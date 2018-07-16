@@ -1,4 +1,4 @@
-open GlType;
+open WonderWebgl.GlType;
 
 type colorRgba = (float, float, float, float);
 

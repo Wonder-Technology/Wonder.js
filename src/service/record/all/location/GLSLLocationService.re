@@ -9,10 +9,10 @@ let _getLocation = ((program, name, locationMap), getGlLocationFunc, gl) =>
     pos
   };
 
-let _getGlAttribLocation = [@bs] ((program, name, gl) => Gl.getAttribLocation(program, name, gl));
+let _getGlAttribLocation = [@bs] ((program, name, gl) => WonderWebgl.Gl.getAttribLocation(program, name, gl));
 
 let _getGlUniformLocation =
-  [@bs] ((program, name, gl) => Gl.getUniformLocation(program, name, gl));
+  [@bs] ((program, name, gl) => WonderWebgl.Gl.getUniformLocation(program, name, gl));
 
 let getAttribLocation = (program, name, attributeLocationMap, gl) =>
   _getLocation((program, name, attributeLocationMap), _getGlAttribLocation, gl);

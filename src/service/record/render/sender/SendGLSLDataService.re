@@ -1,6 +1,6 @@
-open GlType;
+open WonderWebgl.GlType;
 
-open Gl;
+open WonderWebgl.Gl;
 
 let getBufferSizeByType = (type_: string) =>
   switch (type_) {

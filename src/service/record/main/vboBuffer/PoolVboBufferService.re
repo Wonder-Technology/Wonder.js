@@ -3,7 +3,7 @@ open VboBufferType;
 let _getBufferAndSetBufferMap = (gl, bufferPool) =>
   switch (bufferPool |> Js.Array.pop) {
   | Some(buffer) => buffer
-  | None => Gl.createBuffer(gl)
+  | None => WonderWebgl.Gl.createBuffer(gl)
   };
 
 let getArrayBuffer = (gl, {vertexArrayBufferPool}) =>

@@ -1,1 +1,1 @@
-type viewRecord = {canvas: option(DomExtendType.htmlElement)};
+type viewRecord = {canvas: option(WonderWebgl.DomExtendType.htmlElement)};

@@ -1,4 +1,4 @@
-open Gl;
+open WonderWebgl.Gl;
 
 let drawElement = ((drawMode: int, type_: int, typeSize: int, indicesCount: int), gl) => {
   let startOffset = 0;

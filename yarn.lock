@@ -4917,7 +4917,7 @@ wonder-bs-sinon@^0.1.7:
     sinon "^4.1.2"
     wonder-bs-jest latest
 
-wonder-commonlib@0.2.13, wonder-commonlib@0.2.23, wonder-commonlib@^0.2.20, wonder-commonlib@^0.2.23:
+wonder-commonlib@0.2.13, wonder-commonlib@0.2.23, wonder-commonlib@^0.2.23:
   version "0.2.23"
   resolved "https://registry.yarnpkg.com/wonder-commonlib/-/wonder-commonlib-0.2.23.tgz#f8c1f64d41721884baf4df240db3c2e3bae0d7cd"
 
@@ -4928,12 +4928,22 @@ wonder-generate-index@latest:
     bs-glob reasonml-community/bs-glob
     wonder-commonlib "0.2.13"
 
-wonder-glsl-compiler@^0.1.9:
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/wonder-glsl-compiler/-/wonder-glsl-compiler-0.1.9.tgz#b25bc16db99966e3d3ed1792947673e9192e92b0"
+wonder-glsl-compiler@^0.1.11:
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/wonder-glsl-compiler/-/wonder-glsl-compiler-0.1.11.tgz#220e946b01b79f888d5ab6110b5ca9ec4c2958c0"
   dependencies:
     bs-glob reasonml-community/bs-glob
-    wonder-commonlib "^0.2.20"
+    wonder-commonlib "0.2.23"
+
+wonder-imgui@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/wonder-imgui/-/wonder-imgui-0.0.2.tgz#9786d6a6e561c7afb4562fb7eb0c1214cb72e896"
+  dependencies:
+    bs-fetch "^0.3.0"
+    wonder-bs-most "^0.0.3"
+    wonder-commonlib "^0.2.23"
+    wonder-log "^0.2.2"
+    wonder-webgl "^0.0.2"
 
 wonder-jest-cli@latest:
   version "0.0.6"
@@ -5050,6 +5060,12 @@ wonder-render-test@^0.1.26:
     wonder-bs-puppeteer "^0.1.6"
     wonder-commonlib "^0.2.23"
     wonder-log latest
+
+wonder-webgl@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/wonder-webgl/-/wonder-webgl-0.0.2.tgz#9f0669667ab40f4a8d5c1466562ce6b6f7c899dc"
+  dependencies:
+    wonder-log "^0.2.2"
 
 word-wrap@1.1.0:
   version "1.1.0"

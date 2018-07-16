@@ -37,10 +37,10 @@ let _sendTransformMatrixDataBuffer =
       ({pos, size, getOffsetFunc}: instanceAttributeSendData, stride, index),
       state
     ) => {
-  Gl.vertexAttribPointer(
+  WonderWebgl.Gl.vertexAttribPointer(
     pos,
     size,
-    Gl.getFloat(gl),
+    WonderWebgl.Gl.getFloat(gl),
     false,
     stride,
     [@bs] getOffsetFunc(index),

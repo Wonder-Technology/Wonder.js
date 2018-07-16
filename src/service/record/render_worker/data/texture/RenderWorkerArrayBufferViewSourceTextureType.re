@@ -12,6 +12,6 @@ type arrayBufferViewSourceTextureRecord = {
   widths: option(Js.Typed_array.Uint16Array.t),
   heights: option(Js.Typed_array.Uint16Array.t),
   sourceMap: option(WonderCommonlib.SparseMapService.t(Js.Typed_array.Uint8Array.t)),
-  glTextureMap: WonderCommonlib.SparseMapService.t(GlType.texture),
+  glTextureMap: WonderCommonlib.SparseMapService.t(WonderWebgl.GlType.texture),
   bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.t(int)
 };

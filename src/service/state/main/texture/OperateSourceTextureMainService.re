@@ -1,7 +1,7 @@
 open StateDataMainType;
 
 let setFlipY = (gl, flipY, browserRecord) =>
-  gl |> Gl.pixelStorei(Gl.getUnpackFlipYWebgl(gl), flipY);
+  gl |> WonderWebgl.Gl.pixelStorei(WonderWebgl.Gl.getUnpackFlipYWebgl(gl), flipY);
 
 let clearNeedAddedSourceArr = (state) => {
   ...state,

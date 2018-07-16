@@ -1,6 +1,6 @@
-open Gl;
+open WonderWebgl.Gl;
 
-open GlType;
+open WonderWebgl.GlType;
 
 let bindElementArrayBuffer =
   [@bs]

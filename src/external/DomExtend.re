@@ -1,4 +1,4 @@
-open DomExtendType;
+open WonderWebgl.DomExtendType;
 
 [@bs.val] external document : document = "";
 

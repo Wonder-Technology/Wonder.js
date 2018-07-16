@@ -4,7 +4,7 @@ open GeometryType;
 
 open ComponentType;
 
-open GlType;
+open WonderWebgl.GlType;
 
 open Js.Typed_array;
 
@@ -60,7 +60,7 @@ type attributeSendData = {
     (
       . webgl1Context,
       (attributeLocation, int),
-      GlType.buffer,
+      WonderWebgl.GlType.buffer,
       /* StateRenderType.sendAttributeState */
       /* GLSLSenderType.vertexAttribHistoryArray */
       renderState

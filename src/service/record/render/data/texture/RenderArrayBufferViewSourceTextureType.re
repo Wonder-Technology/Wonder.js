@@ -10,8 +10,8 @@ type arrayBufferViewSourceTextureRecord = {
   widths: Js.Typed_array.Uint16Array.t,
   heights: Js.Typed_array.Uint16Array.t,
   sourceMap: WonderCommonlib.SparseMapService.t(Js.Typed_array.Uint8Array.t),
-  glTextureMap: WonderCommonlib.SparseMapService.t(GlType.texture),
+  glTextureMap: WonderCommonlib.SparseMapService.t(WonderWebgl.GlType.texture),
   bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.t(int),
-  setFlipYFunc: (GlType.webgl1Context, bool, BrowserDetectType.browserDetectRecord) => unit,
+  setFlipYFunc: (WonderWebgl.GlType.webgl1Context, bool, BrowserDetectType.browserDetectRecord) => unit,
   textureIndexOffset: int
 };

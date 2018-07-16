@@ -43,7 +43,7 @@ let _buildShaderIndexMapKey = (shaderLibDataArr: shaderLibs) => shaderLibDataArr
 
 let _createProgramAndInit = (gl, shaderIndex, (vsSource, fsSource), programRecord) =>
   gl
-  |> Gl.createProgram
+  |> WonderWebgl.Gl.createProgram
   |> ProgramService.registerProgram(shaderIndex, programRecord)
   |> ProgramService.initShader(vsSource, fsSource, gl);
 

@@ -1,4 +1,4 @@
-open Gl;
+open WonderWebgl.Gl;
 
 let disableVertexAttribArray = (gl, vertexAttribHistoryArray) => {
   WonderLog.Contract.requireCheck(

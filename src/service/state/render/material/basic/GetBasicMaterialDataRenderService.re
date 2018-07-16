@@ -1,4 +1,4 @@
-open GlType;
+open WonderWebgl.GlType;
 
 open StateRenderType;
 

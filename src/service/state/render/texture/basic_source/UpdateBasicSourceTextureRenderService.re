@@ -6,13 +6,13 @@ open BrowserDetectType;
 
 let _drawTexture = (gl, (target, index, source, glFormat, glType)) =>
   gl
-  |> Gl.texImage2D(
+  |> WonderWebgl.Gl.texImage2D(
        target,
        index,
        glFormat,
        glFormat,
        glType,
-       source |> GlType.imageElementToTextureSource,
+       source |> WonderWebgl.GlType.imageElementToTextureSource,
      );
 
 let _drawNoMipmapTwoDTexture = (gl, (target, glFormat, glType), source) =>
@@ -84,7 +84,7 @@ let update =
         textureInTypeArray,
         flipYs,
       );
-    let target = Gl.getTexture2D(gl);
+    let target = WonderWebgl.Gl.getTexture2D(gl);
     UpdateSourceTextureRenderService.update(
       (gl, textureInTypeArray, source),
       (

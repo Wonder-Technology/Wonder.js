@@ -2,9 +2,9 @@ open StateRenderType;
 
 open ProgramType;
 
-open GlType;
+open WonderWebgl.GlType;
 
-open Gl;
+open WonderWebgl.Gl;
 
 let use = (gl, program: program, {programRecord} as state) =>
   switch programRecord.lastUsedProgram {

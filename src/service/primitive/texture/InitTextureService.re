@@ -1,7 +1,7 @@
 let initTexture = (gl, texture, glTextureMap) =>
   switch (OperateGlTextureMapService.getTexture(texture, glTextureMap)) {
   | Some(_) => glTextureMap
-  | None => OperateGlTextureMapService.setTexture(texture, gl |> Gl.createTexture, glTextureMap)
+  | None => OperateGlTextureMapService.setTexture(texture, gl |> WonderWebgl.Gl.createTexture, glTextureMap)
   };
 
 let initTexturesWithIndexArray = (gl, indexInTypeArrayRange, glTextureMap) =>

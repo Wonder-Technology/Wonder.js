@@ -12,8 +12,8 @@ let _filterFallback = (filter, gl) =>
   switch (filter) {
   | SourceTextureType.NEAREST
   | SourceTextureType.NEAREST_MIPMAP_NEAREST
-  | SourceTextureType.NEAREST_MIPMAP_LINEAR => Gl.getNearest(gl)
-  | _ => Gl.getLinear(gl)
+  | SourceTextureType.NEAREST_MIPMAP_LINEAR => WonderWebgl.Gl.getNearest(gl)
+  | _ => WonderWebgl.Gl.getLinear(gl)
   };
 
 let _setTextureParameters =
@@ -25,44 +25,44 @@ let _setTextureParameters =
     ) =>
   isSourcePowerOfTwo ?
     {
-      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapS, glWrapS);
-      gl |> Gl.texParameteri(target, gl |> Gl.getTextureWrapT, glWrapT);
+      gl |> WonderWebgl.Gl.texParameteri(target, gl |> WonderWebgl.Gl.getTextureWrapS, glWrapS);
+      gl |> WonderWebgl.Gl.texParameteri(target, gl |> WonderWebgl.Gl.getTextureWrapT, glWrapT);
       gl
-      |> Gl.texParameteri(
+      |> WonderWebgl.Gl.texParameteri(
            target,
-           gl |> Gl.getTextureMagFilter,
+           gl |> WonderWebgl.Gl.getTextureMagFilter,
            magFilter |> TextureFilterService.getGlFilter(gl),
          );
       gl
-      |> Gl.texParameteri(
+      |> WonderWebgl.Gl.texParameteri(
            target,
-           gl |> Gl.getTextureMinFilter,
+           gl |> WonderWebgl.Gl.getTextureMinFilter,
            minFilter |> TextureFilterService.getGlFilter(gl),
          );
     } :
     {
       gl
-      |> Gl.texParameteri(
+      |> WonderWebgl.Gl.texParameteri(
            target,
-           gl |> Gl.getTextureWrapS,
-           gl |> Gl.getClampToEdge,
+           gl |> WonderWebgl.Gl.getTextureWrapS,
+           gl |> WonderWebgl.Gl.getClampToEdge,
          );
       gl
-      |> Gl.texParameteri(
+      |> WonderWebgl.Gl.texParameteri(
            target,
-           gl |> Gl.getTextureWrapT,
-           gl |> Gl.getClampToEdge,
+           gl |> WonderWebgl.Gl.getTextureWrapT,
+           gl |> WonderWebgl.Gl.getClampToEdge,
          );
       gl
-      |> Gl.texParameteri(
+      |> WonderWebgl.Gl.texParameteri(
            target,
-           gl |> Gl.getTextureMagFilter,
+           gl |> WonderWebgl.Gl.getTextureMagFilter,
            _filterFallback(magFilter, gl),
          );
       gl
-      |> Gl.texParameteri(
+      |> WonderWebgl.Gl.texParameteri(
            target,
-           gl |> Gl.getTextureMinFilter,
+           gl |> WonderWebgl.Gl.getTextureMinFilter,
            _filterFallback(minFilter, gl),
          );
     };
@@ -98,7 +98,7 @@ let update =
   setFlipYFunc(gl, flipY, browserDetectRecord);
 
   gl
-  |> Gl.pixelStoreiEnum(Gl.getUnpackColorspaceCoersionWebgl(gl), Gl.getNone(gl));
+  |> WonderWebgl.Gl.pixelStoreiEnum(WonderWebgl.Gl.getUnpackColorspaceCoersionWebgl(gl), WonderWebgl.Gl.getNone(gl));
 
   /* TODO handle _needClampMaxSize
      if(_needClampMaxSize(source, width, height)){
@@ -120,7 +120,7 @@ let update =
 
   isSourcePowerOfTwo
   && (_isFilterMipmaps(magFilter) || _isFilterMipmaps(minFilter)) ?
-    gl |> Gl.generateMipmap(target) : ();
+    gl |> WonderWebgl.Gl.generateMipmap(target) : ();
 
   OperateTypeArraySourceTextureService.setIsNeedUpdate(
     textureInTypeArray,

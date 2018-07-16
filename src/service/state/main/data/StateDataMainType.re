@@ -1,4 +1,4 @@
-open GlType;
+open WonderWebgl.GlType;
 
 open ComponentType;
 
@@ -216,6 +216,7 @@ and state = {
   workerDetectRecord,
   browserDetectRecord,
   eventRecord,
+  imguiRecord: WonderImgui.IMGUIType.imguiRecord,
 };
 
 type sharedDataForRestoreState = {

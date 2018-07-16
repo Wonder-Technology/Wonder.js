@@ -37,7 +37,7 @@ let _drawTexture =
   );
   /* _setUnpackAlignmentaToOne(gl); */
   gl
-  |> Gl.texImage2DWithArrayBufferView(
+  |> WonderWebgl.Gl.texImage2DWithArrayBufferView(
        target,
        index,
        glFormat,
@@ -134,7 +134,7 @@ let update =
         textureInTypeArray,
         flipYs,
       );
-    let target = Gl.getTexture2D(gl);
+    let target = WonderWebgl.Gl.getTexture2D(gl);
     UpdateSourceTextureRenderService.update(
       (gl, textureInTypeArray, source),
       (
