@@ -63,6 +63,7 @@ let _getWorkerJobHandles = () => [
   ("init_point_light", InitPointLightRenderWorkerJob.execJob),
   ("init_light_material", InitLightMaterialRenderWorkerJob.execJob),
   ("init_texture", InitTextureRenderWorkerJob.execJob),
+  ("init_imgui", InitIMGUIRenderWorkerJob.execJob),
   (
     "send_finish_init_render_data",
     SendFinishInitRenderDataRenderWorkerJob.execJob,
@@ -92,6 +93,7 @@ let _getWorkerJobHandles = () => [
   ("send_uniform_shader_data", SendUniformShaderDataRenderWorkerJob.execJob),
   ("render_basic", RenderBasicRenderWorkerJob.execJob),
   ("front_render_light", FrontRenderLightRenderWorkerJob.execJob),
+  ("render_imgui", RenderIMGUIRenderWorkerJob.execJob),
   ("commit", CommitRenderWorkerJob.execJob),
   ("send_finish_render_data", SendFinishRenderDataRenderWorkerJob.execJob),
   ("get_dispose_data", GetDisposeDataRenderWorkerJob.execJob),

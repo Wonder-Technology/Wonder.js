@@ -8,27 +8,32 @@ open SettingGPUType;
 
 open BrowserDetectType;
 
-let _buildMaterialData = (buffer, index, disposedIndexArray, isSourceInstanceMap) => {
+let _buildMaterialData =
+    (buffer, index, disposedIndexArray, isSourceInstanceMap) => {
   "buffer": buffer,
   "index": index,
   "disposedIndexArray": disposedIndexArray,
-  "isSourceInstanceMap": isSourceInstanceMap
+  "isSourceInstanceMap": isSourceInstanceMap,
 };
 
-let _buildTextureData = (state) => {
+let _buildTextureData = state => {
   WonderLog.Contract.requireCheck(
     () => {
       open WonderLog;
       open Contract;
       open Operators;
-      let basicSourceTextureRecord = RecordBasicSourceTextureMainService.getRecord(state);
-      let needInitedTextureIndexArray = basicSourceTextureRecord.needInitedTextureIndexArray;
+      let basicSourceTextureRecord =
+        RecordBasicSourceTextureMainService.getRecord(state);
+      let needInitedTextureIndexArray =
+        basicSourceTextureRecord.needInitedTextureIndexArray;
       test(
         Log.buildAssertMessage(
-          ~expect={j|basicSourceTextureRecord->needInitedTextureIndexArray should be empty|j},
-          ~actual={j|is $needInitedTextureIndexArray|j}
+          ~expect=
+            {j|basicSourceTextureRecord->needInitedTextureIndexArray should be empty|j},
+          ~actual={j|is $needInitedTextureIndexArray|j},
         ),
-        () => needInitedTextureIndexArray |> Js.Array.length == 0
+        () =>
+        needInitedTextureIndexArray |> Js.Array.length == 0
       );
       let arrayBufferViewSourceTextureRecord =
         RecordArrayBufferViewSourceTextureMainService.getRecord(state);
@@ -36,16 +41,19 @@ let _buildTextureData = (state) => {
         arrayBufferViewSourceTextureRecord.needInitedTextureIndexArray;
       test(
         Log.buildAssertMessage(
-          ~expect={j|arrayBufferViewSourceTextureRecord->needInitedTextureIndexArray should be empty|j},
-          ~actual={j|is $needInitedTextureIndexArray|j}
+          ~expect=
+            {j|arrayBufferViewSourceTextureRecord->needInitedTextureIndexArray should be empty|j},
+          ~actual={j|is $needInitedTextureIndexArray|j},
         ),
-        () => needInitedTextureIndexArray |> Js.Array.length == 0
-      )
+        () =>
+        needInitedTextureIndexArray |> Js.Array.length == 0
+      );
     },
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   let sourceTextureRecord = RecordSourceTextureMainService.getRecord(state);
-  let basicSourceTextureRecord = RecordBasicSourceTextureMainService.getRecord(state);
+  let basicSourceTextureRecord =
+    RecordBasicSourceTextureMainService.getRecord(state);
   let arrayBufferViewSourceTextureRecord =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   {
@@ -55,14 +63,29 @@ let _buildTextureData = (state) => {
       /* TODO perf: add needAddedImageDataArray->arrayBuffer to transfer list */
       "needAddedImageDataArray":
         OperateBasicSourceTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
-          basicSourceTextureRecord.needAddedSourceArray
-        )
+          basicSourceTextureRecord.needAddedSourceArray,
+        ),
     },
     "arrayBufferViewSourceTextureData": {
       "index": arrayBufferViewSourceTextureRecord.index,
-      "sourceMap": arrayBufferViewSourceTextureRecord.sourceMap
-    }
-  }
+      "sourceMap": arrayBufferViewSourceTextureRecord.sourceMap,
+    },
+  };
+};
+
+let _getFntData = imguiRecord =>
+  switch (WonderImgui.AssetIMGUIAPI.getFntData(imguiRecord)) {
+  | None => None
+  | Some(fntData) => fntData |> Obj.magic |> Js.Json.stringify |. Some
+  };
+
+let _buildIMGUIData = ({imguiRecord} as state) => {
+  "setting":
+    WonderImgui.ManageIMGUIAPI.getSetting(imguiRecord)
+    |> Obj.magic
+    |> Js.Json.stringify,
+  "fntData": _getFntData(imguiRecord),
+  "bitmapImageData": AssetIMGUIMainServiice.convertBitmapToImageData(state),
 };
 
 let _buildData = (operateType, canvas, stateData) => {
@@ -72,11 +95,13 @@ let _buildData = (operateType, canvas, stateData) => {
         gameObjectRecord,
         directionLightRecord,
         pointLightRecord,
-        browserDetectRecord
+        browserDetectRecord,
       } as state =
     StateDataMainService.unsafeGetState(stateData);
-  let {useHardwareInstance} = OperateSettingService.unsafeGetGPU(settingRecord);
-  let {maxBigTypeArrayPoolSize} = OperateSettingService.unsafeGetMemory(settingRecord);
+  let {useHardwareInstance} =
+    OperateSettingService.unsafeGetGPU(settingRecord);
+  let {maxBigTypeArrayPoolSize} =
+    OperateSettingService.unsafeGetMemory(settingRecord);
   let buffer = BufferSettingService.unsafeGetBuffer(settingRecord);
   let renderConfigRecord = RecordRenderConfigMainService.getRecord(state);
   let transformRecord = RecordTransformMainService.getRecord(state);
@@ -100,26 +125,42 @@ let _buildData = (operateType, canvas, stateData) => {
       "lightMaterialCount": buffer.lightMaterialCount,
       "textureCountPerMaterial": buffer.textureCountPerMaterial,
       "basicSourceTextureCount": buffer.basicSourceTextureCount,
-      "arrayBufferViewSourceTextureCount": buffer.arrayBufferViewSourceTextureCount
+      "arrayBufferViewSourceTextureCount":
+        buffer.arrayBufferViewSourceTextureCount,
     },
-    "gpuData": {"useHardwareInstance": useHardwareInstance},
-    "memoryData": {"maxBigTypeArrayPoolSize": maxBigTypeArrayPoolSize},
+    "gpuData": {
+      "useHardwareInstance": useHardwareInstance,
+    },
+    "memoryData": {
+      "maxBigTypeArrayPoolSize": maxBigTypeArrayPoolSize,
+    },
     "instanceBufferData": {
-      "sourceInstanceCount": BufferSettingService.getSourceInstanceCount(settingRecord),
+      "sourceInstanceCount":
+        BufferSettingService.getSourceInstanceCount(settingRecord),
       "objectInstanceCountPerSourceInstance":
-        BufferSettingService.getObjectInstanceCountPerSourceInstance(settingRecord)
+        BufferSettingService.getObjectInstanceCountPerSourceInstance(
+          settingRecord,
+        ),
     },
-    "workerDetectData": {"isUseWorker": WorkerDetectMainService.isUseWorker(state)},
-    "browserDetectData": {"browser": browserDetectRecord.browser},
+    "workerDetectData": {
+      "isUseWorker": WorkerDetectMainService.isUseWorker(state),
+    },
+    "browserDetectData": {
+      "browser": browserDetectRecord.browser,
+    },
     "renderConfigData": {
       "shaders":
-        GetDataRenderConfigService.getShaders(renderConfigRecord) |> Obj.magic |> Js.Json.stringify,
+        GetDataRenderConfigService.getShaders(renderConfigRecord)
+        |> Obj.magic
+        |> Js.Json.stringify,
       "shaderLibs":
         GetDataRenderConfigService.getShaderLibs(renderConfigRecord)
         |> Obj.magic
-        |> Js.Json.stringify
+        |> Js.Json.stringify,
     },
-    "transformData": {"buffer": transformRecord |> CopyTransformService.unsafeGetCopiedBuffer},
+    "transformData": {
+      "buffer": transformRecord |> CopyTransformService.unsafeGetCopiedBuffer,
+    },
     "basicMaterialData":
       _buildMaterialData(
         basicMaterialRecord.buffer,
@@ -128,8 +169,8 @@ let _buildData = (operateType, canvas, stateData) => {
         JudgeInstanceMainService.buildMap(
           basicMaterialRecord.index,
           RecordBasicMaterialMainService.getRecord(state).gameObjectMap,
-          gameObjectRecord
-        )
+          gameObjectRecord,
+        ),
       ),
     "lightMaterialData":
       _buildMaterialData(
@@ -139,49 +180,56 @@ let _buildData = (operateType, canvas, stateData) => {
         JudgeInstanceMainService.buildMap(
           lightMaterialRecord.index,
           RecordLightMaterialMainService.getRecord(state).gameObjectMap,
-          gameObjectRecord
-        )
+          gameObjectRecord,
+        ),
       ),
-    "customGeometryData": {"buffer": customGeometryRecord.buffer},
+    "customGeometryData": {
+      "buffer": customGeometryRecord.buffer,
+    },
     "directionLightData": {
       "buffer": directionLightRecord.buffer,
-      "index": directionLightRecord.index
+      "index": directionLightRecord.index,
     },
-    "pointLightData": {"buffer": pointLightRecord.buffer, "index": pointLightRecord.index},
+    "pointLightData": {
+      "buffer": pointLightRecord.buffer,
+      "index": pointLightRecord.index,
+    },
     "sourceInstanceData": {
       "buffer": sourceInstanceRecord.buffer,
-      "objectInstanceTransformIndexMap": sourceInstanceRecord.objectInstanceTransformIndexMap
+      "objectInstanceTransformIndexMap":
+        sourceInstanceRecord.objectInstanceTransformIndexMap,
     },
-    "textureData": _buildTextureData(state)
-  }
+    "textureData": _buildTextureData(state),
+    "imguiData": _buildIMGUIData(state),
+  };
 };
 
-let _clearData = (state) =>
+let _clearData = state =>
   state
   |> OperateSourceTextureMainService.clearNeedAddedSourceArr
   |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray;
 
 let execJob = (flags, stateData) =>
-  MostUtils.callFunc(
-    () => {
-      let {
-            settingRecord,
-            viewRecord,
-            workerInstanceRecord,
-            gameObjectRecord,
-            directionLightRecord,
-            pointLightRecord
-          } as state =
-        StateDataMainService.unsafeGetState(stateData);
-      let operateType = JobConfigUtils.getOperateType(flags);
-      let offscreen = ViewService.unsafeGetCanvas(viewRecord) |> Worker.transferControlToOffscreen;
-      WorkerInstanceService.unsafeGetRenderWorker(workerInstanceRecord)
-      |> WorkerService.postMessageWithTransferData(
-           _buildData(operateType, offscreen, stateData),
-           [|offscreen|]
-         );
-      let state = state |> _clearData;
-      StateDataMainService.setState(stateData, state);
-      Some(operateType)
-    }
-  );
+  MostUtils.callFunc(() => {
+    let {
+          settingRecord,
+          viewRecord,
+          workerInstanceRecord,
+          gameObjectRecord,
+          directionLightRecord,
+          pointLightRecord,
+        } as state =
+      StateDataMainService.unsafeGetState(stateData);
+    let operateType = JobConfigUtils.getOperateType(flags);
+    let offscreen =
+      ViewService.unsafeGetCanvas(viewRecord)
+      |> Worker.transferControlToOffscreen;
+    WorkerInstanceService.unsafeGetRenderWorker(workerInstanceRecord)
+    |> WorkerService.postMessageWithTransferData(
+         _buildData(operateType, offscreen, stateData),
+         [|offscreen|],
+       );
+    let state = state |> _clearData;
+    StateDataMainService.setState(stateData, state);
+    Some(operateType);
+  });

@@ -28,6 +28,20 @@ let _removeAddedSourceDataDuplicateItems = needAddedSourceDataArray =>
        Js.Int.toString(texture)
      );
 
+let _buildIMGUIData = ({imguiRecord, viewRecord} as state) => {
+  let canvas = ViewService.getCanvas(viewRecord) |> Obj.magic;
+
+  {
+    "canvasWidth": canvas##width,
+    "canvasHeight": canvas##height,
+    "imguiFunc":
+      switch (WonderImgui.ManageIMGUIAPI.getIMGUIFunc(imguiRecord)) {
+      | None => None
+      | Some(func) => func |> SerializeService.serializeFunction
+      },
+  };
+};
+
 let _buildData = (operateType, stateData) => {
   let {
         settingRecord,
@@ -145,6 +159,7 @@ let _buildData = (operateType, stateData) => {
           sourceInstanceRecord.objectInstanceTransformIndexMap,
       },
     },
+    "imguiData": _buildIMGUIData(state),
   };
 };
 

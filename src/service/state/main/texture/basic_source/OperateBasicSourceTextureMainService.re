@@ -26,16 +26,11 @@ let convertNeedAddedSourceArrayToImageDataArr = needAddedSourceArray =>
   needAddedSourceArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. imageDataArr, (texture, source)) => {
-         let width = source##width;
-         let height = source##height;
+         let (arrayBuffer, width, height) =
+           ImageDataService.convertImageToImageData(source);
+
          imageDataArr
-         |> ArrayService.push((
-              ImageDataService.getImageData(source, width, height)
-              |> ImageDataService.getArrayBuffer,
-              width,
-              height,
-              texture,
-            ));
+         |> ArrayService.push((arrayBuffer, width, height, texture));
        },
        [||],
      );
