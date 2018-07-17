@@ -64,6 +64,8 @@ let unsafeGetArcballCameraControllerGameObject = ArcballCameraControllerAPI.unsa
 
 let createArcballCameraController = ArcballCameraControllerAPI.createArcballCameraController;
 
+let unsafeGetGl = DeviceManagerAPI.unsafeGetGl;
+
 let startDirector = DirectorAPI.startDirector;
 
 let loopBody = DirectorAPI.loopBody;
@@ -593,6 +595,8 @@ let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraVie
 let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectBasicCameraView;
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
+
+let unsafeGetGl = DeviceManagerAPI.unsafeGetGl;
 
 let startDirector = DirectorAPI.startDirector;
 
