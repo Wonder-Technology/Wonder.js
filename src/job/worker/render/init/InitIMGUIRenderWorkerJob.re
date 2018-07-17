@@ -14,7 +14,7 @@ let execJob = (_, e, stateData) => {
     {
       let state = StateRenderWorkerService.unsafeGetState(stateData);
 
-      ImageBitmapRenderWorkerService.createImageBitmap(
+      ImageBitmapRenderWorkerService.createImageBitmapFromImageData(
         imguiData##bitmapImageData
         |> OptionService.unsafeGetJsonSerializedValue,
         state => false,

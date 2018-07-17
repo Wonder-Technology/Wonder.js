@@ -268,6 +268,10 @@ let image = FixedLayoutControlIMGUIAPI.image;
 
 let label = FixedLayoutControlIMGUIAPI.label;
 
+let setSetting = ManageIMGUIAPI.setSetting;
+
+let getSetting = ManageIMGUIAPI.getSetting;
+
 let setIMGUIFunc = ManageIMGUIAPI.setIMGUIFunc;
 
 let removeWorkerMainLoopJob = JobAPI.removeWorkerMainLoopJob;

@@ -321,7 +321,7 @@ let _ =
               BasicSourceTextureRenderWorkerTool.clearFakeCreateImageBitmapFunc()
             );
             describe("add source to sourceMap", () => {
-              describe("test for chrom", () => {
+              describe("test for chrome", () => {
                 testPromise("test flipY", () => {
                   let (
                     state,

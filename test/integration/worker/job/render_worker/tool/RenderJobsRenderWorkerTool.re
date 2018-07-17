@@ -76,6 +76,7 @@ let init = (completeFunc, state) => {
          InitPointLightRenderWorkerJob.execJob(None),
          InitLightMaterialRenderWorkerJob.execJob(None),
          InitTextureRenderWorkerJob.execJob(None),
+         InitIMGUIRenderWorkerJob.execJob(None),
        |]
        |> concatStreamFuncArray(
             initData,
@@ -131,6 +132,7 @@ let render = (postMessageToRenderWorker, completeFunc) => {
     SendUniformShaderDataRenderWorkerJob.execJob(None),
     RenderBasicRenderWorkerJob.execJob(None),
     FrontRenderLightRenderWorkerJob.execJob(None),
+    RenderIMGUIRenderWorkerJob.execJob(None),
     CommitRenderWorkerJob.execJob(None),
   |]
   |> concatStreamFuncArray(drawData, RenderWorkerStateTool.getStateData())
