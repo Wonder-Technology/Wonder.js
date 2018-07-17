@@ -138,14 +138,16 @@ let _ =
         let image1Data = _getPositionBufferData();
         let state =
           ManageIMGUIAPI.setIMGUIFunc(
-            (. record) => {
+             Obj.magic(-1),
+            ( labelFunc, apiJsObj, record) => {
+              let imageFunc = apiJsObj##image;
               let record =
-                record
-                |> FixedLayoutControlIMGUIAPI.image(
-                     (imageX1, imageY1, imageWidth1, imageHeight1),
-                     (imageS01, imageT01, imageS11, imageT11),
-                     texture1,
-                   );
+                imageFunc(.
+                  (imageX1, imageY1, imageWidth1, imageHeight1),
+                  (imageS01, imageT01, imageS11, imageT11),
+                  texture1,
+                  record,
+                );
 
               record;
             },

@@ -29,15 +29,27 @@ let _removeAddedSourceDataDuplicateItems = needAddedSourceDataArray =>
      );
 
 let _buildIMGUIData = ({imguiRecord, viewRecord} as state) => {
-  let canvas = ViewService.getCanvas(viewRecord) |> Obj.magic;
+  let (canvasWidth, canvasHeight) =
+    switch (ViewService.getCanvas(viewRecord)) {
+    | None => (0, 0)
+    | Some(canvas) => 
+    let canvas = Obj.magic(canvas);
+
+    (canvas##width, canvas##height)
+    };
 
   {
-    "canvasWidth": canvas##width,
-    "canvasHeight": canvas##height,
+    "canvasWidth": canvasWidth,
+    "canvasHeight": canvasHeight,
+    "customData":
+      switch (WonderImgui.ManageIMGUIAPI.getCustomData(imguiRecord)) {
+      | None => None
+      | Some(customData) => customData |. Some
+      },
     "imguiFunc":
       switch (WonderImgui.ManageIMGUIAPI.getIMGUIFunc(imguiRecord)) {
       | None => None
-      | Some(func) => func |> SerializeService.serializeFunction
+      | Some(func) => func |> SerializeService.serializeFunction |. Some
       },
   };
 };

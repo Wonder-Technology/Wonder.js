@@ -11,7 +11,6 @@ let buildFakeCreateImageBitmapFunc = [%bs.raw
   {|
   function(){
     window.createImageBitmap = function(imageData, config){
-
     return new Promise(function(resolve, reject){
       resolve([imageData.uint8ClampedArray.arrayBuffer, imageData.width, imageData.height, config ]);
     }) ;

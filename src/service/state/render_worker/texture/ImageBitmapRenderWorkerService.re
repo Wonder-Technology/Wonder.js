@@ -18,7 +18,7 @@ let _createImageBitmapForFirefox:
     |}
 ];
 
-let createImageBitmap =
+let createImageBitmapFromImageData =
     ((imageArrayBuffer, width, height), getFlipYFunc, state) => {
   let imageData =
     Canvas.newImageData(

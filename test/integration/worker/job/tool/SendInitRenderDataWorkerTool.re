@@ -5,6 +5,7 @@ let buildInitRenderData =
       ~workerDetectData=Sinon.matchAny,
       ~browserDetectData=Sinon.matchAny,
       ~textureData=Sinon.matchAny,
+      ~imguiData=Sinon.matchAny,
       ()
     ) => {
   "operateType": "INIT_RENDER",
@@ -20,6 +21,7 @@ let buildInitRenderData =
   "workerDetectData": workerDetectData,
   "browserDetectData": browserDetectData,
   "textureData": textureData,
+  "imguiData": imguiData,
   "transformData": Sinon.matchAny,
   "basicMaterialData": Sinon.matchAny,
   "lightMaterialData": Sinon.matchAny,

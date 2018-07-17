@@ -69,7 +69,7 @@ let _convertImageArrayBufferDataToImageBitmapStream =
     (imageArrayBufferIndexSizeDataArr, state) =>
   WonderBsMost.Most.from(imageArrayBufferIndexSizeDataArr)
   |> WonderBsMost.Most.flatMap(((arrayBuffer, width, height, texture)) =>
-       ImageBitmapRenderWorkerService.createImageBitmap(
+       ImageBitmapRenderWorkerService.createImageBitmapFromImageData(
          (arrayBuffer, width, height),
          _getFlipYFunc(texture),
          state,
