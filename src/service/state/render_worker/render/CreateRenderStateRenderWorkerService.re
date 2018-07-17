@@ -157,7 +157,7 @@ let createRenderState =
       flipYs: basicSourceTextureRecord.flipYs |> OptionService.unsafeGet,
       sourceMap:
         basicSourceTextureRecord.sourceMap
-        |> RenderWorkerBasicSourceTextureType.sparseMapImageBitmapToSparseMapImageElement,
+        |> WorkerType.sparseMapImageBitmapToSparseMapImageElement,
       glTextureMap: basicSourceTextureRecord.glTextureMap,
       bindTextureUnitCacheMap:
         basicSourceTextureRecord.bindTextureUnitCacheMap,

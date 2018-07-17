@@ -72,6 +72,9 @@
         "name": "init_texture"
     },
     {
+        "name": "init_imgui"
+    },
+    {
         "name": "send_finish_init_render_data",
         "flags": [
             "FINISH_INIT_RENDER"
@@ -135,6 +138,9 @@
     },
     {
         "name": "front_render_light"
+    },
+    {
+        "name": "render_imgui"
     },
     {
         "name": "commit"

@@ -6,47 +6,29 @@ open BrowserDetectType;
 
 open BrowserType;
 
-let _createImageBitmapForChrome:
-  (CanvasType.imageData, Js.t({..})) => Js.Promise.t(imageBitmap) = [%bs.raw
-  {|
-    function(imageData, config){
-        return createImageBitmap(imageData, config)
-    }
-    |}
-];
-
-let _createImageBitmapForFirefox:
-  CanvasType.imageData => Js.Promise.t(imageBitmap) = [%bs.raw
-  {|
-    function(imageData){
-        return createImageBitmap(imageData)
-    }
-    |}
-];
-
-let _createImageBitmap = (texture, imageData, state) => {
-  let {browser} = RecordBrowserDetectRenderWorkerService.getRecord(state);
-  switch (browser) {
-  | Chrome =>
-    let {flipYs} =
-      RecordBasicSourceTextureRenderWorkerService.getRecord(state);
-    let flipY =
-      OperateTypeArrayBasicSourceTextureService.isFlipY(
-        texture,
-        flipYs |> OptionService.unsafeGet,
-      );
-    _createImageBitmapForChrome(
-      imageData,
-      {"imageOrientation": flipY === true ? "flipY" : "none"},
-    );
-  | Firefox => _createImageBitmapForFirefox(imageData)
-  | _ =>
-    RecordBrowserDetectAllService.fatalUnknownBrowser(
-      "_createImageBitmap",
-      browser,
-    )
-  };
-};
+/* let _createImageBitmap = (texture, imageData, state) => {
+     let {browser} = RecordBrowserDetectRenderWorkerService.getRecord(state);
+     switch (browser) {
+     | Chrome =>
+       let {flipYs} =
+         RecordBasicSourceTextureRenderWorkerService.getRecord(state);
+       let flipY =
+         OperateTypeArrayBasicSourceTextureService.isFlipY(
+           texture,
+           flipYs |> OptionService.unsafeGet,
+         );
+       _createImageBitmapForChrome(
+         imageData,
+         {"imageOrientation": flipY === true ? "flipY" : "none"},
+       );
+     | Firefox => _createImageBitmapForFirefox(imageData)
+     | _ =>
+       RecordBrowserDetectAllService.fatalUnknownBrowser(
+         "_createImageBitmap",
+         browser,
+       )
+     };
+   }; */
 
 let _addSource = (texture, imageBitmap, state) => {
   WonderLog.Contract.requireCheck(
@@ -73,25 +55,33 @@ let _addSource = (texture, imageBitmap, state) => {
   state;
 };
 
-let _convertImageSrcToImageBitmapStream =
+let _getFlipYFunc = (texture, state) => {
+  let {flipYs} =
+    RecordBasicSourceTextureRenderWorkerService.getRecord(state);
+
+  OperateTypeArrayBasicSourceTextureService.isFlipY(
+    texture,
+    flipYs |> OptionService.unsafeGet,
+  );
+};
+
+let _convertImageArrayBufferDataToImageBitmapStream =
     (imageArrayBufferIndexSizeDataArr, state) =>
   WonderBsMost.Most.from(imageArrayBufferIndexSizeDataArr)
   |> WonderBsMost.Most.flatMap(((arrayBuffer, width, height, texture)) =>
-       _createImageBitmap(
-         texture,
-         Canvas.newImageData(
-           Canvas.newUint8ClampedArray(arrayBuffer),
-           width,
-           height,
-         ),
+       ImageBitmapRenderWorkerService.createImageBitmap(
+         (arrayBuffer, width, height),
+         _getFlipYFunc(texture),
          state,
        )
        |> WonderBsMost.Most.fromPromise
-       |> WonderBsMost.Most.map(imageBitmap => _addSource(texture, imageBitmap, state))
+       |> WonderBsMost.Most.map(imageBitmap =>
+            _addSource(texture, imageBitmap, state)
+          )
      );
 
 let addSourceFromImageDataStream = (imageArrayBufferIndexSizeDataArr, state) =>
-  _convertImageSrcToImageBitmapStream(
+  _convertImageArrayBufferDataToImageBitmapStream(
     imageArrayBufferIndexSizeDataArr,
     state,
   );

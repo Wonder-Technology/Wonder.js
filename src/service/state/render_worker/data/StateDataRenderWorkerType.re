@@ -81,6 +81,7 @@ type renderWorkerState = {
   mutable globalTempRecord,
   mutable workerDetectRecord: option(workerDetectRecord),
   mutable browserDetectRecord: option(browserDetectRecord),
+  mutable imguiRecord: WonderImgui.IMGUIType.imguiRecord,
 };
 
 type renderWorkerStateData = {mutable state: option(renderWorkerState)};
