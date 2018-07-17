@@ -141,7 +141,7 @@ let _ =
             (. record) => {
               let record =
                 record
-                |> WonderImgui.FixedLayoutControlIMGUIAPI.image(
+                |> FixedLayoutControlIMGUIAPI.image(
                      (imageX1, imageY1, imageWidth1, imageHeight1),
                      (imageS01, imageT01, imageS11, imageT11),
                      texture1,
