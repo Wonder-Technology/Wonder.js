@@ -33,14 +33,27 @@ let _ =
             "./test/res/font/myFont.png",
           |]);
         let bitmap = bitmapFilePath;
+        let customTextureSourceSrc1 = "./test/res/image/1.jpg";
+        let customTextureSourceSrc2 = "./test/res/image/2.png";
+        let customTextureSourceDataArr = [|
+          (customTextureSourceSrc1, "a1"),
+          (customTextureSourceSrc2, "a2"),
+        |];
         IOIMGUITool.buildFakeURL(sandbox^);
         IOIMGUITool.buildFakeLoadImage(.);
         let fetch =
-          IOIMGUITool.buildFakeFetch(sandbox, fntFilePath, bitmapFilePath);
+          IOIMGUITool.buildFakeFetch(
+            sandbox,
+            fntFilePath,
+            bitmapFilePath,
+            customTextureSourceSrc1,
+            customTextureSourceSrc2,
+          );
 
         LoadIMGUIAssetTool.loadIMGUIAsset(
           fntFilePath,
           bitmapFilePath,
+          customTextureSourceDataArr,
           fetch,
           state^,
         )

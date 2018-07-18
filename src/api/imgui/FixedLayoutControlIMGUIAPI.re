@@ -7,5 +7,5 @@ let label =
     FixedLayoutControlIMGUIAPI.label(. rect, str, align, record);
 
 let image =
-  (. rect: (int, int, int, int), uv, texture, record) =>
-    FixedLayoutControlIMGUIAPI.image(. rect, uv, texture, record);
+  (. rect: (int, int, int, int), uv, id, record) =>
+    FixedLayoutControlIMGUIAPI.image(. rect, uv, id, record);

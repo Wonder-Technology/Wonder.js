@@ -12,68 +12,76 @@
     <script>
         window.onload = function () {
             return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
-                AssetTool.loadIMGUIAsset("../res/font/myFont.fnt", "../res/font/myFont.png", wd.unsafeGetState(), function (state) {
+                AssetTool.loadIMGUIAsset("../res/font/myFont.fnt", "../res/font/myFont.png",
+                    [
+                        ["./1.png", "1"],
+                        ["./2.jpg", "2"]
+                    ],
+                    wd.unsafeGetState(), function (state) {
 
-                    setTimeout(() => {
-                        var image1 = new Image();
+                        setTimeout(() => {
+                            // var image1 = new Image();
 
-                        image1.src = "./1.jpg";
-                        image1.onload = () => {
-                            var image2 = new Image();
+                            // image1.src = "./1.jpg";
+                            // image1.onload = () => {
+                            //     var image2 = new Image();
 
-                            image2.src = "./1.png";
-                            image2.onload = () => {
-
-                                var state = wd.unsafeGetState();
-
-                                // var gl = wd.unsafeGetGl(state);
-
-                                // var texture1 = gl.createTexture();
-                                // gl.bindTexture(gl.TEXTURE_2D, texture1);
-
-                                // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image1);
+                            //     image2.src = "./1.png";
+                            //     image2.onload = () => {
+                            //     }
+                            // }
 
 
-                                // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                            var state = wd.unsafeGetState();
+
+                            // var gl = wd.unsafeGetGl(state);
+
+                            // var texture1 = gl.createTexture();
+                            // gl.bindTexture(gl.TEXTURE_2D, texture1);
+
+                            // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image1);
 
 
-                                // var texture2 = gl.createTexture();
-                                // gl.bindTexture(gl.TEXTURE_2D, texture2);
-
-                                // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image2);
+                            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
 
-                                // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                            // var texture2 = gl.createTexture();
+                            // gl.bindTexture(gl.TEXTURE_2D, texture2);
+
+                            // gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image2);
+
+
+                            // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
 
 
 
 
-                                var state = wd.setIMGUIFunc(
-                                    1, (labelFunc, api, record) => {
+                            var state = wd.setIMGUIFunc(
+                                1, (labelFunc, api, record) => {
                                     var record = api.label(
                                         [20, 20, 300, 100], "ab", 0, record
                                     );
 
 
 
-                                    // var record = wd.image(
-                                    //     [50, 150, 50, 100], [0, 0, 1, 1], texture1, record
-                                    // );
+                                    var record = api.image(
+                                        [50, 150, 50, 100], [0, 0, 1, 1], "1", record
+                                    );
 
 
-                                    // var record = wd.image(
-                                    //     [200, 300, 100, 100], [0, 0, 1, 1], texture2, record
-                                    // );
+                                    var record = api.image(
+                                        [200, 300, 100, 100], [0, 0, 1, 1], "2", record
+                                    );
 
 
-                                    // var record = wd.label(
-                                    //     [20, 150, 300, 100], "c", 1, record
-                                    // );
+                                    var record = api.label(
+                                        [20, 150, 300, 100], "c", 1, record
+                                    );
 
-                                    // var record = wd.image(
-                                    //     [500, 300, 100, 100], [0, 0, 1, 1], texture2, record
-                                    // );
+                                    var record = api.image(
+                                        [500, 300, 100, 100], [0, 0, 1, 1], "2", record
+                                    );
 
 
 
@@ -82,13 +90,18 @@
                                 }, state);
 
 
-                                wd.setState(state);
-                            }
-                        }
-                    }, 100);
+                            wd.setState(state);
 
-                    wd.startDirector(state);
-                });
+
+
+
+
+
+
+                        }, 100);
+
+                        wd.startDirector(state);
+                    });
             });
         };
     </script>

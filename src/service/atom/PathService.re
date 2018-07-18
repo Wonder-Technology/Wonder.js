@@ -1,4 +1,4 @@
-let join = (pathArr) => pathArr |> Js.Array.joinWith("");
+let join = pathArr => pathArr |> Js.Array.joinWith("");
 
 let win32SplitPath: string => array(string) = [%bs.raw
   {|

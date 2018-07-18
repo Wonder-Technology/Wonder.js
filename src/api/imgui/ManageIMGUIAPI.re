@@ -5,10 +5,6 @@ let setIMGUIFunc = (customData, func, state) => {
   imguiRecord:
     WonderImgui.ManageIMGUIAPI.setIMGUIFunc(
       customData,
-      /* func(
-           [@bs] FixedLayoutControlIMGUIAPI.label,
-           [@bs] FixedLayoutControlIMGUIAPI.image,
-         ), */
       func,
       state.imguiRecord,
     ),
