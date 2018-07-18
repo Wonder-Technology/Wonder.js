@@ -7,3 +7,6 @@ let createFetchJsonStream = (filePath, fetchFunc) =>
 
 let createFetchArrayBufferStream = (filePath, fetchFunc) =>
   fromPromise(fetchFunc(filePath) |> then_(Fetch.Response.arrayBuffer));
+
+let createFetchBlobStream = (filePath, fetchFunc) =>
+  fromPromise(fetchFunc(filePath) |> then_(Fetch.Response.blob));

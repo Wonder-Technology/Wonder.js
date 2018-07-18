@@ -1,10 +1,14 @@
 open StateDataMainType;
 
-let execJob = (_, state) => {
-  ...state,
-  imguiRecord:
-    WonderImgui.ManageIMGUIAPI.init(
-      DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-      state.imguiRecord,
-    ),
+let execJob = (_, {imguiRecord} as state) => {
+  let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+
+  {
+    ...state,
+    imguiRecord:
+      WonderImgui.ManageIMGUIAPI.init(
+        gl,
+        RecordIMGUIMainService.getRecord(state),
+      ),
+  };
 };

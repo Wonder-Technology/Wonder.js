@@ -105,8 +105,8 @@ let _ =
       testPromise("test render imgui", () => {
         let (
           state,
-          (fntData, bitmap, setting),
-          (imageDataArrayBuffer1, context),
+          (fntData, bitmap, setting, _),
+          (_, context),
         ) =
           IMGUIRenderWorkerTool.prepareSetData(sandbox);
         let canvasWidth = 100;
@@ -124,7 +124,7 @@ let _ =
                 (
                   (imageX1, imageY1, imageWidth1, imageHeight1),
                   (imageS01, imageT01, imageS11, imageT11),
-                  texture1,
+                  textureId1,
                 ),
                 _,
                 _,
@@ -137,7 +137,7 @@ let _ =
                 imageFunc(.
                   (imageX1, imageY1, imageWidth1, imageHeight1),
                   (imageS01, imageT01, imageS11, imageT11),
-                  texture1,
+                  textureId1,
                   record,
                 );
 

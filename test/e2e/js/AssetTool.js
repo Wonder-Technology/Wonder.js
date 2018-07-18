@@ -22,8 +22,8 @@ var AssetTool = (function () {
             //     }
             // })
         },
-        loadIMGUIAsset: function (fntFilePath, bitmapFilePath, state, testFunc) {
-            return wd.loadIMGUIAsset(fntFilePath, bitmapFilePath, state)
+        loadIMGUIAsset: function (fntFilePath, bitmapFilePath, customTextureSourceDataArr, state, testFunc) {
+            return wd.loadIMGUIAsset(fntFilePath, bitmapFilePath, customTextureSourceDataArr, state)
                 .then((state) => {
                     testFunc(state)
                 })

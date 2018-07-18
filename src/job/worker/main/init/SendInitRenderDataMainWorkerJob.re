@@ -86,6 +86,8 @@ let _buildIMGUIData = ({imguiRecord} as state) => {
     |> Js.Json.stringify,
   "fntData": _getFntData(imguiRecord),
   "bitmapImageData": AssetIMGUIMainServiice.convertBitmapToImageData(state),
+  "customTextureSourceDataArr":
+    AssetIMGUIMainServiice.convertCustomTextureSourcesToImageDataArr(state),
 };
 
 let _buildData = (operateType, canvas, stateData) => {

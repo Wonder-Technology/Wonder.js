@@ -4,6 +4,8 @@ open WonderBsMost;
 
 open Js.Promise;
 
+let _getFlipY = state => false;
+
 let execJob = (_, e, stateData) => {
   let data = MessageService.getRecord(e);
   let imguiData = data##imguiData;
@@ -17,7 +19,7 @@ let execJob = (_, e, stateData) => {
       ImageBitmapRenderWorkerService.createImageBitmapFromImageData(
         imguiData##bitmapImageData
         |> OptionService.unsafeGetJsonSerializedValue,
-        state => false,
+        _getFlipY,
         state,
       )
       |> then_(imageBitmap => {
@@ -36,18 +38,59 @@ let execJob = (_, e, stateData) => {
                   |> OptionService.unsafeGetJsonSerializedValue
                   |> Js.Json.parseExn
                   |> Obj.magic,
-                )
-             |> WonderImgui.ManageIMGUIAPI.init(
-                  DeviceManagerService.unsafeGetGl(.
-                    state.deviceManagerRecord,
-                  ),
                 );
 
            state.imguiRecord = imguiRecord;
-           state |> StateRenderWorkerService.setState(stateData);
 
-           e |> resolve;
+           state |> StateRenderWorkerService.setState(stateData) |> resolve;
          })
-      |> Most.fromPromise;
+      |> Most.fromPromise
+      |> Most.concat(
+           Most.mergeArray(
+             imguiData##customTextureSourceDataArr
+             |> Js.Array.map(((imageData, id, imageType)) =>
+                  ImageBitmapRenderWorkerService.createImageBitmapFromImageData(
+                    imageData,
+                    _getFlipY,
+                    state,
+                  )
+                  |> then_(imageBitmap =>
+                       (
+                         imageBitmap |> WorkerType.imageBitmapToImageElement,
+                         id,
+                         imageType,
+                       )
+                       |> resolve
+                     )
+                  |> WonderBsMost.Most.fromPromise
+                ),
+           )
+           |> Most.reduce(
+                (customImageArr, imageData) =>
+                  customImageArr |> ArrayService.push(imageData),
+                [||],
+              )
+           |> then_(customImageArr => {
+                let state =
+                  StateRenderWorkerService.unsafeGetState(stateData);
+
+                state.imguiRecord =
+                  WonderImgui.AssetIMGUIAPI.setCustomImageArr(
+                    customImageArr,
+                    state.imguiRecord,
+                  )
+                  |> WonderImgui.ManageIMGUIAPI.init(
+                       DeviceManagerService.unsafeGetGl(.
+                         state.deviceManagerRecord,
+                       ),
+                     );
+
+                state
+                |> StateRenderWorkerService.setState(stateData)
+                |> resolve;
+              })
+           |> WonderBsMost.Most.fromPromise,
+         )
+      |> Most.map(_ => e);
     };
 };
