@@ -1,3 +1,53 @@
+<a name="1.0.0-alpha.22.1"></a>
+# [1.0.0-alpha.22.1](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.21.1...v1.0.0-alpha.22.1) (2018-07-19)
+
+
+### Bug Fixes
+
+* fix package.json->"fastPf" script ([3776235](https://github.com/Wonder-Technology/Wonder.js/commit/3776235))
+* **data-json:** update data/**/shader_libs.json ([e38c8fc](https://github.com/Wonder-Technology/Wonder.js/commit/e38c8fc))
+* **detect:** fix "detect browser"->"is chrome" && "is firefox" ([897e53c](https://github.com/Wonder-Technology/Wonder.js/commit/897e53c))
+* **state:** fix "no worker loop->get state": now get state from stateData ([ae18624](https://github.com/Wonder-Technology/Wonder.js/commit/ae18624))
+
+
+### Features
+
+* **camera:** add arcballCameraController logic ([829812f](https://github.com/Wonder-Technology/Wonder.js/commit/829812f))
+* **camera:** disposeJob add "dispose arcballCameraController component" logic ([6e3e03e](https://github.com/Wonder-Technology/Wonder.js/commit/6e3e03e))
+* **camera:** fix arcballCameraController->mouse wheel wrong: fix OperateArcballCameraControllerService->setDistanceByEvent ([9cf6940](https://github.com/Wonder-Technology/Wonder.js/commit/9cf6940))
+* **camera:** fix arcballCameraController->mouse/touch drag bug; fix "touch->preventDefault not worker" bug ([fdde915](https://github.com/Wonder-Technology/Wonder.js/commit/fdde915))
+* **camera:** fix HandleMouseEventMainService->_getWheel: if event.detail === 0, not use it ([2bed819](https://github.com/Wonder-Technology/Wonder.js/commit/2bed819))
+* **camera:** fix UpdateArcballCameraControllerMainService->_updateTransform->set transformm localPositionByTuple ([f72a697](https://github.com/Wonder-Technology/Wonder.js/commit/f72a697))
+* **data-json:** update ./data/ json files ([38ac1f4](https://github.com/Wonder-Technology/Wonder.js/commit/38ac1f4))
+* **event:** add "event->mouse event, custom event" draft logic ([b7af8ea](https://github.com/Wonder-Technology/Wonder.js/commit/b7af8ea))
+* **event:** add keyboard event ([cf6a7c6](https://github.com/Wonder-Technology/Wonder.js/commit/cf6a7c6))
+* **event:** add more mouse event and point event ([b664c1e](https://github.com/Wonder-Technology/Wonder.js/commit/b664c1e))
+* **event:** add redo,undo logic and test ([a275a67](https://github.com/Wonder-Technology/Wonder.js/commit/a275a67))
+* **event:** add touch event ([f1ed3ed](https://github.com/Wonder-Technology/Wonder.js/commit/f1ed3ed))
+* **event:** add unbind logic; add more event api ([e7e083c](https://github.com/Wonder-Technology/Wonder.js/commit/e7e083c))
+* **event:** contract check->from dom event stream error: use debug instead of fatal ([d422179](https://github.com/Wonder-Technology/Wonder.js/commit/d422179))
+* **event:** fix '"event.preventDefault in touch" will cause warning" in chrome' bug ([0da8620](https://github.com/Wonder-Technology/Wonder.js/commit/0da8620))
+* **event:** fix "if trigger mouse event before finish init, will error" bug ([9c04320](https://github.com/Wonder-Technology/Wonder.js/commit/9c04320))
+* **event:** fix "keyboard event->get key": add "judge from shiftKeyByKeyCodeMap" ([913511d](https://github.com/Wonder-Technology/Wonder.js/commit/913511d))
+* remove RecordSceneService.re ([0d4c858](https://github.com/Wonder-Technology/Wonder.js/commit/0d4c858))
+* state->sceneRecord add sceneGameObject ([6e1620e](https://github.com/Wonder-Technology/Wonder.js/commit/6e1620e))
+* **event:** optimize: use array instead of list ([33fc82f](https://github.com/Wonder-Technology/Wonder.js/commit/33fc82f))
+* upgrade bs-platform to 4.0.0 ([a8d5cdd](https://github.com/Wonder-Technology/Wonder.js/commit/a8d5cdd))
+* **event:** fix "keyboard event->get key": now judge shift key first ([8a1a506](https://github.com/Wonder-Technology/Wonder.js/commit/8a1a506))
+* **event:** initEventJob->from dom event stream error: now can fatal with message and stack ([13ba3da](https://github.com/Wonder-Technology/Wonder.js/commit/13ba3da))
+* **event:** render worker add InitEventMainWorkerJob ([d1cffc8](https://github.com/Wonder-Technology/Wonder.js/commit/d1cffc8))
+* **gameObject:** "init gameObject" add "init perspectiveCameraProjection component" logic ([a20b7df](https://github.com/Wonder-Technology/Wonder.js/commit/a20b7df))
+* **gameObject:** reallocate gameObject component map: add perspectiveCameraProjectMap, arcballCameraControllerMap ([df7f5a4](https://github.com/Wonder-Technology/Wonder.js/commit/df7f5a4))
+* **worker:** add event and arcballCameraController ([532a6e9](https://github.com/Wonder-Technology/Wonder.js/commit/532a6e9))
+* **worker:** if is mobile, fatal ([27cb3d0](https://github.com/Wonder-Technology/Wonder.js/commit/27cb3d0))
+
+
+### Performance Improvements
+
+* **compile:** output only remain es6-global, remove commonjs ([638be0c](https://github.com/Wonder-Technology/Wonder.js/commit/638be0c))
+
+
+
 <a name="1.0.0-alpha.22"></a>
 # [1.0.0-alpha.22](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.21.1...v1.0.0-alpha.22) (2018-07-10)
 
