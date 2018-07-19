@@ -17,29 +17,24 @@ let _ =
     afterEach(() => TestWorkerTool.clear(sandbox));
 
     describe("test send render data to render worker", () => {
-      let _prepare = ((canvasWidth, canvasHeight)) => {
+      let _prepare = () => {
         let state = TestMainWorkerTool.initWithJobConfig(~sandbox, ());
         let state = WorkerWorkerTool.setFakeWorkersAndSetState(state);
-        let state =
-          ViewTool.setCanvas(
-            {"width": canvasWidth, "height": canvasHeight} |> Obj.magic,
-            state,
-          );
         let imguiFunc = (_, _, record) => record;
         let customData = Obj.magic(100);
-        let state =
-          ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state);
+        let state = ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state);
         let renderWorker =
           WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state);
         let postMessageToRenderWorker =
           WorkerWorkerTool.stubPostMessage(sandbox, renderWorker);
         MainStateTool.setState(state);
 
-        (state, postMessageToRenderWorker, ( customData, imguiFunc ));
+        (state, postMessageToRenderWorker, (customData, imguiFunc));
       };
 
       testPromise("send imguiFunc and customData", () => {
-        let (state, postMessageToRenderWorker, ( customData, imguiFunc )) = _prepare((0, 0));
+        let (state, postMessageToRenderWorker, (customData, imguiFunc)) =
+          _prepare();
 
         WorkerJobWorkerTool.execMainWorkerJob(
           ~execJobFunc=SendRenderDataMainWorkerJob.execJob,
@@ -50,40 +45,11 @@ let _ =
               |> toCalledWith([|
                    SendRenderRenderDataWorkerTool.buildRenderRenderData(
                      ~imguiData={
-                       "canvasWidth": Sinon.matchAny,
-                       "canvasHeight": Sinon.matchAny,
                        "customData": customData,
                        "imguiFunc":
                          RenderIMGUIRenderWorkerTool.serializeFunction(
                            imguiFunc,
                          ),
-                     },
-                     (),
-                   ),
-                 |])
-              |> resolve,
-          (),
-        );
-      });
-      testPromise("send canvas size data", () => {
-        let canvasWidth = 100;
-        let canvasHeight = 200;
-        let (state, postMessageToRenderWorker, imguiFunc) =
-          _prepare((canvasWidth, canvasHeight));
-
-        WorkerJobWorkerTool.execMainWorkerJob(
-          ~execJobFunc=SendRenderDataMainWorkerJob.execJob,
-          ~completeFunc=
-            _ =>
-              postMessageToRenderWorker
-              |> expect
-              |> toCalledWith([|
-                   SendRenderRenderDataWorkerTool.buildRenderRenderData(
-                     ~imguiData={
-                       "canvasWidth": canvasWidth,
-                       "canvasHeight": canvasHeight,
-                       "customData": Sinon.matchAny,
-                       "imguiFunc": Sinon.matchAny,
                      },
                      (),
                    ),
@@ -103,11 +69,7 @@ let _ =
       );
 
       testPromise("test render imgui", () => {
-        let (
-          state,
-          (fntData, bitmap, setting, _),
-          (_, context),
-        ) =
+        let (state, (fntData, bitmap, setting, _), (_, context)) =
           IMGUIRenderWorkerTool.prepareSetData(sandbox);
         let canvasWidth = 100;
         let canvasHeight = 200;
