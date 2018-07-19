@@ -140,40 +140,61 @@ let _encodeCameras = cameraDataArr => (
   |> jsonArray,
 );
 
-let _encodeScenes = (extensionsUsedArr, lightDataArr, state) => {
-  let sceneList = [("nodes", [|0|] |> intArray)];
+let _encodeScenes = (extensionsUsedArr, lightDataArr, imguiData, state) => {
+  let list = [("nodes", [|0|] |> intArray)];
 
-  (
-    "scenes",
-    [|
-      (
-        extensionsUsedArr |> Js.Array.includes("KHR_lights") ?
+  let list =
+    extensionsUsedArr |> Js.Array.includes("KHR_lights") ?
+      [
+        (
+          "extensions",
           [
             (
-              "extensions",
+              "KHR_lights",
               [
                 (
-                  "KHR_lights",
-                  [
-                    (
-                      "light",
-                      BuildLightDataSystem.getAmbientLightIndex(lightDataArr)
-                      |> int,
-                    ),
-                  ]
-                  |> object_,
+                  "light",
+                  BuildLightDataSystem.getAmbientLightIndex(lightDataArr)
+                  |> int,
                 ),
               ]
               |> object_,
             ),
-            ...sceneList,
-          ] :
-          sceneList
+          ]
+          |> object_,
+        ),
+        ...list,
+      ] :
+      list;
+
+  let list =
+    switch (imguiData) {
+    | (None, None) => list
+
+    | (Some(customData), Some(imguiFuncStr)) => [
+        (
+          "extras",
+          [
+            ("customData", customData |> Obj.magic |> int),
+            ("imguiFunc", imguiFuncStr |> string),
+          ]
+          |> object_,
+        ),
+        ...list,
+      ]
+    | _ =>
+      WonderLog.Log.fatal(
+        WonderLog.Log.buildFatalMessage(
+          ~title="_encodeScenes",
+          ~description={j|imguiData error|j},
+          ~reason="",
+          ~solution={j||j},
+          ~params={j||j},
+        ),
       )
-      |> object_,
-    |]
-    |> jsonArray,
-  );
+    };
+
+  ("scenes", [|list |> object_|] |> jsonArray);
 };
 
 let _encodeMaterials = materialDataArr => (
@@ -478,6 +499,7 @@ let encode =
         imageUint8DataArr,
         cameraDataArr,
         lightDataArr,
+        imguiData,
         extensionsUsedArr,
       ),
       state,
@@ -485,7 +507,7 @@ let encode =
   let list = [
     _encodeAsset(),
     ("scene", 0 |> int),
-    _encodeScenes(extensionsUsedArr, lightDataArr, state),
+    _encodeScenes(extensionsUsedArr, lightDataArr, imguiData, state),
     _encodeCameras(cameraDataArr),
     _encodeNodes(nodeDataArr, state),
     _encodeMaterials(materialDataArr),

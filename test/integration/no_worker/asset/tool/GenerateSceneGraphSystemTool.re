@@ -9,6 +9,9 @@ let _emptyBufferUriData = jsonStr =>
        {|"buffers":[{"byteLength":$1,"uri":""|},
      );
 
+let _removeSpaces = str =>
+  str |> Js.String.replaceByRe([%re {|/\s/img|}], "");
+
 let contain = (targetJsonStr: string, json: Js.Json.t) =>
   Wonder_jest.(
     Expect.(
@@ -16,10 +19,9 @@ let contain = (targetJsonStr: string, json: Js.Json.t) =>
         json
         |> Js.Json.stringify
         |> _emptyBufferUriData
+        |> _removeSpaces
         |> expect
-        |> toContainString(
-             targetJsonStr |> Js.String.replaceByRe([%re {|/\s/img|}], ""),
-           )
+        |> toContainString(targetJsonStr |> _removeSpaces)
       )
     )
   );

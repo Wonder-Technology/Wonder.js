@@ -412,6 +412,24 @@ let buildGLTFJsonOfLight = () =>
     (),
   );
 
+let buildGLTFJsonOfIMGUI = (customData, imguiFunc) =>
+  buildGLTFJson(
+    ~scene={|0|},
+    ~scenes=
+      {j|  [
+        {
+        "nodes": [0],
+        "extras": {
+            "imgui": {
+                "customData": $customData,
+                "imguiFunc": "$imguiFunc"
+            }
+        }
+    }
+    ]|j},
+    (),
+  );
+
 let buildGLTFJsonOfMultiPrimitives = () =>
   buildGLTFJson(
     ~nodes=

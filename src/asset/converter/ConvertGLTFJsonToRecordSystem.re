@@ -102,13 +102,37 @@ let _convertImages = json =>
        ),
      );
 
-let _convertScens = json =>
+let _convertCustomData = [%raw
+  json => {|
+      return json.customData;
+      |}
+];
+
+let _convertScenes = json =>
   json
   |> field(
        "scenes",
        array(json =>
          {
            nodes: json |> optional(field("nodes", array(int))),
+           extras:
+             json
+             |> optional(
+                  field("extras", json =>
+                    {
+                      imgui:
+                        json
+                        |> optional(
+                             field("imgui", json =>
+                               {
+                                 imguiFunc: json |> field("imguiFunc", string),
+                                 customData: _convertCustomData(json),
+                               }
+                             ),
+                           ),
+                    }
+                  ),
+                ),
            extensions:
              json
              |> optional(
@@ -371,7 +395,7 @@ let convert = json : GLTFType.gltf => {
   extensionsUsed: json |> optional(field("extensionsUsed", array(string))),
   extensions: _convertExtensions(json),
   asset: _convertAsset(json),
-  scenes: _convertScens(json),
+  scenes: _convertScenes(json),
   scene: json |> optional(field("scene", int)),
   images: _convertImages(json),
   textures: _convertTextures(json),

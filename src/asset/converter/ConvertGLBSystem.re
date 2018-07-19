@@ -38,12 +38,25 @@ let _convertToScene =
     | None => 0
     | Some(scene) => scene
     };
+
+  let {nodes, extras}: GLTFType.scene =
+    ConvertCommon.getScene(scenes, scene);
+
   {
-    gameObjects:
-      ConvertCommon.getScene(scenes, scene).nodes |> OptionService.unsafeGet,
+    gameObjects: nodes |> OptionService.unsafeGet,
     ambientLight:
       ambientLightArr |> Js.Array.length == 1 ?
         Some({color: ambientLightArr[0].color}) : None,
+    imgui:
+      switch (extras) {
+      | None => None
+      | Some(({imgui}: GLTFType.sceneExtras)) =>
+        switch (imgui) {
+        | None => None
+        | Some({imguiFunc, customData}) =>
+          Some({imguiFunc, customData}: WDType.imgui)
+        }
+      },
   };
 };
 

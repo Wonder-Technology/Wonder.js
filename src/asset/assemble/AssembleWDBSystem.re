@@ -179,7 +179,9 @@ let _checkWDB = dataView => {
 let assembleGLBData = (({buffers}: wd) as wd, binBuffer, state) =>
   _buildImageArray(wd, binBuffer)
   |> then_(blobObjectUrlImageArr =>
-       BatchCreateSystem.batchCreate(wd, state)
+       state
+       |> SetIMGUIFuncSystem.setIMGUIFunc(wd)
+       |> BatchCreateSystem.batchCreate(wd)
        |> BatchOperateSystem.batchOperate(
             wd,
             blobObjectUrlImageArr,

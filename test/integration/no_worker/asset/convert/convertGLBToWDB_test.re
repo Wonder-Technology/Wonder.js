@@ -396,7 +396,6 @@ let _ =
           (),
         )
       );
-
       test("test ambientLight", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
@@ -408,6 +407,22 @@ let _ =
           (),
         )
       );
+
+      test("test imgui", () => {
+        let customData = {| [1, "a1"] |};
+        let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
+
+        ConvertGLBTool.testGLTFResultByGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+          ~state,
+          ~testFunc=
+            ({scene}) =>
+              scene.imgui |> expect == Some({customData: [|1|>Obj.magic, "a1"|] |> Obj.magic, imguiFunc}),
+          (),
+        );
+      });
     });
 
     describe("test directionLights", () =>
