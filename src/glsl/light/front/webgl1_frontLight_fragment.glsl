@@ -104,6 +104,12 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 vec4 calcTotalLight(vec3 norm, vec3 viewDir){
     vec4 totalLight = vec4(0.0, 0.0, 0.0, 1.0);
 
+
+    #if (DIRECTION_LIGHTS_COUNT == 0 && POINT_LIGHTS_COUNT == 0 )
+        return vec4(u_ambient, 1.0);
+    #endif
+
+
     #if POINT_LIGHTS_COUNT > 0
                 for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
                 totalLight += vec4(calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir), 0.0);
