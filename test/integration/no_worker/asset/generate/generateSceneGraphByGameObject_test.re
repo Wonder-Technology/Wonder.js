@@ -828,8 +828,7 @@ let _ =
 
     describe("test imgui", () => {
       let _prepareGameObject = state => {
-        let customData =
-          Obj.magic((1, "cc"));
+        let customData = Obj.magic((1, "cc"));
 
         let imguiFunc = (customData, apiJsObj, record) => {
           let (a, b) = Obj.magic(customData);
@@ -2034,6 +2033,176 @@ let _ =
           {j|
                "cameras":[{"type":"perspective","perspective":{"aspectRatio":1.5,"zfar":1000.5,"znear":0.1,"yfov":1.0471975511965976}},{"type":"perspective","perspective":{"aspectRatio":1.5,"zfar":1000.5,"znear":0.1,"yfov":1.0471975511965976}}]
                    |j},
+          state,
+        );
+      });
+    });
+
+    describe("test cameraController", () => {
+      let _createCameraGameObject = state => {
+        let (state, gameObject, transform, (cameraController, _, _)) =
+          ArcballCameraControllerTool.createGameObject(state);
+
+        let (
+          state,
+          (
+            distance,
+            minDistance,
+            phi,
+            theta,
+            thetaMargin,
+            target,
+            moveSpeedX,
+            moveSpeedY,
+            rotateSpeed,
+            wheelSpeed,
+          ),
+        ) =
+          ArcballCameraControllerTool.setArcballCameraControllerData(
+            cameraController,
+            state,
+          );
+
+        (
+          state,
+          transform,
+          (
+            distance,
+            minDistance,
+            phi,
+            theta,
+            thetaMargin,
+            target,
+            moveSpeedX,
+            moveSpeedY,
+            rotateSpeed,
+            wheelSpeed,
+          ),
+        );
+      };
+
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, rootGameObject) = state^ |> createGameObject;
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let (
+          state,
+          transform1,
+          (
+            distance,
+            minDistance,
+            phi,
+            theta,
+            thetaMargin,
+            target,
+            moveSpeedX,
+            moveSpeedY,
+            rotateSpeed,
+            wheelSpeed,
+          ),
+        ) =
+          _createCameraGameObject(state);
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          geometry2,
+          (material2, diffuseColor2),
+          meshRenderer2,
+        ) =
+          _createGameObject1(state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             );
+
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (
+            distance,
+            minDistance,
+            phi,
+            theta,
+            thetaMargin,
+            target,
+            moveSpeedX,
+            moveSpeedY,
+            rotateSpeed,
+            wheelSpeed,
+          ),
+        );
+      };
+
+      test("test nodes", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (
+            distance,
+            minDistance,
+            phi,
+            theta,
+            thetaMargin,
+            target,
+            moveSpeedX,
+            moveSpeedY,
+            rotateSpeed,
+            wheelSpeed,
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+            "nodes":[{"children":[1,2]},{"camera":0,"extras":{"cameraController":0}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"material":0}}]
+                   |j},
+          state,
+        );
+      });
+      test("test cameraControllers", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (
+            distance,
+            minDistance,
+            phi,
+            theta,
+            thetaMargin,
+            target,
+            moveSpeedX,
+            moveSpeedY,
+            rotateSpeed,
+            wheelSpeed,
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+              "extras":{"arcballCameraControllers":[{"distance":$distance,"minDistance": $minDistance,"phi":$phi,"theta":$theta,"thetaMargin":$thetaMargin,"target":[$target],"moveSpeedX":$moveSpeedX,"moveSpeedY":$moveSpeedY,"rotateSpeed":$rotateSpeed,"wheelSpeed":$wheelSpeed}]}
+                      |j},
           state,
         );
       });

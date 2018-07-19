@@ -54,7 +54,7 @@ let _convertToScene =
         switch (imgui) {
         | None => None
         | Some({imguiFunc, customData}) =>
-          Some({imguiFunc, customData}: WDType.imgui)
+          Some({imguiFunc, customData}: SceneGraphType.imgui)
         }
       },
   };
@@ -170,6 +170,8 @@ let _buildWDBJsonUint8Array = gltf => {
              ConvertCamerasSystem.convertToBasicCameraViews(gltf),
            perspectiveCameraProjections:
              ConvertCamerasSystem.convertToPerspectiveCameraProjections(gltf),
+           arcballCameraControllers:
+             ConvertCamerasSystem.convertToArcballCameraControllers(gltf),
            lightMaterials:
              ConvertMaterialsSystem.convertToLightMaterials(gltf),
            customGeometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),

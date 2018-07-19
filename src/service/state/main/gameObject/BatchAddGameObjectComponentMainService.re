@@ -95,7 +95,7 @@ let _batchAddPerspectiveCameraProjectionComponent =
 
 let batchAddPerspectiveCameraProjectionComponentForClone = _batchAddPerspectiveCameraProjectionComponent;
 
-let batchAddArcballCameraControllerComponentForClone =
+let _batchAddArcballCameraControllerComponent =
     (
       uidArr: array(int),
       componentArr: array(component),
@@ -109,6 +109,8 @@ let batchAddArcballCameraControllerComponentForClone =
       arcballCameraControllerRecord,
     ),
 };
+
+let batchAddArcballCameraControllerComponentForClone = _batchAddArcballCameraControllerComponent;
 
 let _batchAddTransformComponent =
     (
@@ -363,6 +365,8 @@ let batchAddCustomGeometryComponentForCreate = _batchAddCustomGeometryComponent;
 let batchAddBasicCameraViewComponentForCreate = _batchAddBasicCameraViewComponent;
 
 let batchAddPerspectiveCameraProjectionComponentForCreate = _batchAddPerspectiveCameraProjectionComponent;
+
+let batchAddArcballCameraControllerComponentForCreate = _batchAddArcballCameraControllerComponent;
 
 let batchAddLightMaterialComponentForCreate = _batchAddLightMaterialComponent;
 

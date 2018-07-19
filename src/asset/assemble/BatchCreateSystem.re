@@ -140,15 +140,38 @@ let _batchCreatePerspectiveCameraProjection =
       indexArr
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (. pMatrixMap, index) =>
-             WonderCommonlib.SparseMapService.set(
-               index,
-               Matrix4Service.createIdentityMatrix4(),
-               pMatrixMap,
-             ),
+             PMatrixService.setDefaultPMatrix(index, pMatrixMap),
            pMatrixMap,
          ),
   };
   (state, indexArr);
+};
+
+/* TODO use batch create */
+let _createArcballCameraControllerOneByOne =
+    ({arcballCameraControllers}, {arcballCameraControllerRecord} as state) => {
+  AssembleCommon.checkNotDisposedBefore(
+    arcballCameraControllerRecord.disposedIndexArray,
+  );
+
+  let (arcballCameraControllerRecord, indexArr) =
+    arcballCameraControllers
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. (arcballCameraControllerRecord, indexArr), _) => {
+           let (arcballCameraControllerRecord, index) =
+             CreateArcballCameraControllerService.create(
+               arcballCameraControllerRecord,
+             );
+
+           (
+             arcballCameraControllerRecord,
+             indexArr |> ArrayService.push(index),
+           );
+         },
+         (arcballCameraControllerRecord, [||]),
+       );
+
+  ({...state, arcballCameraControllerRecord}, indexArr);
 };
 
 let _batchCreateLightMaterial = ({lightMaterials}, {settingRecord} as state) => {
@@ -317,19 +340,18 @@ let _batchCreatePointLightArr = ({pointLights}, {pointLightRecord} as state) => 
 let batchCreate = (wd, state) => {
   let (state, gameObjectArr) = _batchCreateGameObject(wd, state);
   let (state, transformArr) = _batchCreateTransform(wd, state);
-  let (state, customGeometryArr) =
-    _batchCreateCustomGeometry(wd, state);
-  let (state, basicCameraViewArr) =
-    _batchCreateBasicCameraView(wd, state);
+  let (state, customGeometryArr) = _batchCreateCustomGeometry(wd, state);
+  let (state, basicCameraViewArr) = _batchCreateBasicCameraView(wd, state);
   let (state, perspectiveCameraProjectionArr) =
     _batchCreatePerspectiveCameraProjection(wd, state);
+  let (state, arcballCameraControllerArr) =
+    _createArcballCameraControllerOneByOne(wd, state);
   let (state, lightMaterialArr) = _batchCreateLightMaterial(wd, state);
   let (state, basicSourceTextureArr) =
     _batchCreateBasicSourceTextureArr(wd, state);
   /* let (state, arrayBufferViewSourceTextureArr) =
      _batchCreateArrayBufferViewSourceTextureArr(wd, state); */
-  let (state, directionLightArr) =
-    _batchCreateDirectionLightArr(wd, state);
+  let (state, directionLightArr) = _batchCreateDirectionLightArr(wd, state);
   let (state, pointLightArr) = _batchCreatePointLightArr(wd, state);
 
   (
@@ -340,6 +362,7 @@ let batchCreate = (wd, state) => {
       customGeometryArr,
       basicCameraViewArr,
       perspectiveCameraProjectionArr,
+      arcballCameraControllerArr,
       lightMaterialArr,
       directionLightArr,
       pointLightArr,

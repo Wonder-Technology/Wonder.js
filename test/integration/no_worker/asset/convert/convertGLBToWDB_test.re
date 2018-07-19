@@ -419,7 +419,12 @@ let _ =
           ~state,
           ~testFunc=
             ({scene}) =>
-              scene.imgui |> expect == Some({customData: [|1|>Obj.magic, "a1"|] |> Obj.magic, imguiFunc}),
+              scene.imgui
+              |>
+              expect == Some({
+                          customData: [|1 |> Obj.magic, "a1"|] |> Obj.magic,
+                          imguiFunc,
+                        }),
           (),
         );
       });
@@ -514,7 +519,7 @@ let _ =
             (),
           )
         );
-        test("test camera gltf", () =>
+        test("test has data", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
@@ -538,7 +543,7 @@ let _ =
             (),
           )
         );
-        test("test camera gltf", () =>
+        test("test has data", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
@@ -566,6 +571,49 @@ let _ =
         );
       });
     });
+
+    describe("test cameraController data", () =>
+      describe("test arcballCameraControllers", () => {
+        test("test no data", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+            ~state,
+            ~testFunc=
+              ({arcballCameraControllers}) =>
+                arcballCameraControllers |> expect == [||],
+            (),
+          )
+        );
+        test("test has data", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfArcballCameraController(),
+            ~state,
+            ~testFunc=
+              ({arcballCameraControllers}) =>
+                arcballCameraControllers
+                |>
+                expect == [|
+                            {
+                              distance: 1.5,
+                              minDistance: 1.,
+                              phi: 0.8,
+                              theta: 0.6,
+                              thetaMargin: 1.5,
+                              target: (0.0, 0.5, 0.1),
+                              moveSpeedX: 2.1,
+                              moveSpeedY: 3.1,
+                              rotateSpeed: 0.3,
+                              wheelSpeed: 0.9,
+                            },
+                          |],
+            (),
+          )
+        );
+      })
+    );
 
     describe("test transforms", () => {
       test("test matrix exist", () =>

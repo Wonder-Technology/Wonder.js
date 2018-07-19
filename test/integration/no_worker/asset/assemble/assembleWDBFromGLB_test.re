@@ -854,6 +854,83 @@ let _ =
       })
     );
 
+    describe("test arcballCameraControllers", () =>
+      describe("test set data", () => {
+        let _getAllArcballCameraControllerComponent = (rootGameObject, state) =>
+          _getAllGameObjects(rootGameObject, state)
+          |> Js.Array.filter(gameObject =>
+               GameObjectAPI.hasGameObjectArcballCameraControllerComponent(
+                 gameObject,
+                 state,
+               )
+             )
+          |> Js.Array.map(gameObject =>
+               GameObjectAPI.unsafeGetGameObjectArcballCameraControllerComponent(
+                 gameObject,
+                 state,
+               )
+             );
+
+        testPromise("test set distance", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfArcballCameraController(),
+            ~state,
+            ~testFunc=
+              ((state, rootGameObject)) =>
+                _getAllArcballCameraControllerComponent(rootGameObject, state)
+                |> Js.Array.map(cameraController =>
+                     ArcballCameraControllerAPI.unsafeGetArcballCameraControllerDistance(
+                       cameraController,
+                       state,
+                     )
+                   )
+                |> expect == [|1.5|],
+            (),
+          )
+        );
+        testPromise("test set minDistance", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfArcballCameraController(),
+            ~state,
+            ~testFunc=
+              ((state, rootGameObject)) =>
+                _getAllArcballCameraControllerComponent(rootGameObject, state)
+                |> Js.Array.map(cameraController =>
+                     ArcballCameraControllerAPI.unsafeGetArcballCameraControllerMinDistance(
+                       cameraController,
+                       state,
+                     )
+                   )
+                |> expect == [|1.|],
+            (),
+          )
+        );
+        testPromise("test set wheelSpeed", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfArcballCameraController(),
+            ~state,
+            ~testFunc=
+              ((state, rootGameObject)) =>
+                _getAllArcballCameraControllerComponent(rootGameObject, state)
+                |> Js.Array.map(cameraController =>
+                     ArcballCameraControllerAPI.unsafeGetArcballCameraControllerWheelSpeed(
+                       cameraController,
+                       state,
+                     )
+                   )
+                |> expect == [|0.9|],
+            (),
+          )
+        );
+      })
+    );
+
     describe("test lightMaterials", () => {
       /* let _buildGLTFJsonOfLightMaterial = () =>
              ConvertGLBTool.buildGLTFJson(

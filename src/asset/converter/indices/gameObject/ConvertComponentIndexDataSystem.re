@@ -88,7 +88,7 @@ let _checkEveryComponentShouldHasGameObject =
        IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 
-let convertToBasicCameraViewGameObjectIndexData = (nodes, cameras) => {
+let convertToBasicCameraViewGameObjectIndexData = nodes => {
   let (gameObjectIndices, componentIndices) =
     nodes
     |> WonderCommonlib.ArrayService.reduceOneParami(
@@ -163,11 +163,16 @@ let _buildPerspectiveCameraProjectionGameObjectIndexData =
        ([||], [||]),
      );
 
+let buildEmptyGameObjectIndexData = () : WDType.componentGameObjectIndexData => {
+  gameObjectIndices: [||],
+  componentIndices: [||],
+};
+
 let convertToPerspectiveCameraProjectionGameObjectIndexData =
     (nodes, cameras)
     : WDType.componentGameObjectIndexData =>
   switch (cameras) {
-  | None => {gameObjectIndices: [||], componentIndices: [||]}
+  | None => buildEmptyGameObjectIndexData()
   | Some(cameras) =>
     let (perspectiveCameraActualIndexMap, _) =
       _buildPerspectiveCameraActualIndexMap(cameras);
@@ -184,6 +189,35 @@ let convertToPerspectiveCameraProjectionGameObjectIndexData =
     )
     |> _checkGameObjectAndComponentIndicesCountShouldEqual;
   };
+
+let convertToArcballCameraControllerGameObjectIndexData =
+    nodes
+    : WDType.componentGameObjectIndexData => {
+  let (gameObjectIndices, componentIndices) =
+    nodes
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (.
+           (gameObjectIndices, componentIndices),
+           {extras}: GLTFType.node,
+           index,
+         ) =>
+           switch (extras) {
+           | None => (gameObjectIndices, componentIndices)
+           | Some(({cameraController}: GLTFType.nodeExtras)) =>
+             switch (cameraController) {
+             | None => (gameObjectIndices, componentIndices)
+             | Some(cameraController) => (
+                 gameObjectIndices |> ArrayService.push(index),
+                 componentIndices |> ArrayService.push(cameraController),
+               )
+             }
+           },
+         ([||], [||]),
+       );
+
+  ({gameObjectIndices, componentIndices}: WDType.componentGameObjectIndexData)
+  |> _checkGameObjectAndComponentIndicesCountShouldEqual;
+};
 
 let _convertToLightMaterialGameObjectIndexDataFromExtras =
     (material, (gameObjectIndices, componentIndices), index) =>
@@ -322,10 +356,10 @@ let convertToLightGameObjectIndexData =
     (lightType, nodes, extensions)
     : WDType.componentGameObjectIndexData =>
   switch (extensions) {
-  | None => {gameObjectIndices: [||], componentIndices: [||]}
+  | None => buildEmptyGameObjectIndexData()
   | Some(({khr_lights}: GLTFType.extensions)) =>
     switch (khr_lights) {
-    | None => {gameObjectIndices: [||], componentIndices: [||]}
+    | None => buildEmptyGameObjectIndexData()
     | Some({lights}) =>
       let (lightActualIndexMap, _) =
         _getLightActualIndexMap(lightType, lights);

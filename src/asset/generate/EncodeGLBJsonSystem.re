@@ -54,12 +54,22 @@ let _encodeNodeExtensions = (extensions, list) =>
 let _encodeNodeMaterial = (extras, list) =>
   switch (extras) {
   | None => list
-  | Some(({material}: nodeExtras)) =>
+  | Some(({material, cameraController}: nodeExtras)) =>
     let extraList = [];
+
     let extraList =
       switch (material) {
       | None => extraList
       | Some(material) => [("material", material |> int), ...extraList]
+      };
+
+    let extraList =
+      switch (cameraController) {
+      | None => extraList
+      | Some(cameraController) => [
+          ("cameraController", cameraController |> int),
+          ...extraList,
+        ]
       };
 
     [("extras", extraList |> object_), ...list];
@@ -138,6 +148,54 @@ let _encodeCameras = cameraDataArr => (
        |> object_
      )
   |> jsonArray,
+);
+
+let _encodeExtras = arcballCameraControllerDataArr => (
+  "extras",
+  (
+    switch (arcballCameraControllerDataArr |> Js.Array.length) {
+    | 0 => []
+    | _ => [
+        (
+          "arcballCameraControllers",
+          arcballCameraControllerDataArr
+          |> Js.Array.map(
+               (
+                 (
+                   {
+                     distance,
+                     minDistance,
+                     phi,
+                     theta,
+                     thetaMargin,
+                     target,
+                     moveSpeedX,
+                     moveSpeedY,
+                     rotateSpeed,
+                     wheelSpeed,
+                   }: arcballCameraControllerData
+                 ) as data,
+               ) =>
+               [
+                 ("distance", distance |> float),
+                 ("minDistance", minDistance |> float),
+                 ("phi", phi |> float),
+                 ("theta", theta |> float),
+                 ("thetaMargin", thetaMargin |> float),
+                 ("target", target |> targetTupleToArray |> numberArray),
+                 ("moveSpeedX", moveSpeedX |> float),
+                 ("moveSpeedY", moveSpeedY |> float),
+                 ("rotateSpeed", rotateSpeed |> float),
+                 ("wheelSpeed", wheelSpeed |> float),
+               ]
+               |> object_
+             )
+          |> jsonArray,
+        ),
+      ]
+    }
+  )
+  |> object_,
 );
 
 let _encodeScenes = (extensionsUsedArr, lightDataArr, imguiData, state) => {
@@ -498,6 +556,7 @@ let encode =
         samplerDataArr,
         imageUint8DataArr,
         cameraDataArr,
+        arcballCameraControllerDataArr,
         lightDataArr,
         imguiData,
         extensionsUsedArr,
@@ -509,6 +568,7 @@ let encode =
     ("scene", 0 |> int),
     _encodeScenes(extensionsUsedArr, lightDataArr, imguiData, state),
     _encodeCameras(cameraDataArr),
+    _encodeExtras(arcballCameraControllerDataArr),
     _encodeNodes(nodeDataArr, state),
     _encodeMaterials(materialDataArr),
     _encodeTextures(textureDataArr),

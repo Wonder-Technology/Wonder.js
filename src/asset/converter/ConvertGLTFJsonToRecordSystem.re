@@ -124,10 +124,13 @@ let _convertScenes = json =>
                         json
                         |> optional(
                              field("imgui", json =>
-                               {
-                                 imguiFunc: json |> field("imguiFunc", string),
-                                 customData: _convertCustomData(json),
-                               }
+                               (
+                                 {
+                                   imguiFunc:
+                                     json |> field("imguiFunc", string),
+                                   customData: _convertCustomData(json),
+                                 }: SceneGraphType.imgui
+                               )
                              ),
                            ),
                     }
@@ -200,6 +203,40 @@ let _convertExtensions = json =>
                              ),
                            ),
                     }
+                  ),
+                ),
+         }
+       ),
+     );
+
+let _convertExtras = json =>
+  json
+  |> optional(
+       field("extras", json =>
+         {
+           arcballCameraControllers:
+             json
+             |> optional(
+                  field(
+                    "arcballCameraControllers",
+                    array(json =>
+                      (
+                        {
+                          distance: json |> field("distance", float),
+                          minDistance: json |> field("minDistance", float),
+                          phi: json |> field("phi", float),
+                          theta: json |> field("theta", float),
+                          thetaMargin: json |> field("thetaMargin", float),
+                          target:
+                            json
+                            |> field("target", tuple3(float, float, float)),
+                          moveSpeedX: json |> field("moveSpeedX", float),
+                          moveSpeedY: json |> field("moveSpeedY", float),
+                          rotateSpeed: json |> field("rotateSpeed", float),
+                          wheelSpeed: json |> field("wheelSpeed", float),
+                        }: SceneGraphType.arcballCameraController
+                      )
+                    ),
                   ),
                 ),
          }
@@ -365,6 +402,11 @@ let _convertNodes = json =>
                       material:
                         json
                         |> optimizedOptional(optimizedField("material", int)),
+                      cameraController:
+                        json
+                        |> optimizedOptional(
+                             optimizedField("cameraController", int),
+                           ),
                     }
                   ),
                 ),
@@ -394,6 +436,7 @@ let _convertNodes = json =>
 let convert = json : GLTFType.gltf => {
   extensionsUsed: json |> optional(field("extensionsUsed", array(string))),
   extensions: _convertExtensions(json),
+  extras: _convertExtras(json),
   asset: _convertAsset(json),
   scenes: _convertScenes(json),
   scene: json |> optional(field("scene", int)),

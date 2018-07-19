@@ -59,7 +59,11 @@ let _setDefaultMaterial =
                     ...node,
                     extras:
                       switch (extras) {
-                      | None => Some({material: Some(defaultMaterialIndex)})
+                      | None =>
+                        Some({
+                          material: Some(defaultMaterialIndex),
+                          cameraController: None,
+                        })
                       | Some(extras) =>
                         Some({
                           ...extras,

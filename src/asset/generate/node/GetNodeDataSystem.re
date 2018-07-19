@@ -45,7 +45,13 @@ let _addNodeData =
         defaultLocalRotation,
         defaultLocalScale,
       ),
-      (meshIndex, cameraIndex, materialIndex, lightIndex),
+      (
+        meshIndex,
+        cameraIndex,
+        arcballCameraControllerIndex,
+        materialIndex,
+        lightIndex,
+      ),
       nodeDataArr,
     ) =>
   nodeDataArr
@@ -102,9 +108,15 @@ let _addNodeData =
          mesh: meshIndex,
          camera: cameraIndex,
          extras:
-           switch (materialIndex) {
-           | None => None
-           | Some(materialIndex) => Some({material: Some(materialIndex)})
+           switch (materialIndex, arcballCameraControllerIndex) {
+           | (None, None) => None
+           | (materialIndex, arcballCameraControllerIndex) =>
+             Some(
+               {
+                 material: materialIndex,
+                 cameraController: arcballCameraControllerIndex,
+               }: nodeExtras,
+             )
            },
          extensions:
            switch (lightIndex) {
@@ -118,14 +130,27 @@ let _addNodeData =
 let rec _getNodeData =
         (
           state,
-          (nodeIndex, meshIndex, materialIndex, cameraIndex, lightIndex),
+          (
+            nodeIndex,
+            meshIndex,
+            materialIndex,
+            cameraIndex,
+            arcballCameraControllerIndex,
+            lightIndex,
+          ),
           (
             (boxGeometryDataMap, customGeometryDataMap),
             lightMaterialDataMap,
             gameObjectChildrenMap,
             gameObjectNodeIndexMap,
           ),
-          (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+          (
+            meshPointDataMap,
+            materialDataMap,
+            cameraDataMap,
+            arcballCameraControllerDataMap,
+            lightDataMap,
+          ),
           (transformArr, nodeDataArr),
         ) =>
   transformArr
@@ -133,14 +158,27 @@ let rec _getNodeData =
        (.
          (
            {gameObjectRecord} as state,
-           (nodeIndex, meshIndex, materialIndex, cameraIndex, lightIndex),
+           (
+             nodeIndex,
+             meshIndex,
+             materialIndex,
+             cameraIndex,
+             arcballCameraControllerIndex,
+             lightIndex,
+           ),
            (
              (boxGeometryDataMap, customGeometryDataMap),
              lightMaterialDataMap,
              gameObjectChildrenMap,
              gameObjectNodeIndexMap,
            ),
-           (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+           (
+             meshPointDataMap,
+             materialDataMap,
+             cameraDataMap,
+             arcballCameraControllerDataMap,
+             lightDataMap,
+           ),
            nodeDataArr,
          ),
          transform,
@@ -191,23 +229,53 @@ let rec _getNodeData =
 
          let (
            state,
-           (meshIndex, materialIndex, cameraIndex, lightIndex),
-           (newMeshIndex, newMaterialIndex, newCameraIndex, newLightIndex),
+           (
+             meshIndex,
+             materialIndex,
+             cameraIndex,
+             arcballCameraControllerIndex,
+             lightIndex,
+           ),
+           (
+             newMeshIndex,
+             newMaterialIndex,
+             newCameraIndex,
+             newArcbbllCameraControllerIndex,
+             newLightIndex,
+           ),
            (
              (boxGeometryDataMap, customGeometryDataMap),
              lightMaterialDataMap,
            ),
-           (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+           (
+             meshPointDataMap,
+             materialDataMap,
+             cameraDataMap,
+             arcballCameraControllerDataMap,
+             lightDataMap,
+           ),
          ) =
            GetNodeComponentDataSystem.getComponentData((
              gameObject,
              state,
-             (meshIndex, materialIndex, cameraIndex, lightIndex),
+             (
+               meshIndex,
+               materialIndex,
+               cameraIndex,
+               arcballCameraControllerIndex,
+               lightIndex,
+             ),
              (
                (boxGeometryDataMap, customGeometryDataMap),
                lightMaterialDataMap,
              ),
-             (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+             (
+               meshPointDataMap,
+               materialDataMap,
+               cameraDataMap,
+               arcballCameraControllerDataMap,
+               lightDataMap,
+             ),
            ));
 
          _getNodeData(
@@ -217,6 +285,7 @@ let rec _getNodeData =
              newMeshIndex,
              newMaterialIndex,
              newCameraIndex,
+             newArcbbllCameraControllerIndex,
              newLightIndex,
            ),
            (
@@ -225,7 +294,13 @@ let rec _getNodeData =
              gameObjectChildrenMap,
              gameObjectNodeIndexMap,
            ),
-           (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+           (
+             meshPointDataMap,
+             materialDataMap,
+             cameraDataMap,
+             arcballCameraControllerDataMap,
+             lightDataMap,
+           ),
            (
              childrenTransformArr,
              _addNodeData(
@@ -239,7 +314,13 @@ let rec _getNodeData =
                  defaultLocalRotation,
                  defaultLocalScale,
                ),
-               (meshIndex, cameraIndex, materialIndex, lightIndex),
+               (
+                 meshIndex,
+                 cameraIndex,
+                 arcballCameraControllerIndex,
+                 materialIndex,
+                 lightIndex,
+               ),
                nodeDataArr,
              ),
            ),
@@ -247,14 +328,27 @@ let rec _getNodeData =
        },
        (
          state,
-         (nodeIndex, meshIndex, materialIndex, cameraIndex, lightIndex),
+         (
+           nodeIndex,
+           meshIndex,
+           materialIndex,
+           cameraIndex,
+           arcballCameraControllerIndex,
+           lightIndex,
+         ),
          (
            (boxGeometryDataMap, customGeometryDataMap),
            lightMaterialDataMap,
            gameObjectChildrenMap,
            gameObjectNodeIndexMap,
          ),
-         (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+         (
+           meshPointDataMap,
+           materialDataMap,
+           cameraDataMap,
+           arcballCameraControllerDataMap,
+           lightDataMap,
+         ),
          nodeDataArr,
        ),
      );
@@ -262,19 +356,32 @@ let rec _getNodeData =
 let getAllNodeData = (rootGameObject, state) => {
   let (
     state,
-    (nodeIndex, meshIndex, materialIndex, cameraIndex, lightIndex),
+    (
+      nodeIndex,
+      meshIndex,
+      materialIndex,
+      cameraIndex,
+      arcballCameraControllerIndex,
+      lightIndex,
+    ),
     (
       (boxGeometryDataMap, customGeometryDataMap),
       lightMaterialDataMap,
       gameObjectChildrenMap,
       gameObjectNodeIndexMap,
     ),
-    (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+    (
+      meshPointDataMap,
+      materialDataMap,
+      cameraDataMap,
+      arcballCameraControllerDataMap,
+      lightDataMap,
+    ),
     nodeDataArr,
   ) =
     _getNodeData(
       state,
-      (0, 0, 0, 0, 0),
+      (0, 0, 0, 0, 0, 0),
       (
         (
           WonderCommonlib.SparseMapService.createEmpty(),
@@ -285,6 +392,7 @@ let getAllNodeData = (rootGameObject, state) => {
         WonderCommonlib.SparseMapService.createEmpty(),
       ),
       (
+        WonderCommonlib.SparseMapService.createEmpty(),
         WonderCommonlib.SparseMapService.createEmpty(),
         WonderCommonlib.SparseMapService.createEmpty(),
         WonderCommonlib.SparseMapService.createEmpty(),
@@ -303,14 +411,27 @@ let getAllNodeData = (rootGameObject, state) => {
 
   (
     state,
-    (nodeIndex, meshIndex, materialIndex, cameraIndex, lightIndex),
+    (
+      nodeIndex,
+      meshIndex,
+      materialIndex,
+      cameraIndex,
+      arcballCameraControllerIndex,
+      lightIndex,
+    ),
     (
       (boxGeometryDataMap, customGeometryDataMap),
       lightMaterialDataMap,
       gameObjectChildrenMap,
       gameObjectNodeIndexMap,
     ),
-    (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+    (
+      meshPointDataMap,
+      materialDataMap,
+      cameraDataMap,
+      arcballCameraControllerDataMap,
+      lightDataMap,
+    ),
     nodeDataArr,
   );
 
@@ -319,7 +440,13 @@ let getAllNodeData = (rootGameObject, state) => {
 
   (
     state,
-    (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+    (
+      meshPointDataMap,
+      materialDataMap,
+      cameraDataMap,
+      arcballCameraControllerDataMap,
+      lightDataMap,
+    ),
     nodeDataArr,
   );
 };

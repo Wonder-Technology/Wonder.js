@@ -28,6 +28,7 @@ let _getBatchComponentGameObjectData =
         customGeometryArr,
         basicCameraViewArr,
         perspectiveCameraProjectionArr,
+        arcballCameraControllerArr,
         lightMaterialArr,
         directionLightArr,
         pointLightArr,
@@ -93,12 +94,12 @@ let _getBatchComponentGameObjectData =
       indices.gameObjectIndices.perspectiveCameraProjectionGameObjectIndexData.
         componentIndices
       |> _getBatchArrByIndices(perspectiveCameraProjectionArr),
-      /* indices.gameObjectIndices.lightMaterialGameObjectIndexData.
-           gameObjectIndices
-         |> _getBatchArrByIndices(gameObjectArr),
-
-         indices.gameObjectIndices.lightMaterialGameObjectIndexData.componentIndices
-         |> _getBatchArrByIndices(lightMaterialArr), */
+      indices.gameObjectIndices.arcballCameraControllerGameObjectIndexData.
+        gameObjectIndices
+      |> _getBatchArrByIndices(gameObjectArr),
+      indices.gameObjectIndices.arcballCameraControllerGameObjectIndexData.
+        componentIndices
+      |> _getBatchArrByIndices(arcballCameraControllerArr),
       lightMaterialGameObjects,
       gameObjectLightMaterials,
       lightMaterialGameObjects,
@@ -454,6 +455,79 @@ let _batchSetPerspectiveCameraProjectionData =
   {...state, perspectiveCameraProjectionRecord};
 };
 
+let _batchSetArcballCameraControllerData =
+    (
+      {arcballCameraControllers},
+      arcballCameraControllerArr,
+      {arcballCameraControllerRecord, viewRecord} as state,
+    ) => {
+  arcballCameraControllers
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (.
+         arcballCameraControllerRecord,
+         {
+           distance,
+           minDistance,
+           phi,
+           theta,
+           thetaMargin,
+           target,
+           moveSpeedX,
+           moveSpeedY,
+           rotateSpeed,
+           wheelSpeed,
+         }: SceneGraphType.arcballCameraController,
+         index,
+       ) => {
+         let cameraController = arcballCameraControllerArr[index];
+
+         arcballCameraControllerRecord
+         |> OperateArcballCameraControllerService.setMinDistance(
+              cameraController,
+              minDistance,
+            )
+         |> OperateArcballCameraControllerService.setDistance(
+              cameraController,
+              distance,
+            )
+         |> OperateArcballCameraControllerService.setPhi(
+              cameraController,
+              phi,
+            )
+         |> OperateArcballCameraControllerService.setTheta(
+              cameraController,
+              theta,
+            )
+         |> OperateArcballCameraControllerService.setThetaMargin(
+              cameraController,
+              thetaMargin,
+            )
+         |> OperateArcballCameraControllerService.setTarget(
+              cameraController,
+              target,
+            )
+         |> OperateArcballCameraControllerService.setMoveSpeedX(
+              cameraController,
+              moveSpeedX,
+            )
+         |> OperateArcballCameraControllerService.setMoveSpeedY(
+              cameraController,
+              moveSpeedY,
+            )
+         |> OperateArcballCameraControllerService.setRotateSpeed(
+              cameraController,
+              rotateSpeed,
+            )
+         |> OperateArcballCameraControllerService.setWheelSpeed(
+              cameraController,
+              wheelSpeed,
+            );
+       },
+       arcballCameraControllerRecord,
+     );
+  {...state, arcballCameraControllerRecord};
+};
+
 let _batchSetLightMaterialData =
     ({lightMaterials}, lightMaterialArr, {lightMaterialRecord} as state) =>
   lightMaterials
@@ -523,6 +597,7 @@ let batchOperate =
           customGeometryArr,
           basicCameraViewArr,
           perspectiveCameraProjectionArr,
+          arcballCameraControllerArr,
           lightMaterialArr,
           directionLightArr,
           pointLightArr,
@@ -548,6 +623,8 @@ let batchOperate =
       gameObjectBasicCameraViews,
       perspectiveCameraProjectionGameObjects,
       gameObjectPerspectiveCameraProjection,
+      arcballCameraControllerGameObjects,
+      gameObjectArcballCameraController,
       lightMaterialGameObjects,
       gameObjectLightMaterials,
       meshRendererGameObjects,
@@ -566,6 +643,7 @@ let batchOperate =
         customGeometryArr,
         basicCameraViewArr,
         perspectiveCameraProjectionArr,
+        arcballCameraControllerArr,
         lightMaterialArr,
         directionLightArr,
         pointLightArr,
@@ -599,6 +677,7 @@ let batchOperate =
          wd,
          perspectiveCameraProjectionArr,
        )
+    |> _batchSetArcballCameraControllerData(wd, arcballCameraControllerArr)
     |> _batchSetLightMaterialData(wd, lightMaterialArr)
     |> BatchOperateLightSystem.batchSetDirectionLightData(
          wd,
@@ -621,6 +700,10 @@ let batchOperate =
     |> BatchAddGameObjectComponentMainService.batchAddPerspectiveCameraProjectionComponentForCreate(
          perspectiveCameraProjectionGameObjects,
          gameObjectPerspectiveCameraProjection,
+       )
+    |> BatchAddGameObjectComponentMainService.batchAddArcballCameraControllerComponentForCreate(
+         arcballCameraControllerGameObjects,
+         gameObjectArcballCameraController,
        )
     |> BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForCreate(
          lightMaterialGameObjects,

@@ -213,6 +213,26 @@ let _getCameraData =
     (Some(cameraIndex), cameraData, cameraIndex |> succ);
   };
 
+let _getArcballCameraControllerData =
+    (
+      (gameObject, arcballCameraControllerIndex),
+      {gameObjectRecord} as state,
+    ) =>
+  switch (
+    GetComponentGameObjectService.getArcballCameraControllerComponent(.
+      gameObject,
+      gameObjectRecord,
+    )
+  ) {
+  | None => (None, None, arcballCameraControllerIndex)
+
+  | Some(arcballCameraController) => (
+      Some(arcballCameraControllerIndex),
+      Some(arcballCameraController),
+      arcballCameraControllerIndex |> succ,
+    )
+  };
+
 let _getLightData = ((gameObject, lightIndex), {gameObjectRecord} as state) =>
   switch (
     GetComponentGameObjectService.getDirectionLightComponent(.
@@ -246,9 +266,21 @@ let getComponentData =
       (
         gameObject,
         state,
-        (meshIndex, materialIndex, cameraIndex, lightIndex),
+        (
+          meshIndex,
+          materialIndex,
+          cameraIndex,
+          arcballCameraControllerIndex,
+          lightIndex,
+        ),
         ((boxGeometryDataMap, customGeometryDataMap), lightMaterialDataMap),
-        (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+        (
+          meshPointDataMap,
+          materialDataMap,
+          cameraDataMap,
+          arcballCameraControllerDataMap,
+          lightDataMap,
+        ),
       ),
     ) => {
   let (
@@ -307,6 +339,27 @@ let getComponentData =
          )
     };
 
+  let (
+    arcballCameraControllerIndex,
+    arcballCameraControllerData,
+    newCameraControllerIndex,
+  ) =
+    _getArcballCameraControllerData(
+      (gameObject, arcballCameraControllerIndex),
+      state,
+    );
+
+  let arcballCameraControllerDataMap =
+    switch (arcballCameraControllerIndex) {
+    | None => arcballCameraControllerDataMap
+    | Some(arcballCameraControllerIndex) =>
+      arcballCameraControllerDataMap
+      |> WonderCommonlib.SparseMapService.set(
+           arcballCameraControllerIndex,
+           arcballCameraControllerData |> OptionService.unsafeGet,
+         )
+    };
+
   let (lightIndex, lightData, newLightIndex) =
     _getLightData((gameObject, lightIndex), state);
 
@@ -323,9 +376,27 @@ let getComponentData =
 
   (
     state,
-    (meshIndex, materialIndex, cameraIndex, lightIndex),
-    (newMeshIndex, newMaterialIndex, newCameraIndex, newLightIndex),
+    (
+      meshIndex,
+      materialIndex,
+      cameraIndex,
+      arcballCameraControllerIndex,
+      lightIndex,
+    ),
+    (
+      newMeshIndex,
+      newMaterialIndex,
+      newCameraIndex,
+      newCameraControllerIndex,
+      newLightIndex,
+    ),
     ((boxGeometryDataMap, customGeometryDataMap), lightMaterialDataMap),
-    (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+    (
+      meshPointDataMap,
+      materialDataMap,
+      cameraDataMap,
+      arcballCameraControllerDataMap,
+      lightDataMap,
+    ),
   );
 };
