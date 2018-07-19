@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>benchmark</title>
+</head>
+
+<body>
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/PositionTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/js/BasicMaterialTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+
+
+
+    <script src="../../dist/wd.js"></script>
+
+
+
+    <!-- <script src="./gltfTool.js"></script> -->
+    <!-- <script src="./wdData.js"></script> -->
+    <script src="./base64DataTool.js"></script>
+
+    <script>
+        window.onload = function () {
+
+            ReplaceFetchTool.replaceFetchForTest();
+
+
+
+            function _generateWDByGameObject(state) {
+                var rootGameObject = wd.getSceneGameObject(state);
+
+
+                var [state, box] = LightBoxesTool.createBox(state);
+
+
+
+                var state =
+                    wd.addSceneChild(
+                        wd.unsafeGetGameObjectTransformComponent(box, state), state
+                    );
+
+
+                // var [state, directionLightObj, pointLightObj] = _createLights(state);
+
+
+                var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+
+
+                var data = LightBoxesTool.createCamera(state);
+                var state = data[0];
+                var camera = data[1];
+
+
+                var [state, cameraController] = wd.createArcballCameraController(state);
+
+                var state =
+                    wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+
+
+                // var state =
+                //     wd.setArcballCameraControllerMoveSpeedX(cameraController, 0.1, state);
+
+                var state =
+                    wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
+
+                var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+                var state =
+                    wd.setCurrentCameraGameObject(
+                        camera, state
+                    );
+
+
+
+                var state =
+                    wd.addSceneChild(
+                        wd.unsafeGetGameObjectTransformComponent(camera, state), state
+                    );
+
+
+
+
+
+
+
+
+                var [state, wdb] = wd.generateWDB(rootGameObject, wd.createSparseMap(), state);
+
+
+
+                // var state =
+                //     _disposeAll(rootGameObject, state);
+
+
+                // console.log(
+                //     JSON.stringify(wdRecord)
+                // );
+
+                return [state, wdb];
+            }
+
+
+
+
+            function _testGenerateWDByGameObject(state) {
+                var [state, wdb] = _generateWDByGameObject(state);
+
+
+
+
+                wd.assembleWDB(wdb, state)
+                    .forEach(([state, rootGameObject]) => {
+                        wd.startDirector(state);
+                    })
+
+
+                // var rootGameObject = wd.getSceneGameObject(state);
+
+
+                // var [state, box] = LightBoxesTool.createBox(state);
+
+
+
+                // var state =
+                //     wd.addSceneChild(
+                //         wd.unsafeGetGameObjectTransformComponent(box, state), state
+                //     );
+
+
+                // // var [state, directionLightObj, pointLightObj] = _createLights(state);
+
+
+                // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+
+
+                // var data = LightBoxesTool.createCamera(state);
+                // var state = data[0];
+                // var camera = data[1];
+
+
+                // var [state, cameraController] = wd.createArcballCameraController(state);
+
+                // var state =
+                //     wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+
+
+                // // var state =
+                // //     wd.setArcballCameraControllerMoveSpeedX(cameraController, 0.1, state);
+
+                // var state =
+                //     wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
+
+                // var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+                // var state =
+                //     wd.setCurrentCameraGameObject(
+                //         camera, state
+                //     );
+
+
+
+                // var state =
+                //     wd.addSceneChild(
+                //         wd.unsafeGetGameObjectTransformComponent(camera, state), state
+                //     );
+
+
+                // wd.startDirector(state)
+
+
+
+            }
+
+
+
+            return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
+                var state = wd.unsafeGetState();
+
+
+                _testGenerateWDByGameObject(state);
+            });
+        };
+    </script>
+</body>
+
+</html>
