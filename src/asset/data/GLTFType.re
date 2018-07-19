@@ -22,9 +22,17 @@ type sceneKHRLightsExtension = {light: int};
 
 type sceneExtensions = {khr_lights: option(sceneKHRLightsExtension)};
 
+type imgui = {
+  imguiFunc: string,
+  customData: WonderImgui.IMGUIType.customDataForIMGUIFunc,
+};
+
+type sceneExtras = {imgui: option(imgui)};
+
 type scene = {
   nodes: option(array(nodeIndex)),
   extensions: option(sceneExtensions),
+  extras: option(sceneExtras),
 };
 
 type asset = {

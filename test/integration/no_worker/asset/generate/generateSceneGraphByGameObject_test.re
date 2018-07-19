@@ -826,6 +826,40 @@ let _ =
       );
     });
 
+    describe("test imgui", () => {
+      let _prepareGameObject = state => {
+        let customData =
+          Obj.magic((1, "cc"));
+
+        let imguiFunc = (customData, apiJsObj, record) => {
+          let (a, b) = Obj.magic(customData);
+          let imageFunc = apiJsObj##image |> Obj.magic;
+          let record = imageFunc(. a, b, record);
+          record;
+        };
+
+        let state =
+          ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state^);
+
+        let (state, rootGameObject) = state |> GameObjectAPI.createGameObject;
+
+        (state, (customData, imguiFunc), rootGameObject);
+      };
+
+      test("test customData and imguiFunc", () => {
+        let (state, (customData, imguiFunc), rootGameObject) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+            "scenes":[{"extras":{"customData":[1,"cc"],"imguiFunc":"function imguiFunc(customData, apiJsObj, record) {\\n        var imageFunc = apiJsObj.image;\\n        return imageFunc(customData[0], customData[1], record);\\n      }"},
+            |j},
+          state,
+        );
+      });
+    });
+
     describe("test dispose", () => {
       let _prepareGameObject = state => {
         open GameObjectAPI;
@@ -1813,10 +1847,22 @@ let _ =
         let aspect = 1.5;
         let state =
           state
-          |> setPerspectiveCameraProjectionNear(perspectiveCameraProjection, near)
-          |> setPerspectiveCameraProjectionFar(perspectiveCameraProjection, far)
-          |> setPerspectiveCameraProjectionFovy(perspectiveCameraProjection, fovy)
-          |> setPerspectiveCameraProjectionAspect(perspectiveCameraProjection, aspect);
+          |> setPerspectiveCameraProjectionNear(
+               perspectiveCameraProjection,
+               near,
+             )
+          |> setPerspectiveCameraProjectionFar(
+               perspectiveCameraProjection,
+               far,
+             )
+          |> setPerspectiveCameraProjectionFovy(
+               perspectiveCameraProjection,
+               fovy,
+             )
+          |> setPerspectiveCameraProjectionAspect(
+               perspectiveCameraProjection,
+               aspect,
+             );
         (
           state,
           basicCameraView,

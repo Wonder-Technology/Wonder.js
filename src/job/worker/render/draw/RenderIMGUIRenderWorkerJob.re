@@ -17,9 +17,7 @@ let execJob = (flags, e, stateData) =>
                |> OptionService.unsafeGetJsonSerializedValue,
                imguiData##imguiFunc
                |> OptionService.unsafeGetJsonSerializedValue
-               /* |> WonderLog.Log.print */
                |> SerializeService.deserializeFunction,
-               /* |> WonderLog.Log.print, */
              )
           |> WonderImgui.ManageIMGUIAPI.render(
                DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),

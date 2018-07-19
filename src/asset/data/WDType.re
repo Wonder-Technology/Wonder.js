@@ -95,10 +95,10 @@ type accessor = {
 };
 
 /* type buffer = {
-  uri: option(string),
-  buffer: option(Js.Typed_array.ArrayBuffer.t),
-  byteLength: int,
-}; */
+     uri: option(string),
+     buffer: option(Js.Typed_array.ArrayBuffer.t),
+     byteLength: int,
+   }; */
 
 /* type wdbBuffer = {byteLength: int}; */
 
@@ -116,12 +116,12 @@ type bufferView = {
 
 /* type uriImage = {uriBase64: string};
 
-/* type mimeType =
-  | PNG
-  | JPEG
-  | UNKNOWN; */
+   /* type mimeType =
+     | PNG
+     | JPEG
+     | UNKNOWN; */
 
-type blobImage = {objectUrl: string}; */
+   type blobImage = {objectUrl: string}; */
 
 type image = {
   bufferView: bufferViewIndex,
@@ -204,31 +204,16 @@ type pointLight = {
   range: float,
 };
 
+type imgui = {
+  imguiFunc: string,
+  customData: WonderImgui.IMGUIType.customDataForIMGUIFunc,
+};
+
 type scene = {
   gameObjects: array(gameObjectIndex),
   ambientLight: option(ambientLight),
+  imgui: option(imgui),
 };
-
-/* type wd = {
-  asset,
-  scene,
-  indices,
-  gameObjects,
-  uriImages: option(array(uriImage)),
-  blobImages: option(array(blobImage)),
-  basicSourceTextures: array(basicSourceTexture),
-  samplers: array(sampler),
-  buffers: array(buffer),
-  bufferViews: array(bufferView),
-  accessors: array(accessor),
-  directionLights: array(directionLight),
-  pointLights: array(pointLight),
-  basicCameraViews,
-  perspectiveCameraProjections: array(perspectiveCameraProjection),
-  transforms: array(transform),
-  customGeometrys: array(option(customGeometry)),
-  lightMaterials: array(lightMaterial),
-}; */
 
 type wd = {
   asset,

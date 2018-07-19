@@ -1,14 +1,6 @@
 open StateDataMainType;
 
-let setIMGUIFunc = (customData, func, state) => {
-  ...state,
-  imguiRecord:
-    WonderImgui.ManageIMGUIAPI.setIMGUIFunc(
-      customData,
-      func,
-      state.imguiRecord,
-    ),
-};
+let setIMGUIFunc = ManageIMGUIMainService.setIMGUIFunc;
 
 let getSetting = state =>
   WonderImgui.ManageIMGUIAPI.getSetting(state.imguiRecord);

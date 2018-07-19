@@ -36,7 +36,6 @@ let _ =
 
     describe("build scene gameObject", () => {
       testPromise("test single scene gameObject", () =>
-
         AssembleWDBSystemTool.testGLTF(
           ~sandbox=sandbox^,
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
@@ -69,6 +68,32 @@ let _ =
         )
       );
     });
+
+    describe("test imgui", () =>
+      testPromise("set imgui func and custom data", () => {
+        let customData = {| [1, "a1"] |};
+        let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
+
+        AssembleWDBSystemTool.testGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+          ~state,
+          ~testFunc=
+            ((state, rootGameObject)) =>
+              (
+                IMGUITool.getIMGUIFunc(state)
+                |> OptionService.unsafeGet
+                |> SerializeService.serializeFunction,
+                IMGUITool.getCustomData(state)
+                |> OptionService.unsafeGet
+                |> Obj.magic,
+              )
+              |> expect == (imguiFunc, [|1 |> Obj.magic, "a1"|]),
+          (),
+        );
+      })
+    );
 
     describe("test gameObject", () =>
       describe("set gameObject name", () =>
