@@ -1,4 +1,7 @@
-type nodeExtras = {material: option(int)};
+type nodeExtras = {
+  material: option(int),
+  cameraController: option(int),
+};
 
 type nodeKHRLightsExtension = {light: int};
 
@@ -63,7 +66,7 @@ type imageData = {
   bufferView: int,
   mimeType: string,
   uint8Array: Js.Typed_array.Uint8Array.t,
-  byteOffset: int
+  byteOffset: int,
 };
 
 type materialData = {
@@ -78,6 +81,8 @@ type perspectiveCameraData = {
   fovy: float,
   aspect: option(float),
 };
+
+type arcballCameraControllerData = SceneGraphType.arcballCameraController;
 
 type cameraData = {
   type_: string,
@@ -107,3 +112,6 @@ external rotationTupleToArray : RotationType.rotation => array(float) =
   "%identity";
 
 external scaleTupleToArray : ScaleType.scale => array(float) = "%identity";
+
+external targetTupleToArray : SceneGraphType.target => array(float) =
+  "%identity";

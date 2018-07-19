@@ -18,16 +18,13 @@ type nodeIndex = int;
 
 type meshIndex = int;
 
+type cameraControllerIndex = int;
+
 type sceneKHRLightsExtension = {light: int};
 
 type sceneExtensions = {khr_lights: option(sceneKHRLightsExtension)};
 
-type imgui = {
-  imguiFunc: string,
-  customData: WonderImgui.IMGUIType.customDataForIMGUIFunc,
-};
-
-type sceneExtras = {imgui: option(imgui)};
+type sceneExtras = {imgui: option(SceneGraphType.imgui)};
 
 type scene = {
   nodes: option(array(nodeIndex)),
@@ -158,7 +155,10 @@ type material = {
   name: option(string),
 };
 
-type nodeExtras = {material: option(int)};
+type nodeExtras = {
+  material: option(int),
+  cameraController: option(cameraControllerIndex),
+};
 
 type nodeKHRLightsExtension = {light: int};
 
@@ -211,6 +211,11 @@ type khrLightsExtension = {lights: array(light)};
 
 type extensions = {khr_lights: option(khrLightsExtension)};
 
+type gltfExtras = {
+  arcballCameraControllers:
+    option(array(SceneGraphType.arcballCameraController)),
+};
+
 type gltf = {
   asset,
   scenes: array(scene),
@@ -227,4 +232,5 @@ type gltf = {
   materials: option(array(material)),
   extensionsUsed: option(array(string)),
   extensions: option(extensions),
+  extras: option(gltfExtras),
 };

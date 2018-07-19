@@ -156,6 +156,7 @@ type gameObjectIndices = {
   transformGameObjectIndexData: componentGameObjectIndexData,
   basicCameraViewGameObjectIndexData: componentGameObjectIndexData,
   perspectiveCameraProjectionGameObjectIndexData: componentGameObjectIndexData,
+  arcballCameraControllerGameObjectIndexData: componentGameObjectIndexData,
   lightMaterialGameObjectIndexData: componentGameObjectIndexData,
   directionLightGameObjectIndexData: componentGameObjectIndexData,
   pointLightGameObjectIndexData: componentGameObjectIndexData,
@@ -204,15 +205,10 @@ type pointLight = {
   range: float,
 };
 
-type imgui = {
-  imguiFunc: string,
-  customData: WonderImgui.IMGUIType.customDataForIMGUIFunc,
-};
-
 type scene = {
   gameObjects: array(gameObjectIndex),
   ambientLight: option(ambientLight),
-  imgui: option(imgui),
+  imgui: option(SceneGraphType.imgui),
 };
 
 type wd = {
@@ -230,6 +226,7 @@ type wd = {
   pointLights: array(pointLight),
   basicCameraViews,
   perspectiveCameraProjections: array(perspectiveCameraProjection),
+  arcballCameraControllers: array(SceneGraphType.arcballCameraController),
   transforms: array(transform),
   customGeometrys: array(option(customGeometry)),
   lightMaterials: array(lightMaterial),

@@ -93,6 +93,8 @@ let buildGLTFJson =
     ]|},
       ~cameras={|
         []|},
+      ~arcballCameraControllers={|
+        []|},
       ~nodes={| [
         {
             "matrix": [
@@ -280,7 +282,10 @@ let buildGLTFJson =
     "bufferViews": $bufferViews,
     "buffers": $buffers,
     "extensions":$extensions,
-    "extensionsUsed": $extensionsUsed
+    "extensionsUsed": $extensionsUsed,
+    "extras": {
+        "arcballCameraControllers": $arcballCameraControllers
+    }
 }
         |j};
 
@@ -715,6 +720,37 @@ let buildGLTFJsonOfCamera = () =>
                 "znear": 2.0
             },
             "type": "perspective"
+        }
+    ]
+        |},
+    (),
+  );
+
+let buildGLTFJsonOfArcballCameraController = () =>
+  buildGLTFJson(
+    ~nodes=
+      {| [
+        {
+            "mesh": 0,
+            "extras": {
+                "cameraController": 0
+            }
+        }
+    ]|},
+    ~arcballCameraControllers=
+      {|
+[
+        {
+            "distance":1.5,
+            "minDistance":1.0,
+            "phi":0.8,
+            "theta":0.6,
+            "thetaMargin":1.5,
+            "target":[0.0, 0.5, 0.1],
+            "moveSpeedX":2.1,
+            "moveSpeedY":3.1,
+            "rotateSpeed":0.3,
+            "wheelSpeed":0.9
         }
     ]
         |},

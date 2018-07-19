@@ -1,5 +1,7 @@
 let convertToGameObjectIndexData =
-    ({scenes, nodes, meshes, cameras, materials, extensions}: GLTFType.gltf)
+    (
+      {scenes, nodes, meshes, cameras, materials, extras, extensions}: GLTFType.gltf,
+    )
     : WDType.gameObjectIndices => {
   let transformGameObjectIndexData =
     ConvertComponentIndexDataSystem.convertToTransformGameObjectIndexData(
@@ -15,12 +17,15 @@ let convertToGameObjectIndexData =
     basicCameraViewGameObjectIndexData:
       ConvertComponentIndexDataSystem.convertToBasicCameraViewGameObjectIndexData(
         nodes,
-        cameras,
       ),
     perspectiveCameraProjectionGameObjectIndexData:
       ConvertComponentIndexDataSystem.convertToPerspectiveCameraProjectionGameObjectIndexData(
         nodes,
         cameras,
+      ),
+    arcballCameraControllerGameObjectIndexData:
+      ConvertComponentIndexDataSystem.convertToArcballCameraControllerGameObjectIndexData(
+        nodes,
       ),
     lightMaterialGameObjectIndexData:
       ConvertComponentIndexDataSystem.convertToLightMaterialGameObjectIndexData(

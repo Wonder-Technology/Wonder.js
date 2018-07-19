@@ -36,6 +36,50 @@ let createGameObject = state => {
   );
 };
 
+let setArcballCameraControllerData = (cameraController, state) => {
+  open ArcballCameraControllerAPI;
+
+  let distance = 1.6;
+  let minDistance = 0.5;
+  let phi = 1.7;
+  let theta = 0.5;
+  let thetaMargin = 0.3;
+  let target = (0.1, 0.2, 0.5);
+  let moveSpeedX = 0.1;
+  let moveSpeedY = 0.2;
+  let rotateSpeed = 0.3;
+  let wheelSpeed = 0.4;
+
+  let state =
+    state
+    |> setArcballCameraControllerMinDistance(cameraController, minDistance)
+    |> setArcballCameraControllerDistance(cameraController, distance)
+    |> setArcballCameraControllerPhi(cameraController, phi)
+    |> setArcballCameraControllerTheta(cameraController, theta)
+    |> setArcballCameraControllerThetaMargin(cameraController, thetaMargin)
+    |> setArcballCameraControllerTarget(cameraController, target)
+    |> setArcballCameraControllerMoveSpeedX(cameraController, moveSpeedX)
+    |> setArcballCameraControllerMoveSpeedY(cameraController, moveSpeedY)
+    |> setArcballCameraControllerRotateSpeed(cameraController, rotateSpeed)
+    |> setArcballCameraControllerWheelSpeed(cameraController, wheelSpeed);
+
+  (
+    state,
+    (
+      distance,
+      minDistance,
+      phi,
+      theta,
+      thetaMargin,
+      target,
+      moveSpeedX,
+      moveSpeedY,
+      rotateSpeed,
+      wheelSpeed,
+    ),
+  );
+};
+
 let getDirtyArray = state => state.arcballCameraControllerRecord.dirtyArray;
 
 let getPointDragEventHandleFuncMap =

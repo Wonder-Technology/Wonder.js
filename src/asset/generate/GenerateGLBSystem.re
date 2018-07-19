@@ -9,7 +9,13 @@ open GenerateSceneGraphType;
 let generateGLBData = (rootGameObject, imageBase64Map, state) => {
   let (
     state,
-    (meshPointDataMap, materialDataMap, cameraDataMap, lightDataMap),
+    (
+      meshPointDataMap,
+      materialDataMap,
+      cameraDataMap,
+      arcballCameraControllerDataMap,
+      lightDataMap,
+    ),
     nodeDataArr,
   ) =
     GetNodeDataSystem.getAllNodeData(rootGameObject, state);
@@ -46,6 +52,12 @@ let generateGLBData = (rootGameObject, imageBase64Map, state) => {
 
   let cameraDataArr = BuildCameraDataSystem.build(cameraDataMap, state);
 
+  let arcballCameraControllerDataArr =
+    BuildCameraControllerDataSystem.build(
+      arcballCameraControllerDataMap,
+      state,
+    );
+
   let lightDataArr = BuildLightDataSystem.build(lightDataMap, state);
 
   let extensionsUsedArr =
@@ -64,6 +76,7 @@ let generateGLBData = (rootGameObject, imageBase64Map, state) => {
         samplerDataArr,
         imageUint8DataArr,
         cameraDataArr,
+        arcballCameraControllerDataArr,
         lightDataArr,
         BuildIMGUIDataSystem.build(state),
         extensionsUsedArr,

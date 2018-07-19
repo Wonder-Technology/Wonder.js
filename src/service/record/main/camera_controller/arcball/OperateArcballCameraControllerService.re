@@ -3,13 +3,12 @@ open StateDataMainType;
 open EventType;
 
 let unsafeGetDistance = (cameraController, record) =>
-  WonderCommonlib.SparseMapService.get(cameraController, record.distanceMap) |> OptionService.unsafeGet;
+  WonderCommonlib.SparseMapService.get(cameraController, record.distanceMap)
+  |> OptionService.unsafeGet;
 
 let unsafeGetWheelSpeed = (cameraController, record) =>
-  WonderCommonlib.SparseMapService.get(
-    cameraController,
-    record.wheelSpeedMap,
-  ) |> OptionService.unsafeGet;
+  WonderCommonlib.SparseMapService.get(cameraController, record.wheelSpeedMap)
+  |> OptionService.unsafeGet;
 
 let setWheelSpeed =
     (cameraController, wheelSpeed, {wheelSpeedMap, dirtyArray} as record) => {
@@ -26,7 +25,8 @@ let unsafeGetMinDistance = (cameraController, record) =>
   WonderCommonlib.SparseMapService.get(
     cameraController,
     record.minDistanceMap,
-  ) |> OptionService.unsafeGet;
+  )
+  |> OptionService.unsafeGet;
 
 let setDistance =
     (cameraController, distance, {distanceMap, dirtyArray} as record) => {
@@ -80,7 +80,8 @@ let setMinDistance =
 };
 
 let unsafeGetPhi = (cameraController, record) =>
-  WonderCommonlib.SparseMapService.get(cameraController, record.phiMap) |> OptionService.unsafeGet;
+  WonderCommonlib.SparseMapService.get(cameraController, record.phiMap)
+  |> OptionService.unsafeGet;
 
 let setPhi = (cameraController, phi, {phiMap, dirtyArray} as record) => {
   ...record,
@@ -92,13 +93,15 @@ let _constrainTheta = (theta, thetaMargin) =>
   NumberService.clamp(theta, thetaMargin, Js.Math._PI -. thetaMargin);
 
 let unsafeGetTheta = (cameraController, record) =>
-  WonderCommonlib.SparseMapService.get(cameraController, record.thetaMap) |> OptionService.unsafeGet;
+  WonderCommonlib.SparseMapService.get(cameraController, record.thetaMap)
+  |> OptionService.unsafeGet;
 
 let unsafeGetThetaMargin = (cameraController, record) =>
   WonderCommonlib.SparseMapService.get(
     cameraController,
     record.thetaMarginMap,
-  ) |> OptionService.unsafeGet;
+  )
+  |> OptionService.unsafeGet;
 
 let setThetaMargin =
     (
@@ -139,7 +142,8 @@ let setTheta = (cameraController, theta, {thetaMap, dirtyArray} as record) => {
 };
 
 let unsafeGetTarget = (cameraController, record) =>
-  WonderCommonlib.SparseMapService.get(cameraController, record.targetMap) |> OptionService.unsafeGet;
+  WonderCommonlib.SparseMapService.get(cameraController, record.targetMap)
+  |> OptionService.unsafeGet;
 
 let setTarget = (cameraController, target, {targetMap, dirtyArray} as record) => {
   ...record,
@@ -149,10 +153,8 @@ let setTarget = (cameraController, target, {targetMap, dirtyArray} as record) =>
 };
 
 let unsafeGetMoveSpeedX = (cameraController, record) =>
-  WonderCommonlib.SparseMapService.get(
-    cameraController,
-    record.moveSpeedXMap,
-  ) |> OptionService.unsafeGet;
+  WonderCommonlib.SparseMapService.get(cameraController, record.moveSpeedXMap)
+  |> OptionService.unsafeGet;
 
 let setMoveSpeedX =
     (cameraController, moveSpeedX, {moveSpeedXMap, dirtyArray} as record) => {
@@ -166,10 +168,8 @@ let setMoveSpeedX =
 };
 
 let unsafeGetMoveSpeedY = (cameraController, record) =>
-  WonderCommonlib.SparseMapService.get(
-    cameraController,
-    record.moveSpeedYMap,
-  ) |> OptionService.unsafeGet;
+  WonderCommonlib.SparseMapService.get(cameraController, record.moveSpeedYMap)
+  |> OptionService.unsafeGet;
 
 let setMoveSpeedY =
     (cameraController, moveSpeedY, {moveSpeedYMap, dirtyArray} as record) => {
@@ -186,7 +186,8 @@ let unsafeGetRotateSpeed = (cameraController, record) =>
   WonderCommonlib.SparseMapService.get(
     cameraController,
     record.rotateSpeedMap,
-  ) |> OptionService.unsafeGet;
+  )
+  |> OptionService.unsafeGet;
 
 let setRotateSpeed =
     (cameraController, rotateSpeed, {rotateSpeedMap, dirtyArray} as record) => {
