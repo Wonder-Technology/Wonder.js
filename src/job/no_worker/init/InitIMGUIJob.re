@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-let execJob = (_, {imguiRecord} as state) => {
+let execJob = (_, {imguiRecord, viewRecord} as state) => {
   let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
   {
@@ -8,6 +8,7 @@ let execJob = (_, {imguiRecord} as state) => {
     imguiRecord:
       WonderImgui.ManageIMGUIAPI.init(
         gl,
+        ManageIMGUIMainService.getCanvasSize(state),
         RecordIMGUIMainService.getRecord(state),
       ),
   };

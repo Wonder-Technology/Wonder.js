@@ -21,7 +21,6 @@ let execJob = (flags, e, stateData) =>
              )
           |> WonderImgui.ManageIMGUIAPI.render(
                DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-               (imguiData##canvasWidth, imguiData##canvasHeight),
              );
 
         state.imguiRecord = imguiRecord;

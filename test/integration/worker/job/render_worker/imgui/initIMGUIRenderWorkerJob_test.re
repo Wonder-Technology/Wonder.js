@@ -19,6 +19,39 @@ let _ =
     afterEach(() => TestWorkerTool.clear(sandbox));
 
     describe("test send init data to render worker", () => {
+      testPromise("send canvas size data", () => {
+        let (state, (_, context)) = _prepare();
+        MainStateTool.setState(state);
+
+        MainInitJobMainWorkerTool.prepare()
+        |> MainInitJobMainWorkerTool.test(
+             sandbox,
+             state =>
+               WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
+             postMessageToRenderWorker => {
+               let (_, _, width, height, _, _) =
+                 ScreenService.queryFullScreenData();
+
+               postMessageToRenderWorker
+               |> withOneArg(
+                    SendInitRenderDataWorkerTool.buildInitRenderData(
+                      ~imguiData={
+                        "canvasWidth": width,
+                        "canvasHeight": height,
+                        "setting": Sinon.matchAny,
+                        "fntData": Sinon.matchAny,
+                        "bitmapImageData": Sinon.matchAny,
+                        "customTextureSourceDataArr": Sinon.matchAny,
+                      },
+                      (),
+                    ),
+                  )
+               |> getCallCount
+               |> expect == 1;
+             },
+           );
+      });
+
       describe("send bitmapImageData", () =>
         testPromise("convert bitmap to imageData", () => {
           let (
@@ -51,6 +84,8 @@ let _ =
                    |> withOneArg(
                         SendInitRenderDataWorkerTool.buildInitRenderData(
                           ~imguiData={
+                            "canvasWidth": Sinon.matchAny,
+                            "canvasHeight": Sinon.matchAny,
                             "setting": Sinon.matchAny,
                             "fntData": Sinon.matchAny,
                             "bitmapImageData": (
@@ -128,6 +163,8 @@ let _ =
                    |> withOneArg(
                         SendInitRenderDataWorkerTool.buildInitRenderData(
                           ~imguiData={
+                            "canvasWidth": Sinon.matchAny,
+                            "canvasHeight": Sinon.matchAny,
                             "setting": Sinon.matchAny,
                             "fntData": Sinon.matchAny,
                             "bitmapImageData": Sinon.matchAny,
@@ -186,6 +223,8 @@ let _ =
                |> withOneArg(
                     SendInitRenderDataWorkerTool.buildInitRenderData(
                       ~imguiData={
+                        "canvasWidth": Sinon.matchAny,
+                        "canvasHeight": Sinon.matchAny,
                         "setting": setting |> Obj.magic |> Js.Json.stringify,
                         "fntData": Sinon.matchAny,
                         "bitmapImageData": Sinon.matchAny,
@@ -214,6 +253,8 @@ let _ =
                |> withOneArg(
                     SendInitRenderDataWorkerTool.buildInitRenderData(
                       ~imguiData={
+                        "canvasWidth": Sinon.matchAny,
+                        "canvasHeight": Sinon.matchAny,
                         "setting": Sinon.matchAny,
                         "fntData":
                           fntData |> Obj.magic |> Js.Json.stringify |. Some,

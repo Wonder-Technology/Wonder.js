@@ -10,10 +10,12 @@ let _getLocation = ((program, name, locationMap), getGlLocationFunc, gl) =>
   };
 
 let _getGlAttribLocation =
-  (. program, name, gl) => Gl.getAttribLocation(program, name, gl);
+  (. program, name, gl) =>
+    WonderWebgl.Gl.getAttribLocation(program, name, gl);
 
 let _getGlUniformLocation =
-  (. program, name, gl) => Gl.getUniformLocation(program, name, gl);
+  (. program, name, gl) =>
+    WonderWebgl.Gl.getUniformLocation(program, name, gl);
 
 let getAttribLocation = (program, name, attributeLocationMap, gl) =>
   _getLocation(

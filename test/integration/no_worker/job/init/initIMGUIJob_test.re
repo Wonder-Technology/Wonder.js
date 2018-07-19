@@ -7,6 +7,14 @@ let _ =
     open Sinon;
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
+
+    let _setCanvas = () => {
+      let canvas = {"width": 100, "height": 200} |> Obj.magic;
+      let state = ViewTool.setCanvas(canvas, state^);
+
+      state;
+    };
+
     beforeEach(() => {
       sandbox := createSandbox();
       state :=
@@ -43,8 +51,9 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     test("if not load imgui asset, not error", () => {
+      let state = _setCanvas();
       let state =
-        state^ |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+        state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
 
       expect(() => {
         let state = state |> NoWorkerJobTool.execInitJobs;
@@ -64,10 +73,11 @@ let _ =
           }
       );
       test("create program", () => {
+        let state = _setCanvas();
         let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
 
         let state =
-          state^
+          state
           |> FakeGlTool.setFakeGl(
                FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ()),
              );

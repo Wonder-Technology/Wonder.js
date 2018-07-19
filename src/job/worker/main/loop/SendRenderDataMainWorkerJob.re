@@ -29,18 +29,7 @@ let _removeAddedSourceDataDuplicateItems = needAddedSourceDataArray =>
      );
 
 let _buildIMGUIData = ({imguiRecord, viewRecord} as state) => {
-  let (canvasWidth, canvasHeight) =
-    switch (ViewService.getCanvas(viewRecord)) {
-    | None => (0, 0)
-    | Some(canvas) => 
-    let canvas = Obj.magic(canvas);
-
-    (canvas##width, canvas##height)
-    };
-
   {
-    "canvasWidth": canvasWidth,
-    "canvasHeight": canvasHeight,
     "customData":
       switch (WonderImgui.ManageIMGUIAPI.getCustomData(imguiRecord)) {
       | None => None

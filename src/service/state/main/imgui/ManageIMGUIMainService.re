@@ -15,3 +15,12 @@ let setIMGUIFunc = (customData, func, state) => {
 
 let getCustomData = state =>
   WonderImgui.ManageIMGUIAPI.getCustomData(state.imguiRecord);
+
+let getCanvasSize = ({viewRecord}) =>
+  switch (ViewService.getCanvas(viewRecord)) {
+  | None => (0, 0)
+  | Some(canvas) =>
+    let canvas = Obj.magic(canvas);
+
+    (canvas##width, canvas##height);
+  };

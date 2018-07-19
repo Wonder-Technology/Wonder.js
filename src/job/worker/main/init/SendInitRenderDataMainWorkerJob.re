@@ -80,14 +80,21 @@ let _getFntData = imguiRecord =>
   };
 
 let _buildIMGUIData = ({imguiRecord} as state) => {
-  "setting":
-    WonderImgui.ManageIMGUIAPI.getSetting(imguiRecord)
-    |> Obj.magic
-    |> Js.Json.stringify,
-  "fntData": _getFntData(imguiRecord),
-  "bitmapImageData": AssetIMGUIMainServiice.convertBitmapToImageData(state),
-  "customTextureSourceDataArr":
-    AssetIMGUIMainServiice.convertCustomTextureSourcesToImageDataArr(state),
+  let (canvasWidth, canvasHeight) =
+    ManageIMGUIMainService.getCanvasSize(state);
+
+  {
+    "canvasWidth": canvasWidth,
+    "canvasHeight": canvasHeight,
+    "setting":
+      WonderImgui.ManageIMGUIAPI.getSetting(imguiRecord)
+      |> Obj.magic
+      |> Js.Json.stringify,
+    "fntData": _getFntData(imguiRecord),
+    "bitmapImageData": AssetIMGUIMainServiice.convertBitmapToImageData(state),
+    "customTextureSourceDataArr":
+      AssetIMGUIMainServiice.convertCustomTextureSourcesToImageDataArr(state),
+  };
 };
 
 let _buildData = (operateType, canvas, stateData) => {

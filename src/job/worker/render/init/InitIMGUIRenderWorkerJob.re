@@ -83,6 +83,7 @@ let execJob = (_, e, stateData) => {
                        DeviceManagerService.unsafeGetGl(.
                          state.deviceManagerRecord,
                        ),
+                       (imguiData##canvasWidth, imguiData##canvasHeight),
                      );
 
                 state
