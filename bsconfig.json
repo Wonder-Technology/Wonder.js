@@ -11,6 +11,10 @@
       "type": "dev"
     }
   ],
+  "bsc-flags": [
+    "-bs-no-version-header",
+    "-bs-super-errors"
+  ],
   "bs-dev-dependencies": [
     "wonder-bs-jest",
     "wonder-bs-sinon",
@@ -28,8 +32,7 @@
     "wonder-commonlib"
   ],
   "package-specs": [
-    "es6-global",
-    "commonjs"
+    "es6-global"
   ],
   "namespace": true,
   "warnings": {
