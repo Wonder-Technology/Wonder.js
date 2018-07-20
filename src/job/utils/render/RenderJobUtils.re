@@ -114,7 +114,8 @@ let _sendUniformRenderObjectModelData =
          state,
          {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData,
        ) => {
-         sendDataFunc(. gl, pos, getDataFunc(. transformIndex, state));
+         GLSLLocationService.isUniformLocationExist(pos) ?
+           sendDataFunc(. gl, pos, getDataFunc(. transformIndex, state)) : ();
          state;
        },
        state,
