@@ -29,7 +29,8 @@
 
 
             return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
-                return AssetTool.loadWDB("./BoxTextured.wdb", wd.unsafeGetState(), function ([state, gameObject]) {
+                // return AssetTool.loadWDB("./BoxTextured.wdb", wd.unsafeGetState(), function ([state, gameObject]) {
+                return AssetTool.loadWDB("./generated.wdb", wd.unsafeGetState(), function ([state, gameObject]) {
                     return initSample(state, gameObject);
                 });
             });
