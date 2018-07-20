@@ -25,6 +25,27 @@ var AssetTool = (function () {
         loadGLB: function (glbPath) {
             return window.fetch(glbPath)
                 .then((response) => response.arrayBuffer())
+        },
+        download: function (content, filename, mimeType) {
+            var blob = null;
+
+            var eleLink = document.createElement('a');
+            eleLink.download = filename;
+            eleLink.style.display = 'none';
+
+            if (!!!mimeType || mimeType.length === 0) {
+                blob = new Blob([content]);
+            }
+            else {
+                blob = new Blob([content], { type: mimeType });
+            }
+
+            eleLink.href = URL.createObjectURL(blob);
+
+            document.body.appendChild(eleLink);
+            eleLink.click();
+
+            document.body.removeChild(eleLink);
         }
     }
 })()

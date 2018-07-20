@@ -275,19 +275,21 @@
             function _testGenerateWDByGameObject(map1, map2, state$) {
                 var [state, wdb] = _generateWDByGameObject(map1, map2, state$);
 
+                AssetTool.download(wdb, "generated.wdb", "")
+
 
                 // var state =
                 //     _disposeAll(rootGameObject, state);
 
-                var state = state$;
+                // var state = state$;
 
-                wd.assembleWDB(wdb, state)
-                    .forEach(([state, rootGameObject]) => {
-                        // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(false, state);
+                // wd.assembleWDB(wdb, state)
+                //     .forEach(([state, rootGameObject]) => {
+                //         // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(false, state);
 
 
-                        wd.startDirector(state);
-                    })
+                //         wd.startDirector(state);
+                //     })
             }
 
 
@@ -349,6 +351,7 @@
             function initSample(map1, map2, state$) {
                 fetch(
                     // "../res/BoxTextured.glb"
+                    // "../res/CesiumMilkTruck.glb"
                     "../res/CesiumMilkTruck.glb"
                     // "../res/VC.glb"
                     // "../res/2CylinderEngine.glb"
@@ -375,14 +378,14 @@
 
 
 
-                        // _testGenerateWDByGameObject(map1, map2, state$);
+                        _testGenerateWDByGameObject(map1, map2, state$);
 
 
 
-                        _testAssembleWD(
-                            arrayBuffer,
-                            true,
-                            state$);
+                        // _testAssembleWD(
+                        //     arrayBuffer,
+                        //     true,
+                        //     state$);
                     })
             }
 

@@ -29,7 +29,8 @@
 
 
             return AssetTool.load(["./data/setting.json", "./data/"], null, function () {
-                return AssetTool.loadWDB("./BoxTextured.wdb", function ([state, gameObject]) {
+                // return AssetTool.loadWDB("./BoxTextured.wdb", function ([state, gameObject]) {
+                return AssetTool.loadWDB("./gameObject.wdb", function ([state, gameObject]) {
                     return initSample(state, gameObject);
                 });
             });
@@ -93,7 +94,7 @@
             }
 
             function initSample(state, gameObject) {
-                var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(true, state);
+                // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(true, state);
 
                 wd.startDirector(state);
             }
