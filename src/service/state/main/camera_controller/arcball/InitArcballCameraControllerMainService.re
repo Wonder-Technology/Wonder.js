@@ -87,15 +87,15 @@ let initArcballCameraController = (cameraController, state) => {
     ...state,
     arcballCameraControllerRecord:
       state.arcballCameraControllerRecord
-      |> DisposeArcballCameraControllerMainService.setPointDragEventHandleFunc(
+      |> EventArcballCameraControllerMainService.setPointDragEventHandleFunc(
            cameraController,
            pointDragHandleFunc,
          )
-      |> DisposeArcballCameraControllerMainService.setPointScaleEventHandleFunc(
+      |> EventArcballCameraControllerMainService.setPointScaleEventHandleFunc(
            cameraController,
            pointScaleHandleFunc,
          )
-      |> DisposeArcballCameraControllerMainService.setKeydownEventHandleFunc(
+      |> EventArcballCameraControllerMainService.setKeydownEventHandleFunc(
            cameraController,
            keydownHandleFunc,
          ),

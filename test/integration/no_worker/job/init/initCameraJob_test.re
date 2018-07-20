@@ -415,7 +415,30 @@ let _ =
         /* TODO test more unbind events */
       });
 
-      describe("test init two arcballCameraControllers", () =>
+      describe("test init two arcballCameraControllers", () => {
+        let warn = ref(Obj.magic(1));
+
+        beforeEach(() =>
+          warn :=
+            createMethodStubWithJsObjSandbox(sandbox, Console.console, "warn")
+        );
+
+        test("should warn: expect only has one arcballCameraController", () => {
+          let state = _prepare();
+          let (state, gameObject1, _, (cameraController1, _, _)) =
+            ArcballCameraControllerTool.createGameObject(state);
+          let (state, gameObject2, _, (cameraController2, _, _)) =
+            ArcballCameraControllerTool.createGameObject(state);
+          let state = state |> NoWorkerJobTool.execInitJobs;
+          let state = EventTool.restore(state);
+
+          warn^
+          |> withOneArg(
+               "Warn: expect only has one arcballCameraController, but actual > 1. please dispose others.",
+             )
+          |> getCallCount
+          |> expect == 3;
+        });
         test("test bind keydown event", () => {
           let state = _prepare();
           let (state, gameObject1, _, (cameraController1, _, _)) =
@@ -434,7 +457,7 @@ let _ =
           let state = EventTool.restore(state);
 
           preventDefaultFunc |> expect |> toCalledTwice;
-        })
-      );
+        });
+      });
     });
   });

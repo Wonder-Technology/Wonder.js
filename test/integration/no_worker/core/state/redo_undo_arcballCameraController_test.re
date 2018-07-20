@@ -64,6 +64,7 @@ let _ =
 
     describe("test redo/undo binded eventHandleFunc map", () =>
       test("test restore pointDragEventHandleFuncMap", () => {
+        createMethodStubWithJsObjSandbox(sandbox, Console.console, "warn");
         let state = _prepareState();
 
         let (
