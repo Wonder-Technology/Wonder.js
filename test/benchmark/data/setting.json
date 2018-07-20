@@ -9,7 +9,7 @@
         "preserve_drawing_buffer": false
     },
     "buffer": {
-        "custom_geometry_point_count": 2000000,
+        "custom_geometry_point_count": 20000,
         "custom_geometry_count": 1000,
         "transform_count": 30000,
         "basic_material_count": 30000,
