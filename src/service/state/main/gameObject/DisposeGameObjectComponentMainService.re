@@ -31,7 +31,7 @@ let _batchDisposeGeometryComponent = (uidArray, state) => {
 
 let batchDispose =
     (
-      (uidArray: array(int), disposedUidMap, isKeepOrder),
+      (uidArray: array(int), isKeepOrder),
       (
         batchDisposeBasicMaterialComponentFunc,
         batchDisposeLightMaterialComponentFunc,
@@ -80,7 +80,7 @@ let batchDispose =
     |> BatchGetComponentGameObjectMainService.batchGetMeshRendererComponent(
          uidArray,
        )
-    |> batchDisposeMeshRendererComponent(disposedUidMap, state);
+    |> batchDisposeMeshRendererComponent(state);
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetBasicMaterialComponent(

@@ -23,7 +23,6 @@ let _disposeComponents =
     disposedDirectionLightArray,
     disposedPointLightArray,
     disposedMeshRendererComponentArray,
-    disposedMeshRendererUidArray,
   } = gameObjectRecord;
   let state =
     disposedBasicCameraViewArray
@@ -96,10 +95,6 @@ let _disposeComponents =
   let state =
     disposedMeshRendererComponentArray
     |> DisposeComponentGameObjectMainService.batchDisposeMeshRendererComponent(
-         DisposeECSService.buildMapFromArray(
-           disposedMeshRendererUidArray,
-           WonderCommonlib.SparseMapService.createEmpty(),
-         ),
          state,
        );
   (

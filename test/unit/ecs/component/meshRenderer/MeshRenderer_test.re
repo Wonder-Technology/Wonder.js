@@ -252,7 +252,7 @@ let _ =
                         MeshRendererTool.createLightMaterialGameObject(state);
                       state
                       |> MeshRendererTool.getLightMaterialRenderArray
-                      |> expect == [|gameObject3, gameObject4|]
+                      |> expect == [|gameObject4, gameObject3|]
                     }
                   )
                 }

@@ -3,176 +3,147 @@ open StateDataMainType;
 open ComponentType;
 
 let deferDisposeBasicCameraViewComponent =
-  [@bs]
-  (
-    (component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedBasicCameraViewArray:
-          state.gameObjectRecord.disposedBasicCameraViewArray |> ArrayService.push(component)
-      }
-    }
-  );
+  (. component: component, state) => {
+    ...state,
+    gameObjectRecord: {
+      ...state.gameObjectRecord,
+      disposedBasicCameraViewArray:
+        state.gameObjectRecord.disposedBasicCameraViewArray
+        |> ArrayService.push(component),
+    },
+  };
 
 let deferDisposePerspectiveCameraProjectionComponent =
-  [@bs]
-  (
-    (component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedPerspectiveCameraProjectionArray:
-          state.gameObjectRecord.disposedPerspectiveCameraProjectionArray
-          |> ArrayService.push(component)
-      }
-    }
-  );
+  (. component: component, state) => {
+    ...state,
+    gameObjectRecord: {
+      ...state.gameObjectRecord,
+      disposedPerspectiveCameraProjectionArray:
+        state.gameObjectRecord.disposedPerspectiveCameraProjectionArray
+        |> ArrayService.push(component),
+    },
+  };
 
 let deferDisposeTransformComponent =
-  [@bs]
-  (
-    (component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedTransformArray:
-          state.gameObjectRecord.disposedTransformArray |> ArrayService.push(component)
-      }
-    }
-  );
+  (. component: component, state) => {
+    ...state,
+    gameObjectRecord: {
+      ...state.gameObjectRecord,
+      disposedTransformArray:
+        state.gameObjectRecord.disposedTransformArray
+        |> ArrayService.push(component),
+    },
+  };
 
 let deferDisposeTransformComponentForKeepOrder =
-  [@bs]
-  (
-    (component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedTransformArrayForKeepOrder:
-          state.gameObjectRecord.disposedTransformArrayForKeepOrder |> ArrayService.push(component)
-      }
-    }
-  );
+  (. component: component, state) => {
+    ...state,
+    gameObjectRecord: {
+      ...state.gameObjectRecord,
+      disposedTransformArrayForKeepOrder:
+        state.gameObjectRecord.disposedTransformArrayForKeepOrder
+        |> ArrayService.push(component),
+    },
+  };
 
 let deferDisposeBasicMaterialComponent =
-  [@bs]
-  (
-    (component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedBasicMaterialArray:
-          state.gameObjectRecord.disposedBasicMaterialArray |> ArrayService.push(component)
-      }
-    }
-  );
+  (. component: component, state) => {
+    ...state,
+    gameObjectRecord: {
+      ...state.gameObjectRecord,
+      disposedBasicMaterialArray:
+        state.gameObjectRecord.disposedBasicMaterialArray
+        |> ArrayService.push(component),
+    },
+  };
 
 let deferDisposeLightMaterialComponent =
-  [@bs]
-  (
-    (component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedLightMaterialArray:
-          state.gameObjectRecord.disposedLightMaterialArray |> ArrayService.push(component)
-      }
-    }
-  );
+  (. component: component, state) => {
+    ...state,
+    gameObjectRecord: {
+      ...state.gameObjectRecord,
+      disposedLightMaterialArray:
+        state.gameObjectRecord.disposedLightMaterialArray
+        |> ArrayService.push(component),
+    },
+  };
 
 let deferDisposeBoxGeometryComponent =
-  [@bs]
-  (
-    (component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedBoxGeometryArray:
-          state.gameObjectRecord.disposedBoxGeometryArray |> ArrayService.push(component)
-      }
-    }
-  );
+  (. component: component, state) => {
+    ...state,
+    gameObjectRecord: {
+      ...state.gameObjectRecord,
+      disposedBoxGeometryArray:
+        state.gameObjectRecord.disposedBoxGeometryArray
+        |> ArrayService.push(component),
+    },
+  };
 
 let deferDisposeCustomGeometryComponent =
-  [@bs]
-  (
-    (component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedCustomGeometryArray:
-          state.gameObjectRecord.disposedCustomGeometryArray |> ArrayService.push(component)
-      }
-    }
-  );
+  (. component: component, state) => {
+    ...state,
+    gameObjectRecord: {
+      ...state.gameObjectRecord,
+      disposedCustomGeometryArray:
+        state.gameObjectRecord.disposedCustomGeometryArray
+        |> ArrayService.push(component),
+    },
+  };
 
 let deferDisposeSourceInstanceComponent =
-  [@bs]
-  (
-    (component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedSourceInstanceArray:
-          state.gameObjectRecord.disposedSourceInstanceArray |> ArrayService.push(component)
-      }
-    }
-  );
+  (. component: component, state) => {
+    ...state,
+    gameObjectRecord: {
+      ...state.gameObjectRecord,
+      disposedSourceInstanceArray:
+        state.gameObjectRecord.disposedSourceInstanceArray
+        |> ArrayService.push(component),
+    },
+  };
 
 let deferDisposeObjectInstanceComponent =
-  [@bs]
-  (
-    (component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedObjectInstanceArray:
-          state.gameObjectRecord.disposedObjectInstanceArray |> ArrayService.push(component)
-      }
-    }
-  );
+  (. component: component, state) => {
+    ...state,
+    gameObjectRecord: {
+      ...state.gameObjectRecord,
+      disposedObjectInstanceArray:
+        state.gameObjectRecord.disposedObjectInstanceArray
+        |> ArrayService.push(component),
+    },
+  };
 
 let deferDisposeDirectionLightComponent =
-  [@bs]
-  (
-    (component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedDirectionLightArray:
-          state.gameObjectRecord.disposedDirectionLightArray |> ArrayService.push(component)
-      }
-    }
-  );
+  (. component: component, state) => {
+    ...state,
+    gameObjectRecord: {
+      ...state.gameObjectRecord,
+      disposedDirectionLightArray:
+        state.gameObjectRecord.disposedDirectionLightArray
+        |> ArrayService.push(component),
+    },
+  };
 
 let deferDisposePointLightComponent =
-  [@bs]
-  (
-    (component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedPointLightArray:
-          state.gameObjectRecord.disposedPointLightArray |> ArrayService.push(component)
-      }
-    }
-  );
+  (. component: component, state) => {
+    ...state,
+    gameObjectRecord: {
+      ...state.gameObjectRecord,
+      disposedPointLightArray:
+        state.gameObjectRecord.disposedPointLightArray
+        |> ArrayService.push(component),
+    },
+  };
 
 let deferDisposeMeshRendererComponent =
-  [@bs]
-  (
-    (uid, component: component, state) => {
-      ...state,
-      gameObjectRecord: {
-        ...state.gameObjectRecord,
-        disposedMeshRendererUidArray:
-          state.gameObjectRecord.disposedMeshRendererUidArray |> ArrayService.push(uid),
-        disposedMeshRendererComponentArray:
-          state.gameObjectRecord.disposedMeshRendererComponentArray |> ArrayService.push(component)
-      }
-    }
-  );
+  (. uid: int, component: component, state) => {
+    ...state,
+    gameObjectRecord: {
+      ...state.gameObjectRecord,
+      disposedMeshRendererComponentArray:
+        state.gameObjectRecord.disposedMeshRendererComponentArray
+        |> ArrayService.push(component),
+    },
+  };
 
 let batchDisposeBasicCameraViewComponent =
     ({basicCameraViewRecord} as state, componentArray: array(component)) => {
@@ -181,55 +152,71 @@ let batchDisposeBasicCameraViewComponent =
     ComponentMapService.batchDisposeComponent(
       basicCameraViewRecord,
       DisposeBasicCameraViewService.handleBatchDisposeComponent,
-      componentArray
-    )
+      componentArray,
+    ),
 };
 
 let batchDisposePerspectiveCameraProjectionComponent =
-    ({perspectiveCameraProjectionRecord} as state, componentArray: array(component)) => {
+    (
+      {perspectiveCameraProjectionRecord} as state,
+      componentArray: array(component),
+    ) => {
   ...state,
   perspectiveCameraProjectionRecord:
     ComponentMapService.batchDisposeComponent(
       perspectiveCameraProjectionRecord,
       DisposePerspectiveCameraProjectionService.handleBatchDisposeComponent,
-      componentArray
-    )
+      componentArray,
+    ),
 };
 
 let batchDisposeMeshRendererComponent =
-    (uidMap, {meshRendererRecord} as state, componentArray: array(component)) => {
-  ...state,
-  meshRendererRecord:
-    ComponentMapService.batchDisposeComponentWithUidMap(
-      uidMap,
-      meshRendererRecord,
-      DisposeMeshRendererService.handleBatchDisposeComponent,
-      componentArray
-    )
-};
+    ({meshRendererRecord} as state, componentArray: array(component)) =>
+  DisposeComponentGameObjectMainService.batchDisposeMeshRendererComponent(
+    state,
+    componentArray,
+  );
 
 let batchDisposeTransformComponent =
-    ({settingRecord} as state, isKeepOrder, componentArray: array(component)) =>
-  [@bs]
-  DisposeTransformMainService.handleBatchDisposeComponent(
+    (
+      {settingRecord} as state,
+      isKeepOrder,
+      componentArray: array(component),
+    ) =>
+  DisposeTransformMainService.handleBatchDisposeComponent(.
     componentArray,
     MemorySettingService.getMaxTypeArrayPoolSize(settingRecord),
     isKeepOrder,
-    state
+    state,
   );
 
-let batchDisposeBoxGeometryComponent = ({settingRecord} as state, componentArray: array(component)) =>
-  [@bs] DisposeBoxGeometryMainService.handleBatchDisposeComponent(componentArray, state);
+let batchDisposeBoxGeometryComponent =
+    ({settingRecord} as state, componentArray: array(component)) =>
+  DisposeBoxGeometryMainService.handleBatchDisposeComponent(.
+    componentArray,
+    state,
+  );
 
 let batchDisposeCustomGeometryComponent =
     ({settingRecord} as state, componentArray: array(component)) =>
-  [@bs] DisposeCustomGeometryMainService.handleBatchDisposeComponent(componentArray, state);
+  DisposeCustomGeometryMainService.handleBatchDisposeComponent(.
+    componentArray,
+    state,
+  );
 
-let batchDisposeBasicMaterialComponent = (state, componentArray: array(component)) =>
-  DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(state, componentArray);
+let batchDisposeBasicMaterialComponent =
+    (state, componentArray: array(component)) =>
+  DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(
+    state,
+    componentArray,
+  );
 
-let batchDisposeLightMaterialComponent = (state, componentArray: array(component)) =>
-  DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(state, componentArray);
+let batchDisposeLightMaterialComponent =
+    (state, componentArray: array(component)) =>
+  DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
+    state,
+    componentArray,
+  );
 
 let batchDisposeDirectionLightComponent =
     ({directionLightRecord} as state, componentArray: array(component)) => {
@@ -238,8 +225,8 @@ let batchDisposeDirectionLightComponent =
     ComponentMapService.batchDisposeComponent(
       directionLightRecord,
       DisposeDirectionLightService.handleBatchDisposeComponent,
-      componentArray
-    )
+      componentArray,
+    ),
 };
 
 let batchDisposePointLightComponent =
@@ -249,8 +236,8 @@ let batchDisposePointLightComponent =
     ComponentMapService.batchDisposeComponent(
       pointLightRecord,
       DisposePointLightService.handleBatchDisposeComponent,
-      componentArray
-    )
+      componentArray,
+    ),
 };
 
 let batchDisposeSourceInstanceComponent =
@@ -258,19 +245,22 @@ let batchDisposeSourceInstanceComponent =
       state: StateDataMainType.state,
       isKeepOrder,
       disposeGameObjectFunc,
-      componentArray: array(component)
+      componentArray: array(component),
     ) =>
-  [@bs]
-  DisposeSourceInstanceMainService.handleBatchDisposeComponent(
+  DisposeSourceInstanceMainService.handleBatchDisposeComponent(.
     componentArray,
     isKeepOrder,
     disposeGameObjectFunc,
-    state
+    state,
   );
 
 let batchDisposeObjectInstanceComponent =
     (state: StateDataMainType.state, componentArray: array(component)) =>
   switch (componentArray |> Js.Array.length) {
   | 0 => state
-  | _ => [@bs] DisposeObjectInstanceMainService.handleBatchDisposeComponent(componentArray, state)
+  | _ =>
+    DisposeObjectInstanceMainService.handleBatchDisposeComponent(.
+      componentArray,
+      state,
+    )
   };

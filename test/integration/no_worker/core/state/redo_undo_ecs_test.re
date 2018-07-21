@@ -118,17 +118,41 @@ let _ =
       let (state, gameObject3, _, (_, perspectiveCameraProjection3)) =
         CameraTool.createCameraGameObject(state);
       let state =
-        state |> setPerspectiveCameraProjectionNear(perspectiveCameraProjection2, 0.2);
+        state
+        |> setPerspectiveCameraProjectionNear(
+             perspectiveCameraProjection2,
+             0.2,
+           );
       let state =
-        state |> setPerspectiveCameraProjectionFar(perspectiveCameraProjection2, 100.);
+        state
+        |> setPerspectiveCameraProjectionFar(
+             perspectiveCameraProjection2,
+             100.,
+           );
       let state =
-        state |> setPerspectiveCameraProjectionFar(perspectiveCameraProjection3, 100.);
+        state
+        |> setPerspectiveCameraProjectionFar(
+             perspectiveCameraProjection3,
+             100.,
+           );
       let state =
-        state |> setPerspectiveCameraProjectionAspect(perspectiveCameraProjection1, 1.);
+        state
+        |> setPerspectiveCameraProjectionAspect(
+             perspectiveCameraProjection1,
+             1.,
+           );
       let state =
-        state |> setPerspectiveCameraProjectionAspect(perspectiveCameraProjection2, 2.);
+        state
+        |> setPerspectiveCameraProjectionAspect(
+             perspectiveCameraProjection2,
+             2.,
+           );
       let state =
-        state |> setPerspectiveCameraProjectionFovy(perspectiveCameraProjection2, 60.);
+        state
+        |> setPerspectiveCameraProjectionFovy(
+             perspectiveCameraProjection2,
+             60.,
+           );
       let state = state |> PerspectiveCameraProjectionTool.update;
       let state =
         state
@@ -263,8 +287,16 @@ let _ =
         |>
         expect == {
                     index: 3,
-                    basicMaterialRenderGameObjectArray: [|gameObject1|],
-                    lightMaterialRenderGameObjectArray: [|gameObject2|],
+                    basicMaterialRenderGameObjectMap: [|
+                      gameObject1,
+                      Js.Undefined.empty |> Obj.magic,
+                      Js.Undefined.empty |> Obj.magic,
+                    |],
+                    lightMaterialRenderGameObjectMap: [|
+                      Js.Undefined.empty |> Obj.magic,
+                      gameObject2,
+                      Js.Undefined.empty |> Obj.magic,
+                    |],
                     gameObjectMap: [|
                       gameObject1,
                       gameObject2,
@@ -287,15 +319,17 @@ let _ =
           _prepareMeshRendererData(state);
         let copiedState = MainStateTool.deepCopyForRestore(state);
         let {
-              basicMaterialRenderGameObjectArray,
-              lightMaterialRenderGameObjectArray,
+              basicMaterialRenderGameObjectMap,
+              lightMaterialRenderGameObjectMap,
               gameObjectMap,
               disposedIndexArray,
             } as record =
           MeshRendererTool.getMeshRendererRecord(copiedState);
         let record = {...record, index: 0};
-        basicMaterialRenderGameObjectArray |> Js.Array.pop |> ignore;
-        lightMaterialRenderGameObjectArray |> Js.Array.pop |> ignore;
+        basicMaterialRenderGameObjectMap
+        |> DisposeComponentService.disposeSparseMapData(meshRenderer3);
+        lightMaterialRenderGameObjectMap
+        |> DisposeComponentService.disposeSparseMapData(meshRenderer3);
         disposedIndexArray |> Js.Array.pop |> ignore;
         gameObjectMap
         |> Obj.magic
@@ -304,8 +338,16 @@ let _ =
         |>
         expect == {
                     index: 3,
-                    basicMaterialRenderGameObjectArray: [|gameObject1|],
-                    lightMaterialRenderGameObjectArray: [|gameObject2|],
+                    basicMaterialRenderGameObjectMap: [|
+                      gameObject1,
+                      Js.Undefined.empty |> Obj.magic,
+                      Js.Undefined.empty |> Obj.magic,
+                    |],
+                    lightMaterialRenderGameObjectMap: [|
+                      Js.Undefined.empty |> Obj.magic,
+                      gameObject2,
+                      Js.Undefined.empty |> Obj.magic,
+                    |],
                     gameObjectMap: [|
                       gameObject1,
                       gameObject2,
@@ -1452,7 +1494,6 @@ let _ =
                     disposedDirectionLightArray,
                     disposedPointLightArray,
                     disposedMeshRendererComponentArray,
-                    disposedMeshRendererUidArray,
                     aliveUidArray,
                     transformMap,
                     basicCameraViewMap,
@@ -1484,7 +1525,6 @@ let _ =
                     disposedDirectionLightArray |> Obj.magic,
                     disposedPointLightArray |> Obj.magic,
                     disposedMeshRendererComponentArray |> Obj.magic,
-                    disposedMeshRendererUidArray |> Obj.magic,
                     aliveUidArray |> Obj.magic,
                     transformMap |> Obj.magic,
                     basicCameraViewMap |> Obj.magic,
@@ -1682,10 +1722,8 @@ let _ =
             let (currentState, _, _) =
               MeshRendererTool.createBasicMaterialGameObject(currentState);
             (
-              MeshRendererTool.getMeshRendererRecord(state).
-                basicMaterialRenderGameObjectArray,
-              MeshRendererTool.getMeshRendererRecord(state).
-                lightMaterialRenderGameObjectArray,
+              MeshRendererTool.getBasicMaterialRenderArray(state),
+              MeshRendererTool.getLightMaterialRenderArray(state),
             )
             |> expect == ([|gameObject1|], [|gameObject2|]);
           },

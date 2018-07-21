@@ -2,25 +2,29 @@ open MeshRendererType;
 
 let create = () => {
   index: 0,
-  basicMaterialRenderGameObjectArray: WonderCommonlib.ArrayService.createEmpty(),
-  lightMaterialRenderGameObjectArray: WonderCommonlib.ArrayService.createEmpty(),
+  basicMaterialRenderGameObjectMap:
+    WonderCommonlib.SparseMapService.createEmpty(),
+  lightMaterialRenderGameObjectMap:
+    WonderCommonlib.SparseMapService.createEmpty(),
   gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
-  disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
+  disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
 };
 
 let deepCopyForRestore =
     (
       {
         index,
-        basicMaterialRenderGameObjectArray,
-        lightMaterialRenderGameObjectArray,
+        basicMaterialRenderGameObjectMap,
+        lightMaterialRenderGameObjectMap,
         gameObjectMap,
-        disposedIndexArray
-      }
+        disposedIndexArray,
+      },
     ) => {
   index,
-  basicMaterialRenderGameObjectArray: basicMaterialRenderGameObjectArray |> Js.Array.copy,
-  lightMaterialRenderGameObjectArray: lightMaterialRenderGameObjectArray |> Js.Array.copy,
+  basicMaterialRenderGameObjectMap:
+    basicMaterialRenderGameObjectMap |> SparseMapService.copy,
+  lightMaterialRenderGameObjectMap:
+    lightMaterialRenderGameObjectMap |> SparseMapService.copy,
   gameObjectMap: gameObjectMap |> SparseMapService.copy,
-  disposedIndexArray: disposedIndexArray |> Js.Array.copy
+  disposedIndexArray: disposedIndexArray |> Js.Array.copy,
 };

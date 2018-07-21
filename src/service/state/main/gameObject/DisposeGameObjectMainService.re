@@ -16,6 +16,18 @@ let _disposeNameMap = (uidArray, {gameObjectRecord} as state) => {
   state;
 };
 
+let _setDisposedUidMap = (uidArray, {gameObjectRecord} as state) => {
+  ...state,
+  gameObjectRecord: {
+    ...gameObjectRecord,
+    disposedUidMap:
+      DisposeECSService.buildMapFromArray(
+        uidArray,
+        gameObjectRecord.disposedUidMap,
+      ),
+  },
+};
+
 let rec batchDispose =
         (
           (
@@ -26,9 +38,11 @@ let rec batchDispose =
           isKeepOrder,
           state,
         ) => {
-  let state = _disposeNameMap(uidArray, state);
+  let state =
+    state |> _disposeNameMap(uidArray) |> _setDisposedUidMap(uidArray);
 
-  let {disposeCount, disposedUidMap} as record = state.gameObjectRecord;
+  let {disposeCount} as record = state.gameObjectRecord;
+
   record.disposeCount = disposeCount + (uidArray |> Js.Array.length);
   let (
     state,
@@ -38,11 +52,7 @@ let rec batchDispose =
   ) =
     state
     |> DisposeGameObjectComponentMainService.batchDispose(
-         (
-           uidArray,
-           DisposeECSService.buildMapFromArray(uidArray, disposedUidMap),
-           isKeepOrder,
-         ),
+         (uidArray, isKeepOrder),
          (
            batchDisposeBasicMaterialComponentFunc,
            batchDisposeLightMaterialComponentFunc,
@@ -93,7 +103,6 @@ let clearDeferDisposeData = state => {
     disposedPointLightArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedMeshRendererComponentArray:
       WonderCommonlib.ArrayService.createEmpty(),
-    disposedMeshRendererUidArray: WonderCommonlib.ArrayService.createEmpty(),
   },
 };
 

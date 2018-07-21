@@ -2,19 +2,17 @@ open StateDataMainType;
 
 open JobType;
 
-let _getAllNoWorkerJobs = (executableJobs, jobHandleMap, state: StateDataMainType.state) =>
+let _getAllNoWorkerJobs =
+    (executableJobs, jobHandleMap, state: StateDataMainType.state) =>
   NoWorkerJobType.(
     executableJobs
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         [@bs]
-         (
-           (list, {name, flags}: executableJob) =>
-             switch (WonderCommonlib.HashMapService.get(name, jobHandleMap)) {
-             | None => JobService.handleGetNoneJob(name, jobHandleMap)
-             | Some(handleFunc) => list @ [(name, handleFunc(flags))]
-             }
-         ),
-         []
+         (. list, {name, flags}: executableJob) =>
+           switch (WonderCommonlib.HashMapService.get(name, jobHandleMap)) {
+           | None => JobService.handleGetNoneJob(name, jobHandleMap)
+           | Some(handleFunc) => list @ [(name, handleFunc(flags))]
+           },
+         [],
        )
   );
 
@@ -35,7 +33,10 @@ let execNoWorkerLoopJobs = (state: StateDataMainType.state) : state =>
   |> List.fold_left((state, (_, handleFunc)) => handleFunc(state), state);
 
 let init =
-    ((createInitJobHandleMapFunc, createLoopJobHandleMapFunc), state: StateDataMainType.state) => {
+    (
+      (createInitJobHandleMapFunc, createLoopJobHandleMapFunc),
+      state: StateDataMainType.state,
+    ) => {
   ...state,
   jobRecord: {
     ...state.jobRecord,
@@ -44,22 +45,22 @@ let init =
         OperateNoWorkerJobService.getInitPipelineExecutableJobs(
           OperateNoWorkerJobService.getSetting(state.noWorkerJobRecord),
           OperateNoWorkerJobService.getInitPipelines(state.noWorkerJobRecord),
-          OperateNoWorkerJobService.getInitJobs(state.noWorkerJobRecord)
+          OperateNoWorkerJobService.getInitJobs(state.noWorkerJobRecord),
         ),
         createInitJobHandleMapFunc(),
-        state
+        state,
       ),
     noWorkerLoopJobList:
       _getAllNoWorkerJobs(
         OperateNoWorkerJobService.getLoopPipelineExecutableJobs(
           OperateNoWorkerJobService.getSetting(state.noWorkerJobRecord),
           OperateNoWorkerJobService.getLoopPipelines(state.noWorkerJobRecord),
-          OperateNoWorkerJobService.getLoopJobs(state.noWorkerJobRecord)
+          OperateNoWorkerJobService.getLoopJobs(state.noWorkerJobRecord),
         ),
         createLoopJobHandleMapFunc(),
-        state
-      )
-  }
+        state,
+      ),
+  },
 };
 
 let addNoWorkerInitJob =
@@ -67,7 +68,7 @@ let addNoWorkerInitJob =
       (targetJobName: string, afterJobName: string),
       action,
       targetHandleFunc,
-      state: StateDataMainType.state
+      state: StateDataMainType.state,
     ) => {
   ...state,
   jobRecord: {
@@ -75,9 +76,9 @@ let addNoWorkerInitJob =
     noWorkerInitJobList:
       JobService.addJob(
         (targetJobName, afterJobName, action, targetHandleFunc),
-        _getNoWorkerInitJobList(state)
-      )
-  }
+        _getNoWorkerInitJobList(state),
+      ),
+  },
 };
 
 let addNoWorkerLoopJob =
@@ -85,7 +86,7 @@ let addNoWorkerLoopJob =
       (targetJobName: string, afterJobName: string),
       action,
       targetHandleFunc,
-      state: StateDataMainType.state
+      state: StateDataMainType.state,
     ) => {
   ...state,
   jobRecord: {
@@ -93,23 +94,27 @@ let addNoWorkerLoopJob =
     noWorkerLoopJobList:
       JobService.addJob(
         (targetJobName, afterJobName, action, targetHandleFunc),
-        _getNoWorkerLoopJobList(state)
-      )
-  }
+        _getNoWorkerLoopJobList(state),
+      ),
+  },
 };
 
-let removeNoWorkerInitJob = (targetJobName: string, state: StateDataMainType.state) => {
+let removeNoWorkerInitJob =
+    (targetJobName: string, state: StateDataMainType.state) => {
   ...state,
   jobRecord: {
     ...state.jobRecord,
-    noWorkerInitJobList: JobService.removeJob(targetJobName, _getNoWorkerInitJobList(state))
-  }
+    noWorkerInitJobList:
+      JobService.removeJob(targetJobName, _getNoWorkerInitJobList(state)),
+  },
 };
 
-let removeNoWorkerLoopJob = (targetJobName: string, state: StateDataMainType.state) => {
+let removeNoWorkerLoopJob =
+    (targetJobName: string, state: StateDataMainType.state) => {
   ...state,
   jobRecord: {
     ...state.jobRecord,
-    noWorkerLoopJobList: JobService.removeJob(targetJobName, _getNoWorkerLoopJobList(state))
-  }
+    noWorkerLoopJobList:
+      JobService.removeJob(targetJobName, _getNoWorkerLoopJobList(state)),
+  },
 };

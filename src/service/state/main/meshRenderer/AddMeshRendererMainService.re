@@ -4,13 +4,14 @@ open GameObjectType;
 
 open MeshRendererType;
 
-let _setRenderGameObjectArray =
+let _setRenderGameObject =
     (
       meshRenderer: meshRenderer,
       gameObject: gameObject,
-      renderGameObjectArray: Js.Array.t(gameObject),
+      renderGameObjectMap: renderGameObjectMap,
     ) =>
-  renderGameObjectArray |> ArrayService.push(gameObject);
+  renderGameObjectMap
+  |> WonderCommonlib.SparseMapService.set(meshRenderer, gameObject);
 
 let handleAddComponent =
   (.
@@ -20,31 +21,32 @@ let handleAddComponent =
   ) => {
     let {
       gameObjectMap,
-      basicMaterialRenderGameObjectArray,
-      lightMaterialRenderGameObjectArray,
+      basicMaterialRenderGameObjectMap,
+      lightMaterialRenderGameObjectMap,
     } = meshRendererRecord;
-    let basicMaterialRenderGameObjectArray =
+    let basicMaterialRenderGameObjectMap =
       HasComponentGameObjectService.hasBasicMaterialComponent(
         gameObjectUid,
         gameObjectRecord,
       ) ?
-        basicMaterialRenderGameObjectArray
-        |> _setRenderGameObjectArray(meshRenderer, gameObjectUid) :
-        basicMaterialRenderGameObjectArray;
-    let lightMaterialRenderGameObjectArray =
+        basicMaterialRenderGameObjectMap
+        |> _setRenderGameObject(meshRenderer, gameObjectUid) :
+        basicMaterialRenderGameObjectMap;
+    let lightMaterialRenderGameObjectMap =
       HasComponentGameObjectService.hasLightMaterialComponent(
         gameObjectUid,
         gameObjectRecord,
       ) ?
-        lightMaterialRenderGameObjectArray
-        |> _setRenderGameObjectArray(meshRenderer, gameObjectUid) :
-        lightMaterialRenderGameObjectArray;
+        lightMaterialRenderGameObjectMap
+        |> _setRenderGameObject(meshRenderer, gameObjectUid) :
+        lightMaterialRenderGameObjectMap;
+
     {
       ...state,
       meshRendererRecord: {
         ...meshRendererRecord,
-        basicMaterialRenderGameObjectArray,
-        lightMaterialRenderGameObjectArray,
+        basicMaterialRenderGameObjectMap,
+        lightMaterialRenderGameObjectMap,
         gameObjectMap:
           AddComponentService.addComponentToGameObjectMap(
             meshRenderer,
@@ -66,14 +68,14 @@ let handleAddComponent =
                    ),
                    () => {
                      let {
-                       basicMaterialRenderGameObjectArray,
-                       lightMaterialRenderGameObjectArray,
+                       basicMaterialRenderGameObjectMap,
+                       lightMaterialRenderGameObjectMap,
                      } =
                        state.meshRendererRecord;
                      (
-                       basicMaterialRenderGameObjectArray
+                       basicMaterialRenderGameObjectMap
                        |> Js.Array.includes(gameObjectUid)
-                       || lightMaterialRenderGameObjectArray
+                       || lightMaterialRenderGameObjectMap
                        |> Js.Array.includes(gameObjectUid)
                      )
                      |> assertTrue;

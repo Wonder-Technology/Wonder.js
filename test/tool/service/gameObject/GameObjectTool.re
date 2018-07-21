@@ -200,10 +200,6 @@ let disposeGameObjectMeshRendererComponent =
       state: StateDataMainType.state,
     ) =>
   DisposeComponentGameObjectMainService.batchDisposeMeshRendererComponent(
-    DisposeECSService.buildMapFromArray(
-      [|gameObject|],
-      WonderCommonlib.SparseMapService.createEmpty(),
-    ),
     state,
     [|component|],
   );

@@ -181,9 +181,6 @@ let deferDisposeMeshRendererComponent =
       ...gameObjectRecord,
       meshRendererMap:
         _removeComponent(uid, gameObjectRecord.meshRendererMap),
-      disposedMeshRendererUidArray:
-        gameObjectRecord.disposedMeshRendererUidArray
-        |> ArrayService.push(uid),
       disposedMeshRendererComponentArray:
         gameObjectRecord.disposedMeshRendererComponentArray
         |> ArrayService.push(component),
@@ -226,18 +223,12 @@ let batchDisposeArcballCameraControllerComponent =
   );
 
 let batchDisposeMeshRendererComponent =
-    (
-      uidMap,
-      {meshRendererRecord} as state,
-      componentArray: array(component),
-    ) => {
+    ({meshRendererRecord} as state, componentArray: array(component)) => {
   ...state,
   meshRendererRecord:
-    ComponentMapService.batchDisposeComponentWithUidMap(
-      uidMap,
-      meshRendererRecord,
-      DisposeMeshRendererService.handleBatchDisposeComponent,
+    DisposeMeshRendererService.handleBatchDisposeComponent(.
       componentArray,
+      meshRendererRecord,
     ),
 };
 
