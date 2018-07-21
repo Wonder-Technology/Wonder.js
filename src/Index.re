@@ -366,6 +366,8 @@ let unsafeGetLightMaterialGameObject = LightMaterialAPI.unsafeGetLightMaterialGa
 
 let createLightMaterial = LightMaterialAPI.createLightMaterial;
 
+let replaceMaterial = MaterialAPI.replaceMaterial;
+
 let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameObject;
 
 let createMeshRenderer = MeshRendererAPI.createMeshRenderer;

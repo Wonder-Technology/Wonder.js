@@ -817,7 +817,7 @@ vec3 getViewDir(){
                   state^,
                 );
               GLSLTool.containMultiline(
-                GLSLTool.getFsSource(shaderSource),
+                GLSLTool.getFsSource(shaderSource) |> WonderLog.Log.print,
                 [
                   {|uniform vec3 u_cameraPos;|},
                   {|
@@ -834,9 +834,15 @@ float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDi
 }
                             |},
                   {|
+vec3 calcAmbientColor(vec3 materialDiffuse){
+        vec3 materialLight = getMaterialLight();
+
+        return (u_ambient + materialLight) * materialDiffuse.rgb;
+}
+                              |},
+                  {|
 vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)
 {
-        vec3 materialLight = getMaterialLight();
         vec3 materialDiffuse = getMaterialDiffuse();
         vec3 materialSpecular = u_specular;
         vec3 materialEmission = getMaterialEmission();
@@ -848,7 +854,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
         vec3 emissionColor = materialEmission;
 
-        vec3 ambientColor = (u_ambient + materialLight) * materialDiffuse.rgb;
+        vec3 ambientColor = calcAmbientColor(materialDiffuse);
 
 
         // if(u_lightModel == 3){
@@ -914,7 +920,7 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
 
 
     #if (DIRECTION_LIGHTS_COUNT == 0 && POINT_LIGHTS_COUNT == 0 )
-        return vec4(u_ambient, 1.0);
+        return vec4(calcAmbientColor(getMaterialDiffuse()), 1.0);
     #endif
 
 
@@ -949,6 +955,27 @@ vec4 totalColor = calcTotalLight(normal, viewDir);
 totalColor.rgb = totalColor.rgb * getShadowVisibility();
 |},
                 ],
+              )
+              |> expect == true;
+            });
+            test("if has no direction,point light, use ambient color", () => {
+              let shaderSource =
+                InitLightMaterialJobTool.prepareForJudgeGLSL(
+                  InitLightMaterialJobTool.prepareGameObject,
+                  sandbox,
+                  state^,
+                );
+              GLSLTool.contain(
+                GLSLTool.getFsSource(shaderSource),
+                {|
+vec4 calcTotalLight(vec3 norm, vec3 viewDir){
+    vec4 totalLight = vec4(0.0, 0.0, 0.0, 1.0);
+
+
+    #if (DIRECTION_LIGHTS_COUNT == 0 && POINT_LIGHTS_COUNT == 0 )
+        return vec4(calcAmbientColor(getMaterialDiffuse()), 1.0);
+    #endif
+      |},
               )
               |> expect == true;
             });

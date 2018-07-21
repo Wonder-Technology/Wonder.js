@@ -22,9 +22,14 @@ float getBlinnShininess(float shininess, vec3 normal, vec3 lightDir, vec3 viewDi
 //         return phongTerm;
 // }
 
+vec3 calcAmbientColor(vec3 materialDiffuse){
+        vec3 materialLight = getMaterialLight();
+
+        return (u_ambient + materialLight) * materialDiffuse.rgb;
+}
+
 vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)
 {
-        vec3 materialLight = getMaterialLight();
         vec3 materialDiffuse = getMaterialDiffuse();
         vec3 materialSpecular = u_specular;
         vec3 materialEmission = getMaterialEmission();
@@ -36,7 +41,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 
         vec3 emissionColor = materialEmission;
 
-        vec3 ambientColor = (u_ambient + materialLight) * materialDiffuse.rgb;
+        vec3 ambientColor = calcAmbientColor(materialDiffuse);
 
 
         // if(u_lightModel == 3){
@@ -106,7 +111,7 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
 
 
     #if (DIRECTION_LIGHTS_COUNT == 0 && POINT_LIGHTS_COUNT == 0 )
-        return vec4(u_ambient, 1.0);
+        return vec4(calcAmbientColor(getMaterialDiffuse()), 1.0);
     #endif
 
 
