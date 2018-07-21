@@ -1,20 +1,24 @@
 open StateDataMainType;
 
 let getIMGUIFunc = state =>
-  WonderImgui.ManageIMGUIAPI.getIMGUIFunc(state.imguiRecord);
+  WonderImgui.ManageIMGUIAPI.getIMGUIFunc(
+    RecordIMGUIMainService.getWonderIMGUIRecord(state),
+  );
 
 let setIMGUIFunc = (customData, func, state) => {
   ...state,
-  imguiRecord:
-    WonderImgui.ManageIMGUIAPI.setIMGUIFunc(
-      customData,
-      func,
-      state.imguiRecord,
-    ),
+  imguiRecord: {
+    ...state.imguiRecord,
+    wonderImguiIMGUIRecord:
+      RecordIMGUIMainService.getWonderIMGUIRecord(state)
+      |> WonderImgui.ManageIMGUIAPI.setIMGUIFunc(customData, func),
+  },
 };
 
 let getCustomData = state =>
-  WonderImgui.ManageIMGUIAPI.getCustomData(state.imguiRecord);
+  WonderImgui.ManageIMGUIAPI.getCustomData(
+    RecordIMGUIMainService.getWonderIMGUIRecord(state),
+  );
 
 let getCanvasSize = ({viewRecord}) =>
   switch (ViewService.getCanvas(viewRecord)) {

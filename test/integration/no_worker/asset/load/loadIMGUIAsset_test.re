@@ -62,7 +62,7 @@ let _ =
 
       testPromise("test load bitmap image", () =>
         _test((bitmap, state) =>
-          AssetTool.unsafeGetBitmap(state.imguiRecord)
+          AssetTool.unsafeGetBitmap(IMGUITool.getWonderIMGUIRecord(state))
           |> Obj.magic
           |> expect == bitmap
           |> resolve

@@ -10,6 +10,8 @@ open BoxGeometryType;
 
 open CustomGeometryType;
 
+open IMGUIType;
+
 open BasicCameraViewType;
 
 open PerspectiveCameraProjectionType;
@@ -216,7 +218,7 @@ and state = {
   workerDetectRecord,
   browserDetectRecord,
   eventRecord,
-  imguiRecord: WonderImgui.IMGUIType.imguiRecord,
+  imguiRecord
 };
 
 type sharedDataForRestoreState = {

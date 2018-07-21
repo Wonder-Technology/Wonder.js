@@ -30,9 +30,30 @@
                     wd.unsafeGetState(), function (state) {
                         var state = wd.unsafeGetState();
 
+                        var state =
+                            wd.setSetting(
+                                {
+                                    "textColor": [1.0, 1.0, 1.0],
+                                    "buttonColor": [0.5, 0.5, 0.5],
+                                    "hoverButtonColor": [0.5, 0.0, 1.0],
+                                    "clickButtonColor": [0.5, 1.0, 0.0],
+                                    "fontTexUvForWhite": [0.5, 0.5],
+                                }, state
+                            );
+
 
                         var state = wd.setIMGUIFunc(
                             1, (labelFunc, api, record) => {
+
+                                var [record, isButtonClick] = api.button(
+                                    [200, 20, 100, 50], "bu", record
+                                );
+
+                                if (isButtonClick) {
+                                    console.log(isButtonClick);
+                                }
+
+
                                 var record = api.label(
                                     [20, 20, 300, 100], "ab", 0, record
                                 );
@@ -68,7 +89,7 @@
 
 
 
-                        var record = LightBoxesTool.createBox(state);
+                        // var record = LightBoxesTool.createBox(state);
 
 
 
@@ -76,44 +97,44 @@
 
 
 
-                        var state = wd.setAmbientLightColor([0.2, 0.2, 0.2], state);
+                        // var state = wd.setAmbientLightColor([0.2, 0.2, 0.2], state);
 
 
-                        // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+                        // // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
 
 
-                        var data = LightBoxesTool.createCamera(state);
-                        var state = data[0];
-                        var camera = data[1];
+                        // var data = LightBoxesTool.createCamera(state);
+                        // var state = data[0];
+                        // var camera = data[1];
 
 
-                        // var transform = wd.unsafeGetGameObjectTransformComponent(camera
-                        // , state);
+                        // // var transform = wd.unsafeGetGameObjectTransformComponent(camera
+                        // // , state);
 
-                        // state = wd.setTransformLocalPosition(transform, [0,0,50], state);
-
-
-
-                        var [state, cameraController] = wd.createArcballCameraController(state);
-
-                        var state =
-                            wd.setArcballCameraControllerDistance(cameraController, 50, state);
+                        // // state = wd.setTransformLocalPosition(transform, [0,0,50], state);
 
 
+
+                        // var [state, cameraController] = wd.createArcballCameraController(state);
 
                         // var state =
-                        //     wd.setArcballCameraControllerMoveSpeedX(cameraController, 0.1, state);
-
-                        var state =
-                            wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
-
-                        var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+                        //     wd.setArcballCameraControllerDistance(cameraController, 50, state);
 
 
-                        state =
-                            wd.setCurrentCameraGameObject(
-                                camera, state
-                            );
+
+                        // // var state =
+                        // //     wd.setArcballCameraControllerMoveSpeedX(cameraController, 0.1, state);
+
+                        // var state =
+                        //     wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
+
+                        // var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+                        // state =
+                        //     wd.setCurrentCameraGameObject(
+                        //         camera, state
+                        //     );
 
 
 

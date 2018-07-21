@@ -43,5 +43,5 @@ let createState = () => {
   workerDetectRecord: RecordWorkerDetectService.create(),
   browserDetectRecord: RecordBrowserDetectAllService.create(),
   eventRecord: RecordEventMainService.create(),
-  imguiRecord: WonderImgui.ManageIMGUIService.createRecord()
+  imguiRecord: RecordIMGUIMainService.create(),
 };

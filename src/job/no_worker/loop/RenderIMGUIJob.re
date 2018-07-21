@@ -1,12 +1,16 @@
 open StateDataMainType;
 
-open WonderImgui;
-
-let execJob = (flags, {imguiRecord} as state) => {
-  ...state,
-  imguiRecord:
-    ManageIMGUIAPI.render(
-      DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-      imguiRecord,
-    ),
-};
+let execJob = (flags, state) =>
+  {
+    ...state,
+    imguiRecord: {
+      ...state.imguiRecord,
+      wonderImguiIMGUIRecord:
+        WonderImgui.ManageIMGUIService.render(
+          DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+          RecordIMGUIMainService.getIOData(state),
+          RecordIMGUIMainService.getWonderIMGUIRecord(state),
+        ),
+    },
+  }
+  |> IOIMGUIMainService.resetPointEventStateWhenPointUp;

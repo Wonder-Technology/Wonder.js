@@ -64,14 +64,7 @@ let _ =
     });
 
     describe("else, init imgui", () => {
-      beforeEach(() =>
-        state :=
-          {
-            ...state^,
-            imguiRecord:
-              state^.imguiRecord |> WonderImgui.AssetTool.prepareFontAsset,
-          }
-      );
+      beforeEach(() => state := AssetIMGUITool.prepareFontAsset(state^));
       test("create program", () => {
         let state = _setCanvas();
         let createProgram = createEmptyStubWithJsObjSandbox(sandbox);

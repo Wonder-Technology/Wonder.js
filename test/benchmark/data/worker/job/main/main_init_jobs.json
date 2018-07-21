@@ -18,6 +18,9 @@
         "name": "init_event"
     },
     {
+        "name": "init_imgui"
+    },
+    {
         "name": "init_camera"
     },
     {

@@ -4,8 +4,14 @@ let getBitmap = imguiRecord =>
 let setBitmap = (bitmap, state) =>
   StateDataMainType.{
     ...state,
-    imguiRecord:
-      WonderImgui.AssetIMGUIService.setBitmap(bitmap, state.imguiRecord),
+    imguiRecord: {
+      ...state.imguiRecord,
+      wonderImguiIMGUIRecord:
+        WonderImgui.AssetIMGUIService.setBitmap(
+          bitmap,
+          RecordIMGUIMainService.getWonderIMGUIRecord(state),
+        ),
+    },
   };
 
 let getFntData = imguiRecord =>
@@ -14,8 +20,14 @@ let getFntData = imguiRecord =>
 let setFntData = (fntData, state) =>
   StateDataMainType.{
     ...state,
-    imguiRecord:
-      WonderImgui.AssetIMGUIService.setFntData(fntData, state.imguiRecord),
+    imguiRecord: {
+      ...state.imguiRecord,
+      wonderImguiIMGUIRecord:
+        WonderImgui.AssetIMGUIService.setFntData(
+          fntData,
+          RecordIMGUIMainService.getWonderIMGUIRecord(state),
+        ),
+    },
   };
 
 let getSetting = imguiRecord =>
@@ -34,11 +46,14 @@ let getCustomImageArr = imguiRecord =>
 let setCustomImageArr = (customImageArr, state) =>
   StateDataMainType.{
     ...state,
-    imguiRecord:
-      WonderImgui.AssetIMGUIAPI.setCustomImageArr(
-        customImageArr,
-        state.imguiRecord,
-      ),
+    imguiRecord: {
+      ...state.imguiRecord,
+      wonderImguiIMGUIRecord:
+        WonderImgui.AssetIMGUIAPI.setCustomImageArr(
+          customImageArr,
+          RecordIMGUIMainService.getWonderIMGUIRecord(state),
+        ),
+    },
   };
 
 let prepareState = sandbox => {
@@ -58,10 +73,7 @@ let prepareState = sandbox => {
       ),
     );
 
-  let state = {
-    ...state,
-    imguiRecord: state.imguiRecord |> WonderImgui.AssetTool.prepareFontAsset,
-  };
+  let state = AssetIMGUITool.prepareFontAsset(state);
 
   (
     state,
@@ -86,8 +98,9 @@ let prepareSetData = sandbox => {
   let state = setFntData(fntData, state);
   let bitmap = Obj.magic({"width": 100, "height": 200});
   let state = setBitmap(bitmap, state);
-  let setting = {textColorArr: [|0., 1., 0.|]};
-  let state = ManageIMGUIAPI.setSetting(setting, state);
+
+  let (state, setting) =
+    IMGUITool.setTextColorSetting([|0., 1., 0.|], state);
 
   let id1 = "a1";
   let imageType1 = WonderImgui.ImageType.Png;

@@ -209,8 +209,8 @@ let _ =
 
       testPromise("send setting", () => {
         let (state, (_, context)) = _prepare();
-        let setting = {textColorArr: [|0.5, 0.5, 1.|]};
-        let state = ManageIMGUIAPI.setSetting(setting, state);
+        let (state, setting) =
+          IMGUITool.setTextColorSetting([|0.5, 0.5, 1.|], state);
         MainStateTool.setState(state);
 
         MainInitJobMainWorkerTool.prepare()
@@ -460,5 +460,47 @@ let _ =
           );
         })
       );
+
+      /* 
+      TODO fix glsl bug with one light box
+      describe("fix bug", () =>
+        testPromise("test vs glsl", () => {
+          let (state, (fntData, bitmap, setting, _), (_, context)) =
+            _prepareSetData();
+
+          let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
+          /* let createProgram = createEmptyStubWithJsObjSandbox(sandbox); */
+          let state =
+            state
+            |> FakeGlWorkerTool.setFakeGl(
+                 FakeGlWorkerTool.buildFakeGl(~sandbox, ~shaderSource, ()),
+               );
+          MainStateTool.setState(state);
+          BrowserDetectTool.setChrome();
+
+          RenderJobsRenderWorkerTool.init(
+            state =>
+              GLSLTool.contain(
+                GLSLTool.getVsSource(shaderSource) |>WonderLog.Log.print,
+                {|
+  attribute vec3 a_position;
+  attribute vec3 a_normal;
+  attribute null null;
+
+
+
+
+
+
+
+varying vec3 v_worldPosition;
+  |},
+              )
+              |> expect == true
+              |> resolve,
+            state,
+          );
+        })
+      ); */
     });
   });

@@ -28,15 +28,23 @@ let _removeAddedSourceDataDuplicateItems = needAddedSourceDataArray =>
        Js.Int.toString(texture)
      );
 
-let _buildIMGUIData = ({imguiRecord, viewRecord} as state) => {
+let _buildIMGUIData = ({viewRecord} as state) => {
+  let wonderImguiIMGUIRecord =
+    RecordIMGUIMainService.getWonderIMGUIRecord(state);
+
+  let ioData = RecordIMGUIMainService.getIOData(state);
+
   {
+    "ioData": ioData,
     "customData":
-      switch (WonderImgui.ManageIMGUIAPI.getCustomData(imguiRecord)) {
+      switch (
+        WonderImgui.ManageIMGUIAPI.getCustomData(wonderImguiIMGUIRecord)
+      ) {
       | None => None
       | Some(customData) => customData |. Some
       },
     "imguiFunc":
-      switch (WonderImgui.ManageIMGUIAPI.getIMGUIFunc(imguiRecord)) {
+      switch (WonderImgui.ManageIMGUIAPI.getIMGUIFunc(wonderImguiIMGUIRecord)) {
       | None => None
       | Some(func) => func |> SerializeService.serializeFunction |. Some
       },
@@ -175,7 +183,8 @@ let _clearData = state => {
   |> ignore;
   state
   |> OperateSourceTextureMainService.clearNeedAddedSourceArr
-  |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray;
+  |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray
+  |> IOIMGUIMainService.resetPointEventStateWhenPointUp;
 };
 
 let execJob = (flags, stateData) =>

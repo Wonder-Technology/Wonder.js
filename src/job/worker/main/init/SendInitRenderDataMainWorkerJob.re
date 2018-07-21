@@ -79,18 +79,21 @@ let _getFntData = imguiRecord =>
   | Some(fntData) => fntData |> Obj.magic |> Js.Json.stringify |. Some
   };
 
-let _buildIMGUIData = ({imguiRecord} as state) => {
+let _buildIMGUIData = state => {
   let (canvasWidth, canvasHeight) =
     ManageIMGUIMainService.getCanvasSize(state);
+
+  let wonderImguiIMGUIRecord =
+    RecordIMGUIMainService.getWonderIMGUIRecord(state);
 
   {
     "canvasWidth": canvasWidth,
     "canvasHeight": canvasHeight,
     "setting":
-      WonderImgui.ManageIMGUIAPI.getSetting(imguiRecord)
+      WonderImgui.ManageIMGUIAPI.getSetting(wonderImguiIMGUIRecord)
       |> Obj.magic
       |> Js.Json.stringify,
-    "fntData": _getFntData(imguiRecord),
+    "fntData": _getFntData(wonderImguiIMGUIRecord),
     "bitmapImageData": AssetIMGUIMainServiice.convertBitmapToImageData(state),
     "customTextureSourceDataArr":
       AssetIMGUIMainServiice.convertCustomTextureSourcesToImageDataArr(state),

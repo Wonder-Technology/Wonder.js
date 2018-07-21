@@ -3,15 +3,17 @@ open StateDataMainType;
 let convertBitmapToImageData = state =>
   switch (
     WonderImgui.AssetIMGUIService.getBitmap(
-      RecordIMGUIMainService.getRecord(state),
+      RecordIMGUIMainService.getWonderIMGUIRecord(state),
     )
   ) {
   | None => None
   | Some(bitmap) => ImageDataService.convertImageToImageData(bitmap) |. Some
   };
 
-let convertCustomTextureSourcesToImageDataArr = ({imguiRecord}) =>
-  WonderImgui.AssetIMGUIAPI.getCustomImageArr(imguiRecord)
+let convertCustomTextureSourcesToImageDataArr = state =>
+  WonderImgui.AssetIMGUIAPI.getCustomImageArr(
+    RecordIMGUIMainService.getWonderIMGUIRecord(state),
+  )
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. imageDataArr, (image, id, imageType)) =>
          imageDataArr
