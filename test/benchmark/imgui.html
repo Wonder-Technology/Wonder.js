@@ -85,11 +85,11 @@
                             }, state);
 
 
-                        // wd.setState(state);
+                        wd.setState(state);
 
 
 
-                        // var record = LightBoxesTool.createBox(state);
+                        var record = LightBoxesTool.createBox(state);
 
 
 
@@ -97,44 +97,44 @@
 
 
 
-                        // var state = wd.setAmbientLightColor([0.2, 0.2, 0.2], state);
+                        var state = wd.setAmbientLightColor([0.2, 0.2, 0.2], state);
 
 
-                        // // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+                        // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
 
 
-                        // var data = LightBoxesTool.createCamera(state);
-                        // var state = data[0];
-                        // var camera = data[1];
+                        var data = LightBoxesTool.createCamera(state);
+                        var state = data[0];
+                        var camera = data[1];
 
 
-                        // // var transform = wd.unsafeGetGameObjectTransformComponent(camera
-                        // // , state);
+                        // var transform = wd.unsafeGetGameObjectTransformComponent(camera
+                        // , state);
 
-                        // // state = wd.setTransformLocalPosition(transform, [0,0,50], state);
+                        // state = wd.setTransformLocalPosition(transform, [0,0,50], state);
 
 
 
-                        // var [state, cameraController] = wd.createArcballCameraController(state);
+                        var [state, cameraController] = wd.createArcballCameraController(state);
+
+                        var state =
+                            wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+
 
                         // var state =
-                        //     wd.setArcballCameraControllerDistance(cameraController, 50, state);
+                        //     wd.setArcballCameraControllerMoveSpeedX(cameraController, 0.1, state);
+
+                        var state =
+                            wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
+
+                        var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
 
 
-
-                        // // var state =
-                        // //     wd.setArcballCameraControllerMoveSpeedX(cameraController, 0.1, state);
-
-                        // var state =
-                        //     wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
-
-                        // var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
-
-
-                        // state =
-                        //     wd.setCurrentCameraGameObject(
-                        //         camera, state
-                        //     );
+                        state =
+                            wd.setCurrentCameraGameObject(
+                                camera, state
+                            );
 
 
 

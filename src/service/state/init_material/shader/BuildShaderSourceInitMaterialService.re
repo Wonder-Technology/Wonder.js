@@ -31,12 +31,20 @@ let _generateAttributeSource = (shaderLibDataArr: shaderLibs) =>
                  |> OptionService.unsafeGetJsonSerializedValue
                  |> Js.Array.reduce(
                       (result: string, {name, type_}: attribute) =>
-                        switch (name, type_) {
-                        | (Some(name), Some(type_)) =>
-                          result ++ {j|attribute $type_ $name;
-  |j}
-                        | (_, _) => result
-                        },
+                        ! (name |> OptionService.isJsonSerializedValueNone)
+                        && ! (type_ |> OptionService.isJsonSerializedValueNone) ?
+                          {
+                            let name =
+                              name
+                              |> OptionService.unsafeGetJsonSerializedValue;
+                            let type_ =
+                              type_
+                              |> OptionService.unsafeGetJsonSerializedValue;
+
+                            result ++ {j|attribute $type_ $name;
+  |j};
+                          } :
+                          result,
                       "",
                     )
                );

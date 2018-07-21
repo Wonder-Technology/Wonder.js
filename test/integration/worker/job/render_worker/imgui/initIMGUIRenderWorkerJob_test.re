@@ -461,46 +461,44 @@ let _ =
         })
       );
 
-      /* 
-      TODO fix glsl bug with one light box
       describe("fix bug", () =>
-        testPromise("test vs glsl", () => {
-          let (state, (fntData, bitmap, setting, _), (_, context)) =
-            _prepareSetData();
+        describe("test render empty imgui + a light box", () =>
+          testPromise(
+            {|vs glsl should not contain "attribute null null;" |}, () => {
+            let (state, (fntData, bitmap, setting, _), (_, context)) =
+              _prepareSetData();
+            let getExtension =
+              WonderImgui.RenderIMGUITool.buildNoVAOExtension(sandbox);
+            let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlWorkerTool.setFakeGl(
+                   FakeGlWorkerTool.buildFakeGl(
+                     ~sandbox,
+                     ~shaderSource,
+                     ~getExtension,
+                     (),
+                   ),
+                 );
+            let (state, _, _, _, _) =
+              FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+            MainStateTool.setState(state);
+            BrowserDetectTool.setChrome();
 
-          let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
-          /* let createProgram = createEmptyStubWithJsObjSandbox(sandbox); */
-          let state =
-            state
-            |> FakeGlWorkerTool.setFakeGl(
-                 FakeGlWorkerTool.buildFakeGl(~sandbox, ~shaderSource, ()),
-               );
-          MainStateTool.setState(state);
-          BrowserDetectTool.setChrome();
-
-          RenderJobsRenderWorkerTool.init(
-            state =>
-              GLSLTool.contain(
-                GLSLTool.getVsSource(shaderSource) |>WonderLog.Log.print,
-                {|
-  attribute vec3 a_position;
-  attribute vec3 a_normal;
-  attribute null null;
-
-
-
-
-
-
-
-varying vec3 v_worldPosition;
-  |},
-              )
-              |> expect == true
-              |> resolve,
-            state,
-          );
-        })
-      ); */
+            RenderJobsRenderWorkerTool.init(
+              state =>
+                GLSLTool.contain(
+                  /* GLSLTool.getVsSource(shaderSource) |> WonderLog.Log.print, */
+                  GLSLTool.getVsSource(shaderSource),
+                  {|attribute null null;|},
+                )
+                |> expect == false
+                |> resolve,
+              state,
+            );
+          })
+        )
+      );
     });
   });
