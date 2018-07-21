@@ -30,17 +30,17 @@ let _addBufferViewData =
            count: pointsCount,
            componentType:
              switch (pointType) {
-             | VERTEX
-             | NORMAL
-             | TEXCOORD => 5126
-             | INDEX => 5123
+             | Vertex
+             | Normal
+             | TexCoord => 5126
+             | Index => 5123
              },
            type_:
              switch (pointType) {
-             | VERTEX
-             | NORMAL => "VEC3"
-             | TEXCOORD => "VEC2"
-             | INDEX => "SCALAR"
+             | Vertex
+             | Normal => "VEC3"
+             | TexCoord => "VEC2"
+             | Index => "SCALAR"
              },
          }),
       bufferViewDataArr
@@ -120,7 +120,7 @@ let _addAllPointData =
         verticesLength,
         verticesCount,
         Float32Array._BYTES_PER_ELEMENT,
-        VERTEX,
+        Vertex,
       ),
       (bufferViewOffset, bufferViewDataArr, accessorDataArr),
       totalByteLength,
@@ -137,7 +137,7 @@ let _addAllPointData =
     totalByteLength,
   ) =
     _addBufferViewData(
-      (normalsLength, normalsCount, Float32Array._BYTES_PER_ELEMENT, NORMAL),
+      (normalsLength, normalsCount, Float32Array._BYTES_PER_ELEMENT, Normal),
       (bufferViewOffset, bufferViewDataArr, accessorDataArr),
       totalByteLength,
     );
@@ -161,7 +161,7 @@ let _addAllPointData =
         texCoordsLength,
         texCoordsCount,
         Float32Array._BYTES_PER_ELEMENT,
-        TEXCOORD,
+        TexCoord,
       ),
       (bufferViewOffset, bufferViewDataArr, accessorDataArr),
       totalByteLength,
@@ -178,7 +178,7 @@ let _addAllPointData =
     totalByteLength,
   ) =
     _addBufferViewData(
-      (indicesLength, indicesCount, Uint16Array._BYTES_PER_ELEMENT, INDEX),
+      (indicesLength, indicesCount, Uint16Array._BYTES_PER_ELEMENT, Index),
       (bufferViewOffset, bufferViewDataArr, accessorDataArr),
       totalByteLength,
     );

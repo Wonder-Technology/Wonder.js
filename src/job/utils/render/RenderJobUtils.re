@@ -20,28 +20,28 @@ let _getOrCreateBuffer =
       state,
     ) =>
   switch (buffer) {
-  | VERTEX =>
+  | Vertex =>
     ArrayBufferRenderService.getOrCreateBuffer(
       gl,
       (geometryIndex, vertexBufferMap),
       [@bs] getVerticesFunc,
       state,
     )
-  | TEXCOORD =>
+  | TexCoord =>
     ArrayBufferRenderService.getOrCreateBuffer(
       gl,
       (geometryIndex, texCoordBufferMap),
       [@bs] getTexCoordsFunc,
       state,
     )
-  | NORMAL =>
+  | Normal =>
     ArrayBufferRenderService.getOrCreateBuffer(
       gl,
       (geometryIndex, normalBufferMap),
       [@bs] getNormalsFunc,
       state,
     )
-  | INDEX =>
+  | Index =>
     ElementArrayBufferRenderService.getOrCreateBuffer(
       gl,
       (geometryIndex, elementArrayBufferMap),

@@ -100,10 +100,10 @@ type lightData = {
 };
 
 type point =
-  | VERTEX
-  | NORMAL
-  | TEXCOORD
-  | INDEX;
+  | Vertex
+  | Normal
+  | TexCoord
+  | Index;
 
 external positionTupleToArray : PositionType.position => array(float) =
   "%identity";

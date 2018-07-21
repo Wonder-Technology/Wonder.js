@@ -21,7 +21,7 @@ let _readAttributes =
                  let type_ = type_ |> OptionService.unsafeGetJsonSerializedValue;
 
                  switch (buffer) {
-                 | VboBufferType.INSTANCE_M_MATRIX =>
+                 | VboBufferType.Instance_m_matrix =>
                    HandleAttributeConfigDataInitMaterialService.addModelMatrixInstanceArrayBufferSendData(
                      (gl, program, name, attributeLocationMap),
                      sendDataArrTuple,

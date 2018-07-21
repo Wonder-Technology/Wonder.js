@@ -1,12 +1,12 @@
 open WonderWebgl.GlType;
 
 type bufferEnum =
-  | VERTEX
-  | NORMAL
-  | TEXCOORD
-  | INDEX
-  | INSTANCE_NORMAL_MATRIX
-  | INSTANCE_M_MATRIX;
+  | Vertex
+  | Normal
+  | TexCoord
+  | Index
+  | Instance_normal_matrix
+  | Instance_m_matrix;
 
 type vboBufferRecord = {
   boxGeometryVertexBufferMap: WonderCommonlib.SparseMapService.t(buffer),
