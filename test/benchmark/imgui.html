@@ -68,6 +68,48 @@
                                         "radioButtonOuterRadius":
                                             1.0
                                     },
+                                    "checkboxSetting": {
+
+                                        "checkboxOuterColor": [0.3, 0.3, 0.3],
+                                        "checkboxInnerColor":
+
+
+
+                                            [0.15, 0.15, 0.15],
+
+
+                                        "checkboxOuterColorHover":
+                                            [0.33, 0.33, 0.33],
+
+
+                                        "checkboxInnerColorHover":
+
+                                            [0.15, 0.15, 0.15],
+
+
+                                        "checkboxInnerSizeRatio": 0.6,
+
+                                        "checkboxOuterSizeRatio":
+                                            1.0
+                                    },
+                                    "sliderSetting": {
+
+                                        "sliderBackgroundColor": [0.3, 0.3, 0.3],
+                                        "sliderFillColor":
+
+
+
+                                            [0.15, 0.15, 0.15],
+
+
+                                        "sliderBackgroundColorHover":
+                                            [0.33, 0.33, 0.33],
+
+
+                                        "sliderFillColorHover":
+
+                                            [0.15, 0.15, 0.15],
+                                    },
 
 
                                     "fontTexUvForWhite": [0.5, 0.5]
@@ -124,44 +166,109 @@
 
 
 
-                                var [record, isButtonClick] = api.button(
-                                    [200, 400, 100, 50], "b", record
-                                );
 
-                                // if (isButtonClick) {
-                                //     console.log(isButtonClick);
-                                // }
+                                var [record, selectIndex2] = api.checkbox(
 
 
-
-                                var [record, isButtonClick] = api.button(
-                                    [400, 200, 100, 50], "b", record
+                                    [200, 400, 300, 100],
+                                    "checkbox",
+                                    record
                                 );
 
 
-                                // var record = api.label(
-                                //     [20, 20, 300, 100], "ab", 0, record
+
+
+
+
+                                var [record, isSelected1, value1] = api.sliderFloat(
+                                    [
+                                        [200, 600, 300, 50],
+                                        100
+                                    ],
+                                    [
+                                        0.1, 5.5, 2
+                                    ],
+                                    [
+                                        1.3, "float"
+                                    ],
+                                    record
+                                );
+
+
+
+
+                                var [record, isSelected2, value2] = api.sliderFloat(
+                                    [
+                                        [600, 600, 300, 50],
+                                        100
+                                    ],
+                                    [
+                                        0.1, 5.5, 2
+                                    ],
+                                    [
+                                        1.3, "float"
+                                    ],
+                                    record
+                                );
+
+
+                                var [record, isSelected3, value3] = api.sliderInt(
+                                    [
+                                        [1200, 600, 300, 50],
+                                        100
+                                    ],
+                                    [
+                                        2, 7
+                                    ],
+                                    [
+                                        3, "int"
+                                    ],
+                                    record
+                                );
+
+
+                                console.log(isSelected3, value3);
+
+
+
+                                // var [record, isButtonClick] = api.button(
+                                //     [200, 400, 100, 50], "b", record
+                                // );
+
+                                // // if (isButtonClick) {
+                                // //     console.log(isButtonClick);
+                                // // }
+
+
+
+                                // var [record, isButtonClick] = api.button(
+                                //     [400, 200, 100, 50], "b", record
                                 // );
 
 
-
-                                var record = api.image(
-                                    [50, 150, 50, 100], [0, 0, 1, 1], "1", record
-                                );
-
-
-                                var record = api.image(
-                                    [200, 300, 100, 100], [0, 0, 1, 1], "2", record
-                                );
+                                // // var record = api.label(
+                                // //     [20, 20, 300, 100], "ab", 0, record
+                                // // );
 
 
-                                var record = api.label(
-                                    [20, 150, 300, 100], "c", 1, record
-                                );
 
-                                var record = api.image(
-                                    [500, 300, 100, 100], [0, 0, 1, 1], "2", record
-                                );
+                                // var record = api.image(
+                                //     [50, 150, 50, 100], [0, 0, 1, 1], "1", record
+                                // );
+
+
+                                // var record = api.image(
+                                //     [200, 300, 100, 100], [0, 0, 1, 1], "2", record
+                                // );
+
+
+                                // var record = api.label(
+                                //     [20, 150, 300, 100], "c", 1, record
+                                // );
+
+                                // var record = api.image(
+                                //     [500, 300, 100, 100], [0, 0, 1, 1], "2", record
+                                // );
 
 
 
