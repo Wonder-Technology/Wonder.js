@@ -20,6 +20,7 @@
     <script src="../e2e/js/LightMaterialTool.js"></script>
     <script src="../../dist/wd.js"></script>
     <script>
+
         window.onload = function () {
             return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
                 AssetTool.loadIMGUIAsset("../res/font/myFont.fnt", "../res/font/myFont.png",
@@ -30,33 +31,117 @@
                     wd.unsafeGetState(), function (state) {
                         var state = wd.unsafeGetState();
 
+
                         var state =
                             wd.setSetting(
                                 {
                                     "textColor": [1.0, 1.0, 1.0],
-                                    "buttonColor": [0.5, 0.5, 0.5],
-                                    "hoverButtonColor": [0.5, 0.0, 1.0],
-                                    "clickButtonColor": [0.5, 1.0, 0.0],
-                                    "fontTexUvForWhite": [0.5, 0.5],
+                                    "buttonSetting": {
+                                        "buttonColor": [0.5, 0.5, 0.5],
+                                        "hoverButtonColor": [0.5, 0.0, 1.0],
+                                        "clickButtonColor": [0.5, 1.0, 0.0]
+                                    },
+                                    "radioButtonSetting": {
+
+                                        "radioButtonOuterColor": [0.3, 0.3, 0.3],
+                                        "radioButtonInnerColor":
+
+
+
+                                            [0.15, 0.15, 0.15],
+
+
+                                        "radioButtonOuterColorHover":
+                                            [0.33, 0.33, 0.33],
+
+
+                                        "radioButtonInnerColorHover":
+
+                                            [0.15, 0.15, 0.15],
+
+                                        "radioButtonCircleSegments":
+
+                                            9,
+
+                                        "radioButtonInnerRadius": 0.6,
+
+                                        "radioButtonOuterRadius":
+                                            1.0
+                                    },
+
+
+                                    "fontTexUvForWhite": [0.5, 0.5]
                                 }, state
                             );
 
 
                         var state = wd.setIMGUIFunc(
                             1, (labelFunc, api, record) => {
+                                var radioButtonX = 200;
+                                var radioButtonY = 20;
+                                var radioButtonWidth = 100;
+                                var radioButtonHeight = 100;
+
+
+                                var [record, selectIndex1] = api.radioButton(
+                                    [
+                                        [
+
+                                            [radioButtonX, radioButtonY, radioButtonWidth, radioButtonHeight], "a"
+
+                                        ],
+                                        [
+
+                                            [radioButtonX * 2, radioButtonY * 2, 100, 150],
+                                            "b"
+
+                                        ]
+                                    ],
+                                    "group1",
+                                    record
+                                );
+
+
+                                var [record, selectIndex2] = api.radioButton(
+                                    [
+                                        [
+
+                                            [radioButtonX * 3, radioButtonY, radioButtonWidth, radioButtonHeight], "a"
+
+                                        ],
+                                        [
+
+                                            [radioButtonX * 5, radioButtonY * 3, 100, 150],
+                                            "b"
+
+                                        ]
+                                    ],
+                                    "group2",
+                                    record
+                                );
+
+                                // console.log(selectIndex1, selectIndex2)
+
+
 
                                 var [record, isButtonClick] = api.button(
-                                    [200, 20, 100, 50], "bu", record
+                                    [200, 400, 100, 50], "b", record
                                 );
 
-                                if (isButtonClick) {
-                                    console.log(isButtonClick);
-                                }
+                                // if (isButtonClick) {
+                                //     console.log(isButtonClick);
+                                // }
 
 
-                                var record = api.label(
-                                    [20, 20, 300, 100], "ab", 0, record
+
+                                var [record, isButtonClick] = api.button(
+                                    [400, 200, 100, 50], "b", record
                                 );
+
+
+                                // var record = api.label(
+                                //     [20, 20, 300, 100], "ab", 0, record
+                                // );
 
 
 

@@ -264,10 +264,6 @@ let getCustomGeometryDrawMode = CustomGeometryAPI.getCustomGeometryDrawMode;
 
 let createCustomGeometry = CustomGeometryAPI.createCustomGeometry;
 
-let image = FixedLayoutControlIMGUIAPI.image;
-
-let label = FixedLayoutControlIMGUIAPI.label;
-
 let setSetting = ManageIMGUIAPI.setSetting;
 
 let getSetting = ManageIMGUIAPI.getSetting;
