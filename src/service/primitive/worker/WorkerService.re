@@ -1,5 +1,11 @@
 let getSelf = [%bs.raw {|
     function(){
+      if(typeof window !== "undefined"){
+        if(typeof window.fake_self_wonder !== "undefined"){
+          return window.fake_self_wonder;
+        }
+      }
+
         return self;
     }
     |}];
@@ -25,6 +31,7 @@ let _logMessage = (data, worker) =>
 
 let postMessage = (data, worker) => {
   /* _logMessage(data, worker); */
+  /* worker |> Worker.postMessageWithTargetOrigin(data, "*") */
   worker |> Worker.postMessage(data)
 };
 

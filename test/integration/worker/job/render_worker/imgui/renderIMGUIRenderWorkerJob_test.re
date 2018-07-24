@@ -94,7 +94,7 @@ let _ =
 
       testPromise("send imguiFunc and customData", () => {
         let (state, postMessageToRenderWorker) = _prepare();
-        let imguiFunc = (_, _, record) => record;
+        let imguiFunc = (. _, _, state) => state;
         let customData = Obj.magic(100);
         let state = ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state);
         MainStateTool.setState(state);
@@ -146,7 +146,7 @@ let _ =
           let state =
             ManageIMGUIAPI.setIMGUIFunc(
               Obj.magic(WonderImgui.RenderIMGUITool.buildImageData()),
-              (customData, apiJsObj, record) => {
+              (. customData, apiJsObj, state) => {
                 let (
                   (
                     (imageX1, imageY1, imageWidth1, imageHeight1),
@@ -157,18 +157,19 @@ let _ =
                   _,
                 ) =
                   Obj.magic(customData);
+                let apiJsObj = Obj.magic(apiJsObj);
 
                 let imageFunc = apiJsObj##image;
 
-                let record =
+                let state =
                   imageFunc(.
                     (imageX1, imageY1, imageWidth1, imageHeight1),
                     (imageS01, imageT01, imageS11, imageT11),
                     textureId1,
-                    record,
+                    state,
                   );
 
-                record;
+                state;
               },
               state,
             );
@@ -202,5 +203,128 @@ let _ =
         })
       );
 
+      describe("test operate main state if imgui button is click", () =>
+        describe(
+          {|can't invoke api to operate main state in imguiFunc!
+          instead, should:|},
+          () => {
+            testPromise(
+              {|set custom data to render worker state in imguiFunc;
+                send custom data to main worker when finish render;|},
+              () => {
+                let (state, (fntData, bitmap, setting, _), (_, context)) =
+                  IMGUIRenderWorkerTool.prepareSetData(sandbox);
+                let state = RenderIMGUITool.prepareFntData(state);
+                let canvasWidth = 100;
+                let canvasHeight = 200;
+                let state =
+                  ViewTool.setCanvas(
+                    {"width": canvasWidth, "height": canvasHeight}
+                    |> Obj.magic,
+                    state,
+                  );
+                let sendedCustomData = 1;
+
+                let ((buttonX1, buttonY1, buttonWidth1, buttonHeight1), str1) as customData =
+                  WonderImgui.ButtonIMGUITool.buildButtonData1();
+                let state =
+                  ManageIMGUIAPI.setIMGUIFunc(
+                    Obj.magic(customData),
+                    (. customData, apiJsObj, state) => {
+                      let (
+                        (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
+                        str1,
+                      ) =
+                        Obj.magic(customData);
+                      let apiJsObj = Obj.magic(apiJsObj);
+
+                      let buttonFunc = apiJsObj##button;
+                      let setCustomDataFunc = apiJsObj##setCustomData;
+
+                      let (state, isClick) =
+                        buttonFunc(.
+                          (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
+                          str1,
+                          state,
+                        );
+
+                      let state =
+                        isClick ?
+                          setCustomDataFunc(. sendedCustomData, state) : state;
+
+                      state;
+                    },
+                    state,
+                  );
+                let getExtension =
+                  WonderImgui.RenderIMGUITool.buildNoVAOExtension(sandbox);
+                let state =
+                  state
+                  |> FakeGlWorkerTool.setFakeGl(
+                       FakeGlWorkerTool.buildFakeGl(
+                         ~sandbox,
+                         ~getExtension,
+                         (),
+                       ),
+                     );
+                MainStateTool.setState(state);
+                BrowserDetectTool.setChrome();
+                let selfPostMessage =
+                  RenderJobsRenderWorkerTool.stubSelfPostMessage(sandbox^);
+                let state =
+                  IMGUITool.setIOData(
+                    {
+                      pointUp: true,
+                      pointDown: true,
+                      pointPosition: (buttonX1, buttonY1),
+                      pointMovementDelta: (0, 0),
+                    },
+                    state,
+                  );
+                MainStateTool.setState(state);
+                BrowserDetectTool.setChrome();
+
+                RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+                  ~state,
+                  ~sandbox,
+                  ~completeFunc=
+                    postMessageToRenderWorker =>
+                      selfPostMessage
+                      |> expect
+                      |> toCalledWith([|
+                           {
+                             "operateType": "FINISH_RENDER",
+                             "customData": sendedCustomData,
+                           },
+                         |])
+                      |> resolve,
+                  (),
+                );
+              },
+            );
+            test(
+              {|get custom data in main worker;
+                (so that in the next frame, user can check custom data in main state and operate main state in main worker)|},
+              () => {
+                let state = MainStateTool.createState();
+                let customData = 1;
+
+                let state =
+                  GetFinishRenderDataMainWorkerJob._exec(
+                    {
+                      "data": {
+                        "customData": customData,
+                      },
+                    },
+                    state,
+                  );
+
+                WorkerDataTool.getRenderWorkerCustomData(state)
+                |> expect == Obj.magic(customData);
+              },
+            );
+          },
+        )
+      );
     });
   });

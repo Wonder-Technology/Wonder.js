@@ -18,13 +18,23 @@ let execJob = (flags, e, stateData) =>
                imguiData##imguiFunc
                |> OptionService.unsafeGetJsonSerializedValue
                |> SerializeService.deserializeFunction,
-             )
-          |> WonderImgui.ManageIMGUIService.render(
-               DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-               imguiData##ioData,
              );
 
         state.imguiRecord = imguiRecord;
+
+        let state =
+          WonderImgui.ManageIMGUIService.render(
+            DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+            imguiData##ioData,
+            Obj.magic(RecordAPIRenderWorkerService.getAPIJsObj(state)),
+            (
+              ManageIMGUIRenderWorkerService.getRecord |> Obj.magic,
+              ManageIMGUIRenderWorkerService.setRecord |> Obj.magic,
+            ),
+            state |> Obj.magic,
+          )
+          |> Obj.magic;
+
         state |> StateRenderWorkerService.setState(stateData);
 
         e;

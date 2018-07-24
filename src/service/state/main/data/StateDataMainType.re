@@ -2,6 +2,8 @@ open WonderWebgl.GlType;
 
 open ComponentType;
 
+open WorkerDataType;
+
 open TransformType;
 
 open GameObjectType;
@@ -175,6 +177,58 @@ and arcballCameraControllerRecord = {
   gameObjectMap,
   disposedIndexArray: array(component),
 }
+and apiRecord = {
+  apiJsObj: {
+    .
+    "label":
+      (
+        . WonderImgui.StructureType.rect,
+        string,
+        WonderImgui.FontType.align,
+        state
+      ) =>
+      state,
+    "image":
+      (
+        . WonderImgui.StructureType.rect,
+        WonderImgui.StructureType.uv,
+        string,
+        state
+      ) =>
+      state,
+    "button":
+      (. WonderImgui.StructureType.rect, string, state) => (state, bool),
+    "box": (. (int, int, int, int), Js.Array.t(float), state) => state,
+    "radioButton":
+      (. Js.Array.t(((int, int, int, int), string)), string, state) =>
+      (state, option(int)),
+    "checkbox": (. (int, int, int, int), string, state) => (state, bool),
+    "sliderInt":
+      (. ((int, int, int, int), int), (int, int), (int, string), state) =>
+      (state, bool, int),
+    "sliderFloat":
+      (
+        . ((int, int, int, int), int),
+        (float, float, int),
+        (float, string),
+        state
+      ) =>
+      (state, bool, float),
+    "beginGroup": (. WonderImgui.StructureType.position, state) => state,
+    "endGroup": (. state) => state,
+    "setLightMaterialDiffuseColor":
+      (ComponentType.component, array(float), state) => state,
+    "getRenderWorkerCustomData":
+      state => CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
+    /* "box": FixedLayoutControlIMGUIService.box,
+       "radioButton": FixedLayoutControlIMGUIService.radioButton,
+       "checkbox": FixedLayoutControlIMGUIService.checkbox,
+       "sliderInt": FixedLayoutControlIMGUIService.sliderInt,
+       "sliderFloat": FixedLayoutControlIMGUIService.sliderFloat,
+       "beginGroup": GroupLayoutIMGUIService.beginGroup,
+       "endGroup": GroupLayoutIMGUIService.endGroup, */
+  },
+}
 and state = {
   settingRecord,
   jobRecord,
@@ -215,10 +269,12 @@ and state = {
   globalTempRecord,
   typeArrayPoolRecord,
   mutable workerInstanceRecord,
+  workerDataRecord,
   workerDetectRecord,
   browserDetectRecord,
   eventRecord,
-  imguiRecord
+  imguiRecord,
+  apiRecord,
 };
 
 type sharedDataForRestoreState = {

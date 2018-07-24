@@ -592,6 +592,22 @@ let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
 
 let createTransform = TransformAPI.createTransform;
 
+let hasRenderWorkerCustomData = WorkerDataAPI.hasRenderWorkerCustomData;
+
+let getRenderWorkerCustomData = WorkerDataAPI.getRenderWorkerCustomData;
+
+let create = RecordAPIMainService.create;
+
+let setAPIJsObj = RecordAPIMainService.setAPIJsObj;
+
+let getAPIJsObj = RecordAPIMainService.getAPIJsObj;
+
+let create = RecordAPIRenderWorkerService.create;
+
+let setAPIJsObj = RecordAPIRenderWorkerService.setAPIJsObj;
+
+let getAPIJsObj = RecordAPIRenderWorkerService.getAPIJsObj;
+
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
 let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectBasicCameraView;
@@ -857,3 +873,15 @@ let unsafeGetTransformParent = TransformAPI.unsafeGetTransformParent;
 let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
 
 let createTransform = TransformAPI.createTransform;
+
+let create = RecordAPIMainService.create;
+
+let setAPIJsObj = RecordAPIMainService.setAPIJsObj;
+
+let getAPIJsObj = RecordAPIMainService.getAPIJsObj;
+
+let create = RecordAPIRenderWorkerService.create;
+
+let setAPIJsObj = RecordAPIRenderWorkerService.setAPIJsObj;
+
+let getAPIJsObj = RecordAPIRenderWorkerService.getAPIJsObj;

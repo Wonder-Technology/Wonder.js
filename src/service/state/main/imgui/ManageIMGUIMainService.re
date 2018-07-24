@@ -28,3 +28,13 @@ let getCanvasSize = ({viewRecord}) =>
 
     (canvas##width, canvas##height);
   };
+
+let getRecord = state => RecordIMGUIMainService.getWonderIMGUIRecord(state);
+
+let setRecord = (record, state) => {
+  ...state,
+  imguiRecord: {
+    ...state.imguiRecord,
+    wonderImguiIMGUIRecord: record,
+  },
+};

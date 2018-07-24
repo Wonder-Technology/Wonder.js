@@ -4,6 +4,22 @@ open Js.Promise;
 
 open MostRenderWorkerTool;
 
+let stubSelfPostMessage = [%raw
+  sandbox => {|
+              if(typeof window.fake_self_wonder !== "undefined"){
+                return window.fake_self_wonder.postMessage;
+              }
+
+              var postMessage = sandbox.stub();
+
+                window.fake_self_wonder = {
+                  "postMessage": postMessage
+                }
+
+                return postMessage
+              |}
+];
+
 let prepareForUseProgramCase = (sandbox, prepareFunc, state) => {
   open Sinon;
   let state = prepareFunc(sandbox, state);
@@ -110,7 +126,7 @@ let execMainLoopJobs = (sandbox, completeFunc) => {
   |> then_(() => completeFunc(postMessageToRenderWorker));
 };
 
-let render = (postMessageToRenderWorker, completeFunc) => {
+let render = (sandbox, postMessageToRenderWorker, completeFunc) => {
   let state = MainStateTool.unsafeGetState();
   let drawData = {
     "data":
@@ -119,6 +135,9 @@ let render = (postMessageToRenderWorker, completeFunc) => {
         MainStateTool.getStateData(),
       ),
   };
+
+  stubSelfPostMessage(sandbox^);
+
   [|
     GetAmbientLightDataRenderWorkerJob.execJob(None),
     GetDirectionLightDataRenderWorkerJob.execJob(None),
@@ -134,6 +153,7 @@ let render = (postMessageToRenderWorker, completeFunc) => {
     FrontRenderLightRenderWorkerJob.execJob(None),
     RenderIMGUIRenderWorkerJob.execJob(None),
     CommitRenderWorkerJob.execJob(None),
+    SendFinishRenderDataRenderWorkerJob.execJob(Some([|"FINISH_RENDER"|])),
   |]
   |> concatStreamFuncArray(drawData, RenderWorkerStateTool.getStateData())
   |> WonderBsMost.Most.drain
@@ -152,7 +172,7 @@ let mainLoopAndRender =
     sandbox,
     postMessageToRenderWorker => {
       beforeExecRenderRenderWorkerJobsFunc(postMessageToRenderWorker);
-      render(postMessageToRenderWorker, completeFunc);
+      render(sandbox, postMessageToRenderWorker, completeFunc);
     },
   );
 

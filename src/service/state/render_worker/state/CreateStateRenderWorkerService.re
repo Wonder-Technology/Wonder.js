@@ -32,5 +32,7 @@ let createState = () => {
   vboBufferRecord: RecordVboBufferService.create(),
   workerDetectRecord: None,
   browserDetectRecord: None,
+  apiRecord: RecordAPIRenderWorkerService.create(),
   imguiRecord: WonderImgui.ManageIMGUIAPI.createRecord(),
+  customRecord: RecordCustomRenderWorkerService.create(),
 };

@@ -1,3 +1,3 @@
 open StateDataMainType;
 
-let execJob = (flags, stateData) => GetWorkerDataJobUtils.execJob(flags, stateData);
+let execJob = (flags, stateData) => GetWorkerDataJobUtils.execNoDataJob(flags, stateData);

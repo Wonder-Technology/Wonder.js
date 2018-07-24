@@ -1,6 +1,15 @@
 open StateDataMainType;
 
-let execJob = (flags, stateData) =>
+let execNoDataJob = (flags, stateData) =>
+  GetWorkerDataUtils.createGetOtherWorkerNoDataStream(
+    flags,
+    WorkerInstanceService.unsafeGetRenderWorker(
+      StateDataMainService.unsafeGetState(stateData).workerInstanceRecord
+    )
+  );
+
+
+let createGetOtherWorkerDataStream = (flags, stateData) =>
   GetWorkerDataUtils.createGetOtherWorkerDataStream(
     flags,
     WorkerInstanceService.unsafeGetRenderWorker(

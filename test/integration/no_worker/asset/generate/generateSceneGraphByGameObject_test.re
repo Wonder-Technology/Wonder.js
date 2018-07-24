@@ -830,11 +830,14 @@ let _ =
       let _prepareGameObject = state => {
         let customData = Obj.magic((1, "cc"));
 
-        let imguiFunc = (customData, apiJsObj, record) => {
+        let imguiFunc = (. customData, apiJsObj, state) => {
           let (a, b) = Obj.magic(customData);
+          let apiJsObj = Obj.magic(apiJsObj);
+
           let imageFunc = apiJsObj##image |> Obj.magic;
-          let record = imageFunc(. a, b, record);
-          record;
+          let state = imageFunc(. a, b, state);
+
+          state;
         };
 
         let state =
@@ -852,7 +855,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-            "scenes":[{"extras":{"customData":[1,"cc"],"imguiFunc":"function imguiFunc(customData, apiJsObj, record) {\\n        var imageFunc = apiJsObj.image;\\n        return imageFunc(customData[0], customData[1], record);\\n      }"},
+            "scenes":[{"extras":{"customData":[1,"cc"],"imguiFunc":"function imguiFunc(customData, apiJsObj, state) {\\n        var imageFunc = apiJsObj.image;\\n        return imageFunc(customData[0], customData[1], state);\\n      }"},
             |j},
           state,
         );

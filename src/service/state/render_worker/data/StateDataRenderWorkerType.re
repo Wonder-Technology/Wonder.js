@@ -2,6 +2,8 @@ open GPUDetectType;
 
 open RenderWorkerSettingType;
 
+open RenderWorkerCustomType;
+
 open RenderWorkerBasicMaterialType;
 
 open RenderWorkerLightMaterialType;
@@ -52,7 +54,73 @@ open GlobalTempType;
 
 open BrowserDetectType;
 
-type renderWorkerState = {
+type apiRecord = {
+  apiJsObj: {
+    .
+    "label":
+      (
+        . WonderImgui.StructureType.rect,
+        string,
+        WonderImgui.FontType.align,
+        renderWorkerState
+      ) =>
+      renderWorkerState,
+    "image":
+      (
+        . WonderImgui.StructureType.rect,
+        WonderImgui.StructureType.uv,
+        string,
+        renderWorkerState
+      ) =>
+      renderWorkerState,
+    "button":
+      (. (int, int, int, int), string, renderWorkerState) =>
+      (renderWorkerState, bool),
+    "box":
+      (. (int, int, int, int), Js.Array.t(float), renderWorkerState) =>
+      renderWorkerState,
+    "radioButton":
+      (
+        . Js.Array.t(((int, int, int, int), string)),
+        string,
+        renderWorkerState
+      ) =>
+      (renderWorkerState, option(int)),
+    "checkbox":
+      (. (int, int, int, int), string, renderWorkerState) =>
+      (renderWorkerState, bool),
+    "sliderInt":
+      (
+        . ((int, int, int, int), int),
+        (int, int),
+        (int, string),
+        renderWorkerState
+      ) =>
+      (renderWorkerState, bool, int),
+    "sliderFloat":
+      (
+        . ((int, int, int, int), int),
+        (float, float, int),
+        (float, string),
+        renderWorkerState
+      ) =>
+      (renderWorkerState, bool, float),
+    "beginGroup":
+      (. WonderImgui.StructureType.position, renderWorkerState) =>
+      renderWorkerState,
+    "endGroup": (. renderWorkerState) => renderWorkerState,
+    "getCustomData":
+      renderWorkerState =>
+      CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
+    "setCustomData":
+      (
+        . CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
+        renderWorkerState
+      ) =>
+      renderWorkerState,
+  },
+}
+and renderWorkerState = {
   mutable sceneRecord,
   mutable settingRecord,
   mutable renderConfigRecord: option(RenderConfigType.renderConfigRecord),
@@ -82,6 +150,8 @@ type renderWorkerState = {
   mutable workerDetectRecord: option(workerDetectRecord),
   mutable browserDetectRecord: option(browserDetectRecord),
   mutable imguiRecord: WonderImgui.IMGUIType.imguiRecord,
+  mutable apiRecord,
+  mutable customRecord,
 };
 
 type renderWorkerStateData = {mutable state: option(renderWorkerState)};

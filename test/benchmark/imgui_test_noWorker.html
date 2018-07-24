@@ -117,171 +117,10 @@
                             );
 
 
-                        var state = wd.setIMGUIFunc(
-                            1, (customData, api, state) => {
-                                var radioButtonX = 200;
-                                var radioButtonY = 20;
-                                var radioButtonWidth = 100;
-                                var radioButtonHeight = 100;
-
-
-                                var [state, selectIndex1] = api.radioButton(
-                                    [
-                                        [
-
-                                            [radioButtonX, radioButtonY, radioButtonWidth, radioButtonHeight], "a"
-
-                                        ],
-                                        [
-
-                                            [radioButtonX * 2, radioButtonY * 2, 100, 150],
-                                            "b"
-
-                                        ]
-                                    ],
-                                    "group1",
-                                    state
-                                );
-
-
-                                var [state, selectIndex2] = api.radioButton(
-                                    [
-                                        [
-
-                                            [radioButtonX * 3, radioButtonY, radioButtonWidth, radioButtonHeight], "a"
-
-                                        ],
-                                        [
-
-                                            [radioButtonX * 5, radioButtonY * 3, 100, 150],
-                                            "b"
-
-                                        ]
-                                    ],
-                                    "group2",
-                                    state
-                                );
-
-                                // console.log(selectIndex1, selectIndex2)
 
 
 
-
-                                var [state, selectIndex2] = api.checkbox(
-
-
-                                    [200, 400, 300, 100],
-                                    "checkbox",
-                                    state
-                                );
-
-
-
-
-
-
-                                var [state, isSelected1, value1] = api.sliderFloat(
-                                    [
-                                        [200, 600, 300, 50],
-                                        100
-                                    ],
-                                    [
-                                        0.1, 5.5, 2
-                                    ],
-                                    [
-                                        1.3, "float"
-                                    ],
-                                    state
-                                );
-
-
-
-
-                                var [state, isSelected2, value2] = api.sliderFloat(
-                                    [
-                                        [600, 600, 300, 50],
-                                        100
-                                    ],
-                                    [
-                                        0.1, 5.5, 2
-                                    ],
-                                    [
-                                        1.3, "float"
-                                    ],
-                                    state
-                                );
-
-
-                                var [state, isSelected3, value3] = api.sliderInt(
-                                    [
-                                        [1200, 600, 300, 50],
-                                        100
-                                    ],
-                                    [
-                                        2, 7
-                                    ],
-                                    [
-                                        3, "int"
-                                    ],
-                                    state
-                                );
-
-
-                                console.log(isSelected3, value3);
-
-
-
-                                // var [state, isButtonClick] = api.button(
-                                //     [200, 400, 100, 50], "b", state
-                                // );
-
-                                // // if (isButtonClick) {
-                                // //     console.log(isButtonClick);
-                                // // }
-
-
-
-                                // var [state, isButtonClick] = api.button(
-                                //     [400, 200, 100, 50], "b", state
-                                // );
-
-
-                                // // var state = api.label(
-                                // //     [20, 20, 300, 100], "ab", 0, state
-                                // // );
-
-
-
-                                // var state = api.image(
-                                //     [50, 150, 50, 100], [0, 0, 1, 1], "1", state
-                                // );
-
-
-                                // var state = api.image(
-                                //     [200, 300, 100, 100], [0, 0, 1, 1], "2", state
-                                // );
-
-
-                                // var state = api.label(
-                                //     [20, 150, 300, 100], "c", 1, state
-                                // );
-
-                                // var state = api.image(
-                                //     [500, 300, 100, 100], [0, 0, 1, 1], "2", state
-                                // );
-
-
-
-
-                                return state
-                            }, state);
-
-
-                        wd.setState(state);
-
-
-
-                        var record = LightBoxesTool.createBox(state);
+                        var [record, box] = LightBoxesTool.createBox(state);
 
 
 
@@ -329,6 +168,38 @@
                             );
 
 
+
+
+                        var state = wd.setIMGUIFunc(
+                            [
+                                wd.unsafeGetGameObjectLightMaterialComponent(box, state)
+                            ],
+                            (customData, api, state) => {
+
+
+                                var [state, isButtonClick] = api.button(
+                                    [200, 400, 100, 50], "b", state
+                                );
+
+                                if (isButtonClick) {
+                                    // console.log(isButtonClick);
+
+                                    let [boxLightMaterial] = customData;
+
+                                    state =
+                                        api.setLightMaterialDiffuseColor(
+                                            boxLightMaterial, [0.5, 1.0, 0.8], state
+                                        );
+                                }
+
+
+
+
+
+
+                                // return state
+                                return state
+                            }, state);
 
 
 
