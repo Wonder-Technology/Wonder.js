@@ -200,9 +200,10 @@ and apiRecord = {
       (. WonderImgui.StructureType.rect, string, state) => (state, bool),
     "box": (. (int, int, int, int), Js.Array.t(float), state) => state,
     "radioButton":
-      (. Js.Array.t(((int, int, int, int), string)), string, state) =>
-      (state, option(int)),
-    "checkbox": (. (int, int, int, int), string, state) => (state, bool),
+      (. Js.Array.t(((int, int, int, int), string)), int, string, state) =>
+      (state, int),
+    "checkbox":
+      (. (int, int, int, int), bool, string, state) => (state, bool),
     "sliderInt":
       (. ((int, int, int, int), int), (int, int), (int, string), state) =>
       (state, bool, int),

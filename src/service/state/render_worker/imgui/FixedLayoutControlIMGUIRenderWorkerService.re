@@ -42,10 +42,11 @@ let box =
     |> ManageIMGUIRenderWorkerService.setRecord(_, state);
 
 let radioButton =
-  (. groupDataArr, group, state) => {
+  (. groupDataArr, defaultSelectIndex, group, state) => {
     let (record, selectIndex) =
       WonderImgui.FixedLayoutControlIMGUIService.radioButton(.
         groupDataArr,
+        defaultSelectIndex,
         group,
         ManageIMGUIRenderWorkerService.getRecord(state),
       );
@@ -54,10 +55,11 @@ let radioButton =
   };
 
 let checkbox =
-  (. rect, str, state) => {
+  (. rect, defaultIsSelected, str, state) => {
     let (record, isSelected) =
       WonderImgui.FixedLayoutControlIMGUIService.checkbox(.
         rect,
+        defaultIsSelected,
         str,
         ManageIMGUIRenderWorkerService.getRecord(state),
       );

@@ -82,12 +82,13 @@ type apiRecord = {
     "radioButton":
       (
         . Js.Array.t(((int, int, int, int), string)),
+        int,
         string,
         renderWorkerState
       ) =>
-      (renderWorkerState, option(int)),
+      (renderWorkerState, int),
     "checkbox":
-      (. (int, int, int, int), string, renderWorkerState) =>
+      (. (int, int, int, int), bool, string, renderWorkerState) =>
       (renderWorkerState, bool),
     "sliderInt":
       (
