@@ -35,6 +35,29 @@ var ReplaceFetchTool = (function () {
                   }
                 });
               })
+            },
+
+            text: function () {
+              return new Promise((resolve, reject) => {
+                return window.readFileAsUtf8Sync(filePath).then(function (content) {
+                  try {
+                    resolve(content)
+                  } catch (e) {
+                    reject(new Error("fetch text error"))
+                  }
+                });
+              })
+            },
+            blob: function () {
+              return new Promise((resolve, reject) => {
+                return window.readFileAsBufferDataSync(filePath).then(function (bufferData) {
+                  try {
+                    resolve(new Blob([_toArrayBuffer(bufferData.data)]))
+                  } catch (e) {
+                    reject(new Error("fetch blob error"))
+                  }
+                });
+              })
             }
           })
         })

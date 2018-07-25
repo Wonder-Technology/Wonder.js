@@ -33,7 +33,6 @@ var PrepareTool = (function () {
         }
     };
 
-
     return {
         prepareForTest: function () {
             ReplaceFetchTool.replaceFetchForTest();

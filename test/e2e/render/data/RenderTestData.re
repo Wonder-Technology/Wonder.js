@@ -23,6 +23,7 @@ let renderTestData = {
       "./test/e2e/js/LightMaterialTool.js",
       "./test/e2e/js/TextureTool.js",
       "./test/e2e/js/PrepareTool.js",
+      "./test/e2e/js/IMGUITool.js",
       "./dist/wd.js",
     ],
     replaceForDebug: htmlStr =>
@@ -363,9 +364,9 @@ let renderTestData = {
 
 
         return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function () {
-            return window.loadImageSrc("./test/e2e/asset/1.jpg")
+            return window.loadImageSrc("./test/e2e/asset/image/1.jpg")
                 .then((image1DataArr) => {
-                    return window.loadImageSrc("./test/e2e/asset/2.jpg")
+                    return window.loadImageSrc("./test/e2e/asset/image/2.jpg")
                         .then((image2DataArr) => {
                             return initSample(
                                 TextureTool.buildArrayBufferViewSourceTextureFromImageDataArr(image1DataArr),
@@ -429,9 +430,9 @@ let renderTestData = {
 
 
                     return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
-            return window.loadImageSrc("./test/e2e/asset/1.jpg")
+            return window.loadImageSrc("./test/e2e/asset/image/1.jpg")
                 .then((image1DataArr) => {
-                    return window.loadImageSrc("./test/e2e/asset/2.jpg")
+                    return window.loadImageSrc("./test/e2e/asset/image/2.jpg")
                         .then((image2DataArr) => {
                             return initSample(
                                 TextureTool.buildArrayBufferViewSourceTextureFromImageDataArr(image1DataArr),
@@ -576,6 +577,32 @@ let renderTestData = {
 
                         return wd.startDirector(state);
                     }
+    |},
+      scriptFilePathList: None,
+      distance: None,
+      diffPercent: Some(0.00001),
+      threshold: None,
+      frameData: [{timePath: [16]}],
+    },
+        /* TODO fix: puppeteer@1.4.0 can't show all imgui page */
+    {
+      name: "imgui",
+      bodyFuncStr: {|
+                   PrepareTool.prepareForTest();
+
+                    return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
+
+                            return AssetTool.loadIMGUIAsset("./test/e2e/asset/font/Lato-Regular-64.fnt",
+                                "./test/e2e/asset/font/lato.png",
+                                [
+                                    ["./test/e2e/asset/image/1.png", "1"],
+                                    ["./test/e2e/asset/image/2.jpg", "2"]
+                                ],
+                                wd.unsafeGetState(), function (state) {
+                                        return ImguiTool.testIMGUI(1);
+                                });
+                    });
+
     |},
       scriptFilePathList: None,
       distance: None,

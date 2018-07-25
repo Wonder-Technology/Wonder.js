@@ -53,7 +53,7 @@ let performanceTestData = {
 
 
                                      return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
-                             return window.loadImageSrc("./test/e2e/asset/1.jpg")
+                             return window.loadImageSrc("./test/e2e/asset/image/1.jpg")
                              .then((imageDataArr) => {
                                   return initSample(
                                   TextureTool.buildArrayBufferViewSourceTextureFromImageDataArr(imageDataArr), wd.unsafeGetState());
@@ -319,7 +319,7 @@ let performanceTestData = {
 
 
                                         return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
-                             return window.loadImageSrc("./test/e2e/asset/1.jpg")
+                             return window.loadImageSrc("./test/e2e/asset/image/1.jpg")
                              .then((imageDataArr) => {
                                   return initSample(
                                   TextureTool.buildArrayBufferViewSourceTextureFromImageDataArr(imageDataArr), wd.unsafeGetState());
@@ -834,11 +834,11 @@ let performanceTestData = {
 
                              return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
 
-                             return window.loadImageSrc("./test/e2e/asset/1.jpg")
+                             return window.loadImageSrc("./test/e2e/asset/image/1.jpg")
                              .then((image1DataArr) => {
 
 
-                             return window.loadImageSrc("./test/e2e/asset/2.jpg")
+                             return window.loadImageSrc("./test/e2e/asset/image/2.jpg")
                              .then((image2DataArr) => {
                                   return initSample(
                                   TextureTool.buildArrayBufferViewSourceTextureFromImageDataArr(image1DataArr),
@@ -915,11 +915,11 @@ let performanceTestData = {
 
 
                              return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
-                             return window.loadImageSrc("./test/e2e/asset/1.jpg")
+                             return window.loadImageSrc("./test/e2e/asset/image/1.jpg")
                              .then((image1DataArr) => {
 
 
-                             return window.loadImageSrc("./test/e2e/asset/2.jpg")
+                             return window.loadImageSrc("./test/e2e/asset/image/2.jpg")
                              .then((image2DataArr) => {
                                   return initSample(
                                   TextureTool.buildArrayBufferViewSourceTextureFromImageDataArr(image1DataArr),
