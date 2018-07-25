@@ -599,7 +599,9 @@ let renderTestData = {
                                     ["./test/e2e/asset/image/2.jpg", "2"]
                                 ],
                                 wd.unsafeGetState(), function (state) {
-                                        return ImguiTool.testIMGUI(1);
+                                        var state = ImguiTool.testIMGUI(1, state);
+
+            return wd.startDirector(state);
                                 });
                     });
 

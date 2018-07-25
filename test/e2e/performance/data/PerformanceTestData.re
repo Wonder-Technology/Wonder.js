@@ -30,6 +30,7 @@ let performanceTestData = {
       "./test/e2e/js/RandomTool.js",
       "./test/e2e/js/TextureTool.js",
       "./test/e2e/js/PrepareTool.js",
+      "./test/e2e/js/IMGUITool.js",
       "./dist/wd.js",
     ],
     replaceBodyFuncStrWhenDebug:
@@ -1601,6 +1602,55 @@ let performanceTestData = {
                 return { "textArray": ["bind", "trigger"], "timeArray": [n1, n2, n3] };
             });
 |},
+          errorRate: 10,
+        },
+      ],
+    },
+    {
+      name: "imgui",
+      caseList: [
+        {
+          name: "create_30_all_controls",
+          bodyFuncStr: {|
+                   PrepareTool.prepareForTest();
+
+                    return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){
+
+                            return AssetTool.loadIMGUIAsset("./test/e2e/asset/font/Lato-Regular-64.fnt",
+                                "./test/e2e/asset/font/lato.png",
+                                [
+                                    ["./test/e2e/asset/image/1.png", "1"],
+                                    ["./test/e2e/asset/image/2.jpg", "2"]
+                                ],
+                                wd.unsafeGetState(), function (state) {
+                                        var state = ImguiTool.testIMGUI(30, state);
+
+                            var n1 = performance.now();
+
+                                                var state = wd.initDirector(state);
+
+
+
+
+
+                            var n2 = performance.now();
+                                                var state = wd.loopBody(100.0, state);
+
+
+
+
+                            var n3 = performance.now();
+
+
+
+
+
+                            return {"textArray": ["init", "loopBody"], "timeArray": [n1, n2, n3] }
+
+                                });
+                    });
+
+    |},
           errorRate: 10,
         },
       ],

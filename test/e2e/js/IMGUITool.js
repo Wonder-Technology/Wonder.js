@@ -84,18 +84,7 @@ var ImguiTool = (function () {
                 }, state
             );
         },
-        testIMGUI: function (count) {
-            // return AssetTool.loadIMGUIAsset("./test/e2e/asset/font/Lato-Regular-64.fnt",
-            //     "./test/e2e/asset/font/lato.png",
-            //     [
-            //         ["./test/e2e/asset/image/1.png", "1"],
-            //         ["./test/e2e/asset/image/2.jpg", "2"]
-            //     ],
-            //     wd.unsafeGetState(), function (state) {
-            //     });
-            var state = wd.unsafeGetState();
-
-
+        testIMGUI: function (count, state) {
             var state = ImguiTool.setSetting([0.045, 0.012], state);
 
 
@@ -219,15 +208,7 @@ var ImguiTool = (function () {
 
                 }, state);
 
-
-
-
-
-
-
-
-            return wd.startDirector(state);
-
+            return state;
         }
     }
 })()
