@@ -34,6 +34,9 @@
               "name": "set_full_screen"
             },
             {
+              "name": "init_imgui"
+            },
+            {
               "name": "send_init_render_data"
             }
           ]
