@@ -52,4 +52,63 @@ let _ =
            |> resolve
          );
     });
+
+    describe("test load multi wdb files", () => {
+      let _buildFakeFetch = (sandbox, gltfJsonStr1, gltfJsonStr2, binBuffer) => {
+        let fetch = createEmptyStubWithJsObjSandbox(sandbox);
+        fetch
+        |> onCall(0)
+        |> returns(
+             _buildFakeFetchArrayBufferResponse(
+               ConvertGLBSystem.convertGLBData((
+                 gltfJsonStr1 |> Js.Json.parseExn,
+                 binBuffer,
+               ))
+               |> Obj.magic,
+             ),
+           )
+        |> onCall(1)
+        |> returns(
+             _buildFakeFetchArrayBufferResponse(
+               ConvertGLBSystem.convertGLBData((
+                 gltfJsonStr2 |> Js.Json.parseExn,
+                 binBuffer,
+               ))
+               |> Obj.magic,
+             ),
+           );
+        fetch;
+      };
+
+      testPromise("test", () => {
+        let fetchFunc =
+          _buildFakeFetch(
+            sandbox,
+            ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+            ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+            GLBTool.buildBinBuffer(),
+          );
+
+        LoadWDBTool.load(~wdbPath="../singleNode.wdb", ~fetchFunc, ())
+        |> then_(((state, gameObject1)) => {
+             MainStateTool.setState(state) |> ignore;
+
+             LoadWDBTool.load(~wdbPath="../singleNode.wdb", ~fetchFunc, ())
+             |> then_(((state, gameObject2)) =>
+                  (
+                    AssembleWDBSystemTool.getAllGameObjects(
+                      gameObject1,
+                      state,
+                    ),
+                    AssembleWDBSystemTool.getAllGameObjects(
+                      gameObject2,
+                      state,
+                    ),
+                  )
+                  |> expect == ([|gameObject1|], [|gameObject2|])
+                  |> resolve
+                );
+           });
+      });
+    });
   });

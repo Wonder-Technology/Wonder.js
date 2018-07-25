@@ -18,6 +18,7 @@ module.exports = {
     // { name: "exampleScope" },
     // { name: "changeMe" }
     { name: "state" },
+    { name: "api" },
     { name: "data-json" },
     { name: "texture" },
     { name: "asset" },

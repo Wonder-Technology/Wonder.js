@@ -217,17 +217,37 @@ and apiRecord = {
       (state, bool, float),
     "beginGroup": (. WonderImgui.StructureType.position, state) => state,
     "endGroup": (. state) => state,
-    "setLightMaterialDiffuseColor":
-      (ComponentType.component, array(float), state) => state,
+    "unsafeGetGameObjectTransformComponent": (gameObject, state) => int,
+    "unsafeGetGameObjectLightMaterialComponent": (gameObject, state) => int,
+    "setLightMaterialDiffuseColor": (component, array(float), state) => state,
+    "getLightMaterialSpecularColor":
+      (component, state) => array(Js.Typed_array.Float32Array.elt),
+    "setLightMaterialSpecularColor":
+      (component, array(float), state) => state,
+    "getLightMaterialShininess":
+      (component, state) => Js.Typed_array.Float32Array.elt,
+    "setLightMaterialShininess":
+      (component, Js.Typed_array.Float32Array.elt, state) => state,
+    "getTransformLocalPosition":
+      (transform, state) =>
+      (
+        Js.Typed_array.Float32Array.elt,
+        Js.Typed_array.Float32Array.elt,
+        Js.Typed_array.Float32Array.elt,
+      ),
+    "setTransformLocalPosition":
+      (
+        transform,
+        (
+          Js.Typed_array.Float32Array.elt,
+          Js.Typed_array.Float32Array.elt,
+          Js.Typed_array.Float32Array.elt,
+        ),
+        state
+      ) =>
+      state,
     "getRenderWorkerCustomData":
       state => CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
-    /* "box": FixedLayoutControlIMGUIService.box,
-       "radioButton": FixedLayoutControlIMGUIService.radioButton,
-       "checkbox": FixedLayoutControlIMGUIService.checkbox,
-       "sliderInt": FixedLayoutControlIMGUIService.sliderInt,
-       "sliderFloat": FixedLayoutControlIMGUIService.sliderFloat,
-       "beginGroup": GroupLayoutIMGUIService.beginGroup,
-       "endGroup": GroupLayoutIMGUIService.endGroup, */
   },
 }
 and state = {
