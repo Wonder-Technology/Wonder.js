@@ -139,6 +139,7 @@ let render = (sandbox, postMessageToRenderWorker, completeFunc) => {
   stubSelfPostMessage(sandbox^);
 
   [|
+    GetCustomDataRenderWorkerJob.execJob(None),
     GetAmbientLightDataRenderWorkerJob.execJob(None),
     GetDirectionLightDataRenderWorkerJob.execJob(None),
     GetPointLightDataRenderWorkerJob.execJob(None),

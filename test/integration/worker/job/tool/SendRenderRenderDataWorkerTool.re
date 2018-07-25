@@ -4,6 +4,7 @@ let buildRenderRenderData =
       ~arrayBufferViewSourceTextureData=Sinon.matchAny,
       ~materialData=Sinon.matchAny,
       ~imguiData=Sinon.matchAny,
+      ~customData=Sinon.matchAny,
       (),
     ) => {
   "operateType": Sinon.matchAny,
@@ -19,4 +20,5 @@ let buildRenderRenderData =
   },
   "renderData": Sinon.matchAny,
   "imguiData": imguiData,
+  "customData": customData,
 };

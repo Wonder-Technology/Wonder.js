@@ -79,6 +79,9 @@
                         "name": "get_render_data"
                     },
                     {
+                        "name": "get_custom_data"
+                    },
+                    {
                         "name": "get_instance_data"
                     },
                     {

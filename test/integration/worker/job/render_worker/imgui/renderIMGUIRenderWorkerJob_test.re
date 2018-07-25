@@ -239,7 +239,7 @@ let _ =
                       let apiJsObj = Obj.magic(apiJsObj);
 
                       let buttonFunc = apiJsObj##button;
-                      let setCustomDataFunc = apiJsObj##setCustomData;
+                      let setCustomDataFunc = apiJsObj##setCustomDataFromRenderWorkerToMainWorker;
 
                       let (state, isClick) =
                         buttonFunc(.
