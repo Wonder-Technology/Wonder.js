@@ -134,7 +134,7 @@ type customEvent = {
   name: string,
   target: option(GameObjectType.gameObject),
   /* currentTarget: option(GameObjectType.gameObject), */
-  /* isStopPropagation: bool, */
+  isStopPropagation: bool,
   phase: option(phaseType),
   /* type_: eventType, */
   userData: option(userData),

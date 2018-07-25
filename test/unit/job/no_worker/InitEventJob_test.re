@@ -1609,7 +1609,7 @@ let _ =
                 0,
                 (. event, state) => {
                   value := 1;
-                  state;
+                  (state, event);
                 },
                 state,
               );
@@ -1632,7 +1632,7 @@ let _ =
               let handleFunc =
                 (. event, state) => {
                   value := value^ + 1;
-                  state;
+                  (state, event);
                 };
 
               let state =
@@ -1648,7 +1648,7 @@ let _ =
                   0,
                   (. event, state) => {
                     value := value^ + 10;
-                    state;
+                    (state, event);
                   },
                   state,
                 );
@@ -1678,7 +1678,7 @@ let _ =
               let handleFunc =
                 (. event, state) => {
                   value := value^ + 1;
-                  state;
+                  (state, event);
                 };
 
               let state =
@@ -1694,7 +1694,7 @@ let _ =
                   0,
                   (. event, state) => {
                     value := value^ + 10;
-                    state;
+                    (state, event);
                   },
                   state,
                 );
@@ -1732,13 +1732,13 @@ let _ =
                 ManageEventAPI.onCustomGlobalEvent(
                   CustomEventTool.getPointDownEventName(),
                   0,
-                  (. event, state) => {
+                  (. customEvent, state) => {
                     let {event} =
-                      event.userData |> OptionService.unsafeGet |> Obj.magic;
+                      customEvent.userData |> OptionService.unsafeGet |> Obj.magic;
 
                     value := Obj.magic(event)##pageX;
 
-                    state;
+                    (state, customEvent);
                   },
                   state,
                 );
@@ -1795,7 +1795,7 @@ let _ =
                          movementDelta |> Obj.magic,
                        |]);
 
-                    state;
+                    (state, event);
                   },
                   state,
                 );
@@ -1843,7 +1843,7 @@ let _ =
                   0,
                   (. event, state) => {
                     value := value^ - 2;
-                    state;
+                    (state, event);
                   },
                   state,
                 );
@@ -1853,7 +1853,7 @@ let _ =
                   1,
                   (. event, state) => {
                     value := value^ * 2;
-                    state;
+                    (state, event);
                   },
                   state,
                 );
@@ -1904,7 +1904,7 @@ let _ =
                 0,
                 (. event, state) => {
                   value := value^ + 1;
-                  state;
+                  (state, event);
                 },
                 state,
               );
@@ -1945,7 +1945,7 @@ let _ =
                 0,
                 (. event, state) => {
                   value := 1;
-                  state;
+                  (state, event);
                 },
                 state,
               );
@@ -1968,7 +1968,7 @@ let _ =
               let handleFunc =
                 (. event, state) => {
                   value := value^ + 1;
-                  state;
+                  (state, event);
                 };
 
               let state =
@@ -1984,7 +1984,7 @@ let _ =
                   0,
                   (. event, state) => {
                     value := value^ + 10;
-                    state;
+                    (state, event);
                   },
                   state,
                 );
@@ -2014,7 +2014,7 @@ let _ =
               let handleFunc =
                 (. event, state) => {
                   value := value^ + 1;
-                  state;
+                  (state, event);
                 };
 
               let state =
@@ -2030,7 +2030,7 @@ let _ =
                   0,
                   (. event, state) => {
                     value := value^ + 10;
-                    state;
+                    (state, event);
                   },
                   state,
                 );
@@ -2068,14 +2068,14 @@ let _ =
                 ManageEventAPI.onCustomGlobalEvent(
                   CustomEventTool.getPointDownEventName(),
                   0,
-                  (. event, state) => {
+                  (. customEvent, state) => {
                     let {event} =
-                      event.userData |> OptionService.unsafeGet |> Obj.magic;
+                      customEvent.userData |> OptionService.unsafeGet |> Obj.magic;
                     let changedTouches = Obj.magic(event)##changedTouches;
 
                     value := changedTouches[0]##pageX;
 
-                    state;
+                    (state, customEvent);
                   },
                   state,
                 );
@@ -2136,7 +2136,7 @@ let _ =
                          movementDelta |> Obj.magic,
                        |]);
 
-                    state;
+                    (state, event);
                   },
                   state,
                 );
@@ -2181,7 +2181,7 @@ let _ =
                   0,
                   (. event, state) => {
                     value := value^ - 2;
-                    state;
+                    (state, event);
                   },
                   state,
                 );
@@ -2191,7 +2191,7 @@ let _ =
                   1,
                   (. event, state) => {
                     value := value^ * 2;
-                    state;
+                    (state, event);
                   },
                   state,
                 );
@@ -2224,7 +2224,7 @@ let _ =
                 0,
                 (. event, state) => {
                   value := 1;
-                  state;
+                  (state, event);
                 },
                 state,
               );
@@ -2252,7 +2252,7 @@ let _ =
               let handleFunc =
                 (. event, state) => {
                   value := value^ + 1;
-                  state;
+                  (state, event);
                 };
 
               let state =
@@ -2268,7 +2268,7 @@ let _ =
                   0,
                   (. event, state) => {
                     value := value^ + 10;
-                    state;
+                    (state, event);
                   },
                   state,
                 );
@@ -2315,7 +2315,7 @@ let _ =
                 0,
                 (. event, state) => {
                   value := value^ + 1;
-                  state;
+                  (state, event);
                 },
                 state,
               );

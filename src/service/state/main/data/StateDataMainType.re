@@ -130,7 +130,8 @@ and touchDomEventData = {
 }
 and customEventData = {
   priority: int,
-  handleFunc: (. EventType.customEvent, state) => state,
+  handleFunc:
+    (. EventType.customEvent, state) => (state, EventType.customEvent),
 }
 and eventRecord = {
   domEventStreamSubscription: option(WonderBsMost.Most.subscription),
@@ -152,7 +153,7 @@ and eventRecord = {
 }
 and pointEventHandleFuncMap =
   WonderCommonlib.SparseMapService.t(
-    (. EventType.customEvent, state) => state,
+    (. EventType.customEvent, state) => (state, EventType.customEvent),
   )
 and keyboardEventHandleFuncMap =
   WonderCommonlib.SparseMapService.t(

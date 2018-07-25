@@ -37,17 +37,20 @@ let initArcballCameraController = (cameraController, state) => {
     (.
       event: EventType.customEvent,
       {arcballCameraControllerRecord} as state,
-    ) => {
-      ...state,
-      arcballCameraControllerRecord:
-        _changeOrbit(
-          cameraController,
-          event.userData
-          |> OptionService.unsafeGet
-          |> EventType.userDataToPointEvent,
-          arcballCameraControllerRecord,
-        ),
-    };
+    ) => (
+      {
+        ...state,
+        arcballCameraControllerRecord:
+          _changeOrbit(
+            cameraController,
+            event.userData
+            |> OptionService.unsafeGet
+            |> EventType.userDataToPointEvent,
+            arcballCameraControllerRecord,
+          ),
+      },
+      event,
+    );
 
   let pointScaleHandleFunc =
     (.
@@ -61,15 +64,18 @@ let initArcballCameraController = (cameraController, state) => {
 
       HandlePointDomEventMainService.preventDefault(pointEvent.event);
 
-      {
-        ...state,
-        arcballCameraControllerRecord:
-          OperateArcballCameraControllerService.setDistanceByEvent(
-            cameraController,
-            pointEvent,
-            arcballCameraControllerRecord,
-          ),
-      };
+      (
+        {
+          ...state,
+          arcballCameraControllerRecord:
+            OperateArcballCameraControllerService.setDistanceByEvent(
+              cameraController,
+              pointEvent,
+              arcballCameraControllerRecord,
+            ),
+        },
+        event,
+      );
     };
 
   let keydownHandleFunc =

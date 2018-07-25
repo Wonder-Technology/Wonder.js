@@ -14,13 +14,7 @@ let onKeyboardEvent = (~eventName, ~handleFunc, ~state, ~priority=0, ()) =>
   );
 
 let onTouchEvent = (~eventName, ~handleFunc, ~state, ~priority=0, ()) =>
-  BindTouchDomEventMainService.bind(
-    eventName,
-    priority,
-    handleFunc,
-    state,
-  );
-
+  BindTouchDomEventMainService.bind(eventName, priority, handleFunc, state);
 
 let offMouseEventByHandleFunc = (~eventName, ~handleFunc, ~state) =>
   BindMouseDomEventMainService.unbindByHandleFunc(
@@ -42,7 +36,6 @@ let offTouchEventByHandleFunc = (~eventName, ~handleFunc, ~state) =>
     handleFunc,
     state,
   );
-
 
 let onCustomGlobalEvent = (~eventName, ~handleFunc, ~state, ~priority=0, ()) =>
   BindCustomEventMainService.bindGlobalEvent(
@@ -90,6 +83,9 @@ let offCustomGameObjectEventByHandleFunc =
    | MouseUp =>
      HandleMouseEventMainService.execEventHandle(eventName, domEvent, state)
    }; */
+
+let stopPropagationCustomEvent = customEvent =>
+  HandleCustomEventMainService.stopPropagation(customEvent);
 
 let triggerCustomGlobalEvent = (customEvent, state) =>
   HandleCustomEventMainService.triggerGlobalEvent(customEvent, state);

@@ -5,7 +5,11 @@ open EventType;
 let _getDefaultDom = () => DomExtend.document##body;
 
 let _fromDomEvent = eventName =>
-  WonderBsMost.Most.fromEvent(eventName, _getDefaultDom() |> bodyToEventTarget, false);
+  WonderBsMost.Most.fromEvent(
+    eventName,
+    _getDefaultDom() |> bodyToEventTarget,
+    false,
+  );
 
 let _convertMouseEventToPointEvent =
     (
@@ -30,16 +34,20 @@ let _bindDomEventToTriggerPointEvent =
   onDomEventFunc(
     ~eventName=domEventName,
     ~handleFunc=
-      (. mouseEvent, state) =>
-        ManageEventMainService.triggerCustomGlobalEvent(
-          CreateCustomEventMainService.create(
-            customEventName,
-            convertDomEventToPointEventFunc(pointEventName, mouseEvent)
-            |> pointEventToUserData
-            |. Some,
-          ),
-          state,
-        ),
+      (. mouseEvent, state) => {
+        let (state, _) =
+          ManageEventMainService.triggerCustomGlobalEvent(
+            CreateCustomEventMainService.create(
+              customEventName,
+              convertDomEventToPointEventFunc(pointEventName, mouseEvent)
+              |> pointEventToUserData
+              |. Some,
+            ),
+            state,
+          );
+
+        state;
+      },
     ~state,
     (),
   );
@@ -301,7 +309,9 @@ let _fromPCDomEventArr = () => [|
   _fromDomEvent("mouseup")
   |> WonderBsMost.Most.tap(event => _execMouseEventHandle(MouseUp, event)),
   _fromDomEvent("mousemove")
-  |> WonderBsMost.Most.tap(event => _execMouseMoveEventHandle(MouseMove, event)),
+  |> WonderBsMost.Most.tap(event =>
+       _execMouseMoveEventHandle(MouseMove, event)
+     ),
   _fromDomEvent("mousewheel")
   |> WonderBsMost.Most.tap(event => _execMouseEventHandle(MouseWheel, event)),
   _fromDomEvent("mousedown")
@@ -313,7 +323,9 @@ let _fromPCDomEventArr = () => [|
             |> WonderBsMost.Most.tap(event => _execMouseDragEndEventHandle()),
           )
      )
-  |> WonderBsMost.Most.tap(event => _execMouseDragingEventHandle(MouseDrag, event)),
+  |> WonderBsMost.Most.tap(event =>
+       _execMouseDragingEventHandle(MouseDrag, event)
+     ),
   _fromDomEvent("keyup")
   |> WonderBsMost.Most.tap(event => _execKeyboardEventHandle(KeyUp, event)),
   _fromDomEvent("keydown")
@@ -331,7 +343,9 @@ let _fromMobileDomEventArr = () => [|
   _fromDomEvent("touchstart")
   |> WonderBsMost.Most.tap(event => _execTouchEventHandle(TouchStart, event)),
   _fromDomEvent("touchmove")
-  |> WonderBsMost.Most.tap(event => _execTouchMoveEventHandle(TouchMove, event)),
+  |> WonderBsMost.Most.tap(event =>
+       _execTouchMoveEventHandle(TouchMove, event)
+     ),
   _fromDomEvent("touchstart")
   |> WonderBsMost.Most.tap(event => _execTouchDragStartEventHandle())
   |> WonderBsMost.Most.flatMap(event =>
@@ -341,7 +355,9 @@ let _fromMobileDomEventArr = () => [|
             |> WonderBsMost.Most.tap(event => _execTouchDragEndEventHandle()),
           )
      )
-  |> WonderBsMost.Most.tap(event => _execTouchDragingEventHandle(TouchDrag, event)),
+  |> WonderBsMost.Most.tap(event =>
+       _execTouchDragingEventHandle(TouchDrag, event)
+     ),
 |];
 
 let fromDomEvent = ({browserDetectRecord}) =>

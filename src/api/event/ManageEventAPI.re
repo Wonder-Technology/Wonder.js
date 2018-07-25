@@ -91,6 +91,8 @@ let offCustomGameObjectEventByHandleFunc =
     ~state,
   );
 
+let stopPropagationCustomEvent = ManageEventMainService.stopPropagationCustomEvent;
+
 let triggerCustomGlobalEvent = (customEvent, state) =>
   ManageEventMainService.triggerCustomGlobalEvent(customEvent, state);
 

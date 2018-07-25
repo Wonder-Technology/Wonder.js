@@ -168,12 +168,12 @@ let _ =
             let pointDragHandleFunc =
               (. event, state) => {
                 value := value^ + 1;
-                state;
+                (state, event);
               };
             let pointScaleHandleFunc =
               (. event, state) => {
                 value := value^ + 2;
-                state;
+                (state, event);
               };
             let keydownHandleFunc =
               (. event, state) => {
@@ -250,12 +250,12 @@ let _ =
             let pointDragHandleFunc =
               (. event, state) => {
                 value := value^ + 1;
-                state;
+                (state, event);
               };
             let pointScaleHandleFunc =
               (. event, state) => {
                 value := value^ + 2;
-                state;
+                (state, event);
               };
             let keydownHandleFunc =
               (. event, state) => {

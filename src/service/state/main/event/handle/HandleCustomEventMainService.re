@@ -5,18 +5,23 @@ open EventType;
 let _triggerHandleFunc = (customEvent, arr, state) =>
   arr
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. state, {handleFunc}) => handleFunc(. customEvent, state),
-       state,
+       (. (state, customEvent), {handleFunc}) =>
+         customEvent.isStopPropagation ?
+           (state, customEvent) : handleFunc(. customEvent, state),
+       (state, customEvent),
      );
+
+let stopPropagation = customEvent => {
+  ...customEvent,
+  isStopPropagation: true,
+};
 
 let triggerGlobalEvent =
     (({name}: customEvent) as customEvent, {eventRecord} as state) => {
   let {customGlobalEventArrMap} = eventRecord;
 
-  switch (
-    customGlobalEventArrMap |> WonderCommonlib.HashMapService.get(name)
-  ) {
-  | None => state
+  switch (customGlobalEventArrMap |> WonderCommonlib.HashMapService.get(name)) {
+  | None => (state, customEvent)
   | Some(arr) => _triggerHandleFunc(customEvent, arr, state)
   };
 };
@@ -28,12 +33,12 @@ let triggerGameObjectEvent =
   switch (
     customGameObjectEventArrMap |> WonderCommonlib.HashMapService.get(name)
   ) {
-  | None => state
+  | None => (state, customEvent)
   | Some(gameObjectEventListMap) =>
     switch (
       gameObjectEventListMap |> WonderCommonlib.SparseMapService.get(target)
     ) {
-    | None => state
+    | None => (state, customEvent)
     | Some(arr) =>
       _triggerHandleFunc({...customEvent, target: Some(target)}, arr, state)
     }
@@ -41,7 +46,8 @@ let triggerGameObjectEvent =
 };
 
 let rec _broadcastGameObjectEvent = (eventName, target, customEvent, state) => {
-  let state = triggerGameObjectEvent(target, customEvent, state);
+  let (state, customEvent) =
+    triggerGameObjectEvent(target, customEvent, state);
 
   let transformRecord = RecordTransformMainService.getRecord(state);
 
@@ -69,7 +75,8 @@ let broadcastGameObjectEvent =
   );
 
 let rec _emitGameObjectEvent = (eventName, target, customEvent, state) => {
-  let state = triggerGameObjectEvent(target, customEvent, state);
+  let (state, customEvent) =
+    triggerGameObjectEvent(target, customEvent, state);
 
   let transformRecord = RecordTransformMainService.getRecord(state);
 

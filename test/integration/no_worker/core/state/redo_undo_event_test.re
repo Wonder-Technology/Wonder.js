@@ -22,7 +22,7 @@ let _ =
     describe("test redo/undo binded event data map", () => {
       let value = ref(0);
 
-      let _prepare = (value, onEventFunc, state) => {
+      let _prepareDomEvent = (value, onEventFunc, state) => {
         let state =
           state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
 
@@ -49,13 +49,40 @@ let _ =
         MainStateTool.restore(state, copiedState);
       };
 
+      let _prepareCustomEvent = (value, onEventFunc, state) => {
+        let state =
+          state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+
+        let state =
+          onEventFunc(
+            (. event, state) => {
+              value := value^ + 1;
+              (state, event);
+            },
+            state,
+          );
+
+        let copiedState = state |> MainStateTool.deepCopyForRestore;
+
+        let state =
+          onEventFunc(
+            (. event, state) => {
+              value := value^ + 2;
+              (state, event);
+            },
+            state,
+          );
+
+        MainStateTool.restore(state, copiedState);
+      };
+
       beforeEach(() => value := 0);
 
       test("test restore mouseDomEventDataArrMap", () => {
         let state = MouseEventTool.prepare(~sandbox, ());
         let state = state |> NoWorkerJobTool.execInitJobs;
         let restoredState =
-          _prepare(
+          _prepareDomEvent(
             value,
             (handleFunc, state) =>
               ManageEventAPI.onMouseEvent(MouseDown, 0, handleFunc, state),
@@ -76,7 +103,7 @@ let _ =
         let state = KeyboardEventTool.prepare(~sandbox, ());
         let state = state |> NoWorkerJobTool.execInitJobs;
         let restoredState =
-          _prepare(
+          _prepareDomEvent(
             value,
             (handleFunc, state) =>
               ManageEventAPI.onKeyboardEvent(KeyDown, 0, handleFunc, state),
@@ -97,7 +124,7 @@ let _ =
         let state = TouchEventTool.prepare(~sandbox, ());
         let state = state |> NoWorkerJobTool.execInitJobs;
         let restoredState =
-          _prepare(
+          _prepareDomEvent(
             value,
             (handleFunc, state) =>
               ManageEventAPI.onTouchEvent(TouchStart, 0, handleFunc, state),
@@ -116,7 +143,7 @@ let _ =
       });
       test("test restore customGlobalEventArrMap", () => {
         let restoredState =
-          _prepare(
+          _prepareCustomEvent(
             value,
             (handleFunc, state) =>
               ManageEventAPI.onCustomGlobalEvent(
@@ -142,7 +169,7 @@ let _ =
       test("test restore customGameObjectEventArrMap", () => {
         let (state, gameObject) = GameObjectAPI.createGameObject(state^);
         let restoredState =
-          _prepare(
+          _prepareCustomEvent(
             value,
             (handleFunc, state) =>
               ManageEventAPI.onCustomGameObjectEvent(

@@ -5,16 +5,19 @@ let bindEvent = state => {
     ManageEventMainService.onCustomGlobalEvent(
       ~eventName=NameEventService.getPointDownEventName(),
       ~handleFunc=
-        (. event: EventType.customEvent, {imguiRecord} as state) => {
-          ...state,
-          imguiRecord: {
-            ...imguiRecord,
-            ioData: {
-              ...imguiRecord.ioData,
-              pointDown: true,
+        (. event: EventType.customEvent, {imguiRecord} as state) => (
+          {
+            ...state,
+            imguiRecord: {
+              ...imguiRecord,
+              ioData: {
+                ...imguiRecord.ioData,
+                pointDown: true,
+              },
             },
           },
-        },
+          event,
+        ),
       ~state,
       (),
     );
@@ -23,16 +26,19 @@ let bindEvent = state => {
     ManageEventMainService.onCustomGlobalEvent(
       ~eventName=NameEventService.getPointUpEventName(),
       ~handleFunc=
-        (. event: EventType.customEvent, {imguiRecord} as state) => {
-          ...state,
-          imguiRecord: {
-            ...imguiRecord,
-            ioData: {
-              ...imguiRecord.ioData,
-              pointUp: true,
+        (. event: EventType.customEvent, {imguiRecord} as state) => (
+          {
+            ...state,
+            imguiRecord: {
+              ...imguiRecord,
+              ioData: {
+                ...imguiRecord.ioData,
+                pointUp: true,
+              },
             },
           },
-        },
+          event,
+        ),
       ~state,
       (),
     );
@@ -47,17 +53,20 @@ let bindEvent = state => {
             |> OptionService.unsafeGet
             |> EventType.userDataToPointEvent;
 
-          {
-            ...state,
-            imguiRecord: {
-              ...imguiRecord,
-              ioData: {
-                ...imguiRecord.ioData,
-                pointPosition: pointEvent.locationInView,
-                pointMovementDelta: pointEvent.movementDelta,
+          (
+            {
+              ...state,
+              imguiRecord: {
+                ...imguiRecord,
+                ioData: {
+                  ...imguiRecord.ioData,
+                  pointPosition: pointEvent.locationInView,
+                  pointMovementDelta: pointEvent.movementDelta,
+                },
               },
             },
-          };
+            event,
+          );
         },
       ~state,
       (),

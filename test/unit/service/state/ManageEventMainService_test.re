@@ -27,7 +27,7 @@ let _ =
               0,
               (. event, state) => {
                 value := 1;
-                state;
+                (state, event);
               },
               state,
             );
@@ -56,7 +56,7 @@ let _ =
               0,
               (. event, state) => {
                 value := value^ * 2;
-                state;
+                (state, event);
               },
               state,
             );
@@ -67,7 +67,7 @@ let _ =
               0,
               (. event, state) => {
                 value := value^ * 3;
-                state;
+                (state, event);
               },
               state,
             );
@@ -78,11 +78,11 @@ let _ =
               0,
               (. event, state) => {
                 value := value^ * 4;
-                state;
+                (state, event);
               },
               state,
             );
-          let state =
+          let (state, _) =
             ManageEventAPI.triggerCustomGameObjectEvent(
               CustomEventTool.createCustomEvent(
                 ~eventName=CustomEventTool.getPointDownEventName(),
@@ -91,7 +91,7 @@ let _ =
               gameObject2,
               state,
             );
-          let state =
+          let (state, _) =
             ManageEventAPI.triggerCustomGameObjectEvent(
               CustomEventTool.createCustomEvent(
                 ~eventName=CustomEventTool.getPointDownEventName(),
@@ -109,10 +109,11 @@ let _ =
         test("test", () => {
           let (state, gameObject) = GameObjectAPI.createGameObject(state^);
           let value = ref(0);
-          let handleFunc = (. event, state) => {
-            value := value^ + 1;
-            state;
-          };
+          let handleFunc =
+            (. event, state) => {
+              value := value^ + 1;
+              (state, event);
+            };
 
           let state =
             ManageEventAPI.onCustomGameObjectEvent(
@@ -129,7 +130,7 @@ let _ =
               0,
               (. event, state) => {
                 value := value^ + 10;
-                state;
+                (state, event);
               },
               state,
             );
@@ -140,7 +141,7 @@ let _ =
               handleFunc,
               state,
             );
-          let state =
+          let (state, _) =
             ManageEventAPI.triggerCustomGameObjectEvent(
               CustomEventTool.createCustomEvent(
                 ~eventName=CustomEventTool.getPointDownEventName(),
@@ -158,10 +159,11 @@ let _ =
         test("test", () => {
           let (state, gameObject1) = GameObjectAPI.createGameObject(state^);
           let value = ref(0);
-          let handleFunc = (. event, state) => {
-            value := value^ + 1;
-            state;
-          };
+          let handleFunc =
+            (. event, state) => {
+              value := value^ + 1;
+              (state, event);
+            };
 
           let state =
             ManageEventAPI.onCustomGameObjectEvent(
@@ -178,7 +180,7 @@ let _ =
               0,
               (. event, state) => {
                 value := value^ + 10;
-                state;
+                (state, event);
               },
               state,
             );
@@ -188,7 +190,7 @@ let _ =
               gameObject1,
               state,
             );
-          let state =
+          let (state, _) =
             ManageEventAPI.triggerCustomGameObjectEvent(
               CustomEventTool.createCustomEvent(
                 ~eventName=CustomEventTool.getPointDownEventName(),
@@ -214,7 +216,7 @@ let _ =
               1,
               (. event, state) => {
                 value := value^ - 3;
-                state;
+                (state, event);
               },
               state,
             );
@@ -225,11 +227,11 @@ let _ =
               0,
               (. event, state) => {
                 value := value^ * 2;
-                state;
+                (state, event);
               },
               state,
             );
-          let state =
+          let (state, _) =
             ManageEventAPI.triggerCustomGameObjectEvent(
               CustomEventTool.createCustomEvent(
                 ~eventName=CustomEventTool.getPointDownEventName(),
@@ -262,7 +264,7 @@ let _ =
               0,
               (. event, state) => {
                 value := value^ + 1;
-                state;
+                (state, event);
               },
               state,
             );
@@ -273,7 +275,7 @@ let _ =
               0,
               (. event, state) => {
                 value := value^ + 2;
-                state;
+                (state, event);
               },
               state,
             );
@@ -284,7 +286,7 @@ let _ =
               0,
               (. event, state) => {
                 value := value^ + 3;
-                state;
+                (state, event);
               },
               state,
             );
@@ -321,7 +323,7 @@ let _ =
               0,
               (. event, state) => {
                 value := value^ + 1;
-                state;
+                (state, event);
               },
               state,
             );
@@ -332,7 +334,7 @@ let _ =
               0,
               (. event, state) => {
                 value := value^ + 2;
-                state;
+                (state, event);
               },
               state,
             );
@@ -343,7 +345,7 @@ let _ =
               0,
               (. event, state) => {
                 value := value^ * 3;
-                state;
+                (state, event);
               },
               state,
             );
@@ -358,6 +360,95 @@ let _ =
             );
 
           value^ |> expect == 2 * 3 + 2 + 1;
+        })
+      );
+    });
+
+    describe("test stopPropagation", () => {
+      describe("test custom gameObject event", () =>
+        test(
+          "if stopPropagation, gameObject's less priority handleFunc shouldn't be executed",
+          () => {
+            let (state, gameObject1) =
+              GameObjectAPI.createGameObject(state^);
+            let value = ref(2);
+
+            let state =
+              ManageEventAPI.onCustomGameObjectEvent(
+                CustomEventTool.getPointDownEventName(),
+                gameObject1,
+                1,
+                (. event, state) => {
+                  value := value^ - 3;
+
+                  (state, ManageEventAPI.stopPropagationCustomEvent(event));
+                },
+                state,
+              );
+            let state =
+              ManageEventAPI.onCustomGameObjectEvent(
+                CustomEventTool.getPointDownEventName(),
+                gameObject1,
+                0,
+                (. event, state) => {
+                  value := value^ * 2;
+                  (state, event);
+                },
+                state,
+              );
+            let (state, _) =
+              ManageEventAPI.triggerCustomGameObjectEvent(
+                CustomEventTool.createCustomEvent(
+                  ~eventName=CustomEventTool.getPointDownEventName(),
+                  (),
+                ),
+                gameObject1,
+                state,
+              );
+
+            value^ |> expect == (-1);
+          },
+        )
+      );
+
+      describe("test custom global event", () =>
+        test(
+          "if stopPropagation, less priority handleFunc shouldn't be executed",
+          () => {
+          let (state, gameObject1) = GameObjectAPI.createGameObject(state^);
+          let value = ref(2);
+
+          let state =
+            ManageEventAPI.onCustomGlobalEvent(
+              CustomEventTool.getPointDownEventName(),
+              1,
+              (. event, state) => {
+                value := value^ - 3;
+
+                (state, ManageEventAPI.stopPropagationCustomEvent(event));
+              },
+              state,
+            );
+          let state =
+            ManageEventAPI.onCustomGlobalEvent(
+              CustomEventTool.getPointDownEventName(),
+              0,
+              (. event, state) => {
+                value := value^ * 2;
+                (state, event);
+              },
+              state,
+            );
+          let (state, _) =
+            ManageEventAPI.triggerCustomGlobalEvent(
+              CustomEventTool.createCustomEvent(
+                ~eventName=CustomEventTool.getPointDownEventName(),
+                (),
+              ),
+              state,
+            );
+
+          value^ |> expect == (-1);
         })
       );
     });
