@@ -30,7 +30,9 @@
 
             return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
                 // return AssetTool.loadWDB("./BoxTextured.wdb", wd.unsafeGetState(), function ([state, gameObject]) {
-                return AssetTool.loadWDB("./generated.wdb", wd.unsafeGetState(), function ([state, gameObject]) {
+                // return AssetTool.loadWDB("./generated.wdb", wd.unsafeGetState(), function ([state, gameObject]) {
+                // return AssetTool.loadWDB("./generated.wdb", wd.unsafeGetState(), function ([state, gameObject]) {
+                return AssetTool.loadWDB("./CesiumMilkTruck.wdb", wd.unsafeGetState(), function ([state, gameObject]) {
                     return initSample(state, gameObject);
                 });
             });
@@ -94,7 +96,7 @@
             }
 
             function initSample(state, gameObject) {
-                // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(true, state);
+                var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(true, state);
 
                 wd.startDirector(state);
             }
