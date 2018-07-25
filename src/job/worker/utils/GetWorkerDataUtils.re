@@ -1,9 +1,7 @@
 let _createGetWorkerDataStream = (flags, target) =>
   MostUtils.fromWorkerEvent("message", target)
   |> WonderBsMost.Most.filter(e =>
-      { 
-       WonderLog.Log.print(e##data) |> ignore; 
-        e##data##operateType === JobConfigUtils.getOperateType(flags) }
+       e##data##operateType === JobConfigUtils.getOperateType(flags)
      );
 
 let createGetMainWorkerDataStream = (flags, target) =>

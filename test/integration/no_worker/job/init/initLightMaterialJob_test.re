@@ -817,7 +817,7 @@ vec3 getViewDir(){
                   state^,
                 );
               GLSLTool.containMultiline(
-                GLSLTool.getFsSource(shaderSource) |> WonderLog.Log.print,
+                GLSLTool.getFsSource(shaderSource),
                 [
                   {|uniform vec3 u_cameraPos;|},
                   {|

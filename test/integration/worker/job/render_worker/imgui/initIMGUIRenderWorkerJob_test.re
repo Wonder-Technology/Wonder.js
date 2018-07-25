@@ -489,7 +489,6 @@ let _ =
             RenderJobsRenderWorkerTool.init(
               state =>
                 GLSLTool.contain(
-                  /* GLSLTool.getVsSource(shaderSource) |> WonderLog.Log.print, */
                   GLSLTool.getVsSource(shaderSource),
                   {|attribute null null;|},
                 )
