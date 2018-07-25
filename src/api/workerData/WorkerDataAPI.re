@@ -1,5 +1,8 @@
 let getRenderWorkerCustomData = state =>
   OperateWorkerDataMainService.getRenderWorkerCustomData(state);
 
-let hasRenderWorkerCustomData = state =>
-  OperateWorkerDataMainService.hasRenderWorkerCustomData(state);
+let getMainWorkerCustomData = state =>
+  OperateWorkerDataMainService.getMainWorkerCustomData(state);
+
+let setMainWorkerCustomData = (customData, state) =>
+  OperateWorkerDataMainService.setMainWorkerCustomData(customData, state);

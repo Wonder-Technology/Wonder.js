@@ -15,3 +15,13 @@ let create = () => {
   },
   wonderImguiIMGUIRecord: WonderImgui.ManageIMGUIService.createRecord(),
 };
+
+let setControlDataFromRenderWorker = (imguiData, state) => {
+  ...state,
+  imguiRecord: {
+    ...state.imguiRecord,
+    wonderImguiIMGUIRecord:
+      getWonderIMGUIRecord(state)
+      |> WonderImgui.RecordIMGUIService.setControlData(imguiData##controlData),
+  },
+};

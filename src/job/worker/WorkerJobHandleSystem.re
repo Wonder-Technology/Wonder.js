@@ -90,6 +90,7 @@ let _getWorkerJobHandles = () => [
     "create_light_render_object_typeArray",
     CreateLightRenderObjectBufferTypeArrayRenderWorkerJob.execJob,
   ),
+  ("get_custom_data", GetCustomDataRenderWorkerJob.execJob),
   ("get_camera_data", GetCameraDataRenderWorkerJob.execJob),
   ("send_uniform_shader_data", SendUniformShaderDataRenderWorkerJob.execJob),
   ("render_basic", RenderBasicRenderWorkerJob.execJob),

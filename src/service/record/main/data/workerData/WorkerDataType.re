@@ -1,5 +1,10 @@
 open CustomWorkerDataType;
 
+type mainWorkerData = {customDataFromMainWorkerToRenderWorker};
+
 type renderWorkerData = {customDataFromRenderWorkerToMainWorker};
 
-type workerDataRecord = {renderWorkerData};
+type workerDataRecord = {
+  mainWorkerData,
+  renderWorkerData,
+};

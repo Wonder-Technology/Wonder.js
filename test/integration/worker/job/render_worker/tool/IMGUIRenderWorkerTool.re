@@ -120,3 +120,7 @@ let prepareSetData = sandbox => {
     (imageDataArrayBufferTuple, context),
   );
 };
+
+let getControlData = state =>
+  RecordIMGUIRenderWorkerService.getRecord(state)
+  |> WonderImgui.RecordIMGUIService.getControlData;

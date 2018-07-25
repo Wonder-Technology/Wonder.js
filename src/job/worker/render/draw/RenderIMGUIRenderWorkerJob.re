@@ -18,6 +18,9 @@ let execJob = (flags, e, stateData) =>
                imguiData##imguiFunc
                |> OptionService.unsafeGetJsonSerializedValue
                |> SerializeService.deserializeFunction,
+             )
+          |> WonderImgui.RecordIMGUIService.setControlData(
+               imguiData##controlData,
              );
 
         state.imguiRecord = imguiRecord;

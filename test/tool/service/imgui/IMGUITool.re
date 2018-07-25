@@ -1,5 +1,6 @@
 let buildEmptyIMGUIFuncStr = () => {|function (customData, apiJsObj, record){ return record; }|};
 
+
 let getIMGUIFunc = ManageIMGUIMainService.getIMGUIFunc;
 
 let getCustomData = ManageIMGUIMainService.getCustomData;
@@ -87,5 +88,15 @@ let setIOData =
   imguiRecord: {
     ...state.imguiRecord,
     ioData,
+  },
+};
+
+let setControlData = (controlData, state: StateDataMainType.state) => {
+  ...state,
+  imguiRecord: {
+    ...state.imguiRecord,
+    wonderImguiIMGUIRecord:
+      getWonderIMGUIRecord(state)
+      |> WonderImgui.RecordIMGUIService.setControlData(controlData),
   },
 };

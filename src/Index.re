@@ -592,7 +592,9 @@ let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
 
 let createTransform = TransformAPI.createTransform;
 
-let hasRenderWorkerCustomData = WorkerDataAPI.hasRenderWorkerCustomData;
+let setMainWorkerCustomData = WorkerDataAPI.setMainWorkerCustomData;
+
+let getMainWorkerCustomData = WorkerDataAPI.getMainWorkerCustomData;
 
 let getRenderWorkerCustomData = WorkerDataAPI.getRenderWorkerCustomData;
 

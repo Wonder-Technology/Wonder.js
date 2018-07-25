@@ -34,5 +34,5 @@ let createState = () => {
   browserDetectRecord: None,
   apiRecord: RecordAPIRenderWorkerService.create(),
   imguiRecord: WonderImgui.ManageIMGUIAPI.createRecord(),
-  customRecord: RecordCustomRenderWorkerService.create(),
+  customRecord: RecordRenderWorkerCustomService.create(),
 };

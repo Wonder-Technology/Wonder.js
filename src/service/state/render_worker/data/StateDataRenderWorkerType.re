@@ -109,10 +109,13 @@ type apiRecord = {
       (. WonderImgui.StructureType.position, renderWorkerState) =>
       renderWorkerState,
     "endGroup": (. renderWorkerState) => renderWorkerState,
-    "getCustomData":
+    "getCustomDataFromMainWorkerToRenderWorker":
+      renderWorkerState =>
+      CustomWorkerDataType.customDataFromMainWorkerToRenderWorker,
+    "getCustomDataFromRenderWorkerToMainWorker":
       renderWorkerState =>
       CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
-    "setCustomData":
+    "setCustomDataFromRenderWorkerToMainWorker":
       (
         . CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
         renderWorkerState

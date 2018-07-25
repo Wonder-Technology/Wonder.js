@@ -7,11 +7,22 @@ let getRenderWorkerCustomData = state =>
 let setRenderWorkerCustomData = (customData, state) => {
   ...state,
   workerDataRecord: {
+    ...state.workerDataRecord,
     renderWorkerData: {
       customDataFromRenderWorkerToMainWorker: Obj.magic(customData),
     },
   },
 };
 
-let hasRenderWorkerCustomData = state =>
-  RecordWorkerDataService.hasRenderWorkerCustomData(state.workerDataRecord);
+let getMainWorkerCustomData = state =>
+  state.workerDataRecord.mainWorkerData.customDataFromMainWorkerToRenderWorker;
+
+let setMainWorkerCustomData = (customData, state) => {
+  ...state,
+  workerDataRecord: {
+    ...state.workerDataRecord,
+    mainWorkerData: {
+      customDataFromMainWorkerToRenderWorker: Obj.magic(customData),
+    },
+  },
+};

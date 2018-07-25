@@ -17,17 +17,8 @@ let _ =
     afterEach(() => TestWorkerTool.clear(sandbox));
 
     describe("test send render data to render worker", () => {
-      let _prepare = () => {
-        let state = TestMainWorkerTool.initWithJobConfig(~sandbox, ());
-        let state = WorkerWorkerTool.setFakeWorkersAndSetState(state);
-        let renderWorker =
-          WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state);
-        let postMessageToRenderWorker =
-          WorkerWorkerTool.stubPostMessage(sandbox, renderWorker);
-        MainStateTool.setState(state);
-
-        (state, postMessageToRenderWorker);
-      };
+      let _prepare = () =>
+        IMGUIWorkerTool.prepareForTestSendRenderData(sandbox);
 
       testPromise("send ioData", () => {
         open IMGUIType;
@@ -52,6 +43,7 @@ let _ =
                    SendRenderRenderDataWorkerTool.buildRenderRenderData(
                      ~imguiData={
                        "ioData": ioData,
+                       "controlData": Sinon.matchAny,
                        "customData": Sinon.matchAny,
                        "imguiFunc": Sinon.matchAny,
                      },
@@ -109,6 +101,7 @@ let _ =
                    SendRenderRenderDataWorkerTool.buildRenderRenderData(
                      ~imguiData={
                        "ioData": Sinon.matchAny,
+                       "controlData": Sinon.matchAny,
                        "customData": customData,
                        "imguiFunc":
                          RenderIMGUIRenderWorkerTool.serializeFunction(
@@ -134,15 +127,8 @@ let _ =
 
       describe("test render imgui", () =>
         testPromise("test render image", () => {
-          let (state, (fntData, bitmap, setting, _), (_, context)) =
-            IMGUIRenderWorkerTool.prepareSetData(sandbox);
-          let canvasWidth = 100;
-          let canvasHeight = 200;
-          let state =
-            ViewTool.setCanvas(
-              {"width": canvasWidth, "height": canvasHeight} |> Obj.magic,
-              state,
-            );
+          let (state, bufferData) =
+            IMGUIWorkerTool.prepareForTestInRenderWorkerJob(sandbox);
           let state =
             ManageIMGUIAPI.setIMGUIFunc(
               Obj.magic(WonderImgui.RenderIMGUITool.buildImageData()),
@@ -173,25 +159,6 @@ let _ =
               },
               state,
             );
-          let array_buffer = 1;
-          let dynamic_draw = 2;
-          let getExtension =
-            WonderImgui.RenderIMGUITool.buildNoVAOExtension(sandbox);
-          let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
-          let state =
-            state
-            |> FakeGlWorkerTool.setFakeGl(
-                 FakeGlWorkerTool.buildFakeGl(
-                   ~sandbox,
-                   ~array_buffer,
-                   ~bufferData,
-                   ~dynamic_draw,
-                   ~getExtension,
-                   (),
-                 ),
-               );
-          MainStateTool.setState(state);
-          BrowserDetectTool.setChrome();
 
           RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
             ~state,
@@ -212,19 +179,10 @@ let _ =
               {|set custom data to render worker state in imguiFunc;
                 send custom data to main worker when finish render;|},
               () => {
-                let (state, (fntData, bitmap, setting, _), (_, context)) =
-                  IMGUIRenderWorkerTool.prepareSetData(sandbox);
+                let (state, bufferData) =
+                  IMGUIWorkerTool.prepareForTestInRenderWorkerJob(sandbox);
                 let state = RenderIMGUITool.prepareFntData(state);
-                let canvasWidth = 100;
-                let canvasHeight = 200;
-                let state =
-                  ViewTool.setCanvas(
-                    {"width": canvasWidth, "height": canvasHeight}
-                    |> Obj.magic,
-                    state,
-                  );
                 let sendedCustomData = 1;
-
                 let ((buttonX1, buttonY1, buttonWidth1, buttonHeight1), str1) as customData =
                   WonderImgui.ButtonIMGUITool.buildButtonData1();
                 let state =
@@ -256,19 +214,6 @@ let _ =
                     },
                     state,
                   );
-                let getExtension =
-                  WonderImgui.RenderIMGUITool.buildNoVAOExtension(sandbox);
-                let state =
-                  state
-                  |> FakeGlWorkerTool.setFakeGl(
-                       FakeGlWorkerTool.buildFakeGl(
-                         ~sandbox,
-                         ~getExtension,
-                         (),
-                       ),
-                     );
-                MainStateTool.setState(state);
-                BrowserDetectTool.setChrome();
                 let selfPostMessage =
                   RenderJobsRenderWorkerTool.stubSelfPostMessage(sandbox^);
                 let state =
@@ -292,10 +237,10 @@ let _ =
                       selfPostMessage
                       |> expect
                       |> toCalledWith([|
-                           {
-                             "operateType": "FINISH_RENDER",
-                             "customData": sendedCustomData,
-                           },
+                           GetFinishRenderDataMainWorkerTool.buildFinishRenderData(
+                             ~customData=sendedCustomData,
+                             (),
+                           ),
                          |])
                       |> resolve,
                   (),
@@ -311,11 +256,10 @@ let _ =
 
                 let state =
                   GetFinishRenderDataMainWorkerJob._exec(
-                    {
-                      "data": {
-                        "customData": customData,
-                      },
-                    },
+                    GetFinishRenderDataMainWorkerTool.buildFinishRenderData(
+                      ~customData,
+                      (),
+                    ),
                     state,
                   );
 

@@ -1,3 +1,6 @@
 open CustomWorkerDataType;
 
-type customRecord = {customDataFromRenderWorkerToMainWorker};
+type customRecord = {
+  customDataFromRenderWorkerToMainWorker,
+  customDataFromMainWorkerToRenderWorker,
+};

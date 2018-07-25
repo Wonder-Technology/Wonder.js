@@ -48,6 +48,8 @@ let _buildIMGUIData = ({viewRecord} as state) => {
       | None => None
       | Some(func) => func |> SerializeService.serializeFunction |. Some
       },
+    "controlData":
+      WonderImgui.RecordIMGUIService.getControlData(wonderImguiIMGUIRecord),
   };
 };
 
@@ -169,6 +171,7 @@ let _buildData = (operateType, stateData) => {
       },
     },
     "imguiData": _buildIMGUIData(state),
+    "customData": OperateWorkerDataMainService.getMainWorkerCustomData(state),
   };
 };
 
