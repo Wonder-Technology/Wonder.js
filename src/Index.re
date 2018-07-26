@@ -64,6 +64,8 @@ let unsafeGetArcballCameraControllerGameObject = ArcballCameraControllerAPI.unsa
 
 let createArcballCameraController = ArcballCameraControllerAPI.createArcballCameraController;
 
+let isSupportRenderWorkerAndSharedArrayBuffer = WorkerDetectAPI.isSupportRenderWorkerAndSharedArrayBuffer;
+
 let unsafeGetGl = DeviceManagerAPI.unsafeGetGl;
 
 let startDirector = DirectorAPI.startDirector;
