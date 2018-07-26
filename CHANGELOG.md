@@ -1,3 +1,61 @@
+<a name="1.0.0-alpha.23"></a>
+# [1.0.0-alpha.23](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.22.1...v1.0.0-alpha.23) (2018-07-26)
+
+
+### Bug Fixes
+
+* **data-json:** update data/**/shader_libs.json ([8d90c3d](https://github.com/Wonder-Technology/Wonder.js/commit/8d90c3d))
+* **glsl:** fix webgl1_frontLight_fragment.glsl->if has no direction,point light, use ambient color ([90ee88e](https://github.com/Wonder-Technology/Wonder.js/commit/90ee88e))
+* **shader:** remove "attribute null null;" glsl ([abfd0b7](https://github.com/Wonder-Technology/Wonder.js/commit/abfd0b7))
+* **worker:** fix imgui:sync control data between main worker and render worker ([c79b53a](https://github.com/Wonder-Technology/Wonder.js/commit/c79b53a))
+
+
+### Features
+
+* **api:** add more apis ([c689010](https://github.com/Wonder-Technology/Wonder.js/commit/c689010))
+* **asset:** assemble and generate "arcballCameraController" ([5f67e54](https://github.com/Wonder-Technology/Wonder.js/commit/5f67e54))
+* **asset:** assemble and generate "arcballCameraController" ([40ecad5](https://github.com/Wonder-Technology/Wonder.js/commit/40ecad5))
+* **asset:** assemble and generate "imgui data" ([63106e8](https://github.com/Wonder-Technology/Wonder.js/commit/63106e8))
+* **asset:** assemble and generate "imgui data" ([b5f8db0](https://github.com/Wonder-Technology/Wonder.js/commit/b5f8db0))
+* **asset:** loadManagerAPI->loadWDB now accept "state" param ([ed8c0d8](https://github.com/Wonder-Technology/Wonder.js/commit/ed8c0d8))
+* **asset:** loadManagerAPI->loadWDB now accept "state" param ([5f6b8ec](https://github.com/Wonder-Technology/Wonder.js/commit/5f6b8ec))
+* **camera:** arcballCameraController add warn ([55c4605](https://github.com/Wonder-Technology/Wonder.js/commit/55c4605))
+* **data-json:** update data/, test/e2e/ data jsons ([20bc41c](https://github.com/Wonder-Technology/Wonder.js/commit/20bc41c))
+* **demo:** add imgui_demo_noWorker.html ([5f773c2](https://github.com/Wonder-Technology/Wonder.js/commit/5f773c2))
+* **demo:** add imgui_demo_worker.html ([aa6a1ee](https://github.com/Wonder-Technology/Wonder.js/commit/aa6a1ee))
+* **event:** custom event add stopPropagation ([85685e6](https://github.com/Wonder-Technology/Wonder.js/commit/85685e6))
+* **imgui:** import wonder-imgui; import wonder-webgl ([c0f5407](https://github.com/Wonder-Technology/Wonder.js/commit/c0f5407))
+* **imgui:** import wonder-imgui; import wonder-webgl ([946c080](https://github.com/Wonder-Technology/Wonder.js/commit/946c080))
+* **imgui:** integrate with wonder-imgui@0.0.14 ([0f0c08d](https://github.com/Wonder-Technology/Wonder.js/commit/0f0c08d))
+* **imgui:** integrate with wonder-imgui@0.0.16 ([44869da](https://github.com/Wonder-Technology/Wonder.js/commit/44869da))
+* **imgui:** integrate with wonder-imgui@0.0.17 ([b127a39](https://github.com/Wonder-Technology/Wonder.js/commit/b127a39))
+* **imgui:** integrate with wonder-imgui@0.0.18 ([a3ccc56](https://github.com/Wonder-Technology/Wonder.js/commit/a3ccc56))
+* **imgui:** integrate with wonder-imgui@0.0.22 ([61c0bcf](https://github.com/Wonder-Technology/Wonder.js/commit/61c0bcf))
+* **imgui:** optimize imgui ([2e6b9ac](https://github.com/Wonder-Technology/Wonder.js/commit/2e6b9ac))
+* **imgui:** optimize imgui ([aa6d868](https://github.com/Wonder-Technology/Wonder.js/commit/aa6d868))
+* **imgui:** update wonder-imgui ([deca46c](https://github.com/Wonder-Technology/Wonder.js/commit/deca46c))
+* **imgui:** update wonder-imgui version ([44b397c](https://github.com/Wonder-Technology/Wonder.js/commit/44b397c))
+* **imgui:** update wonder-imgui@0.0.23 ([033cd16](https://github.com/Wonder-Technology/Wonder.js/commit/033cd16))
+* **light:** if has no direction,point lights, use ambient light ([24799e0](https://github.com/Wonder-Technology/Wonder.js/commit/24799e0))
+* **light:** if has no direction,point lights, use ambient light ([ac97964](https://github.com/Wonder-Technology/Wonder.js/commit/ac97964))
+* **material:** add MaterialAPI.replaceMaterial api ([1914d33](https://github.com/Wonder-Technology/Wonder.js/commit/1914d33))
+* **render-worker:** add imgui logic ([72dbf24](https://github.com/Wonder-Technology/Wonder.js/commit/72dbf24))
+* **render-worker:** add imgui logic ([e362d6e](https://github.com/Wonder-Technology/Wonder.js/commit/e362d6e))
+* **render-worker:** pass image control ([fd70114](https://github.com/Wonder-Technology/Wonder.js/commit/fd70114))
+* **render-worker:** pass image control ([d26a105](https://github.com/Wonder-Technology/Wonder.js/commit/d26a105))
+* **render-worker:** pass u,i test and run test ([85be903](https://github.com/Wonder-Technology/Wonder.js/commit/85be903))
+* **render-worker:** pass u,i test and run test ([17cf0e6](https://github.com/Wonder-Technology/Wonder.js/commit/17cf0e6))
+* **shader:** if attribute or uniform location not exist, not send data ([ee77015](https://github.com/Wonder-Technology/Wonder.js/commit/ee77015))
+* **worker:** add "send custom data from main worker to render worker" logic ([42477f8](https://github.com/Wonder-Technology/Wonder.js/commit/42477f8))
+* **worker:** add WorkerDetectAPI->isSupportRenderWorkerAndSharedArrayBuffer ([7a811ca](https://github.com/Wonder-Technology/Wonder.js/commit/7a811ca))
+
+
+### Performance Improvements
+
+* **compile:** not output commonjs ([9cbf40a](https://github.com/Wonder-Technology/Wonder.js/commit/9cbf40a))
+
+
+
 <a name="1.0.0-alpha.22.1"></a>
 # [1.0.0-alpha.22.1](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.21.1...v1.0.0-alpha.22.1) (2018-07-19)
 
