@@ -88,6 +88,8 @@ var ImguiTool = (function () {
             var state = ImguiTool.setSetting([0.045, 0.012], state);
 
 
+            var screenWidth = window.innerWidth;
+            var screenHeight = window.innerHeight;
 
 
             var state = wd.setIMGUIFunc(
@@ -96,7 +98,11 @@ var ImguiTool = (function () {
                     var radioButtonWidth = 200;
                     var radioButtonHeight = 100;
 
-                    var intervalX = 500;
+                    var intervalX = screenWidth / 2;
+                    var intervalY = screenWidth / 6;
+
+                    var controlWidth = screenWidth / 2;
+                    var controlHeight = screenHeight / 6;
 
                     var state = state;
 
@@ -107,16 +113,17 @@ var ImguiTool = (function () {
                             [
                                 [
 
-                                    [0, 0, radioButtonWidth, radioButtonHeight], "abc"
+                                    [0, 0, controlWidth, controlHeight], "abc"
 
                                 ],
                                 [
 
-                                    [intervalX, 0, radioButtonWidth, radioButtonHeight],
+                                    [intervalX, 0, controlWidth, controlHeight],
                                     "b"
 
                                 ]
                             ],
+                            0,
                             "group1",
                             state
                         );
@@ -125,13 +132,15 @@ var ImguiTool = (function () {
 
 
                         var [state, selectIndex_checkbox1] = api.checkbox(
-                            [0, 200, 400, 100],
+                            [0, intervalY, controlWidth, controlHeight],
+                            true,
                             "checkbox1",
                             state
                         );
 
                         var [state, selectIndex_checkbox2] = api.checkbox(
-                            [intervalX, 200, 400, 100],
+                            [intervalX, intervalY, controlWidth, controlHeight],
+                            false,
                             "checkbox2",
                             state
                         );
@@ -142,8 +151,8 @@ var ImguiTool = (function () {
 
                         var [state, isSelected_sliderFloat, value_sliderFloat] = api.sliderFloat(
                             [
-                                [0, 400, 300, 100],
-                                300
+                                [0, intervalY * 2, controlWidth / 2, controlHeight],
+                                controlWidth / 2
                             ],
                             [
                                 0.1, 5.5, 2
@@ -161,8 +170,8 @@ var ImguiTool = (function () {
 
                         var [state, isSelected_sliderInt, value_sliderInt] = api.sliderInt(
                             [
-                                [intervalX, 400, 300, 100],
-                                300
+                                [intervalX, intervalY * 2, controlWidth / 2, controlHeight],
+                                controlWidth / 2
                             ],
                             [
                                 2, 7
@@ -175,26 +184,26 @@ var ImguiTool = (function () {
 
 
                         var [state, isClick_button1] = api.button(
-                            [0, 600, 300, 100], "button1", state
+                            [0, intervalY * 3, controlWidth, controlHeight], "button1", state
                         );
 
 
 
                         var state = api.label(
-                            [intervalX, 600, 300, 100], "label1", 0, state
+                            [intervalX, intervalY * 3, controlWidth, controlHeight], "label1", 0, state
                         );
 
 
 
 
                         var state = api.image(
-                            [intervalX / 2, 800, 100, 100], [0, 0, 1, 1], "1", state
+                            [0, intervalY * 4, controlWidth / 2, controlHeight / 2], [0, 0, 1, 1], "1", state
                         );
 
 
 
                         var state = api.image(
-                            [intervalX / 2 * 2, 800, 100, 100], [0, 0, 1, 1], "2", state
+                            [intervalX, intervalY * 4, controlWidth / 2, controlHeight / 2], [0, 0, 1, 1], "2", state
                         );
 
 

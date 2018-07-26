@@ -584,14 +584,12 @@ let renderTestData = {
       threshold: None,
       frameData: [{timePath: [16]}],
     },
-        /* TODO fix: puppeteer@1.4.0 can't show all imgui page */
     {
       name: "imgui",
       bodyFuncStr: {|
                    PrepareTool.prepareForTest();
 
                     return AssetTool.loadConfig(["./test/e2e/render/config/setting.json", "./test/e2e/render/config/"], null, function(){
-
                             return AssetTool.loadIMGUIAsset("./test/e2e/asset/font/Lato-Regular-64.fnt",
                                 "./test/e2e/asset/font/lato.png",
                                 [
@@ -604,7 +602,6 @@ let renderTestData = {
             return wd.startDirector(state);
                                 });
                     });
-
     |},
       scriptFilePathList: None,
       distance: None,
