@@ -43,7 +43,7 @@
                             [
                             ],
                             (customData, api, state) => {
-                                var count = 1;
+                                var count = 100;
 
                                 var radioButtonWidth = 200;
                                 var radioButtonHeight = 100;
@@ -69,6 +69,7 @@
 
                                             ]
                                         ],
+                                        1,
                                         "group1",
                                         state
                                     );
@@ -78,17 +79,17 @@
 
                                     var [state, selectIndex_checkbox1] = api.checkbox(
                                         [0, 200, 400, 100],
+                                        true,
                                         "checkbox1",
                                         state
                                     );
 
                                     var [state, selectIndex_checkbox2] = api.checkbox(
                                         [intervalX, 200, 400, 100],
+                                        false,
                                         "checkbox2",
                                         state
                                     );
-
-
 
 
 
