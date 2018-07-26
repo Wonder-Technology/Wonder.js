@@ -50,10 +50,6 @@
 * **worker:** add WorkerDetectAPI->isSupportRenderWorkerAndSharedArrayBuffer ([7a811ca](https://github.com/Wonder-Technology/Wonder.js/commit/7a811ca))
 
 
-### Performance Improvements
-
-* **compile:** not output commonjs ([9cbf40a](https://github.com/Wonder-Technology/Wonder.js/commit/9cbf40a))
-
 
 
 <a name="1.0.0-alpha.22.1"></a>
