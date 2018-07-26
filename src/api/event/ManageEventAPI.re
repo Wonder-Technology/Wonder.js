@@ -122,3 +122,22 @@ let createCustomEvent = (eventName, userData) =>
     eventName,
     Js.Nullable.to_opt(userData),
   );
+
+let getCustomEventUserData = customEvent =>
+  HandleCustomEventMainService.getCustomEventUserData(customEvent);
+
+let getPointEventLocationInViewOfEvent = (event: EventType.pointEvent) =>
+  event.locationInView;
+
+let getPointEventLocationOfEvent = (event: EventType.pointEvent) =>
+  event.location;
+
+let getPointEventButtonOfEvent = (event: EventType.pointEvent) =>
+  event.button;
+
+let getPointEventWheelOfEvent = (event: EventType.pointEvent) => event.wheel;
+
+let getPointEventMovementDeltaOfEvent = (event: EventType.pointEvent) =>
+  event.movementDelta;
+
+let getPointEventEventOfEvent = (event: EventType.pointEvent) => event.event;

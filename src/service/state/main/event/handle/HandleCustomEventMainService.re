@@ -103,3 +103,6 @@ let emitGameObjectEvent =
     {...customEvent, phase: Some(Emit)},
     state,
   );
+
+let getCustomEventUserData = (customEvent: customEvent) =>
+  customEvent.userData;

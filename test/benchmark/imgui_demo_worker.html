@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>imgui</title>
+</head>
+
+<body>
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/PositionTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/js/BasicMaterialTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../../dist/wd.js"></script>
+    <script src="../e2e/js/IMGUITool.js"></script>
+    <script src="../e2e/js/WorkerTool.js"></script>
+    <script>
+
+
+        function createControls(api, truckGameObject, boxGameObject, state) {
+            function syncCustomDataBetweenMainWorkerAndRenderWorker(api, state) {
+                var customData = api.getCustomDataFromMainWorkerToRenderWorker(state);
+
+                // console.log("sync: ", customData);
+
+
+                var state = api.setCustomDataFromRenderWorkerToMainWorker({
+                    isShowPanel: customData.isShowPanel,
+                    fps: customData.fps
+                }, state);
+
+                return state;
+            }
+
+            function toggleShowPanelData(customData, state) {
+                var isShowPanel = false;
+
+                if (customData.isShowPanel === true) {
+                    isShowPanel = false;
+                }
+                else {
+                    isShowPanel = true;
+                }
+
+
+
+                return isShowPanel;
+            }
+
+
+
+            var radioButtonWidth = 300;
+            var radioButtonHeight = 100;
+
+            var x = 50;
+
+            var intervalX = 400;
+
+            var state = syncCustomDataBetweenMainWorkerAndRenderWorker(api, state);
+
+            var boxColorArr = [0.0, 0.5, 0.5];
+
+
+            var customData = api.getCustomDataFromRenderWorkerToMainWorker(state);
+
+            var buttonText = null;
+
+            if (customData.isShowPanel === true) {
+                buttonText = "hide panel";
+            }
+            else {
+                buttonText = "show panel";
+            }
+
+
+            var [state, isClick_button1] = api.button(
+                // [100, 800, 350, 100], "show panel", state
+                [100, 0, 350, 100], buttonText, state
+            );
+
+            if (isClick_button1) {
+
+                var customData = api.getCustomDataFromRenderWorkerToMainWorker(state);
+                var isShowPanel = toggleShowPanelData(customData, state);
+
+
+                // console.log("toggle isShowPanel:", isShowPanel, customData);
+
+                customData.isShowPanel = isShowPanel;
+
+                var state = api.setCustomDataFromRenderWorkerToMainWorker(customData, state);
+
+                return state
+            }
+
+
+            var customData = api.getCustomDataFromRenderWorkerToMainWorker(state);
+
+            if (customData.isShowPanel === undefined || customData.isShowPanel === false) {
+                return state;
+            }
+
+
+            var state = api.beginGroup([1200, 20], state);
+
+
+            var state = api.box([0, 0, 1000, 950], boxColorArr, state);
+
+
+            var state = api.beginGroup([0, 0], state);
+
+            var state = api.label(
+                [x, 0, 300, 100], "fps: " +  customData.fps.toFixed(2) , 0, state
+            );
+
+
+            var state = api.endGroup(state);
+
+
+            var state = api.beginGroup([0, 220], state);
+
+
+            var [state, selectIndex_radioButton] = api.radioButton(
+                [
+                    [
+
+                        [x, 0, radioButtonWidth, radioButtonHeight], "truck"
+
+                    ],
+                    [
+
+                        [intervalX, 0, radioButtonWidth, radioButtonHeight],
+                        "box"
+
+                    ]
+                ],
+                0,
+                "group1",
+                state
+            );
+
+
+
+            var [state, selectIndex_checkbox1] = api.checkbox(
+                [x, 200, 600, 100],
+                true,
+                "has specular light",
+                state
+            );
+
+            // var [state, selectIndex_checkbox2] = api.checkbox(
+            //     [intervalX, 200, 400, 100],
+            //     true,
+            //     "checkbox2",
+            //     state
+            // );
+
+
+
+
+
+
+
+
+            var [state, isSelected_shininess, value_shininess] = api.sliderFloat(
+                [
+                    [x, 400, 300, 100],
+                    300
+                ],
+                [
+                    0.0, 64.0, 2
+                ],
+                [
+                    32.0, "shininess"
+                ],
+                state
+            );
+
+
+
+
+
+            var customData = api.getCustomDataFromRenderWorkerToMainWorker(state);
+
+            customData.selectIndex_radioButton = selectIndex_radioButton;
+            customData.selectIndex_checkbox1 = selectIndex_checkbox1;
+            customData.value_shininess = value_shininess;
+
+            var state = api.setCustomDataFromRenderWorkerToMainWorker(customData, state);
+
+
+
+
+
+            // var [state, isSelected_sliderInt, value_sliderInt] = api.sliderInt(
+            //     [
+            //         [intervalX, 400, 300, 100],
+            //         300
+            //     ],
+            //     [
+            //         2, 7
+            //     ],
+            //     [
+            //         3, "int"
+            //     ],
+            //     state
+            // );
+
+
+            // var [state, isClick_button2] = api.button(
+            //     [x, 600, 300, 100], "button1", state
+            // );
+
+
+
+            // var state = api.label(
+            //     [intervalX, 600, 300, 100], "label1", 0, state
+            // );
+
+
+
+            var state = api.image(
+                [x, 600, 100, 100], [0, 0, 1, 1], "wonder", state
+            );
+
+
+            var state = api.image(
+                [intervalX / 2, 600, 100, 100], [0, 0, 1, 1], "1", state
+            );
+
+
+
+            var state = api.image(
+                [intervalX / 2 * 2, 600, 100, 100], [0, 0, 1, 1], "2", state
+            );
+
+            var state = api.endGroup(state);
+
+            var state = api.endGroup(state);
+
+            return state
+
+        }
+
+
+        function hasRenderWorkerCustomData(customData) {
+            return !!customData && Object.prototype.toString.call(customData) === "[object Object]";
+        }
+
+        function setIMGUI(state, truckGameObject, boxGameObject) {
+            var state = ImguiTool.setSetting([0.045, 0.012], state);
+
+            // var state = initMainCustomData(state);
+
+
+
+
+
+
+            var state = wd.setIMGUIFunc(
+                [
+                    WorkerTool.serializeFunction(createControls),
+                    truckGameObject, boxGameObject
+                ],
+                (customData, api, state) => {
+                    function deserializeFunction(funcStr) {
+                        return eval('(' + funcStr + ')');
+                    };
+
+
+                    var createControls = deserializeFunction(customData[0]);
+                    var truckGameObject = customData[1];
+                    var boxGameObject = customData[2];
+
+
+                    var state = createControls(api, truckGameObject, boxGameObject, state);
+
+
+
+                    return state
+
+                }, state);
+
+
+
+
+
+
+
+
+
+            return state;
+        }
+
+
+        function _createLightsAndCamera(state) {
+            var state = LightTool.setAmbientLight(state);
+
+
+
+            var record = LightTool.createDirectionLight(state);
+            var state = record[0];
+            var directionLightObj = record[1];
+
+
+
+            var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+
+            state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+
+
+
+            var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
+
+            var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
+
+
+
+
+            var data = LightBoxesTool.createCamera(state);
+            var state = data[0];
+            var camera = data[1];
+
+
+            var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+            var [state, cameraController] = wd.createArcballCameraController(state);
+
+            var state =
+                wd.setArcballCameraControllerDistance(cameraController, 10, state);
+
+
+
+            var state =
+                wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
+
+            var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+            state =
+                wd.setCurrentCameraGameObject(
+                    camera, state
+                );
+
+            return [state, directionLightObj]
+        }
+
+        function bindEvent(state) {
+            var state = wd.onCustomGlobalEvent(
+                wd.getPointDragEventName(),
+                100,
+                (event, state) => {
+                    var pointEvent = wd.getCustomEventUserData(event);
+
+                    var [x, y] = wd.getPointEventLocationInViewOfEvent(pointEvent);
+
+
+
+                    var customData = wd.getRenderWorkerCustomData(state);
+
+
+                    if (
+                        customData.isShowPanel === true &&
+                        x >= 1200
+                    ) {
+                        return [
+                            state,
+                            wd.stopPropagationCustomEvent(event)
+                        ]
+                    }
+
+                    return [state, event];
+                },
+                state
+            );
+
+            return state;
+        };
+
+
+        function initSample(state, truckGameObject, boxGameObject) {
+            var state = bindEvent(state);
+
+            var truckTransform = wd.unsafeGetGameObjectTransformComponent(truckGameObject, state);
+            var boxTransform = wd.unsafeGetGameObjectTransformComponent(boxGameObject, state);
+
+            var state = wd.setTransformLocalPosition(truckTransform, [0, 0, 0], state);
+            var state = wd.setTransformLocalPosition(boxTransform, [-1000, -1000, -1000], state);
+
+
+
+
+
+            var state =
+                ScheduleTool.scheduleWorkerMainLoopUnSafeJob((stateData) => {
+                    var state = wd.unsafeGetState();
+
+                    var customData = wd.getRenderWorkerCustomData(state);
+
+                    // console.log("render worker to main worker customData:", customData);
+
+
+                    state =
+                        wd.setMainWorkerCustomData(
+                            {
+                                isShowPanel: customData.isShowPanel,
+                                fps: wd.getFps(state)
+                            }, state
+                        );
+
+
+                    var targetGameObject = null;
+
+                    var truckTransform = wd.unsafeGetGameObjectTransformComponent(truckGameObject, state);
+                    var boxTransform = wd.unsafeGetGameObjectTransformComponent(boxGameObject, state);
+
+
+                    switch (customData.selectIndex_radioButton) {
+                        case 0:
+                            targetGameObject = wd.unsafeGetTransformGameObject(
+                                wd.unsafeGetTransformChildren(
+                                    truckTransform, state
+                                )[2], state
+                            );
+
+
+                            state = wd.setTransformLocalPosition(truckTransform, [0, 0, 0], state);
+                            state = wd.setTransformLocalPosition(boxTransform, [[-1000, -1000, -1000]], state);
+                            break;
+
+                        case 1:
+                            targetGameObject = wd.unsafeGetTransformGameObject(
+                                wd.unsafeGetTransformChildren(
+                                    boxTransform, state
+                                )[0], state
+                            );
+
+
+
+                            state = wd.setTransformLocalPosition(boxTransform, [0, 0, 0], state);
+                            state = wd.setTransformLocalPosition(truckTransform, [-1000, -1000, -1000], state);
+                            break;
+                        default:
+                            targetGameObject = wd.unsafeGetTransformGameObject(
+                                wd.unsafeGetTransformChildren(
+                                    truckTransform, state
+                                )[2], state
+                            );
+                            break;
+                    };
+
+
+                    var lightMaterial = wd.unsafeGetGameObjectLightMaterialComponent(targetGameObject, state);
+
+                    switch (customData.selectIndex_checkbox1) {
+                        case true:
+                            state = wd.setLightMaterialSpecularColor(lightMaterial, [1, 1, 1], state);
+                            break;
+                        case false:
+                            state = wd.setLightMaterialSpecularColor(lightMaterial, [0, 0, 0], state);
+                            break;
+                        default:
+                            break
+                    };
+
+
+
+
+
+
+                    if (customData.value_shininess !== undefined) {
+                        state = wd.setLightMaterialShininess(lightMaterial, customData.value_shininess, state);
+                    }
+
+
+
+
+
+
+
+
+
+                    wd.setState(state)
+
+                }, state);
+
+
+
+
+
+            var state = setIMGUI(state, truckGameObject, boxGameObject);
+
+
+
+
+
+            var [state, directionLightObj] = _createLightsAndCamera(state);
+
+            return wd.startDirector(state);
+        }
+
+
+        window.onload = function () {
+            return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
+                return AssetTool.loadIMGUIAsset("../res/font/Lato-Regular-64.fnt", "../res/font/lato.png",
+                    [
+                        ["./1.png", "1"],
+                        ["./2.jpg", "2"],
+                        ["./wonder.png", "wonder"],
+                    ],
+                    wd.unsafeGetState(), function (state) {
+                        return AssetTool.loadWDB("./CesiumMilkTruck.wdb", state, function ([state, truckGameObject]) {
+                            return AssetTool.loadWDB("./BoxTextured.wdb", state, function ([state, boxGameObject]) {
+                                return initSample(state, truckGameObject, boxGameObject);
+                            });
+                        });
+                    });
+            });
+        };
+    </script>
+</body>
+
+</html>

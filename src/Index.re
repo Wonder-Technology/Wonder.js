@@ -72,6 +72,20 @@ let loopBody = DirectorAPI.loopBody;
 
 let initDirector = DirectorAPI.initDirector;
 
+let getPointEventEventOfEvent = ManageEventAPI.getPointEventEventOfEvent;
+
+let getPointEventMovementDeltaOfEvent = ManageEventAPI.getPointEventMovementDeltaOfEvent;
+
+let getPointEventWheelOfEvent = ManageEventAPI.getPointEventWheelOfEvent;
+
+let getPointEventButtonOfEvent = ManageEventAPI.getPointEventButtonOfEvent;
+
+let getPointEventLocationOfEvent = ManageEventAPI.getPointEventLocationOfEvent;
+
+let getPointEventLocationInViewOfEvent = ManageEventAPI.getPointEventLocationInViewOfEvent;
+
+let getCustomEventUserData = ManageEventAPI.getCustomEventUserData;
+
 let createCustomEvent = ManageEventAPI.createCustomEvent;
 
 let emitCustomGameObjectEvent = ManageEventAPI.emitCustomGameObjectEvent;
@@ -81,6 +95,8 @@ let broadcastCustomGameObjectEvent = ManageEventAPI.broadcastCustomGameObjectEve
 let triggerCustomGameObjectEvent = ManageEventAPI.triggerCustomGameObjectEvent;
 
 let triggerCustomGlobalEvent = ManageEventAPI.triggerCustomGlobalEvent;
+
+let stopPropagationCustomEvent = ManageEventAPI.stopPropagationCustomEvent;
 
 let offCustomGameObjectEventByHandleFunc = ManageEventAPI.offCustomGameObjectEventByHandleFunc;
 
@@ -105,6 +121,18 @@ let onTouchEvent = ManageEventAPI.onTouchEvent;
 let onKeyboardEvent = ManageEventAPI.onKeyboardEvent;
 
 let onMouseEvent = ManageEventAPI.onMouseEvent;
+
+let getPointDragEventName = NameEventAPI.getPointDragEventName;
+
+let getPointScaleEventName = NameEventAPI.getPointScaleEventName;
+
+let getPointMoveEventName = NameEventAPI.getPointMoveEventName;
+
+let getPointTapEventName = NameEventAPI.getPointTapEventName;
+
+let getPointUpEventName = NameEventAPI.getPointUpEventName;
+
+let getPointDownEventName = NameEventAPI.getPointDownEventName;
 
 let setGameObjectName = GameObjectAPI.setGameObjectName;
 

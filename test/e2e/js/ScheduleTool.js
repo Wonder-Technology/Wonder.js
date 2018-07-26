@@ -4,7 +4,7 @@ var ScheduleTool = (function () {
             return wd.addNoWorkerLoopJob(["scheduleLoop", "tick"], 0, func, state);
         },
         scheduleWorkerMainLoopUnSafeJob: function (func, state) {
-            return wd.addWorkerMainLoopJob(["scheduleLoop", "tick"], 1, func, state);
+            return wd.addWorkerMainLoopJob(["scheduleLoop", "create_basic_render_object_buffer"], 0, func, state);
         }
     }
 })()
