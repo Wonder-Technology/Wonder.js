@@ -43,6 +43,9 @@
             },
             {
                 "name": "front_render_light"
+            },
+            {
+                "name": "render_imgui"
             }
         ]
     }
