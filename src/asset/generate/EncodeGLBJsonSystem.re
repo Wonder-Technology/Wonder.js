@@ -51,26 +51,30 @@ let _encodeNodeExtensions = (extensions, list) =>
     [("extensions", extensionList |> object_), ...list];
   };
 
-let _encodeNodeMaterial = (extras, list) =>
+let _encodeNodeMaterial = (material, extraList) =>
+  switch (material) {
+  | None => extraList
+  | Some(material) => [("material", material |> int), ...extraList]
+  };
+
+let _encodeNodeCameraController = (cameraController, extraList) =>
+  switch (cameraController) {
+  | None => extraList
+  | Some(cameraController) => [
+      ("cameraController", cameraController |> int),
+      ...extraList,
+    ]
+  };
+
+let _encodeNodeExtras = (extras, list) =>
   switch (extras) {
   | None => list
   | Some(({material, cameraController}: nodeExtras)) =>
     let extraList = [];
 
-    let extraList =
-      switch (material) {
-      | None => extraList
-      | Some(material) => [("material", material |> int), ...extraList]
-      };
+    let extraList = _encodeNodeMaterial(material, extraList);
 
-    let extraList =
-      switch (cameraController) {
-      | None => extraList
-      | Some(cameraController) => [
-          ("cameraController", cameraController |> int),
-          ...extraList,
-        ]
-      };
+    let extraList = _encodeNodeCameraController(cameraController, extraList);
 
     [("extras", extraList |> object_), ...list];
   };
@@ -89,7 +93,7 @@ let _encodeNodeComponents =
     | Some(camera) => [("camera", camera |> int), ...list]
     };
 
-  let list = _encodeNodeMaterial(extras, list);
+  let list = _encodeNodeExtras(extras, list);
 
   _encodeNodeExtensions(extensions, list);
 };

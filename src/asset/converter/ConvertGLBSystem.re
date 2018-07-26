@@ -2,6 +2,17 @@ open Js.Promise;
 
 open Js.Typed_array;
 
+let _convertIMGUI = extras =>
+  switch (extras) {
+  | None => None
+  | Some(({imgui}: GLTFType.sceneExtras)) =>
+    switch (imgui) {
+    | None => None
+    | Some({imguiFunc, customData}) =>
+      Some({imguiFunc, customData}: SceneGraphType.imgui)
+    }
+  };
+
 let _convertToScene =
     (
       ambientLightArr: array(WDType.ambientLight),
@@ -47,16 +58,7 @@ let _convertToScene =
     ambientLight:
       ambientLightArr |> Js.Array.length == 1 ?
         Some({color: ambientLightArr[0].color}) : None,
-    imgui:
-      switch (extras) {
-      | None => None
-      | Some(({imgui}: GLTFType.sceneExtras)) =>
-        switch (imgui) {
-        | None => None
-        | Some({imguiFunc, customData}) =>
-          Some({imguiFunc, customData}: SceneGraphType.imgui)
-        }
-      },
+    imgui: _convertIMGUI(extras),
   };
 };
 
