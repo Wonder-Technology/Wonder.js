@@ -188,3 +188,26 @@ let updateAndSetScaleByTuple =
       (globalTempRecord, record),
     );
   };
+
+let updateAndGetEulerAnglesTuple =
+    (transform: transform, globalTempRecord, record) => {
+  open Js.Typed_array;
+  let {localToWorldMatrices, localToWorldMatrixCacheMap} =
+    update(transform, globalTempRecord, record);
+  let localToWorldMatrix =
+    getLocalToWorldMatrixTypeArray(.
+      transform,
+      localToWorldMatrices,
+      localToWorldMatrixCacheMap,
+    );
+  Matrix4Service.getEulerAngles(localToWorldMatrix);
+};
+
+let updateAndSetEulerAnglesByTuple =
+    (transform: transform, eulerAngles, globalTempRecord, record) =>
+  updateAndSetRotationByTuple(
+    transform,
+    QuaternionService.setFromEulerAngles(eulerAngles),
+    globalTempRecord,
+    record,
+  );

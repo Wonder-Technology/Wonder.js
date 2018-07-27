@@ -119,6 +119,27 @@ let setFromMatrix = [%raw
   |}
 ];
 
+let setFromEulerAngles = ((ex, ey, ez)) => {
+  let halfToRad = 0.5 *. AngleService.getDegToRad();
+  let ex = ex *. halfToRad;
+  let ey = ey *. halfToRad;
+  let ez = ez *. halfToRad;
+
+  let sx = Js.Math.sin(ex);
+  let cx = Js.Math.cos(ex);
+  let sy = Js.Math.sin(ey);
+  let cy = Js.Math.cos(ey);
+  let sz = Js.Math.sin(ez);
+  let cz = Js.Math.cos(ez);
+
+  (
+    sx *. cy *. cz -. cx *. sy *. sz,
+    cx *. sy *. cz +. sx *. cy *. sz,
+    cx *. cy *. sz -. sx *. sy *. cz,
+    cx *. cy *. cz +. sx *. sy *. sz,
+  );
+};
+
 let _getEulerAngles = [%raw
   quat => {|
             var x, y, z, qx, qy, qz, qw, a2;

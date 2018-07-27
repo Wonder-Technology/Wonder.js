@@ -142,6 +142,24 @@ let setLocalRotationByTuple =
   record |> markHierachyDirty(transform);
 };
 
+let getLocalEulerAnglesTuple = (transform: transform, localRotations) =>
+  OperateTypeArrayTransformService.getLocalRotationTuple(
+    transform,
+    localRotations,
+  )
+  |> QuaternionService.getEulerAngles;
+
+let setLocalEulerAnglesByTuple =
+    (transform: transform, eulerAngles, {localRotations} as record) => {
+  OperateTypeArrayTransformService.setLocalRotationByTuple(
+    transform,
+    eulerAngles |> QuaternionService.setFromEulerAngles,
+    localRotations,
+  )
+  |> ignore;
+  record |> markHierachyDirty(transform);
+};
+
 let getLocalScaleTuple = (transform: transform, localScales) =>
   OperateTypeArrayTransformService.getLocalScaleTuple(transform, localScales);
 

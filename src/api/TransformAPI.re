@@ -463,6 +463,110 @@ let setTransformScale =
   state;
 };
 
+let getTransformLocalEulerAngles =
+    (transform: transform, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              transform,
+              isAlive,
+              state |> RecordTransformMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  getLocalEulerAnglesTuple(
+    transform,
+    RecordTransformMainService.getRecord(state).localRotations,
+  );
+};
+
+let setTransformLocalEulerAngles =
+    (transform: transform, eulerAngles, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              transform,
+              isAlive,
+              state |> RecordTransformMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  state.transformRecord =
+    Some(
+      setLocalEulerAnglesByTuple(
+        transform,
+        eulerAngles,
+        state |> RecordTransformMainService.getRecord,
+      ),
+    );
+  state;
+};
+
+let getTransformEulerAngles =
+    (transform: transform, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              transform,
+              isAlive,
+              state |> RecordTransformMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  updateAndGetEulerAnglesTuple(
+    transform,
+    state.globalTempRecord,
+    state |> RecordTransformMainService.getRecord,
+  );
+};
+
+let setTransformEulerAngles =
+    (transform: transform, eulerAngles, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              transform,
+              isAlive,
+              state |> RecordTransformMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  state.transformRecord =
+    Some(
+      updateAndSetEulerAnglesByTuple(
+        transform,
+        eulerAngles,
+        state.globalTempRecord,
+        state |> RecordTransformMainService.getRecord,
+      ),
+    );
+  state;
+};
+
 let lookAt = (transform: transform, target, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>

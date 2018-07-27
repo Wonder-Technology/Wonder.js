@@ -545,7 +545,7 @@ let _ =
       });
     });
 
-    describe("setTrasformRotation", () =>
+    describe("setTransformRotation", () =>
       describe("set rotation in world coordinate system", () => {
         test("change parent's rotation should affect children", () => {
           open Vector3Service;
@@ -602,6 +602,106 @@ let _ =
                    6.460195134263704,
                    (-10.027219687210458),
                  ),
+               ),
+             );
+        });
+      })
+    );
+
+    describe("getTransformEulerAngles", () => {
+      test("default value should be (0.,0.,0.)", () => {
+        let (state, transform) = createTransform(state^);
+        state
+        |> getTransformEulerAngles(transform)
+        |> expect == (0., (-0.), 0.);
+      });
+      test("can get the newest eulerAngles", () => {
+        let (state, parent) = createTransform(state^);
+        let (state, child) = createTransform(state);
+        let eulerAngles = (45., 45., 90.);
+        let state =
+          state
+          |> setTransformLocalEulerAngles(parent, eulerAngles)
+          |> setTransformParent(Js.Nullable.return(parent), child);
+        state
+        |> getTransformEulerAngles(child)
+        |> expect == (45., 44.99999999999999, 90.);
+      });
+    });
+
+    describe("setTransformEulerAngles", () =>
+      describe("set eulerAngles in world coordinate system", () => {
+        let _judgeEulerAnglesOneToOne =
+            (
+              (parent, child),
+              (parentLocalEulerAngles, parentEulerAngles),
+              (childLocalEulerAngles, childEulerAngles),
+              state,
+            ) =>
+          (
+            state |> getTransformLocalEulerAngles(parent),
+            state |> getTransformEulerAngles(parent),
+            state |> getTransformLocalEulerAngles(child),
+            state |> getTransformEulerAngles(child),
+          )
+          |>
+          expect == (
+                      parentLocalEulerAngles,
+                      parentEulerAngles,
+                      childLocalEulerAngles,
+                      childEulerAngles,
+                    );
+
+        test("change parent's eulerAngles should affect children", () => {
+          open Vector3Service;
+          open Vector3Type;
+          let (state, parent) = createTransform(state^);
+          let (state, child) = createTransform(state);
+          let eulerAngles1 = (1., 2., 3.5);
+          let eulerAngles2 = (5., 10.5, 30.);
+          let state =
+            setTransformParent(Js.Nullable.return(parent), child, state);
+          let state =
+            setTransformLocalEulerAngles(parent, eulerAngles1, state);
+          let state =
+            setTransformLocalEulerAngles(child, eulerAngles2, state);
+          let state = state |> setTransformEulerAngles(parent, eulerAngles2);
+          state
+          |> _judgeEulerAnglesOneToOne(
+               (parent, child),
+               (
+                 (4.999999720522246, 10.499999504808965, 29.99999866105677),
+                 (4.9999999860374675, 10.499999810789854, 29.99999771097897),
+               ),
+               (
+                 (4.999999720522246, 10.499999504808965, 29.99999866105677),
+                 (14.953095317535913, 16.95073623912726, 61.91119956447435),
+               ),
+             );
+        });
+        test("change child's eulerAngles shouldn't affect parent", () => {
+          let (state, parent) = createTransform(state^);
+          let (state, child) = createTransform(state);
+          let eulerAngles1 = (1., 2., 3.);
+          let eulerAngles2 = (5.5, 10., 30.);
+          let eulerAngles3 = (2.5, 3.5, 4.5);
+          let state =
+            setTransformParent(Js.Nullable.return(parent), child, state);
+          let state =
+            setTransformLocalEulerAngles(parent, eulerAngles1, state);
+          let state =
+            setTransformLocalEulerAngles(child, eulerAngles2, state);
+          let state = state |> setTransformEulerAngles(child, eulerAngles3);
+          state
+          |> _judgeEulerAnglesOneToOne(
+               (parent, child),
+               (
+                 (1.0000000541275584, 2.0000000390849397, 3.000000082590928),
+                 (1.000000070447814, 1.9999999556226822, 3.0000002226737443),
+               ),
+               (
+                 (1.447625368958481, 1.5265914288412556, 1.471299291762878),
+                 (2.4999999977068192, 3.4999998866913646, 4.500000058177029),
                ),
              );
         });

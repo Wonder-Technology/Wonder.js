@@ -226,6 +226,53 @@ let getScaleTuple = matTypeArr => {
   );
 };
 
+let getEulerAngles = matTypeArr => {
+  let (sx, sy, sz) = getScaleTuple(matTypeArr);
+
+  let a00 = Float32Array.unsafe_get(matTypeArr, 0);
+  let a01 = Float32Array.unsafe_get(matTypeArr, 1);
+  let a02 = Float32Array.unsafe_get(matTypeArr, 2);
+  /* let a03 = Float32Array.unsafe_gmatTypeArrmat, 3); */
+  let a10 = Float32Array.unsafe_get(matTypeArr, 4);
+  let a11 = Float32Array.unsafe_get(matTypeArr, 5);
+  let a12 = Float32Array.unsafe_get(matTypeArr, 6);
+  let a22 = Float32Array.unsafe_get(matTypeArr, 10);
+  /* let a13 = Float32Array.unsafe_get(mat, 7); */
+  /* let a20 = Float32Array.unsafe_get(mat, 8);
+     let a21 = Float32Array.unsafe_get(mat, 9);
+     let a23 = Float32Array.unsafe_get(mat, 11);
+     let a30 = Float32Array.unsafe_get(mat, 12);
+     let a31 = Float32Array.unsafe_get(mat, 13);
+     let a32 = Float32Array.unsafe_get(mat, 14);
+     let a33 = Float32Array.unsafe_get(mat, 15); */
+
+  let y = Js.Math.asin(-. a02 /. sx);
+  let halfPi = Js.Math._PI *. 0.5;
+
+  let x = ref(0.);
+  let z = ref(0.);
+  if (y < halfPi) {
+    if (y > -. halfPi) {
+      x := Js.Math.atan2(~y=a12 /. sy, ~x=a22 /. sz, ());
+      z := Js.Math.atan2(~y=a01 /. sx, ~x=a00 /. sx, ());
+    } else {
+      /* Not a unique solution */
+      z := 0.;
+      x := -. Js.Math.atan2(~x=a10 /. sy, ~y=a11 /. sy, ());
+    };
+  } else {
+    /* Not a unique solution */
+    z := 0.;
+    x := Js.Math.atan2(~x=a10 /. sy, ~y=a11 /. sy, ());
+  };
+
+  Vector3Service.scale(
+    Vector3Type.Float,
+    AngleService.getRadToDeg(),
+    (x^, y, z^),
+  );
+};
+
 let multiply =
     (
       aMatTypeArr: Float32Array.t,
