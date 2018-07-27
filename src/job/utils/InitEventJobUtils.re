@@ -2,12 +2,10 @@ open StateDataMainType;
 
 open EventType;
 
-let _getDefaultDom = () => DomExtend.document##body;
-
-let _fromDomEvent = eventName =>
+let _fromDomEvent = (eventName, state) =>
   WonderBsMost.Most.fromEvent(
     eventName,
-    _getDefaultDom() |> bodyToEventTarget,
+    ViewService.unsafeGetCanvas(state.viewRecord) |> canvasToEventTarget,
     false,
   );
 
@@ -301,57 +299,57 @@ let _execKeyboardEventHandle = (keyboardEventName, event) => {
   ();
 };
 
-let _fromPCDomEventArr = () => [|
-  _fromDomEvent("click")
+let _fromPCDomEventArr = state => [|
+  _fromDomEvent("click", state)
   |> WonderBsMost.Most.tap(event => _execMouseEventHandle(Click, event)),
-  _fromDomEvent("mousedown")
+  _fromDomEvent("mousedown", state)
   |> WonderBsMost.Most.tap(event => _execMouseEventHandle(MouseDown, event)),
-  _fromDomEvent("mouseup")
+  _fromDomEvent("mouseup", state)
   |> WonderBsMost.Most.tap(event => _execMouseEventHandle(MouseUp, event)),
-  _fromDomEvent("mousemove")
+  _fromDomEvent("mousemove", state)
   |> WonderBsMost.Most.tap(event =>
        _execMouseMoveEventHandle(MouseMove, event)
      ),
-  _fromDomEvent("mousewheel")
+  _fromDomEvent("mousewheel", state)
   |> WonderBsMost.Most.tap(event => _execMouseEventHandle(MouseWheel, event)),
-  _fromDomEvent("mousedown")
+  _fromDomEvent("mousedown", state)
   |> WonderBsMost.Most.tap(event => _execMouseDragStartEventHandle())
   |> WonderBsMost.Most.flatMap(event =>
-       _fromDomEvent("mousemove")
+       _fromDomEvent("mousemove", state)
        |> WonderBsMost.Most.until(
-            _fromDomEvent("mouseup")
+            _fromDomEvent("mouseup", state)
             |> WonderBsMost.Most.tap(event => _execMouseDragEndEventHandle()),
           )
      )
   |> WonderBsMost.Most.tap(event =>
        _execMouseDragingEventHandle(MouseDrag, event)
      ),
-  _fromDomEvent("keyup")
+  _fromDomEvent("keyup", state)
   |> WonderBsMost.Most.tap(event => _execKeyboardEventHandle(KeyUp, event)),
-  _fromDomEvent("keydown")
+  _fromDomEvent("keydown", state)
   |> WonderBsMost.Most.tap(event => _execKeyboardEventHandle(KeyDown, event)),
-  _fromDomEvent("keypress")
+  _fromDomEvent("keypress", state)
   |> WonderBsMost.Most.tap(event => _execKeyboardEventHandle(KeyPress, event)),
 |];
 
-let _fromMobileDomEventArr = () => [|
-  _fromDomEvent("touchend")
-  |> WonderBsMost.Most.since(_fromDomEvent("touchstart"))
+let _fromMobileDomEventArr = (state) => [|
+  _fromDomEvent("touchend", state)
+  |> WonderBsMost.Most.since(_fromDomEvent("touchstart", state))
   |> WonderBsMost.Most.tap(event => _execTouchEventHandle(TouchTap, event)),
-  _fromDomEvent("touchend")
+  _fromDomEvent("touchend", state)
   |> WonderBsMost.Most.tap(event => _execTouchEventHandle(TouchEnd, event)),
-  _fromDomEvent("touchstart")
+  _fromDomEvent("touchstart", state)
   |> WonderBsMost.Most.tap(event => _execTouchEventHandle(TouchStart, event)),
-  _fromDomEvent("touchmove")
+  _fromDomEvent("touchmove", state)
   |> WonderBsMost.Most.tap(event =>
        _execTouchMoveEventHandle(TouchMove, event)
      ),
-  _fromDomEvent("touchstart")
+  _fromDomEvent("touchstart", state)
   |> WonderBsMost.Most.tap(event => _execTouchDragStartEventHandle())
   |> WonderBsMost.Most.flatMap(event =>
-       _fromDomEvent("touchmove")
+       _fromDomEvent("touchmove", state)
        |> WonderBsMost.Most.until(
-            _fromDomEvent("touchend")
+            _fromDomEvent("touchend", state)
             |> WonderBsMost.Most.tap(event => _execTouchDragEndEventHandle()),
           )
      )
@@ -360,13 +358,13 @@ let _fromMobileDomEventArr = () => [|
      ),
 |];
 
-let fromDomEvent = ({browserDetectRecord}) =>
+let fromDomEvent = ({browserDetectRecord} as state) =>
   WonderBsMost.Most.mergeArray(
     switch (browserDetectRecord.browser) {
     | Chrome
-    | Firefox => _fromPCDomEventArr()
+    | Firefox => _fromPCDomEventArr(state)
     | Android
-    | IOS => _fromMobileDomEventArr()
+    | IOS => _fromMobileDomEventArr(state)
     | browser =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(

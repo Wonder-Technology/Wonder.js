@@ -222,22 +222,22 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "mousewheel",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mousedown",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mousemove",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "keydown",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             let state = EventTool.restore(state);

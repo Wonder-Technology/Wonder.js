@@ -19,7 +19,8 @@ let _extend = [%raw
     |}
 ];
 
-let getBody = () => DomExtend.document##body;
+/* let getBindedDom = state => Obj.magic(ViewTool.unsafeGetCanvas(state))##dom; */
+let getBindedDom = state => ViewTool.unsafeGetCanvas(state);
 
 let triggerDomEvent = [%raw
   (eventName, oTarget, event) => {|
@@ -100,22 +101,79 @@ let triggerDomEvent = [%raw
     |}
 ];
 
-let buildFakeCanvas = ((offsetLeft, offsetTop, offsetParent)) => {
-  /* "id": id, */
-  "nodeType": 1,
-  "style": {
-    "left": "",
-    "top": "",
-    "width": "",
-    "height": "",
-    "position": "static",
-  },
-  "width": 0.,
-  "height": 0.,
-  "offsetLeft": offsetLeft,
-  "offsetTop": offsetTop,
-  "offsetParent": offsetParent,
-};
+let buildFakeCanvas = [%raw
+  (. offsetData) => {|
+var [ offsetLeft, offsetTop, offsetParent ] = offsetData;
 
-let restore = state =>
+    function _getOrCreateEventQueue(type){
+        if(window.eventQueueMap === undefined){
+window.eventQueueMap = {};
+        }
+        if(window.eventQueueMap[type] === undefined){
+window.eventQueueMap[type] = [];
+        }
+
+        return window.eventQueueMap[type];
+    }
+
+return {
+     nodeType: 1,
+     style: {
+       "left": "",
+       "top": "",
+       "width": "",
+       "height": "",
+       "position": "static",
+     },
+     width: 0.,
+     height: 0.,
+     offsetLeft: offsetLeft,
+     offsetTop: offsetTop,
+     offsetParent: offsetParent,
+
+
+
+     addEventListener: (eventName, func, isCapture) => {
+var queue = _getOrCreateEventQueue(eventName);
+
+queue.push(func);
+        },
+
+        removeEventListener: (eventName, func, isCapture) => {
+var queue = _getOrCreateEventQueue(eventName);
+
+var index = queue.indexOf(func);
+
+if(index === -1){
+    return;
+}
+
+queue.splice(
+    index, 1
+);
+        },
+
+        dispatchEvent: (event) => {
+var queue = _getOrCreateEventQueue(event.type);
+
+
+queue.forEach((func) => {
+    func(event)
+});
+        }
+
+         }
+    |}
+];
+
+let _clearEventQueueMap = [%raw
+  (.) => {|
+    window.eventQueueMap = {};
+    |}
+];
+
+let restore = state => {
+  _clearEventQueueMap(.);
+
   ManageEventMainService.unsubscribeDomEventStream(state);
+};

@@ -136,12 +136,12 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "mousedown",
-                  EventTool.getBody(),
+                  EventTool.getBindedDom(state),
                   MouseEventTool.buildMouseEvent(),
                 );
                 EventTool.triggerDomEvent(
                   "mousemove",
-                  EventTool.getBody(),
+                  EventTool.getBindedDom(state),
                   MouseEventTool.buildMouseEvent(
                     ~movementX=1,
                     ~movementY=2,
@@ -184,7 +184,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "mousewheel",
-                EventTool.getBody(),
+                EventTool.getBindedDom(state),
                 MouseEventTool.buildMouseEvent(
                   ~preventDefaultFunc,
                   ~stopPropagationFunc,
@@ -232,7 +232,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "mousewheel",
-                EventTool.getBody(),
+                EventTool.getBindedDom(state),
                 MouseEventTool.buildMouseEvent(
                   ~detail=Js.Nullable.return(-3),
                   (),
@@ -302,7 +302,7 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "keydown",
-                  EventTool.getBody(),
+                  EventTool.getBindedDom(state),
                   KeyboardEventTool.buildKeyboardEvent(~keyCode=65, ()),
                 );
                 let state = EventTool.restore(state);
@@ -323,7 +323,7 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "keydown",
-                  EventTool.getBody(),
+                  EventTool.getBindedDom(state),
                   KeyboardEventTool.buildKeyboardEvent(~keyCode=39, ()),
                 );
                 let state = EventTool.restore(state);
@@ -344,7 +344,7 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "keydown",
-                  EventTool.getBody(),
+                  EventTool.getBindedDom(state),
                   KeyboardEventTool.buildKeyboardEvent(~keyCode=87, ()),
                 );
                 let state = EventTool.restore(state);
@@ -365,7 +365,7 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "keydown",
-                  EventTool.getBody(),
+                  EventTool.getBindedDom(state),
                   KeyboardEventTool.buildKeyboardEvent(~keyCode=83, ()),
                 );
                 let state = EventTool.restore(state);
@@ -404,7 +404,7 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "mousewheel",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(~preventDefaultFunc, ()),
             );
             let state = EventTool.restore(state);
@@ -451,7 +451,7 @@ let _ =
           let state = MainStateTool.setState(state);
           EventTool.triggerDomEvent(
             "mousewheel",
-            EventTool.getBody(),
+            EventTool.getBindedDom(state),
             MouseEventTool.buildMouseEvent(~preventDefaultFunc, ()),
           );
           let state = EventTool.restore(state);

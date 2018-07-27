@@ -302,12 +302,12 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "mousedown",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mousemove",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(
                 ~pageX=buttonX1,
                 ~pageY=buttonY1,
@@ -406,7 +406,7 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "mousemove",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(
                 ~pageX=buttonX1,
                 ~pageY=buttonY1,
@@ -415,12 +415,12 @@ let _ =
             );
             EventTool.triggerDomEvent(
               "mousedown",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mouseup",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             let state = EventTool.restore(state);
@@ -471,7 +471,7 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "mousemove",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(
                 ~pageX=buttonX1,
                 ~pageY=buttonY1,
@@ -480,12 +480,12 @@ let _ =
             );
             EventTool.triggerDomEvent(
               "mousedown",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mouseup",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             let state = EventTool.restore(state);
@@ -494,7 +494,7 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "mousedown",
-              EventTool.getBody(),
+              EventTool.getBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             let state = EventTool.restore(state);
