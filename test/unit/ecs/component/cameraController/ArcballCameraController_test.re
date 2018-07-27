@@ -57,6 +57,92 @@ let _ =
       })
     );
 
+    describe("bind/unbind arcballCameraController event", () => {
+      let _prepare = sandbox => {
+        let state = InitArcballCameraControllerTool.prepare(sandbox);
+        let (state, gameObject, _, (cameraController, _, _)) =
+          ArcballCameraControllerTool.createGameObject(state);
+        let state = state |> NoWorkerJobTool.execInitJobs;
+        let rotateSpeed = 2.5;
+        let phi = 1.;
+        let theta = 0.5;
+
+        let state =
+          state
+          |> setArcballCameraControllerRotateSpeed(
+               cameraController,
+               rotateSpeed,
+             )
+          |> setArcballCameraControllerPhi(cameraController, phi)
+          |> setArcballCameraControllerTheta(cameraController, theta);
+
+        (state, cameraController, phi, theta);
+      };
+
+      let _triggerEvent = state => {
+        let state = MainStateTool.setState(state);
+        EventTool.triggerDomEvent(
+          "mousedown",
+          EventTool.getBindedDom(state),
+          MouseEventTool.buildMouseEvent(),
+        );
+        EventTool.triggerDomEvent(
+          "mousemove",
+          EventTool.getBindedDom(state),
+          MouseEventTool.buildMouseEvent(~movementX=1, ~movementY=2, ()),
+        );
+        let state = EventTool.restore(state);
+
+        state;
+      };
+
+      describe(
+        "if unbind event, arcballCameraController event shouldn't work", () =>
+        test("test point drag event", () => {
+          let (state, cameraController, phi, theta) = _prepare(sandbox);
+          let state =
+            ArcballCameraControllerAPI.unbindArcballCameraControllerEvent(
+              cameraController,
+              state,
+            );
+
+          let state = _triggerEvent(state);
+
+          (
+            state |> unsafeGetArcballCameraControllerPhi(cameraController),
+            state |> unsafeGetArcballCameraControllerTheta(cameraController),
+          )
+          |> expect == (phi, theta);
+        })
+      );
+
+      describe(
+        "if bind event after unbind event, arcballCameraController event should work",
+        () =>
+        test("test point drag event", () => {
+          let (state, cameraController, phi, theta) = _prepare(sandbox);
+          let state =
+            ArcballCameraControllerAPI.unbindArcballCameraControllerEvent(
+              cameraController,
+              state,
+            );
+          let state =
+            ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+              cameraController,
+              state,
+            );
+
+          let state = _triggerEvent(state);
+
+          (
+            state |> unsafeGetArcballCameraControllerPhi(cameraController),
+            state |> unsafeGetArcballCameraControllerTheta(cameraController),
+          )
+          |> expect != (phi, theta);
+        })
+      );
+    });
+
     describe("dispose component", () => {
       let _prepareTwo = state => {
         let (state, gameObject1, _, (cameraController1, _, _)) =

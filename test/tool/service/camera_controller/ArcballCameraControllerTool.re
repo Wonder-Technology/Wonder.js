@@ -90,7 +90,7 @@ let setPointDragEventHandleFunc =
     (cameraController, handleFunc, {arcballCameraControllerRecord} as state) => {
   ...state,
   arcballCameraControllerRecord:
-    EventArcballCameraControllerMainService.setPointDragEventHandleFunc(
+    EventArcballCameraControllerMainService._setPointDragEventHandleFunc(
       cameraController,
       handleFunc,
       arcballCameraControllerRecord,
@@ -101,7 +101,7 @@ let setPointScaleEventHandleFunc =
     (cameraController, handleFunc, {arcballCameraControllerRecord} as state) => {
   ...state,
   arcballCameraControllerRecord:
-    EventArcballCameraControllerMainService.setPointScaleEventHandleFunc(
+    EventArcballCameraControllerMainService._setPointScaleEventHandleFunc(
       cameraController,
       handleFunc,
       arcballCameraControllerRecord,
@@ -112,7 +112,7 @@ let setKeydownEventHandleFunc =
     (cameraController, handleFunc, {arcballCameraControllerRecord} as state) => {
   ...state,
   arcballCameraControllerRecord:
-    EventArcballCameraControllerMainService.setKeydownEventHandleFunc(
+    EventArcballCameraControllerMainService._setKeydownEventHandleFunc(
       cameraController,
       handleFunc,
       arcballCameraControllerRecord,

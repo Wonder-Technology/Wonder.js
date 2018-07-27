@@ -175,3 +175,12 @@ let setArcballCameraControllerRotateSpeed =
       state.arcballCameraControllerRecord,
     ),
 };
+
+let bindArcballCameraControllerEvent = (cameraController, state) =>
+  EventArcballCameraControllerMainService.bindEvent(cameraController, state);
+
+let unbindArcballCameraControllerEvent = (cameraController, state) =>
+  EventArcballCameraControllerMainService.unbindEvent(
+    cameraController,
+    state,
+  );

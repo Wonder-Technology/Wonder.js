@@ -53,52 +53,7 @@ let _ =
     });
 
     describe("init arcballCameraController", () => {
-      let _prepare = () => {
-        let state =
-          MouseEventTool.prepareWithState(
-            ~sandbox,
-            ~state=
-              TestTool.initWithJobConfigWithoutBuildFakeDom(
-                ~sandbox,
-                ~noWorkerJobRecord=
-                  NoWorkerJobConfigTool.buildNoWorkerJobConfig(
-                    ~initPipelines=
-                      {|
-        [
-    {
-      "name": "default",
-      "jobs": [
-        {
-          "name": "init_event"
-        },
-        {
-          "name": "init_camera"
-        }
-      ]
-    }
-  ]
-        |},
-                    ~initJobs=
-                      {j|
-[
-
-    {
-          "name": "init_event"
-    },
-        {
-          "name": "init_camera"
-        }
-]
-        |j},
-                    (),
-                  ),
-                (),
-              ),
-            (),
-          );
-        MouseEventTool.setPointerLocked(.);
-        state;
-      };
+      let _prepare = () => InitArcballCameraControllerTool.prepare(sandbox);
 
       describe("test init one arcballCameraController", () => {
         describe("bind event", () => {
