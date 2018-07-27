@@ -7,6 +7,7 @@ type pointEventName =
   | PointDrag;
 
 type domEventName =
+  | Contextmenu
   | Click
   | MouseDown
   | MouseUp
@@ -48,7 +49,7 @@ type mouseDomEvent = {
   "wheelDelta": Js.Nullable.t(int),
   "pageX": int,
   "pageY": int,
-  "preventDefault": unit => unit,
+  "preventDefault": (. unit) => unit,
 };
 
 type keyboardDomEvent = {
@@ -186,6 +187,8 @@ external canvasToEventTarget :
   WonderWebgl.DomExtendType.htmlElement => Dom.eventTarget =
   "%identity";
 
+external eventTargetToDomEvent : Dom.event => domEvent = "%identity";
+
 external eventTargetToMouseDomEvent : Dom.event => mouseDomEvent = "%identity";
 
 external eventTargetToKeyboardDomEvent : Dom.event => keyboardDomEvent =
@@ -198,3 +201,9 @@ external mouseDomEventToPointDomEvent : mouseDomEvent => pointDomEvent =
 
 external touchDomEventToPointDomEvent : touchDomEvent => pointDomEvent =
   "%identity";
+
+external mouseDomEventToDomEvent : mouseDomEvent => domEvent = "%identity";
+
+external pointDomEventToDomEvent : pointDomEvent => domEvent = "%identity";
+
+external domEventToPointDomEvent : domEvent => pointDomEvent = "%identity";

@@ -122,6 +122,35 @@ let _ =
           });
         };
 
+        describe("bind contextmenu event", () =>
+          test("preventDefault", () => {
+            let state =
+              InitArcballCameraControllerTool.prepareMouseEvent(sandbox);
+            let state = state |> NoWorkerJobTool.execInitJobs;
+            let preventDefaultFunc = createEmptyStubWithJsObjSandbox(sandbox);
+            let stopPropagationFunc =
+              createEmptyStubWithJsObjSandbox(sandbox);
+
+            let state = MainStateTool.setState(state);
+            EventTool.triggerDomEvent(
+              "contextmenu",
+              EventTool.getBody(state),
+              MouseEventTool.buildMouseEvent(
+                ~preventDefaultFunc,
+                ~stopPropagationFunc,
+                (),
+              ),
+            );
+            let state = EventTool.restore(state);
+
+            (
+              preventDefaultFunc |> getCallCount,
+              stopPropagationFunc |> getCallCount,
+            )
+            |> expect == (1, 1);
+          })
+        );
+
         describe("bind mousedown event", () => {
           _testMouseEvent(MouseDown, "mousedown");
 

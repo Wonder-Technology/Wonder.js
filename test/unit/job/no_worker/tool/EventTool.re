@@ -19,10 +19,11 @@ let _extend = [%raw
     |}
 ];
 
+let getBody = state => DomExtend.document##body |> EventType.bodyToEventTarget;
+
 let getPointEventBindedDom = state => ViewTool.unsafeGetCanvas(state);
 
-let getKeyboardEventBindedDom = state =>
-  DomExtend.document##body |> EventType.bodyToEventTarget;
+let getKeyboardEventBindedDom = state => getBody(state);
 
 let triggerDomEvent = [%raw
   (eventName, oTarget, event) => {|

@@ -166,6 +166,15 @@ let bindDomEventToTriggerPointEvent = ({browserDetectRecord} as state) =>
     )
   };
 
+let _preventContextMenuEvent = (event, state) => {
+  HandleDomEventMainService.preventDefault(
+    event |> EventType.eventTargetToDomEvent,
+  )
+  |> ignore;
+
+  ();
+};
+
 let _execMouseEventHandle = (mouseEventName, event, state) => {
   StateDataMainService.unsafeGetStateByFunc(state)
   |> HandleMouseEventMainService.execEventHandle(
@@ -305,6 +314,8 @@ let _execKeyboardEventHandle = (keyboardEventName, event, state) => {
 };
 
 let _fromPCDomEventArr = state => [|
+  WonderBsMost.Most.fromEvent("contextmenu", _getBody(), false)
+  |> WonderBsMost.Most.tap(event => _preventContextMenuEvent(event, state)),
   _fromPointDomEvent("click", state)
   |> WonderBsMost.Most.tap(event =>
        _execMouseEventHandle(Click, event, state)
