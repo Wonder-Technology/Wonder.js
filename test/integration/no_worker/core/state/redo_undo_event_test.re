@@ -92,7 +92,7 @@ let _ =
         let restoredState = MainStateTool.setState(restoredState);
         EventTool.triggerDomEvent(
           "mousedown",
-          EventTool.getBindedDom(state),
+          EventTool.getPointEventBindedDom(state),
           MouseEventTool.buildMouseEvent(),
         );
         let restoredState = EventTool.restore(restoredState);
@@ -113,7 +113,7 @@ let _ =
         let restoredState = MainStateTool.setState(restoredState);
         EventTool.triggerDomEvent(
           "keydown",
-          EventTool.getBindedDom(state),
+          EventTool.getKeyboardEventBindedDom(state),
           KeyboardEventTool.buildKeyboardEvent(),
         );
         let restoredState = EventTool.restore(restoredState);
@@ -134,7 +134,7 @@ let _ =
         let restoredState = MainStateTool.setState(restoredState);
         EventTool.triggerDomEvent(
           "touchstart",
-          EventTool.getBindedDom(state),
+          EventTool.getPointEventBindedDom(state),
           TouchEventTool.buildTouchEvent(),
         );
         let restoredState = EventTool.restore(restoredState);
@@ -266,7 +266,7 @@ let _ =
         let restoredState = MainStateTool.setState(restoredState);
         EventTool.triggerDomEvent(
           "mousedown",
-          EventTool.getBindedDom(state),
+          EventTool.getPointEventBindedDom(state),
           MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
         );
         let restoredState = EventTool.restore(restoredState);
@@ -316,7 +316,7 @@ let _ =
         let restoredState = MainStateTool.setState(restoredState);
         EventTool.triggerDomEvent(
           "touchstart",
-          EventTool.getBindedDom(state),
+          EventTool.getPointEventBindedDom(state),
           TouchEventTool.buildTouchEvent(
             ~changedTouches=[|
               TouchEventTool.buildTouchData(~pageX=10, ~pageY=20, ()),

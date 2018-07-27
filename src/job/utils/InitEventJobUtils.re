@@ -2,10 +2,17 @@ open StateDataMainType;
 
 open EventType;
 
-let _fromDomEvent = (eventName, state) =>
+let _fromPointDomEvent = (eventName, state) =>
   WonderBsMost.Most.fromEvent(
     eventName,
     ViewService.unsafeGetCanvas(state.viewRecord) |> canvasToEventTarget,
+    false,
+  );
+
+let _fromKeyboardDomEvent = (eventName, state) =>
+  WonderBsMost.Most.fromEvent(
+    eventName,
+    DomExtend.document##body |> bodyToEventTarget,
     false,
   );
 
@@ -300,32 +307,32 @@ let _execKeyboardEventHandle = (keyboardEventName, event, state) => {
 };
 
 let _fromPCDomEventArr = state => [|
-  _fromDomEvent("click", state)
+  _fromPointDomEvent("click", state)
   |> WonderBsMost.Most.tap(event =>
        _execMouseEventHandle(Click, event, state)
      ),
-  _fromDomEvent("mousedown", state)
+  _fromPointDomEvent("mousedown", state)
   |> WonderBsMost.Most.tap(event =>
        _execMouseEventHandle(MouseDown, event, state)
      ),
-  _fromDomEvent("mouseup", state)
+  _fromPointDomEvent("mouseup", state)
   |> WonderBsMost.Most.tap(event =>
        _execMouseEventHandle(MouseUp, event, state)
      ),
-  _fromDomEvent("mousemove", state)
+  _fromPointDomEvent("mousemove", state)
   |> WonderBsMost.Most.tap(event =>
        _execMouseMoveEventHandle(MouseMove, event, state)
      ),
-  _fromDomEvent("mousewheel", state)
+  _fromPointDomEvent("mousewheel", state)
   |> WonderBsMost.Most.tap(event =>
        _execMouseEventHandle(MouseWheel, event, state)
      ),
-  _fromDomEvent("mousedown", state)
+  _fromPointDomEvent("mousedown", state)
   |> WonderBsMost.Most.tap(event => _execMouseDragStartEventHandle(state))
   |> WonderBsMost.Most.flatMap(event =>
-       _fromDomEvent("mousemove", state)
+       _fromPointDomEvent("mousemove", state)
        |> WonderBsMost.Most.until(
-            _fromDomEvent("mouseup", state)
+            _fromPointDomEvent("mouseup", state)
             |> WonderBsMost.Most.tap(event =>
                  _execMouseDragEndEventHandle(state)
                ),
@@ -334,44 +341,44 @@ let _fromPCDomEventArr = state => [|
   |> WonderBsMost.Most.tap(event =>
        _execMouseDragingEventHandle(MouseDrag, event, state)
      ),
-  _fromDomEvent("keyup", state)
+  _fromKeyboardDomEvent("keyup", state)
   |> WonderBsMost.Most.tap(event =>
        _execKeyboardEventHandle(KeyUp, event, state)
      ),
-  _fromDomEvent("keydown", state)
+  _fromKeyboardDomEvent("keydown", state)
   |> WonderBsMost.Most.tap(event =>
        _execKeyboardEventHandle(KeyDown, event, state)
      ),
-  _fromDomEvent("keypress", state)
+  _fromKeyboardDomEvent("keypress", state)
   |> WonderBsMost.Most.tap(event =>
        _execKeyboardEventHandle(KeyPress, event, state)
      ),
 |];
 
 let _fromMobileDomEventArr = state => [|
-  _fromDomEvent("touchend", state)
-  |> WonderBsMost.Most.since(_fromDomEvent("touchstart", state))
+  _fromPointDomEvent("touchend", state)
+  |> WonderBsMost.Most.since(_fromPointDomEvent("touchstart", state))
   |> WonderBsMost.Most.tap(event =>
        _execTouchEventHandle(TouchTap, event, state)
      ),
-  _fromDomEvent("touchend", state)
+  _fromPointDomEvent("touchend", state)
   |> WonderBsMost.Most.tap(event =>
        _execTouchEventHandle(TouchEnd, event, state)
      ),
-  _fromDomEvent("touchstart", state)
+  _fromPointDomEvent("touchstart", state)
   |> WonderBsMost.Most.tap(event =>
        _execTouchEventHandle(TouchStart, event, state)
      ),
-  _fromDomEvent("touchmove", state)
+  _fromPointDomEvent("touchmove", state)
   |> WonderBsMost.Most.tap(event =>
        _execTouchMoveEventHandle(TouchMove, event, state)
      ),
-  _fromDomEvent("touchstart", state)
+  _fromPointDomEvent("touchstart", state)
   |> WonderBsMost.Most.tap(event => _execTouchDragStartEventHandle(state))
   |> WonderBsMost.Most.flatMap(event =>
-       _fromDomEvent("touchmove", state)
+       _fromPointDomEvent("touchmove", state)
        |> WonderBsMost.Most.until(
-            _fromDomEvent("touchend", state)
+            _fromPointDomEvent("touchend", state)
             |> WonderBsMost.Most.tap(event =>
                  _execTouchDragEndEventHandle(state)
                ),

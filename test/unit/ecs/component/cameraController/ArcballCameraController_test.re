@@ -83,12 +83,12 @@ let _ =
         let state = MainStateTool.setState(state);
         EventTool.triggerDomEvent(
           "mousedown",
-          EventTool.getBindedDom(state),
+          EventTool.getPointEventBindedDom(state),
           MouseEventTool.buildMouseEvent(),
         );
         EventTool.triggerDomEvent(
           "mousemove",
-          EventTool.getBindedDom(state),
+          EventTool.getPointEventBindedDom(state),
           MouseEventTool.buildMouseEvent(~movementX=1, ~movementY=2, ()),
         );
         let state = EventTool.restore(state);
@@ -308,22 +308,22 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "mousewheel",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mousedown",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mousemove",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "keydown",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             let state = EventTool.restore(state);

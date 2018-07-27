@@ -34,7 +34,7 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               {j|$mouseDomEventName|j},
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             let state = EventTool.restore(state);
@@ -69,7 +69,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 {j|$mouseDomEventName|j},
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(),
               );
               let state = EventTool.restore(state);
@@ -112,7 +112,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 {j|$mouseDomEventName|j},
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(),
               );
               let state = EventTool.restore(state);
@@ -153,7 +153,7 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "mousedown",
-                  EventTool.getBindedDom(state),
+                  EventTool.getPointEventBindedDom(state),
                   MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
                 );
                 let state = EventTool.restore(state);
@@ -192,7 +192,7 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "mousedown",
-                  EventTool.getBindedDom(state),
+                  EventTool.getPointEventBindedDom(state),
                   MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
                 );
                 let state = EventTool.restore(state);
@@ -220,7 +220,7 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "mousedown",
-                  EventTool.getBindedDom(state),
+                  EventTool.getPointEventBindedDom(state),
                   MouseEventTool.buildMouseEvent(~button=eventButton, ()),
                 );
                 let state = EventTool.restore(state);
@@ -262,7 +262,7 @@ let _ =
                   let state = MainStateTool.setState(state);
                   EventTool.triggerDomEvent(
                     "mousedown",
-                    EventTool.getBindedDom(state),
+                    EventTool.getPointEventBindedDom(state),
                     MouseEventTool.buildMouseEvent(
                       ~movementX=1,
                       ~movementY=2,
@@ -298,7 +298,7 @@ let _ =
                   let state = MainStateTool.setState(state);
                   EventTool.triggerDomEvent(
                     "mousedown",
-                    EventTool.getBindedDom(state),
+                    EventTool.getPointEventBindedDom(state),
                     MouseEventTool.buildMouseEvent(~pageX, ~pageY, ()),
                   );
                   let state = EventTool.restore(state);
@@ -334,7 +334,7 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "mousedown",
-                  EventTool.getBindedDom(state),
+                  EventTool.getPointEventBindedDom(state),
                   mouseEvent,
                 );
                 let state = EventTool.restore(state);
@@ -408,7 +408,7 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "mousedown",
-                  EventTool.getBindedDom(state),
+                  EventTool.getPointEventBindedDom(state),
                   MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
                 );
                 let state = EventTool.restore(state);
@@ -447,7 +447,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "mousedown",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(),
               );
               let state = EventTool.restore(state);
@@ -511,12 +511,12 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "mousemove",
-                  EventTool.getBindedDom(state),
+                  EventTool.getPointEventBindedDom(state),
                   MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
                 );
                 EventTool.triggerDomEvent(
                   "mousemove",
-                  EventTool.getBindedDom(state),
+                  EventTool.getPointEventBindedDom(state),
                   MouseEventTool.buildMouseEvent(~pageX=30, ~pageY=50, ()),
                 );
                 let state = EventTool.restore(state);
@@ -546,17 +546,17 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "mousedown",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mousemove",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mousemove",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             let state = EventTool.restore(state);
@@ -582,22 +582,22 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "mousedown",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mousemove",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mouseup",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mousemove",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             let state = EventTool.restore(state);
@@ -627,12 +627,12 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "mousedown",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(),
               );
               EventTool.triggerDomEvent(
                 "mousemove",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(),
               );
               let state = EventTool.restore(state);
@@ -673,22 +673,22 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "mousemove",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(~pageX=1, ~pageY=2, ()),
               );
               EventTool.triggerDomEvent(
                 "mousedown",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(),
               );
               EventTool.triggerDomEvent(
                 "mousemove",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
               );
               EventTool.triggerDomEvent(
                 "mousemove",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(~pageX=50, ~pageY=70, ()),
               );
               let state = EventTool.restore(state);
@@ -701,17 +701,17 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "mousemove",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(~pageX=1, ~pageY=2, ()),
               );
               EventTool.triggerDomEvent(
                 "mousedown",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(),
               );
               EventTool.triggerDomEvent(
                 "mousemove",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(~pageX=50, ~pageY=80, ()),
               );
               let state = EventTool.restore(state);
@@ -742,7 +742,7 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               {j|$keyboardDomEventName|j},
-              EventTool.getBindedDom(state),
+              EventTool.getKeyboardEventBindedDom(state),
               KeyboardEventTool.buildKeyboardEvent(),
             );
             let state = EventTool.restore(state);
@@ -777,7 +777,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 {j|$keyboardDomEventName|j},
-                EventTool.getBindedDom(state),
+                EventTool.getKeyboardEventBindedDom(state),
                 KeyboardEventTool.buildKeyboardEvent(),
               );
               let state = EventTool.restore(state);
@@ -820,7 +820,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 {j|$keyboardDomEventName|j},
-                EventTool.getBindedDom(state),
+                EventTool.getKeyboardEventBindedDom(state),
                 KeyboardEventTool.buildKeyboardEvent(),
               );
               let state = EventTool.restore(state);
@@ -852,7 +852,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "keyup",
-                EventTool.getBindedDom(state),
+                EventTool.getKeyboardEventBindedDom(state),
                 KeyboardEventTool.buildKeyboardEvent(
                   ~ctrlKey=true,
                   ~altKey=true,
@@ -890,7 +890,7 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "keyup",
-                  EventTool.getBindedDom(state),
+                  EventTool.getKeyboardEventBindedDom(state),
                   KeyboardEventTool.buildKeyboardEvent(~keyCode=9, ()),
                 );
                 let state = EventTool.restore(state);
@@ -918,7 +918,7 @@ let _ =
                   let state = MainStateTool.setState(state);
                   EventTool.triggerDomEvent(
                     "keyup",
-                    EventTool.getBindedDom(state),
+                    EventTool.getKeyboardEventBindedDom(state),
                     KeyboardEventTool.buildKeyboardEvent(
                       ~shiftKey=true,
                       ~keyCode=51,
@@ -927,7 +927,7 @@ let _ =
                   );
                   EventTool.triggerDomEvent(
                     "keyup",
-                    EventTool.getBindedDom(state),
+                    EventTool.getKeyboardEventBindedDom(state),
                     KeyboardEventTool.buildKeyboardEvent(
                       ~shiftKey=true,
                       ~keyCode=52,
@@ -936,7 +936,7 @@ let _ =
                   );
                   EventTool.triggerDomEvent(
                     "keyup",
-                    EventTool.getBindedDom(state),
+                    EventTool.getKeyboardEventBindedDom(state),
                     KeyboardEventTool.buildKeyboardEvent(
                       ~shiftKey=true,
                       ~keyCode=187,
@@ -980,7 +980,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "keyup",
-                EventTool.getBindedDom(state),
+                EventTool.getKeyboardEventBindedDom(state),
                 KeyboardEventTool.buildKeyboardEvent(),
               );
               let state = EventTool.restore(state);
@@ -1019,7 +1019,7 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               {j|$touchDomEventName|j},
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             let state = EventTool.restore(state);
@@ -1054,7 +1054,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 {j|$touchDomEventName|j},
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(),
               );
               let state = EventTool.restore(state);
@@ -1097,7 +1097,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 {j|$touchDomEventName|j},
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(),
               );
               let state = EventTool.restore(state);
@@ -1138,7 +1138,7 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "touchstart",
-                  EventTool.getBindedDom(state),
+                  EventTool.getPointEventBindedDom(state),
                   TouchEventTool.buildTouchEvent(
                     ~changedTouches=[|
                       TouchEventTool.buildTouchData(~pageX=10, ~pageY=20, ()),
@@ -1171,7 +1171,7 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "touchstart",
-                  EventTool.getBindedDom(state),
+                  EventTool.getPointEventBindedDom(state),
                   TouchEventTool.buildTouchEvent(
                     ~changedTouches=[|
                       TouchEventTool.buildTouchData(~pageX=10, ~pageY=20, ()),
@@ -1223,7 +1223,7 @@ let _ =
                   let state = MainStateTool.setState(state);
                   EventTool.triggerDomEvent(
                     "touchstart",
-                    EventTool.getBindedDom(state),
+                    EventTool.getPointEventBindedDom(state),
                     TouchEventTool.buildTouchEvent(
                       ~changedTouches=[|
                         TouchEventTool.buildTouchData(~pageX, ~pageY, ()),
@@ -1275,7 +1275,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "touchstart",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(),
               );
               let state = EventTool.restore(state);
@@ -1308,12 +1308,12 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "touchstart",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             EventTool.triggerDomEvent(
               "touchend",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             let state = EventTool.restore(state);
@@ -1349,7 +1349,7 @@ let _ =
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "touchmove",
-                  EventTool.getBindedDom(state),
+                  EventTool.getPointEventBindedDom(state),
                   TouchEventTool.buildTouchEvent(
                     ~changedTouches=[|
                       TouchEventTool.buildTouchData(~pageX=10, ~pageY=20, ()),
@@ -1359,7 +1359,7 @@ let _ =
                 );
                 EventTool.triggerDomEvent(
                   "touchmove",
-                  EventTool.getBindedDom(state),
+                  EventTool.getPointEventBindedDom(state),
                   TouchEventTool.buildTouchEvent(
                     ~changedTouches=[|
                       TouchEventTool.buildTouchData(~pageX=30, ~pageY=50, ()),
@@ -1394,17 +1394,17 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "touchstart",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             EventTool.triggerDomEvent(
               "touchmove",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             EventTool.triggerDomEvent(
               "touchmove",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             let state = EventTool.restore(state);
@@ -1430,22 +1430,22 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "touchstart",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             EventTool.triggerDomEvent(
               "touchmove",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             EventTool.triggerDomEvent(
               "touchend",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             EventTool.triggerDomEvent(
               "touchmove",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             let state = EventTool.restore(state);
@@ -1475,12 +1475,12 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "touchstart",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(),
               );
               EventTool.triggerDomEvent(
                 "touchmove",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(),
               );
               let state = EventTool.restore(state);
@@ -1520,7 +1520,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "touchmove",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(
                   ~changedTouches=[|
                     TouchEventTool.buildTouchData(~pageX=1, ~pageY=2, ()),
@@ -1530,12 +1530,12 @@ let _ =
               );
               EventTool.triggerDomEvent(
                 "touchstart",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(),
               );
               EventTool.triggerDomEvent(
                 "touchmove",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(
                   ~changedTouches=[|
                     TouchEventTool.buildTouchData(~pageX=10, ~pageY=20, ()),
@@ -1545,7 +1545,7 @@ let _ =
               );
               EventTool.triggerDomEvent(
                 "touchmove",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(
                   ~changedTouches=[|
                     TouchEventTool.buildTouchData(~pageX=50, ~pageY=70, ()),
@@ -1563,7 +1563,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "touchmove",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(
                   ~changedTouches=[|
                     TouchEventTool.buildTouchData(~pageX=1, ~pageY=2, ()),
@@ -1573,12 +1573,12 @@ let _ =
               );
               EventTool.triggerDomEvent(
                 "touchstart",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(),
               );
               EventTool.triggerDomEvent(
                 "touchmove",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(
                   ~changedTouches=[|
                     TouchEventTool.buildTouchData(~pageX=50, ~pageY=80, ()),
@@ -1616,7 +1616,7 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               mouseDomEventName,
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             let state = EventTool.restore(state);
@@ -1661,7 +1661,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 mouseDomEventName,
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(),
               );
               let state = EventTool.restore(state);
@@ -1706,7 +1706,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 mouseDomEventName,
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(),
               );
               let state = EventTool.restore(state);
@@ -1749,7 +1749,7 @@ let _ =
                 MouseEventTool.buildMouseEvent(~pageX=10, ());
               EventTool.triggerDomEvent(
                 "mousedown",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 mouseDomEvent,
               );
               let state = EventTool.restore(state);
@@ -1815,7 +1815,7 @@ let _ =
                 );
               EventTool.triggerDomEvent(
                 "mousedown",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 mouseDomEvent,
               );
               let state = EventTool.restore(state);
@@ -1862,7 +1862,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "mousedown",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(),
               );
               let state = EventTool.restore(state);
@@ -1914,17 +1914,17 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "mousedown",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mousemove",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
               "mousemove",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
             let state = EventTool.restore(state);
@@ -1954,7 +1954,7 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               touchDomEventName,
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             let state = EventTool.restore(state);
@@ -1999,7 +1999,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 touchDomEventName,
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(),
               );
               let state = EventTool.restore(state);
@@ -2044,7 +2044,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 touchDomEventName,
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(),
               );
               let state = EventTool.restore(state);
@@ -2093,7 +2093,7 @@ let _ =
                 );
               EventTool.triggerDomEvent(
                 "touchstart",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 touchDomEvent,
               );
               let state = EventTool.restore(state);
@@ -2155,7 +2155,7 @@ let _ =
 
               EventTool.triggerDomEvent(
                 "touchstart",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 touchDomEvent,
               );
               let state = EventTool.restore(state);
@@ -2202,7 +2202,7 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "touchstart",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(),
               );
               let state = EventTool.restore(state);
@@ -2235,12 +2235,12 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "touchstart",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             EventTool.triggerDomEvent(
               "touchend",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             let state = EventTool.restore(state);
@@ -2285,12 +2285,12 @@ let _ =
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
                 "touchstart",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(),
               );
               EventTool.triggerDomEvent(
                 "touchend",
-                EventTool.getBindedDom(state),
+                EventTool.getPointEventBindedDom(state),
                 TouchEventTool.buildTouchEvent(),
               );
               let state = EventTool.restore(state);
@@ -2327,17 +2327,17 @@ let _ =
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
               "touchstart",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             EventTool.triggerDomEvent(
               "touchmove",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             EventTool.triggerDomEvent(
               "touchmove",
-              EventTool.getBindedDom(state),
+              EventTool.getPointEventBindedDom(state),
               TouchEventTool.buildTouchEvent(),
             );
             let state = EventTool.restore(state);
@@ -2383,7 +2383,7 @@ let _ =
           let state = StateAPI.setStateToData(stateData, state);
           EventTool.triggerDomEvent(
             "mousedown",
-            EventTool.getBindedDom(state),
+            EventTool.getPointEventBindedDom(state),
             MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
           );
           let state = EventTool.restore(state);

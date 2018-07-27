@@ -95,7 +95,7 @@ let _ =
         let restoredState = MainStateTool.setState(restoredState);
         EventTool.triggerDomEvent(
           "mousewheel",
-          EventTool.getBindedDom(state),
+          EventTool.getPointEventBindedDom(state),
           MouseEventTool.buildMouseEvent(~preventDefaultFunc, ()),
         );
         let restoredState = EventTool.restore(restoredState);
