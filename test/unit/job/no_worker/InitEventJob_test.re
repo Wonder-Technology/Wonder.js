@@ -2347,4 +2347,49 @@ let _ =
         );
       });
     });
+
+    describe("test state", () => {
+      let _createStateData = () =>
+        CreateStateDataMainService.createStateData();
+
+      describe(
+        "event handleFunc can get/set state from/to other stateData instead of StateDataMain.stateData",
+        () =>
+        test("test mouse event handleFunc", () => {
+          let state = MouseEventTool.prepare(~sandbox, ());
+          let stateData = _createStateData();
+          let state =
+            StateAPI.setStateToData(stateData, state)
+            |> StateAPI.setUnsafeGetStateFunc((.) =>
+                 StateAPI.getStateFromData(stateData)
+               )
+            |> StateAPI.setSetStateFunc((. state) =>
+                 StateAPI.setStateToData(stateData, state)
+               );
+          let state = state |> NoWorkerJobTool.execInitJobs;
+          let value = ref(0);
+
+          let state =
+            ManageEventAPI.onMouseEvent(
+              MouseDown,
+              0,
+              (. event: mouseEvent, state) => {
+                value := 1;
+                state;
+              },
+              state |> StateAPI.deepCopyForRestore,
+            );
+
+          let state = StateAPI.setStateToData(stateData, state);
+          EventTool.triggerDomEvent(
+            "mousedown",
+            EventTool.getBindedDom(state),
+            MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
+          );
+          let state = EventTool.restore(state);
+
+          value^ |> expect == 1;
+        })
+      );
+    });
   });

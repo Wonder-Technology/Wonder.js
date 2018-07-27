@@ -251,7 +251,12 @@ and apiRecord = {
       state => CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
   },
 }
+and stateRecord = {
+  unsafeGetStateFunc: (. unit) => state,
+  setStateFunc: (. state) => state,
+}
 and state = {
+  stateRecord,
   settingRecord,
   jobRecord,
   noWorkerJobRecord: option(noWorkerJobRecord),
