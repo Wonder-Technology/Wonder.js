@@ -34,6 +34,31 @@ let buildTouchEvent =
   "targetTouches": targetTouches,
 };
 
+
+let prepareWithState =
+    (
+      ~sandbox,
+      ~state,
+      ~offsetLeft=1,
+      ~offsetTop=2,
+      ~offsetParent=Js.Nullable.undefined,
+      ~setBrowserFunc=BrowserDetectTool.setChrome,
+      (),
+    ) => {
+  let canvasDom =
+    EventTool.buildFakeCanvas((offsetLeft, offsetTop, offsetParent));
+
+  let state = ViewTool.setCanvas(canvasDom |> Obj.magic, state);
+
+  MainStateTool.setState(state) |> ignore;
+
+  setBrowserFunc();
+
+  MainStateTool.unsafeGetState();
+};
+
+
+
 let prepare =
     (
       ~sandbox,

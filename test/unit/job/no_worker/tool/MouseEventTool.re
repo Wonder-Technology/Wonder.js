@@ -110,3 +110,13 @@ let prepare =
       ),
     (),
   );
+
+let prepareForPointerLock = (sandbox, state) => {
+  open Sinon;
+
+  let canvas = ViewTool.unsafeGetCanvas(state) |> Obj.magic;
+  let requestPointerLockStub = createEmptyStubWithJsObjSandbox(sandbox);
+  canvas##requestPointerLock#=requestPointerLockStub;
+
+  (state, requestPointerLockStub);
+};

@@ -180,7 +180,7 @@ external pointEventToUserData : pointEvent => userData = "%identity";
 external userDataToPointEvent : userData => pointEvent = "%identity";
 
 external bodyToEventTarget : WonderWebgl.DomExtendType.body => Dom.eventTarget =
-   "%identity";
+  "%identity";
 
 external canvasToEventTarget :
   WonderWebgl.DomExtendType.htmlElement => Dom.eventTarget =

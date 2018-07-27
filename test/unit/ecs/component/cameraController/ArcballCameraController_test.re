@@ -58,8 +58,9 @@ let _ =
     );
 
     describe("bind/unbind arcballCameraController event", () => {
-      let _prepare = sandbox => {
-        let state = InitArcballCameraControllerTool.prepare(sandbox);
+      let _prepareMouseEvent = sandbox => {
+        let state =
+          InitArcballCameraControllerTool.prepareMouseEvent(sandbox);
         let (state, gameObject, _, (cameraController, _, _)) =
           ArcballCameraControllerTool.createGameObject(state);
         let state = state |> NoWorkerJobTool.execInitJobs;
@@ -99,7 +100,8 @@ let _ =
       describe(
         "if unbind event, arcballCameraController event shouldn't work", () =>
         test("test point drag event", () => {
-          let (state, cameraController, phi, theta) = _prepare(sandbox);
+          let (state, cameraController, phi, theta) =
+            _prepareMouseEvent(sandbox);
           let state =
             ArcballCameraControllerAPI.unbindArcballCameraControllerEvent(
               cameraController,
@@ -120,7 +122,10 @@ let _ =
         "if bind event after unbind event, arcballCameraController event should work",
         () =>
         test("test point drag event", () => {
-          let (state, cameraController, phi, theta) = _prepare(sandbox);
+          let (state, cameraController, phi, theta) =
+            _prepareMouseEvent(sandbox);
+          let (state, _) =
+            MouseEventTool.prepareForPointerLock(sandbox, state);
           let state =
             ArcballCameraControllerAPI.unbindArcballCameraControllerEvent(
               cameraController,
@@ -251,6 +256,16 @@ let _ =
               ArcballCameraControllerTool.createGameObject(state);
             let state = state |> NoWorkerJobTool.execInitJobs;
             let value = ref(0);
+            let pointDownHandleFunc =
+              (. event, state) => {
+                value := value^ + 20;
+                (state, event);
+              };
+            let pointUpHandleFunc =
+              (. event, state) => {
+                value := value^ + 21;
+                (state, event);
+              };
             let pointDragHandleFunc =
               (. event, state) => {
                 value := value^ + 1;
@@ -269,6 +284,16 @@ let _ =
             let state =
               state
               |> ManageEventAPI.onCustomGlobalEvent(
+                   NameEventService.getPointDownEventName(),
+                   0,
+                   pointDownHandleFunc,
+                 )
+              |> ManageEventAPI.onCustomGlobalEvent(
+                   NameEventService.getPointUpEventName(),
+                   0,
+                   pointUpHandleFunc,
+                 )
+              |> ManageEventAPI.onCustomGlobalEvent(
                    NameEventService.getPointDragEventName(),
                    0,
                    pointDragHandleFunc,
@@ -285,6 +310,14 @@ let _ =
                  );
             let state =
               state
+              |> ArcballCameraControllerTool.setPointDownEventHandleFunc(
+                   cameraController1,
+                   pointDownHandleFunc,
+                 )
+              |> ArcballCameraControllerTool.setPointUpEventHandleFunc(
+                   cameraController1,
+                   pointUpHandleFunc,
+                 )
               |> ArcballCameraControllerTool.setPointDragEventHandleFunc(
                    cameraController1,
                    pointDragHandleFunc,
@@ -322,6 +355,11 @@ let _ =
               MouseEventTool.buildMouseEvent(),
             );
             EventTool.triggerDomEvent(
+              "mouseup",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(),
+            );
+            EventTool.triggerDomEvent(
               "keydown",
               EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
@@ -333,6 +371,16 @@ let _ =
             let (state, gameObject1, _, (cameraController1, _, _)) =
               ArcballCameraControllerTool.createGameObject(state^);
             let value = ref(0);
+            let pointDownHandleFunc =
+              (. event, state) => {
+                value := value^ + 1;
+                (state, event);
+              };
+            let pointUpHandleFunc =
+              (. event, state) => {
+                value := value^ + 1;
+                (state, event);
+              };
             let pointDragHandleFunc =
               (. event, state) => {
                 value := value^ + 1;
@@ -350,6 +398,14 @@ let _ =
               };
             let state =
               state
+              |> ArcballCameraControllerTool.setPointDownEventHandleFunc(
+                   cameraController1,
+                   pointDownHandleFunc,
+                 )
+              |> ArcballCameraControllerTool.setPointUpEventHandleFunc(
+                   cameraController1,
+                   pointUpHandleFunc,
+                 )
               |> ArcballCameraControllerTool.setPointDragEventHandleFunc(
                    cameraController1,
                    pointDragHandleFunc,
@@ -371,12 +427,18 @@ let _ =
                  );
 
             let {
+              pointDownEventHandleFuncMap,
+              pointUpEventHandleFuncMap,
               pointDragEventHandleFuncMap,
               pointScaleEventHandleFuncMap,
               keydownEventHandleFuncMap,
             } =
               state.arcballCameraControllerRecord;
             (
+              pointDownEventHandleFuncMap
+              |> WonderCommonlib.SparseMapService.has(cameraController1),
+              pointUpEventHandleFuncMap
+              |> WonderCommonlib.SparseMapService.has(cameraController1),
               pointDragEventHandleFuncMap
               |> WonderCommonlib.SparseMapService.has(cameraController1),
               pointScaleEventHandleFuncMap
@@ -384,7 +446,7 @@ let _ =
               keydownEventHandleFuncMap
               |> WonderCommonlib.SparseMapService.has(cameraController1),
             )
-            |> expect == (false, false, false);
+            |> expect == (false, false, false, false, false);
           });
         });
       });

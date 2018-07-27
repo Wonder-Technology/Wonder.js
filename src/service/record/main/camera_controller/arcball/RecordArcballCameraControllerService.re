@@ -2,6 +2,8 @@ open StateDataMainType;
 
 let create = () => {
   index: 0,
+  pointDownEventHandleFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
+  pointUpEventHandleFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
   pointDragEventHandleFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
   pointScaleEventHandleFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
   keydownEventHandleFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
@@ -24,6 +26,8 @@ let deepCopyForRestore =
     (
       {
         index,
+        pointDownEventHandleFuncMap,
+        pointUpEventHandleFuncMap,
         pointDragEventHandleFuncMap,
         pointScaleEventHandleFuncMap,
         keydownEventHandleFuncMap,
@@ -43,6 +47,10 @@ let deepCopyForRestore =
       },
     ) => {
   index,
+  pointDownEventHandleFuncMap:
+    pointDownEventHandleFuncMap |> SparseMapService.copy,
+  pointUpEventHandleFuncMap:
+    pointUpEventHandleFuncMap |> SparseMapService.copy,
   pointDragEventHandleFuncMap:
     pointDragEventHandleFuncMap |> SparseMapService.copy,
   pointScaleEventHandleFuncMap:

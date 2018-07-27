@@ -161,6 +161,8 @@ and keyboardEventHandleFuncMap =
   )
 and arcballCameraControllerRecord = {
   index: int,
+  pointDownEventHandleFuncMap: pointEventHandleFuncMap,
+  pointUpEventHandleFuncMap: pointEventHandleFuncMap,
   pointDragEventHandleFuncMap: pointEventHandleFuncMap,
   pointScaleEventHandleFuncMap: pointEventHandleFuncMap,
   keydownEventHandleFuncMap: keyboardEventHandleFuncMap,

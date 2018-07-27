@@ -82,6 +82,35 @@ let setArcballCameraControllerData = (cameraController, state) => {
 
 let getDirtyArray = state => state.arcballCameraControllerRecord.dirtyArray;
 
+let getPointDownEventHandleFuncMap =
+    ({arcballCameraControllerRecord} as state) =>
+  arcballCameraControllerRecord.pointDownEventHandleFuncMap;
+
+let setPointDownEventHandleFunc =
+    (cameraController, handleFunc, {arcballCameraControllerRecord} as state) => {
+  ...state,
+  arcballCameraControllerRecord:
+    EventArcballCameraControllerMainService._setPointDownEventHandleFunc(
+      cameraController,
+      handleFunc,
+      arcballCameraControllerRecord,
+    ),
+};
+
+let getPointUpEventHandleFuncMap = ({arcballCameraControllerRecord} as state) =>
+  arcballCameraControllerRecord.pointUpEventHandleFuncMap;
+
+let setPointUpEventHandleFunc =
+    (cameraController, handleFunc, {arcballCameraControllerRecord} as state) => {
+  ...state,
+  arcballCameraControllerRecord:
+    EventArcballCameraControllerMainService._setPointUpEventHandleFunc(
+      cameraController,
+      handleFunc,
+      arcballCameraControllerRecord,
+    ),
+};
+
 let getPointDragEventHandleFuncMap =
     ({arcballCameraControllerRecord} as state) =>
   arcballCameraControllerRecord.pointDragEventHandleFuncMap;

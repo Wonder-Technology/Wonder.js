@@ -2,6 +2,8 @@ open StateDataMainType;
 
 open EventType;
 
+let _getBody = () => DomExtend.document##body |> bodyToEventTarget;
+
 let _fromPointDomEvent = (eventName, state) =>
   WonderBsMost.Most.fromEvent(
     eventName,
@@ -10,11 +12,7 @@ let _fromPointDomEvent = (eventName, state) =>
   );
 
 let _fromKeyboardDomEvent = (eventName, state) =>
-  WonderBsMost.Most.fromEvent(
-    eventName,
-    DomExtend.document##body |> bodyToEventTarget,
-    false,
-  );
+  WonderBsMost.Most.fromEvent(eventName, _getBody(), false);
 
 let _convertMouseEventToPointEvent =
     (
