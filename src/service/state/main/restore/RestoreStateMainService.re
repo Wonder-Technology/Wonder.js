@@ -15,8 +15,6 @@ let restore =
       currentState: StateDataMainType.state,
       targetState: StateDataMainType.state
     ) => {
-  let intersectShaderIndexDataArray =
-    IntersectShaderIndexMainService.getIntersectShaderIndexDataArray(currentState, targetState);
   let sharedData = _getSharedData(currentState);
   let (targetState, sharedData) =
     targetState |> RestoreSourceInstanceMainService.restore(currentState, sharedData);
@@ -28,9 +26,9 @@ let restore =
   |> RestoreGlobalTempMainService.restore(currentState)
   |> RestoreVboBufferMainService.restore(currentState)
   |> RestoreShaderMainService.restore(currentState)
-  |> RestoreProgramMainService.restore(intersectShaderIndexDataArray, currentState)
-  |> RestoreGLSLLocationMainService.restore(intersectShaderIndexDataArray, currentState)
-  |> RestoreGLSLSenderMainService.restore(intersectShaderIndexDataArray, currentState)
+  |> RestoreProgramMainService.restore( currentState)
+  |> RestoreGLSLLocationMainService.restore( currentState)
+  |> RestoreGLSLSenderMainService.restore( currentState)
   |> RestoreBasicMaterialMainService.restore(gl, currentState)
   |> RestoreLightMaterialMainService.restore(gl, currentState)
   |> RestoreRenderMainService.restore(currentState)
@@ -42,5 +40,4 @@ let restore =
   |> RestoreBasicSourceTextureMainService.restore(currentState)
   |> RestoreArrayBufferViewSourceTextureMainService.restore(currentState)
   |> setState(stateData)
-  /* targetState */
 };

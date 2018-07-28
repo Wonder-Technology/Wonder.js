@@ -11,40 +11,7 @@ let _ =
 
     beforeEach(() => {
       sandbox := createSandbox();
-      state :=
-        InitLightMaterialJobTool.initWithJobConfig(
-          sandbox,
-          NoWorkerJobConfigTool.buildNoWorkerJobConfig(
-            ~initPipelines=
-              {|
-        [
-    {
-      "name": "default",
-      "jobs": [
-        {
-          "name": "preget_glslData"
-        },
-        {
-          "name": "init_light_material"
-        }
-      ]
-    }
-  ]
-        |},
-            ~initJobs=
-              {|
-[
-        {
-          "name": "preget_glslData"
-        },
-        {
-          "name": "init_light_material"
-        }
-]
-        |},
-            (),
-          ),
-        );
+      state := TestTool.initWithJobConfig(~sandbox, ());
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
@@ -177,8 +144,10 @@ let _ =
               test("should use new program", () => {
                 let (state, gameObject, _, material, _) =
                   FrontRenderLightJobTool.prepareGameObject(sandbox, state^);
+                let program1 = Obj.magic(1);
                 let program2 = Obj.magic(2);
                 let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
+                createProgram |> onCall(0) |> returns(program1);
                 createProgram |> onCall(1) |> returns(program2);
                 let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
                 let state =

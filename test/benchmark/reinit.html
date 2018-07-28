@@ -105,17 +105,17 @@
 
 
 
-                    var [state, directionLightObj] = LightTool.createDirectionLight(state);
+                var [state, directionLightObj] = LightTool.createDirectionLight(state);
 
 
 
-                    var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
-                    var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
+                var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
+                var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
 
 
-                    var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+                var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
 
-                    state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
+                state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
 
 
 
@@ -151,7 +151,7 @@
 
 
 
-
+                    var state = wd.loopBody(1.0, state);
 
 
                     var lightMaterial = wd.unsafeGetGameObjectLightMaterialComponent(box, state);
@@ -161,7 +161,7 @@
 
                     wd.setState(state);
 
-                }, 200)
+                }, 500)
 
 
 

@@ -196,7 +196,7 @@ let createRenderState =
     globalTempRecord,
     deviceManagerRecord,
     shaderRecord: {
-      index: shaderRecord.index,
+      usedShaderIndexArray: shaderRecord.usedShaderIndexArray,
     },
     settingRecord: {
       gpu: Some(OperateSettingService.unsafeGetGPU(settingRecord)),

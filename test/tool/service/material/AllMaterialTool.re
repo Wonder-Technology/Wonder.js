@@ -1,9 +1,9 @@
-let pregetGLSLData = (state) =>
+let pregetGLSLData = state =>
   state
   |> PregetGLSLDataTool.preparePrecision
   |> PregetGLSLDataJob.execJob(JobTool.getConfigRecord());
 
-let prepareForInit = (state) => state |> pregetGLSLData;
+let prepareForInit = state => state |> pregetGLSLData;
 
 let _testRemoveFromTypeArr =
     (
@@ -12,7 +12,12 @@ let _testRemoveFromTypeArr =
       (gameObject2, material2),
       (value1, value2),
       defaultValue,
-      (disposeGameObjectMaterialComponentFunc, createGameObjectFunc, getValueFunc, setValueFunc)
+      (
+        disposeGameObjectMaterialComponentFunc,
+        createGameObjectFunc,
+        getValueFunc,
+        setValueFunc,
+      ),
     ) => {
   open Wonder_jest;
   open Expect;
@@ -21,9 +26,10 @@ let _testRemoveFromTypeArr =
   TestTool.closeContractCheck();
   let state = state |> setValueFunc(material1, value1);
   let state = state |> setValueFunc(material2, value2);
-  let state = state |> disposeGameObjectMaterialComponentFunc(gameObject1, material1);
+  let state =
+    state |> disposeGameObjectMaterialComponentFunc(gameObject1, material1);
   (getValueFunc(material1, state), getValueFunc(material2, state))
-  |> expect == (defaultValue, value2)
+  |> expect == (defaultValue, value2);
 };
 
 let testRemoveFromTypeArr =
@@ -31,7 +37,12 @@ let testRemoveFromTypeArr =
       state,
       (value1, value2),
       defaultValue,
-      (disposeGameObjectMaterialComponentFunc, createGameObjectFunc, getValueFunc, setValueFunc)
+      (
+        disposeGameObjectMaterialComponentFunc,
+        createGameObjectFunc,
+        getValueFunc,
+        setValueFunc,
+      ),
     ) => {
   let (state, gameObject1, material1) = createGameObjectFunc(state^);
   let (state, gameObject2, material2) = createGameObjectFunc(state);
@@ -41,8 +52,13 @@ let testRemoveFromTypeArr =
     (gameObject2, material2),
     (value1, value2),
     defaultValue,
-    (disposeGameObjectMaterialComponentFunc, createGameObjectFunc, getValueFunc, setValueFunc)
-  )
+    (
+      disposeGameObjectMaterialComponentFunc,
+      createGameObjectFunc,
+      getValueFunc,
+      setValueFunc,
+    ),
+  );
 };
 
 let testRemoveFromTypeArrWithMap =
@@ -50,7 +66,12 @@ let testRemoveFromTypeArrWithMap =
       state,
       (value1, value2),
       defaultValue,
-      (disposeGameObjectMaterialComponentFunc, createGameObjectFunc, getValueFunc, setValueFunc)
+      (
+        disposeGameObjectMaterialComponentFunc,
+        createGameObjectFunc,
+        getValueFunc,
+        setValueFunc,
+      ),
     ) => {
   let (state, gameObject1, (material1, _)) = createGameObjectFunc(state^);
   let (state, gameObject2, (material2, _)) = createGameObjectFunc(state);
@@ -60,6 +81,19 @@ let testRemoveFromTypeArrWithMap =
     (gameObject2, material2),
     (value1, value2),
     defaultValue,
-    (disposeGameObjectMaterialComponentFunc, createGameObjectFunc, getValueFunc, setValueFunc)
-  )
+    (
+      disposeGameObjectMaterialComponentFunc,
+      createGameObjectFunc,
+      getValueFunc,
+      setValueFunc,
+    ),
+  );
+};
+
+let getShaderIndex = (material, state) => {
+  open LightMaterialType;
+
+  let {shaderIndices} = RecordLightMaterialMainService.getRecord(state);
+
+  ShaderIndicesService.getShaderIndex(material, shaderIndices);
 };

@@ -86,7 +86,7 @@ let reInitComponents = (materialIndices: array(int), state) => {
   let state =
     materialIndices
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. {gameObjectRecord} as state, materialIndex) => {
+         (. {gameObjectRecord, shaderRecord} as state, materialIndex) => {
            let {shaderIndices} =
              RecordLightMaterialMainService.getRecord(state);
            let currentShaderIndex =
@@ -94,6 +94,9 @@ let reInitComponents = (materialIndices: array(int), state) => {
                materialIndex,
                shaderIndices,
              );
+
+           let _ =
+             ShaderIndexShaderService.unuseShaderIndex(currentShaderIndex, shaderRecord);
 
            WorkerDetectMainService.isUseWorker(state) ?
              WonderLog.Log.fatal(
@@ -121,7 +124,6 @@ let reInitComponents = (materialIndices: array(int), state) => {
                  gl,
                  (
                    materialIndex,
-                   currentShaderIndex,
                    JudgeInstanceMainService.isSourceInstance(
                      materialIndex,
                      gameObjectMap,

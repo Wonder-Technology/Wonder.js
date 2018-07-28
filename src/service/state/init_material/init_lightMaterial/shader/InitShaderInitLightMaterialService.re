@@ -45,7 +45,6 @@ let initMaterialShader =
 let reInitMaterialShader =
     (
       materialIndex: int,
-      currentShaderIndex,
       (gl, shaderLibDataArr),
       buildGLSLSourceFunc,
       {
@@ -61,7 +60,6 @@ let reInitMaterialShader =
     ) =>
   InitShaderInitMaterialService.reInitMaterialShader(
     materialIndex,
-    currentShaderIndex,
     (gl, shaderLibDataArr),
     (
       buildGLSLSourceFunc,

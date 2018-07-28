@@ -2,17 +2,13 @@ open StateDataMainType;
 
 open ProgramType;
 
-let restore = (intersectShaderIndexDataArray, currentState, targetState) => {
+let restore = (currentState, targetState) => {
   let {programMap} = currentState.programRecord;
   {
     ...targetState,
     programRecord: {
-      programMap:
-        RestoreShaderFromStateService.getIntersectShaderRelatedMap(
-          intersectShaderIndexDataArray,
-          programMap
-        ),
-      lastUsedProgram: None
-    }
-  }
+      ...targetState.programRecord,
+      lastUsedProgram: None,
+    },
+  };
 };

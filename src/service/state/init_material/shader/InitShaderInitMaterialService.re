@@ -4,35 +4,6 @@ open ShaderType;
 
 open RenderConfigType;
 
-let _genereateShaderIndex = ({index} as record) => {
-  record.index = succ(index);
-  index
-  |> WonderLog.Contract.ensureCheck(
-       r => {
-         open WonderLog;
-         open Contract;
-         open Operators;
-         let defaultShaderIndex =
-           DefaultTypeArrayValueService.getDefaultShaderIndex();
-         test(
-           Log.buildAssertMessage(
-             ~expect={j|not equal default shader index:$defaultShaderIndex |j},
-             ~actual={j|equal|j},
-           ),
-           () =>
-           r <>= defaultShaderIndex
-         );
-       },
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
-};
-
-let _getShaderIndex = (key: string, {shaderIndexMap}) =>
-  shaderIndexMap |> WonderCommonlib.HashMapService.get(key);
-
-let _setShaderIndex = (key: string, shaderIndex: int, {shaderIndexMap}) =>
-  shaderIndexMap |> WonderCommonlib.HashMapService.set(key, shaderIndex);
-
 let _join = (array: array(shaderLib)) => {
   let output = ref("");
   for (i in 0 to Js.Array.length(array) |> pred) {
@@ -73,7 +44,11 @@ let _initNewShader =
       ),
     ) => {
   /* let shaderIndex = _genereateShaderIndex(shaderRecord); */
-  _setShaderIndex(key, shaderIndex, shaderRecord) |> ignore;
+  shaderRecord
+  |> ShaderIndexShaderService.useShaderIndex(shaderIndex)
+  |> ShaderIndexShaderService.setShaderIndex(key, shaderIndex)
+  |> ignore;
+
   let (vsSource, fsSource) =
     buildGLSLSourceFunc(.
       materialIndex,
@@ -88,6 +63,7 @@ let _initNewShader =
       (vsSource, fsSource),
       programRecord,
     );
+    /* WonderLog.Log.print((program, shaderIndex)) |> ignore; */
   let recordTuple =
     addAttributeSendDataFunc(.
       (gl, shaderIndex, program),
@@ -125,11 +101,11 @@ let initMaterialShader =
     ) => {
   let key = _buildShaderIndexMapKey(shaderLibDataArr);
 
-  switch (_getShaderIndex(key, shaderRecord)) {
+  switch (ShaderIndexShaderService.getShaderIndex(key, shaderRecord)) {
   | None =>
     _initNewShader(
       materialIndex,
-      _genereateShaderIndex(shaderRecord),
+      ShaderIndexShaderService.genereateShaderIndex(shaderRecord),
       key,
       (gl, shaderLibDataArr),
       (
@@ -171,7 +147,7 @@ let initMaterialShader =
            glslChunkRecord,
          ),
        ) => {
-     _setShaderIndex(key, shaderIndex, shaderRecord) |> ignore;
+      ShaderIndexShaderService.setShaderIndex(key, shaderIndex, shaderRecord) |> ignore;
      let (vsSource, fsSource) =
        buildGLSLSourceFunc(.
          materialIndex,
@@ -193,7 +169,6 @@ let initMaterialShader =
 let reInitMaterialShader =
     (
       materialIndex: int,
-      currentShaderIndex,
       (gl, shaderLibDataArr),
       (
         buildGLSLSourceFunc,
@@ -211,16 +186,18 @@ let reInitMaterialShader =
       ),
     ) => {
   let key = _buildShaderIndexMapKey(shaderLibDataArr);
+  let shaderIndex =
+    ShaderIndexShaderService.genereateShaderIndex(shaderRecord);
 
-  let glslLocationRecord =
-    GLSLLocationService.clearUniformLocationMap(
-      currentShaderIndex,
-      glslLocationRecord,
-    );
+  /* let glslLocationRecord =
+     GLSLLocationService.clearUniformLocationMap(
+       shaderIndex,
+       glslLocationRecord,
+     ); */
 
   _initNewShader(
     materialIndex,
-    currentShaderIndex,
+    shaderIndex,
     key,
     (gl, shaderLibDataArr),
     (
@@ -238,19 +215,4 @@ let reInitMaterialShader =
       glslChunkRecord,
     ),
   );
-  /* _reInitNewShader(
-       materialIndex,
-       currentShaderIndex,
-       key,
-       (gl, shaderLibDataArr),
-       (buildGLSLSourceFunc, getHandleFunc),
-       (
-         shaderRecord,
-         programRecord,
-         glslRecord,
-         glslSenderRecord,
-         glslLocationRecord,
-         glslChunkRecord,
-       ),
-     ); */
 };

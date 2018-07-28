@@ -46,7 +46,6 @@ let reInitMaterial =
       gl,
       (
         materialIndex: int,
-        currentShaderIndex,
         isSourceInstance,
         isSupportInstance,
       ),
@@ -64,7 +63,6 @@ let reInitMaterial =
     materialIndex,
     reInitMaterialShaderFunc(
       materialIndex,
-      currentShaderIndex,
       (
         gl,
         getMaterialShaderLibDataArrFunc(.
