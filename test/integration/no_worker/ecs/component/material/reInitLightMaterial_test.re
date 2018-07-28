@@ -57,41 +57,80 @@ let _ =
           state;
         };
 
-        test(
-          {|test one light material:
+        describe("test glsl", () => {
+          test(
+            {|test one light material:
    1.has no lights;
    2.init material;
    3.add one light;
    4.re-init material;
 
    glsl->DIRECTION_LIGHTS_COUNT should == 1|},
-          () => {
-            let (state, gameObject, material) =
-              LightMaterialTool.createGameObject(state^);
-            let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ()),
-                 );
-            let state = _initMaterial(material, state);
-            let shaderSourceCallCount = shaderSource |> getCallCount;
+            () => {
+              let (state, gameObject, material) =
+                LightMaterialTool.createGameObject(state^);
+              let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ()),
+                   );
+              let state = _initMaterial(material, state);
+              let shaderSourceCallCount = shaderSource |> getCallCount;
 
-            let (state, lightGameObject, light) =
-              DirectionLightTool.createGameObject(state);
-            let state =
-              LightMaterialAPI.reInitMaterials([|material|], state);
+              let (state, lightGameObject, light) =
+                DirectionLightTool.createGameObject(state);
+              let state =
+                LightMaterialAPI.reInitMaterials([|material|], state);
 
-            GLSLTool.contain(
-              GLSLTool.getVsSourceByCount(
-                shaderSource,
-                shaderSourceCallCount,
-              ),
-              {|#define DIRECTION_LIGHTS_COUNT 1|},
-            )
-            |> expect == true;
-          },
-        );
+              GLSLTool.contain(
+                GLSLTool.getVsSourceByCount(
+                  shaderSource,
+                  shaderSourceCallCount,
+                ),
+                {|#define DIRECTION_LIGHTS_COUNT 1|},
+              )
+              |> expect == true;
+            },
+          );
+          test(
+            {|test one light material:
+   1.has one light;
+   2.init material;
+   3.dispose the light;
+   4.re-init material;
+
+   glsl->DIRECTION_LIGHTS_COUNT should == 0|},
+            () => {
+              let (state, gameObject, material) =
+                LightMaterialTool.createGameObject(state^);
+              let (state, lightGameObject, light) =
+                DirectionLightTool.createGameObject(state);
+              let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ()),
+                   );
+              let state = _initMaterial(material, state);
+              let shaderSourceCallCount = shaderSource |> getCallCount;
+
+              let state =
+                GameObjectTool.disposeGameObject(lightGameObject, state);
+              let state =
+                LightMaterialAPI.reInitMaterials([|material|], state);
+
+              GLSLTool.contain(
+                GLSLTool.getVsSourceByCount(
+                  shaderSource,
+                  shaderSourceCallCount,
+                ),
+                {|#define DIRECTION_LIGHTS_COUNT 0|},
+              )
+              |> expect == true;
+            },
+          );
+        });
 
         test("if use worker, fatal", () => {
           let state =
@@ -114,122 +153,250 @@ let _ =
           |> toThrowMessage("not support worker");
         });
 
-        describe(
-          {|test one light material:
+        describe("test front render light", () => {
+          describe(
+            {|test one light material:
    1.has no lights;
    2.init material;
    3.add one light;
    4.re-init material;
    5.front render light|},
-          () => {
-            let _exec = (material, state) => {
-              let (state, _, cameraTransform, _) =
-                CameraTool.createCameraGameObject(state);
-              let (state, lightGameObject, light) =
-                DirectionLightTool.createGameObject(state);
-              let state =
-                LightMaterialAPI.reInitMaterials([|material|], state);
-              let state = state |> DirectorTool.runWithDefaultTime;
+            () => {
+              let _exec = (material, state) => {
+                let (state, _, cameraTransform, _) =
+                  CameraTool.createCameraGameObject(state);
+                let (state, lightGameObject, light) =
+                  DirectionLightTool.createGameObject(state);
+                let state =
+                  LightMaterialAPI.reInitMaterials([|material|], state);
+                let state = state |> DirectorTool.runWithDefaultTime;
 
-              state;
-            };
+                state;
+              };
 
-            test("should use new program", () => {
-              let (state, gameObject, _, material, _) =
-                FrontRenderLightJobTool.prepareGameObject(sandbox, state^);
-              let program2 = Obj.magic(2);
-              let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
-              createProgram |> onCall(1) |> returns(program2);
-              let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
-              let state =
-                state
-                |> FakeGlTool.setFakeGl(
-                     FakeGlTool.buildFakeGl(
-                       ~sandbox,
-                       ~createProgram,
-                       ~useProgram,
-                       (),
-                     ),
+              test("should use new program", () => {
+                let (state, gameObject, _, material, _) =
+                  FrontRenderLightJobTool.prepareGameObject(sandbox, state^);
+                let program2 = Obj.magic(2);
+                let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
+                createProgram |> onCall(1) |> returns(program2);
+                let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(
+                         ~sandbox,
+                         ~createProgram,
+                         ~useProgram,
+                         (),
+                       ),
+                     );
+                let state = _initMaterial(material, state);
+
+                let state = _exec(material, state);
+
+                useProgram |> expect |> toCalledWith([|program2|]);
+              });
+              test("should only send light data once", () => {
+                let (state, gameObject, material) =
+                  LightMaterialTool.createGameObject(state^);
+                let color = [|1., 0., 0.|];
+                let state =
+                  state
+                  |> LightMaterialAPI.setLightMaterialDiffuseColor(
+                       material,
+                       color,
+                     );
+                let (state, posArr, (uniform1f, uniform3f)) =
+                  FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(
+                    sandbox,
+                    [|"u_directionLights[0].color"|],
+                    state,
+                  );
+                let state = _initMaterial(material, state);
+
+                let state = _exec(material, state);
+
+                uniform3f
+                |> withOneArg(posArr[0])
+                |> getCallCount
+                |> expect == 1;
+              });
+              test("should send u_diffuse", () => {
+                let (state, gameObject, _, material, _) =
+                  FrontRenderLightJobTool.prepareGameObject(sandbox, state^);
+                let color = [|1., 0., 0.|];
+                let state =
+                  state
+                  |> LightMaterialAPI.setLightMaterialDiffuseColor(
+                       material,
+                       color,
+                     );
+                let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+                let name = "u_diffuse";
+                let pos1 = 0;
+                let pos2 = 1;
+                let getUniformLocation =
+                  createEmptyStubWithJsObjSandbox(sandbox);
+
+                getUniformLocation
+                |> withTwoArgs(Sinon.matchAny, name)
+                |> onCall(0)
+                |> returns(pos1);
+                getUniformLocation
+                |> withTwoArgs(Sinon.matchAny, name)
+                |> onCall(1)
+                |> returns(pos2);
+
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(
+                         ~sandbox,
+                         ~uniform3f,
+                         ~getUniformLocation,
+                         (),
+                       ),
+                     );
+                let state = _initMaterial(material, state);
+
+                let state = _exec(material, state);
+
+                uniform3f
+                |> expect
+                |> toCalledWith(
+                     [|pos2 |> Obj.magic|] |> Js.Array.concat(color),
                    );
-              let state = _initMaterial(material, state);
+              });
+            },
+          );
 
-              let state = _exec(material, state);
+          describe(
+            {|test one light material:
+   1.has one light;
+   2.init material;
+   3.dispose the light;
+   4.re-init material;
+   5.front render light|},
+            () => {
+              let _exec = (material, lightGameObject, state) => {
+                let (state, _, cameraTransform, _) =
+                  CameraTool.createCameraGameObject(state);
+                let state =
+                  GameObjectTool.disposeGameObject(lightGameObject, state);
+                let state =
+                  LightMaterialAPI.reInitMaterials([|material|], state);
+                let state = state |> DirectorTool.runWithDefaultTime;
 
-              useProgram |> expect |> toCalledWith([|program2|]);
-            });
-            test("should only send light data once", () => {
-              let (state, gameObject, material) =
-                LightMaterialTool.createGameObject(state^);
-              let color = [|1., 0., 0.|];
-              let state =
-                state
-                |> LightMaterialAPI.setLightMaterialDiffuseColor(
-                     material,
-                     color,
+                state;
+              };
+
+              test("should use new program", () => {
+                let (state, lightGameObject, material, light, cameraTransform) =
+                  FrontRenderLightForNoWorkerAndWorkerJobTool.prepareOneForDirectionLight(
+                    sandbox,
+                    state^,
+                  );
+                let program2 = Obj.magic(2);
+                let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
+                createProgram |> onCall(1) |> returns(program2);
+                let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(
+                         ~sandbox,
+                         ~createProgram,
+                         ~useProgram,
+                         (),
+                       ),
+                     );
+                let state = _initMaterial(material, state);
+
+                let state = _exec(material, lightGameObject, state);
+
+                useProgram |> expect |> toCalledWith([|program2|]);
+              });
+              test("should not send light data", () => {
+                let (state, lightGameObject, material, light, cameraTransform) =
+                  FrontRenderLightForNoWorkerAndWorkerJobTool.prepareOneForDirectionLight(
+                    sandbox,
+                    state^,
+                  );
+                let color = [|1., 0., 0.|];
+                let state =
+                  state
+                  |> LightMaterialAPI.setLightMaterialDiffuseColor(
+                       material,
+                       color,
+                     );
+                let (state, posArr, (uniform1f, uniform3f)) =
+                  FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(
+                    sandbox,
+                    [|"u_directionLights[0].color"|],
+                    state,
+                  );
+                let state = _initMaterial(material, state);
+
+                let state = _exec(material, lightGameObject, state);
+
+                uniform3f
+                |> withOneArg(posArr[0])
+                |> getCallCount
+                |> expect == 0;
+              });
+              test("should send u_diffuse", () => {
+                let (state, lightGameObject, material, light, cameraTransform) =
+                  FrontRenderLightForNoWorkerAndWorkerJobTool.prepareOneForDirectionLight(
+                    sandbox,
+                    state^,
+                  );
+                let color = [|1., 0., 0.|];
+                let state =
+                  state
+                  |> LightMaterialAPI.setLightMaterialDiffuseColor(
+                       material,
+                       color,
+                     );
+                let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+                let name = "u_diffuse";
+                let pos1 = 0;
+                let pos2 = 1;
+                let getUniformLocation =
+                  createEmptyStubWithJsObjSandbox(sandbox);
+
+                getUniformLocation
+                |> withTwoArgs(Sinon.matchAny, name)
+                |> onCall(0)
+                |> returns(pos1);
+                getUniformLocation
+                |> withTwoArgs(Sinon.matchAny, name)
+                |> onCall(1)
+                |> returns(pos2);
+
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(
+                         ~sandbox,
+                         ~uniform3f,
+                         ~getUniformLocation,
+                         (),
+                       ),
+                     );
+                let state = _initMaterial(material, state);
+
+                let state = _exec(material, lightGameObject, state);
+
+                uniform3f
+                |> expect
+                |> toCalledWith(
+                     [|pos2 |> Obj.magic|] |> Js.Array.concat(color),
                    );
-              let (state, posArr, (uniform1f, uniform3f)) =
-                FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(
-                  sandbox,
-                  [|"u_directionLights[0].color"|],
-                  state,
-                );
-              let state = _initMaterial(material, state);
-
-              let state = _exec(material, state);
-
-              uniform3f
-              |> withOneArg(posArr[0])
-              |> getCallCount
-              |> expect == 1;
-            });
-            test("should send u_diffuse", () => {
-              let (state, gameObject, _, material, _) =
-                FrontRenderLightJobTool.prepareGameObject(sandbox, state^);
-              let color = [|1., 0., 0.|];
-              let state =
-                state
-                |> LightMaterialAPI.setLightMaterialDiffuseColor(
-                     material,
-                     color,
-                   );
-              let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
-              let name = "u_diffuse";
-              let pos1 = 0;
-              let pos2 = 1;
-              let getUniformLocation =
-                createEmptyStubWithJsObjSandbox(sandbox);
-
-              getUniformLocation
-              |> withTwoArgs(Sinon.matchAny, name)
-              |> onCall(0)
-              |> returns(pos1);
-              getUniformLocation
-              |> withTwoArgs(Sinon.matchAny, name)
-              |> onCall(1)
-              |> returns(pos2);
-
-              let state =
-                state
-                |> FakeGlTool.setFakeGl(
-                     FakeGlTool.buildFakeGl(
-                       ~sandbox,
-                       ~uniform3f,
-                       ~getUniformLocation,
-                       (),
-                     ),
-                   );
-              let state = _initMaterial(material, state);
-
-              let state = _exec(material, state);
-
-              uniform3f
-              |> expect
-              |> toCalledWith(
-                   [|pos2 |> Obj.magic|] |> Js.Array.concat(color),
-                 );
-            });
-          },
-        );
+              });
+            },
+          );
+        });
       })
     );
   });

@@ -102,11 +102,9 @@
                     );
 
 
-                setTimeout(() => {
-                    var state = wd.unsafeGetState();
 
 
-                    // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+
                     var [state, directionLightObj] = LightTool.createDirectionLight(state);
 
 
@@ -122,7 +120,32 @@
 
 
 
-                    var [state, obj] = wd.createGameObject(state);
+
+
+
+
+                setTimeout(() => {
+                    var state = wd.unsafeGetState();
+
+
+                    // var [state, directionLightObj] = LightTool.createDirectionLight(state);
+
+
+
+                    // var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
+                    // var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
+
+
+                    // var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+
+                    // state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
+
+
+
+
+                    // var [state, obj] = wd.createGameObject(state);
+
+                    var state = wd.disposeGameObject(directionLightObj, state);
 
 
 
