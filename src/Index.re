@@ -20,6 +20,10 @@ let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectB
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 
+let unbindArcballCameraControllerEvent = ArcballCameraControllerAPI.unbindArcballCameraControllerEvent;
+
+let bindArcballCameraControllerEvent = ArcballCameraControllerAPI.bindArcballCameraControllerEvent;
+
 let setArcballCameraControllerRotateSpeed = ArcballCameraControllerAPI.setArcballCameraControllerRotateSpeed;
 
 let unsafeGetArcballCameraControllerRotateSpeed = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerRotateSpeed;
@@ -294,6 +298,10 @@ let getCustomGeometryDrawMode = CustomGeometryAPI.getCustomGeometryDrawMode;
 
 let createCustomGeometry = CustomGeometryAPI.createCustomGeometry;
 
+let image = FixedLayoutControlIMGUIAPI.image;
+
+let label = FixedLayoutControlIMGUIAPI.label;
+
 let setSetting = ManageIMGUIAPI.setSetting;
 
 let getSetting = ManageIMGUIAPI.getSetting;
@@ -371,6 +379,8 @@ let getBasicMaterialColor = BasicMaterialAPI.getBasicMaterialColor;
 let unsafeGetBasicMaterialGameObject = BasicMaterialAPI.unsafeGetBasicMaterialGameObject;
 
 let createBasicMaterial = BasicMaterialAPI.createBasicMaterial;
+
+let reInitMaterials = LightMaterialAPI.reInitMaterials;
 
 let setLightMaterialName = LightMaterialAPI.setLightMaterialName;
 
@@ -455,6 +465,10 @@ let createObjectInstanceGameObject = SourceInstanceAPI.createObjectInstanceGameO
 let unsafeGetSourceInstanceGameObject = SourceInstanceAPI.unsafeGetSourceInstanceGameObject;
 
 let createSourceInstance = SourceInstanceAPI.createSourceInstance;
+
+let setSetStateFunc = StateAPI.setSetStateFunc;
+
+let setUnsafeGetStateFunc = StateAPI.setUnsafeGetStateFunc;
 
 let setIsDebug = StateAPI.setIsDebug;
 
@@ -585,6 +599,14 @@ let getGameTime = TimeControllerAPI.getGameTime;
 let lookAtWithUp = TransformAPI.lookAtWithUp;
 
 let lookAt = TransformAPI.lookAt;
+
+let setTransformEulerAngles = TransformAPI.setTransformEulerAngles;
+
+let getTransformEulerAngles = TransformAPI.getTransformEulerAngles;
+
+let setTransformLocalEulerAngles = TransformAPI.setTransformLocalEulerAngles;
+
+let getTransformLocalEulerAngles = TransformAPI.getTransformLocalEulerAngles;
 
 let setTransformScale = TransformAPI.setTransformScale;
 
@@ -842,6 +864,10 @@ let unsafeGetSourceInstanceGameObject = SourceInstanceAPI.unsafeGetSourceInstanc
 
 let createSourceInstance = SourceInstanceAPI.createSourceInstance;
 
+let setSetStateFunc = StateAPI.setSetStateFunc;
+
+let setUnsafeGetStateFunc = StateAPI.setUnsafeGetStateFunc;
+
 let setIsDebug = StateAPI.setIsDebug;
 
 let setStateToData = StateAPI.setStateToData;
@@ -869,6 +895,14 @@ let getGameTime = TimeControllerAPI.getGameTime;
 let lookAtWithUp = TransformAPI.lookAtWithUp;
 
 let lookAt = TransformAPI.lookAt;
+
+let setTransformEulerAngles = TransformAPI.setTransformEulerAngles;
+
+let getTransformEulerAngles = TransformAPI.getTransformEulerAngles;
+
+let setTransformLocalEulerAngles = TransformAPI.setTransformLocalEulerAngles;
+
+let getTransformLocalEulerAngles = TransformAPI.getTransformLocalEulerAngles;
 
 let setTransformScale = TransformAPI.setTransformScale;
 

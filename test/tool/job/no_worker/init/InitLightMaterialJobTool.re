@@ -3,7 +3,6 @@ let initWithJobConfig = (sandbox, noWorkerJobRecord) =>
 
 let prepareGameObject = (sandbox, state) => {
   open GameObjectAPI;
-  open GameObjectAPI;
   open LightMaterialAPI;
   open BoxGeometryAPI;
   open Sinon;

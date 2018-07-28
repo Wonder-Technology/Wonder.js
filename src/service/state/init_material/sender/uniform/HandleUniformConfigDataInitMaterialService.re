@@ -119,7 +119,7 @@ let addUniformSendData =
       readUniformSendDataFunc,
       (glslSenderRecord, glslLocationRecord),
     ) => {
-  _checkShouldNotAddBefore(shaderIndex, glslSenderRecord);
+  /* _checkShouldNotAddBefore(shaderIndex, glslSenderRecord); */
   let uniformLocationMap =
     HandleShaderConfigDataMapService.getOrCreateHashMap(
       glslLocationRecord

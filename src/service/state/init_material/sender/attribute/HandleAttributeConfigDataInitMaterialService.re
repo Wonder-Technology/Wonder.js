@@ -110,7 +110,7 @@ let addAttributeSendData =
       readAttributeSendDataFunc,
       (glslSenderRecord, glslLocationRecord),
     ) => {
-  WonderLog.Contract.requireCheck(
+  /* WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
         Contract.(
@@ -129,7 +129,7 @@ let addAttributeSendData =
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
+  ); */
   let attributeLocationMap =
     HandleShaderConfigDataMapService.getOrCreateHashMap(
       glslLocationRecord

@@ -17,17 +17,20 @@ let initMaterialShader =
         glslRecord,
         glslSenderRecord,
         glslLocationRecord,
-        glslChunkRecord
-      } as state
+        glslChunkRecord,
+      } as state,
     ) =>
   InitShaderInitMaterialService.initMaterialShader(
     materialIndex,
     (gl, shaderLibDataArr),
     (
       buildGLSLSourceFunc,
-      HandleGLSLInitLightMaterialService.getHandle((directionLightRecord, pointLightRecord)),
+      HandleGLSLInitLightMaterialService.getHandle((
+        directionLightRecord,
+        pointLightRecord,
+      )),
       HandleAttributeConfigDataInitLightMaterialService.addAttributeSendData,
-      HandleUniformConfigDataInitLightMaterialService.addUniformSendData
+      HandleUniformConfigDataInitLightMaterialService.addUniformSendData,
     ),
     (
       shaderRecord,
@@ -35,6 +38,46 @@ let initMaterialShader =
       glslRecord,
       glslSenderRecord,
       glslLocationRecord,
-      glslChunkRecord
-    )
+      glslChunkRecord,
+    ),
+  );
+
+let reInitMaterialShader =
+    (
+      materialIndex: int,
+      currentShaderIndex,
+      (gl, shaderLibDataArr),
+      buildGLSLSourceFunc,
+      {
+        directionLightRecord,
+        pointLightRecord,
+        shaderRecord,
+        programRecord,
+        glslRecord,
+        glslSenderRecord,
+        glslLocationRecord,
+        glslChunkRecord,
+      } as state,
+    ) =>
+  InitShaderInitMaterialService.reInitMaterialShader(
+    materialIndex,
+    currentShaderIndex,
+    (gl, shaderLibDataArr),
+    (
+      buildGLSLSourceFunc,
+      HandleGLSLInitLightMaterialService.getHandle((
+        directionLightRecord,
+        pointLightRecord,
+      )),
+      HandleAttributeConfigDataInitLightMaterialService.addAttributeSendData,
+      HandleUniformConfigDataInitLightMaterialService.addUniformSendData,
+    ),
+    (
+      shaderRecord,
+      programRecord,
+      glslRecord,
+      glslSenderRecord,
+      glslLocationRecord,
+      glslChunkRecord,
+    ),
   );

@@ -52,8 +52,16 @@ let setUniformLocationMap =
   glslLocationRecord.uniformLocationMap
   |> WonderCommonlib.SparseMapService.set(shaderIndex, uniformLocationMap)
   |> ignore;
+
   glslLocationRecord;
 };
+
+let clearUniformLocationMap = (shaderIndex, glslLocationRecord) =>
+  setUniformLocationMap(
+    shaderIndex,
+    WonderCommonlib.HashMapService.createEmpty(),
+    glslLocationRecord,
+  );
 
 let createLocationMap = () => WonderCommonlib.HashMapService.createEmpty();
 

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>benchmark</title>
+</head>
+
+<body>
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/PositionTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/js/BasicMaterialTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+    <script src="../../dist/wd.js"></script>
+    <script>
+        window.onload = function () {
+
+            ReplaceFetchTool.replaceFetchForTest();
+
+
+
+            return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
+
+                var image1 = new Image();
+                image1.src = "./1.jpg";
+
+
+
+                image1.onload = function () {
+                    var image2 = new Image();
+                    image2.src = "./2.jpg";
+
+                    image2.onload = function () {
+                        return initSample(image1, image2, wd.unsafeGetState());
+                    }
+                }
+            });
+
+
+
+            function initSample(image1, image2, state) {
+                var n1 = performance.now();
+
+
+
+                var [state, box] = LightBoxesTool.createBox(state);
+
+
+
+
+
+
+
+                var state = wd.setAmbientLightColor([0.4, 0.4, 0.4], state);
+
+
+                // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+
+
+                var data = LightBoxesTool.createCamera(state);
+                var state = data[0];
+                var camera = data[1];
+
+
+                // var transform = wd.unsafeGetGameObjectTransformComponent(camera
+                // , state);
+
+                // state = wd.setTransformLocalPosition(transform, [0,0,50], state);
+
+
+
+                var [state, cameraController] = wd.createArcballCameraController(state);
+
+                var state =
+                    wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+
+
+                // var state =
+                //     wd.setArcballCameraControllerMoveSpeedX(cameraController, 0.1, state);
+
+                var state =
+                    wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
+
+                var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+                state =
+                    wd.setCurrentCameraGameObject(
+                        camera, state
+                    );
+
+
+                setTimeout(() => {
+                    var state = wd.unsafeGetState();
+
+
+                    // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+                    var [state, directionLightObj] = LightTool.createDirectionLight(state);
+
+
+
+                    var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
+                    var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
+
+
+                    var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+
+                    state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
+
+
+
+
+                    var [state, obj] = wd.createGameObject(state);
+
+
+
+
+
+
+
+
+                    var lightMaterial = wd.unsafeGetGameObjectLightMaterialComponent(box, state);
+
+                    var state = wd.reInitMaterials([lightMaterial], state);
+
+
+                    wd.setState(state);
+
+                }, 200)
+
+
+
+                wd.startDirector(state);
+            }
+
+        };
+    </script>
+</body>
+
+</html>

@@ -7,44 +7,93 @@ let _initMaterialShader =
         buildGLSLSourceFunc,
         setShaderIndexFunc,
         getShaderLibItemsFunc,
-        getMaterialShaderLibDataArrFunc
+        getMaterialShaderLibDataArrFunc,
       ),
-      (shaderIndices, renderConfigRecord, state)
+      (shaderIndices, renderConfigRecord, state),
     ) => {
   let shaders = GetDataRenderConfigService.getShaders(renderConfigRecord);
-  [@bs]
-  setShaderIndexFunc(
+  setShaderIndexFunc(.
     materialIndex,
     initMaterialShaderFunc(
       materialIndex,
       (
         gl,
-        [@bs]
-        getMaterialShaderLibDataArrFunc(
+        getMaterialShaderLibDataArrFunc(.
           materialIndex,
           (isSourceInstance, isSupportInstance),
           (
             shaders,
             getShaderLibItemsFunc(shaders),
-            GetDataRenderConfigService.getShaderLibs(renderConfigRecord)
+            GetDataRenderConfigService.getShaderLibs(renderConfigRecord),
           ),
-          state
-        )
+          state,
+        ),
       ),
       buildGLSLSourceFunc,
-      state
+      state,
     ),
-    shaderIndices
+    shaderIndices,
   )
   |> ignore;
-  state
+  state;
 };
 
 let initMaterial = (gl, dataTuple, funcTuple, stateTuple) =>
   _initMaterialShader(gl, dataTuple, funcTuple, stateTuple);
 
+let reInitMaterial =
+    (
+      gl,
+      (
+        materialIndex: int,
+        currentShaderIndex,
+        isSourceInstance,
+        isSupportInstance,
+      ),
+      (
+        reInitMaterialShaderFunc,
+        buildGLSLSourceFunc,
+        setShaderIndexFunc,
+        getShaderLibItemsFunc,
+        getMaterialShaderLibDataArrFunc,
+      ),
+      (shaderIndices, renderConfigRecord, state),
+    ) => {
+  let shaders = GetDataRenderConfigService.getShaders(renderConfigRecord);
+  setShaderIndexFunc(.
+    materialIndex,
+    reInitMaterialShaderFunc(
+      materialIndex,
+      currentShaderIndex,
+      (
+        gl,
+        getMaterialShaderLibDataArrFunc(.
+          materialIndex,
+          (isSourceInstance, isSupportInstance),
+          (
+            shaders,
+            getShaderLibItemsFunc(shaders),
+            GetDataRenderConfigService.getShaderLibs(renderConfigRecord),
+          ),
+          state,
+        ),
+      ),
+      buildGLSLSourceFunc,
+      state,
+    ),
+    shaderIndices,
+  )
+  |> ignore;
+  state;
+};
+
 let init =
-    (gl, (isSourceInstanceMap, isSupportInstance), initMaterialFunc, (index, disposedIndexArray, state)) => {
+    (
+      gl,
+      (isSourceInstanceMap, isSupportInstance),
+      initMaterialFunc,
+      (index, disposedIndexArray, state),
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -53,33 +102,30 @@ let init =
             test(
               Log.buildAssertMessage(
                 ~expect={j|not dispose any material before init|j},
-                ~actual={j|do|j}
+                ~actual={j|do|j},
               ),
               () =>
-                DisposeMaterialService.isNotDisposed(disposedIndexArray)
-                |> assertTrue
+              DisposeMaterialService.isNotDisposed(disposedIndexArray)
+              |> assertTrue
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   ArrayService.range(0, index - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (state, materialIndex: int) =>
-           [@bs]
-           initMaterialFunc(
-             gl,
-             (
-               materialIndex,
-               isSourceInstanceMap |> JudgeInstanceService.unsafeGetIsSourceInstance(materialIndex),
-               isSupportInstance
-             ),
-             state
-           )
-       ),
-       state
-     )
+       (. state, materialIndex: int) =>
+         initMaterialFunc(.
+           gl,
+           (
+             materialIndex,
+             isSourceInstanceMap
+             |> JudgeInstanceService.unsafeGetIsSourceInstance(materialIndex),
+             isSupportInstance,
+           ),
+           state,
+         ),
+       state,
+     );
 };

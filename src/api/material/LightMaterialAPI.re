@@ -303,3 +303,26 @@ let setLightMaterialName = (material, name, state) => {
   );
   NameLightMaterialMainService.setName(material, name, state);
 };
+
+let reInitMaterials = (materials, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            materials
+            |> WonderCommonlib.ArrayService.forEach((. material) =>
+                 AliveComponentService.checkComponentShouldAlive(
+                   material,
+                   isAlive,
+                   RecordLightMaterialMainService.getRecord(state),
+                 )
+               )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  InitLightMaterialMainService.reInitComponents(materials, state);
+};
