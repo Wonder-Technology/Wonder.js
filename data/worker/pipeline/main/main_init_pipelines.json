@@ -19,9 +19,6 @@
           "link": "concat",
           "jobs": [
             {
-              "name": "init_event"
-            },
-            {
               "name": "init_camera"
             },
             {
@@ -29,6 +26,9 @@
             },
             {
               "name": "create_canvas"
+            },
+            {
+              "name": "init_event"
             },
             {
               "name": "set_full_screen"
