@@ -315,4 +315,18 @@ let _ =
         )
       )
     );
+
+    describe("isExceedMaxCount", () =>
+      test("if lightIndex from record >= max count, return true", () =>
+        {
+          ...state^,
+          directionLightRecord: {
+            ...state^.directionLightRecord,
+            index: 5,
+          },
+        }
+        |> DirectionLightAPI.isExceedMaxCount
+        |> expect == true
+      )
+    );
   });

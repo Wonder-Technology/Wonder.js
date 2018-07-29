@@ -10,10 +10,11 @@ open DisposePointLightService;
 
 open OperatePointLightService;
 
-let createPointLight = (state) => {
-  let (pointLightRecord, index) = [@bs] CreatePointLightService.create(state.pointLightRecord);
+let createPointLight = state => {
+  let (pointLightRecord, index) =
+    CreatePointLightService.create(. state.pointLightRecord);
   state.pointLightRecord = pointLightRecord;
-  (state, index)
+  (state, index);
 };
 
 let unsafeGetPointLightGameObject = (light, state: StateDataMainType.state) => {
@@ -22,19 +23,23 @@ let unsafeGetPointLightGameObject = (light, state: StateDataMainType.state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   unsafeGetGameObject(
     MappedIndexService.getMappedIndex(
       light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
     ),
-    state.pointLightRecord
-  )
+    state.pointLightRecord,
+  );
 };
 
 let getPointLightColor = (light, state: StateDataMainType.state) => {
@@ -43,19 +48,23 @@ let getPointLightColor = (light, state: StateDataMainType.state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   getColor(
     MappedIndexService.getMappedIndex(
       light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
     ),
-    state.pointLightRecord
-  )
+    state.pointLightRecord,
+  );
 };
 
 let setPointLightColor = (light, color, state: StateDataMainType.state) => {
@@ -64,11 +73,15 @@ let setPointLightColor = (light, color, state: StateDataMainType.state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   {
     ...state,
@@ -76,12 +89,12 @@ let setPointLightColor = (light, color, state: StateDataMainType.state) => {
       setColor(
         MappedIndexService.getMappedIndex(
           light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
         ),
         color,
-        state.pointLightRecord
-      )
-  }
+        state.pointLightRecord,
+      ),
+  };
 };
 
 let getPointLightIntensity = (light, state: StateDataMainType.state) => {
@@ -90,19 +103,23 @@ let getPointLightIntensity = (light, state: StateDataMainType.state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   getIntensity(
     MappedIndexService.getMappedIndex(
       light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
     ),
-    state.pointLightRecord
-  )
+    state.pointLightRecord,
+  );
 };
 
 let setPointLightIntensity = (light, color, state: StateDataMainType.state) => {
@@ -111,11 +128,15 @@ let setPointLightIntensity = (light, color, state: StateDataMainType.state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   {
     ...state,
@@ -123,12 +144,12 @@ let setPointLightIntensity = (light, color, state: StateDataMainType.state) => {
       setIntensity(
         MappedIndexService.getMappedIndex(
           light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
         ),
         color,
-        state.pointLightRecord
-      )
-  }
+        state.pointLightRecord,
+      ),
+  };
 };
 
 let getPointLightConstant = (light, state: StateDataMainType.state) => {
@@ -137,19 +158,23 @@ let getPointLightConstant = (light, state: StateDataMainType.state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   getConstant(
     MappedIndexService.getMappedIndex(
       light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
     ),
-    state.pointLightRecord
-  )
+    state.pointLightRecord,
+  );
 };
 
 let setPointLightConstant = (light, color, state: StateDataMainType.state) => {
@@ -158,11 +183,15 @@ let setPointLightConstant = (light, color, state: StateDataMainType.state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   {
     ...state,
@@ -170,12 +199,12 @@ let setPointLightConstant = (light, color, state: StateDataMainType.state) => {
       setConstant(
         MappedIndexService.getMappedIndex(
           light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
         ),
         color,
-        state.pointLightRecord
-      )
-  }
+        state.pointLightRecord,
+      ),
+  };
 };
 
 let getPointLightLinear = (light, state: StateDataMainType.state) => {
@@ -184,19 +213,23 @@ let getPointLightLinear = (light, state: StateDataMainType.state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   getLinear(
     MappedIndexService.getMappedIndex(
       light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
     ),
-    state.pointLightRecord
-  )
+    state.pointLightRecord,
+  );
 };
 
 let setPointLightLinear = (light, color, state: StateDataMainType.state) => {
@@ -205,11 +238,15 @@ let setPointLightLinear = (light, color, state: StateDataMainType.state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   {
     ...state,
@@ -217,12 +254,12 @@ let setPointLightLinear = (light, color, state: StateDataMainType.state) => {
       setLinear(
         MappedIndexService.getMappedIndex(
           light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
         ),
         color,
-        state.pointLightRecord
-      )
-  }
+        state.pointLightRecord,
+      ),
+  };
 };
 
 let getPointLightQuadratic = (light, state: StateDataMainType.state) => {
@@ -231,19 +268,23 @@ let getPointLightQuadratic = (light, state: StateDataMainType.state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   getQuadratic(
     MappedIndexService.getMappedIndex(
       light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
     ),
-    state.pointLightRecord
-  )
+    state.pointLightRecord,
+  );
 };
 
 let setPointLightQuadratic = (light, color, state: StateDataMainType.state) => {
@@ -252,11 +293,15 @@ let setPointLightQuadratic = (light, color, state: StateDataMainType.state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   {
     ...state,
@@ -264,12 +309,12 @@ let setPointLightQuadratic = (light, color, state: StateDataMainType.state) => {
       setQuadratic(
         MappedIndexService.getMappedIndex(
           light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
         ),
         color,
-        state.pointLightRecord
-      )
-  }
+        state.pointLightRecord,
+      ),
+  };
 };
 
 let getPointLightRange = (light, state: StateDataMainType.state) => {
@@ -278,19 +323,23 @@ let getPointLightRange = (light, state: StateDataMainType.state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   getRange(
     MappedIndexService.getMappedIndex(
       light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
     ),
-    state.pointLightRecord
-  )
+    state.pointLightRecord,
+  );
 };
 
 let setPointLightRange = (light, range, state: StateDataMainType.state) => {
@@ -299,11 +348,15 @@ let setPointLightRange = (light, range, state: StateDataMainType.state) => {
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   {
     ...state,
@@ -311,12 +364,12 @@ let setPointLightRange = (light, range, state: StateDataMainType.state) => {
       setRange(
         MappedIndexService.getMappedIndex(
           light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
         ),
         range,
-        state.pointLightRecord
-      )
-  }
+        state.pointLightRecord,
+      ),
+  };
 };
 
 let setPointLightRangeLevel = (light, level, state: StateDataMainType.state) => {
@@ -325,11 +378,15 @@ let setPointLightRangeLevel = (light, level, state: StateDataMainType.state) => 
       WonderLog.(
         Contract.(
           Operators.(
-            AliveComponentService.checkComponentShouldAlive(light, isAlive, state.pointLightRecord)
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   {
     ...state,
@@ -337,10 +394,16 @@ let setPointLightRangeLevel = (light, level, state: StateDataMainType.state) => 
       setRangeLevel(
         MappedIndexService.getMappedIndex(
           light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord)
+          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
         ),
         level,
-        state.pointLightRecord
-      )
-  }
+        state.pointLightRecord,
+      ),
+  };
 };
+
+let isExceedMaxCount = ({pointLightRecord}) =>
+  MaxCountLightService.isExceedMaxCount(
+    pointLightRecord.index,
+    BufferPointLightService.getBufferMaxCount(),
+  );

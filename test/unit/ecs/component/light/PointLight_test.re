@@ -581,4 +581,18 @@ let _ =
         |> toThrowMessage("shouldn't exceed point light range");
       });
     });
+
+    describe("isExceedMaxCount", () =>
+      test("if lightIndex from record >= max count, return true", () =>
+        {
+          ...state^,
+          pointLightRecord: {
+            ...state^.pointLightRecord,
+            index: 5,
+          },
+        }
+        |> PointLightAPI.isExceedMaxCount
+        |> expect == true
+      )
+    );
   });

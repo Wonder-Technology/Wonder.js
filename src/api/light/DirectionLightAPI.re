@@ -10,14 +10,15 @@ open DisposeDirectionLightService;
 
 open OperateDirectionLightService;
 
-let createDirectionLight = (state) => {
+let createDirectionLight = state => {
   let (directionLightRecord, index) =
-    [@bs] CreateDirectionLightService.create(state.directionLightRecord);
+    CreateDirectionLightService.create(. state.directionLightRecord);
   state.directionLightRecord = directionLightRecord;
-  (state, index)
+  (state, index);
 };
 
-let unsafeGetDirectionLightGameObject = (light, state: StateDataMainType.state) => {
+let unsafeGetDirectionLightGameObject =
+    (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -26,20 +27,22 @@ let unsafeGetDirectionLightGameObject = (light, state: StateDataMainType.state) 
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.directionLightRecord
+              state.directionLightRecord,
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   unsafeGetGameObject(
     MappedIndexService.getMappedIndex(
       light,
-      IndexDirectionLightService.getMappedIndexMap(state.directionLightRecord)
+      IndexDirectionLightService.getMappedIndexMap(
+        state.directionLightRecord,
+      ),
     ),
-    state.directionLightRecord
-  )
+    state.directionLightRecord,
+  );
 };
 
 let getDirectionLightColor = (light, state: StateDataMainType.state) => {
@@ -51,20 +54,22 @@ let getDirectionLightColor = (light, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.directionLightRecord
+              state.directionLightRecord,
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   getColor(
     MappedIndexService.getMappedIndex(
       light,
-      IndexDirectionLightService.getMappedIndexMap(state.directionLightRecord)
+      IndexDirectionLightService.getMappedIndexMap(
+        state.directionLightRecord,
+      ),
     ),
-    state.directionLightRecord
-  )
+    state.directionLightRecord,
+  );
 };
 
 let setDirectionLightColor = (light, color, state: StateDataMainType.state) => {
@@ -76,12 +81,12 @@ let setDirectionLightColor = (light, color, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.directionLightRecord
+              state.directionLightRecord,
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   {
     ...state,
@@ -89,12 +94,14 @@ let setDirectionLightColor = (light, color, state: StateDataMainType.state) => {
       setColor(
         MappedIndexService.getMappedIndex(
           light,
-          IndexDirectionLightService.getMappedIndexMap(state.directionLightRecord)
+          IndexDirectionLightService.getMappedIndexMap(
+            state.directionLightRecord,
+          ),
         ),
         color,
-        state.directionLightRecord
-      )
-  }
+        state.directionLightRecord,
+      ),
+  };
 };
 
 let getDirectionLightIntensity = (light, state: StateDataMainType.state) => {
@@ -106,23 +113,26 @@ let getDirectionLightIntensity = (light, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.directionLightRecord
+              state.directionLightRecord,
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   getIntensity(
     MappedIndexService.getMappedIndex(
       light,
-      IndexDirectionLightService.getMappedIndexMap(state.directionLightRecord)
+      IndexDirectionLightService.getMappedIndexMap(
+        state.directionLightRecord,
+      ),
     ),
-    state.directionLightRecord
-  )
+    state.directionLightRecord,
+  );
 };
 
-let setDirectionLightIntensity = (light, color, state: StateDataMainType.state) => {
+let setDirectionLightIntensity =
+    (light, color, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -131,12 +141,12 @@ let setDirectionLightIntensity = (light, color, state: StateDataMainType.state) 
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.directionLightRecord
+              state.directionLightRecord,
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   {
     ...state,
@@ -144,10 +154,18 @@ let setDirectionLightIntensity = (light, color, state: StateDataMainType.state) 
       setIntensity(
         MappedIndexService.getMappedIndex(
           light,
-          IndexDirectionLightService.getMappedIndexMap(state.directionLightRecord)
+          IndexDirectionLightService.getMappedIndexMap(
+            state.directionLightRecord,
+          ),
         ),
         color,
-        state.directionLightRecord
-      )
-  }
+        state.directionLightRecord,
+      ),
+  };
 };
+
+let isExceedMaxCount = ({directionLightRecord}) =>
+  MaxCountLightService.isExceedMaxCount(
+    directionLightRecord.index,
+    BufferDirectionLightService.getBufferMaxCount(),
+  );
