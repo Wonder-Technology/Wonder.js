@@ -149,27 +149,27 @@ let _ =
 
         describe("test send direction light record", () =>
           describe("send structure record", () =>
-            describe("send position", () =>
+            describe("send direction", () =>
               testPromise("test one light", () => {
                 let (state, lightGameObject, material, light, cameraTransform) =
                   FrontRenderLightForNoWorkerAndWorkerJobTool.prepareOneForDirectionLight(
                     sandbox,
                     state^,
                   );
-                let position = (1., 2., 3.);
                 let state =
                   state
-                  |> TransformAPI.setTransformPosition(
+                  |> TransformAPI.setTransformLocalRotation(
                        GameObjectAPI.unsafeGetGameObjectTransformComponent(
                          lightGameObject,
                          state,
                        ),
-                       position,
+                       (0.1, 10.5, 1.5, 1.),
                      );
+
                 let (state, posArr, (uniform1f, uniform3f)) =
                   FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(
                     sandbox,
-                    [|"u_directionLights[0].position"|],
+                    [|"u_directionLights[0].direction"|],
                     state,
                   );
                 RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
@@ -179,7 +179,12 @@ let _ =
                     _ =>
                       uniform3f
                       |> expect
-                      |> toCalledWith([|posArr[0] |> Obj.magic, 1., 2., 3.|])
+                      |> toCalledWith([|
+                           posArr[0] |> Obj.magic,
+                           21.29999999197162,
+                           31.300000005352253,
+                           (-219.5200021448914),
+                         |])
                       |> resolve,
                   (),
                 );

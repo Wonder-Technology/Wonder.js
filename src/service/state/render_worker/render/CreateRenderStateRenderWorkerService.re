@@ -202,8 +202,8 @@ let createRenderState =
       index: directionLightRecord.index,
       colors: directionLightRecord.colors,
       intensities: directionLightRecord.intensities,
-      positionMap:
-        RecordRenderWorkerDirectionLightService.getPositionMap(
+      directionMap:
+        RecordRenderWorkerDirectionLightService.getDirectionMap(
           directionLightRecord,
         ),
     },

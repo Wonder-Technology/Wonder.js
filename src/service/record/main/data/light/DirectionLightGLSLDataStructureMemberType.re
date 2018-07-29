@@ -1,5 +1,5 @@
 type lightGLSLDataStructureMember = {
-  position: string,
+  direction: string,
   color: string,
   intensity: string
 };

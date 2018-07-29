@@ -148,10 +148,10 @@ let createRenderState =
       index: directionLightRecord.index,
       colors: directionLightRecord.colors,
       intensities: directionLightRecord.intensities,
-      positionMap:
-        PositionLightMainService.buildPositionMap(
+      directionMap:
+        DirectionDirectionLightMainService.buildDirectionMap(
           directionLightRecord.index,
-          PositionDirectionLightMainService.getPosition,
+          DirectionDirectionLightMainService.getDirection,
           state,
         ),
     },

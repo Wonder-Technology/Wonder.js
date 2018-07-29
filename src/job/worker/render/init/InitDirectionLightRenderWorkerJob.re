@@ -4,7 +4,7 @@ open RenderWorkerDirectionLightType;
 
 let _createTypeArrays = (buffer, count, index, state) => {
   let (colors, intensities) = CreateTypeArrayDirectionLightService.createTypeArrays(buffer, count);
-  state.directionLightRecord = Some({index, positionMap: None, colors, intensities});
+  state.directionLightRecord = Some({index, directionMap: None, colors, intensities});
   state
 };
 

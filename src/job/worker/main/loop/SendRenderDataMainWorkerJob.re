@@ -94,10 +94,10 @@ let _buildData = (operateType, stateData) => {
     },
     "directionLightData": {
       "index": directionLightRecord.index,
-      "positionMap":
-        PositionLightMainService.buildPositionMap(
+      "directionMap":
+        DirectionDirectionLightMainService.buildDirectionMap(
           directionLightRecord.index,
-          PositionDirectionLightMainService.getPosition,
+          DirectionDirectionLightMainService.getDirection,
           state,
         ),
     },

@@ -93,3 +93,39 @@ let normalize = ((x, y, z)) => {
   let d = Js.Math.sqrt(x *. x +. y *. y +. z *. z);
   d === 0. ? (0., 0., 0.) : (x /. d, y /. d, z /. d);
 };
+
+let transformQuat = [%raw
+  (a, q) => {|
+     // benchmarks: https://jsperf.com/quaternion-transform-vec3-implementations-fixed
+    let qx = q[0], qy = q[1], qz = q[2], qw = q[3];
+    let x = a[0], y = a[1], z = a[2];
+    // var qvec = [qx, qy, qz];
+    // var uv = vec3.cross([], qvec, a);
+    let uvx = qy * z - qz * y,
+        uvy = qz * x - qx * z,
+        uvz = qx * y - qy * x;
+    // var uuv = vec3.cross([], qvec, uv);
+    let uuvx = qy * uvz - qz * uvy,
+        uuvy = qz * uvx - qx * uvz,
+        uuvz = qx * uvy - qy * uvx;
+    // vec3.scale(uv, uv, 2 * w);
+    let w2 = qw * 2;
+    uvx *= w2;
+    uvy *= w2;
+    uvz *= w2;
+    // vec3.scale(uuv, uuv, 2);
+    uuvx *= 2;
+    uuvy *= 2;
+    uuvz *= 2;
+    // return vec3.add(out, a, vec3.add(out, uv, uuv));
+
+    return [
+
+x + uvx + uuvx,
+y + uvy + uuvy,
+z + uvz + uuvz
+
+    ]
+
+  |}
+];

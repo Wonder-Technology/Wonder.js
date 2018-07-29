@@ -168,7 +168,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 {
         float attenuation = 1.0;
 
-        lightDir = normalize(lightDir);
+        // lightDir = normalize(lightDir);
 
         return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
 }
@@ -254,7 +254,7 @@ uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
 
 #if DIRECTION_LIGHTS_COUNT > 0
 struct DirectionLight {
-    vec3 position;
+    vec3 direction;
 
     float intensity;
 
@@ -263,12 +263,14 @@ struct DirectionLight {
 uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 #endif
 |},({|
-vec3 getDirectionLightDirByLightPos(vec3 lightPos);
+vec3 getDirectionLightDir(vec3 lightDirection);
 vec3 getPointLightDirByLightPos(vec3 lightPos);
 vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);
 |},{|
-vec3 getDirectionLightDirByLightPos(vec3 lightPos){
-    return lightPos - vec3(0.0);
+vec3 getDirectionLightDir(vec3 lightDirection){
+    lightDirection =  normalize(lightDirection);
+
+    return -lightDirection;
 }
 vec3 getPointLightDirByLightPos(vec3 lightPos){
     return lightPos - v_worldPosition;
@@ -305,7 +307,7 @@ uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
 
 #if DIRECTION_LIGHTS_COUNT > 0
 struct DirectionLight {
-    vec3 position;
+    vec3 direction;
 
     float intensity;
 
@@ -314,12 +316,14 @@ struct DirectionLight {
 uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 #endif
 |},({|
-vec3 getDirectionLightDirByLightPos(vec3 lightPos);
+vec3 getDirectionLightDir(vec3 lightDirection);
 vec3 getPointLightDirByLightPos(vec3 lightPos);
 vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);
 |},{|
-vec3 getDirectionLightDirByLightPos(vec3 lightPos){
-    return lightPos - vec3(0.0);
+vec3 getDirectionLightDir(vec3 lightDirection){
+    lightDirection =  normalize(lightDirection);
+
+    return -lightDirection;
 }
 vec3 getPointLightDirByLightPos(vec3 lightPos){
     return lightPos - v_worldPosition;
@@ -356,7 +360,7 @@ uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
 
 #if DIRECTION_LIGHTS_COUNT > 0
 struct DirectionLight {
-    vec3 position;
+    vec3 direction;
 
     float intensity;
 
@@ -365,12 +369,14 @@ struct DirectionLight {
 uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 #endif
 |},({|
-vec3 getDirectionLightDirByLightPos(vec3 lightPos);
+vec3 getDirectionLightDir(vec3 lightDirection);
 vec3 getPointLightDirByLightPos(vec3 lightPos);
 vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);
 |},{|
-vec3 getDirectionLightDirByLightPos(vec3 lightPos){
-    return lightPos - vec3(0.0);
+vec3 getDirectionLightDir(vec3 lightDirection){
+    lightDirection =  normalize(lightDirection);
+
+    return -lightDirection;
 }
 vec3 getPointLightDirByLightPos(vec3 lightPos){
     return lightPos - v_worldPosition;
@@ -507,7 +513,7 @@ vec3 getDirectionLightDir(int index){
     //workaround '[] : Index expression must be constant' error
     for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {
         if(x == index){
-            return getDirectionLightDirByLightPos(u_directionLights[x].position);
+            return getDirectionLightDir(u_directionLights[x].direction);
         }
     }
 

@@ -1,3 +1,3 @@
 open RenderWorkerDirectionLightType;
 
-let getPositionMap = (record) => record.positionMap |> OptionService.unsafeGet;
+let getDirectionMap = record => record.directionMap |> OptionService.unsafeGet;

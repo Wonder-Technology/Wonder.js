@@ -67,6 +67,15 @@
 
                 // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
 
+                var [state, directionLightObj] = LightTool.createDirectionLight(state);
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+
+                // state = wd.setTransformLocalEulerAngles(transform, [30, 0, 30], state);
+                state = wd.setTransformLocalEulerAngles(transform, [0, 45, 0], state);
+
+
 
                 var data = LightBoxesTool.createCamera(state);
                 var state = data[0];

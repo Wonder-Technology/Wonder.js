@@ -8,6 +8,11 @@ let getFsSource = (shaderSource) => List.nth(shaderSource |> Sinon.getCall(1) |>
 
 let getFsSourceByCount = (shaderSource, count) => List.nth(shaderSource |> Sinon.getCall(count + 1) |> Sinon.getArgs, 1);
 
+
+let _removeSpaces = str =>
+  str |> Js.String.replaceByRe([%re {|/\s/img|}], "");
+
+
 let containSpecifyCount = (source: string, target: string, ~count=1, ()) =>
   switch (Js.String.match(Js.Re.fromStringWithFlags(target, ~flags="g"), source)) {
   | None => count == 0
@@ -18,4 +23,4 @@ let contain = (source: string, targetLine: string) => Js.String.includes(targetL
 
 let containMultiline = (source: string, targetLineArray: list(string)) =>
   targetLineArray
-  |> List.for_all((targetLine) => Js.String.includes(targetLine |> Js.String.trim, source));
+  |> List.for_all((targetLine) => Js.String.includes(targetLine |> Js.String.trim |> _removeSpaces , source |> _removeSpaces));

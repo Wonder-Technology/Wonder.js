@@ -98,7 +98,7 @@ vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, ve
 {
         float attenuation = 1.0;
 
-        lightDir = normalize(lightDir);
+        // lightDir = normalize(lightDir);
 
         return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
 }

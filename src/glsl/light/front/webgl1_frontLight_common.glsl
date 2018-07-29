@@ -19,7 +19,7 @@ uniform PointLight u_pointLights[POINT_LIGHTS_COUNT];
 
 #if DIRECTION_LIGHTS_COUNT > 0
 struct DirectionLight {
-    vec3 position;
+    vec3 direction;
 
     float intensity;
 
@@ -30,14 +30,16 @@ uniform DirectionLight u_directionLights[DIRECTION_LIGHTS_COUNT];
 @end
 
 @funcDeclare
-vec3 getDirectionLightDirByLightPos(vec3 lightPos);
+vec3 getDirectionLightDir(vec3 lightDirection);
 vec3 getPointLightDirByLightPos(vec3 lightPos);
 vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition);
 @end
 
 @funcDefine
-vec3 getDirectionLightDirByLightPos(vec3 lightPos){
-    return lightPos - vec3(0.0);
+vec3 getDirectionLightDir(vec3 lightDirection){
+    lightDirection =  normalize(lightDirection);
+
+    return -lightDirection;
 }
 vec3 getPointLightDirByLightPos(vec3 lightPos){
     return lightPos - v_worldPosition;

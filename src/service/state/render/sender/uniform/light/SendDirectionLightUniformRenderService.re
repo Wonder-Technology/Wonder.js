@@ -27,47 +27,46 @@ let send =
       },
       IsDebugMainService.getIsDebug(StateDataMain.stateData),
     );
-    /* let {index} = directionLightRecord; */
     let lightGLSLDataStructureMemberNameArr = [|
       {
-        position: "u_directionLights[0].position",
+        direction: "u_directionLights[0].direction",
         color: "u_directionLights[0].color",
         intensity: "u_directionLights[0].intensity",
       },
       {
-        position: "u_directionLights[1].position",
+        direction: "u_directionLights[1].direction",
         color: "u_directionLights[1].color",
         intensity: "u_directionLights[1].intensity",
       },
       {
-        position: "u_directionLights[2].position",
+        direction: "u_directionLights[2].direction",
         color: "u_directionLights[2].color",
         intensity: "u_directionLights[2].intensity",
       },
       {
-        position: "u_directionLights[3].position",
+        direction: "u_directionLights[3].direction",
         color: "u_directionLights[3].color",
         intensity: "u_directionLights[3].intensity",
       },
     |];
-    let {index, positionMap} as directionLightRecord = directionLightRecord;
+    let {index, directionMap} as directionLightRecord = directionLightRecord;
     WonderCommonlib.ArrayService.range(0, index - 1)
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. directionLightRecord, index) => {
-           let {position, color, intensity} = lightGLSLDataStructureMemberNameArr[index];
+           let {direction, color, intensity} = lightGLSLDataStructureMemberNameArr[index];
            SendGLSLDataService.sendVec3(.
              gl,
              uniformCacheMap,
              (
-               position,
+               direction,
                GLSLLocationService.getUniformLocation(
                  program,
-                 position,
+                 direction,
                  uniformLocationMap,
                  gl,
                ),
              ),
-             LightPositionService.getPosition(index, positionMap),
+             DirectionLightService.getDirection(index, directionMap),
            );
            SendGLSLDataService.sendFloat3(.
              gl,

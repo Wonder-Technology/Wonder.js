@@ -8,7 +8,7 @@ var LightTool = (function () {
         createDirectionLight: function (state) {
             var [state, light] = wd.createDirectionLight(state);
 
-            var state = wd.setDirectionLightColor(light, [1.0, 0.0, 0.0], state);
+            var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
 
 
 

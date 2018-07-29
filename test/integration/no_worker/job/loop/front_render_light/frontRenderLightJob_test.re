@@ -740,187 +740,201 @@ let _ =
                 state,
               );
             describe("send structure data", () => {
-              describe("send position", () => {
+              describe("send direction", () => {
                 describe("fix bug", () =>
-                  test("aaaa", () => {
-                    
-                    let (
-                      state,
-                      lightGameObject1,
-                      _,
-                      light1,
-                      _,
-                    ) =
+                  test("test dispose first light gameObject", () => {
+                    let (state, lightGameObject1, _, light1, _) =
                       _prepareOne(sandbox, state^);
 
+                    let (state, lightGameObject2, light2) =
+                      DirectionLightTool.createGameObject(state);
 
-
-  let (state, lightGameObject2, light2) = DirectionLightTool.createGameObject(state);
-
-
-                    let position1 = (1., 2., 3.);
-                    let position2 = (1., 4., 3.);
+                    let eulerAngles1 = (45., 1., 0.);
+                    let eulerAngles2 = (1., 4., 3.);
                     let state =
                       state
-                      |> TransformAPI.setTransformPosition(
+                      |> TransformAPI.setTransformLocalEulerAngles(
                            GameObjectAPI.unsafeGetGameObjectTransformComponent(
                              lightGameObject1,
                              state,
                            ),
-                           position1,
+                           eulerAngles1,
                          );
                     let state =
                       state
-                      |> TransformAPI.setTransformPosition(
+                      |> TransformAPI.setTransformLocalEulerAngles(
                            GameObjectAPI.unsafeGetGameObjectTransformComponent(
                              lightGameObject2,
                              state,
                            ),
-                           position2,
+                           eulerAngles2,
+                         );
+
+                    let (state, posArr, (uniform1f, uniform3f)) =
+                      _setFakeGl(
+                        sandbox,
+                        [|"u_directionLights[0].direction"|],
+                        state,
+                      );
+                    let state = state |> RenderJobsTool.init;
+
+                    let state =
+                      GameObjectTool.disposeGameObject(
+                        lightGameObject1,
+                        state,
+                      );
+                    let state = state |> DirectorTool.runWithDefaultTime;
+
+                    uniform3f
+                    |> expect
+                    |> toCalledWith([|
+                         posArr[0] |> Obj.magic,
+                         0.07056365849307426,
+                         (-0.01377827256865152),
+                         0.997412116116255,
+                       |]);
+                  })
+                );
+
+                describe("convert rotation to direction vector3", () => {
+                  test("test one light", () => {
+                    let (state, lightGameObject1, _, light1, _) =
+                      _prepareOne(sandbox, state^);
+                    let state =
+                      state
+                      |> TransformAPI.setTransformLocalRotation(
+                           GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                             lightGameObject1,
+                             state,
+                           ),
+                           (0.1, 10.5, 1.5, 1.),
                          );
                     let (state, posArr, (uniform1f, uniform3f)) =
                       _setFakeGl(
                         sandbox,
-                        [|"u_directionLights[0].position"|],
+                        [|"u_directionLights[0].direction"|],
                         state,
                       );
 
-
-                    let state =
-                      state
-                      |> RenderJobsTool.init;
-
-
-        let state = GameObjectTool.disposeGameObject(lightGameObject1, state);
-
-
-                    let state =
-                      state
-                      |> DirectorTool.runWithDefaultTime;
+                    let state = state |> RenderJobsTool.init;
+                    let state = state |> DirectorTool.runWithDefaultTime;
 
                     uniform3f
                     |> expect
-                    |> toCalledWith([|posArr[0] |> Obj.magic, 1., 4., 3.|]);
-                  })
-                );
+                    |> toCalledWith([|
+                         posArr[0] |> Obj.magic,
+                         21.29999999197162,
+                         31.300000005352253,
+                         (-219.5200021448914),
+                       |]);
+                  });
+                  test("test four lights", () => {
+                    let (
+                      state,
+                      (
+                        lightGameObject1,
+                        lightGameObject2,
+                        lightGameObject3,
+                        lightGameObject4,
+                      ),
+                      material,
+                      (light1, light2, light3, light4),
+                      cameraTransform,
+                    ) =
+                      _prepareFour(sandbox, state^);
+                    let state =
+                      state
+                      |> TransformAPI.setTransformLocalRotation(
+                           GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                             lightGameObject1,
+                             state,
+                           ),
+                           (0.1, 10.5, 1.5, 1.),
+                         )
+                      |> TransformAPI.setTransformLocalRotation(
+                           GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                             lightGameObject2,
+                             state,
+                           ),
+                           (1.1, 10.5, 1.5, 1.),
+                         )
+                      |> TransformAPI.setTransformLocalRotation(
+                           GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                             lightGameObject3,
+                             state,
+                           ),
+                           (2.1, 10.5, 1.5, 1.),
+                         )
+                      |> TransformAPI.setTransformLocalRotation(
+                           GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                             lightGameObject4,
+                             state,
+                           ),
+                           (3.1, 10.5, 1.5, 1.),
+                         );
+                    let (state, posArr, (uniform1f, uniform3f)) =
+                      _setFakeGl(
+                        sandbox,
+                        [|
+                          "u_directionLights[0].direction",
+                          "u_directionLights[1].direction",
+                          "u_directionLights[2].direction",
+                          "u_directionLights[3].direction",
+                        |],
+                        state,
+                      );
 
-                test("test one light", () => {
-                  let (
-                    state,
-                    lightGameObject,
-                    material,
-                    light,
-                    cameraTransform,
-                  ) =
-                    _prepareOne(sandbox, state^);
-                  let position = (1., 2., 3.);
-                  let state =
-                    state
-                    |> TransformAPI.setTransformPosition(
-                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                           lightGameObject,
-                           state,
-                         ),
-                         position,
-                       );
-                  let (state, posArr, (uniform1f, uniform3f)) =
-                    _setFakeGl(
-                      sandbox,
-                      [|"u_directionLights[0].position"|],
-                      state,
-                    );
-                  let state =
-                    state
-                    |> RenderJobsTool.init
-                    |> DirectorTool.runWithDefaultTime;
-                  uniform3f
-                  |> expect
-                  |> toCalledWith([|posArr[0] |> Obj.magic, 1., 2., 3.|]);
-                });
-                test("test four lights", () => {
-                  let (
-                    state,
+                    let state =
+                      state
+                      |> RenderJobsTool.init
+                      |> DirectorTool.runWithDefaultTime;
+
                     (
-                      lightGameObject1,
-                      lightGameObject2,
-                      lightGameObject3,
-                      lightGameObject4,
-                    ),
-                    material,
-                    (light1, light2, light3, light4),
-                    cameraTransform,
-                  ) =
-                    _prepareFour(sandbox, state^);
-                  let state =
-                    state
-                    |> TransformAPI.setTransformPosition(
-                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                           lightGameObject1,
-                           state,
-                         ),
-                         (1., 2., 3.),
-                       )
-                    |> TransformAPI.setTransformPosition(
-                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                           lightGameObject2,
-                           state,
-                         ),
-                         (2., 2., 3.),
-                       )
-                    |> TransformAPI.setTransformPosition(
-                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                           lightGameObject3,
-                           state,
-                         ),
-                         (3., 2., 3.),
-                       )
-                    |> TransformAPI.setTransformPosition(
-                         GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                           lightGameObject4,
-                           state,
-                         ),
-                         (4., 2., 3.),
-                       );
-                  let (state, posArr, (uniform1f, uniform3f)) =
-                    _setFakeGl(
-                      sandbox,
-                      [|
-                        "u_directionLights[0].position",
-                        "u_directionLights[1].position",
-                        "u_directionLights[2].position",
-                        "u_directionLights[3].position",
-                      |],
-                      state,
-                    );
-                  let state =
-                    state
-                    |> RenderJobsTool.init
-                    |> DirectorTool.runWithDefaultTime;
-                  (
-                    uniform3f
-                    |> withOneArg(posArr[0])
-                    |> getCall(0)
-                    |> getArgs,
-                    uniform3f
-                    |> withOneArg(posArr[1])
-                    |> getCall(0)
-                    |> getArgs,
-                    uniform3f
-                    |> withOneArg(posArr[2])
-                    |> getCall(0)
-                    |> getArgs,
-                    uniform3f
-                    |> withOneArg(posArr[3])
-                    |> getCall(0)
-                    |> getArgs,
-                  )
-                  |>
-                  expect == (
-                              [posArr[0] |> Obj.magic, 1., 2., 3.],
-                              [posArr[1] |> Obj.magic, 2., 2., 3.],
-                              [posArr[2] |> Obj.magic, 3., 2., 3.],
-                              [posArr[3] |> Obj.magic, 4., 2., 3.],
-                            );
+                      uniform3f
+                      |> withOneArg(posArr[0])
+                      |> getCall(0)
+                      |> getArgs,
+                      uniform3f
+                      |> withOneArg(posArr[1])
+                      |> getCall(0)
+                      |> getArgs,
+                      uniform3f
+                      |> withOneArg(posArr[2])
+                      |> getCall(0)
+                      |> getArgs,
+                      uniform3f
+                      |> withOneArg(posArr[3])
+                      |> getCall(0)
+                      |> getArgs,
+                    )
+                    |>
+                    expect == (
+                                [
+                                  posArr[0] |> Obj.magic,
+                                  21.29999999197162,
+                                  31.300000005352253,
+                                  (-219.5200021448914),
+                                ],
+                                [
+                                  posArr[1] |> Obj.magic,
+                                  24.30000006876835,
+                                  29.299999954154437,
+                                  (-221.91999913671927),
+                                ],
+                                [
+                                  posArr[2] |> Obj.magic,
+                                  27.29999987738473,
+                                  27.300000081743512,
+                                  (-228.31999618530273),
+                                ],
+                                [
+                                  posArr[3] |> Obj.magic,
+                                  30.299999741794302,
+                                  25.30000017213713,
+                                  (-238.71999996955168),
+                                ],
+                              );
+                  });
                 });
               });
               describe("send color", () =>

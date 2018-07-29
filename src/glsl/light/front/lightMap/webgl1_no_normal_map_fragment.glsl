@@ -34,7 +34,7 @@ vec3 getDirectionLightDir(int index){
     //workaround '[] : Index expression must be constant' error
     for (int x = 0; x <= DIRECTION_LIGHTS_COUNT; x++) {
         if(x == index){
-            return getDirectionLightDirByLightPos(u_directionLights[x].position);
+            return getDirectionLightDir(u_directionLights[x].direction);
         }
     }
 
