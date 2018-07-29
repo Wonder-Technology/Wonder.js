@@ -1,50 +1,84 @@
 let isAlive = (light, mappedIndexMap) =>
   MappedIndexService.isComponentAlive(light, mappedIndexMap);
 
-let disposeData = (light, gameObjectMap) =>
-  DisposeComponentService.disposeSparseMapData(light, gameObjectMap);
+let _deleteBySwapGameObjectMapData =
+    (mappedSourceIndex, lastComponentIndex, gameObjectMap) => {
+  let lastGameObject =
+    gameObjectMap
+    |> WonderCommonlib.SparseMapService.unsafeGet(lastComponentIndex);
+
+  gameObjectMap
+  |> WonderCommonlib.SparseMapService.set(
+       lastComponentIndex,
+       gameObjectMap
+       |> WonderCommonlib.SparseMapService.unsafeGet(mappedSourceIndex),
+     )
+  |> WonderCommonlib.SparseMapService.set(mappedSourceIndex, lastGameObject)
+  |> Js.Array.pop |> ignore;
+
+  gameObjectMap
+};
+
+let disposeData = (mappedSourceIndex, lastComponentIndex, gameObjectMap) =>
+  _deleteBySwapGameObjectMapData(
+    mappedSourceIndex,
+    lastComponentIndex,
+    gameObjectMap,
+  );
 
 let _swapIndex = (mappedSourceIndex, lastComponentIndex, mappedIndexMap) =>
   mappedSourceIndex >= lastComponentIndex ?
     mappedIndexMap :
-    mappedIndexMap |> MappedIndexService.setMappedIndex(lastComponentIndex, mappedSourceIndex);
+    mappedIndexMap
+    |> MappedIndexService.setMappedIndex(
+         lastComponentIndex,
+         mappedSourceIndex,
+       );
 
 let swapData =
     (
       (mappedSourceIndex, lastComponentIndex),
       (mappedIndexMap, dataSize, defaultData),
       deleteBySwapAndResetTypeArrFunc,
-      typeArr
+      typeArr,
     ) =>
   mappedSourceIndex >= lastComponentIndex ?
     typeArr :
-    [@bs]
-    deleteBySwapAndResetTypeArrFunc(
+    deleteBySwapAndResetTypeArrFunc(.
       (mappedSourceIndex * dataSize, lastComponentIndex * dataSize),
       typeArr,
       dataSize,
-      defaultData
+      defaultData,
     );
 
-let setMappedIndexMap = (sourceIndex, mappedSourceIndex, lastComponentIndex, mappedIndexMap) =>
+let setMappedIndexMap =
+    (sourceIndex, mappedSourceIndex, lastComponentIndex, mappedIndexMap) =>
   mappedIndexMap
   |> _swapIndex(mappedSourceIndex, lastComponentIndex)
   |> MappedIndexService.markDisposed(sourceIndex);
 
-let handleDisposeComponent = (light, (isAliveFunc, handleDisposeFunc), record) => {
+let handleDisposeComponent =
+    (light, (isAliveFunc, handleDisposeFunc), record) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
         Contract.(
-          Operators.(DisposeComponentService.checkComponentShouldAlive(light, isAliveFunc, record))
+          Operators.(
+            DisposeComponentService.checkComponentShouldAlive(
+              light,
+              isAliveFunc,
+              record,
+            )
+          )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  [@bs] handleDisposeFunc(light, record)
+  handleDisposeFunc(. light, record);
 };
 
-let handleBatchDisposeComponent = (lightArray, (isAliveFunc, handleDisposeFunc), record) => {
+let handleBatchDisposeComponent =
+    (lightArray, (isAliveFunc, handleDisposeFunc), record) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -53,16 +87,16 @@ let handleBatchDisposeComponent = (lightArray, (isAliveFunc, handleDisposeFunc),
             DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
               lightArray,
               isAliveFunc,
-              record
+              record,
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   lightArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs] ((record, light) => [@bs] handleDisposeFunc(light, record)),
-       record
-     )
+       (. record, light) => handleDisposeFunc(. light, record),
+       record,
+     );
 };

@@ -5,7 +5,11 @@ let handleAddComponent =
     ...record,
     gameObjectMap:
       AddComponentService.addComponentToGameObjectMap(
-        light,
+        /* light, */
+        MappedIndexService.getMappedIndex(
+          light,
+          IndexDirectionLightService.getMappedIndexMap(record),
+        ),
         gameObjectUid,
         gameObjectMap,
       ),

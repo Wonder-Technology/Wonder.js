@@ -22,9 +22,9 @@ let _disposeData =
         mappedIndexMap
       } as record
     ) => {
-      let gameObjectMap = DisposeLightService.disposeData(sourceIndex, gameObjectMap);
       let lastComponentIndex = pred(index);
       let mappedSourceIndex = mappedIndexMap |> MappedIndexService.getMappedIndex(sourceIndex);
+      let gameObjectMap = DisposeLightService.disposeData(mappedSourceIndex, lastComponentIndex, gameObjectMap);
       {
         ...record,
         index: pred(index),

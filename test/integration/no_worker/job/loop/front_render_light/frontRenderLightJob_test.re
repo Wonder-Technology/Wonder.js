@@ -741,6 +741,69 @@ let _ =
               );
             describe("send structure data", () => {
               describe("send position", () => {
+                describe("fix bug", () =>
+                  test("aaaa", () => {
+                    
+                    let (
+                      state,
+                      lightGameObject1,
+                      _,
+                      light1,
+                      _,
+                    ) =
+                      _prepareOne(sandbox, state^);
+
+
+
+  let (state, lightGameObject2, light2) = DirectionLightTool.createGameObject(state);
+
+
+                    let position1 = (1., 2., 3.);
+                    let position2 = (1., 4., 3.);
+                    let state =
+                      state
+                      |> TransformAPI.setTransformPosition(
+                           GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                             lightGameObject1,
+                             state,
+                           ),
+                           position1,
+                         );
+                    let state =
+                      state
+                      |> TransformAPI.setTransformPosition(
+                           GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                             lightGameObject2,
+                             state,
+                           ),
+                           position2,
+                         );
+                    let (state, posArr, (uniform1f, uniform3f)) =
+                      _setFakeGl(
+                        sandbox,
+                        [|"u_directionLights[0].position"|],
+                        state,
+                      );
+
+
+                    let state =
+                      state
+                      |> RenderJobsTool.init;
+
+
+        let state = GameObjectTool.disposeGameObject(lightGameObject1, state);
+
+
+                    let state =
+                      state
+                      |> DirectorTool.runWithDefaultTime;
+
+                    uniform3f
+                    |> expect
+                    |> toCalledWith([|posArr[0] |> Obj.magic, 1., 4., 3.|]);
+                  })
+                );
+
                 test("test one light", () => {
                   let (
                     state,
@@ -1528,7 +1591,9 @@ let _ =
           (state, (pos1, pos2), uniform3f);
         };
 
-        test("should send uniform data which has different shaders but the same materials", () => {
+        test(
+          "should send uniform data which has different shaders but the same materials",
+          () => {
           let (state, (pos1, pos2), uniform3f) = _prepare(state^);
 
           let state =
