@@ -249,6 +249,16 @@ and apiRecord = {
         state
       ) =>
       state,
+    "getTransformPosition":
+      (transform, state) =>
+      (
+        Js.Typed_array.Float32Array.elt,
+        Js.Typed_array.Float32Array.elt,
+        Js.Typed_array.Float32Array.elt,
+      ),
+    "convertWorldToScreen":
+      (int, int, (float, float, float, float, float), state) =>
+      (float, float),
     "getRenderWorkerCustomData":
       state => CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
   },

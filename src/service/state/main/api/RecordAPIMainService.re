@@ -26,6 +26,8 @@ let create = () => {
     "setLightMaterialShininess": LightMaterialAPI.setLightMaterialShininess,
     "getTransformLocalPosition": TransformAPI.getTransformLocalPosition,
     "setTransformLocalPosition": TransformAPI.setTransformLocalPosition,
+    "getTransformPosition": TransformAPI.getTransformPosition,
+    "convertWorldToScreen": CoordinateAPI.convertWorldToScreen,
     "getRenderWorkerCustomData": OperateWorkerDataMainService.getRenderWorkerCustomData,
   },
 };
