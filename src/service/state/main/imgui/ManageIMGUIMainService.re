@@ -38,3 +38,17 @@ let setRecord = (record, state) => {
     wonderImguiIMGUIRecord: record,
   },
 };
+
+let sendUniformProjectionMatData = (gl, canvasSize, state) => {
+  ...state,
+  programRecord: ProgramService.clearLastSendProgram(state.programRecord),
+  imguiRecord: {
+    ...state.imguiRecord,
+    wonderImguiIMGUIRecord:
+      WonderImgui.ManageIMGUIAPI.sendUniformProjectionMatData(
+        gl,
+        canvasSize,
+        RecordIMGUIMainService.getWonderIMGUIRecord(state),
+      ),
+  },
+};

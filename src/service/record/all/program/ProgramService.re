@@ -15,19 +15,22 @@ let _compileShader = (gl, glslSource: string, shader) => {
           WonderLog.Log.debug(
             WonderLog.Log.buildDebugMessage(
               ~description="shader info log",
-              ~params={j|$message|j}
+              ~params={j|$message|j},
             ),
-            IsDebugMainService.getIsDebug(StateDataMain.stateData)
+            IsDebugMainService.getIsDebug(StateDataMain.stateData),
           );
           WonderLog.Log.debug(
-            WonderLog.Log.buildDebugMessage(~description="glsl source", ~params={j|$glslSource|j}),
-            IsDebugMainService.getIsDebug(StateDataMain.stateData)
-          )
+            WonderLog.Log.buildDebugMessage(
+              ~description="glsl source",
+              ~params={j|$glslSource|j},
+            ),
+            IsDebugMainService.getIsDebug(StateDataMain.stateData),
+          );
         } :
         (),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  shader
+  shader;
 };
 
 let _linkProgram = (program, gl) => {
@@ -43,22 +46,24 @@ let _linkProgram = (program, gl) => {
               ~description={j|$message|j},
               ~reason="",
               ~solution={j||j},
-              ~params={j||j}
-            )
-          )
+              ~params={j||j},
+            ),
+          );
         } :
         (),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  ()
+  ();
 };
 
 let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
-  let vs = _compileShader(gl, vsSource, createShader(getVertexShader(gl), gl));
-  let fs = _compileShader(gl, fsSource, createShader(getFragmentShader(gl), gl));
+  let vs =
+    _compileShader(gl, vsSource, createShader(getVertexShader(gl), gl));
+  let fs =
+    _compileShader(gl, fsSource, createShader(getFragmentShader(gl), gl));
 
   /* WonderLog.Log.print(("vs source: ", vsSource)) |> ignore;
-  WonderLog.Log.print(("fs source: ", fsSource)) |> ignore; */
+     WonderLog.Log.print(("fs source: ", fsSource)) |> ignore; */
 
   /* dispose?
      if (this.glProgram) {
@@ -101,7 +106,7 @@ let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
     */
   deleteShader(vs, gl);
   deleteShader(fs, gl);
-  program
+  program;
 };
 
 let getProgram = (shaderIndex: int, {programMap}) =>
@@ -111,21 +116,29 @@ let unsafeGetProgram = (shaderIndex: int, {programMap}) =>
   programMap
   |> WonderCommonlib.SparseMapService.unsafeGet(shaderIndex)
   |> WonderLog.Contract.ensureCheck(
-       (program) =>
+       program =>
          WonderLog.(
            Contract.(
              Operators.(
                test(
-                 Log.buildAssertMessage(~expect={j|program exist|j}, ~actual={j|not|j}),
-                 () => program |> assertNullableExist
+                 Log.buildAssertMessage(
+                   ~expect={j|program exist|j},
+                   ~actual={j|not|j},
+                 ),
+                 () =>
+                 program |> assertNullableExist
                )
              )
            )
          ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 
 let registerProgram = (shaderIndex: int, {programMap}, program: program) => {
-  programMap |> WonderCommonlib.SparseMapService.set(shaderIndex, program) |> ignore;
-  program
+  programMap
+  |> WonderCommonlib.SparseMapService.set(shaderIndex, program)
+  |> ignore;
+  program;
 };
+
+let clearLastSendProgram = record => {...record, lastUsedProgram: None};

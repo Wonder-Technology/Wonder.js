@@ -19,15 +19,5 @@ let setSetting = (setting, state) => {
   },
 };
 
-let sendUniformProjectionMatData = (gl, canvasSize, state) => {
-  ...state,
-  imguiRecord: {
-    ...state.imguiRecord,
-    wonderImguiIMGUIRecord:
-      WonderImgui.ManageIMGUIAPI.sendUniformProjectionMatData(
-        gl,
-        canvasSize,
-        RecordIMGUIMainService.getWonderIMGUIRecord(state),
-      ),
-  },
-};
+let sendUniformProjectionMatData = (gl, canvasSize, state) =>
+  ManageIMGUIMainService.sendUniformProjectionMatData(gl, canvasSize, state);
