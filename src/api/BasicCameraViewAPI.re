@@ -8,11 +8,11 @@ open DisposeBasicCameraViewService;
 
 open GameObjectBasicCameraViewService;
 
-let createBasicCameraView = (state) => {
+let createBasicCameraView = state => {
   let (basicCameraViewRecord, index) =
     CreateBasicCameraViewService.create(state.basicCameraViewRecord);
   state.basicCameraViewRecord = basicCameraViewRecord;
-  (state, index)
+  (state, index);
 };
 
 let unsafeGetGameObjectBasicCameraView = (cameraView, state) => {
@@ -24,17 +24,18 @@ let unsafeGetGameObjectBasicCameraView = (cameraView, state) => {
             AliveComponentService.checkComponentShouldAlive(
               cameraView,
               isAlive,
-              state.basicCameraViewRecord
+              state.basicCameraViewRecord,
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetGameObject(cameraView, state.basicCameraViewRecord)
+  unsafeGetGameObject(cameraView, state.basicCameraViewRecord);
 };
 
-let getBasicCameraViewWorldToCameraMatrix = (cameraView, state: StateDataMainType.state) => {
+let getBasicCameraViewWorldToCameraMatrix =
+    (cameraView, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -43,23 +44,16 @@ let getBasicCameraViewWorldToCameraMatrix = (cameraView, state: StateDataMainTyp
             AliveComponentService.checkComponentShouldAlive(
               cameraView,
               isAlive,
-              state.basicCameraViewRecord
+              state.basicCameraViewRecord,
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  let {localToWorldMatrices, localToWorldMatrixCacheMap} =
-    RecordTransformMainService.getRecord(state);
-  [@bs]
-  ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(
-    GetComponentGameObjectService.unsafeGetTransformComponent(
-      unsafeGetGameObject(cameraView, state.basicCameraViewRecord),
-      state.gameObjectRecord
-    ),
-    localToWorldMatrices,
-    localToWorldMatrixCacheMap
-  )
-  |> VMatrixService.getWorldToCameraMatrix
+
+  ViewMatrixBasicCameraViewMainService.getBasicCameraViewWorldToCameraMatrix(
+    cameraView,
+    state,
+  );
 };

@@ -63,10 +63,10 @@ let _ =
           CameraTool.createBasicCameraViewPerspectiveCamera(state^);
         let state = state |> DirectorTool.runWithDefaultTime;
         let state =
-          state |> setPerspectiveCameraProjectionNear(basicCameraView, 0.2);
+          state |> setPerspectiveCameraProjectionNear(perspectiveCameraProjection, 0.2);
         let state = state |> DirectorTool.runWithDefaultTime;
         state
-        |> unsafeGetPerspectiveCameraProjectionPMatrix(basicCameraView)
+        |> unsafeGetPerspectiveCameraProjectionPMatrix(perspectiveCameraProjection)
         |>
         expect == Js.Typed_array.Float32Array.make([|
                     1.7320508075688776,
