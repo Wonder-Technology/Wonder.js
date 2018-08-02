@@ -1,3 +1,3 @@
-let serializeFunction = SerializeService.serializeFunction;
+let serializeFunction = SerializeTool.serializeFunction;
 
-let deserializeFunction = SerializeService.deserializeFunction;
+let deserializeFunction = SerializeTool.deserializeFunction;

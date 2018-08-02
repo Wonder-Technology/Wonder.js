@@ -25,8 +25,6 @@ let transformMat4Tuple = ((x, y, z, w), mat4: Float32Array.t) => (
   *. z
   +. Float32Array.unsafe_get(mat4, 14)
   *. w,
-
-
   Float32Array.unsafe_get(mat4, 3)
   *. x
   +. Float32Array.unsafe_get(mat4, 7)

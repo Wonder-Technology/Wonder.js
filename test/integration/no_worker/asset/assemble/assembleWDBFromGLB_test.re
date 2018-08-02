@@ -70,28 +70,87 @@ let _ =
     });
 
     describe("test imgui", () =>
-      testPromise("set imgui func and custom data", () => {
-        let customData = {| [1, "a1"] |};
-        let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
+      describe("set imgui func and custom data", () => {
+        testPromise("test empty imgui func", () => {
+          let customData = {| [1, "a1"] |};
+          let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
 
-        AssembleWDBSystemTool.testGLTF(
-          ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=
-            ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
-          ~state,
-          ~testFunc=
-            ((state, rootGameObject)) =>
-              (
-                IMGUITool.getIMGUIFunc(state)
-                |> OptionService.unsafeGet
-                |> SerializeService.serializeFunction,
-                IMGUITool.getCustomData(state)
-                |> OptionService.unsafeGet
-                |> Obj.magic,
-              )
-              |> expect == (imguiFunc, [|1 |> Obj.magic, "a1"|]),
-          (),
-        );
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+            ~state,
+            ~testFunc=
+              ((state, rootGameObject)) =>
+                (
+                  IMGUITool.getIMGUIFunc(state)
+                  |> OptionService.unsafeGet
+                  |> SerializeTool.serializeFunction,
+                  IMGUITool.getCustomData(state)
+                  |> OptionService.unsafeGet
+                  |> Obj.magic,
+                )
+                |> expect == (imguiFunc, [|1 |> Obj.magic, "a1"|]),
+            (),
+          );
+        });
+        testPromise("test use apiJsObj", () => {
+          let (state, gameObject, material) =
+            LightMaterialTool.createGameObject(state^);
+          let customData = [|gameObject|] |> Obj.magic |> Js.Json.stringify;
+          let imguiFunc =
+            (
+              (. customData, apiJsObj, state) => {
+                let gameObject = Array.unsafe_get(customData, 0);
+                let unsafeGetGameObjectLightMaterialComponent = apiJsObj##unsafeGetGameObjectLightMaterialComponent;
+
+                let material =
+                  unsafeGetGameObjectLightMaterialComponent(.
+                    gameObject,
+                    state,
+                  );
+
+                state;
+              }
+            )
+            |> Obj.magic
+            |> SerializeTool.serializeFunction
+            |> StringTool.removeNewLines;
+
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+            ~state=ref(state),
+            ~testFunc=
+              ((state, rootGameObject)) =>
+                (
+                  IMGUITool.getIMGUIFunc(state)
+                  |> OptionService.unsafeGet
+                  |> SerializeTool.serializeFunction
+                  |> StringTool.removeNewLines
+                  |> StringTool.removeSpaces,
+                  IMGUITool.getCustomData(state)
+                  |> OptionService.unsafeGet
+                  |> Obj.magic,
+                )
+                |>
+                expect == (
+                            {|
+                  function (customData, apiJsObj, state) {
+                    var gameObject = customData[0];
+                    var unsafeGetGameObjectLightMaterialComponent = apiJsObj.unsafeGetGameObjectLightMaterialComponent;
+                    unsafeGetGameObjectLightMaterialComponent(gameObject, state);
+                    return state;
+                  }
+                |}
+                            |> StringTool.removeNewLines
+                            |> StringTool.removeSpaces,
+                            [|gameObject|],
+                          ),
+            (),
+          );
+        });
       })
     );
 

@@ -222,6 +222,9 @@ and apiRecord = {
     "endGroup": (. state) => state,
     "unsafeGetGameObjectTransformComponent": (gameObject, state) => int,
     "unsafeGetGameObjectLightMaterialComponent": (gameObject, state) => int,
+    "unsafeGetGameObjectPerspectiveCameraProjectionComponent":
+      (gameObject, state) => int,
+    "unsafeGetGameObjectBasicCameraViewComponent": (gameObject, state) => int,
     "setLightMaterialDiffuseColor": (component, array(float), state) => state,
     "getLightMaterialSpecularColor":
       (component, state) => array(Js.Typed_array.Float32Array.elt),
@@ -256,6 +259,8 @@ and apiRecord = {
         Js.Typed_array.Float32Array.elt,
         Js.Typed_array.Float32Array.elt,
       ),
+    "unsafeGetTransformChildren": (transform, state) => array(transform),
+    "unsafeGetTransformGameObject": (transform, state) => gameObject,
     "convertWorldToScreen":
       (int, int, (float, float, float, float, float), state) =>
       (float, float),
