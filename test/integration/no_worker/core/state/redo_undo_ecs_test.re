@@ -269,104 +269,6 @@ let _ =
       state := TestTool.initWithJobConfig(~sandbox, ());
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
-    describe("deep copy meshRenderer record", () => {
-      test("copied record should equal to source record", () => {
-        open MeshRendererType;
-        let (
-          state,
-          gameObject1,
-          gameObject2,
-          gameObject3,
-          meshRenderer1,
-          meshRenderer2,
-          meshRenderer3,
-        ) =
-          _prepareMeshRendererData(state);
-        let copiedState = MainStateTool.deepCopyForRestore(state);
-
-        let originMeshRendererRecord =
-          MeshRendererTool.getMeshRendererRecord(state);
-        MeshRendererTool.getMeshRendererRecord(copiedState)
-        |>
-        expect == {
-                    index: 3,
-                    buffer: originMeshRendererRecord.buffer,
-                    drawModes: Uint8Array.make([||]),
-                    basicMaterialRenderGameObjectMap: [|
-                      gameObject1,
-                      Js.Undefined.empty |> Obj.magic,
-                      Js.Undefined.empty |> Obj.magic,
-                    |],
-                    lightMaterialRenderGameObjectMap: [|
-                      Js.Undefined.empty |> Obj.magic,
-                      gameObject2,
-                      Js.Undefined.empty |> Obj.magic,
-                    |],
-                    gameObjectMap: [|
-                      gameObject1,
-                      gameObject2,
-                      Js.Undefined.empty |> Obj.magic,
-                    |],
-                    disposedIndexArray: [|meshRenderer3|],
-                  };
-      });
-      test("changing copied state shouldn't affect source state", () => {
-        open MeshRendererType;
-        let (
-          state,
-          gameObject1,
-          gameObject2,
-          gameObject3,
-          meshRenderer1,
-          meshRenderer2,
-          meshRenderer3,
-        ) =
-          _prepareMeshRendererData(state);
-        let copiedState = MainStateTool.deepCopyForRestore(state);
-        let {
-              basicMaterialRenderGameObjectMap,
-              lightMaterialRenderGameObjectMap,
-              gameObjectMap,
-              disposedIndexArray,
-            } as record =
-          MeshRendererTool.getMeshRendererRecord(copiedState);
-        let record = {...record, index: 0};
-        basicMaterialRenderGameObjectMap
-        |> DisposeComponentService.disposeSparseMapData(meshRenderer3);
-        lightMaterialRenderGameObjectMap
-        |> DisposeComponentService.disposeSparseMapData(meshRenderer3);
-        disposedIndexArray |> Js.Array.pop |> ignore;
-        gameObjectMap
-        |> Obj.magic
-        |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer2);
-
-        let originMeshRendererRecord =
-          MeshRendererTool.getMeshRendererRecord(state);
-        MeshRendererTool.getMeshRendererRecord(state)
-        |>
-        expect == {
-                    index: 3,
-                    buffer: originMeshRendererRecord.buffer,
-                    drawModes: Uint8Array.make([||]),
-                    basicMaterialRenderGameObjectMap: [|
-                      gameObject1,
-                      Js.Undefined.empty |> Obj.magic,
-                      Js.Undefined.empty |> Obj.magic,
-                    |],
-                    lightMaterialRenderGameObjectMap: [|
-                      Js.Undefined.empty |> Obj.magic,
-                      gameObject2,
-                      Js.Undefined.empty |> Obj.magic,
-                    |],
-                    gameObjectMap: [|
-                      gameObject1,
-                      gameObject2,
-                      Js.Undefined.empty |> Obj.magic,
-                    |],
-                    disposedIndexArray: [|meshRenderer3|],
-                  };
-      });
-    });
     describe("deepCopyForRestore", () => {
       let _testCopyTypeArraySingleValue =
           (
@@ -1068,6 +970,51 @@ let _ =
              |> expect == (false, false, false)
            }
          ); */
+
+      describe("deep copy meshRenderer record", () => {
+        test(
+          "shadow copy basicMaterialRenderGameObjectMap,lightMaterialRenderGameObjectMap, gameObjectMap, disposedIndexArray",
+          () =>
+          StateDataMainType.(
+            MeshRendererType.(
+              MainStateTool.testShadowCopyArrayLikeMapData(
+                state => {
+                  let {
+                    basicMaterialRenderGameObjectMap,
+                    lightMaterialRenderGameObjectMap,
+                    gameObjectMap,
+                    disposedIndexArray,
+                  } =
+                    MeshRendererTool.getRecord(state);
+                  [|
+                    basicMaterialRenderGameObjectMap |> Obj.magic,
+                    lightMaterialRenderGameObjectMap |> Obj.magic,
+                    gameObjectMap |> Obj.magic,
+                    disposedIndexArray |> Obj.magic,
+                  |];
+                },
+                state^,
+              )
+            )
+          )
+        );
+        test("copy drawModes", () =>
+          _testCopyTypeArraySingleValue(
+            (
+              GameObjectTool.createGameObject,
+              (material, state) =>
+                MeshRendererAPI.getMeshRendererDrawMode(material, state),
+              MeshRendererAPI.setMeshRendererDrawMode,
+              () => (
+                DrawModeType.Lines |> DrawModeType.drawModeToUint8,
+                DrawModeType.Points |> DrawModeType.drawModeToUint8,
+              ),
+            ),
+            state,
+          )
+        );
+      });
+
       describe("deep copy material record", () => {
         describe("test basic material", () => {
           test("shadow copy textureCountMap,materialArrayForWorkerInit", () =>
@@ -1738,6 +1685,52 @@ let _ =
             |> expect == ([|gameObject1|], [|gameObject2|]);
           },
         );
+        test("test restore typeArrays", () => {
+          open MeshRendererType;
+          state :=
+            TestTool.initWithJobConfigWithoutBuildFakeDom(
+              ~sandbox,
+              ~buffer=
+                SettingTool.buildBufferConfigStr(~meshRendererCount=4, ()),
+              (),
+            );
+          let (
+            state,
+            gameObject1,
+            gameObject2,
+            gameObject3,
+            meshRenderer1,
+            meshRenderer2,
+            meshRenderer3,
+          ) =
+            _prepareMeshRendererData(state);
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+          let state = AllMaterialTool.pregetGLSLData(state);
+          let copiedState = MainStateTool.deepCopyForRestore(state);
+          let (currentState, gameObject4, material4) =
+            MeshRendererTool.createBasicMaterialGameObject(state);
+          let currentState =
+            MeshRendererAPI.setMeshRendererDrawMode(
+              material4,
+              MeshRendererTool.getLines(),
+              currentState,
+            );
+
+          let _ = MainStateTool.restore(currentState, copiedState);
+
+          let defaultDrawMode = MeshRendererTool.getDefaultDrawMode();
+          let {drawModes} =
+            MainStateTool.unsafeGetState() |> MeshRendererTool.getRecord;
+          drawModes
+          |>
+          expect == Uint8Array.make([|
+                      defaultDrawMode,
+                      defaultDrawMode,
+                      defaultDrawMode,
+                    |]);
+        });
       });
       describe("restore transform record to target state", () => {
         let _test = state => {

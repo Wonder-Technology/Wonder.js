@@ -139,6 +139,7 @@ let buildBufferConfigStr =
       ~transformCount=50,
       ~basicMaterialCount=50,
       ~lightMaterialCount=50,
+      ~meshRendererCount=50,
       ~textureCountPerMaterial=3,
       ~basicSourceTextureCount=50,
       ~arrayBufferViewSourceTextureCount=50,
@@ -152,6 +153,7 @@ let buildBufferConfigStr =
   "transform_count": $transformCount,
   "basic_material_count": $basicMaterialCount,
   "light_material_count": $lightMaterialCount,
+  "meshRenderer_count": $meshRendererCount,
   "basic_source_texture_count": $basicSourceTextureCount,
    "arrayBuffer_view_source_texture_count": $arrayBufferViewSourceTextureCount,
 

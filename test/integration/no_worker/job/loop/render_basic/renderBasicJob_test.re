@@ -697,48 +697,50 @@ let _ =
           prepareSendUniformData =>
             describe("test two gameObjects", () =>
               test(
-                "if only set first one's color, second one's sended u_color record shouldn't be affect", () => {
-                let name = "u_color";
-                let (state, _, (_, material1), _, _) =
-                  prepareSendUniformData(
-                    sandbox,
-                    RenderBasicJobTool.prepareGameObject,
-                    state^,
-                  );
-                let (state, gameObject2, _, material2, _) =
-                  RenderBasicJobTool.prepareGameObject(sandbox, state);
-                let state =
-                  state
-                  |> BasicMaterialAPI.setBasicMaterialColor(
-                       material1,
-                       [|0., 1., 0.2|],
-                     );
-                let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
-                let pos = 0;
-                let getUniformLocation =
-                  GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
-                let state =
-                  state
-                  |> FakeGlTool.setFakeGl(
-                       FakeGlTool.buildFakeGl(
-                         ~sandbox,
-                         ~uniform3f,
-                         ~getUniformLocation,
-                         (),
-                       ),
-                     );
-                let state =
-                  state
-                  |> RenderJobsTool.init
-                  |> DirectorTool.runWithDefaultTime;
-                let defaultData = [1., 1., 1.];
+                "if only set first one's color, second one's sended u_color record shouldn't be affect",
+                () => {
+                  let name = "u_color";
+                  let (state, _, (_, material1), _, _) =
+                    prepareSendUniformData(
+                      sandbox,
+                      RenderBasicJobTool.prepareGameObject,
+                      state^,
+                    );
+                  let (state, gameObject2, _, material2, _) =
+                    RenderBasicJobTool.prepareGameObject(sandbox, state);
+                  let state =
+                    state
+                    |> BasicMaterialAPI.setBasicMaterialColor(
+                         material1,
+                         [|0., 1., 0.2|],
+                       );
+                  let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+                  let pos = 0;
+                  let getUniformLocation =
+                    GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
+                  let state =
+                    state
+                    |> FakeGlTool.setFakeGl(
+                         FakeGlTool.buildFakeGl(
+                           ~sandbox,
+                           ~uniform3f,
+                           ~getUniformLocation,
+                           (),
+                         ),
+                       );
+                  let state =
+                    state
+                    |> RenderJobsTool.init
+                    |> DirectorTool.runWithDefaultTime;
+                  let defaultData = [1., 1., 1.];
 
-                uniform3f
-                |> withOneArg(pos)
-                |> getCall(1)
-                |> getArgs
-                |> expect == [pos, ...defaultData |> Obj.magic];
-              })
+                  uniform3f
+                  |> withOneArg(pos)
+                  |> getCall(1)
+                  |> getArgs
+                  |> expect == [pos, ...defaultData |> Obj.magic];
+                },
+              )
             ),
         (),
       );
@@ -1819,10 +1821,10 @@ let _ =
       describe(
         "if geometry has index buffer, bind index buffer and drawElements", () => {
         let _prepareForDrawElements = (sandbox, state) => {
-          let (state, _, geometry, _, _) =
+          let (state, _, geometry, _, meshRenderer) =
             RenderBasicJobTool.prepareGameObject(sandbox, state);
           let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-          (state, geometry);
+          (state, geometry, meshRenderer);
         };
         describe("bind index buffer", () => {
           let _prepareForElementArrayBuffer = state => {
@@ -1881,39 +1883,68 @@ let _ =
             });
           });
         });
-        test("drawElements", () => {
-          let (state, geometry) = _prepareForDrawElements(sandbox, state^);
-          let triangles = 1;
-          let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
-          let state =
-            state
-            |> FakeGlTool.setFakeGl(
-                 FakeGlTool.buildFakeGl(
-                   ~sandbox,
-                   ~triangles,
-                   ~drawElements,
-                   (),
+
+        describe("drawElements", () => {
+          test("test drawMode", () => {
+            let (state, geometry, meshRenderer) =
+              _prepareForDrawElements(sandbox, state^);
+            let state =
+              MeshRendererAPI.setMeshRendererDrawMode(
+                meshRenderer,
+                MeshRendererTool.getLines(),
+                state,
+              );
+            let lines = 1;
+            let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~lines,
+                     ~drawElements,
+                     (),
+                   ),
+                 );
+            let state = state |> RenderJobsTool.init;
+            let state = state |> DirectorTool.runWithDefaultTime;
+            drawElements |> withOneArg(lines) |> expect |> toCalledOnce;
+          });
+          test("test drawElements", () => {
+            let (state, geometry, meshRenderer) =
+              _prepareForDrawElements(sandbox, state^);
+            let triangles = 1;
+            let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~triangles,
+                     ~drawElements,
+                     (),
+                   ),
+                 );
+            let state = state |> RenderJobsTool.init;
+            let state = state |> DirectorTool.runWithDefaultTime;
+            drawElements
+            |> withFourArgs(
+                 triangles,
+                 BoxGeometryTool.getIndicesCount(
+                   geometry,
+                   CreateRenderStateMainService.createRenderState(state),
                  ),
-               );
-          let state = state |> RenderJobsTool.init;
-          let state = state |> DirectorTool.runWithDefaultTime;
-          drawElements
-          |> withFourArgs(
-               triangles,
-               BoxGeometryTool.getIndicesCount(
-                 geometry,
-                 CreateRenderStateMainService.createRenderState(state),
-               ),
-               GeometryTool.getIndexType(
-                 CreateRenderStateMainService.createRenderState(state),
-               ),
-               GeometryTool.getIndexTypeSize(
-                 CreateRenderStateMainService.createRenderState(state),
+                 GeometryTool.getIndexType(
+                   CreateRenderStateMainService.createRenderState(state),
+                 ),
+                 GeometryTool.getIndexTypeSize(
+                   CreateRenderStateMainService.createRenderState(state),
+                 )
+                 * 0,
                )
-               * 0,
-             )
-          |> expect
-          |> toCalledOnce;
+            |> expect
+            |> toCalledOnce;
+          });
         });
         /* describe(
              "fix bug",

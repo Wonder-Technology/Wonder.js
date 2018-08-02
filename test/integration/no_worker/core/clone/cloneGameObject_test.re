@@ -99,6 +99,61 @@ let _ =
                          )
                     );
         });
+
+        describe("cloned one' data === source one's data", () => {
+          let _cloneGameObject = (gameObject, count, state) =>
+            CloneTool.cloneGameObject(gameObject, count, false, state);
+
+          let _prepare = () => {
+            let (state, gameObject1, meshRenderer1) =
+              MeshRendererTool.createLightMaterialGameObject(state^);
+            (state, gameObject1, meshRenderer1);
+          };
+          let _clone = (gameObject, state) => {
+            let (state, clonedGameObjectArr) =
+              _cloneGameObject(gameObject, 2, state);
+            (
+              state,
+              clonedGameObjectArr |> CloneTool.getFlattenClonedGameObjectArr,
+              clonedGameObjectArr
+              |> CloneTool.getFlattenClonedGameObjectArr
+              |> Js.Array.map(clonedGameObject =>
+                   unsafeGetGameObjectMeshRendererComponent(
+                     clonedGameObject,
+                     state,
+                   )
+                 ),
+            );
+          };
+
+          test("test drawMode", () => {
+            let (state, gameObject, meshRenderer) = _prepare();
+            let drawMode = MeshRendererTool.getPoints();
+            let state =
+              state
+              |> MeshRendererAPI.setMeshRendererDrawMode(
+                   meshRenderer,
+                   drawMode,
+                 );
+            let (state, _, clonedMaterialArr) = _clone(gameObject, state);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+            let state = AllMaterialTool.prepareForInit(state);
+            (
+              MeshRendererAPI.getMeshRendererDrawMode(meshRenderer, state),
+              MeshRendererAPI.getMeshRendererDrawMode(
+                clonedMaterialArr[0],
+                state,
+              ),
+              MeshRendererAPI.getMeshRendererDrawMode(
+                clonedMaterialArr[1],
+                state,
+              ),
+            )
+            |> expect == (drawMode, drawMode, drawMode);
+          });
+        });
       });
       describe("test clone light component", () => {
         describe("test clone direction light component", () => {

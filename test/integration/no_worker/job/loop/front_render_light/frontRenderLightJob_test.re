@@ -1935,44 +1935,74 @@ let _ =
       describe(
         "if geometry has index buffer, bind index buffer and drawElements", () => {
         let _prepareForDrawElements = (sandbox, state) => {
-          let (state, _, geometry, _, _) =
+          let (state, _, geometry, _, meshRenderer) =
             FrontRenderLightJobTool.prepareGameObject(sandbox, state);
           let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-          (state, geometry);
+          (state, geometry, meshRenderer);
         };
-        test("drawElements", () => {
-          let (state, geometry) = _prepareForDrawElements(sandbox, state^);
-          let triangles = 1;
-          let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
-          let state =
-            state
-            |> FakeGlTool.setFakeGl(
-                 FakeGlTool.buildFakeGl(
-                   ~sandbox,
-                   ~triangles,
-                   ~drawElements,
-                   (),
+
+        describe("drawElements", () => {
+          test("test drawMode", () => {
+            let (state, geometry, meshRenderer) =
+              _prepareForDrawElements(sandbox, state^);
+            let state =
+              MeshRendererAPI.setMeshRendererDrawMode(
+                meshRenderer,
+                MeshRendererTool.getLines(),
+                state,
+              );
+            let lines = 1;
+            let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~lines,
+                     ~drawElements,
+                     (),
+                   ),
+                 );
+            let state = state |> RenderJobsTool.init;
+            let state = state |> DirectorTool.runWithDefaultTime;
+            drawElements |> withOneArg(lines) |> expect |> toCalledOnce;
+          });
+
+          test("test drawElements", () => {
+            let (state, geometry, meshRenderer) =
+              _prepareForDrawElements(sandbox, state^);
+            let triangles = 1;
+            let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~triangles,
+                     ~drawElements,
+                     (),
+                   ),
+                 );
+            let state = state |> RenderJobsTool.init;
+            let state = state |> DirectorTool.runWithDefaultTime;
+            drawElements
+            |> withFourArgs(
+                 triangles,
+                 BoxGeometryTool.getIndicesCount(
+                   geometry,
+                   CreateRenderStateMainService.createRenderState(state),
                  ),
-               );
-          let state = state |> RenderJobsTool.init;
-          let state = state |> DirectorTool.runWithDefaultTime;
-          drawElements
-          |> withFourArgs(
-               triangles,
-               BoxGeometryTool.getIndicesCount(
-                 geometry,
-                 CreateRenderStateMainService.createRenderState(state),
-               ),
-               GeometryTool.getIndexType(
-                 CreateRenderStateMainService.createRenderState(state),
-               ),
-               GeometryTool.getIndexTypeSize(
-                 CreateRenderStateMainService.createRenderState(state),
+                 GeometryTool.getIndexType(
+                   CreateRenderStateMainService.createRenderState(state),
+                 ),
+                 GeometryTool.getIndexTypeSize(
+                   CreateRenderStateMainService.createRenderState(state),
+                 )
+                 * 0,
                )
-               * 0,
-             )
-          |> expect
-          |> toCalledOnce;
+            |> expect
+            |> toCalledOnce;
+          });
         });
       })
     );

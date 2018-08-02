@@ -1,4 +1,3 @@
-/* TODO test */
 open MeshRendererType;
 
 let _getData =

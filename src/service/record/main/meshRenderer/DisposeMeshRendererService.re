@@ -20,7 +20,6 @@ let _disposeData =
       } as record,
     ) => {
   ...record,
-  /* TODO test */
   drawModes:
     DisposeTypeArrayService.deleteAndResetUint8(.
       meshRenderer,

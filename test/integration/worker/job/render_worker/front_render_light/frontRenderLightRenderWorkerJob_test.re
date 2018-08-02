@@ -292,4 +292,46 @@ let _ =
         );
       });
     });
+
+    describe("draw", () =>
+      describe("drawElements", () =>
+        testPromise("test drawMode", () => {
+          let (state, gameObject, _, material, meshRenderer) =
+            FrontRenderLightJobTool.prepareGameObject(sandbox, state^);
+          let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+
+          let state =
+            MeshRendererAPI.setMeshRendererDrawMode(
+              meshRenderer,
+              MeshRendererTool.getLines(),
+              state,
+            );
+          let lines = 1;
+          let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+          let state =
+            state
+            |> FakeGlWorkerTool.setFakeGl(
+                 FakeGlWorkerTool.buildFakeGl(
+                   ~sandbox,
+                   ~lines,
+                   ~drawElements,
+                   (),
+                 ),
+               );
+
+          RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+            ~state,
+            ~sandbox,
+            ~completeFunc=
+              _ =>
+                drawElements
+                |> withOneArg(lines)
+                |> expect
+                |> toCalledOnce
+                |> resolve,
+            (),
+          );
+        })
+      )
+    );
   });

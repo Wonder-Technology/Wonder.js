@@ -79,7 +79,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
       Some({
         ...record,
         index,
-        /* TODO test */
         drawModes:
           drawModes
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(

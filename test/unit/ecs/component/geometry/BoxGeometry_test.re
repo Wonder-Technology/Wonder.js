@@ -59,18 +59,6 @@ let _ =
           BoxGeometryAPI.getBoxGeometryIndices(state^)
           |> expect == BoxGeometryTool.getDefaultIndices()
       );
-      /* describe(
-        "getDrawMode",
-        () =>
-          test(
-            "return TRIANGLES",
-            () => {
-              let triangles = 1;
-              let state = state^ |> FakeGlTool.setFakeGl({"TRIANGLES": triangles});
-              state |> getBoxGeometryDrawMode |> expect == triangles
-            }
-          )
-      ); */
       describe(
         "unsafeGetBoxGeometryGameObject",
         () =>

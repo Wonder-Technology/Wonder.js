@@ -87,6 +87,7 @@ let init = (completeFunc, state) => {
          PregetGLSLDataRenderWorkerJob.execJob(None),
          InitInstanceRenderWorkerJob.execJob(None),
          InitCustomGeometryRenderWorkerJob.execJob(None),
+         InitMeshRendererRenderWorkerJob.execJob(None),
          InitBasicMaterialRenderWorkerJob.execJob(None),
          InitDirectionLightRenderWorkerJob.execJob(None),
          InitPointLightRenderWorkerJob.execJob(None),
