@@ -1,52 +1,53 @@
 let queryFullScreenData = () => {
   let root = Root.root;
-  (0., 0., root##innerWidth, root##innerHeight, "100%", "100%")
+  (0., 0., root##innerWidth, root##innerHeight, "100%", "100%");
 };
 
-let _setAbsolutePosition = (canvas) => {
+let _setAbsolutePosition = canvas => {
   canvas##style##position#="absolute";
-  canvas
+  canvas;
 };
 
 let setX = (x, canvas) => {
   canvas##style##left#={j|$(x)px|j};
-  canvas
+  canvas;
 };
 
 let setY = (y, canvas) => {
   canvas##style##top#={j|$(y)px|j};
-  canvas
+  canvas;
 };
 
 let setWidth = (width, canvas) => {
   canvas##width#=width;
-  canvas
+  canvas;
 };
 
 let setHeight = (height, canvas) => {
   canvas##height#=height;
-  canvas
+  canvas;
 };
 
 let setStyleWidth = (width, canvas) => {
   canvas##style##width#=width;
-  canvas
+  canvas;
 };
 
 let setStyleHeight = (height, canvas) => {
   canvas##style##height#=height;
-  canvas
+  canvas;
 };
 
-let _setBodyMargin = (document) =>
+let _setBodyMargin = document =>
   switch (DomExtend.querySelectorAll(document, "body")) {
   | bodies when Js.Array.length(bodies) === 0 => ()
   | bodies =>
     DomExtend.setBatchStyle(bodies[0], "margin:0");
-    ()
+    ();
   };
 
-let setToFullScreen = ((x, y, width, height, styleWidth, styleHeight), canvas) => {
+let setToFullScreen =
+    ((x, y, width, height, styleWidth, styleHeight), canvas) => {
   _setBodyMargin(DomExtend.document);
   canvas
   |> _setAbsolutePosition
@@ -56,5 +57,12 @@ let setToFullScreen = ((x, y, width, height, styleWidth, styleHeight), canvas) =
   |> setHeight(height)
   |> setStyleWidth(styleWidth)
   |> setStyleHeight(styleHeight)
-  |> Obj.magic
+  |> Obj.magic;
 };
+
+let setScreenSize = ((width, height, styleWidth, styleHeight), canvas) =>
+  canvas
+  |> setWidth(width)
+  |> setHeight(height)
+  |> setStyleWidth(styleWidth)
+  |> setStyleHeight(styleHeight);
