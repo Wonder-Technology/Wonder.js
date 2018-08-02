@@ -14,16 +14,13 @@ let _setRenderGameObject =
   |> WonderCommonlib.SparseMapService.set(meshRenderer, gameObject);
 
 let handleAddComponent =
-  (.
-    meshRenderer,
-    gameObjectUid: int,
-    {meshRendererRecord, gameObjectRecord} as state,
-  ) => {
+  (. meshRenderer, gameObjectUid: int, {gameObjectRecord} as state) => {
     let {
-      gameObjectMap,
-      basicMaterialRenderGameObjectMap,
-      lightMaterialRenderGameObjectMap,
-    } = meshRendererRecord;
+          gameObjectMap,
+          basicMaterialRenderGameObjectMap,
+          lightMaterialRenderGameObjectMap,
+        } as meshRendererRecord =
+      RecordMeshRendererMainService.getRecord(state);
     let basicMaterialRenderGameObjectMap =
       HasComponentGameObjectService.hasBasicMaterialComponent(
         gameObjectUid,
@@ -43,17 +40,18 @@ let handleAddComponent =
 
     {
       ...state,
-      meshRendererRecord: {
-        ...meshRendererRecord,
-        basicMaterialRenderGameObjectMap,
-        lightMaterialRenderGameObjectMap,
-        gameObjectMap:
-          AddComponentService.addComponentToGameObjectMap(
-            meshRenderer,
-            gameObjectUid,
-            gameObjectMap,
-          ),
-      },
+      meshRendererRecord:
+        Some({
+          ...meshRendererRecord,
+          basicMaterialRenderGameObjectMap,
+          lightMaterialRenderGameObjectMap,
+          gameObjectMap:
+            AddComponentService.addComponentToGameObjectMap(
+              meshRenderer,
+              gameObjectUid,
+              gameObjectMap,
+            ),
+        }),
     }
     |> WonderLog.Contract.ensureCheck(
          state =>
@@ -71,7 +69,7 @@ let handleAddComponent =
                        basicMaterialRenderGameObjectMap,
                        lightMaterialRenderGameObjectMap,
                      } =
-                       state.meshRendererRecord;
+                       RecordMeshRendererMainService.getRecord(state);
                      (
                        basicMaterialRenderGameObjectMap
                        |> Js.Array.includes(gameObjectUid)

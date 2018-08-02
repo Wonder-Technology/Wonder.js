@@ -13,12 +13,21 @@ let _disposeData =
     (
       meshRenderer: meshRenderer,
       {
+        drawModes,
         gameObjectMap,
         basicMaterialRenderGameObjectMap,
         lightMaterialRenderGameObjectMap,
       } as record,
     ) => {
   ...record,
+  /* TODO test */
+  drawModes:
+    DisposeTypeArrayService.deleteAndResetUint8(.
+      meshRenderer,
+      BufferMeshRendererService.getDefaultDrawMode()
+      |> DrawModeType.drawModeToUint8,
+      drawModes,
+    ),
   basicMaterialRenderGameObjectMap:
     basicMaterialRenderGameObjectMap |> disposeSparseMapData(meshRenderer),
   lightMaterialRenderGameObjectMap:

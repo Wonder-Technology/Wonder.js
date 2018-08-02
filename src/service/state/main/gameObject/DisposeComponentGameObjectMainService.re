@@ -223,12 +223,14 @@ let batchDisposeArcballCameraControllerComponent =
   );
 
 let batchDisposeMeshRendererComponent =
-    ({meshRendererRecord} as state, componentArray: array(component)) => {
+    (state, componentArray: array(component)) => {
   ...state,
   meshRendererRecord:
-    DisposeMeshRendererService.handleBatchDisposeComponent(.
-      componentArray,
-      meshRendererRecord,
+    Some(
+      DisposeMeshRendererService.handleBatchDisposeComponent(.
+        componentArray,
+        RecordMeshRendererMainService.getRecord(state),
+      ),
     ),
 };
 

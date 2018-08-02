@@ -6,8 +6,6 @@ open BoxGeometryType;
 
 open DisposeBoxGeometryMainService;
 
-open RenderGeometryService;
-
 let createBoxGeometry = (state) => {
   let (boxGeometryRecord, index) =
     CreateBoxGeometryService.create(state |> RecordBoxGeometryMainService.getRecord);
@@ -15,8 +13,8 @@ let createBoxGeometry = (state) => {
   (state, index)
 };
 
-let getBoxGeometryDrawMode = (state: StateDataMainType.state) =>
-  [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> getDrawMode;
+/* let getBoxGeometryDrawMode = (state: StateDataMainType.state) =>
+  [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> getDrawMode; */
 
 let getBoxGeometryVertices = (state: StateDataMainType.state) =>
   [@bs] GetBoxGeometryVerticesMainService.getVertices(state);

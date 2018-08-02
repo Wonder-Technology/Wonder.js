@@ -7,9 +7,10 @@ let _render = (gl, state: StateDataMainType.state) =>
       count,
       transformIndices,
       materialIndices,
+      meshRendererIndices,
       geometryIndices,
       geometryTypes,
-      sourceInstanceIndices
+      sourceInstanceIndices,
     }) =>
     RenderBasicJobUtils.render(
       gl,
@@ -17,15 +18,19 @@ let _render = (gl, state: StateDataMainType.state) =>
         count,
         transformIndices,
         materialIndices,
+        meshRendererIndices,
         geometryIndices,
         geometryTypes,
-        sourceInstanceIndices
+        sourceInstanceIndices,
       ),
-      CreateRenderStateMainService.createRenderState(state)
+      CreateRenderStateMainService.createRenderState(state),
     )
     |> ignore;
-    state
+    state;
   };
 
 let execJob = (flags, state) =>
-  _render([@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord), state);
+  _render(
+    DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    state,
+  );

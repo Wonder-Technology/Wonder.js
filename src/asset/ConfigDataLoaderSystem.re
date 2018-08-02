@@ -6,60 +6,63 @@ open WonderBsMost.Most;
 
 open SettingType;
 
-let _collectAllRecords = (stream) =>
+let _collectAllRecords = stream =>
   stream |> reduce((arr, record) => arr |> ArrayService.push(record), [||]);
 
 let _createFetchNoWorkerJobStreamArr = (dataDir, fetchFunc) => [|
   FetchCommon.createFetchJsonStream(
     PathService.join([|dataDir, "no_worker/setting/setting.json"|]),
-    fetchFunc
+    fetchFunc,
   )
-  |> map((json) => ParseNoWorkerJobService.convertSettingToRecord(json)),
+  |> map(json => ParseNoWorkerJobService.convertSettingToRecord(json)),
   FetchCommon.createFetchJsonStream(
     PathService.join([|dataDir, "no_worker/pipeline/init_pipelines.json"|]),
-    fetchFunc
+    fetchFunc,
   )
-  |> map((json) => ParseNoWorkerJobService.convertInitPipelinesToRecord(json))
+  |> map(json => ParseNoWorkerJobService.convertInitPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathService.join([|dataDir, "no_worker/pipeline/loop_pipelines.json"|]),
-    fetchFunc
+    fetchFunc,
   )
-  |> map((json) => ParseNoWorkerJobService.convertLoopPipelinesToRecord(json))
+  |> map(json => ParseNoWorkerJobService.convertLoopPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathService.join([|dataDir, "no_worker/job/init_jobs.json"|]),
-    fetchFunc
+    fetchFunc,
   )
-  |> map((json) => ParseNoWorkerJobService.convertInitJobsToRecord(json))
+  |> map(json => ParseNoWorkerJobService.convertInitJobsToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathService.join([|dataDir, "no_worker/job/loop_jobs.json"|]),
-    fetchFunc
+    fetchFunc,
   )
-  |> map((json) => ParseNoWorkerJobService.convertLoopJobsToRecord(json))
-  |> Obj.magic
+  |> map(json => ParseNoWorkerJobService.convertLoopJobsToRecord(json))
+  |> Obj.magic,
 |];
 
 let _createFetchRenderConfigStreamArr = (dataDir, fetchFunc) => [|
   FetchCommon.createFetchJsonStream(
     PathService.join([|dataDir, "render/shader/shaders.json"|]),
-    fetchFunc
+    fetchFunc,
   )
-  |> map((json) => ParseRenderConfigService.convertShadersToRecord(json))
+  |> map(json => ParseRenderConfigService.convertShadersToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathService.join([|dataDir, "render/shader/shader_libs.json"|]),
-    fetchFunc
+    fetchFunc,
   )
-  |> map((json) => ParseRenderConfigService.convertShaderLibsToRecord(json))
-  |> Obj.magic
+  |> map(json => ParseRenderConfigService.convertShaderLibsToRecord(json))
+  |> Obj.magic,
 |];
 
 let _setSetting = (stateData, state: StateDataMainType.state, setting) => {
-  IsDebugMainService.setIsDebug(stateData, OperateSettingService.unsafeGetIsDebug(setting))
+  IsDebugMainService.setIsDebug(
+    stateData,
+    OperateSettingService.unsafeGetIsDebug(setting),
+  )
   |> ignore;
-  {...state, settingRecord: OperateSettingService.setSetting(setting)}
+  {...state, settingRecord: OperateSettingService.setSetting(setting)};
 };
 
 let _createHandleNoWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
@@ -67,15 +70,18 @@ let _createHandleNoWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
     _createFetchNoWorkerJobStreamArr(dataDir, fetchFunc)
     |> MostUtils.concatArray
     |> _collectAllRecords
-    |> then_(
-         (recordArr) =>
-           {...state, noWorkerJobRecord: RecordNoWorkerJobService.create(recordArr |> Obj.magic)}
-           |> NoWorkerJobMainService.init((
-                NoWorkerJobHandleSystem.createInitJobHandleMap,
-                NoWorkerJobHandleSystem.createLoopJobHandleMap
-              ))
-           |> resolve
-       )
+    |> then_(recordArr =>
+         {
+           ...state,
+           noWorkerJobRecord:
+             RecordNoWorkerJobService.create(recordArr |> Obj.magic),
+         }
+         |> NoWorkerJobMainService.init((
+              NoWorkerJobHandleSystem.createInitJobHandleMap,
+              NoWorkerJobHandleSystem.createLoopJobHandleMap,
+            ))
+         |> resolve
+       ),
   );
 
 let _createHandleRenderConfigStreamArr = (dataDir, fetchFunc, state) =>
@@ -83,55 +89,71 @@ let _createHandleRenderConfigStreamArr = (dataDir, fetchFunc, state) =>
     _createFetchRenderConfigStreamArr(dataDir, fetchFunc)
     |> MostUtils.concatArray
     |> _collectAllRecords
-    |> then_(
-         (recordArr) =>
-           {...state, renderConfigRecord: RecordRenderConfigService.create(recordArr |> Obj.magic)}
-           |> resolve
-       )
+    |> then_(recordArr =>
+         {
+           ...state,
+           renderConfigRecord:
+             RecordRenderConfigService.create(recordArr |> Obj.magic),
+         }
+         |> resolve
+       ),
   );
 
 let _createFetchWorkerJobStreamArr = (dataDir, fetchFunc) => [|
   FetchCommon.createFetchJsonStream(
     PathService.join([|dataDir, "worker/setting/setting.json"|]),
-    fetchFunc
+    fetchFunc,
   )
-  |> map((json) => ParseWorkerJobService.convertSettingToRecord(json)),
+  |> map(json => ParseWorkerJobService.convertSettingToRecord(json)),
   FetchCommon.createFetchJsonStream(
-    PathService.join([|dataDir, "worker/pipeline/main/main_init_pipelines.json"|]),
-    fetchFunc
+    PathService.join([|
+      dataDir,
+      "worker/pipeline/main/main_init_pipelines.json",
+    |]),
+    fetchFunc,
   )
-  |> map((json) => ParseWorkerJobService.convertMainInitPipelinesToRecord(json))
+  |> map(json =>
+       ParseWorkerJobService.convertMainInitPipelinesToRecord(json)
+     )
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
-    PathService.join([|dataDir, "worker/pipeline/main/main_loop_pipelines.json"|]),
-    fetchFunc
+    PathService.join([|
+      dataDir,
+      "worker/pipeline/main/main_loop_pipelines.json",
+    |]),
+    fetchFunc,
   )
-  |> map((json) => ParseWorkerJobService.convertMainLoopPipelinesToRecord(json))
+  |> map(json =>
+       ParseWorkerJobService.convertMainLoopPipelinesToRecord(json)
+     )
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathService.join([|dataDir, "worker/job/main/main_init_jobs.json"|]),
-    fetchFunc
+    fetchFunc,
   )
-  |> map((json) => ParseWorkerJobService.convertMainInitJobsToRecord(json))
+  |> map(json => ParseWorkerJobService.convertMainInitJobsToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathService.join([|dataDir, "worker/job/main/main_loop_jobs.json"|]),
-    fetchFunc
+    fetchFunc,
   )
-  |> map((json) => ParseWorkerJobService.convertMainLoopJobsToRecord(json))
+  |> map(json => ParseWorkerJobService.convertMainLoopJobsToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
-    PathService.join([|dataDir, "worker/pipeline/worker/worker_pipelines.json"|]),
-    fetchFunc
+    PathService.join([|
+      dataDir,
+      "worker/pipeline/worker/worker_pipelines.json",
+    |]),
+    fetchFunc,
   )
-  |> map((json) => ParseWorkerJobService.convertWorkerPipelinesToRecord(json))
+  |> map(json => ParseWorkerJobService.convertWorkerPipelinesToRecord(json))
   |> Obj.magic,
   FetchCommon.createFetchJsonStream(
     PathService.join([|dataDir, "worker/job/worker/worker_jobs.json"|]),
-    fetchFunc
+    fetchFunc,
   )
-  |> map((json) => ParseWorkerJobService.convertWorkerJobsToRecord(json))
-  |> Obj.magic
+  |> map(json => ParseWorkerJobService.convertWorkerJobsToRecord(json))
+  |> Obj.magic,
 |];
 
 let _createHandleWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
@@ -139,11 +161,14 @@ let _createHandleWorkerJobConfigStreamArr = (dataDir, fetchFunc, state) =>
     _createFetchWorkerJobStreamArr(dataDir, fetchFunc)
     |> MostUtils.concatArray
     |> _collectAllRecords
-    |> then_(
-         (recordArr) =>
-           {...state, workerJobRecord: RecordWorkerJobService.create(recordArr |> Obj.magic)}
-           |> resolve
-       )
+    |> then_(recordArr =>
+         {
+           ...state,
+           workerJobRecord:
+             RecordWorkerJobService.create(recordArr |> Obj.magic),
+         }
+         |> resolve
+       ),
   );
 
 let _createHandleJobConfigStreamArr = (dataDir, fetchFunc, state) =>
@@ -151,11 +176,12 @@ let _createHandleJobConfigStreamArr = (dataDir, fetchFunc, state) =>
     _createHandleWorkerJobConfigStreamArr(dataDir, fetchFunc, state) :
     _createHandleNoWorkerJobConfigStreamArr(dataDir, fetchFunc, state);
 
-let _createRecordWithState = (state) =>
+let _createRecordWithState = state =>
   state
   |> RecordTransformMainService.create
   |> RecordBasicMaterialMainService.create
   |> RecordLightMaterialMainService.create
+  |> RecordMeshRendererMainService.create
   |> RecordSourceTextureMainService.create
   |> RecordBasicSourceTextureMainService.create
   |> RecordArrayBufferViewSourceTextureMainService.create
@@ -164,8 +190,12 @@ let _createRecordWithState = (state) =>
   |> RecordRenderMainService.create
   |> RecordSceneMainService.create;
 
-let _createAndSetState = (stateData) =>
-  StateDataMainService.setState(stateData, CreateStateMainService.createState()) |> ignore;
+let _createAndSetState = stateData =>
+  StateDataMainService.setState(
+    stateData,
+    CreateStateMainService.createState(),
+  )
+  |> ignore;
 
 let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
   let settingFilePath = Array.unsafe_get(jsonPathArr, 0);
@@ -173,17 +203,21 @@ let load = (jsonPathArr: array(string), fetchFunc, stateData) => {
   _createAndSetState(stateData);
   /* TODO perf: use mergeArray instead of concatArray */
   FetchCommon.createFetchJsonStream(settingFilePath, fetchFunc)
-  |> flatMap(
-       (json) =>
-         ParseSettingService.convertToRecord(json)
-         |> _setSetting(stateData, StateDataMainService.unsafeGetState(stateData))
-         |> WorkerDetectMainService.detect
-         |> BrowserDetectMainService.detect
-         |> _createRecordWithState
-         |> _createHandleJobConfigStreamArr(dataDir, fetchFunc)
-         |> WonderBsMost.Most.concatMap(
-              (state) => state |> _createHandleRenderConfigStreamArr(dataDir, fetchFunc)
-            )
-         |> WonderBsMost.Most.tap((state) => state |> StateDataMainService.setState(stateData) |> ignore)
-     )
+  |> flatMap(json =>
+       ParseSettingService.convertToRecord(json)
+       |> _setSetting(
+            stateData,
+            StateDataMainService.unsafeGetState(stateData),
+          )
+       |> WorkerDetectMainService.detect
+       |> BrowserDetectMainService.detect
+       |> _createRecordWithState
+       |> _createHandleJobConfigStreamArr(dataDir, fetchFunc)
+       |> WonderBsMost.Most.concatMap(state =>
+            state |> _createHandleRenderConfigStreamArr(dataDir, fetchFunc)
+          )
+       |> WonderBsMost.Most.tap(state =>
+            state |> StateDataMainService.setState(stateData) |> ignore
+          )
+     );
 };

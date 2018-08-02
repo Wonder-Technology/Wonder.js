@@ -150,6 +150,7 @@ let render =
         transformIndex,
         materialIndex,
         shaderIndex,
+        meshRendererIndex: MeshRendererType.meshRenderer,
         geometryIndex,
         geometryType,
       ),
@@ -175,14 +176,14 @@ let render =
   };
 };
 
-let draw = (gl, geometryIndex, geometryType, state) => {
+let draw = (gl, meshRendererIndex, geometryIndex, geometryType, state) => {
   let getIndicesCountFunc =
     CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
   DrawGLSLService.drawElement(
     (
-      RenderGeometryService.getDrawMode(gl),
-      RenderGeometryService.getIndexType(gl),
-      RenderGeometryService.getIndexTypeSize(gl),
+      DrawModeMeshRendererService.getGlDrawMode(gl, meshRendererIndex, state),
+      GeometryRenderService.getIndexType(gl),
+      GeometryRenderService.getIndexTypeSize(gl),
       getIndicesCountFunc(. geometryIndex, state),
     ),
     gl,

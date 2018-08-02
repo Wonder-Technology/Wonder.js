@@ -63,13 +63,13 @@ let cloneMeshRendererComponent =
       countRangeArr: array(int),
       {meshRendererRecord} as state,
     ) => {
-  let (meshRendererRecord, componentArr) =
-    CloneMeshRendererService.handleCloneComponent(
+  let (state, componentArr) =
+    CloneMeshRendererMainService.handleCloneComponent(
       sourceComponent,
       countRangeArr,
-      meshRendererRecord,
+      state,
     );
-  ({...state, meshRendererRecord}, componentArr);
+  (state, componentArr);
 };
 
 let cloneBoxGeometryComponent =

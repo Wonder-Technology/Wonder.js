@@ -26,10 +26,10 @@ let replaceMaterial =
           state,
         );
 
-      let (meshRendererRecord, newMeshRenderer) =
-        CreateMeshRendererService.create(state.meshRendererRecord);
+      let (state, newMeshRenderer) =
+        CreateMeshRendererMainService.create(. state);
 
-      {...state, meshRendererRecord}
+      state
       |> AddComponentGameObjectMainService.addMeshRendererComponent(
            gameObject,
            newMeshRenderer,

@@ -299,7 +299,7 @@ and state = {
   mutable pointLightRecord,
   mutable boxGeometryRecord,
   mutable customGeometryRecord: option(customGeometryRecord),
-  mutable meshRendererRecord,
+  mutable meshRendererRecord: option(meshRendererRecord),
   arcballCameraControllerRecord,
   shaderRecord,
   glslRecord,

@@ -6,9 +6,10 @@ open RenderObjectBufferTypeArrayService;
 
 open RenderType;
 
-let getRecord = ({lightRenderObjectRecord}) => lightRenderObjectRecord |> OptionService.unsafeGet;
+let getRecord = ({lightRenderObjectRecord}) =>
+  lightRenderObjectRecord |> OptionService.unsafeGet;
 
-let _initBufferData = (count) => {
+let _initBufferData = count => {
   let buffer =
     Worker.newSharedArrayBuffer(
       count
@@ -17,13 +18,13 @@ let _initBufferData = (count) => {
         * (getComponentSize() * 5)
         + Uint8Array._BYTES_PER_ELEMENT
         * getGeometryTypeSize()
-      )
+      ),
     );
   (
     buffer,
     CreateTypeArrayRenderObjectService.createTypeArrays(buffer, count)
-    |> CreateTypeArrayRenderObjectService.setAllTypeArrDataToDefault(count)
-  )
+    |> CreateTypeArrayRenderObjectService.setAllTypeArrDataToDefault(count),
+  );
 };
 
 let create = ({settingRecord} as state) => {
@@ -31,7 +32,14 @@ let create = ({settingRecord} as state) => {
     BufferSettingService.getLightMaterialCount(settingRecord);
   let (
     buffer,
-    (transformIndices, materialIndices, geometryIndices, sourceInstanceIndices, geometryTypes)
+    (
+      transformIndices,
+      materialIndices,
+      meshRendererIndices,
+      geometryIndices,
+      sourceInstanceIndices,
+      geometryTypes,
+    ),
   ) =
     _initBufferData(lightMaterialCount);
   Some({
@@ -39,8 +47,9 @@ let create = ({settingRecord} as state) => {
     count: lightMaterialCount,
     transformIndices,
     materialIndices,
+    meshRendererIndices,
     geometryIndices,
     sourceInstanceIndices,
-    geometryTypes
-  })
+    geometryTypes,
+  });
 };

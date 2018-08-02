@@ -2,15 +2,15 @@ open StateDataRenderWorkerType;
 
 let _render = (gl, state) =>
   switch (state |> OperateRenderRenderWorkerService.getBasicRenderObjectRecord) {
-  | None =>
-  state
+  | None => state
   | Some({
       count,
       transformIndices,
       materialIndices,
+      meshRendererIndices,
       geometryIndices,
       geometryTypes,
-      sourceInstanceIndices
+      sourceInstanceIndices,
     }) =>
     RenderBasicJobUtils.render(
       gl,
@@ -18,26 +18,25 @@ let _render = (gl, state) =>
         count,
         transformIndices,
         materialIndices,
+        meshRendererIndices,
         geometryIndices,
         geometryTypes,
-        sourceInstanceIndices
+        sourceInstanceIndices,
       ),
-      CreateRenderStateRenderWorkerService.createRenderState(state)
+      CreateRenderStateRenderWorkerService.createRenderState(state),
     )
     |> ignore;
-    state
+    state;
   };
 
 let execJob = (flags, e, stateData) =>
-  MostUtils.callFunc(
-    () => {
-      let state = StateRenderWorkerService.unsafeGetState(stateData);
-      switch (IsRenderUtils.isRender(MessageService.getRecord(e))) {
-      | false => e
-      | true =>
-        let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
-        _render(gl, state) |> StateRenderWorkerService.setState(stateData);
-        e
-      }
-    }
-  );
+  MostUtils.callFunc(() => {
+    let state = StateRenderWorkerService.unsafeGetState(stateData);
+    switch (IsRenderUtils.isRender(MessageService.getRecord(e))) {
+    | false => e
+    | true =>
+      let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+      _render(gl, state) |> StateRenderWorkerService.setState(stateData);
+      e;
+    };
+  });

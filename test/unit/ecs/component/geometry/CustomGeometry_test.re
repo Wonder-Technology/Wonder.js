@@ -97,7 +97,7 @@ let _ =
           )
         }
       );
-      describe(
+      /* describe(
         "getDrawMode",
         () =>
           test(
@@ -108,7 +108,7 @@ let _ =
               state |> getCustomGeometryDrawMode |> expect == triangles
             }
           )
-      );
+      ); */
       describe(
         "unsafeGetCustomGeometryGameObject",
         () =>

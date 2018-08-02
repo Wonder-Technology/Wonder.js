@@ -14,6 +14,7 @@
         "transform_count": 30000,
         "basic_material_count": 30000,
         "light_material_count": 30000,
+        "meshRenderer_count": 30000,
         "basic_source_texture_count": 30000,
         "arrayBuffer_view_source_texture_count": 30000,
         "texture_count_per_material": 16,

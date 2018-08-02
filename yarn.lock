@@ -4935,9 +4935,9 @@ wonder-glsl-compiler@^0.1.11:
     bs-glob reasonml-community/bs-glob
     wonder-commonlib "0.2.23"
 
-wonder-imgui@^0.0.12:
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/wonder-imgui/-/wonder-imgui-0.0.12.tgz#5924ddff6cb1f8a88451f97cc30ab93df1329373"
+wonder-imgui@^0.0.26:
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/wonder-imgui/-/wonder-imgui-0.0.26.tgz#c4142d1fca566f12dbb7b2810b6ca3edc38fc2b8"
   dependencies:
     bs-fetch "^0.3.0"
     wonder-bs-most "^0.0.3"
@@ -5064,6 +5064,12 @@ wonder-render-test@^0.1.26:
 wonder-webgl@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/wonder-webgl/-/wonder-webgl-0.0.2.tgz#9f0669667ab40f4a8d5c1466562ce6b6f7c899dc"
+  dependencies:
+    wonder-log "^0.2.2"
+
+wonder-webgl@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/wonder-webgl/-/wonder-webgl-0.0.3.tgz#01b15a7d71469bd89adc70bf8228d20ba2d0dde0"
   dependencies:
     wonder-log "^0.2.2"
 

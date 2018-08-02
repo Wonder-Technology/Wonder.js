@@ -2,25 +2,35 @@ open SettingType;
 
 let unsafeGetBuffer = ({buffer}) => buffer |> OptionService.unsafeGet;
 
-let getTransformCount = (record) => (record |> unsafeGetBuffer).transformCount;
+let getTransformCount = record => (record |> unsafeGetBuffer).transformCount;
 
-let getCustomGeometryPointCount = (record) => (record |> unsafeGetBuffer).customGeometryPointCount;
+let getCustomGeometryPointCount = record =>
+  (record |> unsafeGetBuffer).customGeometryPointCount;
 
-let getCustomGeometryCount = (record) => (record |> unsafeGetBuffer).customGeometryCount;
+let getCustomGeometryCount = record =>
+  (record |> unsafeGetBuffer).customGeometryCount;
 
-let getBasicMaterialCount = (record) => (record |> unsafeGetBuffer).basicMaterialCount;
+let getBasicMaterialCount = record =>
+  (record |> unsafeGetBuffer).basicMaterialCount;
 
-let getLightMaterialCount = (record) => (record |> unsafeGetBuffer).lightMaterialCount;
+let getLightMaterialCount = record =>
+  (record |> unsafeGetBuffer).lightMaterialCount;
 
-let getSourceInstanceCount = (record) =>
+let getMeshRendererCount = record =>
+  (record |> unsafeGetBuffer).meshRendererCount;
+
+let getSourceInstanceCount = record =>
   (record |> unsafeGetBuffer).instanceBuffer.sourceInstanceCount;
 
-let getObjectInstanceCountPerSourceInstance = (record) =>
-  (record |> unsafeGetBuffer).instanceBuffer.objectInstanceCountPerSourceInstance;
+let getObjectInstanceCountPerSourceInstance = record =>
+  (record |> unsafeGetBuffer).instanceBuffer.
+    objectInstanceCountPerSourceInstance;
 
-let getTextureCountPerMaterial = (record) => (record |> unsafeGetBuffer).textureCountPerMaterial;
+let getTextureCountPerMaterial = record =>
+  (record |> unsafeGetBuffer).textureCountPerMaterial;
 
-let getBasicSourceTextureCount = (record) => (record |> unsafeGetBuffer).basicSourceTextureCount;
+let getBasicSourceTextureCount = record =>
+  (record |> unsafeGetBuffer).basicSourceTextureCount;
 
-let getArrayBufferViewSourceTextureCount = (record) =>
+let getArrayBufferViewSourceTextureCount = record =>
   (record |> unsafeGetBuffer).arrayBufferViewSourceTextureCount;

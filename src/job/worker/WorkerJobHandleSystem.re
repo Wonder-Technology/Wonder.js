@@ -59,6 +59,7 @@ let _getWorkerJobHandles = () => [
   ("init_transform", InitTransformRenderWorkerJob.execJob),
   ("init_instance", InitInstanceRenderWorkerJob.execJob),
   ("init_custom_geometry", InitCustomGeometryRenderWorkerJob.execJob),
+  ("init_meshRenderer", InitMeshRendererRenderWorkerJob.execJob),
   ("init_basic_material", InitBasicMaterialRenderWorkerJob.execJob),
   ("init_direction_light", InitDirectionLightRenderWorkerJob.execJob),
   ("init_point_light", InitPointLightRenderWorkerJob.execJob),

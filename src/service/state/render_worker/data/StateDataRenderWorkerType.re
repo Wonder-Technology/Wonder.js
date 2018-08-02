@@ -12,6 +12,8 @@ open RenderWorkerBasicSourceTextureType;
 
 open RenderWorkerArrayBufferViewSourceTextureType;
 
+open RenderWorkerMeshRendererType;
+
 open RenderWorkerSceneType;
 
 open RenderWorkerDirectionLightType;
@@ -139,6 +141,7 @@ and renderWorkerState = {
   mutable sourceInstanceRecord,
   mutable basicMaterialRecord: option(basicMaterialRecord),
   mutable lightMaterialRecord: option(lightMaterialRecord),
+  mutable meshRendererRecord: option(meshRendererRecord),
   mutable basicSourceTextureRecord: option(basicSourceTextureRecord),
   mutable arrayBufferViewSourceTextureRecord:
     option(arrayBufferViewSourceTextureRecord),

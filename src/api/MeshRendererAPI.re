@@ -6,13 +6,13 @@ open DisposeMeshRendererService;
 
 open MeshRendererType;
 
-let createMeshRenderer = (state) => {
-  let (meshRendererRecord, index) = CreateMeshRendererService.create(state.meshRendererRecord);
-  state.meshRendererRecord = meshRendererRecord;
-  (state, index)
-};
+open OperateMeshRendererMainService;
 
-let unsafeGetMeshRendererGameObject = (meshRenderer: meshRenderer, state: StateDataMainType.state) => {
+let createMeshRenderer = state =>
+  CreateMeshRendererMainService.create(. state);
+
+let unsafeGetMeshRendererGameObject =
+    (meshRenderer: meshRenderer, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -21,12 +21,55 @@ let unsafeGetMeshRendererGameObject = (meshRenderer: meshRenderer, state: StateD
             AliveComponentService.checkComponentShouldAlive(
               meshRenderer,
               isAlive,
-              state.meshRendererRecord
+              RecordMeshRendererMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetGameObject(meshRenderer, state.meshRendererRecord)
+  unsafeGetGameObject(
+    meshRenderer,
+    RecordMeshRendererMainService.getRecord(state),
+  );
+};
+
+let getMeshRendererDrawMode =
+    (meshRenderer: meshRenderer, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              meshRenderer,
+              isAlive,
+              RecordMeshRendererMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  getDrawMode(meshRenderer, state);
+};
+
+let setMeshRendererDrawMode =
+    (meshRenderer: meshRenderer, drawMode, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              meshRenderer,
+              isAlive,
+              RecordMeshRendererMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  setDrawMode(meshRenderer, drawMode, state);
 };

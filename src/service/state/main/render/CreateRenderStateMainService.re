@@ -52,6 +52,7 @@ let createRenderState =
   /* let {colors} = RecordBasicMaterialMainService.getRecord(state); */
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
+  let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
   let basicSourceTextureRecord =
     RecordBasicSourceTextureMainService.getRecord(state);
   let arrayBufferViewSourceTextureRecord =
@@ -102,6 +103,9 @@ let createRenderState =
       textureIndices: lightMaterialRecord.textureIndices,
       diffuseMapUnits: lightMaterialRecord.diffuseMapUnits,
       specularMapUnits: lightMaterialRecord.specularMapUnits,
+    },
+    meshRendererRecord: {
+      drawModes: meshRendererRecord.drawModes,
     },
     basicSourceTextureRecord: {
       wrapSs: basicSourceTextureRecord.wrapSs,

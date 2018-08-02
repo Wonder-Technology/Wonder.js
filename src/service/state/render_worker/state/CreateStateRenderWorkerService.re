@@ -6,6 +6,7 @@ let createState = () => {
   renderConfigRecord: None,
   basicMaterialRecord: None,
   lightMaterialRecord: None,
+  meshRendererRecord: None,
   basicSourceTextureRecord: None,
   arrayBufferViewSourceTextureRecord: None,
   directionLightRecord: None,

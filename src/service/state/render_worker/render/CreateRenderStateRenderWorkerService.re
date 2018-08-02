@@ -8,6 +8,8 @@ open RenderWorkerBasicMaterialType;
 
 open RenderWorkerLightMaterialType;
 
+open RenderWorkerMeshRendererType;
+
 open RenderWorkerSceneType;
 
 open RenderWorkerDirectionLightType;
@@ -57,6 +59,8 @@ let createRenderState =
     RecordBasicMaterialRenderWorkerService.getRecord(state);
   let lightMaterialRecord =
     RecordLightMaterialRenderWorkerService.getRecord(state);
+  let meshRendererRecord =
+    RecordMeshRendererRenderWorkerService.getRecord(state);
   let directionLightRecord =
     RecordDirectionLightRenderWorkerService.getRecord(state);
   let pointLightRecord = RecordPointLightRenderWorkerService.getRecord(state);
@@ -142,6 +146,9 @@ let createRenderState =
         RecordLightMaterialRenderWorkerService.unsafeGetSpecularMapUnits(
           state,
         ),
+    },
+    meshRendererRecord: {
+      drawModes: meshRendererRecord.drawModes,
     },
     basicSourceTextureRecord: {
       wrapSs: basicSourceTextureRecord.wrapSs |> OptionService.unsafeGet,

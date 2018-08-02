@@ -2,8 +2,6 @@ open WonderWebgl.Gl;
 
 open Js.Typed_array;
 
-let getDrawMode = (gl) => getTriangles(gl);
-
 /* TODO handle Uint32Array */
 let getIndexType = (gl) => getUnsignedShort(gl);
 

@@ -47,7 +47,7 @@ let _disposeData =
 let handleBatchDisposeComponent =
   [@bs]
   (
-    (geometryArray: array(geometry), {settingRecord} as state) => {
+    (geometryArray: array(geometry), state) => {
       WonderLog.Contract.requireCheck(
         () =>
           WonderLog.(
@@ -63,7 +63,6 @@ let handleBatchDisposeComponent =
           ),
         IsDebugMainService.getIsDebug(StateDataMain.stateData)
       );
-      /* let {disposedIndexMap} = state |> RecordCustomGeometryMainService.getRecord; */
       let customGeometryRecord = state |> RecordCustomGeometryMainService.getRecord;
       let (geometryNeedDisposeVboBufferArr, customGeometryRecord) =
         geometryArray

@@ -4,11 +4,11 @@ open RenderType;
 
 open Js.Typed_array;
 
-let execJob = ({gameObjectRecord, meshRendererRecord} as state) =>
+let execJob = ({gameObjectRecord} as state) =>
   state
   |> SetRenderObjectBufferDataMainService.setData(
        RenderArrayMeshRendererService.getLightMaterialRenderArray(
-         meshRendererRecord,
+         RecordMeshRendererMainService.getRecord(state),
        ),
        GetComponentGameObjectService.unsafeGetLightMaterialComponent,
        state

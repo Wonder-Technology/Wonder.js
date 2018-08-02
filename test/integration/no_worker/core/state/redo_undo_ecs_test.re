@@ -283,10 +283,15 @@ let _ =
         ) =
           _prepareMeshRendererData(state);
         let copiedState = MainStateTool.deepCopyForRestore(state);
+
+        let originMeshRendererRecord =
+          MeshRendererTool.getMeshRendererRecord(state);
         MeshRendererTool.getMeshRendererRecord(copiedState)
         |>
         expect == {
                     index: 3,
+                    buffer: originMeshRendererRecord.buffer,
+                    drawModes: Uint8Array.make([||]),
                     basicMaterialRenderGameObjectMap: [|
                       gameObject1,
                       Js.Undefined.empty |> Obj.magic,
@@ -334,10 +339,15 @@ let _ =
         gameObjectMap
         |> Obj.magic
         |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer2);
+
+        let originMeshRendererRecord =
+          MeshRendererTool.getMeshRendererRecord(state);
         MeshRendererTool.getMeshRendererRecord(state)
         |>
         expect == {
                     index: 3,
+                    buffer: originMeshRendererRecord.buffer,
+                    drawModes: Uint8Array.make([||]),
                     basicMaterialRenderGameObjectMap: [|
                       gameObject1,
                       Js.Undefined.empty |> Obj.magic,

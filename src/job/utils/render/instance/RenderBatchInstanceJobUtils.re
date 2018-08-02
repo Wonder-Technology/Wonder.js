@@ -13,6 +13,7 @@ let render =
         transformIndex,
         materialIndex,
         shaderIndex,
+        meshRendererIndex,
         geometryIndex,
         geometryType,
         sourceInstance,
@@ -27,12 +28,19 @@ let render =
         transformIndex,
         materialIndex,
         shaderIndex,
+        meshRendererIndex,
         geometryIndex,
         geometryType,
       ),
       state,
     );
-  RenderJobUtils.draw(gl, geometryIndex, geometryType, state);
+  RenderJobUtils.draw(
+    gl,
+    meshRendererIndex,
+    geometryIndex,
+    geometryType,
+    state,
+  );
   /* let uniformInstanceSendNoCachableData =
      state.glslSenderRecord
      |> HandleUniformInstanceNoCachableService.unsafeGetUniformSendData(shaderIndex); */
@@ -41,9 +49,10 @@ let render =
     |> HandleUniformRenderObjectModelService.unsafeGetUniformSendData(
          shaderIndex,
        );
-  let drawMode = RenderGeometryService.getDrawMode(gl);
-  let indexType = RenderGeometryService.getIndexType(gl);
-  let indexTypeSize = RenderGeometryService.getIndexTypeSize(gl);
+  let drawMode =
+    DrawModeMeshRendererService.getGlDrawMode(gl, meshRendererIndex, state);
+  let indexType = GeometryRenderService.getIndexType(gl);
+  let indexTypeSize = GeometryRenderService.getIndexTypeSize(gl);
   let getIndicesCountFunc =
     CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
   let indicesCount = getIndicesCountFunc(. geometryIndex, state);

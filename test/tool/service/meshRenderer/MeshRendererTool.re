@@ -1,10 +1,10 @@
 open StateDataMainType;
 
 let getBasicMaterialRenderArray = (state: StateDataMainType.state) =>
-  RenderArrayMeshRendererService.getBasicMaterialRenderArray(state.meshRendererRecord);
+  RenderArrayMeshRendererService.getBasicMaterialRenderArray(RecordMeshRendererMainService.getRecord(state));
 
 let getLightMaterialRenderArray = (state: StateDataMainType.state) =>
-  RenderArrayMeshRendererService.getLightMaterialRenderArray(state.meshRendererRecord);
+  RenderArrayMeshRendererService.getLightMaterialRenderArray(RecordMeshRendererMainService.getRecord(state));
 
 let isMeshRenderer = (meshRenderer) => {
   open Wonder_jest;
@@ -37,4 +37,4 @@ let createLightMaterialGameObject = (state) => {
   (state, gameObject, meshRenderer)
 };
 
-let getMeshRendererRecord = (state) => state.meshRendererRecord;
+let getMeshRendererRecord = (state) => RecordMeshRendererMainService.getRecord(state);

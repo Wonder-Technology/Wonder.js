@@ -121,6 +121,7 @@ let _buildData = (operateType, canvas, stateData) => {
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
   let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
   let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
+  let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
   let (x, y, width, height, _, _) = ScreenService.queryFullScreenData();
   {
@@ -135,6 +136,7 @@ let _buildData = (operateType, canvas, stateData) => {
       "transformCount": buffer.transformCount,
       "basicMaterialCount": buffer.basicMaterialCount,
       "lightMaterialCount": buffer.lightMaterialCount,
+      "meshRendererCount": buffer.meshRendererCount,
       "textureCountPerMaterial": buffer.textureCountPerMaterial,
       "basicSourceTextureCount": buffer.basicSourceTextureCount,
       "arrayBufferViewSourceTextureCount":
@@ -197,6 +199,9 @@ let _buildData = (operateType, canvas, stateData) => {
       ),
     "customGeometryData": {
       "buffer": customGeometryRecord.buffer,
+    },
+    "meshRendererData": {
+      "buffer": meshRendererRecord.buffer,
     },
     "directionLightData": {
       "buffer": directionLightRecord.buffer,

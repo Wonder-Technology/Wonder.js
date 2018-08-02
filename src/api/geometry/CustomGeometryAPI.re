@@ -6,12 +6,10 @@ open CustomGeometryType;
 
 open DisposeCustomGeometryMainService;
 
-open RenderGeometryService;
-
 let createCustomGeometry = (state) => CreateCustomGeometryMainService.create(state);
 
-let getCustomGeometryDrawMode = (state: StateDataMainType.state) =>
-  [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> getDrawMode;
+/* let getCustomGeometryDrawMode = (state: StateDataMainType.state) =>
+  [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> getDrawMode; */
 
 let getCustomGeometryVertices = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(

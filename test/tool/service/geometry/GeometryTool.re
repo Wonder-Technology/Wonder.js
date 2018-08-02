@@ -2,11 +2,11 @@ open StateDataMainType;
 
 let getIndexType = (state: StateRenderType.renderState) =>
   [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord)
-  |> RenderGeometryService.getIndexType;
+  |> GeometryRenderService.getIndexType;
 
 let getIndexTypeSize = (state: StateRenderType.renderState) =>
   [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord)
-  |> RenderGeometryService.getIndexTypeSize;
+  |> GeometryRenderService.getIndexTypeSize;
 
 /* let hasIndices = (index: int, state: StateDataMainType.state) =>
    IndicesService.hasIndices(index, state.boxGeometryRecord.indicesMap); */

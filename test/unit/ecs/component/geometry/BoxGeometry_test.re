@@ -59,7 +59,7 @@ let _ =
           BoxGeometryAPI.getBoxGeometryIndices(state^)
           |> expect == BoxGeometryTool.getDefaultIndices()
       );
-      describe(
+      /* describe(
         "getDrawMode",
         () =>
           test(
@@ -70,7 +70,7 @@ let _ =
               state |> getBoxGeometryDrawMode |> expect == triangles
             }
           )
-      );
+      ); */
       describe(
         "unsafeGetBoxGeometryGameObject",
         () =>

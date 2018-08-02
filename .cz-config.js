@@ -32,6 +32,7 @@ module.exports = {
     { name: "render-worker" },
     { name: "basicMaterial" },
     { name: "lightMaterial" },
+    { name: "meshRenderer" },
     { name: "instance" },
     { name: "boxGeometry" },
     { name: "customGeometry" },

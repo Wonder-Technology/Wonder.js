@@ -4,18 +4,18 @@ type context = {
   stencil: bool,
   antialias: bool,
   premultipliedAlpha: bool,
-  preserveDrawingBuffer: bool
+  preserveDrawingBuffer: bool,
 };
 
 type memory = {
   maxDisposeCount: int,
   maxTypeArrayPoolSize: int,
-  maxBigTypeArrayPoolSize: int
+  maxBigTypeArrayPoolSize: int,
 };
 
 type instanceBuffer = {
   sourceInstanceCount: int,
-  objectInstanceCountPerSourceInstance: int
+  objectInstanceCountPerSourceInstance: int,
 };
 
 type buffer = {
@@ -27,7 +27,8 @@ type buffer = {
   textureCountPerMaterial: int,
   basicSourceTextureCount: int,
   arrayBufferViewSourceTextureCount: int,
-  instanceBuffer
+  meshRendererCount: int,
+  instanceBuffer,
 };
 
 type worker = {useWorker: bool};
@@ -39,5 +40,5 @@ type settingRecord = {
   isDebug: option(bool),
   context: option(context),
   gpu: option(SettingGPUType.gpu),
-  worker: option(worker)
+  worker: option(worker),
 };

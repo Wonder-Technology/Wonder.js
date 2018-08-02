@@ -68,7 +68,11 @@ let unsafeGetArcballCameraControllerGameObject = ArcballCameraControllerAPI.unsa
 
 let createArcballCameraController = ArcballCameraControllerAPI.createArcballCameraController;
 
+let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
+
 let isSupportRenderWorkerAndSharedArrayBuffer = WorkerDetectAPI.isSupportRenderWorkerAndSharedArrayBuffer;
+
+let setViewport = DeviceManagerAPI.setViewport;
 
 let unsafeGetGl = DeviceManagerAPI.unsafeGetGl;
 
@@ -272,8 +276,6 @@ let getBoxGeometryTexCoords = BoxGeometryAPI.getBoxGeometryTexCoords;
 
 let getBoxGeometryVertices = BoxGeometryAPI.getBoxGeometryVertices;
 
-let getBoxGeometryDrawMode = BoxGeometryAPI.getBoxGeometryDrawMode;
-
 let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
 
 let unsafeGetCustomGeometryGameObject = CustomGeometryAPI.unsafeGetCustomGeometryGameObject;
@@ -294,13 +296,13 @@ let setCustomGeometryVertices = CustomGeometryAPI.setCustomGeometryVertices;
 
 let getCustomGeometryVertices = CustomGeometryAPI.getCustomGeometryVertices;
 
-let getCustomGeometryDrawMode = CustomGeometryAPI.getCustomGeometryDrawMode;
-
 let createCustomGeometry = CustomGeometryAPI.createCustomGeometry;
 
 let image = FixedLayoutControlIMGUIAPI.image;
 
 let label = FixedLayoutControlIMGUIAPI.label;
+
+let sendUniformProjectionMatData = ManageIMGUIAPI.sendUniformProjectionMatData;
 
 let setSetting = ManageIMGUIAPI.setSetting;
 
@@ -324,6 +326,8 @@ let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
 
 let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
 
+let isExceedMaxCount = DirectionLightAPI.isExceedMaxCount;
+
 let setDirectionLightIntensity = DirectionLightAPI.setDirectionLightIntensity;
 
 let getDirectionLightIntensity = DirectionLightAPI.getDirectionLightIntensity;
@@ -335,6 +339,8 @@ let getDirectionLightColor = DirectionLightAPI.getDirectionLightColor;
 let unsafeGetDirectionLightGameObject = DirectionLightAPI.unsafeGetDirectionLightGameObject;
 
 let createDirectionLight = DirectionLightAPI.createDirectionLight;
+
+let isExceedMaxCount = PointLightAPI.isExceedMaxCount;
 
 let setPointLightRangeLevel = PointLightAPI.setPointLightRangeLevel;
 
@@ -416,6 +422,10 @@ let createLightMaterial = LightMaterialAPI.createLightMaterial;
 
 let replaceMaterial = MaterialAPI.replaceMaterial;
 
+let setMeshRendererDrawMode = MeshRendererAPI.setMeshRendererDrawMode;
+
+let getMeshRendererDrawMode = MeshRendererAPI.getMeshRendererDrawMode;
+
 let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameObject;
 
 let createMeshRenderer = MeshRendererAPI.createMeshRenderer;
@@ -455,6 +465,8 @@ let getAmbientLightColor = SceneAPI.getAmbientLightColor;
 let setCurrentCameraGameObject = SceneAPI.setCurrentCameraGameObject;
 
 let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
+
+let setScreenSize = ScreenAPI.setScreenSize;
 
 let markSourceInstanceModelMatrixIsStatic = SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic;
 
@@ -668,6 +680,10 @@ let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectB
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 
+let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
+
+let setViewport = DeviceManagerAPI.setViewport;
+
 let unsafeGetGl = DeviceManagerAPI.unsafeGetGl;
 
 let startDirector = DirectorAPI.startDirector;
@@ -814,6 +830,10 @@ let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
 
 let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
 
+let setMeshRendererDrawMode = MeshRendererAPI.setMeshRendererDrawMode;
+
+let getMeshRendererDrawMode = MeshRendererAPI.getMeshRendererDrawMode;
+
 let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameObject;
 
 let createMeshRenderer = MeshRendererAPI.createMeshRenderer;
@@ -853,6 +873,8 @@ let getAmbientLightColor = SceneAPI.getAmbientLightColor;
 let setCurrentCameraGameObject = SceneAPI.setCurrentCameraGameObject;
 
 let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
+
+let setScreenSize = ScreenAPI.setScreenSize;
 
 let markSourceInstanceModelMatrixIsStatic = SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic;
 

@@ -12,6 +12,8 @@ open GLSLSenderType;
 
 open ProgramType;
 
+open RenderMeshRendererType;
+
 open RenderBoxGeometryType;
 
 open RenderCustomGeometryType;
@@ -171,6 +173,7 @@ and renderState = {
   cameraRecord: option(RenderCameraType.renderCameraRecord),
   basicMaterialRecord,
   lightMaterialRecord,
+  meshRendererRecord,
   basicSourceTextureRecord,
   arrayBufferViewSourceTextureRecord,
   directionLightRecord,

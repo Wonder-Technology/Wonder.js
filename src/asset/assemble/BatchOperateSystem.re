@@ -7,8 +7,11 @@ open Js.Typed_array;
 let _getBatchArrByIndices = (sourceArr, indices) =>
   indices |> Js.Array.map(index => Array.unsafe_get(sourceArr, index));
 
+/* TODO add drawMode */
 let _batchCreateMeshRendererArr =
-    (lightMaterialGameObjects, {gameObjects}, {meshRendererRecord} as state) => {
+    (lightMaterialGameObjects, {gameObjects}, state) => {
+  let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
+
   AssembleCommon.checkNotDisposedBefore(
     meshRendererRecord.disposedIndexArray,
   );
@@ -16,7 +19,7 @@ let _batchCreateMeshRendererArr =
   let {index}: MeshRendererType.meshRendererRecord = meshRendererRecord;
   let newIndex = index + (lightMaterialGameObjects |> Js.Array.length);
   let indexArr = ArrayService.range(index, newIndex - 1);
-  state.meshRendererRecord = {...meshRendererRecord, index: newIndex};
+  state.meshRendererRecord = Some({...meshRendererRecord, index: newIndex});
   (state, indexArr);
 };
 
