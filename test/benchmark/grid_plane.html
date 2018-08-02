@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>benchmark</title>
+</head>
+
+<body>
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/PositionTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/js/BasicMaterialTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+    <script src="../../dist/wd.js"></script>
+    <script>
+        window.onload = function () {
+
+            ReplaceFetchTool.replaceFetchForTest();
+
+
+
+            return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
+                return initSample(wd.unsafeGetState());
+            });
+
+            function _createGridPlaneGameObject(state) {
+                var size = 14;
+                var step = 2;
+
+                var y = 0.0;
+
+                var vertices = [];
+                var indices = [];
+
+                for (var i = - size; i <= size; i += step) {
+                    vertices.push(
+                        -size, y, i
+                    );
+                    vertices.push(
+                        size, y, i
+                    );
+                    vertices.push(
+                        i, y, -size
+                    );
+                    vertices.push(
+                        i, y, size
+                    );
+                }
+
+                for (var i = 0; i <= (vertices.length / 3) - 1; i += 1) {
+                    indices.push(
+                        i
+                    );
+                }
+
+                var record = wd.createGameObject(state);
+                var state = record[0];
+                var obj = record[1];
+
+                var record = wd.createCustomGeometry(state);
+                var state = record[0];
+                var geometry = record[1];
+
+
+                var state = wd.setCustomGeometryVertices(geometry,
+                    new Float32Array(vertices),
+                    state
+                );
+
+
+
+                var state = wd.setCustomGeometryIndices(geometry,
+                    new Uint16Array(indices),
+                    state
+                );
+
+
+
+                state = wd.addGameObjectCustomGeometryComponent(obj, geometry, state);
+
+                return [state, obj];
+            }
+
+
+
+            function initSample(state) {
+                var [state, gridPlaneGameObject] = _createGridPlaneGameObject(state);
+
+
+
+                var data = BasicMaterialTool.createDefaultBasicMaterial(state);
+
+
+                var state = data[0];
+                var material = data[1];
+
+
+
+                var state = wd.addGameObjectBasicMaterialComponent(gridPlaneGameObject, material, state);
+
+
+
+                var record = wd.createMeshRenderer(state);
+                var state = record[0];
+                var meshRenderer = record[1];
+
+                var state =
+                    wd.setMeshRendererDrawMode(
+                        meshRenderer, 1, state
+                    );
+
+                state = wd.addGameObjectMeshRendererComponent(gridPlaneGameObject, meshRenderer, state);
+
+
+
+
+                var data = BasicBoxesTool.createCamera(state);
+                var state = data[0];
+                var camera = data[1];
+
+
+
+
+                var [state, cameraController] = wd.createArcballCameraController(state);
+
+                var state =
+                    wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+
+
+
+                var state =
+                    wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
+
+                var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+                state =
+                    wd.setCurrentCameraGameObject(
+                        camera, state
+                    );
+
+
+
+
+                wd.startDirector(state);
+            }
+
+        };
+    </script>
+</body>
+
+</html>
