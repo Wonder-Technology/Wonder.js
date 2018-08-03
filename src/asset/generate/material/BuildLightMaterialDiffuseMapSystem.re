@@ -259,7 +259,7 @@ let build =
                baseColorFactor: None,
                baseColorTexture: Some(existedTextureIndex),
                name,
-             }: GenerateSceneGraphType.materialData,
+             }: GenerateSceneGraphType.lightMaterialData,
            ),
         textureDataArr,
         samplerDataArr,
@@ -300,7 +300,7 @@ let build =
                baseColorFactor: None,
                baseColorTexture: Some(textureIndex),
                name,
-             }: GenerateSceneGraphType.materialData,
+             }: GenerateSceneGraphType.lightMaterialData,
            ),
         _addTextureData(
           diffuseMap,

@@ -11,7 +11,9 @@ let generateGLBData = (rootGameObject, imageBase64Map, state) => {
     state,
     (
       meshPointDataMap,
-      materialDataMap,
+      meshRendererDataMap,
+      basicMaterialDataMap,
+      lightMaterialDataMap,
       cameraDataMap,
       arcballCameraControllerDataMap,
       lightDataMap,
@@ -29,15 +31,20 @@ let generateGLBData = (rootGameObject, imageBase64Map, state) => {
 
   let geometryEndByteOffset = totalByteLength;
 
+  let meshRendererDataArr =
+    BuildMeshRendererDataSystem.build(meshRendererDataMap, state);
+
   let (
-    materialDataArr,
+    basicMaterialDataArr,
+    lightMaterialDataArr,
     textureDataArr,
     samplerDataArr,
     imageUint8DataArr,
     (totalByteLength, bufferViewDataArr),
   ) =
     BuildMaterialDataSystem.build(
-      materialDataMap,
+      basicMaterialDataMap,
+      lightMaterialDataMap,
       imageBase64Map,
       (totalByteLength, geometryEndByteOffset, bufferViewDataArr),
       state,
@@ -71,7 +78,9 @@ let generateGLBData = (rootGameObject, imageBase64Map, state) => {
         bufferViewDataArr,
         accessorDataArr,
         meshDataArr,
-        materialDataArr,
+        meshRendererDataArr,
+        basicMaterialDataArr,
+        lightMaterialDataArr,
         textureDataArr,
         samplerDataArr,
         imageUint8DataArr,

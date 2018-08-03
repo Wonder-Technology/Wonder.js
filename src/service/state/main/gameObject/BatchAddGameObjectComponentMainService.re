@@ -282,7 +282,7 @@ let _batchAddMaterialComponent =
     record,
   );
 
-let batchAddBasicMaterialComponentForClone =
+let _batchAddBasicMaterialComponent =
     (
       uidArr: array(int),
       componentArr: array(component),
@@ -301,6 +301,8 @@ let batchAddBasicMaterialComponentForClone =
       ),
     ),
 };
+
+let batchAddBasicMaterialComponentForClone = _batchAddBasicMaterialComponent;
 
 let _batchAddLightMaterialComponent =
     (
@@ -367,6 +369,8 @@ let batchAddBasicCameraViewComponentForCreate = _batchAddBasicCameraViewComponen
 let batchAddPerspectiveCameraProjectionComponentForCreate = _batchAddPerspectiveCameraProjectionComponent;
 
 let batchAddArcballCameraControllerComponentForCreate = _batchAddArcballCameraControllerComponent;
+
+let batchAddBasicMaterialComponentForCreate = _batchAddBasicMaterialComponent;
 
 let batchAddLightMaterialComponentForCreate = _batchAddLightMaterialComponent;
 

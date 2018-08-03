@@ -153,6 +153,50 @@ let _getMeshData =
     }
   };
 
+let _getBasicMaterialData =
+    (
+      (gameObject, materialIndex),
+      basicMaterialDataMap,
+      {gameObjectRecord} as state,
+    ) =>
+  switch (
+    GetComponentGameObjectService.getBasicMaterialComponent(.
+      gameObject,
+      gameObjectRecord,
+    )
+  ) {
+  | None => (None, None, materialIndex, basicMaterialDataMap)
+  | Some(basicMaterial) =>
+    switch (
+      basicMaterialDataMap
+      |> WonderCommonlib.SparseMapService.get(basicMaterial)
+    ) {
+    | Some((existedMaterialIndex, materialData)) => (
+        Some(existedMaterialIndex),
+        materialData,
+        materialIndex,
+        basicMaterialDataMap,
+      )
+    | None =>
+      let materialData =
+        Some((
+          basicMaterial,
+          NameBasicMaterialMainService.getName(basicMaterial, state),
+        ));
+
+      (
+        Some(materialIndex),
+        materialData,
+        materialIndex |> succ,
+        basicMaterialDataMap
+        |> WonderCommonlib.SparseMapService.set(
+             basicMaterial,
+             (materialIndex, materialData),
+           ),
+      );
+    }
+  };
+
 let _getLightMaterialData =
     (
       (gameObject, materialIndex),
@@ -195,6 +239,22 @@ let _getLightMaterialData =
            ),
       );
     }
+  };
+
+let _getMeshRendererData =
+    ((gameObject, meshRendererIndex), {gameObjectRecord} as state) =>
+  switch (
+    GetComponentGameObjectService.getMeshRendererComponent(.
+      gameObject,
+      gameObjectRecord,
+    )
+  ) {
+  | None => (None, None, meshRendererIndex)
+
+  | Some(meshRenderer) =>
+    let meshRendererData = Some(meshRenderer);
+
+    (Some(meshRendererIndex), meshRendererData, meshRendererIndex |> succ);
   };
 
 let _getCameraData =
@@ -268,15 +328,23 @@ let getComponentData =
         state,
         (
           meshIndex,
-          materialIndex,
+          meshRendererIndex,
+          basicMaterialIndex,
+          lightMaterialIndex,
           cameraIndex,
           arcballCameraControllerIndex,
           lightIndex,
         ),
-        ((boxGeometryDataMap, customGeometryDataMap), lightMaterialDataMap),
+        (
+          (boxGeometryDataMap, customGeometryDataMap),
+          basicMaterialDataMap,
+          lightMaterialDataMap,
+        ),
         (
           meshPointDataMap,
-          materialDataMap,
+          meshRendererDataMap,
+          resultBasicMaterialDataMap,
+          resultLightMaterialDataMap,
           cameraDataMap,
           arcballCameraControllerDataMap,
           lightDataMap,
@@ -306,21 +374,63 @@ let getComponentData =
          )
     };
 
-  let (materialIndex, materialData, newMaterialIndex, lightMaterialDataMap) =
+  let (meshRendererIndex, meshRendererData, newMeshRendererIndex) =
+    _getMeshRendererData((gameObject, meshRendererIndex), state);
+
+  let meshRendererDataMap =
+    switch (meshRendererIndex) {
+    | None => meshRendererDataMap
+    | Some(meshRendererIndex) =>
+      meshRendererDataMap
+      |> WonderCommonlib.SparseMapService.set(
+           meshRendererIndex,
+           meshRendererData |> OptionService.unsafeGet,
+         )
+    };
+
+  let (
+    basicMaterialIndex,
+    basicMaterialData,
+    newBasicMaterialIndex,
+    basicMaterialDataMap,
+  ) =
+    _getBasicMaterialData(
+      (gameObject, basicMaterialIndex),
+      basicMaterialDataMap,
+      state,
+    );
+
+  let resultBasicMaterialDataMap =
+    switch (basicMaterialIndex) {
+    | None => resultBasicMaterialDataMap
+    | Some(basicMaterialIndex) =>
+      resultBasicMaterialDataMap
+      |> WonderCommonlib.SparseMapService.set(
+           basicMaterialIndex,
+           basicMaterialData |> OptionService.unsafeGet,
+         )
+    };
+
+  let (
+    lightMaterialIndex,
+    lightMaterialData,
+    newLightMaterialIndex,
+    lightMaterialDataMap,
+  ) =
     _getLightMaterialData(
-      (gameObject, materialIndex),
+      (gameObject, lightMaterialIndex),
       lightMaterialDataMap,
       state,
     );
 
-  let materialDataMap =
-    switch (materialIndex) {
-    | None => materialDataMap
-    | Some(materialIndex) =>
-      materialDataMap
+  let resultLightMaterialDataMap =
+    switch (lightMaterialIndex) {
+    | None => resultLightMaterialDataMap
+    | Some(lightMaterialIndex) =>
+      resultLightMaterialDataMap
       |> WonderCommonlib.SparseMapService.set(
-           materialIndex,
-           materialData |> OptionService.unsafeGet,
+           lightMaterialIndex,
+           lightMaterialData |> OptionService.unsafeGet,
          )
     };
 
@@ -378,22 +488,32 @@ let getComponentData =
     state,
     (
       meshIndex,
-      materialIndex,
+      meshRendererIndex,
+      basicMaterialIndex,
+      lightMaterialIndex,
       cameraIndex,
       arcballCameraControllerIndex,
       lightIndex,
     ),
     (
       newMeshIndex,
-      newMaterialIndex,
+      newMeshRendererIndex,
+      newBasicMaterialIndex,
+      newLightMaterialIndex,
       newCameraIndex,
       newCameraControllerIndex,
       newLightIndex,
     ),
-    ((boxGeometryDataMap, customGeometryDataMap), lightMaterialDataMap),
+    (
+      (boxGeometryDataMap, customGeometryDataMap),
+      basicMaterialDataMap,
+      lightMaterialDataMap,
+    ),
     (
       meshPointDataMap,
-      materialDataMap,
+      meshRendererDataMap,
+      resultBasicMaterialDataMap,
+      resultLightMaterialDataMap,
       cameraDataMap,
       arcballCameraControllerDataMap,
       lightDataMap,

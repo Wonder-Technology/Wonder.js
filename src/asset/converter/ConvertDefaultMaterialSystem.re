@@ -35,10 +35,10 @@ let _isNeedAddDefaultMaterial = ({extras, mesh}: GLTFType.node, meshes) =>
   switch (mesh) {
   | Some(mesh) =>
     switch (extras) {
-    | Some({material}) =>
-      switch (material) {
-      | None => _isNeedAddDefaultMaterialByJudgeMesh(mesh, meshes)
-      | Some(_) => false
+    | Some({basicMaterial, lightMaterial}) =>
+      switch (basicMaterial, lightMaterial) {
+      | (None, None) => _isNeedAddDefaultMaterialByJudgeMesh(mesh, meshes)
+      | _ => false
       }
     | None => _isNeedAddDefaultMaterialByJudgeMesh(mesh, meshes)
     }
@@ -61,13 +61,16 @@ let _setDefaultMaterial =
                       switch (extras) {
                       | None =>
                         Some({
-                          material: Some(defaultMaterialIndex),
+                          meshRenderer: None,
+                          basicMaterial: None,
+                          lightMaterial: Some(defaultMaterialIndex),
                           cameraController: None,
                         })
                       | Some(extras) =>
                         Some({
                           ...extras,
-                          material: Some(defaultMaterialIndex),
+                          basicMaterial: None,
+                          lightMaterial: Some(defaultMaterialIndex),
                         })
                       },
                   }: GLTFType.node,

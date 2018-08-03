@@ -25,7 +25,7 @@ let build =
                |]),
              baseColorTexture: None,
              name,
-           }: GenerateSceneGraphType.materialData,
+           }: GenerateSceneGraphType.lightMaterialData,
          ),
       textureDataArr,
       samplerDataArr,

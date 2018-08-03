@@ -1,5 +1,44 @@
-let _buildDefaultMaterialName = materialIndex =>
-  ConvertCommon.buildDefaultName("material", materialIndex);
+let _buildDefaultBasicMaterialName = materialIndex =>
+  ConvertCommon.buildDefaultName("basicMaterial", materialIndex);
+
+let convertToBasicMaterials =
+    ({extras}: GLTFType.gltf)
+    : array(WDType.basicMaterial) =>
+  switch (extras) {
+  | None => [||]
+  | Some({basicMaterials}) =>
+    switch (basicMaterials) {
+    | None => [||]
+    | Some(basicMaterials) =>
+      basicMaterials
+      |> WonderCommonlib.ArrayService.reduceOneParami(
+           (. arr, {colorFactor, name}: GLTFType.basicMaterial, index) =>
+             arr
+             |> ArrayService.push(
+                  {
+                    name:
+                      switch (name) {
+                      | None => _buildDefaultBasicMaterialName(index)
+                      | Some(name) => name
+                      },
+                    color:
+                      switch (colorFactor) {
+                      | None => [|1., 1., 1.|]
+                      | Some(colorFactor) => [|
+                          colorFactor[0],
+                          colorFactor[1],
+                          colorFactor[2],
+                        |]
+                      },
+                  }: WDType.basicMaterial,
+                ),
+           [||],
+         )
+    }
+  };
+
+let _buildDefaultLightMaterialName = materialIndex =>
+  ConvertCommon.buildDefaultName("lightMaterial", materialIndex);
 
 let convertToLightMaterials =
     ({materials}: GLTFType.gltf)
@@ -25,7 +64,7 @@ let convertToLightMaterials =
                   {
                     name:
                       switch (name) {
-                      | None => _buildDefaultMaterialName(index)
+                      | None => _buildDefaultLightMaterialName(index)
                       | Some(name) => name
                       },
                     diffuseColor:

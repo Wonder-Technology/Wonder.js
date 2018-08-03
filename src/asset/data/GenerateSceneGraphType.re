@@ -1,5 +1,7 @@
 type nodeExtras = {
-  material: option(int),
+  meshRenderer: option(int),
+  basicMaterial: option(int),
+  lightMaterial: option(int),
   cameraController: option(int),
 };
 
@@ -69,7 +71,14 @@ type imageData = {
   byteOffset: int,
 };
 
-type materialData = {
+type meshRendererData = {drawMode: Js.Typed_array.Uint8Array.elt};
+
+type basicMaterialData = {
+  colorFactor: option(array(float)),
+  name: option(string),
+};
+
+type lightMaterialData = {
   baseColorFactor: option(array(float)),
   baseColorTexture: option(int),
   name: option(string),

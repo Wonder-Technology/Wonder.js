@@ -74,6 +74,15 @@ let buildNode =
   extensions,
 };
 
+let buildPrimitive =
+    (~attributes, ~indices=None, ~material=None, ~mode=None, ())
+    : GLTFType.primitive => {
+  attributes,
+  indices,
+  material,
+  mode,
+};
+
 let buildGLTFJson =
     (
       ~extensions={|

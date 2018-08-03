@@ -174,9 +174,13 @@ let _buildWDBJsonUint8Array = gltf => {
              ConvertCamerasSystem.convertToPerspectiveCameraProjections(gltf),
            arcballCameraControllers:
              ConvertCamerasSystem.convertToArcballCameraControllers(gltf),
+           basicMaterials:
+             ConvertMaterialsSystem.convertToBasicMaterials(gltf),
            lightMaterials:
              ConvertMaterialsSystem.convertToLightMaterials(gltf),
            customGeometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),
+           meshRenderers:
+             ConvertMeshRenderersSystem.convertToMeshRenderers(gltf),
            basicSourceTextures:
              ConvertTexturesSystem.convertToBasicSourceTextures(gltf),
            samplers: ConvertTexturesSystem.convertToSamplers(gltf),

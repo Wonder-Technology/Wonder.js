@@ -101,6 +101,8 @@ let create = ({settingRecord} as state) => {
       textureIndices,
       mapUnits,
       defaultColor,
+      /* TODO test */
+      nameMap: WonderCommonlib.SparseMapService.createEmpty(),
       textureCountMap: WonderCommonlib.SparseMapService.createEmpty(),
       gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
       groupCountMap: WonderCommonlib.SparseMapService.createEmpty(),
@@ -119,6 +121,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         textureIndices,
         mapUnits,
         defaultColor,
+        nameMap,
         textureCountMap,
         groupCountMap,
         gameObjectMap,
@@ -157,6 +160,8 @@ let deepCopyForRestore = ({settingRecord} as state) => {
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
                index * getMapUnitsSize(),
              ),
+        /* TODO test */
+        nameMap: nameMap |> SparseMapService.copy,
         defaultColor,
         textureCountMap: textureCountMap |> SparseMapService.copy,
         groupCountMap: groupCountMap |> SparseMapService.copy,

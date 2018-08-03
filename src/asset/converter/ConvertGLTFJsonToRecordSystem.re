@@ -239,6 +239,34 @@ let _convertExtras = json =>
                     ),
                   ),
                 ),
+           meshRenderers:
+             json
+             |> optional(
+                  field(
+                    "meshRenderers",
+                    array(json =>
+                      (
+                        {drawMode: json |> field("drawMode", int)}: meshRenderer
+                      )
+                    ),
+                  ),
+                ),
+           basicMaterials:
+             json
+             |> optional(
+                  field(
+                    "basicMaterials",
+                    array(json =>
+                      (
+                        {
+                          colorFactor:
+                            json |> optional(field("color", array(float))),
+                          name: json |> optional(field("name", string)),
+                        }: basicMaterial
+                      )
+                    ),
+                  ),
+                ),
          }
        ),
      );
@@ -309,6 +337,7 @@ let _convertMeshes = json =>
                            ),
                       indices: json |> optional(field("indices", int)),
                       material: json |> optional(field("material", int)),
+                      mode: json |> optional(field("mode", int)),
                     }
                   ),
                 ),
@@ -399,9 +428,21 @@ let _convertNodes = json =>
              |> optimizedOptional(
                   optimizedField("extras", json =>
                     {
-                      material:
+                      meshRenderer:
                         json
-                        |> optimizedOptional(optimizedField("material", int)),
+                        |> optimizedOptional(
+                             optimizedField("meshRenderer", int),
+                           ),
+                      basicMaterial:
+                        json
+                        |> optimizedOptional(
+                             optimizedField("basicMaterial", int),
+                           ),
+                      lightMaterial:
+                        json
+                        |> optimizedOptional(
+                             optimizedField("lightMaterial", int),
+                           ),
                       cameraController:
                         json
                         |> optimizedOptional(

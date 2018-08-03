@@ -155,8 +155,15 @@ type material = {
   name: option(string),
 };
 
+type basicMaterial = {
+  colorFactor: option(array(float)),
+  name: option(string),
+};
+
 type nodeExtras = {
-  material: option(int),
+  meshRenderer: option(int),
+  basicMaterial: option(int),
+  lightMaterial: option(int),
   cameraController: option(cameraControllerIndex),
 };
 
@@ -188,6 +195,7 @@ type primitive = {
   attributes,
   indices: option(accessorIndex),
   material: option(materialIndex),
+  mode: option(int),
 };
 
 type mesh = {
@@ -211,9 +219,13 @@ type khrLightsExtension = {lights: array(light)};
 
 type extensions = {khr_lights: option(khrLightsExtension)};
 
+type meshRenderer = {drawMode: Js.Typed_array.Uint8Array.elt};
+
 type gltfExtras = {
   arcballCameraControllers:
     option(array(SceneGraphType.arcballCameraController)),
+  basicMaterials: option(array(basicMaterial)),
+  meshRenderers: option(array(meshRenderer)),
 };
 
 type gltf = {

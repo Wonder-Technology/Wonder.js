@@ -27,6 +27,12 @@ let convertToGameObjectIndexData =
       ConvertComponentIndexDataSystem.convertToArcballCameraControllerGameObjectIndexData(
         nodes,
       ),
+    basicMaterialGameObjectIndexData:
+      ConvertComponentIndexDataSystem.convertToBasicMaterialGameObjectIndexData(
+        nodes,
+        meshes,
+        materials,
+      ),
     lightMaterialGameObjectIndexData:
       ConvertComponentIndexDataSystem.convertToLightMaterialGameObjectIndexData(
         nodes,
@@ -35,6 +41,10 @@ let convertToGameObjectIndexData =
       ),
     customGeometryGameObjectIndexData:
       ConvertComponentIndexDataSystem.convertToGeometryGameObjectIndexData(
+        nodes,
+      ),
+    meshRendererGameObjectIndexData:
+      ConvertComponentIndexDataSystem.convertToMeshRendererGameObjectIndexData(
         nodes,
       ),
     directionLightGameObjectIndexData:

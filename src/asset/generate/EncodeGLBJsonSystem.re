@@ -51,11 +51,27 @@ let _encodeNodeExtensions = (extensions, list) =>
     [("extensions", extensionList |> object_), ...list];
   };
 
-let _encodeNodeMaterial = (material, extraList) =>
-  switch (material) {
-  | None => extraList
-  | Some(material) => [("material", material |> int), ...extraList]
-  };
+let _encodeNodeMaterial = (basicMaterial, lightMaterial, extraList) => {
+  let extraList =
+    switch (basicMaterial) {
+    | None => extraList
+    | Some(basicMaterial) => [
+        ("basicMaterial", basicMaterial |> int),
+        ...extraList,
+      ]
+    };
+
+  let extraList =
+    switch (lightMaterial) {
+    | None => extraList
+    | Some(lightMaterial) => [
+        ("lightMaterial", lightMaterial |> int),
+        ...extraList,
+      ]
+    };
+
+  extraList;
+};
 
 let _encodeNodeCameraController = (cameraController, extraList) =>
   switch (cameraController) {
@@ -69,10 +85,11 @@ let _encodeNodeCameraController = (cameraController, extraList) =>
 let _encodeNodeExtras = (extras, list) =>
   switch (extras) {
   | None => list
-  | Some(({material, cameraController}: nodeExtras)) =>
+  | Some(({basicMaterial, lightMaterial, cameraController}: nodeExtras)) =>
     let extraList = [];
 
-    let extraList = _encodeNodeMaterial(material, extraList);
+    let extraList =
+      _encodeNodeMaterial(basicMaterial, lightMaterial, extraList);
 
     let extraList = _encodeNodeCameraController(cameraController, extraList);
 
@@ -154,11 +171,66 @@ let _encodeCameras = cameraDataArr => (
   |> jsonArray,
 );
 
-let _encodeExtras = arcballCameraControllerDataArr => (
-  "extras",
-  (
+let _encodeExtras =
+    (
+      meshRendererDataArr,
+      basicMaterialDataArr,
+      arcballCameraControllerDataArr,
+    ) => {
+  let extrasList = [];
+
+  let extrasList =
+    switch (meshRendererDataArr |> Js.Array.length) {
+    | 0 => extrasList
+    | _ => [
+        (
+          "meshRenderers",
+          meshRendererDataArr
+          |> Js.Array.map((({drawMode}: meshRendererData) as data) =>
+               [("drawMode", drawMode |> int)] |> object_
+             )
+          |> jsonArray,
+        ),
+        ...extrasList,
+      ]
+    };
+
+  let extrasList =
+    switch (basicMaterialDataArr |> Js.Array.length) {
+    | 0 => extrasList
+    | _ => [
+        (
+          "basicMaterials",
+          basicMaterialDataArr
+          |> Js.Array.map((({colorFactor, name}: basicMaterialData) as data) => {
+               let list = [];
+
+               let list =
+                 switch (colorFactor) {
+                 | None => list
+                 | Some(colorFactor) => [
+                     ("colorFactor", colorFactor |> numberArray),
+                     ...list,
+                   ]
+                 };
+
+               let list =
+                 switch (name) {
+                 | None => list
+                 | Some(name) => [("name", name |> string), ...list]
+                 };
+
+               list |> object_;
+             })
+          |> jsonArray,
+        ),
+        ...extrasList,
+      ]
+    };
+
+  let extrasList =
     switch (arcballCameraControllerDataArr |> Js.Array.length) {
-    | 0 => []
+    | 0 => extrasList
     | _ => [
         (
           "arcballCameraControllers",
@@ -196,11 +268,12 @@ let _encodeExtras = arcballCameraControllerDataArr => (
              )
           |> jsonArray,
         ),
+        ...extrasList,
       ]
-    }
-  )
-  |> object_,
-);
+    };
+
+  ("extras", extrasList |> object_);
+};
 
 let _encodeScenes = (extensionsUsedArr, lightDataArr, imguiData, state) => {
   let list = [("nodes", [|0|] |> intArray)];
@@ -259,10 +332,11 @@ let _encodeScenes = (extensionsUsedArr, lightDataArr, imguiData, state) => {
   ("scenes", [|list |> object_|] |> jsonArray);
 };
 
-let _encodeMaterials = materialDataArr => (
+let _encodeLightMaterials = materialDataArr => (
   "materials",
   materialDataArr
-  |> Js.Array.map(({baseColorFactor, baseColorTexture, name}: materialData) => {
+  |> Js.Array.map(
+       ({baseColorFactor, baseColorTexture, name}: lightMaterialData) => {
        let list = [];
 
        let list =
@@ -555,7 +629,9 @@ let encode =
         bufferViewDataArr,
         accessorDataArr,
         meshDataArr,
-        materialDataArr,
+        meshRendererDataArr,
+        basicMaterialDataArr,
+        lightMaterialDataArr,
         textureDataArr,
         samplerDataArr,
         imageUint8DataArr,
@@ -572,9 +648,13 @@ let encode =
     ("scene", 0 |> int),
     _encodeScenes(extensionsUsedArr, lightDataArr, imguiData, state),
     _encodeCameras(cameraDataArr),
-    _encodeExtras(arcballCameraControllerDataArr),
+    _encodeExtras(
+      meshRendererDataArr,
+      basicMaterialDataArr,
+      arcballCameraControllerDataArr,
+    ),
     _encodeNodes(nodeDataArr, state),
-    _encodeMaterials(materialDataArr),
+    _encodeLightMaterials(lightMaterialDataArr),
     _encodeTextures(textureDataArr),
     _encodeSamplers(samplerDataArr),
     _encodeImages(imageUint8DataArr),

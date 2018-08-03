@@ -219,15 +219,67 @@ let convertToArcballCameraControllerGameObjectIndexData =
   |> _checkGameObjectAndComponentIndicesCountShouldEqual;
 };
 
-let _convertToLightMaterialGameObjectIndexDataFromExtras =
-    (material, (gameObjectIndices, componentIndices), index) =>
-  switch (material) {
+/* let _isLines = mode => mode === 1;
+
+   let _isTriangles = mode => mode === 4; */
+
+let _convertToGameObjectIndexDataFromExtras =
+    (component, (gameObjectIndices, componentIndices), index) =>
+  switch (component) {
   | None => (gameObjectIndices, componentIndices)
-  | Some(material) => (
+  | Some(component) => (
       gameObjectIndices |> ArrayService.push(index),
-      componentIndices |> ArrayService.push(material),
+      componentIndices |> ArrayService.push(component),
     )
   };
+
+/* let _convertToBasicMaterialGameObjectIndexDataFromMesh =
+     (mesh, meshes, (gameObjectIndices, componentIndices), index) =>
+   switch (mesh) {
+   | None => (gameObjectIndices, componentIndices)
+   | Some(mesh) =>
+     let {primitives}: GLTFType.mesh = Array.unsafe_get(meshes, mesh);
+     let {material, mode}: GLTFType.primitive =
+       ConvertCommon.getPrimitiveData(primitives);
+     switch (material, mode) {
+     | (Some(material), Some(mode)) when _isLines(mode) => (
+         gameObjectIndices |> ArrayService.push(index),
+         componentIndices |> ArrayService.push(material),
+       )
+     | (None, _) => (gameObjectIndices, componentIndices)
+     };
+   }; */
+
+let convertToBasicMaterialGameObjectIndexData = (nodes, meshes, materials) => {
+  let (gameObjectIndices, componentIndices) =
+    nodes
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (.
+           (gameObjectIndices, componentIndices),
+           {mesh, extras}: GLTFType.node,
+           index,
+         ) =>
+           switch (extras) {
+           | None =>
+             /* _convertToBasicMaterialGameObjectIndexDataFromMesh(
+                  mesh,
+                  meshes,
+                  (gameObjectIndices, componentIndices),
+                  index,
+                ) */
+             (gameObjectIndices, componentIndices)
+           | Some({basicMaterial}) =>
+             _convertToGameObjectIndexDataFromExtras(
+               basicMaterial,
+               (gameObjectIndices, componentIndices),
+               index,
+             )
+           },
+         ([||], [||]),
+       );
+  ({gameObjectIndices, componentIndices}: WDType.componentGameObjectIndexData)
+  |> _checkGameObjectAndComponentIndicesCountShouldEqual;
+};
 
 let _convertToLightMaterialGameObjectIndexDataFromMesh =
     (mesh, meshes, (gameObjectIndices, componentIndices), index) =>
@@ -237,12 +289,14 @@ let _convertToLightMaterialGameObjectIndexDataFromMesh =
     let {primitives}: GLTFType.mesh = Array.unsafe_get(meshes, mesh);
     let {material}: GLTFType.primitive =
       ConvertCommon.getPrimitiveData(primitives);
+
     switch (material) {
-    | None => (gameObjectIndices, componentIndices)
+    /* | (Some(material), Some(mode)) when ! _isLines(mode) => ( */
     | Some(material) => (
         gameObjectIndices |> ArrayService.push(index),
         componentIndices |> ArrayService.push(material),
       )
+    | None => (gameObjectIndices, componentIndices)
     };
   };
 
@@ -263,9 +317,9 @@ let convertToLightMaterialGameObjectIndexData = (nodes, meshes, materials) => {
                (gameObjectIndices, componentIndices),
                index,
              )
-           | Some({material}) =>
-             _convertToLightMaterialGameObjectIndexDataFromExtras(
-               material,
+           | Some({lightMaterial}) =>
+             _convertToGameObjectIndexDataFromExtras(
+               lightMaterial,
                (gameObjectIndices, componentIndices),
                index,
              )
@@ -290,6 +344,37 @@ let convertToGeometryGameObjectIndexData = nodes => {
            | Some(mesh) => (
                gameObjectIndices |> ArrayService.push(index),
                componentIndices |> ArrayService.push(mesh),
+             )
+           },
+         ([||], [||]),
+       );
+  ({gameObjectIndices, componentIndices}: WDType.componentGameObjectIndexData)
+  |> _checkGameObjectAndComponentIndicesCountShouldEqual;
+};
+
+let convertToMeshRendererGameObjectIndexData = nodes => {
+  let (gameObjectIndices, componentIndices) =
+    nodes
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (.
+           (gameObjectIndices, componentIndices),
+           {mesh, extras}: GLTFType.node,
+           index,
+         ) =>
+           switch (extras) {
+           | None =>
+             switch (mesh) {
+             | None => (gameObjectIndices, componentIndices)
+             | Some(mesh) => (
+                 gameObjectIndices |> ArrayService.push(index),
+                 componentIndices |> ArrayService.push(mesh),
+               )
+             }
+           | Some({meshRenderer}) =>
+             _convertToGameObjectIndexDataFromExtras(
+               meshRenderer,
+               (gameObjectIndices, componentIndices),
+               index,
              )
            },
          ([||], [||]),

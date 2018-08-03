@@ -8,20 +8,20 @@ let _getBatchArrByIndices = (sourceArr, indices) =>
   indices |> Js.Array.map(index => Array.unsafe_get(sourceArr, index));
 
 /* TODO add drawMode */
-let _batchCreateMeshRendererArr =
-    (lightMaterialGameObjects, {gameObjects}, state) => {
-  let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
+/* let _batchCreateMeshRendererArr =
+       (lightMaterialGameObjects, {gameObjects}, state) => {
+     let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
 
-  AssembleCommon.checkNotDisposedBefore(
-    meshRendererRecord.disposedIndexArray,
-  );
+     AssembleCommon.checkNotDisposedBefore(
+       meshRendererRecord.disposedIndexArray,
+     );
 
-  let {index}: MeshRendererType.meshRendererRecord = meshRendererRecord;
-  let newIndex = index + (lightMaterialGameObjects |> Js.Array.length);
-  let indexArr = ArrayService.range(index, newIndex - 1);
-  state.meshRendererRecord = Some({...meshRendererRecord, index: newIndex});
-  (state, indexArr);
-};
+     let {index}: MeshRendererType.meshRendererRecord = meshRendererRecord;
+     let newIndex = index + (lightMaterialGameObjects |> Js.Array.length);
+     let indexArr = ArrayService.range(index, newIndex - 1);
+     state.meshRendererRecord = Some({...meshRendererRecord, index: newIndex});
+     (state, indexArr);
+   }; */
 
 let _getBatchComponentGameObjectData =
     (
@@ -29,9 +29,11 @@ let _getBatchComponentGameObjectData =
         gameObjectArr,
         transformArr,
         customGeometryArr,
+        meshRendererArr,
         basicCameraViewArr,
         perspectiveCameraProjectionArr,
         arcballCameraControllerArr,
+        basicMaterialArr,
         lightMaterialArr,
         directionLightArr,
         pointLightArr,
@@ -65,17 +67,31 @@ let _getBatchComponentGameObjectData =
       componentIndices
     |> _getBatchArrByIndices(customGeometryArr);
 
+  let meshRendererGameObjects =
+    indices.gameObjectIndices.meshRendererGameObjectIndexData.gameObjectIndices
+    |> _getBatchArrByIndices(gameObjectArr);
+  let gameObjectMeshRenderers =
+    indices.gameObjectIndices.meshRendererGameObjectIndexData.componentIndices
+    |> _getBatchArrByIndices(meshRendererArr);
+
+  let basicMaterialGameObjects =
+    indices.gameObjectIndices.basicMaterialGameObjectIndexData.
+      gameObjectIndices
+    |> _getBatchArrByIndices(gameObjectArr);
+  let gameObjectBasicMaterials =
+    indices.gameObjectIndices.basicMaterialGameObjectIndexData.componentIndices
+    |> _getBatchArrByIndices(basicMaterialArr);
+
   let lightMaterialGameObjects =
     indices.gameObjectIndices.lightMaterialGameObjectIndexData.
       gameObjectIndices
     |> _getBatchArrByIndices(gameObjectArr);
-
   let gameObjectLightMaterials =
     indices.gameObjectIndices.lightMaterialGameObjectIndexData.componentIndices
     |> _getBatchArrByIndices(lightMaterialArr);
 
-  let (state, meshRendererArr) =
-    _batchCreateMeshRendererArr(lightMaterialGameObjects, wd, state);
+  /* let (state, meshRendererArr) =
+     _batchCreateMeshRendererArr(lightMaterialGameObjects, wd, state); */
 
   (
     (
@@ -103,10 +119,12 @@ let _getBatchComponentGameObjectData =
       indices.gameObjectIndices.arcballCameraControllerGameObjectIndexData.
         componentIndices
       |> _getBatchArrByIndices(arcballCameraControllerArr),
+      basicMaterialGameObjects,
+      gameObjectBasicMaterials,
       lightMaterialGameObjects,
       gameObjectLightMaterials,
-      lightMaterialGameObjects,
-      meshRendererArr,
+      meshRendererGameObjects,
+      gameObjectMeshRenderers,
       indices.gameObjectIndices.directionLightGameObjectIndexData.
         gameObjectIndices
       |> _getBatchArrByIndices(gameObjectArr),
@@ -531,8 +549,39 @@ let _batchSetArcballCameraControllerData =
   {...state, arcballCameraControllerRecord};
 };
 
-let _batchSetLightMaterialData =
-    ({lightMaterials}, lightMaterialArr, {lightMaterialRecord} as state) =>
+let _batchSetMeshRendererData = ({meshRenderers}, meshRendererArr, state) =>
+  meshRenderers
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. state, meshRendererData, index) =>
+         meshRendererData |> OptionService.isJsonSerializedValueNone ?
+           state :
+           {
+             let {drawMode} =
+               meshRendererData |> OptionService.unsafeGetJsonSerializedValue;
+             let meshRenderer = meshRendererArr[index];
+
+             OperateMeshRendererMainService.setDrawMode(
+               meshRenderer,
+               drawMode |> DrawModeType.drawModeToUint8,
+               state,
+             );
+           },
+       state,
+     );
+
+let _batchSetBasicMaterialData = ({basicMaterials}, basicMaterialArr, state) =>
+  basicMaterials
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. state, {color, name}, index) => {
+         let material = basicMaterialArr[index];
+
+         OperateBasicMaterialMainService.setColor(material, color, state)
+         |> NameBasicMaterialMainService.setName(material, name);
+       },
+       state,
+     );
+
+let _batchSetLightMaterialData = ({lightMaterials}, lightMaterialArr, state) =>
   lightMaterials
   |> WonderCommonlib.ArrayService.reduceOneParami(
        (. state, {diffuseColor, name}, index) => {
@@ -598,9 +647,11 @@ let batchOperate =
         (
           transformArr,
           customGeometryArr,
+          meshRendererArr,
           basicCameraViewArr,
           perspectiveCameraProjectionArr,
           arcballCameraControllerArr,
+          basicMaterialArr,
           lightMaterialArr,
           directionLightArr,
           pointLightArr,
@@ -628,6 +679,8 @@ let batchOperate =
       gameObjectPerspectiveCameraProjection,
       arcballCameraControllerGameObjects,
       gameObjectArcballCameraController,
+      basicMaterialGameObjects,
+      gameObjectBasicMaterials,
       lightMaterialGameObjects,
       gameObjectLightMaterials,
       meshRendererGameObjects,
@@ -644,9 +697,11 @@ let batchOperate =
         gameObjectArr,
         transformArr,
         customGeometryArr,
+        meshRendererArr,
         basicCameraViewArr,
         perspectiveCameraProjectionArr,
         arcballCameraControllerArr,
+        basicMaterialArr,
         lightMaterialArr,
         directionLightArr,
         pointLightArr,
@@ -681,6 +736,8 @@ let batchOperate =
          perspectiveCameraProjectionArr,
        )
     |> _batchSetArcballCameraControllerData(wd, arcballCameraControllerArr)
+    |> _batchSetMeshRendererData(wd, meshRendererArr)
+    |> _batchSetBasicMaterialData(wd, basicMaterialArr)
     |> _batchSetLightMaterialData(wd, lightMaterialArr)
     |> BatchOperateLightSystem.batchSetDirectionLightData(
          wd,
@@ -707,6 +764,10 @@ let batchOperate =
     |> BatchAddGameObjectComponentMainService.batchAddArcballCameraControllerComponentForCreate(
          arcballCameraControllerGameObjects,
          gameObjectArcballCameraController,
+       )
+    |> BatchAddGameObjectComponentMainService.batchAddBasicMaterialComponentForCreate(
+         basicMaterialGameObjects,
+         gameObjectBasicMaterials,
        )
     |> BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForCreate(
          lightMaterialGameObjects,

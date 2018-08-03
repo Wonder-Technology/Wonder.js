@@ -104,6 +104,23 @@ let _batchCreateCustomGeometry =
   (state, indexArr);
 };
 
+let _batchCreateMeshRenderer = ({meshRenderers}, {settingRecord} as state) => {
+  AssembleCommon.checkNotDisposedBefore(
+    RecordMeshRendererMainService.getRecord(state).disposedIndexArray,
+  );
+
+  let ({index}: MeshRendererType.meshRendererRecord) as meshRendererRecord =
+    RecordMeshRendererMainService.getRecord(state);
+  let newIndex = index + (meshRenderers |> Js.Array.length);
+  let indexArr =
+    ArrayService.range(index, newIndex - 1)
+    |> _checkNotExceedMaxCountByIndex(
+         BufferSettingService.getMeshRendererCount(settingRecord),
+       );
+  state.meshRendererRecord = Some({...meshRendererRecord, index: newIndex});
+  (state, indexArr);
+};
+
 let _batchCreateBasicCameraView =
     ({basicCameraViews}, {basicCameraViewRecord} as state) => {
   AssembleCommon.checkNotDisposedBefore(
@@ -172,6 +189,39 @@ let _createArcballCameraControllerOneByOne =
        );
 
   ({...state, arcballCameraControllerRecord}, indexArr);
+};
+
+let _batchCreateBasicMaterial = ({basicMaterials}, {settingRecord} as state) => {
+  let ({index, textureCountMap}: BasicMaterialType.basicMaterialRecord) as basicMaterialRecord =
+    RecordBasicMaterialMainService.getRecord(state);
+
+  AssembleCommon.checkNotDisposedBefore(
+    basicMaterialRecord.disposedIndexArray,
+  );
+
+  let newIndex = index + (basicMaterials |> Js.Array.length);
+  let indexArr =
+    ArrayService.range(index, newIndex - 1)
+    |> _checkNotExceedMaxCountByIndex(
+         BufferSettingService.getBasicMaterialCount(settingRecord),
+       );
+  state.basicMaterialRecord =
+    Some({
+      ...basicMaterialRecord,
+      index: newIndex,
+      textureCountMap:
+        indexArr
+        |> WonderCommonlib.ArrayService.reduceOneParam(
+             (. textureCountMap, index) =>
+               WonderCommonlib.SparseMapService.set(
+                 index,
+                 TextureCountMapMaterialService.getDefaultCount(),
+                 textureCountMap,
+               ),
+             textureCountMap,
+           ),
+    });
+  (state, indexArr);
 };
 
 let _batchCreateLightMaterial = ({lightMaterials}, {settingRecord} as state) => {
@@ -341,11 +391,13 @@ let batchCreate = (wd, state) => {
   let (state, gameObjectArr) = _batchCreateGameObject(wd, state);
   let (state, transformArr) = _batchCreateTransform(wd, state);
   let (state, customGeometryArr) = _batchCreateCustomGeometry(wd, state);
+  let (state, meshRendererArr) = _batchCreateMeshRenderer(wd, state);
   let (state, basicCameraViewArr) = _batchCreateBasicCameraView(wd, state);
   let (state, perspectiveCameraProjectionArr) =
     _batchCreatePerspectiveCameraProjection(wd, state);
   let (state, arcballCameraControllerArr) =
     _createArcballCameraControllerOneByOne(wd, state);
+  let (state, basicMaterialArr) = _batchCreateBasicMaterial(wd, state);
   let (state, lightMaterialArr) = _batchCreateLightMaterial(wd, state);
   let (state, basicSourceTextureArr) =
     _batchCreateBasicSourceTextureArr(wd, state);
@@ -360,9 +412,11 @@ let batchCreate = (wd, state) => {
     (
       transformArr,
       customGeometryArr,
+      meshRendererArr,
       basicCameraViewArr,
       perspectiveCameraProjectionArr,
       arcballCameraControllerArr,
+      basicMaterialArr,
       lightMaterialArr,
       directionLightArr,
       pointLightArr,

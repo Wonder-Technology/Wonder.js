@@ -115,126 +115,135 @@ let _ =
                       {
                         name: Some("mesh0"),
                         primitives: [|
-                          {
-                            attributes: {
+                          ConvertGLBTool.buildPrimitive(
+                            ~attributes={
                               position: 2,
                               normal: None,
                               texCoord_0: None,
                               texCoord_1: None,
                             },
-                            indices: Some(0),
-                            material: Some(0),
-                          },
-                          {
-                            attributes: {
+                            ~indices=Some(0),
+                            ~material=Some(0),
+                            (),
+                          ),
+                          ConvertGLBTool.buildPrimitive(
+                            ~attributes={
                               position: 6,
                               normal: None,
                               texCoord_0: None,
                               texCoord_1: None,
                             },
-                            indices: Some(4),
-                            material: Some(1),
-                          },
+                            ~indices=Some(4),
+                            ~material=Some(1),
+                            (),
+                          ),
                         |],
                       },
                       {
                         name: None,
                         primitives: [|
-                          {
-                            attributes: {
+                          ConvertGLBTool.buildPrimitive(
+                            ~attributes={
                               position: 9,
                               normal: None,
                               texCoord_0: None,
                               texCoord_1: None,
                             },
-                            indices: Some(7),
-                            material: Some(2),
-                          },
+                            ~indices=Some(7),
+                            ~material=Some(2),
+                            (),
+                          ),
                         |],
                       },
                       {
                         name: None,
                         primitives: [|
-                          {
-                            attributes: {
+                          ConvertGLBTool.buildPrimitive(
+                            ~attributes={
                               position: 10,
                               normal: None,
                               texCoord_0: None,
                               texCoord_1: None,
                             },
-                            indices: Some(8),
-                            material: Some(2),
-                          },
-                          {
-                            attributes: {
+                            ~indices=Some(8),
+                            ~material=Some(2),
+                            (),
+                          ),
+                          ConvertGLBTool.buildPrimitive(
+                            ~attributes={
                               position: 6,
                               normal: None,
                               texCoord_0: None,
                               texCoord_1: None,
                             },
-                            indices: Some(4),
-                            material: Some(1),
-                          },
+                            ~indices=Some(4),
+                            ~material=Some(1),
+                            (),
+                          ),
                         |],
                       },
                       {
                         name: Some("mesh0_0"),
                         primitives: [|
-                          {
-                            attributes: {
+                          ConvertGLBTool.buildPrimitive(
+                            ~attributes={
                               position: 2,
                               normal: None,
                               texCoord_0: None,
                               texCoord_1: None,
                             },
-                            indices: Some(0),
-                            material: Some(0),
-                          },
+                            ~indices=Some(0),
+                            ~material=Some(0),
+                            (),
+                          ),
                         |],
                       },
                       {
                         name: Some("mesh0_1"),
                         primitives: [|
-                          {
-                            attributes: {
+                          ConvertGLBTool.buildPrimitive(
+                            ~attributes={
                               position: 6,
                               normal: None,
                               texCoord_0: None,
                               texCoord_1: None,
                             },
-                            indices: Some(4),
-                            material: Some(1),
-                          },
+                            ~indices=Some(4),
+                            ~material=Some(1),
+                            (),
+                          ),
                         |],
                       },
                       {
                         name: None,
                         primitives: [|
-                          {
-                            attributes: {
+                          ConvertGLBTool.buildPrimitive(
+                            ~attributes={
                               position: 10,
                               normal: None,
                               texCoord_0: None,
                               texCoord_1: None,
                             },
-                            indices: Some(8),
-                            material: Some(2),
-                          },
+                            ~indices=Some(8),
+                            ~material=Some(2),
+                            (),
+                          ),
                         |],
                       },
                       {
                         name: None,
                         primitives: [|
-                          {
-                            attributes: {
+                          ConvertGLBTool.buildPrimitive(
+                            ~attributes={
                               position: 6,
                               normal: None,
                               texCoord_0: None,
                               texCoord_1: None,
                             },
-                            indices: Some(4),
-                            material: Some(1),
-                          },
+                            ~indices=Some(4),
+                            ~material=Some(1),
+                            (),
+                          ),
                         |],
                       },
                     |];

@@ -8,6 +8,8 @@ type accessorIndex = int;
 
 type transformIndex = int;
 
+type basicMaterialIndex = int;
+
 type lightMaterialIndex = int;
 
 type textureIndex = int;
@@ -46,12 +48,13 @@ type transform = {
   scale: option((float, float, float)),
 };
 
+type meshRenderer = {drawMode: DrawModeType.drawMode};
+
 type customGeometry = {
   position: accessorIndex,
   normal: option(accessorIndex),
   texCoord: option(accessorIndex),
   index: accessorIndex,
-  /* TODO add mode */
 };
 
 type perspectiveCameraProjection = {
@@ -66,6 +69,11 @@ type lightMaterial = {
   diffuseColor: array(float),
   /* specularColor: option(array(float)),
      shininess: option(float) */
+  name: string,
+};
+
+type basicMaterial = {
+  color: array(float),
   name: string,
 };
 
@@ -157,10 +165,12 @@ type gameObjectIndices = {
   basicCameraViewGameObjectIndexData: componentGameObjectIndexData,
   perspectiveCameraProjectionGameObjectIndexData: componentGameObjectIndexData,
   arcballCameraControllerGameObjectIndexData: componentGameObjectIndexData,
+  basicMaterialGameObjectIndexData: componentGameObjectIndexData,
   lightMaterialGameObjectIndexData: componentGameObjectIndexData,
   directionLightGameObjectIndexData: componentGameObjectIndexData,
   pointLightGameObjectIndexData: componentGameObjectIndexData,
   customGeometryGameObjectIndexData: componentGameObjectIndexData,
+  meshRendererGameObjectIndexData: componentGameObjectIndexData,
 };
 
 type mapMaterialIndexData = {
@@ -229,5 +239,7 @@ type wd = {
   arcballCameraControllers: array(SceneGraphType.arcballCameraController),
   transforms: array(transform),
   customGeometrys: array(option(customGeometry)),
+  meshRenderers: array(option(meshRenderer)),
+  basicMaterials: array(basicMaterial),
   lightMaterials: array(lightMaterial),
 };

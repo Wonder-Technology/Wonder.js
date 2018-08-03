@@ -14,5 +14,6 @@ type basicMaterialRecord = {
   gameObjectMap,
   groupCountMap,
   disposedIndexArray,
-  mutable materialArrayForWorkerInit: array(int)
+  nameMap: WonderCommonlib.SparseMapService.t(string),
+  mutable materialArrayForWorkerInit: array(int),
 };
