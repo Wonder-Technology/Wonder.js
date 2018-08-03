@@ -1,36 +1,48 @@
-let _convertToMeshRendererByMesh =
-    ({primitives}: GLTFType.mesh)
-    : option(WDType.meshRenderer) =>
-  primitives |> Js.Array.length > 1 ?
-    None :
-    {
-      let {mode}: GLTFType.primitive =
-        ConvertCommon.getPrimitiveData(primitives);
+let _convertByMesh =
+    (meshes, customGeometryGameObjectIndices, customGeometryIndices) =>
+  customGeometryGameObjectIndices
+  |> Js.Array.mapi((_, index) => {
+       let customGeometryIndex =
+         Array.unsafe_get(customGeometryIndices, index);
 
-      Some({
-        drawMode:
-          switch (mode) {
-          | Some(0) => DrawModeType.Points
-          | Some(1) => DrawModeType.Lines
-          | Some(2) => DrawModeType.Line_loop
-          | Some(3) => DrawModeType.Line_strip
-          | Some(4) => DrawModeType.Triangles
-          | Some(5) => DrawModeType.Triangle_strip
-          | Some(6) => DrawModeType.Triangle_fan
-          | None => DrawModeType.Triangles
-          },
-      });
-    };
+       let {primitives}: GLTFType.mesh =
+         Array.unsafe_get(meshes, customGeometryIndex);
 
-let convertToMeshRenderers = ({extras, meshes}: GLTFType.gltf) =>
+       let {mode}: GLTFType.primitive =
+         ConvertCommon.getPrimitiveData(primitives);
+
+       Some(
+         {
+           drawMode:
+             switch (mode) {
+             | Some(0) => DrawModeType.Points
+             | Some(1) => DrawModeType.Lines
+             | Some(2) => DrawModeType.Line_loop
+             | Some(3) => DrawModeType.Line_strip
+             | Some(4) => DrawModeType.Triangles
+             | Some(5) => DrawModeType.Triangle_strip
+             | Some(6) => DrawModeType.Triangle_fan
+             | None => DrawModeType.Triangles
+             },
+         }: WDType.meshRenderer,
+       );
+     });
+
+let convertToMeshRenderers =
+    (
+      {
+        gameObjectIndices: customGeometryGameObjectIndices,
+        componentIndices: customGeometryIndices,
+      }: WDType.componentGameObjectIndexData,
+      {extras, meshes}: GLTFType.gltf,
+    ) =>
   switch (extras) {
   | None =>
-    meshes
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. arr, mesh) =>
-           arr |> ArrayService.push(_convertToMeshRendererByMesh(mesh)),
-         [||],
-       )
+    _convertByMesh(
+      meshes,
+      customGeometryGameObjectIndices,
+      customGeometryIndices,
+    )
   | Some({meshRenderers}) =>
     switch (meshRenderers) {
     | Some(meshRenderers) when Js.Array.length(meshRenderers) > 0 =>
@@ -45,13 +57,11 @@ let convertToMeshRenderers = ({extras, meshes}: GLTFType.gltf) =>
                 ),
            [||],
          )
-
     | _ =>
-      meshes
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. arr, mesh) =>
-             arr |> ArrayService.push(_convertToMeshRendererByMesh(mesh)),
-           [||],
-         )
+      _convertByMesh(
+        meshes,
+        customGeometryGameObjectIndices,
+        customGeometryIndices,
+      )
     }
   };

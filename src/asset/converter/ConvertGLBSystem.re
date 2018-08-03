@@ -154,6 +154,8 @@ let _buildWDBJsonUint8Array = gltf => {
   let (ambientLightArr, directionLightArr, pointLightArr) =
     ConvertLightsSystem.convertToLights(gltf);
 
+  let indices = ConvertIndicesSystem.convertToIndices(gltf);
+
   let encoder = TextEncoder.newTextEncoder();
 
   encoder
@@ -166,7 +168,7 @@ let _buildWDBJsonUint8Array = gltf => {
            },
            scene: _convertToScene(ambientLightArr, gltf),
            gameObjects: ConvertGameObjectsSystem.convert(gltf),
-           indices: ConvertIndicesSystem.convertToIndices(gltf),
+           indices,
            transforms: ConvertTransformsSystem.convertToTransforms(gltf),
            basicCameraViews:
              ConvertCamerasSystem.convertToBasicCameraViews(gltf),
@@ -180,7 +182,10 @@ let _buildWDBJsonUint8Array = gltf => {
              ConvertMaterialsSystem.convertToLightMaterials(gltf),
            customGeometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),
            meshRenderers:
-             ConvertMeshRenderersSystem.convertToMeshRenderers(gltf),
+             ConvertMeshRenderersSystem.convertToMeshRenderers(
+               indices.gameObjectIndices.customGeometryGameObjectIndexData,
+               gltf,
+             ),
            basicSourceTextures:
              ConvertTexturesSystem.convertToBasicSourceTextures(gltf),
            samplers: ConvertTexturesSystem.convertToSamplers(gltf),

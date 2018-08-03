@@ -297,7 +297,8 @@ let _ =
                 meshRenderers
                 |>
                 expect == [|
-                            ConvertTool.getJsonSerializedNone(),
+                            Some({drawMode: DrawModeType.Triangles}),
+                            Some({drawMode: DrawModeType.Triangles}),
                             Some({drawMode: DrawModeType.Triangles}),
                             Some({drawMode: DrawModeType.Triangles}),
                             Some({drawMode: DrawModeType.Triangles}),
@@ -358,7 +359,7 @@ let _ =
                       |>
                       expect == {
                                   gameObjectIndices: [|1, 3, 4, 5, 6|],
-                                  componentIndices: [|1, 2, 3, 2, 3|],
+                                  componentIndices: [|0, 1, 2, 3, 4|],
                                 },
                   (),
                 )
@@ -1189,36 +1190,63 @@ let _ =
       )
     );
 
-    describe("test meshRenderers", () => {
-      test("test single primitive", () =>
-        ConvertGLBTool.testGLTFResultByGLTF(
-          ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
-          ~state,
-          ~testFunc=
-            ({meshRenderers}) =>
-              meshRenderers
-              |> expect == [|Some({drawMode: DrawModeType.Triangles})|],
-          (),
-        )
-      );
-      test("test extras", () =>
-        ConvertGLBTool.testGLTFResultByGLTF(
-          ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfMeshRenderer(),
-          ~state,
-          ~testFunc=
-            ({meshRenderers}) =>
-              meshRenderers
-              |>
-              expect == [|
-                          Some({drawMode: DrawModeType.Lines}),
-                          Some({drawMode: DrawModeType.Line_strip}),
-                        |],
-          (),
-        )
-      );
-    });
+    describe("test meshRenderers", () =>
+      describe(
+        {|meshRenderers.length should === custom geometry gameObjects.length;
+meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
+|},
+        () => {
+          test("test single primitive", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+              ~state,
+              ~testFunc=
+                ({meshRenderers}) =>
+                  meshRenderers
+                  |> expect == [|Some({drawMode: DrawModeType.Triangles})|],
+              (),
+            )
+          );
+          test("test extras", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfMeshRenderer(),
+              ~state,
+              ~testFunc=
+                ({meshRenderers}) =>
+                  meshRenderers
+                  |>
+                  expect == [|
+                              Some({drawMode: DrawModeType.Lines}),
+                              Some({drawMode: DrawModeType.Line_strip}),
+                            |],
+              (),
+            )
+          );
+
+          describe("test different nodes share the same mesh", () =>
+            test("test truck glb", () =>
+              ConvertGLBTool.testResult(
+                sandbox^,
+                GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+                (({meshRenderers}, binBuffer)) =>
+                meshRenderers
+                |>
+                expect == [|
+                            Some({drawMode: DrawModeType.Triangles}),
+                            Some({drawMode: DrawModeType.Triangles}),
+                            Some({drawMode: DrawModeType.Triangles}),
+                            Some({drawMode: DrawModeType.Triangles}),
+                            Some({drawMode: DrawModeType.Triangles}),
+                          |]
+              )
+            )
+          );
+        },
+      )
+    );
 
     describe("test indices", () => {
       describe("test gameObjectIndices", () => {
@@ -1338,7 +1366,7 @@ let _ =
               |>
               expect == _buildComponentIndexData(
                           [|2, 4, 5, 6, 7|],
-                          [|1, 1, 2, 3, 4|],
+                          [|0, 1, 2, 3, 4|],
                         )
             )
           );

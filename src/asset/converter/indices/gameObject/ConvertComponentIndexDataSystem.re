@@ -362,7 +362,10 @@ let convertToMeshRendererGameObjectIndexData = nodes => {
              | None => (gameObjectIndices, componentIndices)
              | Some(mesh) => (
                  gameObjectIndices |> ArrayService.push(index),
-                 componentIndices |> ArrayService.push(mesh),
+                 componentIndices
+                 |> ArrayService.push(
+                      (gameObjectIndices |> Js.Array.length) - 1,
+                    ),
                )
              }
            },
