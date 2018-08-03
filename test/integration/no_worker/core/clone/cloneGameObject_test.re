@@ -695,6 +695,7 @@ let _ =
             );
           });
         });
+
         describe("test clone light material component", () => {
           let _cloneGameObject = (gameObject, isShareMaterial, count, state) =>
             CloneTool.cloneGameObject(
@@ -761,6 +762,33 @@ let _ =
                      ),
                 );
               };
+
+              test("test name", () => {
+                let (state, gameObject, material) = _prepare();
+                let name = "name1";
+                let state =
+                  state
+                  |> LightMaterialAPI.setLightMaterialName(material, name);
+                let (state, _, clonedMaterialArr) =
+                  _clone(gameObject, state);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(~sandbox, ()),
+                     );
+                let state = AllMaterialTool.prepareForInit(state);
+                (
+                  LightMaterialAPI.unsafeGetLightMaterialName(
+                    clonedMaterialArr[0],
+                    state,
+                  ),
+                  LightMaterialAPI.unsafeGetLightMaterialName(
+                    clonedMaterialArr[1],
+                    state,
+                  ),
+                )
+                |> expect == (name, name);
+              });
               test("test diffuse color", () => {
                 let (state, gameObject, material) = _prepare();
                 let color = [|1., 0.2, 0.3|];
