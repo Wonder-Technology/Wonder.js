@@ -6,34 +6,39 @@ open Js.Typed_array;
 
 open BufferCustomGeometryService;
 
-let getRecord = ({customGeometryRecord}) => customGeometryRecord |> OptionService.unsafeGet;
+let getRecord = ({customGeometryRecord}) =>
+  customGeometryRecord |> OptionService.unsafeGet;
 
 let setAllTypeArrDataToDefault =
-    (geometryCount: int, geometryPointCount, (vertices, texCoords, normals, indices)) => (
+    (
+      geometryCount: int,
+      geometryPointCount,
+      (vertices, texCoords, normals, indices),
+    ) => (
   vertices
   |> Js.Typed_array.Float32Array.fillRangeInPlace(
        0.,
        ~start=0,
-       ~end_=geometryCount * geometryPointCount * getVertexSize()
+       ~end_=geometryCount * geometryPointCount * getVertexSize(),
      ),
   texCoords
   |> Js.Typed_array.Float32Array.fillRangeInPlace(
        0.,
        ~start=0,
-       ~end_=geometryCount * geometryPointCount * getTexCoordsSize()
+       ~end_=geometryCount * geometryPointCount * getTexCoordsSize(),
      ),
   normals
   |> Js.Typed_array.Float32Array.fillRangeInPlace(
        0.,
        ~start=0,
-       ~end_=geometryCount * geometryPointCount * getVertexSize()
+       ~end_=geometryCount * geometryPointCount * getVertexSize(),
      ),
   indices
   |> Js.Typed_array.Uint16Array.fillRangeInPlace(
        0,
        ~start=0,
-       ~end_=geometryCount * geometryPointCount * getIndexSize()
-     )
+       ~end_=geometryCount * geometryPointCount * getIndexSize(),
+     ),
 );
 
 let _initBufferData = (geometryPointCount, geometryCount) => {
@@ -46,12 +51,12 @@ let _initBufferData = (geometryPointCount, geometryCount) => {
     verticesInfos,
     texCoordsInfos,
     normalsInfos,
-    indicesInfos
+    indicesInfos,
   ) =
     CreateTypeArrayCustomGeometryService.createTypeArrays(
       buffer,
       geometryPointCount,
-      geometryCount
+      geometryCount,
     );
   (
     buffer,
@@ -62,13 +67,15 @@ let _initBufferData = (geometryPointCount, geometryCount) => {
     verticesInfos,
     texCoordsInfos,
     normalsInfos,
-    indicesInfos
-  )
+    indicesInfos,
+  );
 };
 
 let create = ({settingRecord} as state) => {
-  let geometryPointCount = BufferSettingService.getCustomGeometryPointCount(settingRecord);
-  let geometryCount = BufferSettingService.getCustomGeometryCount(settingRecord);
+  let geometryPointCount =
+    BufferSettingService.getCustomGeometryPointCount(settingRecord);
+  let geometryCount =
+    BufferSettingService.getCustomGeometryCount(settingRecord);
   let (
     buffer,
     vertices,
@@ -78,7 +85,7 @@ let create = ({settingRecord} as state) => {
     verticesInfos,
     texCoordsInfos,
     normalsInfos,
-    indicesInfos
+    indicesInfos,
   ) =
     _initBufferData(geometryPointCount, geometryCount);
   state.customGeometryRecord =
@@ -105,12 +112,12 @@ let create = ({settingRecord} as state) => {
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
       aliveIndexArray: WonderCommonlib.ArrayService.createEmpty(),
       /* isInitMap: WonderCommonlib.SparseMapService.createEmpty(), */
-      groupCountMap: WonderCommonlib.SparseMapService.createEmpty()
+      groupCountMap: WonderCommonlib.SparseMapService.createEmpty(),
     });
-  state
+  state;
 };
 
-let deepCopyForRestore = (state) => {
+let deepCopyForRestore = state => {
   let {
         index,
         vertices,
@@ -126,9 +133,10 @@ let deepCopyForRestore = (state) => {
         gameObjectMap,
         disposedIndexArray,
         disposedIndexMap,
-        aliveIndexArray
+        aliveIndexArray,
       } as record =
     state |> getRecord;
+
   {
     ...state,
     customGeometryRecord:
@@ -136,14 +144,19 @@ let deepCopyForRestore = (state) => {
         ...record,
         index,
         vertices:
-          vertices |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getVertexSize()),
+          vertices
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(verticesOffset),
         texCoords:
           texCoords
-          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getTexCoordsSize()),
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               texCoordsOffset,
+             ),
         normals:
-          normals |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getVertexSize()),
+          normals
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(normalsOffset),
         indices:
-          indices |> CopyTypeArrayService.copyUint16ArrayWithEndIndex(index * getIndexSize()),
+          indices
+          |> CopyTypeArrayService.copyUint16ArrayWithEndIndex(indicesOffset),
         verticesOffset,
         texCoordsOffset,
         normalsOffset,
@@ -153,7 +166,7 @@ let deepCopyForRestore = (state) => {
         gameObjectMap: gameObjectMap |> SparseMapService.copy,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
         disposedIndexMap: disposedIndexMap |> SparseMapService.copy,
-        aliveIndexArray: aliveIndexArray |> Js.Array.copy
-      })
-  }
+        aliveIndexArray: aliveIndexArray |> Js.Array.copy,
+      }),
+  };
 };

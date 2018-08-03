@@ -3,9 +3,16 @@ open StateDataMainType;
 open CustomGeometryType;
 
 let _restoreTypeArrays =
-    (customGeometryPointCount, currentCustomGeometryRecord, targetCustomGeometryRecord) =>
+    (
+      customGeometryPointCount,
+      currentCustomGeometryRecord,
+      targetCustomGeometryRecord,
+    ) =>
   currentCustomGeometryRecord.vertices === targetCustomGeometryRecord.vertices
   && currentCustomGeometryRecord.normals === targetCustomGeometryRecord.normals
+  &&
+  currentCustomGeometryRecord.texCoords === targetCustomGeometryRecord.
+                                              texCoords
   && currentCustomGeometryRecord.indices === targetCustomGeometryRecord.indices ?
     (currentCustomGeometryRecord, targetCustomGeometryRecord) :
     {
@@ -17,44 +24,54 @@ let _restoreTypeArrays =
             currentCustomGeometryRecord.vertices,
             currentCustomGeometryRecord.texCoords,
             currentCustomGeometryRecord.normals,
-            currentCustomGeometryRecord.indices
-          )
+            currentCustomGeometryRecord.indices,
+          ),
         );
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (currentCustomGeometryRecord.vertices, 0),
         (targetCustomGeometryRecord.vertices, 0),
-        Js.Typed_array.Float32Array.length(targetCustomGeometryRecord.vertices)
+        Js.Typed_array.Float32Array.length(
+          targetCustomGeometryRecord.vertices,
+        ),
       )
       |> ignore;
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (currentCustomGeometryRecord.texCoords, 0),
         (targetCustomGeometryRecord.texCoords, 0),
-        Js.Typed_array.Float32Array.length(targetCustomGeometryRecord.texCoords)
+        Js.Typed_array.Float32Array.length(
+          targetCustomGeometryRecord.texCoords,
+        ),
       )
       |> ignore;
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (currentCustomGeometryRecord.normals, 0),
         (targetCustomGeometryRecord.normals, 0),
-        Js.Typed_array.Float32Array.length(targetCustomGeometryRecord.normals)
+        Js.Typed_array.Float32Array.length(
+          targetCustomGeometryRecord.normals,
+        ),
       )
       |> ignore;
       TypeArrayService.fillUint16ArrayWithUint16Array(
         (currentCustomGeometryRecord.indices, 0),
         (targetCustomGeometryRecord.indices, 0),
-        Js.Typed_array.Uint16Array.length(targetCustomGeometryRecord.indices)
+        Js.Typed_array.Uint16Array.length(targetCustomGeometryRecord.indices),
       )
       |> ignore;
-      (currentCustomGeometryRecord, targetCustomGeometryRecord)
+      (currentCustomGeometryRecord, targetCustomGeometryRecord);
     };
 
 let restore = (currentState, targetState) => {
-  let currentCustomGeometryRecord = RecordCustomGeometryMainService.getRecord(currentState);
-  let targetCustomGeometryRecord = RecordCustomGeometryMainService.getRecord(targetState);
+  let currentCustomGeometryRecord =
+    RecordCustomGeometryMainService.getRecord(currentState);
+  let targetCustomGeometryRecord =
+    RecordCustomGeometryMainService.getRecord(targetState);
   let (currentCustomGeometryRecord, targetCustomGeometryRecord) =
     _restoreTypeArrays(
-      BufferSettingService.getCustomGeometryPointCount(currentState.settingRecord),
+      BufferSettingService.getCustomGeometryPointCount(
+        currentState.settingRecord,
+      ),
       currentCustomGeometryRecord,
-      targetCustomGeometryRecord
+      targetCustomGeometryRecord,
     );
   {
     ...targetState,
@@ -65,7 +82,7 @@ let restore = (currentState, targetState) => {
         vertices: currentCustomGeometryRecord.vertices,
         texCoords: currentCustomGeometryRecord.texCoords,
         normals: currentCustomGeometryRecord.normals,
-        indices: currentCustomGeometryRecord.indices
-      })
-  }
+        indices: currentCustomGeometryRecord.indices,
+      }),
+  };
 };

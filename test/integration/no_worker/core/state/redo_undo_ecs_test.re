@@ -1957,14 +1957,45 @@ let _ =
         );
       });
       describe("restore customGeometry record to target state", () => {
+        let _createGameObjectAndSetPointData =
+            (state: StateDataMainType.state) => {
+          open Js.Typed_array;
+          open CustomGeometryAPI;
+
+          let (state, geometry) = createCustomGeometry(state);
+          let (state, gameObject) = GameObjectAPI.createGameObject(state);
+          let state =
+            state
+            |> GameObjectAPI.addGameObjectCustomGeometryComponent(
+                 gameObject,
+                 geometry,
+               );
+          let vertices1 = Float32Array.make([|10., 10., 10., 10., 10., 10.|]);
+          let texCoords1 = Float32Array.make([|0.5, 0.5, 0.5, 0.5|]);
+          let normals1 = Float32Array.make([|1., 1., 1., 1., 1., 1.|]);
+          let indices1 = Uint16Array.make([|0, 2, 1|]);
+          let state =
+            state
+            |> setCustomGeometryVertices(geometry, vertices1)
+            |> setCustomGeometryTexCoords(geometry, texCoords1)
+            |> setCustomGeometryNormals(geometry, normals1)
+            |> setCustomGeometryIndices(geometry, indices1);
+          (
+            state,
+            gameObject,
+            geometry,
+            (vertices1, texCoords1, normals1, indices1),
+          );
+        };
+
         let _prepare = () => {
           let state =
             TestTool.initWithJobConfigWithoutBuildFakeDom(
               ~sandbox,
               ~buffer=
                 SettingTool.buildBufferConfigStr(
-                  ~customGeometryPointCount=4,
-                  ~customGeometryCount=3,
+                  ~customGeometryPointCount=6,
+                  ~customGeometryCount=6,
                   (),
                 ),
               (),
@@ -1975,7 +2006,7 @@ let _ =
             geometry1,
             (vertices1, texCoords1, normals1, indices1),
           ) =
-            CustomGeometryTool.createGameObjectAndSetPointData(state);
+            _createGameObjectAndSetPointData(state);
           let state =
             state
             |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
@@ -2018,6 +2049,12 @@ let _ =
           expect == (
                       Float32Array.make([|
                         10.,
+                        10.,
+                        10.,
+                        10.,
+                        10.,
+                        10.,
+                        0.,
                         0.,
                         0.,
                         0.,
@@ -2030,8 +2067,26 @@ let _ =
                         0.,
                         0.,
                       |]),
-                      Float32Array.make([|0.5, 0., 0., 0., 0., 0., 0., 0.|]),
                       Float32Array.make([|
+                        0.5,
+                        0.5,
+                        0.5,
+                        0.5,
+                        0.,
+                        0.,
+                        0.,
+                        0.,
+                        0.,
+                        0.,
+                        0.,
+                        0.,
+                      |]),
+                      Float32Array.make([|
+                        1.,
+                        1.,
+                        1.,
+                        1.,
+                        1.,
                         1.,
                         0.,
                         0.,
@@ -2044,8 +2099,9 @@ let _ =
                         0.,
                         0.,
                         0.,
+                        0.,
                       |]),
-                      Uint16Array.make([|2, 0, 0, 0|]),
+                      Uint16Array.make([|0, 2, 1, 0, 0, 0|]),
                     );
         });
         test("test set point after restore", () => {
