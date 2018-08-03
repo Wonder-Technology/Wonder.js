@@ -1,5 +1,5 @@
 let _createDefaultMaterial = () : GLTFType.material => {
-  name: Some("defaultMaterial"),
+  name: Some("defaultLightMaterial"),
   pbrMetallicRoughness:
     Some({
       baseColorFactor: Some([|1., 1., 1.|]),

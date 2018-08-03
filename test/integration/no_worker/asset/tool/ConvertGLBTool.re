@@ -75,7 +75,7 @@ let buildNode =
 };
 
 let buildPrimitive =
-    (~attributes, ~indices=None, ~material=None, ~mode=None, ())
+    (~attributes, ~indices=None, ~material=None, ~mode=Some(4), ())
     : GLTFType.primitive => {
   attributes,
   indices,
@@ -102,6 +102,8 @@ let buildGLTFJson =
     ]|},
       ~cameras={|
         []|},
+      ~meshRenderers={|[]|},
+      ~basicMaterials={|[]|},
       ~arcballCameraControllers={|
         []|},
       ~nodes={| [
@@ -293,6 +295,8 @@ let buildGLTFJson =
     "extensions":$extensions,
     "extensionsUsed": $extensionsUsed,
     "extras": {
+        "meshRenderers": $meshRenderers,
+        "basicMaterials": $basicMaterials,
         "arcballCameraControllers": $arcballCameraControllers
     }
 }
@@ -763,6 +767,164 @@ let buildGLTFJsonOfArcballCameraController = () =>
         }
     ]
         |},
+    (),
+  );
+
+let buildGLTFJsonOfMeshRenderer = () =>
+  buildGLTFJson(
+    ~nodes=
+      {| [
+        {
+            "mesh": 0,
+            "extras": {
+                "meshRenderer": 1
+            }
+        }
+    ]|},
+    ~meshRenderers=
+      {j|
+[
+        {
+            "drawMode": 1
+        }, 
+        {
+            "drawMode": 3
+        }
+    ]
+        |j},
+    (),
+  );
+
+let buildGLTFJsonOfBasicMaterial =
+    (~colorFactor=[|0., 0., 1., 1.|], ~name="basicMaterial", ()) =>
+  buildGLTFJson(
+    ~nodes=
+      {| [
+        {
+            "mesh": 0,
+            "extras": {
+                "basicMaterial": 0
+            }
+        }
+    ]|},
+    ~basicMaterials=
+      {j|
+[
+        {
+            "colorFactor": [$colorFactor],
+            "name": "$name"
+        }
+    ]
+        |j},
+    (),
+  );
+
+let buildGLTFJsonOfLightMaterial = () =>
+  buildGLTFJson(
+    ~nodes=
+      {| [
+        {
+            "mesh": 0,
+            "extras": {
+                "lightMaterial": 1
+            }
+        }
+    ]|},
+    ~meshes=
+      {| [
+        {"primitives": [
+        {
+            "attributes": {
+                "POSITION": 2
+            },
+            "indices": 0,
+            "material": 0
+        }
+    ]}
+    ]|},
+    ~materials=
+      {| [
+        {
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [0.5, 1.0, 1.0, 1.0],
+                "metallicFactor": 0.0
+            },
+            "name": "lightMaterial_0"
+        },
+        {
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [0.7, 1.0, 1.0, 1.0],
+                "metallicFactor": 0.0
+            },
+            "name": "lightMaterial_1"
+        }
+    ]|},
+    (),
+  );
+
+let buildGLTFJsonOfBasicMaterialAndLightMaterial =
+    () =>
+  buildGLTFJson(
+    ~nodes=
+      {| [
+        {
+
+            "children": [
+                1, 2
+            ],
+            "extras": {
+                "basicMaterial": 0
+            }
+        },
+{
+            "mesh": 0,
+            "extras": {
+                "lightMaterial": 1
+            }
+        },
+
+{
+            "mesh": 0
+        }
+    ]|},
+    ~basicMaterials=
+      {j|
+[
+        {
+            "colorFactor": [0.5, 1.0, 0.2, 0.0],
+            "name": "basicMaterial_0"
+        }
+    ]
+        |j},
+    ~meshes=
+      {| [
+        {"primitives": [
+        {
+            "attributes": {
+                "POSITION": 2
+            },
+            "indices": 0,
+            "material": 0
+        }
+    ]}
+    ]|},
+    ~materials=
+      {| [
+        {
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [0.5, 1.0, 1.0, 1.0],
+                "metallicFactor": 0.0
+            },
+            "name": "lightMaterial_0"
+        },
+        {
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [0.7, 1.0, 1.0, 1.0],
+                "metallicFactor": 0.0
+            },
+            "name": "lightMaterial_1"
+        }
+    ]|},
     (),
   );
 

@@ -224,14 +224,10 @@ let convertToArcballCameraControllerGameObjectIndexData =
    let _isTriangles = mode => mode === 4; */
 
 let _convertToGameObjectIndexDataFromExtras =
-    (component, (gameObjectIndices, componentIndices), index) =>
-  switch (component) {
-  | None => (gameObjectIndices, componentIndices)
-  | Some(component) => (
-      gameObjectIndices |> ArrayService.push(index),
-      componentIndices |> ArrayService.push(component),
-    )
-  };
+    (component, (gameObjectIndices, componentIndices), index) => (
+  gameObjectIndices |> ArrayService.push(index),
+  componentIndices |> ArrayService.push(component),
+);
 
 /* let _convertToBasicMaterialGameObjectIndexDataFromMesh =
      (mesh, meshes, (gameObjectIndices, componentIndices), index) =>
@@ -260,20 +256,13 @@ let convertToBasicMaterialGameObjectIndexData = (nodes, meshes, materials) => {
            index,
          ) =>
            switch (extras) {
-           | None =>
-             /* _convertToBasicMaterialGameObjectIndexDataFromMesh(
-                  mesh,
-                  meshes,
-                  (gameObjectIndices, componentIndices),
-                  index,
-                ) */
-             (gameObjectIndices, componentIndices)
-           | Some({basicMaterial}) =>
+           | Some({basicMaterial}) when basicMaterial |> Js.Option.isSome =>
              _convertToGameObjectIndexDataFromExtras(
-               basicMaterial,
+               basicMaterial |> OptionService.unsafeGet,
                (gameObjectIndices, componentIndices),
                index,
              )
+           | _ => (gameObjectIndices, componentIndices)
            },
          ([||], [||]),
        );
@@ -310,16 +299,16 @@ let convertToLightMaterialGameObjectIndexData = (nodes, meshes, materials) => {
            index,
          ) =>
            switch (extras) {
-           | None =>
-             _convertToLightMaterialGameObjectIndexDataFromMesh(
-               mesh,
-               meshes,
+           | Some({lightMaterial}) when lightMaterial |> Js.Option.isSome =>
+             _convertToGameObjectIndexDataFromExtras(
+               lightMaterial |> OptionService.unsafeGet,
                (gameObjectIndices, componentIndices),
                index,
              )
-           | Some({lightMaterial}) =>
-             _convertToGameObjectIndexDataFromExtras(
-               lightMaterial,
+           | _ =>
+             _convertToLightMaterialGameObjectIndexDataFromMesh(
+               mesh,
+               meshes,
                (gameObjectIndices, componentIndices),
                index,
              )
@@ -362,7 +351,13 @@ let convertToMeshRendererGameObjectIndexData = nodes => {
            index,
          ) =>
            switch (extras) {
-           | None =>
+           | Some({meshRenderer}) when meshRenderer |> Js.Option.isSome =>
+             _convertToGameObjectIndexDataFromExtras(
+               meshRenderer |> OptionService.unsafeGet,
+               (gameObjectIndices, componentIndices),
+               index,
+             )
+           | _ =>
              switch (mesh) {
              | None => (gameObjectIndices, componentIndices)
              | Some(mesh) => (
@@ -370,12 +365,6 @@ let convertToMeshRendererGameObjectIndexData = nodes => {
                  componentIndices |> ArrayService.push(mesh),
                )
              }
-           | Some({meshRenderer}) =>
-             _convertToGameObjectIndexDataFromExtras(
-               meshRenderer,
-               (gameObjectIndices, componentIndices),
-               index,
-             )
            },
          ([||], [||]),
        );

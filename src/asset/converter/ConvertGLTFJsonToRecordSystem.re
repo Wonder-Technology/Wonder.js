@@ -260,7 +260,7 @@ let _convertExtras = json =>
                       (
                         {
                           colorFactor:
-                            json |> optional(field("color", array(float))),
+                            json |> optional(field("colorFactor", array(float))),
                           name: json |> optional(field("name", string)),
                         }: basicMaterial
                       )

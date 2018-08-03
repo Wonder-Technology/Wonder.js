@@ -177,6 +177,18 @@ let getAllGeometryData = (rootGameObject, state) =>
 
 let batchCreate = BatchCreateSystem.batchCreate;
 
+let getAllBasicMaterials = (rootGameObject, state) =>
+  getAllGameObjects(rootGameObject, state)
+  |> Js.Array.filter(gameObject =>
+       GameObjectAPI.hasGameObjectBasicMaterialComponent(gameObject, state)
+     )
+  |> Js.Array.map(gameObject =>
+       GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent(
+         gameObject,
+         state,
+       )
+     );
+
 let getAllLightMaterials = (rootGameObject, state) =>
   getAllGameObjects(rootGameObject, state)
   |> Js.Array.filter(gameObject =>

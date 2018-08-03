@@ -250,7 +250,7 @@ let _ =
         });
       });
 
-      describe("test convert to wd", () => {
+      describe("test convert to wdb", () => {
         test("test customGeometrys", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
@@ -286,6 +286,26 @@ let _ =
           )
         );
 
+        test("test meshRenderers", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfMultiPrimitives(),
+            ~state,
+            ~testFunc=
+              ({meshRenderers}) =>
+                meshRenderers
+                |>
+                expect == [|
+                            ConvertTool.getJsonSerializedNone(),
+                            Some({drawMode: DrawModeType.Triangles}),
+                            Some({drawMode: DrawModeType.Triangles}),
+                            Some({drawMode: DrawModeType.Triangles}),
+                          |],
+            (),
+          )
+        );
+
         describe("test gameObjects", () =>
           test("test count", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
@@ -300,7 +320,7 @@ let _ =
         );
 
         describe("test indices", () =>
-          describe("test gameObjectIndices", () =>
+          describe("test gameObjectIndices", () => {
             describe("test geometryGameObjectIndices", () =>
               test(
                 "test multi primitives geometry should has no gameObject", () =>
@@ -321,66 +341,137 @@ let _ =
                   (),
                 )
               )
-            )
-          )
+            );
+
+            describe("test meshRendererGameObjectIndices", () =>
+              test(
+                "test multi primitives corresponding meshRenderer should has no gameObject",
+                () =>
+                ConvertGLBTool.testGLTFResultByGLTF(
+                  ~sandbox=sandbox^,
+                  ~embeddedGLTFJsonStr=
+                    ConvertGLBTool.buildGLTFJsonOfMultiPrimitives(),
+                  ~state,
+                  ~testFunc=
+                    ({indices}) =>
+                      indices.gameObjectIndices.meshRendererGameObjectIndexData
+                      |>
+                      expect == {
+                                  gameObjectIndices: [|1, 3, 4, 5, 6|],
+                                  componentIndices: [|1, 2, 3, 2, 3|],
+                                },
+                  (),
+                )
+              )
+            );
+          })
         );
       });
     });
 
     describe("test set default material", () => {
-      test("test default lightMaterial", () =>
-        ConvertGLBTool.testGLTFResultByGLTF(
-          ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
-          ~state,
-          ~testFunc=
-            ({lightMaterials}) =>
-              lightMaterials
-              |>
-              expect == [|
-                          {
-                            diffuseColor:
-                              ConvertGLBTool.getDefaultDiffuseColor(),
-                            name: "defaultMaterial",
-                          },
-                        |],
-          (),
-        )
-      );
-      test("test customGeometrys", () =>
-        ConvertGLBTool.testGLTFResultByGLTF(
-          ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
-          ~state,
-          ~testFunc=
-            ({customGeometrys}) =>
-              customGeometrys
-              |>
-              expect == [|
-                          Some({
-                            position: 1,
-                            normal: ConvertTool.getJsonSerializedNone(),
-                            texCoord: ConvertTool.getJsonSerializedNone(),
-                            index: 0,
-                          }),
-                        |],
-          (),
+      describe("test if node has any one material extras", () =>
+        test("not add default lightMaterial", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJson(
+                ~nodes=
+                  {|[
+    {
+      "mesh" : 0,
+      "extras": {
+        "lightMaterial": 0
+      }
+    }
+  ] |},
+                ~materials=
+                  {|[
+        {
+            "pbrMetallicRoughness": {
+            },
+            "name": "material"
+        }
+    ]|},
+                ~meshes=
+                  {|[
+    {
+      "primitives" : [ {
+        "attributes" : {
+          "POSITION" : 1
+        },
+        "indices" : 0
+      } ]
+    }
+  ]|},
+                (),
+              ),
+            ~state,
+            ~testFunc=
+              ({lightMaterials}) =>
+                lightMaterials[0].name |> expect == "material",
+            (),
+          )
         )
       );
 
-      test("test default material's lightMaterialGameObjectIndexData", () =>
-        ConvertGLBTool.testGLTFResultByGLTF(
-          ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
-          ~state,
-          ~testFunc=
-            ({indices}) =>
-              indices.gameObjectIndices.lightMaterialGameObjectIndexData
-              |>
-              expect == ConvertGLBTool.buildComponentIndexData([|0|], [|0|]),
-          (),
-        )
-      );
+      describe("else, test mesh has no material", () => {
+        test("add default lightMaterial", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
+            ~state,
+            ~testFunc=
+              ({lightMaterials}) =>
+                lightMaterials
+                |>
+                expect == [|
+                            {
+                              diffuseColor:
+                                ConvertGLBTool.getDefaultDiffuseColor(),
+                              name: "defaultLightMaterial",
+                            },
+                          |],
+            (),
+          )
+        );
+        test("test customGeometrys", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
+            ~state,
+            ~testFunc=
+              ({customGeometrys}) =>
+                customGeometrys
+                |>
+                expect == [|
+                            Some({
+                              position: 1,
+                              normal: ConvertTool.getJsonSerializedNone(),
+                              texCoord: ConvertTool.getJsonSerializedNone(),
+                              index: 0,
+                            }),
+                          |],
+            (),
+          )
+        );
+        test("test default material's lightMaterialGameObjectIndexData", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
+            ~state,
+            ~testFunc=
+              ({indices}) =>
+                indices.gameObjectIndices.lightMaterialGameObjectIndexData
+                |>
+                expect == ConvertGLBTool.buildComponentIndexData(
+                            [|0|],
+                            [|0|],
+                          ),
+            (),
+          )
+        );
+      });
     });
 
     test("test asset", () =>
@@ -729,64 +820,119 @@ let _ =
       );
     });
 
-    describe("test lightMaterials", () =>
-      describe("test diffuseColor", () => {
-        test("test no data", () =>
+    describe("test basicMaterials", () => {
+      test("test no data", () =>
+        ConvertGLBTool.testGLTFResultByGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJson(
+              ~nodes=
+                {| [
+        {
+            "mesh": 0,
+            "extras": {
+                "basicMaterial": 0
+            }
+        }
+    ]|},
+              ~basicMaterials={j|
+[
+        {
+        }
+    ]
+        |j},
+              (),
+            ),
+          ~state,
+          ~testFunc=
+            ({basicMaterials}) =>
+              basicMaterials
+              |>
+              expect == [|
+                          {
+                            color: ConvertGLBTool.getDefaultDiffuseColor(),
+                            name: "basicMaterial_0",
+                          },
+                        |],
+          (),
+        )
+      );
+
+      describe("test has data", () =>
+        test("only set r,g,b components, ignore alpha component", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfBasicMaterial(
+                ~colorFactor=[|0.1, 0.2, 0.3, 0.4|],
+                ~name="name",
+                (),
+              ),
+            ~state,
+            ~testFunc=
+              ({basicMaterials}) =>
+                basicMaterials
+                |> expect == [|{color: [|0.1, 0.2, 0.3|], name: "name"}|],
+            (),
+          )
+        )
+      );
+    });
+
+    describe("test lightMaterials", () => {
+      test("test no data", () =>
+        ConvertGLBTool.testResult(
+          sandbox^,
+          GLBTool.buildGLBFilePath("BoxTextured.glb"),
+          (({lightMaterials}, _)) =>
+          lightMaterials
+          |>
+          expect == [|
+                      {
+                        diffuseColor: ConvertGLBTool.getDefaultDiffuseColor(),
+                        name: "Texture",
+                      },
+                    |]
+        )
+      );
+      describe("test has data", () =>
+        test("only set r,g,b components, ignore alpha component", () =>
           ConvertGLBTool.testResult(
             sandbox^,
-            GLBTool.buildGLBFilePath("BoxTextured.glb"),
-            (({lightMaterials}, _)) =>
+            GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+            (({lightMaterials}, binBuffer)) =>
             lightMaterials
             |>
             expect == [|
                         {
                           diffuseColor: ConvertGLBTool.getDefaultDiffuseColor(),
-                          name: "Texture",
+                          name: "truck",
+                        },
+                        {
+                          diffuseColor: [|
+                            0.0,
+                            0.04050629958510399,
+                            0.021240700036287309,
+                          |],
+                          name: "glass",
+                        },
+                        {
+                          diffuseColor: [|
+                            0.06400000303983689,
+                            0.06400000303983689,
+                            0.06400000303983689,
+                          |],
+                          name: "window_trim",
+                        },
+                        {
+                          diffuseColor: ConvertGLBTool.getDefaultDiffuseColor(),
+                          name: "wheels",
                         },
                       |]
           )
-        );
-        describe("test has data", () =>
-          test("only set r,g,b components, ignore alpha component", () =>
-            ConvertGLBTool.testResult(
-              sandbox^,
-              GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-              (({lightMaterials}, binBuffer)) =>
-              lightMaterials
-              |>
-              expect == [|
-                          {
-                            diffuseColor:
-                              ConvertGLBTool.getDefaultDiffuseColor(),
-                            name: "truck",
-                          },
-                          {
-                            diffuseColor: [|
-                              0.0,
-                              0.04050629958510399,
-                              0.021240700036287309,
-                            |],
-                            name: "glass",
-                          },
-                          {
-                            diffuseColor: [|
-                              0.06400000303983689,
-                              0.06400000303983689,
-                              0.06400000303983689,
-                            |],
-                            name: "window_trim",
-                          },
-                          {
-                            diffuseColor:
-                              ConvertGLBTool.getDefaultDiffuseColor(),
-                            name: "wheels",
-                          },
-                        |]
-            )
-          )
-        );
-      })
-    );
+        )
+      );
+    });
 
     describe("test basicSourceTextures", () => {
       test("test BoxTextured glb", () =>
@@ -1043,6 +1189,37 @@ let _ =
       )
     );
 
+    describe("test meshRenderers", () => {
+      test("test single primitive", () =>
+        ConvertGLBTool.testGLTFResultByGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+          ~state,
+          ~testFunc=
+            ({meshRenderers}) =>
+              meshRenderers
+              |> expect == [|Some({drawMode: DrawModeType.Triangles})|],
+          (),
+        )
+      );
+      test("test extras", () =>
+        ConvertGLBTool.testGLTFResultByGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfMeshRenderer(),
+          ~state,
+          ~testFunc=
+            ({meshRenderers}) =>
+              meshRenderers
+              |>
+              expect == [|
+                          Some({drawMode: DrawModeType.Lines}),
+                          Some({drawMode: DrawModeType.Line_strip}),
+                        |],
+          (),
+        )
+      );
+    });
+
     describe("test indices", () => {
       describe("test gameObjectIndices", () => {
         let _buildTransformIndexData =
@@ -1108,6 +1285,7 @@ let _ =
             )
           );
         });
+
         describe("test perspectiveCameraProjectionGameObjectIndexData", () => {
           test("test no data", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
@@ -1136,16 +1314,18 @@ let _ =
             )
           );
         });
-        describe("test lightMaterialGameObjectIndexData", () => {
-          test("test single node gltf", () =>
+
+        describe("test meshRendererGameObjectIndexData", () => {
+          test("test extras", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfMeshRenderer(),
               ~state,
               ~testFunc=
                 ({indices}) =>
-                  indices.gameObjectIndices.lightMaterialGameObjectIndexData
-                  |> expect == _buildComponentIndexData([|0|], [|0|]),
+                  indices.gameObjectIndices.meshRendererGameObjectIndexData
+                  |> expect == _buildComponentIndexData([|0|], [|1|]),
               (),
             )
           );
@@ -1154,15 +1334,105 @@ let _ =
               sandbox^,
               GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
               (({indices}, _)) =>
-              indices.gameObjectIndices.lightMaterialGameObjectIndexData
+              indices.gameObjectIndices.meshRendererGameObjectIndexData
               |>
               expect == _buildComponentIndexData(
                           [|2, 4, 5, 6, 7|],
-                          [|3, 3, 0, 1, 2|],
+                          [|1, 1, 2, 3, 4|],
                         )
             )
           );
         });
+
+        describe("test material GameObjectIndexData", () => {
+          describe("test basicMaterialGameObjectIndexData", () =>
+            test("test extras", () =>
+              ConvertGLBTool.testGLTFResultByGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfBasicMaterial(),
+                ~state,
+                ~testFunc=
+                  ({indices}) =>
+                    indices.gameObjectIndices.basicMaterialGameObjectIndexData
+                    |> expect == _buildComponentIndexData([|0|], [|0|]),
+                (),
+              )
+            )
+          );
+
+          describe("test lightMaterialGameObjectIndexData", () => {
+            test("test extras", () =>
+              ConvertGLBTool.testGLTFResultByGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfLightMaterial(),
+                ~state,
+                ~testFunc=
+                  ({indices}) =>
+                    indices.gameObjectIndices.lightMaterialGameObjectIndexData
+                    |> expect == _buildComponentIndexData([|0|], [|1|]),
+                (),
+              )
+            );
+            test("test gltf", () =>
+              ConvertGLBTool.testGLTFResultByGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+                ~state,
+                ~testFunc=
+                  ({indices}) =>
+                    indices.gameObjectIndices.lightMaterialGameObjectIndexData
+                    |> expect == _buildComponentIndexData([|0|], [|0|]),
+                (),
+              )
+            );
+            test("test truck glb", () =>
+              ConvertGLBTool.testResult(
+                sandbox^,
+                GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+                (({indices}, _)) =>
+                indices.gameObjectIndices.lightMaterialGameObjectIndexData
+                |>
+                expect == _buildComponentIndexData(
+                            [|2, 4, 5, 6, 7|],
+                            [|3, 3, 0, 1, 2|],
+                          )
+              )
+            );
+          });
+
+          describe(
+            "test basicMaterial and lightMaterial gameObjectIndexData", () =>
+            test("test gltf", () =>
+              ConvertGLBTool.testGLTFResultByGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfBasicMaterialAndLightMaterial(),
+                ~state,
+                ~testFunc=
+                  ({indices}) =>
+                    (
+                      indices.gameObjectIndices.
+                        basicMaterialGameObjectIndexData,
+                      indices.gameObjectIndices.
+                        lightMaterialGameObjectIndexData,
+                    )
+                    |>
+                    expect == (
+                                _buildComponentIndexData([|0|], [|0|]),
+                                _buildComponentIndexData(
+                                  [|1, 2|],
+                                  [|1, 0|],
+                                ),
+                              ),
+                (),
+              )
+            )
+          );
+        });
+
         describe("test transformGameObjectIndexData", () => {
           test("test single node gltf", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
@@ -1190,6 +1460,7 @@ let _ =
             )
           );
         });
+
         describe("test customGeometryGameObjectIndexData", () => {
           test("test single node gltf", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
@@ -1248,11 +1519,13 @@ let _ =
           )
         );
       });
+
       describe("test materialIndices", () => {
         let _buildIndexData = (materialIndices, mapIndices) => {
           materialIndices,
           mapIndices,
         };
+
         describe("test diffuseMapMaterialIndices", () =>
           test("test truck glb", () =>
             ConvertGLBTool.testResult(
@@ -1265,6 +1538,7 @@ let _ =
           )
         );
       });
+
       describe("test imageTextureIndices", () => {
         let _buildIndexData = (textureIndices, imageIndices) => {
           textureIndices,
@@ -1280,6 +1554,7 @@ let _ =
           )
         );
       });
+
       describe("test samplerTextureIndices", () => {
         let _buildIndexData = (textureIndices, samplerIndices) => {
           textureIndices,

@@ -207,6 +207,8 @@ let _ =
           let (state, gameObject1, material1) =
             LightMaterialTool.createGameObject(state^);
           let state =
+            LightMaterialAPI.setLightMaterialName(material1, "name", state);
+          let state =
             state
             |> GameObjectTool.disposeGameObjectLightMaterialComponent(
                  gameObject1,

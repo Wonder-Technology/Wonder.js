@@ -1017,14 +1017,17 @@ let _ =
 
       describe("deep copy material record", () => {
         describe("test basic material", () => {
-          test("shadow copy textureCountMap,materialArrayForWorkerInit", () =>
+          test(
+            "shadow copy nameMap, textureCountMap,materialArrayForWorkerInit",
+            () =>
             StateDataMainType.(
               BasicMaterialType.(
                 MainStateTool.testShadowCopyArrayLikeMapData(
                   state => {
-                    let {textureCountMap, materialArrayForWorkerInit} =
+                    let {nameMap, textureCountMap, materialArrayForWorkerInit} =
                       BasicMaterialTool.getRecord(state);
                     [|
+                      nameMap |> Obj.magic,
                       textureCountMap |> Obj.magic,
                       materialArrayForWorkerInit |> Obj.magic,
                     |];
@@ -1073,14 +1076,17 @@ let _ =
           );
         });
         describe("test light material", () => {
-          test("shadow copy textureCountMap,materialArrayForWorkerInit", () =>
+          test(
+            "shadow copy nameMap, textureCountMap,materialArrayForWorkerInit",
+            () =>
             StateDataMainType.(
               LightMaterialType.(
                 MainStateTool.testShadowCopyArrayLikeMapData(
                   state => {
-                    let {textureCountMap, materialArrayForWorkerInit} =
+                    let {nameMap, textureCountMap, materialArrayForWorkerInit} =
                       LightMaterialTool.getRecord(state);
                     [|
+                      nameMap |> Obj.magic,
                       textureCountMap |> Obj.magic,
                       materialArrayForWorkerInit |> Obj.magic,
                     |];

@@ -8,7 +8,6 @@ let convertToBasicMaterials =
   | None => [||]
   | Some({basicMaterials}) =>
     switch (basicMaterials) {
-    | None => [||]
     | Some(basicMaterials) =>
       basicMaterials
       |> WonderCommonlib.ArrayService.reduceOneParami(
@@ -34,6 +33,7 @@ let convertToBasicMaterials =
                 ),
            [||],
          )
+    | _ => [||]
     }
   };
 

@@ -33,8 +33,7 @@ let convertToMeshRenderers = ({extras, meshes}: GLTFType.gltf) =>
        )
   | Some({meshRenderers}) =>
     switch (meshRenderers) {
-    | None => [||]
-    | Some(meshRenderers) =>
+    | Some(meshRenderers) when Js.Array.length(meshRenderers) > 0 =>
       meshRenderers
       |> WonderCommonlib.ArrayService.reduceOneParami(
            (. arr, {drawMode}: GLTFType.meshRenderer, index) =>
@@ -44,6 +43,14 @@ let convertToMeshRenderers = ({extras, meshes}: GLTFType.gltf) =>
                     {drawMode: drawMode |> DrawModeType.uint8ToDrawMode}: WDType.meshRenderer,
                   ),
                 ),
+           [||],
+         )
+
+    | _ =>
+      meshes
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. arr, mesh) =>
+             arr |> ArrayService.push(_convertToMeshRendererByMesh(mesh)),
            [||],
          )
     }

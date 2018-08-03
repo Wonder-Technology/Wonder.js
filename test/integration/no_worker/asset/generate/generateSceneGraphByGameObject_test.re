@@ -75,9 +75,9 @@ let _ =
       (state, texture, (source, width, height));
     };
 
-    let _createGameObjectWithShareMaterial = (material, state) => {
+    let _createGameObjectWithShareMaterial =
+        (material, addGameObjectMaterialComponentFunc, state) => {
       open GameObjectAPI;
-      open LightMaterialAPI;
       open MeshRendererAPI;
 
       let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
@@ -85,7 +85,7 @@ let _ =
       let (state, gameObject) = state |> createGameObject;
       let state =
         state
-        |> addGameObjectLightMaterialComponent(gameObject, material)
+        |> addGameObjectMaterialComponentFunc(gameObject, material)
         |> addGameObjectBoxGeometryComponent(gameObject, geometry)
         |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
 
@@ -174,7 +174,7 @@ let _ =
 
       let (state, material) = createLightMaterial(state);
 
-      let diffuseColor = [|0., 0.8, 0.2|];
+      let diffuseColor = [|0., 0.5, 1.|];
 
       let state =
         LightMaterialAPI.setLightMaterialDiffuseColor(
@@ -567,7 +567,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
-          {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"material":0}},{"children":[3],"translation":[$localPos2],"rotation":[$localRotation2],"scale":[$localScale2],"mesh":1,"extras":{"material":1}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":2,"extras":{"material":2}}]|j},
+          {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"lightMaterial":0}},{"children":[3],"translation":[$localPos2],"rotation":[$localRotation2],"scale":[$localScale2],"mesh":1,"extras":{"lightMaterial":1}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":2,"extras":{"lightMaterial":2}}]|j},
           state,
         );
       });
@@ -601,7 +601,7 @@ let _ =
         );
       });
 
-      test("test materials", () => {
+      test("test meshRenderers", () => {
         let (
           state,
           (rootGameObject, sceneGameObjectTransform),
@@ -624,7 +624,36 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-              "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[0,0.800000011920929,0.20000000298023224,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":1}}}]
+              "extras":{"meshRenderers":[{"drawMode":4},{"drawMode":4},{"drawMode":4}]}
+                |j},
+          state,
+        );
+      });
+
+      test("test materials", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (gameObject1, gameObject2, gameObject3),
+          (
+            (transform1, (localPos1, localRotation1, localScale1)),
+            (transform2, (localPos2, localRotation2, localScale2)),
+            (transform3, (localPos3, localRotation3, localScale3)),
+          ),
+          (
+            geometry1,
+            (geometry2, (vertices2, texCoords2, normals2, indices2)),
+            (geometry3, (vertices3, texCoords3, normals3, indices3)),
+          ),
+          ((material1, diffuseColor1), _, _, _),
+          (meshRenderer1, meshRenderer2, meshRenderer3),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+              "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor1,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":1}}}]
                 |j},
           state,
         );
@@ -830,15 +859,16 @@ let _ =
       let _prepareGameObject = state => {
         let customData = Obj.magic((1, "cc"));
 
-        let imguiFunc = (. customData, apiJsObj, state) => {
-          let (a, b) = Obj.magic(customData);
-          let apiJsObj = Obj.magic(apiJsObj);
+        let imguiFunc =
+          (. customData, apiJsObj, state) => {
+            let (a, b) = Obj.magic(customData);
+            let apiJsObj = Obj.magic(apiJsObj);
 
-          let imageFunc = apiJsObj##image |> Obj.magic;
-          let state = imageFunc(. a, b, state);
+            let imageFunc = apiJsObj##image |> Obj.magic;
+            let state = imageFunc(. a, b, state);
 
-          state;
-        };
+            state;
+          };
 
         let state =
           ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state^);
@@ -967,7 +997,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-                     "nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"material":0}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1,"extras":{"material":1}}]
+                     "nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"lightMaterial":0}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1,"extras":{"lightMaterial":1}}]
 
                      |j},
           state,
@@ -1031,7 +1061,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-       "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[0,0.800000011920929,0.20000000298023224,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],
+       "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor1,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],
                      "textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],"images":[{"bufferView":7,"mimeType":"image/png"}]                       |j},
           state,
         );
@@ -1223,7 +1253,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
-          {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"material":0}},{"children":[3],"translation":[$localPos2],"rotation":[$localRotation2],"scale":[$localScale2],"mesh":0,"extras":{"material":1}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1,"extras":{"material":2}}]|j},
+          {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"lightMaterial":0}},{"children":[3],"translation":[$localPos2],"rotation":[$localRotation2],"scale":[$localScale2],"mesh":0,"extras":{"lightMaterial":1}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1,"extras":{"lightMaterial":2}}]|j},
           state,
         );
       });
@@ -1344,7 +1374,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-                 "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[0,0.800000011920929,0.20000000298023224,1]}},{"pbrMetallicRoughness":{"baseColorFactor":[1,0.5,0.5,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
+                 "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor1,1]}},{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor2,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
                  "images":[{"bufferView":7,"mimeType":"image/png"}]
                    |j},
           state,
@@ -1352,7 +1382,7 @@ let _ =
       });
     });
 
-    describe("test share material", () => {
+    describe("test share light material", () => {
       let _prepareGameObject = state => {
         open GameObjectAPI;
 
@@ -1392,7 +1422,11 @@ let _ =
           material3,
           meshRenderer3,
         ) =
-          _createGameObjectWithShareMaterial(material2, state);
+          _createGameObjectWithShareMaterial(
+            material2,
+            GameObjectAPI.addGameObjectLightMaterialComponent,
+            state,
+          );
 
         let state =
           state
@@ -1455,7 +1489,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-                 "nodes":[{"children":[1,2]},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"material":0}},{"children":[3],"translation":[0.5,-1.5,1.5],"rotation":[2,2.5,5,4.5],"scale":[3,5.5,1],"mesh":1,"extras":{"material":1}},{"translation":[0.5,11,12.5],"rotation":[3,1,2.5,1],"scale":[2.5,15.5,1.5],"mesh":2,"extras":{"material":1}}]
+                 "nodes":[{"children":[1,2]},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0}},{"children":[3],"translation":[0.5,-1.5,1.5],"rotation":[2,2.5,5,4.5],"scale":[3,5.5,1],"mesh":1,"extras":{"lightMaterial":1}},{"translation":[0.5,11,12.5],"rotation":[3,1,2.5,1],"scale":[2.5,15.5,1.5],"mesh":2,"extras":{"lightMaterial":1}}]
                    |j},
           state,
         );
@@ -1485,8 +1519,133 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-                 "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[0,0.800000011920929,0.20000000298023224,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0,"name":"$name2"}],"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728}],
+                 "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor1,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0,"name":"$name2"}],"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728}],
                  "images":[{"bufferView":11,"mimeType":"image/png"}]
+                   |j},
+          state,
+        );
+      });
+    });
+
+    describe("test share basic material", () => {
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, rootGameObject) = state^ |> createGameObject;
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let (state, basicMaterial) =
+          BasicMaterialAPI.createBasicMaterial(state);
+
+        let (
+          state,
+          gameObject1,
+          (transform1, (localPos1, localRotation1, localScale1)),
+          geometry1,
+          material1,
+          meshRenderer1,
+        ) =
+          _createGameObjectWithShareMaterial(
+            basicMaterial,
+            GameObjectAPI.addGameObjectBasicMaterialComponent,
+            state,
+          );
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          geometry2,
+          (material2, diffuseColor2),
+          meshRenderer2,
+        ) =
+          _createGameObject1(state);
+
+        let (
+          state,
+          gameObject3,
+          (transform3, (localPos3, localRotation3, localScale3)),
+          geometry3,
+          (material3, texture3, _),
+          meshRenderer3,
+        ) =
+          _createGameObject3(state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(transform2),
+               transform3,
+             );
+
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (
+            material1,
+            (material2, diffuseColor2),
+            (material3, texture3),
+            (base64Str1, base64Str2),
+          ),
+        );
+      };
+
+      test("test materials, textures, samplers, images", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (
+            material1,
+            (material2, diffuseColor2),
+            (material3, texture3),
+            (base64Str1, base64Str2),
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+                 "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor2,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
+                 "images":[{"bufferView":10,"mimeType":"image/png"}]
+                   |j},
+          state,
+        );
+      });
+      test("test extras->basicMaterials", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (
+            material1,
+            (material2, diffuseColor2),
+            (material3, texture3),
+            (base64Str1, base64Str2),
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        let color = BasicMaterialTool.getDefaultColor(state);
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+                 "extras":{"basicMaterials":[{"colorFactor":[$color,1]}],
                    |j},
           state,
         );
@@ -1606,7 +1765,11 @@ let _ =
           material4,
           meshRenderer4,
         ) =
-          _createGameObjectWithShareMaterial(material3, state);
+          _createGameObjectWithShareMaterial(
+            material3,
+            GameObjectAPI.addGameObjectLightMaterialComponent,
+            state,
+          );
 
         let state =
           state
@@ -1733,105 +1896,6 @@ let _ =
           )
           |> toThrowMessage("expect map be basicSourceTexture");
         });
-      });
-    });
-
-    describe("test basic material", () => {
-      let _prepareGameObject = state => {
-        open GameObjectAPI;
-
-        let (state, rootGameObject) = state^ |> createGameObject;
-
-        let sceneGameObjectTransform =
-          GameObjectAPI.unsafeGetGameObjectTransformComponent(
-            rootGameObject,
-            state,
-          );
-
-        let (state, basicMaterial) =
-          BasicMaterialAPI.createBasicMaterial(state);
-
-        let (
-          state,
-          gameObject1,
-          (transform1, (localPos1, localRotation1, localScale1)),
-          geometry1,
-          material1,
-          meshRenderer1,
-        ) =
-          _createGameObjectWithShareMaterial(basicMaterial, state);
-
-        let (
-          state,
-          gameObject2,
-          (transform2, (localPos2, localRotation2, localScale2)),
-          geometry2,
-          (material2, diffuseColor2),
-          meshRenderer2,
-        ) =
-          _createGameObject1(state);
-
-        let (
-          state,
-          gameObject3,
-          (transform3, (localPos3, localRotation3, localScale3)),
-          geometry3,
-          (material3, texture3, _),
-          meshRenderer3,
-        ) =
-          _createGameObject3(state);
-
-        let state =
-          state
-          |> TransformAPI.setTransformParent(
-               Js.Nullable.return(sceneGameObjectTransform),
-               transform1,
-             )
-          |> TransformAPI.setTransformParent(
-               Js.Nullable.return(sceneGameObjectTransform),
-               transform2,
-             )
-          |> TransformAPI.setTransformParent(
-               Js.Nullable.return(transform2),
-               transform3,
-             );
-
-        let (canvas, context, (base64Str1, base64Str2)) =
-          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
-
-        (
-          state,
-          (rootGameObject, sceneGameObjectTransform),
-          (
-            material1,
-            (material2, diffuseColor2),
-            (material3, texture3),
-            (base64Str1, base64Str2),
-          ),
-        );
-      };
-
-      test("test materials, textures, samplers, images", () => {
-        let (
-          state,
-          (rootGameObject, sceneGameObjectTransform),
-          (
-            material1,
-            (material2, diffuseColor2),
-            (material3, texture3),
-            (base64Str1, base64Str2),
-          ),
-        ) =
-          _prepareGameObject(state);
-
-        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-          rootGameObject,
-          {j|
-                 "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[0,0.800000011920929,0.20000000298023224,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
-                 "images":[{"bufferView":10,"mimeType":"image/png"}]
-                   |j},
-          state,
-        );
       });
     });
 
@@ -2007,7 +2071,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-               "nodes":[{"children":[1,2]},{"camera":0},{"children":[3],"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"material":0}},{"camera":1}]
+               "nodes":[{"children":[1,2]},{"camera":0},{"children":[3],"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0}},{"camera":1}]
                    |j},
           state,
         );
@@ -2177,7 +2241,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-            "nodes":[{"children":[1,2]},{"camera":0,"extras":{"cameraController":0}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"material":0}}]
+            "nodes":[{"children":[1,2]},{"camera":0,"extras":{"cameraController":0}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0}}]
                    |j},
           state,
         );
@@ -2204,7 +2268,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-              "extras":{"arcballCameraControllers":[{"distance":$distance,"minDistance": $minDistance,"phi":$phi,"theta":$theta,"thetaMargin":$thetaMargin,"target":[$target],"moveSpeedX":$moveSpeedX,"moveSpeedY":$moveSpeedY,"rotateSpeed":$rotateSpeed,"wheelSpeed":$wheelSpeed}]}
+              "extras":{"arcballCameraControllers":[{"distance":$distance,"minDistance": $minDistance,"phi":$phi,"theta":$theta,"thetaMargin":$thetaMargin,"target":[$target],"moveSpeedX":$moveSpeedX,"moveSpeedY":$moveSpeedY,"rotateSpeed":$rotateSpeed,"wheelSpeed":$wheelSpeed}]
                       |j},
           state,
         );
@@ -2479,7 +2543,7 @@ let _ =
          ],
          "mesh": 0,
          "extras": {
-           "material": 0
+           "lightMaterial": 0
          }
        },
        {
@@ -2556,6 +2620,162 @@ let _ =
                           range3,
                         ),
                       |],
+          state,
+        );
+      });
+    });
+
+    describe("test drawMode and basicMaterial", () => {
+      let _createBasicMaterialGameObject = state => {
+        open GameObjectAPI;
+        open BasicMaterialAPI;
+        open CustomGeometryAPI;
+        open MeshRendererAPI;
+
+        let (state, material) = createBasicMaterial(state);
+
+        let color = [|0.5, 0.5, 1.|];
+
+        let state = setBasicMaterialColor(material, color, state);
+
+        let (state, gameObject, geometry, _) =
+          CustomGeometryTool.createGameObjectAndSetPointData(state);
+
+        let drawMode = DrawModeType.Lines;
+        let (state, meshRenderer) = createMeshRenderer(state);
+        let state =
+          setMeshRendererDrawMode(
+            meshRenderer,
+            drawMode |> DrawModeType.drawModeToUint8,
+            state,
+          );
+
+        let state =
+          state
+          |> addGameObjectBasicMaterialComponent(gameObject, material)
+          |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+
+        let transform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject,
+            state,
+          );
+
+        (
+          state,
+          gameObject,
+          transform,
+          (material, color),
+          (meshRenderer, drawMode),
+        );
+      };
+
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, rootGameObject) = state^ |> createGameObject;
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let (
+          state,
+          gameObject1,
+          transform1,
+          (material1, color1),
+          (meshRenderer1, drawMode1),
+        ) =
+          _createBasicMaterialGameObject(state);
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          geometry2,
+          (material2, diffuseColor2),
+          meshRenderer2,
+        ) =
+          _createGameObject1(state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             );
+
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          ((material1, color1), (material2, diffuseColor2)),
+          (
+            (meshRenderer1, drawMode1),
+            (
+              meshRenderer2,
+              MeshRendererAPI.getMeshRendererDrawMode(meshRenderer2, state),
+            ),
+          ),
+        );
+      };
+
+      test("test extras->basicMaterials and meshRenderers", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          ((material1, color1), (material2, diffuseColor2)),
+          ((meshRenderer1, drawMode1), (meshRenderer2, drawMode2)),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+      "extras":{"basicMaterials":[{"colorFactor":[$color1,1]}],"meshRenderers":[{"drawMode":$drawMode1},{"drawMode":$drawMode2}]}
+                   |j},
+          state,
+        );
+      });
+      test("test nodes", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          ((material1, color1), (material2, diffuseColor2)),
+          ((meshRenderer1, drawMode1), (meshRenderer2, drawMode2)),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+      "nodes":[{"children":[1,2]},{"mesh":0,"extras":{"basicMaterial":0}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":1,"extras":{"lightMaterial":0}}]
+                   |j},
+          state,
+        );
+      });
+      test("test materials", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          ((material1, color1), (material2, diffuseColor2)),
+          ((meshRenderer1, drawMode1), (meshRenderer2, drawMode2)),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+            "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor2,1]}}]
+                   |j},
           state,
         );
       });

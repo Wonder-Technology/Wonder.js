@@ -40,7 +40,7 @@ let _ =
             gltf
             |> GenerateSceneGraphSystemTool.contain(
                  {|
-  "nodes":[{"name":"gameObject_0","children":[1],"rotation":[-0.7071067690849304,0,0,0.7071067690849304]},{"name":"Mesh","mesh":0,"extras":{"material":0}}]
+  "nodes":[{"name":"gameObject_0","children":[1],"rotation":[-0.7071067690849304,0,0,0.7071067690849304]},{"name":"Mesh","mesh":0,"extras":{"lightMaterial":0}}]
   |},
                ),
           state,
@@ -173,7 +173,7 @@ let _ =
       ],
       "mesh": 0,
       "extras": {
-        "material": 0
+        "lightMaterial": 0
       }
     },
     {
@@ -197,28 +197,28 @@ let _ =
       ],
       "mesh": 0,
       "extras": {
-        "material": 0
+        "lightMaterial": 0
       }
     },
     {
       "name": "Cesium_Milk_Truck_0",
       "mesh": 1,
       "extras": {
-        "material": 1
+        "lightMaterial": 1
       }
     },
     {
       "name": "Cesium_Milk_Truck_1",
       "mesh": 2,
       "extras": {
-        "material": 2
+        "lightMaterial": 2
       }
     },
     {
       "name": "Cesium_Milk_Truck_2",
       "mesh": 3,
       "extras": {
-        "material": 3
+        "lightMaterial": 3
       }
     }
   ]
@@ -441,7 +441,7 @@ let _ =
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
           ~targetJsonStr=
             {|
-            "nodes":[{"children":[1,2,3]},{"name":"gameObject_0","rotation":[-0.382999986410141,0,0,0.9237499833106995],"mesh":0,"extras":{"material":0}},{"name":"gameObject_1","translation":[0.5,0.5,3],"camera":0},{"name":"gameObject_2","translation":[0.5,0.5,3]}]
+            "nodes":[{"children":[1,2,3]},{"name":"gameObject_0","rotation":[-0.382999986410141,0,0,0.9237499833106995],"mesh":0,"extras":{"lightMaterial":0}},{"name":"gameObject_1","translation":[0.5,0.5,3],"camera":0},{"name":"gameObject_2","translation":[0.5,0.5,3]}]
             |},
           ~state,
           (),
@@ -638,7 +638,7 @@ let _ =
       ],
       "mesh": 0,
       "extras": {
-        "material": 0
+        "lightMaterial": 0
       }
     },
     {
@@ -674,7 +674,7 @@ let _ =
       ],
       "mesh": 0,
       "extras": {
-        "material": 0
+        "lightMaterial": 0
       },
       "extensions": {
         "KHR_lights": {

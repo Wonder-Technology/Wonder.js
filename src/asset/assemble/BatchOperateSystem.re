@@ -665,6 +665,7 @@ let batchOperate =
          (gameObjectArr, basicSourceTextureArr),
          (gameObjects, basicSourceTextures),
        );
+
   let (
     (
       parentTransforms,

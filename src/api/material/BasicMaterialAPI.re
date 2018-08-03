@@ -129,3 +129,41 @@ let hasBasicMaterialMap = (material, state) => {
   );
   hasMap(material, state);
 };
+
+let unsafeGetBasicMaterialName = (material, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordBasicMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  NameBasicMaterialMainService.unsafeGetName(material, state);
+};
+
+let setBasicMaterialName = (material, name, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordBasicMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  NameBasicMaterialMainService.setName(material, name, state);
+};
