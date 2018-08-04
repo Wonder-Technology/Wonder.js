@@ -37,4 +37,11 @@ let getPrimitiveData = primitives =>
 
 let buildDefaultName = (type_, index) => {j|$(type_)_$index|j};
 
-let getScene = (scenes, scene) => Array.unsafe_get(scenes, scene);
+let getScene = (scenes, scene) =>
+  Array.unsafe_get(
+    scenes,
+    switch (scene) {
+    | None => 0
+    | Some(scene) => scene
+    },
+  );

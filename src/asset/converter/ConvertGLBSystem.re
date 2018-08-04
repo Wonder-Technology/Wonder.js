@@ -44,11 +44,6 @@ let _convertToScene =
     },
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  let scene =
-    switch (scene) {
-    | None => 0
-    | Some(scene) => scene
-    };
 
   let {nodes, extras}: GLTFType.scene =
     ConvertCommon.getScene(scenes, scene);

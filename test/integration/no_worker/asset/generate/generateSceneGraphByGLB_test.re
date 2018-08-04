@@ -495,6 +495,21 @@ let _ =
         );
       });
 
+      testPromise("test scenes->extras->isActiveCameraIndex", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameraOfIsActiveCameraIndexExtras(),
+          ~targetJsonStr=
+            {|
+              "extras":{"isActiveCameraIndex":2}
+            |},
+          ~state,
+          (),
+        );
+      });
+
       describe("fix bug", () =>
         testPromise("test gltf->camera has no aspectRatio,zfar", () => {
           let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
@@ -544,18 +559,7 @@ let _ =
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
           ~targetJsonStr=
             {|
-  "scenes": [
-    {
-      "extensions": {
-        "KHR_lights": {
-          "light": 2
-        }
-      },
-      "nodes": [
-        0
-      ]
-    }
-  ],
+              "scenes":[{"extensions":{"KHR_lights":{"light":2}},"nodes":[0],"extras":{}}]
 |},
           ~state,
           (),

@@ -616,21 +616,43 @@ let _ =
             ~state,
             ~testFunc=
               ({basicCameraViews}) =>
-                basicCameraViews |> expect == {count: 0},
+                basicCameraViews
+                |>
+                expect == {
+                            count: 0,
+                            isActiveIndex: ConvertTool.getJsonSerializedNone(),
+                          },
             (),
           )
         );
-        test("test has data", () =>
-          ConvertGLBTool.testGLTFResultByGLTF(
-            ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
-            ~state,
-            ~testFunc=
-              ({basicCameraViews}) =>
-                basicCameraViews |> expect == {count: 3},
-            (),
-          )
-        );
+
+        describe("test has data", () => {
+          test("default isActiveIndex is 0", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
+              ~state,
+              ~testFunc=
+                ({basicCameraViews}) =>
+                  basicCameraViews
+                  |> expect == {count: 3, isActiveIndex: Some(0)},
+              (),
+            )
+          );
+          test("test extras", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfCameraOfIsActiveCameraIndexExtras(),
+              ~state,
+              ~testFunc=
+                ({basicCameraViews}) =>
+                  basicCameraViews
+                  |> expect == {count: 3, isActiveIndex: Some(1)},
+              (),
+            )
+          );
+        });
       });
       describe("test perspectiveCameraProjections", () => {
         test("test no data", () =>

@@ -885,7 +885,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-            "scenes":[{"extras":{"customData":[1,"cc"],"imguiFunc":"function imguiFunc(customData, apiJsObj, state) {\\n        var imageFunc = apiJsObj.image;\\n        return imageFunc(customData[0], customData[1], state);\\n      }"},
+"extras":{"imgui":{"customData":[1,"cc"],"imguiFunc":"function imguiFunc(customData, apiJsObj, state) {\\n        var imageFunc = apiJsObj.image;\\n        return imageFunc(customData[0], customData[1], state);\\n      }"}}
             |j},
           state,
         );
@@ -2016,6 +2016,9 @@ let _ =
           _createCameraGameObject(state);
 
         let state =
+          BasicCameraViewAPI.activeBasicCameraView(basicCameraView1, state);
+
+        let state =
           state
           |> TransformAPI.setTransformParent(
                Js.Nullable.return(sceneGameObjectTransform),
@@ -2038,6 +2041,7 @@ let _ =
           (rootGameObject, sceneGameObjectTransform),
           (material2, diffuseColor2),
           (
+            basicCameraView1,
             (
               basicCameraView1,
               (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
@@ -2056,6 +2060,7 @@ let _ =
           (rootGameObject, sceneGameObjectTransform),
           (material2, diffuseColor2),
           (
+            activedBasicCameraView,
             (
               basicCameraView1,
               (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
@@ -2083,6 +2088,7 @@ let _ =
           (rootGameObject, sceneGameObjectTransform),
           (material2, diffuseColor2),
           (
+            activedBasicCameraView,
             (
               basicCameraView1,
               (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
@@ -2099,6 +2105,33 @@ let _ =
           rootGameObject,
           {j|
                "cameras":[{"type":"perspective","perspective":{"aspectRatio":1.5,"zfar":1000.5,"znear":0.1,"yfov":1.0471975511965976}},{"type":"perspective","perspective":{"aspectRatio":1.5,"zfar":1000.5,"znear":0.1,"yfov":1.0471975511965976}}]
+                   |j},
+          state,
+        );
+      });
+      test("test scenes->extras->isActiveCameraIndex", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          (
+            activedBasicCameraView,
+            (
+              basicCameraView1,
+              (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
+            ),
+            (
+              basicCameraView3,
+              (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
+            ),
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+            "extras":{"isActiveCameraIndex":$activedBasicCameraView}
                    |j},
           state,
         );
@@ -2472,18 +2505,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-     "scenes": [
-       {
-         "extensions": {
-           "KHR_lights": {
-             "light": 2
-           }
-         },
-         "nodes": [
-           0
-         ]
-       }
-     ],
+            "scenes":[{"extensions":{"KHR_lights":{"light":2}},"nodes":[0],"extras":{}}]
                    |j},
           state,
         );

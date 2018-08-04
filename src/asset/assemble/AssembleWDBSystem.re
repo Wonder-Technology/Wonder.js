@@ -100,45 +100,6 @@ let _buildBufferArray = (buffers: array(int), binBuffer) => {
 
   [|binBuffer|];
 };
-/* buffers
-   |> WonderCommonlib.ArrayService.reduceOneParam(
-        (. arrayBufferArr, byteLength) =>
-          switch (uri) {
-          | Some(uri) =>
-            switch (ConvertCommon.isBase64(uri)) {
-            | false =>
-              WonderLog.Log.fatal(
-                WonderLog.Log.buildFatalMessage(
-                  ~title="_buildBufferArray",
-                  ~description={j|only support base64 uri|j},
-                  ~reason="",
-                  ~solution={j||j},
-                  ~params={j||j},
-                ),
-              )
-            | true =>
-              arrayBufferArr |> ArrayService.push(_decodeArrayBuffer(uri))
-            }
-          | None =>
-            arrayBufferArr
-            |> ArrayService.push(buffer |> OptionService.unsafeGet)
-          },
-        [||],
-      ); */
-
-/* let assemble = ({indices, buffers, uriImages, blobImages} as wd, state) =>
-   _buildImageArray(uriImages, blobImages)
-   |> then_(imageArrTuple =>
-        BatchCreateSystem.batchCreate(wd, state)
-        |> BatchOperateSystem.batchOperate(
-             wd,
-             imageArrTuple,
-             _buildBufferArray(buffers),
-           )
-        |> BuildRootGameObjectSystem.build(wd)
-        |> resolve
-      )
-   |> WonderBsMost.Most.fromPromise; */
 
 let _checkWDB = dataView => {
   WonderLog.Contract.requireCheck(

@@ -164,22 +164,6 @@ let _getBatchTextureData =
 
 let _getBatchAllTypeTextureData =
     (lightMaterialArr, basicSourceTextureArr, blobObjectUrlImageArr, wd) =>
-  /* switch (imageBase64Arr) {
-     | Some(imageBase64Arr) =>
-       _getBatchTextureData(
-         lightMaterialArr,
-         basicSourceTextureArr,
-         imageBase64Arr,
-         wd,
-       )
-     | None =>
-       _getBatchTextureData(
-         lightMaterialArr,
-         basicSourceTextureArr,
-         blobObjectUrlImageArr |> OptionService.unsafeGet,
-         wd,
-       )
-     }; */
   _getBatchTextureData(
     lightMaterialArr,
     basicSourceTextureArr,
@@ -419,6 +403,61 @@ let _batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
              ),
       }),
   };
+};
+
+let _batchSetBasicCameraViewData =
+    (
+      {basicCameraViews},
+      basicCameraViewArr,
+      {basicCameraViewRecord} as state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+
+      let {isActiveIndex} = basicCameraViews;
+      let len = basicCameraViewArr |> Js.Array.length;
+
+      OptionService.isJsonSerializedValueNone(isActiveIndex) ?
+        () :
+        {
+          let isActiveIndex =
+            OptionService.unsafeGetJsonSerializedValue(isActiveIndex);
+
+          test(
+            Log.buildAssertMessage(
+              ~expect={j|isActiveIndex < $len|j},
+              ~actual={j|is $isActiveIndex|j},
+            ),
+            () =>
+            isActiveIndex < len
+          );
+        };
+    },
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  let {isActiveIndex} = basicCameraViews;
+
+  OptionService.isJsonSerializedValueNone(isActiveIndex) ?
+    state :
+    {
+      let isActiveIndex =
+        OptionService.unsafeGetJsonSerializedValue(isActiveIndex);
+
+      let cameraView = basicCameraViewArr[isActiveIndex];
+
+      {
+        ...state,
+        basicCameraViewRecord:
+          ActiveBasicCameraViewService.active(
+            cameraView,
+            basicCameraViewRecord,
+          ),
+      };
+    };
 };
 
 let _batchSetPerspectiveCameraProjectionData =
@@ -732,6 +771,7 @@ let batchOperate =
     |> _batchSetTransformData(wd, gameObjectTransforms)
     |> _batchSetTransformParent(parentTransforms, childrenTransforms)
     |> _batchSetCustomGeometryData(wd, customGeometryArr, bufferArr)
+    |> _batchSetBasicCameraViewData(wd, basicCameraViewArr)
     |> _batchSetPerspectiveCameraProjectionData(
          wd,
          perspectiveCameraProjectionArr,

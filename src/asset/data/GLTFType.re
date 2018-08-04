@@ -24,7 +24,10 @@ type sceneKHRLightsExtension = {light: int};
 
 type sceneExtensions = {khr_lights: option(sceneKHRLightsExtension)};
 
-type sceneExtras = {imgui: option(SceneGraphType.imgui)};
+type sceneExtras = {
+  isActiveCameraIndex: option(int),
+  imgui: option(SceneGraphType.imgui),
+};
 
 type scene = {
   nodes: option(array(nodeIndex)),

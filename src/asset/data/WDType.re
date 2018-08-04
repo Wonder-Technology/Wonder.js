@@ -197,7 +197,10 @@ type indices = {
   samplerTextureIndices: samplerTextureIndexData,
 };
 
-type basicCameraViews = {count: int};
+type basicCameraViews = {
+  count: int,
+  isActiveIndex: option(int),
+};
 
 type ambientLight = {color: array(float)};
 

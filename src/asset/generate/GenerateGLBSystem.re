@@ -85,6 +85,7 @@ let generateGLBData = (rootGameObject, imageBase64Map, state) => {
         samplerDataArr,
         imageUint8DataArr,
         cameraDataArr,
+        BuildCameraDataSystem.getIsActiveCameraIndex(state),
         arcballCameraControllerDataArr,
         lightDataArr,
         BuildIMGUIDataSystem.build(state),

@@ -677,7 +677,7 @@ let _ =
       );
     });
 
-    describe("test basicCameraViews", () =>
+    describe("test basicCameraViews", () => {
       describe("test add basicCameraView components", () =>
         testPromise("test", () =>
           AssembleWDBSystemTool.testGLTF(
@@ -697,8 +697,82 @@ let _ =
             (),
           )
         )
-      )
-    );
+      );
+
+      describe("test set active", () => {
+        let _getAllBasicCameraViewGameObjects = (rootGameObject, state) =>
+          _getAllGameObjects(rootGameObject, state)
+          |> Js.Array.filter(gameObject =>
+               GameObjectAPI.hasGameObjectBasicCameraViewComponent(
+                 gameObject,
+                 state,
+               )
+             );
+
+        describe("test no extras", () =>
+          testPromise("active the one whose cameraViewIndex === 0", () =>
+            AssembleWDBSystemTool.testGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
+              ~state,
+              ~testFunc=
+                ((state, rootGameObject)) =>
+                  _getAllBasicCameraViewGameObjects(rootGameObject, state)
+                  |> Js.Array.map(gameObject =>
+                       GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent(
+                         gameObject,
+                         state,
+                       )
+                     )
+                  |> Js.Array.map(cameraView =>
+                       (
+                         cameraView,
+                         BasicCameraViewAPI.isActiveBasicCameraView(
+                           cameraView,
+                           state,
+                         ),
+                       )
+                     )
+                  |> expect == [|(2, false), (0, true)|],
+              (),
+            )
+          )
+        );
+
+        describe("test extras", () =>
+          testPromise(
+            "isActiveCameraIndex is the index in all perspective and ortho cameras",
+            () =>
+            AssembleWDBSystemTool.testGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfCameraOfIsActiveCameraIndexExtras(),
+              ~state,
+              ~testFunc=
+                ((state, rootGameObject)) =>
+                  _getAllBasicCameraViewGameObjects(rootGameObject, state)
+                  |> Js.Array.map(gameObject =>
+                       GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent(
+                         gameObject,
+                         state,
+                       )
+                     )
+                  |> Js.Array.map(cameraView =>
+                       (
+                         cameraView,
+                         BasicCameraViewAPI.isActiveBasicCameraView(
+                           cameraView,
+                           state,
+                         ),
+                       )
+                     )
+                  |> expect == [|(2, true), (0, false)|],
+              (),
+            )
+          )
+        );
+      });
+    });
 
     describe("test perspectiveCameraProjections", () =>
       describe("test set data", () => {

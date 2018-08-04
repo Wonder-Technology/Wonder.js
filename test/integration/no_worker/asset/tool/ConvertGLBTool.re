@@ -739,6 +739,67 @@ let buildGLTFJsonOfCamera = () =>
     (),
   );
 
+let buildGLTFJsonOfCameraOfIsActiveCameraIndexExtras = () =>
+  buildGLTFJson(
+    ~scenes=
+      {|  [
+        {
+        "nodes": [0],
+        "extras": {
+            "isActiveCameraIndex": 2
+        }
+    }
+    ]|},
+    ~nodes=
+      {| [
+        {
+            "mesh": 0,
+            "camera": 2,
+            "children": [
+                1, 2
+            ]
+        },
+        {
+            "mesh": 0,
+            "camera": 0
+        },
+        {
+            "mesh": 0
+        }
+    ]|},
+    ~cameras=
+      {|
+[
+        {
+            "perspective": {
+                "yfov": 0.6,
+                "znear": 1.0
+            },
+            "type": "perspective"
+        },
+        {
+            "orthographic": {
+                "xmag": 10.0,
+                "ymag": 20.5,
+                "zfar": 10000.0,
+                "znear": 1.0
+            },
+            "type": "orthographic"
+        },
+        {
+            "perspective": {
+                "aspectRatio": 2.0,
+                "yfov": 0.5,
+                "zfar": 1000.0,
+                "znear": 2.0
+            },
+            "type": "perspective"
+        }
+    ]
+        |},
+    (),
+  );
+
 let buildGLTFJsonOfArcballCameraController = () =>
   buildGLTFJson(
     ~nodes=
@@ -786,7 +847,7 @@ let buildGLTFJsonOfMeshRenderer = () =>
 [
         {
             "drawMode": 1
-        }, 
+        },
         {
             "drawMode": 3
         }
@@ -862,8 +923,7 @@ let buildGLTFJsonOfLightMaterial = () =>
     (),
   );
 
-let buildGLTFJsonOfBasicMaterialAndLightMaterial =
-    () =>
+let buildGLTFJsonOfBasicMaterialAndLightMaterial = () =>
   buildGLTFJson(
     ~nodes=
       {| [

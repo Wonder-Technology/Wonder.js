@@ -290,54 +290,6 @@ let _batchCreateBasicSourceTextureArr =
   (state, indexArr);
 };
 
-/* let _batchCreateArrayBufferViewSourceTextureArr =
-     ({arrayBufferViewSourceTextures}, {settingRecord} as state) =>
-   switch (arrayBufferViewSourceTextures) {
-   | None => (state, None)
-   | Some(arrayBufferViewSourceTextures) =>
-     let (
-           {index, flipYs}: ArrayBufferViewSourceTextureType.arrayBufferViewSourceTextureRecord
-         ) as arrayBufferViewSourceTextureRecord =
-       RecordArrayBufferViewSourceTextureMainService.getRecord(state);
-
-     AssembleCommon.checkNotDisposedBefore(
-       arrayBufferViewSourceTextureRecord.disposedIndexArray,
-     );
-
-     let newIndex = index + arrayBufferViewSourceTextures.count;
-
-     let indexArr =
-       ArrayService.range(index, newIndex - 1)
-       |> Js.Array.map(index =>
-            IndexSourceTextureMainService.generateArrayBufferViewSourceTextureIndex(
-              index,
-              state,
-            )
-          )
-       |> _checkNotExceedMaxCountByIndex(
-            BufferArrayBufferViewSourceTextureMainService.getMaxArrayBufferViewSourceTextureIndex(
-              state,
-            ),
-          );
-
-     state.arrayBufferViewSourceTextureRecord =
-       Some({...arrayBufferViewSourceTextureRecord, index: newIndex});
-
-     let state =
-       indexArr
-       |> WonderCommonlib.ArrayService.reduceOneParam(
-            (. state, index) =>
-              OperateArrayBufferViewSourceTextureMainService.setFlipY(
-                index,
-                false,
-                state,
-              ),
-            state,
-          );
-
-     (state, indexArr |. Some);
-   }; */
-
 let _batchCreateDirectionLightArr =
     ({directionLights}, {directionLightRecord} as state) => {
   let {index, mappedIndexMap}: DirectionLightType.directionLightRecord = directionLightRecord;

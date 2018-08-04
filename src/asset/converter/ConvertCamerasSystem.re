@@ -1,11 +1,28 @@
 let convertToBasicCameraViews =
-    ({cameras}: GLTFType.gltf)
+    ({scenes, scene, cameras}: GLTFType.gltf)
     : WDType.basicCameraViews => {
-  count:
+  let count =
     switch (cameras) {
     | None => 0
     | Some(cameras) => cameras |> Js.Array.length
+    };
+
+  {
+    count,
+    /* TODO test */
+    isActiveIndex: {
+      let defaultIsActiveIndex = count > 0 ? Some(0) : None;
+
+      switch (ConvertCommon.getScene(scenes, scene).extras) {
+      | None => defaultIsActiveIndex
+      | Some({isActiveCameraIndex}) =>
+        switch (isActiveCameraIndex) {
+        | None => defaultIsActiveIndex
+        | Some(isActiveCameraIndex) => Some(isActiveCameraIndex)
+        }
+      };
     },
+  };
 };
 
 let _convertRadiansToDegree = angle => angle *. 180. /. Js.Math._PI;

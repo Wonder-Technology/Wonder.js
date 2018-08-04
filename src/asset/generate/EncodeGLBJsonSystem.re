@@ -275,7 +275,54 @@ let _encodeExtras =
   ("extras", extrasList |> object_);
 };
 
-let _encodeScenes = (extensionsUsedArr, lightDataArr, imguiData, state) => {
+let _encodeSceneExtras = (isActiveCameraIndex, imguiData) => {
+  let extrasList = [];
+
+  let extrasList =
+    switch (isActiveCameraIndex) {
+    | None => extrasList
+    | Some(isActiveCameraIndex) => [
+        ("isActiveCameraIndex", isActiveCameraIndex |> int),
+        ...extrasList,
+      ]
+    };
+
+  let extrasList =
+    switch (imguiData) {
+    | (None, None) => extrasList
+
+    | (Some(customData), Some(imguiFuncStr)) => [
+        (
+          "imgui",
+          [
+            ("customData", customData |> Obj.magic |> int),
+            ("imguiFunc", imguiFuncStr |> string),
+          ]
+          |> object_,
+        ),
+        ...extrasList,
+      ]
+    | _ =>
+      WonderLog.Log.fatal(
+        WonderLog.Log.buildFatalMessage(
+          ~title="_encodeScenes",
+          ~description={j|imguiData error|j},
+          ~reason="",
+          ~solution={j||j},
+          ~params={j||j},
+        ),
+      )
+    };
+
+  [("extras", extrasList |> object_)];
+};
+
+let _encodeScenes =
+    (
+      extensionsUsedArr,
+      (lightDataArr, imguiData, isActiveCameraIndex),
+      state,
+    ) => {
   let list = [("nodes", [|0|] |> intArray)];
 
   let list =
@@ -302,32 +349,7 @@ let _encodeScenes = (extensionsUsedArr, lightDataArr, imguiData, state) => {
       ] :
       list;
 
-  let list =
-    switch (imguiData) {
-    | (None, None) => list
-
-    | (Some(customData), Some(imguiFuncStr)) => [
-        (
-          "extras",
-          [
-            ("customData", customData |> Obj.magic |> int),
-            ("imguiFunc", imguiFuncStr |> string),
-          ]
-          |> object_,
-        ),
-        ...list,
-      ]
-    | _ =>
-      WonderLog.Log.fatal(
-        WonderLog.Log.buildFatalMessage(
-          ~title="_encodeScenes",
-          ~description={j|imguiData error|j},
-          ~reason="",
-          ~solution={j||j},
-          ~params={j||j},
-        ),
-      )
-    };
+  let list = list @ _encodeSceneExtras(isActiveCameraIndex, imguiData);
 
   ("scenes", [|list |> object_|] |> jsonArray);
 };
@@ -636,6 +658,7 @@ let encode =
         samplerDataArr,
         imageUint8DataArr,
         cameraDataArr,
+        isActiveCameraIndex,
         arcballCameraControllerDataArr,
         lightDataArr,
         imguiData,
@@ -646,7 +669,11 @@ let encode =
   let list = [
     _encodeAsset(),
     ("scene", 0 |> int),
-    _encodeScenes(extensionsUsedArr, lightDataArr, imguiData, state),
+    _encodeScenes(
+      extensionsUsedArr,
+      (lightDataArr, imguiData, isActiveCameraIndex),
+      state,
+    ),
     _encodeCameras(cameraDataArr),
     _encodeExtras(
       meshRendererDataArr,

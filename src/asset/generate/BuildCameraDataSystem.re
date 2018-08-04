@@ -1,5 +1,8 @@
 open StateDataMainType;
 
+let getIsActiveCameraIndex = ({basicCameraViewRecord} as state) =>
+  ActiveBasicCameraViewService.getActiveCameraView(basicCameraViewRecord);
+
 let _convertDegreeToRadians = angle => angle *. Js.Math._PI /. 180.;
 
 let build = (cameraDataMap, {perspectiveCameraProjectionRecord} as state) => {

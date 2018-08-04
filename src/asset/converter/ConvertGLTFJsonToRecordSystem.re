@@ -120,6 +120,8 @@ let _convertScenes = json =>
              |> optional(
                   field("extras", json =>
                     {
+                      isActiveCameraIndex:
+                        json |> optional(field("isActiveCameraIndex", int)),
                       imgui:
                         json
                         |> optional(
@@ -260,7 +262,8 @@ let _convertExtras = json =>
                       (
                         {
                           colorFactor:
-                            json |> optional(field("colorFactor", array(float))),
+                            json
+                            |> optional(field("colorFactor", array(float))),
                           name: json |> optional(field("name", string)),
                         }: basicMaterial
                       )
