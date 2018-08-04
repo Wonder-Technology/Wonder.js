@@ -34,3 +34,15 @@ let getAllPerspectiveCameraProjectionComponents = ({gameObjectRecord}) => {
 
   _getAllComponents(disposedUidMap, perspectiveCameraProjectionMap);
 };
+
+let getAllDirectionLightComponents = ({gameObjectRecord}) => {
+  let {directionLightMap, disposedUidMap} = gameObjectRecord;
+
+  _getAllComponents(disposedUidMap, directionLightMap);
+};
+
+let getAllPointLightComponents = ({gameObjectRecord}) => {
+  let {pointLightMap, disposedUidMap} = gameObjectRecord;
+
+  _getAllComponents(disposedUidMap, pointLightMap);
+};

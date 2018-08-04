@@ -894,3 +894,7 @@ let getAllPerspectiveCameraProjectionComponents = GetComponentGameObjectMainServ
 let getAllBasicMaterialComponents = GetComponentGameObjectMainService.getAllBasicMaterialComponents;
 
 let getAllLightMaterialComponents = GetComponentGameObjectMainService.getAllLightMaterialComponents;
+
+let getAllDirectionLightComponents = GetComponentGameObjectMainService.getAllDirectionLightComponents;
+
+let getAllPointLightComponents = GetComponentGameObjectMainService.getAllPointLightComponents;

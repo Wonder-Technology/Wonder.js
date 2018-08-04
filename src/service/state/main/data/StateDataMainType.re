@@ -225,6 +225,14 @@ and apiRecord = {
     "unsafeGetGameObjectPerspectiveCameraProjectionComponent":
       (gameObject, state) => int,
     "unsafeGetGameObjectBasicCameraViewComponent": (gameObject, state) => int,
+    "hasGameObjectDirectionLightComponent": (gameObject, state) => bool,
+    "hasGameObjectPointLightComponent": (gameObject, state) => bool,
+    "getAllBasicCameraViewComponents": state => array(component),
+    "getAllPerspectiveCameraProjectionComponents": state => array(component),
+    "getAllBasicMaterialComponents": state => array(component),
+    "getAllLightMaterialComponents": state => array(component),
+    "getAllDirectionLightComponents": state => array(component),
+    "getAllPointLightComponents": state => array(component),
     "setLightMaterialDiffuseColor": (component, array(float), state) => state,
     "getLightMaterialSpecularColor":
       (component, state) => array(Js.Typed_array.Float32Array.elt),
@@ -261,6 +269,8 @@ and apiRecord = {
       ),
     "unsafeGetTransformChildren": (transform, state) => array(transform),
     "unsafeGetTransformGameObject": (transform, state) => gameObject,
+    "unsafeGetDirectionLightGameObject": (component, state) => gameObject,
+    "unsafeGetPointLightGameObject": (component, state) => gameObject,
     "convertWorldToScreen":
       (int, int, (float, float, float, float, float), state) =>
       (float, float),

@@ -450,6 +450,88 @@ let _ =
         );
       };
 
+      let _createLightGameObjects = state => {
+        let (state, gameObject1, light1) =
+          DirectionLightTool.createGameObject(state^);
+        let (state, gameObject2, light2) =
+          DirectionLightTool.createGameObject(state);
+        let (state, gameObject3, light3) =
+          PointLightTool.createGameObject(state);
+        let (state, gameObject4, geometry1) =
+          CustomGeometryTool.createGameObject(state);
+
+        (
+          state,
+          (gameObject1, gameObject2, gameObject3, gameObject4),
+          (light1, light2, light3),
+          geometry1,
+        );
+      };
+
+      describe("getAllDirectionLightComponents", () => {
+        test("get all components", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3, gameObject4),
+            (light1, light2, light3),
+            geometry1,
+          ) =
+            _createLightGameObjects(state);
+
+          GameObjectAPI.getAllDirectionLightComponents(state)
+          |> expect == [|light1, light2|];
+        });
+        test("test dispose", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3, gameObject4),
+            (light1, light2, light3),
+            geometry1,
+          ) =
+            _createLightGameObjects(state);
+
+          let state =
+            state
+            |> GameObjectTool.disposeGameObject(gameObject2)
+            |> GameObjectTool.disposeGameObject(gameObject3);
+
+          GameObjectAPI.getAllDirectionLightComponents(state)
+          |> expect == [|light1|];
+        });
+      });
+
+      describe("getAllPointLightComponents", () => {
+        test("get all components", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3, gameObject4),
+            (light1, light2, light3),
+            geometry1,
+          ) =
+            _createLightGameObjects(state);
+
+          GameObjectAPI.getAllPointLightComponents(state)
+          |> expect == [|light3|];
+        });
+        test("test dispose", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3, gameObject4),
+            (light1, light2, light3),
+            geometry1,
+          ) =
+            _createLightGameObjects(state);
+
+          let state =
+            state
+            |> GameObjectTool.disposeGameObject(gameObject2)
+            |> GameObjectTool.disposeGameObject(gameObject3);
+
+          GameObjectAPI.getAllPointLightComponents(state)
+          |> expect == [||];
+        });
+      });
+
       describe("getAllBasicCameraViewComponents", () => {
         test("get all components", () => {
           let (
