@@ -5,19 +5,12 @@ open StateDataMainType;
 open ComponentType;
 
 let cloneBasicCameraViewComponent =
-    (
-      sourceComponent: component,
-      countRangeArr: array(int),
-      {basicCameraViewRecord} as state,
-    ) => {
-  let (basicCameraViewRecord, componentArr) =
-    CloneBasicCameraViewService.handleCloneComponent(
-      sourceComponent,
-      countRangeArr,
-      basicCameraViewRecord,
-    );
-  ({...state, basicCameraViewRecord}, componentArr);
-};
+    (sourceComponent: component, countRangeArr: array(int), state) =>
+  CloneBasicCameraViewMainService.handleCloneComponent(
+    sourceComponent,
+    countRangeArr,
+    state,
+  );
 
 let clonePerspectiveCameraProjectionComponent =
     (

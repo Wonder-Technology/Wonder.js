@@ -1095,6 +1095,19 @@ let _ =
           let (_, _, _, _, clonedBasicCameraViewArr) = _prepare(state^);
           clonedBasicCameraViewArr |> Js.Array.length |> expect == 2;
         });
+        test("cloned one's isActive should be false", () => {
+          let (state, _, basicCameraView1, _, clonedBasicCameraViewArr) =
+            _prepare(state^);
+
+          clonedBasicCameraViewArr
+          |> Js.Array.map(basicCameraView =>
+               BasicCameraViewAPI.isActiveBasicCameraView(
+                 basicCameraView,
+                 state,
+               )
+             )
+          |> expect == [|false, false|];
+        });
       });
 
       describe("test clone perspectiveCameraProjection component", () => {

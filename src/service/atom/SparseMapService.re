@@ -7,6 +7,8 @@ let copy = Js.Array.copy;
 /* let getFirst = map =>
    map |> length === 0 ? None : Some(Array.unsafe_get(map, 0)); */
 
+let filter = Js.Array.filter;
+
 let getValidValues = map =>
   map |> Js.Array.filter(value => value |> Obj.magic !== Js.Undefined.empty);
 
@@ -22,6 +24,8 @@ let getValidKeys = map =>
          },
        [||],
      );
+
+let map = (func, map) => map |> Js.Array.map(value => func(. value));
 
 let mapValid = (func, map) =>
   map
@@ -52,6 +56,8 @@ let forEachiValid = (func, map) =>
          func(. value, index);
        }
      );
+
+let reducei = WonderCommonlib.ArrayService.reduceOneParami;
 
 let reduceValid = (func, initValue, map) =>
   map

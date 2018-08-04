@@ -1530,13 +1530,14 @@ let _ =
         )
       );
       describe("deep copy basicCameraView record", () =>
-        test("shadow copy gameObjectMap, disposedIndexArray", () =>
+        test("shadow copy isActiveMap, gameObjectMap, disposedIndexArray", () =>
           BasicCameraViewType.(
             MainStateTool.testShadowCopyArrayLikeMapData(
               state => {
-                let {gameObjectMap, disposedIndexArray} =
+                let {isActiveMap, gameObjectMap, disposedIndexArray} =
                   state.basicCameraViewRecord;
                 [|
+                  isActiveMap |> Obj.magic,
                   gameObjectMap |> Obj.magic,
                   disposedIndexArray |> Obj.magic,
                 |];

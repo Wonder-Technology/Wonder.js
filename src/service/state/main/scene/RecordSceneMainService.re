@@ -11,7 +11,6 @@ let create = state => {
     ...state,
     sceneRecord:
       Some({
-        currentCameraGameObject: None,
         ambientLight: {
           color: AmbientLightService.getDefaultColor(),
         },

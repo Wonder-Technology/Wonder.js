@@ -144,6 +144,18 @@ let getPointUpEventName = NameEventAPI.getPointUpEventName;
 
 let getPointDownEventName = NameEventAPI.getPointDownEventName;
 
+let getAllPointLightComponents = GameObjectAPI.getAllPointLightComponents;
+
+let getAllDirectionLightComponents = GameObjectAPI.getAllDirectionLightComponents;
+
+let getAllLightMaterialComponents = GameObjectAPI.getAllLightMaterialComponents;
+
+let getAllBasicMaterialComponents = GameObjectAPI.getAllBasicMaterialComponents;
+
+let getAllPerspectiveCameraProjectionComponents = GameObjectAPI.getAllPerspectiveCameraProjectionComponents;
+
+let getAllBasicCameraViewComponents = GameObjectAPI.getAllBasicCameraViewComponents;
+
 let setGameObjectName = GameObjectAPI.setGameObjectName;
 
 let unsafeGetGameObjectName = GameObjectAPI.unsafeGetGameObjectName;
@@ -466,10 +478,6 @@ let setAmbientLightColor = SceneAPI.setAmbientLightColor;
 
 let getAmbientLightColor = SceneAPI.getAmbientLightColor;
 
-let setCurrentCameraGameObject = SceneAPI.setCurrentCameraGameObject;
-
-let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
-
 let setScreenSize = ScreenAPI.setScreenSize;
 
 let markSourceInstanceModelMatrixIsStatic = SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic;
@@ -696,6 +704,18 @@ let loopBody = DirectorAPI.loopBody;
 
 let initDirector = DirectorAPI.initDirector;
 
+let getAllPointLightComponents = GameObjectAPI.getAllPointLightComponents;
+
+let getAllDirectionLightComponents = GameObjectAPI.getAllDirectionLightComponents;
+
+let getAllLightMaterialComponents = GameObjectAPI.getAllLightMaterialComponents;
+
+let getAllBasicMaterialComponents = GameObjectAPI.getAllBasicMaterialComponents;
+
+let getAllPerspectiveCameraProjectionComponents = GameObjectAPI.getAllPerspectiveCameraProjectionComponents;
+
+let getAllBasicCameraViewComponents = GameObjectAPI.getAllBasicCameraViewComponents;
+
 let setGameObjectName = GameObjectAPI.setGameObjectName;
 
 let unsafeGetGameObjectName = GameObjectAPI.unsafeGetGameObjectName;
@@ -873,10 +893,6 @@ let getSceneGameObject = SceneAPI.getSceneGameObject;
 let setAmbientLightColor = SceneAPI.setAmbientLightColor;
 
 let getAmbientLightColor = SceneAPI.getAmbientLightColor;
-
-let setCurrentCameraGameObject = SceneAPI.setCurrentCameraGameObject;
-
-let getCurrentCameraGameObject = SceneAPI.getCurrentCameraGameObject;
 
 let setScreenSize = ScreenAPI.setScreenSize;
 

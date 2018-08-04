@@ -12,37 +12,22 @@ let getCameraData =
       } as state,
     ) =>
   switch (
-    CameraSceneMainService.getCurrentCameraGameObject(
-      basicCameraViewRecord,
-      RecordSceneMainService.getRecord(state),
-    )
+    ActiveBasicCameraViewService.getActiveCameraView(basicCameraViewRecord)
   ) {
   | None => None
-  | Some(currentCameraGameObject) =>
+  | Some(activeCameraView) =>
+    let activeCameraViewGameObject =
+      activeCameraView
+      |> GameObjectBasicCameraViewService.unsafeGetGameObject(
+           _,
+           basicCameraViewRecord,
+         );
     let transformRecord = state |> RecordTransformMainService.getRecord;
     let transform =
       GetComponentGameObjectService.unsafeGetTransformComponent(
-        currentCameraGameObject,
+        activeCameraViewGameObject,
         gameObjectRecord,
       );
-    /* OperateRenderMainService.isFirstRender(state) ?
-       Some({
-         vMatrix:
-           CacheType.New(BasicCameraViewSystem.getWorldToCameraMatrixByTransform(transform, state)),
-         pMatrix: CacheType.New(BasicCameraViewSystem.getPMatrix(currentBasicCameraView, state))
-       }) :
-       Some({
-         vMatrix:
-           TransformSystem.isDirty(transform, state) ?
-             CacheType.New(
-               BasicCameraViewSystem.getWorldToCameraMatrixByTransform(transform, state)
-             ) :
-             CacheType.Cache,
-         pMatrix:
-           BasicCameraViewSystem.isDirty(currentBasicCameraView, state) ?
-             CacheType.New(BasicCameraViewSystem.getPMatrix(currentBasicCameraView, state)) :
-             CacheType.Cache
-       }) */
     Some({
       vMatrix:
         VMatrixService.getWorldToCameraMatrix(
@@ -55,7 +40,7 @@ let getCameraData =
       pMatrix:
         PMatrixService.unsafeGetPMatrix(
           GetComponentGameObjectService.unsafeGetPerspectiveCameraProjectionComponent(
-            currentCameraGameObject,
+            activeCameraViewGameObject,
             gameObjectRecord,
           ),
           perspectiveCameraProjectionRecord.pMatrixMap,
