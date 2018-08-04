@@ -1,0 +1,9 @@
+let createRenderGroup = RenderGroupMainService.createRenderGroup;
+
+let addGameObjectRenderGroupComponents = RenderGroupMainService.addRenderGroupComponents;
+
+let disposeGameObjectRenderGroupComponents = RenderGroupMainService.disposeRenderGroupComponents;
+
+let unsafeGetGameObjectRenderGroupComponents = RenderGroupMainService.unsafeGetRenderGroupComponents;
+
+let hasGameObjectRenderGroupComponents = RenderGroupMainService.hasRenderGroupComponents;
