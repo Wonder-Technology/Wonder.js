@@ -14,6 +14,16 @@ let loadWDB = LoaderManagerAPI.loadWDB;
 
 let loadConfig = LoaderManagerAPI.loadConfig;
 
+let getActiveBasicCameraView = BasicCameraViewAPI.getActiveBasicCameraView;
+
+let setActiveBasicCameraView = BasicCameraViewAPI.setActiveBasicCameraView;
+
+let unactiveBasicCameraView = BasicCameraViewAPI.unactiveBasicCameraView;
+
+let activeBasicCameraView = BasicCameraViewAPI.activeBasicCameraView;
+
+let isActiveBasicCameraView = BasicCameraViewAPI.isActiveBasicCameraView;
+
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
 let unsafeGetBasicCameraViewGameObject = BasicCameraViewAPI.unsafeGetBasicCameraViewGameObject;
@@ -685,6 +695,16 @@ let create = RecordAPIRenderWorkerService.create;
 let setAPIJsObj = RecordAPIRenderWorkerService.setAPIJsObj;
 
 let getAPIJsObj = RecordAPIRenderWorkerService.getAPIJsObj;
+
+let getActiveBasicCameraView = BasicCameraViewAPI.getActiveBasicCameraView;
+
+let setActiveBasicCameraView = BasicCameraViewAPI.setActiveBasicCameraView;
+
+let unactiveBasicCameraView = BasicCameraViewAPI.unactiveBasicCameraView;
+
+let activeBasicCameraView = BasicCameraViewAPI.activeBasicCameraView;
+
+let isActiveBasicCameraView = BasicCameraViewAPI.isActiveBasicCameraView;
 
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
