@@ -221,14 +221,6 @@ let hasGameObjectArcballCameraControllerComponent =
   hasArcballCameraControllerComponent(gameObject, state.gameObjectRecord);
 };
 
-
-
-
-
-
-
-
-
 let addGameObjectTransformComponent =
     (
       gameObject: gameObject,
@@ -894,3 +886,11 @@ let setGameObjectName =
   );
   NameGameObjectMainService.setName(. gameObject, name, state);
 };
+
+let getAllBasicCameraViewComponents = GetComponentGameObjectMainService.getAllBasicCameraViewComponents;
+
+let getAllPerspectiveCameraProjectionComponents = GetComponentGameObjectMainService.getAllPerspectiveCameraProjectionComponents;
+
+let getAllBasicMaterialComponents = GetComponentGameObjectMainService.getAllBasicMaterialComponents;
+
+let getAllLightMaterialComponents = GetComponentGameObjectMainService.getAllLightMaterialComponents;

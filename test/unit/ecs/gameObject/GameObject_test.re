@@ -401,6 +401,195 @@ let _ =
       });
     });
 
+    describe("test get all components", () => {
+      let _createMaterialGameObjects = state => {
+        let (state, gameObject1, material1) =
+          LightMaterialTool.createGameObject(state^);
+        let (state, gameObject2, material2) =
+          BasicMaterialTool.createGameObject(state);
+        let (state, gameObject3, material3) =
+          LightMaterialTool.createGameObject(state);
+        let (state, gameObject4, geometry1) =
+          CustomGeometryTool.createGameObject(state);
+
+        (
+          state,
+          (gameObject1, gameObject2, gameObject3, gameObject4),
+          (material1, material2, material3),
+          geometry1,
+        );
+      };
+
+      let _createCameraGameObjects = state => {
+        let (
+          state,
+          gameObject1,
+          _,
+          (basicCameraView1, perspectiveCameraProjection1),
+        ) =
+          CameraTool.createCameraGameObject(state^);
+        let (
+          state,
+          gameObject2,
+          _,
+          (basicCameraView2, perspectiveCameraProjection2),
+        ) =
+          CameraTool.createCameraGameObject(state);
+        let (state, gameObject3, material1) =
+          LightMaterialTool.createGameObject(state);
+        let (state, gameObject4, geometry1) =
+          CustomGeometryTool.createGameObject(state);
+
+        (
+          state,
+          (gameObject1, gameObject2, gameObject3, gameObject4),
+          (basicCameraView1, basicCameraView2),
+          (perspectiveCameraProjection1, perspectiveCameraProjection2),
+          material1,
+          geometry1,
+        );
+      };
+
+      describe("getAllBasicCameraViewComponents", () => {
+        test("get all components", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3, gameObject4),
+            (basicCameraView1, basicCameraView2),
+            (perspectiveCameraProjection1, perspectiveCameraProjection2),
+            material1,
+            geometry1,
+          ) =
+            _createCameraGameObjects(state);
+
+          GameObjectAPI.getAllBasicCameraViewComponents(state)
+          |> expect == [|basicCameraView1, basicCameraView2|];
+        });
+        test("test dispose", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3, gameObject4),
+            (basicCameraView1, basicCameraView2),
+            (perspectiveCameraProjection1, perspectiveCameraProjection2),
+            material1,
+            geometry1,
+          ) =
+            _createCameraGameObjects(state);
+
+          let state =
+            state
+            |> GameObjectTool.disposeGameObject(gameObject2)
+            |> GameObjectTool.disposeGameObject(gameObject3);
+
+          GameObjectAPI.getAllBasicCameraViewComponents(state)
+          |> expect == [|basicCameraView1|];
+        });
+      });
+
+      describe("getAllPerspectiveCameraProjectionComponents", () => {
+        test("get all components", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3, gameObject4),
+            (basicCameraView1, basicCameraView2),
+            (perspectiveCameraProjection1, perspectiveCameraProjection2),
+            material1,
+            geometry1,
+          ) =
+            _createCameraGameObjects(state);
+
+          GameObjectAPI.getAllPerspectiveCameraProjectionComponents(state)
+          |>
+          expect == [|
+                      perspectiveCameraProjection1,
+                      perspectiveCameraProjection2,
+                    |];
+        });
+        test("test dispose", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3, gameObject4),
+            (basicCameraView1, basicCameraView2),
+            (perspectiveCameraProjection1, perspectiveCameraProjection2),
+            material1,
+            geometry1,
+          ) =
+            _createCameraGameObjects(state);
+
+          let state =
+            state
+            |> GameObjectTool.disposeGameObject(gameObject2)
+            |> GameObjectTool.disposeGameObject(gameObject3);
+
+          GameObjectAPI.getAllPerspectiveCameraProjectionComponents(state)
+          |> expect == [|perspectiveCameraProjection1|];
+        });
+      });
+
+      describe("getAllBasicMaterialComponents", () => {
+        test("get all components", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3, gameObject4),
+            (material1, material2, material3),
+            geometry1,
+          ) =
+            _createMaterialGameObjects(state);
+
+          GameObjectAPI.getAllBasicMaterialComponents(state)
+          |> expect == [|material2|];
+        });
+        test("test dispose", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3, gameObject4),
+            (material1, material2, material3),
+            geometry1,
+          ) =
+            _createMaterialGameObjects(state);
+
+          let state =
+            state
+            |> GameObjectTool.disposeGameObject(gameObject1)
+            |> GameObjectTool.disposeGameObject(gameObject2);
+
+          GameObjectAPI.getAllBasicMaterialComponents(state) |> expect == [||];
+        });
+      });
+
+      describe("getAllLightMaterialComponents", () => {
+        test("get all components", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3, gameObject4),
+            (material1, material2, material3),
+            geometry1,
+          ) =
+            _createMaterialGameObjects(state);
+
+          GameObjectAPI.getAllLightMaterialComponents(state)
+          |> expect == [|material1, material3|];
+        });
+        test("test dispose", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3, gameObject4),
+            (material1, material2, material3),
+            geometry1,
+          ) =
+            _createMaterialGameObjects(state);
+
+          let state =
+            state
+            |> GameObjectTool.disposeGameObject(gameObject1)
+            |> GameObjectTool.disposeGameObject(gameObject2);
+
+          GameObjectAPI.getAllLightMaterialComponents(state)
+          |> expect == [|material3|];
+        });
+      });
+    });
+
     describe("unsafeGetGameObjectName", () =>
       test("if no name, contract error", () => {
         TestTool.openContractCheck();
