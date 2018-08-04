@@ -44,6 +44,7 @@
                 var rootGameObject = wd.getSceneGameObject(state);
 
 
+
                 var [state, wdb] = wd.generateWDB(rootGameObject, wd.createSparseMap(), state);
 
                 // console.log(
@@ -57,11 +58,14 @@
             function _testGenerateWDByGameObject(state) {
                 var [state, wdb] = _generateWDByGameObject(state);
 
+                // wd.startDirector(state);
 
-                wd.assembleWDB(wdb, state)
-                    .forEach(([state, rootGameObject]) => {
-                        wd.startDirector(state);
-                    })
+                AssetTool.download(wdb, "generated.wdb", "")
+
+                // wd.assembleWDB(wdb, state)
+                //     .forEach(([state, rootGameObject]) => {
+                //         wd.startDirector(state);
+                //     })
             }
 
 
@@ -76,35 +80,35 @@
                         var state = wd.unsafeGetState();
 
                         var state = wd.setIMGUIFunc(
-                            1, (labelFunc, api, record) => {
-                                var record = api.label(
-                                    [20, 20, 300, 100], "ab", 0, record
+                            1, (customData, api, state) => {
+                                var state = api.label(
+                                    [20, 20, 300, 100], "ab", 0, state
                                 );
 
 
 
-                                var record = api.image(
-                                    [50, 150, 50, 100], [0, 0, 1, 1], "1", record
+                                var state = api.image(
+                                    [50, 150, 50, 100], [0, 0, 1, 1], "1", state
                                 );
 
 
-                                var record = api.image(
-                                    [200, 300, 100, 100], [0, 0, 1, 1], "2", record
+                                var state = api.image(
+                                    [200, 300, 100, 100], [0, 0, 1, 1], "2", state
                                 );
 
 
-                                var record = api.label(
-                                    [20, 150, 300, 100], "c", 1, record
+                                var state = api.label(
+                                    [20, 150, 300, 100], "c", 1, state
                                 );
 
-                                var record = api.image(
-                                    [500, 300, 100, 100], [0, 0, 1, 1], "2", record
+                                var state = api.image(
+                                    [500, 300, 100, 100], [0, 0, 1, 1], "2", state
                                 );
 
 
 
 
-                                return record
+                                return state
                             }, state);
 
                         _testGenerateWDByGameObject(state);

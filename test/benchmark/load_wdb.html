@@ -30,7 +30,16 @@
 
             return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
                 return AssetTool.loadWDB("./generated.wdb", wd.unsafeGetState(), function ([state, gameObject]) {
-                    return initSample(state, gameObject);
+
+                    AssetTool.loadIMGUIAsset("../res/font/myFont.fnt", "../res/font/myFont.png",
+                        [
+                            ["./1.png", "1"],
+                            ["./2.jpg", "2"]
+                        ],
+                        state, function (state) {
+                            return initSample(state, gameObject);
+                        });
+
                 });
             });
 
