@@ -70,6 +70,18 @@ let _ =
         test("test2", () =>
           _test((0., 0., 1.), (1., 0.5, 0.), (2232., 134.))
         );
+
+        describe("fix bug", () =>
+          describe(
+            "if world coordinate is in the reverse direction, screen coordinate should be out of screen",
+            () =>
+            test(
+              "if the w(the coordinate(x,y,z,w) after perspective transform) < 0.0, set screen coordinate to be (-100.0, -100.0)",
+              () =>
+              _test((0., 0., 1.), (0., 0., 100.), ((-100.), (-100.)))
+            )
+          )
+        );
       })
     );
   });

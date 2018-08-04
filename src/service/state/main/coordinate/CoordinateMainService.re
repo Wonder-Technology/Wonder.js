@@ -20,10 +20,15 @@ let convertWorldToScreen =
       Matrix4Service.createIdentityMatrix4(),
     )
     |> Vector4Service.transformMat4Tuple((worldX, worldY, worldZ, 1.));
-  let (x, y, z) as ndcSpacePos = (x /. w, y /. w, z /. w);
 
-  (
-    Js.Math.round((x +. 1.) /. 2. *. screenWidth),
-    Js.Math.round((1. -. y) /. 2. *. screenHeight),
-  );
+  w < 0. ?
+    ((-100.), (-100.)) :
+    {
+      let (x, y, z) as ndcSpacePos = (x /. w, y /. w, z /. w);
+
+      (
+        Js.Math.round((x +. 1.) /. 2. *. screenWidth),
+        Js.Math.round((1. -. y) /. 2. *. screenHeight),
+      );
+    };
 };
