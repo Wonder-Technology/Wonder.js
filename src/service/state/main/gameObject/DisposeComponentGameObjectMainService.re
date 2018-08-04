@@ -2,7 +2,7 @@ open StateDataMainType;
 
 open ComponentType;
 
-let _removeComponent = (uid, componentMap) =>
+let _removeComponent = (uid:int, componentMap) =>
   componentMap |> ComponentMapService.removeComponent(uid) |> Obj.magic;
 
 let deferDisposeBasicCameraViewComponent =

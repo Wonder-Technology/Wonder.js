@@ -492,8 +492,9 @@ let _ =
 
           let state =
             state
-            |> GameObjectTool.disposeGameObject(gameObject2)
-            |> GameObjectTool.disposeGameObject(gameObject3);
+            |> GameObjectAPI.disposeGameObject(gameObject2)
+            |> GameObjectAPI.disposeGameObject(gameObject3);
+          let state = state |> DisposeJob.execJob(None);
 
           GameObjectAPI.getAllDirectionLightComponents(state)
           |> expect == [|light1|];
@@ -527,8 +528,7 @@ let _ =
             |> GameObjectTool.disposeGameObject(gameObject2)
             |> GameObjectTool.disposeGameObject(gameObject3);
 
-          GameObjectAPI.getAllPointLightComponents(state)
-          |> expect == [||];
+          GameObjectAPI.getAllPointLightComponents(state) |> expect == [||];
         });
       });
 
@@ -746,7 +746,7 @@ let _ =
       );
 
       describe("dispose all components", () => {
-        test("dispose tranform component", () => {
+        test("dispose transform component", () => {
           let (state, gameObject1) = createGameObject(state^);
           let (state, gameObject2) = createGameObject(state);
           let transform1 =
@@ -766,7 +766,8 @@ let _ =
             |> TransformAPI.setTransformLocalPosition(transform1, pos1)
             |> TransformAPI.setTransformLocalPosition(transform2, pos2);
 
-          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+          let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
+          let state = state |> DisposeJob.execJob(None);
 
           expect(() =>
             state

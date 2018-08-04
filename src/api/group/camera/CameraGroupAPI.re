@@ -1,0 +1,9 @@
+let createCameraGroup = CameraGroupMainService.createCameraGroup;
+
+let addGameObjectCameraGroupComponents = CameraGroupMainService.addCameraGroupComponents;
+
+let disposeGameObjectCameraGroupComponents = CameraGroupMainService.disposeCameraGroupComponents;
+
+let unsafeGetGameObjectCameraGroupComponents = CameraGroupMainService.unsafeGetCameraGroupComponents;
+
+let hasGameObjectCameraGroupComponents = CameraGroupMainService.hasCameraGroupComponents;
