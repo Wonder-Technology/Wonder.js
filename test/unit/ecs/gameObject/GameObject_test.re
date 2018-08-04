@@ -246,7 +246,7 @@ let _ =
             open BasicCameraViewAPI;
             let (state, gameObject, _) = _prepare();
             state
-            |> unsafeGetGameObjectBasicCameraView(
+            |> unsafeGetBasicCameraViewGameObject(
                  unsafeGetGameObjectBasicCameraViewComponent(
                    gameObject,
                    state,

@@ -39,7 +39,7 @@ let _ =
       });
     });
 
-    describe("unsafeGetGameObjectBasicCameraView", () =>
+    describe("unsafeGetBasicCameraViewGameObject", () =>
       test("get cameraView's gameObject", () => {
         open GameObjectAPI;
         let (state, cameraView) = createBasicCameraView(state^);
@@ -48,7 +48,7 @@ let _ =
           state
           |> addGameObjectBasicCameraViewComponent(gameObject, cameraView);
         state
-        |> unsafeGetGameObjectBasicCameraView(cameraView)
+        |> unsafeGetBasicCameraViewGameObject(cameraView)
         |> expect == gameObject;
       })
     );

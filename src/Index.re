@@ -16,7 +16,7 @@ let loadConfig = LoaderManagerAPI.loadConfig;
 
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
-let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectBasicCameraView;
+let unsafeGetBasicCameraViewGameObject = BasicCameraViewAPI.unsafeGetBasicCameraViewGameObject;
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 
@@ -688,7 +688,7 @@ let getAPIJsObj = RecordAPIRenderWorkerService.getAPIJsObj;
 
 let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
 
-let unsafeGetGameObjectBasicCameraView = BasicCameraViewAPI.unsafeGetGameObjectBasicCameraView;
+let unsafeGetBasicCameraViewGameObject = BasicCameraViewAPI.unsafeGetBasicCameraViewGameObject;
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 

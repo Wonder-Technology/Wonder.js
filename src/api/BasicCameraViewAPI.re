@@ -15,7 +15,7 @@ let createBasicCameraView = state => {
   (state, index);
 };
 
-let unsafeGetGameObjectBasicCameraView = (cameraView, state) => {
+let unsafeGetBasicCameraViewGameObject = (cameraView, state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
