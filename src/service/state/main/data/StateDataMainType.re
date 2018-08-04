@@ -271,6 +271,7 @@ and apiRecord = {
     "unsafeGetTransformGameObject": (transform, state) => gameObject,
     "unsafeGetDirectionLightGameObject": (component, state) => gameObject,
     "unsafeGetPointLightGameObject": (component, state) => gameObject,
+    "unsafeGetBasicCameraViewGameObject": (component, state) => gameObject,
     "convertWorldToScreen":
       (int, int, (float, float, float, float, float), state) =>
       (float, float),

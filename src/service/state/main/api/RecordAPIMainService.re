@@ -41,6 +41,7 @@ let create = () => {
     "unsafeGetTransformGameObject": TransformAPI.unsafeGetTransformGameObject,
     "unsafeGetDirectionLightGameObject": DirectionLightAPI.unsafeGetDirectionLightGameObject,
     "unsafeGetPointLightGameObject": PointLightAPI.unsafeGetPointLightGameObject,
+    "unsafeGetBasicCameraViewGameObject": BasicCameraViewAPI.unsafeGetBasicCameraViewGameObject,
     "convertWorldToScreen": CoordinateAPI.convertWorldToScreen,
     "getRenderWorkerCustomData": OperateWorkerDataMainService.getRenderWorkerCustomData,
   },
