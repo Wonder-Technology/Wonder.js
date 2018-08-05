@@ -267,33 +267,7 @@
         }
 
         function bindEvent(state) {
-            var state = wd.onCustomGlobalEvent(
-                wd.getPointDragEventName(),
-                100,
-                (event, state) => {
-                    var pointEvent = wd.getCustomEventUserData(event);
-
-                    var [x, y] = wd.getPointEventLocationInViewOfEvent(pointEvent);
-
-
-                    var [regionX, regionY, regionWidth, regionHeight] = DemoImguiTool.getIMGUIRegion(window.innerWidth, window.innerHeight);
-
-                    if (
-                        window.isShowPanel === true &&
-                        x >= regionX && y >= regionY
-                    ) {
-                        return [
-                            state,
-                            wd.stopPropagationCustomEvent(event)
-                        ]
-                    }
-
-                    return [state, event];
-                },
-                state
-            );
-
-            return state;
+            return DemoImguiTool.bindEvent((state) => window.isShowPanel, state);
         };
 
 

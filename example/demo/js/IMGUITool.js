@@ -1,5 +1,39 @@
 var DemoImguiTool = (function () {
     return {
+        bindEvent: function (getIsShowPanelFunc, state) {
+            var state = wd.onCustomGlobalEvent(
+                wd.getPointDragEventName(),
+                100,
+                (event, state) => {
+                    var pointEvent = wd.getCustomEventUserData(event);
+
+
+
+                    var [x, y] = wd.getPointEventLocationInViewOfEvent(pointEvent);
+
+
+
+                    var [regionX, regionY, regionWidth, regionHeight] = DemoImguiTool.getIMGUIRegion(window.innerWidth, window.innerHeight);
+
+                    if (
+                        getIsShowPanelFunc(state) === true &&
+                        x >= regionX && y >= regionY
+                    ) {
+                        document.exitPointerLock();
+
+                        return [
+                            state,
+                            wd.stopPropagationCustomEvent(event)
+                        ]
+                    }
+
+                    return [state, event];
+                },
+                state
+            );
+
+            return state;
+        },
         getIMGUIRegion: function (screenWidth, screenHeight) {
             return [screenWidth / 1.8, 10, screenWidth - screenWidth / 1.8, screenHeight]
         },
