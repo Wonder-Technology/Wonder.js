@@ -42,7 +42,6 @@
 
 
                 var state = api.setCustomDataFromRenderWorkerToMainWorker({
-                    isShowPanel: customData.isShowPanel,
                     fps: customData.fps
                 }, state);
 
@@ -287,7 +286,6 @@
                     state =
                         wd.setMainWorkerCustomData(
                             {
-                                isShowPanel: customData.isShowPanel,
                                 fps: wd.getFps(state)
                             }, state
                         );
