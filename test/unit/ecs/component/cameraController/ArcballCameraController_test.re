@@ -162,6 +162,7 @@ let _ =
           cameraController2,
         );
       };
+
       describe("dispose data", () => {
         test("dirtyArray: remove from array", () => {
           let (state, gameObject1, _, (cameraController1, _, _)) =
@@ -449,6 +450,36 @@ let _ =
             |> expect == (false, false, false, false, false);
           });
         });
+
+        describe("fix bug", () =>
+          test(
+            {|dispose component;
+  loopBody;
+  loopBody;
+
+component should be removed from gameObject
+  |},
+            () => {
+              let (state, gameObject1, _, (cameraController1, _, _)) =
+                ArcballCameraControllerTool.createGameObject(state^);
+              let state =
+                state
+                |> GameObjectAPI.disposeGameObjectArcballCameraControllerComponent(
+                     gameObject1,
+                     cameraController1,
+                   );
+
+              let state = state |> DisposeJob.execJob(None);
+              let state = state |> DisposeJob.execJob(None);
+
+              GameObjectAPI.hasGameObjectArcballCameraControllerComponent(
+                gameObject1,
+                state,
+              )
+              |> expect == false;
+            },
+          )
+        );
       });
     });
 

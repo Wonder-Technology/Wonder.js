@@ -3,6 +3,7 @@ open StateDataMainType;
 let isAlive =
     (cameraController, {disposedIndexArray}: arcballCameraControllerRecord) =>
   DisposeComponentService.isAlive(cameraController, disposedIndexArray);
+
 let _disposeData = (cameraController, state) => {
   let {arcballCameraControllerRecord} as state =
     state
