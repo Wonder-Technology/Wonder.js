@@ -60,7 +60,7 @@ let _ =
     describe("bind/unbind arcballCameraController event", () => {
       let _prepareMouseEvent = sandbox => {
         let state =
-          InitArcballCameraControllerTool.prepareMouseEvent(sandbox);
+          EventArcballCameraControllerTool.prepareMouseEvent(sandbox);
         let (state, gameObject, _, (cameraController, _, _)) =
           ArcballCameraControllerTool.createGameObject(state);
         let state = state |> NoWorkerJobTool.execInitJobs;

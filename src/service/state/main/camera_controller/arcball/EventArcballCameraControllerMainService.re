@@ -409,3 +409,5 @@ let unbindEvent = (cameraController, state) =>
   |> _disposePointDragEventHandleFuncMap(cameraController)
   |> _disposePointScaleEventHandleFuncMap(cameraController)
   |> _disposeKeyDownEventHandleFuncMap(cameraController);
+
+/* let getBind */

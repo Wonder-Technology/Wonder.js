@@ -2157,23 +2157,6 @@ let _ =
                       0.,
                     |]);
         });
-        test("init arcballCameraController component", () => {
-          let (state, gameObject, _, (cameraController, _, _)) =
-            ArcballCameraControllerTool.createGameObject(state^);
-
-          let attachShader = createEmptyStubWithJsObjSandbox(sandbox);
-          let state =
-            state
-            |> FakeGlTool.setFakeGl(
-                 FakeGlTool.buildFakeGl(~sandbox, ~attachShader, ()),
-               );
-          let state = AllMaterialTool.prepareForInit(state);
-          let state = state |> initGameObject(gameObject);
-
-          ArcballCameraControllerTool.getPointDragEventHandleFuncMap(state)
-          |> SparseMapService.length
-          |> expect == 1;
-        });
       })
     );
     describe("contract check: is alive", () =>

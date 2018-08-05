@@ -66,7 +66,6 @@ let _ =
       test("test restore pointDragEventHandleFuncMap", () => {
         createMethodStubWithJsObjSandbox(sandbox, Console.console, "warn");
         let state = _prepareState();
-
         let (
           state,
           gameObject,
@@ -74,19 +73,25 @@ let _ =
           (cameraController, basicCameraView, perspectiveCameraProjection),
         ) =
           ArcballCameraControllerTool.createGameObject(state);
-
         let state = state |> NoWorkerJobTool.execInitJobs;
-
+        let state =
+          ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+            cameraController,
+            state,
+          );
         let state =
           state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
 
         let copiedState = state |> MainStateTool.deepCopyForRestore;
 
-        let (state, gameObject2, _, _) =
+        let (state, gameObject2, _, (cameraController2, _, _)) =
           ArcballCameraControllerTool.createGameObject(state);
 
         let state =
-          state |> InitGameObjectMainService.initGameObject(gameObject2);
+          ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+            cameraController2,
+            state,
+          );
 
         let restoredState = MainStateTool.restore(state, copiedState);
 

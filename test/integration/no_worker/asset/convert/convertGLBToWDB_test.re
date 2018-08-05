@@ -648,7 +648,7 @@ let _ =
               ~testFunc=
                 ({basicCameraViews}) =>
                   basicCameraViews
-                  |> expect == {count: 3, isActiveIndex: Some(1)},
+                  |> expect == {count: 3, isActiveIndex: Some(2)},
               (),
             )
           );

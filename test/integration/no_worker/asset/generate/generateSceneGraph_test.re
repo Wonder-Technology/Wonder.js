@@ -55,7 +55,9 @@ let _ =
           ((gltf, binBuffer)) =>
             gltf
             |> GenerateSceneGraphSystemTool.contain(
-                 {|"scene": 0, "scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0]}]|},
+                 {|
+                  "scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0],"extras":{}}]
+                  |},
                ),
           state,
         );

@@ -60,20 +60,5 @@ let initGameObject = (uid: int, {gameObjectRecord} as state) => {
     | None => state
     };
 
-  let state =
-    switch (
-      GetComponentGameObjectService.getArcballCameraControllerComponent(.
-        uid,
-        gameObjectRecord,
-      )
-    ) {
-    | Some(cameraController) =>
-      InitArcballCameraControllerMainService.initArcballCameraController(
-        cameraController,
-        state,
-      )
-    | None => state
-    };
-
   state;
 };

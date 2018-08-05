@@ -125,7 +125,7 @@ let _ =
         describe("bind contextmenu event", () =>
           test("preventDefault", () => {
             let state =
-              InitArcballCameraControllerTool.prepareMouseEvent(sandbox);
+              EventArcballCameraControllerTool.prepareMouseEvent(sandbox);
             let state = state |> NoWorkerJobTool.execInitJobs;
             let preventDefaultFunc = createEmptyStubWithJsObjSandbox(sandbox);
             let stopPropagationFunc =
