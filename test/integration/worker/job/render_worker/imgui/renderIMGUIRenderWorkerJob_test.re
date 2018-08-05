@@ -43,7 +43,6 @@ let _ =
                    SendRenderRenderDataWorkerTool.buildRenderRenderData(
                      ~imguiData={
                        "ioData": ioData,
-                       "controlData": Sinon.matchAny,
                        "customData": Sinon.matchAny,
                        "imguiFunc": Sinon.matchAny,
                      },
@@ -84,37 +83,123 @@ let _ =
         })
       );
 
-      testPromise("send imguiFunc and customData", () => {
-        let (state, postMessageToRenderWorker) = _prepare();
-        let imguiFunc = (. _, _, state) => state;
-        let customData = Obj.magic((100, a => a + 1));
-        let state = ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state);
-        MainStateTool.setState(state);
+      describe("send imguiFunc and customData", () => {
+        let _buildData = () => (
+          (. _, _, state) => state,
+          Obj.magic((100, a => a + 1)),
+        );
 
-        WorkerJobWorkerTool.execMainWorkerJob(
-          ~execJobFunc=SendRenderDataMainWorkerJob.execJob,
-          ~completeFunc=
-            _ =>
-              postMessageToRenderWorker
-              |> expect
-              |> toCalledWith([|
-                   SendRenderRenderDataWorkerTool.buildRenderRenderData(
-                     ~imguiData={
-                       "ioData": Sinon.matchAny,
-                       "controlData": Sinon.matchAny,
-                       "customData":
-                         customData
-                         |> RenderIMGUIRenderWorkerTool.serializeValueWithFunction,
-                       "imguiFunc":
-                         RenderIMGUIRenderWorkerTool.serializeFunction(
-                           imguiFunc,
-                         ),
-                     },
-                     (),
-                   ),
-                 |])
-              |> resolve,
-          (),
+        describe(
+          "if is already set imguiFunc in render worker, not set again", () =>
+          describe("send none", () => {
+            testPromise("test two loops", () => {
+              let (state, postMessageToRenderWorker) = _prepare();
+              let (imguiFunc, customData) = _buildData();
+              let state =
+                ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state);
+              MainStateTool.setState(state);
+
+              WorkerJobWorkerTool.execMainWorkerJob(
+                ~execJobFunc=SendRenderDataMainWorkerJob.execJob,
+                ~completeFunc=
+                  _ =>
+                    WorkerJobWorkerTool.execMainWorkerJob(
+                      ~execJobFunc=SendRenderDataMainWorkerJob.execJob,
+                      ~completeFunc=
+                        _ =>
+                          postMessageToRenderWorker
+                          |> expect
+                          |> toCalledWith([|
+                               SendRenderRenderDataWorkerTool.buildRenderRenderData(
+                                 ~imguiData={
+                                   "ioData": Sinon.matchAny,
+                                   "customData": None,
+                                   "imguiFunc": None,
+                                 },
+                                 (),
+                               ),
+                             |])
+                          |> resolve,
+                      (),
+                    ),
+                (),
+              );
+            });
+            testPromise("test three loops", () => {
+              let (state, postMessageToRenderWorker) = _prepare();
+              let (imguiFunc, customData) = _buildData();
+              let state =
+                ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state);
+              MainStateTool.setState(state);
+
+              WorkerJobWorkerTool.execMainWorkerJob(
+                ~execJobFunc=SendRenderDataMainWorkerJob.execJob,
+                ~completeFunc=
+                  _ =>
+                    WorkerJobWorkerTool.execMainWorkerJob(
+                      ~execJobFunc=SendRenderDataMainWorkerJob.execJob,
+                      ~completeFunc=
+                        _ =>
+                          WorkerJobWorkerTool.execMainWorkerJob(
+                            ~execJobFunc=SendRenderDataMainWorkerJob.execJob,
+                            ~completeFunc=
+                              _ =>
+                                postMessageToRenderWorker
+                                |> expect
+                                |> toCalledWith([|
+                                     SendRenderRenderDataWorkerTool.buildRenderRenderData(
+                                       ~imguiData={
+                                         "ioData": Sinon.matchAny,
+                                         "customData": None,
+                                         "imguiFunc": None,
+                                       },
+                                       (),
+                                     ),
+                                   |])
+                                |> resolve,
+                            (),
+                          ),
+                      (),
+                    ),
+                (),
+              );
+            });
+          })
+        );
+
+        describe("else", () =>
+          testPromise("send data", () => {
+            let (state, postMessageToRenderWorker) = _prepare();
+            let (imguiFunc, customData) = _buildData();
+            let state =
+              ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state);
+            MainStateTool.setState(state);
+
+            WorkerJobWorkerTool.execMainWorkerJob(
+              ~execJobFunc=SendRenderDataMainWorkerJob.execJob,
+              ~completeFunc=
+                _ =>
+                  postMessageToRenderWorker
+                  |> expect
+                  |> toCalledWith([|
+                       SendRenderRenderDataWorkerTool.buildRenderRenderData(
+                         ~imguiData={
+                           "ioData": Sinon.matchAny,
+                           "customData":
+                             customData
+                             |> RenderIMGUIRenderWorkerTool.serializeValueWithFunction,
+                           "imguiFunc":
+                             RenderIMGUIRenderWorkerTool.serializeFunction(
+                               imguiFunc,
+                             ),
+                         },
+                         (),
+                       ),
+                     |])
+                  |> resolve,
+              (),
+            );
+          })
         );
       });
     });

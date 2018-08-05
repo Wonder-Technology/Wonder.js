@@ -34,34 +34,41 @@ let _buildIMGUIData = ({viewRecord} as state) => {
 
   let ioData = RecordIMGUIMainService.getIOData(state);
 
-  {
-    "ioData": ioData,
-    "customData":
-      switch (
-        WonderImgui.ManageIMGUIAPI.getCustomData(wonderImguiIMGUIRecord)
-      ) {
-      | None => None
-      | Some(customData) =>
-        customData |> SerializeService.serializeValueWithFunction |. Some
+  ManageIMGUIMainService.isSetIMGUIFuncInRenderWorkerForWorker(state) ?
+    (state, {"ioData": ioData, "customData": None, "imguiFunc": None}) :
+    (
+      ManageIMGUIMainService.markSetIMGUIFuncInRenderWorkerForWorker(state),
+      {
+        "ioData": ioData,
+        "customData":
+          switch (
+            WonderImgui.ManageIMGUIAPI.getCustomData(wonderImguiIMGUIRecord)
+          ) {
+          | None => None
+          | Some(customData) =>
+            customData |> SerializeService.serializeValueWithFunction |. Some
+          },
+        "imguiFunc":
+          switch (
+            WonderImgui.ManageIMGUIAPI.getIMGUIFunc(wonderImguiIMGUIRecord)
+          ) {
+          | None => None
+          | Some(func) => func |> SerializeService.serializeFunction |. Some
+          },
       },
-    "imguiFunc":
-      switch (WonderImgui.ManageIMGUIAPI.getIMGUIFunc(wonderImguiIMGUIRecord)) {
-      | None => None
-      | Some(func) => func |> SerializeService.serializeFunction |. Some
-      },
-    "controlData":
-      WonderImgui.RecordIMGUIService.getControlData(wonderImguiIMGUIRecord),
-  };
+    );
 };
 
-let _buildData = (operateType, stateData) => {
-  let {
+let _buildData =
+    (
+      operateType,
+      {
         settingRecord,
         gameObjectRecord,
         directionLightRecord,
         pointLightRecord,
-      } as state =
-    StateDataMainService.unsafeGetState(stateData);
+      } as state,
+    ) => {
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
   let basicRenderObjectRecord =
@@ -87,93 +94,99 @@ let _buildData = (operateType, stateData) => {
         }),
       )
     };
-  /* WonderLog.Log.print("send render data") |> ignore; */
-  {
-    "operateType": operateType,
-    "ambientLightData": {
-      "color": AmbientLightSceneMainService.getAmbientLightColor(state),
-    },
-    "directionLightData": {
-      "index": directionLightRecord.index,
-      "directionMap":
-        DirectionDirectionLightMainService.buildDirectionMap(
-          directionLightRecord.index,
-          DirectionDirectionLightMainService.getDirection,
-          state,
-        ),
-    },
-    "pointLightData": {
-      "index": pointLightRecord.index,
-      "positionMap":
-        PositionLightMainService.buildPositionMap(
-          pointLightRecord.index,
-          PositionPointLightMainService.getPosition,
-          state,
-        ),
-    },
-    "initData": {
-      "materialData": {
-        "basicMaterialData": {
-          "materialDataForWorkerInit":
-            _buildMaterialData(
-              basicMaterialRecord.materialArrayForWorkerInit,
-              basicMaterialRecord.gameObjectMap,
-              gameObjectRecord,
-            ),
-        },
-        "lightMaterialData": {
-          "materialDataForWorkerInit":
-            _buildMaterialData(
-              lightMaterialRecord.materialArrayForWorkerInit,
-              lightMaterialRecord.gameObjectMap,
-              gameObjectRecord,
-            ),
-        },
+
+  let (state, imguiData) = _buildIMGUIData(state);
+
+  (
+    state,
+    {
+      "operateType": operateType,
+      "ambientLightData": {
+        "color": AmbientLightSceneMainService.getAmbientLightColor(state),
       },
-      "textureData": {
-        "basicSourceTextureData": {
-          "needAddedImageDataArray":
-            OperateBasicSourceTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
-              basicSourceTextureRecord.needAddedSourceArray
+      "directionLightData": {
+        "index": directionLightRecord.index,
+        "directionMap":
+          DirectionDirectionLightMainService.buildDirectionMap(
+            directionLightRecord.index,
+            DirectionDirectionLightMainService.getDirection,
+            state,
+          ),
+      },
+      "pointLightData": {
+        "index": pointLightRecord.index,
+        "positionMap":
+          PositionLightMainService.buildPositionMap(
+            pointLightRecord.index,
+            PositionPointLightMainService.getPosition,
+            state,
+          ),
+      },
+      "initData": {
+        "materialData": {
+          "basicMaterialData": {
+            "materialDataForWorkerInit":
+              _buildMaterialData(
+                basicMaterialRecord.materialArrayForWorkerInit,
+                basicMaterialRecord.gameObjectMap,
+                gameObjectRecord,
+              ),
+          },
+          "lightMaterialData": {
+            "materialDataForWorkerInit":
+              _buildMaterialData(
+                lightMaterialRecord.materialArrayForWorkerInit,
+                lightMaterialRecord.gameObjectMap,
+                gameObjectRecord,
+              ),
+          },
+        },
+        "textureData": {
+          "basicSourceTextureData": {
+            "needAddedImageDataArray":
+              OperateBasicSourceTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+                basicSourceTextureRecord.needAddedSourceArray
+                |> _removeAddedSourceDataDuplicateItems,
+              ),
+            "needInitedTextureIndexArray":
+              basicSourceTextureRecord.needInitedTextureIndexArray
+              |> WonderCommonlib.ArrayService.removeDuplicateItems,
+          },
+          "arrayBufferViewSourceTextureData": {
+            "needAddedSourceArray":
+              arrayBufferViewSourceTextureRecord.needAddedSourceArray
               |> _removeAddedSourceDataDuplicateItems,
-            ),
-          "needInitedTextureIndexArray":
-            basicSourceTextureRecord.needInitedTextureIndexArray
-            |> WonderCommonlib.ArrayService.removeDuplicateItems,
-        },
-        "arrayBufferViewSourceTextureData": {
-          "needAddedSourceArray":
-            arrayBufferViewSourceTextureRecord.needAddedSourceArray
-            |> _removeAddedSourceDataDuplicateItems,
-          "needInitedTextureIndexArray":
-            arrayBufferViewSourceTextureRecord.needInitedTextureIndexArray
-            |> WonderCommonlib.ArrayService.removeDuplicateItems,
+            "needInitedTextureIndexArray":
+              arrayBufferViewSourceTextureRecord.needInitedTextureIndexArray
+              |> WonderCommonlib.ArrayService.removeDuplicateItems,
+          },
         },
       },
+      "renderData": {
+        "isRender": isRender,
+        "camera": cameraData,
+        "basic": {
+          "buffer": basicRenderObjectRecord.buffer,
+          "count": basicRenderObjectRecord.count,
+          "bufferCount":
+            BufferSettingService.getBasicMaterialCount(settingRecord),
+        },
+        "light": {
+          "buffer": lightRenderObjectRecord.buffer,
+          "count": lightRenderObjectRecord.count,
+          "bufferCount":
+            BufferSettingService.getLightMaterialCount(settingRecord),
+        },
+        "sourceInstance": {
+          "objectInstanceTransformIndexMap":
+            sourceInstanceRecord.objectInstanceTransformIndexMap,
+        },
+      },
+      "imguiData": imguiData,
+      "customData":
+        OperateWorkerDataMainService.getMainWorkerCustomData(state),
     },
-    "renderData": {
-      "isRender": isRender,
-      "camera": cameraData,
-      "basic": {
-        "buffer": basicRenderObjectRecord.buffer,
-        "count": basicRenderObjectRecord.count,
-        "bufferCount":
-          BufferSettingService.getBasicMaterialCount(settingRecord),
-      },
-      "light": {
-        "buffer": lightRenderObjectRecord.buffer,
-        "count": lightRenderObjectRecord.count,
-        "bufferCount":
-          BufferSettingService.getLightMaterialCount(settingRecord),
-      },
-      "sourceInstance": {
-        "objectInstanceTransformIndexMap":
-          sourceInstanceRecord.objectInstanceTransformIndexMap,
-      },
-    },
-    "imguiData": _buildIMGUIData(state),
-    "customData": OperateWorkerDataMainService.getMainWorkerCustomData(state),
-  };
+  );
 };
 
 let _clearData = state => {
@@ -195,9 +208,14 @@ let execJob = (flags, stateData) =>
   MostUtils.callFunc(() => {
     let {workerInstanceRecord} as state =
       StateDataMainService.unsafeGetState(stateData);
+
     let operateType = JobConfigUtils.getOperateType(flags);
+
+    let (state, data) = _buildData(operateType, state);
+
     WorkerInstanceService.unsafeGetRenderWorker(workerInstanceRecord)
-    |> WorkerService.postMessage(_buildData(operateType, stateData));
+    |> WorkerService.postMessage(data);
+
     let state = state |> _clearData;
     StateDataMainService.setState(stateData, state);
     Some(operateType);

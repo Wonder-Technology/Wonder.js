@@ -129,13 +129,9 @@ let execMainLoopJobs = (sandbox, completeFunc) => {
 
 let render = (sandbox, postMessageToRenderWorker, completeFunc) => {
   let state = MainStateTool.unsafeGetState();
-  let drawData = {
-    "data":
-      SendRenderDataMainWorkerJob._buildData(
-        "",
-        MainStateTool.getStateData(),
-      ),
-  };
+  let (state, renderData) =
+    SendRenderDataMainWorkerJob._buildData("", state);
+  let drawData = {"data": renderData};
 
   stubSelfPostMessage(sandbox^);
 

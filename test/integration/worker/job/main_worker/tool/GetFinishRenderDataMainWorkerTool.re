@@ -1,6 +1,4 @@
-let buildFinishRenderData =
-    (~customData=Sinon.matchAny, ~imguiData=Sinon.matchAny, ()) => {
+let buildFinishRenderData = (~customData=Sinon.matchAny, ()) => {
   "operateType": "FINISH_RENDER",
   "customData": customData,
-  "imguiData": imguiData,
 };

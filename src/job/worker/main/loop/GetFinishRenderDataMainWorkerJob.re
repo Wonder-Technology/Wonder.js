@@ -4,8 +4,7 @@ let _exec = (data, state) =>
   OperateWorkerDataMainService.setRenderWorkerCustomData(
     data##customData,
     state,
-  )
-  |> RecordIMGUIMainService.setControlDataFromRenderWorker(data##imguiData);
+  );
 
 let execJob = (flags, stateData) =>
   GetWorkerDataJobUtils.createGetOtherWorkerDataStream(flags, stateData)

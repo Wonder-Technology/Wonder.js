@@ -8,13 +8,7 @@ let execJob = (flags, e, stateData) =>
          "customData":
            OperateCustomRenderWorkerService.getCustomDataFromRenderWorkerToMainWorker(
              state,
-           ),
-         "imguiData": {
-           "controlData":
-             WonderImgui.RecordIMGUIService.getControlData(
-               RecordIMGUIRenderWorkerService.getRecord(state),
-             ),
-         },
+           )
        })
     |> ignore;
     e;
