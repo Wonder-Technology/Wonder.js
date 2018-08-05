@@ -1,0 +1,52 @@
+[
+    {
+        "name": "default",
+        "jobs": [
+            {
+                "name": "tick"
+            },
+            {
+                "name": "dispose"
+            },
+            {
+                "name": "reallocate_cpu_memory"
+            },
+            {
+                "name": "update_transform"
+            },
+            {
+                "name": "update_camera"
+            },
+            {
+                "name": "get_camera_data"
+            },
+            {
+                "name": "create_basic_render_object_buffer"
+            },
+            {
+                "name": "create_light_render_object_buffer"
+            },
+            {
+                "name": "clear_color"
+            },
+            {
+                "name": "clear_buffer"
+            },
+            {
+                "name": "clear_last_send_component"
+            },
+            {
+                "name": "send_uniform_shader_data"
+            },
+            {
+                "name": "render_basic"
+            },
+            {
+                "name": "front_render_light"
+            },
+            {
+                "name": "render_imgui"
+            }
+        ]
+    }
+]

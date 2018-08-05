@@ -14,21 +14,7 @@ let loadWDB = LoaderManagerAPI.loadWDB;
 
 let loadConfig = LoaderManagerAPI.loadConfig;
 
-let getActiveBasicCameraView = BasicCameraViewAPI.getActiveBasicCameraView;
-
-let setActiveBasicCameraView = BasicCameraViewAPI.setActiveBasicCameraView;
-
-let unactiveBasicCameraView = BasicCameraViewAPI.unactiveBasicCameraView;
-
-let activeBasicCameraView = BasicCameraViewAPI.activeBasicCameraView;
-
-let isActiveBasicCameraView = BasicCameraViewAPI.isActiveBasicCameraView;
-
-let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
-
-let unsafeGetBasicCameraViewGameObject = BasicCameraViewAPI.unsafeGetBasicCameraViewGameObject;
-
-let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
+let isBindArcballCameraControllerEvent = ArcballCameraControllerAPI.isBindArcballCameraControllerEvent;
 
 let unbindArcballCameraControllerEvent = ArcballCameraControllerAPI.unbindArcballCameraControllerEvent;
 
@@ -77,6 +63,44 @@ let unsafeGetArcballCameraControllerDistance = ArcballCameraControllerAPI.unsafe
 let unsafeGetArcballCameraControllerGameObject = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerGameObject;
 
 let createArcballCameraController = ArcballCameraControllerAPI.createArcballCameraController;
+
+let getActiveBasicCameraView = BasicCameraViewAPI.getActiveBasicCameraView;
+
+let setActiveBasicCameraView = BasicCameraViewAPI.setActiveBasicCameraView;
+
+let unactiveBasicCameraView = BasicCameraViewAPI.unactiveBasicCameraView;
+
+let activeBasicCameraView = BasicCameraViewAPI.activeBasicCameraView;
+
+let isActiveBasicCameraView = BasicCameraViewAPI.isActiveBasicCameraView;
+
+let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
+
+let unsafeGetBasicCameraViewGameObject = BasicCameraViewAPI.unsafeGetBasicCameraViewGameObject;
+
+let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
+
+let setPerspectiveCameraProjectionFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionFar;
+
+let unsafeGetPerspectiveCameraFar = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFar;
+
+let setPerspectiveCameraProjectionNear = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionNear;
+
+let unsafeGetPerspectiveCameraNear = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraNear;
+
+let setPerspectiveCameraProjectionAspect = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionAspect;
+
+let unsafeGetPerspectiveCameraAspect = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect;
+
+let setPerspectiveCameraProjectionFovy = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionFovy;
+
+let unsafeGetPerspectiveCameraFovy = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFovy;
+
+let unsafeGetPerspectiveCameraProjectionGameObject = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionGameObject;
+
+let unsafeGetPerspectiveCameraProjectionPMatrix = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionPMatrix;
+
+let createPerspectiveCameraProjection = PerspectiveCameraProjectionAPI.createPerspectiveCameraProjection;
 
 let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
 
@@ -320,6 +344,26 @@ let getCustomGeometryVertices = CustomGeometryAPI.getCustomGeometryVertices;
 
 let createCustomGeometry = CustomGeometryAPI.createCustomGeometry;
 
+let hasGameObjectCameraGroupComponents = CameraGroupAPI.hasGameObjectCameraGroupComponents;
+
+let unsafeGetGameObjectCameraGroupComponents = CameraGroupAPI.unsafeGetGameObjectCameraGroupComponents;
+
+let disposeGameObjectCameraGroupComponents = CameraGroupAPI.disposeGameObjectCameraGroupComponents;
+
+let addGameObjectCameraGroupComponents = CameraGroupAPI.addGameObjectCameraGroupComponents;
+
+let createCameraGroup = CameraGroupAPI.createCameraGroup;
+
+let hasGameObjectRenderGroupComponents = RenderGroupAPI.hasGameObjectRenderGroupComponents;
+
+let unsafeGetGameObjectRenderGroupComponents = RenderGroupAPI.unsafeGetGameObjectRenderGroupComponents;
+
+let disposeGameObjectRenderGroupComponents = RenderGroupAPI.disposeGameObjectRenderGroupComponents;
+
+let addGameObjectRenderGroupComponents = RenderGroupAPI.addGameObjectRenderGroupComponents;
+
+let createRenderGroup = RenderGroupAPI.createRenderGroup;
+
 let image = FixedLayoutControlIMGUIAPI.image;
 
 let label = FixedLayoutControlIMGUIAPI.label;
@@ -455,28 +499,6 @@ let getMeshRendererDrawMode = MeshRendererAPI.getMeshRendererDrawMode;
 let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameObject;
 
 let createMeshRenderer = MeshRendererAPI.createMeshRenderer;
-
-let setPerspectiveCameraProjectionFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionFar;
-
-let unsafeGetPerspectiveCameraFar = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFar;
-
-let setPerspectiveCameraProjectionNear = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionNear;
-
-let unsafeGetPerspectiveCameraNear = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraNear;
-
-let setPerspectiveCameraProjectionAspect = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionAspect;
-
-let unsafeGetPerspectiveCameraAspect = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect;
-
-let setPerspectiveCameraProjectionFovy = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionFovy;
-
-let unsafeGetPerspectiveCameraFovy = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFovy;
-
-let unsafeGetPerspectiveCameraProjectionGameObject = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionGameObject;
-
-let unsafeGetPerspectiveCameraProjectionPMatrix = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionPMatrix;
-
-let createPerspectiveCameraProjection = PerspectiveCameraProjectionAPI.createPerspectiveCameraProjection;
 
 let addSceneChildren = SceneAPI.addSceneChildren;
 
@@ -696,22 +718,6 @@ let setAPIJsObj = RecordAPIRenderWorkerService.setAPIJsObj;
 
 let getAPIJsObj = RecordAPIRenderWorkerService.getAPIJsObj;
 
-let getActiveBasicCameraView = BasicCameraViewAPI.getActiveBasicCameraView;
-
-let setActiveBasicCameraView = BasicCameraViewAPI.setActiveBasicCameraView;
-
-let unactiveBasicCameraView = BasicCameraViewAPI.unactiveBasicCameraView;
-
-let activeBasicCameraView = BasicCameraViewAPI.activeBasicCameraView;
-
-let isActiveBasicCameraView = BasicCameraViewAPI.isActiveBasicCameraView;
-
-let getBasicCameraViewWorldToCameraMatrix = BasicCameraViewAPI.getBasicCameraViewWorldToCameraMatrix;
-
-let unsafeGetBasicCameraViewGameObject = BasicCameraViewAPI.unsafeGetBasicCameraViewGameObject;
-
-let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
-
 let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
 
 let setViewport = DeviceManagerAPI.setViewport;
@@ -881,28 +887,6 @@ let getMeshRendererDrawMode = MeshRendererAPI.getMeshRendererDrawMode;
 let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameObject;
 
 let createMeshRenderer = MeshRendererAPI.createMeshRenderer;
-
-let setPerspectiveCameraProjectionFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionFar;
-
-let unsafeGetPerspectiveCameraFar = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFar;
-
-let setPerspectiveCameraProjectionNear = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionNear;
-
-let unsafeGetPerspectiveCameraNear = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraNear;
-
-let setPerspectiveCameraProjectionAspect = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionAspect;
-
-let unsafeGetPerspectiveCameraAspect = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect;
-
-let setPerspectiveCameraProjectionFovy = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionFovy;
-
-let unsafeGetPerspectiveCameraFovy = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFovy;
-
-let unsafeGetPerspectiveCameraProjectionGameObject = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionGameObject;
-
-let unsafeGetPerspectiveCameraProjectionPMatrix = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionPMatrix;
-
-let createPerspectiveCameraProjection = PerspectiveCameraProjectionAPI.createPerspectiveCameraProjection;
 
 let addSceneChildren = SceneAPI.addSceneChildren;
 

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>imgui</title>
+</head>
+
+<body>
+    <script src="../../test/e2e/js/AssetTool.js"></script>
+    <script src="../../test/e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../../test/e2e/js/ScheduleTool.js"></script>
+    <script src="../../test/e2e/js/BasicBoxesTool.js"></script>
+    <script src="../../test/e2e/js/LightBoxesTool.js"></script>
+    <script src="../../test/e2e/js/PositionTool.js"></script>
+    <script src="../../test/e2e/js/LightTool.js"></script>
+    <script src="../../test/e2e/js/CameraTool.js"></script>
+    <script src="../../test/e2e/js/CustomGeometryTool.js"></script>
+    <script src="../../test/e2e/js/BasicMaterialTool.js"></script>
+    <script src="../../test/e2e/js/LightMaterialTool.js"></script>
+    <script src="../../test/e2e/js/WorkerTool.js"></script>
+    <script src="../../test/e2e/js/IMGUITool.js"></script>
+
+
+    <script src="./js/IMGUITool.js"></script>
+
+    <script src="../../dist/wd.js"></script>
+
+
+    <h1 id="detect" style="display: none">your browser not support sharedArrayBuffer or offscreenCanvas</h1>
+
+
+    <script>
+
+
+        function createControls(api, truckGameObject, boxGameObject, state) {
+            function toggleShowPanelData(state) {
+                var isShowPanel = false;
+
+                if (window.isShowPanel === true) {
+                    isShowPanel = false;
+                }
+                else {
+                    isShowPanel = true;
+                }
+
+
+
+                return isShowPanel;
+            }
+
+
+
+            var radioButtonWidth = 300;
+            var radioButtonHeight = 100;
+
+            var x = 50;
+
+            var intervalX = 400;
+
+
+
+            var buttonText = null;
+
+            if (window.isShowPanel === true) {
+                buttonText = "hide panel";
+            }
+            else {
+                buttonText = "show panel";
+            }
+
+
+            var [state, isClick_button1] = api.button(
+                // [100, 800, 350, 100], "show panel", state
+                [100, 0, 350, 100], buttonText, state
+            );
+
+            if (isClick_button1) {
+                var isShowPanel = toggleShowPanelData(state);
+
+                window.isShowPanel = isShowPanel;
+
+                return state
+            }
+
+
+
+            if (window.isShowPanel === undefined || window.isShowPanel === false) {
+                return state;
+            }
+
+
+            var [state, selectIndex_radioButton, selectIndex_checkbox1, value_shininess] = DemoImguiTool.buildImguiFunc(api, wd.getFps(state), window.innerWidth, window.innerHeight, DemoImguiTool.getIMGUIRegion, state);
+
+            var targetGameObject = null;
+
+            var truckTransform = wd.unsafeGetGameObjectTransformComponent(truckGameObject, state);
+            var boxTransform = wd.unsafeGetGameObjectTransformComponent(boxGameObject, state);
+
+
+            switch (selectIndex_radioButton) {
+                case 0:
+                    targetGameObject = wd.unsafeGetTransformGameObject(
+                        wd.unsafeGetTransformChildren(
+                            truckTransform, state
+                        )[2], state
+                    );
+
+
+                    state = wd.setTransformLocalPosition(truckTransform, [0, 0, 0], state);
+                    state = wd.setTransformLocalPosition(boxTransform, [[-1000, -1000, -1000]], state);
+                    break;
+
+                case 1:
+                    targetGameObject = wd.unsafeGetTransformGameObject(
+                        wd.unsafeGetTransformChildren(
+                            boxTransform, state
+                        )[0], state
+                    );
+
+
+
+                    state = wd.setTransformLocalPosition(boxTransform, [0, 0, 0], state);
+                    state = wd.setTransformLocalPosition(truckTransform, [-1000, -1000, -1000], state);
+                    break;
+                default:
+                    targetGameObject = wd.unsafeGetTransformGameObject(
+                        wd.unsafeGetTransformChildren(
+                            truckTransform, state
+                        )[2], state
+                    );
+                    break;
+            };
+
+
+            var lightMaterial = wd.unsafeGetGameObjectLightMaterialComponent(targetGameObject, state);
+
+            switch (selectIndex_checkbox1) {
+                case true:
+                    state = wd.setLightMaterialSpecularColor(lightMaterial, [1, 1, 1], state);
+                    break;
+                case false:
+                    state = wd.setLightMaterialSpecularColor(lightMaterial, [0, 0, 0], state);
+                    break;
+                default:
+                    break
+            };
+
+
+
+
+
+
+            if (value_shininess !== undefined) {
+                state = wd.setLightMaterialShininess(lightMaterial, value_shininess, state);
+            }
+
+
+
+
+
+
+
+
+
+            return state
+
+        }
+
+
+        function hasRenderWorkerCustomData(customData) {
+            return !!customData && Object.prototype.toString.call(customData) === "[object Object]";
+        }
+
+        function setIMGUI(state, truckGameObject, boxGameObject) {
+            var state = ImguiTool.setSetting([0.045, 0.012], state);
+
+
+
+
+            var state = wd.setIMGUIFunc(
+                [
+                    truckGameObject, boxGameObject,
+                ],
+                (customData, api, state) => {
+                    function deserializeFunction(funcStr) {
+                        return eval('(' + funcStr + ')');
+                    };
+
+
+                    var truckGameObject = customData[0];
+                    var boxGameObject = customData[1];
+
+
+                    var state = createControls(api, truckGameObject, boxGameObject, state);
+
+
+
+                    return state
+
+                }, state);
+
+
+
+
+
+
+
+
+
+            return state;
+        }
+
+
+        function _createLightsAndCamera(state) {
+            var state = LightTool.setAmbientLight(state);
+
+
+
+            var record = LightTool.createDirectionLight(state);
+            var state = record[0];
+            var directionLightObj = record[1];
+
+
+
+            var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+
+            state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+
+
+
+            var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
+
+            var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
+
+
+
+
+            var data = LightBoxesTool.createCamera(state);
+            var state = data[0];
+            var camera = data[1];
+
+
+            var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+            var [state, cameraController] = wd.createArcballCameraController(state);
+
+            var state =
+                wd.setArcballCameraControllerDistance(cameraController, 10, state);
+
+
+
+            var state =
+                wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
+
+            var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+            var state =
+                wd.bindArcballCameraControllerEvent(
+                    cameraController, state
+                );
+
+
+
+            return [state, directionLightObj]
+        }
+
+        function bindEvent(state) {
+            var state = wd.onCustomGlobalEvent(
+                wd.getPointDragEventName(),
+                100,
+                (event, state) => {
+                    var pointEvent = wd.getCustomEventUserData(event);
+
+                    var [x, y] = wd.getPointEventLocationInViewOfEvent(pointEvent);
+
+
+                    var [regionX, regionY, regionWidth, regionHeight] = DemoImguiTool.getIMGUIRegion(window.innerWidth, window.innerHeight);
+
+                    if (
+                        window.isShowPanel === true &&
+                        x >= regionX && y >= regionY
+                    ) {
+                        return [
+                            state,
+                            wd.stopPropagationCustomEvent(event)
+                        ]
+                    }
+
+                    return [state, event];
+                },
+                state
+            );
+
+            return state;
+        };
+
+
+        function initSample(state, truckGameObject, boxGameObject) {
+            var state = bindEvent(state);
+
+            var truckTransform = wd.unsafeGetGameObjectTransformComponent(truckGameObject, state);
+            var boxTransform = wd.unsafeGetGameObjectTransformComponent(boxGameObject, state);
+
+            var state = wd.setTransformLocalPosition(truckTransform, [0, 0, 0], state);
+            var state = wd.setTransformLocalPosition(boxTransform, [-1000, -1000, -1000], state);
+
+
+            var state = setIMGUI(state, truckGameObject, boxGameObject);
+
+
+
+
+
+            var [state, directionLightObj] = _createLightsAndCamera(state);
+
+            return wd.startDirector(state);
+        }
+
+
+        window.onload = function () {
+            return AssetTool.loadConfig(["../data/setting_noWorker.json", "../data/"], null, function () {
+                return AssetTool.loadIMGUIAsset("../asset/font/Lato-Regular-64.fnt", "../asset/font/lato.png",
+                    [
+                        ["../asset/image/1.png", "1"],
+                        ["../asset/image/2.jpg", "2"],
+                        ["../asset/image/wonder.png", "wonder"],
+                    ],
+                    wd.unsafeGetState(), function (state) {
+                        return AssetTool.loadWDB("../asset/wdb/CesiumMilkTruck.wdb", state, function ([state, truckGameObject]) {
+                            return AssetTool.loadWDB("../asset/wdb/BoxTextured.wdb", state, function ([state, boxGameObject]) {
+                                return initSample(state, truckGameObject, boxGameObject);
+                            });
+                        });
+                    });
+            });
+        };
+    </script>
+</body>
+
+</html>

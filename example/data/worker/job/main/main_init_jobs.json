@@ -1,0 +1,44 @@
+[
+    {
+        "name": "create_worker_instance"
+    },
+    {
+        "name": "send_job_data",
+        "flags": [
+            "SEND_JOB_DATA"
+        ]
+    },
+    {
+        "name": "get_finish_send_job_data",
+        "flags": [
+            "FINISH_SEND_JOB_DATA"
+        ]
+    },
+    {
+        "name": "init_event"
+    },
+    {
+        "name": "init_imgui"
+    },
+    {
+        "name": "init_camera"
+    },
+    {
+        "name": "create_canvas"
+    },
+    {
+        "name": "set_full_screen"
+    },
+    {
+        "name": "send_init_render_data",
+        "flags": [
+            "INIT_RENDER"
+        ]
+    },
+    {
+        "name": "get_finish_init_render_data",
+        "flags": [
+            "FINISH_INIT_RENDER"
+        ]
+    }
+]
