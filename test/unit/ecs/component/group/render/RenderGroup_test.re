@@ -44,13 +44,13 @@ let _ =
 
     describe("addRenderGroupComponents", () =>
       test("add meshRenderer and material component", () => {
-        let (state, cameraGroup) = RenderGroupTool.createRenderGroup(state^);
+        let (state, renderGroup) = RenderGroupTool.createRenderGroup(state^);
         let (state, gameObject) = GameObjectAPI.createGameObject(state);
 
         let state =
           RenderGroupTool.addGameObjectRenderGroupComponents(
             gameObject,
-            cameraGroup,
+            renderGroup,
             state,
           );
 
@@ -67,19 +67,19 @@ let _ =
 
     describe("disposeGameObjectRenderGroupComponents", () =>
       test("dispose meshRenderer and material component", () => {
-        let (state, cameraGroup) = RenderGroupTool.createRenderGroup(state^);
+        let (state, renderGroup) = RenderGroupTool.createRenderGroup(state^);
         let (state, gameObject) = GameObjectAPI.createGameObject(state);
         let state =
           RenderGroupTool.addGameObjectRenderGroupComponents(
             gameObject,
-            cameraGroup,
+            renderGroup,
             state,
           );
 
         let state =
           RenderGroupTool.disposeGameObjectRenderGroupComponents(
             gameObject,
-            cameraGroup,
+            renderGroup,
             state,
           );
 
@@ -96,12 +96,12 @@ let _ =
 
     describe("unsafeGetGameObjectRenderGroupComponents", () =>
       test("unsafe get meshRenderer and material components", () => {
-        let (state, cameraGroup) = RenderGroupTool.createRenderGroup(state^);
+        let (state, renderGroup) = RenderGroupTool.createRenderGroup(state^);
         let (state, gameObject) = GameObjectAPI.createGameObject(state);
         let state =
           RenderGroupTool.addGameObjectRenderGroupComponents(
             gameObject,
-            cameraGroup,
+            renderGroup,
             state,
           );
 
@@ -109,23 +109,80 @@ let _ =
           gameObject,
           state,
         )
-        |> expect == cameraGroup;
+        |> expect == renderGroup;
       })
     );
 
     describe("hasGameObjectRenderGroupComponents", () =>
       test("has meshRenderer and material components", () => {
-        let (state, cameraGroup) = RenderGroupTool.createRenderGroup(state^);
+        let (state, renderGroup) = RenderGroupTool.createRenderGroup(state^);
         let (state, gameObject) = GameObjectAPI.createGameObject(state);
         let state =
           RenderGroupTool.addGameObjectRenderGroupComponents(
             gameObject,
-            cameraGroup,
+            renderGroup,
             state,
           );
 
         RenderGroupTool.hasGameObjectRenderGroupComponents(gameObject, state)
         |> expect == true;
       })
+    );
+
+    describe("replaceRenderGroupComponents", () =>
+      describe("replace meshRenderer and material components", () =>
+        test("test send u_diffuse", () => {
+          state :=
+            RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(
+              sandbox,
+              LoopRenderJobTool.buildNoWorkerJobConfig(),
+            );
+          let (state, gameObject, _, basicMaterial, meshRenderer1) =
+            RenderBasicJobTool.prepareGameObject(sandbox, state^);
+          let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+          let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+          let pos1 = 0;
+          let getUniformLocation =
+            GLSLLocationTool.getUniformLocation(
+              ~pos=pos1,
+              sandbox,
+              "u_diffuse",
+            );
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(
+                   ~sandbox,
+                   ~uniform3f,
+                   ~getUniformLocation,
+                   (),
+                 ),
+               );
+          let state =
+            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+          let (state, lightMaterial) =
+            LightMaterialAPI.createLightMaterial(state);
+          let (state, meshRenderer2) =
+            MeshRendererAPI.createMeshRenderer(state);
+
+          let state =
+            RenderGroupAPI.replaceRenderGroupComponents(
+              (
+                (meshRenderer1, basicMaterial),
+                (meshRenderer2, lightMaterial),
+              ),
+              gameObject,
+              (
+                GameObjectAPI.disposeGameObjectBasicMaterialComponent,
+                GameObjectAPI.addGameObjectLightMaterialComponent,
+              ),
+              state,
+            );
+          let state = state |> DirectorTool.runWithDefaultTime;
+
+          uniform3f |> withOneArg(pos1) |> getCallCount |> expect == 1;
+        })
+      )
     );
   });

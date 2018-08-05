@@ -51,3 +51,17 @@ let hasRenderGroupComponents =
   |> hasMeshRendererComponentFunc(gameObject)
   && state
   |> hasMaterialComponentFunc(gameObject);
+
+let replaceRenderGroupComponents =
+    (
+      renderGroupTuple,
+      gameObject,
+      (disposeSourceMaterialFunc, addTargetMaterialFunc),
+      state,
+    ) =>
+  ReplaceMaterialMainService.replaceMaterial(
+    renderGroupTuple,
+    gameObject,
+    (disposeSourceMaterialFunc, addTargetMaterialFunc),
+    state,
+  );

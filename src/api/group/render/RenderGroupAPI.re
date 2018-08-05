@@ -7,3 +7,5 @@ let disposeGameObjectRenderGroupComponents = RenderGroupMainService.disposeRende
 let unsafeGetGameObjectRenderGroupComponents = RenderGroupMainService.unsafeGetRenderGroupComponents;
 
 let hasGameObjectRenderGroupComponents = RenderGroupMainService.hasRenderGroupComponents;
+
+let replaceRenderGroupComponents = RenderGroupMainService.replaceRenderGroupComponents;
