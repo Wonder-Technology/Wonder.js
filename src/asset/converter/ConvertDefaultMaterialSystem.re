@@ -61,6 +61,7 @@ let _setDefaultMaterial =
                       switch (extras) {
                       | None =>
                         Some({
+                          basicCameraView: None,
                           meshRenderer: None,
                           basicMaterial: None,
                           lightMaterial: Some(defaultMaterialIndex),

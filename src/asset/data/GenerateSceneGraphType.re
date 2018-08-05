@@ -1,4 +1,5 @@
 type nodeExtras = {
+  basicCameraView: option(int),
   meshRenderer: option(int),
   basicMaterial: option(int),
   lightMaterial: option(int),
@@ -93,10 +94,12 @@ type perspectiveCameraData = {
 
 type arcballCameraControllerData = SceneGraphType.arcballCameraController;
 
-type cameraData = {
+type cameraProjectionData = {
   type_: string,
   perspective: perspectiveCameraData,
 };
+
+type basicCameraViewData = {isActive: bool};
 
 type lightData = {
   type_: string,

@@ -24,10 +24,7 @@ type sceneKHRLightsExtension = {light: int};
 
 type sceneExtensions = {khr_lights: option(sceneKHRLightsExtension)};
 
-type sceneExtras = {
-  isActiveCameraIndex: option(int),
-  imgui: option(SceneGraphType.imgui),
-};
+type sceneExtras = {imgui: option(SceneGraphType.imgui)};
 
 type scene = {
   nodes: option(array(nodeIndex)),
@@ -164,6 +161,7 @@ type basicMaterial = {
 };
 
 type nodeExtras = {
+  basicCameraView: option(int),
   meshRenderer: option(int),
   basicMaterial: option(int),
   lightMaterial: option(int),
@@ -224,7 +222,10 @@ type extensions = {khr_lights: option(khrLightsExtension)};
 
 type meshRenderer = {drawMode: Js.Typed_array.Uint8Array.elt};
 
+type basicCameraView = {isActive: bool};
+
 type gltfExtras = {
+  basicCameraViews: option(array(basicCameraView)),
   arcballCameraControllers:
     option(array(SceneGraphType.arcballCameraController)),
   basicMaterials: option(array(basicMaterial)),

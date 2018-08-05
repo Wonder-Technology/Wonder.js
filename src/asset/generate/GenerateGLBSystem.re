@@ -14,7 +14,8 @@ let generateGLBData = (rootGameObject, imageBase64Map, state) => {
       meshRendererDataMap,
       basicMaterialDataMap,
       lightMaterialDataMap,
-      cameraDataMap,
+      basicCameraViewDataMap,
+      cameraProjectionDataMap,
       arcballCameraControllerDataMap,
       lightDataMap,
     ),
@@ -57,7 +58,17 @@ let generateGLBData = (rootGameObject, imageBase64Map, state) => {
       imageUint8DataArr,
     );
 
-  let cameraDataArr = BuildCameraDataSystem.build(cameraDataMap, state);
+  let basicCameraViewDataArr =
+    BuildCameraDataSystem.buildBasicCameraViewData(
+      basicCameraViewDataMap,
+      state,
+    );
+
+  let cameraProjectionDataArr =
+    BuildCameraDataSystem.buildCameraProjectionData(
+      cameraProjectionDataMap,
+      state,
+    );
 
   let arcballCameraControllerDataArr =
     BuildCameraControllerDataSystem.build(
@@ -84,8 +95,8 @@ let generateGLBData = (rootGameObject, imageBase64Map, state) => {
         textureDataArr,
         samplerDataArr,
         imageUint8DataArr,
-        cameraDataArr,
-        BuildCameraDataSystem.getIsActiveCameraIndex(state),
+        basicCameraViewDataArr,
+        cameraProjectionDataArr,
         arcballCameraControllerDataArr,
         lightDataArr,
         BuildIMGUIDataSystem.build(state),

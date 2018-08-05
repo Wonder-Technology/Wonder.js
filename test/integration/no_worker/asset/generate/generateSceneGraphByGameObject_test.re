@@ -567,7 +567,9 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
-          {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"lightMaterial":0}},{"children":[3],"translation":[$localPos2],"rotation":[$localRotation2],"scale":[$localScale2],"mesh":1,"extras":{"lightMaterial":1}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":2,"extras":{"lightMaterial":2}}]|j},
+          {j|
+            "nodes":[{"children":[1,2]},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}},{"children":[3],"translation":[0.5,-1.5,1.5],"rotation":[2,2.5,5,4.5],"scale":[3,5.5,1],"mesh":1,"extras":{"lightMaterial":1,"meshRenderer":1}},{"translation":[2.5,-2.5,0.5],"rotation":[2,3.5,5,4.5],"scale":[3,8.5,1],"mesh":2,"extras":{"lightMaterial":2,"meshRenderer":2}}]
+          |j},
           state,
         );
       });
@@ -997,8 +999,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-                     "nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"lightMaterial":0}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1,"extras":{"lightMaterial":1}}]
-
+                     "nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"lightMaterial":0," meshRenderer":0}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1,"extras":{"lightMaterial":1, "meshRenderer":1}}]
                      |j},
           state,
         );
@@ -1253,7 +1254,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
-          {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"lightMaterial":0}},{"children":[3],"translation":[$localPos2],"rotation":[$localRotation2],"scale":[$localScale2],"mesh":0,"extras":{"lightMaterial":1}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1,"extras":{"lightMaterial":2}}]|j},
+          {j|"nodes":[{"children":[1,2]},{"translation":[$localPos1],"rotation":[$localRotation1],"scale":[$localScale1],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}},{"children":[3],"translation":[$localPos2],"rotation":[$localRotation2],"scale":[$localScale2],"mesh":0,"extras":{"lightMaterial":1,"meshRenderer":1}},{"translation":[$localPos3],"rotation":[$localRotation3],"scale":[$localScale3],"mesh":1,"extras":{"lightMaterial":2,"meshRenderer":2}}]|j},
           state,
         );
       });
@@ -1489,7 +1490,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-                 "nodes":[{"children":[1,2]},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0}},{"children":[3],"translation":[0.5,-1.5,1.5],"rotation":[2,2.5,5,4.5],"scale":[3,5.5,1],"mesh":1,"extras":{"lightMaterial":1}},{"translation":[0.5,11,12.5],"rotation":[3,1,2.5,1],"scale":[2.5,15.5,1.5],"mesh":2,"extras":{"lightMaterial":1}}]
+                 "nodes":[{"children":[1,2]},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}},{"children":[3],"translation":[0.5,-1.5,1.5],"rotation":[2,2.5,5,4.5],"scale":[3,5.5,1],"mesh":1,"extras":{"lightMaterial":1,"meshRenderer":1}},{"translation":[0.5,11,12.5],"rotation":[3,1,2.5,1],"scale":[2.5,15.5,1.5],"mesh":2,"extras":{"lightMaterial":1,"meshRenderer":2}}]
                    |j},
           state,
         );
@@ -1899,7 +1900,7 @@ let _ =
       });
     });
 
-    describe("test camera", () => {
+    describe("test perspectiveCameraProjection", () => {
       let _createBasicCameraViewPerspectiveCamera = state => {
         open BasicCameraViewAPI;
         open PerspectiveCameraProjectionAPI;
@@ -2076,7 +2077,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-               "nodes":[{"children":[1,2]},{"camera":0},{"children":[3],"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0}},{"camera":1}]
+               "nodes":[{"children":[1,2]},{"camera":0,"extras":{"basicCameraView":0}},{"children":[3],"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}},{"camera":1,"extras":{"basicCameraView":1}}]
                    |j},
           state,
         );
@@ -2109,32 +2110,258 @@ let _ =
           state,
         );
       });
-      test("test scenes->extras->isActiveCameraIndex", () => {
-        let (
+    });
+
+    describe("test basicCameraView", () => {
+      let _createCameraGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, basicCameraView, perspectiveCameraProjection) =
+          CameraTool.createBasicCameraViewPerspectiveCamera(state);
+
+        let (state, gameObject) = state |> GameObjectAPI.createGameObject;
+        let state =
+          state
+          |> addGameObjectBasicCameraViewComponent(
+               gameObject,
+               basicCameraView,
+             );
+        let state =
+          state
+          |> addGameObjectPerspectiveCameraProjectionComponent(
+               gameObject,
+               perspectiveCameraProjection,
+             );
+        (
           state,
-          (rootGameObject, sceneGameObjectTransform),
-          (material2, diffuseColor2),
+          gameObject,
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject,
+            state,
+          ),
+          (basicCameraView, perspectiveCameraProjection),
+        );
+      };
+
+      describe("test dispose case", () => {
+        let _prepareGameObject = state => {
+          open GameObjectAPI;
+
+          let (state, rootGameObject) = state^ |> createGameObject;
+
+          let sceneGameObjectTransform =
+            GameObjectAPI.unsafeGetGameObjectTransformComponent(
+              rootGameObject,
+              state,
+            );
+
+          let (
+            state,
+            gameObject1,
+            transform1,
+            (basicCameraView1, perspectiveCameraProjection1),
+          ) =
+            _createCameraGameObject(state);
+
+          let (
+            state,
+            gameObject2,
+            (transform2, (localPos2, localRotation2, localScale2)),
+            geometry2,
+            (material2, diffuseColor2),
+            meshRenderer2,
+          ) =
+            _createGameObject1(state);
+
+          let state = GameObjectTool.disposeGameObject(gameObject1, state);
+          let (
+            state,
+            gameObject3,
+            transform3,
+            (basicCameraView3, perspectiveCameraProjection3),
+          ) =
+            _createCameraGameObject(state);
+
+          let (
+            state,
+            gameObject4,
+            transform4,
+            (basicCameraView4, perspectiveCameraProjection4),
+          ) =
+            _createCameraGameObject(state);
+
+          let state =
+            BasicCameraViewAPI.activeBasicCameraView(basicCameraView3, state);
+
+          let state =
+            state
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform2,
+               )
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform3,
+               )
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform4,
+               );
+
           (
-            activedBasicCameraView,
-            (
-              basicCameraView1,
-              (perspectiveCameraProjection1, near1, far1, fovy1, aspect1),
-            ),
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            (material2, diffuseColor2),
             (
               basicCameraView3,
-              (perspectiveCameraProjection3, near3, far3, fovy3, aspect3),
+              (basicCameraView1, perspectiveCameraProjection1),
+              (basicCameraView3, perspectiveCameraProjection3),
+              (basicCameraView4, perspectiveCameraProjection4),
             ),
-          ),
-        ) =
-          _prepareGameObject(state);
+          );
+        };
 
-        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-          rootGameObject,
-          {j|
-            "extras":{"isActiveCameraIndex":$activedBasicCameraView}
+        test("test nodes", () => {
+          let (
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            (material2, diffuseColor2),
+            (
+              activedBasicCameraView,
+              (basicCameraView1, perspectiveCameraProjection1),
+              (basicCameraView3, perspectiveCameraProjection3),
+              (basicCameraView4, perspectiveCameraProjection4),
+            ),
+          ) =
+            _prepareGameObject(state);
+
+          GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+            rootGameObject,
+            {j|
+               "nodes":[{"children":[1,2,3]},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}},{"camera":$perspectiveCameraProjection3,"extras":{"basicCameraView":$basicCameraView3}},{"camera":$perspectiveCameraProjection4,"extras":{"basicCameraView":$basicCameraView4}}]
                    |j},
-          state,
-        );
+            state,
+          );
+        });
+        test("test extras", () => {
+          let (
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            (material2, diffuseColor2),
+            (
+              activedBasicCameraView,
+              (basicCameraView1, perspectiveCameraProjection1),
+              (basicCameraView3, perspectiveCameraProjection3),
+              (basicCameraView4, perspectiveCameraProjection4),
+            ),
+          ) =
+            _prepareGameObject(state);
+
+          GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+            rootGameObject,
+            {j|
+              "extras":{"meshRenderers":[{"drawMode":4}],"basicCameraViews":[{"isActive":true},{"isActive":false}]}
+                   |j},
+            state,
+          );
+        });
+      });
+
+      describe("contract check", () => {
+        let _prepareGameObject = state => {
+          open GameObjectAPI;
+
+          let (state, rootGameObject) = state^ |> createGameObject;
+
+          let sceneGameObjectTransform =
+            GameObjectAPI.unsafeGetGameObjectTransformComponent(
+              rootGameObject,
+              state,
+            );
+
+          let (
+            state,
+            gameObject1,
+            transform1,
+            (basicCameraView1, perspectiveCameraProjection1),
+          ) =
+            _createCameraGameObject(state);
+
+          let (
+            state,
+            gameObject2,
+            (transform2, (localPos2, localRotation2, localScale2)),
+            geometry2,
+            (material2, diffuseColor2),
+            meshRenderer2,
+          ) =
+            _createGameObject1(state);
+
+          let (
+            state,
+            gameObject3,
+            transform3,
+            (basicCameraView3, perspectiveCameraProjection3),
+          ) =
+            _createCameraGameObject(state);
+
+          let state =
+            state
+            |> BasicCameraViewAPI.setActiveBasicCameraView(
+                 basicCameraView1,
+                 true,
+               )
+            |> BasicCameraViewAPI.setActiveBasicCameraView(
+                 basicCameraView3,
+                 true,
+               );
+
+          let state =
+            state
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform1,
+               )
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform2,
+               )
+            |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(sceneGameObjectTransform),
+                 transform3,
+               );
+
+          (
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            (material2, diffuseColor2),
+            (
+              basicCameraView3,
+              (basicCameraView1, perspectiveCameraProjection1),
+              (basicCameraView3, perspectiveCameraProjection3),
+            ),
+          );
+        };
+
+        test("should has at most one active", () => {
+          let (
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            (material2, diffuseColor2),
+            _,
+          ) =
+            _prepareGameObject(state);
+
+          expect(() =>
+            GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+              rootGameObject,
+              {j|
+                   |j},
+              state,
+            )
+          )
+          |> toThrowMessage("expect has at most one active");
+        });
       });
     });
 
@@ -2274,7 +2501,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-            "nodes":[{"children":[1,2]},{"camera":0,"extras":{"cameraController":0}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0}}]
+            "nodes":[{"children":[1,2]},{"camera":0,"extras":{"cameraController":0,"basicCameraView":0}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}}]
                    |j},
           state,
         );
@@ -2529,53 +2756,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-     "nodes": [
-       {
-         "children": [
-           1,
-           2
-         ]
-       },
-       {
-         "extensions": {
-           "KHR_lights": {
-             "light": 0
-           }
-         }
-       },
-       {
-         "children": [
-           3
-         ],
-         "translation": [
-           10,
-           11,
-           12.5
-         ],
-         "rotation": [
-           0,
-           1,
-           2.5,
-           1
-         ],
-         "scale": [
-           2,
-           3.5,
-           1.5
-         ],
-         "mesh": 0,
-         "extras": {
-           "lightMaterial": 0
-         }
-       },
-       {
-         "extensions": {
-           "KHR_lights": {
-             "light": 1
-           }
-         }
-       }
-     ],
+     "nodes":[{"children":[1,2]},{"extensions":{"KHR_lights":{"light":0}}},{"children":[3],"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}},{"extensions":{"KHR_lights":{"light":1}}}]
                    |j},
           state,
         );
@@ -2779,7 +2960,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-      "nodes":[{"children":[1,2]},{"mesh":0,"extras":{"basicMaterial":0}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":1,"extras":{"lightMaterial":0}}]
+      "nodes":[{"children":[1,2]},{"mesh":0,"extras":{"basicMaterial":0,"meshRenderer":0}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":1,"extras":{"lightMaterial":0,"meshRenderer":1}}]
                    |j},
           state,
         );

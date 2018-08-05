@@ -120,8 +120,6 @@ let _convertScenes = json =>
              |> optional(
                   field("extras", json =>
                     {
-                      isActiveCameraIndex:
-                        json |> optional(field("isActiveCameraIndex", int)),
                       imgui:
                         json
                         |> optional(
@@ -237,6 +235,18 @@ let _convertExtras = json =>
                           rotateSpeed: json |> field("rotateSpeed", float),
                           wheelSpeed: json |> field("wheelSpeed", float),
                         }: SceneGraphType.arcballCameraController
+                      )
+                    ),
+                  ),
+                ),
+           basicCameraViews:
+             json
+             |> optional(
+                  field(
+                    "basicCameraViews",
+                    array(json =>
+                      (
+                        {isActive: json |> field("isActive", bool)}: basicCameraView
                       )
                     ),
                   ),
@@ -431,6 +441,11 @@ let _convertNodes = json =>
              |> optimizedOptional(
                   optimizedField("extras", json =>
                     {
+                      basicCameraView:
+                        json
+                        |> optimizedOptional(
+                             optimizedField("basicCameraView", int),
+                           ),
                       meshRenderer:
                         json
                         |> optimizedOptional(

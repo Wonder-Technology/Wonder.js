@@ -1,29 +1,35 @@
-let convertToBasicCameraViews =
-    ({scenes, scene, cameras}: GLTFType.gltf)
-    : WDType.basicCameraViews => {
-  let count =
-    switch (cameras) {
-    | None => 0
-    | Some(cameras) => cameras |> Js.Array.length
-    };
-
-  {
-    count,
-    /* TODO test */
-    isActiveIndex: {
-      let defaultIsActiveIndex = count > 0 ? Some(0) : None;
-
-      switch (ConvertCommon.getScene(scenes, scene).extras) {
-      | None => defaultIsActiveIndex
-      | Some({isActiveCameraIndex}) =>
-        switch (isActiveCameraIndex) {
-        | None => defaultIsActiveIndex
-        | Some(isActiveCameraIndex) => Some(isActiveCameraIndex)
-        }
-      };
-    },
+let _convertToBasicCameraViewsByCameras = cameras =>
+  switch (cameras) {
+  | Some(cameras) when Js.Array.length(cameras) > 0 =>
+    cameras
+    |> Js.Array.sliceFrom(1)
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. arr, _) =>
+           arr
+           |> ArrayService.push({isActive: false}: WDType.basicCameraView),
+         [|{isActive: true}|],
+       )
+  | _ => [||]
   };
-};
+
+let convertToBasicCameraViews = ({cameras, extras}: GLTFType.gltf) =>
+  switch (extras) {
+  | None => _convertToBasicCameraViewsByCameras(cameras)
+  | Some({basicCameraViews}) =>
+    switch (basicCameraViews) {
+    | Some(basicCameraViews) when Js.Array.length(basicCameraViews) > 0 =>
+      basicCameraViews
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. arr, {isActive}: GLTFType.basicCameraView) =>
+             arr
+             |> ArrayService.push(
+                  {isActive: isActive}: WDType.basicCameraView,
+                ),
+           [||],
+         )
+    | _ => _convertToBasicCameraViewsByCameras(cameras)
+    }
+  };
 
 let _convertRadiansToDegree = angle => angle *. 180. /. Js.Math._PI;
 

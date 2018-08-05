@@ -615,13 +615,7 @@ let _ =
             ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
             ~state,
             ~testFunc=
-              ({basicCameraViews}) =>
-                basicCameraViews
-                |>
-                expect == {
-                            count: 0,
-                            isActiveIndex: ConvertTool.getJsonSerializedNone(),
-                          },
+              ({basicCameraViews}) => basicCameraViews |> expect == [||],
             (),
           )
         );
@@ -635,7 +629,12 @@ let _ =
               ~testFunc=
                 ({basicCameraViews}) =>
                   basicCameraViews
-                  |> expect == {count: 3, isActiveIndex: Some(0)},
+                  |>
+                  expect == [|
+                              {isActive: true},
+                              {isActive: false},
+                              {isActive: false},
+                            |],
               (),
             )
           );
@@ -643,12 +642,17 @@ let _ =
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
               ~embeddedGLTFJsonStr=
-                ConvertGLBTool.buildGLTFJsonOfCameraOfIsActiveCameraIndexExtras(),
+                ConvertGLBTool.buildGLTFJsonOfBasicCameraView(),
               ~state,
               ~testFunc=
                 ({basicCameraViews}) =>
                   basicCameraViews
-                  |> expect == {count: 3, isActiveIndex: Some(2)},
+                  |>
+                  expect == [|
+                              {isActive: false},
+                              {isActive: true},
+                              {isActive: false},
+                            |],
               (),
             )
           );
@@ -1282,6 +1286,7 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
             gameObjectIndices,
             componentIndices,
           );
+
         describe("test childrenTransformIndexData", () => {
           test("test single node gltf", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
@@ -1309,6 +1314,7 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
             )
           );
         });
+
         describe("test basicCameraViewGameObjectIndexData", () => {
           test("test no data", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
@@ -1331,6 +1337,23 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
                 ({indices}) =>
                   indices.gameObjectIndices.basicCameraViewGameObjectIndexData
                   |> expect == _buildComponentIndexData([|0, 1|], [|2, 0|]),
+              (),
+            )
+          );
+          test("test basicCameraView gltf", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfBasicCameraView(),
+              ~state,
+              ~testFunc=
+                ({indices}) =>
+                  indices.gameObjectIndices.basicCameraViewGameObjectIndexData
+                  |>
+                  expect == _buildComponentIndexData(
+                              [|0, 1, 2|],
+                              [|1, 0, 2|],
+                            ),
               (),
             )
           );

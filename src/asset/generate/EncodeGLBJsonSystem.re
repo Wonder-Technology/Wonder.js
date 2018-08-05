@@ -85,8 +85,36 @@ let _encodeNodeCameraController = (cameraController, extraList) =>
 let _encodeNodeExtras = (extras, list) =>
   switch (extras) {
   | None => list
-  | Some(({basicMaterial, lightMaterial, cameraController}: nodeExtras)) =>
+  | Some(
+      (
+        {
+          basicCameraView,
+          meshRenderer,
+          basicMaterial,
+          lightMaterial,
+          cameraController,
+        }: nodeExtras
+      ),
+    ) =>
     let extraList = [];
+
+    let extraList =
+      switch (basicCameraView) {
+      | None => extraList
+      | Some(basicCameraView) => [
+          ("basicCameraView", basicCameraView |> int),
+          ...extraList,
+        ]
+      };
+
+    let extraList =
+      switch (meshRenderer) {
+      | None => extraList
+      | Some(meshRenderer) => [
+          ("meshRenderer", meshRenderer |> int),
+          ...extraList,
+        ]
+      };
 
     let extraList =
       _encodeNodeMaterial(basicMaterial, lightMaterial, extraList);
@@ -158,10 +186,10 @@ let _encodePerspectiveCamera = ({near, far, fovy, aspect}) => {
   };
 };
 
-let _encodeCameras = cameraDataArr => (
+let _encodeCameras = cameraProjectionDataArr => (
   "cameras",
-  cameraDataArr
-  |> Js.Array.map(({type_, perspective}: cameraData) =>
+  cameraProjectionDataArr
+  |> Js.Array.map(({type_, perspective}: cameraProjectionData) =>
        [
          ("type", type_ |> string),
          ("perspective", _encodePerspectiveCamera(perspective) |> object_),
@@ -173,11 +201,28 @@ let _encodeCameras = cameraDataArr => (
 
 let _encodeExtras =
     (
+      basicCameraViewDataArr,
       meshRendererDataArr,
       basicMaterialDataArr,
       arcballCameraControllerDataArr,
     ) => {
   let extrasList = [];
+
+  let extrasList =
+    switch (basicCameraViewDataArr |> Js.Array.length) {
+    | 0 => extrasList
+    | _ => [
+        (
+          "basicCameraViews",
+          basicCameraViewDataArr
+          |> Js.Array.map((({isActive}: basicCameraViewData) as data) =>
+               [("isActive", isActive |> bool)] |> object_
+             )
+          |> jsonArray,
+        ),
+        ...extrasList,
+      ]
+    };
 
   let extrasList =
     switch (meshRendererDataArr |> Js.Array.length) {
@@ -275,17 +320,8 @@ let _encodeExtras =
   ("extras", extrasList |> object_);
 };
 
-let _encodeSceneExtras = (isActiveCameraIndex, imguiData) => {
+let _encodeSceneExtras = imguiData => {
   let extrasList = [];
-
-  let extrasList =
-    switch (isActiveCameraIndex) {
-    | None => extrasList
-    | Some(isActiveCameraIndex) => [
-        ("isActiveCameraIndex", isActiveCameraIndex |> int),
-        ...extrasList,
-      ]
-    };
 
   let extrasList =
     switch (imguiData) {
@@ -317,12 +353,7 @@ let _encodeSceneExtras = (isActiveCameraIndex, imguiData) => {
   [("extras", extrasList |> object_)];
 };
 
-let _encodeScenes =
-    (
-      extensionsUsedArr,
-      (lightDataArr, imguiData, isActiveCameraIndex),
-      state,
-    ) => {
+let _encodeScenes = (extensionsUsedArr, (lightDataArr, imguiData), state) => {
   let list = [("nodes", [|0|] |> intArray)];
 
   let list =
@@ -349,7 +380,7 @@ let _encodeScenes =
       ] :
       list;
 
-  let list = list @ _encodeSceneExtras(isActiveCameraIndex, imguiData);
+  let list = list @ _encodeSceneExtras(imguiData);
 
   ("scenes", [|list |> object_|] |> jsonArray);
 };
@@ -657,8 +688,8 @@ let encode =
         textureDataArr,
         samplerDataArr,
         imageUint8DataArr,
-        cameraDataArr,
-        isActiveCameraIndex,
+        basicCameraViewDataArr,
+        cameraProjectionDataArr,
         arcballCameraControllerDataArr,
         lightDataArr,
         imguiData,
@@ -669,13 +700,10 @@ let encode =
   let list = [
     _encodeAsset(),
     ("scene", 0 |> int),
-    _encodeScenes(
-      extensionsUsedArr,
-      (lightDataArr, imguiData, isActiveCameraIndex),
-      state,
-    ),
-    _encodeCameras(cameraDataArr),
+    _encodeScenes(extensionsUsedArr, (lightDataArr, imguiData), state),
+    _encodeCameras(cameraProjectionDataArr),
     _encodeExtras(
+      basicCameraViewDataArr,
       meshRendererDataArr,
       basicMaterialDataArr,
       arcballCameraControllerDataArr,

@@ -741,12 +741,12 @@ let _ =
 
         describe("test extras", () =>
           testPromise(
-            "isActiveCameraIndex is the index in all perspective and ortho cameras",
+            "test",
             () =>
             AssembleWDBSystemTool.testGLTF(
               ~sandbox=sandbox^,
               ~embeddedGLTFJsonStr=
-                ConvertGLBTool.buildGLTFJsonOfCameraOfIsActiveCameraIndexExtras(),
+                ConvertGLBTool.buildGLTFJsonOfBasicCameraView(),
               ~state,
               ~testFunc=
                 ((state, rootGameObject)) =>
@@ -766,7 +766,7 @@ let _ =
                          ),
                        )
                      )
-                  |> expect == [|(2, true), (0, false)|],
+                  |> expect == [|(1, true), (0, false), (2, false)|],
               (),
             )
           )

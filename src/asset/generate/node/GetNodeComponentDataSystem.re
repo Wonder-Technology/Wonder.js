@@ -257,20 +257,44 @@ let _getMeshRendererData =
     (Some(meshRendererIndex), meshRendererData, meshRendererIndex |> succ);
   };
 
-let _getCameraData =
-    ((gameObject, cameraIndex), {gameObjectRecord} as state) =>
+let _getBasicCameraViewData =
+    ((gameObject, basicCameraViewIndex), {gameObjectRecord} as state) =>
+  switch (
+    GetComponentGameObjectService.getBasicCameraViewComponent(.
+      gameObject,
+      gameObjectRecord,
+    )
+  ) {
+  | None => (None, None, basicCameraViewIndex)
+
+  | Some(cameraView) =>
+    let basicCameraViewData = Some(cameraView);
+
+    (
+      Some(basicCameraViewIndex),
+      basicCameraViewData,
+      basicCameraViewIndex |> succ,
+    );
+  };
+
+let _getCameraProjectionData =
+    ((gameObject, cameraProjectionIndex), {gameObjectRecord} as state) =>
   switch (
     GetComponentGameObjectService.getPerspectiveCameraProjectionComponent(.
       gameObject,
       gameObjectRecord,
     )
   ) {
-  | None => (None, None, cameraIndex)
+  | None => (None, None, cameraProjectionIndex)
 
   | Some(perspectiveCamera) =>
-    let cameraData = Some(perspectiveCamera);
+    let cameraProjectionData = Some(perspectiveCamera);
 
-    (Some(cameraIndex), cameraData, cameraIndex |> succ);
+    (
+      Some(cameraProjectionIndex),
+      cameraProjectionData,
+      cameraProjectionIndex |> succ,
+    );
   };
 
 let _getArcballCameraControllerData =
@@ -331,7 +355,8 @@ let getComponentData =
           meshRendererIndex,
           basicMaterialIndex,
           lightMaterialIndex,
-          cameraIndex,
+          basicCameraViewIndex,
+          cameraProjectionIndex,
           arcballCameraControllerIndex,
           lightIndex,
         ),
@@ -345,7 +370,8 @@ let getComponentData =
           meshRendererDataMap,
           resultBasicMaterialDataMap,
           resultLightMaterialDataMap,
-          cameraDataMap,
+          basicCameraViewDataMap,
+          cameraProjectionDataMap,
           arcballCameraControllerDataMap,
           lightDataMap,
         ),
@@ -434,18 +460,32 @@ let getComponentData =
          )
     };
 
-  /* TODO support ortho camera */
-  let (cameraIndex, cameraData, newCameraIndex) =
-    _getCameraData((gameObject, cameraIndex), state);
+  let (basicCameraViewIndex, basicCameraViewData, newBasicCameraViewIndex) =
+    _getBasicCameraViewData((gameObject, basicCameraViewIndex), state);
 
-  let cameraDataMap =
-    switch (cameraIndex) {
-    | None => cameraDataMap
-    | Some(cameraIndex) =>
-      cameraDataMap
+  let basicCameraViewDataMap =
+    switch (basicCameraViewIndex) {
+    | None => basicCameraViewDataMap
+    | Some(basicCameraViewIndex) =>
+      basicCameraViewDataMap
       |> WonderCommonlib.SparseMapService.set(
-           cameraIndex,
-           cameraData |> OptionService.unsafeGet,
+           basicCameraViewIndex,
+           basicCameraViewData |> OptionService.unsafeGet,
+         )
+    };
+
+  /* TODO support ortho camera */
+  let (cameraProjectionIndex, cameraProjectionData, newCameraProjectionIndex) =
+    _getCameraProjectionData((gameObject, cameraProjectionIndex), state);
+
+  let cameraProjectionDataMap =
+    switch (cameraProjectionIndex) {
+    | None => cameraProjectionDataMap
+    | Some(cameraProjectionIndex) =>
+      cameraProjectionDataMap
+      |> WonderCommonlib.SparseMapService.set(
+           cameraProjectionIndex,
+           cameraProjectionData |> OptionService.unsafeGet,
          )
     };
 
@@ -491,7 +531,8 @@ let getComponentData =
       meshRendererIndex,
       basicMaterialIndex,
       lightMaterialIndex,
-      cameraIndex,
+      basicCameraViewIndex,
+      cameraProjectionIndex,
       arcballCameraControllerIndex,
       lightIndex,
     ),
@@ -500,7 +541,8 @@ let getComponentData =
       newMeshRendererIndex,
       newBasicMaterialIndex,
       newLightMaterialIndex,
-      newCameraIndex,
+      newBasicCameraViewIndex,
+      newCameraProjectionIndex,
       newCameraControllerIndex,
       newLightIndex,
     ),
@@ -514,7 +556,8 @@ let getComponentData =
       meshRendererDataMap,
       resultBasicMaterialDataMap,
       resultLightMaterialDataMap,
-      cameraDataMap,
+      basicCameraViewDataMap,
+      cameraProjectionDataMap,
       arcballCameraControllerDataMap,
       lightDataMap,
     ),

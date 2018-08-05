@@ -417,47 +417,43 @@ let _batchSetBasicCameraViewData =
       open Contract;
       open Operators;
 
-      let {isActiveIndex} = basicCameraViews;
-      let len = basicCameraViewArr |> Js.Array.length;
+      let len =
+        basicCameraViews
+        |> Js.Array.filter(({isActive}) => isActive === true)
+        |> Js.Array.length;
 
-      OptionService.isJsonSerializedValueNone(isActiveIndex) ?
-        () :
-        {
-          let isActiveIndex =
-            OptionService.unsafeGetJsonSerializedValue(isActiveIndex);
-
-          test(
-            Log.buildAssertMessage(
-              ~expect={j|isActiveIndex < $len|j},
-              ~actual={j|is $isActiveIndex|j},
-            ),
-            () =>
-            isActiveIndex < len
-          );
-        };
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|has at most one active basicCameraView|j},
+          ~actual={j|has $len|j},
+        ),
+        () =>
+        len <= 1
+      );
     },
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
-  let {isActiveIndex} = basicCameraViews;
+  {
+    ...state,
+    basicCameraViewRecord:
+      basicCameraViews
+      |> WonderCommonlib.ArrayService.reduceOneParami(
+           (. basicCameraViewRecord, {isActive}, index) => {
+             let cameraView = basicCameraViewArr[index];
 
-  OptionService.isJsonSerializedValueNone(isActiveIndex) ?
-    state :
-    {
-      let isActiveIndex =
-        OptionService.unsafeGetJsonSerializedValue(isActiveIndex);
+             let basicCameraViewRecord =
+               ActiveBasicCameraViewService.setActive(
+                 cameraView,
+                 isActive,
+                 basicCameraViewRecord,
+               );
 
-      let cameraView = basicCameraViewArr[isActiveIndex];
-
-      {
-        ...state,
-        basicCameraViewRecord:
-          ActiveBasicCameraViewService.active(
-            cameraView,
-            basicCameraViewRecord,
-          ),
-      };
-    };
+             basicCameraViewRecord;
+           },
+           basicCameraViewRecord,
+         ),
+  };
 };
 
 let _batchSetPerspectiveCameraProjectionData =
@@ -466,53 +462,54 @@ let _batchSetPerspectiveCameraProjectionData =
       perspectiveCameraProjectionArr,
       {perspectiveCameraProjectionRecord, viewRecord} as state,
     ) => {
-  perspectiveCameraProjections
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       (.
+  ...state,
+  perspectiveCameraProjectionRecord:
+    perspectiveCameraProjections
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (.
+           perspectiveCameraProjectionRecord,
+           {near, far, fovy, aspect},
+           index,
+         ) => {
+           let cameraProjection = perspectiveCameraProjectionArr[index];
+
+           let perspectiveCameraProjectionRecord =
+             perspectiveCameraProjectionRecord
+             |> FrustumPerspectiveCameraProjectionService.setNear(
+                  cameraProjection,
+                  near,
+                );
+           let perspectiveCameraProjectionRecord =
+             far |> OptionService.isJsonSerializedValueNone ?
+               perspectiveCameraProjectionRecord
+               |> FrustumPerspectiveCameraProjectionService.setFar(
+                    cameraProjection,
+                    FrustumPerspectiveCameraProjectionService.getInfiniteFar(),
+                  ) :
+               perspectiveCameraProjectionRecord
+               |> FrustumPerspectiveCameraProjectionService.setFar(
+                    cameraProjection,
+                    far |> OptionService.unsafeGetJsonSerializedValue,
+                  );
+           let perspectiveCameraProjectionRecord =
+             perspectiveCameraProjectionRecord
+             |> FrustumPerspectiveCameraProjectionService.setFovy(
+                  cameraProjection,
+                  fovy,
+                );
+           let perspectiveCameraProjectionRecord =
+             aspect |> OptionService.isJsonSerializedValueNone ?
+               perspectiveCameraProjectionRecord :
+               perspectiveCameraProjectionRecord
+               |> FrustumPerspectiveCameraProjectionService.setAspect(
+                    cameraProjection,
+                    aspect |> OptionService.unsafeGetJsonSerializedValue,
+                  );
+
+           perspectiveCameraProjectionRecord;
+         },
          perspectiveCameraProjectionRecord,
-         {near, far, fovy, aspect},
-         index,
-       ) => {
-         let cameraProjection = perspectiveCameraProjectionArr[index];
-
-         let perspectiveCameraProjectionRecord =
-           perspectiveCameraProjectionRecord
-           |> FrustumPerspectiveCameraProjectionService.setNear(
-                cameraProjection,
-                near,
-              );
-         let perspectiveCameraProjectionRecord =
-           far |> OptionService.isJsonSerializedValueNone ?
-             perspectiveCameraProjectionRecord
-             |> FrustumPerspectiveCameraProjectionService.setFar(
-                  cameraProjection,
-                  FrustumPerspectiveCameraProjectionService.getInfiniteFar(),
-                ) :
-             perspectiveCameraProjectionRecord
-             |> FrustumPerspectiveCameraProjectionService.setFar(
-                  cameraProjection,
-                  far |> OptionService.unsafeGetJsonSerializedValue,
-                );
-         let perspectiveCameraProjectionRecord =
-           perspectiveCameraProjectionRecord
-           |> FrustumPerspectiveCameraProjectionService.setFovy(
-                cameraProjection,
-                fovy,
-              );
-         let perspectiveCameraProjectionRecord =
-           aspect |> OptionService.isJsonSerializedValueNone ?
-             perspectiveCameraProjectionRecord :
-             perspectiveCameraProjectionRecord
-             |> FrustumPerspectiveCameraProjectionService.setAspect(
-                  cameraProjection,
-                  aspect |> OptionService.unsafeGetJsonSerializedValue,
-                );
-
-         perspectiveCameraProjectionRecord;
-       },
-       perspectiveCameraProjectionRecord,
-     );
-  {...state, perspectiveCameraProjectionRecord};
+       ),
 };
 
 let _batchSetArcballCameraControllerData =

@@ -102,6 +102,8 @@ let buildGLTFJson =
     ]|},
       ~cameras={|
         []|},
+      ~basicCameraViews={|
+        []|},
       ~meshRenderers={|[]|},
       ~basicMaterials={|[]|},
       ~arcballCameraControllers={|
@@ -295,6 +297,7 @@ let buildGLTFJson =
     "extensions":$extensions,
     "extensionsUsed": $extensionsUsed,
     "extras": {
+        "basicCameraViews": $basicCameraViews,
         "meshRenderers": $meshRenderers,
         "basicMaterials": $basicMaterials,
         "arcballCameraControllers": $arcballCameraControllers
@@ -739,16 +742,19 @@ let buildGLTFJsonOfCamera = () =>
     (),
   );
 
-let buildGLTFJsonOfCameraOfIsActiveCameraIndexExtras = () =>
+let buildGLTFJsonOfBasicCameraView = () =>
   buildGLTFJson(
-    ~scenes=
+    ~basicCameraViews=
       {|  [
         {
-        "nodes": [0],
-        "extras": {
-            "isActiveCameraIndex": 2
+            "isActive": false
+        },
+        {
+            "isActive": true
+        },
+        {
+            "isActive": false
         }
-    }
     ]|},
     ~nodes=
       {| [
@@ -757,14 +763,24 @@ let buildGLTFJsonOfCameraOfIsActiveCameraIndexExtras = () =>
             "camera": 2,
             "children": [
                 1, 2
-            ]
+            ],
+            "extras":{
+                "basicCameraView": 1
+            }
         },
         {
             "mesh": 0,
-            "camera": 0
+            "camera": 0,
+            "extras":{
+                "basicCameraView": 0
+            }
         },
         {
-            "mesh": 0
+            "mesh": 0,
+            "camera": 1,
+            "extras":{
+                "basicCameraView": 2
+            }
         }
     ]|},
     ~cameras=

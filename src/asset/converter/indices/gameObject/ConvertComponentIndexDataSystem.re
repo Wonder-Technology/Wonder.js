@@ -88,21 +88,37 @@ let _checkEveryComponentShouldHasGameObject =
        IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 
+let _convertToGameObjectIndexDataFromExtras =
+    (component, (gameObjectIndices, componentIndices), index) => (
+  gameObjectIndices |> ArrayService.push(index),
+  componentIndices |> ArrayService.push(component),
+);
+
 let convertToBasicCameraViewGameObjectIndexData = nodes => {
   let (gameObjectIndices, componentIndices) =
     nodes
     |> WonderCommonlib.ArrayService.reduceOneParami(
          (.
            (gameObjectIndices, componentIndices),
-           {camera}: GLTFType.node,
+           {camera, extras}: GLTFType.node,
            index,
          ) =>
-           switch (camera) {
-           | None => (gameObjectIndices, componentIndices)
-           | Some(camera) => (
-               gameObjectIndices |> ArrayService.push(index),
-               componentIndices |> ArrayService.push(camera),
+           switch (extras) {
+           | Some(({basicCameraView}))
+               when basicCameraView |> Js.Option.isSome =>
+             _convertToGameObjectIndexDataFromExtras(
+               basicCameraView |> OptionService.unsafeGet,
+               (gameObjectIndices, componentIndices),
+               index,
              )
+           | _ =>
+             switch (camera) {
+             | None => (gameObjectIndices, componentIndices)
+             | Some(camera) => (
+                 gameObjectIndices |> ArrayService.push(index),
+                 componentIndices |> ArrayService.push(camera),
+               )
+             }
            },
          ([||], [||]),
        );
@@ -222,12 +238,6 @@ let convertToArcballCameraControllerGameObjectIndexData =
 /* let _isLines = mode => mode === 1;
 
    let _isTriangles = mode => mode === 4; */
-
-let _convertToGameObjectIndexDataFromExtras =
-    (component, (gameObjectIndices, componentIndices), index) => (
-  gameObjectIndices |> ArrayService.push(index),
-  componentIndices |> ArrayService.push(component),
-);
 
 /* let _convertToBasicMaterialGameObjectIndexDataFromMesh =
      (mesh, meshes, (gameObjectIndices, componentIndices), index) =>

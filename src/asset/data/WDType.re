@@ -197,10 +197,7 @@ type indices = {
   samplerTextureIndices: samplerTextureIndexData,
 };
 
-type basicCameraViews = {
-  count: int,
-  isActiveIndex: option(int),
-};
+type basicCameraView = {isActive: bool};
 
 type ambientLight = {color: array(float)};
 
@@ -237,7 +234,7 @@ type wd = {
   accessors: array(accessor),
   directionLights: array(directionLight),
   pointLights: array(pointLight),
-  basicCameraViews,
+  basicCameraViews: array(basicCameraView),
   perspectiveCameraProjections: array(perspectiveCameraProjection),
   arcballCameraControllers: array(SceneGraphType.arcballCameraController),
   transforms: array(transform),

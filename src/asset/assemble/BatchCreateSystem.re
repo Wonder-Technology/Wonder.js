@@ -122,13 +122,42 @@ let _batchCreateMeshRenderer = ({meshRenderers}, {settingRecord} as state) => {
 };
 
 let _batchCreateBasicCameraView =
-    ({basicCameraViews}, {basicCameraViewRecord} as state) => {
+    (
+      {basicCameraViews, perspectiveCameraProjections},
+      {basicCameraViewRecord} as state,
+    ) => {
+  /* 
+  TODO check after add orhiCameraProjection
+  WonderLog.Contract.requireCheck(
+       () => {
+         open WonderLog;
+         open Contract;
+         open Operators;
+
+         let basicCameraViewCount = basicCameraViews |> Js.Array.length;
+
+         let perspectiveCameraProjectionCount =
+           perspectiveCameraProjections |> Js.Array.length;
+
+         test(
+           Log.buildAssertMessage(
+             ~expect=
+               {j|basicCameraViews' count:$basicCameraViewCount === cameraProjects' count:$perspectiveCameraProjectionCount|j},
+             ~actual={j|not|j},
+           ),
+           () =>
+           basicCameraViewCount == perspectiveCameraProjectionCount
+         );
+       },
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     ); */
+
   AssembleCommon.checkNotDisposedBefore(
     basicCameraViewRecord.disposedIndexArray,
   );
 
   let {index}: BasicCameraViewType.basicCameraViewRecord = basicCameraViewRecord;
-  let newIndex = index + basicCameraViews.count;
+  let newIndex = index + (basicCameraViews |> Js.Array.length);
   let indexArr = ArrayService.range(index, newIndex - 1);
   state.basicCameraViewRecord = {...basicCameraViewRecord, index: newIndex};
   (state, indexArr);
