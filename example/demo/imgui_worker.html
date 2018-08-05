@@ -23,6 +23,7 @@
 
 
     <script src="./js/IMGUITool.js"></script>
+    <script src="./js/WorkerTool.js"></script>
 
     <script src="../../dist/wd.js"></script>
 
@@ -33,7 +34,7 @@
     <script>
 
 
-        function createControls(api, truckGameObject, boxGameObject, screenWidth, screenHeight, buildImguiFunc, getIMGUIRegion, state) {
+        function createControls(api, truckGameObject, boxGameObject, screenWidth, screenHeight, buildImguiFunc, getIMGUIRegion, getOrCreateCustomData, state) {
             function syncCustomDataBetweenMainWorkerAndRenderWorker(api, state) {
                 var customData = api.getCustomDataFromMainWorkerToRenderWorker(state);
 
@@ -79,9 +80,15 @@
 
             var customData = api.getCustomDataFromRenderWorkerToMainWorker(state);
 
+
+            var customDataInRenderWorker = api.getCustomDataInRenderWorker(state);
+
+            customDataInRenderWorker = getOrCreateCustomData(customDataInRenderWorker);
+
+
             var buttonText = null;
 
-            if (customData.isShowPanel === true) {
+            if (customDataInRenderWorker.isShowPanel === true) {
                 buttonText = "hide panel";
             }
             else {
@@ -95,24 +102,26 @@
             );
 
             if (isClick_button1) {
-
                 var customData = api.getCustomDataFromRenderWorkerToMainWorker(state);
-                var isShowPanel = toggleShowPanelData(customData, state);
+
+                var isShowPanel = toggleShowPanelData(customDataInRenderWorker, state);
 
 
-                // console.log("toggle isShowPanel:", isShowPanel, customData);
+                console.log("toggle isShowPanel:", isShowPanel, customData);
 
+                customDataInRenderWorker.isShowPanel = isShowPanel;
                 customData.isShowPanel = isShowPanel;
 
+                var state = api.setCustomDataInRenderWorker(customDataInRenderWorker, state);
                 var state = api.setCustomDataFromRenderWorkerToMainWorker(customData, state);
 
                 return state
             }
 
 
-            var customData = api.getCustomDataFromRenderWorkerToMainWorker(state);
+            // var customData = api.getCustomDataFromRenderWorkerToMainWorker(state);
 
-            if (customData.isShowPanel === undefined || customData.isShowPanel === false) {
+            if (customDataInRenderWorker.isShowPanel === undefined || customDataInRenderWorker.isShowPanel === false) {
                 return state;
             }
 
@@ -153,6 +162,7 @@
                     createControls,
                     DemoImguiTool.buildImguiFunc,
                     DemoImguiTool.getIMGUIRegion,
+                    DemoWorkerTool.getOrCreateCustomData,
                     truckGameObject,
                     boxGameObject,
                     window.innerWidth,
@@ -163,13 +173,14 @@
                         createControls,
                         buildImguiFunc,
                         getIMGUIRegion,
+                        getOrCreateCustomData,
                         truckGameObject,
                         boxGameObject,
                         screenWidth,
                         screenHeight
                     ] = customData;
 
-                    var state = createControls(api, truckGameObject, boxGameObject, screenWidth, screenHeight, buildImguiFunc, getIMGUIRegion, state);
+                    var state = createControls(api, truckGameObject, boxGameObject, screenWidth, screenHeight, buildImguiFunc, getIMGUIRegion, getOrCreateCustomData, state);
 
 
 

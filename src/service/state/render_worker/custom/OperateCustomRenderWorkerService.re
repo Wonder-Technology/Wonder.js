@@ -1,5 +1,17 @@
 open StateDataRenderWorkerType;
 
+let getCustomDataInRenderWorker = state =>
+  state.customRecord.customDataInRenderWorker;
+
+let setCustomDataInRenderWorker =
+  (. customData: RenderWorkerCustomType.customDataInRenderWorker, state) => {
+    state.customRecord = {
+      ...state.customRecord,
+      customDataInRenderWorker: Obj.magic(customData),
+    };
+    state;
+  };
+
 let getCustomDataFromRenderWorkerToMainWorker = state =>
   state.customRecord.customDataFromRenderWorkerToMainWorker;
 

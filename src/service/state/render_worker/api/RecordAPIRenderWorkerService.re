@@ -16,6 +16,8 @@ let create = () => {
     "sliderFloat": FixedLayoutControlIMGUIRenderWorkerService.sliderFloat,
     "beginGroup": FixedLayoutControlIMGUIRenderWorkerService.beginGroup,
     "endGroup": FixedLayoutControlIMGUIRenderWorkerService.endGroup,
+    "getCustomDataInRenderWorker": OperateCustomRenderWorkerService.getCustomDataInRenderWorker,
+    "setCustomDataInRenderWorker": OperateCustomRenderWorkerService.setCustomDataInRenderWorker,
     "getCustomDataFromMainWorkerToRenderWorker": OperateCustomRenderWorkerService.getCustomDataFromMainWorkerToRenderWorker,
     "getCustomDataFromRenderWorkerToMainWorker": OperateCustomRenderWorkerService.getCustomDataFromRenderWorkerToMainWorker,
     "setCustomDataFromRenderWorkerToMainWorker": OperateCustomRenderWorkerService.setCustomDataFromRenderWorkerToMainWorker,
