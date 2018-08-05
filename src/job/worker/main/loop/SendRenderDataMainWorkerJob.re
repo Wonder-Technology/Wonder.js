@@ -41,7 +41,8 @@ let _buildIMGUIData = ({viewRecord} as state) => {
         WonderImgui.ManageIMGUIAPI.getCustomData(wonderImguiIMGUIRecord)
       ) {
       | None => None
-      | Some(customData) => customData |. Some
+      | Some(customData) =>
+        customData |> SerializeService.serializeValueWithFunction |. Some
       },
     "imguiFunc":
       switch (WonderImgui.ManageIMGUIAPI.getIMGUIFunc(wonderImguiIMGUIRecord)) {

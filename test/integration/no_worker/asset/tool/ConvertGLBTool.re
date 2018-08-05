@@ -442,7 +442,7 @@ let buildGLTFJsonOfIMGUI = (customData, imguiFunc) =>
         "nodes": [0],
         "extras": {
             "imgui": {
-                "customData": $customData,
+                "customData": "$customData",
                 "imguiFunc": "$imguiFunc"
             }
         }

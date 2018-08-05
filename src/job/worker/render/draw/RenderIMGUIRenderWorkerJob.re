@@ -7,14 +7,18 @@ let execJob = (flags, e, stateData) =>
     let data = MessageService.getRecord(e);
     let imguiData = data##imguiData;
 
-    imguiData##imguiFunc |> OptionService.isJsonSerializedValueNone ?
+    imguiData##imguiFunc
+    |> OptionService.isJsonSerializedValueNone
+    || imguiData##customData
+    |> OptionService.isJsonSerializedValueNone ?
       e :
       {
         let imguiRecord =
           RecordIMGUIRenderWorkerService.getRecord(state)
           |> WonderImgui.ManageIMGUIAPI.setIMGUIFunc(
                imguiData##customData
-               |> OptionService.unsafeGetJsonSerializedValue,
+               |> OptionService.unsafeGetJsonSerializedValue
+               |> SerializeService.deserializeValueWithFunction,
                imguiData##imguiFunc
                |> OptionService.unsafeGetJsonSerializedValue
                |> SerializeService.deserializeFunction,

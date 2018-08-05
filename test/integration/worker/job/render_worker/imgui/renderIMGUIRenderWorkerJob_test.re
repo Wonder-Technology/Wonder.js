@@ -87,7 +87,7 @@ let _ =
       testPromise("send imguiFunc and customData", () => {
         let (state, postMessageToRenderWorker) = _prepare();
         let imguiFunc = (. _, _, state) => state;
-        let customData = Obj.magic(100);
+        let customData = Obj.magic((100, a => a + 1));
         let state = ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state);
         MainStateTool.setState(state);
 
@@ -102,7 +102,9 @@ let _ =
                      ~imguiData={
                        "ioData": Sinon.matchAny,
                        "controlData": Sinon.matchAny,
-                       "customData": customData,
+                       "customData":
+                         customData
+                         |> RenderIMGUIRenderWorkerTool.serializeValueWithFunction,
                        "imguiFunc":
                          RenderIMGUIRenderWorkerTool.serializeFunction(
                            imguiFunc,

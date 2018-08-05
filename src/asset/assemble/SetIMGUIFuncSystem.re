@@ -8,7 +8,7 @@ let setIMGUIFunc = ({scene}, state) =>
         OptionService.unsafeGetJsonSerializedValue(scene.imgui);
 
       ManageIMGUIMainService.setIMGUIFunc(
-        customData,
+        customData |> SerializeService.deserializeValueWithFunction,
         imguiFunc |> SerializeService.deserializeFunction,
         state,
       );

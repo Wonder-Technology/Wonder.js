@@ -71,8 +71,32 @@ let _ =
 
     describe("test imgui", () =>
       describe("set imgui func and custom data", () => {
+        describe("test customData", () =>
+          testPromise("test value with function", () => {
+            let customData = {|[ 1, \"function (a) { return a; }\" ]|};
+            let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
+
+            AssembleWDBSystemTool.testGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+              ~state,
+              ~testFunc=
+                ((state, rootGameObject)) => {
+                  let (_, func) =
+                    IMGUITool.getCustomData(state)
+                    |> OptionService.unsafeGet
+                    |> Obj.magic;
+
+                  func(10) |> expect == 10;
+                },
+              (),
+            );
+          })
+        );
+
         testPromise("test empty imgui func", () => {
-          let customData = {| [1, "a1"] |};
+          let customData = {|1|};
           let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
 
           AssembleWDBSystemTool.testGLTF(
@@ -90,7 +114,11 @@ let _ =
                   |> OptionService.unsafeGet
                   |> Obj.magic,
                 )
-                |> expect == (imguiFunc, [|1 |> Obj.magic, "a1"|]),
+                |>
+                expect == (
+                            imguiFunc,
+                            customData |> Obj.magic |> Js.Json.parseExn,
+                          ),
             (),
           );
         });

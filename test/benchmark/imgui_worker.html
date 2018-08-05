@@ -58,9 +58,9 @@
             function _testGenerateWDByGameObject(state) {
                 var [state, wdb] = _generateWDByGameObject(state);
 
-                // wd.startDirector(state);
-                
-                AssetTool.download(wdb, "generated.wdb", "")
+                wd.startDirector(state);
+
+                // AssetTool.download(wdb, "generated.wdb", "")
 
                 // wd.assembleWDB(wdb, state)
                 //     .forEach(([state, rootGameObject]) => {
@@ -108,7 +108,8 @@
                                 return state
                             }, state);
 
-                        _testGenerateWDByGameObject(state);
+
+                        wd.startDirector(state);
                     });
             });
         };

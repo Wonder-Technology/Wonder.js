@@ -887,7 +887,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-"extras":{"imgui":{"customData":[1,"cc"],"imguiFunc":"function imguiFunc(customData, apiJsObj, state) {\\n        var imageFunc = apiJsObj.image;\\n        return imageFunc(customData[0], customData[1], state);\\n      }"}}
+"extras":{"imgui":{"customData":"[1,\\"cc\\"]","imguiFunc":"function imguiFunc(customData, apiJsObj, state) {\\n        var imageFunc = apiJsObj.image;\\n        return imageFunc(customData[0], customData[1], state);\\n      }"}}
             |j},
           state,
         );

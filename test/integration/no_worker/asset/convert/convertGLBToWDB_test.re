@@ -510,7 +510,7 @@ let _ =
       );
 
       test("test imgui", () => {
-        let customData = {| [1, "a1"] |};
+        let customData = {| [1, 2] |};
         let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
 
         ConvertGLBTool.testGLTFResultByGLTF(
@@ -523,7 +523,7 @@ let _ =
               scene.imgui
               |>
               expect == Some({
-                          customData: [|1 |> Obj.magic, "a1"|] |> Obj.magic,
+                          customData: customData |> Obj.magic,
                           imguiFunc,
                         }),
           (),
