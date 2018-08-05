@@ -164,8 +164,8 @@ let setDirectionLightIntensity =
   };
 };
 
-let isExceedMaxCount = ({directionLightRecord}) =>
-  MaxCountLightService.isExceedMaxCount(
+let isMaxCount = ({directionLightRecord}) =>
+  MaxCountLightService.isMaxCount(
     directionLightRecord.index,
     BufferDirectionLightService.getBufferMaxCount(),
   );

@@ -402,8 +402,8 @@ let setPointLightRangeLevel = (light, level, state: StateDataMainType.state) => 
   };
 };
 
-let isExceedMaxCount = ({pointLightRecord}) =>
-  MaxCountLightService.isExceedMaxCount(
+let isMaxCount = ({pointLightRecord}) =>
+  MaxCountLightService.isMaxCount(
     pointLightRecord.index,
     BufferPointLightService.getBufferMaxCount(),
   );

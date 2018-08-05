@@ -348,7 +348,7 @@ let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
 
 let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
 
-let isExceedMaxCount = DirectionLightAPI.isExceedMaxCount;
+let isMaxCount = DirectionLightAPI.isMaxCount;
 
 let setDirectionLightIntensity = DirectionLightAPI.setDirectionLightIntensity;
 
@@ -362,7 +362,7 @@ let unsafeGetDirectionLightGameObject = DirectionLightAPI.unsafeGetDirectionLigh
 
 let createDirectionLight = DirectionLightAPI.createDirectionLight;
 
-let isExceedMaxCount = PointLightAPI.isExceedMaxCount;
+let isMaxCount = PointLightAPI.isMaxCount;
 
 let setPointLightRangeLevel = PointLightAPI.setPointLightRangeLevel;
 

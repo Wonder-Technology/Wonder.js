@@ -582,17 +582,14 @@ let _ =
       });
     });
 
-    describe("isExceedMaxCount", () =>
-      test("if lightIndex from record >= max count, return true", () =>
-        {
-          ...state^,
-          pointLightRecord: {
-            ...state^.pointLightRecord,
-            index: 5,
-          },
-        }
-        |> PointLightAPI.isExceedMaxCount
-        |> expect == true
-      )
+    describe("isMaxCount", () =>
+      test("if already have created max count lights, return true", () => {
+        let (state, _) = createPointLight(state^);
+        let (state, _) = createPointLight(state);
+        let (state, _) = createPointLight(state);
+        let (state, _) = createPointLight(state);
+
+        state |> PointLightAPI.isMaxCount |> expect == true;
+      })
     );
   });
