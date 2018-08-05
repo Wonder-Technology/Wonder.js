@@ -410,4 +410,10 @@ let unbindEvent = (cameraController, state) =>
   |> _disposePointScaleEventHandleFuncMap(cameraController)
   |> _disposeKeyDownEventHandleFuncMap(cameraController);
 
-/* let getBind */
+let isBindEvent =
+    (cameraController, {arcballCameraControllerRecord} as state) => {
+  let {pointDownEventHandleFuncMap} = arcballCameraControllerRecord;
+
+  pointDownEventHandleFuncMap
+  |> WonderCommonlib.SparseMapService.has(cameraController);
+};

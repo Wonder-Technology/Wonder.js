@@ -460,7 +460,7 @@ let _batchSetPerspectiveCameraProjectionData =
     (
       {perspectiveCameraProjections},
       perspectiveCameraProjectionArr,
-      {perspectiveCameraProjectionRecord, viewRecord} as state,
+      {perspectiveCameraProjectionRecord} as state,
     ) => {
   ...state,
   perspectiveCameraProjectionRecord:
@@ -516,12 +516,13 @@ let _batchSetArcballCameraControllerData =
     (
       {arcballCameraControllers},
       arcballCameraControllerArr,
-      {arcballCameraControllerRecord, viewRecord} as state,
-    ) => {
+      {arcballCameraControllerRecord} as state,
+    ) =>
   arcballCameraControllers
   |> WonderCommonlib.ArrayService.reduceOneParami(
+       /* arcballCameraControllerRecord, */
        (.
-         arcballCameraControllerRecord,
+         state,
          {
            distance,
            minDistance,
@@ -533,57 +534,68 @@ let _batchSetArcballCameraControllerData =
            moveSpeedY,
            rotateSpeed,
            wheelSpeed,
+           isBindEvent,
          }: SceneGraphType.arcballCameraController,
          index,
        ) => {
          let cameraController = arcballCameraControllerArr[index];
 
-         arcballCameraControllerRecord
-         |> OperateArcballCameraControllerService.setMinDistance(
-              cameraController,
-              minDistance,
-            )
-         |> OperateArcballCameraControllerService.setDistance(
-              cameraController,
-              distance,
-            )
-         |> OperateArcballCameraControllerService.setPhi(
-              cameraController,
-              phi,
-            )
-         |> OperateArcballCameraControllerService.setTheta(
-              cameraController,
-              theta,
-            )
-         |> OperateArcballCameraControllerService.setThetaMargin(
-              cameraController,
-              thetaMargin,
-            )
-         |> OperateArcballCameraControllerService.setTarget(
-              cameraController,
-              target,
-            )
-         |> OperateArcballCameraControllerService.setMoveSpeedX(
-              cameraController,
-              moveSpeedX,
-            )
-         |> OperateArcballCameraControllerService.setMoveSpeedY(
-              cameraController,
-              moveSpeedY,
-            )
-         |> OperateArcballCameraControllerService.setRotateSpeed(
-              cameraController,
-              rotateSpeed,
-            )
-         |> OperateArcballCameraControllerService.setWheelSpeed(
-              cameraController,
-              wheelSpeed,
-            );
+         let state =
+           isBindEvent ?
+             EventArcballCameraControllerMainService.bindEvent(
+               cameraController,
+               state,
+             ) :
+             state;
+
+         {
+           ...state,
+           arcballCameraControllerRecord:
+             state.arcballCameraControllerRecord
+             |> OperateArcballCameraControllerService.setMinDistance(
+                  cameraController,
+                  minDistance,
+                )
+             |> OperateArcballCameraControllerService.setDistance(
+                  cameraController,
+                  distance,
+                )
+             |> OperateArcballCameraControllerService.setPhi(
+                  cameraController,
+                  phi,
+                )
+             |> OperateArcballCameraControllerService.setTheta(
+                  cameraController,
+                  theta,
+                )
+             |> OperateArcballCameraControllerService.setThetaMargin(
+                  cameraController,
+                  thetaMargin,
+                )
+             |> OperateArcballCameraControllerService.setTarget(
+                  cameraController,
+                  target,
+                )
+             |> OperateArcballCameraControllerService.setMoveSpeedX(
+                  cameraController,
+                  moveSpeedX,
+                )
+             |> OperateArcballCameraControllerService.setMoveSpeedY(
+                  cameraController,
+                  moveSpeedY,
+                )
+             |> OperateArcballCameraControllerService.setRotateSpeed(
+                  cameraController,
+                  rotateSpeed,
+                )
+             |> OperateArcballCameraControllerService.setWheelSpeed(
+                  cameraController,
+                  wheelSpeed,
+                ),
+         };
        },
-       arcballCameraControllerRecord,
+       state,
      );
-  {...state, arcballCameraControllerRecord};
-};
 
 let _batchSetMeshRendererData = ({meshRenderers}, meshRendererArr, state) =>
   meshRenderers

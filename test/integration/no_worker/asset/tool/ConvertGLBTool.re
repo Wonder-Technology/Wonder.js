@@ -840,7 +840,8 @@ let buildGLTFJsonOfArcballCameraController = () =>
             "moveSpeedX":2.1,
             "moveSpeedY":3.1,
             "rotateSpeed":0.3,
-            "wheelSpeed":0.9
+            "wheelSpeed":0.9,
+            "isBindEvent": true
         }
     ]
         |},

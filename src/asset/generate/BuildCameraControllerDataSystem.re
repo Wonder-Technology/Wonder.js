@@ -75,6 +75,10 @@ let build =
                   |> OperateArcballCameraControllerService.unsafeGetWheelSpeed(
                        cameraController,
                      ),
+                isBindEvent:
+                  EventArcballCameraControllerMainService.isBindEvent(
+                    cameraController, state
+                  ),
               }: GenerateSceneGraphType.arcballCameraControllerData,
             ),
        [||],

@@ -11,6 +11,7 @@ type arcballCameraController = {
   moveSpeedY: float,
   rotateSpeed: float,
   wheelSpeed: float,
+  isBindEvent: bool,
 };
 
 type imgui = {

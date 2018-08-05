@@ -2365,8 +2365,8 @@ let _ =
       });
     });
 
-    describe("test cameraController", () => {
-      let _createCameraGameObject = state => {
+    describe("test arcballCameraController", () => {
+      let _createCameraGameObject = (isBindEvent, state) => {
         let (state, gameObject, transform, (cameraController, _, _)) =
           ArcballCameraControllerTool.createGameObject(state);
 
@@ -2390,6 +2390,17 @@ let _ =
             state,
           );
 
+        let state =
+          isBindEvent ?
+            ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+              cameraController,
+              state,
+            ) :
+            ArcballCameraControllerAPI.unbindArcballCameraControllerEvent(
+              cameraController,
+              state,
+            );
+
         (
           state,
           transform,
@@ -2404,6 +2415,7 @@ let _ =
             moveSpeedY,
             rotateSpeed,
             wheelSpeed,
+            isBindEvent,
           ),
         );
       };
@@ -2423,27 +2435,47 @@ let _ =
           state,
           transform1,
           (
-            distance,
-            minDistance,
-            phi,
-            theta,
-            thetaMargin,
-            target,
-            moveSpeedX,
-            moveSpeedY,
-            rotateSpeed,
-            wheelSpeed,
+            distance1,
+            minDistance1,
+            phi1,
+            theta1,
+            thetaMargin1,
+            target1,
+            moveSpeedX1,
+            moveSpeedY1,
+            rotateSpeed1,
+            wheelSpeed1,
+            isBindEvent1,
           ),
         ) =
-          _createCameraGameObject(state);
+          _createCameraGameObject(false, state);
 
         let (
           state,
-          gameObject2,
-          (transform2, (localPos2, localRotation2, localScale2)),
-          geometry2,
-          (material2, diffuseColor2),
-          meshRenderer2,
+          transform2,
+          (
+            distance2,
+            minDistance2,
+            phi2,
+            theta2,
+            thetaMargin2,
+            target2,
+            moveSpeedX2,
+            moveSpeedY2,
+            rotateSpeed2,
+            wheelSpeed2,
+            isBindEvent2,
+          ),
+        ) =
+          _createCameraGameObject(true, state);
+
+        let (
+          state,
+          gameObject3,
+          (transform3, (localPos3, localRotation3, localScale3)),
+          geometry3,
+          (material3, diffuseColor3),
+          meshRenderer3,
         ) =
           _createGameObject1(state);
 
@@ -2456,6 +2488,10 @@ let _ =
           |> TransformAPI.setTransformParent(
                Js.Nullable.return(sceneGameObjectTransform),
                transform2,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform3,
              );
 
         let (canvas, context, (base64Str1, base64Str2)) =
@@ -2465,16 +2501,32 @@ let _ =
           state,
           (rootGameObject, sceneGameObjectTransform),
           (
-            distance,
-            minDistance,
-            phi,
-            theta,
-            thetaMargin,
-            target,
-            moveSpeedX,
-            moveSpeedY,
-            rotateSpeed,
-            wheelSpeed,
+            (
+              distance1,
+              minDistance1,
+              phi1,
+              theta1,
+              thetaMargin1,
+              target1,
+              moveSpeedX1,
+              moveSpeedY1,
+              rotateSpeed1,
+              wheelSpeed1,
+              isBindEvent1,
+            ),
+            (
+              distance2,
+              minDistance2,
+              phi2,
+              theta2,
+              thetaMargin2,
+              target2,
+              moveSpeedX2,
+              moveSpeedY2,
+              rotateSpeed2,
+              wheelSpeed2,
+              isBindEvent2,
+            ),
           ),
         );
       };
@@ -2484,16 +2536,32 @@ let _ =
           state,
           (rootGameObject, sceneGameObjectTransform),
           (
-            distance,
-            minDistance,
-            phi,
-            theta,
-            thetaMargin,
-            target,
-            moveSpeedX,
-            moveSpeedY,
-            rotateSpeed,
-            wheelSpeed,
+            (
+              distance1,
+              minDistance1,
+              phi1,
+              theta1,
+              thetaMargin1,
+              target1,
+              moveSpeedX1,
+              moveSpeedY1,
+              rotateSpeed1,
+              wheelSpeed1,
+              isBindEvent1,
+            ),
+            (
+              distance2,
+              minDistance2,
+              phi2,
+              theta2,
+              thetaMargin2,
+              target2,
+              moveSpeedX2,
+              moveSpeedY2,
+              rotateSpeed2,
+              wheelSpeed2,
+              isBindEvent2,
+            ),
           ),
         ) =
           _prepareGameObject(state);
@@ -2501,26 +2569,42 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-            "nodes":[{"children":[1,2]},{"camera":0,"extras":{"cameraController":0,"basicCameraView":0}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}}]
+            "nodes":[{"children":[1,2,3]},{"camera":0,"extras":{"cameraController":0,"basicCameraView":0}},{"camera":1,"extras":{"cameraController":1,"basicCameraView":1}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}}]
                    |j},
           state,
         );
       });
-      test("test cameraControllers", () => {
+      test("test arcballCameraController", () => {
         let (
           state,
           (rootGameObject, sceneGameObjectTransform),
           (
-            distance,
-            minDistance,
-            phi,
-            theta,
-            thetaMargin,
-            target,
-            moveSpeedX,
-            moveSpeedY,
-            rotateSpeed,
-            wheelSpeed,
+            (
+              distance1,
+              minDistance1,
+              phi1,
+              theta1,
+              thetaMargin1,
+              target1,
+              moveSpeedX1,
+              moveSpeedY1,
+              rotateSpeed1,
+              wheelSpeed1,
+              isBindEvent1,
+            ),
+            (
+              distance2,
+              minDistance2,
+              phi2,
+              theta2,
+              thetaMargin2,
+              target2,
+              moveSpeedX2,
+              moveSpeedY2,
+              rotateSpeed2,
+              wheelSpeed2,
+              isBindEvent2,
+            ),
           ),
         ) =
           _prepareGameObject(state);
@@ -2528,7 +2612,8 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-              "extras":{"arcballCameraControllers":[{"distance":$distance,"minDistance": $minDistance,"phi":$phi,"theta":$theta,"thetaMargin":$thetaMargin,"target":[$target],"moveSpeedX":$moveSpeedX,"moveSpeedY":$moveSpeedY,"rotateSpeed":$rotateSpeed,"wheelSpeed":$wheelSpeed}]
+              "extras":{"arcballCameraControllers":[{"distance":$distance1,"minDistance": $minDistance1,"phi":$phi1,"theta":$theta1,"thetaMargin":$thetaMargin1,"target":[$target1],"moveSpeedX":$moveSpeedX1,"moveSpeedY":$moveSpeedY1,"rotateSpeed":$rotateSpeed1,"wheelSpeed":$wheelSpeed1,"isBindEvent":$isBindEvent1},
+              {"distance":$distance2,"minDistance": $minDistance2,"phi":$phi2,"theta":$theta2,"thetaMargin":$thetaMargin2,"target":[$target2],"moveSpeedX":$moveSpeedX2,"moveSpeedY":$moveSpeedY2,"rotateSpeed":$rotateSpeed2,"wheelSpeed":$wheelSpeed2,"isBindEvent":$isBindEvent2}]
                       |j},
           state,
         );

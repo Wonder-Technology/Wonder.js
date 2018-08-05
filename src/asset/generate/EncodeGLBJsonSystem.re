@@ -294,6 +294,7 @@ let _encodeExtras =
                      moveSpeedY,
                      rotateSpeed,
                      wheelSpeed,
+                     isBindEvent,
                    }: arcballCameraControllerData
                  ) as data,
                ) =>
@@ -308,6 +309,7 @@ let _encodeExtras =
                  ("moveSpeedY", moveSpeedY |> float),
                  ("rotateSpeed", rotateSpeed |> float),
                  ("wheelSpeed", wheelSpeed |> float),
+                 ("isBindEvent", isBindEvent |> bool),
                ]
                |> object_
              )

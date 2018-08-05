@@ -234,6 +234,7 @@ let _convertExtras = json =>
                           moveSpeedY: json |> field("moveSpeedY", float),
                           rotateSpeed: json |> field("rotateSpeed", float),
                           wheelSpeed: json |> field("wheelSpeed", float),
+                          isBindEvent: json |> field("isBindEvent", bool),
                         }: SceneGraphType.arcballCameraController
                       )
                     ),

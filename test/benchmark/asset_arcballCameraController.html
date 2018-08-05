@@ -57,7 +57,30 @@
                 // var [state, directionLightObj, pointLightObj] = _createLights(state);
 
 
-                var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+                // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+
+
+                var [state, directionLightObj] = LightTool.createDirectionLight(state);
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+
+                var state =
+                    wd.setTransformLocalEulerAngles(transform, [160, 0, 0], state);
+
+
+                var state =
+                    wd.addSceneChild(
+                        transform, state
+                    );
+
+
+
+
+
+
+
+
 
 
                 var data = LightBoxesTool.createCamera(state);
@@ -81,17 +104,62 @@
                 var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
 
 
-                var state =
-                    wd.setCurrentCameraGameObject(
-                        camera, state
-                    );
-
 
 
                 var state =
                     wd.addSceneChild(
                         wd.unsafeGetGameObjectTransformComponent(camera, state), state
                     );
+
+
+
+
+
+                var data = LightBoxesTool.createCamera(state);
+                var state = data[0];
+                var camera2 = data[1];
+
+
+                var [state, cameraController2] = wd.createArcballCameraController(state);
+
+                var state =
+                    wd.setArcballCameraControllerDistance(cameraController2, 200, state);
+
+
+
+
+
+
+                var state = wd.addGameObjectArcballCameraControllerComponent(camera2, cameraController2, state);
+
+
+
+                var state =
+                    wd.addSceneChild(
+                        wd.unsafeGetGameObjectTransformComponent(camera2, state), state
+                    );
+
+
+
+
+
+
+
+
+
+                var state =
+                    wd.bindArcballCameraControllerEvent(
+                        cameraController, state
+                    );
+
+
+                var state =
+                    wd.activeBasicCameraView(
+                        wd.unsafeGetGameObjectBasicCameraViewComponent(
+                            camera, state
+                        ), state
+                    );
+
 
 
 
@@ -104,14 +172,6 @@
 
 
 
-                // var state =
-                //     _disposeAll(rootGameObject, state);
-
-
-                // console.log(
-                //     JSON.stringify(wdRecord)
-                // );
-
                 return [state, wdb];
             }
 
@@ -121,15 +181,9 @@
             function _testGenerateWDByGameObject(state) {
                 var [state, wdb] = _generateWDByGameObject(state);
 
+                // wd.startDirector(state)
 
                 AssetTool.download(wdb, "generated.wdb", "")
-
-
-                // wd.assembleWDB(wdb, state)
-                //     .forEach(([state, rootGameObject]) => {
-                //         wd.startDirector(state);
-                //     })
-
             }
 
 

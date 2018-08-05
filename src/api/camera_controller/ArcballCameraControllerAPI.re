@@ -184,3 +184,9 @@ let unbindArcballCameraControllerEvent = (cameraController, state) =>
     cameraController,
     state,
   );
+
+let isBindArcballCameraControllerEvent = (cameraController, state) =>
+  EventArcballCameraControllerMainService.isBindEvent(
+    cameraController,
+    state,
+  );

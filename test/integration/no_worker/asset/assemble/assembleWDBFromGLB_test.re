@@ -740,9 +740,7 @@ let _ =
         );
 
         describe("test extras", () =>
-          testPromise(
-            "test",
-            () =>
+          testPromise("test", () =>
             AssembleWDBSystemTool.testGLTF(
               ~sandbox=sandbox^,
               ~embeddedGLTFJsonStr=
@@ -1059,6 +1057,25 @@ let _ =
                      )
                    )
                 |> expect == [|0.9|],
+            (),
+          )
+        );
+        testPromise("test set isBindEvent", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfArcballCameraController(),
+            ~state,
+            ~testFunc=
+              ((state, rootGameObject)) =>
+                _getAllArcballCameraControllerComponent(rootGameObject, state)
+                |> Js.Array.map(cameraController =>
+                     ArcballCameraControllerAPI.isBindArcballCameraControllerEvent(
+                       cameraController,
+                       state,
+                     )
+                   )
+                |> expect == [|true|],
             (),
           )
         );
