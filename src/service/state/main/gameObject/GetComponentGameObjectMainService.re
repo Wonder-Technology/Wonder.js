@@ -8,9 +8,14 @@ let _getAllComponents = (disposedUidMap, componentMap) =>
   componentMap
   |> Js.Array.filteri((component, uid) =>
        ! (disposedUidMap |> WonderCommonlib.SparseMapService.has(uid))
-       && 
-       Obj.magic(component) !== Js.Undefined.empty
+       && Obj.magic(component) !== Js.Undefined.empty
      );
+
+let getAllArcballCameraControllerComponents = ({gameObjectRecord}) => {
+  let {arcballCameraControllerMap, disposedUidMap} = gameObjectRecord;
+
+  _getAllComponents(disposedUidMap, arcballCameraControllerMap);
+};
 
 let getAllBasicMaterialComponents = ({gameObjectRecord}) => {
   let {disposedUidMap, basicMaterialMap} = gameObjectRecord;

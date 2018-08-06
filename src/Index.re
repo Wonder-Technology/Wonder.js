@@ -190,6 +190,8 @@ let getAllPerspectiveCameraProjectionComponents = GameObjectAPI.getAllPerspectiv
 
 let getAllBasicCameraViewComponents = GameObjectAPI.getAllBasicCameraViewComponents;
 
+let getAllArcballCameraControllerComponents = GameObjectAPI.getAllArcballCameraControllerComponents;
+
 let setGameObjectName = GameObjectAPI.setGameObjectName;
 
 let unsafeGetGameObjectName = GameObjectAPI.unsafeGetGameObjectName;
@@ -741,6 +743,8 @@ let getAllBasicMaterialComponents = GameObjectAPI.getAllBasicMaterialComponents;
 let getAllPerspectiveCameraProjectionComponents = GameObjectAPI.getAllPerspectiveCameraProjectionComponents;
 
 let getAllBasicCameraViewComponents = GameObjectAPI.getAllBasicCameraViewComponents;
+
+let getAllArcballCameraControllerComponents = GameObjectAPI.getAllArcballCameraControllerComponents;
 
 let setGameObjectName = GameObjectAPI.setGameObjectName;
 

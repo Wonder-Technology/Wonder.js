@@ -887,6 +887,8 @@ let setGameObjectName =
   NameGameObjectMainService.setName(. gameObject, name, state);
 };
 
+let getAllArcballCameraControllerComponents = GetComponentGameObjectMainService.getAllArcballCameraControllerComponents;
+
 let getAllBasicCameraViewComponents = GetComponentGameObjectMainService.getAllBasicCameraViewComponents;
 
 let getAllPerspectiveCameraProjectionComponents = GetComponentGameObjectMainService.getAllPerspectiveCameraProjectionComponents;
