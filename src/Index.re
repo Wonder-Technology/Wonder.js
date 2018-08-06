@@ -354,6 +354,8 @@ let addGameObjectCameraGroupComponents = CameraGroupAPI.addGameObjectCameraGroup
 
 let createCameraGroup = CameraGroupAPI.createCameraGroup;
 
+let replaceRenderGroupComponents = RenderGroupAPI.replaceRenderGroupComponents;
+
 let hasGameObjectRenderGroupComponents = RenderGroupAPI.hasGameObjectRenderGroupComponents;
 
 let unsafeGetGameObjectRenderGroupComponents = RenderGroupAPI.unsafeGetGameObjectRenderGroupComponents;
@@ -489,8 +491,6 @@ let getLightMaterialDiffuseColor = LightMaterialAPI.getLightMaterialDiffuseColor
 let unsafeGetLightMaterialGameObject = LightMaterialAPI.unsafeGetLightMaterialGameObject;
 
 let createLightMaterial = LightMaterialAPI.createLightMaterial;
-
-let replaceMaterial = MaterialAPI.replaceMaterial;
 
 let setMeshRendererDrawMode = MeshRendererAPI.setMeshRendererDrawMode;
 

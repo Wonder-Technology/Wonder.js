@@ -24,7 +24,7 @@ let execJob = (_, e, stateData) =>
         );
       state.renderRecord.basicRenderObjectRecord =
         Some({
-          count: basicRenderData##count,
+          renderArray: basicRenderData##renderArray,
           transformIndices,
           materialIndices,
           meshRendererIndices,

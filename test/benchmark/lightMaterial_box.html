@@ -54,7 +54,17 @@
 
 
 
-                var record = LightBoxesTool.createBox(state);
+                var [state, box1] = LightBoxesTool.createBox2(state);
+
+
+
+                var [state, box2] = LightBoxesTool.createBox(state);
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(box2, state);
+
+                state = wd.setTransformLocalPosition(transform, [15,0,0], state);
+
 
 
 
@@ -105,10 +115,10 @@
                 var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
 
 
-                state =
-                    wd.setCurrentCameraGameObject(
-                        camera, state
-                    );
+                // state =
+                //     wd.setCurrentCameraGameObject(
+                //         camera, state
+                //     );
 
 
 

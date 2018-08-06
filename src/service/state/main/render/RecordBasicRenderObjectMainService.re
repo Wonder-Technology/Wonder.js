@@ -44,7 +44,7 @@ let create = ({settingRecord} as state) => {
     _initBufferData(basicMaterialCount);
   Some({
     buffer,
-    count: basicMaterialCount,
+    renderArray: [||],
     transformIndices,
     materialIndices,
     meshRendererIndices,

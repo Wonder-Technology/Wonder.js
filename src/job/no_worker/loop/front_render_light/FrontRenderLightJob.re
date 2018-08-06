@@ -4,7 +4,7 @@ let _render = (gl, state: StateDataMainType.state) =>
   switch (state |> OperateRenderMainService.getLightRenderObjectRecord) {
   | None => state
   | Some({
-      count,
+      renderArray,
       transformIndices,
       materialIndices,
       meshRendererIndices,
@@ -15,7 +15,7 @@ let _render = (gl, state: StateDataMainType.state) =>
     FrontRenderLightJobUtils.render(
       gl,
       (
-        count,
+        renderArray,
         transformIndices,
         materialIndices,
         meshRendererIndices,

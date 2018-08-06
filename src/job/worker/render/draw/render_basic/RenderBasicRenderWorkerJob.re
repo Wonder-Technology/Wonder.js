@@ -4,7 +4,7 @@ let _render = (gl, state) =>
   switch (state |> OperateRenderRenderWorkerService.getBasicRenderObjectRecord) {
   | None => state
   | Some({
-      count,
+      renderArray,
       transformIndices,
       materialIndices,
       meshRendererIndices,
@@ -15,7 +15,7 @@ let _render = (gl, state) =>
     RenderBasicJobUtils.render(
       gl,
       (
-        count,
+        renderArray,
         transformIndices,
         materialIndices,
         meshRendererIndices,

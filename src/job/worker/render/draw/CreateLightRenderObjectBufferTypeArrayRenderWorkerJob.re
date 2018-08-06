@@ -24,7 +24,7 @@ let execJob = (_, e, stateData) =>
         );
       state.renderRecord.lightRenderObjectRecord =
         Some({
-          count: lightRenderData##count,
+          renderArray: lightRenderData##renderArray,
           transformIndices,
           materialIndices,
           meshRendererIndices,

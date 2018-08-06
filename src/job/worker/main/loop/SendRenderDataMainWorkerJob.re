@@ -167,13 +167,13 @@ let _buildData =
         "camera": cameraData,
         "basic": {
           "buffer": basicRenderObjectRecord.buffer,
-          "count": basicRenderObjectRecord.count,
+          "renderArray": basicRenderObjectRecord.renderArray,
           "bufferCount":
             BufferSettingService.getBasicMaterialCount(settingRecord),
         },
         "light": {
           "buffer": lightRenderObjectRecord.buffer,
-          "count": lightRenderObjectRecord.count,
+          "renderArray": lightRenderObjectRecord.renderArray,
           "bufferCount":
             BufferSettingService.getLightMaterialCount(settingRecord),
         },

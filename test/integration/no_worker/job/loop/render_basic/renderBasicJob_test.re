@@ -1995,6 +1995,85 @@ let _ =
            ) */
       })
     );
+
+    describe("fix bug", () => {
+      let _prepareGameObjectHasNoGeometry = (sandbox, state) => {
+        open GameObjectAPI;
+        open BasicMaterialAPI;
+        open MeshRendererAPI;
+        open Sinon;
+        let (state, material) = createBasicMaterial(state);
+        let (state, meshRenderer) = createMeshRenderer(state);
+        let (state, gameObject) = state |> createGameObject;
+        let state =
+          state
+          |> addGameObjectBasicMaterialComponent(gameObject, material)
+          |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+
+        let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+
+        state;
+      };
+
+      describe("if gameObject has no geometry component, not render", () => {
+        test("test one gameObject", () => {
+          let state = _prepareGameObjectHasNoGeometry(sandbox, state^);
+          let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+          let pos = 0;
+          let getUniformLocation =
+            GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_color");
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(
+                   ~sandbox,
+                   ~uniform3f,
+                   ~getUniformLocation,
+                   (),
+                 ),
+               );
+          let state =
+            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+          uniform3f |> withOneArg(pos) |> expect |> not_ |> toCalled;
+        });
+        test(
+          "should still render other gameObjects has geometry component", () => {
+          let state = _prepareGameObjectHasNoGeometry(sandbox, state^);
+          let (state, gameObject2, geometry2, material2, meshRenderer2) =
+            RenderBasicJobTool.prepareGameObject(sandbox, state);
+          let state =
+            state
+            |> BasicMaterialAPI.setBasicMaterialColor(
+                 material2,
+                 [|1., 0., 0.|],
+               );
+
+          let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+          let pos = 0;
+          let getUniformLocation =
+            GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_color");
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(
+                   ~sandbox,
+                   ~uniform3f,
+                   ~getUniformLocation,
+                   (),
+                 ),
+               );
+          let state =
+            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+          (
+            uniform3f |> withOneArg(pos) |> getCallCount,
+            uniform3f |> withFourArgs(pos, 1., 0., 0.) |> getCallCount,
+          )
+          |> expect == (1, 1);
+        });
+      });
+    });
     /* TODO test
        test
        ("if gameObject not has indices, contract error",

@@ -42,7 +42,7 @@ let _ =
               |> then_(
                    () => {
                      let state = MainStateTool.unsafeGetState();
-                     let {buffer, count, geometryTypes}: RenderType.renderObjectRecord =
+                     let {buffer, renderArray, geometryTypes}: RenderType.renderObjectRecord =
                        RenderMainTool.unsafeGetBasicRenderObjectRecord(state);
                      let renderWorkerState = RenderWorkerStateTool.createStateAndSetToStateData();
                      CreateBasicRenderObjectBufferTypeArrayRenderWorkerJob.execJob(
@@ -53,7 +53,7 @@ let _ =
                              "isRender": true,
                              "basic": {
                                "buffer": buffer,
-                               "count": count,
+                               "renderArray": renderArray,
                                "bufferCount":
                                  BufferSettingTool.getBasicMaterialCount(state)
                              }
@@ -67,7 +67,7 @@ let _ =
                           () => {
                             let renderWorkerState = RenderWorkerStateTool.unsafeGetState();
                             let {
-                              count,
+                              renderArray,
                               transformIndices,
                               materialIndices,
                               geometryIndices,
@@ -80,7 +80,7 @@ let _ =
                             let defaultShaderIndex = BufferTool.getDefaultShaderIndex();
                             let defaultSourceInstance = BufferTool.getDefaultSourceInstance();
                             (
-                              count,
+                              renderArray,
                               transformIndices,
                               materialIndices,
                               geometryIndices,
@@ -89,7 +89,7 @@ let _ =
                             )
                             |>
                             expect == (
-                                        3,
+                                        [|0,1,2|],
                                         Js.Typed_array.Uint32Array.make([|1, 2, 3, 0, 0|]),
                                         Js.Typed_array.Uint32Array.make([|0, 1, 2, 0, 0|]),
                                         Js.Typed_array.Uint32Array.make([|0, 1, 0, 0, 0|]),
