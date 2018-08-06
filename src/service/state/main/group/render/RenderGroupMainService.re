@@ -54,14 +54,27 @@ let hasRenderGroupComponents =
 
 let replaceRenderGroupComponents =
     (
-      renderGroupTuple,
+      (
+        {meshRenderer: sourceMeshRenderer, material: sourceMaterial},
+        {meshRenderer: targetMeshRenderer, material: targetMaterial},
+      ),
       gameObject,
       (disposeSourceMaterialFunc, addTargetMaterialFunc),
       state,
-    ) =>
-  ReplaceMaterialMainService.replaceMaterial(
-    renderGroupTuple,
+    ) => {
+  let state =
+    state
+    |> disposeSourceMaterialFunc(gameObject, sourceMaterial)
+    |> addTargetMaterialFunc(gameObject, targetMaterial);
+
+  DisposeComponentGameObjectMainService.deferDisposeMeshRendererComponent(.
     gameObject,
-    (disposeSourceMaterialFunc, addTargetMaterialFunc),
+    sourceMeshRenderer,
     state,
-  );
+  )
+  |> AddComponentGameObjectMainService.addMeshRendererComponent(
+       gameObject,
+       targetMeshRenderer,
+     )
+  |> GameObjectAPI.initGameObject(gameObject);
+};

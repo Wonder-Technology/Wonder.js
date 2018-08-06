@@ -1,3 +1,7 @@
+open RenderGroupType;
+
+let buildRenderGroup = (meshRenderer, material) => {meshRenderer, material};
+
 let createRenderGroup = state =>
   RenderGroupAPI.createRenderGroup(
     (

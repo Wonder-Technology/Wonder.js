@@ -130,8 +130,8 @@ let _ =
     );
 
     describe("replaceRenderGroupComponents", () =>
-      describe("replace meshRenderer and material components", () =>
-        test("test send u_diffuse", () => {
+      describe("replace meshRenderer and material components", () => {
+        test("test replace basic material to light material", () => {
           state :=
             RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(
               sandbox,
@@ -161,16 +161,20 @@ let _ =
           let state =
             state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
 
-          let (state, lightMaterial) =
-            LightMaterialAPI.createLightMaterial(state);
-          let (state, meshRenderer2) =
-            MeshRendererAPI.createMeshRenderer(state);
+          let (state, renderGroup2) =
+            RenderGroupAPI.createRenderGroup(
+              (
+                MeshRendererAPI.createMeshRenderer,
+                LightMaterialAPI.createLightMaterial,
+              ),
+              state,
+            );
 
           let state =
             RenderGroupAPI.replaceRenderGroupComponents(
               (
-                (meshRenderer1, basicMaterial),
-                (meshRenderer2, lightMaterial),
+                RenderGroupTool.buildRenderGroup(meshRenderer1, basicMaterial),
+                renderGroup2,
               ),
               gameObject,
               (
@@ -182,7 +186,63 @@ let _ =
           let state = state |> DirectorTool.runWithDefaultTime;
 
           uniform3f |> withOneArg(pos1) |> getCallCount |> expect == 1;
-        })
-      )
+        });
+        test("test replace light material to basic material", () => {
+          state :=
+            RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(
+              sandbox,
+              LoopRenderJobTool.buildNoWorkerJobConfig(),
+            );
+          let (state, gameObject, _, lightMaterial, meshRenderer1) =
+            FrontRenderLightJobTool.prepareGameObject(sandbox, state^);
+          let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+          let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+          let pos1 = 0;
+          let getUniformLocation =
+            GLSLLocationTool.getUniformLocation(
+              ~pos=pos1,
+              sandbox,
+              "u_color",
+            );
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(
+                   ~sandbox,
+                   ~uniform3f,
+                   ~getUniformLocation,
+                   (),
+                 ),
+               );
+          let state =
+            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+          let (state, renderGroup2) =
+            RenderGroupAPI.createRenderGroup(
+              (
+                MeshRendererAPI.createMeshRenderer,
+                BasicMaterialAPI.createBasicMaterial,
+              ),
+              state,
+            );
+
+          let state =
+            RenderGroupAPI.replaceRenderGroupComponents(
+              (
+                RenderGroupTool.buildRenderGroup(meshRenderer1, lightMaterial),
+                renderGroup2,
+              ),
+              gameObject,
+              (
+                GameObjectAPI.disposeGameObjectLightMaterialComponent,
+                GameObjectAPI.addGameObjectBasicMaterialComponent,
+              ),
+              state,
+            );
+          let state = state |> DirectorTool.runWithDefaultTime;
+
+          uniform3f |> withOneArg(pos1) |> getCallCount |> expect == 1;
+        });
+      })
     );
   });
