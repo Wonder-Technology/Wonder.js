@@ -15,7 +15,7 @@ let prepareGameObject = (sandbox, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectCustomGeometryComponent(gameObject, geometry)
+    |> addGameObjectGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer)
 };
@@ -31,21 +31,21 @@ let prepareGameObjectWithCreatedMap = (sandbox, state) => {
   prepareGameObjectWithMap(sandbox, map, state)
 };
 
-let prepareGameObjectWithCustomGeometry = (sandbox, state) => {
+let prepareGameObjectWithGeometry = (sandbox, state) => {
   open GameObjectAPI;
   open BasicMaterialAPI;
-  open CustomGeometryAPI;
+  open GeometryAPI;
   open MeshRendererAPI;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
-  let (state, gameObject, customGeometry, (vertices, texCoords, normals, indices)) =
-    CustomGeometryTool.createGameObjectAndSetPointData(state);
+  let (state, gameObject, geometry, (vertices, texCoords, normals, indices)) =
+    GeometryTool.createGameObjectAndSetPointData(state);
   let (state, meshRenderer) = createMeshRenderer(state);
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
-  (state, gameObject, customGeometry, material, meshRenderer)
+  (state, gameObject, geometry, material, meshRenderer)
 };
 
 let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
@@ -61,7 +61,7 @@ let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectCustomGeometryComponent(gameObject, geometry)
+    |> addGameObjectGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer)
 };
@@ -79,7 +79,7 @@ let prepareGameObjectWithSharedMaterial = (sandbox, material, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectCustomGeometryComponent(gameObject, geometry)
+    |> addGameObjectGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer)
 };

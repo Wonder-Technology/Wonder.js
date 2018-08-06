@@ -21,7 +21,7 @@ let performanceTestData = {
       "./test/e2e/js/PositionTool.js",
       "./test/e2e/js/LightTool.js",
       "./test/e2e/js/CameraTool.js",
-      "./test/e2e/js/CustomGeometryTool.js",
+      "./test/e2e/js/GeometryTool.js",
       "./test/e2e/js/BasicMaterialTool.js",
       "./test/e2e/js/LightMaterialTool.js",
       "./test/e2e/js/InstanceBasicBoxesTool.js",
@@ -410,7 +410,7 @@ let performanceTestData = {
                                                         function initSample(state) {
                   var n1 = performance.now();
 
-                  var data = CustomGeometryTool.createBasicTriangleByClone(1, 10, state);
+                  var data = GeometryTool.createBasicTriangleByClone(1, 10, state);
 
                   var state = data[0];
                   var boxes = data[1];
@@ -426,7 +426,7 @@ let performanceTestData = {
                   var state = data[0];
 
 
-                  var state = CustomGeometryTool.createAndDisposeGameObjects(1000, boxes, state);
+                  var state = GeometryTool.createAndDisposeGameObjects(1000, boxes, state);
 
 
 
@@ -1327,7 +1327,7 @@ let performanceTestData = {
       name: "basic_light_geometrys_boxes",
       caseList: [
         {
-          name: "create_150_basic_customGeometry+150_basic_boxGeometry+150_light_boxGeometry",
+          name: "create_150_basic_geometry+150_basic_boxGeometry+150_light_boxGeometry",
           bodyFuncStr: {|
                                      PrepareTool.prepareForTest();
 
@@ -1354,7 +1354,7 @@ let performanceTestData = {
 
 
 
-                  var data = CustomGeometryTool.createBasicTriangleWithoutClone(150, 10, state);
+                  var data = GeometryTool.createBasicTriangleWithoutClone(150, 10, state);
 
                   var state = data[0];
                   var boxes = data[1];

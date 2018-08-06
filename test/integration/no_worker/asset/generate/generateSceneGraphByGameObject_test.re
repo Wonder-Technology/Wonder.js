@@ -86,7 +86,7 @@ let _ =
       let state =
         state
         |> addGameObjectMaterialComponentFunc(gameObject, material)
-        |> addGameObjectCustomGeometryComponent(gameObject, geometry)
+        |> addGameObjectGeometryComponent(gameObject, geometry)
         |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
 
       let transform =
@@ -189,7 +189,7 @@ let _ =
       let state =
         state
         |> addGameObjectLightMaterialComponent(gameObject, material)
-        |> addGameObjectCustomGeometryComponent(gameObject, geometry)
+        |> addGameObjectGeometryComponent(gameObject, geometry)
         |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
 
       let transform =
@@ -221,14 +221,14 @@ let _ =
     let _createGameObject2 = state => {
       open GameObjectAPI;
       open LightMaterialAPI;
-      open CustomGeometryAPI;
+      open GeometryAPI;
       open MeshRendererAPI;
       open Js.Typed_array;
-      let (state, geometry) = createCustomGeometry(state);
+      let (state, geometry) = createGeometry(state);
       let (state, gameObject) = GameObjectAPI.createGameObject(state);
       let state =
         state
-        |> GameObjectAPI.addGameObjectCustomGeometryComponent(
+        |> GameObjectAPI.addGameObjectGeometryComponent(
              gameObject,
              geometry,
            );
@@ -269,10 +269,10 @@ let _ =
 
       let state =
         state
-        |> setCustomGeometryVertices(geometry, vertices1)
-        |> setCustomGeometryTexCoords(geometry, texCoords1)
-        |> setCustomGeometryNormals(geometry, normals1)
-        |> setCustomGeometryIndices(geometry, indices1);
+        |> setGeometryVertices(geometry, vertices1)
+        |> setGeometryTexCoords(geometry, texCoords1)
+        |> setGeometryNormals(geometry, normals1)
+        |> setGeometryIndices(geometry, indices1);
 
       let (state, material) = createLightMaterial(state);
 
@@ -353,14 +353,14 @@ let _ =
     let _createGameObject3 = state => {
       open GameObjectAPI;
       open LightMaterialAPI;
-      open CustomGeometryAPI;
+      open GeometryAPI;
       open MeshRendererAPI;
       open Js.Typed_array;
-      let (state, geometry) = createCustomGeometry(state);
+      let (state, geometry) = createGeometry(state);
       let (state, gameObject) = GameObjectAPI.createGameObject(state);
       let state =
         state
-        |> GameObjectAPI.addGameObjectCustomGeometryComponent(
+        |> GameObjectAPI.addGameObjectGeometryComponent(
              gameObject,
              geometry,
            );
@@ -401,10 +401,10 @@ let _ =
 
       let state =
         state
-        |> setCustomGeometryVertices(geometry, vertices1)
-        |> setCustomGeometryTexCoords(geometry, texCoords1)
-        |> setCustomGeometryNormals(geometry, normals1)
-        |> setCustomGeometryIndices(geometry, indices1);
+        |> setGeometryVertices(geometry, vertices1)
+        |> setGeometryTexCoords(geometry, texCoords1)
+        |> setGeometryNormals(geometry, normals1)
+        |> setGeometryIndices(geometry, indices1);
 
       let (state, material) = createLightMaterial(state);
 
@@ -456,8 +456,8 @@ let _ =
           ~sandbox,
           ~buffer=
             SettingTool.buildBufferConfigStr(
-              ~customGeometryPointCount=50000,
-              ~customGeometryCount=10,
+              ~geometryPointCount=50000,
+              ~geometryCount=10,
               (),
             ),
           (),
@@ -1176,7 +1176,7 @@ let _ =
         ) =
           _createGameObjectWithShareGeometry(
             geometry1,
-            GameObjectAPI.addGameObjectCustomGeometryComponent,
+            GameObjectAPI.addGameObjectGeometryComponent,
             state,
           );
 
@@ -1677,7 +1677,7 @@ let _ =
         let state =
           state
           |> addGameObjectLightMaterialComponent(gameObject, material)
-          |> addGameObjectCustomGeometryComponent(gameObject, geometry)
+          |> addGameObjectGeometryComponent(gameObject, geometry)
           |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
 
         let transform =
@@ -2917,7 +2917,7 @@ let _ =
       let _createBasicMaterialGameObject = state => {
         open GameObjectAPI;
         open BasicMaterialAPI;
-        open CustomGeometryAPI;
+        open GeometryAPI;
         open MeshRendererAPI;
 
         let (state, material) = createBasicMaterial(state);
@@ -2927,7 +2927,7 @@ let _ =
         let state = setBasicMaterialColor(material, color, state);
 
         let (state, gameObject, geometry, _) =
-          CustomGeometryTool.createGameObjectAndSetPointData(state);
+          GeometryTool.createGameObjectAndSetPointData(state);
 
         let drawMode = DrawModeType.Lines;
         let (state, meshRenderer) = createMeshRenderer(state);

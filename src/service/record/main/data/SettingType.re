@@ -19,8 +19,8 @@ type instanceBuffer = {
 };
 
 type buffer = {
-  customGeometryPointCount: int,
-  customGeometryCount: int,
+  geometryPointCount: int,
+  geometryCount: int,
   transformCount: int,
   basicMaterialCount: int,
   lightMaterialCount: int,

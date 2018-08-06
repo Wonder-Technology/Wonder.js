@@ -24,7 +24,7 @@ open RenderWorkerSourceInstanceType;
 
 open RenderWorkerTransformType;
 
-open RenderWorkerCustomGeometryType;
+open RenderWorkerGeometryType;
 
 open RenderWorkerRenderType;
 
@@ -41,8 +41,6 @@ open StateRenderType;
 open GLSLLocationType;
 
 open MaterialType;
-
-open GeometryType;
 
 open ShaderChunkType;
 
@@ -149,7 +147,7 @@ and renderWorkerState = {
   mutable arrayBufferViewSourceTextureRecord:
     option(arrayBufferViewSourceTextureRecord),
   mutable transformRecord: option(transformRecord),
-  mutable customGeometryRecord: option(customGeometryRecord),
+  mutable geometryRecord: option(geometryRecord),
   mutable directionLightRecord: option(directionLightRecord),
   mutable pointLightRecord: option(pointLightRecord),
   mutable renderRecord,

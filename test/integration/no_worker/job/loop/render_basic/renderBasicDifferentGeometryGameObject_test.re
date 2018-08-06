@@ -13,12 +13,12 @@ let _ =
         open GameObjectAPI;
         open BasicMaterialAPI;
         
-        open CustomGeometryAPI;
+        open GeometryAPI;
         open MeshRendererAPI;
         open Sinon;
         let (state, gameObject1, boxGeometry) = BoxGeometryTool.createGameObject(state);
-        let (state, gameObject2, customGeometry, (vertices, texCoords, normals, indices)) =
-          CustomGeometryTool.createGameObjectAndSetPointData(state);
+        let (state, gameObject2, geometry, (vertices, texCoords, normals, indices)) =
+          GeometryTool.createGameObjectAndSetPointData(state);
         let (state, material1) = createBasicMaterial(state);
         let (state, material2) = createBasicMaterial(state);
         let (state, meshRenderer1) = createMeshRenderer(state);
@@ -34,7 +34,7 @@ let _ =
         (
           state,
           (gameObject1, gameObject2),
-          (boxGeometry, (customGeometry, vertices, texCoords, normals, indices)),
+          (boxGeometry, (geometry, vertices, texCoords, normals, indices)),
           (material1, material2),
           (meshRenderer1, meshRenderer2)
         )
@@ -81,7 +81,7 @@ let _ =
                   test(
                     "bufferData",
                     () => {
-                      let (state, (boxGeometry, (customGeometry, customVertices, _, _, _))) =
+                      let (state, (boxGeometry, (geometry, customVertices, _, _, _))) =
                         _prepare(sandbox, state^);
                       let array_buffer = 1;
                       let static_draw = 2;
@@ -133,7 +133,7 @@ let _ =
                   test(
                     "bufferData",
                     () => {
-                      let (state, (boxGeometry, (customGeometry, _, _, _, customIndices))) =
+                      let (state, (boxGeometry, (geometry, _, _, _, customIndices))) =
                         _prepare(sandbox, state^);
                       let element_array_buffer = 1;
                       let static_draw = 2;

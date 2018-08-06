@@ -6,12 +6,12 @@ let _buildData =
     (
       operateType,
       (
-        customGeometryNeedDisposeVboBufferArr,
+        geometryNeedDisposeVboBufferArr,
         sourceInstanceNeedDisposeVboBufferArr,
       ),
     ) => {
   "operateType": operateType,
-  "customGeometryNeedDisposeVboBufferArr": customGeometryNeedDisposeVboBufferArr,
+  "geometryNeedDisposeVboBufferArr": geometryNeedDisposeVboBufferArr,
   "sourceInstanceNeedDisposeVboBufferArr": sourceInstanceNeedDisposeVboBufferArr,
 };
 
@@ -27,7 +27,7 @@ let execJob = (flags, stateData) =>
     let operateType = JobConfigUtils.getOperateType(flags);
     let (
       state,
-      customGeometryNeedDisposeVboBufferArr,
+      geometryNeedDisposeVboBufferArr,
       sourceInstanceNeedDisposeVboBufferArr,
     ) =
       DisposeJobUtils.execJob(
@@ -38,7 +38,7 @@ let execJob = (flags, stateData) =>
     _sendDisposeData(
       operateType,
       (
-        customGeometryNeedDisposeVboBufferArr,
+        geometryNeedDisposeVboBufferArr,
         sourceInstanceNeedDisposeVboBufferArr,
       ),
       state,

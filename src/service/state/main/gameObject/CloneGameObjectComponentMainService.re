@@ -41,8 +41,8 @@ let _cloneComponentExceptTransform =
          clonedGameObjectArr,
        ),
        (
-         CloneComponentGameObjectMainService.cloneCustomGeometryComponent,
-         BatchAddGameObjectComponentMainService.batchAddCustomGeometryComponentForClone,
+         CloneComponentGameObjectMainService.cloneGeometryComponent,
+         BatchAddGameObjectComponentMainService.batchAddGeometryComponentForClone,
        ),
      )
   |> _clone(

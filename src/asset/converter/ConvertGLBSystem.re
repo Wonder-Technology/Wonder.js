@@ -79,7 +79,7 @@ let _convertToScene =
        perspectiveCameraProjections:
          ConvertCamerasSystem.convertToPerspectiveCameraProjections(gltf),
        lightMaterials: ConvertMaterialsSystem.convertToLightMaterials(gltf),
-       customGeometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),
+       geometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),
        basicSourceTextures:
          ConvertTexturesSystem.convertToBasicSourceTextures(gltf),
        /* arrayBufferViewSourceTextures: None, */
@@ -175,10 +175,10 @@ let _buildWDBJsonUint8Array = gltf => {
              ConvertMaterialsSystem.convertToBasicMaterials(gltf),
            lightMaterials:
              ConvertMaterialsSystem.convertToLightMaterials(gltf),
-           customGeometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),
+           geometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),
            meshRenderers:
              ConvertMeshRenderersSystem.convertToMeshRenderers(
-               indices.gameObjectIndices.customGeometryGameObjectIndexData,
+               indices.gameObjectIndices.geometryGameObjectIndexData,
                gltf,
              ),
            basicSourceTextures:

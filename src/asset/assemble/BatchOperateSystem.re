@@ -28,7 +28,7 @@ let _getBatchComponentGameObjectData =
       (
         gameObjectArr,
         transformArr,
-        customGeometryArr,
+        geometryArr,
         meshRendererArr,
         basicCameraViewArr,
         perspectiveCameraProjectionArr,
@@ -58,14 +58,14 @@ let _getBatchComponentGameObjectData =
   let gameObjectTransforms =
     indices.gameObjectIndices.transformGameObjectIndexData.componentIndices
     |> _getBatchArrByIndices(transformArr);
-  let customGeometryGameObjects =
-    indices.gameObjectIndices.customGeometryGameObjectIndexData.
+  let geometryGameObjects =
+    indices.gameObjectIndices.geometryGameObjectIndexData.
       gameObjectIndices
     |> _getBatchArrByIndices(gameObjectArr);
-  let gameObjectCustomGeometrys =
-    indices.gameObjectIndices.customGeometryGameObjectIndexData.
+  let gameObjectGeometrys =
+    indices.gameObjectIndices.geometryGameObjectIndexData.
       componentIndices
-    |> _getBatchArrByIndices(customGeometryArr);
+    |> _getBatchArrByIndices(geometryArr);
 
   let meshRendererGameObjects =
     indices.gameObjectIndices.meshRendererGameObjectIndexData.gameObjectIndices
@@ -99,8 +99,8 @@ let _getBatchComponentGameObjectData =
       childrenTransforms,
       transformGameObjects,
       gameObjectTransforms,
-      customGeometryGameObjects,
-      gameObjectCustomGeometrys,
+      geometryGameObjects,
+      gameObjectGeometrys,
       indices.gameObjectIndices.basicCameraViewGameObjectIndexData.
         gameObjectIndices
       |> _getBatchArrByIndices(gameObjectArr),
@@ -263,34 +263,34 @@ let _getBufferIndexData = (accessorIndex, dataViewArr, wd) =>
     Uint16Array.fromBufferRange,
   );
 
-let _batchSetCustomGeometryData =
-    ({customGeometrys} as wd, customGeometryArr, bufferArr, state) => {
+let _batchSetGeometryData =
+    ({geometrys} as wd, geometryArr, bufferArr, state) => {
   let dataViewArr =
     bufferArr |> Js.Array.map(buffer => DataViewCommon.create(buffer));
 
-  /* TODO optimize: first get all customGeometry point data; then batch set?(need benchmark test) */
-  customGeometrys
+  /* TODO optimize: first get all geometry point data; then batch set?(need benchmark test) */
+  geometrys
   |> WonderCommonlib.ArrayService.reduceOneParami(
        (. state, geometryData, geometryIndex) =>
          geometryData |> OptionService.isJsonSerializedValueNone ?
            state :
            {
-             let {position, normal, texCoord, index}: WDType.customGeometry =
+             let {position, normal, texCoord, index}: WDType.geometry =
                geometryData |> OptionService.unsafeGetJsonSerializedValue;
 
-             let customGeometry =
-               Array.unsafe_get(customGeometryArr, geometryIndex);
+             let geometry =
+               Array.unsafe_get(geometryArr, geometryIndex);
              let state =
-               VerticesCustomGeometryMainService.setVerticesByTypeArray(
-                 customGeometry,
+               VerticesGeometryMainService.setVerticesByTypeArray(
+                 geometry,
                  _getBufferAttributeData(position, dataViewArr, wd),
                  state,
                );
              let state =
                normal |> OptionService.isJsonSerializedValueNone ?
                  state :
-                 NormalsCustomGeometryMainService.setNormalsByTypeArray(
-                   customGeometry,
+                 NormalsGeometryMainService.setNormalsByTypeArray(
+                   geometry,
                    _getBufferAttributeData(
                      normal |> OptionService.unsafeGetJsonSerializedValue,
                      dataViewArr,
@@ -301,8 +301,8 @@ let _batchSetCustomGeometryData =
              let state =
                texCoord |> OptionService.isJsonSerializedValueNone ?
                  state :
-                 TexCoordsCustomGeometryMainService.setTexCoordsByTypeArray(
-                   customGeometry,
+                 TexCoordsGeometryMainService.setTexCoordsByTypeArray(
+                   geometry,
                    _getBufferAttributeData(
                      texCoord |> OptionService.unsafeGetJsonSerializedValue,
                      dataViewArr,
@@ -311,8 +311,8 @@ let _batchSetCustomGeometryData =
                    state,
                  );
              let state =
-               IndicesCustomGeometryMainService.setIndicesByTypeArray(
-                 customGeometry,
+               IndicesGeometryMainService.setIndicesByTypeArray(
+                 geometry,
                  _getBufferIndexData(index, dataViewArr, wd),
                  state,
                );
@@ -694,7 +694,7 @@ let batchOperate =
         gameObjectArr,
         (
           transformArr,
-          customGeometryArr,
+          geometryArr,
           meshRendererArr,
           basicCameraViewArr,
           perspectiveCameraProjectionArr,
@@ -720,8 +720,8 @@ let batchOperate =
       childrenTransforms,
       transformGameObjects,
       gameObjectTransforms,
-      customGeometryGameObjects,
-      gameObjectCustomGeometrys,
+      geometryGameObjects,
+      gameObjectGeometrys,
       basicCameraViewGameObjects,
       gameObjectBasicCameraViews,
       perspectiveCameraProjectionGameObjects,
@@ -745,7 +745,7 @@ let batchOperate =
       (
         gameObjectArr,
         transformArr,
-        customGeometryArr,
+        geometryArr,
         meshRendererArr,
         basicCameraViewArr,
         perspectiveCameraProjectionArr,
@@ -779,7 +779,7 @@ let batchOperate =
     state
     |> _batchSetTransformData(wd, gameObjectTransforms)
     |> _batchSetTransformParent(parentTransforms, childrenTransforms)
-    |> _batchSetCustomGeometryData(wd, customGeometryArr, bufferArr)
+    |> _batchSetGeometryData(wd, geometryArr, bufferArr)
     |> _batchSetBasicCameraViewData(wd, basicCameraViewArr)
     |> _batchSetPerspectiveCameraProjectionData(
          wd,
@@ -799,9 +799,9 @@ let batchOperate =
          transformGameObjects,
          gameObjectTransforms,
        )
-    |> BatchAddGameObjectComponentMainService.batchAddCustomGeometryComponentForCreate(
-         customGeometryGameObjects,
-         gameObjectCustomGeometrys,
+    |> BatchAddGameObjectComponentMainService.batchAddGeometryComponentForCreate(
+         geometryGameObjects,
+         gameObjectGeometrys,
        )
     |> BatchAddGameObjectComponentMainService.batchAddBasicCameraViewComponentForCreate(
          basicCameraViewGameObjects,

@@ -39,7 +39,7 @@ let convertToGameObjectIndexData =
         meshes,
         materials,
       ),
-    customGeometryGameObjectIndexData:
+    geometryGameObjectIndexData:
       ConvertComponentIndexDataSystem.convertToGeometryGameObjectIndexData(
         nodes,
       ),

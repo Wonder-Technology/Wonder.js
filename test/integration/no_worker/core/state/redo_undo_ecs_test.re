@@ -437,18 +437,18 @@ let _ =
                    "copy verticesInfos",
                    () => {
                      open StateDataMainType;
-                     open CustomGeometryAPI;
+                     open GeometryAPI;
                      open GeometryType;
                      let (state, gameObject1, geometry1) =
                        GameObjectTool.createGameObject(state^);
                      let vertices1 = Float32Array.make([|10.|]);
-                     let state = state |> setCustomGeometryVertices(geometry1, vertices1);
+                     let state = state |> setGeometryVertices(geometry1, vertices1);
                      let copiedState = MainStateTool.deepCopyForRestore(state);
-                     CustomGeometryTool.getRecord(copiedState).verticesInfos[0] = {
+                     GeometryTool.getRecord(copiedState).verticesInfos[0] = {
                        startIndex: 10,
                        endIndex: 20
                      };
-                     CustomGeometryTool.getRecord(state).verticesInfos[0]
+                     GeometryTool.getRecord(state).verticesInfos[0]
                      |> expect == {startIndex: 0, endIndex: 1}
                    }
                  )
@@ -466,7 +466,7 @@ let _ =
                  state :=
                    TestTool.initWithJobConfigWithoutBuildFakeDom(
                      ~sandbox,
-                     ~buffer=SettingTool.buildBufferConfigStr(~customGeometryPointCount=500, ()),
+                     ~buffer=SettingTool.buildBufferConfigStr(~geometryPointCount=500, ()),
                      ()
                    );
                  });
@@ -476,9 +476,9 @@ let _ =
                      _testCopyTypeArraySingleValue(
                        (
                          /* GameObjectTool.createGameObject, */
-                         CustomGeometryTool.createGameObject,
-                         CustomGeometryAPI.getCustomGeometryVertices,
-                         CustomGeometryAPI.setCustomGeometryVertices,
+                         GeometryTool.createGameObject,
+                         GeometryAPI.getGeometryVertices,
+                         GeometryAPI.setGeometryVertices,
                          () => (
                            Float32Array.make([|2., 0., 0.|]),
                            Float32Array.make([|4., 0., 0.|])
@@ -493,8 +493,8 @@ let _ =
                      _testCopyTypeArraySingleValue(
                        (
                          GameObjectTool.createGameObject,
-                         CustomGeometryAPI.getCustomGeometryNormals,
-                         CustomGeometryAPI.setCustomGeometryNormals,
+                         GeometryAPI.getGeometryNormals,
+                         GeometryAPI.setGeometryNormals,
                          () => (
                            Float32Array.make([|2., 0., 0.|]),
                            Float32Array.make([|4., 0., 0.|])
@@ -509,8 +509,8 @@ let _ =
                      _testCopyTypeArraySingleValue(
                        (
                          GameObjectTool.createGameObject,
-                         CustomGeometryAPI.getCustomGeometryIndices,
-                         CustomGeometryAPI.setCustomGeometryIndices,
+                         GeometryAPI.getGeometryIndices,
+                         GeometryAPI.setGeometryIndices,
                          () => (Uint16Array.make([|2, 0, 0|]), Uint16Array.make([|4|]))
                        ),
                        state
@@ -1014,7 +1014,7 @@ let _ =
       });
       describe("deep copy gameObject record", () =>
         test(
-          "shadow copy nameMap, disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,\n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialArray,\n        disposedLightMaterialArray,\n                disposedCustomGeometryArray,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n                disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
+          "shadow copy nameMap, disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,\n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialArray,\n        disposedLightMaterialArray,\n                disposedGeometryArray,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n                disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
           () =>
           StateDataMainType.(
             GameObjectType.(
@@ -1031,7 +1031,7 @@ let _ =
                     disposedPerspectiveCameraProjectionArray,
                     disposedBasicMaterialArray,
                     disposedLightMaterialArray,
-                    disposedCustomGeometryArray,
+                    disposedGeometryArray,
                     disposedSourceInstanceArray,
                     disposedObjectInstanceArray,
                     disposedDirectionLightArray,
@@ -1061,7 +1061,7 @@ let _ =
                     disposedPerspectiveCameraProjectionArray |> Obj.magic,
                     disposedBasicMaterialArray |> Obj.magic,
                     disposedLightMaterialArray |> Obj.magic,
-                    disposedCustomGeometryArray |> Obj.magic,
+                    disposedGeometryArray |> Obj.magic,
                     disposedSourceInstanceArray |> Obj.magic,
                     disposedObjectInstanceArray |> Obj.magic,
                     disposedDirectionLightArray |> Obj.magic,
@@ -1536,17 +1536,17 @@ let _ =
           })
         );
       });
-      describe("restore customGeometry record to target state", () => {
+      describe("restore geometry record to target state", () => {
         let _createGameObjectAndSetPointData =
             (state: StateDataMainType.state) => {
           open Js.Typed_array;
-          open CustomGeometryAPI;
+          open GeometryAPI;
 
-          let (state, geometry) = createCustomGeometry(state);
+          let (state, geometry) = createGeometry(state);
           let (state, gameObject) = GameObjectAPI.createGameObject(state);
           let state =
             state
-            |> GameObjectAPI.addGameObjectCustomGeometryComponent(
+            |> GameObjectAPI.addGameObjectGeometryComponent(
                  gameObject,
                  geometry,
                );
@@ -1556,10 +1556,10 @@ let _ =
           let indices1 = Uint16Array.make([|0, 2, 1|]);
           let state =
             state
-            |> setCustomGeometryVertices(geometry, vertices1)
-            |> setCustomGeometryTexCoords(geometry, texCoords1)
-            |> setCustomGeometryNormals(geometry, normals1)
-            |> setCustomGeometryIndices(geometry, indices1);
+            |> setGeometryVertices(geometry, vertices1)
+            |> setGeometryTexCoords(geometry, texCoords1)
+            |> setGeometryNormals(geometry, normals1)
+            |> setGeometryIndices(geometry, indices1);
           (
             state,
             gameObject,
@@ -1574,8 +1574,8 @@ let _ =
               ~sandbox,
               ~buffer=
                 SettingTool.buildBufferConfigStr(
-                  ~customGeometryPointCount=6,
-                  ~customGeometryCount=6,
+                  ~geometryPointCount=6,
+                  ~geometryCount=6,
                   (),
                 ),
               (),
@@ -1592,9 +1592,9 @@ let _ =
             |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
           let copiedState = MainStateTool.deepCopyForRestore(state);
           let (currentState, gameObject2, geometry2) =
-            CustomGeometryTool.createGameObject(state);
+            GeometryTool.createGameObject(state);
           let (currentState, gameObject3, geometry3) =
-            CustomGeometryTool.createGameObject(state);
+            GeometryTool.createGameObject(state);
           let vertices2 =
             Float32Array.make([|2., 3., 40., 1., 3., 5., 3., 4., 11.|]);
           let texCoords2 = Float32Array.make([|1., 0.5, 0.2, 0.3, 0.3, 0.5|]);
@@ -1603,27 +1603,27 @@ let _ =
           let indices2 = Uint16Array.make([|0, 1, 2|]);
           let currentState =
             currentState
-            |> CustomGeometryAPI.setCustomGeometryVertices(
+            |> GeometryAPI.setGeometryVertices(
                  geometry2,
                  vertices2,
                )
-            |> CustomGeometryAPI.setCustomGeometryTexCoords(
+            |> GeometryAPI.setGeometryTexCoords(
                  geometry2,
                  texCoords2,
                )
-            |> CustomGeometryAPI.setCustomGeometryNormals(
+            |> GeometryAPI.setGeometryNormals(
                  geometry3,
                  normals2,
                )
-            |> CustomGeometryAPI.setCustomGeometryIndices(geometry2, indices2);
+            |> GeometryAPI.setGeometryIndices(geometry2, indices2);
           ((currentState, copiedState), (geometry1, geometry2, geometry3));
         };
         test("test restore typeArrays", () => {
-          open CustomGeometryType;
+          open GeometryType;
           let ((currentState, copiedState), _) = _prepare();
           let _ = MainStateTool.restore(currentState, copiedState);
           let {vertices, texCoords, normals, indices} =
-            MainStateTool.unsafeGetState() |> CustomGeometryTool.getRecord;
+            MainStateTool.unsafeGetState() |> GeometryTool.getRecord;
           (vertices, texCoords, normals, indices)
           |>
           expect == (
@@ -1685,7 +1685,7 @@ let _ =
                     );
         });
         test("test set point after restore", () => {
-          open CustomGeometryType;
+          open GeometryType;
           let (
             (currentState, copiedState),
             (geometry1, geometry2, geometry3),
@@ -1696,13 +1696,13 @@ let _ =
           let vertices3 = Float32Array.make([|3., 4., 11.|]);
           let restoredState =
             restoredState
-            |> CustomGeometryAPI.setCustomGeometryVertices(
+            |> GeometryAPI.setGeometryVertices(
                  geometry3,
                  vertices3,
                );
           let vertices =
             restoredState
-            |> CustomGeometryAPI.getCustomGeometryVertices(geometry3);
+            |> GeometryAPI.getGeometryVertices(geometry3);
           vertices |> expect == vertices3;
         });
       });

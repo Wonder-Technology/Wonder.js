@@ -270,9 +270,9 @@ let hasGameObjectGeometryComponent = GameObjectAPI.hasGameObjectGeometryComponen
 
 let unsafeGetGameObjectGeometryComponent = GameObjectAPI.unsafeGetGameObjectGeometryComponent;
 
-let disposeGameObjectCustomGeometryComponent = GameObjectAPI.disposeGameObjectCustomGeometryComponent;
+let disposeGameObjectGeometryComponent = GameObjectAPI.disposeGameObjectGeometryComponent;
 
-let addGameObjectCustomGeometryComponent = GameObjectAPI.addGameObjectCustomGeometryComponent;
+let addGameObjectGeometryComponent = GameObjectAPI.addGameObjectGeometryComponent;
 
 let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
 
@@ -308,27 +308,27 @@ let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCame
 
 let createGameObject = GameObjectAPI.createGameObject;
 
-let unsafeGetCustomGeometryGameObject = CustomGeometryAPI.unsafeGetCustomGeometryGameObject;
+let unsafeGetGeometryGameObject = GeometryAPI.unsafeGetGeometryGameObject;
 
-let setCustomGeometryIndices = CustomGeometryAPI.setCustomGeometryIndices;
+let setGeometryIndices = GeometryAPI.setGeometryIndices;
 
-let getCustomGeometryIndices = CustomGeometryAPI.getCustomGeometryIndices;
+let getGeometryIndices = GeometryAPI.getGeometryIndices;
 
-let setCustomGeometryNormals = CustomGeometryAPI.setCustomGeometryNormals;
+let setGeometryNormals = GeometryAPI.setGeometryNormals;
 
-let getCustomGeometryNormals = CustomGeometryAPI.getCustomGeometryNormals;
+let getGeometryNormals = GeometryAPI.getGeometryNormals;
 
-let setCustomGeometryTexCoords = CustomGeometryAPI.setCustomGeometryTexCoords;
+let setGeometryTexCoords = GeometryAPI.setGeometryTexCoords;
 
-let getCustomGeometryTexCoords = CustomGeometryAPI.getCustomGeometryTexCoords;
+let getGeometryTexCoords = GeometryAPI.getGeometryTexCoords;
 
-let setCustomGeometryVertices = CustomGeometryAPI.setCustomGeometryVertices;
+let setGeometryVertices = GeometryAPI.setGeometryVertices;
 
-let getCustomGeometryVertices = CustomGeometryAPI.getCustomGeometryVertices;
+let getGeometryVertices = GeometryAPI.getGeometryVertices;
 
-let createBoxGeometry = CustomGeometryAPI.createBoxGeometry;
+let createBoxGeometry = GeometryAPI.createBoxGeometry;
 
-let createCustomGeometry = CustomGeometryAPI.createCustomGeometry;
+let createGeometry = GeometryAPI.createGeometry;
 
 let hasGameObjectCameraGroupComponents = CameraGroupAPI.hasGameObjectCameraGroupComponents;
 
@@ -808,9 +808,9 @@ let hasGameObjectGeometryComponent = GameObjectAPI.hasGameObjectGeometryComponen
 
 let unsafeGetGameObjectGeometryComponent = GameObjectAPI.unsafeGetGameObjectGeometryComponent;
 
-let disposeGameObjectCustomGeometryComponent = GameObjectAPI.disposeGameObjectCustomGeometryComponent;
+let disposeGameObjectGeometryComponent = GameObjectAPI.disposeGameObjectGeometryComponent;
 
-let addGameObjectCustomGeometryComponent = GameObjectAPI.addGameObjectCustomGeometryComponent;
+let addGameObjectGeometryComponent = GameObjectAPI.addGameObjectGeometryComponent;
 
 let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
 

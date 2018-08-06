@@ -12,7 +12,7 @@ let prepareGameObject = (sandbox, state) => {
   let state =
     state
     |> addGameObjectLightMaterialComponent(gameObject, material)
-    |> addGameObjectCustomGeometryComponent(gameObject, geometry)
+    |> addGameObjectGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer);
 };

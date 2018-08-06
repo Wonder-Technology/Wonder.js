@@ -19,7 +19,7 @@ let prepareGameObject = (sandbox, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectCustomGeometryComponent(gameObject, geometry);
+    |> addGameObjectGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry, material)
 };
 
@@ -35,7 +35,7 @@ let prepareGameObjectWithCreatedMap = (sandbox, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectCustomGeometryComponent(gameObject, geometry);
+    |> addGameObjectGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry, material)
 };
 

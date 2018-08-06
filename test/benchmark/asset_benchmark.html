@@ -15,7 +15,7 @@
     <script src="../e2e/js/PositionTool.js"></script>
     <script src="../e2e/js/LightTool.js"></script>
     <script src="../e2e/js/CameraTool.js"></script>
-    <script src="../e2e/js/CustomGeometryTool.js"></script>
+    <script src="../e2e/js/GeometryTool.js"></script>
     <script src="../e2e/js/BasicMaterialTool.js"></script>
     <script src="../e2e/js/LightMaterialTool.js"></script>
     <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
@@ -603,11 +603,11 @@
                             );
 
 
-                            var record = wd.createCustomGeometry(state);
+                            var record = wd.createGeometry(state);
                             var state = record[0];
                             var geometry = record[1];
 
-                            var state = wd.setCustomGeometryVertices(
+                            var state = wd.setGeometryVertices(
                                 geometry,
                                 vertices,
                                 state
@@ -616,7 +616,7 @@
 
 
 
-                            var state = wd.setCustomGeometryNormals(
+                            var state = wd.setGeometryNormals(
                                 geometry,
                                 normals,
                                 state
@@ -626,7 +626,7 @@
 
 
 
-                            var state = wd.setCustomGeometryTexCoords(
+                            var state = wd.setGeometryTexCoords(
                                 geometry,
                                 texCoords,
                                 state
@@ -634,7 +634,7 @@
 
 
 
-                            var state = wd.setCustomGeometryIndices(
+                            var state = wd.setGeometryIndices(
                                 geometry,
                                 indices,
                                 state
@@ -642,7 +642,7 @@
 
 
 
-                            state = wd.addGameObjectCustomGeometryComponent(obj, geometry, state);
+                            state = wd.addGameObjectGeometryComponent(obj, geometry, state);
                         }
 
 

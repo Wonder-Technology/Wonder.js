@@ -1,12 +1,12 @@
 let _convertByMesh =
-    (meshes, customGeometryGameObjectIndices, customGeometryIndices) =>
-  customGeometryGameObjectIndices
+    (meshes, geometryGameObjectIndices, geometryIndices) =>
+  geometryGameObjectIndices
   |> Js.Array.mapi((_, index) => {
-       let customGeometryIndex =
-         Array.unsafe_get(customGeometryIndices, index);
+       let geometryIndex =
+         Array.unsafe_get(geometryIndices, index);
 
        let {primitives}: GLTFType.mesh =
-         Array.unsafe_get(meshes, customGeometryIndex);
+         Array.unsafe_get(meshes, geometryIndex);
 
        let {mode}: GLTFType.primitive =
          ConvertCommon.getPrimitiveData(primitives);
@@ -31,8 +31,8 @@ let _convertByMesh =
 let convertToMeshRenderers =
     (
       {
-        gameObjectIndices: customGeometryGameObjectIndices,
-        componentIndices: customGeometryIndices,
+        gameObjectIndices: geometryGameObjectIndices,
+        componentIndices: geometryIndices,
       }: WDType.componentGameObjectIndexData,
       {extras, meshes}: GLTFType.gltf,
     ) =>
@@ -40,8 +40,8 @@ let convertToMeshRenderers =
   | None =>
     _convertByMesh(
       meshes,
-      customGeometryGameObjectIndices,
-      customGeometryIndices,
+      geometryGameObjectIndices,
+      geometryIndices,
     )
   | Some({meshRenderers}) =>
     switch (meshRenderers) {
@@ -60,8 +60,8 @@ let convertToMeshRenderers =
     | _ =>
       _convertByMesh(
         meshes,
-        customGeometryGameObjectIndices,
-        customGeometryIndices,
+        geometryGameObjectIndices,
+        geometryIndices,
       )
     }
   };

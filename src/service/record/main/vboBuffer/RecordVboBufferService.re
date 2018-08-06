@@ -1,10 +1,10 @@
 open VboBufferType;
 
 let create = () => {
-  customGeometryVertexBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
-  customGeometryTexCoordBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
-  customGeometryNormalBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
-  customGeometryElementArrayBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
+  geometryVertexBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
+  geometryTexCoordBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
+  geometryNormalBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
+  geometryElementArrayBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
   matrixInstanceBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
   vertexArrayBufferPool: WonderCommonlib.ArrayService.createEmpty(),
   elementArrayBufferPool: WonderCommonlib.ArrayService.createEmpty(),
@@ -12,10 +12,10 @@ let create = () => {
 };
 
 let deepCopyForRestore = (record) => {
-  customGeometryVertexBufferMap: [||],
-  customGeometryTexCoordBufferMap: [||],
-  customGeometryNormalBufferMap: [||],
-  customGeometryElementArrayBufferMap: [||],
+  geometryVertexBufferMap: [||],
+  geometryTexCoordBufferMap: [||],
+  geometryNormalBufferMap: [||],
+  geometryElementArrayBufferMap: [||],
   matrixInstanceBufferMap: [||],
   vertexArrayBufferPool: [||],
   elementArrayBufferPool: [||],

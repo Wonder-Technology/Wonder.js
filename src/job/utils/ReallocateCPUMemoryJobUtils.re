@@ -2,7 +2,7 @@ open StateDataMainType;
 
 open GameObjectType;
 
-open CustomGeometryType;
+open GeometryType;
 
 let _reallocateGameObjectByDisposeCount = ({settingRecord, gameObjectRecord} as state) =>
   if (QueryCPUMemoryService.isDisposeTooMany(gameObjectRecord.disposeCount, state.settingRecord)) {
@@ -15,24 +15,24 @@ let _reallocateGameObjectByDisposeCount = ({settingRecord, gameObjectRecord} as 
     state
   };
 
-let _reallocateCustomGeometryByDisposeCount = ({settingRecord} as state) => {
+let _reallocateGeometryByDisposeCount = ({settingRecord} as state) => {
   ...state,
-  customGeometryRecord:
+  geometryRecord:
     Some(
       {
-        let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
+        let geometryRecord = RecordGeometryMainService.getRecord(state);
         if (QueryCPUMemoryService.isDisposeTooMany(
-              customGeometryRecord.disposeCount,
+              geometryRecord.disposeCount,
               settingRecord
             )) {
-          customGeometryRecord.disposeCount = 0;
-          ReallocateCustomGeometryCPUMemoryService.reAllocate(customGeometryRecord)
+          geometryRecord.disposeCount = 0;
+          ReallocateGeometryCPUMemoryService.reAllocate(geometryRecord)
         } else {
-          customGeometryRecord
+          geometryRecord
         }
       }
     )
 };
 
 let execJob = (state) =>
-  state |> _reallocateGameObjectByDisposeCount |> _reallocateCustomGeometryByDisposeCount;
+  state |> _reallocateGameObjectByDisposeCount |> _reallocateGeometryByDisposeCount;

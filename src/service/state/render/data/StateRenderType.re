@@ -14,7 +14,7 @@ open ProgramType;
 
 open RenderMeshRendererType;
 
-open RenderCustomGeometryType;
+open RenderGeometryType;
 
 open RenderBasicMaterialType;
 
@@ -166,7 +166,7 @@ and renderState = {
   typeArrayPoolRecord,
   glslSenderRecord,
   programRecord,
-  customGeometryRecord,
+  geometryRecord,
   cameraRecord: option(RenderCameraType.renderCameraRecord),
   basicMaterialRecord,
   lightMaterialRecord,

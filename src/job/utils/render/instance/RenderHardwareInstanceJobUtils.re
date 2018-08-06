@@ -351,7 +351,7 @@ let render =
       DrawModeMeshRendererService.getGlDrawMode(gl, meshRendererIndex, state),
       GeometryRenderService.getIndexType(gl),
       GeometryRenderService.getIndexTypeSize(gl),
-      GetCustomGeometryIndicesRenderService.getIndicesCount(.
+      GetGeometryIndicesRenderService.getIndicesCount(.
         geometryIndex,
         state,
       ),

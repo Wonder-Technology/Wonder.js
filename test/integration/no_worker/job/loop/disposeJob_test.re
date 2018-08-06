@@ -364,7 +364,7 @@ let _ =
               test("add buffer to pool", () => {
                 open VboBufferType;
                 let (state, gameObject1, geometry1) =
-                  DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeCustomGeometryVboBuffer(
+                  DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeGeometryVboBuffer(
                     state,
                   );
                 let state = state |> DisposeJob.execJob(None);
@@ -379,25 +379,25 @@ let _ =
               test("remove from buffer map", () => {
                 open VboBufferType;
                 let (state, gameObject1, geometry1) =
-                  DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeCustomGeometryVboBuffer(
+                  DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeGeometryVboBuffer(
                     state,
                   );
                 let state = state |> DisposeJob.execJob(None);
                 let {
-                  customGeometryVertexBufferMap,
-                  customGeometryTexCoordBufferMap,
-                  customGeometryNormalBufferMap,
-                  customGeometryElementArrayBufferMap,
+                  geometryVertexBufferMap,
+                  geometryTexCoordBufferMap,
+                  geometryNormalBufferMap,
+                  geometryElementArrayBufferMap,
                 } =
                   VboBufferTool.getVboBufferRecord(state);
                 (
-                  customGeometryVertexBufferMap
+                  geometryVertexBufferMap
                   |> WonderCommonlib.SparseMapService.has(geometry1),
-                  customGeometryTexCoordBufferMap
+                  geometryTexCoordBufferMap
                   |> WonderCommonlib.SparseMapService.has(geometry1),
-                  customGeometryNormalBufferMap
+                  geometryNormalBufferMap
                   |> WonderCommonlib.SparseMapService.has(geometry1),
-                  customGeometryElementArrayBufferMap
+                  geometryElementArrayBufferMap
                   |> WonderCommonlib.SparseMapService.has(geometry1),
                 )
                 |> expect == (false, false, false, false);
@@ -405,14 +405,14 @@ let _ =
             })
           )
         );
-        describe("test disposeGameObjectCustomGeometryComponent", () =>
+        describe("test disposeGameObjectGeometryComponent", () =>
           describe("dispose data in dispose job", () =>
             describe("dispose vbo buffer data", () => {
               let _prepare = state => {
                 let (state, gameObject1, geometry1) =
-                  CustomGeometryTool.createGameObject(state^);
+                  GeometryTool.createGameObject(state^);
                 let state =
-                  VboBufferTool.addVboBufferToCustomGeometryBufferMap(
+                  VboBufferTool.addVboBufferToGeometryBufferMap(
                     geometry1,
                     state,
                   );
@@ -437,20 +437,20 @@ let _ =
                 let (state, gameObject1, geometry1) = _prepare(state);
                 let state = state |> DisposeJob.execJob(None);
                 let {
-                  customGeometryVertexBufferMap,
-                  customGeometryTexCoordBufferMap,
-                  customGeometryNormalBufferMap,
-                  customGeometryElementArrayBufferMap,
+                  geometryVertexBufferMap,
+                  geometryTexCoordBufferMap,
+                  geometryNormalBufferMap,
+                  geometryElementArrayBufferMap,
                 } =
                   VboBufferTool.getVboBufferRecord(state);
                 (
-                  customGeometryVertexBufferMap
+                  geometryVertexBufferMap
                   |> WonderCommonlib.SparseMapService.has(geometry1),
-                  customGeometryTexCoordBufferMap
+                  geometryTexCoordBufferMap
                   |> WonderCommonlib.SparseMapService.has(geometry1),
-                  customGeometryNormalBufferMap
+                  geometryNormalBufferMap
                   |> WonderCommonlib.SparseMapService.has(geometry1),
-                  customGeometryElementArrayBufferMap
+                  geometryElementArrayBufferMap
                   |> WonderCommonlib.SparseMapService.has(geometry1),
                 )
                 |> expect == (false, false, false, false);

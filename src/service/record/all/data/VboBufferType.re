@@ -9,10 +9,10 @@ type bufferEnum =
   | Instance_m_matrix;
 
 type vboBufferRecord = {
-  customGeometryVertexBufferMap: WonderCommonlib.SparseMapService.t(buffer),
-  customGeometryTexCoordBufferMap: WonderCommonlib.SparseMapService.t(buffer),
-  customGeometryNormalBufferMap: WonderCommonlib.SparseMapService.t(buffer),
-  customGeometryElementArrayBufferMap:
+  geometryVertexBufferMap: WonderCommonlib.SparseMapService.t(buffer),
+  geometryTexCoordBufferMap: WonderCommonlib.SparseMapService.t(buffer),
+  geometryNormalBufferMap: WonderCommonlib.SparseMapService.t(buffer),
+  geometryElementArrayBufferMap:
     WonderCommonlib.SparseMapService.t(buffer),
   matrixInstanceBufferMap: WonderCommonlib.SparseMapService.t(buffer),
   vertexArrayBufferPool: array(buffer),

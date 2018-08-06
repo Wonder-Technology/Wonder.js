@@ -2,7 +2,7 @@ open StateRenderType;
 
 open TransformType;
 
-open CustomGeometryType;
+open GeometryType;
 
 open BasicMaterialType;
 
@@ -43,7 +43,7 @@ let createRenderState =
     ) => {
   let {localToWorldMatrices, localToWorldMatrixCacheMap, normalMatrixCacheMap} as transformRecord =
     RecordTransformMainService.getRecord(state);
-  let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
+  let geometryRecord = RecordGeometryMainService.getRecord(state);
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
   let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
@@ -66,15 +66,15 @@ let createRenderState =
   {
     glslSenderRecord,
     programRecord,
-    customGeometryRecord: {
-      vertices: customGeometryRecord.vertices,
-      texCoords: customGeometryRecord.texCoords,
-      normals: customGeometryRecord.normals,
-      indices: customGeometryRecord.indices,
-      verticesInfos: customGeometryRecord.verticesInfos,
-      texCoordsInfos: customGeometryRecord.texCoordsInfos,
-      normalsInfos: customGeometryRecord.normalsInfos,
-      indicesInfos: customGeometryRecord.indicesInfos,
+    geometryRecord: {
+      vertices: geometryRecord.vertices,
+      texCoords: geometryRecord.texCoords,
+      normals: geometryRecord.normals,
+      indices: geometryRecord.indices,
+      verticesInfos: geometryRecord.verticesInfos,
+      texCoordsInfos: geometryRecord.texCoordsInfos,
+      normalsInfos: geometryRecord.normalsInfos,
+      indicesInfos: geometryRecord.indicesInfos,
     },
     cameraRecord: OperateRenderMainService.getCameraRecord(state),
     basicMaterialRecord: {

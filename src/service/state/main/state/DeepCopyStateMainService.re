@@ -8,7 +8,7 @@ let deepCopyForRestore = (state: StateDataMainType.state) => {
     |> RecordBasicMaterialMainService.deepCopyForRestore
     |> RecordLightMaterialMainService.deepCopyForRestore
     |> RecordMeshRendererMainService.deepCopyForRestore
-    |> RecordCustomGeometryMainService.deepCopyForRestore
+    |> RecordGeometryMainService.deepCopyForRestore
     |> RecordSourceInstanceMainService.deepCopyForRestore
     |> RecordDirectionLightMainService.deepCopyForRestore
     |> RecordPointLightMainService.deepCopyForRestore

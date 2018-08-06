@@ -115,7 +115,7 @@ var LightBoxesTool = (function () {
 
 
 
-            state = wd.addGameObjectCustomGeometryComponent(obj, geometry, state);
+            state = wd.addGameObjectGeometryComponent(obj, geometry, state);
 
             return [state, obj];
 
@@ -148,7 +148,7 @@ var LightBoxesTool = (function () {
 
 
 
-            // state = wd.addGameObjectCustomGeometryComponent(obj, geometry, state);
+            // state = wd.addGameObjectGeometryComponent(obj, geometry, state);
 
             return [state, obj];
 

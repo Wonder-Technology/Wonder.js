@@ -136,7 +136,7 @@ let _ =
             let state =
               state
               |> addGameObjectBasicMaterialComponent(gameObject, material)
-              |> addGameObjectCustomGeometryComponent(gameObject, geometry);
+              |> addGameObjectGeometryComponent(gameObject, geometry);
             (state, gameObject);
           };
           let _prepareInstanceGameObject = (sandbox, state) => {
@@ -157,7 +157,7 @@ let _ =
                    sourceInstance,
                  )
               |> addGameObjectBasicMaterialComponent(gameObject, material)
-              |> addGameObjectCustomGeometryComponent(gameObject, geometry);
+              |> addGameObjectGeometryComponent(gameObject, geometry);
             (state, gameObject);
           };
           let _exec = (currentState, copiedState, gameObject) => {

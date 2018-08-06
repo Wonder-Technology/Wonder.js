@@ -28,7 +28,7 @@ let _ =
         let (state, _, _, _, _) =
           RenderBasicJobTool.prepareGameObject(sandbox, state);
         let (state, _, _, _, _) =
-          RenderBasicJobTool.prepareGameObjectWithCustomGeometry(
+          RenderBasicJobTool.prepareGameObjectWithGeometry(
             sandbox,
             state,
           );

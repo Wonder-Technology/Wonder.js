@@ -168,16 +168,16 @@ let _ =
               )
             );
 
-            describe("test customGeometry", () => {
+            describe("test geometry", () => {
               describe("if not has normals", () => {
                 open Js.Typed_array;
 
                 let _prepare = (sandbox, state) => {
-                  open CustomGeometryAPI;
-                  let (state, geometry) = createCustomGeometry(state);
+                  open GeometryAPI;
+                  let (state, geometry) = createGeometry(state);
                   let state =
                     state
-                    |> setCustomGeometryVertices(
+                    |> setGeometryVertices(
                          geometry,
                          Float32Array.make([|
                            1.,
@@ -194,7 +194,7 @@ let _ =
                            (-2.),
                          |]),
                        )
-                    |> setCustomGeometryIndices(
+                    |> setGeometryIndices(
                          geometry,
                          Uint16Array.make([|0, 2, 1, 2, 3, 1|]),
                        );
@@ -203,7 +203,7 @@ let _ =
                     FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
                       sandbox,
                       geometry,
-                      GameObjectAPI.addGameObjectCustomGeometryComponent,
+                      GameObjectAPI.addGameObjectGeometryComponent,
                       state,
                     );
                   let (state, _, _, _) =
@@ -229,7 +229,7 @@ let _ =
 
                 test("compute vertex normals", () =>
                   Js.Typed_array.(
-                    CustomGeometryAPI.(
+                    GeometryAPI.(
                       _prepareForBufferData(
                         state,
                         (_ => _getComputedNormals(), _prepare),
@@ -354,7 +354,7 @@ let _ =
               FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
                 sandbox,
                 geometry,
-                GameObjectAPI.addGameObjectCustomGeometryComponent,
+                GameObjectAPI.addGameObjectGeometryComponent,
                 state,
               );
             let float = 1;
@@ -1988,7 +1988,7 @@ let _ =
             drawElements
             |> withFourArgs(
                  triangles,
-                 CustomGeometryTool.getIndicesCount(
+                 GeometryTool.getIndicesCount(
                    geometry,
                    CreateRenderStateMainService.createRenderState(state),
                  ),

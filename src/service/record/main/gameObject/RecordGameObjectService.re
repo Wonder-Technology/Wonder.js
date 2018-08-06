@@ -17,7 +17,7 @@ let create = () => {
     WonderCommonlib.ArrayService.createEmpty(),
   disposedBasicMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedLightMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
-  disposedCustomGeometryArray: WonderCommonlib.ArrayService.createEmpty(),
+  disposedGeometryArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedSourceInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedObjectInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedDirectionLightArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -56,7 +56,7 @@ let deepCopyForRestore =
         disposedArcballCameraControllerArray,
         disposedBasicMaterialArray,
         disposedLightMaterialArray,
-        disposedCustomGeometryArray,
+        disposedGeometryArray,
         disposedSourceInstanceArray,
         disposedObjectInstanceArray,
         disposedDirectionLightArray,
@@ -98,8 +98,8 @@ let deepCopyForRestore =
     disposedBasicMaterialArray |> SparseMapService.copy,
   disposedLightMaterialArray:
     disposedLightMaterialArray |> SparseMapService.copy,
-  disposedCustomGeometryArray:
-    disposedCustomGeometryArray |> SparseMapService.copy,
+  disposedGeometryArray:
+    disposedGeometryArray |> SparseMapService.copy,
   disposedSourceInstanceArray:
     disposedSourceInstanceArray |> SparseMapService.copy,
   disposedObjectInstanceArray:

@@ -68,16 +68,16 @@ let _directlySendAttributeData =
     ) => {
   let currentGeometryBufferMapAndGetPointsFuncsTuple = (
     (
-      vboBufferRecord.customGeometryVertexBufferMap,
-      vboBufferRecord.customGeometryTexCoordBufferMap,
-      vboBufferRecord.customGeometryNormalBufferMap,
-      vboBufferRecord.customGeometryElementArrayBufferMap,
+      vboBufferRecord.geometryVertexBufferMap,
+      vboBufferRecord.geometryTexCoordBufferMap,
+      vboBufferRecord.geometryNormalBufferMap,
+      vboBufferRecord.geometryElementArrayBufferMap,
     ),
     (
-      GetCustomGeometryVerticesRenderService.getVertices,
-      GetCustomGeometryTexCoordsRenderService.getTexCoords,
-      GetCustomGeometryNormalsRenderService.getNormals,
-      GetCustomGeometryIndicesRenderService.getIndices,
+      GetGeometryVerticesRenderService.getVertices,
+      GetGeometryTexCoordsRenderService.getTexCoords,
+      GetGeometryNormalsRenderService.getNormals,
+      GetGeometryIndicesRenderService.getIndices,
     ),
   );
   let dataTuple = (gl, geometryIndex);
@@ -187,7 +187,7 @@ let draw = (gl, meshRendererIndex, geometryIndex, state) =>
       DrawModeMeshRendererService.getGlDrawMode(gl, meshRendererIndex, state),
       GeometryRenderService.getIndexType(gl),
       GeometryRenderService.getIndexTypeSize(gl),
-      GetCustomGeometryIndicesRenderService.getIndicesCount(.
+      GetGeometryIndicesRenderService.getIndicesCount(.
         geometryIndex,
         state,
       ),

@@ -125,18 +125,18 @@ let _ =
         describe("unsafeGetGeometryComponent", () =>
           test("get geometry component", () => {
             let (state, gameObject) = createGameObject(state^);
-            let (state, customGeometry1) =
-              CustomGeometryAPI.createCustomGeometry(state);
-            let (state, customGeometry2) =
-              CustomGeometryAPI.createCustomGeometry(state);
+            let (state, geometry1) =
+              GeometryAPI.createGeometry(state);
+            let (state, geometry2) =
+              GeometryAPI.createGeometry(state);
             let state =
               state
-              |> addGameObjectCustomGeometryComponent(
+              |> addGameObjectGeometryComponent(
                    gameObject,
-                   customGeometry2,
+                   geometry2,
                  );
             unsafeGetGameObjectGeometryComponent(gameObject, state)
-            |> expect == customGeometry2;
+            |> expect == geometry2;
           })
         );
 
@@ -145,10 +145,10 @@ let _ =
             test("has geometry component", () => {
               let (state, gameObject) = createGameObject(state^);
               let (state, geometry) =
-                CustomGeometryAPI.createCustomGeometry(state);
+                GeometryAPI.createGeometry(state);
               let state =
                 state
-                |> addGameObjectCustomGeometryComponent(gameObject, geometry);
+                |> addGameObjectGeometryComponent(gameObject, geometry);
               hasGameObjectGeometryComponent(gameObject, state)
               |> expect == true;
             })
@@ -394,7 +394,7 @@ let _ =
         let (state, gameObject3, material3) =
           LightMaterialTool.createGameObject(state);
         let (state, gameObject4, geometry1) =
-          CustomGeometryTool.createGameObject(state);
+          GeometryTool.createGameObject(state);
 
         (
           state,
@@ -422,7 +422,7 @@ let _ =
         let (state, gameObject3, material1) =
           LightMaterialTool.createGameObject(state);
         let (state, gameObject4, geometry1) =
-          CustomGeometryTool.createGameObject(state);
+          GeometryTool.createGameObject(state);
 
         (
           state,
@@ -442,7 +442,7 @@ let _ =
         let (state, gameObject3, light3) =
           PointLightTool.createGameObject(state);
         let (state, gameObject4, geometry1) =
-          CustomGeometryTool.createGameObject(state);
+          GeometryTool.createGameObject(state);
 
         (
           state,
@@ -808,14 +808,14 @@ let _ =
             TestTool.closeContractCheck();
             open GameObjectType;
             let (state, gameObject1, geometry1) =
-              CustomGeometryTool.createGameObject(state^);
+              GeometryTool.createGameObject(state^);
             let (state, gameObject2, geometry2) =
-              CustomGeometryTool.createGameObject(state);
+              GeometryTool.createGameObject(state);
             let state =
               state |> GameObjectTool.disposeGameObject(gameObject1);
             (
-              CustomGeometryTool.isGeometryDisposed(geometry1, state),
-              CustomGeometryTool.isGeometryDisposed(geometry2, state),
+              GeometryTool.isGeometryDisposed(geometry1, state),
+              GeometryTool.isGeometryDisposed(geometry2, state),
             )
             |> expect == (true, false);
           })
@@ -985,20 +985,20 @@ let _ =
           |> expect == material2;
         });
 
-        test("replace customGeometry component", () => {
+        test("replace geometry component", () => {
           let (state, gameObject1, geometry1) =
-            CustomGeometryTool.createGameObject(state^);
+            GeometryTool.createGameObject(state^);
 
           let state =
-            GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+            GameObjectAPI.disposeGameObjectGeometryComponent(
               gameObject1,
               geometry1,
               state,
             );
           let (state, geometry2) =
-            CustomGeometryAPI.createCustomGeometry(state);
+            GeometryAPI.createGeometry(state);
           let state =
-            GameObjectAPI.addGameObjectCustomGeometryComponent(
+            GameObjectAPI.addGameObjectGeometryComponent(
               gameObject1,
               geometry2,
               state,
@@ -1680,15 +1680,15 @@ let _ =
                      TestTool.closeContractCheck();
                      open GameObjectType;
                      let (state, gameObject1, geometry1) =
-                       CustomGeometryTool.createGameObject(state^);
+                       GeometryTool.createGameObject(state^);
                      let (state, gameObject2, geometry2) =
-                       CustomGeometryTool.createGameObject(state);
+                       GeometryTool.createGameObject(state);
                      let state =
                        state
                        |> GameObjectTool.batchDisposeGameObject([|gameObject1, gameObject2|]);
                      (
-                       CustomGeometryTool.isGeometryDisposed(geometry1, state),
-                       CustomGeometryTool.isGeometryDisposed(geometry2, state)
+                       GeometryTool.isGeometryDisposed(geometry1, state),
+                       GeometryTool.isGeometryDisposed(geometry2, state)
                      )
                      |> expect == (true, true)
                    }
@@ -2194,14 +2194,14 @@ let _ =
         test("disposeGameObjectMeshRendererComponent should error", () =>
           _testThreeParmFunc(disposeGameObjectMeshRendererComponent)
         );
-        test("addGameObjectCustomGeometryComponent should error", () =>
-          _testThreeParmFunc(addGameObjectCustomGeometryComponent)
+        test("addGameObjectGeometryComponent should error", () =>
+          _testThreeParmFunc(addGameObjectGeometryComponent)
         );
-        test("addGameObjectCustomGeometryComponent should error", () =>
-          _testThreeParmFunc(addGameObjectCustomGeometryComponent)
+        test("addGameObjectGeometryComponent should error", () =>
+          _testThreeParmFunc(addGameObjectGeometryComponent)
         );
-        test("disposeGameObjectCustomGeometryComponentshould error", () =>
-          _testThreeParmFunc(disposeGameObjectCustomGeometryComponent)
+        test("disposeGameObjectGeometryComponentshould error", () =>
+          _testThreeParmFunc(disposeGameObjectGeometryComponent)
         );
       })
     );

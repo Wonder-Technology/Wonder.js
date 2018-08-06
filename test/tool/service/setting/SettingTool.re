@@ -134,8 +134,8 @@ let buildSetting =
 
 let buildBufferConfigStr =
     (
-      ~customGeometryPointCount=300,
-      ~customGeometryCount=30,
+      ~geometryPointCount=300,
+      ~geometryCount=30,
       ~transformCount=50,
       ~basicMaterialCount=50,
       ~lightMaterialCount=50,
@@ -148,8 +148,8 @@ let buildBufferConfigStr =
       (),
     ) => {j|
        {
-            "custom_geometry_point_count": $customGeometryPointCount,
-            "custom_geometry_count": $customGeometryCount,
+            "geometry_point_count": $geometryPointCount,
+            "geometry_count": $geometryCount,
   "transform_count": $transformCount,
   "basic_material_count": $basicMaterialCount,
   "light_material_count": $lightMaterialCount,
@@ -235,14 +235,14 @@ let setMemory = (state: StateDataMainType.state, ~maxDisposeCount=1000, ()) => {
 };
 
 let setBufferSize =
-    (state: StateDataMainType.state, ~customGeometryPointCount=100, ()) => {
+    (state: StateDataMainType.state, ~geometryPointCount=100, ()) => {
   ...state,
   settingRecord: {
     ...state.settingRecord,
     buffer:
       Some({
         ...BufferSettingService.unsafeGetBuffer(state.settingRecord),
-        customGeometryPointCount,
+        geometryPointCount,
       }),
   },
 };

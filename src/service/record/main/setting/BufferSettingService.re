@@ -4,11 +4,11 @@ let unsafeGetBuffer = ({buffer}) => buffer |> OptionService.unsafeGet;
 
 let getTransformCount = record => (record |> unsafeGetBuffer).transformCount;
 
-let getCustomGeometryPointCount = record =>
-  (record |> unsafeGetBuffer).customGeometryPointCount;
+let getGeometryPointCount = record =>
+  (record |> unsafeGetBuffer).geometryPointCount;
 
-let getCustomGeometryCount = record =>
-  (record |> unsafeGetBuffer).customGeometryCount;
+let getGeometryCount = record =>
+  (record |> unsafeGetBuffer).geometryCount;
 
 let getBasicMaterialCount = record =>
   (record |> unsafeGetBuffer).basicMaterialCount;

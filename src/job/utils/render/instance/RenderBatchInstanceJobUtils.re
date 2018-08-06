@@ -46,7 +46,7 @@ let render =
   let indexType = GeometryRenderService.getIndexType(gl);
   let indexTypeSize = GeometryRenderService.getIndexTypeSize(gl);
   let indicesCount =
-    GetCustomGeometryIndicesRenderService.getIndicesCount(.
+    GetGeometryIndicesRenderService.getIndicesCount(.
       geometryIndex,
       state,
     );

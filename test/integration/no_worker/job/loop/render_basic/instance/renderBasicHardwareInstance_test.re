@@ -19,7 +19,7 @@ let _ =
               sandbox,
               LoopRenderJobTool.buildNoWorkerJobConfig(),
               SettingTool.buildBufferConfigStr(
-                ~customGeometryPointCount=300,
+                ~geometryPointCount=300,
                 ~transformCount=500,
                 ~basicMaterialCount=50,
                 ~lightMaterialCount=50,
@@ -798,7 +798,7 @@ let _ =
               RenderHardwareInstanceTool.testDrawElementsInstancedANGLE(
                 sandbox,
                 RenderBasicHardwareInstanceTool.prepare,
-                CustomGeometryTool.getIndicesCount,
+                GeometryTool.getIndicesCount,
                 state
               )
           );
@@ -807,8 +807,8 @@ let _ =
             () =>
               RenderHardwareInstanceTool.testDrawElementsInstancedANGLE(
                 sandbox,
-                RenderBasicHardwareInstanceTool.prepareWithCustomGeometry,
-                CustomGeometryTool.getIndicesCount,
+                RenderBasicHardwareInstanceTool.prepareWithGeometry,
+                GeometryTool.getIndicesCount,
                 state
               )
           )

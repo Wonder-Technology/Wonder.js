@@ -28,7 +28,7 @@ let _ =
               testPromise("not add buffer to pool", () => {
                 open VboBufferType;
                 let (state, gameObject1, geometry1) =
-                  DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeCustomGeometryVboBuffer(
+                  DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeGeometryVboBuffer(
                     state,
                   );
                 let state =
@@ -165,7 +165,7 @@ let _ =
           (gameObject1, gameObject2, gameObject3),
           (geometry1, geometry2, geometry3),
         ) =
-          DisposeForNoWorkerAndWorkerJobTool.prepareCustomGeometryGameObjects(
+          DisposeForNoWorkerAndWorkerJobTool.prepareGeometryGameObjects(
             state,
           );
         let (state, gameObject4, (geometry4, _, _, sourceInstance4, _)) =
@@ -203,7 +203,7 @@ let _ =
               |> toCalledWith([|
                    {
                      "operateType": "DISPOSE",
-                     "customGeometryNeedDisposeVboBufferArr": [|
+                     "geometryNeedDisposeVboBufferArr": [|
                        geometry1,
                        geometry2,
                        geometry3,

@@ -386,7 +386,7 @@ let _ =
           describe("test clone custom geometry component", () => {
             let _createAndInitGameObject = state => {
               let (state, gameObject1, geometry1) =
-                CustomGeometryTool.createGameObject(state);
+                GeometryTool.createGameObject(state);
               let state = state |> initGameObject(gameObject1);
               (state, gameObject1, geometry1);
             };
@@ -394,14 +394,14 @@ let _ =
               open StateDataMainType;
               let (state, gameObject1, geometry1) =
                 _createAndInitGameObject(state);
-              CloneTool.cloneWithCustomGeometry(
+              CloneTool.cloneWithGeometry(
                 state,
                 gameObject1,
                 geometry1,
                 2,
               );
             };
-            test("test clone specific count of customGeometrys", () => {
+            test("test clone specific count of geometrys", () => {
               let (_, _, _, _, clonedGeometryArr) = _prepare(state^);
               clonedGeometryArr |> Js.Array.length |> expect == 2;
             });
@@ -421,11 +421,11 @@ let _ =
               ) =
                 _prepare(state^);
               (
-                CustomGeometryAPI.unsafeGetCustomGeometryGameObject(
+                GeometryAPI.unsafeGetGeometryGameObject(
                   clonedGeometryArr[0],
                   state,
                 ),
-                CustomGeometryAPI.unsafeGetCustomGeometryGameObject(
+                GeometryAPI.unsafeGetGeometryGameObject(
                   clonedGeometryArr[1],
                   state,
                 ),
@@ -1310,7 +1310,7 @@ let _ =
              "test clone geometry component",
              () =>
                test(
-                 "test clone specific count of customGeometrys",
+                 "test clone specific count of geometrys",
                  () => {
                    open StateDataMainType;
                    let (state, gameObject1, geometry1) =

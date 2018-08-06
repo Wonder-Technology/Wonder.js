@@ -82,22 +82,22 @@ let _batchCreateTransform = ({transforms}, {settingRecord} as state) => {
   (state, indexArr);
 };
 
-let _batchCreateCustomGeometry =
-    ({customGeometrys}, {settingRecord} as state) => {
+let _batchCreateGeometry =
+    ({geometrys}, {settingRecord} as state) => {
   AssembleCommon.checkNotDisposedBefore(
-    RecordCustomGeometryMainService.getRecord(state).disposedIndexArray,
+    RecordGeometryMainService.getRecord(state).disposedIndexArray,
   );
-  let ({index, aliveIndexArray}: CustomGeometryType.customGeometryRecord) as customGeometryRecord =
-    RecordCustomGeometryMainService.getRecord(state);
-  let newIndex = index + (customGeometrys |> Js.Array.length);
+  let ({index, aliveIndexArray}: GeometryType.geometryRecord) as geometryRecord =
+    RecordGeometryMainService.getRecord(state);
+  let newIndex = index + (geometrys |> Js.Array.length);
   let indexArr =
     ArrayService.range(index, newIndex - 1)
     |> _checkNotExceedMaxCountByIndex(
-         BufferSettingService.getCustomGeometryCount(settingRecord),
+         BufferSettingService.getGeometryCount(settingRecord),
        );
-  state.customGeometryRecord =
+  state.geometryRecord =
     Some({
-      ...customGeometryRecord,
+      ...geometryRecord,
       index: newIndex,
       aliveIndexArray: aliveIndexArray |> Js.Array.concat(indexArr),
     });
@@ -371,7 +371,7 @@ let _batchCreatePointLightArr = ({pointLights}, {pointLightRecord} as state) => 
 let batchCreate = (wd, state) => {
   let (state, gameObjectArr) = _batchCreateGameObject(wd, state);
   let (state, transformArr) = _batchCreateTransform(wd, state);
-  let (state, customGeometryArr) = _batchCreateCustomGeometry(wd, state);
+  let (state, geometryArr) = _batchCreateGeometry(wd, state);
   let (state, meshRendererArr) = _batchCreateMeshRenderer(wd, state);
   let (state, basicCameraViewArr) = _batchCreateBasicCameraView(wd, state);
   let (state, perspectiveCameraProjectionArr) =
@@ -392,7 +392,7 @@ let batchCreate = (wd, state) => {
     gameObjectArr,
     (
       transformArr,
-      customGeometryArr,
+      geometryArr,
       meshRendererArr,
       basicCameraViewArr,
       perspectiveCameraProjectionArr,
@@ -411,7 +411,7 @@ let batchCreate = (wd, state) => {
            gameObjectArr,
            (
              transformArr,
-             customGeometryArr,
+             geometryArr,
              basicCameraViewArr,
              perspectiveCameraProjectionArr,
              lightMaterialArr,

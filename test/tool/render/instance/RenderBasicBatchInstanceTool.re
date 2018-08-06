@@ -28,9 +28,9 @@ let prepare = (sandbox, count, state) => {
   (state, gameObject, componentTuple, objectInstanceGameObjectList)
 };
 
-let createSourceInstanceGameObjectWithCustomGeometry = (sandbox, count, state) => {
+let createSourceInstanceGameObjectWithGeometry = (sandbox, count, state) => {
   let (state, gameObject, geometry, material, meshRenderer) =
-    RenderBasicJobTool.prepareGameObjectWithCustomGeometry(sandbox, state);
+    RenderBasicJobTool.prepareGameObjectWithGeometry(sandbox, state);
   let (state, sourceInstance) = SourceInstanceAPI.createSourceInstance(state);
   let state =
     state |> GameObjectAPI.addGameObjectSourceInstanceComponent(gameObject, sourceInstance);
@@ -50,10 +50,10 @@ let createSourceInstanceGameObjectWithCustomGeometry = (sandbox, count, state) =
   (state, gameObject, geometry, objectInstanceGameObjectList)
 };
 
-let prepareWithCustomGeometry = (sandbox, count, state) => {
+let prepareWithGeometry = (sandbox, count, state) => {
   let state = state |> InstanceTool.setGPUDetectDataAllowBatchInstance;
   let (state, gameObject, componentTuple, objectInstanceGameObjectList) =
-    createSourceInstanceGameObjectWithCustomGeometry(sandbox, count, state);
+    createSourceInstanceGameObjectWithGeometry(sandbox, count, state);
   let (state, _, _, _) = CameraTool.createCameraGameObject(state);
   (state, gameObject, componentTuple, objectInstanceGameObjectList)
 };

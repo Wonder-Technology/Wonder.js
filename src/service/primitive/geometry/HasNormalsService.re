@@ -1,5 +1,5 @@
 let hasNormals = (index, normalsInfos) =>
   ReallocatedPointsGeometryService.hasPointData(
-    BufferCustomGeometryService.getInfoIndex(index),
+    BufferGeometryService.getInfoIndex(index),
     normalsInfos,
   );

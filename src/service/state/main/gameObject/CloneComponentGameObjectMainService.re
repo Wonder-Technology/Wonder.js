@@ -65,19 +65,19 @@ let cloneMeshRendererComponent =
   (state, componentArr);
 };
 
-let cloneCustomGeometryComponent =
+let cloneGeometryComponent =
     (
       sourceComponent: component,
       countRangeArr: array(int),
-      {customGeometryRecord} as state,
+      {geometryRecord} as state,
     ) => {
-  let (customGeometryRecord, componentArr) =
-    CloneCustomGeometryService.handleCloneComponent(
+  let (geometryRecord, componentArr) =
+    CloneGeometryService.handleCloneComponent(
       sourceComponent,
       countRangeArr,
-      customGeometryRecord,
+      geometryRecord,
     );
-  ({...state, customGeometryRecord}, componentArr);
+  ({...state, geometryRecord}, componentArr);
 };
 
 let cloneBasicMaterialComponent =

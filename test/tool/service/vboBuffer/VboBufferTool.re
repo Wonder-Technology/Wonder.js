@@ -23,35 +23,35 @@ let getOrCreateInstanceBuffer =
   );
 };
 
-let addVboBufferToCustomGeometryBufferMapByRecord =
+let addVboBufferToGeometryBufferMapByRecord =
     (
       geometryIndex,
       {
-        customGeometryVertexBufferMap,
-        customGeometryTexCoordBufferMap,
-        customGeometryNormalBufferMap,
-        customGeometryElementArrayBufferMap,
+        geometryVertexBufferMap,
+        geometryTexCoordBufferMap,
+        geometryNormalBufferMap,
+        geometryElementArrayBufferMap,
       } as vboBufferRecord: VboBufferType.vboBufferRecord,
     ) => {
   WonderCommonlib.SparseMapService.set(
     geometryIndex,
     Obj.magic(0),
-    customGeometryVertexBufferMap,
+    geometryVertexBufferMap,
   );
   WonderCommonlib.SparseMapService.set(
     geometryIndex,
     Obj.magic(1),
-    customGeometryTexCoordBufferMap,
+    geometryTexCoordBufferMap,
   );
   WonderCommonlib.SparseMapService.set(
     geometryIndex,
     Obj.magic(2),
-    customGeometryNormalBufferMap,
+    geometryNormalBufferMap,
   );
   WonderCommonlib.SparseMapService.set(
     geometryIndex,
     Obj.magic(3),
-    customGeometryElementArrayBufferMap,
+    geometryElementArrayBufferMap,
   );
   vboBufferRecord;
 };
@@ -70,11 +70,11 @@ let addVboBufferToSourceInstanceBufferMapByRecord =
   vboBufferRecord;
 };
 
-let addVboBufferToCustomGeometryBufferMap =
+let addVboBufferToGeometryBufferMap =
     (geometryIndex, state: StateDataMainType.state) => {
   ...state,
   vboBufferRecord:
-    addVboBufferToCustomGeometryBufferMapByRecord(
+    addVboBufferToGeometryBufferMapByRecord(
       geometryIndex,
       state.vboBufferRecord,
     ),
@@ -131,68 +131,68 @@ let prepareCreatedBuffer = (sandbox, state) => {
   );
 };
 
-let getOrCreateCustomGeometryVertexArrayBuffer =
+let getOrCreateGeometryVertexArrayBuffer =
     (geometryIndex: int, state: StateDataMainType.state) => {
   let state = RenderStateTool.createState(state);
   GetVboBufferRenderService.getOrCreateBuffer(
     DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-    (geometryIndex, state.vboBufferRecord.customGeometryVertexBufferMap),
+    (geometryIndex, state.vboBufferRecord.geometryVertexBufferMap),
     (
       [@bs] ArrayBufferRenderService.createBuffer,
-      [@bs] GetCustomGeometryVerticesRenderService.getVertices,
+      [@bs] GetGeometryVerticesRenderService.getVertices,
     ),
     state,
   );
 };
 
-let getOrCreateCustomGeometryTexCoordArrayBuffer =
+let getOrCreateGeometryTexCoordArrayBuffer =
     (geometryIndex: int, state: StateDataMainType.state) => {
   let state = RenderStateTool.createState(state);
   GetVboBufferRenderService.getOrCreateBuffer(
     DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-    (geometryIndex, state.vboBufferRecord.customGeometryTexCoordBufferMap),
+    (geometryIndex, state.vboBufferRecord.geometryTexCoordBufferMap),
     (
       [@bs] ArrayBufferRenderService.createBuffer,
-      [@bs] GetCustomGeometryTexCoordsRenderService.getTexCoords,
+      [@bs] GetGeometryTexCoordsRenderService.getTexCoords,
     ),
     state,
   );
 };
 
-let getOrCreateCustomGeometryNormalArrayBuffer =
+let getOrCreateGeometryNormalArrayBuffer =
     (geometryIndex: int, state: StateDataMainType.state) => {
   let state = RenderStateTool.createState(state);
   GetVboBufferRenderService.getOrCreateBuffer(
     DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-    (geometryIndex, state.vboBufferRecord.customGeometryNormalBufferMap),
+    (geometryIndex, state.vboBufferRecord.geometryNormalBufferMap),
     (
       [@bs] ArrayBufferRenderService.createBuffer,
-      [@bs] GetCustomGeometryNormalsRenderService.getNormals,
+      [@bs] GetGeometryNormalsRenderService.getNormals,
     ),
     state,
   );
 };
 
-let getOrCreateCustomGeometryElementArrayBuffer =
+let getOrCreateGeometryElementArrayBuffer =
     (geometryIndex: int, state: StateDataMainType.state) => {
   let state = RenderStateTool.createState(state);
   GetVboBufferRenderService.getOrCreateBuffer(
     DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
     (
       geometryIndex,
-      state.vboBufferRecord.customGeometryElementArrayBufferMap,
+      state.vboBufferRecord.geometryElementArrayBufferMap,
     ),
     (
       [@bs] ElementArrayBufferRenderService.createBuffer,
-      [@bs] GetCustomGeometryIndicesRenderService.getIndices,
+      [@bs] GetGeometryIndicesRenderService.getIndices,
     ),
     state,
   );
 };
 
-let getOrCreateAllCustomGeometryBuffers = (geometry, state) => (
-  getOrCreateCustomGeometryVertexArrayBuffer(geometry, state),
-  getOrCreateCustomGeometryTexCoordArrayBuffer(geometry, state),
-  getOrCreateCustomGeometryNormalArrayBuffer(geometry, state),
-  getOrCreateCustomGeometryElementArrayBuffer(geometry, state),
+let getOrCreateAllGeometryBuffers = (geometry, state) => (
+  getOrCreateGeometryVertexArrayBuffer(geometry, state),
+  getOrCreateGeometryTexCoordArrayBuffer(geometry, state),
+  getOrCreateGeometryNormalArrayBuffer(geometry, state),
+  getOrCreateGeometryElementArrayBuffer(geometry, state),
 );

@@ -33,7 +33,7 @@ let restore =
   |> RestoreLightMaterialMainService.restore(gl, currentState)
   |> RestoreRenderMainService.restore(currentState)
   |> RestoreTransformMainService.restore(currentState)
-  |> RestoreCustomGeometryMainService.restore(currentState)
+  |> RestoreGeometryMainService.restore(currentState)
   |> RestoreDirectionLightMainService.restore(currentState)
   |> RestorePointLightMainService.restore(currentState)
   |> RestoreSourceTextureMainService.restore(currentState)

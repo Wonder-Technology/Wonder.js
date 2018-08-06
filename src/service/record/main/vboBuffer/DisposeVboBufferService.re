@@ -6,25 +6,25 @@ open VboBufferType;
 
 open DisposeComponentService;
 
-let disposeCustomGeometryBufferData =
+let disposeGeometryBufferData =
   [@bs]
   (
     (
       geometry,
       {
-        customGeometryVertexBufferMap,
-        customGeometryTexCoordBufferMap,
-        customGeometryNormalBufferMap,
-        customGeometryElementArrayBufferMap
+        geometryVertexBufferMap,
+        geometryTexCoordBufferMap,
+        geometryNormalBufferMap,
+        geometryElementArrayBufferMap
       } as record
     ) => {
       ...record,
-      customGeometryVertexBufferMap: disposeSparseMapData(geometry, customGeometryVertexBufferMap),
-      customGeometryTexCoordBufferMap:
-        disposeSparseMapData(geometry, customGeometryTexCoordBufferMap),
-      customGeometryNormalBufferMap: disposeSparseMapData(geometry, customGeometryNormalBufferMap),
-      customGeometryElementArrayBufferMap:
-        disposeSparseMapData(geometry, customGeometryElementArrayBufferMap)
+      geometryVertexBufferMap: disposeSparseMapData(geometry, geometryVertexBufferMap),
+      geometryTexCoordBufferMap:
+        disposeSparseMapData(geometry, geometryTexCoordBufferMap),
+      geometryNormalBufferMap: disposeSparseMapData(geometry, geometryNormalBufferMap),
+      geometryElementArrayBufferMap:
+        disposeSparseMapData(geometry, geometryElementArrayBufferMap)
     }
   );
 
@@ -50,12 +50,12 @@ let _disposeVboBuffer =
        vboBufferRecord
      );
 
-let disposeCustomGeometryVboBuffer = (customGeometryNeedDisposeVboBufferArr, vboBufferRecord) =>
+let disposeGeometryVboBuffer = (geometryNeedDisposeVboBufferArr, vboBufferRecord) =>
   _disposeVboBuffer(
-    customGeometryNeedDisposeVboBufferArr,
+    geometryNeedDisposeVboBufferArr,
     (
-      [@bs] PoolVboBufferService.addCustomGeometryBufferToPool,
-      [@bs] disposeCustomGeometryBufferData
+      [@bs] PoolVboBufferService.addGeometryBufferToPool,
+      [@bs] disposeGeometryBufferData
     ),
     vboBufferRecord
   );

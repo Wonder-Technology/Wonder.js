@@ -157,10 +157,10 @@ let getAllGeometryData = (rootGameObject, state) =>
        (
          GameObjectAPI.unsafeGetGameObjectName(gameObject, state),
          (
-           CustomGeometryTool.getMainVertices(geometry, state),
-           CustomGeometryTool.getMainNormals(geometry, state),
-           CustomGeometryTool.getMainTexCoords(geometry, state),
-           CustomGeometryTool.getMainIndices(geometry, state),
+           GeometryTool.getMainVertices(geometry, state),
+           GeometryTool.getMainNormals(geometry, state),
+           GeometryTool.getMainTexCoords(geometry, state),
+           GeometryTool.getMainIndices(geometry, state),
          ),
        );
      });

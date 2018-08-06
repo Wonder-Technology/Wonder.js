@@ -25,7 +25,7 @@ let batchDisposeGameObject =
     (gameObjectArray: array(gameObject), state: StateDataMainType.state) => {
   let (
     state,
-    customGeometryNeedDisposeVboBufferArr,
+    geometryNeedDisposeVboBufferArr,
     sourceInstanceNeedDisposeVboBufferArr,
   ) =
     DisposeGameObjectMainService.batchDispose(
@@ -42,8 +42,8 @@ let batchDisposeGameObject =
     ...state,
     vboBufferRecord:
       state.vboBufferRecord
-      |> DisposeVboBufferService.disposeCustomGeometryVboBuffer(
-           customGeometryNeedDisposeVboBufferArr,
+      |> DisposeVboBufferService.disposeGeometryVboBuffer(
+           geometryNeedDisposeVboBufferArr,
          )
       |> DisposeVboBufferService.disposeSourceInstanceVboBuffer(
            sourceInstanceNeedDisposeVboBufferArr,
@@ -55,7 +55,7 @@ let batchDisposeGameObjectKeepOrder =
     (gameObjectArray: array(gameObject), state: StateDataMainType.state) => {
   let (
     state,
-    customGeometryNeedDisposeVboBufferArr,
+    geometryNeedDisposeVboBufferArr,
     sourceInstanceNeedDisposeVboBufferArr,
   ) =
     DisposeGameObjectMainService.batchDispose(
@@ -71,8 +71,8 @@ let batchDisposeGameObjectKeepOrder =
     ...state,
     vboBufferRecord:
       state.vboBufferRecord
-      |> DisposeVboBufferService.disposeCustomGeometryVboBuffer(
-           customGeometryNeedDisposeVboBufferArr,
+      |> DisposeVboBufferService.disposeGeometryVboBuffer(
+           geometryNeedDisposeVboBufferArr,
          )
       |> DisposeVboBufferService.disposeSourceInstanceVboBuffer(
            sourceInstanceNeedDisposeVboBufferArr,
@@ -134,14 +134,14 @@ let disposeGameObjectTransformComponent =
     [|component|],
   );
 
-let disposeGameObjectCustomGeometryComponentWithoutVboBuffer =
+let disposeGameObjectGeometryComponentWithoutVboBuffer =
     (
       gameObject: gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
-  let (state, customGeometryNeedDisposeVboBufferArr) =
-    DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(
+  let (state, geometryNeedDisposeVboBufferArr) =
+    DisposeComponentGameObjectMainService.batchDisposeGeometryComponent(
       state,
       [|component|],
     );

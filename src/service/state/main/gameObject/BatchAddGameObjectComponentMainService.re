@@ -166,27 +166,27 @@ let _batchAddSharableComponent =
      );
 };
 
-let _batchAddCustomGeometryComponent =
+let _batchAddGeometryComponent =
     (
       uidArr: array(int),
       componentArr: array(component),
       {gameObjectRecord} as state,
     ) => {
   ...state,
-  customGeometryRecord:
+  geometryRecord:
     Some(
       _batchAddSharableComponent(
         (uidArr, componentArr, gameObjectRecord.geometryMap),
         (
-          GroupCustomGeometryService.increaseGroupCount,
-          AddCustomGeometryService.handleAddComponent,
+          GroupGeometryService.increaseGroupCount,
+          AddGeometryService.handleAddComponent,
         ),
-        RecordCustomGeometryMainService.getRecord(state),
+        RecordGeometryMainService.getRecord(state),
       ),
     ),
 };
 
-let batchAddCustomGeometryComponentForClone = _batchAddCustomGeometryComponent;
+let batchAddGeometryComponentForClone = _batchAddGeometryComponent;
 
 let _batchAddBasicMaterialComponent =
     (
@@ -268,7 +268,7 @@ let batchAddPointLightComponentForClone = _batchAddPointLightComponent;
 
 let batchAddTransformComponentForCreate = _batchAddTransformComponent;
 
-let batchAddCustomGeometryComponentForCreate = _batchAddCustomGeometryComponent;
+let batchAddGeometryComponentForCreate = _batchAddGeometryComponent;
 
 let batchAddBasicCameraViewComponentForCreate = _batchAddBasicCameraViewComponent;
 

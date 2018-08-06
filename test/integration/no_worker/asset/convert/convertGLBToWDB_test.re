@@ -251,15 +251,15 @@ let _ =
       });
 
       describe("test convert to wdb", () => {
-        test("test customGeometrys", () =>
+        test("test geometrys", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=
               ConvertGLBTool.buildGLTFJsonOfMultiPrimitives(),
             ~state,
             ~testFunc=
-              ({customGeometrys, images}) =>
-                customGeometrys
+              ({geometrys, images}) =>
+                geometrys
                 |>
                 expect == [|
                             ConvertTool.getJsonSerializedNone(),
@@ -333,7 +333,7 @@ let _ =
                   ~testFunc=
                     ({indices}) =>
                       indices.gameObjectIndices.
-                        customGeometryGameObjectIndexData
+                        geometryGameObjectIndexData
                       |>
                       expect == {
                                   gameObjectIndices: [|1, 3, 4, 5, 6|],
@@ -436,14 +436,14 @@ let _ =
             (),
           )
         );
-        test("test customGeometrys", () =>
+        test("test geometrys", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
             ~state,
             ~testFunc=
-              ({customGeometrys}) =>
-                customGeometrys
+              ({geometrys}) =>
+                geometrys
                 |>
                 expect == [|
                             Some({
@@ -1194,15 +1194,15 @@ let _ =
       )
     );
 
-    describe("test customGeometrys", () =>
+    describe("test geometrys", () =>
       test("test single primitive", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
           ~state,
           ~testFunc=
-            ({customGeometrys}) =>
-              customGeometrys
+            ({geometrys}) =>
+              geometrys
               |>
               expect == [|
                           Some({
@@ -1535,7 +1535,7 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
           );
         });
 
-        describe("test customGeometryGameObjectIndexData", () => {
+        describe("test geometryGameObjectIndexData", () => {
           test("test single node gltf", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
@@ -1543,7 +1543,7 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
               ~state,
               ~testFunc=
                 ({indices}) =>
-                  indices.gameObjectIndices.customGeometryGameObjectIndexData
+                  indices.gameObjectIndices.geometryGameObjectIndexData
                   |> expect == _buildComponentIndexData([|0|], [|0|]),
               (),
             )
@@ -1553,7 +1553,7 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
               sandbox^,
               GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
               (({indices}, _)) =>
-              indices.gameObjectIndices.customGeometryGameObjectIndexData
+              indices.gameObjectIndices.geometryGameObjectIndexData
               |>
               expect == _buildComponentIndexData(
                           [|2, 4, 5, 6, 7|],

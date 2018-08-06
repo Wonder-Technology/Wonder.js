@@ -18,7 +18,7 @@ let renderTestData = {
       "./test/e2e/js/InstanceLightBoxesTool.js",
       "./test/e2e/js/RedoUndoTool.js",
       "./test/e2e/js/RandomTool.js",
-      "./test/e2e/js/CustomGeometryTool.js",
+      "./test/e2e/js/GeometryTool.js",
       "./test/e2e/js/BasicMaterialTool.js",
       "./test/e2e/js/LightMaterialTool.js",
       "./test/e2e/js/TextureTool.js",
@@ -200,7 +200,7 @@ let renderTestData = {
       frameData: [{timePath: [16]}],
     },
     {
-      name: "custom_geometry_basic_material",
+      name: "geometry_basic_material",
       bodyFuncStr: {|
                    PrepareTool.prepareForTest();
 
@@ -209,7 +209,7 @@ let renderTestData = {
                     });
 
                     function initSample(state) {
-                        var data = CustomGeometryTool.createTriangle(1, state);
+                        var data = GeometryTool.createTriangle(1, state);
 
 
                         var state = data[0];
@@ -253,7 +253,7 @@ let renderTestData = {
       frameData: [{timePath: [16]}],
     },
     {
-      name: "custom_geometry_light_material",
+      name: "geometry_light_material",
       bodyFuncStr: {|
                    PrepareTool.prepareForTest();
 
@@ -262,7 +262,7 @@ let renderTestData = {
                     });
 
                     function initSample(state) {
-                        var data = CustomGeometryTool.createTriangle(1, state);
+                        var data = GeometryTool.createTriangle(1, state);
 
 
                         var state = data[0];

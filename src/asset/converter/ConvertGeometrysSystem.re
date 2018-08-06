@@ -1,6 +1,6 @@
 let _convertToGeometry =
     ({primitives}: GLTFType.mesh)
-    : option(WDType.customGeometry) => {
+    : option(WDType.geometry) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(

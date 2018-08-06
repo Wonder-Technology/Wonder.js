@@ -26,7 +26,7 @@ let _ =
           (gameObject1, gameObject2, gameObject3),
           (geometry1, geometry2, geometry3),
         ) =
-          DisposeForNoWorkerAndWorkerJobTool.prepareCustomGeometryGameObjects(
+          DisposeForNoWorkerAndWorkerJobTool.prepareGeometryGameObjects(
             state,
           );
         let (state, gameObject4, (_, _, _, sourceInstance4, _)) =
@@ -38,13 +38,13 @@ let _ =
           RenderWorkerStateTool.createStateAndSetToStateData();
         renderWorkerState.vboBufferRecord =
           renderWorkerState.vboBufferRecord
-          |> VboBufferTool.addVboBufferToCustomGeometryBufferMapByRecord(
+          |> VboBufferTool.addVboBufferToGeometryBufferMapByRecord(
                geometry1,
              )
-          |> VboBufferTool.addVboBufferToCustomGeometryBufferMapByRecord(
+          |> VboBufferTool.addVboBufferToGeometryBufferMapByRecord(
                geometry2,
              )
-          |> VboBufferTool.addVboBufferToCustomGeometryBufferMapByRecord(
+          |> VboBufferTool.addVboBufferToGeometryBufferMapByRecord(
                geometry3,
              )
           |> VboBufferTool.addVboBufferToSourceInstanceBufferMapByRecord(
@@ -59,7 +59,7 @@ let _ =
       let _buildData = (geometry1, geometry2, geometry3, sourceInstance4) =>
         Some({
           "data": {
-            "customGeometryNeedDisposeVboBufferArr": [|geometry1, geometry2,geometry3|],
+            "geometryNeedDisposeVboBufferArr": [|geometry1, geometry2,geometry3|],
             "sourceInstanceNeedDisposeVboBufferArr": [|sourceInstance4|],
           },
         });
@@ -111,30 +111,30 @@ let _ =
         |> then_(() => {
              let renderWorkerState = RenderWorkerStateTool.unsafeGetState();
              let {
-               customGeometryVertexBufferMap,
-               customGeometryNormalBufferMap,
-               customGeometryElementArrayBufferMap,
+               geometryVertexBufferMap,
+               geometryNormalBufferMap,
+               geometryElementArrayBufferMap,
                matrixInstanceBufferMap,
              } =
                renderWorkerState.vboBufferRecord;
              (
-               customGeometryVertexBufferMap
+               geometryVertexBufferMap
                |> WonderCommonlib.SparseMapService.has(geometry1),
-               customGeometryNormalBufferMap
+               geometryNormalBufferMap
                |> WonderCommonlib.SparseMapService.has(geometry1),
-               customGeometryElementArrayBufferMap
+               geometryElementArrayBufferMap
                |> WonderCommonlib.SparseMapService.has(geometry1),
-               customGeometryVertexBufferMap
+               geometryVertexBufferMap
                |> WonderCommonlib.SparseMapService.has(geometry2),
-               customGeometryNormalBufferMap
+               geometryNormalBufferMap
                |> WonderCommonlib.SparseMapService.has(geometry2),
-               customGeometryElementArrayBufferMap
+               geometryElementArrayBufferMap
                |> WonderCommonlib.SparseMapService.has(geometry2),
-               customGeometryVertexBufferMap
+               geometryVertexBufferMap
                |> WonderCommonlib.SparseMapService.has(geometry3),
-               customGeometryNormalBufferMap
+               geometryNormalBufferMap
                |> WonderCommonlib.SparseMapService.has(geometry3),
-               customGeometryElementArrayBufferMap
+               geometryElementArrayBufferMap
                |> WonderCommonlib.SparseMapService.has(geometry3),
                matrixInstanceBufferMap
                |> WonderCommonlib.SparseMapService.has(sourceInstance4),

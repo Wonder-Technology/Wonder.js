@@ -46,7 +46,7 @@ let rec batchDispose =
   record.disposeCount = disposeCount + (uidArray |> Js.Array.length);
   let (
     state,
-    customGeometryNeedDisposeVboBufferArr,
+    geometryNeedDisposeVboBufferArr,
     sourceInstanceNeedDisposeVboBufferArr,
   ) =
     state
@@ -60,7 +60,7 @@ let rec batchDispose =
        );
   (
     state,
-    customGeometryNeedDisposeVboBufferArr,
+    geometryNeedDisposeVboBufferArr,
     sourceInstanceNeedDisposeVboBufferArr,
   );
 };
@@ -95,7 +95,7 @@ let clearDeferDisposeData = state => {
       WonderCommonlib.ArrayService.createEmpty(),
     disposedBasicMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedLightMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
-    disposedCustomGeometryArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedGeometryArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedSourceInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedObjectInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedDirectionLightArray: WonderCommonlib.ArrayService.createEmpty(),

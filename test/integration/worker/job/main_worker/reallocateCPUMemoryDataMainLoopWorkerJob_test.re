@@ -53,7 +53,7 @@ let _ =
             }
           );
           testPromise(
-            "test reallocate customGeometry",
+            "test reallocate geometry",
             () => {
               let (
                 state,
@@ -64,7 +64,7 @@ let _ =
                 (normals1, normals2, normals3),
                 (indices1, indices2, indices3)
               ) =
-                ReallocateCustomGeometryCPUMemoryTool.prepareForOptimize(state);
+                ReallocateGeometryCPUMemoryTool.prepareForOptimize(state);
               let state =
                 state |> FakeGlWorkerTool.setFakeGl(FakeGlWorkerTool.buildFakeGl(~sandbox, ()));
               let state = MainStateTool.setState(state);
@@ -74,7 +74,7 @@ let _ =
                 ~completeFunc=
                   (postMessageToRenderWorker) => {
                     let state = MainStateTool.unsafeGetState();
-                    ReallocateCustomGeometryCPUMemoryTool.judgeForOptimize(
+                    ReallocateGeometryCPUMemoryTool.judgeForOptimize(
                       state,
                       (gameObject1, gameObject2, gameObject3),
                       (geometry1, geometry2, geometry3),

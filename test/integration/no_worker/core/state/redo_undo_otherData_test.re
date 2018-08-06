@@ -56,10 +56,10 @@ let _ =
     let _prepareVboBufferData = state => {
       open VboBufferType;
       let {
-        customGeometryVertexBufferMap,
-        customGeometryTexCoordBufferMap,
-        customGeometryNormalBufferMap,
-        customGeometryElementArrayBufferMap,
+        geometryVertexBufferMap,
+        geometryTexCoordBufferMap,
+        geometryNormalBufferMap,
+        geometryElementArrayBufferMap,
         matrixInstanceBufferMap,
         vertexArrayBufferPool,
         elementArrayBufferPool,
@@ -83,13 +83,13 @@ let _ =
       let bufferInMap3 = Obj.magic(12);
       let bufferInMap4 = Obj.magic(13);
       let bufferInMap5 = Obj.magic(14);
-      customGeometryVertexBufferMap
+      geometryVertexBufferMap
       |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap1);
-      customGeometryTexCoordBufferMap
+      geometryTexCoordBufferMap
       |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap2);
-      customGeometryNormalBufferMap
+      geometryNormalBufferMap
       |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap3);
-      customGeometryElementArrayBufferMap
+      geometryElementArrayBufferMap
       |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap4);
       matrixInstanceBufferMap
       |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap5);
@@ -156,10 +156,10 @@ let _ =
           let (state, _, _, _) = _prepareVboBufferData(state^);
           let copiedState = MainStateTool.deepCopyForRestore(state);
           let {
-            customGeometryVertexBufferMap,
-            customGeometryTexCoordBufferMap,
-            customGeometryNormalBufferMap,
-            customGeometryElementArrayBufferMap,
+            geometryVertexBufferMap,
+            geometryTexCoordBufferMap,
+            geometryNormalBufferMap,
+            geometryElementArrayBufferMap,
             matrixInstanceBufferMap,
             vertexArrayBufferPool,
             elementArrayBufferPool,
@@ -167,10 +167,10 @@ let _ =
           } =
             VboBufferTool.getVboBufferRecord(copiedState);
           (
-            customGeometryVertexBufferMap,
-            customGeometryTexCoordBufferMap,
-            customGeometryNormalBufferMap,
-            customGeometryElementArrayBufferMap,
+            geometryVertexBufferMap,
+            geometryTexCoordBufferMap,
+            geometryNormalBufferMap,
+            geometryElementArrayBufferMap,
             matrixInstanceBufferMap,
             vertexArrayBufferPool,
             elementArrayBufferPool,
@@ -273,24 +273,24 @@ let _ =
             );
           let newState = MainStateTool.restore(currentState, state);
           let {
-            customGeometryVertexBufferMap,
-            customGeometryTexCoordBufferMap,
-            customGeometryNormalBufferMap,
-            customGeometryElementArrayBufferMap,
+            geometryVertexBufferMap,
+            geometryTexCoordBufferMap,
+            geometryNormalBufferMap,
+            geometryElementArrayBufferMap,
             matrixInstanceBufferMap,
           } =
             newState |> VboBufferTool.getVboBufferRecord;
           (
-            customGeometryVertexBufferMap,
-            customGeometryTexCoordBufferMap,
-            customGeometryNormalBufferMap,
-            customGeometryElementArrayBufferMap,
+            geometryVertexBufferMap,
+            geometryTexCoordBufferMap,
+            geometryNormalBufferMap,
+            geometryElementArrayBufferMap,
             matrixInstanceBufferMap,
           )
           |> expect == ([||], [||], [||], [||], [||]);
         });
         test(
-          "add current state->vboBufferRecord->customGeometryVertexBufferMap, customGeometryTexCoordBufferMap, customGeometryNormalBufferMap, customGeometryElementArrayBufferMap, matrixInstanceBufferMap buffer to pool",
+          "add current state->vboBufferRecord->geometryVertexBufferMap, geometryTexCoordBufferMap, geometryNormalBufferMap, geometryElementArrayBufferMap, matrixInstanceBufferMap buffer to pool",
           () => {
             open VboBufferType;
             let (

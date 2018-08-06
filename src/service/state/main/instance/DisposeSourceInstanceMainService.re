@@ -21,7 +21,7 @@ let _disposeObjectInstanceGameObject =
        (
          (
            state,
-           customGeometryNeedDisposeVboBufferArr,
+           geometryNeedDisposeVboBufferArr,
            sourceInstanceNeedDisposeVboBufferArr,
          ),
        ) => {
@@ -31,11 +31,11 @@ let _disposeObjectInstanceGameObject =
          test(
            Log.buildAssertMessage(
              ~expect=
-               {j|customGeometryNeedDisposeVboBufferArr from object instance gameObject should be empty|j},
-             ~actual={j|is $customGeometryNeedDisposeVboBufferArr|j},
+               {j|geometryNeedDisposeVboBufferArr from object instance gameObject should be empty|j},
+             ~actual={j|is $geometryNeedDisposeVboBufferArr|j},
            ),
            () =>
-           customGeometryNeedDisposeVboBufferArr |> Js.Array.length == 0
+           geometryNeedDisposeVboBufferArr |> Js.Array.length == 0
          );
          test(
            Log.buildAssertMessage(

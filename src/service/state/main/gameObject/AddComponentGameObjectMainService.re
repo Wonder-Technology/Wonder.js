@@ -93,25 +93,25 @@ let addTransformComponent =
   state;
 };
 
-let addCustomGeometryComponent =
+let addGeometryComponent =
     (uid: int, component: component, {gameObjectRecord} as state) => {
-  let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
-  state.customGeometryRecord =
+  let geometryRecord = RecordGeometryMainService.getRecord(state);
+  state.geometryRecord =
     Some(
-      customGeometryRecord
+      geometryRecord
       |> _addSharableComponent(
            (
              uid,
              component,
              gameObjectRecord.geometryMap,
-             GameObjectCustomGeometryService.getGameObject(
+             GameObjectGeometryService.getGameObject(
                component,
-               customGeometryRecord,
+               geometryRecord,
              ),
            ),
            (
-             GroupCustomGeometryService.increaseGroupCount,
-             AddCustomGeometryService.handleAddComponent,
+             GroupGeometryService.increaseGroupCount,
+             AddGeometryService.handleAddComponent,
            ),
          ),
     );

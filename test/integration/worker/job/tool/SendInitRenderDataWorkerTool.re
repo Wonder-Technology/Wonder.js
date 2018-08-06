@@ -27,7 +27,7 @@ let buildInitRenderData =
   "basicMaterialData": Sinon.matchAny,
   "lightMaterialData": Sinon.matchAny,
   "meshRendererData": Sinon.matchAny,
-  "customGeometryData": Sinon.matchAny,
+  "geometryData": Sinon.matchAny,
   "directionLightData": Sinon.matchAny,
   "pointLightData": Sinon.matchAny,
   "sourceInstanceData": Sinon.matchAny

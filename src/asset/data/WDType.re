@@ -50,7 +50,7 @@ type transform = {
 
 type meshRenderer = {drawMode: DrawModeType.drawMode};
 
-type customGeometry = {
+type geometry = {
   position: accessorIndex,
   normal: option(accessorIndex),
   texCoord: option(accessorIndex),
@@ -169,7 +169,7 @@ type gameObjectIndices = {
   lightMaterialGameObjectIndexData: componentGameObjectIndexData,
   directionLightGameObjectIndexData: componentGameObjectIndexData,
   pointLightGameObjectIndexData: componentGameObjectIndexData,
-  customGeometryGameObjectIndexData: componentGameObjectIndexData,
+  geometryGameObjectIndexData: componentGameObjectIndexData,
   meshRendererGameObjectIndexData: componentGameObjectIndexData,
 };
 
@@ -238,7 +238,7 @@ type wd = {
   perspectiveCameraProjections: array(perspectiveCameraProjection),
   arcballCameraControllers: array(SceneGraphType.arcballCameraController),
   transforms: array(transform),
-  customGeometrys: array(option(customGeometry)),
+  geometrys: array(option(geometry)),
   meshRenderers: array(option(meshRenderer)),
   basicMaterials: array(basicMaterial),
   lightMaterials: array(lightMaterial),

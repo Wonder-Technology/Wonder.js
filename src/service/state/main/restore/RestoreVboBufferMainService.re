@@ -8,10 +8,10 @@ let restore = (currentState, targetState) => {
   {
     ...targetState,
     vboBufferRecord: {
-      customGeometryVertexBufferMap: [||],
-      customGeometryTexCoordBufferMap: [||],
-      customGeometryNormalBufferMap: [||],
-      customGeometryElementArrayBufferMap: [||],
+      geometryVertexBufferMap: [||],
+      geometryTexCoordBufferMap: [||],
+      geometryNormalBufferMap: [||],
+      geometryElementArrayBufferMap: [||],
       matrixInstanceBufferMap: [||],
       vertexArrayBufferPool,
       elementArrayBufferPool,

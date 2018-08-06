@@ -52,7 +52,7 @@ let _ =
       describe("init vbo buffers when first send", () => {
         let _prepare = (sandbox, state) => {
           let (state, gameObject, geometry, _, _) =
-            RenderBasicJobTool.prepareGameObjectWithCustomGeometry(
+            RenderBasicJobTool.prepareGameObjectWithGeometry(
               sandbox,
               state,
             );
@@ -82,7 +82,7 @@ let _ =
               ~completeFunc=
                 _ => {
                   let vertices =
-                    CustomGeometryAPI.getCustomGeometryVertices(
+                    GeometryAPI.getGeometryVertices(
                       geometry,
                       state,
                     );
@@ -119,7 +119,7 @@ let _ =
               ~completeFunc=
                 _ => {
                   let indices =
-                    CustomGeometryAPI.getCustomGeometryIndices(
+                    GeometryAPI.getGeometryIndices(
                       geometry,
                       state,
                     );

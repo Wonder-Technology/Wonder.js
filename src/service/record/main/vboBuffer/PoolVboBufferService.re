@@ -27,29 +27,29 @@ let _addBufferToPool = (geometryIndex, bufferMap, pool) =>
 let addAllBufferToPool =
     (
       {
-        customGeometryVertexBufferMap,
-        customGeometryTexCoordBufferMap,
-        customGeometryNormalBufferMap,
-        customGeometryElementArrayBufferMap,
+        geometryVertexBufferMap,
+        geometryTexCoordBufferMap,
+        geometryNormalBufferMap,
+        geometryElementArrayBufferMap,
         matrixInstanceBufferMap,
         vertexArrayBufferPool,
         elementArrayBufferPool,
         matrixInstanceBufferPool,
       },
     ) => {
-  customGeometryVertexBufferMap
+  geometryVertexBufferMap
   |> SparseMapService.forEachValid((. buffer) =>
        vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore
      );
-  customGeometryTexCoordBufferMap
+  geometryTexCoordBufferMap
   |> SparseMapService.forEachValid((. buffer) =>
        vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore
      );
-  customGeometryNormalBufferMap
+  geometryNormalBufferMap
   |> SparseMapService.forEachValid((. buffer) =>
        vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore
      );
-  customGeometryElementArrayBufferMap
+  geometryElementArrayBufferMap
   |> SparseMapService.forEachValid((. buffer) =>
        elementArrayBufferPool |> Js.Array.push(buffer) |> ignore
      );
@@ -69,14 +69,14 @@ let _addBufferToPool = (geometryIndex, bufferMap, pool) =>
   | None => pool
   };
 
-let addCustomGeometryBufferToPool =
+let addGeometryBufferToPool =
   (.
     geometryIndex: int,
     {
-      customGeometryVertexBufferMap,
-      customGeometryTexCoordBufferMap,
-      customGeometryNormalBufferMap,
-      customGeometryElementArrayBufferMap,
+      geometryVertexBufferMap,
+      geometryTexCoordBufferMap,
+      geometryNormalBufferMap,
+      geometryElementArrayBufferMap,
       vertexArrayBufferPool,
       elementArrayBufferPool,
     } as record,
@@ -84,12 +84,12 @@ let addCustomGeometryBufferToPool =
     ...record,
     vertexArrayBufferPool:
       vertexArrayBufferPool
-      |> _addBufferToPool(geometryIndex, customGeometryVertexBufferMap)
-      |> _addBufferToPool(geometryIndex, customGeometryTexCoordBufferMap)
-      |> _addBufferToPool(geometryIndex, customGeometryNormalBufferMap),
+      |> _addBufferToPool(geometryIndex, geometryVertexBufferMap)
+      |> _addBufferToPool(geometryIndex, geometryTexCoordBufferMap)
+      |> _addBufferToPool(geometryIndex, geometryNormalBufferMap),
     elementArrayBufferPool:
       elementArrayBufferPool
-      |> _addBufferToPool(geometryIndex, customGeometryElementArrayBufferMap),
+      |> _addBufferToPool(geometryIndex, geometryElementArrayBufferMap),
   };
 
 let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>

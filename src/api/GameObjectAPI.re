@@ -284,7 +284,7 @@ let hasGameObjectTransformComponent =
   hasTransformComponent(gameObject, state.gameObjectRecord);
 };
 
-let addGameObjectCustomGeometryComponent =
+let addGameObjectGeometryComponent =
     (
       gameObject: gameObject,
       component: component,
@@ -297,10 +297,10 @@ let addGameObjectCustomGeometryComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  addCustomGeometryComponent(gameObject, component, state);
+  addGeometryComponent(gameObject, component, state);
 };
 
-let disposeGameObjectCustomGeometryComponent =
+let disposeGameObjectGeometryComponent =
     (
       gameObject: gameObject,
       component: component,
@@ -313,7 +313,7 @@ let disposeGameObjectCustomGeometryComponent =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  deferDisposeCustomGeometryComponent(. gameObject, component, state);
+  deferDisposeGeometryComponent(. gameObject, component, state);
 };
 
 let unsafeGetGameObjectGeometryComponent =

@@ -25,8 +25,8 @@ let _ =
           ~sandbox,
           ~buffer=
             SettingTool.buildBufferConfigStr(
-              ~customGeometryPointCount=10000,
-              ~customGeometryCount=10,
+              ~geometryPointCount=10000,
+              ~geometryCount=10,
               (),
             ),
           (),
@@ -337,7 +337,7 @@ let _ =
       );
     });
 
-    describe("test customGeometrys", () => {
+    describe("test geometrys", () => {
       open Js.Typed_array;
 
       describe("test set point data", () => {
@@ -355,13 +355,13 @@ let _ =
                     state,
                   );
                 (
-                  CustomGeometryAPI.getCustomGeometryVertices(geometry, state),
-                  CustomGeometryAPI.getCustomGeometryNormals(geometry, state),
-                  CustomGeometryAPI.getCustomGeometryTexCoords(
+                  GeometryAPI.getGeometryVertices(geometry, state),
+                  GeometryAPI.getGeometryNormals(geometry, state),
+                  GeometryAPI.getGeometryTexCoords(
                     geometry,
                     state,
                   ),
-                  CustomGeometryAPI.getCustomGeometryIndices(geometry, state),
+                  GeometryAPI.getGeometryIndices(geometry, state),
                 )
                 |>
                 expect == (
@@ -685,7 +685,7 @@ let _ =
         testPromise("shouldn't disposed before", () => {
           TestTool.openContractCheck();
           let (state, gameObject, geometry) =
-            CustomGeometryTool.createGameObject(state^);
+            GeometryTool.createGameObject(state^);
           let state = GameObjectTool.disposeGameObject(gameObject, state);
 
           ConvertGLBTool.testGLTFResultByGLTF(
@@ -1603,7 +1603,7 @@ let _ =
 
     describe("test meshRenderers", () => {
       testPromise(
-        "each gameObject with customGeometry component should has one meshRenderer",
+        "each gameObject with geometry component should has one meshRenderer",
         () =>
         AssembleWDBSystemTool.testGLB(
           sandbox^,

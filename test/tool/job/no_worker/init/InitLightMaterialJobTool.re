@@ -12,7 +12,7 @@ let prepareGameObject = (sandbox, state) => {
   let state =
     state
     |> addGameObjectLightMaterialComponent(gameObject, material)
-    |> addGameObjectCustomGeometryComponent(gameObject, geometry);
+    |> addGameObjectGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry, material)
 };
 
@@ -29,7 +29,7 @@ let prepareGameObjectWithMap = (sandbox, diffuseMap, specularMap, state) => {
   let state =
     state
     |> addGameObjectLightMaterialComponent(gameObject, material)
-    |> addGameObjectCustomGeometryComponent(gameObject, geometry);
+    |> addGameObjectGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry, material)
 };
 
@@ -45,7 +45,7 @@ let prepareGameObjectWithCreatedMap = (sandbox, state) => {
   let state =
     state
     |> addGameObjectLightMaterialComponent(gameObject, material)
-    |> addGameObjectCustomGeometryComponent(gameObject, geometry);
+    |> addGameObjectGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry, material)
 };
 

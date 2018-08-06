@@ -27,10 +27,10 @@ let convertToRecord = setting => {
       |> optional(
            field("buffer", json =>
              {
-               customGeometryPointCount:
-                 json |> field("custom_geometry_point_count", int),
-               customGeometryCount:
-                 json |> field("custom_geometry_count", int),
+               geometryPointCount:
+                 json |> field("geometry_point_count", int),
+               geometryCount:
+                 json |> field("geometry_count", int),
                transformCount: json |> field("transform_count", int),
                basicMaterialCount: json |> field("basic_material_count", int),
                lightMaterialCount: json |> field("light_material_count", int),

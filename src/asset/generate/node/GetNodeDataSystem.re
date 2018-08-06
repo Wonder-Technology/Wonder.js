@@ -160,7 +160,7 @@ let rec _getNodeData =
             lightIndex,
           ),
           (
-            customGeometryDataMap,
+            geometryDataMap,
             basicMaterialDataMap,
             lightMaterialDataMap,
             gameObjectChildrenMap,
@@ -195,7 +195,7 @@ let rec _getNodeData =
              lightIndex,
            ),
            (
-             customGeometryDataMap,
+             geometryDataMap,
              basicMaterialDataMap,
              lightMaterialDataMap,
              gameObjectChildrenMap,
@@ -282,7 +282,7 @@ let rec _getNodeData =
              newLightIndex,
            ),
            (
-             customGeometryDataMap,
+             geometryDataMap,
              basicMaterialDataMap,
              lightMaterialDataMap,
            ),
@@ -311,7 +311,7 @@ let rec _getNodeData =
                lightIndex,
              ),
              (
-               customGeometryDataMap,
+               geometryDataMap,
                basicMaterialDataMap,
                lightMaterialDataMap,
              ),
@@ -341,7 +341,7 @@ let rec _getNodeData =
              newLightIndex,
            ),
            (
-             customGeometryDataMap,
+             geometryDataMap,
              basicMaterialDataMap,
              lightMaterialDataMap,
              gameObjectChildrenMap,
@@ -399,7 +399,7 @@ let rec _getNodeData =
            lightIndex,
          ),
          (
-           customGeometryDataMap,
+           geometryDataMap,
            basicMaterialDataMap,
            lightMaterialDataMap,
            gameObjectChildrenMap,
@@ -434,7 +434,7 @@ let getAllNodeData = (rootGameObject, state) => {
       lightIndex,
     ),
     (
-      customGeometryDataMap,
+      geometryDataMap,
       basicMaterialDataMap,
       lightMaterialDataMap,
       gameObjectChildrenMap,
@@ -497,7 +497,7 @@ let getAllNodeData = (rootGameObject, state) => {
       lightIndex,
     ),
     (
-      customGeometryDataMap,
+      geometryDataMap,
       basicMaterialDataMap,
       lightMaterialDataMap,
       gameObjectChildrenMap,

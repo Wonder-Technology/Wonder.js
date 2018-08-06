@@ -68,13 +68,13 @@ let deferDisposeLightMaterialComponent =
     },
   };
 
-let deferDisposeCustomGeometryComponent =
+let deferDisposeGeometryComponent =
   (. component: component, state) => {
     ...state,
     gameObjectRecord: {
       ...state.gameObjectRecord,
-      disposedCustomGeometryArray:
-        state.gameObjectRecord.disposedCustomGeometryArray
+      disposedGeometryArray:
+        state.gameObjectRecord.disposedGeometryArray
         |> ArrayService.push(component),
     },
   };
@@ -179,9 +179,9 @@ let batchDisposeTransformComponent =
     state,
   );
 
-let batchDisposeCustomGeometryComponent =
+let batchDisposeGeometryComponent =
     ({settingRecord} as state, componentArray: array(component)) =>
-  DisposeCustomGeometryMainService.handleBatchDisposeComponent(.
+  DisposeGeometryMainService.handleBatchDisposeComponent(.
     componentArray,
     state,
   );

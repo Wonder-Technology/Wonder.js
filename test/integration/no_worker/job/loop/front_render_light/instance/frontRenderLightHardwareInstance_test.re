@@ -19,7 +19,7 @@ let _ =
               sandbox,
               LoopRenderJobTool.buildNoWorkerJobConfig(),
               SettingTool.buildBufferConfigStr(
-                ~customGeometryPointCount=300,
+                ~geometryPointCount=300,
                 ~transformCount=500,
                 ~basicMaterialCount=50,
                 ~lightMaterialCount=50,
@@ -627,7 +627,7 @@ let _ =
           RenderHardwareInstanceTool.testDrawElementsInstancedANGLE(
             sandbox,
             _prepare,
-            CustomGeometryTool.getIndicesCount,
+            GeometryTool.getIndicesCount,
             state
           )
       )

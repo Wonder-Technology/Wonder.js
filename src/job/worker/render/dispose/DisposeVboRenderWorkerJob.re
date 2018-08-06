@@ -6,8 +6,8 @@ let execJob = (flags, e, stateData) =>
     let data = MessageService.getRecord(e);
     state.vboBufferRecord =
       state.vboBufferRecord
-      |> DisposeVboBufferService.disposeCustomGeometryVboBuffer(
-           data##customGeometryNeedDisposeVboBufferArr,
+      |> DisposeVboBufferService.disposeGeometryVboBuffer(
+           data##geometryNeedDisposeVboBufferArr,
          )
       |> DisposeVboBufferService.disposeSourceInstanceVboBuffer(
            data##sourceInstanceNeedDisposeVboBufferArr,

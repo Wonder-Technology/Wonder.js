@@ -49,22 +49,22 @@ let _ =
             createBuffer,
           ) =
             VboBufferTool.prepareCreatedBuffer(sandbox, state);
-          VboBufferTool.getOrCreateAllCustomGeometryBuffers(geometry1, state);
+          VboBufferTool.getOrCreateAllGeometryBuffers(geometry1, state);
           let (
             resultVertexArrayBuffer1,
             resultTexCoordArrayBuffer1,
             resultNormalArrayBuffer1,
             resultElementArrayBuffer1,
           ) =
-            VboBufferTool.getOrCreateAllCustomGeometryBuffers(geometry1, state);
+            VboBufferTool.getOrCreateAllGeometryBuffers(geometry1, state);
           let state =
             state
-            |> GameObjectAPI.disposeGameObjectCustomGeometryComponent(
+            |> GameObjectAPI.disposeGameObjectGeometryComponent(
                  gameObject1,
                  geometry1,
                );
           let (state, gameObject2, geometry2) =
-            CustomGeometryTool.createGameObject(state);
+            GeometryTool.createGameObject(state);
           let state = state |> GameObjectAPI.initGameObject(gameObject2);
           let state = state |> DisposeJob.execJob(None);
           let (
@@ -73,7 +73,7 @@ let _ =
             resultNormalArrayBuffer2,
             resultElementArrayBuffer2,
           ) =
-            VboBufferTool.getOrCreateAllCustomGeometryBuffers(
+            VboBufferTool.getOrCreateAllGeometryBuffers(
               geometry2,
               state,
             );

@@ -1,6 +1,6 @@
 open Js.Typed_array;
 
-let createBoxGeometry = state => CustomGeometryAPI.createBoxGeometry(state);
+let createBoxGeometry = state => GeometryAPI.createBoxGeometry(state);
 
 let getBoxGeometryVertices = state => {
   let (vertices, texCoords, normals, indices) =
@@ -35,7 +35,7 @@ let createGameObject = (state: StateDataMainType.state) => {
   let (state, gameObject) = GameObjectAPI.createGameObject(state);
   let state =
     state
-    |> GameObjectAPI.addGameObjectCustomGeometryComponent(
+    |> GameObjectAPI.addGameObjectGeometryComponent(
          gameObject,
          geometry,
        );
@@ -52,7 +52,7 @@ let getDefaultVertices = () => {
 
 let isGeometryDisposed = (geometry, state) =>
   !
-    DisposeCustomGeometryMainService.isAlive(
+    DisposeGeometryMainService.isAlive(
       geometry,
-      state |> RecordCustomGeometryMainService.getRecord,
+      state |> RecordGeometryMainService.getRecord,
     );

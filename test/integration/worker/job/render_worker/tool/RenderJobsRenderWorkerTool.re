@@ -86,7 +86,7 @@ let init = (completeFunc, state) => {
          GetBrowserDetectDataRenderWorkerJob.execJob(None),
          PregetGLSLDataRenderWorkerJob.execJob(None),
          InitInstanceRenderWorkerJob.execJob(None),
-         InitCustomGeometryRenderWorkerJob.execJob(None),
+         InitGeometryRenderWorkerJob.execJob(None),
          InitMeshRendererRenderWorkerJob.execJob(None),
          InitBasicMaterialRenderWorkerJob.execJob(None),
          InitDirectionLightRenderWorkerJob.execJob(None),
@@ -180,7 +180,7 @@ let dispose = (postMessageToRenderWorker, completeFunc) => {
     postMessageToRenderWorker
     |> withOneArg({
          "operateType": "DISPOSE",
-         "customGeometryNeedDisposeVboBufferArr": Sinon.matchAny,
+         "geometryNeedDisposeVboBufferArr": Sinon.matchAny,
          "sourceInstanceNeedDisposeVboBufferArr": Sinon.matchAny,
        })
     |> Obj.magic
@@ -191,7 +191,7 @@ let dispose = (postMessageToRenderWorker, completeFunc) => {
     /* DisposeAndSendDisposeDataMainWorkerJob._buildData(
          "",
          (
-           customGeometryNeedDisposeVboBufferArr,
+           geometryNeedDisposeVboBufferArr,
            sourceInstanceNeedDisposeVboBufferArr
          )
        ) */

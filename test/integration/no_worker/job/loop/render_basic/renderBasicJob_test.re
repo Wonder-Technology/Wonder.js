@@ -1930,7 +1930,7 @@ let _ =
             drawElements
             |> withFourArgs(
                  triangles,
-                 CustomGeometryTool.getIndicesCount(
+                 GeometryTool.getIndicesCount(
                    geometry,
                    CreateRenderStateMainService.createRenderState(state),
                  ),
@@ -1975,7 +1975,7 @@ let _ =
                      drawElements
                    |> withFourArgs(
                         triangles,
-                        CustomGeometryTool.getIndicesCount(geometry1, state),
+                        GeometryTool.getIndicesCount(geometry1, state),
                                            GeometryTool.getIndexType( CreateRenderStateMainService.createRenderState(state)),
                         GeometryTool.getIndexTypeSize(CreateRenderStateMainService.createRenderState(state)) * 0
                       )
@@ -1983,7 +1983,7 @@ let _ =
                      drawElements
                    |> withFourArgs(
                         triangles,
-                        CustomGeometryTool.getIndicesCount(geometry2, state),
+                        GeometryTool.getIndicesCount(geometry2, state),
                                            GeometryTool.getIndexType( CreateRenderStateMainService.createRenderState(state)),
                         GeometryTool.getIndexTypeSize(CreateRenderStateMainService.createRenderState(state)) * 0
                       )

@@ -32,7 +32,7 @@ let createState = () => {
   arrayBufferViewSourceTextureRecord: None,
   directionLightRecord: RecordDirectionLightMainService.create(),
   pointLightRecord: RecordPointLightMainService.create(),
-  customGeometryRecord: None,
+  geometryRecord: None,
   meshRendererRecord: None,
   shaderRecord: RecordShaderService.create(),
   glslRecord: RecordGLSLService.create(),

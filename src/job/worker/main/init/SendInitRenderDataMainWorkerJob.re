@@ -119,7 +119,7 @@ let _buildData = (operateType, canvas, stateData) => {
   let transformRecord = RecordTransformMainService.getRecord(state);
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
-  let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
+  let geometryRecord = RecordGeometryMainService.getRecord(state);
   let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
   let (x, y, width, height, _, _) = ScreenService.queryFullScreenData();
@@ -130,8 +130,8 @@ let _buildData = (operateType, canvas, stateData) => {
     "isDebug": IsDebugMainService.getIsDebug(stateData),
     "viewportData": [|x, y, width, height|],
     "bufferData": {
-      "customGeometryPointCount": buffer.customGeometryPointCount,
-      "customGeometryCount": buffer.customGeometryCount,
+      "geometryPointCount": buffer.geometryPointCount,
+      "geometryCount": buffer.geometryCount,
       "transformCount": buffer.transformCount,
       "basicMaterialCount": buffer.basicMaterialCount,
       "lightMaterialCount": buffer.lightMaterialCount,
@@ -196,8 +196,8 @@ let _buildData = (operateType, canvas, stateData) => {
           gameObjectRecord,
         ),
       ),
-    "customGeometryData": {
-      "buffer": customGeometryRecord.buffer,
+    "geometryData": {
+      "buffer": geometryRecord.buffer,
     },
     "meshRendererData": {
       "buffer": meshRendererRecord.buffer,
