@@ -180,7 +180,7 @@ let _ =
           RenderBatchInstanceTool.testDrawElements(
             sandbox,
             FrontRenderLightBatchInstanceTool.prepare,
-            BoxGeometryTool.getIndicesCount,
+            CustomGeometryTool.getIndicesCount,
             state
           )
       )

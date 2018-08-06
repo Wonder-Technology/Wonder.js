@@ -166,80 +166,6 @@ let _batchAddSharableComponent =
      );
 };
 
-let _batchAddSharableGeometryComponent =
-    (
-      (
-        uidArr: array(int),
-        componentArr: array(component),
-        dataTupleForBatchAddComponentDataFunc,
-      ),
-      (
-        increaseGroupCountFunc,
-        handleAddComponentFunc,
-        batchAddComponentDataFunc,
-      ),
-      record,
-    ) => {
-  _checkBatchAdd(uidArr, componentArr);
-  uidArr
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. record, uid, index) => {
-         let component = Array.unsafe_get(componentArr, index);
-         batchAddComponentDataFunc(.
-           dataTupleForBatchAddComponentDataFunc,
-           component,
-           uid,
-         )
-         |> ignore;
-         let record = increaseGroupCountFunc(. component, record);
-         handleAddComponentFunc(. component, uid, record);
-       },
-       record,
-     );
-};
-
-let _batchAddBoxGeometryComponentDataForClone =
-  (. (geometryDataMap, type_), component, uid) =>
-    CurrentComponentDataMapRenderService.addToMap(
-      uid,
-      (component, type_),
-      geometryDataMap,
-    );
-
-let batchAddBoxGeometryComponentForClone =
-    (
-      uidArr: array(int),
-      componentArr: array(component),
-      {gameObjectRecord} as state,
-    ) => {
-  ...state,
-  boxGeometryRecord:
-    _batchAddSharableGeometryComponent(
-      (
-        uidArr,
-        componentArr,
-        (
-          gameObjectRecord.geometryDataMap,
-          CurrentComponentDataMapService.getBoxGeometryType(),
-        ),
-      ),
-      (
-        GroupBoxGeometryService.increaseGroupCount,
-        AddBoxGeometryService.handleAddComponent,
-        _batchAddBoxGeometryComponentDataForClone,
-      ),
-      state |> RecordBoxGeometryMainService.getRecord,
-    ),
-};
-
-let _batchAddCustomGeometryComponentData =
-  (. (geometryDataMap, type_), component, uid) =>
-    CurrentComponentDataMapRenderService.addToMap(
-      uid,
-      (component, type_),
-      geometryDataMap,
-    );
-
 let _batchAddCustomGeometryComponent =
     (
       uidArr: array(int),
@@ -249,38 +175,18 @@ let _batchAddCustomGeometryComponent =
   ...state,
   customGeometryRecord:
     Some(
-      _batchAddSharableGeometryComponent(
-        (
-          uidArr,
-          componentArr,
-          (
-            gameObjectRecord.geometryDataMap,
-            CurrentComponentDataMapService.getCustomGeometryType(),
-          ),
-        ),
+      _batchAddSharableComponent(
+        (uidArr, componentArr, gameObjectRecord.geometryMap),
         (
           GroupCustomGeometryService.increaseGroupCount,
           AddCustomGeometryService.handleAddComponent,
-          _batchAddCustomGeometryComponentData,
         ),
-        state |> RecordCustomGeometryMainService.getRecord,
+        RecordCustomGeometryMainService.getRecord(state),
       ),
     ),
 };
 
 let batchAddCustomGeometryComponentForClone = _batchAddCustomGeometryComponent;
-
-let _batchAddMaterialComponent =
-    (
-      (uidArr: array(int), componentArr: array(component), componentMap),
-      funcTuple,
-      record,
-    ) =>
-  _batchAddSharableComponent(
-    (uidArr, componentArr, componentMap),
-    funcTuple,
-    record,
-  );
 
 let _batchAddBasicMaterialComponent =
     (
@@ -291,7 +197,7 @@ let _batchAddBasicMaterialComponent =
   ...state,
   basicMaterialRecord:
     Some(
-      _batchAddMaterialComponent(
+      _batchAddSharableComponent(
         (uidArr, componentArr, gameObjectRecord.basicMaterialMap),
         (
           GroupBasicMaterialService.increaseGroupCount,
@@ -313,7 +219,7 @@ let _batchAddLightMaterialComponent =
   ...state,
   lightMaterialRecord:
     Some(
-      _batchAddMaterialComponent(
+      _batchAddSharableComponent(
         (uidArr, componentArr, gameObjectRecord.lightMaterialMap),
         (
           GroupLightMaterialService.increaseGroupCount,

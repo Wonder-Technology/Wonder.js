@@ -293,7 +293,6 @@ let render =
           shaderIndex,
           meshRendererIndex,
           geometryIndex,
-          geometryType,
           sourceInstance,
         ) as indexTuple,
         defaultCapacity,
@@ -315,7 +314,6 @@ let render =
         shaderIndex,
         meshRendererIndex,
         geometryIndex,
-        geometryType,
       ),
       renderFunc,
       state,
@@ -348,14 +346,15 @@ let render =
         fillMatrixTypeArrFunc,
         state,
       );
-  let getIndicesCountFunc =
-    CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
   DrawGLSLService.drawElementsInstancedANGLE(
     (
       DrawModeMeshRendererService.getGlDrawMode(gl, meshRendererIndex, state),
       GeometryRenderService.getIndexType(gl),
       GeometryRenderService.getIndexTypeSize(gl),
-      getIndicesCountFunc(. geometryIndex, state),
+      GetCustomGeometryIndicesRenderService.getIndicesCount(.
+        geometryIndex,
+        state,
+      ),
       instanceRenderListCount,
     ),
     Obj.magic(extension),

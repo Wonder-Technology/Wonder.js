@@ -4,8 +4,6 @@ open TransformType;
 
 open GeometryType;
 
-open BoxGeometryType;
-
 open MeshRendererType;
 
 open MaterialType;
@@ -47,9 +45,6 @@ type gameObjectObjectInstanceMap =
 
 type gameObjectLightMap = WonderCommonlib.SparseMapService.t(int);
 
-type gameObjectCurrentGeometryDataMap =
-  WonderCommonlib.SparseMapService.t((geometry, int));
-
 type gameObjectRecord = {
   mutable uid: int,
   mutable nameMap: WonderCommonlib.SparseMapService.t(string),
@@ -64,7 +59,6 @@ type gameObjectRecord = {
   mutable disposedArcballCameraControllerArray: array(int),
   mutable disposedBasicMaterialArray: array(int),
   mutable disposedLightMaterialArray: array(int),
-  mutable disposedBoxGeometryArray: array(int),
   mutable disposedCustomGeometryArray: array(int),
   mutable disposedSourceInstanceArray: array(int),
   mutable disposedObjectInstanceArray: array(int),
@@ -72,7 +66,7 @@ type gameObjectRecord = {
   mutable disposedPointLightArray: array(int),
   mutable disposedMeshRendererComponentArray: array(int),
   mutable aliveUidArray: gameObjectAliveUidArray,
-  mutable geometryDataMap: gameObjectCurrentGeometryDataMap,
+  mutable geometryMap: gameObjectGeometryMap,
   mutable transformMap: gameObjectTransformMap,
   mutable basicCameraViewMap: gameObjectCameraViewMap,
   mutable perspectiveCameraProjectionMap: gameObjectCameraProjectionMap,

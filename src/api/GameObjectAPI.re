@@ -284,50 +284,6 @@ let hasGameObjectTransformComponent =
   hasTransformComponent(gameObject, state.gameObjectRecord);
 };
 
-let addGameObjectBoxGeometryComponent =
-    (
-      gameObject: gameObject,
-      component: component,
-      state: StateDataMainType.state,
-    ) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-  addBoxGeometryComponent(gameObject, component, state);
-};
-
-let disposeGameObjectBoxGeometryComponent =
-    (
-      gameObject: gameObject,
-      component: component,
-      state: StateDataMainType.state,
-    ) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-  deferDisposeBoxGeometryComponent(. gameObject, component, state);
-};
-
-let hasGameObjectBoxGeometryComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-  hasBoxGeometryComponent(gameObject, state.gameObjectRecord);
-};
-
 let addGameObjectCustomGeometryComponent =
     (
       gameObject: gameObject,

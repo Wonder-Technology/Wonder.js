@@ -23,53 +23,6 @@ let _clone =
   | None => state
   };
 
-let _cloneGeometryComponent =
-    (
-      uid,
-      countRangeArr,
-      clonedGameObjectArr: array(int),
-      {gameObjectRecord} as state,
-    ) => {
-  let boxGeometryType = CurrentComponentDataMapService.getBoxGeometryType();
-  let customGeometryType =
-    CurrentComponentDataMapService.getCustomGeometryType();
-  switch (
-    GetComponentGameObjectService.getGeometryComponentData(.
-      uid,
-      gameObjectRecord,
-    )
-  ) {
-  | Some((component, type_)) =>
-    switch (type_) {
-    | type_ when type_ === boxGeometryType =>
-      let (componentRecord, clonedComponentArr) =
-        CloneComponentGameObjectMainService.cloneBoxGeometryComponent(
-          component,
-          countRangeArr,
-          state,
-        );
-      BatchAddGameObjectComponentMainService.batchAddBoxGeometryComponentForClone(
-        clonedGameObjectArr,
-        clonedComponentArr,
-        state,
-      );
-    | type_ when type_ === customGeometryType =>
-      let (componentRecord, clonedComponentArr) =
-        CloneComponentGameObjectMainService.cloneCustomGeometryComponent(
-          component,
-          countRangeArr,
-          state,
-        );
-      BatchAddGameObjectComponentMainService.batchAddCustomGeometryComponentForClone(
-        clonedGameObjectArr,
-        clonedComponentArr,
-        state,
-      );
-    }
-  | None => state
-  };
-};
-
 let _cloneComponentExceptTransform =
     (
       (uid, countRangeArr, clonedGameObjectArr: array(int)),
@@ -77,7 +30,21 @@ let _cloneComponentExceptTransform =
       {gameObjectRecord} as state,
     ) =>
   state
-  |> _cloneGeometryComponent(uid, countRangeArr, clonedGameObjectArr)
+  |> _clone(
+       (
+         uid,
+         GetComponentGameObjectService.getGeometryComponent(
+           uid,
+           gameObjectRecord,
+         ),
+         countRangeArr,
+         clonedGameObjectArr,
+       ),
+       (
+         CloneComponentGameObjectMainService.cloneCustomGeometryComponent,
+         BatchAddGameObjectComponentMainService.batchAddCustomGeometryComponentForClone,
+       ),
+     )
   |> _clone(
        (
          uid,

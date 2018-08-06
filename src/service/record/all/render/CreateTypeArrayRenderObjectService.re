@@ -28,11 +28,6 @@ let createTypeArrays = (buffer, count) => (
     ~offset=getSourceInstanceIndicesOffset(count),
     ~length=getSourceInstanceIndicesLength(count),
   ),
-  Uint8Array.fromBufferRange(
-    WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getGeometryTypesOffset(count),
-    ~length=getGeometryTypesLength(count),
-  ),
 );
 
 let setAllTypeArrDataToDefault = (count: int, typeArrTuple) => {
@@ -47,7 +42,6 @@ let setAllTypeArrDataToDefault = (count: int, typeArrTuple) => {
            meshRendererIndices,
            geometryIndices,
            sourceInstanceIndices,
-           geometryTypes,
          ),
          index,
        ) => (
@@ -56,7 +50,6 @@ let setAllTypeArrDataToDefault = (count: int, typeArrTuple) => {
          meshRendererIndices,
          geometryIndices,
          setComponent(index, defaultSourceInstance, sourceInstanceIndices),
-         geometryTypes,
        ),
        typeArrTuple,
      );

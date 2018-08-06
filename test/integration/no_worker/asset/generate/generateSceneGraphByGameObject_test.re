@@ -86,7 +86,7 @@ let _ =
       let state =
         state
         |> addGameObjectMaterialComponentFunc(gameObject, material)
-        |> addGameObjectBoxGeometryComponent(gameObject, geometry)
+        |> addGameObjectCustomGeometryComponent(gameObject, geometry)
         |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
 
       let transform =
@@ -169,7 +169,7 @@ let _ =
     let _createGameObject1 = state => {
       open GameObjectAPI;
       open LightMaterialAPI;
-      open BoxGeometryAPI;
+      
       open MeshRendererAPI;
 
       let (state, material) = createLightMaterial(state);
@@ -189,7 +189,7 @@ let _ =
       let state =
         state
         |> addGameObjectLightMaterialComponent(gameObject, material)
-        |> addGameObjectBoxGeometryComponent(gameObject, geometry)
+        |> addGameObjectCustomGeometryComponent(gameObject, geometry)
         |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
 
       let transform =
@@ -1176,7 +1176,7 @@ let _ =
         ) =
           _createGameObjectWithShareGeometry(
             geometry1,
-            GameObjectAPI.addGameObjectBoxGeometryComponent,
+            GameObjectAPI.addGameObjectCustomGeometryComponent,
             state,
           );
 
@@ -1677,7 +1677,7 @@ let _ =
         let state =
           state
           |> addGameObjectLightMaterialComponent(gameObject, material)
-          |> addGameObjectBoxGeometryComponent(gameObject, geometry)
+          |> addGameObjectCustomGeometryComponent(gameObject, geometry)
           |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
 
         let transform =

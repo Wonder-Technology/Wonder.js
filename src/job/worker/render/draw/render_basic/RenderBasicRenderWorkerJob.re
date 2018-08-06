@@ -9,7 +9,6 @@ let _render = (gl, state) =>
       materialIndices,
       meshRendererIndices,
       geometryIndices,
-      geometryTypes,
       sourceInstanceIndices,
     }) =>
     RenderBasicJobUtils.render(
@@ -20,7 +19,6 @@ let _render = (gl, state) =>
         materialIndices,
         meshRendererIndices,
         geometryIndices,
-        geometryTypes,
         sourceInstanceIndices,
       ),
       CreateRenderStateRenderWorkerService.createRenderState(state),

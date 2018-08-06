@@ -22,8 +22,6 @@ open RenderWorkerSourceInstanceType;
 
 open RenderWorkerTransformType;
 
-open RenderWorkerBoxGeometryType;
-
 open RenderWorkerRenderType;
 
 open RenderWorkerWorkerDetectType;
@@ -51,8 +49,6 @@ let createRenderState =
     ) => {
   let {localToWorldMatrices, localToWorldMatrixCacheMap, normalMatrixCacheMap} as transformRecord =
     RecordTransformRenderWorkerService.getRecord(state);
-  let boxGeometryRecord =
-    RecordBoxGeometryRenderWorkerService.getRecord(state);
   let customGeometryRecord =
     RecordCustomGeometryRenderWorkerService.getRecord(state);
   let basicMaterialRecord =
@@ -102,12 +98,6 @@ let createRenderState =
     },
     glslSenderRecord,
     programRecord,
-    boxGeometryRecord: {
-      vertices: boxGeometryRecord.vertices,
-      texCoords: boxGeometryRecord.texCoords,
-      normals: boxGeometryRecord.normals,
-      indices: boxGeometryRecord.indices,
-    },
     customGeometryRecord: {
       vertices: customGeometryRecord.vertices,
       texCoords: customGeometryRecord.texCoords,

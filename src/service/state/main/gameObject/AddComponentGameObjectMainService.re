@@ -93,109 +93,17 @@ let addTransformComponent =
   state;
 };
 
-let _addSharableGeometryComponent =
-    (
-      (uid, component, gameObject),
-      (increaseGroupCountFunc, handleAddComponentFunc),
-      componentRecord,
-    ) =>
-  switch (gameObject) {
-  | Some(_) => increaseGroupCountFunc(. component, componentRecord)
-  | _ => handleAddComponentFunc(. component, uid, componentRecord)
-  };
-
-let _addCurrentBoxGeometryComponentData =
-    (
-      uid,
-      component,
-      /* {boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap}, */
-      {geometryDataMap},
-    ) =>
-  CurrentComponentDataMapRenderService.addToMap(
-    uid,
-    (
-      component,
-      CurrentComponentDataMapService.getBoxGeometryType(),
-      /* (boxGeometryVertexBufferMap, boxGeometryNormalBufferMap, boxGeometryElementArrayBufferMap),
-         (
-           VerticesBoxGeometryMainService.getVertices,
-           NormalsBoxGeometryMainService.getNormals,
-           IndicesBoxGeometryMainService.getIndices,
-           IndicesBoxGeometryMainService.getIndicesCount
-         ) */
-    ),
-    geometryDataMap,
-  );
-
-let addBoxGeometryComponent =
-    (uid: int, component: component, {gameObjectRecord} as state) => {
-  _addCurrentBoxGeometryComponentData(uid, component, gameObjectRecord)
-  |> ignore;
-  let boxGeometryRecord = state |> RecordBoxGeometryMainService.getRecord;
-  state.boxGeometryRecord =
-    boxGeometryRecord
-    |> _addSharableGeometryComponent(
-         (
-           uid,
-           component,
-           /* gameObjectRecord.boxGeometryMap, */
-           GameObjectBoxGeometryService.getGameObject(
-             component,
-             boxGeometryRecord,
-           ),
-         ),
-         (
-           GroupBoxGeometryService.increaseGroupCount,
-           AddBoxGeometryService.handleAddComponent,
-         ),
-       );
-  state;
-};
-
-let _addCurrentCustomGeometryComponentData =
-    (
-      uid,
-      component,
-      /* {
-           customGeometryVertexBufferMap,
-           customGeometryNormalBufferMap,
-           customGeometryElementArrayBufferMap
-         }, */
-      {geometryDataMap},
-    ) =>
-  CurrentComponentDataMapRenderService.addToMap(
-    uid,
-    (
-      component,
-      CurrentComponentDataMapService.getCustomGeometryType(),
-      /* (
-           customGeometryVertexBufferMap,
-           customGeometryNormalBufferMap,
-           customGeometryElementArrayBufferMap
-         ),
-         (
-           VerticesCustomGeometryMainService.getVertices,
-           NormalsCustomGeometryMainService.getNormals,
-           IndicesCustomGeometryMainService.getIndices,
-           IndicesCustomGeometryMainService.getIndicesCount
-         ) */
-    ),
-    geometryDataMap,
-  );
-
 let addCustomGeometryComponent =
     (uid: int, component: component, {gameObjectRecord} as state) => {
-  _addCurrentCustomGeometryComponentData(uid, component, gameObjectRecord)
-  |> ignore;
-  let customGeometryRecord =
-    state |> RecordCustomGeometryMainService.getRecord;
+  let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
   state.customGeometryRecord =
     Some(
       customGeometryRecord
-      |> _addSharableGeometryComponent(
+      |> _addSharableComponent(
            (
              uid,
              component,
+             gameObjectRecord.geometryMap,
              GameObjectCustomGeometryService.getGameObject(
                component,
                customGeometryRecord,

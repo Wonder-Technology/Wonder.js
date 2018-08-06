@@ -24,7 +24,7 @@ let _ =
           let state = GameObjectTool.disposeGameObject(boxGameObject, state);
           let (state, boxGameObject2, _) = BoxGeometryTool.createGameObject(state);
           let state = GameObjectAPI.initGameObject(boxGameObject2, state);
-          BoxGeometryAPI.getBoxGeometryVertices(copiedState)
+          BoxGeometryTool.getBoxGeometryVertices(copiedState)
           |> expect == BoxGeometryTool.getDefaultVertices()
         }
       );

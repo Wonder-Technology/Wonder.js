@@ -24,8 +24,6 @@ open RenderWorkerSourceInstanceType;
 
 open RenderWorkerTransformType;
 
-open RenderWorkerBoxGeometryType;
-
 open RenderWorkerCustomGeometryType;
 
 open RenderWorkerRenderType;
@@ -151,7 +149,6 @@ and renderWorkerState = {
   mutable arrayBufferViewSourceTextureRecord:
     option(arrayBufferViewSourceTextureRecord),
   mutable transformRecord: option(transformRecord),
-  mutable boxGeometryRecord,
   mutable customGeometryRecord: option(customGeometryRecord),
   mutable directionLightRecord: option(directionLightRecord),
   mutable pointLightRecord: option(pointLightRecord),

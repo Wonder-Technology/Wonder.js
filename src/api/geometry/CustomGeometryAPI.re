@@ -6,12 +6,14 @@ open CustomGeometryType;
 
 open DisposeCustomGeometryMainService;
 
-let createCustomGeometry = (state) => CreateCustomGeometryMainService.create(state);
+let createCustomGeometry = state =>
+  CreateCustomGeometryMainService.create(state);
 
-/* let getCustomGeometryDrawMode = (state: StateDataMainType.state) =>
-  [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord) |> getDrawMode; */
+let createBoxGeometry = state =>
+  CreateBoxGeometryCustomGeometryMainService.create(state);
 
-let getCustomGeometryVertices = (geometry: int, state: StateDataMainType.state) => {
+let getCustomGeometryVertices =
+    (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -20,18 +22,22 @@ let getCustomGeometryVertices = (geometry: int, state: StateDataMainType.state) 
             AliveComponentService.checkComponentShouldAlive(
               geometry,
               isAlive,
-              RecordCustomGeometryMainService.getRecord(state)
+              RecordCustomGeometryMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  [@bs] VerticesCustomGeometryMainService.getVertices(geometry, state)
+  VerticesCustomGeometryMainService.getVertices(. geometry, state);
 };
 
 let setCustomGeometryVertices =
-    (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataMainType.state) => {
+    (
+      geometry: int,
+      data: Js.Typed_array.Float32Array.t,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -40,17 +46,22 @@ let setCustomGeometryVertices =
             AliveComponentService.checkComponentShouldAlive(
               geometry,
               isAlive,
-              RecordCustomGeometryMainService.getRecord(state)
+              RecordCustomGeometryMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  VerticesCustomGeometryMainService.setVerticesByTypeArray(geometry, data, state)
+  VerticesCustomGeometryMainService.setVerticesByTypeArray(
+    geometry,
+    data,
+    state,
+  );
 };
 
-let getCustomGeometryTexCoords = (geometry: int, state: StateDataMainType.state) => {
+let getCustomGeometryTexCoords =
+    (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -59,18 +70,22 @@ let getCustomGeometryTexCoords = (geometry: int, state: StateDataMainType.state)
             AliveComponentService.checkComponentShouldAlive(
               geometry,
               isAlive,
-              RecordCustomGeometryMainService.getRecord(state)
+              RecordCustomGeometryMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  [@bs] TexCoordsCustomGeometryMainService.getTexCoords(geometry, state)
+  TexCoordsCustomGeometryMainService.getTexCoords(. geometry, state);
 };
 
 let setCustomGeometryTexCoords =
-    (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataMainType.state) => {
+    (
+      geometry: int,
+      data: Js.Typed_array.Float32Array.t,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -79,14 +94,18 @@ let setCustomGeometryTexCoords =
             AliveComponentService.checkComponentShouldAlive(
               geometry,
               isAlive,
-              RecordCustomGeometryMainService.getRecord(state)
+              RecordCustomGeometryMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  TexCoordsCustomGeometryMainService.setTexCoordsByTypeArray(geometry, data, state)
+  TexCoordsCustomGeometryMainService.setTexCoordsByTypeArray(
+    geometry,
+    data,
+    state,
+  );
 };
 
 let getCustomGeometryNormals = (geometry: int, state: StateDataMainType.state) => {
@@ -98,18 +117,22 @@ let getCustomGeometryNormals = (geometry: int, state: StateDataMainType.state) =
             AliveComponentService.checkComponentShouldAlive(
               geometry,
               isAlive,
-              RecordCustomGeometryMainService.getRecord(state)
+              RecordCustomGeometryMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  [@bs] NormalsCustomGeometryMainService.getNormals(geometry, state)
+  NormalsCustomGeometryMainService.getNormals(. geometry, state);
 };
 
 let setCustomGeometryNormals =
-    (geometry: int, data: Js.Typed_array.Float32Array.t, state: StateDataMainType.state) => {
+    (
+      geometry: int,
+      data: Js.Typed_array.Float32Array.t,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -118,14 +141,18 @@ let setCustomGeometryNormals =
             AliveComponentService.checkComponentShouldAlive(
               geometry,
               isAlive,
-              RecordCustomGeometryMainService.getRecord(state)
+              RecordCustomGeometryMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  NormalsCustomGeometryMainService.setNormalsByTypeArray(geometry, data, state)
+  NormalsCustomGeometryMainService.setNormalsByTypeArray(
+    geometry,
+    data,
+    state,
+  );
 };
 
 let getCustomGeometryIndices = (geometry: int, state: StateDataMainType.state) => {
@@ -137,18 +164,22 @@ let getCustomGeometryIndices = (geometry: int, state: StateDataMainType.state) =
             AliveComponentService.checkComponentShouldAlive(
               geometry,
               isAlive,
-              RecordCustomGeometryMainService.getRecord(state)
+              RecordCustomGeometryMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  [@bs] IndicesCustomGeometryMainService.getIndices(geometry, state)
+  IndicesCustomGeometryMainService.getIndices(. geometry, state);
 };
 
 let setCustomGeometryIndices =
-    (geometry: int, data: Js.Typed_array.Uint16Array.t, state: StateDataMainType.state) => {
+    (
+      geometry: int,
+      data: Js.Typed_array.Uint16Array.t,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -157,17 +188,22 @@ let setCustomGeometryIndices =
             AliveComponentService.checkComponentShouldAlive(
               geometry,
               isAlive,
-              RecordCustomGeometryMainService.getRecord(state)
+              RecordCustomGeometryMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  IndicesCustomGeometryMainService.setIndicesByTypeArray(geometry, data, state)
+  IndicesCustomGeometryMainService.setIndicesByTypeArray(
+    geometry,
+    data,
+    state,
+  );
 };
 
-let unsafeGetCustomGeometryGameObject = (geometry: geometry, state: StateDataMainType.state) => {
+let unsafeGetCustomGeometryGameObject =
+    (geometry: geometry, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -176,15 +212,15 @@ let unsafeGetCustomGeometryGameObject = (geometry: geometry, state: StateDataMai
             AliveComponentService.checkComponentShouldAlive(
               geometry,
               isAlive,
-              RecordCustomGeometryMainService.getRecord(state)
+              RecordCustomGeometryMainService.getRecord(state),
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   GameObjectCustomGeometryService.unsafeGetGameObject(
     geometry,
-    RecordCustomGeometryMainService.getRecord(state)
-  )
+    RecordCustomGeometryMainService.getRecord(state),
+  );
 };

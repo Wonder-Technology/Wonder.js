@@ -5,7 +5,7 @@ let execJob = (configData, state) => RenderBasicJob.execJob(configData, state);
 let prepareGameObject = (sandbox, state) => {
   open GameObjectAPI;
   open BasicMaterialAPI;
-  open BoxGeometryAPI;
+  
   open MeshRendererAPI;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
@@ -15,7 +15,7 @@ let prepareGameObject = (sandbox, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectBoxGeometryComponent(gameObject, geometry)
+    |> addGameObjectCustomGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer)
 };
@@ -51,7 +51,7 @@ let prepareGameObjectWithCustomGeometry = (sandbox, state) => {
 let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
   open GameObjectAPI;
   open BasicMaterialAPI;
-  open BoxGeometryAPI;
+  
   open MeshRendererAPI;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
@@ -61,7 +61,7 @@ let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectBoxGeometryComponent(gameObject, geometry)
+    |> addGameObjectCustomGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer)
 };
@@ -69,7 +69,7 @@ let prepareGameObjectWithSharedGeometry = (sandbox, geometry, state) => {
 let prepareGameObjectWithSharedMaterial = (sandbox, material, state) => {
   open GameObjectAPI;
   open BasicMaterialAPI;
-  open BoxGeometryAPI;
+  
   open MeshRendererAPI;
   open Sinon;
   /* let (state, material) = createBasicMaterial(state); */
@@ -79,7 +79,7 @@ let prepareGameObjectWithSharedMaterial = (sandbox, material, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectBoxGeometryComponent(gameObject, geometry)
+    |> addGameObjectCustomGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
   (state, gameObject, geometry, material, meshRenderer)
 };

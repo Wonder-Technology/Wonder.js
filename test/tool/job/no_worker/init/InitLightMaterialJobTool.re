@@ -4,7 +4,7 @@ let initWithJobConfig = (sandbox, noWorkerJobRecord) =>
 let prepareGameObject = (sandbox, state) => {
   open GameObjectAPI;
   open LightMaterialAPI;
-  open BoxGeometryAPI;
+  
   open Sinon;
   let (state, material) = createLightMaterial(state);
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
@@ -12,14 +12,14 @@ let prepareGameObject = (sandbox, state) => {
   let state =
     state
     |> addGameObjectLightMaterialComponent(gameObject, material)
-    |> addGameObjectBoxGeometryComponent(gameObject, geometry);
+    |> addGameObjectCustomGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry, material)
 };
 
 let prepareGameObjectWithMap = (sandbox, diffuseMap, specularMap, state) => {
   open GameObjectAPI;
   open LightMaterialAPI;
-  open BoxGeometryAPI;
+  
   open Sinon;
   let (state, material) = createLightMaterial(state);
   let (state, (texture1, texture2)) =
@@ -29,14 +29,14 @@ let prepareGameObjectWithMap = (sandbox, diffuseMap, specularMap, state) => {
   let state =
     state
     |> addGameObjectLightMaterialComponent(gameObject, material)
-    |> addGameObjectBoxGeometryComponent(gameObject, geometry);
+    |> addGameObjectCustomGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry, material)
 };
 
 let prepareGameObjectWithCreatedMap = (sandbox, state) => {
   open GameObjectAPI;
   open LightMaterialAPI;
-  open BoxGeometryAPI;
+  
   open Sinon;
   let (state, material) = createLightMaterial(state);
   let (state, (texture1, texture2)) = LightMaterialTool.createAndSetMaps(material, state);
@@ -45,7 +45,7 @@ let prepareGameObjectWithCreatedMap = (sandbox, state) => {
   let state =
     state
     |> addGameObjectLightMaterialComponent(gameObject, material)
-    |> addGameObjectBoxGeometryComponent(gameObject, geometry);
+    |> addGameObjectCustomGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry, material)
 };
 

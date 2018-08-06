@@ -98,7 +98,7 @@ var InstanceLightBoxesTool = (function () {
 
 
 
-            state = wd.addGameObjectBoxGeometryComponent(obj, geometry, state);
+            state = wd.addGameObjectCustomGeometryComponent(obj, geometry, state);
 
 
 

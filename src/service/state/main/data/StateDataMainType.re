@@ -8,8 +8,6 @@ open TransformType;
 
 open GameObjectType;
 
-open BoxGeometryType;
-
 open CustomGeometryType;
 
 open IMGUIType;
@@ -25,8 +23,6 @@ open SettingType;
 open GameObjectType;
 
 open GeometryType;
-
-open BoxGeometryType;
 
 open MeshRendererType;
 
@@ -308,7 +304,6 @@ and state = {
     option(arrayBufferViewSourceTextureRecord),
   mutable directionLightRecord,
   mutable pointLightRecord,
-  mutable boxGeometryRecord,
   mutable customGeometryRecord: option(customGeometryRecord),
   mutable meshRendererRecord: option(meshRendererRecord),
   arcballCameraControllerRecord,

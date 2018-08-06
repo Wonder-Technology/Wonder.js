@@ -4,7 +4,6 @@ type renderObjectRecord = {
   materialIndices: Js.Typed_array.Uint32Array.t,
   meshRendererIndices: Js.Typed_array.Uint32Array.t,
   geometryIndices: Js.Typed_array.Uint32Array.t,
-  geometryTypes: Js.Typed_array.Uint8Array.t,
   sourceInstanceIndices: Js.Typed_array.Uint32Array.t,
 };
 

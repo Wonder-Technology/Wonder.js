@@ -24,42 +24,8 @@ let batchGetArcballCameraControllerComponent =
 let batchGetTransformComponent = (uidArray: array(int), {gameObjectRecord}) =>
   batchGetComponent(uidArray, gameObjectRecord.transformMap);
 
-let batchGetGeometryComponentData =
-    (uidArray: array(int), {gameObjectRecord}) => {
-  let geometryDataMap = gameObjectRecord.geometryDataMap;
-  let boxGeometryType = CurrentComponentDataMapService.getBoxGeometryType();
-  let customGeometryType =
-    CurrentComponentDataMapService.getCustomGeometryType();
-  uidArray
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. (boxGeometryArr, customGeometryArr) as arrTuple, uid) =>
-         switch (
-           geometryDataMap
-           |> CurrentComponentDataMapService.getComponentData(uid)
-         ) {
-         | None => arrTuple
-         | Some((component, type_)) =>
-           switch (type_) {
-           | type_ when type_ === boxGeometryType =>
-             boxGeometryArr |> ArrayService.push(component) |> ignore
-           | type_ when type_ === customGeometryType =>
-             customGeometryArr |> ArrayService.push(component) |> ignore
-           | _ =>
-             WonderLog.Log.fatal(
-               WonderLog.Log.buildFatalMessage(
-                 ~title="unknown type_",
-                 ~description={j||j},
-                 ~reason="",
-                 ~solution={j||j},
-                 ~params={j|type_: $type_|j},
-               ),
-             )
-           };
-           arrTuple;
-         },
-       ([||], [||]),
-     );
-};
+let batchGetGeometryComponent = (uidArray: array(int), {gameObjectRecord}) =>
+  batchGetComponent(uidArray, gameObjectRecord.geometryMap);
 
 let batchGetBasicMaterialComponent =
     (uidArray: array(int), {gameObjectRecord}) =>

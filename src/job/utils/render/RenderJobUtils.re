@@ -63,14 +63,23 @@ let _getOrCreateBuffer =
 let _directlySendAttributeData =
     (
       gl,
-      (shaderIndex, geometryIndex, geometryType),
+      (shaderIndex, geometryIndex),
       {vboBufferRecord, glslSenderRecord} as state,
     ) => {
-  let currentGeometryBufferMapAndGetPointsFuncsTuple =
-    CurrentComponentDataMapRenderService.getCurrentGeometryBufferMapAndGetPointsFuncs(
-      geometryType,
-      vboBufferRecord,
-    );
+  let currentGeometryBufferMapAndGetPointsFuncsTuple = (
+    (
+      vboBufferRecord.customGeometryVertexBufferMap,
+      vboBufferRecord.customGeometryTexCoordBufferMap,
+      vboBufferRecord.customGeometryNormalBufferMap,
+      vboBufferRecord.customGeometryElementArrayBufferMap,
+    ),
+    (
+      GetCustomGeometryVerticesRenderService.getVertices,
+      GetCustomGeometryTexCoordsRenderService.getTexCoords,
+      GetCustomGeometryNormalsRenderService.getNormals,
+      GetCustomGeometryIndicesRenderService.getIndices,
+    ),
+  );
   let dataTuple = (gl, geometryIndex);
   glslSenderRecord
   |> HandleAttributeConfigDataService.unsafeGetAttributeSendData(shaderIndex)
@@ -90,15 +99,12 @@ let _directlySendAttributeData =
 };
 
 let _sendAttributeData =
-    (gl, (shaderIndex, geometryIndex, geometryType) as indexTuple, state) => {
+    (gl, (shaderIndex, geometryIndex) as indexTuple, state) => {
   let {lastSendGeometryData} as record = state.glslSenderRecord;
   switch (lastSendGeometryData) {
-  | Some((lastSendGeometryIndex, lastSendGeometryType))
-      when
-        lastSendGeometryIndex === geometryIndex
-        && lastSendGeometryType === geometryType => state
+  | Some(lastSendGeometryData) when lastSendGeometryData === geometryIndex => state
   | _ =>
-    record.lastSendGeometryData = Some((geometryIndex, geometryType));
+    record.lastSendGeometryData = Some(geometryIndex);
     _directlySendAttributeData(gl, indexTuple, state);
   };
 };
@@ -152,7 +158,6 @@ let render =
         shaderIndex,
         meshRendererIndex: MeshRendererType.meshRenderer,
         geometryIndex,
-        geometryType,
       ),
       bindAndUpdateFunc,
       {programRecord} as state,
@@ -161,7 +166,7 @@ let render =
   let state =
     state
     |> UseProgramRenderService.use(gl, program)
-    |> _sendAttributeData(gl, (shaderIndex, geometryIndex, geometryType))
+    |> _sendAttributeData(gl, (shaderIndex, geometryIndex))
     |> _sendUniformRenderObjectModelData(gl, shaderIndex, transformIndex);
   let {lastSendMaterialData} as record = state.glslSenderRecord;
   switch (lastSendMaterialData) {
@@ -176,16 +181,16 @@ let render =
   };
 };
 
-let draw = (gl, meshRendererIndex, geometryIndex, geometryType, state) => {
-  let getIndicesCountFunc =
-    CurrentComponentDataMapRenderService.getGetIndicesCountFunc(geometryType);
+let draw = (gl, meshRendererIndex, geometryIndex, state) =>
   DrawGLSLService.drawElement(
     (
       DrawModeMeshRendererService.getGlDrawMode(gl, meshRendererIndex, state),
       GeometryRenderService.getIndexType(gl),
       GeometryRenderService.getIndexTypeSize(gl),
-      getIndicesCountFunc(. geometryIndex, state),
+      GetCustomGeometryIndicesRenderService.getIndicesCount(.
+        geometryIndex,
+        state,
+      ),
     ),
     gl,
   );
-};

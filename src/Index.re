@@ -274,12 +274,6 @@ let disposeGameObjectCustomGeometryComponent = GameObjectAPI.disposeGameObjectCu
 
 let addGameObjectCustomGeometryComponent = GameObjectAPI.addGameObjectCustomGeometryComponent;
 
-let hasGameObjectBoxGeometryComponent = GameObjectAPI.hasGameObjectBoxGeometryComponent;
-
-let disposeGameObjectBoxGeometryComponent = GameObjectAPI.disposeGameObjectBoxGeometryComponent;
-
-let addGameObjectBoxGeometryComponent = GameObjectAPI.addGameObjectBoxGeometryComponent;
-
 let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
 
 let unsafeGetGameObjectTransformComponent = GameObjectAPI.unsafeGetGameObjectTransformComponent;
@@ -314,18 +308,6 @@ let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCame
 
 let createGameObject = GameObjectAPI.createGameObject;
 
-let unsafeGetBoxGeometryGameObject = BoxGeometryAPI.unsafeGetBoxGeometryGameObject;
-
-let getBoxGeometryIndices = BoxGeometryAPI.getBoxGeometryIndices;
-
-let getBoxGeometryNormals = BoxGeometryAPI.getBoxGeometryNormals;
-
-let getBoxGeometryTexCoords = BoxGeometryAPI.getBoxGeometryTexCoords;
-
-let getBoxGeometryVertices = BoxGeometryAPI.getBoxGeometryVertices;
-
-let createBoxGeometry = BoxGeometryAPI.createBoxGeometry;
-
 let unsafeGetCustomGeometryGameObject = CustomGeometryAPI.unsafeGetCustomGeometryGameObject;
 
 let setCustomGeometryIndices = CustomGeometryAPI.setCustomGeometryIndices;
@@ -343,6 +325,8 @@ let getCustomGeometryTexCoords = CustomGeometryAPI.getCustomGeometryTexCoords;
 let setCustomGeometryVertices = CustomGeometryAPI.setCustomGeometryVertices;
 
 let getCustomGeometryVertices = CustomGeometryAPI.getCustomGeometryVertices;
+
+let createBoxGeometry = CustomGeometryAPI.createBoxGeometry;
 
 let createCustomGeometry = CustomGeometryAPI.createCustomGeometry;
 
@@ -827,12 +811,6 @@ let unsafeGetGameObjectGeometryComponent = GameObjectAPI.unsafeGetGameObjectGeom
 let disposeGameObjectCustomGeometryComponent = GameObjectAPI.disposeGameObjectCustomGeometryComponent;
 
 let addGameObjectCustomGeometryComponent = GameObjectAPI.addGameObjectCustomGeometryComponent;
-
-let hasGameObjectBoxGeometryComponent = GameObjectAPI.hasGameObjectBoxGeometryComponent;
-
-let disposeGameObjectBoxGeometryComponent = GameObjectAPI.disposeGameObjectBoxGeometryComponent;
-
-let addGameObjectBoxGeometryComponent = GameObjectAPI.addGameObjectBoxGeometryComponent;
 
 let hasGameObjectTransformComponent = GameObjectAPI.hasGameObjectTransformComponent;
 

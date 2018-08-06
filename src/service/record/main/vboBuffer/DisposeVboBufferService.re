@@ -1,5 +1,3 @@
-open BoxGeometryType;
-
 open InstanceType;
 
 open SourceInstanceType;
@@ -7,27 +5,6 @@ open SourceInstanceType;
 open VboBufferType;
 
 open DisposeComponentService;
-
-let disposeBoxGeometryBufferData =
-  [@bs]
-  (
-    (
-      geometry,
-      {
-        boxGeometryVertexBufferMap,
-        boxGeometryTexCoordBufferMap,
-        boxGeometryNormalBufferMap,
-        boxGeometryElementArrayBufferMap
-      } as record
-    ) => {
-      ...record,
-      boxGeometryVertexBufferMap: disposeSparseMapData(geometry, boxGeometryVertexBufferMap),
-      boxGeometryTexCoordBufferMap: disposeSparseMapData(geometry, boxGeometryTexCoordBufferMap),
-      boxGeometryNormalBufferMap: disposeSparseMapData(geometry, boxGeometryNormalBufferMap),
-      boxGeometryElementArrayBufferMap:
-        disposeSparseMapData(geometry, boxGeometryElementArrayBufferMap)
-    }
-  );
 
 let disposeCustomGeometryBufferData =
   [@bs]
@@ -72,13 +49,6 @@ let _disposeVboBuffer =
        ),
        vboBufferRecord
      );
-
-let disposeBoxGeometryVboBuffer = (boxGeometryNeedDisposeVboBufferArr, vboBufferRecord) =>
-  _disposeVboBuffer(
-    boxGeometryNeedDisposeVboBufferArr,
-    ([@bs] PoolVboBufferService.addBoxGeometryBufferToPool, [@bs] disposeBoxGeometryBufferData),
-    vboBufferRecord
-  );
 
 let disposeCustomGeometryVboBuffer = (customGeometryNeedDisposeVboBufferArr, vboBufferRecord) =>
   _disposeVboBuffer(

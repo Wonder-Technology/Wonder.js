@@ -65,21 +65,6 @@ let cloneMeshRendererComponent =
   (state, componentArr);
 };
 
-let cloneBoxGeometryComponent =
-    (
-      sourceComponent: component,
-      countRangeArr: array(int),
-      {boxGeometryRecord} as state,
-    ) => {
-  let (boxGeometryRecord, componentArr) =
-    CloneBoxGeometryService.handleCloneComponent(
-      sourceComponent,
-      countRangeArr,
-      boxGeometryRecord,
-    );
-  ({...state, boxGeometryRecord}, componentArr);
-};
-
 let cloneCustomGeometryComponent =
     (
       sourceComponent: component,

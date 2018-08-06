@@ -111,32 +111,7 @@ let unsafeGetGeometryComponent = (uid: int, {gameObjectRecord}) =>
   GetComponentGameObjectService.unsafeGetGeometryComponent(
     uid,
     gameObjectRecord,
-  )
-  |> WonderLog.Contract.ensureCheck(
-       r =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(
-                   ~expect={j|type_ is box|j},
-                   ~actual={j|not|j},
-                 ),
-                 () => {
-                   let (_, type_) =
-                     GetComponentGameObjectService.unsafeGetGeometryComponentData(
-                       uid,
-                       gameObjectRecord,
-                     );
-                   type_
-                   == CurrentComponentDataMapService.getCustomGeometryType();
-                 },
-               )
-             )
-           )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
+  );
 
 let _getMainVertexData = (geometry, count, getCustomGeometryVertexFunc, state) => {
   open Js.Typed_array;

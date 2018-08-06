@@ -123,17 +123,14 @@ let _ =
       });
       describe("test geometry component", () => {
         describe("unsafeGetGeometryComponent", () =>
-          test("get last added geometry component", () => {
+          test("get geometry component", () => {
             let (state, gameObject) = createGameObject(state^);
-            let (state, boxGeometry) =
-              BoxGeometryAPI.createBoxGeometry(state);
             let (state, customGeometry1) =
               CustomGeometryAPI.createCustomGeometry(state);
             let (state, customGeometry2) =
               CustomGeometryAPI.createCustomGeometry(state);
             let state =
               state
-              |> addGameObjectBoxGeometryComponent(gameObject, boxGeometry)
               |> addGameObjectCustomGeometryComponent(
                    gameObject,
                    customGeometry2,
@@ -142,20 +139,7 @@ let _ =
             |> expect == customGeometry2;
           })
         );
-        describe("test box geometry component", () =>
-          describe("hasGameObjectBoxGeometryComponent", () =>
-            test("has geometry component", () => {
-              let (state, gameObject) = createGameObject(state^);
-              let (state, geometry) =
-                BoxGeometryAPI.createBoxGeometry(state);
-              let state =
-                state
-                |> addGameObjectBoxGeometryComponent(gameObject, geometry);
-              hasGameObjectBoxGeometryComponent(gameObject, state)
-              |> expect == true;
-            })
-          )
-        );
+
         describe("test custom geometry component", () =>
           describe("hasGameObjectGeometryComponent", () =>
             test("has geometry component", () => {
@@ -819,23 +803,7 @@ let _ =
             |> expect == (true, false);
           });
         });
-        describe("dispose geometry component", () => {
-          test("test box geometry component", () => {
-            TestTool.closeContractCheck();
-            open GameObjectType;
-            let (state, gameObject1, geometry1) =
-              BoxGeometryTool.createGameObject(state^);
-            let (state, gameObject2, geometry2) =
-              BoxGeometryTool.createGameObject(state);
-            /*let state = state |> BoxGeometryTool.initGeometrys;*/
-            let state =
-              state |> GameObjectTool.disposeGameObject(gameObject1);
-            (
-              BoxGeometryTool.isGeometryDisposed(geometry1, state),
-              BoxGeometryTool.isGeometryDisposed(geometry2, state),
-            )
-            |> expect == (true, false);
-          });
+        describe("dispose geometry component", () =>
           test("test custom geometry component", () => {
             TestTool.closeContractCheck();
             open GameObjectType;
@@ -850,8 +818,8 @@ let _ =
               CustomGeometryTool.isGeometryDisposed(geometry2, state),
             )
             |> expect == (true, false);
-          });
-        });
+          })
+        );
         describe("dispose light component", () => {
           describe("test direction light component", () =>
             test("test dispose one", () => {
@@ -1017,31 +985,6 @@ let _ =
           |> expect == material2;
         });
 
-        test("replace boxGeometry component", () => {
-          let (state, gameObject1, geometry1) =
-            BoxGeometryTool.createGameObject(state^);
-
-          let state =
-            GameObjectAPI.disposeGameObjectBoxGeometryComponent(
-              gameObject1,
-              geometry1,
-              state,
-            );
-          let (state, geometry2) = BoxGeometryTool.createBoxGeometry(state);
-          let state =
-            GameObjectAPI.addGameObjectBoxGeometryComponent(
-              gameObject1,
-              geometry2,
-              state,
-            );
-
-          GameObjectAPI.unsafeGetGameObjectGeometryComponent(
-            gameObject1,
-            state,
-          )
-          |> expect == geometry2;
-        });
-
         test("replace customGeometry component", () => {
           let (state, gameObject1, geometry1) =
             CustomGeometryTool.createGameObject(state^);
@@ -1153,7 +1096,7 @@ let _ =
               |> expect == (false, false, true);
             });
             describe("test current component data map", () =>
-              test("new geometryDataMap should only has alive data", () => {
+              test("new geometryMap should only has alive data", () => {
                 open GameObjectType;
                 let state = TestTool.initWithoutBuildFakeDom(~sandbox, ());
                 TestTool.closeContractCheck();
@@ -1166,31 +1109,31 @@ let _ =
                 let (state, gameObject3, geometry3) =
                   BoxGeometryTool.createGameObject(state);
                 /*let state = state |> BoxGeometryTool.initGeometrys;*/
-                let {geometryDataMap as oldCurrentGeometryDataMap} =
+                let {geometryMap as oldCurrentGeometryDataMap} =
                   GameObjectTool.getGameObjectRecord(state);
                 let state =
                   state |> GameObjectTool.disposeGameObject(gameObject1);
                 let state =
                   state |> GameObjectTool.disposeGameObject(gameObject2);
-                let {geometryDataMap} =
+                let {geometryMap} =
                   GameObjectTool.getGameObjectRecord(state);
                 (
                   ArrayTool.isArraySame(
-                    geometryDataMap,
+                    geometryMap,
                     oldCurrentGeometryDataMap,
                   ),
-                  geometryDataMap
+                  geometryMap
                   |> WonderCommonlib.SparseMapService.has(gameObject1),
-                  geometryDataMap
+                  geometryMap
                   |> WonderCommonlib.SparseMapService.has(gameObject2),
-                  geometryDataMap
+                  geometryMap
                   |> WonderCommonlib.SparseMapService.has(gameObject3),
                 )
                 |> expect == (false, false, false, true);
               })
             );
             describe("test geometry map", () =>
-              test("new geometryDataMap should only has alive data", () => {
+              test("new geometryMap should only has alive data", () => {
                 open GameObjectType;
                 let state = TestTool.initWithoutBuildFakeDom(~sandbox, ());
                 TestTool.closeContractCheck();
@@ -1207,14 +1150,14 @@ let _ =
                   state |> GameObjectTool.disposeGameObject(gameObject1);
                 let state =
                   state |> GameObjectTool.disposeGameObject(gameObject2);
-                let {geometryDataMap} =
+                let {geometryMap} =
                   GameObjectTool.getGameObjectRecord(state);
                 (
-                  geometryDataMap
+                  geometryMap
                   |> WonderCommonlib.SparseMapService.has(gameObject1),
-                  geometryDataMap
+                  geometryMap
                   |> WonderCommonlib.SparseMapService.has(gameObject2),
-                  geometryDataMap
+                  geometryMap
                   |> WonderCommonlib.SparseMapService.has(gameObject3),
                 )
                 |> expect == (false, false, true);
@@ -2218,9 +2161,6 @@ let _ =
         test("initGameObject should error", () =>
           _testTwoParamFunc(initGameObject)
         );
-        test("hasGameObjectBoxGeometryComponent should error", () =>
-          _testTwoParamFunc(hasGameObjectBoxGeometryComponent)
-        );
         test("hasGameObjectGeometryComponent should error", () =>
           _testTwoParamFunc(hasGameObjectGeometryComponent)
         );
@@ -2254,11 +2194,8 @@ let _ =
         test("disposeGameObjectMeshRendererComponent should error", () =>
           _testThreeParmFunc(disposeGameObjectMeshRendererComponent)
         );
-        test("addGameObjectBoxGeometryComponent should error", () =>
-          _testThreeParmFunc(addGameObjectBoxGeometryComponent)
-        );
-        test("disposeGameObjectBoxGeometryComponentshould error", () =>
-          _testThreeParmFunc(disposeGameObjectBoxGeometryComponent)
+        test("addGameObjectCustomGeometryComponent should error", () =>
+          _testThreeParmFunc(addGameObjectCustomGeometryComponent)
         );
         test("addGameObjectCustomGeometryComponent should error", () =>
           _testThreeParmFunc(addGameObjectCustomGeometryComponent)

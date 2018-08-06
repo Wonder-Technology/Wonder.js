@@ -17,7 +17,6 @@ let create = () => {
     WonderCommonlib.ArrayService.createEmpty(),
   disposedBasicMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedLightMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
-  disposedBoxGeometryArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedCustomGeometryArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedSourceInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedObjectInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -26,7 +25,7 @@ let create = () => {
   disposedMeshRendererComponentArray:
     WonderCommonlib.ArrayService.createEmpty(),
   aliveUidArray: WonderCommonlib.ArrayService.createEmpty(),
-  geometryDataMap: WonderCommonlib.SparseMapService.createEmpty(),
+  geometryMap: WonderCommonlib.SparseMapService.createEmpty(),
   transformMap: WonderCommonlib.SparseMapService.createEmpty(),
   basicCameraViewMap: WonderCommonlib.SparseMapService.createEmpty(),
   perspectiveCameraProjectionMap:
@@ -57,7 +56,6 @@ let deepCopyForRestore =
         disposedArcballCameraControllerArray,
         disposedBasicMaterialArray,
         disposedLightMaterialArray,
-        disposedBoxGeometryArray,
         disposedCustomGeometryArray,
         disposedSourceInstanceArray,
         disposedObjectInstanceArray,
@@ -65,7 +63,7 @@ let deepCopyForRestore =
         disposedPointLightArray,
         disposedMeshRendererComponentArray,
         aliveUidArray,
-        geometryDataMap,
+        geometryMap,
         transformMap,
         basicCameraViewMap,
         perspectiveCameraProjectionMap,
@@ -100,7 +98,6 @@ let deepCopyForRestore =
     disposedBasicMaterialArray |> SparseMapService.copy,
   disposedLightMaterialArray:
     disposedLightMaterialArray |> SparseMapService.copy,
-  disposedBoxGeometryArray: disposedBoxGeometryArray |> SparseMapService.copy,
   disposedCustomGeometryArray:
     disposedCustomGeometryArray |> SparseMapService.copy,
   disposedSourceInstanceArray:
@@ -113,7 +110,7 @@ let deepCopyForRestore =
   disposedMeshRendererComponentArray:
     disposedMeshRendererComponentArray |> SparseMapService.copy,
   aliveUidArray: aliveUidArray |> SparseMapService.copy,
-  geometryDataMap: geometryDataMap |> SparseMapService.copy,
+  geometryMap: geometryMap |> SparseMapService.copy,
   transformMap: transformMap |> SparseMapService.copy,
   basicCameraViewMap: basicCameraViewMap |> SparseMapService.copy,
   perspectiveCameraProjectionMap:

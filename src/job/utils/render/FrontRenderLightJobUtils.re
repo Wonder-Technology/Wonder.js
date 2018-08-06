@@ -14,7 +14,6 @@ let render =
         materialIndices,
         meshRendererIndices,
         geometryIndices,
-        geometryTypes,
         sourceInstanceIndices,
       ),
       state,
@@ -43,11 +42,6 @@ let render =
              index,
              geometryIndices,
            );
-         let geometryType =
-           RenderObjectBufferTypeArrayService.getGeometryType(
-             index,
-             geometryTypes,
-           );
          let sourceInstance =
            RenderObjectBufferTypeArrayService.getComponent(
              index,
@@ -64,7 +58,6 @@ let render =
                shaderIndex,
                meshRendererIndex,
                geometryIndex,
-               geometryType,
                sourceInstance,
              ),
              state,
@@ -79,17 +72,10 @@ let render =
                  shaderIndex,
                  meshRendererIndex,
                  geometryIndex,
-                 geometryType,
                ),
                state,
              );
-           RenderJobUtils.draw(
-             gl,
-             meshRendererIndex,
-             geometryIndex,
-             geometryType,
-             state,
-           );
+           RenderJobUtils.draw(gl, meshRendererIndex, geometryIndex, state);
            state;
          };
        },

@@ -11,9 +11,7 @@ let initWithJobConfig = (sandbox, noWorkerJobRecord) =>
 
 let prepareGameObject = (sandbox, state) => {
   open GameObjectAPI;
-  open GameObjectAPI;
   open BasicMaterialAPI;
-  open BoxGeometryAPI;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
@@ -21,14 +19,13 @@ let prepareGameObject = (sandbox, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectBoxGeometryComponent(gameObject, geometry);
+    |> addGameObjectCustomGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry, material)
 };
 
 let prepareGameObjectWithCreatedMap = (sandbox, state) => {
   open GameObjectAPI;
   open BasicMaterialAPI;
-  open BoxGeometryAPI;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
   let (state, map) = BasicSourceTextureAPI.createBasicSourceTexture(state);
@@ -38,7 +35,7 @@ let prepareGameObjectWithCreatedMap = (sandbox, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectBoxGeometryComponent(gameObject, geometry);
+    |> addGameObjectCustomGeometryComponent(gameObject, geometry);
   (state, gameObject, geometry, material)
 };
 

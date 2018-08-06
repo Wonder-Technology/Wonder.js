@@ -1,1 +1,2 @@
-let getOperateType = (flags) => JobConfigService.unsafeGetFlags(flags)[0];
+let getOperateType = flags =>
+  Array.unsafe_get(JobConfigService.unsafeGetFlags(flags), 0);

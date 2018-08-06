@@ -4,28 +4,20 @@ let initWithJobConfig = (sandbox, noWorkerJobRecord) =>
     ~sandbox,
     /* ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), */
     ~noWorkerJobRecord,
-    ()
+    (),
   )
   |> DirectorTool.prepare;
-
 
 let initWithJobConfigAndBufferConfig = (sandbox, noWorkerJobRecord, buffer) =>
-  TestTool.initWithJobConfig(
-    ~sandbox,
-    ~buffer,
-    ~noWorkerJobRecord,
-    ()
-  )
+  TestTool.initWithJobConfig(~sandbox, ~buffer, ~noWorkerJobRecord, ())
   |> DirectorTool.prepare;
-
-
 
 let initWithJobConfigWithoutBuildFakeDom = (sandbox, noWorkerJobRecord) =>
   TestTool.initWithJobConfigWithoutBuildFakeDom(
     ~sandbox,
     /* ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), */
     ~noWorkerJobRecord,
-    ()
+    (),
   )
   |> DirectorTool.prepare;
 
@@ -33,7 +25,6 @@ let prepareGameObject = (sandbox, state) => {
   open GameObjectAPI;
   open GameObjectAPI;
   open BasicMaterialAPI;
-  open BoxGeometryAPI;
   open MeshRendererAPI;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
@@ -43,9 +34,9 @@ let prepareGameObject = (sandbox, state) => {
   let state =
     state
     |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectBoxGeometryComponent(gameObject, geometry)
+    |> addGameObjectCustomGeometryComponent(gameObject, geometry)
     |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
-  (state, gameObject, geometry, material, meshRenderer)
+  (state, gameObject, geometry, material, meshRenderer);
 };
 
 let init = (state: StateDataMainType.state) =>
@@ -60,34 +51,48 @@ let prepareForUseProgramCase = (sandbox, prepareFunc, state) => {
   open Sinon;
   let state = prepareFunc(sandbox, state);
   let program = Obj.magic(1);
-  let createProgram = createEmptyStubWithJsObjSandbox(sandbox) |> returns(program);
+  let createProgram =
+    createEmptyStubWithJsObjSandbox(sandbox) |> returns(program);
   let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
   let state =
     state
-    |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ~useProgram, ()));
-  (state, program, useProgram)
+    |> FakeGlTool.setFakeGl(
+         FakeGlTool.buildFakeGl(~sandbox, ~createProgram, ~useProgram, ()),
+       );
+  (state, program, useProgram);
 };
 
 let testSendShaderUniformDataOnlyOnce =
-    (sandbox, name, (prepareSendUinformDataFunc, setFakeGlFunc, prepareGameObject), state) =>
+    (
+      sandbox,
+      name,
+      (prepareSendUinformDataFunc, setFakeGlFunc, prepareGameObject),
+      state,
+    ) =>
   Wonder_jest.(
     Expect.(
       Expect.Operators.(
         Sinon.(
-          test(
-            "send shader uniform record only once",
-            () => {
-              let (state, _, gameObjectTransform, cameraTransform, basicCameraView) =
-                prepareSendUinformDataFunc(sandbox, prepareGameObject, state^);
-              let (state, gameObject2, _, _, _) = prepareGameObject(sandbox, state);
-              let uniformDataStub = createEmptyStubWithJsObjSandbox(sandbox);
-              let pos = 0;
-              let getUniformLocation = GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
-              let state = setFakeGlFunc(uniformDataStub, getUniformLocation, state);
-              let state = state |> init |> DirectorTool.runWithDefaultTime;
-              uniformDataStub |> withOneArg(pos) |> getCallCount |> expect == 1
-            }
-          )
+          test("send shader uniform record only once", () => {
+            let (
+              state,
+              _,
+              gameObjectTransform,
+              cameraTransform,
+              basicCameraView,
+            ) =
+              prepareSendUinformDataFunc(sandbox, prepareGameObject, state^);
+            let (state, gameObject2, _, _, _) =
+              prepareGameObject(sandbox, state);
+            let uniformDataStub = createEmptyStubWithJsObjSandbox(sandbox);
+            let pos = 0;
+            let getUniformLocation =
+              GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
+            let state =
+              setFakeGlFunc(uniformDataStub, getUniformLocation, state);
+            let state = state |> init |> DirectorTool.runWithDefaultTime;
+            uniformDataStub |> withOneArg(pos) |> getCallCount |> expect == 1;
+          })
         )
       )
     )
@@ -103,11 +108,16 @@ let testSendShaderUniformMatrix4DataOnlyOnce =
       (stub, getUniformLocation, state) =>
         state
         |> FakeGlTool.setFakeGl(
-             FakeGlTool.buildFakeGl(~sandbox, ~uniformMatrix4fv=stub, ~getUniformLocation, ())
+             FakeGlTool.buildFakeGl(
+               ~sandbox,
+               ~uniformMatrix4fv=stub,
+               ~getUniformLocation,
+               (),
+             ),
            ),
-      prepareGameObject
+      prepareGameObject,
     ),
-    state
+    state,
   );
 
 let testSendShaderUniformMatrix3DataOnlyOnce =
@@ -120,11 +130,16 @@ let testSendShaderUniformMatrix3DataOnlyOnce =
       (stub, getUniformLocation, state) =>
         state
         |> FakeGlTool.setFakeGl(
-             FakeGlTool.buildFakeGl(~sandbox, ~uniformMatrix3fv=stub, ~getUniformLocation, ())
+             FakeGlTool.buildFakeGl(
+               ~sandbox,
+               ~uniformMatrix3fv=stub,
+               ~getUniformLocation,
+               (),
+             ),
            ),
-      prepareGameObject
+      prepareGameObject,
     ),
-    state
+    state,
   );
 
 let testSendShaderUniformVec3DataOnlyOnce =
@@ -137,9 +152,14 @@ let testSendShaderUniformVec3DataOnlyOnce =
       (stub, getUniformLocation, state) =>
         state
         |> FakeGlTool.setFakeGl(
-             FakeGlTool.buildFakeGl(~sandbox, ~uniform3f=stub, ~getUniformLocation, ())
+             FakeGlTool.buildFakeGl(
+               ~sandbox,
+               ~uniform3f=stub,
+               ~getUniformLocation,
+               (),
+             ),
            ),
-      prepareGameObject
+      prepareGameObject,
     ),
-    state
+    state,
   );

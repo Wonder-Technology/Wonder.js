@@ -180,7 +180,6 @@ let dispose = (postMessageToRenderWorker, completeFunc) => {
     postMessageToRenderWorker
     |> withOneArg({
          "operateType": "DISPOSE",
-         "boxGeometryNeedDisposeVboBufferArr": Sinon.matchAny,
          "customGeometryNeedDisposeVboBufferArr": Sinon.matchAny,
          "sourceInstanceNeedDisposeVboBufferArr": Sinon.matchAny,
        })
@@ -192,7 +191,6 @@ let dispose = (postMessageToRenderWorker, completeFunc) => {
     /* DisposeAndSendDisposeDataMainWorkerJob._buildData(
          "",
          (
-           boxGeometryNeedDisposeVboBufferArr,
            customGeometryNeedDisposeVboBufferArr,
            sourceInstanceNeedDisposeVboBufferArr
          )

@@ -128,7 +128,7 @@ let _ =
             open GameObjectAPI;
             open GameObjectAPI;
             open BasicMaterialAPI;
-            open BoxGeometryAPI;
+            
             open Sinon;
             let (state, material) = createBasicMaterial(state);
             let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
@@ -136,14 +136,14 @@ let _ =
             let state =
               state
               |> addGameObjectBasicMaterialComponent(gameObject, material)
-              |> addGameObjectBoxGeometryComponent(gameObject, geometry);
+              |> addGameObjectCustomGeometryComponent(gameObject, geometry);
             (state, gameObject);
           };
           let _prepareInstanceGameObject = (sandbox, state) => {
             open GameObjectAPI;
             open GameObjectAPI;
             open BasicMaterialAPI;
-            open BoxGeometryAPI;
+            
             open Sinon;
             let (state, material) = createBasicMaterial(state);
             let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
@@ -157,7 +157,7 @@ let _ =
                    sourceInstance,
                  )
               |> addGameObjectBasicMaterialComponent(gameObject, material)
-              |> addGameObjectBoxGeometryComponent(gameObject, geometry);
+              |> addGameObjectCustomGeometryComponent(gameObject, geometry);
             (state, gameObject);
           };
           let _exec = (currentState, copiedState, gameObject) => {

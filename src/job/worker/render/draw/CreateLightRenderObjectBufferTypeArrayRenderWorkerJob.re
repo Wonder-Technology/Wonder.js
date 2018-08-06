@@ -16,7 +16,6 @@ let execJob = (_, e, stateData) =>
         meshRendererIndices,
         geometryIndices,
         sourceInstanceIndices,
-        geometryTypes,
       ) =
         CreateTypeArrayRenderObjectService.createTypeArrays(
           lightRenderData##buffer,
@@ -30,7 +29,6 @@ let execJob = (_, e, stateData) =>
           meshRendererIndices,
           geometryIndices,
           sourceInstanceIndices,
-          geometryTypes,
         });
       StateRenderWorkerService.setState(stateData, state);
       e;

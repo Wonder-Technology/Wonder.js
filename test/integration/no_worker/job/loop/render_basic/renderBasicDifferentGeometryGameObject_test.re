@@ -12,7 +12,7 @@ let _ =
       let prepareGameObjects = (sandbox, state) => {
         open GameObjectAPI;
         open BasicMaterialAPI;
-        open BoxGeometryAPI;
+        
         open CustomGeometryAPI;
         open MeshRendererAPI;
         open Sinon;
@@ -98,7 +98,7 @@ let _ =
                              )
                            );
                       let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-                      let vertices = BoxGeometryAPI.getBoxGeometryVertices(state);
+                      let vertices = BoxGeometryTool.getBoxGeometryVertices(state);
                       (
                         bufferData
                         |> withThreeArgs(array_buffer, vertices, static_draw)
@@ -150,7 +150,7 @@ let _ =
                              )
                            );
                       let state = state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-                      let indices = BoxGeometryAPI.getBoxGeometryIndices(state);
+                      let indices = BoxGeometryTool.getBoxGeometryIndices(state);
                       (
                         bufferData
                         |> withThreeArgs(element_array_buffer, indices, static_draw)

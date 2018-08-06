@@ -160,7 +160,7 @@ let rec _getNodeData =
             lightIndex,
           ),
           (
-            (boxGeometryDataMap, customGeometryDataMap),
+            customGeometryDataMap,
             basicMaterialDataMap,
             lightMaterialDataMap,
             gameObjectChildrenMap,
@@ -195,7 +195,7 @@ let rec _getNodeData =
              lightIndex,
            ),
            (
-             (boxGeometryDataMap, customGeometryDataMap),
+             customGeometryDataMap,
              basicMaterialDataMap,
              lightMaterialDataMap,
              gameObjectChildrenMap,
@@ -282,7 +282,7 @@ let rec _getNodeData =
              newLightIndex,
            ),
            (
-             (boxGeometryDataMap, customGeometryDataMap),
+             customGeometryDataMap,
              basicMaterialDataMap,
              lightMaterialDataMap,
            ),
@@ -311,7 +311,7 @@ let rec _getNodeData =
                lightIndex,
              ),
              (
-               (boxGeometryDataMap, customGeometryDataMap),
+               customGeometryDataMap,
                basicMaterialDataMap,
                lightMaterialDataMap,
              ),
@@ -341,7 +341,7 @@ let rec _getNodeData =
              newLightIndex,
            ),
            (
-             (boxGeometryDataMap, customGeometryDataMap),
+             customGeometryDataMap,
              basicMaterialDataMap,
              lightMaterialDataMap,
              gameObjectChildrenMap,
@@ -399,7 +399,7 @@ let rec _getNodeData =
            lightIndex,
          ),
          (
-           (boxGeometryDataMap, customGeometryDataMap),
+           customGeometryDataMap,
            basicMaterialDataMap,
            lightMaterialDataMap,
            gameObjectChildrenMap,
@@ -434,7 +434,7 @@ let getAllNodeData = (rootGameObject, state) => {
       lightIndex,
     ),
     (
-      (boxGeometryDataMap, customGeometryDataMap),
+      customGeometryDataMap,
       basicMaterialDataMap,
       lightMaterialDataMap,
       gameObjectChildrenMap,
@@ -456,10 +456,7 @@ let getAllNodeData = (rootGameObject, state) => {
       state,
       (0, 0, 0, 0, 0, 0, 0, 0, 0),
       (
-        (
-          WonderCommonlib.SparseMapService.createEmpty(),
-          WonderCommonlib.SparseMapService.createEmpty(),
-        ),
+        WonderCommonlib.SparseMapService.createEmpty(),
         WonderCommonlib.SparseMapService.createEmpty(),
         WonderCommonlib.SparseMapService.createEmpty(),
         WonderCommonlib.SparseMapService.createEmpty(),
@@ -500,7 +497,7 @@ let getAllNodeData = (rootGameObject, state) => {
       lightIndex,
     ),
     (
-      (boxGeometryDataMap, customGeometryDataMap),
+      customGeometryDataMap,
       basicMaterialDataMap,
       lightMaterialDataMap,
       gameObjectChildrenMap,

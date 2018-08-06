@@ -627,7 +627,7 @@ let _ =
           RenderHardwareInstanceTool.testDrawElementsInstancedANGLE(
             sandbox,
             _prepare,
-            BoxGeometryTool.getIndicesCount,
+            CustomGeometryTool.getIndicesCount,
             state
           )
       )

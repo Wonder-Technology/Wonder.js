@@ -23,7 +23,7 @@ describe(
           () => {
             let (state, gameObject, geometry) = BoxGeometryTool.createGameObject(state^);
             /*let state = state |> BoxGeometryTool.initGeometrys;*/
-            BoxGeometryTool.getIndicesCount(geometry, RenderStateTool.createState(state))
+            CustomGeometryTool.getIndicesCount(geometry, RenderStateTool.createState(state))
             |> expect == 36
           }
         )

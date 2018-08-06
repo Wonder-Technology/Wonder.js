@@ -11,11 +11,6 @@ let getBasicCameraViewComponent =
 let unsafeGetBasicCameraViewComponent = (uid: int, {basicCameraViewMap}) =>
   basicCameraViewMap |> unsafeGetComponent(uid);
 
-/* let getCustomGeometryComponent =
-     [@bs] ((uid: int, {customGeometryRecord}) => customGeometryRecord |> getComponent(uid));
-
-   let unsafeGetGeometryComponent = (uid: int, {customGeometryRecord}) =>
-     customGeometryRecord |> unsafeGetComponent(uid); */
 let getPerspectiveCameraProjectionComponent =
   (. uid: int, {perspectiveCameraProjectionMap}) =>
     perspectiveCameraProjectionMap |> getComponent(uid);
@@ -38,19 +33,11 @@ let getTransformComponent =
 let unsafeGetTransformComponent = (uid: int, {transformMap}) =>
   transformMap |> unsafeGetComponent(uid);
 
-let unsafeGetGeometryComponentData = (uid, {geometryDataMap}) =>
-  CurrentComponentDataMapService.unsafeGetComponentData(uid, geometryDataMap);
+let getGeometryComponent = (uid: int, {geometryMap}) =>
+  geometryMap |> getComponent(uid);
 
-let getGeometryComponentData =
-  (. uid: int, {geometryDataMap}) =>
-    geometryDataMap |> CurrentComponentDataMapService.getComponentData(uid);
-
-let unsafeGetGeometryComponent = (uid: int, {geometryDataMap}) => {
-  let (component, _) =
-    geometryDataMap
-    |> CurrentComponentDataMapService.unsafeGetComponentData(uid);
-  component;
-};
+let unsafeGetGeometryComponent = (uid: int, {geometryMap}) =>
+  geometryMap |> unsafeGetComponent(uid);
 
 let getBasicMaterialComponent =
   (. uid: int, {basicMaterialMap}) => basicMaterialMap |> getComponent(uid);

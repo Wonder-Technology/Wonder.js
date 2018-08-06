@@ -27,10 +27,6 @@ let _addBufferToPool = (geometryIndex, bufferMap, pool) =>
 let addAllBufferToPool =
     (
       {
-        boxGeometryVertexBufferMap,
-        boxGeometryTexCoordBufferMap,
-        boxGeometryNormalBufferMap,
-        boxGeometryElementArrayBufferMap,
         customGeometryVertexBufferMap,
         customGeometryTexCoordBufferMap,
         customGeometryNormalBufferMap,
@@ -38,46 +34,30 @@ let addAllBufferToPool =
         matrixInstanceBufferMap,
         vertexArrayBufferPool,
         elementArrayBufferPool,
-        matrixInstanceBufferPool
-      }
+        matrixInstanceBufferPool,
+      },
     ) => {
-  boxGeometryVertexBufferMap
-  |> SparseMapService.forEachValid(
-       [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
-     );
-  boxGeometryTexCoordBufferMap
-  |> SparseMapService.forEachValid(
-       [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
-     );
-  boxGeometryNormalBufferMap
-  |> SparseMapService.forEachValid(
-       [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
-     );
-  boxGeometryElementArrayBufferMap
-  |> SparseMapService.forEachValid(
-       [@bs] ((buffer) => elementArrayBufferPool |> Js.Array.push(buffer) |> ignore)
-     );
   customGeometryVertexBufferMap
-  |> SparseMapService.forEachValid(
-       [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
+  |> SparseMapService.forEachValid((. buffer) =>
+       vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore
      );
   customGeometryTexCoordBufferMap
-  |> SparseMapService.forEachValid(
-       [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
+  |> SparseMapService.forEachValid((. buffer) =>
+       vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore
      );
   customGeometryNormalBufferMap
-  |> SparseMapService.forEachValid(
-       [@bs] ((buffer) => vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore)
+  |> SparseMapService.forEachValid((. buffer) =>
+       vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore
      );
   customGeometryElementArrayBufferMap
-  |> SparseMapService.forEachValid(
-       [@bs] ((buffer) => elementArrayBufferPool |> Js.Array.push(buffer) |> ignore)
+  |> SparseMapService.forEachValid((. buffer) =>
+       elementArrayBufferPool |> Js.Array.push(buffer) |> ignore
      );
   matrixInstanceBufferMap
-  |> SparseMapService.forEachValid(
-       [@bs] ((buffer) => matrixInstanceBufferPool |> Js.Array.push(buffer) |> ignore)
+  |> SparseMapService.forEachValid((. buffer) =>
+       matrixInstanceBufferPool |> Js.Array.push(buffer) |> ignore
      );
-  (vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool)
+  (vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool);
 };
 
 let _getBufferFromBufferMap = (index: int, bufferMap) =>
@@ -89,86 +69,66 @@ let _addBufferToPool = (geometryIndex, bufferMap, pool) =>
   | None => pool
   };
 
-let addBoxGeometryBufferToPool =
-  [@bs]
-  (
-    (
-      geometryIndex: int,
-      {
-        boxGeometryVertexBufferMap,
-        boxGeometryTexCoordBufferMap,
-        boxGeometryNormalBufferMap,
-        boxGeometryElementArrayBufferMap,
-        vertexArrayBufferPool,
-        elementArrayBufferPool
-      } as record
-    ) => {
-      ...record,
-      vertexArrayBufferPool:
-        vertexArrayBufferPool
-        |> _addBufferToPool(geometryIndex, boxGeometryVertexBufferMap)
-        |> _addBufferToPool(geometryIndex, boxGeometryTexCoordBufferMap)
-        |> _addBufferToPool(geometryIndex, boxGeometryNormalBufferMap),
-      elementArrayBufferPool:
-        elementArrayBufferPool |> _addBufferToPool(geometryIndex, boxGeometryElementArrayBufferMap)
-    }
-  );
-
 let addCustomGeometryBufferToPool =
-  [@bs]
-  (
-    (
-      geometryIndex: int,
-      {
-        customGeometryVertexBufferMap,
-        customGeometryTexCoordBufferMap,
-        customGeometryNormalBufferMap,
-        customGeometryElementArrayBufferMap,
-        vertexArrayBufferPool,
-        elementArrayBufferPool
-      } as record
-    ) => {
-      ...record,
-      vertexArrayBufferPool:
-        vertexArrayBufferPool
-        |> _addBufferToPool(geometryIndex, customGeometryVertexBufferMap)
-        |> _addBufferToPool(geometryIndex, customGeometryTexCoordBufferMap)
-        |> _addBufferToPool(geometryIndex, customGeometryNormalBufferMap),
-      elementArrayBufferPool:
-        elementArrayBufferPool
-        |> _addBufferToPool(geometryIndex, customGeometryElementArrayBufferMap)
-    }
-  );
+  (.
+    geometryIndex: int,
+    {
+      customGeometryVertexBufferMap,
+      customGeometryTexCoordBufferMap,
+      customGeometryNormalBufferMap,
+      customGeometryElementArrayBufferMap,
+      vertexArrayBufferPool,
+      elementArrayBufferPool,
+    } as record,
+  ) => {
+    ...record,
+    vertexArrayBufferPool:
+      vertexArrayBufferPool
+      |> _addBufferToPool(geometryIndex, customGeometryVertexBufferMap)
+      |> _addBufferToPool(geometryIndex, customGeometryTexCoordBufferMap)
+      |> _addBufferToPool(geometryIndex, customGeometryNormalBufferMap),
+    elementArrayBufferPool:
+      elementArrayBufferPool
+      |> _addBufferToPool(geometryIndex, customGeometryElementArrayBufferMap),
+  };
 
 let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
   WonderCommonlib.SparseMapService.unsafeGet(index, bufferMap)
   |> WonderLog.Contract.ensureCheck(
-       (r) =>
+       r =>
          WonderLog.(
            Contract.(
              Operators.(
                test(
                  Log.buildAssertMessage(
                    ~expect={j|buffer exist in bufferMap|j},
-                   ~actual={j|not|j}
+                   ~actual={j|not|j},
                  ),
-                 () => WonderCommonlib.SparseMapService.has(index, bufferMap) |> assertTrue
+                 () =>
+                 WonderCommonlib.SparseMapService.has(index, bufferMap)
+                 |> assertTrue
                )
              )
            )
          ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 
 let addInstanceBufferToPool =
-  [@bs]
-  (
-    (sourceInstanceIndex: int, {matrixInstanceBufferMap, matrixInstanceBufferPool} as record) =>
-      switch (WonderCommonlib.SparseMapService.get(sourceInstanceIndex, matrixInstanceBufferMap)) {
-      | None => record
-      | Some(buffer) => {
-          ...record,
-          matrixInstanceBufferPool: matrixInstanceBufferPool |> ArrayService.push(buffer)
-        }
+  (.
+    sourceInstanceIndex: int,
+    {matrixInstanceBufferMap, matrixInstanceBufferPool} as record,
+  ) =>
+    switch (
+      WonderCommonlib.SparseMapService.get(
+        sourceInstanceIndex,
+        matrixInstanceBufferMap,
+      )
+    ) {
+    | None => record
+    | Some(buffer) => {
+        ...record,
+        matrixInstanceBufferPool:
+          matrixInstanceBufferPool |> ArrayService.push(buffer),
       }
-  );
+    };

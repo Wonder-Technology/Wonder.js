@@ -12,13 +12,7 @@ let getRecord = ({basicRenderObjectRecord}) =>
 let _initBufferData = count => {
   let buffer =
     Worker.newSharedArrayBuffer(
-      count
-      * (
-        Uint32Array._BYTES_PER_ELEMENT
-        * (getComponentSize() * 5)
-        + Uint8Array._BYTES_PER_ELEMENT
-        * getGeometryTypeSize()
-      ),
+      count * (Uint32Array._BYTES_PER_ELEMENT * (getComponentSize() * 5)),
     );
   (
     buffer,
@@ -38,7 +32,6 @@ let create = ({settingRecord} as state) => {
       meshRendererIndices,
       geometryIndices,
       sourceInstanceIndices,
-      geometryTypes,
     ),
   ) =
     _initBufferData(basicMaterialCount);
@@ -50,6 +43,5 @@ let create = ({settingRecord} as state) => {
     meshRendererIndices,
     geometryIndices,
     sourceInstanceIndices,
-    geometryTypes,
   });
 };

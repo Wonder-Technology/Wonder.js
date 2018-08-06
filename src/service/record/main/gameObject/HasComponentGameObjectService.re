@@ -21,19 +21,8 @@ let hasMeshRendererComponent = (uid: int, gameObjectRecord) : bool =>
 let hasTransformComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.transformMap);
 
-let hasBoxGeometryComponent = (uid: int, gameObjectRecord) : bool =>
-  CurrentComponentDataMapRenderService.hasComponent(
-    uid,
-    gameObjectRecord.geometryDataMap,
-    CurrentComponentDataMapService.getBoxGeometryType(),
-  );
-
 let hasGeometryComponent = (uid: int, gameObjectRecord) : bool =>
-  CurrentComponentDataMapRenderService.hasComponent(
-    uid,
-    gameObjectRecord.geometryDataMap,
-    CurrentComponentDataMapService.getCustomGeometryType(),
-  );
+  hasComponent(uid, gameObjectRecord.geometryMap);
 
 let hasBasicMaterialComponent = (uid: int, gameObjectRecord) : bool =>
   hasComponent(uid, gameObjectRecord.basicMaterialMap);

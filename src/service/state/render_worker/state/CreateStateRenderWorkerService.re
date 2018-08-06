@@ -12,7 +12,6 @@ let createState = () => {
   directionLightRecord: None,
   pointLightRecord: None,
   transformRecord: None,
-  boxGeometryRecord: RecordBoxGeometryRenderWorkerService.create(),
   customGeometryRecord: None,
   sourceInstanceRecord: RecordRenderWorkerSourceInstanceService.create(),
   gpuDetectRecord: {

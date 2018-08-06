@@ -16,7 +16,6 @@ let _disposeComponents =
     disposedArcballCameraControllerArray,
     disposedBasicMaterialArray,
     disposedLightMaterialArray,
-    disposedBoxGeometryArray,
     disposedCustomGeometryArray,
     disposedSourceInstanceArray,
     disposedObjectInstanceArray,
@@ -57,11 +56,6 @@ let _disposeComponents =
   let state =
     disposedLightMaterialArray
     |> batchDisposeLightMaterialComponentFunc(state);
-  let (state, boxGeometryNeedDisposeVboBufferArr) =
-    disposedBoxGeometryArray
-    |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(
-         state,
-       );
   let (state, customGeometryNeedDisposeVboBufferArr) =
     disposedCustomGeometryArray
     |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(
@@ -99,7 +93,6 @@ let _disposeComponents =
        );
   (
     state,
-    boxGeometryNeedDisposeVboBufferArr,
     customGeometryNeedDisposeVboBufferArr,
     sourceInstanceNeedDisposeVboBufferArr,
   );
@@ -114,7 +107,6 @@ let _disposeGameObjects =
   let {disposedUidArray, disposedUidArrayForKeepOrder} = gameObjectRecord;
   let (
     state,
-    boxGeometryNeedDisposeVboBufferArrForNotKeepOrder,
     customGeometryNeedDisposeVboBufferArrForNotKeepOrder,
     sourceInstanceNeedDisposeVboBufferArrForNotKeepOrder,
   ) =
@@ -129,7 +121,6 @@ let _disposeGameObjects =
        );
   let (
     state,
-    boxGeometryNeedDisposeVboBufferArrForKeepOrder,
     customGeometryNeedDisposeVboBufferArrForKeepOrder,
     sourceInstanceNeedDisposeVboBufferArrForKeepOrder,
   ) =
@@ -145,8 +136,6 @@ let _disposeGameObjects =
   let state = state |> DisposeGameObjectMainService.clearDeferDisposeData;
   (
     state,
-    boxGeometryNeedDisposeVboBufferArrForNotKeepOrder
-    |> Js.Array.concat(boxGeometryNeedDisposeVboBufferArrForKeepOrder),
     customGeometryNeedDisposeVboBufferArrForNotKeepOrder
     |> Js.Array.concat(customGeometryNeedDisposeVboBufferArrForKeepOrder),
     sourceInstanceNeedDisposeVboBufferArrForNotKeepOrder
@@ -162,7 +151,6 @@ let execJob =
     ) => {
   let (
     state,
-    boxGeometryNeedDisposeVboBufferArrFromComponent,
     customGeometryNeedDisposeVboBufferArrFromComponent,
     sourceInstanceNeedDisposeVboBufferArrFromComponent,
   ) =
@@ -173,7 +161,6 @@ let execJob =
        );
   let (
     state,
-    boxGeometryNeedDisposeVboBufferArrFromGameObject,
     customGeometryNeedDisposeVboBufferArrFromGameObject,
     sourceInstanceNeedDisposeVboBufferArrFromGameObject,
   ) =
@@ -184,8 +171,6 @@ let execJob =
        );
   (
     state,
-    boxGeometryNeedDisposeVboBufferArrFromComponent
-    |> Js.Array.concat(boxGeometryNeedDisposeVboBufferArrFromGameObject),
     customGeometryNeedDisposeVboBufferArrFromComponent
     |> Js.Array.concat(customGeometryNeedDisposeVboBufferArrFromGameObject),
     sourceInstanceNeedDisposeVboBufferArrFromComponent

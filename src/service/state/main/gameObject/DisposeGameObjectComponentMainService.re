@@ -6,29 +6,6 @@ open DisposeComponentGameObjectMainService;
 
 open BatchGetComponentGameObjectMainService;
 
-let _batchDisposeGeometryComponent = (uidArray, state) => {
-  let (boxGeometryArr, customGeometryArr) =
-    state
-    |> BatchGetComponentGameObjectMainService.batchGetGeometryComponentData(
-         uidArray,
-       );
-  let (state, boxGeometryNeedDisposeVboBufferArr) =
-    boxGeometryArr
-    |> DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(
-         state,
-       );
-  let (state, customGeometryNeedDisposeVboBufferArr) =
-    customGeometryArr
-    |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(
-         state,
-       );
-  (
-    state,
-    boxGeometryNeedDisposeVboBufferArr,
-    customGeometryNeedDisposeVboBufferArr,
-  );
-};
-
 let batchDispose =
     (
       (uidArray: array(int), isKeepOrder),
@@ -45,12 +22,16 @@ let batchDispose =
          uidArray,
        )
     |> batchDisposeTransformComponent(state, isKeepOrder);
-  let (
-    state,
-    boxGeometryNeedDisposeVboBufferArr,
-    customGeometryNeedDisposeVboBufferArr,
-  ) =
-    state |> _batchDisposeGeometryComponent(uidArray);
+
+  let (state, customGeometryNeedDisposeVboBufferArr) =
+    state
+    |> BatchGetComponentGameObjectMainService.batchGetGeometryComponent(
+         uidArray,
+       )
+    |> DisposeComponentGameObjectMainService.batchDisposeCustomGeometryComponent(
+         state,
+       );
+
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetBasicCameraViewComponent(
@@ -132,7 +113,6 @@ let batchDispose =
        );
   (
     state,
-    boxGeometryNeedDisposeVboBufferArr,
     customGeometryNeedDisposeVboBufferArr,
     sourceInstanceNeedDisposeVboBufferArr,
   );

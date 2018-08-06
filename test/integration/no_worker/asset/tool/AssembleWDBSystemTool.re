@@ -154,25 +154,15 @@ let getAllGeometryData = (rootGameObject, state) =>
            state,
          );
 
-       GameObjectAPI.hasGameObjectBoxGeometryComponent(gameObject, state) ?
+       (
+         GameObjectAPI.unsafeGetGameObjectName(gameObject, state),
          (
-           GameObjectAPI.unsafeGetGameObjectName(gameObject, state),
-           (
-             BoxGeometryAPI.getBoxGeometryVertices(state),
-             BoxGeometryAPI.getBoxGeometryNormals(state),
-             BoxGeometryAPI.getBoxGeometryTexCoords(state),
-             BoxGeometryAPI.getBoxGeometryIndices(state),
-           ),
-         ) :
-         (
-           GameObjectAPI.unsafeGetGameObjectName(gameObject, state),
-           (
-             CustomGeometryTool.getMainVertices(geometry, state),
-             CustomGeometryTool.getMainNormals(geometry, state),
-             CustomGeometryTool.getMainTexCoords(geometry, state),
-             CustomGeometryTool.getMainIndices(geometry, state),
-           ),
-         );
+           CustomGeometryTool.getMainVertices(geometry, state),
+           CustomGeometryTool.getMainNormals(geometry, state),
+           CustomGeometryTool.getMainTexCoords(geometry, state),
+           CustomGeometryTool.getMainIndices(geometry, state),
+         ),
+       );
      });
 
 let batchCreate = BatchCreateSystem.batchCreate;

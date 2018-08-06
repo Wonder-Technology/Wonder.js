@@ -382,57 +382,7 @@ let _ =
         });
       });
       describe("test clone geometry component", () =>
-        describe("test clone shared geometry", () => {
-          describe("test clone box geometry component", () => {
-            let _createAndInitGameObject = state => {
-              let (state, gameObject1, geometry1) =
-                BoxGeometryTool.createGameObject(state);
-              let state = state |> initGameObject(gameObject1);
-              (state, gameObject1, geometry1);
-            };
-            let _prepare = state => {
-              open StateDataMainType;
-              let (state, gameObject1, geometry1) =
-                _createAndInitGameObject(state);
-              CloneTool.cloneWithBoxGeometry(
-                state,
-                gameObject1,
-                geometry1,
-                2,
-              );
-            };
-            test("test clone specific count of customGeometrys", () => {
-              let (_, _, _, _, clonedGeometryArr) = _prepare(state^);
-              clonedGeometryArr |> Js.Array.length |> expect == 2;
-            });
-            test("cloned one == source one", () => {
-              let (_, _, geometry, _, clonedGeometryArr) = _prepare(state^);
-              clonedGeometryArr |> expect == [|geometry, geometry|];
-            });
-            test(
-              "cloned one's gameObject ===  the last gameObject which add the geometry",
-              () => {
-              let (
-                state,
-                gameObject,
-                _,
-                clonedGameObjectArr,
-                clonedGeometryArr,
-              ) =
-                _prepare(state^);
-              (
-                BoxGeometryAPI.unsafeGetBoxGeometryGameObject(
-                  clonedGeometryArr[0],
-                  state,
-                ),
-                BoxGeometryAPI.unsafeGetBoxGeometryGameObject(
-                  clonedGeometryArr[1],
-                  state,
-                ),
-              )
-              |> expect == (clonedGameObjectArr[1], clonedGameObjectArr[1]);
-            });
-          });
+        describe("test clone shared geometry", () =>
           describe("test clone custom geometry component", () => {
             let _createAndInitGameObject = state => {
               let (state, gameObject1, geometry1) =
@@ -482,8 +432,8 @@ let _ =
               )
               |> expect == (clonedGameObjectArr[1], clonedGameObjectArr[1]);
             });
-          });
-        })
+          })
+        )
       );
       describe("test clone material component", () => {
         describe("test clone basic material component", () => {

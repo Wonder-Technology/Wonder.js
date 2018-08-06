@@ -25,7 +25,6 @@ let batchDisposeGameObject =
     (gameObjectArray: array(gameObject), state: StateDataMainType.state) => {
   let (
     state,
-    boxGeometryNeedDisposeVboBufferArr,
     customGeometryNeedDisposeVboBufferArr,
     sourceInstanceNeedDisposeVboBufferArr,
   ) =
@@ -43,9 +42,6 @@ let batchDisposeGameObject =
     ...state,
     vboBufferRecord:
       state.vboBufferRecord
-      |> DisposeVboBufferService.disposeBoxGeometryVboBuffer(
-           boxGeometryNeedDisposeVboBufferArr,
-         )
       |> DisposeVboBufferService.disposeCustomGeometryVboBuffer(
            customGeometryNeedDisposeVboBufferArr,
          )
@@ -59,7 +55,6 @@ let batchDisposeGameObjectKeepOrder =
     (gameObjectArray: array(gameObject), state: StateDataMainType.state) => {
   let (
     state,
-    boxGeometryNeedDisposeVboBufferArr,
     customGeometryNeedDisposeVboBufferArr,
     sourceInstanceNeedDisposeVboBufferArr,
   ) =
@@ -76,9 +71,6 @@ let batchDisposeGameObjectKeepOrder =
     ...state,
     vboBufferRecord:
       state.vboBufferRecord
-      |> DisposeVboBufferService.disposeBoxGeometryVboBuffer(
-           boxGeometryNeedDisposeVboBufferArr,
-         )
       |> DisposeVboBufferService.disposeCustomGeometryVboBuffer(
            customGeometryNeedDisposeVboBufferArr,
          )
@@ -141,20 +133,6 @@ let disposeGameObjectTransformComponent =
     isKeepOrder,
     [|component|],
   );
-
-let disposeGameObjectBoxGeometryComponentWithoutVboBuffer =
-    (
-      gameObject: gameObject,
-      component: component,
-      state: StateDataMainType.state,
-    ) => {
-  let (state, boxGeometryNeedDisposeVboBufferArr) =
-    DisposeComponentGameObjectMainService.batchDisposeBoxGeometryComponent(
-      state,
-      [|component|],
-    );
-  state;
-};
 
 let disposeGameObjectCustomGeometryComponentWithoutVboBuffer =
     (
@@ -232,7 +210,7 @@ let disposeGameObjectSourceInstanceComponent =
       component: component,
       state: StateDataMainType.state,
     ) => {
-  let (state, boxGeometryNeedDisposeVboBufferArr) =
+  let (state, _) =
     DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
       state,
       false,

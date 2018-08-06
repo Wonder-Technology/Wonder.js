@@ -14,8 +14,6 @@ open ProgramType;
 
 open RenderMeshRendererType;
 
-open RenderBoxGeometryType;
-
 open RenderCustomGeometryType;
 
 open RenderBasicMaterialType;
@@ -160,7 +158,7 @@ and glslSenderRecord = {
   /* drawPointsFuncMap: WonderCommonlib.SparseMapService.t((webgl1Context => unit)), */
   mutable vertexAttribHistoryArray,
   mutable lastSendMaterialData: option((material, ShaderType.shader)),
-  mutable lastSendGeometryData: option((geometry, int)),
+  mutable lastSendGeometryData: option(geometry),
 }
 and renderState = {
   sceneRecord,
@@ -168,7 +166,6 @@ and renderState = {
   typeArrayPoolRecord,
   glslSenderRecord,
   programRecord,
-  boxGeometryRecord,
   customGeometryRecord,
   cameraRecord: option(RenderCameraType.renderCameraRecord),
   basicMaterialRecord,

@@ -113,7 +113,7 @@ let _ =
           test("bufferData", () =>
             _prepareForBufferData(
               state,
-              (BoxGeometryAPI.getBoxGeometryVertices, _prepare),
+              (BoxGeometryTool.getBoxGeometryVertices, _prepare),
             )
           );
           test("bind buffer and unbind buffer", () => {
@@ -155,7 +155,7 @@ let _ =
           test("bufferData", () =>
             _prepareForBufferData(
               state,
-              (BoxGeometryAPI.getBoxGeometryTexCoords, _prepareWithMap),
+              (BoxGeometryTool.getBoxGeometryTexCoords, _prepareWithMap),
             )
           )
         );
@@ -164,7 +164,7 @@ let _ =
             test("boxGeometry", () =>
               _prepareForBufferData(
                 state,
-                (BoxGeometryAPI.getBoxGeometryNormals, _prepareWithMap),
+                (BoxGeometryTool.getBoxGeometryNormals, _prepareWithMap),
               )
             );
 
@@ -271,7 +271,7 @@ let _ =
                 test("test", () =>
                   _prepareForBufferData(
                     state,
-                    (BoxGeometryAPI.getBoxGeometryVertices, _prepare),
+                    (BoxGeometryTool.getBoxGeometryVertices, _prepare),
                   )
                 )
               );
@@ -297,7 +297,7 @@ let _ =
                  );
             let state =
               state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-            let indices = BoxGeometryAPI.getBoxGeometryIndices(state);
+            let indices = BoxGeometryTool.getBoxGeometryIndices(state);
             bufferData
             |> withThreeArgs(element_array_buffer, indices, static_draw)
             |> expect
@@ -354,7 +354,7 @@ let _ =
               FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
                 sandbox,
                 geometry,
-                GameObjectAPI.addGameObjectBoxGeometryComponent,
+                GameObjectAPI.addGameObjectCustomGeometryComponent,
                 state,
               );
             let float = 1;
@@ -1988,7 +1988,7 @@ let _ =
             drawElements
             |> withFourArgs(
                  triangles,
-                 BoxGeometryTool.getIndicesCount(
+                 CustomGeometryTool.getIndicesCount(
                    geometry,
                    CreateRenderStateMainService.createRenderState(state),
                  ),

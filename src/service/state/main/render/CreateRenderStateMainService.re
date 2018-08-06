@@ -2,8 +2,6 @@ open StateRenderType;
 
 open TransformType;
 
-open BoxGeometryType;
-
 open CustomGeometryType;
 
 open BasicMaterialType;
@@ -45,11 +43,7 @@ let createRenderState =
     ) => {
   let {localToWorldMatrices, localToWorldMatrixCacheMap, normalMatrixCacheMap} as transformRecord =
     RecordTransformMainService.getRecord(state);
-  /* let {vertices, normals, indices} = RecordBoxGeometryMainService.getRecord(state); */
-  let boxGeometryRecord = RecordBoxGeometryMainService.getRecord(state);
-  /* let {vertices, normals, indices, verticesInfos, normalsInfos, indicesInfos} = */
   let customGeometryRecord = RecordCustomGeometryMainService.getRecord(state);
-  /* let {colors} = RecordBasicMaterialMainService.getRecord(state); */
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
   let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
@@ -72,12 +66,6 @@ let createRenderState =
   {
     glslSenderRecord,
     programRecord,
-    boxGeometryRecord: {
-      vertices: boxGeometryRecord.vertices,
-      texCoords: boxGeometryRecord.texCoords,
-      normals: boxGeometryRecord.normals,
-      indices: boxGeometryRecord.indices,
-    },
     customGeometryRecord: {
       vertices: customGeometryRecord.vertices,
       texCoords: customGeometryRecord.texCoords,

@@ -16,7 +16,6 @@ let setData =
         meshRendererIndices,
         geometryIndices,
         sourceInstanceIndices,
-        geometryTypes,
       } as renderObjectRecord,
       {gameObjectRecord} as state,
     ) => {
@@ -26,7 +25,6 @@ let setData =
     meshRendererIndices,
     geometryIndices,
     sourceInstanceIndices,
-    geometryTypes,
     renderArray,
   ) =
     renderArray
@@ -38,20 +36,19 @@ let setData =
              meshRendererIndices,
              geometryIndices,
              sourceInstanceIndices,
-             geometryTypes,
              renderArray,
            ) as dataTuple,
            uid,
            index,
          ) =>
            switch (
-             GetComponentGameObjectService.getGeometryComponentData(.
+             GetComponentGameObjectService.getGeometryComponent(
                uid,
                gameObjectRecord,
              )
            ) {
            | None => dataTuple
-           | Some((geometryIndex, type_)) =>
+           | Some(geometryIndex) =>
              let materialIndex =
                unsafeGetMaterialComponentFunc(. uid, gameObjectRecord);
 
@@ -84,7 +81,6 @@ let setData =
                | Some(sourceInstance) =>
                  setComponent(index, sourceInstance, sourceInstanceIndices)
                },
-               TypeArrayService.setUint8_1(index, type_, geometryTypes),
                renderArray |> ArrayService.push(index),
              );
            },
@@ -94,7 +90,6 @@ let setData =
            meshRendererIndices,
            geometryIndices,
            sourceInstanceIndices,
-           geometryTypes,
            [||],
          ),
        );
@@ -106,6 +101,5 @@ let setData =
     meshRendererIndices,
     geometryIndices,
     sourceInstanceIndices,
-    geometryTypes,
   });
 };

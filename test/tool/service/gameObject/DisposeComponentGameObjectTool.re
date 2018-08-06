@@ -68,17 +68,6 @@ let deferDisposeLightMaterialComponent =
     },
   };
 
-let deferDisposeBoxGeometryComponent =
-  (. component: component, state) => {
-    ...state,
-    gameObjectRecord: {
-      ...state.gameObjectRecord,
-      disposedBoxGeometryArray:
-        state.gameObjectRecord.disposedBoxGeometryArray
-        |> ArrayService.push(component),
-    },
-  };
-
 let deferDisposeCustomGeometryComponent =
   (. component: component, state) => {
     ...state,
@@ -187,13 +176,6 @@ let batchDisposeTransformComponent =
     componentArray,
     MemorySettingService.getMaxTypeArrayPoolSize(settingRecord),
     isKeepOrder,
-    state,
-  );
-
-let batchDisposeBoxGeometryComponent =
-    ({settingRecord} as state, componentArray: array(component)) =>
-  DisposeBoxGeometryMainService.handleBatchDisposeComponent(.
-    componentArray,
     state,
   );
 

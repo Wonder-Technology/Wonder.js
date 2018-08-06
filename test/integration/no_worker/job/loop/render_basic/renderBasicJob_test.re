@@ -150,7 +150,7 @@ let _ =
           test("bufferData", () =>
             _prepareForBufferData(
               state,
-              BoxGeometryAPI.getBoxGeometryVertices,
+              BoxGeometryTool.getBoxGeometryVertices,
             )
           );
           test("bind buffer and unbind buffer", () => {
@@ -192,7 +192,7 @@ let _ =
           test("bufferData", () =>
             _prepareForBufferData(
               state,
-              BoxGeometryAPI.getBoxGeometryTexCoords,
+              BoxGeometryTool.getBoxGeometryTexCoords,
             )
           )
         );
@@ -215,7 +215,7 @@ let _ =
                  );
             let state =
               state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-            let indices = BoxGeometryAPI.getBoxGeometryIndices(state);
+            let indices = BoxGeometryTool.getBoxGeometryIndices(state);
             bufferData
             |> withThreeArgs(element_array_buffer, indices, static_draw)
             |> expect
@@ -1930,7 +1930,7 @@ let _ =
             drawElements
             |> withFourArgs(
                  triangles,
-                 BoxGeometryTool.getIndicesCount(
+                 CustomGeometryTool.getIndicesCount(
                    geometry,
                    CreateRenderStateMainService.createRenderState(state),
                  ),
@@ -1975,7 +1975,7 @@ let _ =
                      drawElements
                    |> withFourArgs(
                         triangles,
-                        BoxGeometryTool.getIndicesCount(geometry1, state),
+                        CustomGeometryTool.getIndicesCount(geometry1, state),
                                            GeometryTool.getIndexType( CreateRenderStateMainService.createRenderState(state)),
                         GeometryTool.getIndexTypeSize(CreateRenderStateMainService.createRenderState(state)) * 0
                       )
@@ -1983,7 +1983,7 @@ let _ =
                      drawElements
                    |> withFourArgs(
                         triangles,
-                        BoxGeometryTool.getIndicesCount(geometry2, state),
+                        CustomGeometryTool.getIndicesCount(geometry2, state),
                                            GeometryTool.getIndexType( CreateRenderStateMainService.createRenderState(state)),
                         GeometryTool.getIndexTypeSize(CreateRenderStateMainService.createRenderState(state)) * 0
                       )

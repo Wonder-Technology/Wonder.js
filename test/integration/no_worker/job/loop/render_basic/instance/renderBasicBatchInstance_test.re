@@ -124,7 +124,7 @@ let _ =
               RenderBatchInstanceTool.testDrawElements(
                 sandbox,
                 RenderBasicBatchInstanceTool.prepare,
-                BoxGeometryTool.getIndicesCount,
+                CustomGeometryTool.getIndicesCount,
                 state
               )
           );

@@ -13,56 +13,8 @@ let _hasMap = (gameObject, {gameObjectRecord} as state) =>
     || OperateLightMaterialMainService.hasSpecularMap(lightMaterial, state)
   };
 
-let _getBoxGeometryData =
-    (
-      (gameObject, meshIndex),
-      geometry,
-      (boxGeometryDataMap, customGeometryDataMap),
-      state,
-    ) =>
-  switch (
-    boxGeometryDataMap |> WonderCommonlib.SparseMapService.get(geometry)
-  ) {
-  | Some((existedMeshIndex, pointData)) => (
-      Some(existedMeshIndex),
-      pointData,
-      meshIndex,
-      (boxGeometryDataMap, customGeometryDataMap),
-    )
-
-  | None =>
-    let pointData =
-      Some((
-        GetBoxGeometryVerticesMainService.getVertices(. state),
-        GetBoxGeometryNormalsMainService.getNormals(. state),
-        _hasMap(gameObject, state) ?
-          Some(GetBoxGeometryTexCoordsMainService.getTexCoords(. state)) :
-          None,
-        GetBoxGeometryIndicesMainService.getIndices(. state),
-      ));
-
-    (
-      Some(meshIndex),
-      pointData,
-      meshIndex |> succ,
-      (
-        boxGeometryDataMap
-        |> WonderCommonlib.SparseMapService.set(
-             geometry,
-             (meshIndex, pointData),
-           ),
-        customGeometryDataMap,
-      ),
-    );
-  };
-
 let _getCustomGeometryData =
-    (
-      (gameObject, meshIndex),
-      geometry,
-      (boxGeometryDataMap, customGeometryDataMap),
-      state,
-    ) =>
+    ((gameObject, meshIndex), geometry, customGeometryDataMap, state) =>
   switch (
     customGeometryDataMap |> WonderCommonlib.SparseMapService.get(geometry)
   ) {
@@ -70,7 +22,7 @@ let _getCustomGeometryData =
       Some(existedMeshIndex),
       pointData,
       meshIndex,
-      (boxGeometryDataMap, customGeometryDataMap),
+      customGeometryDataMap,
     )
 
   | None =>
@@ -93,64 +45,35 @@ let _getCustomGeometryData =
       Some(meshIndex),
       pointData,
       meshIndex |> succ,
-      (
-        boxGeometryDataMap,
-        customGeometryDataMap
-        |> WonderCommonlib.SparseMapService.set(
-             geometry,
-             (meshIndex, pointData),
-           ),
-      ),
+      customGeometryDataMap
+      |> WonderCommonlib.SparseMapService.set(
+           geometry,
+           (meshIndex, pointData),
+         ),
     );
   };
 
 let _getMeshData =
     (
       (gameObject, meshIndex),
-      (boxGeometryDataMap, customGeometryDataMap),
+      customGeometryDataMap,
       {gameObjectRecord} as state,
     ) =>
   switch (
-    GetComponentGameObjectService.getGeometryComponentData(.
+    GetComponentGameObjectService.getGeometryComponent(
       gameObject,
       gameObjectRecord,
     )
   ) {
-  | None => (
-      None,
-      None,
-      meshIndex,
-      (boxGeometryDataMap, customGeometryDataMap),
-    )
+  | None => (None, None, meshIndex, customGeometryDataMap)
 
-  | Some((geometry, type_)) =>
-    switch (type_) {
-    | type_ when type_ === CurrentComponentDataMapService.getBoxGeometryType() =>
-      _getBoxGeometryData(
-        (gameObject, meshIndex),
-        geometry,
-        (boxGeometryDataMap, customGeometryDataMap),
-        state,
-      )
-    | type_
-        when type_ === CurrentComponentDataMapService.getCustomGeometryType() =>
-      _getCustomGeometryData(
-        (gameObject, meshIndex),
-        geometry,
-        (boxGeometryDataMap, customGeometryDataMap),
-        state,
-      )
-    | _ =>
-      WonderLog.Log.fatal(
-        WonderLog.Log.buildFatalMessage(
-          ~title="unknown type_",
-          ~description={j||j},
-          ~reason="",
-          ~solution={j||j},
-          ~params={j|type_: $type_|j},
-        ),
-      )
-    }
+  | Some(geometry) =>
+    _getCustomGeometryData(
+      (gameObject, meshIndex),
+      geometry,
+      customGeometryDataMap,
+      state,
+    )
   };
 
 let _getBasicMaterialData =
@@ -360,11 +283,7 @@ let getComponentData =
           arcballCameraControllerIndex,
           lightIndex,
         ),
-        (
-          (boxGeometryDataMap, customGeometryDataMap),
-          basicMaterialDataMap,
-          lightMaterialDataMap,
-        ),
+        (customGeometryDataMap, basicMaterialDataMap, lightMaterialDataMap),
         (
           meshPointDataMap,
           meshRendererDataMap,
@@ -377,17 +296,8 @@ let getComponentData =
         ),
       ),
     ) => {
-  let (
-    meshIndex,
-    pointData,
-    newMeshIndex,
-    (boxGeometryDataMap, customGeometryDataMap),
-  ) =
-    _getMeshData(
-      (gameObject, meshIndex),
-      (boxGeometryDataMap, customGeometryDataMap),
-      state,
-    );
+  let (meshIndex, pointData, newMeshIndex, customGeometryDataMap) =
+    _getMeshData((gameObject, meshIndex), customGeometryDataMap, state);
 
   let meshPointDataMap =
     switch (meshIndex) {
@@ -546,11 +456,7 @@ let getComponentData =
       newCameraControllerIndex,
       newLightIndex,
     ),
-    (
-      (boxGeometryDataMap, customGeometryDataMap),
-      basicMaterialDataMap,
-      lightMaterialDataMap,
-    ),
+    (customGeometryDataMap, basicMaterialDataMap, lightMaterialDataMap),
     (
       meshPointDataMap,
       meshRendererDataMap,
