@@ -2015,23 +2015,29 @@ let _ =
         state;
       };
 
+      let _prepareGl = state => {
+        let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
+        let pos = 0;
+        let getUniformLocation =
+          GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_color");
+        let state =
+          state
+          |> FakeGlTool.setFakeGl(
+               FakeGlTool.buildFakeGl(
+                 ~sandbox,
+                 ~uniform3f,
+                 ~getUniformLocation,
+                 (),
+               ),
+             );
+
+        (state, pos, uniform3f);
+      };
+
       describe("if gameObject has no geometry component, not render", () => {
         test("test one gameObject", () => {
           let state = _prepareGameObjectHasNoGeometry(sandbox, state^);
-          let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
-          let pos = 0;
-          let getUniformLocation =
-            GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_color");
-          let state =
-            state
-            |> FakeGlTool.setFakeGl(
-                 FakeGlTool.buildFakeGl(
-                   ~sandbox,
-                   ~uniform3f,
-                   ~getUniformLocation,
-                   (),
-                 ),
-               );
+          let (state, pos, uniform3f) = _prepareGl(state);
           let state =
             state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
 
@@ -2048,21 +2054,8 @@ let _ =
                  material2,
                  [|1., 0., 0.|],
                );
+          let (state, pos, uniform3f) = _prepareGl(state);
 
-          let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
-          let pos = 0;
-          let getUniformLocation =
-            GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_color");
-          let state =
-            state
-            |> FakeGlTool.setFakeGl(
-                 FakeGlTool.buildFakeGl(
-                   ~sandbox,
-                   ~uniform3f,
-                   ~getUniformLocation,
-                   (),
-                 ),
-               );
           let state =
             state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
 
@@ -2073,6 +2066,57 @@ let _ =
           |> expect == (1, 1);
         });
       });
+
+      describe(
+        {|remove old renderGroup;
+          add new renderGroup;
+
+          test send u_color
+      |},
+        () =>
+        test("test if cached, only send once", () => {
+          let (state, gameObject1, geometry1, material1, meshRenderer1) =
+            RenderBasicJobTool.prepareGameObject(sandbox, state^);
+          let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+          let (state, pos, uniform3f) = _prepareGl(state);
+          let state =
+            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+          let state =
+            RenderGroupAPI.disposeGameObjectRenderGroupComponents(
+              gameObject1,
+              {meshRenderer: meshRenderer1, material: material1},
+              (
+                GameObjectAPI.disposeGameObjectMeshRendererComponent,
+                GameObjectAPI.disposeGameObjectBasicMaterialComponent,
+              ),
+              state,
+            );
+          let state = state |> DirectorTool.runWithDefaultTime;
+          let (state, renderGroup2) =
+            RenderGroupAPI.createRenderGroup(
+              (
+                MeshRendererAPI.createMeshRenderer,
+                BasicMaterialAPI.createBasicMaterial,
+              ),
+              state,
+            );
+          let state =
+            RenderGroupAPI.addGameObjectRenderGroupComponents(
+              gameObject1,
+              renderGroup2,
+              (
+                GameObjectAPI.addGameObjectMeshRendererComponent,
+                GameObjectAPI.addGameObjectBasicMaterialComponent,
+              ),
+              state,
+            );
+          let state = GameObjectAPI.initGameObject(gameObject1, state);
+          let state = state |> DirectorTool.runWithDefaultTime;
+
+          uniform3f |> withOneArg(pos) |> expect |> toCalledOnce;
+        })
+      );
     });
     /* TODO test
        test
