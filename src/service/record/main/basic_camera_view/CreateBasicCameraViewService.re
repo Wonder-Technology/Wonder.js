@@ -6,7 +6,7 @@ let create = ({index, disposedIndexArray} as record) => {
   let (index, newIndex, disposedIndexArray) =
     generateIndex(index, disposedIndexArray);
 
-  let record = ActiveBasicCameraViewService.active(index, record);
+  /* let record = ActiveBasicCameraViewService.active(index, record); */
 
   ({...record, index: newIndex, disposedIndexArray}, index);
 };

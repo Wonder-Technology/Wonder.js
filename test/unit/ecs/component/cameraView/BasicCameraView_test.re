@@ -31,12 +31,12 @@ let _ =
         })
       );
 
-      test("active new one", () => {
+      /* test("active new one", () => {
         let (state, cameraView) = createBasicCameraView(state^);
 
         BasicCameraViewAPI.isActiveBasicCameraView(cameraView, state)
         |> expect == true;
-      });
+      }); */
     });
 
     describe("unsafeGetBasicCameraViewGameObject", () =>

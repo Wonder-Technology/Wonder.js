@@ -1,7 +1,8 @@
-let createBasicCameraViewPerspectiveCamera = (state) => {
+let createBasicCameraViewPerspectiveCamera = state => {
   open BasicCameraViewAPI;
   open PerspectiveCameraProjectionAPI;
-  let (state, perspectiveCameraProjection) = createPerspectiveCameraProjection(state);
+  let (state, perspectiveCameraProjection) =
+    createPerspectiveCameraProjection(state);
   let (state, basicCameraView) = createBasicCameraView(state);
   let state =
     state
@@ -9,25 +10,34 @@ let createBasicCameraViewPerspectiveCamera = (state) => {
     |> setPerspectiveCameraProjectionFar(perspectiveCameraProjection, 1000.)
     |> setPerspectiveCameraProjectionFovy(perspectiveCameraProjection, 60.)
     |> setPerspectiveCameraProjectionAspect(perspectiveCameraProjection, 1.);
-  (state, basicCameraView, perspectiveCameraProjection)
+  (state, basicCameraView, perspectiveCameraProjection);
 };
 
-let createCameraGameObject = (state) => {
+let createCameraGameObject = state => {
   open GameObjectAPI;
   open BasicCameraViewAPI;
   let (state, basicCameraView, perspectiveCameraProjection) =
     createBasicCameraViewPerspectiveCamera(state);
   let (state, gameObject) = state |> GameObjectAPI.createGameObject;
-  let state = state |> addGameObjectBasicCameraViewComponent(gameObject, basicCameraView);
   let state =
     state
-    |> addGameObjectPerspectiveCameraProjectionComponent(gameObject, perspectiveCameraProjection);
+    |> addGameObjectBasicCameraViewComponent(gameObject, basicCameraView);
+  let state =
+    state
+    |> addGameObjectPerspectiveCameraProjectionComponent(
+         gameObject,
+         perspectiveCameraProjection,
+       );
+
+  let state =
+    BasicCameraViewAPI.activeBasicCameraView(basicCameraView, state);
+
   (
     state,
     gameObject,
     GameObjectAPI.unsafeGetGameObjectTransformComponent(gameObject, state),
-    (basicCameraView, perspectiveCameraProjection)
-  )
+    (basicCameraView, perspectiveCameraProjection),
+  );
 };
 
 let testBuildPMatrix = (stateFunc, execFunc) =>
@@ -35,35 +45,34 @@ let testBuildPMatrix = (stateFunc, execFunc) =>
     PerspectiveCameraProjectionAPI.(
       Expect.(
         Expect.Operators.(
-          test(
-            "build dirty pMatrix",
-            () => {
-              let (state, basicCameraView, perspectiveCameraProjection) =
-                createBasicCameraViewPerspectiveCamera(stateFunc());
-              let state = state |> execFunc;
-              state
-              |> unsafeGetPerspectiveCameraProjectionPMatrix(perspectiveCameraProjection)
-              |>
-              expect == Js.Typed_array.Float32Array.make([|
-                          1.7320508075688776,
-                          0.,
-                          0.,
-                          0.,
-                          0.,
-                          1.7320508075688776,
-                          0.,
-                          0.,
-                          0.,
-                          0.,
-                          (-1.0002000200020003),
-                          (-1.),
-                          0.,
-                          0.,
-                          (-0.2000200020002),
-                          0.
-                        |])
-            }
-          )
+          test("build dirty pMatrix", () => {
+            let (state, basicCameraView, perspectiveCameraProjection) =
+              createBasicCameraViewPerspectiveCamera(stateFunc());
+            let state = state |> execFunc;
+            state
+            |> unsafeGetPerspectiveCameraProjectionPMatrix(
+                 perspectiveCameraProjection,
+               )
+            |>
+            expect == Js.Typed_array.Float32Array.make([|
+                        1.7320508075688776,
+                        0.,
+                        0.,
+                        0.,
+                        0.,
+                        1.7320508075688776,
+                        0.,
+                        0.,
+                        0.,
+                        0.,
+                        (-1.0002000200020003),
+                        (-1.),
+                        0.,
+                        0.,
+                        (-0.2000200020002),
+                        0.,
+                      |]);
+          })
         )
       )
     )
