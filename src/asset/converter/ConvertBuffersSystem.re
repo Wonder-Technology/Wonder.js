@@ -27,27 +27,6 @@ let _convertComponentType = componentType =>
     )
   };
 
-let _convertType = type_ =>
-  switch (type_) {
-  | "SCALAR" => WDType.SCALAR
-  | "VEC2" => WDType.VEC2
-  | "VEC3" => WDType.VEC3
-  | "VEC4" => WDType.VEC4
-  | "MAT2" => WDType.MAT2
-  | "MAT3" => WDType.MAT3
-  | "MAT4" => WDType.MAT4
-  | type_ =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_convertToAccessors",
-        ~description={j|unknown type_:$type_|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j},
-      ),
-    )
-  };
-
 let convertToAccessors =
     ({accessors}: GLTFType.gltf)
     : array(WDType.accessor) =>
@@ -55,7 +34,9 @@ let convertToAccessors =
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (.
          arr,
-         {bufferView, byteOffset, count, componentType, type_}: GLTFType.accessor,
+         (
+           {bufferView, byteOffset, count, componentType, type_}: GLTFType.accessor
+         ) as accessor,
        ) =>
          arr
          |> ArrayService.push(
@@ -74,14 +55,10 @@ let convertToAccessors =
                     )
                   | Some(bufferView) => bufferView
                   },
-                byteOffset:
-                  switch (byteOffset) {
-                  | None => 0
-                  | Some(byteOffset) => byteOffset
-                  },
+                byteOffset: BufferUtils.unsafeGetAccessorByteOffset(accessor),
                 count,
                 componentType: _convertComponentType(componentType),
-                type_: _convertType(type_),
+                type_: BufferUtils.convertType(type_),
               }: WDType.accessor,
             ),
        [||],
@@ -94,17 +71,14 @@ let convertToBufferViews =
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (.
          arr,
-         {buffer, byteOffset, byteLength, byteStride}: GLTFType.bufferView,
+         ({buffer, byteLength, byteStride}: GLTFType.bufferView) as bufferView,
        ) =>
          arr
          |> ArrayService.push(
               {
                 buffer,
                 byteOffset:
-                  switch (byteOffset) {
-                  | None => 0
-                  | Some(byteOffset) => byteOffset
-                  },
+                  BufferUtils.unsafeGetBufferViewByteOffset(bufferView),
                 byteLength,
                 byteStride,
                 /* target:

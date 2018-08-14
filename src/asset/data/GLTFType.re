@@ -138,7 +138,7 @@ type texture = {
 };
 
 type textureInfo = {
-  index: int,
+  index: textureIndex,
   texCoord: option(int),
 };
 
@@ -250,3 +250,9 @@ type gltf = {
   extensions: option(extensions),
   extras: option(gltfExtras),
 };
+
+external arrayFloat3ToTuple : array(float) => (float, float, float) =
+  "%identity";
+
+external arrayFloat4ToTuple : array(float) => (float, float, float, float) =
+  "%identity";

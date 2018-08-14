@@ -5,8 +5,8 @@ let testResult = (sandbox, glbFilePath, testFunc) => {
 
   let wdb = ConverterAPI.convertGLBToWDB(buffer##buffer);
 
-  let (wdFileContent, binBuffer) =
-    BinaryUtils.decode(wdb, AssembleWDBSystem._checkWDB);
+  let (wdFileContent, _, binBuffer) =
+    BufferUtils.decodeWDB(wdb, AssembleWDBSystem._checkWDB);
 
   testFunc((wdFileContent |> Js.Json.parseExn |> Obj.magic, binBuffer));
 };
@@ -32,8 +32,8 @@ let testGLTFResultByGLTF =
       binBuffer,
     ));
 
-  let (wdFileContent, binBuffer) =
-    BinaryUtils.decode(wdb, AssembleWDBSystem._checkWDB);
+  let (wdFileContent, _, binBuffer) =
+    BufferUtils.decodeWDB(wdb, AssembleWDBSystem._checkWDB);
 
   testFunc(wdFileContent |> Js.Json.parseExn |> Obj.magic);
 };
@@ -208,7 +208,7 @@ let buildGLTFJson =
             "type": "VEC2"
         }
     ]|},
-      /* ~materials={| [
+      ~materials={| [
              {
                  "pbrMetallicRoughness": {
                      "baseColorTexture": {
@@ -218,22 +218,22 @@ let buildGLTFJson =
                  },
                  "name": "material"
              }
+         ]|},
+      /* ~materials={| [
+             {
+                 "pbrMetallicRoughness": {
+                     "baseColorFactor": [0.5, 1.0, 1.0, 1.0],
+                     "metallicFactor": 0.0
+                 },
+                 "name": "material"
+             }
          ]|}, */
-      ~materials={| [
-        {
-            "pbrMetallicRoughness": {
-                "baseColorFactor": [0.5, 1.0, 1.0, 1.0],
-                "metallicFactor": 0.0
-            },
-            "name": "material"
-        }
-    ]|},
-      /* ~textures={|  [
+      ~textures={|  [
              {
                  "sampler": 0,
                  "source": 0
              }
-         ]|}, */
+         ]|},
       /* ~images={|  [
          {
              "uri":"|}
@@ -241,19 +241,17 @@ let buildGLTFJson =
                ++ {|"
              }
              ]|}, */
-      /* ~images={|  [
-         {
-             "bufferView":
-             }
-             ]|}, */
-      /* ~samplers={|  [
+      ~images={|  [
+         {"name": "CesiumLogoFlat.png", "mimeType": "image/png", "bufferView": 3}
+             ]|},
+      ~samplers={|  [
              {
                  "magFilter": 9729,
                  "minFilter": 9986,
                  "wrapS": 10497,
                  "wrapT": 10497
              }
-         ]|}, */
+         ]|},
       ~bufferViews={|  [
         {
             "buffer": 0,
@@ -274,11 +272,12 @@ let buildGLTFJson =
             "byteLength": 192,
             "byteStride": 8,
             "target": 34962
-        }
+        },
+        {"buffer":0,"byteLength":23516,"byteOffset":840}
     ]|},
       ~buffers={| [
         {
-            "byteLength": 840
+            "byteLength": 24360
         }
             ]|},
       (),
@@ -294,6 +293,9 @@ let buildGLTFJson =
     "materials": $materials,
     "bufferViews": $bufferViews,
     "buffers": $buffers,
+    "textures": $textures,
+    "samplers": $samplers,
+    "images": $images,
     "extensions":$extensions,
     "extensionsUsed": $extensionsUsed,
     "extras": {
@@ -681,32 +683,29 @@ let buildGLTFJsonOfCamera = () =>
             "camera": 2,
             "children": [
                 1, 2
+            ],
+            "translation": [
+                1.0,
+                3.0,
+                5.0
             ]
         },
         {
             "mesh": 0,
             "camera": 0,
-            "matrix": [
-                1.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                1.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                1.0,
-                0.0,
+            "translation": [
                 10.0,
                 30.0,
-                50.0,
-                1.0
+                50.0
             ]
         },
         {
-            "mesh": 0
+            "mesh": 0,
+            "translation": [
+                -10.0,
+                0.0,
+                0.0
+            ]
         }
     ]|},
     ~cameras=

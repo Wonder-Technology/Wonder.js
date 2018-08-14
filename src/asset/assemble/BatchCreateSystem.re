@@ -82,8 +82,7 @@ let _batchCreateTransform = ({transforms}, {settingRecord} as state) => {
   (state, indexArr);
 };
 
-let _batchCreateGeometry =
-    ({geometrys}, {settingRecord} as state) => {
+let _batchCreateGeometry = ({geometrys}, {settingRecord} as state) => {
   AssembleCommon.checkNotDisposedBefore(
     RecordGeometryMainService.getRecord(state).disposedIndexArray,
   );
@@ -126,31 +125,31 @@ let _batchCreateBasicCameraView =
       {basicCameraViews, perspectiveCameraProjections},
       {basicCameraViewRecord} as state,
     ) => {
-  /* 
-  TODO check after add orhiCameraProjection
-  WonderLog.Contract.requireCheck(
-       () => {
-         open WonderLog;
-         open Contract;
-         open Operators;
+  /*
+   TODO check after add orhiCameraProjection
+   WonderLog.Contract.requireCheck(
+        () => {
+          open WonderLog;
+          open Contract;
+          open Operators;
 
-         let basicCameraViewCount = basicCameraViews |> Js.Array.length;
+          let basicCameraViewCount = basicCameraViews |> Js.Array.length;
 
-         let perspectiveCameraProjectionCount =
-           perspectiveCameraProjections |> Js.Array.length;
+          let perspectiveCameraProjectionCount =
+            perspectiveCameraProjections |> Js.Array.length;
 
-         test(
-           Log.buildAssertMessage(
-             ~expect=
-               {j|basicCameraViews' count:$basicCameraViewCount === cameraProjects' count:$perspectiveCameraProjectionCount|j},
-             ~actual={j|not|j},
-           ),
-           () =>
-           basicCameraViewCount == perspectiveCameraProjectionCount
-         );
-       },
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     ); */
+          test(
+            Log.buildAssertMessage(
+              ~expect=
+                {j|basicCameraViews' count:$basicCameraViewCount === cameraProjects' count:$perspectiveCameraProjectionCount|j},
+              ~actual={j|not|j},
+            ),
+            () =>
+            basicCameraViewCount == perspectiveCameraProjectionCount
+          );
+        },
+        IsDebugMainService.getIsDebug(StateDataMain.stateData),
+      ); */
 
   AssembleCommon.checkNotDisposedBefore(
     basicCameraViewRecord.disposedIndexArray,
@@ -288,25 +287,26 @@ let _batchCreateLightMaterial = ({lightMaterials}, {settingRecord} as state) => 
 
 let _batchCreateBasicSourceTextureArr =
     ({basicSourceTextures}, {settingRecord} as state) => {
-  let ({index, flipYs}: BasicSourceTextureType.basicSourceTextureRecord) as basicSourceTextureRecord =
+  let basicSourceTextureRecord =
     RecordBasicSourceTextureMainService.getRecord(state);
 
   AssembleCommon.checkNotDisposedBefore(
     basicSourceTextureRecord.disposedIndexArray,
   );
 
-  let newIndex = index + (basicSourceTextures |> Js.Array.length);
-  let indexArr =
-    ArrayService.range(index, newIndex - 1)
-    |> Js.Array.map(index =>
-         IndexSourceTextureMainService.generateBasicSourceTextureIndex(index)
-       )
-    |> _checkNotExceedMaxCountByIndex(
-         BufferSettingService.getBasicSourceTextureCount(settingRecord),
-       );
+  let (state, indexArr) =
+    basicSourceTextures
+    |> ArrayService.reduceOneParamValidi(
+         (. (state, indexArr), _, basicSourceTextureIndex) => {
+           let (state, index) =
+             CreateBasicSourceTextureMainService.create(. state);
 
-  state.basicSourceTextureRecord =
-    Some({...basicSourceTextureRecord, index: newIndex});
+           Array.unsafe_set(indexArr, basicSourceTextureIndex, index);
+
+           (state, indexArr);
+         },
+         (state, [||]),
+       );
 
   let state =
     indexArr

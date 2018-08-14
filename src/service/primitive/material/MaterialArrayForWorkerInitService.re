@@ -14,5 +14,5 @@ let removeDisposedOnesFromMaterialArrayForWorkerInit = (materialArray, materialA
   };
 
 let addMaterialToMaterialArrayForWorkerInit = (materialIndex, materialArrayForWorkerInit) =>
-  materialArrayForWorkerInit |> ArrayService.getLast === materialIndex ?
+  materialArrayForWorkerInit |> ArrayService.unsafeGetLast === materialIndex ?
     materialArrayForWorkerInit : materialArrayForWorkerInit |> ArrayService.push(materialIndex);

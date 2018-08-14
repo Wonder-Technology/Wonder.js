@@ -1,6 +1,4 @@
-let _convertToGeometry =
-    ({primitives}: GLTFType.mesh)
-    : option(WDType.geometry) => {
+let _convertToGeometry = mesh : option(WDType.geometry) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -11,20 +9,31 @@ let _convertToGeometry =
                 ~expect={j|not has texCoord_1|j},
                 ~actual={j|has|j},
               ),
-              () => {
-                let {attributes, indices}: GLTFType.primitive =
-                  ConvertCommon.getPrimitiveData(primitives);
-                attributes.texCoord_1 |> assertNotExist;
-              },
+              () =>
+              ! ArrayService.isNotValid(mesh) ?
+                {
+                  let {primitives}: GLTFType.mesh = mesh;
+
+                  let {attributes, indices}: GLTFType.primitive =
+                    ConvertCommon.getPrimitiveData(primitives);
+                  attributes.texCoord_1 |> assertNotExist;
+                } :
+                assertPass()
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  primitives |> Js.Array.length > 1 ?
+
+  ArrayService.isNotValid(mesh) ?
     None :
     {
+      /* ConvertMultiPrimitivesSystem.isMultiPrimitives(primitives) ?
+         None : */
+
+      let {primitives}: GLTFType.mesh = mesh;
+
       let {attributes, indices}: GLTFType.primitive =
         ConvertCommon.getPrimitiveData(primitives);
       let {position, normal, texCoord_0}: GLTFType.attributes = attributes;

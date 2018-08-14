@@ -44,6 +44,7 @@ module.exports = {
     { name: "camera" },
     { name: "dispose" },
     { name: "example" },
+    { name: "stream" },
     { name: "detect" }
   ],
 

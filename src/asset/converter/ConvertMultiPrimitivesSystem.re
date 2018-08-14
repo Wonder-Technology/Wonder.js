@@ -10,6 +10,8 @@ let _buildMultiPrimitivesMeshName = (meshName, primitiveIndex) =>
 let _buildMultiPrimitivesNodeName = (nodeName, primitiveIndex) =>
   _buildMultiPrimitivesName(nodeName, primitiveIndex);
 
+let isMultiPrimitives = primitives => primitives |> Js.Array.length > 1;
+
 let _buildMultiPrimitivesMeshMap = meshes => {
   let (multiPrimitivesMeshMap, newMeshIndex) =
     meshes
@@ -19,37 +21,36 @@ let _buildMultiPrimitivesMeshMap = meshes => {
            {primitives, name}: GLTFType.mesh,
            meshIndex,
          ) =>
-           switch (primitives |> Js.Array.length) {
-           | 0
-           | 1 => (multiPrimitivesMeshMap, newMeshIndex)
-           | primitivesLen =>
-             let newMeshDataArr =
-               primitives
-               |> WonderCommonlib.ArrayService.reduceOneParami(
-                    (. newMeshDataArr, primitive, primitiveIndex) =>
-                      newMeshDataArr
-                      |> ArrayService.push((
-                           {
-                             primitives: [|primitive|],
-                             name:
-                               _buildMultiPrimitivesMeshName(
-                                 name,
-                                 primitiveIndex,
-                               ),
-                           }: GLTFType.mesh,
-                           newMeshIndex + primitiveIndex,
-                         )),
-                    [||],
-                  );
-             (
-               multiPrimitivesMeshMap
-               |> WonderCommonlib.SparseMapService.set(
-                    meshIndex,
-                    newMeshDataArr,
-                  ),
-               newMeshIndex + (newMeshDataArr |> Js.Array.length),
-             );
-           },
+           isMultiPrimitives(primitives) ?
+             {
+               let newMeshDataArr =
+                 primitives
+                 |> WonderCommonlib.ArrayService.reduceOneParami(
+                      (. newMeshDataArr, primitive, primitiveIndex) =>
+                        newMeshDataArr
+                        |> ArrayService.push((
+                             {
+                               primitives: [|primitive|],
+                               name:
+                                 _buildMultiPrimitivesMeshName(
+                                   name,
+                                   primitiveIndex,
+                                 ),
+                             }: GLTFType.mesh,
+                             newMeshIndex + primitiveIndex,
+                           )),
+                      [||],
+                    );
+               (
+                 multiPrimitivesMeshMap
+                 |> WonderCommonlib.SparseMapService.set(
+                      meshIndex,
+                      newMeshDataArr,
+                    ),
+                 newMeshIndex + (newMeshDataArr |> Js.Array.length),
+               );
+             } :
+             (multiPrimitivesMeshMap, newMeshIndex),
          (
            WonderCommonlib.SparseMapService.createEmpty(),
            meshes |> Js.Array.length,

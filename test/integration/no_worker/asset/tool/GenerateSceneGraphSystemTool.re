@@ -86,7 +86,7 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
        );
 
      let (_, binBuffer) =
-       BinaryUtils.decode(buffer##buffer, ConvertGLBSystem._checkGLB);
+       BufferUtils.decode(buffer##buffer, ConvertGLBSystem._checkGLB);
 
      binBuffer;
    }; */

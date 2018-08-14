@@ -57,5 +57,5 @@ let _getActiveCameraViews = ({isActiveMap} as record) =>
 let getActiveCameraView = ({isActiveMap} as record) =>
   switch (_getActiveCameraViews(record)) {
   | arr when Js.Array.length(arr) === 0 => None
-  | arr => arr |> ArrayService.getFirst |. Some
+  | arr => arr |> ArrayService.unsafeGetFirst |. Some
   };

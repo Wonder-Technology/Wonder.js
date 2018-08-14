@@ -31,6 +31,8 @@ let _ =
             ),
           (),
         );
+
+      ConvertTool.setFakeTransformCount();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
@@ -357,10 +359,7 @@ let _ =
                 (
                   GeometryAPI.getGeometryVertices(geometry, state),
                   GeometryAPI.getGeometryNormals(geometry, state),
-                  GeometryAPI.getGeometryTexCoords(
-                    geometry,
-                    state,
-                  ),
+                  GeometryAPI.getGeometryTexCoords(geometry, state),
                   GeometryAPI.getGeometryIndices(geometry, state),
                 )
                 |>
@@ -1549,7 +1548,7 @@ let _ =
                 ((state, rootGameObject)) =>
                   GLBTool.getURL()##revokeObjectURL
                   |> getCallCount
-                  |> expect == 4,
+                  |> expect == 2,
                 state^,
               )
             )

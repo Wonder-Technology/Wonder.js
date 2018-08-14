@@ -17,6 +17,7 @@ let _ =
     beforeEach(() => {
       sandbox := createSandbox();
       state := TestTool.init(~sandbox, ());
+      ConvertTool.setFakeTransformCount();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
@@ -332,8 +333,7 @@ let _ =
                   ~state,
                   ~testFunc=
                     ({indices}) =>
-                      indices.gameObjectIndices.
-                        geometryGameObjectIndexData
+                      indices.gameObjectIndices.geometryGameObjectIndexData
                       |>
                       expect == {
                                   gameObjectIndices: [|1, 3, 4, 5, 6|],
@@ -522,10 +522,7 @@ let _ =
             ({scene}) =>
               scene.imgui
               |>
-              expect == Some({
-                          customData: customData |> Obj.magic,
-                          imguiFunc,
-                        }),
+              expect == Some({customData: customData |> Obj.magic, imguiFunc}),
           (),
         );
       });
@@ -734,7 +731,7 @@ let _ =
                               moveSpeedY: 3.1,
                               rotateSpeed: 0.3,
                               wheelSpeed: 0.9,
-                              isBindEvent: true
+                              isBindEvent: true,
                             },
                           |],
             (),

@@ -57,94 +57,16 @@ let _convertToScene =
   };
 };
 
-/* let _convertGLTFToWDB = (gltf: GLTFType.gltf) : WDType.wd => {
-     let ({asset, scenes, scene, nodes, extensions}: GLTFType.gltf) as gltf =
-       gltf
-       |> ConvertMultiPrimitivesSystem.convertMultiPrimitivesToNodes
-       |> ConvertDefaultMaterialSystem.convert;
-
-     let (ambientLightArr, directionLightArr, pointLightArr) =
-       ConvertLightsSystem.convertToLights(gltf);
-
-     {
-       asset: {
-         version: asset.version,
-         generator: GLTFUtils.getGenerator(),
-       },
-       scene: _convertToScene(ambientLightArr, gltf),
-       gameObjects: ConvertGameObjectsSystem.convert(gltf),
-       indices: ConvertIndicesSystem.convertToIndices(gltf),
-       transforms: ConvertTransformsSystem.convertToTransforms(gltf),
-       basicCameraViews: ConvertCamerasSystem.convertToBasicCameraViews(gltf),
-       perspectiveCameraProjections:
-         ConvertCamerasSystem.convertToPerspectiveCameraProjections(gltf),
-       lightMaterials: ConvertMaterialsSystem.convertToLightMaterials(gltf),
-       geometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),
-       basicSourceTextures:
-         ConvertTexturesSystem.convertToBasicSourceTextures(gltf),
-       /* arrayBufferViewSourceTextures: None, */
-       samplers: ConvertTexturesSystem.convertToSamplers(gltf),
-       uriImages: ConvertImagesSystem.convertToUriImages(gltf) |. Some,
-       blobImages: None,
-       accessors: ConvertBuffersSystem.convertToAccessors(gltf),
-       bufferViews: ConvertBuffersSystem.convertToBufferViews(gltf),
-       buffers: ConvertBuffersSystem.convertToBuffers(None, gltf),
-       directionLights: directionLightArr,
-       pointLights: pointLightArr,
-     };
-   }; */
-
-let _getBinBufferByteLength = binBuffer =>
-  binBuffer
-  |> ArrayBuffer.byteLength
-  |> WonderLog.Contract.ensureCheck(
-       byteLength =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(
-                   ~expect={j|binBuffer aligned with multiple of 4|j},
-                   ~actual={j|not|j},
-                 ),
-                 () =>
-                 byteLength mod 4 == 0
-               )
-             )
-           )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
-
-let _copyUint8ArrayToArrayBuffer =
-    (
-      byteOffset,
-      (emptyUint8Data, uint8ArrayAlignedByteLength, uint8Array),
-      dataView,
-    ) => {
-  let resultByteOffset = byteOffset + uint8ArrayAlignedByteLength;
-  let byteOffset = ref(byteOffset);
-  let uint8ArrayByteLength = uint8Array |> Uint8Array.length;
-
-  for (i in 0 to uint8ArrayAlignedByteLength - 1) {
-    let value =
-      if (i >= uint8ArrayByteLength) {
-        emptyUint8Data;
-      } else {
-        TypeArrayService.getUint8_1(i, uint8Array);
-      };
-
-    byteOffset := DataViewCommon.writeUint8_1(. value, byteOffset^, dataView);
-  };
-
-  (resultByteOffset, uint8Array, dataView);
-};
-
-let _buildWDBJsonUint8Array = gltf => {
+let _buildWDBJsonUint8Array = (gltf: GLTFType.gltf) => {
   let ({asset, scenes, scene, nodes, extensions}: GLTFType.gltf) as gltf =
     gltf
     |> ConvertMultiPrimitivesSystem.convertMultiPrimitivesToNodes
     |> ConvertDefaultMaterialSystem.convert;
+
+  let transforms = ConvertTransformsSystem.convertToTransforms(gltf);
+
+  let (bufferViewDataArr, streamChunkArr, gltf) =
+    gltf |> ConvertStreamSystem.buildJsonData(transforms);
 
   let (ambientLightArr, directionLightArr, pointLightArr) =
     ConvertLightsSystem.convertToLights(gltf);
@@ -153,48 +75,54 @@ let _buildWDBJsonUint8Array = gltf => {
 
   let encoder = TextEncoder.newTextEncoder();
 
-  encoder
-  |> TextEncoder.encodeUint8Array(
-       (
-         {
-           asset: {
-             version: asset.version,
-             generator: GLTFUtils.getGenerator(),
-           },
-           scene: _convertToScene(ambientLightArr, gltf),
-           gameObjects: ConvertGameObjectsSystem.convert(gltf),
-           indices,
-           transforms: ConvertTransformsSystem.convertToTransforms(gltf),
-           basicCameraViews:
-             ConvertCamerasSystem.convertToBasicCameraViews(gltf),
-           perspectiveCameraProjections:
-             ConvertCamerasSystem.convertToPerspectiveCameraProjections(gltf),
-           arcballCameraControllers:
-             ConvertCamerasSystem.convertToArcballCameraControllers(gltf),
-           basicMaterials:
-             ConvertMaterialsSystem.convertToBasicMaterials(gltf),
-           lightMaterials:
-             ConvertMaterialsSystem.convertToLightMaterials(gltf),
-           geometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),
-           meshRenderers:
-             ConvertMeshRenderersSystem.convertToMeshRenderers(
-               indices.gameObjectIndices.geometryGameObjectIndexData,
-               gltf,
-             ),
-           basicSourceTextures:
-             ConvertTexturesSystem.convertToBasicSourceTextures(gltf),
-           samplers: ConvertTexturesSystem.convertToSamplers(gltf),
-           images: ConvertImagesSystem.convertToImages(gltf),
-           accessors: ConvertBuffersSystem.convertToAccessors(gltf),
-           bufferViews: ConvertBuffersSystem.convertToBufferViews(gltf),
-           buffers: ConvertBuffersSystem.convertToBuffers(gltf),
-           directionLights: directionLightArr,
-           pointLights: pointLightArr,
-         }: WDType.wd
-       )
-       |> Obj.magic
-       |> Js.Json.stringify,
-     );
+  (
+    bufferViewDataArr,
+    streamChunkArr,
+    encoder
+    |> TextEncoder.encodeUint8Array(
+         (
+           {
+             asset: {
+               version: asset.version,
+               generator: GLTFUtils.getGenerator(),
+             },
+             scene: _convertToScene(ambientLightArr, gltf),
+             gameObjects: ConvertGameObjectsSystem.convert(gltf),
+             indices,
+             transforms,
+             basicCameraViews:
+               ConvertCamerasSystem.convertToBasicCameraViews(gltf),
+             perspectiveCameraProjections:
+               ConvertCamerasSystem.convertToPerspectiveCameraProjections(
+                 gltf,
+               ),
+             arcballCameraControllers:
+               ConvertCamerasSystem.convertToArcballCameraControllers(gltf),
+             basicMaterials:
+               ConvertMaterialsSystem.convertToBasicMaterials(gltf),
+             lightMaterials:
+               ConvertMaterialsSystem.convertToLightMaterials(gltf),
+             geometrys: ConvertGeometrysSystem.convertToGeometrys(gltf),
+             meshRenderers:
+               ConvertMeshRenderersSystem.convertToMeshRenderers(
+                 indices.gameObjectIndices.geometryGameObjectIndexData,
+                 gltf,
+               ),
+             basicSourceTextures:
+               ConvertTexturesSystem.convertToBasicSourceTextures(gltf),
+             samplers: ConvertTexturesSystem.convertToSamplers(gltf),
+             images: ConvertImagesSystem.convertToImages(gltf),
+             accessors: ConvertBuffersSystem.convertToAccessors(gltf),
+             bufferViews: ConvertBuffersSystem.convertToBufferViews(gltf),
+             buffers: ConvertBuffersSystem.convertToBuffers(gltf),
+             directionLights: directionLightArr,
+             pointLights: pointLightArr,
+           }: WDType.wd
+         )
+         |> Obj.magic
+         |> Js.Json.stringify,
+       ),
+  );
 };
 
 let _writeHeader = (totalByteLength, dataView) =>
@@ -213,7 +141,7 @@ let _writeJson =
     byteOffset
     |> DataViewCommon.writeUint32_1(jsonByteLength, _, dataView)
     |> DataViewCommon.writeUint32_1(0x4E4F534A, _, dataView);
-  _copyUint8ArrayToArrayBuffer(
+  BufferUtils.copyUint8ArrayToArrayBuffer(
     byteOffset,
     (emptyEncodedUint8Data, jsonByteLength, jsonUint8Array),
     dataView,
@@ -222,31 +150,25 @@ let _writeJson =
 
 let _writeBinaryBuffer =
     (byteOffset, (binBufferByteLength, binBuffer), dataView) => {
-  WonderLog.Contract.requireCheck(
-    () => {
-      open WonderLog;
-      open Contract;
-      open Operators;
-      test(
-        Log.buildAssertMessage(
-          ~expect={j|binBufferByteLength === binBuffer.byteLength|j},
-          ~actual={j|not|j},
-        ),
-        () =>
-        binBufferByteLength == (binBuffer |> ArrayBuffer.byteLength)
-      );
+  /* WonderLog.Contract.requireCheck(
+       () => {
+         open WonderLog;
+         open Contract;
+         open Operators;
 
-      test(
-        Log.buildAssertMessage(
-          ~expect={j|binBuffer aligned with multiple of 4|j},
-          ~actual={j|not|j},
-        ),
-        () =>
-        binBufferByteLength mod 4 == 0
-      );
-    },
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
+         BufferUtils.checkByteLengthShouldBeAligned(binBufferByteLength);
+
+         test(
+           Log.buildAssertMessage(
+             ~expect={j|binBufferByteLength === binBuffer.byteLength|j},
+             ~actual={j|not|j},
+           ),
+           () =>
+           binBufferByteLength == (binBuffer |> ArrayBuffer.byteLength)
+         );
+       },
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     ); */
 
   let byteOffset =
     byteOffset
@@ -276,22 +198,20 @@ let _getEmptyEncodedUint8Data = () => {
 };
 
 let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer) : ArrayBuffer.t => {
-  let jsonUint8Array = _buildWDBJsonUint8Array(gltf);
+  let (bufferViewDataArr, streamChunkArr, jsonUint8Array) =
+    _buildWDBJsonUint8Array(gltf);
 
   let jsonByteLength =
-    jsonUint8Array |> Uint8Array.byteLength |> BinaryUtils.alignedLength;
-
-  let binBufferByteLength = _getBinBufferByteLength(binBuffer);
+    jsonUint8Array |> Uint8Array.byteLength |> BufferUtils.alignedLength;
 
   let totalByteLength =
     /* file header: magic + version + length */
-    12
+    BufferUtils.getFirstHeaderByteLength()
     /* json chunk header: json length + type */
-    + 8
+    + BufferUtils.getChunkHeaderByteLength()
     + jsonByteLength
-    /* bin chunk header: chunk length + type */
-    + 8
-    + binBufferByteLength;
+    + ConvertStreamSystem.getStreamChunkTotalByteLength(streamChunkArr)
+    + ConvertStreamSystem.getBinBufferChunkTotalByteLength(binBuffer);
 
   let wdb = ArrayBuffer.make(totalByteLength);
   let dataView = DataViewCommon.create(wdb);
@@ -300,39 +220,30 @@ let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer) : ArrayBuffer.t => {
 
   let emptyEncodedUint8Data = _getEmptyEncodedUint8Data();
 
-  let (byteOffset, uint8Array, dataView) =
+  let (byteOffset, _, dataView) =
     _writeJson(
       byteOffset,
       (emptyEncodedUint8Data, jsonByteLength, jsonUint8Array),
       dataView,
     );
-  let (byteOffset, uint8Array, dataView) =
-    _writeBinaryBuffer(
+
+  let (byteOffset, dataView) =
+    ConvertStreamSystem.buildStreamChunk(
       byteOffset,
-      (binBufferByteLength, binBuffer),
+      streamChunkArr,
+      dataView,
+    );
+
+  let (byteOffset, dataView) =
+    ConvertStreamSystem.buildBinBufferChunk(
+      byteOffset,
+      bufferViewDataArr,
+      binBuffer,
       dataView,
     );
 
   wdb;
 };
-
-/* let convert = (gltfFileContent: string) =>
-   {
-     /* let (gltfFileContent, binBuffer) = BinaryUtils.decode(glb, _checkGLB); */
-     _convertGLBToWDB(
-       ConvertGLTFJsonToRecordSystem.convert(
-         gltfFileContent |> Js.Json.parseExn,
-       ),
-       binBuffer,
-     );
-
-   }; */
-
-/* _convertGLTFToWDB(
-     ConvertGLTFJsonToRecordSystem.convert(
-       gltfFileContent |> Js.Json.parseExn,
-     ),
-   ); */
 
 let _checkGLB = dataView => {
   WonderLog.Contract.requireCheck(
@@ -373,7 +284,7 @@ let convertGLBData = ((gltf, binBuffer)) =>
   _convertGLBToWDB(ConvertGLTFJsonToRecordSystem.convert(gltf), binBuffer);
 
 let convertGLB = (glb: ArrayBuffer.t) => {
-  let (gltfFileContent, binBuffer) = BinaryUtils.decode(glb, _checkGLB);
+  let (gltfFileContent, binBuffer) = BufferUtils.decodeGLB(glb, _checkGLB);
 
   convertGLBData((gltfFileContent |> Js.Json.parseExn, binBuffer));
 };

@@ -148,7 +148,8 @@ let batchSet =
 
 let batchSetFormat = (basicSourceTextureArr, basicSourceTextures, state) =>
   basicSourceTextureArr
-  |> WonderCommonlib.ArrayService.reduceOneParami(
+  /* |> WonderCommonlib.ArrayService.reduceOneParami( */
+  |> ArrayService.reduceOneParamValidi(
        (. state, basicSourceTexture, index) =>
          OperateBasicSourceTextureMainService.setFormat(
            basicSourceTexture,

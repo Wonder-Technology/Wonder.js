@@ -1,1 +1,1 @@
-let getGenerator= () => "GLTF2WD";
+let getGenerator = () => "GLTF2WD";
