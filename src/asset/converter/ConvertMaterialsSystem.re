@@ -84,3 +84,23 @@ let convertToLightMaterials =
          [||],
        )
   };
+
+let _getLightMaterialOfMesh = (mesh, meshes) =>
+  switch (mesh) {
+  | None => None
+  | Some(mesh) =>
+    let ({primitives}: GLTFType.mesh) as meshData =
+      Array.unsafe_get(meshes, mesh);
+
+    ConvertCommon.getPrimitiveData(primitives).material;
+  };
+
+let getLightMaterialOfNode = ({mesh, extras}: GLTFType.node, meshes) =>
+  switch (extras) {
+  | Some({lightMaterial}) =>
+    switch (lightMaterial) {
+    | Some(lightMaterial) => Some(lightMaterial)
+    | None => _getLightMaterialOfMesh(mesh, meshes)
+    }
+  | None => _getLightMaterialOfMesh(mesh, meshes)
+  };

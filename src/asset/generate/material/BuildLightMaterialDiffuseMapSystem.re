@@ -167,12 +167,12 @@ let _addImageData =
 
     let imageBase64 = _getImageBase64(texture, source, imageBase64Map);
 
-    let imageUint8Array = BinaryUtils.convertBase64ToBinary(imageBase64);
+    let imageUint8Array = BufferUtils.convertBase64ToBinary(imageBase64);
 
     let imageUint8ArrayByteLength = imageUint8Array |> Uint8Array.byteLength;
 
     let imageUint8ArrayAlignedByteLength =
-      imageUint8ArrayByteLength |> BinaryUtils.alignedLength;
+      imageUint8ArrayByteLength |> BufferUtils.alignedLength;
 
     (
       imageIndex,
@@ -182,7 +182,7 @@ let _addImageData =
            {
              bufferView: bufferViewDataArr |> Js.Array.length,
              mimeType:
-               BinaryUtils.getBase64MimeType(imageBase64)
+               BufferUtils.getBase64MimeType(imageBase64)
                |> _convertBase64MimeTypeToWDBMimeType,
              uint8Array: imageUint8Array,
              byteOffset,

@@ -138,15 +138,19 @@ let convertToImages = (({images}: GLTFType.gltf) as gltf) =>
   | None => None
   | Some(images) =>
     images
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. arr, {bufferView, mimeType}: GLTFType.image) =>
-           arr
-           |> ArrayService.push(
-                {
-                  bufferView: bufferView |> OptionService.unsafeGet,
-                  mimeType: mimeType |> OptionService.unsafeGet,
-                }: WDType.image,
-              ),
+    |> ArrayService.reduceOneParamValidi(
+         (. arr, {bufferView, mimeType}: GLTFType.image, index) => {
+           Array.unsafe_set(
+             arr,
+             index,
+             {
+               bufferView: bufferView |> OptionService.unsafeGet,
+               mimeType: mimeType |> OptionService.unsafeGet,
+             }: WDType.image,
+           );
+
+           arr;
+         },
          [||],
        )
     |. Some

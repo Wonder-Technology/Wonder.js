@@ -28,7 +28,7 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
       blobObjectUrlImageArr :
       images
       |> OptionService.unsafeGetJsonSerializedValue
-      |> WonderCommonlib.ArrayService.reduceOneParami(
+      |> ArrayService.reduceOneParamValidi(
            (. streamArr, {bufferView, mimeType}: image, imageIndex) => {
              let arrayBuffer =
                _getArrayBuffer(binBuffer, bufferView, bufferViews);
@@ -44,9 +44,11 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
                   |> WonderBsMost.Most.tap(image => {
                        Blob.revokeObjectURL(blob);
 
-                       blobObjectUrlImageArr
-                       |> ArrayService.push(image)
-                       |> ignore;
+                       Array.unsafe_set(
+                         blobObjectUrlImageArr,
+                         imageIndex,
+                         image,
+                       );
                      }),
                 );
            },
@@ -140,7 +142,9 @@ let _checkWDB = dataView => {
 let assembleGLBData = (({buffers}: wd) as wd, binBuffer, state) =>
   _buildImageArray(wd, binBuffer)
   |> then_(blobObjectUrlImageArr =>
-       state
+       {
+        
+        state
        |> SetIMGUIFuncSystem.setIMGUIFunc(wd)
        |> BatchCreateSystem.batchCreate(wd)
        |> BatchOperateSystem.batchOperate(
@@ -149,12 +153,13 @@ let assembleGLBData = (({buffers}: wd) as wd, binBuffer, state) =>
             _buildBufferArray(buffers, binBuffer),
           )
        |> BuildRootGameObjectSystem.build(wd)
-       |> resolve
+       |> resolve}
      )
   |> WonderBsMost.Most.fromPromise;
 
 let assemble = (wdb, state) => {
-  let (wdFileContent, binBuffer) = BinaryUtils.decode(wdb, _checkWDB);
+  let (wdFileContent, streamChunk, binBuffer) =
+    BufferUtils.decodeWDB(wdb, _checkWDB);
 
   assembleGLBData(
     wdFileContent |> Js.Json.parseExn |> Obj.magic,

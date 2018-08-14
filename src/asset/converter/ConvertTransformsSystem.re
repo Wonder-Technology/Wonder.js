@@ -1,9 +1,3 @@
-external arrayFloat3ToTuple : array(float) => (float, float, float) =
-  "%identity";
-
-external arrayFloat4ToTuple : array(float) => (float, float, float, float) =
-  "%identity";
-
 let _getTranslationTuple = mat => (mat[12], mat[13], mat[14]);
 
 let _getScaleTuple = mat => {
@@ -100,17 +94,19 @@ let convertToTransforms = ({nodes}: GLTFType.gltf) : array(WDType.transform) =>
                     switch (translation) {
                     | None => None
                     | Some(translation) =>
-                      Some(translation |> arrayFloat3ToTuple)
+                      Some(translation |> GLTFType.arrayFloat3ToTuple)
                     },
                   rotation:
                     switch (rotation) {
                     | None => None
-                    | Some(rotation) => Some(rotation |> arrayFloat4ToTuple)
+                    | Some(rotation) =>
+                      Some(rotation |> GLTFType.arrayFloat4ToTuple)
                     },
                   scale:
                     switch (scale) {
                     | None => None
-                    | Some(scale) => Some(scale |> arrayFloat3ToTuple)
+                    | Some(scale) =>
+                      Some(scale |> GLTFType.arrayFloat3ToTuple)
                     },
                 }: WDType.transform,
               )
@@ -126,3 +122,164 @@ let convertToTransforms = ({nodes}: GLTFType.gltf) : array(WDType.transform) =>
          },
        [||],
      );
+
+let rec _setParent = (parentIndex, transformArr, nodes, state) => {
+  open StateDataMainType;
+
+  let {children}: GLTFType.node = Array.unsafe_get(nodes, parentIndex);
+
+  switch (children) {
+  | Some(children) =>
+    children
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. state, child) => {
+           state.transformRecord =
+             Some(
+               HierachyTransformService.setParent(.
+                 transformArr |> ArrayService.getNth(parentIndex),
+                 child,
+                 state |> RecordTransformMainService.getRecord,
+               ),
+             );
+
+           state |> _setParent(child, transformArr, nodes);
+         },
+         state,
+       )
+  | None => state
+  };
+};
+
+let _createTransformCount = [%raw
+  count => {|
+    return window.wonder_transformCount_forTest || count;
+  |}
+];
+
+let _createState = () => {
+  let state = CreateStateMainService.createState();
+
+  {
+    ...state,
+    settingRecord: {
+      canvasId: None,
+      memory: None,
+      buffer:
+        Some({
+          geometryPointCount: 300,
+          geometryCount: 30,
+          transformCount: _createTransformCount(100000),
+          basicMaterialCount: 50,
+          lightMaterialCount: 50,
+          textureCountPerMaterial: 50,
+          basicSourceTextureCount: 50,
+          arrayBufferViewSourceTextureCount: 50,
+          meshRendererCount: 50,
+          instanceBuffer: {
+            sourceInstanceCount: 50,
+            objectInstanceCountPerSourceInstance: 50,
+          },
+        }),
+      isDebug: None,
+      context: None,
+      gpu: None,
+      worker: Some({useWorker: false}),
+    },
+  }
+  |> RecordTransformMainService.create;
+};
+
+let computeWorldPositionTransforms =
+    (transforms, {nodes, scenes, scene}: GLTFType.gltf) => {
+  open StateDataMainType;
+
+  let state = _createState();
+
+  let (transformArr, state) =
+    transforms
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (.
+           (transformArr, state),
+           {translation, rotation, scale}: WDType.transform,
+         ) => {
+           let (state, transform) = CreateTransformMainService.create(state);
+
+           let state =
+             switch (translation) {
+             | Some(translation) =>
+               state.transformRecord =
+                 Some(
+                   ModelMatrixTransformService.setLocalPositionByTuple(
+                     transform,
+                     translation,
+                     state |> RecordTransformMainService.getRecord,
+                   ),
+                 );
+               state;
+             | None => state
+             };
+
+           let state =
+             switch (rotation) {
+             | Some(rotation) =>
+               state.transformRecord =
+                 Some(
+                   ModelMatrixTransformService.setLocalRotationByTuple(
+                     transform,
+                     rotation,
+                     state |> RecordTransformMainService.getRecord,
+                   ),
+                 );
+               state;
+             | None => state
+             };
+
+           let state =
+             switch (scale) {
+             | Some(scale) =>
+               state.transformRecord =
+                 Some(
+                   ModelMatrixTransformService.setLocalScaleByTuple(
+                     transform,
+                     scale,
+                     state |> RecordTransformMainService.getRecord,
+                   ),
+                 );
+               state;
+             | None => state
+             };
+
+           (transformArr |> ArrayService.push(transform), state);
+         },
+         ([||], state),
+       );
+
+  let state =
+    ConvertSceneSystem.getRootNodeIndexs(
+      ConvertCommon.getScene(scenes, scene),
+    )
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. state, rootNodeIndex) =>
+           _setParent(rootNodeIndex, transformArr, nodes, state),
+         state,
+       );
+
+  let (positionArr, _) =
+    transformArr
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. (positionArr, state), transform) => (
+           positionArr
+           |> ArrayService.push(
+                UpdateTransformMainService.updateAndGetPositionTuple(
+                  transform,
+                  state.globalTempRecord,
+                  state |> RecordTransformMainService.getRecord,
+                ),
+              ),
+           state,
+         ),
+         ([||], state),
+       );
+
+  positionArr;
+};

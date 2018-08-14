@@ -31,6 +31,86 @@ let convertToBasicCameraViews = ({cameras, extras}: GLTFType.gltf) =>
     }
   };
 
+let _getFirstNodeIndexWhichUseFirstCamera = nodes => {
+  let firstCameraIndex = 0;
+
+  nodes
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. index, {camera}: GLTFType.node, i) =>
+         switch (camera) {
+         | Some(camera) when camera === firstCameraIndex => Some(i)
+         | _ => index
+         },
+       None,
+     );
+};
+
+let _getFirstNodeIndexWhichUseBasicCameraView = (nodes, basicCameraViewIndex) =>
+  nodes
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. index, {extras}: GLTFType.node, i) =>
+         switch (extras) {
+         | Some({basicCameraView}) =>
+           switch (basicCameraView) {
+           | Some(basicCameraView)
+               when basicCameraView === basicCameraViewIndex =>
+             Some(i)
+           | _ => index
+           }
+         | _ => index
+         },
+       None,
+     );
+
+let _getActiveBasicCameraViewIndex = basicCameraViews => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|should has one active basicCameraView|j},
+                ~actual={j|not|j},
+              ),
+              () =>
+              basicCameraViews
+              |> Js.Array.filter(({isActive}: GLTFType.basicCameraView) =>
+                   isActive === true
+                 )
+              |> Js.Array.length == 1
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  basicCameraViews
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. index, {isActive}: GLTFType.basicCameraView, i) =>
+         isActive === true ? i : index,
+       -1,
+     );
+};
+
+let getActiveCameraNodeIndex = ({nodes, cameras, extras}: GLTFType.gltf) =>
+  switch (extras) {
+  | None =>
+    switch (cameras) {
+    | Some(cameras) when Js.Array.length(cameras) > 0 =>
+      _getFirstNodeIndexWhichUseFirstCamera(nodes)
+    | _ => None
+    }
+  | Some({basicCameraViews}) =>
+    switch (basicCameraViews) {
+    | Some(basicCameraViews) when Js.Array.length(basicCameraViews) > 0 =>
+      _getActiveBasicCameraViewIndex(basicCameraViews)
+      |> _getFirstNodeIndexWhichUseBasicCameraView(nodes)
+    | _ => _getFirstNodeIndexWhichUseFirstCamera(nodes)
+    }
+  };
+
 let _convertRadiansToDegree = angle => angle *. 180. /. Js.Math._PI;
 
 let convertToPerspectiveCameraProjections = ({cameras}: GLTFType.gltf) =>

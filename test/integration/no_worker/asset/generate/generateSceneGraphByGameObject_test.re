@@ -455,6 +455,8 @@ let _ =
             ),
           (),
         );
+
+      ConvertTool.setFakeTransformCount();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 

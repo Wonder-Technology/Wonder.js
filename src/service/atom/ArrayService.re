@@ -48,9 +48,16 @@ let push = (item, arr) => {
   arr;
 };
 
-let getFirst = arr => Array.unsafe_get(arr, 0);
+let unsafeGetFirst = arr => Array.unsafe_get(arr, 0);
 
-let getLast = arr => Array.unsafe_get(arr, Js.Array.length(arr) - 1);
+let getFirst = arr => unsafeGetFirst(arr) |> Obj.magic |> Js.toOption;
+
+let unsafeGetLast = arr => Array.unsafe_get(arr, Js.Array.length(arr) - 1);
+
+let getLast = arr => unsafeGetLast(arr) |> Obj.magic |> Js.toOption;
+
+let getNth = (index, arr) =>
+  Array.unsafe_get(arr, index) |> Obj.magic |> Js.toOption;
 
 /* let removeDuplicateItems = (isDuplicateFunc, arr) => { */
 let removeDuplicateItems = (buildKeyFunc, arr) => {
@@ -70,4 +77,22 @@ let removeDuplicateItems = (buildKeyFunc, arr) => {
     };
   };
   resultArr;
+};
+
+let isNotValid = (value) => 
+  Obj.magic(value) === Js.Nullable.null
+  || Obj.magic(value) === Js.Nullable.undefined;
+
+let reduceOneParamValidi = (func, param, arr) => {
+  let mutableParam = ref(param);
+  for (i in 0 to Js.Array.length(arr) - 1) {
+    let value = Array.unsafe_get(arr, i);
+
+    if (isNotValid(value)) {
+      ();
+    } else {
+      mutableParam := func(. mutableParam^, Array.unsafe_get(arr, i), i);
+    };
+  };
+  mutableParam^;
 };

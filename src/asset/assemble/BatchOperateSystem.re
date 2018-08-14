@@ -169,27 +169,6 @@ let _getBatchAllTypeTextureData =
     wd,
   );
 
-let _getAccessorTypeSize = ({type_}) =>
-  switch (type_) {
-  | SCALAR => 1
-  | VEC2 => 2
-  | VEC3 => 3
-  | VEC4 => 4
-  | MAT2 => 4
-  | MAT3 => 9
-  | MAT4 => 16
-  | _ =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_getAccessorTypeSize",
-        ~description={j|unknown type_:$type_ |j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j},
-      ),
-    )
-  };
-
 let _getBufferData =
     (
       {accessors, bufferViews, buffers},
@@ -211,11 +190,12 @@ let _getBufferData =
                   Array.unsafe_get(bufferViews, accessor.bufferView);
 
                 byteStride |> OptionService.isJsonSerializedValueNone ?
-                  () :
+                  assertPass() :
                   byteStride
                   |>
-                  OptionService.unsafeGetJsonSerializedValue == _getAccessorTypeSize(
-                                                                  accessor,
+                  OptionService.unsafeGetJsonSerializedValue == BufferUtils.getAccessorTypeSize(
+                                                                  accessor.
+                                                                    type_,
                                                                 )
                   * bytes_per_element;
               },
@@ -225,16 +205,21 @@ let _getBufferData =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
+
   let accessor = Array.unsafe_get(accessors, accessorIndex);
   let bufferView = Array.unsafe_get(bufferViews, accessor.bufferView);
   let dataView = Array.unsafe_get(dataViewArr, bufferView.buffer);
 
   let offset = accessor.byteOffset + bufferView.byteOffset;
+  /* let offset = bufferView.byteOffset; */
 
   (
     dataView |> DataView.buffer,
     offset,
-    accessor.count * _getAccessorTypeSize(accessor),
+    BufferUtils.computeTypeArrayLengthByAccessorData(
+      accessor.count,
+      accessor.type_,
+    ),
   );
 };
 
@@ -655,7 +640,7 @@ let _batchSetGameObjectName = (targets, names, setNameFunc, state) =>
 
 let _batchSetTextureName = (basicSourceTextureArr, basicSourceTextures, state) =>
   basicSourceTextureArr
-  |> WonderCommonlib.ArrayService.reduceOneParami(
+  |> ArrayService.reduceOneParamValidi(
        (. state, basicSourceTexture, index) =>
          NameBasicSourceTextureMainService.setName(.
            basicSourceTexture,

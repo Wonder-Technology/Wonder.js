@@ -19,7 +19,7 @@ let _addBufferViewData =
   | _ =>
     let bufferViewByteLength = pointsLength * bytes_per_element;
     let bufferViewAlignedByteLength =
-      BinaryUtils.alignedLength(bufferViewByteLength);
+      BufferUtils.alignedLength(bufferViewByteLength);
 
     (
       accessorDataArr |> Js.Array.length |. Some,

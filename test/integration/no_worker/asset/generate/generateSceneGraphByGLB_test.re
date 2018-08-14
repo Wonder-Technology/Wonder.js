@@ -26,6 +26,8 @@ let _ =
             ),
           (),
         );
+
+      ConvertTool.setFakeTransformCount();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
@@ -334,15 +336,15 @@ let _ =
                  )
               |>
               expect == [|
-                          "object_url4" |> Obj.magic,
-                          "object_url4" |> Obj.magic,
-                          "object_url4" |> Obj.magic,
-                          "object_url4" |> Obj.magic,
-                          "object_url4" |> Obj.magic,
-                          "object_url4" |> Obj.magic,
-                          "object_url4" |> Obj.magic,
-                          "object_url4" |> Obj.magic,
-                          "object_url5" |> Obj.magic,
+                          "object_url2" |> Obj.magic,
+                          "object_url2" |> Obj.magic,
+                          "object_url2" |> Obj.magic,
+                          "object_url2" |> Obj.magic,
+                          "object_url2" |> Obj.magic,
+                          "object_url2" |> Obj.magic,
+                          "object_url2" |> Obj.magic,
+                          "object_url2" |> Obj.magic,
+                          "object_url3" |> Obj.magic,
                         |],
             state,
           );

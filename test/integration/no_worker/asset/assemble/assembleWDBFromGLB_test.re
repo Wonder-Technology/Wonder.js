@@ -31,6 +31,8 @@ let _ =
             ),
           (),
         );
+
+      ConvertTool.setFakeTransformCount();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
@@ -1582,7 +1584,7 @@ let _ =
                 ((state, rootGameObject)) =>
                   GLBTool.getURL()##revokeObjectURL
                   |> getCallCount
-                  |> expect == 4,
+                  |> expect == 2,
                 state^,
               )
             )
