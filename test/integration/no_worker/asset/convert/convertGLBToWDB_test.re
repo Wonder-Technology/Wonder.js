@@ -17,7 +17,7 @@ let _ =
     beforeEach(() => {
       sandbox := createSandbox();
       state := TestTool.init(~sandbox, ());
-      ConvertTool.setFakeTransformCount();
+      ConvertTool.setFakeTransformCount(50);
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 

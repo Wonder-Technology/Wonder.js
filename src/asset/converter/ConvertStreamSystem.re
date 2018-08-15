@@ -931,28 +931,36 @@ let buildStreamChunk = (byteOffset, streamChunkArr, dataView) => {
   );
 };
 
-let _getBinBufferByteLength = binBuffer =>
-  binBuffer
-  |> ArrayBuffer.byteLength
-  |> WonderLog.Contract.ensureCheck(
-       byteLength => {
-         open WonderLog;
-         open Contract;
-         open Operators;
-
-         BufferUtils.checkByteLengthShouldBeAligned(byteLength);
-
-         test(
-           Log.buildAssertMessage(
-             ~expect={j|binBufferByteLength === binBuffer.byteLength|j},
-             ~actual={j|not|j},
-           ),
-           () =>
-           byteLength == (binBuffer |> ArrayBuffer.byteLength)
-         );
-       },
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+let _getBinBufferByteLength = bufferViewDataArr =>
+  bufferViewDataArr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. byteLength, (_, _, alignedByteLength)) =>
+         byteLength + alignedByteLength,
+       0,
      );
+
+/*
+ binBuffer
+ |> ArrayBuffer.byteLength
+ |> WonderLog.Contract.ensureCheck(
+      byteLength => {
+        open WonderLog;
+        open Contract;
+        open Operators;
+
+        BufferUtils.checkByteLengthShouldBeAligned(byteLength);
+
+        test(
+          Log.buildAssertMessage(
+            ~expect={j|binBufferByteLength === binBuffer.byteLength|j},
+            ~actual={j|not|j},
+          ),
+          () =>
+          byteLength == (binBuffer |> ArrayBuffer.byteLength)
+        );
+      },
+      IsDebugMainService.getIsDebug(StateDataMain.stateData),
+    ); */
 
 let _writeBinBufferByBufferViewData =
     (
@@ -965,6 +973,14 @@ let _writeBinBufferByBufferViewData =
       binBufferDataView,
       totalDataView,
     ) => {
+  /* WonderLog.Log.print((
+    "new totalByteOffset: ",
+    totalByteOffset,
+    totalByteOffset + oldBufferView.byteLength,
+    totalByteOffset + alignedByteLength,
+  ))
+  |> ignore; */
+
   let (_, _) =
     ArrayService.range(0, oldBufferView.byteLength - 1)
     |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -993,10 +1009,10 @@ let _writeBinBufferByBufferViewData =
   (totalByteOffset + alignedByteLength, binBufferDataView, totalDataView);
 };
 
-let getBinBufferChunkTotalByteLength = binBuffer => {
+let getBinBufferChunkTotalByteLength = bufferViewDataArr => {
   let headerByteLength = BufferUtils.getChunkHeaderByteLength();
 
-  headerByteLength + _getBinBufferByteLength(binBuffer);
+  headerByteLength + _getBinBufferByteLength(bufferViewDataArr);
 };
 
 let buildBinBufferChunk = (byteOffset, bufferViewDataArr, binBuffer, dataView) => {
@@ -1038,7 +1054,9 @@ let buildBinBufferChunk = (byteOffset, bufferViewDataArr, binBuffer, dataView) =
        IsDebugMainService.getIsDebug(StateDataMain.stateData),
      ); */
 
-  let binBufferByteLength = _getBinBufferByteLength(binBuffer);
+  let binBufferByteLength = _getBinBufferByteLength(bufferViewDataArr);
+
+  /* WonderLog.Log.print(("write binBufferByteLength: ", binBufferByteLength)) |> ignore; */
 
   let byteOffset =
     byteOffset
@@ -1046,6 +1064,11 @@ let buildBinBufferChunk = (byteOffset, bufferViewDataArr, binBuffer, dataView) =
     |> DataViewCommon.writeUint32_1(0x004E4942, _, dataView);
 
   let binBufferDataView = DataViewCommon.create(binBuffer);
+
+  /* WonderLog.Log.printJson(("bufferViewDataArr:", 
+  
+  bufferViewDataArr
+  )) |> ignore; */
 
   let (byteOffset, binBufferDataView, dataView) =
     bufferViewDataArr

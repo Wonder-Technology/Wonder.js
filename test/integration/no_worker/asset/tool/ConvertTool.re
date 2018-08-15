@@ -14,7 +14,7 @@ let buildFakeLoadImage = [%raw
 let getJsonSerializedNone = () => Js.Nullable.null |> Obj.magic;
 
 let setFakeTransformCount = [%raw
-  () => {|
-    window.wonder_transformCount_forTest = 50;
+  (count) => {|
+    window.wonder_transformCount_forTest = count;
     |}
 ];

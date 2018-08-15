@@ -26,7 +26,7 @@ let _ =
           (),
         );
 
-      ConvertTool.setFakeTransformCount();
+      ConvertTool.setFakeTransformCount(50);
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 

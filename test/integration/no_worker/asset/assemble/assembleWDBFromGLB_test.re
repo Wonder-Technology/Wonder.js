@@ -32,7 +32,7 @@ let _ =
           (),
         );
 
-      ConvertTool.setFakeTransformCount();
+      ConvertTool.setFakeTransformCount(50);
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
@@ -184,7 +184,7 @@ let _ =
       })
     );
 
-    describe("test gameObject", () =>
+    describe("test gameObject", () => {
       describe("set gameObject name", () =>
         testPromise("test", () =>
           AssembleWDBSystemTool.testGLB(
@@ -209,8 +209,42 @@ let _ =
             state^,
           )
         )
-      )
-    );
+      );
+
+      describe("test gameObject count", () =>
+        testPromise("test 2CylinderEngine glb", () => {
+          ConvertTool.setFakeTransformCount(1000);
+
+          state :=
+            TestTool.initWithoutBuildFakeDom(
+              ~sandbox,
+              ~buffer=
+                SettingTool.buildBufferConfigStr(
+                  ~geometryPointCount=300000,
+                  ~geometryCount=50,
+                  ~transformCount=500,
+                  ~lightMaterialCount=500,
+                  ~meshRendererCount=500,
+                  (),
+                ),
+              (),
+            );
+
+          AssembleWDBSystemTool.testGLB(
+            sandbox^,
+            GLBTool.buildGLBFilePath("2CylinderEngine.glb"),
+            ((state, rootGameObject)) => {
+              let dataMap = GLTFTool.getTruckGeometryData();
+
+              AssembleWDBSystemTool.getAllGameObjects(rootGameObject, state)
+              |> Js.Array.length
+              |> expect == 159;
+            },
+            state^,
+          );
+        })
+      );
+    });
 
     describe("test transforms", () => {
       describe("test set parent", () => {
@@ -656,6 +690,86 @@ let _ =
             state^,
           )
         );
+
+        testPromise("test AlphaBlendModeTest glb", () => {
+          state :=
+            TestTool.initWithoutBuildFakeDom(
+              ~sandbox,
+              ~buffer=
+                SettingTool.buildBufferConfigStr(
+                  ~geometryPointCount=8000000,
+                  ~geometryCount=50,
+                  ~transformCount=500,
+                  ~lightMaterialCount=500,
+                  ~meshRendererCount=500,
+                  (),
+                ),
+              (),
+            );
+
+          AssembleWDBSystemTool.testGLB(
+            sandbox^,
+            GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
+            ((state, rootGameObject)) => {
+              let allGeometryData =
+                AssembleWDBSystemTool.getAllGeometryData(
+                  rootGameObject,
+                  state,
+                );
+
+              (allGeometryData |> Js.Array.length, allGeometryData[1])
+              |>
+              expect == (
+                          9,
+                          (
+                            "DecalBlend",
+                            (
+                              Float32Array.make([|
+                                (-0.9919999837875366),
+                                0.11400000005960464,
+                                0.009999999776482582,
+                                (-1.2080000638961792),
+                                (-0.11400000005960464),
+                                0.009999999776482582,
+                                (-0.9919999837875366),
+                                (-0.11400000005960464),
+                                0.009999999776482582,
+                                (-1.2080000638961792),
+                                0.11400000005960464,
+                                0.009999999776482582,
+                              |]),
+                              Float32Array.make([|
+                                (-0.),
+                                0.,
+                                1.,
+                                (-0.),
+                                0.,
+                                1.,
+                                (-0.),
+                                0.,
+                                1.,
+                                (-0.),
+                                0.,
+                                1.,
+                              |]),
+                              Float32Array.make([|
+                                0.9825000166893005,
+                                0.6625000238418579,
+                                0.8924999237060547,
+                                0.7575000524520874,
+                                0.9825000166893005,
+                                0.7575000524520874,
+                                0.8924999237060547,
+                                0.6625000238418579,
+                              |]),
+                              Uint16Array.make([|0, 1, 2, 0, 3, 1|]),
+                            ),
+                          ),
+                        );
+            },
+            state^,
+          );
+        });
 
         testPromise(
           "test gameObjects which has no cutomGeometry component", () =>
