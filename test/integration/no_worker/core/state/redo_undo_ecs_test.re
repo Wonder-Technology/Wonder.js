@@ -427,130 +427,22 @@ let _ =
                     );
         });
       });
-      /* describe(
-           "deep copy geometry record",
-           () => {
-             /* describe(
-               "deep copy custom geometry record",
-               () =>
-                 test(
-                   "copy verticesInfos",
-                   () => {
-                     open StateDataMainType;
-                     open GeometryAPI;
-                     open GeometryType;
-                     let (state, gameObject1, geometry1) =
-                       GameObjectTool.createGameObject(state^);
-                     let vertices1 = Float32Array.make([|10.|]);
-                     let state = state |> setGeometryVertices(geometry1, vertices1);
-                     let copiedState = MainStateTool.deepCopyForRestore(state);
-                     GeometryTool.getRecord(copiedState).verticesInfos[0] = {
-                       startIndex: 10,
-                       endIndex: 20
-                     };
-                     GeometryTool.getRecord(state).verticesInfos[0]
-                     |> expect == {startIndex: 0, endIndex: 1}
-                   }
-                 )
-             ) */
-           }
-         ); */
-      /* describe(
-           "deep copy geometry record",
-           () =>
-             describe(
-               "deep copy custom geometry record",
-               () => {
-                 beforeEach(()=>{
 
-                 state :=
-                   TestTool.initWithJobConfigWithoutBuildFakeDom(
-                     ~sandbox,
-                     ~buffer=SettingTool.buildBufferConfigStr(~geometryPointCount=500, ()),
-                     ()
-                   );
-                 });
-                 test(
-                   "copy vertices",
-                   () =>
-                     _testCopyTypeArraySingleValue(
-                       (
-                         /* GameObjectTool.createGameObject, */
-                         GeometryTool.createGameObject,
-                         GeometryAPI.getGeometryVertices,
-                         GeometryAPI.setGeometryVertices,
-                         () => (
-                           Float32Array.make([|2., 0., 0.|]),
-                           Float32Array.make([|4., 0., 0.|])
-                         )
-                       ),
-                       state
-                     )
-                 );
-                 test(
-                   "copy normals",
-                   () =>
-                     _testCopyTypeArraySingleValue(
-                       (
-                         GameObjectTool.createGameObject,
-                         GeometryAPI.getGeometryNormals,
-                         GeometryAPI.setGeometryNormals,
-                         () => (
-                           Float32Array.make([|2., 0., 0.|]),
-                           Float32Array.make([|4., 0., 0.|])
-                         )
-                       ),
-                       state
-                     )
-                 );
-                 test(
-                   "copy indices",
-                   () =>
-                     _testCopyTypeArraySingleValue(
-                       (
-                         GameObjectTool.createGameObject,
-                         GeometryAPI.getGeometryIndices,
-                         GeometryAPI.setGeometryIndices,
-                         () => (Uint16Array.make([|2, 0, 0|]), Uint16Array.make([|4|]))
-                       ),
-                       state
-                     )
-                 )
-               }
-             )
-         ); */
-      /* test(
-           "change copied state shouldn't affect source state",
-           () => {
-             open StateDataMainType;
-             let (state, gameObject1, gameObject2, gameObject3, geometry1, geometry2, geometry3) =
-               _prepareGeometryData(state);
-             let copiedState = MainStateTool.deepCopyForRestore(state);
-             let record = copiedState.boxGeometryRecord;
-             record.verticesMap
-             |> Obj.magic
-             |> WonderCommonlib.SparseMapService.deleteVal(geometry2);
-             record.normalsMap
-             |> Obj.magic
-             |> WonderCommonlib.SparseMapService.deleteVal(geometry2);
-             record.indicesMap
-             |> Obj.magic
-             |> WonderCommonlib.SparseMapService.deleteVal(geometry2);
-             let {verticesMap, normalsMap, indicesMap} = state.boxGeometryRecord;
-             (
-               verticesMap
-               |> WonderCommonlib.SparseMapService.unsafeGet(geometry2)
-               |> JudgeTool.isUndefined,
-               normalsMap
-               |> WonderCommonlib.SparseMapService.unsafeGet(geometry2)
-               |> JudgeTool.isUndefined,
-               indicesMap
-               |> WonderCommonlib.SparseMapService.unsafeGet(geometry2)
-               |> JudgeTool.isUndefined
-             )
-             |> expect == (false, false, false)
-           }
-         ); */
+      describe("deep copy geometry record", () =>
+        test("shadow copy nameMap", () =>
+          StateDataMainType.(
+            GeometryType.(
+              MainStateTool.testShadowCopyArrayLikeMapData(
+                state => {
+                  let {nameMap} = GeometryTool.getRecord(state);
+                  [|nameMap |> Obj.magic|];
+                },
+                state^,
+              )
+            )
+          )
+        )
+      );
 
       describe("deep copy meshRenderer record", () => {
         test(
@@ -1603,18 +1495,9 @@ let _ =
           let indices2 = Uint16Array.make([|0, 1, 2|]);
           let currentState =
             currentState
-            |> GeometryAPI.setGeometryVertices(
-                 geometry2,
-                 vertices2,
-               )
-            |> GeometryAPI.setGeometryTexCoords(
-                 geometry2,
-                 texCoords2,
-               )
-            |> GeometryAPI.setGeometryNormals(
-                 geometry3,
-                 normals2,
-               )
+            |> GeometryAPI.setGeometryVertices(geometry2, vertices2)
+            |> GeometryAPI.setGeometryTexCoords(geometry2, texCoords2)
+            |> GeometryAPI.setGeometryNormals(geometry3, normals2)
             |> GeometryAPI.setGeometryIndices(geometry2, indices2);
           ((currentState, copiedState), (geometry1, geometry2, geometry3));
         };
@@ -1696,13 +1579,9 @@ let _ =
           let vertices3 = Float32Array.make([|3., 4., 11.|]);
           let restoredState =
             restoredState
-            |> GeometryAPI.setGeometryVertices(
-                 geometry3,
-                 vertices3,
-               );
+            |> GeometryAPI.setGeometryVertices(geometry3, vertices3);
           let vertices =
-            restoredState
-            |> GeometryAPI.getGeometryVertices(geometry3);
+            restoredState |> GeometryAPI.getGeometryVertices(geometry3);
           vertices |> expect == vertices3;
         });
       });

@@ -74,8 +74,7 @@ let _initBufferData = (geometryPointCount, geometryCount) => {
 let create = ({settingRecord} as state) => {
   let geometryPointCount =
     BufferSettingService.getGeometryPointCount(settingRecord);
-  let geometryCount =
-    BufferSettingService.getGeometryCount(settingRecord);
+  let geometryCount = BufferSettingService.getGeometryCount(settingRecord);
   let (
     buffer,
     vertices,
@@ -113,6 +112,7 @@ let create = ({settingRecord} as state) => {
       aliveIndexArray: WonderCommonlib.ArrayService.createEmpty(),
       /* isInitMap: WonderCommonlib.SparseMapService.createEmpty(), */
       groupCountMap: WonderCommonlib.SparseMapService.createEmpty(),
+      nameMap: WonderCommonlib.SparseMapService.createEmpty(),
     });
   state;
 };
@@ -134,6 +134,7 @@ let deepCopyForRestore = state => {
         disposedIndexArray,
         disposedIndexMap,
         aliveIndexArray,
+        nameMap,
       } as record =
     state |> getRecord;
 
@@ -167,6 +168,7 @@ let deepCopyForRestore = state => {
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
         disposedIndexMap: disposedIndexMap |> SparseMapService.copy,
         aliveIndexArray: aliveIndexArray |> Js.Array.copy,
+        nameMap: nameMap |> SparseMapService.copy,
       }),
   };
 };

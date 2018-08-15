@@ -6,14 +6,12 @@ open GeometryType;
 
 open DisposeGeometryMainService;
 
-let createGeometry = state =>
-  CreateGeometryMainService.create(state);
+let createGeometry = state => CreateGeometryMainService.create(state);
 
 let createBoxGeometry = state =>
   CreateBoxGeometryGeometryMainService.create(state);
 
-let getGeometryVertices =
-    (geometry: int, state: StateDataMainType.state) => {
+let getGeometryVertices = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -53,15 +51,10 @@ let setGeometryVertices =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  VerticesGeometryMainService.setVerticesByTypeArray(
-    geometry,
-    data,
-    state,
-  );
+  VerticesGeometryMainService.setVerticesByTypeArray(geometry, data, state);
 };
 
-let getGeometryTexCoords =
-    (geometry: int, state: StateDataMainType.state) => {
+let getGeometryTexCoords = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -101,11 +94,7 @@ let setGeometryTexCoords =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  TexCoordsGeometryMainService.setTexCoordsByTypeArray(
-    geometry,
-    data,
-    state,
-  );
+  TexCoordsGeometryMainService.setTexCoordsByTypeArray(geometry, data, state);
 };
 
 let getGeometryNormals = (geometry: int, state: StateDataMainType.state) => {
@@ -148,11 +137,7 @@ let setGeometryNormals =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  NormalsGeometryMainService.setNormalsByTypeArray(
-    geometry,
-    data,
-    state,
-  );
+  NormalsGeometryMainService.setNormalsByTypeArray(geometry, data, state);
 };
 
 let getGeometryIndices = (geometry: int, state: StateDataMainType.state) => {
@@ -195,11 +180,7 @@ let setGeometryIndices =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  IndicesGeometryMainService.setIndicesByTypeArray(
-    geometry,
-    data,
-    state,
-  );
+  IndicesGeometryMainService.setIndicesByTypeArray(geometry, data, state);
 };
 
 let unsafeGetGeometryGameObject =
@@ -223,4 +204,42 @@ let unsafeGetGeometryGameObject =
     geometry,
     RecordGeometryMainService.getRecord(state),
   );
+};
+
+let unsafeGetGeometryName = (material, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordGeometryMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  NameGeometryMainService.unsafeGetName(material, state);
+};
+
+let setGeometryName = (material, name, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordGeometryMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  NameGeometryMainService.setName(material, name, state);
 };
