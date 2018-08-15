@@ -38,4 +38,5 @@ type geometryRecord = {
   mutable disposedIndexArray: array(geometry),
   mutable disposedIndexMap: geometryDisposedIndexMap,
   aliveIndexArray: array(int),
+  nameMap: WonderCommonlib.SparseMapService.t(string),
 };
