@@ -211,7 +211,48 @@ let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer) : ArrayBuffer.t => {
     + BufferUtils.getChunkHeaderByteLength()
     + jsonByteLength
     + ConvertStreamSystem.getStreamChunkTotalByteLength(streamChunkArr)
-    + ConvertStreamSystem.getBinBufferChunkTotalByteLength(binBuffer);
+    + ConvertStreamSystem.getBinBufferChunkTotalByteLength(bufferViewDataArr);
+
+
+
+    /* WonderLog.Log.print(("totalByteLength: ", 
+    
+    totalByteLength,
+
+ConvertStreamSystem.getBinBufferChunkTotalByteLength(bufferViewDataArr)
+    )) |> ignore; */
+
+  /* + BufferUtils.getChunkHeaderByteLength()
+         /* + ConvertStreamSystem.getBinBufferChunkTotalByteLength(binBuffer); */
+     /* 1794652; */
+         + (bufferViewDataArr |> WonderCommonlib.ArrayService.reduceOneParam((. count, (_,_,n)) => {
+      count + n
+     }, 0 )); */
+
+  /* ConvertStreamSystem.getBinBufferChunkTotalByteLength(binBuffer); */
+
+  /* WonderLog.Log.print(
+    BufferUtils.getFirstHeaderByteLength()
+    /* json chunk header: json length + type */
+    + BufferUtils.getChunkHeaderByteLength()
+    + jsonByteLength
+    + ConvertStreamSystem.getStreamChunkTotalByteLength(streamChunkArr),
+  )
+  |> ignore; */
+
+  /* WonderLog.Log.print((
+    "compare binBuffer and bufferViewDataArr",
+    /* ConvertStreamSystem.getBinBufferChunkTotalByteLength(binBuffer), */
+    binBuffer |> Js.Typed_array. ArrayBuffer.byteLength,
+
+
+       bufferViewDataArr |> WonderCommonlib.ArrayService.reduceOneParam((. count, (_,_,n)) => {
+        count + n
+       }, 0 )
+    /* totalByteLength, */
+  )
+  )
+  |> ignore; */
 
   let wdb = ArrayBuffer.make(totalByteLength);
   let dataView = DataViewCommon.create(wdb);

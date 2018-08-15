@@ -211,7 +211,6 @@ let _getBufferData =
   let dataView = Array.unsafe_get(dataViewArr, bufferView.buffer);
 
   let offset = accessor.byteOffset + bufferView.byteOffset;
-  /* let offset = bufferView.byteOffset; */
 
   (
     dataView |> DataView.buffer,
@@ -221,6 +220,12 @@ let _getBufferData =
       accessor.type_,
     ),
   );
+};
+
+let _getAccessorComponentType = ({accessors}, accessorIndex) => {
+  let accessor = Array.unsafe_get(accessors, accessorIndex);
+
+  accessor.componentType;
 };
 
 let _getBufferPointData =
@@ -241,10 +246,21 @@ let _getBufferAttributeData = (accessorIndex, dataViewArr, wd) =>
   );
 
 let _getBufferIndexData = (accessorIndex, dataViewArr, wd) =>
-  _getBufferPointData(
-    (accessorIndex, Uint16Array._BYTES_PER_ELEMENT, dataViewArr, wd),
-    Uint16Array.fromBufferRange,
-  );
+  switch (_getAccessorComponentType(wd, accessorIndex)) {
+  | UNSIGNED_BYTE =>
+    Uint16Array.from(
+      _getBufferPointData(
+        (accessorIndex, Uint8Array._BYTES_PER_ELEMENT, dataViewArr, wd),
+        Uint8Array.fromBufferRange,
+      )
+      |> Obj.magic,
+    )
+  | UNSIGNED_SHORT =>
+    _getBufferPointData(
+      (accessorIndex, Uint16Array._BYTES_PER_ELEMENT, dataViewArr, wd),
+      Uint16Array.fromBufferRange,
+    )
+  };
 
 let _batchSetGeometryData =
     ({geometrys} as wd, geometryArr, bufferArr, state) => {

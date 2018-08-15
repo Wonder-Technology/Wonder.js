@@ -29,9 +29,9 @@
 
 
 
-    <script src="./gltfTool.js"></script>
-    <script src="./wdData.js"></script>
-    <script src="./base64DataTool.js"></script>
+    <!-- <script src="./gltfTool.js"></script>
+    <script src="./wdData.js"></script> -->
+    <!-- <script src="./base64DataTool.js"></script> -->
 
     <script>
         function _createLightsAndCamera(isCreateCamera, state) {
@@ -82,10 +82,44 @@
                 // var state = wd.setTransformLocalPosition(transform, [50, 100, 500], state);
                 state = wd.setTransformLocalPosition(transform, [0, 5, 10], state);
 
-                state =
-                    wd.setCurrentCameraGameObject(
-                        camera, state
+                // state =
+                //     wd.setCurrentCameraGameObject(
+                //         camera, state
+                //     );
+
+
+
+
+
+
+                var [state, cameraController] = wd.createArcballCameraController(state);
+
+                var state =
+                    wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+                var state =
+                    wd.bindArcballCameraControllerEvent(
+                        cameraController, state
                     );
+
+
+                var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+
+
+
+
+
+
+                var state =
+                    wd.activeBasicCameraView(
+                        wd.unsafeGetGameObjectBasicCameraViewComponent(
+                            camera, state
+                        ), state
+                    );
+
+
             }
 
             return [state, directionLightObj, pointLightObj]
@@ -97,7 +131,10 @@
         function initSample(state) {
             fetch(
                 // "../res/BoxTextured.glb"
-                "../res/CesiumMilkTruck.glb"
+                // "../res/CesiumMilkTruck.glb"
+                "../res/AlphaBlendModeTest.glb"
+                // "../res/2CylinderEngine.glb"
+                // "../res/Lantern.glb"
             )
                 .then((res) => {
                     return res.arrayBuffer();
@@ -113,7 +150,9 @@
                             console.log(performance.now() - n1);
                             console.profileEnd();
 
+                            // var isCreateCamera = false;
                             var isCreateCamera = true;
+
 
                             var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(isCreateCamera, state);
 

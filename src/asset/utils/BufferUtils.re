@@ -106,6 +106,10 @@ let computeByteLengthByAccessorData = (count, componentType, type_) =>
     }
   );
 
+
+
+
+
 let getFirstHeaderByteLength = () => 12;
 
 let getChunkHeaderByteLength = () => 8;
@@ -181,37 +185,31 @@ let decodeWDB = (binary: ArrayBuffer.t, checkFunc) => {
       dataView,
     );
 
-
-
-
   /* let (binBufferSize, _) =
     DataViewCommon.getUint32_1(.
       /* getFirstHeaderByteLength() + getChunkHeaderByteLength() + jsonBufSize, */
-
-
-              getFirstHeaderByteLength()
-              + getChunkHeaderByteLength()
-              + jsonBufSize
-              + getChunkHeaderByteLength()
-              + streamChunkSize,
-              /* + getChunkHeaderByteLength(), */
-
-
+      getFirstHeaderByteLength()
+      + getChunkHeaderByteLength()
+      + jsonBufSize
+      + getChunkHeaderByteLength()
+      + streamChunkSize,
+      /* + getChunkHeaderByteLength(), */
       dataView,
-    ); */
+    );
 
-  /* WonderLog.Log.print((
-     jsonBufSize, streamChunkSize,
-
-binBufferSize,
-              getFirstHeaderByteLength()
-              + getChunkHeaderByteLength()
-              + jsonBufSize
-              + getChunkHeaderByteLength()
-              + streamChunkSize
-              + getChunkHeaderByteLength(),
-
-         )) |> ignore; */
+  WonderLog.Log.print((
+    jsonBufSize,
+    streamChunkSize,
+    binBufferSize,
+    binary |> ArrayBuffer.byteLength,
+    /* getFirstHeaderByteLength()
+       + getChunkHeaderByteLength()
+       + jsonBufSize
+       + getChunkHeaderByteLength()
+       + streamChunkSize
+       + getChunkHeaderByteLength(), */
+  ))
+  |> ignore; */
 
   let decoder = TextDecoder.newTextDecoder("utf-8");
 
