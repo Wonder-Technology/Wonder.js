@@ -92,10 +92,50 @@
                     // var state = wd.setTransformLocalPosition(transform, [50, 100, 500], state);
                     state = wd.setTransformLocalPosition(transform, [0, 5, 10], state);
 
-                    state =
-                        wd.setCurrentCameraGameObject(
-                            camera, state
+                    // state =
+                    //     wd.setCurrentCameraGameObject(
+                    //         camera, state
+                    //     );
+
+
+
+
+                    var [state, cameraController] = wd.createArcballCameraController(state);
+
+                    var state =
+                        wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+                    var state =
+                        wd.bindArcballCameraControllerEvent(
+                            cameraController, state
                         );
+
+
+                    var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+
+
+
+
+
+
+                    var state =
+                        wd.activeBasicCameraView(
+                            wd.unsafeGetGameObjectBasicCameraViewComponent(
+                                camera, state
+                            ), state
+                        );
+
+
+
+
+
+
+
+
+
+
                 }
 
                 return [state, directionLightObj, pointLightObj]

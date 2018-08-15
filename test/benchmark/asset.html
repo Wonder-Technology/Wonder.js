@@ -165,23 +165,26 @@
                         var [state, wdb] = wd.generateWDB(rootGameObject, imageBase64Map, state);
 
 
-                        console.profileEnd();
-                        var n1 = performance.now();
-
-                        console.log(n1 - n0)
+                        AssetTool.download(wdb, "generated.wdb", "")
 
 
-                        // var state =
-                        //     _disposeAll(rootGameObject, state);
+                        // console.profileEnd();
+                        // var n1 = performance.now();
+
+                        // console.log(n1 - n0)
 
 
-                        wd.assembleWDB(wdb, state)
-                            .forEach(([state, rootGameObject]) => {
-                                var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(isCreateCamera, state);
+                        // // var state =
+                        // //     _disposeAll(rootGameObject, state);
 
 
-                                wd.startDirector(state);
-                            });
+                        // wd.assembleWDB(wdb, state)
+                        //     .forEach(([state, rootGameObject]) => {
+                        //         var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(isCreateCamera, state);
+
+
+                        //         wd.startDirector(state);
+                        //     });
 
 
 
@@ -225,6 +228,16 @@
                 var data = LightBoxesTool.createCamera(state);
                 var state = data[0];
                 var camera = data[1];
+
+
+                var state =
+                    wd.activeBasicCameraView(
+                        wd.unsafeGetGameObjectBasicCameraViewComponent(
+                            camera, state
+                        ), state
+                    );
+
+
 
 
                 var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
@@ -352,15 +365,16 @@
                 fetch(
                     // "../res/BoxTextured.glb"
                     // "../res/CesiumMilkTruck.glb"
-                    "../res/CesiumMilkTruck.glb"
+                    // "../res/CesiumMilkTruck.glb"
                     // "../res/VC.glb"
                     // "../res/2CylinderEngine.glb"
+                    "../res/AlphaBlendModeTest.glb"
                 )
                     .then((res) => {
                         return res.arrayBuffer();
                     })
                     .then((arrayBuffer) => {
-                        // var imageBase64Map = wd.createSparseMap();
+                        var imageBase64Map = wd.createSparseMap();
                         // imageBase64Map =
                         //     wd.setSparseMapValue(3,
                         //         truckImageBase64,
