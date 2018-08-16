@@ -164,14 +164,21 @@ let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer) : ArrayBuffer.t => {
   let (bufferViewDataArr, streamChunkArr, jsonUint8Array) =
     _buildWDBJsonUint8Array(gltf);
 
-  let jsonChunkByteLength =
-    jsonUint8Array |> Uint8Array.byteLength |> BufferUtils.alignedLength;
+  let jsonChunkByteLength = jsonUint8Array |> Uint8Array.byteLength;
+
+  let jsonChunkAlignedByteLength =
+    jsonChunkByteLength |> BufferUtils.alignedLength;
 
   let totalByteLength =
     BufferUtils.getWDBHeaderTotalByteLength()
-    + jsonChunkByteLength
-    + ConvertStreamSystem.getStreamChunkTotalByteLength(streamChunkArr)
-    + ConvertStreamSystem.getBinBufferChunkTotalByteLength(bufferViewDataArr);
+    + jsonChunkAlignedByteLength
+    + (
+      ConvertStreamSystem.getStreamChunkTotalByteLength(streamChunkArr)
+      |> BufferUtils.alignedLength
+    )
+    + ConvertStreamSystem.getBinBufferChunkTotalAlignedByteLength(
+        bufferViewDataArr,
+      );
 
   let wdb = ArrayBuffer.make(totalByteLength);
   let dataView = DataViewCommon.create(wdb);
@@ -181,7 +188,9 @@ let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer) : ArrayBuffer.t => {
       totalByteLength,
       jsonChunkByteLength,
       ConvertStreamSystem.getStreamChunkTotalByteLength(streamChunkArr),
-      ConvertStreamSystem.getBinBufferChunkTotalByteLength(bufferViewDataArr),
+      ConvertStreamSystem.getBinBufferChunkTotalAlignedByteLength(
+        bufferViewDataArr,
+      ),
       dataView,
     );
 
@@ -190,7 +199,7 @@ let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer) : ArrayBuffer.t => {
   let (byteOffset, _, dataView) =
     _writeJson(
       byteOffset,
-      (emptyEncodedUint8Data, jsonChunkByteLength, jsonUint8Array),
+      (emptyEncodedUint8Data, jsonChunkAlignedByteLength, jsonUint8Array),
       dataView,
     );
 
