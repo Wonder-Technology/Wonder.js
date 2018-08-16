@@ -106,13 +106,14 @@ let computeByteLengthByAccessorData = (count, componentType, type_) =>
     }
   );
 
+let getHeaderByteLength = () => 12;
 
+let getGLBChunkHeaderByteLength = () => 8;
 
+let getWDBChunkHeaderByteLength = () => 4;
 
-
-let getFirstHeaderByteLength = () => 12;
-
-let getChunkHeaderByteLength = () => 8;
+let getWDBHeaderTotalByteLength = () =>
+  getHeaderByteLength() + getWDBChunkHeaderByteLength() * 3;
 
 let alignedLength = (value: int) : int =>
   switch (value) {
@@ -131,44 +132,25 @@ let decodeGLB = (binary: ArrayBuffer.t, checkFunc) => {
   let dataView = DataViewCommon.create(binary);
   let dataView = checkFunc(dataView);
   let (jsonBufSize, _) =
-    DataViewCommon.getUint32_1(. getFirstHeaderByteLength(), dataView);
+    DataViewCommon.getUint32_1(. getHeaderByteLength(), dataView);
   let decoder = TextDecoder.newTextDecoder("utf-8");
-
-  /* let (binBufferSize, _) =
-       DataViewCommon.getUint32_1(.
-         getFirstHeaderByteLength() +
-         getChunkHeaderByteLength()+
-         jsonBufSize,
-         /* 28, */
-         dataView,
-       );
-
-     WonderLog.Log.print((
-
-       DataViewCommon.getUint32_1(.
-       8,
-         /* 28, */
-         dataView,
-       ),
-
-     "jsonBufSize:", jsonBufSize, binBufferSize)) |> ignore; */
 
   (
     decoder
     |> TextDecoder.decodeUint8Array(
          Uint8Array.fromBufferRange(
            binary,
-           ~offset=getFirstHeaderByteLength() + getChunkHeaderByteLength(),
+           ~offset=getHeaderByteLength() + getGLBChunkHeaderByteLength(),
            ~length=jsonBufSize,
          ),
        )
     |> _removeAlignedEmptyChars,
     binary
     |> ArrayBuffer.sliceFrom(
-         getFirstHeaderByteLength()
-         + getChunkHeaderByteLength()
+         getHeaderByteLength()
+         + getGLBChunkHeaderByteLength()
          + jsonBufSize
-         + getChunkHeaderByteLength(),
+         + getGLBChunkHeaderByteLength(),
        ),
   );
 };
@@ -176,40 +158,15 @@ let decodeGLB = (binary: ArrayBuffer.t, checkFunc) => {
 let decodeWDB = (binary: ArrayBuffer.t, checkFunc) => {
   let dataView = DataViewCommon.create(binary);
   let dataView = checkFunc(dataView);
+
   let (jsonBufSize, _) =
-    DataViewCommon.getUint32_1(. getFirstHeaderByteLength(), dataView);
+    DataViewCommon.getUint32_1(. getHeaderByteLength(), dataView);
 
   let (streamChunkSize, _) =
     DataViewCommon.getUint32_1(.
-      getFirstHeaderByteLength() + getChunkHeaderByteLength() + jsonBufSize,
+      getHeaderByteLength() + getWDBChunkHeaderByteLength(),
       dataView,
     );
-
-  /* let (binBufferSize, _) =
-    DataViewCommon.getUint32_1(.
-      /* getFirstHeaderByteLength() + getChunkHeaderByteLength() + jsonBufSize, */
-      getFirstHeaderByteLength()
-      + getChunkHeaderByteLength()
-      + jsonBufSize
-      + getChunkHeaderByteLength()
-      + streamChunkSize,
-      /* + getChunkHeaderByteLength(), */
-      dataView,
-    );
-
-  WonderLog.Log.print((
-    jsonBufSize,
-    streamChunkSize,
-    binBufferSize,
-    binary |> ArrayBuffer.byteLength,
-    /* getFirstHeaderByteLength()
-       + getChunkHeaderByteLength()
-       + jsonBufSize
-       + getChunkHeaderByteLength()
-       + streamChunkSize
-       + getChunkHeaderByteLength(), */
-  ))
-  |> ignore; */
 
   let decoder = TextDecoder.newTextDecoder("utf-8");
 
@@ -218,33 +175,19 @@ let decodeWDB = (binary: ArrayBuffer.t, checkFunc) => {
     |> TextDecoder.decodeUint8Array(
          Uint8Array.fromBufferRange(
            binary,
-           ~offset=getFirstHeaderByteLength() + getChunkHeaderByteLength(),
+           ~offset=getWDBHeaderTotalByteLength(),
            ~length=jsonBufSize,
          ),
        )
     |> _removeAlignedEmptyChars,
     binary
     |> ArrayBuffer.slice(
-         ~start=
-           getFirstHeaderByteLength()
-           + getChunkHeaderByteLength()
-           + jsonBufSize
-           + getChunkHeaderByteLength(),
-         ~end_=
-           getFirstHeaderByteLength()
-           + getChunkHeaderByteLength()
-           + jsonBufSize
-           + getChunkHeaderByteLength()
-           + streamChunkSize,
+         ~start=getWDBHeaderTotalByteLength() + jsonBufSize,
+         ~end_=getWDBHeaderTotalByteLength() + jsonBufSize + streamChunkSize,
        ),
     binary
     |> ArrayBuffer.sliceFrom(
-         getFirstHeaderByteLength()
-         + getChunkHeaderByteLength()
-         + jsonBufSize
-         + getChunkHeaderByteLength()
-         + streamChunkSize
-         + getChunkHeaderByteLength(),
+         getWDBHeaderTotalByteLength() + jsonBufSize + streamChunkSize,
        ),
   );
 };
