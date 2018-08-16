@@ -828,48 +828,21 @@ let _getDefault11ImageUint8Array = () =>
 let _getDefault11ImageUint8ArrayAlignedByteLength = () =>
   70 |> BufferUtils.alignedLength;
 
-let _getChunkType = () => 0x4E4F5300;
-
 let _writeStreamChunk =
-    (
-      (
-        default11ImageUint8ArrayAlignedByteLength,
-        streamChunkArrAlignedByteLength,
-      ),
-      (default11ImageUint8Array, streamChunkArr),
-      byteOffset,
-      dataView,
-    ) => {
+    (streamChunkArrAlignedByteLength, streamChunkArr, byteOffset, dataView) => {
   WonderLog.Contract.requireCheck(
-    () => {
-      open WonderLog;
-      open Contract;
-      open Operators;
-
-      BufferUtils.checkByteLengthShouldBeAligned(
-        default11ImageUint8ArrayAlignedByteLength,
-      );
-      BufferUtils.checkByteLengthShouldBeAligned(
-        streamChunkArrAlignedByteLength,
-      );
-    },
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            BufferUtils.checkByteLengthShouldBeAligned(
+              streamChunkArrAlignedByteLength,
+            )
+          )
+        )
+      ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-
-  let emptyEncodedUint8Data = 0;
-
-  let (byteOffset, _, dataView) =
-    BufferUtils.copyUint8ArrayToArrayBuffer(
-      byteOffset,
-      (
-        emptyEncodedUint8Data,
-        default11ImageUint8ArrayAlignedByteLength,
-        default11ImageUint8Array,
-      ),
-      dataView,
-    );
-
-  /* WonderLog.Log.print(byteOffset) |> ignore; */
 
   let byteOffset =
     streamChunkArr
@@ -900,16 +873,12 @@ let getStreamChunkArrAlignedByteLength = streamChunkArr =>
   |> BufferUtils.alignedLength;
 
 let getStreamChunkTotalByteLength = streamChunkArr =>
-  + _getDefault11ImageUint8ArrayAlignedByteLength()
-  + getStreamChunkArrAlignedByteLength(streamChunkArr);
+  getStreamChunkArrAlignedByteLength(streamChunkArr);
 
 let buildStreamChunk = (byteOffset, streamChunkArr, dataView) =>
   _writeStreamChunk(
-    (
-      _getDefault11ImageUint8ArrayAlignedByteLength(),
-      getStreamChunkArrAlignedByteLength(streamChunkArr),
-    ),
-    (_getDefault11ImageUint8Array(), streamChunkArr),
+    getStreamChunkArrAlignedByteLength(streamChunkArr),
+    streamChunkArr,
     byteOffset,
     dataView,
   );
