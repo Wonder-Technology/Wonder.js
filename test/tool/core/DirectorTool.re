@@ -1,10 +1,13 @@
 let prepare = (state: StateDataMainType.state) => {
   TimeControllerTool.setStartTime(0.);
-  state
+  state;
 };
 
-let init = (state: StateDataMainType.state) => state |> DirectorAPI._noWorkerInit;
+let init = (state: StateDataMainType.state) =>
+  state |> DirectorMainService._noWorkerInit;
 
-let run = (state: StateDataMainType.state, ~time=0., ()) => state |> DirectorAPI._run(time);
+let run = (state: StateDataMainType.state, ~time=0., ()) =>
+  state |> DirectorMainService._run(time);
 
-let runWithDefaultTime = (state: StateDataMainType.state) => state |> DirectorAPI._run(0.);
+let runWithDefaultTime = (state: StateDataMainType.state) =>
+  state |> DirectorMainService._run(0.);
