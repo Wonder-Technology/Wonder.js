@@ -126,12 +126,15 @@ let alignedLength = (value: int) : int =>
     };
   };
 
+/* let getWDBChunkBufferByteLength = chunkActualByteLength =>
+   chunkActualByteLength |> alignedLength; */
+
 let _removeAlignedEmptyChars = decodedStr => decodedStr |> Js.String.trim;
 
 let decodeGLB = (binary: ArrayBuffer.t, checkFunc) => {
   let dataView = DataViewCommon.create(binary);
   let dataView = checkFunc(dataView);
-  let (jsonBufSize, _) =
+  let (jsonChunkSize, _) =
     DataViewCommon.getUint32_1(. getHeaderByteLength(), dataView);
   let decoder = TextDecoder.newTextDecoder("utf-8");
 
@@ -141,7 +144,7 @@ let decodeGLB = (binary: ArrayBuffer.t, checkFunc) => {
          Uint8Array.fromBufferRange(
            binary,
            ~offset=getHeaderByteLength() + getGLBChunkHeaderByteLength(),
-           ~length=jsonBufSize,
+           ~length=jsonChunkSize,
          ),
        )
     |> _removeAlignedEmptyChars,
@@ -149,7 +152,7 @@ let decodeGLB = (binary: ArrayBuffer.t, checkFunc) => {
     |> ArrayBuffer.sliceFrom(
          getHeaderByteLength()
          + getGLBChunkHeaderByteLength()
-         + jsonBufSize
+         + jsonChunkSize
          + getGLBChunkHeaderByteLength(),
        ),
   );
@@ -159,7 +162,7 @@ let decodeWDB = (binary: ArrayBuffer.t, checkFunc) => {
   let dataView = DataViewCommon.create(binary);
   let dataView = checkFunc(dataView);
 
-  let (jsonBufSize, _) =
+  let (jsonChunkSize, _) =
     DataViewCommon.getUint32_1(. getHeaderByteLength(), dataView);
 
   let (streamChunkSize, _) =
@@ -176,18 +179,19 @@ let decodeWDB = (binary: ArrayBuffer.t, checkFunc) => {
          Uint8Array.fromBufferRange(
            binary,
            ~offset=getWDBHeaderTotalByteLength(),
-           ~length=jsonBufSize,
+           ~length=jsonChunkSize,
          ),
-       )
-    |> _removeAlignedEmptyChars,
+       ),
     binary
     |> ArrayBuffer.slice(
-         ~start=getWDBHeaderTotalByteLength() + jsonBufSize,
-         ~end_=getWDBHeaderTotalByteLength() + jsonBufSize + streamChunkSize,
+         ~start=getWDBHeaderTotalByteLength() + jsonChunkSize |> alignedLength,
+         ~end_=getWDBHeaderTotalByteLength() + jsonChunkSize + streamChunkSize,
        ),
     binary
     |> ArrayBuffer.sliceFrom(
-         getWDBHeaderTotalByteLength() + jsonBufSize + streamChunkSize,
+         getWDBHeaderTotalByteLength()
+         + (jsonChunkSize |> alignedLength)
+         + (streamChunkSize |> alignedLength),
        ),
   );
 };
