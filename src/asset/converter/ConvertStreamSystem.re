@@ -836,7 +836,7 @@ let _writeStreamChunk =
         default11ImageUint8ArrayAlignedByteLength,
         streamChunkArrAlignedByteLength,
       ),
-      (chunkType, default11ImageUint8Array, streamChunkArr),
+      (default11ImageUint8Array, streamChunkArr),
       byteOffset,
       dataView,
     ) => {
@@ -855,16 +855,6 @@ let _writeStreamChunk =
     },
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-
-  let byteOffset =
-    byteOffset
-    |> DataViewCommon.writeUint32_1(
-         default11ImageUint8ArrayAlignedByteLength
-         + streamChunkArrAlignedByteLength,
-         _,
-         dataView,
-       )
-    |> DataViewCommon.writeUint32_1(chunkType, _, dataView);
 
   let emptyEncodedUint8Data = 0;
 
@@ -909,27 +899,20 @@ let getStreamChunkArrAlignedByteLength = streamChunkArr =>
   * Js.Array.length(streamChunkArr)
   |> BufferUtils.alignedLength;
 
-let getStreamChunkTotalByteLength = streamChunkArr => {
-  let headerByteLength = BufferUtils.getChunkHeaderByteLength();
-
-  headerByteLength
+let getStreamChunkTotalByteLength = streamChunkArr =>
   + _getDefault11ImageUint8ArrayAlignedByteLength()
   + getStreamChunkArrAlignedByteLength(streamChunkArr);
-};
 
-let buildStreamChunk = (byteOffset, streamChunkArr, dataView) => {
-  let chunkType = _getChunkType();
-
+let buildStreamChunk = (byteOffset, streamChunkArr, dataView) =>
   _writeStreamChunk(
     (
       _getDefault11ImageUint8ArrayAlignedByteLength(),
       getStreamChunkArrAlignedByteLength(streamChunkArr),
     ),
-    (chunkType, _getDefault11ImageUint8Array(), streamChunkArr),
+    (_getDefault11ImageUint8Array(), streamChunkArr),
     byteOffset,
     dataView,
   );
-};
 
 let _getBinBufferByteLength = bufferViewDataArr =>
   bufferViewDataArr
@@ -974,12 +957,12 @@ let _writeBinBufferByBufferViewData =
       totalDataView,
     ) => {
   /* WonderLog.Log.print((
-    "new totalByteOffset: ",
-    totalByteOffset,
-    totalByteOffset + oldBufferView.byteLength,
-    totalByteOffset + alignedByteLength,
-  ))
-  |> ignore; */
+       "new totalByteOffset: ",
+       totalByteOffset,
+       totalByteOffset + oldBufferView.byteLength,
+       totalByteOffset + alignedByteLength,
+     ))
+     |> ignore; */
 
   let (_, _) =
     ArrayService.range(0, oldBufferView.byteLength - 1)
@@ -1009,11 +992,8 @@ let _writeBinBufferByBufferViewData =
   (totalByteOffset + alignedByteLength, binBufferDataView, totalDataView);
 };
 
-let getBinBufferChunkTotalByteLength = bufferViewDataArr => {
-  let headerByteLength = BufferUtils.getChunkHeaderByteLength();
-
-  headerByteLength + _getBinBufferByteLength(bufferViewDataArr);
-};
+let getBinBufferChunkTotalByteLength = bufferViewDataArr =>
+  _getBinBufferByteLength(bufferViewDataArr);
 
 let buildBinBufferChunk = (byteOffset, bufferViewDataArr, binBuffer, dataView) => {
   /* WonderLog.Contract.requireCheck(
@@ -1058,17 +1038,12 @@ let buildBinBufferChunk = (byteOffset, bufferViewDataArr, binBuffer, dataView) =
 
   /* WonderLog.Log.print(("write binBufferByteLength: ", binBufferByteLength)) |> ignore; */
 
-  let byteOffset =
-    byteOffset
-    |> DataViewCommon.writeUint32_1(binBufferByteLength, _, dataView)
-    |> DataViewCommon.writeUint32_1(0x004E4942, _, dataView);
-
   let binBufferDataView = DataViewCommon.create(binBuffer);
 
-  /* WonderLog.Log.printJson(("bufferViewDataArr:", 
-  
-  bufferViewDataArr
-  )) |> ignore; */
+  /* WonderLog.Log.printJson(("bufferViewDataArr:",
+
+     bufferViewDataArr
+     )) |> ignore; */
 
   let (byteOffset, binBufferDataView, dataView) =
     bufferViewDataArr

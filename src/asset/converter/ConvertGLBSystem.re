@@ -125,70 +125,33 @@ let _buildWDBJsonUint8Array = (gltf: GLTFType.gltf) => {
   );
 };
 
-let _writeHeader = (totalByteLength, dataView) =>
+let _writeHeader =
+    (
+      totalByteLength,
+      jsonChunkByteLength,
+      streamChunkByteLength,
+      binBufferChunkByteLength,
+      dataView,
+    ) =>
   dataView
   |> DataViewCommon.writeUint32_1(0x46546C68, 0)
   |> DataViewCommon.writeUint32_1(1, _, dataView)
-  |> DataViewCommon.writeUint32_1(totalByteLength, _, dataView);
+  |> DataViewCommon.writeUint32_1(totalByteLength, _, dataView)
+  |> DataViewCommon.writeUint32_1(jsonChunkByteLength, _, dataView)
+  |> DataViewCommon.writeUint32_1(streamChunkByteLength, _, dataView)
+  |> DataViewCommon.writeUint32_1(binBufferChunkByteLength, _, dataView);
 
 let _writeJson =
     (
       byteOffset,
-      (emptyEncodedUint8Data, jsonByteLength, jsonUint8Array),
+      (emptyEncodedUint8Data, jsonChunkByteLength, jsonUint8Array),
       dataView,
-    ) => {
-  let byteOffset =
-    byteOffset
-    |> DataViewCommon.writeUint32_1(jsonByteLength, _, dataView)
-    |> DataViewCommon.writeUint32_1(0x4E4F534A, _, dataView);
+    ) =>
   BufferUtils.copyUint8ArrayToArrayBuffer(
     byteOffset,
-    (emptyEncodedUint8Data, jsonByteLength, jsonUint8Array),
+    (emptyEncodedUint8Data, jsonChunkByteLength, jsonUint8Array),
     dataView,
   );
-};
-
-let _writeBinaryBuffer =
-    (byteOffset, (binBufferByteLength, binBuffer), dataView) => {
-  /* WonderLog.Contract.requireCheck(
-       () => {
-         open WonderLog;
-         open Contract;
-         open Operators;
-
-         BufferUtils.checkByteLengthShouldBeAligned(binBufferByteLength);
-
-         test(
-           Log.buildAssertMessage(
-             ~expect={j|binBufferByteLength === binBuffer.byteLength|j},
-             ~actual={j|not|j},
-           ),
-           () =>
-           binBufferByteLength == (binBuffer |> ArrayBuffer.byteLength)
-         );
-       },
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     ); */
-
-  let byteOffset =
-    byteOffset
-    |> DataViewCommon.writeUint32_1(binBufferByteLength, _, dataView)
-    |> DataViewCommon.writeUint32_1(0x004E4942, _, dataView);
-
-  let binBufferUint8Arr = Uint8Array.fromBuffer(binBuffer);
-
-  TypeArrayService.setUint8Array(
-    binBufferUint8Arr,
-    Uint8Array.fromBufferRange(
-      dataView |> DataView.buffer,
-      ~offset=byteOffset,
-      ~length=binBufferByteLength / 1,
-    ),
-  )
-  |> ignore;
-
-  (byteOffset + binBufferByteLength, binBufferUint8Arr, dataView);
-};
 
 let _getEmptyEncodedUint8Data = () => {
   let encoder = TextEncoder.newTextEncoder();
@@ -201,70 +164,33 @@ let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer) : ArrayBuffer.t => {
   let (bufferViewDataArr, streamChunkArr, jsonUint8Array) =
     _buildWDBJsonUint8Array(gltf);
 
-  let jsonByteLength =
+  let jsonChunkByteLength =
     jsonUint8Array |> Uint8Array.byteLength |> BufferUtils.alignedLength;
 
   let totalByteLength =
-    /* file header: magic + version + length */
-    BufferUtils.getFirstHeaderByteLength()
-    /* json chunk header: json length + type */
-    + BufferUtils.getChunkHeaderByteLength()
-    + jsonByteLength
+    BufferUtils.getWDBHeaderTotalByteLength()
+    + jsonChunkByteLength
     + ConvertStreamSystem.getStreamChunkTotalByteLength(streamChunkArr)
     + ConvertStreamSystem.getBinBufferChunkTotalByteLength(bufferViewDataArr);
-
-
-
-    /* WonderLog.Log.print(("totalByteLength: ", 
-    
-    totalByteLength,
-
-ConvertStreamSystem.getBinBufferChunkTotalByteLength(bufferViewDataArr)
-    )) |> ignore; */
-
-  /* + BufferUtils.getChunkHeaderByteLength()
-         /* + ConvertStreamSystem.getBinBufferChunkTotalByteLength(binBuffer); */
-     /* 1794652; */
-         + (bufferViewDataArr |> WonderCommonlib.ArrayService.reduceOneParam((. count, (_,_,n)) => {
-      count + n
-     }, 0 )); */
-
-  /* ConvertStreamSystem.getBinBufferChunkTotalByteLength(binBuffer); */
-
-  /* WonderLog.Log.print(
-    BufferUtils.getFirstHeaderByteLength()
-    /* json chunk header: json length + type */
-    + BufferUtils.getChunkHeaderByteLength()
-    + jsonByteLength
-    + ConvertStreamSystem.getStreamChunkTotalByteLength(streamChunkArr),
-  )
-  |> ignore; */
-
-  /* WonderLog.Log.print((
-    "compare binBuffer and bufferViewDataArr",
-    /* ConvertStreamSystem.getBinBufferChunkTotalByteLength(binBuffer), */
-    binBuffer |> Js.Typed_array. ArrayBuffer.byteLength,
-
-
-       bufferViewDataArr |> WonderCommonlib.ArrayService.reduceOneParam((. count, (_,_,n)) => {
-        count + n
-       }, 0 )
-    /* totalByteLength, */
-  )
-  )
-  |> ignore; */
 
   let wdb = ArrayBuffer.make(totalByteLength);
   let dataView = DataViewCommon.create(wdb);
 
-  let byteOffset = _writeHeader(totalByteLength, dataView);
+  let byteOffset =
+    _writeHeader(
+      totalByteLength,
+      jsonChunkByteLength,
+      ConvertStreamSystem.getStreamChunkTotalByteLength(streamChunkArr),
+      ConvertStreamSystem.getBinBufferChunkTotalByteLength(bufferViewDataArr),
+      dataView,
+    );
 
   let emptyEncodedUint8Data = _getEmptyEncodedUint8Data();
 
   let (byteOffset, _, dataView) =
     _writeJson(
       byteOffset,
-      (emptyEncodedUint8Data, jsonByteLength, jsonUint8Array),
+      (emptyEncodedUint8Data, jsonChunkByteLength, jsonUint8Array),
       dataView,
     );
 
