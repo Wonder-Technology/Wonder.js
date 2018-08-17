@@ -29,29 +29,22 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
       images
       |> OptionService.unsafeGetJsonSerializedValue
       |> ArrayService.reduceOneParamValidi(
-           (. streamArr, {bufferView, mimeType}: image, imageIndex) => {
-             let arrayBuffer =
-               _getArrayBuffer(binBuffer, bufferView, bufferViews);
-
-             let blob = Blob.newBlobFromArrayBuffer(arrayBuffer, mimeType);
-
+           (. streamArr, {bufferView, mimeType}: image, imageIndex) =>
              streamArr
              |> ArrayService.push(
-                  LoadImageSystem.loadBlobImage(
-                    blob |> Blob.createObjectURL,
+                  AssembleUtils.buildLoadImageStream(
+                    _getArrayBuffer(binBuffer, bufferView, bufferViews),
+                    mimeType,
                     {j|load image error. imageIndex: $imageIndex|j},
                   )
-                  |> WonderBsMost.Most.tap(image => {
-                       Blob.revokeObjectURL(blob);
-
+                  |> WonderBsMost.Most.tap(image =>
                        Array.unsafe_set(
                          blobObjectUrlImageArr,
                          imageIndex,
                          image,
-                       );
-                     }),
-                );
-           },
+                       )
+                     ),
+                ),
            [||],
          )
   )
@@ -142,9 +135,7 @@ let _checkWDB = dataView => {
 let assembleGLBData = (({buffers}: wd) as wd, binBuffer, state) =>
   _buildImageArray(wd, binBuffer)
   |> then_(blobObjectUrlImageArr =>
-       {
-        
-        state
+       state
        |> SetIMGUIFuncSystem.setIMGUIFunc(wd)
        |> BatchCreateSystem.batchCreate(wd)
        |> BatchOperateSystem.batchOperate(
@@ -153,7 +144,7 @@ let assembleGLBData = (({buffers}: wd) as wd, binBuffer, state) =>
             _buildBufferArray(buffers, binBuffer),
           )
        |> BuildRootGameObjectSystem.build(wd)
-       |> resolve}
+       |> resolve
      )
   |> WonderBsMost.Most.fromPromise;
 
