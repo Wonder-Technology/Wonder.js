@@ -7,6 +7,7 @@ type chunk =
 
 type streamUnitData = {
   byteLength: int,
+  index: int,
   type_: chunk,
 };
 
