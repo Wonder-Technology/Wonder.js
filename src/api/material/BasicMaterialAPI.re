@@ -167,3 +167,9 @@ let setBasicMaterialName = (material, name, state) => {
   );
   NameBasicMaterialMainService.setName(material, name, state);
 };
+
+let batchDisposeBasicMaterial = (state, componentArray) =>
+  DisposeBasicMaterialMainService.handleBatchDisposeComponent(.
+    componentArray,
+    state,
+  );
