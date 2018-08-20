@@ -1,10 +1,10 @@
 open WonderBsMost.Most;
 
-let load = (wdPath, fetchFunc, state) =>
-  FetchCommon.createFetchArrayBufferStream(wdPath, fetchFunc)
+let load = (wdbPath, fetchFunc, state) =>
+  FetchCommon.createFetchArrayBufferStream(wdbPath, fetchFunc)
   |> flatMap(wdb =>
        AssembleWDBSystem.assemble(
          wdb |> LoadType.fetchArrayBufferToArrayBuffer,
-         state
+         state,
        )
      );

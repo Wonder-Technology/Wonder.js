@@ -8,3 +8,6 @@ type image = {
   "onload": unit => unit,
   "onerror": error => unit,
 };
+
+
+external imageToDomExtendImageElement : image => WonderWebgl.DomExtendType.imageElement = "%identity";
