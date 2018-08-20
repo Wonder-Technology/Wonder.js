@@ -7,8 +7,8 @@ let loadConfig = jsonPathArr =>
     StateDataMain.stateData,
   );
 
-let loadWDB = (wdPath, state) =>
-  LoaderManagerSystem.loadWDB(wdPath, _fetch, state);
+let loadWDB = (wdbPath, state) =>
+  LoaderManagerSystem.loadWDB(wdbPath, _fetch, state);
 
 let loadIMGUIAsset =
     (fntFilePath, bitmapFilePath, customTextureSourceDataArr, state) =>
