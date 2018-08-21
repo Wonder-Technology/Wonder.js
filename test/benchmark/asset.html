@@ -363,12 +363,12 @@
 
             function initSample(map1, map2, state$) {
                 fetch(
-                    // "../res/BoxTextured.glb"
+                    "../res/BoxTextured.glb"
                     // "../res/CesiumMilkTruck.glb"
                     // "../res/CesiumMilkTruck.glb"
                     // "../res/VC.glb"
                     // "../res/2CylinderEngine.glb"
-                    "../res/AlphaBlendModeTest.glb"
+                    // "../res/AlphaBlendModeTest.glb"
                 )
                     .then((res) => {
                         return res.arrayBuffer();
@@ -380,19 +380,19 @@
                         //         truckImageBase64,
                         //         imageBase64Map);
 
-                        // _testGenerateWDBByGLB(
-                        //     arrayBuffer,
+                        _testGenerateWDBByGLB(
+                            arrayBuffer,
 
-                        //     imageBase64Map,
+                            imageBase64Map,
 
-                        //     true,
+                            true,
 
-                        //     state$);
-
-
+                            state$);
 
 
-                        _testGenerateWDByGameObject(map1, map2, state$);
+
+
+                        // _testGenerateWDByGameObject(map1, map2, state$);
 
 
 

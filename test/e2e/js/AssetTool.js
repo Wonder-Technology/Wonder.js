@@ -22,6 +22,9 @@ var AssetTool = (function () {
             //     }
             // })
         },
+        loadStreamWDB: function (wdbPath, state, handleBeforeStartLoopFunc, handleWhenDoneFunc) {
+            return wd.loadStreamWDB(wdbPath, handleBeforeStartLoopFunc, handleWhenDoneFunc, state).drain()
+        },
         loadIMGUIAsset: function (fntFilePath, bitmapFilePath, customTextureSourceDataArr, state, testFunc) {
             return wd.loadIMGUIAsset(fntFilePath, bitmapFilePath, customTextureSourceDataArr, state)
                 .then((state) => {
