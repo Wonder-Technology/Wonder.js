@@ -263,6 +263,14 @@ let addChildren =
        state,
      );
 
+let getChildren = (gameObject, state) =>
+  TransformAPI.unsafeGetTransformChildren(
+    GameObjectAPI.unsafeGetGameObjectTransformComponent(gameObject, state),
+    state,
+  )
+  |> Js.Array.map(transform =>
+       transform |> TransformAPI.unsafeGetTransformGameObject(_, state)
+     );
 let testDisposeKeepOrder =
     (disposeGameObjectKeepOrderRemoveGeometryFunc, state) => {
   open Wonder_jest;

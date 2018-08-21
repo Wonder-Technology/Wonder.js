@@ -10,6 +10,8 @@ let generateGLBData = GenerateSceneGraphAPI.generateGLBData;
 
 let loadIMGUIAsset = LoaderManagerAPI.loadIMGUIAsset;
 
+let loadStreamWDB = LoaderManagerAPI.loadStreamWDB;
+
 let loadWDB = LoaderManagerAPI.loadWDB;
 
 let loadConfig = LoaderManagerAPI.loadConfig;

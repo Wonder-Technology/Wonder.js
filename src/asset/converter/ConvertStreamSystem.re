@@ -828,7 +828,7 @@ let getDefault11ImageUint8ArrayData = () => (
 let getStreamChunkArr = ((jsonChunkLength, streamChunkLength), dataView) => {
   let rec _get = (currentByteOffset, endByteOffset, dataView, streamChunkArr) =>
     currentByteOffset >= endByteOffset ?
-      streamChunkArr :
+      (currentByteOffset, endByteOffset, streamChunkArr) :
       {
         let (byteLength, currentByteOffset) =
           DataViewCommon.getUint32_1(. currentByteOffset, dataView);
@@ -848,16 +848,36 @@ let getStreamChunkArr = ((jsonChunkLength, streamChunkLength), dataView) => {
                {byteLength, index, type_: type_ |> StreamType.uint8ToChunk}: StreamType.streamUnitData,
              ),
         );
-      };
+      }
+      |> WonderLog.Contract.ensureCheck(
+           ((currentByteOffset, endByteOffset, streamChunkArr)) =>
+             WonderLog.(
+               Contract.(
+                 Operators.(
+                   test(
+                     Log.buildAssertMessage(
+                       ~expect={j|currentByteOffset === endByteOffset|j},
+                       ~actual={j|not|j},
+                     ),
+                     () =>
+                     currentByteOffset == endByteOffset
+                   )
+                 )
+               )
+             ),
+           IsDebugMainService.getIsDebug(StateDataMain.stateData),
+         );
 
   let currentByteOffset =
     BufferUtils.getWDBHeaderTotalByteLength()
     + (jsonChunkLength |> BufferUtils.alignedLength);
 
-  let endByteOffset =
-    currentByteOffset + (streamChunkLength |> BufferUtils.alignedLength);
+  let endByteOffset = currentByteOffset + streamChunkLength;
 
-  _get(currentByteOffset, endByteOffset, dataView, [||]);
+  let (currentByteOffset, endByteOffset, streamChunkArr) =
+    _get(currentByteOffset, endByteOffset, dataView, [||]);
+
+  streamChunkArr;
 };
 
 let _writeStreamChunk = (streamChunkArr, byteOffset, dataView) => {
