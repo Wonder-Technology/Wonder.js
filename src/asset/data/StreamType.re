@@ -39,6 +39,8 @@ type loadedStreamBlobData = {
   type_: chunk,
 };
 
+exception ReadError;
+
 external uint8ToChunk : Js.Typed_array.Uint8Array.elt => chunk = "%identity";
 
 external chunkToUint8 : chunk => Js.Typed_array.Uint8Array.elt = "%identity";

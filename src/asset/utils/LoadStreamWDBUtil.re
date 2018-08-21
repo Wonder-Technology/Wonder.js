@@ -19,5 +19,5 @@ let buildLoadedDataView = (totalLoadedByteLength, loadedUint8ArrayArr) => {
          (0, Uint8Array.fromLength(totalLoadedByteLength)),
        );
 
-  uint8Array |> Obj.magic |> DataViewCommon.create;
+  uint8Array |> Uint8Array.buffer |> DataViewCommon.create;
 };

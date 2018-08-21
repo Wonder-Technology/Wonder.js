@@ -49,18 +49,26 @@ let _getBasicSourceTextures =
        )
      );
 
-let _computeLoadedChunkByteLength = (nextStreamChunkIndex, streamChunkArr) =>
-  streamChunkArr
-  |> Js.Array.slice(~start=0, ~end_=nextStreamChunkIndex)
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. chunkByteLength, {byteLength}: streamUnitData) =>
-         chunkByteLength + byteLength,
-       0,
-     );
+let _computeCompleteStreamChunkTotalLoadedByteLength =
+    (
+      headerJsonStreamChunkTotalByteLength,
+      nextStreamChunkIndex,
+      streamChunkArr,
+    ) =>
+  headerJsonStreamChunkTotalByteLength
+  + (
+    streamChunkArr
+    |> Js.Array.slice(~start=0, ~end_=nextStreamChunkIndex)
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. chunkByteLength, {byteLength}: streamUnitData) =>
+           chunkByteLength + byteLength,
+         0,
+       )
+  );
 
 let rec _build =
         (
-          loadedChunkByteOffset,
+          completeStreamChunkTotalLoadedByteLength,
           totalLoadedByteLength,
           nextStreamChunkIndex,
           streamChunkArr,
@@ -68,9 +76,16 @@ let rec _build =
           images,
           loadedStreamChunkDataArr,
         ) =>
-  loadedChunkByteOffset >= totalLoadedByteLength ?
+  completeStreamChunkTotalLoadedByteLength
+  |> BufferUtils.alignedLength >= totalLoadedByteLength ?
     (nextStreamChunkIndex, loadedStreamChunkDataArr) :
     {
+      /* WonderLog.Log.print((
+           completeStreamChunkTotalLoadedByteLength,
+           streamChunkArr,
+           nextStreamChunkIndex,
+         ))
+         |> ignore; */
       let {byteLength, index, type_}: streamUnitData =
         Array.unsafe_get(streamChunkArr, nextStreamChunkIndex);
 
@@ -88,8 +103,10 @@ let rec _build =
                      meshIndex: index,
                      arrayBuffer:
                        ArrayBuffer.slice(
-                         ~start=loadedChunkByteOffset,
-                         ~end_=loadedChunkByteOffset + byteLength,
+                         ~start=completeStreamChunkTotalLoadedByteLength,
+                         ~end_=
+                           completeStreamChunkTotalLoadedByteLength
+                           + byteLength,
                          loadedArrayBuffer,
                        ),
                    }),
@@ -116,8 +133,10 @@ let rec _build =
                      mimeType,
                      arrayBuffer:
                        ArrayBuffer.slice(
-                         ~start=loadedChunkByteOffset,
-                         ~end_=loadedChunkByteOffset + byteLength,
+                         ~start=completeStreamChunkTotalLoadedByteLength,
+                         ~end_=
+                           completeStreamChunkTotalLoadedByteLength
+                           + byteLength,
                          loadedArrayBuffer,
                        ),
                    }),
@@ -127,7 +146,7 @@ let rec _build =
         };
 
       _build(
-        loadedChunkByteOffset + byteLength,
+        completeStreamChunkTotalLoadedByteLength + byteLength,
         totalLoadedByteLength,
         nextStreamChunkIndex |> succ,
         streamChunkArr,
@@ -138,7 +157,11 @@ let rec _build =
     };
 
 let _splitLoadedStreamChunkArrByJudgeHasAllData =
-    (loadedStreamChunkDataArr: array(loadedStreamData)) => {
+    (
+      nextStreamChunkIndex,
+      streamChunkArr: array(StreamType.streamUnitData),
+      loadedStreamChunkDataArr: array(loadedStreamData),
+    ) => {
   let {geometryData}: loadedStreamData =
     Array.unsafe_get(loadedStreamChunkDataArr, 0);
 
@@ -178,10 +201,18 @@ let _splitLoadedStreamChunkArrByJudgeHasAllData =
          (firstMeshIndex, [||], [||]),
        );
 
-  (
-    loadedStreamChunkArrWhichNotHasAllData,
-    loadedStreamChunkDataArrWhichHasAllData,
-  );
+  nextStreamChunkIndex === Js.Array.length(streamChunkArr)
+  ||
+  Array.unsafe_get(streamChunkArr, nextStreamChunkIndex).type_ === StreamType.Vertex ?
+    (
+      [||],
+      loadedStreamChunkDataArrWhichHasAllData
+      |> Js.Array.concat(loadedStreamChunkArrWhichNotHasAllData),
+    ) :
+    (
+      loadedStreamChunkArrWhichNotHasAllData,
+      loadedStreamChunkDataArrWhichHasAllData,
+    );
 };
 
 /* let _loadBlobImageFromImageArrayBufferData = (loadedImageMap, loadedStreamChunkDataArr) => { */
@@ -237,16 +268,17 @@ let _buildBinBufferChunkData =
     (
       nextStreamChunkIndex,
       loadedStreamChunkArrWhichNotHasAllData,
-      loadedChunkByteLength,
+      completeStreamChunkTotalLoadedByteLength,
       totalLoadedByteLength,
       loadedArrayBuffer,
       streamChunkArr,
       /* loadedImageMap, */
       images,
     ) => {
+  /* WonderLog.Log.print("aaa") |> ignore; */
   let (nextStreamChunkIndex, loadedStreamChunkDataArr) =
     _build(
-      loadedChunkByteLength,
+      completeStreamChunkTotalLoadedByteLength,
       totalLoadedByteLength,
       nextStreamChunkIndex,
       streamChunkArr,
@@ -259,7 +291,17 @@ let _buildBinBufferChunkData =
     loadedStreamChunkArrWhichNotHasAllData,
     loadedStreamChunkDataArrWhichHasAllData,
   ) =
-    loadedStreamChunkDataArr |> _splitLoadedStreamChunkArrByJudgeHasAllData;
+    loadedStreamChunkDataArr
+    |> _splitLoadedStreamChunkArrByJudgeHasAllData(
+         nextStreamChunkIndex,
+         streamChunkArr,
+       );
+
+  WonderLog.Log.printJson((
+    loadedStreamChunkArrWhichNotHasAllData,
+    loadedStreamChunkDataArrWhichHasAllData,
+  ))
+  |> ignore;
 
   /* _loadBlobImageFromImageArrayBufferData (loadedImageMap, loadedStreamChunkDataArrWhichHasAllData) */
   _loadBlobImageFromImageArrayBufferData(
@@ -297,6 +339,8 @@ let _setGeometryData =
       gameObjectGeometrys,
     );
 
+  /* WonderLog.Log.print(geometry) |> ignore; */
+
   setPointsByTypeArrayFunc(
     geometry,
     fromBufferFunc(geometryData.arrayBuffer),
@@ -307,9 +351,6 @@ let _setGeometryData =
 let _setBinBufferChunkData =
     (
       loadedStreamChunkDataArrWhichHasAllData,
-      /* nextStreamChunkIndex, */
-      /* loadedStreamChunkArrWhichNotHasAllData, */
-      /* loadedImageMap, */
       (geometryArr, geometryGameObjects, gameObjectGeometrys),
       (basicSourceTextureArr, imageTextureIndices),
       state,
@@ -330,7 +371,6 @@ let _setBinBufferChunkData =
              ),
              state,
            )
-
          | Normal =>
            _setGeometryData(
              geometryData |> OptionService.unsafeGet,
@@ -338,12 +378,11 @@ let _setBinBufferChunkData =
              geometryGameObjects,
              gameObjectGeometrys,
              (
-               VerticesGeometryMainService.setVerticesByTypeArray,
+               NormalsGeometryMainService.setNormalsByTypeArray,
                Float32Array.fromBuffer,
              ),
              state,
            )
-
          | TexCoord =>
            _setGeometryData(
              geometryData |> OptionService.unsafeGet,
@@ -356,7 +395,6 @@ let _setBinBufferChunkData =
              ),
              state,
            )
-
          | Index =>
            let {meshIndex, arrayBuffer} =
              geometryData |> OptionService.unsafeGet;
@@ -406,10 +444,10 @@ let _setBinBufferChunkData =
        state,
      );
 
-let _isLoadCompleteNextStreamData =
+let _isLoadCompleteNextStreamChunkData =
     (
       totalLoadedByteLength,
-      loadedChunkByteLength,
+      completeStreamChunkTotalLoadedByteLength,
       nextStreamChunkIndex,
       streamChunkArr,
     ) => {
@@ -435,12 +473,17 @@ let _isLoadCompleteNextStreamData =
   let {byteLength} =
     Array.unsafe_get(streamChunkArr, nextStreamChunkIndex + 1);
 
-  loadedChunkByteLength + byteLength <= totalLoadedByteLength;
+  totalLoadedByteLength >= completeStreamChunkTotalLoadedByteLength
+  + byteLength;
 };
 
 let handleBinBufferData =
     (
-      (totalLoadedByteLength, loadedUint8ArrayArr),
+      (
+        headerJsonStreamChunkTotalByteLength,
+        totalLoadedByteLength,
+        loadedUint8ArrayArr,
+      ),
       (
         nextStreamChunkIndex,
         streamChunkArr,
@@ -454,15 +497,27 @@ let handleBinBufferData =
       ) as assembleData,
       state,
     ) => {
-  let loadedChunkByteLength =
-    _computeLoadedChunkByteLength(nextStreamChunkIndex, streamChunkArr);
+  let completeStreamChunkTotalLoadedByteLength =
+    _computeCompleteStreamChunkTotalLoadedByteLength(
+      headerJsonStreamChunkTotalByteLength,
+      nextStreamChunkIndex,
+      streamChunkArr,
+    );
 
-  _isLoadCompleteNextStreamData(
-    totalLoadedByteLength,
-    loadedChunkByteLength,
-    nextStreamChunkIndex,
-    streamChunkArr,
-  ) ?
+  /* WonderLog.Log.print((
+       "headerJsonStreamChunkTotalByteLength: ",
+       headerJsonStreamChunkTotalByteLength,
+     ))
+     |> ignore; */
+
+  !
+    _isLoadCompleteNextStreamChunkData(
+      totalLoadedByteLength,
+      completeStreamChunkTotalLoadedByteLength,
+      nextStreamChunkIndex,
+      streamChunkArr,
+    ) ?
+    /* TODO optimize: not use promise here? */
     make((~resolve, ~reject) =>
       resolve(. (
         state,
@@ -475,7 +530,7 @@ let handleBinBufferData =
     _buildBinBufferChunkData(
       nextStreamChunkIndex,
       loadedStreamChunkArrWhichNotHasAllData,
-      loadedChunkByteLength,
+      completeStreamChunkTotalLoadedByteLength,
       totalLoadedByteLength,
       LoadStreamWDBUtil.buildLoadedDataView(
         totalLoadedByteLength,
@@ -495,6 +550,8 @@ let handleBinBufferData =
            ),
          ) => {
          /* loadedImageMap */
+
+         /* WonderLog.Log.printJson(("loadedStreamChunkDataArrWhichHasAllData: ", loadedStreamChunkDataArrWhichHasAllData)) |> ignore; */
 
          let state =
            _setBinBufferChunkData(

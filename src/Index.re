@@ -10,6 +10,8 @@ let generateGLBData = GenerateSceneGraphAPI.generateGLBData;
 
 let loadIMGUIAsset = LoaderManagerAPI.loadIMGUIAsset;
 
+let loadStreamWDB = LoaderManagerAPI.loadStreamWDB;
+
 let loadWDB = LoaderManagerAPI.loadWDB;
 
 let loadConfig = LoaderManagerAPI.loadConfig;
@@ -307,6 +309,10 @@ let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectB
 let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
 
 let createGameObject = GameObjectAPI.createGameObject;
+
+let setGeometryName = GeometryAPI.setGeometryName;
+
+let unsafeGetGeometryName = GeometryAPI.unsafeGetGeometryName;
 
 let unsafeGetGeometryGameObject = GeometryAPI.unsafeGetGeometryGameObject;
 
