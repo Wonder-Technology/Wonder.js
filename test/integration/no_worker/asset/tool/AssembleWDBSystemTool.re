@@ -59,7 +59,7 @@ let testGLTF =
     embeddedGLTFJsonStr |> Js.Json.parseExn,
     binBuffer,
   ))
-  |. AssembleWDBSystem.assemble(state^)
+  |. AssembleWholeWDBSystem.assemble(state^)
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => testFunc(result^) |> resolve);
 };
@@ -70,7 +70,7 @@ let testGLB = (sandbox, glbFilePath, testFunc, state) => {
   let result = ref(Obj.magic(1));
 
   ConvertGLBTool.testResult(sandbox, glbFilePath, ((wd, binBuffer)) =>
-    AssembleWDBSystem.assembleGLBData(wd, binBuffer, state)
+    AssembleWholeWDBSystem.assembleGLBData(wd, binBuffer, state)
     |> WonderBsMost.Most.forEach(data => result := data)
     |> then_(() => testFunc(result^) |> resolve)
   );

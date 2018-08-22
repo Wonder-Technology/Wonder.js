@@ -16,7 +16,7 @@ let testResult = (sandbox, glbFilePath, testFunc) => {
   |> WonderLog.Log.print; */
 
   let (wdFileContent, _, binBuffer) =
-    BufferUtils.decodeWDB(wdb, AssembleWDBSystem._checkWDB);
+    BufferUtils.decodeWDB(wdb, AssembleWholeWDBSystem._checkWDB);
 
     /* WonderLog.Log.print(
 wdFileContent
@@ -47,7 +47,7 @@ let testGLTFResultByGLTF =
     ));
 
   let (wdFileContent, _, binBuffer) =
-    BufferUtils.decodeWDB(wdb, AssembleWDBSystem._checkWDB);
+    BufferUtils.decodeWDB(wdb, AssembleWholeWDBSystem._checkWDB);
 
   testFunc(wdFileContent |> Js.Json.parseExn |> Obj.magic);
 };

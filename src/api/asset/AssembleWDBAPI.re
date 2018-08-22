@@ -1,6 +1,6 @@
 open Js.Promise;
 
 let assembleGLB = (glb, state) =>
-  ConvertGLBSystem.convertGLB(glb) |. AssembleWDBSystem.assemble(state);
+  ConvertGLBSystem.convertGLB(glb) |. AssembleWholeWDBSystem.assemble(state);
 
-let assembleWDB = (wdb, state) => AssembleWDBSystem.assemble(wdb, state);
+let assembleWDB = (wdb, state) => AssembleWholeWDBSystem.assemble(wdb, state);

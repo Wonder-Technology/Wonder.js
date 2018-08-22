@@ -73,7 +73,7 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
        |> resolve;
      })
   |> then_(((state, data)) =>
-       AssembleWDBSystem.assemble(data, state)
+       AssembleWholeWDBSystem.assemble(data, state)
        |> WonderBsMost.Most.forEach(data => result := data)
        |> then_(() => testFunc(result^) |> resolve)
      );
@@ -110,7 +110,7 @@ let testGLTFResultByGLTF =
     embeddedGLTFJsonStr |> Js.Json.parseExn,
     binBuffer,
   ))
-  |. AssembleWDBSystem.assemble(state^)
+  |. AssembleWholeWDBSystem.assemble(state^)
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => {
        let (state, rootGameObject) = result^;
@@ -164,7 +164,7 @@ let testAssembleResultByGameObject =
       state,
     );
 
-  AssembleWDBSystem.assemble(data, state)
+  AssembleWholeWDBSystem.assemble(data, state)
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => testFunc(result^) |> resolve);
 };

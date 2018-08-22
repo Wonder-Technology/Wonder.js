@@ -33,7 +33,7 @@ let _batchSetNewMap =
      );
 };
 
-let _batchSetNewDiffueMaps =
+let batchSetNewDiffueMaps =
     (
       diffuseMapLightMaterials,
       lightMaterialDiffuseMaps,
@@ -70,7 +70,7 @@ let _batchSetNewDiffueMaps =
   };
 };
 
-let _batchSetBasicSourceTextureData =
+let batchSetBasicSourceTextureData =
     (
       samplerBasicSourceTextures,
       arrayBufferViewSourceTextureSamplers,
@@ -103,52 +103,8 @@ let _batchSetBasicSourceTextureData =
        state,
      );
 
-let _batchSetBasicSourceTextureSources =
-    (
-      imageBasicSourceTextures,
-      basicSourceTextureImages,
-      {settingRecord} as state,
-    ) =>
-  imageBasicSourceTextures
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. state, basicSourceTexture, index) => {
-         let image = Array.unsafe_get(basicSourceTextureImages, index);
-
-         OperateBasicSourceTextureMainService.setSource(
-           basicSourceTexture,
-           image,
-           state,
-         );
-       },
-       state,
-     );
-
-let batchSet =
-    (
-      (
-        (diffuseMapLightMaterials, lightMaterialDiffuseMaps),
-        (samplerBasicSourceTextures, basicSourceTextureSamplers),
-        (imageBasicSourceTextures, basicSourceTextureImages),
-      ),
-      state,
-    ) =>
-  state
-  |> _batchSetNewDiffueMaps(
-       diffuseMapLightMaterials,
-       lightMaterialDiffuseMaps,
-     )
-  |> _batchSetBasicSourceTextureData(
-       samplerBasicSourceTextures,
-       basicSourceTextureSamplers,
-     )
-  |> _batchSetBasicSourceTextureSources(
-       imageBasicSourceTextures,
-       basicSourceTextureImages,
-     );
-
 let batchSetFormat = (basicSourceTextureArr, basicSourceTextures, state) =>
   basicSourceTextureArr
-  /* |> WonderCommonlib.ArrayService.reduceOneParami( */
   |> ArrayService.reduceOneParamValidi(
        (. state, basicSourceTexture, index) =>
          OperateBasicSourceTextureMainService.setFormat(

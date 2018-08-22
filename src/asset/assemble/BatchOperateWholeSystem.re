@@ -5,7 +5,7 @@ open WDType;
 open Js.Typed_array;
 
 let _getBatchTextureData =
-    (lightMaterialArr, textureArr, default11Image, {indices, samplers}) => (
+    (lightMaterialArr, textureArr, imageArr, {indices, samplers}) => (
   (
     indices.materialIndices.diffuseMapMaterialIndices.materialIndices
     |> BatchOperateSystem.getBatchArrByIndices(lightMaterialArr),
@@ -21,24 +21,30 @@ let _getBatchTextureData =
   (
     indices.imageTextureIndices.textureIndices
     |> BatchOperateSystem.getBatchArrByIndices(textureArr),
-    default11Image,
+    indices.imageTextureIndices.imageIndices
+    |> BatchOperateSystem.getBatchArrByIndices(imageArr),
   ),
 );
 
 let _getBatchAllTypeTextureData =
-    (lightMaterialArr, basicSourceTextureArr, default11Image, wd) =>
+    (lightMaterialArr, basicSourceTextureArr, blobObjectUrlImageArr, wd) =>
   _getBatchTextureData(
     lightMaterialArr,
     basicSourceTextureArr,
-    /* blobObjectUrlImageArr, */
-    default11Image,
+    blobObjectUrlImageArr,
     wd,
   );
 
 let batchOperate =
     (
-      {indices, gameObjects, basicSourceTextures, images} as wd,
-      default11Image,
+      {
+        indices,
+        gameObjects,
+        basicSourceTextures,
+        /* arrayBufferViewSourceTextures, */
+      } as wd,
+      blobObjectUrlImageArr,
+      bufferArr,
       (
         state,
         gameObjectArr,
@@ -121,7 +127,7 @@ let batchOperate =
     _getBatchAllTypeTextureData(
       lightMaterialArr,
       basicSourceTextureArr,
-      default11Image,
+      blobObjectUrlImageArr,
       wd,
     );
 
@@ -132,6 +138,7 @@ let batchOperate =
          parentTransforms,
          childrenTransforms,
        )
+    |> BatchOperateSystem.batchSetGeometryData(wd, geometryArr, bufferArr)
     |> BatchOperateSystem.batchSetBasicCameraViewData(wd, basicCameraViewArr)
     |> BatchOperateSystem.batchSetPerspectiveCameraProjectionData(
          wd,
@@ -153,6 +160,10 @@ let batchOperate =
     |> BatchAddGameObjectComponentMainService.batchAddTransformComponentForCreate(
          transformGameObjects,
          gameObjectTransforms,
+       )
+    |> BatchAddGameObjectComponentMainService.batchAddGeometryComponentForCreate(
+         geometryGameObjects,
+         gameObjectGeometrys,
        )
     |> BatchAddGameObjectComponentMainService.batchAddBasicCameraViewComponentForCreate(
          basicCameraViewGameObjects,
@@ -186,9 +197,7 @@ let batchOperate =
          pointLightGameObjects,
          gameObjectPointLights,
        )
-    |> BatchSetStreamTextureAllDataSystem.batchSet(basicSourceTextureData),
+    |> BatchSetWholeTextureAllDataSystem.batchSet(basicSourceTextureData),
     gameObjectArr,
-    (geometryArr, geometryGameObjects, gameObjectGeometrys),
-    (basicSourceTextureArr, indices.imageTextureIndices, images),
   );
 };
