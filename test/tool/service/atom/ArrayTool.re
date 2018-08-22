@@ -7,3 +7,5 @@ let _isArraySame = [%bs.raw
 ];
 
 let isArraySame = (arr1, arr2) => _isArraySame(arr1, arr2);
+
+let range = ArrayService.range;

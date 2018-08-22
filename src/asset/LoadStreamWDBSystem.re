@@ -26,9 +26,7 @@ let load =
            handleWhenLoadFunc,
            handleWhenDoneFunc,
          ), */
-      (fetchFunc, 
-      handleBeforeStartLoopFunc,
-      handleWhenDoneFunc),
+      (fetchFunc, handleBeforeStartLoopFunc, handleWhenDoneFunc),
       state,
     ) => {
   let (unit8Array, mimeType, errorMsg) =
@@ -75,13 +73,19 @@ let load =
                         let reader = _getReader(response);
 
                         ReadStreamChunkSystem.read(
-                          (default11Image, controller, handleBeforeStartLoopFunc, handleWhenDoneFunc),
+                          (
+                            default11Image,
+                            controller,
+                            handleBeforeStartLoopFunc,
+                            handleWhenDoneFunc,
+                          ),
                           [||],
                           None,
                           [||],
                           None,
                           0,
                           [||],
+                          WonderCommonlib.SparseMapService.createEmpty(),
                           reader,
                         );
                       },
