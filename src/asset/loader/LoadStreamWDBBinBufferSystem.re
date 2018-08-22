@@ -82,15 +82,17 @@ let rec _build =
       let {byteLength, index, type_}: streamUnitData =
         Array.unsafe_get(streamChunkArr, nextStreamChunkIndex);
 
-        WonderLog.Log.print(("nextStreamChunkIndex: ", nextStreamChunkIndex)) |> ignore;
+      WonderLog.Log.print(("nextStreamChunkIndex: ", nextStreamChunkIndex))
+      |> ignore;
 
       let nextCompleteStreamChunkTotalLoadedByteLength =
         completeStreamChunkTotalLoadedAlignedByteLength + byteLength;
 
-        WonderLog.Log.print((
-nextCompleteStreamChunkTotalLoadedByteLength , totalLoadedByteLength 
-
-        )) |> ignore;
+      WonderLog.Log.print((
+        nextCompleteStreamChunkTotalLoadedByteLength,
+        totalLoadedByteLength,
+      ))
+      |> ignore;
 
       nextCompleteStreamChunkTotalLoadedByteLength > totalLoadedByteLength ?
         (nextStreamChunkIndex, loadedStreamChunkDataArr) :
@@ -297,7 +299,11 @@ let _buildBinBufferChunkData =
       loadBlobImageMap,
       images,
     ) => {
-      WonderLog.Log.print(("completeStreamChunkTotalLoadedAlignedByteLength: ", completeStreamChunkTotalLoadedAlignedByteLength)) |> ignore;
+  WonderLog.Log.print((
+    "completeStreamChunkTotalLoadedAlignedByteLength: ",
+    completeStreamChunkTotalLoadedAlignedByteLength,
+  ))
+  |> ignore;
   let (nextStreamChunkIndex, loadedStreamChunkDataArr) =
     _build(
       completeStreamChunkTotalLoadedAlignedByteLength,
@@ -480,11 +486,11 @@ let _isLoadCompleteNextStreamChunkData =
           Operators.(
             test(
               Log.buildAssertMessage(
-                ~expect={j|streamChunkArr has chunkData to load|j},
-                ~actual={j|not|j},
+                ~expect={j|nextStreamChunkIndex not out of bounds|j},
+                ~actual={j|out|j},
               ),
               () =>
-              nextStreamChunkIndex <= Js.Array.length(streamChunkArr) - 2
+              nextStreamChunkIndex <= Js.Array.length(streamChunkArr) - 1
             )
           )
         )
@@ -492,8 +498,7 @@ let _isLoadCompleteNextStreamChunkData =
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
-  let {byteLength} =
-    Array.unsafe_get(streamChunkArr, nextStreamChunkIndex + 1);
+  let {byteLength} = Array.unsafe_get(streamChunkArr, nextStreamChunkIndex);
 
   totalLoadedByteLength >= completeStreamChunkTotalLoadedAlignedByteLength
   + (byteLength |> BufferUtils.alignedLength);

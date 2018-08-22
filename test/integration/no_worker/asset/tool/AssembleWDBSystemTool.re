@@ -8,7 +8,8 @@ let buildGLTFJsonOfMultiSceneGameObjects = () =>
             }
         ]
         |},
-    ~nodes={|
+    ~nodes=
+      {|
 [
         {
             "matrix": [
