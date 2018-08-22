@@ -30,8 +30,9 @@
 
             return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
                 return AssetTool.loadStreamWDB(
-                    "../res/wdb/CesiumMilkTruck.wdb",
+                    // "../res/wdb/CesiumMilkTruck.wdb",
                     // "../res/wdb/BoxTextured.wdb",
+                    "../res/wdb/AlphaBlendModeTest.wdb",
                     wd.unsafeGetState(), function (state, gameObject) {
                         return handleBeforeStartLoop(state, gameObject);
                     }, function (state, gameObject) {
