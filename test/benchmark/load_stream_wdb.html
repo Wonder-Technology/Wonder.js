@@ -29,11 +29,14 @@
 
 
             return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
-                return AssetTool.loadStreamWDB("./generated.wdb", wd.unsafeGetState(), function (state, gameObject) {
-                    return handleBeforeStartLoop(state, gameObject);
-                }, function (state, gameObject) {
-                    return state;
-                });
+                return AssetTool.loadStreamWDB(
+                    "../res/wdb/CesiumMilkTruck.wdb",
+                    // "../res/wdb/BoxTextured.wdb",
+                    wd.unsafeGetState(), function (state, gameObject) {
+                        return handleBeforeStartLoop(state, gameObject);
+                    }, function (state, gameObject) {
+                        return state;
+                    });
             });
 
 
@@ -115,7 +118,18 @@
             }
 
             function handleBeforeStartLoop(state, gameObject) {
-                var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(true, state);
+                var isCreateLight =
+                    wd.getAllDirectionLightComponents(state).length === 0 && wd.getAllPointLightComponents(state).length === 0;
+
+                var isCreateCamera =
+                    wd.getAllBasicCameraViewComponents(state).length === 0;
+
+                var state = state;
+
+                if (isCreateLight) {
+                    var data = _createLightsAndCamera(isCreateCamera, state);
+                    state = data[0];
+                }
 
                 return state;
             }
