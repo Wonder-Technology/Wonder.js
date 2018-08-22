@@ -165,12 +165,14 @@ let rec read =
             handleWhenDoneFunc,
           ),
           loadedUint8ArrayArr,
-          allChunkLengths,
-          streamChunkArr,
-          assembleData,
-          nextStreamChunkIndex,
-          loadedStreamChunkArrWhichNotHasAllData,
-          loadBlobImageMap,
+          (
+            allChunkLengths,
+            streamChunkArr,
+            assembleData,
+            nextStreamChunkIndex,
+            loadedStreamChunkArrWhichNotHasAllData,
+            loadBlobImageMap,
+          ),
           reader,
         ) =>
   _readReader(reader)
@@ -199,7 +201,6 @@ let rec read =
 
            let value = streamData##value;
 
-           /* WonderLog.Log.print(("value: ", value)) |> ignore; */
            WonderLog.Log.printJson(("value", value |> Uint8Array.byteLength))
            |> ignore;
 
@@ -218,12 +219,14 @@ let rec read =
                  handleWhenDoneFunc,
                ),
                loadedUint8ArrayArr,
-               allChunkLengths,
-               streamChunkArr,
-               assembleData,
-               nextStreamChunkIndex,
-               loadedStreamChunkArrWhichNotHasAllData,
-               loadBlobImageMap,
+               (
+                 allChunkLengths,
+                 streamChunkArr,
+                 assembleData,
+                 nextStreamChunkIndex,
+                 loadedStreamChunkArrWhichNotHasAllData,
+                 loadBlobImageMap,
+               ),
                reader,
              ) :
              {
@@ -315,66 +318,18 @@ let rec read =
                             handleWhenDoneFunc,
                           ),
                           loadedUint8ArrayArr,
-                          allChunkLengths |. Some,
-                          streamChunkArr,
-                          assembleData |. Some,
-                          nextStreamChunkIndex,
-                          loadedStreamChunkArrWhichNotHasAllData,
-                          loadBlobImageMap,
+                          (
+                            allChunkLengths |. Some,
+                            streamChunkArr,
+                            assembleData |. Some,
+                            nextStreamChunkIndex,
+                            loadedStreamChunkArrWhichNotHasAllData,
+                            loadBlobImageMap,
+                          ),
                           reader,
                         );
                       });
                  } :
-                 /* _isLoadStreamChunk(jsonChunkLength, totalLoadedByteLength) ?
-                    {
-                      WonderLog.Log.print("load stream chunk") |> ignore;
-                      let streamChunkArr =
-                        _getStreamChunkData(
-                          streamChunkArr,
-                          (jsonChunkLength, streamChunkLength),
-                          totalLoadedByteLength,
-                          loadedUint8ArrayArr,
-                        );
-
-                      let state =
-                        StateDataMainService.unsafeGetState(
-                          StateDataMain.stateData,
-                        );
-
-                      let (state, assembleData) =
-                        _assembleAndStartLoop(
-                          assembleData,
-                          jsonChunkLength,
-                          totalLoadedByteLength,
-                          loadedUint8ArrayArr,
-                          default11Image,
-                          handleBeforeStartLoopFunc,
-                          state,
-                        );
-
-                      StateDataMainService.setState(
-                        StateDataMain.stateData,
-                        state,
-                      )
-                      |> ignore;
-
-                      read(
-                        (
-                          default11Image,
-                          controller,
-                          handleBeforeStartLoopFunc,
-                          handleWhenDoneFunc,
-                        ),
-                        loadedUint8ArrayArr,
-                        allChunkLengths |. Some,
-                        streamChunkArr,
-                        assembleData |. Some,
-                        nextStreamChunkIndex,
-                        loadedStreamChunkArrWhichNotHasAllData,
-                        loadBlobImageMap,
-                        reader,
-                      );
-                    } : */
                  read(
                    (
                      default11Image,
@@ -383,12 +338,14 @@ let rec read =
                      handleWhenDoneFunc,
                    ),
                    loadedUint8ArrayArr,
-                   allChunkLengths |. Some,
-                   streamChunkArr,
-                   assembleData,
-                   nextStreamChunkIndex,
-                   loadedStreamChunkArrWhichNotHasAllData,
-                   loadBlobImageMap,
+                   (
+                     allChunkLengths |. Some,
+                     streamChunkArr,
+                     assembleData,
+                     nextStreamChunkIndex,
+                     loadedStreamChunkArrWhichNotHasAllData,
+                     loadBlobImageMap,
+                   ),
                    reader,
                  );
              };

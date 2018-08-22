@@ -19,4 +19,31 @@ open Js.Promise;
      |> then_(() => resolve());
    }; */
 
-let read = ReadStreamChunkSystem.read;
+let read =
+    (
+      (
+        default11Image,
+        controller,
+        handleBeforeStartLoopFunc,
+        handleWhenDoneFunc,
+      ),
+      reader,
+    ) =>
+  ReadStreamChunkSystem.read(
+    (
+      default11Image,
+      controller,
+      handleBeforeStartLoopFunc,
+      handleWhenDoneFunc,
+    ),
+    [||],
+    (
+      None,
+      [||],
+      None,
+      0,
+      [||],
+      WonderCommonlib.SparseMapService.createEmpty(),
+    ),
+    reader,
+  );
