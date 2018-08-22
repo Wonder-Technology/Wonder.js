@@ -4,26 +4,10 @@ open WDType;
 
 open Js.Typed_array;
 
-let _getBatchArrByIndices = (sourceArr, indices) =>
+let getBatchArrByIndices = (sourceArr, indices) =>
   indices |> Js.Array.map(index => Array.unsafe_get(sourceArr, index));
 
-/* TODO add drawMode */
-/* let _batchCreateMeshRendererArr =
-       (lightMaterialGameObjects, {gameObjects}, state) => {
-     let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
-
-     AssembleCommon.checkNotDisposedBefore(
-       meshRendererRecord.disposedIndexArray,
-     );
-
-     let {index}: MeshRendererType.meshRendererRecord = meshRendererRecord;
-     let newIndex = index + (lightMaterialGameObjects |> Js.Array.length);
-     let indexArr = ArrayService.range(index, newIndex - 1);
-     state.meshRendererRecord = Some({...meshRendererRecord, index: newIndex});
-     (state, indexArr);
-   }; */
-
-let _getBatchComponentGameObjectData =
+let getBatchComponentGameObjectData =
     (
       (
         gameObjectArr,
@@ -44,7 +28,7 @@ let _getBatchComponentGameObjectData =
     ) => {
   let parentTransforms =
     indices.gameObjectIndices.childrenTransformIndexData.parentTransformIndices
-    |> _getBatchArrByIndices(transformArr);
+    |> getBatchArrByIndices(transformArr);
   let childrenTransforms =
     indices.gameObjectIndices.childrenTransformIndexData.
       childrenTransformIndices
@@ -54,42 +38,39 @@ let _getBatchComponentGameObjectData =
        );
   let transformGameObjects =
     indices.gameObjectIndices.transformGameObjectIndexData.gameObjectIndices
-    |> _getBatchArrByIndices(gameObjectArr);
+    |> getBatchArrByIndices(gameObjectArr);
   let gameObjectTransforms =
     indices.gameObjectIndices.transformGameObjectIndexData.componentIndices
-    |> _getBatchArrByIndices(transformArr);
+    |> getBatchArrByIndices(transformArr);
   let geometryGameObjects =
     indices.gameObjectIndices.geometryGameObjectIndexData.gameObjectIndices
-    |> _getBatchArrByIndices(gameObjectArr);
+    |> getBatchArrByIndices(gameObjectArr);
   let gameObjectGeometrys =
     indices.gameObjectIndices.geometryGameObjectIndexData.componentIndices
-    |> _getBatchArrByIndices(geometryArr);
+    |> getBatchArrByIndices(geometryArr);
 
   let meshRendererGameObjects =
     indices.gameObjectIndices.meshRendererGameObjectIndexData.gameObjectIndices
-    |> _getBatchArrByIndices(gameObjectArr);
+    |> getBatchArrByIndices(gameObjectArr);
   let gameObjectMeshRenderers =
     indices.gameObjectIndices.meshRendererGameObjectIndexData.componentIndices
-    |> _getBatchArrByIndices(meshRendererArr);
+    |> getBatchArrByIndices(meshRendererArr);
 
   let basicMaterialGameObjects =
     indices.gameObjectIndices.basicMaterialGameObjectIndexData.
       gameObjectIndices
-    |> _getBatchArrByIndices(gameObjectArr);
+    |> getBatchArrByIndices(gameObjectArr);
   let gameObjectBasicMaterials =
     indices.gameObjectIndices.basicMaterialGameObjectIndexData.componentIndices
-    |> _getBatchArrByIndices(basicMaterialArr);
+    |> getBatchArrByIndices(basicMaterialArr);
 
   let lightMaterialGameObjects =
     indices.gameObjectIndices.lightMaterialGameObjectIndexData.
       gameObjectIndices
-    |> _getBatchArrByIndices(gameObjectArr);
+    |> getBatchArrByIndices(gameObjectArr);
   let gameObjectLightMaterials =
     indices.gameObjectIndices.lightMaterialGameObjectIndexData.componentIndices
-    |> _getBatchArrByIndices(lightMaterialArr);
-
-  /* let (state, meshRendererArr) =
-     _batchCreateMeshRendererArr(lightMaterialGameObjects, wd, state); */
+    |> getBatchArrByIndices(lightMaterialArr);
 
   (
     (
@@ -101,22 +82,22 @@ let _getBatchComponentGameObjectData =
       gameObjectGeometrys,
       indices.gameObjectIndices.basicCameraViewGameObjectIndexData.
         gameObjectIndices
-      |> _getBatchArrByIndices(gameObjectArr),
+      |> getBatchArrByIndices(gameObjectArr),
       indices.gameObjectIndices.basicCameraViewGameObjectIndexData.
         componentIndices
-      |> _getBatchArrByIndices(basicCameraViewArr),
+      |> getBatchArrByIndices(basicCameraViewArr),
       indices.gameObjectIndices.perspectiveCameraProjectionGameObjectIndexData.
         gameObjectIndices
-      |> _getBatchArrByIndices(gameObjectArr),
+      |> getBatchArrByIndices(gameObjectArr),
       indices.gameObjectIndices.perspectiveCameraProjectionGameObjectIndexData.
         componentIndices
-      |> _getBatchArrByIndices(perspectiveCameraProjectionArr),
+      |> getBatchArrByIndices(perspectiveCameraProjectionArr),
       indices.gameObjectIndices.arcballCameraControllerGameObjectIndexData.
         gameObjectIndices
-      |> _getBatchArrByIndices(gameObjectArr),
+      |> getBatchArrByIndices(gameObjectArr),
       indices.gameObjectIndices.arcballCameraControllerGameObjectIndexData.
         componentIndices
-      |> _getBatchArrByIndices(arcballCameraControllerArr),
+      |> getBatchArrByIndices(arcballCameraControllerArr),
       basicMaterialGameObjects,
       gameObjectBasicMaterials,
       lightMaterialGameObjects,
@@ -125,49 +106,18 @@ let _getBatchComponentGameObjectData =
       gameObjectMeshRenderers,
       indices.gameObjectIndices.directionLightGameObjectIndexData.
         gameObjectIndices
-      |> _getBatchArrByIndices(gameObjectArr),
+      |> getBatchArrByIndices(gameObjectArr),
       indices.gameObjectIndices.directionLightGameObjectIndexData.
         componentIndices
-      |> _getBatchArrByIndices(directionLightArr),
+      |> getBatchArrByIndices(directionLightArr),
       indices.gameObjectIndices.pointLightGameObjectIndexData.gameObjectIndices
-      |> _getBatchArrByIndices(gameObjectArr),
+      |> getBatchArrByIndices(gameObjectArr),
       indices.gameObjectIndices.pointLightGameObjectIndexData.componentIndices
-      |> _getBatchArrByIndices(pointLightArr),
+      |> getBatchArrByIndices(pointLightArr),
     ),
     state,
   );
 };
-
-let _getBatchTextureData =
-    (lightMaterialArr, textureArr, imageArr, {indices, samplers}) => (
-  (
-    indices.materialIndices.diffuseMapMaterialIndices.materialIndices
-    |> _getBatchArrByIndices(lightMaterialArr),
-    indices.materialIndices.diffuseMapMaterialIndices.mapIndices
-    |> _getBatchArrByIndices(textureArr),
-  ),
-  (
-    indices.samplerTextureIndices.textureIndices
-    |> _getBatchArrByIndices(textureArr),
-    indices.samplerTextureIndices.samplerIndices
-    |> _getBatchArrByIndices(samplers),
-  ),
-  (
-    indices.imageTextureIndices.textureIndices
-    |> _getBatchArrByIndices(textureArr),
-    indices.imageTextureIndices.imageIndices
-    |> _getBatchArrByIndices(imageArr),
-  ),
-);
-
-let _getBatchAllTypeTextureData =
-    (lightMaterialArr, basicSourceTextureArr, blobObjectUrlImageArr, wd) =>
-  _getBatchTextureData(
-    lightMaterialArr,
-    basicSourceTextureArr,
-    blobObjectUrlImageArr,
-    wd,
-  );
 
 let _getBufferData =
     (
@@ -222,7 +172,7 @@ let _getBufferData =
   );
 };
 
-let _getAccessorComponentType = ({accessors}, accessorIndex) => {
+let getAccessorComponentType = ({accessors}, accessorIndex) => {
   let accessor = Array.unsafe_get(accessors, accessorIndex);
 
   accessor.componentType;
@@ -246,7 +196,7 @@ let _getBufferAttributeData = (accessorIndex, dataViewArr, wd) =>
   );
 
 let _getBufferIndexData = (accessorIndex, dataViewArr, wd) =>
-  switch (_getAccessorComponentType(wd, accessorIndex)) {
+  switch (getAccessorComponentType(wd, accessorIndex)) {
   | UNSIGNED_BYTE =>
     Uint16Array.from(
       _getBufferPointData(
@@ -262,8 +212,7 @@ let _getBufferIndexData = (accessorIndex, dataViewArr, wd) =>
     )
   };
 
-let _batchSetGeometryData =
-    ({geometrys} as wd, geometryArr, bufferArr, state) => {
+let batchSetGeometryData = ({geometrys} as wd, geometryArr, bufferArr, state) => {
   let dataViewArr =
     bufferArr |> Js.Array.map(buffer => DataViewCommon.create(buffer));
 
@@ -320,7 +269,7 @@ let _batchSetGeometryData =
      );
 };
 
-let _batchSetTransformParent = (parentTransforms, childrenTransforms, state) => {
+let batchSetTransformParent = (parentTransforms, childrenTransforms, state) => {
   let ({parentMap, childMap}: TransformType.transformRecord) as transformRecord =
     RecordTransformMainService.getRecord(state);
   let (parentMap, childMap) =
@@ -340,7 +289,7 @@ let _batchSetTransformParent = (parentTransforms, childrenTransforms, state) => 
   };
 };
 
-let _batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
+let batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
   let (
         {localPositions, localRotations, localScales}: TransformType.transformRecord
       ) as transformRecord =
@@ -403,7 +352,7 @@ let _batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
   };
 };
 
-let _batchSetBasicCameraViewData =
+let batchSetBasicCameraViewData =
     (
       {basicCameraViews},
       basicCameraViewArr,
@@ -454,7 +403,7 @@ let _batchSetBasicCameraViewData =
   };
 };
 
-let _batchSetPerspectiveCameraProjectionData =
+let batchSetPerspectiveCameraProjectionData =
     (
       {perspectiveCameraProjections},
       perspectiveCameraProjectionArr,
@@ -510,7 +459,7 @@ let _batchSetPerspectiveCameraProjectionData =
        ),
 };
 
-let _batchSetArcballCameraControllerData =
+let batchSetArcballCameraControllerData =
     (
       {arcballCameraControllers},
       arcballCameraControllerArr,
@@ -518,7 +467,6 @@ let _batchSetArcballCameraControllerData =
     ) =>
   arcballCameraControllers
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       /* arcballCameraControllerRecord, */
        (.
          state,
          {
@@ -595,7 +543,7 @@ let _batchSetArcballCameraControllerData =
        state,
      );
 
-let _batchSetMeshRendererData = ({meshRenderers}, meshRendererArr, state) =>
+let batchSetMeshRendererData = ({meshRenderers}, meshRendererArr, state) =>
   meshRenderers
   |> WonderCommonlib.ArrayService.reduceOneParami(
        (. state, meshRendererData, index) =>
@@ -615,7 +563,7 @@ let _batchSetMeshRendererData = ({meshRenderers}, meshRendererArr, state) =>
        state,
      );
 
-let _batchSetBasicMaterialData = ({basicMaterials}, basicMaterialArr, state) =>
+let batchSetBasicMaterialData = ({basicMaterials}, basicMaterialArr, state) =>
   basicMaterials
   |> WonderCommonlib.ArrayService.reduceOneParami(
        (. state, {color, name}, index) => {
@@ -627,7 +575,7 @@ let _batchSetBasicMaterialData = ({basicMaterials}, basicMaterialArr, state) =>
        state,
      );
 
-let _batchSetLightMaterialData = ({lightMaterials}, lightMaterialArr, state) =>
+let batchSetLightMaterialData = ({lightMaterials}, lightMaterialArr, state) =>
   lightMaterials
   |> WonderCommonlib.ArrayService.reduceOneParami(
        (. state, {diffuseColor, name}, index) => {
@@ -643,7 +591,7 @@ let _batchSetLightMaterialData = ({lightMaterials}, lightMaterialArr, state) =>
        state,
      );
 
-let _batchSetGameObjectName = (targets, names, setNameFunc, state) =>
+let batchSetGameObjectName = (targets, names, setNameFunc, state) =>
   targets
   |> WonderCommonlib.ArrayService.reduceOneParami(
        (. state, target, index) =>
@@ -651,7 +599,7 @@ let _batchSetGameObjectName = (targets, names, setNameFunc, state) =>
        state,
      );
 
-let _batchSetTextureName = (basicSourceTextureArr, basicSourceTextures, state) =>
+let batchSetTextureName = (basicSourceTextureArr, basicSourceTextures, state) =>
   basicSourceTextureArr
   |> ArrayService.reduceOneParamValidi(
        (. state, basicSourceTexture, index) =>
@@ -663,177 +611,16 @@ let _batchSetTextureName = (basicSourceTextureArr, basicSourceTextures, state) =
        state,
      );
 
-let _batchSetNames =
+let batchSetNames =
     (
       (gameObjectArr, basicSourceTextureArr),
       (gameObjects: WDType.gameObjects, basicSourceTextures),
       state,
     ) =>
   state
-  |> _batchSetGameObjectName(
+  |> batchSetGameObjectName(
        gameObjectArr,
        gameObjects.names,
        NameGameObjectMainService.setName,
      )
-  |> _batchSetTextureName(basicSourceTextureArr, basicSourceTextures);
-
-let batchOperate =
-    (
-      {
-        indices,
-        gameObjects,
-        basicSourceTextures,
-        /* arrayBufferViewSourceTextures, */
-      } as wd,
-      blobObjectUrlImageArr,
-      bufferArr,
-      (
-        state,
-        gameObjectArr,
-        (
-          transformArr,
-          geometryArr,
-          meshRendererArr,
-          basicCameraViewArr,
-          perspectiveCameraProjectionArr,
-          arcballCameraControllerArr,
-          basicMaterialArr,
-          lightMaterialArr,
-          directionLightArr,
-          pointLightArr,
-        ),
-        basicSourceTextureArr,
-      ),
-    ) => {
-  let state =
-    state
-    |> _batchSetNames(
-         (gameObjectArr, basicSourceTextureArr),
-         (gameObjects, basicSourceTextures),
-       );
-
-  let (
-    (
-      parentTransforms,
-      childrenTransforms,
-      transformGameObjects,
-      gameObjectTransforms,
-      geometryGameObjects,
-      gameObjectGeometrys,
-      basicCameraViewGameObjects,
-      gameObjectBasicCameraViews,
-      perspectiveCameraProjectionGameObjects,
-      gameObjectPerspectiveCameraProjection,
-      arcballCameraControllerGameObjects,
-      gameObjectArcballCameraController,
-      basicMaterialGameObjects,
-      gameObjectBasicMaterials,
-      lightMaterialGameObjects,
-      gameObjectLightMaterials,
-      meshRendererGameObjects,
-      gameObjectMeshRenderers,
-      directionLightGameObjects,
-      gameObjectDirectionLights,
-      pointLightGameObjects,
-      gameObjectPointLights,
-    ),
-    state,
-  ) =
-    _getBatchComponentGameObjectData(
-      (
-        gameObjectArr,
-        transformArr,
-        geometryArr,
-        meshRendererArr,
-        basicCameraViewArr,
-        perspectiveCameraProjectionArr,
-        arcballCameraControllerArr,
-        basicMaterialArr,
-        lightMaterialArr,
-        directionLightArr,
-        pointLightArr,
-      ),
-      indices,
-      wd,
-      state,
-    );
-
-  let state =
-    BatchSetTextureAllDataSystem.batchSetFormat(
-      basicSourceTextureArr,
-      basicSourceTextures,
-      state,
-    );
-
-  let basicSourceTextureData =
-    _getBatchAllTypeTextureData(
-      lightMaterialArr,
-      basicSourceTextureArr,
-      blobObjectUrlImageArr,
-      wd,
-    );
-
-  (
-    state
-    |> _batchSetTransformData(wd, gameObjectTransforms)
-    |> _batchSetTransformParent(parentTransforms, childrenTransforms)
-    |> _batchSetGeometryData(wd, geometryArr, bufferArr)
-    |> _batchSetBasicCameraViewData(wd, basicCameraViewArr)
-    |> _batchSetPerspectiveCameraProjectionData(
-         wd,
-         perspectiveCameraProjectionArr,
-       )
-    |> _batchSetArcballCameraControllerData(wd, arcballCameraControllerArr)
-    |> _batchSetMeshRendererData(wd, meshRendererArr)
-    |> _batchSetBasicMaterialData(wd, basicMaterialArr)
-    |> _batchSetLightMaterialData(wd, lightMaterialArr)
-    |> BatchOperateLightSystem.batchSetDirectionLightData(
-         wd,
-         directionLightArr,
-       )
-    |> BatchOperateLightSystem.batchSetPointLightData(wd, pointLightArr)
-    |> BatchOperateLightSystem.setAmbientLightData(wd)
-    |> BatchAddGameObjectComponentMainService.batchAddTransformComponentForCreate(
-         transformGameObjects,
-         gameObjectTransforms,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddGeometryComponentForCreate(
-         geometryGameObjects,
-         gameObjectGeometrys,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddBasicCameraViewComponentForCreate(
-         basicCameraViewGameObjects,
-         gameObjectBasicCameraViews,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddPerspectiveCameraProjectionComponentForCreate(
-         perspectiveCameraProjectionGameObjects,
-         gameObjectPerspectiveCameraProjection,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddArcballCameraControllerComponentForCreate(
-         arcballCameraControllerGameObjects,
-         gameObjectArcballCameraController,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddBasicMaterialComponentForCreate(
-         basicMaterialGameObjects,
-         gameObjectBasicMaterials,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForCreate(
-         lightMaterialGameObjects,
-         gameObjectLightMaterials,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddMeshRendererComponentForCreate(
-         meshRendererGameObjects,
-         gameObjectMeshRenderers,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddDirectionLightComponentForCreate(
-         directionLightGameObjects,
-         gameObjectDirectionLights,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddPointLightComponentForCreate(
-         pointLightGameObjects,
-         gameObjectPointLights,
-       )
-    |> BatchSetTextureAllDataSystem.batchSet(basicSourceTextureData),
-    gameObjectArr,
-  );
-};
+  |> batchSetTextureName(basicSourceTextureArr, basicSourceTextures);

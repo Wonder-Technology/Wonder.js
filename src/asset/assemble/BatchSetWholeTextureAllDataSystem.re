@@ -3,15 +3,22 @@ open StateDataMainType;
 open WDType;
 
 let _batchSetBasicSourceTextureSources =
-    (imageBasicSourceTextures, default11Image, {settingRecord} as state) =>
+    (
+      imageBasicSourceTextures,
+      basicSourceTextureImages,
+      {settingRecord} as state,
+    ) =>
   imageBasicSourceTextures
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. state, basicSourceTexture, index) =>
+       (. state, basicSourceTexture, index) => {
+         let image = Array.unsafe_get(basicSourceTextureImages, index);
+
          OperateBasicSourceTextureMainService.setSource(
            basicSourceTexture,
-           default11Image,
+           image,
            state,
-         ),
+         );
+       },
        state,
      );
 
@@ -20,7 +27,7 @@ let batchSet =
       (
         (diffuseMapLightMaterials, lightMaterialDiffuseMaps),
         (samplerBasicSourceTextures, basicSourceTextureSamplers),
-        (imageBasicSourceTextures, default11Image),
+        (imageBasicSourceTextures, basicSourceTextureImages),
       ),
       state,
     ) =>
@@ -35,5 +42,5 @@ let batchSet =
      )
   |> _batchSetBasicSourceTextureSources(
        imageBasicSourceTextures,
-       default11Image,
+       basicSourceTextureImages,
      );

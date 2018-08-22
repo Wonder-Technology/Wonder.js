@@ -138,7 +138,7 @@ let assembleGLBData = (({buffers}: wd) as wd, binBuffer, state) =>
        state
        |> SetIMGUIFuncSystem.setIMGUIFunc(wd)
        |> BatchCreateSystem.batchCreate(wd)
-       |> BatchOperateSystem.batchOperate(
+       |> BatchOperateWholeSystem.batchOperate(
             wd,
             blobObjectUrlImageArr,
             _buildBufferArray(buffers, binBuffer),
