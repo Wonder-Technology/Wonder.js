@@ -135,35 +135,9 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
         );
 
       let _getAllGeometryData = (rootGameObject, state) =>
-        /* AssembleWDBSystemTool.getAllGameObjects(rootGameObject, state)
-           |> Js.Array.filter(gameObject =>
-                GameObjectAPI.hasGameObjectGeometryComponent(gameObject, state)
-              )
-           |> Js.Array.map(gameObject => {
-                let geometry =
-                  GameObjectAPI.unsafeGetGameObjectGeometryComponent(
-                    gameObject,
-                    state,
-                  );
-
-                  /* WonderLog.Log.print(("geometry:", geometry)) |> ignore; */
-
-                (
-                  GameObjectAPI.unsafeGetGameObjectName(gameObject, state),
-                  GeometryTool.getMainVertices(
-                    geometry,
-                    state,
-                    /* GeometryTool.getMainNormals(geometry, state),
-                       GeometryTool.getMainTexCoords(geometry, state),
-                       GeometryTool.getMainIndices(geometry, state), */
-                  ),
-                );
-              }); */
         AssembleWDBSystemTool.getAllGeometryData(rootGameObject, state);
 
       let _getAllGeometrys = (rootGameObject, state) =>
-        /* AssembleWDBSystemTool.getAllGeometryData(rootGameObject, state); */
-        /* GameObjectTool.getChildren(rootGameObject, state) */
         AssembleWDBSystemTool.getAllGameObjects(rootGameObject, state)
         |> Js.Array.filter(gameObject =>
              GameObjectAPI.hasGameObjectGeometryComponent(gameObject, state)
@@ -302,6 +276,16 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                 (),
               );
           });
+
+          testPromise("set default source to all basicSourceTextures", () =>
+            _testSetDefaultSource(sandbox, state)
+          );
+        });
+
+        describe("test AlphaBlendModeTest wdb", () => {
+          beforeEach(() =>
+            wdbArrayBuffer := _getWDBArrayBuffer("AlphaBlendModeTest")
+          );
 
           testPromise("set default source to all basicSourceTextures", () =>
             _testSetDefaultSource(sandbox, state)
@@ -730,10 +714,102 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             _testDraw(sandbox, 5, state)
           );
         });
+
+        describe("test AlphaBlendModeTest wdb", () => {
+          beforeEach(() =>
+            wdbArrayBuffer := _getWDBArrayBuffer("AlphaBlendModeTest")
+          );
+
+          testPromise("add geometry component", () =>
+            _testAddGeometryComponents(
+              sandbox,
+              ([||], [|8, 0, 1, 2, 3, 4, 5, 6, 7|]),
+              state,
+            )
+          );
+          testPromise("test set geometry point data", () => {
+            let state =
+              state^
+              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+            let (default11Image, readStub, handleBeforeStartLoop, _, state) =
+              _prepare(sandbox, wdbArrayBuffer^, state);
+            let rootGameObjectWhenDone = ref(-1);
+            let handleWhenDoneFunc = (state, rootGameObject) => {
+              rootGameObjectWhenDone := rootGameObject;
+
+              state;
+            };
+
+            LoadStreamWDBTool.read(
+              (
+                default11Image,
+                _buildController(sandbox),
+                handleBeforeStartLoop,
+                handleWhenDoneFunc,
+              ),
+              [||],
+              None,
+              [||],
+              None,
+              0,
+              [||],
+              WonderCommonlib.SparseMapService.createEmpty(),
+              _buildReader(readStub),
+            )
+            |> then_(() => {
+                 let state = StateAPI.unsafeGetState();
+
+                 let state = DirectorTool.runWithDefaultTime(state);
+
+                 let dataArr =
+                   _getAllGeometryData(rootGameObjectWhenDone^, state);
+
+                 let dataMap = GLTFTool.getAlphaBlendModeTestGeometryData();
+
+                 (dataArr |> Js.Array.length, dataArr[2])
+                 |>
+                 expect == (
+                             9,
+                             (
+                               "DecalBlend",
+                               dataMap
+                               |> WonderCommonlib.HashMapService.unsafeGet(
+                                    "DecalBlend",
+                                  ),
+                             ),
+                           )
+                 |> resolve;
+               });
+          });
+          testPromise("load blob image and set it to be source", () =>
+            _testLoadBlobImage(
+              sandbox,
+              (
+                2,
+                94660,
+                {"type": "image/png"},
+                [|
+                  "object_url1" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                |],
+              ),
+              state,
+            )
+          );
+          testPromise("draw the gameObject", () =>
+            _testDraw(sandbox, 9, state)
+          );
+        });
       });
 
-      /* describe("test complete load one or more stream chunk data", () => */
-      describe("test load in multiple chunks", () =>
+      describe("test load in multiple chunks", () => {
         describe("test CesiumMilkTruck wdb", () => {
           let _testSetGeometryPointData =
               (sandbox, dataCount, prepareFunc, state) => {
@@ -1561,8 +1637,126 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               });
             },
           );
-        })
-      );
+        });
+
+        describe("test AlphaBlendModeTest wdb", () => {
+          let _testSetGeometryPointData =
+              (sandbox, dataCount, prepareFunc, state) => {
+            let state =
+              state^
+              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+            let (
+              default11Image,
+              readStub,
+              handleBeforeStartLoop,
+              handleWhenDoneFunc,
+              state,
+            ) =
+              prepareFunc(sandbox, state);
+            let rootGameObjectWhenDone = ref(-1);
+            let handleWhenDoneFunc = (state, rootGameObject) => {
+              rootGameObjectWhenDone := rootGameObject;
+
+              state;
+            };
+
+            LoadStreamWDBTool.read(
+              (
+                default11Image,
+                _buildController(sandbox),
+                handleBeforeStartLoop,
+                handleWhenDoneFunc,
+              ),
+              [||],
+              None,
+              [||],
+              None,
+              0,
+              [||],
+              WonderCommonlib.SparseMapService.createEmpty(),
+              _buildReader(readStub),
+            )
+            |> then_(() => {
+                 let state = StateAPI.unsafeGetState();
+
+                 let state = DirectorTool.runWithDefaultTime(state);
+
+                 let dataArr =
+                   _getAllGeometryData(rootGameObjectWhenDone^, state);
+
+                 dataArr |> Js.Array.length |> expect == dataCount |> resolve;
+               });
+          };
+
+          beforeEach(() =>
+            wdbArrayBuffer := _getWDBArrayBuffer("AlphaBlendModeTest")
+          );
+
+          describe(
+            {|
+            1.chunk1: header + json + stream + stream_chunk1-stream_chunk4 + a part of stream_chunk5(image chunk)
+            2.chunk2: other stream_chunk5 + stream_chunk6-stream_chunk44 + a part of stream_chunk45
+            3.chunk3: a part of stream_chunk45
+            4.chunk4: other stream chunk data
+            5.done
+            |},
+            () =>
+            describe("test 1,2,3,5", () => {
+              let _prepare = (sandbox, state) => {
+                let readStub = createEmptyStubWithJsObjSandbox(sandbox);
+                let readStub =
+                  readStub
+                  |> onCall(0)
+                  |> returns(
+                       _buildChunkData(
+                         ~arrayBuffer=
+                           wdbArrayBuffer^
+                           |> ArrayBuffer.slice(~start=0, ~end_=65536)
+                           |. Some,
+                         (),
+                       ),
+                     )
+                  |> onCall(1)
+                  |> returns(
+                       _buildChunkData(
+                         ~arrayBuffer=
+                           wdbArrayBuffer^
+                           |> ArrayBuffer.slice(
+                                ~start=65536,
+                                ~end_=65536 * 2,
+                              )
+                           |. Some,
+                         (),
+                       ),
+                     )
+                  |> onCall(2)
+                  |> returns(
+                       _buildChunkData(
+                         ~arrayBuffer=
+                           wdbArrayBuffer^
+                           |> ArrayBuffer.slice(
+                                ~start=65536 * 2,
+                                ~end_=65536 * 3,
+                              )
+                           |. Some,
+                         (),
+                       ),
+                     )
+                  |> onCall(3)
+                  |> returns(
+                       _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                     );
+
+                _prepareWithReadStub(sandbox, readStub, state);
+              };
+
+              testPromise("set geometry point data", () =>
+                _testSetGeometryPointData(sandbox, 8, _prepare, state)
+              );
+            })
+          );
+        });
+      });
     });
   });
 

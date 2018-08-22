@@ -176,7 +176,7 @@ let getAllGeometryData = (rootGameObject, state) =>
          );
 
        (
-         GameObjectAPI.unsafeGetGameObjectName(gameObject, state),
+         GameObjectAPI.unsafeGetGameObjectName(gameObject, state)|>WonderLog.Log.print,
          (
            GeometryTool.getMainVertices(geometry, state),
            GeometryTool.getMainNormals(geometry, state),
