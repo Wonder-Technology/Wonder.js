@@ -80,12 +80,14 @@ let load =
                             handleWhenDoneFunc,
                           ),
                           [||],
-                          None,
-                          [||],
-                          None,
-                          0,
-                          [||],
-                          WonderCommonlib.SparseMapService.createEmpty(),
+                          (
+                            None,
+                            [||],
+                            None,
+                            0,
+                            [||],
+                            WonderCommonlib.SparseMapService.createEmpty(),
+                          ),
                           reader,
                         );
                       },
@@ -93,17 +95,6 @@ let load =
                   )
                   |> resolve
             ),
-         /* if done{
-            let state = handleWhenDoneFunc(. (state, rootGameObject));
-
-
-
-            }
-
-            else{
-            handleWhenLoadFunc(progress data, state)
-            } */
-         /* response. */
        );
      });
 };

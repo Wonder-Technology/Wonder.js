@@ -222,13 +222,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               handleBeforeStartLoop,
               handleWhenDoneFunc,
             ),
-            [||],
-            None,
-            [||],
-            None,
-            0,
-            [||],
-            WonderCommonlib.SparseMapService.createEmpty(),
             _buildReader(readStub),
           )
           |> then_(() => {
@@ -329,13 +322,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               handleBeforeStartLoop,
               handleWhenDoneFunc,
             ),
-            [||],
-            None,
-            [||],
-            None,
-            0,
-            [||],
-            WonderCommonlib.SparseMapService.createEmpty(),
             _buildReader(readStub),
           )
           |> then_(() => {
@@ -391,13 +377,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               handleBeforeStartLoop,
               handleWhenDoneFunc,
             ),
-            [||],
-            None,
-            [||],
-            None,
-            0,
-            [||],
-            WonderCommonlib.SparseMapService.createEmpty(),
             _buildReader(readStub),
           )
           |> then_(() => {
@@ -449,13 +428,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               handleBeforeStartLoop,
               handleWhenDoneFunc,
             ),
-            [||],
-            None,
-            [||],
-            None,
-            0,
-            [||],
-            WonderCommonlib.SparseMapService.createEmpty(),
             _buildReader(readStub),
           )
           |> then_(() => {
@@ -517,13 +489,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                 handleBeforeStartLoop,
                 handleWhenDoneFunc,
               ),
-              [||],
-              None,
-              [||],
-              None,
-              0,
-              [||],
-              WonderCommonlib.SparseMapService.createEmpty(),
               _buildReader(readStub),
             )
             |> then_(() => {
@@ -633,13 +598,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                 handleBeforeStartLoop,
                 handleWhenDoneFunc,
               ),
-              [||],
-              None,
-              [||],
-              None,
-              0,
-              [||],
-              WonderCommonlib.SparseMapService.createEmpty(),
               _buildReader(readStub),
             )
             |> then_(() => {
@@ -747,13 +705,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                 handleBeforeStartLoop,
                 handleWhenDoneFunc,
               ),
-              [||],
-              None,
-              [||],
-              None,
-              0,
-              [||],
-              WonderCommonlib.SparseMapService.createEmpty(),
               _buildReader(readStub),
             )
             |> then_(() => {
@@ -838,13 +789,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                 handleBeforeStartLoop,
                 handleWhenDoneFunc,
               ),
-              [||],
-              None,
-              [||],
-              None,
-              0,
-              [||],
-              WonderCommonlib.SparseMapService.createEmpty(),
               _buildReader(readStub),
             )
             |> then_(() => {
@@ -1041,13 +985,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     handleBeforeStartLoop,
                     handleWhenDoneFunc,
                   ),
-                  [||],
-                  None,
-                  [||],
-                  None,
-                  0,
-                  [||],
-                  WonderCommonlib.SparseMapService.createEmpty(),
                   _buildReader(readStub),
                 )
                 |> then_(() => {
@@ -1082,13 +1019,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     handleBeforeStartLoop,
                     handleWhenDoneFunc,
                   ),
-                  [||],
-                  None,
-                  [||],
-                  None,
-                  0,
-                  [||],
-                  WonderCommonlib.SparseMapService.createEmpty(),
                   _buildReader(readStub),
                 )
                 |> then_(() =>
@@ -1243,13 +1173,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                           handleBeforeStartLoop,
                           handleWhenDoneFunc,
                         ),
-                        [||],
-                        None,
-                        [||],
-                        None,
-                        0,
-                        [||],
-                        WonderCommonlib.SparseMapService.createEmpty(),
                         _buildReader(readStub),
                       )
                       |> then_(() =>
@@ -1298,13 +1221,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                           handleBeforeStartLoop,
                           handleWhenDoneFunc,
                         ),
-                        [||],
-                        None,
-                        [||],
-                        None,
-                        0,
-                        [||],
-                        WonderCommonlib.SparseMapService.createEmpty(),
                         _buildReader(readStub),
                       )
                       |> then_(() =>
@@ -1667,13 +1583,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                 handleBeforeStartLoop,
                 handleWhenDoneFunc,
               ),
-              [||],
-              None,
-              [||],
-              None,
-              0,
-              [||],
-              WonderCommonlib.SparseMapService.createEmpty(),
               _buildReader(readStub),
             )
             |> then_(() => {
