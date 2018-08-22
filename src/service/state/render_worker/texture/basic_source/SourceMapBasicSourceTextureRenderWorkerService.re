@@ -31,24 +31,24 @@ open BrowserType;
    }; */
 
 let _addSource = (texture, imageBitmap, state) => {
-  WonderLog.Contract.requireCheck(
-    () => {
-      open WonderLog;
-      open Contract;
-      open Operators;
-      let {sourceMap} =
-        RecordBasicSourceTextureRenderWorkerService.getRecord(state);
-      test(
-        Log.buildAssertMessage(
-          ~expect={j|sourceMap shouldn't has source before|j},
-          ~actual={j|has|j},
-        ),
-        () =>
-        TextureSourceMapService.hasSource(texture, sourceMap) |> assertFalse
-      );
-    },
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
+  /* WonderLog.Contract.requireCheck(
+       () => {
+         open WonderLog;
+         open Contract;
+         open Operators;
+         let {sourceMap} =
+           RecordBasicSourceTextureRenderWorkerService.getRecord(state);
+         test(
+           Log.buildAssertMessage(
+             ~expect={j|sourceMap shouldn't has source before|j},
+             ~actual={j|has|j},
+           ),
+           () =>
+           TextureSourceMapService.hasSource(texture, sourceMap) |> assertFalse
+         );
+       },
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     ); */
   let {sourceMap} =
     RecordBasicSourceTextureRenderWorkerService.getRecord(state);
   TextureSourceMapService.addSource(texture, imageBitmap, sourceMap) |> ignore;

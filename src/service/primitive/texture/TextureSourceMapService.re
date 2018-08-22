@@ -9,14 +9,14 @@ let setSource = (texture, source, sourceMap) =>
   sourceMap |> WonderCommonlib.SparseMapService.set(texture, source);
 
 let addSource = (texture, source, sourceMap) => {
-  WonderLog.Contract.requireCheck(
+  /* WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
         Contract.(
           Operators.(
             test(
               Log.buildAssertMessage(
-                ~expect={j|sourceMap in texture:$texture should exist source before|j},
+                ~expect={j|source in sourceMap->texture:$texture shouldn't exist before|j},
                 ~actual={j|exist|j}
               ),
               () => hasSource(texture, sourceMap) |> assertFalse
@@ -25,6 +25,6 @@ let addSource = (texture, source, sourceMap) => {
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
-  );
+  ); */
   sourceMap |> WonderCommonlib.SparseMapService.set(texture, source)
 };
