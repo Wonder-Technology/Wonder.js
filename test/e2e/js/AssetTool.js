@@ -1,5 +1,28 @@
 var AssetTool = (function () {
     return {
+        addChild: function (parentGameObject, childGameObject, state) {
+            var parentTransform =
+                wd.unsafeGetGameObjectTransformComponent(
+                    parentGameObject, state
+                );
+
+            var childTransform =
+                wd.unsafeGetGameObjectTransformComponent(
+                    childGameObject, state
+                );
+
+            var state =
+                wd.setTransformParentKeepOrder(
+                    parentTransform, childTransform, state
+                );
+
+            return state;
+        },
+        addChildren: function (parentGameObject, childGameObjectArr, state) {
+            return childGameObjectArr.reduce((state, childGameObject) => {
+                return AssetTool.addChild(parentGameObject, childGameObject, state)
+            }, state);
+        },
         loadConfig: function (jsonPathArr, nextFunc, completeFunc) {
             return wd.loadConfig(jsonPathArr).forEach(function (state) {
                 if (!!nextFunc) {

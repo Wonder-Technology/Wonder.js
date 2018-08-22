@@ -29,21 +29,44 @@
 
 
             return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
-                return AssetTool.loadStreamWDB(
-                    // "../res/wdb/CesiumMilkTruck.wdb",
-                    // "../res/wdb/BoxTextured.wdb",
-                    // "../res/wdb/AlphaBlendModeTest.wdb",
-
-                    // "https://wonder-technology.github.io/wonder-demo.github.io/demo/engine/asset/wdb/BoxTextured.wdb",
-                    // "https://wonder-technology.github.io/wonder-demo.github.io/demo/engine/asset/wdb/CesiumMilkTruck.wdb",
-                    "https://wonder-technology.github.io/wonder-demo.github.io/demo/engine/asset/wdb/AlphaBlendModeTest.wdb",
 
 
-                    wd.unsafeGetState(), function (state, gameObject) {
-                        return handleBeforeStartLoop(state, gameObject);
-                    }, function (state, gameObject) {
-                        return state;
-                    });
+                AssetTool.loadIMGUIAsset("../res/font/Lato-Regular-64.fnt", "../res/font/lato.png",
+                    [
+                        ["./1.png", "1"],
+                        ["./2.jpg", "2"]
+                    ],
+                    wd.unsafeGetState(), function (state) {
+
+
+
+
+
+
+
+
+
+
+
+
+                        return AssetTool.loadStreamWDB(
+                            // "../res/wdb/CesiumMilkTruck.wdb",
+                            // "../res/wdb/BoxTextured.wdb",
+                            // "../res/wdb/AlphaBlendModeTest.wdb",
+                            "../res/wdb/Scene1.wdb",
+
+                            // "https://wonder-technology.github.io/wonder-demo.github.io/demo/engine/asset/wdb/BoxTextured.wdb",
+                            // "https://wonder-technology.github.io/wonder-demo.github.io/demo/engine/asset/wdb/CesiumMilkTruck.wdb",
+                            // "https://wonder-technology.github.io/wonder-demo.github.io/demo/engine/asset/wdb/AlphaBlendModeTest.wdb",
+
+
+                            // wd.unsafeGetState(), function (state, gameObject) {
+                            state, function (state, gameObject) {
+                                return handleBeforeStartLoop(state, gameObject);
+                            }, function (state, gameObject) {
+                                return state;
+                            });
+                    })
             });
 
 
