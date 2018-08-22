@@ -385,6 +385,7 @@ let _addImageData =
                 newBufferViewOffset,
                 gltf,
               );
+
             (
               bufferViewDataArr,
               streamChunkArr

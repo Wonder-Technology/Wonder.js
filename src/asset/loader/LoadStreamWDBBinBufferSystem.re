@@ -49,7 +49,7 @@ let _getBasicSourceTextures =
        )
      );
 
-let _computeCompleteStreamChunkTotalLoadedByteLength =
+let _computeCompleteStreamChunkTotalLoadedAlignedByteLength =
     (
       headerJsonStreamChunkTotalByteLength,
       nextStreamChunkIndex,
@@ -61,14 +61,14 @@ let _computeCompleteStreamChunkTotalLoadedByteLength =
     |> Js.Array.slice(~start=0, ~end_=nextStreamChunkIndex)
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. chunkByteLength, {byteLength}: streamUnitData) =>
-           chunkByteLength + byteLength,
+           chunkByteLength + (byteLength |> BufferUtils.alignedLength),
          0,
        )
   );
 
 let rec _build =
         (
-          completeStreamChunkTotalLoadedByteLength,
+          completeStreamChunkTotalLoadedAlignedByteLength,
           totalLoadedByteLength,
           nextStreamChunkIndex,
           streamChunkArr,
@@ -76,84 +76,88 @@ let rec _build =
           images,
           loadedStreamChunkDataArr,
         ) =>
-  completeStreamChunkTotalLoadedByteLength
-  |> BufferUtils.alignedLength >= totalLoadedByteLength ?
+  nextStreamChunkIndex >= Js.Array.length(streamChunkArr) ?
     (nextStreamChunkIndex, loadedStreamChunkDataArr) :
     {
-      /* WonderLog.Log.print((
-           completeStreamChunkTotalLoadedByteLength,
-           streamChunkArr,
-           nextStreamChunkIndex,
-         ))
-         |> ignore; */
       let {byteLength, index, type_}: streamUnitData =
         Array.unsafe_get(streamChunkArr, nextStreamChunkIndex);
 
-      let loadedStreamChunkDataArr =
-        switch (type_) {
-        | Vertex
-        | Normal
-        | TexCoord
-        | Index =>
-          loadedStreamChunkDataArr
-          |> ArrayService.push(
-               {
-                 geometryData:
-                   Some({
-                     meshIndex: index,
-                     arrayBuffer:
-                       ArrayBuffer.slice(
-                         ~start=completeStreamChunkTotalLoadedByteLength,
-                         ~end_=
-                           completeStreamChunkTotalLoadedByteLength
-                           + byteLength,
-                         loadedArrayBuffer,
-                       ),
-                   }),
-                 imageData: None,
-                 type_,
-               }: loadedStreamData,
-             )
-        | Image =>
-          let imageIndex = index;
+        WonderLog.Log.print(("nextStreamChunkIndex: ", nextStreamChunkIndex)) |> ignore;
 
-          let {mimeType}: WDType.image =
-            Array.unsafe_get(
-              images |> OptionService.unsafeGetJsonSerializedValue,
-              imageIndex,
-            );
+      let nextCompleteStreamChunkTotalLoadedByteLength =
+        completeStreamChunkTotalLoadedAlignedByteLength + byteLength;
 
-          loadedStreamChunkDataArr
-          |> ArrayService.push(
-               {
-                 geometryData: None,
-                 imageData:
-                   Some({
-                     imageIndex,
-                     mimeType,
-                     arrayBuffer:
-                       ArrayBuffer.slice(
-                         ~start=completeStreamChunkTotalLoadedByteLength,
-                         ~end_=
-                           completeStreamChunkTotalLoadedByteLength
-                           + byteLength,
-                         loadedArrayBuffer,
-                       ),
-                   }),
-                 type_,
-               }: loadedStreamData,
-             );
+        WonderLog.Log.print((
+nextCompleteStreamChunkTotalLoadedByteLength , totalLoadedByteLength 
+
+        )) |> ignore;
+
+      nextCompleteStreamChunkTotalLoadedByteLength > totalLoadedByteLength ?
+        (nextStreamChunkIndex, loadedStreamChunkDataArr) :
+        {
+          let loadedStreamChunkDataArr =
+            switch (type_) {
+            | Vertex
+            | Normal
+            | TexCoord
+            | Index =>
+              loadedStreamChunkDataArr
+              |> ArrayService.push(
+                   {
+                     geometryData:
+                       Some({
+                         meshIndex: index,
+                         arrayBuffer:
+                           ArrayBuffer.slice(
+                             ~start=completeStreamChunkTotalLoadedAlignedByteLength,
+                             ~end_=nextCompleteStreamChunkTotalLoadedByteLength,
+                             loadedArrayBuffer,
+                           ),
+                       }),
+                     imageData: None,
+                     type_,
+                   }: loadedStreamData,
+                 )
+            | Image =>
+              let imageIndex = index;
+
+              let {mimeType}: WDType.image =
+                Array.unsafe_get(
+                  images |> OptionService.unsafeGetJsonSerializedValue,
+                  imageIndex,
+                );
+
+              loadedStreamChunkDataArr
+              |> ArrayService.push(
+                   {
+                     geometryData: None,
+                     imageData:
+                       Some({
+                         imageIndex,
+                         mimeType,
+                         arrayBuffer:
+                           ArrayBuffer.slice(
+                             ~start=completeStreamChunkTotalLoadedAlignedByteLength,
+                             ~end_=nextCompleteStreamChunkTotalLoadedByteLength,
+                             loadedArrayBuffer,
+                           ),
+                       }),
+                     type_,
+                   }: loadedStreamData,
+                 );
+            };
+
+          _build(
+            nextCompleteStreamChunkTotalLoadedByteLength
+            |> BufferUtils.alignedLength,
+            totalLoadedByteLength,
+            nextStreamChunkIndex |> succ,
+            streamChunkArr,
+            loadedArrayBuffer,
+            images,
+            loadedStreamChunkDataArr,
+          );
         };
-
-      _build(
-        completeStreamChunkTotalLoadedByteLength + byteLength,
-        totalLoadedByteLength,
-        nextStreamChunkIndex |> succ,
-        streamChunkArr,
-        loadedArrayBuffer,
-        images,
-        loadedStreamChunkDataArr,
-      );
     };
 
 let _splitLoadedStreamChunkArrByJudgeHasAllData =
@@ -187,7 +191,7 @@ let _splitLoadedStreamChunkArrByJudgeHasAllData =
            switch (geometryData) {
            | Some({meshIndex}) when meshIndex !== prevMeshIndex => (
                meshIndex,
-               [||],
+               [|data|],
                loadedStreamChunkDataArrWhichHasAllData
                |> Js.Array.concat(loadedStreamChunkArrWhichNotHasAllData),
              )
@@ -215,28 +219,42 @@ let _splitLoadedStreamChunkArrByJudgeHasAllData =
     );
 };
 
-/* let _loadBlobImageFromImageArrayBufferData = (loadedImageMap, loadedStreamChunkDataArr) => { */
 let _loadBlobImageFromImageArrayBufferData =
-    (loadedStreamChunkDataArr: array(loadedStreamData)) => {
+    (loadedStreamChunkDataArr: array(loadedStreamData), loadBlobImageMap) => {
   let resultLoadedStreamChunkDataArr = [||];
 
   Most.from(loadedStreamChunkDataArr)
-  |> Most.flatMap(({geometryData, imageData, type_}: loadedStreamData) =>
+  |> Most.concatMap(({geometryData, imageData, type_}: loadedStreamData) =>
        switch (type_) {
        | Image =>
          let {imageIndex, mimeType, arrayBuffer} =
            imageData |> OptionService.unsafeGet;
 
-         AssembleUtils.buildLoadImageStream(
-           arrayBuffer,
-           mimeType,
-           {j|load image error. imageIndex: $imageIndex|j},
-         )
-         |> Most.tap(image
-              /* loadedImageMap |> WonderCommonlib.SparseMapService.set(
-                   imageIndex, image
-                 ) |> ignore; */
-              =>
+         WonderLog.Log.print(arrayBuffer) |> ignore;
+
+         switch (
+           loadBlobImageMap
+           |> WonderCommonlib.SparseMapService.get(imageIndex)
+         ) {
+         | Some(image) =>
+           resultLoadedStreamChunkDataArr
+           |> ArrayService.push(
+                {
+                  geometryData: None,
+                  imageData: Some({imageIndex, image}),
+                  type_,
+                }: loadedStreamBlobData,
+              )
+           |> ignore;
+
+           Most.empty();
+         | None =>
+           AssembleUtils.buildLoadImageStream(
+             arrayBuffer,
+             mimeType,
+             {j|load image error. imageIndex: $imageIndex|j},
+           )
+           |> Most.tap(image => {
                 resultLoadedStreamChunkDataArr
                 |> ArrayService.push(
                      {
@@ -245,9 +263,15 @@ let _loadBlobImageFromImageArrayBufferData =
                        type_,
                      }: loadedStreamBlobData,
                    )
-                |> ignore
-              )
-         |> Most.map(_ => ());
+                |> ignore;
+
+                loadBlobImageMap
+                |> WonderCommonlib.SparseMapService.set(imageIndex, image)
+                |> ignore;
+              })
+           |> Most.map(_ => ())
+         };
+
        | _ =>
          resultLoadedStreamChunkDataArr
          |> ArrayService.push({geometryData, imageData: None, type_})
@@ -258,9 +282,7 @@ let _loadBlobImageFromImageArrayBufferData =
      )
   |> Most.drain
   |> then_(() =>
-       resultLoadedStreamChunkDataArr
-       /* loadedImageMap */
-       |> resolve
+       (resultLoadedStreamChunkDataArr, loadBlobImageMap) |> resolve
      );
 };
 
@@ -268,17 +290,17 @@ let _buildBinBufferChunkData =
     (
       nextStreamChunkIndex,
       loadedStreamChunkArrWhichNotHasAllData,
-      completeStreamChunkTotalLoadedByteLength,
+      completeStreamChunkTotalLoadedAlignedByteLength,
       totalLoadedByteLength,
       loadedArrayBuffer,
       streamChunkArr,
-      /* loadedImageMap, */
+      loadBlobImageMap,
       images,
     ) => {
-  /* WonderLog.Log.print("aaa") |> ignore; */
+      WonderLog.Log.print(("completeStreamChunkTotalLoadedAlignedByteLength: ", completeStreamChunkTotalLoadedAlignedByteLength)) |> ignore;
   let (nextStreamChunkIndex, loadedStreamChunkDataArr) =
     _build(
-      completeStreamChunkTotalLoadedByteLength,
+      completeStreamChunkTotalLoadedAlignedByteLength,
       totalLoadedByteLength,
       nextStreamChunkIndex,
       streamChunkArr,
@@ -286,6 +308,9 @@ let _buildBinBufferChunkData =
       images,
       loadedStreamChunkArrWhichNotHasAllData,
     );
+
+  WonderLog.Log.print(("loadedStreamChunkDataArr:", loadedStreamChunkDataArr))
+  |> ignore;
 
   let (
     loadedStreamChunkArrWhichNotHasAllData,
@@ -303,23 +328,20 @@ let _buildBinBufferChunkData =
   ))
   |> ignore;
 
-  /* _loadBlobImageFromImageArrayBufferData (loadedImageMap, loadedStreamChunkDataArrWhichHasAllData) */
   _loadBlobImageFromImageArrayBufferData(
     loadedStreamChunkDataArrWhichHasAllData,
+    loadBlobImageMap,
   )
   |> then_(
-       /* (resultLoadedStreamChunkDataArrWhichHasAllData, nextStreamChunkIndex) */
-       resultLoadedStreamChunkDataArrWhichHasAllData
-       /* loadedImageMap */
-       =>
-         (
-           resultLoadedStreamChunkDataArrWhichHasAllData,
-           nextStreamChunkIndex,
-           loadedStreamChunkArrWhichNotHasAllData,
-           /* loadedImageMap */
-         )
-         |> resolve
-       );
+       ((resultLoadedStreamChunkDataArrWhichHasAllData, loadBlobImageMap)) =>
+       (
+         resultLoadedStreamChunkDataArrWhichHasAllData,
+         nextStreamChunkIndex,
+         loadedStreamChunkArrWhichNotHasAllData,
+         loadBlobImageMap,
+       )
+       |> resolve
+     );
 };
 
 let _setGeometryData =
@@ -339,7 +361,7 @@ let _setGeometryData =
       gameObjectGeometrys,
     );
 
-  /* WonderLog.Log.print(geometry) |> ignore; */
+  WonderLog.Log.print(("geometry:", geometry)) |> ignore;
 
   setPointsByTypeArrayFunc(
     geometry,
@@ -447,7 +469,7 @@ let _setBinBufferChunkData =
 let _isLoadCompleteNextStreamChunkData =
     (
       totalLoadedByteLength,
-      completeStreamChunkTotalLoadedByteLength,
+      completeStreamChunkTotalLoadedAlignedByteLength,
       nextStreamChunkIndex,
       streamChunkArr,
     ) => {
@@ -473,8 +495,8 @@ let _isLoadCompleteNextStreamChunkData =
   let {byteLength} =
     Array.unsafe_get(streamChunkArr, nextStreamChunkIndex + 1);
 
-  totalLoadedByteLength >= completeStreamChunkTotalLoadedByteLength
-  + byteLength;
+  totalLoadedByteLength >= completeStreamChunkTotalLoadedAlignedByteLength
+  + (byteLength |> BufferUtils.alignedLength);
 };
 
 let handleBinBufferData =
@@ -488,8 +510,8 @@ let handleBinBufferData =
         nextStreamChunkIndex,
         streamChunkArr,
         loadedStreamChunkArrWhichNotHasAllData,
+        loadBlobImageMap,
       ),
-      /* loadedImageMap, */
       (
         _,
         (geometryArr, geometryGameObjects, gameObjectGeometrys),
@@ -497,8 +519,8 @@ let handleBinBufferData =
       ) as assembleData,
       state,
     ) => {
-  let completeStreamChunkTotalLoadedByteLength =
-    _computeCompleteStreamChunkTotalLoadedByteLength(
+  let completeStreamChunkTotalLoadedAlignedByteLength =
+    _computeCompleteStreamChunkTotalLoadedAlignedByteLength(
       headerJsonStreamChunkTotalByteLength,
       nextStreamChunkIndex,
       streamChunkArr,
@@ -513,7 +535,7 @@ let handleBinBufferData =
   !
     _isLoadCompleteNextStreamChunkData(
       totalLoadedByteLength,
-      completeStreamChunkTotalLoadedByteLength,
+      completeStreamChunkTotalLoadedAlignedByteLength,
       nextStreamChunkIndex,
       streamChunkArr,
     ) ?
@@ -525,12 +547,13 @@ let handleBinBufferData =
         assembleData,
         nextStreamChunkIndex,
         loadedStreamChunkArrWhichNotHasAllData,
+        loadBlobImageMap,
       ))
     ) :
     _buildBinBufferChunkData(
       nextStreamChunkIndex,
       loadedStreamChunkArrWhichNotHasAllData,
-      completeStreamChunkTotalLoadedByteLength,
+      completeStreamChunkTotalLoadedAlignedByteLength,
       totalLoadedByteLength,
       LoadStreamWDBUtil.buildLoadedDataView(
         totalLoadedByteLength,
@@ -538,8 +561,8 @@ let handleBinBufferData =
       )
       |> DataView.buffer,
       streamChunkArr,
+      loadBlobImageMap,
       images,
-      /* loadedImageMap */
     )
     |> then_(
          (
@@ -547,16 +570,12 @@ let handleBinBufferData =
              loadedStreamChunkDataArrWhichHasAllData,
              nextStreamChunkIndex,
              loadedStreamChunkArrWhichNotHasAllData,
+             loadBlobImageMap,
            ),
          ) => {
-         /* loadedImageMap */
-
-         /* WonderLog.Log.printJson(("loadedStreamChunkDataArrWhichHasAllData: ", loadedStreamChunkDataArrWhichHasAllData)) |> ignore; */
-
          let state =
            _setBinBufferChunkData(
              loadedStreamChunkDataArrWhichHasAllData,
-             /* loadedImageMap, */
              (geometryArr, geometryGameObjects, gameObjectGeometrys),
              (basicSourceTextureArr, imageTextureIndices),
              state,
@@ -568,6 +587,7 @@ let handleBinBufferData =
            assembleData,
            nextStreamChunkIndex,
            loadedStreamChunkArrWhichNotHasAllData,
+           loadBlobImageMap,
          )
          |> resolve;
        });

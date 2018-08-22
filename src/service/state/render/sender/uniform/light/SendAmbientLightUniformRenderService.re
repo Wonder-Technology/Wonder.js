@@ -3,6 +3,7 @@ open StateRenderType;
 let send =
   (. gl, (program, uniformCacheMap, uniformLocationMap), {sceneRecord}) => {
     let name = "u_ambient";
+
     SendGLSLDataService.sendFloat3(.
       gl,
       uniformCacheMap,

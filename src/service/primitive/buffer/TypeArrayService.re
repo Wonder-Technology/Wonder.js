@@ -251,7 +251,7 @@ let fillFloat32ArrayWithOffset =
         Log.buildAssertMessage(
           ~expect=
             {j|sourceTypeArr.length:$sourceTypeArrLen + offset:$offset <= targetTypeArr.length:$targetTypeArrLen|j},
-          ~actual={j||j},
+          ~actual={j|not|j},
         ),
         () =>
         sourceTypeArrLen + offset <= targetTypeArrLen
@@ -312,7 +312,7 @@ let fillUint16ArrayWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
         Log.buildAssertMessage(
           ~expect=
             {j|sourceTypeArr.length:$sourceTypeArrLen + offset:$offset <= targetTypeArr.length:$targetTypeArrLen|j},
-          ~actual={j||j},
+          ~actual={j|not|j},
         ),
         () =>
         sourceTypeArrLen + offset <= targetTypeArrLen
