@@ -60,38 +60,52 @@
 
             return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
 
-                var image1 = new Image();
-                image1.src = "./1.jpg";
 
 
 
-                image1.onload = function () {
-                    var image2 = new Image();
-                    image2.src = "./2.jpg";
+                AssetTool.loadIMGUIAsset("../res/font/Lato-Regular-64.fnt", "../res/font/lato.png",
+                    [
+                        ["./1.png", "1"],
+                        ["./2.jpg", "2"]
+                    ],
+                    wd.unsafeGetState(), function (state) {
+                        wd.setState(state);
 
-                    image2.onload = function () {
-                        var state = wd.unsafeGetState();
 
-
-                        var record = wd.createBasicSourceTexture(state)
-                        var state = record[0];
-                        var texture1 = record[1];
-
-                        var state = wd.setBasicSourceTextureSource(texture1, image1, state);
+                        var image1 = new Image();
+                        image1.src = "./1.jpg";
 
 
 
-                        var record = wd.createBasicSourceTexture(state)
-                        var state = record[0];
-                        var texture2 = record[1];
+                        image1.onload = function () {
+                            var image2 = new Image();
+                            image2.src = "./2.jpg";
 
-                        var state = wd.setBasicSourceTextureSource(texture2, image2, state);
+                            image2.onload = function () {
+                                var state = wd.unsafeGetState();
+
+
+                                var record = wd.createBasicSourceTexture(state)
+                                var state = record[0];
+                                var texture1 = record[1];
+
+                                var state = wd.setBasicSourceTextureSource(texture1, image1, state);
 
 
 
-                        return initSample(texture1, texture2, wd.unsafeGetState());
-                    }
-                }
+                                var record = wd.createBasicSourceTexture(state)
+                                var state = record[0];
+                                var texture2 = record[1];
+
+                                var state = wd.setBasicSourceTextureSource(texture2, image2, state);
+
+
+
+                                // return initSample(texture1, texture2, wd.unsafeGetState());
+                                return initSample(texture1, texture2, state);
+                            }
+                        }
+                    })
             });
 
 
@@ -170,6 +184,184 @@
                 }
 
                 return [state, directionLightObj, pointLightObj]
+            }
+
+
+            function _downloadScene([
+                boxArrayBuffer,
+                truckArrayBuffer,
+                alphaArrayBuffer
+            ], imageBase64Map, isCreateCamera, state) {
+                var state = wd.setIMGUIFunc(
+                    null, (_, api, state) => {
+                        var state = api.label(
+                            [100, 30, 300, 200], "imgui", 0, state
+                        );
+
+
+
+
+                        return state
+                    }, state);
+
+
+
+
+
+                wd.assembleGLB(boxArrayBuffer, state)
+                    .forEach(([state, boxGameObject]) => {
+
+                        wd.assembleGLB(truckArrayBuffer, state)
+                            .forEach(([state, truckGameObject]) => {
+                                wd.assembleGLB(alphaArrayBuffer, state)
+                                    .forEach(([state, alphaGameObject]) => {
+
+
+                                        var transform = wd.unsafeGetGameObjectTransformComponent(truckGameObject, state);
+
+
+
+
+                                        state = wd.setTransformLocalPosition(transform, [0, 10, 10], state);
+
+
+
+
+
+
+                                        var transform = wd.unsafeGetGameObjectTransformComponent(boxGameObject, state);
+
+
+
+
+                                        state = wd.setTransformLocalPosition(transform, [0, 0, 0], state);
+
+
+
+
+
+
+
+
+
+
+
+
+                                        var transform = wd.unsafeGetGameObjectTransformComponent(alphaGameObject, state);
+
+
+
+
+                                        state = wd.setTransformLocalPosition(transform, [0, -10, -10], state);
+
+
+
+
+
+
+
+
+
+
+                                        var state = LightTool.setAmbientLight(state);
+
+
+
+                                        var record = LightTool.createDirectionLight(state);
+                                        var state = record[0];
+                                        var directionLightObj = record[1];
+
+
+
+                                        // var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+
+                                        // state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+
+
+
+                                        var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
+
+                                        var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
+
+
+
+
+                                        var data = LightBoxesTool.createCamera(state);
+                                        var state = data[0];
+                                        var camera = data[1];
+
+
+                                        var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+
+
+
+                                        var [state, cameraController] = wd.createArcballCameraController(state);
+
+                                        var state =
+                                            wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+                                        var state =
+                                            wd.bindArcballCameraControllerEvent(
+                                                cameraController, state
+                                            );
+
+
+                                        var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+
+
+                                        var state =
+                                            wd.activeBasicCameraView(
+                                                wd.unsafeGetGameObjectBasicCameraViewComponent(
+                                                    camera, state
+                                                ), state
+                                            );
+
+
+
+
+                                        var [state, rootGameObject] = wd.createGameObject(state);
+
+
+
+                                        var state =
+                                            AssetTool.addChildren(
+                                                rootGameObject, [
+                                                    boxGameObject,
+                                                    truckGameObject,
+                                                    alphaGameObject,
+                                                    directionLightObj,
+                                                    camera
+                                                ], state
+                                            );
+
+
+
+
+                                        // wd.startDirector(state);
+
+
+                                        // console.profile("generateWDB");
+                                        // var n0 = performance.now();
+
+
+                                        var [state, wdb] = wd.generateWDB(rootGameObject, imageBase64Map, state);
+
+
+                                        AssetTool.download(wdb, "generated.wdb", "")
+                                    });
+                            })
+
+
+                    })
+
+
+
+
+
+
             }
 
 
@@ -397,44 +589,89 @@
 
             function initSample(map1, map2, state$) {
                 fetch(
-                    // "../res/BoxTextured.glb"
-                    // "../res/CesiumMilkTruck.glb"
-                    // "../res/CesiumMilkTruck.glb"
-                    // "../res/VC.glb"
-                    // "../res/2CylinderEngine.glb"
-                    "../res/AlphaBlendModeTest.glb"
+                    "../res/BoxTextured.glb"
                 )
                     .then((res) => {
                         return res.arrayBuffer();
                     })
-                    .then((arrayBuffer) => {
-                        var imageBase64Map = wd.createSparseMap();
-                        // imageBase64Map =
-                        //     wd.setSparseMapValue(3,
-                        //         truckImageBase64,
-                        //         imageBase64Map);
-
-                        _testGenerateWDBByGLB(
-                            arrayBuffer,
-
-                            imageBase64Map,
-
-                            true,
-
-                            state$);
+                    .then((boxArrayBuffer) => {
 
 
+                        fetch(
+                            "../res/CesiumMilkTruck.glb"
+                        )
+                            .then((res) => {
+                                return res.arrayBuffer();
+                            })
+                            .then((truckArrayBuffer) => {
+                                fetch(
+                                    // "../res/BoxTextured.glb"
+                                    // "../res/CesiumMilkTruck.glb"
+                                    // "../res/CesiumMilkTruck.glb"
+                                    // "../res/VC.glb"
+                                    // "../res/2CylinderEngine.glb"
+                                    "../res/AlphaBlendModeTest.glb"
+                                )
+                                    .then((res) => {
+                                        return res.arrayBuffer();
+                                    })
+                                    .then((alphaArrayBuffer) => {
+                                        var imageBase64Map = wd.createSparseMap();
+                                        // imageBase64Map =
+                                        //     wd.setSparseMapValue(3,
+                                        //         truckImageBase64,
+                                        //         imageBase64Map);
+
+                                        // _testGenerateWDBByGLB(
+                                        //     // [
+                                        //     //     boxArrayBuffer,
+                                        //     //     truckArrayBuffer,
+                                        //     //     alphaArrayBuffer
+                                        //     // ],
+                                        //     boxArrayBuffer,
+
+                                        //     imageBase64Map,
+
+                                        //     true,
+
+                                        //     state$);
 
 
-                        // _testGenerateWDByGameObject(map1, map2, state$);
+                                        _downloadScene(
+                                            [
+                                                boxArrayBuffer,
+                                                truckArrayBuffer,
+                                                alphaArrayBuffer
+                                            ],
+
+                                            imageBase64Map,
+
+                                            true,
+
+                                            state$
+                                        );
 
 
 
-                        // _testAssembleWD(
-                        //     arrayBuffer,
-                        //     true,
-                        //     state$);
+
+                                        // _testGenerateWDByGameObject(map1, map2, state$);
+
+
+
+                                        // _testAssembleWD(
+                                        //     arrayBuffer,
+                                        //     true,
+                                        //     state$);
+                                    })
+                            })
+
+
                     })
+
+
+
+
+
             }
 
         };
