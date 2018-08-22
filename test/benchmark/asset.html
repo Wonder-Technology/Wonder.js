@@ -142,12 +142,30 @@
 
                     var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
 
-                    // var state = wd.setTransformLocalPosition(transform, [50, 100, 500], state);
-                    state = wd.setTransformLocalPosition(transform, [0, 5, 10], state);
 
-                    state =
-                        wd.setCurrentCameraGameObject(
-                            camera, state
+
+
+                    var [state, cameraController] = wd.createArcballCameraController(state);
+
+                    var state =
+                        wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+                    var state =
+                        wd.bindArcballCameraControllerEvent(
+                            cameraController, state
+                        );
+
+
+                    var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+
+
+                    var state =
+                        wd.activeBasicCameraView(
+                            wd.unsafeGetGameObjectBasicCameraViewComponent(
+                                camera, state
+                            ), state
                         );
                 }
 
@@ -165,7 +183,7 @@
                         var [state, wdb] = wd.generateWDB(rootGameObject, imageBase64Map, state);
 
 
-                        AssetTool.download(wdb, "generated.wdb", "")
+                        // AssetTool.download(wdb, "generated.wdb", "")
 
 
                         // console.profileEnd();
@@ -178,13 +196,29 @@
                         // //     _disposeAll(rootGameObject, state);
 
 
-                        // wd.assembleWDB(wdb, state)
-                        //     .forEach(([state, rootGameObject]) => {
-                        //         var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(isCreateCamera, state);
+                        wd.assembleWDB(wdb, state)
+                            .forEach(([state, rootGameObject]) => {
+                                // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(isCreateCamera, state);
 
 
-                        //         wd.startDirector(state);
-                        //     });
+                                var isCreateLight =
+                                    wd.getAllDirectionLightComponents(state).length === 0 && wd.getAllPointLightComponents(state).length === 0;
+
+                                var isCreateCamera =
+                                    wd.getAllBasicCameraViewComponents(state).length === 0;
+
+                                var state = state;
+
+                                if (isCreateLight) {
+                                    var data = _createLightsAndCamera(isCreateCamera, state);
+                                    state = data[0];
+                                }
+
+
+
+
+                                wd.startDirector(state);
+                            });
 
 
 
@@ -363,8 +397,8 @@
 
             function initSample(map1, map2, state$) {
                 fetch(
-                    "../res/BoxTextured.glb"
-                    // "../res/CesiumMilkTruck.glb"
+                    // "../res/BoxTextured.glb"
+                    "../res/CesiumMilkTruck.glb"
                     // "../res/CesiumMilkTruck.glb"
                     // "../res/VC.glb"
                     // "../res/2CylinderEngine.glb"
