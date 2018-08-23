@@ -1868,6 +1868,44 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
       });
     });
 
+    describe("test set bin buffer chunk data", () =>
+      describe("test set image data", () =>
+        test("mark need update", () => {
+          let image = Obj.magic(51);
+          let basicSourceTextureArr = [|0, 1|];
+          let state =
+            basicSourceTextureArr
+            |> WonderCommonlib.ArrayService.reduceOneParam(
+                 (. state, basicSourceTexture) =>
+                   BasicSourceTextureTool.setIsNeedUpdate(
+                     basicSourceTexture,
+                     BasicSourceTextureTool.getNotNeedUpdate(),
+                     state,
+                   ),
+                 state^,
+               );
+
+          let state =
+            LoadStreamWDBTool.setImageData(
+              ({imageIndex: 0, image}: StreamType.loadedStreamImageBlobData)
+              |. Some,
+              basicSourceTextureArr,
+              {textureIndices: [|0, 1|], imageIndices: [|0, 0|]}: WDType.imageTextureIndexData,
+              state,
+            );
+
+          basicSourceTextureArr
+          |> Js.Array.map(basicSourceTexture =>
+               BasicSourceTextureTool.getIsNeedUpdate(
+                 basicSourceTexture,
+                 state,
+               )
+             )
+          |> expect == [|true, true|];
+        })
+      )
+    );
+
     describe("if load error", () => {
       let _buildFakeFetchReturnResponse = (ok, status, statusText) =>
         {"ok": ok, "status": status, "statusText": statusText}

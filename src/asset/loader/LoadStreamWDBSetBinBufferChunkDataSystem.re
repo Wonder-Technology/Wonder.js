@@ -75,6 +75,32 @@ let _getBasicSourceTextures =
        )
      );
 
+let _setImageData =
+    (imageData, basicSourceTextureArr, imageTextureIndices, state) => {
+  let {imageIndex, image} = imageData |> OptionService.unsafeGet;
+  let basicSourceTextures =
+    _getBasicSourceTextures(
+      imageIndex,
+      basicSourceTextureArr,
+      imageTextureIndices,
+    );
+
+  basicSourceTextures
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. state, basicSourceTexture) =>
+         OperateBasicSourceTextureMainService.setIsNeedUpdate(
+           basicSourceTexture,
+           BufferSourceTextureService.getNeedUpdate(),
+           state,
+         )
+         |> OperateBasicSourceTextureMainService.setSource(
+              basicSourceTexture,
+              image |> ImageType.imageToDomExtendImageElement,
+            ),
+       state,
+     );
+};
+
 let setBinBufferChunkData =
     (
       loadedStreamChunkDataArrWhichHasAllData,
@@ -149,36 +175,12 @@ let setBinBufferChunkData =
                 geometrys,
               );
          | Image =>
-           let {imageIndex, image} = imageData |> OptionService.unsafeGet;
-           let basicSourceTextures =
-             _getBasicSourceTextures(
-               imageIndex,
-               basicSourceTextureArr,
-               imageTextureIndices,
-             );
-
-           WonderLog.Log.print((
-             "basicSourceTextures: ",
-             basicSourceTextures,
-             "basicSourceTextureArr:",
+           _setImageData(
+             imageData,
              basicSourceTextureArr,
-             "imageTextureIndices: ",
              imageTextureIndices,
-             "image: ",
-             image##width,
-           ))
-           |> ignore;
-
-           basicSourceTextures
-           |> WonderCommonlib.ArrayService.reduceOneParam(
-                (. state, basicSourceTexture) =>
-                  state
-                  |> OperateBasicSourceTextureMainService.setSource(
-                       basicSourceTexture,
-                       image |> ImageType.imageToDomExtendImageElement,
-                     ),
-                state,
-              );
+             state,
+           )
          },
        state,
      );

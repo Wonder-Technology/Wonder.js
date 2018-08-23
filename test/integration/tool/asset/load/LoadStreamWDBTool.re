@@ -71,3 +71,5 @@ let read =
     ),
     reader,
   );
+
+let setImageData = LoadStreamWDBSetBinBufferChunkDataSystem._setImageData;

@@ -62,6 +62,10 @@ let getDefaultType = () => TextureTypeService.getUnsignedByte();
 let getDefaultIsNeedUpdate = () =>
   BufferBasicSourceTextureService.getDefaultIsNeedUpdate();
 
+let getNeedUpdate = BufferSourceTextureService.getNeedUpdate;
+
+let getNotNeedUpdate = BufferSourceTextureService.getNotNeedUpdate;
+
 let getIsNeedUpdate = (texture, state) =>
   OperateBasicSourceTextureMainService.getIsNeedUpdate(texture, state)
   === BufferSourceTextureService.getNeedUpdate();
