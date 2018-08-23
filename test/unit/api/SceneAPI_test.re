@@ -51,4 +51,15 @@ let _ =
         |> expect == [|transform1, transform2|];
       })
     );
+
+    describe("setSceneGameObject", () =>
+      test("test", () => {
+        let (state, gameObject1) = GameObjectAPI.createGameObject(state^);
+        let (state, gameObject2) = GameObjectAPI.createGameObject(state);
+
+        let state = SceneAPI.setSceneGameObject(gameObject2, state);
+
+        SceneAPI.getSceneGameObject(state) |> expect == gameObject2;
+      })
+    );
   });

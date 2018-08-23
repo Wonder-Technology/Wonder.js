@@ -3,6 +3,12 @@ open StateDataMainType;
 let getSceneGameObject = state =>
   RecordSceneMainService.getRecord(state).sceneGameObject;
 
+let setSceneGameObject = (sceneGameObject, state) => {
+  ...state,
+  sceneRecord:
+    Some({...RecordSceneMainService.getRecord(state), sceneGameObject}),
+};
+
 let addChild = (childGameObject, {gameObjectRecord} as state) => {
   ...state,
   transformRecord:
