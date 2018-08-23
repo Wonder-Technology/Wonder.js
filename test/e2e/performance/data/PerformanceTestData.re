@@ -1512,7 +1512,7 @@ let performanceTestData = {
                    var n3 = null;
                    var n4 = null;
 
-                   return wd.assembleWDB(wdb, wd.unsafeGetState())
+                   return wd.assembleWholeWDB(wdb, wd.unsafeGetState())
                        .forEach(([state, sceneGameObject]) => {
                            n3 = performance.now();
 

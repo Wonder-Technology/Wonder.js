@@ -208,12 +208,12 @@
 
 
 
-                wd.assembleGLB(boxArrayBuffer, state)
+                wd.assembleWholeGLB(boxArrayBuffer, state)
                     .forEach(([state, boxGameObject]) => {
 
-                        wd.assembleGLB(truckArrayBuffer, state)
+                        wd.assembleWholeGLB(truckArrayBuffer, state)
                             .forEach(([state, truckGameObject]) => {
-                                wd.assembleGLB(alphaArrayBuffer, state)
+                                wd.assembleWholeGLB(alphaArrayBuffer, state)
                                     .forEach(([state, alphaGameObject]) => {
 
 
@@ -366,7 +366,7 @@
 
 
             function _testGenerateWDBByGLB(glb, imageBase64Map, isCreateCamera, state$) {
-                wd.assembleGLB(glb, state$)
+                wd.assembleWholeGLB(glb, state$)
                     .forEach(([state, rootGameObject]) => {
                         console.profile("generateWDB");
                         var n0 = performance.now();
@@ -388,7 +388,7 @@
                         // //     _disposeAll(rootGameObject, state);
 
 
-                        // wd.assembleWDB(wdb, state)
+                        // wd.assembleWholeWDB(wdb, state)
                         //     .forEach(([state, rootGameObject]) => {
                         //         // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(isCreateCamera, state);
 
@@ -522,7 +522,7 @@
 
                 // var state = state$;
 
-                wd.assembleWDB(wdb, state)
+                wd.assembleWholeWDB(wdb, state)
                     .forEach(([state, rootGameObject]) => {
                         // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(false, state);
 
@@ -546,11 +546,11 @@
 
 
 
-                console.profile("assembleWDB");
+                console.profile("assembleWholeWDB");
 
                 var n1 = performance.now();
 
-                wd.assembleWDB(wdb, state)
+                wd.assembleWholeWDB(wdb, state)
                     .forEach(([state, rootGameObject]) => {
                         console.log(performance.now() - n1);
                         console.profileEnd();

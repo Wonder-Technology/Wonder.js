@@ -130,11 +130,11 @@
 
 
 
-                console.profile("assembleWDB");
+                console.profile("assembleWholeWDB");
 
                 var n1 = performance.now();
 
-                wd.assembleWDB(wdb, state)
+                wd.assembleWholeWDB(wdb, state)
                     .forEach(([state, rootGameObject]) => {
                         console.log(performance.now() - n1);
                         console.profileEnd();

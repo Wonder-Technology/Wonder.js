@@ -1,6 +1,6 @@
-let assembleWDB = AssembleWDBAPI.assembleWDB;
+let assembleWholeWDB = AssembleWholeWDBAPI.assembleWholeWDB;
 
-let assembleGLB = AssembleWDBAPI.assembleGLB;
+let assembleWholeGLB = AssembleWholeWDBAPI.assembleWholeGLB;
 
 let convertGLBToWDB = ConverterAPI.convertGLBToWDB;
 

@@ -35,7 +35,7 @@ let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
 
   GLBTool.prepare(sandbox);
 
-  AssembleWDBAPI.assembleGLB(buffer##buffer, state^)
+  AssembleWholeWDBAPI.assembleWholeGLB(buffer##buffer, state^)
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => {
        let (state, rootGameObject) = result^;
@@ -60,7 +60,7 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
 
   let buffer = NodeExtend.readFileBufferSync(glbFilePath);
 
-  AssembleWDBAPI.assembleGLB(buffer##buffer, state^)
+  AssembleWholeWDBAPI.assembleWholeGLB(buffer##buffer, state^)
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => {
        let (state, rootGameObject) = result^;

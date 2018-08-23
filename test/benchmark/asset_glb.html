@@ -140,12 +140,12 @@
                     return res.arrayBuffer();
                 })
                 .then((arrayBuffer) => {
-                    console.profile("assembleGLB");
+                    console.profile("assembleWholeGLB");
 
                     var n1 = performance.now();
 
 
-                    wd.assembleGLB(arrayBuffer, state)
+                    wd.assembleWholeGLB(arrayBuffer, state)
                         .forEach(([state, sceneGameObject]) => {
                             console.log(performance.now() - n1);
                             console.profileEnd();
