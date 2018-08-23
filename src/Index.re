@@ -12,7 +12,7 @@ let loadIMGUIAsset = LoaderManagerAPI.loadIMGUIAsset;
 
 let loadStreamWDB = LoaderManagerAPI.loadStreamWDB;
 
-let loadWDB = LoaderManagerAPI.loadWDB;
+let loadWholeWDB = LoaderManagerAPI.loadWholeWDB;
 
 let loadConfig = LoaderManagerAPI.loadConfig;
 

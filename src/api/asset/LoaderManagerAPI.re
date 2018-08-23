@@ -7,8 +7,8 @@ let loadConfig = jsonPathArr =>
     StateDataMain.stateData,
   );
 
-let loadWDB = (wdbPath, state) =>
-  LoaderManagerSystem.loadWDB(wdbPath, _fetch, state);
+let loadWholeWDB = (wdbPath, state) =>
+  LoaderManagerSystem.loadWholeWDB(wdbPath, _fetch, state);
 
 let loadStreamWDB = (wdbPath, handleBeforeStartLoopFunc, handleWhenDoneFunc, state) =>
   LoaderManagerSystem.loadStreamWDB(

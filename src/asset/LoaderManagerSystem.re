@@ -7,8 +7,8 @@ open WonderBsMost;
 let loadConfig = (jsonPathArr, fetchFunc, stateData) =>
   ConfigDataLoaderSystem.load(jsonPathArr, fetchFunc, stateData);
 
-let loadWDB = (wdbPath, fetchFunc, state) =>
-  LoadWDBSystem.load(wdbPath, fetchFunc, state);
+let loadWholeWDB = (wdbPath, fetchFunc, state) =>
+  LoadWholeWDBSystem.load(wdbPath, fetchFunc, state);
 
 let loadStreamWDB =
     (

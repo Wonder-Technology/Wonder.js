@@ -37,7 +37,7 @@
                         ["./2.jpg", "2"]
                     ],
                     wd.unsafeGetState(), function (state) {
-                        return AssetTool.loadWDB("./generated.wdb", wd.unsafeGetState(), function ([state, gameObject]) {
+                        return AssetTool.loadWholeWDB("./generated.wdb", wd.unsafeGetState(), function ([state, gameObject]) {
                             return initSample(state, gameObject);
                         });
                     });
