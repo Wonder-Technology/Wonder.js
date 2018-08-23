@@ -44,7 +44,7 @@ let load =
               ! Fetch.Response.ok(response |> WonderLog.Log.print) ?
                 {
                   let status = Fetch.Response.status(response);
-                  let statusText = Fetch.Response.status(response);
+                  let statusText = Fetch.Response.statusText(response);
 
                   WonderLog.Log.fatal(
                     WonderLog.Log.buildFatalMessage(

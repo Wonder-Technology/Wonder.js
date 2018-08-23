@@ -1648,6 +1648,35 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
       });
     });
 
+    describe("if load error", () => {
+      let _buildFakeFetchReturnResponse = (ok, status, statusText) =>
+        {"ok": ok, "status": status, "statusText": statusText}
+        |> Js.Promise.resolve;
+
+      let _buildFakeFetch = (sandbox, status, statusText) => {
+        let fetch = createEmptyStubWithJsObjSandbox(sandbox);
+        fetch
+        |> onCall(0)
+        |> returns(_buildFakeFetchReturnResponse(false, status, statusText));
+        fetch;
+      };
+
+      beforeEach(() => GLBTool.prepare(sandbox^));
+
+      testPromise("throw error", () => {
+        let status = "aaa";
+        let statusText = "bbb";
+        let fetchFunc = _buildFakeFetch(sandbox, status, statusText);
+
+        LoadStreamWDBTool.load(
+          ~wdbPath=_buildWDBPath("BoxTextured"),
+          ~fetchFunc,
+          (),
+        )
+        |> PromiseTool.judgeErrorMessage({j|$status $statusText|j});
+      });
+    });
+
     describe("if not support stream load", () => {
       let _buildFakeFetchReturnResponse = (ok, arrayBuffer) =>
         {"ok": true, "arrayBuffer": () => arrayBuffer |> resolve}
