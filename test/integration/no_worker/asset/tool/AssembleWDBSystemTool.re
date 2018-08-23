@@ -57,6 +57,7 @@ let testGLB = (sandbox, glbFilePath, testFunc, state) => {
 let _getChildren = (parent, state) =>
   TransformAPI.unsafeGetTransformChildren(parent, state)
   |> Js.Array.sortInPlace;
+
 let getAllChildrenTransform = (rootGameObject, state) => {
   let rec _addChildren = (parentArr, state, childrenArr) => {
     let childrenArr = childrenArr |> Js.Array.concat(parentArr);
