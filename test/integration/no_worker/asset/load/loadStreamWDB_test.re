@@ -94,8 +94,10 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
 
       let _buildReader = readStub => {"read": readStub |> Obj.magic};
 
+      let _getDefault11Image = () => Obj.magic(101);
+
       let _prepareWithReadStub = (sandbox, readStub, state) => {
-        let default11Image = Obj.magic(101);
+        let default11Image = _getDefault11Image();
 
         StateAPI.setState(state) |> ignore;
 
@@ -804,11 +806,95 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             {|
             1.chunk1: header + json + stream + stream_chunk1-stream_chunk4 + a part of stream_chunk5(image chunk)
             2.chunk2: a part of stream_chunk5(image chunk)
-            3.chunk3: other stream chunk data
-            4.done
+            3.chunk3: other stream_chunk5 + stream_chunk6 + a part of stream_chunk7
+            4.chunk4: other stream chunk data
+            5.done
             |},
             () => {
-              describe("test 1,4", () => {
+              let _testLoadBlobImage =
+                  (
+                    sandbox,
+                    (
+                      blobDataLength,
+                      /* arrayBufferByteLength,
+                         resultParam, */
+                      resultSourcesWhenDone,
+                    ),
+                    prepareFunc,
+                    state,
+                  ) => {
+                let state =
+                  state^
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(~sandbox, ()),
+                     );
+                let (
+                  default11Image,
+                  readStub,
+                  handleBeforeStartLoop,
+                  _,
+                  state,
+                ) =
+                  prepareFunc(sandbox, state);
+                let sourcesWhenDone = ref([||]);
+
+                let handleWhenDoneFunc = (state, rootGameObject) => {
+                  sourcesWhenDone :=
+                    _getAllDiffuseMapSources(rootGameObject, state);
+
+                  GameObjectAPI.hasGameObjectGeometryComponent(
+                    _getBoxTexturedMeshGameObject(rootGameObject, state),
+                    state,
+                  );
+
+                  let (state, _, _) =
+                    DirectionLightTool.createGameObject(state);
+                  let (state, _, _, _) =
+                    CameraTool.createCameraGameObject(state);
+
+                  state;
+                };
+
+                LoadStreamWDBTool.read(
+                  (
+                    default11Image,
+                    _buildController(sandbox),
+                    handleBeforeStartLoop,
+                    handleWhenDoneFunc,
+                  ),
+                  _buildReader(readStub),
+                )
+                |> then_(() => {
+                     let state = StateAPI.unsafeGetState();
+
+                     let state = DirectorTool.runWithDefaultTime(state);
+
+                     let blobData = _getBlobData(.) |> Js.toOption;
+
+                     /* let (arrayBuffer, param) =
+                        Array.unsafe_get(blobData, 0); */
+
+                     (
+                       switch (blobData) {
+                       | None => 0
+                       | Some(blobData) => blobData |> Js.Array.length
+                       },
+                       /* arrayBuffer |> ArrayBuffer.byteLength,
+                          param, */
+                       sourcesWhenDone^,
+                     )
+                     |>
+                     expect == (
+                                 blobDataLength,
+                                 /* arrayBufferByteLength,
+                                    resultParam, */
+                                 resultSourcesWhenDone,
+                               )
+                     |> resolve;
+                   });
+              };
+
+              describe("test 1,5", () => {
                 let _prepare = (sandbox, state) => {
                   let readStub = createEmptyStubWithJsObjSandbox(sandbox);
                   let readStub =
@@ -831,12 +917,27 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   _prepareWithReadStub(sandbox, readStub, state);
                 };
 
-                testPromise("not set geometry point data", () =>
-                  _testSetGeometryPointData(sandbox, 0, _prepare, state)
+                testPromise("set geometry point data", () =>
+                  _testSetGeometryPointData(sandbox, 2, _prepare, state)
+                );
+                testPromise("not load blob image", () =>
+                  _testLoadBlobImage(
+                    sandbox,
+                    (
+                      0,
+                      [|
+                        _getDefault11Image(),
+                        _getDefault11Image(),
+                        _getDefault11Image(),
+                      |],
+                    ),
+                    _prepare,
+                    state,
+                  )
                 );
               });
 
-              describe("test 1,2,4", () => {
+              describe("test 1,2,5", () => {
                 let _prepare = (sandbox, state) => {
                   let readStub = createEmptyStubWithJsObjSandbox(sandbox);
                   let readStub =
@@ -856,7 +957,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.slice(~start=32768, ~end_=10000)
+                             |> ArrayBuffer.slice(~start=32768, ~end_=100000)
                              |. Some,
                            (),
                          ),
@@ -869,12 +970,27 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   _prepareWithReadStub(sandbox, readStub, state);
                 };
 
-                testPromise("not set geometry point data", () =>
-                  _testSetGeometryPointData(sandbox, 0, _prepare, state)
+                testPromise("not set new geometry point data", () =>
+                  _testSetGeometryPointData(sandbox, 2, _prepare, state)
+                );
+                testPromise("not load blob image", () =>
+                  _testLoadBlobImage(
+                    sandbox,
+                    (
+                      0,
+                      [|
+                        _getDefault11Image(),
+                        _getDefault11Image(),
+                        _getDefault11Image(),
+                      |],
+                    ),
+                    _prepare,
+                    state,
+                  )
                 );
               });
 
-              describe("test 1,2,3,4", () => {
+              describe("test 1,2,3,5", () => {
                 let _prepare = (sandbox, state) => {
                   let readStub = createEmptyStubWithJsObjSandbox(sandbox);
                   let readStub =
@@ -894,7 +1010,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.slice(~start=32768, ~end_=10000)
+                             |> ArrayBuffer.slice(~start=32768, ~end_=100000)
                              |. Some,
                            (),
                          ),
@@ -904,7 +1020,10 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.sliceFrom(42768)
+                             |> ArrayBuffer.slice(
+                                  ~start=100000,
+                                  ~end_=1140000,
+                                )
                              |. Some,
                            (),
                          ),
@@ -917,8 +1036,109 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   _prepareWithReadStub(sandbox, readStub, state);
                 };
 
-                testPromise("set geometry point data", () =>
-                  _testSetGeometryPointData(sandbox, 4, _prepare, state)
+                testPromise("not set new geometry point data", () =>
+                  _testSetGeometryPointData(sandbox, 2, _prepare, state)
+                );
+                testPromise(
+                  {|
+                     load blob image;
+                     set it to be source;
+                     |},
+                  () =>
+                  _testLoadBlobImage(
+                    sandbox,
+                    (
+                      1,
+                      [|
+                        "object_url0" |> Obj.magic,
+                        "object_url0" |> Obj.magic,
+                        "object_url0" |> Obj.magic,
+                      |],
+                    ),
+                    _prepare,
+                    state,
+                  )
+                );
+              });
+
+              describe("test 1,2,3,4,5", () => {
+                let _prepare = (sandbox, state) => {
+                  let readStub = createEmptyStubWithJsObjSandbox(sandbox);
+                  let readStub =
+                    readStub
+                    |> onCall(0)
+                    |> returns(
+                         _buildChunkData(
+                           ~arrayBuffer=
+                             wdbArrayBuffer^
+                             |> ArrayBuffer.slice(~start=0, ~end_=32768)
+                             |. Some,
+                           (),
+                         ),
+                       )
+                    |> onCall(1)
+                    |> returns(
+                         _buildChunkData(
+                           ~arrayBuffer=
+                             wdbArrayBuffer^
+                             |> ArrayBuffer.slice(~start=32768, ~end_=100000)
+                             |. Some,
+                           (),
+                         ),
+                       )
+                    |> onCall(2)
+                    |> returns(
+                         _buildChunkData(
+                           ~arrayBuffer=
+                             wdbArrayBuffer^
+                             |> ArrayBuffer.slice(
+                                  ~start=100000,
+                                  ~end_=1140000,
+                                )
+                             |. Some,
+                           (),
+                         ),
+                       )
+                    |> onCall(3)
+                    |> returns(
+                         _buildChunkData(
+                           ~arrayBuffer=
+                             wdbArrayBuffer^
+                             |> ArrayBuffer.sliceFrom(1140000)
+                             |. Some,
+                           (),
+                         ),
+                       )
+                    |> onCall(4)
+                    |> returns(
+                         _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                       );
+
+                  _prepareWithReadStub(sandbox, readStub, state);
+                };
+
+                testPromise("set new geometry point data", () =>
+                  _testSetGeometryPointData(sandbox, 5, _prepare, state)
+                );
+                testPromise(
+                  {|
+                     load blob image;
+                     set it to be source;
+                     |},
+                  () =>
+                  _testLoadBlobImage(
+                    sandbox,
+                    (
+                      1,
+                      [|
+                        "object_url0" |> Obj.magic,
+                        "object_url0" |> Obj.magic,
+                        "object_url0" |> Obj.magic,
+                      |],
+                    ),
+                    _prepare,
+                    state,
+                  )
                 );
               });
             },
@@ -1640,7 +1860,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               };
 
               testPromise("set geometry point data", () =>
-                _testSetGeometryPointData(sandbox, 8, _prepare, state)
+                _testSetGeometryPointData(sandbox, 9, _prepare, state)
               );
             })
           );

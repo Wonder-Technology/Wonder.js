@@ -21,7 +21,7 @@ let _ =
       BasicSourceTextureRenderWorkerTool.clearFakeCreateImageBitmapFunc()
     );
 
-    testPromise("aaa", () => {
+    testPromise("test set the same texture's source which has set the default source before", () => {
       let (
         state,
         context,

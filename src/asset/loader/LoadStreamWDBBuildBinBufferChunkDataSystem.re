@@ -102,21 +102,13 @@ let rec _build =
         };
     };
 
-let _splitLoadedStreamChunkArrByJudgeHasAllData =
+let _splitLoadedStreamChunkArrByJudgeHasAllGeometryPointDataOrHasImageData =
     (
       nextStreamChunkIndex,
       streamChunkArr: array(StreamType.streamUnitData),
       loadedStreamChunkDataArr: array(loadedStreamData),
     ) => {
-  let {geometryData}: loadedStreamData =
-    Array.unsafe_get(loadedStreamChunkDataArr, 0);
-
-  let {meshIndex} = geometryData |> OptionService.unsafeGet;
-
-  let firstMeshIndex = meshIndex;
-
   let (
-    prevMeshIndex,
     loadedStreamChunkArrWhichNotHasAllData,
     loadedStreamChunkDataArrWhichHasAllData,
   ) =
@@ -124,27 +116,28 @@ let _splitLoadedStreamChunkArrByJudgeHasAllData =
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (.
            (
-             prevMeshIndex,
              loadedStreamChunkArrWhichNotHasAllData,
              loadedStreamChunkDataArrWhichHasAllData,
            ),
            ({geometryData, imageData, type_}: loadedStreamData) as data,
          ) =>
-           switch (geometryData) {
-           | Some({meshIndex}) when meshIndex !== prevMeshIndex => (
-               meshIndex,
-               [|data|],
+           switch (type_) {
+           | Index
+           | Image => (
+               [||],
                loadedStreamChunkDataArrWhichHasAllData
-               |> Js.Array.concat(loadedStreamChunkArrWhichNotHasAllData),
+               |> Js.Array.concat(
+                    loadedStreamChunkArrWhichNotHasAllData
+                    |> ArrayService.push(data),
+                  ),
              )
            | _ => (
-               prevMeshIndex,
                loadedStreamChunkArrWhichNotHasAllData
                |> ArrayService.push(data),
                loadedStreamChunkDataArrWhichHasAllData,
              )
            },
-         (firstMeshIndex, [||], [||]),
+         ([||], [||]),
        );
 
   nextStreamChunkIndex === Js.Array.length(streamChunkArr)
@@ -263,7 +256,7 @@ let buildBinBufferChunkData =
     loadedStreamChunkDataArrWhichHasAllData,
   ) =
     loadedStreamChunkDataArr
-    |> _splitLoadedStreamChunkArrByJudgeHasAllData(
+    |> _splitLoadedStreamChunkArrByJudgeHasAllGeometryPointDataOrHasImageData(
          nextStreamChunkIndex,
          streamChunkArr,
        );

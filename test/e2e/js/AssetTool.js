@@ -60,15 +60,15 @@ var AssetTool = (function () {
 
 
 
-            var record = LightTool.createPointLight(state);
-            var state = record[0];
-            var pointLightObj = record[1];
+            // var record = LightTool.createPointLight(state);
+            // var state = record[0];
+            // var pointLightObj = record[1];
 
 
 
-            var transform = wd.unsafeGetGameObjectTransformComponent(pointLightObj, state);
+            // var transform = wd.unsafeGetGameObjectTransformComponent(pointLightObj, state);
 
-            state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
+            // state = wd.setTransformLocalPosition(transform, [5, 0, 25], state);
 
 
 
@@ -89,7 +89,7 @@ var AssetTool = (function () {
                 var [state, cameraController] = wd.createArcballCameraController(state);
 
                 var state =
-                    wd.setArcballCameraControllerDistance(cameraController, 50, state);
+                    wd.setArcballCameraControllerDistance(cameraController, 10, state);
 
                 var state =
                     wd.bindArcballCameraControllerEvent(

@@ -169,3 +169,23 @@ let getHeight = (texture, state) => {
   | Some(source) => TextureSizeService.getHeight(source)
   };
 };
+
+let getIsNeedUpdate = (texture, state) => {
+  let {isNeedUpdates} = RecordBasicSourceTextureMainService.getRecord(state);
+
+  OperateTypeArrayBasicSourceTextureService.getIsNeedUpdate(.
+    texture,
+    isNeedUpdates,
+  );
+};
+
+let setIsNeedUpdate = (texture, isNeedUpdate, state) => {
+  let {isNeedUpdates} = RecordBasicSourceTextureMainService.getRecord(state);
+  OperateTypeArrayBasicSourceTextureService.setIsNeedUpdate(
+    texture,
+    isNeedUpdate,
+    isNeedUpdates,
+  )
+  |> ignore;
+  state;
+};

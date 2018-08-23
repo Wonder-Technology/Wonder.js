@@ -157,14 +157,26 @@ let setBinBufferChunkData =
                imageTextureIndices,
              );
 
+           WonderLog.Log.print((
+             "basicSourceTextures: ",
+             basicSourceTextures,
+             "basicSourceTextureArr:",
+             basicSourceTextureArr,
+             "imageTextureIndices: ",
+             imageTextureIndices,
+             "image: ",
+             image##width,
+           ))
+           |> ignore;
+
            basicSourceTextures
            |> WonderCommonlib.ArrayService.reduceOneParam(
                 (. state, basicSourceTexture) =>
-                  OperateBasicSourceTextureMainService.setSource(
-                    basicSourceTexture,
-                    image |> ImageType.imageToDomExtendImageElement,
-                    state,
-                  ),
+                  state
+                  |> OperateBasicSourceTextureMainService.setSource(
+                       basicSourceTexture,
+                       image |> ImageType.imageToDomExtendImageElement,
+                     ),
                 state,
               );
          },
