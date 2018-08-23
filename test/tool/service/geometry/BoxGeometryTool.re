@@ -4,28 +4,28 @@ let createBoxGeometry = state => GeometryAPI.createBoxGeometry(state);
 
 let getBoxGeometryVertices = state => {
   let (vertices, texCoords, normals, indices) =
-    ComputePointsBoxGeometryService.generateAllFaces();
+    ComputeBoxPointsGeometryService.generateAllFaces();
 
   Float32Array.make(vertices);
 };
 
 let getBoxGeometryTexCoords = state => {
   let (vertices, texCoords, normals, indices) =
-    ComputePointsBoxGeometryService.generateAllFaces();
+    ComputeBoxPointsGeometryService.generateAllFaces();
 
   Float32Array.make(texCoords);
 };
 
 let getBoxGeometryNormals = state => {
   let (vertices, texCoords, normals, indices) =
-    ComputePointsBoxGeometryService.generateAllFaces();
+    ComputeBoxPointsGeometryService.generateAllFaces();
 
   Float32Array.make(normals);
 };
 
 let getBoxGeometryIndices = state => {
   let (vertices, texCoords, normals, indices) =
-    ComputePointsBoxGeometryService.generateAllFaces();
+    ComputeBoxPointsGeometryService.generateAllFaces();
 
   Uint16Array.make(indices);
 };
@@ -45,7 +45,7 @@ let createGameObject = (state: StateDataMainType.state) => {
 
 let getDefaultVertices = () => {
   let (vertices, texCoords, normals, indices) =
-    ComputePointsBoxGeometryService.generateAllFaces();
+    ComputeBoxPointsGeometryService.generateAllFaces();
 
   Float32Array.make(vertices);
 };

@@ -2,8 +2,6 @@ open GeometryAPI;
 
 open GeometryType;
 
-open GeometryType;
-
 open Wonder_jest;
 
 open Js.Typed_array;

@@ -11,6 +11,9 @@ let createGeometry = state => CreateGeometryMainService.create(state);
 let createBoxGeometry = state =>
   CreateBoxGeometryGeometryMainService.create(state);
 
+let createSphereGeometry = (radius, bands, state) =>
+  CreateSphereGeometryGeometryMainService.create(radius, bands, state);
+
 let getGeometryVertices = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>

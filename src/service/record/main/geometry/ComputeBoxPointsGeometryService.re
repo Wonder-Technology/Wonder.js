@@ -146,5 +146,3 @@ let generateAllFaces = () => {
        )
      )
 };
-
-let getIndicesCount = () => 36;

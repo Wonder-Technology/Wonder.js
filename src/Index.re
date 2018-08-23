@@ -308,6 +308,10 @@ let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCame
 
 let createGameObject = GameObjectAPI.createGameObject;
 
+let setGeometryName = GeometryAPI.setGeometryName;
+
+let unsafeGetGeometryName = GeometryAPI.unsafeGetGeometryName;
+
 let unsafeGetGeometryGameObject = GeometryAPI.unsafeGetGeometryGameObject;
 
 let setGeometryIndices = GeometryAPI.setGeometryIndices;
@@ -325,6 +329,8 @@ let getGeometryTexCoords = GeometryAPI.getGeometryTexCoords;
 let setGeometryVertices = GeometryAPI.setGeometryVertices;
 
 let getGeometryVertices = GeometryAPI.getGeometryVertices;
+
+let createSphereGeometry = GeometryAPI.createSphereGeometry;
 
 let createBoxGeometry = GeometryAPI.createBoxGeometry;
 
@@ -426,6 +432,8 @@ let unsafeGetPointLightGameObject = PointLightAPI.unsafeGetPointLightGameObject;
 
 let createPointLight = PointLightAPI.createPointLight;
 
+let batchDisposeBasicMaterial = BasicMaterialAPI.batchDisposeBasicMaterial;
+
 let setBasicMaterialName = BasicMaterialAPI.setBasicMaterialName;
 
 let unsafeGetBasicMaterialName = BasicMaterialAPI.unsafeGetBasicMaterialName;
@@ -443,6 +451,8 @@ let getBasicMaterialColor = BasicMaterialAPI.getBasicMaterialColor;
 let unsafeGetBasicMaterialGameObject = BasicMaterialAPI.unsafeGetBasicMaterialGameObject;
 
 let createBasicMaterial = BasicMaterialAPI.createBasicMaterial;
+
+let batchDisposeLightMaterial = LightMaterialAPI.batchDisposeLightMaterial;
 
 let reInitMaterials = LightMaterialAPI.reInitMaterials;
 
