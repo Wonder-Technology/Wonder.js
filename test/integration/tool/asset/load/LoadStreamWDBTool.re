@@ -19,6 +19,30 @@ open Js.Promise;
      |> then_(() => resolve());
    }; */
 
+let load =
+    (
+      ~wdbPath,
+      ~fetchFunc,
+      ~handleWhenLoadWholeWDBFunc=(state, rootGameObject) => (),
+      (),
+    ) => {
+  let result = ref(Obj.magic(1));
+
+  MainStateTool.unsafeGetState()
+  |> LoaderManagerSystem.loadStreamWDB(
+       wdbPath,
+       (
+         fetchFunc,
+         (state, rootGameObject) => state,
+         (state, rootGameObject) => state,
+         handleWhenLoadWholeWDBFunc,
+       ),
+     )
+  |> WonderBsMost.Most.drain;
+  /* |> WonderBsMost.Most.forEach(data => result := data)
+     |> then_(() => result^ |> resolve); */
+};
+
 let read =
     (
       (

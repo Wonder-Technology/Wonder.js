@@ -42,6 +42,13 @@ window.Blob = Blob;
     |}
     ];
 
+    let _buildWDBPath = wdbName =>
+      Node.Path.join([|
+        Node.Process.cwd(),
+        "./test/res/",
+        {j|wdb/$wdbName.wdb|j},
+      |]);
+
     beforeEach(() => {
       sandbox := createSandbox();
       state :=
@@ -78,11 +85,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
         |> resolve;
 
       let _getWDBArrayBuffer = wdbName => NodeExtend.readFileBufferSync(
-                                            Node.Path.join([|
-                                              Node.Process.cwd(),
-                                              "./test/res/",
-                                              {j|wdb/$wdbName.wdb|j},
-                                            |]),
+                                            _buildWDBPath(wdbName),
                                           )##buffer;
 
       let _buildController = sandbox => {
@@ -150,32 +153,9 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
            );
 
       let _getAllLightMaterials = (rootGameObject, state) =>
-        /* GameObjectTool.getChildren(rootGameObject, state)
-           |> Js.Array.filter(gameObject =>
-                GameObjectAPI.hasGameObjectLightMaterialComponent(
-                  gameObject,
-                  state,
-                )
-              )
-           |> Js.Array.map(gameObject =>
-                GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(
-                  gameObject,
-                  state,
-                )
-              ); */
         AssembleWDBSystemTool.getAllLightMaterials(rootGameObject, state);
 
       let _getAllDiffuseMaps = (rootGameObject, state) =>
-        /* _getAllLightMaterials(rootGameObject, state)
-           |> Js.Array.filter(material =>
-                LightMaterialAPI.hasLightMaterialDiffuseMap(material, state)
-              )
-           |> Js.Array.map(material =>
-                LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(
-                  material,
-                  state,
-                )
-              ); */
         AssembleWDBSystemTool.getAllDiffuseMaps(rootGameObject, state);
 
       let _getAllDiffuseMapSources = (rootGameObject, state) =>
@@ -1666,6 +1646,88 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           );
         });
       });
+    });
+
+    describe("if not support stream load", () => {
+      let _buildFakeFetchReturnResponse = (ok, arrayBuffer) =>
+        {"ok": true, "arrayBuffer": () => arrayBuffer |> resolve}
+        |> Js.Promise.resolve;
+
+      let _buildFakeFetch = (sandbox, gltfJsonStr, binBuffer) => {
+        let fetch = createEmptyStubWithJsObjSandbox(sandbox);
+        fetch
+        |> onCall(0)
+        |> returns(
+             _buildFakeFetchReturnResponse(
+               true,
+               ConvertGLBSystem.convertGLBData((
+                 gltfJsonStr |> Js.Json.parseExn,
+                 binBuffer,
+               )),
+             ),
+           );
+        fetch;
+      };
+
+      beforeEach(() => GLBTool.prepare(sandbox^) |> ignore);
+
+      testPromise("warn", () => {
+        let warnStub =
+          createMethodStubWithJsObjSandbox(sandbox, Console.console, "warn");
+        let fetchFunc =
+          _buildFakeFetch(
+            sandbox,
+            ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+            GLBTool.buildBinBuffer(),
+          );
+
+        LoadStreamWDBTool.load(
+          ~wdbPath=_buildWDBPath("BoxTextured"),
+          ~fetchFunc,
+          (),
+        )
+        |> then_(_ =>
+             warnStub
+             |> expect
+             |> toCalledWith([|
+                  "Warn: your browser does not seem to have the Streams API yet, fallback to load whole wdb",
+                |])
+             |> resolve
+           );
+      });
+      describe("fallback to load whole wdb", () =>
+        testPromise("load wdb and assemble", () => {
+          let stateRef = ref(Obj.magic(-1));
+          let rootGameObjectRef = ref(-1);
+          let fetchFunc =
+            _buildFakeFetch(
+              sandbox,
+              ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+              GLBTool.buildBinBuffer(),
+            );
+
+          LoadStreamWDBTool.load(
+            ~wdbPath=_buildWDBPath("BoxTextured"),
+            ~fetchFunc,
+            ~handleWhenLoadWholeWDBFunc=
+              (state, rootGameObject) => {
+                stateRef := state;
+                rootGameObjectRef := rootGameObject;
+              },
+            (),
+          )
+          |> then_(_ => {
+               let rootGameObject = rootGameObjectRef^;
+
+               AssembleWDBSystemTool.getAllGameObjects(
+                 rootGameObject,
+                 stateRef^,
+               )
+               |> expect == [|rootGameObject|]
+               |> resolve;
+             });
+        })
+      );
     });
   });
 

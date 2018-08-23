@@ -10,10 +10,22 @@ let loadConfig = jsonPathArr =>
 let loadWholeWDB = (wdbPath, state) =>
   LoaderManagerSystem.loadWholeWDB(wdbPath, _fetch, state);
 
-let loadStreamWDB = (wdbPath, handleBeforeStartLoopFunc, handleWhenDoneFunc, state) =>
+let loadStreamWDB =
+    (
+      wdbPath,
+      handleBeforeStartLoopFunc,
+      handleWhenDoneFunc,
+      handleWhenLoadWholeWDBFunc,
+      state,
+    ) =>
   LoaderManagerSystem.loadStreamWDB(
     wdbPath,
-    (_fetch, handleBeforeStartLoopFunc, handleWhenDoneFunc),
+    (
+      _fetch,
+      handleBeforeStartLoopFunc,
+      handleWhenDoneFunc,
+      handleWhenLoadWholeWDBFunc,
+    ),
     state,
   );
 

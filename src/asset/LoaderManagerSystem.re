@@ -10,17 +10,8 @@ let loadConfig = (jsonPathArr, fetchFunc, stateData) =>
 let loadWholeWDB = (wdbPath, fetchFunc, state) =>
   LoadWholeWDBSystem.load(wdbPath, fetchFunc, state);
 
-let loadStreamWDB =
-    (
-      wdbPath,
-      (fetchFunc, handleBeforeStartLoopFunc, handleWhenDoneFunc),
-      state,
-    ) =>
-  LoadStreamWDBSystem.load(
-    wdbPath,
-    (fetchFunc, handleBeforeStartLoopFunc, handleWhenDoneFunc),
-    state,
-  );
+let loadStreamWDB = (wdbPath, funcTuple, state) =>
+  LoadStreamWDBSystem.load(wdbPath, funcTuple, state);
 
 let loadIMGUIAsset =
     (

@@ -6,7 +6,7 @@ open Js.Promise;
 
 let _isSupportStreamLoad = [%raw
   response => {|
-        return !!response.body || !!response.body.getReader
+        return !!response.body && !!response.body.getReader
       |}
 ];
 
@@ -16,17 +16,15 @@ let _getReader = [%raw
   |}
 ];
 
-/* TODO add more handleFuncs */
 let load =
     (
       wdbPath,
-      /* (
-           fetchFunc,
-           handleBeforeLoadFunc,
-           handleWhenLoadFunc,
-           handleWhenDoneFunc,
-         ), */
-      (fetchFunc, handleBeforeStartLoopFunc, handleWhenDoneFunc),
+      (
+        fetchFunc,
+        handleBeforeStartLoopFunc,
+        handleWhenDoneFunc,
+        handleWhenLoadWholeWDBFunc,
+      ),
       state,
     ) => {
   let (unit8Array, mimeType, errorMsg) =
@@ -43,7 +41,7 @@ let load =
        Most.fromPromise(
          fetchFunc(wdbPath)
          |> then_(response =>
-              ! Fetch.Response.ok(response) ?
+              ! Fetch.Response.ok(response |> WonderLog.Log.print) ?
                 {
                   let status = Fetch.Response.status(response);
                   let statusText = Fetch.Response.status(response);
@@ -61,13 +59,54 @@ let load =
                 ! _isSupportStreamLoad(response) ?
                   {
                     WonderLog.Log.warn(
-                      {j|your browser does not seem to have the Streams API yet, fallback to use sync load|j},
+                      {j|your browser does not seem to have the Streams API yet, fallback to load whole wdb|j},
                     );
 
-                    /* TODO use sync load */
-                    response |> resolve;
+                    response
+                    |> Fetch.Response.arrayBuffer
+                    |> then_(wdb =>
+                         AssembleWholeWDBSystem.assemble(
+                           wdb |> LoadType.fetchArrayBufferToArrayBuffer,
+                           state,
+                         )
+                         |> Most.tap(((state, rootGameObject)) =>
+                              handleWhenLoadWholeWDBFunc(
+                                state,
+                                rootGameObject,
+                              )
+                            )
+                         |> Most.drain
+                         |> then_(_ => resolve())
+                       );
                   } :
-                  FetchExtend.newResponse(
+                  {
+                    /* FetchExtend.newResponse(
+                         FetchExtend.newReadableStream({
+                           "start": controller => {
+                             let reader = _getReader(response);
+
+                             ReadStreamChunkSystem.read(
+                               (
+                                 default11Image,
+                                 controller,
+                                 handleBeforeStartLoopFunc,
+                                 handleWhenDoneFunc,
+                               ),
+                               [||],
+                               (
+                                 None,
+                                 [||],
+                                 None,
+                                 0,
+                                 [||],
+                                 WonderCommonlib.SparseMapService.createEmpty(),
+                               ),
+                               reader,
+                             );
+                           },
+                         }),
+                       ) */
+
                     FetchExtend.newReadableStream({
                       "start": controller => {
                         let reader = _getReader(response);
@@ -91,9 +130,11 @@ let load =
                           reader,
                         );
                       },
-                    }),
-                  )
-                  |> resolve
+                    })
+                    |> ignore;
+
+                    resolve();
+                  }
             ),
        );
      });

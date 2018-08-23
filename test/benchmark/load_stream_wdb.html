@@ -37,18 +37,6 @@
                         ["./2.jpg", "2"]
                     ],
                     wd.unsafeGetState(), function (state) {
-
-
-
-
-
-
-
-
-
-
-
-
                         return AssetTool.loadStreamWDB(
                             // "../res/wdb/CesiumMilkTruck.wdb",
                             // "../res/wdb/BoxTextured.wdb",
@@ -65,12 +53,29 @@
                                 return handleBeforeStartLoop(state, gameObject);
                             }, function (state, gameObject) {
                                 return state;
-                            });
+                            },
+                            function (state, gameObject) {
+                                var state = _createLightsAndCamera(state);
+
+                                wd.startDirector(state);
+                            }
+                        );
                     })
             });
 
 
-            function _createLightsAndCamera(isCreateCamera, state) {
+            function _createLightsAndCamera(state) {
+                var isCreateLight =
+                    wd.getAllDirectionLightComponents(state).length === 0 && wd.getAllPointLightComponents(state).length === 0;
+
+                var isCreateCamera =
+                    wd.getAllBasicCameraViewComponents(state).length === 0;
+
+                if (!isCreateLight) {
+                    return state;
+                }
+
+
                 var state = LightTool.setAmbientLight(state);
 
 
@@ -144,22 +149,12 @@
                         );
                 }
 
-                return [state, directionLightObj, pointLightObj]
+                // return [state, directionLightObj, pointLightObj]
+                return state;
             }
 
             function handleBeforeStartLoop(state, gameObject) {
-                var isCreateLight =
-                    wd.getAllDirectionLightComponents(state).length === 0 && wd.getAllPointLightComponents(state).length === 0;
-
-                var isCreateCamera =
-                    wd.getAllBasicCameraViewComponents(state).length === 0;
-
-                var state = state;
-
-                if (isCreateLight) {
-                    var data = _createLightsAndCamera(isCreateCamera, state);
-                    state = data[0];
-                }
+                var state = _createLightsAndCamera(state);
 
                 return state;
             }

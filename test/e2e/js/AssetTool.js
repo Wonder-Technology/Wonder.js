@@ -45,8 +45,8 @@ var AssetTool = (function () {
             //     }
             // })
         },
-        loadStreamWDB: function (wdbPath, state, handleBeforeStartLoopFunc, handleWhenDoneFunc) {
-            return wd.loadStreamWDB(wdbPath, handleBeforeStartLoopFunc, handleWhenDoneFunc, state).drain()
+        loadStreamWDB: function (wdbPath, state, handleBeforeStartLoopFunc, handleWhenDoneFunc, handleWhenLoadWholeWDBFunc) {
+            return wd.loadStreamWDB(wdbPath, handleBeforeStartLoopFunc, handleWhenDoneFunc, handleWhenLoadWholeWDBFunc, state).drain()
         },
         loadIMGUIAsset: function (fntFilePath, bitmapFilePath, customTextureSourceDataArr, state, testFunc) {
             return wd.loadIMGUIAsset(fntFilePath, bitmapFilePath, customTextureSourceDataArr, state)
