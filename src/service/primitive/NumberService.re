@@ -6,6 +6,14 @@ function(str) {
 |}
 ];
 
+let convertStringToInt: string => int = [%bs.raw
+  {|
+function(str) {
+    return parseInt(str, 10);
+}
+|}
+];
+
 let leastFloat = (min, num) => num < 0. ? 0. : num;
 
 let bigThan = (num, below) => num < below ? below : num;

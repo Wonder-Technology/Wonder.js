@@ -22,13 +22,17 @@ let _getTotalLoadedByteLength = loadedUint8ArrayArr =>
      );
 
 let _getAllChunkLengths =
-    (allChunkLengths, totalLoadedByteLength, loadedUint8ArrayArr) =>
+    (
+      allChunkLengths,
+      totalLoadedByteLength,
+      (loadedUint8ArrayArr, totalUint8Array),
+    ) =>
   switch (allChunkLengths) {
   | None =>
     let dataView =
       LoadStreamWDBUtil.buildLoadedDataView(
         totalLoadedByteLength,
-        loadedUint8ArrayArr,
+        (loadedUint8ArrayArr, totalUint8Array),
       );
 
     let (jsonChunkLength, _) =
@@ -59,7 +63,7 @@ let _getStreamChunkData =
       streamChunkArr,
       chunkLengthData,
       totalLoadedByteLength,
-      loadedUint8ArrayArr,
+      (loadedUint8ArrayArr, totalUint8Array),
     ) =>
   Js.Array.length(streamChunkArr) > 0 ?
     streamChunkArr :
@@ -67,18 +71,22 @@ let _getStreamChunkData =
       let dataView =
         LoadStreamWDBUtil.buildLoadedDataView(
           totalLoadedByteLength,
-          loadedUint8ArrayArr,
+          (loadedUint8ArrayArr, totalUint8Array),
         );
 
       ConvertStreamSystem.getStreamChunkArr(chunkLengthData, dataView);
     };
 
 let _getJsonChunkStr =
-    (jsonChunkLength, totalLoadedByteLength, loadedUint8ArrayArr) => {
+    (
+      jsonChunkLength,
+      totalLoadedByteLength,
+      (loadedUint8ArrayArr, totalUint8Array),
+    ) => {
   let dataView =
     LoadStreamWDBUtil.buildLoadedDataView(
       totalLoadedByteLength,
-      loadedUint8ArrayArr,
+      (loadedUint8ArrayArr, totalUint8Array),
     );
 
   BufferUtils.getWDBJsonChunkStr(
@@ -164,7 +172,7 @@ let rec read =
             handleBeforeStartLoopFunc,
             handleWhenDoneFunc,
           ),
-          loadedUint8ArrayArr,
+          (loadedUint8ArrayArr, totalUint8Array),
           (
             allChunkLengths,
             streamChunkArr,
@@ -394,7 +402,7 @@ let rec read =
                  handleBeforeStartLoopFunc,
                  handleWhenDoneFunc,
                ),
-               loadedUint8ArrayArr,
+               (loadedUint8ArrayArr, totalUint8Array),
                (
                  allChunkLengths,
                  streamChunkArr,
@@ -410,7 +418,7 @@ let rec read =
                  _getAllChunkLengths(
                    allChunkLengths,
                    totalLoadedByteLength,
-                   loadedUint8ArrayArr,
+                   (loadedUint8ArrayArr, totalUint8Array),
                  );
 
                WonderLog.Log.print(("allChunkLengths: ", allChunkLengths))
@@ -432,7 +440,7 @@ let rec read =
                        streamChunkArr,
                        (jsonChunkLength, streamChunkLength),
                        totalLoadedByteLength,
-                       loadedUint8ArrayArr,
+                       (loadedUint8ArrayArr, totalUint8Array),
                      );
 
                    WonderLog.Log.print(("streamChunkArr: ", streamChunkArr))
@@ -448,7 +456,7 @@ let rec read =
                        assembleData,
                        jsonChunkLength,
                        totalLoadedByteLength,
-                       loadedUint8ArrayArr,
+                       (loadedUint8ArrayArr, totalUint8Array),
                        default11Image,
                        handleBeforeStartLoopFunc,
                        state,
@@ -458,7 +466,7 @@ let rec read =
                      (
                        headerJsonStreamChunkTotalByteLength,
                        totalLoadedByteLength,
-                       loadedUint8ArrayArr,
+                       (loadedUint8ArrayArr, totalUint8Array),
                      ),
                      (
                        nextStreamChunkIndex,
@@ -493,7 +501,7 @@ let rec read =
                             handleBeforeStartLoopFunc,
                             handleWhenDoneFunc,
                           ),
-                          loadedUint8ArrayArr,
+                          (loadedUint8ArrayArr, totalUint8Array),
                           (
                             allChunkLengths |. Some,
                             streamChunkArr,
@@ -513,7 +521,7 @@ let rec read =
                      handleBeforeStartLoopFunc,
                      handleWhenDoneFunc,
                    ),
-                   loadedUint8ArrayArr,
+                   (loadedUint8ArrayArr, totalUint8Array),
                    (
                      allChunkLengths |. Some,
                      streamChunkArr,

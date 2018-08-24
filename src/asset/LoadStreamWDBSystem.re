@@ -16,6 +16,12 @@ let _getReader = [%raw
   |}
 ];
 
+let _getContentLength = [%raw
+  response => {|
+  return response.headers.get("content-length");
+  |}
+];
+
 let load =
     (
       wdbPath,
@@ -115,6 +121,27 @@ let load =
                          }),
                        ) */
 
+                    let contentLength = _getContentLength(response);
+                    switch (contentLength |> Js.toOption) {
+                    | None =>
+                      WonderLog.Log.error(
+                        WonderLog.Log.buildErrorMessage(
+                          ~title="load",
+                          ~description=
+                            {j|Content-Length response header unavailable|j},
+                          ~reason="",
+                          ~solution={j||j},
+                          ~params={j||j},
+                        ),
+                      )
+                    | _ => ()
+                    };
+
+                    let totalUint8Array =
+                      Uint8Array.fromLength(
+                        contentLength |> NumberService.convertStringToInt,
+                      );
+
                     FetchExtend.newReadableStream({
                       "start": controller => {
                         let reader = _getReader(response);
@@ -126,7 +153,7 @@ let load =
                             handleBeforeStartLoopFunc,
                             handleWhenDoneFunc,
                           ),
-                          [||],
+                          ([||], totalUint8Array),
                           (
                             None,
                             [||],

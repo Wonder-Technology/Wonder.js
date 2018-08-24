@@ -60,7 +60,7 @@ let read =
       handleBeforeStartLoopFunc,
       handleWhenDoneFunc,
     ),
-    [||],
+    ([||], Js.Typed_array.Uint8Array.fromLength(1000000)),
     (
       None,
       [||],

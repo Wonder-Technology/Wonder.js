@@ -1,6 +1,7 @@
 open Js.Typed_array;
 
-let buildLoadedDataView = (totalLoadedByteLength, loadedUint8ArrayArr) => {
+let buildLoadedDataView =
+    (totalLoadedByteLength, (loadedUint8ArrayArr, totalUint8Array)) => {
   let (_, uint8Array) =
     loadedUint8ArrayArr
     |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -16,7 +17,7 @@ let buildLoadedDataView = (totalLoadedByteLength, loadedUint8ArrayArr) => {
              uint8Array,
            );
          },
-         (0, Uint8Array.fromLength(totalLoadedByteLength)),
+         (0, totalUint8Array),
        );
 
   uint8Array |> Uint8Array.buffer |> DataViewCommon.create;

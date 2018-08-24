@@ -60,7 +60,7 @@ let handleBinBufferData =
       (
         headerJsonStreamChunkTotalByteLength,
         totalLoadedByteLength,
-        loadedUint8ArrayArr,
+        (loadedUint8ArrayArr, totalUint8Array),
       ),
       (
         nextStreamChunkIndex,
@@ -113,7 +113,7 @@ let handleBinBufferData =
       totalLoadedByteLength,
       LoadStreamWDBUtil.buildLoadedDataView(
         totalLoadedByteLength,
-        loadedUint8ArrayArr,
+        (loadedUint8ArrayArr, totalUint8Array),
       )
       |> DataView.buffer,
       streamChunkArr,
