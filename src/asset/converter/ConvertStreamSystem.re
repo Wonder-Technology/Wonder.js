@@ -943,29 +943,6 @@ let _getBinBufferAlignedByteLength = bufferViewDataArr =>
        0,
      );
 
-/*
- binBuffer
- |> ArrayBuffer.byteLength
- |> WonderLog.Contract.ensureCheck(
-      byteLength => {
-        open WonderLog;
-        open Contract;
-        open Operators;
-
-        BufferUtils.checkByteLengthShouldBeAligned(byteLength);
-
-        test(
-          Log.buildAssertMessage(
-            ~expect={j|binBufferByteLength === binBuffer.byteLength|j},
-            ~actual={j|not|j},
-          ),
-          () =>
-          byteLength == (binBuffer |> ArrayBuffer.byteLength)
-        );
-      },
-      IsDebugMainService.getIsDebug(StateDataMain.stateData),
-    ); */
-
 let _writeBinBufferByBufferViewData =
     (
       totalByteOffset,
@@ -977,38 +954,19 @@ let _writeBinBufferByBufferViewData =
       binBufferDataView,
       totalDataView,
     ) => {
-  /* WonderLog.Log.print((
-       "new totalByteOffset: ",
-       totalByteOffset,
-       totalByteOffset + oldBufferView.byteLength,
-       totalByteOffset + alignedByteLength,
-     ))
-     |> ignore; */
+  let bufferViewByteOffsetRef =
+    ref(BufferUtils.unsafeGetBufferViewByteOffset(oldBufferView));
+  let totalByteOffsetRef = ref(totalByteOffset);
 
-  let (_, _) =
-    ArrayService.range(0, oldBufferView.byteLength - 1)
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. (bufferViewByteOffset, totalByteOffset), i) => {
-           let (value, bufferViewByteOffset) =
-             DataViewCommon.getUint8_1(
-               bufferViewByteOffset,
-               binBufferDataView,
-             );
+  for (i in 0 to oldBufferView.byteLength - 1) {
+    let (value, bufferViewByteOffset) =
+      DataViewCommon.getUint8_1(bufferViewByteOffsetRef^, binBufferDataView);
 
-           (
-             bufferViewByteOffset,
-             DataViewCommon.writeUint8_1(.
-               value,
-               totalByteOffset,
-               totalDataView,
-             ),
-           );
-         },
-         (
-           BufferUtils.unsafeGetBufferViewByteOffset(oldBufferView),
-           totalByteOffset,
-         ),
-       );
+    bufferViewByteOffsetRef := bufferViewByteOffset;
+
+    totalByteOffsetRef :=
+      DataViewCommon.writeUint8_1(. value, totalByteOffsetRef^, totalDataView);
+  };
 
   (totalByteOffset + alignedByteLength, binBufferDataView, totalDataView);
 };

@@ -386,56 +386,96 @@
             }
 
 
-            function _testGenerateWDBByGLB(glb, isCreateCamera, state$) {
-                wd.assembleWholeGLB(glb, state$)
-                    .forEach(([state, imageUint8ArrayDataMap, rootGameObject]) => {
-                        console.profile("generateWDB");
-                        var n0 = performance.now();
+            function _testGenerateWDBByGLB(glb, isCreateCamera, state) {
+
+                console.profile("convertGLBToWDB");
+
+                var n0 = performance.now();
 
 
-                        var [state, wdb] = wd.generateWDB(rootGameObject, imageUint8ArrayDataMap, state);
+                var wdb = wd.convertGLBToWDB(glb);
 
 
-                        AssetTool.download(wdb, "generated.wdb", "")
+
+                var n1 = performance.now();
+
+                console.profileEnd();
+
+                console.log(n1 - n0)
 
 
-                        // console.profileEnd();
-                        // var n1 = performance.now();
 
-                        // console.log(n1 - n0)
-
-
-                        // // var state =
-                        // //     _disposeAll(rootGameObject, state);
+                console.profile("assembleWholeWDB");
+                var n2 = performance.now();
 
 
-                        // wd.assembleWholeWDB(wdb, state)
-                        //     .forEach(([state, rootGameObject]) => {
-                        //         // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(isCreateCamera, state);
+                wd.assembleWholeWDB(wdb, state).forEach(([state, imageUint8ArrayDataMap, rootGameObject]) => {
 
 
-                        //         var isCreateLight =
-                        //             wd.getAllDirectionLightComponents(state).length === 0 && wd.getAllPointLightComponents(state).length === 0;
+                    var n3 = performance.now();
 
-                        //         var isCreateCamera =
-                        //             wd.getAllBasicCameraViewComponents(state).length === 0;
+                    console.profileEnd();
 
-                        //         var state = state;
-
-                        //         if (isCreateLight) {
-                        //             var data = _createLightsAndCamera(isCreateCamera, state);
-                        //             state = data[0];
-                        //         }
+                    console.log(n3 - n2)
 
 
 
 
-                        //         wd.startDirector(state);
-                        //     });
+                    console.profile("generateWDB");
+                    var n4 = performance.now();
+
+
+                    var [state, wdb] = wd.generateWDB(rootGameObject, imageUint8ArrayDataMap, state);
+                    // var [state, wdb] = wd.generateWDB(rootGameObject, [], state);
+
+
+                    var n5 = performance.now();
+
+                    console.profileEnd();
+
+                    console.log(n5 - n1);
+
+
+                    // AssetTool.download(wdb, "generated.wdb", "")
+
+
+                    // console.profileEnd();
+                    // var n1 = performance.now();
+
+                    // console.log(n1 - n0)
+
+
+                    // // var state =
+                    // //     _disposeAll(rootGameObject, state);
+
+
+                    // wd.assembleWholeWDB(wdb, state)
+                    //     .forEach(([state, rootGameObject]) => {
+                    //         // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(isCreateCamera, state);
+
+
+                    //         var isCreateLight =
+                    //             wd.getAllDirectionLightComponents(state).length === 0 && wd.getAllPointLightComponents(state).length === 0;
+
+                    //         var isCreateCamera =
+                    //             wd.getAllBasicCameraViewComponents(state).length === 0;
+
+                    //         var state = state;
+
+                    //         if (isCreateLight) {
+                    //             var data = _createLightsAndCamera(isCreateCamera, state);
+                    //             state = data[0];
+                    //         }
 
 
 
-                    });
+
+                    //         wd.startDirector(state);
+                    //     });
+
+
+
+                });
             }
 
 
@@ -641,8 +681,8 @@
                                         _testGenerateWDBByGLB(
                                             // [
                                             // boxArrayBuffer,
-                                            //     truckArrayBuffer,
-                                            alphaArrayBuffer,
+                                            truckArrayBuffer,
+                                            // alphaArrayBuffer,
                                             // ],
                                             // boxArrayBuffer,
 
