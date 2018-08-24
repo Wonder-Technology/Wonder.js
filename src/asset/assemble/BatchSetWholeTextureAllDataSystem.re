@@ -22,6 +22,28 @@ let _batchSetBasicSourceTextureSources =
        state,
      );
 
+let convertKeyFromImageIndexToBasicSourceTexture =
+    (imageTextureIndexData, basicSourceTextureArr, imageUint8ArrayDataMap) =>
+  imageUint8ArrayDataMap
+  |> SparseMapService.reduceiValid(
+       (. resultImageUint8ArrayDataMap, data, imageIndex) =>
+         IndicesUtils.getBasicSourceTextures(
+           imageIndex,
+           basicSourceTextureArr,
+           imageTextureIndexData,
+         )
+         |> WonderCommonlib.ArrayService.reduceOneParam(
+              (. resultImageUint8ArrayDataMap, basicSourceTexture) =>
+                resultImageUint8ArrayDataMap
+                |> WonderCommonlib.SparseMapService.set(
+                     basicSourceTexture,
+                     data,
+                   ),
+              resultImageUint8ArrayDataMap,
+            ),
+       WonderCommonlib.SparseMapService.createEmpty(),
+     );
+
 let batchSet =
     (
       (

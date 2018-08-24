@@ -23,7 +23,7 @@ let load =
     (
       ~wdbPath,
       ~fetchFunc,
-      ~handleWhenLoadWholeWDBFunc=(state, rootGameObject) => (),
+      ~handleWhenLoadWholeWDBFunc=(state, _, rootGameObject) => (),
       (),
     ) => {
   let result = ref(Obj.magic(1));

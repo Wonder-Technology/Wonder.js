@@ -120,21 +120,17 @@ let _convertBase64MimeTypeToWDBMimeType = mimeType =>
     )
   };
 
-let _getImageBase64 = (texture, source, imageBase64Map) =>
-  switch (imageBase64Map |> WonderCommonlib.SparseMapService.get(texture)) {
-  | None =>
-    _convertImageToBase64(
-      TextureSizeService.getWidth(source),
-      TextureSizeService.getHeight(source),
-      source,
-    )
-  | Some(base64Str) => base64Str
-  };
+let _getImageBase64 = (texture, source) =>
+  _convertImageToBase64(
+    TextureSizeService.getWidth(source),
+    TextureSizeService.getHeight(source),
+    source,
+  );
 
 let _addImageData =
     (
       (texture, imageMap, state),
-      imageBase64Map,
+      imageUint8ArrayDataMap,
       imageUint8DataArr,
       (totalByteLength, byteOffset, bufferViewDataArr),
     ) => {
@@ -165,9 +161,20 @@ let _addImageData =
   | imageIndex when imageIndex === (-1) =>
     let imageIndex = imageUint8DataArr |> Js.Array.length;
 
-    let imageBase64 = _getImageBase64(texture, source, imageBase64Map);
+    let (mimeType, imageUint8Array) =
+      switch (
+        imageUint8ArrayDataMap
+        |> WonderCommonlib.SparseMapService.get(texture)
+      ) {
+      | Some(data) => data
+      | None =>
+        let imageBase64 = _getImageBase64(texture, source);
 
-    let imageUint8Array = BufferUtils.convertBase64ToBinary(imageBase64);
+        (
+          BufferUtils.getBase64MimeType(imageBase64),
+          BufferUtils.convertBase64ToBinary(imageBase64),
+        );
+      };
 
     let imageUint8ArrayByteLength = imageUint8Array |> Uint8Array.byteLength;
 
@@ -181,9 +188,7 @@ let _addImageData =
       |> ArrayService.push(
            {
              bufferView: bufferViewDataArr |> Js.Array.length,
-             mimeType:
-               BufferUtils.getBase64MimeType(imageBase64)
-               |> _convertBase64MimeTypeToWDBMimeType,
+             mimeType: mimeType |> _convertBase64MimeTypeToWDBMimeType,
              uint8Array: imageUint8Array,
              byteOffset,
            }: GenerateSceneGraphType.imageData,
@@ -222,7 +227,7 @@ let build =
       (diffuseMap, name),
       (
         (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
-        (textureIndexMap, samplerIndexMap, imageMap, imageBase64Map),
+        (textureIndexMap, samplerIndexMap, imageMap, imageUint8ArrayDataMap),
       ),
       (totalByteLength, byteOffset, bufferViewDataArr),
       state,
@@ -287,7 +292,7 @@ let build =
     ) =
       _addImageData(
         (diffuseMap, imageMap, state),
-        imageBase64Map,
+        imageUint8ArrayDataMap,
         imageUint8DataArr,
         (totalByteLength, byteOffset, bufferViewDataArr),
       );

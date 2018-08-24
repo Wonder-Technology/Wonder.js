@@ -37,13 +37,8 @@ let _getBatchAllTypeTextureData =
 
 let batchOperate =
     (
-      {
-        indices,
-        gameObjects,
-        basicSourceTextures,
-        /* arrayBufferViewSourceTextures, */
-      } as wd,
-      blobObjectUrlImageArr,
+      {indices, gameObjects, basicSourceTextures} as wd,
+      (blobObjectUrlImageArr, imageUint8ArrayDataMap),
       bufferArr,
       (
         state,
@@ -131,6 +126,13 @@ let batchOperate =
       wd,
     );
 
+  let imageUint8ArrayDataMap =
+    BatchSetWholeTextureAllDataSystem.convertKeyFromImageIndexToBasicSourceTexture(
+      indices.imageTextureIndices,
+      basicSourceTextureArr,
+      imageUint8ArrayDataMap,
+    );
+
   (
     state
     |> BatchOperateSystem.batchSetTransformData(wd, gameObjectTransforms)
@@ -198,6 +200,7 @@ let batchOperate =
          gameObjectPointLights,
        )
     |> BatchSetWholeTextureAllDataSystem.batchSet(basicSourceTextureData),
+    imageUint8ArrayDataMap,
     gameObjectArr,
   );
 };

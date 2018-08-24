@@ -84,3 +84,16 @@ let reduceiValid = (func, initValue, map) =>
      );
 
 let indexOf = (targetValue, map) => map |> Js.Array.indexOf(targetValue);
+
+let mergeSparseMaps = mapArr =>
+  mapArr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. resultMap, map) =>
+         map
+         |> reduceiValid(
+              (. resultMap, value, key) =>
+                resultMap |> WonderCommonlib.SparseMapService.set(key, value),
+              resultMap,
+            ),
+       WonderCommonlib.SparseMapService.createEmpty(),
+     );

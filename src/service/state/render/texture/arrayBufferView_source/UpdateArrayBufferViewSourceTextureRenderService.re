@@ -4,14 +4,14 @@ open RenderArrayBufferViewSourceTextureType;
 
 open BrowserDetectType;
 
-/* let _setUnpackAlignmentaToOne = [%bs.raw
-     {|
+let _setUnpackAlignmentaToOne = [%bs.raw
+  {|
          function(gl){
 
      gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
          }
          |}
-   ]; */
+];
 
 let _drawTexture =
     (gl, (target, index, source, glFormat, glType), (width, height)) => {
@@ -35,7 +35,7 @@ let _drawTexture =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  /* _setUnpackAlignmentaToOne(gl); */
+  _setUnpackAlignmentaToOne(gl);
   gl
   |> WonderWebgl.Gl.texImage2DWithArrayBufferView(
        target,
@@ -50,12 +50,11 @@ let _drawTexture =
      );
 };
 
-let _drawNoMipmapTwoDTexture =
-    (gl, (target, glFormat, glType), sizeTuple, source) =>
+let _drawTwoDTexture = (gl, (target, glFormat, glType), sizeTuple, source) =>
   _drawTexture(gl, (target, 0, source, glFormat, glType), sizeTuple);
 
 let _allocateSourceToTexture = (sizeTuple, gl, paramTuple, source) =>
-  _drawNoMipmapTwoDTexture(gl, paramTuple, sizeTuple, source);
+  _drawTwoDTexture(gl, paramTuple, sizeTuple, source);
 
 let update =
     (

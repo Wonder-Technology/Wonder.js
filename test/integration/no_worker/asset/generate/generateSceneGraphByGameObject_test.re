@@ -824,7 +824,7 @@ let _ =
           GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
             sandbox^,
             rootGameObject,
-            ((state, rootGameObject)) =>
+            ((state, _, rootGameObject)) =>
               AssembleWDBSystemTool.getAllGeometryData(rootGameObject, state)
               |>
               expect == [|
@@ -1307,7 +1307,7 @@ let _ =
           GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
             sandbox^,
             rootGameObject,
-            ((state, rootGameObject)) => {
+            ((state, _, rootGameObject)) => {
               let dataMap = GLTFTool.getTruckGeometryData();
 
               AssembleWDBSystemTool.getAllGeometryData(rootGameObject, state)
@@ -2861,7 +2861,7 @@ let _ =
         GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
           sandbox^,
           rootGameObject,
-          ((state, rootGameObject)) =>
+          ((state, _, rootGameObject)) =>
             AssembleWDBSystemTool.getAllDirectionLightData(
               rootGameObject,
               state,
@@ -2890,7 +2890,7 @@ let _ =
         GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
           sandbox^,
           rootGameObject,
-          ((state, rootGameObject)) =>
+          ((state, _, rootGameObject)) =>
             AssembleWDBSystemTool.getAllPointLightData(rootGameObject, state)
             |>
             expect == [|
@@ -3172,20 +3172,23 @@ let _ =
           ) =
             _prepareGameObject(state);
 
-          let base64Str1 = "data:image/png;base64,a1";
-          let base64Str2 = "data:image/jpeg;base64,a2";
+          let uint8ArrayData1 = ("image/png", Uint8Array.make([|1|]));
+          let uint8ArrayData2 = ("image/jpeg", Uint8Array.make([|2|]));
 
-          let imageBase64Map =
+          let imageUint8ArrayMap =
             WonderCommonlib.SparseMapService.createEmpty()
-            |> WonderCommonlib.SparseMapService.set(texture2, base64Str1)
-            |> WonderCommonlib.SparseMapService.set(texture3, base64Str2);
+            |> WonderCommonlib.SparseMapService.set(
+                 texture2,
+                 uint8ArrayData1,
+               )
+            |> WonderCommonlib.SparseMapService.set(texture3, uint8ArrayData2);
 
-          GenerateSceneGraphSystemTool.testGLTFResultByGameObjectWithImageBase64Map(
+          GenerateSceneGraphSystemTool.testGLTFResultByGameObjectWithImageUint8ArrayDataMap(
             rootGameObject,
             {j|
                 "images":[{"bufferView":11,"mimeType":"image/png"},{"bufferView":12,"mimeType":"image/jpeg"}]
                    |j},
-            imageBase64Map,
+            Js.Nullable.return(imageUint8ArrayMap),
             state,
           );
         });

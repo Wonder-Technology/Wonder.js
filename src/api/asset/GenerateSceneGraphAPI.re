@@ -1,13 +1,19 @@
-let generateGLBData = (sceneGameObject, imageBase64Map, state) =>
+let generateGLBData = (sceneGameObject, imageUint8ArrayMap, state) =>
   GenerateSceneGraphSystem.generateGLBData(
     sceneGameObject,
-    imageBase64Map,
+    switch (Js.toOption(imageUint8ArrayMap)) {
+    | None => WonderCommonlib.SparseMapService.createEmpty()
+    | Some(imageUint8ArrayMap) => imageUint8ArrayMap
+    },
     state,
   );
 
-let generateWDB = (sceneGameObject, imageBase64Map, state) =>
+let generateWDB = (sceneGameObject, imageUint8ArrayMap, state) =>
   GenerateSceneGraphSystem.generateWDB(
     sceneGameObject,
-    imageBase64Map,
+    switch (Js.toOption(imageUint8ArrayMap)) {
+    | None => WonderCommonlib.SparseMapService.createEmpty()
+    | Some(imageUint8ArrayMap) => imageUint8ArrayMap
+    },
     state,
   );

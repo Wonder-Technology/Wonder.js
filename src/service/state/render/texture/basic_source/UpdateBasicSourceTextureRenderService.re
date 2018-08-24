@@ -15,11 +15,11 @@ let _drawTexture = (gl, (target, index, source, glFormat, glType)) =>
        source |> WonderWebgl.GlType.imageElementToTextureSource,
      );
 
-let _drawNoMipmapTwoDTexture = (gl, (target, glFormat, glType), source) =>
+let _drawTwoDTexture = (gl, (target, glFormat, glType), source) =>
   _drawTexture(gl, (target, 0, source, glFormat, glType));
 
 let _allocateSourceToTexture = (gl, paramTuple, source) =>
-  _drawNoMipmapTwoDTexture(gl, paramTuple, source);
+  _drawTwoDTexture(gl, paramTuple, source);
 
 let update =
     (gl, textureInTypeArray, (basicSourceTextureRecord, browserDetectRecord)) => {

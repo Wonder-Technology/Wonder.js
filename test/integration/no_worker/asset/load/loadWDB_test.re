@@ -46,7 +46,7 @@ let _ =
         );
 
       LoadWDBTool.load(~wdbPath="../singleNode.wdb", ~fetchFunc, ())
-      |> then_(((state, gameObject)) =>
+      |> then_(((state, _, gameObject)) =>
            AssembleWDBSystemTool.getAllGameObjects(gameObject, state)
            |> expect == [|gameObject|]
            |> resolve
@@ -90,11 +90,11 @@ let _ =
           );
 
         LoadWDBTool.load(~wdbPath="../singleNode.wdb", ~fetchFunc, ())
-        |> then_(((state, gameObject1)) => {
+        |> then_(((state, _, gameObject1)) => {
              MainStateTool.setState(state) |> ignore;
 
              LoadWDBTool.load(~wdbPath="../singleNode.wdb", ~fetchFunc, ())
-             |> then_(((state, gameObject2)) =>
+             |> then_(((state, _, gameObject2)) =>
                   (
                     AssembleWDBSystemTool.getAllGameObjects(
                       gameObject1,

@@ -222,3 +222,20 @@ let getAllDiffuseMaps = (rootGameObject, state) =>
   |> Js.Array.map(lightMaterial =>
        LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(lightMaterial, state)
      );
+
+let isImageUint8ArrayMapEqual =
+    (sourceImageUint8ArrayMap, targetImageUint8ArrayMap) =>
+  Js.Typed_array.(
+    sourceImageUint8ArrayMap
+    |> SparseMapService.mapValid((. (mimeType, uint8Array)) =>
+         (mimeType, uint8Array |> Uint8Array.byteLength |> Obj.magic)
+       )
+    |>
+    Obj.magic == (
+                   targetImageUint8ArrayMap
+                   |> SparseMapService.mapValid(
+                        (. (mimeType, uint8ArrayByteLength)) =>
+                        (mimeType, uint8ArrayByteLength)
+                      )
+                 )
+  );

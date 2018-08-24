@@ -1,7 +1,7 @@
 let _buildLightMaterialData =
     (
       lightMaterialDataMap,
-      imageBase64Map,
+      imageUint8ArrayDataMap,
       (totalByteLength, byteOffset, bufferViewDataArr),
       state,
     ) =>
@@ -53,7 +53,12 @@ let _buildLightMaterialData =
                  samplerDataArr,
                  imageUint8DataArr,
                ),
-               (textureIndexMap, samplerIndexMap, imageMap, imageBase64Map),
+               (
+                 textureIndexMap,
+                 samplerIndexMap,
+                 imageMap,
+                 imageUint8ArrayDataMap,
+               ),
              ),
              (totalByteLength, byteOffset, bufferViewDataArr),
              state,
@@ -71,7 +76,7 @@ let build =
     (
       basicMaterialDataMap,
       lightMaterialDataMap,
-      imageBase64Map,
+      imageUint8ArrayDataMap,
       (totalByteLength, byteOffset, bufferViewDataArr),
       state,
     ) => {
@@ -94,7 +99,7 @@ let build =
   ) =
     _buildLightMaterialData(
       lightMaterialDataMap,
-      imageBase64Map,
+      imageUint8ArrayDataMap,
       (totalByteLength, byteOffset, bufferViewDataArr),
       state,
     );

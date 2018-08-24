@@ -6,7 +6,7 @@ open StateDataMainType;
 
 open GenerateSceneGraphType;
 
-let generateGLBData = (rootGameObject, imageBase64Map, state) => {
+let generateGLBData = (rootGameObject, imageUint8ArrayDataMap, state) => {
   let (
     state,
     (
@@ -46,7 +46,7 @@ let generateGLBData = (rootGameObject, imageBase64Map, state) => {
     BuildMaterialDataSystem.build(
       basicMaterialDataMap,
       lightMaterialDataMap,
-      imageBase64Map,
+      imageUint8ArrayDataMap,
       (totalByteLength, geometryEndByteOffset, bufferViewDataArr),
       state,
     );

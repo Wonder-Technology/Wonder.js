@@ -1,3 +1,5 @@
+let assembleStreamWDB = AssembleStreamWDBAPI.assembleStreamWDB;
+
 let assembleWholeWDB = AssembleWholeWDBAPI.assembleWholeWDB;
 
 let assembleWholeGLB = AssembleWholeWDBAPI.assembleWholeGLB;
@@ -547,6 +549,8 @@ let getStateData = StateAPI.getStateData;
 let restoreState = StateAPI.restoreState;
 
 let deepCopyForRestore = StateAPI.deepCopyForRestore;
+
+let mergeSparseMaps = SparseMapAPI.mergeSparseMaps;
 
 let setSparseMapValue = SparseMapAPI.setSparseMapValue;
 

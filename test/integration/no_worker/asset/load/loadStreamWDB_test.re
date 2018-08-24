@@ -523,7 +523,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               sandbox,
               (
                 1,
-                21366,
+                23516,
                 {"type": "image/png"},
                 [|"object_url0" |> Obj.magic|],
               ),
@@ -639,7 +639,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               sandbox,
               (
                 1,
-                1091805,
+                427633,
                 {"type": "image/png"},
                 [|
                   "object_url0" |> Obj.magic,
@@ -719,7 +719,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               sandbox,
               (
                 2,
-                94660,
+                65522,
                 {"type": "image/png"},
                 [|
                   "object_url1" |> Obj.magic,
@@ -957,7 +957,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.slice(~start=32768, ~end_=100000)
+                             |> ArrayBuffer.slice(~start=32768, ~end_=40000)
                              |. Some,
                            (),
                          ),
@@ -1010,7 +1010,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.slice(~start=32768, ~end_=100000)
+                             |> ArrayBuffer.slice(~start=32768, ~end_=40000)
                              |. Some,
                            (),
                          ),
@@ -1020,10 +1020,8 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.slice(
-                                  ~start=100000,
-                                  ~end_=1140000,
-                                )
+                             /* |> ArrayBuffer.slice(~start=40000, ~end_=80000) */
+                             |> ArrayBuffer.slice(~start=40000, ~end_=470000)
                              |. Some,
                            (),
                          ),
@@ -1081,7 +1079,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.slice(~start=32768, ~end_=100000)
+                             |> ArrayBuffer.slice(~start=32768, ~end_=40000)
                              |. Some,
                            (),
                          ),
@@ -1091,10 +1089,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.slice(
-                                  ~start=100000,
-                                  ~end_=1140000,
-                                )
+                             |> ArrayBuffer.slice(~start=40000, ~end_=80000)
                              |. Some,
                            (),
                          ),
@@ -1104,7 +1099,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.sliceFrom(1140000)
+                             |> ArrayBuffer.sliceFrom(80000)
                              |. Some,
                            (),
                          ),
@@ -1553,10 +1548,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.slice(
-                                  ~start=10000,
-                                  ~end_=1130000,
-                                )
+                             |> ArrayBuffer.slice(~start=10000, ~end_=50000)
                              |. Some,
                            (),
                          ),
@@ -1624,10 +1616,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.slice(
-                                  ~start=10000,
-                                  ~end_=1130000,
-                                )
+                             |> ArrayBuffer.slice(~start=10000, ~end_=50000)
                              |. Some,
                            (),
                          ),
@@ -1637,10 +1626,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.slice(
-                                  ~start=1130000,
-                                  ~end_=1188000,
-                                )
+                             |> ArrayBuffer.slice(~start=50000, ~end_=523828)
                              |. Some,
                            (),
                          ),
@@ -1658,7 +1644,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                 );
               });
 
-              describe("test 1,2,3,4,5,6,8", () => {
+              describe("test 1,2,3,4,5,6,7,8", () => {
                 let _prepare = (sandbox, state) => {
                   let readStub = createEmptyStubWithJsObjSandbox(sandbox);
                   let readStub =
@@ -1708,10 +1694,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.slice(
-                                  ~start=10000,
-                                  ~end_=1130000,
-                                )
+                             |> ArrayBuffer.slice(~start=10000, ~end_=50000)
                              |. Some,
                            (),
                          ),
@@ -1721,10 +1704,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.slice(
-                                  ~start=1130000,
-                                  ~end_=1188000,
-                                )
+                             |> ArrayBuffer.slice(~start=50000, ~end_=523828)
                              |. Some,
                            (),
                          ),
@@ -1734,7 +1714,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          _buildChunkData(
                            ~arrayBuffer=
                              wdbArrayBuffer^
-                             |> ArrayBuffer.sliceFrom(1188000)
+                             |> ArrayBuffer.sliceFrom(523828)
                              |. Some,
                            (),
                          ),
@@ -1830,10 +1810,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        _buildChunkData(
                          ~arrayBuffer=
                            wdbArrayBuffer^
-                           |> ArrayBuffer.slice(
-                                ~start=65536,
-                                ~end_=65536 * 2,
-                              )
+                           |> ArrayBuffer.slice(~start=65536, ~end_=80000)
                            |. Some,
                          (),
                        ),
@@ -1843,10 +1820,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        _buildChunkData(
                          ~arrayBuffer=
                            wdbArrayBuffer^
-                           |> ArrayBuffer.slice(
-                                ~start=65536 * 2,
-                                ~end_=65536 * 3,
-                              )
+                           |> ArrayBuffer.slice(~start=80000, ~end_=100000)
                            |. Some,
                          (),
                        ),
@@ -1997,7 +1971,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             ~wdbPath=_buildWDBPath("BoxTextured"),
             ~fetchFunc,
             ~handleWhenLoadWholeWDBFunc=
-              (state, rootGameObject) => {
+              (state, _, rootGameObject) => {
                 stateRef := state;
                 rootGameObjectRef := rootGameObject;
               },

@@ -125,8 +125,8 @@ var AssetTool = (function () {
         },
 
         loadWholeWDB: function (wdbPath, state, testFunc) {
-            return wd.loadWholeWDB(wdbPath, state).forEach(function ([state, gameObject]) {
-                testFunc([state, gameObject])
+            return wd.loadWholeWDB(wdbPath, state).forEach(function ([state, imageUint8ArrayMap, gameObject]) {
+                testFunc([state, imageUint8ArrayMap, gameObject])
             })
             // .then(function () {
             //     if (!!completeFunc) {

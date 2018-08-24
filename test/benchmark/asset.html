@@ -191,7 +191,7 @@
                 boxArrayBuffer,
                 truckArrayBuffer,
                 alphaArrayBuffer
-            ], imageBase64Map, isCreateCamera, state) {
+            ], imageUint8ArrayMap, isCreateCamera, state) {
                 var state = wd.setIMGUIFunc(
                     null, (_, api, state) => {
                         var state = api.label(
@@ -209,12 +209,15 @@
 
 
                 wd.assembleWholeGLB(boxArrayBuffer, state)
-                    .forEach(([state, boxGameObject]) => {
-
+                    .forEach(([state, imageUint8ArrayMap1, boxGameObject]) => {
                         wd.assembleWholeGLB(truckArrayBuffer, state)
-                            .forEach(([state, truckGameObject]) => {
+                            .forEach(([state,
+                                imageUint8ArrayMap2,
+                                truckGameObject]) => {
                                 wd.assembleWholeGLB(alphaArrayBuffer, state)
-                                    .forEach(([state, alphaGameObject]) => {
+                                    .forEach(([state,
+                                        imageUint8ArrayMap3,
+                                        alphaGameObject]) => {
 
 
                                         var transform = wd.unsafeGetGameObjectTransformComponent(truckGameObject, state);
@@ -347,7 +350,25 @@
                                         // var n0 = performance.now();
 
 
-                                        var [state, wdb] = wd.generateWDB(rootGameObject, imageBase64Map, state);
+
+
+
+
+
+
+
+
+                                        var [state, wdb] = wd.generateWDB(
+                                            rootGameObject,
+                                            // wd.mergeSparseMaps(
+                                            //     [
+                                            //         imageUint8ArrayMap1,
+                                            //         imageUint8ArrayMap2,
+                                            //         imageUint8ArrayMap3
+                                            //     ]
+                                            // ),
+                                            [],
+                                            state);
 
 
                                         AssetTool.download(wdb, "generated.wdb", "")
@@ -365,14 +386,14 @@
             }
 
 
-            function _testGenerateWDBByGLB(glb, imageBase64Map, isCreateCamera, state$) {
+            function _testGenerateWDBByGLB(glb, isCreateCamera, state$) {
                 wd.assembleWholeGLB(glb, state$)
-                    .forEach(([state, rootGameObject]) => {
+                    .forEach(([state, imageUint8ArrayDataMap, rootGameObject]) => {
                         console.profile("generateWDB");
                         var n0 = performance.now();
 
 
-                        var [state, wdb] = wd.generateWDB(rootGameObject, imageBase64Map, state);
+                        var [state, wdb] = wd.generateWDB(rootGameObject, imageUint8ArrayDataMap, state);
 
 
                         AssetTool.download(wdb, "generated.wdb", "")
@@ -551,7 +572,7 @@
                 var n1 = performance.now();
 
                 wd.assembleWholeWDB(wdb, state)
-                    .forEach(([state, rootGameObject]) => {
+                    .forEach(([state, _, rootGameObject]) => {
                         console.log(performance.now() - n1);
                         console.profileEnd();
 
@@ -616,40 +637,36 @@
                                         return res.arrayBuffer();
                                     })
                                     .then((alphaArrayBuffer) => {
-                                        var imageBase64Map = wd.createSparseMap();
-                                        // imageBase64Map =
-                                        //     wd.setSparseMapValue(3,
-                                        //         truckImageBase64,
-                                        //         imageBase64Map);
 
-                                        // _testGenerateWDBByGLB(
-                                        //     // [
-                                        //     //     boxArrayBuffer,
-                                        //     //     truckArrayBuffer,
-                                        //     //     alphaArrayBuffer
-                                        //     // ],
-                                        //     boxArrayBuffer,
+                                        _testGenerateWDBByGLB(
+                                            // [
+                                            // boxArrayBuffer,
+                                            //     truckArrayBuffer,
+                                            alphaArrayBuffer,
+                                            // ],
+                                            // boxArrayBuffer,
 
-                                        //     imageBase64Map,
+                                            // truckArrayBuffer,
 
-                                        //     true,
-
-                                        //     state$);
-
-
-                                        _downloadScene(
-                                            [
-                                                boxArrayBuffer,
-                                                truckArrayBuffer,
-                                                alphaArrayBuffer
-                                            ],
-
-                                            imageBase64Map,
 
                                             true,
 
-                                            state$
-                                        );
+                                            state$);
+
+
+                                        // _downloadScene(
+                                        //     [
+                                        //         boxArrayBuffer,
+                                        //         truckArrayBuffer,
+                                        //         alphaArrayBuffer
+                                        //     ],
+
+                                        //     imageUint8ArrayMap,
+
+                                        //     true,
+
+                                        //     state$
+                                        // );
 
 
 
@@ -659,7 +676,7 @@
 
 
                                         // _testAssembleWD(
-                                        //     arrayBuffer,
+                                        //     truckArrayBuffer,
                                         //     true,
                                         //     state$);
                                     })

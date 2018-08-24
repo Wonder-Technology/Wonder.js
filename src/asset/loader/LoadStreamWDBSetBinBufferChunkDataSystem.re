@@ -56,24 +56,12 @@ let _setGeometryData =
 };
 
 let _getBasicSourceTextures =
-    (
-      imageIndex,
-      basicSourceTextureArr,
-      {textureIndices, imageIndices}: WDType.imageTextureIndexData,
-    ) =>
-  imageIndices
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. indexArr, imageSource, index) =>
-         imageSource === imageIndex ?
-           indexArr |> ArrayService.push(index) : indexArr,
-       [||],
-     )
-  |> Js.Array.map(index =>
-       Array.unsafe_get(
-         basicSourceTextureArr,
-         Array.unsafe_get(textureIndices, index),
-       )
-     );
+    (imageIndex, basicSourceTextureArr, imageTextureIndexData) =>
+  IndicesUtils.getBasicSourceTextures(
+    imageIndex,
+    basicSourceTextureArr,
+    imageTextureIndexData,
+  );
 
 let _setImageData =
     (imageData, basicSourceTextureArr, imageTextureIndices, state) => {

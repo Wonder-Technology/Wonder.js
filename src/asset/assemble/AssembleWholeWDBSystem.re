@@ -22,6 +22,7 @@ let _getArrayBuffer = (binBuffer, bufferView, bufferViews: array(bufferView)) =>
 
 let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
   let blobObjectUrlImageArr = [||];
+  let imageUint8ArrayDataMap = WonderCommonlib.SparseMapService.createEmpty();
 
   (
     images |> OptionService.isJsonSerializedValueNone ?
@@ -29,11 +30,21 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
       images
       |> OptionService.unsafeGetJsonSerializedValue
       |> ArrayService.reduceOneParamValidi(
-           (. streamArr, {bufferView, mimeType}: image, imageIndex) =>
+           (. streamArr, {bufferView, mimeType}: image, imageIndex) => {
+             let arrayBuffer =
+               _getArrayBuffer(binBuffer, bufferView, bufferViews);
+
+             imageUint8ArrayDataMap
+             |> WonderCommonlib.SparseMapService.set(
+                  imageIndex,
+                  (mimeType, Uint8Array.fromBuffer(arrayBuffer)),
+                )
+             |> ignore;
+
              streamArr
              |> ArrayService.push(
                   AssembleUtils.buildLoadImageStream(
-                    _getArrayBuffer(binBuffer, bufferView, bufferViews),
+                    arrayBuffer,
                     mimeType,
                     {j|load image error. imageIndex: $imageIndex|j},
                   )
@@ -44,13 +55,14 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
                          image,
                        )
                      ),
-                ),
+                );
+           },
            [||],
          )
   )
   |> WonderBsMost.Most.mergeArray
   |> WonderBsMost.Most.drain
-  |> then_(() => blobObjectUrlImageArr |> resolve);
+  |> then_(() => (blobObjectUrlImageArr, imageUint8ArrayDataMap) |> resolve);
 };
 
 /* let _decodeArrayBuffer = (base64Str: string) => {
@@ -134,18 +146,22 @@ let _checkWDB = dataView => {
 
 let assembleGLBData = (({buffers}: wd) as wd, binBuffer, state) =>
   _buildImageArray(wd, binBuffer)
-  |> then_(blobObjectUrlImageArr =>
-       state
-       |> SetIMGUIFuncSystem.setIMGUIFunc(wd)
-       |> BatchCreateSystem.batchCreate(wd)
-       |> BatchOperateWholeSystem.batchOperate(
-            wd,
-            blobObjectUrlImageArr,
-            _buildBufferArray(buffers, binBuffer),
-          )
-       |> BuildRootGameObjectSystem.build(wd)
-       |> resolve
-     )
+  |> then_(imageDataTuple => {
+       let (state, imageUint8ArrayDataMap, gameObjectArr) =
+         state
+         |> SetIMGUIFuncSystem.setIMGUIFunc(wd)
+         |> BatchCreateSystem.batchCreate(wd)
+         |> BatchOperateWholeSystem.batchOperate(
+              wd,
+              imageDataTuple,
+              _buildBufferArray(buffers, binBuffer),
+            );
+
+       let (state, rootGameObject) =
+         BuildRootGameObjectSystem.build(wd, (state, gameObjectArr));
+
+       (state, imageUint8ArrayDataMap, rootGameObject) |> resolve;
+     })
   |> WonderBsMost.Most.fromPromise;
 
 let assemble = (wdb, state) => {

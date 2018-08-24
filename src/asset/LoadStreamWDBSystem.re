@@ -69,9 +69,17 @@ let load =
                            wdb |> LoadType.fetchArrayBufferToArrayBuffer,
                            state,
                          )
-                         |> Most.tap(((state, rootGameObject)) =>
+                         |> Most.tap(
+                              (
+                                (
+                                  state,
+                                  imageUint8ArrayDataMap,
+                                  rootGameObject,
+                                ),
+                              ) =>
                               handleWhenLoadWholeWDBFunc(
                                 state,
+                                imageUint8ArrayDataMap,
                                 rootGameObject,
                               )
                             )

@@ -31,4 +31,19 @@ let _ =
         |> expect == (None, Some("aaa"));
       })
     );
+
+    describe("mergeSparseMaps", () =>
+      test("merge sparse map arr", () => {
+        let map1 = createSparseMap() |> setSparseMapValue(1, "aaa");
+        let map2 = createSparseMap() |> setSparseMapValue(3, "b");
+
+        SparseMapAPI.mergeSparseMaps([|map1, map2|])
+        |>
+        expect == (
+                    createSparseMap()
+                    |> setSparseMapValue(1, "aaa")
+                    |> setSparseMapValue(3, "b")
+                  );
+      })
+    );
   });
