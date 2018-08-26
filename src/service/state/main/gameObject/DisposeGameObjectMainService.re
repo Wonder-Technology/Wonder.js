@@ -35,7 +35,7 @@ let rec batchDispose =
             batchDisposeLightMaterialComponentFunc,
           ),
           uidArray: array(int),
-          isKeepOrder,
+          (isKeepOrder, isRemoveGeometry),
           state,
         ) => {
   let state =
@@ -51,7 +51,7 @@ let rec batchDispose =
   ) =
     state
     |> DisposeGameObjectComponentMainService.batchDispose(
-         (uidArray, isKeepOrder),
+         (uidArray, isKeepOrder, isRemoveGeometry),
          (
            batchDisposeBasicMaterialComponentFunc,
            batchDisposeLightMaterialComponentFunc,
@@ -109,3 +109,13 @@ let deferDispose = (uid: int, state) => deferBatchDispose([|uid|], state);
 
 let deferDisposeKeepOrder = (uid: int, state) =>
   deferBatchDisposeKeepOrder([|uid|], state);
+
+let _deferBatchDisposeRemoveGeometryKeepOrder = (uidArray: array(int), state) => {
+  state.gameObjectRecord.disposedUidArrayForKeepOrderRemoveGeometry =
+    state.gameObjectRecord.disposedUidArrayForKeepOrderRemoveGeometry
+    |> Js.Array.concat(uidArray);
+  state;
+};
+
+let deferDisposeKeepOrderRemoveGeometry = (uid: int, state) =>
+  _deferBatchDisposeRemoveGeometryKeepOrder([|uid|], state);

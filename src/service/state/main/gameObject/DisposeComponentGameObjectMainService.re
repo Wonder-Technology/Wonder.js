@@ -327,13 +327,13 @@ let batchDisposePointLightComponent =
 let batchDisposeSourceInstanceComponent =
     (
       state: StateDataMainType.state,
-      isKeepOrder,
+      ( isKeepOrder, isRemoveGeometry ),
       disposeGameObjectFunc,
       componentArray: array(component),
     ) =>
   DisposeSourceInstanceMainService.handleBatchDisposeComponent(.
     componentArray,
-    isKeepOrder,
+    ( isKeepOrder, isRemoveGeometry ),
     disposeGameObjectFunc,
     state,
   );

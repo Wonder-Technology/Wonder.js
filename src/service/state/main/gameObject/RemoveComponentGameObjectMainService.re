@@ -15,3 +15,9 @@ let removeGeometryComponent =
     },
   }
   |> RemoveGeometryMainService.handleRemoveComponent(uid, component);
+
+let batchRemoveGeometryComponent = (state, geometryDataArray) =>
+  RemoveGeometryMainService.handleBatchRemoveComponent(
+    geometryDataArray,
+    state,
+  );

@@ -1514,23 +1514,44 @@ let _ =
         });
       });
     });
+
     describe("disposeKeepOrder", () =>
-      test("not change its current parent's children order", () => {
-        let (state, parent, tra) = GameObjectTool.createGameObject(state^);
-        let (state, child1, tra1) = GameObjectTool.createGameObject(state);
-        let (state, child2, tra2) = GameObjectTool.createGameObject(state);
-        let (state, child3, tra3) = GameObjectTool.createGameObject(state);
+      test("not change its current parent's children order", () =>
+        GameObjectTool.testDisposeKeepOrder(
+          GameObjectAPI.disposeGameObjectKeepOrder,
+          state,
+        )
+      )
+    );
+
+    describe("disposeGameObjectKeepOrderRemoveGeometry", () => {
+      test("not change its current parent's children order", () =>
+        GameObjectTool.testDisposeKeepOrder(
+          GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometry,
+          state,
+        )
+      );
+      test("remove geometry component instead of dispose", () => {
+        let (
+          state,
+          gameObject1,
+          geometry1,
+          (vertices1, texCoords1, normals1, indices1),
+        ) =
+          GeometryTool.createGameObjectAndSetPointData(state^);
+
         let state =
           state
-          |> TransformAPI.setTransformParent(Js.Nullable.return(tra), tra1)
-          |> TransformAPI.setTransformParent(Js.Nullable.return(tra), tra2)
-          |> TransformAPI.setTransformParent(Js.Nullable.return(tra), tra3);
-        let state =
-          state |> GameObjectTool.disposeGameObjectKeepOrder(child1);
-        TransformAPI.unsafeGetTransformChildren(tra, state)
-        |> expect == [|tra2, tra3|];
-      })
-    );
+          |> GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometry(
+               gameObject1,
+             );
+        let state = DisposeJob.execJob(None, state);
+
+        GeometryAPI.getGeometryVertices(geometry1, state)
+        |> expect == vertices1;
+      });
+    });
+
     describe("test batchDispose gameObject", ()
       /* describe(
            "batch dispose all components",

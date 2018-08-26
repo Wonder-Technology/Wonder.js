@@ -65,7 +65,7 @@ let _disposeComponents =
     disposedSourceInstanceArray
     |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
          state,
-         false,
+         (false, false),
          DisposeGameObjectMainService.batchDispose((
            batchDisposeLightMaterialComponentFunc,
            batchDisposeLightMaterialComponentFunc,
@@ -104,7 +104,11 @@ let _disposeGameObjects =
       batchDisposeLightMaterialComponentFunc,
       {gameObjectRecord} as state,
     ) => {
-  let {disposedUidArray, disposedUidArrayForKeepOrder} = gameObjectRecord;
+  let {
+    disposedUidArray,
+    disposedUidArrayForKeepOrder,
+    disposedUidArrayForKeepOrderRemoveGeometry,
+  } = gameObjectRecord;
   let (
     state,
     geometryNeedDisposeVboBufferArrForNotKeepOrder,
@@ -117,7 +121,7 @@ let _disposeGameObjects =
            batchDisposeLightMaterialComponentFunc,
          ),
          disposedUidArray,
-         false,
+         (false, false),
        );
   let (
     state,
@@ -131,15 +135,37 @@ let _disposeGameObjects =
            batchDisposeLightMaterialComponentFunc,
          ),
          disposedUidArrayForKeepOrder,
-         true,
+         (true, false),
        );
+  let (
+    state,
+    geometryNeedDisposeVboBufferArrForKeepOrderRemoveGeometry,
+    sourceInstanceNeedDisposeVboBufferArrForKeepOrderRemoveGeometry,
+  ) =
+    state
+    |> DisposeGameObjectMainService.batchDispose(
+         (
+           batchDisposeBasicMaterialComponentFunc,
+           batchDisposeLightMaterialComponentFunc,
+         ),
+         disposedUidArrayForKeepOrderRemoveGeometry,
+         (true, true),
+       );
+
   let state = state |> DisposeGameObjectMainService.clearDeferDisposeData;
+
   (
     state,
     geometryNeedDisposeVboBufferArrForNotKeepOrder
-    |> Js.Array.concat(geometryNeedDisposeVboBufferArrForKeepOrder),
+    |> Js.Array.concatMany([|
+         geometryNeedDisposeVboBufferArrForKeepOrder,
+         geometryNeedDisposeVboBufferArrForKeepOrderRemoveGeometry,
+       |]),
     sourceInstanceNeedDisposeVboBufferArrForNotKeepOrder
-    |> Js.Array.concat(sourceInstanceNeedDisposeVboBufferArrForKeepOrder),
+    |> Js.Array.concatMany([|
+         sourceInstanceNeedDisposeVboBufferArrForKeepOrder,
+         sourceInstanceNeedDisposeVboBufferArrForKeepOrderRemoveGeometry,
+       |]),
   );
 };
 

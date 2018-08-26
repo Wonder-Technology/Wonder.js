@@ -8,7 +8,7 @@ open BatchGetComponentGameObjectMainService;
 
 let batchDispose =
     (
-      (uidArray: array(int), isKeepOrder),
+      (uidArray: array(int), isKeepOrder, isRemoveGeometry),
       (
         batchDisposeBasicMaterialComponentFunc,
         batchDisposeLightMaterialComponentFunc,
@@ -23,17 +23,28 @@ let batchDispose =
        )
     |> batchDisposeTransformComponent(state, isKeepOrder);
 
-  let (state, geometryNeedDisposeVboBufferArr) =
+  let geometryDataArr =
     state
     |> BatchGetComponentGameObjectMainService.batchGetGeometryComponent(
          uidArray,
        )
     |> Js.Array.mapi((geometry, index) =>
          (Array.unsafe_get(uidArray, index), geometry)
-       )
-    |> DisposeComponentGameObjectMainService.batchDisposeGeometryComponent(
-         state,
        );
+
+  let (state, geometryNeedDisposeVboBufferArr) =
+    isRemoveGeometry ?
+      (
+        RemoveComponentGameObjectMainService.batchRemoveGeometryComponent(
+          state,
+          geometryDataArr,
+        ),
+        [||],
+      ) :
+      DisposeComponentGameObjectMainService.batchDisposeGeometryComponent(
+        state,
+        geometryDataArr,
+      );
 
   let state =
     state
@@ -100,7 +111,7 @@ let batchDispose =
        )
     |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
          state,
-         isKeepOrder,
+         (isKeepOrder, isRemoveGeometry),
          batchDisposeFunc((
            batchDisposeBasicMaterialComponentFunc,
            batchDisposeLightMaterialComponentFunc,
