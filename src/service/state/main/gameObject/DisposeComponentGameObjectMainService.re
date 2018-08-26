@@ -2,7 +2,7 @@ open StateDataMainType;
 
 open ComponentType;
 
-let _removeComponent = (uid:int, componentMap) =>
+let _removeComponent = (uid: int, componentMap) =>
   componentMap |> ComponentMapService.removeComponent(uid) |> Obj.magic;
 
 let deferDisposeBasicCameraViewComponent =
@@ -102,11 +102,10 @@ let deferDisposeGeometryComponent =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
-      geometryMap:
-        _removeComponent(uid, gameObjectRecord.geometryMap),
-      disposedGeometryArray:
-        gameObjectRecord.disposedGeometryArray
-        |> ArrayService.push(component),
+      geometryMap: _removeComponent(uid, gameObjectRecord.geometryMap),
+      disposedGeometryDataArray:
+        gameObjectRecord.disposedGeometryDataArray
+        |> ArrayService.push((uid, component)),
     },
   };
 
@@ -235,9 +234,9 @@ let batchDisposeTransformComponent =
   );
 
 let batchDisposeGeometryComponent =
-    ({settingRecord} as state, componentArray: array(component)) =>
+    ({settingRecord} as state, disposedGeometryDataArray) =>
   DisposeGeometryMainService.handleBatchDisposeComponent(.
-    componentArray,
+    disposedGeometryDataArray,
     state,
   );
 

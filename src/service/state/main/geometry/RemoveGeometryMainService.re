@@ -2,32 +2,36 @@ open StateDataMainType;
 
 open GeometryType;
 
-let _handleRemoveComponent = (geometry: geometry, geometryRecord) =>
+let _handleRemoveComponent = (gameObject, geometry: geometry, geometryRecord) =>
   switch (GroupGeometryService.isGroupGeometry(geometry, geometryRecord)) {
   | false => geometryRecord
-  | true => GroupGeometryService.decreaseGroupCount(geometry, geometryRecord)
+  | true =>
+    GroupGeometryService.removeGameObject(
+      gameObject,
+      geometry,
+      geometryRecord,
+    )
   };
 
-let handleRemoveComponent =
-  (geometry: geometry, state) => {
-    let geometryRecord = state |> RecordGeometryMainService.getRecord;
+let handleRemoveComponent = (gameObject, geometry: geometry, state) => {
+  let geometryRecord = state |> RecordGeometryMainService.getRecord;
 
-    {
-      ...state,
-      geometryRecord: Some(_handleRemoveComponent(geometry, geometryRecord)),
-    };
-  };
-
-let handleBatchRemoveComponent =
-  (geometryArray: array(geometry), state) => {
+  {
     ...state,
     geometryRecord:
-      Some(
-        geometryArray
-        |> WonderCommonlib.ArrayService.reduceOneParam(
-             (. geometryRecord, geometry) =>
-               _handleRemoveComponent(geometry, geometryRecord),
-             state |> RecordGeometryMainService.getRecord,
-           ),
-      ),
+      Some(_handleRemoveComponent(gameObject, geometry, geometryRecord)),
   };
+};
+
+let handleBatchRemoveComponent = (geometryDataArray, state) => {
+  ...state,
+  geometryRecord:
+    Some(
+      geometryDataArray
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. geometryRecord, (gameObject, geometry)) =>
+             _handleRemoveComponent(gameObject, geometry, geometryRecord),
+           state |> RecordGeometryMainService.getRecord,
+         ),
+    ),
+};

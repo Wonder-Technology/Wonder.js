@@ -95,7 +95,7 @@ let clearDeferDisposeData = state => {
       WonderCommonlib.ArrayService.createEmpty(),
     disposedBasicMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedLightMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
-    disposedGeometryArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedGeometryDataArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedSourceInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedObjectInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedDirectionLightArray: WonderCommonlib.ArrayService.createEmpty(),

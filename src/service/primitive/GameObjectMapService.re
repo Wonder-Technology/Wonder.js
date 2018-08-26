@@ -4,19 +4,20 @@ let getGameObject = (component, gameObjectMap) =>
 let unsafeGetGameObject = (component, gameObjectMap) =>
   WonderCommonlib.SparseMapService.unsafeGet(component, gameObjectMap)
   |> WonderLog.Contract.ensureCheck(
-       (gameObject) =>
+       gameObject =>
          WonderLog.(
            Contract.(
              Operators.(
                test(
                  Log.buildAssertMessage(
                    ~expect={j|component's gameObject exist|j},
-                   ~actual={j|not|j}
+                   ~actual={j|not|j},
                  ),
-                 () => gameObject |> assertNullableExist
+                 () =>
+                 gameObject |> assertNullableExist
                )
              )
            )
          ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );

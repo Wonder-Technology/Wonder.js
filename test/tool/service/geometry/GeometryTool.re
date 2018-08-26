@@ -85,11 +85,19 @@ let createThreeGameObjectsAndSetPointData = state => {
   );
 };
 
-let getGroupCount = (geometry, state) =>
-  GroupGeometryService.getGroupCount(
-    geometry,
-    state |> RecordGeometryMainService.getRecord,
-  );
+/* let getGroupCount = (geometry, state) =>
+   GroupGeometryService.getGroupCount(
+     geometry,
+     state |> RecordGeometryMainService.getRecord,
+   ); */
+
+let hasGameObject = (geometry, state) =>
+  switch (
+    GameObjectGeometryService.getGameObjects(geometry, getRecord(state))
+  ) {
+  | Some(arr) when arr |> Js.Array.length > 0 => true
+  | _ => false
+  };
 
 let isGeometryDisposed = (geometry, state) =>
   !

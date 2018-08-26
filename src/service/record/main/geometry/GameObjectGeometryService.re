@@ -2,8 +2,8 @@ open GeometryType;
 
 open IndexComponentService;
 
-let getGameObject = (geometry, {gameObjectMap}) =>
-  GameObjectMapService.getGameObject(geometry, gameObjectMap);
+let getGameObjects = (geometry, {gameObjectsMap}) =>
+  GameObjectsMapService.getGameObjects(geometry, gameObjectsMap);
 
-let unsafeGetGameObject = (geometry, {gameObjectMap}) =>
-  GameObjectMapService.unsafeGetGameObject(geometry, gameObjectMap);
+let unsafeGetGameObjects = (geometry, {gameObjectsMap}) =>
+  GameObjectsMapService.unsafeGetGameObjects(geometry, gameObjectsMap);

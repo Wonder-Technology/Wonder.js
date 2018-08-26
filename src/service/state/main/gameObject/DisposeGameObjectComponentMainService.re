@@ -28,6 +28,9 @@ let batchDispose =
     |> BatchGetComponentGameObjectMainService.batchGetGeometryComponent(
          uidArray,
        )
+    |> Js.Array.mapi((geometry, index) =>
+         (Array.unsafe_get(uidArray, index), geometry)
+       )
     |> DisposeComponentGameObjectMainService.batchDisposeGeometryComponent(
          state,
        );

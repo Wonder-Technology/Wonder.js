@@ -4,6 +4,8 @@ open Js.Typed_array;
 
 type geometry = int;
 
+type gameObjectsMap = WonderCommonlib.SparseMapService.t(array(int));
+
 type geometryComputeData = {
   vertices: array(float),
   normals: array(float),
@@ -15,7 +17,7 @@ type geometryDisposedIndexMap = WonderCommonlib.SparseMapService.t(bool);
 
 type geometryIsInitMap = WonderCommonlib.SparseMapService.t(bool);
 
-type geometryGroupCountMap = WonderCommonlib.SparseMapService.t(int);
+/* type geometryGroupCountMap = WonderCommonlib.SparseMapService.t(int); */
 
 type geometryRecord = {
   index: int,
@@ -33,8 +35,8 @@ type geometryRecord = {
   mutable normalsOffset: int,
   mutable indicesOffset: int,
   mutable disposeCount: int,
-  gameObjectMap,
-  groupCountMap: geometryGroupCountMap,
+  gameObjectsMap,
+  /* groupCountMap: geometryGroupCountMap, */
   mutable disposedIndexArray: array(geometry),
   mutable disposedIndexMap: geometryDisposedIndexMap,
   aliveIndexArray: array(int),

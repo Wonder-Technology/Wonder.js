@@ -16,7 +16,7 @@ let _disposeComponents =
     disposedArcballCameraControllerArray,
     disposedBasicMaterialArray,
     disposedLightMaterialArray,
-    disposedGeometryArray,
+    disposedGeometryDataArray,
     disposedSourceInstanceArray,
     disposedObjectInstanceArray,
     disposedDirectionLightArray,
@@ -57,7 +57,7 @@ let _disposeComponents =
     disposedLightMaterialArray
     |> batchDisposeLightMaterialComponentFunc(state);
   let (state, geometryNeedDisposeVboBufferArr) =
-    disposedGeometryArray
+    disposedGeometryDataArray
     |> DisposeComponentGameObjectMainService.batchDisposeGeometryComponent(
          state,
        );

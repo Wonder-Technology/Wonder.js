@@ -186,7 +186,7 @@ let setGeometryIndices =
   IndicesGeometryMainService.setIndicesByTypeArray(geometry, data, state);
 };
 
-let unsafeGetGeometryGameObject =
+let unsafeGetGeometryGameObjects =
     (geometry: geometry, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -203,7 +203,7 @@ let unsafeGetGeometryGameObject =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  GameObjectGeometryService.unsafeGetGameObject(
+  GameObjectGeometryService.unsafeGetGameObjects(
     geometry,
     RecordGeometryMainService.getRecord(state),
   );

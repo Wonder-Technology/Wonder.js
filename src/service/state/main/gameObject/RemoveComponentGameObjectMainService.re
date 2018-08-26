@@ -14,4 +14,4 @@ let removeGeometryComponent =
       geometryMap: _removeComponent(uid, gameObjectRecord.geometryMap),
     },
   }
-  |> RemoveGeometryMainService.handleRemoveComponent(component);
+  |> RemoveGeometryMainService.handleRemoveComponent(uid, component);

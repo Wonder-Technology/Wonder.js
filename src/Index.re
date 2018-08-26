@@ -270,6 +270,8 @@ let hasGameObjectGeometryComponent = GameObjectAPI.hasGameObjectGeometryComponen
 
 let unsafeGetGameObjectGeometryComponent = GameObjectAPI.unsafeGetGameObjectGeometryComponent;
 
+let removeGameObjectGeometryComponent = GameObjectAPI.removeGameObjectGeometryComponent;
+
 let disposeGameObjectGeometryComponent = GameObjectAPI.disposeGameObjectGeometryComponent;
 
 let addGameObjectGeometryComponent = GameObjectAPI.addGameObjectGeometryComponent;
@@ -312,7 +314,7 @@ let setGeometryName = GeometryAPI.setGeometryName;
 
 let unsafeGetGeometryName = GeometryAPI.unsafeGetGeometryName;
 
-let unsafeGetGeometryGameObject = GeometryAPI.unsafeGetGeometryGameObject;
+let unsafeGetGeometryGameObjects = GeometryAPI.unsafeGetGeometryGameObjects;
 
 let setGeometryIndices = GeometryAPI.setGeometryIndices;
 
@@ -499,6 +501,8 @@ let createMeshRenderer = MeshRendererAPI.createMeshRenderer;
 let addSceneChildren = SceneAPI.addSceneChildren;
 
 let addSceneChild = SceneAPI.addSceneChild;
+
+let setSceneGameObject = SceneAPI.setSceneGameObject;
 
 let getSceneGameObject = SceneAPI.getSceneGameObject;
 
@@ -818,6 +822,8 @@ let hasGameObjectGeometryComponent = GameObjectAPI.hasGameObjectGeometryComponen
 
 let unsafeGetGameObjectGeometryComponent = GameObjectAPI.unsafeGetGameObjectGeometryComponent;
 
+let removeGameObjectGeometryComponent = GameObjectAPI.removeGameObjectGeometryComponent;
+
 let disposeGameObjectGeometryComponent = GameObjectAPI.disposeGameObjectGeometryComponent;
 
 let addGameObjectGeometryComponent = GameObjectAPI.addGameObjectGeometryComponent;
@@ -883,6 +889,8 @@ let createMeshRenderer = MeshRendererAPI.createMeshRenderer;
 let addSceneChildren = SceneAPI.addSceneChildren;
 
 let addSceneChild = SceneAPI.addSceneChild;
+
+let setSceneGameObject = SceneAPI.setSceneGameObject;
 
 let getSceneGameObject = SceneAPI.getSceneGameObject;
 

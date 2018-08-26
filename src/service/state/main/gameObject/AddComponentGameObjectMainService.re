@@ -93,26 +93,25 @@ let addTransformComponent =
   state;
 };
 
+let _addSharableGeometry =
+    ((uid, component, componentMap), handleAddComponentFunc, componentRecord) => {
+  componentMap |> ComponentMapService.addComponent(uid, component) |> ignore;
+  /* switch (gameObject) {
+     | Some(_) => increaseGroupCountFunc(. component, componentRecord)
+     | _ => handleAddComponentFunc(. component, uid, componentRecord)
+     }; */
+  handleAddComponentFunc(. component, uid, componentRecord);
+};
+
 let addGeometryComponent =
     (uid: int, component: component, {gameObjectRecord} as state) => {
   let geometryRecord = RecordGeometryMainService.getRecord(state);
   state.geometryRecord =
     Some(
       geometryRecord
-      |> _addSharableComponent(
-           (
-             uid,
-             component,
-             gameObjectRecord.geometryMap,
-             GameObjectGeometryService.getGameObject(
-               component,
-               geometryRecord,
-             ),
-           ),
-           (
-             GroupGeometryService.increaseGroupCount,
-             AddGeometryService.handleAddComponent,
-           ),
+      |> _addSharableGeometry(
+           (uid, component, gameObjectRecord.geometryMap),
+           AddGeometryService.handleAddComponent,
          ),
     );
   state;

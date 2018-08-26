@@ -394,12 +394,7 @@ let _ =
               open StateDataMainType;
               let (state, gameObject1, geometry1) =
                 _createAndInitGameObject(state);
-              CloneTool.cloneWithGeometry(
-                state,
-                gameObject1,
-                geometry1,
-                2,
-              );
+              CloneTool.cloneWithGeometry(state, gameObject1, geometry1, 2);
             };
             test("test clone specific count of geometrys", () => {
               let (_, _, _, _, clonedGeometryArr) = _prepare(state^);
@@ -410,7 +405,7 @@ let _ =
               clonedGeometryArr |> expect == [|geometry, geometry|];
             });
             test(
-              "cloned one's gameObject ===  the last gameObject which add the geometry",
+              "cloned one's gameObjects should be gameObjects who add the geometry",
               () => {
               let (
                 state,
@@ -420,17 +415,20 @@ let _ =
                 clonedGeometryArr,
               ) =
                 _prepare(state^);
+
+              let result =
+                [|gameObject|] |> Js.Array.concat(clonedGameObjectArr);
               (
-                GeometryAPI.unsafeGetGeometryGameObject(
+                GeometryAPI.unsafeGetGeometryGameObjects(
                   clonedGeometryArr[0],
                   state,
                 ),
-                GeometryAPI.unsafeGetGeometryGameObject(
+                GeometryAPI.unsafeGetGeometryGameObjects(
                   clonedGeometryArr[1],
                   state,
                 ),
               )
-              |> expect == (clonedGameObjectArr[1], clonedGameObjectArr[1]);
+              |> expect == (result, result);
             });
           })
         )

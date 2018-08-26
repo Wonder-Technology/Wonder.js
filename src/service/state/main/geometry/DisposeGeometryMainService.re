@@ -4,31 +4,18 @@ open GeometryType;
 
 open DisposeComponentService;
 
-/* let isAlive = (geometry, {disposedIndexMap} as record) =>
-   disposedIndexMap |> WonderCommonlib.SparseMapService.has(geometry) ?
-     false :
-     MappedIndexService.isComponentAlive(
-       geometry,
-       IndexGeometryService.getMappedIndexMap(record)
-     ); */
 let isAlive = (geometry, {disposedIndexArray}) =>
   DisposeComponentService.isAlive(geometry, disposedIndexArray);
 
 let _disposeData =
     (
+      gameObject,
       geometry,
       {
         disposeCount,
         disposedIndexArray,
         disposedIndexMap,
-        /* verticesInfos,
-           normalsInfos,
-           indicesInfos, */
-        /* computeDataFuncMap,
-           configDataMap, */
-        gameObjectMap,
-        /* isInitMap, */
-        groupCountMap,
+        gameObjectsMap,
         nameMap,
       } as geometryRecord,
     ) => {
@@ -37,23 +24,25 @@ let _disposeData =
   disposedIndexMap:
     disposedIndexMap |> WonderCommonlib.SparseMapService.set(geometry, true),
   disposeCount: succ(disposeCount),
-  /* computeDataFuncMap: computeDataFuncMap |> disposeSparseMapData(geometry),
-     configDataMap: configDataMap |> disposeSparseMapData(geometry), */
-  gameObjectMap: gameObjectMap |> disposeSparseMapData(geometry),
-  /* isInitMap: isInitMap |> disposeSparseMapData(geometry), */
-  groupCountMap: groupCountMap |> disposeSparseMapData(geometry),
-  nameMap: nameMap |> disposeSparseMapData(geometry)
+  gameObjectsMap:
+    GameObjectsMapService.removeGameObject(
+      gameObject,
+      geometry,
+      gameObjectsMap,
+    ),
+  nameMap: nameMap |> disposeSparseMapData(geometry),
 };
 
 let handleBatchDisposeComponent =
-  (. geometryArray: array(geometry), state) => {
+  (. geometryDataArray, state) => {
     WonderLog.Contract.requireCheck(
       () =>
         WonderLog.(
           Contract.(
             Operators.(
               DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
-                geometryArray,
+                geometryDataArray
+                |> Js.Array.map(((_, geometry)) => geometry),
                 isAlive,
                 state |> RecordGeometryMainService.getRecord,
               )
@@ -64,20 +53,24 @@ let handleBatchDisposeComponent =
     );
     let geometryRecord = state |> RecordGeometryMainService.getRecord;
     let (geometryNeedDisposeVboBufferArr, geometryRecord) =
-      geometryArray
+      geometryDataArray
       |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. (geometryNeedDisposeVboBufferArr, geometryRecord), geometry) =>
+           (.
+             (geometryNeedDisposeVboBufferArr, geometryRecord),
+             (gameObject, geometry),
+           ) =>
              switch (
                GroupGeometryService.isGroupGeometry(geometry, geometryRecord)
              ) {
              | false => (
                  geometryNeedDisposeVboBufferArr
                  |> ArrayService.push(geometry),
-                 _disposeData(geometry, geometryRecord),
+                 _disposeData(gameObject, geometry, geometryRecord),
                )
              | true => (
                  geometryNeedDisposeVboBufferArr,
-                 GroupGeometryService.decreaseGroupCount(
+                 GroupGeometryService.removeGameObject(
+                   gameObject,
                    geometry,
                    geometryRecord,
                  ),

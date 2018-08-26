@@ -1,21 +1,17 @@
 open GeometryType;
 
-let getGroupCount = (geometry, record) =>
-  GroupService.getGroupCount(geometry, record.groupCountMap);
-
 let isGroupGeometry = (geometry, record) =>
-  GroupService.isGroupComponent(geometry, record.groupCountMap);
+  switch (record |> GameObjectGeometryService.getGameObjects(geometry)) {
+  | Some(arr) when arr |> Js.Array.length > 1 => true
+  | _ => false
+  };
 
-let increaseGroupCount =
-  [@bs]
-  (
-    (geometry, {groupCountMap} as record) => {
-      ...record,
-      groupCountMap: groupCountMap |> GroupService.increaseGroupCount(geometry)
-    }
-  );
-
-let decreaseGroupCount = (geometry, {groupCountMap} as record) => {
+let removeGameObject = (gameObject, geometry, {gameObjectsMap} as record) => {
   ...record,
-  groupCountMap: groupCountMap |> GroupService.decreaseGroupCount(geometry)
+  gameObjectsMap:
+    GameObjectsMapService.removeGameObject(
+      gameObject,
+      geometry,
+      gameObjectsMap,
+    ),
 };

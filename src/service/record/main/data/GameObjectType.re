@@ -45,6 +45,8 @@ type gameObjectObjectInstanceMap =
 
 type gameObjectLightMap = WonderCommonlib.SparseMapService.t(int);
 
+type geometryData = (gameObject, geometry);
+
 type gameObjectRecord = {
   mutable uid: int,
   mutable nameMap: WonderCommonlib.SparseMapService.t(string),
@@ -59,7 +61,7 @@ type gameObjectRecord = {
   mutable disposedArcballCameraControllerArray: array(int),
   mutable disposedBasicMaterialArray: array(int),
   mutable disposedLightMaterialArray: array(int),
-  mutable disposedGeometryArray: array(int),
+  mutable disposedGeometryDataArray: array(geometryData),
   mutable disposedSourceInstanceArray: array(int),
   mutable disposedObjectInstanceArray: array(int),
   mutable disposedDirectionLightArray: array(int),

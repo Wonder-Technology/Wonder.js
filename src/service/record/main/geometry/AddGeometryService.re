@@ -1,12 +1,12 @@
 open GeometryType;
 
 let handleAddComponent =
-  (. geometry, gameObjectUid: int, {gameObjectMap} as record) => {
+  (. geometry, gameObjectUid: int, {gameObjectsMap} as record) => {
     ...record,
-    gameObjectMap:
-      AddComponentService.addComponentToGameObjectMap(
+    gameObjectsMap:
+      AddComponentService.addSharableComponentToGameObjectsMap(
         geometry,
         gameObjectUid,
-        gameObjectMap,
+        gameObjectsMap,
       ),
   };

@@ -19,11 +19,7 @@ let checkComponentShouldAliveWithBatchDispose =
     (componentArr, isAliveFunc, record) =>
   componentArr
   |> WonderCommonlib.ArrayService.forEach((. component) =>
-       checkComponentShouldAlive(
-         component,
-         isAliveFunc,
-         record,
-       )
+       checkComponentShouldAlive(component, isAliveFunc, record)
      );
 
 let disposeSparseMapData = (component: int, map) =>
@@ -34,9 +30,14 @@ let disposeSparseMapData = (component: int, map) =>
 
 let removeFromArray = (target: int, arr) => {
   let index = arr |> Js.Array.indexOf(target);
-  let lastIndex = arr |> Js.Array.length |> pred;
-  arr |> ArrayService.deleteBySwap(index, lastIndex);
-  arr;
+
+  index === (-1) ?
+    arr :
+    {
+      let lastIndex = arr |> Js.Array.length |> pred;
+      arr |> ArrayService.deleteBySwap(index, lastIndex);
+      arr;
+    };
 };
 
 let batchRemoveFromArray = (map, arr) =>

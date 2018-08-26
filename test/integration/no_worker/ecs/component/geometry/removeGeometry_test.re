@@ -33,7 +33,7 @@ let _ =
       });
 
       describe("test dispose shared geometry", () =>
-        test("descrease group count", () => {
+        test("remove gameObject", () => {
           let (state, geometry1) = createGeometry(state^);
           let (state, gameObject1) = GameObjectAPI.createGameObject(state);
           let state =
@@ -63,7 +63,8 @@ let _ =
                  geometry1,
                );
 
-          GeometryTool.getGroupCount(geometry1, state) |> expect == 1;
+          GeometryAPI.unsafeGetGeometryGameObjects(geometry1, state)
+          |> expect == [|gameObject3, gameObject2|];
         })
       );
 

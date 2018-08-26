@@ -83,21 +83,27 @@ let _ =
       })
     );
 
-    describe("unsafeGetGeometryGameObject", () =>
-      test("get geometry's gameObject", () => {
+    describe("unsafeGetGeometryGameObjects", () =>
+      test("get geometry's gameObjects", () => {
         open GameObjectAPI;
         let (state, geometry) = createGeometry(state^);
-        let (state, gameObject) = state |> createGameObject;
+        let (state, gameObject1) = state |> createGameObject;
+        let (state, gameObject2) = state |> createGameObject;
         let state =
-          state |> addGameObjectGeometryComponent(gameObject, geometry);
-        state |> unsafeGetGeometryGameObject(geometry) |> expect == gameObject;
+          state
+          |> addGameObjectGeometryComponent(gameObject1, geometry)
+          |> addGameObjectGeometryComponent(gameObject2, geometry);
+
+        state
+        |> unsafeGetGeometryGameObjects(geometry)
+        |> expect == [|gameObject1, gameObject2|];
       })
     );
 
     describe("dispose component", () => {
       describe("dispose data", () => {
         describe("test dispose shared geometry", () =>
-          test("descrease group count", () => {
+          test("remove gameObject", () => {
             let (state, geometry1) = createGeometry(state^);
             let (state, gameObject1) = GameObjectAPI.createGameObject(state);
             let state =
@@ -126,7 +132,9 @@ let _ =
                    gameObject1,
                    geometry1,
                  );
-            GeometryTool.getGroupCount(geometry1, state) |> expect == 1;
+
+            GeometryAPI.unsafeGetGeometryGameObjects(geometry1, state)
+            |> expect == [|gameObject3, gameObject2|];
           })
         );
         describe("test dispose not shared geometry", () => {
@@ -143,17 +151,16 @@ let _ =
                  );
             (state, gameObject1, geometry1);
           };
-          test("remove from groupCountMap, gameObjectMap, nameMap", () => {
+          test("remove from gameObjectsMap, nameMap", () => {
             open StateDataMainType;
             let (state, gameObject1, geometry1) = _prepare(state);
-            let {groupCountMap, gameObjectMap, nameMap} =
-              GeometryTool.getRecord(state);
+            let {gameObjectsMap, nameMap} = GeometryTool.getRecord(state);
+
             (
-              groupCountMap |> WonderCommonlib.SparseMapService.has(geometry1),
-              gameObjectMap |> WonderCommonlib.SparseMapService.has(geometry1),
+              GeometryTool.hasGameObject(geometry1, state),
               nameMap |> WonderCommonlib.SparseMapService.has(geometry1),
             )
-            |> expect == (false, false, false);
+            |> expect == (false, false);
           });
           describe("test reallocate geometry", () => {
             let _prepare = state => {
@@ -577,8 +584,8 @@ let _ =
           test("getGeometryIndices should error", () =>
             _testGetFunc(getGeometryIndices)
           );
-          test("unsafeGetGeometryGameObject should error", () =>
-            _testGetFunc(unsafeGetGeometryGameObject)
+          test("unsafeGetGeometryGameObjects should error", () =>
+            _testGetFunc(unsafeGetGeometryGameObjects)
           );
           test("setGeometryVertices should error", () =>
             _testSetFunc(setGeometryVertices)

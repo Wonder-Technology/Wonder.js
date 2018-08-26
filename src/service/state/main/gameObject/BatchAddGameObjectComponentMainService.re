@@ -166,6 +166,27 @@ let _batchAddSharableComponent =
      );
 };
 
+let _batchAddSharableGeometry =
+    (
+      (uidArr: array(int), componentArr: array(component), componentMap),
+      handleAddComponentFunc,
+      record,
+    ) => {
+  _checkBatchAdd(uidArr, componentArr);
+  uidArr
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. record, uid, index) => {
+         let component = Array.unsafe_get(componentArr, index);
+         componentMap
+         |> ComponentMapService.addComponent(uid, component)
+         |> ignore;
+         /* let record = increaseGroupCountFunc(. component, record); */
+         handleAddComponentFunc(. component, uid, record);
+       },
+       record,
+     );
+};
+
 let _batchAddGeometryComponent =
     (
       uidArr: array(int),
@@ -175,12 +196,9 @@ let _batchAddGeometryComponent =
   ...state,
   geometryRecord:
     Some(
-      _batchAddSharableComponent(
+      _batchAddSharableGeometry(
         (uidArr, componentArr, gameObjectRecord.geometryMap),
-        (
-          GroupGeometryService.increaseGroupCount,
-          AddGeometryService.handleAddComponent,
-        ),
+        AddGeometryService.handleAddComponent,
         RecordGeometryMainService.getRecord(state),
       ),
     ),

@@ -125,34 +125,26 @@ let _ =
         describe("unsafeGetGeometryComponent", () =>
           test("get geometry component", () => {
             let (state, gameObject) = createGameObject(state^);
-            let (state, geometry1) =
-              GeometryAPI.createGeometry(state);
-            let (state, geometry2) =
-              GeometryAPI.createGeometry(state);
+            let (state, geometry1) = GeometryAPI.createGeometry(state);
+            let (state, geometry2) = GeometryAPI.createGeometry(state);
             let state =
-              state
-              |> addGameObjectGeometryComponent(
-                   gameObject,
-                   geometry2,
-                 );
+              state |> addGameObjectGeometryComponent(gameObject, geometry2);
+
             unsafeGetGameObjectGeometryComponent(gameObject, state)
             |> expect == geometry2;
           })
         );
 
-        describe("test custom geometry component", () =>
-          describe("hasGameObjectGeometryComponent", () =>
-            test("has geometry component", () => {
-              let (state, gameObject) = createGameObject(state^);
-              let (state, geometry) =
-                GeometryAPI.createGeometry(state);
-              let state =
-                state
-                |> addGameObjectGeometryComponent(gameObject, geometry);
-              hasGameObjectGeometryComponent(gameObject, state)
-              |> expect == true;
-            })
-          )
+        describe("hasGameObjectGeometryComponent", () =>
+          test("has geometry component", () => {
+            let (state, gameObject) = createGameObject(state^);
+            let (state, geometry) = GeometryAPI.createGeometry(state);
+            let state =
+              state |> addGameObjectGeometryComponent(gameObject, geometry);
+
+            hasGameObjectGeometryComponent(gameObject, state)
+            |> expect == true;
+          })
         );
       });
       describe("test meshRenderer component", () => {
@@ -803,23 +795,21 @@ let _ =
             |> expect == (true, false);
           });
         });
-        describe("dispose geometry component", () =>
-          test("test custom geometry component", () => {
-            TestTool.closeContractCheck();
-            open GameObjectType;
-            let (state, gameObject1, geometry1) =
-              GeometryTool.createGameObject(state^);
-            let (state, gameObject2, geometry2) =
-              GeometryTool.createGameObject(state);
-            let state =
-              state |> GameObjectTool.disposeGameObject(gameObject1);
-            (
-              GeometryTool.isGeometryDisposed(geometry1, state),
-              GeometryTool.isGeometryDisposed(geometry2, state),
-            )
-            |> expect == (true, false);
-          })
-        );
+        test("dispose geometry component", () => {
+          TestTool.closeContractCheck();
+          open GameObjectType;
+          let (state, gameObject1, geometry1) =
+            GeometryTool.createGameObject(state^);
+          let (state, gameObject2, geometry2) =
+            GeometryTool.createGameObject(state);
+          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+          (
+            GeometryTool.isGeometryDisposed(geometry1, state),
+            GeometryTool.isGeometryDisposed(geometry2, state),
+          )
+          |> expect == (true, false);
+        });
+
         describe("dispose light component", () => {
           describe("test direction light component", () =>
             test("test dispose one", () => {
@@ -995,8 +985,7 @@ let _ =
               geometry1,
               state,
             );
-          let (state, geometry2) =
-            GeometryAPI.createGeometry(state);
+          let (state, geometry2) = GeometryAPI.createGeometry(state);
           let state =
             GameObjectAPI.addGameObjectGeometryComponent(
               gameObject1,

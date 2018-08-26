@@ -143,7 +143,7 @@ let disposeGameObjectGeometryComponentWithoutVboBuffer =
   let (state, geometryNeedDisposeVboBufferArr) =
     DisposeComponentGameObjectMainService.batchDisposeGeometryComponent(
       state,
-      [|component|],
+      [|(gameObject, component)|],
     );
   let state = state |> ReallocateCPUMemoryJob.execJob(None);
   state;
