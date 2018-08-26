@@ -158,8 +158,7 @@ let _ =
             gltf
             |> GenerateSceneGraphSystemTool.contain(
                  {|
-            "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1,"TEXCOORD_0":2},"indices":3}]},{"primitives":[{"attributes":{"POSITION":4,"NORMAL":5,"TEXCOORD_0":6},"indices":7}]},{"primitives":[{"attributes":{"POSITION":8,"NORMAL":9},"indices":10}]},{"primitives":[{"attributes":{"POSITION":11,"NORMAL":12},"indices":13}]}]
-
+            "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1,"TEXCOORD_0":2},"indices":3}],"name":"Wheels"},{"primitives":[{"attributes":{"POSITION":4,"NORMAL":5,"TEXCOORD_0":6},"indices":7}],"name":"Cesium_Milk_Truck_0"},{"primitives":[{"attributes":{"POSITION":8,"NORMAL":9},"indices":10}],"name":"Cesium_Milk_Truck_1"},{"primitives":[{"attributes":{"POSITION":11,"NORMAL":12},"indices":13}],"name":"Cesium_Milk_Truck_2"}]
           |},
                ),
           state,

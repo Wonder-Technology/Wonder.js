@@ -59,12 +59,10 @@ let _getBatchComponentGameObjectData =
     indices.gameObjectIndices.transformGameObjectIndexData.componentIndices
     |> _getBatchArrByIndices(transformArr);
   let geometryGameObjects =
-    indices.gameObjectIndices.geometryGameObjectIndexData.
-      gameObjectIndices
+    indices.gameObjectIndices.geometryGameObjectIndexData.gameObjectIndices
     |> _getBatchArrByIndices(gameObjectArr);
   let gameObjectGeometrys =
-    indices.gameObjectIndices.geometryGameObjectIndexData.
-      componentIndices
+    indices.gameObjectIndices.geometryGameObjectIndexData.componentIndices
     |> _getBatchArrByIndices(geometryArr);
 
   let meshRendererGameObjects =
@@ -275,11 +273,13 @@ let _batchSetGeometryData =
          geometryData |> OptionService.isJsonSerializedValueNone ?
            state :
            {
-             let {position, normal, texCoord, index}: WDType.geometry =
+             let {position, normal, texCoord, index, name}: WDType.geometry =
                geometryData |> OptionService.unsafeGetJsonSerializedValue;
 
-             let geometry =
-               Array.unsafe_get(geometryArr, geometryIndex);
+             let geometry = Array.unsafe_get(geometryArr, geometryIndex);
+
+             let state =
+               NameGeometryMainService.setName(geometry, name, state);
              let state =
                VerticesGeometryMainService.setVerticesByTypeArray(
                  geometry,

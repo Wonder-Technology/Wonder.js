@@ -169,7 +169,6 @@ let _ =
     let _createGameObject1 = state => {
       open GameObjectAPI;
       open LightMaterialAPI;
-      
       open MeshRendererAPI;
 
       let (state, material) = createLightMaterial(state);
@@ -228,10 +227,7 @@ let _ =
       let (state, gameObject) = GameObjectAPI.createGameObject(state);
       let state =
         state
-        |> GameObjectAPI.addGameObjectGeometryComponent(
-             gameObject,
-             geometry,
-           );
+        |> GameObjectAPI.addGameObjectGeometryComponent(gameObject, geometry);
       let vertices1 =
         Float32Array.make([|
           (-0.04454309865832329),
@@ -360,10 +356,7 @@ let _ =
       let (state, gameObject) = GameObjectAPI.createGameObject(state);
       let state =
         state
-        |> GameObjectAPI.addGameObjectGeometryComponent(
-             gameObject,
-             geometry,
-           );
+        |> GameObjectAPI.addGameObjectGeometryComponent(gameObject, geometry);
       let vertices1 =
         Float32Array.make([|
           2.602089970253733e-18,
@@ -834,7 +827,7 @@ let _ =
               |>
               expect == [|
                           (
-                            "gameObject_1",
+                            "geometry_0",
                             (
                               GLTFTool.getBoxMainVertices(),
                               GLTFTool.getBoxMainNormals(),
@@ -843,11 +836,11 @@ let _ =
                             ),
                           ),
                           (
-                            "gameObject_2",
+                            "geometry_1",
                             (vertices2, normals2, texCoords2, indices2),
                           ),
                           (
-                            "gameObject_3",
+                            "geometry_2",
                             (vertices3, normals3, texCoords3, indices3),
                           ),
                         |],
@@ -1319,7 +1312,7 @@ let _ =
               |>
               expect == [|
                           (
-                            "gameObject_1",
+                            "geometry_0",
                             (
                               GLTFTool.getBoxMainVertices(),
                               GLTFTool.getBoxMainNormals(),
@@ -1328,7 +1321,7 @@ let _ =
                             ),
                           ),
                           (
-                            "gameObject_2",
+                            "geometry_0",
                             (
                               GLTFTool.getBoxMainVertices(),
                               GLTFTool.getBoxMainNormals(),
@@ -1337,7 +1330,7 @@ let _ =
                             ),
                           ),
                           (
-                            "gameObject_3",
+                            "geometry_1",
                             (vertices3, normals3, texCoords3, indices3),
                           ),
                         |];

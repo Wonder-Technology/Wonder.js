@@ -1,5 +1,8 @@
+let _buildDefaultName = geometryIndex =>
+  ConvertCommon.buildDefaultName("geometry", geometryIndex);
+
 let _convertToGeometry =
-    ({primitives}: GLTFType.mesh)
+    ({primitives, name}: GLTFType.mesh, index)
     : option(WDType.geometry) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -29,6 +32,11 @@ let _convertToGeometry =
         ConvertCommon.getPrimitiveData(primitives);
       let {position, normal, texCoord_0}: GLTFType.attributes = attributes;
       Some({
+        name:
+          switch (name) {
+          | None => _buildDefaultName(index)
+          | Some(name) => name
+          },
         position,
         normal,
         texCoord: texCoord_0,
@@ -39,7 +47,8 @@ let _convertToGeometry =
 
 let convertToGeometrys = ({meshes}: GLTFType.gltf) =>
   meshes
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. arr, mesh) => arr |> ArrayService.push(_convertToGeometry(mesh)),
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. arr, mesh, index) =>
+         arr |> ArrayService.push(_convertToGeometry(mesh, index)),
        [||],
      );

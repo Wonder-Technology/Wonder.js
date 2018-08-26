@@ -10,7 +10,7 @@ let generateGLBData = (rootGameObject, imageBase64Map, state) => {
   let (
     state,
     (
-      meshPointDataMap,
+      meshPointAndNameDataMap,
       meshRendererDataMap,
       basicMaterialDataMap,
       lightMaterialDataMap,
@@ -28,7 +28,7 @@ let generateGLBData = (rootGameObject, imageBase64Map, state) => {
     (bufferViewDataArr, accessorDataArr, meshDataArr),
     (vertexDataArr, indexDataArr),
   ) =
-    BuildGeometryDataSystem.build(meshPointDataMap);
+    BuildGeometryDataSystem.build(meshPointAndNameDataMap);
 
   let geometryEndByteOffset = totalByteLength;
 

@@ -264,18 +264,21 @@ let _ =
                 expect == [|
                             ConvertTool.getJsonSerializedNone(),
                             Some({
+                              name: "geometry_1",
                               position: 9,
                               normal: ConvertTool.getJsonSerializedNone(),
                               texCoord: ConvertTool.getJsonSerializedNone(),
                               index: 7,
                             }),
                             Some({
+                              name: "geometry_2",
                               position: 2,
                               normal: ConvertTool.getJsonSerializedNone(),
                               texCoord: ConvertTool.getJsonSerializedNone(),
                               index: 0,
                             }),
                             Some({
+                              name: "geometry_3",
                               position: 6,
                               normal: ConvertTool.getJsonSerializedNone(),
                               texCoord: ConvertTool.getJsonSerializedNone(),
@@ -332,8 +335,7 @@ let _ =
                   ~state,
                   ~testFunc=
                     ({indices}) =>
-                      indices.gameObjectIndices.
-                        geometryGameObjectIndexData
+                      indices.gameObjectIndices.geometryGameObjectIndexData
                       |>
                       expect == {
                                   gameObjectIndices: [|1, 3, 4, 5, 6|],
@@ -447,6 +449,7 @@ let _ =
                 |>
                 expect == [|
                             Some({
+                              name: "geometry_0",
                               position: 1,
                               normal: ConvertTool.getJsonSerializedNone(),
                               texCoord: ConvertTool.getJsonSerializedNone(),
@@ -522,10 +525,7 @@ let _ =
             ({scene}) =>
               scene.imgui
               |>
-              expect == Some({
-                          customData: customData |> Obj.magic,
-                          imguiFunc,
-                        }),
+              expect == Some({customData: customData |> Obj.magic, imguiFunc}),
           (),
         );
       });
@@ -734,7 +734,7 @@ let _ =
                               moveSpeedY: 3.1,
                               rotateSpeed: 0.3,
                               wheelSpeed: 0.9,
-                              isBindEvent: true
+                              isBindEvent: true,
                             },
                           |],
             (),
@@ -1206,6 +1206,7 @@ let _ =
               |>
               expect == [|
                           Some({
+                            name: "geometry_0",
                             position: 2,
                             normal: Some(1),
                             texCoord: Some(3),

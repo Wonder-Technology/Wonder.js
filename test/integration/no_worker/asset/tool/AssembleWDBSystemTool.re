@@ -143,28 +143,28 @@ let getAllPointLightData = (rootGameObject, state) =>
        )
      );
 
-let getAllGeometryData = (rootGameObject, state) =>
+let getAllGeometrys = (rootGameObject, state) =>
   getAllGameObjects(rootGameObject, state)
   |> Js.Array.filter(gameObject =>
        GameObjectAPI.hasGameObjectGeometryComponent(gameObject, state)
      )
-  |> Js.Array.map(gameObject => {
-       let geometry =
-         GameObjectAPI.unsafeGetGameObjectGeometryComponent(
-           gameObject,
-           state,
-         );
+  |> Js.Array.map(gameObject =>
+       GameObjectAPI.unsafeGetGameObjectGeometryComponent(gameObject, state)
+     );
 
+let getAllGeometryData = (rootGameObject, state) =>
+  getAllGeometrys(rootGameObject, state)
+  |> Js.Array.map(geometry =>
        (
-         GameObjectAPI.unsafeGetGameObjectName(gameObject, state),
+         GeometryAPI.unsafeGetGeometryName(geometry, state),
          (
            GeometryTool.getMainVertices(geometry, state),
            GeometryTool.getMainNormals(geometry, state),
            GeometryTool.getMainTexCoords(geometry, state),
            GeometryTool.getMainIndices(geometry, state),
          ),
-       );
-     });
+       )
+     );
 
 let batchCreate = BatchCreateSystem.batchCreate;
 

@@ -357,10 +357,7 @@ let _ =
                 (
                   GeometryAPI.getGeometryVertices(geometry, state),
                   GeometryAPI.getGeometryNormals(geometry, state),
-                  GeometryAPI.getGeometryTexCoords(
-                    geometry,
-                    state,
-                  ),
+                  GeometryAPI.getGeometryTexCoords(geometry, state),
                   GeometryAPI.getGeometryIndices(geometry, state),
                 )
                 |>
@@ -676,6 +673,42 @@ let _ =
                  )
               |>
               expect == [|false, false, true, false, true, true, true, true|],
+            state^,
+          )
+        );
+      });
+
+      describe("set geometry name", () => {
+        testPromise("test BoxTextured glb", () =>
+          AssembleWDBSystemTool.testGLB(
+            sandbox^,
+            GLBTool.buildGLBFilePath("BoxTextured.glb"),
+            ((state, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllGeometrys(rootGameObject, state)
+              |> Js.Array.map(geometry =>
+                   GeometryAPI.unsafeGetGeometryName(geometry, state)
+                 )
+              |> expect == [|"Mesh"|],
+            state^,
+          )
+        );
+        testPromise("test truck glb", () =>
+          AssembleWDBSystemTool.testGLB(
+            sandbox^,
+            GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+            ((state, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllGeometrys(rootGameObject, state)
+              |> Js.Array.map(geometry =>
+                   GeometryAPI.unsafeGetGeometryName(geometry, state)
+                 )
+              |>
+              expect == [|
+                          "Cesium_Milk_Truck_0",
+                          "Cesium_Milk_Truck_1",
+                          "Cesium_Milk_Truck_2",
+                          "Wheels",
+                          "Wheels",
+                        |],
             state^,
           )
         );

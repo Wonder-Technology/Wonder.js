@@ -15,50 +15,44 @@ let _hasMap = (gameObject, {gameObjectRecord} as state) =>
 
 let _getGeometryData =
     ((gameObject, meshIndex), geometry, geometryDataMap, state) =>
-  switch (
-    geometryDataMap |> WonderCommonlib.SparseMapService.get(geometry)
-  ) {
-  | Some((existedMeshIndex, pointData)) => (
+  switch (geometryDataMap |> WonderCommonlib.SparseMapService.get(geometry)) {
+  | Some((existedMeshIndex, pointAndNameData)) => (
       Some(existedMeshIndex),
-      pointData,
+      pointAndNameData,
       meshIndex,
       geometryDataMap,
     )
 
   | None =>
-    let pointData =
+    let pointAndNameData =
       Some((
-        VerticesGeometryMainService.getVertices(. geometry, state),
-        NormalsGeometryMainService.getNormals(. geometry, state),
-        _hasMap(gameObject, state) ?
-          Some(
-            TexCoordsGeometryMainService.getTexCoords(.
-              geometry,
-              state,
-            ),
-          ) :
-          None,
-        IndicesGeometryMainService.getIndices(. geometry, state),
+        (
+          VerticesGeometryMainService.getVertices(. geometry, state),
+          NormalsGeometryMainService.getNormals(. geometry, state),
+          _hasMap(gameObject, state) ?
+            Some(
+              TexCoordsGeometryMainService.getTexCoords(. geometry, state),
+            ) :
+            None,
+          IndicesGeometryMainService.getIndices(. geometry, state),
+        ),
+        NameGeometryMainService.getName(geometry, state),
       ));
 
     (
       Some(meshIndex),
-      pointData,
+      pointAndNameData,
       meshIndex |> succ,
       geometryDataMap
       |> WonderCommonlib.SparseMapService.set(
            geometry,
-           (meshIndex, pointData),
+           (meshIndex, pointAndNameData),
          ),
     );
   };
 
 let _getMeshData =
-    (
-      (gameObject, meshIndex),
-      geometryDataMap,
-      {gameObjectRecord} as state,
-    ) =>
+    ((gameObject, meshIndex), geometryDataMap, {gameObjectRecord} as state) =>
   switch (
     GetComponentGameObjectService.getGeometryComponent(
       gameObject,
@@ -66,7 +60,6 @@ let _getMeshData =
     )
   ) {
   | None => (None, None, meshIndex, geometryDataMap)
-
   | Some(geometry) =>
     _getGeometryData(
       (gameObject, meshIndex),
@@ -285,7 +278,7 @@ let getComponentData =
         ),
         (geometryDataMap, basicMaterialDataMap, lightMaterialDataMap),
         (
-          meshPointDataMap,
+          meshPointAndNameDataMap,
           meshRendererDataMap,
           resultBasicMaterialDataMap,
           resultLightMaterialDataMap,
@@ -296,17 +289,17 @@ let getComponentData =
         ),
       ),
     ) => {
-  let (meshIndex, pointData, newMeshIndex, geometryDataMap) =
+  let (meshIndex, pointAndNameData, newMeshIndex, geometryDataMap) =
     _getMeshData((gameObject, meshIndex), geometryDataMap, state);
 
-  let meshPointDataMap =
+  let meshPointAndNameDataMap =
     switch (meshIndex) {
-    | None => meshPointDataMap
+    | None => meshPointAndNameDataMap
     | Some(meshIndex) =>
-      meshPointDataMap
+      meshPointAndNameDataMap
       |> WonderCommonlib.SparseMapService.set(
            meshIndex,
-           pointData |> OptionService.unsafeGet,
+           pointAndNameData |> OptionService.unsafeGet,
          )
     };
 
@@ -458,7 +451,7 @@ let getComponentData =
     ),
     (geometryDataMap, basicMaterialDataMap, lightMaterialDataMap),
     (
-      meshPointDataMap,
+      meshPointAndNameDataMap,
       meshRendererDataMap,
       resultBasicMaterialDataMap,
       resultLightMaterialDataMap,

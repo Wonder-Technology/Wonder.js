@@ -167,7 +167,7 @@ let rec _getNodeData =
             gameObjectNodeIndexMap,
           ),
           (
-            meshPointDataMap,
+            meshPointAndNameDataMap,
             meshRendererDataMap,
             resultBasicMaterialDataMap,
             resultLightMaterialDataMap,
@@ -202,7 +202,7 @@ let rec _getNodeData =
              gameObjectNodeIndexMap,
            ),
            (
-             meshPointDataMap,
+             meshPointAndNameDataMap,
              meshRendererDataMap,
              resultBasicMaterialDataMap,
              resultLightMaterialDataMap,
@@ -287,7 +287,7 @@ let rec _getNodeData =
              lightMaterialDataMap,
            ),
            (
-             meshPointDataMap,
+             meshPointAndNameDataMap,
              meshRendererDataMap,
              resultBasicMaterialDataMap,
              resultLightMaterialDataMap,
@@ -316,7 +316,7 @@ let rec _getNodeData =
                lightMaterialDataMap,
              ),
              (
-               meshPointDataMap,
+               meshPointAndNameDataMap,
                meshRendererDataMap,
                resultBasicMaterialDataMap,
                resultLightMaterialDataMap,
@@ -348,7 +348,7 @@ let rec _getNodeData =
              gameObjectNodeIndexMap,
            ),
            (
-             meshPointDataMap,
+             meshPointAndNameDataMap,
              meshRendererDataMap,
              resultBasicMaterialDataMap,
              resultLightMaterialDataMap,
@@ -406,7 +406,7 @@ let rec _getNodeData =
            gameObjectNodeIndexMap,
          ),
          (
-           meshPointDataMap,
+           meshPointAndNameDataMap,
            meshRendererDataMap,
            resultBasicMaterialDataMap,
            resultLightMaterialDataMap,
@@ -441,7 +441,7 @@ let getAllNodeData = (rootGameObject, state) => {
       gameObjectNodeIndexMap,
     ),
     (
-      meshPointDataMap,
+      meshPointAndNameDataMap,
       meshRendererDataMap,
       resultBasicMaterialDataMap,
       resultLightMaterialDataMap,
@@ -504,7 +504,7 @@ let getAllNodeData = (rootGameObject, state) => {
       gameObjectNodeIndexMap,
     ),
     (
-      meshPointDataMap,
+      meshPointAndNameDataMap,
       meshRendererDataMap,
       resultBasicMaterialDataMap,
       resultLightMaterialDataMap,
@@ -522,7 +522,7 @@ let getAllNodeData = (rootGameObject, state) => {
   (
     state,
     (
-      meshPointDataMap,
+      meshPointAndNameDataMap,
       meshRendererDataMap,
       resultBasicMaterialDataMap,
       resultLightMaterialDataMap,

@@ -2,19 +2,19 @@ open StateDataMainType;
 
 open GeometryType;
 
-let getName = (material, state) =>
+let getName = (geometry, state) =>
   NameService.getName(
-    material,
+    geometry,
     RecordGeometryMainService.getRecord(state).nameMap,
   );
 
-let unsafeGetName = (material, state) =>
+let unsafeGetName = (geometry, state) =>
   NameService.unsafeGetName(
-    material,
+    geometry,
     RecordGeometryMainService.getRecord(state).nameMap,
   );
 
-let setName = (material, name, state) => {
+let setName = (geometry, name, state) => {
   let {nameMap} as record = RecordGeometryMainService.getRecord(state);
 
   {
@@ -22,7 +22,7 @@ let setName = (material, name, state) => {
     geometryRecord:
       Some({
         ...record,
-        nameMap: NameService.setName(material, name, nameMap),
+        nameMap: NameService.setName(geometry, name, nameMap),
       }),
   };
 };

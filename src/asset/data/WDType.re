@@ -51,6 +51,7 @@ type transform = {
 type meshRenderer = {drawMode: DrawModeType.drawMode};
 
 type geometry = {
+  name: string,
   position: accessorIndex,
   normal: option(accessorIndex),
   texCoord: option(accessorIndex),

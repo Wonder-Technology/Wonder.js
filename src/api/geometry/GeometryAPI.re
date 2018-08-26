@@ -209,14 +209,14 @@ let unsafeGetGeometryGameObjects =
   );
 };
 
-let unsafeGetGeometryName = (material, state) => {
+let unsafeGetGeometryName = (geometry, state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
         Contract.(
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
-              material,
+              geometry,
               isAlive,
               RecordGeometryMainService.getRecord(state),
             )
@@ -225,17 +225,17 @@ let unsafeGetGeometryName = (material, state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  NameGeometryMainService.unsafeGetName(material, state);
+  NameGeometryMainService.unsafeGetName(geometry, state);
 };
 
-let setGeometryName = (material, name, state) => {
+let setGeometryName = (geometry, name, state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
         Contract.(
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
-              material,
+              geometry,
               isAlive,
               RecordGeometryMainService.getRecord(state),
             )
@@ -244,5 +244,5 @@ let setGeometryName = (material, name, state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  NameGeometryMainService.setName(material, name, state);
+  NameGeometryMainService.setName(geometry, name, state);
 };

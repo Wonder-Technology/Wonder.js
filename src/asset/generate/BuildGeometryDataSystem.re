@@ -195,6 +195,7 @@ let _addMeshData =
     (
       (vertexIndex, normalIndex, texCoordIndex, indexIndex),
       texCoords,
+      name,
       meshDataArr,
     ) =>
   meshDataArr
@@ -213,7 +214,7 @@ let _addMeshData =
            indices: indexIndex |> OptionService.unsafeGet,
            material: None,
          },
-         name: None,
+         name,
        }: meshData,
      );
 
@@ -233,12 +234,14 @@ let _addMeshData =
      bufferViewOffset,
    ); */
 
-let build = meshPointDataMap => {
+let build = meshPointAndNameDataMap => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
         Contract.(
-          Operators.(GenerateCommon.checkShouldHasNoSlot(meshPointDataMap))
+          Operators.(
+            GenerateCommon.checkShouldHasNoSlot(meshPointAndNameDataMap)
+          )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
@@ -254,7 +257,7 @@ let build = meshPointDataMap => {
     (bufferViewDataArr, accessorDataArr, meshDataArr),
     (vertexDataArr, indexDataArr),
   ) =
-    meshPointDataMap
+    meshPointAndNameDataMap
     |> SparseMapService.reduceiValid(
          (.
            (
@@ -262,7 +265,7 @@ let build = meshPointDataMap => {
              (bufferViewDataArr, accessorDataArr, meshDataArr),
              (vertexDataArr, indexDataArr),
            ),
-           (vertices, normals, texCoords, indices),
+           ((vertices, normals, texCoords, indices), name),
            meshIndex,
          ) => {
            let verticesLength = vertices |> Float32Array.length;
@@ -304,6 +307,7 @@ let build = meshPointDataMap => {
                _addMeshData(
                  (vertexIndex, normalIndex, texCoordIndex, indexIndex),
                  texCoords,
+                 name,
                  meshDataArr,
                ),
              ),
