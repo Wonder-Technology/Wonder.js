@@ -1,7 +1,5 @@
 open GeometryType;
 
-open GeometryType;
-
 open VboBufferType;
 
 let _updateInfos = (infos, infoIndex, (startIndex, endIndex), offset: int) => {

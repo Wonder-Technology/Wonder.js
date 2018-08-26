@@ -14,9 +14,10 @@ let _deleteBySwapGameObjectMapData =
        |> WonderCommonlib.SparseMapService.unsafeGet(mappedSourceIndex),
      )
   |> WonderCommonlib.SparseMapService.set(mappedSourceIndex, lastGameObject)
-  |> Js.Array.pop |> ignore;
+  |> Js.Array.pop
+  |> ignore;
 
-  gameObjectMap
+  gameObjectMap;
 };
 
 let disposeData = (mappedSourceIndex, lastComponentIndex, gameObjectMap) =>

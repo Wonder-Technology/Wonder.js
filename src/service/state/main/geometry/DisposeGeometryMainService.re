@@ -2,8 +2,6 @@ open StateDataMainType;
 
 open GeometryType;
 
-open GeometryType;
-
 open DisposeComponentService;
 
 /* let isAlive = (geometry, {disposedIndexMap} as record) =>

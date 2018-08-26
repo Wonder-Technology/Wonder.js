@@ -316,6 +316,27 @@ let disposeGameObjectGeometryComponent =
   deferDisposeGeometryComponent(. gameObject, component, state);
 };
 
+let removeGameObjectGeometryComponent =
+    (
+      gameObject: gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  RemoveComponentGameObjectMainService.removeGeometryComponent(
+    gameObject,
+    component,
+    state,
+  );
+};
+
 let unsafeGetGameObjectGeometryComponent =
     (gameObject: gameObject, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
