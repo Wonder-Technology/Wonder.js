@@ -19,6 +19,9 @@ let setData =
       } as renderObjectRecord,
       {gameObjectRecord} as state,
     ) => {
+  let renderArray =
+    OperateRenderMainService.hasCameraRecord(state) ? renderArray : [||];
+
   let (
     transformIndices,
     materialIndices,

@@ -1996,6 +1996,30 @@ let _ =
       })
     );
 
+    describe("if has no camera gameObject, not render", () => {
+      let _prepareGl = state => {
+        let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+        let state =
+          state
+          |> FakeGlTool.setFakeGl(
+               FakeGlTool.buildFakeGl(~sandbox, ~drawElements, ()),
+             );
+
+        (state, drawElements);
+      };
+
+      test("test", () => {
+        let (state, _, _, _, _) =
+          RenderBasicJobTool.prepareGameObject(sandbox, state^);
+
+        let (state, drawElements) = _prepareGl(state);
+        let state =
+          state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+        drawElements |> expect |> not_ |> toCalled;
+      });
+    });
+
     describe("fix bug", () => {
       let _prepareGameObjectHasNoGeometry = (sandbox, state) => {
         open GameObjectAPI;

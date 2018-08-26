@@ -121,6 +121,9 @@
 
 
 
+
+                setTimeout(() => {
+                    var state = wd.unsafeGetState();
                 var data = LightBoxesTool.createCamera(state);
                 var state = data[0];
                 var camera = data[1];
@@ -161,6 +164,10 @@
                             camera, state
                         ), state
                     );
+
+
+                     wd.setState(state);
+                }, 1000);
 
 
 

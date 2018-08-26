@@ -23,20 +23,22 @@ let _ =
               SettingTool.buildBufferConfigStr(~basicMaterialCount=5, ()),
             (),
           );
+        let (state, _, _, _) = CameraTool.createCameraGameObject(state);
         let (state, _, _, _, _) =
           RenderBasicJobTool.prepareGameObject(sandbox, state);
         let (state, _, _, _, _) =
           RenderBasicJobTool.prepareGameObject(sandbox, state);
         let (state, _, _, _, _) =
-          RenderBasicJobTool.prepareGameObjectWithGeometry(
-            sandbox,
-            state,
-          );
+          RenderBasicJobTool.prepareGameObjectWithGeometry(sandbox, state);
         let state = MainStateTool.setState(state);
-        CreateBasicRenderObjectBufferMainWorkerJob.execJob(
-          None,
-          MainStateTool.getStateData(),
-        )
+
+        GetCameraDataMainWorkerJob.execJob(None, MainStateTool.getStateData())
+        |> WonderBsMost.Most.concat(
+             CreateBasicRenderObjectBufferMainWorkerJob.execJob(
+               None,
+               MainStateTool.getStateData(),
+             ),
+           )
         |> WonderBsMost.Most.drain
         |> then_(() => {
              let state = MainStateTool.unsafeGetState();
@@ -89,9 +91,9 @@ let _ =
                   expect == (
                               [|0, 1, 2|],
                               Js.Typed_array.Uint32Array.make([|
-                                1,
                                 2,
                                 3,
+                                4,
                                 0,
                                 0,
                               |]),

@@ -32,7 +32,7 @@ let _ =
         |> expect == false;
       });
 
-      describe("test dispose shared geometry", () =>
+      describe("test remove shared geometry from gameObject", () =>
         test("remove gameObject", () => {
           let (state, geometry1) = createGeometry(state^);
           let (state, gameObject1) = GameObjectAPI.createGameObject(state);

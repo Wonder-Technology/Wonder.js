@@ -2,23 +2,27 @@ open RenderType;
 
 open StateDataMainType;
 
-let getCameraRecord = (state) => RecordRenderMainService.getRecord(state).cameraRecord;
+let getCameraRecord = state =>
+  RecordRenderMainService.getRecord(state).cameraRecord;
 
-let unsafeGetCameraRecord = (state) => state |> getCameraRecord |> OptionService.unsafeGet;
+let unsafeGetCameraRecord = state =>
+  state |> getCameraRecord |> OptionService.unsafeGet;
 
 let setCameraRecord = (cameraRecord, state: StateDataMainType.state) => {
   RecordRenderMainService.getRecord(state).cameraRecord = cameraRecord;
-  state
+  state;
 };
 
-let getBasicRenderObjectRecord = (state) =>
+let hasCameraRecord = state => getCameraRecord(state) |> Js.Option.isSome;
+
+let getBasicRenderObjectRecord = state =>
   RecordRenderMainService.getRecord(state).basicRenderObjectRecord;
 
-let unsafeGetBasicRenderObjectRecord = (state) =>
+let unsafeGetBasicRenderObjectRecord = state =>
   getBasicRenderObjectRecord(state) |> OptionService.unsafeGet;
 
-let getLightRenderObjectRecord = (state) =>
+let getLightRenderObjectRecord = state =>
   RecordRenderMainService.getRecord(state).lightRenderObjectRecord;
 
-let unsafeGetLightRenderObjectRecord = (state) =>
+let unsafeGetLightRenderObjectRecord = state =>
   getLightRenderObjectRecord(state) |> OptionService.unsafeGet;
