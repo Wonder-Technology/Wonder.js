@@ -54,7 +54,7 @@
         "name": "init_instance"
     },
     {
-        "name": "init_custom_geometry"
+        "name": "init_geometry"
     },
     {
         "name": "init_meshRenderer"
@@ -107,7 +107,7 @@
     {
         "name": "clear_color",
         "flags": [
-            "#000000"
+            "#20B2AA"
         ]
     },
     {

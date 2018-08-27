@@ -50,7 +50,7 @@
                         "name": "init_instance"
                     },
                     {
-                        "name": "init_custom_geometry"
+                        "name": "init_geometry"
                     },
                     {
                         "name": "init_meshRenderer"

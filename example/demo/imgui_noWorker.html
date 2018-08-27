@@ -18,7 +18,6 @@
     <script src="../../test/e2e/js/GeometryTool.js"></script>
     <script src="../../test/e2e/js/BasicMaterialTool.js"></script>
     <script src="../../test/e2e/js/LightMaterialTool.js"></script>
-    <!-- <script src="../../test/e2e/js/WorkerTool.js"></script> -->
     <script src="../../test/e2e/js/IMGUITool.js"></script>
 
 
@@ -136,11 +135,18 @@
                     state = wd.setTransformLocalPosition(truckTransform, [-1000, -1000, -1000], state);
                     break;
                 default:
-                    targetGameObject = wd.unsafeGetTransformGameObject(
-                        wd.unsafeGetTransformChildren(
-                            truckTransform, state
-                        )[2], state
-                    );
+                    var children =
+                        AssetTool.getAllChildren(
+                            truckGameObject, state
+                        );
+
+
+
+                    targetGameObjectArr =
+                        children.filter((child) => {
+                            return wd.hasGameObjectLightMaterialComponent(child, state)
+                        });
+
                     break;
             };
 

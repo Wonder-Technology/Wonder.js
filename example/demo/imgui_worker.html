@@ -15,10 +15,9 @@
     <script src="../../test/e2e/js/PositionTool.js"></script>
     <script src="../../test/e2e/js/LightTool.js"></script>
     <script src="../../test/e2e/js/CameraTool.js"></script>
-    <script src="../../test/e2e/js/CustomGeometryTool.js"></script>
+    <script src="../../test/e2e/js/GeometryTool.js"></script>
     <script src="../../test/e2e/js/BasicMaterialTool.js"></script>
     <script src="../../test/e2e/js/LightMaterialTool.js"></script>
-    <script src="../../test/e2e/js/WorkerTool.js"></script>
     <script src="../../test/e2e/js/IMGUITool.js"></script>
 
 
@@ -199,58 +198,58 @@
         }
 
 
-        function _createLightsAndCamera(state) {
-            var state = LightTool.setAmbientLight(state);
+        // function _createLightsAndCamera(state) {
+        //     var state = LightTool.setAmbientLight(state);
 
 
 
-            var record = LightTool.createDirectionLight(state);
-            var state = record[0];
-            var directionLightObj = record[1];
+        //     var record = LightTool.createDirectionLight(state);
+        //     var state = record[0];
+        //     var directionLightObj = record[1];
 
 
 
-            var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+        //     var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
 
-            state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
-
-
-
-            var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
-
-            var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
+        //     state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
 
 
 
+        //     var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
 
-            var data = LightBoxesTool.createCamera(state);
-            var state = data[0];
-            var camera = data[1];
-
-
-            var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
-
-            var [state, cameraController] = wd.createArcballCameraController(state);
-
-            var state =
-                wd.setArcballCameraControllerDistance(cameraController, 10, state);
+        //     var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
 
 
 
-            var state =
-                wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
 
-            var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
-
-
-            var state =
-                wd.bindArcballCameraControllerEvent(
-                    cameraController, state
-                );
+        //     var data = LightBoxesTool.createCamera(state);
+        //     var state = data[0];
+        //     var camera = data[1];
 
 
-            return [state, directionLightObj]
-        }
+        //     var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+        //     var [state, cameraController] = wd.createArcballCameraController(state);
+
+        //     var state =
+        //         wd.setArcballCameraControllerDistance(cameraController, 10, state);
+
+
+
+        //     var state =
+        //         wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
+
+        //     var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+        //     var state =
+        //         wd.bindArcballCameraControllerEvent(
+        //             cameraController, state
+        //         );
+
+
+        //     return [state, directionLightObj]
+        // }
 
         function bindEvent(state) {
             return DemoImguiTool.bindEvent((state) => {
@@ -291,7 +290,8 @@
                         );
 
 
-                    var targetGameObject = null;
+                    // var targetGameObject = null;
+                    var targetGameObjectArr = null;
 
                     var truckTransform = wd.unsafeGetGameObjectTransformComponent(truckGameObject, state);
                     var boxTransform = wd.unsafeGetGameObjectTransformComponent(boxGameObject, state);
@@ -299,11 +299,17 @@
 
                     switch (customData.selectIndex_radioButton) {
                         case 0:
-                            targetGameObject = wd.unsafeGetTransformGameObject(
-                                wd.unsafeGetTransformChildren(
-                                    truckTransform, state
-                                )[2], state
-                            );
+                            var children =
+                                AssetTool.getAllChildren(
+                                    truckGameObject, state
+                                );
+
+
+
+                            targetGameObjectArr =
+                                children.filter((child) => {
+                                    return wd.hasGameObjectLightMaterialComponent(child, state)
+                                });
 
 
                             state = wd.setTransformLocalPosition(truckTransform, [0, 0, 0], state);
@@ -311,35 +317,55 @@
                             break;
 
                         case 1:
-                            targetGameObject = wd.unsafeGetTransformGameObject(
-                                wd.unsafeGetTransformChildren(
-                                    boxTransform, state
-                                )[0], state
-                            );
-
+                            targetGameObjectArr = [
+                                wd.unsafeGetTransformGameObject(
+                                    wd.unsafeGetTransformChildren(
+                                        boxTransform, state
+                                    )[0], state
+                                )
+                            ];
 
 
                             state = wd.setTransformLocalPosition(boxTransform, [0, 0, 0], state);
                             state = wd.setTransformLocalPosition(truckTransform, [-1000, -1000, -1000], state);
                             break;
                         default:
-                            targetGameObject = wd.unsafeGetTransformGameObject(
-                                wd.unsafeGetTransformChildren(
-                                    truckTransform, state
-                                )[2], state
-                            );
+                            var children =
+                                AssetTool.getAllChildren(
+                                    truckGameObject, state
+                                );
+
+
+
+                            targetGameObjectArr =
+                                children.filter((child) => {
+                                    return wd.hasGameObjectLightMaterialComponent(child, state)
+                                });
+
                             break;
                     };
 
 
-                    var lightMaterial = wd.unsafeGetGameObjectLightMaterialComponent(targetGameObject, state);
+
+                    var lightMaterialArr =
+                        targetGameObjectArr.map((targetGameObject) => {
+                            return wd.unsafeGetGameObjectLightMaterialComponent(targetGameObject, state)
+                        });
 
                     switch (customData.selectIndex_checkbox1) {
                         case true:
-                            state = wd.setLightMaterialSpecularColor(lightMaterial, [1, 1, 1], state);
+                            state =
+                                lightMaterialArr.reduce((state, lightMaterial) => {
+                                    return wd.setLightMaterialSpecularColor(lightMaterial, [1, 1, 1], state);
+                                }, state);
+
                             break;
                         case false:
-                            state = wd.setLightMaterialSpecularColor(lightMaterial, [0, 0, 0], state);
+                            state =
+                                lightMaterialArr.reduce((state, lightMaterial) => {
+                                    return wd.setLightMaterialSpecularColor(lightMaterial, [0, 0, 0], state);
+                                }, state);
+
                             break;
                         default:
                             break
@@ -351,7 +377,11 @@
 
 
                     if (customData.value_shininess !== undefined) {
-                        state = wd.setLightMaterialShininess(lightMaterial, customData.value_shininess, state);
+                        state =
+                            lightMaterialArr.reduce((state, lightMaterial) => {
+                                return wd.setLightMaterialShininess(lightMaterial, customData.value_shininess, state);
+                            }, state);
+
                     }
 
 
@@ -376,9 +406,11 @@
 
 
 
-            var [state, directionLightObj] = _createLightsAndCamera(state);
+            // var [state, directionLightObj] = _createLightsAndCamera(state);
+            var state = AssetTool.createLightsAndCamera(state);
 
-            return wd.startDirector(state);
+            // return wd.startDirector(state);
+            return state;
         }
 
 
@@ -393,23 +425,65 @@
             }
 
 
+            var loadedIMGUIByteLength = 0;
+
+            var totalIMGUIByteLength = (76 + 258 + 26) * 1024;
+            var totalWDBByteLength = 550 * 1024;
+            var totalByteLength = totalIMGUIByteLength + totalWDBByteLength;
+
 
 
 
             return AssetTool.loadConfig(["../data/setting_worker.json", "../data/"], null, function () {
-                return AssetTool.loadIMGUIAsset("../asset/font/Lato-Regular-64.fnt", "../asset/font/lato.png",
+                return AssetTool.loadIMGUIAsset("../../test/res/font/Lato-Regular-64.fnt", "../../test/res/font/lato.png",
                     [
-                        ["../asset/image/1.png", "1"],
-                        ["../asset/image/2.jpg", "2"],
+                        ["../../test/res/image/1.jpg", "1"],
+                        ["../../test/res/image/2.png", "2"],
                         ["../asset/image/wonder.png", "wonder"],
                     ],
-                    wd.unsafeGetState(), function (state) {
-                        return AssetTool.loadWDB("../asset/wdb/CesiumMilkTruck.wdb", state, function ([state, truckGameObject]) {
-                            return AssetTool.loadWDB("../asset/wdb/BoxTextured.wdb", state, function ([state, boxGameObject]) {
+
+                    function (contentLength, filePath) {
+                        loadedIMGUIByteLength += contentLength;
+
+                        AssetTool.showOrCreateLoadingInfo(
+                            loadedIMGUIByteLength,
+                            totalByteLength
+                        );
+                    },
+                    function (state) {
+                        return AssetTool.loadStreamWDB("../asset/wdb/imgui.wdb",
+                            function (totalLoadedByteLength, contentLength, wdbPath) {
+                                AssetTool.showOrCreateLoadingInfo(
+                                    loadedIMGUIByteLength + totalLoadedByteLength,
+                                    totalByteLength
+                                );
+                            },
+                            function (state, gameObject) {
+                                var children = AssetTool.getChildren(gameObject, state);
+
+                                var boxGameObject = children[0];
+                                var truckGameObject = children[1];
+
+
                                 return initSample(state, truckGameObject, boxGameObject);
-                            });
-                        });
-                    });
+                            },
+                            function (state, gameObject) {
+                                AssetTool.removeLoadingInfo();
+
+                                return state;
+                            },
+                            function (state, _, gameObject) {
+                                var children = AssetTool.getChildren(gameObject, state);
+
+                                var boxGameObject = children[0];
+                                var truckGameObject = children[1];
+
+
+                                var state = initSample(state, truckGameObject, boxGameObject);
+
+                                wd.startDirector(state);
+                            }, state);
+                    }, wd.unsafeGetState());
             });
         };
     </script>
