@@ -30,7 +30,7 @@ let load =
        Most.fromPromise(
          fetchFunc(wdbPath)
          |> then_(response =>
-              ! Fetch.Response.ok(response |> WonderLog.Log.print) ?
+              ! Fetch.Response.ok(response) ?
                 {
                   let status = Fetch.Response.status(response);
                   let statusText = Fetch.Response.statusText(response);

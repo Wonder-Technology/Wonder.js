@@ -22,17 +22,17 @@ let rec _build =
       let {byteLength, index, type_}: streamUnitData =
         Array.unsafe_get(streamChunkArr, nextStreamChunkIndex);
 
-      WonderLog.Log.print(("nextStreamChunkIndex: ", nextStreamChunkIndex))
-      |> ignore;
+      /* WonderLog.Log.print(("nextStreamChunkIndex: ", nextStreamChunkIndex))
+         |> ignore; */
 
       let nextCompleteStreamChunkTotalLoadedByteLength =
         completeStreamChunkTotalLoadedAlignedByteLength + byteLength;
 
-      WonderLog.Log.print((
-        nextCompleteStreamChunkTotalLoadedByteLength,
-        totalLoadedByteLength,
-      ))
-      |> ignore;
+      /* WonderLog.Log.print((
+           nextCompleteStreamChunkTotalLoadedByteLength,
+           totalLoadedByteLength,
+         ))
+         |> ignore; */
 
       nextCompleteStreamChunkTotalLoadedByteLength > totalLoadedByteLength ?
         (nextStreamChunkIndex, loadedStreamChunkDataArr) :
@@ -165,8 +165,6 @@ let _loadBlobImageFromImageArrayBufferData =
          let {imageIndex, mimeType, arrayBuffer} =
            imageData |> OptionService.unsafeGet;
 
-         WonderLog.Log.print(arrayBuffer) |> ignore;
-
          switch (
            loadBlobImageMap
            |> WonderCommonlib.SparseMapService.get(imageIndex)
@@ -232,11 +230,11 @@ let buildBinBufferChunkData =
       loadBlobImageMap,
       images,
     ) => {
-  WonderLog.Log.print((
-    "completeStreamChunkTotalLoadedAlignedByteLength: ",
-    completeStreamChunkTotalLoadedAlignedByteLength,
-  ))
-  |> ignore;
+  /* WonderLog.Log.print((
+       "completeStreamChunkTotalLoadedAlignedByteLength: ",
+       completeStreamChunkTotalLoadedAlignedByteLength,
+     ))
+     |> ignore; */
   let (nextStreamChunkIndex, loadedStreamChunkDataArr) =
     _build(
       completeStreamChunkTotalLoadedAlignedByteLength,
@@ -248,8 +246,8 @@ let buildBinBufferChunkData =
       loadedStreamChunkArrWhichNotHasAllData,
     );
 
-  WonderLog.Log.print(("loadedStreamChunkDataArr:", loadedStreamChunkDataArr))
-  |> ignore;
+  /* WonderLog.Log.print(("loadedStreamChunkDataArr:", loadedStreamChunkDataArr))
+     |> ignore; */
 
   let (
     loadedStreamChunkArrWhichNotHasAllData,
@@ -260,12 +258,6 @@ let buildBinBufferChunkData =
          nextStreamChunkIndex,
          streamChunkArr,
        );
-
-  WonderLog.Log.printJson((
-    loadedStreamChunkArrWhichNotHasAllData,
-    loadedStreamChunkDataArrWhichHasAllData,
-  ))
-  |> ignore;
 
   _loadBlobImageFromImageArrayBufferData(
     loadedStreamChunkDataArrWhichHasAllData,

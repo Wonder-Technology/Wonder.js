@@ -46,8 +46,6 @@ let _setGeometryData =
       gameObjectGeometrys,
     );
 
-  WonderLog.Log.print(("geometry:", geometry)) |> ignore;
-
   setPointsByTypeArrayFunc(
     geometry,
     fromBufferFunc(geometryData.arrayBuffer),
