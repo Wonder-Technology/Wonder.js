@@ -36,7 +36,11 @@
                         ["./1.png", "1"],
                         ["./2.jpg", "2"]
                     ],
-                    wd.unsafeGetState(), function (state) {
+                    function (contentLength, filePath) {
+                        console.log(contentLength, filePath)
+
+                    },
+                    function (state) {
                         return AssetTool.loadStreamWDB(
                             // "../res/wdb/CesiumMilkTruck.wdb",
                             // "../res/wdb/BoxTextured.wdb",
@@ -52,8 +56,10 @@
                             // "https://wonder-technology.github.io/wonder-demo.github.io/demo/engine/asset/wdb/AlphaBlendModeTest.wdb",
 
 
-                            // wd.unsafeGetState(), function (state, gameObject) {
-                            state, function (state, gameObject) {
+                            function (totalLoadedByteLength, contentLength, wdbPath) {
+                                console.log(totalLoadedByteLength, contentLength, wdbPath);
+                            },
+                            function (state, gameObject) {
                                 return handleBeforeStartLoop(state, gameObject);
                             }, function (state, gameObject) {
                                 return state;
@@ -62,9 +68,8 @@
                                 var state = _createLightsAndCamera(state);
 
                                 wd.startDirector(state);
-                            }
-                        );
-                    })
+                            }, state);
+                    }, wd.unsafeGetState())
             });
 
 

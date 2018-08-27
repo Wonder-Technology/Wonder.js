@@ -169,6 +169,7 @@ let rec read =
           (
             default11Image,
             controller,
+            (contentLength, wdbPath, handleWhenLoadingFunc),
             handleBeforeStartLoopFunc,
             handleWhenDoneFunc,
           ),
@@ -394,11 +395,18 @@ let rec read =
            let totalLoadedByteLength =
              _getTotalLoadedByteLength(loadedUint8ArrayArr);
 
+           handleWhenLoadingFunc(
+             totalLoadedByteLength,
+             contentLength,
+             wdbPath,
+           );
+
            _isLoadHeader(totalLoadedByteLength) ?
              read(
                (
                  default11Image,
                  controller,
+                 (contentLength, wdbPath, handleWhenLoadingFunc),
                  handleBeforeStartLoopFunc,
                  handleWhenDoneFunc,
                ),
@@ -498,6 +506,7 @@ let rec read =
                           (
                             default11Image,
                             controller,
+                            (contentLength, wdbPath, handleWhenLoadingFunc),
                             handleBeforeStartLoopFunc,
                             handleWhenDoneFunc,
                           ),
@@ -518,6 +527,7 @@ let rec read =
                    (
                      default11Image,
                      controller,
+                     (contentLength, wdbPath, handleWhenLoadingFunc),
                      handleBeforeStartLoopFunc,
                      handleWhenDoneFunc,
                    ),

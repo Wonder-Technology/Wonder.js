@@ -23,6 +23,8 @@ let load =
     (
       ~wdbPath,
       ~fetchFunc,
+      ~handleWhenLoadingFunc=(totalLoadedByteLength, contentLength, wdbPath) =>
+                               (),
       ~handleWhenLoadWholeWDBFunc=(state, _, rootGameObject) => (),
       (),
     ) => {
@@ -33,6 +35,7 @@ let load =
        wdbPath,
        (
          fetchFunc,
+         handleWhenLoadingFunc,
          (state, rootGameObject) => state,
          (state, rootGameObject) => state,
          handleWhenLoadWholeWDBFunc,
@@ -57,9 +60,43 @@ let read =
     (
       default11Image,
       controller,
+      /* (contentLength, wdbPath, handleWhenLoadingFunc), */
+      (0, "", (totalLoadedByteLength, contentLength, wdbPath) => ()),
       handleBeforeStartLoopFunc,
       handleWhenDoneFunc,
     ),
+    ([||], Js.Typed_array.Uint8Array.fromLength(1000000)),
+    (
+      None,
+      [||],
+      None,
+      0,
+      [||],
+      WonderCommonlib.SparseMapService.createEmpty(),
+    ),
+    reader,
+  );
+
+let readWithHandleWhenLoadingFunc =
+    (
+      (
+        default11Image,
+        controller,
+        (contentLength, wdbPath, handleWhenLoadingFunc),
+        handleBeforeStartLoopFunc,
+        handleWhenDoneFunc,
+      ),
+      reader,
+    ) =>
+  ReadStreamChunkSystem.read(
+    (
+      default11Image,
+      controller,
+      (contentLength, wdbPath, handleWhenLoadingFunc),
+      handleBeforeStartLoopFunc,
+      handleWhenDoneFunc,
+    ),
+    /* ([||], Js.Typed_array.Uint8Array.fromLength(contentLength)), */
     ([||], Js.Typed_array.Uint8Array.fromLength(1000000)),
     (
       None,

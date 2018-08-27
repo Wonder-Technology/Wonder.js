@@ -13,6 +13,7 @@ let loadWholeWDB = (wdbPath, state) =>
 let loadStreamWDB =
     (
       wdbPath,
+      handleWhenLoadingFunc,
       handleBeforeStartLoopFunc,
       handleWhenDoneFunc,
       handleWhenLoadWholeWDBFunc,
@@ -22,6 +23,7 @@ let loadStreamWDB =
     wdbPath,
     (
       _fetch,
+      handleWhenLoadingFunc,
       handleBeforeStartLoopFunc,
       handleWhenDoneFunc,
       handleWhenLoadWholeWDBFunc,

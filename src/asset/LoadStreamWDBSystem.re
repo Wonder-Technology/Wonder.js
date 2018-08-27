@@ -4,29 +4,27 @@ open Js.Typed_array;
 
 open Js.Promise;
 
-let _isSupportStreamLoad = [%raw
-  response => {|
-        return !!response.body && !!response.body.getReader
-      |}
-];
-
-let _getReader = [%raw
-  response => {|
-  return response.body.getReader();
-  |}
-];
-
-let _getContentLength = [%raw
-  response => {|
-  return response.headers.get("content-length");
-  |}
-];
+let _getContentLength = response =>
+  switch (FetchCommon.getContentLength(response) |> Js.toOption) {
+  | None =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildErrorMessage(
+        ~title="load",
+        ~description={j|Content-Length response header unavailable|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j},
+      ),
+    )
+  | Some(contentLength) => contentLength |> NumberService.convertStringToInt
+  };
 
 let load =
     (
       wdbPath,
       (
         fetchFunc,
+        handleWhenLoadingFunc,
         handleBeforeStartLoopFunc,
         handleWhenDoneFunc,
         handleWhenLoadWholeWDBFunc,
@@ -62,7 +60,7 @@ let load =
                     ),
                   );
                 } :
-                ! _isSupportStreamLoad(response) ?
+                ! FetchCommon.isSupportStreamLoad(response) ?
                   {
                     WonderLog.Log.warn(
                       {j|your browser does not seem to have the Streams API yet, fallback to load whole wdb|j},
@@ -70,6 +68,17 @@ let load =
 
                     response
                     |> Fetch.Response.arrayBuffer
+                    |> then_(wdb => {
+                         handleWhenLoadingFunc(
+                           wdb
+                           |> LoadType.fetchArrayBufferToArrayBuffer
+                           |> ArrayBuffer.byteLength,
+                           _getContentLength(response),
+                           wdbPath,
+                         );
+
+                         wdb |> resolve;
+                       })
                     |> then_(wdb =>
                          AssembleWholeWDBSystem.assemble(
                            wdb |> LoadType.fetchArrayBufferToArrayBuffer,
@@ -122,34 +131,19 @@ let load =
                        ) */
 
                     let contentLength = _getContentLength(response);
-                    switch (contentLength |> Js.toOption) {
-                    | None =>
-                      WonderLog.Log.error(
-                        WonderLog.Log.buildErrorMessage(
-                          ~title="load",
-                          ~description=
-                            {j|Content-Length response header unavailable|j},
-                          ~reason="",
-                          ~solution={j||j},
-                          ~params={j||j},
-                        ),
-                      )
-                    | _ => ()
-                    };
 
                     let totalUint8Array =
-                      Uint8Array.fromLength(
-                        contentLength |> NumberService.convertStringToInt,
-                      );
+                      Uint8Array.fromLength(contentLength);
 
                     FetchExtend.newReadableStream({
                       "start": controller => {
-                        let reader = _getReader(response);
+                        let reader = FetchCommon.getReader(response);
 
                         ReadStreamChunkSystem.read(
                           (
                             default11Image,
                             controller,
+                            (contentLength, wdbPath, handleWhenLoadingFunc),
                             handleBeforeStartLoopFunc,
                             handleWhenDoneFunc,
                           ),
