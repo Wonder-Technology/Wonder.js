@@ -1,10 +1,9 @@
 var AssetTool = (function () {
     function computeLoadingPercent(
-
         loadedIMGUIByteLength,
         totalByteLength
     ) {
-        return loadedIMGUIByteLength >= totalByteLength ? 100 : Math.round(loadedIMGUIByteLength / totalByteLength * 100);
+        return loadedIMGUIByteLength >= totalByteLength ? 100 : Math.ceil(loadedIMGUIByteLength / totalByteLength * 100);
     }
 
     return {
@@ -24,7 +23,7 @@ var AssetTool = (function () {
                 dom =
                     document.createElement("div");
 
-                dom.style.cssText = 'position:absolute;top:' + windowHeight * 0.55 + 'px;left:' + windowWidth * 0.45 + 'px;width:200px;height:50px;font-size:80px; color:bisque; text-align: center;';
+                dom.style.cssText = 'position:absolute;top:' + windowHeight * 0.55 + 'px;left:' + windowWidth * 0.4 + 'px;width:' + windowWidth * (0.6 - 0.4) + 'px;height:50px;font-size:80px; color:bisque; text-align: center;';
 
                 dom.id = "loading";
 
@@ -41,7 +40,7 @@ var AssetTool = (function () {
             )) + '%';
         },
         removeLoadingInfo: function () {
-             document.querySelector("#loading").remove();
+            document.querySelector("#loading").remove();
         },
         addChild: function (parentGameObject, childGameObject, state) {
             var parentTransform =
@@ -112,7 +111,7 @@ var AssetTool = (function () {
 
             var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
 
-            state = wd.setTransformLocalPosition(transform, [-10, 0, 20], state);
+            state = wd.setTransformLocalEulerAngles(transform, [-45,45,0], state);
 
 
 
