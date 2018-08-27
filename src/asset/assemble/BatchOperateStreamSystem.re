@@ -37,7 +37,7 @@ let _getBatchAllTypeTextureData =
 
 let batchOperate =
     (
-      {indices, gameObjects, basicSourceTextures, images} as wd,
+      {geometrys, indices, gameObjects, basicSourceTextures, images} as wd,
       default11Image,
       (
         state,
@@ -62,6 +62,7 @@ let batchOperate =
     |> BatchOperateSystem.batchSetNames(
          (gameObjectArr, basicSourceTextureArr),
          (gameObjects, basicSourceTextures),
+         (geometrys, geometryArr),
        );
 
   let (

@@ -1,9 +1,7 @@
 let _buildDefaultName = geometryIndex =>
   ConvertCommon.buildDefaultName("geometry", geometryIndex);
 
-let _convertToGeometry =
-    (({primitives, name}: GLTFType.mesh) as mesh, index)
-    : option(WDType.geometry) => {
+let _convertToGeometry = (mesh, index) : option(WDType.geometry) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -37,7 +35,7 @@ let _convertToGeometry =
       /* ConvertMultiPrimitivesSystem.isMultiPrimitives(primitives) ?
          None : */
 
-      let {primitives}: GLTFType.mesh = mesh;
+      let {primitives, name}: GLTFType.mesh = mesh;
 
       let {attributes, indices}: GLTFType.primitive =
         ConvertCommon.getPrimitiveData(primitives);

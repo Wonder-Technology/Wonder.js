@@ -486,10 +486,10 @@ let _ =
               expect == (
                           9,
                           (
-                            "DecalBlend",
+                            "DecalBlendMesh",
                             dataMap
                             |> WonderCommonlib.HashMapService.unsafeGet(
-                                 "DecalBlend",
+                                 "DecalBlendMesh",
                                ),
                           ),
                         );
@@ -526,7 +526,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("BoxTextured.glb"),
-            ((state, rootGameObject)) =>
+            ((state, _, rootGameObject)) =>
               AssembleWDBSystemTool.getAllGeometrys(rootGameObject, state)
               |> Js.Array.map(geometry =>
                    GeometryAPI.unsafeGetGeometryName(geometry, state)
@@ -539,7 +539,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, rootGameObject)) =>
+            ((state, _, rootGameObject)) =>
               AssembleWDBSystemTool.getAllGeometrys(rootGameObject, state)
               |> Js.Array.map(geometry =>
                    GeometryAPI.unsafeGetGeometryName(geometry, state)

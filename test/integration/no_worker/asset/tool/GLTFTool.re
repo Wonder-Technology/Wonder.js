@@ -1268,7 +1268,7 @@ let getAlphaBlendModeTestGeometryData = () => {
 
   map
   |> WonderCommonlib.HashMapService.set(
-       "DecalBlend",
+       "DecalBlendMesh",
        (
          Float32Array.make([|
            (-0.9919999837875366),

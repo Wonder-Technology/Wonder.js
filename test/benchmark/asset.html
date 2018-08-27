@@ -191,7 +191,7 @@
                 boxArrayBuffer,
                 truckArrayBuffer,
                 alphaArrayBuffer
-            ], imageUint8ArrayMap, isCreateCamera, state) {
+            ], isCreateCamera, state) {
                 var state = wd.setIMGUIFunc(
                     null, (_, api, state) => {
                         var state = api.label(
@@ -360,14 +360,14 @@
 
                                         var [state, wdb] = wd.generateWDB(
                                             rootGameObject,
-                                            // wd.mergeSparseMaps(
-                                            //     [
-                                            //         imageUint8ArrayMap1,
-                                            //         imageUint8ArrayMap2,
-                                            //         imageUint8ArrayMap3
-                                            //     ]
-                                            // ),
-                                            [],
+                                            wd.mergeSparseMaps(
+                                                [
+                                                    imageUint8ArrayMap1,
+                                                    imageUint8ArrayMap2,
+                                                    imageUint8ArrayMap3
+                                                ]
+                                            ),
+                                            // [],
                                             state);
 
 
@@ -425,8 +425,8 @@
                     var n4 = performance.now();
 
 
-                    // var [state, wdb] = wd.generateWDB(rootGameObject, imageUint8ArrayDataMap, state);
-                    var [state, wdb] = wd.generateWDB(rootGameObject, [], state);
+                    var [state, wdb] = wd.generateWDB(rootGameObject, imageUint8ArrayDataMap, state);
+                    // var [state, wdb] = wd.generateWDB(rootGameObject, [], state);
 
 
                     var n5 = performance.now();
@@ -436,7 +436,7 @@
                     console.log(n5 - n1);
 
 
-                    // AssetTool.download(wdb, "generated.wdb", "")
+                    AssetTool.download(wdb, "generated.wdb", "")
 
 
                     // console.profileEnd();
@@ -678,35 +678,34 @@
                                     })
                                     .then((alphaArrayBuffer) => {
 
-                                        _testGenerateWDBByGLB(
-                                            // [
-                                            // boxArrayBuffer,
-                                            truckArrayBuffer,
-                                            // alphaArrayBuffer,
-                                            // ],
-                                            // boxArrayBuffer,
+                                        // _testGenerateWDBByGLB(
+                                        //     // [
+                                        //     boxArrayBuffer,
+                                        //     // truckArrayBuffer,
+                                        //     // alphaArrayBuffer,
+                                        //     // ],
+                                        //     // boxArrayBuffer,
 
-                                            // truckArrayBuffer,
+                                        //     // truckArrayBuffer,
+
+
+                                        //     true,
+
+                                        //     state$);
+
+
+                                        _downloadScene(
+                                            [
+                                                boxArrayBuffer,
+                                                truckArrayBuffer,
+                                                alphaArrayBuffer
+                                            ],
 
 
                                             true,
 
-                                            state$);
-
-
-                                        // _downloadScene(
-                                        //     [
-                                        //         boxArrayBuffer,
-                                        //         truckArrayBuffer,
-                                        //         alphaArrayBuffer
-                                        //     ],
-
-                                        //     imageUint8ArrayMap,
-
-                                        //     true,
-
-                                        //     state$
-                                        // );
+                                            state$
+                                        );
 
 
 

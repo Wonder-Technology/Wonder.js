@@ -138,6 +138,8 @@ let _addPrimitiveData =
     ) => {
   let {position, normal, texCoord_0}: GLTFType.attributes = attributes;
 
+  WonderLog.Log.print((position, normal, texCoord_0)) |> ignore;
+
   let (
     byteLength,
     newPositionAccessorBufferIndex,
@@ -583,6 +585,8 @@ let buildJsonData =
              let ({primitives}: GLTFType.mesh) as meshData =
                Array.unsafe_get(meshes, mesh);
 
+             WonderLog.Log.print(("meshData:", meshData)) |> ignore;
+
              ConvertMultiPrimitivesSystem.isMultiPrimitives(primitives) ?
                noneData :
                {
@@ -704,15 +708,6 @@ let buildJsonData =
                        newImages,
                      );
                    };
-                 /* (
-                      (hasMeshAddBeforeMap, hasImageAddBeforeMap),
-                      accessorBufferArr,
-                      bufferViewDataArr,
-                      streamChunkArr,
-                      newBufferViewOffset,
-                      newMeshes,
-                      newImages,
-                    ); */
                };
 
            | None => noneData

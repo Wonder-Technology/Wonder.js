@@ -704,10 +704,10 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  expect == (
                              9,
                              (
-                               "DecalBlend",
+                               "DecalBlendMesh",
                                dataMap
                                |> WonderCommonlib.HashMapService.unsafeGet(
-                                    "DecalBlend",
+                                    "DecalBlendMesh",
                                   ),
                              ),
                            )
