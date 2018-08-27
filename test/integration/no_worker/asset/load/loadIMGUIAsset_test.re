@@ -21,7 +21,17 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("load imgui asset", () => {
-      let _test = testFunc => {
+      let _test =
+          (
+            (
+              customTextureSource1ContentLength,
+              customTextureSource2ContentLength,
+              bitmapFileContentLength,
+              fntFileContentLength,
+            ),
+            handleWhenLoadingFunc,
+            testFunc,
+          ) => {
         let fntFilePath =
           Node.Path.join([|
             Node.Process.cwd(),
@@ -39,6 +49,10 @@ let _ =
           (customTextureSourceSrc1, "a1"),
           (customTextureSourceSrc2, "a2"),
         |];
+        let customImageArr = [|
+          (customTextureSourceSrc1, "a1", ImageType.Jpg),
+          (customTextureSourceSrc2, "a2", ImageType.Png),
+        |];
         IOIMGUITool.buildFakeURL(sandbox^);
         IOIMGUITool.buildFakeLoadImage(.);
         let fetch =
@@ -46,6 +60,12 @@ let _ =
             sandbox,
             fntFilePath,
             bitmapFilePath,
+            (
+              customTextureSource1ContentLength,
+              customTextureSource2ContentLength,
+              bitmapFileContentLength,
+              fntFileContentLength,
+            ),
             customTextureSourceSrc1,
             customTextureSourceSrc2,
           );
@@ -54,18 +74,21 @@ let _ =
           fntFilePath,
           bitmapFilePath,
           customTextureSourceDataArr,
-          fetch,
+          (fetch, handleWhenLoadingFunc),
           state^,
         )
         |> then_(state => testFunc(bitmap, state));
       };
 
-      testPromise("test load bitmap image", () =>
-        _test((bitmap, state) =>
-          AssetTool.unsafeGetBitmap(IMGUITool.getWonderIMGUIRecord(state))
-          |> Obj.magic
-          |> expect == bitmap
-          |> resolve
+      testPromise("load bitmap image", () =>
+        _test(
+          (1, 2, 3, 4),
+          (contentLength, filePath) => {},
+          (bitmap, state) =>
+            AssetTool.unsafeGetBitmap(IMGUITool.getWonderIMGUIRecord(state))
+            |> Obj.magic
+            |> expect == bitmap
+            |> resolve,
         )
       );
     });

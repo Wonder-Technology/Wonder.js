@@ -30,10 +30,16 @@ let loadStreamWDB =
   );
 
 let loadIMGUIAsset =
-    (fntFilePath, bitmapFilePath, customTextureSourceDataArr, state) =>
+    (
+      fntFilePath,
+      bitmapFilePath,
+      customTextureSourceDataArr,
+      handleWhenLoadingFunc,
+      state,
+    ) =>
   LoaderManagerSystem.loadIMGUIAsset(
     (fntFilePath, bitmapFilePath),
     customTextureSourceDataArr,
-    _fetch,
+    (_fetch, handleWhenLoadingFunc),
     state,
   );

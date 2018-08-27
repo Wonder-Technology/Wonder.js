@@ -17,12 +17,15 @@ let loadIMGUIAsset =
     (
       (fntFilePath, bitmapFilePath),
       customTextureSourceDataArr,
-      fetchFunc,
+      (fetchFunc, handleWhenLoadingFunc),
       state,
     ) =>
   RecordIMGUIMainService.getWonderIMGUIRecord(state)
   |> WonderImgui.IOIMGUIAPI.addFont(fntFilePath, bitmapFilePath)
-  |> WonderImgui.IOIMGUIAPI.load(customTextureSourceDataArr)
+  |> WonderImgui.IOIMGUIAPI.load(
+       customTextureSourceDataArr,
+       handleWhenLoadingFunc,
+     )
   |> then_(imguiRecord =>
        {
          ...state,

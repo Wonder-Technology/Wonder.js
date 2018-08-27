@@ -299,14 +299,18 @@
                         ["../../test/res/image/2.png", "2"],
                         ["../asset/image/wonder.png", "wonder"],
                     ],
-                    wd.unsafeGetState(), function (state) {
-                        // return AssetTool.loadWholeWDB("../asset/wdb/CesiumMilkTruck.wdb", state, function ([state, imageUint8ArrayMap, truckGameObject]) {
+
+                    function (contentLength, filePath) {
+                        console.log(contentLength, filePath)
+
+                    },
+                    function (state) {
                         return AssetTool.loadWholeWDB("../../test/res/wdb/CesiumMilkTruck.wdb", state, function ([state, imageUint8ArrayMap, truckGameObject]) {
                             return AssetTool.loadWholeWDB("../../test/res/wdb/BoxTextured.wdb", state, function ([state, imageUint8ArrayMap, boxGameObject]) {
                                 return initSample(state, truckGameObject, boxGameObject);
                             });
                         });
-                    });
+                    }, wd.unsafeGetState());
             });
         };
     </script>

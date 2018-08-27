@@ -137,10 +137,15 @@ var AssetTool = (function () {
         loadStreamWDB: function (wdbPath, state, handleBeforeStartLoopFunc, handleWhenDoneFunc, handleWhenLoadWholeWDBFunc) {
             return wd.loadStreamWDB(wdbPath, handleBeforeStartLoopFunc, handleWhenDoneFunc, handleWhenLoadWholeWDBFunc, state).drain()
         },
-        loadIMGUIAsset: function (fntFilePath, bitmapFilePath, customTextureSourceDataArr, state, testFunc) {
-            return wd.loadIMGUIAsset(fntFilePath, bitmapFilePath, customTextureSourceDataArr, state)
+        loadIMGUIAsset: function (fntFilePath, bitmapFilePath, customTextureSourceDataArr, handleWhenLoadingFunc, handleWhenDoneFunc, state) {
+            return wd.loadIMGUIAsset(
+                fntFilePath,
+                bitmapFilePath,
+                customTextureSourceDataArr,
+                handleWhenLoadingFunc,
+                state)
                 .then((state) => {
-                    return testFunc(state)
+                    return handleWhenDoneFunc(state)
                 })
         },
         loadGLB: function (glbPath) {

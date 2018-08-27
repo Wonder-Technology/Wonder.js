@@ -653,6 +653,7 @@
                     "../res/BoxTextured.glb"
                 )
                     .then((res) => {
+                        // console.log(res.headers.get("content-length"));
                         return res.arrayBuffer();
                     })
                     .then((boxArrayBuffer) => {
