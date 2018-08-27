@@ -1,5 +1,11 @@
 var AssetTool = (function () {
     return {
+        showOrCreateLoadingInfo: function () {
+
+        },
+        removeLoadingInfo: function () {
+
+        },
         addChild: function (parentGameObject, childGameObject, state) {
             var parentTransform =
                 wd.unsafeGetGameObjectTransformComponent(
@@ -22,6 +28,26 @@ var AssetTool = (function () {
             return childGameObjectArr.reduce((state, childGameObject) => {
                 return AssetTool.addChild(parentGameObject, childGameObject, state)
             }, state);
+        },
+        getChildren: function (gameObject, state) {
+            return wd.unsafeGetTransformChildren(
+                wd.unsafeGetGameObjectTransformComponent(gameObject, state),
+                state
+
+            ).map((transform) => {
+                return wd.unsafeGetTransformGameObject(transform, state)
+            });
+        },
+        getAllChildren: function (gameObject, state) {
+            function _get(result, children, state) {
+                return children.reduce((result, child) => {
+                    return _get(result, AssetTool.getChildren(child, state), state)
+
+                }, result.concat(children));
+
+            };
+
+            return _get([], AssetTool.getChildren(gameObject, state), state);
         },
 
 

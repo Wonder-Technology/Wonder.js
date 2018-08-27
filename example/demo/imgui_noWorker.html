@@ -92,7 +92,7 @@
 
             var [state, selectIndex_radioButton, selectIndex_checkbox1, value_shininess] = DemoImguiTool.buildImguiFunc(api, wd.getFps(state), window.innerWidth, window.innerHeight, DemoImguiTool.getIMGUIRegion, state);
 
-            var targetGameObject = null;
+            var targetGameObjectArr = null;
 
             var truckTransform = wd.unsafeGetGameObjectTransformComponent(truckGameObject, state);
             var boxTransform = wd.unsafeGetGameObjectTransformComponent(boxGameObject, state);
@@ -100,11 +100,17 @@
 
             switch (selectIndex_radioButton) {
                 case 0:
-                    targetGameObject = wd.unsafeGetTransformGameObject(
-                        wd.unsafeGetTransformChildren(
-                            truckTransform, state
-                        )[2], state
-                    );
+                    var children =
+                        AssetTool.getAllChildren(
+                            truckGameObject, state
+                        );
+
+
+
+                    targetGameObjectArr =
+                        children.filter((child) => {
+                            return wd.hasGameObjectLightMaterialComponent(child, state)
+                        });
 
 
                     state = wd.setTransformLocalPosition(truckTransform, [0, 0, 0], state);
@@ -112,11 +118,13 @@
                     break;
 
                 case 1:
-                    targetGameObject = wd.unsafeGetTransformGameObject(
-                        wd.unsafeGetTransformChildren(
-                            boxTransform, state
-                        )[0], state
-                    );
+                    targetGameObjectArr = [
+                        wd.unsafeGetTransformGameObject(
+                            wd.unsafeGetTransformChildren(
+                                boxTransform, state
+                            )[0], state
+                        )
+                    ];
 
 
 
@@ -133,14 +141,27 @@
             };
 
 
-            var lightMaterial = wd.unsafeGetGameObjectLightMaterialComponent(targetGameObject, state);
+            var lightMaterialArr =
+                targetGameObjectArr.map((targetGameObject) => {
+                    return wd.unsafeGetGameObjectLightMaterialComponent(targetGameObject, state)
+                });
 
             switch (selectIndex_checkbox1) {
                 case true:
-                    state = wd.setLightMaterialSpecularColor(lightMaterial, [1, 1, 1], state);
+
+                    state =
+                        lightMaterialArr.reduce((state, lightMaterial) => {
+                            return wd.setLightMaterialSpecularColor(lightMaterial, [1, 1, 1], state);
+                        }, state);
+
+
                     break;
                 case false:
-                    state = wd.setLightMaterialSpecularColor(lightMaterial, [0, 0, 0], state);
+                    state =
+                        lightMaterialArr.reduce((state, lightMaterial) => {
+                            return wd.setLightMaterialSpecularColor(lightMaterial, [0, 0, 0], state);
+                        }, state);
+
                     break;
                 default:
                     break
@@ -152,13 +173,11 @@
 
 
             if (value_shininess !== undefined) {
-                state = wd.setLightMaterialShininess(lightMaterial, value_shininess, state);
+                state =
+                    lightMaterialArr.reduce((state, lightMaterial) => {
+                        return wd.setLightMaterialShininess(lightMaterial, value_shininess, state);
+                    }, state);
             }
-
-
-
-
-
 
 
 
@@ -287,11 +306,41 @@
             var state = AssetTool.createLightsAndCamera(state);
 
 
-            return wd.startDirector(state);
+            // return wd.startDirector(state);
+            return state
         }
+
+        // function loadNextWDB(truckGameObject, state) {
+        //     return AssetTool.loadStreamWDB("../../test/res/wdb/BoxTextured.wdb",
+        //         function (totalLoadedByteLength, contentLength, wdbPath) {
+        //             console.log(totalLoadedByteLength, contentLength, wdbPath);
+        //         },
+        //         function (state, boxGameObject) {
+        //             return initSample(state, truckGameObject, boxGameObject);
+        //         }, function (state, boxGameObject) {
+        //             return state;
+        //         },
+        //         function (state, _, boxGameObject) {
+        //             var state = initSample(state, truckGameObject, boxGameObject);
+
+        //             wd.startDirector(state);
+        //         }, state);
+        // };
+
+
+
+
 
 
         window.onload = function () {
+            // var loadedIMGUIByteLength = 0;
+
+            // var totalIMGUIByteLength = (76 + 258 + 26) * 1024;
+            // var totalWDBByteLength = 776 * 1024;
+            // var totalByteLength = totalIMGUIByteLength + totalWDBByteLength;
+
+
+
             return AssetTool.loadConfig(["../data/setting_noWorker.json", "../data/"], null, function () {
                 return AssetTool.loadIMGUIAsset("../../test/res/font/Lato-Regular-64.fnt", "../../test/res/font/lato.png",
                     [
@@ -301,15 +350,42 @@
                     ],
 
                     function (contentLength, filePath) {
-                        console.log(contentLength, filePath)
+                        // loadedIMGUIByteLength += contentLength;
+
+                        // AssetTool.showOrCreateLoadingInfo(
+                        //     loadedIMGUIByteLength,
+                        //     totalByteLength
+                        // );
 
                     },
                     function (state) {
-                        return AssetTool.loadWholeWDB("../../test/res/wdb/CesiumMilkTruck.wdb", state, function ([state, imageUint8ArrayMap, truckGameObject]) {
-                            return AssetTool.loadWholeWDB("../../test/res/wdb/BoxTextured.wdb", state, function ([state, imageUint8ArrayMap, boxGameObject]) {
+                        return AssetTool.loadStreamWDB("../asset/wdb/imgui.wdb",
+                            function (totalLoadedByteLength, contentLength, wdbPath) {
+                                console.log(totalLoadedByteLength, contentLength, wdbPath);
+                            },
+                            function (state, gameObject) {
+                                var children = AssetTool.getChildren(gameObject, state);
+
+                                var boxGameObject = children[0];
+                                var truckGameObject = children[1];
+
+
                                 return initSample(state, truckGameObject, boxGameObject);
-                            });
-                        });
+                            },
+                            function (state, gameObject) {
+                                return state;
+                            },
+                            function (state, _, gameObject) {
+                                var children = AssetTool.getChildren(gameObject, state);
+
+                                var boxGameObject = children[0];
+                                var truckGameObject = children[1];
+
+
+                                var state = initSample(state, truckGameObject, boxGameObject);
+
+                                wd.startDirector(state);
+                            }, state);
                     }, wd.unsafeGetState());
             });
         };

@@ -27,18 +27,20 @@
         window.onload = function () {
             ReplaceFetchTool.replaceFetchForTest();
 
-
             return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
-
-
                 AssetTool.loadIMGUIAsset("../res/font/Lato-Regular-64.fnt", "../res/font/lato.png",
                     [
                         ["./1.png", "1"],
                         ["./2.jpg", "2"]
                     ],
                     function (contentLength, filePath) {
-                        console.log(contentLength, filePath)
+                        // console.log(contentLength, filePath)
+                        loadedIMGUIByteLength += contentLength;
 
+                        AssetTool.showOrCreateLoadingInfo(
+                            loadedIMGUIByteLength,
+                            totalByteLength
+                        );
                     },
                     function (state) {
                         return AssetTool.loadStreamWDB(
