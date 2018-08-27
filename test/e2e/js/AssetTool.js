@@ -1,10 +1,47 @@
 var AssetTool = (function () {
-    return {
-        showOrCreateLoadingInfo: function () {
+    function computeLoadingPercent(
 
+        loadedIMGUIByteLength,
+        totalByteLength
+    ) {
+        return loadedIMGUIByteLength >= totalByteLength ? 100 : Math.round(loadedIMGUIByteLength / totalByteLength * 100);
+    }
+
+    return {
+        showOrCreateLoadingInfo: function (
+            loadedIMGUIByteLength,
+            totalByteLength
+        ) {
+            var windowWidth = window.innerWidth;
+            var windowHeight = window.innerHeight;
+
+            var dom = document.querySelector("#loading");
+
+
+
+
+            if (!dom) {
+                dom =
+                    document.createElement("div");
+
+                dom.style.cssText = 'position:absolute;top:' + windowHeight * 0.55 + 'px;left:' + windowWidth * 0.45 + 'px;width:200px;height:50px;font-size:80px; color:bisque; text-align: center;';
+
+                dom.id = "loading";
+
+
+                document.querySelector("body").prepend(
+                    dom
+                );
+            }
+
+            dom.innerHTML = String(computeLoadingPercent(
+
+                loadedIMGUIByteLength,
+                totalByteLength
+            )) + '%';
         },
         removeLoadingInfo: function () {
-
+             document.querySelector("#loading").remove();
         },
         addChild: function (parentGameObject, childGameObject, state) {
             var parentTransform =

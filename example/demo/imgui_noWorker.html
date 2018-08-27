@@ -29,6 +29,10 @@
 
     <h1 id="detect" style="display: none">your browser not support sharedArrayBuffer or offscreenCanvas</h1>
 
+    <!-- <div id="loading" style="position:absolute;top:100px;left:100px;width:200px;height:50px;border:1px solid red; font-size:80px; color:bisque; text-align: center; ">
+    100%
+    </div> -->
+
 
     <script>
 
@@ -333,11 +337,11 @@
 
 
         window.onload = function () {
-            // var loadedIMGUIByteLength = 0;
+            var loadedIMGUIByteLength = 0;
 
-            // var totalIMGUIByteLength = (76 + 258 + 26) * 1024;
-            // var totalWDBByteLength = 776 * 1024;
-            // var totalByteLength = totalIMGUIByteLength + totalWDBByteLength;
+            var totalIMGUIByteLength = (76 + 258 + 26) * 1024;
+            var totalWDBByteLength = 550 * 1024;
+            var totalByteLength = totalIMGUIByteLength + totalWDBByteLength;
 
 
 
@@ -350,18 +354,20 @@
                     ],
 
                     function (contentLength, filePath) {
-                        // loadedIMGUIByteLength += contentLength;
+                        loadedIMGUIByteLength += contentLength;
 
-                        // AssetTool.showOrCreateLoadingInfo(
-                        //     loadedIMGUIByteLength,
-                        //     totalByteLength
-                        // );
-
+                        AssetTool.showOrCreateLoadingInfo(
+                            loadedIMGUIByteLength,
+                            totalByteLength
+                        );
                     },
                     function (state) {
                         return AssetTool.loadStreamWDB("../asset/wdb/imgui.wdb",
                             function (totalLoadedByteLength, contentLength, wdbPath) {
-                                console.log(totalLoadedByteLength, contentLength, wdbPath);
+                                AssetTool.showOrCreateLoadingInfo(
+                                    loadedIMGUIByteLength + totalLoadedByteLength,
+                                    totalByteLength
+                                );
                             },
                             function (state, gameObject) {
                                 var children = AssetTool.getChildren(gameObject, state);
@@ -373,6 +379,8 @@
                                 return initSample(state, truckGameObject, boxGameObject);
                             },
                             function (state, gameObject) {
+                                AssetTool.removeLoadingInfo();
+
                                 return state;
                             },
                             function (state, _, gameObject) {
