@@ -123,16 +123,10 @@ var AssetTool = (function () {
                 }
             })
         },
-
-        loadWholeWDB: function (wdbPath, testFunc, state) {
-            return wd.loadWholeWDB(wdbPath, state).forEach(function ([state, imageUint8ArrayMap, gameObject]) {
+        loadWholeWDB: function (wdbPath, handleWhenLoadingFunc, testFunc, state) {
+            return wd.loadWholeWDB(wdbPath, handleWhenLoadingFunc, state).forEach(function ([state, imageUint8ArrayMap, gameObject]) {
                 testFunc([state, imageUint8ArrayMap, gameObject])
             })
-            // .then(function () {
-            //     if (!!completeFunc) {
-            //         return completeFunc()
-            //     }
-            // })
         },
         loadStreamWDB: function (wdbPath, handleWhenLoadingFunc, handleBeforeStartLoopFunc, handleWhenDoneFunc, handleWhenLoadWholeWDBFunc, state) {
             return wd.loadStreamWDB(wdbPath, handleWhenLoadingFunc, handleBeforeStartLoopFunc, handleWhenDoneFunc, handleWhenLoadWholeWDBFunc, state).drain()

@@ -10,16 +10,27 @@ let _ =
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
 
-    let _buildFakeFetchArrayBufferResponse = arrayBuffer =>
-      {"arrayBuffer": () => arrayBuffer |> Js.Promise.resolve}
+    let _buildFakeFetchArrayBufferResponse =
+        (sandbox, contentLength, arrayBuffer) =>
+      {
+        "headers": {
+          "get":
+            Sinon.createEmptyStubWithJsObjSandbox(sandbox)
+            |> Sinon.withOneArg("content-length")
+            |> Sinon.returns(contentLength),
+        },
+        "arrayBuffer": () => arrayBuffer |> Js.Promise.resolve,
+      }
       |> Js.Promise.resolve;
 
-    let _buildFakeFetch = (sandbox, gltfJsonStr, binBuffer) => {
+    let _buildFakeFetch = (sandbox, contentLength, gltfJsonStr, binBuffer) => {
       let fetch = createEmptyStubWithJsObjSandbox(sandbox);
       fetch
       |> onCall(0)
       |> returns(
            _buildFakeFetchArrayBufferResponse(
+             sandbox,
+             contentLength,
              ConvertGLBSystem.convertGLBData((
                gltfJsonStr |> Js.Json.parseExn,
                binBuffer,
@@ -41,6 +52,7 @@ let _ =
       let fetchFunc =
         _buildFakeFetch(
           sandbox,
+          0,
           ConvertGLBTool.buildGLTFJsonOfSingleNode(),
           GLBTool.buildBinBuffer(),
         );
@@ -54,12 +66,22 @@ let _ =
     });
 
     describe("test load multi wdb files", () => {
-      let _buildFakeFetch = (sandbox, gltfJsonStr1, gltfJsonStr2, binBuffer) => {
+      let _buildFakeFetch =
+          (
+            sandbox,
+            contentLength1,
+            contentLength2,
+            gltfJsonStr1,
+            gltfJsonStr2,
+            binBuffer,
+          ) => {
         let fetch = createEmptyStubWithJsObjSandbox(sandbox);
         fetch
         |> onCall(0)
         |> returns(
              _buildFakeFetchArrayBufferResponse(
+               sandbox,
+               contentLength1,
                ConvertGLBSystem.convertGLBData((
                  gltfJsonStr1 |> Js.Json.parseExn,
                  binBuffer,
@@ -70,6 +92,8 @@ let _ =
         |> onCall(1)
         |> returns(
              _buildFakeFetchArrayBufferResponse(
+               sandbox,
+               contentLength2,
                ConvertGLBSystem.convertGLBData((
                  gltfJsonStr2 |> Js.Json.parseExn,
                  binBuffer,
@@ -80,10 +104,12 @@ let _ =
         fetch;
       };
 
-      testPromise("test", () => {
+      testPromise("test load", () => {
         let fetchFunc =
           _buildFakeFetch(
             sandbox,
+            0,
+            0,
             ConvertGLBTool.buildGLTFJsonOfSingleNode(),
             ConvertGLBTool.buildGLTFJsonOfSingleNode(),
             GLBTool.buildBinBuffer(),
@@ -106,6 +132,66 @@ let _ =
                     ),
                   )
                   |> expect == ([|gameObject1|], [|gameObject2|])
+                  |> resolve
+                );
+           });
+      });
+      testPromise("test trigger handleWhenLoadingFunc", () => {
+        let contentLengthArr = [||];
+        let wdbPathArr = [||];
+        let contentLength1 = 1;
+        let contentLength2 = 2;
+        let wdbPath1 = "../singleNode1.wdb";
+        let wdbPath2 = "../singleNode2.wdb";
+        let fetchFunc =
+          _buildFakeFetch(
+            sandbox,
+            contentLength1,
+            contentLength2,
+            ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+            ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+            GLBTool.buildBinBuffer(),
+          );
+        let handleWhenLoadingFunc = (contentLength, wdbPath) => {
+          contentLengthArr |> ArrayService.push(contentLength) |> ignore;
+          wdbPathArr |> ArrayService.push(wdbPath) |> ignore;
+        };
+
+        LoadWDBTool.load(
+          ~wdbPath=wdbPath1,
+          ~fetchFunc,
+          ~handleWhenLoadingFunc,
+          (),
+        )
+        |> then_(((state, _, gameObject1)) => {
+             MainStateTool.setState(state) |> ignore;
+
+             LoadWDBTool.load(
+               ~wdbPath=wdbPath2,
+               ~fetchFunc,
+               ~handleWhenLoadingFunc,
+               (),
+             )
+             |> then_(((state, _, gameObject2)) =>
+                  (
+                    contentLengthArr,
+                    wdbPathArr,
+                    AssembleWDBSystemTool.getAllGameObjects(
+                      gameObject1,
+                      state,
+                    ),
+                    AssembleWDBSystemTool.getAllGameObjects(
+                      gameObject2,
+                      state,
+                    ),
+                  )
+                  |>
+                  expect == (
+                              [|contentLength1, contentLength2|],
+                              [|wdbPath1, wdbPath2|],
+                              [|gameObject1|],
+                              [|gameObject2|],
+                            )
                   |> resolve
                 );
            });

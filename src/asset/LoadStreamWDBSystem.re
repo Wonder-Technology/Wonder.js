@@ -4,21 +4,6 @@ open Js.Typed_array;
 
 open Js.Promise;
 
-let _getContentLength = response =>
-  switch (FetchCommon.getContentLength(response) |> Js.toOption) {
-  | None =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildErrorMessage(
-        ~title="load",
-        ~description={j|Content-Length response header unavailable|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j},
-      ),
-    )
-  | Some(contentLength) => contentLength |> NumberService.convertStringToInt
-  };
-
 let load =
     (
       wdbPath,
@@ -73,7 +58,7 @@ let load =
                            wdb
                            |> LoadType.fetchArrayBufferToArrayBuffer
                            |> ArrayBuffer.byteLength,
-                           _getContentLength(response),
+                           FetchCommon.getContentLength(response),
                            wdbPath,
                          );
 
@@ -130,7 +115,8 @@ let load =
                          }),
                        ) */
 
-                    let contentLength = _getContentLength(response);
+                    let contentLength =
+                      FetchCommon.getContentLength(response);
 
                     let totalUint8Array =
                       Uint8Array.fromLength(contentLength);
