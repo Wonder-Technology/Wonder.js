@@ -531,7 +531,7 @@ let buildGLTFJsonOfMultiPrimitives = () =>
             "primitives": [
                 {
                     "attributes": {
-                        "POSITION": 2
+                        "POSITION": 1
                     },
                     "indices": 0,
                     "mode": 4,
@@ -539,11 +539,11 @@ let buildGLTFJsonOfMultiPrimitives = () =>
                 },
                 {
                     "attributes": {
-                        "POSITION": 6
+                        "POSITION": 2
                     },
                     "indices": 4,
                     "mode": 4,
-                    "material": 1
+                    "material": 0
                 }
             ]
         },
@@ -551,16 +551,120 @@ let buildGLTFJsonOfMultiPrimitives = () =>
             "primitives": [
                 {
                     "attributes": {
-                        "POSITION": 9
+                        "POSITION": 3
                     },
-                    "indices": 7,
+                    "indices": 5,
                     "mode": 4,
-                    "material": 2
+                    "material": 0
                 }
             ]
         }
     ]
         |},
+
+
+      ~accessors={| [
+        {
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5123,
+            "count": 36,
+            "max": [
+                23
+            ],
+            "min": [
+                0
+            ],
+            "type": "SCALAR"
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 24,
+            "max": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "min": [
+                -1.0,
+                -1.0,
+                -1.0
+            ],
+            "type": "VEC3"
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 288,
+            "componentType": 5126,
+            "count": 24,
+            "max": [
+                0.5,
+                0.5,
+                0.5
+            ],
+            "min": [
+                -0.5,
+                -0.5,
+                -0.5
+            ],
+            "type": "VEC3"
+        },
+        {
+            "bufferView": 2,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 24,
+            "max": [
+                6.0,
+                1.0
+            ],
+            "min": [
+                0.0,
+                0.0
+            ],
+            "type": "VEC2"
+        },
+        {
+            "bufferView": 0,
+            "byteOffset": 72,
+            "componentType": 5123,
+            "count": 36,
+            "type": "SCALAR"
+        },
+        {
+            "bufferView": 0,
+            "byteOffset": 144,
+            "componentType": 5123,
+            "count": 36,
+            "type": "SCALAR"
+        }
+    ]|},
+
+      ~bufferViews={|  [
+        {
+            "buffer": 0,
+            "byteOffset": 768,
+            "byteLength": 216,
+            "target": 34963
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 576,
+            "byteStride": 12,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 576,
+            "byteLength": 192,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {"buffer":0,"byteLength":23516,"byteOffset":840}
+    ]|},
     (),
   );
 

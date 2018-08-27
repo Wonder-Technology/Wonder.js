@@ -266,24 +266,24 @@ let _ =
                             ConvertTool.getJsonSerializedNone(),
                             Some({
                               name: "geometry_1",
-                              position: 9,
+                              position: 0,
                               normal: ConvertTool.getJsonSerializedNone(),
                               texCoord: ConvertTool.getJsonSerializedNone(),
-                              index: 7,
+                              index: 1,
                             }),
                             Some({
                               name: "geometry_2",
                               position: 2,
                               normal: ConvertTool.getJsonSerializedNone(),
                               texCoord: ConvertTool.getJsonSerializedNone(),
-                              index: 0,
+                              index: 3,
                             }),
                             Some({
                               name: "geometry_3",
-                              position: 6,
+                              position: 4,
                               normal: ConvertTool.getJsonSerializedNone(),
                               texCoord: ConvertTool.getJsonSerializedNone(),
-                              index: 4,
+                              index: 5,
                             }),
                           |],
             (),
@@ -451,10 +451,10 @@ let _ =
                 expect == [|
                             Some({
                               name: "geometry_0",
-                              position: 1,
+                              position: 0,
                               normal: ConvertTool.getJsonSerializedNone(),
                               texCoord: ConvertTool.getJsonSerializedNone(),
-                              index: 0,
+                              index: 1,
                             }),
                           |],
             (),
@@ -987,8 +987,8 @@ let _ =
           basicSourceTextures
           |>
           expect == [|
-                      {name: "texture_0", format: SourceTextureType.RGB},
-                      {name: "texture_1", format: SourceTextureType.RGB},
+                      ConvertTool.getJsonSerializedNone(),
+                      ConvertTool.getJsonSerializedNone(),
                       {name: "texture_2", format: SourceTextureType.RGB},
                       {name: "texture_3", format: SourceTextureType.RGBA},
                       {name: "texture_4", format: SourceTextureType.RGBA},
@@ -1028,7 +1028,7 @@ let _ =
           (({images}, binBuffer)) => {
             let images = images |> OptionService.unsafeGet;
 
-            images |> expect == [|{bufferView: 3, mimeType: "image/png"}|];
+            images |> expect == [|{bufferView: 4, mimeType: "image/png"}|];
           },
         )
       );
@@ -1043,10 +1043,10 @@ let _ =
             images
             |>
             expect == [|
-                        {bufferView: 45, mimeType: "image/jpeg"},
-                        {bufferView: 46, mimeType: "image/jpeg"},
-                        {bufferView: 47, mimeType: "image/jpeg"},
-                        {bufferView: 48, mimeType: "image/png"},
+                        ConvertTool.getJsonSerializedNone(),
+                        ConvertTool.getJsonSerializedNone(),
+                        {bufferView: 4, mimeType: "image/jpeg"},
+                        {bufferView: 9, mimeType: "image/png"},
                       |];
           },
         )
@@ -1064,14 +1064,14 @@ let _ =
           expect == [|
                       {
                         buffer: 0,
-                        byteOffset: 768,
-                        byteLength: 72,
-                        byteStride: ConvertTool.getJsonSerializedNone(),
+                        byteOffset: 0,
+                        byteLength: 288,
+                        byteStride: Some(12),
                       },
                       {
                         buffer: 0,
-                        byteOffset: 0,
-                        byteLength: 576,
+                        byteOffset: 288,
+                        byteLength: 288,
                         byteStride: Some(12),
                       },
                       {
@@ -1079,6 +1079,12 @@ let _ =
                         byteOffset: 576,
                         byteLength: 192,
                         byteStride: Some(8),
+                      },
+                      {
+                        buffer: 0,
+                        byteOffset: 768,
+                        byteLength: 72,
+                        byteStride: ConvertTool.getJsonSerializedNone(),
                       },
                       {
                         buffer: 0,
@@ -1095,38 +1101,14 @@ let _ =
           sandbox^,
           GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
           (({bufferViews}, binBuffer)) =>
-          (
-            bufferViews |> Js.Array.length,
-            bufferViews[45],
-            bufferViews[46],
-            bufferViews[47],
-            bufferViews[48],
-          )
+          (bufferViews |> Js.Array.length, bufferViews[37])
           |>
           expect == (
-                      49,
+                      38,
                       {
                         buffer: 0,
-                        byteOffset: 6776,
-                        byteLength: 1216267,
-                        byteStride: ConvertTool.getJsonSerializedNone(),
-                      },
-                      {
-                        buffer: 0,
-                        byteOffset: 1223044,
-                        byteLength: 1013673,
-                        byteStride: ConvertTool.getJsonSerializedNone(),
-                      },
-                      {
-                        buffer: 0,
-                        byteOffset: 2236720,
-                        byteLength: 702714,
-                        byteStride: ConvertTool.getJsonSerializedNone(),
-                      },
-                      {
-                        buffer: 0,
-                        byteOffset: 2939436,
-                        byteLength: 65522,
+                        byteOffset: 772816,
+                        byteLength: 6,
                         byteStride: ConvertTool.getJsonSerializedNone(),
                       },
                     )
@@ -1165,20 +1147,13 @@ let _ =
                       {
                         bufferView: 0,
                         byteOffset: 0,
-                        componentType: UNSIGNED_SHORT,
-                        count: 36,
-                        type_: SCALAR,
-                      },
-                      {
-                        bufferView: 1,
-                        byteOffset: 0,
                         componentType: FLOAT,
                         count: 24,
                         type_: VEC3,
                       },
                       {
                         bufferView: 1,
-                        byteOffset: 288,
+                        byteOffset: 0,
                         componentType: FLOAT,
                         count: 24,
                         type_: VEC3,
@@ -1189,6 +1164,13 @@ let _ =
                         componentType: FLOAT,
                         count: 24,
                         type_: VEC2,
+                      },
+                      {
+                        bufferView: 3,
+                        byteOffset: 0,
+                        componentType: UNSIGNED_SHORT,
+                        count: 36,
+                        type_: SCALAR,
                       },
                     |]
         )
@@ -1208,10 +1190,10 @@ let _ =
               expect == [|
                           Some({
                             name: "geometry_0",
-                            position: 2,
+                            position: 0,
                             normal: Some(1),
-                            texCoord: Some(3),
-                            index: 0,
+                            texCoord: Some(2),
+                            index: 3,
                           }),
                         |],
           (),
