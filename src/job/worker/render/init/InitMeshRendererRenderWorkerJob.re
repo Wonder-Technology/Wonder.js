@@ -3,13 +3,13 @@ open StateDataRenderWorkerType;
 open RenderWorkerMeshRendererType;
 
 let _createTypeArrays = (buffer, meshRendererCount, state) => {
-  let drawModes =
+  let (drawModes, isRenders) =
     CreateTypeArrayMeshRendererService.createTypeArrays(
       buffer,
       meshRendererCount,
     );
 
-  state.meshRendererRecord =  Some({drawModes: drawModes});
+  state.meshRendererRecord = Some({drawModes, isRenders});
 
   state;
 };

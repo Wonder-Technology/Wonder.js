@@ -89,6 +89,7 @@ let _ =
              );
         });
       });
+
       describe("test clone meshRenderer component", () => {
         test("test clone specific count", () => {
           open StateDataMainType;
@@ -160,26 +161,50 @@ let _ =
                    meshRenderer,
                    drawMode,
                  );
-            let (state, _, clonedMaterialArr) = _clone(gameObject, state);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-            let state = AllMaterialTool.prepareForInit(state);
+            let (state, _, clonedMeshRendererArr) =
+              _clone(gameObject, state);
             (
               MeshRendererAPI.getMeshRendererDrawMode(meshRenderer, state),
               MeshRendererAPI.getMeshRendererDrawMode(
-                clonedMaterialArr[0],
+                clonedMeshRendererArr[0],
                 state,
               ),
               MeshRendererAPI.getMeshRendererDrawMode(
-                clonedMaterialArr[1],
+                clonedMeshRendererArr[1],
                 state,
               ),
             )
             |> expect == (drawMode, drawMode, drawMode);
           });
+          test("test isRender", () => {
+            let (state, gameObject, meshRenderer) = _prepare();
+            let isRender = ! MeshRendererTool.getDefaultIsRender();
+            let state =
+              state
+              |> MeshRendererAPI.setMeshRendererIsRender(
+                   meshRenderer,
+                   isRender,
+                 );
+
+            let (state, clonedGameObjectArr, clonedMeshRendererArr) =
+              _clone(gameObject, state);
+
+            (
+              MeshRendererAPI.getMeshRendererIsRender(meshRenderer, state),
+              MeshRendererAPI.getMeshRendererIsRender(
+                clonedMeshRendererArr[0],
+                state,
+              ),
+              MeshRendererAPI.getMeshRendererIsRender(
+                clonedMeshRendererArr[1],
+                state,
+              ),
+            )
+            |> expect == (isRender, isRender, isRender);
+          });
         });
       });
+
       describe("test clone light component", () => {
         describe("test clone direction light component", () => {
           let _clone = (gameObject, state) => {

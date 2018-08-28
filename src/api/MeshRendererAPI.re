@@ -73,3 +73,43 @@ let setMeshRendererDrawMode =
   );
   setDrawMode(meshRenderer, drawMode, state);
 };
+
+let getMeshRendererIsRender =
+    (meshRenderer: meshRenderer, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              meshRenderer,
+              isAlive,
+              RecordMeshRendererMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  getIsRender(meshRenderer, state);
+};
+
+let setMeshRendererIsRender =
+    (meshRenderer: meshRenderer, isRender, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              meshRenderer,
+              isAlive,
+              RecordMeshRendererMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  setIsRender(meshRenderer, isRender, state);
+};

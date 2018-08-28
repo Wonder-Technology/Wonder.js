@@ -4,47 +4,46 @@ open GameObjectType;
 
 open MeshRendererType;
 
-let _setRenderGameObject =
-    (
-      meshRenderer: meshRenderer,
-      gameObject: gameObject,
-      renderGameObjectMap: renderGameObjectMap,
-    ) =>
-  renderGameObjectMap
-  |> WonderCommonlib.SparseMapService.set(meshRenderer, gameObject);
-
 let handleAddComponent =
   (. meshRenderer, gameObjectUid: int, {gameObjectRecord} as state) => {
-    let {
-          gameObjectMap,
-          basicMaterialRenderGameObjectMap,
-          lightMaterialRenderGameObjectMap,
-        } as meshRendererRecord =
-      RecordMeshRendererMainService.getRecord(state);
-    let basicMaterialRenderGameObjectMap =
-      HasComponentGameObjectService.hasBasicMaterialComponent(
+    WonderLog.Contract.requireCheck(
+      () =>
+        WonderLog.(
+          Contract.(
+            Operators.(
+              test(
+                Log.buildAssertMessage(
+                  ~expect={j|isRender is true|j},
+                  ~actual={j|is false|j},
+                ),
+                () =>
+                OperateMeshRendererMainService.getIsRender(
+                  meshRenderer,
+                  state,
+                )
+                |> assertTrue
+              )
+            )
+          )
+        ),
+      IsDebugMainService.getIsDebug(StateDataMain.stateData),
+    );
+
+    let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
+
+    let {gameObjectMap} as meshRendererRecord =
+      RenderArrayMeshRendererMainService.addToRenderGameObjectMap(
+        meshRenderer,
         gameObjectUid,
+        meshRendererRecord,
         gameObjectRecord,
-      ) ?
-        basicMaterialRenderGameObjectMap
-        |> _setRenderGameObject(meshRenderer, gameObjectUid) :
-        basicMaterialRenderGameObjectMap;
-    let lightMaterialRenderGameObjectMap =
-      HasComponentGameObjectService.hasLightMaterialComponent(
-        gameObjectUid,
-        gameObjectRecord,
-      ) ?
-        lightMaterialRenderGameObjectMap
-        |> _setRenderGameObject(meshRenderer, gameObjectUid) :
-        lightMaterialRenderGameObjectMap;
+      );
 
     {
       ...state,
       meshRendererRecord:
         Some({
           ...meshRendererRecord,
-          basicMaterialRenderGameObjectMap,
-          lightMaterialRenderGameObjectMap,
           gameObjectMap:
             AddComponentService.addComponentToGameObjectMap(
               meshRenderer,

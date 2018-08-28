@@ -23,6 +23,35 @@ let _clone =
   | None => state
   };
 
+let _cloneMeshRenderer =
+    (uid, countRangeArr, clonedGameObjectArr, {gameObjectRecord} as state) =>
+  switch (
+    GetComponentGameObjectService.getMeshRendererComponent(.
+      uid,
+      gameObjectRecord,
+    )
+  ) {
+  | Some(meshRenderer) =>
+    let (state, clonedMeshRendererArr) =
+      CloneComponentGameObjectMainService.cloneMeshRendererComponent(
+        meshRenderer,
+        countRangeArr,
+        state,
+      );
+
+    BatchAddGameObjectComponentMainService.batchAddMeshRendererComponentForClone(
+      clonedGameObjectArr,
+      clonedMeshRendererArr,
+      state,
+    )
+    |> CloneMeshRendererMainService.setIsRenderAfterAddToGameObject(
+         meshRenderer,
+         clonedMeshRendererArr,
+       );
+
+  | None => state
+  };
+
 let _cloneComponentExceptTransform =
     (
       (uid, countRangeArr, clonedGameObjectArr: array(int)),
@@ -130,21 +159,7 @@ let _cloneComponentExceptTransform =
          BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForClone,
        ),
      )
-  |> _clone(
-       (
-         uid,
-         GetComponentGameObjectService.getMeshRendererComponent(.
-           uid,
-           gameObjectRecord,
-         ),
-         countRangeArr,
-         clonedGameObjectArr,
-       ),
-       (
-         CloneComponentGameObjectMainService.cloneMeshRendererComponent,
-         BatchAddGameObjectComponentMainService.batchAddMeshRendererComponentForClone,
-       ),
-     )
+  |> _cloneMeshRenderer(uid, countRangeArr, clonedGameObjectArr)
   |> _clone(
        (
          uid,

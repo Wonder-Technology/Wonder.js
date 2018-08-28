@@ -57,3 +57,13 @@ let getTriangles = () =>
 let getDefaultDrawMode = () =>
   BufferMeshRendererService.getDefaultDrawMode()
   |> DrawModeType.drawModeToUint8;
+
+let getRender = () => BufferMeshRendererService.getRender();
+
+let getNotRender = () => BufferMeshRendererService.getNotRender();
+
+let getDefaultIsRender = () =>
+  BufferMeshRendererService.getDefaultIsRender() === getRender();
+
+let getDefaultIsRenderUint8 = () =>
+  BufferMeshRendererService.getDefaultIsRender();

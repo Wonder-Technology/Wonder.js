@@ -16,6 +16,64 @@ let _ =
         );
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
+    describe("test meshRenderer->isRender", () => {
+      describe("if is false, not render", () =>
+        test("test not draw", () => {
+          let (state, geometry, meshRenderer) =
+            RenderBasicJobTool.prepareForDrawElements(sandbox, state^);
+          let state =
+            MeshRendererAPI.setMeshRendererIsRender(
+              meshRenderer,
+              false,
+              state,
+            );
+          let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(~sandbox, ~drawElements, ()),
+               );
+
+          let state = state |> RenderJobsTool.init;
+          let state = state |> DirectorTool.runWithDefaultTime;
+
+          drawElements |> expect |> not_ |> toCalled;
+        })
+      );
+
+      describe("else, render", () =>
+        test("test draw", () => {
+          let (state, geometry, meshRenderer) =
+            RenderBasicJobTool.prepareForDrawElements(sandbox, state^);
+          let state =
+            MeshRendererAPI.setMeshRendererIsRender(
+              meshRenderer,
+              false,
+              state,
+            );
+          let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(~sandbox, ~drawElements, ()),
+               );
+
+          let state = state |> RenderJobsTool.init;
+          let state = state |> DirectorTool.runWithDefaultTime;
+          let state =
+            MeshRendererAPI.setMeshRendererIsRender(
+              meshRenderer,
+              true,
+              state,
+            );
+          let state = state |> DirectorTool.runWithDefaultTime;
+
+          drawElements |> expect |> toCalledOnce;
+        })
+      );
+    });
+
     describe("use program", () => {
       let _prepare = (sandbox, state) =>
         RenderBasicForNoWorkerAndWorkerJobTool.prepareForUseProgramCase(
@@ -1820,12 +1878,9 @@ let _ =
     describe("draw", () =>
       describe(
         "if geometry has index buffer, bind index buffer and drawElements", () => {
-        let _prepareForDrawElements = (sandbox, state) => {
-          let (state, _, geometry, _, meshRenderer) =
-            RenderBasicJobTool.prepareGameObject(sandbox, state);
-          let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-          (state, geometry, meshRenderer);
-        };
+        let _prepareForDrawElements = (sandbox, state) =>
+          RenderBasicJobTool.prepareForDrawElements(sandbox, state);
+
         describe("bind index buffer", () => {
           let _prepareForElementArrayBuffer = state => {
             let element_array_buffer = 1;

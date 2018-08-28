@@ -14,6 +14,7 @@ let _disposeData =
       meshRenderer: meshRenderer,
       {
         drawModes,
+        isRenders,
         gameObjectMap,
         basicMaterialRenderGameObjectMap,
         lightMaterialRenderGameObjectMap,
@@ -26,6 +27,12 @@ let _disposeData =
       BufferMeshRendererService.getDefaultDrawMode()
       |> DrawModeType.drawModeToUint8,
       drawModes,
+    ),
+  isRenders:
+    DisposeTypeArrayService.deleteAndResetUint8(.
+      meshRenderer,
+      BufferMeshRendererService.getDefaultIsRender(),
+      isRenders,
     ),
   basicMaterialRenderGameObjectMap:
     basicMaterialRenderGameObjectMap |> disposeSparseMapData(meshRenderer),

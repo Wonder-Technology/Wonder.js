@@ -65,6 +65,80 @@ let _ =
       })
     );
 
+    describe("getMeshRendererIsRender", () =>
+      test("default value is render", () => {
+        let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+
+        getMeshRendererIsRender(meshRenderer1, state) |> expect == true;
+      })
+    );
+
+    describe("setMeshRendererIsRender", () => {
+      test("set is render", () => {
+        let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+
+        let state =
+          state
+          |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
+
+        getMeshRendererIsRender(meshRenderer1, state) |> expect == false;
+      });
+      test("if isRender === false, remove from renderArray", () => {
+        let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+
+        let state =
+          state
+          |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
+
+        state |> MeshRendererTool.getBasicMaterialRenderArray |> expect == [||];
+      });
+      test("if isRender === true, add to renderArray", () => {
+        let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+
+        let state =
+          state
+          |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
+        let state =
+          state
+          |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, true);
+
+        state
+        |> MeshRendererTool.getBasicMaterialRenderArray
+        |> expect == [|gameObject1|];
+      });
+
+      describe("test isRender not change", () => {
+        test("test isRender === false", () => {
+          let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+
+          let state =
+            state
+            |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
+          let state =
+            state
+            |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
+
+          state
+          |> MeshRendererTool.getBasicMaterialRenderArray
+          |> expect == [||];
+        });
+        test("test isRender === true", () => {
+          let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+
+          let state =
+            state
+            |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, true);
+          let state =
+            state
+            |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, true);
+
+          state
+          |> MeshRendererTool.getBasicMaterialRenderArray
+          |> expect == [|gameObject1|];
+        });
+      });
+    });
+
     describe("getBasicMaterialRenderArray", () =>
       test(
         "get array of gameObject which has meshRenderer component and basicMaterial component",
@@ -85,6 +159,7 @@ let _ =
         },
       )
     );
+
     describe("getLightMaterialRenderArray", () =>
       test(
         "get array of gameObject which has meshRenderer component and lightMaterial component",
@@ -105,6 +180,7 @@ let _ =
         },
       )
     );
+
     describe("test add component", () =>
       describe(
         "should add meshRenderer component after add material component", () => {
@@ -140,6 +216,7 @@ let _ =
         });
       })
     );
+
     describe("disposeComponent", () => {
       describe("dispose data", () => {
         test("remove from gameObjectMap", () => {
@@ -254,7 +331,7 @@ let _ =
             |> expect == [|gameObject4, gameObject3|];
           });
         });
-        describe("test remove from type array", () =>
+        describe("test remove from type array", () => {
           test("remove from drawModes", () => {
             let (state, gameObject1, meshRenderer1) =
               MeshRendererTool.createLightMaterialGameObject(state^);
@@ -287,8 +364,41 @@ let _ =
               MeshRendererAPI.getMeshRendererDrawMode(meshRenderer2, state),
             )
             |> expect == (MeshRendererTool.getDefaultDrawMode(), drawMode2);
-          })
-        );
+          });
+          test("remove from isRenders", () => {
+            let (state, gameObject1, meshRenderer1) =
+              MeshRendererTool.createLightMaterialGameObject(state^);
+            let (state, gameObject2, meshRenderer2) =
+              MeshRendererTool.createLightMaterialGameObject(state);
+            let isRender1 = ! MeshRendererTool.getDefaultIsRender();
+            let isRender2 = ! MeshRendererTool.getDefaultIsRender();
+            let state =
+              state
+              |> MeshRendererAPI.setMeshRendererIsRender(
+                   meshRenderer1,
+                   isRender1,
+                 );
+            let state =
+              state
+              |> MeshRendererAPI.setMeshRendererIsRender(
+                   meshRenderer2,
+                   isRender2,
+                 );
+            let state =
+              state
+              |> GameObjectTool.disposeGameObjectMeshRendererComponent(
+                   gameObject1,
+                   meshRenderer1,
+                 );
+
+            TestTool.closeContractCheck();
+            (
+              MeshRendererAPI.getMeshRendererIsRender(meshRenderer1, state),
+              MeshRendererAPI.getMeshRendererIsRender(meshRenderer2, state),
+            )
+            |> expect == (MeshRendererTool.getDefaultIsRender(), isRender2);
+          });
+        });
       });
       test(
         "the disposed meshRenderer shouldn't affect other alive ones' record",

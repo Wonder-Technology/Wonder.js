@@ -25,8 +25,18 @@ let _setTextureParameters =
     ) =>
   isSourcePowerOfTwo ?
     {
-      gl |> WonderWebgl.Gl.texParameteri(target, gl |> WonderWebgl.Gl.getTextureWrapS, glWrapS);
-      gl |> WonderWebgl.Gl.texParameteri(target, gl |> WonderWebgl.Gl.getTextureWrapT, glWrapT);
+      gl
+      |> WonderWebgl.Gl.texParameteri(
+           target,
+           gl |> WonderWebgl.Gl.getTextureWrapS,
+           glWrapS,
+         );
+      gl
+      |> WonderWebgl.Gl.texParameteri(
+           target,
+           gl |> WonderWebgl.Gl.getTextureWrapT,
+           glWrapT,
+         );
       gl
       |> WonderWebgl.Gl.texParameteri(
            target,
@@ -98,7 +108,10 @@ let update =
   setFlipYFunc(gl, flipY, browserDetectRecord);
 
   gl
-  |> WonderWebgl.Gl.pixelStoreiEnum(WonderWebgl.Gl.getUnpackColorspaceCoersionWebgl(gl), WonderWebgl.Gl.getNone(gl));
+  |> WonderWebgl.Gl.pixelStoreiEnum(
+       WonderWebgl.Gl.getUnpackColorspaceCoersionWebgl(gl),
+       WonderWebgl.Gl.getNone(gl),
+     );
 
   /* TODO handle _needClampMaxSize
      if(_needClampMaxSize(source, width, height)){
@@ -138,4 +151,4 @@ let isNeedUpdate =
       getIsNeedUpdateFunc,
     ) =>
   getIsNeedUpdateFunc(. textureInTypeArray, isNeedUpdates)
-  === BufferSourceTextureService.getDefaultIsNeedUpdate();
+  === BufferSourceTextureService.getNeedUpdate();

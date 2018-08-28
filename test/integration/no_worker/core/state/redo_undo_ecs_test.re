@@ -486,6 +486,21 @@ let _ =
             state,
           )
         );
+        test("copy isRenders", () =>
+          _testCopyTypeArraySingleValue(
+            (
+              GameObjectTool.createGameObject,
+              (material, state) =>
+                MeshRendererAPI.getMeshRendererIsRender(material, state),
+              MeshRendererAPI.setMeshRendererIsRender,
+              () => (
+                MeshRendererTool.getDefaultIsRender(),
+                ! MeshRendererTool.getDefaultIsRender(),
+              ),
+            ),
+            state,
+          )
+        );
       });
 
       describe("deep copy material record", () => {
@@ -1194,20 +1209,32 @@ let _ =
               material4,
               MeshRendererTool.getLines(),
               currentState,
-            );
+            )
+            |> MeshRendererAPI.setMeshRendererIsRender(
+                 material4,
+                 ! MeshRendererTool.getDefaultIsRender(),
+               );
 
           let _ = MainStateTool.restore(currentState, copiedState);
 
           let defaultDrawMode = MeshRendererTool.getDefaultDrawMode();
-          let {drawModes} =
+          let defaultIsRender = MeshRendererTool.getDefaultIsRenderUint8();
+          let {drawModes, isRenders} =
             MainStateTool.unsafeGetState() |> MeshRendererTool.getRecord;
-          drawModes
+          (drawModes, isRenders)
           |>
-          expect == Uint8Array.make([|
-                      defaultDrawMode,
-                      defaultDrawMode,
-                      defaultDrawMode,
-                    |]);
+          expect == (
+                      Uint8Array.make([|
+                        defaultDrawMode,
+                        defaultDrawMode,
+                        defaultDrawMode,
+                      |]),
+                      Uint8Array.make([|
+                        defaultIsRender,
+                        defaultIsRender,
+                        defaultIsRender,
+                      |]),
+                    );
         });
       });
       describe("restore transform record to target state", () => {
