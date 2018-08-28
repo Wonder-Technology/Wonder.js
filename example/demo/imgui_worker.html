@@ -473,6 +473,8 @@
                                 return state;
                             },
                             function (state, _, gameObject) {
+                                AssetTool.removeLoadingInfo();
+
                                 var children = AssetTool.getChildren(gameObject, state);
 
                                 var boxGameObject = children[0];
