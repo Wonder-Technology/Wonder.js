@@ -1169,7 +1169,7 @@ let _ =
               let (state, map) = _prepare(~state, ~width=3, ~height=4, ());
               (state, map);
             };
-            test("set wrap to CLAMP_TO_EDGE", () => {
+            test("set wrap to Clamp_to_edge", () => {
               let (state, map) = _prepare(state^);
               let texture2D = Obj.magic(1);
               let textureWrapS = Obj.magic(2);
@@ -1234,7 +1234,7 @@ let _ =
                 );
               };
               test(
-                "if filter === NEAREST or NEAREST_MIPMAP_MEAREST or NEAREST_MIPMAP_LINEAR, set NEAREST",
+                "if filter === Nearest or NEAREST_MIPMAP_MEAREST or Nearest_mipmap_linear, set Nearest",
                 () => {
                   let (state, map) = _prepare(state^);
                   let state =
@@ -1272,7 +1272,7 @@ let _ =
                   |> expect == (1, 1);
                 },
               );
-              test("else, set LINEAR", () => {
+              test("else, set Linear", () => {
                 let (state, map) = _prepare(state^);
                 let state =
                   state
@@ -1510,7 +1510,7 @@ let _ =
               let (state, map) = _prepare(~state, ~width=3, ~height=4, ());
               (state, map);
             };
-            test("set wrap to CLAMP_TO_EDGE", () => {
+            test("set wrap to Clamp_to_edge", () => {
               let (state, map) = _prepare(state^);
               let texture2D = Obj.magic(1);
               let textureWrapS = Obj.magic(2);

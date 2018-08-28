@@ -1197,10 +1197,10 @@ let _ =
                   |>
                   expect == [|
                               (
-                                SourceTextureType.LINEAR,
-                                SourceTextureType.NEAREST_MIPMAP_LINEAR,
-                                SourceTextureType.REPEAT,
-                                SourceTextureType.REPEAT,
+                                SourceTextureType.Linear,
+                                SourceTextureType.Nearest_mipmap_linear,
+                                SourceTextureType.Repeat,
+                                SourceTextureType.Repeat,
                               ),
                             |],
                 state^,
@@ -1240,7 +1240,7 @@ let _ =
             );
 
             describe("test set format", () => {
-              testPromise("png source should set RGBA format", () =>
+              testPromise("png source should set Rgba format", () =>
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("BoxTextured.glb"),
@@ -1255,12 +1255,12 @@ let _ =
                            state,
                          )
                        )
-                    |> expect == [|SourceTextureType.RGBA|],
+                    |> expect == [|SourceTextureType.Rgba|],
                   state^,
                 )
               );
 
-              testPromise("jpeg source should set RGB format", () =>
+              testPromise("jpeg source should set Rgb format", () =>
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
@@ -1277,15 +1277,15 @@ let _ =
                        )
                     |>
                     expect == [|
-                                SourceTextureType.RGB,
-                                SourceTextureType.RGBA,
-                                SourceTextureType.RGBA,
-                                SourceTextureType.RGBA,
-                                SourceTextureType.RGBA,
-                                SourceTextureType.RGBA,
-                                SourceTextureType.RGBA,
-                                SourceTextureType.RGBA,
-                                SourceTextureType.RGBA,
+                                SourceTextureType.Rgb,
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
                               |],
                   state^,
                 )
@@ -1370,22 +1370,22 @@ let _ =
                   |>
                   expect == [|
                               (
-                                SourceTextureType.LINEAR,
-                                SourceTextureType.NEAREST_MIPMAP_LINEAR,
-                                SourceTextureType.REPEAT,
-                                SourceTextureType.REPEAT,
+                                SourceTextureType.Linear,
+                                SourceTextureType.Nearest_mipmap_linear,
+                                SourceTextureType.Repeat,
+                                SourceTextureType.Repeat,
                               ),
                               (
-                                SourceTextureType.LINEAR,
-                                SourceTextureType.NEAREST_MIPMAP_LINEAR,
-                                SourceTextureType.REPEAT,
-                                SourceTextureType.REPEAT,
+                                SourceTextureType.Linear,
+                                SourceTextureType.Nearest_mipmap_linear,
+                                SourceTextureType.Repeat,
+                                SourceTextureType.Repeat,
                               ),
                               (
-                                SourceTextureType.LINEAR,
-                                SourceTextureType.NEAREST_MIPMAP_LINEAR,
-                                SourceTextureType.REPEAT,
-                                SourceTextureType.REPEAT,
+                                SourceTextureType.Linear,
+                                SourceTextureType.Nearest_mipmap_linear,
+                                SourceTextureType.Repeat,
+                                SourceTextureType.Repeat,
                               ),
                             |],
                 state^,

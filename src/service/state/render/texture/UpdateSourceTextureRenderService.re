@@ -10,9 +10,9 @@ let _isSourcePowerOfTwo = (width, height) =>
 
 let _filterFallback = (filter, gl) =>
   switch (filter) {
-  | SourceTextureType.NEAREST
-  | SourceTextureType.NEAREST_MIPMAP_NEAREST
-  | SourceTextureType.NEAREST_MIPMAP_LINEAR => WonderWebgl.Gl.getNearest(gl)
+  | SourceTextureType.Nearest
+  | SourceTextureType.Nearest_mipmap_nearest
+  | SourceTextureType.Nearest_mipmap_linear => WonderWebgl.Gl.getNearest(gl)
   | _ => WonderWebgl.Gl.getLinear(gl)
   };
 
@@ -69,10 +69,10 @@ let _setTextureParameters =
 
 let _isFilterMipmaps = filter =>
   switch (filter) {
-  | SourceTextureType.NEAREST_MIPMAP_NEAREST
-  | SourceTextureType.NEAREST_MIPMAP_LINEAR
-  | SourceTextureType.LINEAR_MIPMAP_NEAREST
-  | SourceTextureType.LINEAR_MIPMAP_LINEAR => true
+  | SourceTextureType.Nearest_mipmap_nearest
+  | SourceTextureType.Nearest_mipmap_linear
+  | SourceTextureType.Linear_mipmap_nearest
+  | SourceTextureType.Linear_mipmap_linear => true
   | _ => false
   };
 

@@ -22,12 +22,12 @@ let _ =
       let state =
         BasicSourceTextureAPI.setBasicSourceTextureWrapS(
           texture,
-          SourceTextureType.REPEAT,
+          SourceTextureType.Repeat,
           state,
         )
         |> BasicSourceTextureAPI.setBasicSourceTextureMagFilter(
              texture,
-             SourceTextureType.LINEAR,
+             SourceTextureType.Linear,
            );
 
       let width = 30;
@@ -52,12 +52,12 @@ let _ =
       let state =
         BasicSourceTextureAPI.setBasicSourceTextureWrapT(
           texture,
-          SourceTextureType.REPEAT,
+          SourceTextureType.Repeat,
           state,
         )
         |> BasicSourceTextureAPI.setBasicSourceTextureMinFilter(
              texture,
-             SourceTextureType.LINEAR_MIPMAP_LINEAR,
+             SourceTextureType.Linear_mipmap_linear,
            );
 
       let width = 32;
@@ -287,12 +287,12 @@ let _ =
          let state =
            BasicSourceTextureAPI.setBasicSourceTextureWrapS(
              texture,
-             SourceTextureType.REPEAT,
+             SourceTextureType.Repeat,
              state,
            )
            |> BasicSourceTextureAPI.setBasicSourceTextureMagFilter(
                 texture,
-                SourceTextureType.LINEAR,
+                SourceTextureType.Linear,
               );
 
          let width = 30;

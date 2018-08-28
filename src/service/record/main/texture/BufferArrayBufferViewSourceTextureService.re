@@ -2,16 +2,16 @@ open Js.Typed_array;
 
 open BufferSourceSizeTextureService;
 
-let getDefaultWrapS = () => SourceTextureType.CLAMP_TO_EDGE;
+let getDefaultWrapS = () => SourceTextureType.Clamp_to_edge;
 
-let getDefaultWrapT = () => SourceTextureType.CLAMP_TO_EDGE;
+let getDefaultWrapT = () => SourceTextureType.Clamp_to_edge;
 
-let getDefaultMagFilter = () => SourceTextureType.LINEAR;
+let getDefaultMagFilter = () => SourceTextureType.Linear;
 
-let getDefaultMinFilter = () => SourceTextureType.NEAREST;
+let getDefaultMinFilter = () => SourceTextureType.Nearest;
 
 /* let getDefaultFormat = () => TextureFormatService.getRgba(); */
-let getDefaultFormat = () => SourceTextureType.RGBA;
+let getDefaultFormat = () => SourceTextureType.Rgba;
 
 let getDefaultType = () => TextureTypeService.getUnsignedByte();
 

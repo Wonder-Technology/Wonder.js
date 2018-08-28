@@ -1,23 +1,23 @@
 let getNearest = () =>
-  SourceTextureType.NEAREST;
+  SourceTextureType.Nearest;
    /* |> SourceTextureType.filterToUint8; */
 
 let getNearestMipmapNearest = () =>
-  SourceTextureType.NEAREST_MIPMAP_NEAREST; 
+  SourceTextureType.Nearest_mipmap_nearest; 
   /* |> SourceTextureType.filterToUint8; */
 
 let getLinear = () =>
-  SourceTextureType.LINEAR;
+  SourceTextureType.Linear;
    /* |> SourceTextureType.filterToUint8; */
 
 let getNearestMipmapLinear = () =>
-  SourceTextureType.NEAREST_MIPMAP_LINEAR;
+  SourceTextureType.Nearest_mipmap_linear;
    /* |> SourceTextureType.filterToUint8; */
 
 let getLinearMipmapNearest = () =>
-  SourceTextureType.LINEAR_MIPMAP_NEAREST;
+  SourceTextureType.Linear_mipmap_nearest;
    /* |> SourceTextureType.filterToUint8; */
 
 let getLinearMipmapLinear = () =>
-  SourceTextureType.LINEAR_MIPMAP_LINEAR;
+  SourceTextureType.Linear_mipmap_linear;
    /* |> SourceTextureType.filterToUint8; */

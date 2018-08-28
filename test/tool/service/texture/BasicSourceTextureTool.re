@@ -33,11 +33,11 @@ let getLinearMipmapNearest = () => SourceTextureTool.getLinearMipmapNearest();
 
 let getLinearMipmapLinear = () => SourceTextureTool.getLinearMipmapLinear();
 
-let getRgb = () => SourceTextureType.RGB;
+let getRgb = () => SourceTextureType.Rgb;
 
-let getRgba = () => SourceTextureType.RGBA;
+let getRgba = () => SourceTextureType.Rgba;
 
-let getAlpha = () => SourceTextureType.ALPHA;
+let getAlpha = () => SourceTextureType.Alpha;
 
 let getUnsignedByte = () => TextureTypeService.getUnsignedByte();
 
@@ -55,7 +55,7 @@ let getDefaultMagFilter = () =>
 let getDefaultMinFilter = () =>
   BufferBasicSourceTextureService.getDefaultMinFilter();
 
-let getDefaultFormat = () => SourceTextureType.RGBA;
+let getDefaultFormat = () => SourceTextureType.Rgba;
 
 let getDefaultType = () => TextureTypeService.getUnsignedByte();
 

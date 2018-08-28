@@ -32,8 +32,8 @@ let _buildDefaultName = textureIndex =>
 
 let _getFormat = mimeType =>
   switch (mimeType) {
-  | "image/png" => SourceTextureType.RGBA
-  | "image/jpeg" => SourceTextureType.RGB
+  | "image/png" => SourceTextureType.Rgba
+  | "image/jpeg" => SourceTextureType.Rgb
   | mimeType =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
@@ -108,11 +108,11 @@ let convertToBasicSourceTextures =
 
 let _convertMagFilter = magFilter =>
   switch (magFilter) {
-  | None => SourceTextureType.LINEAR
+  | None => SourceTextureType.Linear
   | Some(magFilter) =>
     switch (magFilter) {
-    | 9728 => SourceTextureType.NEAREST
-    | 9729 => SourceTextureType.LINEAR
+    | 9728 => SourceTextureType.Nearest
+    | 9729 => SourceTextureType.Linear
     | magFilter =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(
@@ -128,15 +128,15 @@ let _convertMagFilter = magFilter =>
 
 let _convertMinFilter = minFilter =>
   switch (minFilter) {
-  | None => SourceTextureType.NEAREST
+  | None => SourceTextureType.Nearest
   | Some(minFilter) =>
     switch (minFilter) {
-    | 9728 => SourceTextureType.NEAREST
-    | 9729 => SourceTextureType.LINEAR
-    | 9984 => SourceTextureType.NEAREST_MIPMAP_NEAREST
-    | 9985 => SourceTextureType.LINEAR_MIPMAP_NEAREST
-    | 9986 => SourceTextureType.NEAREST_MIPMAP_LINEAR
-    | 9987 => SourceTextureType.LINEAR_MIPMAP_LINEAR
+    | 9728 => SourceTextureType.Nearest
+    | 9729 => SourceTextureType.Linear
+    | 9984 => SourceTextureType.Nearest_mipmap_nearest
+    | 9985 => SourceTextureType.Linear_mipmap_nearest
+    | 9986 => SourceTextureType.Nearest_mipmap_linear
+    | 9987 => SourceTextureType.Linear_mipmap_linear
     | minFilter =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(
@@ -152,12 +152,12 @@ let _convertMinFilter = minFilter =>
 
 let _convertWrapS = wrapS =>
   switch (wrapS) {
-  | None => SourceTextureType.CLAMP_TO_EDGE
+  | None => SourceTextureType.Clamp_to_edge
   | Some(wrapS) =>
     switch (wrapS) {
-    | 33071 => SourceTextureType.CLAMP_TO_EDGE
-    | 33648 => SourceTextureType.MIRRORED_REPEAT
-    | 10497 => SourceTextureType.REPEAT
+    | 33071 => SourceTextureType.Clamp_to_edge
+    | 33648 => SourceTextureType.Mirrored_repeat
+    | 10497 => SourceTextureType.Repeat
     | wrapS =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(
@@ -173,12 +173,12 @@ let _convertWrapS = wrapS =>
 
 let _convertWrapT = wrapT =>
   switch (wrapT) {
-  | None => SourceTextureType.CLAMP_TO_EDGE
+  | None => SourceTextureType.Clamp_to_edge
   | Some(wrapT) =>
     switch (wrapT) {
-    | 33071 => SourceTextureType.CLAMP_TO_EDGE
-    | 33648 => SourceTextureType.MIRRORED_REPEAT
-    | 10497 => SourceTextureType.REPEAT
+    | 33071 => SourceTextureType.Clamp_to_edge
+    | 33648 => SourceTextureType.Mirrored_repeat
+    | 10497 => SourceTextureType.Repeat
     | wrapT =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(

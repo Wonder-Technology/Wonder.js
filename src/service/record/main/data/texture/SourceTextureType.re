@@ -1,34 +1,34 @@
 type filter =
-  | NEAREST
-  | LINEAR
-  | NEAREST_MIPMAP_NEAREST
-  | LINEAR_MIPMAP_NEAREST
-  | NEAREST_MIPMAP_LINEAR
-  | LINEAR_MIPMAP_LINEAR;
+  | Nearest
+  | Linear
+  | Nearest_mipmap_nearest
+  | Linear_mipmap_nearest
+  | Nearest_mipmap_linear
+  | Linear_mipmap_linear;
 
 type wrap =
-  | CLAMP_TO_EDGE
-  | MIRRORED_REPEAT
-  | REPEAT;
+  | Clamp_to_edge
+  | Mirrored_repeat
+  | Repeat;
 
 type isNeedUpdate =
-  | NOT_NEEDUPDATE
-  | NEEDUPDATE;
+  | Not_needUpdate
+  | NeedUpdate;
 
 type isFlipY =
-  | NOT_FLIPY
-  | FLIPY;
+  | Not_flipy
+  | Flipy;
 
 type format =
-  | RGB
-  | RGBA
-  | ALPHA
-  | LUMINANCE
-  | LUMINANCEALPHA
-  | RGBS3TCDXT1
-  | RGBAS3TCDXT1
-  | RGBAS3TCDXT3
-  | RGBAS3TCDXT5;
+  | Rgb
+  | Rgba
+  | Alpha
+  | Luminance
+  | LuminanceAlpha
+  | Rgbs3tcdxt1
+  | Rgbas3tcdxt1
+  | Rgbas3tcdxt3
+  | Rgbas3tcdxt5;
 
 type sourceTextureRecord = {buffer: WorkerType.sharedArrayBuffer};
 

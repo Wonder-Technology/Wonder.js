@@ -7,21 +7,21 @@ let _buildSamplerDataMapKey = (wrapS, wrapT, magFilter, minFilter) =>
 let _getWrapData = wrap =>
   SourceTextureType.(
     switch (wrap |> uint8ToWrap) {
-    | CLAMP_TO_EDGE => 33071
-    | MIRRORED_REPEAT => 33648
-    | REPEAT => 10497
+    | Clamp_to_edge => 33071
+    | Mirrored_repeat => 33648
+    | Repeat => 10497
     }
   );
 
 let _getFilterData = filter =>
   SourceTextureType.(
     switch (filter |> uint8ToFilter) {
-    | NEAREST => 9728
-    | LINEAR => 9729
-    | NEAREST_MIPMAP_NEAREST => 9984
-    | LINEAR_MIPMAP_NEAREST => 9985
-    | NEAREST_MIPMAP_LINEAR => 9986
-    | LINEAR_MIPMAP_LINEAR => 9987
+    | Nearest => 9728
+    | Linear => 9729
+    | Nearest_mipmap_nearest => 9984
+    | Linear_mipmap_nearest => 9985
+    | Nearest_mipmap_linear => 9986
+    | Linear_mipmap_linear => 9987
     }
   );
 

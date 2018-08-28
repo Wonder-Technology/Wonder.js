@@ -59,25 +59,25 @@ let createBuffer =
   );
 
 let getNeedUpdate = () =>
-  SourceTextureType.NEEDUPDATE |> SourceTextureType.isNeedUpdateToUint8;
+  SourceTextureType.NeedUpdate |> SourceTextureType.isNeedUpdateToUint8;
 
 let getNotNeedUpdate = () =>
-  SourceTextureType.NOT_NEEDUPDATE |> SourceTextureType.isNeedUpdateToUint8;
+  SourceTextureType.Not_needUpdate |> SourceTextureType.isNeedUpdateToUint8;
 
 let getDefaultIsNeedUpdate = () => getNeedUpdate();
 
 let getFlipY = () =>
-  SourceTextureType.FLIPY |> SourceTextureType.isFlipYToUint8;
+  SourceTextureType.Flipy |> SourceTextureType.isFlipYToUint8;
 
 let getNotFlipY = () =>
-  SourceTextureType.NOT_FLIPY |> SourceTextureType.isFlipYToUint8;
+  SourceTextureType.Not_flipy |> SourceTextureType.isFlipYToUint8;
 
 let getFlipYTypeArrayValue = (isFlipY: bool) =>
   isFlipY ? getFlipY() : getNotFlipY();
 
 let getFlipYFromTypeArrayValue = (isFlipY: int) =>
   switch (isFlipY |> SourceTextureType.uint8ToIsFlipY) {
-  | SourceTextureType.FLIPY => true
+  | SourceTextureType.Flipy => true
   | _ => false
   };
 

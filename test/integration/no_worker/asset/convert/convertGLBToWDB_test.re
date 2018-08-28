@@ -974,7 +974,7 @@ let _ =
           expect == [|
                       {
                         name: "CesiumLogoFlat.png",
-                        format: SourceTextureType.RGBA,
+                        format: SourceTextureType.Rgba,
                       },
                     |]
         )
@@ -989,12 +989,12 @@ let _ =
           expect == [|
                       ConvertTool.getJsonSerializedNone(),
                       ConvertTool.getJsonSerializedNone(),
-                      {name: "texture_2", format: SourceTextureType.RGB},
-                      {name: "texture_3", format: SourceTextureType.RGBA},
-                      {name: "texture_4", format: SourceTextureType.RGBA},
-                      {name: "texture_5", format: SourceTextureType.RGBA},
-                      {name: "texture_6", format: SourceTextureType.RGBA},
-                      {name: "texture_7", format: SourceTextureType.RGBA},
+                      {name: "texture_2", format: SourceTextureType.Rgb},
+                      {name: "texture_3", format: SourceTextureType.Rgba},
+                      {name: "texture_4", format: SourceTextureType.Rgba},
+                      {name: "texture_5", format: SourceTextureType.Rgba},
+                      {name: "texture_6", format: SourceTextureType.Rgba},
+                      {name: "texture_7", format: SourceTextureType.Rgba},
                     |]
         )
       );
@@ -1010,10 +1010,10 @@ let _ =
           |>
           expect == [|
                       {
-                        magFilter: LINEAR,
-                        minFilter: NEAREST_MIPMAP_LINEAR,
-                        wrapS: REPEAT,
-                        wrapT: REPEAT,
+                        magFilter: Linear,
+                        minFilter: Nearest_mipmap_linear,
+                        wrapS: Repeat,
+                        wrapT: Repeat,
                       },
                     |]
         )

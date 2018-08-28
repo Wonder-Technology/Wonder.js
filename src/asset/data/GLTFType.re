@@ -109,21 +109,21 @@ type image = {
 };
 
 /* type magFilter =
-     | NEAREST
-     | LINEAR;
+     | Nearest
+     | Linear;
 
    type minFilter =
-     | NEAREST
-     | LINEAR
-     | NEAREST_MIPMAP_NEAREST
-     | LINEAR_MIPMAP_NEAREST
-     | NEAREST_MIPMAP_LINEAR
-     | LINEAR_MIPMAP_LINEAR;
+     | Nearest
+     | Linear
+     | Nearest_mipmap_nearest
+     | Linear_mipmap_nearest
+     | Nearest_mipmap_linear
+     | Linear_mipmap_linear;
 
    type wrap =
-     | CLAMP_TO_EDGE
-     | MIRRORED_REPEAT
-     | REPEAT; */
+     | Clamp_to_edge
+     | Mirrored_repeat
+     | Repeat; */
 type sampler = {
   magFilter: option(int),
   minFilter: option(int),
