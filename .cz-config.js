@@ -43,6 +43,7 @@ module.exports = {
     { name: "imgui" },
     { name: "camera" },
     { name: "dispose" },
+    { name: "clone" },
     { name: "example" },
     { name: "stream" },
     { name: "detect" }
