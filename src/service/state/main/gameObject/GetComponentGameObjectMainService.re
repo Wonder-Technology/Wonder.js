@@ -11,6 +11,12 @@ let _getAllComponents = (disposedUidMap, componentMap) =>
        && Obj.magic(component) !== Js.Undefined.empty
      );
 
+let getAllGeometryComponents = ({gameObjectRecord}) => {
+  let {geometryMap, disposedUidMap} = gameObjectRecord;
+
+  _getAllComponents(disposedUidMap, geometryMap);
+};
+
 let getAllArcballCameraControllerComponents = ({gameObjectRecord}) => {
   let {arcballCameraControllerMap, disposedUidMap} = gameObjectRecord;
 

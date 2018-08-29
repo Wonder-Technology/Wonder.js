@@ -444,6 +444,21 @@ let _ =
         );
       };
 
+      let _createGeometryGameObjects = state => {
+        let (state, gameObject1, geometry1) =
+          GeometryTool.createGameObject(state^);
+        let (state, gameObject2, geometry2) =
+          GeometryTool.createGameObject(state);
+        let (state, gameObject3, geometry3) =
+          BoxGeometryTool.createGameObject(state);
+
+        (
+          state,
+          (gameObject1, gameObject2, gameObject3),
+          (geometry1, geometry2, geometry3),
+        );
+      };
+
       describe("getAllDirectionLightComponents", () => {
         test("get all components", () => {
           let (
@@ -505,6 +520,37 @@ let _ =
             |> GameObjectTool.disposeGameObject(gameObject3);
 
           GameObjectAPI.getAllPointLightComponents(state) |> expect == [||];
+        });
+      });
+
+      describe("getAllGeometryComponents", () => {
+        test("get all components", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3),
+            (geometry1, geometry2, geometry3),
+          ) =
+            _createGeometryGameObjects(state);
+
+          GameObjectAPI.getAllGeometryComponents(state)
+          |> expect == [|geometry1, geometry2, geometry3|];
+        });
+        test("test dispose", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3),
+            (geometry1, geometry2, geometry3),
+          ) =
+            _createGeometryGameObjects(state);
+
+          let state =
+            state
+            |> GameObjectAPI.disposeGameObject(gameObject2)
+            |> GameObjectAPI.disposeGameObject(gameObject3);
+          let state = state |> DisposeJob.execJob(None);
+
+          GameObjectAPI.getAllGeometryComponents(state)
+          |> expect == [|geometry1|];
         });
       });
 
