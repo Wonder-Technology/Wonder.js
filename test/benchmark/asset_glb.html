@@ -145,7 +145,7 @@
                     var n1 = performance.now();
 
 
-                    wd.assembleWholeGLB(arrayBuffer, state)
+                    wd.assembleWholeGLB(arrayBuffer, true, state)
                         .forEach(([state, sceneGameObject]) => {
                             console.log(performance.now() - n1);
                             console.profileEnd();

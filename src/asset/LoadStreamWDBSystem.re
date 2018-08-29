@@ -67,6 +67,7 @@ let load =
                     |> then_(wdb =>
                          AssembleWholeWDBSystem.assemble(
                            wdb |> LoadType.fetchArrayBufferToArrayBuffer,
+                           true,
                            state,
                          )
                          |> Most.tap(

@@ -48,6 +48,7 @@ let testGLTF =
       ~testFunc,
       ~state,
       ~binBuffer=GLBTool.buildBinBuffer(),
+      ~isSetIMGUIFunc=true,
       (),
     ) => {
   open Js.Promise;
@@ -59,7 +60,7 @@ let testGLTF =
     embeddedGLTFJsonStr |> Js.Json.parseExn,
     binBuffer,
   ))
-  |. AssembleWholeWDBSystem.assemble(state^)
+  |. AssembleWholeWDBSystem.assemble(isSetIMGUIFunc, state^)
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => testFunc(result^) |> resolve);
 };
@@ -70,7 +71,12 @@ let testGLB = (sandbox, glbFilePath, testFunc, state) => {
   let result = ref(Obj.magic(1));
 
   ConvertGLBTool.testResult(sandbox, glbFilePath, ((wd, binBuffer)) =>
-    AssembleWholeWDBSystem.assembleWDBData(wd, binBuffer, state)
+    AssembleWholeWDBSystem.assembleWDBData(
+      wd,
+      binBuffer,
+      true,
+      state,
+    )
     |> WonderBsMost.Most.forEach(data => result := data)
     |> then_(() => testFunc(result^) |> resolve)
   );

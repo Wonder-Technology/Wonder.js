@@ -111,7 +111,7 @@ var AssetTool = (function () {
 
             var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
 
-            state = wd.setTransformLocalEulerAngles(transform, [-45,45,0], state);
+            state = wd.setTransformLocalEulerAngles(transform, [-45, 45, 0], state);
 
 
 
@@ -186,7 +186,7 @@ var AssetTool = (function () {
             })
         },
         loadWholeWDB: function (wdbPath, handleWhenLoadingFunc, testFunc, state) {
-            return wd.loadWholeWDB(wdbPath, handleWhenLoadingFunc, state).forEach(function ([state, imageUint8ArrayMap, gameObject]) {
+            return wd.loadWholeWDB(wdbPath, true, handleWhenLoadingFunc, state).forEach(function ([state, imageUint8ArrayMap, gameObject]) {
                 testFunc([state, imageUint8ArrayMap, gameObject])
             })
         },

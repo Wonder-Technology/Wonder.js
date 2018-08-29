@@ -144,12 +144,16 @@ let _checkWDB = dataView => {
   dataView;
 };
 
-let assembleWDBData = (({buffers}: wd) as wd, binBuffer, state) =>
+let assembleWDBData =
+    (({buffers}: wd) as wd, binBuffer, isSetIMGUIFunc, state) =>
   _buildImageArray(wd, binBuffer)
   |> then_(imageDataTuple => {
+       let state =
+         isSetIMGUIFunc ?
+           state |> SetIMGUIFuncSystem.setIMGUIFunc(wd) : state;
+
        let (state, imageUint8ArrayDataMap, gameObjectArr) =
          state
-         |> SetIMGUIFuncSystem.setIMGUIFunc(wd)
          |> BatchCreateSystem.batchCreate(wd)
          |> BatchOperateWholeSystem.batchOperate(
               wd,
@@ -164,13 +168,14 @@ let assembleWDBData = (({buffers}: wd) as wd, binBuffer, state) =>
      })
   |> WonderBsMost.Most.fromPromise;
 
-let assemble = (wdb, state) => {
+let assemble = (wdb, isSetIMGUIFunc, state) => {
   let (wdFileContent, streamChunk, binBuffer) =
     BufferUtils.decodeWDB(wdb, _checkWDB);
 
   assembleWDBData(
     wdFileContent |> Js.Json.parseExn |> Obj.magic,
     binBuffer,
+    isSetIMGUIFunc,
     state,
   );
 };

@@ -2,7 +2,8 @@ open Js.Promise;
 
 open WonderBsMost.Most;
 
-let load = (wdbPath, (fetchFunc, handleWhenLoadingFunc), state) =>
+let load =
+    (wdbPath, isSetIMGUIFunc, (fetchFunc, handleWhenLoadingFunc), state) =>
   fromPromise(
     fetchFunc(wdbPath)
     |> then_(response => {
@@ -18,6 +19,7 @@ let load = (wdbPath, (fetchFunc, handleWhenLoadingFunc), state) =>
   |> flatMap(wdb =>
        AssembleWholeWDBSystem.assemble(
          wdb |> LoadType.fetchArrayBufferToArrayBuffer,
+         isSetIMGUIFunc,
          state,
        )
      );

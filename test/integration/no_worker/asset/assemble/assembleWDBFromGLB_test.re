@@ -71,8 +71,9 @@ let _ =
       );
     });
 
-    describe("test imgui", () =>
-      describe("set imgui func and custom data", () => {
+    describe("test imgui", () => {
+      describe(
+        "if isSetIMGUIFunc === true, set imgui func and custom data", () => {
         describe("test customData", () =>
           testPromise("test value with function", () => {
             let customData = {|[ 1, \"function (a) { return a; }\" ]|};
@@ -181,8 +182,29 @@ let _ =
             (),
           );
         });
-      })
-    );
+      });
+
+      describe("else, not set", () =>
+        testPromise("test no customData", () => {
+          let customData = {|[ 1, \"function (a) { return a; }\" ]|};
+          let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
+
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+            ~state,
+            ~isSetIMGUIFunc=false,
+            ~testFunc=
+              ((state, _, rootGameObject)) =>
+                IMGUITool.getCustomData(state)
+                |> Js.Option.isNone
+                |> expect == true,
+            (),
+          );
+        })
+      );
+    });
 
     describe("test gameObject", () => {
       describe("set gameObject name", () =>
@@ -350,27 +372,27 @@ let _ =
         )
       );
       /* describe("contract check", () =>
-        testPromise("shouldn't disposed before", () => {
-          TestTool.openContractCheck();
-          let (state, gameObject, transform) =
-            GameObjectTool.createGameObject(state^);
-          let state = TransformTool.dispose(transform, state);
+           testPromise("shouldn't disposed before", () => {
+             TestTool.openContractCheck();
+             let (state, gameObject, transform) =
+               GameObjectTool.createGameObject(state^);
+             let state = TransformTool.dispose(transform, state);
 
-          ConvertGLBTool.testGLTFResultByGLTF(
-            ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
-            ~state,
-            ~testFunc=
-              data =>
-                expect(() =>
-                  AssembleWDBSystemTool.batchCreate(data, state)
-                )
-                |> toThrowMessage("expect not disposed before")
-                |> resolve,
-            (),
-          );
-        })
-      ); */
+             ConvertGLBTool.testGLTFResultByGLTF(
+               ~sandbox=sandbox^,
+               ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+               ~state,
+               ~testFunc=
+                 data =>
+                   expect(() =>
+                     AssembleWDBSystemTool.batchCreate(data, state)
+                   )
+                   |> toThrowMessage("expect not disposed before")
+                   |> resolve,
+               (),
+             );
+           })
+         ); */
     });
 
     describe("test geometrys", () => {
@@ -556,29 +578,28 @@ let _ =
           )
         );
       });
-
       /* describe("contract check", () =>
-        testPromise("shouldn't disposed before", () => {
-          TestTool.openContractCheck();
-          let (state, gameObject, geometry) =
-            GeometryTool.createGameObject(state^);
-          let state = GameObjectTool.disposeGameObject(gameObject, state);
+           testPromise("shouldn't disposed before", () => {
+             TestTool.openContractCheck();
+             let (state, gameObject, geometry) =
+               GeometryTool.createGameObject(state^);
+             let state = GameObjectTool.disposeGameObject(gameObject, state);
 
-          ConvertGLBTool.testGLTFResultByGLTF(
-            ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
-            ~state,
-            ~testFunc=
-              data =>
-                expect(() =>
-                  AssembleWDBSystemTool.batchCreate(data, state)
-                )
-                |> toThrowMessage("expect not disposed before")
-                |> resolve,
-            (),
-          );
-        })
-      ); */
+             ConvertGLBTool.testGLTFResultByGLTF(
+               ~sandbox=sandbox^,
+               ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+               ~state,
+               ~testFunc=
+                 data =>
+                   expect(() =>
+                     AssembleWDBSystemTool.batchCreate(data, state)
+                   )
+                   |> toThrowMessage("expect not disposed before")
+                   |> resolve,
+               (),
+             );
+           })
+         ); */
     });
 
     describe("test basicCameraViews", () => {

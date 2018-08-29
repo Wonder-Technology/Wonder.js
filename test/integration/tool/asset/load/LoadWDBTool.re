@@ -4,6 +4,7 @@ let load =
     (
       ~wdbPath,
       ~fetchFunc,
+      ~isSetIMGUIFunc=true,
       ~handleWhenLoadingFunc=(contentLength, wdbPath) => (),
       (),
     ) => {
@@ -12,6 +13,7 @@ let load =
   MainStateTool.unsafeGetState()
   |> LoaderManagerSystem.loadWholeWDB(
        wdbPath,
+       isSetIMGUIFunc,
        (fetchFunc, handleWhenLoadingFunc),
      )
   |> WonderBsMost.Most.forEach(data => result := data)

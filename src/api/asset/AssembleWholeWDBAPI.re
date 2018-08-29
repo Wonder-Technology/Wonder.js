@@ -1,7 +1,8 @@
 open Js.Promise;
 
-let assembleWholeGLB = (glb, state) =>
-  ConvertGLBSystem.convertGLB(glb) |. AssembleWholeWDBSystem.assemble(state);
+let assembleWholeGLB = (glb, isSetIMGUIFunc, state) =>
+  ConvertGLBSystem.convertGLB(glb)
+  |> AssembleWholeWDBSystem.assemble(_, isSetIMGUIFunc, state);
 
-let assembleWholeWDB = (wdb, state) =>
-  AssembleWholeWDBSystem.assemble(wdb, state);
+let assembleWholeWDB = (wdb, isSetIMGUIFunc, state) =>
+  AssembleWholeWDBSystem.assemble(wdb, isSetIMGUIFunc, state);
