@@ -93,7 +93,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
   let {
         index,
         drawModes,
-        /* TODO test */
         isRenders,
         basicMaterialRenderGameObjectMap,
         lightMaterialRenderGameObjectMap,

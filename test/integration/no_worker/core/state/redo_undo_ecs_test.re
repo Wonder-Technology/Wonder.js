@@ -1228,8 +1228,10 @@ let _ =
                         defaultDrawMode,
                         defaultDrawMode,
                         defaultDrawMode,
+                        defaultDrawMode,
                       |]),
                       Uint8Array.make([|
+                        defaultIsRender,
                         defaultIsRender,
                         defaultIsRender,
                         defaultIsRender,
