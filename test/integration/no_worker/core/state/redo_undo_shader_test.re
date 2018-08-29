@@ -68,10 +68,10 @@ let _ =
               MainStateTool.createNewCompleteState(sandbox),
             );
           let newState = MainStateTool.restore(currentState, state);
-          let {lastSendMaterialData, lastSendGeometryData}: StateRenderType.glslSenderRecord =
+          /* let {lastSendMaterialData, lastSendGeometryData}: StateRenderType.glslSenderRecord = */
+          let {lastSendMaterialData}: StateRenderType.glslSenderRecord =
             newState |> GLSLSenderTool.getGLSLSenderRecord;
-          (lastSendMaterialData, lastSendGeometryData)
-          |> expect == (None, None);
+          lastSendMaterialData |> expect == None;
         });
         test("clear vertexAttribHistoryArray", () => {
           open StateDataMainType;
@@ -128,7 +128,6 @@ let _ =
             open GameObjectAPI;
             open GameObjectAPI;
             open BasicMaterialAPI;
-            
             open Sinon;
             let (state, material) = createBasicMaterial(state);
             let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
@@ -143,7 +142,6 @@ let _ =
             open GameObjectAPI;
             open GameObjectAPI;
             open BasicMaterialAPI;
-            
             open Sinon;
             let (state, material) = createBasicMaterial(state);
             let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);

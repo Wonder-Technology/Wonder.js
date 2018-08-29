@@ -11,10 +11,10 @@ let disableVertexAttribArray = (state: StateDataMainType.state) => {
   state;
 };
 
-let clearLastSendGeometry = (state: StateDataMainType.state) => {
+/* let clearLastSendGeometry = (state: StateDataMainType.state) => {
   state.glslSenderRecord.lastSendGeometryData = None;
   state;
-};
+}; */
 
 let clearShaderCache = (state: StateDataMainType.state) => {
   ...state,

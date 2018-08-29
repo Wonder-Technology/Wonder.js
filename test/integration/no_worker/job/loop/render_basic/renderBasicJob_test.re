@@ -317,60 +317,60 @@ let _ =
         });
       });
       describe("send buffer", () => {
-        describe("optimize", () => {
-          let _prepare = (sandbox, state) => {
-            let (state, _, geometry, _, _) =
-              RenderBasicJobTool.prepareGameObject(sandbox, state);
-            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-            (state, geometry);
-          };
-          test("if lastSendGeometryData === geometryIndex, not send", () => {
-            let (state, geometry) = _prepare(sandbox, state^);
-            let (state, _, _, _, _) =
-              RenderBasicJobTool.prepareGameObjectWithSharedGeometry(
-                sandbox,
-                geometry,
-                state,
-              );
-            let float = 1;
-            let vertexAttribPointer =
-              createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~float,
-                     ~vertexAttribPointer,
-                     (),
-                   ),
+        /* describe("optimize", () => {
+             let _prepare = (sandbox, state) => {
+               let (state, _, geometry, _, _) =
+                 RenderBasicJobTool.prepareGameObject(sandbox, state);
+               let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+               (state, geometry);
+             };
+             test("if lastSendGeometryData === geometryIndex, not send", () => {
+               let (state, geometry) = _prepare(sandbox, state^);
+               let (state, _, _, _, _) =
+                 RenderBasicJobTool.prepareGameObjectWithSharedGeometry(
+                   sandbox,
+                   geometry,
+                   state,
                  );
-            let state = state |> RenderJobsTool.init;
-            let state = state |> DirectorTool.runWithDefaultTime;
-            vertexAttribPointer |> getCallCount |> expect == 1;
-          });
-          test("else, send", () => {
-            let (state, geometry) = _prepare(sandbox, state^);
-            let (state, _, _, _, _) =
-              RenderBasicJobTool.prepareGameObject(sandbox, state);
-            let float = 1;
-            let vertexAttribPointer =
-              createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~float,
-                     ~vertexAttribPointer,
-                     (),
-                   ),
-                 );
-            let state = state |> RenderJobsTool.init;
-            let state = state |> DirectorTool.runWithDefaultTime;
-            vertexAttribPointer |> getCallCount |> expect == 2;
-          });
-        });
+               let float = 1;
+               let vertexAttribPointer =
+                 createEmptyStubWithJsObjSandbox(sandbox);
+               let state =
+                 state
+                 |> FakeGlTool.setFakeGl(
+                      FakeGlTool.buildFakeGl(
+                        ~sandbox,
+                        ~float,
+                        ~vertexAttribPointer,
+                        (),
+                      ),
+                    );
+               let state = state |> RenderJobsTool.init;
+               let state = state |> DirectorTool.runWithDefaultTime;
+               vertexAttribPointer |> getCallCount |> expect == 1;
+             });
+             test("else, send", () => {
+               let (state, geometry) = _prepare(sandbox, state^);
+               let (state, _, _, _, _) =
+                 RenderBasicJobTool.prepareGameObject(sandbox, state);
+               let float = 1;
+               let vertexAttribPointer =
+                 createEmptyStubWithJsObjSandbox(sandbox);
+               let state =
+                 state
+                 |> FakeGlTool.setFakeGl(
+                      FakeGlTool.buildFakeGl(
+                        ~sandbox,
+                        ~float,
+                        ~vertexAttribPointer,
+                        (),
+                      ),
+                    );
+               let state = state |> RenderJobsTool.init;
+               let state = state |> DirectorTool.runWithDefaultTime;
+               vertexAttribPointer |> getCallCount |> expect == 2;
+             });
+           }); */
         describe("send a_position", () => {
           test("bind array buffer", () => {
             let state = _prepare(sandbox, state^);
@@ -476,10 +476,8 @@ let _ =
                    );
               let state = state |> RenderJobsTool.init;
               let state = state |> DirectorTool.runWithDefaultTime;
-              let state =
-                state
-                |> GLSLSenderTool.disableVertexAttribArray
-                |> GLSLSenderTool.clearLastSendGeometry;
+              let state = state |> GLSLSenderTool.disableVertexAttribArray;
+              /* |> GLSLSenderTool.clearLastSendGeometry; */
               let state = state |> DirectorTool.runWithDefaultTime;
               enableVertexAttribArray
               |> withOneArg(pos)
@@ -1900,43 +1898,44 @@ let _ =
             let state = state |> RenderJobsTool.init;
             (state, bindBuffer, element_array_buffer);
           };
-          describe("optimize", () => {
-            test("if lastSendGeometryData === geometryIndex, not bind", () => {
-              let (state, _, geometry, _, _) =
-                RenderBasicJobTool.prepareGameObject(sandbox, state^);
-              let (state, _, _, _) =
-                CameraTool.createCameraGameObject(state);
-              let (state, _, _, _, _) =
-                RenderBasicJobTool.prepareGameObjectWithSharedGeometry(
-                  sandbox,
-                  geometry,
-                  state,
-                );
-              let (state, bindBuffer, element_array_buffer) =
-                _prepareForElementArrayBuffer(state);
-              let state = state |> DirectorTool.runWithDefaultTime;
-              bindBuffer
-              |> withOneArg(element_array_buffer)
-              |> getCallCount
-              |> expect == 3;
-            });
-            test("else, bind", () => {
-              let (state, _, geometry, _, _) =
-                RenderBasicJobTool.prepareGameObject(sandbox, state^);
-              let (state, _, _, _) =
-                CameraTool.createCameraGameObject(state);
-              let (state, _, _, _, _) =
-                RenderBasicJobTool.prepareGameObject(sandbox, state);
-              let (state, bindBuffer, element_array_buffer) =
-                _prepareForElementArrayBuffer(state);
-              let state = state |> DirectorTool.runWithDefaultTime;
-              bindBuffer
-              |> withOneArg(element_array_buffer)
-              |> getCallCount
-              |> expect == 3
-              * 2;
-            });
-          });
+          ();
+          /* describe("optimize", () => {
+               test("if lastSendGeometryData === geometryIndex, not bind", () => {
+                 let (state, _, geometry, _, _) =
+                   RenderBasicJobTool.prepareGameObject(sandbox, state^);
+                 let (state, _, _, _) =
+                   CameraTool.createCameraGameObject(state);
+                 let (state, _, _, _, _) =
+                   RenderBasicJobTool.prepareGameObjectWithSharedGeometry(
+                     sandbox,
+                     geometry,
+                     state,
+                   );
+                 let (state, bindBuffer, element_array_buffer) =
+                   _prepareForElementArrayBuffer(state);
+                 let state = state |> DirectorTool.runWithDefaultTime;
+                 bindBuffer
+                 |> withOneArg(element_array_buffer)
+                 |> getCallCount
+                 |> expect == 3;
+               });
+               test("else, bind", () => {
+                 let (state, _, geometry, _, _) =
+                   RenderBasicJobTool.prepareGameObject(sandbox, state^);
+                 let (state, _, _, _) =
+                   CameraTool.createCameraGameObject(state);
+                 let (state, _, _, _, _) =
+                   RenderBasicJobTool.prepareGameObject(sandbox, state);
+                 let (state, bindBuffer, element_array_buffer) =
+                   _prepareForElementArrayBuffer(state);
+                 let state = state |> DirectorTool.runWithDefaultTime;
+                 bindBuffer
+                 |> withOneArg(element_array_buffer)
+                 |> getCallCount
+                 |> expect == 3
+                 * 2;
+               });
+             }); */
         });
 
         describe("drawElements", () => {

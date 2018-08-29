@@ -195,6 +195,7 @@ let buildFakeGl =
   "cullFace": cullFace,
   "enable": enable,
   "disable": disable,
+  "blendFunc": blendFunc,
   "isEnabled": isEnabled,
   "linkProgram": linkProgram,
   "getShaderParameter": getShaderParameter,

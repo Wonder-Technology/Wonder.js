@@ -190,7 +190,7 @@ let _ =
               )
             }
           );
-          describe(
+          /* describe(
             "send buffer",
             () =>
               describe(
@@ -290,7 +290,7 @@ let _ =
                   )
                 }
               )
-          )
+          ) */
         }
       )
     }

@@ -13,5 +13,5 @@ let create = () => {
   /* drawPointsFuncMap: WonderCommonlib.SparseMapService.createEmpty(), */
   vertexAttribHistoryArray: WonderCommonlib.ArrayService.createEmpty(),
   lastSendMaterialData: None,
-  lastSendGeometryData: None
+  /* lastSendGeometryData: None */
 };

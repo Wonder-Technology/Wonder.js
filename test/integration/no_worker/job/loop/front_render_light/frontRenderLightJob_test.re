@@ -341,7 +341,7 @@ let _ =
         });
       });
       describe("send buffer", () => {
-        describe("optimize", () => {
+        /* describe("optimize", () => {
           let _prepare = (sandbox, state) => {
             let (state, _, geometry, _, _) =
               FrontRenderLightJobTool.prepareGameObject(sandbox, state);
@@ -396,7 +396,7 @@ let _ =
             let state = state |> DirectorTool.runWithDefaultTime;
             vertexAttribPointer |> getCallCount |> expect == 4 * 2;
           });
-        });
+        }); */
         describe("send a_position", () =>
           test("attach buffer to attribute", () => {
             let state = _prepare(sandbox, state^);

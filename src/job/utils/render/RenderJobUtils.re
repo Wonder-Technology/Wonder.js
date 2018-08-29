@@ -99,15 +99,18 @@ let _directlySendAttributeData =
 };
 
 let _sendAttributeData =
-    (gl, (shaderIndex, geometryIndex) as indexTuple, state) => {
-  let {lastSendGeometryData} as record = state.glslSenderRecord;
-  switch (lastSendGeometryData) {
-  | Some(lastSendGeometryData) when lastSendGeometryData === geometryIndex => state
-  | _ =>
-    record.lastSendGeometryData = Some(geometryIndex);
-    _directlySendAttributeData(gl, indexTuple, state);
-  };
-};
+    (gl, (shaderIndex, geometryIndex) as indexTuple, state) =>
+  /*
+   TODO when use vao, use lastSendGeometryData optimize!!!
+   (because if not, should judge both last send geometry index and last send attribute data type(e.g. texCoords, ...)!!!)
+   let {lastSendGeometryData} as record = state.glslSenderRecord;
+      switch (lastSendGeometryData) {
+      | Some(lastSendGeometryData) when lastSendGeometryData === geometryIndex => state
+      | _ =>
+        record.lastSendGeometryData = Some(geometryIndex);
+        _directlySendAttributeData(gl, indexTuple, state);
+      }; */
+  _directlySendAttributeData(gl, indexTuple, state);
 
 let _sendUniformRenderObjectModelData =
     (gl, shaderIndex, transformIndex, {glslSenderRecord} as state) =>
@@ -187,10 +190,7 @@ let draw = (gl, meshRendererIndex, geometryIndex, state) =>
       DrawModeMeshRendererService.getGlDrawMode(gl, meshRendererIndex, state),
       GeometryRenderService.getIndexType(gl),
       GeometryRenderService.getIndexTypeSize(gl),
-      GetGeometryIndicesRenderService.getIndicesCount(.
-        geometryIndex,
-        state,
-      ),
+      GetGeometryIndicesRenderService.getIndicesCount(. geometryIndex, state),
     ),
     gl,
   );

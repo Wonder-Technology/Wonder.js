@@ -60,7 +60,7 @@ let _ =
               )
           )
       );
-      describe(
+      /* describe(
         "clear lastSendGeometryData",
         () =>
           describe(
@@ -107,6 +107,6 @@ let _ =
               )
             }
           )
-      )
+      ) */
     }
   );
