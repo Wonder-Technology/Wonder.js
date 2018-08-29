@@ -535,6 +535,19 @@ let _ =
           GameObjectAPI.getAllGeometryComponents(state)
           |> expect == [|geometry1, geometry2, geometry3|];
         });
+        test("include the ones not add to gameObject", () => {
+          let (
+            state,
+            (gameObject1, gameObject2, gameObject3),
+            (geometry1, geometry2, geometry3),
+          ) =
+            _createGeometryGameObjects(state);
+
+          let (state, geometry4) = GeometryAPI.createGeometry(state);
+
+          GameObjectAPI.getAllGeometryComponents(state)
+          |> expect == [|geometry1, geometry2, geometry3|];
+        });
         test("test dispose", () => {
           let (
             state,

@@ -246,3 +246,24 @@ let setGeometryName = (geometry, name, state) => {
   );
   NameGeometryMainService.setName(geometry, name, state);
 };
+
+let _getAllComponents = (disposedUidMap, componentMap) =>
+  componentMap
+  |> Js.Array.filteri((component, uid) =>
+       ! (disposedUidMap |> WonderCommonlib.SparseMapService.has(uid))
+       && Obj.magic(component) !== Js.Undefined.empty
+     );
+
+let getAllGeometrys = state => {
+  let {index, disposedIndexMap} = RecordGeometryMainService.getRecord(state);
+
+  ArrayService.range(0, index - 1)
+  |> Js.Array.filter(index =>
+       switch (
+         disposedIndexMap |> WonderCommonlib.SparseMapService.get(index)
+       ) {
+       | Some(isDisposed) when isDisposed === true => false
+       | _ => true
+       }
+     );
+};

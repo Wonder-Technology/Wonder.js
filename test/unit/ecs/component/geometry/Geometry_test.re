@@ -27,6 +27,55 @@ let _ =
       })
     );
 
+    describe("getAllGeometrys", () => {
+      let _createGeometryGameObjects = state => {
+        let (state, gameObject1, geometry1) =
+          GeometryTool.createGameObject(state^);
+        let (state, gameObject2, geometry2) =
+          GeometryTool.createGameObject(state);
+        let (state, gameObject3, geometry3) =
+          BoxGeometryTool.createGameObject(state);
+
+        (
+          state,
+          (gameObject1, gameObject2, gameObject3),
+          (geometry1, geometry2, geometry3),
+        );
+      };
+
+      test(
+        "get all geometrys include the ones add or not add to gameObject", () => {
+        let (
+          state,
+          (gameObject1, gameObject2, gameObject3),
+          (geometry1, geometry2, geometry3),
+        ) =
+          _createGeometryGameObjects(state);
+
+        let (state, geometry4) = GeometryAPI.createGeometry(state);
+
+        GeometryAPI.getAllGeometrys(state)
+        |> expect == [|geometry1, geometry2, geometry3, geometry4|];
+      });
+      test("test dispose", () => {
+        let (
+          state,
+          (gameObject1, gameObject2, gameObject3),
+          (geometry1, geometry2, geometry3),
+        ) =
+          _createGeometryGameObjects(state);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObject(gameObject2)
+          |> GameObjectAPI.disposeGameObject(gameObject3);
+        let state = state |> DisposeJob.execJob(None);
+
+        GameObjectAPI.getAllGeometryComponents(state)
+        |> expect == [|geometry1|];
+      });
+    });
+
     describe("test set points", () => {
       let _testSetVertexDataWithTypeArray = (type_, getFunc, setFunc) =>
         test({j|directly set it|j}, () => {
