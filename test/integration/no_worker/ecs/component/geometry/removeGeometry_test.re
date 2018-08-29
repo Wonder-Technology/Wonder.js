@@ -31,6 +31,20 @@ let _ =
         GameObjectAPI.hasGameObjectGeometryComponent(gameObject, state)
         |> expect == false;
       });
+      test("remove from gameObjectsMap", () => {
+        let (state, gameObject, geometry) =
+          GeometryTool.createGameObject(state^);
+
+        let state =
+          GameObjectAPI.removeGameObjectGeometryComponent(
+            gameObject,
+            geometry,
+            state,
+          );
+
+        GeometryAPI.unsafeGetGeometryGameObjects(geometry, state)
+        |> expect == [||];
+      });
 
       describe("test remove shared geometry from gameObject", () =>
         test("remove gameObject", () => {

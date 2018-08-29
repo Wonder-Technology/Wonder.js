@@ -3,15 +3,7 @@ open StateDataMainType;
 open GeometryType;
 
 let _handleRemoveComponent = (gameObject, geometry: geometry, geometryRecord) =>
-  switch (GroupGeometryService.isGroupGeometry(geometry, geometryRecord)) {
-  | false => geometryRecord
-  | true =>
-    GroupGeometryService.removeGameObject(
-      gameObject,
-      geometry,
-      geometryRecord,
-    )
-  };
+  GroupGeometryService.removeGameObject(gameObject, geometry, geometryRecord);
 
 let handleRemoveComponent = (gameObject, geometry: geometry, state) => {
   let geometryRecord = state |> RecordGeometryMainService.getRecord;
