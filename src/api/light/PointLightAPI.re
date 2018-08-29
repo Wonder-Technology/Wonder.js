@@ -10,12 +10,7 @@ open DisposePointLightService;
 
 open OperatePointLightService;
 
-let createPointLight = state => {
-  let (pointLightRecord, index) =
-    CreatePointLightService.create(. state.pointLightRecord);
-  state.pointLightRecord = pointLightRecord;
-  (state, index);
-};
+let createPointLight = state => CreatePointLightMainService.create(. state);
 
 let unsafeGetPointLightGameObject = (light, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(

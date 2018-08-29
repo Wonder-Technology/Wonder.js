@@ -496,6 +496,10 @@ let unsafeGetLightMaterialGameObject = LightMaterialAPI.unsafeGetLightMaterialGa
 
 let createLightMaterial = LightMaterialAPI.createLightMaterial;
 
+let setMeshRendererIsRender = MeshRendererAPI.setMeshRendererIsRender;
+
+let getMeshRendererIsRender = MeshRendererAPI.getMeshRendererIsRender;
+
 let setMeshRendererDrawMode = MeshRendererAPI.setMeshRendererDrawMode;
 
 let getMeshRendererDrawMode = MeshRendererAPI.getMeshRendererDrawMode;
@@ -887,6 +891,10 @@ let removeNoWorkerInitJob = JobAPI.removeNoWorkerInitJob;
 let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
 
 let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
+
+let setMeshRendererIsRender = MeshRendererAPI.setMeshRendererIsRender;
+
+let getMeshRendererIsRender = MeshRendererAPI.getMeshRendererIsRender;
 
 let setMeshRendererDrawMode = MeshRendererAPI.setMeshRendererDrawMode;
 

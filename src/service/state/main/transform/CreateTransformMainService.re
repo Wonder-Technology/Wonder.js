@@ -8,7 +8,7 @@ let _setDefaultChildren = (index: int, childMap) =>
   WonderCommonlib.SparseMapService.set(
     index,
     WonderCommonlib.ArrayService.createEmpty(),
-    childMap
+    childMap,
   );
 
 /*
@@ -48,14 +48,14 @@ let _initDataWhenCreate =
         localToWorldMatrices,
         localPositions,
         defaultLocalToWorldMatrix,
-        defaultLocalPosition
-      } as transformRecord
+        defaultLocalPosition,
+      } as transformRecord,
     ) =>
   _isNotNeedInitData(index, childMap) ?
     transformRecord :
     {
       ...transformRecord,
-      childMap: childMap |> _setDefaultChildren(index)
+      childMap: childMap |> _setDefaultChildren(index),
       /* localToWorldMatrices:
            RecordTransformMainService.setLocalToWorldMatrix(
              index,
@@ -68,36 +68,35 @@ let _initDataWhenCreate =
 
 let createWithoutMarkNotDirtyWithRecord =
     (settingRecord, {index, disposedIndexArray} as transformRecord) => {
-  let (index, newIndex, disposedIndexArray) = generateIndex(index, disposedIndexArray);
+  let (index, newIndex, disposedIndexArray) =
+    generateIndex(index, disposedIndexArray);
   transformRecord.index = newIndex;
   let transformRecord = _initDataWhenCreate(index, transformRecord);
   transformRecord.disposedIndexArray = disposedIndexArray;
   (transformRecord, index)
   |> BufferService.checkNotExceedMaxCount(
-       BufferSettingService.getTransformCount(settingRecord)
-     )
+       BufferSettingService.getTransformCount(settingRecord),
+     );
 };
 
 let createWithoutMarkNotDirty = ({settingRecord} as state) => {
   let (transformRecord, index) =
     createWithoutMarkNotDirtyWithRecord(
       settingRecord,
-      state |> RecordTransformMainService.getRecord
+      state |> RecordTransformMainService.getRecord,
     );
   state.transformRecord = Some(transformRecord);
-  (state, index)
+  (state, index);
 };
 
-let create = (state) => {
-  let (state, index) = createWithoutMarkNotDirty(state);
-  state.transformRecord =
-    Some(state |> RecordTransformMainService.getRecord |> DirtyTransformService.mark(index, true));
-  (state, index)
-};
-
-
-
-
-
-
-
+let create =
+  (. state) => {
+    let (state, index) = createWithoutMarkNotDirty(state);
+    state.transformRecord =
+      Some(
+        state
+        |> RecordTransformMainService.getRecord
+        |> DirtyTransformService.mark(index, true),
+      );
+    (state, index);
+  };

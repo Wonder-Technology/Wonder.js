@@ -349,7 +349,7 @@ let _ =
           )
         )
       );
-      describe("contract check", () =>
+      /* describe("contract check", () =>
         testPromise("shouldn't disposed before", () => {
           TestTool.openContractCheck();
           let (state, gameObject, transform) =
@@ -370,7 +370,7 @@ let _ =
             (),
           );
         })
-      );
+      ); */
     });
 
     describe("test geometrys", () => {
@@ -557,7 +557,7 @@ let _ =
         );
       });
 
-      describe("contract check", () =>
+      /* describe("contract check", () =>
         testPromise("shouldn't disposed before", () => {
           TestTool.openContractCheck();
           let (state, gameObject, geometry) =
@@ -578,7 +578,7 @@ let _ =
             (),
           );
         })
-      );
+      ); */
     });
 
     describe("test basicCameraViews", () => {

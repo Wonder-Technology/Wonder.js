@@ -16,7 +16,7 @@ open ModelMatrixTransformService;
 
 open UpdateTransformMainService;
 
-let createTransform = CreateTransformMainService.create;
+let createTransform = state => CreateTransformMainService.create(. state);
 
 /* (state) => {
      let (typeArrayPoolRecord, transformRecord, index) =

@@ -144,7 +144,7 @@ let _checkWDB = dataView => {
   dataView;
 };
 
-let assembleGLBData = (({buffers}: wd) as wd, binBuffer, state) =>
+let assembleWDBData = (({buffers}: wd) as wd, binBuffer, state) =>
   _buildImageArray(wd, binBuffer)
   |> then_(imageDataTuple => {
        let (state, imageUint8ArrayDataMap, gameObjectArr) =
@@ -168,7 +168,7 @@ let assemble = (wdb, state) => {
   let (wdFileContent, streamChunk, binBuffer) =
     BufferUtils.decodeWDB(wdb, _checkWDB);
 
-  assembleGLBData(
+  assembleWDBData(
     wdFileContent |> Js.Json.parseExn |> Obj.magic,
     binBuffer,
     state,

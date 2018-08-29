@@ -1,7 +1,7 @@
 open Js.Typed_array;
 
 let create = ((vertices, texCoords, normals, indices), state) => {
-  let (state, geometry) = CreateGeometryMainService.create(state);
+  let (state, geometry) = CreateGeometryMainService.create(. state);
 
   let state =
     state

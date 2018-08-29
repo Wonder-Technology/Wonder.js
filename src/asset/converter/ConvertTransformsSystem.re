@@ -203,7 +203,8 @@ let computeWorldPositionTransforms =
            (transformArr, state),
            {translation, rotation, scale}: WDType.transform,
          ) => {
-           let (state, transform) = CreateTransformMainService.create(state);
+           let (state, transform) =
+             CreateTransformMainService.create(. state);
 
            let state =
              switch (translation) {

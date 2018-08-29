@@ -8,12 +8,8 @@ open DisposeBasicCameraViewService;
 
 open GameObjectBasicCameraViewService;
 
-let createBasicCameraView = state => {
-  let (basicCameraViewRecord, index) =
-    CreateBasicCameraViewService.create(state.basicCameraViewRecord);
-  state.basicCameraViewRecord = basicCameraViewRecord;
-  (state, index);
-};
+let createBasicCameraView = state =>
+  CreateBasicCameraViewMainService.create(. state);
 
 let unsafeGetBasicCameraViewGameObject = (cameraView, state) => {
   WonderLog.Contract.requireCheck(

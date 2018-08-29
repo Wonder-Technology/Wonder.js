@@ -70,7 +70,7 @@ let testGLB = (sandbox, glbFilePath, testFunc, state) => {
   let result = ref(Obj.magic(1));
 
   ConvertGLBTool.testResult(sandbox, glbFilePath, ((wd, binBuffer)) =>
-    AssembleWholeWDBSystem.assembleGLBData(wd, binBuffer, state)
+    AssembleWholeWDBSystem.assembleWDBData(wd, binBuffer, state)
     |> WonderBsMost.Most.forEach(data => result := data)
     |> then_(() => testFunc(result^) |> resolve)
   );

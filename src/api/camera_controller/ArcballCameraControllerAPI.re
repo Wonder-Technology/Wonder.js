@@ -8,13 +8,8 @@ open GameObjectArcballCameraControllerService;
 
 open OperateArcballCameraControllerService;
 
-let createArcballCameraController = state => {
-  let (arcballCameraControllerRecord, index) =
-    CreateArcballCameraControllerService.create(
-      state.arcballCameraControllerRecord,
-    );
-  ({...state, arcballCameraControllerRecord}, index);
-};
+let createArcballCameraController = state =>
+  CreateArcballCameraControllerMainService.create(. state);
 
 let unsafeGetArcballCameraControllerGameObject = (cameraController, state) => {
   WonderLog.Contract.requireCheck(

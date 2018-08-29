@@ -10,12 +10,8 @@ open DisposeDirectionLightService;
 
 open OperateDirectionLightService;
 
-let createDirectionLight = state => {
-  let (directionLightRecord, index) =
-    CreateDirectionLightService.create(. state.directionLightRecord);
-  state.directionLightRecord = directionLightRecord;
-  (state, index);
-};
+let createDirectionLight = state =>
+  CreateDirectionLightMainService.create(. state);
 
 let unsafeGetDirectionLightGameObject =
     (light, state: StateDataMainType.state) => {

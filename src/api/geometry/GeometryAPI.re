@@ -6,7 +6,7 @@ open GeometryType;
 
 open DisposeGeometryMainService;
 
-let createGeometry = state => CreateGeometryMainService.create(state);
+let createGeometry = state => CreateGeometryMainService.create(. state);
 
 let createBoxGeometry = state =>
   CreateBoxGeometryGeometryMainService.create(state);

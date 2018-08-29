@@ -4,7 +4,7 @@ open GeometryType;
 
 open GeometryType;
 
-let create = ({settingRecord} as state) => {
+let create = (. {settingRecord} as state) => {
   let {disposedIndexArray, aliveIndexArray, index} as geometryRecord =
     RecordGeometryMainService.getRecord(state);
   let (index, newIndex, disposedIndexArray) =

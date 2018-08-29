@@ -11,6 +11,7 @@ let _checkNotExceedMaxCountByIndex = (maxCount, indexArr) => {
 
 let _batchCreateGameObject = ({gameObjects}, {gameObjectRecord} as state) => {
   let {count}: gameObjects = gameObjects;
+
   let {uid, aliveUidArray}: GameObjectType.gameObjectRecord = gameObjectRecord;
   let uidArr = ArrayService.range(uid, uid + count - 1);
   (
@@ -55,76 +56,35 @@ let _initTransformDataWhenCreate =
   childMap: childMap |> _setDefaultChildren(indexArr),
 };
 
-let _batchCreateTransform = ({transforms}, {settingRecord} as state) => {
-  AssembleCommon.checkNotDisposedBefore(
-    RecordTransformMainService.getRecord(state).disposedIndexArray,
-  );
-  let ({index, disposedIndexArray}: TransformType.transformRecord) as transformRecord =
-    RecordTransformMainService.getRecord(state);
-  let newIndex = index + (transforms |> Js.Array.length);
-  let indexArr =
-    ArrayService.range(index, newIndex - 1)
-    |> _checkNotExceedMaxCountByIndex(
-         BufferSettingService.getTransformCount(settingRecord),
-       );
-  transformRecord.index = newIndex;
-  let transformRecord =
-    _initTransformDataWhenCreate(indexArr, transformRecord);
-  state.transformRecord =
-    Some(
-      indexArr
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. transformRecord, index) =>
-             transformRecord |> DirtyTransformService.mark(index, true),
-           transformRecord,
-         ),
-    );
-  (state, indexArr);
-};
+let _batchCreateComponent = (components, createFunc, state) =>
+  ArrayService.range(0, (components |> Js.Array.length) - 1)
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. (state, indexArr), _) => {
+         let (state, index) = createFunc(. state);
 
-let _batchCreateGeometry = ({geometrys}, {settingRecord} as state) => {
-  AssembleCommon.checkNotDisposedBefore(
-    RecordGeometryMainService.getRecord(state).disposedIndexArray,
-  );
-  let ({index, aliveIndexArray}: GeometryType.geometryRecord) as geometryRecord =
-    RecordGeometryMainService.getRecord(state);
-  let newIndex = index + (geometrys |> Js.Array.length);
-  let indexArr =
-    ArrayService.range(index, newIndex - 1)
-    |> _checkNotExceedMaxCountByIndex(
-         BufferSettingService.getGeometryCount(settingRecord),
-       );
-  state.geometryRecord =
-    Some({
-      ...geometryRecord,
-      index: newIndex,
-      aliveIndexArray: aliveIndexArray |> Js.Array.concat(indexArr),
-    });
-  (state, indexArr);
-};
+         (state, indexArr |> ArrayService.push(index));
+       },
+       (state, [||]),
+     );
 
-let _batchCreateMeshRenderer = ({meshRenderers}, {settingRecord} as state) => {
-  AssembleCommon.checkNotDisposedBefore(
-    RecordMeshRendererMainService.getRecord(state).disposedIndexArray,
-  );
+let _batchCreateTransform = ({transforms}, {settingRecord} as state) =>
+  _batchCreateComponent(transforms, CreateTransformMainService.create, state);
 
-  let ({index}: MeshRendererType.meshRendererRecord) as meshRendererRecord =
-    RecordMeshRendererMainService.getRecord(state);
-  let newIndex = index + (meshRenderers |> Js.Array.length);
-  let indexArr =
-    ArrayService.range(index, newIndex - 1)
-    |> _checkNotExceedMaxCountByIndex(
-         BufferSettingService.getMeshRendererCount(settingRecord),
-       );
-  state.meshRendererRecord = Some({...meshRendererRecord, index: newIndex});
-  (state, indexArr);
-};
+let _batchCreateGeometry = ({geometrys}, {settingRecord} as state) =>
+  _batchCreateComponent(geometrys, CreateGeometryMainService.create, state);
+
+let _batchCreateMeshRenderer = ({meshRenderers}, {settingRecord} as state) =>
+  _batchCreateComponent(
+    meshRenderers,
+    CreateMeshRendererMainService.create,
+    state,
+  );
 
 let _batchCreateBasicCameraView =
     (
       {basicCameraViews, perspectiveCameraProjections},
       {basicCameraViewRecord} as state,
-    ) => {
+    ) =>
   /*
    TODO check after add orhiCameraProjection
    WonderLog.Contract.requireCheck(
@@ -150,140 +110,45 @@ let _batchCreateBasicCameraView =
         },
         IsDebugMainService.getIsDebug(StateDataMain.stateData),
       ); */
-
-  AssembleCommon.checkNotDisposedBefore(
-    basicCameraViewRecord.disposedIndexArray,
+  _batchCreateComponent(
+    basicCameraViews,
+    CreateBasicCameraViewMainService.create,
+    state,
   );
-
-  let {index}: BasicCameraViewType.basicCameraViewRecord = basicCameraViewRecord;
-  let newIndex = index + (basicCameraViews |> Js.Array.length);
-  let indexArr = ArrayService.range(index, newIndex - 1);
-  state.basicCameraViewRecord = {...basicCameraViewRecord, index: newIndex};
-  (state, indexArr);
-};
 
 let _batchCreatePerspectiveCameraProjection =
     (
       {perspectiveCameraProjections},
       {perspectiveCameraProjectionRecord} as state,
-    ) => {
-  AssembleCommon.checkNotDisposedBefore(
-    perspectiveCameraProjectionRecord.disposedIndexArray,
+    ) =>
+  _batchCreateComponent(
+    perspectiveCameraProjections,
+    CreatePerspectiveCameraProjectionMainService.create,
+    state,
   );
-
-  let {index, pMatrixMap}: PerspectiveCameraProjectionType.perspectiveCameraProjectionRecord = perspectiveCameraProjectionRecord;
-
-  let newIndex = index + (perspectiveCameraProjections |> Js.Array.length);
-
-  let indexArr = ArrayService.range(index, newIndex - 1);
-
-  state.perspectiveCameraProjectionRecord = {
-    ...perspectiveCameraProjectionRecord,
-    index: newIndex,
-    dirtyArray: indexArr,
-    pMatrixMap:
-      indexArr
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. pMatrixMap, index) =>
-             PMatrixService.setDefaultPMatrix(index, pMatrixMap),
-           pMatrixMap,
-         ),
-  };
-  (state, indexArr);
-};
 
 /* TODO use batch create */
 let _createArcballCameraControllerOneByOne =
-    ({arcballCameraControllers}, {arcballCameraControllerRecord} as state) => {
-  AssembleCommon.checkNotDisposedBefore(
-    arcballCameraControllerRecord.disposedIndexArray,
+    ({arcballCameraControllers}, {arcballCameraControllerRecord} as state) =>
+  _batchCreateComponent(
+    arcballCameraControllers,
+    CreateArcballCameraControllerMainService.create,
+    state,
   );
 
-  let (arcballCameraControllerRecord, indexArr) =
-    arcballCameraControllers
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. (arcballCameraControllerRecord, indexArr), _) => {
-           let (arcballCameraControllerRecord, index) =
-             CreateArcballCameraControllerService.create(
-               arcballCameraControllerRecord,
-             );
-
-           (
-             arcballCameraControllerRecord,
-             indexArr |> ArrayService.push(index),
-           );
-         },
-         (arcballCameraControllerRecord, [||]),
-       );
-
-  ({...state, arcballCameraControllerRecord}, indexArr);
-};
-
-let _batchCreateBasicMaterial = ({basicMaterials}, {settingRecord} as state) => {
-  let ({index, textureCountMap}: BasicMaterialType.basicMaterialRecord) as basicMaterialRecord =
-    RecordBasicMaterialMainService.getRecord(state);
-
-  AssembleCommon.checkNotDisposedBefore(
-    basicMaterialRecord.disposedIndexArray,
+let _batchCreateBasicMaterial = ({basicMaterials}, {settingRecord} as state) =>
+  _batchCreateComponent(
+    basicMaterials,
+    CreateBasicMaterialMainService.create,
+    state,
   );
 
-  let newIndex = index + (basicMaterials |> Js.Array.length);
-  let indexArr =
-    ArrayService.range(index, newIndex - 1)
-    |> _checkNotExceedMaxCountByIndex(
-         BufferSettingService.getBasicMaterialCount(settingRecord),
-       );
-  state.basicMaterialRecord =
-    Some({
-      ...basicMaterialRecord,
-      index: newIndex,
-      textureCountMap:
-        indexArr
-        |> WonderCommonlib.ArrayService.reduceOneParam(
-             (. textureCountMap, index) =>
-               WonderCommonlib.SparseMapService.set(
-                 index,
-                 TextureCountMapMaterialService.getDefaultCount(),
-                 textureCountMap,
-               ),
-             textureCountMap,
-           ),
-    });
-  (state, indexArr);
-};
-
-let _batchCreateLightMaterial = ({lightMaterials}, {settingRecord} as state) => {
-  let ({index, textureCountMap}: LightMaterialType.lightMaterialRecord) as lightMaterialRecord =
-    RecordLightMaterialMainService.getRecord(state);
-
-  AssembleCommon.checkNotDisposedBefore(
-    lightMaterialRecord.disposedIndexArray,
+let _batchCreateLightMaterial = ({lightMaterials}, {settingRecord} as state) =>
+  _batchCreateComponent(
+    lightMaterials,
+    CreateLightMaterialMainService.create,
+    state,
   );
-
-  let newIndex = index + (lightMaterials |> Js.Array.length);
-  let indexArr =
-    ArrayService.range(index, newIndex - 1)
-    |> _checkNotExceedMaxCountByIndex(
-         BufferSettingService.getLightMaterialCount(settingRecord),
-       );
-  state.lightMaterialRecord =
-    Some({
-      ...lightMaterialRecord,
-      index: newIndex,
-      textureCountMap:
-        indexArr
-        |> WonderCommonlib.ArrayService.reduceOneParam(
-             (. textureCountMap, index) =>
-               WonderCommonlib.SparseMapService.set(
-                 index,
-                 TextureCountMapMaterialService.getDefaultCount(),
-                 textureCountMap,
-               ),
-             textureCountMap,
-           ),
-    });
-  (state, indexArr);
-};
 
 let _batchCreateBasicSourceTextureArr =
     ({basicSourceTextures}, {settingRecord} as state) => {
@@ -308,6 +173,13 @@ let _batchCreateBasicSourceTextureArr =
          (state, [||]),
        );
 
+  /* let (state, indexArr) =
+     _batchCreateComponent(
+       basicSourceTextures,
+       CreateBasicSourceTextureMainService.create,
+       state,
+     ); */
+
   let state =
     indexArr
     |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -320,53 +192,19 @@ let _batchCreateBasicSourceTextureArr =
 };
 
 let _batchCreateDirectionLightArr =
-    ({directionLights}, {directionLightRecord} as state) => {
-  let {index, mappedIndexMap}: DirectionLightType.directionLightRecord = directionLightRecord;
+    ({directionLights}, {directionLightRecord} as state) =>
+  _batchCreateComponent(
+    directionLights,
+    CreateDirectionLightMainService.create,
+    state,
+  );
 
-  let newIndex = index + (directionLights |> Js.Array.length);
-  let indexArr =
-    ArrayService.range(index, newIndex - 1)
-    |> _checkNotExceedMaxCountByIndex(
-         BufferDirectionLightService.getBufferMaxCount(),
-       );
-
-  state.directionLightRecord = {
-    ...directionLightRecord,
-    index: newIndex,
-    mappedIndexMap:
-      indexArr
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. mappedIndexMap, index) =>
-             mappedIndexMap |> MappedIndexService.setMappedIndex(index, index),
-           mappedIndexMap,
-         ),
-  };
-  (state, indexArr);
-};
-
-let _batchCreatePointLightArr = ({pointLights}, {pointLightRecord} as state) => {
-  let {index, mappedIndexMap}: PointLightType.pointLightRecord = pointLightRecord;
-
-  let newIndex = index + (pointLights |> Js.Array.length);
-  let indexArr =
-    ArrayService.range(index, newIndex - 1)
-    |> _checkNotExceedMaxCountByIndex(
-         BufferPointLightService.getBufferMaxCount(),
-       );
-
-  state.pointLightRecord = {
-    ...pointLightRecord,
-    index: newIndex,
-    mappedIndexMap:
-      indexArr
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. mappedIndexMap, index) =>
-             mappedIndexMap |> MappedIndexService.setMappedIndex(index, index),
-           mappedIndexMap,
-         ),
-  };
-  (state, indexArr);
-};
+let _batchCreatePointLightArr = ({pointLights}, {pointLightRecord} as state) =>
+  _batchCreateComponent(
+    pointLights,
+    CreatePointLightMainService.create,
+    state,
+  );
 
 let batchCreate = (wd, state) => {
   let (state, gameObjectArr) = _batchCreateGameObject(wd, state);
