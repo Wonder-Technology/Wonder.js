@@ -428,7 +428,7 @@ let _ =
         });
       });
 
-      describe("deep copy geometry record", () =>
+      describe("deep copy geometry record", () => {
         test("shadow copy nameMap", () =>
           StateDataMainType.(
             GeometryType.(
@@ -441,8 +441,35 @@ let _ =
               )
             )
           )
-        )
-      );
+        );
+        test("deep copy gameObjectsMap", () => {
+          open StateDataMainType;
+          open GeometryType;
+          let (state, gameObject1, geometry1) =
+            GeometryTool.createGameObject(state^);
+          let {gameObjectsMap} = GeometryTool.getRecord(state);
+          let originGameObjectsArr = [|1|];
+          let copiedOriginGameObjectsArr =
+            originGameObjectsArr |> Js.Array.copy;
+          gameObjectsMap
+          |> WonderCommonlib.SparseMapService.set(
+               geometry1,
+               originGameObjectsArr,
+             )
+          |> ignore;
+          let copiedState = MainStateTool.deepCopyForRestore(state);
+          let {gameObjectsMap} = GeometryTool.getRecord(copiedState);
+          let arr =
+            gameObjectsMap
+            |> WonderCommonlib.SparseMapService.unsafeGet(geometry1);
+          Array.unsafe_set(arr, 0, 2);
+
+          let {gameObjectsMap} = GeometryTool.getRecord(state);
+          gameObjectsMap
+          |> WonderCommonlib.SparseMapService.unsafeGet(geometry1)
+          |> expect == copiedOriginGameObjectsArr;
+        });
+      });
 
       describe("deep copy meshRenderer record", () => {
         test(

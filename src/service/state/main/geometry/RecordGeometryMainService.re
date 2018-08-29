@@ -164,7 +164,8 @@ let deepCopyForRestore = state => {
         indicesOffset,
         disposeCount,
         /* groupCountMap: groupCountMap |> SparseMapService.copy, */
-        gameObjectsMap: gameObjectsMap |> SparseMapService.copy,
+        gameObjectsMap:
+          gameObjectsMap |> CopyTypeArrayService.deepCopyArrayArray,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
         disposedIndexMap: disposedIndexMap |> SparseMapService.copy,
         aliveIndexArray: aliveIndexArray |> Js.Array.copy,
