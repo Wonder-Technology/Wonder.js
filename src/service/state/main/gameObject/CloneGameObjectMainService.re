@@ -67,9 +67,16 @@ let rec _clone =
       isShareMaterial,
       state,
     );
+
+  let transformRecord =
+    state
+    |> RecordTransformMainService.getRecord
+    |> _setParent(clonedParentTransformArr, clonedTransformArr);
+
+  state.transformRecord = Some(transformRecord);
+
   state
   |> RecordTransformMainService.getRecord
-  |> _setParent(clonedParentTransformArr, clonedTransformArr)
   |> HierachyTransformService.unsafeGetChildren(transform)
   |> ReduceStateMainService.reduceState(
        (. state, childTransform) =>
@@ -90,7 +97,6 @@ let rec _clone =
             ),
        state,
      );
-  state;
 };
 
 /* {

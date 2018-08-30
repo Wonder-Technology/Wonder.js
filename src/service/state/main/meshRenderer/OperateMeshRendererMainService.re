@@ -27,7 +27,6 @@ let setDrawMode = (meshRenderer, drawMode, state) => {
   };
 };
 
-/* TODO test */
 let getIsRender = (meshRenderer, state) =>
   OperateTypeArrayMeshRendererService.getIsRender(
     meshRenderer,

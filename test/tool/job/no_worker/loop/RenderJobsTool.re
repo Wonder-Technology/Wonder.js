@@ -21,6 +21,16 @@ let initWithJobConfigWithoutBuildFakeDom = (sandbox, noWorkerJobRecord) =>
   )
   |> DirectorTool.prepare;
 
+let initWithJobConfigAndBufferConfigWithoutBuildFakeDom =
+    (sandbox, noWorkerJobRecord, buffer) =>
+  TestTool.initWithJobConfigWithoutBuildFakeDom(
+    ~sandbox,
+    ~noWorkerJobRecord,
+    ~buffer,
+    (),
+  )
+  |> DirectorTool.prepare;
+
 let prepareGameObject = (sandbox, state) => {
   open GameObjectAPI;
   open GameObjectAPI;

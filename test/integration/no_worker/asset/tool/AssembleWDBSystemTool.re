@@ -71,12 +71,7 @@ let testGLB = (sandbox, glbFilePath, testFunc, state) => {
   let result = ref(Obj.magic(1));
 
   ConvertGLBTool.testResult(sandbox, glbFilePath, ((wd, binBuffer)) =>
-    AssembleWholeWDBSystem.assembleWDBData(
-      wd,
-      binBuffer,
-      true,
-      state,
-    )
+    AssembleWholeWDBSystem.assembleWDBData(wd, binBuffer, true, state)
     |> WonderBsMost.Most.forEach(data => result := data)
     |> then_(() => testFunc(result^) |> resolve)
   );
@@ -133,6 +128,18 @@ let getAllGameObjects = (rootGameObject, state) => {
           ),
      );
 };
+
+let getAllMeshRenderers = (rootGameObject, state) =>
+  getAllGameObjects(rootGameObject, state)
+  |> Js.Array.filter(gameObject =>
+       GameObjectAPI.hasGameObjectMeshRendererComponent(gameObject, state)
+     )
+  |> Js.Array.map(gameObject =>
+       GameObjectAPI.unsafeGetGameObjectMeshRendererComponent(
+         gameObject,
+         state,
+       )
+     );
 
 let getAllDirectionLightData = (rootGameObject, state) =>
   getAllGameObjects(rootGameObject, state)

@@ -22,7 +22,7 @@ let _ =
 
     describe("test dispose gameObject before assemble", () =>
       testPromise(
-        "all components create component from disposedIndexArray when assemble except basicSourceTexture component",
+        "all components should create component from disposedIndexArray when assemble except basicSourceTexture component",
         () => {
           let (state, gameObject1, geometry1, _, _, _) =
             FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(

@@ -203,6 +203,42 @@ let _ =
             |> expect == (isRender, isRender, isRender);
           });
         });
+
+        describe("fix bug", () =>
+          test("test clone hierachy gameObjects", () => {
+            let (state, gameObject1, meshRenderer1) =
+              MeshRendererTool.createBasicMaterialGameObject(state^);
+            let (state, gameObject2, meshRenderer2) =
+              MeshRendererTool.createBasicMaterialGameObject(state);
+            let (state, gameObject3, meshRenderer3) =
+              MeshRendererTool.createBasicMaterialGameObject(state);
+            let (state, gameObject4, meshRenderer4) =
+              MeshRendererTool.createBasicMaterialGameObject(state);
+
+            let state =
+              GameObjectTool.addChild(gameObject1, gameObject2, state)
+              |> GameObjectTool.addChild(gameObject2, gameObject3)
+              |> GameObjectTool.addChild(gameObject1, gameObject4);
+
+            let state =
+              AssembleWDBSystemTool.getAllMeshRenderers(gameObject1, state)
+              |> WonderCommonlib.ArrayService.reduceOneParam(
+                   (. state, meshRenderer) =>
+                     MeshRendererAPI.setMeshRendererIsRender(
+                       meshRenderer,
+                       false,
+                       state,
+                     ),
+                   state,
+                 );
+
+            let (state, clonedGameObjectArr) =
+              CloneTool.cloneGameObject(gameObject1, 1, true, state);
+
+            clonedGameObjectArr
+            |> expect == [|[|5|], [|6|], [|7|], [|8|]|];
+          })
+        );
       });
 
       describe("test clone light component", () => {

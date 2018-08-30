@@ -6,9 +6,10 @@ let create =
   (. {settingRecord} as state) => {
     let {index, disposedIndexArray} as meshRendererRecord =
       state |> RecordMeshRendererMainService.getRecord;
+
     let (index, newIndex, disposedIndexArray) =
       IndexComponentService.generateIndex(index, disposedIndexArray);
-    state.meshRendererRecord = 
+    state.meshRendererRecord =
       Some({...meshRendererRecord, index: newIndex, disposedIndexArray});
     (state, index)
     |> BufferService.checkNotExceedMaxCount(
