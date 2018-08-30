@@ -220,23 +220,21 @@ let _ =
               |> GameObjectTool.addChild(gameObject2, gameObject3)
               |> GameObjectTool.addChild(gameObject1, gameObject4);
 
-            let state =
-              AssembleWDBSystemTool.getAllMeshRenderers(gameObject1, state)
-              |> WonderCommonlib.ArrayService.reduceOneParam(
-                   (. state, meshRenderer) =>
-                     MeshRendererAPI.setMeshRendererIsRender(
-                       meshRenderer,
-                       false,
-                       state,
-                     ),
-                   state,
-                 );
-
             let (state, clonedGameObjectArr) =
               CloneTool.cloneGameObject(gameObject1, 1, true, state);
 
-            clonedGameObjectArr
-            |> expect == [|[|5|], [|6|], [|7|], [|8|]|];
+            (
+              clonedGameObjectArr |> CloneTool.getFlattenClonedGameObjectArr,
+              clonedGameObjectArr
+              |> CloneTool.getFlattenClonedGameObjectArr
+              |> Js.Array.map(clonedGameObject =>
+                   unsafeGetGameObjectMeshRendererComponent(
+                     clonedGameObject,
+                     state,
+                   )
+                 ),
+            )
+            |> expect == ([|5, 6, 7, 8|], [|4, 5, 6, 7|]);
           })
         );
       });
