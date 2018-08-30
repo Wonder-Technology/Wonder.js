@@ -32,7 +32,8 @@ let _disposeData = (cameraController, state) => {
     arcballCameraControllerRecord: {
       ...arcballCameraControllerRecord,
       dirtyArray:
-        DisposeComponentService.removeFromArray(cameraController, dirtyArray),
+        dirtyArray
+        |> Js.Array.filter(dirtyIndex => dirtyIndex !== cameraController),
       distanceMap:
         distanceMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),

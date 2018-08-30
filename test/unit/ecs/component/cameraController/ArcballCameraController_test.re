@@ -164,9 +164,20 @@ let _ =
       };
 
       describe("dispose data", () => {
-        test("dirtyArray: remove from array", () => {
+        test("dirtyArray: remove from array(include duplicated ones)", () => {
           let (state, gameObject1, _, (cameraController1, _, _)) =
             ArcballCameraControllerTool.createGameObject(state^);
+          let state =
+            ArcballCameraControllerAPI.setArcballCameraControllerDistance(
+              cameraController1,
+              11.,
+              state,
+            )
+            |> ArcballCameraControllerAPI.setArcballCameraControllerPhi(
+                 cameraController1,
+                 0.1,
+               );
+
           let state =
             state
             |> GameObjectTool.disposeGameObjectArcballCameraControllerComponent(
@@ -174,9 +185,7 @@ let _ =
                  cameraController1,
                );
           let {dirtyArray} = state.arcballCameraControllerRecord;
-          dirtyArray
-          |> WonderCommonlib.ArrayService.removeDuplicateItems
-          |> expect == [||];
+          dirtyArray |> expect == [||];
         });
         test(
           "remove from distanceMap, minDistanceMap, phiMap, thetaMap, thetaMarginMap, targetMap, moveSpeedXMap, moveSpeedYMap, rotateSpeedMap, wheelSpeedMap, gameObjectMap",
