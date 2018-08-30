@@ -635,42 +635,61 @@ let _ =
              );
 
         describe("test no extras", () =>
-          testPromise("active the one whose cameraViewIndex === 0", () =>
-            AssembleWDBSystemTool.testGLTF(
-              ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
-              ~state,
-              ~testFunc=
-                ((state, _, rootGameObject)) =>
-                  _getAllBasicCameraViewGameObjects(rootGameObject, state)
-                  |> Js.Array.map(gameObject =>
-                       GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent(
-                         gameObject,
-                         state,
-                       )
-                     )
-                  |> Js.Array.map(cameraView =>
-                       (
-                         cameraView,
-                         BasicCameraViewAPI.isActiveBasicCameraView(
-                           cameraView,
+          describe("active the one whose cameraViewIndex === 0", () =>
+            testPromise("unactive other ones", () => {
+              let (state, basicCameraView, perspectiveCameraProjection) =
+                CameraTool.createBasicCameraViewPerspectiveCamera(state^);
+              let state =
+                BasicCameraViewAPI.activeBasicCameraView(
+                  basicCameraView,
+                  state,
+                );
+
+              AssembleWDBSystemTool.testGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
+                ~state=ref(state),
+                ~testFunc=
+                  ((state, _, rootGameObject)) =>
+                    _getAllBasicCameraViewGameObjects(rootGameObject, state)
+                    |> Js.Array.map(gameObject =>
+                         GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent(
+                           gameObject,
                            state,
-                         ),
+                         )
                        )
-                     )
-                  |> expect == [|(2, false), (0, true)|],
-              (),
-            )
+                    |> ArrayService.push(basicCameraView)
+                    |> Js.Array.map(cameraView =>
+                         (
+                           cameraView,
+                           BasicCameraViewAPI.isActiveBasicCameraView(
+                             cameraView,
+                             state,
+                           ),
+                         )
+                       )
+                    |> expect == [|(3, false), (1, true), (0, false)|],
+                (),
+              );
+            })
           )
         );
 
         describe("test extras", () =>
-          testPromise("test", () =>
+          testPromise("unactive other ones", () => {
+            let (state, basicCameraView, perspectiveCameraProjection) =
+              CameraTool.createBasicCameraViewPerspectiveCamera(state^);
+            let state =
+              BasicCameraViewAPI.activeBasicCameraView(
+                basicCameraView,
+                state,
+              );
+
             AssembleWDBSystemTool.testGLTF(
               ~sandbox=sandbox^,
               ~embeddedGLTFJsonStr=
                 ConvertGLBTool.buildGLTFJsonOfBasicCameraView(),
-              ~state,
+              ~state=ref(state),
               ~testFunc=
                 ((state, _, rootGameObject)) =>
                   _getAllBasicCameraViewGameObjects(rootGameObject, state)
@@ -680,6 +699,7 @@ let _ =
                          state,
                        )
                      )
+                  |> ArrayService.push(basicCameraView)
                   |> Js.Array.map(cameraView =>
                        (
                          cameraView,
@@ -689,10 +709,16 @@ let _ =
                          ),
                        )
                      )
-                  |> expect == [|(1, true), (0, false), (2, false)|],
+                  |>
+                  expect == [|
+                              (2, true),
+                              (1, false),
+                              (3, false),
+                              (0, false),
+                            |],
               (),
-            )
-          )
+            );
+          })
         );
       });
     });

@@ -240,11 +240,12 @@ let batchSetBasicCameraViewData =
              let cameraView = basicCameraViewArr[index];
 
              let basicCameraViewRecord =
-               ActiveBasicCameraViewService.setActive(
-                 cameraView,
-                 isActive,
-                 basicCameraViewRecord,
-               );
+               isActive ?
+                 ActiveBasicCameraViewService.active(
+                   cameraView,
+                   basicCameraViewRecord,
+                 ) :
+                 basicCameraViewRecord;
 
              basicCameraViewRecord;
            },
