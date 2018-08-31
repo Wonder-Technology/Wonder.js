@@ -6,21 +6,21 @@ let testResult = (sandbox, glbFilePath, testFunc) => {
   let wdb = ConverterAPI.convertGLBToWDB(buffer##buffer);
 
   /* ConvertStreamSystem.getStreamChunkArr(
-    (
-      /* 1615, 144 */
-      1597,
-      144,
-    ),
-    DataViewCommon.create(wdb),
-  )
-  |> WonderLog.Log.print; */
+       (
+         /* 1615, 144 */
+         1597,
+         144,
+       ),
+       DataViewCommon.create(wdb),
+     )
+     |> WonderLog.Log.print; */
 
   let (wdFileContent, _, binBuffer) =
     BufferUtils.decodeWDB(wdb, AssembleWholeWDBSystem._checkWDB);
 
-    /* WonderLog.Log.print(
-wdFileContent
-    ) |> ignore; */
+  /* WonderLog.Log.print(
+     wdFileContent
+         ) |> ignore; */
 
   testFunc((wdFileContent |> Js.Json.parseExn |> Obj.magic, binBuffer));
 };
@@ -561,9 +561,8 @@ let buildGLTFJsonOfMultiPrimitives = () =>
         }
     ]
         |},
-
-
-      ~accessors={| [
+    ~accessors=
+      {| [
         {
             "bufferView": 0,
             "byteOffset": 0,
@@ -641,8 +640,8 @@ let buildGLTFJsonOfMultiPrimitives = () =>
             "type": "SCALAR"
         }
     ]|},
-
-      ~bufferViews={|  [
+    ~bufferViews=
+      {|  [
         {
             "buffer": 0,
             "byteOffset": 768,
@@ -933,7 +932,9 @@ let buildGLTFJsonOfBasicCameraView = () =>
     (),
   );
 
-let buildGLTFJsonOfArcballCameraController = () =>
+let buildGLTFJsonOfArcballCameraController = (~isBindEvent=true, ()) => {
+  let isBindEvent = isBindEvent ? "true" : "false";
+
   buildGLTFJson(
     ~nodes=
       {| [
@@ -945,7 +946,7 @@ let buildGLTFJsonOfArcballCameraController = () =>
         }
     ]|},
     ~arcballCameraControllers=
-      {|
+      {j|
 [
         {
             "distance":1.5,
@@ -958,12 +959,13 @@ let buildGLTFJsonOfArcballCameraController = () =>
             "moveSpeedY":3.1,
             "rotateSpeed":0.3,
             "wheelSpeed":0.9,
-            "isBindEvent": true
+            "isBindEvent": $isBindEvent
         }
     ]
-        |},
+        |j},
     (),
   );
+};
 
 let buildGLTFJsonOfMeshRenderer = () =>
   buildGLTFJson(

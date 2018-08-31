@@ -141,6 +141,7 @@ let batchOperate =
     |> BatchOperateSystem.batchSetArcballCameraControllerData(
          wd,
          arcballCameraControllerArr,
+         true,
        )
     |> BatchOperateSystem.batchSetMeshRendererData(wd, meshRendererArr)
     |> BatchOperateSystem.batchSetBasicMaterialData(wd, basicMaterialArr)

@@ -145,7 +145,7 @@ let _checkWDB = dataView => {
 };
 
 let assembleWDBData =
-    (({buffers}: wd) as wd, binBuffer, isSetIMGUIFunc, state) =>
+    (({buffers}: wd) as wd, binBuffer, (isSetIMGUIFunc, isBindEvent), state) =>
   _buildImageArray(wd, binBuffer)
   |> then_(imageDataTuple => {
        let state =
@@ -159,6 +159,7 @@ let assembleWDBData =
               wd,
               imageDataTuple,
               _buildBufferArray(buffers, binBuffer),
+              isBindEvent,
             );
 
        let (state, rootGameObject) =
@@ -168,14 +169,14 @@ let assembleWDBData =
      })
   |> WonderBsMost.Most.fromPromise;
 
-let assemble = (wdb, isSetIMGUIFunc, state) => {
+let assemble = (wdb, configTuple, state) => {
   let (wdFileContent, streamChunk, binBuffer) =
     BufferUtils.decodeWDB(wdb, _checkWDB);
 
   assembleWDBData(
     wdFileContent |> Js.Json.parseExn |> Obj.magic,
     binBuffer,
-    isSetIMGUIFunc,
+    configTuple,
     state,
   );
 };

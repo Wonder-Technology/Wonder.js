@@ -314,6 +314,7 @@ let batchSetArcballCameraControllerData =
     (
       {arcballCameraControllers},
       arcballCameraControllerArr,
+      isBindEventConfig,
       {arcballCameraControllerRecord} as state,
     ) =>
   arcballCameraControllers
@@ -338,7 +339,7 @@ let batchSetArcballCameraControllerData =
          let cameraController = arcballCameraControllerArr[index];
 
          let state =
-           isBindEvent ?
+           isBindEventConfig && isBindEvent ?
              EventArcballCameraControllerMainService.bindEvent(
                cameraController,
                state,

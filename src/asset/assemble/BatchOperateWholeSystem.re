@@ -192,6 +192,7 @@ let batchOperate =
       {geometrys, indices, gameObjects, basicSourceTextures} as wd,
       (blobObjectUrlImageArr, imageUint8ArrayDataMap),
       bufferArr,
+      isBindEvent,
       (
         state,
         gameObjectArr,
@@ -302,6 +303,7 @@ let batchOperate =
     |> BatchOperateSystem.batchSetArcballCameraControllerData(
          wd,
          arcballCameraControllerArr,
+         isBindEvent,
        )
     |> BatchOperateSystem.batchSetMeshRendererData(wd, meshRendererArr)
     |> BatchOperateSystem.batchSetBasicMaterialData(wd, basicMaterialArr)

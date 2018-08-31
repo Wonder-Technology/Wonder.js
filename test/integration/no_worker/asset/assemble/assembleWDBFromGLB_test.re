@@ -1011,25 +1011,87 @@ let _ =
             (),
           )
         );
-        testPromise("test set isBindEvent", () =>
-          AssembleWDBSystemTool.testGLTF(
-            ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=
-              ConvertGLBTool.buildGLTFJsonOfArcballCameraController(),
-            ~state,
-            ~testFunc=
-              ((state, _, rootGameObject)) =>
-                _getAllArcballCameraControllerComponent(rootGameObject, state)
-                |> Js.Array.map(cameraController =>
-                     ArcballCameraControllerAPI.isBindArcballCameraControllerEvent(
-                       cameraController,
-                       state,
+
+        describe("test set isBindEvent", () => {
+          testPromise("if isBindEvent===false, not bind event", () =>
+            AssembleWDBSystemTool.testGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfArcballCameraController(),
+              ~isBindEvent=false,
+              ~state,
+              ~testFunc=
+                ((state, _, rootGameObject)) =>
+                  _getAllArcballCameraControllerComponent(
+                    rootGameObject,
+                    state,
+                  )
+                  |> Js.Array.map(cameraController =>
+                       ArcballCameraControllerAPI.isBindArcballCameraControllerEvent(
+                         cameraController,
+                         state,
+                       )
                      )
-                   )
-                |> expect == [|true|],
-            (),
-          )
-        );
+                  |> expect == [|false|],
+              (),
+            )
+          );
+
+          describe("else, judge by data", () => {
+            testPromise("test not bind", () =>
+              AssembleWDBSystemTool.testGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfArcballCameraController(
+                    ~isBindEvent=false,
+                    (),
+                  ),
+                ~isBindEvent=true,
+                ~state,
+                ~testFunc=
+                  ((state, _, rootGameObject)) =>
+                    _getAllArcballCameraControllerComponent(
+                      rootGameObject,
+                      state,
+                    )
+                    |> Js.Array.map(cameraController =>
+                         ArcballCameraControllerAPI.isBindArcballCameraControllerEvent(
+                           cameraController,
+                           state,
+                         )
+                       )
+                    |> expect == [|false|],
+                (),
+              )
+            );
+            testPromise("test bind", () =>
+              AssembleWDBSystemTool.testGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfArcballCameraController(
+                    ~isBindEvent=true,
+                    (),
+                  ),
+                ~isBindEvent=true,
+                ~state,
+                ~testFunc=
+                  ((state, _, rootGameObject)) =>
+                    _getAllArcballCameraControllerComponent(
+                      rootGameObject,
+                      state,
+                    )
+                    |> Js.Array.map(cameraController =>
+                         ArcballCameraControllerAPI.isBindArcballCameraControllerEvent(
+                           cameraController,
+                           state,
+                         )
+                       )
+                    |> expect == [|true|],
+                (),
+              )
+            );
+          });
+        });
       })
     );
 
