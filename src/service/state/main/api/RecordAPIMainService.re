@@ -23,6 +23,8 @@ let create = () => {
     "unsafeGetGameObjectBasicCameraViewComponent": GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent,
     "hasGameObjectDirectionLightComponent": GameObjectAPI.hasGameObjectDirectionLightComponent,
     "hasGameObjectPointLightComponent": GameObjectAPI.hasGameObjectPointLightComponent,
+    "hasGameObjectBasicCameraViewComponent": GameObjectAPI.hasGameObjectBasicCameraViewComponent,
+    "getAllGameObjects": GameObjectAPI.getAllGameObjects,
     "getAllBasicCameraViewComponents": GameObjectAPI.getAllBasicCameraViewComponents,
     "getAllPerspectiveCameraProjectionComponents": GameObjectAPI.getAllPerspectiveCameraProjectionComponents,
     "getAllBasicMaterialComponents": GameObjectAPI.getAllBasicMaterialComponents,
