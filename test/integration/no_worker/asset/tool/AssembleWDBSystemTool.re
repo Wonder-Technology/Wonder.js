@@ -77,35 +77,11 @@ let testGLB = (sandbox, glbFilePath, testFunc, state) => {
   );
 };
 
-let _getChildren = (parent, state) =>
-  TransformAPI.unsafeGetTransformChildren(parent, state)
-  |> Js.Array.sortInPlace;
+let getAllChildrenTransform = (rootGameObject, state) =>
+  GameObjectAPI.getAllChildrenTransform(rootGameObject, state);
 
-let getAllChildrenTransform = (rootGameObject, state) => {
-  let rec _addChildren = (parentArr, state, childrenArr) => {
-    let childrenArr = childrenArr |> Js.Array.concat(parentArr);
-    parentArr
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. (state, childrenArr), parent) =>
-           _addChildren(_getChildren(parent, state), state, childrenArr),
-         (state, childrenArr),
-       );
-  };
-  _addChildren(
-    _getChildren(
-      GameObjectAPI.unsafeGetGameObjectTransformComponent(
-        rootGameObject,
-        state,
-      ),
-      state,
-    ),
-    state,
-    [||],
-  );
-};
 let getAllSortedTransforms = (rootGameObject, state) => {
-  let (state, allTransformChildren) =
-    getAllChildrenTransform(rootGameObject, state);
+  let allTransformChildren = getAllChildrenTransform(rootGameObject, state);
   let allTransformChildren = allTransformChildren |> Js.Array.sortInPlace;
   [|
     GameObjectAPI.unsafeGetGameObjectTransformComponent(
@@ -116,18 +92,8 @@ let getAllSortedTransforms = (rootGameObject, state) => {
   |> Js.Array.concat(allTransformChildren);
 };
 
-let getAllGameObjects = (rootGameObject, state) => {
-  let (state, allTransformChildren) =
-    getAllChildrenTransform(rootGameObject, state);
-
-  [|rootGameObject|]
-  |> Js.Array.concat(
-       allTransformChildren
-       |> Js.Array.map(transform =>
-            TransformAPI.unsafeGetTransformGameObject(transform, state)
-          ),
-     );
-};
+let getAllGameObjects = (rootGameObject, state) =>
+  GameObjectAPI.getAllGameObjects(rootGameObject, state);
 
 let getAllMeshRenderers = (rootGameObject, state) =>
   getAllGameObjects(rootGameObject, state)

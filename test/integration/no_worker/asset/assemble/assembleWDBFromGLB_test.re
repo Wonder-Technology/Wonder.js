@@ -275,7 +275,7 @@ let _ =
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
             ((state, _, rootGameObject)) => {
-              let (state, allTransformChildren) =
+              let allTransformChildren =
                 _getAllChildrenTransform(rootGameObject, state);
               allTransformChildren |> expect == [|2, 4, 6, 7, 8, 3, 5|];
             },
@@ -287,7 +287,7 @@ let _ =
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
             ((state, _, rootGameObject)) => {
-              let (state, allTransformChildren) =
+              let allTransformChildren =
                 _getAllChildrenTransform(rootGameObject, state);
               TransformTool.getRecord(state).parentMap
               |> Obj.magic

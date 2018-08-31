@@ -377,6 +377,44 @@ let _ =
       });
     });
 
+    describe("getAllChildrenTransform", () =>
+      test("get all children' transform", () => {
+        let (state, gameObject1, tra1) =
+          GameObjectTool.createGameObject(state^);
+        let (state, _) = TransformAPI.createTransform(state);
+        let (state, gameObject2, tra2) =
+          GameObjectTool.createGameObject(state);
+        let (state, gameObject3, tra3) =
+          GameObjectTool.createGameObject(state);
+
+        let state =
+          GameObjectTool.addChild(gameObject1, gameObject2, state)
+          |> GameObjectTool.addChild(gameObject2, gameObject3);
+
+        GameObjectAPI.getAllChildrenTransform(gameObject1, state)
+        |> expect == [|tra2, tra3|];
+      })
+    );
+
+    describe("getAllGameObjects", () =>
+      test("get itself and all children", () => {
+        let (state, gameObject1, tra1) =
+          GameObjectTool.createGameObject(state^);
+        let (state, _) = TransformAPI.createTransform(state);
+        let (state, gameObject2, tra2) =
+          GameObjectTool.createGameObject(state);
+        let (state, gameObject3, tra3) =
+          GameObjectTool.createGameObject(state);
+
+        let state =
+          GameObjectTool.addChild(gameObject1, gameObject2, state)
+          |> GameObjectTool.addChild(gameObject2, gameObject3);
+
+        GameObjectAPI.getAllGameObjects(gameObject1, state)
+        |> expect == [|gameObject1, gameObject2, gameObject3|];
+      })
+    );
+
     describe("test get all components", () => {
       let _createMaterialGameObjects = state => {
         let (state, gameObject1, material1) =

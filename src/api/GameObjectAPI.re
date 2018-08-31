@@ -876,6 +876,30 @@ let setGameObjectName =
   NameGameObjectMainService.setName(. gameObject, name, state);
 };
 
+let getAllChildrenTransform = (gameObject, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  AllGameObjectMainService.getAllChildrenTransform(gameObject, state);
+};
+
+let getAllGameObjects = (gameObject, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  AllGameObjectMainService.getAllGameObjects(gameObject, state);
+};
+
 let getAllGeometryComponents = GetComponentGameObjectMainService.getAllGeometryComponents;
 
 let getAllArcballCameraControllerComponents = GetComponentGameObjectMainService.getAllArcballCameraControllerComponents;
