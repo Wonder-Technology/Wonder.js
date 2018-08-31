@@ -214,13 +214,13 @@
 
 
 
-                wd.assembleWholeGLB(boxArrayBuffer, true, state)
+                wd.assembleWholeGLB(boxArrayBuffer, true, true, state)
                     .forEach(([state, imageUint8ArrayMap1, boxGameObject]) => {
-                        wd.assembleWholeGLB(truckArrayBuffer, true, state)
+                        wd.assembleWholeGLB(truckArrayBuffer, true, true, state)
                             .forEach(([state,
                                 imageUint8ArrayMap2,
                                 truckGameObject]) => {
-                                wd.assembleWholeGLB(alphaArrayBuffer, true, state)
+                                wd.assembleWholeGLB(alphaArrayBuffer, true, true, state)
                                     .forEach(([state,
                                         imageUint8ArrayMap3,
                                         alphaGameObject]) => {
@@ -397,9 +397,9 @@
                 boxArrayBuffer,
                 truckArrayBuffer,
             ], isCreateCamera, state) {
-                wd.assembleWholeGLB(boxArrayBuffer, true, state)
+                wd.assembleWholeGLB(boxArrayBuffer, true, true, state)
                     .forEach(([state, imageUint8ArrayMap1, boxGameObject]) => {
-                        wd.assembleWholeGLB(truckArrayBuffer, true, state)
+                        wd.assembleWholeGLB(truckArrayBuffer, true, true, state)
                             .forEach(([state,
                                 imageUint8ArrayMap2,
                                 truckGameObject]) => {
@@ -595,7 +595,7 @@
                 var n2 = performance.now();
 
 
-                wd.assembleWholeWDB(wdb, true, state).forEach(([state, imageUint8ArrayDataMap, rootGameObject]) => {
+                wd.assembleWholeWDB(wdb, true, true, state).forEach(([state, imageUint8ArrayDataMap, rootGameObject]) => {
 
 
                     var n3 = performance.now();
@@ -769,7 +769,7 @@
 
                 // var state = state$;
 
-                wd.assembleWholeWDB(wdb, true, state)
+                wd.assembleWholeWDB(wdb, true, true, state)
                     .forEach(([state, rootGameObject]) => {
                         // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(false, state);
 
@@ -797,7 +797,7 @@
 
                 var n1 = performance.now();
 
-                wd.assembleWholeWDB(wdb, true, state)
+                wd.assembleWholeWDB(wdb, true, true, state)
                     .forEach(([state, _, rootGameObject]) => {
                         console.log(performance.now() - n1);
                         console.profileEnd();

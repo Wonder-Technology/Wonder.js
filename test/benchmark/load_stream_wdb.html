@@ -35,12 +35,11 @@
                     ],
                     function (contentLength, filePath) {
                         // console.log(contentLength, filePath)
-                        loadedIMGUIByteLength += contentLength;
 
-                        AssetTool.showOrCreateLoadingInfo(
-                            loadedIMGUIByteLength,
-                            totalByteLength
-                        );
+                        // AssetTool.showOrCreateLoadingInfo(
+                        //     loadedIMGUIByteLength,
+                        //     totalByteLength
+                        // );
                     },
                     function (state) {
                         return AssetTool.loadStreamWDB(

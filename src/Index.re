@@ -196,6 +196,12 @@ let getAllBasicCameraViewComponents = GameObjectAPI.getAllBasicCameraViewCompone
 
 let getAllArcballCameraControllerComponents = GameObjectAPI.getAllArcballCameraControllerComponents;
 
+let getAllGeometryComponents = GameObjectAPI.getAllGeometryComponents;
+
+let getAllGameObjects = GameObjectAPI.getAllGameObjects;
+
+let getAllChildrenTransform = GameObjectAPI.getAllChildrenTransform;
+
 let setGameObjectName = GameObjectAPI.setGameObjectName;
 
 let unsafeGetGameObjectName = GameObjectAPI.unsafeGetGameObjectName;
@@ -315,6 +321,8 @@ let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectB
 let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
 
 let createGameObject = GameObjectAPI.createGameObject;
+
+let getAllGeometrys = GeometryAPI.getAllGeometrys;
 
 let setGeometryName = GeometryAPI.setGeometryName;
 
@@ -755,6 +763,12 @@ let getAllPerspectiveCameraProjectionComponents = GameObjectAPI.getAllPerspectiv
 let getAllBasicCameraViewComponents = GameObjectAPI.getAllBasicCameraViewComponents;
 
 let getAllArcballCameraControllerComponents = GameObjectAPI.getAllArcballCameraControllerComponents;
+
+let getAllGeometryComponents = GameObjectAPI.getAllGeometryComponents;
+
+let getAllGameObjects = GameObjectAPI.getAllGameObjects;
+
+let getAllChildrenTransform = GameObjectAPI.getAllChildrenTransform;
 
 let setGameObjectName = GameObjectAPI.setGameObjectName;
 

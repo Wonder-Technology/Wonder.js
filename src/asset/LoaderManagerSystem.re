@@ -7,8 +7,13 @@ open WonderBsMost;
 let loadConfig = (jsonPathArr, fetchFunc, stateData) =>
   ConfigDataLoaderSystem.load(jsonPathArr, fetchFunc, stateData);
 
-let loadWholeWDB = (wdbPath, isSetIMGUIFunc, fetchFunc, state) =>
-  LoadWholeWDBSystem.load(wdbPath, isSetIMGUIFunc, fetchFunc, state);
+let loadWholeWDB = (wdbPath, (isSetIMGUIFunc, isBindEvent), fetchFunc, state) =>
+  LoadWholeWDBSystem.load(
+    wdbPath,
+    (isSetIMGUIFunc, isBindEvent),
+    fetchFunc,
+    state,
+  );
 
 let loadStreamWDB = (wdbPath, funcTuple, state) =>
   LoadStreamWDBSystem.load(wdbPath, funcTuple, state);

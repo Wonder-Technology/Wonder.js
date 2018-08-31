@@ -7,10 +7,11 @@ let loadConfig = jsonPathArr =>
     StateDataMain.stateData,
   );
 
-let loadWholeWDB = (wdbPath, isSetIMGUIFunc, handleWhenLoadingFunc, state) =>
+let loadWholeWDB =
+    (wdbPath, isSetIMGUIFunc, isBindEvent, handleWhenLoadingFunc, state) =>
   LoaderManagerSystem.loadWholeWDB(
     wdbPath,
-    isSetIMGUIFunc,
+    (isSetIMGUIFunc, isBindEvent),
     (_fetch, handleWhenLoadingFunc),
     state,
   );
