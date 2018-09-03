@@ -50,6 +50,12 @@ let send =
       },
     |];
     let {index, directionMap} as directionLightRecord = directionLightRecord;
+
+WonderLog.Log.print((
+
+"uniformCacheMap:", uniformCacheMap
+)) |> ignore;
+
     WonderCommonlib.ArrayService.range(0, index - 1)
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. directionLightRecord, index) => {

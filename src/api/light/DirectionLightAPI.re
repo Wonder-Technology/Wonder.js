@@ -128,7 +128,7 @@ let getDirectionLightIntensity = (light, state: StateDataMainType.state) => {
 };
 
 let setDirectionLightIntensity =
-    (light, color, state: StateDataMainType.state) => {
+    (light, intensity, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -154,7 +154,7 @@ let setDirectionLightIntensity =
             state.directionLightRecord,
           ),
         ),
-        color,
+        intensity,
         state.directionLightRecord,
       ),
   };

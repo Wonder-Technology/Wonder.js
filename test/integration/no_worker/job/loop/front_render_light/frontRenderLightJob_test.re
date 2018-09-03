@@ -342,61 +342,61 @@ let _ =
       });
       describe("send buffer", () => {
         /* describe("optimize", () => {
-          let _prepare = (sandbox, state) => {
-            let (state, _, geometry, _, _) =
-              FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-            (state, geometry);
-          };
-          test("if lastSendGeometryData === geometryIndex, not send", () => {
-            let (state, geometry) = _prepare(sandbox, state^);
-            let (state, _, _, _, _) =
-              FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
-                sandbox,
-                geometry,
-                GameObjectAPI.addGameObjectGeometryComponent,
-                state,
-              );
-            let float = 1;
-            let vertexAttribPointer =
-              createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~float,
-                     ~vertexAttribPointer,
-                     (),
-                   ),
+             let _prepare = (sandbox, state) => {
+               let (state, _, geometry, _, _) =
+                 FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+               let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+               (state, geometry);
+             };
+             test("if lastSendGeometryData === geometryIndex, not send", () => {
+               let (state, geometry) = _prepare(sandbox, state^);
+               let (state, _, _, _, _) =
+                 FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
+                   sandbox,
+                   geometry,
+                   GameObjectAPI.addGameObjectGeometryComponent,
+                   state,
                  );
-            let state = state |> RenderJobsTool.init;
-            let state = state |> DirectorTool.runWithDefaultTime;
-            vertexAttribPointer |> getCallCount |> expect == 2 * 1;
-          });
-          test("else, send", () => {
-            let (state, geometry) = _prepare(sandbox, state^);
-            let (state, _, _, _, _) =
-              FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-            let float = 1;
-            let vertexAttribPointer =
-              createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~float,
-                     ~vertexAttribPointer,
-                     (),
-                   ),
-                 );
-            let state = state |> RenderJobsTool.init;
-            let state = state |> DirectorTool.runWithDefaultTime;
-            let state = state |> DirectorTool.runWithDefaultTime;
-            vertexAttribPointer |> getCallCount |> expect == 4 * 2;
-          });
-        }); */
+               let float = 1;
+               let vertexAttribPointer =
+                 createEmptyStubWithJsObjSandbox(sandbox);
+               let state =
+                 state
+                 |> FakeGlTool.setFakeGl(
+                      FakeGlTool.buildFakeGl(
+                        ~sandbox,
+                        ~float,
+                        ~vertexAttribPointer,
+                        (),
+                      ),
+                    );
+               let state = state |> RenderJobsTool.init;
+               let state = state |> DirectorTool.runWithDefaultTime;
+               vertexAttribPointer |> getCallCount |> expect == 2 * 1;
+             });
+             test("else, send", () => {
+               let (state, geometry) = _prepare(sandbox, state^);
+               let (state, _, _, _, _) =
+                 FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+               let float = 1;
+               let vertexAttribPointer =
+                 createEmptyStubWithJsObjSandbox(sandbox);
+               let state =
+                 state
+                 |> FakeGlTool.setFakeGl(
+                      FakeGlTool.buildFakeGl(
+                        ~sandbox,
+                        ~float,
+                        ~vertexAttribPointer,
+                        (),
+                      ),
+                    );
+               let state = state |> RenderJobsTool.init;
+               let state = state |> DirectorTool.runWithDefaultTime;
+               let state = state |> DirectorTool.runWithDefaultTime;
+               vertexAttribPointer |> getCallCount |> expect == 4 * 2;
+             });
+           }); */
         describe("send a_position", () =>
           test("attach buffer to attribute", () => {
             let state = _prepare(sandbox, state^);
@@ -937,8 +937,8 @@ let _ =
                   });
                 });
               });
-              describe("send color", () =>
-                test("test one light", () => {
+              describe("send color", () => {
+                let _prepare = state => {
                   let (
                     state,
                     lightGameObject,
@@ -961,15 +961,45 @@ let _ =
                     state
                     |> RenderJobsTool.init
                     |> DirectorTool.runWithDefaultTime;
+
+                  (state, light, color, posArr, uniform3f);
+                };
+
+                test("test one light", () => {
+                  let (state, light, color, posArr, uniform3f) =
+                    _prepare(state);
+
                   uniform3f
                   |> expect
                   |> toCalledWith(
                        [|posArr[0] |> Obj.magic|] |> Js.Array.concat(color),
                      );
-                })
-              );
-              describe("send intensity", () =>
-                test("test one light", () => {
+                });
+                test("test glsl cache", () => {
+                  let (state, light, color, posArr, uniform3f) =
+                    _prepare(state);
+
+                  let state =
+                    state
+                    |> DirectionLightAPI.setDirectionLightColor(
+                         light,
+                         [|0.3, 0., 0.|],
+                       );
+                  let state = state |> DirectorTool.runWithDefaultTime;
+
+                  let state =
+                    state
+                    |> DirectionLightAPI.setDirectionLightColor(light, color);
+                  let state = state |> DirectorTool.runWithDefaultTime;
+
+                  uniform3f
+                  |> withFourArgs(posArr[0], color[0], color[1], color[2])
+                  |> getCallCount
+                  |> expect == 2;
+                });
+              });
+              describe("send intensity", () => {
+                let _prepare = state => {
                   let (
                     state,
                     lightGameObject,
@@ -995,14 +1025,47 @@ let _ =
                     state
                     |> RenderJobsTool.init
                     |> DirectorTool.runWithDefaultTime;
+
+                  (state, light, intensity, posArr, uniform1f);
+                };
+
+                test("test one light", () => {
+                  let (state, light, intensity, posArr, uniform1f) =
+                    _prepare(state);
+
                   uniform1f
                   |> expect
                   |> toCalledWith(
                        [|posArr[0] |> Obj.magic|]
                        |> ArrayService.push(intensity),
                      );
-                })
-              );
+                });
+                test("test glsl cache", () => {
+                  let (state, light, intensity, posArr, uniform1f) =
+                    _prepare(state);
+
+                  let state =
+                    state
+                    |> DirectionLightAPI.setDirectionLightIntensity(
+                         light,
+                         1.3,
+                       );
+                  let state = state |> DirectorTool.runWithDefaultTime;
+
+                  let state =
+                    state
+                    |> DirectionLightAPI.setDirectionLightIntensity(
+                         light,
+                         intensity,
+                       );
+                  let state = state |> DirectorTool.runWithDefaultTime;
+
+                  uniform1f
+                  |> withTwoArgs(posArr[0], intensity)
+                  |> getCallCount
+                  |> expect == 2;
+                });
+              });
             });
           });
 

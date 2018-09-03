@@ -117,7 +117,8 @@ let getPointLightIntensity = (light, state: StateDataMainType.state) => {
   );
 };
 
-let setPointLightIntensity = (light, color, state: StateDataMainType.state) => {
+let setPointLightIntensity =
+    (light, intensity, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -141,7 +142,7 @@ let setPointLightIntensity = (light, color, state: StateDataMainType.state) => {
           light,
           IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
         ),
-        color,
+        intensity,
         state.pointLightRecord,
       ),
   };
@@ -172,7 +173,7 @@ let getPointLightConstant = (light, state: StateDataMainType.state) => {
   );
 };
 
-let setPointLightConstant = (light, color, state: StateDataMainType.state) => {
+let setPointLightConstant = (light, constant, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -196,7 +197,7 @@ let setPointLightConstant = (light, color, state: StateDataMainType.state) => {
           light,
           IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
         ),
-        color,
+        constant,
         state.pointLightRecord,
       ),
   };
@@ -227,7 +228,7 @@ let getPointLightLinear = (light, state: StateDataMainType.state) => {
   );
 };
 
-let setPointLightLinear = (light, color, state: StateDataMainType.state) => {
+let setPointLightLinear = (light, linear, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -251,7 +252,7 @@ let setPointLightLinear = (light, color, state: StateDataMainType.state) => {
           light,
           IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
         ),
-        color,
+        linear,
         state.pointLightRecord,
       ),
   };
@@ -282,7 +283,7 @@ let getPointLightQuadratic = (light, state: StateDataMainType.state) => {
   );
 };
 
-let setPointLightQuadratic = (light, color, state: StateDataMainType.state) => {
+let setPointLightQuadratic = (light, quadratic, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -306,7 +307,7 @@ let setPointLightQuadratic = (light, color, state: StateDataMainType.state) => {
           light,
           IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
         ),
-        color,
+        quadratic,
         state.pointLightRecord,
       ),
   };

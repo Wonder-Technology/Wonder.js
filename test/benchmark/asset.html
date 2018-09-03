@@ -595,7 +595,7 @@
                 var n2 = performance.now();
 
 
-                wd.assembleWholeWDB(wdb, true, true, state).forEach(([state, imageUint8ArrayDataMap, rootGameObject]) => {
+                wd.assembleWholeWDB(wdb, true, true, true, state).forEach(([state, imageUint8ArrayDataMap, rootGameObject]) => {
 
 
                     var n3 = performance.now();
@@ -769,7 +769,7 @@
 
                 // var state = state$;
 
-                wd.assembleWholeWDB(wdb, true, true, state)
+                wd.assembleWholeWDB(wdb, true, true, true, state)
                     .forEach(([state, rootGameObject]) => {
                         // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(false, state);
 
@@ -797,7 +797,7 @@
 
                 var n1 = performance.now();
 
-                wd.assembleWholeWDB(wdb, true, true, state)
+                wd.assembleWholeWDB(wdb, true, true, true, state)
                     .forEach(([state, _, rootGameObject]) => {
                         console.log(performance.now() - n1);
                         console.profileEnd();

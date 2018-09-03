@@ -89,10 +89,10 @@ let _isNotCacheVector3AndSetCache =
 
 let _isNotCacheNumberAndSetCache = (shaderCacheMap, name: string, value) =>
   switch (_getCache(shaderCacheMap, name)) {
-  | None =>
+  | Some(cache) when cache === value => false
+  | _ =>
     _setCache(shaderCacheMap, name, value) |> ignore;
     true;
-  | Some(cache) => cache !== value
   };
 
 let sendFloat =
