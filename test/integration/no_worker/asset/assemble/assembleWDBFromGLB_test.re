@@ -74,6 +74,24 @@ let _ =
     describe("test imgui", () => {
       describe(
         "if isSetIMGUIFunc === true, set imgui func and custom data", () => {
+        describe("test return hasIMGUIFunc", () =>
+          testPromise("return true", () => {
+            let customData = {|[ 1, \"function (a) { return a; }\" ]|};
+            let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
+
+            AssembleWDBSystemTool.testGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+              ~state,
+              ~testFunc=
+                ((state, (_, hasIMGUIFunc), rootGameObject)) =>
+                  hasIMGUIFunc |> expect == true,
+              (),
+            );
+          })
+        );
+
         describe("test customData", () =>
           testPromise("test value with function", () => {
             let customData = {|[ 1, \"function (a) { return a; }\" ]|};
@@ -184,7 +202,26 @@ let _ =
         });
       });
 
-      describe("else, not set", () =>
+      describe("else, not set", () => {
+        describe("test return hasIMGUIFunc", () =>
+          testPromise("return true", () => {
+            let customData = {|[ 1, \"function (a) { return a; }\" ]|};
+            let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
+
+            AssembleWDBSystemTool.testGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+              ~state,
+              ~isSetIMGUIFunc=false,
+              ~testFunc=
+                ((state, (_, hasIMGUIFunc), rootGameObject)) =>
+                  hasIMGUIFunc |> expect == true,
+              (),
+            );
+          })
+        );
+
         testPromise("test no customData", () => {
           let customData = {|[ 1, \"function (a) { return a; }\" ]|};
           let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
@@ -202,8 +239,8 @@ let _ =
                 |> expect == true,
             (),
           );
-        })
-      );
+        });
+      });
     });
 
     describe("test gameObject", () => {
@@ -1709,7 +1746,7 @@ let _ =
         AssembleWDBSystemTool.testGLB(
           sandbox^,
           GLBTool.buildGLBFilePath("BoxTextured.glb"),
-          ((state, imageUint8ArrayMap, rootGameObject)) =>
+          ((state, (imageUint8ArrayMap, _), rootGameObject)) =>
             AssembleWDBSystemTool.isImageUint8ArrayMapEqual(
               imageUint8ArrayMap,
               WonderCommonlib.SparseMapService.createEmpty()
@@ -1727,7 +1764,7 @@ let _ =
         AssembleWDBSystemTool.testGLB(
           sandbox^,
           GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-          ((state, imageUint8ArrayMap, rootGameObject)) =>
+          ((state, (imageUint8ArrayMap, _), rootGameObject)) =>
             AssembleWDBSystemTool.isImageUint8ArrayMapEqual(
               imageUint8ArrayMap,
               WonderCommonlib.SparseMapService.createEmpty()

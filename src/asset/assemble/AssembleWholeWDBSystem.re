@@ -148,8 +148,10 @@ let assembleWDBData =
     (({buffers}: wd) as wd, binBuffer, (isSetIMGUIFunc, isBindEvent), state) =>
   _buildImageArray(wd, binBuffer)
   |> then_(imageDataTuple => {
+       let hasIMGUIFunc =
+         ! OptionService.isJsonSerializedValueNone(wd.scene.imgui);
        let state =
-         isSetIMGUIFunc ?
+         isSetIMGUIFunc && hasIMGUIFunc ?
            state |> SetIMGUIFuncSystem.setIMGUIFunc(wd) : state;
 
        let (state, imageUint8ArrayDataMap, gameObjectArr) =
@@ -165,7 +167,8 @@ let assembleWDBData =
        let (state, rootGameObject) =
          BuildRootGameObjectSystem.build(wd, (state, gameObjectArr));
 
-       (state, imageUint8ArrayDataMap, rootGameObject) |> resolve;
+       (state, (imageUint8ArrayDataMap, hasIMGUIFunc), rootGameObject)
+       |> resolve;
      })
   |> WonderBsMost.Most.fromPromise;
 

@@ -74,13 +74,13 @@ let load =
                               (
                                 (
                                   state,
-                                  imageUint8ArrayDataMap,
+                                  data,
                                   rootGameObject,
                                 ),
                               ) =>
                               handleWhenLoadWholeWDBFunc(
                                 state,
-                                imageUint8ArrayDataMap,
+                                data,
                                 rootGameObject,
                               )
                             )

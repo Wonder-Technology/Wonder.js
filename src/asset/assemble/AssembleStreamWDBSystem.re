@@ -1,6 +1,10 @@
 open WDType;
 
 let assemble = (({buffers}: wd) as wd, default11Image, state) => {
+  let state =
+    ! OptionService.isJsonSerializedValueNone(wd.scene.imgui) ?
+      state |> SetIMGUIFuncSystem.setIMGUIFunc(wd) : state;
+
   let (
     state,
     gameObjectArr,
@@ -8,7 +12,6 @@ let assemble = (({buffers}: wd) as wd, default11Image, state) => {
     (basicSourceTextureArr, imageTextureIndices, images),
   ) =
     state
-    |> SetIMGUIFuncSystem.setIMGUIFunc(wd)
     |> BatchCreateSystem.batchCreate(wd)
     |> BatchOperateStreamSystem.batchOperate(wd, default11Image);
 
