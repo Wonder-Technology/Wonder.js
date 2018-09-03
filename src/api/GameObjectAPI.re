@@ -900,6 +900,12 @@ let getAllGameObjects = (gameObject, state) => {
   AllGameObjectMainService.getAllGameObjects(gameObject, state);
 };
 
+let getAllDirectionLightComponentsOfGameObject = AllGameObjectMainService.getAllDirectionLightComponentsOfGameObject;
+
+let getAllPointLightComponentsOfGameObject = AllGameObjectMainService.getAllPointLightComponentsOfGameObject;
+
+let getAllPointLightComponents = GetComponentGameObjectMainService.getAllPointLightComponents;
+
 let getAllGeometryComponents = GetComponentGameObjectMainService.getAllGeometryComponents;
 
 let getAllArcballCameraControllerComponents = GetComponentGameObjectMainService.getAllArcballCameraControllerComponents;

@@ -225,6 +225,10 @@ and apiRecord = {
     "hasGameObjectPointLightComponent": (gameObject, state) => bool,
     "hasGameObjectBasicCameraViewComponent": (gameObject, state) => bool,
     "getAllGameObjects": (gameObject, state) => array(gameObject),
+    "getAllDirectionLightComponentsOfGameObject":
+      (gameObject, state) => array(component),
+    "getAllPointLightComponentsOfGameObject":
+      (gameObject, state) => array(component),
     "getAllBasicCameraViewComponents": state => array(component),
     "getAllPerspectiveCameraProjectionComponents": state => array(component),
     "getAllBasicMaterialComponents": state => array(component),

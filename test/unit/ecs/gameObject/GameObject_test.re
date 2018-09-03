@@ -429,8 +429,7 @@ let _ =
             |> GameObjectTool.addChild(gameObject1, gameObject2)
             |> GameObjectTool.addChild(gameObject1, gameObject0);
 
-          let _ =
-            GameObjectAPI.getAllGameObjects(gameObject1, state);
+          let _ = GameObjectAPI.getAllGameObjects(gameObject1, state);
           GameObjectTool.getChildren(gameObject1, state)
           |> Js.Array.map(gameObject =>
                GameObjectAPI.unsafeGetGameObjectTransformComponent(
@@ -525,250 +524,303 @@ let _ =
         );
       };
 
-      describe("getAllDirectionLightComponents", () => {
-        test("get all components", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3, gameObject4),
-            (light1, light2, light3),
-            geometry1,
-          ) =
-            _createLightGameObjects(state);
+      describe("test get all components of gameObject", () => {
+        describe("getAllDirectionLightComponentsOfGameObject", () =>
+          test("test", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (light1, light2, light3),
+              geometry1,
+            ) =
+              _createLightGameObjects(state);
 
-          GameObjectAPI.getAllDirectionLightComponents(state)
-          |> expect == [|light1, light2|];
-        });
-        test("test dispose", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3, gameObject4),
-            (light1, light2, light3),
-            geometry1,
-          ) =
-            _createLightGameObjects(state);
+            let state =
+              SceneAPI.addSceneChildren(
+                [|gameObject2, gameObject3, gameObject4|],
+                state,
+              );
 
-          let state =
-            state
-            |> GameObjectAPI.disposeGameObject(gameObject2)
-            |> GameObjectAPI.disposeGameObject(gameObject3);
-          let state = state |> DisposeJob.execJob(None);
+            GameObjectAPI.getAllDirectionLightComponentsOfGameObject(
+              SceneAPI.getSceneGameObject(state),
+              state,
+            )
+            |> expect == [|light2|];
+          })
+        );
 
-          GameObjectAPI.getAllDirectionLightComponents(state)
-          |> expect == [|light1|];
-        });
+        describe("getAllPointLightComponentsOfGameObject", () =>
+          test("test", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (light1, light2, light3),
+              geometry1,
+            ) =
+              _createLightGameObjects(state);
+
+            let state =
+              SceneAPI.addSceneChildren(
+                [|gameObject2, gameObject3, gameObject4|],
+                state,
+              );
+
+            GameObjectAPI.getAllPointLightComponentsOfGameObject(
+              SceneAPI.getSceneGameObject(state),
+              state,
+            )
+            |> expect == [|light3|];
+          })
+        );
       });
 
-      describe("getAllPointLightComponents", () => {
-        test("get all components", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3, gameObject4),
-            (light1, light2, light3),
-            geometry1,
-          ) =
-            _createLightGameObjects(state);
+      describe("test get all components of state", () => {
+        describe("getAllDirectionLightComponents", () => {
+          test("get all components", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (light1, light2, light3),
+              geometry1,
+            ) =
+              _createLightGameObjects(state);
 
-          GameObjectAPI.getAllPointLightComponents(state)
-          |> expect == [|light3|];
+            GameObjectAPI.getAllDirectionLightComponents(state)
+            |> expect == [|light1, light2|];
+          });
+          test("test dispose", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (light1, light2, light3),
+              geometry1,
+            ) =
+              _createLightGameObjects(state);
+
+            let state =
+              state
+              |> GameObjectAPI.disposeGameObject(gameObject2)
+              |> GameObjectAPI.disposeGameObject(gameObject3);
+            let state = state |> DisposeJob.execJob(None);
+
+            GameObjectAPI.getAllDirectionLightComponents(state)
+            |> expect == [|light1|];
+          });
         });
-        test("test dispose", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3, gameObject4),
-            (light1, light2, light3),
-            geometry1,
-          ) =
-            _createLightGameObjects(state);
 
-          let state =
-            state
-            |> GameObjectTool.disposeGameObject(gameObject2)
-            |> GameObjectTool.disposeGameObject(gameObject3);
+        describe("getAllPointLightComponents", () => {
+          test("get all components", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (light1, light2, light3),
+              geometry1,
+            ) =
+              _createLightGameObjects(state);
 
-          GameObjectAPI.getAllPointLightComponents(state) |> expect == [||];
+            GameObjectAPI.getAllPointLightComponents(state)
+            |> expect == [|light3|];
+          });
+          test("test dispose", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (light1, light2, light3),
+              geometry1,
+            ) =
+              _createLightGameObjects(state);
+
+            let state =
+              state
+              |> GameObjectTool.disposeGameObject(gameObject2)
+              |> GameObjectTool.disposeGameObject(gameObject3);
+
+            GameObjectAPI.getAllPointLightComponents(state) |> expect == [||];
+          });
         });
-      });
 
-      describe("getAllGeometryComponents", () => {
-        test("get all components", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3),
-            (geometry1, geometry2, geometry3),
-          ) =
-            _createGeometryGameObjects(state);
+        describe("getAllGeometryComponents", () => {
+          test("get all components", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3),
+              (geometry1, geometry2, geometry3),
+            ) =
+              _createGeometryGameObjects(state);
 
-          GameObjectAPI.getAllGeometryComponents(state)
-          |> expect == [|geometry1, geometry2, geometry3|];
+            GameObjectAPI.getAllGeometryComponents(state)
+            |> expect == [|geometry1, geometry2, geometry3|];
+          });
+          test("include the ones not add to gameObject", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3),
+              (geometry1, geometry2, geometry3),
+            ) =
+              _createGeometryGameObjects(state);
+
+            let (state, geometry4) = GeometryAPI.createGeometry(state);
+
+            GameObjectAPI.getAllGeometryComponents(state)
+            |> expect == [|geometry1, geometry2, geometry3|];
+          });
+          test("test dispose", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3),
+              (geometry1, geometry2, geometry3),
+            ) =
+              _createGeometryGameObjects(state);
+
+            let state =
+              state
+              |> GameObjectAPI.disposeGameObject(gameObject2)
+              |> GameObjectAPI.disposeGameObject(gameObject3);
+            let state = state |> DisposeJob.execJob(None);
+
+            GameObjectAPI.getAllGeometryComponents(state)
+            |> expect == [|geometry1|];
+          });
         });
-        test("include the ones not add to gameObject", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3),
-            (geometry1, geometry2, geometry3),
-          ) =
-            _createGeometryGameObjects(state);
 
-          let (state, geometry4) = GeometryAPI.createGeometry(state);
+        describe("getAllBasicCameraViewComponents", () => {
+          test("get all components", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (basicCameraView1, basicCameraView2),
+              (perspectiveCameraProjection1, perspectiveCameraProjection2),
+              material1,
+              geometry1,
+            ) =
+              _createCameraGameObjects(state);
 
-          GameObjectAPI.getAllGeometryComponents(state)
-          |> expect == [|geometry1, geometry2, geometry3|];
+            GameObjectAPI.getAllBasicCameraViewComponents(state)
+            |> expect == [|basicCameraView1, basicCameraView2|];
+          });
+          test("test dispose", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (basicCameraView1, basicCameraView2),
+              (perspectiveCameraProjection1, perspectiveCameraProjection2),
+              material1,
+              geometry1,
+            ) =
+              _createCameraGameObjects(state);
+
+            let state =
+              state
+              |> GameObjectTool.disposeGameObject(gameObject2)
+              |> GameObjectTool.disposeGameObject(gameObject3);
+
+            GameObjectAPI.getAllBasicCameraViewComponents(state)
+            |> expect == [|basicCameraView1|];
+          });
         });
-        test("test dispose", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3),
-            (geometry1, geometry2, geometry3),
-          ) =
-            _createGeometryGameObjects(state);
 
-          let state =
-            state
-            |> GameObjectAPI.disposeGameObject(gameObject2)
-            |> GameObjectAPI.disposeGameObject(gameObject3);
-          let state = state |> DisposeJob.execJob(None);
+        describe("getAllPerspectiveCameraProjectionComponents", () => {
+          test("get all components", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (basicCameraView1, basicCameraView2),
+              (perspectiveCameraProjection1, perspectiveCameraProjection2),
+              material1,
+              geometry1,
+            ) =
+              _createCameraGameObjects(state);
 
-          GameObjectAPI.getAllGeometryComponents(state)
-          |> expect == [|geometry1|];
+            GameObjectAPI.getAllPerspectiveCameraProjectionComponents(state)
+            |>
+            expect == [|
+                        perspectiveCameraProjection1,
+                        perspectiveCameraProjection2,
+                      |];
+          });
+          test("test dispose", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (basicCameraView1, basicCameraView2),
+              (perspectiveCameraProjection1, perspectiveCameraProjection2),
+              material1,
+              geometry1,
+            ) =
+              _createCameraGameObjects(state);
+
+            let state =
+              state
+              |> GameObjectTool.disposeGameObject(gameObject2)
+              |> GameObjectTool.disposeGameObject(gameObject3);
+
+            GameObjectAPI.getAllPerspectiveCameraProjectionComponents(state)
+            |> expect == [|perspectiveCameraProjection1|];
+          });
         });
-      });
 
-      describe("getAllBasicCameraViewComponents", () => {
-        test("get all components", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3, gameObject4),
-            (basicCameraView1, basicCameraView2),
-            (perspectiveCameraProjection1, perspectiveCameraProjection2),
-            material1,
-            geometry1,
-          ) =
-            _createCameraGameObjects(state);
+        describe("getAllBasicMaterialComponents", () => {
+          test("get all components", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (material1, material2, material3),
+              geometry1,
+            ) =
+              _createMaterialGameObjects(state);
 
-          GameObjectAPI.getAllBasicCameraViewComponents(state)
-          |> expect == [|basicCameraView1, basicCameraView2|];
+            GameObjectAPI.getAllBasicMaterialComponents(state)
+            |> expect == [|material2|];
+          });
+          test("test dispose", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (material1, material2, material3),
+              geometry1,
+            ) =
+              _createMaterialGameObjects(state);
+
+            let state =
+              state
+              |> GameObjectTool.disposeGameObject(gameObject1)
+              |> GameObjectTool.disposeGameObject(gameObject2);
+
+            GameObjectAPI.getAllBasicMaterialComponents(state)
+            |> expect == [||];
+          });
         });
-        test("test dispose", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3, gameObject4),
-            (basicCameraView1, basicCameraView2),
-            (perspectiveCameraProjection1, perspectiveCameraProjection2),
-            material1,
-            geometry1,
-          ) =
-            _createCameraGameObjects(state);
 
-          let state =
-            state
-            |> GameObjectTool.disposeGameObject(gameObject2)
-            |> GameObjectTool.disposeGameObject(gameObject3);
+        describe("getAllLightMaterialComponents", () => {
+          test("get all components", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (material1, material2, material3),
+              geometry1,
+            ) =
+              _createMaterialGameObjects(state);
 
-          GameObjectAPI.getAllBasicCameraViewComponents(state)
-          |> expect == [|basicCameraView1|];
-        });
-      });
+            GameObjectAPI.getAllLightMaterialComponents(state)
+            |> expect == [|material1, material3|];
+          });
+          test("test dispose", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (material1, material2, material3),
+              geometry1,
+            ) =
+              _createMaterialGameObjects(state);
 
-      describe("getAllPerspectiveCameraProjectionComponents", () => {
-        test("get all components", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3, gameObject4),
-            (basicCameraView1, basicCameraView2),
-            (perspectiveCameraProjection1, perspectiveCameraProjection2),
-            material1,
-            geometry1,
-          ) =
-            _createCameraGameObjects(state);
+            let state =
+              state
+              |> GameObjectTool.disposeGameObject(gameObject1)
+              |> GameObjectTool.disposeGameObject(gameObject2);
 
-          GameObjectAPI.getAllPerspectiveCameraProjectionComponents(state)
-          |>
-          expect == [|
-                      perspectiveCameraProjection1,
-                      perspectiveCameraProjection2,
-                    |];
-        });
-        test("test dispose", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3, gameObject4),
-            (basicCameraView1, basicCameraView2),
-            (perspectiveCameraProjection1, perspectiveCameraProjection2),
-            material1,
-            geometry1,
-          ) =
-            _createCameraGameObjects(state);
-
-          let state =
-            state
-            |> GameObjectTool.disposeGameObject(gameObject2)
-            |> GameObjectTool.disposeGameObject(gameObject3);
-
-          GameObjectAPI.getAllPerspectiveCameraProjectionComponents(state)
-          |> expect == [|perspectiveCameraProjection1|];
-        });
-      });
-
-      describe("getAllBasicMaterialComponents", () => {
-        test("get all components", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3, gameObject4),
-            (material1, material2, material3),
-            geometry1,
-          ) =
-            _createMaterialGameObjects(state);
-
-          GameObjectAPI.getAllBasicMaterialComponents(state)
-          |> expect == [|material2|];
-        });
-        test("test dispose", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3, gameObject4),
-            (material1, material2, material3),
-            geometry1,
-          ) =
-            _createMaterialGameObjects(state);
-
-          let state =
-            state
-            |> GameObjectTool.disposeGameObject(gameObject1)
-            |> GameObjectTool.disposeGameObject(gameObject2);
-
-          GameObjectAPI.getAllBasicMaterialComponents(state) |> expect == [||];
-        });
-      });
-
-      describe("getAllLightMaterialComponents", () => {
-        test("get all components", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3, gameObject4),
-            (material1, material2, material3),
-            geometry1,
-          ) =
-            _createMaterialGameObjects(state);
-
-          GameObjectAPI.getAllLightMaterialComponents(state)
-          |> expect == [|material1, material3|];
-        });
-        test("test dispose", () => {
-          let (
-            state,
-            (gameObject1, gameObject2, gameObject3, gameObject4),
-            (material1, material2, material3),
-            geometry1,
-          ) =
-            _createMaterialGameObjects(state);
-
-          let state =
-            state
-            |> GameObjectTool.disposeGameObject(gameObject1)
-            |> GameObjectTool.disposeGameObject(gameObject2);
-
-          GameObjectAPI.getAllLightMaterialComponents(state)
-          |> expect == [|material3|];
+            GameObjectAPI.getAllLightMaterialComponents(state)
+            |> expect == [|material3|];
+          });
         });
       });
     });

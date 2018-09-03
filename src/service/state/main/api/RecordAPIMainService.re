@@ -25,6 +25,8 @@ let create = () => {
     "hasGameObjectPointLightComponent": GameObjectAPI.hasGameObjectPointLightComponent,
     "hasGameObjectBasicCameraViewComponent": GameObjectAPI.hasGameObjectBasicCameraViewComponent,
     "getAllGameObjects": GameObjectAPI.getAllGameObjects,
+    "getAllDirectionLightComponentsOfGameObject": GameObjectAPI.getAllDirectionLightComponentsOfGameObject,
+    "getAllPointLightComponentsOfGameObject": GameObjectAPI.getAllPointLightComponentsOfGameObject,
     "getAllBasicCameraViewComponents": GameObjectAPI.getAllBasicCameraViewComponents,
     "getAllPerspectiveCameraProjectionComponents": GameObjectAPI.getAllPerspectiveCameraProjectionComponents,
     "getAllBasicMaterialComponents": GameObjectAPI.getAllBasicMaterialComponents,

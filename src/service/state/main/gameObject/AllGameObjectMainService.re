@@ -51,3 +51,36 @@ let getAllGameObjects = (gameObject, state) => {
           ),
      );
 };
+
+let _getAllComponentsOfGameObject =
+    (gameObject, getComponentFunc, {gameObjectRecord} as state) => {
+  let (_, components) =
+    getAllGameObjects(gameObject, state)
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. (gameObjectRecord, allComponents), gameObject) =>
+           switch (getComponentFunc(. gameObject, gameObjectRecord)) {
+           | None => (gameObjectRecord, allComponents)
+           | Some(component) => (
+               gameObjectRecord,
+               allComponents |> ArrayService.push(component),
+             )
+           },
+         (gameObjectRecord, [||]),
+       );
+
+  components;
+};
+
+let getAllDirectionLightComponentsOfGameObject = (gameObject, state) =>
+  _getAllComponentsOfGameObject(
+    gameObject,
+    GetComponentGameObjectService.getDirectionLightComponent,
+    state,
+  );
+
+let getAllPointLightComponentsOfGameObject = (gameObject, state) =>
+  _getAllComponentsOfGameObject(
+    gameObject,
+    GetComponentGameObjectService.getPointLightComponent,
+    state,
+  );
