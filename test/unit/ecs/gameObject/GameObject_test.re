@@ -396,7 +396,7 @@ let _ =
       })
     );
 
-    describe("getAllGameObjects", () =>
+    describe("getAllGameObjects", () => {
       test("get itself and all children", () => {
         let (state, gameObject1, tra1) =
           GameObjectTool.createGameObject(state^);
@@ -412,8 +412,36 @@ let _ =
 
         GameObjectAPI.getAllGameObjects(gameObject1, state)
         |> expect == [|gameObject1, gameObject2, gameObject3|];
-      })
-    );
+      });
+
+      describe("fix bug", () =>
+        test("not sort transform children", () => {
+          let (state, gameObject0, tra0) =
+            GameObjectTool.createGameObject(state^);
+          let (state, gameObject1, tra1) =
+            GameObjectTool.createGameObject(state);
+          let (state, _) = TransformAPI.createTransform(state);
+          let (state, gameObject2, tra2) =
+            GameObjectTool.createGameObject(state);
+
+          let state =
+            state
+            |> GameObjectTool.addChild(gameObject1, gameObject2)
+            |> GameObjectTool.addChild(gameObject1, gameObject0);
+
+          let _ =
+            GameObjectAPI.getAllGameObjects(gameObject1, state);
+          GameObjectTool.getChildren(gameObject1, state)
+          |> Js.Array.map(gameObject =>
+               GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                 gameObject,
+                 state,
+               )
+             )
+          |> expect == [|tra2, tra0|];
+        })
+      );
+    });
 
     describe("test get all components", () => {
       let _createMaterialGameObjects = state => {

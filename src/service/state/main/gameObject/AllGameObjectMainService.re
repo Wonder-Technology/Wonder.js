@@ -1,8 +1,7 @@
 open StateDataMainType;
 
 let _getChildren = (parent, transformRecord) =>
-  HierachyTransformService.unsafeGetChildren(parent, transformRecord)
-  |> Js.Array.sortInPlace;
+  HierachyTransformService.unsafeGetChildren(parent, transformRecord);
 
 let rec _addChildren = (parentArr, transformRecord, childrenArr) => {
   let childrenArr = childrenArr |> Js.Array.concat(parentArr);
