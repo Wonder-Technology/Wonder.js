@@ -192,7 +192,7 @@ let batchOperate =
       {geometrys, indices, gameObjects, basicSourceTextures} as wd,
       (blobObjectUrlImageArr, imageUint8ArrayDataMap),
       bufferArr,
-      isBindEvent,
+      (isBindEvent, isActiveCamera),
       (
         state,
         gameObjectArr,
@@ -295,7 +295,11 @@ let batchOperate =
          childrenTransforms,
        )
     |> _batchSetGeometryData(wd, geometryArr, bufferArr)
-    |> BatchOperateSystem.batchSetBasicCameraViewData(wd, basicCameraViewArr)
+    |> BatchOperateSystem.batchSetBasicCameraViewData(
+         wd,
+         basicCameraViewArr,
+         isActiveCamera,
+       )
     |> BatchOperateSystem.batchSetPerspectiveCameraProjectionData(
          wd,
          perspectiveCameraProjectionArr,

@@ -745,7 +745,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           testPromise("add geometry component", () =>
             _testAddGeometryComponents(
               sandbox,
-              ([||], [|8, 0, 1, 2, 3, 4, 5, 6, 7|]),
+              ([||], [|0, 1, 2, 3, 4, 5, 6, 7, 8|]),
               state,
             )
           );
@@ -781,7 +781,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
 
                  let dataMap = GLTFTool.getAlphaBlendModeTestGeometryData();
 
-                 (dataArr |> Js.Array.length, dataArr[2])
+                 (dataArr |> Js.Array.length, dataArr[1])
                  |>
                  expect == (
                              9,
@@ -804,15 +804,15 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                 65522,
                 {"type": "image/png"},
                 [|
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
+                  "object_url0" |> Obj.magic,
                   "object_url1" |> Obj.magic,
-                  "object_url0" |> Obj.magic,
-                  "object_url0" |> Obj.magic,
-                  "object_url0" |> Obj.magic,
-                  "object_url0" |> Obj.magic,
-                  "object_url0" |> Obj.magic,
-                  "object_url0" |> Obj.magic,
-                  "object_url0" |> Obj.magic,
-                  "object_url0" |> Obj.magic,
                 |],
               ),
               state,

@@ -35,7 +35,13 @@ let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
 
   GLBTool.prepare(sandbox);
 
-  AssembleWholeWDBAPI.assembleWholeGLB(buffer##buffer, true, true, state^)
+  AssembleWholeWDBAPI.assembleWholeGLB(
+    buffer##buffer,
+    true,
+    true,
+    true,
+    state^,
+  )
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => {
        let (state, _, rootGameObject) = result^;
@@ -60,7 +66,13 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
 
   let buffer = NodeExtend.readFileBufferSync(glbFilePath);
 
-  AssembleWholeWDBAPI.assembleWholeGLB(buffer##buffer, true, true, state^)
+  AssembleWholeWDBAPI.assembleWholeGLB(
+    buffer##buffer,
+    true,
+    true,
+    true,
+    state^,
+  )
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => {
        let (state, _, rootGameObject) = result^;
@@ -73,7 +85,7 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
        |> resolve;
      })
   |> then_(((state, data)) =>
-       AssembleWholeWDBSystem.assemble(data, (true, true), state)
+       AssembleWholeWDBSystem.assemble(data, (true, true, true), state)
        |> WonderBsMost.Most.forEach(data => result := data)
        |> then_(() => testFunc(result^) |> resolve)
      );
@@ -110,7 +122,7 @@ let testGLTFResultByGLTF =
     embeddedGLTFJsonStr |> Js.Json.parseExn,
     binBuffer,
   ))
-  |. AssembleWholeWDBSystem.assemble((true, true), state^)
+  |. AssembleWholeWDBSystem.assemble((true, true, true), state^)
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => {
        let (state, _, rootGameObject) = result^;
@@ -164,7 +176,7 @@ let testAssembleResultByGameObject =
       state,
     );
 
-  AssembleWholeWDBSystem.assemble(data, (true, true), state)
+  AssembleWholeWDBSystem.assemble(data, (true, true, true), state)
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => testFunc(result^) |> resolve);
 };

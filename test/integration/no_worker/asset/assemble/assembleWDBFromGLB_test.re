@@ -257,8 +257,8 @@ let _ =
               |>
               expect == [|
                           "gameObject_0",
-                          "gameObject_1",
                           "gameObject_3",
+                          "gameObject_1",
                           "Cesium_Milk_Truck_0",
                           "Cesium_Milk_Truck_1",
                           "Cesium_Milk_Truck_2",
@@ -314,7 +314,7 @@ let _ =
             ((state, _, rootGameObject)) => {
               let allTransformChildren =
                 _getAllChildrenTransform(rootGameObject, state);
-              allTransformChildren |> expect == [|2, 4, 6, 7, 8, 3, 5|];
+              allTransformChildren |> expect == [|4, 2, 6, 7, 8, 5, 3|];
             },
             state^,
           )
@@ -672,19 +672,15 @@ let _ =
              );
 
         describe("test no extras", () =>
-          describe("active the one whose cameraViewIndex === 0", () =>
-            testPromise("unactive other ones", () => {
+          describe("active the one whose cameraViewIndex === 0", () => {
+            testPromise("if isActiveCamera === false, not active", () => {
               let (state, basicCameraView, perspectiveCameraProjection) =
                 CameraTool.createBasicCameraViewPerspectiveCamera(state^);
-              let state =
-                BasicCameraViewAPI.activeBasicCameraView(
-                  basicCameraView,
-                  state,
-                );
 
               AssembleWDBSystemTool.testGLTF(
                 ~sandbox=sandbox^,
                 ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
+                ~isActiveCamera=false,
                 ~state=ref(state),
                 ~testFunc=
                   ((state, _, rootGameObject)) =>
@@ -705,27 +701,63 @@ let _ =
                            ),
                          )
                        )
-                    |> expect == [|(3, false), (1, true), (0, false)|],
+                    |> expect == [|(3, false), (1, false), (0, false)|],
                 (),
               );
-            })
-          )
+            });
+
+            describe("else", () =>
+              testPromise("unactive other ones", () => {
+                let (state, basicCameraView, perspectiveCameraProjection) =
+                  CameraTool.createBasicCameraViewPerspectiveCamera(state^);
+                let state =
+                  BasicCameraViewAPI.activeBasicCameraView(
+                    basicCameraView,
+                    state,
+                  );
+
+                AssembleWDBSystemTool.testGLTF(
+                  ~sandbox=sandbox^,
+                  ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
+                  ~isActiveCamera=true,
+                  ~state=ref(state),
+                  ~testFunc=
+                    ((state, _, rootGameObject)) =>
+                      _getAllBasicCameraViewGameObjects(rootGameObject, state)
+                      |> Js.Array.map(gameObject =>
+                           GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent(
+                             gameObject,
+                             state,
+                           )
+                         )
+                      |> ArrayService.push(basicCameraView)
+                      |> Js.Array.map(cameraView =>
+                           (
+                             cameraView,
+                             BasicCameraViewAPI.isActiveBasicCameraView(
+                               cameraView,
+                               state,
+                             ),
+                           )
+                         )
+                      |> expect == [|(3, false), (1, true), (0, false)|],
+                  (),
+                );
+              })
+            );
+          })
         );
 
-        describe("test extras", () =>
-          testPromise("unactive other ones", () => {
+        describe("test extras", () => {
+          testPromise("if isActiveCamera === false, not active", () => {
             let (state, basicCameraView, perspectiveCameraProjection) =
               CameraTool.createBasicCameraViewPerspectiveCamera(state^);
-            let state =
-              BasicCameraViewAPI.activeBasicCameraView(
-                basicCameraView,
-                state,
-              );
 
             AssembleWDBSystemTool.testGLTF(
               ~sandbox=sandbox^,
               ~embeddedGLTFJsonStr=
                 ConvertGLBTool.buildGLTFJsonOfBasicCameraView(),
+              ~isActiveCamera=false,
               ~state=ref(state),
               ~testFunc=
                 ((state, _, rootGameObject)) =>
@@ -748,15 +780,61 @@ let _ =
                      )
                   |>
                   expect == [|
-                              (2, true),
+                              (2, false),
                               (1, false),
                               (3, false),
                               (0, false),
                             |],
               (),
             );
-          })
-        );
+          });
+
+          describe("else", () =>
+            testPromise("unactive other ones", () => {
+              let (state, basicCameraView, perspectiveCameraProjection) =
+                CameraTool.createBasicCameraViewPerspectiveCamera(state^);
+              let state =
+                BasicCameraViewAPI.activeBasicCameraView(
+                  basicCameraView,
+                  state,
+                );
+
+              AssembleWDBSystemTool.testGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfBasicCameraView(),
+                ~state=ref(state),
+                ~testFunc=
+                  ((state, _, rootGameObject)) =>
+                    _getAllBasicCameraViewGameObjects(rootGameObject, state)
+                    |> Js.Array.map(gameObject =>
+                         GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent(
+                           gameObject,
+                           state,
+                         )
+                       )
+                    |> ArrayService.push(basicCameraView)
+                    |> Js.Array.map(cameraView =>
+                         (
+                           cameraView,
+                           BasicCameraViewAPI.isActiveBasicCameraView(
+                             cameraView,
+                             state,
+                           ),
+                         )
+                       )
+                    |>
+                    expect == [|
+                                (2, true),
+                                (1, false),
+                                (3, false),
+                                (0, false),
+                              |],
+                (),
+              );
+            })
+          );
+        });
       });
     });
 
@@ -1423,15 +1501,15 @@ let _ =
                        )
                     |>
                     expect == [|
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
+                                SourceTextureType.Rgba,
                                 SourceTextureType.Rgb,
-                                SourceTextureType.Rgba,
-                                SourceTextureType.Rgba,
-                                SourceTextureType.Rgba,
-                                SourceTextureType.Rgba,
-                                SourceTextureType.Rgba,
-                                SourceTextureType.Rgba,
-                                SourceTextureType.Rgba,
-                                SourceTextureType.Rgba,
                               |],
                   state^,
                 )

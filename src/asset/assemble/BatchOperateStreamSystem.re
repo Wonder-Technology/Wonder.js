@@ -133,7 +133,11 @@ let batchOperate =
          parentTransforms,
          childrenTransforms,
        )
-    |> BatchOperateSystem.batchSetBasicCameraViewData(wd, basicCameraViewArr)
+    |> BatchOperateSystem.batchSetBasicCameraViewData(
+         wd,
+         basicCameraViewArr,
+         true,
+       )
     |> BatchOperateSystem.batchSetPerspectiveCameraProjectionData(
          wd,
          perspectiveCameraProjectionArr,

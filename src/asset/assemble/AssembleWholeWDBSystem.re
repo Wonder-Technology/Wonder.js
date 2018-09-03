@@ -145,7 +145,12 @@ let _checkWDB = dataView => {
 };
 
 let assembleWDBData =
-    (({buffers}: wd) as wd, binBuffer, (isSetIMGUIFunc, isBindEvent), state) =>
+    (
+      ({buffers}: wd) as wd,
+      binBuffer,
+      (isSetIMGUIFunc, isBindEvent, isActiveCamera),
+      state,
+    ) =>
   _buildImageArray(wd, binBuffer)
   |> then_(imageDataTuple => {
        let hasIMGUIFunc =
@@ -161,7 +166,7 @@ let assembleWDBData =
               wd,
               imageDataTuple,
               _buildBufferArray(buffers, binBuffer),
-              isBindEvent,
+              (isBindEvent, isActiveCamera),
             );
 
        let (state, rootGameObject) =

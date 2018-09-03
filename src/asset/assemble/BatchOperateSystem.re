@@ -206,6 +206,7 @@ let batchSetBasicCameraViewData =
     (
       {basicCameraViews},
       basicCameraViewArr,
+      isActiveCamera,
       {basicCameraViewRecord} as state,
     ) => {
   WonderLog.Contract.requireCheck(
@@ -234,23 +235,25 @@ let batchSetBasicCameraViewData =
   {
     ...state,
     basicCameraViewRecord:
-      basicCameraViews
-      |> WonderCommonlib.ArrayService.reduceOneParami(
-           (. basicCameraViewRecord, {isActive}, index) => {
-             let cameraView = basicCameraViewArr[index];
+      isActiveCamera ?
+        basicCameraViews
+        |> WonderCommonlib.ArrayService.reduceOneParami(
+             (. basicCameraViewRecord, {isActive}, index) => {
+               let cameraView = basicCameraViewArr[index];
 
-             let basicCameraViewRecord =
-               isActive ?
-                 ActiveBasicCameraViewService.active(
-                   cameraView,
-                   basicCameraViewRecord,
-                 ) :
-                 basicCameraViewRecord;
+               let basicCameraViewRecord =
+                 isActive ?
+                   ActiveBasicCameraViewService.active(
+                     cameraView,
+                     basicCameraViewRecord,
+                   ) :
+                   basicCameraViewRecord;
 
-             basicCameraViewRecord;
-           },
-           basicCameraViewRecord,
-         ),
+               basicCameraViewRecord;
+             },
+             basicCameraViewRecord,
+           ) :
+        basicCameraViewRecord,
   };
 };
 
