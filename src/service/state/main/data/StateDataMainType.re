@@ -97,6 +97,14 @@ type stateData = {
 and jobRecord = {
   noWorkerInitJobList: list((string, state => state)),
   noWorkerLoopJobList: list((string, state => state)),
+  noWorkerCustomInitJobHandleMap:
+    WonderCommonlib.HashMapService.t(
+      (NoWorkerJobType.jobFlags, state) => state,
+    ),
+  noWorkerCustomLoopJobHandleMap:
+    WonderCommonlib.HashMapService.t(
+      (NoWorkerJobType.jobFlags, state) => state,
+    ),
   workerCustomMainInitTargetJobMap:
     WonderCommonlib.HashMapService.t(
       (string, JobType.workerCustomJobAction, stateData => unit),

@@ -11,7 +11,12 @@ let _workerInit = (stateData, state: StateDataMainType.state) =>
   );
 
 let _noWorkerInit = (state: StateDataMainType.state) =>
-  state |> NoWorkerJobMainService.execNoWorkerInitJobs;
+  state
+  |> NoWorkerJobMainService.init((
+       NoWorkerJobHandleSystem.createInitJobHandleMap,
+       NoWorkerJobHandleSystem.createLoopJobHandleMap,
+     ))
+  |> NoWorkerJobMainService.execNoWorkerInitJobs;
 
 let _computeElapseTime = (time, state) => {
   state.timeControllerRecord =

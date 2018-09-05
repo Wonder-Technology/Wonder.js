@@ -1,12 +1,23 @@
 let initWithoutBuildFakeDom =
-    (~sandbox, ~isDebug="true", ~buffer=SettingTool.buildBufferConfigStr(), ()) => {
+    (
+      ~sandbox,
+      ~isDebug="true",
+      ~buffer=SettingTool.buildBufferConfigStr(),
+      (),
+    ) => {
   Random.init(1);
-  SettingTool.createStateAndSetToStateData(~isDebug, ~buffer, ())
+  SettingTool.createStateAndSetToStateData(~isDebug, ~buffer, ());
 };
 
-let init = (~sandbox, ~isDebug="true", ~buffer=SettingTool.buildBufferConfigStr(), ()) => {
+let init =
+    (
+      ~sandbox,
+      ~isDebug="true",
+      ~buffer=SettingTool.buildBufferConfigStr(),
+      (),
+    ) => {
   SettingTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
-  initWithoutBuildFakeDom(~sandbox, ~isDebug, ~buffer, ())
+  initWithoutBuildFakeDom(~sandbox, ~isDebug, ~buffer, ());
 };
 
 let initWithJobConfigWithoutBuildFakeDom =
@@ -28,23 +39,23 @@ let initWithJobConfigWithoutBuildFakeDom =
       ~buffer=SettingTool.buildBufferConfigStr(),
       ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
-      ()
+      (),
     ) => {
-  [@bs] SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
+  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer(.);
   SettingTool.createStateAndSetToStateData(
     ~isDebug,
     ~canvasId,
     ~buffer,
     ~context,
     ~useHardwareInstance,
-    ()
+    (),
   )
   |> NoWorkerJobConfigTool.create(noWorkerJobRecord)
   |> NoWorkerJobTool.init((
        NoWorkerJobHandleSystem.createInitJobHandleMap,
-       NoWorkerJobHandleSystem.createLoopJobHandleMap
+       NoWorkerJobHandleSystem.createLoopJobHandleMap,
      ))
-  |> RenderConfigTool.create(renderConfigRecord)
+  |> RenderConfigTool.create(renderConfigRecord);
 };
 
 let initWithJobConfig =
@@ -54,11 +65,71 @@ let initWithJobConfig =
       ~buffer=SettingTool.buildBufferConfigStr(),
       ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
-      ()
+      (),
     ) => {
-  [@bs] SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
+  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer(.);
   SettingTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
-  initWithJobConfigWithoutBuildFakeDom(~sandbox, ~isDebug, ~buffer, ~noWorkerJobRecord, ())
+  initWithJobConfigWithoutBuildFakeDom(
+    ~sandbox,
+    ~isDebug,
+    ~buffer,
+    ~noWorkerJobRecord,
+    (),
+  );
+};
+
+let createWithJobConfigWithoutBuildFakeDom =
+    (
+      ~sandbox,
+      ~isDebug="true",
+      ~canvasId=None,
+      ~context={|
+        {
+        "alpha": true,
+        "depth": true,
+        "stencil": false,
+        "antialias": true,
+        "premultiplied_alpha": true,
+        "preserve_drawing_buffer": false
+        }
+               |},
+      ~useHardwareInstance="true",
+      ~buffer=SettingTool.buildBufferConfigStr(),
+      ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
+      ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
+      (),
+    ) => {
+  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer(.);
+  SettingTool.createStateAndSetToStateData(
+    ~isDebug,
+    ~canvasId,
+    ~buffer,
+    ~context,
+    ~useHardwareInstance,
+    (),
+  )
+  |> NoWorkerJobConfigTool.create(noWorkerJobRecord)
+  |> RenderConfigTool.create(renderConfigRecord);
+};
+
+let createWithJobConfig =
+    (
+      ~sandbox,
+      ~isDebug="true",
+      ~buffer=SettingTool.buildBufferConfigStr(),
+      ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
+      ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
+      (),
+    ) => {
+  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer(.);
+  SettingTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
+  createWithJobConfigWithoutBuildFakeDom(
+    ~sandbox,
+    ~isDebug,
+    ~buffer,
+    ~noWorkerJobRecord,
+    (),
+  );
 };
 
 let openContractCheck = () =>

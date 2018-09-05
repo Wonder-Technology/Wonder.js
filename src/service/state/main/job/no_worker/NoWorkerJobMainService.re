@@ -37,30 +37,75 @@ let init =
       (createInitJobHandleMapFunc, createLoopJobHandleMapFunc),
       state: StateDataMainType.state,
     ) => {
-  ...state,
-  jobRecord: {
-    ...state.jobRecord,
-    noWorkerInitJobList:
-      _getAllNoWorkerJobs(
-        OperateNoWorkerJobService.getInitPipelineExecutableJobs(
-          OperateNoWorkerJobService.getSetting(state.noWorkerJobRecord),
-          OperateNoWorkerJobService.getInitPipelines(state.noWorkerJobRecord),
-          OperateNoWorkerJobService.getInitJobs(state.noWorkerJobRecord),
+  let {noWorkerCustomInitJobHandleMap, noWorkerCustomLoopJobHandleMap} as jobRecord =
+    state.jobRecord;
+
+  {
+    ...state,
+    jobRecord: {
+      ...jobRecord,
+      noWorkerInitJobList:
+        _getAllNoWorkerJobs(
+          OperateNoWorkerJobService.getInitPipelineExecutableJobs(
+            OperateNoWorkerJobService.getSetting(state.noWorkerJobRecord),
+            OperateNoWorkerJobService.getInitPipelines(
+              state.noWorkerJobRecord,
+            ),
+            OperateNoWorkerJobService.getInitJobs(state.noWorkerJobRecord),
+          ),
+          createInitJobHandleMapFunc()
+          |> HandleJobService.concatJobHandleMaps(
+               noWorkerCustomInitJobHandleMap,
+             ),
+          state,
         ),
-        createInitJobHandleMapFunc(),
-        state,
-      ),
-    noWorkerLoopJobList:
-      _getAllNoWorkerJobs(
-        OperateNoWorkerJobService.getLoopPipelineExecutableJobs(
-          OperateNoWorkerJobService.getSetting(state.noWorkerJobRecord),
-          OperateNoWorkerJobService.getLoopPipelines(state.noWorkerJobRecord),
-          OperateNoWorkerJobService.getLoopJobs(state.noWorkerJobRecord),
+      noWorkerLoopJobList:
+        _getAllNoWorkerJobs(
+          OperateNoWorkerJobService.getLoopPipelineExecutableJobs(
+            OperateNoWorkerJobService.getSetting(state.noWorkerJobRecord),
+            OperateNoWorkerJobService.getLoopPipelines(
+              state.noWorkerJobRecord,
+            ),
+            OperateNoWorkerJobService.getLoopJobs(state.noWorkerJobRecord),
+          ),
+          createLoopJobHandleMapFunc()
+          |> HandleJobService.concatJobHandleMaps(
+               noWorkerCustomLoopJobHandleMap,
+             ),
+          state,
         ),
-        createLoopJobHandleMapFunc(),
-        state,
-      ),
-  },
+    },
+  };
+};
+
+let registerNoWorkerInitJob =
+    (jobName, handleFunc, state: StateDataMainType.state) => {
+  let {noWorkerCustomInitJobHandleMap} as jobRecord = state.jobRecord;
+
+  {
+    ...state,
+    jobRecord: {
+      ...state.jobRecord,
+      noWorkerCustomInitJobHandleMap:
+        noWorkerCustomInitJobHandleMap
+        |> WonderCommonlib.HashMapService.set(jobName, handleFunc),
+    },
+  };
+};
+
+let registerNoWorkerLoopJob =
+    (jobName, handleFunc, state: StateDataMainType.state) => {
+  let {noWorkerCustomLoopJobHandleMap} as jobRecord = state.jobRecord;
+
+  {
+    ...state,
+    jobRecord: {
+      ...state.jobRecord,
+      noWorkerCustomLoopJobHandleMap:
+        noWorkerCustomLoopJobHandleMap
+        |> WonderCommonlib.HashMapService.set(jobName, handleFunc),
+    },
+  };
 };
 
 let addNoWorkerInitJob =
