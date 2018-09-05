@@ -4,14 +4,14 @@ open RenderArrayBufferViewSourceTextureType;
 
 open BrowserDetectType;
 
-let _setUnpackAlignmentaToOne = [%bs.raw
+/* let _setUnpackAlignmentaToOne = [%bs.raw
   {|
          function(gl){
 
      gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
          }
          |}
-];
+]; */
 
 let _drawTexture =
     (gl, (target, index, source, glFormat, glType), (width, height)) => {
@@ -35,7 +35,7 @@ let _drawTexture =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  _setUnpackAlignmentaToOne(gl);
+  /* _setUnpackAlignmentaToOne(gl); */
   gl
   |> WonderWebgl.Gl.texImage2DWithArrayBufferView(
        target,
