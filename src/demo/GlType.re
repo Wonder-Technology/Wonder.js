@@ -1,0 +1,3 @@
+type framebuffer;
+
+type renderbuffer;

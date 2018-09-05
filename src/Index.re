@@ -408,6 +408,10 @@ let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
 
 let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
 
+let registerNoWorkerLoopJob = JobAPI.registerNoWorkerLoopJob;
+
+let registerNoWorkerInitJob = JobAPI.registerNoWorkerInitJob;
+
 let isMaxCount = DirectionLightAPI.isMaxCount;
 
 let setDirectionLightIntensity = DirectionLightAPI.setDirectionLightIntensity;
@@ -732,6 +736,16 @@ let getMainWorkerCustomData = WorkerDataAPI.getMainWorkerCustomData;
 
 let getRenderWorkerCustomData = WorkerDataAPI.getRenderWorkerCustomData;
 
+let initDemo = DemoAPI.initDemo;
+
+let finishRenderGameViewToTextureJob = DemoAPI.finishRenderGameViewToTextureJob;
+
+let prepareRenderGameViewToTextureJob = DemoAPI.prepareRenderGameViewToTextureJob;
+
+let initGameViewFramebufferObjectJob = DemoAPI.initGameViewFramebufferObjectJob;
+
+let editorState = DemoAPI.editorState;
+
 let create = RecordAPIMainService.create;
 
 let setAPIJsObj = RecordAPIMainService.setAPIJsObj;
@@ -918,6 +932,10 @@ let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
 
 let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
 
+let registerNoWorkerLoopJob = JobAPI.registerNoWorkerLoopJob;
+
+let registerNoWorkerInitJob = JobAPI.registerNoWorkerInitJob;
+
 let setMeshRendererIsRender = MeshRendererAPI.setMeshRendererIsRender;
 
 let getMeshRendererIsRender = MeshRendererAPI.getMeshRendererIsRender;
@@ -1029,6 +1047,16 @@ let unsafeGetTransformParent = TransformAPI.unsafeGetTransformParent;
 let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
 
 let createTransform = TransformAPI.createTransform;
+
+let initDemo = DemoAPI.initDemo;
+
+let finishRenderGameViewToTextureJob = DemoAPI.finishRenderGameViewToTextureJob;
+
+let prepareRenderGameViewToTextureJob = DemoAPI.prepareRenderGameViewToTextureJob;
+
+let initGameViewFramebufferObjectJob = DemoAPI.initGameViewFramebufferObjectJob;
+
+let editorState = DemoAPI.editorState;
 
 let create = RecordAPIMainService.create;
 
