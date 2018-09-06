@@ -68,7 +68,13 @@ let unsafeGetFovy = (cameraProjection, state: StateDataMainType.state) =>
   );
 
 let unsafeGetAspect = (cameraProjection, state: StateDataMainType.state) =>
-  FrustumPerspectiveCameraProjectionService.unsafeGetAspect(
+  PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect(
+    cameraProjection,
+    state,
+  );
+
+let getAspect = (cameraProjection, state: StateDataMainType.state) =>
+  FrustumPerspectiveCameraProjectionService.getAspect(
     cameraProjection,
     state.perspectiveCameraProjectionRecord,
   );

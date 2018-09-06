@@ -22,7 +22,8 @@ let buildFakeGl = sandbox => {
     createEmptyStub(refJsObjToSandbox(sandbox^)) |> returns(Obj.magic(1)),
 };
 
-let buildFakeCanvas = (id, gl, sandbox) => {
+let buildFakeCanvasWithSize =
+    (~gl, ~sandbox, ~id="a", ~width=1., ~height=1., ()) => {
   "id": id,
   "nodeType": 1,
   "style": {
@@ -32,10 +33,13 @@ let buildFakeCanvas = (id, gl, sandbox) => {
     "height": "",
     "position": "static",
   },
-  "width": 0.,
-  "height": 0.,
+  "width": width,
+  "height": height,
   "getContext": createGetContextStub(gl, sandbox),
 };
+
+let buildFakeCanvas = (id, gl, sandbox) =>
+  buildFakeCanvasWithSize(~id, ~gl, ~sandbox, ());
 
 let buildFakeDomForNotPassCanvasId = sandbox => {
   let fakeGl = buildFakeGl(sandbox);
@@ -66,12 +70,11 @@ let buildFakeDomForNotPassCanvasId = sandbox => {
   (canvasDom, fakeGl, div, body);
 };
 
-let buildFakeDiv = (canvasDom) => {
+let buildFakeDiv = canvasDom => {
   let div = DomService.buildDom("<div></div>");
   /* div##appendChild(canvasDom); */
-  div
+  div;
 };
-
 
 let buildFakeCanvasForNotPassCanvasIdWithCanvas = (sandbox, canvasDom) => {
   let div = buildFakeDiv(canvasDom);

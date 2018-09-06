@@ -14,7 +14,7 @@ var CameraTool = (function () {
             state = wd.setPerspectiveCameraProjectionNear(perspectiveCameraProjection, 0.1, state);
             state = wd.setPerspectiveCameraProjectionFar(perspectiveCameraProjection, 2000, state);
             state = wd.setPerspectiveCameraProjectionFovy(perspectiveCameraProjection, 60, state);
-            state = wd.setPerspectiveCameraProjectionAspect(perspectiveCameraProjection, 1.0, state);
+            // state = wd.setPerspectiveCameraProjectionAspect(perspectiveCameraProjection, 1.0, state);
 
 
 

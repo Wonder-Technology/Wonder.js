@@ -994,7 +994,7 @@ let _ =
               (),
             );
 
-          testPromise("if no aspect, set canvas.width/canvas.height", () => {
+          testPromise("if has no aspect data, not set aspect", () => {
             let state =
               RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(
                 sandbox,
@@ -1038,12 +1038,12 @@ let _ =
                     state,
                   )
                   |> Js.Array.map(cameraProjection =>
-                       PerspectiveCameraProjectionTool.unsafeGetAspect(
+                       PerspectiveCameraProjectionTool.getAspect(
                          cameraProjection,
                          state,
                        )
                      )
-                  |> expect == [|2., canvas##width /. canvas##height|];
+                  |> expect == [|Some(2.), None|];
                 },
               (),
             );
