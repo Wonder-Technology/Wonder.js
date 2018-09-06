@@ -69,15 +69,12 @@ let unsafeGetPerspectiveCameraAspect = (cameraProjection, state) =>
   state.perspectiveCameraProjectionRecord |> unsafeGetAspect(cameraProjection);
 
 let setPerspectiveCameraProjectionAspect =
-    (cameraProjection, aspect: float, state) => {
-  ...state,
-  perspectiveCameraProjectionRecord:
-    setAspect(
-      cameraProjection,
-      aspect,
-      state.perspectiveCameraProjectionRecord,
-    ),
-};
+    (cameraProjection, aspect: float, state) =>
+  FrustumPerspectiveCameraProjectionMainService.setAspect(
+    cameraProjection,
+    aspect,
+    state,
+  );
 
 let unsafeGetPerspectiveCameraNear = (cameraProjection, state) =>
   state.perspectiveCameraProjectionRecord |> unsafeGetNear(cameraProjection);
@@ -96,4 +93,14 @@ let setPerspectiveCameraProjectionFar = (cameraProjection, far: float, state) =>
   ...state,
   perspectiveCameraProjectionRecord:
     setFar(cameraProjection, far, state.perspectiveCameraProjectionRecord),
+};
+
+let getAllPerspectiveCameraProjections =
+    ({perspectiveCameraProjectionRecord} as state) => {
+  let {index, disposedIndexArray} = perspectiveCameraProjectionRecord;
+
+  ArrayService.range(0, index - 1)
+  |> Js.Array.filter(index =>
+       ! (disposedIndexArray |> Js.Array.includes(index))
+     );
 };

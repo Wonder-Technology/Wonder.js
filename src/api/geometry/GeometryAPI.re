@@ -2,8 +2,6 @@ open StateDataMainType;
 
 open GeometryType;
 
-open GeometryType;
-
 open DisposeGeometryMainService;
 
 let createGeometry = state => CreateGeometryMainService.create(. state);

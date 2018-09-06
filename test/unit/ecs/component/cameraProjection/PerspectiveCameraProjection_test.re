@@ -18,6 +18,7 @@ let _ =
       state := TestTool.init(~sandbox, ());
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
     describe("createPerspectiveCameraProjection", () => {
       test("create a new camera which is just index(int)", () => {
         let (_, cameraProjection) =
@@ -39,6 +40,68 @@ let _ =
         |> expect == [|cameraProjection|];
       });
     });
+
+    describe("getAllPerspectiveCameraProjections", () => {
+      let _createPerspectiveCameraProjectionGameObjects = state => {
+        let (state, gameObject1, _, (_, cameraProjection1)) =
+          CameraTool.createCameraGameObject(state^);
+        let (state, gameObject2, _, (_, cameraProjection2)) =
+          CameraTool.createCameraGameObject(state);
+        let (state, gameObject3, _, (_, cameraProjection3)) =
+          CameraTool.createCameraGameObject(state);
+
+        (
+          state,
+          (gameObject1, gameObject2, gameObject3),
+          (cameraProjection1, cameraProjection2, cameraProjection3),
+        );
+      };
+
+      test(
+        "get all cameraProjections include the ones add or not add to gameObject",
+        () => {
+        let (
+          state,
+          (gameObject1, gameObject2, gameObject3),
+          (cameraProjection1, cameraProjection2, cameraProjection3),
+        ) =
+          _createPerspectiveCameraProjectionGameObjects(state);
+
+        let (state, cameraProjection4) =
+          PerspectiveCameraProjectionAPI.createPerspectiveCameraProjection(
+            state,
+          );
+
+        PerspectiveCameraProjectionAPI.getAllPerspectiveCameraProjections(
+          state,
+        )
+        |>
+        expect == [|
+                    cameraProjection1,
+                    cameraProjection2,
+                    cameraProjection3,
+                    cameraProjection4,
+                  |];
+      });
+      test("test dispose", () => {
+        let (
+          state,
+          (gameObject1, gameObject2, gameObject3),
+          (cameraProjection1, cameraProjection2, cameraProjection3),
+        ) =
+          _createPerspectiveCameraProjectionGameObjects(state);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObject(gameObject2)
+          |> GameObjectAPI.disposeGameObject(gameObject3);
+        let state = state |> DisposeJob.execJob(None);
+
+        GameObjectAPI.getAllPerspectiveCameraProjectionComponents(state)
+        |> expect == [|cameraProjection1|];
+      });
+    });
+
     describe("unsafeGetPerspectiveCameraProjectionGameObject", () =>
       test("get cameraProjection's gameObject", () => {
         open GameObjectAPI;
