@@ -9,7 +9,8 @@ type editorState = {
   mutable gameViewHeight: int,
   mutable framebuffer: option(GlType.framebuffer),
   mutable texture: option(WonderWebgl.GlType.texture),
-  mutable sceneViewActiveBasicCameraView: option(ComponentType.component),
+  /* mutable sceneViewActiveBasicCameraView: option(ComponentType.component), */
+  mutable gameViewActiveBasicCameraViewAspect: option(float),
   mutable gameViewCanvasContext: option(CanvasType.canvasContext),
 };
 
@@ -18,7 +19,8 @@ let editorState = {
   gameViewHeight: 512,
   framebuffer: None,
   texture: None,
-  sceneViewActiveBasicCameraView: None,
+  /* sceneViewActiveBasicCameraView: None, */
+  gameViewActiveBasicCameraViewAspect: None,
   gameViewCanvasContext: None,
 };
 
@@ -48,6 +50,14 @@ let _unsafeGetSceneViewActiveBasicCameraView = state => 0;
 
 /* TODO fix */
 let _unsafeGetGameViewActiveBasicCameraView = state => 1;
+
+let _unsafeGetGameViewActivePerspectiveCameraProjection = state =>
+  _unsafeGetGameViewActiveBasicCameraView(state)
+  |> BasicCameraViewAPI.unsafeGetBasicCameraViewGameObject(_, state)
+  |> GameObjectAPI.unsafeGetGameObjectPerspectiveCameraProjectionComponent(
+       _,
+       state,
+     );
 
 let initGameViewFramebufferObjectJob = (_, state) => {
   let gl = DeviceManagerAPI.unsafeGetGl(state);
@@ -142,20 +152,40 @@ let initGameViewFramebufferObjectJob = (_, state) => {
 };
 
 let _activeSceneViewCamera = state => {
-  let editorState = _getEditorState();
+  let {gameViewWidth, gameViewHeight} as editorState = _getEditorState();
 
   let sceneViewActiveBasicCameraView =
     _unsafeGetSceneViewActiveBasicCameraView(state);
   let gameViewActiveBasicCameraView =
     _unsafeGetGameViewActiveBasicCameraView(state);
+
+  let gameViewActivePerspectiveCameraProjection =
+    _unsafeGetGameViewActivePerspectiveCameraProjection(state);
+
+  let gameViewActiveBasicCameraViewAspect =
+    PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect(
+      gameViewActivePerspectiveCameraProjection,
+      state,
+    );
+
+  let state =
+    PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionAspect(
+      gameViewActivePerspectiveCameraProjection,
+      gameViewWidth / gameViewHeight |> NumberType.intToFloat,
+      state,
+    );
+  let state = state |> UpdatePerspectiveCameraProjectionMainService.update;
+
   let state =
     BasicCameraViewAPI.activeBasicCameraView(
       gameViewActiveBasicCameraView,
       state,
     );
 
-  editorState.sceneViewActiveBasicCameraView =
-    Some(sceneViewActiveBasicCameraView);
+  /* editorState.sceneViewActiveBasicCameraView =
+     Some(sceneViewActiveBasicCameraView); */
+  editorState.gameViewActiveBasicCameraViewAspect =
+    Some(gameViewActiveBasicCameraViewAspect);
 
   (state, editorState);
 };
@@ -186,12 +216,26 @@ let prepareRenderGameViewToTextureJob = (_, state) => {
 };
 
 let _restoreCamera = state => {
-  let {sceneViewActiveBasicCameraView} = _getEditorState();
+  let {gameViewActiveBasicCameraViewAspect} = _getEditorState();
 
-  BasicCameraViewAPI.activeBasicCameraView(
-    sceneViewActiveBasicCameraView |> OptionService.unsafeGet,
-    state,
-  );
+  let sceneViewActiveBasicCameraView =
+    _unsafeGetSceneViewActiveBasicCameraView(state);
+
+  /* let gameViewActiveBasicCameraView =
+     _unsafeGetGameViewActiveBasicCameraView(state); */
+
+  let gameViewActivePerspectiveCameraProjection =
+    _unsafeGetGameViewActivePerspectiveCameraProjection(state);
+
+  state
+  |> BasicCameraViewAPI.activeBasicCameraView(
+       /* sceneViewActiveBasicCameraView |> OptionService.unsafeGet, */
+       sceneViewActiveBasicCameraView,
+     )
+  |> PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionAspect(
+       gameViewActivePerspectiveCameraProjection,
+       gameViewActiveBasicCameraViewAspect |> OptionService.unsafeGet,
+     );
 };
 
 let _renderTextureToCanvas = (gl, state) => {
