@@ -13,6 +13,19 @@ let createBasicCameraViewPerspectiveCamera = state => {
   (state, basicCameraView, perspectiveCameraProjection);
 };
 
+let createBasicCameraViewPerspectiveCameraWithoutAspect = state => {
+  let (state, basicCameraView, perspectiveCameraProjection) =
+    createBasicCameraViewPerspectiveCamera(state);
+
+  let state =
+    PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionAspect(
+      perspectiveCameraProjection,
+      Js.Nullable.undefined |> Obj.magic,
+      state,
+    );
+  (state, basicCameraView, perspectiveCameraProjection);
+};
+
 let createCameraGameObject = state => {
   open GameObjectAPI;
   open BasicCameraViewAPI;
@@ -38,6 +51,20 @@ let createCameraGameObject = state => {
     GameObjectAPI.unsafeGetGameObjectTransformComponent(gameObject, state),
     (basicCameraView, perspectiveCameraProjection),
   );
+};
+
+let createCameraGameObjectWithoutAspect = state => {
+  let (state, gameObject, transform, (basicCameraView, cameraProjection)) =
+    createCameraGameObject(state);
+
+  let state =
+    PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionAspect(
+      cameraProjection,
+      Js.Nullable.undefined |> Obj.magic,
+      state,
+    );
+
+  (state, gameObject, transform, (basicCameraView, cameraProjection));
 };
 
 let testBuildPMatrix = (stateFunc, execFunc) =>

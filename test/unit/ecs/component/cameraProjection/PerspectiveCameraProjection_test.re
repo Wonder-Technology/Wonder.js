@@ -102,6 +102,23 @@ let _ =
       });
     });
 
+    describe("markPerspectiveCameraProjectionDirty", () =>
+      test("mark dirty", () => {
+        let (state, gameObject1, _, (_, cameraProjection1)) =
+          CameraTool.createCameraGameObject(state^);
+
+        let state = state |> UpdateCameraJob.execJob(None);
+        let state =
+          PerspectiveCameraProjectionAPI.markPerspectiveCameraProjectionDirty(
+            cameraProjection1,
+            state,
+          );
+
+        PerspectiveCameraProjectionTool.getDirtyArray(state)
+        |> expect == [|cameraProjection1|];
+      })
+    );
+
     describe("unsafeGetPerspectiveCameraProjectionGameObject", () =>
       test("get cameraProjection's gameObject", () => {
         open GameObjectAPI;

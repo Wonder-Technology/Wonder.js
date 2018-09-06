@@ -104,3 +104,5 @@ let getAllPerspectiveCameraProjections =
        ! (disposedIndexArray |> Js.Array.includes(index))
      );
 };
+
+let markPerspectiveCameraProjectionDirty = DirtyPerspectiveCameraProjectionMainService.markDirty;

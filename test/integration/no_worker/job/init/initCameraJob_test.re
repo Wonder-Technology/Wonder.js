@@ -72,14 +72,9 @@ let _ =
             |> ViewTool.setCanvas(_, state^);
 
           let (state, basicCameraView, perspectiveCameraProjection) =
-            CameraTool.createBasicCameraViewPerspectiveCamera(state^);
-          let state =
-            PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionAspect(
-              perspectiveCameraProjection,
-              Js.Nullable.undefined |> Obj.magic,
-              state,
+            CameraTool.createBasicCameraViewPerspectiveCameraWithoutAspect(
+              state^,
             );
-
           let state = state |> DirectorTool.init;
 
           (

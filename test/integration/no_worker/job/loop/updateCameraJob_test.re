@@ -63,10 +63,16 @@ let _ =
           CameraTool.createBasicCameraViewPerspectiveCamera(state^);
         let state = state |> DirectorTool.runWithDefaultTime;
         let state =
-          state |> setPerspectiveCameraProjectionNear(perspectiveCameraProjection, 0.2);
+          state
+          |> setPerspectiveCameraProjectionNear(
+               perspectiveCameraProjection,
+               0.2,
+             );
         let state = state |> DirectorTool.runWithDefaultTime;
         state
-        |> unsafeGetPerspectiveCameraProjectionPMatrix(perspectiveCameraProjection)
+        |> unsafeGetPerspectiveCameraProjectionPMatrix(
+             perspectiveCameraProjection,
+           )
         |>
         expect == Js.Typed_array.Float32Array.make([|
                     1.7320508075688776,
@@ -86,6 +92,66 @@ let _ =
                     (-0.40008001600320064),
                     0.,
                   |]);
+      });
+      test("test mark dirty", () => {
+        let (state, gameObject1, _, (_, cameraProjection1)) =
+          CameraTool.createCameraGameObjectWithoutAspect(state^);
+        let width = 100.;
+        let height = 150.;
+        let state =
+          SettingTool.buildFakeCanvasWithSize(
+            ~gl=SettingTool.buildFakeGl(sandbox),
+            ~sandbox,
+            ~width,
+            ~height,
+            (),
+          )
+          |> Obj.magic
+          |> ViewTool.setCanvas(_, state);
+        let state = state |> DirectorTool.runWithDefaultTime;
+
+        let width = 200.;
+        let height = 150.;
+        let state =
+          SettingTool.buildFakeCanvasWithSize(
+            ~gl=SettingTool.buildFakeGl(sandbox),
+            ~sandbox,
+            ~width,
+            ~height,
+            (),
+          )
+          |> Obj.magic
+          |> ViewTool.setCanvas(_, state);
+        let state =
+          PerspectiveCameraProjectionAPI.markPerspectiveCameraProjectionDirty(
+            cameraProjection1,
+            state,
+          );
+        let state = state |> DirectorTool.runWithDefaultTime;
+
+        PerspectiveCameraProjectionTool.unsafeGetPMatrix(
+          cameraProjection1,
+          state,
+        )
+        |>
+        expect == Js.Typed_array.Float32Array.make([|
+                        1.299038052558899,
+                        0.,
+                        0.,
+                        0.,
+                        0.,
+                        1.7320507764816284,
+                        0.,
+                        0.,
+                        0.,
+                        0.,
+                        (-1.0002000331878662),
+                        (-1.),
+                        0.,
+                        0.,
+                        (-0.20002000033855438),
+                        0.,
+                      |]);
       });
     });
 
