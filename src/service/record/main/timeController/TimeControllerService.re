@@ -13,14 +13,14 @@ let getFps = ({fps}) => fps;
 let getElapsed = ({elapsed}) => elapsed;
 
 let _computeFps = (deltaTime: float, lastTime: option(float)) =>
-  switch lastTime {
+  switch (lastTime) {
   | None => starting_fps
   | _ => gametime_scale /. deltaTime
   };
 
 let tick = (elapsed: float, {lastTime} as record) => {
   let deltaTime =
-    switch lastTime {
+    switch (lastTime) {
     | None => elapsed
     | Some(lastTime) => elapsed -. lastTime
     };
@@ -29,16 +29,16 @@ let tick = (elapsed: float, {lastTime} as record) => {
     deltaTime,
     fps: _computeFps(deltaTime, lastTime),
     gameTime: elapsed /. gametime_scale,
-    lastTime: Some(elapsed)
-  }
+    lastTime: Some(elapsed),
+  };
 };
 
 let _getNow = () => {
   let now = root##performance##now;
-  [@bs] now()
+  now(.);
 };
 
-let start = (record) => {...record, startTime: _getNow(), elapsed: 0.};
+let start = record => {...record, startTime: _getNow(), elapsed: 0.};
 
 /* TODO support pause */
 let computeElapseTime = (time: float, {startTime} as record) =>
@@ -49,11 +49,15 @@ let computeElapseTime = (time: float, {startTime} as record) =>
            Contract.(
              Operators.(
                test(
-                 Log.buildAssertMessage(~expect={j|elapsed >= 0|j}, ~actual={j|is $elapsed|j}),
-                 () => elapsed >=. 0.
+                 Log.buildAssertMessage(
+                   ~expect={j|elapsed >= 0|j},
+                   ~actual={j|is $elapsed|j},
+                 ),
+                 () =>
+                 elapsed >=. 0.
                )
              )
            )
          ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );

@@ -46,6 +46,7 @@ let _ =
         }
       );
       afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
       test(
         "set start time to now",
         () => {

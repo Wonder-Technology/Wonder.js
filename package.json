@@ -1,6 +1,6 @@
 {
   "name": "wonder.js",
-  "version": "1.0.0-alpha.23.53",
+  "version": "1.0.0-alpha.23.55",
   "authors": "Wonder",
   "description": "3d webgl engine",
   "homepage": "https://github.com/Wonder-Technology/Wonder.js",
@@ -22,7 +22,7 @@
     "test:renderCI": "gulp installPuppeteerInCI && npm run build && gulp testRenderInCI",
     "test:pf": "npm run build && gulp testPerformanceInLocal",
     "test:pfCI": "gulp installPuppeteerInCI && npm run build && gulp testPerformanceInCI",
-    "test:watch": "jest --watch --config jest.json",
+    "test:watch": "jest --watch --verbose false --config jest.json",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
   },
   "config": {
@@ -66,13 +66,14 @@
     "wonder-bs-most": "^0.0.3",
     "wonder-commonlib": "^0.2.23",
     "wonder-imgui": "^0.0.28",
-    "wonder-log": "^0.2.2",
+    "wonder-log": "^0.2.6",
     "wonder-most-animation-frame": "0.0.3",
     "wonder-webgl": "^0.0.3"
   },
   "resolutions": {
+    "wonder-log": "^0.2.6",
     "wonder-commonlib": "0.2.23",
-    "wonder-bs-jest": "0.2.17",
+    "wonder-bs-jest": "0.2.18",
     "wonder-bs-puppeteer": "^0.1.6"
   }
 }
