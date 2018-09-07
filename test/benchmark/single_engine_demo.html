@@ -93,11 +93,16 @@
                 var gameViewCanvasContext = gameViewCanvas.getContext("2d");
                 var gameViewWidth = gameViewCanvas.width;
                 var gameViewHeight = gameViewCanvas.height;
+                var offscreenWidth = 512;
+                var offscreenHeight = 512;
 
 
                 var state =
                     wd.initDemo(
-                        gameViewCanvasContext, gameViewWidth, gameViewHeight, state
+                        gameViewCanvasContext,
+                        gameViewWidth, gameViewHeight,
+                        offscreenWidth, offscreenHeight,
+                        state
                     );
 
 

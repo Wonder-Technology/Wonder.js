@@ -7,6 +7,8 @@ open WonderWebgl.Gl;
 type editorState = {
   mutable gameViewWidth: int,
   mutable gameViewHeight: int,
+  mutable offscreenWidth: int,
+  mutable offscreenHeight: int,
   mutable framebuffer: option(GlType.framebuffer),
   mutable texture: option(WonderWebgl.GlType.texture),
   /* mutable sceneViewActiveBasicCameraView: option(ComponentType.component), */
@@ -15,8 +17,10 @@ type editorState = {
 };
 
 let editorState = {
-  gameViewWidth: 512,
-  gameViewHeight: 512,
+  gameViewWidth: 0,
+  gameViewHeight: 0,
+  offscreenWidth: 0,
+  offscreenHeight: 0,
   framebuffer: None,
   texture: None,
   /* sceneViewActiveBasicCameraView: None, */
@@ -62,7 +66,7 @@ let _unsafeGetGameViewActivePerspectiveCameraProjection = state =>
 let initGameViewFramebufferObjectJob = (_, state) => {
   let gl = DeviceManagerAPI.unsafeGetGl(state);
 
-  let {gameViewWidth, gameViewHeight} = _getEditorState();
+  let {offscreenWidth, offscreenHeight} = _getEditorState();
 
   let framebuffer = createFramebuffer(gl);
 
@@ -77,8 +81,8 @@ let initGameViewFramebufferObjectJob = (_, state) => {
        textureTarget,
        0,
        getRgba(gl),
-       gameViewWidth,
-       gameViewHeight,
+       offscreenWidth,
+       offscreenHeight,
        0,
        getRgba(gl),
        getUnsignedByte(gl),
@@ -96,8 +100,8 @@ let initGameViewFramebufferObjectJob = (_, state) => {
   |> renderbufferStorage(
        renderBufferTarget,
        getDepthComponent16(gl),
-       gameViewWidth,
-       gameViewHeight,
+       offscreenWidth,
+       offscreenHeight,
      );
 
   let frameBufferTarget = getFrameBuffer(gl);
@@ -163,15 +167,16 @@ let _activeSceneViewCamera = state => {
     _unsafeGetGameViewActivePerspectiveCameraProjection(state);
 
   let gameViewActiveBasicCameraViewAspect =
-    PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect(
+    FrustumPerspectiveCameraProjectionService.getAspect(
       gameViewActivePerspectiveCameraProjection,
-      state,
+      state.perspectiveCameraProjectionRecord,
     );
 
   let state =
     PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionAspect(
       gameViewActivePerspectiveCameraProjection,
-      gameViewWidth / gameViewHeight |> NumberType.intToFloat,
+      (gameViewWidth |> NumberType.intToFloat)
+      /. (gameViewHeight |> NumberType.intToFloat),
       state,
     );
   let state = state |> UpdatePerspectiveCameraProjectionMainService.update;
@@ -185,7 +190,8 @@ let _activeSceneViewCamera = state => {
   /* editorState.sceneViewActiveBasicCameraView =
      Some(sceneViewActiveBasicCameraView); */
   editorState.gameViewActiveBasicCameraViewAspect =
-    Some(gameViewActiveBasicCameraViewAspect);
+    /* Some(gameViewActiveBasicCameraViewAspect); */
+    gameViewActiveBasicCameraViewAspect;
 
   (state, editorState);
 };
@@ -227,20 +233,31 @@ let _restoreCamera = state => {
   let gameViewActivePerspectiveCameraProjection =
     _unsafeGetGameViewActivePerspectiveCameraProjection(state);
 
-  state
-  |> BasicCameraViewAPI.activeBasicCameraView(
-       /* sceneViewActiveBasicCameraView |> OptionService.unsafeGet, */
-       sceneViewActiveBasicCameraView,
-     )
-  |> PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionAspect(
-       gameViewActivePerspectiveCameraProjection,
-       gameViewActiveBasicCameraViewAspect |> OptionService.unsafeGet,
-     );
+  let state =
+    state
+    |> BasicCameraViewAPI.activeBasicCameraView(
+         /* sceneViewActiveBasicCameraView |> OptionService.unsafeGet, */
+         sceneViewActiveBasicCameraView,
+       );
+
+  let state =
+    switch (gameViewActiveBasicCameraViewAspect) {
+    | Some(gameViewActiveBasicCameraViewAspect) =>
+      state
+      |> PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionAspect(
+           gameViewActivePerspectiveCameraProjection,
+           gameViewActiveBasicCameraViewAspect,
+         )
+    | None => state
+    };
+
+  state;
 };
 
 let _renderTextureToCanvas = (gl, state) => {
   let {gameViewWidth, gameViewHeight, gameViewCanvasContext} =
     _getEditorState();
+
   let gameViewCanvasContext = gameViewCanvasContext |> OptionService.unsafeGet;
 
   let bytes_per_pixel = 4;
@@ -307,7 +324,15 @@ let restoreViewportJob = (_, state) => {
   state;
 };
 
-let initDemo = (gameViewCanvasContext, gameViewWidth, gameViewHeight, state) => {
+let initDemo =
+    (
+      gameViewCanvasContext,
+      gameViewWidth,
+      gameViewHeight,
+      offscreenWidth,
+      offscreenHeight,
+      state,
+    ) => {
   let state =
     state
     |> JobAPI.registerNoWorkerInitJob(
@@ -326,8 +351,14 @@ let initDemo = (gameViewCanvasContext, gameViewWidth, gameViewHeight, state) => 
 
   let editorState = _getEditorState();
   editorState.gameViewCanvasContext = Some(gameViewCanvasContext);
+  /* editorState.gameViewWidth = Some(gameViewWidth);
+     editorState.gameViewHeight = Some(gameViewHeight);
+     editorState.offscreenWidth = Some(offscreenWidth);
+     editorState.offscreenHeight = Some(offscreenHeight); */
   editorState.gameViewWidth = gameViewWidth;
   editorState.gameViewHeight = gameViewHeight;
+  editorState.offscreenWidth = offscreenWidth;
+  editorState.offscreenHeight = offscreenHeight;
 
   state;
 };
