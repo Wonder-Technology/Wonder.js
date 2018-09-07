@@ -84,6 +84,10 @@ let unsafeGetBasicCameraViewGameObject = BasicCameraViewAPI.unsafeGetBasicCamera
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 
+let markPerspectiveCameraProjectionDirty = PerspectiveCameraProjectionAPI.markPerspectiveCameraProjectionDirty;
+
+let getAllPerspectiveCameraProjections = PerspectiveCameraProjectionAPI.getAllPerspectiveCameraProjections;
+
 let setPerspectiveCameraProjectionFar = PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionFar;
 
 let unsafeGetPerspectiveCameraFar = PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFar;
@@ -738,11 +742,9 @@ let getRenderWorkerCustomData = WorkerDataAPI.getRenderWorkerCustomData;
 
 let initDemo = DemoAPI.initDemo;
 
-let finishRenderGameViewToTextureJob = DemoAPI.finishRenderGameViewToTextureJob;
+let prepareRenderGameViewJob = DemoAPI.prepareRenderGameViewJob;
 
-let prepareRenderGameViewToTextureJob = DemoAPI.prepareRenderGameViewToTextureJob;
-
-let initGameViewFramebufferObjectJob = DemoAPI.initGameViewFramebufferObjectJob;
+let prepareRenderSceneViewJob = DemoAPI.prepareRenderSceneViewJob;
 
 let editorState = DemoAPI.editorState;
 
@@ -1050,11 +1052,9 @@ let createTransform = TransformAPI.createTransform;
 
 let initDemo = DemoAPI.initDemo;
 
-let finishRenderGameViewToTextureJob = DemoAPI.finishRenderGameViewToTextureJob;
+let prepareRenderGameViewJob = DemoAPI.prepareRenderGameViewJob;
 
-let prepareRenderGameViewToTextureJob = DemoAPI.prepareRenderGameViewToTextureJob;
-
-let initGameViewFramebufferObjectJob = DemoAPI.initGameViewFramebufferObjectJob;
+let prepareRenderSceneViewJob = DemoAPI.prepareRenderSceneViewJob;
 
 let editorState = DemoAPI.editorState;
 

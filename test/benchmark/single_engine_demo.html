@@ -8,7 +8,7 @@
 
 <body>
 
-    <canvas id="game_view" style="position:absolute;left:500px;border: 1px solid red;"></canvas>
+    <!-- <canvas id="game_view" style="position:absolute;left:500px;border: 1px solid red;"></canvas> -->
 
 
     <script src="../e2e/js/AssetTool.js"></script>
@@ -89,19 +89,17 @@
 
 
             function initSample(image1, image2, state) {
-                var gameViewCanvas = document.querySelector("#game_view");
-                var gameViewCanvasContext = gameViewCanvas.getContext("2d");
-                var gameViewWidth = gameViewCanvas.width;
-                var gameViewHeight = gameViewCanvas.height;
-                var offscreenWidth = 512;
-                var offscreenHeight = 512;
+                let windowWidth = window.innerWidth;
+                let windowHeight = window.innerHeight;
+
+                var sceneViewRect = [0, 0, windowWidth / 2, windowHeight];
+                var gameViewRect = [windowWidth / 2, 0, windowWidth / 2, windowHeight];
 
 
                 var state =
                     wd.initDemo(
-                        gameViewCanvasContext,
-                        gameViewWidth, gameViewHeight,
-                        offscreenWidth, offscreenHeight,
+                        sceneViewRect,
+                        gameViewRect,
                         state
                     );
 
@@ -279,7 +277,7 @@
                 var transform = wd.unsafeGetGameObjectTransformComponent(camera2
                     , state);
 
-                state = wd.setTransformLocalPosition(transform, [5, 0, 30], state);
+                state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
                 // state = wd.setTransformLocalPosition(transform, [0, 0, 30], state);
 
 

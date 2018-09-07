@@ -30,60 +30,7 @@
 
 
 
-            {
-                "name": "prepare_render_game_view_to_texture"
-            },
-            {
-                "name": "get_camera_data"
-            },
 
-            {
-                "name": "clear_last_send_component"
-            },
-            {
-                "name": "send_uniform_shader_data"
-            },
-
-
-            {
-                "name": "render_basic"
-            },
-            {
-                "name": "front_render_light"
-            },
-            {
-                "name": "render_imgui"
-            },
-
-            {
-                "name": "finish_render_game_view_to_texture"
-            },
-
-
-
-
-
-
-
-
-
-            {
-                "name": "get_camera_data"
-            },
-
-            {
-                "name": "clear_last_send_component"
-            },
-            {
-                "name": "send_uniform_shader_data"
-            },
-
-
-
-
-            {
-                "name": "restore_viewport"
-            },
             {
                 "name": "clear_color"
             },
@@ -95,6 +42,23 @@
 
 
 
+
+
+
+
+
+            {
+                "name": "prepare_render_scene_view"
+            },
+            {
+                "name": "get_camera_data"
+            },
+            {
+                "name": "clear_last_send_component"
+            },
+            {
+                "name": "send_uniform_shader_data"
+            },
             {
                 "name": "render_basic"
             },
@@ -103,6 +67,38 @@
             },
             {
                 "name": "render_imgui"
+            },
+
+
+
+
+
+
+            {
+                "name": "prepare_render_game_view"
+            },
+            {
+                "name": "get_camera_data"
+            },
+            {
+                "name": "clear_last_send_component"
+            },
+            {
+                "name": "send_uniform_shader_data"
+            },
+            {
+                "name": "render_basic"
+            },
+            {
+                "name": "front_render_light"
+            },
+            {
+                "name": "render_imgui"
+            },
+
+
+            {
+                "name": "restore"
             }
         ]
     }

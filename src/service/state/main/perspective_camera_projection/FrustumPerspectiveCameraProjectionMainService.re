@@ -12,10 +12,26 @@ let computeAspect = state => {
   };
 };
 
+let getAspect = (cameraProjection, state) =>
+  FrustumPerspectiveCameraProjectionService.getAspect(
+    cameraProjection,
+    state.perspectiveCameraProjectionRecord,
+  );
+
 let setAspect = (cameraProjection, aspect: float, state) => {
   FrustumPerspectiveCameraProjectionService.setAspect(
     cameraProjection,
     aspect,
+    state.perspectiveCameraProjectionRecord,
+  )
+  |> ignore;
+
+  state;
+};
+
+let removeAspect = (cameraProjection, state) => {
+  FrustumPerspectiveCameraProjectionService.removeAspect(
+    cameraProjection,
     state.perspectiveCameraProjectionRecord,
   )
   |> ignore;

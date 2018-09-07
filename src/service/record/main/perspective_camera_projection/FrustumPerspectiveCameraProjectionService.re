@@ -45,6 +45,16 @@ let setAspect =
     },
   );
 
+let removeAspect = (cameraProjection, {aspectMap, dirtyArray} as record) => {
+  ...record,
+  dirtyArray: DirtyArrayService.addToDirtyArray(cameraProjection, dirtyArray),
+  aspectMap:
+    aspectMap
+    |> Obj.magic
+    |> WonderCommonlib.SparseMapService.deleteVal(cameraProjection)
+    |> Obj.magic,
+};
+
 let getNear = (cameraProjection, record) =>
   WonderCommonlib.SparseMapService.get(cameraProjection, record.nearMap);
 

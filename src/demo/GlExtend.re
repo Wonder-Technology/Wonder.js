@@ -56,6 +56,11 @@ external readUnsignedBytePixels :
   (int, int, int, int, int, int, Js.Typed_array.Uint8Array.t) => unit =
   "readPixels";
 
+[@bs.send.pipe: webgl1Context]
+external scissor : (int, int, int, int) => unit = "";
+
+[@bs.get] external getScissorTest : webgl1Context => int = "SCISSOR_TEST";
+
 let getFramebufferStatus = [%bs.raw
   status => {|
 return status.toString();

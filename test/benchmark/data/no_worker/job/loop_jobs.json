@@ -53,12 +53,12 @@
         "name": "render_imgui"
     },
     {
-        "name": "prepare_render_game_view_to_texture"
+        "name": "prepare_render_scene_view"
     },
     {
-        "name": "finish_render_game_view_to_texture"
+        "name": "prepare_render_game_view"
     },
     {
-        "name": "restore_viewport"
+        "name": "restore"
     }
 ]
