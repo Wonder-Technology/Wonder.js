@@ -28,3 +28,5 @@ let getPointMoveEventName = () => "wd_editor_pointmove";
 let getPointScaleEventName = () => "wd_editor_pointscale";
 
 let getPointDragEventName = () => "wd_editor_pointdrag";
+
+

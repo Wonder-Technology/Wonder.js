@@ -119,6 +119,31 @@ let _ =
       })
     );
 
+    describe("markPerspectiveCameraProjectionNotDirty", () =>
+      test("mark not dirty", () => {
+        let (state, gameObject1, _, (_, cameraProjection1)) =
+          CameraTool.createCameraGameObject(state^);
+        let (state, gameObject2, _, (_, cameraProjection2)) =
+          CameraTool.createCameraGameObject(state);
+
+        let state =
+          PerspectiveCameraProjectionAPI.setPerspectiveCameraProjectionFar(
+            cameraProjection1,
+            2.,
+            state,
+          );
+        let state =
+          PerspectiveCameraProjectionAPI.markPerspectiveCameraProjectionNotDirty(
+            cameraProjection1,
+            state,
+          );
+
+        PerspectiveCameraProjectionTool.getDirtyArray(state)
+        |> WonderCommonlib.ArrayService.removeDuplicateItems
+        |> expect == [|cameraProjection2|];
+      })
+    );
+
     describe("unsafeGetPerspectiveCameraProjectionGameObject", () =>
       test("get cameraProjection's gameObject", () => {
         open GameObjectAPI;

@@ -1,5 +1,9 @@
 let create = () => WonderCommonlib.ArrayService.createEmpty();
 
-let addToDirtyArray = (isDirty, dirtyArray) => dirtyArray |> ArrayService.push(isDirty);
+let addToDirtyArray = (index, dirtyArray) =>
+  dirtyArray |> ArrayService.push(index);
 
-let getCount = (dirtyArray) => dirtyArray |> Js.Array.length;
+let removeFromDirtyArray = (index, dirtyArray) =>
+  dirtyArray |> Js.Array.filter(dirtyIndex => dirtyIndex !== index);
+
+let getCount = dirtyArray => dirtyArray |> Js.Array.length;

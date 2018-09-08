@@ -55,6 +55,9 @@ let _activeViewCamera =
       |> FrustumPerspectiveCameraProjectionMainService.removeAspect(
            viewActivePerspectiveCameraProjection,
          )
+      |> PerspectiveCameraProjectionAPI.markPerspectiveCameraProjectionNotDirty(
+           viewActivePerspectiveCameraProjection,
+         )
     | Some(aspect) => state
     };
 
@@ -161,3 +164,67 @@ let initDemo = (sceneViewRect, gameViewRect, state) => {
 
 let bindArcballCameraControllerEventForEditor = (cameraController, state) =>
   BindArcballCameraControllerEvent.bindEvent(cameraController, state);
+
+let unsafeGetActiveCameraPerspectiveCameraProjection = state => {
+  let {eventTarget} = Editor.getEditorState();
+
+  switch (eventTarget) {
+  | Scene => _unsafeGetSceneViewActivePerspectiveCameraProjection(state)
+  | Game => _unsafeGetGameViewActivePerspectiveCameraProjection(state)
+  };
+};
+
+let _getActiveCameraAspect = (activeCameraPerspectiveCameraProjection, state) =>
+  switch (
+    FrustumPerspectiveCameraProjectionService.getAspect(
+      activeCameraPerspectiveCameraProjection,
+      state.perspectiveCameraProjectionRecord,
+    )
+  ) {
+  | Some(aspect) => aspect
+  | None =>
+    let {eventTarget, sceneViewRect, gameViewRect} = Editor.getEditorState();
+
+    _computeAspect(
+      switch (eventTarget) {
+      | Scene => sceneViewRect
+      | Game => gameViewRect
+      },
+    );
+  };
+
+let getActiveCameraAspect = state =>
+  _getActiveCameraAspect(
+    unsafeGetActiveCameraPerspectiveCameraProjection(state),
+    state,
+  );
+
+let getActiveCameraPMatrix = state => {
+  /* unsafeGetActiveCameraPerspectiveCameraProjection(state)
+     |> PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraProjectionPMatrix(
+          _,
+          state,
+        ); */
+
+  let cameraProjection =
+    unsafeGetActiveCameraPerspectiveCameraProjection(state);
+
+  Matrix4Service.buildPerspective(
+    (
+      PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFovy(
+        cameraProjection,
+        state,
+      ),
+      _getActiveCameraAspect(cameraProjection, state),
+      PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraNear(
+        cameraProjection,
+        state,
+      ),
+      PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraFar(
+        cameraProjection,
+        state,
+      ),
+    ),
+    Matrix4Service.createIdentityMatrix4(),
+  );
+};

@@ -106,3 +106,5 @@ let getAllPerspectiveCameraProjections =
 };
 
 let markPerspectiveCameraProjectionDirty = DirtyPerspectiveCameraProjectionMainService.markDirty;
+
+let markPerspectiveCameraProjectionNotDirty = DirtyPerspectiveCameraProjectionMainService.markNotDirty;

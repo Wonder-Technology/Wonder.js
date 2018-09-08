@@ -93,7 +93,8 @@
                 let windowHeight = window.innerHeight;
 
                 var sceneViewRect = [0, 0, windowWidth / 2, windowHeight];
-                var gameViewRect = [windowWidth / 2, 0, windowWidth / 2, windowHeight];
+                // var gameViewRect = [windowWidth / 2, 0, windowWidth / 2, windowHeight];
+                var gameViewRect = [windowWidth / 2, 0, windowWidth / 3, windowHeight];
 
 
                 var state =
@@ -107,7 +108,11 @@
                 var state =
                     wd.onCustomGlobalEvent(
                         "wd_editor_pointtap", 0, (event, state) => {
-                            console.log("wd_editor_pointtap", event);
+                            console.log("wd_editor_pointtap", event,
+                                wd.unsafeGetActiveCameraPerspectiveCameraProjection(state),
+                                wd.getActiveCameraAspect(state),
+                                wd.getActiveCameraPMatrix(state)
+                            );
 
                             return [state, event];
                         }, state
@@ -118,7 +123,11 @@
                 var state =
                     wd.onCustomGlobalEvent(
                         "wd_pointtap", 0, (event, state) => {
-                            console.log("wd_pointtap", event);
+                            console.log("wd_pointtap", event,
+                                wd.unsafeGetActiveCameraPerspectiveCameraProjection(state),
+                                wd.getActiveCameraAspect(state),
+                                wd.getActiveCameraPMatrix(state)
+                            );
 
                             return [state, event];
                         }, state

@@ -84,6 +84,8 @@ let unsafeGetBasicCameraViewGameObject = BasicCameraViewAPI.unsafeGetBasicCamera
 
 let createBasicCameraView = BasicCameraViewAPI.createBasicCameraView;
 
+let markPerspectiveCameraProjectionNotDirty = PerspectiveCameraProjectionAPI.markPerspectiveCameraProjectionNotDirty;
+
 let markPerspectiveCameraProjectionDirty = PerspectiveCameraProjectionAPI.markPerspectiveCameraProjectionDirty;
 
 let getAllPerspectiveCameraProjections = PerspectiveCameraProjectionAPI.getAllPerspectiveCameraProjections;
@@ -740,6 +742,12 @@ let getMainWorkerCustomData = WorkerDataAPI.getMainWorkerCustomData;
 
 let getRenderWorkerCustomData = WorkerDataAPI.getRenderWorkerCustomData;
 
+let getActiveCameraPMatrix = DemoAPI.getActiveCameraPMatrix;
+
+let getActiveCameraAspect = DemoAPI.getActiveCameraAspect;
+
+let unsafeGetActiveCameraPerspectiveCameraProjection = DemoAPI.unsafeGetActiveCameraPerspectiveCameraProjection;
+
 let bindArcballCameraControllerEventForEditor = DemoAPI.bindArcballCameraControllerEventForEditor;
 
 let initDemo = DemoAPI.initDemo;
@@ -1051,6 +1059,12 @@ let unsafeGetTransformParent = TransformAPI.unsafeGetTransformParent;
 let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
 
 let createTransform = TransformAPI.createTransform;
+
+let getActiveCameraPMatrix = DemoAPI.getActiveCameraPMatrix;
+
+let getActiveCameraAspect = DemoAPI.getActiveCameraAspect;
+
+let unsafeGetActiveCameraPerspectiveCameraProjection = DemoAPI.unsafeGetActiveCameraPerspectiveCameraProjection;
 
 let bindArcballCameraControllerEventForEditor = DemoAPI.bindArcballCameraControllerEventForEditor;
 
