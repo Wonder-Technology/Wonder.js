@@ -2377,7 +2377,7 @@ let _ =
       });
     });
 
-    describe("test state", () => {
+    /* describe("test state", () => {
       let _createStateData = () =>
         CreateStateDataMainService.createStateData();
 
@@ -2420,5 +2420,5 @@ let _ =
           value^ |> expect == 1;
         })
       );
-    });
+    }); */
   });

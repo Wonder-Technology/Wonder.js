@@ -27,9 +27,3 @@ let setStateToData = (stateData, state: StateDataMainType.state) =>
 
 let setIsDebug = isDebug =>
   IsDebugMainService.setIsDebug(getStateData(), isDebug);
-
-let setUnsafeGetStateFunc = (unsafeGetStateFunc, state) =>
-  FunctionStateMainService.setUnsafeGetStateFunc(unsafeGetStateFunc, state);
-
-let setSetStateFunc = (setStateFunc, state) =>
-  FunctionStateMainService.setSetStateFunc(setStateFunc, state);

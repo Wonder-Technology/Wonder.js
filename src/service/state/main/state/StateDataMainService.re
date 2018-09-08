@@ -11,16 +11,3 @@ let setState = (stateData, state) => {
   stateData.state = Some(state);
   state;
 };
-
-let unsafeGetStateByFunc = state => {
-  let unsafeGetStateFunc =
-    FunctionStateMainService.getUnsafeGetStateFunc(state);
-
-  unsafeGetStateFunc(.);
-};
-
-let setStateByFunc = state => {
-  let setStateFunc = FunctionStateMainService.getSetStateFunc(state);
-
-  setStateFunc(. state);
-};

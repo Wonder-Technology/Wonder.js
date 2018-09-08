@@ -201,20 +201,20 @@ let _preventContextMenuEvent = (event, state) => {
 };
 
 let _execMouseEventHandle = (mouseEvent, state) => {
-  StateDataMainService.unsafeGetStateByFunc(state)
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleMouseEventMainService.execEventHandle(
        /* TODO fix engine->_execMouseEventHandle */
        /* event |> eventTargetToMouseDomEvent, */
        mouseEvent,
      )
-  |> StateDataMainService.setStateByFunc
+  |> StateDataMainService.setState(StateDataMain.stateData)
   |> ignore;
 
   ();
 };
 
 let _execMouseMoveEventHandle = (mouseEventName, event, state) => {
-  let state = StateDataMainService.unsafeGetStateByFunc(state);
+  let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
   let mouseEvent =
     event
@@ -228,48 +228,48 @@ let _execMouseMoveEventHandle = (mouseEventName, event, state) => {
   state
   |> HandleMouseEventMainService.execEventHandle(mouseEvent)
   |> HandleMouseEventMainService.setLastXYWhenMouseMove(mouseEvent)
-  |> StateDataMainService.setStateByFunc
+  |> StateDataMainService.setState(StateDataMain.stateData)
   |> ignore;
 
   ();
 };
 
 let _execMouseDragingEventHandle = (mouseEvent, state) => {
-  StateDataMainService.unsafeGetStateByFunc(state)
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleMouseEventMainService.execEventHandle(mouseEvent)
   |> HandleMouseEventMainService.setLastXYByLocation(mouseEvent)
-  |> StateDataMainService.setStateByFunc
+  |> StateDataMainService.setState(StateDataMain.stateData)
   |> ignore;
 
   ();
 };
 
 let _execMouseDragStartEventHandle = state => {
-  StateDataMainService.unsafeGetStateByFunc(state)
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleMouseEventMainService.setIsDrag(true)
   |> HandleMouseEventMainService.setLastXY(None, None)
-  |> StateDataMainService.setStateByFunc
+  |> StateDataMainService.setState(StateDataMain.stateData)
   |> ignore;
 
   ();
 };
 
 let _execMouseDragEndEventHandle = state => {
-  StateDataMainService.unsafeGetStateByFunc(state)
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleMouseEventMainService.setIsDrag(false)
-  |> StateDataMainService.setStateByFunc
+  |> StateDataMainService.setState(StateDataMain.stateData)
   |> ignore;
 
   ();
 };
 
 let _execKeyboardEventHandle = (keyboardEventName, event, state) => {
-  StateDataMainService.unsafeGetStateByFunc(state)
+  StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleKeyboardEventMainService.execEventHandle(
        keyboardEventName,
        event |> eventTargetToKeyboardDomEvent,
      )
-  |> StateDataMainService.setStateByFunc
+  |> StateDataMainService.setState(StateDataMain.stateData)
   |> ignore;
 
   ();
@@ -320,7 +320,7 @@ let _mapMouseEventToView =
 };
 
 let _convertDomEventToMouseEvent = (eventName, event, state) => {
-  let state = StateDataMainService.unsafeGetStateByFunc(state);
+  let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
   event
   |> eventTargetToMouseDomEvent

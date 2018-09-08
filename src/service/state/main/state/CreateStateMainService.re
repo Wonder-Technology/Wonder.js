@@ -1,13 +1,6 @@
 open StateDataMainType;
 
 let createState = () => {
-  stateRecord: {
-    unsafeGetStateFunc:
-      (.) => StateDataMainService.unsafeGetState(StateDataMain.stateData),
-    setStateFunc:
-      (. state) =>
-        StateDataMainService.setState(StateDataMain.stateData, state),
-  },
   settingRecord: RecordSettingService.create(),
   jobRecord: RecordJobService.create(),
   noWorkerJobRecord: None,

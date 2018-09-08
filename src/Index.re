@@ -556,10 +556,6 @@ let unsafeGetSourceInstanceGameObject = SourceInstanceAPI.unsafeGetSourceInstanc
 
 let createSourceInstance = SourceInstanceAPI.createSourceInstance;
 
-let setSetStateFunc = StateAPI.setSetStateFunc;
-
-let setUnsafeGetStateFunc = StateAPI.setUnsafeGetStateFunc;
-
 let setIsDebug = StateAPI.setIsDebug;
 
 let setStateToData = StateAPI.setStateToData;
@@ -983,10 +979,6 @@ let createObjectInstanceGameObject = SourceInstanceAPI.createObjectInstanceGameO
 let unsafeGetSourceInstanceGameObject = SourceInstanceAPI.unsafeGetSourceInstanceGameObject;
 
 let createSourceInstance = SourceInstanceAPI.createSourceInstance;
-
-let setSetStateFunc = StateAPI.setSetStateFunc;
-
-let setUnsafeGetStateFunc = StateAPI.setUnsafeGetStateFunc;
 
 let setIsDebug = StateAPI.setIsDebug;
 
