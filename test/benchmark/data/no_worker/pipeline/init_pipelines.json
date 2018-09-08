@@ -18,7 +18,7 @@
           "name": "detect_gl"
         },
         {
-          "name": "init_event"
+          "name": "init_event_for_editor"
         },
         {
           "name": "init_camera"
@@ -44,14 +44,6 @@
         {
           "name": "init_imgui"
         }
-
-
-
-
-
-
-
-
       ]
     }
   ]

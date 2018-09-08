@@ -241,7 +241,8 @@ let _ =
             (. event: mouseEvent, state) => {
               let (x, y) = event.movementDelta;
               valueX := valueX^ + x;
-              valueY := valueX^ + y;
+              valueY := valueY^ + y;
+
               state;
             },
             state,
@@ -291,7 +292,7 @@ let _ =
             (. event: touchEvent, state) => {
               let (x, y) = event.movementDelta;
               valueX := valueX^ + x;
-              valueY := valueX^ + y;
+              valueY := valueY^ + y;
               state;
             },
             state,

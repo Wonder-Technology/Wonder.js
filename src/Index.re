@@ -742,11 +742,11 @@ let getRenderWorkerCustomData = WorkerDataAPI.getRenderWorkerCustomData;
 
 let initDemo = DemoAPI.initDemo;
 
+let restoreJob = DemoAPI.restoreJob;
+
 let prepareRenderGameViewJob = DemoAPI.prepareRenderGameViewJob;
 
 let prepareRenderSceneViewJob = DemoAPI.prepareRenderSceneViewJob;
-
-let editorState = DemoAPI.editorState;
 
 let create = RecordAPIMainService.create;
 
@@ -1052,11 +1052,11 @@ let createTransform = TransformAPI.createTransform;
 
 let initDemo = DemoAPI.initDemo;
 
+let restoreJob = DemoAPI.restoreJob;
+
 let prepareRenderGameViewJob = DemoAPI.prepareRenderGameViewJob;
 
 let prepareRenderSceneViewJob = DemoAPI.prepareRenderSceneViewJob;
-
-let editorState = DemoAPI.editorState;
 
 let create = RecordAPIMainService.create;
 

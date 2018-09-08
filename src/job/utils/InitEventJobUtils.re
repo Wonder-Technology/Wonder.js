@@ -175,11 +175,18 @@ let _preventContextMenuEvent = (event, state) => {
   ();
 };
 
-let _execMouseEventHandle = (mouseEventName, event, state) => {
-  StateDataMainService.unsafeGetStateByFunc(state)
+let _execMouseEventHandle = (eventName, event, state) => {
+  let state = StateDataMainService.unsafeGetStateByFunc(state);
+
+  state
   |> HandleMouseEventMainService.execEventHandle(
-       mouseEventName,
-       event |> eventTargetToMouseDomEvent,
+       event
+       |> eventTargetToMouseDomEvent
+       |> HandleMouseEventMainService.convertMouseDomEventToMouseEvent(
+            eventName,
+            _,
+            state,
+          ),
      )
   |> StateDataMainService.setStateByFunc
   |> ignore;
@@ -188,15 +195,20 @@ let _execMouseEventHandle = (mouseEventName, event, state) => {
 };
 
 let _execMouseMoveEventHandle = (mouseEventName, event, state) => {
-  StateDataMainService.unsafeGetStateByFunc(state)
-  |> HandleMouseEventMainService.execEventHandle(
-       mouseEventName,
-       event |> eventTargetToMouseDomEvent,
-     )
-  |> HandleMouseEventMainService.setLastXYWhenMouseMove(
-       mouseEventName,
-       event |> eventTargetToMouseDomEvent,
-     )
+  let state = StateDataMainService.unsafeGetStateByFunc(state);
+
+  let mouseEvent =
+    event
+    |> eventTargetToMouseDomEvent
+    |> HandleMouseEventMainService.convertMouseDomEventToMouseEvent(
+         mouseEventName,
+         _,
+         state,
+       );
+
+  state
+  |> HandleMouseEventMainService.execEventHandle(mouseEvent)
+  |> HandleMouseEventMainService.setLastXYWhenMouseMove(mouseEvent)
   |> StateDataMainService.setStateByFunc
   |> ignore;
 
@@ -204,15 +216,20 @@ let _execMouseMoveEventHandle = (mouseEventName, event, state) => {
 };
 
 let _execMouseDragingEventHandle = (mouseEventName, event, state) => {
-  StateDataMainService.unsafeGetStateByFunc(state)
-  |> HandleMouseEventMainService.execEventHandle(
-       mouseEventName,
-       event |> eventTargetToMouseDomEvent,
-     )
-  |> HandleMouseEventMainService.setLastXYByLocation(
-       mouseEventName,
-       event |> eventTargetToMouseDomEvent,
-     )
+  let state = StateDataMainService.unsafeGetStateByFunc(state);
+
+  let mouseEvent =
+    event
+    |> eventTargetToMouseDomEvent
+    |> HandleMouseEventMainService.convertMouseDomEventToMouseEvent(
+         mouseEventName,
+         _,
+         state,
+       );
+
+  state
+  |> HandleMouseEventMainService.execEventHandle(mouseEvent)
+  |> HandleMouseEventMainService.setLastXYByLocation(mouseEvent)
   |> StateDataMainService.setStateByFunc
   |> ignore;
 

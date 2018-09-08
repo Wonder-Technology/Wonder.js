@@ -104,6 +104,51 @@
                     );
 
 
+                var state =
+                    wd.onCustomGlobalEvent(
+                        "wd_editor_pointtap", 0, (event, state) => {
+                            console.log("wd_editor_pointtap", event);
+
+                            return [ state, event ];
+                        }, state
+                    );
+
+
+
+                var state =
+                    wd.onCustomGlobalEvent(
+                        "wd_pointtap", 0, (event, state) => {
+                            console.log("wd_pointtap", event);
+
+                            return [ state, event ];
+                        }, state
+                    );
+
+
+
+
+                var state =
+                    wd.onKeyboardEvent(
+                        8, 0, (event, state) => {
+                            console.log("game view keydown", event);
+
+                            return state;
+                        }, state
+                    );
+
+
+
+                var state =
+                    wd.onKeyboardEvent(
+                        16, 0, (event, state) => {
+                            console.log("scene view keydown", event);
+
+                            return state;
+                        }, state
+                    );
+
+
+
 
 
                 var n1 = performance.now();

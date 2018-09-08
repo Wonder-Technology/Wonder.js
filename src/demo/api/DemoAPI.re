@@ -4,37 +4,7 @@ open GlExtend;
 
 open WonderWebgl.Gl;
 
-type rect = (int, int, int, int);
-
-type editorState = {
-  mutable sceneViewRect: rect,
-  mutable gameViewRect: rect,
-  /* mutable gameViewWidth: int,
-     mutable gameViewHeight: int,
-     mutable offscreenWidth: int,
-     mutable offscreenHeight: int,
-     mutable framebuffer: option(GlType.framebuffer),
-     mutable texture: option(WonderWebgl.GlType.texture), */
-  /* mutable sceneViewActiveBasicCameraView: option(ComponentType.component), */
-  /* mutable gameViewActiveBasicCameraViewAspect: option(float), */
-  /* mutable gameViewCanvasContext: option(CanvasType.canvasContext), */
-};
-
-let editorState = {
-  sceneViewRect: (0, 0, 0, 0),
-  gameViewRect: (0, 0, 0, 0),
-  /* gameViewWidth: 0,
-     gameViewHeight: 0,
-     offscreenWidth: 0,
-     offscreenHeight: 0,
-     framebuffer: None,
-     texture: None,
-     /* sceneViewActiveBasicCameraView: None, */
-     gameViewActiveBasicCameraViewAspect: None,
-     gameViewCanvasContext: None, */
-};
-
-let _getEditorState = () => editorState;
+open EditorType;
 
 /* TODO fix */
 let _unsafeGetSceneViewActiveBasicCameraView = state => 0;
@@ -92,7 +62,7 @@ let _activeViewCamera =
 };
 
 let _activeSceneViewCamera = state => {
-  let {sceneViewRect} as editorState = _getEditorState();
+  let {sceneViewRect} as editorState = Editor.getEditorState();
 
   _activeViewCamera(
     sceneViewRect,
@@ -103,7 +73,7 @@ let _activeSceneViewCamera = state => {
 };
 
 let _activeGameViewCamera = state => {
-  let {gameViewRect} as editorState = _getEditorState();
+  let {gameViewRect} as editorState = Editor.getEditorState();
 
   _activeViewCamera(
     gameViewRect,
@@ -115,7 +85,7 @@ let _activeGameViewCamera = state => {
 
 let prepareRenderSceneViewJob = (_, state) => {
   let gl = DeviceManagerAPI.unsafeGetGl(state);
-  let {sceneViewRect} = _getEditorState();
+  let {sceneViewRect} = Editor.getEditorState();
 
   let (x, y, width, height) = sceneViewRect;
 
@@ -135,7 +105,7 @@ let prepareRenderSceneViewJob = (_, state) => {
 
 let prepareRenderGameViewJob = (_, state) => {
   let gl = DeviceManagerAPI.unsafeGetGl(state);
-  let {gameViewRect} = _getEditorState();
+  let {gameViewRect} = Editor.getEditorState();
 
   let (x, y, width, height) = gameViewRect;
 
@@ -168,6 +138,10 @@ let restoreJob = (_, state) => {
 let initDemo = (sceneViewRect, gameViewRect, state) => {
   let state =
     state
+    |> JobAPI.registerNoWorkerInitJob(
+         "init_event_for_editor",
+         InitEventForEditorJob.initEventForEditorJob,
+       )
     |> JobAPI.registerNoWorkerLoopJob(
          "prepare_render_scene_view",
          prepareRenderSceneViewJob,
@@ -178,7 +152,7 @@ let initDemo = (sceneViewRect, gameViewRect, state) => {
        )
     |> JobAPI.registerNoWorkerLoopJob("restore", restoreJob);
 
-  let editorState = _getEditorState();
+  let editorState = Editor.getEditorState();
   editorState.sceneViewRect = sceneViewRect;
   editorState.gameViewRect = gameViewRect;
 

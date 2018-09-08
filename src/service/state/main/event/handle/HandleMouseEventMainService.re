@@ -4,25 +4,25 @@ open BrowserDetectType;
 
 open EventType;
 
-let _getLocation = (mouseDomEvent, {browserDetectRecord}) => {
+let getLocation = (mouseDomEvent, {browserDetectRecord}) => {
   let {browser} = browserDetectRecord;
 
   switch (browser) {
   | Chrome
   | Firefox => (mouseDomEvent##pageX, mouseDomEvent##pageY)
   | _ =>
-    RecordBrowserDetectAllService.fatalUnknownBrowser("_getLocation", browser)
+    RecordBrowserDetectAllService.fatalUnknownBrowser("getLocation", browser)
   };
 };
 
-let _getLocationInView = (mouseDomEvent, {viewRecord} as state) =>
+let getLocationInView = (mouseDomEvent, {viewRecord} as state) =>
   HandlePointDomEventMainService.getLocationInView(
     mouseDomEvent,
-    _getLocation,
+    getLocation,
     state,
   );
 
-let _getButton = (mouseDomEvent, {browserDetectRecord} as state) => {
+let getButton = (mouseDomEvent, {browserDetectRecord} as state) => {
   let {browser} = browserDetectRecord;
 
   switch (browser) {
@@ -35,7 +35,7 @@ let _getButton = (mouseDomEvent, {browserDetectRecord} as state) => {
     | button =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(
-          ~title="_getButton",
+          ~title="getButton",
           ~description={j|not support multi mouse button|j},
           ~reason="",
           ~solution={j||j},
@@ -44,7 +44,7 @@ let _getButton = (mouseDomEvent, {browserDetectRecord} as state) => {
       )
     }
   | _ =>
-    RecordBrowserDetectAllService.fatalUnknownBrowser("_getButton", browser)
+    RecordBrowserDetectAllService.fatalUnknownBrowser("getButton", browser)
   };
 };
 
@@ -54,7 +54,7 @@ let _getFromWheelDelta = mouseDomEvent =>
   | None => 0
   };
 
-let _getWheel = mouseDomEvent =>
+let getWheel = mouseDomEvent =>
   switch (Js.toOption(mouseDomEvent##detail)) {
   | Some(detail) when detail !== 0 => (-1) * detail
   | _ => _getFromWheelDelta(mouseDomEvent)
@@ -98,33 +98,34 @@ let _getMovementDeltaWhenPointerLocked =
   },
 );
 
-let _getMovementDelta = (mouseDomEvent, {eventRecord} as state) =>
+let getMovementDelta = (mouseDomEvent, {eventRecord} as state) =>
   _isPointerLocked(.) ?
     _getMovementDeltaWhenPointerLocked(mouseDomEvent, state) :
     HandlePointDomEventMainService.getMovementDelta(
-      _getLocation(mouseDomEvent, state),
+      getLocation(mouseDomEvent, state),
       MouseEventService.getLastXY(eventRecord),
       state,
     );
 
-let _convertMouseDomEventToMouseEvent =
+let convertMouseDomEventToMouseEvent =
     (eventName, mouseDomEvent, state)
     : mouseEvent => {
   name: eventName,
-  location: _getLocation(mouseDomEvent, state),
-  locationInView: _getLocationInView(mouseDomEvent, state),
-  button: _getButton(mouseDomEvent, state),
-  wheel: _getWheel(mouseDomEvent),
-  movementDelta: _getMovementDelta(mouseDomEvent, state),
+  location: getLocation(mouseDomEvent, state),
+  locationInView: getLocationInView(mouseDomEvent, state),
+  button: getButton(mouseDomEvent, state),
+  wheel: getWheel(mouseDomEvent),
+  movementDelta: getMovementDelta(mouseDomEvent, state),
   event: mouseDomEvent,
 };
 
-let execEventHandle = (eventName, mouseDomEvent, {eventRecord} as state) => {
+let execEventHandle =
+    (({name}: mouseEvent) as mouseEvent, {eventRecord} as state) => {
   let {mouseDomEventDataArrMap} = eventRecord;
 
   switch (
     mouseDomEventDataArrMap
-    |> WonderCommonlib.SparseMapService.get(eventName |> domEventNameToInt)
+    |> WonderCommonlib.SparseMapService.get(name |> domEventNameToInt)
   ) {
   | None => state
   | Some(arr) =>
@@ -132,11 +133,12 @@ let execEventHandle = (eventName, mouseDomEvent, {eventRecord} as state) => {
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. state, {handleFunc}: mouseDomEventData) =>
            handleFunc(.
-             _convertMouseDomEventToMouseEvent(
-               eventName,
-               mouseDomEvent,
-               state,
-             ),
+             /* convertMouseDomEventToMouseEvent(
+                  eventName,
+                  mouseDomEvent,
+                  state,
+                ), */
+             mouseEvent,
              state,
            ),
          state,
@@ -149,9 +151,8 @@ let setLastXY = (lastX, lastY, {eventRecord} as state) => {
   eventRecord: MouseEventService.setLastXY(lastX, lastY, eventRecord),
 };
 
-let setLastXYByLocation = (eventName, mouseDomEvent, {eventRecord} as state) => {
-  let {location}: mouseEvent =
-    _convertMouseDomEventToMouseEvent(eventName, mouseDomEvent, state);
+let setLastXYByLocation = (mouseEvent, {eventRecord} as state) => {
+  let {location}: mouseEvent = mouseEvent;
 
   let (x, y) = location;
 
@@ -172,6 +173,5 @@ let setIsDrag = (isDrag, {eventRecord} as state) => {
   },
 };
 
-let setLastXYWhenMouseMove = (eventName, mouseDomEvent, state) =>
-  getIsDrag(state) ?
-    state : setLastXYByLocation(eventName, mouseDomEvent, state);
+let setLastXYWhenMouseMove = (mouseEvent, state) =>
+  getIsDrag(state) ? state : setLastXYByLocation(mouseEvent, state);
