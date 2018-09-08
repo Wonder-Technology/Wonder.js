@@ -113,32 +113,36 @@ let bindDomEventToTriggerPointEvent = ({browserDetectRecord} as state) =>
          PointTap,
          _isTriggerGameViewEvent,
        )
-    /* |> _bindMouseEventToTriggerPointEvent(
+    |> _bindMouseEventToTriggerPointEvent(
          MouseUp,
          NameEventService.getPointUpEventName(),
          PointUp,
-       ) */
+         _isTriggerGameViewEvent,
+       )
     |> _bindMouseEventToTriggerPointEvent(
          MouseDown,
          NameEventService.getPointDownEventName(),
          PointDown,
          _isTriggerGameViewEvent,
        )
-    /* |> _bindMouseEventToTriggerPointEvent(
-            MouseWheel,
-            NameEventService.getPointScaleEventName(),
-            PointScale,
-          )
-       |> _bindMouseEventToTriggerPointEvent(
-            MouseMove,
-            NameEventService.getPointMoveEventName(),
-            PointMove,
-          )
-       |> _bindMouseEventToTriggerPointEvent(
-            MouseDrag,
-            NameEventService.getPointDragEventName(),
-            PointDrag,
-          ) */
+    |> _bindMouseEventToTriggerPointEvent(
+         MouseWheel,
+         NameEventService.getPointScaleEventName(),
+         PointScale,
+         _isTriggerGameViewEvent,
+       )
+    |> _bindMouseEventToTriggerPointEvent(
+         MouseMove,
+         NameEventService.getPointMoveEventName(),
+         PointMove,
+         _isTriggerGameViewEvent,
+       )
+    |> _bindMouseEventToTriggerPointEvent(
+         MouseDrag,
+         NameEventService.getPointDragEventName(),
+         PointDrag,
+         _isTriggerGameViewEvent,
+       )
     |> _bindMouseEventToTriggerPointEvent(
          Click,
          Editor.getPointTapEventName(),
@@ -146,9 +150,33 @@ let bindDomEventToTriggerPointEvent = ({browserDetectRecord} as state) =>
          _isTriggerSceneViewEvent,
        )
     |> _bindMouseEventToTriggerPointEvent(
+         MouseUp,
+         Editor.getPointUpEventName(),
+         PointUp,
+         _isTriggerSceneViewEvent,
+       )
+    |> _bindMouseEventToTriggerPointEvent(
          MouseDown,
          Editor.getPointDownEventName(),
          PointDown,
+         _isTriggerSceneViewEvent,
+       )
+    |> _bindMouseEventToTriggerPointEvent(
+         MouseWheel,
+         Editor.getPointScaleEventName(),
+         PointScale,
+         _isTriggerSceneViewEvent,
+       )
+    |> _bindMouseEventToTriggerPointEvent(
+         MouseMove,
+         Editor.getPointMoveEventName(),
+         PointMove,
+         _isTriggerSceneViewEvent,
+       )
+    |> _bindMouseEventToTriggerPointEvent(
+         MouseDrag,
+         Editor.getPointDragEventName(),
+         PointDrag,
          _isTriggerSceneViewEvent,
        )
   | browser =>
@@ -185,56 +213,55 @@ let _execMouseEventHandle = (mouseEvent, state) => {
   ();
 };
 
-/* let _execMouseMoveEventHandle = (mouseEventName, event, state) => {
-     StateDataMainService.unsafeGetStateByFunc(state)
-     |> HandleMouseEventMainService.execEventHandle(
-          mouseEventName,
-          event |> eventTargetToMouseDomEvent,
-        )
-     |> HandleMouseEventMainService.setLastXYWhenMouseMove(
-          mouseEventName,
-          event |> eventTargetToMouseDomEvent,
-        )
-     |> StateDataMainService.setStateByFunc
-     |> ignore;
+let _execMouseMoveEventHandle = (mouseEventName, event, state) => {
+  let state = StateDataMainService.unsafeGetStateByFunc(state);
 
-     ();
-   }; */
+  let mouseEvent =
+    event
+    |> eventTargetToMouseDomEvent
+    |> HandleMouseEventMainService.convertMouseDomEventToMouseEvent(
+         mouseEventName,
+         _,
+         state,
+       );
 
-/* let _execMouseDragingEventHandle = (mouseEventName, event, state) => {
-     StateDataMainService.unsafeGetStateByFunc(state)
-     |> HandleMouseEventMainService.execEventHandle(
-          mouseEventName,
-          event |> eventTargetToMouseDomEvent,
-        )
-     |> HandleMouseEventMainService.setLastXYByLocation(
-          mouseEventName,
-          event |> eventTargetToMouseDomEvent,
-        )
-     |> StateDataMainService.setStateByFunc
-     |> ignore;
+  state
+  |> HandleMouseEventMainService.execEventHandle(mouseEvent)
+  |> HandleMouseEventMainService.setLastXYWhenMouseMove(mouseEvent)
+  |> StateDataMainService.setStateByFunc
+  |> ignore;
 
-     ();
-   };
+  ();
+};
 
-   let _execMouseDragStartEventHandle = state => {
-     StateDataMainService.unsafeGetStateByFunc(state)
-     |> HandleMouseEventMainService.setIsDrag(true)
-     |> HandleMouseEventMainService.setLastXY(None, None)
-     |> StateDataMainService.setStateByFunc
-     |> ignore;
+let _execMouseDragingEventHandle = (mouseEvent, state) => {
+  StateDataMainService.unsafeGetStateByFunc(state)
+  |> HandleMouseEventMainService.execEventHandle(mouseEvent)
+  |> HandleMouseEventMainService.setLastXYByLocation(mouseEvent)
+  |> StateDataMainService.setStateByFunc
+  |> ignore;
 
-     ();
-   };
+  ();
+};
 
-   let _execMouseDragEndEventHandle = state => {
-     StateDataMainService.unsafeGetStateByFunc(state)
-     |> HandleMouseEventMainService.setIsDrag(false)
-     |> StateDataMainService.setStateByFunc
-     |> ignore;
+let _execMouseDragStartEventHandle = state => {
+  StateDataMainService.unsafeGetStateByFunc(state)
+  |> HandleMouseEventMainService.setIsDrag(true)
+  |> HandleMouseEventMainService.setLastXY(None, None)
+  |> StateDataMainService.setStateByFunc
+  |> ignore;
 
-     ();
-   }; */
+  ();
+};
+
+let _execMouseDragEndEventHandle = state => {
+  StateDataMainService.unsafeGetStateByFunc(state)
+  |> HandleMouseEventMainService.setIsDrag(false)
+  |> StateDataMainService.setStateByFunc
+  |> ignore;
+
+  ();
+};
 
 let _execKeyboardEventHandle = (keyboardEventName, event, state) => {
   StateDataMainService.unsafeGetStateByFunc(state)
@@ -303,6 +330,16 @@ let _convertDomEventToMouseEvent = (eventName, event, state) => {
        state,
      );
 };
+let _mapAndExecMouseEventHandle = (eventName, event, state) =>
+  _convertDomEventToMouseEvent(eventName, event, state)
+  |> _mapMouseEventToView
+  |> _execMouseEventHandle(_, state);
+
+let _execViewKeyboardEventHandle =
+    (sceneViewEventName, gameViewEventName, event, state) =>
+  _isTriggerGameViewEvent() ?
+    _execKeyboardEventHandle(gameViewEventName, event, state) :
+    _execKeyboardEventHandle(sceneViewEventName |> Obj.magic, event, state);
 
 let _fromPCDomEventArr = state => [|
   /* TODO refactor: duplicate with initEventJobUtils */
@@ -316,89 +353,49 @@ let _fromPCDomEventArr = state => [|
      ),
   _fromPointDomEvent("mousedown", state)
   |> WonderBsMost.Most.tap(event =>
-       _convertDomEventToMouseEvent(MouseDown, event, state)
+       _mapAndExecMouseEventHandle(MouseDown, event, state)
+     ),
+  _fromPointDomEvent("mouseup", state)
+  |> WonderBsMost.Most.tap(event =>
+       _mapAndExecMouseEventHandle(MouseUp, event, state)
+     ),
+  _fromPointDomEvent("mousemove", state)
+  |> WonderBsMost.Most.tap(event =>
+       _mapAndExecMouseEventHandle(MouseMove, event, state)
+     ),
+  _fromPointDomEvent("mousewheel", state)
+  |> WonderBsMost.Most.tap(event =>
+       _mapAndExecMouseEventHandle(MouseWheel, event, state)
+     ),
+  _fromPointDomEvent("mousedown", state)
+  |> WonderBsMost.Most.tap(event => _execMouseDragStartEventHandle(state))
+  |> WonderBsMost.Most.flatMap(event =>
+       _fromPointDomEvent("mousemove", state)
+       |> WonderBsMost.Most.until(
+            _fromPointDomEvent("mouseup", state)
+            |> WonderBsMost.Most.tap(event =>
+                 _execMouseDragEndEventHandle(state)
+               ),
+          )
+     )
+  |> WonderBsMost.Most.tap(event =>
+       _convertDomEventToMouseEvent(MouseDrag, event, state)
        |> _mapMouseEventToView
-       |> _execMouseEventHandle(_, state)
+       |> _execMouseDragingEventHandle(_, state)
+     ),
+  _fromKeyboardDomEvent("keyup", state)
+  |> WonderBsMost.Most.tap(event =>
+       _execViewKeyboardEventHandle(KeyUp_editor, KeyUp, event, state)
      ),
   _fromKeyboardDomEvent("keydown", state)
   |> WonderBsMost.Most.tap(event =>
-       _isTriggerGameViewEvent() ?
-         _execKeyboardEventHandle(KeyDown, event, state) :
-         _execKeyboardEventHandle(KeyDown_editor |> Obj.magic, event, state)
+       _execViewKeyboardEventHandle(KeyDown_editor, KeyDown, event, state)
      ),
-  /* _fromPointDomEvent("mouseup", state)
-     |> WonderBsMost.Most.tap(event =>
-          _execMouseEventHandle(MouseUp, event, state)
-        ),
-     _fromPointDomEvent("mousemove", state)
-     |> WonderBsMost.Most.tap(event =>
-          _execMouseMoveEventHandle(MouseMove, event, state)
-        ),
-     _fromPointDomEvent("mousewheel", state)
-     |> WonderBsMost.Most.tap(event =>
-          _execMouseEventHandle(MouseWheel, event, state)
-        ),
-     _fromPointDomEvent("mousedown", state)
-     |> WonderBsMost.Most.tap(event => _execMouseDragStartEventHandle(state))
-     |> WonderBsMost.Most.flatMap(event =>
-          _fromPointDomEvent("mousemove", state)
-          |> WonderBsMost.Most.until(
-               _fromPointDomEvent("mouseup", state)
-               |> WonderBsMost.Most.tap(event =>
-                    _execMouseDragEndEventHandle(state)
-                  ),
-             )
-        )
-     |> WonderBsMost.Most.tap(event =>
-          _execMouseDragingEventHandle(MouseDrag, event, state)
-        ),
-     _fromKeyboardDomEvent("keyup", state)
-     |> WonderBsMost.Most.tap(event =>
-          _execKeyboardEventHandle(KeyUp, event, state)
-        ),
-     _fromKeyboardDomEvent("keydown", state)
-     |> WonderBsMost.Most.tap(event =>
-          _execKeyboardEventHandle(KeyDown, event, state)
-        ),
-     _fromKeyboardDomEvent("keypress", state)
-     |> WonderBsMost.Most.tap(event =>
-          _execKeyboardEventHandle(KeyPress, event, state)
-        ), */
+  _fromKeyboardDomEvent("keypress", state)
+  |> WonderBsMost.Most.tap(event =>
+       _execViewKeyboardEventHandle(KeyPress_editor, KeyPress, event, state)
+     ),
 |];
-
-/* let _fromMobileDomEventArr = state => [|
-     _fromPointDomEvent("touchend", state)
-     |> WonderBsMost.Most.since(_fromPointDomEvent("touchstart", state))
-     |> WonderBsMost.Most.tap(event =>
-          _execTouchEventHandle(TouchTap, event, state)
-        ),
-     _fromPointDomEvent("touchend", state)
-     |> WonderBsMost.Most.tap(event =>
-          _execTouchEventHandle(TouchEnd, event, state)
-        ),
-     _fromPointDomEvent("touchstart", state)
-     |> WonderBsMost.Most.tap(event =>
-          _execTouchEventHandle(TouchStart, event, state)
-        ),
-     _fromPointDomEvent("touchmove", state)
-     |> WonderBsMost.Most.tap(event =>
-          _execTouchMoveEventHandle(TouchMove, event, state)
-        ),
-     _fromPointDomEvent("touchstart", state)
-     |> WonderBsMost.Most.tap(event => _execTouchDragStartEventHandle(state))
-     |> WonderBsMost.Most.flatMap(event =>
-          _fromPointDomEvent("touchmove", state)
-          |> WonderBsMost.Most.until(
-               _fromPointDomEvent("touchend", state)
-               |> WonderBsMost.Most.tap(event =>
-                    _execTouchDragEndEventHandle(state)
-                  ),
-             )
-        )
-     |> WonderBsMost.Most.tap(event =>
-          _execTouchDragingEventHandle(TouchDrag, event, state)
-        ),
-   |]; */
 
 let fromDomEvent = ({browserDetectRecord} as state) =>
   WonderBsMost.Most.mergeArray(

@@ -158,3 +158,6 @@ let initDemo = (sceneViewRect, gameViewRect, state) => {
 
   state;
 };
+
+let bindArcballCameraControllerEventForEditor = (cameraController, state) =>
+  BindArcballCameraControllerEvent.bindEvent(cameraController, state);

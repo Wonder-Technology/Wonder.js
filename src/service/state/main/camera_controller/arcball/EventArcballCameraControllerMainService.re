@@ -100,7 +100,7 @@ let _changeOrbit =
      );
 };
 
-let bindEvent = (cameraController, state) => {
+let prepareBindEvent = (cameraController, state) => {
   let pointDownHandleFunc =
     (. event: EventType.customEvent, {viewRecord} as state) =>
       BrowserDetectMainService.isMobile(state) ?
@@ -203,6 +203,27 @@ let bindEvent = (cameraController, state) => {
          )
       |> _setKeydownEventHandleFunc(cameraController, keydownHandleFunc),
   };
+
+  (
+    state,
+    pointDownHandleFunc,
+    pointUpHandleFunc,
+    pointDragHandleFunc,
+    pointScaleHandleFunc,
+    keydownHandleFunc,
+  );
+};
+
+let bindEvent = (cameraController, state) => {
+  let (
+    state,
+    pointDownHandleFunc,
+    pointUpHandleFunc,
+    pointDragHandleFunc,
+    pointScaleHandleFunc,
+    keydownHandleFunc,
+  ) =
+    prepareBindEvent(cameraController, state);
 
   let state =
     ManageEventMainService.onCustomGlobalEvent(

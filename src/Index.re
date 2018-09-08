@@ -740,6 +740,8 @@ let getMainWorkerCustomData = WorkerDataAPI.getMainWorkerCustomData;
 
 let getRenderWorkerCustomData = WorkerDataAPI.getRenderWorkerCustomData;
 
+let bindArcballCameraControllerEventForEditor = DemoAPI.bindArcballCameraControllerEventForEditor;
+
 let initDemo = DemoAPI.initDemo;
 
 let restoreJob = DemoAPI.restoreJob;
@@ -1049,6 +1051,8 @@ let unsafeGetTransformParent = TransformAPI.unsafeGetTransformParent;
 let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
 
 let createTransform = TransformAPI.createTransform;
+
+let bindArcballCameraControllerEventForEditor = DemoAPI.bindArcballCameraControllerEventForEditor;
 
 let initDemo = DemoAPI.initDemo;
 
