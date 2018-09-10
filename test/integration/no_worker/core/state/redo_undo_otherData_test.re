@@ -17,7 +17,9 @@ let _ =
       let clearColor = Some((1., 0.1, 0.2, 1.));
       let side = Some(BOTH);
       let depthTest = Some(true);
-      let viewport = Some((1., 0.1, 10., 20.));
+      let scissorTest = Some(true);
+      let viewport = Some((1., 3., 10., 20.));
+      let scissor = Some((2, 4, 11, 21));
       (
         {
           ...state,
@@ -27,11 +29,21 @@ let _ =
             clearColor,
             side,
             depthTest,
+            scissorTest,
             viewport,
+            scissor,
           },
         },
         Some(gl),
-        (colorWrite, clearColor, side, depthTest, viewport),
+        (
+          colorWrite,
+          clearColor,
+          side,
+          depthTest,
+          scissorTest,
+          viewport,
+          scissor,
+        ),
       );
     };
     let _prepareTypeArrayPoolData = state => {
@@ -126,7 +138,15 @@ let _ =
           let (
             state,
             gl,
-            (colorWrite, clearColor, side, depthTest, viewport),
+            (
+              colorWrite,
+              clearColor,
+              side,
+              depthTest,
+              scissorTest,
+              viewport,
+              scissor,
+            ),
           ) =
             _prepareDeviceManagerData(state^);
           let copiedState = MainStateTool.deepCopyForRestore(state);
@@ -138,7 +158,9 @@ let _ =
             copiedData.clearColor,
             copiedData.side,
             copiedData.depthTest,
+            copiedData.scissorTest,
             copiedData.viewport,
+            copiedData.scissor,
           )
           |>
           expect == (
@@ -146,7 +168,9 @@ let _ =
                       targetData.clearColor,
                       targetData.side,
                       targetData.depthTest,
+                      targetData.scissorTest,
                       targetData.viewport,
+                      targetData.scissor,
                     );
         });
       });

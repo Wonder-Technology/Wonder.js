@@ -1,8 +1,13 @@
 open StateDataMainType;
 
-let getDeviceManagerRecord = (state: StateDataMainType.state) => state.deviceManagerRecord;
+let getDeviceManagerRecord = (state: StateDataMainType.state) =>
+  state.deviceManagerRecord;
 
-let setSide = (gl, targetSide, record) => DeviceManagerService.setSide(gl, targetSide, record);
+let setGl = (gl, state) => {
+  ...state,
+  deviceManagerRecord:
+    DeviceManagerService.setGl(gl, state.deviceManagerRecord),
+};
 
-let setViewportOfGl = (gl, viewport, record) =>
-  DeviceManagerService.setViewportOfGl(gl, viewport, record);
+let setSide = (gl, targetSide, record) =>
+  DeviceManagerService.setSide(gl, targetSide, record);

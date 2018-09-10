@@ -850,9 +850,8 @@ bs-fetch@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/bs-fetch/-/bs-fetch-0.3.0.tgz#60c64457359d0c7e0798d5a04db8987d16c4f8f3"
 
-"bs-glob@github:reasonml-community/bs-glob", bs-glob@reasonml-community/bs-glob:
+bs-glob@reasonml-community/bs-glob:
   version "0.1.1"
-  uid "5a6f38370d1c0abd12480b1f7bbcbd577dd45bf9"
   resolved "https://codeload.github.com/reasonml-community/bs-glob/tar.gz/5a6f38370d1c0abd12480b1f7bbcbd577dd45bf9"
   dependencies:
     glob "^7.1.2"
@@ -5188,9 +5187,9 @@ wonder-webgl@^0.0.2:
   dependencies:
     wonder-log "^0.2.2"
 
-wonder-webgl@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/wonder-webgl/-/wonder-webgl-0.0.3.tgz#01b15a7d71469bd89adc70bf8228d20ba2d0dde0"
+wonder-webgl@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/wonder-webgl/-/wonder-webgl-0.0.4.tgz#32c8663214bd398a730c9f8d326f51380d238a16"
   dependencies:
     wonder-log "^0.2.2"
 

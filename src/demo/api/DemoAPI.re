@@ -1,7 +1,5 @@
 open StateDataMainType;
 
-open GlExtend;
-
 open WonderWebgl.Gl;
 
 open EditorType;
@@ -87,55 +85,72 @@ let _activeGameViewCamera = state => {
 };
 
 let prepareRenderSceneViewJob = (_, state) => {
-  let gl = DeviceManagerAPI.unsafeGetGl(state);
+  /* let gl = DeviceManagerAPI.unsafeGetGl(state); */
   let {sceneViewRect} = Editor.getEditorState();
 
   let (x, y, width, height) = sceneViewRect;
 
-  gl
-  |> viewport(
+  state
+  |> DeviceManagerAPI.setViewport((
        x |> NumberType.intToFloat,
        y |> NumberType.intToFloat,
        width |> NumberType.intToFloat,
        height |> NumberType.intToFloat,
-     );
-
-  gl |> enable(getScissorTest(gl));
-  gl |> scissor(x, y, width, height);
-
-  _activeSceneViewCamera(state);
+     ))
+  |> DeviceManagerAPI.setScissorTest(true)
+  |> DeviceManagerAPI.setScissor((x, y, width, height))
+  /* gl
+     |> viewport(
+          x |> NumberType.intToFloat,
+          y |> NumberType.intToFloat,
+          width |> NumberType.intToFloat,
+          height |> NumberType.intToFloat,
+        ); */
+  /* gl |> enable(getScissorTest(gl));
+     gl |> scissor(x, y, width, height); */
+  |> _activeSceneViewCamera;
 };
 
 let prepareRenderGameViewJob = (_, state) => {
-  let gl = DeviceManagerAPI.unsafeGetGl(state);
+  /* let gl = DeviceManagerAPI.unsafeGetGl(state); */
   let {gameViewRect} = Editor.getEditorState();
 
   let (x, y, width, height) = gameViewRect;
 
-  gl
-  |> viewport(
+  /* gl
+     |> viewport(
+          x |> NumberType.intToFloat,
+          y |> NumberType.intToFloat,
+          width |> NumberType.intToFloat,
+          height |> NumberType.intToFloat,
+        );
+
+     gl |> enable(getScissorTest(gl));
+     gl |> scissor(x, y, width, height); */
+
+  state
+  |> DeviceManagerAPI.setViewport((
        x |> NumberType.intToFloat,
        y |> NumberType.intToFloat,
        width |> NumberType.intToFloat,
        height |> NumberType.intToFloat,
-     );
-
-  gl |> enable(getScissorTest(gl));
-  gl |> scissor(x, y, width, height);
-
-  _activeGameViewCamera(state);
+     ))
+  |> DeviceManagerAPI.setScissorTest(true)
+  |> DeviceManagerAPI.setScissor((x, y, width, height))
+  |> _activeGameViewCamera;
 };
 
 let restoreJob = (_, state) => {
-  let gl = DeviceManagerAPI.unsafeGetGl(state);
+  /* let gl = DeviceManagerAPI.unsafeGetGl(state); */
   let (x, y, width, height, _, _) as screenData =
     ScreenService.queryFullScreenData();
   let viewportData = (x, y, width, height);
 
-  gl |> disable(getScissorTest(gl));
-  gl |> viewport(x, y, width, height);
-
-  state;
+  /* gl |> disable(getScissorTest(gl));
+     gl |> viewport(x, y, width, height); */
+  state
+  |> DeviceManagerAPI.setViewport(viewportData)
+  |> DeviceManagerAPI.setScissorTest(false);
 };
 
 let initDemo = (sceneViewRect, gameViewRect, state) => {

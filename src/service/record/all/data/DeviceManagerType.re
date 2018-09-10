@@ -14,5 +14,7 @@ type deviceManagerRecord = {
   clearColor: option(colorRgba),
   side: option(side),
   depthTest: option(bool),
-  viewport: option((float, float, float, float))
+  scissorTest: option(bool),
+  scissor: option((int, int, int, int)),
+  viewport: option((float, float, float, float)),
 };

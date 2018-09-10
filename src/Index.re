@@ -116,6 +116,12 @@ let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
 
 let isSupportRenderWorkerAndSharedArrayBuffer = WorkerDetectAPI.isSupportRenderWorkerAndSharedArrayBuffer;
 
+let setSide = DeviceManagerAPI.setSide;
+
+let setScissorTest = DeviceManagerAPI.setScissorTest;
+
+let setScissor = DeviceManagerAPI.setScissor;
+
 let setViewport = DeviceManagerAPI.setViewport;
 
 let unsafeGetGl = DeviceManagerAPI.unsafeGetGl;
@@ -767,6 +773,12 @@ let setAPIJsObj = RecordAPIRenderWorkerService.setAPIJsObj;
 let getAPIJsObj = RecordAPIRenderWorkerService.getAPIJsObj;
 
 let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
+
+let setSide = DeviceManagerAPI.setSide;
+
+let setScissorTest = DeviceManagerAPI.setScissorTest;
+
+let setScissor = DeviceManagerAPI.setScissor;
 
 let setViewport = DeviceManagerAPI.setViewport;
 
