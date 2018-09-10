@@ -16,5 +16,5 @@ type deviceManagerRecord = {
   depthTest: option(bool),
   scissorTest: option(bool),
   scissor: option((int, int, int, int)),
-  viewport: option((float, float, float, float)),
+  viewport: option((int, int, int, int)),
 };

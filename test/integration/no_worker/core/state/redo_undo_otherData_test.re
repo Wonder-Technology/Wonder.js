@@ -18,7 +18,7 @@ let _ =
       let side = Some(BOTH);
       let depthTest = Some(true);
       let scissorTest = Some(true);
-      let viewport = Some((1., 3., 10., 20.));
+      let viewport = Some((1, 3, 10, 20));
       let scissor = Some((2, 4, 11, 21));
       (
         {

@@ -5187,9 +5187,9 @@ wonder-webgl@^0.0.2:
   dependencies:
     wonder-log "^0.2.2"
 
-wonder-webgl@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/wonder-webgl/-/wonder-webgl-0.0.4.tgz#32c8663214bd398a730c9f8d326f51380d238a16"
+wonder-webgl@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/wonder-webgl/-/wonder-webgl-0.0.5.tgz#e31fe338ae6293174199387d6b7232d4c1972674"
   dependencies:
     wonder-log "^0.2.2"
 

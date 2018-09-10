@@ -1,6 +1,6 @@
 let queryFullScreenData = () => {
   let root = Root.root;
-  (0., 0., root##innerWidth, root##innerHeight, "100%", "100%");
+  (0, 0, root##innerWidth, root##innerHeight, "100%", "100%");
 };
 
 let _setAbsolutePosition = canvas => {

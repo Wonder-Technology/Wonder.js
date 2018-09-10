@@ -84,60 +84,23 @@ let _activeGameViewCamera = state => {
   );
 };
 
+let _prepareRenderViewJob = (viewRect, _activeViewCameraFunc, state) =>
+  state
+  |> DeviceManagerAPI.setViewport(viewRect)
+  |> DeviceManagerAPI.setScissorTest(true)
+  |> DeviceManagerAPI.setScissor(viewRect)
+  |> _activeViewCameraFunc;
+
 let prepareRenderSceneViewJob = (_, state) => {
-  /* let gl = DeviceManagerAPI.unsafeGetGl(state); */
   let {sceneViewRect} = Editor.getEditorState();
 
-  let (x, y, width, height) = sceneViewRect;
-
-  state
-  |> DeviceManagerAPI.setViewport((
-       x |> NumberType.intToFloat,
-       y |> NumberType.intToFloat,
-       width |> NumberType.intToFloat,
-       height |> NumberType.intToFloat,
-     ))
-  |> DeviceManagerAPI.setScissorTest(true)
-  |> DeviceManagerAPI.setScissor((x, y, width, height))
-  /* gl
-     |> viewport(
-          x |> NumberType.intToFloat,
-          y |> NumberType.intToFloat,
-          width |> NumberType.intToFloat,
-          height |> NumberType.intToFloat,
-        ); */
-  /* gl |> enable(getScissorTest(gl));
-     gl |> scissor(x, y, width, height); */
-  |> _activeSceneViewCamera;
+  _prepareRenderViewJob(sceneViewRect, _activeSceneViewCamera, state);
 };
 
 let prepareRenderGameViewJob = (_, state) => {
-  /* let gl = DeviceManagerAPI.unsafeGetGl(state); */
   let {gameViewRect} = Editor.getEditorState();
 
-  let (x, y, width, height) = gameViewRect;
-
-  /* gl
-     |> viewport(
-          x |> NumberType.intToFloat,
-          y |> NumberType.intToFloat,
-          width |> NumberType.intToFloat,
-          height |> NumberType.intToFloat,
-        );
-
-     gl |> enable(getScissorTest(gl));
-     gl |> scissor(x, y, width, height); */
-
-  state
-  |> DeviceManagerAPI.setViewport((
-       x |> NumberType.intToFloat,
-       y |> NumberType.intToFloat,
-       width |> NumberType.intToFloat,
-       height |> NumberType.intToFloat,
-     ))
-  |> DeviceManagerAPI.setScissorTest(true)
-  |> DeviceManagerAPI.setScissor((x, y, width, height))
-  |> _activeGameViewCamera;
+  _prepareRenderViewJob(gameViewRect, _activeGameViewCamera, state);
 };
 
 let restoreJob = (_, state) => {
@@ -146,8 +109,6 @@ let restoreJob = (_, state) => {
     ScreenService.queryFullScreenData();
   let viewportData = (x, y, width, height);
 
-  /* gl |> disable(getScissorTest(gl));
-     gl |> viewport(x, y, width, height); */
   state
   |> DeviceManagerAPI.setViewport(viewportData)
   |> DeviceManagerAPI.setScissorTest(false);

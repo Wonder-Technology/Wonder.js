@@ -18,7 +18,7 @@ describe("DeviceManagerService", () => {
       let viewport = Sinon.createEmptyStubWithJsObjSandbox(sandbox);
       let gl = FakeGlTool.buildFakeGl(~sandbox, ~viewport, ()) |> Obj.magic;
       let state = DeviceManagerTool.setGl(gl, state^);
-      let viewportData = (1., 2., 10., 20.);
+      let viewportData = (1, 2, 10, 20);
       let state = DeviceManagerAPI.setViewport(viewportData, state);
       let state = DeviceManagerAPI.setViewport(viewportData, state);
       expect(viewport) |> toCalledOnce;
