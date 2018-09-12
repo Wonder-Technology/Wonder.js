@@ -58,8 +58,8 @@ let _ =
         );
 
         test("if has no aspect, use canvas.width/canvas.height", () => {
-          let width = 200.;
-          let height = 150.;
+          let width = 200;
+          let height = 150;
           state :=
             SettingTool.buildFakeCanvasWithSize(
               ~gl=SettingTool.buildFakeGl(sandbox),

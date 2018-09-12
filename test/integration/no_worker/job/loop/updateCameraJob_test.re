@@ -96,8 +96,8 @@ let _ =
       test("test mark dirty", () => {
         let (state, gameObject1, _, (_, cameraProjection1)) =
           CameraTool.createCameraGameObjectWithoutAspect(state^);
-        let width = 100.;
-        let height = 150.;
+        let width = 100;
+        let height = 150;
         let state =
           SettingTool.buildFakeCanvasWithSize(
             ~gl=SettingTool.buildFakeGl(sandbox),
@@ -110,8 +110,8 @@ let _ =
           |> ViewTool.setCanvas(_, state);
         let state = state |> DirectorTool.runWithDefaultTime;
 
-        let width = 200.;
-        let height = 150.;
+        let width = 200;
+        let height = 150;
         let state =
           SettingTool.buildFakeCanvasWithSize(
             ~gl=SettingTool.buildFakeGl(sandbox),

@@ -23,7 +23,7 @@ let buildFakeGl = sandbox => {
 };
 
 let buildFakeCanvasWithSize =
-    (~gl, ~sandbox, ~id="a", ~width=1., ~height=1., ()) => {
+    (~gl, ~sandbox, ~id="a", ~width=1, ~height=1, ()) => {
   "id": id,
   "nodeType": 1,
   "style": {

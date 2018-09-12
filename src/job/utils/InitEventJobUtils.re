@@ -175,7 +175,7 @@ let _preventContextMenuEvent = event => {
   ();
 };
 
-let _execMouseEventHandle = (eventName, event, state) => {
+let _execMouseEventHandle = (eventName, event) => {
   let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
   state
@@ -194,7 +194,7 @@ let _execMouseEventHandle = (eventName, event, state) => {
   ();
 };
 
-let _execMouseMoveEventHandle = (mouseEventName, event, state) => {
+let _execMouseMoveEventHandle = (mouseEventName, event) => {
   let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
   let mouseEvent =
@@ -215,7 +215,7 @@ let _execMouseMoveEventHandle = (mouseEventName, event, state) => {
   ();
 };
 
-let _execMouseDragingEventHandle = (mouseEventName, event, state) => {
+let _execMouseDragingEventHandle = (mouseEventName, event) => {
   let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
   let mouseEvent =
@@ -236,7 +236,7 @@ let _execMouseDragingEventHandle = (mouseEventName, event, state) => {
   ();
 };
 
-let _execMouseDragStartEventHandle = state => {
+let _execMouseDragStartEventHandle = () => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleMouseEventMainService.setIsDrag(true)
   |> HandleMouseEventMainService.setLastXY(None, None)
@@ -246,7 +246,7 @@ let _execMouseDragStartEventHandle = state => {
   ();
 };
 
-let _execMouseDragEndEventHandle = state => {
+let _execMouseDragEndEventHandle = () => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleMouseEventMainService.setIsDrag(false)
   |> StateDataMainService.setState(StateDataMain.stateData)
@@ -255,7 +255,7 @@ let _execMouseDragEndEventHandle = state => {
   ();
 };
 
-let _execTouchEventHandle = (touchEventName, event, state) => {
+let _execTouchEventHandle = (touchEventName, event) => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleTouchEventMainService.execEventHandle(
        touchEventName,
@@ -267,7 +267,7 @@ let _execTouchEventHandle = (touchEventName, event, state) => {
   ();
 };
 
-let _execTouchMoveEventHandle = (touchEventName, event, state) => {
+let _execTouchMoveEventHandle = (touchEventName, event) => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleTouchEventMainService.execEventHandle(
        touchEventName,
@@ -283,7 +283,7 @@ let _execTouchMoveEventHandle = (touchEventName, event, state) => {
   ();
 };
 
-let _execTouchDragingEventHandle = (touchEventName, event, state) => {
+let _execTouchDragingEventHandle = (touchEventName, event) => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleTouchEventMainService.execEventHandle(
        touchEventName,
@@ -299,7 +299,7 @@ let _execTouchDragingEventHandle = (touchEventName, event, state) => {
   ();
 };
 
-let _execTouchDragStartEventHandle = state => {
+let _execTouchDragStartEventHandle = () => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleTouchEventMainService.setIsDrag(true)
   |> HandleTouchEventMainService.setLastXY(None, None)
@@ -309,7 +309,7 @@ let _execTouchDragStartEventHandle = state => {
   ();
 };
 
-let _execTouchDragEndEventHandle = state => {
+let _execTouchDragEndEventHandle = () => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleTouchEventMainService.setIsDrag(false)
   |> StateDataMainService.setState(StateDataMain.stateData)
@@ -318,7 +318,7 @@ let _execTouchDragEndEventHandle = state => {
   ();
 };
 
-let _execKeyboardEventHandle = (keyboardEventName, event, state) => {
+let _execKeyboardEventHandle = (keyboardEventName, event) => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleKeyboardEventMainService.execEventHandle(
        keyboardEventName,
@@ -334,84 +334,60 @@ let _fromPCDomEventArr = state => [|
   WonderBsMost.Most.fromEvent("contextmenu", _getBody(), false)
   |> WonderBsMost.Most.tap(event => _preventContextMenuEvent(event)),
   _fromPointDomEvent("click", state)
-  |> WonderBsMost.Most.tap(event =>
-       _execMouseEventHandle(Click, event, state)
-     ),
+  |> WonderBsMost.Most.tap(event => _execMouseEventHandle(Click, event)),
   _fromPointDomEvent("mousedown", state)
-  |> WonderBsMost.Most.tap(event =>
-       _execMouseEventHandle(MouseDown, event, state)
-     ),
+  |> WonderBsMost.Most.tap(event => _execMouseEventHandle(MouseDown, event)),
   _fromPointDomEvent("mouseup", state)
-  |> WonderBsMost.Most.tap(event =>
-       _execMouseEventHandle(MouseUp, event, state)
-     ),
+  |> WonderBsMost.Most.tap(event => _execMouseEventHandle(MouseUp, event)),
   _fromPointDomEvent("mousemove", state)
   |> WonderBsMost.Most.tap(event =>
-       _execMouseMoveEventHandle(MouseMove, event, state)
+       _execMouseMoveEventHandle(MouseMove, event)
      ),
   _fromPointDomEvent("mousewheel", state)
-  |> WonderBsMost.Most.tap(event =>
-       _execMouseEventHandle(MouseWheel, event, state)
-     ),
+  |> WonderBsMost.Most.tap(event => _execMouseEventHandle(MouseWheel, event)),
   _fromPointDomEvent("mousedown", state)
-  |> WonderBsMost.Most.tap(event => _execMouseDragStartEventHandle(state))
+  |> WonderBsMost.Most.tap(event => _execMouseDragStartEventHandle())
   |> WonderBsMost.Most.flatMap(event =>
        _fromPointDomEvent("mousemove", state)
        |> WonderBsMost.Most.until(
             _fromPointDomEvent("mouseup", state)
-            |> WonderBsMost.Most.tap(event =>
-                 _execMouseDragEndEventHandle(state)
-               ),
+            |> WonderBsMost.Most.tap(event => _execMouseDragEndEventHandle()),
           )
      )
   |> WonderBsMost.Most.tap(event =>
-       _execMouseDragingEventHandle(MouseDrag, event, state)
+       _execMouseDragingEventHandle(MouseDrag, event)
      ),
   _fromKeyboardDomEvent("keyup", state)
-  |> WonderBsMost.Most.tap(event =>
-       _execKeyboardEventHandle(KeyUp, event, state)
-     ),
+  |> WonderBsMost.Most.tap(event => _execKeyboardEventHandle(KeyUp, event)),
   _fromKeyboardDomEvent("keydown", state)
-  |> WonderBsMost.Most.tap(event =>
-       _execKeyboardEventHandle(KeyDown, event, state)
-     ),
+  |> WonderBsMost.Most.tap(event => _execKeyboardEventHandle(KeyDown, event)),
   _fromKeyboardDomEvent("keypress", state)
-  |> WonderBsMost.Most.tap(event =>
-       _execKeyboardEventHandle(KeyPress, event, state)
-     ),
+  |> WonderBsMost.Most.tap(event => _execKeyboardEventHandle(KeyPress, event)),
 |];
 
 let _fromMobileDomEventArr = state => [|
   _fromPointDomEvent("touchend", state)
   |> WonderBsMost.Most.since(_fromPointDomEvent("touchstart", state))
-  |> WonderBsMost.Most.tap(event =>
-       _execTouchEventHandle(TouchTap, event, state)
-     ),
+  |> WonderBsMost.Most.tap(event => _execTouchEventHandle(TouchTap, event)),
   _fromPointDomEvent("touchend", state)
-  |> WonderBsMost.Most.tap(event =>
-       _execTouchEventHandle(TouchEnd, event, state)
-     ),
+  |> WonderBsMost.Most.tap(event => _execTouchEventHandle(TouchEnd, event)),
   _fromPointDomEvent("touchstart", state)
-  |> WonderBsMost.Most.tap(event =>
-       _execTouchEventHandle(TouchStart, event, state)
-     ),
+  |> WonderBsMost.Most.tap(event => _execTouchEventHandle(TouchStart, event)),
   _fromPointDomEvent("touchmove", state)
   |> WonderBsMost.Most.tap(event =>
-       _execTouchMoveEventHandle(TouchMove, event, state)
+       _execTouchMoveEventHandle(TouchMove, event)
      ),
   _fromPointDomEvent("touchstart", state)
-  |> WonderBsMost.Most.tap(event => _execTouchDragStartEventHandle(state))
+  |> WonderBsMost.Most.tap(event => _execTouchDragStartEventHandle())
   |> WonderBsMost.Most.flatMap(event =>
        _fromPointDomEvent("touchmove", state)
        |> WonderBsMost.Most.until(
             _fromPointDomEvent("touchend", state)
-            |> WonderBsMost.Most.tap(event =>
-                 _execTouchDragEndEventHandle(state)
-               ),
+            |> WonderBsMost.Most.tap(event => _execTouchDragEndEventHandle()),
           )
      )
   |> WonderBsMost.Most.tap(event =>
-       _execTouchDragingEventHandle(TouchDrag, event, state)
+       _execTouchDragingEventHandle(TouchDrag, event)
      ),
 |];
 
