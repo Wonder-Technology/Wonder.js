@@ -153,7 +153,15 @@ let rec _setParent = (parentIndex, transformArr, nodes, state) => {
 /* TODO remove wonder_transformCount_forTest */
 let _createTransformCount = [%raw
   count => {|
-    return window.wonder_transformCount_forTest || count;
+    if(
+typeof window !== "undefined" &&
+    typeof window.wonder_transformCount_forTest !== "undefined"
+    ){
+      return window.wonder_transformCount_forTest
+    }
+    else{
+      return count
+    }
   |}
 ];
 
