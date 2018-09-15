@@ -4,14 +4,6 @@ open EventType;
 
 let _setEventHandleFunc = (cameraController, handleFunc, eventHandleFuncMap) => {
   eventHandleFuncMap
-  |> SparseMapService.getValidValues
-  |> SparseMapService.length > 0 ?
-    WonderLog.Log.warn(
-      {j|expect only has one arcballCameraController, but actual > 1. please dispose others.|j},
-    ) :
-    ();
-
-  eventHandleFuncMap
   |> WonderCommonlib.SparseMapService.set(cameraController, handleFunc);
 };
 

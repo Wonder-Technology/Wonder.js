@@ -503,14 +503,14 @@ let _ =
       });
 
       describe("test bind two arcballCameraControllers' event", () => {
-        let warn = ref(Obj.magic(1));
+        /* let warn = ref(Obj.magic(1));
 
         beforeEach(() =>
           warn :=
             createMethodStubWithJsObjSandbox(sandbox, Console.console, "warn")
-        );
+        ); */
 
-        test("should warn: expect only has one arcballCameraController", () => {
+        /* test("should warn: expect only has one arcballCameraController", () => {
           let state = _prepareMouseEvent();
           let (state, gameObject1, _, (cameraController1, _, _)) =
             ArcballCameraControllerTool.createGameObject(state);
@@ -536,7 +536,7 @@ let _ =
              )
           |> getCallCount
           |> expect == 5;
-        });
+        }); */
         test("test bind keydown event", () => {
           let state = _prepareMouseEvent();
           let (state, gameObject1, _, (cameraController1, _, _)) =
