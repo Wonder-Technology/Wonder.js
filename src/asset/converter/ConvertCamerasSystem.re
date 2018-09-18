@@ -62,37 +62,35 @@ let _getFirstNodeIndexWhichUseBasicCameraView = (nodes, basicCameraViewIndex) =>
        None,
      );
 
-let _getActiveBasicCameraViewIndex = basicCameraViews => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|should has one active basicCameraView|j},
-                ~actual={j|not|j},
-              ),
-              () =>
-              basicCameraViews
-              |> Js.Array.filter(({isActive}: GLTFType.basicCameraView) =>
-                   isActive === true
-                 )
-              |> Js.Array.length == 1
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-
+let _getActiveBasicCameraViewIndex = basicCameraViews =>
+  /* WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(
+                   ~expect={j|should has one active basicCameraView|j},
+                   ~actual={j|not|j},
+                 ),
+                 () =>
+                 basicCameraViews
+                 |> Js.Array.filter(({isActive}: GLTFType.basicCameraView) =>
+                      isActive === true
+                    )
+                 |> Js.Array.length == 1
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     ); */
   basicCameraViews
   |> WonderCommonlib.ArrayService.reduceOneParami(
        (. index, {isActive}: GLTFType.basicCameraView, i) =>
-         isActive === true ? i : index,
-       -1,
+         isActive === true ? Some(i) : index,
+       None,
      );
-};
 
 let getActiveCameraNodeIndex = ({nodes, cameras, extras}: GLTFType.gltf) =>
   switch (extras) {
@@ -105,8 +103,11 @@ let getActiveCameraNodeIndex = ({nodes, cameras, extras}: GLTFType.gltf) =>
   | Some({basicCameraViews}) =>
     switch (basicCameraViews) {
     | Some(basicCameraViews) when Js.Array.length(basicCameraViews) > 0 =>
-      _getActiveBasicCameraViewIndex(basicCameraViews)
-      |> _getFirstNodeIndexWhichUseBasicCameraView(nodes)
+      switch (_getActiveBasicCameraViewIndex(basicCameraViews)) {
+      | None => None
+      | Some(basicCameraViewIndex) =>
+        basicCameraViewIndex |> _getFirstNodeIndexWhichUseBasicCameraView(nodes)
+      }
     | _ => _getFirstNodeIndexWhichUseFirstCamera(nodes)
     }
   };
