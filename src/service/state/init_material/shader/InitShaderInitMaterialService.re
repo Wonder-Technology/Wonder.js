@@ -63,7 +63,6 @@ let _initNewShader =
       (vsSource, fsSource),
       programRecord,
     );
-    /* WonderLog.Log.print((program, shaderIndex)) |> ignore; */
   let recordTuple =
     addAttributeSendDataFunc(.
       (gl, shaderIndex, program),

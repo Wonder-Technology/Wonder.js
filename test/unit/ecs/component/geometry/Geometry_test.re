@@ -427,7 +427,7 @@ let _ =
                             indices2 |> Uint16Array.length,
                           );
               });
-              test("clean disposedIndexMap", () => {
+              test("clear disposedIndexMap", () => {
                 open StateDataMainType;
                 let (
                   state,

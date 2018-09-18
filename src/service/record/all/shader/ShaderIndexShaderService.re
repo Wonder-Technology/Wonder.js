@@ -46,3 +46,9 @@ let unuseShaderIndex = (shaderIndex, {usedShaderIndexArray} as record) => {
       record;
     };
 };
+
+let clearShaderIndexMap = shaderRecord => {
+  shaderRecord.shaderIndexMap = WonderCommonlib.HashMapService.createEmpty();
+
+  shaderRecord;
+};

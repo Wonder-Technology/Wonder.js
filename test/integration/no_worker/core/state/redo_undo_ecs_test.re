@@ -397,7 +397,7 @@ let _ =
           |> TransformAPI.unsafeGetTransformChildren(transform1)
           |> expect == [|transform2|];
         });
-        test("clean localToWorldMatrixCacheMap, normalMatrixCacheMap", () => {
+        test("clear localToWorldMatrixCacheMap, normalMatrixCacheMap", () => {
           open TransformType;
           let (
             state,
