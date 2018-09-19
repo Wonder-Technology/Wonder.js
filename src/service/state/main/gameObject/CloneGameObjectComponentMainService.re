@@ -43,11 +43,7 @@ let _cloneMeshRenderer =
       clonedGameObjectArr,
       clonedMeshRendererArr,
       state,
-    )
-    |> CloneMeshRendererMainService.setIsRenderAfterAddToGameObject(
-         meshRenderer,
-         clonedMeshRendererArr,
-       );
+    );
 
   | None => state
   };

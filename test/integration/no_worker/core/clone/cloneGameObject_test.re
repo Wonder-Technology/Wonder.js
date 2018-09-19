@@ -176,9 +176,9 @@ let _ =
             )
             |> expect == (drawMode, drawMode, drawMode);
           });
-          test("test isRender", () => {
+          test("set isRender to true", () => {
             let (state, gameObject, meshRenderer) = _prepare();
-            let isRender = ! MeshRendererTool.getDefaultIsRender();
+            let isRender = false;
             let state =
               state
               |> MeshRendererAPI.setMeshRendererIsRender(
@@ -200,7 +200,7 @@ let _ =
                 state,
               ),
             )
-            |> expect == (isRender, isRender, isRender);
+            |> expect == (isRender, true, true);
           });
         });
 

@@ -24,20 +24,3 @@ let handleCloneComponent = (sourceComponent, countRangeArr, state) => {
        (state, [||]),
      );
 };
-
-let setIsRenderAfterAddToGameObject =
-    (sourceComponent, clonedMeshRendererArr, state) => {
-  let isRender =
-    OperateMeshRendererMainService.getIsRender(sourceComponent, state);
-
-  clonedMeshRendererArr
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. state, clonedMeshRenderer) =>
-         state
-         |> OperateMeshRendererMainService.setIsRender(
-              clonedMeshRenderer,
-              isRender,
-            ),
-       state,
-     );
-};
