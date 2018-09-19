@@ -42,13 +42,6 @@ window.Blob = Blob;
     |}
     ];
 
-    let _buildWDBPath = wdbName =>
-      Node.Path.join([|
-        Node.Process.cwd(),
-        "./test/res/",
-        {j|wdb/$wdbName.wdb|j},
-      |]);
-
     beforeEach(() => {
       sandbox := createSandbox();
       state :=
@@ -84,9 +77,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
         }
         |> resolve;
 
-      let _getWDBArrayBuffer = wdbName => NodeExtend.readFileBufferSync(
-                                            _buildWDBPath(wdbName),
-                                          )##buffer;
+      let _getWDBArrayBuffer = wdbName => NodeTool.getWDBArrayBuffer(wdbName);
 
       let _buildController = sandbox => {
         "close": createEmptyStubWithJsObjSandbox(sandbox),
@@ -1983,7 +1974,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
         let fetchFunc = _buildFakeFetch(sandbox, status, statusText);
 
         LoadStreamWDBTool.load(
-          ~wdbPath=_buildWDBPath("BoxTextured"),
+          ~wdbPath=NodeTool.buildWDBPath("BoxTextured"),
           ~fetchFunc,
           (),
         )
@@ -2036,7 +2027,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           );
 
         LoadStreamWDBTool.load(
-          ~wdbPath=_buildWDBPath("BoxTextured"),
+          ~wdbPath=NodeTool.buildWDBPath("BoxTextured"),
           ~fetchFunc,
           (),
         )
@@ -2063,7 +2054,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           );
 
         LoadStreamWDBTool.load(
-          ~wdbPath=_buildWDBPath("BoxTextured"),
+          ~wdbPath=NodeTool.buildWDBPath("BoxTextured"),
           ~handleWhenLoadingFunc=
             (totalLoadedByteLength, contentLength, wdbPath) => {
               totalLoadedByteLengthArr
@@ -2102,7 +2093,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             );
 
           LoadStreamWDBTool.load(
-            ~wdbPath=_buildWDBPath("BoxTextured"),
+            ~wdbPath=NodeTool.buildWDBPath("BoxTextured"),
             ~fetchFunc,
             ~handleWhenLoadWholeWDBFunc=
               (state, _, rootGameObject) => {
