@@ -208,7 +208,7 @@ let _ =
         );
         describe("test basic shader lib's glsl", () =>
           test("test vs glsl", () => {
-            let shaderSource =
+            let (_, shaderSource) =
               InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
             GLSLTool.getVsSource(shaderSource)
             |> expect
@@ -219,7 +219,7 @@ let _ =
         );
         describe("test basic_color shader lib's glsl", () =>
           test("test fs glsl", () => {
-            let shaderSource =
+            let (_, shaderSource) =
               InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
             GLSLTool.containMultiline(
               GLSLTool.getFsSource(shaderSource),
@@ -235,7 +235,7 @@ let _ =
         describe("test map shader lib's glsl", () => {
           describe("if has map, add basic_map shader lib", () => {
             test("test vs glsl", () => {
-              let shaderSource =
+              let (_, shaderSource) =
                 InitBasicMaterialJobTool.prepareForJudgeGLSLWithMap(
                   sandbox,
                   state^,
@@ -252,7 +252,7 @@ let _ =
 
             describe("test fs glsl", () => {
               test("test", () => {
-                let shaderSource =
+                let (_, shaderSource) =
                   InitBasicMaterialJobTool.prepareForJudgeGLSLWithMap(
                     sandbox,
                     state^,
@@ -269,7 +269,7 @@ let _ =
                 |> expect == true;
               });
               test("should contain u_color only once", () => {
-                let shaderSource =
+                let (_, shaderSource) =
                   InitBasicMaterialJobTool.prepareForJudgeGLSLWithMap(
                     sandbox,
                     state^,
@@ -287,7 +287,7 @@ let _ =
           });
           describe("else, not add", () =>
             test("test vs glsl", () => {
-              let shaderSource =
+              let (_, shaderSource) =
                 InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
               GLSLTool.containMultiline(
                 GLSLTool.getVsSource(shaderSource),
@@ -298,7 +298,7 @@ let _ =
           );
         });
         test("test basic_end shader lib's glsl", () => {
-          let shaderSource =
+          let (_, shaderSource) =
             InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
           GLSLTool.getFsSource(shaderSource)
           |> expect

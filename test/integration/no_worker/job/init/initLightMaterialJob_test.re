@@ -218,7 +218,7 @@ let _ =
           )
         );
         test("test normal shader lib's glsl", () => {
-          let shaderSource =
+          let (state, shaderSource) =
             InitLightMaterialJobTool.prepareForJudgeGLSL(
               InitLightMaterialJobTool.prepareGameObject,
               sandbox,
@@ -247,7 +247,7 @@ let _ =
           test(
             "if has no sourceInstance component, use normalMatrix_noInstance shader lib",
             () => {
-            let shaderSource =
+            let (_, shaderSource) =
               InitLightMaterialJobTool.prepareForJudgeGLSL(
                 InitLightMaterialJobTool.prepareGameObject,
                 sandbox,
@@ -400,7 +400,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
           ];
 
           test("test vs glsl", () => {
-            let shaderSource =
+            let (_, shaderSource) =
               InitLightMaterialJobTool.prepareForJudgeGLSL(
                 InitLightMaterialJobTool.prepareGameObject,
                 sandbox,
@@ -413,7 +413,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
             |> expect == true;
           });
           test("test fs glsl", () => {
-            let shaderSource =
+            let (_, shaderSource) =
               InitLightMaterialJobTool.prepareForJudgeGLSL(
                 InitLightMaterialJobTool.prepareGameObject,
                 sandbox,
@@ -427,7 +427,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
           });
         });
         test("test light_setWorldPosition shader lib", () => {
-          let shaderSource =
+          let (_, shaderSource) =
             InitLightMaterialJobTool.prepareForJudgeGLSL(
               InitLightMaterialJobTool.prepareGameObject,
               sandbox,
@@ -443,7 +443,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
           describe("test diffuse map shader lib", () => {
             describe("if has map", () => {
               test("test vs glsl", () => {
-                let shaderSource =
+                let (_, shaderSource) =
                   InitLightMaterialJobTool.prepareForJudgeGLSL(
                     InitLightMaterialJobTool.prepareGameObjectWithCreatedMap,
                     sandbox,
@@ -461,7 +461,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
 
               describe("test fs glsl", () => {
                 test("test", () => {
-                  let shaderSource =
+                  let (_, shaderSource) =
                     InitLightMaterialJobTool.prepareForJudgeGLSL(
                       InitLightMaterialJobTool.prepareGameObjectWithCreatedMap,
                       sandbox,
@@ -482,7 +482,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                 });
 
                 test("should contain u_diffuse only once", () => {
-                  let shaderSource =
+                  let (_, shaderSource) =
                     InitLightMaterialJobTool.prepareForJudgeGLSL(
                       InitLightMaterialJobTool.prepareGameObjectWithCreatedMap,
                       sandbox,
@@ -500,7 +500,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
             });
             describe("else", () =>
               test("test fs glsl", () => {
-                let shaderSource =
+                let (_, shaderSource) =
                   InitLightMaterialJobTool.prepareForJudgeGLSL(
                     InitLightMaterialJobTool.prepareGameObject,
                     sandbox,
@@ -524,7 +524,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
           describe("test specular map shader lib", () => {
             describe("if has map", () => {
               test("test vs glsl", () => {
-                let shaderSource =
+                let (_, shaderSource) =
                   InitLightMaterialJobTool.prepareForJudgeGLSL(
                     InitLightMaterialJobTool.prepareGameObjectWithCreatedMap,
                     sandbox,
@@ -540,7 +540,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                 |> expect == true;
               });
               test("test fs glsl", () => {
-                let shaderSource =
+                let (_, shaderSource) =
                   InitLightMaterialJobTool.prepareForJudgeGLSL(
                     InitLightMaterialJobTool.prepareGameObjectWithCreatedMap,
                     sandbox,
@@ -561,7 +561,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
             });
             describe("else", () =>
               test("test fs glsl", () => {
-                let shaderSource =
+                let (_, shaderSource) =
                   InitLightMaterialJobTool.prepareForJudgeGLSL(
                     InitLightMaterialJobTool.prepareGameObject,
                     sandbox,
@@ -580,7 +580,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
             );
           });
           test("test no_light_map shader lib", () => {
-            let shaderSource =
+            let (_, shaderSource) =
               InitLightMaterialJobTool.prepareForJudgeGLSL(
                 InitLightMaterialJobTool.prepareGameObject,
                 sandbox,
@@ -599,7 +599,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
             |> expect == true;
           });
           test("test no_emission_map shader lib", () => {
-            let shaderSource =
+            let (_, shaderSource) =
               InitLightMaterialJobTool.prepareForJudgeGLSL(
                 InitLightMaterialJobTool.prepareGameObject,
                 sandbox,
@@ -619,7 +619,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
           });
           describe("test no_normal_map shader lib", () => {
             test("test vs glsl", () => {
-              let shaderSource =
+              let (_, shaderSource) =
                 InitLightMaterialJobTool.prepareForJudgeGLSL(
                   InitLightMaterialJobTool.prepareGameObject,
                   sandbox,
@@ -635,7 +635,7 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
               |> expect == true;
             });
             test("test fs glsl", () => {
-              let shaderSource =
+              let (_, shaderSource) =
                 InitLightMaterialJobTool.prepareForJudgeGLSL(
                   InitLightMaterialJobTool.prepareGameObject,
                   sandbox,
@@ -698,7 +698,7 @@ vec3 getViewDir(){
             });
           });
           test("test no_shadow_map shader lib", () => {
-            let shaderSource =
+            let (_, shaderSource) =
               InitLightMaterialJobTool.prepareForJudgeGLSL(
                 InitLightMaterialJobTool.prepareGameObject,
                 sandbox,
@@ -718,40 +718,97 @@ vec3 getViewDir(){
           });
         });
         describe("test light shader lib", () => {
-          let _prepareForJudgeGLSL = state =>
-            InitLightMaterialJobTool.prepareForJudgeGLSL(
-              (sandbox, state) => {
-                let (state, gameObject, geometry, material) =
-                  InitLightMaterialJobTool.prepareGameObject(sandbox, state);
-                let (state, gameObject, light) =
-                  DirectionLightTool.createGameObject(state);
-                let (state, gameObject, light) =
-                  DirectionLightTool.createGameObject(state);
-                let (state, gameObject, light) =
-                  PointLightTool.createGameObject(state);
-                let (state, gameObject, light) =
-                  PointLightTool.createGameObject(state);
-                (state, gameObject, geometry, material);
-              },
-              sandbox,
-              state^,
-            );
+          let _prepareForJudgeGLSL = state => {
+            let (state, shaderSource) =
+              InitLightMaterialJobTool.prepareForJudgeGLSL(
+                (sandbox, state) => {
+                  let (state, gameObject, geometry, material) =
+                    InitLightMaterialJobTool.prepareGameObject(
+                      sandbox,
+                      state,
+                    );
+                  let (state, gameObject, light) =
+                    DirectionLightTool.createGameObject(state);
+                  let (state, gameObject, light) =
+                    DirectionLightTool.createGameObject(state);
+                  let (state, gameObject, light) =
+                    PointLightTool.createGameObject(state);
+                  let (state, gameObject, light) =
+                    PointLightTool.createGameObject(state);
+                  (state, gameObject, geometry, material);
+                },
+                sandbox,
+                state^,
+              );
+
+            shaderSource;
+          };
+
           describe("test vs glsl", () => {
-            test("define light count", () => {
-              let shaderSource = _prepareForJudgeGLSL(state);
-              GLSLTool.containMultiline(
-                GLSLTool.getVsSource(shaderSource),
-                [
-                  {|#define DIRECTION_LIGHTS_COUNT 2
+            describe("define light count", () => {
+              test("if is render, add to count", () => {
+                let shaderSource = _prepareForJudgeGLSL(state);
+                GLSLTool.containMultiline(
+                  GLSLTool.getVsSource(shaderSource),
+                  [
+                    {|#define DIRECTION_LIGHTS_COUNT 2
 |},
-                  {|#define POINT_LIGHTS_COUNT 2
+                    {|#define POINT_LIGHTS_COUNT 2
 |},
-                ],
-              )
-              |> expect == true;
+                  ],
+                )
+                |> expect == true;
+              });
+              test("else, not add to count", () => {
+                let (state, gameObject, geometry, material) =
+                  InitLightMaterialJobTool.prepareGameObject(sandbox, state^);
+                let (state, gameObject, light1) =
+                  DirectionLightTool.createGameObject(state);
+                let (state, gameObject, light2) =
+                  DirectionLightTool.createGameObject(state);
+                let (state, gameObject, light3) =
+                  PointLightTool.createGameObject(state);
+                let (state, gameObject, light4) =
+                  PointLightTool.createGameObject(state);
+
+                let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
+                let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(
+                         ~sandbox,
+                         ~shaderSource,
+                         ~createProgram,
+                         (),
+                       ),
+                     );
+
+                /* TODO add point light test */
+                let state =
+                  state
+                  |> DirectionLightAPI.setDirectionLightIsRender(
+                       light1,
+                       false,
+                     )
+                  |> DirectionLightAPI.setDirectionLightIsRender(light2, true);
+                let state = state |> InitLightMaterialJobTool.exec;
+
+                GLSLTool.containMultiline(
+                  GLSLTool.getVsSource(shaderSource),
+                  [
+                    {|#define DIRECTION_LIGHTS_COUNT 1
+|},
+                    {|#define POINT_LIGHTS_COUNT 2
+|},
+                  ],
+                )
+                |> expect == true;
+              });
             });
+
             test("set gl_Position", () => {
-              let shaderSource =
+              let (_, shaderSource) =
                 InitLightMaterialJobTool.prepareForJudgeGLSL(
                   InitLightMaterialJobTool.prepareGameObject,
                   sandbox,
@@ -781,7 +838,7 @@ vec3 getViewDir(){
               |> expect == true;
             });
             test("calc total color", () => {
-              let shaderSource =
+              let (_, shaderSource) =
                 InitLightMaterialJobTool.prepareForJudgeGLSL(
                   InitLightMaterialJobTool.prepareGameObject,
                   sandbox,
@@ -941,7 +998,7 @@ vec3 getViewDir(){
               |> expect == true;
             });
             test("if has no direction,point light, use ambient color", () => {
-              let shaderSource =
+              let (_, shaderSource) =
                 InitLightMaterialJobTool.prepareForJudgeGLSL(
                   InitLightMaterialJobTool.prepareGameObject,
                   sandbox,
@@ -964,7 +1021,7 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
           });
         });
         test("test ambient_light shader lib", () => {
-          let shaderSource =
+          let (_, shaderSource) =
             InitLightMaterialJobTool.prepareForJudgeGLSL(
               InitLightMaterialJobTool.prepareGameObject,
               sandbox,
@@ -975,7 +1032,7 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
           |> toContainString({|uniform vec3 u_ambient;|});
         });
         test("test light_end shader lib", () => {
-          let shaderSource =
+          let (_, shaderSource) =
             InitLightMaterialJobTool.prepareForJudgeGLSL(
               InitLightMaterialJobTool.prepareGameObject,
               sandbox,

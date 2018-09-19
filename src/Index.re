@@ -426,6 +426,10 @@ let registerNoWorkerInitJob = JobAPI.registerNoWorkerInitJob;
 
 let isMaxCount = DirectionLightAPI.isMaxCount;
 
+let setDirectionLightIsRender = DirectionLightAPI.setDirectionLightIsRender;
+
+let getDirectionLightIsRender = DirectionLightAPI.getDirectionLightIsRender;
+
 let setDirectionLightIntensity = DirectionLightAPI.setDirectionLightIntensity;
 
 let getDirectionLightIntensity = DirectionLightAPI.getDirectionLightIntensity;
@@ -551,6 +555,8 @@ let setAmbientLightColor = SceneAPI.setAmbientLightColor;
 let getAmbientLightColor = SceneAPI.getAmbientLightColor;
 
 let setScreenSize = ScreenAPI.setScreenSize;
+
+let clearShaderCache = ShaderAPI.clearShaderCache;
 
 let markSourceInstanceModelMatrixIsStatic = SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic;
 

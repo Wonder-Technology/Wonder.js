@@ -10,7 +10,8 @@ let getDefaultColor = () => [|1., 1., 1.|];
 
 let getDefaultIntensity = () => 1.;
 
-let getColor = (index, typeArr) => TypeArrayService.getFloat3(getColorIndex(index), typeArr);
+let getColor = (index, typeArr) =>
+  TypeArrayService.getFloat3(getColorIndex(index), typeArr);
 
 let setColor = (index, color, typeArr) =>
   TypeArrayService.setFloat3(getColorIndex(index), color, typeArr);
@@ -26,28 +27,26 @@ let setAllTypeArrDataToDefault = (count: int, (colors, intensities)) => {
   let defaultIntensity = getDefaultIntensity();
   WonderCommonlib.ArrayService.range(0, count - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         ((colors, intensities), index) => (
-           setColor(index, defaultColor, colors),
-           setIntensity(index, defaultIntensity, intensities)
-         )
+       (. (colors, intensities), index) => (
+         setColor(index, defaultColor, colors),
+         setIntensity(index, defaultIntensity, intensities),
        ),
-       (colors, intensities)
-     )
+       (colors, intensities),
+     );
 };
 
 let _setAllTypeArrDataToDefault = (count: int, (buffer, colors, intensities)) => {
   let defaultColor = getDefaultColor();
   let defaultIntensity = getDefaultIntensity();
-  (buffer, setAllTypeArrDataToDefault(count, (colors, intensities)))
+  (buffer, setAllTypeArrDataToDefault(count, (colors, intensities)));
 };
 
 let _initBufferData = () => {
   let count = getBufferMaxCount();
   let buffer = createBuffer(count);
-  let (colors, intensities) = CreateTypeArrayDirectionLightService.createTypeArrays(buffer, count);
-  (buffer, colors, intensities) |> _setAllTypeArrDataToDefault(count)
+  let (colors, intensities) =
+    CreateTypeArrayDirectionLightService.createTypeArrays(buffer, count);
+  (buffer, colors, intensities) |> _setAllTypeArrDataToDefault(count);
 };
 
 let create = () => {
@@ -57,25 +56,39 @@ let create = () => {
     buffer,
     colors,
     intensities,
-    mappedIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
-    gameObjectMap: WonderCommonlib.SparseMapService.createEmpty()
-  }
+    disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+    renderLightArr: WonderCommonlib.ArrayService.createEmpty(),
+    gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+  };
 };
 
 let deepCopyForRestore = ({directionLightRecord} as state) => {
-  let {index, colors, intensities, gameObjectMap, mappedIndexMap} = directionLightRecord;
+  let {
+    index,
+    colors,
+    intensities,
+    gameObjectMap,
+    disposedIndexArray,
+    renderLightArr,
+  } = directionLightRecord;
   {
     ...state,
     directionLightRecord: {
       ...directionLightRecord,
       index,
       colors:
-        colors |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getColorsSize()),
+        colors
+        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+             index * getColorsSize(),
+           ),
       intensities:
         intensities
-        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getIntensitiesSize()),
-      mappedIndexMap: mappedIndexMap |> SparseMapService.copy,
-      gameObjectMap: gameObjectMap |> SparseMapService.copy
-    }
-  }
+        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+             index * getIntensitiesSize(),
+           ),
+      gameObjectMap: gameObjectMap |> SparseMapService.copy,
+      renderLightArr: renderLightArr |> Js.Array.copy,
+      disposedIndexArray: disposedIndexArray |> Js.Array.copy,
+    },
+  };
 };

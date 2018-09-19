@@ -49,12 +49,13 @@ let send =
         intensity: "u_directionLights[3].intensity",
       },
     |];
-    let {index, directionMap} as directionLightRecord = directionLightRecord;
+    let {directionMap, renderLightArr} as directionLightRecord = directionLightRecord;
 
-    WonderCommonlib.ArrayService.range(0, index - 1)
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. directionLightRecord, index) => {
+    renderLightArr
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (. directionLightRecord, light, index) => {
            let {direction, color, intensity} = lightGLSLDataStructureMemberNameArr[index];
+
            SendGLSLDataService.sendVec3(.
              gl,
              uniformCacheMap,
@@ -67,7 +68,7 @@ let send =
                  gl,
                ),
              ),
-             DirectionLightService.getDirection(index, directionMap),
+             DirectionLightService.getDirection(light, directionMap),
            );
            SendGLSLDataService.sendFloat3(.
              gl,
@@ -82,7 +83,7 @@ let send =
                ),
              ),
              GetDataRenderDirectionLightService.getColor(
-               index,
+               light,
                directionLightRecord,
              ),
            );
@@ -99,7 +100,7 @@ let send =
                ),
              ),
              GetDataRenderDirectionLightService.getIntensity(
-               index,
+               light,
                directionLightRecord,
              ),
            );

@@ -18,8 +18,9 @@ let getDirection =
   )
   |> Vector3Service.transformQuat((0., 0., 1.));
 
-let buildDirectionMap = (index, getDirectionFunc, state) =>
-  ArrayService.range(0, index - 1)
+let buildDirectionMap =
+    (getDirectionFunc, {directionLightRecord} as state) =>
+  directionLightRecord.renderLightArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. map, i) =>
          map

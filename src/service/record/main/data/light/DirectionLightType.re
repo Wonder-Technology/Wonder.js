@@ -5,6 +5,7 @@ type directionLightRecord = {
   buffer: WorkerType.sharedArrayBuffer,
   colors: Js.Typed_array.Float32Array.t,
   intensities: Js.Typed_array.Float32Array.t,
-  mappedIndexMap: WonderCommonlib.SparseMapService.t(int),
-  gameObjectMap
+  renderLightArr: array(component),
+  gameObjectMap,
+  disposedIndexArray: array(component),
 };

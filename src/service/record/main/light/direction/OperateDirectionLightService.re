@@ -1,17 +1,44 @@
 open DirectionLightType;
 
-let getColor = (mappedIndex, {colors}) =>
-  RecordDirectionLightMainService.getColor(mappedIndex, colors);
+let getColor = (light, {colors}) =>
+  RecordDirectionLightMainService.getColor(light, colors);
 
-let setColor = (mappedIndex, color: array(float), {colors} as record) => {
+let setColor = (light, color: array(float), {colors} as record) => {
   ...record,
-  colors: RecordDirectionLightMainService.setColor(mappedIndex, color, colors)
+  colors:
+    RecordDirectionLightMainService.setColor(light, color, colors),
 };
 
-let getIntensity = (mappedIndex, {intensities}) =>
-  RecordDirectionLightMainService.getIntensity(mappedIndex, intensities);
+let getIntensity = (light, {intensities}) =>
+  RecordDirectionLightMainService.getIntensity(light, intensities);
 
-let setIntensity = (mappedIndex, intensity, {intensities} as record) => {
+let setIntensity = (light, intensity, {intensities} as record) => {
   ...record,
-  intensities: RecordDirectionLightMainService.setIntensity(mappedIndex, intensity, intensities)
+  intensities:
+    RecordDirectionLightMainService.setIntensity(
+      light,
+      intensity,
+      intensities,
+    ),
 };
+
+let getIsRender = (light, {renderLightArr} as record) =>
+  renderLightArr |> Js.Array.includes(light);
+
+let setIsRender = (light, isRender, {renderLightArr} as record) =>
+  isRender ?
+    {
+      ...record,
+      renderLightArr:
+        renderLightArr
+        |> ArrayService.push(light)
+        |> WonderCommonlib.ArrayService.removeDuplicateItems,
+    } :
+    {
+      ...record,
+      renderLightArr:
+        RenderLightArrLightService.removeFromRenderLightArr(
+          light,
+          renderLightArr,
+        ),
+    };

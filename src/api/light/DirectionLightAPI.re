@@ -30,15 +30,7 @@ let unsafeGetDirectionLightGameObject =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetGameObject(
-    MappedIndexService.getMappedIndex(
-      light,
-      IndexDirectionLightService.getMappedIndexMap(
-        state.directionLightRecord,
-      ),
-    ),
-    state.directionLightRecord,
-  );
+  unsafeGetGameObject(light, state.directionLightRecord);
 };
 
 let getDirectionLightColor = (light, state: StateDataMainType.state) => {
@@ -57,15 +49,7 @@ let getDirectionLightColor = (light, state: StateDataMainType.state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getColor(
-    MappedIndexService.getMappedIndex(
-      light,
-      IndexDirectionLightService.getMappedIndexMap(
-        state.directionLightRecord,
-      ),
-    ),
-    state.directionLightRecord,
-  );
+  getColor(light, state.directionLightRecord);
 };
 
 let setDirectionLightColor = (light, color, state: StateDataMainType.state) => {
@@ -86,17 +70,7 @@ let setDirectionLightColor = (light, color, state: StateDataMainType.state) => {
   );
   {
     ...state,
-    directionLightRecord:
-      setColor(
-        MappedIndexService.getMappedIndex(
-          light,
-          IndexDirectionLightService.getMappedIndexMap(
-            state.directionLightRecord,
-          ),
-        ),
-        color,
-        state.directionLightRecord,
-      ),
+    directionLightRecord: setColor(light, color, state.directionLightRecord),
   };
 };
 
@@ -116,15 +90,7 @@ let getDirectionLightIntensity = (light, state: StateDataMainType.state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getIntensity(
-    MappedIndexService.getMappedIndex(
-      light,
-      IndexDirectionLightService.getMappedIndexMap(
-        state.directionLightRecord,
-      ),
-    ),
-    state.directionLightRecord,
-  );
+  getIntensity(light, state.directionLightRecord);
 };
 
 let setDirectionLightIntensity =
@@ -147,21 +113,54 @@ let setDirectionLightIntensity =
   {
     ...state,
     directionLightRecord:
-      setIntensity(
-        MappedIndexService.getMappedIndex(
-          light,
-          IndexDirectionLightService.getMappedIndexMap(
-            state.directionLightRecord,
-          ),
-        ),
-        intensity,
-        state.directionLightRecord,
+      setIntensity(light, intensity, state.directionLightRecord),
+  };
+};
+
+let getDirectionLightIsRender = (light, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.directionLightRecord,
+            )
+          )
+        )
       ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  getIsRender(light, state.directionLightRecord);
+};
+
+let setDirectionLightIsRender = (light, isRender, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.directionLightRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  {
+    ...state,
+    directionLightRecord:
+      setIsRender(light, isRender, state.directionLightRecord),
   };
 };
 
 let isMaxCount = ({directionLightRecord}) =>
   MaxCountLightService.isMaxCount(
-    directionLightRecord.index,
+    directionLightRecord.renderLightArr,
     BufferDirectionLightService.getBufferMaxCount(),
   );

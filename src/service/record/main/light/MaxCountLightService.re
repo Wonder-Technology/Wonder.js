@@ -1,2 +1,2 @@
-let isMaxCount = (lightIndexFromRecord, maxCount) =>
-  lightIndexFromRecord >= BufferDirectionLightService.getBufferMaxCount() - 1;
+let isMaxCount = (renderLightArr, maxCount) =>
+  CountLightService.getLightCount(renderLightArr) >= maxCount;

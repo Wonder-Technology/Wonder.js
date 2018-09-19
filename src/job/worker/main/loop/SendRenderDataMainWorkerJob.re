@@ -108,9 +108,12 @@ let _buildData =
         "index": directionLightRecord.index,
         "directionMap":
           DirectionDirectionLightMainService.buildDirectionMap(
-            directionLightRecord.index,
             DirectionDirectionLightMainService.getDirection,
             state,
+          ),
+        "renderLightArr":
+          RenderArrayDirectionLightServivce.getRenderLightArr(
+            directionLightRecord,
           ),
       },
       "pointLightData": {

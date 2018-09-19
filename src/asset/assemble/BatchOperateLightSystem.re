@@ -11,23 +11,14 @@ let batchSetDirectionLightData =
          {color, intensity}: WDType.directionLight,
          index,
        ) => {
-         let mappedIndex =
-           directionLightArr[index]
-           |. MappedIndexService.getMappedIndex(
-                IndexDirectionLightService.getMappedIndexMap(
-                  directionLightRecord,
-                ),
-              );
+         let index = directionLightArr[index];
 
          {
            ...state,
            directionLightRecord:
              directionLightRecord
-             |> OperateDirectionLightService.setColor(mappedIndex, color)
-             |> OperateDirectionLightService.setIntensity(
-                  mappedIndex,
-                  intensity,
-                ),
+             |> OperateDirectionLightService.setColor(index, color)
+             |> OperateDirectionLightService.setIntensity(index, intensity),
          };
        },
        state,
@@ -85,8 +76,7 @@ let setAmbientLightData = ({scene}, state) => {
     state :
     {
       let {color}: ambientLight =
-        optionalAmbientLight |> OptionService.unsafeGetJsonSerializedValue
-;
+        optionalAmbientLight |> OptionService.unsafeGetJsonSerializedValue;
 
       SceneAPI.setAmbientLightColor(color, state);
     };

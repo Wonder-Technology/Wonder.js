@@ -1,4 +1,9 @@
 open InitLightMaterialDirectionLightType;
 
-let getLightCount = ({index}) =>
-  CountLightService.getLightCount(index, BufferDirectionLightService.getBufferMaxCount());
+let getLightCount = ({renderLightArr}) =>
+  renderLightArr
+  |> CountLightService.getLightCount
+  |> CountLightService.checkNotExceedMaxCount(
+       _,
+       BufferDirectionLightService.getBufferMaxCount(),
+     );

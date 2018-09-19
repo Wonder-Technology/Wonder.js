@@ -7,20 +7,18 @@ let _initBasicMaterials = (gl, basicMaterialData, isSupportInstance, state) => {
     RecordBasicMaterialRenderWorkerService.getRecord(state);
   basicMaterialData##materialDataForWorkerInit
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (initBasicMaterialState, (materialIndex, isSourceInstance)) =>
-           [@bs]
-           InitInitBasicMaterialService.initMaterial(
-             gl,
-             (materialIndex, isSourceInstance, isSupportInstance),
-             initBasicMaterialState
-           )
+       (. initBasicMaterialState, (materialIndex, isSourceInstance)) =>
+         InitInitBasicMaterialService.initMaterial(.
+           gl,
+           (materialIndex, isSourceInstance, isSupportInstance),
+           initBasicMaterialState,
+         ),
+       CreateInitBasicMaterialStateRenderWorkerService.createInitMaterialState(
+         state,
        ),
-       CreateInitBasicMaterialStateRenderWorkerService.createInitMaterialState(state)
      )
   |> ignore;
-  state
+  state;
 };
 
 let _initLightMaterials = (gl, lightMaterialData, isSupportInstance, state) => {
@@ -28,39 +26,34 @@ let _initLightMaterials = (gl, lightMaterialData, isSupportInstance, state) => {
     RecordLightMaterialRenderWorkerService.getRecord(state);
   lightMaterialData##materialDataForWorkerInit
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (initLightMaterialState, (materialIndex, isSourceInstance)) =>
-           [@bs]
-           InitInitLightMaterialService.initMaterial(
-             gl,
-             (materialIndex, isSourceInstance, isSupportInstance),
-             initLightMaterialState
-           )
+       (. initLightMaterialState, (materialIndex, isSourceInstance)) =>
+         InitInitLightMaterialService.initMaterial(.
+           gl,
+           (materialIndex, isSourceInstance, isSupportInstance),
+           initLightMaterialState,
+         ),
+       CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState(
+         state,
        ),
-       CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState(state)
      )
   |> ignore;
-  state
+  state;
 };
 
 let execJob = (flags, e, stateData) =>
-  MostUtils.callFunc(
-    () => {
-      let state = StateRenderWorkerService.unsafeGetState(stateData);
-      let data = MessageService.getRecord(e);
-      let initData = data##initData;
-      let materialData = initData##materialData;
-      let basicMaterialData = data##initData##materialData##basicMaterialData;
-      let lightMaterialData = data##initData##materialData##lightMaterialData;
-      let directionLightData = initData##directionLightData;
-      let pointLightData = initData##pointLightData;
-      let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
-      let isSupportInstance = JudgeInstanceRenderWorkerService.isSupportInstance(state);
-      state
-      |> _initBasicMaterials(gl, basicMaterialData, isSupportInstance)
-      |> _initLightMaterials(gl, lightMaterialData, isSupportInstance)
-      |> StateRenderWorkerService.setState(stateData);
-      e
-    }
-  );
+  MostUtils.callFunc(() => {
+    let state = StateRenderWorkerService.unsafeGetState(stateData);
+    let data = MessageService.getRecord(e);
+    let initData = data##initData;
+    let materialData = initData##materialData;
+    let basicMaterialData = data##initData##materialData##basicMaterialData;
+    let lightMaterialData = data##initData##materialData##lightMaterialData;
+    let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+    let isSupportInstance =
+      JudgeInstanceRenderWorkerService.isSupportInstance(state);
+    state
+    |> _initBasicMaterials(gl, basicMaterialData, isSupportInstance)
+    |> _initLightMaterials(gl, lightMaterialData, isSupportInstance)
+    |> StateRenderWorkerService.setState(stateData);
+    e;
+  });

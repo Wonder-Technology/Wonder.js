@@ -19,6 +19,13 @@ let _ =
         let (_, light) = createDirectionLight(state^);
         expect(light) == 0;
       });
+      test("set is render to true", () => {
+        let (state, light) = createDirectionLight(state^);
+
+        DirectionLightAPI.getDirectionLightIsRender(light, state)
+        |> expect == true;
+      });
+
       describe("contract check", () =>
         describe("limit the total alive count of light to 4", () => {
           test("test create", () => {
@@ -30,9 +37,7 @@ let _ =
               let (state, light) = createDirectionLight(state);
               ();
             })
-            |> toThrowMessage(
-                 "expect index: 4 <= maxIndex: 3, but actual not",
-               );
+            |> toThrowMessage("expect light count: 5 <= max count: 4");
           });
           test("test create after dispose", () => {
             let (state, gameObject1, _) =
@@ -45,6 +50,26 @@ let _ =
               DirectionLightTool.createGameObject(state);
             let state =
               state |> GameObjectTool.disposeGameObject(gameObject1);
+            expect(() => {
+              let (state, light) = createDirectionLight(state);
+              ();
+            })
+            |> not_
+            |> toThrow;
+          });
+          test("test set is render", () => {
+            let (state, light1) = createDirectionLight(state^);
+            let (state, light2) = createDirectionLight(state);
+            let (state, light3) = createDirectionLight(state);
+            let (state, light4) = createDirectionLight(state);
+
+            let state =
+              DirectionLightAPI.setDirectionLightIsRender(
+                light4,
+                false,
+                state,
+              );
+
             expect(() => {
               let (state, light) = createDirectionLight(state);
               ();
@@ -113,36 +138,37 @@ let _ =
           DirectionLightTool.isAlive(light1, state) |> expect == false;
         });
 
-        describe("remove from gameObjectMap", () =>
-          describe("swap with last one", () => {
-            test("test only has one", () => {
-              open DirectionLightType;
-              let (state, gameObject1, light1) =
-                DirectionLightTool.createGameObject(state^);
-              let state =
-                state
-                |> GameObjectTool.disposeGameObjectDirectionLightComponent(
-                     gameObject1,
-                     light1,
-                   );
-              let {gameObjectMap} = DirectionLightTool.getRecord(state);
-              gameObjectMap |> expect == [||];
-            });
-            test("test two", () => {
-              open DirectionLightType;
-              let (state, gameObject1, light1) =
-                DirectionLightTool.createGameObject(state^);
-              let (state, gameObject2, light2) =
-                DirectionLightTool.createGameObject(state);
-              let state =
-                state
-                |> GameObjectTool.disposeGameObjectDirectionLightComponent(
-                     gameObject1,
-                     light1,
-                   );
-              let {gameObjectMap} = DirectionLightTool.getRecord(state);
-              gameObjectMap |> expect == [|gameObject2|];
-            });
+        test("remove from gameObjectMap", () => {
+          open DirectionLightType;
+          let (state, gameObject1, light1) =
+            DirectionLightTool.createGameObject(state^);
+          let state =
+            state
+            |> GameObjectTool.disposeGameObjectDirectionLightComponent(
+                 gameObject1,
+                 light1,
+               );
+          let {gameObjectMap} = DirectionLightTool.getRecord(state);
+          gameObjectMap
+          |> WonderCommonlib.SparseMapService.has(light1)
+          |> expect == false;
+        });
+
+        describe("remove from renderLightArr", () =>
+          test("test", () => {
+            open DirectionLightType;
+            let (state, gameObject1, light1) =
+              DirectionLightTool.createGameObject(state^);
+            let (state, gameObject2, light2) =
+              DirectionLightTool.createGameObject(state);
+            let state =
+              state
+              |> GameObjectTool.disposeGameObjectDirectionLightComponent(
+                   gameObject1,
+                   light1,
+                 );
+            let {renderLightArr} = DirectionLightTool.getRecord(state);
+            renderLightArr |> expect == [|light2|];
           })
         );
 
@@ -174,7 +200,7 @@ let _ =
                 (light1, light2),
               );
             };
-            test("swap with last one and reset removed one's value", () => {
+            test("reset removed one's value", () => {
               let (
                 state,
                 (gameObject1, gameObject2),
@@ -186,7 +212,7 @@ let _ =
                 DirectionLightTool.getColor(0, state),
                 DirectionLightTool.getColor(1, state),
               )
-              |> expect == (color2, DirectionLightTool.getDefaultColor());
+              |> expect == (DirectionLightTool.getDefaultColor(), color2);
             });
           });
           describe("remove from intensities", () => {
@@ -222,7 +248,7 @@ let _ =
                 (light1, light2),
               );
             };
-            test("swap with last one and reset removed one's value", () => {
+            test("reset removed one's value", () => {
               let (
                 state,
                 (gameObject1, gameObject2),
@@ -235,35 +261,12 @@ let _ =
                 DirectionLightTool.getIntensity(1, state),
               )
               |>
-              expect == (intensity2, DirectionLightTool.getDefaultIntensity());
+              expect == (DirectionLightTool.getDefaultIntensity(), intensity2);
             });
           });
         });
       })
     );
-
-    /* describe("fix bug", () =>
-             test("aaaa", () => {
-               let (state, gameObject1, light1) =
-                 DirectionLightTool.createGameObject(state^);
-               let (state, gameObject2, light2) =
-                 DirectionLightTool.createGameObject(state);
-
-
-                 /* WonderLog.Log.print(
-       GameObjectDirectionLightService.unsafeGetGameObject(light2, state.directionLightRecord)
-                 ) |> ignore; */
-
-               let state = GameObjectTool.disposeGameObject(gameObject1, state);
-
-               PositionLightMainService.buildPositionMap(
-                 DirectionLightTool.getRecord(state).index,
-                 PositionDirectionLightMainService.getPosition,
-                 state,
-               )
-               |> expect == [||];
-             })
-           ); */
 
     describe("contract check: is alive", () =>
       describe("if light is disposed", () => {
@@ -296,27 +299,27 @@ let _ =
         );
       })
     );
-    describe("getLightCount", () =>
-      describe("contract check", () =>
-        test("count should <= max buffer count", () =>
-          expect(() => {
-            let state =
-              {
-                ...state^,
-                directionLightRecord: {
-                  ...state^.directionLightRecord,
-                  index: 5,
-                },
-              }
-              |> DirectionLightTool.getLightCount;
-            ();
-          })
-          |> toThrowMessage("light count: 5 <= max buffer count: 4")
-        )
-      )
-    );
+    /* describe("getLightCount", () =>
+         describe("contract check", () =>
+           test("count should <= max buffer count", () =>
+             expect(() => {
+               let state =
+                 {
+                   ...state^,
+                   directionLightRecord: {
+                     ...state^.directionLightRecord,
+                     index: 5,
+                   },
+                 }
+                 |> DirectionLightTool.getLightCount;
+               ();
+             })
+             |> toThrowMessage("light count: 5 <= max buffer count: 4")
+           )
+         )
+       ); */
 
-    describe("isMaxCount", () =>
+    describe("isMaxCount", () => {
       test("if already have created max count lights, return true", () => {
         let (state, _) = createDirectionLight(state^);
         let (state, _) = createDirectionLight(state);
@@ -324,6 +327,17 @@ let _ =
         let (state, _) = createDirectionLight(state);
 
         state |> DirectionLightAPI.isMaxCount |> expect == true;
-      })
-    );
+      });
+      test("test set is render", () => {
+        let (state, _) = createDirectionLight(state^);
+        let (state, _) = createDirectionLight(state);
+        let (state, _) = createDirectionLight(state);
+        let (state, light4) = createDirectionLight(state);
+
+        let state =
+          DirectionLightAPI.setDirectionLightIsRender(light4, false, state);
+
+        state |> DirectionLightAPI.isMaxCount |> expect == false;
+      });
+    });
   });

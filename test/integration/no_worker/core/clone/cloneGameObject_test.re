@@ -312,6 +312,27 @@ let _ =
               )
               |> expect == (intensity1, intensity1);
             });
+            test("set isRender to true", () => {
+              open StateDataMainType;
+              let (state, gameObject1, light1) =
+                DirectionLightTool.createGameObject(state^);
+              let state =
+                state
+                |> DirectionLightAPI.setDirectionLightIsRender(light1, false);
+              let (state, _, clonedComponentArr) =
+                _clone(gameObject1, state);
+              (
+                DirectionLightAPI.getDirectionLightIsRender(
+                  clonedComponentArr[0],
+                  state,
+                ),
+                DirectionLightAPI.getDirectionLightIsRender(
+                  clonedComponentArr[1],
+                  state,
+                ),
+              )
+              |> expect == (true, true);
+            });
           });
         });
         describe("test clone point light component", () => {

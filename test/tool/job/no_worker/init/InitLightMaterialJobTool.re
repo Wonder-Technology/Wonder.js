@@ -4,7 +4,6 @@ let initWithJobConfig = (sandbox, noWorkerJobRecord) =>
 let prepareGameObject = (sandbox, state) => {
   open GameObjectAPI;
   open LightMaterialAPI;
-  
   open Sinon;
   let (state, material) = createLightMaterial(state);
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
@@ -13,40 +12,44 @@ let prepareGameObject = (sandbox, state) => {
     state
     |> addGameObjectLightMaterialComponent(gameObject, material)
     |> addGameObjectGeometryComponent(gameObject, geometry);
-  (state, gameObject, geometry, material)
+  (state, gameObject, geometry, material);
 };
 
 let prepareGameObjectWithMap = (sandbox, diffuseMap, specularMap, state) => {
   open GameObjectAPI;
   open LightMaterialAPI;
-  
   open Sinon;
   let (state, material) = createLightMaterial(state);
   let (state, (texture1, texture2)) =
-    LightMaterialTool.createAndSetMapsWithMap(material, diffuseMap, specularMap, state);
+    LightMaterialTool.createAndSetMapsWithMap(
+      material,
+      diffuseMap,
+      specularMap,
+      state,
+    );
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
   let (state, gameObject) = state |> createGameObject;
   let state =
     state
     |> addGameObjectLightMaterialComponent(gameObject, material)
     |> addGameObjectGeometryComponent(gameObject, geometry);
-  (state, gameObject, geometry, material)
+  (state, gameObject, geometry, material);
 };
 
 let prepareGameObjectWithCreatedMap = (sandbox, state) => {
   open GameObjectAPI;
   open LightMaterialAPI;
-  
   open Sinon;
   let (state, material) = createLightMaterial(state);
-  let (state, (texture1, texture2)) = LightMaterialTool.createAndSetMaps(material, state);
+  let (state, (texture1, texture2)) =
+    LightMaterialTool.createAndSetMaps(material, state);
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
   let (state, gameObject) = state |> createGameObject;
   let state =
     state
     |> addGameObjectLightMaterialComponent(gameObject, material)
     |> addGameObjectGeometryComponent(gameObject, geometry);
-  (state, gameObject, geometry, material)
+  (state, gameObject, geometry, material);
 };
 
 let exec = (state: StateDataMainType.state) => InitRenderJobTool.exec(state);
@@ -58,12 +61,15 @@ let prepareForJudgeGLSLNotExec = (prepareGameObjectFunc, sandbox, state) => {
   let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
   let state =
     state
-    |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ~createProgram, ()));
-  (state, shaderSource, gameObject)
+    |> FakeGlTool.setFakeGl(
+         FakeGlTool.buildFakeGl(~sandbox, ~shaderSource, ~createProgram, ()),
+       );
+  (state, shaderSource, gameObject);
 };
 
 let prepareForJudgeGLSL = (prepareGameObjectFunc, sandbox, state) => {
-  let (state, shaderSource, _) = prepareForJudgeGLSLNotExec(prepareGameObjectFunc, sandbox, state);
+  let (state, shaderSource, _) =
+    prepareForJudgeGLSLNotExec(prepareGameObjectFunc, sandbox, state);
   let state = state |> exec;
-  shaderSource
+  (state, shaderSource);
 };

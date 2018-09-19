@@ -24,9 +24,6 @@ let getDefaultColor = RecordDirectionLightMainService.getDefaultColor;
 
 let getDefaultIntensity = RecordDirectionLightMainService.getDefaultIntensity;
 
-let getMappedIndex = (index, state) =>
-  state |> IndexDirectionLightService.getMappedIndexMap |> MappedIndexService.getMappedIndex(index);
-
 let getLightCount = (state) =>
   CountInitLightMaterialDirectionLightService.getLightCount(
     InitLightMaterialStateTool.createStateWithoutMaterialData(state).directionLightRecord

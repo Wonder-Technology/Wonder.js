@@ -49,8 +49,7 @@ let createRenderState =
     ) => {
   let {localToWorldMatrices, localToWorldMatrixCacheMap, normalMatrixCacheMap} as transformRecord =
     RecordTransformRenderWorkerService.getRecord(state);
-  let geometryRecord =
-    RecordGeometryRenderWorkerService.getRecord(state);
+  let geometryRecord = RecordGeometryRenderWorkerService.getRecord(state);
   let basicMaterialRecord =
     RecordBasicMaterialRenderWorkerService.getRecord(state);
   let lightMaterialRecord =
@@ -201,6 +200,10 @@ let createRenderState =
       intensities: directionLightRecord.intensities,
       directionMap:
         RecordRenderWorkerDirectionLightService.getDirectionMap(
+          directionLightRecord,
+        ),
+      renderLightArr:
+        RecordRenderWorkerDirectionLightService.getRenderLightArr(
           directionLightRecord,
         ),
     },

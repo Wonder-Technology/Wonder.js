@@ -23,14 +23,14 @@ let _disposeData =
   ...record,
   drawModes:
     DisposeTypeArrayService.deleteAndResetUint8(.
-      meshRenderer,
+      BufferMeshRendererService.getDrawModeIndex(meshRenderer),
       BufferMeshRendererService.getDefaultDrawMode()
       |> DrawModeType.drawModeToUint8,
       drawModes,
     ),
   isRenders:
     DisposeTypeArrayService.deleteAndResetUint8(.
-      meshRenderer,
+      BufferMeshRendererService.getIsRenderIndex(meshRenderer),
       BufferMeshRendererService.getDefaultIsRender(),
       isRenders,
     ),

@@ -740,15 +740,41 @@ let _ =
                 state,
               );
             describe("send structure data", () => {
+              test("if light's isRender === false, not send its data", () => {
+                let (state, lightGameObject1, _, light1, _) =
+                  _prepareOne(sandbox, state^);
+                let (state, lightGameObject2, light2) =
+                  DirectionLightTool.createGameObject(state);
+                let state =
+                   DirectionLightAPI.setDirectionLightIsRender(
+                     light1, false, state
+                   );
+                let (state, posArr, (uniform1f, uniform3f)) =
+                  _setFakeGl(
+                    sandbox,
+                    [|
+                      "u_directionLights[0].direction",
+                      "u_directionLights[1].direction",
+                    |],
+                    state,
+                  );
+                let state = state |> RenderJobsTool.init;
+                let state = state |> DirectorTool.runWithDefaultTime;
+
+                (
+                  uniform3f |> withOneArg(posArr[0]) |> getCallCount,
+                  uniform3f |> withOneArg(posArr[1]) |> getCallCount,
+                )
+                |> expect == (1, 0);
+              });
+
               describe("send direction", () => {
                 describe("fix bug", () =>
                   test("test dispose first light gameObject", () => {
                     let (state, lightGameObject1, _, light1, _) =
                       _prepareOne(sandbox, state^);
-
                     let (state, lightGameObject2, light2) =
                       DirectionLightTool.createGameObject(state);
-
                     let eulerAngles1 = (45., 1., 0.);
                     let eulerAngles2 = (1., 4., 3.);
                     let state =
@@ -769,7 +795,6 @@ let _ =
                            ),
                            eulerAngles2,
                          );
-
                     let (state, posArr, (uniform1f, uniform3f)) =
                       _setFakeGl(
                         sandbox,
@@ -777,7 +802,6 @@ let _ =
                         state,
                       );
                     let state = state |> RenderJobsTool.init;
-
                     let state =
                       GameObjectTool.disposeGameObject(
                         lightGameObject1,
