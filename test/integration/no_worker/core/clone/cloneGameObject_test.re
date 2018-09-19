@@ -1246,30 +1246,65 @@ let _ =
              )
           |> expect == [|sourceFovy, sourceFovy|];
         });
-        test(
+
+        describe(
           "set cloned perspectiveCameraProjection's aspect by source one's aspect",
           () => {
-          let (
-            state,
-            _,
-            perspectiveCameraProjection1,
-            _,
-            clonedPerspectiveCameraProjectionArr,
-          ) =
-            _prepare(state^);
-          let sourceAspect =
-            PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect(
-              perspectiveCameraProjection1,
+          test("test has aspect", () => {
+            let (
               state,
-            );
-          clonedPerspectiveCameraProjectionArr
-          |> Js.Array.map(perspectiveCameraProjection =>
-               PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect(
-                 perspectiveCameraProjection,
-                 state,
+              _,
+              perspectiveCameraProjection1,
+              _,
+              clonedPerspectiveCameraProjectionArr,
+            ) =
+              _prepare(state^);
+            let sourceAspect =
+              PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect(
+                perspectiveCameraProjection1,
+                state,
+              );
+            clonedPerspectiveCameraProjectionArr
+            |> Js.Array.map(perspectiveCameraProjection =>
+                 PerspectiveCameraProjectionAPI.unsafeGetPerspectiveCameraAspect(
+                   perspectiveCameraProjection,
+                   state,
+                 )
                )
-             )
-          |> expect == [|sourceAspect, sourceAspect|];
+            |> expect == [|sourceAspect, sourceAspect|];
+          });
+          test("if not has aspect, not set it", () => {
+            let (state, _) =
+              PerspectiveCameraProjectionAPI.createPerspectiveCameraProjection(
+                state^,
+              );
+            let (state, gameObject1, _, (_, perspectiveCameraProjection1)) =
+              CameraTool.createCameraGameObjectWithFunc(
+                CameraTool.createBasicCameraViewPerspectiveCameraWithoutAspect,
+                state,
+              );
+
+            let (state, clonedGameObjectArr) =
+              _cloneGameObject(gameObject1, 2, state);
+            let clonedPerspectiveCameraProjectionArr =
+              clonedGameObjectArr
+              |> CloneTool.getFlattenClonedGameObjectArr
+              |> Js.Array.map(clonedGameObject =>
+                   unsafeGetGameObjectPerspectiveCameraProjectionComponent(
+                     clonedGameObject,
+                     state,
+                   )
+                 );
+
+            clonedPerspectiveCameraProjectionArr
+            |> Js.Array.map(perspectiveCameraProjection =>
+                 PerspectiveCameraProjectionTool.getAspect(
+                   perspectiveCameraProjection,
+                   state,
+                 )
+               )
+            |> expect == [|None, None|];
+          });
         });
       });
 

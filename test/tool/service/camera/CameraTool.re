@@ -26,11 +26,12 @@ let createBasicCameraViewPerspectiveCameraWithoutAspect = state => {
   (state, basicCameraView, perspectiveCameraProjection);
 };
 
-let createCameraGameObject = state => {
+let createCameraGameObjectWithFunc =
+    (createBasicCameraViewPerspectiveCameraFunc, state) => {
   open GameObjectAPI;
   open BasicCameraViewAPI;
   let (state, basicCameraView, perspectiveCameraProjection) =
-    createBasicCameraViewPerspectiveCamera(state);
+    createBasicCameraViewPerspectiveCameraFunc(state);
   let (state, gameObject) = state |> GameObjectAPI.createGameObject;
   let state =
     state
@@ -52,6 +53,12 @@ let createCameraGameObject = state => {
     (basicCameraView, perspectiveCameraProjection),
   );
 };
+
+let createCameraGameObject = state =>
+  createCameraGameObjectWithFunc(
+    createBasicCameraViewPerspectiveCamera,
+    state,
+  );
 
 let createCameraGameObjectWithoutAspect = state => {
   let (state, gameObject, transform, (basicCameraView, cameraProjection)) =
