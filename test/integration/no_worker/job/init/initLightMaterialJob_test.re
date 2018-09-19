@@ -784,14 +784,18 @@ vec3 getViewDir(){
                        ),
                      );
 
-                /* TODO add point light test */
                 let state =
                   state
                   |> DirectionLightAPI.setDirectionLightIsRender(
                        light1,
                        false,
                      )
-                  |> DirectionLightAPI.setDirectionLightIsRender(light2, true);
+                  |> DirectionLightAPI.setDirectionLightIsRender(
+                       light2,
+                       true,
+                     )
+                  |> PointLightAPI.setPointLightIsRender(light3, false)
+                  |> PointLightAPI.setPointLightIsRender(light4, true);
                 let state = state |> InitLightMaterialJobTool.exec;
 
                 GLSLTool.containMultiline(
@@ -799,7 +803,7 @@ vec3 getViewDir(){
                   [
                     {|#define DIRECTION_LIGHTS_COUNT 1
 |},
-                    {|#define POINT_LIGHTS_COUNT 2
+                    {|#define POINT_LIGHTS_COUNT 1
 |},
                   ],
                 )

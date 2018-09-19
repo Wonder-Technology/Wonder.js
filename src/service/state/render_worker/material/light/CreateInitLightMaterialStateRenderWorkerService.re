@@ -28,6 +28,10 @@ let createInitMaterialState =
     },
     pointLightRecord: {
       index: pointLightRecord.index,
+      renderLightArr:
+        RecordRenderWorkerPointLightService.getRenderLightArr(
+          pointLightRecord,
+        ),
     },
     materialRecord: {
       index,

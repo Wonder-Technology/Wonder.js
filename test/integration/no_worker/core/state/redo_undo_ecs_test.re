@@ -875,16 +875,17 @@ let _ =
               )
             );
           });
-          test("shadow copy mappedIndexMap, gameObjectMap", () =>
+          test("shadow copy mappedIndexMap, gameObjectMap, renderLightArr", () =>
             StateDataMainType.(
               PointLightType.(
                 MainStateTool.testShadowCopyArrayLikeMapData(
                   state => {
-                    let {mappedIndexMap, gameObjectMap} =
+                    let {disposedIndexArray, gameObjectMap, renderLightArr} =
                       PointLightTool.getRecord(state);
                     [|
-                      mappedIndexMap |> Obj.magic,
+                      disposedIndexArray |> Obj.magic,
                       gameObjectMap |> Obj.magic,
+                      renderLightArr |> Obj.magic,
                     |];
                   },
                   state^,

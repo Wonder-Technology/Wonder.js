@@ -9,6 +9,7 @@ type pointLightRecord = {
   linears: Js.Typed_array.Float32Array.t,
   quadratics: Js.Typed_array.Float32Array.t,
   ranges: Js.Typed_array.Float32Array.t,
-  mappedIndexMap: WonderCommonlib.SparseMapService.t(int),
-  gameObjectMap
+  renderLightArr: array(component),
+  disposedIndexArray: array(component),
+  gameObjectMap,
 };

@@ -1,124 +1,129 @@
 open PointLightType;
 
-let getColor = (mappedIndex, {colors}) => RecordPointLightMainService.getColor(mappedIndex, colors);
+let getColor = (light, {colors}) =>
+  RecordPointLightMainService.getColor(light, colors);
 
-let setColor = (mappedIndex, color: array(float), {colors} as record) => {
+let setColor = (light, color: array(float), {colors} as record) => {
   ...record,
-  colors: RecordPointLightMainService.setColor(mappedIndex, color, colors)
+  colors: RecordPointLightMainService.setColor(light, color, colors),
 };
 
-let getIntensity = (mappedIndex, {intensities}) =>
-  RecordPointLightMainService.getIntensity(mappedIndex, intensities);
+let getIntensity = (light, {intensities}) =>
+  RecordPointLightMainService.getIntensity(light, intensities);
 
-let setIntensity = (mappedIndex, intensity, {intensities} as record) => {
+let setIntensity = (light, intensity, {intensities} as record) => {
   ...record,
-  intensities: RecordPointLightMainService.setIntensity(mappedIndex, intensity, intensities)
+  intensities:
+    RecordPointLightMainService.setIntensity(light, intensity, intensities),
 };
 
-let getConstant = (mappedIndex, {constants}) =>
-  RecordPointLightMainService.getConstant(mappedIndex, constants);
+let getConstant = (light, {constants}) =>
+  RecordPointLightMainService.getConstant(light, constants);
 
-let setConstant = (mappedIndex, constant, {constants} as record) => {
+let setConstant = (light, constant, {constants} as record) => {
   ...record,
-  constants: RecordPointLightMainService.setIntensity(mappedIndex, constant, constants)
+  constants:
+    RecordPointLightMainService.setIntensity(light, constant, constants),
 };
 
-let getLinear = (mappedIndex, {linears}) =>
-  RecordPointLightMainService.getLinear(mappedIndex, linears);
+let getLinear = (light, {linears}) =>
+  RecordPointLightMainService.getLinear(light, linears);
 
-let setLinear = (mappedIndex, linear, {linears} as record) => {
+let setLinear = (light, linear, {linears} as record) => {
   ...record,
-  linears: RecordPointLightMainService.setLinear(mappedIndex, linear, linears)
+  linears: RecordPointLightMainService.setLinear(light, linear, linears),
 };
 
-let getQuadratic = (mappedIndex, {quadratics}) =>
-  RecordPointLightMainService.getQuadratic(mappedIndex, quadratics);
+let getQuadratic = (light, {quadratics}) =>
+  RecordPointLightMainService.getQuadratic(light, quadratics);
 
-let setQuadratic = (mappedIndex, quadratic, {quadratics} as record) => {
+let setQuadratic = (light, quadratic, {quadratics} as record) => {
   ...record,
-  quadratics: RecordPointLightMainService.setQuadratic(mappedIndex, quadratic, quadratics)
+  quadratics:
+    RecordPointLightMainService.setQuadratic(light, quadratic, quadratics),
 };
 
-let getRange = (mappedIndex, {ranges}) => RecordPointLightMainService.getRange(mappedIndex, ranges);
+let getRange = (light, {ranges}) =>
+  RecordPointLightMainService.getRange(light, ranges);
 
-let setRange = (mappedIndex, range, {ranges} as record) => {
+let setRange = (light, range, {ranges} as record) => {
   ...record,
-  ranges: RecordPointLightMainService.setRange(mappedIndex, range, ranges)
+  ranges: RecordPointLightMainService.setRange(light, range, ranges),
 };
 
-/* let setRangeLevel = (mappedIndex, level, {linears, quadratics, ranges} as record) =>
+/* let setRangeLevel = (light, level, {linears, quadratics, ranges} as record) =>
    switch level {
    | 0 => {
        ...record,
-       ranges: setRange(mappedIndex, 7., record),
-       linears: setLinear(mappedIndex, 0.7, record),
-       quadratics: setQuadratic(mappedIndex, 1.8, record)
+       ranges: setRange(light, 7., record),
+       linears: setLinear(light, 0.7, record),
+       quadratics: setQuadratic(light, 1.8, record)
      }
    | 1 => {
        ...record,
-       ranges: setRange(mappedIndex, 13., record),
-       linears: setLinear(mappedIndex, 0.35, record),
-       quadratics: setQuadratic(mappedIndex, 0.44, record)
+       ranges: setRange(light, 13., record),
+       linears: setLinear(light, 0.35, record),
+       quadratics: setQuadratic(light, 0.44, record)
      }
    | 2 => {
        ...record,
-       ranges: setRange(mappedIndex, 20., record),
-       linears: setLinear(mappedIndex, 0.22, record),
-       quadratics: setQuadratic(mappedIndex, 0.20, record)
+       ranges: setRange(light, 20., record),
+       linears: setLinear(light, 0.22, record),
+       quadratics: setQuadratic(light, 0.20, record)
      }
    | 3 => {
        ...record,
-       ranges: setRange(mappedIndex, 32., record),
-       linears: setLinear(mappedIndex, 0.14, record),
-       quadratics: setQuadratic(mappedIndex, 0.07, record)
+       ranges: setRange(light, 32., record),
+       linears: setLinear(light, 0.14, record),
+       quadratics: setQuadratic(light, 0.07, record)
      }
    | 4 => {
        ...record,
-       ranges: setRange(mappedIndex, 50., record),
-       linears: setLinear(mappedIndex, 0.09, record),
-       quadratics: setQuadratic(mappedIndex, 0.032, record)
+       ranges: setRange(light, 50., record),
+       linears: setLinear(light, 0.09, record),
+       quadratics: setQuadratic(light, 0.032, record)
      }
    | 5 => {
        ...record,
-       ranges: setRange(mappedIndex, 65., record),
-       linears: setLinear(mappedIndex, 0.07, record),
-       quadratics: setQuadratic(mappedIndex, 0.017, record)
+       ranges: setRange(light, 65., record),
+       linears: setLinear(light, 0.07, record),
+       quadratics: setQuadratic(light, 0.017, record)
      }
    | 6 => {
        ...record,
-       ranges: setRange(mappedIndex, 100., record),
-       linears: setLinear(mappedIndex, 0.045, record),
-       quadratics: setQuadratic(mappedIndex, 0.0075, record)
+       ranges: setRange(light, 100., record),
+       linears: setLinear(light, 0.045, record),
+       quadratics: setQuadratic(light, 0.0075, record)
      }
    | 7 => {
        ...record,
-       ranges: setRange(mappedIndex, 160., record),
-       linears: setLinear(mappedIndex, 0.027, record),
-       quadratics: setQuadratic(mappedIndex, 0.0028, record)
+       ranges: setRange(light, 160., record),
+       linears: setLinear(light, 0.027, record),
+       quadratics: setQuadratic(light, 0.0028, record)
      }
    | 8 => {
        ...record,
-       ranges: setRange(mappedIndex, 200., record),
-       linears: setLinear(mappedIndex, 0.022, record),
-       quadratics: setQuadratic(mappedIndex, 0.0019, record)
+       ranges: setRange(light, 200., record),
+       linears: setLinear(light, 0.022, record),
+       quadratics: setQuadratic(light, 0.0019, record)
      }
    | 9 => {
        ...record,
-       ranges: setRange(mappedIndex, 325., record),
-       linears: setLinear(mappedIndex, 0.014, record),
-       quadratics: setQuadratic(mappedIndex, 0.0007, record)
+       ranges: setRange(light, 325., record),
+       linears: setLinear(light, 0.014, record),
+       quadratics: setQuadratic(light, 0.0007, record)
      }
    | 10 => {
        ...record,
-       ranges: setRange(mappedIndex, 600., record),
-       linears: setLinear(mappedIndex, 0.007, record),
-       quadratics: setQuadratic(mappedIndex, 0.0002, record)
+       ranges: setRange(light, 600., record),
+       linears: setLinear(light, 0.007, record),
+       quadratics: setQuadratic(light, 0.0002, record)
      }
    | 11 => {
        ...record,
-       ranges: setRange(mappedIndex, 3250., record),
-       linears: setLinear(mappedIndex, 0.0014, record),
-       quadratics: setQuadratic(mappedIndex, 0.000007, record)
+       ranges: setRange(light, 3250., record),
+       linears: setLinear(light, 0.0014, record),
+       quadratics: setQuadratic(light, 0.000007, record)
      }
    | _ =>
      WonderLog.Log.fatal(
@@ -131,68 +136,68 @@ let setRange = (mappedIndex, range, {ranges} as record) => {
        )
      )
    }; */
-let setRangeLevel = (mappedIndex, level, {linears, quadratics, ranges} as record) =>
-  switch level {
+let setRangeLevel = (light, level, {linears, quadratics, ranges} as record) =>
+  switch (level) {
   | 0 =>
     record
-    |> setRange(mappedIndex, 7.)
-    |> setLinear(mappedIndex, 0.7)
-    |> setQuadratic(mappedIndex, 1.8)
+    |> setRange(light, 7.)
+    |> setLinear(light, 0.7)
+    |> setQuadratic(light, 1.8)
   | 1 =>
     record
-    |> setRange(mappedIndex, 13.)
-    |> setLinear(mappedIndex, 0.35)
-    |> setQuadratic(mappedIndex, 0.44)
+    |> setRange(light, 13.)
+    |> setLinear(light, 0.35)
+    |> setQuadratic(light, 0.44)
   | 2 =>
     record
-    |> setRange(mappedIndex, 20.)
-    |> setLinear(mappedIndex, 0.22)
-    |> setQuadratic(mappedIndex, 0.20)
+    |> setRange(light, 20.)
+    |> setLinear(light, 0.22)
+    |> setQuadratic(light, 0.20)
   | 3 =>
     record
-    |> setRange(mappedIndex, 32.)
-    |> setLinear(mappedIndex, 0.14)
-    |> setQuadratic(mappedIndex, 0.07)
+    |> setRange(light, 32.)
+    |> setLinear(light, 0.14)
+    |> setQuadratic(light, 0.07)
   | 4 =>
     record
-    |> setRange(mappedIndex, 50.)
-    |> setLinear(mappedIndex, 0.09)
-    |> setQuadratic(mappedIndex, 0.032)
+    |> setRange(light, 50.)
+    |> setLinear(light, 0.09)
+    |> setQuadratic(light, 0.032)
   | 5 =>
     record
-    |> setRange(mappedIndex, 65.)
-    |> setLinear(mappedIndex, 0.07)
-    |> setQuadratic(mappedIndex, 0.017)
+    |> setRange(light, 65.)
+    |> setLinear(light, 0.07)
+    |> setQuadratic(light, 0.017)
   | 6 =>
     record
-    |> setRange(mappedIndex, 100.)
-    |> setLinear(mappedIndex, 0.045)
-    |> setQuadratic(mappedIndex, 0.0075)
+    |> setRange(light, 100.)
+    |> setLinear(light, 0.045)
+    |> setQuadratic(light, 0.0075)
   | 7 =>
     record
-    |> setRange(mappedIndex, 160.)
-    |> setLinear(mappedIndex, 0.027)
-    |> setQuadratic(mappedIndex, 0.0028)
+    |> setRange(light, 160.)
+    |> setLinear(light, 0.027)
+    |> setQuadratic(light, 0.0028)
   | 8 =>
     record
-    |> setRange(mappedIndex, 200.)
-    |> setLinear(mappedIndex, 0.022)
-    |> setQuadratic(mappedIndex, 0.0019)
+    |> setRange(light, 200.)
+    |> setLinear(light, 0.022)
+    |> setQuadratic(light, 0.0019)
   | 9 =>
     record
-    |> setRange(mappedIndex, 325.)
-    |> setLinear(mappedIndex, 0.014)
-    |> setQuadratic(mappedIndex, 0.0007)
+    |> setRange(light, 325.)
+    |> setLinear(light, 0.014)
+    |> setQuadratic(light, 0.0007)
   | 10 =>
     record
-    |> setRange(mappedIndex, 600.)
-    |> setLinear(mappedIndex, 0.007)
-    |> setQuadratic(mappedIndex, 0.0002)
+    |> setRange(light, 600.)
+    |> setLinear(light, 0.007)
+    |> setQuadratic(light, 0.0002)
   | 11 =>
     record
-    |> setRange(mappedIndex, 3250.)
-    |> setLinear(mappedIndex, 0.0014)
-    |> setQuadratic(mappedIndex, 0.000007)
+    |> setRange(light, 3250.)
+    |> setLinear(light, 0.0014)
+    |> setQuadratic(light, 0.000007)
   | _ =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
@@ -200,7 +205,28 @@ let setRangeLevel = (mappedIndex, level, {linears, quadratics, ranges} as record
         ~description={j|shouldn't exceed point light range|j},
         ~reason="level is too large",
         ~solution={j|level should in [0, 11]|j},
-        ~params={j|level: $level|j}
-      )
+        ~params={j|level: $level|j},
+      ),
     )
   };
+
+let getIsRender = (light, {renderLightArr} as record) =>
+  renderLightArr |> Js.Array.includes(light);
+
+let setIsRender = (light, isRender, {renderLightArr} as record) =>
+  isRender ?
+    {
+      ...record,
+      renderLightArr:
+        renderLightArr
+        |> ArrayService.push(light)
+        |> WonderCommonlib.ArrayService.removeDuplicateItems,
+    } :
+    {
+      ...record,
+      renderLightArr:
+        RenderLightArrLightService.removeFromRenderLightArr(
+          light,
+          renderLightArr,
+        ),
+    };

@@ -2,16 +2,13 @@ open PointLightType;
 
 open DisposeComponentService;
 
-let isAlive = (light, record) =>
-  DisposeLightService.isAlive(light, IndexPointLightService.getMappedIndexMap(record));
+let isAlive = (light, {disposedIndexArray}) =>
+  DisposeComponentService.isAlive(light, disposedIndexArray);
 
 let _disposeData =
-  [@bs]
-  (
     (
-      sourceIndex,
+      light,
       {
-        index,
         colors,
         intensities,
         constants,
@@ -19,96 +16,79 @@ let _disposeData =
         quadratics,
         ranges,
         gameObjectMap,
-        mappedIndexMap
-      } as record
+        renderLightArr,
+      } as record,
     ) => {
-      let lastComponentIndex = pred(index);
-      let mappedSourceIndex = mappedIndexMap |> MappedIndexService.getMappedIndex(sourceIndex);
-      let gameObjectMap = DisposeLightService.disposeData(mappedSourceIndex, lastComponentIndex, gameObjectMap);
-      {
-        ...record,
-        index: pred(index),
-        mappedIndexMap:
-          DisposeLightService.setMappedIndexMap(
-            sourceIndex,
-            mappedSourceIndex,
-            lastComponentIndex,
-            mappedIndexMap
-          ),
-        colors:
-          colors
-          |> DisposeLightService.swapData(
-               (mappedSourceIndex, lastComponentIndex),
-               (
-                 mappedIndexMap,
-                 BufferPointLightService.getColorsSize(),
-                 RecordPointLightMainService.getDefaultColor()
-               ),
-               DisposeTypeArrayService.deleteBySwapAndResetFloat32TypeArr
-             ),
-        intensities:
-          intensities
-          |> DisposeLightService.swapData(
-               (mappedSourceIndex, lastComponentIndex),
-               (
-                 mappedIndexMap,
-                 BufferPointLightService.getIntensitiesSize(),
-                 RecordPointLightMainService.getDefaultIntensity()
-               ),
-               DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
-             ),
-        constants:
-          constants
-          |> DisposeLightService.swapData(
-               (mappedSourceIndex, lastComponentIndex),
-               (
-                 mappedIndexMap,
-                 BufferPointLightService.getConstantsSize(),
-                 RecordPointLightMainService.getDefaultConstant()
-               ),
-               DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
-             ),
-        linears:
-          linears
-          |> DisposeLightService.swapData(
-               (mappedSourceIndex, lastComponentIndex),
-               (
-                 mappedIndexMap,
-                 BufferPointLightService.getLinearsSize(),
-                 RecordPointLightMainService.getDefaultLinear()
-               ),
-               DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
-             ),
-        quadratics:
-          quadratics
-          |> DisposeLightService.swapData(
-               (mappedSourceIndex, lastComponentIndex),
-               (
-                 mappedIndexMap,
-                 BufferPointLightService.getQuadraticsSize(),
-                 RecordPointLightMainService.getDefaultQuadratic()
-               ),
-               DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
-             ),
-        ranges:
-          ranges
-          |> DisposeLightService.swapData(
-               (mappedSourceIndex, lastComponentIndex),
-               (
-                 mappedIndexMap,
-                 BufferPointLightService.getRangesSize(),
-                 RecordPointLightMainService.getDefaultRange()
-               ),
-               DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr
-             ),
-        gameObjectMap
-      }
-    }
-  );
+  ...record,
+  colors:
+    DisposeTypeArrayService.deleteAndResetFloat32TypeArr(.
+      BufferPointLightService.getColorIndex(light),
+      BufferPointLightService.getColorsSize(),
+      RecordPointLightMainService.getDefaultColor(),
+      colors,
+    ),
+  intensities:
+    DisposeTypeArrayService.deleteAndResetFloat32(.
+      BufferPointLightService.getIntensityIndex(light),
+      RecordPointLightMainService.getDefaultIntensity(),
+      intensities,
+    ),
+  constants:
+    DisposeTypeArrayService.deleteAndResetFloat32(.
+      BufferPointLightService.getConstantIndex(light),
+      RecordPointLightMainService.getDefaultConstant(),
+      constants,
+    ),
+  linears:
+    DisposeTypeArrayService.deleteAndResetFloat32(.
+      BufferPointLightService.getLinearIndex(light),
+      RecordPointLightMainService.getDefaultLinear(),
+      linears,
+    ),
+  quadratics:
+    DisposeTypeArrayService.deleteAndResetFloat32(.
+      BufferPointLightService.getQuadraticIndex(light),
+      RecordPointLightMainService.getDefaultQuadratic(),
+      quadratics,
+    ),
+  ranges:
+    DisposeTypeArrayService.deleteAndResetFloat32(.
+      BufferPointLightService.getRangeIndex(light),
+      RecordPointLightMainService.getDefaultRange(),
+      ranges,
+    ),
+  gameObjectMap: gameObjectMap |> disposeSparseMapData(light),
+};
 
 let handleBatchDisposeComponent =
-  [@bs]
-  (
-    (lightArray, record) =>
-      DisposeLightService.handleBatchDisposeComponent(lightArray, (isAlive, _disposeData), record)
-  );
+  (. lightArray, {disposedIndexArray} as record) => {
+    WonderLog.Contract.requireCheck(
+      () =>
+        WonderLog.(
+          Contract.(
+            Operators.(
+              DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
+                lightArray,
+                isAlive,
+                record,
+              )
+            )
+          )
+        ),
+      IsDebugMainService.getIsDebug(StateDataMain.stateData),
+    );
+
+    switch (lightArray |> Js.Array.length) {
+    | 0 => record
+    | _ =>
+      let record = {
+        ...record,
+        disposedIndexArray: disposedIndexArray |> Js.Array.concat(lightArray),
+      };
+      lightArray
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. record, light) => record |> _disposeData(light),
+           record,
+         );
+    };
+  };

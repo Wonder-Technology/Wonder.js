@@ -26,6 +26,7 @@ let createInitMaterialState =
     },
     pointLightRecord: {
       index: pointLightRecord.index,
+      renderLightArr: pointLightRecord.renderLightArr,
     },
     materialRecord: {
       index,

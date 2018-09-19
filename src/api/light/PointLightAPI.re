@@ -28,13 +28,7 @@ let unsafeGetPointLightGameObject = (light, state: StateDataMainType.state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetGameObject(
-    MappedIndexService.getMappedIndex(
-      light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-    ),
-    state.pointLightRecord,
-  );
+  unsafeGetGameObject(light, state.pointLightRecord);
 };
 
 let getPointLightColor = (light, state: StateDataMainType.state) => {
@@ -53,13 +47,7 @@ let getPointLightColor = (light, state: StateDataMainType.state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getColor(
-    MappedIndexService.getMappedIndex(
-      light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-    ),
-    state.pointLightRecord,
-  );
+  getColor(light, state.pointLightRecord);
 };
 
 let setPointLightColor = (light, color, state: StateDataMainType.state) => {
@@ -80,15 +68,7 @@ let setPointLightColor = (light, color, state: StateDataMainType.state) => {
   );
   {
     ...state,
-    pointLightRecord:
-      setColor(
-        MappedIndexService.getMappedIndex(
-          light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-        ),
-        color,
-        state.pointLightRecord,
-      ),
+    pointLightRecord: setColor(light, color, state.pointLightRecord),
   };
 };
 
@@ -108,13 +88,7 @@ let getPointLightIntensity = (light, state: StateDataMainType.state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getIntensity(
-    MappedIndexService.getMappedIndex(
-      light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-    ),
-    state.pointLightRecord,
-  );
+  getIntensity(light, state.pointLightRecord);
 };
 
 let setPointLightIntensity =
@@ -136,15 +110,7 @@ let setPointLightIntensity =
   );
   {
     ...state,
-    pointLightRecord:
-      setIntensity(
-        MappedIndexService.getMappedIndex(
-          light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-        ),
-        intensity,
-        state.pointLightRecord,
-      ),
+    pointLightRecord: setIntensity(light, intensity, state.pointLightRecord),
   };
 };
 
@@ -164,13 +130,7 @@ let getPointLightConstant = (light, state: StateDataMainType.state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getConstant(
-    MappedIndexService.getMappedIndex(
-      light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-    ),
-    state.pointLightRecord,
-  );
+  getConstant(light, state.pointLightRecord);
 };
 
 let setPointLightConstant = (light, constant, state: StateDataMainType.state) => {
@@ -191,15 +151,7 @@ let setPointLightConstant = (light, constant, state: StateDataMainType.state) =>
   );
   {
     ...state,
-    pointLightRecord:
-      setConstant(
-        MappedIndexService.getMappedIndex(
-          light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-        ),
-        constant,
-        state.pointLightRecord,
-      ),
+    pointLightRecord: setConstant(light, constant, state.pointLightRecord),
   };
 };
 
@@ -219,13 +171,7 @@ let getPointLightLinear = (light, state: StateDataMainType.state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getLinear(
-    MappedIndexService.getMappedIndex(
-      light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-    ),
-    state.pointLightRecord,
-  );
+  getLinear(light, state.pointLightRecord);
 };
 
 let setPointLightLinear = (light, linear, state: StateDataMainType.state) => {
@@ -246,15 +192,7 @@ let setPointLightLinear = (light, linear, state: StateDataMainType.state) => {
   );
   {
     ...state,
-    pointLightRecord:
-      setLinear(
-        MappedIndexService.getMappedIndex(
-          light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-        ),
-        linear,
-        state.pointLightRecord,
-      ),
+    pointLightRecord: setLinear(light, linear, state.pointLightRecord),
   };
 };
 
@@ -274,16 +212,11 @@ let getPointLightQuadratic = (light, state: StateDataMainType.state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getQuadratic(
-    MappedIndexService.getMappedIndex(
-      light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-    ),
-    state.pointLightRecord,
-  );
+  getQuadratic(light, state.pointLightRecord);
 };
 
-let setPointLightQuadratic = (light, quadratic, state: StateDataMainType.state) => {
+let setPointLightQuadratic =
+    (light, quadratic, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -301,15 +234,7 @@ let setPointLightQuadratic = (light, quadratic, state: StateDataMainType.state) 
   );
   {
     ...state,
-    pointLightRecord:
-      setQuadratic(
-        MappedIndexService.getMappedIndex(
-          light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-        ),
-        quadratic,
-        state.pointLightRecord,
-      ),
+    pointLightRecord: setQuadratic(light, quadratic, state.pointLightRecord),
   };
 };
 
@@ -329,13 +254,7 @@ let getPointLightRange = (light, state: StateDataMainType.state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getRange(
-    MappedIndexService.getMappedIndex(
-      light,
-      IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-    ),
-    state.pointLightRecord,
-  );
+  getRange(light, state.pointLightRecord);
 };
 
 let setPointLightRange = (light, range, state: StateDataMainType.state) => {
@@ -356,15 +275,7 @@ let setPointLightRange = (light, range, state: StateDataMainType.state) => {
   );
   {
     ...state,
-    pointLightRecord:
-      setRange(
-        MappedIndexService.getMappedIndex(
-          light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-        ),
-        range,
-        state.pointLightRecord,
-      ),
+    pointLightRecord: setRange(light, range, state.pointLightRecord),
   };
 };
 
@@ -386,21 +297,53 @@ let setPointLightRangeLevel = (light, level, state: StateDataMainType.state) => 
   );
   {
     ...state,
-    pointLightRecord:
-      setRangeLevel(
-        MappedIndexService.getMappedIndex(
-          light,
-          IndexPointLightService.getMappedIndexMap(state.pointLightRecord),
-        ),
-        level,
-        state.pointLightRecord,
+    pointLightRecord: setRangeLevel(light, level, state.pointLightRecord),
+  };
+};
+
+let getPointLightIsRender = (light, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
+          )
+        )
       ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  getIsRender(light, state.pointLightRecord);
+};
+
+let setPointLightIsRender = (light, isRender, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              light,
+              isAlive,
+              state.pointLightRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  {
+    ...state,
+    pointLightRecord: setIsRender(light, isRender, state.pointLightRecord),
   };
 };
 
 let isMaxCount = ({pointLightRecord}) =>
   MaxCountLightService.isMaxCount(
-    /* pointLightRecord.index, */
-    [||],
+    pointLightRecord.renderLightArr,
     BufferPointLightService.getBufferMaxCount(),
   );

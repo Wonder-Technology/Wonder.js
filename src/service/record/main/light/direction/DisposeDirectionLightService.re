@@ -3,42 +3,11 @@ open DirectionLightType;
 open DisposeComponentService;
 
 let isAlive = (light, {disposedIndexArray}) =>
-  /* DisposeLightService.isAlive(
-       light,
-       IndexDirectionLightService.getMappedIndexMap(record),
-     ); */
   DisposeComponentService.isAlive(light, disposedIndexArray);
 
 let _disposeData =
-    (
-      light,
-      {
-        /* index, */
-        colors,
-        intensities,
-        gameObjectMap,
-        /* mappedIndexMap, */
-        renderLightArr,
-      } as record,
-    ) => {
-  /* let lastComponentIndex = pred(index);
-     let mappedSourceIndex =
-       mappedIndexMap |> MappedIndexService.getMappedIndex(sourceIndex); */
-  /* let gameObjectMap =
-     DisposeLightService.disposeData(
-       mappedSourceIndex,
-       lastComponentIndex,
-       gameObjectMap,
-     ); */
+    (light, {colors, intensities, gameObjectMap, renderLightArr} as record) => {
   ...record,
-  /* index: pred(index), */
-  /* mappedIndexMap:
-     DisposeLightService.setMappedIndexMap(
-       sourceIndex,
-       mappedSourceIndex,
-       lastComponentIndex,
-       mappedIndexMap,
-     ), */
   colors:
     DisposeTypeArrayService.deleteAndResetFloat32TypeArr(.
       BufferDirectionLightService.getColorIndex(light),
@@ -46,27 +15,7 @@ let _disposeData =
       RecordDirectionLightMainService.getDefaultColor(),
       colors,
     ),
-  /* colors
-     |> DisposeLightService.swapData(
-          (mappedSourceIndex, lastComponentIndex),
-          (
-            mappedIndexMap,
-            BufferDirectionLightService.getColorsSize(),
-            RecordDirectionLightMainService.getDefaultColor(),
-          ),
-          DisposeTypeArrayService.deleteBySwapAndResetFloat32TypeArr,
-        ), */
   intensities:
-    /* intensities
-       |> DisposeLightService.swapData(
-            (mappedSourceIndex, lastComponentIndex),
-            (
-              mappedIndexMap,
-              BufferDirectionLightService.getIntensitiesSize(),
-              RecordDirectionLightMainService.getDefaultIntensity(),
-            ),
-            DisposeTypeArrayService.deleteSingleValueBySwapAndResetFloat32TypeArr,
-          ), */
     DisposeTypeArrayService.deleteAndResetFloat32(.
       BufferDirectionLightService.getIntensityIndex(light),
       RecordDirectionLightMainService.getDefaultIntensity(),
@@ -77,17 +26,8 @@ let _disposeData =
       light,
       renderLightArr,
     ),
-  /* gameObjectMap, */
   gameObjectMap: gameObjectMap |> disposeSparseMapData(light),
 };
-
-/* let handleBatchDisposeComponent =
-   (. lightArray, record) =>
-     DisposeLightService.handleBatchDisposeComponent(
-       lightArray,
-       (isAlive, _disposeData),
-       record,
-     ); */
 
 let handleBatchDisposeComponent =
   (. lightArray, {disposedIndexArray} as record) => {

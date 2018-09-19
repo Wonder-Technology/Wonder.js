@@ -213,6 +213,8 @@ let _buildData = (operateType, canvas, stateData) => {
     "pointLightData": {
       "buffer": pointLightRecord.buffer,
       "index": pointLightRecord.index,
+      "renderLightArr":
+        RenderArrayPointLightServivce.getRenderLightArr(pointLightRecord),
     },
     "sourceInstanceData": {
       "buffer": sourceInstanceRecord.buffer,

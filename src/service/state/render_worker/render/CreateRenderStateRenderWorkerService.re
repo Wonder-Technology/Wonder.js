@@ -217,6 +217,10 @@ let createRenderState =
       ranges: pointLightRecord.ranges,
       positionMap:
         RecordRenderWorkerPointLightService.getPositionMap(pointLightRecord),
+      renderLightArr:
+        RecordRenderWorkerPointLightService.getRenderLightArr(
+          pointLightRecord,
+        ),
     },
     vboBufferRecord,
     typeArrayPoolRecord,

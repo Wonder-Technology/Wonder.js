@@ -157,10 +157,10 @@ let createRenderState =
       ranges: pointLightRecord.ranges,
       positionMap:
         PositionLightMainService.buildPositionMap(
-          pointLightRecord.index,
           PositionPointLightMainService.getPosition,
           state,
         ),
+      renderLightArr: pointLightRecord.renderLightArr,
     },
     vboBufferRecord,
     typeArrayPoolRecord,

@@ -17,44 +17,50 @@ open BufferPointLightService;
  let _getQuadraticIndex = (index) => index * getQuadraticsSize();
 
  let _getRangeIndex = (index) => index * getRangesSize(); */
-let getColor = (index, typeArr) => TypeArrayService.getFloat3(getColorIndex(index), typeArr);
+let getColor = (index, typeArr) =>
+  TypeArrayService.getFloat3(getColorIndex(index), typeArr);
 
 let setColor = (index, color, typeArr) =>
   TypeArrayService.setFloat3(getColorIndex(index), color, typeArr);
 
-let getIntensity = (index, typeArr) => Js.Typed_array.Float32Array.unsafe_get(typeArr, index);
+let getIntensity = (index, typeArr) =>
+  Js.Typed_array.Float32Array.unsafe_get(typeArr, index);
 
 let setIntensity = (index, intensity, typeArr) => {
   Js.Typed_array.Float32Array.unsafe_set(typeArr, index, intensity);
-  typeArr
+  typeArr;
 };
 
-let getConstant = (index, typeArr) => Js.Typed_array.Float32Array.unsafe_get(typeArr, index);
+let getConstant = (index, typeArr) =>
+  Js.Typed_array.Float32Array.unsafe_get(typeArr, index);
 
 let setConstant = (index, constant, typeArr) => {
   Js.Typed_array.Float32Array.unsafe_set(typeArr, index, constant);
-  typeArr
+  typeArr;
 };
 
-let getLinear = (index, typeArr) => Js.Typed_array.Float32Array.unsafe_get(typeArr, index);
+let getLinear = (index, typeArr) =>
+  Js.Typed_array.Float32Array.unsafe_get(typeArr, index);
 
 let setLinear = (index, linear, typeArr) => {
   Js.Typed_array.Float32Array.unsafe_set(typeArr, index, linear);
-  typeArr
+  typeArr;
 };
 
-let getQuadratic = (index, typeArr) => Js.Typed_array.Float32Array.unsafe_get(typeArr, index);
+let getQuadratic = (index, typeArr) =>
+  Js.Typed_array.Float32Array.unsafe_get(typeArr, index);
 
 let setQuadratic = (index, quadratic, typeArr) => {
   Js.Typed_array.Float32Array.unsafe_set(typeArr, index, quadratic);
-  typeArr
+  typeArr;
 };
 
-let getRange = (index, typeArr) => Js.Typed_array.Float32Array.unsafe_get(typeArr, index);
+let getRange = (index, typeArr) =>
+  Js.Typed_array.Float32Array.unsafe_get(typeArr, index);
 
 let setRange = (index, range, typeArr) => {
   Js.Typed_array.Float32Array.unsafe_set(typeArr, index, range);
-  typeArr
+  typeArr;
 };
 
 let getDefaultColor = () => [|1., 1., 1.|];
@@ -70,7 +76,10 @@ let getDefaultQuadratic = () => 0.017;
 let getDefaultRange = () => 65.;
 
 let setAllTypeArrDataToDefault =
-    (count: int, (colors, intensities, constants, linears, quadratics, ranges)) => {
+    (
+      count: int,
+      (colors, intensities, constants, linears, quadratics, ranges),
+    ) => {
   let defaultColor = getDefaultColor();
   let defaultIntensity = getDefaultIntensity();
   let defaultConstant = getDefaultConstant();
@@ -79,25 +88,31 @@ let setAllTypeArrDataToDefault =
   let defaultRange = getDefaultRange();
   WonderCommonlib.ArrayService.range(0, count - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         ((colors, intensities, constants, linears, quadratics, ranges), index) => (
-           setColor(index, defaultColor, colors),
-           setIntensity(index, defaultIntensity, intensities),
-           setConstant(index, defaultConstant, constants),
-           setLinear(index, defaultLinear, linears),
-           setQuadratic(index, defaultQuadratic, quadratics),
-           setRange(index, defaultRange, ranges)
-         )
+       (.
+         (colors, intensities, constants, linears, quadratics, ranges),
+         index,
+       ) => (
+         setColor(index, defaultColor, colors),
+         setIntensity(index, defaultIntensity, intensities),
+         setConstant(index, defaultConstant, constants),
+         setLinear(index, defaultLinear, linears),
+         setQuadratic(index, defaultQuadratic, quadratics),
+         setRange(index, defaultRange, ranges),
        ),
-       (colors, intensities, constants, linears, quadratics, ranges)
-     )
+       (colors, intensities, constants, linears, quadratics, ranges),
+     );
 };
 
 let _setAllTypeArrDataToDefault =
-    (count: int, (buffer, colors, intensities, constants, linears, quadratics, ranges)) => (
+    (
+      count: int,
+      (buffer, colors, intensities, constants, linears, quadratics, ranges),
+    ) => (
   buffer,
-  setAllTypeArrDataToDefault(count, (colors, intensities, constants, linears, quadratics, ranges))
+  setAllTypeArrDataToDefault(
+    count,
+    (colors, intensities, constants, linears, quadratics, ranges),
+  ),
 );
 
 let _initBufferData = () => {
@@ -106,11 +121,12 @@ let _initBufferData = () => {
   let (colors, intensities, constants, linears, quadratics, ranges) =
     CreateTypeArrayPointLightService.createTypeArrays(buffer, count);
   (buffer, colors, intensities, constants, linears, quadratics, ranges)
-  |> _setAllTypeArrDataToDefault(count)
+  |> _setAllTypeArrDataToDefault(count);
 };
 
 let create = () => {
-  let (buffer, (colors, intensities, constants, linears, quadratics, ranges)) = _initBufferData();
+  let (buffer, (colors, intensities, constants, linears, quadratics, ranges)) =
+    _initBufferData();
   {
     index: 0,
     buffer,
@@ -120,9 +136,10 @@ let create = () => {
     linears,
     quadratics,
     ranges,
-    mappedIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
-    gameObjectMap: WonderCommonlib.SparseMapService.createEmpty()
-  }
+    disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+    renderLightArr: WonderCommonlib.ArrayService.createEmpty(),
+    gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+  };
 };
 
 let deepCopyForRestore = ({pointLightRecord} as state) => {
@@ -135,27 +152,47 @@ let deepCopyForRestore = ({pointLightRecord} as state) => {
     quadratics,
     ranges,
     gameObjectMap,
-    mappedIndexMap
+    disposedIndexArray,
+    renderLightArr,
   } = pointLightRecord;
   {
     ...state,
     pointLightRecord: {
       ...pointLightRecord,
       index,
-      colors: colors |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getColorsSize()),
+      colors:
+        colors
+        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+             index * getColorsSize(),
+           ),
       intensities:
         intensities
-        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getIntensitiesSize()),
+        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+             index * getIntensitiesSize(),
+           ),
       constants:
-        constants |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getConstantsSize()),
+        constants
+        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+             index * getConstantsSize(),
+           ),
       linears:
-        linears |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getLinearsSize()),
+        linears
+        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+             index * getLinearsSize(),
+           ),
       quadratics:
         quadratics
-        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getQuadraticsSize()),
-      ranges: ranges |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(index * getRangesSize()),
-      mappedIndexMap: mappedIndexMap |> SparseMapService.copy,
-      gameObjectMap: gameObjectMap |> SparseMapService.copy
-    }
-  }
+        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+             index * getQuadraticsSize(),
+           ),
+      ranges:
+        ranges
+        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+             index * getRangesSize(),
+           ),
+      gameObjectMap: gameObjectMap |> SparseMapService.copy,
+      renderLightArr: renderLightArr |> Js.Array.copy,
+      disposedIndexArray: disposedIndexArray |> Js.Array.copy,
+    },
+  };
 };

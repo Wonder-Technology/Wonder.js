@@ -444,6 +444,10 @@ let createDirectionLight = DirectionLightAPI.createDirectionLight;
 
 let isMaxCount = PointLightAPI.isMaxCount;
 
+let setPointLightIsRender = PointLightAPI.setPointLightIsRender;
+
+let getPointLightIsRender = PointLightAPI.getPointLightIsRender;
+
 let setPointLightRangeLevel = PointLightAPI.setPointLightRangeLevel;
 
 let setPointLightRange = PointLightAPI.setPointLightRange;

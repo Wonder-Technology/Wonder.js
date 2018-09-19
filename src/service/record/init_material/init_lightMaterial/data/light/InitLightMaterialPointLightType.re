@@ -1,1 +1,4 @@
-type pointLightRecord = {index: int};
+type pointLightRecord = {
+  index: int,
+  renderLightArr: array(ComponentType.component),
+};

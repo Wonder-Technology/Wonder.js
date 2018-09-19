@@ -19,6 +19,12 @@ let _ =
         let (_, light) = createPointLight(state^);
         expect(light) == 0;
       });
+      test("set is render to true", () => {
+        let (state, light) = createPointLight(state^);
+
+        PointLightAPI.getPointLightIsRender(light, state) |> expect == true;
+      });
+
       describe("contract check", () =>
         describe("limit the total alive count of light to 4", () => {
           test("test create", () => {
@@ -30,9 +36,7 @@ let _ =
               let (state, light) = createPointLight(state);
               ();
             })
-            |> toThrowMessage(
-                 "expect index: 4 <= maxIndex: 3, but actual not",
-               );
+            |> toThrowMessage("expect light count: 5 <= max count: 4");
           });
           test("test create after dispose", () => {
             let (state, gameObject1, _) =
@@ -45,6 +49,22 @@ let _ =
               PointLightTool.createGameObject(state);
             let state =
               state |> GameObjectTool.disposeGameObject(gameObject1);
+            expect(() => {
+              let (state, light) = createPointLight(state);
+              ();
+            })
+            |> not_
+            |> toThrow;
+          });
+          test("test set is render", () => {
+            let (state, light1) = createPointLight(state^);
+            let (state, light2) = createPointLight(state);
+            let (state, light3) = createPointLight(state);
+            let (state, light4) = createPointLight(state);
+
+            let state =
+              PointLightAPI.setPointLightIsRender(light4, false, state);
+
             expect(() => {
               let (state, light) = createPointLight(state);
               ();
@@ -173,38 +193,21 @@ let _ =
           PointLightTool.isAlive(light1, state) |> expect == false;
         });
 
-        describe("remove from gameObjectMap", () =>
-          describe("swap with last one", () => {
-            test("test only has one", () => {
-              open PointLightType;
-              let (state, gameObject1, light1) =
-                PointLightTool.createGameObject(state^);
-              let state =
-                state
-                |> GameObjectTool.disposeGameObjectPointLightComponent(
-                     gameObject1,
-                     light1,
-                   );
-              let {gameObjectMap} = PointLightTool.getRecord(state);
-              gameObjectMap |> expect == [||];
-            });
-            test("test two", () => {
-              open PointLightType;
-              let (state, gameObject1, light1) =
-                PointLightTool.createGameObject(state^);
-              let (state, gameObject2, light2) =
-                PointLightTool.createGameObject(state);
-              let state =
-                state
-                |> GameObjectTool.disposeGameObjectPointLightComponent(
-                     gameObject1,
-                     light1,
-                   );
-              let {gameObjectMap} = PointLightTool.getRecord(state);
-              gameObjectMap |> expect == [|gameObject2|];
-            });
-          })
-        );
+        test("remove from gameObjectMap", () => {
+          open DirectionLightType;
+          let (state, gameObject1, light1) =
+            DirectionLightTool.createGameObject(state^);
+          let state =
+            state
+            |> GameObjectTool.disposeGameObjectDirectionLightComponent(
+                 gameObject1,
+                 light1,
+               );
+          let {gameObjectMap} = DirectionLightTool.getRecord(state);
+          gameObjectMap
+          |> WonderCommonlib.SparseMapService.has(light1)
+          |> expect == false;
+        });
 
         describe("test remove from type array", () => {
           describe("remove from colors", () => {
@@ -232,7 +235,7 @@ let _ =
                 (light1, light2),
               );
             };
-            test("swap with last one and reset removed one's value", () => {
+            test("reset removed one's value", () => {
               let (
                 state,
                 (gameObject1, gameObject2),
@@ -244,7 +247,7 @@ let _ =
                 PointLightTool.getColor(0, state),
                 PointLightTool.getColor(1, state),
               )
-              |> expect == (color2, PointLightTool.getDefaultColor());
+              |> expect == (PointLightTool.getDefaultColor(), color2);
             });
           });
           describe("remove from intensities", () => {
@@ -274,7 +277,7 @@ let _ =
                 (light1, light2),
               );
             };
-            test("swap with last one and reset removed one's value", () => {
+            test("reset removed one's value", () => {
               let (
                 state,
                 (gameObject1, gameObject2),
@@ -286,7 +289,7 @@ let _ =
                 PointLightTool.getIntensity(0, state),
                 PointLightTool.getIntensity(1, state),
               )
-              |> expect == (intensity2, PointLightTool.getDefaultIntensity());
+              |> expect == (PointLightTool.getDefaultIntensity(), intensity2);
             });
           });
           describe("remove from constants", () => {
@@ -316,7 +319,7 @@ let _ =
                 (light1, light2),
               );
             };
-            test("swap with last one and reset removed one's value", () => {
+            test("reset removed one's value", () => {
               let (
                 state,
                 (gameObject1, gameObject2),
@@ -328,7 +331,7 @@ let _ =
                 PointLightTool.getConstant(0, state),
                 PointLightTool.getConstant(1, state),
               )
-              |> expect == (constant2, PointLightTool.getDefaultConstant());
+              |> expect == (PointLightTool.getDefaultConstant(), constant2);
             });
           });
           describe("remove from linears", () => {
@@ -356,7 +359,7 @@ let _ =
                 (light1, light2),
               );
             };
-            test("swap with last one and reset removed one's value", () => {
+            test("reset removed one's value", () => {
               let (
                 state,
                 (gameObject1, gameObject2),
@@ -365,11 +368,11 @@ let _ =
               ) =
                 _prepare(state);
               (
-                PointLightTool.getLinear(0, state),
-                PointLightTool.getLinear(1, state)
+                PointLightTool.getLinear(0, state)
                 |> TypeArrayTool.truncateFloatValue(5),
+                PointLightTool.getLinear(1, state),
               )
-              |> expect == (linear2, PointLightTool.getDefaultLinear());
+              |> expect == (PointLightTool.getDefaultLinear(), linear2);
             });
           });
           describe("remove from quadratics", () => {
@@ -399,7 +402,7 @@ let _ =
                 (light1, light2),
               );
             };
-            test("swap with last one and reset removed one's value", () => {
+            test("reset removed one's value", () => {
               let (
                 state,
                 (gameObject1, gameObject2),
@@ -408,11 +411,11 @@ let _ =
               ) =
                 _prepare(state);
               (
-                PointLightTool.getQuadratic(0, state),
-                PointLightTool.getQuadratic(1, state)
+                PointLightTool.getQuadratic(0, state)
                 |> TypeArrayTool.truncateFloatValue(5),
+                PointLightTool.getQuadratic(1, state),
               )
-              |> expect == (quadratic2, PointLightTool.getDefaultQuadratic());
+              |> expect == (PointLightTool.getDefaultQuadratic(), quadratic2);
             });
           });
           describe("remove from ranges", () => {
@@ -440,7 +443,7 @@ let _ =
                 (light1, light2),
               );
             };
-            test("swap with last one and reset removed one's value", () => {
+            test("reset removed one's value", () => {
               let (
                 state,
                 (gameObject1, gameObject2),
@@ -452,7 +455,7 @@ let _ =
                 PointLightTool.getRange(0, state),
                 PointLightTool.getRange(1, state),
               )
-              |> expect == (range2, PointLightTool.getDefaultRange());
+              |> expect == (PointLightTool.getDefaultRange(), range2);
             });
           });
         });
@@ -501,25 +504,7 @@ let _ =
         );
       })
     );
-    describe("getLightCount", () =>
-      describe("contract check", () =>
-        test("count should <= max buffer count", () =>
-          expect(() => {
-            let state =
-              {
-                ...state^,
-                pointLightRecord: {
-                  ...state^.pointLightRecord,
-                  index: 5,
-                },
-              }
-              |> PointLightTool.getLightCount;
-            ();
-          })
-          |> toThrowMessage("light count: 5 <= max buffer count: 4")
-        )
-      )
-    );
+
     describe("setRangeLevel", () => {
       let _test = (level, (range, linear, quadratic), state) => {
         let (state, light) = createPointLight(state^);

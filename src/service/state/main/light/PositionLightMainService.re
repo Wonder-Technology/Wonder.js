@@ -2,15 +2,22 @@ open StateDataMainType;
 
 let getPosition = (gameObject, {gameObjectRecord, globalTempRecord} as state) =>
   UpdateTransformMainService.updateAndGetPositionTuple(
-    GetComponentGameObjectService.unsafeGetTransformComponent(gameObject, gameObjectRecord),
+    GetComponentGameObjectService.unsafeGetTransformComponent(
+      gameObject,
+      gameObjectRecord,
+    ),
     globalTempRecord,
-    state |> RecordTransformMainService.getRecord
+    state |> RecordTransformMainService.getRecord,
   );
 
-let buildPositionMap = (index, getPositionFunc, state) =>
-  ArrayService.range(0, index - 1)
+let buildPositionMap = (getPositionFunc, {pointLightRecord} as state) =>
+  pointLightRecord.renderLightArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       ((map, i) => map |> WonderCommonlib.SparseMapService.set(i, getPositionFunc(i, state))),
-       WonderCommonlib.SparseMapService.createEmpty()
+       (. map, i) =>
+         map
+         |> WonderCommonlib.SparseMapService.set(
+              i,
+              getPositionFunc(i, state),
+            ),
+       WonderCommonlib.SparseMapService.createEmpty(),
      );

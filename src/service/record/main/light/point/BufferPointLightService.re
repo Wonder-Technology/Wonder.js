@@ -14,18 +14,31 @@ let getQuadraticsSize = () => 1;
 
 let getRangesSize = () => 1;
 
-let getColorIndex = (index) => index * getColorsSize();
+let getColorIndex = index => index * getColorsSize();
+
+let getIntensityIndex = index => index * getIntensitiesSize();
+
+let getConstantIndex = index => index * getConstantsSize();
+
+let getLinearIndex = index => index * getLinearsSize();
+
+let getQuadraticIndex = index => index * getQuadraticsSize();
+
+let getRangeIndex = index => index * getRangesSize();
 
 let getColorsOffset = () => 0;
 
 let getColorsLength = () => getBufferMaxCount() * getColorsSize();
 
-let getIntensitiesOffset = () => getColorsLength() * Float32Array._BYTES_PER_ELEMENT;
+let getIntensitiesOffset = () =>
+  getColorsLength() * Float32Array._BYTES_PER_ELEMENT;
 
 let getIntensitiesLength = () => getBufferMaxCount() * getIntensitiesSize();
 
 let getConstantsOffset = () =>
-  getIntensitiesOffset() + getIntensitiesLength() * Float32Array._BYTES_PER_ELEMENT;
+  getIntensitiesOffset()
+  + getIntensitiesLength()
+  * Float32Array._BYTES_PER_ELEMENT;
 
 let getConstantsLength = () => getBufferMaxCount() * getConstantsSize();
 
@@ -40,11 +53,13 @@ let getQuadraticsOffset = () =>
 let getQuadraticsLength = () => getBufferMaxCount() * getQuadraticsSize();
 
 let getRangesOffset = () =>
-  getQuadraticsOffset() + getQuadraticsLength() * Float32Array._BYTES_PER_ELEMENT;
+  getQuadraticsOffset()
+  + getQuadraticsLength()
+  * Float32Array._BYTES_PER_ELEMENT;
 
 let getRangesLength = () => getBufferMaxCount() * getRangesSize();
 
-let getTotalByteLength = (count) =>
+let getTotalByteLength = count =>
   count
   * Float32Array._BYTES_PER_ELEMENT
   * (
@@ -56,4 +71,5 @@ let getTotalByteLength = (count) =>
     + getRangesSize()
   );
 
-let createBuffer = (count) => Worker.newSharedArrayBuffer(getTotalByteLength(count));
+let createBuffer = count =>
+  Worker.newSharedArrayBuffer(getTotalByteLength(count));

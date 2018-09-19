@@ -120,10 +120,11 @@ let _buildData =
         "index": pointLightRecord.index,
         "positionMap":
           PositionLightMainService.buildPositionMap(
-            pointLightRecord.index,
             PositionPointLightMainService.getPosition,
             state,
           ),
+        "renderLightArr":
+          RenderArrayPointLightServivce.getRenderLightArr(pointLightRecord),
       },
       "initData": {
         "materialData": {

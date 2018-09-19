@@ -39,31 +39,24 @@ let batchSetPointLightData = ({pointLights}, pointLightArr, state) =>
          }: WDType.pointLight,
          index,
        ) => {
-         let mappedIndex =
-           pointLightArr[index]
-           |. MappedIndexService.getMappedIndex(
-                IndexPointLightService.getMappedIndexMap(pointLightRecord),
-              );
+         let index = pointLightArr[index];
 
          {
            ...state,
            pointLightRecord:
              pointLightRecord
-             |> OperatePointLightService.setColor(mappedIndex, color)
-             |> OperatePointLightService.setIntensity(mappedIndex, intensity)
+             |> OperatePointLightService.setColor(index, color)
+             |> OperatePointLightService.setIntensity(index, intensity)
              |> OperatePointLightService.setConstant(
-                  mappedIndex,
+                  index,
                   constantAttenuation,
                 )
-             |> OperatePointLightService.setLinear(
-                  mappedIndex,
-                  linearAttenuation,
-                )
+             |> OperatePointLightService.setLinear(index, linearAttenuation)
              |> OperatePointLightService.setQuadratic(
-                  mappedIndex,
+                  index,
                   quadraticAttenuation,
                 )
-             |> OperatePointLightService.setRange(mappedIndex, range),
+             |> OperatePointLightService.setRange(index, range),
          };
        },
        state,
