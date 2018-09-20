@@ -209,6 +209,24 @@ let _ =
           |> expect == false;
         });
 
+        describe("remove from renderLightArr", () =>
+          test("test", () => {
+            open PointLightType;
+            let (state, gameObject1, light1) =
+              PointLightTool.createGameObject(state^);
+            let (state, gameObject2, light2) =
+              PointLightTool.createGameObject(state);
+            let state =
+              state
+              |> GameObjectTool.disposeGameObjectPointLightComponent(
+                   gameObject1,
+                   light1,
+                 );
+            let {renderLightArr} = PointLightTool.getRecord(state);
+            renderLightArr |> expect == [|light2|];
+          })
+        );
+
         describe("test remove from type array", () => {
           describe("remove from colors", () => {
             let _prepare = state => {

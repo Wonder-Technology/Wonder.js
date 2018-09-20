@@ -57,6 +57,11 @@ let _disposeData =
       RecordPointLightMainService.getDefaultRange(),
       ranges,
     ),
+  renderLightArr:
+    RenderLightArrLightService.removeFromRenderLightArr(
+      light,
+      renderLightArr,
+    ),
   gameObjectMap: gameObjectMap |> disposeSparseMapData(light),
 };
 
