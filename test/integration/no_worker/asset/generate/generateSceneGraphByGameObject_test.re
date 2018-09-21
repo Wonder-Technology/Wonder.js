@@ -592,7 +592,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-            "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"POSITION":3,"NORMAL":4,"TEXCOORD_0":5},"indices":6}]},{"primitives":[{"attributes":{"POSITION":7,"NORMAL":8,"TEXCOORD_0":9},"indices":10}]}]
+            "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1,"TEXCOORD_0":2},"indices":3}]},{"primitives":[{"attributes":{"POSITION":4,"NORMAL":5,"TEXCOORD_0":6},"indices":7}]},{"primitives":[{"attributes":{"POSITION":8,"NORMAL":9,"TEXCOORD_0":10},"indices":11}]}]
                 |j},
           state,
         );
@@ -684,16 +684,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-              "textures":[{"sampler":0,"source":0,"name":"$name2"},{"sampler":1,"source":1}],"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728},{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],"images":[
-    {
-      "bufferView": 11,
-      "mimeType": "image/png"
-    },
-    {
-      "bufferView": 12,
-      "mimeType": "image/jpeg"
-    }
-  ]
+  "textures":[{"sampler":0,"source":0,"name":"$name2"},{"sampler":1,"source":1}],"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728},{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],"images":[{"bufferView":12,"mimeType":"image/png"},{"bufferView":13,"mimeType":"image/jpeg"}]
                 |j},
           state,
         );
@@ -727,73 +718,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-  "bufferViews": [
-    {
-      "buffer": 0,
-      "byteOffset": 0,
-      "byteLength": 288
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 288,
-      "byteLength": 288
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 576,
-      "byteLength": 72
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 648,
-      "byteLength": 36
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 684,
-      "byteLength": 36
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 720,
-      "byteLength": 24
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 744,
-      "byteLength": 6
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 752,
-      "byteLength": 36
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 788,
-      "byteLength": 36
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 824,
-      "byteLength": 24
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 848,
-      "byteLength": 6
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 856,
-      "byteLength": 2
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 860,
-      "byteLength": 2
-    }
-  ]
+  "bufferViews":[{"buffer":0,"byteOffset":0,"byteLength":288},{"buffer":0,"byteOffset":288,"byteLength":288},{"buffer":0,"byteOffset":576,"byteLength":192},{"buffer":0,"byteOffset":768,"byteLength":72},{"buffer":0,"byteOffset":840,"byteLength":36},{"buffer":0,"byteOffset":876,"byteLength":36},{"buffer":0,"byteOffset":912,"byteLength":24},{"buffer":0,"byteOffset":936,"byteLength":6},{"buffer":0,"byteOffset":944,"byteLength":36},{"buffer":0,"byteOffset":980,"byteLength":36},{"buffer":0,"byteOffset":1016,"byteLength":24},{"buffer":0,"byteOffset":1040,"byteLength":6},{"buffer":0,"byteOffset":1048,"byteLength":2},{"buffer":0,"byteOffset":1052,"byteLength":2}]
 
                 |j},
           state,
@@ -833,7 +758,7 @@ let _ =
                             (
                               GLTFTool.getBoxMainVertices(),
                               GLTFTool.getBoxMainNormals(),
-                              Float32Array.make([||]),
+                              GLTFTool.getBoxMainTexCoords(),
                               GLTFTool.getBoxMainIndices(),
                             ),
                           ),
@@ -1023,7 +948,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-                   "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"POSITION":3,"NORMAL":4,"TEXCOORD_0":5},"indices":6}]}]
+                   "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1,"TEXCOORD_0":2},"indices":3}]},{"primitives":[{"attributes":{"POSITION":4,"NORMAL":5,"TEXCOORD_0":6},"indices":7}]}]
                        |j},
           state,
         );
@@ -1058,7 +983,7 @@ let _ =
           rootGameObject,
           {j|
        "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor1,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],
-                     "textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],"images":[{"bufferView":7,"mimeType":"image/png"}]                       |j},
+                     "textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],"images":[{"bufferView":8,"mimeType":"image/png"}]                       |j},
           state,
         );
       });
@@ -1091,48 +1016,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-  "bufferViews": [
-    {
-      "buffer": 0,
-      "byteOffset": 0,
-      "byteLength": 288
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 288,
-      "byteLength": 288
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 576,
-      "byteLength": 72
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 648,
-      "byteLength": 36
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 684,
-      "byteLength": 36
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 720,
-      "byteLength": 24
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 744,
-      "byteLength": 6
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 752,
-      "byteLength": 2
-    }
-  ]
+            "bufferViews":[{"buffer":0,"byteOffset":0,"byteLength":288},{"buffer":0,"byteOffset":288,"byteLength":288},{"buffer":0,"byteOffset":576,"byteLength":192},{"buffer":0,"byteOffset":768,"byteLength":72},{"buffer":0,"byteOffset":840,"byteLength":36},{"buffer":0,"byteOffset":876,"byteLength":36},{"buffer":0,"byteOffset":912,"byteLength":24},{"buffer":0,"byteOffset":936,"byteLength":6},{"buffer":0,"byteOffset":944,"byteLength":2}]
 |j},
           state,
         );
@@ -1277,7 +1161,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-               "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1},"indices":2}]},{"primitives":[{"attributes":{"POSITION":3,"NORMAL":4,"TEXCOORD_0":5},"indices":6}]}]
+               "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1,"TEXCOORD_0":2},"indices":3}]},{"primitives":[{"attributes":{"POSITION":4,"NORMAL":5,"TEXCOORD_0":6},"indices":7}]}]
                    |j},
           state,
         );
@@ -1318,7 +1202,7 @@ let _ =
                             (
                               GLTFTool.getBoxMainVertices(),
                               GLTFTool.getBoxMainNormals(),
-                              Float32Array.make([||]),
+                              GLTFTool.getBoxMainTexCoords() ,
                               GLTFTool.getBoxMainIndices(),
                             ),
                           ),
@@ -1327,7 +1211,7 @@ let _ =
                             (
                               GLTFTool.getBoxMainVertices(),
                               GLTFTool.getBoxMainNormals(),
-                              Float32Array.make([||]),
+                              GLTFTool.getBoxMainTexCoords(),
                               GLTFTool.getBoxMainIndices(),
                             ),
                           ),
@@ -1371,7 +1255,7 @@ let _ =
           rootGameObject,
           {j|
                  "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor1,1]}},{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor2,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
-                 "images":[{"bufferView":7,"mimeType":"image/png"}]
+                 "images":[{"bufferView":8,"mimeType":"image/png"}]
                    |j},
           state,
         );
@@ -1516,7 +1400,7 @@ let _ =
           rootGameObject,
           {j|
                  "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor1,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0,"name":"$name2"}],"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728}],
-                 "images":[{"bufferView":11,"mimeType":"image/png"}]
+                 "images":[{"bufferView":12,"mimeType":"image/png"}]
                    |j},
           state,
         );
@@ -1619,7 +1503,7 @@ let _ =
           rootGameObject,
           {j|
                  "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor2,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
-                 "images":[{"bufferView":10,"mimeType":"image/png"}]
+                 "images":[{"bufferView":12,"mimeType":"image/png"}]
                    |j},
           state,
         );
@@ -1892,6 +1776,58 @@ let _ =
           )
           |> toThrowMessage("expect map be basicSourceTexture");
         });
+      });
+    });
+
+    describe("if has no maps, geometry should still generate texCoords data", () => {
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, rootGameObject) = state^ |> createGameObject;
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let (
+          state,
+          gameObject1,
+          (transform1, (localPos1, localRotation1, localScale1)),
+          geometry1,
+          (material1, diffuseColor1),
+          meshRenderer1,
+        ) =
+          _createGameObject1(state);
+
+        let state =
+          GameObjectTool.disposeGameObjectLightMaterialComponent(
+            gameObject1,
+            material1,
+            state,
+          );
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             );
+
+        (state, rootGameObject);
+      };
+
+      test("test meshes", () => {
+        let (state, rootGameObject) = _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+            "meshes":[{"primitives":[{"attributes":{"POSITION":0,"NORMAL":1, "TEXCOORD_0":2},"indices":3}]}]
+                   |j},
+          state,
+        );
       });
     });
 
@@ -3186,7 +3122,7 @@ let _ =
           GenerateSceneGraphSystemTool.testGLTFResultByGameObjectWithImageUint8ArrayDataMap(
             rootGameObject,
             {j|
-                "images":[{"bufferView":11,"mimeType":"image/png"},{"bufferView":12,"mimeType":"image/jpeg"}]
+                "images":[{"bufferView":12,"mimeType":"image/png"},{"bufferView":13,"mimeType":"image/jpeg"}]
                    |j},
             Js.Nullable.return(imageUint8ArrayMap),
             state,

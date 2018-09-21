@@ -29,11 +29,7 @@ let _getGeometryData =
         (
           VerticesGeometryMainService.getVertices(. geometry, state),
           NormalsGeometryMainService.getNormals(. geometry, state),
-          _hasMap(gameObject, state) ?
-            Some(
-              TexCoordsGeometryMainService.getTexCoords(. geometry, state),
-            ) :
-            None,
+          TexCoordsGeometryMainService.getTexCoords(. geometry, state),
           IndicesGeometryMainService.getIndices(. geometry, state),
         ),
         NameGeometryMainService.getName(geometry, state),

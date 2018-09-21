@@ -143,11 +143,7 @@ let _addAllPointData =
     );
 
   let vertexDataArr =
-    switch (texCoords) {
-    | None => vertexDataArr
-    | Some(texCoords) =>
-      _addVertexData((bufferViewOffset, texCoords), vertexDataArr)
-    };
+    _addVertexData((bufferViewOffset, texCoords), vertexDataArr);
 
   let (
     texCoordIndex,
@@ -202,15 +198,12 @@ let _addMeshData =
   |> ArrayService.push(
        {
          primitives: {
-           attributes: {
-             position: vertexIndex |> OptionService.unsafeGet,
-             normal: normalIndex,
-             texCoord_0:
-               switch (texCoords) {
-               | None => None
-               | Some(_) => texCoordIndex
-               },
-           },
+           attributes:
+             {
+               position: vertexIndex |> OptionService.unsafeGet,
+               normal: normalIndex,
+               texCoord_0: texCoordIndex,
+             },
            indices: indexIndex |> OptionService.unsafeGet,
            material: None,
          },
@@ -270,11 +263,8 @@ let build = meshPointAndNameDataMap => {
          ) => {
            let verticesLength = vertices |> Float32Array.length;
            let normalsLength = normals |> Float32Array.length;
-           let texCoordsLength =
-             switch (texCoords) {
-             | None => 0
-             | Some(texCoords) => texCoords |> Float32Array.length
-             };
+           let texCoordsLength = texCoords |> Float32Array.length;
+
            let indicesLength = indices |> Uint16Array.length;
 
            let (
