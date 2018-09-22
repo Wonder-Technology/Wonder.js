@@ -187,6 +187,7 @@ let _ =
         });
       });
     });
+
     describe("disposeComponent", () =>
       describe("dispose data", () => {
         test("reset basicSourceTextureCount to 0 from textureCountMap", () => {
@@ -418,6 +419,57 @@ let _ =
         });
       })
     );
+
+    describe("getAllLightMaterials", () => {
+      let _createLightMaterialGameObjects = state => {
+        let (state, gameObject1, component1) =
+          LightMaterialTool.createGameObject(state^);
+        let (state, gameObject2, component2) =
+          LightMaterialTool.createGameObject(state);
+        let (state, gameObject3, component3) =
+          LightMaterialTool.createGameObject(state);
+
+        (
+          state,
+          (gameObject1, gameObject2, gameObject3),
+          (component1, component2, component3),
+        );
+      };
+
+      test(
+        "get all components include the ones add or not add to gameObject", () => {
+        let (
+          state,
+          (gameObject1, gameObject2, gameObject3),
+          (component1, component2, component3),
+        ) =
+          _createLightMaterialGameObjects(state);
+
+        let (state, component4) =
+          LightMaterialAPI.createLightMaterial(state);
+
+        LightMaterialAPI.getAllLightMaterials(state)
+        |> expect == [|component1, component2, component3, component4|];
+      });
+      test("test dispose", () => {
+        let (
+          state,
+          (gameObject1, gameObject2, gameObject3),
+          (component1, component2, component3),
+        ) =
+          _createLightMaterialGameObjects(state);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObject(gameObject2)
+          |> GameObjectAPI.disposeGameObject(gameObject3);
+        let state = state |> DisposeJob.execJob(None);
+
+        GameObjectAPI.getAllLightMaterialComponents(state)
+        |> expect == [|component1|];
+      });
+    });
+
     describe("contract check: is alive", () =>
       describe("if material is disposed", () => {
         let _testGetFunc = getFunc => {

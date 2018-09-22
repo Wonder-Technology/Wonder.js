@@ -253,15 +253,8 @@ let _getAllComponents = (disposedUidMap, componentMap) =>
      );
 
 let getAllGeometrys = state => {
-  let {index, disposedIndexMap} = RecordGeometryMainService.getRecord(state);
+  let {index, disposedIndexArray} =
+    RecordGeometryMainService.getRecord(state);
 
-  ArrayService.range(0, index - 1)
-  |> Js.Array.filter(index =>
-       switch (
-         disposedIndexMap |> WonderCommonlib.SparseMapService.get(index)
-       ) {
-       | Some(isDisposed) when isDisposed === true => false
-       | _ => true
-       }
-     );
+  GetAllComponentService.getAllComponents(index, disposedIndexArray);
 };

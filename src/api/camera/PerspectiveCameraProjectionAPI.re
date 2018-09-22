@@ -99,10 +99,7 @@ let getAllPerspectiveCameraProjections =
     ({perspectiveCameraProjectionRecord} as state) => {
   let {index, disposedIndexArray} = perspectiveCameraProjectionRecord;
 
-  ArrayService.range(0, index - 1)
-  |> Js.Array.filter(index =>
-       ! (disposedIndexArray |> Js.Array.includes(index))
-     );
+  GetAllComponentService.getAllComponents(index, disposedIndexArray);
 };
 
 let markPerspectiveCameraProjectionDirty = DirtyPerspectiveCameraProjectionMainService.markDirty;

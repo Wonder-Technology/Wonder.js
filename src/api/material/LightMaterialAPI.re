@@ -332,3 +332,10 @@ let batchDisposeLightMaterial = (state, componentArray) =>
     componentArray,
     state,
   );
+
+let getAllLightMaterials = state => {
+  let {index, disposedIndexArray} =
+    RecordLightMaterialMainService.getRecord(state);
+
+  GetAllComponentService.getAllComponents(index, disposedIndexArray);
+};

@@ -173,3 +173,10 @@ let batchDisposeBasicMaterial = (state, componentArray) =>
     componentArray,
     state,
   );
+
+let getAllBasicMaterials = state => {
+  let {index, disposedIndexArray} =
+    RecordBasicMaterialMainService.getRecord(state);
+
+  GetAllComponentService.getAllComponents(index, disposedIndexArray);
+};

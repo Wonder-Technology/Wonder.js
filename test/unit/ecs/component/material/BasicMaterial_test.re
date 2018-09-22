@@ -122,6 +122,7 @@ let _ =
         });
       });
     });
+
     describe("disposeComponent", () => {
       describe("dispose data", () => {
         describe("test dispose shared material", () =>
@@ -371,6 +372,57 @@ let _ =
         });
       });
     });
+
+    describe("getAllBasicMaterials", () => {
+      let _createBasicMaterialGameObjects = state => {
+        let (state, gameObject1, component1) =
+          BasicMaterialTool.createGameObject(state^);
+        let (state, gameObject2, component2) =
+          BasicMaterialTool.createGameObject(state);
+        let (state, gameObject3, component3) =
+          BasicMaterialTool.createGameObject(state);
+
+        (
+          state,
+          (gameObject1, gameObject2, gameObject3),
+          (component1, component2, component3),
+        );
+      };
+
+      test(
+        "get all components include the ones add or not add to gameObject", () => {
+        let (
+          state,
+          (gameObject1, gameObject2, gameObject3),
+          (component1, component2, component3),
+        ) =
+          _createBasicMaterialGameObjects(state);
+
+        let (state, component4) =
+          BasicMaterialAPI.createBasicMaterial(state);
+
+        BasicMaterialAPI.getAllBasicMaterials(state)
+        |> expect == [|component1, component2, component3, component4|];
+      });
+      test("test dispose", () => {
+        let (
+          state,
+          (gameObject1, gameObject2, gameObject3),
+          (component1, component2, component3),
+        ) =
+          _createBasicMaterialGameObjects(state);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObject(gameObject2)
+          |> GameObjectAPI.disposeGameObject(gameObject3);
+        let state = state |> DisposeJob.execJob(None);
+
+        GameObjectAPI.getAllBasicMaterialComponents(state)
+        |> expect == [|component1|];
+      });
+    });
+
     describe("contract check: is alive", () =>
       describe("if material is disposed", () => {
         let _testGetFunc = getFunc => {
