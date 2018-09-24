@@ -9,6 +9,8 @@ let create = () => {
   disposedUidArrayForKeepOrder: WonderCommonlib.ArrayService.createEmpty(),
   disposedUidArrayForKeepOrderRemoveGeometry:
     WonderCommonlib.ArrayService.createEmpty(),
+  disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial:
+    WonderCommonlib.ArrayService.createEmpty(),
   disposedBasicCameraViewArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedTransformArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedTransformArrayForKeepOrder:
@@ -17,8 +19,8 @@ let create = () => {
     WonderCommonlib.ArrayService.createEmpty(),
   disposedArcballCameraControllerArray:
     WonderCommonlib.ArrayService.createEmpty(),
-  disposedBasicMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
-  disposedLightMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
+  disposedBasicMaterialDataArray: WonderCommonlib.ArrayService.createEmpty(),
+  disposedLightMaterialDataArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedGeometryDataArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedSourceInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedObjectInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -52,13 +54,14 @@ let deepCopyForRestore =
         disposedUidArray,
         disposedUidArrayForKeepOrder,
         disposedUidArrayForKeepOrderRemoveGeometry,
+        disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
         disposedBasicCameraViewArray,
         disposedTransformArray,
         disposedTransformArrayForKeepOrder,
         disposedPerspectiveCameraProjectionArray,
         disposedArcballCameraControllerArray,
-        disposedBasicMaterialArray,
-        disposedLightMaterialArray,
+        disposedBasicMaterialDataArray,
+        disposedLightMaterialDataArray,
         disposedGeometryDataArray,
         disposedSourceInstanceArray,
         disposedObjectInstanceArray,
@@ -90,6 +93,8 @@ let deepCopyForRestore =
     disposedUidArrayForKeepOrder |> SparseMapService.copy,
   disposedUidArrayForKeepOrderRemoveGeometry:
     disposedUidArrayForKeepOrderRemoveGeometry |> SparseMapService.copy,
+  disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial:
+    disposedUidArrayForKeepOrderRemoveGeometry |> SparseMapService.copy,
   disposedBasicCameraViewArray:
     disposedBasicCameraViewArray |> SparseMapService.copy,
   disposedTransformArray: disposedTransformArray |> SparseMapService.copy,
@@ -99,10 +104,10 @@ let deepCopyForRestore =
     disposedPerspectiveCameraProjectionArray |> SparseMapService.copy,
   disposedArcballCameraControllerArray:
     disposedPerspectiveCameraProjectionArray |> SparseMapService.copy,
-  disposedBasicMaterialArray:
-    disposedBasicMaterialArray |> SparseMapService.copy,
-  disposedLightMaterialArray:
-    disposedLightMaterialArray |> SparseMapService.copy,
+  disposedBasicMaterialDataArray:
+    disposedBasicMaterialDataArray |> SparseMapService.copy,
+  disposedLightMaterialDataArray:
+    disposedLightMaterialDataArray |> SparseMapService.copy,
   disposedGeometryDataArray:
     disposedGeometryDataArray |> SparseMapService.copy,
   disposedSourceInstanceArray:

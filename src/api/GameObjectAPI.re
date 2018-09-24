@@ -781,6 +781,20 @@ let disposeGameObjectKeepOrderRemoveGeometry =
   deferDisposeKeepOrderRemoveGeometry(gameObject, state);
 };
 
+
+let disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial =
+    (gameObject: gameObject, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  deferDisposeKeepOrderRemoveGeometryRemoveMaterial(gameObject, state);
+};
+
+
 let initGameObject = (gameObject: gameObject, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>

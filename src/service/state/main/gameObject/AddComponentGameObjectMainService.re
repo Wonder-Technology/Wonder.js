@@ -93,13 +93,9 @@ let addTransformComponent =
   state;
 };
 
-let _addSharableGeometry =
+let _addSharableComponent =
     ((uid, component, componentMap), handleAddComponentFunc, componentRecord) => {
   componentMap |> ComponentMapService.addComponent(uid, component) |> ignore;
-  /* switch (gameObject) {
-     | Some(_) => increaseGroupCountFunc(. component, componentRecord)
-     | _ => handleAddComponentFunc(. component, uid, componentRecord)
-     }; */
   handleAddComponentFunc(. component, uid, componentRecord);
 };
 
@@ -109,7 +105,7 @@ let addGeometryComponent =
   state.geometryRecord =
     Some(
       geometryRecord
-      |> _addSharableGeometry(
+      |> _addSharableComponent(
            (uid, component, gameObjectRecord.geometryMap),
            AddGeometryService.handleAddComponent,
          ),
@@ -124,19 +120,8 @@ let addBasicMaterialComponent =
     Some(
       basicMaterialRecord
       |> _addSharableComponent(
-           (
-             uid,
-             component,
-             gameObjectRecord.basicMaterialMap,
-             GameObjectBasicMaterialService.getGameObject(
-               component,
-               basicMaterialRecord,
-             ),
-           ),
-           (
-             GroupBasicMaterialService.increaseGroupCount,
-             AddBasicMaterialService.handleAddComponent,
-           ),
+           (uid, component, gameObjectRecord.basicMaterialMap),
+           AddBasicMaterialService.handleAddComponent,
          ),
     );
   state;
@@ -149,19 +134,8 @@ let addLightMaterialComponent =
     Some(
       lightMaterialRecord
       |> _addSharableComponent(
-           (
-             uid,
-             component,
-             gameObjectRecord.lightMaterialMap,
-             GameObjectLightMaterialService.getGameObject(
-               component,
-               lightMaterialRecord,
-             ),
-           ),
-           (
-             GroupLightMaterialService.increaseGroupCount,
-             AddLightMaterialService.handleAddComponent,
-           ),
+           (uid, component, gameObjectRecord.lightMaterialMap),
+           AddLightMaterialService.handleAddComponent,
          ),
     );
   state;

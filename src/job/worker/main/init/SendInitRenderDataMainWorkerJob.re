@@ -181,7 +181,7 @@ let _buildData = (operateType, canvas, stateData) => {
         basicMaterialRecord.disposedIndexArray,
         JudgeInstanceMainService.buildMap(
           basicMaterialRecord.index,
-          RecordBasicMaterialMainService.getRecord(state).gameObjectMap,
+          RecordBasicMaterialMainService.getRecord(state).gameObjectsMap,
           gameObjectRecord,
         ),
       ),
@@ -192,7 +192,7 @@ let _buildData = (operateType, canvas, stateData) => {
         lightMaterialRecord.disposedIndexArray,
         JudgeInstanceMainService.buildMap(
           lightMaterialRecord.index,
-          RecordLightMaterialMainService.getRecord(state).gameObjectMap,
+          RecordLightMaterialMainService.getRecord(state).gameObjectsMap,
           gameObjectRecord,
         ),
       ),

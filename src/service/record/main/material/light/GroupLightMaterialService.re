@@ -1,22 +1,10 @@
-open MaterialType;
-
 open LightMaterialType;
 
-let getGroupCount = (material, record) =>
-  GroupService.getGroupCount(material, record.groupCountMap);
+let isGroupLightMaterial = (material, record) =>
+  GroupService.isGroup(material, record.gameObjectsMap);
 
-let isGroupMaterial = (material, record) =>
-  GroupService.isGroupComponent(material, record.groupCountMap);
-
-let increaseGroupCount =
-  (. material, record) => {
-    ...record,
-    groupCountMap:
-      GroupService.increaseGroupCount(material, record.groupCountMap),
-  };
-
-let decreaseGroupCount = (material, record) => {
+let removeGameObject = (gameObject, material, {gameObjectsMap} as record) => {
   ...record,
-  groupCountMap:
-    GroupService.decreaseGroupCount(material, record.groupCountMap),
+  gameObjectsMap:
+    GroupService.removeGameObject(gameObject, material, gameObjectsMap),
 };

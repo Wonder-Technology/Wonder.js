@@ -12,7 +12,7 @@ open DisposeBasicMaterialMainService;
 
 let createBasicMaterial = state => create(. state);
 
-let unsafeGetBasicMaterialGameObject =
+let unsafeGetBasicMaterialGameObjects =
     (material, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -29,7 +29,7 @@ let unsafeGetBasicMaterialGameObject =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetGameObject(
+  unsafeGetGameObjects(
     material,
     RecordBasicMaterialMainService.getRecord(state),
   );
@@ -168,9 +168,9 @@ let setBasicMaterialName = (material, name, state) => {
   NameBasicMaterialMainService.setName(material, name, state);
 };
 
-let batchDisposeBasicMaterial = (state, componentArray) =>
+let batchDisposeBasicMaterial = (state, componentDataArray) =>
   DisposeBasicMaterialMainService.handleBatchDisposeComponent(.
-    componentArray,
+    componentDataArray,
     state,
   );
 

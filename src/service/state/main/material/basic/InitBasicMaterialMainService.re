@@ -5,76 +5,79 @@ open MaterialType;
 open BasicMaterialType;
 
 let initMaterials = (materialIndexArr, gl, {gameObjectRecord} as state) => {
-  let gameObjectMap = RecordBasicMaterialMainService.getRecord(state).gameObjectMap;
+  let gameObjectsMap =
+    RecordBasicMaterialMainService.getRecord(state).gameObjectsMap;
   let isSupportInstance = JudgeInstanceMainService.isSupportInstance(state);
-  let {index, disposedIndexArray} = RecordBasicMaterialMainService.getRecord(state);
+  let {index, disposedIndexArray} =
+    RecordBasicMaterialMainService.getRecord(state);
   materialIndexArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       [@bs]
-       (
-         (state, materialIndex: int) =>
-           [@bs]
-           InitInitBasicMaterialService.initMaterial(
-             gl,
-             (
+       (. state, materialIndex: int) =>
+         InitInitBasicMaterialService.initMaterial(.
+           gl,
+           (
+             materialIndex,
+             JudgeInstanceMainService.isSourceInstance(
                materialIndex,
-               JudgeInstanceMainService.isSourceInstance(
-                 materialIndex,
-                 gameObjectMap,
-                 gameObjectRecord
-               ),
-               isSupportInstance
+               gameObjectsMap,
+               gameObjectRecord,
              ),
-             state
-           )
-       ),
+             isSupportInstance,
+           ),
+           state,
+         ),
        CreateInitBasicMaterialStateMainService.createInitMaterialState(
          (index, disposedIndexArray),
-         state
-       )
+         state,
+       ),
      )
   |> ignore;
-  state
+  state;
 };
 
 let handleInitComponent = (materialIndex: int, {gameObjectRecord} as state) => {
   let {shaderIndices} = RecordBasicMaterialMainService.getRecord(state);
-  InitInitBasicMaterialService.isNeedInitMaterial(materialIndex, shaderIndices) ?
+  InitInitBasicMaterialService.isNeedInitMaterial(
+    materialIndex,
+    shaderIndices,
+  ) ?
     WorkerDetectMainService.isUseWorker(state) ?
       {
-        let {materialArrayForWorkerInit} = RecordBasicMaterialMainService.getRecord(state);
+        let {materialArrayForWorkerInit} =
+          RecordBasicMaterialMainService.getRecord(state);
         MaterialArrayForWorkerInitService.addMaterialToMaterialArrayForWorkerInit(
           materialIndex,
-          materialArrayForWorkerInit
+          materialArrayForWorkerInit,
         )
         |> ignore;
-        state
+        state;
       } :
       {
-        let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
-        let gameObjectMap = RecordBasicMaterialMainService.getRecord(state).gameObjectMap;
-        let isSupportInstance = JudgeInstanceMainService.isSupportInstance(state);
+        let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+        let gameObjectsMap =
+          RecordBasicMaterialMainService.getRecord(state).gameObjectsMap;
+        let isSupportInstance =
+          JudgeInstanceMainService.isSupportInstance(state);
         let {index, disposedIndexArray, shaderIndices} =
           RecordBasicMaterialMainService.getRecord(state);
-        [@bs]
-        InitInitBasicMaterialService.initMaterial(
+        InitInitBasicMaterialService.initMaterial(.
           gl,
           (
             materialIndex,
             JudgeInstanceMainService.isSourceInstance(
               materialIndex,
-              gameObjectMap,
-              gameObjectRecord
+              gameObjectsMap,
+              gameObjectRecord,
             ),
-            isSupportInstance
+            isSupportInstance,
           ),
           CreateInitBasicMaterialStateMainService.createInitMaterialState(
             (index, disposedIndexArray),
-            state
-          )
+            state,
+          ),
         )
         |> ignore;
-        state
+        state;
       } :
-    state
+    state;
 };

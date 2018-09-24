@@ -5,7 +5,7 @@ open RenderType;
 open RenderCameraType;
 
 let _buildMaterialData =
-    (materialArrayForWorkerInit, gameObjectMap, gameObjectRecord) =>
+    (materialArrayForWorkerInit, gameObjectsMap, gameObjectRecord) =>
   materialArrayForWorkerInit
   |> WonderCommonlib.ArrayService.removeDuplicateItems
   |> Js.Array.reduce(
@@ -15,7 +15,7 @@ let _buildMaterialData =
               materialIndex,
               JudgeInstanceMainService.isSourceInstance(
                 materialIndex,
-                gameObjectMap,
+                gameObjectsMap,
                 gameObjectRecord,
               ),
             )),
@@ -132,7 +132,7 @@ let _buildData =
             "materialDataForWorkerInit":
               _buildMaterialData(
                 basicMaterialRecord.materialArrayForWorkerInit,
-                basicMaterialRecord.gameObjectMap,
+                basicMaterialRecord.gameObjectsMap,
                 gameObjectRecord,
               ),
           },
@@ -140,7 +140,7 @@ let _buildData =
             "materialDataForWorkerInit":
               _buildMaterialData(
                 lightMaterialRecord.materialArrayForWorkerInit,
-                lightMaterialRecord.gameObjectMap,
+                lightMaterialRecord.gameObjectsMap,
                 gameObjectRecord,
               ),
           },

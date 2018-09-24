@@ -4,8 +4,6 @@ open Js.Typed_array;
 
 type geometry = int;
 
-type gameObjectsMap = WonderCommonlib.SparseMapService.t(array(int));
-
 type geometryComputeData = {
   vertices: array(float),
   normals: array(float),

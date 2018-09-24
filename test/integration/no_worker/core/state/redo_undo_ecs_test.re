@@ -950,7 +950,11 @@ let _ =
       });
       describe("deep copy gameObject record", () =>
         test(
-          "shadow copy nameMap, disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,\n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialArray,\n        disposedLightMaterialArray,\n                disposedGeometryArray,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n                disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
+          "shadow copy nameMap, disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,
+
+          disposedUidArrayForKeepOrderRemoveGeometry,
+          disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
+          \n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialDataArray,\n        disposedLightMaterialDataArray,\n                disposedGeometryArray,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n                disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
           () =>
           StateDataMainType.(
             GameObjectType.(
@@ -961,12 +965,14 @@ let _ =
                     disposedUidMap,
                     disposedUidArray,
                     disposedUidArrayForKeepOrder,
+                    disposedUidArrayForKeepOrderRemoveGeometry,
+                    disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
                     disposedBasicCameraViewArray,
                     disposedTransformArray,
                     disposedTransformArrayForKeepOrder,
                     disposedPerspectiveCameraProjectionArray,
-                    disposedBasicMaterialArray,
-                    disposedLightMaterialArray,
+                    disposedBasicMaterialDataArray,
+                    disposedLightMaterialDataArray,
                     disposedGeometryDataArray,
                     disposedSourceInstanceArray,
                     disposedObjectInstanceArray,
@@ -991,12 +997,15 @@ let _ =
                     disposedUidMap |> Obj.magic,
                     disposedUidArray |> Obj.magic,
                     disposedUidArrayForKeepOrder |> Obj.magic,
+                    disposedUidArrayForKeepOrderRemoveGeometry |> Obj.magic,
+                    disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial
+                    |> Obj.magic,
                     disposedBasicCameraViewArray |> Obj.magic,
                     disposedTransformArray |> Obj.magic,
                     disposedTransformArrayForKeepOrder |> Obj.magic,
                     disposedPerspectiveCameraProjectionArray |> Obj.magic,
-                    disposedBasicMaterialArray |> Obj.magic,
-                    disposedLightMaterialArray |> Obj.magic,
+                    disposedBasicMaterialDataArray |> Obj.magic,
+                    disposedLightMaterialDataArray |> Obj.magic,
                     disposedGeometryDataArray |> Obj.magic,
                     disposedSourceInstanceArray |> Obj.magic,
                     disposedObjectInstanceArray |> Obj.magic,

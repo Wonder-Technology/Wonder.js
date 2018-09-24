@@ -5,8 +5,8 @@ open MaterialType;
 open LightMaterialType;
 
 let initMaterials = (materialIndexArr, gl, {gameObjectRecord} as state) => {
-  let gameObjectMap =
-    RecordLightMaterialMainService.getRecord(state).gameObjectMap;
+  let gameObjectsMap =
+    RecordLightMaterialMainService.getRecord(state).gameObjectsMap;
   let isSupportInstance = JudgeInstanceMainService.isSupportInstance(state);
   let {index, disposedIndexArray} =
     RecordLightMaterialMainService.getRecord(state);
@@ -19,7 +19,7 @@ let initMaterials = (materialIndexArr, gl, {gameObjectRecord} as state) => {
              materialIndex,
              JudgeInstanceMainService.isSourceInstance(
                materialIndex,
-               gameObjectMap,
+               gameObjectsMap,
                gameObjectRecord,
              ),
              isSupportInstance,
@@ -54,8 +54,8 @@ let handleInitComponent = (materialIndex: int, {gameObjectRecord} as state) => {
       } :
       {
         let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
-        let gameObjectMap =
-          RecordLightMaterialMainService.getRecord(state).gameObjectMap;
+        let gameObjectsMap =
+          RecordLightMaterialMainService.getRecord(state).gameObjectsMap;
         let isSupportInstance =
           JudgeInstanceMainService.isSupportInstance(state);
         let {index, disposedIndexArray} =
@@ -66,7 +66,7 @@ let handleInitComponent = (materialIndex: int, {gameObjectRecord} as state) => {
             materialIndex,
             JudgeInstanceMainService.isSourceInstance(
               materialIndex,
-              gameObjectMap,
+              gameObjectsMap,
               gameObjectRecord,
             ),
             isSupportInstance,
@@ -113,9 +113,9 @@ let reInitComponents = (materialIndices: array(int), state) => {
                  DeviceManagerService.unsafeGetGl(.
                    state.deviceManagerRecord,
                  );
-               let gameObjectMap =
+               let gameObjectsMap =
                  RecordLightMaterialMainService.getRecord(state).
-                   gameObjectMap;
+                   gameObjectsMap;
                let isSupportInstance =
                  JudgeInstanceMainService.isSupportInstance(state);
                let {index, disposedIndexArray} =
@@ -126,7 +126,7 @@ let reInitComponents = (materialIndices: array(int), state) => {
                    materialIndex,
                    JudgeInstanceMainService.isSourceInstance(
                      materialIndex,
-                     gameObjectMap,
+                     gameObjectsMap,
                      gameObjectRecord,
                    ),
                    isSupportInstance,

@@ -2,8 +2,8 @@ open MaterialType;
 
 open LightMaterialType;
 
-let getGameObject = (material, {gameObjectMap}) =>
-  GameObjectMapService.getGameObject(material, gameObjectMap);
+let getGameObjects = (material, {gameObjectsMap}) =>
+  GameObjectsMapService.getGameObjects(material, gameObjectsMap);
 
-let unsafeGetGameObject = (material, {gameObjectMap}) =>
-  GameObjectMapService.unsafeGetGameObject(material, gameObjectMap);
+let unsafeGetGameObjects = (material, {gameObjectsMap}) =>
+  GameObjectsMapService.unsafeGetGameObjects(material, gameObjectsMap);

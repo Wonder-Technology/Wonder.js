@@ -34,7 +34,7 @@ let batchDisposeGameObject =
         DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent,
       ),
       gameObjectArray,
-      (false, false),
+      (false, false, false),
       state,
     );
   let state = state |> ReallocateCPUMemoryJob.execJob(None);
@@ -64,7 +64,7 @@ let batchDisposeGameObjectKeepOrder =
         DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent,
       ),
       gameObjectArray,
-      (true, false),
+      (true, false, false),
       state,
     );
   {
@@ -157,7 +157,7 @@ let disposeGameObjectBasicMaterialComponent =
     ) =>
   DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(
     state,
-    [|component|],
+    [|(gameObject, component)|],
   );
 
 let disposeGameObjectLightMaterialComponent =
@@ -168,7 +168,7 @@ let disposeGameObjectLightMaterialComponent =
     ) =>
   DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
     state,
-    [|component|],
+    [|(gameObject, component)|],
   );
 
 let disposeGameObjectMeshRendererComponent =
@@ -213,7 +213,7 @@ let disposeGameObjectSourceInstanceComponent =
   let (state, _) =
     DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
       state,
-      (false, false),
+      (false, false, false),
       DisposeGameObjectMainService.batchDispose((
         DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
         DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent,

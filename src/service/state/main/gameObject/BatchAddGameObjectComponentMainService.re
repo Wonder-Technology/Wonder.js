@@ -145,28 +145,28 @@ let _batchAddMeshRendererComponent =
 
 let batchAddMeshRendererComponentForClone = _batchAddMeshRendererComponent;
 
-let _batchAddSharableComponent =
-    (
-      (uidArr: array(int), componentArr: array(component), componentMap),
-      (increaseGroupCountFunc, handleAddComponentFunc),
-      record,
-    ) => {
-  _checkBatchAdd(uidArr, componentArr);
-  uidArr
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. record, uid, index) => {
-         let component = Array.unsafe_get(componentArr, index);
-         componentMap
-         |> ComponentMapService.addComponent(uid, component)
-         |> ignore;
-         let record = increaseGroupCountFunc(. component, record);
-         handleAddComponentFunc(. component, uid, record);
-       },
-       record,
-     );
-};
+/* let _batchAddSharableComponent =
+       (
+         (uidArr: array(int), componentArr: array(component), componentMap),
+         (increaseGroupCountFunc, handleAddComponentFunc),
+         record,
+       ) => {
+     _checkBatchAdd(uidArr, componentArr);
+     uidArr
+     |> WonderCommonlib.ArrayService.reduceOneParami(
+          (. record, uid, index) => {
+            let component = Array.unsafe_get(componentArr, index);
+            componentMap
+            |> ComponentMapService.addComponent(uid, component)
+            |> ignore;
+            let record = increaseGroupCountFunc(. component, record);
+            handleAddComponentFunc(. component, uid, record);
+          },
+          record,
+        );
+   }; */
 
-let _batchAddSharableGeometry =
+let _batchAddSharableComponent =
     (
       (uidArr: array(int), componentArr: array(component), componentMap),
       handleAddComponentFunc,
@@ -196,7 +196,7 @@ let _batchAddGeometryComponent =
   ...state,
   geometryRecord:
     Some(
-      _batchAddSharableGeometry(
+      _batchAddSharableComponent(
         (uidArr, componentArr, gameObjectRecord.geometryMap),
         AddGeometryService.handleAddComponent,
         RecordGeometryMainService.getRecord(state),
@@ -217,10 +217,7 @@ let _batchAddBasicMaterialComponent =
     Some(
       _batchAddSharableComponent(
         (uidArr, componentArr, gameObjectRecord.basicMaterialMap),
-        (
-          GroupBasicMaterialService.increaseGroupCount,
-          AddBasicMaterialService.handleAddComponent,
-        ),
+        AddBasicMaterialService.handleAddComponent,
         RecordBasicMaterialMainService.getRecord(state),
       ),
     ),
@@ -239,10 +236,7 @@ let _batchAddLightMaterialComponent =
     Some(
       _batchAddSharableComponent(
         (uidArr, componentArr, gameObjectRecord.lightMaterialMap),
-        (
-          GroupLightMaterialService.increaseGroupCount,
-          AddLightMaterialService.handleAddComponent,
-        ),
+        AddLightMaterialService.handleAddComponent,
         RecordLightMaterialMainService.getRecord(state),
       ),
     ),

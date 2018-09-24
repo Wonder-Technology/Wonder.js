@@ -12,7 +12,7 @@ open DisposeLightMaterialMainService;
 
 let createLightMaterial = state => create(. state);
 
-let unsafeGetLightMaterialGameObject =
+let unsafeGetLightMaterialGameObjects =
     (material, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -29,7 +29,7 @@ let unsafeGetLightMaterialGameObject =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetGameObject(
+  unsafeGetGameObjects(
     material,
     RecordLightMaterialMainService.getRecord(state),
   );
@@ -327,9 +327,9 @@ let reInitMaterials = (materials, state) => {
   InitLightMaterialMainService.reInitComponents(materials, state);
 };
 
-let batchDisposeLightMaterial = (state, componentArray) =>
+let batchDisposeLightMaterial = (state, componentDataArray) =>
   DisposeLightMaterialMainService.handleBatchDisposeComponent(.
-    componentArray,
+    componentDataArray,
     state,
   );
 

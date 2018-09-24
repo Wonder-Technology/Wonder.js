@@ -47,24 +47,24 @@ let deferDisposeTransformComponentForKeepOrder =
   };
 
 let deferDisposeBasicMaterialComponent =
-  (. component: component, state) => {
+  (. gameObject, component: component, state) => {
     ...state,
     gameObjectRecord: {
       ...state.gameObjectRecord,
-      disposedBasicMaterialArray:
-        state.gameObjectRecord.disposedBasicMaterialArray
-        |> ArrayService.push(component),
+      disposedBasicMaterialDataArray:
+        state.gameObjectRecord.disposedBasicMaterialDataArray
+        |> ArrayService.push((gameObject, component)),
     },
   };
 
 let deferDisposeLightMaterialComponent =
-  (. component: component, state) => {
+  (. gameObject, component: component, state) => {
     ...state,
     gameObjectRecord: {
       ...state.gameObjectRecord,
-      disposedLightMaterialArray:
-        state.gameObjectRecord.disposedLightMaterialArray
-        |> ArrayService.push(component),
+      disposedLightMaterialDataArray:
+        state.gameObjectRecord.disposedLightMaterialDataArray
+        |> ArrayService.push((gameObject, component)),
     },
   };
 
@@ -186,18 +186,16 @@ let batchDisposeGeometryComponent =
     state,
   );
 
-let batchDisposeBasicMaterialComponent =
-    (state, componentArray: array(component)) =>
+let batchDisposeBasicMaterialComponent = (state, componentDataArray) =>
   DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(
     state,
-    componentArray,
+    componentDataArray,
   );
 
-let batchDisposeLightMaterialComponent =
-    (state, componentArray: array(component)) =>
+let batchDisposeLightMaterialComponent = (state, componentDataArray) =>
   DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
     state,
-    componentArray,
+    componentDataArray,
   );
 
 let batchDisposeDirectionLightComponent =

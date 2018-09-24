@@ -234,6 +234,8 @@ let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
 let initGameObject = GameObjectAPI.initGameObject;
 
+let disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial;
+
 let disposeGameObjectKeepOrderRemoveGeometry = GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometry;
 
 let disposeGameObjectKeepOrder = GameObjectAPI.disposeGameObjectKeepOrder;
@@ -478,6 +480,8 @@ let unsafeGetPointLightGameObject = PointLightAPI.unsafeGetPointLightGameObject;
 
 let createPointLight = PointLightAPI.createPointLight;
 
+let getAllBasicMaterials = BasicMaterialAPI.getAllBasicMaterials;
+
 let batchDisposeBasicMaterial = BasicMaterialAPI.batchDisposeBasicMaterial;
 
 let setBasicMaterialName = BasicMaterialAPI.setBasicMaterialName;
@@ -494,9 +498,11 @@ let setBasicMaterialColor = BasicMaterialAPI.setBasicMaterialColor;
 
 let getBasicMaterialColor = BasicMaterialAPI.getBasicMaterialColor;
 
-let unsafeGetBasicMaterialGameObject = BasicMaterialAPI.unsafeGetBasicMaterialGameObject;
+let unsafeGetBasicMaterialGameObjects = BasicMaterialAPI.unsafeGetBasicMaterialGameObjects;
 
 let createBasicMaterial = BasicMaterialAPI.createBasicMaterial;
+
+let getAllLightMaterials = LightMaterialAPI.getAllLightMaterials;
 
 let batchDisposeLightMaterial = LightMaterialAPI.batchDisposeLightMaterial;
 
@@ -530,7 +536,7 @@ let setLightMaterialDiffuseColor = LightMaterialAPI.setLightMaterialDiffuseColor
 
 let getLightMaterialDiffuseColor = LightMaterialAPI.getLightMaterialDiffuseColor;
 
-let unsafeGetLightMaterialGameObject = LightMaterialAPI.unsafeGetLightMaterialGameObject;
+let unsafeGetLightMaterialGameObjects = LightMaterialAPI.unsafeGetLightMaterialGameObjects;
 
 let createLightMaterial = LightMaterialAPI.createLightMaterial;
 
@@ -839,6 +845,8 @@ let batchDisposeGameObjectKeepOrder = GameObjectAPI.batchDisposeGameObjectKeepOr
 let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
 let initGameObject = GameObjectAPI.initGameObject;
+
+let disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial;
 
 let disposeGameObjectKeepOrderRemoveGeometry = GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometry;
 

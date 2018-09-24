@@ -51,19 +51,23 @@ let _ =
                )
            )
        ); */
-    describe("unsafeGetLightMaterialGameObject", () =>
-      test("get material's gameObject", () => {
-        open GameObjectAPI;
+
+    describe("unsafeGetLightMaterialGameObjects", () =>
+      test("get material's gameObjects", () => {
         open GameObjectAPI;
         let (state, material) = createLightMaterial(state^);
-        let (state, gameObject) = state |> createGameObject;
+        let (state, gameObject1) = state |> createGameObject;
+        let (state, gameObject2) = state |> createGameObject;
         let state =
-          state |> addGameObjectLightMaterialComponent(gameObject, material);
+          state |> addGameObjectLightMaterialComponent(gameObject1, material);
+        let state =
+          state |> addGameObjectLightMaterialComponent(gameObject2, material);
         state
-        |> unsafeGetLightMaterialGameObject(material)
-        |> expect == gameObject;
+        |> unsafeGetLightMaterialGameObjects(material)
+        |> expect == [|gameObject1, gameObject2|];
       })
     );
+
     describe("operate data", () => {
       test(
         "get the data from array buffer may not equal to the value which is setted",
@@ -203,7 +207,7 @@ let _ =
           LightMaterialTool.getBasicSourceTextureCount(material1, state)
           |> expect == 0;
         });
-        test("remove from gameObjectMap, nameMap", () => {
+        test("remove from gameObjectsMap, nameMap", () => {
           open LightMaterialType;
           let (state, gameObject1, material1) =
             LightMaterialTool.createGameObject(state^);
@@ -215,10 +219,10 @@ let _ =
                  gameObject1,
                  material1,
                );
-          let {gameObjectMap, nameMap} = LightMaterialTool.getRecord(state);
+          let {gameObjectsMap, nameMap} = LightMaterialTool.getRecord(state);
 
           (
-            gameObjectMap |> WonderCommonlib.SparseMapService.has(material1),
+            gameObjectsMap |> WonderCommonlib.SparseMapService.has(material1),
             nameMap |> WonderCommonlib.SparseMapService.has(material1),
           )
           |> expect == (false, false);
@@ -393,29 +397,42 @@ let _ =
             );
           });
         });
-        test("reset group count", () => {
-          let (state, material1) = createLightMaterial(state^);
+
+        test("remove gameObject", () => {
+          let (state, lightMaterial1) = createLightMaterial(state^);
           let (state, gameObject1) = GameObjectAPI.createGameObject(state);
           let state =
             state
             |> GameObjectAPI.addGameObjectLightMaterialComponent(
                  gameObject1,
-                 material1,
+                 lightMaterial1,
                );
           let (state, gameObject2) = GameObjectAPI.createGameObject(state);
           let state =
             state
             |> GameObjectAPI.addGameObjectLightMaterialComponent(
                  gameObject2,
-                 material1,
+                 lightMaterial1,
+               );
+          let (state, gameObject3) = GameObjectAPI.createGameObject(state);
+          let state =
+            state
+            |> GameObjectAPI.addGameObjectLightMaterialComponent(
+                 gameObject3,
+                 lightMaterial1,
                );
           let state =
             state
             |> GameObjectTool.disposeGameObjectLightMaterialComponent(
                  gameObject1,
-                 material1,
+                 lightMaterial1,
                );
-          LightMaterialTool.getGroupCount(material1, state) |> expect == 0;
+
+          LightMaterialAPI.unsafeGetLightMaterialGameObjects(
+            lightMaterial1,
+            state,
+          )
+          |> expect == [|gameObject3, gameObject2|];
         });
       })
     );
@@ -490,8 +507,8 @@ let _ =
           )
           |> toThrowMessage("expect component alive, but actual not");
         };
-        test("unsafeGetLightMaterialGameObject should error", () =>
-          _testGetFunc(unsafeGetLightMaterialGameObject)
+        test("unsafeGetLightMaterialGameObjects should error", () =>
+          _testGetFunc(unsafeGetLightMaterialGameObjects)
         );
         test("getLightMaterialDiffuseColor should error", () =>
           _testGetFunc(getLightMaterialDiffuseColor)

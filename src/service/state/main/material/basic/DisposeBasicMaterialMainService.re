@@ -19,6 +19,7 @@ let isAlive = (material, {disposedIndexArray}) =>
   */
 let _disposeData =
     (
+      gameObject,
       material,
       textureCountPerMaterial,
       {
@@ -30,15 +31,16 @@ let _disposeData =
         defaultColor,
         nameMap,
         groupCountMap,
-        gameObjectMap,
+        gameObjectsMap,
       } as basicMaterialRecord,
     ) => {
-  let (shaderIndices, groupCountMap, gameObjectMap) =
+  let (shaderIndices, groupCountMap) =
     DisposeMaterialService.disposeData(
       material,
-      (shaderIndices, groupCountMap, gameObjectMap),
+      (shaderIndices, groupCountMap),
       DefaultTypeArrayValueService.getDefaultShaderIndex(),
     );
+
   {
     ...basicMaterialRecord,
     shaderIndices,
@@ -69,42 +71,51 @@ let _disposeData =
          ),
     nameMap: nameMap |> disposeSparseMapData(material),
     groupCountMap,
-    gameObjectMap,
+    gameObjectsMap:
+      GameObjectsMapService.removeGameObject(
+        gameObject,
+        material,
+        gameObjectsMap,
+      ),
   };
 };
 
 let _handleDispose =
     (
+      gameObject,
       disposedIndexArray,
       material,
       textureCountPerMaterial,
       basicMaterialRecord,
     ) =>
   switch (
-    GroupBasicMaterialService.isGroupMaterial(material, basicMaterialRecord)
+    GroupBasicMaterialService.isGroupBasicMaterial(material, basicMaterialRecord)
   ) {
   | false => {
       ...
-        basicMaterialRecord |> _disposeData(material, textureCountPerMaterial),
+        basicMaterialRecord
+        |> _disposeData(gameObject, material, textureCountPerMaterial),
       disposedIndexArray:
         DisposeMaterialService.addDisposeIndex(material, disposedIndexArray),
     }
   | true =>
-    GroupBasicMaterialService.decreaseGroupCount(
+    GroupBasicMaterialService.removeGameObject(
+      gameObject,
       material,
       basicMaterialRecord,
     )
   };
 
 let handleBatchDisposeComponent =
-  (. materialArray: array(material), {settingRecord} as state) => {
+  (. materialDataArray, {settingRecord} as state) => {
     WonderLog.Contract.requireCheck(
       () =>
         WonderLog.(
           Contract.(
             Operators.(
               DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
-                materialArray,
+                materialDataArray
+                |> Js.Array.map(((_, material)) => material),
                 isAlive,
                 RecordBasicMaterialMainService.getRecord(state),
               )
@@ -117,10 +128,11 @@ let handleBatchDisposeComponent =
       RecordBasicMaterialMainService.getRecord(state);
     let textureCountPerMaterial =
       BufferSettingService.getTextureCountPerMaterial(settingRecord);
-    materialArray
+    materialDataArray
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. basicMaterialRecord, material) =>
+         (. basicMaterialRecord, (gameObject, material)) =>
            _handleDispose(
+             gameObject,
              disposedIndexArray,
              material,
              textureCountPerMaterial,

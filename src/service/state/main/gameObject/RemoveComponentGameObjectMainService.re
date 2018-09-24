@@ -21,3 +21,39 @@ let batchRemoveGeometryComponent = (state, geometryDataArray) =>
     geometryDataArray,
     state,
   );
+
+let removeBasicMaterialComponent =
+    (uid, component: component, {gameObjectRecord} as state) =>
+  {
+    ...state,
+    gameObjectRecord: {
+      ...gameObjectRecord,
+      basicMaterialMap:
+        _removeComponent(uid, gameObjectRecord.basicMaterialMap),
+    },
+  }
+  |> RemoveBasicMaterialMainService.handleRemoveComponent(uid, component);
+
+let batchRemoveBasicMaterialComponent = (state, basicMaterialDataArray) =>
+  RemoveBasicMaterialMainService.handleBatchRemoveComponent(
+    basicMaterialDataArray,
+    state,
+  );
+
+let removeLightMaterialComponent =
+    (uid, component: component, {gameObjectRecord} as state) =>
+  {
+    ...state,
+    gameObjectRecord: {
+      ...gameObjectRecord,
+      lightMaterialMap:
+        _removeComponent(uid, gameObjectRecord.lightMaterialMap),
+    },
+  }
+  |> RemoveLightMaterialMainService.handleRemoveComponent(uid, component);
+
+let batchRemoveLightMaterialComponent = (state, lightMaterialDataArray) =>
+  RemoveLightMaterialMainService.handleBatchRemoveComponent(
+    lightMaterialDataArray,
+    state,
+  );

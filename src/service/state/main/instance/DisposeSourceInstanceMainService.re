@@ -12,13 +12,13 @@ let isAlive = (sourceInstance, {disposedIndexArray}) =>
 let _disposeObjectInstanceGameObject =
     (
       objectInstanceGameObjectArr,
-      (isKeepOrder, isRemoveGeometry),
+      (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
       batchDisposeGameObjectFunc,
       state,
     ) =>
   batchDisposeGameObjectFunc(
     objectInstanceGameObjectArr,
-    (isKeepOrder, isRemoveGeometry),
+    (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
     state,
   )
   |> WonderLog.Contract.ensureCheck(
@@ -57,7 +57,7 @@ let _disposeObjectInstanceGameObject =
 let _disposeData =
     (
       sourceInstance: sourceInstance,
-      (isKeepOrder, isRemoveGeometry),
+      (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
       batchDisposeGameObjectFunc,
       {typeArrayPoolRecord, settingRecord} as state,
     ) => {
@@ -117,7 +117,7 @@ let _disposeData =
     state
     |> _disposeObjectInstanceGameObject(
          objectInstanceGameObjectArr,
-         (isKeepOrder, isRemoveGeometry),
+         (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
          batchDisposeGameObjectFunc,
        );
   state;
@@ -126,9 +126,9 @@ let _disposeData =
 let handleBatchDisposeComponent =
   (.
     sourceInstanceArray: array(sourceInstance),
-    (isKeepOrder, isRemoveGeometry),
+    (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
     batchDisposeGameObjectFunc:
-      (array(int), (bool, bool), StateDataMainType.state) =>
+      (array(int), (bool, bool, bool), StateDataMainType.state) =>
       (StateDataMainType.state, array(int), array(int)),
     state,
   ) => {
@@ -165,7 +165,7 @@ let handleBatchDisposeComponent =
              state
              |> _disposeData(
                   sourceInstance,
-                  (isKeepOrder, isRemoveGeometry),
+                  (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
                   batchDisposeGameObjectFunc,
                 ),
            state,

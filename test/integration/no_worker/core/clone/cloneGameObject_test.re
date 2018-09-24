@@ -553,9 +553,9 @@ let _ =
               isShareMaterial,
               state,
             );
-          let _prepare = isShareMaterial => {
+          let _prepare = (isShareMaterial, state) => {
             let (state, gameObject1, material1) =
-              BasicMaterialTool.createGameObject(state^);
+              BasicMaterialTool.createGameObject(state);
             let state =
               state |> BasicMaterialTool.setShaderIndex(material1, 1);
             let (state, clonedGameObjectArr) =
@@ -578,62 +578,69 @@ let _ =
           describe("test clone shared material", () => {
             test("cloned one== source one", () => {
               let (state, _, material, _, clonedMaterialArr) =
-                _prepare(true);
+                _prepare(true, state^);
               clonedMaterialArr |> expect == [|material, material|];
             });
             test(
-              "cloned one's gameObject ===  the last gameObject which add the material",
+              "cloned one's gameObjects should be gameObjects who add the geometry",
               () => {
               let (
                 state,
                 gameObject,
                 _,
                 clonedGameObjectArr,
-                clonedMaterialArr,
+                clonedBasicMaterialArr,
               ) =
-                _prepare(true);
+                _prepare(true, state^);
+
+              let result =
+                [|gameObject|] |> Js.Array.concat(clonedGameObjectArr);
               (
-                BasicMaterialAPI.unsafeGetBasicMaterialGameObject(
-                  clonedMaterialArr[0],
+                BasicMaterialAPI.unsafeGetBasicMaterialGameObjects(
+                  clonedBasicMaterialArr[0],
                   state,
                 ),
-                BasicMaterialAPI.unsafeGetBasicMaterialGameObject(
-                  clonedMaterialArr[1],
+                BasicMaterialAPI.unsafeGetBasicMaterialGameObjects(
+                  clonedBasicMaterialArr[1],
                   state,
                 ),
               )
-              |> expect == (clonedGameObjectArr[1], clonedGameObjectArr[1]);
-            });
-            test("increase group count", () => {
-              let (state, _, material, _, _) = _prepare(true);
-              BasicMaterialTool.getGroupCount(material, state) |> expect == 2;
+              |> expect == (result, result);
             });
           });
           describe("test clone not shared material", () => {
             test("cloned ones are new created ones", () => {
               let (state, _, material, _, clonedMaterialArr) =
-                _prepare(false);
+                _prepare(false, state^);
               clonedMaterialArr |> expect == [|1, 2|];
             });
-            test("add cloned one's gameObject to map", () => {
-              let (state, _, _, clonedGameObjectArr, clonedMaterialArr) =
-                _prepare(false);
+            test(
+              "cloned one's gameObjects should be gameObjects who add the geometry",
+              () => {
+              let (
+                state,
+                gameObject,
+                _,
+                clonedGameObjectArr,
+                clonedBasicMaterialArr,
+              ) =
+                _prepare(false, state^);
+
+              let result =
+                [|gameObject|] |> Js.Array.concat(clonedGameObjectArr);
               (
-                BasicMaterialAPI.unsafeGetBasicMaterialGameObject(
-                  clonedMaterialArr[0],
+                BasicMaterialAPI.unsafeGetBasicMaterialGameObjects(
+                  clonedBasicMaterialArr[0],
                   state,
                 ),
-                BasicMaterialAPI.unsafeGetBasicMaterialGameObject(
-                  clonedMaterialArr[1],
+                BasicMaterialAPI.unsafeGetBasicMaterialGameObjects(
+                  clonedBasicMaterialArr[1],
                   state,
                 ),
               )
-              |> expect == (clonedGameObjectArr[0], clonedGameObjectArr[1]);
+              |> expect == (result, result);
             });
-            test("not change group count", () => {
-              let (state, _, material, _, _) = _prepare(false);
-              BasicMaterialTool.getGroupCount(material, state) |> expect == 0;
-            });
+
             describe("cloned one' data === source one's data", () => {
               let _prepare = () => {
                 let (state, gameObject1, material1) =
@@ -736,7 +743,7 @@ let _ =
             describe("test init cloned material", () =>
               test("can correctly set cloned one's shader index", () => {
                 let (state, _, _, clonedGameObjectArr, clonedMaterialArr) =
-                  _prepare(false);
+                  _prepare(false, state^);
                 let state =
                   state
                   |> FakeGlTool.setFakeGl(

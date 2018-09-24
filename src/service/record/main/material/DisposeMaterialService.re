@@ -8,15 +8,15 @@ let isAlive = (material, disposedIndexArray) =>
 let addDisposeIndex = (material, disposedIndexArray) =>
   disposedIndexArray |> ArrayService.push(material);
 
-let disposeData = (material, (shaderIndices, groupCountMap, gameObjectMap), defaultShaderIndex) => (
-  [@bs]
-  DisposeTypeArrayService.deleteAndResetUint32(
+let disposeData =
+    (material, (shaderIndices, groupCountMap), defaultShaderIndex) => (
+  DisposeTypeArrayService.deleteAndResetUint32(.
     ShaderIndicesService.getShaderIndexIndex(material),
     defaultShaderIndex,
-    shaderIndices
+    shaderIndices,
   ),
   groupCountMap |> WonderCommonlib.SparseMapService.set(material, 0),
-  disposeSparseMapData(material, gameObjectMap)
+  /* disposeSparseMapData(material, gameObjectMap) */
 );
 
 /* let handleBatchDisposeComponent =
@@ -47,4 +47,5 @@ let disposeData = (material, (shaderIndices, groupCountMap, gameObjectMap), defa
           state
         )
    }; */
-let isNotDisposed = (disposedIndexArray) => disposedIndexArray |> Js.Array.length == 0;
+let isNotDisposed = disposedIndexArray =>
+  disposedIndexArray |> Js.Array.length == 0;

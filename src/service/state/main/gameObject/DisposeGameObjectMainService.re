@@ -35,7 +35,7 @@ let rec batchDispose =
             batchDisposeLightMaterialComponentFunc,
           ),
           uidArray: array(int),
-          (isKeepOrder, isRemoveGeometry),
+          (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
           state,
         ) => {
   let state =
@@ -51,7 +51,7 @@ let rec batchDispose =
   ) =
     state
     |> DisposeGameObjectComponentMainService.batchDispose(
-         (uidArray, isKeepOrder, isRemoveGeometry),
+         (uidArray, isKeepOrder, isRemoveGeometry, isRemoveMaterial),
          (
            batchDisposeBasicMaterialComponentFunc,
            batchDisposeLightMaterialComponentFunc,
@@ -95,8 +95,8 @@ let clearDeferDisposeData = state => {
       WonderCommonlib.ArrayService.createEmpty(),
     disposedArcballCameraControllerArray:
       WonderCommonlib.ArrayService.createEmpty(),
-    disposedBasicMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
-    disposedLightMaterialArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedBasicMaterialDataArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedLightMaterialDataArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedGeometryDataArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedSourceInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedObjectInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -121,3 +121,16 @@ let _deferBatchDisposeRemoveGeometryKeepOrder = (uidArray: array(int), state) =>
 
 let deferDisposeKeepOrderRemoveGeometry = (uid: int, state) =>
   _deferBatchDisposeRemoveGeometryKeepOrder([|uid|], state);
+
+let _deferDisposeKeepOrderRemoveGeometryRemoveMaterial =
+    (uidArray: array(int), state) => {
+  state.gameObjectRecord.
+    disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial =
+    state.gameObjectRecord.
+      disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial
+    |> Js.Array.concat(uidArray);
+  state;
+};
+
+let deferDisposeKeepOrderRemoveGeometryRemoveMaterial = (uid: int, state) =>
+  _deferDisposeKeepOrderRemoveGeometryRemoveMaterial([|uid|], state);

@@ -1,17 +1,10 @@
 open GeometryType;
 
 let isGroupGeometry = (geometry, record) =>
-  switch (record |> GameObjectGeometryService.getGameObjects(geometry)) {
-  | Some(arr) when arr |> Js.Array.length > 1 => true
-  | _ => false
-  };
+  GroupService.isGroup(geometry, record.gameObjectsMap);
 
 let removeGameObject = (gameObject, geometry, {gameObjectsMap} as record) => {
   ...record,
   gameObjectsMap:
-    GameObjectsMapService.removeGameObject(
-      gameObject,
-      geometry,
-      gameObjectsMap,
-    ),
+    GroupService.removeGameObject(gameObject, geometry, gameObjectsMap),
 };

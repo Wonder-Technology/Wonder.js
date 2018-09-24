@@ -57,7 +57,7 @@ let initMaterials = (gl, {gameObjectRecord} as state) => {
     (
       JudgeInstanceMainService.buildMap(
         index,
-        RecordBasicMaterialMainService.getRecord(state).gameObjectMap,
+        RecordBasicMaterialMainService.getRecord(state).gameObjectsMap,
         gameObjectRecord,
       ),
       JudgeInstanceMainService.isSupportInstance(state),
@@ -98,9 +98,6 @@ let isMaterialDisposed = (material, state) => {
   let {disposedIndexArray} = getRecord(state);
   disposedIndexArray |> Js.Array.includes(material);
 };
-
-let getGroupCount = (material, state) =>
-  GroupBasicMaterialService.getGroupCount(material, getRecord(state));
 
 let getBasicSourceTextureCount = (material, state) =>
   TextureCountMapMaterialService.unsafeGetCount(

@@ -2,8 +2,9 @@ open StateDataMainType;
 
 open BasicMaterialType;
 
-let _resetShaderIndices = (state) => {
-  let {index, shaderIndices} as record = RecordBasicMaterialMainService.getRecord(state);
+let _resetShaderIndices = state => {
+  let {index, shaderIndices} as record =
+    RecordBasicMaterialMainService.getRecord(state);
   {
     ...state,
     basicMaterialRecord:
@@ -13,16 +14,20 @@ let _resetShaderIndices = (state) => {
           RestoreMaterialService.resetShaderIndices(
             index,
             DefaultTypeArrayValueService.getDefaultShaderIndex(),
-            shaderIndices
-          )
-      })
-  }
+            shaderIndices,
+          ),
+      }),
+  };
 };
 
-let _restoreTypeArrays = (currentBasicMaterialRecord, targetBasicMaterialRecord) =>
-  currentBasicMaterialRecord.shaderIndices === targetBasicMaterialRecord.shaderIndices
+let _restoreTypeArrays =
+    (currentBasicMaterialRecord, targetBasicMaterialRecord) =>
+  currentBasicMaterialRecord.shaderIndices
+  === targetBasicMaterialRecord.shaderIndices
   && currentBasicMaterialRecord.colors === targetBasicMaterialRecord.colors
-  && currentBasicMaterialRecord.textureIndices === targetBasicMaterialRecord.textureIndices
+  &&
+  currentBasicMaterialRecord.textureIndices === targetBasicMaterialRecord.
+                                                  textureIndices
   && currentBasicMaterialRecord.mapUnits === targetBasicMaterialRecord.mapUnits ?
     (currentBasicMaterialRecord, targetBasicMaterialRecord) :
     {
@@ -31,38 +36,42 @@ let _restoreTypeArrays = (currentBasicMaterialRecord, targetBasicMaterialRecord)
           currentBasicMaterialRecord.shaderIndices,
           currentBasicMaterialRecord.colors,
           currentBasicMaterialRecord.textureIndices,
-          currentBasicMaterialRecord.mapUnits
+          currentBasicMaterialRecord.mapUnits,
         )
         |> RecordBasicMaterialMainService.setAllTypeArrDataToDefault(
              currentBasicMaterialRecord.index,
              DefaultTypeArrayValueService.getDefaultShaderIndex(),
-             currentBasicMaterialRecord.defaultColor
+             currentBasicMaterialRecord.defaultColor,
            );
       TypeArrayService.fillUint32ArrayWithUint32Array(
         (currentBasicMaterialRecord.shaderIndices, 0),
         (targetBasicMaterialRecord.shaderIndices, 0),
-        Js.Typed_array.Uint32Array.length(targetBasicMaterialRecord.shaderIndices)
+        Js.Typed_array.Uint32Array.length(
+          targetBasicMaterialRecord.shaderIndices,
+        ),
       )
       |> ignore;
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (currentBasicMaterialRecord.colors, 0),
         (targetBasicMaterialRecord.colors, 0),
-        Js.Typed_array.Float32Array.length(targetBasicMaterialRecord.colors)
+        Js.Typed_array.Float32Array.length(targetBasicMaterialRecord.colors),
       )
       |> ignore;
       TypeArrayService.fillUint32ArrayWithUint32Array(
         (currentBasicMaterialRecord.textureIndices, 0),
         (targetBasicMaterialRecord.textureIndices, 0),
-        Js.Typed_array.Uint32Array.length(targetBasicMaterialRecord.textureIndices)
+        Js.Typed_array.Uint32Array.length(
+          targetBasicMaterialRecord.textureIndices,
+        ),
       )
       |> ignore;
       TypeArrayService.fillUint8ArrayWithUint8Array(
         (currentBasicMaterialRecord.mapUnits, 0),
         (targetBasicMaterialRecord.mapUnits, 0),
-        Js.Typed_array.Uint8Array.length(targetBasicMaterialRecord.mapUnits)
+        Js.Typed_array.Uint8Array.length(targetBasicMaterialRecord.mapUnits),
       )
       |> ignore;
-      (currentBasicMaterialRecord, targetBasicMaterialRecord)
+      (currentBasicMaterialRecord, targetBasicMaterialRecord);
     };
 
 let restore = (gl, currentState, targetState) => {
@@ -71,12 +80,15 @@ let restore = (gl, currentState, targetState) => {
     targetState
     |> InitBasicMaterialMainService.initMaterials(
          AliveMaterialService.getAllAliveMaterials(
-           RecordBasicMaterialMainService.getRecord(targetState).gameObjectMap
+           RecordBasicMaterialMainService.getRecord(targetState).
+             gameObjectsMap,
          ),
-         gl
+         gl,
        );
-  let currentBasicMaterialRecord = RecordBasicMaterialMainService.getRecord(currentState);
-  let targetBasicMaterialRecord = RecordBasicMaterialMainService.getRecord(targetState);
+  let currentBasicMaterialRecord =
+    RecordBasicMaterialMainService.getRecord(currentState);
+  let targetBasicMaterialRecord =
+    RecordBasicMaterialMainService.getRecord(targetState);
   let (currentBasicMaterialRecord, targetBasicMaterialRecord) =
     _restoreTypeArrays(currentBasicMaterialRecord, targetBasicMaterialRecord);
   {
@@ -88,7 +100,7 @@ let restore = (gl, currentState, targetState) => {
         shaderIndices: currentBasicMaterialRecord.shaderIndices,
         colors: currentBasicMaterialRecord.colors,
         textureIndices: currentBasicMaterialRecord.textureIndices,
-        mapUnits: currentBasicMaterialRecord.mapUnits
-      })
-  }
-};
+        mapUnits: currentBasicMaterialRecord.mapUnits,
+      }),
+  };
+};    

@@ -6,23 +6,8 @@ open DisposeComponentGameObjectMainService;
 
 open BatchGetComponentGameObjectMainService;
 
-let batchDispose =
-    (
-      (uidArray: array(int), isKeepOrder, isRemoveGeometry),
-      (
-        batchDisposeBasicMaterialComponentFunc,
-        batchDisposeLightMaterialComponentFunc,
-        batchDisposeFunc,
-      ),
-      {gameObjectRecord} as state,
-    ) => {
-  let state =
-    state
-    |> BatchGetComponentGameObjectMainService.batchGetTransformComponent(
-         uidArray,
-       )
-    |> batchDisposeTransformComponent(state, isKeepOrder);
-
+let _batchDisposeSharableComponents =
+    (uidArray, (isRemoveGeometry, isRemoveMaterial), state) => {
   let geometryDataArr =
     state
     |> BatchGetComponentGameObjectMainService.batchGetGeometryComponent(
@@ -45,6 +30,73 @@ let batchDispose =
         state,
         geometryDataArr,
       );
+
+  let basicMaterialDataArr =
+    state
+    |> BatchGetComponentGameObjectMainService.batchGetBasicMaterialComponent(
+         uidArray,
+       )
+    |> Js.Array.mapi((basicMaterial, index) =>
+         (Array.unsafe_get(uidArray, index), basicMaterial)
+       );
+
+  let state =
+    isRemoveMaterial ?
+      RemoveComponentGameObjectMainService.batchRemoveBasicMaterialComponent(
+        state,
+        basicMaterialDataArr,
+      ) :
+      DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(
+        state,
+        basicMaterialDataArr,
+      );
+
+  let lightMaterialDataArr =
+    state
+    |> BatchGetComponentGameObjectMainService.batchGetLightMaterialComponent(
+         uidArray,
+       )
+    |> Js.Array.mapi((lightMaterial, index) =>
+         (Array.unsafe_get(uidArray, index), lightMaterial)
+       );
+
+  let state =
+    isRemoveMaterial ?
+      RemoveComponentGameObjectMainService.batchRemoveLightMaterialComponent(
+        state,
+        lightMaterialDataArr,
+      ) :
+      DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
+        state,
+        lightMaterialDataArr,
+      );
+
+  (state, geometryNeedDisposeVboBufferArr);
+};
+
+let batchDispose =
+    (
+      (uidArray: array(int), isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+      (
+        batchDisposeBasicMaterialComponentFunc,
+        batchDisposeLightMaterialComponentFunc,
+        batchDisposeFunc,
+      ),
+      {gameObjectRecord} as state,
+    ) => {
+  let state =
+    state
+    |> BatchGetComponentGameObjectMainService.batchGetTransformComponent(
+         uidArray,
+       )
+    |> batchDisposeTransformComponent(state, isKeepOrder);
+
+  let (state, geometryNeedDisposeVboBufferArr) =
+    _batchDisposeSharableComponents(
+      uidArray,
+      (isRemoveGeometry, isRemoveMaterial),
+      state,
+    );
 
   let state =
     state
@@ -76,18 +128,7 @@ let batchDispose =
          uidArray,
        )
     |> batchDisposeMeshRendererComponent(state);
-  let state =
-    state
-    |> BatchGetComponentGameObjectMainService.batchGetBasicMaterialComponent(
-         uidArray,
-       )
-    |> batchDisposeBasicMaterialComponentFunc(state);
-  let state =
-    state
-    |> BatchGetComponentGameObjectMainService.batchGetLightMaterialComponent(
-         uidArray,
-       )
-    |> batchDisposeLightMaterialComponentFunc(state);
+
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetDirectionLightComponent(
@@ -111,7 +152,7 @@ let batchDispose =
        )
     |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
          state,
-         (isKeepOrder, isRemoveGeometry),
+         (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
          batchDisposeFunc((
            batchDisposeBasicMaterialComponentFunc,
            batchDisposeLightMaterialComponentFunc,

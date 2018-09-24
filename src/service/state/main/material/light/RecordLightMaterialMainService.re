@@ -217,7 +217,7 @@ let create = ({settingRecord} as state) => {
       defaultShininess,
       nameMap: WonderCommonlib.SparseMapService.createEmpty(),
       textureCountMap: WonderCommonlib.SparseMapService.createEmpty(),
-      gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+      gameObjectsMap: WonderCommonlib.SparseMapService.createEmpty(),
       groupCountMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
       materialArrayForWorkerInit: WonderCommonlib.ArrayService.createEmpty(),
@@ -241,7 +241,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         nameMap,
         textureCountMap,
         groupCountMap,
-        gameObjectMap,
+        gameObjectsMap,
         disposedIndexArray,
         materialArrayForWorkerInit,
       } as record =
@@ -298,7 +298,8 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         nameMap: nameMap |> SparseMapService.copy,
         textureCountMap: textureCountMap |> SparseMapService.copy,
         groupCountMap: groupCountMap |> SparseMapService.copy,
-        gameObjectMap: gameObjectMap |> SparseMapService.copy,
+        gameObjectsMap:
+          gameObjectsMap |> CopyTypeArrayService.deepCopyArrayArray,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
         materialArrayForWorkerInit:
           materialArrayForWorkerInit |> Js.Array.copy,

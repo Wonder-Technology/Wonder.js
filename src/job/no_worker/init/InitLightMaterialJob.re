@@ -10,7 +10,7 @@ let execJob = (flags, {gameObjectRecord} as state) => {
     (
       JudgeInstanceMainService.buildMap(
         index,
-        RecordLightMaterialMainService.getRecord(state).gameObjectMap,
+        RecordLightMaterialMainService.getRecord(state).gameObjectsMap,
         gameObjectRecord,
       ),
       JudgeInstanceMainService.isSupportInstance(state),
