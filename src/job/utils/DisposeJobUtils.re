@@ -110,6 +110,7 @@ let _disposeGameObjects =
     disposedUidArrayForKeepOrderRemoveGeometry,
     disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
   } = gameObjectRecord;
+
   let (
     state,
     geometryNeedDisposeVboBufferArrForNotKeepOrder,

@@ -850,6 +850,90 @@ let _ =
       })
     );
 
+    describe("removeGameObjectGeometryComponent", () => {
+      let _prepareAndExec = state => {
+        let (state, gameObject1, geometry1) =
+          BoxGeometryTool.createGameObject(state);
+
+        let state =
+          GameObjectAPI.removeGameObjectGeometryComponent(
+            gameObject1,
+            geometry1,
+            state,
+          );
+
+        (state, gameObject1, geometry1);
+      };
+
+      test("remove geometry from gameObject", () => {
+        let (state, gameObject1, geometry1) = _prepareAndExec(state^);
+
+        GameObjectAPI.hasGameObjectGeometryComponent(gameObject1, state)
+        |> expect == false;
+      });
+      test("remove gameObject from geometry", () => {
+        let (state, gameObject1, geometry1) = _prepareAndExec(state^);
+
+        GeometryTool.hasGameObject(geometry1, state) |> expect == false;
+      });
+    });
+
+    describe("removeGameObjectBasicMaterialComponent", () => {
+      let _prepareAndExec = state => {
+        let (state, gameObject1, material1) =
+          BasicMaterialTool.createGameObject(state);
+
+        let state =
+          GameObjectAPI.removeGameObjectBasicMaterialComponent(
+            gameObject1,
+            material1,
+            state,
+          );
+
+        (state, gameObject1, material1);
+      };
+
+      test("remove material from gameObject", () => {
+        let (state, gameObject1, material1) = _prepareAndExec(state^);
+
+        GameObjectAPI.hasGameObjectBasicMaterialComponent(gameObject1, state)
+        |> expect == false;
+      });
+      test("remove gameObject from material", () => {
+        let (state, gameObject1, material1) = _prepareAndExec(state^);
+
+        BasicMaterialTool.hasGameObject(material1, state) |> expect == false;
+      });
+    });
+
+    describe("removeGameObjectLightMaterialComponent", () => {
+      let _prepareAndExec = state => {
+        let (state, gameObject1, material1) =
+          LightMaterialTool.createGameObject(state);
+
+        let state =
+          GameObjectAPI.removeGameObjectLightMaterialComponent(
+            gameObject1,
+            material1,
+            state,
+          );
+
+        (state, gameObject1, material1);
+      };
+
+      test("remove material from gameObject", () => {
+        let (state, gameObject1, material1) = _prepareAndExec(state^);
+
+        GameObjectAPI.hasGameObjectLightMaterialComponent(gameObject1, state)
+        |> expect == false;
+      });
+      test("remove gameObject from material", () => {
+        let (state, gameObject1, material1) = _prepareAndExec(state^);
+
+        LightMaterialTool.hasGameObject(material1, state) |> expect == false;
+      });
+    });
+
     describe("dispose", () => {
       describe("test alive", () => {
         test("disposed one shouldn't alive before reallocate", () => {
@@ -1726,6 +1810,52 @@ let _ =
 
         GeometryAPI.getGeometryVertices(geometry1, state)
         |> expect == vertices1;
+      });
+    });
+
+    describe("disposeGameObjectKeepOrderRemoveMaterial", () => {
+      test("not change its current parent's children order", () =>
+        GameObjectTool.testDisposeKeepOrder(
+          GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial,
+          state,
+        )
+      );
+      test("remove basicMaterial component instead of dispose", () => {
+        let (state, gameObject1, basicMaterial1) =
+          BasicMaterialTool.createGameObject(state^);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial(
+               gameObject1,
+             );
+        let state = DisposeJob.execJob(None, state);
+
+        (
+          BasicMaterialTool.hasGameObject(basicMaterial1, state),
+          BasicMaterialAPI.getBasicMaterialColor(basicMaterial1, state),
+        )
+        |> expect == (false, BasicMaterialTool.getDefaultColor(state));
+      });
+      test("remove lightMaterial component instead of dispose", () => {
+        let (state, gameObject1, lightMaterial1) =
+          LightMaterialTool.createGameObject(state^);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial(
+               gameObject1,
+             );
+        let state = DisposeJob.execJob(None, state);
+
+        (
+          LightMaterialTool.hasGameObject(lightMaterial1, state),
+          LightMaterialAPI.getLightMaterialDiffuseColor(
+            lightMaterial1,
+            state,
+          ),
+        )
+        |> expect == (false, LightMaterialTool.getDefaultDiffuseColor(state));
       });
     });
 

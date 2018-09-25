@@ -852,6 +852,25 @@ let _ =
           BoxGeometryTool.isGeometryDisposed(geometry1, state)
           |> expect == false;
         });
+        test("test disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial", () => {
+          TestTool.closeContractCheck();
+          open GameObjectType;
+          let (state, gameObject1, geometry1) =
+            BoxGeometryTool.createGameObject(state^);
+          let (state, gameObject2, geometry2) =
+            BoxGeometryTool.createGameObject(state);
+
+          let state =
+            state
+            |> GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial(
+                 gameObject1,
+               );
+          let state = state |> DisposeJob.execJob(None);
+          let state = state |> DisposeJob.execJob(None);
+
+          BoxGeometryTool.isGeometryDisposed(geometry1, state)
+          |> expect == false;
+        });
       })
     );
   });

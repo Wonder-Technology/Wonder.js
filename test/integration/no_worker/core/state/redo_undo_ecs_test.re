@@ -552,6 +552,33 @@ let _ =
               )
             )
           );
+          test("deep copy gameObjectsMap", () => {
+            open StateDataMainType;
+            open BasicMaterialType;
+            let (state, gameObject1, basicMaterial1) =
+              BasicMaterialTool.createGameObject(state^);
+            let {gameObjectsMap} = BasicMaterialTool.getRecord(state);
+            let originGameObjectsArr = [|1|];
+            let copiedOriginGameObjectsArr =
+              originGameObjectsArr |> Js.Array.copy;
+            gameObjectsMap
+            |> WonderCommonlib.SparseMapService.set(
+                 basicMaterial1,
+                 originGameObjectsArr,
+               )
+            |> ignore;
+            let copiedState = MainStateTool.deepCopyForRestore(state);
+            let {gameObjectsMap} = BasicMaterialTool.getRecord(copiedState);
+            let arr =
+              gameObjectsMap
+              |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1);
+            Array.unsafe_set(arr, 0, 2);
+
+            let {gameObjectsMap} = BasicMaterialTool.getRecord(state);
+            gameObjectsMap
+            |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1)
+            |> expect == copiedOriginGameObjectsArr;
+          });
           test("copy colors", () =>
             _testCopyTypeArraySingleValue(
               (
@@ -611,6 +638,33 @@ let _ =
               )
             )
           );
+          test("deep copy gameObjectsMap", () => {
+            open StateDataMainType;
+            open LightMaterialType;
+            let (state, gameObject1, lightMaterial1) =
+              LightMaterialTool.createGameObject(state^);
+            let {gameObjectsMap} = LightMaterialTool.getRecord(state);
+            let originGameObjectsArr = [|1|];
+            let copiedOriginGameObjectsArr =
+              originGameObjectsArr |> Js.Array.copy;
+            gameObjectsMap
+            |> WonderCommonlib.SparseMapService.set(
+                 lightMaterial1,
+                 originGameObjectsArr,
+               )
+            |> ignore;
+            let copiedState = MainStateTool.deepCopyForRestore(state);
+            let {gameObjectsMap} = LightMaterialTool.getRecord(copiedState);
+            let arr =
+              gameObjectsMap
+              |> WonderCommonlib.SparseMapService.unsafeGet(lightMaterial1);
+            Array.unsafe_set(arr, 0, 2);
+
+            let {gameObjectsMap} = LightMaterialTool.getRecord(state);
+            gameObjectsMap
+            |> WonderCommonlib.SparseMapService.unsafeGet(lightMaterial1)
+            |> expect == copiedOriginGameObjectsArr;
+          });
           test("copy diffuseColors", () =>
             _testCopyTypeArraySingleValue(
               (

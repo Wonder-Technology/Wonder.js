@@ -337,6 +337,48 @@ let removeGameObjectGeometryComponent =
   );
 };
 
+let removeGameObjectBasicMaterialComponent =
+    (
+      gameObject: gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  RemoveComponentGameObjectMainService.removeBasicMaterialComponent(
+    gameObject,
+    component,
+    state,
+  );
+};
+
+let removeGameObjectLightMaterialComponent =
+    (
+      gameObject: gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  RemoveComponentGameObjectMainService.removeLightMaterialComponent(
+    gameObject,
+    component,
+    state,
+  );
+};
+
 let unsafeGetGameObjectGeometryComponent =
     (gameObject: gameObject, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
@@ -781,7 +823,6 @@ let disposeGameObjectKeepOrderRemoveGeometry =
   deferDisposeKeepOrderRemoveGeometry(gameObject, state);
 };
 
-
 let disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial =
     (gameObject: gameObject, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
@@ -793,7 +834,6 @@ let disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial =
   );
   deferDisposeKeepOrderRemoveGeometryRemoveMaterial(gameObject, state);
 };
-
 
 let initGameObject = (gameObject: gameObject, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(

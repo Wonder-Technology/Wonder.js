@@ -163,7 +163,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         defaultColor,
         textureCountMap: textureCountMap |> SparseMapService.copy,
         groupCountMap: groupCountMap |> SparseMapService.copy,
-        /* TODO test */
         gameObjectsMap:
           gameObjectsMap |> CopyTypeArrayService.deepCopyArrayArray,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,

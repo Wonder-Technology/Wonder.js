@@ -82,10 +82,11 @@ let clearDeferDisposeData = state => {
   ...state,
   gameObjectRecord: {
     ...state.gameObjectRecord,
-    /* nameMap: WonderCommonlib.ArrayService.createEmpty(), */
     disposedUidArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedUidArrayForKeepOrder: WonderCommonlib.ArrayService.createEmpty(),
     disposedUidArrayForKeepOrderRemoveGeometry:
+      WonderCommonlib.ArrayService.createEmpty(),
+    disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial:
       WonderCommonlib.ArrayService.createEmpty(),
     disposedBasicCameraViewArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedTransformArray: WonderCommonlib.ArrayService.createEmpty(),
