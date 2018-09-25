@@ -30,9 +30,16 @@ let _ =
     describe("init", () =>
       describe("contract check", () =>
         test("shouldn't dispose any material before init", () => {
-          let (state, material1) = createBasicMaterial(state^);
-          let (state, material2) = createBasicMaterial(state);
-          let state = state |> BasicMaterialTool.dispose(material1);
+          state := TestTool.initWithJobConfigWithoutBuildFakeDom(~sandbox, ());
+
+          let (state, gameObject1, material1) =
+            BasicMaterialTool.createGameObject(state^);
+          let (state, gameObject2, material2) =
+            BasicMaterialTool.createGameObject(state);
+
+          let state =
+            state |> BasicMaterialTool.dispose(gameObject1, material1);
+
           expect(() => {
             let state =
               state
@@ -41,9 +48,7 @@ let _ =
                  );
             ();
           })
-          |> toThrowMessage(
-               "expect component's gameObject exist, but actual not",
-             );
+          |> toThrowMessage("expect not dispose any material before init");
         })
       )
     );
@@ -129,72 +134,44 @@ let _ =
 
     describe("disposeComponent", () => {
       describe("dispose data", () => {
-        describe("test dispose shared material", ()
-          /* test("descrease group count", () => {
-               let (state, material1) = createBasicMaterial(state^);
-               let (state, gameObject1) = GameObjectAPI.createGameObject(state);
-               let state =
-                 state
-                 |> GameObjectAPI.addGameObjectBasicMaterialComponent(
-                      gameObject1,
-                      material1,
-                    );
-               let (state, gameObject2) = GameObjectAPI.createGameObject(state);
-               let state =
-                 state
-                 |> GameObjectAPI.addGameObjectBasicMaterialComponent(
-                      gameObject2,
-                      material1,
-                    );
-               let state =
-                 state
-                 |> GameObjectTool.disposeGameObjectBasicMaterialComponent(
-                      gameObject1,
-                      material1,
-                    );
-               BasicMaterialTool.getGroupCount(material1, state) |> expect == 0;
-             }) */
-          =>
-            test("remove gameObject", () => {
-              let (state, basicMaterial1) = createBasicMaterial(state^);
-              let (state, gameObject1) =
-                GameObjectAPI.createGameObject(state);
-              let state =
-                state
-                |> GameObjectAPI.addGameObjectBasicMaterialComponent(
-                     gameObject1,
-                     basicMaterial1,
-                   );
-              let (state, gameObject2) =
-                GameObjectAPI.createGameObject(state);
-              let state =
-                state
-                |> GameObjectAPI.addGameObjectBasicMaterialComponent(
-                     gameObject2,
-                     basicMaterial1,
-                   );
-              let (state, gameObject3) =
-                GameObjectAPI.createGameObject(state);
-              let state =
-                state
-                |> GameObjectAPI.addGameObjectBasicMaterialComponent(
-                     gameObject3,
-                     basicMaterial1,
-                   );
-              let state =
-                state
-                |> GameObjectTool.disposeGameObjectBasicMaterialComponent(
-                     gameObject1,
-                     basicMaterial1,
-                   );
+        describe("test dispose shared material", () =>
+          test("remove gameObject", () => {
+            let (state, basicMaterial1) = createBasicMaterial(state^);
+            let (state, gameObject1) = GameObjectAPI.createGameObject(state);
+            let state =
+              state
+              |> GameObjectAPI.addGameObjectBasicMaterialComponent(
+                   gameObject1,
+                   basicMaterial1,
+                 );
+            let (state, gameObject2) = GameObjectAPI.createGameObject(state);
+            let state =
+              state
+              |> GameObjectAPI.addGameObjectBasicMaterialComponent(
+                   gameObject2,
+                   basicMaterial1,
+                 );
+            let (state, gameObject3) = GameObjectAPI.createGameObject(state);
+            let state =
+              state
+              |> GameObjectAPI.addGameObjectBasicMaterialComponent(
+                   gameObject3,
+                   basicMaterial1,
+                 );
+            let state =
+              state
+              |> GameObjectTool.disposeGameObjectBasicMaterialComponent(
+                   gameObject1,
+                   basicMaterial1,
+                 );
 
-              BasicMaterialAPI.unsafeGetBasicMaterialGameObjects(
-                basicMaterial1,
-                state,
-              )
-              |> expect == [|gameObject3, gameObject2|];
-            })
-          );
+            BasicMaterialAPI.unsafeGetBasicMaterialGameObjects(
+              basicMaterial1,
+              state,
+            )
+            |> expect == [|gameObject3, gameObject2|];
+          })
+        );
         describe("test dispose not shared material", () => {
           test("reset basicSourceTextureCount to 0 from textureCountMap", () => {
             open BasicMaterialType;
@@ -226,7 +203,7 @@ let _ =
               BasicMaterialTool.getRecord(state);
 
             (
-              gameObjectsMap |> WonderCommonlib.SparseMapService.has(material1),
+              BasicMaterialTool.hasGameObject(material1, state),
               nameMap |> WonderCommonlib.SparseMapService.has(material1),
             )
             |> expect == (false, false);

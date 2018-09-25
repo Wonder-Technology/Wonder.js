@@ -87,8 +87,12 @@ let setShaderIndex =
     state,
   );
 
-let dispose = (material, state: StateDataMainType.state) =>
-  GameObjectTool.disposeGameObjectBasicMaterialComponent(-1, material, state);
+let dispose = (gameObject, material, state: StateDataMainType.state) =>
+  GameObjectTool.disposeGameObjectBasicMaterialComponent(
+    gameObject,
+    material,
+    state,
+  );
 
 let initMaterial = (materialIndex, state) =>
   InitBasicMaterialMainService.handleInitComponent(materialIndex, state);
@@ -129,3 +133,11 @@ let getTextureIndicesIndex = (material, state) =>
 
 let getDefaultTextureIndex = () =>
   BufferMaterialService.getDefaultTextureIndex();
+
+let hasGameObject = (material, state) =>
+  switch (
+    GameObjectBasicMaterialService.getGameObjects(material, getRecord(state))
+  ) {
+  | Some(arr) when arr |> Js.Array.length > 0 => true
+  | _ => false
+  };

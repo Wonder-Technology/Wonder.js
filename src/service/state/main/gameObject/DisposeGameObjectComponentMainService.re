@@ -7,7 +7,15 @@ open DisposeComponentGameObjectMainService;
 open BatchGetComponentGameObjectMainService;
 
 let _batchDisposeSharableComponents =
-    (uidArray, (isRemoveGeometry, isRemoveMaterial), state) => {
+    (
+      uidArray,
+      (isRemoveGeometry, isRemoveMaterial),
+      (
+        batchDisposeBasicMaterialComponentFunc,
+        batchDisposeLightMaterialComponentFunc,
+      ),
+      state,
+    ) => {
   let geometryDataArr =
     state
     |> BatchGetComponentGameObjectMainService.batchGetGeometryComponent(
@@ -46,10 +54,7 @@ let _batchDisposeSharableComponents =
         state,
         basicMaterialDataArr,
       ) :
-      DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(
-        state,
-        basicMaterialDataArr,
-      );
+      batchDisposeBasicMaterialComponentFunc(state, basicMaterialDataArr);
 
   let lightMaterialDataArr =
     state
@@ -66,10 +71,7 @@ let _batchDisposeSharableComponents =
         state,
         lightMaterialDataArr,
       ) :
-      DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
-        state,
-        lightMaterialDataArr,
-      );
+      batchDisposeLightMaterialComponentFunc(state, lightMaterialDataArr);
 
   (state, geometryNeedDisposeVboBufferArr);
 };
@@ -95,6 +97,10 @@ let batchDispose =
     _batchDisposeSharableComponents(
       uidArray,
       (isRemoveGeometry, isRemoveMaterial),
+      (
+        batchDisposeBasicMaterialComponentFunc,
+        batchDisposeLightMaterialComponentFunc,
+      ),
       state,
     );
 

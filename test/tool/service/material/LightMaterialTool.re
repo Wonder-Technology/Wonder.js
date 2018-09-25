@@ -171,3 +171,11 @@ let getTextureIndicesIndex = (material, state) =>
 
 let getDefaultTextureIndex = () =>
   BufferMaterialService.getDefaultTextureIndex();
+
+let hasGameObject = (material, state) =>
+  switch (
+    GameObjectLightMaterialService.getGameObjects(material, getRecord(state))
+  ) {
+  | Some(arr) when arr |> Js.Array.length > 0 => true
+  | _ => false
+  };

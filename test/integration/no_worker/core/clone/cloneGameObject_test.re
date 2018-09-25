@@ -582,7 +582,7 @@ let _ =
               clonedMaterialArr |> expect == [|material, material|];
             });
             test(
-              "cloned one's gameObjects should be gameObjects who add the geometry",
+              "cloned one's gameObjects should be gameObjects who add the material",
               () => {
               let (
                 state,
@@ -614,9 +614,7 @@ let _ =
                 _prepare(false, state^);
               clonedMaterialArr |> expect == [|1, 2|];
             });
-            test(
-              "cloned one's gameObjects should be gameObjects who add the geometry",
-              () => {
+            test("cloned one's gameObject should be the cloned gameObject", () => {
               let (
                 state,
                 gameObject,
@@ -638,7 +636,11 @@ let _ =
                   state,
                 ),
               )
-              |> expect == (result, result);
+              |>
+              expect == (
+                          [|clonedGameObjectArr[0]|],
+                          [|clonedGameObjectArr[1]|],
+                        );
             });
 
             describe("cloned one' data === source one's data", () => {

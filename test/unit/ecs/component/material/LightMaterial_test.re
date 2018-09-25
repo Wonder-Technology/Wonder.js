@@ -222,7 +222,7 @@ let _ =
           let {gameObjectsMap, nameMap} = LightMaterialTool.getRecord(state);
 
           (
-            gameObjectsMap |> WonderCommonlib.SparseMapService.has(material1),
+            LightMaterialTool.hasGameObject(material1, state),
             nameMap |> WonderCommonlib.SparseMapService.has(material1),
           )
           |> expect == (false, false);
