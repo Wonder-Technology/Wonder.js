@@ -33,8 +33,8 @@ let getTransformComponent =
 let unsafeGetTransformComponent = (uid: int, {transformMap}) =>
   transformMap |> unsafeGetComponent(uid);
 
-let getGeometryComponent = (uid: int, {geometryMap}) =>
-  geometryMap |> getComponent(uid);
+let getGeometryComponent =
+  (. uid: int, {geometryMap}) => geometryMap |> getComponent(uid);
 
 let unsafeGetGeometryComponent = (uid: int, {geometryMap}) =>
   geometryMap |> unsafeGetComponent(uid);

@@ -6,6 +6,18 @@ open DisposeComponentGameObjectMainService;
 
 open BatchGetComponentGameObjectMainService;
 
+let _getSharableComponentDataArr =
+    (uidArray, getComponentFunc, gameObjectRecord) =>
+  uidArray
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. dataArr, uid) =>
+         switch (getComponentFunc(. uid, gameObjectRecord)) {
+         | None => dataArr
+         | Some(component) => dataArr |> ArrayService.push((uid, component))
+         },
+       [||],
+     );
+
 let _batchDisposeSharableComponents =
     (
       uidArray,
@@ -14,16 +26,14 @@ let _batchDisposeSharableComponents =
         batchDisposeBasicMaterialComponentFunc,
         batchDisposeLightMaterialComponentFunc,
       ),
-      state,
+      {gameObjectRecord} as state,
     ) => {
   let geometryDataArr =
-    state
-    |> BatchGetComponentGameObjectMainService.batchGetGeometryComponent(
-         uidArray,
-       )
-    |> Js.Array.mapi((geometry, index) =>
-         (Array.unsafe_get(uidArray, index), geometry)
-       );
+    _getSharableComponentDataArr(
+      uidArray,
+      GetComponentGameObjectService.getGeometryComponent,
+      gameObjectRecord,
+    );
 
   let (state, geometryNeedDisposeVboBufferArr) =
     isRemoveGeometry ?
@@ -40,15 +50,13 @@ let _batchDisposeSharableComponents =
       );
 
   let basicMaterialDataArr =
-    state
-    |> BatchGetComponentGameObjectMainService.batchGetBasicMaterialComponent(
-         uidArray,
-       )
-    |> Js.Array.mapi((basicMaterial, index) =>
-         (Array.unsafe_get(uidArray, index), basicMaterial)
-       );
+    _getSharableComponentDataArr(
+      uidArray,
+      GetComponentGameObjectService.getBasicMaterialComponent,
+      gameObjectRecord,
+    );
 
-  let state =
+  let {gameObjectRecord} as state =
     isRemoveMaterial ?
       RemoveComponentGameObjectMainService.batchRemoveBasicMaterialComponent(
         state,
@@ -57,13 +65,11 @@ let _batchDisposeSharableComponents =
       batchDisposeBasicMaterialComponentFunc(state, basicMaterialDataArr);
 
   let lightMaterialDataArr =
-    state
-    |> BatchGetComponentGameObjectMainService.batchGetLightMaterialComponent(
-         uidArray,
-       )
-    |> Js.Array.mapi((lightMaterial, index) =>
-         (Array.unsafe_get(uidArray, index), lightMaterial)
-       );
+    _getSharableComponentDataArr(
+      uidArray,
+      GetComponentGameObjectService.getLightMaterialComponent,
+      gameObjectRecord,
+    );
 
   let state =
     isRemoveMaterial ?

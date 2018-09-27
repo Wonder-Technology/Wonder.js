@@ -554,6 +554,7 @@ let _ =
           });
         });
       });
+
       describe("contract check", () =>
         test("shouldn't dispose the alive component", () => {
           let (state, gameObject1, geometry1) =
@@ -580,6 +581,34 @@ let _ =
                "expect dispose the alive component, but actual not",
              );
         })
+      );
+
+      describe("fix bug", () =>
+        test(
+          "if have create other gameObjects, shouldn't affect dispose geometry gameObjects",
+          () => {
+            let (state, gameObject1, material1) =
+              BasicMaterialTool.createGameObject(state^);
+          let (state, gameObject2, geometry2) =
+            GeometryTool.createGameObject(state);
+
+            let state =
+              state
+              |> GameObjectAPI.batchDisposeGameObject([|
+                   gameObject1,
+                   gameObject2,
+                 |])
+              |> DisposeJob.execJob(None);
+          let (state, gameObject3, geometry3) =
+            GeometryTool.createGameObject(state);
+
+            GeometryAPI.unsafeGetGeometryGameObjects(
+              geometry3,
+              state,
+            )
+            |> expect == [|gameObject3|];
+          },
+        )
       );
     });
     describe("contract check", () =>

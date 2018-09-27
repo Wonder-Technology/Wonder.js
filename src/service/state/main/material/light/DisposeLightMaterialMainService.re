@@ -42,6 +42,7 @@ let _disposeData =
       (shaderIndices, groupCountMap),
       DefaultTypeArrayValueService.getDefaultShaderIndex(),
     );
+
   {
     ...lightMaterialRecord,
     shaderIndices,
@@ -109,7 +110,10 @@ let _handleDispose =
       lightMaterialRecord,
     ) =>
   switch (
-    GroupLightMaterialService.isGroupLightMaterial(material, lightMaterialRecord)
+    GroupLightMaterialService.isGroupLightMaterial(
+      material,
+      lightMaterialRecord,
+    )
   ) {
   | false => {
       ...

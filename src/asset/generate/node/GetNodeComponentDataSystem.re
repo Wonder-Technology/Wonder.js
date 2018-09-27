@@ -50,7 +50,7 @@ let _getGeometryData =
 let _getMeshData =
     ((gameObject, meshIndex), geometryDataMap, {gameObjectRecord} as state) =>
   switch (
-    GetComponentGameObjectService.getGeometryComponent(
+    GetComponentGameObjectService.getGeometryComponent(.
       gameObject,
       gameObjectRecord,
     )

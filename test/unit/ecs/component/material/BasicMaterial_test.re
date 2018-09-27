@@ -339,7 +339,36 @@ let _ =
             });
           });
         });
+
+        describe("fix bug", () =>
+          test(
+            "if have create other gameObjects, shouldn't affect dispose basicMaterial gameObjects",
+            () => {
+              let (state, gameObject1, material1) =
+                LightMaterialTool.createGameObject(state^);
+              let (state, gameObject2, material2) =
+                BasicMaterialTool.createGameObject(state);
+
+              let state =
+                state
+                |> GameObjectAPI.batchDisposeGameObject([|
+                     gameObject1,
+                     gameObject2,
+                   |])
+                |> DisposeJob.execJob(None);
+              let (state, gameObject3, material3) =
+                BasicMaterialTool.createGameObject(state);
+
+              BasicMaterialAPI.unsafeGetBasicMaterialGameObjects(
+                material3,
+                state,
+              )
+              |> expect == [|gameObject3|];
+            },
+          )
+        );
       });
+
       describe("test add new one after dispose old one", () => {
         test("new one's data should be default value", () => {
           let (state, gameObject1, material1) =

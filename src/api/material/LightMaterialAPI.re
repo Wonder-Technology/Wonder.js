@@ -327,6 +327,12 @@ let reInitMaterials = (materials, state) => {
   InitLightMaterialMainService.reInitComponents(materials, state);
 };
 
+let batchDisposeLightMaterial = (state, componentDataArray) =>
+  DisposeLightMaterialMainService.handleBatchDisposeComponent(.
+    componentDataArray,
+    state,
+  );
+
 let getAllLightMaterials = state => {
   let {index, disposedIndexArray} =
     RecordLightMaterialMainService.getRecord(state);

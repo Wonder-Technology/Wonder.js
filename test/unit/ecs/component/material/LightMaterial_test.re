@@ -434,6 +434,34 @@ let _ =
           )
           |> expect == [|gameObject3, gameObject2|];
         });
+
+        describe("fix bug", () =>
+          test(
+            "if have create other gameObjects, shouldn't affect dispose lightMaterial gameObjects",
+            () => {
+              let (state, gameObject1, material1) =
+                BasicMaterialTool.createGameObject(state^);
+              let (state, gameObject2, material2) =
+                LightMaterialTool.createGameObject(state);
+
+              let state =
+                state
+                |> GameObjectAPI.batchDisposeGameObject([|
+                     gameObject1,
+                     gameObject2,
+                   |])
+                |> DisposeJob.execJob(None);
+              let (state, gameObject3, material3) =
+                LightMaterialTool.createGameObject(state);
+
+              LightMaterialAPI.unsafeGetLightMaterialGameObjects(
+                material3,
+                state,
+              )
+              |> expect == [|gameObject3|];
+            },
+          )
+        );
       })
     );
 

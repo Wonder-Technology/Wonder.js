@@ -58,7 +58,7 @@ let _cloneComponentExceptTransform =
   |> _clone(
        (
          uid,
-         GetComponentGameObjectService.getGeometryComponent(
+         GetComponentGameObjectService.getGeometryComponent(.
            uid,
            gameObjectRecord,
          ),

@@ -45,7 +45,7 @@ let setData =
            index,
          ) =>
            switch (
-             GetComponentGameObjectService.getGeometryComponent(
+             GetComponentGameObjectService.getGeometryComponent(.
                uid,
                gameObjectRecord,
              )
