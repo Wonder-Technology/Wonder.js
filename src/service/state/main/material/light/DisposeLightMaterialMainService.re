@@ -9,7 +9,7 @@ open LightMaterialType;
 open DisposeComponentService;
 
 let isAlive = (material, {disposedIndexArray}) =>
-  DisposeComponentService.isAlive(material, disposedIndexArray);
+  DisposeMaterialMainService.isAlive(material, disposedIndexArray);
 
 /*!
   not dispose texture when dispose material!

@@ -179,3 +179,9 @@ let hasGameObject = (material, state) =>
   | Some(arr) when arr |> Js.Array.length > 0 => true
   | _ => false
   };
+
+let isNeedInitMaterial = (material, state) =>
+  InitInitLightMaterialService.isNeedInitMaterial(
+    material,
+    getRecord(state).shaderIndices,
+  );

@@ -302,6 +302,10 @@ let hasGameObjectGeometryComponent = GameObjectAPI.hasGameObjectGeometryComponen
 
 let unsafeGetGameObjectGeometryComponent = GameObjectAPI.unsafeGetGameObjectGeometryComponent;
 
+let removeGameObjectLightMaterialComponent = GameObjectAPI.removeGameObjectLightMaterialComponent;
+
+let removeGameObjectBasicMaterialComponent = GameObjectAPI.removeGameObjectBasicMaterialComponent;
+
 let removeGameObjectGeometryComponent = GameObjectAPI.removeGameObjectGeometryComponent;
 
 let disposeGameObjectGeometryComponent = GameObjectAPI.disposeGameObjectGeometryComponent;
@@ -501,6 +505,8 @@ let unsafeGetBasicMaterialGameObjects = BasicMaterialAPI.unsafeGetBasicMaterialG
 let createBasicMaterial = BasicMaterialAPI.createBasicMaterial;
 
 let getAllLightMaterials = LightMaterialAPI.getAllLightMaterials;
+
+let batchDisposeLightMaterial = LightMaterialAPI.batchDisposeLightMaterial;
 
 let reInitMaterials = LightMaterialAPI.reInitMaterials;
 
@@ -909,6 +915,10 @@ let addGameObjectBasicMaterialComponent = GameObjectAPI.addGameObjectBasicMateri
 let hasGameObjectGeometryComponent = GameObjectAPI.hasGameObjectGeometryComponent;
 
 let unsafeGetGameObjectGeometryComponent = GameObjectAPI.unsafeGetGameObjectGeometryComponent;
+
+let removeGameObjectLightMaterialComponent = GameObjectAPI.removeGameObjectLightMaterialComponent;
+
+let removeGameObjectBasicMaterialComponent = GameObjectAPI.removeGameObjectBasicMaterialComponent;
 
 let removeGameObjectGeometryComponent = GameObjectAPI.removeGameObjectGeometryComponent;
 

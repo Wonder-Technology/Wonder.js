@@ -129,13 +129,12 @@ let _restoreTypeArrays =
 
 let restore = (gl, currentState, targetState) => {
   let targetState = _resetShaderIndices(targetState);
+  let {index, disposedIndexArray} =
+    RecordLightMaterialMainService.getRecord(targetState);
   let targetState =
     targetState
     |> InitLightMaterialMainService.initMaterials(
-         AliveMaterialService.getAllAliveMaterials(
-           RecordLightMaterialMainService.getRecord(targetState).
-             gameObjectsMap,
-         ),
+         AliveMaterialService.getAllAliveMaterials(index, disposedIndexArray),
          gl,
        );
   let currentLightMaterialRecord =

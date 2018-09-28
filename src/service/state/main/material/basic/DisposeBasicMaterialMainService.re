@@ -9,7 +9,7 @@ open BasicMaterialType;
 open DisposeComponentService;
 
 let isAlive = (material, {disposedIndexArray}) =>
-  DisposeComponentService.isAlive(material, disposedIndexArray);
+  DisposeMaterialMainService.isAlive(material, disposedIndexArray);
 
 /*!
   not dispose texture when dispose material!
@@ -89,7 +89,10 @@ let _handleDispose =
       basicMaterialRecord,
     ) =>
   switch (
-    GroupBasicMaterialService.isGroupBasicMaterial(material, basicMaterialRecord)
+    GroupBasicMaterialService.isGroupBasicMaterial(
+      material,
+      basicMaterialRecord,
+    )
   ) {
   | false => {
       ...

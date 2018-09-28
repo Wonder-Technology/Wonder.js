@@ -76,13 +76,12 @@ let _restoreTypeArrays =
 
 let restore = (gl, currentState, targetState) => {
   let targetState = _resetShaderIndices(targetState);
+  let {index, disposedIndexArray} =
+    RecordBasicMaterialMainService.getRecord(targetState);
   let targetState =
     targetState
     |> InitBasicMaterialMainService.initMaterials(
-         AliveMaterialService.getAllAliveMaterials(
-           RecordBasicMaterialMainService.getRecord(targetState).
-             gameObjectsMap,
-         ),
+         AliveMaterialService.getAllAliveMaterials(index, disposedIndexArray),
          gl,
        );
   let currentBasicMaterialRecord =
@@ -103,4 +102,4 @@ let restore = (gl, currentState, targetState) => {
         mapUnits: currentBasicMaterialRecord.mapUnits,
       }),
   };
-};    
+};
