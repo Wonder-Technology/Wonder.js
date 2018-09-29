@@ -762,22 +762,6 @@ let getMainWorkerCustomData = WorkerDataAPI.getMainWorkerCustomData;
 
 let getRenderWorkerCustomData = WorkerDataAPI.getRenderWorkerCustomData;
 
-let getActiveCameraPMatrix = DemoAPI.getActiveCameraPMatrix;
-
-let getActiveCameraAspect = DemoAPI.getActiveCameraAspect;
-
-let unsafeGetActiveCameraPerspectiveCameraProjection = DemoAPI.unsafeGetActiveCameraPerspectiveCameraProjection;
-
-let bindArcballCameraControllerEventForEditor = DemoAPI.bindArcballCameraControllerEventForEditor;
-
-let initDemo = DemoAPI.initDemo;
-
-let restoreJob = DemoAPI.restoreJob;
-
-let prepareRenderGameViewJob = DemoAPI.prepareRenderGameViewJob;
-
-let prepareRenderSceneViewJob = DemoAPI.prepareRenderSceneViewJob;
-
 let create = RecordAPIMainService.create;
 
 let setAPIJsObj = RecordAPIMainService.setAPIJsObj;
@@ -1087,22 +1071,6 @@ let unsafeGetTransformParent = TransformAPI.unsafeGetTransformParent;
 let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
 
 let createTransform = TransformAPI.createTransform;
-
-let getActiveCameraPMatrix = DemoAPI.getActiveCameraPMatrix;
-
-let getActiveCameraAspect = DemoAPI.getActiveCameraAspect;
-
-let unsafeGetActiveCameraPerspectiveCameraProjection = DemoAPI.unsafeGetActiveCameraPerspectiveCameraProjection;
-
-let bindArcballCameraControllerEventForEditor = DemoAPI.bindArcballCameraControllerEventForEditor;
-
-let initDemo = DemoAPI.initDemo;
-
-let restoreJob = DemoAPI.restoreJob;
-
-let prepareRenderGameViewJob = DemoAPI.prepareRenderGameViewJob;
-
-let prepareRenderSceneViewJob = DemoAPI.prepareRenderSceneViewJob;
 
 let create = RecordAPIMainService.create;
 
