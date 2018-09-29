@@ -198,31 +198,31 @@
                 truckArrayBuffer,
                 alphaArrayBuffer
             ], isCreateCamera, state) {
-                // var state = wd.setIMGUIFunc(
-                //     null, (_, api, state) => {
-                //         var state = api.label(
-                //             [100, 30, 300, 200], "imgui", 0, state
-                //         );
+                var state = wd.setIMGUIFunc(
+                    null, (_, api, state) => {
+                        var state = api.label(
+                            [100, 30, 300, 200], "imgui", 0, state
+                        );
 
 
 
 
-                //         return state
-                //     }, state);
+                        return state
+                    }, state);
 
 
 
 
 
-                wd.assembleWholeGLB(boxArrayBuffer, true, true, state)
-                    .forEach(([state, imageUint8ArrayMap1, boxGameObject]) => {
-                        wd.assembleWholeGLB(truckArrayBuffer, true, true, state)
+                wd.assembleWholeGLB(boxArrayBuffer, true, true, true, state)
+                    .forEach(([state, [imageUint8ArrayMap1, _], boxGameObject]) => {
+                        wd.assembleWholeGLB(truckArrayBuffer, true, true, true, state)
                             .forEach(([state,
-                                imageUint8ArrayMap2,
+                                [imageUint8ArrayMap2, _],
                                 truckGameObject]) => {
-                                wd.assembleWholeGLB(alphaArrayBuffer, true, true, state)
+                                wd.assembleWholeGLB(alphaArrayBuffer, true, true, true, state)
                                     .forEach(([state,
-                                        imageUint8ArrayMap3,
+                                        [imageUint8ArrayMap3, _],
                                         alphaGameObject]) => {
 
 
@@ -397,11 +397,11 @@
                 boxArrayBuffer,
                 truckArrayBuffer,
             ], isCreateCamera, state) {
-                wd.assembleWholeGLB(boxArrayBuffer, true, true, state)
-                    .forEach(([state, imageUint8ArrayMap1, boxGameObject]) => {
-                        wd.assembleWholeGLB(truckArrayBuffer, true, true, state)
+                wd.assembleWholeGLB(boxArrayBuffer, true, true, true, state)
+                    .forEach(([state, [imageUint8ArrayMap1, _], boxGameObject]) => {
+                        wd.assembleWholeGLB(truckArrayBuffer, true, true, true, state)
                             .forEach(([state,
-                                imageUint8ArrayMap2,
+                                [imageUint8ArrayMap2, _],
                                 truckGameObject]) => {
                                 // var transform = wd.unsafeGetGameObjectTransformComponent(truckGameObject, state);
 
@@ -561,6 +561,133 @@
 
                             })
 
+
+                    })
+
+
+
+
+
+
+            }
+
+
+
+            function _downloadScene3([
+                truckArrayBuffer,
+            ], isCreateCamera, state) {
+                wd.assembleWholeGLB(truckArrayBuffer, true, true, true, state)
+                    .forEach(([state,
+                        [imageUint8ArrayMap2, _],
+                        truckGameObject]) => {
+
+
+                        var state = LightTool.setAmbientLight(state);
+
+
+
+                        var record = LightTool.createDirectionLight(state);
+                        var state = record[0];
+                        var directionLightObj = record[1];
+
+
+
+                        var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+
+
+
+                        state = wd.setTransformLocalEulerAngles(transform, [-200, 0, 0], state);
+
+
+
+
+                        var light = wd.unsafeGetGameObjectDirectionLightComponent(directionLightObj, state);
+
+                        var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
+
+
+
+
+                        var data = LightBoxesTool.createCamera(state);
+                        var state = data[0];
+                        var camera = data[1];
+
+
+                        var transform = wd.unsafeGetGameObjectTransformComponent(camera, state);
+
+
+
+
+                        var [state, cameraController] = wd.createArcballCameraController(state);
+
+                        var state =
+                            wd.setArcballCameraControllerDistance(cameraController, 20, state);
+
+                        var state =
+                            wd.bindArcballCameraControllerEvent(
+                                cameraController, state
+                            );
+
+
+                        var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+
+
+                        var state =
+                            wd.activeBasicCameraView(
+                                wd.unsafeGetGameObjectBasicCameraViewComponent(
+                                    camera, state
+                                ), state
+                            );
+
+
+
+
+                        var [state, rootGameObject] = wd.createGameObject(state);
+
+
+
+                        var state =
+                            AssetTool.addChildren(
+                                rootGameObject, [
+                                    truckGameObject,
+                                    directionLightObj,
+                                    camera
+                                ], state
+                            );
+
+
+
+
+                        // wd.startDirector(state);
+
+
+                        // console.profile("generateWDB");
+                        // var n0 = performance.now();
+
+
+
+
+
+
+
+
+
+
+                        var [state, wdb] = wd.generateWDB(
+                            rootGameObject,
+                            wd.mergeSparseMaps(
+                                [
+                                    imageUint8ArrayMap2,
+                                    // imageUint8ArrayMap3
+                                ]
+                            ),
+                            // [],
+                            state);
+
+
+                        AssetTool.download(wdb, "generated.wdb", "")
 
                     })
 
@@ -881,10 +1008,23 @@
                                         //     state$);
 
 
-                                        // _downloadScene(
-                                        // _downloadScene2(
+                                        _downloadScene(
+                                            [
+                                                boxArrayBuffer,
+                                                truckArrayBuffer,
+                                                alphaArrayBuffer
+                                            ],
+
+
+                                            true,
+
+                                            state$
+                                        );
+
+
+                                        // _downloadScene3(
                                         //     [
-                                        //         boxArrayBuffer,
+                                        //         // boxArrayBuffer,
                                         //         truckArrayBuffer,
                                         //         // alphaArrayBuffer
                                         //     ],
@@ -902,10 +1042,10 @@
 
 
 
-                                        _testAssembleWD(
-                                            truckArrayBuffer,
-                                            true,
-                                            state$);
+                                        // _testAssembleWD(
+                                        //     truckArrayBuffer,
+                                        //     true,
+                                        //     state$);
                                     })
                             })
 
