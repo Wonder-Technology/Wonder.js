@@ -43,7 +43,6 @@ let _initNewShader =
         glslChunkRecord,
       ),
     ) => {
-  /* let shaderIndex = _genereateShaderIndex(shaderRecord); */
   shaderRecord
   |> ShaderIndexShaderService.useShaderIndex(shaderIndex)
   |> ShaderIndexShaderService.setShaderIndex(key, shaderIndex)
@@ -51,7 +50,6 @@ let _initNewShader =
 
   let (vsSource, fsSource) =
     buildGLSLSourceFunc(.
-      materialIndex,
       shaderLibDataArr,
       getHandleFunc,
       (glslRecord, glslChunkRecord),
@@ -102,9 +100,19 @@ let initMaterialShader =
 
   switch (ShaderIndexShaderService.getShaderIndex(key, shaderRecord)) {
   | None =>
+    let shaderIndex =
+      ShaderIndexShaderService.genereateShaderIndex(shaderRecord);
+
+    let shaderRecord =
+      MaterialsMapShaderService.addMaterialWithoutDuplicate(
+        shaderIndex,
+        materialIndex,
+        shaderRecord,
+      );
+
     _initNewShader(
       materialIndex,
-      ShaderIndexShaderService.genereateShaderIndex(shaderRecord),
+      shaderIndex,
       key,
       (gl, shaderLibDataArr),
       (
@@ -121,8 +129,16 @@ let initMaterialShader =
         glslLocationRecord,
         glslChunkRecord,
       ),
-    )
-  | Some(shaderIndex) => shaderIndex
+    );
+  | Some(shaderIndex) =>
+    let _ =
+      MaterialsMapShaderService.addMaterialWithoutDuplicate(
+        shaderIndex,
+        materialIndex,
+        shaderRecord,
+      );
+
+    shaderIndex;
   };
 };
 
@@ -193,6 +209,13 @@ let reInitMaterialShader =
        shaderIndex,
        glslLocationRecord,
      ); */
+
+  let shaderRecord =
+    MaterialsMapShaderService.addMaterialWithoutDuplicate(
+      shaderIndex,
+      materialIndex,
+      shaderRecord,
+    );
 
   _initNewShader(
     materialIndex,

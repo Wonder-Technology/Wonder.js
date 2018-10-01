@@ -96,7 +96,11 @@ let reInitComponents = (materialIndices: array(int), state) => {
              );
 
            let _ =
-             ShaderIndexShaderService.unuseShaderIndex(currentShaderIndex, shaderRecord);
+             ShaderIndexShaderService.unuseShaderIndex(
+               currentShaderIndex,
+               materialIndex,
+               shaderRecord,
+             );
 
            WorkerDetectMainService.isUseWorker(state) ?
              WonderLog.Log.fatal(

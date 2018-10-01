@@ -35,15 +35,29 @@ let useShaderIndex = (shaderIndex, {usedShaderIndexArray} as record) => {
   record;
 };
 
-let unuseShaderIndex = (shaderIndex, {usedShaderIndexArray} as record) => {
-  let index = Js.Array.indexOf(shaderIndex, usedShaderIndexArray);
+let _hasMaterialUseShader = (shaderIndex, material, materialsMap) =>
+  switch (WonderCommonlib.SparseMapService.get(shaderIndex, materialsMap)) {
+  | Some(arr) when arr |> Js.Array.length > 0 => true
+  | _ => false
+  };
 
-  index === (-1) ?
+let unuseShaderIndex =
+    (shaderIndex, material, {materialsMap, usedShaderIndexArray} as record) => {
+  ArrayMapService.removeValue(shaderIndex, material, materialsMap) |> ignore;
+
+  _hasMaterialUseShader(shaderIndex, material, materialsMap) ?
     record :
     {
-      usedShaderIndexArray |> Js.Array.removeCountInPlace(~pos=index, ~count=1);
+      let index = Js.Array.indexOf(shaderIndex, usedShaderIndexArray);
 
-      record;
+      index === (-1) ?
+        record :
+        {
+          usedShaderIndexArray
+          |> Js.Array.removeCountInPlace(~pos=index, ~count=1);
+
+          record;
+        };
     };
 };
 

@@ -13,11 +13,13 @@ let _ =
     open Sinon;
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
+
     beforeEach(() => {
       sandbox := createSandbox();
       state := TestTool.init(~sandbox, ());
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
     describe("createArcballCameraController", () => {
       test("create a new camera which is just index(int)", () => {
         let (_, cameraController) = createArcballCameraController(state^);

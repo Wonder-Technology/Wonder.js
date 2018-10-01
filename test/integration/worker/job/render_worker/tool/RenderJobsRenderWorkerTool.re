@@ -89,6 +89,7 @@ let init = (completeFunc, state) => {
          InitGeometryRenderWorkerJob.execJob(None),
          InitMeshRendererRenderWorkerJob.execJob(None),
          InitBasicMaterialRenderWorkerJob.execJob(None),
+         InitBasicMaterialRenderWorkerJob.execJob(None),
          InitDirectionLightRenderWorkerJob.execJob(None),
          InitPointLightRenderWorkerJob.execJob(None),
          InitLightMaterialRenderWorkerJob.execJob(None),

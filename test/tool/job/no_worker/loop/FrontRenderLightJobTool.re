@@ -1,10 +1,9 @@
 let prepareGameObject = (sandbox, state) => {
   open GameObjectAPI;
-  open GameObjectAPI;
   open LightMaterialAPI;
-  
   open MeshRendererAPI;
   open Sinon;
+
   let (state, material) = createLightMaterial(state);
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
   let (state, meshRenderer) = createMeshRenderer(state);
@@ -32,12 +31,13 @@ let prepareGameObjectWithCreatedMap = (sandbox, state) => {
   );
 };
 
-let prepareGameObjectWithSharedGeometry = (sandbox, geometry, addGameObjectGeometryComponentFunc, state) => {
+let prepareGameObjectWithSharedGeometry =
+    (sandbox, geometry, addGameObjectGeometryComponentFunc, state) => {
   open GameObjectAPI;
   open LightMaterialAPI;
-  
   open MeshRendererAPI;
   open Sinon;
+
   let (state, material) = createLightMaterial(state);
   let (state, meshRenderer) = createMeshRenderer(state);
   let (state, gameObject) = state |> createGameObject;

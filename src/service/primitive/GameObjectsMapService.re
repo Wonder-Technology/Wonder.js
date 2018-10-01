@@ -22,11 +22,5 @@ let unsafeGetGameObjects = (component, gameObjectsMap) =>
        IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 
-let removeGameObject = (gameObject, component, gameObjectsMap) => {
-  gameObjectsMap
-  |> WonderCommonlib.SparseMapService.unsafeGet(component)
-  |> DisposeComponentService.removeFromArray(gameObject)
-  |> ignore;
-
-  gameObjectsMap;
-};
+let removeGameObject = (gameObject, component, gameObjectsMap) =>
+  ArrayMapService.removeValue(component, gameObject, gameObjectsMap);

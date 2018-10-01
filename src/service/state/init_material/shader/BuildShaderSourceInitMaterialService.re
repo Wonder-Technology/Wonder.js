@@ -188,7 +188,6 @@ let _buildVsAndFs =
 
 let buildGLSLSource =
   (.
-    materialIndex: int,
     shaderLibDataArr: shaderLibs,
     execHandleFunc,
     (glslRecord, glslChunkRecord),

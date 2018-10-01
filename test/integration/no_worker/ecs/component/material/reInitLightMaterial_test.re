@@ -9,14 +9,13 @@ let _ =
     let sandbox = getSandboxDefaultVal();
     let state = ref(CreateStateMainService.createState());
 
-    beforeEach(() => {
-      sandbox := createSandbox();
-      state := TestTool.initWithJobConfig(~sandbox, ());
-    });
+    beforeEach(() => sandbox := createSandbox());
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("test with light", () =>
       describe("test with direction light", () => {
+        beforeEach(() => state := TestTool.initWithJobConfig(~sandbox, ()));
+
         let _initMaterial = (material, state) => {
           let state = AllMaterialTool.prepareForInit(state);
           let state = LightMaterialTool.initMaterial(material, state);
@@ -368,4 +367,103 @@ let _ =
         });
       })
     );
+
+    describe("fix bug", () => {
+      let _test =
+          ((gameObject1, gameObject2), (material1, material2), state) => {
+        let pos = 0;
+        let getUniformLocation =
+          GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_vMatrix");
+        let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
+        let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
+        let state =
+          state
+          |> FakeGlTool.setFakeGl(
+               FakeGlTool.buildFakeGl(
+                 ~sandbox,
+                 ~uniformMatrix4fv,
+                 ~getUniformLocation,
+                 (),
+               ),
+             );
+        let state = AllMaterialTool.prepareForInit(state);
+        let state =
+          state
+          |> GameObjectAPI.initGameObject(gameObject1)
+          |> GameObjectAPI.initGameObject(gameObject2);
+
+        let state = LightMaterialAPI.reInitMaterials([|material1|], state);
+        let state = state |> DirectorTool.runWithDefaultTime;
+
+        uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2;
+      };
+
+      beforeEach(() =>
+        state :=
+          RenderJobsTool.initWithJobConfig(
+            sandbox,
+            NoWorkerJobConfigTool.buildNoWorkerJobConfig(
+              ~loopPipelines=
+                {|
+[
+    {
+        "name": "default",
+        "jobs": [
+            {
+                "name": "get_camera_data"
+            },
+            {
+                "name": "send_uniform_shader_data"
+            }
+        ]
+    }
+]
+        |},
+              (),
+            ),
+          )
+      );
+
+      describe(
+        {|1.create two materials use the same shader(shader1);
+          2.init both;
+          2.reinit one material(create new shader2);
+          3.loopBody;
+
+          should send shader1's and shader2's camera data(u_vMatrix)
+          |},
+        () => {
+          test("test two lightMaterials", () => {
+            let (state, _, cameraTransform, _) =
+              CameraTool.createCameraGameObject(state^);
+            let (state, gameObject1, _, material1, _) =
+              FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+            let (state, gameObject2, _, material2, _) =
+              FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+
+            _test(
+              (gameObject1, gameObject2),
+              (material1, material2),
+              state,
+            );
+          });
+          test(
+            "test one basicMaterial and one lightMaterial(their materialIndexs are equal)",
+            () => {
+            let (state, _, cameraTransform, _) =
+              CameraTool.createCameraGameObject(state^);
+            let (state, gameObject1, _, material1, _) =
+              FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+            let (state, gameObject2, _, material2, _) =
+              RenderBasicJobTool.prepareGameObject(sandbox, state);
+
+            _test(
+              (gameObject1, gameObject2),
+              (material1, material2),
+              state,
+            );
+          });
+        },
+      );
+    });
   });

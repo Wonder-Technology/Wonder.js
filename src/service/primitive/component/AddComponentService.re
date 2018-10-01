@@ -15,45 +15,11 @@ let addSharableComponentToGameObjectsMap =
       WonderLog.(
         Contract.(
           Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect=
-                  {j|sharable component only add to the same gameObject once|j},
-                ~actual={j|not|j},
-              ),
-              () =>
-              switch (
-                gameObjectsMap
-                |> WonderCommonlib.SparseMapService.get(component)
-              ) {
-              | None => assertPass()
-              | Some(arr) =>
-                let (map, hasDuplicateItems) =
-                  arr
-                  |> WonderCommonlib.ArrayService.reduceOneParam(
-                       (. (map, hasDuplicateItems), gameObject) =>
-                         switch (
-                           map
-                           |> WonderCommonlib.SparseMapService.get(gameObject)
-                         ) {
-                         | None => (
-                             map
-                             |> WonderCommonlib.SparseMapService.set(
-                                  gameObject,
-                                  true,
-                                ),
-                             hasDuplicateItems,
-                           )
-                         | Some(_) => (map, true)
-                         },
-                       (
-                         WonderCommonlib.SparseMapService.createEmpty(),
-                         false,
-                       ),
-                     );
-
-                hasDuplicateItems |> assertFalse;
-              }
+            ArrayMapService.checkDuplicate(
+              {j|sharable component only add to the same gameObject once|j},
+              component,
+              gameObjectUid,
+              gameObjectsMap,
             )
           )
         )
@@ -61,12 +27,5 @@ let addSharableComponentToGameObjectsMap =
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
-  switch (gameObjectsMap |> WonderCommonlib.SparseMapService.get(component)) {
-  | None =>
-    gameObjectsMap
-    |> WonderCommonlib.SparseMapService.set(component, [|gameObjectUid|])
-  | Some(gameObjectArr) =>
-    gameObjectArr |> ArrayService.push(gameObjectUid) |> ignore;
-    gameObjectsMap;
-  };
+  ArrayMapService.addValue(component, gameObjectUid, gameObjectsMap);
 };
