@@ -486,9 +486,13 @@ let createPointLight = PointLightAPI.createPointLight;
 
 let getAllBasicMaterials = BasicMaterialAPI.getAllBasicMaterials;
 
+let reInitMaterials = BasicMaterialAPI.reInitMaterials;
+
 let setBasicMaterialName = BasicMaterialAPI.setBasicMaterialName;
 
 let unsafeGetBasicMaterialName = BasicMaterialAPI.unsafeGetBasicMaterialName;
+
+let removeBasicMaterialMap = BasicMaterialAPI.removeBasicMaterialMap;
 
 let hasBasicMaterialMap = BasicMaterialAPI.hasBasicMaterialMap;
 
@@ -506,19 +510,21 @@ let createBasicMaterial = BasicMaterialAPI.createBasicMaterial;
 
 let getAllLightMaterials = LightMaterialAPI.getAllLightMaterials;
 
-let batchDisposeLightMaterial = LightMaterialAPI.batchDisposeLightMaterial;
-
 let reInitMaterials = LightMaterialAPI.reInitMaterials;
 
 let setLightMaterialName = LightMaterialAPI.setLightMaterialName;
 
 let unsafeGetLightMaterialName = LightMaterialAPI.unsafeGetLightMaterialName;
 
+let removeLightMaterialSpecularMap = LightMaterialAPI.removeLightMaterialSpecularMap;
+
 let hasLightMaterialSpecularMap = LightMaterialAPI.hasLightMaterialSpecularMap;
 
 let setLightMaterialSpecularMap = LightMaterialAPI.setLightMaterialSpecularMap;
 
 let unsafeGetLightMaterialSpecularMap = LightMaterialAPI.unsafeGetLightMaterialSpecularMap;
+
+let removeLightMaterialDiffuseMap = LightMaterialAPI.removeLightMaterialDiffuseMap;
 
 let hasLightMaterialDiffuseMap = LightMaterialAPI.hasLightMaterialDiffuseMap;
 

@@ -320,38 +320,41 @@ let _ =
 
     describe("clearShaderCache", () =>
       describe("clear shader cache", () =>
-        test({|1.create material1 and init;
+        test(
+          {|1.create material1 and init;
           2.dispose material1;
           3.create material2 and init;
 
-          material2's shaderIndex should not equal material1's shaderIndex|}, () => {
-          let state =
-            FakeGlTool.setFakeGl(
-              FakeGlTool.buildFakeGl(~sandbox, ()),
-              state^,
-            );
-          let state = AllMaterialTool.pregetGLSLData(state);
-          let (state, gameObject1, material1) =
-            LightMaterialTool.createGameObject(state);
-          let state = GameObjectAPI.initGameObject(gameObject1, state);
+          material2's shaderIndex should not equal material1's shaderIndex|},
+          () => {
+            let state =
+              FakeGlTool.setFakeGl(
+                FakeGlTool.buildFakeGl(~sandbox, ()),
+                state^,
+              );
+            let state = AllMaterialTool.pregetGLSLData(state);
+            let (state, gameObject1, material1) =
+              LightMaterialTool.createGameObject(state);
+            let state = GameObjectAPI.initGameObject(gameObject1, state);
 
-          let shaderIndex1 =
-            LightMaterialTool.getShaderIndex(material1, state);
+            let shaderIndex1 =
+              LightMaterialTool.getShaderIndex(material1, state);
 
-          let state = GameObjectTool.disposeGameObject(gameObject1, state);
+            let state = GameObjectTool.disposeGameObject(gameObject1, state);
 
-          let state = ShaderAPI.clearShaderCache(state);
+            let state = ShaderAPI.clearShaderCache(state);
 
-          let (state, gameObject2, material2) =
-            LightMaterialTool.createGameObject(state);
+            let (state, gameObject2, material2) =
+              LightMaterialTool.createGameObject(state);
 
-          let state = GameObjectAPI.initGameObject(gameObject2, state);
+            let state = GameObjectAPI.initGameObject(gameObject2, state);
 
-          LightMaterialTool.getShaderIndex(material2, state)
-          |> expect
-          |> not_
-          |> toEqual(shaderIndex1);
-        })
+            LightMaterialTool.getShaderIndex(material2, state)
+            |> expect
+            |> not_
+            |> toEqual(shaderIndex1);
+          },
+        )
       )
     );
   });

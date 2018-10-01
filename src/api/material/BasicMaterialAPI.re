@@ -130,6 +130,25 @@ let hasBasicMaterialMap = (material, state) => {
   hasMap(material, state);
 };
 
+let removeBasicMaterialMap = (material, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordBasicMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  removeMap(material, state);
+};
+
 let unsafeGetBasicMaterialName = (material, state) => {
   WonderLog.Contract.requireCheck(
     () =>

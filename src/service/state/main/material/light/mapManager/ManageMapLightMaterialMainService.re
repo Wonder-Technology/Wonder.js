@@ -20,9 +20,9 @@ let unsafeGetDiffuseMap = (material, {settingRecord} as state) =>
   getDiffuseMap(material, state) |> OptionService.unsafeGet;
 
 let setDiffuseMap = (material, texture, {settingRecord} as state) => {
-  let {textureIndices, diffuseMapUnits, textureCountMap} as lightMaterialRecord =
+  let {textureIndices, diffuseMapUnits, emptyMapUnitArrayMap} as lightMaterialRecord =
     RecordLightMaterialMainService.getRecord(state);
-  let (textureIndices, diffuseMapUnits, textureCountMap) =
+  let (textureIndices, diffuseMapUnits, emptyMapUnitArrayMap) =
     ManagerMapMaterialMainService.setMap(
       material,
       texture,
@@ -35,7 +35,7 @@ let setDiffuseMap = (material, texture, {settingRecord} as state) => {
         BufferSettingService.getTextureCountPerMaterial(settingRecord),
         textureIndices,
         diffuseMapUnits,
-        textureCountMap,
+        emptyMapUnitArrayMap,
       ),
     );
   {
@@ -45,13 +45,43 @@ let setDiffuseMap = (material, texture, {settingRecord} as state) => {
         ...lightMaterialRecord,
         textureIndices,
         diffuseMapUnits,
-        textureCountMap,
+        emptyMapUnitArrayMap,
       }),
   };
 };
 
 let hasDiffuseMap = (material, {settingRecord} as state) =>
   getDiffuseMap(material, state) |> Js.Option.isSome;
+
+let removeDiffuseMap = (material, {settingRecord} as state) => {
+  let {textureIndices, diffuseMapUnits, emptyMapUnitArrayMap} as lightMaterialRecord =
+    RecordLightMaterialMainService.getRecord(state);
+  let (textureIndices, diffuseMapUnits, emptyMapUnitArrayMap) =
+    ManagerMapMaterialMainService.removeMap(
+      material,
+      (
+        OperateTypeArrayLightMaterialService.getDiffuseMapUnit,
+        OperateTypeArrayLightMaterialService.setDiffuseMapUnit,
+        OperateTypeArrayLightMaterialService.setTextureIndex,
+      ),
+      (
+        BufferSettingService.getTextureCountPerMaterial(settingRecord),
+        textureIndices,
+        diffuseMapUnits,
+        emptyMapUnitArrayMap,
+      ),
+    );
+  {
+    ...state,
+    lightMaterialRecord:
+      Some({
+        ...lightMaterialRecord,
+        textureIndices,
+        diffuseMapUnits,
+        emptyMapUnitArrayMap,
+      }),
+  };
+};
 
 let getSpecularMap = (material, {settingRecord} as state) => {
   let {textureIndices, specularMapUnits} =
@@ -71,9 +101,9 @@ let unsafeGetSpecularMap = (material, {settingRecord} as state) =>
   getSpecularMap(material, state) |> OptionService.unsafeGet;
 
 let setSpecularMap = (material, texture, {settingRecord} as state) => {
-  let {textureIndices, specularMapUnits, textureCountMap} as lightMaterialRecord =
+  let {textureIndices, specularMapUnits, emptyMapUnitArrayMap} as lightMaterialRecord =
     RecordLightMaterialMainService.getRecord(state);
-  let (textureIndices, specularMapUnits, textureCountMap) =
+  let (textureIndices, specularMapUnits, emptyMapUnitArrayMap) =
     ManagerMapMaterialMainService.setMap(
       material,
       texture,
@@ -86,7 +116,41 @@ let setSpecularMap = (material, texture, {settingRecord} as state) => {
         BufferSettingService.getTextureCountPerMaterial(settingRecord),
         textureIndices,
         specularMapUnits,
-        textureCountMap,
+        emptyMapUnitArrayMap,
+      ),
+    );
+
+  {
+    ...state,
+    lightMaterialRecord:
+      Some({
+        ...lightMaterialRecord,
+        textureIndices,
+        specularMapUnits,
+        emptyMapUnitArrayMap,
+      }),
+  };
+};
+
+let hasSpecularMap = (material, {settingRecord} as state) =>
+  getSpecularMap(material, state) |> Js.Option.isSome;
+
+let removeSpecularMap = (material, {settingRecord} as state) => {
+  let {textureIndices, specularMapUnits, emptyMapUnitArrayMap} as lightMaterialRecord =
+    RecordLightMaterialMainService.getRecord(state);
+  let (textureIndices, specularMapUnits, emptyMapUnitArrayMap) =
+    ManagerMapMaterialMainService.removeMap(
+      material,
+      (
+        OperateTypeArrayLightMaterialService.getSpecularMapUnit,
+        OperateTypeArrayLightMaterialService.setSpecularMapUnit,
+        OperateTypeArrayLightMaterialService.setTextureIndex,
+      ),
+      (
+        BufferSettingService.getTextureCountPerMaterial(settingRecord),
+        textureIndices,
+        specularMapUnits,
+        emptyMapUnitArrayMap,
       ),
     );
   {
@@ -96,10 +160,7 @@ let setSpecularMap = (material, texture, {settingRecord} as state) => {
         ...lightMaterialRecord,
         textureIndices,
         specularMapUnits,
-        textureCountMap,
+        emptyMapUnitArrayMap,
       }),
   };
 };
-
-let hasSpecularMap = (material, {settingRecord} as state) =>
-  getSpecularMap(material, state) |> Js.Option.isSome;

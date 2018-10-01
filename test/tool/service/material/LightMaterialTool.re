@@ -125,12 +125,6 @@ let isMaterialDisposed = (material, state) => {
   disposedIndexArray |> Js.Array.includes(material);
 };
 
-let getBasicSourceTextureCount = (material, state) =>
-  TextureCountMapMaterialService.unsafeGetCount(
-    material,
-    getRecord(state).textureCountMap,
-  );
-
 let getDiffuseMapUnit = (material, state) =>
   OperateTypeArrayLightMaterialService.getDiffuseMapUnit(.
     material,
@@ -184,4 +178,10 @@ let isNeedInitMaterial = (material, state) =>
   InitInitLightMaterialService.isNeedInitMaterial(
     material,
     getRecord(state).shaderIndices,
+  );
+
+let getEmptyMapUnitArray = (material, state) =>
+  EmptyMapUnitArrayMapService._unsafeGetEmptyMapUnitArray(
+    material,
+    getRecord(state).emptyMapUnitArrayMap,
   );

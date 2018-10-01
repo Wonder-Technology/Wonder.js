@@ -20,10 +20,21 @@ let _ =
         expect(material) == 0;
       });
       describe("set default value", () =>
-        test("set texture count to be 0", () => {
+        test("init emptyMapUnitArray", () => {
+          state :=
+            TestTool.initWithoutBuildFakeDom(
+              ~sandbox,
+              ~buffer=
+                SettingTool.buildBufferConfigStr(
+                  ~textureCountPerMaterial=3,
+                  (),
+                ),
+              (),
+            );
+
           let (state, material) = createBasicMaterial(state^);
-          BasicMaterialTool.getBasicSourceTextureCount(material, state)
-          |> expect == 0;
+          BasicMaterialTool.getEmptyMapUnitArray(material, state)
+          |> expect == [|2, 1, 0|];
         })
       );
     });
@@ -115,11 +126,6 @@ let _ =
             state |> BasicMaterialAPI.setBasicMaterialMap(material, map2);
           (state, material, map2);
         };
-        test("texture count + 1", () => {
-          let (state, material, map) = _prepare(state^);
-          BasicMaterialTool.getBasicSourceTextureCount(material, state)
-          |> expect == 1;
-        });
         test("set map unit to 0", () => {
           let (state, material, map) = _prepare(state^);
           BasicMaterialTool.getMapUnit(material, state) |> expect == 0;
@@ -173,21 +179,7 @@ let _ =
           })
         );
         describe("test dispose not shared material", () => {
-          test("reset basicSourceTextureCount to 0 from textureCountMap", () => {
-            open BasicMaterialType;
-            let (state, gameObject1, (material1, _)) =
-              BasicMaterialTool.createGameObjectWithMap(state^);
-            let state =
-              state
-              |> GameObjectTool.disposeGameObjectBasicMaterialComponent(
-                   gameObject1,
-                   material1,
-                 );
-            BasicMaterialTool.getBasicSourceTextureCount(material1, state)
-            |> expect == 0;
-          });
-
-          test("remove from gameObjectsMap, nameMap", () => {
+          test("remove from gameObjectsMap, nameMap, emptyMapUnitArrayMap", () => {
             open BasicMaterialType;
             let (state, gameObject1, material1) =
               BasicMaterialTool.createGameObject(state^);
@@ -199,14 +191,16 @@ let _ =
                    gameObject1,
                    material1,
                  );
-            let {gameObjectsMap, nameMap} =
+            let {gameObjectsMap, nameMap, emptyMapUnitArrayMap} =
               BasicMaterialTool.getRecord(state);
 
             (
               BasicMaterialTool.hasGameObject(material1, state),
               nameMap |> WonderCommonlib.SparseMapService.has(material1),
+              emptyMapUnitArrayMap
+              |> WonderCommonlib.SparseMapService.has(material1),
             )
-            |> expect == (false, false);
+            |> expect == (false, false, false);
           });
 
           describe("test remove from type array", () => {

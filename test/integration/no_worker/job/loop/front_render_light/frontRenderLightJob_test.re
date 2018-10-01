@@ -746,9 +746,11 @@ let _ =
                 let (state, lightGameObject2, light2) =
                   DirectionLightTool.createGameObject(state);
                 let state =
-                   DirectionLightAPI.setDirectionLightIsRender(
-                     light1, false, state
-                   );
+                  DirectionLightAPI.setDirectionLightIsRender(
+                    light1,
+                    false,
+                    state,
+                  );
                 let (state, posArr, (uniform1f, uniform3f)) =
                   _setFakeGl(
                     sandbox,
@@ -1724,9 +1726,10 @@ let _ =
           state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
         bindTexture |> expect |> not_ |> toCalled;
       });
+
       describe("else", () => {
         let _prepare = state => {
-          let (state, gameObject, _, _, _, _) =
+          let (state, gameObject, _, material, _, (texture1, texture2)) =
             FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(
               sandbox,
               state,
@@ -1736,9 +1739,11 @@ let _ =
           let texture2D = Obj.magic(8);
           let glTexture1 = Obj.magic(11);
           let glTexture2 = Obj.magic(12);
+          let glTexture3 = Obj.magic(13);
           let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
           createTexture |> onCall(0) |> returns(glTexture1);
           createTexture |> onCall(1) |> returns(glTexture2);
+          createTexture |> onCall(2) |> returns(glTexture3);
           let activeTexture = createEmptyStubWithJsObjSandbox(sandbox);
           let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
           let state =
@@ -1756,24 +1761,31 @@ let _ =
                );
           (
             state,
-            (texture2D, glTexture1, glTexture2),
+            (texture2D, glTexture1, glTexture2, glTexture3),
+            material,
+            (texture1, texture2),
             (activeTexture, bindTexture),
           );
         };
         test(
           "if texture of the specific unit is cached, not bind and active it again",
           () => {
-          let (state, _, (activeTexture, _)) = _prepare(state^);
+          let (state, _, _, _, (activeTexture, _)) = _prepare(state^);
+
           let state =
             state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
           let state = state |> DirectorTool.runWithDefaultTime;
+
           activeTexture |> expect |> toCalledTwice;
         });
+
         describe("else", () => {
           test("active texture unit", () => {
-            let (state, _, (activeTexture, _)) = _prepare(state^);
+            let (state, _, _, _, (activeTexture, _)) = _prepare(state^);
+
             let state =
               state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
             (
               SinonTool.calledWith(activeTexture, 0),
               SinonTool.calledWith(activeTexture, 1),
@@ -1783,12 +1795,16 @@ let _ =
           test("bind gl texture to TEXTURE_2D target", () => {
             let (
               state,
-              (texture2D, glTexture1, glTexture2),
+              (texture2D, glTexture1, glTexture2, _),
+              _,
+              _,
               (_, bindTexture),
             ) =
               _prepare(state^);
+
             let state =
               state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
             (
               SinonTool.calledWithArg2(bindTexture, texture2D, glTexture1),
               SinonTool.calledWithArg2(bindTexture, texture2D, glTexture2),
@@ -1796,6 +1812,36 @@ let _ =
             |> expect == (true, true);
           });
         });
+
+        describe("test remove map", () =>
+          test("new map's unit should be removed one", () => {
+            let (
+              state,
+              _,
+              material,
+              (texture1, texture2),
+              (activeTexture, bindTexture),
+            ) =
+              _prepare(state^);
+
+            let state =
+              state
+              |> LightMaterialAPI.removeLightMaterialSpecularMap(material);
+            let (state, map3) =
+              BasicSourceTextureAPI.createBasicSourceTexture(state);
+            let state =
+              state
+              |> LightMaterialAPI.setLightMaterialSpecularMap(material, map3);
+            let state =
+              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+            (
+              SinonTool.calledWith(activeTexture, 0),
+              SinonTool.calledWith(activeTexture, 1),
+            )
+            |> expect == (true, true);
+          })
+        );
       });
     });
 

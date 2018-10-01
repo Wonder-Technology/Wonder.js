@@ -27,7 +27,7 @@ let _disposeData =
         colors,
         textureIndices,
         mapUnits,
-        textureCountMap,
+        emptyMapUnitArrayMap,
         defaultColor,
         nameMap,
         groupCountMap,
@@ -63,12 +63,8 @@ let _disposeData =
         MapUnitService.getDefaultUnit(),
         mapUnits,
       ),
-    textureCountMap:
-      textureCountMap
-      |> TextureCountMapMaterialService.setCount(
-           material,
-           TextureCountMapMaterialService.getDefaultCount(),
-         ),
+    emptyMapUnitArrayMap:
+      emptyMapUnitArrayMap |> disposeSparseMapData(material),
     nameMap: nameMap |> disposeSparseMapData(material),
     groupCountMap,
     gameObjectsMap:

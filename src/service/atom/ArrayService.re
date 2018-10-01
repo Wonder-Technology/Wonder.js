@@ -35,6 +35,14 @@ let range = (a: int, b: int) => {
   result;
 };
 
+let rangeReverse = (a: int, b: int) => {
+  let result = WonderCommonlib.ArrayService.createEmpty();
+  for (i in a downto b) {
+    Js.Array.push(i, result) |> ignore;
+  };
+  result;
+};
+
 let join = arr => {
   let output = ref("");
   for (i in 0 to Js.Array.length(arr)) {
@@ -79,7 +87,7 @@ let removeDuplicateItems = (buildKeyFunc, arr) => {
   resultArr;
 };
 
-let isNotValid = (value) => 
+let isNotValid = value =>
   Obj.magic(value) === Js.Nullable.null
   || Obj.magic(value) === Js.Nullable.undefined;
 

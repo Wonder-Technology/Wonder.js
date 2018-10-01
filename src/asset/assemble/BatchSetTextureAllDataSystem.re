@@ -6,30 +6,37 @@ let _batchSetNewMap =
     (
       (materialArr, textureArr, mapCount),
       (setMapUnitFunc, setTextureIndexFunc),
-      (textureCountPerMaterial, textureIndices, mapUnits, textureCountMap),
+      (
+        textureCountPerMaterial,
+        textureIndices,
+        mapUnits,
+        emptyMapUnitArrayMap,
+      ),
     ) => {
   let newTextureCount = mapCount |> succ;
 
   materialArr
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. (textureIndices, mapUnits, textureCountMap), material, index) => {
+       (. (textureIndices, mapUnits, emptyMapUnitArrayMap), material, index) => {
          let texture = Array.unsafe_get(textureArr, index);
+
+         let (mapUnit, emptyMapUnitArrayMap) =
+           EmptyMapUnitArrayMapService.unsafeGetEmptyMapUnitAndPop(
+             material,
+             emptyMapUnitArrayMap,
+           );
 
          (
            setTextureIndexFunc(.
-             (material, mapCount, textureCountPerMaterial),
+             (material, mapUnit, textureCountPerMaterial),
              texture,
              textureIndices,
            ),
-           setMapUnitFunc(. material, mapCount, mapUnits),
-           textureCountMap
-           |> TextureCountMapMaterialService.setCount(
-                material,
-                newTextureCount,
-              ),
+           setMapUnitFunc(. material, mapUnit, mapUnits),
+           emptyMapUnitArrayMap,
          );
        },
-       (textureIndices, mapUnits, textureCountMap),
+       (textureIndices, mapUnits, emptyMapUnitArrayMap),
      );
 };
 
@@ -40,10 +47,10 @@ let batchSetNewDiffueMaps =
       {settingRecord} as state,
     ) => {
   let (
-        {textureIndices, diffuseMapUnits, textureCountMap}: LightMaterialType.lightMaterialRecord
+        {textureIndices, diffuseMapUnits, emptyMapUnitArrayMap}: LightMaterialType.lightMaterialRecord
       ) as lightMaterialRecord =
     RecordLightMaterialMainService.getRecord(state);
-  let (textureIndices, diffuseMapUnits, textureCountMap) =
+  let (textureIndices, diffuseMapUnits, emptyMapUnitArrayMap) =
     _batchSetNewMap(
       (diffuseMapLightMaterials, lightMaterialDiffuseMaps, 0),
       (
@@ -54,7 +61,7 @@ let batchSetNewDiffueMaps =
         BufferSettingService.getTextureCountPerMaterial(settingRecord),
         textureIndices,
         diffuseMapUnits,
-        textureCountMap,
+        emptyMapUnitArrayMap,
       ),
     );
 
@@ -65,7 +72,7 @@ let batchSetNewDiffueMaps =
         ...lightMaterialRecord,
         textureIndices,
         diffuseMapUnits,
-        textureCountMap,
+        emptyMapUnitArrayMap,
       }),
   };
 };

@@ -12,7 +12,7 @@ type lightMaterialRecord = {
   textureIndices: Js.Typed_array.Uint32Array.t,
   diffuseMapUnits: Js.Typed_array.Uint8Array.t,
   specularMapUnits: Js.Typed_array.Uint8Array.t,
-  textureCountMap: WonderCommonlib.SparseMapService.t(int),
+  emptyMapUnitArrayMap: WonderCommonlib.SparseMapService.t(array(int)),
   defaultDiffuseColor: array(float),
   defaultSpecularColor: array(float),
   defaultShininess: float,

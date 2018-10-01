@@ -9,7 +9,7 @@ type basicMaterialRecord = {
   colors: Js.Typed_array.Float32Array.t,
   textureIndices: Js.Typed_array.Uint32Array.t,
   mapUnits: Js.Typed_array.Uint8Array.t,
-  textureCountMap: WonderCommonlib.SparseMapService.t(int),
+  emptyMapUnitArrayMap: WonderCommonlib.SparseMapService.t(array(int)),
   defaultColor: array(float),
   gameObjectsMap,
   groupCountMap,

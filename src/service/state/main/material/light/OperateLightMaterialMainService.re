@@ -88,6 +88,9 @@ let setDiffuseMap = (material, texture, state) =>
 let hasDiffuseMap = (material, state) =>
   ManageMapLightMaterialMainService.hasDiffuseMap(material, state);
 
+let removeDiffuseMap = (material, state) =>
+  ManageMapLightMaterialMainService.removeDiffuseMap(material, state);
+
 let getSpecularMap = (material, state) =>
   ManageMapLightMaterialMainService.getSpecularMap(material, state);
 
@@ -99,3 +102,6 @@ let setSpecularMap = (material, texture, state) =>
 
 let hasSpecularMap = (material, state) =>
   ManageMapLightMaterialMainService.hasSpecularMap(material, state);
+
+let removeSpecularMap = (material, state) =>
+  ManageMapLightMaterialMainService.removeSpecularMap(material, state);

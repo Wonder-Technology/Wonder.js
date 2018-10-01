@@ -532,18 +532,15 @@ let _ =
 
       describe("deep copy material record", () => {
         describe("test basic material", () => {
-          test(
-            "shadow copy nameMap, textureCountMap,materialArrayForWorkerInit",
-            () =>
+          test("shadow copy nameMap, aterialArrayForWorkerInit", () =>
             StateDataMainType.(
               BasicMaterialType.(
                 MainStateTool.testShadowCopyArrayLikeMapData(
                   state => {
-                    let {nameMap, textureCountMap, materialArrayForWorkerInit} =
+                    let {nameMap, materialArrayForWorkerInit} =
                       BasicMaterialTool.getRecord(state);
                     [|
                       nameMap |> Obj.magic,
-                      textureCountMap |> Obj.magic,
                       materialArrayForWorkerInit |> Obj.magic,
                     |];
                   },
@@ -552,37 +549,61 @@ let _ =
               )
             )
           );
-          test("deep copy gameObjectsMap", () => {
+          test("deep copy gameObjectsMap, emptyMapUnitArrayMap", () => {
             open StateDataMainType;
             open BasicMaterialType;
             let (state, gameObject1, basicMaterial1) =
               BasicMaterialTool.createGameObject(state^);
-            let {gameObjectsMap} = BasicMaterialTool.getRecord(state);
+            let {gameObjectsMap, emptyMapUnitArrayMap} =
+              BasicMaterialTool.getRecord(state);
             let originGameObjectsArr = [|1|];
+            let originEmptyMapUnitArrayMap = [|2, 1, 0|];
             let copiedOriginGameObjectsArr =
               originGameObjectsArr |> Js.Array.copy;
+            let copiedOriginEmptyMapUnitArrayMap =
+              originEmptyMapUnitArrayMap |> Js.Array.copy;
             gameObjectsMap
             |> WonderCommonlib.SparseMapService.set(
                  basicMaterial1,
                  originGameObjectsArr,
                )
             |> ignore;
+            emptyMapUnitArrayMap
+            |> WonderCommonlib.SparseMapService.set(
+                 basicMaterial1,
+                 originEmptyMapUnitArrayMap,
+               )
+            |> ignore;
             let copiedState = MainStateTool.deepCopyForRestore(state);
-            let {gameObjectsMap} = BasicMaterialTool.getRecord(copiedState);
+            let {gameObjectsMap, emptyMapUnitArrayMap} =
+              BasicMaterialTool.getRecord(copiedState);
             let arr =
               gameObjectsMap
               |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1);
             Array.unsafe_set(arr, 0, 2);
+            let arr =
+              emptyMapUnitArrayMap
+              |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1);
+            Array.unsafe_set(arr, 0, 4);
 
-            let {gameObjectsMap} = BasicMaterialTool.getRecord(state);
-            gameObjectsMap
-            |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1)
-            |> expect == copiedOriginGameObjectsArr;
+            let {gameObjectsMap, emptyMapUnitArrayMap} =
+              BasicMaterialTool.getRecord(state);
+            (
+              gameObjectsMap
+              |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1),
+              emptyMapUnitArrayMap
+              |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1),
+            )
+            |>
+            expect == (
+                        copiedOriginGameObjectsArr,
+                        copiedOriginEmptyMapUnitArrayMap,
+                      );
           });
           test("copy colors", () =>
             _testCopyTypeArraySingleValue(
               (
-                GameObjectTool.createGameObject,
+                BasicMaterialTool.createGameObject,
                 (material, state) =>
                   BasicMaterialAPI.getBasicMaterialColor(material, state)
                   |> TypeArrayTool.truncateArray,
@@ -595,7 +616,7 @@ let _ =
           test("copy textureIndices", () =>
             _testCopyTypeArraySingleValue(
               (
-                GameObjectTool.createGameObject,
+                BasicMaterialTool.createGameObject,
                 (material, state) =>
                   BasicMaterialAPI.unsafeGetBasicMaterialMap(material, state),
                 BasicMaterialAPI.setBasicMaterialMap,
@@ -607,7 +628,7 @@ let _ =
           test("copy mapUnits", () =>
             _testCopyTypeArraySingleValue(
               (
-                GameObjectTool.createGameObject,
+                BasicMaterialTool.createGameObject,
                 (material, state) =>
                   BasicMaterialTool.getMapUnit(material, state),
                 BasicMaterialTool.setMapUnit,
@@ -617,19 +638,17 @@ let _ =
             )
           );
         });
+
         describe("test light material", () => {
-          test(
-            "shadow copy nameMap, textureCountMap,materialArrayForWorkerInit",
-            () =>
+          test("shadow copy nameMap, materialArrayForWorkerInit", () =>
             StateDataMainType.(
               LightMaterialType.(
                 MainStateTool.testShadowCopyArrayLikeMapData(
                   state => {
-                    let {nameMap, textureCountMap, materialArrayForWorkerInit} =
+                    let {nameMap, materialArrayForWorkerInit} =
                       LightMaterialTool.getRecord(state);
                     [|
                       nameMap |> Obj.magic,
-                      textureCountMap |> Obj.magic,
                       materialArrayForWorkerInit |> Obj.magic,
                     |];
                   },
@@ -638,37 +657,61 @@ let _ =
               )
             )
           );
-          test("deep copy gameObjectsMap", () => {
+          test("deep copy gameObjectsMap, emptyMapUnitArrayMap", () => {
             open StateDataMainType;
             open LightMaterialType;
-            let (state, gameObject1, lightMaterial1) =
+            let (state, gameObject1, basicMaterial1) =
               LightMaterialTool.createGameObject(state^);
-            let {gameObjectsMap} = LightMaterialTool.getRecord(state);
+            let {gameObjectsMap, emptyMapUnitArrayMap} =
+              LightMaterialTool.getRecord(state);
             let originGameObjectsArr = [|1|];
+            let originEmptyMapUnitArrayMap = [|2, 1, 0|];
             let copiedOriginGameObjectsArr =
               originGameObjectsArr |> Js.Array.copy;
+            let copiedOriginEmptyMapUnitArrayMap =
+              originEmptyMapUnitArrayMap |> Js.Array.copy;
             gameObjectsMap
             |> WonderCommonlib.SparseMapService.set(
-                 lightMaterial1,
+                 basicMaterial1,
                  originGameObjectsArr,
                )
             |> ignore;
+            emptyMapUnitArrayMap
+            |> WonderCommonlib.SparseMapService.set(
+                 basicMaterial1,
+                 originEmptyMapUnitArrayMap,
+               )
+            |> ignore;
             let copiedState = MainStateTool.deepCopyForRestore(state);
-            let {gameObjectsMap} = LightMaterialTool.getRecord(copiedState);
+            let {gameObjectsMap, emptyMapUnitArrayMap} =
+              LightMaterialTool.getRecord(copiedState);
             let arr =
               gameObjectsMap
-              |> WonderCommonlib.SparseMapService.unsafeGet(lightMaterial1);
+              |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1);
             Array.unsafe_set(arr, 0, 2);
+            let arr =
+              emptyMapUnitArrayMap
+              |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1);
+            Array.unsafe_set(arr, 0, 4);
 
-            let {gameObjectsMap} = LightMaterialTool.getRecord(state);
-            gameObjectsMap
-            |> WonderCommonlib.SparseMapService.unsafeGet(lightMaterial1)
-            |> expect == copiedOriginGameObjectsArr;
+            let {gameObjectsMap, emptyMapUnitArrayMap} =
+              LightMaterialTool.getRecord(state);
+            (
+              gameObjectsMap
+              |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1),
+              emptyMapUnitArrayMap
+              |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1),
+            )
+            |>
+            expect == (
+                        copiedOriginGameObjectsArr,
+                        copiedOriginEmptyMapUnitArrayMap,
+                      );
           });
           test("copy diffuseColors", () =>
             _testCopyTypeArraySingleValue(
               (
-                GameObjectTool.createGameObject,
+                LightMaterialTool.createGameObject,
                 (material, state) =>
                   LightMaterialAPI.getLightMaterialDiffuseColor(
                     material,
@@ -684,7 +727,7 @@ let _ =
           test("copy specularColors", () =>
             _testCopyTypeArraySingleValue(
               (
-                GameObjectTool.createGameObject,
+                LightMaterialTool.createGameObject,
                 (material, state) =>
                   LightMaterialAPI.getLightMaterialSpecularColor(
                     material,
@@ -700,7 +743,7 @@ let _ =
           test("copy shininess", () =>
             _testCopyTypeArraySingleValue(
               (
-                GameObjectTool.createGameObject,
+                LightMaterialTool.createGameObject,
                 LightMaterialAPI.getLightMaterialShininess,
                 LightMaterialAPI.setLightMaterialShininess,
                 () => (1., 2.),
@@ -711,7 +754,7 @@ let _ =
           test("copy textureIndices", () =>
             _testCopyTypeArraySingleValue(
               (
-                GameObjectTool.createGameObject,
+                LightMaterialTool.createGameObject,
                 (material, state) =>
                   LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(
                     material,
@@ -726,7 +769,7 @@ let _ =
           test("copy diffuseMapUnits", () =>
             _testCopyTypeArraySingleValue(
               (
-                GameObjectTool.createGameObject,
+                LightMaterialTool.createGameObject,
                 (material, state) =>
                   LightMaterialTool.getDiffuseMapUnit(material, state),
                 LightMaterialTool.setDiffuseMapUnit,
@@ -738,7 +781,7 @@ let _ =
           test("copy specularMapUnits", () =>
             _testCopyTypeArraySingleValue(
               (
-                GameObjectTool.createGameObject,
+                LightMaterialTool.createGameObject,
                 (material, state) =>
                   LightMaterialTool.getSpecularMapUnit(material, state),
                 LightMaterialTool.setSpecularMapUnit,
@@ -749,6 +792,7 @@ let _ =
           );
         });
       });
+
       describe("deep copy texture record", () => {
         describe("deep copy basic source texture record", () =>
           test(
@@ -1185,6 +1229,7 @@ let _ =
         });
       });
     });
+
     describe("restore", () => {
       let _testRestoreStateEqualTargetState =
           (state, prepareDataFunc, getDataFunc) => {
@@ -1199,6 +1244,7 @@ let _ =
         |> expect == (state |> getDataFunc);
         /* expect(1) == 1; */
       };
+
       describe("restore meshRenderer record to target state", () => {
         let _prepare = state => {
           let (
@@ -1331,6 +1377,7 @@ let _ =
                     );
         });
       });
+
       describe("restore transform record to target state", () => {
         let _test = state => {
           open TransformType;
@@ -1549,6 +1596,7 @@ let _ =
           })
         );
       });
+
       describe("restore geometry record to target state", () => {
         let _createGameObjectAndSetPointData =
             (state: StateDataMainType.state) => {
@@ -1706,6 +1754,7 @@ let _ =
           vertices |> expect == vertices3;
         });
       });
+
       describe("restore material record to target state", () => {
         describe("test basic material", () =>
           test("test restore typeArrays", () => {
@@ -1782,6 +1831,7 @@ let _ =
                       );
           })
         );
+
         describe("test light material", () =>
           test("test restore typeArrays", () => {
             open LightMaterialType;
@@ -1791,7 +1841,7 @@ let _ =
                 ~buffer=
                   SettingTool.buildBufferConfigStr(
                     ~lightMaterialCount=4,
-                    ~textureCountPerMaterial=1,
+                    ~textureCountPerMaterial=2,
                     (),
                   ),
                 (),
@@ -1874,7 +1924,7 @@ let _ =
                           1.,
                           1.,
                         |]),
-                        Uint32Array.make([|0, 0, 0, 0|]),
+                        Uint32Array.make([|0, 0, 0, 0, 0, 0, 0, 0|]),
                         Uint8Array.make([|
                           defaultUnit,
                           defaultUnit,
@@ -1891,6 +1941,7 @@ let _ =
           })
         );
       });
+
       describe("restore light record to target state", () => {
         let _prepareLightData = (createGameObjectFunc, state) => {
           open LightMaterialAPI;

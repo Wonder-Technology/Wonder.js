@@ -11,6 +11,7 @@ let _ =
     let state = ref(MainStateTool.createState());
     beforeEach(() => sandbox := createSandbox());
     afterEach(() => TestWorkerTool.clear(sandbox));
+    
     describe("init all textures", () => {
       let _prepareForBasicSourceTexture = () => {
         let (
@@ -491,6 +492,7 @@ let _ =
                 );
               });
             });
+
             describe("init added textures", () =>
               testPromise("test create gl texture", () => {
                 let (
@@ -524,6 +526,7 @@ let _ =
               })
             );
           });
+
           describe("test arrayBufferView source texture", () => {
             describe("add source map", () =>
               testPromise("test", () => {

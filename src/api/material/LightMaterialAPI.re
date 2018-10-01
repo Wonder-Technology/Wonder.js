@@ -209,6 +209,25 @@ let hasLightMaterialDiffuseMap = (material, state) => {
   hasDiffuseMap(material, state);
 };
 
+let removeLightMaterialDiffuseMap = (material, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordLightMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  removeDiffuseMap(material, state);
+};
+
 let unsafeGetLightMaterialSpecularMap = (material, state) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -264,6 +283,25 @@ let hasLightMaterialSpecularMap = (material, state) => {
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   hasSpecularMap(material, state);
+};
+
+let removeLightMaterialSpecularMap = (material, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordLightMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  removeSpecularMap(material, state);
 };
 
 let unsafeGetLightMaterialName = (material, state) => {

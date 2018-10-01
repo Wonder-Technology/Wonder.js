@@ -20,10 +20,21 @@ let _ =
         expect(material) == 0;
       });
       describe("set default value", () =>
-        test("set texture count to be 0", () => {
+        test("init emptyMapUnitArray", () => {
+          state :=
+            TestTool.initWithoutBuildFakeDom(
+              ~sandbox,
+              ~buffer=
+                SettingTool.buildBufferConfigStr(
+                  ~textureCountPerMaterial=3,
+                  (),
+                ),
+              (),
+            );
+
           let (state, material) = createLightMaterial(state^);
-          LightMaterialTool.getBasicSourceTextureCount(material, state)
-          |> expect == 0;
+          LightMaterialTool.getEmptyMapUnitArray(material, state)
+          |> expect == [|2, 1, 0|];
         })
       );
     });
@@ -147,6 +158,7 @@ let _ =
           |> toThrowMessage("expect data exist");
         })
       );
+
       describe("setLightMaterialDiffuseMap, setLightMaterialSpecularMap", () => {
         let _prepare = state => {
           let (state, material) = createLightMaterial(state);
@@ -162,11 +174,6 @@ let _ =
             |> LightMaterialAPI.setLightMaterialDiffuseMap(material, map2);
           (state, material, (map1, map2));
         };
-        test("texture count + 1", () => {
-          let (state, material, (map1, map2)) = _prepare(state^);
-          LightMaterialTool.getBasicSourceTextureCount(material, state)
-          |> expect == 2;
-        });
         test("set map unit", () => {
           let (state, material, (map1, map2)) = _prepare(state^);
           (
@@ -190,24 +197,75 @@ let _ =
           |> expect == (map2, map1);
         });
       });
+
+      describe(
+        "removeLightMaterialDiffuseMap, removeLightMaterialSpecularMap", () => {
+        let _prepare = state => {
+          let (state, material) = createLightMaterial(state);
+          let (state, map1) =
+            BasicSourceTextureAPI.createBasicSourceTexture(state);
+          let (state, map2) =
+            BasicSourceTextureAPI.createBasicSourceTexture(state);
+
+          let state =
+            state
+            |> LightMaterialAPI.setLightMaterialSpecularMap(material, map1)
+            |> LightMaterialAPI.setLightMaterialDiffuseMap(material, map2);
+
+          (state, material, (map1, map2));
+        };
+
+        let _exec = (material, state) =>
+          state
+          |> LightMaterialAPI.removeLightMaterialSpecularMap(material)
+          |> LightMaterialAPI.removeLightMaterialDiffuseMap(material);
+
+        test("has map should return false", () => {
+          let (state, material, (map1, map2)) = _prepare(state^);
+
+          let state = _exec(material, state);
+
+          (
+            LightMaterialAPI.hasLightMaterialDiffuseMap(material, state),
+            LightMaterialAPI.hasLightMaterialSpecularMap(material, state),
+          )
+          |> expect == (false, false);
+        });
+
+        describe("test set new map after remove", () =>
+          test("should get correct map", () => {
+            let (state, material, (map1, map2)) = _prepare(state^);
+
+            let state =
+              state
+              |> LightMaterialAPI.removeLightMaterialSpecularMap(material);
+
+            let (state, map3) =
+              BasicSourceTextureAPI.createBasicSourceTexture(state);
+
+            let state =
+              state
+              |> LightMaterialAPI.setLightMaterialSpecularMap(material, map3);
+
+            (
+              LightMaterialAPI.unsafeGetLightMaterialSpecularMap(
+                material,
+                state,
+              ),
+              LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(
+                material,
+                state,
+              ),
+            )
+            |> expect == (map3, map2);
+          })
+        );
+      });
     });
 
     describe("disposeComponent", () =>
       describe("dispose data", () => {
-        test("reset basicSourceTextureCount to 0 from textureCountMap", () => {
-          open LightMaterialType;
-          let (state, gameObject1, (material1, _)) =
-            LightMaterialTool.createGameObjectWithMap(state^);
-          let state =
-            state
-            |> GameObjectTool.disposeGameObjectLightMaterialComponent(
-                 gameObject1,
-                 material1,
-               );
-          LightMaterialTool.getBasicSourceTextureCount(material1, state)
-          |> expect == 0;
-        });
-        test("remove from gameObjectsMap, nameMap", () => {
+        test("remove from gameObjectsMap, nameMap, emptyMapUnitArrayMap", () => {
           open LightMaterialType;
           let (state, gameObject1, material1) =
             LightMaterialTool.createGameObject(state^);
@@ -219,14 +277,18 @@ let _ =
                  gameObject1,
                  material1,
                );
-          let {gameObjectsMap, nameMap} = LightMaterialTool.getRecord(state);
+          let {gameObjectsMap, nameMap, emptyMapUnitArrayMap} =
+            LightMaterialTool.getRecord(state);
 
           (
             LightMaterialTool.hasGameObject(material1, state),
             nameMap |> WonderCommonlib.SparseMapService.has(material1),
+            emptyMapUnitArrayMap
+            |> WonderCommonlib.SparseMapService.has(material1),
           )
-          |> expect == (false, false);
+          |> expect == (false, false, false);
         });
+
         describe("test remove from type array", () => {
           let _testRemoveFromTypeArr =
               (

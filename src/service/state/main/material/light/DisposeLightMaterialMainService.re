@@ -27,7 +27,7 @@ let _disposeData =
         textureIndices,
         diffuseMapUnits,
         specularMapUnits,
-        textureCountMap,
+        emptyMapUnitArrayMap,
         defaultDiffuseColor,
         defaultSpecularColor,
         defaultShininess,
@@ -84,12 +84,8 @@ let _disposeData =
         MapUnitService.getDefaultUnit(),
         specularMapUnits,
       ),
-    textureCountMap:
-      textureCountMap
-      |> TextureCountMapMaterialService.setCount(
-           material,
-           TextureCountMapMaterialService.getDefaultCount(),
-         ),
+    emptyMapUnitArrayMap:
+      emptyMapUnitArrayMap |> disposeSparseMapData(material),
     nameMap: nameMap |> disposeSparseMapData(material),
     groupCountMap,
     gameObjectsMap:

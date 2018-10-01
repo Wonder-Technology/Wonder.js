@@ -6,6 +6,7 @@ let getMap =
       (textureIndices, mapUnits),
     ) => {
   let mapUnit = getMapUnitFunc(. material, mapUnits);
+
   MapUnitService.hasMap(mapUnit) ?
     Some(
       getTextureIndexFunc(.
@@ -16,53 +17,101 @@ let getMap =
     None;
 };
 
-/* let unsafeGetMap =
-     (
-       material,
-       textureCountPerMaterial,
-       (getMapUnitFunc, getTextureIndexFunc),
-       (textureIndices, mapUnits)
-     ) =>
-   getMap(
-     material,
-     textureCountPerMaterial,
-     (getMapUnitFunc, getTextureIndexFunc),
-     (textureIndices, mapUnits)
-   )
-   |> OptionService.unsafeGet; */
+let _changeMap =
+    (
+      material,
+      texture,
+      mapUnit,
+      setTextureIndexFunc,
+      (
+        textureCountPerMaterial,
+        textureIndices,
+        mapUnits,
+        emptyMapUnitArrayMap,
+      ),
+    ) => (
+  setTextureIndexFunc(.
+    (material, mapUnit, textureCountPerMaterial),
+    texture,
+    textureIndices,
+  ),
+  mapUnits,
+  emptyMapUnitArrayMap,
+);
+
 let setMap =
     (
       material,
       texture,
       (getMapUnitFunc, setMapUnitFunc, setTextureIndexFunc),
-      (textureCountPerMaterial, textureIndices, mapUnits, textureCountMap),
+      (
+        textureCountPerMaterial,
+        textureIndices,
+        mapUnits,
+        emptyMapUnitArrayMap,
+      ),
     ) => {
   let mapUnit = getMapUnitFunc(. material, mapUnits);
   MapUnitService.hasMap(mapUnit) ?
-    (
-      setTextureIndexFunc(.
-        (material, mapUnit, textureCountPerMaterial),
-        texture,
+    _changeMap(
+      material,
+      texture,
+      mapUnit,
+      setTextureIndexFunc,
+      (
+        textureCountPerMaterial,
         textureIndices,
+        mapUnits,
+        emptyMapUnitArrayMap,
       ),
-      mapUnits,
-      textureCountMap,
     ) :
     {
-      let mapCount =
-        TextureCountMapMaterialService.unsafeGetCount(
+      let (mapUnit, emptyMapUnitArrayMap) =
+        EmptyMapUnitArrayMapService.unsafeGetEmptyMapUnitAndPop(
           material,
-          textureCountMap,
+          emptyMapUnitArrayMap,
         );
+
       (
         setTextureIndexFunc(.
-          (material, mapCount, textureCountPerMaterial),
+          (material, mapUnit, textureCountPerMaterial),
           texture,
           textureIndices,
         ),
-        setMapUnitFunc(. material, mapCount, mapUnits),
-        textureCountMap
-        |> TextureCountMapMaterialService.setCount(material, mapCount |> succ),
+        setMapUnitFunc(. material, mapUnit, mapUnits),
+        emptyMapUnitArrayMap,
       );
     };
+};
+
+let removeMap =
+    (
+      material,
+      (getMapUnitFunc, setMapUnitFunc, setTextureIndexFunc),
+      (
+        textureCountPerMaterial,
+        textureIndices,
+        mapUnits,
+        emptyMapUnitArrayMap,
+      ),
+    ) => {
+  let defaultTexture = BufferMaterialService.getDefaultTextureIndex();
+
+  let mapUnit = getMapUnitFunc(. material, mapUnits);
+
+  MapUnitService.hasMap(mapUnit) ?
+    (
+      setTextureIndexFunc(.
+        (material, defaultTexture, textureCountPerMaterial),
+        defaultTexture,
+        textureIndices,
+      ),
+      setMapUnitFunc(. material, MapUnitService.getDefaultUnit(), mapUnits),
+      EmptyMapUnitArrayMapService.addEmptyMapUnit(
+        material,
+        mapUnit,
+        emptyMapUnitArrayMap,
+      ),
+    ) :
+    (textureIndices, mapUnits, emptyMapUnitArrayMap);
 };

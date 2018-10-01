@@ -37,3 +37,6 @@ let setMap = (material, texture, state) =>
 
 let hasMap = (material, state) =>
   ManageMapBasicMaterialMainService.hasMap(material, state);
+
+let removeMap = (material, state) =>
+  ManageMapBasicMaterialMainService.removeMap(material, state);

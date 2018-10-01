@@ -15,6 +15,7 @@ let bindAndUpdate =
         material,
         specularMapUnits,
       );
+
     let (textureIndices, settingRecord, state) =
       (textureIndices, settingRecord, state)
       |> BindAndUpdateMapMaterialRenderService.bindAndUpdate(
