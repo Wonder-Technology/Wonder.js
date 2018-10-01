@@ -11,7 +11,6 @@ let deepCopyForRestore =
     ({index, materialsMap, shaderIndexMap, usedShaderIndexArray}) => {
   index,
   shaderIndexMap: shaderIndexMap |> HashMapService.copy,
-  /* TODO test */
   materialsMap: materialsMap |> CopyTypeArrayService.deepCopyArrayArray,
   usedShaderIndexArray: usedShaderIndexArray |> Js.Array.copy,
 };

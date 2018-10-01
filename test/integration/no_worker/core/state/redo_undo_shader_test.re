@@ -58,6 +58,38 @@ let _ =
         );
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
+    describe("deepCopyForRestore", () =>
+      test("deep copy materialsMap", () => {
+        open ShaderType;
+
+        let {materialsMap} = ShaderTool.getShaderRecord(state^);
+
+        let shaderIndex = 0;
+
+        let originMaterialArr = [|1|];
+        let copiedOriginMaterialArr = originMaterialArr |> Js.Array.copy;
+        materialsMap
+        |> WonderCommonlib.SparseMapService.set(
+             shaderIndex,
+             originMaterialArr,
+           )
+        |> ignore;
+        let copiedState = MainStateTool.deepCopyForRestore(state^);
+
+        let {materialsMap} = ShaderTool.getShaderRecord(copiedState);
+        let arr =
+          materialsMap
+          |> WonderCommonlib.SparseMapService.unsafeGet(shaderIndex);
+        Array.unsafe_set(arr, 0, 2);
+
+        let {materialsMap} = ShaderTool.getShaderRecord(state^);
+        materialsMap
+        |> WonderCommonlib.SparseMapService.unsafeGet(shaderIndex)
+        |> expect == copiedOriginMaterialArr;
+      })
+    );
+
     describe("restore", () => {
       describe("restore glsl sender data to target state", () => {
         test("clear last send data", () => {
