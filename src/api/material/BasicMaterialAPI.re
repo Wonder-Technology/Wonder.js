@@ -168,6 +168,29 @@ let setBasicMaterialName = (material, name, state) => {
   NameBasicMaterialMainService.setName(material, name, state);
 };
 
+let reInitMaterials = (materials, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            materials
+            |> WonderCommonlib.ArrayService.forEach((. material) =>
+                 AliveComponentService.checkComponentShouldAlive(
+                   material,
+                   isAlive,
+                   RecordBasicMaterialMainService.getRecord(state),
+                 )
+               )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  InitBasicMaterialMainService.reInitComponents(materials, state);
+};
+
 let getAllBasicMaterials = state => {
   let {index, disposedIndexArray} =
     RecordBasicMaterialMainService.getRecord(state);

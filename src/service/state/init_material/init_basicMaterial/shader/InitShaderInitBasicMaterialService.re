@@ -15,8 +15,8 @@ let initMaterialShader =
         glslRecord,
         glslSenderRecord,
         glslLocationRecord,
-        glslChunkRecord
-      } as state
+        glslChunkRecord,
+      } as state,
     ) =>
   InitShaderInitMaterialService.initMaterialShader(
     materialIndex,
@@ -25,7 +25,7 @@ let initMaterialShader =
       buildGLSLSourceFunc,
       HandleGLSLInitBasicMaterialService.getHandle,
       HandleAttributeConfigDataInitBasicMaterialService.addAttributeSendData,
-      HandleUniformConfigDataInitBasicMaterialService.addUniformSendData
+      HandleUniformConfigDataInitBasicMaterialService.addUniformSendData,
     ),
     (
       shaderRecord,
@@ -33,6 +33,39 @@ let initMaterialShader =
       glslRecord,
       glslSenderRecord,
       glslLocationRecord,
-      glslChunkRecord
-    )
+      glslChunkRecord,
+    ),
+  );
+
+let reInitMaterialShader =
+    (
+      materialIndex: int,
+      (gl, shaderLibDataArr),
+      buildGLSLSourceFunc,
+      {
+        shaderRecord,
+        programRecord,
+        glslRecord,
+        glslSenderRecord,
+        glslLocationRecord,
+        glslChunkRecord,
+      } as state,
+    ) =>
+  InitShaderInitMaterialService.reInitMaterialShader(
+    materialIndex,
+    (gl, shaderLibDataArr),
+    (
+      buildGLSLSourceFunc,
+      HandleGLSLInitBasicMaterialService.getHandle,
+      HandleAttributeConfigDataInitBasicMaterialService.addAttributeSendData,
+      HandleUniformConfigDataInitBasicMaterialService.addUniformSendData,
+    ),
+    (
+      shaderRecord,
+      programRecord,
+      glslRecord,
+      glslSenderRecord,
+      glslLocationRecord,
+      glslChunkRecord,
+    ),
   );

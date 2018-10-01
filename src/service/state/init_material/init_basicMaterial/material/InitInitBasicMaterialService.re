@@ -35,6 +35,24 @@ let initMaterial =
       )
   );
 
+
+let reInitMaterial =
+  (. gl, dataTuple, {materialRecord, renderConfigRecord} as state) =>
+    InitMaterialInitMaterialService.reInitMaterial(
+      gl,
+      dataTuple,
+      (
+        InitShaderInitBasicMaterialService.reInitMaterialShader,
+        BuildShaderSourceInitMaterialService.buildGLSLSource,
+        ShaderIndicesService.setShaderIndex,
+        _getShaderLibItems,
+        GetShaderLibDataArrayInitBasicMaterialService.getMaterialShaderLibDataArr,
+      ),
+      (materialRecord.shaderIndices, renderConfigRecord, state),
+    );
+
+
+
 let init = (gl, instanceTuple, {materialRecord} as state) => {
   let {index, disposedIndexArray} = materialRecord;
   InitMaterialInitMaterialService.init(
