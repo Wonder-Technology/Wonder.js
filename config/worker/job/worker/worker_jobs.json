@@ -57,6 +57,9 @@
         "name": "init_geometry"
     },
     {
+        "name": "init_meshRenderer"
+    },
+    {
         "name": "init_basic_material"
     },
     {
@@ -104,7 +107,7 @@
     {
         "name": "clear_color",
         "flags": [
-            "#AAAAAA"
+            "#20B2AA"
         ]
     },
     {
