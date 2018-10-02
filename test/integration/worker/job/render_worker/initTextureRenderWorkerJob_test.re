@@ -11,7 +11,7 @@ let _ =
     let state = ref(MainStateTool.createState());
     beforeEach(() => sandbox := createSandbox());
     afterEach(() => TestWorkerTool.clear(sandbox));
-    
+
     describe("init all textures", () => {
       let _prepareForBasicSourceTexture = () => {
         let (
@@ -130,8 +130,9 @@ let _ =
               },
             );
           });
+
           describe("test basic source texture", () => {
-            describe("send needAddedImageDataArray", () =>
+            describe("send needAddedImageDataArray", () => {
               testPromise("convert source to imageData", () => {
                 let (
                   state,
@@ -210,8 +211,73 @@ let _ =
                        )
                        |> expect == (1, 1, 1, 1, 1),
                    );
-              })
-            );
+              });
+
+              describe("fix bug", () =>
+                testPromise("shouldn't convert undefined source", () => {
+                  let (
+                    state,
+                    context,
+                    (
+                      imageDataArrayBuffer1,
+                      imageDataArrayBuffer2,
+                      imageDataArrayBuffer3,
+                      imageDataArrayBuffer4,
+                    ),
+                    (map1, map2),
+                    (source1, source2),
+                  ) =
+                    _prepareForBasicSourceTexture();
+                  let state =
+                    state
+                    |> BasicSourceTextureAPI.setBasicSourceTextureSource(
+                         Js.Nullable.undefined |> Obj.magic,
+                         Js.Nullable.undefined |> Obj.magic,
+                       );
+
+                  let drawImage = context##drawImage;
+                  let getImageData = context##getImageData;
+                  MainInitJobMainWorkerTool.prepare()
+                  |> MainInitJobMainWorkerTool.test(
+                       sandbox,
+                       state =>
+                         WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(
+                           state,
+                         ),
+                       postMessageToRenderWorker =>
+                         postMessageToRenderWorker
+                         |> withOneArg(
+                              SendInitRenderDataWorkerTool.buildInitRenderData(
+                                ~textureData={
+                                  "buffer": Sinon.matchAny,
+                                  "basicSourceTextureData": {
+                                    "index": 2,
+                                    "needAddedImageDataArray": [|
+                                      (
+                                        imageDataArrayBuffer1,
+                                        source1##width,
+                                        source1##height,
+                                        0,
+                                      ),
+                                      (
+                                        imageDataArrayBuffer2,
+                                        source2##width,
+                                        source2##height,
+                                        1,
+                                      ),
+                                    |],
+                                  },
+                                  "arrayBufferViewSourceTextureData": Sinon.matchAny,
+                                },
+                                (),
+                              ),
+                            )
+                         |> getCallCount
+                         |> expect == 1,
+                     );
+                })
+              );
+            });
             testPromise(
               "clear basicSourceTextureRecord->needAddedSourceArray, needInitedTextureIndexArray after send",
               () => {
@@ -252,6 +318,7 @@ let _ =
               },
             );
           });
+
           describe("test arrayBufferView source texture", () => {
             describe("send sourceMap", () =>
               testPromise("test", () => {
@@ -313,6 +380,7 @@ let _ =
             );
           });
         });
+
         describe("test render worker job", () => {
           describe("test basic source texture", () => {
             beforeAllPromise(() =>
@@ -321,6 +389,7 @@ let _ =
             afterAllPromise(() =>
               BasicSourceTextureRenderWorkerTool.clearFakeCreateImageBitmapFunc()
             );
+
             describe("add source to sourceMap", () => {
               describe("test for chrome", () => {
                 testPromise("test flipY", () => {

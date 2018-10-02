@@ -24,6 +24,9 @@ let setSource = (texture, source, state) =>
 
 let convertNeedAddedSourceArrayToImageDataArr = needAddedSourceArray =>
   needAddedSourceArray
+  |> Js.Array.filter(((_, source)) =>
+       Obj.magic(source) !== Js.Nullable.undefined
+     )
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. imageDataArr, (texture, source)) => {
          let (arrayBuffer, width, height) =

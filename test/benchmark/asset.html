@@ -349,7 +349,7 @@
 
 
 
-                                        // wd.startDirector(state);
+                                        wd.startDirector(state);
 
 
                                         // console.profile("generateWDB");
@@ -358,6 +358,7 @@
 
 
 
+return;
 
 
 
@@ -1008,18 +1009,18 @@
                                         //     state$);
 
 
-                                        _downloadScene(
-                                            [
-                                                boxArrayBuffer,
-                                                truckArrayBuffer,
-                                                alphaArrayBuffer
-                                            ],
+                                        // _downloadScene(
+                                        //     [
+                                        //         boxArrayBuffer,
+                                        //         truckArrayBuffer,
+                                        //         alphaArrayBuffer
+                                        //     ],
 
 
-                                            true,
+                                        //     true,
 
-                                            state$
-                                        );
+                                        //     state$
+                                        // );
 
 
                                         // _downloadScene3(
@@ -1042,10 +1043,13 @@
 
 
 
-                                        // _testAssembleWD(
-                                        //     truckArrayBuffer,
-                                        //     true,
-                                        //     state$);
+                                        _testAssembleWD(
+                                            // truckArrayBuffer,
+
+                                                // boxArrayBuffer,
+alphaArrayBuffer,
+                                            true,
+                                            state$);
                                     })
                             })
 
