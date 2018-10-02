@@ -34,7 +34,7 @@
 
 
 
-            return AssetTool.loadConfig(["./data/setting.json", "./data/"], null, function () {
+            return AssetTool.loadConfig(["./config/setting.json", "./config/"], null, function () {
                 TextureTool.loadTwoUint8ArrayImages("./1.jpg", "./2.jpg", (image1Data, image2Data) => {
                     return initSample(image1Data, image2Data, wd.unsafeGetState());
                 })
