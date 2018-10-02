@@ -19,7 +19,7 @@
           "link": "concat",
           "jobs": [
             {
-              "name": "init_camera"
+              "name": "detect_environment"
             },
             {
               "name": "transfer_job_data"
@@ -29,6 +29,9 @@
             },
             {
               "name": "init_event"
+            },
+            {
+              "name": "init_camera"
             },
             {
               "name": "set_full_screen"

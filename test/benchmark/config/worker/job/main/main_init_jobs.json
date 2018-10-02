@@ -24,6 +24,9 @@
         "name": "init_camera"
     },
     {
+        "name": "detect_environment"
+    },
+    {
         "name": "create_canvas"
     },
     {
