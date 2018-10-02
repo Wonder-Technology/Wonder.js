@@ -3,6 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
+
+    <link rel="icon" href="../asset/logo/favicon.ico" type="image/x-icon" />
+
     <title>imgui</title>
 </head>
 
@@ -28,9 +31,12 @@
 
     <h1 id="detect" style="display: none">your browser not support sharedArrayBuffer or offscreenCanvas</h1>
 
-    <!-- <div id="loading" style="position:absolute;top:100px;left:100px;width:200px;height:50px;border:1px solid red; font-size:80px; color:bisque; text-align: center; ">
-    100%
-    </div> -->
+    <!-- <div id="loading" style="position:absolute;top:100px;left:100px;width:200px;height:50px;border:1px solid red; font-size:80px; color:bisque; text-align: center; "> -->
+    <div id="loading">
+        <img id="logo" style="display: none;" src="../asset/logo/logo.png" width=100 height=100 />
+        <br />
+        <span id="text"></span>
+    </div>
 
 
     <script>
@@ -355,8 +361,7 @@
                 return AssetTool.loadIMGUIAsset("../../test/res/font/Lato-Regular-64.fnt", "../../test/res/font/lato.png",
                     [
                         ["../../test/res/image/1.jpg", "1"],
-                        ["../../test/res/image/2.png", "2"],
-                        ["../asset/image/wonder.png", "wonder"],
+                        ["../../test/res/image/2.png", "2"]
                     ],
 
                     function (contentLength, filePath) {
@@ -372,7 +377,7 @@
                             function (totalLoadedByteLength, contentLength, wdbPath) {
                                 AssetTool.showOrCreateLoadingInfo(
                                     loadedIMGUIByteLength + totalLoadedByteLength,
-                                    totalByteLength
+                                    totalByteLength,
                                 );
                             },
                             function (state, gameObject) {

@@ -9,35 +9,28 @@ var AssetTool = (function () {
     return {
         showOrCreateLoadingInfo: function (
             loadedIMGUIByteLength,
-            totalByteLength
+            totalByteLength,
         ) {
             var windowWidth = window.innerWidth;
             var windowHeight = window.innerHeight;
 
+
+            document.querySelector("#logo").style.display = "inline";
+
             var dom = document.querySelector("#loading");
 
 
+            dom.style.cssText = 'position:absolute;top:' + windowHeight * 0.55 + 'px;left:' + windowWidth * 0.4 + 'px;width:' + windowWidth * (0.6 - 0.4) + 'px;height:50px;font-size:80px; color:bisque; text-align: center;';
 
 
-            if (!dom) {
-                dom =
-                    document.createElement("div");
-
-                dom.style.cssText = 'position:absolute;top:' + windowHeight * 0.55 + 'px;left:' + windowWidth * 0.4 + 'px;width:' + windowWidth * (0.6 - 0.4) + 'px;height:50px;font-size:80px; color:bisque; text-align: center;';
-
-                dom.id = "loading";
 
 
-                document.querySelector("body").prepend(
-                    dom
-                );
-            }
+            document.querySelector("#text")
+                .innerHTML = String(computeLoadingPercent(
 
-            dom.innerHTML = String(computeLoadingPercent(
-
-                loadedIMGUIByteLength,
-                totalByteLength
-            )) + '%';
+                    loadedIMGUIByteLength,
+                    totalByteLength
+                )) + '%';
         },
         removeLoadingInfo: function () {
             document.querySelector("#loading").remove();

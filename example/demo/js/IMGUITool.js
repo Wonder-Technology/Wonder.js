@@ -134,9 +134,9 @@ var DemoImguiTool = (function () {
 
 
 
-            var state = api.image(
-                [x, intervalY * 3, controlWidth / 3, controlHeight / 3], [0, 0, 1, 1], "wonder", state
-            );
+            // var state = api.image(
+            //     [x, intervalY * 3, controlWidth / 3, controlHeight / 3], [0, 0, 1, 1], "wonder", state
+            // );
 
 
             var state = api.image(

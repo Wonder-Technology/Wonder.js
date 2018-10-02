@@ -3,6 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
+
+    <link rel="icon" href="../asset/logo/favicon.ico" type="image/x-icon" />
+
     <title>imgui</title>
 </head>
 
@@ -28,6 +31,14 @@
 
 
     <h1 id="detect" style="display: none">your browser not support sharedArrayBuffer or offscreenCanvas</h1>
+
+
+    <div id="loading">
+        <img id="logo" style="display: none;" src="../asset/logo/logo.png" width=100 height=100 />
+        <br />
+        <span id="text"></span>
+    </div>
+
 
 
     <script>
@@ -438,8 +449,7 @@
                 return AssetTool.loadIMGUIAsset("../../test/res/font/Lato-Regular-64.fnt", "../../test/res/font/lato.png",
                     [
                         ["../../test/res/image/1.jpg", "1"],
-                        ["../../test/res/image/2.png", "2"],
-                        ["../asset/image/wonder.png", "wonder"],
+                        ["../../test/res/image/2.png", "2"]
                     ],
 
                     function (contentLength, filePath) {
