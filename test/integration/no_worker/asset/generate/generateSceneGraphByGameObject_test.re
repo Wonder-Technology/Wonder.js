@@ -1202,7 +1202,7 @@ let _ =
                             (
                               GLTFTool.getBoxMainVertices(),
                               GLTFTool.getBoxMainNormals(),
-                              GLTFTool.getBoxMainTexCoords() ,
+                              GLTFTool.getBoxMainTexCoords(),
                               GLTFTool.getBoxMainIndices(),
                             ),
                           ),
@@ -1779,7 +1779,8 @@ let _ =
       });
     });
 
-    describe("if has no maps, geometry should still generate texCoords data", () => {
+    describe(
+      "if has no maps, geometry should still generate texCoords data", () => {
       let _prepareGameObject = state => {
         open GameObjectAPI;
 
@@ -2997,6 +2998,101 @@ let _ =
                    |j},
           state,
         );
+      });
+    });
+
+    describe("test toDataURL", () => {
+      let _createGameObjectWithMap = (textureName, imageName, state) => {
+        open GameObjectAPI;
+        open LightMaterialAPI;
+        open MeshRendererAPI;
+
+        let (state, material) = createLightMaterial(state);
+
+        let (state, (texture, _), (source, width, height)) =
+          _createTexture1(state);
+
+        let state =
+          BasicSourceTextureAPI.setBasicSourceTextureName(
+            texture,
+            textureName,
+            state,
+          );
+
+        Obj.magic(source)##name#=imageName;
+
+        let state =
+          LightMaterialAPI.setLightMaterialDiffuseMap(
+            material,
+            texture,
+            state,
+          );
+
+        let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
+        let (state, meshRenderer) = createMeshRenderer(state);
+        let (state, gameObject) = state |> createGameObject;
+        let state =
+          state
+          |> addGameObjectLightMaterialComponent(gameObject, material)
+          |> addGameObjectGeometryComponent(gameObject, geometry)
+          |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+
+        let transform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject,
+            state,
+          );
+
+        (state, gameObject, transform);
+      };
+
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let state = state^;
+
+        let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let (state, gameObject1, transform1) =
+          _createGameObjectWithMap("1", "1.jpg", state);
+
+        let (state, gameObject2, transform2) =
+          _createGameObjectWithMap("2", "2.png", state);
+
+        let state =
+          state
+          |> SceneAPI.addSceneChild(transform1)
+          |> SceneAPI.addSceneChild(transform2);
+
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        (state, rootGameObject, canvas);
+      };
+
+      test("pass mimeType to toDataURL based on source.name", () => {
+        let (state, rootGameObject, canvas) = _prepareGameObject(state);
+
+        let _ =
+          GenerateSceneGraphAPI.generateGLBData(
+            rootGameObject,
+            Js.Nullable.return(
+              WonderCommonlib.SparseMapService.createEmpty(),
+            ),
+            state,
+          );
+
+        (
+          Obj.magic(canvas)##toDataURL |> getCall(0) |> getArgs,
+          Obj.magic(canvas)##toDataURL |> getCall(1) |> getArgs,
+        )
+        |> expect == (["image/jpeg"], ["image/png"]);
       });
     });
 
