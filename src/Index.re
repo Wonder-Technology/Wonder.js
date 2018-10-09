@@ -386,7 +386,7 @@ let addGameObjectCameraGroupComponents = CameraGroupAPI.addGameObjectCameraGroup
 
 let createCameraGroup = CameraGroupAPI.createCameraGroup;
 
-let replaceRenderGroupComponents = RenderGroupAPI.replaceRenderGroupComponents;
+let replaceMaterial = RenderGroupAPI.replaceMaterial;
 
 let hasGameObjectRenderGroupComponents = RenderGroupAPI.hasGameObjectRenderGroupComponents;
 
@@ -397,6 +397,8 @@ let disposeGameObjectRenderGroupComponents = RenderGroupAPI.disposeGameObjectRen
 let addGameObjectRenderGroupComponents = RenderGroupAPI.addGameObjectRenderGroupComponents;
 
 let createRenderGroup = RenderGroupAPI.createRenderGroup;
+
+let buildRenderGroup = RenderGroupAPI.buildRenderGroup;
 
 let image = FixedLayoutControlIMGUIAPI.image;
 

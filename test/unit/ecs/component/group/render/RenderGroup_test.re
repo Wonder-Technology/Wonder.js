@@ -129,8 +129,8 @@ let _ =
       })
     );
 
-    describe("replaceRenderGroupComponents", () =>
-      describe("replace meshRenderer and material components", () => {
+    describe("replaceMaterial", () => {
+      describe("replace material components", () => {
         test("test replace basic material to light material", () => {
           state :=
             RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(
@@ -171,7 +171,7 @@ let _ =
             );
 
           let state =
-            RenderGroupAPI.replaceRenderGroupComponents(
+            RenderGroupAPI.replaceMaterial(
               (
                 RenderGroupTool.buildRenderGroup(meshRenderer1, basicMaterial),
                 renderGroup2,
@@ -227,7 +227,7 @@ let _ =
             );
 
           let state =
-            RenderGroupAPI.replaceRenderGroupComponents(
+            RenderGroupAPI.replaceMaterial(
               (
                 RenderGroupTool.buildRenderGroup(meshRenderer1, lightMaterial),
                 renderGroup2,
@@ -243,6 +243,125 @@ let _ =
 
           uniform3f |> withOneArg(pos1) |> getCallCount |> expect == 1;
         });
-      })
-    );
+      });
+
+      describe("not replace meshRenderer", () => {
+        let _prepare = state => {
+          let (state, gameObject1, _, lightMaterial1, meshRenderer1) =
+            FrontRenderLightJobTool.prepareGameObject(sandbox, state^);
+
+          let state = state |> DirectorTool.init;
+
+          let (state, renderGroup2) =
+            RenderGroupAPI.createRenderGroup(
+              (
+                MeshRendererAPI.createMeshRenderer,
+                BasicMaterialAPI.createBasicMaterial,
+              ),
+              state,
+            );
+
+          let state = state |> PregetGLSLDataTool.preparePrecision;
+
+          (state, gameObject1, meshRenderer1, lightMaterial1, renderGroup2);
+        };
+
+        let _prepareAndExec = state => {
+          let (
+            state,
+            gameObject1,
+            meshRenderer1,
+            lightMaterial1,
+            renderGroup2,
+          ) =
+            _prepare(state);
+
+          let state =
+            RenderGroupAPI.replaceMaterial(
+              (
+                RenderGroupTool.buildRenderGroup(
+                  meshRenderer1,
+                  lightMaterial1,
+                ),
+                renderGroup2,
+              ),
+              gameObject1,
+              (
+                GameObjectAPI.disposeGameObjectLightMaterialComponent,
+                GameObjectAPI.addGameObjectBasicMaterialComponent,
+              ),
+              state,
+            );
+
+          (state, gameObject1, meshRenderer1);
+        };
+
+        beforeEach(() =>
+          state :=
+            RenderJobsTool.initWithJobConfigWithoutBuildFakeDom(
+              sandbox,
+              LoopRenderJobTool.buildNoWorkerJobConfig(),
+            )
+            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()))
+            |> PregetGLSLDataTool.preparePrecision
+        );
+
+        test("meshRenderer shouldn't be relpace", () => {
+          let (state, gameObject1, meshRenderer1) = _prepareAndExec(state);
+
+          GameObjectAPI.unsafeGetGameObjectMeshRendererComponent(
+            gameObject1,
+            state,
+          )
+          |> expect == meshRenderer1;
+        });
+        test("update renderArray", () => {
+          let (state, gameObject1, meshRenderer1) = _prepareAndExec(state);
+
+          (
+            MeshRendererTool.getBasicMaterialRenderArray(state),
+            MeshRendererTool.getLightMaterialRenderArray(state),
+          )
+          |> expect == ([|gameObject1|], [||]);
+        });
+
+        test("meshRenderer->drawMode not change", () => {
+          let (
+            state,
+            gameObject1,
+            meshRenderer1,
+            lightMaterial1,
+            renderGroup2,
+          ) =
+            _prepare(state);
+          let drawMode = 1;
+          let state =
+            MeshRendererAPI.setMeshRendererDrawMode(
+              meshRenderer1,
+              drawMode,
+              state,
+            );
+
+          let state =
+            RenderGroupAPI.replaceMaterial(
+              (
+                RenderGroupTool.buildRenderGroup(
+                  meshRenderer1,
+                  lightMaterial1,
+                ),
+                renderGroup2,
+              ),
+              gameObject1,
+              (
+                GameObjectAPI.disposeGameObjectLightMaterialComponent,
+                GameObjectAPI.addGameObjectBasicMaterialComponent,
+              ),
+              state,
+            );
+
+          MeshRendererAPI.getMeshRendererDrawMode(meshRenderer1, state)
+          |> expect == 1;
+        });
+      });
+    });
   });

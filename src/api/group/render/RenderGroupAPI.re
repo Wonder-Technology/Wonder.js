@@ -1,3 +1,5 @@
+let buildRenderGroup = RenderGroupMainService.buildRenderGroup;
+
 let createRenderGroup = RenderGroupMainService.createRenderGroup;
 
 let addGameObjectRenderGroupComponents = RenderGroupMainService.addRenderGroupComponents;
@@ -8,4 +10,4 @@ let unsafeGetGameObjectRenderGroupComponents = RenderGroupMainService.unsafeGetR
 
 let hasGameObjectRenderGroupComponents = RenderGroupMainService.hasRenderGroupComponents;
 
-let replaceRenderGroupComponents = RenderGroupMainService.replaceRenderGroupComponents;
+let replaceMaterial = RenderGroupMainService.replaceMaterial;

@@ -2,11 +2,13 @@ open StateDataMainType;
 
 open RenderGroupType;
 
+let buildRenderGroup = (meshRenderer, material) => {meshRenderer, material};
+
 let createRenderGroup = ((createMeshRendererFunc, createMaterialFunc), state) => {
   let (state, meshRenderer) = createMeshRendererFunc(state);
   let (state, material) = createMaterialFunc(state);
 
-  (state, {meshRenderer, material});
+  (state, buildRenderGroup(meshRenderer, material));
 };
 
 let addRenderGroupComponents =
@@ -52,7 +54,7 @@ let hasRenderGroupComponents =
   && state
   |> hasMaterialComponentFunc(gameObject);
 
-let replaceRenderGroupComponents =
+let replaceMaterial =
     (
       (
         {meshRenderer: sourceMeshRenderer, material: sourceMaterial},
@@ -65,16 +67,23 @@ let replaceRenderGroupComponents =
   let state =
     state
     |> disposeSourceMaterialFunc(gameObject, sourceMaterial)
-    |> addTargetMaterialFunc(gameObject, targetMaterial);
+    |> addTargetMaterialFunc(gameObject, targetMaterial)
+    |> RenderArrayMeshRendererMainService.removeFromRenderGameObjectMap(
+         sourceMeshRenderer,
+       );
 
-  DisposeComponentGameObjectMainService.deferDisposeMeshRendererComponent(.
-    gameObject,
-    sourceMeshRenderer,
-    state,
-  )
-  |> AddComponentGameObjectMainService.addMeshRendererComponent(
-       gameObject,
-       targetMeshRenderer,
-     )
-  |> GameObjectAPI.initGameObject(gameObject);
+  let state = {
+    ...state,
+    meshRendererRecord:
+      Some(
+        RenderArrayMeshRendererMainService.addToRenderGameObjectMap(
+          targetMeshRenderer,
+          gameObject,
+          RecordMeshRendererMainService.getRecord(state),
+          state.gameObjectRecord,
+        ),
+      ),
+  };
+
+  state |> GameObjectAPI.initGameObject(gameObject);
 };

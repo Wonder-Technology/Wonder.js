@@ -38,3 +38,14 @@ let addToRenderGameObjectMap =
       |> _setRenderGameObject(meshRenderer, gameObjectUid) :
       lightMaterialRenderGameObjectMap,
 };
+
+let removeFromRenderGameObjectMap = (meshRenderer, state) => {
+  ...state,
+  meshRendererRecord:
+    Some(
+      RenderArrayMeshRendererService.removeFromRenderGameObjectMap(
+        meshRenderer,
+        RecordMeshRendererMainService.getRecord(state),
+      ),
+    ),
+};

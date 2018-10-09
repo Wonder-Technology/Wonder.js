@@ -6,30 +6,20 @@ let getBasicMaterialRenderArray = ({basicMaterialRenderGameObjectMap}) =>
 let getLightMaterialRenderArray = ({lightMaterialRenderGameObjectMap}) =>
   lightMaterialRenderGameObjectMap |> SparseMapService.getValidValues;
 
-/* let _isGameObjectInRenderArray =
-       (meshRenderer, gameObject, materialRenderGameObjectMap) =>
-     switch (
-       materialRenderGameObjectMap
-       |> WonderCommonlib.SparseMapService.get(meshRenderer)
-     ) {
-     | Some(gameObjectNeedRender) when gameObjectNeedRender === gameObject =>
-       true
-     | _ => false
-     };
-
-   let isGameObjectInRenderArray =
-       (
-         meshRenderer,
-         gameObject,
-         {basicMaterialRenderGameObjectMap, lightMaterialRenderGameObjectMap},
-       ) =>
-     _isGameObjectInRenderArray(
-       meshRenderer,
-       gameObject,
-       basicMaterialRenderGameObjectMap,
-     )
-     || _isGameObjectInRenderArray(
-          meshRenderer,
-          gameObject,
-          lightMaterialRenderGameObjectMap,
-        ); */
+let removeFromRenderGameObjectMap =
+    (
+      meshRenderer,
+      {basicMaterialRenderGameObjectMap, lightMaterialRenderGameObjectMap} as meshRendererRecord,
+    ) => {
+  ...meshRendererRecord,
+  basicMaterialRenderGameObjectMap:
+    basicMaterialRenderGameObjectMap
+    |> Obj.magic
+    |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
+    |> Obj.magic,
+  lightMaterialRenderGameObjectMap:
+    lightMaterialRenderGameObjectMap
+    |> Obj.magic
+    |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
+    |> Obj.magic,
+};

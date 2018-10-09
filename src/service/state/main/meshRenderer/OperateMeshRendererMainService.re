@@ -69,7 +69,10 @@ let setIsRender = (meshRenderer, isRender: bool, {gameObjectRecord} as state) =>
             meshRendererRecord,
             gameObjectRecord,
           ) :
-          _removeFromRenderGameObjectMap(meshRenderer, meshRendererRecord);
+          RenderArrayMeshRendererService.removeFromRenderGameObjectMap(
+            meshRenderer,
+            meshRendererRecord,
+          );
 
       {
         ...state,
