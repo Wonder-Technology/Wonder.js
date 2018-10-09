@@ -61,12 +61,12 @@ let replaceMaterial =
         {meshRenderer: targetMeshRenderer, material: targetMaterial},
       ),
       gameObject,
-      (disposeSourceMaterialFunc, addTargetMaterialFunc),
+      (deleteSourceMaterialFunc, addTargetMaterialFunc),
       state,
     ) => {
   let state =
     state
-    |> disposeSourceMaterialFunc(gameObject, sourceMaterial)
+    |> deleteSourceMaterialFunc(gameObject, sourceMaterial)
     |> addTargetMaterialFunc(gameObject, targetMaterial)
     |> RenderArrayMeshRendererMainService.removeFromRenderGameObjectMap(
          sourceMeshRenderer,
