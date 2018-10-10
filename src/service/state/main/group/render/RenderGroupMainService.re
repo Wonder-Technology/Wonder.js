@@ -64,6 +64,25 @@ let replaceMaterial =
       (deleteSourceMaterialFunc, addTargetMaterialFunc),
       state,
     ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|sourceMeshRenderer === targetMeshRenderer|j},
+                ~actual={j|not|j},
+              ),
+              () =>
+              sourceMeshRenderer === targetMeshRenderer
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
   let state =
     state
     |> deleteSourceMaterialFunc(gameObject, sourceMaterial)
