@@ -20,26 +20,31 @@ let isSourceInstance = (materialIndex, gameObjectsMap, gameObjectRecord) => {
               ),
               () => {
                 let gameObjects =
-                  GameObjectsMapService.unsafeGetGameObjects(
+                  GameObjectsMapService.getGameObjects(
                     materialIndex,
                     gameObjectsMap,
                   );
-                let gameObjectsLen = Js.Array.length(gameObjects);
-                let isSourceInstanceLen =
-                  gameObjects
-                  |> Js.Array.filter(gameObject =>
-                       gameObjectRecord
-                       |> HasComponentGameObjectService.hasSourceInstanceComponent(
-                            gameObject,
-                          )
-                     )
-                  |> Js.Array.length;
 
-                (
-                  isSourceInstanceLen === gameObjectsLen
-                  || isSourceInstanceLen === 0
-                )
-                |> assertTrue;
+                switch (gameObjects) {
+                | None => assertPass()
+                | Some(gameObjects) =>
+                  let gameObjectsLen = Js.Array.length(gameObjects);
+                  let isSourceInstanceLen =
+                    gameObjects
+                    |> Js.Array.filter(gameObject =>
+                         gameObjectRecord
+                         |> HasComponentGameObjectService.hasSourceInstanceComponent(
+                              gameObject,
+                            )
+                       )
+                    |> Js.Array.length;
+
+                  (
+                    isSourceInstanceLen === gameObjectsLen
+                    || isSourceInstanceLen === 0
+                  )
+                  |> assertTrue;
+                };
               },
             )
           )
@@ -48,14 +53,14 @@ let isSourceInstance = (materialIndex, gameObjectsMap, gameObjectRecord) => {
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
-  gameObjectRecord
-  |> HasComponentGameObjectService.hasSourceInstanceComponent(
-       GameObjectsMapService.unsafeGetGameObjects(
-         materialIndex,
-         gameObjectsMap,
+  switch (GameObjectsMapService.getGameObjects(materialIndex, gameObjectsMap)) {
+  | None => false
+  | Some(gameObjects) =>
+    gameObjectRecord
+    |> HasComponentGameObjectService.hasSourceInstanceComponent(
+         gameObjects |> ArrayService.unsafeGetFirst,
        )
-       |> ArrayService.unsafeGetFirst,
-     );
+  };
 };
 
 let buildMap = (index, gameObjectsMap, gameObjectRecord) =>
