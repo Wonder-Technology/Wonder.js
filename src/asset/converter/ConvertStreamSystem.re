@@ -337,10 +337,6 @@ let _addImageData =
     hasImageAddBeforeMap,
   );
 
-  /* WonderLog.Log.print("add image data") |> ignore; */
-
-  /* WonderLog.Log.print((lightMaterial, materials, textures, images)) |> ignore; */
-
   switch (lightMaterial, materials, textures, images) {
   | (Some(lightMaterial), Some(materials), Some(textures), Some(images)) =>
     let {pbrMetallicRoughness}: GLTFType.material =
@@ -499,7 +495,6 @@ let _checkMeshPointDataHasUniqueAccessorIndex = meshes => {
                          accessorIndex,
                          (isDuplicate, hasAccessorIndexMap),
                        )
-
                      | _ => (isDuplicate, hasAccessorIndexMap)
                      };
 
@@ -538,8 +533,6 @@ let buildJsonData =
   let activeCameraNodeIndex =
     ConvertCamerasSystem.getActiveCameraNodeIndex(gltf);
 
-  /* WonderLog.Log.print(activeCameraNodeIndex) |> ignore; */
-
   let (
     _,
     accessorBufferArr,
@@ -554,11 +547,10 @@ let buildJsonData =
       transforms,
       gltf,
     )
-    /* |> WonderLog.Log.print */
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (.
            (
-             (hasMeshAddBeforeMap, hasImageAddBeforeMap),
+             hasImageAddBeforeMap,
              accessorBufferArr,
              bufferViewDataArr,
              streamChunkArr,
@@ -569,7 +561,7 @@ let buildJsonData =
            ({mesh, extras}: GLTFType.node) as node,
          ) => {
            let noneData = (
-             (hasMeshAddBeforeMap, hasImageAddBeforeMap),
+             hasImageAddBeforeMap,
              accessorBufferArr,
              bufferViewDataArr,
              streamChunkArr,
@@ -589,131 +581,109 @@ let buildJsonData =
                  let ({attributes, indices}: GLTFType.primitive) as primitive =
                    ConvertCommon.getPrimitiveData(primitives);
 
-                 _hasAddDataBefore(hasMeshAddBeforeMap, mesh) ?
+                 let (
+                   newBufferViewOffset,
+                   accessorBufferArr,
+                   bufferViewDataArr,
+                   streamChunkArr,
                    (
-                     (hasMeshAddBeforeMap, hasImageAddBeforeMap),
+                     newPositionAccessorBufferIndex,
+                     newNormalAccessorBufferIndex,
+                     newTexCoord0AccessorBufferIndex,
+                     newIndicesAccessorBufferIndex,
+                   ),
+                 ) =
+                   _addPrimitiveData(
+                     mesh,
+                     primitive,
                      accessorBufferArr,
                      bufferViewDataArr,
                      streamChunkArr,
                      newBufferViewOffset,
-                     newMeshes,
-                     newImages,
-                   ) :
+                     gltf,
+                   );
+
+                 Array.unsafe_set(
+                   newMeshes,
+                   mesh,
                    {
-                     let (
-                       newBufferViewOffset,
-                       accessorBufferArr,
-                       bufferViewDataArr,
-                       streamChunkArr,
-                       (
-                         newPositionAccessorBufferIndex,
-                         newNormalAccessorBufferIndex,
-                         newTexCoord0AccessorBufferIndex,
-                         newIndicesAccessorBufferIndex,
-                       ),
-                     ) =
-                       _addPrimitiveData(
-                         mesh,
-                         primitive,
-                         accessorBufferArr,
-                         bufferViewDataArr,
-                         streamChunkArr,
-                         newBufferViewOffset,
-                         gltf,
-                       );
-
-                     Array.unsafe_set(
-                       newMeshes,
-                       mesh,
+                     ...meshData,
+                     primitives: [|
                        {
-                         ...meshData,
-                         primitives: [|
-                           {
-                             ...primitive,
-                             attributes: {
-                               position:
-                                 newPositionAccessorBufferIndex
-                                 |> OptionService.unsafeGet,
-                               normal: newNormalAccessorBufferIndex,
-                               texCoord_0: newTexCoord0AccessorBufferIndex,
-                               texCoord_1: None,
-                             },
-                             indices: newIndicesAccessorBufferIndex,
-                           },
-                         |],
+                         ...primitive,
+                         attributes: {
+                           position:
+                             newPositionAccessorBufferIndex
+                             |> OptionService.unsafeGet,
+                           normal: newNormalAccessorBufferIndex,
+                           texCoord_0: newTexCoord0AccessorBufferIndex,
+                           texCoord_1: None,
+                         },
+                         indices: newIndicesAccessorBufferIndex,
                        },
-                     );
+                     |],
+                   },
+                 );
 
-                     let (
-                       bufferViewDataArr,
-                       streamChunkArr,
-                       newBufferViewIndex,
-                       newBufferViewOffset,
-                       imageData,
-                       hasImageAddBeforeMap,
-                     ) =
-                       _addImageData(
-                         ConvertMaterialsSystem.getLightMaterialOfNode(
-                           node,
-                           meshes,
-                         ),
-                         bufferViewDataArr,
-                         streamChunkArr,
-                         newBufferViewOffset,
-                         hasImageAddBeforeMap,
-                         gltf,
-                       );
+                 let (
+                   bufferViewDataArr,
+                   streamChunkArr,
+                   newBufferViewIndex,
+                   newBufferViewOffset,
+                   imageData,
+                   hasImageAddBeforeMap,
+                 ) =
+                   _addImageData(
+                     ConvertMaterialsSystem.getLightMaterialOfNode(
+                       node,
+                       meshes,
+                     ),
+                     bufferViewDataArr,
+                     streamChunkArr,
+                     newBufferViewOffset,
+                     hasImageAddBeforeMap,
+                     gltf,
+                   );
 
-                     let newImages =
-                       switch (newImages) {
-                       | None => newImages
-                       | Some(newImages) =>
-                         (
-                           switch (newBufferViewIndex, imageData) {
-                           | (
-                               Some(newBufferViewIndex),
-                               Some((imageIndex, image)),
-                             ) =>
-                             Array.unsafe_set(
-                               newImages,
-                               imageIndex,
-                               {
-                                 ...image,
-                                 bufferView: Some(newBufferViewIndex),
-                               }: GLTFType.image,
-                             );
-
-                             newImages;
-                           | _ => newImages
-                           }
-                         )
-                         |. Some
-                       };
-
+                 let newImages =
+                   switch (newImages) {
+                   | None => newImages
+                   | Some(newImages) =>
                      (
-                       (
-                         hasMeshAddBeforeMap
-                         |> WonderCommonlib.SparseMapService.set(mesh, true),
-                         hasImageAddBeforeMap,
-                       ),
-                       accessorBufferArr,
-                       bufferViewDataArr,
-                       streamChunkArr,
-                       newBufferViewOffset,
-                       newMeshes,
-                       newImages,
-                     );
+                       switch (newBufferViewIndex, imageData) {
+                       | (
+                           Some(newBufferViewIndex),
+                           Some((imageIndex, image)),
+                         ) =>
+                         Array.unsafe_set(
+                           newImages,
+                           imageIndex,
+                           {...image, bufferView: Some(newBufferViewIndex)}: GLTFType.image,
+                         );
+
+                         newImages;
+                       | _ => newImages
+                       }
+                     )
+                     |. Some
                    };
+
+                 (
+                   hasImageAddBeforeMap,
+                   accessorBufferArr,
+                   bufferViewDataArr,
+                   streamChunkArr,
+                   newBufferViewOffset,
+                   newMeshes,
+                   newImages,
+                 );
                };
 
            | None => noneData
            };
          },
          (
-           (
-             WonderCommonlib.SparseMapService.createEmpty(),
-             WonderCommonlib.SparseMapService.createEmpty(),
-           ),
+           WonderCommonlib.SparseMapService.createEmpty(),
            [||],
            [||],
            [||],
