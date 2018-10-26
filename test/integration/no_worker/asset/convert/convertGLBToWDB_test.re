@@ -973,7 +973,7 @@ let _ =
           |>
           expect == [|
                       {
-                        name: "CesiumLogoFlat.png",
+                        name: "texture_0",
                         format: SourceTextureType.Rgba,
                       },
                     |]
@@ -1028,7 +1028,8 @@ let _ =
           (({images}, binBuffer)) => {
             let images = images |> OptionService.unsafeGet;
 
-            images |> expect == [|{bufferView: 4, mimeType: "image/png"}|];
+            images
+            |> expect == [|{name: "CesiumLogoFlat.png", bufferView: 4, mimeType: "image/png"}|];
           },
         )
       );
@@ -1045,8 +1046,8 @@ let _ =
             expect == [|
                         ConvertTool.getJsonSerializedNone(),
                         ConvertTool.getJsonSerializedNone(),
-                        {bufferView: 4, mimeType: "image/jpeg"},
-                        {bufferView: 9, mimeType: "image/png"},
+                        {name: "image_2", bufferView: 4, mimeType: "image/jpeg"},
+                        {name: "image_3", bufferView: 9, mimeType: "image/png"},
                       |];
           },
         )

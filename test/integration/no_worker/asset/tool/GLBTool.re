@@ -44,6 +44,8 @@ let buildFakeTextEncoder =
     |}
   ];
 
+let _createFakeImage = src => {"src": src, "name": ""};
+
 let buildFakeURL = [%raw
   sandbox => {|
         var URL = {
@@ -51,12 +53,12 @@ let buildFakeURL = [%raw
           revokeObjectURL: sandbox.stub()
         };
 
-        URL.createObjectURL.onCall(0).returns("object_url0");
-        URL.createObjectURL.onCall(1).returns("object_url1");
-        URL.createObjectURL.onCall(2).returns("object_url2");
-        URL.createObjectURL.onCall(3).returns("object_url3");
-        URL.createObjectURL.onCall(4).returns("object_url4");
-        URL.createObjectURL.onCall(5).returns("object_url5");
+        URL.createObjectURL.onCall(0).returns(_createFakeImage("object_url0"));
+        URL.createObjectURL.onCall(1).returns(_createFakeImage("object_url1"));
+        URL.createObjectURL.onCall(2).returns(_createFakeImage("object_url2"));
+        URL.createObjectURL.onCall(3).returns(_createFakeImage("object_url3"));
+        URL.createObjectURL.onCall(4).returns(_createFakeImage("object_url4"));
+        URL.createObjectURL.onCall(5).returns(_createFakeImage("object_url5"));
 
         window.URL = URL;
     |}

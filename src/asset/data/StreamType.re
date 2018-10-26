@@ -17,6 +17,7 @@ type loadedStreamGeometryData = {
 };
 
 type loadedStreamImageData = {
+  name: string,
   imageIndex: int,
   mimeType: string,
   arrayBuffer: Js.Typed_array.ArrayBuffer.t,

@@ -59,7 +59,7 @@ let _ =
             gltf
             |> GenerateSceneGraphSystemTool.contain(
                  {|
-  "images":[{"bufferView":4,"mimeType":"image/png"}]
+  "images":[{"name": "CesiumLogoFlat.png", "bufferView":4,"mimeType":"image/png"}]
   |},
                ),
           state,
@@ -125,7 +125,11 @@ let _ =
                      state,
                    )
                  )
-              |> expect == [|"object_url1" |> Obj.magic|],
+              |>
+              expect == [|
+                          {"name": "CesiumLogoFlat.png", "src": "object_url1"}
+                          |> Obj.magic,
+                        |],
             state,
           );
         })
@@ -336,15 +340,24 @@ let _ =
                  )
               |>
               expect == [|
-                          "object_url2" |> Obj.magic,
-                          "object_url2" |> Obj.magic,
-                          "object_url2" |> Obj.magic,
-                          "object_url2" |> Obj.magic,
-                          "object_url2" |> Obj.magic,
-                          "object_url2" |> Obj.magic,
-                          "object_url2" |> Obj.magic,
-                          "object_url2" |> Obj.magic,
-                          "object_url3" |> Obj.magic,
+                          {"name": "image_3", "src": "object_url2"}
+                          |> Obj.magic,
+                          {"name": "image_3", "src": "object_url2"}
+                          |> Obj.magic,
+                          {"name": "image_3", "src": "object_url2"}
+                          |> Obj.magic,
+                          {"name": "image_3", "src": "object_url2"}
+                          |> Obj.magic,
+                          {"name": "image_3", "src": "object_url2"}
+                          |> Obj.magic,
+                          {"name": "image_3", "src": "object_url2"}
+                          |> Obj.magic,
+                          {"name": "image_3", "src": "object_url2"}
+                          |> Obj.magic,
+                          {"name": "image_3", "src": "object_url2"}
+                          |> Obj.magic,
+                          {"name": "image_2", "src": "object_url3"}
+                          |> Obj.magic,
                         |],
             state,
           );

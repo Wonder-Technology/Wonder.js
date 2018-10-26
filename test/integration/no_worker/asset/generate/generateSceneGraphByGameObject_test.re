@@ -75,6 +75,46 @@ let _ =
       (state, texture, (source, width, height));
     };
 
+    let _createGameObjectWithMap = (textureName, imageName, state) => {
+      open GameObjectAPI;
+      open LightMaterialAPI;
+      open MeshRendererAPI;
+
+      let (state, material) = createLightMaterial(state);
+
+      let (state, (texture, _), (source, width, height)) =
+        _createTexture1(state);
+
+      let state =
+        BasicSourceTextureAPI.setBasicSourceTextureName(
+          texture,
+          textureName,
+          state,
+        );
+
+      ImageUtils.setImageName(source, imageName);
+
+      let state =
+        LightMaterialAPI.setLightMaterialDiffuseMap(material, texture, state);
+
+      let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
+      let (state, meshRenderer) = createMeshRenderer(state);
+      let (state, gameObject) = state |> createGameObject;
+      let state =
+        state
+        |> addGameObjectLightMaterialComponent(gameObject, material)
+        |> addGameObjectGeometryComponent(gameObject, geometry)
+        |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+
+      let transform =
+        GameObjectAPI.unsafeGetGameObjectTransformComponent(
+          gameObject,
+          state,
+        );
+
+      (state, gameObject, transform);
+    };
+
     let _createGameObjectWithShareMaterial =
         (material, addGameObjectMaterialComponentFunc, state) => {
       open GameObjectAPI;
@@ -3002,50 +3042,6 @@ let _ =
     });
 
     describe("test toDataURL", () => {
-      let _createGameObjectWithMap = (textureName, imageName, state) => {
-        open GameObjectAPI;
-        open LightMaterialAPI;
-        open MeshRendererAPI;
-
-        let (state, material) = createLightMaterial(state);
-
-        let (state, (texture, _), (source, width, height)) =
-          _createTexture1(state);
-
-        let state =
-          BasicSourceTextureAPI.setBasicSourceTextureName(
-            texture,
-            textureName,
-            state,
-          );
-
-        Obj.magic(source)##name#=imageName;
-
-        let state =
-          LightMaterialAPI.setLightMaterialDiffuseMap(
-            material,
-            texture,
-            state,
-          );
-
-        let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
-        let (state, meshRenderer) = createMeshRenderer(state);
-        let (state, gameObject) = state |> createGameObject;
-        let state =
-          state
-          |> addGameObjectLightMaterialComponent(gameObject, material)
-          |> addGameObjectGeometryComponent(gameObject, geometry)
-          |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
-
-        let transform =
-          GameObjectAPI.unsafeGetGameObjectTransformComponent(
-            gameObject,
-            state,
-          );
-
-        (state, gameObject, transform);
-      };
-
       let _prepareGameObject = state => {
         open GameObjectAPI;
 
@@ -3094,6 +3090,72 @@ let _ =
         )
         |> expect == (["image/jpeg"], ["image/png"]);
       });
+    });
+
+    describe("test image name", () => {
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, rootGameObject) = state^ |> createGameObject;
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let textureName = "texture_name";
+        let imageName = "image_name";
+
+        let (state, gameObject1, transform1) =
+          _createGameObjectWithMap(textureName, imageName, state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             );
+
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          gameObject1,
+          (textureName, imageName),
+        );
+      };
+
+      testPromise(
+        "generate wdb->image name should equal the image name before assemble wdb",
+        () => {
+          let (
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            gameObject1,
+            (textureName, imageName),
+          ) =
+            _prepareGameObject(state);
+
+          GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
+            sandbox^,
+            rootGameObject,
+            ((state, _, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllDiffuseMaps(rootGameObject, state)
+              |> Js.Array.map(map =>
+                   BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+                     map,
+                     state,
+                   )
+                   |> ImageUtils.getImageName
+                 )
+              |> expect == [|imageName|],
+            state,
+          );
+        },
+      );
     });
 
     describe("optimize", () =>

@@ -30,7 +30,7 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
       images
       |> OptionService.unsafeGetJsonSerializedValue
       |> ArrayService.reduceOneParamValidi(
-           (. streamArr, {bufferView, mimeType}: image, imageIndex) => {
+           (. streamArr, {name, bufferView, mimeType}: image, imageIndex) => {
              let arrayBuffer =
                _getArrayBuffer(binBuffer, bufferView, bufferViews);
 
@@ -48,13 +48,15 @@ let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
                     mimeType,
                     {j|load image error. imageIndex: $imageIndex|j},
                   )
-                  |> WonderBsMost.Most.tap(image =>
+                  |> WonderBsMost.Most.tap(image => {
+                       ImageUtils.setImageName(image, name);
+
                        Array.unsafe_set(
                          blobObjectUrlImageArr,
                          imageIndex,
                          image,
-                       )
-                     ),
+                       );
+                     }),
                 );
            },
            [||],

@@ -126,13 +126,6 @@ let _assembleAndStartLoop =
         state,
       );
 
-    /* WonderLog.Log.printJson((
-         rootGameObject,
-         (geometryArr, geometryGameObjects, gameObjectGeometrys),
-         (basicSourceTextureArr, imageTextureIndices, images),
-       ))
-       |> ignore; */
-
     let state = handleBeforeStartLoopFunc(state, rootGameObject);
 
     DirectorMainService.start(state);

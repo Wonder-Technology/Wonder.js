@@ -206,6 +206,7 @@ let _addImageData =
       imageUint8DataArr
       |> ArrayService.push(
            {
+             name: ImageUtils.getImageName(source) |> Js.Nullable.toOption,
              bufferView: bufferViewDataArr |> Js.Array.length,
              mimeType: mimeType |> _convertBase64MimeTypeToWDBMimeType,
              uint8Array: imageUint8Array,

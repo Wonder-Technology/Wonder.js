@@ -133,6 +133,7 @@ type bufferView = {
    type blobImage = {objectUrl: string}; */
 
 type image = {
+  name: string,
   bufferView: bufferViewIndex,
   mimeType: string,
 };

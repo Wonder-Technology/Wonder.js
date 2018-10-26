@@ -133,17 +133,25 @@
           )
      }; */
 
+let _buildDefaultName = imageIndex =>
+  ConvertCommon.buildDefaultName("image", imageIndex);
+
 let convertToImages = (({images}: GLTFType.gltf) as gltf) =>
   switch (images) {
   | None => None
   | Some(images) =>
     images
     |> ArrayService.reduceOneParamValidi(
-         (. arr, {bufferView, mimeType}: GLTFType.image, index) => {
+         (. arr, {bufferView, mimeType, name}: GLTFType.image, index) => {
            Array.unsafe_set(
              arr,
              index,
              {
+               name:
+                 switch (name) {
+                 | Some(name) => name
+                 | None => _buildDefaultName(index)
+                 },
                bufferView: bufferView |> OptionService.unsafeGet,
                mimeType: mimeType |> OptionService.unsafeGet,
              }: WDType.image,

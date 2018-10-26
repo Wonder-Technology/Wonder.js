@@ -63,7 +63,7 @@ let rec _build =
             | Image =>
               let imageIndex = index;
 
-              let {mimeType}: WDType.image =
+              let {name, mimeType}: WDType.image =
                 Array.unsafe_get(
                   images |> OptionService.unsafeGetJsonSerializedValue,
                   imageIndex,
@@ -75,6 +75,7 @@ let rec _build =
                      geometryData: None,
                      imageData:
                        Some({
+                         name,
                          imageIndex,
                          mimeType,
                          arrayBuffer:
@@ -162,7 +163,7 @@ let _loadBlobImageFromImageArrayBufferData =
   |> Most.concatMap(({geometryData, imageData, type_}: loadedStreamData) =>
        switch (type_) {
        | Image =>
-         let {imageIndex, mimeType, arrayBuffer} =
+         let {name, imageIndex, mimeType, arrayBuffer} =
            imageData |> OptionService.unsafeGet;
 
          switch (
@@ -188,6 +189,8 @@ let _loadBlobImageFromImageArrayBufferData =
              {j|load image error. imageIndex: $imageIndex|j},
            )
            |> Most.tap(image => {
+                ImageUtils.setImageName(image, name);
+
                 resultLoadedStreamChunkDataArr
                 |> ArrayService.push(
                      {
@@ -235,6 +238,7 @@ let buildBinBufferChunkData =
        completeStreamChunkTotalLoadedAlignedByteLength,
      ))
      |> ignore; */
+
   let (nextStreamChunkIndex, loadedStreamChunkDataArr) =
     _build(
       completeStreamChunkTotalLoadedAlignedByteLength,

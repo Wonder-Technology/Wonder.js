@@ -1361,7 +1361,7 @@ let _ =
                            state,
                          )
                        )
-                    |> expect == [|"CesiumLogoFlat.png"|],
+                    |> expect == [|"texture_0"|],
                   state^,
                 )
               )
@@ -1446,7 +1446,14 @@ let _ =
                          state,
                        )
                      )
-                  |> expect == [|"object_url0" |> Obj.magic|],
+                  |>
+                  expect == [|
+                              {
+                                "name": "CesiumLogoFlat.png",
+                                "src": "object_url0",
+                              }
+                              |> Obj.magic,
+                            |],
                 state^,
               )
             );
@@ -1632,9 +1639,12 @@ let _ =
                      )
                   |>
                   expect == [|
-                              "object_url0" |> Obj.magic,
-                              "object_url0" |> Obj.magic,
-                              "object_url0" |> Obj.magic,
+                              {"name": "image_0", "src": "object_url0"}
+                              |> Obj.magic,
+                              {"name": "image_0", "src": "object_url0"}
+                              |> Obj.magic,
+                              {"name": "image_0", "src": "object_url0"}
+                              |> Obj.magic,
                             |],
                 state^,
               )

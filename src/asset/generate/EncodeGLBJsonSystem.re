@@ -475,11 +475,17 @@ let _encodeSamplers = samplerDataArr => (
 let _encodeImages = imageUint8DataArr => (
   "images",
   imageUint8DataArr
-  |> Js.Array.map(({bufferView, mimeType}) => {
+  |> Js.Array.map(({bufferView, mimeType, name}) => {
        let list = [
          ("bufferView", bufferView |> int),
          ("mimeType", mimeType |> string),
        ];
+
+       let list =
+         switch (name) {
+         | None => list
+         | Some(name) => [("name", name |> string), ...list]
+         };
 
        list |> object_;
      })
