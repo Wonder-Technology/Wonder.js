@@ -2,17 +2,16 @@ open Js.Typed_array;
 
 let create = arrayBuffer => DataView.make(arrayBuffer);
 
-/*
- let getUint16_1 =
-   (. offset, dataView) => (
-     DataView.getUint16LittleEndian(dataView, offset),
-     offset + 2,
-   ); */
-
 let getFloat =
   (. offset, dataView) => (
     DataView.getFloat32LittleEndian(dataView, offset),
     offset + 4,
+  );
+
+let getUint16_1 =
+  (. offset, dataView) => (
+    DataView.getUint16LittleEndian(dataView, offset),
+    offset + 2,
   );
 
 let getUint32_1 =
@@ -43,12 +42,10 @@ let writeUint8_1 =
     offset + 1;
   };
 
-/* let writeUint16_1 =
-   (. value, offset, dataView) => {
-     DataView.setUint16LittleEndian(dataView, offset, value);
-     /* (dataView, offset + 2); */
-     offset + 2;
-   }; */
+let writeUint16_1 = (value, offset, dataView) => {
+  DataView.setUint16LittleEndian(dataView, offset, value);
+  offset + 2;
+};
 
 let writeUint32_1 = (value, offset, dataView) => {
   DataView.setUint32LittleEndian(dataView, offset, value);

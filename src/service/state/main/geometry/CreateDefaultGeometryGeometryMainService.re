@@ -17,7 +17,7 @@ let create = ((vertices, texCoords, normals, indices), state) => {
          geometry,
          Float32Array.make(normals),
        )
-    |> IndicesGeometryMainService.setIndicesByTypeArray(
+    |> IndicesGeometryMainService.setIndicesByUint16Array(
          geometry,
          Uint16Array.make(indices),
        );

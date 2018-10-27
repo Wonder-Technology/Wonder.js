@@ -9,6 +9,11 @@ let _ =
     open Expect;
     open Expect.Operators;
     open Sinon;
+
+    let boxTexturedWDBArrayBuffer = ref(Obj.magic(-1));
+    let cesiumMilkTruckWDBArrayBuffer = ref(Obj.magic(-1));
+    let alphaBlendModeTestWDBArrayBuffer = ref(Obj.magic(-1));
+
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
 
@@ -42,6 +47,13 @@ window.Blob = Blob;
     |}
     ];
 
+    beforeAll(() => {
+      boxTexturedWDBArrayBuffer := NodeTool.convertGLBToWDB("BoxTextured");
+      cesiumMilkTruckWDBArrayBuffer :=
+        NodeTool.convertGLBToWDB("cesiumMilkTruck");
+      alphaBlendModeTestWDBArrayBuffer :=
+        NodeTool.convertGLBToWDB("AlphaBlendModeTest");
+    });
     beforeEach(() => {
       sandbox := createSandbox();
       state :=
@@ -56,8 +68,6 @@ window.Blob = Blob;
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("test load", () => {
-      let wdbArrayBuffer = ref(Obj.magic(-1));
-
       let _buildFakeRequestAnimationFrame = [%raw
         (unsafeGetStateFunc, setStateFunc, runWithDefaultTimeFunc) => {|
             window.requestAnimationFrame = function(func){
@@ -76,8 +86,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             },
         }
         |> resolve;
-
-      let _getWDBArrayBuffer = wdbName => NodeTool.getWDBArrayBuffer(wdbName);
 
       let _buildController = sandbox => {
         "close": createEmptyStubWithJsObjSandbox(sandbox),
@@ -179,7 +187,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             |> returns(
                  _buildChunkData(
                    ~arrayBuffer=
-                     wdbArrayBuffer^
+                     boxTexturedWDBArrayBuffer^
                      |> ArrayBuffer.slice(~start=0, ~end_=1000)
                      |. Some,
                    (),
@@ -189,7 +197,9 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             |> returns(
                  _buildChunkData(
                    ~arrayBuffer=
-                     wdbArrayBuffer^ |> ArrayBuffer.sliceFrom(1000) |. Some,
+                     boxTexturedWDBArrayBuffer^
+                     |> ArrayBuffer.sliceFrom(1000)
+                     |. Some,
                    (),
                  ),
                )
@@ -198,8 +208,6 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
 
           _prepareWithReadStub(sandbox, readStub, state);
         };
-
-        beforeEach(() => wdbArrayBuffer := _getWDBArrayBuffer("BoxTextured"));
 
         testPromise("trigger when load each chunk data", () => {
           let totalLoadedByteLengthArr = [||];
@@ -243,7 +251,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                (totalLoadedByteLengthArr, contentLengthArr, wdbPathArr)
                |>
                expect == (
-                           [|1000, 24976|],
+                           [|1000, 24996|],
                            [|contentLength, contentLength|],
                            [|"./BoxTextured.wdb", "./BoxTextured.wdb"|],
                          )
@@ -253,7 +261,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
       });
 
       describe("test before start loop", () => {
-        let _testSetDefaultSource = (sandbox, state) => {
+        let _testSetDefaultSource = (sandbox, wdbArrayBuffer, state) => {
           let state =
             state^
             |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
@@ -297,20 +305,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
              });
         };
 
-        describe("test BoxTextured wdb", () => {
-          beforeEach(() =>
-            wdbArrayBuffer := _getWDBArrayBuffer("BoxTextured")
-          );
-
+        describe("test BoxTextured wdb", () =>
           testPromise("set default source to all basicSourceTextures", () =>
-            _testSetDefaultSource(sandbox, state)
-          );
-        });
+            _testSetDefaultSource(sandbox, boxTexturedWDBArrayBuffer, state)
+          )
+        );
 
         describe("test CesiumMilkTruck wdb", () => {
-          beforeEach(() => {
-            wdbArrayBuffer := _getWDBArrayBuffer("CesiumMilkTruck");
-
+          beforeEach(() =>
             state :=
               TestTool.initWithJobConfigWithoutBuildFakeDom(
                 ~sandbox,
@@ -322,29 +324,34 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   ),
                 ~noWorkerJobRecord=LoopRenderJobTool.buildNoWorkerJobConfig(),
                 (),
-              );
-          });
-
-          testPromise("set default source to all basicSourceTextures", () =>
-            _testSetDefaultSource(sandbox, state)
-          );
-        });
-
-        describe("test AlphaBlendModeTest wdb", () => {
-          beforeEach(() =>
-            wdbArrayBuffer := _getWDBArrayBuffer("AlphaBlendModeTest")
+              )
           );
 
           testPromise("set default source to all basicSourceTextures", () =>
-            _testSetDefaultSource(sandbox, state)
+            _testSetDefaultSource(
+              sandbox,
+              cesiumMilkTruckWDBArrayBuffer,
+              state,
+            )
           );
         });
+
+        describe("test AlphaBlendModeTest wdb", () =>
+          testPromise("set default source to all basicSourceTextures", () =>
+            _testSetDefaultSource(
+              sandbox,
+              alphaBlendModeTestWDBArrayBuffer,
+              state,
+            )
+          )
+        );
       });
 
       describe("test load all data in first chunk", () => {
         let _testAddGeometryComponents =
             (
               sandbox,
+              wdbArrayBuffer,
               (resultGeometrysBeforeStartLoop, resultGeometrysWhenDone),
               state,
             ) => {
@@ -397,6 +404,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
         let _testLoadBlobImage =
             (
               sandbox,
+              wdbArrayBuffer,
               (
                 blobDataLength,
                 arrayBufferByteLength,
@@ -460,7 +468,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
              });
         };
 
-        let _testDraw = (sandbox, drawCount, state) => {
+        let _testDraw = (sandbox, wdbArrayBuffer, drawCount, state) => {
           let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
           let state =
             state^
@@ -500,12 +508,13 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
         };
 
         describe("test BoxTextured wdb", () => {
-          beforeEach(() =>
-            wdbArrayBuffer := _getWDBArrayBuffer("BoxTextured")
-          );
-
           testPromise("add geometry component", () =>
-            _testAddGeometryComponents(sandbox, ([||], [|0|]), state)
+            _testAddGeometryComponents(
+              sandbox,
+              boxTexturedWDBArrayBuffer,
+              ([||], [|0|]),
+              state,
+            )
           );
           testPromise("test set geometry point data", () => {
             let array_buffer = 1;
@@ -525,7 +534,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                    ),
                  );
             let (default11Image, readStub, handleBeforeStartLoop, _, state) =
-              _prepare(sandbox, wdbArrayBuffer^, state);
+              _prepare(sandbox, boxTexturedWDBArrayBuffer^, state);
             let geometryWhenDone = ref(-1);
             let handleWhenDoneFunc = (state, rootGameObject) => {
               geometryWhenDone :=
@@ -594,24 +603,26 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           testPromise("load blob image and set it to be source", () =>
             _testLoadBlobImage(
               sandbox,
+              boxTexturedWDBArrayBuffer,
               (
                 1,
                 23516,
                 {"type": "image/png"},
-                [|{"name": "4", "src": "object_url0"} |> Obj.magic|],
+                [|
+                  {"name": "CesiumLogoFlat.png", "src": "object_url0"}
+                  |> Obj.magic,
+                |],
               ),
               state,
             )
           );
           testPromise("draw the gameObject", () =>
-            _testDraw(sandbox, 1, state)
+            _testDraw(sandbox, boxTexturedWDBArrayBuffer, 1, state)
           );
         });
 
         describe("test CesiumMilkTruck wdb", () => {
-          beforeEach(() => {
-            wdbArrayBuffer := _getWDBArrayBuffer("CesiumMilkTruck");
-
+          beforeEach(() =>
             state :=
               TestTool.initWithJobConfigWithoutBuildFakeDom(
                 ~sandbox,
@@ -623,13 +634,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   ),
                 ~noWorkerJobRecord=LoopRenderJobTool.buildNoWorkerJobConfig(),
                 (),
-              );
-          });
+              )
+          );
 
           testPromise("add geometry component", () =>
             _testAddGeometryComponents(
               sandbox,
-              ([||], [|1, 2, 3, 0, 0|]),
+              cesiumMilkTruckWDBArrayBuffer,
+              ([||], [|2, 3, 4, 1, 1|]),
               state,
             )
           );
@@ -638,7 +650,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               state^
               |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
             let (default11Image, readStub, handleBeforeStartLoop, _, state) =
-              _prepare(sandbox, wdbArrayBuffer^, state);
+              _prepare(sandbox, cesiumMilkTruckWDBArrayBuffer^, state);
             let rootGameObjectWhenDone = ref(-1);
             let handleWhenDoneFunc = (state, rootGameObject) => {
               rootGameObjectWhenDone := rootGameObject;
@@ -710,33 +722,31 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           testPromise("load blob image and set it to be source", () =>
             _testLoadBlobImage(
               sandbox,
+              cesiumMilkTruckWDBArrayBuffer,
               (
                 1,
                 427633,
                 {"type": "image/png"},
                 [|
-                  {"name": "4", "src": "object_url0"} |> Obj.magic,
-                  {"name": "4", "src": "object_url0"} |> Obj.magic,
-                  {"name": "4", "src": "object_url0"} |> Obj.magic,
+                  {"name": "image_0", "src": "object_url0"} |> Obj.magic,
+                  {"name": "image_0", "src": "object_url0"} |> Obj.magic,
+                  {"name": "image_0", "src": "object_url0"} |> Obj.magic,
                 |],
               ),
               state,
             )
           );
           testPromise("draw the gameObject", () =>
-            _testDraw(sandbox, 5, state)
+            _testDraw(sandbox, cesiumMilkTruckWDBArrayBuffer, 5, state)
           );
         });
 
         describe("test AlphaBlendModeTest wdb", () => {
-          beforeEach(() =>
-            wdbArrayBuffer := _getWDBArrayBuffer("AlphaBlendModeTest")
-          );
-
           testPromise("add geometry component", () =>
             _testAddGeometryComponents(
               sandbox,
-              ([||], [|0, 1, 2, 3, 4, 5, 6, 7, 8|]),
+              alphaBlendModeTestWDBArrayBuffer,
+              ([||], [|4, 7, 5, 1, 8, 0, 3, 6, 2|]),
               state,
             )
           );
@@ -745,7 +755,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               state^
               |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
             let (default11Image, readStub, handleBeforeStartLoop, _, state) =
-              _prepare(sandbox, wdbArrayBuffer^, state);
+              _prepare(sandbox, alphaBlendModeTestWDBArrayBuffer^, state);
             let rootGameObjectWhenDone = ref(-1);
             let handleWhenDoneFunc = (state, rootGameObject) => {
               rootGameObjectWhenDone := rootGameObject;
@@ -790,27 +800,28 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           testPromise("load blob image and set it to be source", () =>
             _testLoadBlobImage(
               sandbox,
+              alphaBlendModeTestWDBArrayBuffer,
               (
                 2,
-                65522,
-                {"type": "image/png"},
+                702714,
+                {"type": "image/jpeg"},
                 [|
-                  {"name": "4", "src": "object_url0"} |> Obj.magic,
-                  {"name": "4", "src": "object_url0"} |> Obj.magic,
-                  {"name": "4", "src": "object_url0"} |> Obj.magic,
-                  {"name": "4", "src": "object_url0"} |> Obj.magic,
-                  {"name": "4", "src": "object_url0"} |> Obj.magic,
-                  {"name": "4", "src": "object_url0"} |> Obj.magic,
-                  {"name": "4", "src": "object_url0"} |> Obj.magic,
-                  {"name": "4", "src": "object_url0"} |> Obj.magic,
-                  {"name": "37", "src": "object_url1"} |> Obj.magic,
+                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
+                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
+                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
+                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
+                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
+                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
+                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
+                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
+                  {"name": "image_2", "src": "object_url0"} |> Obj.magic,
                 |],
               ),
               state,
             )
           );
           testPromise("draw the gameObject", () =>
-            _testDraw(sandbox, 9, state)
+            _testDraw(sandbox, alphaBlendModeTestWDBArrayBuffer, 9, state)
           );
         });
       });
@@ -858,9 +869,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                });
           };
 
-          beforeEach(() => {
-            wdbArrayBuffer := _getWDBArrayBuffer("CesiumMilkTruck");
-
+          beforeEach(() =>
             state :=
               TestTool.initWithJobConfigWithoutBuildFakeDom(
                 ~sandbox,
@@ -872,8 +881,8 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   ),
                 ~noWorkerJobRecord=LoopRenderJobTool.buildNoWorkerJobConfig(),
                 (),
-              );
-          });
+              )
+          );
 
           describe(
             {|
@@ -976,7 +985,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=0, ~end_=32768)
                              |. Some,
                            (),
@@ -1019,7 +1028,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=0, ~end_=32768)
                              |. Some,
                            (),
@@ -1029,7 +1038,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=32768, ~end_=40000)
                              |. Some,
                            (),
@@ -1072,7 +1081,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=0, ~end_=32768)
                              |. Some,
                            (),
@@ -1082,7 +1091,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=32768, ~end_=40000)
                              |. Some,
                            (),
@@ -1092,7 +1101,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              /* |> ArrayBuffer.slice(~start=40000, ~end_=80000) */
                              |> ArrayBuffer.slice(~start=40000, ~end_=470000)
                              |. Some,
@@ -1121,9 +1130,9 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     (
                       1,
                       [|
-                        {"name": "4", "src": "object_url0"} |> Obj.magic,
-                        {"name": "4", "src": "object_url0"} |> Obj.magic,
-                        {"name": "4", "src": "object_url0"} |> Obj.magic,
+                        {"name": "image_0", "src": "object_url0"} |> Obj.magic,
+                        {"name": "image_0", "src": "object_url0"} |> Obj.magic,
+                        {"name": "image_0", "src": "object_url0"} |> Obj.magic,
                       |],
                     ),
                     _prepare,
@@ -1141,7 +1150,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=0, ~end_=32768)
                              |. Some,
                            (),
@@ -1151,7 +1160,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=32768, ~end_=40000)
                              |. Some,
                            (),
@@ -1161,7 +1170,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=40000, ~end_=80000)
                              |. Some,
                            (),
@@ -1171,7 +1180,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.sliceFrom(80000)
                              |. Some,
                            (),
@@ -1199,9 +1208,9 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     (
                       1,
                       [|
-                        {"name": "4", "src": "object_url0"} |> Obj.magic,
-                        {"name": "4", "src": "object_url0"} |> Obj.magic,
-                        {"name": "4", "src": "object_url0"} |> Obj.magic,
+                        {"name": "image_0", "src": "object_url0"} |> Obj.magic,
+                        {"name": "image_0", "src": "object_url0"} |> Obj.magic,
+                        {"name": "image_0", "src": "object_url0"} |> Obj.magic,
                       |],
                     ),
                     _prepare,
@@ -1303,7 +1312,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=0, ~end_=300)
                              |. Some,
                            (),
@@ -1331,7 +1340,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=0, ~end_=300)
                              |. Some,
                            (),
@@ -1341,7 +1350,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=300, ~end_=1650)
                              |. Some,
                            (),
@@ -1369,7 +1378,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=0, ~end_=300)
                              |. Some,
                            (),
@@ -1379,7 +1388,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=300, ~end_=1650)
                              |. Some,
                            (),
@@ -1389,7 +1398,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=1650, ~end_=3000)
                              |. Some,
                            (),
@@ -1519,7 +1528,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=0, ~end_=300)
                              |. Some,
                            (),
@@ -1529,7 +1538,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=300, ~end_=1650)
                              |. Some,
                            (),
@@ -1539,7 +1548,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=1650, ~end_=3000)
                              |. Some,
                            (),
@@ -1549,7 +1558,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=3000, ~end_=10000)
                              |. Some,
                            (),
@@ -1580,7 +1589,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=0, ~end_=300)
                              |. Some,
                            (),
@@ -1590,7 +1599,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=300, ~end_=1650)
                              |. Some,
                            (),
@@ -1600,7 +1609,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=1650, ~end_=3000)
                              |. Some,
                            (),
@@ -1610,7 +1619,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=3000, ~end_=10000)
                              |. Some,
                            (),
@@ -1620,7 +1629,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=10000, ~end_=50000)
                              |. Some,
                            (),
@@ -1648,7 +1657,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=0, ~end_=300)
                              |. Some,
                            (),
@@ -1658,7 +1667,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=300, ~end_=1650)
                              |. Some,
                            (),
@@ -1668,7 +1677,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=1650, ~end_=3000)
                              |. Some,
                            (),
@@ -1678,7 +1687,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=3000, ~end_=10000)
                              |. Some,
                            (),
@@ -1688,7 +1697,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=10000, ~end_=50000)
                              |. Some,
                            (),
@@ -1698,7 +1707,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=50000, ~end_=523828)
                              |. Some,
                            (),
@@ -1726,7 +1735,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=0, ~end_=300)
                              |. Some,
                            (),
@@ -1736,7 +1745,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=300, ~end_=1650)
                              |. Some,
                            (),
@@ -1746,7 +1755,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=1650, ~end_=3000)
                              |. Some,
                            (),
@@ -1756,7 +1765,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=3000, ~end_=10000)
                              |. Some,
                            (),
@@ -1766,7 +1775,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=10000, ~end_=50000)
                              |. Some,
                            (),
@@ -1776,7 +1785,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.slice(~start=50000, ~end_=523828)
                              |. Some,
                            (),
@@ -1786,7 +1795,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             wdbArrayBuffer^
+                             cesiumMilkTruckWDBArrayBuffer^
                              |> ArrayBuffer.sliceFrom(523828)
                              |. Some,
                            (),
@@ -1850,20 +1859,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                });
           };
 
-          beforeEach(() =>
-            wdbArrayBuffer := _getWDBArrayBuffer("AlphaBlendModeTest")
-          );
-
           describe(
             {|
             1.chunk1: header + json + stream + stream_chunk1-stream_chunk4 + a part of stream_chunk5(image chunk)
-            2.chunk2: other stream_chunk5 + stream_chunk6-stream_chunk44 + a part of stream_chunk45
-            3.chunk3: a part of stream_chunk45
-            4.chunk4: other stream chunk data
-            5.done
+            ...
+            2.done
             |},
             () =>
-            describe("test 1,2,3,5", () => {
+            describe("test 1,2", () => {
               let _prepare = (sandbox, state) => {
                 let readStub = createEmptyStubWithJsObjSandbox(sandbox);
                 let readStub =
@@ -1872,17 +1875,17 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   |> returns(
                        _buildChunkData(
                          ~arrayBuffer=
-                           wdbArrayBuffer^
+                           alphaBlendModeTestWDBArrayBuffer^
                            |> ArrayBuffer.slice(~start=0, ~end_=65536)
                            |. Some,
                          (),
                        ),
                      )
-                  |> onCall(1)
+                  /* |> onCall(1)
                   |> returns(
                        _buildChunkData(
                          ~arrayBuffer=
-                           wdbArrayBuffer^
+                           alphaBlendModeTestWDBArrayBuffer^
                            |> ArrayBuffer.slice(~start=65536, ~end_=80000)
                            |. Some,
                          (),
@@ -1892,13 +1895,13 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   |> returns(
                        _buildChunkData(
                          ~arrayBuffer=
-                           wdbArrayBuffer^
+                           alphaBlendModeTestWDBArrayBuffer^
                            |> ArrayBuffer.slice(~start=80000, ~end_=100000)
                            |. Some,
                          (),
                        ),
-                     )
-                  |> onCall(3)
+                     ) */
+                  |> onCall(1)
                   |> returns(
                        _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
                      );
@@ -1907,7 +1910,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               };
 
               testPromise("set geometry point data", () =>
-                _testSetGeometryPointData(sandbox, 9, _prepare, state)
+                _testSetGeometryPointData(sandbox, 1, _prepare, state)
               );
             })
           );
@@ -2070,7 +2073,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
              (totalLoadedByteLengthArr, contentLengthArr, wdbPathArr)
              |>
              expect == (
-                         [|24920|],
+                         [|24940|],
                          [|contentLength|],
                          [|
                            "/Users/y/Github/Wonder.js/test/res/wdb/BoxTextured.wdb",

@@ -186,7 +186,18 @@ let rec read =
            _close(controller);
 
            switch (assembleData) {
-           | None => resolve()
+           | None =>
+             WonderLog.Log.error(
+               WonderLog.Log.buildErrorMessage(
+                 ~title="read",
+                 ~description=
+                   {j|assembleData should exist, but actually is none|j},
+                 ~reason="",
+                 ~solution={j||j},
+                 ~params={j||j},
+               ),
+             );
+             resolve();
            | Some((rootGameObject, _, _)) =>
              handleWhenDoneFunc(
                StateDataMainService.unsafeGetState(StateDataMain.stateData),
@@ -269,7 +280,7 @@ let rec read =
                      );
 
                    /* WonderLog.Log.print(("streamChunkArr: ", streamChunkArr))
-                      |> ignore; */
+                   |> ignore; */
 
                    let state =
                      StateDataMainService.unsafeGetState(

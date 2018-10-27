@@ -145,7 +145,7 @@ let _batchSetGeometryData =
                    state,
                  );
              let state =
-               IndicesGeometryMainService.setIndicesByTypeArray(
+               IndicesGeometryMainService.setIndicesByUint16Array(
                  geometry,
                  _getBufferIndexData(index, dataViewArr, wd),
                  state,

@@ -1,5 +1,7 @@
 open Js.Typed_array;
 
+let _getImageComponentType = () => 0;
+
 let _addAccessorData =
     (
       oldAccessorIndex,
@@ -27,6 +29,7 @@ let _addAccessorData =
 
   (
     byteLength,
+    oldAccessor.componentType,
     Some(accessorBufferArr |> Js.Array.length),
     accessorBufferArr
     |> ArrayService.push({
@@ -140,6 +143,7 @@ let _addPrimitiveData =
 
   let (
     byteLength,
+    componentType,
     newPositionAccessorBufferIndex,
     accessorBufferArr,
     bufferViewDataArr,
@@ -156,7 +160,7 @@ let _addPrimitiveData =
   let streamChunkArr =
     streamChunkArr
     |> ArrayService.push(
-         {byteLength, index: mesh, type_: Vertex}: StreamType.streamUnitData,
+         {byteLength, componentType, index: mesh, type_: Vertex}: StreamType.streamUnitData,
        );
 
   let (
@@ -171,6 +175,7 @@ let _addPrimitiveData =
     | Some(normal) =>
       let (
         byteLength,
+        componentType,
         newNormalAccessorBufferIndex,
         accessorBufferArr,
         bufferViewDataArr,
@@ -192,7 +197,7 @@ let _addPrimitiveData =
         newBufferViewOffset,
         streamChunkArr
         |> ArrayService.push(
-             {byteLength, index: mesh, type_: Normal}: StreamType.streamUnitData,
+             {byteLength, componentType, index: mesh, type_: Normal}: StreamType.streamUnitData,
            ),
       );
     | None => (
@@ -217,6 +222,7 @@ let _addPrimitiveData =
     | Some(texCoord_0) =>
       let (
         byteLength,
+        componentType,
         newTexCoord0AccessorBufferIndex,
         accessorBufferArr,
         bufferViewDataArr,
@@ -238,7 +244,7 @@ let _addPrimitiveData =
         newBufferViewOffset,
         streamChunkArr
         |> ArrayService.push(
-             {byteLength, index: mesh, type_: TexCoord}: StreamType.streamUnitData,
+             {byteLength, componentType, index: mesh, type_: TexCoord}: StreamType.streamUnitData,
            ),
       );
 
@@ -264,6 +270,7 @@ let _addPrimitiveData =
     | Some(indices) =>
       let (
         byteLength,
+        componentType,
         newIndicesAccessorBufferIndex,
         accessorBufferArr,
         bufferViewDataArr,
@@ -285,7 +292,7 @@ let _addPrimitiveData =
         newBufferViewOffset,
         streamChunkArr
         |> ArrayService.push(
-             {byteLength, index: mesh, type_: Index}: StreamType.streamUnitData,
+             {byteLength, componentType, index: mesh, type_: Index}: StreamType.streamUnitData,
            ),
       );
 
@@ -358,7 +365,12 @@ let _addImageData =
             bufferViewDataArr,
             streamChunkArr
             |> ArrayService.push(
-                 {byteLength: 0, index: imageIndex, type_: Image}: StreamType.streamUnitData,
+                 {
+                   byteLength: 0,
+                   componentType: _getImageComponentType(),
+                   index: imageIndex,
+                   type_: Image,
+                 }: StreamType.streamUnitData,
                ),
             None,
             newBufferViewOffset,
@@ -386,7 +398,12 @@ let _addImageData =
               bufferViewDataArr,
               streamChunkArr
               |> ArrayService.push(
-                   {byteLength, index: imageIndex, type_: Image}: StreamType.streamUnitData,
+                   {
+                     byteLength,
+                     componentType: _getImageComponentType(),
+                     index: imageIndex,
+                     type_: Image,
+                   }: StreamType.streamUnitData,
                  ),
               newImageBufferViewIndex |. Some,
               newBufferViewOffset,
@@ -550,7 +567,7 @@ let buildJsonData =
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (.
            (
-             hasImageAddBeforeMap,
+             (hasMeshAddBeforeMap, hasImageAddBeforeMap),
              accessorBufferArr,
              bufferViewDataArr,
              streamChunkArr,
@@ -561,7 +578,7 @@ let buildJsonData =
            ({mesh, extras}: GLTFType.node) as node,
          ) => {
            let noneData = (
-             hasImageAddBeforeMap,
+             (hasMeshAddBeforeMap, hasImageAddBeforeMap),
              accessorBufferArr,
              bufferViewDataArr,
              streamChunkArr,
@@ -586,44 +603,73 @@ let buildJsonData =
                    accessorBufferArr,
                    bufferViewDataArr,
                    streamChunkArr,
-                   (
-                     newPositionAccessorBufferIndex,
-                     newNormalAccessorBufferIndex,
-                     newTexCoord0AccessorBufferIndex,
-                     newIndicesAccessorBufferIndex,
-                   ),
-                 ) =
-                   _addPrimitiveData(
-                     mesh,
-                     primitive,
-                     accessorBufferArr,
-                     bufferViewDataArr,
-                     streamChunkArr,
-                     newBufferViewOffset,
-                     gltf,
-                   );
-
-                 Array.unsafe_set(
                    newMeshes,
-                   mesh,
-                   {
-                     ...meshData,
-                     primitives: [|
-                       {
-                         ...primitive,
-                         attributes: {
-                           position:
-                             newPositionAccessorBufferIndex
-                             |> OptionService.unsafeGet,
-                           normal: newNormalAccessorBufferIndex,
-                           texCoord_0: newTexCoord0AccessorBufferIndex,
-                           texCoord_1: None,
+                   hasMeshAddBeforeMap,
+                 ) =
+                   _hasAddDataBefore(hasMeshAddBeforeMap, mesh) ?
+                     (
+                       newBufferViewOffset,
+                       accessorBufferArr,
+                       bufferViewDataArr,
+                       streamChunkArr,
+                       newMeshes,
+                       hasMeshAddBeforeMap,
+                     ) :
+                     {
+                       let (
+                         newBufferViewOffset,
+                         accessorBufferArr,
+                         bufferViewDataArr,
+                         streamChunkArr,
+                         (
+                           newPositionAccessorBufferIndex,
+                           newNormalAccessorBufferIndex,
+                           newTexCoord0AccessorBufferIndex,
+                           newIndicesAccessorBufferIndex,
+                         ),
+                       ) =
+                         _addPrimitiveData(
+                           mesh,
+                           primitive,
+                           accessorBufferArr,
+                           bufferViewDataArr,
+                           streamChunkArr,
+                           newBufferViewOffset,
+                           gltf,
+                         );
+
+                       Array.unsafe_set(
+                         newMeshes,
+                         mesh,
+                         {
+                           ...meshData,
+                           primitives: [|
+                             {
+                               ...primitive,
+                               attributes: {
+                                 position:
+                                   newPositionAccessorBufferIndex
+                                   |> OptionService.unsafeGet,
+                                 normal: newNormalAccessorBufferIndex,
+                                 texCoord_0: newTexCoord0AccessorBufferIndex,
+                                 texCoord_1: None,
+                               },
+                               indices: newIndicesAccessorBufferIndex,
+                             },
+                           |],
                          },
-                         indices: newIndicesAccessorBufferIndex,
-                       },
-                     |],
-                   },
-                 );
+                       );
+
+                       (
+                         newBufferViewOffset,
+                         accessorBufferArr,
+                         bufferViewDataArr,
+                         streamChunkArr,
+                         newMeshes,
+                         hasMeshAddBeforeMap
+                         |> WonderCommonlib.SparseMapService.set(mesh, true),
+                       );
+                     };
 
                  let (
                    bufferViewDataArr,
@@ -669,7 +715,7 @@ let buildJsonData =
                    };
 
                  (
-                   hasImageAddBeforeMap,
+                   (hasMeshAddBeforeMap, hasImageAddBeforeMap),
                    accessorBufferArr,
                    bufferViewDataArr,
                    streamChunkArr,
@@ -683,12 +729,17 @@ let buildJsonData =
            };
          },
          (
-           WonderCommonlib.SparseMapService.createEmpty(),
+           (
+             WonderCommonlib.SparseMapService.createEmpty(),
+             WonderCommonlib.SparseMapService.createEmpty(),
+           ),
            [||],
            [||],
            [||],
            0,
+           /* meshes, */
            [||],
+           /* images, */
            Some([||]),
          ),
        );
@@ -795,6 +846,9 @@ let getStreamChunkArr = ((jsonChunkLength, streamChunkLength), dataView) => {
         let (byteLength, currentByteOffset) =
           DataViewCommon.getUint32_1(. currentByteOffset, dataView);
 
+        let (componentType, currentByteOffset) =
+          DataViewCommon.getUint16_1(. currentByteOffset, dataView);
+
         let (index, currentByteOffset) =
           DataViewCommon.getUint32_1(. currentByteOffset, dataView);
 
@@ -807,7 +861,12 @@ let getStreamChunkArr = ((jsonChunkLength, streamChunkLength), dataView) => {
           dataView,
           streamChunkArr
           |> ArrayService.push(
-               {byteLength, index, type_: type_ |> StreamType.uint8ToChunk}: StreamType.streamUnitData,
+               {
+                 byteLength,
+                 componentType,
+                 index,
+                 type_: type_ |> StreamType.uint8ToChunk,
+               }: StreamType.streamUnitData,
              ),
         );
       }
@@ -862,10 +921,17 @@ let _writeStreamChunk = (streamChunkArr, byteOffset, dataView) => {
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (.
            byteOffset,
-           {byteLength, index, type_}: StreamType.streamUnitData,
+           {byteLength, componentType, index, type_}: StreamType.streamUnitData,
          ) => {
            let byteOffset =
              DataViewCommon.writeUint32_1(byteLength, byteOffset, dataView);
+
+           let byteOffset =
+             DataViewCommon.writeUint16_1(
+               componentType,
+               byteOffset,
+               dataView,
+             );
 
            let byteOffset =
              DataViewCommon.writeUint32_1(index, byteOffset, dataView);
@@ -887,7 +953,12 @@ let _writeStreamChunk = (streamChunkArr, byteOffset, dataView) => {
 };
 
 let _getStreamChunkArrByteLength = streamChunkArr =>
-  (Uint32Array._BYTES_PER_ELEMENT * 2 + Uint8Array._BYTES_PER_ELEMENT)
+  (
+    Uint32Array._BYTES_PER_ELEMENT
+    * 2
+    + Uint16Array._BYTES_PER_ELEMENT
+    + Uint8Array._BYTES_PER_ELEMENT
+  )
   * Js.Array.length(streamChunkArr);
 
 let getStreamChunkTotalByteLength = streamChunkArr =>

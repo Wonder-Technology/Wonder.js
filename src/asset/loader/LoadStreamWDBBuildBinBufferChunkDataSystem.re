@@ -19,7 +19,7 @@ let rec _build =
   nextStreamChunkIndex >= Js.Array.length(streamChunkArr) ?
     (nextStreamChunkIndex, loadedStreamChunkDataArr) :
     {
-      let {byteLength, index, type_}: streamUnitData =
+      let {byteLength, componentType, index, type_}: streamUnitData =
         Array.unsafe_get(streamChunkArr, nextStreamChunkIndex);
 
       /* WonderLog.Log.print(("nextStreamChunkIndex: ", nextStreamChunkIndex))
@@ -49,6 +49,7 @@ let rec _build =
                      geometryData:
                        Some({
                          meshIndex: index,
+                         componentType,
                          arrayBuffer:
                            ArrayBuffer.slice(
                              ~start=completeStreamChunkTotalLoadedAlignedByteLength,

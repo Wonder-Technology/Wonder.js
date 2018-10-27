@@ -181,7 +181,7 @@ let setGeometryIndices =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  IndicesGeometryMainService.setIndicesByTypeArray(geometry, data, state);
+  IndicesGeometryMainService.setIndicesByUint16Array(geometry, data, state);
 };
 
 let unsafeGetGeometryGameObjects =

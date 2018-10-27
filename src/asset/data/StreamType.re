@@ -9,11 +9,13 @@ type streamUnitData = {
   byteLength: int,
   index: int,
   type_: chunk,
+  componentType: int,
 };
 
 type loadedStreamGeometryData = {
   meshIndex: int,
   arrayBuffer: Js.Typed_array.ArrayBuffer.t,
+  componentType: int,
 };
 
 type loadedStreamImageData = {

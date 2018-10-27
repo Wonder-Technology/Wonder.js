@@ -292,6 +292,39 @@ let getFloat32ArraySubarray =
      };
      typeArray
    }; */
+
+/* let fillUint8ArrayWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
+  WonderLog.Contract.requireCheck(
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|offset should >= 0|j},
+          ~actual={j|is $offset|j},
+        ),
+        () =>
+        offset >= 0
+      );
+      let sourceTypeArrLen = Uint8Array.length(sourceTypeArr);
+      let targetTypeArrLen = Uint8Array.length(targetTypeArr);
+      test(
+        Log.buildAssertMessage(
+          ~expect=
+            {j|sourceTypeArr.length:$sourceTypeArrLen + offset:$offset <= targetTypeArr.length:$targetTypeArrLen|j},
+          ~actual={j|not|j},
+        ),
+        () =>
+        sourceTypeArrLen + offset <= targetTypeArrLen
+      );
+    },
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  targetTypeArr
+  |> Uint8Array.setArrayOffset(Obj.magic(sourceTypeArr), offset);
+}; */
+
 let fillUint16ArrayWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
   WonderLog.Contract.requireCheck(
     () => {

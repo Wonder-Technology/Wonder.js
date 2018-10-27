@@ -87,6 +87,22 @@ let _setImageData =
      );
 };
 
+let _getIndexUintData = (componentType, arrayBuffer) =>
+  switch (componentType) {
+  | 5121 => Uint16Array.make(Uint8Array.fromBuffer(arrayBuffer) |> Obj.magic)
+  | 5123 => Uint16Array.fromBuffer(arrayBuffer)
+  | componentType =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_getIndexUintData",
+        ~description={j|unknown componentType for geometry index|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j|componentType: $componentType|j},
+      ),
+    )
+  };
+
 let setBinBufferChunkData =
     (
       loadedStreamChunkDataArrWhichHasAllData,
@@ -135,7 +151,7 @@ let setBinBufferChunkData =
              state,
            )
          | Index =>
-           let {meshIndex, arrayBuffer} =
+           let {componentType, meshIndex, arrayBuffer} =
              geometryData |> OptionService.unsafeGet;
            let (gameObjects, geometry) =
              _getGameObjectsAndGeometrys(
@@ -146,9 +162,9 @@ let setBinBufferChunkData =
              );
 
            let state =
-             IndicesGeometryMainService.setIndicesByTypeArray(
+             IndicesGeometryMainService.setIndicesByUint16Array(
                geometry,
-               Uint16Array.fromBuffer(arrayBuffer),
+               _getIndexUintData(componentType, arrayBuffer),
                state,
              );
 

@@ -5,11 +5,16 @@ let buildWDBPath = wdbName =>
     {j|wdb/$wdbName.wdb|j},
   |]);
 
-let getWDBArrayBuffer = wdbName => {
+let buildGLBPath = wdbName =>
+  Node.Path.join([|Node.Process.cwd(), "./test/res/", {j|$wdbName.glb|j}|]);
+
+let convertGLBToWDB = glbName => {
   /*! fix fs.readFileSync returns corrupt ArrayBuffer (fs.readFile works as expected):
     https://github.com/nodejs/node/issues/11132 */
-  let uint8TypeArray = NodeExtend.readFileBufferSync(buildWDBPath(wdbName));
+  let buffer = NodeExtend.readFileBufferSync(buildGLBPath(glbName));
 
-  Js.Typed_array.Uint8Array.fromBuffer(uint8TypeArray)
-  |> Js.Typed_array.Uint8Array.buffer;
+  GLBTool.buildFakeTextDecoder(GLBTool.convertUint8ArrayToBuffer);
+  GLBTool.buildFakeTextEncoder(.);
+
+  buffer##buffer |> ConverterAPI.convertGLBToWDB;
 };

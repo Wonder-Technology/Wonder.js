@@ -13,15 +13,16 @@ open TypeArrayService;
 open Js.Typed_array;
 
 let getIndices =
-  [@bs]
-  (
-    (index: int, state) => {
-      let {indices, indicesInfos} = getRecord(state);
-      getUint16PointData(BufferGeometryService.getInfoIndex(index), indices, indicesInfos)
-    }
-  );
+  (. index: int, state) => {
+    let {indices, indicesInfos} = getRecord(state);
+    getUint16PointData(
+      BufferGeometryService.getInfoIndex(index),
+      indices,
+      indicesInfos,
+    );
+  };
 
-let setIndicesByTypeArray = (index: int, data: Uint16Array.t, state) => {
+let setIndicesByUint16Array = (index: int, data: Uint16Array.t, state) => {
   let {indicesInfos, indices, indicesOffset} as record = getRecord(state);
   record.indicesOffset =
     setUint16PointData(
@@ -29,11 +30,11 @@ let setIndicesByTypeArray = (index: int, data: Uint16Array.t, state) => {
         BufferGeometryService.getInfoIndex(index),
         indicesInfos,
         indicesOffset,
-        Uint16Array.length(data)
+        Uint16Array.length(data),
       ),
-      fillUint16ArrayWithOffset(indices, data)
+      fillUint16ArrayWithOffset(indices, data),
     );
-  state
+  state;
 };
 /*
  let getIndicesCount = (index, state) => {
