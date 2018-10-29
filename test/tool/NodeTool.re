@@ -5,8 +5,8 @@ let buildWDBPath = wdbName =>
     {j|wdb/$wdbName.wdb|j},
   |]);
 
-let buildGLBPath = wdbName =>
-  Node.Path.join([|Node.Process.cwd(), "./test/res/", {j|$wdbName.glb|j}|]);
+let buildGLBPath = glbName =>
+  Node.Path.join([|Node.Process.cwd(), "./test/res/", {j|$glbName.glb|j}|]);
 
 let convertGLBToWDB = glbName => {
   /*! fix fs.readFileSync returns corrupt ArrayBuffer (fs.readFile works as expected):

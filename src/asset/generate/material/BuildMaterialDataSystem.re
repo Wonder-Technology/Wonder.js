@@ -45,7 +45,7 @@ let _buildLightMaterialData =
 
          | Some(diffuseMap) =>
            BuildLightMaterialDiffuseMapSystem.build(
-             (diffuseMap, name),
+             (lightMaterial, diffuseMap, name),
              (
                (
                  lightMaterialDataArr,

@@ -244,7 +244,7 @@ let _addTextureData =
 
 let build =
     (
-      (diffuseMap, name),
+      (lightMaterial, diffuseMap, name),
       (
         (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
         (textureIndexMap, samplerIndexMap, imageMap, imageUint8ArrayDataMap),
@@ -275,13 +275,17 @@ let build =
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
+  let diffuseColor =
+    OperateLightMaterialMainService.getDiffuseColor(lightMaterial, state);
+  let baseColorFactor = BuildMaterialUtils.buildColorFactor(diffuseColor);
+
   switch (textureIndexMap |> WonderCommonlib.SparseMapService.get(diffuseMap)) {
   | Some(existedTextureIndex) => (
       (
         materialDataArr
         |> ArrayService.push(
              {
-               baseColorFactor: None,
+               baseColorFactor,
                baseColorTexture: Some(existedTextureIndex),
                name,
              }: GenerateSceneGraphType.lightMaterialData,
@@ -321,11 +325,7 @@ let build =
       (
         materialDataArr
         |> ArrayService.push(
-             {
-               baseColorFactor: None,
-               baseColorTexture: Some(textureIndex),
-               name,
-             }: GenerateSceneGraphType.lightMaterialData,
+             {baseColorFactor, baseColorTexture: Some(textureIndex), name}: GenerateSceneGraphType.lightMaterialData,
            ),
         _addTextureData(
           diffuseMap,

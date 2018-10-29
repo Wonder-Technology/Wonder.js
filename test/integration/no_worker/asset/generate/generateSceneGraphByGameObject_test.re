@@ -1702,7 +1702,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-                 "extras":{"basicMaterials":[{"colorFactor":[$color,1]}],
+                 "extras":{"basicMaterials":[{}],
                    |j},
           state,
         );
@@ -3425,4 +3425,135 @@ let _ =
         });
       })
     );
+
+    describe("fix bug", () => {
+      let _createBasicMaterialGameObjectWithShareGeometry = (geometry, state) => {
+        open GameObjectAPI;
+        open BasicMaterialAPI;
+        open GeometryAPI;
+        open MeshRendererAPI;
+
+        let (state, material) = createBasicMaterial(state);
+
+        let color = [|0.5, 0.5, 1.|];
+
+        let state = setBasicMaterialColor(material, color, state);
+
+        let (state, meshRenderer) = createMeshRenderer(state);
+
+        let (state, gameObject) = state |> createGameObject;
+        let state =
+          state
+          |> addGameObjectBasicMaterialComponent(gameObject, material)
+          |> addGameObjectGeometryComponent(gameObject, geometry)
+          |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+
+        let transform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject,
+            state,
+          );
+
+        (state, gameObject, transform, (material, color));
+      };
+
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, rootGameObject) = state^ |> createGameObject;
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
+
+        let (state, gameObject1, transform1, (material1, color1)) =
+          _createBasicMaterialGameObjectWithShareGeometry(geometry, state);
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          geometry2,
+          (material2, diffuseColor2),
+          meshRenderer2,
+        ) =
+          _createGameObjectWithShareGeometry(
+            geometry,
+            GameObjectAPI.addGameObjectGeometryComponent,
+            state,
+          );
+
+        let (state, (texture, _), (source, width, height)) =
+          _createTexture1(state);
+
+        let state =
+          LightMaterialAPI.setLightMaterialDiffuseMap(
+            material2,
+            texture,
+            state,
+          );
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             );
+
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (gameObject1, material1),
+          (gameObject2, material2, diffuseColor2),
+        );
+      };
+
+      testPromise(
+        {|
+          1.create two gameObjects with one geometry and one basic material(set color to c1) and one light material(set color to c2 and set map);
+          2.generate wdb;
+          3.assemble wdb;
+
+          the assembled->rootGameObject->light material->diffuseColor should be c2
+          |},
+        () => {
+          let (
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            (gameObject1, material1),
+            (gameObject2, material2, diffuseColor2),
+          ) =
+            _prepareGameObject(state);
+
+          GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
+            sandbox^,
+            rootGameObject,
+            ((state, _, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllLightMaterials(
+                rootGameObject,
+                state,
+              )
+              |> Js.Array.map(material =>
+                   LightMaterialAPI.getLightMaterialDiffuseColor(
+                     material,
+                     state,
+                   )
+                 )
+              |> expect == [|diffuseColor2|],
+            state,
+          );
+        },
+      );
+    });
   });

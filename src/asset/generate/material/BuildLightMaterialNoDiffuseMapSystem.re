@@ -17,12 +17,7 @@ let build =
       |> ArrayService.push(
            {
              baseColorFactor:
-               Some([|
-                 diffuseColor[0],
-                 diffuseColor[1],
-                 diffuseColor[2],
-                 1.0,
-               |]),
+               BuildMaterialUtils.buildColorFactor(diffuseColor),
              baseColorTexture: None,
              name,
            }: GenerateSceneGraphType.lightMaterialData,
