@@ -31,10 +31,10 @@ let _ =
            _buildFakeFetchArrayBufferResponse(
              sandbox,
              contentLength,
-             ConvertGLBSystem.convertGLBData((
+             ConvertGLBSystem.convertGLBData(
                gltfJsonStr |> Js.Json.parseExn,
                binBuffer,
-             ))
+             )
              |> Obj.magic,
            ),
          );
@@ -82,10 +82,10 @@ let _ =
              _buildFakeFetchArrayBufferResponse(
                sandbox,
                contentLength1,
-               ConvertGLBSystem.convertGLBData((
+               ConvertGLBSystem.convertGLBData(
                  gltfJsonStr1 |> Js.Json.parseExn,
                  binBuffer,
-               ))
+               )
                |> Obj.magic,
              ),
            )
@@ -94,10 +94,10 @@ let _ =
              _buildFakeFetchArrayBufferResponse(
                sandbox,
                contentLength2,
-               ConvertGLBSystem.convertGLBData((
+               ConvertGLBSystem.convertGLBData(
                  gltfJsonStr2 |> Js.Json.parseExn,
                  binBuffer,
-               ))
+               )
                |> Obj.magic,
              ),
            );

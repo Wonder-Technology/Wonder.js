@@ -38,7 +38,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGLB(
           sandbox^,
           GLBTool.buildGLBFilePath("BoxTextured.glb"),
-          ((gltf, binBuffer)) =>
+          ((gltf, _, binBuffer)) =>
             gltf
             |> GenerateSceneGraphSystemTool.contain(
                  {|
@@ -55,7 +55,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGLB(
           sandbox^,
           GLBTool.buildGLBFilePath("BoxTextured.glb"),
-          ((gltf, binBuffer)) =>
+          ((gltf, _, binBuffer)) =>
             gltf
             |> GenerateSceneGraphSystemTool.contain(
                  {|
@@ -72,7 +72,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGLB(
           sandbox^,
           GLBTool.buildGLBFilePath("BoxTextured.glb"),
-          ((gltf, binBuffer)) =>
+          ((gltf, _, binBuffer)) =>
             gltf
             |> GenerateSceneGraphSystemTool.contain(
                  {|
@@ -137,13 +137,34 @@ let _ =
     });
 
     describe("test CesiumMilkTruck glb", () => {
+      testPromise("test imageResultUint8ArrayMap", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLB(
+          sandbox^,
+          GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+          ((_, imageResultUint8ArrayMap, _)) =>
+            imageResultUint8ArrayMap
+            |>
+            expect == [|
+                        BufferUtils.convertBase64ToBinary(
+                          GenerateSceneGraphSystemTool.buildBase64Str1(),
+                        ),
+                        BufferUtils.convertBase64ToBinary(
+                          GenerateSceneGraphSystemTool.buildBase64Str1(),
+                        ),
+                      |],
+          state,
+        );
+      });
+
       testPromise("test nodes", () => {
         let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLB(
           sandbox^,
           GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-          ((gltf, binBuffer)) =>
+          ((gltf, _, binBuffer)) =>
             gltf
             |> GenerateSceneGraphSystemTool.contain(
                  {|
@@ -160,7 +181,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGLB(
           sandbox^,
           GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-          ((gltf, binBuffer)) =>
+          ((gltf, _, binBuffer)) =>
             gltf
             |> GenerateSceneGraphSystemTool.contain(
                  {|
@@ -233,7 +254,7 @@ let _ =
           GenerateSceneGraphSystemTool.testGLTFResultByGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((gltf, binBuffer)) =>
+            ((gltf, _, binBuffer)) =>
               gltf
               |> GenerateSceneGraphSystemTool.contain(
                    {|  "materials": [
@@ -290,7 +311,7 @@ let _ =
           GenerateSceneGraphSystemTool.testGLTFResultByGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((gltf, binBuffer)) =>
+            ((gltf, _, binBuffer)) =>
               gltf
               |> GenerateSceneGraphSystemTool.contain(
                    {|

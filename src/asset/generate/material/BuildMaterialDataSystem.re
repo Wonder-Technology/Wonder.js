@@ -4,33 +4,48 @@ let _buildLightMaterialData =
       imageUint8ArrayDataMap,
       (totalByteLength, byteOffset, bufferViewDataArr),
       state,
-    ) =>
-  lightMaterialDataMap
-  |> SparseMapService.reduceValid(
-       (.
-         (
+    ) => {
+  let (
+    (lightMaterialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
+    (
+      textureIndexMap,
+      samplerIndexMap,
+      imageMap,
+      imageUint8ArrayMap,
+      imageResultUint8ArrayMap,
+    ),
+    (totalByteLength, byteOffset, bufferViewDataArr),
+  ) =
+    lightMaterialDataMap
+    |> SparseMapService.reduceValid(
+         (.
            (
-             lightMaterialDataArr,
-             textureDataArr,
-             samplerDataArr,
-             imageUint8DataArr,
-           ),
-           (textureIndexMap, samplerIndexMap, imageMap),
-           (totalByteLength, byteOffset, bufferViewDataArr),
-         ),
-         (lightMaterial, name),
-       ) => {
-         let diffuseMap =
-           OperateLightMaterialMainService.getDiffuseMap(
-             lightMaterial,
-             state,
-           );
-
-         switch (diffuseMap) {
-         | None =>
-           BuildLightMaterialNoDiffuseMapSystem.build(
-             (lightMaterial, name),
              (
+               lightMaterialDataArr,
+               textureDataArr,
+               samplerDataArr,
+               imageUint8DataArr,
+             ),
+             (
+               textureIndexMap,
+               samplerIndexMap,
+               imageMap,
+               imageUint8ArrayMap,
+               imageResultUint8ArrayMap,
+             ),
+             (totalByteLength, byteOffset, bufferViewDataArr),
+           ),
+           (lightMaterial, name),
+         ) => {
+           let diffuseMap =
+             OperateLightMaterialMainService.getDiffuseMap(
+               lightMaterial,
+               state,
+             );
+
+           switch (diffuseMap) {
+           | None =>
+             let (
                (
                  lightMaterialDataArr,
                  textureDataArr,
@@ -38,14 +53,23 @@ let _buildLightMaterialData =
                  imageUint8DataArr,
                ),
                (textureIndexMap, samplerIndexMap, imageMap),
-             ),
-             (totalByteLength, byteOffset, bufferViewDataArr),
-             state,
-           )
+               (totalByteLength, byteOffset, bufferViewDataArr),
+             ) =
+               BuildLightMaterialNoDiffuseMapSystem.build(
+                 (lightMaterial, name),
+                 (
+                   (
+                     lightMaterialDataArr,
+                     textureDataArr,
+                     samplerDataArr,
+                     imageUint8DataArr,
+                   ),
+                   (textureIndexMap, samplerIndexMap, imageMap),
+                 ),
+                 (totalByteLength, byteOffset, bufferViewDataArr),
+                 state,
+               );
 
-         | Some(diffuseMap) =>
-           BuildLightMaterialDiffuseMapSystem.build(
-             (lightMaterial, diffuseMap, name),
              (
                (
                  lightMaterialDataArr,
@@ -57,20 +81,59 @@ let _buildLightMaterialData =
                  textureIndexMap,
                  samplerIndexMap,
                  imageMap,
-                 imageUint8ArrayDataMap,
+                 imageUint8ArrayMap,
+                 imageResultUint8ArrayMap,
                ),
-             ),
-             (totalByteLength, byteOffset, bufferViewDataArr),
-             state,
-           )
-         };
-       },
-       (
-         ([||], [||], [||], [||]),
-         ([||], WonderCommonlib.HashMapService.createEmpty(), [||]),
-         (totalByteLength, byteOffset, bufferViewDataArr),
-       ),
-     );
+               (totalByteLength, byteOffset, bufferViewDataArr),
+             );
+           | Some(diffuseMap) =>
+             BuildLightMaterialDiffuseMapSystem.build(
+               (lightMaterial, diffuseMap, name),
+               (
+                 (
+                   lightMaterialDataArr,
+                   textureDataArr,
+                   samplerDataArr,
+                   imageUint8DataArr,
+                 ),
+                 (
+                   textureIndexMap,
+                   samplerIndexMap,
+                   imageMap,
+                   imageUint8ArrayMap,
+                   imageUint8ArrayDataMap,
+                   imageResultUint8ArrayMap,
+                 ),
+               ),
+               (totalByteLength, byteOffset, bufferViewDataArr),
+               state,
+             )
+           };
+         },
+         (
+           ([||], [||], [||], [||]),
+           (
+             WonderCommonlib.SparseMapService.createEmpty(),
+             WonderCommonlib.HashMapService.createEmpty(),
+             WonderCommonlib.SparseMapService.createEmpty(),
+             WonderCommonlib.SparseMapService.createEmpty(),
+             WonderCommonlib.SparseMapService.createEmpty(),
+           ),
+           (totalByteLength, byteOffset, bufferViewDataArr),
+         ),
+       );
+
+  (
+    (lightMaterialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
+    (
+      textureIndexMap,
+      samplerIndexMap,
+      imageMap,
+      imageResultUint8ArrayMap,
+    ),
+    (totalByteLength, byteOffset, bufferViewDataArr),
+  );
+};
 
 let build =
     (
@@ -94,7 +157,12 @@ let build =
 
   let (
     (lightMaterialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
-    (textureIndexMap, samplerIndexMap, imageMap),
+    (
+      textureIndexMap,
+      samplerIndexMap,
+      imageMap,
+      imageResultUint8ArrayMap,
+    ),
     (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     _buildLightMaterialData(
@@ -122,6 +190,7 @@ let build =
     textureDataArr,
     samplerDataArr,
     imageUint8DataArr,
+    imageResultUint8ArrayMap,
     (totalByteLength, bufferViewDataArr),
   );
 };

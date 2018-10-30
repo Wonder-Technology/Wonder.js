@@ -3,7 +3,11 @@ let build =
       (lightMaterial, name),
       (
         (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
-        (textureIndexMap, samplerIndexMap, imageMap),
+        (
+          textureIndexMap,
+          samplerIndexMap,
+          imageMap,
+        ),
       ),
       (totalByteLength, byteOffset, bufferViewDataArr),
       state,
@@ -26,7 +30,11 @@ let build =
       samplerDataArr,
       imageUint8DataArr,
     ),
-    (textureIndexMap, samplerIndexMap, imageMap),
+    (
+      textureIndexMap,
+      samplerIndexMap,
+      imageMap,
+    ),
     (totalByteLength, byteOffset, bufferViewDataArr),
   );
 };

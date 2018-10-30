@@ -41,10 +41,10 @@ let testGLTFResultByGLTF =
   GLBTool.prepare(sandbox);
 
   let wdb =
-    ConvertGLBSystem.convertGLBData((
+    ConvertGLBSystem.convertGLBData(
       embeddedGLTFJsonStr |> Js.Json.parseExn,
       binBuffer,
-    ));
+    );
 
   let (wdFileContent, _, binBuffer) =
     BufferUtils.decodeWDB(wdb, AssembleWholeWDBSystem._checkWDB);

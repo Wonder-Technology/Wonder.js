@@ -1882,25 +1882,25 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        ),
                      )
                   /* |> onCall(1)
-                  |> returns(
-                       _buildChunkData(
-                         ~arrayBuffer=
-                           alphaBlendModeTestWDBArrayBuffer^
-                           |> ArrayBuffer.slice(~start=65536, ~end_=80000)
-                           |. Some,
-                         (),
-                       ),
-                     )
-                  |> onCall(2)
-                  |> returns(
-                       _buildChunkData(
-                         ~arrayBuffer=
-                           alphaBlendModeTestWDBArrayBuffer^
-                           |> ArrayBuffer.slice(~start=80000, ~end_=100000)
-                           |. Some,
-                         (),
-                       ),
-                     ) */
+                     |> returns(
+                          _buildChunkData(
+                            ~arrayBuffer=
+                              alphaBlendModeTestWDBArrayBuffer^
+                              |> ArrayBuffer.slice(~start=65536, ~end_=80000)
+                              |. Some,
+                            (),
+                          ),
+                        )
+                     |> onCall(2)
+                     |> returns(
+                          _buildChunkData(
+                            ~arrayBuffer=
+                              alphaBlendModeTestWDBArrayBuffer^
+                              |> ArrayBuffer.slice(~start=80000, ~end_=100000)
+                              |. Some,
+                            (),
+                          ),
+                        ) */
                   |> onCall(1)
                   |> returns(
                        _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
@@ -2007,10 +2007,10 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
              _buildFakeFetchReturnResponse(
                contentLength,
                true,
-               ConvertGLBSystem.convertGLBData((
+               ConvertGLBSystem.convertGLBData(
                  gltfJsonStr |> Js.Json.parseExn,
                  binBuffer,
-               )),
+               ),
              ),
            );
         fetch;

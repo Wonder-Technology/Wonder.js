@@ -58,10 +58,10 @@ let testGLTF =
 
   GLBTool.prepare(sandbox);
 
-  ConvertGLBSystem.convertGLBData((
+  ConvertGLBSystem.convertGLBData(
     embeddedGLTFJsonStr |> Js.Json.parseExn,
     binBuffer,
-  ))
+  )
   |. AssembleWholeWDBSystem.assemble(
        (isSetIMGUIFunc, isBindEvent, isActiveCamera),
        state^,

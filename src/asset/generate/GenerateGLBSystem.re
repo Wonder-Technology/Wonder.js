@@ -41,6 +41,7 @@ let generateGLBData = (rootGameObject, imageUint8ArrayDataMap, state) => {
     textureDataArr,
     samplerDataArr,
     imageUint8DataArr,
+    imageResultUint8ArrayMap,
     (totalByteLength, bufferViewDataArr),
   ) =
     BuildMaterialDataSystem.build(
@@ -104,6 +105,7 @@ let generateGLBData = (rootGameObject, imageUint8ArrayDataMap, state) => {
       ),
       state,
     ),
+    imageResultUint8ArrayMap,
     buffer,
   );
 };

@@ -262,11 +262,11 @@ let _checkGLB = dataView => {
   dataView;
 };
 
-let convertGLBData = ((gltf, binBuffer)) =>
+let convertGLBData = (gltf, binBuffer) =>
   _convertGLBToWDB(ConvertGLTFJsonToRecordSystem.convert(gltf), binBuffer);
 
 let convertGLB = (glb: ArrayBuffer.t) => {
   let (gltfFileContent, binBuffer) = BufferUtils.decodeGLB(glb, _checkGLB);
 
-  convertGLBData((gltfFileContent |> Js.Json.parseExn, binBuffer));
+  convertGLBData(gltfFileContent |> Js.Json.parseExn, binBuffer);
 };

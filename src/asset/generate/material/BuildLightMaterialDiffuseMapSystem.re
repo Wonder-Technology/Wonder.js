@@ -148,8 +148,8 @@ let _getImageBase64 = (texture, source) =>
 
 let _addImageData =
     (
-      (texture, imageMap, state),
-      imageUint8ArrayDataMap,
+      (texture, imageMap, imageUint8ArrayMap, state),
+      (imageUint8ArrayDataMap, imageResultUint8ArrayMap),
       imageUint8DataArr,
       (totalByteLength, byteOffset, bufferViewDataArr),
     ) => {
@@ -195,6 +195,14 @@ let _addImageData =
         );
       };
 
+    let imageUint8ArrayMap =
+      imageUint8ArrayMap
+      |> WonderCommonlib.SparseMapService.set(imageIndex, imageUint8Array);
+
+    let imageResultUint8ArrayMap =
+      imageResultUint8ArrayMap
+      |> WonderCommonlib.SparseMapService.set(texture, imageUint8Array);
+
     let imageUint8ArrayByteLength = imageUint8Array |> Uint8Array.byteLength;
 
     let imageUint8ArrayAlignedByteLength =
@@ -203,6 +211,7 @@ let _addImageData =
     (
       imageIndex,
       imageMap |> WonderCommonlib.SparseMapService.set(imageIndex, source),
+      imageUint8ArrayMap,
       imageUint8DataArr
       |> ArrayService.push(
            {
@@ -213,6 +222,7 @@ let _addImageData =
              byteOffset,
            }: GenerateSceneGraphType.imageData,
          ),
+      imageResultUint8ArrayMap,
       (
         totalByteLength + imageUint8ArrayAlignedByteLength,
         byteOffset + imageUint8ArrayAlignedByteLength,
@@ -222,12 +232,23 @@ let _addImageData =
            ),
       ),
     );
-  | imageIndex => (
+  | imageIndex =>
+    let imageResultUint8ArrayMap =
+      imageResultUint8ArrayMap
+      |> WonderCommonlib.SparseMapService.set(
+           texture,
+           imageUint8ArrayMap
+           |> WonderCommonlib.SparseMapService.unsafeGet(imageIndex),
+         );
+
+    (
       imageIndex,
       imageMap,
+      imageUint8ArrayMap,
       imageUint8DataArr,
+      imageResultUint8ArrayMap,
       (totalByteLength, byteOffset, bufferViewDataArr),
-    )
+    );
   };
 };
 
@@ -247,7 +268,14 @@ let build =
       (lightMaterial, diffuseMap, name),
       (
         (materialDataArr, textureDataArr, samplerDataArr, imageUint8DataArr),
-        (textureIndexMap, samplerIndexMap, imageMap, imageUint8ArrayDataMap),
+        (
+          textureIndexMap,
+          samplerIndexMap,
+          imageMap,
+          imageUint8ArrayMap,
+          imageUint8ArrayDataMap,
+          imageResultUint8ArrayMap,
+        ),
       ),
       (totalByteLength, byteOffset, bufferViewDataArr),
       state,
@@ -294,7 +322,13 @@ let build =
         samplerDataArr,
         imageUint8DataArr,
       ),
-      (textureIndexMap, samplerIndexMap, imageMap),
+      (
+        textureIndexMap,
+        samplerIndexMap,
+        imageMap,
+        imageUint8ArrayMap,
+        imageResultUint8ArrayMap,
+      ),
       (totalByteLength, byteOffset, bufferViewDataArr),
     )
 
@@ -311,12 +345,14 @@ let build =
     let (
       imageIndex,
       imageMap,
+      imageUint8ArrayMap,
       imageUint8DataArr,
+      imageResultUint8ArrayMap,
       (totalByteLength, byteOffset, bufferViewDataArr),
     ) =
       _addImageData(
-        (diffuseMap, imageMap, state),
-        imageUint8ArrayDataMap,
+        (diffuseMap, imageMap, imageUint8ArrayMap, state),
+        (imageUint8ArrayDataMap, imageResultUint8ArrayMap),
         imageUint8DataArr,
         (totalByteLength, byteOffset, bufferViewDataArr),
       );
@@ -336,7 +372,13 @@ let build =
         samplerDataArr,
         imageUint8DataArr,
       ),
-      (textureIndexMap, samplerIndexMap, imageMap),
+      (
+        textureIndexMap,
+        samplerIndexMap,
+        imageMap,
+        imageUint8ArrayMap,
+        imageResultUint8ArrayMap,
+      ),
       (totalByteLength, byteOffset, bufferViewDataArr),
     );
   };
