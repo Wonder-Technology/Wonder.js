@@ -3,7 +3,9 @@ open StateDataMainType;
 let create =
   (. state) => {
     let (pointLightRecord, index) =
-      CreatePointLightService.create(. state.pointLightRecord);
-    state.pointLightRecord = pointLightRecord;
+      CreatePointLightService.create(.
+        RecordPointLightMainService.getRecord(state),
+      );
+    state.pointLightRecord = Some(pointLightRecord);
     (state, index);
   };

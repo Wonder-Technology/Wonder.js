@@ -3,7 +3,7 @@ open StateDataMainType;
 let getAmbientLightIndex = lightDataArr =>
   (lightDataArr |> Js.Array.length) - 1;
 
-let build = (lightDataMap, {directionLightRecord, pointLightRecord} as state) => {
+let build = (lightDataMap, state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -13,6 +13,9 @@ let build = (lightDataMap, {directionLightRecord, pointLightRecord} as state) =>
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
+
+  let directionLightRecord = RecordDirectionLightMainService.getRecord(state);
+  let pointLightRecord = RecordPointLightMainService.getRecord(state);
 
   lightDataMap
   |> SparseMapService.reduceValid(

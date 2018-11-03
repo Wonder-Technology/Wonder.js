@@ -6,8 +6,6 @@ let createInitMaterialState =
     (
       (index, disposedIndexArray),
       {
-        directionLightRecord,
-        pointLightRecord,
         shaderRecord,
         programRecord,
         glslRecord,
@@ -19,6 +17,10 @@ let createInitMaterialState =
     : StateInitLightMaterialType.initLightMaterialState => {
   let {shaderIndices, diffuseMapUnits, specularMapUnits} =
     RecordLightMaterialMainService.getRecord(state);
+
+  let directionLightRecord = RecordDirectionLightMainService.getRecord(state);
+  let pointLightRecord = RecordPointLightMainService.getRecord(state);
+
   {
     directionLightRecord: {
       index: directionLightRecord.index,

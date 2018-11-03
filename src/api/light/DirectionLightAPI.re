@@ -23,14 +23,17 @@ let unsafeGetDirectionLightGameObject =
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.directionLightRecord,
+              RecordDirectionLightMainService.getRecord(state),
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetGameObject(light, state.directionLightRecord);
+  unsafeGetGameObject(
+    light,
+    RecordDirectionLightMainService.getRecord(state),
+  );
 };
 
 let getDirectionLightColor = (light, state: StateDataMainType.state) => {
@@ -42,14 +45,14 @@ let getDirectionLightColor = (light, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.directionLightRecord,
+              RecordDirectionLightMainService.getRecord(state),
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getColor(light, state.directionLightRecord);
+  getColor(light, RecordDirectionLightMainService.getRecord(state));
 };
 
 let setDirectionLightColor = (light, color, state: StateDataMainType.state) => {
@@ -61,7 +64,7 @@ let setDirectionLightColor = (light, color, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.directionLightRecord,
+              RecordDirectionLightMainService.getRecord(state),
             )
           )
         )
@@ -70,7 +73,14 @@ let setDirectionLightColor = (light, color, state: StateDataMainType.state) => {
   );
   {
     ...state,
-    directionLightRecord: setColor(light, color, state.directionLightRecord),
+    directionLightRecord:
+      Some(
+        setColor(
+          light,
+          color,
+          RecordDirectionLightMainService.getRecord(state),
+        ),
+      ),
   };
 };
 
@@ -83,14 +93,14 @@ let getDirectionLightIntensity = (light, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.directionLightRecord,
+              RecordDirectionLightMainService.getRecord(state),
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getIntensity(light, state.directionLightRecord);
+  getIntensity(light, RecordDirectionLightMainService.getRecord(state));
 };
 
 let setDirectionLightIntensity =
@@ -103,7 +113,7 @@ let setDirectionLightIntensity =
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.directionLightRecord,
+              RecordDirectionLightMainService.getRecord(state),
             )
           )
         )
@@ -113,7 +123,13 @@ let setDirectionLightIntensity =
   {
     ...state,
     directionLightRecord:
-      setIntensity(light, intensity, state.directionLightRecord),
+      Some(
+        setIntensity(
+          light,
+          intensity,
+          RecordDirectionLightMainService.getRecord(state),
+        ),
+      ),
   };
 };
 
@@ -126,14 +142,14 @@ let getDirectionLightIsRender = (light, state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.directionLightRecord,
+              RecordDirectionLightMainService.getRecord(state),
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getIsRender(light, state.directionLightRecord);
+  getIsRender(light, RecordDirectionLightMainService.getRecord(state));
 };
 
 let setDirectionLightIsRender = (light, isRender, state) => {
@@ -145,7 +161,7 @@ let setDirectionLightIsRender = (light, isRender, state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.directionLightRecord,
+              RecordDirectionLightMainService.getRecord(state),
             )
           )
         )
@@ -155,12 +171,18 @@ let setDirectionLightIsRender = (light, isRender, state) => {
   {
     ...state,
     directionLightRecord:
-      setIsRender(light, isRender, state.directionLightRecord),
+      Some(
+        setIsRender(
+          light,
+          isRender,
+          RecordDirectionLightMainService.getRecord(state),
+        ),
+      ),
   };
 };
 
-let isMaxCount = ({directionLightRecord}) =>
+let isMaxCount = state =>
   MaxCountLightService.isMaxCount(
-    directionLightRecord.renderLightArr,
+    RecordDirectionLightMainService.getRecord(state).renderLightArr,
     BufferDirectionLightService.getBufferMaxCount(),
   );

@@ -3,7 +3,9 @@ open StateDataMainType;
 let create =
   (. state) => {
     let (directionLightRecord, index) =
-      CreateDirectionLightService.create(. state.directionLightRecord);
-    state.directionLightRecord = directionLightRecord;
+      CreateDirectionLightService.create(.
+        RecordDirectionLightMainService.getRecord(state),
+      );
+    state.directionLightRecord = Some(directionLightRecord);
     (state, index);
   };

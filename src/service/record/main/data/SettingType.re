@@ -24,6 +24,8 @@ type buffer = {
   transformCount: int,
   basicMaterialCount: int,
   lightMaterialCount: int,
+  directionLightCount: int,
+  pointLightCount: int,
   textureCountPerMaterial: int,
   basicSourceTextureCount: int,
   arrayBufferViewSourceTextureCount: int,

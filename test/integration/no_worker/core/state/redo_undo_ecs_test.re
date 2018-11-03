@@ -2013,7 +2013,11 @@ let _ =
             let _ = MainStateTool.restore(currentState, copiedState);
             let {colors, intensities} =
               MainStateTool.unsafeGetState() |> DirectionLightTool.getRecord;
-            (colors, intensities)
+
+            (
+              colors |> Float32Array.slice(~start=0, ~end_=12),
+              intensities |> Float32Array.slice(~start=0, ~end_=4),
+            )
             |>
             expect == (
                         Float32Array.make([|
@@ -2076,7 +2080,11 @@ let _ =
             let _ = MainStateTool.restore(currentState, copiedState);
             let {colors, ranges} =
               MainStateTool.unsafeGetState() |> PointLightTool.getRecord;
-            (colors, ranges)
+
+            (
+              colors |> Float32Array.slice(~start=0, ~end_=12),
+              ranges |> Float32Array.slice(~start=0, ~end_=4),
+            )
             |>
             expect == (
                         Float32Array.make([|

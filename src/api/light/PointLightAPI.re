@@ -21,14 +21,14 @@ let unsafeGetPointLightGameObject = (light, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  unsafeGetGameObject(light, state.pointLightRecord);
+  unsafeGetGameObject(light, RecordPointLightMainService.getRecord(state));
 };
 
 let getPointLightColor = (light, state: StateDataMainType.state) => {
@@ -40,14 +40,14 @@ let getPointLightColor = (light, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getColor(light, state.pointLightRecord);
+  getColor(light, RecordPointLightMainService.getRecord(state));
 };
 
 let setPointLightColor = (light, color, state: StateDataMainType.state) => {
@@ -59,7 +59,7 @@ let setPointLightColor = (light, color, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
@@ -68,7 +68,10 @@ let setPointLightColor = (light, color, state: StateDataMainType.state) => {
   );
   {
     ...state,
-    pointLightRecord: setColor(light, color, state.pointLightRecord),
+    pointLightRecord:
+      Some(
+        setColor(light, color, RecordPointLightMainService.getRecord(state)),
+      ),
   };
 };
 
@@ -81,14 +84,14 @@ let getPointLightIntensity = (light, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getIntensity(light, state.pointLightRecord);
+  getIntensity(light, RecordPointLightMainService.getRecord(state));
 };
 
 let setPointLightIntensity =
@@ -101,7 +104,7 @@ let setPointLightIntensity =
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
@@ -110,7 +113,14 @@ let setPointLightIntensity =
   );
   {
     ...state,
-    pointLightRecord: setIntensity(light, intensity, state.pointLightRecord),
+    pointLightRecord:
+      Some(
+        setIntensity(
+          light,
+          intensity,
+          RecordPointLightMainService.getRecord(state),
+        ),
+      ),
   };
 };
 
@@ -123,14 +133,14 @@ let getPointLightConstant = (light, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getConstant(light, state.pointLightRecord);
+  getConstant(light, RecordPointLightMainService.getRecord(state));
 };
 
 let setPointLightConstant = (light, constant, state: StateDataMainType.state) => {
@@ -142,7 +152,7 @@ let setPointLightConstant = (light, constant, state: StateDataMainType.state) =>
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
@@ -151,7 +161,14 @@ let setPointLightConstant = (light, constant, state: StateDataMainType.state) =>
   );
   {
     ...state,
-    pointLightRecord: setConstant(light, constant, state.pointLightRecord),
+    pointLightRecord:
+      Some(
+        setConstant(
+          light,
+          constant,
+          RecordPointLightMainService.getRecord(state),
+        ),
+      ),
   };
 };
 
@@ -164,14 +181,14 @@ let getPointLightLinear = (light, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getLinear(light, state.pointLightRecord);
+  getLinear(light, RecordPointLightMainService.getRecord(state));
 };
 
 let setPointLightLinear = (light, linear, state: StateDataMainType.state) => {
@@ -183,7 +200,7 @@ let setPointLightLinear = (light, linear, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
@@ -192,7 +209,14 @@ let setPointLightLinear = (light, linear, state: StateDataMainType.state) => {
   );
   {
     ...state,
-    pointLightRecord: setLinear(light, linear, state.pointLightRecord),
+    pointLightRecord:
+      Some(
+        setLinear(
+          light,
+          linear,
+          RecordPointLightMainService.getRecord(state),
+        ),
+      ),
   };
 };
 
@@ -205,14 +229,14 @@ let getPointLightQuadratic = (light, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getQuadratic(light, state.pointLightRecord);
+  getQuadratic(light, RecordPointLightMainService.getRecord(state));
 };
 
 let setPointLightQuadratic =
@@ -225,7 +249,7 @@ let setPointLightQuadratic =
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
@@ -234,7 +258,14 @@ let setPointLightQuadratic =
   );
   {
     ...state,
-    pointLightRecord: setQuadratic(light, quadratic, state.pointLightRecord),
+    pointLightRecord:
+      Some(
+        setQuadratic(
+          light,
+          quadratic,
+          RecordPointLightMainService.getRecord(state),
+        ),
+      ),
   };
 };
 
@@ -247,14 +278,14 @@ let getPointLightRange = (light, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getRange(light, state.pointLightRecord);
+  getRange(light, RecordPointLightMainService.getRecord(state));
 };
 
 let setPointLightRange = (light, range, state: StateDataMainType.state) => {
@@ -266,7 +297,7 @@ let setPointLightRange = (light, range, state: StateDataMainType.state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
@@ -275,7 +306,10 @@ let setPointLightRange = (light, range, state: StateDataMainType.state) => {
   );
   {
     ...state,
-    pointLightRecord: setRange(light, range, state.pointLightRecord),
+    pointLightRecord:
+      Some(
+        setRange(light, range, RecordPointLightMainService.getRecord(state)),
+      ),
   };
 };
 
@@ -288,7 +322,7 @@ let setPointLightRangeLevel = (light, level, state: StateDataMainType.state) => 
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
@@ -297,7 +331,14 @@ let setPointLightRangeLevel = (light, level, state: StateDataMainType.state) => 
   );
   {
     ...state,
-    pointLightRecord: setRangeLevel(light, level, state.pointLightRecord),
+    pointLightRecord:
+      Some(
+        setRangeLevel(
+          light,
+          level,
+          RecordPointLightMainService.getRecord(state),
+        ),
+      ),
   };
 };
 
@@ -310,14 +351,14 @@ let getPointLightIsRender = (light, state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  getIsRender(light, state.pointLightRecord);
+  getIsRender(light, RecordPointLightMainService.getRecord(state));
 };
 
 let setPointLightIsRender = (light, isRender, state) => {
@@ -329,7 +370,7 @@ let setPointLightIsRender = (light, isRender, state) => {
             AliveComponentService.checkComponentShouldAlive(
               light,
               isAlive,
-              state.pointLightRecord,
+              RecordPointLightMainService.getRecord(state),
             )
           )
         )
@@ -338,12 +379,19 @@ let setPointLightIsRender = (light, isRender, state) => {
   );
   {
     ...state,
-    pointLightRecord: setIsRender(light, isRender, state.pointLightRecord),
+    pointLightRecord:
+      Some(
+        setIsRender(
+          light,
+          isRender,
+          RecordPointLightMainService.getRecord(state),
+        ),
+      ),
   };
 };
 
-let isMaxCount = ({pointLightRecord}) =>
+let isMaxCount = state =>
   MaxCountLightService.isMaxCount(
-    pointLightRecord.renderLightArr,
+    RecordPointLightMainService.getRecord(state).renderLightArr,
     BufferPointLightService.getBufferMaxCount(),
   );

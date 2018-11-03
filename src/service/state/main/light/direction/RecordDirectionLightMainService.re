@@ -6,6 +6,9 @@ open Js.Typed_array;
 
 open BufferDirectionLightService;
 
+let getRecord = ({directionLightRecord}) =>
+  directionLightRecord |> OptionService.unsafeGet;
+
 let getDefaultColor = () => [|1., 1., 1.|];
 
 let getDefaultIntensity = () => 1.;
@@ -41,54 +44,61 @@ let _setAllTypeArrDataToDefault = (count: int, (buffer, colors, intensities)) =>
   (buffer, setAllTypeArrDataToDefault(count, (colors, intensities)));
 };
 
-let _initBufferData = () => {
-  let count = getBufferMaxCount();
+let _initBufferData = count => {
   let buffer = createBuffer(count);
   let (colors, intensities) =
     CreateTypeArrayDirectionLightService.createTypeArrays(buffer, count);
   (buffer, colors, intensities) |> _setAllTypeArrDataToDefault(count);
 };
 
-let create = () => {
-  let (buffer, (colors, intensities)) = _initBufferData();
+let create = ({settingRecord} as state) => {
+  let lightCount = BufferSettingService.getDirectionLightCount(settingRecord);
+  let (buffer, (colors, intensities)) = _initBufferData(lightCount);
+
   {
-    index: 0,
-    buffer,
-    colors,
-    intensities,
-    disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
-    renderLightArr: WonderCommonlib.ArrayService.createEmpty(),
-    gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+    ...state,
+    directionLightRecord:
+      Some({
+        index: 0,
+        buffer,
+        colors,
+        intensities,
+        disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+        renderLightArr: WonderCommonlib.ArrayService.createEmpty(),
+        gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+      }),
   };
 };
 
-let deepCopyForRestore = ({directionLightRecord} as state) => {
+let deepCopyForRestore = state => {
   let {
-    index,
-    colors,
-    intensities,
-    gameObjectMap,
-    disposedIndexArray,
-    renderLightArr,
-  } = directionLightRecord;
+        index,
+        colors,
+        intensities,
+        gameObjectMap,
+        disposedIndexArray,
+        renderLightArr,
+      } as directionLightRecord =
+    getRecord(state);
   {
     ...state,
-    directionLightRecord: {
-      ...directionLightRecord,
-      index,
-      colors:
-        colors
-        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
-             index * getColorsSize(),
-           ),
-      intensities:
-        intensities
-        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
-             index * getIntensitiesSize(),
-           ),
-      gameObjectMap: gameObjectMap |> SparseMapService.copy,
-      renderLightArr: renderLightArr |> Js.Array.copy,
-      disposedIndexArray: disposedIndexArray |> Js.Array.copy,
-    },
+    directionLightRecord:
+      Some({
+        ...directionLightRecord,
+        index,
+        colors:
+          colors
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getColorsSize(),
+             ),
+        intensities:
+          intensities
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getIntensitiesSize(),
+             ),
+        gameObjectMap: gameObjectMap |> SparseMapService.copy,
+        renderLightArr: renderLightArr |> Js.Array.copy,
+        disposedIndexArray: disposedIndexArray |> Js.Array.copy,
+      }),
   };
 };

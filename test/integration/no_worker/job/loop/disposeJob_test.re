@@ -585,7 +585,7 @@ let _ =
               (directionLight1, directionLight2, directionLight3),
             ) =
               _prepare(state);
-            let {gameObjectMap} = state.directionLightRecord;
+            let {gameObjectMap} = DirectionLightTool.getRecord(state);
             (
               gameObjectMap |> Js.Array.includes(gameObject1),
               gameObjectMap |> Js.Array.includes(gameObject2),
@@ -601,7 +601,7 @@ let _ =
             ) =
               _prepare(state);
             let state = state |> DisposeJob.execJob(None);
-            let {gameObjectMap} = state.directionLightRecord;
+            let {gameObjectMap} = DirectionLightTool.getRecord(state);
             (
               gameObjectMap |> Js.Array.includes(gameObject1),
               gameObjectMap |> Js.Array.includes(gameObject2),
@@ -643,7 +643,7 @@ let _ =
               (pointLight1, pointLight2, pointLight3),
             ) =
               _prepare(state);
-            let {gameObjectMap} = state.pointLightRecord;
+            let {gameObjectMap} = PointLightTool.getRecord(state);
             (
               gameObjectMap |> Js.Array.includes(gameObject1),
               gameObjectMap |> Js.Array.includes(gameObject2),
@@ -659,7 +659,7 @@ let _ =
             ) =
               _prepare(state);
             let state = state |> DisposeJob.execJob(None);
-            let {gameObjectMap} = state.pointLightRecord;
+            let {gameObjectMap} = PointLightTool.getRecord(state);
             (
               gameObjectMap |> Js.Array.includes(gameObject1),
               gameObjectMap |> Js.Array.includes(gameObject2),

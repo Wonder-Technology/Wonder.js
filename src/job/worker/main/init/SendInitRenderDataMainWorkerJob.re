@@ -105,8 +105,6 @@ let _buildData = (operateType, canvas, stateData) => {
         settingRecord,
         workerInstanceRecord,
         gameObjectRecord,
-        directionLightRecord,
-        pointLightRecord,
         browserDetectRecord,
       } as state =
     StateDataMainService.unsafeGetState(stateData);
@@ -119,6 +117,8 @@ let _buildData = (operateType, canvas, stateData) => {
   let transformRecord = RecordTransformMainService.getRecord(state);
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
+  let directionLightRecord = RecordDirectionLightMainService.getRecord(state);
+  let pointLightRecord = RecordPointLightMainService.getRecord(state);
   let geometryRecord = RecordGeometryMainService.getRecord(state);
   let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);

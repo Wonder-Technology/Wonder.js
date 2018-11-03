@@ -31,8 +31,6 @@ let createRenderState =
         gpuDetectRecord,
         glslSenderRecord,
         programRecord,
-        directionLightRecord,
-        pointLightRecord,
         vboBufferRecord,
         typeArrayPoolRecord,
         globalTempRecord,
@@ -46,6 +44,8 @@ let createRenderState =
   let geometryRecord = RecordGeometryMainService.getRecord(state);
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
+  let directionLightRecord = RecordDirectionLightMainService.getRecord(state);
+  let pointLightRecord = RecordPointLightMainService.getRecord(state);
   let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
   let basicSourceTextureRecord =
     RecordBasicSourceTextureMainService.getRecord(state);

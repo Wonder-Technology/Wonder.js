@@ -199,24 +199,28 @@ let batchDisposeLightMaterialComponent = (state, componentDataArray) =>
   );
 
 let batchDisposeDirectionLightComponent =
-    ({directionLightRecord} as state, componentArray: array(component)) => {
+    (state, componentArray: array(component)) => {
   ...state,
   directionLightRecord:
-    ComponentMapService.batchDisposeComponent(
-      directionLightRecord,
-      DisposeDirectionLightService.handleBatchDisposeComponent,
-      componentArray,
+    Some(
+      ComponentMapService.batchDisposeComponent(
+        RecordDirectionLightMainService.getRecord(state),
+        DisposeDirectionLightService.handleBatchDisposeComponent,
+        componentArray,
+      ),
     ),
 };
 
 let batchDisposePointLightComponent =
-    ({pointLightRecord} as state, componentArray: array(component)) => {
+    (state, componentArray: array(component)) => {
   ...state,
   pointLightRecord:
-    ComponentMapService.batchDisposeComponent(
-      pointLightRecord,
-      DisposePointLightService.handleBatchDisposeComponent,
-      componentArray,
+    Some(
+      ComponentMapService.batchDisposeComponent(
+        RecordPointLightMainService.getRecord(state),
+        DisposePointLightService.handleBatchDisposeComponent,
+        componentArray,
+      ),
     ),
 };
 

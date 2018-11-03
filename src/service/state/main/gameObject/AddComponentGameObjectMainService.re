@@ -150,31 +150,27 @@ let addMeshRendererComponent =
   );
 
 let addDirectionLightComponent =
-    (
-      uid: int,
-      component: component,
-      {directionLightRecord, gameObjectRecord} as state,
-    ) => {
+    (uid: int, component: component, {gameObjectRecord} as state) => {
   state.directionLightRecord =
-    _addComponent(
-      (uid, component, gameObjectRecord.directionLightMap),
-      AddDirectionLightService.handleAddComponent,
-      directionLightRecord,
+    Some(
+      _addComponent(
+        (uid, component, gameObjectRecord.directionLightMap),
+        AddDirectionLightService.handleAddComponent,
+        RecordDirectionLightMainService.getRecord(state),
+      ),
     );
   state;
 };
 
 let addPointLightComponent =
-    (
-      uid: int,
-      component: component,
-      {pointLightRecord, gameObjectRecord} as state,
-    ) => {
+    (uid: int, component: component, {gameObjectRecord} as state) => {
   state.pointLightRecord =
-    _addComponent(
-      (uid, component, gameObjectRecord.pointLightMap),
-      AddPointLightService.handleAddComponent,
-      pointLightRecord,
+    Some(
+      _addComponent(
+        (uid, component, gameObjectRecord.pointLightMap),
+        AddPointLightService.handleAddComponent,
+        RecordPointLightMainService.getRecord(state),
+      ),
     );
   state;
 };

@@ -180,6 +180,8 @@ let _createState = () => {
           transformCount: _createTransformCount(100000),
           basicMaterialCount: 50,
           lightMaterialCount: 50,
+          directionLightCount: 50,
+          pointLightCount: 50,
           textureCountPerMaterial: 50,
           basicSourceTextureCount: 50,
           arrayBufferViewSourceTextureCount: 50,

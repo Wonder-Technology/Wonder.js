@@ -9,28 +9,49 @@ let createGameObject = state => {
   (state, gameObject, light);
 };
 
-let getRecord = state => state.pointLightRecord;
+let getRecord = state => RecordPointLightMainService.getRecord(state);
 
 let isAlive = (light, state) =>
-  DisposePointLightService.isAlive(light, state.pointLightRecord);
+  DisposePointLightService.isAlive(
+    light,
+    RecordPointLightMainService.getRecord(state),
+  );
 
 let getColor = (light, state) =>
-  OperatePointLightService.getColor(light, state.pointLightRecord);
+  OperatePointLightService.getColor(
+    light,
+    RecordPointLightMainService.getRecord(state),
+  );
 
 let getIntensity = (light, state) =>
-  OperatePointLightService.getIntensity(light, state.pointLightRecord);
+  OperatePointLightService.getIntensity(
+    light,
+    RecordPointLightMainService.getRecord(state),
+  );
 
 let getConstant = (light, state) =>
-  OperatePointLightService.getConstant(light, state.pointLightRecord);
+  OperatePointLightService.getConstant(
+    light,
+    RecordPointLightMainService.getRecord(state),
+  );
 
 let getLinear = (light, state) =>
-  OperatePointLightService.getLinear(light, state.pointLightRecord);
+  OperatePointLightService.getLinear(
+    light,
+    RecordPointLightMainService.getRecord(state),
+  );
 
 let getQuadratic = (light, state) =>
-  OperatePointLightService.getQuadratic(light, state.pointLightRecord);
+  OperatePointLightService.getQuadratic(
+    light,
+    RecordPointLightMainService.getRecord(state),
+  );
 
 let getRange = (light, state) =>
-  OperatePointLightService.getRange(light, state.pointLightRecord);
+  OperatePointLightService.getRange(
+    light,
+    RecordPointLightMainService.getRecord(state),
+  );
 
 let getDefaultColor = RecordPointLightMainService.getDefaultColor;
 

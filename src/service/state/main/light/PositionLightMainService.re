@@ -10,8 +10,8 @@ let getPosition = (gameObject, {gameObjectRecord, globalTempRecord} as state) =>
     state |> RecordTransformMainService.getRecord,
   );
 
-let buildPositionMap = (getPositionFunc, {pointLightRecord} as state) =>
-  pointLightRecord.renderLightArr
+let buildPositionMap = (getPositionFunc, state) =>
+  RecordPointLightMainService.getRecord(state).renderLightArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. map, i) =>
          map

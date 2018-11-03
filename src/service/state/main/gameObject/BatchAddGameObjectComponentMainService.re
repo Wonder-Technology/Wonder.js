@@ -248,14 +248,16 @@ let _batchAddDirectionLightComponent =
     (
       uidArr: array(int),
       componentArr: array(component),
-      {directionLightRecord, gameObjectRecord} as state,
+      {gameObjectRecord} as state,
     ) => {
   ...state,
   directionLightRecord:
-    _batchAddComponent(
-      (uidArr, componentArr, gameObjectRecord.directionLightMap),
-      AddDirectionLightService.handleAddComponent,
-      directionLightRecord,
+    Some(
+      _batchAddComponent(
+        (uidArr, componentArr, gameObjectRecord.directionLightMap),
+        AddDirectionLightService.handleAddComponent,
+        RecordDirectionLightMainService.getRecord(state),
+      ),
     ),
 };
 
@@ -265,14 +267,16 @@ let _batchAddPointLightComponent =
     (
       uidArr: array(int),
       componentArr: array(component),
-      {pointLightRecord, gameObjectRecord} as state,
+      {gameObjectRecord} as state,
     ) => {
   ...state,
   pointLightRecord:
-    _batchAddComponent(
-      (uidArr, componentArr, gameObjectRecord.pointLightMap),
-      AddPointLightService.handleAddComponent,
-      pointLightRecord,
+    Some(
+      _batchAddComponent(
+        (uidArr, componentArr, gameObjectRecord.pointLightMap),
+        AddPointLightService.handleAddComponent,
+        RecordPointLightMainService.getRecord(state),
+      ),
     ),
 };
 

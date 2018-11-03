@@ -6,19 +6,16 @@ let batchSetDirectionLightData =
     ({directionLights}, directionLightArr, state) =>
   directionLights
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       (.
-         {directionLightRecord} as state,
-         {color, intensity}: WDType.directionLight,
-         index,
-       ) => {
+       (. state, {color, intensity}: WDType.directionLight, index) => {
          let index = directionLightArr[index];
 
          {
            ...state,
            directionLightRecord:
-             directionLightRecord
+             RecordDirectionLightMainService.getRecord(state)
              |> OperateDirectionLightService.setColor(index, color)
-             |> OperateDirectionLightService.setIntensity(index, intensity),
+             |> OperateDirectionLightService.setIntensity(index, intensity)
+             |. Some,
          };
        },
        state,
@@ -28,7 +25,7 @@ let batchSetPointLightData = ({pointLights}, pointLightArr, state) =>
   pointLights
   |> WonderCommonlib.ArrayService.reduceOneParami(
        (.
-         {pointLightRecord} as state,
+         state,
          {
            color,
            intensity,
@@ -44,7 +41,7 @@ let batchSetPointLightData = ({pointLights}, pointLightArr, state) =>
          {
            ...state,
            pointLightRecord:
-             pointLightRecord
+             RecordPointLightMainService.getRecord(state)
              |> OperatePointLightService.setColor(index, color)
              |> OperatePointLightService.setIntensity(index, intensity)
              |> OperatePointLightService.setConstant(
@@ -56,7 +53,8 @@ let batchSetPointLightData = ({pointLights}, pointLightArr, state) =>
                   index,
                   quadraticAttenuation,
                 )
-             |> OperatePointLightService.setRange(index, range),
+             |> OperatePointLightService.setRange(index, range)
+             |. Some,
          };
        },
        state,

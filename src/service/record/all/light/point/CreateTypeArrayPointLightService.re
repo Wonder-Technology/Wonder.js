@@ -5,32 +5,32 @@ open BufferPointLightService;
 let createTypeArrays = (buffer, count) => (
   Float32Array.fromBufferRange(
     WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getColorsOffset(),
-    ~length=getColorsLength()
+    ~offset=getColorsOffset(count),
+    ~length=getColorsLength(count)
   ),
   Float32Array.fromBufferRange(
     WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getIntensitiesOffset(),
-    ~length=getIntensitiesLength()
+    ~offset=getIntensitiesOffset(count),
+    ~length=getIntensitiesLength(count)
   ),
   Float32Array.fromBufferRange(
     WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getConstantsOffset(),
-    ~length=getConstantsLength()
+    ~offset=getConstantsOffset(count),
+    ~length=getConstantsLength(count)
   ),
   Float32Array.fromBufferRange(
     WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getLinearsOffset(),
-    ~length=getLinearsLength()
+    ~offset=getLinearsOffset(count),
+    ~length=getLinearsLength(count)
   ),
   Float32Array.fromBufferRange(
     WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getQuadraticsOffset(),
-    ~length=getQuadraticsLength()
+    ~offset=getQuadraticsOffset(count),
+    ~length=getQuadraticsLength(count)
   ),
   Float32Array.fromBufferRange(
     WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getRangesOffset(),
-    ~length=getRangesLength()
+    ~offset=getRangesOffset(count),
+    ~length=getRangesLength(count)
   )
 );

@@ -26,38 +26,42 @@ let getQuadraticIndex = index => index * getQuadraticsSize();
 
 let getRangeIndex = index => index * getRangesSize();
 
-let getColorsOffset = () => 0;
+let getColorsOffset = count => 0;
 
-let getColorsLength = () => getBufferMaxCount() * getColorsSize();
+let getColorsLength = count => count * getColorsSize();
 
-let getIntensitiesOffset = () =>
-  getColorsLength() * Float32Array._BYTES_PER_ELEMENT;
+let getIntensitiesOffset = count =>
+  getColorsLength(count) * Float32Array._BYTES_PER_ELEMENT;
 
-let getIntensitiesLength = () => getBufferMaxCount() * getIntensitiesSize();
+let getIntensitiesLength = count => count * getIntensitiesSize();
 
-let getConstantsOffset = () =>
-  getIntensitiesOffset()
-  + getIntensitiesLength()
+let getConstantsOffset = count =>
+  getIntensitiesOffset(count)
+  + getIntensitiesLength(count)
   * Float32Array._BYTES_PER_ELEMENT;
 
-let getConstantsLength = () => getBufferMaxCount() * getConstantsSize();
+let getConstantsLength = count => count * getConstantsSize();
 
-let getLinearsOffset = () =>
-  getConstantsOffset() + getConstantsLength() * Float32Array._BYTES_PER_ELEMENT;
-
-let getLinearsLength = () => getBufferMaxCount() * getLinearsSize();
-
-let getQuadraticsOffset = () =>
-  getLinearsOffset() + getLinearsLength() * Float32Array._BYTES_PER_ELEMENT;
-
-let getQuadraticsLength = () => getBufferMaxCount() * getQuadraticsSize();
-
-let getRangesOffset = () =>
-  getQuadraticsOffset()
-  + getQuadraticsLength()
+let getLinearsOffset = count =>
+  getConstantsOffset(count)
+  + getConstantsLength(count)
   * Float32Array._BYTES_PER_ELEMENT;
 
-let getRangesLength = () => getBufferMaxCount() * getRangesSize();
+let getLinearsLength = count => count * getLinearsSize();
+
+let getQuadraticsOffset = count =>
+  getLinearsOffset(count)
+  + getLinearsLength(count)
+  * Float32Array._BYTES_PER_ELEMENT;
+
+let getQuadraticsLength = count => count * getQuadraticsSize();
+
+let getRangesOffset = count =>
+  getQuadraticsOffset(count)
+  + getQuadraticsLength(count)
+  * Float32Array._BYTES_PER_ELEMENT;
+
+let getRangesLength = count => count * getRangesSize();
 
 let getTotalByteLength = count =>
   count

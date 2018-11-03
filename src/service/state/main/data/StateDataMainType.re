@@ -311,8 +311,8 @@ and state = {
   mutable basicSourceTextureRecord: option(basicSourceTextureRecord),
   mutable arrayBufferViewSourceTextureRecord:
     option(arrayBufferViewSourceTextureRecord),
-  mutable directionLightRecord,
-  mutable pointLightRecord,
+  mutable directionLightRecord: option(directionLightRecord),
+  mutable pointLightRecord: option(pointLightRecord),
   mutable geometryRecord: option(geometryRecord),
   mutable meshRendererRecord: option(meshRendererRecord),
   mutable arcballCameraControllerRecord,

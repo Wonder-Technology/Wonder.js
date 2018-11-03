@@ -17,6 +17,10 @@ open BufferPointLightService;
  let _getQuadraticIndex = (index) => index * getQuadraticsSize();
 
  let _getRangeIndex = (index) => index * getRangesSize(); */
+
+let getRecord = ({pointLightRecord}) =>
+  pointLightRecord |> OptionService.unsafeGet;
+
 let getColor = (index, typeArr) =>
   TypeArrayService.getFloat3(getColorIndex(index), typeArr);
 
@@ -115,8 +119,7 @@ let _setAllTypeArrDataToDefault =
   ),
 );
 
-let _initBufferData = () => {
-  let count = getBufferMaxCount();
+let _initBufferData = count => {
   let buffer = createBuffer(count);
   let (colors, intensities, constants, linears, quadratics, ranges) =
     CreateTypeArrayPointLightService.createTypeArrays(buffer, count);
@@ -124,75 +127,83 @@ let _initBufferData = () => {
   |> _setAllTypeArrDataToDefault(count);
 };
 
-let create = () => {
+let create = ({settingRecord} as state) => {
+  let lightCount = BufferSettingService.getPointLightCount(settingRecord);
   let (buffer, (colors, intensities, constants, linears, quadratics, ranges)) =
-    _initBufferData();
+    _initBufferData(lightCount);
+
   {
-    index: 0,
-    buffer,
-    colors,
-    intensities,
-    constants,
-    linears,
-    quadratics,
-    ranges,
-    disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
-    renderLightArr: WonderCommonlib.ArrayService.createEmpty(),
-    gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+    ...state,
+    pointLightRecord:
+      Some({
+        index: 0,
+        buffer,
+        colors,
+        intensities,
+        constants,
+        linears,
+        quadratics,
+        ranges,
+        disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+        renderLightArr: WonderCommonlib.ArrayService.createEmpty(),
+        gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+      }),
   };
 };
 
-let deepCopyForRestore = ({pointLightRecord} as state) => {
+let deepCopyForRestore = state => {
   let {
-    index,
-    colors,
-    intensities,
-    constants,
-    linears,
-    quadratics,
-    ranges,
-    gameObjectMap,
-    disposedIndexArray,
-    renderLightArr,
-  } = pointLightRecord;
+        index,
+        colors,
+        intensities,
+        constants,
+        linears,
+        quadratics,
+        ranges,
+        gameObjectMap,
+        disposedIndexArray,
+        renderLightArr,
+      } as pointLightRecord =
+    getRecord(state);
   {
     ...state,
-    pointLightRecord: {
-      ...pointLightRecord,
-      index,
-      colors:
-        colors
-        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
-             index * getColorsSize(),
-           ),
-      intensities:
-        intensities
-        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
-             index * getIntensitiesSize(),
-           ),
-      constants:
-        constants
-        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
-             index * getConstantsSize(),
-           ),
-      linears:
-        linears
-        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
-             index * getLinearsSize(),
-           ),
-      quadratics:
-        quadratics
-        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
-             index * getQuadraticsSize(),
-           ),
-      ranges:
-        ranges
-        |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
-             index * getRangesSize(),
-           ),
-      gameObjectMap: gameObjectMap |> SparseMapService.copy,
-      renderLightArr: renderLightArr |> Js.Array.copy,
-      disposedIndexArray: disposedIndexArray |> Js.Array.copy,
-    },
+    pointLightRecord:
+      Some({
+        ...pointLightRecord,
+        index,
+        colors:
+          colors
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getColorsSize(),
+             ),
+        intensities:
+          intensities
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getIntensitiesSize(),
+             ),
+        constants:
+          constants
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getConstantsSize(),
+             ),
+        linears:
+          linears
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getLinearsSize(),
+             ),
+        quadratics:
+          quadratics
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getQuadraticsSize(),
+             ),
+        ranges:
+          ranges
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getRangesSize(),
+             ),
+        gameObjectMap: gameObjectMap |> SparseMapService.copy,
+        renderLightArr: renderLightArr |> Js.Array.copy,
+        disposedIndexArray: disposedIndexArray |> Js.Array.copy,
+      }),
   };
 };

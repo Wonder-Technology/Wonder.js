@@ -59,22 +59,15 @@ let _buildIMGUIData = ({viewRecord} as state) => {
     );
 };
 
-let _buildData =
-    (
-      operateType,
-      {
-        settingRecord,
-        gameObjectRecord,
-        directionLightRecord,
-        pointLightRecord,
-      } as state,
-    ) => {
+let _buildData = (operateType, {settingRecord, gameObjectRecord} as state) => {
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
   let basicRenderObjectRecord =
     OperateRenderMainService.unsafeGetBasicRenderObjectRecord(state);
   let lightRenderObjectRecord =
     OperateRenderMainService.unsafeGetLightRenderObjectRecord(state);
+  let directionLightRecord = RecordDirectionLightMainService.getRecord(state);
+  let pointLightRecord = RecordPointLightMainService.getRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
   let basicSourceTextureRecord =
     RecordBasicSourceTextureMainService.getRecord(state);

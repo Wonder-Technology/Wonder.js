@@ -27,7 +27,7 @@ let _ =
       });
 
       describe("contract check", () =>
-        describe("limit the total alive count of light to 4", () => {
+        describe("limit the total is-render light count of light to 4", () => {
           test("test create", () => {
             let (state, light) = createDirectionLight(state^);
             let (state, light) = createDirectionLight(state);
@@ -57,7 +57,7 @@ let _ =
             |> not_
             |> toThrow;
           });
-          test("test set is render", () => {
+          test("test set is render to false", () => {
             let (state, light1) = createDirectionLight(state^);
             let (state, light2) = createDirectionLight(state);
             let (state, light3) = createDirectionLight(state);
@@ -80,6 +80,7 @@ let _ =
         })
       );
     });
+
     describe("unsafeGetDirectionLightGameObject", () =>
       test("get light's gameObject", () => {
         open GameObjectAPI;
@@ -93,12 +94,14 @@ let _ =
         |> expect == gameObject;
       })
     );
+
     describe("getDirectionLightColor", () =>
       test("test default color", () => {
         let (state, light) = createDirectionLight(state^);
         getDirectionLightColor(light, state) |> expect == [|1., 1., 1.|];
       })
     );
+
     describe("setDirectionLightColor", () =>
       test("test set color", () => {
         let (state, light) = createDirectionLight(state^);
@@ -109,6 +112,7 @@ let _ =
         |> expect == color;
       })
     );
+
     describe("getDirectionLightIntensity", () =>
       test("test default intensity", () => {
         let (state, light) = createDirectionLight(state^);

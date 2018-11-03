@@ -6,19 +6,23 @@ let getColorsSize = () => 3;
 
 let getIntensitiesSize = () => 1;
 
-let getColorIndex = (index) => index * getColorsSize();
+let getColorIndex = index => index * getColorsSize();
 
-let getIntensityIndex = (index) => index * getIntensitiesSize();
+let getIntensityIndex = index => index * getIntensitiesSize();
 
-let getColorsOffset = () => 0;
+let getColorsOffset = count => 0;
 
-let getColorsLength = () => getBufferMaxCount() * getColorsSize();
+let getColorsLength = count => count * getColorsSize();
 
-let getIntensitiesOffset = () => getColorsLength() * Float32Array._BYTES_PER_ELEMENT;
+let getIntensitiesOffset = count =>
+  getColorsLength(count) * Float32Array._BYTES_PER_ELEMENT;
 
-let getIntensitiesLength = () => getBufferMaxCount() * getIntensitiesSize();
+let getIntensitiesLength = count => count * getIntensitiesSize();
 
-let getTotalByteLength = (count) =>
-  count * Float32Array._BYTES_PER_ELEMENT * (getColorsSize() + getIntensitiesSize());
+let getTotalByteLength = count =>
+  count
+  * Float32Array._BYTES_PER_ELEMENT
+  * (getColorsSize() + getIntensitiesSize());
 
-let createBuffer = (count) => Worker.newSharedArrayBuffer(getTotalByteLength(count));
+let createBuffer = count =>
+  Worker.newSharedArrayBuffer(getTotalByteLength(count));

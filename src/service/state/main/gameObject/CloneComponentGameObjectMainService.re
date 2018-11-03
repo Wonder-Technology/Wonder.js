@@ -109,31 +109,26 @@ let cloneLightMaterialComponent =
   );
 
 let cloneDirectionLightComponent =
-    (
-      sourceComponent: component,
-      countRangeArr: array(int),
-      {directionLightRecord} as state,
-    ) => {
+    (sourceComponent: component, countRangeArr: array(int), state) => {
   let (directionLightRecord, componentArr) =
     CloneDirectionLightService.handleCloneComponent(
       sourceComponent,
       countRangeArr,
-      directionLightRecord,
+      RecordDirectionLightMainService.getRecord(state),
     );
-  ({...state, directionLightRecord}, componentArr);
+  (
+    {...state, directionLightRecord: Some(directionLightRecord)},
+    componentArr,
+  );
 };
 
 let clonePointLightComponent =
-    (
-      sourceComponent: component,
-      countRangeArr: array(int),
-      {pointLightRecord} as state,
-    ) => {
+    (sourceComponent: component, countRangeArr: array(int), state) => {
   let (pointLightRecord, componentArr) =
     ClonePointLightService.handleCloneComponent(
       sourceComponent,
       countRangeArr,
-      pointLightRecord,
+      RecordPointLightMainService.getRecord(state),
     );
-  ({...state, pointLightRecord}, componentArr);
+  ({...state, pointLightRecord: Some(pointLightRecord)}, componentArr);
 };
