@@ -46,22 +46,86 @@ let getFloat4Tuple = (index: int, typeArray: Float32Array.t) => (
   Float32Array.unsafe_get(typeArray, index + 3),
 );
 
+let _checkNotExceedBound = (index, typeArray, getLengthFunc) =>
+  WonderLog.(
+    Contract.(
+      Operators.(
+        test(
+          Log.buildAssertMessage(
+            ~expect={j|not exceed bound|j},
+            ~actual={j|exceed|j},
+          ),
+          () =>
+          index < (typeArray |> getLengthFunc)
+        )
+      )
+    )
+  );
+
 let setUint8_1 = (index: int, value: int, typeArray: Uint8Array.t) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            _checkNotExceedBound(index, typeArray, Uint8Array.length)
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
   Uint8Array.unsafe_set(typeArray, index, value);
   typeArray;
 };
 
 let setUint16_1 = (index: int, value: int, typeArray: Uint16Array.t) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            _checkNotExceedBound(index, typeArray, Uint16Array.length)
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
   Uint16Array.unsafe_set(typeArray, index, value);
   typeArray;
 };
 
 let setUint32_1 = (index: int, value: int, typeArray: Uint32Array.t) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            _checkNotExceedBound(index, typeArray, Uint32Array.length)
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
   Uint32Array.unsafe_set(typeArray, index, value);
   typeArray;
 };
 
 let setFloat1 = (index: int, value, typeArray: Float32Array.t) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            _checkNotExceedBound(index, typeArray, Float32Array.length)
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
   Float32Array.unsafe_set(typeArray, index, value);
   typeArray;
 };
@@ -82,6 +146,8 @@ let setFloat3 =
         () =>
         len == 3
       );
+
+      _checkNotExceedBound(index + 2, typeArray, Float32Array.length);
     },
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
@@ -112,6 +178,7 @@ let setFloat4 =
         () =>
         len == 4
       );
+      _checkNotExceedBound(index + 3, typeArray, Float32Array.length);
     },
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
@@ -126,6 +193,18 @@ let setFloat4 =
 };
 
 let setFloat3ByTuple = (index: int, (x, y, z), typeArray: Float32Array.t) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            _checkNotExceedBound(index + 2, typeArray, Float32Array.length)
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
   Float32Array.unsafe_set(typeArray, index, x);
   Float32Array.unsafe_set(typeArray, index + 1, y);
   Float32Array.unsafe_set(typeArray, index + 2, z);
@@ -133,6 +212,18 @@ let setFloat3ByTuple = (index: int, (x, y, z), typeArray: Float32Array.t) => {
 };
 
 let setFloat4ByTuple = (index: int, (x, y, z, w), typeArray: Float32Array.t) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            _checkNotExceedBound(index + 3, typeArray, Float32Array.length)
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
   Float32Array.unsafe_set(typeArray, index, x);
   Float32Array.unsafe_set(typeArray, index + 1, y);
   Float32Array.unsafe_set(typeArray, index + 2, z);
@@ -185,6 +276,7 @@ let setFloat16 =
         () =>
         len == 16
       );
+      _checkNotExceedBound(index + 15, typeArray, Float32Array.length);
     },
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
@@ -294,36 +386,36 @@ let getFloat32ArraySubarray =
    }; */
 
 /* let fillUint8ArrayWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
-  WonderLog.Contract.requireCheck(
-    () => {
-      open WonderLog;
-      open Contract;
-      open Operators;
-      test(
-        Log.buildAssertMessage(
-          ~expect={j|offset should >= 0|j},
-          ~actual={j|is $offset|j},
-        ),
-        () =>
-        offset >= 0
-      );
-      let sourceTypeArrLen = Uint8Array.length(sourceTypeArr);
-      let targetTypeArrLen = Uint8Array.length(targetTypeArr);
-      test(
-        Log.buildAssertMessage(
-          ~expect=
-            {j|sourceTypeArr.length:$sourceTypeArrLen + offset:$offset <= targetTypeArr.length:$targetTypeArrLen|j},
-          ~actual={j|not|j},
-        ),
-        () =>
-        sourceTypeArrLen + offset <= targetTypeArrLen
-      );
-    },
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-  targetTypeArr
-  |> Uint8Array.setArrayOffset(Obj.magic(sourceTypeArr), offset);
-}; */
+     WonderLog.Contract.requireCheck(
+       () => {
+         open WonderLog;
+         open Contract;
+         open Operators;
+         test(
+           Log.buildAssertMessage(
+             ~expect={j|offset should >= 0|j},
+             ~actual={j|is $offset|j},
+           ),
+           () =>
+           offset >= 0
+         );
+         let sourceTypeArrLen = Uint8Array.length(sourceTypeArr);
+         let targetTypeArrLen = Uint8Array.length(targetTypeArr);
+         test(
+           Log.buildAssertMessage(
+             ~expect=
+               {j|sourceTypeArr.length:$sourceTypeArrLen + offset:$offset <= targetTypeArr.length:$targetTypeArrLen|j},
+             ~actual={j|not|j},
+           ),
+           () =>
+           sourceTypeArrLen + offset <= targetTypeArrLen
+         );
+       },
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     );
+     targetTypeArr
+     |> Uint8Array.setArrayOffset(Obj.magic(sourceTypeArr), offset);
+   }; */
 
 let fillUint16ArrayWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
   WonderLog.Contract.requireCheck(

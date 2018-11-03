@@ -739,6 +739,7 @@ let _ =
                 nameArr,
                 state,
               );
+
             describe("send structure data", () => {
               test("if light's isRender === false, not send its data", () => {
                 let (state, lightGameObject1, _, light1, _) =

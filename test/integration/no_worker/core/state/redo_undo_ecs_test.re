@@ -267,6 +267,7 @@ let _ =
     beforeEach(() => {
       sandbox := createSandbox();
       state := TestTool.initWithJobConfig(~sandbox, ());
+      TestTool.closeContractCheck();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
     describe("deepCopyForRestore", () => {
@@ -1325,6 +1326,8 @@ let _ =
                 SettingTool.buildBufferConfigStr(~meshRendererCount=4, ()),
               (),
             );
+          TestTool.closeContractCheck();
+
           let (
             state,
             gameObject1,
@@ -1539,6 +1542,7 @@ let _ =
               ~buffer=SettingTool.buildBufferConfigStr(~transformCount=5, ()),
               (),
             );
+          TestTool.closeContractCheck();
           let (state, gameObject1, gameObject2, _, transform1, transform2, _) =
             _prepareTransformMatrixData(state);
 
@@ -1576,6 +1580,7 @@ let _ =
                   SettingTool.buildBufferConfigStr(~transformCount=5, ()),
                 (),
               );
+            TestTool.closeContractCheck();
             let (
               state,
               gameObject1,
@@ -1641,6 +1646,7 @@ let _ =
                 ),
               (),
             );
+          TestTool.closeContractCheck();
           let (
             state,
             gameObject1,
@@ -1770,6 +1776,7 @@ let _ =
                   ),
                 (),
               );
+            TestTool.closeContractCheck();
             let (
               state,
               gameObject1,
@@ -1846,6 +1853,7 @@ let _ =
                   ),
                 (),
               );
+            TestTool.closeContractCheck();
             let (
               state,
               gameObject1,
@@ -2104,6 +2112,7 @@ let _ =
                   ),
                 (),
               );
+            TestTool.closeContractCheck();
             let (state, texture1, texture2, texture3) =
               _prepareBasicSourceTextureData(state^);
             let state =
@@ -2220,6 +2229,7 @@ let _ =
                   ),
                 (),
               );
+            TestTool.closeContractCheck();
             let (state, texture1, texture2, texture3) =
               _prepareArrayBufferViewSourceTextureData(state^);
             let state =
@@ -2360,6 +2370,7 @@ let _ =
                 ),
               (),
             );
+          TestTool.closeContractCheck();
           let (
             state,
             gameObject,

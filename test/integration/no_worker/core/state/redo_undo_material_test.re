@@ -17,6 +17,8 @@ let _ =
           sandbox,
           LoopRenderJobTool.buildNoWorkerJobConfig(),
         );
+
+      TestTool.closeContractCheck();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 

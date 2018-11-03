@@ -1725,6 +1725,9 @@ let _ =
           });
           test("test dispose sourceInstance", () => {
             open GameObjectType;
+
+            TestTool.closeContractCheck();
+
             let state = SettingTool.setMemory(state^, ~maxDisposeCount=1, ());
             let (
               state,

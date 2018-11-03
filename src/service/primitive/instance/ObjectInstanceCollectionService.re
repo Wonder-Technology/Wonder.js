@@ -104,6 +104,7 @@ let addObjectInstanceTransform =
     ) => {
   let objectInstanceTransformIndex =
     getObjectInstanceTransformIndex(sourceInstance, objectInstanceTransformIndexMap);
+
   (
     objectInstanceTransformIndexMap
     |> WonderCommonlib.SparseMapService.set(sourceInstance, objectInstanceTransformIndex |> succ),

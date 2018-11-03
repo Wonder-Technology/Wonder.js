@@ -1,3 +1,9 @@
+let openContractCheck = () =>
+  IsDebugMainService.setIsDebug(StateDataMain.stateData, true) |> ignore;
+
+let closeContractCheck = () =>
+  IsDebugMainService.setIsDebug(StateDataMain.stateData, false) |> ignore;
+
 let initWithoutBuildFakeDom =
     (
       ~sandbox,
@@ -131,9 +137,3 @@ let createWithJobConfig =
     (),
   );
 };
-
-let openContractCheck = () =>
-  IsDebugMainService.setIsDebug(StateDataMain.stateData, true) |> ignore;
-
-let closeContractCheck = () =>
-  IsDebugMainService.setIsDebug(StateDataMain.stateData, false) |> ignore;
