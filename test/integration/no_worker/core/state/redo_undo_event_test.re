@@ -16,7 +16,6 @@ let _ =
     beforeEach(() => {
       sandbox := createSandbox();
       state := TestTool.initWithJobConfig(~sandbox, ());
-      TestTool.closeContractCheck();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
@@ -81,7 +80,7 @@ let _ =
 
       test("test restore mouseDomEventDataArrMap", () => {
         let state = MouseEventTool.prepare(~sandbox, ());
-        TestTool.closeContractCheck();
+
         let state = state |> NoWorkerJobTool.execInitJobs;
         let restoredState =
           _prepareDomEvent(
@@ -103,7 +102,7 @@ let _ =
       });
       test("test restore keyboardDomEventDataArrMap", () => {
         let state = KeyboardEventTool.prepare(~sandbox, ());
-        TestTool.closeContractCheck();
+
         let state = state |> NoWorkerJobTool.execInitJobs;
         let restoredState =
           _prepareDomEvent(
@@ -125,7 +124,6 @@ let _ =
       });
       test("test restore touchDomEventDataArrMap", () => {
         let state = TouchEventTool.prepare(~sandbox, ());
-        TestTool.closeContractCheck();
 
         let state = state |> NoWorkerJobTool.execInitJobs;
         let restoredState =
@@ -204,7 +202,7 @@ let _ =
     describe("test copy mouseEventData", () =>
       test("set isDrag to false", () => {
         let state = MouseEventTool.prepare(~sandbox, ());
-        TestTool.closeContractCheck();
+
         let state = MouseEventTool.setIsDrag(true, state);
         let state = state |> NoWorkerJobTool.execInitJobs;
         let state =
@@ -219,7 +217,7 @@ let _ =
     describe("test copy touchEventData", () =>
       test("set isDrag to false", () => {
         let state = TouchEventTool.prepare(~sandbox, ());
-        TestTool.closeContractCheck();
+
         let state = TouchEventTool.setIsDrag(true, state);
         let state = state |> NoWorkerJobTool.execInitJobs;
         let state =
@@ -235,7 +233,7 @@ let _ =
       test("test lastX, lastY", () => {
         let (valueX, valueY) = (ref(0), ref(0));
         let state = MouseEventTool.prepare(~sandbox, ());
-        TestTool.closeContractCheck();
+
         MouseEventTool.setNotPointerLocked(.);
         let state = MouseEventTool.setLastXY(Some(1), Some(2), state);
         let state = state |> NoWorkerJobTool.execInitJobs;
@@ -288,7 +286,7 @@ let _ =
       test("test lastX, lastY", () => {
         let (valueX, valueY) = (ref(0), ref(0));
         let state = TouchEventTool.prepare(~sandbox, ());
-        TestTool.closeContractCheck();
+
         let state = TouchEventTool.setLastXY(Some(1), Some(2), state);
         let state = state |> NoWorkerJobTool.execInitJobs;
         let state =

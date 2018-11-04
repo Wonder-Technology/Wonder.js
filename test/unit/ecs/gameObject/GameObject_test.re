@@ -1057,7 +1057,6 @@ let _ =
           });
         });
         test("dispose geometry component", () => {
-          TestTool.closeContractCheck();
           open GameObjectType;
           let (state, gameObject1, geometry1) =
             GeometryTool.createGameObject(state^);
@@ -1074,7 +1073,6 @@ let _ =
         describe("dispose light component", () => {
           describe("test direction light component", () =>
             test("test dispose one", () => {
-              TestTool.closeContractCheck();
               open GameObjectType;
               let (state, gameObject1, light1) =
                 DirectionLightTool.createGameObject(state^);
@@ -1091,7 +1089,6 @@ let _ =
           );
           describe("test point light component", () =>
             test("test dispose one", () => {
-              TestTool.closeContractCheck();
               open GameObjectType;
               let (state, gameObject1, light1) =
                 PointLightTool.createGameObject(state^);
@@ -1349,7 +1346,7 @@ let _ =
               test("new geometryMap should only has alive data", () => {
                 open GameObjectType;
                 let state = TestTool.initWithoutBuildFakeDom(~sandbox, ());
-                TestTool.closeContractCheck();
+
                 let state =
                   SettingTool.setMemory(state, ~maxDisposeCount=2, ());
                 let (state, gameObject1, geometry1) =
@@ -1386,7 +1383,7 @@ let _ =
               test("new geometryMap should only has alive data", () => {
                 open GameObjectType;
                 let state = TestTool.initWithoutBuildFakeDom(~sandbox, ());
-                TestTool.closeContractCheck();
+
                 let state =
                   SettingTool.setMemory(state, ~maxDisposeCount=2, ());
                 let (state, gameObject1, geometry1) =
@@ -1948,7 +1945,7 @@ let _ =
                "batch dispose light components",
                () => {
                  let _test = ((createGameObjectFunc, isAliveFunc), state) => {
-                   TestTool.closeContractCheck();
+
                    open GameObjectType;
                    let (state, gameObject1, light1) = createGameObjectFunc(state^);
                    let (state, gameObject2, light2) = createGameObjectFunc(state);
@@ -1977,7 +1974,7 @@ let _ =
                  test(
                    "test box geometry component",
                    () => {
-                     TestTool.closeContractCheck();
+
                      open GameObjectType;
                      let (state, gameObject1, geometry1) =
                        BoxGeometryTool.createGameObject(state^);
@@ -1997,7 +1994,7 @@ let _ =
                  test(
                    "test custom geometry component",
                    () => {
-                     TestTool.closeContractCheck();
+
                      open GameObjectType;
                      let (state, gameObject1, geometry1) =
                        GeometryTool.createGameObject(state^);

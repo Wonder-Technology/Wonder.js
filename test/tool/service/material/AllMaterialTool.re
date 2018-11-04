@@ -23,7 +23,9 @@ let _testRemoveFromTypeArr =
   open Expect;
   open Expect.Operators;
   open Sinon;
+
   TestTool.closeContractCheck();
+
   let state = state |> setValueFunc(material1, value1);
   let state = state |> setValueFunc(material2, value2);
   let state =

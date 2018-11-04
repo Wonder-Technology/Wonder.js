@@ -229,7 +229,9 @@ let _ =
               |> setTransformParent(Js.Nullable.return(parent), child1)
               |> setTransformParent(Js.Nullable.return(parent), child2)
               |> setTransformParent(Js.Nullable.return(parent), child3);
+
             TestTool.closeContractCheck();
+
             let state =
               state
               |> GameObjectAPI.disposeGameObjectTransformComponent(

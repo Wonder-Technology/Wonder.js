@@ -56,8 +56,6 @@ let _ =
           ~noWorkerJobRecord=InitRenderJobTool.buildNoWorkerJobConfig(),
           (),
         );
-
-      TestTool.closeContractCheck();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 

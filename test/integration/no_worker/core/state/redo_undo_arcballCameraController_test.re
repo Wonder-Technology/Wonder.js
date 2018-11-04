@@ -54,15 +54,12 @@ let _ =
         );
       MouseEventTool.setPointerLocked(.);
 
-      TestTool.closeContractCheck();
-
       state;
     };
 
     beforeEach(() => {
       sandbox := createSandbox();
       state := TestTool.init(~sandbox, ());
-      TestTool.closeContractCheck();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 

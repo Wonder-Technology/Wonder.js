@@ -41,7 +41,9 @@ let _ =
           (),
         )
         |> FakeGlTool.setFakeGl(fakeGl);
+
       TestTool.closeContractCheck();
+      
       state |> DirectorTool.init;
     };
     let _setFakeGlData = [%bs.raw

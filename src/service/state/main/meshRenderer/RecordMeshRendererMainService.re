@@ -100,6 +100,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         disposedIndexArray,
       } as record =
     state |> getRecord;
+
   {
     ...state,
     meshRendererRecord:

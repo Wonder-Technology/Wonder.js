@@ -8,17 +8,15 @@ let _ =
     open Expect.Operators;
     open Sinon;
     let sandbox = getSandboxDefaultVal();
-    beforeEach(() => {
-      sandbox := createSandbox();
-      TestTool.closeContractCheck();
-    });
+
+    beforeEach(() => sandbox := createSandbox());
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
     test(
       {|1.create box1; 2.get copied state by deepCopyForRestore; 3.dispose box1; 4.add box2;
         the box1's vertices from copied state is wrong!|},
       () => {
         let state = TestTool.initWithJobConfig(~sandbox, ());
-        TestTool.closeContractCheck();
 
         let (state, boxGameObject, geometry) =
           BoxGeometryTool.createGameObject(state);
@@ -44,7 +42,6 @@ let _ =
             sandbox,
             LoopRenderJobTool.buildNoWorkerJobConfig(),
           );
-        TestTool.closeContractCheck();
 
         let (state, _, _, _) = CameraTool.createCameraGameObject(state);
         let (state, gameObject1, _, _, _, _) =

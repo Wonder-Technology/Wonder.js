@@ -26,7 +26,7 @@ let _ =
               test(
                 "if shaderLibItem->type_ unknown, fatal",
                 () => {
-                  TestTool.closeContractCheck();
+                  
                   expect(
                     () =>
                       [@bs]
@@ -43,7 +43,7 @@ let _ =
               test(
                 "if shaderLibItem->name unknown with type=static_branch, fatal",
                 () => {
-                  TestTool.closeContractCheck();
+                  
                   expect(
                     () =>
                       [@bs]

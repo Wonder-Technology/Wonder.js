@@ -208,7 +208,7 @@ let isGeometry = geometry => {
 };
 
 let batchDisposeGeometryByCloseContractCheck = (gameObjectArr, state) => {
-  TestTool.closeContractCheck();
+  
   let state = state |> GameObjectTool.batchDisposeGameObject(gameObjectArr);
   TestTool.openContractCheck();
   state;
