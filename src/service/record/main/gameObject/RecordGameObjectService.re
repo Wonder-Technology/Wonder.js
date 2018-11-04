@@ -11,6 +11,8 @@ let create = () => {
     WonderCommonlib.ArrayService.createEmpty(),
   disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial:
     WonderCommonlib.ArrayService.createEmpty(),
+  disposedUidArrayForDisposeGeometryRemoveMaterial:
+    WonderCommonlib.ArrayService.createEmpty(),
   disposedBasicCameraViewArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedTransformArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedTransformArrayForKeepOrder:
@@ -55,6 +57,7 @@ let deepCopyForRestore =
         disposedUidArrayForKeepOrder,
         disposedUidArrayForKeepOrderRemoveGeometry,
         disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
+        disposedUidArrayForDisposeGeometryRemoveMaterial,
         disposedBasicCameraViewArray,
         disposedTransformArray,
         disposedTransformArrayForKeepOrder,
@@ -95,6 +98,8 @@ let deepCopyForRestore =
     disposedUidArrayForKeepOrderRemoveGeometry |> SparseMapService.copy,
   disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial:
     disposedUidArrayForKeepOrderRemoveGeometry |> SparseMapService.copy,
+  disposedUidArrayForDisposeGeometryRemoveMaterial:
+    disposedUidArrayForDisposeGeometryRemoveMaterial |> SparseMapService.copy,
   disposedBasicCameraViewArray:
     disposedBasicCameraViewArray |> SparseMapService.copy,
   disposedTransformArray: disposedTransformArray |> SparseMapService.copy,

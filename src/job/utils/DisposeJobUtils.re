@@ -109,6 +109,7 @@ let _disposeGameObjects =
     disposedUidArrayForKeepOrder,
     disposedUidArrayForKeepOrderRemoveGeometry,
     disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
+    disposedUidArrayForDisposeGeometryRemoveMaterial,
   } = gameObjectRecord;
 
   let (
@@ -167,6 +168,20 @@ let _disposeGameObjects =
          disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
          (true, true, true),
        );
+  let (
+    state,
+    geometryNeedDisposeVboBufferArrForDisposeGeometryRemoveMaterial,
+    sourceInstanceNeedDisposeVboBufferArrForDisposeGeometryRemoveMaterial,
+  ) =
+    state
+    |> DisposeGameObjectMainService.batchDispose(
+         (
+           batchDisposeBasicMaterialComponentFunc,
+           batchDisposeLightMaterialComponentFunc,
+         ),
+         disposedUidArrayForDisposeGeometryRemoveMaterial,
+         (false, false, true),
+       );
 
   let state = state |> DisposeGameObjectMainService.clearDeferDisposeData;
 
@@ -177,12 +192,14 @@ let _disposeGameObjects =
          geometryNeedDisposeVboBufferArrForKeepOrder,
          geometryNeedDisposeVboBufferArrForKeepOrderRemoveGeometry,
          geometryNeedDisposeVboBufferArrForKeepOrderRemoveGeometryRemoveMaterial,
+         geometryNeedDisposeVboBufferArrForDisposeGeometryRemoveMaterial,
        |]),
     sourceInstanceNeedDisposeVboBufferArrForNotKeepOrder
     |> Js.Array.concatMany([|
          sourceInstanceNeedDisposeVboBufferArrForKeepOrder,
          sourceInstanceNeedDisposeVboBufferArrForKeepOrderRemoveGeometry,
          sourceInstanceNeedDisposeVboBufferArrForKeepOrderRemoveGeometryRemoveMaterial,
+         sourceInstanceNeedDisposeVboBufferArrForDisposeGeometryRemoveMaterial,
        |]),
   );
 };

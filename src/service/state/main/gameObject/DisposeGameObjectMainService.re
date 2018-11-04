@@ -88,6 +88,8 @@ let clearDeferDisposeData = state => {
       WonderCommonlib.ArrayService.createEmpty(),
     disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial:
       WonderCommonlib.ArrayService.createEmpty(),
+    disposedUidArrayForDisposeGeometryRemoveMaterial:
+      WonderCommonlib.ArrayService.createEmpty(),
     disposedBasicCameraViewArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedTransformArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedTransformArrayForKeepOrder:
@@ -135,3 +137,10 @@ let _deferDisposeKeepOrderRemoveGeometryRemoveMaterial =
 
 let deferDisposeKeepOrderRemoveGeometryRemoveMaterial = (uid: int, state) =>
   _deferDisposeKeepOrderRemoveGeometryRemoveMaterial([|uid|], state);
+
+let deferDisposeDisposeGeometryRemoveMaterial = (uid: int, state) => {
+  state.gameObjectRecord.disposedUidArrayForDisposeGeometryRemoveMaterial =
+    state.gameObjectRecord.disposedUidArrayForDisposeGeometryRemoveMaterial
+    |> ArrayService.push(uid);
+  state;
+};

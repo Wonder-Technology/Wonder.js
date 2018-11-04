@@ -1859,6 +1859,59 @@ let _ =
       });
     });
 
+    describe("disposeGameObjectDisposeGeometryRemoveMaterial", () => {
+      test("gameObject shouldn't be alive", () => {
+        let (state, gameObject1, _) =
+          GameObjectTool.createGameObject(state^);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObjectDisposeGeometryRemoveMaterial(
+               gameObject1,
+             );
+        let state = DisposeJob.execJob(None, state);
+
+        GameObjectTool.isAlive(gameObject1, state) |> expect == false;
+      });
+      test("remove lightMaterial component instead of dispose", () => {
+        let (state, gameObject1, lightMaterial1) =
+          LightMaterialTool.createGameObject(state^);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObjectDisposeGeometryRemoveMaterial(
+               gameObject1,
+             );
+        let state = DisposeJob.execJob(None, state);
+
+        (
+          LightMaterialTool.hasGameObject(lightMaterial1, state),
+          LightMaterialAPI.getLightMaterialDiffuseColor(
+            lightMaterial1,
+            state,
+          ),
+        )
+        |> expect == (false, LightMaterialTool.getDefaultDiffuseColor(state));
+      });
+      test("dispose geometry component instead of remove", () => {
+        let (state, gameObject1, geometry1) =
+          GeometryTool.createGameObject(state^);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObjectDisposeGeometryRemoveMaterial(
+               gameObject1,
+             );
+        let state = DisposeJob.execJob(None, state);
+
+        (
+          GeometryTool.hasGameObject(geometry1, state),
+          GeometryTool.isGeometryDisposed(geometry1, state),
+        )
+        |> expect == (false, true);
+      });
+    });
+
     describe("test batchDispose gameObject", ()
       /* describe(
            "batch dispose all components",

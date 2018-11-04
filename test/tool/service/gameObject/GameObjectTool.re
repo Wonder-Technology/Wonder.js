@@ -293,3 +293,5 @@ let testDisposeKeepOrder =
   TransformAPI.unsafeGetTransformChildren(tra, state)
   |> expect == [|tra2, tra3|];
 };
+
+let isAlive = AliveGameObjectMainService.isAlive;
