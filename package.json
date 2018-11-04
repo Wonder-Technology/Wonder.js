@@ -37,7 +37,9 @@
     "high-performance",
     "3d",
     "engine",
-    "reasonml"
+    "reasonml",
+    "reason",
+    "bucklescript"
   ],
   "devDependencies": {
     "babel": "^6.23.0",
