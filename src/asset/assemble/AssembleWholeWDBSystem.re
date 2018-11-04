@@ -150,7 +150,7 @@ let assembleWDBData =
     (
       ({buffers}: wd) as wd,
       binBuffer,
-      (isSetIMGUIFunc, isBindEvent, isActiveCamera),
+      (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight),
       state,
     ) =>
   _buildImageArray(wd, binBuffer)
@@ -163,7 +163,7 @@ let assembleWDBData =
 
        let (state, imageUint8ArrayDataMap, gameObjectArr) =
          state
-         |> BatchCreateSystem.batchCreate(wd)
+         |> BatchCreateSystem.batchCreate(isRenderLight, wd)
          |> BatchOperateWholeSystem.batchOperate(
               wd,
               imageDataTuple,

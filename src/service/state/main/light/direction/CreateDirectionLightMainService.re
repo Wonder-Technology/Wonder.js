@@ -1,11 +1,11 @@
 open StateDataMainType;
 
-let create =
-  (. state) => {
-    let (directionLightRecord, index) =
-      CreateDirectionLightService.create(.
-        RecordDirectionLightMainService.getRecord(state),
-      );
-    state.directionLightRecord = Some(directionLightRecord);
-    (state, index);
-  };
+let create = (isRenderLight, state) => {
+  let (directionLightRecord, index) =
+    CreateDirectionLightService.create(
+      isRenderLight,
+      RecordDirectionLightMainService.getRecord(state),
+    );
+  state.directionLightRecord = Some(directionLightRecord);
+  (state, index);
+};

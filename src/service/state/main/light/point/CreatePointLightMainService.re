@@ -1,11 +1,11 @@
 open StateDataMainType;
 
-let create =
-  (. state) => {
-    let (pointLightRecord, index) =
-      CreatePointLightService.create(.
-        RecordPointLightMainService.getRecord(state),
-      );
-    state.pointLightRecord = Some(pointLightRecord);
-    (state, index);
-  };
+let create = (isRenderLight, state) => {
+  let (pointLightRecord, index) =
+    CreatePointLightService.create(
+      isRenderLight,
+      RecordPointLightMainService.getRecord(state),
+    );
+  state.pointLightRecord = Some(pointLightRecord);
+  (state, index);
+};

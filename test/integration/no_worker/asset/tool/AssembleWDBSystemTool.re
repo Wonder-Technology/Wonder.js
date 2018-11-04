@@ -51,6 +51,7 @@ let testGLTF =
       ~isSetIMGUIFunc=true,
       ~isBindEvent=true,
       ~isActiveCamera=true,
+      ~isRenderLight=true,
       (),
     ) => {
   open Js.Promise;
@@ -63,7 +64,7 @@ let testGLTF =
     binBuffer,
   )
   |. AssembleWholeWDBSystem.assemble(
-       (isSetIMGUIFunc, isBindEvent, isActiveCamera),
+       (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight),
        state^,
      )
   |> WonderBsMost.Most.forEach(data => result := data)
@@ -79,7 +80,7 @@ let testGLB = (sandbox, glbFilePath, testFunc, state) => {
     AssembleWholeWDBSystem.assembleWDBData(
       wd,
       binBuffer,
-      (true, true, true),
+      (true, true, true, true),
       state,
     )
     |> WonderBsMost.Most.forEach(data => result := data)
@@ -117,7 +118,7 @@ let getAllMeshRenderers = (rootGameObject, state) =>
        )
      );
 
-let getAllDirectionLightData = (rootGameObject, state) =>
+let getAllDirectionLights = (rootGameObject, state) =>
   getAllGameObjects(rootGameObject, state)
   |> Js.Array.filter(gameObject =>
        GameObjectAPI.hasGameObjectDirectionLightComponent(gameObject, state)
@@ -127,7 +128,10 @@ let getAllDirectionLightData = (rootGameObject, state) =>
          gameObject,
          state,
        )
-     )
+     );
+
+let getAllDirectionLightData = (rootGameObject, state) =>
+  getAllDirectionLights(rootGameObject, state)
   |> Js.Array.map(light =>
        (
          DirectionLightAPI.getDirectionLightColor(light, state),
@@ -135,14 +139,17 @@ let getAllDirectionLightData = (rootGameObject, state) =>
        )
      );
 
-let getAllPointLightData = (rootGameObject, state) =>
+let getAllPointLights = (rootGameObject, state) =>
   getAllGameObjects(rootGameObject, state)
   |> Js.Array.filter(gameObject =>
        GameObjectAPI.hasGameObjectPointLightComponent(gameObject, state)
      )
   |> Js.Array.map(gameObject =>
        GameObjectAPI.unsafeGetGameObjectPointLightComponent(gameObject, state)
-     )
+     );
+
+let getAllPointLightData = (rootGameObject, state) =>
+  getAllPointLights(rootGameObject, state)
   |> Js.Array.map(light =>
        (
          PointLightAPI.getPointLightColor(light, state),

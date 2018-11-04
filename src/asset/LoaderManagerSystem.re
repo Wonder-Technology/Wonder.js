@@ -10,13 +10,13 @@ let loadConfig = (jsonPathArr, fetchFunc, stateData) =>
 let loadWholeWDB =
     (
       wdbPath,
-      (isSetIMGUIFunc, isBindEvent, isActiveCamera),
+      (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight),
       fetchFunc,
       state,
     ) =>
   LoadWholeWDBSystem.load(
     wdbPath,
-    (isSetIMGUIFunc, isBindEvent, isActiveCamera),
+    (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight),
     fetchFunc,
     state,
   );

@@ -1,13 +1,16 @@
 open DirectionLightType;
 
 let create =
-  (. {index, disposedIndexArray} as record) => {
+  (isRenderLight, {index, disposedIndexArray} as record) => {
     let (index, newIndex, disposedIndexArray) =
       IndexComponentService.generateIndex(index, disposedIndexArray);
 
+    let record = {...record, index: newIndex};
+
     let record =
-      {...record, index: newIndex}
-      |> OperateDirectionLightService.setIsRender(index, true);
+      isRenderLight ?
+        record |> OperateDirectionLightService.setIsRender(index, true) :
+        record;
 
     record.renderLightArr
     |> CountLightService.getLightCount

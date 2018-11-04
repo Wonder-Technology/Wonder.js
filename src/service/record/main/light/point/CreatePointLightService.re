@@ -1,21 +1,22 @@
 open PointLightType;
 
-let create =
-  (. {index, disposedIndexArray} as record) => {
-    let (index, newIndex, disposedIndexArray) =
-      IndexComponentService.generateIndex(index, disposedIndexArray);
+let create = (isRenderLight, {index, disposedIndexArray} as record) => {
+  let (index, newIndex, disposedIndexArray) =
+    IndexComponentService.generateIndex(index, disposedIndexArray);
 
-    let record =
-      {...record, index: newIndex}
-      |> OperatePointLightService.setIsRender(index, true);
+  let record = {...record, index: newIndex};
 
-    record.renderLightArr
-    |> CountLightService.getLightCount
-    |> CountLightService.checkNotExceedMaxCount(
-         _,
-         BufferPointLightService.getBufferMaxCount(),
-       )
-    |> ignore;
+  let record =
+    isRenderLight ?
+      record |> OperatePointLightService.setIsRender(index, true) : record;
 
-    (record, index);
-  };
+  record.renderLightArr
+  |> CountLightService.getLightCount
+  |> CountLightService.checkNotExceedMaxCount(
+       _,
+       BufferPointLightService.getBufferMaxCount(),
+     )
+  |> ignore;
+
+  (record, index);
+};

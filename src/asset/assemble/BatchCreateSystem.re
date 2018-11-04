@@ -191,22 +191,34 @@ let _batchCreateBasicSourceTextureArr =
   (state, indexArr);
 };
 
+let _batchCreateLightComponent = (components, createFunc, state) =>
+  ArrayService.range(0, (components |> Js.Array.length) - 1)
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. (state, indexArr), _) => {
+         let (state, index) = createFunc(state);
+
+         (state, indexArr |> ArrayService.push(index));
+       },
+       (state, [||]),
+     );
+
 let _batchCreateDirectionLightArr =
-    ({directionLights}, {directionLightRecord} as state) =>
-  _batchCreateComponent(
+    (isRenderLight, {directionLights}, {directionLightRecord} as state) =>
+  _batchCreateLightComponent(
     directionLights,
-    CreateDirectionLightMainService.create,
+    CreateDirectionLightMainService.create(isRenderLight),
     state,
   );
 
-let _batchCreatePointLightArr = ({pointLights}, {pointLightRecord} as state) =>
-  _batchCreateComponent(
+let _batchCreatePointLightArr =
+    (isRenderLight, {pointLights}, {pointLightRecord} as state) =>
+  _batchCreateLightComponent(
     pointLights,
-    CreatePointLightMainService.create,
+    CreatePointLightMainService.create(isRenderLight),
     state,
   );
 
-let batchCreate = (wd, state) => {
+let batchCreate = (isRenderLight, wd, state) => {
   let (state, gameObjectArr) = _batchCreateGameObject(wd, state);
   let (state, transformArr) = _batchCreateTransform(wd, state);
   let (state, geometryArr) = _batchCreateGeometry(wd, state);
@@ -222,8 +234,10 @@ let batchCreate = (wd, state) => {
     _batchCreateBasicSourceTextureArr(wd, state);
   /* let (state, arrayBufferViewSourceTextureArr) =
      _batchCreateArrayBufferViewSourceTextureArr(wd, state); */
-  let (state, directionLightArr) = _batchCreateDirectionLightArr(wd, state);
-  let (state, pointLightArr) = _batchCreatePointLightArr(wd, state);
+  let (state, directionLightArr) =
+    _batchCreateDirectionLightArr(isRenderLight, wd, state);
+  let (state, pointLightArr) =
+    _batchCreatePointLightArr(isRenderLight, wd, state);
 
   (
     state,

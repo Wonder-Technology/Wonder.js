@@ -1776,7 +1776,27 @@ let _ =
       );
     });
 
-    describe("test directionLights", () =>
+    describe("test directionLights", () => {
+      testPromise("if isRenderLight === false, set light not render", () =>
+        AssembleWDBSystemTool.testGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
+          ~isRenderLight=false,
+          ~state,
+          ~testFunc=
+            ((state, _, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllDirectionLights(
+                rootGameObject,
+                state,
+              )
+              |> Js.Array.map(light =>
+                   DirectionLightAPI.getDirectionLightIsRender(light, state)
+                 )
+              |> expect == [|false|],
+          (),
+        )
+      );
+
       testPromise("test set color, intensity", () =>
         AssembleWDBSystemTool.testGLTF(
           ~sandbox=sandbox^,
@@ -1791,10 +1811,26 @@ let _ =
               |> expect == [|([|0.5, 0.5, 1.|], 1.)|],
           (),
         )
-      )
-    );
+      );
+    });
 
-    describe("test pointLights", () =>
+    describe("test pointLights", () => {
+      testPromise("if isRenderLight === false, set light not render", () =>
+        AssembleWDBSystemTool.testGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
+          ~isRenderLight=false,
+          ~state,
+          ~testFunc=
+            ((state, _, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllPointLights(rootGameObject, state)
+              |> Js.Array.map(light =>
+                   PointLightAPI.getPointLightIsRender(light, state)
+                 )
+              |> expect == [|false|],
+          (),
+        )
+      );
       testPromise(
         "test set color, intensity, constant, linear, quadratic, range", () =>
         AssembleWDBSystemTool.testGLTF(
@@ -1810,8 +1846,8 @@ let _ =
               |> expect == [|([|0., 0., 0.|], 2.5, 1., 1.5, 0., 55.5)|],
           (),
         )
-      )
-    );
+      );
+    });
 
     describe("test ambientLight", () =>
       testPromise("test set color", () =>

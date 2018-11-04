@@ -12,7 +12,7 @@ let assemble = (({buffers}: wd) as wd, default11Image, state) => {
     (basicSourceTextureArr, imageTextureIndices, images),
   ) =
     state
-    |> BatchCreateSystem.batchCreate(wd)
+    |> BatchCreateSystem.batchCreate(true, wd)
     |> BatchOperateStreamSystem.batchOperate(wd, default11Image);
 
   let (state, rootGameObject) =
