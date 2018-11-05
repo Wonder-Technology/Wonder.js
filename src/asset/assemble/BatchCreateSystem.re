@@ -71,7 +71,18 @@ let _batchCreateTransform = ({transforms}, {settingRecord} as state) =>
   _batchCreateComponent(transforms, CreateTransformMainService.create, state);
 
 let _batchCreateGeometry = ({geometrys}, {settingRecord} as state) =>
-  _batchCreateComponent(geometrys, CreateGeometryMainService.create, state);
+  geometrys
+  |> Obj.magic
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. (state, indexArr), geometry, index) =>
+         switch (geometry |> Js.toOption) {
+         | None => (state, indexArr |> ArrayService.push(-1))
+         | _ =>
+           let (state, index) = CreateGeometryMainService.create(. state);
+           (state, indexArr |> ArrayService.push(index));
+         },
+       (state, [||]),
+     );
 
 let _batchCreateMeshRenderer = ({meshRenderers}, {settingRecord} as state) =>
   _batchCreateComponent(

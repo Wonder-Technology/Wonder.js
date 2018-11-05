@@ -641,7 +641,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             _testAddGeometryComponents(
               sandbox,
               cesiumMilkTruckWDBArrayBuffer,
-              ([||], [|2, 3, 4, 1, 1|]),
+              ([||], [|1, 2, 3, 0, 0|]),
               state,
             )
           );
