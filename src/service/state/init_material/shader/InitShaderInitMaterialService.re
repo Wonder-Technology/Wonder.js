@@ -77,7 +77,7 @@ let _initNewShader =
   shaderIndex;
 };
 
-let initMaterialShader =
+let _initShader =
     (
       materialIndex: int,
       (gl, shaderLibDataArr),
@@ -142,44 +142,43 @@ let initMaterialShader =
   };
 };
 
-/* let _reInitNewShader =
-       (
-         materialIndex: int,
-         shaderIndex,
-         key,
-         (gl, shaderLibDataArr),
-         (buildGLSLSourceFunc, getHandleFunc,
-
-           addAttributeSendDataFunc,
-           addUniformSendDataFunc,
-         ),
-         (
-           shaderRecord,
-           programRecord,
-           glslRecord,
-           glslSenderRecord,
-           glslLocationRecord,
-           glslChunkRecord,
-         ),
-       ) => {
-      ShaderIndexShaderService.setShaderIndex(key, shaderIndex, shaderRecord) |> ignore;
-     let (vsSource, fsSource) =
-       buildGLSLSourceFunc(.
-         materialIndex,
-         shaderLibDataArr,
-         getHandleFunc,
-         (glslRecord, glslChunkRecord),
-       );
-     let program =
-       _createProgramAndInit(
-         gl,
-         shaderIndex,
-         (vsSource, fsSource),
-         programRecord,
-       );
-
-     shaderIndex;
-   }; */
+let initMaterialShader =
+    (
+      materialIndex: int,
+      (gl, shaderLibDataArr),
+      (
+        buildGLSLSourceFunc,
+        getHandleFunc,
+        addAttributeSendDataFunc,
+        addUniformSendDataFunc,
+      ),
+      (
+        shaderRecord,
+        programRecord,
+        glslRecord,
+        glslSenderRecord,
+        glslLocationRecord,
+        glslChunkRecord,
+      ),
+    ) =>
+  _initShader(
+    materialIndex,
+    (gl, shaderLibDataArr),
+    (
+      buildGLSLSourceFunc,
+      getHandleFunc,
+      addAttributeSendDataFunc,
+      addUniformSendDataFunc,
+    ),
+    (
+      shaderRecord,
+      programRecord,
+      glslRecord,
+      glslSenderRecord,
+      glslLocationRecord,
+      glslChunkRecord,
+    ),
+  );
 
 let reInitMaterialShader =
     (
@@ -199,28 +198,9 @@ let reInitMaterialShader =
         glslLocationRecord,
         glslChunkRecord,
       ),
-    ) => {
-  let key = _buildShaderIndexMapKey(shaderLibDataArr);
-  let shaderIndex =
-    ShaderIndexShaderService.genereateShaderIndex(shaderRecord);
-
-  /* let glslLocationRecord =
-     GLSLLocationService.clearUniformLocationMap(
-       shaderIndex,
-       glslLocationRecord,
-     ); */
-
-  let shaderRecord =
-    MaterialsMapShaderService.addMaterialWithoutDuplicate(
-      shaderIndex,
-      materialIndex,
-      shaderRecord,
-    );
-
-  _initNewShader(
+    ) =>
+  _initShader(
     materialIndex,
-    shaderIndex,
-    key,
     (gl, shaderLibDataArr),
     (
       buildGLSLSourceFunc,
@@ -237,4 +217,3 @@ let reInitMaterialShader =
       glslChunkRecord,
     ),
   );
-};

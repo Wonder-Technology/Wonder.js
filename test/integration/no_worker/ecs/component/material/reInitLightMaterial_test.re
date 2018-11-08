@@ -9,19 +9,19 @@ let _ =
     let sandbox = getSandboxDefaultVal();
     let state = ref(CreateStateMainService.createState());
 
+    let _initMaterial = (material, state) => {
+      let state = AllMaterialTool.prepareForInit(state);
+      let state = LightMaterialTool.initMaterial(material, state);
+
+      state;
+    };
+
     beforeEach(() => sandbox := createSandbox());
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("test with light", () =>
       describe("test with direction light", () => {
         beforeEach(() => state := TestTool.initWithJobConfig(~sandbox, ()));
-
-        let _initMaterial = (material, state) => {
-          let state = AllMaterialTool.prepareForInit(state);
-          let state = LightMaterialTool.initMaterial(material, state);
-
-          state;
-        };
 
         describe("test glsl", () => {
           test(
@@ -369,42 +369,88 @@ let _ =
     );
 
     describe("fix bug", () => {
-      let _test =
-          ((gameObject1, gameObject2), (material1, material2), state) => {
-        let pos = 0;
-        let getUniformLocation =
-          GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_vMatrix");
-        let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
-        let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
-        let state =
-          state
-          |> FakeGlTool.setFakeGl(
-               FakeGlTool.buildFakeGl(
-                 ~sandbox,
-                 ~uniformMatrix4fv,
-                 ~getUniformLocation,
-                 (),
-               ),
-             );
-        let state = AllMaterialTool.prepareForInit(state);
-        let state =
-          state
-          |> GameObjectAPI.initGameObject(gameObject1)
-          |> GameObjectAPI.initGameObject(gameObject2);
+      describe("test share material", () => {
+        beforeEach(() => state := TestTool.initWithJobConfig(~sandbox, ()));
 
-        let state = LightMaterialAPI.reInitMaterials([|material1|], state);
-        let state = state |> DirectorTool.runWithDefaultTime;
+        test("should use share material's shaderIndex", () => {
+          let (state, gameObject1, material1) =
+            LightMaterialTool.createGameObject(state^);
+          let (state, gameObject2, (material2, _)) =
+            LightMaterialTool.createGameObjectWithMap(state);
+          let (state, gameObject3, material2) =
+            LightMaterialTool.createGameObjectWithMaterial(material2, state);
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+          let state = _initMaterial(material1, state);
+          let state = _initMaterial(material2, state);
+          let state = _initMaterial(material2, state);
 
-        uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2;
-      };
+          let (state, lightGameObject1, light1) =
+            DirectionLightTool.createGameObject(state);
+          let state =
+            LightMaterialAPI.reInitMaterials(
+              [|material1, material2, material2|],
+              state,
+            );
 
-      beforeEach(() =>
-        state :=
-          RenderJobsTool.initWithJobConfig(
-            sandbox,
-            NoWorkerJobConfigTool.buildNoWorkerJobConfig(
-              ~loopPipelines=
-                {|
+          let shaderIndex1 = ShaderTool.getShaderIndex(material1, state);
+          let shaderIndex2 = ShaderTool.getShaderIndex(material2, state);
+          (
+            shaderIndex1,
+            shaderIndex2,
+            ShaderTool.getAllShaderIndexArray(state),
+          )
+          |> expect == (2, 3, [|2, 3|]);
+        });
+      });
+
+      describe(
+        {|1.create two materials use the same shader(shader1);
+          2.init both;
+          2.reinit one material(create new shader2);
+          3.loopBody;
+
+          should send shader1's and shader2's camera data(u_vMatrix)
+          |},
+        () => {
+          let _test =
+              ((gameObject1, gameObject2), (material1, material2), state) => {
+            let pos = 0;
+            let getUniformLocation =
+              GLSLLocationTool.getUniformLocation(~pos, sandbox, "u_vMatrix");
+            let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
+            let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~uniformMatrix4fv,
+                     ~getUniformLocation,
+                     (),
+                   ),
+                 );
+            let state = AllMaterialTool.prepareForInit(state);
+            let state =
+              state
+              |> GameObjectAPI.initGameObject(gameObject1)
+              |> GameObjectAPI.initGameObject(gameObject2);
+
+            let state =
+              LightMaterialAPI.reInitMaterials([|material1|], state);
+            let state = state |> DirectorTool.runWithDefaultTime;
+
+            uniformMatrix4fv |> withOneArg(pos) |> getCallCount |> expect == 2;
+          };
+
+          beforeEach(() =>
+            state :=
+              RenderJobsTool.initWithJobConfig(
+                sandbox,
+                NoWorkerJobConfigTool.buildNoWorkerJobConfig(
+                  ~loopPipelines=
+                    {|
 [
     {
         "name": "default",
@@ -419,20 +465,11 @@ let _ =
     }
 ]
         |},
-              (),
-            ),
-          )
-      );
+                  (),
+                ),
+              )
+          );
 
-      describe(
-        {|1.create two materials use the same shader(shader1);
-          2.init both;
-          2.reinit one material(create new shader2);
-          3.loopBody;
-
-          should send shader1's and shader2's camera data(u_vMatrix)
-          |},
-        () => {
           test("test two lightMaterials", () => {
             let (state, _, cameraTransform, _) =
               CameraTool.createCameraGameObject(state^);

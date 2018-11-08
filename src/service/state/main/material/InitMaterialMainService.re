@@ -83,8 +83,11 @@ let reInitComponents =
       (reInitMaterialFunc, createInitMaterialStateFunc),
       state,
     ) => {
+  let state = ClearShaderMainService.clearShaderCache(state);
+
   let state =
     materialIndices
+    |> WonderCommonlib.ArrayService.removeDuplicateItems
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. {gameObjectRecord, shaderRecord} as state, materialIndex) => {
            let currentShaderIndex =

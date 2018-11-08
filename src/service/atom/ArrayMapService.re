@@ -1,19 +1,19 @@
 let addValue = (key, value, arrayMap) =>
   switch (arrayMap |> WonderCommonlib.SparseMapService.get(key)) {
   | None => arrayMap |> WonderCommonlib.SparseMapService.set(key, [|value|])
-  | Some(gameObjectArr) =>
-    gameObjectArr |> ArrayService.push(value) |> ignore;
+  | Some(valueArr) =>
+    valueArr |> ArrayService.push(value) |> ignore;
     arrayMap;
   };
 
 let addValueWithoutDuplicate = (key, value, arrayMap) =>
   switch (arrayMap |> WonderCommonlib.SparseMapService.get(key)) {
   | None => arrayMap |> WonderCommonlib.SparseMapService.set(key, [|value|])
-  | Some(gameObjectArr) =>
-    gameObjectArr |> Js.Array.includes(value) ?
+  | Some(valueArr) =>
+    valueArr |> Js.Array.includes(value) ?
       arrayMap :
       {
-        gameObjectArr |> ArrayService.push(value) |> ignore;
+        valueArr |> ArrayService.push(value) |> ignore;
         arrayMap;
       }
   };
