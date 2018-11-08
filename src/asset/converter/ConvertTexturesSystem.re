@@ -122,7 +122,7 @@ let _convertMagFilter = magFilter =>
     | magFilter =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(
-          ~title="_convertToSamplers",
+          ~title="_convertMagFilter",
           ~description={j|unknown magFilter: $magFilter|j},
           ~reason="",
           ~solution={j||j},
@@ -146,7 +146,7 @@ let _convertMinFilter = minFilter =>
     | minFilter =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(
-          ~title="_convertToSamplers",
+          ~title="_convertMinFilter",
           ~description={j|unknown minFilter: $minFilter|j},
           ~reason="",
           ~solution={j||j},
@@ -156,40 +156,19 @@ let _convertMinFilter = minFilter =>
     }
   };
 
-let _convertWrapS = wrapS =>
-  switch (wrapS) {
+let _convertWrap = wrap =>
+  switch (wrap) {
   | None => SourceTextureType.Clamp_to_edge
-  | Some(wrapS) =>
-    switch (wrapS) {
+  | Some(wrap) =>
+    switch (wrap) {
     | 33071 => SourceTextureType.Clamp_to_edge
     | 33648 => SourceTextureType.Mirrored_repeat
     | 10497 => SourceTextureType.Repeat
-    | wrapS =>
+    | wrap =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(
-          ~title="_convertToSamplers",
-          ~description={j|unknown wrapS: $wrapS|j},
-          ~reason="",
-          ~solution={j||j},
-          ~params={j||j},
-        ),
-      )
-    }
-  };
-
-let _convertWrapT = wrapT =>
-  switch (wrapT) {
-  | None => SourceTextureType.Clamp_to_edge
-  | Some(wrapT) =>
-    switch (wrapT) {
-    | 33071 => SourceTextureType.Clamp_to_edge
-    | 33648 => SourceTextureType.Mirrored_repeat
-    | 10497 => SourceTextureType.Repeat
-    | wrapT =>
-      WonderLog.Log.fatal(
-        WonderLog.Log.buildFatalMessage(
-          ~title="_convertToSamplers",
-          ~description={j|unknown wrapT: $wrapT|j},
+          ~title="_convertWrap",
+          ~description={j|unknown wrap: $wrap|j},
           ~reason="",
           ~solution={j||j},
           ~params={j||j},
@@ -210,8 +189,8 @@ let convertToSamplers = ({samplers}: GLTFType.gltf) : array(WDType.sampler) =>
                 {
                   magFilter: _convertMagFilter(magFilter),
                   minFilter: _convertMinFilter(minFilter),
-                  wrapS: _convertWrapS(wrapS),
-                  wrapT: _convertWrapT(wrapT),
+                  wrapS: _convertWrap(wrapS),
+                  wrapT: _convertWrap(wrapT),
                 }: WDType.sampler,
               ),
          [||],
