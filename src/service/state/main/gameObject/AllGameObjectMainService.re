@@ -3,18 +3,18 @@ open StateDataMainType;
 let _getChildren = (parent, transformRecord) =>
   HierachyTransformService.unsafeGetChildren(parent, transformRecord);
 
-let rec _addChildren = (parentArr, transformRecord, childrenArr) => {
-  let childrenArr = childrenArr |> Js.Array.concat(parentArr);
+let rec _addChildren = (parentArr, transformRecord, totalChildrenArr) => {
+  let totalChildrenArr = ArrayService.fastConcat(totalChildrenArr, parentArr);
 
   parentArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. (transformRecord, childrenArr), parent) =>
+       (. (transformRecord, totalChildrenArr), parent) =>
          _addChildren(
            _getChildren(parent, transformRecord),
            transformRecord,
-           childrenArr,
+           totalChildrenArr,
          ),
-       (transformRecord, childrenArr),
+       (transformRecord, totalChildrenArr),
      );
 };
 
@@ -40,16 +40,16 @@ let getAllGameObjects = (gameObject, state) => {
 
   let transformRecord = RecordTransformMainService.getRecord(state);
 
-  [|gameObject|]
-  |> Js.Array.concat(
-       allTransformChildren
-       |> Js.Array.map(transform =>
-            GameObjectTransformService.unsafeGetGameObject(
-              transform,
-              transformRecord,
-            )
-          ),
-     );
+  ArrayService.fastConcat(
+    [|gameObject|],
+    allTransformChildren
+    |> Js.Array.map(transform =>
+         GameObjectTransformService.unsafeGetGameObject(
+           transform,
+           transformRecord,
+         )
+       ),
+  );
 };
 
 let _getAllComponentsOfGameObject =

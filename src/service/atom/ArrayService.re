@@ -104,3 +104,10 @@ let reduceOneParamValidi = (func, param, arr) => {
   };
   mutableParam^;
 };
+
+let fastConcat = (arr1, arr2) =>
+  arr2
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. arr1, value2) => arr1 |> push(value2),
+       arr1,
+     );
