@@ -58,7 +58,7 @@ let _disposeComponents =
     |> batchDisposeLightMaterialComponentFunc(state);
   let (state, geometryNeedDisposeVboBufferArr) =
     disposedGeometryDataArray
-    |> DisposeComponentGameObjectMainService.batchDisposeGeometryComponent(
+    |> DisposeComponentGameObjectMainService.batchDisposeGeometryComponentData(
          state,
        );
   let (state, sourceInstanceNeedDisposeVboBufferArr) =

@@ -112,7 +112,6 @@ let _ =
       describe("set indices with type array", () =>
         test("directly set it", () => {
           open GameObjectAPI;
-          open GameObjectAPI;
           let (state, geometry) = createGeometry(state^);
           let newData = Uint16Array.make([|3, 5, 5|]);
           let state = state |> setGeometryIndices(geometry, newData);
@@ -148,6 +147,139 @@ let _ =
         |> expect == [|gameObject1, gameObject2|];
       })
     );
+
+    describe("batchDisposeGeometry", () => {
+      let _exec = (geometry1, state) => {
+        let state = GeometryAPI.batchDisposeGeometry([|geometry1|], state);
+        let state = DisposeJob.execJob(None, state);
+
+        state;
+      };
+
+      describe("if geometry has gameObjects", () => {
+        let _prepare = state => {
+          let (state, geometry1) = createGeometry(state^);
+          let (state, gameObject1) = GameObjectAPI.createGameObject(state);
+          let state =
+            state
+            |> GameObjectAPI.addGameObjectGeometryComponent(
+                 gameObject1,
+                 geometry1,
+               );
+          let (state, gameObject2) = GameObjectAPI.createGameObject(state);
+          let state =
+            state
+            |> GameObjectAPI.addGameObjectGeometryComponent(
+                 gameObject2,
+                 geometry1,
+               );
+
+          ((gameObject1, gameObject2), geometry1, state);
+        };
+
+        let _prepareAndExec = state => {
+          let ((gameObject1, gameObject2), geometry1, state) =
+            _prepare(state);
+
+          let state = _exec(geometry1, state);
+
+          ((gameObject1, gameObject2), geometry1, state);
+        };
+
+        test("remove from gameObject", () => {
+          let ((gameObject1, gameObject2), geometry1, state) =
+            _prepareAndExec(state);
+
+          (
+            GameObjectAPI.hasGameObjectGeometryComponent(gameObject1, state),
+            GameObjectAPI.hasGameObjectGeometryComponent(gameObject2, state),
+          )
+          |> expect == (false, false);
+        });
+
+        describe("dispose geometry data", () => {
+          test("remove gameObject", () => {
+            let ((gameObject1, gameObject2), geometry1, state) =
+              _prepareAndExec(state);
+
+            GeometryTool.hasGameObject(geometry1, state) |> expect == false;
+          });
+          test("remove from nameMap", () => {
+            let ((gameObject1, gameObject2), geometry1, state) =
+              _prepareAndExec(state);
+
+            GeometryTool.getName(geometry1, state) |> expect == None;
+          });
+        });
+
+        describe("dispose vbo buffer data", () =>
+          test("test", () => {
+            open VboBufferType;
+
+            let ((gameObject1, gameObject2), geometry1, state) =
+              _prepare(state);
+
+            let state =
+              VboBufferTool.addVboBufferToGeometryBufferMap(geometry1, state);
+
+            let state = _exec(geometry1, state);
+
+            let {geometryVertexBufferMap} = VboBufferTool.getRecord(state);
+
+            geometryVertexBufferMap
+            |> WonderCommonlib.SparseMapService.has(geometry1)
+            |> expect == false;
+          })
+        );
+      });
+      describe("else", () => {
+        let _prepare = state => {
+          let (state, geometry1) = createGeometry(state^);
+
+          (geometry1, state);
+        };
+
+        let _prepareAndExec = state => {
+          let (geometry1, state) = _prepare(state);
+
+          let state = _exec(geometry1, state);
+
+          (geometry1, state);
+        };
+
+        describe("dispose geometry data", () => {
+          test("remove gameObject", () => {
+            let (geometry1, state) = _prepareAndExec(state);
+
+            GeometryTool.hasGameObject(geometry1, state) |> expect == false;
+          });
+          test("remove from nameMap", () => {
+            let (geometry1, state) = _prepareAndExec(state);
+
+            GeometryTool.getName(geometry1, state) |> expect == None;
+          });
+        });
+
+        describe("dispose vbo buffer data", () =>
+          test("test", () => {
+            open VboBufferType;
+
+            let (geometry1, state) = _prepare(state);
+
+            let state =
+              VboBufferTool.addVboBufferToGeometryBufferMap(geometry1, state);
+
+            let state = _exec(geometry1, state);
+
+            let {geometryVertexBufferMap} = VboBufferTool.getRecord(state);
+
+            geometryVertexBufferMap
+            |> WonderCommonlib.SparseMapService.has(geometry1)
+            |> expect == false;
+          })
+        );
+      });
+    });
 
     describe("dispose component", () => {
       describe("dispose data", () => {
@@ -589,8 +721,8 @@ let _ =
           () => {
             let (state, gameObject1, material1) =
               BasicMaterialTool.createGameObject(state^);
-          let (state, gameObject2, geometry2) =
-            GeometryTool.createGameObject(state);
+            let (state, gameObject2, geometry2) =
+              GeometryTool.createGameObject(state);
 
             let state =
               state
@@ -599,13 +731,10 @@ let _ =
                    gameObject2,
                  |])
               |> DisposeJob.execJob(None);
-          let (state, gameObject3, geometry3) =
-            GeometryTool.createGameObject(state);
+            let (state, gameObject3, geometry3) =
+              GeometryTool.createGameObject(state);
 
-            GeometryAPI.unsafeGetGeometryGameObjects(
-              geometry3,
-              state,
-            )
+            GeometryAPI.unsafeGetGeometryGameObjects(geometry3, state)
             |> expect == [|gameObject3|];
           },
         )

@@ -141,7 +141,7 @@ let disposeGameObjectGeometryComponentWithoutVboBuffer =
       state: StateDataMainType.state,
     ) => {
   let (state, geometryNeedDisposeVboBufferArr) =
-    DisposeComponentGameObjectMainService.batchDisposeGeometryComponent(
+    DisposeComponentGameObjectMainService.batchDisposeGeometryComponentData(
       state,
       [|(gameObject, component)|],
     );

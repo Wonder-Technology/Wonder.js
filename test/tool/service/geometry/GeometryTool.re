@@ -208,8 +208,10 @@ let isGeometry = geometry => {
 };
 
 let batchDisposeGeometryByCloseContractCheck = (gameObjectArr, state) => {
-  
   let state = state |> GameObjectTool.batchDisposeGameObject(gameObjectArr);
   TestTool.openContractCheck();
   state;
 };
+
+let getName = (geometry, state) =>
+  NameGeometryMainService.getName(geometry, state);

@@ -44,7 +44,7 @@ let _batchDisposeSharableComponents =
         ),
         [||],
       ) :
-      DisposeComponentGameObjectMainService.batchDisposeGeometryComponent(
+      DisposeComponentGameObjectMainService.batchDisposeGeometryComponentData(
         state,
         geometryDataArr,
       );

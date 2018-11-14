@@ -258,3 +258,9 @@ let getAllGeometrys = state => {
 
   GetAllComponentService.getAllComponents(index, disposedIndexArray);
 };
+
+let batchDisposeGeometry = (geometryArr, state) =>
+  DisposeComponentGameObjectMainService.batchDisposeGeometryComponent(
+    geometryArr,
+    state,
+  );

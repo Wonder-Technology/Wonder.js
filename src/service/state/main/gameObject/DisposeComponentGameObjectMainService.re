@@ -233,12 +233,55 @@ let batchDisposeTransformComponent =
     state,
   );
 
-let batchDisposeGeometryComponent =
+let batchDisposeGeometryComponentData =
     ({settingRecord} as state, compnentDataArray) =>
-  DisposeGeometryMainService.handleBatchDisposeComponent(.
+  DisposeGeometryMainService.handleBatchDisposeComponentData(.
     compnentDataArray,
     state,
   );
+
+let batchDisposeGeometryComponent =
+    (componentArray, {settingRecord} as state) => {
+  let (componentHasNoGameObjectArr, state) =
+    componentArray
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. (componentHasNoGameObjectArr, state), component) => {
+           let geometryRecord = state |> RecordGeometryMainService.getRecord;
+
+           switch (
+             GameObjectGeometryService.getGameObjects(
+               component,
+               geometryRecord,
+             )
+           ) {
+           | Some(gameObjects) => (
+               componentHasNoGameObjectArr,
+               gameObjects
+               |> WonderCommonlib.ArrayService.reduceOneParam(
+                    (. state, gameObject) =>
+                      deferDisposeGeometryComponent(.
+                        gameObject,
+                        component,
+                        state,
+                      ),
+                    state,
+                  ),
+             )
+
+           | None => (
+               componentHasNoGameObjectArr |> ArrayService.push(component),
+               state,
+             )
+           };
+         },
+         ([||], state),
+       );
+
+  DisposeGeometryMainService.handleBatchDisposeComponent(
+    componentHasNoGameObjectArr,
+    state,
+  );
+};
 
 let batchDisposeBasicMaterialComponent = (state, compnentDataArray) =>
   DisposeBasicMaterialMainService.handleBatchDisposeComponent(.

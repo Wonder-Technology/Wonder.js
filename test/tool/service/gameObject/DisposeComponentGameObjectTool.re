@@ -179,9 +179,9 @@ let batchDisposeTransformComponent =
     state,
   );
 
-let batchDisposeGeometryComponent =
+let batchDisposeGeometryComponentData =
     ({settingRecord} as state, geometryDataArray) =>
-  DisposeGeometryMainService.handleBatchDisposeComponent(.
+  DisposeGeometryMainService.handleBatchDisposeComponentData(.
     geometryDataArray,
     state,
   );

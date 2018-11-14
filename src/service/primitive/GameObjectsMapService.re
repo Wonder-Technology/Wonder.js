@@ -24,3 +24,10 @@ let unsafeGetGameObjects = (component, gameObjectsMap) =>
 
 let removeGameObject = (gameObject, component, gameObjectsMap) =>
   ArrayMapService.removeValue(component, gameObject, gameObjectsMap);
+
+let removeGameObjects = (component, gameObjectsMap) =>
+  WonderCommonlib.SparseMapService.deleteVal(
+    component,
+    gameObjectsMap |> Obj.magic,
+  )
+  |> Obj.magic;
