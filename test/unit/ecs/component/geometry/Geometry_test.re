@@ -283,6 +283,38 @@ let _ =
 
     describe("dispose component", () => {
       describe("dispose data", () => {
+        test("remove point data", () => {
+          let (
+            state,
+            gameObject1,
+            geometry1,
+            (vertices1, texCoords1, normals1, indices1),
+          ) =
+            GeometryTool.createGameObjectAndSetPointData(state^);
+
+          let state =
+            state
+            |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
+                 gameObject1,
+                 geometry1,
+               );
+
+          let (state, geometry2) = createGeometry(state);
+          (
+            GeometryAPI.getGeometryVertices(geometry2, state),
+            GeometryAPI.getGeometryTexCoords(geometry2, state),
+            GeometryAPI.getGeometryNormals(geometry2, state),
+            GeometryAPI.getGeometryIndices(geometry2, state),
+          )
+          |>
+          expect == (
+                      Float32Array.make([||]),
+                      Float32Array.make([||]),
+                      Float32Array.make([||]),
+                      Uint16Array.make([||]),
+                    );
+        });
+
         describe("test dispose shared geometry", () =>
           test("remove gameObject", () => {
             let (state, geometry1) = createGeometry(state^);
@@ -507,10 +539,10 @@ let _ =
                   )
                   |>
                   expect == (
-                              Uint32Array.make([|0, 3, 0, 3, 3, 6|]),
-                              Uint32Array.make([|0, 2, 0, 2, 2, 4|]),
-                              Uint32Array.make([|0, 3, 0, 3, 3, 6|]),
-                              Uint32Array.make([|0, 3, 0, 3, 3, 6|]),
+                              Uint32Array.make([|0, 0, 0, 3, 3, 6|]),
+                              Uint32Array.make([|0, 0, 0, 2, 2, 4|]),
+                              Uint32Array.make([|0, 0, 0, 3, 3, 6|]),
+                              Uint32Array.make([|0, 0, 0, 3, 3, 6|]),
                             );
                 })
               );

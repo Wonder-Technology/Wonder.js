@@ -14,16 +14,41 @@ let _disposeData =
         disposeCount,
         disposedIndexArray,
         disposedIndexMap,
-        gameObjectsMap,
         nameMap,
+        verticesInfos,
+        texCoordsInfos,
+        normalsInfos,
+        indicesInfos,
       } as geometryRecord,
     ) => {
-  ...geometryRecord,
-  disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry),
-  disposedIndexMap:
-    disposedIndexMap |> WonderCommonlib.SparseMapService.set(geometry, true),
-  disposeCount: succ(disposeCount),
-  nameMap: nameMap |> disposeSparseMapData(geometry),
+  let infoIndex = BufferGeometryService.getInfoIndex(geometry);
+
+  {
+    ...geometryRecord,
+    verticesInfos:
+      ReallocatedPointsGeometryService.setInfo(
+        infoIndex,
+        0,
+        0,
+        verticesInfos,
+      ),
+    texCoordsInfos:
+      ReallocatedPointsGeometryService.setInfo(
+        infoIndex,
+        0,
+        0,
+        texCoordsInfos,
+      ),
+    normalsInfos:
+      ReallocatedPointsGeometryService.setInfo(infoIndex, 0, 0, normalsInfos),
+    indicesInfos:
+      ReallocatedPointsGeometryService.setInfo(infoIndex, 0, 0, indicesInfos),
+    disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry),
+    disposedIndexMap:
+      disposedIndexMap |> WonderCommonlib.SparseMapService.set(geometry, true),
+    disposeCount: succ(disposeCount),
+    nameMap: nameMap |> disposeSparseMapData(geometry),
+  };
 };
 
 let _disposeDataWithGameObject =
@@ -38,18 +63,17 @@ let _disposeDataWithGameObject =
         nameMap,
       } as geometryRecord,
     ) => {
-  ...geometryRecord,
-  disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry),
-  disposedIndexMap:
-    disposedIndexMap |> WonderCommonlib.SparseMapService.set(geometry, true),
-  disposeCount: succ(disposeCount),
-  gameObjectsMap:
-    GameObjectsMapService.removeGameObject(
-      gameObject,
-      geometry,
-      gameObjectsMap,
-    ),
-  nameMap: nameMap |> disposeSparseMapData(geometry),
+  let geometryRecord = _disposeData(geometry, geometryRecord);
+
+  {
+    ...geometryRecord,
+    gameObjectsMap:
+      GameObjectsMapService.removeGameObject(
+        gameObject,
+        geometry,
+        gameObjectsMap,
+      ),
+  };
 };
 
 let handleBatchDisposeComponentData =
