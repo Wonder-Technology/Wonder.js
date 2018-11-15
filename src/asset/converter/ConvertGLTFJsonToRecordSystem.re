@@ -366,6 +366,75 @@ let _convertMaterials = json =>
          "materials",
          array(json =>
            {
+             extensions:
+               json
+               |> optional(
+                    field("extensions", json =>
+                      {
+                        khr_materials_pbrSpecularGlossiness:
+                          json
+                          |> optional(
+                               field(
+                                 "KHR_materials_pbrSpecularGlossiness", json =>
+                                 {
+                                   diffuseFactor:
+                                     json
+                                     |> optional(
+                                          field(
+                                            "diffuseFactor",
+                                            array(float),
+                                          ),
+                                        ),
+                                   diffuseTexture:
+                                     json
+                                     |> optional(
+                                          field("diffuseTexture", json =>
+                                            {
+                                              index:
+                                                json |> field("index", int),
+                                              texCoord:
+                                                json
+                                                |> optional(
+                                                     field("texCoord", int),
+                                                   ),
+                                            }
+                                          ),
+                                        ),
+                                   glossinessFactor:
+                                     json
+                                     |> optional(
+                                          field("glossinessFactor", float),
+                                        ),
+                                   specularFactor:
+                                     json
+                                     |> optional(
+                                          field(
+                                            "specularFactor",
+                                            array(float),
+                                          ),
+                                        ),
+                                   specularGlossinessTexture:
+                                     json
+                                     |> optional(
+                                          field(
+                                            "specularGlossinessTexture", json =>
+                                            {
+                                              index:
+                                                json |> field("index", int),
+                                              texCoord:
+                                                json
+                                                |> optional(
+                                                     field("texCoord", int),
+                                                   ),
+                                            }
+                                          ),
+                                        ),
+                                 }
+                               ),
+                             ),
+                      }
+                    ),
+                  ),
              name: json |> optional(field("name", string)),
              pbrMetallicRoughness:
                json

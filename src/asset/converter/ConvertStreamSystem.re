@@ -326,6 +326,142 @@ let _hasAddDataBefore = (hasAddBeforeMap, key) =>
   && hasAddBeforeMap
   |> WonderCommonlib.SparseMapService.unsafeGet(key) === true;
 
+let _addPBRImageData =
+    (
+      diffuseTextureIndex,
+      (
+        gltf,
+        bufferViewDataArr,
+        streamChunkArr,
+        newBufferViewOffset,
+        hasImageAddBeforeMap,
+      ),
+      (lightMaterial, materials, textures, images),
+      noneData,
+    ) => {
+  let {source}: GLTFType.texture =
+    Array.unsafe_get(textures, diffuseTextureIndex);
+
+  let imageIndex = source |> OptionService.unsafeGet;
+
+  _hasAddDataBefore(hasImageAddBeforeMap, imageIndex) ?
+    (
+      bufferViewDataArr,
+      streamChunkArr
+      |> ArrayService.push(
+           {
+             byteLength: 0,
+             componentType: _getImageComponentType(),
+             index: imageIndex,
+             type_: Image,
+           }: StreamType.streamUnitData,
+         ),
+      None,
+      newBufferViewOffset,
+      None,
+      hasImageAddBeforeMap,
+    ) :
+    {
+      let ({bufferView}: GLTFType.image) as image =
+        Array.unsafe_get(images, imageIndex);
+
+      let (
+        byteLength,
+        newImageBufferViewIndex,
+        bufferViewDataArr,
+        newBufferViewOffset,
+      ) =
+        _addBufferViewData(
+          bufferView |> OptionService.unsafeGet,
+          bufferViewDataArr,
+          newBufferViewOffset,
+          gltf,
+        );
+
+      (
+        bufferViewDataArr,
+        streamChunkArr
+        |> ArrayService.push(
+             {
+               byteLength,
+               componentType: _getImageComponentType(),
+               index: imageIndex,
+               type_: Image,
+             }: StreamType.streamUnitData,
+           ),
+        newImageBufferViewIndex |. Some,
+        newBufferViewOffset,
+        Some((imageIndex, image)),
+        hasImageAddBeforeMap
+        |> WonderCommonlib.SparseMapService.set(imageIndex, true),
+      );
+    };
+};
+
+let _addMetallicRoughnessImageData =
+    (
+      pbrMetallicRoughness: option(GLTFType.pbrMetallicRoughness),
+      (
+        gltf,
+        bufferViewDataArr,
+        streamChunkArr,
+        newBufferViewOffset,
+        hasImageAddBeforeMap,
+      ),
+      (lightMaterial, materials, textures, images),
+      noneData,
+    ) =>
+  switch (pbrMetallicRoughness) {
+  | None => noneData
+  | Some({baseColorTexture}) =>
+    switch (baseColorTexture) {
+    | None => noneData
+    | Some({index}) =>
+      _addPBRImageData(
+        index,
+        (
+          gltf,
+          bufferViewDataArr,
+          streamChunkArr,
+          newBufferViewOffset,
+          hasImageAddBeforeMap,
+        ),
+        (lightMaterial, materials, textures, images),
+        noneData,
+      )
+    }
+  };
+
+let _addSpecularGlossinessImageData =
+    (
+      pbrSpecularGlossiness: GLTFType.khrMaterialsPBRSpecularGlossiness,
+      (
+        gltf,
+        bufferViewDataArr,
+        streamChunkArr,
+        newBufferViewOffset,
+        hasImageAddBeforeMap,
+      ),
+      (lightMaterial, materials, textures, images),
+      noneData,
+    ) =>
+  switch (pbrSpecularGlossiness.diffuseTexture) {
+  | None => noneData
+  | Some({index}) =>
+    _addPBRImageData(
+      index,
+      (
+        gltf,
+        bufferViewDataArr,
+        streamChunkArr,
+        newBufferViewOffset,
+        hasImageAddBeforeMap,
+      ),
+      (lightMaterial, materials, textures, images),
+      noneData,
+    )
+  };
+
 let _addImageData =
     (
       lightMaterial,
@@ -346,74 +482,54 @@ let _addImageData =
 
   switch (lightMaterial, materials, textures, images) {
   | (Some(lightMaterial), Some(materials), Some(textures), Some(images)) =>
-    let {pbrMetallicRoughness}: GLTFType.material =
+    let {extensions, pbrMetallicRoughness}: GLTFType.material =
       Array.unsafe_get(materials, lightMaterial);
 
-    switch (pbrMetallicRoughness) {
-    | None => noneData
-    /* TODO add more image data from more texture(e.g. metallicRoughnessTexture) */
-    | Some({baseColorTexture}) =>
-      switch (baseColorTexture) {
-      | None => noneData
-      | Some({index}) =>
-        let {source}: GLTFType.texture = Array.unsafe_get(textures, index);
-
-        let imageIndex = source |> OptionService.unsafeGet;
-
-        _hasAddDataBefore(hasImageAddBeforeMap, imageIndex) ?
+    switch (extensions) {
+    | None =>
+      _addMetallicRoughnessImageData(
+        pbrMetallicRoughness,
+        (
+          gltf,
+          bufferViewDataArr,
+          streamChunkArr,
+          newBufferViewOffset,
+          hasImageAddBeforeMap,
+        ),
+        (lightMaterial, materials, textures, images),
+        noneData,
+      )
+    | Some({khr_materials_pbrSpecularGlossiness}) =>
+      switch (khr_materials_pbrSpecularGlossiness) {
+      | None =>
+        _addMetallicRoughnessImageData(
+          pbrMetallicRoughness,
           (
+            gltf,
             bufferViewDataArr,
-            streamChunkArr
-            |> ArrayService.push(
-                 {
-                   byteLength: 0,
-                   componentType: _getImageComponentType(),
-                   index: imageIndex,
-                   type_: Image,
-                 }: StreamType.streamUnitData,
-               ),
-            None,
+            streamChunkArr,
             newBufferViewOffset,
-            None,
             hasImageAddBeforeMap,
-          ) :
-          {
-            let ({bufferView}: GLTFType.image) as image =
-              Array.unsafe_get(images, imageIndex);
-
-            let (
-              byteLength,
-              newImageBufferViewIndex,
-              bufferViewDataArr,
-              newBufferViewOffset,
-            ) =
-              _addBufferViewData(
-                bufferView |> OptionService.unsafeGet,
-                bufferViewDataArr,
-                newBufferViewOffset,
-                gltf,
-              );
-
-            (
-              bufferViewDataArr,
-              streamChunkArr
-              |> ArrayService.push(
-                   {
-                     byteLength,
-                     componentType: _getImageComponentType(),
-                     index: imageIndex,
-                     type_: Image,
-                   }: StreamType.streamUnitData,
-                 ),
-              newImageBufferViewIndex |. Some,
-              newBufferViewOffset,
-              Some((imageIndex, image)),
-              hasImageAddBeforeMap
-              |> WonderCommonlib.SparseMapService.set(imageIndex, true),
-            );
-          };
+          ),
+          (lightMaterial, materials, textures, images),
+          noneData,
+        )
+      | Some(pbrSpecularGlossiness) =>
+        _addSpecularGlossinessImageData(
+          pbrSpecularGlossiness,
+          (
+            gltf,
+            bufferViewDataArr,
+            streamChunkArr,
+            newBufferViewOffset,
+            hasImageAddBeforeMap,
+          ),
+          (lightMaterial, materials, textures, images),
+          noneData,
+        )
       }
     };
+
   | _ => noneData
   };
 };

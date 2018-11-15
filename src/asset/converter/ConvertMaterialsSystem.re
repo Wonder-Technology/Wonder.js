@@ -40,6 +40,34 @@ let convertToBasicMaterials =
 let _buildDefaultLightMaterialName = materialIndex =>
   ConvertCommon.buildDefaultName("lightMaterial", materialIndex);
 
+let _convertPBRData = (name, diffuseColorFactor, arr, index) =>
+  arr
+  |> ArrayService.push(
+       {
+         name:
+           switch (name) {
+           | None => _buildDefaultLightMaterialName(index)
+           | Some(name) => name
+           },
+         diffuseColor:
+           switch (diffuseColorFactor) {
+           | None => [|1., 1., 1.|]
+           | Some(colorFactor) => [|
+               colorFactor[0],
+               colorFactor[1],
+               colorFactor[2],
+             |]
+           },
+       }: WDType.lightMaterial,
+     );
+
+let _convertMetallicRoughness = (name, pbrMetallicRoughness, arr, index) =>
+  switch (pbrMetallicRoughness) {
+  | None => arr
+  | Some(({baseColorFactor}: GLTFType.pbrMetallicRoughness)) =>
+    _convertPBRData(name, baseColorFactor, arr, index)
+  };
+
 let convertToLightMaterials =
     ({materials}: GLTFType.gltf)
     : array(WDType.lightMaterial) =>
@@ -48,38 +76,31 @@ let convertToLightMaterials =
   | Some(materials) =>
     materials
     |> WonderCommonlib.ArrayService.reduceOneParami(
-         (. arr, {pbrMetallicRoughness, name}: GLTFType.material, index) =>
-           switch (pbrMetallicRoughness) {
-           | None => arr
-           | Some(pbrMetallicRoughness) =>
-             let {
-               baseColorFactor,
-               /* baseColorTexture: option(textureIndex), */
-               /* metallicFactor,
-                  roughnessFactor, */
-               /* metallicRoughnessTexture: option(textureIndex) */
-             }: GLTFType.pbrMetallicRoughness = pbrMetallicRoughness;
-             arr
-             |> ArrayService.push(
-                  {
-                    name:
-                      switch (name) {
-                      | None => _buildDefaultLightMaterialName(index)
-                      | Some(name) => name
-                      },
-                    diffuseColor:
-                      switch (baseColorFactor) {
-                      | None => [|1., 1., 1.|]
-                      | Some(baseColorFactor) => [|
-                          baseColorFactor[0],
-                          baseColorFactor[1],
-                          baseColorFactor[2],
-                        |]
-                      },
-                    /* specularColor: metallicFactor,
-                       shininess: roughnessFactor */
-                  }: WDType.lightMaterial,
-                );
+         (.
+           arr,
+           {extensions, pbrMetallicRoughness, name}: GLTFType.material,
+           index,
+         ) =>
+           switch (extensions) {
+           | None =>
+             _convertMetallicRoughness(name, pbrMetallicRoughness, arr, index)
+
+           | Some({khr_materials_pbrSpecularGlossiness}) =>
+             switch (khr_materials_pbrSpecularGlossiness) {
+             | None =>
+               _convertMetallicRoughness(
+                 name,
+                 pbrMetallicRoughness,
+                 arr,
+                 index,
+               )
+             | Some(
+                 (
+                   {diffuseFactor}: GLTFType.khrMaterialsPBRSpecularGlossiness
+                 ),
+               ) =>
+               _convertPBRData(name, diffuseFactor, arr, index)
+             }
            },
          [||],
        )

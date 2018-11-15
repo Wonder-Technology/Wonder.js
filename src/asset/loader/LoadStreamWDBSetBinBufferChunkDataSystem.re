@@ -87,10 +87,21 @@ let _setImageData =
      );
 };
 
+let _getUint32ArrayBufferIndexData = arrayBuffer =>
+  Uint32Array.fromBuffer(arrayBuffer)
+  |> WonderLog.Contract.ensureCheck(
+       indices => GeometryUtils.checkIndexData(indices),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     );
+
 let _getIndexUintData = (componentType, arrayBuffer) =>
   switch (componentType) {
   | 5121 => Uint16Array.make(Uint8Array.fromBuffer(arrayBuffer) |> Obj.magic)
   | 5123 => Uint16Array.fromBuffer(arrayBuffer)
+  | 5125 =>
+    Uint16Array.make(
+      _getUint32ArrayBufferIndexData(arrayBuffer) |> Obj.magic,
+    )
   | componentType =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(

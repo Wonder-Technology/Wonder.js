@@ -80,6 +80,16 @@ let _getBufferAttributeData = (accessorIndex, dataViewArr, wd) =>
     Float32Array.fromBufferRange,
   );
 
+let _getUint32ArrayBufferIndexData = (accessorIndex, dataViewArr, wd) =>
+  _getBufferPointData(
+    (accessorIndex, Uint32Array._BYTES_PER_ELEMENT, dataViewArr, wd),
+    Uint32Array.fromBufferRange,
+  )
+  |> WonderLog.Contract.ensureCheck(
+       indices => GeometryUtils.checkIndexData(indices),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     );
+
 let _getBufferIndexData = (accessorIndex, dataViewArr, wd) =>
   switch (_getAccessorComponentType(wd, accessorIndex)) {
   | UNSIGNED_BYTE =>
@@ -94,6 +104,21 @@ let _getBufferIndexData = (accessorIndex, dataViewArr, wd) =>
     _getBufferPointData(
       (accessorIndex, Uint16Array._BYTES_PER_ELEMENT, dataViewArr, wd),
       Uint16Array.fromBufferRange,
+    )
+  | UNSIGNED_INT =>
+    Uint16Array.from(
+      _getUint32ArrayBufferIndexData(accessorIndex, dataViewArr, wd)
+      |> Obj.magic,
+    )
+  | componentType =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_getBufferIndexData",
+        ~description={j|unknown componentType: $componentType|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j},
+      ),
     )
   };
 

@@ -8,6 +8,30 @@ let _setMapMaterialIndices =
     )
   };
 
+let _convertMetallicRoughness =
+    (pbrMetallicRoughness, (materialIndices, diffuseMapIndices), index) =>
+  switch (pbrMetallicRoughness) {
+  | None => (materialIndices, diffuseMapIndices)
+  | Some(pbrMetallicRoughness) =>
+    let {baseColorTexture}: GLTFType.pbrMetallicRoughness = pbrMetallicRoughness;
+    _setMapMaterialIndices(
+      baseColorTexture,
+      index,
+      (materialIndices, diffuseMapIndices),
+    );
+  };
+
+let _convertSpecularGlossiness =
+    (pbrSpecularGlossiness, (materialIndices, diffuseMapIndices), index) => {
+  let {diffuseTexture}: GLTFType.khrMaterialsPBRSpecularGlossiness = pbrSpecularGlossiness;
+
+  _setMapMaterialIndices(
+    diffuseTexture,
+    index,
+    (materialIndices, diffuseMapIndices),
+  );
+};
+
 let convertToMaterialIndices =
     ({materials}: GLTFType.gltf)
     : WDType.materialIndices =>
@@ -26,18 +50,31 @@ let convertToMaterialIndices =
       |> WonderCommonlib.ArrayService.reduceOneParami(
            (.
              (materialIndices, diffuseMapIndices),
-             {pbrMetallicRoughness}: GLTFType.material,
+             {extensions, pbrMetallicRoughness}: GLTFType.material,
              index,
            ) =>
-             switch (pbrMetallicRoughness) {
-             | None => (materialIndices, diffuseMapIndices)
-             | Some(pbrMetallicRoughness) =>
-               let {baseColorTexture}: GLTFType.pbrMetallicRoughness = pbrMetallicRoughness;
-               _setMapMaterialIndices(
-                 baseColorTexture,
-                 index,
+             switch (extensions) {
+             | None =>
+               _convertMetallicRoughness(
+                 pbrMetallicRoughness,
                  (materialIndices, diffuseMapIndices),
-               );
+                 index,
+               )
+             | Some({khr_materials_pbrSpecularGlossiness}) =>
+               switch (khr_materials_pbrSpecularGlossiness) {
+               | None =>
+                 _convertMetallicRoughness(
+                   pbrMetallicRoughness,
+                   (materialIndices, diffuseMapIndices),
+                   index,
+                 )
+               | Some(pbrSpecularGlossiness) =>
+                 _convertSpecularGlossiness(
+                   pbrSpecularGlossiness,
+                   (materialIndices, diffuseMapIndices),
+                   index,
+                 )
+               }
              },
            ([||], [||]),
          );

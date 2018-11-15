@@ -8,6 +8,7 @@ let _createDefaultMaterial = () : GLTFType.material => {
       roughnessFactor: Some(1.),
       metallicRoughnessTexture: None,
     }),
+  extensions: None,
 };
 
 let _addDefaultMaterial = ({materials} as gltf: GLTFType.gltf) => {

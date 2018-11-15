@@ -150,9 +150,23 @@ type pbrMetallicRoughness = {
   metallicRoughnessTexture: option(textureInfo),
 };
 
+type khrMaterialsPBRSpecularGlossiness = {
+  diffuseFactor: option(array(float)),
+  diffuseTexture: option(textureInfo),
+  glossinessFactor: option(float),
+  specularFactor: option(array(float)),
+  specularGlossinessTexture: option(textureInfo),
+};
+
+type materialExtensions = {
+  khr_materials_pbrSpecularGlossiness:
+    option(khrMaterialsPBRSpecularGlossiness),
+};
+
 type material = {
   pbrMetallicRoughness: option(pbrMetallicRoughness),
   name: option(string),
+  extensions: option(materialExtensions),
 };
 
 type basicMaterial = {
