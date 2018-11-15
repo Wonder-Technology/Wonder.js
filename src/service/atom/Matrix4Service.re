@@ -611,16 +611,7 @@ let invertTo3x3 = (mat: Float32Array.t, resultFloat32Arr) => {
   /* Calculate the determinant */
   let det = ref(a00 *. b11 +. a01 *. b12 +. a02 *. b13);
   switch (det^) {
-  | 0. =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="invertTo3x3",
-        ~description={j|det shouldn't be 0.|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j},
-      ),
-    )
+  | 0. => Matrix3Service.createEmptyMatrix3()
   | _ =>
     det := 1.0 /. det^;
     Float32Array.unsafe_set(resultFloat32Arr, 0, b11 *. det^);
