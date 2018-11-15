@@ -1674,7 +1674,8 @@ let _ =
             |> GeometryAPI.setGeometryIndices(geometry2, indices2);
           ((currentState, copiedState), (geometry1, geometry2, geometry3));
         };
-        test("test restore typeArrays", () => {
+
+        test("test restore point data typeArrays", () => {
           open GeometryType;
           let ((currentState, copiedState), _) = _prepare();
           let _ = MainStateTool.restore(currentState, copiedState);
@@ -1739,6 +1740,41 @@ let _ =
                       |]),
                       Uint16Array.make([|0, 2, 1, 0, 0, 0|]),
                     );
+        });
+
+        test("test restore point info typeArrays", () => {
+          let (
+            (currentState, copiedState),
+            (geometry1, geometry2, geometry3),
+          ) =
+            _prepare();
+          let restoredState =
+            MainStateTool.restore(currentState, copiedState);
+
+          let vertices =
+            restoredState |> GeometryAPI.getGeometryVertices(geometry1);
+
+          (
+            restoredState
+            |> GeometryAPI.getGeometryVertices(geometry1)
+            |> Float32Array.length,
+            restoredState
+            |> GeometryAPI.getGeometryNormals(geometry1)
+            |> Float32Array.length,
+            restoredState
+            |> GeometryAPI.getGeometryTexCoords(geometry1)
+            |> Float32Array.length,
+            restoredState
+            |> GeometryAPI.getGeometryIndices(geometry1)
+            |> Uint16Array.length,
+            restoredState
+            |> GeometryAPI.getGeometryVertices(geometry2)
+            |> Float32Array.length,
+            restoredState
+            |> GeometryAPI.getGeometryNormals(geometry3)
+            |> Float32Array.length,
+          )
+          |> expect == (6, 6, 4, 3, 0, 0);
         });
         test("test set point after restore", () => {
           open GeometryType;

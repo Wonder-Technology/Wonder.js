@@ -128,8 +128,11 @@ let deepCopyForRestore = state => {
         texCoordsOffset,
         normalsOffset,
         indicesOffset,
+        verticesInfos,
+        texCoordsInfos,
+        normalsInfos,
+        indicesInfos,
         disposeCount,
-        /* groupCountMap, */
         gameObjectsMap,
         disposedIndexArray,
         disposedIndexMap,
@@ -162,8 +165,19 @@ let deepCopyForRestore = state => {
         texCoordsOffset,
         normalsOffset,
         indicesOffset,
+        verticesInfos:
+          verticesInfos
+          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(verticesOffset),
+        texCoordsInfos:
+          texCoordsInfos
+          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(texCoordsOffset),
+        normalsInfos:
+          normalsInfos
+          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(normalsOffset),
+        indicesInfos:
+          indicesInfos
+          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(indicesOffset),
         disposeCount,
-        /* groupCountMap: groupCountMap |> SparseMapService.copy, */
         gameObjectsMap:
           gameObjectsMap |> CopyTypeArrayService.deepCopyArrayArray,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
