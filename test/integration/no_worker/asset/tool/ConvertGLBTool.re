@@ -1268,3 +1268,23 @@ let buildGLTFJsonOfCameras = () => {|
   }
 }
     |};
+
+let buildGLTFJsonOfTexCoord1 = () =>
+  buildGLTFJson(
+    ~meshes=
+      {| [
+        {"primitives": [
+        {
+            "attributes": {
+                "NORMAL": 1,
+                "POSITION": 2,
+                "TEXCOORD_0": 3,
+                "TEXCOORD_1": 3
+            },
+            "indices": 0,
+            "material": 0
+        }
+    ]}
+    ]|},
+    (),
+  );

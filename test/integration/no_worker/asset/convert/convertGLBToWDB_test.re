@@ -971,12 +971,7 @@ let _ =
           (({basicSourceTextures}, binBuffer)) =>
           basicSourceTextures
           |>
-          expect == [|
-                      {
-                        name: "texture_0",
-                        format: SourceTextureType.Rgba,
-                      },
-                    |]
+          expect == [|{name: "texture_0", format: SourceTextureType.Rgba}|]
         )
       );
       test("test basicSourceTextures", () =>
@@ -1029,7 +1024,14 @@ let _ =
             let images = images |> OptionService.unsafeGet;
 
             images
-            |> expect == [|{name: "CesiumLogoFlat.png", bufferView: 4, mimeType: "image/png"}|];
+            |>
+            expect == [|
+                        {
+                          name: "CesiumLogoFlat.png",
+                          bufferView: 4,
+                          mimeType: "image/png",
+                        },
+                      |];
           },
         )
       );
@@ -1046,8 +1048,16 @@ let _ =
             expect == [|
                         ConvertTool.getJsonSerializedNone(),
                         ConvertTool.getJsonSerializedNone(),
-                        {name: "image_2", bufferView: 4, mimeType: "image/jpeg"},
-                        {name: "image_3", bufferView: 9, mimeType: "image/png"},
+                        {
+                          name: "image_2",
+                          bufferView: 4,
+                          mimeType: "image/jpeg",
+                        },
+                        {
+                          name: "image_3",
+                          bufferView: 9,
+                          mimeType: "image/png",
+                        },
                       |];
           },
         )
@@ -1178,7 +1188,7 @@ let _ =
       )
     );
 
-    describe("test geometrys", () =>
+    describe("test geometrys", () => {
       test("test single primitive", () =>
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
@@ -1199,8 +1209,31 @@ let _ =
                         |],
           (),
         )
-      )
-    );
+      );
+
+      describe("not support texCoord_1", () =>
+        test("if attributes has texCoord_1, warn", () => {
+          let warn =
+            createMethodStubWithJsObjSandbox(
+              sandbox,
+              Console.console,
+              "warn",
+            );
+
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfTexCoord1(),
+            ~state,
+            ~testFunc=
+              _ =>
+                warn
+                |> expect
+                |> toCalledWith([|"Warn: not support texCoord_1"|]),
+            (),
+          );
+        })
+      );
+    });
 
     describe("test meshRenderers", () =>
       describe(
