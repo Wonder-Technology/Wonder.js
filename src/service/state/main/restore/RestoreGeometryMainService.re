@@ -16,7 +16,7 @@ let _restoreTypeArrays =
   && currentGeometryRecord.indicesInfos === targetGeometryRecord.indicesInfos ?
     (currentGeometryRecord, targetGeometryRecord) :
     {
-      let (vertices, texCoords, normals, indices, indices32) =
+      /* let (vertices, texCoords, normals, indices, indices32) =
         RecordGeometryMainService.setAllTypeArrDataToDefault(
           currentGeometryRecord.index,
           geometryPointCount,
@@ -27,7 +27,7 @@ let _restoreTypeArrays =
             currentGeometryRecord.indices,
             currentGeometryRecord.indices32,
           ),
-        );
+        ); */
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (currentGeometryRecord.vertices, 0),
         (targetGeometryRecord.vertices, 0),

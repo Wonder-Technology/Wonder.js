@@ -9,43 +9,43 @@ open BufferGeometryService;
 let getRecord = ({geometryRecord}) =>
   geometryRecord |> OptionService.unsafeGet;
 
-let setAllTypeArrDataToDefault =
-    (
-      geometryCount: int,
-      geometryPointCount,
-      (vertices, texCoords, normals, indices, indices32),
-    ) => (
-  vertices
-  |> Js.Typed_array.Float32Array.fillRangeInPlace(
-       0.,
-       ~start=0,
-       ~end_=geometryCount * geometryPointCount * getVertexSize(),
-     ),
-  texCoords
-  |> Js.Typed_array.Float32Array.fillRangeInPlace(
-       0.,
-       ~start=0,
-       ~end_=geometryCount * geometryPointCount * getTexCoordsSize(),
-     ),
-  normals
-  |> Js.Typed_array.Float32Array.fillRangeInPlace(
-       0.,
-       ~start=0,
-       ~end_=geometryCount * geometryPointCount * getVertexSize(),
-     ),
-  indices
-  |> Js.Typed_array.Uint16Array.fillRangeInPlace(
-       0,
-       ~start=0,
-       ~end_=geometryCount * geometryPointCount * getIndexSize(),
-     ),
-  indices32
-  |> Js.Typed_array.Uint32Array.fillRangeInPlace(
-       0,
-       ~start=0,
-       ~end_=geometryCount * geometryPointCount * getIndexSize(),
-     ),
-);
+/* let setAllTypeArrDataToDefault =
+       (
+         geometryCount: int,
+         geometryPointCount,
+         (vertices, texCoords, normals, indices, indices32),
+       ) => (
+     vertices
+     |> Js.Typed_array.Float32Array.fillRangeInPlace(
+          0.,
+          ~start=0,
+          ~end_=geometryCount * geometryPointCount * getVertexSize(),
+        ),
+     texCoords
+     |> Js.Typed_array.Float32Array.fillRangeInPlace(
+          0.,
+          ~start=0,
+          ~end_=geometryCount * geometryPointCount * getTexCoordsSize(),
+        ),
+     normals
+     |> Js.Typed_array.Float32Array.fillRangeInPlace(
+          0.,
+          ~start=0,
+          ~end_=geometryCount * geometryPointCount * getVertexSize(),
+        ),
+     indices
+     |> Js.Typed_array.Uint16Array.fillRangeInPlace(
+          0,
+          ~start=0,
+          ~end_=geometryCount * geometryPointCount * getIndexSize(),
+        ),
+     indices32
+     |> Js.Typed_array.Uint32Array.fillRangeInPlace(
+          0,
+          ~start=0,
+          ~end_=geometryCount * geometryPointCount * getIndexSize(),
+        ),
+   ); */
 
 let _initBufferData = (geometryPointCount, geometryCount) => {
   let buffer = createBuffer(geometryPointCount, geometryCount);

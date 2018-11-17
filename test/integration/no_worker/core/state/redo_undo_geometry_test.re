@@ -135,7 +135,7 @@ let _ =
           GeometryTool.createGameObject(state);
         let vertices2 =
           Float32Array.make([|2., 3., 40., 1., 3., 5., 3., 4., 11.|]);
-        let texCoords2 = Float32Array.make([|1., 0.5, 0.2, 0.3, 0.3, 0.5|]);
+        let texCoords2 = Float32Array.make([|1., 0.5, 1., 1.5, 0.3, 0.5|]);
         let normals2 =
           Float32Array.make([|3., 2., 4., 5., 6., 7., 2.5, 1.5, 0.|]);
         let indices2 = Uint16Array.make([|0, 1, 2|]);
@@ -185,13 +185,13 @@ let _ =
                       10.,
                       10.,
                       10.,
-                      0.,
-                      0.,
+                      2.,
+                      3.
                     |]),
-                    Float32Array.make([|0.5, 0.5, 0.5, 0.5, 0., 0., 0., 0.|]),
-                    Float32Array.make([|1., 1., 1., 1., 1., 1., 0., 0.|]),
-                    Uint16Array.make([|0, 2, 1, 0, 0, 0, 0, 0|]),
-                    Uint32Array.make([|0, 2, 1, 0, 0, 0, 0, 0|]),
+                    Float32Array.make([|0.5, 0.5, 0.5, 0.5, 1., 0.5, 1., 1.5|]),
+                    Float32Array.make([|1., 1., 1., 1., 1., 1., 3.,2.|]),
+                    Uint16Array.make([|0, 2, 1, 0, 1, 2, 0, 0|]),
+                    Uint32Array.make([|0, 2, 1, 0, 1, 2, 0, 0|]),
                   );
       });
 
@@ -272,7 +272,7 @@ let _ =
                     /* false,
                        false, */
                     vertices,
-                    Uint16Array.make([|0, 0, 0|]),
+                    Uint16Array.make([|0, 1, 2|]),
                     indices32,
                   );
       });
