@@ -80,18 +80,8 @@ let _getBufferAttributeData = (accessorIndex, dataViewArr, wd) =>
     Float32Array.fromBufferRange,
   );
 
-let _getUint32ArrayBufferIndexData = (accessorIndex, dataViewArr, wd) =>
-  _getBufferPointData(
-    (accessorIndex, Uint32Array._BYTES_PER_ELEMENT, dataViewArr, wd),
-    Uint32Array.fromBufferRange,
-  )
-  |> WonderLog.Contract.ensureCheck(
-       indices => GeometryUtils.checkIndexData(indices),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
-
-let _getBufferIndexData = (accessorIndex, dataViewArr, wd) =>
-  switch (_getAccessorComponentType(wd, accessorIndex)) {
+let _getBufferIndex16Data = (componentType, accessorIndex, dataViewArr, wd) =>
+  switch (componentType) {
   | UNSIGNED_BYTE =>
     Uint16Array.from(
       _getBufferPointData(
@@ -100,26 +90,25 @@ let _getBufferIndexData = (accessorIndex, dataViewArr, wd) =>
       )
       |> Obj.magic,
     )
+    |. Some
   | UNSIGNED_SHORT =>
     _getBufferPointData(
       (accessorIndex, Uint16Array._BYTES_PER_ELEMENT, dataViewArr, wd),
       Uint16Array.fromBufferRange,
     )
+    |. Some
+  | _ => None
+  };
+
+let _getBufferIndex32Data = (componentType, accessorIndex, dataViewArr, wd) =>
+  switch (componentType) {
   | UNSIGNED_INT =>
-    Uint16Array.from(
-      _getUint32ArrayBufferIndexData(accessorIndex, dataViewArr, wd)
-      |> Obj.magic,
+    _getBufferPointData(
+      (accessorIndex, Uint32Array._BYTES_PER_ELEMENT, dataViewArr, wd),
+      Uint32Array.fromBufferRange,
     )
-  | componentType =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_getBufferIndexData",
-        ~description={j|unknown componentType: $componentType|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j},
-      ),
-    )
+    |. Some
+  | _ => None
   };
 
 let _batchSetGeometryData =
@@ -169,12 +158,47 @@ let _batchSetGeometryData =
                    ),
                    state,
                  );
+
+             let componentType = _getAccessorComponentType(wd, index);
              let state =
-               IndicesGeometryMainService.setIndicesByUint16Array(
-                 geometry,
-                 _getBufferIndexData(index, dataViewArr, wd),
-                 state,
-               );
+               switch (
+                 _getBufferIndex16Data(componentType, index, dataViewArr, wd)
+               ) {
+               | Some(data) =>
+                 IndicesGeometryMainService.setIndicesByUint16Array(
+                   geometry,
+                   data,
+                   state,
+                 )
+               | None =>
+                 switch (
+                   _getBufferIndex32Data(
+                     componentType,
+                     index,
+                     dataViewArr,
+                     wd,
+                   )
+                 ) {
+                 | Some(data) =>
+                   IndicesGeometryMainService.setIndicesByUint32Array(
+                     geometry,
+                     data,
+                     state,
+                   )
+                 | None =>
+                   WonderLog.Log.fatal(
+                     WonderLog.Log.buildFatalMessage(
+                       ~title="_batchSetGeometryData",
+                       ~description=
+                         {j|unknown componentType: $componentType|j},
+                       ~reason="",
+                       ~solution={j||j},
+                       ~params={j||j},
+                     ),
+                   )
+                 }
+               };
+
              state;
            },
        state,

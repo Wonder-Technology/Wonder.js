@@ -227,16 +227,61 @@ let _ =
                     0.7071067690849304,
                   |]);
 
-                test("compute vertex normals", () =>
-                  Js.Typed_array.(
-                    GeometryAPI.(
-                      _prepareForBufferData(
+                describe("compute vertex normals", () => {
+                  let _prepareIndices32 = (sandbox, state) => {
+                    open GeometryAPI;
+
+                    let (state, geometry) = createGeometry(state);
+                    let state =
+                      state
+                      |> setGeometryVertices(
+                           geometry,
+                           Float32Array.make([|
+                             1.,
+                             (-1.),
+                             0.,
+                             0.,
+                             1.,
+                             0.,
+                             0.,
+                             0.,
+                             1.,
+                             2.,
+                             3.,
+                             (-2.),
+                           |]),
+                         )
+                      |> setGeometryIndices32(
+                           geometry,
+                           Uint32Array.make([|0, 2, 1, 2, 3, 1|]),
+                         );
+
+                    let (state, gameObject, geometry, _, _) =
+                      FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
+                        sandbox,
+                        geometry,
+                        GameObjectAPI.addGameObjectGeometryComponent,
                         state,
-                        (_ => _getComputedNormals(), _prepare),
-                      )
+                      );
+                    let (state, _, _, _) =
+                      CameraTool.createCameraGameObject(state);
+                    (state, geometry);
+                  };
+
+                  test("test indices16", () =>
+                    _prepareForBufferData(
+                      state,
+                      (_ => _getComputedNormals(), _prepare),
                     )
-                  )
-                );
+                  );
+                  test("test indices32", () =>
+                    _prepareForBufferData(
+                      state,
+                      (_ => _getComputedNormals(), _prepareIndices32),
+                    )
+                  );
+                });
+
                 test("only buffer data once", () => {
                   let (state, geometry) = _prepare(sandbox, state^);
                   let array_buffer = 1;

@@ -7,7 +7,8 @@ let buildInitRenderData =
       ~textureData=Sinon.matchAny,
       ~imguiData=Sinon.matchAny,
       ~meshRendererData=Sinon.matchAny,
-      ()
+      ~geometryData=Sinon.matchAny,
+      (),
     ) => {
   "operateType": "INIT_RENDER",
   "canvas": Sinon.matchAny,
@@ -27,8 +28,8 @@ let buildInitRenderData =
   "basicMaterialData": Sinon.matchAny,
   "lightMaterialData": Sinon.matchAny,
   "meshRendererData": Sinon.matchAny,
-  "geometryData": Sinon.matchAny,
+  "geometryData": geometryData,
   "directionLightData": Sinon.matchAny,
   "pointLightData": Sinon.matchAny,
-  "sourceInstanceData": Sinon.matchAny
+  "sourceInstanceData": Sinon.matchAny,
 };

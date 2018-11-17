@@ -158,6 +158,7 @@ let _ =
         let (state, _, _, _) = CameraTool.createCameraGameObject(state);
         state;
       };
+
       describe("init vbo buffers when first send", () => {
         let _prepare = (sandbox, state) => {
           let (state, gameObject, geometry, _, _, _) =
@@ -204,6 +205,7 @@ let _ =
             state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
           getCallCount(createBuffer) |> expect == 3;
         });
+
         describe("init vertex buffer", () => {
           test("bufferData", () =>
             _prepareForBufferData(
@@ -246,6 +248,7 @@ let _ =
             |> expect == (true, true);
           });
         });
+
         describe("init texCoord buffer", () =>
           test("bufferData", () =>
             _prepareForBufferData(
@@ -254,31 +257,63 @@ let _ =
             )
           )
         );
+
         describe("init index buffer", () => {
-          test("bufferData", () => {
-            let (state, geometry) = _prepare(sandbox, state^);
-            let element_array_buffer = 1;
-            let static_draw = 2;
-            let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~element_array_buffer,
-                     ~static_draw,
-                     ~bufferData,
-                     (),
-                   ),
-                 );
-            let state =
-              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-            let indices = BoxGeometryTool.getBoxGeometryIndices(state);
-            bufferData
-            |> withThreeArgs(element_array_buffer, indices, static_draw)
-            |> expect
-            |> toCalledOnce;
+          describe("buffer data", () => {
+            test("test indices16", () => {
+              let (state, geometry) = _prepare(sandbox, state^);
+              let element_array_buffer = 1;
+              let static_draw = 2;
+              let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(
+                       ~sandbox,
+                       ~element_array_buffer,
+                       ~static_draw,
+                       ~bufferData,
+                       (),
+                     ),
+                   );
+              let state =
+                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+              let indices = BoxGeometryTool.getBoxGeometryIndices(state);
+              bufferData
+              |> withThreeArgs(element_array_buffer, indices, static_draw)
+              |> expect
+              |> toCalledOnce;
+            });
+            test("test indices32", () => {
+              let (state, geometry) = _prepare(sandbox, state^);
+              let indices32 = Js.Typed_array.Uint32Array.make([|1, 2, 3|]);
+              let state =
+                GeometryAPI.setGeometryIndices32(geometry, indices32, state);
+              let element_array_buffer = 1;
+              let static_draw = 2;
+              let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(
+                       ~sandbox,
+                       ~element_array_buffer,
+                       ~static_draw,
+                       ~bufferData,
+                       (),
+                     ),
+                   );
+
+              let state =
+                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+              bufferData
+              |> withThreeArgs(element_array_buffer, indices32, static_draw)
+              |> expect
+              |> toCalledOnce;
+            });
           });
+
           test("bind buffer and unbind buffer", () => {
             let (state, geometry) = _prepare(sandbox, state^);
             let element_array_buffer = 5;
@@ -1964,40 +1999,85 @@ let _ =
             let state = state |> DirectorTool.runWithDefaultTime;
             drawElements |> withOneArg(lines) |> expect |> toCalledOnce;
           });
-          test("test drawElements", () => {
-            let (state, geometry, meshRenderer) =
-              _prepareForDrawElements(sandbox, state^);
-            let triangles = 1;
-            let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~triangles,
-                     ~drawElements,
-                     (),
+
+          describe("test draw indices", () => {
+            test("test indices16", () => {
+              let (state, geometry, meshRenderer) =
+                _prepareForDrawElements(sandbox, state^);
+              let triangles = 1;
+              let unsigned_short = 2;
+              let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(
+                       ~sandbox,
+                       ~triangles,
+                       ~drawElements,
+                       ~unsigned_short,
+                       (),
+                     ),
+                   );
+
+              let state = state |> RenderJobsTool.init;
+              let state = state |> DirectorTool.runWithDefaultTime;
+
+              drawElements
+              |> withFourArgs(
+                   triangles,
+                   GeometryTool.getIndicesCount(
+                     geometry,
+                     CreateRenderStateMainService.createRenderState(state),
                    ),
-                 );
-            let state = state |> RenderJobsTool.init;
-            let state = state |> DirectorTool.runWithDefaultTime;
-            drawElements
-            |> withFourArgs(
-                 triangles,
-                 GeometryTool.getIndicesCount(
-                   geometry,
-                   CreateRenderStateMainService.createRenderState(state),
-                 ),
-                 GeometryTool.getIndexType(
-                   CreateRenderStateMainService.createRenderState(state),
-                 ),
-                 GeometryTool.getIndexTypeSize(
-                   CreateRenderStateMainService.createRenderState(state),
+                   unsigned_short,
+                   GeometryTool.getIndexTypeSize(
+                     CreateRenderStateMainService.createRenderState(state),
+                   )
+                   * 0,
                  )
-                 * 0,
-               )
-            |> expect
-            |> toCalledOnce;
+              |> expect
+              |> toCalledOnce;
+            });
+            test("test indices32", () => {
+              let (state, geometry, meshRenderer) =
+                _prepareForDrawElements(sandbox, state^);
+              let state =
+                GeometryAPI.setGeometryIndices32(
+                  geometry,
+                  Js.Typed_array.Uint32Array.make([|1, 2, 3|]),
+                  state,
+                );
+              let triangles = 1;
+              let unsigned_int = 2;
+              let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(
+                       ~sandbox,
+                       ~triangles,
+                       ~drawElements,
+                       ~unsigned_int,
+                       (),
+                     ),
+                   );
+
+              let state = state |> RenderJobsTool.init;
+              let state = state |> DirectorTool.runWithDefaultTime;
+
+              drawElements
+              |> withFourArgs(
+                   triangles,
+                   GeometryTool.getIndicesCount(
+                     geometry,
+                     CreateRenderStateMainService.createRenderState(state),
+                   ),
+                   unsigned_int,
+                   Js.Typed_array.Uint32Array._BYTES_PER_ELEMENT * 0,
+                 )
+              |> expect
+              |> toCalledOnce;
+            });
           });
         });
         /* describe(

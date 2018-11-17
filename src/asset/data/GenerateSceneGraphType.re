@@ -116,7 +116,8 @@ type point =
   | Vertex
   | Normal
   | TexCoord
-  | Index;
+  | Index
+  | Index32;
 
 external positionTupleToArray : PositionType.position => array(float) =
   "%identity";

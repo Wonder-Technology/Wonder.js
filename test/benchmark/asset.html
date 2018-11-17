@@ -358,7 +358,7 @@
 
 
 
-return;
+                                        return;
 
 
 
@@ -723,7 +723,7 @@ return;
                 var n2 = performance.now();
 
 
-                wd.assembleWholeWDB(wdb, true, true, true, state).forEach(([state, imageUint8ArrayDataMap, rootGameObject]) => {
+                wd.assembleWholeWDB(wdb, true, true, true, true, state).forEach(([state, imageUint8ArrayDataMap, rootGameObject]) => {
 
 
                     var n3 = performance.now();
@@ -897,7 +897,7 @@ return;
 
                 // var state = state$;
 
-                wd.assembleWholeWDB(wdb, true, true, true, state)
+                wd.assembleWholeWDB(wdb, true, true, true, true, state)
                     .forEach(([state, rootGameObject]) => {
                         // var [state, directionLightObj, pointLightObj] = _createLightsAndCamera(false, state);
 
@@ -907,13 +907,13 @@ return;
             }
 
 
-            function _testAssembleWD(glb, isCreateCamera, state$) {
+            function _testAssembleWD(glb, isCreateCamera, state) {
                 console.profile("convert");
                 var n0 = performance.now();
 
                 let wdb = wd.convertGLBToWDB(glb);
 
-                var state = state$;
+                // var state = state$;
 
 
                 console.log(performance.now() - n0);
@@ -925,7 +925,7 @@ return;
 
                 var n1 = performance.now();
 
-                wd.assembleWholeWDB(wdb, true, true, true, state)
+                wd.assembleWholeWDB(wdb, true, true, true, true, state)
                     .forEach(([state, _, rootGameObject]) => {
                         console.log(performance.now() - n1);
                         console.profileEnd();
@@ -960,107 +960,128 @@ return;
             }
 
 
-
-
-            function initSample(map1, map2, state$) {
+            function initSample(map1, map2, state) {
                 fetch(
-                    "../res/BoxTextured.glb"
+                    // "../res/BoxTextured.glb"
+                    // "../res/CesiumMilkTruck.glb"
+                    // "../res/CesiumMilkTruck.glb"
+                    // "../res/VC.glb"
+                    // "../res/2CylinderEngine.glb"
+                    // "../res/AlphaBlendModeTest.glb"
+                    "../res/SuperLowPolyStove.glb"
                 )
                     .then((res) => {
-                        // console.log(res.headers.get("content-length"));
                         return res.arrayBuffer();
                     })
-                    .then((boxArrayBuffer) => {
-
-
-                        fetch(
-                            "../res/CesiumMilkTruck.glb"
-                        )
-                            .then((res) => {
-                                return res.arrayBuffer();
-                            })
-                            .then((truckArrayBuffer) => {
-                                fetch(
-                                    // "../res/BoxTextured.glb"
-                                    // "../res/CesiumMilkTruck.glb"
-                                    // "../res/CesiumMilkTruck.glb"
-                                    // "../res/VC.glb"
-                                    // "../res/2CylinderEngine.glb"
-                                    "../res/AlphaBlendModeTest.glb"
-                                )
-                                    .then((res) => {
-                                        return res.arrayBuffer();
-                                    })
-                                    .then((alphaArrayBuffer) => {
-
-                                        // _testGenerateWDBByGLB(
-                                        //     // [
-                                        //     boxArrayBuffer,
-                                        //     // truckArrayBuffer,
-                                        //     // alphaArrayBuffer,
-                                        //     // ],
-                                        //     // boxArrayBuffer,
-
-                                        //     // truckArrayBuffer,
-
-
-                                        //     true,
-
-                                        //     state$);
-
-
-                                        // _downloadScene(
-                                        //     [
-                                        //         boxArrayBuffer,
-                                        //         truckArrayBuffer,
-                                        //         alphaArrayBuffer
-                                        //     ],
-
-
-                                        //     true,
-
-                                        //     state$
-                                        // );
-
-
-                                        // _downloadScene3(
-                                        //     [
-                                        //         // boxArrayBuffer,
-                                        //         truckArrayBuffer,
-                                        //         // alphaArrayBuffer
-                                        //     ],
-
-
-                                        //     true,
-
-                                        //     state$
-                                        // );
-
-
-
-
-                                        // _testGenerateWDByGameObject(map1, map2, state$);
-
-
-
-                                        _testAssembleWD(
-                                            // truckArrayBuffer,
-
-                                                // boxArrayBuffer,
-alphaArrayBuffer,
-                                            true,
-                                            state$);
-                                    })
-                            })
-
-
+                    .then((arrayBuffer) => {
+                        _testAssembleWD(
+                            arrayBuffer,
+                            true,
+                            state);
                     })
-
-
-
-
-
             }
+
+
+            // function initSample(map1, map2, state$) {
+            //     fetch(
+            //         "../res/BoxTextured.glb"
+            //     )
+            //         .then((res) => {
+            //             // console.log(res.headers.get("content-length"));
+            //             return res.arrayBuffer();
+            //         })
+            //         .then((boxArrayBuffer) => {
+
+
+            //             fetch(
+            //                 "../res/CesiumMilkTruck.glb"
+            //             )
+            //                 .then((res) => {
+            //                     return res.arrayBuffer();
+            //                 })
+            //                 .then((truckArrayBuffer) => {
+            //                     fetch(
+            //                         // "../res/BoxTextured.glb"
+            //                         // "../res/CesiumMilkTruck.glb"
+            //                         // "../res/CesiumMilkTruck.glb"
+            //                         // "../res/VC.glb"
+            //                         // "../res/2CylinderEngine.glb"
+            //                         // "../res/AlphaBlendModeTest.glb"
+            //                         "../res/SuperLowPolyStove.glb"
+            //                     )
+            //                         .then((res) => {
+            //                             return res.arrayBuffer();
+            //                         })
+            //                         .then((alphaArrayBuffer) => {
+
+            //                             // _testGenerateWDBByGLB(
+            //                             //     // [
+            //                             //     boxArrayBuffer,
+            //                             //     // truckArrayBuffer,
+            //                             //     // alphaArrayBuffer,
+            //                             //     // ],
+            //                             //     // boxArrayBuffer,
+
+            //                             //     // truckArrayBuffer,
+
+
+            //                             //     true,
+
+            //                             //     state$);
+
+
+            //                             // _downloadScene(
+            //                             //     [
+            //                             //         boxArrayBuffer,
+            //                             //         truckArrayBuffer,
+            //                             //         alphaArrayBuffer
+            //                             //     ],
+
+
+            //                             //     true,
+
+            //                             //     state$
+            //                             // );
+
+
+            //                             // _downloadScene3(
+            //                             //     [
+            //                             //         // boxArrayBuffer,
+            //                             //         truckArrayBuffer,
+            //                             //         // alphaArrayBuffer
+            //                             //     ],
+
+
+            //                             //     true,
+
+            //                             //     state$
+            //                             // );
+
+
+
+
+            //                             // _testGenerateWDByGameObject(map1, map2, state$);
+
+
+
+            //                             _testAssembleWD(
+            //                                 // truckArrayBuffer,
+
+            //                                 // boxArrayBuffer,
+            //                                 alphaArrayBuffer,
+            //                                 true,
+            //                                 state$);
+            //                         })
+            //                 })
+
+
+            //         })
+
+
+
+
+
+            // }
 
         };
     </script>

@@ -65,18 +65,23 @@ let _ =
                );
           let (state, gameObject2, geometry2) =
             GeometryTool.createGameObject(state);
+          let state =
+            GeometryAPI.setGeometryIndices(
+              geometry2,
+              Js.Typed_array.Uint16Array.make([|1, 3, 2|]),
+              state,
+            );
+
           let state = state |> GameObjectAPI.initGameObject(gameObject2);
           let state = state |> DisposeJob.execJob(None);
+
           let (
             resultVertexArrayBuffer2,
             resultTexCoordArrayBuffer2,
             resultNormalArrayBuffer2,
             resultElementArrayBuffer2,
           ) =
-            VboBufferTool.getOrCreateAllGeometryBuffers(
-              geometry2,
-              state,
-            );
+            VboBufferTool.getOrCreateAllGeometryBuffers(geometry2, state);
           (
             createBuffer |> getCallCount,
             resultVertexArrayBuffer2,

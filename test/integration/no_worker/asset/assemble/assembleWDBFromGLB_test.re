@@ -453,7 +453,8 @@ let _ =
                   GeometryAPI.getGeometryVertices(geometry, state),
                   GeometryAPI.getGeometryNormals(geometry, state),
                   GeometryAPI.getGeometryTexCoords(geometry, state),
-                  GeometryAPI.getGeometryIndices(geometry, state),
+                  GeometryAPI.getGeometryIndices(geometry, state) |. Some,
+                  None,
                 )
                 |> expect == GLTFTool.getBoxTexturedGeometryData();
               },

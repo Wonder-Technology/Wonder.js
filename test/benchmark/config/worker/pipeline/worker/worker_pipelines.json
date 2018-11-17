@@ -88,6 +88,9 @@
                         "name": "get_instance_data"
                     },
                     {
+                        "name": "get_geometry_data"
+                    },
+                    {
                         "name": "get_ambient_light_data"
                     },
                     {

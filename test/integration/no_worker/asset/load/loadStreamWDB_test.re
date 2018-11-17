@@ -13,6 +13,7 @@ let _ =
     let boxTexturedWDBArrayBuffer = ref(Obj.magic(-1));
     let cesiumMilkTruckWDBArrayBuffer = ref(Obj.magic(-1));
     let alphaBlendModeTestWDBArrayBuffer = ref(Obj.magic(-1));
+    let stoveWDBArrayBuffer = ref(Obj.magic(-1));
 
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
@@ -53,13 +54,19 @@ window.Blob = Blob;
         NodeTool.convertGLBToWDB("cesiumMilkTruck");
       alphaBlendModeTestWDBArrayBuffer :=
         NodeTool.convertGLBToWDB("AlphaBlendModeTest");
+      stoveWDBArrayBuffer := NodeTool.convertGLBToWDB("SuperLowPolyStove");
     });
     beforeEach(() => {
       sandbox := createSandbox();
       state :=
-        RenderJobsTool.initWithJobConfig(
+        RenderJobsTool.initWithJobConfigAndBufferConfig(
           sandbox,
           LoopRenderJobTool.buildNoWorkerJobConfig(),
+          SettingTool.buildBufferConfigStr(
+            ~geometryPointCount=100000,
+            ~geometryCount=100,
+            (),
+          ),
         );
 
       _clearBlobData(.);
@@ -345,6 +352,12 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             )
           )
         );
+
+        describe("test SuperLowPolyStove wdb", () =>
+          testPromise("set default source to all basicSourceTextures", () =>
+            _testSetDefaultSource(sandbox, stoveWDBArrayBuffer, state)
+          )
+        );
       });
 
       describe("test load all data in first chunk", () => {
@@ -572,7 +585,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                    GeometryAPI.getGeometryIndices(geometry, state);
 
                  (
-                   (vertices, normals, texCoords, indices),
+                   (vertices, normals, texCoords, indices |. Some, None),
                    (
                      bufferData
                      |> withThreeArgs(array_buffer, vertices, static_draw)
@@ -822,6 +835,67 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           );
           testPromise("draw the gameObject", () =>
             _testDraw(sandbox, alphaBlendModeTestWDBArrayBuffer, 9, state)
+          );
+        });
+
+        describe("test SuperLowPolyStove wdb", () => {
+          testPromise("add geometry component", () =>
+            _testAddGeometryComponents(
+              sandbox,
+              stoveWDBArrayBuffer,
+              ([||], [|0, 1|]),
+              state,
+            )
+          );
+          testPromise("test set geometry point data", () => {
+            let state =
+              state^
+              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+            let (default11Image, readStub, handleBeforeStartLoop, _, state) =
+              _prepare(sandbox, stoveWDBArrayBuffer^, state);
+            let rootGameObjectWhenDone = ref(-1);
+            let handleWhenDoneFunc = (state, rootGameObject) => {
+              rootGameObjectWhenDone := rootGameObject;
+
+              state;
+            };
+
+            LoadStreamWDBTool.read(
+              (
+                default11Image,
+                _buildController(sandbox),
+                handleBeforeStartLoop,
+                handleWhenDoneFunc,
+              ),
+              _buildReader(readStub),
+            )
+            |> then_(() => {
+                 let state = StateAPI.unsafeGetState();
+
+                 let state = DirectorTool.runWithDefaultTime(state);
+
+                 let dataArr =
+                   _getAllGeometryData(rootGameObjectWhenDone^, state);
+
+                 let dataMap = GLTFTool.getSuperLowPolyStoveGeometryData();
+
+                 (dataArr |> Js.Array.length, dataArr[1])
+                 |>
+                 expect == (
+                             2,
+                             (
+                               "Stove_1",
+                               dataMap
+                               |> WonderCommonlib.HashMapService.unsafeGet(
+                                    "Stove_1",
+                                  ),
+                             ),
+                           )
+                 |> resolve;
+               });
+          });
+          testPromise("draw the gameObject", () =>
+            _testDraw(sandbox, stoveWDBArrayBuffer, 2, state)
           );
         });
       });
@@ -1916,177 +1990,116 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           );
         });
       });
-    });
 
-    describe("test set bin buffer chunk data", () =>
-      describe("test set image data", () =>
-        test("mark need update", () => {
-          let image = Obj.magic(51);
-          let basicSourceTextureArr = [|0, 1|];
-          let state =
+      describe("test set bin buffer chunk data", () =>
+        describe("test set image data", () =>
+          test("mark need update", () => {
+            let image = Obj.magic(51);
+            let basicSourceTextureArr = [|0, 1|];
+            let state =
+              basicSourceTextureArr
+              |> WonderCommonlib.ArrayService.reduceOneParam(
+                   (. state, basicSourceTexture) =>
+                     BasicSourceTextureTool.setIsNeedUpdate(
+                       basicSourceTexture,
+                       BasicSourceTextureTool.getNotNeedUpdate(),
+                       state,
+                     ),
+                   state^,
+                 );
+
+            let state =
+              LoadStreamWDBTool.setImageData(
+                ({imageIndex: 0, image}: StreamType.loadedStreamImageBlobData)
+                |. Some,
+                basicSourceTextureArr,
+                {textureIndices: [|0, 1|], imageIndices: [|0, 0|]}: WDType.imageTextureIndexData,
+                state,
+              );
+
             basicSourceTextureArr
-            |> WonderCommonlib.ArrayService.reduceOneParam(
-                 (. state, basicSourceTexture) =>
-                   BasicSourceTextureTool.setIsNeedUpdate(
-                     basicSourceTexture,
-                     BasicSourceTextureTool.getNotNeedUpdate(),
-                     state,
-                   ),
-                 state^,
-               );
-
-          let state =
-            LoadStreamWDBTool.setImageData(
-              ({imageIndex: 0, image}: StreamType.loadedStreamImageBlobData)
-              |. Some,
-              basicSourceTextureArr,
-              {textureIndices: [|0, 1|], imageIndices: [|0, 0|]}: WDType.imageTextureIndexData,
-              state,
-            );
-
-          basicSourceTextureArr
-          |> Js.Array.map(basicSourceTexture =>
-               BasicSourceTextureTool.getIsNeedUpdate(
-                 basicSourceTexture,
-                 state,
+            |> Js.Array.map(basicSourceTexture =>
+                 BasicSourceTextureTool.getIsNeedUpdate(
+                   basicSourceTexture,
+                   state,
+                 )
                )
-             )
-          |> expect == [|true, true|];
-        })
-      )
-    );
-
-    describe("if load error", () => {
-      let _buildFakeFetchReturnResponse = (ok, status, statusText) =>
-        {"ok": ok, "status": status, "statusText": statusText}
-        |> Js.Promise.resolve;
-
-      let _buildFakeFetch = (sandbox, status, statusText) => {
-        let fetch = createEmptyStubWithJsObjSandbox(sandbox);
-        fetch
-        |> onCall(0)
-        |> returns(_buildFakeFetchReturnResponse(false, status, statusText));
-        fetch;
-      };
-
-      beforeEach(() => GLBTool.prepare(sandbox^));
-
-      testPromise("throw error", () => {
-        let status = "aaa";
-        let statusText = "bbb";
-        let fetchFunc = _buildFakeFetch(sandbox, status, statusText);
-
-        LoadStreamWDBTool.load(
-          ~wdbPath=NodeTool.buildWDBPath("BoxTextured"),
-          ~fetchFunc,
-          (),
+            |> expect == [|true, true|];
+          })
         )
-        |> PromiseTool.judgeErrorMessage({j|$status $statusText|j});
+      );
+
+      describe("if load error", () => {
+        let _buildFakeFetchReturnResponse = (ok, status, statusText) =>
+          {"ok": ok, "status": status, "statusText": statusText}
+          |> Js.Promise.resolve;
+
+        let _buildFakeFetch = (sandbox, status, statusText) => {
+          let fetch = createEmptyStubWithJsObjSandbox(sandbox);
+          fetch
+          |> onCall(0)
+          |> returns(
+               _buildFakeFetchReturnResponse(false, status, statusText),
+             );
+          fetch;
+        };
+
+        beforeEach(() => GLBTool.prepare(sandbox^));
+
+        testPromise("throw error", () => {
+          let status = "aaa";
+          let statusText = "bbb";
+          let fetchFunc = _buildFakeFetch(sandbox, status, statusText);
+
+          LoadStreamWDBTool.load(
+            ~wdbPath=NodeTool.buildWDBPath("BoxTextured"),
+            ~fetchFunc,
+            (),
+          )
+          |> PromiseTool.judgeErrorMessage({j|$status $statusText|j});
+        });
       });
-    });
 
-    describe("if not support stream load", () => {
-      let _buildFakeFetchReturnResponse = (contentLength, ok, arrayBuffer) =>
-        {
-          "ok": true,
-          "headers": {
-            "get":
-              Sinon.createEmptyStubWithJsObjSandbox(sandbox)
-              |> Sinon.withOneArg("content-length")
-              |> Sinon.returns(contentLength),
-          },
-          "arrayBuffer": () => arrayBuffer |> resolve,
-        }
-        |> Js.Promise.resolve;
-
-      let _buildFakeFetch = (sandbox, contentLength, gltfJsonStr, binBuffer) => {
-        let fetch = createEmptyStubWithJsObjSandbox(sandbox);
-        fetch
-        |> onCall(0)
-        |> returns(
-             _buildFakeFetchReturnResponse(
-               contentLength,
-               true,
-               ConvertGLBSystem.convertGLBData(
-                 gltfJsonStr |> Js.Json.parseExn,
-                 binBuffer,
-               ),
-             ),
-           );
-        fetch;
-      };
-
-      beforeEach(() => GLBTool.prepare(sandbox^) |> ignore);
-
-      testPromise("warn", () => {
-        let warnStub =
-          createMethodStubWithJsObjSandbox(sandbox, Console.console, "warn");
-        let fetchFunc =
-          _buildFakeFetch(
-            sandbox,
-            0,
-            ConvertGLBTool.buildGLTFJsonOfSingleNode(),
-            GLBTool.buildBinBuffer(),
-          );
-
-        LoadStreamWDBTool.load(
-          ~wdbPath=NodeTool.buildWDBPath("BoxTextured"),
-          ~fetchFunc,
-          (),
-        )
-        |> then_(_ =>
-             warnStub
-             |> expect
-             |> toCalledWith([|
-                  "Warn: your browser does not seem to have the Streams API yet, fallback to load whole wdb",
-                |])
-             |> resolve
-           );
-      });
-      testPromise("trigger handleWhenLoadingFunc", () => {
-        let totalLoadedByteLengthArr = [||];
-        let contentLengthArr = [||];
-        let wdbPathArr = [||];
-        let contentLength = 1;
-        let fetchFunc =
-          _buildFakeFetch(
-            sandbox,
-            contentLength,
-            ConvertGLBTool.buildGLTFJsonOfSingleNode(),
-            GLBTool.buildBinBuffer(),
-          );
-
-        LoadStreamWDBTool.load(
-          ~wdbPath=NodeTool.buildWDBPath("BoxTextured"),
-          ~handleWhenLoadingFunc=
-            (totalLoadedByteLength, contentLength, wdbPath) => {
-              totalLoadedByteLengthArr
-              |> ArrayService.push(totalLoadedByteLength)
-              |> ignore;
-              contentLengthArr |> ArrayService.push(contentLength) |> ignore;
-              wdbPathArr |> ArrayService.push(wdbPath) |> ignore;
+      describe("if not support stream load", () => {
+        let _buildFakeFetchReturnResponse = (contentLength, ok, arrayBuffer) =>
+          {
+            "ok": true,
+            "headers": {
+              "get":
+                Sinon.createEmptyStubWithJsObjSandbox(sandbox)
+                |> Sinon.withOneArg("content-length")
+                |> Sinon.returns(contentLength),
             },
-          ~fetchFunc,
-          (),
-        )
-        |> then_(_ =>
-             (totalLoadedByteLengthArr, contentLengthArr, wdbPathArr)
-             |>
-             expect == (
-                         [|24940|],
-                         [|contentLength|],
-                         [|
-                           "/Users/y/Github/Wonder.js/test/res/wdb/BoxTextured.wdb",
-                         |],
-                       )
-             |> resolve
-           );
-      });
+            "arrayBuffer": () => arrayBuffer |> resolve,
+          }
+          |> Js.Promise.resolve;
 
-      describe("fallback to load whole wdb", () =>
-        testPromise("load wdb and assemble", () => {
-          let stateRef = ref(Obj.magic(-1));
-          let rootGameObjectRef = ref(-1);
+        let _buildFakeFetch = (sandbox, contentLength, gltfJsonStr, binBuffer) => {
+          let fetch = createEmptyStubWithJsObjSandbox(sandbox);
+          fetch
+          |> onCall(0)
+          |> returns(
+               _buildFakeFetchReturnResponse(
+                 contentLength,
+                 true,
+                 ConvertGLBSystem.convertGLBData(
+                   gltfJsonStr |> Js.Json.parseExn,
+                   binBuffer,
+                 ),
+               ),
+             );
+          fetch;
+        };
+
+        beforeEach(() => GLBTool.prepare(sandbox^) |> ignore);
+
+        testPromise("warn", () => {
+          let warnStub =
+            createMethodStubWithJsObjSandbox(
+              sandbox,
+              Console.console,
+              "warn",
+            );
           let fetchFunc =
             _buildFakeFetch(
               sandbox,
@@ -2098,25 +2111,92 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           LoadStreamWDBTool.load(
             ~wdbPath=NodeTool.buildWDBPath("BoxTextured"),
             ~fetchFunc,
-            ~handleWhenLoadWholeWDBFunc=
-              (state, _, rootGameObject) => {
-                stateRef := state;
-                rootGameObjectRef := rootGameObject;
-              },
             (),
           )
-          |> then_(_ => {
-               let rootGameObject = rootGameObjectRef^;
+          |> then_(_ =>
+               warnStub
+               |> expect
+               |> toCalledWith([|
+                    "Warn: your browser does not seem to have the Streams API yet, fallback to load whole wdb",
+                  |])
+               |> resolve
+             );
+        });
+        testPromise("trigger handleWhenLoadingFunc", () => {
+          let totalLoadedByteLengthArr = [||];
+          let contentLengthArr = [||];
+          let wdbPathArr = [||];
+          let contentLength = 1;
+          let fetchFunc =
+            _buildFakeFetch(
+              sandbox,
+              contentLength,
+              ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+              GLBTool.buildBinBuffer(),
+            );
 
-               AssembleWDBSystemTool.getAllGameObjects(
-                 rootGameObject,
-                 stateRef^,
-               )
-               |> expect == [|rootGameObject|]
-               |> resolve;
-             });
-        })
-      );
+          LoadStreamWDBTool.load(
+            ~wdbPath=NodeTool.buildWDBPath("BoxTextured"),
+            ~handleWhenLoadingFunc=
+              (totalLoadedByteLength, contentLength, wdbPath) => {
+                totalLoadedByteLengthArr
+                |> ArrayService.push(totalLoadedByteLength)
+                |> ignore;
+                contentLengthArr |> ArrayService.push(contentLength) |> ignore;
+                wdbPathArr |> ArrayService.push(wdbPath) |> ignore;
+              },
+            ~fetchFunc,
+            (),
+          )
+          |> then_(_ =>
+               (totalLoadedByteLengthArr, contentLengthArr, wdbPathArr)
+               |>
+               expect == (
+                           [|24940|],
+                           [|contentLength|],
+                           [|
+                             "/Users/y/Github/Wonder.js/test/res/wdb/BoxTextured.wdb",
+                           |],
+                         )
+               |> resolve
+             );
+        });
+
+        describe("fallback to load whole wdb", () =>
+          testPromise("load wdb and assemble", () => {
+            let stateRef = ref(Obj.magic(-1));
+            let rootGameObjectRef = ref(-1);
+            let fetchFunc =
+              _buildFakeFetch(
+                sandbox,
+                0,
+                ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+                GLBTool.buildBinBuffer(),
+              );
+
+            LoadStreamWDBTool.load(
+              ~wdbPath=NodeTool.buildWDBPath("BoxTextured"),
+              ~fetchFunc,
+              ~handleWhenLoadWholeWDBFunc=
+                (state, _, rootGameObject) => {
+                  stateRef := state;
+                  rootGameObjectRef := rootGameObject;
+                },
+              (),
+            )
+            |> then_(_ => {
+                 let rootGameObject = rootGameObjectRef^;
+
+                 AssembleWDBSystemTool.getAllGameObjects(
+                   rootGameObject,
+                   stateRef^,
+                 )
+                 |> expect == [|rootGameObject|]
+                 |> resolve;
+               });
+          })
+        );
+      });
     });
   });
 

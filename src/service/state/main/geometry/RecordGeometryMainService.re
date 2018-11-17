@@ -13,7 +13,7 @@ let setAllTypeArrDataToDefault =
     (
       geometryCount: int,
       geometryPointCount,
-      (vertices, texCoords, normals, indices),
+      (vertices, texCoords, normals, indices, indices32),
     ) => (
   vertices
   |> Js.Typed_array.Float32Array.fillRangeInPlace(
@@ -39,6 +39,12 @@ let setAllTypeArrDataToDefault =
        ~start=0,
        ~end_=geometryCount * geometryPointCount * getIndexSize(),
      ),
+  indices32
+  |> Js.Typed_array.Uint32Array.fillRangeInPlace(
+       0,
+       ~start=0,
+       ~end_=geometryCount * geometryPointCount * getIndexSize(),
+     ),
 );
 
 let _initBufferData = (geometryPointCount, geometryCount) => {
@@ -48,6 +54,7 @@ let _initBufferData = (geometryPointCount, geometryCount) => {
     texCoords,
     normals,
     indices,
+    indices32,
     verticesInfos,
     texCoordsInfos,
     normalsInfos,
@@ -64,6 +71,7 @@ let _initBufferData = (geometryPointCount, geometryCount) => {
     texCoords,
     normals,
     indices,
+    indices32,
     verticesInfos,
     texCoordsInfos,
     normalsInfos,
@@ -81,6 +89,7 @@ let create = ({settingRecord} as state) => {
     texCoords,
     normals,
     indices,
+    indices32,
     verticesInfos,
     texCoordsInfos,
     normalsInfos,
@@ -95,6 +104,7 @@ let create = ({settingRecord} as state) => {
       texCoords,
       normals,
       indices,
+      indices32,
       verticesInfos,
       texCoordsInfos,
       normalsInfos,
@@ -103,9 +113,11 @@ let create = ({settingRecord} as state) => {
       texCoordsOffset: 0,
       normalsOffset: 0,
       indicesOffset: 0,
+      indices32Offset: 0,
       disposeCount: 0,
       /* configDataMap: WonderCommonlib.SparseMapService.createEmpty(),
          computeDataFuncMap: WonderCommonlib.SparseMapService.createEmpty(), */
+      indicesTypeMap: WonderCommonlib.SparseMapService.createEmpty(),
       gameObjectsMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -124,15 +136,18 @@ let deepCopyForRestore = state => {
         texCoords,
         normals,
         indices,
+        indices32,
         verticesOffset,
         texCoordsOffset,
         normalsOffset,
         indicesOffset,
+        indices32Offset,
         verticesInfos,
         texCoordsInfos,
         normalsInfos,
         indicesInfos,
         disposeCount,
+        indicesTypeMap,
         gameObjectsMap,
         disposedIndexArray,
         disposedIndexMap,
@@ -161,10 +176,14 @@ let deepCopyForRestore = state => {
         indices:
           indices
           |> CopyTypeArrayService.copyUint16ArrayWithEndIndex(indicesOffset),
+        indices32:
+          indices32
+          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(indices32Offset),
         verticesOffset,
         texCoordsOffset,
         normalsOffset,
         indicesOffset,
+        indices32Offset,
         verticesInfos:
           verticesInfos
           |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(verticesOffset),
@@ -178,6 +197,7 @@ let deepCopyForRestore = state => {
           indicesInfos
           |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(indicesOffset),
         disposeCount,
+        indicesTypeMap: indicesTypeMap |> SparseMapService.copy,
         gameObjectsMap:
           gameObjectsMap |> CopyTypeArrayService.deepCopyArrayArray,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,

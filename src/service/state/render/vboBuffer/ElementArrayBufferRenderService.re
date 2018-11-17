@@ -6,28 +6,50 @@ open Js.Typed_array;
 
 open StateRenderType;
 
-let createBuffer =
-  [@bs]
-  (
-    (gl, record: Uint16Array.t, state) => {
-      let buffer = PoolVboBufferService.getElementArrayBuffer(gl, state.vboBufferRecord);
-      bindBuffer(getElementArrayBuffer(gl), buffer, gl);
-      bufferUint16Data(getElementArrayBuffer(gl), record, getStaticDraw(gl), gl);
-      resetBuffer(getElementArrayBuffer(gl), Js.Nullable.null, gl);
-      buffer
-    }
+let create16Buffer =
+  (. gl, data, state) => {
+    let buffer =
+      PoolVboBufferService.getElementArrayBuffer(gl, state.vboBufferRecord);
+
+    bindBuffer(getElementArrayBuffer(gl), buffer, gl);
+    bufferUint16Data(
+      getElementArrayBuffer(gl),
+      data,
+      getStaticDraw(gl),
+      gl,
+    );
+    resetBuffer(getElementArrayBuffer(gl), Js.Nullable.null, gl);
+    buffer;
+  };
+
+let create32Buffer =
+  (. gl, data, state) => {
+    let buffer =
+      PoolVboBufferService.getElementArrayBuffer(gl, state.vboBufferRecord);
+
+    bindBuffer(getElementArrayBuffer(gl), buffer, gl);
+    bufferUint32Data(
+      getElementArrayBuffer(gl),
+      data,
+      getStaticDraw(gl),
+      gl,
+    );
+    resetBuffer(getElementArrayBuffer(gl), Js.Nullable.null, gl);
+    buffer;
+  };
+
+let getOrCreate16Buffer = (gl, (geometryIndex, bufferMap), indices, state) =>
+  GetVboBufferRenderService.getOrCreateIndexBuffer(
+    gl,
+    (geometryIndex, bufferMap, indices),
+    create16Buffer,
+    state,
   );
 
-let getOrCreateBuffer =
-    (
-      gl,
-      (geometryIndex, bufferMap),
-      getDataFunc,
-      state
-    ) =>
-  GetVboBufferRenderService.getOrCreateBuffer(
+let getOrCreate32Buffer = (gl, (geometryIndex, bufferMap), indices, state) =>
+  GetVboBufferRenderService.getOrCreateIndexBuffer(
     gl,
-    (geometryIndex, bufferMap),
-    (createBuffer, getDataFunc),
-    state
+    (geometryIndex, bufferMap, indices),
+    create32Buffer,
+    state,
   );

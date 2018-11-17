@@ -19,8 +19,8 @@ let _ =
         );
     });
     afterEach(() => TestWorkerTool.clear(sandbox));
-    describe("detect extension", () =>
-      testPromise("detect instanced_arrays", () => {
+    describe("detect extension", () => {
+      let _test = (callIndex, extensionStr) => {
         let renderWorkerState =
           RenderWorkerStateTool.createStateAndSetToStateData();
         let renderWorkerState =
@@ -42,10 +42,21 @@ let _ =
           ~completeFunc=
             state => {
               let gl = GlRenderWorkerTool.unsafeGetGl(state) |> Obj.magic;
-              gl##getExtension |> expect |> toCalledOnce |> resolve;
+              gl##getExtension
+              |> getCall(callIndex)
+              |> expect
+              |> toCalledWith([|extensionStr|])
+              |> resolve;
             },
           (),
         );
-      })
-    );
+      };
+
+      testPromise("detect instanced_arrays", () =>
+        _test(0, "ANGLE_instanced_arrays")
+      );
+      testPromise("detect element_index_uint", () =>
+        _test(1, "OES_element_index_uint")
+      );
+    });
   });

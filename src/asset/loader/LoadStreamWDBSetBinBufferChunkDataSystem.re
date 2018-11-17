@@ -87,31 +87,18 @@ let _setImageData =
      );
 };
 
-let _getUint32ArrayBufferIndexData = arrayBuffer =>
-  Uint32Array.fromBuffer(arrayBuffer)
-  |> WonderLog.Contract.ensureCheck(
-       indices => GeometryUtils.checkIndexData(indices),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
-
-let _getIndexUintData = (componentType, arrayBuffer) =>
+let _getIndexUint16Data = (componentType, arrayBuffer) =>
   switch (componentType) {
-  | 5121 => Uint16Array.make(Uint8Array.fromBuffer(arrayBuffer) |> Obj.magic)
-  | 5123 => Uint16Array.fromBuffer(arrayBuffer)
-  | 5125 =>
-    Uint16Array.make(
-      _getUint32ArrayBufferIndexData(arrayBuffer) |> Obj.magic,
-    )
-  | componentType =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_getIndexUintData",
-        ~description={j|unknown componentType for geometry index|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j|componentType: $componentType|j},
-      ),
-    )
+  | 5121 =>
+    Uint16Array.make(Uint8Array.fromBuffer(arrayBuffer) |> Obj.magic) |. Some
+  | 5123 => Uint16Array.fromBuffer(arrayBuffer) |. Some
+  | _ => None
+  };
+
+let _getIndexUint32Data = (componentType, arrayBuffer) =>
+  switch (componentType) {
+  | 5125 => Uint32Array.fromBuffer(arrayBuffer) |. Some
+  | _ => None
   };
 
 let setBinBufferChunkData =
@@ -173,11 +160,33 @@ let setBinBufferChunkData =
              );
 
            let state =
-             IndicesGeometryMainService.setIndicesByUint16Array(
-               geometry,
-               _getIndexUintData(componentType, arrayBuffer),
-               state,
-             );
+             switch (_getIndexUint16Data(componentType, arrayBuffer)) {
+             | Some(data) =>
+               IndicesGeometryMainService.setIndicesByUint16Array(
+                 geometry,
+                 data,
+                 state,
+               )
+             | None =>
+               switch (_getIndexUint32Data(componentType, arrayBuffer)) {
+               | Some(data) =>
+                 IndicesGeometryMainService.setIndicesByUint32Array(
+                   geometry,
+                   data,
+                   state,
+                 )
+               | None =>
+                 WonderLog.Log.fatal(
+                   WonderLog.Log.buildFatalMessage(
+                     ~title="setBinBufferChunkData",
+                     ~description={j|unknown componentType: $componentType|j},
+                     ~reason="",
+                     ~solution={j||j},
+                     ~params={j||j},
+                   ),
+                 )
+               }
+             };
 
            let geometrys =
              gameObjects |> Js.Array.copy |> Js.Array.map(_ => geometry);

@@ -179,7 +179,8 @@ let getAllGeometryData = (rootGameObject, state) =>
            GeometryTool.getMainVertices(geometry, state),
            GeometryTool.getMainNormals(geometry, state),
            GeometryTool.getMainTexCoords(geometry, state),
-           GeometryTool.getMainIndices(geometry, state),
+           GeometryTool.getMainIndices16(geometry, state),
+           GeometryTool.getMainIndices32(geometry, state),
          ),
        )
      );

@@ -87,3 +87,11 @@ let getUint16PointData = (infoIndex: int, points: Uint16Array.t, infos) => {
 
 let setUint16PointData = (dataTuple, fillUint16ArraryFunc) =>
   _setPointData(dataTuple, fillUint16ArraryFunc);
+
+let getUint32PointData = (infoIndex: int, points: Uint32Array.t, infos) => {
+  let (startIndex, endIndex) = getInfo(infoIndex, infos);
+  getUint32ArraySubarray(points, startIndex, endIndex);
+};
+
+let setUint32PointData = (dataTuple, fillUint32ArraryFunc) =>
+  _setPointData(dataTuple, fillUint32ArraryFunc);

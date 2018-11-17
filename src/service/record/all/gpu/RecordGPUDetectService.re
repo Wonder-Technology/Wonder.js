@@ -1,3 +1,8 @@
 open GPUDetectType;
 
-let create = () => {extensionInstancedArrays: None, precision: None, maxTextureUnit: None};
+let create = () => {
+  extensionInstancedArrays: None,
+  extensionElementIndexUint: None,
+  precision: None,
+  maxTextureUnit: None,
+};

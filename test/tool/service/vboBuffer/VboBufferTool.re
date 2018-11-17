@@ -175,19 +175,39 @@ let getOrCreateGeometryNormalArrayBuffer =
 
 let getOrCreateGeometryElementArrayBuffer =
     (geometryIndex: int, state: StateDataMainType.state) => {
-  let state = RenderStateTool.createState(state);
-  GetVboBufferRenderService.getOrCreateBuffer(
-    DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-    (
-      geometryIndex,
-      state.vboBufferRecord.geometryElementArrayBufferMap,
-    ),
-    (
-      [@bs] ElementArrayBufferRenderService.createBuffer,
-      [@bs] GetGeometryIndicesRenderService.getIndices,
-    ),
-    state,
-  );
+  open GeometryType;
+
+  let renderState = RenderStateTool.createState(state);
+  let gl =
+    DeviceManagerService.unsafeGetGl(. renderState.deviceManagerRecord);
+
+  let elementArrayBufferMap =
+    renderState.vboBufferRecord.geometryElementArrayBufferMap;
+
+  switch (
+    IndicesGeometryMainService.unsafeGetIndicesType(geometryIndex, state)
+  ) {
+  | Short =>
+    ElementArrayBufferRenderService.getOrCreate16Buffer(
+      gl,
+      (geometryIndex, elementArrayBufferMap),
+      GetGeometryIndicesRenderService.getIndices(.
+        geometryIndex,
+        renderState,
+      ),
+      renderState,
+    )
+  | Int =>
+    ElementArrayBufferRenderService.getOrCreate32Buffer(
+      gl,
+      (geometryIndex, elementArrayBufferMap),
+      GetGeometryIndicesRenderService.getIndices32(.
+        geometryIndex,
+        renderState,
+      ),
+      renderState,
+    )
+  };
 };
 
 let getOrCreateAllGeometryBuffers = (geometry, state) => (

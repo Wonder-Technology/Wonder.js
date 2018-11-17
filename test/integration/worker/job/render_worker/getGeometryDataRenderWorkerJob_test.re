@@ -2,10 +2,8 @@ open Wonder_jest;
 
 open Js.Promise;
 
-open WonderImgui.IMGUIType;
-
 let _ =
-  describe("test get custom data render worker job", () => {
+  describe("test get geometry data render worker job", () => {
     open Expect;
     open Expect.Operators;
     open Sinon;
@@ -16,14 +14,13 @@ let _ =
     beforeEach(() => sandbox := createSandbox());
     afterEach(() => TestWorkerTool.clear(sandbox));
 
-    describe("test send render data to render worker", () => {
-      let _prepare = () =>
-        SendRenderDataMainWorkerTool.prepareForTestSendRenderData(sandbox);
-
-      testPromise("send customData", () => {
-        let (state, postMessageToRenderWorker) = _prepare();
-        let customData = 100;
-        let state = WorkerDataAPI.setMainWorkerCustomData(customData, state);
+    describe("test send render data to render worker", () =>
+      testPromise("send indiciesTypeMap", () => {
+        let (state, postMessageToRenderWorker) =
+          SendRenderDataMainWorkerTool.prepareForTestSendRenderData(sandbox);
+        let (state, _, _, _, _, _, _) =
+          GeometryTool.createThreeGameObjectsAndSetFullPointData(state);
+        let indicesTypeMap = GeometryTool.getRecord(state).indicesTypeMap;
         MainStateTool.setState(state);
 
         WorkerJobWorkerTool.execMainWorkerJob(
@@ -34,26 +31,28 @@ let _ =
               |> expect
               |> toCalledWith([|
                    SendRenderRenderDataWorkerTool.buildRenderRenderData(
-                     ~customData,
+                     ~renderGeometryData={"indicesTypeMap": indicesTypeMap},
                      (),
                    ),
                  |])
               |> resolve,
           (),
         );
-      });
-    });
+      })
+    );
 
     describe("test render worker job", () =>
-      testPromise("get customData", () => {
+      testPromise("get indicesTypeMap", () => {
         let state = TestMainWorkerTool.initWithJobConfig(~sandbox, ());
         let state =
           state
           |> FakeGlWorkerTool.setFakeGl(
                FakeGlWorkerTool.buildFakeGl(~sandbox, ()),
              );
-        let customData = 100;
-        let state = WorkerDataAPI.setMainWorkerCustomData(customData, state);
+        let (state, _, _, _, _, _, _) =
+          GeometryTool.createThreeGameObjectsAndSetFullPointData(state);
+        let indicesTypeMapInMainState =
+          GeometryTool.getRecord(state).indicesTypeMap;
         MainStateTool.setState(state);
 
         RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
@@ -62,13 +61,12 @@ let _ =
           ~completeFunc=
             _ => {
               let renderWorkerState = RenderWorkerStateTool.unsafeGetState();
+              let {indicesTypeMap}: RenderWorkerGeometryType.geometryRecord =
+                RecordGeometryRenderWorkerService.getRecord(
+                  renderWorkerState,
+                );
 
-              OperateCustomRenderWorkerService.getCustomDataFromMainWorkerToRenderWorker(
-                renderWorkerState,
-              )
-              |> Obj.magic
-              |> expect == customData
-              |> resolve;
+              indicesTypeMap |> expect == indicesTypeMapInMainState |> resolve;
             },
           (),
         );

@@ -442,6 +442,19 @@ let _ =
             )
           )
         );
+        test("shadow copy indicesTypeMap", () =>
+          StateDataMainType.(
+            GeometryType.(
+              MainStateTool.testShadowCopyArrayLikeMapData(
+                state => {
+                  let {indicesTypeMap} = GeometryTool.getRecord(state);
+                  [|indicesTypeMap |> Obj.magic|];
+                },
+                state^,
+              )
+            )
+          )
+        );
         test("deep copy gameObjectsMap", () => {
           open StateDataMainType;
           open GeometryType;
@@ -1618,17 +1631,20 @@ let _ =
           let texCoords1 = Float32Array.make([|0.5, 0.5, 0.5, 0.5|]);
           let normals1 = Float32Array.make([|1., 1., 1., 1., 1., 1.|]);
           let indices1 = Uint16Array.make([|0, 2, 1|]);
+          let indices32_1 = Uint32Array.make([|0, 2, 1|]);
           let state =
             state
             |> setGeometryVertices(geometry, vertices1)
             |> setGeometryTexCoords(geometry, texCoords1)
             |> setGeometryNormals(geometry, normals1)
-            |> setGeometryIndices(geometry, indices1);
+            |> setGeometryIndices(geometry, indices1)
+            |> setGeometryIndices32(geometry, indices32_1);
+
           (
             state,
             gameObject,
             geometry,
-            (vertices1, texCoords1, normals1, indices1),
+            (vertices1, texCoords1, normals1, indices1, indices32_1),
           );
         };
 
@@ -1638,7 +1654,7 @@ let _ =
               ~sandbox,
               ~buffer=
                 SettingTool.buildBufferConfigStr(
-                  ~geometryPointCount=6,
+                  ~geometryPointCount=12,
                   ~geometryCount=6,
                   (),
                 ),
@@ -1649,7 +1665,7 @@ let _ =
             state,
             gameObject1,
             geometry1,
-            (vertices1, texCoords1, normals1, indices1),
+            (vertices1, texCoords1, normals1, indices1, indices32_1),
           ) =
             _createGameObjectAndSetPointData(state);
           let state =
@@ -1666,22 +1682,44 @@ let _ =
           let normals2 =
             Float32Array.make([|3., 2., 4., 5., 6., 7., 2.5, 1.5, 0.|]);
           let indices2 = Uint16Array.make([|0, 1, 2|]);
+          let indices32_2 = Uint32Array.make([|0, 1, 2|]);
           let currentState =
             currentState
             |> GeometryAPI.setGeometryVertices(geometry2, vertices2)
             |> GeometryAPI.setGeometryTexCoords(geometry2, texCoords2)
             |> GeometryAPI.setGeometryNormals(geometry3, normals2)
-            |> GeometryAPI.setGeometryIndices(geometry2, indices2);
+            |> GeometryAPI.setGeometryIndices(geometry2, indices2)
+            |> GeometryAPI.setGeometryIndices32(geometry2, indices32_2);
+
           ((currentState, copiedState), (geometry1, geometry2, geometry3));
         };
 
+        let _getMainVertexData = data =>
+          data |> Float32Array.slice(~start=0, ~end_=8);
+
+        let _getMainIndexData = data =>
+          data |> Uint16Array.slice(~start=0, ~end_=8);
+
+        let _getMainIndex32Data = data =>
+          data |> Uint32Array.slice(~start=0, ~end_=8);
+
         test("test restore point data typeArrays", () => {
           open GeometryType;
+
           let ((currentState, copiedState), _) = _prepare();
-          let _ = MainStateTool.restore(currentState, copiedState);
-          let {vertices, texCoords, normals, indices} =
-            MainStateTool.unsafeGetState() |> GeometryTool.getRecord;
-          (vertices, texCoords, normals, indices)
+          let restoredState =
+            MainStateTool.restore(currentState, copiedState);
+
+          let {vertices, texCoords, normals, indices, indices32} =
+            restoredState |> GeometryTool.getRecord;
+
+          (
+            vertices |> _getMainVertexData,
+            texCoords |> _getMainVertexData,
+            normals |> _getMainVertexData,
+            indices |> _getMainIndexData,
+            indices32 |> _getMainIndex32Data,
+          )
           |>
           expect == (
                       Float32Array.make([|
@@ -1693,16 +1731,6 @@ let _ =
                         10.,
                         0.,
                         0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
                       |]),
                       Float32Array.make([|
                         0.5,
@@ -1713,32 +1741,10 @@ let _ =
                         0.,
                         0.,
                         0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
                       |]),
-                      Float32Array.make([|
-                        1.,
-                        1.,
-                        1.,
-                        1.,
-                        1.,
-                        1.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                        0.,
-                      |]),
-                      Uint16Array.make([|0, 2, 1, 0, 0, 0|]),
+                      Float32Array.make([|1., 1., 1., 1., 1., 1., 0., 0.|]),
+                      Uint16Array.make([|0, 2, 1, 0, 0, 0, 0, 0|]),
+                      Uint32Array.make([|0, 2, 1, 0, 0, 0, 0, 0|]),
                     );
         });
 

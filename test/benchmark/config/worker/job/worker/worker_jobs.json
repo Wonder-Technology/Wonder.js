@@ -27,6 +27,9 @@
         "name": "get_material_data"
     },
     {
+        "name": "get_geometry_data"
+    },
+    {
         "name": "get_browserDetect_data"
     },
     {

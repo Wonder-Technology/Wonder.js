@@ -184,6 +184,49 @@ let setGeometryIndices =
   IndicesGeometryMainService.setIndicesByUint16Array(geometry, data, state);
 };
 
+let getGeometryIndices32 = (geometry: int, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              geometry,
+              isAlive,
+              RecordGeometryMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  IndicesGeometryMainService.getIndices32(. geometry, state);
+};
+
+let setGeometryIndices32 =
+    (
+      geometry: int,
+      data: Js.Typed_array.Uint32Array.t,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              geometry,
+              isAlive,
+              RecordGeometryMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  IndicesGeometryMainService.setIndicesByUint32Array(geometry, data, state);
+};
+
 let unsafeGetGeometryGameObjects =
     (geometry: geometry, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(

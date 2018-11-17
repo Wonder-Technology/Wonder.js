@@ -16,6 +16,7 @@ let createState = () => {
   sourceInstanceRecord: RecordRenderWorkerSourceInstanceService.create(),
   gpuDetectRecord: {
     extensionInstancedArrays: None,
+    extensionElementIndexUint: None,
     precision: None,
     maxTextureUnit: None,
   },

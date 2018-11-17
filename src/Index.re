@@ -234,6 +234,8 @@ let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
 let initGameObject = GameObjectAPI.initGameObject;
 
+let disposeGameObjectDisposeGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectDisposeGeometryRemoveMaterial;
+
 let disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial;
 
 let disposeGameObjectKeepOrderRemoveGeometry = GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometry;
@@ -346,6 +348,8 @@ let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCame
 
 let createGameObject = GameObjectAPI.createGameObject;
 
+let batchDisposeGeometry = GeometryAPI.batchDisposeGeometry;
+
 let getAllGeometrys = GeometryAPI.getAllGeometrys;
 
 let setGeometryName = GeometryAPI.setGeometryName;
@@ -353,6 +357,10 @@ let setGeometryName = GeometryAPI.setGeometryName;
 let unsafeGetGeometryName = GeometryAPI.unsafeGetGeometryName;
 
 let unsafeGetGeometryGameObjects = GeometryAPI.unsafeGetGeometryGameObjects;
+
+let setGeometryIndices32 = GeometryAPI.setGeometryIndices32;
+
+let getGeometryIndices32 = GeometryAPI.getGeometryIndices32;
 
 let setGeometryIndices = GeometryAPI.setGeometryIndices;
 
@@ -839,6 +847,8 @@ let batchDisposeGameObjectKeepOrder = GameObjectAPI.batchDisposeGameObjectKeepOr
 let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
 let initGameObject = GameObjectAPI.initGameObject;
+
+let disposeGameObjectDisposeGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectDisposeGeometryRemoveMaterial;
 
 let disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial;
 

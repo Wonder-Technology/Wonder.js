@@ -10,6 +10,10 @@ external uint16ToArrayUint16Elt :
   Js.Typed_array.Uint16Array.t => array(Js.Typed_array.Uint16Array.elt) =
   "%identity";
 
+external uint32ToArrayUint32Elt :
+  Js.Typed_array.Uint32Array.t => array(Js.Typed_array.Uint32Array.elt) =
+  "%identity";
+
 external intToUint32Elt : int => Js.Typed_array.Uint32Array.elt = "%identity";
 
 external float32ToArrayFloat32Elt :

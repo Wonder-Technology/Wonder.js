@@ -24,13 +24,30 @@ let _getGeometryData =
     )
 
   | None =>
+    open GeometryType;
+
+    let (indices16, indices32) =
+      switch (
+        IndicesGeometryMainService.unsafeGetIndicesType(geometry, state)
+      ) {
+      | Short => (
+          IndicesGeometryMainService.getIndices(. geometry, state) |. Some,
+          None,
+        )
+      | Int => (
+          None,
+          IndicesGeometryMainService.getIndices32(. geometry, state) |. Some,
+        )
+      };
+
     let pointAndNameData =
       Some((
         (
           VerticesGeometryMainService.getVertices(. geometry, state),
           NormalsGeometryMainService.getNormals(. geometry, state),
           TexCoordsGeometryMainService.getTexCoords(. geometry, state),
-          IndicesGeometryMainService.getIndices(. geometry, state),
+          indices16,
+          indices32,
         ),
         NameGeometryMainService.getName(geometry, state),
       ));

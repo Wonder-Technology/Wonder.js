@@ -43,7 +43,7 @@ let _ =
         |> FakeGlTool.setFakeGl(fakeGl);
 
       TestTool.closeContractCheck();
-      
+
       state |> DirectorTool.init;
     };
     let _setFakeGlData = [%bs.raw
@@ -56,15 +56,30 @@ let _ =
     ];
     beforeEach(() => sandbox := createSandbox());
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
-    describe("detect extension", () =>
+    describe("detect extension", () => {
       test("detect instanced_arrays", () => {
         let (_, fakeGl, _, _) =
           SettingTool.buildFakeDomForNotPassCanvasId(sandbox);
 
         let state = _exec(fakeGl);
-        fakeGl##getExtension |> expect |> toCalledOnce;
-      })
-    );
+
+        fakeGl##getExtension
+        |> getCall(0)
+        |> expect
+        |> toCalledWith([|"ANGLE_instanced_arrays"|]);
+      });
+      test("detect element_index_uint", () => {
+        let (_, fakeGl, _, _) =
+          SettingTool.buildFakeDomForNotPassCanvasId(sandbox);
+
+        let state = _exec(fakeGl);
+
+        fakeGl##getExtension
+        |> getCall(1)
+        |> expect
+        |> toCalledWith([|"OES_element_index_uint"|]);
+      });
+    });
     describe("detect capabilty", () => {
       describe("detect texture capability", () => {
         let _prepare = () => {

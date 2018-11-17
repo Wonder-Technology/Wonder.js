@@ -1,4 +1,4 @@
-let prepareForOptimize = (state) => {
+let prepareForOptimize = state => {
   let state = SettingTool.setMemory(state^, ~maxDisposeCount=1, ());
   let (
     state,
@@ -7,20 +7,23 @@ let prepareForOptimize = (state) => {
     (vertices1, vertices2, vertices3),
     (texCoords1, texCoords2, texCoords3),
     (normals1, normals2, normals3),
-    (indices1, indices2, indices3)
+    (
+      (indices1, indices2, indices3),
+      (indices32_1, indices32_2, indices32_3),
+    ),
   ) =
-    GeometryTool.createThreeGameObjectsAndSetPointData(state);
+    GeometryTool.createThreeGameObjectsAndSetFullPointData(state);
   let state =
     state
     |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
          gameObject1,
-         geometry1
+         geometry1,
        );
   let state =
     state
     |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
          gameObject2,
-         geometry2
+         geometry2,
        );
   (
     state,
@@ -29,8 +32,11 @@ let prepareForOptimize = (state) => {
     (vertices1, vertices2, vertices3),
     (texCoords1, texCoords2, texCoords3),
     (normals1, normals2, normals3),
-    (indices1, indices2, indices3)
-  )
+    (
+      (indices1, indices2, indices3),
+      (indices32_1, indices32_2, indices32_3),
+    ),
+  );
 };
 
 let judgeForOptimize =
@@ -41,7 +47,10 @@ let judgeForOptimize =
       (vertices1, vertices2, vertices3),
       (texCoords1, texCoords2, texCoords3),
       (normals1, normals2, normals3),
-      (indices1, indices2, indices3)
+      (
+        (indices1, indices2, indices3),
+        (indices32_1, indices32_2, indices32_3),
+      ),
     ) => {
   open Wonder_jest;
   open Expect;
@@ -51,8 +60,9 @@ let judgeForOptimize =
       getGeometryVertices(geometry3, state),
       getGeometryTexCoords(geometry3, state),
       getGeometryNormals(geometry3, state),
-      getGeometryIndices(geometry3, state)
+      getGeometryIndices(geometry3, state),
+      getGeometryIndices32(geometry3, state),
     )
-    |> expect == (vertices3, texCoords3, normals3, indices3)
-  )
+    |> expect == (vertices3, texCoords3, normals3, indices3, indices32_3)
+  );
 };

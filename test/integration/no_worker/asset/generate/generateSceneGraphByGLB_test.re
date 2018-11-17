@@ -31,6 +31,110 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
+    describe("test SuperLowPolyStove glb", () => {
+      testPromise("test bufferViews", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLB(
+          sandbox^,
+          GLBTool.buildGLBFilePath("SuperLowPolyStove.glb"),
+          ((gltf, _, binBuffer)) =>
+            gltf
+            |> GenerateSceneGraphSystemTool.contain(
+                 {|
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 11472
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 11472,
+      "byteLength": 11472
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 22944,
+      "byteLength": 7648
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 30592,
+        "byteLength": 20208
+          },
+            {
+              "buffer": 0,
+              "byteOffset": 50800,
+              "byteLength": 18048
+            },
+            {
+              "buffer": 0,
+              "byteOffset": 68848,
+              "byteLength": 18048
+            },
+            {
+              "buffer": 0,
+              "byteOffset": 86896,
+              "byteLength": 12032
+            },
+            {
+              "buffer": 0,
+              "byteOffset": 98928,
+              "byteLength": 19344
+            },
+            {
+              "buffer": 0,
+              "byteOffset": 118272,
+              "byteLength": 2
+            },
+            {
+              "buffer": 0,
+              "byteOffset": 118276,
+              "byteLength": 2
+            }
+          ]
+         |},
+               ),
+          state,
+        );
+      });
+
+      describe("test buffer", () =>
+        testPromise("test data", () => {
+          let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+          GenerateSceneGraphSystemTool.testAssembleResultByGLB(
+            sandbox^,
+            GLBTool.buildGLBFilePath("SuperLowPolyStove.glb"),
+            ((state, _, rootGameObject)) => {
+              let dataMap = GLTFTool.getSuperLowPolyStoveGeometryData();
+
+              let allGeometryData =
+                AssembleWDBSystemTool.getAllGeometryData(
+                  rootGameObject,
+                  state,
+                );
+
+              (allGeometryData |> Js.Array.length, allGeometryData[1])
+              |>
+              expect == (
+                          2,
+                          (
+                            "Stove_1",
+                            dataMap
+                            |> WonderCommonlib.HashMapService.unsafeGet(
+                                 "Stove_1",
+                               ),
+                          ),
+                        );
+            },
+            state,
+          );
+        })
+      );
+    });
+
     describe("test BoxTextured glb", () => {
       testPromise("test nodes", () => {
         let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);

@@ -236,7 +236,9 @@ let getBoxTexturedGeometryData = () => (
     23,
     22,
     21,
-  |]),
+  |])
+  |. Some,
+  None,
 );
 
 let getTruckGeometryData = () => {
@@ -473,7 +475,9 @@ let getTruckGeometryData = () => {
            1625,
            1624,
            1625,
-         |]),
+         |])
+         |. Some,
+         None,
        ),
      )
   |> WonderCommonlib.HashMapService.set(
@@ -665,7 +669,9 @@ let getTruckGeometryData = () => {
            69,
            71,
            69,
-         |]),
+         |])
+         |. Some,
+         None,
        ),
      )
   |> WonderCommonlib.HashMapService.set(
@@ -857,7 +863,9 @@ let getTruckGeometryData = () => {
            45,
            47,
            45,
-         |]),
+         |])
+         |. Some,
+         None,
        ),
      )
   |> WonderCommonlib.HashMapService.set(
@@ -1090,7 +1098,9 @@ let getTruckGeometryData = () => {
            67,
            68,
            67,
-         |]),
+         |])
+         |. Some,
+         None,
        ),
      );
 };
@@ -1352,7 +1362,8 @@ let getAlphaBlendModeTestGeometryData = () => {
            0.8924999237060547,
            0.6625000238418579,
          |]),
-         Uint16Array.make([|0, 1, 2, 0, 3, 1|]),
+         Uint16Array.make([|0, 1, 2, 0, 3, 1|]) |. Some,
+         None,
        ),
      );
 };
@@ -1530,7 +1541,8 @@ let getSuperLowPolyStoveGeometryData = () => {
            0.8723300099372864,
            0.794439971446991,
          |]),
-         Uint16Array.make([|
+         None,
+         Uint32Array.make([|
            12,
            13,
            14,
@@ -1591,7 +1603,9 @@ let getSuperLowPolyStoveGeometryData = () => {
            1502,
            1500,
            1502,
-         |]),
+         |])
+         |. Some,
        ),
-     );
+     )
+  |> Obj.magic;
 };

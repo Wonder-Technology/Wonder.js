@@ -1,8 +1,25 @@
 open WonderWebgl.Gl;
 
+open StateRenderType;
+
+open RenderGeometryType;
+
 open Js.Typed_array;
 
-/* TODO handle Uint32Array */
-let getIndexType = (gl) => getUnsignedShort(gl);
+let unsafeGetIndicesType = (geometry, {geometryRecord}) =>
+  IndicesTypeGeometryType.unsafeGetIndicesType(
+    geometry,
+    geometryRecord.indicesTypeMap,
+  );
 
-let getIndexTypeSize = (gl) => Uint16Array._BYTES_PER_ELEMENT;
+let getIndexType = (gl, geometry, state) =>
+  switch (unsafeGetIndicesType(geometry, state)) {
+  | GeometryType.Short => getUnsignedShort(gl)
+  | GeometryType.Int => getUnsignedInt(gl)
+  };
+
+let getIndexTypeSize = (gl, geometry, state) =>
+  switch (unsafeGetIndicesType(geometry, state)) {
+  | GeometryType.Short => Uint16Array._BYTES_PER_ELEMENT
+  | GeometryType.Int => Uint32Array._BYTES_PER_ELEMENT
+  };

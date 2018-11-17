@@ -34,13 +34,15 @@ let _addBufferViewData =
              | Normal
              | TexCoord => 5126
              | Index => 5123
+             | Index32 => 5125
              },
            type_:
              switch (pointType) {
              | Vertex
              | Normal => "VEC3"
              | TexCoord => "VEC2"
-             | Index => "SCALAR"
+             | Index
+             | Index32 => "SCALAR"
              },
          }),
       bufferViewDataArr
@@ -91,19 +93,18 @@ let _addIndexData = ((bufferViewOffset, points), indexDataArr) => {
 let _addAllPointData =
     (
       (
-        (vertices, normals, texCoords, indices),
+        (vertices, normals, texCoords, indices, indices32),
         (verticesSize, normalsSize, texCoordsSize, indicesSize),
-        (verticesLength, normalsLength, texCoordsLength, indicesLength),
+        (verticesLength, normalsLength, texCoordsLength),
       ),
       (bufferViewOffset, (bufferViewDataArr, accessorDataArr)),
-      (totalByteLength, (vertexDataArr, indexDataArr)),
+      (totalByteLength, (vertexDataArr, indexDataArr, index32DataArr)),
     ) => {
   open Js.Typed_array;
 
   let verticesCount = verticesLength / verticesSize;
   let normalsCount = normalsLength / normalsSize;
   let texCoordsCount = texCoordsLength / texCoordsSize;
-  let indicesCount = indicesLength / indicesSize;
 
   let vertexDataArr =
     _addVertexData((bufferViewOffset, vertices), vertexDataArr);
@@ -163,27 +164,75 @@ let _addAllPointData =
       totalByteLength,
     );
 
-  let indexDataArr =
-    _addIndexData((bufferViewOffset, indices), indexDataArr);
-
   let (
-    indexIndex,
-    accessorDataArr,
-    bufferViewDataArr,
-    bufferViewOffset,
-    totalByteLength,
-  ) =
-    _addBufferViewData(
-      (indicesLength, indicesCount, Uint16Array._BYTES_PER_ELEMENT, Index),
-      (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+    indexDataArr,
+    index32DataArr,
+    (
+      indexIndex,
+      accessorDataArr,
+      bufferViewDataArr,
+      bufferViewOffset,
       totalByteLength,
-    );
+    ),
+  ) =
+    switch (indices) {
+    | None =>
+      switch (indices32) {
+      | None =>
+        WonderLog.Log.fatal(
+          WonderLog.Log.buildFatalMessage(
+            ~title="_addAllPointData",
+            ~description={j|should has indices data|j},
+            ~reason="",
+            ~solution={j||j},
+            ~params={j||j},
+          ),
+        )
+      | Some(indices32) =>
+        let indices32Length = Uint32Array.length(indices32);
+        let indices32Count = indices32Length / indicesSize;
+
+        (
+          indexDataArr,
+          _addIndexData((bufferViewOffset, indices32), index32DataArr),
+          _addBufferViewData(
+            (
+              indices32Length,
+              indices32Count,
+              Uint32Array._BYTES_PER_ELEMENT,
+              Index32,
+            ),
+            (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+            totalByteLength,
+          ),
+        );
+      }
+    | Some(indices) =>
+      let indicesLength = Uint16Array.length(indices);
+      let indicesCount = indicesLength / indicesSize;
+
+      (
+        _addIndexData((bufferViewOffset, indices), indexDataArr),
+        index32DataArr,
+        _addBufferViewData(
+          (
+            indicesLength,
+            indicesCount,
+            Uint16Array._BYTES_PER_ELEMENT,
+            Index,
+          ),
+          (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+          totalByteLength,
+        ),
+      );
+    };
+
   (
     (vertexIndex, normalIndex, texCoordIndex, indexIndex),
     accessorDataArr,
     bufferViewDataArr,
     bufferViewOffset,
-    (totalByteLength, (vertexDataArr, indexDataArr)),
+    (totalByteLength, (vertexDataArr, indexDataArr, index32DataArr)),
   );
 };
 
@@ -198,12 +247,11 @@ let _addMeshData =
   |> ArrayService.push(
        {
          primitives: {
-           attributes:
-             {
-               position: vertexIndex |> OptionService.unsafeGet,
-               normal: normalIndex,
-               texCoord_0: texCoordIndex,
-             },
+           attributes: {
+             position: vertexIndex |> OptionService.unsafeGet,
+             normal: normalIndex,
+             texCoord_0: texCoordIndex,
+           },
            indices: indexIndex |> OptionService.unsafeGet,
            material: None,
          },
@@ -248,7 +296,7 @@ let build = meshPointAndNameDataMap => {
   let (
     (totalByteLength, bufferViewOffset),
     (bufferViewDataArr, accessorDataArr, meshDataArr),
-    (vertexDataArr, indexDataArr),
+    (vertexDataArr, indexDataArr, index32DataArr),
   ) =
     meshPointAndNameDataMap
     |> SparseMapService.reduceiValid(
@@ -256,37 +304,36 @@ let build = meshPointAndNameDataMap => {
            (
              (totalByteLength, bufferViewOffset),
              (bufferViewDataArr, accessorDataArr, meshDataArr),
-             (vertexDataArr, indexDataArr),
+             (vertexDataArr, indexDataArr, index32DataArr),
            ),
-           ((vertices, normals, texCoords, indices), name),
+           ((vertices, normals, texCoords, indices, indices32), name),
            meshIndex,
          ) => {
            let verticesLength = vertices |> Float32Array.length;
            let normalsLength = normals |> Float32Array.length;
            let texCoordsLength = texCoords |> Float32Array.length;
 
-           let indicesLength = indices |> Uint16Array.length;
-
            let (
              (vertexIndex, normalIndex, texCoordIndex, indexIndex),
              accessorDataArr,
              bufferViewDataArr,
              bufferViewOffset,
-             (totalByteLength, (vertexDataArr, indexDataArr)),
+             (
+               totalByteLength,
+               (vertexDataArr, indexDataArr, index32DataArr),
+             ),
            ) =
              _addAllPointData(
                (
-                 (vertices, normals, texCoords, indices),
+                 (vertices, normals, texCoords, indices, indices32),
                  (verticesSize, normalsSize, texCoordsSize, indicesSize),
-                 (
-                   verticesLength,
-                   normalsLength,
-                   texCoordsLength,
-                   indicesLength,
-                 ),
+                 (verticesLength, normalsLength, texCoordsLength),
                ),
                (bufferViewOffset, (bufferViewDataArr, accessorDataArr)),
-               (totalByteLength, (vertexDataArr, indexDataArr)),
+               (
+                 totalByteLength,
+                 (vertexDataArr, indexDataArr, index32DataArr),
+               ),
              );
 
            (
@@ -301,15 +348,15 @@ let build = meshPointAndNameDataMap => {
                  meshDataArr,
                ),
              ),
-             (vertexDataArr, indexDataArr),
+             (vertexDataArr, indexDataArr, index32DataArr),
            );
          },
-         ((0, 0), ([||], [||], [||]), ([||], [||])),
+         ((0, 0), ([||], [||], [||]), ([||], [||], [||])),
        );
 
   (
     totalByteLength,
     (bufferViewDataArr, accessorDataArr, meshDataArr),
-    (vertexDataArr, indexDataArr),
+    (vertexDataArr, indexDataArr, index32DataArr),
   );
 };

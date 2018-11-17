@@ -2,6 +2,8 @@ open StateRenderType;
 
 open GPUDetectType;
 
+open RenderWorkerGeometryType;
+
 open RenderWorkerSettingType;
 
 open RenderWorkerBasicMaterialType;
@@ -102,10 +104,12 @@ let createRenderState =
       texCoords: geometryRecord.texCoords,
       normals: geometryRecord.normals,
       indices: geometryRecord.indices,
+      indices32: geometryRecord.indices32,
       verticesInfos: geometryRecord.verticesInfos,
       texCoordsInfos: geometryRecord.texCoordsInfos,
       normalsInfos: geometryRecord.normalsInfos,
       indicesInfos: geometryRecord.indicesInfos,
+      indicesTypeMap: geometryRecord.indicesTypeMap,
     },
     cameraRecord: OperateRenderRenderWorkerService.getCameraRecord(state),
     basicMaterialRecord: {

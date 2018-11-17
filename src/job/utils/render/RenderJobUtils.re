@@ -15,7 +15,13 @@ let _getOrCreateBuffer =
           normalBufferMap,
           elementArrayBufferMap,
         ),
-        (getVerticesFunc, getTexCoordsFunc, getNormalsFunc, getIndicesFunc),
+        (
+          getVerticesFunc,
+          getTexCoordsFunc,
+          getNormalsFunc,
+          getIndicesFunc,
+          getIndices32Func,
+        ),
       ),
       state,
     ) =>
@@ -42,13 +48,23 @@ let _getOrCreateBuffer =
       state,
     )
   | Index =>
-    ElementArrayBufferRenderService.getOrCreateBuffer(
-      gl,
-      (geometryIndex, elementArrayBufferMap),
-      [@bs] getIndicesFunc,
-      state,
-    )
-  | _ =>
+    switch (GeometryRenderService.unsafeGetIndicesType(geometryIndex, state)) {
+    | Short =>
+      ElementArrayBufferRenderService.getOrCreate16Buffer(
+        gl,
+        (geometryIndex, elementArrayBufferMap),
+        getIndicesFunc(. geometryIndex, state),
+        state,
+      )
+    | Int =>
+      ElementArrayBufferRenderService.getOrCreate32Buffer(
+        gl,
+        (geometryIndex, elementArrayBufferMap),
+        getIndices32Func(. geometryIndex, state),
+        state,
+      )
+    }
+  | buffer =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
         ~title="_sendAttributeData",
@@ -78,6 +94,7 @@ let _directlySendAttributeData =
       GetGeometryTexCoordsRenderService.getTexCoords,
       GetGeometryNormalsRenderService.getNormals,
       GetGeometryIndicesRenderService.getIndices,
+      GetGeometryIndicesRenderService.getIndices32,
     ),
   );
   let dataTuple = (gl, geometryIndex);
@@ -188,8 +205,8 @@ let draw = (gl, meshRendererIndex, geometryIndex, state) =>
   DrawGLSLService.drawElement(
     (
       DrawModeMeshRendererService.getGlDrawMode(gl, meshRendererIndex, state),
-      GeometryRenderService.getIndexType(gl),
-      GeometryRenderService.getIndexTypeSize(gl),
+      GeometryRenderService.getIndexType(gl, geometryIndex, state),
+      GeometryRenderService.getIndexTypeSize(gl, geometryIndex, state),
       GetGeometryIndicesRenderService.getIndicesCount(. geometryIndex, state),
     ),
     gl,

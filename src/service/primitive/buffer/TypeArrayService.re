@@ -449,9 +449,45 @@ let fillUint16ArrayWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
   |> Uint16Array.setArrayOffset(Obj.magic(sourceTypeArr), offset);
 };
 
+let fillUint32ArrayWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
+  WonderLog.Contract.requireCheck(
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|offset should >= 0|j},
+          ~actual={j|is $offset|j},
+        ),
+        () =>
+        offset >= 0
+      );
+      let sourceTypeArrLen = Uint32Array.length(sourceTypeArr);
+      let targetTypeArrLen = Uint32Array.length(targetTypeArr);
+      test(
+        Log.buildAssertMessage(
+          ~expect=
+            {j|sourceTypeArr.length:$sourceTypeArrLen + offset:$offset <= targetTypeArr.length:$targetTypeArrLen|j},
+          ~actual={j|not|j},
+        ),
+        () =>
+        sourceTypeArrLen + offset <= targetTypeArrLen
+      );
+    },
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  targetTypeArr
+  |> Uint32Array.setArrayOffset(Obj.magic(sourceTypeArr), offset);
+};
+
 let getUint16ArraySubarray =
     (typeArray: Uint16Array.t, startIndex: int, endIndex: int) =>
   Uint16Array.subarray(~start=startIndex, ~end_=endIndex, typeArray);
+
+let getUint32ArraySubarray =
+    (typeArray: Uint32Array.t, startIndex: int, endIndex: int) =>
+  Uint32Array.subarray(~start=startIndex, ~end_=endIndex, typeArray);
 
 let _setFloat32ArrayWithFloat32Array =
   (. targetTypeArr, sourceTypeArr, typeArrIndex, i) =>
@@ -545,6 +581,14 @@ let setUint16Array = (sourceTypeArr, targetTypeArr) => {
   targetTypeArr
   |> Uint16Array.setArray(
        sourceTypeArr |> TypeArrayType.uint16ToArrayUint16Elt,
+     );
+  targetTypeArr;
+};
+
+let setUint32Array = (sourceTypeArr, targetTypeArr) => {
+  targetTypeArr
+  |> Uint32Array.setArray(
+       sourceTypeArr |> TypeArrayType.uint32ToArrayUint32Elt,
      );
   targetTypeArr;
 };

@@ -375,11 +375,12 @@ let _ =
             )
             |> expect == (false, false);
           });
+
           describe("test reallocate geometry", () => {
             let _prepare = state => {
               let state =
                 SettingTool.setMemory(state, ~maxDisposeCount=1, ());
-              GeometryTool.createThreeGameObjectsAndSetPointData(state);
+              GeometryTool.createThreeGameObjectsAndSetFullPointData(state);
             };
             describe(
               "if have dispose too many geometrys, reallocate geometry", () => {
@@ -393,7 +394,10 @@ let _ =
                       (vertices1, vertices2, vertices3),
                       (texCoords1, texCoords2, texCoords3),
                       (normals1, normals2, normals3),
-                      (indices1, indices2, indices3),
+                      (
+                        (indices1, indices2, indices3),
+                        (indices32_1, indices32_2, indices32_3),
+                      ),
                     ) =
                       _prepare(state^);
                     let state =
@@ -407,10 +411,12 @@ let _ =
                       getGeometryTexCoords(geometry2, state),
                       getGeometryNormals(geometry2, state),
                       getGeometryIndices(geometry2, state),
+                      getGeometryIndices32(geometry2, state),
                       getGeometryVertices(geometry3, state),
                       getGeometryTexCoords(geometry3, state),
                       getGeometryNormals(geometry3, state),
                       getGeometryIndices(geometry3, state),
+                      getGeometryIndices32(geometry3, state),
                     )
                     |>
                     expect == (
@@ -418,15 +424,18 @@ let _ =
                                 texCoords2,
                                 normals2,
                                 indices2,
+                                indices32_2,
                                 vertices3,
                                 texCoords3,
                                 normals3,
                                 indices3,
+                                indices32_3,
                               );
                   });
                   test("type array should be packed", () => {
                     open Js_typed_array;
                     open StateDataMainType;
+
                     let (
                       state,
                       (gameObject1, gameObject2, gameObject3),
@@ -434,7 +443,10 @@ let _ =
                       (vertices1, vertices2, vertices3),
                       (texCoords1, texCoords2, texCoords3),
                       (normals1, normals2, normals3),
-                      (indices1, indices2, indices3),
+                      (
+                        (indices1, indices2, indices3),
+                        (indices32_1, indices32_2, indices32_3),
+                      ),
                     ) =
                       _prepare(state^);
                     let state =
@@ -443,13 +455,14 @@ let _ =
                            gameObject2,
                            geometry2,
                          );
-                    let {vertices, texCoords, normals, indices} =
+                    let {vertices, texCoords, normals, indices, indices32} =
                       state |> GeometryTool.getRecord;
                     (
                       vertices |> Float32Array.slice(~start=0, ~end_=10),
                       texCoords |> Float32Array.slice(~start=0, ~end_=10),
                       normals |> Float32Array.slice(~start=0, ~end_=10),
                       indices |> Uint16Array.slice(~start=0, ~end_=10),
+                      indices32 |> Uint32Array.slice(~start=0, ~end_=10),
                     )
                     |>
                     expect == (
@@ -501,6 +514,18 @@ let _ =
                                   2,
                                   0,
                                 |]),
+                                Uint32Array.make([|
+                                  2,
+                                  1,
+                                  0,
+                                  0,
+                                  1,
+                                  2,
+                                  0,
+                                  1,
+                                  2,
+                                  0,
+                                |]),
                               );
                   });
                 })
@@ -515,7 +540,10 @@ let _ =
                     (vertices1, vertices2, vertices3),
                     (texCoords1, texCoords2, texCoords3),
                     (normals1, normals2, normals3),
-                    (indices1, indices2, indices3),
+                    (
+                      (indices1, indices2, indices3),
+                      (indices32_1, indices32_2, indices32_3),
+                    ),
                   ) =
                     _prepare(state^);
                   let state =
@@ -555,7 +583,10 @@ let _ =
                   (vertices1, vertices2, vertices3),
                   (texCoords1, texCoords2, texCoords3),
                   (normals1, normals2, normals3),
-                  (indices1, indices2, indices3),
+                  (
+                    (indices1, indices2, indices3),
+                    (indices32_1, indices32_2, indices32_3),
+                  ),
                 ) =
                   _prepare(state^);
                 let state =
@@ -575,6 +606,7 @@ let _ =
                   texCoordsOffset,
                   normalsOffset,
                   indicesOffset,
+                  indices32Offset,
                 } =
                   state |> GeometryTool.getRecord;
                 (
@@ -582,6 +614,7 @@ let _ =
                   texCoordsOffset,
                   normalsOffset,
                   indicesOffset,
+                  indices32Offset,
                 )
                 |>
                 expect == (
@@ -589,6 +622,7 @@ let _ =
                             texCoords2 |> Float32Array.length,
                             normals2 |> Float32Array.length,
                             indices2 |> Uint16Array.length,
+                            indices32_2 |> Uint32Array.length,
                           );
               });
               test("clear disposedIndexMap", () => {
@@ -600,7 +634,10 @@ let _ =
                   (vertices1, vertices2, vertices3),
                   (texCoords1, texCoords2, texCoords3),
                   (normals1, normals2, normals3),
-                  (indices1, indices2, indices3),
+                  (
+                    (indices1, indices2, indices3),
+                    (indices32_1, indices32_2, indices32_3),
+                  ),
                 ) =
                   _prepare(state^);
                 let state =
@@ -622,7 +659,10 @@ let _ =
                   (vertices1, vertices2, vertices3),
                   (texCoords1, texCoords2, texCoords3),
                   (normals1, normals2, normals3),
-                  (indices1, indices2, indices3),
+                  (
+                    (indices1, indices2, indices3),
+                    (indices32_1, indices32_2, indices32_3),
+                  ),
                 ) =
                   _prepare(state^);
                 let state =
@@ -647,7 +687,7 @@ let _ =
                       (vertices1, vertices2, vertices3),
                       (texCoords1, texCoords2, texCoords3),
                       (normals1, normals2, normals3),
-                      (indices1, indices2, indices3),
+                      _,
                     ) =
                       _prepare(state^);
                     let state =
@@ -683,7 +723,7 @@ let _ =
                     (vertices1, vertices2, vertices3),
                     (texCoords1, texCoords2, texCoords3),
                     (normals1, normals2, normals3),
-                    (indices1, indices2, indices3),
+                    _,
                   ) =
                     _prepare(state^);
                   let (state, gameObject4, geometry4) =
@@ -701,7 +741,10 @@ let _ =
                   (vertices1, vertices2, vertices3),
                   (texCoords1, texCoords2, texCoords3),
                   (normals1, normals2, normals3),
-                  (indices1, indices2, indices3),
+                  (
+                    (indices1, indices2, indices3),
+                    (indices32_1, indices32_2, indices32_3),
+                  ),
                 ) =
                   ReallocateGeometryCPUMemoryTool.prepareForOptimize(state);
                 ReallocateGeometryCPUMemoryTool.judgeForOptimize(
@@ -711,7 +754,10 @@ let _ =
                   (vertices1, vertices2, vertices3),
                   (texCoords1, texCoords2, texCoords3),
                   (normals1, normals2, normals3),
-                  (indices1, indices2, indices3),
+                  (
+                    (indices1, indices2, indices3),
+                    (indices32_1, indices32_2, indices32_3),
+                  ),
                 );
               })
             );

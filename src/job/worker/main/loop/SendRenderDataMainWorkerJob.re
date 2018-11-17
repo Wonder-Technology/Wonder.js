@@ -62,6 +62,7 @@ let _buildIMGUIData = ({viewRecord} as state) => {
 let _buildData = (operateType, {settingRecord, gameObjectRecord} as state) => {
   let basicMaterialRecord = RecordBasicMaterialMainService.getRecord(state);
   let lightMaterialRecord = RecordLightMaterialMainService.getRecord(state);
+  let geometryRecord = RecordGeometryMainService.getRecord(state);
   let basicRenderObjectRecord =
     OperateRenderMainService.unsafeGetBasicRenderObjectRecord(state);
   let lightRenderObjectRecord =
@@ -162,6 +163,9 @@ let _buildData = (operateType, {settingRecord, gameObjectRecord} as state) => {
       "renderData": {
         "isRender": isRender,
         "camera": cameraData,
+        "geometryData": {
+          "indicesTypeMap": geometryRecord.indicesTypeMap,
+        },
         "basic": {
           "buffer": basicRenderObjectRecord.buffer,
           "renderArray": basicRenderObjectRecord.renderArray,

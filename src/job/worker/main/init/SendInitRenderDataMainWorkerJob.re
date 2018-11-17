@@ -198,6 +198,7 @@ let _buildData = (operateType, canvas, stateData) => {
       ),
     "geometryData": {
       "buffer": geometryRecord.buffer,
+      "indicesTypeMap": geometryRecord.indicesTypeMap,
     },
     "meshRendererData": {
       "buffer": meshRendererRecord.buffer,

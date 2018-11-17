@@ -6,8 +6,24 @@ open GPUDetectType;
 
 let _getExtension = (name: string, gl) =>
   (
-    switch name {
+    switch (name) {
     | "instanced_arrays" => gl |> getExtension("ANGLE_instanced_arrays")
+    | "element_index_uint" =>
+      switch (gl |> getExtension("OES_element_index_uint") |> Js.toOption) {
+      | None =>
+        WonderLog.Log.fatal(
+          WonderLog.Log.buildFatalMessage(
+            ~title="_getExtension",
+            ~description={j|not support OES_element_index_uint extension|j},
+            ~reason="",
+            ~solution={j||j},
+            ~params={j||j},
+          ),
+        );
+
+        Obj.magic(false);
+      | Some(_) => Obj.magic(true)
+      }
     | _ => gl |> getExtension(name)
     }
   )
@@ -16,7 +32,8 @@ let _getExtension = (name: string, gl) =>
 
 let _detectExtension = (gl, record) => {
   ...record,
-  extensionInstancedArrays: _getExtension("instanced_arrays", gl)
+  extensionInstancedArrays: _getExtension("instanced_arrays", gl),
+  extensionElementIndexUint: _getExtension("element_index_uint", gl),
 };
 
 let _detectPrecision = (gl, record) => {
@@ -32,7 +49,8 @@ let _detectPrecision = (gl, record) => {
   let highFloat = gl |> getHighFloat;
   let mediumFloat = gl |> getMediumFloat;
   /* let lowFloat = gl |> getLowFloat; */
-  let vertexShaderPrecisionHighpFloat = gl |> getShaderPrecisionFormat(vertexShader, highFloat);
+  let vertexShaderPrecisionHighpFloat =
+    gl |> getShaderPrecisionFormat(vertexShader, highFloat);
   let vertexShaderPrecisionMediumpFloat =
     gl |> getShaderPrecisionFormat(vertexShader, mediumFloat);
   let fragmentShaderPrecisionHighpFloat =
@@ -48,18 +66,23 @@ let _detectPrecision = (gl, record) => {
   if (! highpAvailable) {
     if (mediumpAvailable) {
       WonderLog.Log.warn({j|not support highp, using mediump instead|j});
-      {...record, precision: Some(MEDIUMP)}
+      {...record, precision: Some(MEDIUMP)};
     } else {
-      WonderLog.Log.warn({j|not support highp and mediump, using lowp instead|j});
-      {...record, precision: Some(LOWP)}
-    }
+      WonderLog.Log.warn(
+        {j|not support highp and mediump, using lowp instead|j},
+      );
+      {...record, precision: Some(LOWP)};
+    };
   } else {
-    {...record, precision: Some(HIGHP)}
-  }
+    {...record, precision: Some(HIGHP)};
+  };
 };
 
 let _getTextureCapability = (gl, textureCountPerMaterial, record) =>
-  {...record, maxTextureUnit: Some(gl |> getParameter(gl |> getMaxTextureImageUnits))}
+  {
+    ...record,
+    maxTextureUnit: Some(gl |> getParameter(gl |> getMaxTextureImageUnits)),
+  }
   |> WonderLog.Contract.ensureCheck(
        ({maxTextureUnit}) => {
          open WonderLog;
@@ -68,24 +91,30 @@ let _getTextureCapability = (gl, textureCountPerMaterial, record) =>
          let maxTextureUnit = maxTextureUnit |> OptionService.unsafeGet;
          test(
            Log.buildAssertMessage(
-             ~expect={j|maxTextureUnit:$maxTextureUnit >= textureCountPerMaterial:$textureCountPerMaterial|j},
-             ~actual={j|not|j}
+             ~expect=
+               {j|maxTextureUnit:$maxTextureUnit >= textureCountPerMaterial:$textureCountPerMaterial|j},
+             ~actual={j|not|j},
            ),
-           () => maxTextureUnit >= textureCountPerMaterial
-         )
+           () =>
+           maxTextureUnit >= textureCountPerMaterial
+         );
        },
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 
 let _detectCapability = (gl, textureCountPerMaterial, record) =>
-  record |> _getTextureCapability(gl, textureCountPerMaterial) |> _detectPrecision(gl);
+  record
+  |> _getTextureCapability(gl, textureCountPerMaterial)
+  |> _detectPrecision(gl);
 
 let detect = (gl, textureCountPerMaterial, record) =>
-  record |> _detectExtension(gl) |> _detectCapability(gl, textureCountPerMaterial);
+  record
+  |> _detectExtension(gl)
+  |> _detectCapability(gl, textureCountPerMaterial);
 
-let hasExtension = (extension) => Js.Option.isSome(extension);
+let hasExtension = extension => Js.Option.isSome(extension);
 
-let unsafeGetInstanceExtension = (record) => {
+let unsafeGetInstanceExtension = record => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -94,14 +123,15 @@ let unsafeGetInstanceExtension = (record) => {
             test(
               Log.buildAssertMessage(
                 ~expect={j|extensionInstancedArrays exist|j},
-                ~actual={j|not|j}
+                ~actual={j|not|j},
               ),
-              () => record.extensionInstancedArrays |> assertExist
+              () =>
+              record.extensionInstancedArrays |> assertExist
             )
           )
         )
       ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData)
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  record.extensionInstancedArrays |> OptionService.unsafeGet
+  record.extensionInstancedArrays |> OptionService.unsafeGet;
 };

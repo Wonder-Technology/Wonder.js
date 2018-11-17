@@ -43,13 +43,12 @@ let render =
        );
   let drawMode =
     DrawModeMeshRendererService.getGlDrawMode(gl, meshRendererIndex, state);
-  let indexType = GeometryRenderService.getIndexType(gl);
-  let indexTypeSize = GeometryRenderService.getIndexTypeSize(gl);
+  let indexType =
+    GeometryRenderService.getIndexType(gl, geometryIndex, state);
+  let indexTypeSize =
+    GeometryRenderService.getIndexTypeSize(gl, geometryIndex, state);
   let indicesCount =
-    GetGeometryIndicesRenderService.getIndicesCount(.
-      geometryIndex,
-      state,
-    );
+    GetGeometryIndicesRenderService.getIndicesCount(. geometryIndex, state);
   let (_, objectInstanceTransformDataTuple) =
     BuildObjectInstanceTransformDataTupleUtils.build(sourceInstance, state);
   ObjectInstanceCollectionService.reduceObjectInstanceTransformCollection(

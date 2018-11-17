@@ -2,21 +2,23 @@ open StateDataRenderWorkerType;
 
 open RenderWorkerGeometryType;
 
-let _createTypeArrays = (buffer, geometryPointCount, geometryCount, state) => {
+let _createTypeArrays =
+    (buffer, geometryPointCount, geometryCount, indicesTypeMap, state) => {
   let (
     vertices,
     texCoords,
     normals,
     indices,
+    indices32,
     verticesInfos,
     texCoordsInfos,
     normalsInfos,
-    indicesInfos
+    indicesInfos,
   ) =
     CreateTypeArrayGeometryService.createTypeArrays(
       buffer,
       geometryPointCount,
-      geometryCount
+      geometryCount,
     );
   state.geometryRecord =
     Some({
@@ -24,30 +26,32 @@ let _createTypeArrays = (buffer, geometryPointCount, geometryCount, state) => {
       texCoords,
       normals,
       indices,
+      indices32,
       verticesInfos,
       texCoordsInfos,
       normalsInfos,
-      indicesInfos
+      indicesInfos,
+      indicesTypeMap,
     });
-  state
+  state;
 };
 
 let execJob = (_, e, stateData) =>
-  MostUtils.callFunc(
-    () => {
-      let state = StateRenderWorkerService.unsafeGetState(stateData);
-      let data = MessageService.getRecord(e);
-      let geometryData = data##geometryData;
-      let buffer = geometryData##buffer;
-      let geometryPointCount = data##bufferData##geometryPointCount;
-      let geometryCount = data##bufferData##geometryCount;
-      state
-      |> _createTypeArrays(
-           buffer,
-           geometryPointCount,
-           geometryCount
-         )
-      |> StateRenderWorkerService.setState(stateData);
-      e
-    }
-  );
+  MostUtils.callFunc(() => {
+    let state = StateRenderWorkerService.unsafeGetState(stateData);
+    let data = MessageService.getRecord(e);
+    let geometryData = data##geometryData;
+    let buffer = geometryData##buffer;
+    let indicesTypeMap = geometryData##indicesTypeMap;
+    let geometryPointCount = data##bufferData##geometryPointCount;
+    let geometryCount = data##bufferData##geometryCount;
+    state
+    |> _createTypeArrays(
+         buffer,
+         geometryPointCount,
+         geometryCount,
+         indicesTypeMap,
+       )
+    |> StateRenderWorkerService.setState(stateData);
+    e;
+  });

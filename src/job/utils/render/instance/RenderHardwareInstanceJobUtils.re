@@ -349,12 +349,9 @@ let render =
   DrawGLSLService.drawElementsInstancedANGLE(
     (
       DrawModeMeshRendererService.getGlDrawMode(gl, meshRendererIndex, state),
-      GeometryRenderService.getIndexType(gl),
-      GeometryRenderService.getIndexTypeSize(gl),
-      GetGeometryIndicesRenderService.getIndicesCount(.
-        geometryIndex,
-        state,
-      ),
+      GeometryRenderService.getIndexType(gl, geometryIndex, state),
+      GeometryRenderService.getIndexTypeSize(gl, geometryIndex, state),
+      GetGeometryIndicesRenderService.getIndicesCount(. geometryIndex, state),
       instanceRenderListCount,
     ),
     Obj.magic(extension),

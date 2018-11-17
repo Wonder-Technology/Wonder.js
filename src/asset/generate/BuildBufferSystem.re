@@ -28,6 +28,21 @@ let _fillIndexBuffer = (buffer, indices, offset) => {
   buffer;
 };
 
+
+let _fillIndex32Buffer = (buffer, indices32, offset) => {
+  TypeArrayService.setUint32Array(
+    indices32,
+    Uint32Array.fromBufferRange(
+      buffer,
+      ~offset,
+      ~length=indices32 |> Uint32Array.length,
+    ),
+  )
+  |> ignore;
+
+  buffer;
+};
+
 let _fillImageUint8ArrayBuffer = (buffer, uint8Array, offset) => {
   TypeArrayService.setUint8Array(
     uint8Array,
@@ -45,7 +60,7 @@ let _fillImageUint8ArrayBuffer = (buffer, uint8Array, offset) => {
 let build =
     (
       totalByteLength,
-      (geometryEndByteOffset, (vertexDataArr, indexDataArr)),
+      (geometryEndByteOffset, (vertexDataArr, indexDataArr, index32DataArr)),
       imageUint8DataArr,
     ) => {
   let buffer = ArrayBuffer.make(totalByteLength);
@@ -63,6 +78,14 @@ let build =
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. buffer, (bufferViewOffset, indices)) =>
            _fillIndexBuffer(buffer, indices, bufferViewOffset),
+         buffer,
+       );
+
+  let buffer =
+    index32DataArr
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. buffer, (bufferViewOffset, indices32)) =>
+           _fillIndex32Buffer(buffer, indices32, bufferViewOffset),
          buffer,
        );
 
