@@ -1,33 +1,29 @@
 let getCount = arrs => arrs |> Js.Array.length;
 
-let _checkPrimitive = (({attributes}: GLTFType.primitive) as primitive) =>
-  attributes.texCoord_1 |> Js.Option.isSome ?
-    {
-      WonderLog.Log.warn({j|not support texCoord_1|j});
-
-      primitive;
-    } :
-    primitive;
-
 let getPrimitiveData = primitives =>
   primitives[0]
-  |> _checkPrimitive
   |> WonderLog.Contract.ensureCheck(
-       ({attributes, indices}: GLTFType.primitive) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(
-                   ~expect={j|indices exist|j},
-                   ~actual={j|not|j},
-                 ),
-                 () =>
-                 indices |> Js.Option.isSome |> assertTrue
-               )
-             )
-           )
-         ),
+       ({attributes, indices}: GLTFType.primitive) => {
+         open WonderLog;
+         open Contract;
+         open Operators;
+         test(
+           Log.buildAssertMessage(
+             ~expect={j|not has TEXCOORD_1|j},
+             ~actual={j|has|j},
+           ),
+           () =>
+           attributes.texCoord_1 |> Js.Option.isNone |> assertTrue
+         );
+         test(
+           Log.buildAssertMessage(
+             ~expect={j|indices exist|j},
+             ~actual={j|not|j},
+           ),
+           () =>
+           indices |> Js.Option.isSome |> assertTrue
+         );
+       },
        IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 

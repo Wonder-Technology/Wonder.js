@@ -1212,26 +1212,18 @@ let _ =
       );
 
       describe("not support texCoord_1", () =>
-        test("if attributes has texCoord_1, warn", () => {
-          let warn =
-            createMethodStubWithJsObjSandbox(
-              sandbox,
-              Console.console,
-              "warn",
-            );
-
-          ConvertGLBTool.testGLTFResultByGLTF(
-            ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfTexCoord1(),
-            ~state,
-            ~testFunc=
-              _ =>
-                warn
-                |> expect
-                |> toCalledWith([|"Warn: not support texCoord_1"|]),
-            (),
-          );
-        })
+        test("if attributes has texCoord_1, fatal", () =>
+          expect(() =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfTexCoord1(),
+              ~state,
+              ~testFunc=_ => 1 |> expect == 1,
+              (),
+            )
+          )
+          |> toThrowMessageRe([%re {|/not\shas\sTEXCOORD_1/img|}])
+        )
       );
     });
 
