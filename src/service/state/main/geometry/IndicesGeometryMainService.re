@@ -59,6 +59,7 @@ let setIndicesByUint16Array = (index: int, data: Uint16Array.t, state) => {
       ),
       fillUint16ArrayWithOffset(indices, data),
     );
+  record.isPointDataDirtyForRestore = true;
   state;
 };
 
@@ -89,6 +90,7 @@ let setIndicesByUint32Array = (index: int, data: Uint32Array.t, state) => {
       ),
       fillUint32ArrayWithOffset(indices32, data),
     );
+  record.isPointDataDirtyForRestore = true;
   state;
 };
 

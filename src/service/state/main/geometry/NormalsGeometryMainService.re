@@ -37,5 +37,6 @@ let setNormalsByTypeArray = (index: int, data: Float32Array.t, state) => {
       ),
       fillFloat32ArrayWithOffset(normals, data),
     );
+  record.isPointDataDirtyForRestore = true;
   state;
 };

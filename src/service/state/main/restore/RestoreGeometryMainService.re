@@ -17,17 +17,17 @@ let _restoreTypeArrays =
     (currentGeometryRecord, targetGeometryRecord) :
     {
       /* let (vertices, texCoords, normals, indices, indices32) =
-        RecordGeometryMainService.setAllTypeArrDataToDefault(
-          currentGeometryRecord.index,
-          geometryPointCount,
-          (
-            currentGeometryRecord.vertices,
-            currentGeometryRecord.texCoords,
-            currentGeometryRecord.normals,
-            currentGeometryRecord.indices,
-            currentGeometryRecord.indices32,
-          ),
-        ); */
+         RecordGeometryMainService.setAllTypeArrDataToDefault(
+           currentGeometryRecord.index,
+           geometryPointCount,
+           (
+             currentGeometryRecord.vertices,
+             currentGeometryRecord.texCoords,
+             currentGeometryRecord.normals,
+             currentGeometryRecord.indices,
+             currentGeometryRecord.indices32,
+           ),
+         ); */
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (currentGeometryRecord.vertices, 0),
         (targetGeometryRecord.vertices, 0),
@@ -91,12 +91,18 @@ let restore = (currentState, targetState) => {
   let currentGeometryRecord =
     RecordGeometryMainService.getRecord(currentState);
   let targetGeometryRecord = RecordGeometryMainService.getRecord(targetState);
+
   let (currentGeometryRecord, targetGeometryRecord) =
-    _restoreTypeArrays(
-      BufferSettingService.getGeometryPointCount(currentState.settingRecord),
-      currentGeometryRecord,
-      targetGeometryRecord,
-    );
+    ! currentGeometryRecord.isPointDataDirtyForRestore ?
+      (currentGeometryRecord, targetGeometryRecord) :
+      _restoreTypeArrays(
+        BufferSettingService.getGeometryPointCount(
+          currentState.settingRecord,
+        ),
+        currentGeometryRecord,
+        targetGeometryRecord,
+      );
+
   {
     ...targetState,
     geometryRecord:
@@ -112,6 +118,7 @@ let restore = (currentState, targetState) => {
         texCoordsInfos: currentGeometryRecord.texCoordsInfos,
         normalsInfos: currentGeometryRecord.normalsInfos,
         indicesInfos: currentGeometryRecord.indicesInfos,
+        isPointDataDirtyForRestore: false,
       }),
   };
 };

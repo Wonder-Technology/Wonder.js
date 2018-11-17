@@ -33,6 +33,7 @@ let setVerticesByTypeArray = (index: int, data: Float32Array.t, state) => {
       ),
       fillFloat32ArrayWithOffset(vertices, data),
     );
+  record.isPointDataDirtyForRestore = true;
   state;
 };
 

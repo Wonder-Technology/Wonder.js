@@ -115,6 +115,7 @@ let create = ({settingRecord} as state) => {
       indicesOffset: 0,
       indices32Offset: 0,
       disposeCount: 0,
+      isPointDataDirtyForRestore: false,
       /* configDataMap: WonderCommonlib.SparseMapService.createEmpty(),
          computeDataFuncMap: WonderCommonlib.SparseMapService.createEmpty(), */
       indicesTypeMap: WonderCommonlib.SparseMapService.createEmpty(),
@@ -163,6 +164,7 @@ let deepCopyForRestore = state => {
     geometryRecord:
       Some({
         ...record,
+        isPointDataDirtyForRestore: false,
         index,
         vertices:
           vertices

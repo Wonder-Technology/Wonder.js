@@ -11,6 +11,81 @@ let _ =
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
 
+    let _createGameObjectAndSetPointData = (state: StateDataMainType.state) => {
+      open Js.Typed_array;
+      open GeometryAPI;
+
+      let (state, geometry) = createGeometry(state);
+      let (state, gameObject) = GameObjectAPI.createGameObject(state);
+      let state =
+        state
+        |> GameObjectAPI.addGameObjectGeometryComponent(gameObject, geometry);
+      let vertices1 = Float32Array.make([|10., 10., 10., 10., 10., 10.|]);
+      let texCoords1 = Float32Array.make([|0.5, 0.5, 0.5, 0.5|]);
+      let normals1 = Float32Array.make([|1., 1., 1., 1., 1., 1.|]);
+      let indices1 = Uint16Array.make([|0, 2, 1|]);
+      let indices32_1 = Uint32Array.make([|0, 2, 1|]);
+      let state =
+        state
+        |> setGeometryVertices(geometry, vertices1)
+        |> setGeometryTexCoords(geometry, texCoords1)
+        |> setGeometryNormals(geometry, normals1)
+        |> setGeometryIndices(geometry, indices1)
+        |> setGeometryIndices32(geometry, indices32_1);
+
+      (
+        state,
+        gameObject,
+        geometry,
+        (vertices1, texCoords1, normals1, indices1, indices32_1),
+      );
+    };
+
+    let _prepare = () => {
+      let state =
+        TestTool.initWithJobConfigWithoutBuildFakeDom(
+          ~sandbox,
+          ~buffer=
+            SettingTool.buildBufferConfigStr(
+              ~geometryPointCount=12,
+              ~geometryCount=6,
+              (),
+            ),
+          (),
+        );
+
+      let (
+        state,
+        gameObject1,
+        geometry1,
+        (vertices1, texCoords1, normals1, indices1, indices32_1),
+      ) =
+        _createGameObjectAndSetPointData(state);
+      let state =
+        state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+      let copiedState = MainStateTool.deepCopyForRestore(state);
+      let (currentState, gameObject2, geometry2) =
+        GeometryTool.createGameObject(state);
+      let (currentState, gameObject3, geometry3) =
+        GeometryTool.createGameObject(state);
+      let vertices2 =
+        Float32Array.make([|2., 3., 40., 1., 3., 5., 3., 4., 11.|]);
+      let texCoords2 = Float32Array.make([|1., 0.5, 1., 1.5, 0.3, 0.5|]);
+      let normals2 =
+        Float32Array.make([|3., 2., 4., 5., 6., 7., 2.5, 1.5, 0.|]);
+      let indices2 = Uint16Array.make([|0, 1, 2|]);
+      let indices32_2 = Uint32Array.make([|0, 1, 2|]);
+      let currentState =
+        currentState
+        |> GeometryAPI.setGeometryVertices(geometry2, vertices2)
+        |> GeometryAPI.setGeometryTexCoords(geometry2, texCoords2)
+        |> GeometryAPI.setGeometryNormals(geometry3, normals2)
+        |> GeometryAPI.setGeometryIndices(geometry2, indices2)
+        |> GeometryAPI.setGeometryIndices32(geometry2, indices32_2);
+
+      ((currentState, copiedState), (geometry1, geometry2, geometry3));
+    };
+
     beforeEach(() => {
       sandbox := createSandbox();
       state := TestTool.initWithJobConfig(~sandbox, ());
@@ -73,84 +148,6 @@ let _ =
     });
 
     describe("restore geometry record to target state", () => {
-      let _createGameObjectAndSetPointData = (state: StateDataMainType.state) => {
-        open Js.Typed_array;
-        open GeometryAPI;
-
-        let (state, geometry) = createGeometry(state);
-        let (state, gameObject) = GameObjectAPI.createGameObject(state);
-        let state =
-          state
-          |> GameObjectAPI.addGameObjectGeometryComponent(
-               gameObject,
-               geometry,
-             );
-        let vertices1 = Float32Array.make([|10., 10., 10., 10., 10., 10.|]);
-        let texCoords1 = Float32Array.make([|0.5, 0.5, 0.5, 0.5|]);
-        let normals1 = Float32Array.make([|1., 1., 1., 1., 1., 1.|]);
-        let indices1 = Uint16Array.make([|0, 2, 1|]);
-        let indices32_1 = Uint32Array.make([|0, 2, 1|]);
-        let state =
-          state
-          |> setGeometryVertices(geometry, vertices1)
-          |> setGeometryTexCoords(geometry, texCoords1)
-          |> setGeometryNormals(geometry, normals1)
-          |> setGeometryIndices(geometry, indices1)
-          |> setGeometryIndices32(geometry, indices32_1);
-
-        (
-          state,
-          gameObject,
-          geometry,
-          (vertices1, texCoords1, normals1, indices1, indices32_1),
-        );
-      };
-
-      let _prepare = () => {
-        let state =
-          TestTool.initWithJobConfigWithoutBuildFakeDom(
-            ~sandbox,
-            ~buffer=
-              SettingTool.buildBufferConfigStr(
-                ~geometryPointCount=12,
-                ~geometryCount=6,
-                (),
-              ),
-            (),
-          );
-
-        let (
-          state,
-          gameObject1,
-          geometry1,
-          (vertices1, texCoords1, normals1, indices1, indices32_1),
-        ) =
-          _createGameObjectAndSetPointData(state);
-        let state =
-          state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-        let copiedState = MainStateTool.deepCopyForRestore(state);
-        let (currentState, gameObject2, geometry2) =
-          GeometryTool.createGameObject(state);
-        let (currentState, gameObject3, geometry3) =
-          GeometryTool.createGameObject(state);
-        let vertices2 =
-          Float32Array.make([|2., 3., 40., 1., 3., 5., 3., 4., 11.|]);
-        let texCoords2 = Float32Array.make([|1., 0.5, 1., 1.5, 0.3, 0.5|]);
-        let normals2 =
-          Float32Array.make([|3., 2., 4., 5., 6., 7., 2.5, 1.5, 0.|]);
-        let indices2 = Uint16Array.make([|0, 1, 2|]);
-        let indices32_2 = Uint32Array.make([|0, 1, 2|]);
-        let currentState =
-          currentState
-          |> GeometryAPI.setGeometryVertices(geometry2, vertices2)
-          |> GeometryAPI.setGeometryTexCoords(geometry2, texCoords2)
-          |> GeometryAPI.setGeometryNormals(geometry3, normals2)
-          |> GeometryAPI.setGeometryIndices(geometry2, indices2)
-          |> GeometryAPI.setGeometryIndices32(geometry2, indices32_2);
-
-        ((currentState, copiedState), (geometry1, geometry2, geometry3));
-      };
-
       let _getMainVertexData = data =>
         data |> Float32Array.slice(~start=0, ~end_=8);
 
@@ -186,10 +183,19 @@ let _ =
                       10.,
                       10.,
                       2.,
-                      3.
+                      3.,
                     |]),
-                    Float32Array.make([|0.5, 0.5, 0.5, 0.5, 1., 0.5, 1., 1.5|]),
-                    Float32Array.make([|1., 1., 1., 1., 1., 1., 3.,2.|]),
+                    Float32Array.make([|
+                      0.5,
+                      0.5,
+                      0.5,
+                      0.5,
+                      1.,
+                      0.5,
+                      1.,
+                      1.5,
+                    |]),
+                    Float32Array.make([|1., 1., 1., 1., 1., 1., 3., 2.|]),
                     Uint16Array.make([|0, 2, 1, 0, 1, 2, 0, 0|]),
                     Uint32Array.make([|0, 2, 1, 0, 1, 2, 0, 0|]),
                   );
@@ -275,6 +281,60 @@ let _ =
                     Uint16Array.make([|0, 1, 2|]),
                     indices32,
                   );
+      });
+    });
+
+    describe("optimize: if point data not dirty, not restore typeArrays", () => {
+      test(
+        "if point data not dirty, restored typeArrays should be current state's one",
+        () => {
+        open GeometryType;
+
+        let ((currentState, copiedState), (geometry1, geometry2, geometry3)) =
+          _prepare();
+
+        let restoredState1 = MainStateTool.restore(currentState, copiedState);
+        let copiedState = MainStateTool.deepCopyForRestore(restoredState1);
+        let restoredState2 =
+          MainStateTool.restore(restoredState1, copiedState);
+
+        let geometryRecord1 = restoredState1 |> GeometryTool.getRecord;
+        let geometryRecord2 = restoredState2 |> GeometryTool.getRecord;
+        (geometryRecord2.vertices, geometryRecord2.verticesInfos)
+        |> expect == (geometryRecord1.vertices, geometryRecord1.verticesInfos);
+      });
+      test(
+        "deepCopy shouldn't change source state->isPointDataDirtyForRestore",
+        () => {
+        open GeometryType;
+
+        let (
+          (currentState, copiedState1),
+          (geometry1, geometry2, geometry3),
+        ) =
+          _prepare();
+
+        let copiedState2 = MainStateTool.deepCopyForRestore(currentState);
+        let currentState =
+          currentState
+          |> GeometryAPI.setGeometryVertices(
+               geometry1,
+               Float32Array.make([|1.|]),
+             );
+        let copiedState3 = MainStateTool.deepCopyForRestore(currentState);
+
+        GeometryTool.isPointDataDirtyForRestore(currentState)
+        |> expect == true;
+      });
+      test(
+        "when deepCopy, copied state->isPointDataDirtyForRestore to false", () => {
+        open GeometryType;
+
+        let ((currentState, copiedState), (geometry1, geometry2, geometry3)) =
+          _prepare();
+
+        GeometryTool.isPointDataDirtyForRestore(copiedState)
+        |> expect == false;
       });
     });
   });
