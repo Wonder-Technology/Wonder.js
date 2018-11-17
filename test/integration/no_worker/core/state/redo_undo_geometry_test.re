@@ -336,5 +336,86 @@ let _ =
         GeometryTool.isPointDataDirtyForRestore(copiedState)
         |> expect == false;
       });
+
+      describe("test operations mark point data dirty", () => {
+        let _test = operateFunc => {
+          let state = GeometryTool.markPointDataNotDirtyForRestore(state^);
+
+          let (state, gameObject, geometry) =
+            GeometryTool.createGameObject(state);
+
+          let state = operateFunc(gameObject, geometry, state);
+
+          GeometryTool.isPointDataDirtyForRestore(state) |> expect == true;
+        };
+
+        test("batchDisposeGeometry should mark point data dirty", () =>
+          _test((gameObject, geometry, state) =>
+            GeometryAPI.batchDisposeGeometry([|geometry|], state)
+          )
+        );
+        test(
+          "disposeGameObjectGeometryComponent should mark point data dirty", () =>
+          _test((gameObject, geometry, state) =>
+            GameObjectAPI.disposeGameObjectGeometryComponent(
+              gameObject,
+              geometry,
+              state,
+            )
+            |> DisposeJob.execJob(None)
+          )
+        );
+        test("disposeGameObject should mark point data dirty", () =>
+          _test((gameObject, geometry, state) =>
+            GameObjectAPI.disposeGameObject(gameObject, state)
+            |> DisposeJob.execJob(None)
+          )
+        );
+        test("disposeGameObjectKeepOrder should mark point data dirty", () =>
+          _test((gameObject, geometry, state) =>
+            GameObjectAPI.disposeGameObject(gameObject, state)
+            |> DisposeJob.execJob(None)
+          )
+        );
+        test(
+          "disposeGameObjectDisposeGeometryRemoveMaterial should mark point data dirty",
+          () =>
+          _test((gameObject, geometry, state) =>
+            GameObjectAPI.disposeGameObjectDisposeGeometryRemoveMaterial(
+              gameObject,
+              state,
+            )
+            |> DisposeJob.execJob(None)
+          )
+        );
+        test("batchDisposeGameObject should mark point data dirty", () =>
+          _test((gameObject, geometry, state) =>
+            GameObjectAPI.batchDisposeGameObject([|gameObject|], state)
+            |> DisposeJob.execJob(None)
+          )
+        );
+        test(
+          "batchDisposeGameObjectKeepOrder should mark point data dirty", () =>
+          _test((gameObject, geometry, state) =>
+            GameObjectAPI.batchDisposeGameObjectKeepOrder(
+              [|gameObject|],
+              state,
+            )
+            |> DisposeJob.execJob(None)
+          )
+        );
+        test("reallocate geometry should mark point data dirty", () =>
+          _test((gameObject, geometry, state) => {
+            state.geometryRecord =
+              Some(
+                ReallocateGeometryCPUMemoryService.reAllocate(
+                  GeometryTool.getRecord(state),
+                ),
+              );
+
+            state;
+          })
+        );
+      });
     });
   });

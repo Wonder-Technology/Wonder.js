@@ -126,7 +126,14 @@ let handleBatchDisposeComponentData =
            ([||], geometryRecord),
          );
     (
-      {...state, geometryRecord: Some(geometryRecord)},
+      {
+        ...state,
+        geometryRecord:
+          Some(
+            geometryRecord
+            |> PointDataDirtyGeometryService.markPointDataDirtyForRestore,
+          ),
+      },
       geometryNeedDisposeVboBufferArr,
     );
   };
@@ -183,7 +190,11 @@ let handleBatchDisposeComponent = (geometryHasNoGameObjectArray, state) => {
 
   {
     ...state,
-    geometryRecord: Some(geometryRecord),
+    geometryRecord:
+      Some(
+        geometryRecord
+        |> PointDataDirtyGeometryService.markPointDataDirtyForRestore,
+      ),
     vboBufferRecord:
       state.vboBufferRecord
       |> DisposeVboBufferService.disposeGeometryVboBuffer(

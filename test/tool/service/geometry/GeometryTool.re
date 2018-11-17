@@ -318,3 +318,11 @@ let isPointDataDirtyForRestore = state => {
 
   isPointDataDirtyForRestore;
 };
+
+let markPointDataNotDirtyForRestore = state => {
+  let {isPointDataDirtyForRestore} as record = state |> getRecord;
+
+  record.isPointDataDirtyForRestore = false;
+
+  state;
+};
