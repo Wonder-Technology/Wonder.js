@@ -349,13 +349,13 @@ let _ =
           GeometryTool.isPointDataDirtyForRestore(state) |> expect == true;
         };
 
-        test("batchDisposeGeometry should mark point data dirty", () =>
+        test("batchDisposeGeometry unEmpty data", () =>
           _test((gameObject, geometry, state) =>
             GeometryAPI.batchDisposeGeometry([|geometry|], state)
+            |> DisposeJob.execJob(None)
           )
         );
-        test(
-          "disposeGameObjectGeometryComponent should mark point data dirty", () =>
+        test("disposeGameObjectGeometryComponent unEmpty data", () =>
           _test((gameObject, geometry, state) =>
             GameObjectAPI.disposeGameObjectGeometryComponent(
               gameObject,
@@ -365,21 +365,19 @@ let _ =
             |> DisposeJob.execJob(None)
           )
         );
-        test("disposeGameObject should mark point data dirty", () =>
+        test("disposeGameObject unEmpty data", () =>
           _test((gameObject, geometry, state) =>
             GameObjectAPI.disposeGameObject(gameObject, state)
             |> DisposeJob.execJob(None)
           )
         );
-        test("disposeGameObjectKeepOrder should mark point data dirty", () =>
+        test("disposeGameObjectKeepOrder unEmpty data", () =>
           _test((gameObject, geometry, state) =>
             GameObjectAPI.disposeGameObject(gameObject, state)
             |> DisposeJob.execJob(None)
           )
         );
-        test(
-          "disposeGameObjectDisposeGeometryRemoveMaterial should mark point data dirty",
-          () =>
+        test("disposeGameObjectDisposeGeometryRemoveMaterial unEmpty data", () =>
           _test((gameObject, geometry, state) =>
             GameObjectAPI.disposeGameObjectDisposeGeometryRemoveMaterial(
               gameObject,
@@ -388,14 +386,13 @@ let _ =
             |> DisposeJob.execJob(None)
           )
         );
-        test("batchDisposeGameObject should mark point data dirty", () =>
+        test("batchDisposeGameObject unEmpty data", () =>
           _test((gameObject, geometry, state) =>
             GameObjectAPI.batchDisposeGameObject([|gameObject|], state)
             |> DisposeJob.execJob(None)
           )
         );
-        test(
-          "batchDisposeGameObjectKeepOrder should mark point data dirty", () =>
+        test("batchDisposeGameObjectKeepOrder unEmpty data", () =>
           _test((gameObject, geometry, state) =>
             GameObjectAPI.batchDisposeGameObjectKeepOrder(
               [|gameObject|],
@@ -415,6 +412,49 @@ let _ =
 
             state;
           })
+        );
+      });
+
+      describe("test operations not mark point data", () => {
+        let _test = operateFunc => {
+          let state = GeometryTool.markPointDataNotDirtyForRestore(state^);
+
+          let (state, gameObject, geometry) =
+            GeometryTool.createGameObject(state);
+
+          let state = operateFunc(gameObject, geometry, state);
+
+          GeometryTool.isPointDataDirtyForRestore(state) |> expect == false;
+        };
+
+        test("batchDisposeGeometry empty arr", () =>
+          _test((gameObject, geometry, state) =>
+            GeometryAPI.batchDisposeGeometry([||], state)
+            |> DisposeJob.execJob(None)
+          )
+        );
+        test("dispose gameObject->geometry which is group geometry", () =>
+          _test((gameObject, geometry, state) => {
+            let (state, gameObject2) = GameObjectAPI.createGameObject(state);
+            let state =
+              state
+              |> GameObjectAPI.addGameObjectGeometryComponent(
+                   gameObject2,
+                   geometry,
+                 );
+
+            GameObjectAPI.disposeGameObjectGeometryComponent(
+              gameObject,
+              geometry,
+              state,
+            )
+            |> DisposeJob.execJob(None);
+          })
+        );
+        test("dispose job->dispose empty geometrys", () =>
+          _test((gameObject, geometry, state) =>
+            state |> DisposeJob.execJob(None)
+          )
         );
       });
     });

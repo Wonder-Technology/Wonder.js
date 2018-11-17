@@ -48,7 +48,8 @@ let _disposeData =
       disposedIndexMap |> WonderCommonlib.SparseMapService.set(geometry, true),
     disposeCount: succ(disposeCount),
     nameMap: nameMap |> disposeSparseMapData(geometry),
-  };
+  }
+  |> PointDataDirtyGeometryService.markPointDataDirtyForRestore;
 };
 
 let _disposeDataWithGameObject =
@@ -73,7 +74,8 @@ let _disposeDataWithGameObject =
         geometry,
         gameObjectsMap,
       ),
-  };
+  }
+  |> PointDataDirtyGeometryService.markPointDataDirtyForRestore;
 };
 
 let handleBatchDisposeComponentData =
@@ -125,15 +127,9 @@ let handleBatchDisposeComponentData =
              },
            ([||], geometryRecord),
          );
+
     (
-      {
-        ...state,
-        geometryRecord:
-          Some(
-            geometryRecord
-            |> PointDataDirtyGeometryService.markPointDataDirtyForRestore,
-          ),
-      },
+      {...state, geometryRecord: Some(geometryRecord)},
       geometryNeedDisposeVboBufferArr,
     );
   };
@@ -190,11 +186,7 @@ let handleBatchDisposeComponent = (geometryHasNoGameObjectArray, state) => {
 
   {
     ...state,
-    geometryRecord:
-      Some(
-        geometryRecord
-        |> PointDataDirtyGeometryService.markPointDataDirtyForRestore,
-      ),
+    geometryRecord: Some(geometryRecord),
     vboBufferRecord:
       state.vboBufferRecord
       |> DisposeVboBufferService.disposeGeometryVboBuffer(
