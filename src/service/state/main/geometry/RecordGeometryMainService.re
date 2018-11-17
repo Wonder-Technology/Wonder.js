@@ -130,6 +130,28 @@ let create = ({settingRecord} as state) => {
 };
 
 let deepCopyForRestore = state => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|indicesOffset == indices32Offset|j},
+                ~actual={j|not|j},
+              ),
+              () => {
+                let {indicesOffset, indices32Offset} = state |> getRecord;
+
+                indicesOffset == indices32Offset;
+              },
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
   let {
         index,
         vertices,
@@ -155,6 +177,8 @@ let deepCopyForRestore = state => {
         nameMap,
       } as record =
     state |> getRecord;
+
+  let infosEndIndex = index * BufferGeometryService.getInfoSize();
 
   {
     ...state,
@@ -186,16 +210,16 @@ let deepCopyForRestore = state => {
         indices32Offset,
         verticesInfos:
           verticesInfos
-          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(verticesOffset),
+          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(infosEndIndex),
         texCoordsInfos:
           texCoordsInfos
-          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(texCoordsOffset),
+          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(infosEndIndex),
         normalsInfos:
           normalsInfos
-          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(normalsOffset),
+          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(infosEndIndex),
         indicesInfos:
           indicesInfos
-          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(indicesOffset),
+          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(infosEndIndex),
         disposeCount,
         indicesTypeMap: indicesTypeMap |> SparseMapService.copy,
         gameObjectsMap:

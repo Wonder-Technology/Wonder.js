@@ -307,3 +307,15 @@ let batchDisposeGeometry = (geometryArr, state) =>
     geometryArr,
     state,
   );
+
+let hasGeometryVertices = (geometry, state) =>
+  VerticesGeometryMainService.hasVertices(geometry, state);
+
+let hasGeometryNormals = (geometry, state) =>
+  NormalsGeometryMainService.hasNormals(geometry, state);
+
+let hasGeometryTexCoords = (geometry, state) =>
+  TexCoordsGeometryMainService.hasTexCoords(geometry, state);
+
+let hasGeometryIndices = (geometry, state) =>
+  IndicesGeometryMainService.hasIndices(geometry, state);

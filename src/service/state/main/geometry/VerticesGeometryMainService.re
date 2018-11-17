@@ -13,6 +13,7 @@ open Js.Typed_array;
 let getVertices =
   (. index, state) => {
     let {vertices, verticesInfos} = getRecord(state);
+
     getFloat32PointData(
       BufferGeometryService.getInfoIndex(index),
       vertices,
@@ -33,4 +34,13 @@ let setVerticesByTypeArray = (index: int, data: Float32Array.t, state) => {
       fillFloat32ArrayWithOffset(vertices, data),
     );
   state;
+};
+
+let hasVertices = (index, state) => {
+  let {verticesInfos} = getRecord(state);
+
+  ReallocatedPointsGeometryService.hasPointData(
+    BufferGeometryService.getInfoIndex(index),
+    verticesInfos,
+  );
 };

@@ -10,21 +10,30 @@ let getInfo = (infoIndex, infos) =>
     TypeArrayService.getUint32_1(infoIndex + 1, infos),
   )
   |> WonderLog.Contract.ensureCheck(
-       ((startIndex, endIndex)) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(
-                   ~expect={j|endIndex >= startIndex|j},
-                   ~actual={j|is $endIndex|j},
-                 ),
-                 () =>
-                 endIndex >= startIndex
-               )
-             )
-           )
-         ),
+       ((startIndex, endIndex)) => {
+         open WonderLog;
+         open Contract;
+         open Operators;
+
+         test(
+           Log.buildAssertMessage(
+             ~expect={j|has info data|j},
+             ~actual={j|not|j},
+           ),
+           () => {
+             startIndex |> assertNullableExist;
+             endIndex |> assertNullableExist;
+           },
+         );
+         test(
+           Log.buildAssertMessage(
+             ~expect={j|endIndex >= startIndex|j},
+             ~actual={j|is $endIndex|j},
+           ),
+           () =>
+           endIndex >= startIndex
+         );
+       },
        IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 
@@ -58,13 +67,15 @@ let setInfo = (infoIndex, startIndex, endIndex, infos) => {
   |> TypeArrayService.setUint32_1(infoIndex + 1, endIndex);
 };
 
-let hasPointData = (infoIndex, infos) => {
-  let (startIndex, endIndex) = getInfo(infoIndex, infos);
-  endIndex > startIndex;
+let hasPointData = (infoIndex, infos) =>{
+  WonderLog.Log.print((infoIndex, infos)) |> ignore;
+
+  infoIndex + 1 <= Uint32Array.length(infos) - 1;
 };
 
 let getFloat32PointData = (infoIndex, points: Float32Array.t, infos) => {
   let (startIndex, endIndex) = getInfo(infoIndex, infos);
+
   TypeArrayService.getFloat32ArraySubarray(points, startIndex, endIndex);
 };
 

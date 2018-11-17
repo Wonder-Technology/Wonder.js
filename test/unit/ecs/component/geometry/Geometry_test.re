@@ -120,6 +120,45 @@ let _ =
       );
     });
 
+    describe("hasGeometryVertices", () =>
+      test("test", () => {
+        let (state, geometry) = GeometryAPI.createGeometry(state^);
+        let state =
+          state
+          |> GeometryAPI.setGeometryVertices(
+               geometry,
+               Float32Array.make([|1., 2., 3.|]),
+             );
+
+        GeometryAPI.hasGeometryVertices(geometry, state) |> expect == true;
+      })
+    );
+
+    describe("hasGeometryIndices", () => {
+      test("test indices16", () => {
+        let (state, geometry) = GeometryAPI.createGeometry(state^);
+        let state =
+          state
+          |> GeometryAPI.setGeometryIndices(
+               geometry,
+               Uint16Array.make([|1, 2, 3|]),
+             );
+
+        GeometryAPI.hasGeometryIndices(geometry, state) |> expect == true;
+      });
+      test("test indices32", () => {
+        let (state, geometry) = GeometryAPI.createGeometry(state^);
+        let state =
+          state
+          |> GeometryAPI.setGeometryIndices32(
+               geometry,
+               Uint32Array.make([|1, 2, 3|]),
+             );
+
+        GeometryAPI.hasGeometryIndices(geometry, state) |> expect == true;
+      });
+    });
+
     describe("test setGeometryName", () =>
       test("test", () => {
         let (state, geometry) = createGeometry(state^);

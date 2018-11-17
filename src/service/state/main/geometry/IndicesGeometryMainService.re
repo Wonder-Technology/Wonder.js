@@ -76,7 +76,8 @@ let getIndices32 =
 let setIndicesByUint32Array = (index: int, data: Uint32Array.t, state) => {
   let state = setIndicesType(index, Int, state);
 
-  let {indicesInfos, indices32, indices32Offset} as record = getRecord(state);
+  let {indicesInfos, indices32, indices32Offset} as record =
+    getRecord(state);
 
   record.indices32Offset =
     setUint32PointData(
@@ -89,4 +90,13 @@ let setIndicesByUint32Array = (index: int, data: Uint32Array.t, state) => {
       fillUint32ArrayWithOffset(indices32, data),
     );
   state;
+};
+
+let hasIndices = (index, state) => {
+  let {indicesInfos} = getRecord(state);
+
+  ReallocatedPointsGeometryService.hasPointData(
+    BufferGeometryService.getInfoIndex(index),
+    indicesInfos,
+  );
 };
