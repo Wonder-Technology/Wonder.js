@@ -130,28 +130,6 @@ let create = ({settingRecord} as state) => {
 };
 
 let deepCopyForRestore = state => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|indicesOffset == indices32Offset|j},
-                ~actual={j|not|j},
-              ),
-              () => {
-                let {indicesOffset, indices32Offset} = state |> getRecord;
-
-                indicesOffset == indices32Offset;
-              },
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-
   let {
         index,
         vertices,

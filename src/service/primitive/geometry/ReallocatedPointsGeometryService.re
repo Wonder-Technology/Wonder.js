@@ -68,9 +68,8 @@ let setInfo = (infoIndex, startIndex, endIndex, infos) => {
 };
 
 let hasPointData = (infoIndex, infos) =>{
-  WonderLog.Log.print((infoIndex, infos)) |> ignore;
-
-  infoIndex + 1 <= Uint32Array.length(infos) - 1;
+  let (startIndex, endIndex) = getInfo(infoIndex, infos);
+  endIndex > startIndex;
 };
 
 let getFloat32PointData = (infoIndex, points: Float32Array.t, infos) => {
