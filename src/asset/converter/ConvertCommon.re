@@ -1,17 +1,7 @@
 let getCount = arrs => arrs |> Js.Array.length;
 
-let _checkPrimitive = (({attributes}: GLTFType.primitive) as primitive) =>
-  attributes.texCoord_1 |> Js.Option.isSome ?
-    {
-      WonderLog.Log.warn({j|not support texCoord_1|j});
-
-      primitive;
-    } :
-    primitive;
-
 let getPrimitiveData = primitives =>
   primitives[0]
-  |> _checkPrimitive
   |> WonderLog.Contract.ensureCheck(
        ({attributes, indices}: GLTFType.primitive) =>
          WonderLog.(

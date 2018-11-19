@@ -57,7 +57,30 @@ let _convertToScene =
   };
 };
 
+let _checkAndWarn = (({meshes}: GLTFType.gltf) as gltf) => {
+  let hasTexCoord_1 = ref(false);
+
+  meshes
+  |> WonderCommonlib.ArrayService.forEach((. {primitives}: GLTFType.mesh) => {
+       let {attributes}: GLTFType.primitive =
+         Array.unsafe_get(primitives, 0);
+
+       attributes.texCoord_1 |> Js.Option.isSome ?
+         {
+           hasTexCoord_1 := true;
+
+           ();
+         } :
+         ();
+     });
+
+  hasTexCoord_1^ ? WonderLog.Log.warn({j|not support texCoord_1|j}) : ();
+
+  gltf;
+};
+
 let _buildWDBJsonUint8Array = (gltf: GLTFType.gltf) => {
+  let gltf = _checkAndWarn(gltf);
   let ({asset, scenes, scene, nodes, extensions}: GLTFType.gltf) as gltf =
     gltf
     |> ConvertMultiPrimitivesSystem.convertMultiPrimitivesToNodes
