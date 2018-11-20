@@ -2,9 +2,11 @@ open ComponentType;
 
 type transform = int;
 
-type transformParentMap = WonderCommonlib.SparseMapService.t(Js.undefined(transform));
+type transformParentMap =
+  WonderCommonlib.SparseMapService.t(Js.undefined(transform));
 
-type transformChildMap = WonderCommonlib.SparseMapService.t(array(transform));
+type transformChildMap =
+  WonderCommonlib.SparseMapService.t(array(transform));
 
 type transformDirtyMap = WonderCommonlib.SparseMapService.t(bool);
 
@@ -20,6 +22,10 @@ type transformRecord = {
   mutable copiedLocalPositions: option(Js.Typed_array.Float32Array.t),
   mutable copiedLocalRotations: option(Js.Typed_array.Float32Array.t),
   mutable copiedLocalScales: option(Js.Typed_array.Float32Array.t),
+  mutable copiedLocalToWorldMatricesForRestore: Js.Typed_array.Float32Array.t,
+  mutable copiedLocalPositionsForRestore: Js.Typed_array.Float32Array.t,
+  mutable copiedLocalRotationsForRestore: Js.Typed_array.Float32Array.t,
+  mutable copiedLocalScalesForRestore: Js.Typed_array.Float32Array.t,
   defaultLocalToWorldMatrix: array(float),
   defaultLocalPosition: array(float),
   defaultLocalRotation: array(float),
@@ -28,9 +34,12 @@ type transformRecord = {
   mutable childMap: transformChildMap,
   mutable gameObjectMap,
   mutable dirtyMap: transformDirtyMap,
-  mutable localToWorldMatrixCacheMap: WonderCommonlib.SparseMapService.t(Js.Typed_array.Float32Array.t),
-  mutable normalMatrixCacheMap: WonderCommonlib.SparseMapService.t(Js.Typed_array.Float32Array.t),
-  mutable disposedIndexArray: array(transform)
+  mutable localToWorldMatrixCacheMap:
+    WonderCommonlib.SparseMapService.t(Js.Typed_array.Float32Array.t),
+  mutable normalMatrixCacheMap:
+    WonderCommonlib.SparseMapService.t(Js.Typed_array.Float32Array.t),
+  mutable disposedIndexArray: array(transform),
 };
 
-external transformToJsUndefine : transform => Js.undefined(transform) = "%identity";
+external transformToJsUndefine : transform => Js.undefined(transform) =
+  "%identity";

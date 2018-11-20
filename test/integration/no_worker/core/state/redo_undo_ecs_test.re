@@ -290,7 +290,7 @@ let _ =
         getDataFunc(component1, state) |> expect == data1;
       };
       describe("deep copy transform record", () => {
-        test("copy localToWorldMatrices", () =>
+        /* test("copy localToWorldMatrices", () =>
           _testCopyTypeArraySingleValue(
             (
               GameObjectTool.createGameObject,
@@ -370,7 +370,7 @@ let _ =
             ),
             state,
           )
-        );
+        ); */
         test("deep copy childMap", () => {
           open TransformType;
           let (
@@ -427,7 +427,6 @@ let _ =
                     );
         });
       });
-
 
       describe("deep copy meshRenderer record", () => {
         test(
@@ -1526,38 +1525,37 @@ let _ =
           let _ = MainStateTool.restore(currentState, copiedState);
           _test(MainStateTool.unsafeGetState());
         });
-        describe("test restore to the same state", () =>
-          test("should not change typeArrays", () => {
-            open TransformType;
-            state :=
-              TestTool.initWithJobConfigWithoutBuildFakeDom(
-                ~sandbox,
-                ~buffer=
-                  SettingTool.buildBufferConfigStr(~transformCount=5, ()),
-                (),
-              );
+        /* describe("test restore to the same state", () =>
+             test("should not change typeArrays", () => {
+               open TransformType;
+               state :=
+                 TestTool.initWithJobConfigWithoutBuildFakeDom(
+                   ~sandbox,
+                   ~buffer=
+                     SettingTool.buildBufferConfigStr(~transformCount=5, ()),
+                   (),
+                 );
 
-            let (
-              state,
-              gameObject1,
-              gameObject2,
-              _,
-              transform1,
-              transform2,
-              _,
-            ) =
-              _prepareTransformMatrixData(state);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-            let state = TransformTool.update(transform1, state);
-            let state = TransformTool.update(transform2, state);
-            let _ = MainStateTool.restore(state, state);
-            _test(MainStateTool.unsafeGetState());
-          })
-        );
+               let (
+                 state,
+                 gameObject1,
+                 gameObject2,
+                 _,
+                 transform1,
+                 transform2,
+                 _,
+               ) =
+                 _prepareTransformMatrixData(state);
+               let state =
+                 state
+                 |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+               let state = TransformTool.update(transform1, state);
+               let state = TransformTool.update(transform2, state);
+               let _ = MainStateTool.restore(state, state);
+               _test(MainStateTool.unsafeGetState());
+             })
+           ); */
       });
-
 
       describe("restore material record to target state", () => {
         describe("test basic material", () =>
