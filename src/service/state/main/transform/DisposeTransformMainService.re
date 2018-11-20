@@ -109,7 +109,10 @@ let handleBatchDisposeComponent =
       IsDebugMainService.getIsDebug(StateDataMain.stateData),
     );
     let {disposedIndexArray} as transformRecord =
-      state |> RecordTransformMainService.getRecord;
+      state
+      |> RecordTransformMainService.getRecord
+      |> RecordTransformMainService.markAllDirtyForRestore(true);
+
     transformRecord.disposedIndexArray =
       disposedIndexArray |> Js.Array.concat(transformArray);
     /* let transformRecord = {

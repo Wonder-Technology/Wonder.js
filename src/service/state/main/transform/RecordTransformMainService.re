@@ -262,6 +262,10 @@ let _createForWorker =
         WonderCommonlib.SparseMapService.createEmpty(),
       normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+      isParentMapDirtyForDeepCopy: true,
+      isChildMapForDeepCopy: true,
+      isGameObjectMapForDeepCopy: true,
+      isDirtyMapForDeepCopy: true,
     });
   state;
 };
@@ -316,6 +320,10 @@ let _createForNoWorker =
         WonderCommonlib.SparseMapService.createEmpty(),
       normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+      isParentMapDirtyForDeepCopy: true,
+      isChildMapForDeepCopy: true,
+      isGameObjectMapForDeepCopy: true,
+      isDirtyMapForDeepCopy: true,
     });
   state;
 };
@@ -417,6 +425,18 @@ let getLocalScalesEndIndex = index => index * getLocalScalesSize();
 let getLocalToWorldMatricesEndIndex = index =>
   index * getLocalToWorldMatricesSize();
 
+let markAllDirtyForRestore = (isDirty, record) => {
+  record.isParentMapDirtyForDeepCopy = isDirty;
+  record.isChildMapForDeepCopy = isDirty;
+  record.isGameObjectMapForDeepCopy = isDirty;
+  record.isDirtyMapForDeepCopy = isDirty;
+
+  record;
+};
+
+let _markSourceRecordNotDirty = sourceRecord =>
+  markAllDirtyForRestore(false, sourceRecord) |> ignore;
+
 let deepCopyForRestore = state => {
   let {
         index,
@@ -435,45 +455,63 @@ let deepCopyForRestore = state => {
         dirtyMap,
         gameObjectMap,
         disposedIndexArray,
+        isParentMapDirtyForDeepCopy,
+        isChildMapForDeepCopy,
+        isGameObjectMapForDeepCopy,
+        isDirtyMapForDeepCopy,
       } as record =
     state |> getRecord;
+
+  _markSourceRecordNotDirty(record);
+
   {
     ...state,
     transformRecord:
-      Some({
-        ...record,
-        copiedLocalToWorldMatricesForRestore:
-          _fillToCopiedData(
-            localToWorldMatrices,
-            copiedLocalToWorldMatricesForRestore,
-            getLocalToWorldMatricesEndIndex(index),
-          ),
-        copiedLocalPositionsForRestore:
-          _fillToCopiedData(
-            localPositions,
-            copiedLocalPositionsForRestore,
-            getLocalPositionsEndIndex(index),
-          ),
-        copiedLocalRotationsForRestore:
-          _fillToCopiedData(
-            localRotations,
-            copiedLocalRotationsForRestore,
-            getLocalRotationsEndIndex(index),
-          ),
-        copiedLocalScalesForRestore:
-          _fillToCopiedData(
-            localScales,
-            copiedLocalScalesForRestore,
-            getLocalScalesEndIndex(index),
-          ),
-        localToWorldMatrixCacheMap:
-          WonderCommonlib.SparseMapService.createEmpty(),
-        normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
-        parentMap: parentMap |> SparseMapService.copy,
-        childMap: childMap |> CopyTypeArrayService.deepCopyArrayArray,
-        dirtyMap: dirtyMap |> SparseMapService.copy,
-        gameObjectMap: gameObjectMap |> SparseMapService.copy,
-        disposedIndexArray: disposedIndexArray |> Js.Array.copy,
-      }),
+      Some(
+        {
+          ...record,
+          copiedLocalToWorldMatricesForRestore:
+            _fillToCopiedData(
+              localToWorldMatrices,
+              copiedLocalToWorldMatricesForRestore,
+              getLocalToWorldMatricesEndIndex(index),
+            ),
+          copiedLocalPositionsForRestore:
+            _fillToCopiedData(
+              localPositions,
+              copiedLocalPositionsForRestore,
+              getLocalPositionsEndIndex(index),
+            ),
+          copiedLocalRotationsForRestore:
+            _fillToCopiedData(
+              localRotations,
+              copiedLocalRotationsForRestore,
+              getLocalRotationsEndIndex(index),
+            ),
+          copiedLocalScalesForRestore:
+            _fillToCopiedData(
+              localScales,
+              copiedLocalScalesForRestore,
+              getLocalScalesEndIndex(index),
+            ),
+          localToWorldMatrixCacheMap:
+            WonderCommonlib.SparseMapService.createEmpty(),
+          normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
+          parentMap:
+            isParentMapDirtyForDeepCopy ?
+              parentMap |> SparseMapService.copy : parentMap,
+          childMap:
+            isChildMapForDeepCopy ?
+              childMap |> CopyTypeArrayService.deepCopyArrayArray : childMap,
+          dirtyMap:
+            isDirtyMapForDeepCopy ?
+              dirtyMap |> SparseMapService.copy : dirtyMap,
+          gameObjectMap:
+            isGameObjectMapForDeepCopy ?
+              gameObjectMap |> SparseMapService.copy : gameObjectMap,
+          disposedIndexArray: disposedIndexArray |> Js.Array.copy,
+        }
+        |> markAllDirtyForRestore(false),
+      ),
   };
 };

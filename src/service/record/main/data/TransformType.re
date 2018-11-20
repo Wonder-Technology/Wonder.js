@@ -34,6 +34,10 @@ type transformRecord = {
   mutable childMap: transformChildMap,
   mutable gameObjectMap,
   mutable dirtyMap: transformDirtyMap,
+  mutable isParentMapDirtyForDeepCopy: bool,
+  mutable isChildMapForDeepCopy: bool,
+  mutable isGameObjectMapForDeepCopy: bool,
+  mutable isDirtyMapForDeepCopy: bool,
   mutable localToWorldMatrixCacheMap:
     WonderCommonlib.SparseMapService.t(Js.Typed_array.Float32Array.t),
   mutable normalMatrixCacheMap:

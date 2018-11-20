@@ -11,6 +11,7 @@ let getParent = (transform: transform, record) =>
 
 let removeFromParentMap = (child: int, record) => {
   ...record,
+  isParentMapDirtyForDeepCopy: true,
   parentMap:
     WonderCommonlib.SparseMapService.deleteVal(
       child,
@@ -42,6 +43,7 @@ let unsafeGetChildren = (transform: transform, record) =>
 
 let _setChildren = (record, parent, children) => {
   ...record,
+  isChildMapForDeepCopy: true,
   childMap:
     WonderCommonlib.SparseMapService.set(parent, children, record.childMap),
 };
@@ -53,7 +55,9 @@ let _removeChild = (child: int, isKeepOrder, children: array(transform)) =>
     children,
   );
 
-let removeFromChildMap = (parent: int, child: int, isKeepOrder, record) =>
+let removeFromChildMap = (parent: int, child: int, isKeepOrder, record) => {
+  record.isChildMapForDeepCopy = true;
+
   isKeepOrder ?
     unsafeGetChildren(parent, record)
     |> Js.Array.filter(transform => transform !== child)
@@ -64,14 +68,16 @@ let removeFromChildMap = (parent: int, child: int, isKeepOrder, record) =>
       |> ignore;
       record;
     };
+};
 
 let _removeFromParent =
     (currentParent: int, child: transform, isKeepOrder, record) =>
   removeFromParentMap(child, record)
   |> removeFromChildMap(currentParent, child, isKeepOrder);
 
-let _setParent = (parent: transform, child: int, record) => {
+let _setToParentMap = (parent: transform, child: int, record) => {
   ...record,
+  isParentMapDirtyForDeepCopy: true,
   parentMap:
     WonderCommonlib.SparseMapService.set(
       child,
@@ -81,7 +87,10 @@ let _setParent = (parent: transform, child: int, record) => {
 };
 
 let _addChild = (parent: int, child: transform, record) => {
+  record.isChildMapForDeepCopy = true;
+
   unsafeGetChildren(parent, record) |> Js.Array.push(child) |> ignore;
+
   record;
 };
 
@@ -112,10 +121,10 @@ let addToParent = (parent: transform, child: transform, record) => {
     },
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  _setParent(parent, child, record) |> _addChild(parent, child);
+  _setToParentMap(parent, child, record) |> _addChild(parent, child);
 };
 
-let rec markHierachyDirty = (transform: transform, {dirtyMap} as record) =>
+let rec markHierachyDirty = (transform: transform, record) =>
   record
   |> DirtyTransformService.mark(transform, true)
   |> unsafeGetChildren(transform)
