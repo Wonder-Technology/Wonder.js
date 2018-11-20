@@ -8,16 +8,12 @@ let isAlive = (material, disposedIndexArray) =>
 let addDisposeIndex = (material, disposedIndexArray) =>
   disposedIndexArray |> ArrayService.push(material);
 
-let disposeData =
-    (material, (shaderIndices, groupCountMap), defaultShaderIndex) => (
+let disposeData = (material, shaderIndices, defaultShaderIndex) =>
   DisposeTypeArrayService.deleteAndResetUint32(.
     ShaderIndicesService.getShaderIndexIndex(material),
     defaultShaderIndex,
     shaderIndices,
-  ),
-  groupCountMap |> WonderCommonlib.SparseMapService.set(material, 0),
-  /* disposeSparseMapData(material, gameObjectMap) */
-);
+  );
 
 /* let handleBatchDisposeComponent =
        (

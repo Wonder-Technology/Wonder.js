@@ -12,7 +12,6 @@ type basicMaterialRecord = {
   emptyMapUnitArrayMap: WonderCommonlib.SparseMapService.t(array(int)),
   defaultColor: array(float),
   gameObjectsMap,
-  groupCountMap,
   disposedIndexArray,
   nameMap: WonderCommonlib.SparseMapService.t(string),
   mutable materialArrayForWorkerInit: array(int),

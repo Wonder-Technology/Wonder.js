@@ -24,7 +24,6 @@ type lightMaterialRecord = {
   defaultSpecularColor: array(float),
   defaultShininess: float,
   gameObjectsMap,
-  groupCountMap,
   disposedIndexArray,
   nameMap: WonderCommonlib.SparseMapService.t(string),
   mutable materialArrayForWorkerInit: array(int),

@@ -32,14 +32,13 @@ let _disposeData =
         defaultSpecularColor,
         defaultShininess,
         nameMap,
-        groupCountMap,
         gameObjectsMap,
       } as lightMaterialRecord,
     ) => {
-  let (shaderIndices, groupCountMap) =
+  let shaderIndices =
     DisposeMaterialService.disposeData(
       material,
-      (shaderIndices, groupCountMap),
+      shaderIndices,
       DefaultTypeArrayValueService.getDefaultShaderIndex(),
     );
 
@@ -87,7 +86,6 @@ let _disposeData =
     emptyMapUnitArrayMap:
       emptyMapUnitArrayMap |> disposeSparseMapData(material),
     nameMap: nameMap |> disposeSparseMapData(material),
-    groupCountMap,
     gameObjectsMap:
       GameObjectsMapService.removeGameObject(
         gameObject,
