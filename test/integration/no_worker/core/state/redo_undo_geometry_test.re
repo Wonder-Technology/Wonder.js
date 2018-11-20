@@ -85,7 +85,11 @@ let _ =
         |> GeometryAPI.setGeometryIndices(geometry2, indices2)
         |> GeometryAPI.setGeometryIndices32(geometry2, indices32_2);
 
-      ((currentState, copiedState), (geometry1, geometry2, geometry3));
+      (
+        (currentState, copiedState),
+        (geometry1, geometry2, geometry3),
+        (vertices1, texCoords1, normals1, indices1, indices32_1),
+      );
     };
 
     beforeEach(() => {
@@ -162,7 +166,7 @@ let _ =
       test("test restore point data typeArrays", () => {
         open GeometryType;
 
-        let ((currentState, copiedState), _) = _prepare();
+        let ((currentState, copiedState), _, _) = _prepare();
         let restoredState = MainStateTool.restore(currentState, copiedState);
 
         let {vertices, texCoords, normals, indices, indices32} =
@@ -204,7 +208,11 @@ let _ =
       });
 
       test("test restore point info typeArrays", () => {
-        let ((currentState, copiedState), (geometry1, geometry2, geometry3)) =
+        let (
+          (currentState, copiedState),
+          (geometry1, geometry2, geometry3),
+          _,
+        ) =
           _prepare();
         let restoredState = MainStateTool.restore(currentState, copiedState);
 
@@ -231,11 +239,14 @@ let _ =
           |> GeometryAPI.getGeometryNormals(geometry3)
           |> Float32Array.length,
         )
-        /* |> expect == (6, 6, 4, 3, 0, 0); */
-        |> expect == (6, 6, 4, 3, 9, 9);
+        |> expect == (6, 6, 4, 3, 0, 0);
       });
       test("test set point after restore", () => {
-        let ((currentState, copiedState), (geometry1, geometry2, geometry3)) =
+        let (
+          (currentState, copiedState),
+          (geometry1, geometry2, geometry3),
+          _,
+        ) =
           _prepare();
         let restoredState = MainStateTool.restore(currentState, copiedState);
 
@@ -249,7 +260,11 @@ let _ =
         vertices |> expect == vertices3;
       });
       test("test create geometry and set point after restore", () => {
-        let ((currentState, copiedState), (geometry1, geometry2, geometry3)) =
+        let (
+          (currentState, copiedState),
+          (geometry1, geometry2, geometry3),
+          _,
+        ) =
           _prepare();
 
         let restoredState = MainStateTool.restore(currentState, copiedState);
@@ -275,15 +290,53 @@ let _ =
           GeometryAPI.getGeometryIndices(geometry4, restoredState),
           GeometryAPI.getGeometryIndices32(geometry4, restoredState),
         )
-        |>
-        expect == (
-                    /* false,
-                       false, */
-                    vertices,
-                    Uint16Array.make([|0, 1, 2|]),
-                    indices32,
-                  );
+        |> expect == (vertices, Uint16Array.make([|0, 1, 2|]), indices32);
       });
+
+      describe("test reallocate geometry", () =>
+        test("test restore after reallocate", () => {
+          let (
+            (currentState, copiedState),
+            (geometry1, geometry2, geometry3),
+            (vertices1, texCoords1, normals1, indices1, indices32_1),
+          ) =
+            _prepare();
+          let gameObject1 =
+            GeometryAPI.unsafeGetGeometryGameObjects(geometry1, currentState)
+            |> ArrayService.unsafeGetFirst;
+          let currentState =
+            SettingTool.setMemory(currentState, ~maxDisposeCount=1, ());
+
+          let currentState =
+            currentState
+            |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
+                 gameObject1,
+                 geometry1,
+               );
+          let restoredState =
+            MainStateTool.restore(currentState, copiedState);
+
+          (
+            restoredState |> GeometryAPI.getGeometryVertices(geometry1),
+            restoredState |> GeometryAPI.getGeometryNormals(geometry1),
+            restoredState |> GeometryAPI.getGeometryTexCoords(geometry1),
+            restoredState |> GeometryAPI.getGeometryIndices(geometry1),
+            restoredState |> GeometryAPI.getGeometryIndices32(geometry1),
+            restoredState |> GeometryAPI.hasGeometryVertices(geometry2),
+            restoredState |> GeometryAPI.hasGeometryNormals(geometry3),
+          )
+          |>
+          expect == (
+                      vertices1,
+                      normals1,
+                      texCoords1,
+                      indices1,
+                      indices32_1,
+                      false,
+                      false,
+                    );
+        })
+      );
     });
 
     describe("optimize: if point data not dirty, not restore typeArrays", () => {
@@ -292,7 +345,11 @@ let _ =
         () => {
         open GeometryType;
 
-        let ((currentState, copiedState), (geometry1, geometry2, geometry3)) =
+        let (
+          (currentState, copiedState),
+          (geometry1, geometry2, geometry3),
+          _,
+        ) =
           _prepare();
 
         let restoredState1 = MainStateTool.restore(currentState, copiedState);
@@ -313,6 +370,7 @@ let _ =
         let (
           (currentState, copiedState1),
           (geometry1, geometry2, geometry3),
+          _,
         ) =
           _prepare();
 
@@ -332,7 +390,11 @@ let _ =
         "when deepCopy, copied state->isPointDataDirtyForRestore to false", () => {
         open GeometryType;
 
-        let ((currentState, copiedState), (geometry1, geometry2, geometry3)) =
+        let (
+          (currentState, copiedState),
+          (geometry1, geometry2, geometry3),
+          _,
+        ) =
           _prepare();
 
         GeometryTool.isPointDataDirtyForRestore(copiedState)

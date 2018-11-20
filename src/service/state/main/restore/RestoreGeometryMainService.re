@@ -16,18 +16,16 @@ let _restoreTypeArrays =
   && currentGeometryRecord.indicesInfos === targetGeometryRecord.indicesInfos ?
     (currentGeometryRecord, targetGeometryRecord) :
     {
-      /* let (vertices, texCoords, normals, indices, indices32) =
-         RecordGeometryMainService.setAllTypeArrDataToDefault(
-           currentGeometryRecord.index,
-           geometryPointCount,
-           (
-             currentGeometryRecord.vertices,
-             currentGeometryRecord.texCoords,
-             currentGeometryRecord.normals,
-             currentGeometryRecord.indices,
-             currentGeometryRecord.indices32,
-           ),
-         ); */
+      let (verticesInfos, texCoordsInfos, normalsInfos, indicesInfos) =
+        RecordGeometryMainService.setAllInfosDataToDefault(
+          currentGeometryRecord.index,
+          (
+            currentGeometryRecord.verticesInfos,
+            currentGeometryRecord.texCoordsInfos,
+            currentGeometryRecord.normalsInfos,
+            currentGeometryRecord.indicesInfos,
+          ),
+        );
 
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (currentGeometryRecord.vertices, 0),
@@ -60,19 +58,19 @@ let _restoreTypeArrays =
       )
       |> ignore;
       TypeArrayService.fillUint32ArrayWithUint32Array(
-        (currentGeometryRecord.verticesInfos, 0),
+        (verticesInfos, 0),
         (targetGeometryRecord.verticesInfos, 0),
         Js.Typed_array.Uint32Array.length(targetGeometryRecord.verticesInfos),
       )
       |> ignore;
       TypeArrayService.fillUint32ArrayWithUint32Array(
-        (currentGeometryRecord.normalsInfos, 0),
+        (normalsInfos, 0),
         (targetGeometryRecord.normalsInfos, 0),
         Js.Typed_array.Uint32Array.length(targetGeometryRecord.normalsInfos),
       )
       |> ignore;
       TypeArrayService.fillUint32ArrayWithUint32Array(
-        (currentGeometryRecord.texCoordsInfos, 0),
+        (texCoordsInfos, 0),
         (targetGeometryRecord.texCoordsInfos, 0),
         Js.Typed_array.Uint32Array.length(
           targetGeometryRecord.texCoordsInfos,
@@ -80,7 +78,7 @@ let _restoreTypeArrays =
       )
       |> ignore;
       TypeArrayService.fillUint32ArrayWithUint32Array(
-        (currentGeometryRecord.indicesInfos, 0),
+        (indicesInfos, 0),
         (targetGeometryRecord.indicesInfos, 0),
         Js.Typed_array.Uint32Array.length(targetGeometryRecord.indicesInfos),
       )

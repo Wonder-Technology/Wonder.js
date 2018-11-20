@@ -47,6 +47,37 @@ let getRecord = ({geometryRecord}) =>
         ),
    ); */
 
+let setAllInfosDataToDefault =
+    (
+      geometryCount: int,
+      (verticesInfos, texCoordsInfos, normalsInfos, indicesInfos),
+    ) => (
+  verticesInfos
+  |> Js.Typed_array.Uint32Array.fillRangeInPlace(
+       0,
+       ~start=0,
+       ~end_=geometryCount * BufferGeometryService.getInfoSize(),
+     ),
+  texCoordsInfos
+  |> Js.Typed_array.Uint32Array.fillRangeInPlace(
+       0,
+       ~start=0,
+       ~end_=geometryCount * BufferGeometryService.getInfoSize(),
+     ),
+  normalsInfos
+  |> Js.Typed_array.Uint32Array.fillRangeInPlace(
+       0,
+       ~start=0,
+       ~end_=geometryCount * BufferGeometryService.getInfoSize(),
+     ),
+  indicesInfos
+  |> Js.Typed_array.Uint32Array.fillRangeInPlace(
+       0,
+       ~start=0,
+       ~end_=geometryCount * BufferGeometryService.getInfoSize(),
+     ),
+);
+
 let _initBufferData = (geometryPointCount, geometryCount) => {
   let buffer = createBuffer(geometryPointCount, geometryCount);
   let (

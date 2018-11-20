@@ -1,3 +1,5 @@
+open StateDataMainType;
+
 let prepareForOptimize = state => {
   let state = SettingTool.setMemory(state^, ~maxDisposeCount=1, ());
   let (
@@ -65,4 +67,13 @@ let judgeForOptimize =
     )
     |> expect == (vertices3, texCoords3, normals3, indices3, indices32_3)
   );
+};
+
+let reAllocate = state => {
+  ...state,
+  geometryRecord:
+    ReallocateGeometryCPUMemoryService.reAllocate(
+      GeometryTool.getRecord(state),
+    )
+    |. Some,
 };
