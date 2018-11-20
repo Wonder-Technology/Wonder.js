@@ -59,6 +59,9 @@ let handleBatchDisposeComponent =
       IsDebugMainService.getIsDebug(StateDataMain.stateData),
     );
 
+    let record =
+      RecordMeshRendererMainService.markAllDirtyForRestore(true, record);
+
     switch (meshRendererArray |> Js.Array.length) {
     | 0 => record
     | _ =>

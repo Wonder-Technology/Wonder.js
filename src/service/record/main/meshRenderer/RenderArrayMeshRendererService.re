@@ -12,6 +12,8 @@ let removeFromRenderGameObjectMap =
       {basicMaterialRenderGameObjectMap, lightMaterialRenderGameObjectMap} as meshRendererRecord,
     ) => {
   ...meshRendererRecord,
+  isBasicMaterialRenderGameObjectMapForDeepCopy: true,
+  isLightMaterialRenderGameObjectMapForDeepCopy: true,
   basicMaterialRenderGameObjectMap:
     basicMaterialRenderGameObjectMap
     |> Obj.magic

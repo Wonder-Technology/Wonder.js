@@ -67,3 +67,13 @@ let getDefaultIsRender = () =>
 
 let getDefaultIsRenderUint8 = () =>
   BufferMeshRendererService.getDefaultIsRender();
+
+let markAllDirtyForRestore = (isDirty, state) => {
+  ...state,
+  meshRendererRecord:
+    RecordMeshRendererMainService.markAllDirtyForRestore(
+      isDirty,
+      getRecord(state),
+    )
+    |. Some,
+};

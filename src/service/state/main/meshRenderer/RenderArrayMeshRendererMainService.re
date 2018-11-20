@@ -21,6 +21,8 @@ let addToRenderGameObjectMap =
       gameObjectRecord,
     ) => {
   ...meshRendererRecord,
+  isBasicMaterialRenderGameObjectMapForDeepCopy: true,
+  isLightMaterialRenderGameObjectMapForDeepCopy: true,
   basicMaterialRenderGameObjectMap:
     HasComponentGameObjectService.hasBasicMaterialComponent(
       gameObjectUid,
