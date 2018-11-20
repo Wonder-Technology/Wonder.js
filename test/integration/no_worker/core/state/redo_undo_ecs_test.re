@@ -291,86 +291,86 @@ let _ =
       };
       describe("deep copy transform record", () => {
         /* test("copy localToWorldMatrices", () =>
-          _testCopyTypeArraySingleValue(
-            (
-              GameObjectTool.createGameObject,
-              TransformTool.getLocalToWorldMatrix,
-              TransformTool.setLocalToWorldMatrix,
-              () => (
-                [|
-                  2.,
-                  0.,
-                  0.,
-                  0.,
-                  0.,
-                  1.,
-                  0.,
-                  0.,
-                  0.,
-                  0.,
-                  1.,
-                  0.,
-                  0.,
-                  0.,
-                  0.,
-                  1.,
-                |],
-                [|
-                  3.,
-                  1.,
-                  0.,
-                  0.,
-                  0.,
-                  1.,
-                  0.,
-                  0.,
-                  0.,
-                  0.,
-                  1.,
-                  0.,
-                  0.,
-                  0.,
-                  0.,
-                  1.,
-                |],
-              ),
-            ),
-            state,
-          )
-        );
-        test("copy localPositions", () =>
-          _testCopyTypeArraySingleValue(
-            (
-              GameObjectTool.createGameObject,
-              TransformAPI.getTransformLocalPosition,
-              TransformAPI.setTransformLocalPosition,
-              () => ((2., 0., 0.), (3., 1., 2.)),
-            ),
-            state,
-          )
-        );
-        test("copy localRotations", () =>
-          _testCopyTypeArraySingleValue(
-            (
-              GameObjectTool.createGameObject,
-              TransformAPI.getTransformLocalRotation,
-              TransformAPI.setTransformLocalRotation,
-              () => ((2., 0., 0., 1.), (3., 1., 2., 1.)),
-            ),
-            state,
-          )
-        );
-        test("copy localScales", () =>
-          _testCopyTypeArraySingleValue(
-            (
-              GameObjectTool.createGameObject,
-              TransformAPI.getTransformLocalScale,
-              TransformAPI.setTransformLocalScale,
-              () => ((2., 0., 0.), (3., 1., 2.)),
-            ),
-            state,
-          )
-        ); */
+             _testCopyTypeArraySingleValue(
+               (
+                 GameObjectTool.createGameObject,
+                 TransformTool.getLocalToWorldMatrix,
+                 TransformTool.setLocalToWorldMatrix,
+                 () => (
+                   [|
+                     2.,
+                     0.,
+                     0.,
+                     0.,
+                     0.,
+                     1.,
+                     0.,
+                     0.,
+                     0.,
+                     0.,
+                     1.,
+                     0.,
+                     0.,
+                     0.,
+                     0.,
+                     1.,
+                   |],
+                   [|
+                     3.,
+                     1.,
+                     0.,
+                     0.,
+                     0.,
+                     1.,
+                     0.,
+                     0.,
+                     0.,
+                     0.,
+                     1.,
+                     0.,
+                     0.,
+                     0.,
+                     0.,
+                     1.,
+                   |],
+                 ),
+               ),
+               state,
+             )
+           );
+           test("copy localPositions", () =>
+             _testCopyTypeArraySingleValue(
+               (
+                 GameObjectTool.createGameObject,
+                 TransformAPI.getTransformLocalPosition,
+                 TransformAPI.setTransformLocalPosition,
+                 () => ((2., 0., 0.), (3., 1., 2.)),
+               ),
+               state,
+             )
+           );
+           test("copy localRotations", () =>
+             _testCopyTypeArraySingleValue(
+               (
+                 GameObjectTool.createGameObject,
+                 TransformAPI.getTransformLocalRotation,
+                 TransformAPI.setTransformLocalRotation,
+                 () => ((2., 0., 0., 1.), (3., 1., 2., 1.)),
+               ),
+               state,
+             )
+           );
+           test("copy localScales", () =>
+             _testCopyTypeArraySingleValue(
+               (
+                 GameObjectTool.createGameObject,
+                 TransformAPI.getTransformLocalScale,
+                 TransformAPI.setTransformLocalScale,
+                 () => ((2., 0., 0.), (3., 1., 2.)),
+               ),
+               state,
+             )
+           ); */
         test("deep copy childMap", () => {
           open TransformType;
           let (
@@ -1005,7 +1005,7 @@ let _ =
       });
       describe("deep copy gameObject record", () =>
         test(
-          "shadow copy nameMap, disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,
+          "shadow copy disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,
 
           disposedUidArrayForKeepOrderRemoveGeometry,
           disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
@@ -1016,7 +1016,6 @@ let _ =
               MainStateTool.testShadowCopyArrayLikeMapData(
                 state => {
                   let {
-                    nameMap,
                     disposedUidMap,
                     disposedUidArray,
                     disposedUidArrayForKeepOrder,
@@ -1048,7 +1047,6 @@ let _ =
                   } =
                     GameObjectTool.getGameObjectRecord(state);
                   [|
-                    nameMap |> Obj.magic,
                     disposedUidMap |> Obj.magic,
                     disposedUidArray |> Obj.magic,
                     disposedUidArrayForKeepOrder |> Obj.magic,

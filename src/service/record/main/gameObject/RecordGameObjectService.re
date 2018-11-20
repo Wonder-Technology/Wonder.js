@@ -50,7 +50,6 @@ let deepCopyForRestore =
     (
       {
         uid,
-        nameMap,
         disposeCount,
         disposedUidMap,
         disposedUidArray,
@@ -88,7 +87,6 @@ let deepCopyForRestore =
     ) => {
   ...record,
   uid,
-  nameMap: nameMap |> SparseMapService.copy,
   disposeCount,
   disposedUidMap: disposedUidMap |> SparseMapService.copy,
   disposedUidArray: disposedUidArray |> SparseMapService.copy,

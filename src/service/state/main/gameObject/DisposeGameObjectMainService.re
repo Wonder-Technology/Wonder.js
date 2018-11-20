@@ -2,19 +2,16 @@ open StateDataMainType;
 
 open GameObjectType;
 
-let _disposeNameMap = (uidArray, {gameObjectRecord} as state) => {
-  gameObjectRecord.nameMap =
+let _disposeNameMap = (uidArray, state) =>
+  NameGameObjectMainService.setNameMap(
     uidArray
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. nameMap, uid) =>
            nameMap |> DisposeComponentService.disposeSparseMapData(uid),
-         gameObjectRecord.nameMap,
-       );
-
-  state.gameObjectRecord = gameObjectRecord;
-
-  state;
-};
+         NameGameObjectMainService.getCopiedNameMap(state),
+       ),
+    state,
+  );
 
 let _setDisposedUidMap = (uidArray, {gameObjectRecord} as state) => {
   ...state,

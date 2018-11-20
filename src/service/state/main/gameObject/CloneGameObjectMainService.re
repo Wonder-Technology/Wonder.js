@@ -29,15 +29,15 @@ let _setParent =
        transformRecord,
      );
 
-let _setGameObjectName = (sourceGameObject, clonedGameObjectArr, state) =>
-  switch (NameGameObjectMainService.getName(sourceGameObject, state)) {
-  | None => state
+let _setGameObjectName = (sourceGameObject, clonedGameObjectArr, nameMap) =>
+  switch (NameService.getName(sourceGameObject, nameMap)) {
+  | None => nameMap
   | Some(name) =>
     clonedGameObjectArr
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. state, clonedGameObject) =>
-           NameGameObjectMainService.setName(. clonedGameObject, name, state),
-         state,
+         (. nameMap, clonedGameObject) =>
+           NameService.setName(clonedGameObject, name, nameMap),
+         nameMap,
        )
   };
 
@@ -51,12 +51,13 @@ let rec _clone =
             totalClonedGameObjectArr,
           ),
           isShareMaterial,
+          nameMap,
           state: StateDataMainType.state,
         ) => {
   let (gameObjectRecord, clonedGameObjectArr) =
     _createGameObjectArr(countRangeArr, state.gameObjectRecord);
 
-  let state = _setGameObjectName(uid, clonedGameObjectArr, state);
+  let nameMap = _setGameObjectName(uid, clonedGameObjectArr, nameMap);
 
   let totalClonedGameObjectArr =
     totalClonedGameObjectArr |> ArrayService.push(clonedGameObjectArr);
@@ -78,8 +79,8 @@ let rec _clone =
   state
   |> RecordTransformMainService.getRecord
   |> HierachyTransformService.unsafeGetChildren(transform)
-  |> ReduceStateMainService.reduceState(
-       (. state, childTransform) =>
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. (nameMap, state), childTransform) =>
          state
          |> _clone(
               (
@@ -94,8 +95,9 @@ let rec _clone =
                 totalClonedGameObjectArr,
               ),
               isShareMaterial,
+              nameMap,
             ),
-       state,
+       (nameMap, state),
      );
 };
 
@@ -145,7 +147,7 @@ let clone =
   );
   let totalClonedGameObjectArr = [||];
 
-  (
+  let (nameMap, state) =
     _clone(
       (
         uid,
@@ -159,8 +161,12 @@ let clone =
         totalClonedGameObjectArr,
       ),
       isShareMaterial,
+      NameGameObjectMainService.getCopiedNameMap(state),
       state,
-    ),
+    );
+
+  (
+    NameGameObjectMainService.setNameMap(nameMap, state),
     totalClonedGameObjectArr,
   );
 };

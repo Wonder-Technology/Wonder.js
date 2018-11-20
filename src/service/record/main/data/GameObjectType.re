@@ -53,7 +53,7 @@ type geometryData = (gameObject, geometry);
 
 type gameObjectRecord = {
   mutable uid: int,
-  mutable nameMap: WonderCommonlib.SparseMapService.t(string),
+  nameMap: WonderCommonlib.SparseMapService.t(string),
   mutable disposeCount: int,
   mutable disposedUidMap: gameObjectDisposedUidMap,
   mutable disposedUidArray: array(int),
