@@ -61,9 +61,11 @@ let _ =
         (vertices1, texCoords1, normals1, indices1, indices32_1),
       ) =
         _createGameObjectAndSetPointData(state);
+
       let state =
         state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
       let copiedState = MainStateTool.deepCopyForRestore(state);
+
       let (currentState, gameObject2, geometry2) =
         GeometryTool.createGameObject(state);
       let (currentState, gameObject3, geometry3) =
@@ -78,7 +80,7 @@ let _ =
       let currentState =
         currentState
         |> GeometryAPI.setGeometryVertices(geometry2, vertices2)
-        |> GeometryAPI.setGeometryTexCoords(geometry2, texCoords2)
+        |> GeometryAPI.setGeometryTexCoords(geometry1, texCoords2)
         |> GeometryAPI.setGeometryNormals(geometry3, normals2)
         |> GeometryAPI.setGeometryIndices(geometry2, indices2)
         |> GeometryAPI.setGeometryIndices32(geometry2, indices32_2);

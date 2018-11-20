@@ -27,16 +27,23 @@ let hasNormals = (index, state) => {
 
 let setNormalsByTypeArray = (index: int, data: Float32Array.t, state) => {
   let {normalsInfos, normals, normalsOffset} as record = getRecord(state);
-  record.normalsOffset =
-    setFloat32PointData(
-      (
-        BufferGeometryService.getInfoIndex(index),
-        normalsInfos,
-        normalsOffset,
-        Float32Array.length(data),
-      ),
-      fillFloat32ArrayWithOffset(normals, data),
-    );
   record.isPointDataDirtyForRestore = true;
-  state;
+
+  {
+    ...state,
+    geometryRecord:
+      Some({
+        ...record,
+        normalsOffset:
+          setFloat32PointData(
+            (
+              BufferGeometryService.getInfoIndex(index),
+              normalsInfos,
+              normalsOffset,
+              Float32Array.length(data),
+            ),
+            fillFloat32ArrayWithOffset(normals, data),
+          ),
+      }),
+  };
 };

@@ -40,13 +40,50 @@ let getIndices32Offset = geometryPointCount =>
   + getIndicesLength(geometryPointCount)
   * Uint16Array._BYTES_PER_ELEMENT;
 
+let getCopiedVertexLength = geometryPointCount =>
+  geometryPointCount * getVertexSize();
+
+let getCopiedVerticesOffset = geometryPointCount =>
+  getIndices32Offset(geometryPointCount)
+  + getIndices32Length(geometryPointCount)
+  * Uint32Array._BYTES_PER_ELEMENT;
+
+let getCopiedTexCoordsLength = geometryPointCount =>
+  geometryPointCount * getTexCoordsSize();
+
+let getCopiedTexCoordsOffset = geometryPointCount =>
+  getCopiedVerticesOffset(geometryPointCount)
+  + getCopiedVertexLength(geometryPointCount)
+  * Float32Array._BYTES_PER_ELEMENT;
+
+let getCopiedNormalsOffset = geometryPointCount =>
+  getCopiedTexCoordsOffset(geometryPointCount)
+  + getCopiedTexCoordsLength(geometryPointCount)
+  * Float32Array._BYTES_PER_ELEMENT;
+
+let getCopiedIndicesLength = geometryPointCount =>
+  geometryPointCount * getIndexSize();
+
+let getCopiedIndicesOffset = geometryPointCount =>
+  getCopiedNormalsOffset(geometryPointCount)
+  + getVertexLength(geometryPointCount)
+  * Float32Array._BYTES_PER_ELEMENT;
+
+let getCopiedIndices32Length = geometryPointCount =>
+  geometryPointCount * getIndexSize();
+
+let getCopiedIndices32Offset = geometryPointCount =>
+  getCopiedIndicesOffset(geometryPointCount)
+  + getCopiedIndicesLength(geometryPointCount)
+  * Uint16Array._BYTES_PER_ELEMENT;
+
 let getInfoSize = () => 2;
 
 let getVerticesInfosLength = geometryCount => geometryCount * getInfoSize();
 
 let getVerticesInfosOffset = geometryPointCount =>
-  getIndices32Offset(geometryPointCount)
-  + getIndices32Length(geometryPointCount)
+  getCopiedIndices32Offset(geometryPointCount)
+  + getCopiedIndices32Length(geometryPointCount)
   * Uint32Array._BYTES_PER_ELEMENT;
 
 let getTexCoordsInfosLength = geometryCount => geometryCount * getInfoSize();
@@ -82,6 +119,15 @@ let getTotalByteLength = (geometryPointCount, geometryCount) =>
   geometryPointCount
   * (
     Float32Array._BYTES_PER_ELEMENT
+    * getVertexSize()
+    * 2
+    + Float32Array._BYTES_PER_ELEMENT
+    * getTexCoordsSize()
+    + Uint16Array._BYTES_PER_ELEMENT
+    * getIndexSize()
+    + Uint32Array._BYTES_PER_ELEMENT
+    * getIndexSize()
+    + Float32Array._BYTES_PER_ELEMENT
     * getVertexSize()
     * 2
     + Float32Array._BYTES_PER_ELEMENT

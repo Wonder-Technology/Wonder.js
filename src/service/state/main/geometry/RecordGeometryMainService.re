@@ -55,6 +55,11 @@ let _initBufferData = (geometryPointCount, geometryCount) => {
     normals,
     indices,
     indices32,
+    copiedVertices,
+    copiedTexCoords,
+    copiedNormals,
+    copiedIndices,
+    copiedIndices32,
     verticesInfos,
     texCoordsInfos,
     normalsInfos,
@@ -72,6 +77,11 @@ let _initBufferData = (geometryPointCount, geometryCount) => {
     normals,
     indices,
     indices32,
+    copiedVertices,
+    copiedTexCoords,
+    copiedNormals,
+    copiedIndices,
+    copiedIndices32,
     verticesInfos,
     texCoordsInfos,
     normalsInfos,
@@ -90,6 +100,11 @@ let create = ({settingRecord} as state) => {
     normals,
     indices,
     indices32,
+    copiedVertices,
+    copiedTexCoords,
+    copiedNormals,
+    copiedIndices,
+    copiedIndices32,
     verticesInfos,
     texCoordsInfos,
     normalsInfos,
@@ -105,6 +120,11 @@ let create = ({settingRecord} as state) => {
       normals,
       indices,
       indices32,
+      copiedVertices,
+      copiedTexCoords,
+      copiedNormals,
+      copiedIndices,
+      copiedIndices32,
       verticesInfos,
       texCoordsInfos,
       normalsInfos,
@@ -130,6 +150,39 @@ let create = ({settingRecord} as state) => {
   state;
 };
 
+let _fillToCopiedVertexPoints = (sourcePoints, copiedPoints, pointOffset) => {
+  TypeArrayService.fillFloat32ArrayWithFloat32Array(
+    (copiedPoints, 0),
+    (sourcePoints, 0),
+    pointOffset,
+  )
+  |> ignore;
+
+  copiedPoints;
+};
+
+let _fillToCopiedIndices = (sourcePoints, copiedPoints, pointOffset) => {
+  TypeArrayService.fillUint16ArrayWithUint16Array(
+    (copiedPoints, 0),
+    (sourcePoints, 0),
+    pointOffset,
+  )
+  |> ignore;
+
+  copiedPoints;
+};
+
+let _fillToCopiedIndices32 = (sourcePoints, copiedPoints, pointOffset) => {
+  TypeArrayService.fillUint32ArrayWithUint32Array(
+    (copiedPoints, 0),
+    (sourcePoints, 0),
+    pointOffset,
+  )
+  |> ignore;
+
+  copiedPoints;
+};
+
 let deepCopyForRestore = state => {
   let {
         index,
@@ -138,6 +191,11 @@ let deepCopyForRestore = state => {
         normals,
         indices,
         indices32,
+        copiedVertices,
+        copiedTexCoords,
+        copiedNormals,
+        copiedIndices,
+        copiedIndices32,
         verticesOffset,
         texCoordsOffset,
         normalsOffset,
@@ -166,28 +224,20 @@ let deepCopyForRestore = state => {
         ...record,
         isPointDataDirtyForRestore: false,
         index,
-        vertices:
-          vertices
-          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(verticesOffset),
-        texCoords:
-          texCoords
-          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
-               texCoordsOffset,
-             ),
-        normals:
-          normals
-          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(normalsOffset),
-        indices:
-          indices
-          |> CopyTypeArrayService.copyUint16ArrayWithEndIndex(indicesOffset),
-        indices32:
-          indices32
-          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(indices32Offset),
-        verticesOffset,
-        texCoordsOffset,
-        normalsOffset,
-        indicesOffset,
-        indices32Offset,
+        copiedVertices:
+          _fillToCopiedVertexPoints(vertices, copiedVertices, verticesOffset),
+        copiedTexCoords:
+          _fillToCopiedVertexPoints(
+            texCoords,
+            copiedTexCoords,
+            texCoordsOffset,
+          ),
+        copiedNormals:
+          _fillToCopiedVertexPoints(normals, copiedNormals, normalsOffset),
+        copiedIndices:
+          _fillToCopiedIndices(indices, copiedIndices, indicesOffset),
+        copiedIndices32:
+          _fillToCopiedIndices32(indices32, copiedIndices32, indicesOffset),
         verticesInfos:
           verticesInfos
           |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(infosEndIndex),
