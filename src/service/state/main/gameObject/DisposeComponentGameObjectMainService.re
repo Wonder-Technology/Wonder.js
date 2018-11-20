@@ -10,6 +10,7 @@ let deferDisposeBasicCameraViewComponent =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
+      isBasicCameraViewMapDirtyForDeepCopy: true,
       basicCameraViewMap:
         _removeComponent(uid, gameObjectRecord.basicCameraViewMap),
       disposedBasicCameraViewArray:
@@ -23,6 +24,7 @@ let deferDisposePerspectiveCameraProjectionComponent =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
+      isPerspectiveCameraProjectionMapDirtyForDeepCopy: true,
       perspectiveCameraProjectionMap:
         _removeComponent(
           uid,
@@ -39,6 +41,7 @@ let deferDisposeArcballCameraControllerComponent =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
+      isArcballCameraControllerMapDirtyForDeepCopy: true,
       arcballCameraControllerMap:
         _removeComponent(uid, gameObjectRecord.arcballCameraControllerMap),
       disposedArcballCameraControllerArray:
@@ -52,6 +55,7 @@ let deferDisposeTransformComponent =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
+      isTransformMapDirtyForDeepCopy: true,
       transformMap: _removeComponent(uid, gameObjectRecord.transformMap),
       disposedTransformArray:
         gameObjectRecord.disposedTransformArray
@@ -64,6 +68,7 @@ let deferDisposeTransformComponentForKeepOrder =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
+      isTransformMapDirtyForDeepCopy: true,
       transformMap: _removeComponent(uid, gameObjectRecord.transformMap),
       disposedTransformArrayForKeepOrder:
         gameObjectRecord.disposedTransformArrayForKeepOrder
@@ -76,6 +81,7 @@ let deferDisposeBasicMaterialComponent =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
+      isBasicMaterialMapDirtyForDeepCopy: true,
       basicMaterialMap:
         _removeComponent(uid, gameObjectRecord.basicMaterialMap),
       disposedBasicMaterialDataArray:
@@ -89,6 +95,7 @@ let deferDisposeLightMaterialComponent =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
+      isLightMaterialMapDirtyForDeepCopy: true,
       lightMaterialMap:
         _removeComponent(uid, gameObjectRecord.lightMaterialMap),
       disposedLightMaterialDataArray:
@@ -102,6 +109,7 @@ let deferDisposeGeometryComponent =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
+      isGeometryMapDirtyForDeepCopy: true,
       geometryMap: _removeComponent(uid, gameObjectRecord.geometryMap),
       disposedGeometryDataArray:
         gameObjectRecord.disposedGeometryDataArray
@@ -114,6 +122,7 @@ let deferDisposeSourceInstanceComponent =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
+      isSourceInstanceMapDirtyForDeepCopy: true,
       sourceInstanceMap:
         _removeComponent(uid, gameObjectRecord.sourceInstanceMap),
       disposedSourceInstanceArray:
@@ -127,6 +136,7 @@ let deferDisposeObjectInstanceComponent =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
+      isObjectInstanceMapDirtyForDeepCopy: true,
       objectInstanceMap:
         _removeComponent(uid, gameObjectRecord.objectInstanceMap),
       disposedObjectInstanceArray:
@@ -140,6 +150,7 @@ let deferDisposeDirectionLightComponent =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
+      isDirectionLightMapDirtyForDeepCopy: true,
       directionLightMap:
         _removeComponent(uid, gameObjectRecord.directionLightMap),
       disposedDirectionLightArray:
@@ -153,6 +164,7 @@ let deferDisposePointLightComponent =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
+      isPointLightMapDirtyForDeepCopy: true,
       pointLightMap: _removeComponent(uid, gameObjectRecord.pointLightMap),
       disposedPointLightArray:
         gameObjectRecord.disposedPointLightArray
@@ -165,6 +177,7 @@ let deferDisposeMeshRendererComponent =
     ...state,
     gameObjectRecord: {
       ...gameObjectRecord,
+      isMeshRendererMapDirtyForDeepCopy: true,
       meshRendererMap:
         _removeComponent(uid, gameObjectRecord.meshRendererMap),
       disposedMeshRendererComponentArray:
