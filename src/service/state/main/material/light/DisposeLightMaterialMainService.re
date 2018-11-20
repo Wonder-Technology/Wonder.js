@@ -143,24 +143,28 @@ let handleBatchDisposeComponent =
       IsDebugMainService.getIsDebug(StateDataMain.stateData),
     );
 
-    let {disposedIndexArray} as lightMaterialRecord =
-      RecordLightMaterialMainService.getRecord(state)
-      |> RecordLightMaterialMainService.markAllDirtyForRestore(true);
+    materialDataArray |> Js.Array.length === 0 ?
+      state :
+      {
+        let {disposedIndexArray} as lightMaterialRecord =
+          RecordLightMaterialMainService.getRecord(state)
+          |> RecordLightMaterialMainService.markAllDirtyForRestore(true);
 
-    let textureCountPerMaterial =
-      BufferSettingService.getTextureCountPerMaterial(settingRecord);
-    materialDataArray
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. lightMaterialRecord, (gameObject, material)) =>
-           _handleDispose(
-             gameObject,
-             disposedIndexArray,
-             material,
-             textureCountPerMaterial,
+        let textureCountPerMaterial =
+          BufferSettingService.getTextureCountPerMaterial(settingRecord);
+        materialDataArray
+        |> WonderCommonlib.ArrayService.reduceOneParam(
+             (. lightMaterialRecord, (gameObject, material)) =>
+               _handleDispose(
+                 gameObject,
+                 disposedIndexArray,
+                 material,
+                 textureCountPerMaterial,
+                 lightMaterialRecord,
+               ),
              lightMaterialRecord,
-           ),
-         lightMaterialRecord,
-       )
-    |> ignore;
-    state;
+           )
+        |> ignore;
+        state;
+      };
   };

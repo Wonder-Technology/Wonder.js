@@ -34,33 +34,36 @@ let rec batchDispose =
           uidArray: array(int),
           (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
           state,
-        ) => {
-  let state =
-    state |> _disposeNameMap(uidArray) |> _setDisposedUidMap(uidArray);
+        ) =>
+  uidArray |> Js.Array.length === 0 ?
+    (state, [||], [||]) :
+    {
+      let state =
+        state |> _disposeNameMap(uidArray) |> _setDisposedUidMap(uidArray);
 
-  let {disposeCount} as record = state.gameObjectRecord;
+      let {disposeCount} as record = state.gameObjectRecord;
 
-  record.disposeCount = disposeCount + (uidArray |> Js.Array.length);
-  let (
-    state,
-    geometryNeedDisposeVboBufferArr,
-    sourceInstanceNeedDisposeVboBufferArr,
-  ) =
-    state
-    |> DisposeGameObjectComponentMainService.batchDispose(
-         (uidArray, isKeepOrder, isRemoveGeometry, isRemoveMaterial),
-         (
-           batchDisposeBasicMaterialComponentFunc,
-           batchDisposeLightMaterialComponentFunc,
-           batchDispose,
-         ),
-       );
-  (
-    state,
-    geometryNeedDisposeVboBufferArr,
-    sourceInstanceNeedDisposeVboBufferArr,
-  );
-};
+      record.disposeCount = disposeCount + (uidArray |> Js.Array.length);
+      let (
+        state,
+        geometryNeedDisposeVboBufferArr,
+        sourceInstanceNeedDisposeVboBufferArr,
+      ) =
+        state
+        |> DisposeGameObjectComponentMainService.batchDispose(
+             (uidArray, isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+             (
+               batchDisposeBasicMaterialComponentFunc,
+               batchDisposeLightMaterialComponentFunc,
+               batchDispose,
+             ),
+           );
+      (
+        state,
+        geometryNeedDisposeVboBufferArr,
+        sourceInstanceNeedDisposeVboBufferArr,
+      );
+    };
 
 let deferBatchDispose = (uidArray: array(int), state) => {
   state.gameObjectRecord.disposedUidArray =

@@ -108,28 +108,33 @@ let handleBatchDisposeComponent =
         ),
       IsDebugMainService.getIsDebug(StateDataMain.stateData),
     );
-    let {disposedIndexArray} as transformRecord =
-      state
-      |> RecordTransformMainService.getRecord
-      |> RecordTransformMainService.markAllDirtyForRestore(true);
 
-    transformRecord.disposedIndexArray =
-      disposedIndexArray |> Js.Array.concat(transformArray);
-    /* let transformRecord = {
-         ...transformRecord,
-         disposedIndexArray: disposedIndexArray |> Js.Array.concat(transformArray)
-       }; */
-    let transformCount =
-      BufferSettingService.getTransformCount(settingRecord);
-    let dataTuple = (transformCount, maxTypeArrayPoolSize, isKeepOrder);
-    /* TODO optimize: batch remove parent,child? */
-    let transformRecord =
-      transformArray
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. transformRecord, transform) =>
-             _disposeData(transform, dataTuple, transformRecord),
-           transformRecord,
-         );
-    state.transformRecord = Some(transformRecord);
-    state;
+    transformArray |> Js.Array.length === 0 ?
+      state :
+      {
+        let {disposedIndexArray} as transformRecord =
+          state
+          |> RecordTransformMainService.getRecord
+          |> RecordTransformMainService.markAllDirtyForRestore(true);
+
+        transformRecord.disposedIndexArray =
+          disposedIndexArray |> Js.Array.concat(transformArray);
+        /* let transformRecord = {
+             ...transformRecord,
+             disposedIndexArray: disposedIndexArray |> Js.Array.concat(transformArray)
+           }; */
+        let transformCount =
+          BufferSettingService.getTransformCount(settingRecord);
+        let dataTuple = (transformCount, maxTypeArrayPoolSize, isKeepOrder);
+        /* TODO optimize: batch remove parent,child? */
+        let transformRecord =
+          transformArray
+          |> WonderCommonlib.ArrayService.reduceOneParam(
+               (. transformRecord, transform) =>
+                 _disposeData(transform, dataTuple, transformRecord),
+               transformRecord,
+             );
+        state.transformRecord = Some(transformRecord);
+        state;
+      };
   };

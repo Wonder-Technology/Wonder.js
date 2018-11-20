@@ -9,19 +9,41 @@ let getLightMaterialRenderArray = ({lightMaterialRenderGameObjectMap}) =>
 let removeFromRenderGameObjectMap =
     (
       meshRenderer,
-      {basicMaterialRenderGameObjectMap, lightMaterialRenderGameObjectMap} as meshRendererRecord,
+      {
+        isBasicMaterialRenderGameObjectMapForDeepCopy,
+        isLightMaterialRenderGameObjectMapForDeepCopy,
+        basicMaterialRenderGameObjectMap,
+        lightMaterialRenderGameObjectMap,
+      } as meshRendererRecord,
     ) => {
-  ...meshRendererRecord,
-  isBasicMaterialRenderGameObjectMapForDeepCopy: true,
-  isLightMaterialRenderGameObjectMapForDeepCopy: true,
-  basicMaterialRenderGameObjectMap:
+  let isInBasicMaterialRenderGameObjectMap =
     basicMaterialRenderGameObjectMap
-    |> Obj.magic
-    |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
-    |> Obj.magic,
-  lightMaterialRenderGameObjectMap:
+    |> WonderCommonlib.SparseMapService.has(meshRenderer);
+  let isInLightMaterialRenderGameObjectMap =
     lightMaterialRenderGameObjectMap
-    |> Obj.magic
-    |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
-    |> Obj.magic,
+    |> WonderCommonlib.SparseMapService.has(meshRenderer);
+
+  {
+    ...meshRendererRecord,
+    isBasicMaterialRenderGameObjectMapForDeepCopy:
+      isInBasicMaterialRenderGameObjectMap ?
+        true : isBasicMaterialRenderGameObjectMapForDeepCopy,
+    isLightMaterialRenderGameObjectMapForDeepCopy:
+      isInLightMaterialRenderGameObjectMap ?
+        true : isLightMaterialRenderGameObjectMapForDeepCopy,
+    basicMaterialRenderGameObjectMap:
+      isInBasicMaterialRenderGameObjectMap ?
+        basicMaterialRenderGameObjectMap
+        |> Obj.magic
+        |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
+        |> Obj.magic :
+        basicMaterialRenderGameObjectMap,
+    lightMaterialRenderGameObjectMap:
+      isInLightMaterialRenderGameObjectMap ?
+        lightMaterialRenderGameObjectMap
+        |> Obj.magic
+        |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
+        |> Obj.magic :
+        lightMaterialRenderGameObjectMap,
+  };
 };

@@ -17,28 +17,45 @@ let addToRenderGameObjectMap =
     (
       meshRenderer,
       gameObjectUid,
-      {basicMaterialRenderGameObjectMap, lightMaterialRenderGameObjectMap} as meshRendererRecord,
+      {
+        isBasicMaterialRenderGameObjectMapForDeepCopy,
+        isLightMaterialRenderGameObjectMapForDeepCopy,
+        basicMaterialRenderGameObjectMap,
+        lightMaterialRenderGameObjectMap,
+      } as meshRendererRecord,
       gameObjectRecord,
     ) => {
-  ...meshRendererRecord,
-  isBasicMaterialRenderGameObjectMapForDeepCopy: true,
-  isLightMaterialRenderGameObjectMapForDeepCopy: true,
-  basicMaterialRenderGameObjectMap:
+  let hasBasicMaterialComponent =
     HasComponentGameObjectService.hasBasicMaterialComponent(
       gameObjectUid,
       gameObjectRecord,
-    ) ?
-      basicMaterialRenderGameObjectMap
-      |> _setRenderGameObject(meshRenderer, gameObjectUid) :
-      basicMaterialRenderGameObjectMap,
-  lightMaterialRenderGameObjectMap:
+    );
+
+  let hasLightMaterialComponent =
     HasComponentGameObjectService.hasLightMaterialComponent(
       gameObjectUid,
       gameObjectRecord,
-    ) ?
-      lightMaterialRenderGameObjectMap
-      |> _setRenderGameObject(meshRenderer, gameObjectUid) :
-      lightMaterialRenderGameObjectMap,
+    );
+
+  {
+    ...meshRendererRecord,
+    isBasicMaterialRenderGameObjectMapForDeepCopy:
+      hasBasicMaterialComponent ?
+        true : isBasicMaterialRenderGameObjectMapForDeepCopy,
+    isLightMaterialRenderGameObjectMapForDeepCopy:
+      hasLightMaterialComponent ?
+        true : isLightMaterialRenderGameObjectMapForDeepCopy,
+    basicMaterialRenderGameObjectMap:
+      hasBasicMaterialComponent ?
+        basicMaterialRenderGameObjectMap
+        |> _setRenderGameObject(meshRenderer, gameObjectUid) :
+        basicMaterialRenderGameObjectMap,
+    lightMaterialRenderGameObjectMap:
+      hasLightMaterialComponent ?
+        lightMaterialRenderGameObjectMap
+        |> _setRenderGameObject(meshRenderer, gameObjectUid) :
+        lightMaterialRenderGameObjectMap,
+  };
 };
 
 let removeFromRenderGameObjectMap = (meshRenderer, state) => {
