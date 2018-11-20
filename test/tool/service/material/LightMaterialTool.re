@@ -14,6 +14,16 @@ let createGameObject = state => {
   (state, gameObject, material);
 };
 
+
+let createGameObjectWithShareMaterial = (material, state ) => {
+  open LightMaterialAPI;
+  open GameObjectAPI;
+  let (state, gameObject) = state |> createGameObject;
+  let state =
+    state |> addGameObjectLightMaterialComponent(gameObject, material);
+  (state, gameObject, material);
+};
+
 let createAndSetMapsWithMap = (material, diffuseMap, specularMap, state) => {
   let state =
     state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, diffuseMap);
@@ -185,3 +195,13 @@ let getEmptyMapUnitArray = (material, state) =>
     material,
     getRecord(state).emptyMapUnitArrayMap,
   );
+
+let markAllDirtyForRestore = (isDirty, state) => {
+  ...state,
+  lightMaterialRecord:
+    RecordLightMaterialMainService.markAllDirtyForRestore(
+      isDirty,
+      getRecord(state),
+    )
+    |. Some,
+};

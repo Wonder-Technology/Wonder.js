@@ -253,9 +253,23 @@ let create = ({settingRecord} as state) => {
       gameObjectsMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
       materialArrayForWorkerInit: WonderCommonlib.ArrayService.createEmpty(),
+      isGameObjectsMapDirtyForDeepCopy: true,
+      isEmptyMapUnitArrayMapDirtyForDeepCopy: true,
+      isNameMapDirtyForDeepCopy: true,
     });
   state;
 };
+
+let markAllDirtyForRestore = (isDirty, record) => {
+  record.isGameObjectsMapDirtyForDeepCopy = isDirty;
+  record.isEmptyMapUnitArrayMapDirtyForDeepCopy = isDirty;
+  record.isNameMapDirtyForDeepCopy = isDirty;
+
+  record;
+};
+
+let _markSourceRecordNotDirty = sourceRecord =>
+  markAllDirtyForRestore(false, sourceRecord) |> ignore;
 
 let _fillToCopiedIndices = (sourceData, copiedData, endIndex) => {
   TypeArrayService.fillUint32ArrayWithUint32Array(
@@ -342,67 +356,82 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         gameObjectsMap,
         disposedIndexArray,
         materialArrayForWorkerInit,
+        isGameObjectsMapDirtyForDeepCopy,
+        isEmptyMapUnitArrayMapDirtyForDeepCopy,
+        isNameMapDirtyForDeepCopy,
       } as record =
     state |> getRecord;
+
+  _markSourceRecordNotDirty(record);
+
   {
     ...state,
     lightMaterialRecord:
-      Some({
-        ...record,
-        index,
-        copiedShaderIndices:
-          _fillToCopiedIndices(
-            shaderIndices,
-            copiedShaderIndices,
-            getShaderIndicesEndIndex(index),
-          ),
-        copiedDiffuseColors:
-          _fillToCopiedColors(
-            diffuseColors,
-            copiedDiffuseColors,
-            getDiffuseColorsEndIndex(index),
-          ),
-        copiedSpecularColors:
-          _fillToCopiedColors(
-            specularColors,
-            copiedSpecularColors,
-            getSpecularColorsEndIndex(index),
-          ),
-        copiedShininess:
-          _fillToFloat32Values(
-            shininess,
-            copiedShininess,
-            getShininessEndIndex(index),
-          ),
-        copiedTextureIndices:
-          _fillToCopiedIndices(
-            textureIndices,
-            copiedTextureIndices,
-            getTextureIndicesEndIndex(settingRecord, index),
-          ),
-        copiedDiffuseMapUnits:
-          _fillToMapUnits(
-            diffuseMapUnits,
-            copiedDiffuseMapUnits,
-            getMapUnitsEndIndex(index),
-          ),
-        copiedSpecularMapUnits:
-          _fillToMapUnits(
-            specularMapUnits,
-            copiedSpecularMapUnits,
-            getMapUnitsEndIndex(index),
-          ),
-        defaultDiffuseColor,
-        defaultSpecularColor,
-        defaultShininess,
-        nameMap: nameMap |> SparseMapService.copy,
-        emptyMapUnitArrayMap:
-          emptyMapUnitArrayMap |> CopyTypeArrayService.deepCopyArrayArray,
-        gameObjectsMap:
-          gameObjectsMap |> CopyTypeArrayService.deepCopyArrayArray,
-        disposedIndexArray: disposedIndexArray |> Js.Array.copy,
-        materialArrayForWorkerInit:
-          materialArrayForWorkerInit |> Js.Array.copy,
-      }),
+      Some(
+        {
+          ...record,
+          index,
+          copiedShaderIndices:
+            _fillToCopiedIndices(
+              shaderIndices,
+              copiedShaderIndices,
+              getShaderIndicesEndIndex(index),
+            ),
+          copiedDiffuseColors:
+            _fillToCopiedColors(
+              diffuseColors,
+              copiedDiffuseColors,
+              getDiffuseColorsEndIndex(index),
+            ),
+          copiedSpecularColors:
+            _fillToCopiedColors(
+              specularColors,
+              copiedSpecularColors,
+              getSpecularColorsEndIndex(index),
+            ),
+          copiedShininess:
+            _fillToFloat32Values(
+              shininess,
+              copiedShininess,
+              getShininessEndIndex(index),
+            ),
+          copiedTextureIndices:
+            _fillToCopiedIndices(
+              textureIndices,
+              copiedTextureIndices,
+              getTextureIndicesEndIndex(settingRecord, index),
+            ),
+          copiedDiffuseMapUnits:
+            _fillToMapUnits(
+              diffuseMapUnits,
+              copiedDiffuseMapUnits,
+              getMapUnitsEndIndex(index),
+            ),
+          copiedSpecularMapUnits:
+            _fillToMapUnits(
+              specularMapUnits,
+              copiedSpecularMapUnits,
+              getMapUnitsEndIndex(index),
+            ),
+          defaultDiffuseColor,
+          defaultSpecularColor,
+          defaultShininess,
+          nameMap:
+            isNameMapDirtyForDeepCopy ?
+              nameMap |> SparseMapService.copy : nameMap,
+          emptyMapUnitArrayMap:
+            isEmptyMapUnitArrayMapDirtyForDeepCopy ?
+              emptyMapUnitArrayMap |> CopyTypeArrayService.deepCopyArrayArray :
+              emptyMapUnitArrayMap,
+          gameObjectsMap:
+            isGameObjectsMapDirtyForDeepCopy ?
+              gameObjectsMap |> CopyTypeArrayService.deepCopyArrayArray :
+              gameObjectsMap,
+          disposedIndexArray: disposedIndexArray |> Js.Array.copy,
+          materialArrayForWorkerInit:
+            materialArrayForWorkerInit |> Js.Array.copy,
+        }
+        |> markAllDirtyForRestore(false),
+      ),
   };
 };

@@ -142,8 +142,11 @@ let handleBatchDisposeComponent =
         ),
       IsDebugMainService.getIsDebug(StateDataMain.stateData),
     );
+
     let {disposedIndexArray} as lightMaterialRecord =
-      RecordLightMaterialMainService.getRecord(state);
+      RecordLightMaterialMainService.getRecord(state)
+      |> RecordLightMaterialMainService.markAllDirtyForRestore(true);
+
     let textureCountPerMaterial =
       BufferSettingService.getTextureCountPerMaterial(settingRecord);
     materialDataArray

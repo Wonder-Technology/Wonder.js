@@ -27,4 +27,7 @@ type lightMaterialRecord = {
   disposedIndexArray,
   nameMap: WonderCommonlib.SparseMapService.t(string),
   mutable materialArrayForWorkerInit: array(int),
+  mutable isGameObjectsMapDirtyForDeepCopy: bool,
+  mutable isEmptyMapUnitArrayMapDirtyForDeepCopy: bool,
+  mutable isNameMapDirtyForDeepCopy: bool,
 };

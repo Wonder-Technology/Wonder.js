@@ -123,31 +123,34 @@ let deepCopyForRestore = ({settingRecord} as state) => {
   {
     ...state,
     meshRendererRecord:
-      Some({
-        ...record,
-        index,
-        drawModes:
-          drawModes
-          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
-               index * getDrawModesSize(),
-             ),
-        isRenders:
-          isRenders
-          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
-               index * getIsRendersSize(),
-             ),
-        basicMaterialRenderGameObjectMap:
-          isBasicMaterialRenderGameObjectMapForDeepCopy ?
-            basicMaterialRenderGameObjectMap |> SparseMapService.copy :
-            basicMaterialRenderGameObjectMap,
-        lightMaterialRenderGameObjectMap:
-          isLightMaterialRenderGameObjectMapForDeepCopy ?
-            lightMaterialRenderGameObjectMap |> SparseMapService.copy :
-            lightMaterialRenderGameObjectMap,
-        gameObjectMap:
-          isGameObjectMapForDeepCopy ?
-            gameObjectMap |> SparseMapService.copy : gameObjectMap,
-        disposedIndexArray: disposedIndexArray |> Js.Array.copy,
-      }),
+      Some(
+        {
+          ...record,
+          index,
+          drawModes:
+            drawModes
+            |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+                 index * getDrawModesSize(),
+               ),
+          isRenders:
+            isRenders
+            |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+                 index * getIsRendersSize(),
+               ),
+          basicMaterialRenderGameObjectMap:
+            isBasicMaterialRenderGameObjectMapForDeepCopy ?
+              basicMaterialRenderGameObjectMap |> SparseMapService.copy :
+              basicMaterialRenderGameObjectMap,
+          lightMaterialRenderGameObjectMap:
+            isLightMaterialRenderGameObjectMapForDeepCopy ?
+              lightMaterialRenderGameObjectMap |> SparseMapService.copy :
+              lightMaterialRenderGameObjectMap,
+          gameObjectMap:
+            isGameObjectMapForDeepCopy ?
+              gameObjectMap |> SparseMapService.copy : gameObjectMap,
+          disposedIndexArray: disposedIndexArray |> Js.Array.copy,
+        }
+        |> markAllDirtyForRestore(false),
+      ),
   };
 };

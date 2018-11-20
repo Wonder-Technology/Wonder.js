@@ -1,0 +1,269 @@
+open Wonder_jest;
+
+open Js.Typed_array;
+
+let _ =
+  describe("test redo,undo lightMaterial", () => {
+    open Expect;
+    open Expect.Operators;
+    open Sinon;
+
+    let sandbox = getSandboxDefaultVal();
+    let state = ref(CreateStateMainService.createState());
+
+    let _prepareLightMaterialData = state => {
+      open LightMaterialAPI;
+      open Js.Typed_array;
+      let (state, gameObject1, material1) =
+        LightMaterialTool.createGameObject(state^);
+      let (state, gameObject2, material2) =
+        LightMaterialTool.createGameObject(state);
+      let (state, gameObject3, material3) =
+        LightMaterialTool.createGameObject(state);
+      let state = AllMaterialTool.prepareForInit(state);
+      /* let state = state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+         let state = LightMaterialTool.initMaterials([@bs] GlTool.unsafeGetGl(state), state); */
+      let diffuseColor2 = [|1., 0.5, 0.0|];
+      let specularColor2 = [|0., 1.0, 0.5|];
+      let state =
+        state |> setLightMaterialDiffuseColor(material2, diffuseColor2);
+      let state =
+        state |> setLightMaterialSpecularColor(material2, specularColor2);
+      (
+        state,
+        gameObject1,
+        gameObject2,
+        gameObject3,
+        material1,
+        material2,
+        material3,
+      );
+    };
+
+    beforeEach(() => {
+      sandbox := createSandbox();
+
+      state :=
+        RenderJobsTool.initWithJobConfig(
+          sandbox,
+          LoopRenderJobTool.buildNoWorkerJobConfig(),
+        );
+    });
+    afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
+    describe("deep copy light material record", () => {
+      test("shadow copy nameMap, materialArrayForWorkerInit", () =>
+        StateDataMainType.(
+          LightMaterialType.(
+            MainStateTool.testShadowCopyArrayLikeMapData(
+              state => {
+                let {nameMap, materialArrayForWorkerInit} =
+                  LightMaterialTool.getRecord(state);
+                [|
+                  nameMap |> Obj.magic,
+                  materialArrayForWorkerInit |> Obj.magic,
+                |];
+              },
+              state^,
+            )
+          )
+        )
+      );
+      test("deep copy gameObjectsMap, emptyMapUnitArrayMap", () => {
+        open StateDataMainType;
+        open LightMaterialType;
+        let (state, gameObject1, basicMaterial1) =
+          LightMaterialTool.createGameObject(state^);
+        let {gameObjectsMap, emptyMapUnitArrayMap} =
+          LightMaterialTool.getRecord(state);
+        let originGameObjectsArr = [|1|];
+        let originEmptyMapUnitArrayMap = [|2, 1, 0|];
+        let copiedOriginGameObjectsArr = originGameObjectsArr |> Js.Array.copy;
+        let copiedOriginEmptyMapUnitArrayMap =
+          originEmptyMapUnitArrayMap |> Js.Array.copy;
+        gameObjectsMap
+        |> WonderCommonlib.SparseMapService.set(
+             basicMaterial1,
+             originGameObjectsArr,
+           )
+        |> ignore;
+        emptyMapUnitArrayMap
+        |> WonderCommonlib.SparseMapService.set(
+             basicMaterial1,
+             originEmptyMapUnitArrayMap,
+           )
+        |> ignore;
+        let copiedState = MainStateTool.deepCopyForRestore(state);
+        let {gameObjectsMap, emptyMapUnitArrayMap} =
+          LightMaterialTool.getRecord(copiedState);
+        let arr =
+          gameObjectsMap
+          |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1);
+        Array.unsafe_set(arr, 0, 2);
+        let arr =
+          emptyMapUnitArrayMap
+          |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1);
+        Array.unsafe_set(arr, 0, 4);
+
+        let {gameObjectsMap, emptyMapUnitArrayMap} =
+          LightMaterialTool.getRecord(state);
+        (
+          gameObjectsMap
+          |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1),
+          emptyMapUnitArrayMap
+          |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1),
+        )
+        |>
+        expect == (
+                    copiedOriginGameObjectsArr,
+                    copiedOriginEmptyMapUnitArrayMap,
+                  );
+      });
+
+      describe(
+        "optimize deep copy nameMap, emptyMapUnitArrayMap, gameObjectsMap", () =>
+        describe("if data is dirty, copy it", () =>
+          test("if add lightMaterial component, be dirty", () => {
+            let (
+              state,
+              gameObject1,
+              gameObject2,
+              gameObject3,
+              material1,
+              material2,
+              material3,
+            ) =
+              _prepareLightMaterialData(state);
+
+            let state =
+              LightMaterialTool.markAllDirtyForRestore(false, state);
+
+            let (state, gameObject4, material4) =
+              LightMaterialTool.createGameObject(state);
+
+            let copiedState = MainStateTool.deepCopyForRestore(state);
+
+            let (state, gameObject5, _) =
+              LightMaterialTool.createGameObjectWithShareMaterial(
+                material4,
+                state,
+              );
+
+            LightMaterialAPI.unsafeGetLightMaterialGameObjects(
+              material4,
+              copiedState,
+            )
+            |> expect == [|gameObject4|];
+          })
+        )
+      );
+    });
+
+    describe("restore light material record to target state", () =>
+      test("test restore typeArrays", () => {
+        open LightMaterialType;
+        state :=
+          TestTool.initWithJobConfigWithoutBuildFakeDom(
+            ~sandbox,
+            ~buffer=
+              SettingTool.buildBufferConfigStr(
+                ~lightMaterialCount=4,
+                ~textureCountPerMaterial=2,
+                (),
+              ),
+            (),
+          );
+
+        let (
+          state,
+          gameObject1,
+          gameObject2,
+          gameObject3,
+          material1,
+          material2,
+          material3,
+        ) =
+          _prepareLightMaterialData(state);
+        let state =
+          state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+        let copiedState = MainStateTool.deepCopyForRestore(state);
+        let (currentState, gameObject4, material4) =
+          LightMaterialTool.createGameObject(state);
+        let currentState =
+          LightMaterialAPI.setLightMaterialDiffuseColor(
+            material4,
+            [|1., 0.1, 1.|],
+            currentState,
+          );
+        let currentState =
+          LightMaterialAPI.setLightMaterialSpecularColor(
+            material4,
+            [|0.5, 0.2, 0.|],
+            currentState,
+          );
+        let state = state |> LightMaterialTool.createAndSetMaps(material4);
+        let currentState = AllMaterialTool.pregetGLSLData(currentState);
+        let _ = MainStateTool.restore(currentState, copiedState);
+        let defaultUnit = BasicSourceTextureTool.getDefaultUnit();
+        let {
+          diffuseColors,
+          specularColors,
+          textureIndices,
+          diffuseMapUnits,
+          specularMapUnits,
+        } =
+          MainStateTool.unsafeGetState() |> LightMaterialTool.getRecord;
+        (
+          diffuseColors,
+          specularColors,
+          textureIndices,
+          diffuseMapUnits,
+          specularMapUnits,
+        )
+        |>
+        expect == (
+                    Float32Array.make([|
+                      1.,
+                      1.,
+                      1.,
+                      1.,
+                      0.5,
+                      0.,
+                      1.,
+                      1.,
+                      1.,
+                      1.,
+                      1.,
+                      1.,
+                    |]),
+                    Float32Array.make([|
+                      1.,
+                      1.,
+                      1.,
+                      0.,
+                      1.,
+                      0.5,
+                      1.,
+                      1.,
+                      1.,
+                      1.,
+                      1.,
+                      1.,
+                    |]),
+                    Uint32Array.make([|0, 0, 0, 0, 0, 0, 0, 0|]),
+                    Uint8Array.make([|
+                      defaultUnit,
+                      defaultUnit,
+                      defaultUnit,
+                      defaultUnit,
+                    |]),
+                    Uint8Array.make([|
+                      defaultUnit,
+                      defaultUnit,
+                      defaultUnit,
+                      defaultUnit,
+                    |]),
+                  );
+      })
+    );
+  });
