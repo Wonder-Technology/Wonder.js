@@ -146,31 +146,48 @@ let _initBufferData =
     textureIndices,
     diffuseMapUnits,
     specularMapUnits,
+    copiedShaderIndices,
+    copiedDiffuseColors,
+    copiedSpecularColors,
+    copiedShininess,
+    copiedTextureIndices,
+    copiedDiffuseMapUnits,
+    copiedSpecularMapUnits,
   ) =
     CreateTypeArrayLightMaterialService.createTypeArrays(
       buffer,
       lightMaterialCount,
       textureCountPerMaterial,
     );
+
   (
-    buffer,
-    shaderIndices,
-    diffuseColors,
-    specularColors,
-    shininess,
-    textureIndices,
-    diffuseMapUnits,
-    specularMapUnits,
-  )
-  |> _setAllTypeArrDataToDefault(
-       lightMaterialCount,
-       (
-         defaultShaderIndex,
-         defaultDiffuseColor,
-         defaultSpecularColor,
-         defaultShiness,
+    (
+      buffer,
+      shaderIndices,
+      diffuseColors,
+      specularColors,
+      shininess,
+      textureIndices,
+      diffuseMapUnits,
+      specularMapUnits,
+    )
+    |> _setAllTypeArrDataToDefault(
+         lightMaterialCount,
+         (
+           defaultShaderIndex,
+           defaultDiffuseColor,
+           defaultSpecularColor,
+           defaultShiness,
+         ),
        ),
-     );
+    copiedShaderIndices,
+    copiedDiffuseColors,
+    copiedSpecularColors,
+    copiedShininess,
+    copiedTextureIndices,
+    copiedDiffuseMapUnits,
+    copiedSpecularMapUnits,
+  );
 };
 
 let create = ({settingRecord} as state) => {
@@ -180,16 +197,25 @@ let create = ({settingRecord} as state) => {
   let defaultSpecularColor = [|1., 1., 1.|];
   let defaultShininess = 32.0;
   let (
-    buffer,
     (
-      shaderIndices,
-      diffuseColors,
-      specularColors,
-      shininess,
-      textureIndices,
-      diffuseMapUnits,
-      specularMapUnits,
+      buffer,
+      (
+        shaderIndices,
+        diffuseColors,
+        specularColors,
+        shininess,
+        textureIndices,
+        diffuseMapUnits,
+        specularMapUnits,
+      ),
     ),
+    copiedShaderIndices,
+    copiedDiffuseColors,
+    copiedSpecularColors,
+    copiedShininess,
+    copiedTextureIndices,
+    copiedDiffuseMapUnits,
+    copiedSpecularMapUnits,
   ) =
     _initBufferData(
       BufferSettingService.getLightMaterialCount(settingRecord),
@@ -212,6 +238,13 @@ let create = ({settingRecord} as state) => {
       textureIndices,
       diffuseMapUnits,
       specularMapUnits,
+      copiedShaderIndices,
+      copiedDiffuseColors,
+      copiedSpecularColors,
+      copiedShininess,
+      copiedTextureIndices,
+      copiedDiffuseMapUnits,
+      copiedSpecularMapUnits,
       defaultDiffuseColor,
       defaultSpecularColor,
       defaultShininess,
@@ -225,6 +258,66 @@ let create = ({settingRecord} as state) => {
   state;
 };
 
+let _fillToCopiedIndices = (sourceData, copiedData, endIndex) => {
+  TypeArrayService.fillUint32ArrayWithUint32Array(
+    (copiedData, 0),
+    (sourceData, 0),
+    endIndex,
+  )
+  |> ignore;
+
+  copiedData;
+};
+
+let _fillToCopiedColors = (sourceData, copiedData, endIndex) => {
+  TypeArrayService.fillFloat32ArrayWithFloat32Array(
+    (copiedData, 0),
+    (sourceData, 0),
+    endIndex,
+  )
+  |> ignore;
+
+  copiedData;
+};
+
+let _fillToMapUnits = (sourceData, copiedData, endIndex) => {
+  TypeArrayService.fillUint8ArrayWithUint8Array(
+    (copiedData, 0),
+    (sourceData, 0),
+    endIndex,
+  )
+  |> ignore;
+
+  copiedData;
+};
+
+let _fillToFloat32Values = (sourceData, copiedData, endIndex) => {
+  TypeArrayService.fillFloat32ArrayWithFloat32Array(
+    (copiedData, 0),
+    (sourceData, 0),
+    endIndex,
+  )
+  |> ignore;
+
+  copiedData;
+};
+
+let getShaderIndicesEndIndex = index => index * getShaderIndicesSize();
+
+let getDiffuseColorsEndIndex = index => index * getDiffuseColorsSize();
+
+let getSpecularColorsEndIndex = index => index * getSpecularColorsSize();
+
+let getShininessEndIndex = index => index * getShininessSize();
+
+let getMapUnitsEndIndex = index => index * getMapUnitsSize();
+
+let getTextureIndicesEndIndex = (settingRecord, index) =>
+  index
+  * BufferMaterialService.getTextureIndicesSize(
+      BufferSettingService.getTextureCountPerMaterial(settingRecord),
+    );
+
 let deepCopyForRestore = ({settingRecord} as state) => {
   let {
         index,
@@ -235,6 +328,13 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         textureIndices,
         diffuseMapUnits,
         specularMapUnits,
+        copiedShaderIndices,
+        copiedDiffuseColors,
+        copiedSpecularColors,
+        copiedShininess,
+        copiedTextureIndices,
+        copiedDiffuseMapUnits,
+        copiedSpecularMapUnits,
         defaultDiffuseColor,
         defaultSpecularColor,
         defaultShininess,
@@ -252,46 +352,48 @@ let deepCopyForRestore = ({settingRecord} as state) => {
       Some({
         ...record,
         index,
-        shaderIndices:
-          shaderIndices
-          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(
-               index * getShaderIndicesSize(),
-             ),
-        diffuseColors:
-          diffuseColors
-          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
-               index * getDiffuseColorsSize(),
-             ),
-        specularColors:
-          specularColors
-          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
-               index * getSpecularColorsSize(),
-             ),
-        shininess:
-          shininess
-          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
-               index * getShininessSize(),
-             ),
-        textureIndices:
-          textureIndices
-          |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(
-               index
-               * BufferMaterialService.getTextureIndicesSize(
-                   BufferSettingService.getTextureCountPerMaterial(
-                     settingRecord,
-                   ),
-                 ),
-             ),
-        diffuseMapUnits:
-          diffuseMapUnits
-          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
-               index * getMapUnitsSize(),
-             ),
-        specularMapUnits:
-          specularMapUnits
-          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
-               index * getMapUnitsSize(),
-             ),
+        copiedShaderIndices:
+          _fillToCopiedIndices(
+            shaderIndices,
+            copiedShaderIndices,
+            getShaderIndicesEndIndex(index),
+          ),
+        copiedDiffuseColors:
+          _fillToCopiedColors(
+            diffuseColors,
+            copiedDiffuseColors,
+            getDiffuseColorsEndIndex(index),
+          ),
+        copiedSpecularColors:
+          _fillToCopiedColors(
+            specularColors,
+            copiedSpecularColors,
+            getSpecularColorsEndIndex(index),
+          ),
+        copiedShininess:
+          _fillToFloat32Values(
+            shininess,
+            copiedShininess,
+            getShininessEndIndex(index),
+          ),
+        copiedTextureIndices:
+          _fillToCopiedIndices(
+            textureIndices,
+            copiedTextureIndices,
+            getTextureIndicesEndIndex(settingRecord, index),
+          ),
+        copiedDiffuseMapUnits:
+          _fillToMapUnits(
+            diffuseMapUnits,
+            copiedDiffuseMapUnits,
+            getMapUnitsEndIndex(index),
+          ),
+        copiedSpecularMapUnits:
+          _fillToMapUnits(
+            specularMapUnits,
+            copiedSpecularMapUnits,
+            getMapUnitsEndIndex(index),
+          ),
         defaultDiffuseColor,
         defaultSpecularColor,
         defaultShininess,

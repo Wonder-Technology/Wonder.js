@@ -380,88 +380,88 @@ let _ =
                         copiedOriginEmptyMapUnitArrayMap,
                       );
           });
-          test("copy diffuseColors", () =>
-            RedoUndoTool.testCopyTypeArraySingleValue(
-              (
-                LightMaterialTool.createGameObject,
-                (material, state) =>
-                  LightMaterialAPI.getLightMaterialDiffuseColor(
-                    material,
-                    state,
-                  )
-                  |> TypeArrayTool.truncateArray,
-                LightMaterialAPI.setLightMaterialDiffuseColor,
-                () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|]),
-              ),
-              state,
-            )
-          );
-          test("copy specularColors", () =>
-            RedoUndoTool.testCopyTypeArraySingleValue(
-              (
-                LightMaterialTool.createGameObject,
-                (material, state) =>
-                  LightMaterialAPI.getLightMaterialSpecularColor(
-                    material,
-                    state,
-                  )
-                  |> TypeArrayTool.truncateArray,
-                LightMaterialAPI.setLightMaterialSpecularColor,
-                () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|]),
-              ),
-              state,
-            )
-          );
-          test("copy shininess", () =>
-            RedoUndoTool.testCopyTypeArraySingleValue(
-              (
-                LightMaterialTool.createGameObject,
-                LightMaterialAPI.getLightMaterialShininess,
-                LightMaterialAPI.setLightMaterialShininess,
-                () => (1., 2.),
-              ),
-              state,
-            )
-          );
-          test("copy textureIndices", () =>
-            RedoUndoTool.testCopyTypeArraySingleValue(
-              (
-                LightMaterialTool.createGameObject,
-                (material, state) =>
-                  LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(
-                    material,
-                    state,
-                  ),
-                LightMaterialAPI.setLightMaterialDiffuseMap,
-                () => (0, 1),
-              ),
-              state,
-            )
-          );
-          test("copy diffuseMapUnits", () =>
-            RedoUndoTool.testCopyTypeArraySingleValue(
-              (
-                LightMaterialTool.createGameObject,
-                (material, state) =>
-                  LightMaterialTool.getDiffuseMapUnit(material, state),
-                LightMaterialTool.setDiffuseMapUnit,
-                () => (1, 2),
-              ),
-              state,
-            )
-          );
-          test("copy specularMapUnits", () =>
-            RedoUndoTool.testCopyTypeArraySingleValue(
-              (
-                LightMaterialTool.createGameObject,
-                (material, state) =>
-                  LightMaterialTool.getSpecularMapUnit(material, state),
-                LightMaterialTool.setSpecularMapUnit,
-                () => (1, 2),
-              ),
-              state,
-            )
-          );
+          /* test("copy diffuseColors", () =>
+               RedoUndoTool.testCopyTypeArraySingleValue(
+                 (
+                   LightMaterialTool.createGameObject,
+                   (material, state) =>
+                     LightMaterialAPI.getLightMaterialDiffuseColor(
+                       material,
+                       state,
+                     )
+                     |> TypeArrayTool.truncateArray,
+                   LightMaterialAPI.setLightMaterialDiffuseColor,
+                   () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|]),
+                 ),
+                 state,
+               )
+             );
+             test("copy specularColors", () =>
+               RedoUndoTool.testCopyTypeArraySingleValue(
+                 (
+                   LightMaterialTool.createGameObject,
+                   (material, state) =>
+                     LightMaterialAPI.getLightMaterialSpecularColor(
+                       material,
+                       state,
+                     )
+                     |> TypeArrayTool.truncateArray,
+                   LightMaterialAPI.setLightMaterialSpecularColor,
+                   () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|]),
+                 ),
+                 state,
+               )
+             );
+             test("copy shininess", () =>
+               RedoUndoTool.testCopyTypeArraySingleValue(
+                 (
+                   LightMaterialTool.createGameObject,
+                   LightMaterialAPI.getLightMaterialShininess,
+                   LightMaterialAPI.setLightMaterialShininess,
+                   () => (1., 2.),
+                 ),
+                 state,
+               )
+             );
+             test("copy textureIndices", () =>
+               RedoUndoTool.testCopyTypeArraySingleValue(
+                 (
+                   LightMaterialTool.createGameObject,
+                   (material, state) =>
+                     LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(
+                       material,
+                       state,
+                     ),
+                   LightMaterialAPI.setLightMaterialDiffuseMap,
+                   () => (0, 1),
+                 ),
+                 state,
+               )
+             );
+             test("copy diffuseMapUnits", () =>
+               RedoUndoTool.testCopyTypeArraySingleValue(
+                 (
+                   LightMaterialTool.createGameObject,
+                   (material, state) =>
+                     LightMaterialTool.getDiffuseMapUnit(material, state),
+                   LightMaterialTool.setDiffuseMapUnit,
+                   () => (1, 2),
+                 ),
+                 state,
+               )
+             );
+             test("copy specularMapUnits", () =>
+               RedoUndoTool.testCopyTypeArraySingleValue(
+                 (
+                   LightMaterialTool.createGameObject,
+                   (material, state) =>
+                     LightMaterialTool.getSpecularMapUnit(material, state),
+                   LightMaterialTool.setSpecularMapUnit,
+                   () => (1, 2),
+                 ),
+                 state,
+               )
+             ); */
         });
       });
 
