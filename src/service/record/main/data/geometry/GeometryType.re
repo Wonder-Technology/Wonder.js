@@ -39,7 +39,6 @@ type geometryRecord = {
   mutable indices32Offset: int,
   mutable disposeCount: int,
   mutable indicesTypeMap: WonderCommonlib.SparseMapService.t(indicesType),
-  mutable isPointDataDirtyForRestore: bool,
   gameObjectsMap,
   /* groupCountMap: geometryGroupCountMap, */
   mutable disposedIndexArray: array(geometry),

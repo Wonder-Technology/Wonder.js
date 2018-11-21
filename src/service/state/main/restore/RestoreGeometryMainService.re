@@ -93,15 +93,11 @@ let restore = (currentState, targetState) => {
   let targetGeometryRecord = RecordGeometryMainService.getRecord(targetState);
 
   let (currentGeometryRecord, targetGeometryRecord) =
-    ! currentGeometryRecord.isPointDataDirtyForRestore ?
-      (currentGeometryRecord, targetGeometryRecord) :
-      _restoreTypeArrays(
-        BufferSettingService.getGeometryPointCount(
-          currentState.settingRecord,
-        ),
-        currentGeometryRecord,
-        targetGeometryRecord,
-      );
+    _restoreTypeArrays(
+      BufferSettingService.getGeometryPointCount(currentState.settingRecord),
+      currentGeometryRecord,
+      targetGeometryRecord,
+    );
 
   {
     ...targetState,
@@ -118,7 +114,6 @@ let restore = (currentState, targetState) => {
         texCoordsInfos: currentGeometryRecord.texCoordsInfos,
         normalsInfos: currentGeometryRecord.normalsInfos,
         indicesInfos: currentGeometryRecord.indicesInfos,
-        isPointDataDirtyForRestore: false,
       }),
   };
 };

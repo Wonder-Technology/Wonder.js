@@ -273,8 +273,7 @@ let reAllocateToNewBuffer =
          ! ReallocateCPUMemoryService.isDisposed(aliveIndex, disposedIndexMap)
        );
   _allocateNewData(newAliveIndexArray, newBufferData, geometryRecord)
-  |> _setNewDataToState(newAliveIndexArray, geometryRecord)
-  |> PointDataDirtyGeometryService.markPointDataDirtyForRestore;
+  |> _setNewDataToState(newAliveIndexArray, geometryRecord);
 };
 
 let reAllocate =

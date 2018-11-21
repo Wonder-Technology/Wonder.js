@@ -312,17 +312,3 @@ let batchDisposeGeometryByCloseContractCheck = (gameObjectArr, state) => {
 
 let getName = (geometry, state) =>
   NameGeometryMainService.getName(geometry, state);
-
-let isPointDataDirtyForRestore = state => {
-  let {isPointDataDirtyForRestore} = state |> getRecord;
-
-  isPointDataDirtyForRestore;
-};
-
-let markPointDataNotDirtyForRestore = state => {
-  let {isPointDataDirtyForRestore} as record = state |> getRecord;
-
-  record.isPointDataDirtyForRestore = false;
-
-  state;
-};
