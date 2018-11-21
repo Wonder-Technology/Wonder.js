@@ -271,10 +271,6 @@ let _ =
 
         let (restoredState, geometry4) =
           GeometryAPI.createGeometry(restoredState);
-        /* let hasGeometry4Vertices =
-             GeometryAPI.hasGeometryVertices(geometry4, restoredState);
-           let hasGeometry4Indices =
-             GeometryAPI.hasGeometryIndices(geometry4, restoredState); */
 
         let vertices = Float32Array.make([|0., 0.5, 1.0|]);
         let indices32 = Uint32Array.make([|1, 3, 2|]);
@@ -284,8 +280,6 @@ let _ =
           |> GeometryAPI.setGeometryIndices32(geometry4, indices32);
 
         (
-          /* hasGeometry4Vertices,
-             hasGeometry4Indices, */
           GeometryAPI.getGeometryVertices(geometry4, restoredState),
           GeometryAPI.getGeometryIndices(geometry4, restoredState),
           GeometryAPI.getGeometryIndices32(geometry4, restoredState),
@@ -293,7 +287,56 @@ let _ =
         |> expect == (vertices, Uint16Array.make([|0, 1, 2|]), indices32);
       });
 
-      describe("test reallocate geometry", () =>
+      describe("test reallocate geometry", () => {
+        open StateDataMainType;
+
+        let reAllocateGeometryToNewBuffer = ({settingRecord} as state) => {
+          let geometryPointCount =
+            BufferSettingService.getGeometryPointCount(settingRecord);
+          let geometryCount =
+            BufferSettingService.getGeometryCount(settingRecord);
+          let (
+            buffer,
+            vertices,
+            texCoords,
+            normals,
+            indices,
+            indices32,
+            verticesInfos,
+            texCoordsInfos,
+            normalsInfos,
+            indicesInfos,
+          ) =
+            RecordGeometryMainService._initBufferData(
+              geometryPointCount,
+              geometryCount,
+            );
+
+          let geometryRecord = GeometryTool.getRecord(state);
+
+          {
+            ...state,
+            geometryRecord:
+              Some(
+                ReallocateGeometryCPUMemoryService.reAllocateToNewBuffer(
+                  (
+                    buffer,
+                    vertices,
+                    texCoords,
+                    normals,
+                    indices,
+                    indices32,
+                    verticesInfos,
+                    texCoordsInfos,
+                    normalsInfos,
+                    indicesInfos,
+                  ),
+                  geometryRecord,
+                ),
+              ),
+          };
+        };
+
         test("test restore after reallocate", () => {
           let (
             (currentState, copiedState),
@@ -301,18 +344,20 @@ let _ =
             (vertices1, texCoords1, normals1, indices1, indices32_1),
           ) =
             _prepare();
+
           let gameObject1 =
             GeometryAPI.unsafeGetGeometryGameObjects(geometry1, currentState)
             |> ArrayService.unsafeGetFirst;
-          let currentState =
-            SettingTool.setMemory(currentState, ~maxDisposeCount=1, ());
 
           let currentState =
             currentState
-            |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
+            |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBufferAndNotReallocate(
                  gameObject1,
                  geometry1,
                );
+
+          let currentState = reAllocateGeometryToNewBuffer(currentState);
+
           let restoredState =
             MainStateTool.restore(currentState, copiedState);
 
@@ -335,8 +380,8 @@ let _ =
                       false,
                       false,
                     );
-        })
-      );
+        });
+      });
     });
 
     describe("optimize: if point data not dirty, not restore typeArrays", () => {

@@ -22,7 +22,6 @@ let setName = (material, name, state) => {
     lightMaterialRecord:
       Some({
         ...record,
-        isNameMapDirtyForDeepCopy: true,
         nameMap: NameService.setName(material, name, nameMap),
       }),
   };

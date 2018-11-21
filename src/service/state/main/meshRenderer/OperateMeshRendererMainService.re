@@ -34,6 +34,24 @@ let getIsRender = (meshRenderer, state) =>
   )
   === BufferMeshRendererService.getRender();
 
+let _removeFromRenderGameObjectMap =
+    (
+      meshRenderer,
+      {basicMaterialRenderGameObjectMap, lightMaterialRenderGameObjectMap} as meshRendererRecord,
+    ) => {
+  ...meshRendererRecord,
+  basicMaterialRenderGameObjectMap:
+    basicMaterialRenderGameObjectMap
+    |> Obj.magic
+    |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
+    |> Obj.magic,
+  lightMaterialRenderGameObjectMap:
+    lightMaterialRenderGameObjectMap
+    |> Obj.magic
+    |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
+    |> Obj.magic,
+};
+
 let setIsRender = (meshRenderer, isRender: bool, {gameObjectRecord} as state) =>
   isRender === getIsRender(meshRenderer, state) ?
     state :

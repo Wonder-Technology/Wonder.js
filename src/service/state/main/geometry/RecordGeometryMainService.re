@@ -9,44 +9,6 @@ open BufferGeometryService;
 let getRecord = ({geometryRecord}) =>
   geometryRecord |> OptionService.unsafeGet;
 
-/* let setAllTypeArrDataToDefault =
-       (
-         geometryCount: int,
-         geometryPointCount,
-         (vertices, texCoords, normals, indices, indices32),
-       ) => (
-     vertices
-     |> Js.Typed_array.Float32Array.fillRangeInPlace(
-          0.,
-          ~start=0,
-          ~end_=geometryCount * geometryPointCount * getVertexSize(),
-        ),
-     texCoords
-     |> Js.Typed_array.Float32Array.fillRangeInPlace(
-          0.,
-          ~start=0,
-          ~end_=geometryCount * geometryPointCount * getTexCoordsSize(),
-        ),
-     normals
-     |> Js.Typed_array.Float32Array.fillRangeInPlace(
-          0.,
-          ~start=0,
-          ~end_=geometryCount * geometryPointCount * getVertexSize(),
-        ),
-     indices
-     |> Js.Typed_array.Uint16Array.fillRangeInPlace(
-          0,
-          ~start=0,
-          ~end_=geometryCount * geometryPointCount * getIndexSize(),
-        ),
-     indices32
-     |> Js.Typed_array.Uint32Array.fillRangeInPlace(
-          0,
-          ~start=0,
-          ~end_=geometryCount * geometryPointCount * getIndexSize(),
-        ),
-   ); */
-
 let setAllInfosDataToDefault =
     (
       geometryCount: int,
@@ -86,11 +48,6 @@ let _initBufferData = (geometryPointCount, geometryCount) => {
     normals,
     indices,
     indices32,
-    copiedVertices,
-    copiedTexCoords,
-    copiedNormals,
-    copiedIndices,
-    copiedIndices32,
     verticesInfos,
     texCoordsInfos,
     normalsInfos,
@@ -108,11 +65,6 @@ let _initBufferData = (geometryPointCount, geometryCount) => {
     normals,
     indices,
     indices32,
-    copiedVertices,
-    copiedTexCoords,
-    copiedNormals,
-    copiedIndices,
-    copiedIndices32,
     verticesInfos,
     texCoordsInfos,
     normalsInfos,
@@ -131,11 +83,6 @@ let create = ({settingRecord} as state) => {
     normals,
     indices,
     indices32,
-    copiedVertices,
-    copiedTexCoords,
-    copiedNormals,
-    copiedIndices,
-    copiedIndices32,
     verticesInfos,
     texCoordsInfos,
     normalsInfos,
@@ -151,11 +98,6 @@ let create = ({settingRecord} as state) => {
       normals,
       indices,
       indices32,
-      copiedVertices,
-      copiedTexCoords,
-      copiedNormals,
-      copiedIndices,
-      copiedIndices32,
       verticesInfos,
       texCoordsInfos,
       normalsInfos,
@@ -181,39 +123,6 @@ let create = ({settingRecord} as state) => {
   state;
 };
 
-let _fillToCopiedVertexPoints = (sourcePoints, copiedPoints, pointOffset) => {
-  TypeArrayService.fillFloat32ArrayWithFloat32Array(
-    (copiedPoints, 0),
-    (sourcePoints, 0),
-    pointOffset,
-  )
-  |> ignore;
-
-  copiedPoints;
-};
-
-let _fillToCopiedIndices = (sourcePoints, copiedPoints, pointOffset) => {
-  TypeArrayService.fillUint16ArrayWithUint16Array(
-    (copiedPoints, 0),
-    (sourcePoints, 0),
-    pointOffset,
-  )
-  |> ignore;
-
-  copiedPoints;
-};
-
-let _fillToCopiedIndices32 = (sourcePoints, copiedPoints, pointOffset) => {
-  TypeArrayService.fillUint32ArrayWithUint32Array(
-    (copiedPoints, 0),
-    (sourcePoints, 0),
-    pointOffset,
-  )
-  |> ignore;
-
-  copiedPoints;
-};
-
 let deepCopyForRestore = state => {
   let {
         index,
@@ -222,11 +131,6 @@ let deepCopyForRestore = state => {
         normals,
         indices,
         indices32,
-        copiedVertices,
-        copiedTexCoords,
-        copiedNormals,
-        copiedIndices,
-        copiedIndices32,
         verticesOffset,
         texCoordsOffset,
         normalsOffset,
@@ -255,20 +159,6 @@ let deepCopyForRestore = state => {
         ...record,
         isPointDataDirtyForRestore: false,
         index,
-        copiedVertices:
-          _fillToCopiedVertexPoints(vertices, copiedVertices, verticesOffset),
-        copiedTexCoords:
-          _fillToCopiedVertexPoints(
-            texCoords,
-            copiedTexCoords,
-            texCoordsOffset,
-          ),
-        copiedNormals:
-          _fillToCopiedVertexPoints(normals, copiedNormals, normalsOffset),
-        copiedIndices:
-          _fillToCopiedIndices(indices, copiedIndices, indicesOffset),
-        copiedIndices32:
-          _fillToCopiedIndices32(indices32, copiedIndices32, indicesOffset),
         verticesInfos:
           verticesInfos
           |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(infosEndIndex),

@@ -15,36 +15,51 @@ let _restoreTypeArrays =
       ),
     );
 
-  TypeArrayService.fillFloat32ArrayWithFloat32Array(
-    (currentGeometryRecord.vertices, 0),
-    (targetGeometryRecord.copiedVertices, 0),
-    targetGeometryRecord.verticesOffset,
-  )
-  |> ignore;
-  TypeArrayService.fillFloat32ArrayWithFloat32Array(
-    (currentGeometryRecord.texCoords, 0),
-    (targetGeometryRecord.copiedTexCoords, 0),
-    targetGeometryRecord.texCoordsOffset,
-  )
-  |> ignore;
-  TypeArrayService.fillFloat32ArrayWithFloat32Array(
-    (currentGeometryRecord.normals, 0),
-    (targetGeometryRecord.copiedNormals, 0),
-    targetGeometryRecord.normalsOffset,
-  )
-  |> ignore;
-  TypeArrayService.fillUint16ArrayWithUint16Array(
-    (currentGeometryRecord.indices, 0),
-    (targetGeometryRecord.copiedIndices, 0),
-    targetGeometryRecord.indicesOffset,
-  )
-  |> ignore;
-  TypeArrayService.fillUint32ArrayWithUint32Array(
-    (currentGeometryRecord.indices32, 0),
-    (targetGeometryRecord.copiedIndices32, 0),
-    targetGeometryRecord.indices32Offset,
-  )
-  |> ignore;
+  currentGeometryRecord.vertices === targetGeometryRecord.vertices ?
+    () :
+    TypeArrayService.fillFloat32ArrayWithFloat32Array(
+      (currentGeometryRecord.vertices, 0),
+      (targetGeometryRecord.vertices, 0),
+      Js.Typed_array.Float32Array.length(targetGeometryRecord.vertices),
+    )
+    |> ignore;
+
+  currentGeometryRecord.texCoords === targetGeometryRecord.texCoords ?
+    () :
+    TypeArrayService.fillFloat32ArrayWithFloat32Array(
+      (currentGeometryRecord.texCoords, 0),
+      (targetGeometryRecord.texCoords, 0),
+      Js.Typed_array.Float32Array.length(targetGeometryRecord.texCoords),
+    )
+    |> ignore;
+
+  currentGeometryRecord.normals === targetGeometryRecord.normals ?
+    () :
+    TypeArrayService.fillFloat32ArrayWithFloat32Array(
+      (currentGeometryRecord.normals, 0),
+      (targetGeometryRecord.normals, 0),
+      Js.Typed_array.Float32Array.length(targetGeometryRecord.normals),
+    )
+    |> ignore;
+
+  currentGeometryRecord.indices === targetGeometryRecord.indices ?
+    () :
+    TypeArrayService.fillUint16ArrayWithUint16Array(
+      (currentGeometryRecord.indices, 0),
+      (targetGeometryRecord.indices, 0),
+      Js.Typed_array.Uint16Array.length(targetGeometryRecord.indices),
+    )
+    |> ignore;
+
+  currentGeometryRecord.indices32 === targetGeometryRecord.indices32 ?
+    () :
+    TypeArrayService.fillUint32ArrayWithUint32Array(
+      (currentGeometryRecord.indices32, 0),
+      (targetGeometryRecord.indices32, 0),
+      Js.Typed_array.Uint32Array.length(targetGeometryRecord.indices32),
+    )
+    |> ignore;
+
   TypeArrayService.fillUint32ArrayWithUint32Array(
     (verticesInfos, 0),
     (targetGeometryRecord.verticesInfos, 0),

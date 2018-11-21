@@ -16,9 +16,6 @@ type meshRendererRecord = {
   basicMaterialRenderGameObjectMap: renderGameObjectMap,
   lightMaterialRenderGameObjectMap: renderGameObjectMap,
   gameObjectMap,
-  mutable isBasicMaterialRenderGameObjectMapForDeepCopy: bool,
-  mutable isLightMaterialRenderGameObjectMapForDeepCopy: bool,
-  mutable isGameObjectMapForDeepCopy: bool,
   disposedIndexArray: array(meshRenderer),
 };
 

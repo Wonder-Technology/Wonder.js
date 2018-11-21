@@ -103,38 +103,6 @@ let _ =
           state,
         )
       );
-
-      describe(
-        "optimize deep copy basicMaterialRenderGameObjectMap, lightMaterialRenderGameObjectMap, gameObjectMap",
-        () =>
-        describe("if data is dirty, copy it", () =>
-          test("if add meshRenderer component, be dirty", () => {
-            let (
-              state,
-              gameObject1,
-              gameObject2,
-              gameObject3,
-              meshRenderer1,
-              meshRenderer2,
-              meshRenderer3,
-            ) =
-              _prepareMeshRendererData(state);
-
-            let state = MeshRendererTool.markAllDirtyForRestore(false, state);
-
-            let (state, gameObject4, meshRenderer4) =
-              MeshRendererTool.createBasicMaterialGameObject(state);
-
-            let copiedState = MainStateTool.deepCopyForRestore(state);
-
-            let (state, gameObject5, meshRenderer5) =
-              MeshRendererTool.createBasicMaterialGameObject(state);
-
-            MeshRendererTool.getBasicMaterialRenderArray(copiedState)
-            |> expect == [|gameObject1, gameObject4|];
-          })
-        )
-      );
     });
 
     describe("restore meshRenderer record to target state", () => {

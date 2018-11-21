@@ -119,44 +119,6 @@ let _ =
                     copiedOriginEmptyMapUnitArrayMap,
                   );
       });
-
-      describe(
-        "optimize deep copy nameMap, emptyMapUnitArrayMap, gameObjectsMap", () =>
-        describe("if data is dirty, copy it", () =>
-          test("if add lightMaterial component, be dirty", () => {
-            let (
-              state,
-              gameObject1,
-              gameObject2,
-              gameObject3,
-              material1,
-              material2,
-              material3,
-            ) =
-              _prepareLightMaterialData(state);
-
-            let state =
-              LightMaterialTool.markAllDirtyForRestore(false, state);
-
-            let (state, gameObject4, material4) =
-              LightMaterialTool.createGameObject(state);
-
-            let copiedState = MainStateTool.deepCopyForRestore(state);
-
-            let (state, gameObject5, _) =
-              LightMaterialTool.createGameObjectWithShareMaterial(
-                material4,
-                state,
-              );
-
-            LightMaterialAPI.unsafeGetLightMaterialGameObjects(
-              material4,
-              copiedState,
-            )
-            |> expect == [|gameObject4|];
-          })
-        )
-      );
     });
 
     describe("restore light material record to target state", () =>

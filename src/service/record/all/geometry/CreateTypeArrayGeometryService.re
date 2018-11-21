@@ -28,31 +28,6 @@ let createTypeArrays = (buffer, geometryPointCount, geometryCount) => (
     ~offset=getIndices32Offset(geometryPointCount),
     ~length=getIndices32Length(geometryPointCount),
   ),
-  Float32Array.fromBufferRange(
-    WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getCopiedVerticesOffset(geometryPointCount),
-    ~length=getVertexLength(geometryCount),
-  ),
-  Float32Array.fromBufferRange(
-    WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getCopiedTexCoordsOffset(geometryPointCount),
-    ~length=getTexCoordsLength(geometryCount),
-  ),
-  Float32Array.fromBufferRange(
-    WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getCopiedNormalsOffset(geometryPointCount),
-    ~length=getVertexLength(geometryCount),
-  ),
-  Uint16Array.fromBufferRange(
-    WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getCopiedIndicesOffset(geometryPointCount),
-    ~length=getCopiedIndicesLength(geometryPointCount),
-  ),
-  Uint32Array.fromBufferRange(
-    WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getCopiedIndices32Offset(geometryPointCount),
-    ~length=getCopiedIndices32Length(geometryPointCount),
-  ),
   Uint32Array.fromBufferRange(
     WorkerType.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getVerticesInfosOffset(geometryPointCount),

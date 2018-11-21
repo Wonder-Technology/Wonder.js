@@ -59,26 +59,18 @@ let handleBatchDisposeComponent =
       IsDebugMainService.getIsDebug(StateDataMain.stateData),
     );
 
-    meshRendererArray |> Js.Array.length === 0 ?
-      record :
-      {
-        let record =
-          RecordMeshRendererMainService.markAllDirtyForRestore(true, record);
-
-        switch (meshRendererArray |> Js.Array.length) {
-        | 0 => record
-        | _ =>
-          let record = {
-            ...record,
-            disposedIndexArray:
-              disposedIndexArray |> Js.Array.concat(meshRendererArray),
-          };
-          meshRendererArray
-          |> WonderCommonlib.ArrayService.reduceOneParam(
-               (. record, meshRenderer) =>
-                 record |> _disposeData(meshRenderer),
-               record,
-             );
-        };
+    switch (meshRendererArray |> Js.Array.length) {
+    | 0 => record
+    | _ =>
+      let record = {
+        ...record,
+        disposedIndexArray:
+          disposedIndexArray |> Js.Array.concat(meshRendererArray),
       };
+      meshRendererArray
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. record, meshRenderer) => record |> _disposeData(meshRenderer),
+           record,
+         );
+    };
   };

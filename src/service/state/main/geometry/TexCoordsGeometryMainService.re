@@ -23,26 +23,18 @@ let getTexCoords =
 let setTexCoordsByTypeArray = (index: int, data: Float32Array.t, state) => {
   let {texCoordsInfos, texCoords, texCoordsOffset} as record =
     getRecord(state);
-
+  record.texCoordsOffset =
+    setFloat32PointData(
+      (
+        BufferGeometryService.getInfoIndex(index),
+        texCoordsInfos,
+        texCoordsOffset,
+        Float32Array.length(data),
+      ),
+      fillFloat32ArrayWithOffset(texCoords, data),
+    );
   record.isPointDataDirtyForRestore = true;
-
-  {
-    ...state,
-    geometryRecord:
-      Some({
-        ...record,
-        texCoordsOffset:
-          setFloat32PointData(
-            (
-              BufferGeometryService.getInfoIndex(index),
-              texCoordsInfos,
-              texCoordsOffset,
-              Float32Array.length(data),
-            ),
-            fillFloat32ArrayWithOffset(texCoords, data),
-          ),
-      }),
-  };
+  state;
 };
 
 let hasTexCoords = (index, state) => {

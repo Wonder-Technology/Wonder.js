@@ -23,27 +23,18 @@ let getVertices =
 
 let setVerticesByTypeArray = (index: int, data: Float32Array.t, state) => {
   let {verticesInfos, vertices, verticesOffset} as record = getRecord(state);
-
+  record.verticesOffset =
+    setFloat32PointData(
+      (
+        BufferGeometryService.getInfoIndex(index),
+        verticesInfos,
+        verticesOffset,
+        Float32Array.length(data),
+      ),
+      fillFloat32ArrayWithOffset(vertices, data),
+    );
   record.isPointDataDirtyForRestore = true;
-
-  {
-    ...state,
-    geometryRecord:
-      Some({
-        ...record,
-        verticesOffset:
-          setFloat32PointData(
-            (
-              BufferGeometryService.getInfoIndex(index),
-              verticesInfos,
-              verticesOffset,
-              Float32Array.length(data),
-            ),
-            fillFloat32ArrayWithOffset(vertices, data),
-
-          ),
-      }),
-  };
+  state;
 };
 
 let hasVertices = (index, state) => {

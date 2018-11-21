@@ -85,23 +85,9 @@ let create = ({settingRecord} as state) => {
         WonderCommonlib.SparseMapService.createEmpty(),
       gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
-      isBasicMaterialRenderGameObjectMapForDeepCopy: true,
-      isLightMaterialRenderGameObjectMapForDeepCopy: true,
-      isGameObjectMapForDeepCopy: true,
     });
   state;
 };
-
-let markAllDirtyForRestore = (isDirty, record) => {
-  record.isBasicMaterialRenderGameObjectMapForDeepCopy = isDirty;
-  record.isLightMaterialRenderGameObjectMapForDeepCopy = isDirty;
-  record.isGameObjectMapForDeepCopy = isDirty;
-
-  record;
-};
-
-let _markSourceRecordNotDirty = sourceRecord =>
-  markAllDirtyForRestore(false, sourceRecord) |> ignore;
 
 let deepCopyForRestore = ({settingRecord} as state) => {
   let {
@@ -112,45 +98,31 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         lightMaterialRenderGameObjectMap,
         gameObjectMap,
         disposedIndexArray,
-        isBasicMaterialRenderGameObjectMapForDeepCopy,
-        isLightMaterialRenderGameObjectMapForDeepCopy,
-        isGameObjectMapForDeepCopy,
       } as record =
     state |> getRecord;
-
-  _markSourceRecordNotDirty(record);
 
   {
     ...state,
     meshRendererRecord:
-      Some(
-        {
-          ...record,
-          index,
-          drawModes:
-            drawModes
-            |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
-                 index * getDrawModesSize(),
-               ),
-          isRenders:
-            isRenders
-            |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
-                 index * getIsRendersSize(),
-               ),
-          basicMaterialRenderGameObjectMap:
-            isBasicMaterialRenderGameObjectMapForDeepCopy ?
-              basicMaterialRenderGameObjectMap |> SparseMapService.copy :
-              basicMaterialRenderGameObjectMap,
-          lightMaterialRenderGameObjectMap:
-            isLightMaterialRenderGameObjectMapForDeepCopy ?
-              lightMaterialRenderGameObjectMap |> SparseMapService.copy :
-              lightMaterialRenderGameObjectMap,
-          gameObjectMap:
-            isGameObjectMapForDeepCopy ?
-              gameObjectMap |> SparseMapService.copy : gameObjectMap,
-          disposedIndexArray: disposedIndexArray |> Js.Array.copy,
-        }
-        |> markAllDirtyForRestore(false),
-      ),
+      Some({
+        ...record,
+        index,
+        drawModes:
+          drawModes
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getDrawModesSize(),
+             ),
+        isRenders:
+          isRenders
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getIsRendersSize(),
+             ),
+        basicMaterialRenderGameObjectMap:
+          basicMaterialRenderGameObjectMap |> SparseMapService.copy,
+        lightMaterialRenderGameObjectMap:
+          lightMaterialRenderGameObjectMap |> SparseMapService.copy,
+        gameObjectMap: gameObjectMap |> SparseMapService.copy,
+        disposedIndexArray: disposedIndexArray |> Js.Array.copy,
+      }),
   };
 };

@@ -17,45 +17,26 @@ let addToRenderGameObjectMap =
     (
       meshRenderer,
       gameObjectUid,
-      {
-        isBasicMaterialRenderGameObjectMapForDeepCopy,
-        isLightMaterialRenderGameObjectMapForDeepCopy,
-        basicMaterialRenderGameObjectMap,
-        lightMaterialRenderGameObjectMap,
-      } as meshRendererRecord,
+      {basicMaterialRenderGameObjectMap, lightMaterialRenderGameObjectMap} as meshRendererRecord,
       gameObjectRecord,
     ) => {
-  let hasBasicMaterialComponent =
+  ...meshRendererRecord,
+  basicMaterialRenderGameObjectMap:
     HasComponentGameObjectService.hasBasicMaterialComponent(
       gameObjectUid,
       gameObjectRecord,
-    );
-
-  let hasLightMaterialComponent =
+    ) ?
+      basicMaterialRenderGameObjectMap
+      |> _setRenderGameObject(meshRenderer, gameObjectUid) :
+      basicMaterialRenderGameObjectMap,
+  lightMaterialRenderGameObjectMap:
     HasComponentGameObjectService.hasLightMaterialComponent(
       gameObjectUid,
       gameObjectRecord,
-    );
-
-  {
-    ...meshRendererRecord,
-    isBasicMaterialRenderGameObjectMapForDeepCopy:
-      hasBasicMaterialComponent ?
-        true : isBasicMaterialRenderGameObjectMapForDeepCopy,
-    isLightMaterialRenderGameObjectMapForDeepCopy:
-      hasLightMaterialComponent ?
-        true : isLightMaterialRenderGameObjectMapForDeepCopy,
-    basicMaterialRenderGameObjectMap:
-      hasBasicMaterialComponent ?
-        basicMaterialRenderGameObjectMap
-        |> _setRenderGameObject(meshRenderer, gameObjectUid) :
-        basicMaterialRenderGameObjectMap,
-    lightMaterialRenderGameObjectMap:
-      hasLightMaterialComponent ?
-        lightMaterialRenderGameObjectMap
-        |> _setRenderGameObject(meshRenderer, gameObjectUid) :
-        lightMaterialRenderGameObjectMap,
-  };
+    ) ?
+      lightMaterialRenderGameObjectMap
+      |> _setRenderGameObject(meshRenderer, gameObjectUid) :
+      lightMaterialRenderGameObjectMap,
 };
 
 let removeFromRenderGameObjectMap = (meshRenderer, state) => {

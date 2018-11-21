@@ -421,10 +421,49 @@ let _ =
                 SettingTool.setMemory(state, ~maxDisposeCount=1, ());
               GeometryTool.createThreeGameObjectsAndSetFullPointData(state);
             };
+
             describe(
               "if have dispose too many geometrys, reallocate geometry", () => {
               describe("test type array data", () =>
                 describe("pack old type array with alived data", () => {
+                  test("test indices and indices32", () => {
+                    open GeometryTool;
+                    let state =
+                      SettingTool.setMemory(state^, ~maxDisposeCount=1, ());
+                    let indices1 = Uint16Array.make([|2, 1, 0|]);
+                    let indices3 = Uint16Array.make([|0, 1, 2|]);
+                    let indices4 = Uint16Array.make([|3, 2, 5|]);
+                    let indices32_2 = Uint32Array.make([|2, 9, 1|]);
+                    let (state, gameObject1, geometry1) =
+                      createGameObject(state);
+                    let (state, gameObject2, geometry2) =
+                      createGameObject(state);
+                    let (state, gameObject3, geometry3) =
+                      createGameObject(state);
+                    let (state, gameObject4, geometry4) =
+                      createGameObject(state);
+                    let state =
+                      state
+                      |> setGeometryIndices(geometry1, indices1)
+                      |> setGeometryIndices(geometry3, indices3)
+                      |> setGeometryIndices(geometry4, indices4)
+                      |> setGeometryIndices32(geometry2, indices32_2);
+
+                    let state =
+                      state
+                      |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
+                           gameObject1,
+                           geometry1,
+                         );
+
+                    (
+                      getGeometryIndices(geometry3, state),
+                      getGeometryIndices(geometry4, state),
+                      getGeometryIndices32(geometry2, state),
+                    )
+                    |> expect == (indices3, indices4, indices32_2);
+                  });
+
                   test("alive geometry's points should exist", () => {
                     let (
                       state,

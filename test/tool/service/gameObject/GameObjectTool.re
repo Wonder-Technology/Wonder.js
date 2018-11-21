@@ -134,6 +134,20 @@ let disposeGameObjectTransformComponent =
     [|component|],
   );
 
+let disposeGameObjectGeometryComponentWithoutVboBufferAndNotReallocate =
+    (
+      gameObject: gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) => {
+  let (state, geometryNeedDisposeVboBufferArr) =
+    DisposeComponentGameObjectMainService.batchDisposeGeometryComponentData(
+      state,
+      [|(gameObject, component)|],
+    );
+  state;
+};
+
 let disposeGameObjectGeometryComponentWithoutVboBuffer =
     (
       gameObject: gameObject,

@@ -21,93 +21,111 @@ let _resetShaderIndices = state => {
 };
 
 let _restoreTypeArrays =
-    (settingRecord, currentLightMaterialRecord, targetLightMaterialRecord) => {
-  let (
-    shaderIndices,
-    diffuseColors,
-    specularColors,
-    shininess,
-    textureIndices,
-    diffuseMapUnits,
-    specularMapUnits,
-  ) =
-    (
-      currentLightMaterialRecord.shaderIndices,
-      currentLightMaterialRecord.diffuseColors,
-      currentLightMaterialRecord.specularColors,
-      currentLightMaterialRecord.shininess,
-      currentLightMaterialRecord.textureIndices,
-      currentLightMaterialRecord.diffuseMapUnits,
-      currentLightMaterialRecord.specularMapUnits,
-    )
-    |> RecordLightMaterialMainService.setAllTypeArrDataToDefault(
-         currentLightMaterialRecord.index,
-         (
-           DefaultTypeArrayValueService.getDefaultShaderIndex(),
-           currentLightMaterialRecord.defaultDiffuseColor,
-           currentLightMaterialRecord.defaultSpecularColor,
-           currentLightMaterialRecord.defaultShininess,
-         ),
-       );
-  TypeArrayService.fillUint32ArrayWithUint32Array(
-    (currentLightMaterialRecord.shaderIndices, 0),
-    (targetLightMaterialRecord.copiedShaderIndices, 0),
-    RecordLightMaterialMainService.getShaderIndicesEndIndex(
-      targetLightMaterialRecord.index,
-    ),
-  )
-  |> ignore;
-  TypeArrayService.fillFloat32ArrayWithFloat32Array(
-    (currentLightMaterialRecord.diffuseColors, 0),
-    (targetLightMaterialRecord.copiedDiffuseColors, 0),
-    RecordLightMaterialMainService.getDiffuseColorsEndIndex(
-      targetLightMaterialRecord.index,
-    ),
-  )
-  |> ignore;
-  TypeArrayService.fillFloat32ArrayWithFloat32Array(
-    (currentLightMaterialRecord.specularColors, 0),
-    (targetLightMaterialRecord.copiedSpecularColors, 0),
-    RecordLightMaterialMainService.getSpecularColorsEndIndex(
-      targetLightMaterialRecord.index,
-    ),
-  )
-  |> ignore;
-  TypeArrayService.fillFloat32ArrayWithFloat32Array(
-    (currentLightMaterialRecord.shininess, 0),
-    (targetLightMaterialRecord.copiedShininess, 0),
-    RecordLightMaterialMainService.getShininessEndIndex(
-      targetLightMaterialRecord.index,
-    ),
-  )
-  |> ignore;
-  TypeArrayService.fillUint32ArrayWithUint32Array(
-    (currentLightMaterialRecord.textureIndices, 0),
-    (targetLightMaterialRecord.copiedTextureIndices, 0),
-    RecordLightMaterialMainService.getTextureIndicesEndIndex(
-      settingRecord,
-      targetLightMaterialRecord.index,
-    ),
-  )
-  |> ignore;
-  TypeArrayService.fillUint8ArrayWithUint8Array(
-    (currentLightMaterialRecord.diffuseMapUnits, 0),
-    (targetLightMaterialRecord.copiedDiffuseMapUnits, 0),
-    RecordLightMaterialMainService.getMapUnitsEndIndex(
-      targetLightMaterialRecord.index,
-    ),
-  )
-  |> ignore;
-  TypeArrayService.fillUint8ArrayWithUint8Array(
-    (currentLightMaterialRecord.specularMapUnits, 0),
-    (targetLightMaterialRecord.copiedSpecularMapUnits, 0),
-    RecordLightMaterialMainService.getMapUnitsEndIndex(
-      targetLightMaterialRecord.index,
-    ),
-  )
-  |> ignore;
-  (currentLightMaterialRecord, targetLightMaterialRecord);
-};
+    (currentLightMaterialRecord, targetLightMaterialRecord) =>
+  currentLightMaterialRecord.shaderIndices
+  === targetLightMaterialRecord.shaderIndices
+  &&
+  currentLightMaterialRecord.diffuseColors === targetLightMaterialRecord.
+                                                 diffuseColors
+  &&
+  currentLightMaterialRecord.specularColors === targetLightMaterialRecord.
+                                                  specularColors
+  &&
+  currentLightMaterialRecord.textureIndices === targetLightMaterialRecord.
+                                                  textureIndices
+  &&
+  currentLightMaterialRecord.diffuseMapUnits === targetLightMaterialRecord.
+                                                   diffuseMapUnits
+  &&
+  currentLightMaterialRecord.specularMapUnits === targetLightMaterialRecord.
+                                                    specularMapUnits ?
+    (currentLightMaterialRecord, targetLightMaterialRecord) :
+    {
+      let (
+        shaderIndices,
+        diffuseColors,
+        specularColors,
+        shininess,
+        textureIndices,
+        diffuseMapUnits,
+        specularMapUnits,
+      ) =
+        (
+          currentLightMaterialRecord.shaderIndices,
+          currentLightMaterialRecord.diffuseColors,
+          currentLightMaterialRecord.specularColors,
+          currentLightMaterialRecord.shininess,
+          currentLightMaterialRecord.textureIndices,
+          currentLightMaterialRecord.diffuseMapUnits,
+          currentLightMaterialRecord.specularMapUnits,
+        )
+        |> RecordLightMaterialMainService.setAllTypeArrDataToDefault(
+             currentLightMaterialRecord.index,
+             (
+               DefaultTypeArrayValueService.getDefaultShaderIndex(),
+               currentLightMaterialRecord.defaultDiffuseColor,
+               currentLightMaterialRecord.defaultSpecularColor,
+               currentLightMaterialRecord.defaultShininess,
+             ),
+           );
+      TypeArrayService.fillUint32ArrayWithUint32Array(
+        (currentLightMaterialRecord.shaderIndices, 0),
+        (targetLightMaterialRecord.shaderIndices, 0),
+        Js.Typed_array.Uint32Array.length(
+          targetLightMaterialRecord.shaderIndices,
+        ),
+      )
+      |> ignore;
+      TypeArrayService.fillFloat32ArrayWithFloat32Array(
+        (currentLightMaterialRecord.diffuseColors, 0),
+        (targetLightMaterialRecord.diffuseColors, 0),
+        Js.Typed_array.Float32Array.length(
+          targetLightMaterialRecord.diffuseColors,
+        ),
+      )
+      |> ignore;
+      TypeArrayService.fillFloat32ArrayWithFloat32Array(
+        (currentLightMaterialRecord.specularColors, 0),
+        (targetLightMaterialRecord.specularColors, 0),
+        Js.Typed_array.Float32Array.length(
+          targetLightMaterialRecord.specularColors,
+        ),
+      )
+      |> ignore;
+      TypeArrayService.fillFloat32ArrayWithFloat32Array(
+        (currentLightMaterialRecord.shininess, 0),
+        (targetLightMaterialRecord.shininess, 0),
+        Js.Typed_array.Float32Array.length(
+          targetLightMaterialRecord.shininess,
+        ),
+      )
+      |> ignore;
+      TypeArrayService.fillUint32ArrayWithUint32Array(
+        (currentLightMaterialRecord.textureIndices, 0),
+        (targetLightMaterialRecord.textureIndices, 0),
+        Js.Typed_array.Uint32Array.length(
+          targetLightMaterialRecord.textureIndices,
+        ),
+      )
+      |> ignore;
+      TypeArrayService.fillUint8ArrayWithUint8Array(
+        (currentLightMaterialRecord.diffuseMapUnits, 0),
+        (targetLightMaterialRecord.diffuseMapUnits, 0),
+        Js.Typed_array.Uint8Array.length(
+          targetLightMaterialRecord.diffuseMapUnits,
+        ),
+      )
+      |> ignore;
+      TypeArrayService.fillUint8ArrayWithUint8Array(
+        (currentLightMaterialRecord.specularMapUnits, 0),
+        (targetLightMaterialRecord.specularMapUnits, 0),
+        Js.Typed_array.Uint8Array.length(
+          targetLightMaterialRecord.specularMapUnits,
+        ),
+      )
+      |> ignore;
+      (currentLightMaterialRecord, targetLightMaterialRecord);
+    };
 
 let restore = (gl, currentState, targetState) => {
   let targetState = _resetShaderIndices(targetState);
@@ -124,11 +142,7 @@ let restore = (gl, currentState, targetState) => {
   let targetLightMaterialRecord =
     RecordLightMaterialMainService.getRecord(targetState);
   let (currentLightMaterialRecord, targetLightMaterialRecord) =
-    _restoreTypeArrays(
-      currentState.settingRecord,
-      currentLightMaterialRecord,
-      targetLightMaterialRecord,
-    );
+    _restoreTypeArrays(currentLightMaterialRecord, targetLightMaterialRecord);
   {
     ...targetState,
     lightMaterialRecord:

@@ -73,6 +73,7 @@ let _allocateNewEachData =
   );
 
   let infoIndex = BufferGeometryService.getInfoIndex(index);
+
   let (verticesStartIndex, verticesEndIndex) as verticesInfo =
     ReallocatedPointsGeometryService.getInfo(infoIndex, verticesInfos);
   let (texCoordsStartIndex, texCoordsEndIndex) as texCoordsInfo =
@@ -94,41 +95,53 @@ let _allocateNewEachData =
     _updateInfos(normalsInfos, infoIndex, normalsInfo, newNormalsOffset),
     _updateInfos(indicesInfos, infoIndex, indicesInfo, newIndicesOffset),
     TypeArrayService.fillFloat32ArrayWithFloat32Array(
-      (vertices, newVerticesOffset),
+      (newVertices, newVerticesOffset),
       (vertices, verticesStartIndex),
       verticesEndIndex,
     ),
     TypeArrayService.fillFloat32ArrayWithFloat32Array(
-      (texCoords, newTexCoordsOffset),
+      (newTexCoords, newTexCoordsOffset),
       (texCoords, texCoordsStartIndex),
       texCoordsEndIndex,
     ),
     TypeArrayService.fillFloat32ArrayWithFloat32Array(
-      (normals, newNormalsOffset),
+      (newNormals, newNormalsOffset),
       (normals, normalsStartIndex),
       normalsEndIndex,
     ),
     TypeArrayService.fillUint16ArrayWithUint16Array(
-      (indices, newIndicesOffset),
+      (newIndices, newIndicesOffset),
       (indices, indicesStartIndex),
       indicesEndIndex,
     ),
     TypeArrayService.fillUint32ArrayWithUint32Array(
-      (indices32, newIndices32Offset),
+      (newIndices32, newIndices32Offset),
       (indices32, indicesStartIndex),
       indicesEndIndex,
     ),
-    vertices,
-    texCoords,
-    normals,
-    indices,
-    indices32,
+    newVertices,
+    newTexCoords,
+    newNormals,
+    newIndices,
+    newIndices32,
   );
 };
 
 let _allocateNewData =
     (
       newAliveIndexArray,
+      (
+        newBuffer,
+        newVertices,
+        newTexCoords,
+        newNormals,
+        newIndices,
+        newIndices32,
+        newVerticesInfos,
+        newTexCoordsInfos,
+        newNormalsInfos,
+        newIndicesInfos,
+      ),
       {
         vertices,
         texCoords,
@@ -142,7 +155,8 @@ let _allocateNewData =
         disposedIndexMap,
         aliveIndexArray,
       } as geometryRecord,
-    ) =>
+    ) => (
+  newBuffer,
   newAliveIndexArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (.
@@ -188,46 +202,51 @@ let _allocateNewData =
          ),
        (
          0,
-         verticesInfos,
-         texCoordsInfos,
-         normalsInfos,
-         indicesInfos,
+         newVerticesInfos,
+         newTexCoordsInfos,
+         newNormalsInfos,
+         newIndicesInfos,
          0,
          0,
          0,
          0,
          0,
-         vertices,
-         texCoords,
-         normals,
-         indices,
-         indices32,
+         newVertices,
+         newTexCoords,
+         newNormals,
+         newIndices,
+         newIndices32,
        ),
-     );
+     ),
+);
 
 let _setNewDataToState =
     (
       newAliveIndexArray,
       geometryRecord,
       (
-        newIndex,
-        newVerticesInfos,
-        newTexCoordsInfos,
-        newNormalsInfos,
-        newIndicesInfos,
-        newVerticesOffset,
-        newTexCoordsOffset,
-        newNormalsOffset,
-        newIndicesOffset,
-        newIndices32Offset,
-        newVertices,
-        newTexCoords,
-        newNormals,
-        newIndices,
-        newIndices32,
+        newBuffer,
+        (
+          newIndex,
+          newVerticesInfos,
+          newTexCoordsInfos,
+          newNormalsInfos,
+          newIndicesInfos,
+          newVerticesOffset,
+          newTexCoordsOffset,
+          newNormalsOffset,
+          newIndicesOffset,
+          newIndices32Offset,
+          newVertices,
+          newTexCoords,
+          newNormals,
+          newIndices,
+          newIndices32,
+        ),
       ),
     ) => {
   ...geometryRecord,
+  buffer: newBuffer,
   verticesInfos: newVerticesInfos,
   texCoordsInfos: newTexCoordsInfos,
   normalsInfos: newNormalsInfos,
@@ -246,13 +265,45 @@ let _setNewDataToState =
   disposedIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
 };
 
-let reAllocate = ({disposedIndexMap, aliveIndexArray} as geometryRecord) => {
+let reAllocateToNewBuffer =
+    (newBufferData, {disposedIndexMap, aliveIndexArray} as geometryRecord) => {
   let newAliveIndexArray =
     aliveIndexArray
     |> Js.Array.filter(aliveIndex =>
          ! ReallocateCPUMemoryService.isDisposed(aliveIndex, disposedIndexMap)
        );
-  _allocateNewData(newAliveIndexArray, geometryRecord)
+  _allocateNewData(newAliveIndexArray, newBufferData, geometryRecord)
   |> _setNewDataToState(newAliveIndexArray, geometryRecord)
   |> PointDataDirtyGeometryService.markPointDataDirtyForRestore;
 };
+
+let reAllocate =
+    (
+      {
+        buffer,
+        vertices,
+        texCoords,
+        normals,
+        indices,
+        indices32,
+        verticesInfos,
+        texCoordsInfos,
+        normalsInfos,
+        indicesInfos,
+      } as geometryRecord,
+    ) =>
+  reAllocateToNewBuffer(
+    (
+      buffer,
+      vertices,
+      texCoords,
+      normals,
+      indices,
+      indices32,
+      verticesInfos,
+      texCoordsInfos,
+      normalsInfos,
+      indicesInfos,
+    ),
+    geometryRecord,
+  );

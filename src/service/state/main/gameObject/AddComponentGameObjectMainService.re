@@ -15,8 +15,20 @@ let _addComponent =
 let _addComponentWithState =
     ((uid, component, componentMap), handleAddComponentFunc, state) => {
   componentMap |> ComponentMapService.addComponent(uid, component) |> ignore;
-
   handleAddComponentFunc(. component, uid, state);
+};
+
+let _addSharableComponent =
+    (
+      (uid, component, componentMap, gameObject),
+      (increaseGroupCountFunc, handleAddComponentFunc),
+      componentRecord,
+    ) => {
+  componentMap |> ComponentMapService.addComponent(uid, component) |> ignore;
+  switch (gameObject) {
+  | Some(_) => increaseGroupCountFunc(. component, componentRecord)
+  | _ => handleAddComponentFunc(. component, uid, componentRecord)
+  };
 };
 
 let addBasicCameraViewComponent =
@@ -31,9 +43,6 @@ let addBasicCameraViewComponent =
       AddBasicCameraViewService.handleAddComponent,
       basicCameraViewRecord,
     );
-
-  gameObjectRecord.isBasicCameraViewMapDirtyForDeepCopy = true;
-
   state;
 };
 
@@ -49,7 +58,6 @@ let addPerspectiveCameraProjectionComponent =
       AddPerspectiveCameraProjectionService.handleAddComponent,
       perspectiveCameraProjectionRecord,
     );
-  gameObjectRecord.isPerspectiveCameraProjectionMapDirtyForDeepCopy = true;
   state;
 };
 
@@ -60,10 +68,6 @@ let addArcballCameraControllerComponent =
       {arcballCameraControllerRecord, gameObjectRecord} as state,
     ) => {
   ...state,
-  gameObjectRecord: {
-    ...gameObjectRecord,
-    isArcballCameraControllerMapDirtyForDeepCopy: true,
-  },
   arcballCameraControllerRecord:
     _addComponent(
       (uid, component, gameObjectRecord.arcballCameraControllerMap),
@@ -86,8 +90,6 @@ let addTransformComponent =
         state |> RecordTransformMainService.getRecord,
       ),
     );
-  gameObjectRecord.isTransformMapDirtyForDeepCopy = true;
-
   state;
 };
 
@@ -108,8 +110,6 @@ let addGeometryComponent =
            AddGeometryService.handleAddComponent,
          ),
     );
-  gameObjectRecord.isGeometryMapDirtyForDeepCopy = true;
-
   state;
 };
 
@@ -124,9 +124,6 @@ let addBasicMaterialComponent =
            AddBasicMaterialService.handleAddComponent,
          ),
     );
-
-  gameObjectRecord.isBasicMaterialMapDirtyForDeepCopy = true;
-
   state;
 };
 
@@ -141,21 +138,16 @@ let addLightMaterialComponent =
            AddLightMaterialService.handleAddComponent,
          ),
     );
-  gameObjectRecord.isLightMaterialMapDirtyForDeepCopy = true;
-
   state;
 };
 
 let addMeshRendererComponent =
-    (uid: int, component: component, {gameObjectRecord} as state) => {
-  gameObjectRecord.isMeshRendererMapDirtyForDeepCopy = true;
-
+    (uid: int, component: component, {gameObjectRecord} as state) =>
   _addComponentWithState(
     (uid, component, gameObjectRecord.meshRendererMap),
     AddMeshRendererMainService.handleAddComponent,
     state,
   );
-};
 
 let addDirectionLightComponent =
     (uid: int, component: component, {gameObjectRecord} as state) => {
@@ -167,8 +159,6 @@ let addDirectionLightComponent =
         RecordDirectionLightMainService.getRecord(state),
       ),
     );
-  gameObjectRecord.isDirectionLightMapDirtyForDeepCopy = true;
-
   state;
 };
 
@@ -182,8 +172,6 @@ let addPointLightComponent =
         RecordPointLightMainService.getRecord(state),
       ),
     );
-  gameObjectRecord.isPointLightMapDirtyForDeepCopy = true;
-
   state;
 };
 
@@ -197,8 +185,6 @@ let addSourceInstanceComponent =
         RecordSourceInstanceMainService.getRecord(state),
       ),
     );
-  gameObjectRecord.isSourceInstanceMapDirtyForDeepCopy = true;
-
   state;
 };
 
@@ -214,7 +200,5 @@ let addObjectInstanceComponent =
       AddObjectInstanceService.handleAddComponent,
       objectInstanceRecord,
     );
-  gameObjectRecord.isObjectInstanceMapDirtyForDeepCopy = true;
-
   state;
 };

@@ -2,8 +2,7 @@ open StateDataRenderWorkerType;
 
 open RenderWorkerLightMaterialType;
 
-let _createTypeArrays =
-    (buffer, lightMaterialCount, textureCountPerMaterial, state) => {
+let _createTypeArrays = (buffer, lightMaterialCount, textureCountPerMaterial, state) => {
   let (
     shaderIndices,
     diffuseColors,
@@ -11,22 +10,14 @@ let _createTypeArrays =
     shininess,
     textureIndices,
     diffuseMapUnits,
-    specularMapUnits,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
+    specularMapUnits
   ) =
     CreateTypeArrayLightMaterialService.createTypeArrays(
       buffer,
       lightMaterialCount,
-      textureCountPerMaterial,
+      textureCountPerMaterial
     );
-  let lightMaterialRecord =
-    RecordLightMaterialRenderWorkerService.getRecord(state);
+  let lightMaterialRecord = RecordLightMaterialRenderWorkerService.getRecord(state);
   state.lightMaterialRecord =
     Some({
       ...lightMaterialRecord,
@@ -36,32 +27,29 @@ let _createTypeArrays =
       shininess: Some(shininess),
       textureIndices: Some(textureIndices),
       diffuseMapUnits: Some(diffuseMapUnits),
-      specularMapUnits: Some(specularMapUnits),
+      specularMapUnits: Some(specularMapUnits)
     });
-  state;
+  state
 };
 
 let execJob = (_, e, stateData) =>
-  MostUtils.callFunc(() => {
-    let state = StateRenderWorkerService.unsafeGetState(stateData);
-    let data = MessageService.getRecord(e);
-    let lightMaterialData = data##lightMaterialData;
-    let lightMaterialCount = data##bufferData##lightMaterialCount;
-    let textureCountPerMaterial = data##bufferData##textureCountPerMaterial;
-    state
-    |> _createTypeArrays(
-         lightMaterialData##buffer,
-         lightMaterialCount,
-         textureCountPerMaterial,
-       )
-    |> InitMaterialRenderWorkerJobUtils.initMaterials(
-         (
-           CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState,
-           InitInitLightMaterialService.init,
-         ),
-         RecordLightMaterialRenderWorkerService.getRecord(state).
-           isSourceInstanceMap,
-       )
-    |> StateRenderWorkerService.setState(stateData);
-    e;
-  });
+  MostUtils.callFunc(
+    () => {
+      let state = StateRenderWorkerService.unsafeGetState(stateData);
+      let data = MessageService.getRecord(e);
+      let lightMaterialData = data##lightMaterialData;
+      let lightMaterialCount = data##bufferData##lightMaterialCount;
+      let textureCountPerMaterial = data##bufferData##textureCountPerMaterial;
+      state
+      |> _createTypeArrays(lightMaterialData##buffer, lightMaterialCount, textureCountPerMaterial)
+      |> InitMaterialRenderWorkerJobUtils.initMaterials(
+           (
+             CreateInitLightMaterialStateRenderWorkerService.createInitMaterialState,
+             InitInitLightMaterialService.init
+           ),
+           RecordLightMaterialRenderWorkerService.getRecord(state).isSourceInstanceMap
+         )
+      |> StateRenderWorkerService.setState(stateData);
+      e
+    }
+  );

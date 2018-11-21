@@ -44,66 +44,13 @@ let create = () => {
   objectInstanceMap: WonderCommonlib.SparseMapService.createEmpty(),
   directionLightMap: WonderCommonlib.SparseMapService.createEmpty(),
   pointLightMap: WonderCommonlib.SparseMapService.createEmpty(),
-  isAliveUidArrayDirtyForDeepCopy: true,
-  isGeometryMapDirtyForDeepCopy: true,
-  isTransformMapDirtyForDeepCopy: true,
-  isBasicCameraViewMapDirtyForDeepCopy: true,
-  isPerspectiveCameraProjectionMapDirtyForDeepCopy: true,
-  isArcballCameraControllerMapDirtyForDeepCopy: true,
-  isMeshRendererMapDirtyForDeepCopy: true,
-  isBasicMaterialMapDirtyForDeepCopy: true,
-  isLightMaterialMapDirtyForDeepCopy: true,
-  isSourceInstanceMapDirtyForDeepCopy: true,
-  isObjectInstanceMapDirtyForDeepCopy: true,
-  isDirectionLightMapDirtyForDeepCopy: true,
-  isPointLightMapDirtyForDeepCopy: true,
 };
 
-let _isGameObjectHasDisposedAtLeastOnce =
+let deepCopyForRestore =
     (
       {
-        disposedUidArray,
-        disposedUidArrayForKeepOrder,
-        disposedUidArrayForKeepOrderRemoveGeometry,
-        disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
-        disposedUidArrayForDisposeGeometryRemoveMaterial,
-      },
-    ) =>
-  disposedUidArray
-  |> Js.Array.length > 0
-  || disposedUidArrayForKeepOrder
-  |> Js.Array.length > 0
-  || disposedUidArrayForKeepOrderRemoveGeometry
-  |> Js.Array.length > 0
-  || disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial
-  |> Js.Array.length > 0
-  || disposedUidArrayForDisposeGeometryRemoveMaterial
-  |> Js.Array.length > 0;
-
-let markAllDirtyForRestore = (isDirty, record) => {
-  record.isAliveUidArrayDirtyForDeepCopy = isDirty;
-  record.isGeometryMapDirtyForDeepCopy = isDirty;
-  record.isTransformMapDirtyForDeepCopy = isDirty;
-  record.isBasicCameraViewMapDirtyForDeepCopy = isDirty;
-  record.isPerspectiveCameraProjectionMapDirtyForDeepCopy = isDirty;
-  record.isArcballCameraControllerMapDirtyForDeepCopy = isDirty;
-  record.isMeshRendererMapDirtyForDeepCopy = isDirty;
-  record.isBasicMaterialMapDirtyForDeepCopy = isDirty;
-  record.isLightMaterialMapDirtyForDeepCopy = isDirty;
-  record.isSourceInstanceMapDirtyForDeepCopy = isDirty;
-  record.isObjectInstanceMapDirtyForDeepCopy = isDirty;
-  record.isDirectionLightMapDirtyForDeepCopy = isDirty;
-  record.isPointLightMapDirtyForDeepCopy = isDirty;
-
-  record;
-};
-
-let _markSourceRecordNotDirty = sourceRecord =>
-  markAllDirtyForRestore(false, sourceRecord) |> ignore;
-
-let deepCopyForRestore = record => {
-  let {
         uid,
+        nameMap,
         disposeCount,
         disposedUidMap,
         disposedUidArray,
@@ -137,104 +84,59 @@ let deepCopyForRestore = record => {
         objectInstanceMap,
         directionLightMap,
         pointLightMap,
-        isAliveUidArrayDirtyForDeepCopy,
-        isGeometryMapDirtyForDeepCopy,
-        isTransformMapDirtyForDeepCopy,
-        isBasicCameraViewMapDirtyForDeepCopy,
-        isPerspectiveCameraProjectionMapDirtyForDeepCopy,
-        isArcballCameraControllerMapDirtyForDeepCopy,
-        isMeshRendererMapDirtyForDeepCopy,
-        isBasicMaterialMapDirtyForDeepCopy,
-        isLightMaterialMapDirtyForDeepCopy,
-        isSourceInstanceMapDirtyForDeepCopy,
-        isObjectInstanceMapDirtyForDeepCopy,
-        isDirectionLightMapDirtyForDeepCopy,
-        isPointLightMapDirtyForDeepCopy,
-      } as record =
-    _isGameObjectHasDisposedAtLeastOnce(record) ?
-      markAllDirtyForRestore(true, record) : record;
-
-  _markSourceRecordNotDirty(record);
-
-  {
-    ...record,
-    uid,
-    disposeCount,
-    disposedUidMap: disposedUidMap |> SparseMapService.copy,
-    disposedUidArray: disposedUidArray |> SparseMapService.copy,
-    disposedUidArrayForKeepOrder:
-      disposedUidArrayForKeepOrder |> SparseMapService.copy,
-    disposedUidArrayForKeepOrderRemoveGeometry:
-      disposedUidArrayForKeepOrderRemoveGeometry |> SparseMapService.copy,
-    disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial:
-      disposedUidArrayForKeepOrderRemoveGeometry |> SparseMapService.copy,
-    disposedUidArrayForDisposeGeometryRemoveMaterial:
-      disposedUidArrayForDisposeGeometryRemoveMaterial |> SparseMapService.copy,
-    disposedBasicCameraViewArray:
-      disposedBasicCameraViewArray |> SparseMapService.copy,
-    disposedTransformArray: disposedTransformArray |> SparseMapService.copy,
-    disposedTransformArrayForKeepOrder:
-      disposedTransformArrayForKeepOrder |> SparseMapService.copy,
-    disposedPerspectiveCameraProjectionArray:
-      disposedPerspectiveCameraProjectionArray |> SparseMapService.copy,
-    disposedArcballCameraControllerArray:
-      disposedPerspectiveCameraProjectionArray |> SparseMapService.copy,
-    disposedBasicMaterialDataArray:
-      disposedBasicMaterialDataArray |> SparseMapService.copy,
-    disposedLightMaterialDataArray:
-      disposedLightMaterialDataArray |> SparseMapService.copy,
-    disposedGeometryDataArray:
-      disposedGeometryDataArray |> SparseMapService.copy,
-    disposedSourceInstanceArray:
-      disposedSourceInstanceArray |> SparseMapService.copy,
-    disposedObjectInstanceArray:
-      disposedObjectInstanceArray |> SparseMapService.copy,
-    disposedDirectionLightArray:
-      disposedDirectionLightArray |> SparseMapService.copy,
-    disposedPointLightArray: disposedPointLightArray |> SparseMapService.copy,
-    disposedMeshRendererComponentArray:
-      disposedMeshRendererComponentArray |> SparseMapService.copy,
-    aliveUidArray:
-      isAliveUidArrayDirtyForDeepCopy ?
-        aliveUidArray |> SparseMapService.copy : aliveUidArray,
-    geometryMap:
-      isGeometryMapDirtyForDeepCopy ?
-        geometryMap |> SparseMapService.copy : geometryMap,
-    transformMap:
-      isTransformMapDirtyForDeepCopy ?
-        transformMap |> SparseMapService.copy : transformMap,
-    basicCameraViewMap:
-      isBasicCameraViewMapDirtyForDeepCopy ?
-        basicCameraViewMap |> SparseMapService.copy : basicCameraViewMap,
-    perspectiveCameraProjectionMap:
-      isPerspectiveCameraProjectionMapDirtyForDeepCopy ?
-        perspectiveCameraProjectionMap |> SparseMapService.copy :
-        perspectiveCameraProjectionMap,
-    arcballCameraControllerMap:
-      isArcballCameraControllerMapDirtyForDeepCopy ?
-        arcballCameraControllerMap |> SparseMapService.copy :
-        arcballCameraControllerMap,
-    meshRendererMap:
-      isMeshRendererMapDirtyForDeepCopy ?
-        meshRendererMap |> SparseMapService.copy : meshRendererMap,
-    basicMaterialMap:
-      isBasicMaterialMapDirtyForDeepCopy ?
-        basicMaterialMap |> SparseMapService.copy : basicMaterialMap,
-    lightMaterialMap:
-      isLightMaterialMapDirtyForDeepCopy ?
-        lightMaterialMap |> SparseMapService.copy : lightMaterialMap,
-    sourceInstanceMap:
-      isSourceInstanceMapDirtyForDeepCopy ?
-        sourceInstanceMap |> SparseMapService.copy : sourceInstanceMap,
-    objectInstanceMap:
-      isObjectInstanceMapDirtyForDeepCopy ?
-        objectInstanceMap |> SparseMapService.copy : objectInstanceMap,
-    directionLightMap:
-      isDirectionLightMapDirtyForDeepCopy ?
-        directionLightMap |> SparseMapService.copy : directionLightMap,
-    pointLightMap:
-      isPointLightMapDirtyForDeepCopy ?
-        pointLightMap |> SparseMapService.copy : pointLightMap,
-  }
-  |> markAllDirtyForRestore(false);
+      } as record,
+    ) => {
+  ...record,
+  uid,
+  nameMap: nameMap |> SparseMapService.copy,
+  disposeCount,
+  disposedUidMap: disposedUidMap |> SparseMapService.copy,
+  disposedUidArray: disposedUidArray |> SparseMapService.copy,
+  disposedUidArrayForKeepOrder:
+    disposedUidArrayForKeepOrder |> SparseMapService.copy,
+  disposedUidArrayForKeepOrderRemoveGeometry:
+    disposedUidArrayForKeepOrderRemoveGeometry |> SparseMapService.copy,
+  disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial:
+    disposedUidArrayForKeepOrderRemoveGeometry |> SparseMapService.copy,
+  disposedUidArrayForDisposeGeometryRemoveMaterial:
+    disposedUidArrayForDisposeGeometryRemoveMaterial |> SparseMapService.copy,
+  disposedBasicCameraViewArray:
+    disposedBasicCameraViewArray |> SparseMapService.copy,
+  disposedTransformArray: disposedTransformArray |> SparseMapService.copy,
+  disposedTransformArrayForKeepOrder:
+    disposedTransformArrayForKeepOrder |> SparseMapService.copy,
+  disposedPerspectiveCameraProjectionArray:
+    disposedPerspectiveCameraProjectionArray |> SparseMapService.copy,
+  disposedArcballCameraControllerArray:
+    disposedPerspectiveCameraProjectionArray |> SparseMapService.copy,
+  disposedBasicMaterialDataArray:
+    disposedBasicMaterialDataArray |> SparseMapService.copy,
+  disposedLightMaterialDataArray:
+    disposedLightMaterialDataArray |> SparseMapService.copy,
+  disposedGeometryDataArray:
+    disposedGeometryDataArray |> SparseMapService.copy,
+  disposedSourceInstanceArray:
+    disposedSourceInstanceArray |> SparseMapService.copy,
+  disposedObjectInstanceArray:
+    disposedObjectInstanceArray |> SparseMapService.copy,
+  disposedDirectionLightArray:
+    disposedDirectionLightArray |> SparseMapService.copy,
+  disposedPointLightArray: disposedPointLightArray |> SparseMapService.copy,
+  disposedMeshRendererComponentArray:
+    disposedMeshRendererComponentArray |> SparseMapService.copy,
+  aliveUidArray: aliveUidArray |> SparseMapService.copy,
+  geometryMap: geometryMap |> SparseMapService.copy,
+  transformMap: transformMap |> SparseMapService.copy,
+  basicCameraViewMap: basicCameraViewMap |> SparseMapService.copy,
+  perspectiveCameraProjectionMap:
+    perspectiveCameraProjectionMap |> SparseMapService.copy,
+  arcballCameraControllerMap:
+    arcballCameraControllerMap |> SparseMapService.copy,
+  meshRendererMap: meshRendererMap |> SparseMapService.copy,
+  basicMaterialMap: basicMaterialMap |> SparseMapService.copy,
+  lightMaterialMap: lightMaterialMap |> SparseMapService.copy,
+  sourceInstanceMap: sourceInstanceMap |> SparseMapService.copy,
+  objectInstanceMap: objectInstanceMap |> SparseMapService.copy,
+  directionLightMap: directionLightMap |> SparseMapService.copy,
+  pointLightMap: pointLightMap |> SparseMapService.copy,
 };

@@ -49,25 +49,18 @@ let setIndicesByUint16Array = (index: int, data: Uint16Array.t, state) => {
   let {indicesInfos, indices, indicesOffset, indicesTypeMap} as record =
     getRecord(state);
 
+  record.indicesOffset =
+    setUint16PointData(
+      (
+        BufferGeometryService.getInfoIndex(index),
+        indicesInfos,
+        indicesOffset,
+        Uint16Array.length(data),
+      ),
+      fillUint16ArrayWithOffset(indices, data),
+    );
   record.isPointDataDirtyForRestore = true;
-
-  {
-    ...state,
-    geometryRecord:
-      Some({
-        ...record,
-        indicesOffset:
-          setUint16PointData(
-            (
-              BufferGeometryService.getInfoIndex(index),
-              indicesInfos,
-              indicesOffset,
-              Uint16Array.length(data),
-            ),
-            fillUint16ArrayWithOffset(indices, data),
-          ),
-      }),
-  };
+  state;
 };
 
 let getIndices32 =
@@ -87,25 +80,18 @@ let setIndicesByUint32Array = (index: int, data: Uint32Array.t, state) => {
   let {indicesInfos, indices32, indices32Offset} as record =
     getRecord(state);
 
+  record.indices32Offset =
+    setUint32PointData(
+      (
+        BufferGeometryService.getInfoIndex(index),
+        indicesInfos,
+        indices32Offset,
+        Uint32Array.length(data),
+      ),
+      fillUint32ArrayWithOffset(indices32, data),
+    );
   record.isPointDataDirtyForRestore = true;
-
-  {
-    ...state,
-    geometryRecord:
-      Some({
-        ...record,
-        indices32Offset:
-          setUint32PointData(
-            (
-              BufferGeometryService.getInfoIndex(index),
-              indicesInfos,
-              indices32Offset,
-              Uint32Array.length(data),
-            ),
-            fillUint32ArrayWithOffset(indices32, data),
-          ),
-      }),
-  };
+  state;
 };
 
 let hasIndices = (index, state) => {
