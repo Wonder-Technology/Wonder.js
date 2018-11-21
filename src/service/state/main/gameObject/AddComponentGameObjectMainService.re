@@ -18,19 +18,6 @@ let _addComponentWithState =
   handleAddComponentFunc(. component, uid, state);
 };
 
-let _addSharableComponent =
-    (
-      (uid, component, componentMap, gameObject),
-      (increaseGroupCountFunc, handleAddComponentFunc),
-      componentRecord,
-    ) => {
-  componentMap |> ComponentMapService.addComponent(uid, component) |> ignore;
-  switch (gameObject) {
-  | Some(_) => increaseGroupCountFunc(. component, componentRecord)
-  | _ => handleAddComponentFunc(. component, uid, componentRecord)
-  };
-};
-
 let addBasicCameraViewComponent =
     (
       uid: int,

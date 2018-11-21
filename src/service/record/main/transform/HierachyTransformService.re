@@ -70,7 +70,7 @@ let _removeFromParent =
   removeFromParentMap(child, record)
   |> removeFromChildMap(currentParent, child, isKeepOrder);
 
-let _setParent = (parent: transform, child: int, record) => {
+let _setParentToParentMap = (parent: transform, child: int, record) => {
   ...record,
   parentMap:
     WonderCommonlib.SparseMapService.set(
@@ -112,7 +112,7 @@ let addToParent = (parent: transform, child: transform, record) => {
     },
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  _setParent(parent, child, record) |> _addChild(parent, child);
+  _setParentToParentMap(parent, child, record) |> _addChild(parent, child);
 };
 
 let rec markHierachyDirty = (transform: transform, {dirtyMap} as record) =>
