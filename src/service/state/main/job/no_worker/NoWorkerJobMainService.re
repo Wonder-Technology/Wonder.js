@@ -55,6 +55,7 @@ let init =
           ),
           createInitJobHandleMapFunc()
           |> HandleJobService.concatJobHandleMaps(
+               _,
                noWorkerCustomInitJobHandleMap,
              ),
           state,
@@ -70,6 +71,7 @@ let init =
           ),
           createLoopJobHandleMapFunc()
           |> HandleJobService.concatJobHandleMaps(
+               _,
                noWorkerCustomLoopJobHandleMap,
              ),
           state,

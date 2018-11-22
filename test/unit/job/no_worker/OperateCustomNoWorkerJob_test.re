@@ -57,7 +57,7 @@ let _ =
           state := DirectorTool.prepare(state^);
         });
 
-        describe("add job which defined in init pipeline", () =>
+        describe("add job which defined in init pipeline", () => {
           test("should register before init", () => {
             let customData = [||];
             let state =
@@ -70,8 +70,27 @@ let _ =
             let state = state |> DirectorTool.init;
 
             customData |> expect == [|1|];
-          })
-        );
+          });
+          test("can register job to replace default job", () => {
+            let customData = [||];
+            let state =
+              state^
+              |> JobAPI.registerNoWorkerInitJob("registerd", (_, state) => {
+                   customData |> ArrayService.push(2) |> ignore;
+                   state;
+                 });
+            let state =
+              state
+              |> JobAPI.registerNoWorkerInitJob("start_time", (_, state) => {
+                   customData |> ArrayService.push(3) |> ignore;
+                   state;
+                 });
+
+            let state = state |> DirectorTool.init;
+
+            customData |> expect == [|2, 3|];
+          });
+        });
       });
 
       describe("registerNoWorkerLoopJob", () => {
@@ -131,7 +150,7 @@ let _ =
           state := DirectorTool.prepare(state^);
         });
 
-        describe("add job which defined in loop pipeline", () =>
+        describe("add job which defined in loop pipeline", () => {
           test("should register before init", () => {
             let customData = [||];
             let state =
@@ -145,8 +164,28 @@ let _ =
             let state = state |> DirectorTool.runWithDefaultTime;
 
             customData |> expect == [|2|];
-          })
-        );
+          });
+          test("can register job to replace default job", () => {
+            let customData = [||];
+            let state =
+              state^
+              |> JobAPI.registerNoWorkerLoopJob("registerd", (_, state) => {
+                   customData |> ArrayService.push(2) |> ignore;
+                   state;
+                 });
+            let state =
+              state
+              |> JobAPI.registerNoWorkerLoopJob("tick", (_, state) => {
+                   customData |> ArrayService.push(1) |> ignore;
+                   state;
+                 });
+
+            let state = state |> DirectorTool.init;
+            let state = state |> DirectorTool.runWithDefaultTime;
+
+            customData |> expect == [|1, 2|];
+          });
+        });
       });
     });
 
