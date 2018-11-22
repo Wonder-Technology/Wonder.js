@@ -265,7 +265,7 @@ let _setNewDataToState =
   disposedIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
 };
 
-let reAllocateToNewBuffer =
+let reAllocateToBuffer =
     (newBufferData, {disposedIndexMap, aliveIndexArray} as geometryRecord) => {
   let newAliveIndexArray =
     aliveIndexArray
@@ -276,7 +276,7 @@ let reAllocateToNewBuffer =
   |> _setNewDataToState(newAliveIndexArray, geometryRecord);
 };
 
-let reAllocate =
+let reAllocateToTheSameBuffer =
     (
       {
         buffer,
@@ -291,7 +291,7 @@ let reAllocate =
         indicesInfos,
       } as geometryRecord,
     ) =>
-  reAllocateToNewBuffer(
+  reAllocateToBuffer(
     (
       buffer,
       vertices,

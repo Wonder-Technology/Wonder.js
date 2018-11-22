@@ -72,8 +72,54 @@ let judgeForOptimize =
 let reAllocate = state => {
   ...state,
   geometryRecord:
-    ReallocateGeometryCPUMemoryService.reAllocate(
+    ReallocateGeometryCPUMemoryService.reAllocateToTheSameBuffer(
       GeometryTool.getRecord(state),
     )
     |. Some,
+};
+
+let reAllocateGeometryToNewBuffer = ({settingRecord} as state) => {
+  let geometryPointCount =
+    BufferSettingService.getGeometryPointCount(settingRecord);
+  let geometryCount = BufferSettingService.getGeometryCount(settingRecord);
+  let (
+    buffer,
+    vertices,
+    texCoords,
+    normals,
+    indices,
+    indices32,
+    verticesInfos,
+    texCoordsInfos,
+    normalsInfos,
+    indicesInfos,
+  ) =
+    RecordGeometryMainService._initBufferData(
+      geometryPointCount,
+      geometryCount,
+    );
+
+  let geometryRecord = GeometryTool.getRecord(state);
+
+  {
+    ...state,
+    geometryRecord:
+      Some(
+        ReallocateGeometryCPUMemoryService.reAllocateToBuffer(
+          (
+            buffer,
+            vertices,
+            texCoords,
+            normals,
+            indices,
+            indices32,
+            verticesInfos,
+            texCoordsInfos,
+            normalsInfos,
+            indicesInfos,
+          ),
+          geometryRecord,
+        ),
+      ),
+  };
 };

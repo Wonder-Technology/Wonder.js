@@ -287,56 +287,7 @@ let _ =
         |> expect == (vertices, Uint16Array.make([|0, 1, 2|]), indices32);
       });
 
-      describe("test reallocate geometry", () => {
-        open StateDataMainType;
-
-        let reAllocateGeometryToNewBuffer = ({settingRecord} as state) => {
-          let geometryPointCount =
-            BufferSettingService.getGeometryPointCount(settingRecord);
-          let geometryCount =
-            BufferSettingService.getGeometryCount(settingRecord);
-          let (
-            buffer,
-            vertices,
-            texCoords,
-            normals,
-            indices,
-            indices32,
-            verticesInfos,
-            texCoordsInfos,
-            normalsInfos,
-            indicesInfos,
-          ) =
-            RecordGeometryMainService._initBufferData(
-              geometryPointCount,
-              geometryCount,
-            );
-
-          let geometryRecord = GeometryTool.getRecord(state);
-
-          {
-            ...state,
-            geometryRecord:
-              Some(
-                ReallocateGeometryCPUMemoryService.reAllocateToNewBuffer(
-                  (
-                    buffer,
-                    vertices,
-                    texCoords,
-                    normals,
-                    indices,
-                    indices32,
-                    verticesInfos,
-                    texCoordsInfos,
-                    normalsInfos,
-                    indicesInfos,
-                  ),
-                  geometryRecord,
-                ),
-              ),
-          };
-        };
-
+      describe("test reallocate geometry", () =>
         test("test restore after reallocate", () => {
           let (
             (currentState, copiedState),
@@ -356,7 +307,10 @@ let _ =
                  geometry1,
                );
 
-          let currentState = reAllocateGeometryToNewBuffer(currentState);
+          let currentState =
+            ReallocateGeometryCPUMemoryTool.reAllocateGeometryToNewBuffer(
+              currentState,
+            );
 
           let restoredState =
             MainStateTool.restore(currentState, copiedState);
@@ -380,7 +334,7 @@ let _ =
                       false,
                       false,
                     );
-        });
-      });
+        })
+      );
     });
   });
