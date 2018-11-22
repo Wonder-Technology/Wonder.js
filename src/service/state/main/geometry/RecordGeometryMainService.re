@@ -125,16 +125,6 @@ let create = ({settingRecord} as state) => {
 let deepCopyForRestore = state => {
   let {
         index,
-        vertices,
-        texCoords,
-        normals,
-        indices,
-        indices32,
-        verticesOffset,
-        texCoordsOffset,
-        normalsOffset,
-        indicesOffset,
-        indices32Offset,
         verticesInfos,
         texCoordsInfos,
         normalsInfos,

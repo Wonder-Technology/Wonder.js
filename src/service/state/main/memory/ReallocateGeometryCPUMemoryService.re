@@ -85,15 +85,20 @@ let _allocateNewEachData =
 
   (
     succ(newIndex),
-    _updateInfos(verticesInfos, infoIndex, verticesInfo, newVerticesOffset),
     _updateInfos(
-      texCoordsInfos,
+      newVerticesInfos,
+      infoIndex,
+      verticesInfo,
+      newVerticesOffset,
+    ),
+    _updateInfos(
+      newTexCoordsInfos,
       infoIndex,
       texCoordsInfo,
       newTexCoordsOffset,
     ),
-    _updateInfos(normalsInfos, infoIndex, normalsInfo, newNormalsOffset),
-    _updateInfos(indicesInfos, infoIndex, indicesInfo, newIndicesOffset),
+    _updateInfos(newNormalsInfos, infoIndex, normalsInfo, newNormalsOffset),
+    _updateInfos(newIndicesInfos, infoIndex, indicesInfo, newIndicesOffset),
     TypeArrayService.fillFloat32ArrayWithFloat32Array(
       (newVertices, newVerticesOffset),
       (vertices, verticesStartIndex),
