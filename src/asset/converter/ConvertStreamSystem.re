@@ -1106,15 +1106,18 @@ let _writeBinBufferByBufferViewData =
     ref(BufferUtils.unsafeGetBufferViewByteOffset(oldBufferView));
   let totalByteOffsetRef = ref(totalByteOffset);
 
-  for (i in 0 to oldBufferView.byteLength - 1) {
-    let (value, bufferViewByteOffset) =
-      DataViewCommon.getUint8_1(bufferViewByteOffsetRef^, binBufferDataView);
+  let binBuffer = binBufferDataView |> DataView.buffer;
+  let totalBuffer = totalDataView |> DataView.buffer;
 
-    bufferViewByteOffsetRef := bufferViewByteOffset;
-
-    totalByteOffsetRef :=
-      DataViewCommon.writeUint8_1(. value, totalByteOffsetRef^, totalDataView);
-  };
+  BufferUtils.mergeUint8Array(
+    Uint8Array.fromBuffer(totalBuffer),
+    Uint8Array.fromBuffer(binBuffer)
+    |> Uint8Array.subarray(
+         ~start=bufferViewByteOffsetRef^,
+         ~end_=bufferViewByteOffsetRef^ + oldBufferView.byteLength,
+       ),
+    totalByteOffsetRef^,
+  );
 
   (totalByteOffset + alignedByteLength, binBufferDataView, totalDataView);
 };

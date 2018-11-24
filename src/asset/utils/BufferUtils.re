@@ -254,3 +254,10 @@ let unsafeGetBufferViewByteOffset = ({byteOffset}: GLTFType.bufferView) =>
   | None => 0
   | Some(byteOffset) => byteOffset
   };
+
+let mergeUint8Array = (sourceUint8Array, targetUint8Array, offset) => {
+  sourceUint8Array
+  |> Uint8Array.setArrayOffset(targetUint8Array |> Obj.magic, offset);
+
+  sourceUint8Array;
+};
