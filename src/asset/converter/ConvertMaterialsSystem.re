@@ -1,5 +1,5 @@
 let _buildDefaultBasicMaterialName = materialIndex =>
-  ConvertCommon.buildDefaultName("basicMaterial", materialIndex);
+  ConvertCommon.buildDefaultBasicMaterialName(materialIndex);
 
 let convertToBasicMaterials =
     ({extras}: GLTFType.gltf)
@@ -38,7 +38,7 @@ let convertToBasicMaterials =
   };
 
 let _buildDefaultLightMaterialName = materialIndex =>
-  ConvertCommon.buildDefaultName("lightMaterial", materialIndex);
+  ConvertCommon.buildDefaultLightMaterialName(materialIndex);
 
 let _convertPBRData = (name, diffuseColorFactor, arr, index) =>
   arr

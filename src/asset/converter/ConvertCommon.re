@@ -31,6 +31,33 @@ let getPrimitiveData = primitives =>
 
 let buildDefaultName = (type_, index) => {j|$(type_)_$index|j};
 
+let buildDefaultImageName = index => buildDefaultName("image", index);
+
+let buildDefaultGameObjectName = index =>
+  buildDefaultName("gameObject", index);
+
+let buildDefaultGeometryName = index => buildDefaultName("geometry", index);
+
+let buildDefaultBasicMaterialName = index =>
+  buildDefaultName("basicMaterial", index);
+
+let buildDefaultLightMaterialName = index =>
+  buildDefaultName("lightMaterial", index);
+
+let buildDefaultTextureName = index => buildDefaultName("texture", index);
+
+let isDefaultImageName = name =>
+  name |> Js.String.match([%re {|/^image_/g|}]) |> Js.Option.isSome;
+
+let isDefaultLightMaterialName = name =>
+  name |> Js.String.match([%re {|/^lightMaterial_/g|}]) |> Js.Option.isSome;
+
+let isDefaultBasicMaterialName = name =>
+  name |> Js.String.match([%re {|/^basicMaterial_/g|}]) |> Js.Option.isSome;
+
+let isDefaultTextureName = name =>
+  name |> Js.String.match([%re {|/^texture_/g|}]) |> Js.Option.isSome;
+
 let getScene = (scenes, scene) =>
   Array.unsafe_get(
     scenes,

@@ -1,5 +1,5 @@
 let _buildDefaultName = geometryIndex =>
-  ConvertCommon.buildDefaultName("geometry", geometryIndex);
+  ConvertCommon.buildDefaultGeometryName(geometryIndex);
 
 let _convertToGeometry = (mesh, index) : option(WDType.geometry) => {
   WonderLog.Contract.requireCheck(

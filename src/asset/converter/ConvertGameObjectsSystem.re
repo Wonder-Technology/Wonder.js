@@ -1,5 +1,5 @@
 let _buildDefaultName = nodeIndex =>
-  ConvertCommon.buildDefaultName("gameObject", nodeIndex);
+  ConvertCommon.buildDefaultGameObjectName(nodeIndex);
 
 let _getNames = ({nodes, meshes}: GLTFType.gltf) =>
   nodes

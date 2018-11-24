@@ -1,5 +1,5 @@
 let _buildDefaultName = textureIndex =>
-  ConvertCommon.buildDefaultName("texture", textureIndex);
+  ConvertCommon.buildDefaultTextureName(textureIndex);
 
 /* let _getNames = (textures, images) =>
    textures

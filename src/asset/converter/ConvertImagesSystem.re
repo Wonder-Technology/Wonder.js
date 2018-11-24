@@ -134,7 +134,7 @@
      }; */
 
 let _buildDefaultName = imageIndex =>
-  ConvertCommon.buildDefaultName("image", imageIndex);
+  ConvertCommon.buildDefaultImageName(imageIndex);
 
 let convertToImages = (({images}: GLTFType.gltf) as gltf) =>
   switch (images) {
