@@ -49,8 +49,6 @@ let _allocateNewEachData =
         texCoordsInfos,
         normalsInfos,
         indicesInfos,
-        disposedIndexMap,
-        aliveIndexArray,
       },
     ) => {
   WonderLog.Contract.requireCheck(
@@ -157,8 +155,6 @@ let _allocateNewData =
         texCoordsInfos,
         normalsInfos,
         indicesInfos,
-        disposedIndexMap,
-        aliveIndexArray,
       } as geometryRecord,
     ) => (
   newBuffer,
@@ -266,17 +262,17 @@ let _setNewDataToState =
   normals: newNormals,
   indices: newIndices,
   indices32: newIndices32,
-  aliveIndexArray: newAliveIndexArray,
-  disposedIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
 };
 
-let reAllocateToBuffer =
-    (newBufferData, {disposedIndexMap, aliveIndexArray} as geometryRecord) => {
-  let newAliveIndexArray =
-    aliveIndexArray
-    |> Js.Array.filter(aliveIndex =>
-         ! ReallocateCPUMemoryService.isDisposed(aliveIndex, disposedIndexMap)
-       );
+let getAllAliveGeometrys = (index, geometryRecord) =>
+  ArrayService.range(0, index - 1)
+  |> Js.Array.filter(geometry =>
+       DisposeGeometryMainService.isAlive(geometry, geometryRecord)
+     );
+
+let reAllocateToBuffer = (newBufferData, {index} as geometryRecord) => {
+  let newAliveIndexArray = getAllAliveGeometrys(index, geometryRecord);
+
   _allocateNewData(newAliveIndexArray, newBufferData, geometryRecord)
   |> _setNewDataToState(newAliveIndexArray, geometryRecord);
 };

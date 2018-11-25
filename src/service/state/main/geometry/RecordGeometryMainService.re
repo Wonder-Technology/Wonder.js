@@ -112,9 +112,7 @@ let create = ({settingRecord} as state) => {
          computeDataFuncMap: WonderCommonlib.SparseMapService.createEmpty(), */
       indicesTypeMap: WonderCommonlib.SparseMapService.createEmpty(),
       gameObjectsMap: WonderCommonlib.SparseMapService.createEmpty(),
-      disposedIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
-      aliveIndexArray: WonderCommonlib.ArrayService.createEmpty(),
       /* isInitMap: WonderCommonlib.SparseMapService.createEmpty(), */
       /* groupCountMap: WonderCommonlib.SparseMapService.createEmpty(), */
       nameMap: WonderCommonlib.SparseMapService.createEmpty(),
@@ -133,8 +131,6 @@ let deepCopyForRestore = state => {
         indicesTypeMap,
         gameObjectsMap,
         disposedIndexArray,
-        disposedIndexMap,
-        aliveIndexArray,
         nameMap,
       } as record =
     state |> getRecord;
@@ -164,8 +160,6 @@ let deepCopyForRestore = state => {
         gameObjectsMap:
           gameObjectsMap |> CopyTypeArrayService.deepCopyArrayArray,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
-        disposedIndexMap: disposedIndexMap |> SparseMapService.copy,
-        aliveIndexArray: aliveIndexArray |> Js.Array.copy,
         nameMap: nameMap |> SparseMapService.copy,
       }),
   };

@@ -42,8 +42,6 @@ type geometryRecord = {
   gameObjectsMap,
   /* groupCountMap: geometryGroupCountMap, */
   mutable disposedIndexArray: array(geometry),
-  mutable disposedIndexMap: geometryDisposedIndexMap,
-  aliveIndexArray: array(int),
   nameMap: WonderCommonlib.SparseMapService.t(string),
 };
 

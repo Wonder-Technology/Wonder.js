@@ -7,8 +7,10 @@ let _ =
     open Expect;
     open Expect.Operators;
     open Sinon;
+
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
+
     beforeEach(() => {
       sandbox := createSandbox();
       state :=
@@ -19,6 +21,7 @@ let _ =
         );
     });
     afterEach(() => TestWorkerTool.clear(sandbox));
+
     describe("should only reallocate once in one loop", () => {
       testPromise("test reallocate gameObject", () => {
         let (state, gameObject1, gameObject2, gameObject3) =

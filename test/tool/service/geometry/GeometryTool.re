@@ -87,21 +87,21 @@ let createThreeGameObjectsAndSetPointData = state => {
 
 let createThreeGameObjectsAndSetFullPointData = state => {
   open Js.Typed_array;
-  let vertices1 = Float32Array.make([|10., 10., 11.|]);
-  let vertices2 = Float32Array.make([|3., 2., 3.|]);
-  let vertices3 = Float32Array.make([|5., 3., 2.|]);
-  let texCoords1 = Float32Array.make([|0.5, 0.5|]);
-  let texCoords2 = Float32Array.make([|0., 1.|]);
-  let texCoords3 = Float32Array.make([|0., 0.5|]);
-  let normals1 = Float32Array.make([|1., 2., 3.|]);
-  let normals2 = Float32Array.make([|2., 2., 4.|]);
-  let normals3 = Float32Array.make([|5., 1., 2.|]);
-  let indices1 = Uint16Array.make([|2, 1, 0|]);
-  let indices2 = Uint16Array.make([|2, 0, 1|]);
-  let indices3 = Uint16Array.make([|0, 1, 2|]);
-  let indices32_1 = Uint32Array.make([|2, 1, 0|]);
-  let indices32_2 = Uint32Array.make([|2, 0, 1|]);
-  let indices32_3 = Uint32Array.make([|0, 1, 2|]);
+  let vertices1 = Float32Array.make([|11., 10., 11.|]);
+  let vertices2 = Float32Array.make([|2., 2., 3.|]);
+  let vertices3 = Float32Array.make([|4., 3., 2.|]);
+  let texCoords1 = Float32Array.make([|0.5, 1.5|]);
+  let texCoords2 = Float32Array.make([|1., 2.|]);
+  let texCoords3 = Float32Array.make([|1., 0.5|]);
+  let normals1 = Float32Array.make([|1., 3., 3.|]);
+  let normals2 = Float32Array.make([|2., 4., 4.|]);
+  let normals3 = Float32Array.make([|5., 4., 2.|]);
+  let indices1 = Uint16Array.make([|2, 0, 1|]);
+  let indices2 = Uint16Array.make([|2, 1, 0|]);
+  let indices3 = Uint16Array.make([|1, 0, 2|]);
+  let indices32_1 = Uint32Array.make([|1, 2, 0|]);
+  let indices32_2 = Uint32Array.make([|1, 2, 1|]);
+  let indices32_3 = Uint32Array.make([|1, 0, 2|]);
   let (state, gameObject1, geometry1) = createGameObject(state);
   let (state, gameObject2, geometry2) = createGameObject(state);
   let (state, gameObject3, geometry3) = createGameObject(state);

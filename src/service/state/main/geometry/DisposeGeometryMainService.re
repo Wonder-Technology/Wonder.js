@@ -13,7 +13,6 @@ let _disposeData =
       {
         disposeCount,
         disposedIndexArray,
-        disposedIndexMap,
         nameMap,
         verticesInfos,
         texCoordsInfos,
@@ -44,8 +43,6 @@ let _disposeData =
     indicesInfos:
       ReallocatedPointsGeometryService.setInfo(infoIndex, 0, 0, indicesInfos),
     disposedIndexArray: disposedIndexArray |> ArrayService.push(geometry),
-    disposedIndexMap:
-      disposedIndexMap |> WonderCommonlib.SparseMapService.set(geometry, true),
     disposeCount: succ(disposeCount),
     nameMap: nameMap |> disposeSparseMapData(geometry),
   };
@@ -55,13 +52,7 @@ let _disposeDataWithGameObject =
     (
       gameObject,
       geometry,
-      {
-        disposeCount,
-        disposedIndexArray,
-        disposedIndexMap,
-        gameObjectsMap,
-        nameMap,
-      } as geometryRecord,
+      {disposeCount, disposedIndexArray, gameObjectsMap, nameMap} as geometryRecord,
     ) => {
   let geometryRecord = _disposeData(geometry, geometryRecord);
 

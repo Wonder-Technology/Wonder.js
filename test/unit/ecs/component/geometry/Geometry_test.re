@@ -545,23 +545,23 @@ let _ =
                     |>
                     expect == (
                                 Float32Array.make([|
-                                  10.,
+                                  11.,
                                   10.,
                                   11.,
-                                  5.,
+                                  4.,
                                   3.,
                                   2.,
-                                  5.,
+                                  4.,
                                   3.,
                                   2.,
                                   0.,
                                 |]),
                                 Float32Array.make([|
                                   0.5,
+                                  1.5,
+                                  1.,
                                   0.5,
-                                  0.,
-                                  0.5,
-                                  0.,
+                                  1.,
                                   0.5,
                                   0.,
                                   0.,
@@ -570,37 +570,37 @@ let _ =
                                 |]),
                                 Float32Array.make([|
                                   1.,
-                                  2.,
+                                  3.,
                                   3.,
                                   5.,
-                                  1.,
+                                  4.,
                                   2.,
                                   5.,
-                                  1.,
+                                  4.,
                                   2.,
                                   0.,
                                 |]),
                                 Uint16Array.make([|
                                   2,
-                                  1,
-                                  0,
                                   0,
                                   1,
+                                  1,
+                                  0,
                                   2,
-                                  0,
                                   1,
+                                  0,
                                   2,
                                   0,
                                 |]),
                                 Uint32Array.make([|
-                                  2,
-                                  1,
-                                  0,
-                                  0,
                                   1,
                                   2,
                                   0,
                                   1,
+                                  0,
+                                  2,
+                                  1,
+                                  0,
                                   2,
                                   0,
                                 |]),
@@ -702,57 +702,6 @@ let _ =
                             indices2 |> Uint16Array.length,
                             indices32_2 |> Uint32Array.length,
                           );
-              });
-              test("clear disposedIndexMap", () => {
-                open StateDataMainType;
-                let (
-                  state,
-                  (gameObject1, gameObject2, gameObject3),
-                  (geometry1, geometry2, geometry3),
-                  (vertices1, vertices2, vertices3),
-                  (texCoords1, texCoords2, texCoords3),
-                  (normals1, normals2, normals3),
-                  (
-                    (indices1, indices2, indices3),
-                    (indices32_1, indices32_2, indices32_3),
-                  ),
-                ) =
-                  _prepare(state^);
-                let state =
-                  state
-                  |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
-                       gameObject1,
-                       geometry1,
-                     );
-                let {disposedIndexMap} = state |> GeometryTool.getRecord;
-                disposedIndexMap
-                |> expect == WonderCommonlib.SparseMapService.createEmpty();
-              });
-              test("reset aliveIndexArray", () => {
-                open StateDataMainType;
-                let (
-                  state,
-                  (gameObject1, gameObject2, gameObject3),
-                  (geometry1, geometry2, geometry3),
-                  (vertices1, vertices2, vertices3),
-                  (texCoords1, texCoords2, texCoords3),
-                  (normals1, normals2, normals3),
-                  (
-                    (indices1, indices2, indices3),
-                    (indices32_1, indices32_2, indices32_3),
-                  ),
-                ) =
-                  _prepare(state^);
-                let state =
-                  state |> GameObjectTool.disposeGameObject(gameObject1);
-                let (state, gameObject4, geometry4) =
-                  GeometryTool.createGameObject(state);
-                let state =
-                  state |> GameObjectAPI.initGameObject(gameObject4);
-                let state =
-                  state |> GameObjectTool.disposeGameObject(gameObject4);
-                let {aliveIndexArray} = state |> GeometryTool.getRecord;
-                aliveIndexArray |> expect == [|geometry2, geometry3|];
               });
               describe("test add new one after dispose old one", () => {
                 describe("if has disposed one", () =>

@@ -28,6 +28,7 @@ let _reallocateGeometryByDisposeCount = ({settingRecord} as state) => {
     Some(
       {
         let geometryRecord = RecordGeometryMainService.getRecord(state);
+
         if (QueryCPUMemoryService.isDisposeTooMany(
               geometryRecord.disposeCount,
               settingRecord,
