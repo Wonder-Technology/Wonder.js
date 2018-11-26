@@ -22,17 +22,8 @@ let rec _build =
       let {byteLength, componentType, index, type_}: streamUnitData =
         Array.unsafe_get(streamChunkArr, nextStreamChunkIndex);
 
-      /* WonderLog.Log.print(("nextStreamChunkIndex: ", nextStreamChunkIndex))
-         |> ignore; */
-
       let nextCompleteStreamChunkTotalLoadedByteLength =
         completeStreamChunkTotalLoadedAlignedByteLength + byteLength;
-
-      /* WonderLog.Log.print((
-           nextCompleteStreamChunkTotalLoadedByteLength,
-           totalLoadedByteLength,
-         ))
-         |> ignore; */
 
       nextCompleteStreamChunkTotalLoadedByteLength > totalLoadedByteLength ?
         (nextStreamChunkIndex, loadedStreamChunkDataArr) :
@@ -234,12 +225,6 @@ let buildBinBufferChunkData =
       loadBlobImageMap,
       images,
     ) => {
-  /* WonderLog.Log.print((
-       "completeStreamChunkTotalLoadedAlignedByteLength: ",
-       completeStreamChunkTotalLoadedAlignedByteLength,
-     ))
-     |> ignore; */
-
   let (nextStreamChunkIndex, loadedStreamChunkDataArr) =
     _build(
       completeStreamChunkTotalLoadedAlignedByteLength,
@@ -250,9 +235,6 @@ let buildBinBufferChunkData =
       images,
       loadedStreamChunkArrWhichNotHasAllData,
     );
-
-  /* WonderLog.Log.print(("loadedStreamChunkDataArr:", loadedStreamChunkDataArr))
-     |> ignore; */
 
   let (
     loadedStreamChunkArrWhichNotHasAllData,

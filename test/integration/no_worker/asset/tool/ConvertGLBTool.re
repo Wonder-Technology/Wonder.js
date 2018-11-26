@@ -5,22 +5,8 @@ let testResult = (sandbox, glbFilePath, testFunc) => {
 
   let wdb = ConverterAPI.convertGLBToWDB(buffer##buffer);
 
-  /* ConvertStreamSystem.getStreamChunkArr(
-       (
-         /* 1615, 144 */
-         1597,
-         144,
-       ),
-       DataViewCommon.create(wdb),
-     )
-     |> WonderLog.Log.print; */
-
   let (wdFileContent, _, binBuffer) =
     BufferUtils.decodeWDB(wdb, AssembleWholeWDBSystem._checkWDB);
-
-  /* WonderLog.Log.print(
-     wdFileContent
-         ) |> ignore; */
 
   testFunc((wdFileContent |> Js.Json.parseExn |> Obj.magic, binBuffer));
 };

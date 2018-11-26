@@ -62,9 +62,6 @@ let initShader = (vsSource: string, fsSource: string, gl, program: program) => {
   let fs =
     _compileShader(gl, fsSource, createShader(getFragmentShader(gl), gl));
 
-  /* WonderLog.Log.print(("vs source: ", vsSource)) |> ignore;
-     WonderLog.Log.print(("fs source: ", fsSource)) |> ignore; */
-
   /* dispose?
      if (this.glProgram) {
          this.dispose();

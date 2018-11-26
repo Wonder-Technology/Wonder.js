@@ -537,28 +537,6 @@ let _addImageData =
 let _buildNewGLTF =
     (accessorBufferArr, bufferViewArr, newMeshes, newImages, gltf)
     : GLTFType.gltf => {
-  /* WonderLog.Log.print(("build New gltf: ", accessorBufferArr, bufferViewArr))
-     |> ignore; */
-  /* WonderLog.Contract.requireCheck(
-       () =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(
-                   ~expect={j|newMeshes has no slot|j},
-                   ~actual={j|has|j},
-                 ),
-                 () =>
-                 newMeshes
-                 |> Js.Array.filter(value => ArrayService.isNotValid(value))
-                 |> Js.Array.length == 0
-               )
-             )
-           )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     ); */
   ...gltf,
   accessors: accessorBufferArr,
   bufferViews: bufferViewArr,
@@ -1126,54 +1104,7 @@ let getBinBufferChunkTotalAlignedByteLength = bufferViewDataArr =>
   _getBinBufferAlignedByteLength(bufferViewDataArr);
 
 let buildBinBufferChunk = (byteOffset, bufferViewDataArr, binBuffer, dataView) => {
-  /* WonderLog.Contract.requireCheck(
-       () =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(
-                   ~expect=
-                     {j|the last bufferViewData->byteOffset + byteLength |> BufferUtils.alignedLength  === binBuffer byteLength|j},
-                   ~actual={j|not|j},
-                 ),
-                 () => {
-                   let (_, {byteOffset, byteLength}: GLTFType.bufferView ) =
-                     bufferViewDataArr |> ArrayService.unsafeGetLast;
-
-                   WonderLog.Log.print((
-                     (byteOffset |> OptionService.unsafeGet)
-                     + byteLength
-                     |> BufferUtils.alignedLength,
-                     _getBinBufferAlignedByteLength(binBuffer),
-                   ))
-                   |> ignore;
-
-                   (byteOffset |> OptionService.unsafeGet)
-                   + byteLength
-                   |>
-                   BufferUtils.alignedLength
-                   == _getBinBufferAlignedByteLength(
-                                                  binBuffer,
-                                                );
-                 },
-               )
-             )
-           )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     ); */
-
-  /* let binBufferByteLength = _getBinBufferAlignedByteLength(bufferViewDataArr); */
-
-  /* WonderLog.Log.print(("write binBufferByteLength: ", binBufferByteLength)) |> ignore; */
-
   let binBufferDataView = DataViewCommon.create(binBuffer);
-
-  /* WonderLog.Log.printJson(("bufferViewDataArr:",
-
-     bufferViewDataArr
-     )) |> ignore; */
 
   let (byteOffset, binBufferDataView, dataView) =
     bufferViewDataArr

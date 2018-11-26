@@ -72,20 +72,6 @@ let convertToBasicSourceTextures =
                      | Some(name) => name
                      | None => _buildDefaultName(index)
                      },
-                   /* : {
-                        /* WonderLog.Log.print(("source: ", source)) |> ignore; */
-                        /*
-                        let {name}: GLTFType.image =
-                          Array.unsafe_get(
-                            images |> OptionService.unsafeGet,
-                            source,
-                          ); */
-
-                        /* switch (name) {
-                        | Some(name) => name
-                        | None => _buildDefaultName(index)
-                        }; */
-                      }, */
                    format: {
                      let ({uri, mimeType}: GLTFType.image) as image =
                        Array.unsafe_get(

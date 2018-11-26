@@ -257,9 +257,6 @@ let rec read =
                    (loadedUint8ArrayArr, totalUint8Array),
                  );
 
-               /* WonderLog.Log.print(("allChunkLengths: ", allChunkLengths))
-                  |> ignore; */
-
                let headerJsonStreamChunkTotalByteLength =
                  _computeHeaderJsonStreamChunkTotalByteLength(
                    jsonChunkLength,
@@ -278,9 +275,6 @@ let rec read =
                        totalLoadedByteLength,
                        (loadedUint8ArrayArr, totalUint8Array),
                      );
-
-                   /* WonderLog.Log.print(("streamChunkArr: ", streamChunkArr))
-                   |> ignore; */
 
                    let state =
                      StateDataMainService.unsafeGetState(

@@ -82,12 +82,6 @@ let handleBinBufferData =
       streamChunkArr,
     );
 
-  /* WonderLog.Log.print((
-       "headerJsonStreamChunkTotalByteLength: ",
-       headerJsonStreamChunkTotalByteLength,
-     ))
-     |> ignore; */
-
   !
     _isLoadCompleteNextStreamChunkData(
       totalLoadedByteLength,

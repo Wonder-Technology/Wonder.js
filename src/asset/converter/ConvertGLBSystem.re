@@ -203,12 +203,6 @@ let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer) : ArrayBuffer.t => {
         bufferViewDataArr,
       );
 
-  /* WonderLog.Log.print((
-       jsonChunkByteLength,
-       ConvertStreamSystem.getStreamChunkTotalByteLength(streamChunkArr),
-     ))
-     |> ignore; */
-
   let wdb = ArrayBuffer.make(totalByteLength);
   let dataView = DataViewCommon.create(wdb);
 
