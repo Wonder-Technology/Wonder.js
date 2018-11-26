@@ -58,6 +58,9 @@ let isDefaultBasicMaterialName = name =>
 let isDefaultTextureName = name =>
   name |> Js.String.match([%re {|/^texture_/g|}]) |> Js.Option.isSome;
 
+let isDefaultGeometryName = name =>
+  name |> Js.String.match([%re {|/^geometry_/g|}]) |> Js.Option.isSome;
+
 let getScene = (scenes, scene) =>
   Array.unsafe_get(
     scenes,
