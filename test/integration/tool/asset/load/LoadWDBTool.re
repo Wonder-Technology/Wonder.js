@@ -8,6 +8,7 @@ let load =
       ~isBindEvent=true,
       ~isActiveCamera=true,
       ~isRenderLight=true,
+      ~isLoadImage=true,
       ~handleWhenLoadingFunc=(contentLength, wdbPath) => (),
       (),
     ) => {
@@ -16,7 +17,13 @@ let load =
   MainStateTool.unsafeGetState()
   |> LoaderManagerSystem.loadWholeWDB(
        wdbPath,
-       (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight),
+       (
+         isSetIMGUIFunc,
+         isBindEvent,
+         isActiveCamera,
+         isRenderLight,
+         isLoadImage,
+       ),
        (fetchFunc, handleWhenLoadingFunc),
      )
   |> WonderBsMost.Most.forEach(data => result := data)

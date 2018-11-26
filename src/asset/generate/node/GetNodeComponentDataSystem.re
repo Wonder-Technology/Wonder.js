@@ -14,7 +14,19 @@ let _hasMap = (gameObject, {gameObjectRecord} as state) =>
   };
 
 let _getGeometryData =
-    ((gameObject, meshIndex), geometry, geometryDataMap, state) =>
+    (
+      (gameObject, meshIndex),
+      geometry,
+      geometryDataMap,
+      (
+        getVerticesFunc,
+        getNormalsFunc,
+        getTexCoordsFunc,
+        getIndicesFunc,
+        getIndices32Func,
+      ),
+      state,
+    ) =>
   switch (geometryDataMap |> WonderCommonlib.SparseMapService.get(geometry)) {
   | Some((existedMeshIndex, pointAndNameData)) => (
       Some(existedMeshIndex),
@@ -30,22 +42,16 @@ let _getGeometryData =
       switch (
         IndicesGeometryMainService.unsafeGetIndicesType(geometry, state)
       ) {
-      | Short => (
-          IndicesGeometryMainService.getIndices(. geometry, state) |. Some,
-          None,
-        )
-      | Int => (
-          None,
-          IndicesGeometryMainService.getIndices32(. geometry, state) |. Some,
-        )
+      | Short => (getIndicesFunc(. geometry, state) |. Some, None)
+      | Int => (None, getIndices32Func(. geometry, state) |. Some)
       };
 
     let pointAndNameData =
       Some((
         (
-          VerticesGeometryMainService.getVertices(. geometry, state),
-          NormalsGeometryMainService.getNormals(. geometry, state),
-          TexCoordsGeometryMainService.getTexCoords(. geometry, state),
+          getVerticesFunc(. geometry, state),
+          getNormalsFunc(. geometry, state),
+          getTexCoordsFunc(. geometry, state),
           indices16,
           indices32,
         ),
@@ -65,7 +71,12 @@ let _getGeometryData =
   };
 
 let _getMeshData =
-    ((gameObject, meshIndex), geometryDataMap, {gameObjectRecord} as state) =>
+    (
+      (gameObject, meshIndex),
+      geometryDataMap,
+      getPointsDataFuncTuple,
+      {gameObjectRecord} as state,
+    ) =>
   switch (
     GetComponentGameObjectService.getGeometryComponent(.
       gameObject,
@@ -78,6 +89,7 @@ let _getMeshData =
       (gameObject, meshIndex),
       geometry,
       geometryDataMap,
+      getPointsDataFuncTuple,
       state,
     )
   };
@@ -301,9 +313,15 @@ let getComponentData =
           lightDataMap,
         ),
       ),
+      getPointsDataFuncTuple,
     ) => {
   let (meshIndex, pointAndNameData, newMeshIndex, geometryDataMap) =
-    _getMeshData((gameObject, meshIndex), geometryDataMap, state);
+    _getMeshData(
+      (gameObject, meshIndex),
+      geometryDataMap,
+      getPointsDataFuncTuple,
+      state,
+    );
 
   let meshPointAndNameDataMap =
     switch (meshIndex) {

@@ -28,7 +28,6 @@ let _fillIndexBuffer = (buffer, indices, offset) => {
   buffer;
 };
 
-
 let _fillIndex32Buffer = (buffer, indices32, offset) => {
   TypeArrayService.setUint32Array(
     indices32,

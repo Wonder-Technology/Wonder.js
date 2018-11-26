@@ -5,7 +5,13 @@ open WonderBsMost.Most;
 let load =
     (
       wdbPath,
-      (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight),
+      (
+        isSetIMGUIFunc,
+        isBindEvent,
+        isActiveCamera,
+        isRenderLight,
+        isLoadImage,
+      ),
       (fetchFunc, handleWhenLoadingFunc),
       state,
     ) =>
@@ -24,7 +30,13 @@ let load =
   |> flatMap(wdb =>
        AssembleWholeWDBSystem.assemble(
          wdb |> LoadType.fetchArrayBufferToArrayBuffer,
-         (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight),
+         (
+           isSetIMGUIFunc,
+           isBindEvent,
+           isActiveCamera,
+           isRenderLight,
+           isLoadImage,
+         ),
          state,
        )
      );

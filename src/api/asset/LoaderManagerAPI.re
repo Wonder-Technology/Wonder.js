@@ -14,12 +14,13 @@ let loadWholeWDB =
       isBindEvent,
       isActiveCamera,
       isRenderLight,
+      isLoadImage,
       handleWhenLoadingFunc,
       state,
     ) =>
   LoaderManagerSystem.loadWholeWDB(
     wdbPath,
-    (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight),
+    (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight, isLoadImage),
     (_fetch, handleWhenLoadingFunc),
     state,
   );

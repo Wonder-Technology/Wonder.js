@@ -20,51 +20,53 @@ let _getArrayBuffer = (binBuffer, bufferView, bufferViews: array(bufferView)) =>
      );
 };
 
-let _buildImageArray = ({images, bufferViews}: wd, binBuffer) => {
+let _buildImageArray = (isLoadImage, {images, bufferViews}: wd, binBuffer) => {
   let blobObjectUrlImageArr = [||];
   let imageUint8ArrayDataMap = WonderCommonlib.SparseMapService.createEmpty();
 
-  (
-    images |> OptionService.isJsonSerializedValueNone ?
-      blobObjectUrlImageArr :
-      images
-      |> OptionService.unsafeGetJsonSerializedValue
-      |> ArrayService.reduceOneParamValidi(
-           (. streamArr, {name, bufferView, mimeType}: image, imageIndex) => {
-             let arrayBuffer =
-               _getArrayBuffer(binBuffer, bufferView, bufferViews);
+  ! isLoadImage ?
+    resolve((blobObjectUrlImageArr, imageUint8ArrayDataMap)) :
+    (
+      images |> OptionService.isJsonSerializedValueNone ?
+        blobObjectUrlImageArr :
+        images
+        |> OptionService.unsafeGetJsonSerializedValue
+        |> ArrayService.reduceOneParamValidi(
+             (. streamArr, {name, bufferView, mimeType}: image, imageIndex) => {
+               let arrayBuffer =
+                 _getArrayBuffer(binBuffer, bufferView, bufferViews);
 
-             imageUint8ArrayDataMap
-             |> WonderCommonlib.SparseMapService.set(
-                  imageIndex,
-                  (mimeType, Uint8Array.fromBuffer(arrayBuffer)),
-                )
-             |> ignore;
-
-             streamArr
-             |> ArrayService.push(
-                  AssembleUtils.buildLoadImageStream(
-                    arrayBuffer,
-                    mimeType,
-                    {j|load image error. imageIndex: $imageIndex|j},
+               imageUint8ArrayDataMap
+               |> WonderCommonlib.SparseMapService.set(
+                    imageIndex,
+                    (mimeType, Uint8Array.fromBuffer(arrayBuffer)),
                   )
-                  |> WonderBsMost.Most.tap(image => {
-                       ImageUtils.setImageName(image, name);
+               |> ignore;
 
-                       Array.unsafe_set(
-                         blobObjectUrlImageArr,
-                         imageIndex,
-                         image,
-                       );
-                     }),
-                );
-           },
-           [||],
-         )
-  )
-  |> WonderBsMost.Most.mergeArray
-  |> WonderBsMost.Most.drain
-  |> then_(() => (blobObjectUrlImageArr, imageUint8ArrayDataMap) |> resolve);
+               streamArr
+               |> ArrayService.push(
+                    AssembleUtils.buildLoadImageStream(
+                      arrayBuffer,
+                      mimeType,
+                      {j|load image error. imageIndex: $imageIndex|j},
+                    )
+                    |> WonderBsMost.Most.tap(image => {
+                         ImageUtils.setImageName(image, name);
+
+                         Array.unsafe_set(
+                           blobObjectUrlImageArr,
+                           imageIndex,
+                           image,
+                         );
+                       }),
+                  );
+             },
+             [||],
+           )
+    )
+    |> WonderBsMost.Most.mergeArray
+    |> WonderBsMost.Most.drain
+    |> then_(() => (blobObjectUrlImageArr, imageUint8ArrayDataMap) |> resolve);
 };
 
 /* let _decodeArrayBuffer = (base64Str: string) => {
@@ -150,10 +152,16 @@ let assembleWDBData =
     (
       ({buffers}: wd) as wd,
       binBuffer,
-      (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight),
+      (
+        isSetIMGUIFunc,
+        isBindEvent,
+        isActiveCamera,
+        isRenderLight,
+        isLoadImage,
+      ),
       state,
     ) =>
-  _buildImageArray(wd, binBuffer)
+  _buildImageArray(isLoadImage, wd, binBuffer)
   |> then_(imageDataTuple => {
        let hasIMGUIFunc =
          ! OptionService.isJsonSerializedValueNone(wd.scene.imgui);

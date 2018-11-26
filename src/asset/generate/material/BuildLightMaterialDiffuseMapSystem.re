@@ -152,6 +152,7 @@ let _addImageData =
       (imageUint8ArrayDataMap, imageResultUint8ArrayMap),
       imageUint8DataArr,
       (totalByteLength, byteOffset, bufferViewDataArr),
+      getResultUint8ArrayDataFunc,
     ) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -199,14 +200,17 @@ let _addImageData =
       imageUint8ArrayMap
       |> WonderCommonlib.SparseMapService.set(imageIndex, imageUint8Array);
 
+    let imageResultUint8Array = imageUint8Array |> getResultUint8ArrayDataFunc;
+
     let imageResultUint8ArrayMap =
       imageResultUint8ArrayMap
       |> WonderCommonlib.SparseMapService.set(texture, imageUint8Array);
 
-    let imageUint8ArrayByteLength = imageUint8Array |> Uint8Array.byteLength;
+    let imageResultUint8ArrayByteLength =
+      imageResultUint8Array |> Uint8Array.byteLength;
 
-    let imageUint8ArrayAlignedByteLength =
-      imageUint8ArrayByteLength |> BufferUtils.alignedLength;
+    let imageResultUint8ArrayAlignedByteLength =
+      imageResultUint8ArrayByteLength |> BufferUtils.alignedLength;
 
     (
       imageIndex,
@@ -218,17 +222,21 @@ let _addImageData =
              name: ImageUtils.getImageName(source) |> Js.Nullable.toOption,
              bufferView: bufferViewDataArr |> Js.Array.length,
              mimeType: mimeType |> _convertBase64MimeTypeToWDBMimeType,
-             uint8Array: imageUint8Array,
+             uint8Array: imageResultUint8Array,
              byteOffset,
            }: GenerateSceneGraphType.imageData,
          ),
       imageResultUint8ArrayMap,
       (
-        totalByteLength + imageUint8ArrayAlignedByteLength,
-        byteOffset + imageUint8ArrayAlignedByteLength,
+        totalByteLength + imageResultUint8ArrayAlignedByteLength,
+        byteOffset + imageResultUint8ArrayAlignedByteLength,
         bufferViewDataArr
         |> ArrayService.push(
-             {buffer: 0, byteOffset, byteLength: imageUint8ArrayByteLength}: GenerateSceneGraphType.bufferViewData,
+             {
+               buffer: 0,
+               byteOffset,
+               byteLength: imageResultUint8ArrayByteLength,
+             }: GenerateSceneGraphType.bufferViewData,
            ),
       ),
     );
@@ -278,6 +286,7 @@ let build =
         ),
       ),
       (totalByteLength, byteOffset, bufferViewDataArr),
+      getResultUint8ArrayDataFunc,
       state,
     ) => {
   WonderLog.Contract.requireCheck(
@@ -355,6 +364,7 @@ let build =
         (imageUint8ArrayDataMap, imageResultUint8ArrayMap),
         imageUint8DataArr,
         (totalByteLength, byteOffset, bufferViewDataArr),
+        getResultUint8ArrayDataFunc,
       );
 
     (

@@ -10,15 +10,16 @@ let _batchSetBasicSourceTextureSources =
     ) =>
   imageBasicSourceTextures
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. state, basicSourceTexture, index) => {
-         let image = Array.unsafe_get(basicSourceTextureImages, index);
-
-         OperateBasicSourceTextureMainService.setSource(
-           basicSourceTexture,
-           image,
-           state,
-         );
-       },
+       (. state, basicSourceTexture, index) =>
+         switch (ArrayService.getNth(index, basicSourceTextureImages)) {
+         | None => state
+         | Some(image) =>
+           OperateBasicSourceTextureMainService.setSource(
+             basicSourceTexture,
+             image,
+             state,
+           )
+         },
        state,
      );
 

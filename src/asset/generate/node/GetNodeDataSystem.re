@@ -177,6 +177,7 @@ let rec _getNodeData =
             lightDataMap,
           ),
           (transformArr, nodeDataArr),
+          getPointsDataFuncTuple,
         ) =>
   transformArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -281,11 +282,7 @@ let rec _getNodeData =
              newArcbbllCameraControllerIndex,
              newLightIndex,
            ),
-           (
-             geometryDataMap,
-             basicMaterialDataMap,
-             lightMaterialDataMap,
-           ),
+           (geometryDataMap, basicMaterialDataMap, lightMaterialDataMap),
            (
              meshPointAndNameDataMap,
              meshRendererDataMap,
@@ -297,35 +294,34 @@ let rec _getNodeData =
              lightDataMap,
            ),
          ) =
-           GetNodeComponentDataSystem.getComponentData((
-             gameObject,
-             state,
+           GetNodeComponentDataSystem.getComponentData(
              (
-               meshIndex,
-               meshRendererIndex,
-               basicMaterialIndex,
-               lightMaterialIndex,
-               basicCameraViewIndex,
-               cameraProjectionIndex,
-               arcballCameraControllerIndex,
-               lightIndex,
+               gameObject,
+               state,
+               (
+                 meshIndex,
+                 meshRendererIndex,
+                 basicMaterialIndex,
+                 lightMaterialIndex,
+                 basicCameraViewIndex,
+                 cameraProjectionIndex,
+                 arcballCameraControllerIndex,
+                 lightIndex,
+               ),
+               (geometryDataMap, basicMaterialDataMap, lightMaterialDataMap),
+               (
+                 meshPointAndNameDataMap,
+                 meshRendererDataMap,
+                 resultBasicMaterialDataMap,
+                 resultLightMaterialDataMap,
+                 basicCameraViewDataMap,
+                 cameraProjectionDataMap,
+                 arcballCameraControllerDataMap,
+                 lightDataMap,
+               ),
              ),
-             (
-               geometryDataMap,
-               basicMaterialDataMap,
-               lightMaterialDataMap,
-             ),
-             (
-               meshPointAndNameDataMap,
-               meshRendererDataMap,
-               resultBasicMaterialDataMap,
-               resultLightMaterialDataMap,
-               basicCameraViewDataMap,
-               cameraProjectionDataMap,
-               arcballCameraControllerDataMap,
-               lightDataMap,
-             ),
-           ));
+             getPointsDataFuncTuple,
+           );
 
          _getNodeData(
            state,
@@ -383,6 +379,7 @@ let rec _getNodeData =
                nodeDataArr,
              ),
            ),
+           getPointsDataFuncTuple,
          );
        },
        (
@@ -419,7 +416,7 @@ let rec _getNodeData =
        ),
      );
 
-let getAllNodeData = (rootGameObject, state) => {
+let getAllNodeData = (rootGameObject, getPointsDataFuncTuple, state) => {
   let (
     state,
     (
@@ -481,6 +478,7 @@ let getAllNodeData = (rootGameObject, state) => {
         |],
         [||],
       ),
+      getPointsDataFuncTuple,
     );
 
   (

@@ -52,6 +52,7 @@ let testGLTF =
       ~isBindEvent=true,
       ~isActiveCamera=true,
       ~isRenderLight=true,
+      ~isLoadImage=true,
       (),
     ) => {
   open Js.Promise;
@@ -64,14 +65,32 @@ let testGLTF =
     binBuffer,
   )
   |. AssembleWholeWDBSystem.assemble(
-       (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight),
+       (
+         isSetIMGUIFunc,
+         isBindEvent,
+         isActiveCamera,
+         isRenderLight,
+         isLoadImage,
+       ),
        state^,
      )
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => testFunc(result^) |> resolve);
 };
 
-let testGLB = (sandbox, glbFilePath, testFunc, state) => {
+let testGLBWithConfig =
+    (
+      ~sandbox,
+      ~glbFilePath,
+      ~testFunc,
+      ~state,
+      ~isSetIMGUIFunc=true,
+      ~isBindEvent=true,
+      ~isActiveCamera=true,
+      ~isRenderLight=true,
+      ~isLoadImage=true,
+      (),
+    ) => {
   open Js.Promise;
 
   let result = ref(Obj.magic(1));
@@ -80,13 +99,22 @@ let testGLB = (sandbox, glbFilePath, testFunc, state) => {
     AssembleWholeWDBSystem.assembleWDBData(
       wd,
       binBuffer,
-      (true, true, true, true),
+      (
+        isSetIMGUIFunc,
+        isBindEvent,
+        isActiveCamera,
+        isRenderLight,
+        isLoadImage,
+      ),
       state,
     )
     |> WonderBsMost.Most.forEach(data => result := data)
     |> then_(() => testFunc(result^) |> resolve)
   );
 };
+
+let testGLB = (sandbox, glbFilePath, testFunc, state) =>
+  testGLBWithConfig(~sandbox, ~glbFilePath, ~testFunc, ~state, ());
 
 let getAllChildrenTransform = (rootGameObject, state) =>
   GameObjectAPI.getAllChildrenTransform(rootGameObject, state);

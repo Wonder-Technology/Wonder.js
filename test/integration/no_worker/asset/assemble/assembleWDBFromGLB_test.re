@@ -1475,32 +1475,58 @@ let _ =
                 )
               );
 
-              testPromise("test set source", () =>
-                AssembleWDBSystemTool.testGLB(
-                  sandbox^,
-                  GLBTool.buildGLBFilePath("BoxTextured.glb"),
-                  ((state, _, rootGameObject)) =>
-                    AssembleWDBSystemTool.getAllDiffuseMaps(
-                      rootGameObject,
-                      state,
-                    )
-                    |> Js.Array.map(diffuseMap =>
-                         BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
-                           diffuseMap,
-                           state,
+              describe("test set source", () => {
+                testPromise("if isLoadImage === true, set source", () =>
+                  AssembleWDBSystemTool.testGLB(
+                    sandbox^,
+                    GLBTool.buildGLBFilePath("BoxTextured.glb"),
+                    ((state, _, rootGameObject)) =>
+                      AssembleWDBSystemTool.getAllDiffuseMaps(
+                        rootGameObject,
+                        state,
+                      )
+                      |> Js.Array.map(diffuseMap =>
+                           BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+                             diffuseMap,
+                             state,
+                           )
                          )
-                       )
-                    |>
-                    expect == [|
-                                {
-                                  "name": "CesiumLogoFlat.png",
-                                  "src": "object_url0",
-                                }
-                                |> Obj.magic,
-                              |],
-                  state^,
-                )
-              );
+                      |>
+                      expect == [|
+                                  {
+                                    "name": "CesiumLogoFlat.png",
+                                    "src": "object_url0",
+                                  }
+                                  |> Obj.magic,
+                                |],
+                    state^,
+                  )
+                );
+                testPromise("else, not set source", () =>
+                  AssembleWDBSystemTool.testGLBWithConfig(
+                    ~sandbox=sandbox^,
+                    ~glbFilePath=GLBTool.buildGLBFilePath("BoxTextured.glb"),
+                    ~testFunc=
+                      ((state, _, rootGameObject)) =>
+                        AssembleWDBSystemTool.getAllDiffuseMaps(
+                          rootGameObject,
+                          state,
+                        )
+                        |> Js.Array.map(diffuseMap =>
+                             BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+                               diffuseMap,
+                               state,
+                             )
+                             |> Obj.magic
+                             |> Js.toOption
+                           )
+                        |> expect == [|None|],
+                    ~state=state^,
+                    ~isLoadImage=false,
+                    (),
+                  )
+                );
+              });
 
               testPromise("test release blobs", () =>
                 AssembleWDBSystemTool.testGLB(
