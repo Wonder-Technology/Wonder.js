@@ -1228,7 +1228,7 @@ let _ =
               ~testFunc=
                 _ =>
                   warn
-                  |> withOneArg("Warn: not support texCoord_1")
+                  |> withOneArg("not support texCoord_1")
                   |> expect
                   |> toCalledOnce,
               (),

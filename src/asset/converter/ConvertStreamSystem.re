@@ -10,8 +10,6 @@ let _addAccessorData =
       newBufferViewOffset,
       {accessors, bufferViews}: GLTFType.gltf,
     ) => {
-  /* ////TODO check accessorBufferArr not has duplicate oldAccessorIndex data */
-
   let oldAccessor = Array.unsafe_get(accessors, oldAccessorIndex);
 
   let oldBufferView =

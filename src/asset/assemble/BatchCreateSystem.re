@@ -96,31 +96,6 @@ let _batchCreateBasicCameraView =
       {basicCameraViews, perspectiveCameraProjections},
       {basicCameraViewRecord} as state,
     ) =>
-  /*
-   TODO check after add orhiCameraProjection
-   WonderLog.Contract.requireCheck(
-        () => {
-          open WonderLog;
-          open Contract;
-          open Operators;
-
-          let basicCameraViewCount = basicCameraViews |> Js.Array.length;
-
-          let perspectiveCameraProjectionCount =
-            perspectiveCameraProjections |> Js.Array.length;
-
-          test(
-            Log.buildAssertMessage(
-              ~expect=
-                {j|basicCameraViews' count:$basicCameraViewCount === cameraProjects' count:$perspectiveCameraProjectionCount|j},
-              ~actual={j|not|j},
-            ),
-            () =>
-            basicCameraViewCount == perspectiveCameraProjectionCount
-          );
-        },
-        IsDebugMainService.getIsDebug(StateDataMain.stateData),
-      ); */
   _batchCreateComponent(
     basicCameraViews,
     CreateBasicCameraViewMainService.create,

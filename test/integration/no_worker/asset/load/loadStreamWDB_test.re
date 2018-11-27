@@ -2117,7 +2117,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                warnStub
                |> expect
                |> toCalledWith([|
-                    "Warn: your browser does not seem to have the Streams API yet, fallback to load whole wdb",
+                    "your browser does not seem to have the Streams API yet, fallback to load whole wdb",
                   |])
                |> resolve
              );
