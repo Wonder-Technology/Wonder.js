@@ -2,10 +2,9 @@ open StateDataMainType;
 
 open EventType;
 
-let _setEventHandleFunc = (cameraController, handleFunc, eventHandleFuncMap) => {
+let _setEventHandleFunc = (cameraController, handleFunc, eventHandleFuncMap) =>
   eventHandleFuncMap
   |> WonderCommonlib.SparseMapService.set(cameraController, handleFunc);
-};
 
 let _setPointDownEventHandleFunc =
     (cameraController, handleFunc, {pointDownEventHandleFuncMap} as record) => {
@@ -184,8 +183,6 @@ let prepareBindEvent = (cameraController, state) => {
     ...state,
     arcballCameraControllerRecord:
       state.arcballCameraControllerRecord
-      /* TODO set handleFunc
-         TODO handle dipose */
       |> _setPointDownEventHandleFunc(cameraController, pointDownHandleFunc)
       |> _setPointUpEventHandleFunc(cameraController, pointUpHandleFunc)
       |> _setPointDragEventHandleFunc(cameraController, pointDragHandleFunc)

@@ -186,7 +186,6 @@ var AssetTool = (function () {
         loadStreamWDB: function (wdbPath, handleWhenLoadingFunc, handleBeforeStartLoopFunc, handleWhenDoneFunc, handleWhenLoadWholeWDBFunc, state) {
             return wd.loadStreamWDB(wdbPath, handleWhenLoadingFunc, handleBeforeStartLoopFunc, handleWhenDoneFunc, handleWhenLoadWholeWDBFunc, state).drain()
         },
-        // TODO fix
         loadIMGUIAsset: function (fntFilePath, bitmapFilePath, customTextureSourceDataArr, handleWhenDoneFunc, state) {
             return wd.loadIMGUIAsset(
                 fntFilePath,

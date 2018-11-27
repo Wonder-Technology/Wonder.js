@@ -25,11 +25,9 @@ let _computeElapseTime = (time, state) => {
   state;
 };
 
-/* TODO unit test */
 let rec _createWorkerLoopStream = () =>
   MostAnimationFrame.nextAnimationFrame()
   |> WonderBsMost.Most.flatMap(time => {
-       /* WonderLog.Log.log({j|time: $time|j}); */
        let state =
          _computeElapseTime(
            time,
@@ -69,16 +67,6 @@ let rec _noWorkerLoop = (time: float, state: StateDataMainType.state) : int => {
 };
 
 let start = (state: StateDataMainType.state) =>
-  /*
-    TODO save loop id
-    let rec _loop = (time: float, state: StateDataMainType.state) : int =>
-      DomExtend.requestAnimationFrame(
-        (time: float) => state |> loopBody(time) |> setState(stateData) |> _loop(time) |> ignore
-      );
-    state |> init(StateDataMain.stateData) |> _loop(0.) |> ignore
-
-   */
-  /* state |> init(StateDataMain.stateData) |> ignore; */
   WorkerDetectMainService.isUseWorker(state) ?
     state
     |> StateDataMainService.setState(StateDataMain.stateData)

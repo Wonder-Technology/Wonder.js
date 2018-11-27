@@ -5,7 +5,6 @@ let getAPIJsObj = state => state.apiRecord.apiJsObj;
 let setAPIJsObj = (apiJsObj, state) => {...state, apiRecord: apiJsObj};
 
 let create = () => {
-  /* TODO add more api */
   apiJsObj: {
     "label": FixedLayoutControlIMGUIMainService.label,
     "image": FixedLayoutControlIMGUIMainService.image,

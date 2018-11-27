@@ -40,7 +40,6 @@ let _getNow = () => {
 
 let start = record => {...record, startTime: _getNow(), elapsed: 0.};
 
-/* TODO support pause */
 let computeElapseTime = (time: float, {startTime} as record) =>
   {...record, elapsed: NumberService.leastFloat(0., time -. startTime)}
   |> WonderLog.Contract.ensureCheck(

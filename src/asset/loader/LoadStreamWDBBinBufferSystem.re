@@ -89,7 +89,6 @@ let handleBinBufferData =
       nextStreamChunkIndex,
       streamChunkArr,
     ) ?
-    /* TODO optimize: not use promise here? */
     make((~resolve, ~reject) =>
       resolve(. (
         state,
