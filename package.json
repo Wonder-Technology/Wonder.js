@@ -68,12 +68,12 @@
     "wonder-bs-most": "^0.0.3",
     "wonder-commonlib": "^0.2.23",
     "wonder-imgui": "^0.0.28",
-    "wonder-log": "^0.2.7",
+    "wonder-log": "^0.2.10",
     "wonder-most-animation-frame": "0.0.3",
     "wonder-webgl": "^0.0.5"
   },
   "resolutions": {
-    "wonder-log": "^0.2.7",
+    "wonder-log": "^0.2.10",
     "wonder-commonlib": "0.2.23",
     "wonder-bs-jest": "0.2.18",
     "wonder-bs-puppeteer": "^0.1.6"

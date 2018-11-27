@@ -1426,69 +1426,6 @@ let performanceTestData = {
       ],
     },
     {
-      name: "redo_undo",
-      caseList: [
-        {
-          name: "copy_1k_boxes(objectInstance)+restore_from_1k_boxes(not instance)_1k_boxes(objectInstance)",
-          bodyFuncStr: {|
-                                     PrepareTool.prepareForTest();
-
-
-
-
-
-                             return AssetTool.loadConfig(["./test/e2e/performance/config/setting1.json", "./test/e2e/performance/config/"], null, function(){ return initSample(wd.unsafeGetState()); });
-
-
-
-                                            function initSample(state) {
-                            var n1 = performance.now();
-
-
-                                            var data = RedoUndoTool.createBoxesByInstance(1000, state);
-                                                var state = data[0];
-                                                var box = data[1];
-
-                                                var data = RedoUndoTool.setPosition([box], state);
-                                                var state = data[0];
-                                                var boxes = data[1];
-
-                                                var data = RedoUndoTool.createCamera(state);
-                                                var state = data[0];
-
-
-
-                                                var state = RedoUndoTool.redoUndoShader(1000, state);
-
-
-                            var n2 = performance.now();
-
-                                                var state = wd.initDirector(state);
-
-
-
-
-
-                            var n3 = performance.now();
-                                                var state = wd.loopBody(100.0, state);
-
-
-
-
-                            var n4 = performance.now();
-
-
-
-
-
-                            return {"textArray": ["prepare", "init", "loopBody"], "timeArray": [n1, n2, n3, n4] }
-                            }
-                            |},
-          errorRate: 10,
-        },
-      ],
-    },
-    {
       name: "asset",
       caseList: [
         {
@@ -1512,11 +1449,13 @@ let performanceTestData = {
                    var n3 = null;
                    var n4 = null;
 
-                   return wd.assembleWholeWDB(wdb, wd.unsafeGetState())
-                       .forEach(([state, sceneGameObject]) => {
+                   return wd.assembleWholeWDB(wdb,
+                   true, true, true, true, true,
+                   wd.unsafeGetState())
+                       .forEach(([state, _, sceneGameObject]) => {
                            n3 = performance.now();
 
-                           var [state, wdb] = wd.generateWDB(sceneGameObject, wd.createSparseMap(), state);
+                           var [state, _, wdb] = wd.generateWDB(sceneGameObject, wd.createSparseMap(), state);
 
                            n4 = performance.now();
                        })

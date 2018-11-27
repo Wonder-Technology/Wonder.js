@@ -3,6 +3,9 @@
         "name": "default",
         "jobs": [
             {
+                "name": "scheduleLoop"
+            },
+            {
                 "name": "tick"
             },
             {

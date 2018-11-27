@@ -259,7 +259,7 @@ var BasicBoxesTool = (function () {
 
 
         setData: function (boxes, state) {
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 return _setData(boxes, state)
             }, state)
         },
@@ -283,7 +283,7 @@ var BasicBoxesTool = (function () {
                 state = wd.setTransformParent(boxes[i - 1], box, state)
             }
 
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 var box = boxes[i];
                 state = wd.setTransformParent(boxes[_getRandomParentIndex(10)], box, state);
 
@@ -294,7 +294,7 @@ var BasicBoxesTool = (function () {
             window.mapBox = boxes[0];
             window.boxes = [];
 
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 var state = wd.batchDisposeGameObject(window.boxes, state);
 
                 var record = wd.cloneGameObject(window.mapBox, count, true, state);
@@ -337,7 +337,7 @@ var BasicBoxesTool = (function () {
         createAndDisposeGameObjects: function (count, boxes, state) {
             window.boxes = [];
 
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 return createAndDisposeGameObjects(count, boxes,
                     state
                 )
@@ -349,7 +349,7 @@ var BasicBoxesTool = (function () {
         createAndDisposeGameObjectsByClone: function (count, boxes, state) {
             window.boxes = [];
 
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 return createAndDisposeGameObjectsByClone(count, boxes,
                     state
                 )
@@ -360,7 +360,7 @@ var BasicBoxesTool = (function () {
         createAndDisposeGameObjectsWithMapByClone: function (count, boxes, map, state) {
             window.boxes = [];
 
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 return createAndDisposeGameObjectsWithMapByClone(count, boxes, map, state
                 )
             }, state);

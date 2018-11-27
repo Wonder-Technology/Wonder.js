@@ -235,7 +235,7 @@ var LightBoxesTool = (function () {
 
 
         setData: function (boxes, state) {
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 return _setData(boxes, state)
             }, state)
         },
@@ -259,7 +259,7 @@ var LightBoxesTool = (function () {
                 state = wd.setTransformParent(boxes[i - 1], box, state)
             }
 
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 var box = boxes[i];
                 state = wd.setTransformParent(boxes[_getRandomParentIndex(10)], box, state);
 
@@ -271,7 +271,7 @@ var LightBoxesTool = (function () {
         createAndDisposeGameObjects: function (count, boxes, state) {
             window.boxes = [];
 
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 return createAndDisposeGameObjects(count, boxes,
                     state
                 )
@@ -282,7 +282,7 @@ var LightBoxesTool = (function () {
         createAndDisposeGameObjectsWithMapByClone: function (count, boxes, map1, map2, state) {
             window.boxes = [];
 
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 return createAndDisposeGameObjectsWithMapByClone(count, boxes, map1, map2, state)
             }, state);
         },

@@ -123,7 +123,7 @@ var InstanceBasicBoxesTool = (function () {
             // setTimeout(() => {
 
 
-            // ScheduleTool.scheduleLoop(function (state) {
+            // ScheduleTool.scheduleLoop(function (_, state) {
             //         return markSourceInstanceModelMatrixIsStatic(sourceInstance, false, state)
             //     }, state);
 
@@ -133,7 +133,7 @@ var InstanceBasicBoxesTool = (function () {
             // setTimeout(() => {
 
 
-            // ScheduleTool.scheduleLoop(function (state) {
+            // ScheduleTool.scheduleLoop(function (_, state) {
             //         return markSourceInstanceModelMatrixIsStatic(sourceInstance, true, state)
             //     }, state);
 
@@ -272,7 +272,7 @@ var InstanceBasicBoxesTool = (function () {
         },
 
         setData: function (boxes, state) {
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 return _setData(boxes, state)
             }, state)
         },
@@ -294,7 +294,7 @@ var InstanceBasicBoxesTool = (function () {
         createAndDisposeSourceInstanceGameObjects: function (sourceInstanceCount, objectInstanceCount, boxes, state) {
             window.boxes = [];
 
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 return createAndDisposeSourceInstanceGameObjects(sourceInstanceCount, objectInstanceCount, boxes, state)
             }, state)
         },
@@ -316,7 +316,7 @@ var InstanceBasicBoxesTool = (function () {
         createAndDisposeObjectInstanceGameObjects: function (boxes, state) {
             window.boxes = [];
 
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 for (let i = 0, len = window.boxes.length; i < len; i++) {
                     let box = window.boxes[i];
                     state = wd.disposeGameObject(box, state);

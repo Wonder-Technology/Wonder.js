@@ -129,7 +129,7 @@ var GeometryTool = (function () {
         createAndDisposeGameObjects: function (count, gameObjects, state) {
             window.gameObjects = [];
 
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 var state = wd.batchDisposeGameObject(window.gameObjects, state);
 
 
@@ -158,7 +158,7 @@ var GeometryTool = (function () {
             window.sourceGameObject = gameObjects[0];
             window.gameObjects = [];
 
-            return ScheduleTool.scheduleLoop(function (state) {
+            return ScheduleTool.scheduleLoop(function (_, state) {
                 var state = wd.batchDisposeGameObject(window.gameObjects, state);
 
 
