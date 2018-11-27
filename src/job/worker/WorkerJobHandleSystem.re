@@ -117,7 +117,7 @@ let createWorkerJobHandleMap = () =>
 
 let _getJobHandle = (name, jobHandleMap) =>
   switch (WonderCommonlib.HashMapService.get(name, jobHandleMap)) {
-  | None => JobService.handleGetNoneJob(name, jobHandleMap)
+  | None => JobService.handleGetNoneWorkerJob(name, jobHandleMap)
   | Some(handleFunc) => handleFunc
   };
 

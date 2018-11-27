@@ -9,7 +9,7 @@ let _getAllNoWorkerJobs =
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. list, {name, flags}: executableJob) =>
            switch (WonderCommonlib.HashMapService.get(name, jobHandleMap)) {
-           | None => JobService.handleGetNoneJob(name, jobHandleMap)
+           | None => JobService.handleGetNoneNoWorkerJob(name, list)
            | Some(handleFunc) => list @ [(name, handleFunc(flags))]
            },
          [],

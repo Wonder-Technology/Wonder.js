@@ -58,6 +58,34 @@ let _ =
         });
 
         describe("add job which defined in init pipeline", () => {
+          describe("if the job is none(not register)", () => {
+            test("warn", () => {
+              let warn =
+                createMethodStubWithJsObjSandbox(
+                  sandbox,
+                  Console.console,
+                  "warn",
+                );
+
+              let state = state^ |> DirectorTool.init;
+
+              warn |> expect |> toCalledOnce;
+            });
+            test("exec the next job ", () => {
+              let customData = [||];
+              let state =
+                state^
+                |> JobAPI.registerNoWorkerInitJob("start_time", (_, state) => {
+                     customData |> ArrayService.push(1) |> ignore;
+                     state;
+                   });
+
+              let state = state |> DirectorTool.init;
+
+              customData |> expect == [|1|];
+            });
+          });
+
           test("should register before init", () => {
             let customData = [||];
             let state =
@@ -151,6 +179,36 @@ let _ =
         });
 
         describe("add job which defined in loop pipeline", () => {
+          describe("if the job is none(not register)", () => {
+            test("warn", () => {
+              let warn =
+                createMethodStubWithJsObjSandbox(
+                  sandbox,
+                  Console.console,
+                  "warn",
+                );
+
+              let state = state^ |> DirectorTool.init;
+              let state = state |> DirectorTool.runWithDefaultTime;
+
+              warn |> expect |> toCalledOnce;
+            });
+            test("exec the next job ", () => {
+              let customData = [||];
+              let state =
+                state^
+                |> JobAPI.registerNoWorkerLoopJob("tick", (_, state) => {
+                     customData |> ArrayService.push(1) |> ignore;
+                     state;
+                   });
+
+              let state = state |> DirectorTool.init;
+              let state = state |> DirectorTool.runWithDefaultTime;
+
+              customData |> expect == [|1|];
+            });
+          });
+
           test("should register before init", () => {
             let customData = [||];
             let state =
@@ -256,26 +314,52 @@ let _ =
           )
       );
 
-      describe("test operate noWorker init job", () => {
-        describe("addNoWorkerInitJob", () =>
-          describe("add job to noWorker init pipeline", () => {
-            beforeEach(() => state := DirectorTool.prepare(state^));
-            describe("test add job after target job", () =>
-              test("test add two job", () => {
+      describe("should operate after init", () => {
+        describe("test operate noWorker init job", () => {
+          describe("addNoWorkerInitJob", () =>
+            describe("add job to noWorker init pipeline", () => {
+              beforeEach(() => state := DirectorTool.prepare(state^));
+              describe("test add job after target job", () =>
+                test("test add two job", () => {
+                  let state = _prepare(state);
+                  let customData = [||];
+                  let state =
+                    state
+                    |> JobAPI.addNoWorkerInitJob(
+                         ("customJob1", "start_time"),
+                         AFTER,
+                         state => {
+                           customData |> ArrayService.push(1) |> ignore;
+                           state;
+                         },
+                       )
+                    |> JobAPI.addNoWorkerInitJob(
+                         ("customJob2", "customJob1"),
+                         AFTER,
+                         state => {
+                           customData |> ArrayService.push(2) |> ignore;
+                           state;
+                         },
+                       );
+                  let state = state |> NoWorkerJobTool.execInitJobs;
+                  customData |> expect == [|1, 2|];
+                })
+              );
+              test("test add job before target job", () => {
                 let state = _prepare(state);
                 let customData = [||];
                 let state =
                   state
                   |> JobAPI.addNoWorkerInitJob(
-                       ("customJob1", "start_time"),
-                       AFTER,
+                       ("customJob1", "create_canvas"),
+                       BEFORE,
                        state => {
                          customData |> ArrayService.push(1) |> ignore;
                          state;
                        },
                      )
                   |> JobAPI.addNoWorkerInitJob(
-                       ("customJob2", "customJob1"),
+                       ("customJob2", "start_time"),
                        AFTER,
                        state => {
                          customData |> ArrayService.push(2) |> ignore;
@@ -284,133 +368,112 @@ let _ =
                      );
                 let state = state |> NoWorkerJobTool.execInitJobs;
                 customData |> expect == [|1, 2|];
-              })
-            );
-            test("test add job before target job", () => {
+              });
+            })
+          );
+          describe("removeNoWorkerInitJob", () => {
+            test("test remove custom added job", () => {
               let state = _prepare(state);
               let customData = [||];
               let state =
                 state
                 |> JobAPI.addNoWorkerInitJob(
-                     ("customJob1", "create_canvas"),
-                     BEFORE,
+                     ("customJob", "start_time"),
+                     AFTER,
                      state => {
                        customData |> ArrayService.push(1) |> ignore;
                        state;
                      },
                    )
-                |> JobAPI.addNoWorkerInitJob(
-                     ("customJob2", "start_time"),
-                     AFTER,
-                     state => {
-                       customData |> ArrayService.push(2) |> ignore;
-                       state;
-                     },
-                   );
+                |> JobAPI.removeNoWorkerInitJob("customJob");
               let state = state |> NoWorkerJobTool.execInitJobs;
-              customData |> expect == [|1, 2|];
+              customData |> expect == [||];
             });
-          })
-        );
-        describe("removeNoWorkerInitJob", () => {
-          test("test remove custom added job", () => {
-            let state = _prepare(state);
-            let customData = [||];
-            let state =
+            test("test remove default job", () => {
+              let state = _prepare(state);
+              let state = state |> JobAPI.removeNoWorkerInitJob("start_time");
               state
-              |> JobAPI.addNoWorkerInitJob(
-                   ("customJob", "start_time"),
-                   AFTER,
-                   state => {
-                     customData |> ArrayService.push(1) |> ignore;
-                     state;
-                   },
-                 )
-              |> JobAPI.removeNoWorkerInitJob("customJob");
-            let state = state |> NoWorkerJobTool.execInitJobs;
-            customData |> expect == [||];
-          });
-          test("test remove default job", () => {
-            let state = _prepare(state);
-            let state = state |> JobAPI.removeNoWorkerInitJob("start_time");
-            state
-            |> NoWorkerJobTool.getNoWorkerInitJobList
-            |> NoWorkerJobTool.isJobExistInJobList("start_time")
-            |> expect == false;
+              |> NoWorkerJobTool.getNoWorkerInitJobList
+              |> NoWorkerJobTool.isJobExistInJobList("start_time")
+              |> expect == false;
+            });
           });
         });
-      });
-      describe("test operate noWorker loop job", () => {
-        let _prepare = state => {
-          let (state, _, _, _) =
-            InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
-          state
-          |> NoWorkerJobTool.init((
-               NoWorkerJobHandleSystem.createInitJobHandleMap,
-               NoWorkerJobHandleSystem.createLoopJobHandleMap,
-             ));
-        };
-        describe("addNoWorkerLoopJob", () =>
-          describe("add job to noWorker loop pipeline", () =>
-            describe("test add job after target job", () =>
-              test("test add one job", () => {
-                let state = _prepare(state);
-                let customData = [||];
-                let state =
-                  state
-                  |> JobAPI.addNoWorkerLoopJob(
-                       ("customJob", "tick"),
-                       AFTER,
-                       state => {
-                         customData
-                         |> ArrayService.push(
-                              TimeControllerService.getElapsed(
-                                state.timeControllerRecord,
-                              ),
-                            )
-                         |> ignore;
-                         state;
-                       },
-                     );
-                let elapsed = 100.1;
-                let state =
-                  state
-                  |> TimeControllerTool.setElapsed(elapsed)
-                  |> NoWorkerJobTool.execLoopJobs;
-                customData |> expect == [|elapsed|];
-              })
+        describe("test operate noWorker loop job", () => {
+          let _prepare = state => {
+            let (state, _, _, _) =
+              InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
+
+            state
+            |> NoWorkerJobTool.init((
+                 NoWorkerJobHandleSystem.createInitJobHandleMap,
+                 NoWorkerJobHandleSystem.createLoopJobHandleMap,
+               ));
+          };
+
+          describe("addNoWorkerLoopJob", () =>
+            describe("add job to noWorker loop pipeline", () =>
+              describe("test add job after target job", () =>
+                test("test add one job", () => {
+                  let state = _prepare(state);
+                  let customData = [||];
+                  let state =
+                    state
+                    |> JobAPI.addNoWorkerLoopJob(
+                         ("customJob", "tick"),
+                         AFTER,
+                         state => {
+                           customData
+                           |> ArrayService.push(
+                                TimeControllerService.getElapsed(
+                                  state.timeControllerRecord,
+                                ),
+                              )
+                           |> ignore;
+                           state;
+                         },
+                       );
+                  let elapsed = 100.1;
+
+                  let state =
+                    state
+                    |> TimeControllerTool.setElapsed(elapsed)
+                    |> NoWorkerJobTool.execLoopJobs;
+                  customData |> expect == [|elapsed|];
+                })
+              )
             )
-          )
-        );
-        describe("removeNoWorkerLoopJob", () =>
-          test("test remove custom added job", () => {
-            let state = _prepare(state);
-            let customData = [||];
-            let state =
-              state
-              |> JobAPI.addNoWorkerLoopJob(
-                   ("customJob", "tick"),
-                   AFTER,
-                   state => {
-                     customData
-                     |> ArrayService.push(
-                          TimeControllerService.getElapsed(
-                            state.timeControllerRecord,
-                          ),
-                        )
-                     |> ignore;
-                     state;
-                   },
-                 )
-              |> JobAPI.removeNoWorkerLoopJob("customJob");
-            let elapsed = 100.1;
-            let state =
-              state
-              |> TimeControllerTool.setElapsed(elapsed)
-              |> NoWorkerJobTool.execLoopJobs;
-            customData |> expect == [||];
-          })
-        );
+          );
+          describe("removeNoWorkerLoopJob", () =>
+            test("test remove custom added job", () => {
+              let state = _prepare(state);
+              let customData = [||];
+              let state =
+                state
+                |> JobAPI.addNoWorkerLoopJob(
+                     ("customJob", "tick"),
+                     AFTER,
+                     state => {
+                       customData
+                       |> ArrayService.push(
+                            TimeControllerService.getElapsed(
+                              state.timeControllerRecord,
+                            ),
+                          )
+                       |> ignore;
+                       state;
+                     },
+                   )
+                |> JobAPI.removeNoWorkerLoopJob("customJob");
+              let elapsed = 100.1;
+              let state =
+                state
+                |> TimeControllerTool.setElapsed(elapsed)
+                |> NoWorkerJobTool.execLoopJobs;
+              customData |> expect == [||];
+            })
+          );
+        });
       });
     });
   });

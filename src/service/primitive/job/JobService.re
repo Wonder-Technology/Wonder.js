@@ -1,27 +1,43 @@
 open JobType;
 
-let handleGetNoneJob = (name, jobHandleMap) =>
+let handleGetNoneNoWorkerJob = (name, list) => {
+  WonderLog.Log.warn({j|job:$name is none|j});
+
+  list;
+};
+
+let handleGetNoneWorkerJob = (name, jobHandleMap) =>
   WonderLog.Log.fatal(
     WonderLog.Log.buildFatalMessage(
       ~title="get no job",
-      ~description={j|can't find job handle function whose job name is $name|j},
+      ~description=
+        {j|can't find job handle function whose job name is $name|j},
       ~reason="",
-      ~solution={j|make sure that the job name defined in config record be correctly|j},
-      ~params="jobHandleMap:" ++ WonderLog.Log.getJsonStr(jobHandleMap) ++ {j|
-name: $name|j}
-    )
+      ~solution=
+        {j|make sure that the job name defined in config record be correctly|j},
+      ~params=
+        "jobHandleMap:"
+        ++ WonderLog.Log.getJsonStr(jobHandleMap)
+        ++ {j|
+name: $name|j},
+    ),
   );
 
-let addJob = ((targetJobName: string, afterJobName: string, action, targetHandleFunc), jobList) =>
-  switch action {
+let addJob =
+    (
+      (targetJobName: string, afterJobName: string, action, targetHandleFunc),
+      jobList,
+    ) =>
+  switch (action) {
   | BEFORE => [(targetJobName, targetHandleFunc), ...jobList]
   | AFTER =>
     jobList
     |> List.fold_left(
          (list, (jobName, handleFunc) as jobItem) =>
            jobName === afterJobName ?
-             list @ [jobItem, (targetJobName, targetHandleFunc)] : list @ [jobItem],
-         []
+             list @ [jobItem, (targetJobName, targetHandleFunc)] :
+             list @ [jobItem],
+         [],
        )
   | _ =>
     WonderLog.Log.fatal(
@@ -30,10 +46,11 @@ let addJob = ((targetJobName: string, afterJobName: string, action, targetHandle
         ~description={j|unknown action:$action|j},
         ~reason="",
         ~solution={j||j},
-        ~params={j||j}
-      )
+        ~params={j||j},
+      ),
     )
   };
 
 let removeJob = (targetJobName: string, jobList) =>
-  jobList |> List.filter(((jobName, handleFunc)) => jobName !== targetJobName);
+  jobList
+  |> List.filter(((jobName, handleFunc)) => jobName !== targetJobName);
