@@ -18,6 +18,16 @@ var ReplaceFetchTool = (function () {
       window.fetch = function (filePath) {
         return new Promise((resolve, reject) => {
           resolve({
+            headers: {
+              get: function (key) {
+                switch (key) {
+                  case "content-length":
+                    return 0;
+                  default:
+                    throw new Error("unknown key: ", key);
+                }
+              }
+            },
             json: function () {
               return new Promise((resolve, reject) => {
                 return window.readFileAsUtf8Sync(filePath).then(function (content) {

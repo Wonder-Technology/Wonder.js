@@ -1622,7 +1622,7 @@ let performanceTestData = {
                                     ["./test/e2e/asset/image/1.png", "1"],
                                     ["./test/e2e/asset/image/2.jpg", "2"]
                                 ],
-                                wd.unsafeGetState(), function (state) {
+                                function (state) {
                                         var state = ImguiTool.testIMGUI(30, state);
 
                             var n1 = performance.now();
@@ -1647,7 +1647,7 @@ let performanceTestData = {
 
                             return {"textArray": ["init", "loopBody"], "timeArray": [n1, n2, n3] }
 
-                                });
+                                }, wd.unsafeGetState());
                     });
 
     |},

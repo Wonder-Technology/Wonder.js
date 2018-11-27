@@ -8,7 +8,7 @@ var LightTool = (function () {
         createDirectionLight: function (state) {
             var [state, light] = wd.createDirectionLight(state);
 
-            var state = wd.setDirectionLightColor(light, [1.0, 1.0, 1.0], state);
+            var state = wd.setDirectionLightColor(light, [1.0, 0.0, 0.0], state);
 
 
 
@@ -47,7 +47,7 @@ var LightTool = (function () {
 
             var [state, material] = wd.createLightMaterial(state);
 
-            state = wd.setLightMaterialDiffuseColor(material, [0.5, 1.0, 0.2], state);
+            state = wd.setLightMaterialDiffuseColor(material, [1.0, 1.0, 0.5], state);
 
             var [state, meshRenderer] = wd.createMeshRenderer(state);
 
@@ -70,7 +70,7 @@ var LightTool = (function () {
 
             return [state, obj];
         },
-        createLights: function (directionLightPos, pointLightPos, state) {
+        createLights: function (_directionLightPos, pointLightPos, state) {
             var state = LightTool.setAmbientLight(state);
 
 
@@ -83,7 +83,7 @@ var LightTool = (function () {
 
             var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
 
-            state = wd.setTransformLocalPosition(transform, directionLightPos, state);
+            state = wd.setTransformLocalEulerAngles(transform, [45, 120, 20], state);
 
 
 

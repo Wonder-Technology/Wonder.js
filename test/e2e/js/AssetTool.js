@@ -179,19 +179,20 @@ var AssetTool = (function () {
             })
         },
         loadWholeWDB: function (wdbPath, handleWhenLoadingFunc, testFunc, state) {
-            return wd.loadWholeWDB(wdbPath, true, true, handleWhenLoadingFunc, state).forEach(function ([state, imageUint8ArrayMap, gameObject]) {
+            return wd.loadWholeWDB(wdbPath, true, true, true, true, true, handleWhenLoadingFunc, state).forEach(function ([state, imageUint8ArrayMap, gameObject]) {
                 testFunc([state, imageUint8ArrayMap, gameObject])
             })
         },
         loadStreamWDB: function (wdbPath, handleWhenLoadingFunc, handleBeforeStartLoopFunc, handleWhenDoneFunc, handleWhenLoadWholeWDBFunc, state) {
             return wd.loadStreamWDB(wdbPath, handleWhenLoadingFunc, handleBeforeStartLoopFunc, handleWhenDoneFunc, handleWhenLoadWholeWDBFunc, state).drain()
         },
-        loadIMGUIAsset: function (fntFilePath, bitmapFilePath, customTextureSourceDataArr, handleWhenLoadingFunc, handleWhenDoneFunc, state) {
+        // TODO fix
+        loadIMGUIAsset: function (fntFilePath, bitmapFilePath, customTextureSourceDataArr, handleWhenDoneFunc, state) {
             return wd.loadIMGUIAsset(
                 fntFilePath,
                 bitmapFilePath,
                 customTextureSourceDataArr,
-                handleWhenLoadingFunc,
+                (a, b) => { },
                 state)
                 .then((state) => {
                     return handleWhenDoneFunc(state)
