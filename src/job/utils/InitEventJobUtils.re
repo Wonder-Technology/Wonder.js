@@ -194,7 +194,8 @@ let _execMouseEventHandle = (eventName, event) => {
   ();
 };
 
-let _execMouseMoveEventHandle = (mouseEventName, event) => {
+let _execMouseChangePositionEventHandle =
+    (mouseEventName, event, setPositionFunc) => {
   let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
   let mouseEvent =
@@ -208,33 +209,26 @@ let _execMouseMoveEventHandle = (mouseEventName, event) => {
 
   state
   |> HandleMouseEventMainService.execEventHandle(mouseEvent)
-  |> HandleMouseEventMainService.setLastXYWhenMouseMove(mouseEvent)
+  |> setPositionFunc(mouseEvent)
   |> StateDataMainService.setState(StateDataMain.stateData)
   |> ignore;
 
   ();
 };
 
-let _execMouseDragingEventHandle = (mouseEventName, event) => {
-  let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
+let _execMouseMoveEventHandle = (mouseEventName, event) =>
+  _execMouseChangePositionEventHandle(
+    mouseEventName,
+    event,
+    HandleMouseEventMainService.setLastXYWhenMouseMove,
+  );
 
-  let mouseEvent =
-    event
-    |> eventTargetToMouseDomEvent
-    |> HandleMouseEventMainService.convertMouseDomEventToMouseEvent(
-         mouseEventName,
-         _,
-         state,
-       );
-
-  state
-  |> HandleMouseEventMainService.execEventHandle(mouseEvent)
-  |> HandleMouseEventMainService.setLastXYByLocation(mouseEvent)
-  |> StateDataMainService.setState(StateDataMain.stateData)
-  |> ignore;
-
-  ();
-};
+let _execMouseDragingEventHandle = (mouseEventName, event) =>
+  _execMouseChangePositionEventHandle(
+    mouseEventName,
+    event,
+    HandleMouseEventMainService.setLastXYByLocation,
+  );
 
 let _execMouseDragStartEventHandle = () => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
@@ -267,37 +261,33 @@ let _execTouchEventHandle = (touchEventName, event) => {
   ();
 };
 
-let _execTouchMoveEventHandle = (touchEventName, event) => {
+let _execTouchChangePositionEventHandle =
+    (touchEventName, event, setPositonFunc) => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
   |> HandleTouchEventMainService.execEventHandle(
        touchEventName,
        event |> eventTargetToTouchDomEvent,
      )
-  |> HandleTouchEventMainService.setLastXYWhenTouchMove(
-       touchEventName,
-       event |> eventTargetToTouchDomEvent,
-     )
+  |> setPositonFunc(touchEventName, event |> eventTargetToTouchDomEvent)
   |> StateDataMainService.setState(StateDataMain.stateData)
   |> ignore;
 
   ();
 };
 
-let _execTouchDragingEventHandle = (touchEventName, event) => {
-  StateDataMainService.unsafeGetState(StateDataMain.stateData)
-  |> HandleTouchEventMainService.execEventHandle(
-       touchEventName,
-       event |> eventTargetToTouchDomEvent,
-     )
-  |> HandleTouchEventMainService.setLastXYByLocation(
-       touchEventName,
-       event |> eventTargetToTouchDomEvent,
-     )
-  |> StateDataMainService.setState(StateDataMain.stateData)
-  |> ignore;
+let _execTouchMoveEventHandle = (touchEventName, event) =>
+  _execTouchChangePositionEventHandle(
+    touchEventName,
+    event,
+    HandleTouchEventMainService.setLastXYWhenTouchMove,
+  );
 
-  ();
-};
+let _execTouchDragingEventHandle = (touchEventName, event) =>
+  _execTouchChangePositionEventHandle(
+    touchEventName,
+    event,
+    HandleTouchEventMainService.setLastXYByLocation,
+  );
 
 let _execTouchDragStartEventHandle = () => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)

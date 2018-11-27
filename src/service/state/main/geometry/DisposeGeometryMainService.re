@@ -4,8 +4,11 @@ open GeometryType;
 
 open DisposeComponentService;
 
-let isAlive = (geometry, {disposedIndexArray}) =>
+let isAlive = (geometry, disposedIndexArray) =>
   DisposeComponentService.isAlive(geometry, disposedIndexArray);
+
+let isAliveWithRecord = (geometry, {disposedIndexArray}) =>
+  isAlive(geometry, disposedIndexArray);
 
 let _disposeData =
     (
@@ -77,7 +80,7 @@ let handleBatchDisposeComponentData =
               DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
                 geometryDataArray
                 |> Js.Array.map(((_, geometry)) => geometry),
-                isAlive,
+                isAliveWithRecord,
                 state |> RecordGeometryMainService.getRecord,
               )
             )
@@ -132,7 +135,7 @@ let handleBatchDisposeComponent = (geometryHasNoGameObjectArray, state) => {
 
       DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
         geometryHasNoGameObjectArray,
-        isAlive,
+        isAliveWithRecord,
         state |> RecordGeometryMainService.getRecord,
       );
       test(

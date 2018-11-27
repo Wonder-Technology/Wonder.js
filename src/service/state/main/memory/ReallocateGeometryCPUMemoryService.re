@@ -264,11 +264,12 @@ let _setNewDataToState =
   indices32: newIndices32,
 };
 
-let getAllAliveGeometrys = (index, geometryRecord) =>
-  ArrayService.range(0, index - 1)
-  |> Js.Array.filter(geometry =>
-       DisposeGeometryMainService.isAlive(geometry, geometryRecord)
-     );
+let getAllAliveGeometrys = (index, {disposedIndexArray}) =>
+  AliveComponentService.getAllAliveComponents(
+    index,
+    disposedIndexArray,
+    DisposeGeometryMainService.isAlive,
+  );
 
 let reAllocateToBuffer = (newBufferData, {index} as geometryRecord) => {
   let newAliveIndexArray = getAllAliveGeometrys(index, geometryRecord);

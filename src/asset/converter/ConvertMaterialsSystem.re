@@ -1,6 +1,12 @@
 let _buildDefaultBasicMaterialName = materialIndex =>
   ConvertCommon.buildDefaultBasicMaterialName(materialIndex);
 
+let _convertColor = colorFactor =>
+  switch (colorFactor) {
+  | None => [|1., 1., 1.|]
+  | Some(colorFactor) => [|colorFactor[0], colorFactor[1], colorFactor[2]|]
+  };
+
 let convertToBasicMaterials =
     ({extras}: GLTFType.gltf)
     : array(WDType.basicMaterial) =>
@@ -20,15 +26,7 @@ let convertToBasicMaterials =
                       | None => _buildDefaultBasicMaterialName(index)
                       | Some(name) => name
                       },
-                    color:
-                      switch (colorFactor) {
-                      | None => [|1., 1., 1.|]
-                      | Some(colorFactor) => [|
-                          colorFactor[0],
-                          colorFactor[1],
-                          colorFactor[2],
-                        |]
-                      },
+                    color: _convertColor(colorFactor),
                   }: WDType.basicMaterial,
                 ),
            [||],
@@ -49,15 +47,7 @@ let _convertPBRData = (name, diffuseColorFactor, arr, index) =>
            | None => _buildDefaultLightMaterialName(index)
            | Some(name) => name
            },
-         diffuseColor:
-           switch (diffuseColorFactor) {
-           | None => [|1., 1., 1.|]
-           | Some(colorFactor) => [|
-               colorFactor[0],
-               colorFactor[1],
-               colorFactor[2],
-             |]
-           },
+         diffuseColor: _convertColor(diffuseColorFactor),
        }: WDType.lightMaterial,
      );
 

@@ -20,7 +20,7 @@ let getGeometryVertices = (geometry: int, state: StateDataMainType.state) => {
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
               geometry,
-              isAlive,
+              isAliveWithRecord,
               RecordGeometryMainService.getRecord(state),
             )
           )
@@ -44,7 +44,7 @@ let setGeometryVertices =
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
               geometry,
-              isAlive,
+              isAliveWithRecord,
               RecordGeometryMainService.getRecord(state),
             )
           )
@@ -63,7 +63,7 @@ let getGeometryTexCoords = (geometry: int, state: StateDataMainType.state) => {
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
               geometry,
-              isAlive,
+              isAliveWithRecord,
               RecordGeometryMainService.getRecord(state),
             )
           )
@@ -87,7 +87,7 @@ let setGeometryTexCoords =
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
               geometry,
-              isAlive,
+              isAliveWithRecord,
               RecordGeometryMainService.getRecord(state),
             )
           )
@@ -106,7 +106,7 @@ let getGeometryNormals = (geometry: int, state: StateDataMainType.state) => {
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
               geometry,
-              isAlive,
+              isAliveWithRecord,
               RecordGeometryMainService.getRecord(state),
             )
           )
@@ -130,7 +130,7 @@ let setGeometryNormals =
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
               geometry,
-              isAlive,
+              isAliveWithRecord,
               RecordGeometryMainService.getRecord(state),
             )
           )
@@ -149,7 +149,7 @@ let getGeometryIndices = (geometry: int, state: StateDataMainType.state) => {
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
               geometry,
-              isAlive,
+              isAliveWithRecord,
               RecordGeometryMainService.getRecord(state),
             )
           )
@@ -173,7 +173,7 @@ let setGeometryIndices =
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
               geometry,
-              isAlive,
+              isAliveWithRecord,
               RecordGeometryMainService.getRecord(state),
             )
           )
@@ -192,7 +192,7 @@ let getGeometryIndices32 = (geometry: int, state: StateDataMainType.state) => {
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
               geometry,
-              isAlive,
+              isAliveWithRecord,
               RecordGeometryMainService.getRecord(state),
             )
           )
@@ -216,7 +216,7 @@ let setGeometryIndices32 =
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
               geometry,
-              isAlive,
+              isAliveWithRecord,
               RecordGeometryMainService.getRecord(state),
             )
           )
@@ -236,7 +236,7 @@ let unsafeGetGeometryGameObjects =
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
               geometry,
-              isAlive,
+              isAliveWithRecord,
               RecordGeometryMainService.getRecord(state),
             )
           )
@@ -258,7 +258,7 @@ let unsafeGetGeometryName = (geometry, state) => {
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
               geometry,
-              isAlive,
+              isAliveWithRecord,
               RecordGeometryMainService.getRecord(state),
             )
           )
@@ -277,7 +277,7 @@ let setGeometryName = (geometry, name, state) => {
           Operators.(
             AliveComponentService.checkComponentShouldAlive(
               geometry,
-              isAlive,
+              isAliveWithRecord,
               RecordGeometryMainService.getRecord(state),
             )
           )
@@ -287,13 +287,6 @@ let setGeometryName = (geometry, name, state) => {
   );
   NameGeometryMainService.setName(geometry, name, state);
 };
-
-let _getAllComponents = (disposedUidMap, componentMap) =>
-  componentMap
-  |> Js.Array.filteri((component, uid) =>
-       ! (disposedUidMap |> WonderCommonlib.SparseMapService.has(uid))
-       && Obj.magic(component) !== Js.Undefined.empty
-     );
 
 let getAllGeometrys = state => {
   let {index, disposedIndexArray} =

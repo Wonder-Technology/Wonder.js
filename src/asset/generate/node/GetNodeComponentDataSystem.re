@@ -94,49 +94,56 @@ let _getMeshData =
     )
   };
 
+let _getMaterialData =
+    (
+      (gameObject, materialIndex),
+      materialCompoent,
+      materialDataMap,
+      getNameFunc,
+      {gameObjectRecord} as state,
+    ) =>
+  switch (materialCompoent) {
+  | None => (None, None, materialIndex, materialDataMap)
+  | Some(material) =>
+    switch (materialDataMap |> WonderCommonlib.SparseMapService.get(material)) {
+    | Some((existedMaterialIndex, materialData)) => (
+        Some(existedMaterialIndex),
+        materialData,
+        materialIndex,
+        materialDataMap,
+      )
+    | None =>
+      let materialData = Some((material, getNameFunc(material, state)));
+
+      (
+        Some(materialIndex),
+        materialData,
+        materialIndex |> succ,
+        materialDataMap
+        |> WonderCommonlib.SparseMapService.set(
+             material,
+             (materialIndex, materialData),
+           ),
+      );
+    }
+  };
+
 let _getBasicMaterialData =
     (
       (gameObject, materialIndex),
       basicMaterialDataMap,
       {gameObjectRecord} as state,
     ) =>
-  switch (
+  _getMaterialData(
+    (gameObject, materialIndex),
     GetComponentGameObjectService.getBasicMaterialComponent(.
       gameObject,
       gameObjectRecord,
-    )
-  ) {
-  | None => (None, None, materialIndex, basicMaterialDataMap)
-  | Some(basicMaterial) =>
-    switch (
-      basicMaterialDataMap
-      |> WonderCommonlib.SparseMapService.get(basicMaterial)
-    ) {
-    | Some((existedMaterialIndex, materialData)) => (
-        Some(existedMaterialIndex),
-        materialData,
-        materialIndex,
-        basicMaterialDataMap,
-      )
-    | None =>
-      let materialData =
-        Some((
-          basicMaterial,
-          NameBasicMaterialMainService.getName(basicMaterial, state),
-        ));
-
-      (
-        Some(materialIndex),
-        materialData,
-        materialIndex |> succ,
-        basicMaterialDataMap
-        |> WonderCommonlib.SparseMapService.set(
-             basicMaterial,
-             (materialIndex, materialData),
-           ),
-      );
-    }
-  };
+    ),
+    basicMaterialDataMap,
+    NameBasicMaterialMainService.getName,
+    state,
+  );
 
 let _getLightMaterialData =
     (
@@ -144,119 +151,66 @@ let _getLightMaterialData =
       lightMaterialDataMap,
       {gameObjectRecord} as state,
     ) =>
-  switch (
+  _getMaterialData(
+    (gameObject, materialIndex),
     GetComponentGameObjectService.getLightMaterialComponent(.
       gameObject,
       gameObjectRecord,
-    )
-  ) {
-  | None => (None, None, materialIndex, lightMaterialDataMap)
-  | Some(lightMaterial) =>
-    switch (
-      lightMaterialDataMap
-      |> WonderCommonlib.SparseMapService.get(lightMaterial)
-    ) {
-    | Some((existedMaterialIndex, materialData)) => (
-        Some(existedMaterialIndex),
-        materialData,
-        materialIndex,
-        lightMaterialDataMap,
-      )
-    | None =>
-      let materialData =
-        Some((
-          lightMaterial,
-          NameLightMaterialMainService.getName(lightMaterial, state),
-        ));
+    ),
+    lightMaterialDataMap,
+    NameLightMaterialMainService.getName,
+    state,
+  );
 
-      (
-        Some(materialIndex),
-        materialData,
-        materialIndex |> succ,
-        lightMaterialDataMap
-        |> WonderCommonlib.SparseMapService.set(
-             lightMaterial,
-             (materialIndex, materialData),
-           ),
-      );
-    }
+let _getComponentData =
+    (
+      (gameObject, componentIndex),
+      getComponentFunc,
+      {gameObjectRecord} as state,
+    ) =>
+  switch (getComponentFunc(. gameObject, gameObjectRecord)) {
+  | None => (None, None, componentIndex)
+
+  | Some(component) =>
+    let componentData = Some(component);
+
+    (Some(componentIndex), componentData, componentIndex |> succ);
   };
 
 let _getMeshRendererData =
     ((gameObject, meshRendererIndex), {gameObjectRecord} as state) =>
-  switch (
-    GetComponentGameObjectService.getMeshRendererComponent(.
-      gameObject,
-      gameObjectRecord,
-    )
-  ) {
-  | None => (None, None, meshRendererIndex)
-
-  | Some(meshRenderer) =>
-    let meshRendererData = Some(meshRenderer);
-
-    (Some(meshRendererIndex), meshRendererData, meshRendererIndex |> succ);
-  };
+  _getComponentData(
+    (gameObject, meshRendererIndex),
+    GetComponentGameObjectService.getMeshRendererComponent,
+    state,
+  );
 
 let _getBasicCameraViewData =
     ((gameObject, basicCameraViewIndex), {gameObjectRecord} as state) =>
-  switch (
-    GetComponentGameObjectService.getBasicCameraViewComponent(.
-      gameObject,
-      gameObjectRecord,
-    )
-  ) {
-  | None => (None, None, basicCameraViewIndex)
-
-  | Some(cameraView) =>
-    let basicCameraViewData = Some(cameraView);
-
-    (
-      Some(basicCameraViewIndex),
-      basicCameraViewData,
-      basicCameraViewIndex |> succ,
-    );
-  };
+  _getComponentData(
+    (gameObject, basicCameraViewIndex),
+    GetComponentGameObjectService.getBasicCameraViewComponent,
+    state,
+  );
 
 let _getCameraProjectionData =
     ((gameObject, cameraProjectionIndex), {gameObjectRecord} as state) =>
-  switch (
-    GetComponentGameObjectService.getPerspectiveCameraProjectionComponent(.
-      gameObject,
-      gameObjectRecord,
-    )
-  ) {
-  | None => (None, None, cameraProjectionIndex)
-
-  | Some(perspectiveCamera) =>
-    let cameraProjectionData = Some(perspectiveCamera);
-
-    (
-      Some(cameraProjectionIndex),
-      cameraProjectionData,
-      cameraProjectionIndex |> succ,
-    );
-  };
+  _getComponentData(
+    (gameObject, cameraProjectionIndex),
+    GetComponentGameObjectService.getPerspectiveCameraProjectionComponent,
+    state,
+  );
 
 let _getArcballCameraControllerData =
     (
       (gameObject, arcballCameraControllerIndex),
       {gameObjectRecord} as state,
     ) =>
-  switch (
-    GetComponentGameObjectService.getArcballCameraControllerComponent(.
-      gameObject,
-      gameObjectRecord,
-    )
-  ) {
-  | None => (None, None, arcballCameraControllerIndex)
-
-  | Some(arcballCameraController) => (
-      Some(arcballCameraControllerIndex),
-      Some(arcballCameraController),
-      arcballCameraControllerIndex |> succ,
-    )
-  };
+  _getComponentData(
+    (gameObject, arcballCameraControllerIndex),
+    GetComponentGameObjectService.getArcballCameraControllerComponent,
+    state,
+  );
 
 let _getLightData = ((gameObject, lightIndex), {gameObjectRecord} as state) =>
   switch (
@@ -286,7 +240,7 @@ let _getLightData = ((gameObject, lightIndex), {gameObjectRecord} as state) =>
     (Some(lightIndex), lightData, lightIndex |> succ);
   };
 
-let getComponentData =
+let getAllComponentData =
     (
       (
         gameObject,

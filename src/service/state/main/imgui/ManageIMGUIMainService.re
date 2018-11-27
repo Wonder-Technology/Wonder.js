@@ -5,46 +5,46 @@ let getIMGUIFunc = state =>
     RecordIMGUIMainService.getWonderIMGUIRecord(state),
   );
 
-let setIMGUIFunc = (customData, func, state) =>
+let setIMGUIFunc = (customData, func, state) => {
+  let wonderImguiIMGUIRecord =
+    RecordIMGUIMainService.getWonderIMGUIRecord(state)
+    |> WonderImgui.ManageIMGUIAPI.setIMGUIFunc(customData, func);
+
   WorkerDetectMainService.isUseWorker(state) ?
     {
       ...state,
       imguiRecord: {
         ...state.imguiRecord,
         isSetIMGUIFuncInRenderWorkerForWorker: false,
-        wonderImguiIMGUIRecord:
-          RecordIMGUIMainService.getWonderIMGUIRecord(state)
-          |> WonderImgui.ManageIMGUIAPI.setIMGUIFunc(customData, func),
+        wonderImguiIMGUIRecord,
       },
     } :
     {
       ...state,
       imguiRecord: {
         ...state.imguiRecord,
-        wonderImguiIMGUIRecord:
-          RecordIMGUIMainService.getWonderIMGUIRecord(state)
-          |> WonderImgui.ManageIMGUIAPI.setIMGUIFunc(customData, func),
+        wonderImguiIMGUIRecord,
       },
     };
+};
 
 let isSetIMGUIFuncInRenderWorkerForWorker = state =>
   state.imguiRecord.isSetIMGUIFuncInRenderWorkerForWorker === true;
 
-let markSetIMGUIFuncInRenderWorkerForWorker = state => {
+let _markIsSetIMGUIFuncInRenderWorkerForWorker =
+    (isSetIMGUIFuncInRenderWorkerForWorker, state) => {
   ...state,
   imguiRecord: {
     ...state.imguiRecord,
-    isSetIMGUIFuncInRenderWorkerForWorker: true,
+    isSetIMGUIFuncInRenderWorkerForWorker,
   },
 };
 
-let resetIsSetIMGUIFuncInRenderWorkerForWorker = state => {
-  ...state,
-  imguiRecord: {
-    ...state.imguiRecord,
-    isSetIMGUIFuncInRenderWorkerForWorker: false,
-  },
-};
+let markSetIMGUIFuncInRenderWorkerForWorker = state =>
+  _markIsSetIMGUIFuncInRenderWorkerForWorker(true, state);
+
+let resetIsSetIMGUIFuncInRenderWorkerForWorker = state =>
+  _markIsSetIMGUIFuncInRenderWorkerForWorker(false, state);
 
 let getCustomData = state =>
   WonderImgui.ManageIMGUIAPI.getCustomData(

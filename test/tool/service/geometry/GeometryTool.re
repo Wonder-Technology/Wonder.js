@@ -153,7 +153,7 @@ let hasGameObject = (geometry, state) =>
 
 let isGeometryDisposed = (geometry, state) =>
   !
-    DisposeGeometryMainService.isAlive(
+    DisposeGeometryMainService.isAliveWithRecord(
       geometry,
       state |> RecordGeometryMainService.getRecord,
     );

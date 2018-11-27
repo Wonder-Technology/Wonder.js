@@ -294,7 +294,7 @@ let rec _getNodeData =
              lightDataMap,
            ),
          ) =
-           GetNodeComponentDataSystem.getComponentData(
+           GetNodeComponentDataSystem.getAllComponentData(
              (
                gameObject,
                state,

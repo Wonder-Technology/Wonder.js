@@ -53,18 +53,14 @@ let _normalizeNormals = normals => {
 
 let _createDefaultNormals = count => Float32Array.fromLength(count);
 
-let computeVertexNormalsByIndices = (vertices, indices) => {
-  open Vector3Type;
-
-  let indicesLen = indices |> Uint16Array.length;
-
+let _computeVertexNormals = (vertices, indices, indicesLen, getIndexFunc) => {
   let rec _compute = (index, normals) =>
     index >= indicesLen ?
       normals :
       {
-        let va = Uint16Array.unsafe_get(indices, index) * 3;
-        let vb = Uint16Array.unsafe_get(indices, index + 1) * 3;
-        let vc = Uint16Array.unsafe_get(indices, index + 2) * 3;
+        let va = getIndexFunc(indices, index) * 3;
+        let vb = getIndexFunc(indices, index + 1) * 3;
+        let vc = getIndexFunc(indices, index + 2) * 3;
         let pa = _getPosition(vertices, va);
         let pb = _getPosition(vertices, vb);
         let pc = _getPosition(vertices, vc);
@@ -85,34 +81,24 @@ let computeVertexNormalsByIndices = (vertices, indices) => {
   |> _normalizeNormals;
 };
 
-let computeVertexNormalsByIndices32 = (vertices, indices32) => {
-  open Vector3Type;
+let computeVertexNormalsByIndices = (vertices, indices) => {
+  let indicesLen = indices |> Uint16Array.length;
 
+  _computeVertexNormals(
+    vertices,
+    indices,
+    indicesLen,
+    Uint16Array.unsafe_get,
+  );
+};
+
+let computeVertexNormalsByIndices32 = (vertices, indices32) => {
   let indicesLen = indices32 |> Uint32Array.length;
 
-  let rec _compute = (index, normals) =>
-    index >= indicesLen ?
-      normals :
-      {
-        let va = Uint32Array.unsafe_get(indices32, index) * 3;
-        let vb = Uint32Array.unsafe_get(indices32, index + 1) * 3;
-        let vc = Uint32Array.unsafe_get(indices32, index + 2) * 3;
-        let pa = _getPosition(vertices, va);
-        let pb = _getPosition(vertices, vb);
-        let pc = _getPosition(vertices, vc);
-        let v0 = Vector3Service.sub(Float, pc, pb);
-        let v1 = Vector3Service.sub(Float, pa, pb);
-        let (faceNormalX, faceNormalY, faceNormalZ) as faceNormalTuple =
-          Vector3Service.cross(v0, v1);
-        _compute(
-          index + 3,
-          normals
-          |> _setNormal(faceNormalTuple, va)
-          |> _setNormal(faceNormalTuple, vb)
-          |> _setNormal(faceNormalTuple, vc),
-        );
-      };
-
-  _compute(0, _createDefaultNormals(vertices |> Float32Array.length))
-  |> _normalizeNormals;
+  _computeVertexNormals(
+    vertices,
+    indices32,
+    indicesLen,
+    Uint32Array.unsafe_get,
+  );
 };
