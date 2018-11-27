@@ -4,6 +4,16 @@ let assembleWholeWDB = AssembleWholeWDBAPI.assembleWholeWDB;
 
 let assembleWholeGLB = AssembleWholeWDBAPI.assembleWholeGLB;
 
+let isDefaultGeometryName = ConverterAPI.isDefaultGeometryName;
+
+let isDefaultTextureName = ConverterAPI.isDefaultTextureName;
+
+let isDefaultBasicMaterialName = ConverterAPI.isDefaultBasicMaterialName;
+
+let isDefaultLightMaterialName = ConverterAPI.isDefaultLightMaterialName;
+
+let isDefaultImageName = ConverterAPI.isDefaultImageName;
+
 let convertGLBToWDB = ConverterAPI.convertGLBToWDB;
 
 let generateWDB = GenerateSceneGraphAPI.generateWDB;
@@ -347,6 +357,14 @@ let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectB
 let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
 
 let createGameObject = GameObjectAPI.createGameObject;
+
+let hasGeometryIndices = GeometryAPI.hasGeometryIndices;
+
+let hasGeometryTexCoords = GeometryAPI.hasGeometryTexCoords;
+
+let hasGeometryNormals = GeometryAPI.hasGeometryNormals;
+
+let hasGeometryVertices = GeometryAPI.hasGeometryVertices;
 
 let batchDisposeGeometry = GeometryAPI.batchDisposeGeometry;
 
