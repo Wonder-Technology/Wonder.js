@@ -3,8 +3,7 @@ open StateDataMainType;
 let initMaterials =
     (
       materialIndexArr,
-      gl,
-      (index, disposedIndexArray, gameObjectsMap),
+      (gl, index, disposedIndexArray, gameObjectsMap),
       (initMaterialFunc, createInitMaterialStateFunc),
       {gameObjectRecord} as state,
     ) => {

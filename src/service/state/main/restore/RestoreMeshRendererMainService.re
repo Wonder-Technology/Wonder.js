@@ -10,11 +10,12 @@ let _restoreTypeArrays = (currentMeshRecord, targetMeshRecord) =>
       let (drawModes, isRenders) =
         RecordMeshRendererMainService.setAllTypeArrDataToDefault(
           currentMeshRecord.index,
-          BufferMeshRendererService.getDefaultDrawMode()
-          |> DrawModeType.drawModeToUint8,
-          BufferMeshRendererService.getDefaultIsRender(),
-          currentMeshRecord.drawModes,
-          currentMeshRecord.isRenders,
+          (
+            BufferMeshRendererService.getDefaultDrawMode()
+            |> DrawModeType.drawModeToUint8,
+            BufferMeshRendererService.getDefaultIsRender(),
+          ),
+          (currentMeshRecord.drawModes, currentMeshRecord.isRenders),
         );
       TypeArrayService.fillUint8ArrayWithUint8Array(
         (currentMeshRecord.drawModes, 0),

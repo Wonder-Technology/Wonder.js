@@ -146,6 +146,41 @@ let _getImageBase64 = (texture, source) =>
     source,
   );
 
+let _getImageUint8ArrayData =
+    (texture, source, imageUint8ArrayDataMap, getResultUint8ArrayDataFunc) => {
+  open Js.Typed_array;
+
+  let (mimeType, imageUint8Array) =
+    switch (
+      imageUint8ArrayDataMap |> WonderCommonlib.SparseMapService.get(texture)
+    ) {
+    | Some(data) => data
+    | None =>
+      let imageBase64 = _getImageBase64(texture, source);
+
+      (
+        BufferUtils.getBase64MimeType(imageBase64),
+        BufferUtils.convertBase64ToBinary(imageBase64),
+      );
+    };
+
+  let imageResultUint8Array = imageUint8Array |> getResultUint8ArrayDataFunc;
+  let imageResultUint8ArrayByteLength =
+    imageResultUint8Array |> Uint8Array.byteLength;
+  let imageResultUint8ArrayAlignedByteLength =
+    imageResultUint8ArrayByteLength |> BufferUtils.alignedLength;
+
+  (
+    mimeType,
+    imageUint8Array,
+    (
+      imageResultUint8Array,
+      imageResultUint8ArrayByteLength,
+      imageResultUint8ArrayAlignedByteLength,
+    ),
+  );
+};
+
 let _addImageData =
     (
       (texture, imageMap, imageUint8ArrayMap, state),
@@ -172,7 +207,6 @@ let _addImageData =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  open Js.Typed_array;
 
   let source =
     OperateBasicSourceTextureMainService.unsafeGetSource(texture, state);
@@ -181,36 +215,29 @@ let _addImageData =
   | imageIndex when imageIndex === (-1) =>
     let imageIndex = imageUint8DataArr |> Js.Array.length;
 
-    let (mimeType, imageUint8Array) =
-      switch (
-        imageUint8ArrayDataMap
-        |> WonderCommonlib.SparseMapService.get(texture)
-      ) {
-      | Some(data) => data
-      | None =>
-        let imageBase64 = _getImageBase64(texture, source);
-
-        (
-          BufferUtils.getBase64MimeType(imageBase64),
-          BufferUtils.convertBase64ToBinary(imageBase64),
-        );
-      };
+    let (
+      mimeType,
+      imageUint8Array,
+      (
+        imageResultUint8Array,
+        imageResultUint8ArrayByteLength,
+        imageResultUint8ArrayAlignedByteLength,
+      ),
+    ) =
+      _getImageUint8ArrayData(
+        texture,
+        source,
+        imageUint8ArrayDataMap,
+        getResultUint8ArrayDataFunc,
+      );
 
     let imageUint8ArrayMap =
       imageUint8ArrayMap
       |> WonderCommonlib.SparseMapService.set(imageIndex, imageUint8Array);
 
-    let imageResultUint8Array = imageUint8Array |> getResultUint8ArrayDataFunc;
-
     let imageResultUint8ArrayMap =
       imageResultUint8ArrayMap
       |> WonderCommonlib.SparseMapService.set(texture, imageUint8Array);
-
-    let imageResultUint8ArrayByteLength =
-      imageResultUint8Array |> Uint8Array.byteLength;
-
-    let imageResultUint8ArrayAlignedByteLength =
-      imageResultUint8ArrayByteLength |> BufferUtils.alignedLength;
 
     (
       imageIndex,
@@ -269,6 +296,13 @@ let _addTextureData =
          sampler: samplerIndex,
          source: imageIndex,
        }: GenerateSceneGraphType.textureData,
+     );
+
+let _addMaterialData =
+    (materialDataArr, (baseColorFactor, textureIndex, name)) =>
+  materialDataArr
+  |> ArrayService.push(
+       {baseColorFactor, baseColorTexture: Some(textureIndex), name}: GenerateSceneGraphType.lightMaterialData,
      );
 
 let build =
@@ -369,10 +403,10 @@ let build =
 
     (
       (
-        materialDataArr
-        |> ArrayService.push(
-             {baseColorFactor, baseColorTexture: Some(textureIndex), name}: GenerateSceneGraphType.lightMaterialData,
-           ),
+        _addMaterialData(
+          materialDataArr,
+          (baseColorFactor, textureIndex, name),
+        ),
         _addTextureData(
           diffuseMap,
           (samplerIndex, imageIndex),

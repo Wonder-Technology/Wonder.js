@@ -15,9 +15,7 @@ let _hasMap = (gameObject, {gameObjectRecord} as state) =>
 
 let _getGeometryData =
     (
-      (gameObject, meshIndex),
-      geometry,
-      geometryDataMap,
+      (gameObject, meshIndex, geometry, geometryDataMap),
       (
         getVerticesFunc,
         getNormalsFunc,
@@ -34,7 +32,6 @@ let _getGeometryData =
       meshIndex,
       geometryDataMap,
     )
-
   | None =>
     open GeometryType;
 
@@ -86,9 +83,7 @@ let _getMeshData =
   | None => (None, None, meshIndex, geometryDataMap)
   | Some(geometry) =>
     _getGeometryData(
-      (gameObject, meshIndex),
-      geometry,
-      geometryDataMap,
+      (gameObject, meshIndex, geometry, geometryDataMap),
       getPointsDataFuncTuple,
       state,
     )
@@ -96,9 +91,7 @@ let _getMeshData =
 
 let _getMaterialData =
     (
-      (gameObject, materialIndex),
-      materialCompoent,
-      materialDataMap,
+      (gameObject, materialIndex, materialCompoent, materialDataMap),
       getNameFunc,
       {gameObjectRecord} as state,
     ) =>
@@ -135,12 +128,15 @@ let _getBasicMaterialData =
       {gameObjectRecord} as state,
     ) =>
   _getMaterialData(
-    (gameObject, materialIndex),
-    GetComponentGameObjectService.getBasicMaterialComponent(.
+    (
       gameObject,
-      gameObjectRecord,
+      materialIndex,
+      GetComponentGameObjectService.getBasicMaterialComponent(.
+        gameObject,
+        gameObjectRecord,
+      ),
+      basicMaterialDataMap,
     ),
-    basicMaterialDataMap,
     NameBasicMaterialMainService.getName,
     state,
   );
@@ -152,12 +148,15 @@ let _getLightMaterialData =
       {gameObjectRecord} as state,
     ) =>
   _getMaterialData(
-    (gameObject, materialIndex),
-    GetComponentGameObjectService.getLightMaterialComponent(.
+    (
       gameObject,
-      gameObjectRecord,
+      materialIndex,
+      GetComponentGameObjectService.getLightMaterialComponent(.
+        gameObject,
+        gameObjectRecord,
+      ),
+      lightMaterialDataMap,
     ),
-    lightMaterialDataMap,
     NameLightMaterialMainService.getName,
     state,
   );

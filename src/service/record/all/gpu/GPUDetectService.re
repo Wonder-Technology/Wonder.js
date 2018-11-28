@@ -4,26 +4,28 @@ open WonderWebgl.GlType;
 
 open GPUDetectType;
 
+let _getElementIndexUint = gl =>
+  switch (gl |> getExtension("OES_element_index_uint") |> Js.toOption) {
+  | None =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_getExtension",
+        ~description={j|not support OES_element_index_uint extension|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j},
+      ),
+    );
+
+    Obj.magic(false);
+  | Some(_) => Obj.magic(true)
+  };
+
 let _getExtension = (name: string, gl) =>
   (
     switch (name) {
     | "instanced_arrays" => gl |> getExtension("ANGLE_instanced_arrays")
-    | "element_index_uint" =>
-      switch (gl |> getExtension("OES_element_index_uint") |> Js.toOption) {
-      | None =>
-        WonderLog.Log.fatal(
-          WonderLog.Log.buildFatalMessage(
-            ~title="_getExtension",
-            ~description={j|not support OES_element_index_uint extension|j},
-            ~reason="",
-            ~solution={j||j},
-            ~params={j||j},
-          ),
-        );
-
-        Obj.magic(false);
-      | Some(_) => Obj.magic(true)
-      }
+    | "element_index_uint" => _getElementIndexUint(gl)
     | _ => gl |> getExtension(name)
     }
   )

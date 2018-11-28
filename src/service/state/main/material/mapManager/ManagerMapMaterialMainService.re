@@ -19,8 +19,7 @@ let getMap =
 
 let _changeMap =
     (
-      material,
-      texture,
+      (material, texture),
       mapUnit,
       setTextureIndexFunc,
       (
@@ -54,8 +53,7 @@ let setMap =
   let mapUnit = getMapUnitFunc(. material, mapUnits);
   MapUnitService.hasMap(mapUnit) ?
     _changeMap(
-      material,
-      texture,
+      (material, texture),
       mapUnit,
       setTextureIndexFunc,
       (

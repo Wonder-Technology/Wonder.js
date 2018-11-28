@@ -361,7 +361,7 @@ and _handleLoading =
 
   let value = streamData##value;
 
-  WonderLog.Log.logJson(("value", value |> Uint8Array.byteLength)) |> ignore;
+  WonderLog.Log.log(("value", value |> Uint8Array.byteLength)) |> ignore;
 
   let loadedUint8ArrayArr = loadedUint8ArrayArr |> ArrayService.push(value);
 

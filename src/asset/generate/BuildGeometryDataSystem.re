@@ -2,6 +2,24 @@ open Js.Typed_array;
 
 open GenerateSceneGraphType;
 
+let _getComponentType = pointType =>
+  switch (pointType) {
+  | Vertex
+  | Normal
+  | TexCoord => 5126
+  | Index => 5123
+  | Index32 => 5125
+  };
+
+let _getType = pointType =>
+  switch (pointType) {
+  | Vertex
+  | Normal => "VEC3"
+  | TexCoord => "VEC2"
+  | Index
+  | Index32 => "SCALAR"
+  };
+
 let _addBufferViewData =
     (
       (pointsLength, pointsCount, bytes_per_element, pointType),
@@ -28,22 +46,8 @@ let _addBufferViewData =
            bufferView: bufferViewDataArr |> Js.Array.length,
            /* byteOffset:  0, */
            count: pointsCount,
-           componentType:
-             switch (pointType) {
-             | Vertex
-             | Normal
-             | TexCoord => 5126
-             | Index => 5123
-             | Index32 => 5125
-             },
-           type_:
-             switch (pointType) {
-             | Vertex
-             | Normal => "VEC3"
-             | TexCoord => "VEC2"
-             | Index
-             | Index32 => "SCALAR"
-             },
+           componentType: _getComponentType(pointType),
+           type_: _getType(pointType),
          }),
       bufferViewDataArr
       |> ArrayService.push({
@@ -84,11 +88,83 @@ let _addVertexData = ((bufferViewOffset, points), vertexDataArr) => {
   vertexDataArr |> ArrayService.push((bufferViewOffset, points));
 };
 
-let _addIndexData = ((bufferViewOffset, points), indexDataArr) => {
+let _addIndexDataToArr = ((bufferViewOffset, points), indexDataArr) => {
   _checkBufferViewOffsetAligned(bufferViewOffset);
 
   indexDataArr |> ArrayService.push((bufferViewOffset, points));
 };
+
+let _addPointData =
+    (
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr, totalByteLength),
+      (points, pointsLength, pointsCount, type_),
+      vertexDataArr,
+    ) => {
+  let vertexDataArr =
+    _addVertexData((bufferViewOffset, points), vertexDataArr);
+
+  (
+    vertexDataArr,
+    _addBufferViewData(
+      (pointsLength, pointsCount, Float32Array._BYTES_PER_ELEMENT, type_),
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+      totalByteLength,
+    ),
+  );
+};
+
+let _addIndexData =
+    (
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr, totalByteLength),
+      (indices, indices32, indicesSize),
+      (indexDataArr, index32DataArr),
+    ) =>
+  switch (indices) {
+  | None =>
+    switch (indices32) {
+    | None =>
+      WonderLog.Log.fatal(
+        WonderLog.Log.buildFatalMessage(
+          ~title="_addAllPointData",
+          ~description={j|should has indices data|j},
+          ~reason="",
+          ~solution={j||j},
+          ~params={j||j},
+        ),
+      )
+    | Some(indices32) =>
+      let indices32Length = Uint32Array.length(indices32);
+      let indices32Count = indices32Length / indicesSize;
+
+      (
+        indexDataArr,
+        _addIndexDataToArr((bufferViewOffset, indices32), index32DataArr),
+        _addBufferViewData(
+          (
+            indices32Length,
+            indices32Count,
+            Uint32Array._BYTES_PER_ELEMENT,
+            Index32,
+          ),
+          (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+          totalByteLength,
+        ),
+      );
+    }
+  | Some(indices) =>
+    let indicesLength = Uint16Array.length(indices);
+    let indicesCount = indicesLength / indicesSize;
+
+    (
+      _addIndexDataToArr((bufferViewOffset, indices), indexDataArr),
+      index32DataArr,
+      _addBufferViewData(
+        (indicesLength, indicesCount, Uint16Array._BYTES_PER_ELEMENT, Index),
+        (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+        totalByteLength,
+      ),
+    );
+  };
 
 let _addAllPointData =
     (
@@ -106,62 +182,52 @@ let _addAllPointData =
   let normalsCount = normalsLength / normalsSize;
   let texCoordsCount = texCoordsLength / texCoordsSize;
 
-  let vertexDataArr =
-    _addVertexData((bufferViewOffset, vertices), vertexDataArr);
-
   let (
-    vertexIndex,
-    accessorDataArr,
-    bufferViewDataArr,
-    bufferViewOffset,
-    totalByteLength,
-  ) =
-    _addBufferViewData(
-      (
-        verticesLength,
-        verticesCount,
-        Float32Array._BYTES_PER_ELEMENT,
-        Vertex,
-      ),
-      (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+    vertexDataArr,
+    (
+      vertexIndex,
+      accessorDataArr,
+      bufferViewDataArr,
+      bufferViewOffset,
       totalByteLength,
+    ),
+  ) =
+    _addPointData(
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr, totalByteLength),
+      (vertices, verticesLength, verticesCount, Vertex),
+      vertexDataArr,
     );
 
-  let vertexDataArr =
-    _addVertexData((bufferViewOffset, normals), vertexDataArr);
-
   let (
-    normalIndex,
-    accessorDataArr,
-    bufferViewDataArr,
-    bufferViewOffset,
-    totalByteLength,
-  ) =
-    _addBufferViewData(
-      (normalsLength, normalsCount, Float32Array._BYTES_PER_ELEMENT, Normal),
-      (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+    vertexDataArr,
+    (
+      normalIndex,
+      accessorDataArr,
+      bufferViewDataArr,
+      bufferViewOffset,
       totalByteLength,
+    ),
+  ) =
+    _addPointData(
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr, totalByteLength),
+      (normals, normalsLength, normalsCount, Normal),
+      vertexDataArr,
     );
 
-  let vertexDataArr =
-    _addVertexData((bufferViewOffset, texCoords), vertexDataArr);
-
   let (
-    texCoordIndex,
-    accessorDataArr,
-    bufferViewDataArr,
-    bufferViewOffset,
-    totalByteLength,
-  ) =
-    _addBufferViewData(
-      (
-        texCoordsLength,
-        texCoordsCount,
-        Float32Array._BYTES_PER_ELEMENT,
-        TexCoord,
-      ),
-      (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+    vertexDataArr,
+    (
+      texCoordIndex,
+      accessorDataArr,
+      bufferViewDataArr,
+      bufferViewOffset,
       totalByteLength,
+    ),
+  ) =
+    _addPointData(
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr, totalByteLength),
+      (texCoords, texCoordsLength, texCoordsCount, TexCoord),
+      vertexDataArr,
     );
 
   let (
@@ -175,57 +241,11 @@ let _addAllPointData =
       totalByteLength,
     ),
   ) =
-    switch (indices) {
-    | None =>
-      switch (indices32) {
-      | None =>
-        WonderLog.Log.fatal(
-          WonderLog.Log.buildFatalMessage(
-            ~title="_addAllPointData",
-            ~description={j|should has indices data|j},
-            ~reason="",
-            ~solution={j||j},
-            ~params={j||j},
-          ),
-        )
-      | Some(indices32) =>
-        let indices32Length = Uint32Array.length(indices32);
-        let indices32Count = indices32Length / indicesSize;
-
-        (
-          indexDataArr,
-          _addIndexData((bufferViewOffset, indices32), index32DataArr),
-          _addBufferViewData(
-            (
-              indices32Length,
-              indices32Count,
-              Uint32Array._BYTES_PER_ELEMENT,
-              Index32,
-            ),
-            (bufferViewOffset, bufferViewDataArr, accessorDataArr),
-            totalByteLength,
-          ),
-        );
-      }
-    | Some(indices) =>
-      let indicesLength = Uint16Array.length(indices);
-      let indicesCount = indicesLength / indicesSize;
-
-      (
-        _addIndexData((bufferViewOffset, indices), indexDataArr),
-        index32DataArr,
-        _addBufferViewData(
-          (
-            indicesLength,
-            indicesCount,
-            Uint16Array._BYTES_PER_ELEMENT,
-            Index,
-          ),
-          (bufferViewOffset, bufferViewDataArr, accessorDataArr),
-          totalByteLength,
-        ),
-      );
-    };
+    _addIndexData(
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr, totalByteLength),
+      (indices, indices32, indicesSize),
+      (indexDataArr, index32DataArr),
+    );
 
   (
     (vertexIndex, normalIndex, texCoordIndex, indexIndex),
@@ -258,22 +278,6 @@ let _addMeshData =
          name,
        }: meshData,
      );
-
-/* let _setTotalByteLength =
-       (
-         (verticesLength, normalsLength, texCoordsLength, indicesLength),
-         bufferViewOffset,
-         totalByteLength,
-       ) => (
-     totalByteLength
-     + (
-       Float32Array._BYTES_PER_ELEMENT
-       * (verticesLength + normalsLength + texCoordsLength)
-       + Uint16Array._BYTES_PER_ELEMENT
-       * indicesLength
-     ),
-     bufferViewOffset,
-   ); */
 
 let build = meshPointAndNameDataMap => {
   WonderLog.Contract.requireCheck(

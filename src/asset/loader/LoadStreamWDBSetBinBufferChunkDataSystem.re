@@ -31,10 +31,7 @@ let _getGameObjectsAndGeometrys =
 
 let _setGeometryData =
     (
-      geometryData,
-      geometryArr,
-      geometryGameObjects,
-      gameObjectGeometrys,
+      (geometryData, geometryArr, geometryGameObjects, gameObjectGeometrys),
       (setPointsByTypeArrayFunc, fromBufferFunc),
       state,
     ) => {
@@ -101,6 +98,59 @@ let _getIndexUint32Data = (componentType, arrayBuffer) =>
   | _ => None
   };
 
+let _setIndexData =
+    (
+      (geometryData, geometryArr, geometryGameObjects, gameObjectGeometrys),
+      state,
+    ) => {
+  let {componentType, meshIndex, arrayBuffer} =
+    geometryData |> OptionService.unsafeGet;
+  let (gameObjects, geometry) =
+    _getGameObjectsAndGeometrys(
+      meshIndex,
+      geometryArr,
+      geometryGameObjects,
+      gameObjectGeometrys,
+    );
+
+  let state =
+    switch (_getIndexUint16Data(componentType, arrayBuffer)) {
+    | Some(data) =>
+      IndicesGeometryMainService.setIndicesByUint16Array(
+        geometry,
+        data,
+        state,
+      )
+    | None =>
+      switch (_getIndexUint32Data(componentType, arrayBuffer)) {
+      | Some(data) =>
+        IndicesGeometryMainService.setIndicesByUint32Array(
+          geometry,
+          data,
+          state,
+        )
+      | None =>
+        WonderLog.Log.fatal(
+          WonderLog.Log.buildFatalMessage(
+            ~title="setBinBufferChunkData",
+            ~description={j|unknown componentType: $componentType|j},
+            ~reason="",
+            ~solution={j||j},
+            ~params={j||j},
+          ),
+        )
+      }
+    };
+
+  let geometrys = gameObjects |> Js.Array.copy |> Js.Array.map(_ => geometry);
+
+  state
+  |> BatchAddGameObjectComponentMainService.batchAddGeometryComponentForCreate(
+       gameObjects,
+       geometrys,
+     );
+};
+
 let setBinBufferChunkData =
     (
       loadedStreamChunkDataArrWhichHasAllData,
@@ -114,10 +164,12 @@ let setBinBufferChunkData =
          switch (type_) {
          | Vertex =>
            _setGeometryData(
-             geometryData |> OptionService.unsafeGet,
-             geometryArr,
-             geometryGameObjects,
-             gameObjectGeometrys,
+             (
+               geometryData |> OptionService.unsafeGet,
+               geometryArr,
+               geometryGameObjects,
+               gameObjectGeometrys,
+             ),
              (
                VerticesGeometryMainService.setVerticesByTypeArray,
                Float32Array.fromBuffer,
@@ -126,10 +178,12 @@ let setBinBufferChunkData =
            )
          | Normal =>
            _setGeometryData(
-             geometryData |> OptionService.unsafeGet,
-             geometryArr,
-             geometryGameObjects,
-             gameObjectGeometrys,
+             (
+               geometryData |> OptionService.unsafeGet,
+               geometryArr,
+               geometryGameObjects,
+               gameObjectGeometrys,
+             ),
              (
                NormalsGeometryMainService.setNormalsByTypeArray,
                Float32Array.fromBuffer,
@@ -138,10 +192,12 @@ let setBinBufferChunkData =
            )
          | TexCoord =>
            _setGeometryData(
-             geometryData |> OptionService.unsafeGet,
-             geometryArr,
-             geometryGameObjects,
-             gameObjectGeometrys,
+             (
+               geometryData |> OptionService.unsafeGet,
+               geometryArr,
+               geometryGameObjects,
+               gameObjectGeometrys,
+             ),
              (
                TexCoordsGeometryMainService.setTexCoordsByTypeArray,
                Float32Array.fromBuffer,
@@ -149,53 +205,15 @@ let setBinBufferChunkData =
              state,
            )
          | Index =>
-           let {componentType, meshIndex, arrayBuffer} =
-             geometryData |> OptionService.unsafeGet;
-           let (gameObjects, geometry) =
-             _getGameObjectsAndGeometrys(
-               meshIndex,
+           _setIndexData(
+             (
+               geometryData,
                geometryArr,
                geometryGameObjects,
                gameObjectGeometrys,
-             );
-
-           let state =
-             switch (_getIndexUint16Data(componentType, arrayBuffer)) {
-             | Some(data) =>
-               IndicesGeometryMainService.setIndicesByUint16Array(
-                 geometry,
-                 data,
-                 state,
-               )
-             | None =>
-               switch (_getIndexUint32Data(componentType, arrayBuffer)) {
-               | Some(data) =>
-                 IndicesGeometryMainService.setIndicesByUint32Array(
-                   geometry,
-                   data,
-                   state,
-                 )
-               | None =>
-                 WonderLog.Log.fatal(
-                   WonderLog.Log.buildFatalMessage(
-                     ~title="setBinBufferChunkData",
-                     ~description={j|unknown componentType: $componentType|j},
-                     ~reason="",
-                     ~solution={j||j},
-                     ~params={j||j},
-                   ),
-                 )
-               }
-             };
-
-           let geometrys =
-             gameObjects |> Js.Array.copy |> Js.Array.map(_ => geometry);
-
-           state
-           |> BatchAddGameObjectComponentMainService.batchAddGeometryComponentForCreate(
-                gameObjects,
-                geometrys,
-              );
+             ),
+             state,
+           )
          | Image =>
            _setImageData(
              imageData,

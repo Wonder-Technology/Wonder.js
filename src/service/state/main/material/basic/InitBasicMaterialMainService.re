@@ -10,8 +10,7 @@ let initMaterials = (materialIndexArr, gl, {gameObjectRecord} as state) => {
 
   InitMaterialMainService.initMaterials(
     materialIndexArr,
-    gl,
-    (index, disposedIndexArray, gameObjectsMap),
+    (gl, index, disposedIndexArray, gameObjectsMap),
     (
       InitInitBasicMaterialService.initMaterial,
       CreateInitBasicMaterialStateMainService.createInitMaterialState,

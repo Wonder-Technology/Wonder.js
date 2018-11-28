@@ -16,10 +16,8 @@ let getRecord = ({meshRendererRecord}) =>
 let setAllTypeArrDataToDefault =
     (
       meshRendererCount: int,
-      defaultDrawMode,
-      defaultIsRender,
-      drawModes,
-      isRenders,
+      (defaultDrawMode, defaultIsRender),
+      (drawModes, isRenders),
     ) =>
   WonderCommonlib.ArrayService.range(0, meshRendererCount - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -40,10 +38,8 @@ let _setAllTypeArrDataToDefault =
   buffer,
   setAllTypeArrDataToDefault(
     meshRendererCount,
-    defaultDrawMode,
-    defaultIsRender,
-    drawModes,
-    isRenders,
+    (defaultDrawMode, defaultIsRender),
+    (drawModes, isRenders),
   ),
 );
 

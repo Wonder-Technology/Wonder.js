@@ -150,10 +150,12 @@ let _buildWDBJsonUint8Array = (gltf: GLTFType.gltf) => {
 
 let _writeHeader =
     (
-      totalByteLength,
-      jsonChunkByteLength,
-      streamChunkByteLength,
-      binBufferChunkByteLength,
+      (
+        totalByteLength,
+        jsonChunkByteLength,
+        streamChunkByteLength,
+        binBufferChunkByteLength,
+      ),
       dataView,
     ) =>
   dataView
@@ -208,11 +210,13 @@ let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer) : ArrayBuffer.t => {
 
   let byteOffset =
     _writeHeader(
-      totalByteLength,
-      jsonChunkByteLength,
-      ConvertStreamSystem.getStreamChunkTotalByteLength(streamChunkArr),
-      ConvertStreamSystem.getBinBufferChunkTotalAlignedByteLength(
-        bufferViewDataArr,
+      (
+        totalByteLength,
+        jsonChunkByteLength,
+        ConvertStreamSystem.getStreamChunkTotalByteLength(streamChunkArr),
+        ConvertStreamSystem.getBinBufferChunkTotalAlignedByteLength(
+          bufferViewDataArr,
+        ),
       ),
       dataView,
     );

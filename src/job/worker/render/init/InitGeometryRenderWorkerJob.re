@@ -3,7 +3,7 @@ open StateDataRenderWorkerType;
 open RenderWorkerGeometryType;
 
 let _createTypeArrays =
-    (buffer, geometryPointCount, geometryCount, indicesTypeMap, state) => {
+    (buffer, (geometryPointCount, geometryCount), indicesTypeMap, state) => {
   let (
     vertices,
     texCoords,
@@ -48,8 +48,7 @@ let execJob = (_, e, stateData) =>
     state
     |> _createTypeArrays(
          buffer,
-         geometryPointCount,
-         geometryCount,
+         (geometryPointCount, geometryCount),
          indicesTypeMap,
        )
     |> StateRenderWorkerService.setState(stateData);

@@ -97,9 +97,8 @@ let _disposeData =
 
 let _handleDispose =
     (
-      gameObject,
+      (gameObject, material),
       disposedIndexArray,
-      material,
       textureCountPerMaterial,
       lightMaterialRecord,
     ) =>
@@ -148,11 +147,10 @@ let handleBatchDisposeComponent =
       BufferSettingService.getTextureCountPerMaterial(settingRecord);
     materialDataArray
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. lightMaterialRecord, (gameObject, material)) =>
+         (. lightMaterialRecord, materialData) =>
            _handleDispose(
-             gameObject,
+             materialData,
              disposedIndexArray,
-             material,
              textureCountPerMaterial,
              lightMaterialRecord,
            ),

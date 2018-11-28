@@ -1,7 +1,6 @@
 let _buildLightMaterialData =
     (
-      lightMaterialDataMap,
-      imageUint8ArrayDataMap,
+      (lightMaterialDataMap, imageUint8ArrayDataMap),
       (totalByteLength, byteOffset, bufferViewDataArr),
       getResultUint8ArrayDataFunc,
       state,
@@ -134,11 +133,9 @@ let _buildLightMaterialData =
 
 let build =
     (
-      basicMaterialDataMap,
-      lightMaterialDataMap,
-      imageUint8ArrayDataMap,
+      (basicMaterialDataMap, lightMaterialDataMap, imageUint8ArrayDataMap),
       (totalByteLength, byteOffset, bufferViewDataArr),
-getResultUint8ArrayDataFunc,
+      getResultUint8ArrayDataFunc,
       state,
     ) => {
   WonderLog.Contract.requireCheck(
@@ -159,10 +156,9 @@ getResultUint8ArrayDataFunc,
     (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     _buildLightMaterialData(
-      lightMaterialDataMap,
-      imageUint8ArrayDataMap,
+      (lightMaterialDataMap, imageUint8ArrayDataMap),
       (totalByteLength, byteOffset, bufferViewDataArr),
-getResultUint8ArrayDataFunc,
+      getResultUint8ArrayDataFunc,
       state,
     );
 

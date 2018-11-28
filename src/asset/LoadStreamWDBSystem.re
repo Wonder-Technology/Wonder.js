@@ -4,6 +4,90 @@ open Js.Typed_array;
 
 open Js.Promise;
 
+let _handleNotSupportStreamLoad =
+    (
+      response,
+      wdbPath,
+      (handleWhenLoadingFunc, handleWhenLoadWholeWDBFunc),
+      state,
+    ) => {
+  WonderLog.Log.warn(
+    {j|your browser does not seem to have the Streams API yet, fallback to load whole wdb|j},
+  );
+
+  response
+  |> Fetch.Response.arrayBuffer
+  |> then_(wdb => {
+       handleWhenLoadingFunc(
+         wdb
+         |> LoadType.fetchArrayBufferToArrayBuffer
+         |> ArrayBuffer.byteLength,
+         FetchCommon.getContentLength(response),
+         wdbPath,
+       );
+
+       wdb |> resolve;
+     })
+  |> then_(wdb =>
+       AssembleWholeWDBSystem.assemble(
+         wdb |> LoadType.fetchArrayBufferToArrayBuffer,
+         (true, true, true, true, true),
+         state,
+       )
+       |> Most.tap(((state, data, rootGameObject)) =>
+            handleWhenLoadWholeWDBFunc(state, data, rootGameObject)
+          )
+       |> Most.drain
+       |> then_(_ => resolve())
+     );
+};
+
+let _streamLoad =
+    (
+      response,
+      (wdbPath, default11Image),
+      (
+        handleWhenLoadingFunc,
+        handleBeforeStartLoopFunc,
+        handleWhenDoneFunc,
+        handleWhenLoadWholeWDBFunc,
+      ),
+      state,
+    ) => {
+  let contentLength = FetchCommon.getContentLength(response);
+
+  let totalUint8Array = Uint8Array.fromLength(contentLength);
+
+  FetchExtend.newReadableStream({
+    "start": controller => {
+      let reader = FetchCommon.getReader(response);
+
+      ReadStreamChunkSystem.read(
+        (
+          default11Image,
+          controller,
+          (contentLength, wdbPath, handleWhenLoadingFunc),
+          handleBeforeStartLoopFunc,
+          handleWhenDoneFunc,
+        ),
+        ([||], totalUint8Array),
+        (
+          None,
+          [||],
+          None,
+          0,
+          [||],
+          WonderCommonlib.SparseMapService.createEmpty(),
+        ),
+        reader,
+      );
+    },
+  })
+  |> ignore;
+
+  resolve();
+};
+
 let load =
     (
       wdbPath,
@@ -46,76 +130,23 @@ let load =
                   );
                 } :
                 ! FetchCommon.isSupportStreamLoad(response) ?
-                  {
-                    WonderLog.Log.warn(
-                      {j|your browser does not seem to have the Streams API yet, fallback to load whole wdb|j},
-                    );
-
-                    response
-                    |> Fetch.Response.arrayBuffer
-                    |> then_(wdb => {
-                         handleWhenLoadingFunc(
-                           wdb
-                           |> LoadType.fetchArrayBufferToArrayBuffer
-                           |> ArrayBuffer.byteLength,
-                           FetchCommon.getContentLength(response),
-                           wdbPath,
-                         );
-
-                         wdb |> resolve;
-                       })
-                    |> then_(wdb =>
-                         AssembleWholeWDBSystem.assemble(
-                           wdb |> LoadType.fetchArrayBufferToArrayBuffer,
-                           (true, true, true, true, true),
-                           state,
-                         )
-                         |> Most.tap(((state, data, rootGameObject)) =>
-                              handleWhenLoadWholeWDBFunc(
-                                state,
-                                data,
-                                rootGameObject,
-                              )
-                            )
-                         |> Most.drain
-                         |> then_(_ => resolve())
-                       );
-                  } :
-                  {
-                    let contentLength = FetchCommon.getContentLength(response);
-
-                    let totalUint8Array =
-                      Uint8Array.fromLength(contentLength);
-
-                    FetchExtend.newReadableStream({
-                      "start": controller => {
-                        let reader = FetchCommon.getReader(response);
-
-                        ReadStreamChunkSystem.read(
-                          (
-                            default11Image,
-                            controller,
-                            (contentLength, wdbPath, handleWhenLoadingFunc),
-                            handleBeforeStartLoopFunc,
-                            handleWhenDoneFunc,
-                          ),
-                          ([||], totalUint8Array),
-                          (
-                            None,
-                            [||],
-                            None,
-                            0,
-                            [||],
-                            WonderCommonlib.SparseMapService.createEmpty(),
-                          ),
-                          reader,
-                        );
-                      },
-                    })
-                    |> ignore;
-
-                    resolve();
-                  }
+                  _handleNotSupportStreamLoad(
+                    response,
+                    wdbPath,
+                    (handleWhenLoadingFunc, handleWhenLoadWholeWDBFunc),
+                    state,
+                  ) :
+                  _streamLoad(
+                    response,
+                    (wdbPath, default11Image),
+                    (
+                      handleWhenLoadingFunc,
+                      handleBeforeStartLoopFunc,
+                      handleWhenDoneFunc,
+                      handleWhenLoadWholeWDBFunc,
+                    ),
+                    state,
+                  )
             ),
        );
      });

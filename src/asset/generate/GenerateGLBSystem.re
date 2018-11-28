@@ -7,7 +7,12 @@ open StateDataMainType;
 open GenerateSceneGraphType;
 
 let generateGLBData =
-    (rootGameObject, imageUint8ArrayDataMap, ( getPointsDataFuncTuple, getResultUint8ArrayDataFunc ), state) => {
+    (
+      rootGameObject,
+      imageUint8ArrayDataMap,
+      (getPointsDataFuncTuple, getResultUint8ArrayDataFunc),
+      state,
+    ) => {
   let (
     state,
     (
@@ -50,9 +55,7 @@ let generateGLBData =
     (totalByteLength, bufferViewDataArr),
   ) =
     BuildMaterialDataSystem.build(
-      basicMaterialDataMap,
-      lightMaterialDataMap,
-      imageUint8ArrayDataMap,
+      (basicMaterialDataMap, lightMaterialDataMap, imageUint8ArrayDataMap),
       (totalByteLength, geometryEndByteOffset, bufferViewDataArr),
       getResultUint8ArrayDataFunc,
       state,

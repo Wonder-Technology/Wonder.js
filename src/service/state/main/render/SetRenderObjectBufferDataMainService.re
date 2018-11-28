@@ -6,6 +6,18 @@ open RenderObjectBufferTypeArrayService;
 
 open Js.Typed_array;
 
+let _setSourceInstance = (index, uid, sourceInstanceIndices, gameObjectRecord) =>
+  switch (
+    GetComponentGameObjectService.getSourceInstanceComponent(.
+      uid,
+      gameObjectRecord,
+    )
+  ) {
+  | None => sourceInstanceIndices
+  | Some(sourceInstance) =>
+    setComponent(index, sourceInstance, sourceInstanceIndices)
+  };
+
 let setData =
     (
       renderArray,
@@ -74,16 +86,12 @@ let setData =
                  meshRendererIndices,
                ),
                setComponent(index, geometryIndex, geometryIndices),
-               switch (
-                 GetComponentGameObjectService.getSourceInstanceComponent(.
-                   uid,
-                   gameObjectRecord,
-                 )
-               ) {
-               | None => sourceInstanceIndices
-               | Some(sourceInstance) =>
-                 setComponent(index, sourceInstance, sourceInstanceIndices)
-               },
+               _setSourceInstance(
+                 index,
+                 uid,
+                 sourceInstanceIndices,
+                 gameObjectRecord,
+               ),
                renderArray |> ArrayService.push(index),
              );
            },

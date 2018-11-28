@@ -139,6 +139,23 @@ let batchSetTransformParent = (parentTransforms, childrenTransforms, state) => {
   };
 };
 
+let _batchSetTransformLocalData =
+    (
+      (gameObjectTransforms, index),
+      (localData, localDataTypeArray),
+      setLocalDataFunc,
+    ) =>
+  localData |> OptionService.isJsonSerializedValueNone ?
+    localDataTypeArray :
+    {
+      let transform = gameObjectTransforms[index];
+      setLocalDataFunc(
+        transform,
+        localData |> OptionService.unsafeGetJsonSerializedValue,
+        localDataTypeArray,
+      );
+    };
+
 let batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
   let (
         {localPositions, localRotations, localScales}: TransformType.transformRecord
@@ -153,49 +170,33 @@ let batchSetTransformData = ({transforms}, gameObjectTransforms, state) => {
           transforms
           |> WonderCommonlib.ArrayService.reduceOneParami(
                (. localPositions, {translation}, index) =>
-                 translation |> OptionService.isJsonSerializedValueNone ?
-                   localPositions :
-                   {
-                     let transform = gameObjectTransforms[index];
-                     OperateTypeArrayTransformService.setLocalPositionByTuple(
-                       transform,
-                       translation
-                       |> OptionService.unsafeGetJsonSerializedValue,
-                       localPositions,
-                     );
-                   },
+                 _batchSetTransformLocalData(
+                   (gameObjectTransforms, index),
+                   (translation, localPositions),
+                   OperateTypeArrayTransformService.setLocalPositionByTuple,
+                 ),
                localPositions,
              ),
         localRotations:
           transforms
           |> WonderCommonlib.ArrayService.reduceOneParami(
                (. localRotations, {rotation}, index) =>
-                 rotation |> OptionService.isJsonSerializedValueNone ?
-                   localRotations :
-                   {
-                     let transform = gameObjectTransforms[index];
-                     OperateTypeArrayTransformService.setLocalRotationByTuple(
-                       transform,
-                       rotation |> OptionService.unsafeGetJsonSerializedValue,
-                       localRotations,
-                     );
-                   },
+                 _batchSetTransformLocalData(
+                   (gameObjectTransforms, index),
+                   (rotation, localRotations),
+                   OperateTypeArrayTransformService.setLocalRotationByTuple,
+                 ),
                localRotations,
              ),
         localScales:
           transforms
           |> WonderCommonlib.ArrayService.reduceOneParami(
                (. localScales, {scale}, index) =>
-                 scale |> OptionService.isJsonSerializedValueNone ?
-                   localScales :
-                   {
-                     let transform = gameObjectTransforms[index];
-                     OperateTypeArrayTransformService.setLocalScaleByTuple(
-                       transform,
-                       scale |> OptionService.unsafeGetJsonSerializedValue,
-                       localScales,
-                     );
-                   },
+                 _batchSetTransformLocalData(
+                   (gameObjectTransforms, index),
+                   (scale, localScales),
+                   OperateTypeArrayTransformService.setLocalScaleByTuple,
+                 ),
                localScales,
              ),
       }),
