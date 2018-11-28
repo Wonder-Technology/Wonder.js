@@ -82,35 +82,7 @@ let load =
                        );
                   } :
                   {
-                    /* FetchExtend.newResponse(
-                         FetchExtend.newReadableStream({
-                           "start": controller => {
-                             let reader = _getReader(response);
-
-                             ReadStreamChunkSystem.read(
-                               (
-                                 default11Image,
-                                 controller,
-                                 handleBeforeStartLoopFunc,
-                                 handleWhenDoneFunc,
-                               ),
-                               [||],
-                               (
-                                 None,
-                                 [||],
-                                 None,
-                                 0,
-                                 [||],
-                                 WonderCommonlib.SparseMapService.createEmpty(),
-                               ),
-                               reader,
-                             );
-                           },
-                         }),
-                       ) */
-
-                    let contentLength =
-                      FetchCommon.getContentLength(response);
+                    let contentLength = FetchCommon.getContentLength(response);
 
                     let totalUint8Array =
                       Uint8Array.fromLength(contentLength);

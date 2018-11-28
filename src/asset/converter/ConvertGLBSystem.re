@@ -89,7 +89,7 @@ let _buildWDBJsonUint8Array = (gltf: GLTFType.gltf) => {
   let transforms = ConvertTransformsSystem.convertToTransforms(gltf);
 
   let (bufferViewDataArr, streamChunkArr, gltf) =
-    gltf |> ConvertStreamSystem.buildJsonData(transforms);
+    gltf |> BuildGLTFJsonDataSystem.buildJsonData(transforms);
 
   let (ambientLightArr, directionLightArr, pointLightArr) =
     ConvertLightsSystem.convertToLights(gltf);

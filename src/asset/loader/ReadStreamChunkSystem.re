@@ -98,10 +98,12 @@ let _getJsonChunkStr =
 let _assembleAndStartLoop =
     (
       assembleData,
-      jsonChunkLength,
-      totalLoadedByteLength,
-      loadedUint8ArrayArr,
-      default11Image,
+      (
+        jsonChunkLength,
+        totalLoadedByteLength,
+        loadedUint8ArrayArr,
+        default11Image,
+      ),
       handleBeforeStartLoopFunc,
       state,
     ) =>
@@ -157,6 +159,35 @@ let _isLoadStreamChunk = (jsonChunkLength, totalLoadedByteLength) =>
   totalLoadedByteLength >= BufferUtils.getWDBHeaderTotalByteLength()
   + jsonChunkLength;
 
+let _handleDone = (controller, assembleData, handleWhenDoneFunc) => {
+  WonderLog.Log.log("done") |> ignore;
+
+  _close(controller);
+
+  switch (assembleData) {
+  | None =>
+    WonderLog.Log.error(
+      WonderLog.Log.buildErrorMessage(
+        ~title="read",
+        ~description={j|assembleData should exist, but actually is none|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j},
+      ),
+    );
+    resolve();
+  | Some((rootGameObject, _, _)) =>
+    handleWhenDoneFunc(
+      StateDataMainService.unsafeGetState(StateDataMain.stateData),
+      rootGameObject,
+    )
+    |> StateDataMainService.setState(StateDataMain.stateData)
+    |> ignore;
+
+    resolve();
+  };
+};
+
 let rec read =
         (
           (
@@ -180,195 +211,245 @@ let rec read =
   _readReader(reader)
   |> then_(streamData =>
        FetchExtend.isDone(streamData) ?
-         {
-           WonderLog.Log.log("done") |> ignore;
-
-           _close(controller);
-
-           switch (assembleData) {
-           | None =>
-             WonderLog.Log.error(
-               WonderLog.Log.buildErrorMessage(
-                 ~title="read",
-                 ~description=
-                   {j|assembleData should exist, but actually is none|j},
-                 ~reason="",
-                 ~solution={j||j},
-                 ~params={j||j},
-               ),
-             );
-             resolve();
-           | Some((rootGameObject, _, _)) =>
-             handleWhenDoneFunc(
-               StateDataMainService.unsafeGetState(StateDataMain.stateData),
-               rootGameObject,
-             )
-             |> StateDataMainService.setState(StateDataMain.stateData)
-             |> ignore;
-
-             resolve();
-           };
-         } :
-         {
-           /* TODO use requestIdleCallback + timeout? */
-
-           let value = streamData##value;
-
-           WonderLog.Log.logJson(("value", value |> Uint8Array.byteLength))
-           |> ignore;
-
-           let loadedUint8ArrayArr =
-             loadedUint8ArrayArr |> ArrayService.push(value);
-
-           let totalLoadedByteLength =
-             _getTotalLoadedByteLength(loadedUint8ArrayArr);
-
-           handleWhenLoadingFunc(
-             totalLoadedByteLength,
-             contentLength,
-             wdbPath,
-           );
-
-           _isLoadHeader(totalLoadedByteLength) ?
-             read(
-               (
-                 default11Image,
-                 controller,
-                 (contentLength, wdbPath, handleWhenLoadingFunc),
-                 handleBeforeStartLoopFunc,
-                 handleWhenDoneFunc,
-               ),
-               (loadedUint8ArrayArr, totalUint8Array),
-               (
-                 allChunkLengths,
-                 streamChunkArr,
-                 assembleData,
-                 nextStreamChunkIndex,
-                 loadedStreamChunkArrWhichNotHasAllData,
-                 loadBlobImageMap,
-               ),
-               reader,
-             ) :
-             {
-               let (jsonChunkLength, streamChunkLength, binBufferChunkLength) as allChunkLengths =
-                 _getAllChunkLengths(
-                   allChunkLengths,
-                   totalLoadedByteLength,
-                   (loadedUint8ArrayArr, totalUint8Array),
-                 );
-
-               let headerJsonStreamChunkTotalByteLength =
-                 _computeHeaderJsonStreamChunkTotalByteLength(
-                   jsonChunkLength,
-                   streamChunkLength,
-                 );
-
-               _isLoadBinBufferChunk(
-                 headerJsonStreamChunkTotalByteLength,
-                 totalLoadedByteLength,
-               ) ?
-                 {
-                   let streamChunkArr =
-                     _getStreamChunkData(
-                       streamChunkArr,
-                       (jsonChunkLength, streamChunkLength),
-                       totalLoadedByteLength,
-                       (loadedUint8ArrayArr, totalUint8Array),
-                     );
-
-                   let state =
-                     StateDataMainService.unsafeGetState(
-                       StateDataMain.stateData,
-                     );
-
-                   let (state, assembleData) =
-                     _assembleAndStartLoop(
-                       assembleData,
-                       jsonChunkLength,
-                       totalLoadedByteLength,
-                       (loadedUint8ArrayArr, totalUint8Array),
-                       default11Image,
-                       handleBeforeStartLoopFunc,
-                       state,
-                     );
-
-                   LoadStreamWDBBinBufferSystem.handleBinBufferData(
-                     (
-                       headerJsonStreamChunkTotalByteLength,
-                       totalLoadedByteLength,
-                       (loadedUint8ArrayArr, totalUint8Array),
-                     ),
-                     (
-                       nextStreamChunkIndex,
-                       streamChunkArr,
-                       loadedStreamChunkArrWhichNotHasAllData,
-                       loadBlobImageMap,
-                     ),
-                     assembleData,
-                     state,
-                   )
-                   |> then_(
-                        (
-                          (
-                            state,
-                            streamChunkArr,
-                            assembleData,
-                            nextStreamChunkIndex,
-                            loadedStreamChunkArrWhichNotHasAllData,
-                            loadBlobImageMap,
-                          ),
-                        ) => {
-                        StateDataMainService.setState(
-                          StateDataMain.stateData,
-                          state,
-                        )
-                        |> ignore;
-
-                        read(
-                          (
-                            default11Image,
-                            controller,
-                            (contentLength, wdbPath, handleWhenLoadingFunc),
-                            handleBeforeStartLoopFunc,
-                            handleWhenDoneFunc,
-                          ),
-                          (loadedUint8ArrayArr, totalUint8Array),
-                          (
-                            allChunkLengths |. Some,
-                            streamChunkArr,
-                            assembleData |. Some,
-                            nextStreamChunkIndex,
-                            loadedStreamChunkArrWhichNotHasAllData,
-                            loadBlobImageMap,
-                          ),
-                          reader,
-                        );
-                      });
-                 } :
-                 read(
-                   (
-                     default11Image,
-                     controller,
-                     (contentLength, wdbPath, handleWhenLoadingFunc),
-                     handleBeforeStartLoopFunc,
-                     handleWhenDoneFunc,
-                   ),
-                   (loadedUint8ArrayArr, totalUint8Array),
-                   (
-                     allChunkLengths |. Some,
-                     streamChunkArr,
-                     assembleData,
-                     nextStreamChunkIndex,
-                     loadedStreamChunkArrWhichNotHasAllData,
-                     loadBlobImageMap,
-                   ),
-                   reader,
-                 );
-             };
-         }
+         _handleDone(controller, assembleData, handleWhenDoneFunc) :
+         _handleLoading(
+           streamData,
+           (
+             default11Image,
+             controller,
+             (contentLength, wdbPath, handleWhenLoadingFunc),
+             handleBeforeStartLoopFunc,
+             handleWhenDoneFunc,
+           ),
+           (loadedUint8ArrayArr, totalUint8Array),
+           (
+             allChunkLengths,
+             streamChunkArr,
+             assembleData,
+             nextStreamChunkIndex,
+             loadedStreamChunkArrWhichNotHasAllData,
+             loadBlobImageMap,
+           ),
+           reader,
+         )
      )
   |> catch(e => {
        WonderLog.Log.error(e) |> ignore;
 
        reject(StreamType.ReadError);
+     })
+and _handleLoadBinBufferChunk =
+    (
+      (
+        jsonChunkLength,
+        streamChunkLength,
+        totalLoadedByteLength,
+        headerJsonStreamChunkTotalByteLength,
+      ),
+      (
+        default11Image,
+        controller,
+        (contentLength, wdbPath, handleWhenLoadingFunc),
+        handleBeforeStartLoopFunc,
+        handleWhenDoneFunc,
+      ),
+      (loadedUint8ArrayArr, totalUint8Array),
+      (
+        allChunkLengths,
+        streamChunkArr,
+        assembleData,
+        nextStreamChunkIndex,
+        loadedStreamChunkArrWhichNotHasAllData,
+        loadBlobImageMap,
+      ),
+      reader,
+    ) => {
+  let streamChunkArr =
+    _getStreamChunkData(
+      streamChunkArr,
+      (jsonChunkLength, streamChunkLength),
+      totalLoadedByteLength,
+      (loadedUint8ArrayArr, totalUint8Array),
+    );
+
+  let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
+
+  let (state, assembleData) =
+    _assembleAndStartLoop(
+      assembleData,
+      (
+        jsonChunkLength,
+        totalLoadedByteLength,
+        (loadedUint8ArrayArr, totalUint8Array),
+        default11Image,
+      ),
+      handleBeforeStartLoopFunc,
+      state,
+    );
+
+  LoadStreamWDBBinBufferSystem.handleBinBufferData(
+    (
+      headerJsonStreamChunkTotalByteLength,
+      totalLoadedByteLength,
+      (loadedUint8ArrayArr, totalUint8Array),
+    ),
+    (
+      nextStreamChunkIndex,
+      streamChunkArr,
+      loadedStreamChunkArrWhichNotHasAllData,
+      loadBlobImageMap,
+    ),
+    assembleData,
+    state,
+  )
+  |> then_(
+       (
+         (
+           state,
+           streamChunkArr,
+           assembleData,
+           nextStreamChunkIndex,
+           loadedStreamChunkArrWhichNotHasAllData,
+           loadBlobImageMap,
+         ),
+       ) => {
+       StateDataMainService.setState(StateDataMain.stateData, state) |> ignore;
+
+       read(
+         (
+           default11Image,
+           controller,
+           (contentLength, wdbPath, handleWhenLoadingFunc),
+           handleBeforeStartLoopFunc,
+           handleWhenDoneFunc,
+         ),
+         (loadedUint8ArrayArr, totalUint8Array),
+         (
+           allChunkLengths |. Some,
+           streamChunkArr,
+           assembleData |. Some,
+           nextStreamChunkIndex,
+           loadedStreamChunkArrWhichNotHasAllData,
+           loadBlobImageMap,
+         ),
+         reader,
+       );
      });
+}
+and _handleLoading =
+    (
+      streamData,
+      (
+        default11Image,
+        controller,
+        (contentLength, wdbPath, handleWhenLoadingFunc),
+        handleBeforeStartLoopFunc,
+        handleWhenDoneFunc,
+      ),
+      (loadedUint8ArrayArr, totalUint8Array),
+      (
+        allChunkLengths,
+        streamChunkArr,
+        assembleData,
+        nextStreamChunkIndex,
+        loadedStreamChunkArrWhichNotHasAllData,
+        loadBlobImageMap,
+      ),
+      reader,
+    ) => {
+  /* TODO use requestIdleCallback + timeout? */
+
+  let value = streamData##value;
+
+  WonderLog.Log.logJson(("value", value |> Uint8Array.byteLength)) |> ignore;
+
+  let loadedUint8ArrayArr = loadedUint8ArrayArr |> ArrayService.push(value);
+
+  let totalLoadedByteLength = _getTotalLoadedByteLength(loadedUint8ArrayArr);
+
+  handleWhenLoadingFunc(totalLoadedByteLength, contentLength, wdbPath);
+
+  _isLoadHeader(totalLoadedByteLength) ?
+    read(
+      (
+        default11Image,
+        controller,
+        (contentLength, wdbPath, handleWhenLoadingFunc),
+        handleBeforeStartLoopFunc,
+        handleWhenDoneFunc,
+      ),
+      (loadedUint8ArrayArr, totalUint8Array),
+      (
+        allChunkLengths,
+        streamChunkArr,
+        assembleData,
+        nextStreamChunkIndex,
+        loadedStreamChunkArrWhichNotHasAllData,
+        loadBlobImageMap,
+      ),
+      reader,
+    ) :
+    {
+      let (jsonChunkLength, streamChunkLength, binBufferChunkLength) as allChunkLengths =
+        _getAllChunkLengths(
+          allChunkLengths,
+          totalLoadedByteLength,
+          (loadedUint8ArrayArr, totalUint8Array),
+        );
+
+      let headerJsonStreamChunkTotalByteLength =
+        _computeHeaderJsonStreamChunkTotalByteLength(
+          jsonChunkLength,
+          streamChunkLength,
+        );
+
+      _isLoadBinBufferChunk(
+        headerJsonStreamChunkTotalByteLength,
+        totalLoadedByteLength,
+      ) ?
+        _handleLoadBinBufferChunk(
+          (
+            jsonChunkLength,
+            streamChunkLength,
+            totalLoadedByteLength,
+            headerJsonStreamChunkTotalByteLength,
+          ),
+          (
+            default11Image,
+            controller,
+            (contentLength, wdbPath, handleWhenLoadingFunc),
+            handleBeforeStartLoopFunc,
+            handleWhenDoneFunc,
+          ),
+          (loadedUint8ArrayArr, totalUint8Array),
+          (
+            allChunkLengths,
+            streamChunkArr,
+            assembleData,
+            nextStreamChunkIndex,
+            loadedStreamChunkArrWhichNotHasAllData,
+            loadBlobImageMap,
+          ),
+          reader,
+        ) :
+        read(
+          (
+            default11Image,
+            controller,
+            (contentLength, wdbPath, handleWhenLoadingFunc),
+            handleBeforeStartLoopFunc,
+            handleWhenDoneFunc,
+          ),
+          (loadedUint8ArrayArr, totalUint8Array),
+          (
+            allChunkLengths |. Some,
+            streamChunkArr,
+            assembleData,
+            nextStreamChunkIndex,
+            loadedStreamChunkArrWhichNotHasAllData,
+            loadBlobImageMap,
+          ),
+          reader,
+        );
+    };
+};
