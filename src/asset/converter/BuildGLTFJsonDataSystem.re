@@ -161,6 +161,39 @@ let _addPrimitivePointData =
   );
 };
 
+let _addPrimitiveOptionPointData =
+    (
+      (pointData, mesh, type_),
+      (
+        streamChunkArr,
+        accessorBufferArr,
+        bufferViewDataArr,
+        newBufferViewOffset,
+      ),
+      gltf,
+    ) =>
+  switch (pointData) {
+  | Some(pointData) =>
+    _addPrimitivePointData(
+      (pointData, mesh, type_),
+      (
+        streamChunkArr,
+        accessorBufferArr,
+        bufferViewDataArr,
+        newBufferViewOffset,
+      ),
+      gltf,
+    )
+  | None => (
+      0,
+      None,
+      accessorBufferArr,
+      bufferViewDataArr,
+      newBufferViewOffset,
+      streamChunkArr,
+    )
+  };
+
 let _addPrimitiveData =
     (
       mesh,
@@ -202,27 +235,16 @@ let _addPrimitiveData =
     newBufferViewOffset,
     streamChunkArr,
   ) =
-    switch (normal) {
-    | Some(normal) =>
-      _addPrimitivePointData(
-        (normal, mesh, Normal),
-        (
-          streamChunkArr,
-          accessorBufferArr,
-          bufferViewDataArr,
-          newBufferViewOffset,
-        ),
-        gltf,
-      )
-    | None => (
-        0,
-        None,
+    _addPrimitiveOptionPointData(
+      (normal, mesh, Normal),
+      (
+        streamChunkArr,
         accessorBufferArr,
         bufferViewDataArr,
         newBufferViewOffset,
-        streamChunkArr,
-      )
-    };
+      ),
+      gltf,
+    );
 
   let (
     byteLength,
@@ -232,27 +254,16 @@ let _addPrimitiveData =
     newBufferViewOffset,
     streamChunkArr,
   ) =
-    switch (texCoord_0) {
-    | Some(texCoord_0) =>
-      _addPrimitivePointData(
-        (texCoord_0, mesh, TexCoord),
-        (
-          streamChunkArr,
-          accessorBufferArr,
-          bufferViewDataArr,
-          newBufferViewOffset,
-        ),
-        gltf,
-      )
-    | None => (
-        0,
-        None,
+    _addPrimitiveOptionPointData(
+      (texCoord_0, mesh, TexCoord),
+      (
+        streamChunkArr,
         accessorBufferArr,
         bufferViewDataArr,
         newBufferViewOffset,
-        streamChunkArr,
-      )
-    };
+      ),
+      gltf,
+    );
 
   let (
     byteLength,
@@ -262,27 +273,16 @@ let _addPrimitiveData =
     newBufferViewOffset,
     streamChunkArr,
   ) =
-    switch (indices) {
-    | Some(indices) =>
-      _addPrimitivePointData(
-        (indices, mesh, Index),
-        (
-          streamChunkArr,
-          accessorBufferArr,
-          bufferViewDataArr,
-          newBufferViewOffset,
-        ),
-        gltf,
-      )
-    | None => (
-        0,
-        None,
+    _addPrimitiveOptionPointData(
+      (indices, mesh, Index),
+      (
+        streamChunkArr,
         accessorBufferArr,
         bufferViewDataArr,
         newBufferViewOffset,
-        streamChunkArr,
-      )
-    };
+      ),
+      gltf,
+    );
 
   (
     newBufferViewOffset,
