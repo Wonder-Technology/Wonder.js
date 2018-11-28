@@ -2149,15 +2149,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             (),
           )
           |> then_(_ =>
-               (totalLoadedByteLengthArr, contentLengthArr, wdbPathArr)
-               |>
-               expect == (
-                           [|24940|],
-                           [|contentLength|],
-                           [|
-                             "/Users/y/Github/Wonder.js/test/res/wdb/BoxTextured.wdb",
-                           |],
-                         )
+               (
+                 totalLoadedByteLengthArr,
+                 contentLengthArr,
+                 wdbPathArr |> Js.Array.length,
+                 ArrayService.unsafeGetFirst(wdbPathArr)
+                 |> Js.String.includes("test/res/wdb/BoxTextured.wdb"),
+               )
+               |> expect == ([|24940|], [|contentLength|], 1, true)
                |> resolve
              );
         });
