@@ -51,7 +51,7 @@ window.Blob = Blob;
     beforeAll(() => {
       boxTexturedWDBArrayBuffer := NodeTool.convertGLBToWDB("BoxTextured");
       cesiumMilkTruckWDBArrayBuffer :=
-        NodeTool.convertGLBToWDB("cesiumMilkTruck");
+        NodeTool.convertGLBToWDB("CesiumMilkTruck");
       alphaBlendModeTestWDBArrayBuffer :=
         NodeTool.convertGLBToWDB("AlphaBlendModeTest");
       stoveWDBArrayBuffer := NodeTool.convertGLBToWDB("SuperLowPolyStove");
