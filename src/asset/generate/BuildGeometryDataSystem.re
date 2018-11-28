@@ -115,55 +115,101 @@ let _addPointData =
 
 let _addIndexData =
     (
+      (indices, indicesSize),
+      (indexDataArr, index32DataArr),
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr, totalByteLength),
+      getLengthFunc,
+    ) => {
+  let indicesLength = getLengthFunc(indices);
+  let indicesCount = indicesLength / indicesSize;
+
+  (
+    _addIndexDataToArr((bufferViewOffset, indices), indexDataArr),
+    index32DataArr,
+    _addBufferViewData(
+      (indicesLength, indicesCount, Uint16Array._BYTES_PER_ELEMENT, Index),
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+      totalByteLength,
+    ),
+  );
+};
+
+let _addIndex16Data =
+    (
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr, totalByteLength),
+      (indices, indicesSize),
+      (indexDataArr, index32DataArr),
+    ) => {
+  let indicesLength = Uint16Array.length(indices);
+  let indicesCount = indicesLength / indicesSize;
+
+  (
+    _addIndexDataToArr((bufferViewOffset, indices), indexDataArr),
+    index32DataArr,
+    _addBufferViewData(
+      (indicesLength, indicesCount, Uint16Array._BYTES_PER_ELEMENT, Index),
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+      totalByteLength,
+    ),
+  );
+};
+
+let _addIndex32Data =
+    (
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr, totalByteLength),
+      (indices32, indicesSize),
+      (indexDataArr, index32DataArr),
+    ) =>
+  switch (indices32) {
+  | None =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_addAllPointData",
+        ~description={j|should has indices data|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j},
+      ),
+    )
+  | Some(indices32) =>
+    let indices32Length = Uint32Array.length(indices32);
+    let indices32Count = indices32Length / indicesSize;
+
+    (
+      indexDataArr,
+      _addIndexDataToArr((bufferViewOffset, indices32), index32DataArr),
+      _addBufferViewData(
+        (
+          indices32Length,
+          indices32Count,
+          Uint32Array._BYTES_PER_ELEMENT,
+          Index32,
+        ),
+        (bufferViewOffset, bufferViewDataArr, accessorDataArr),
+        totalByteLength,
+      ),
+    );
+  };
+
+let _addIndex16And32Data =
+    (
       (bufferViewOffset, bufferViewDataArr, accessorDataArr, totalByteLength),
       (indices, indices32, indicesSize),
       (indexDataArr, index32DataArr),
     ) =>
   switch (indices) {
   | None =>
-    switch (indices32) {
-    | None =>
-      WonderLog.Log.fatal(
-        WonderLog.Log.buildFatalMessage(
-          ~title="_addAllPointData",
-          ~description={j|should has indices data|j},
-          ~reason="",
-          ~solution={j||j},
-          ~params={j||j},
-        ),
-      )
-    | Some(indices32) =>
-      let indices32Length = Uint32Array.length(indices32);
-      let indices32Count = indices32Length / indicesSize;
-
-      (
-        indexDataArr,
-        _addIndexDataToArr((bufferViewOffset, indices32), index32DataArr),
-        _addBufferViewData(
-          (
-            indices32Length,
-            indices32Count,
-            Uint32Array._BYTES_PER_ELEMENT,
-            Index32,
-          ),
-          (bufferViewOffset, bufferViewDataArr, accessorDataArr),
-          totalByteLength,
-        ),
-      );
-    }
+    _addIndex32Data(
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr, totalByteLength),
+      (indices32, indicesSize),
+      (indexDataArr, index32DataArr),
+    )
   | Some(indices) =>
-    let indicesLength = Uint16Array.length(indices);
-    let indicesCount = indicesLength / indicesSize;
-
-    (
-      _addIndexDataToArr((bufferViewOffset, indices), indexDataArr),
-      index32DataArr,
-      _addBufferViewData(
-        (indicesLength, indicesCount, Uint16Array._BYTES_PER_ELEMENT, Index),
-        (bufferViewOffset, bufferViewDataArr, accessorDataArr),
-        totalByteLength,
-      ),
-    );
+    _addIndex16Data(
+      (bufferViewOffset, bufferViewDataArr, accessorDataArr, totalByteLength),
+      (indices, indicesSize),
+      (indexDataArr, index32DataArr),
+    )
   };
 
 let _addAllPointData =
@@ -241,7 +287,7 @@ let _addAllPointData =
       totalByteLength,
     ),
   ) =
-    _addIndexData(
+    _addIndex16And32Data(
       (bufferViewOffset, bufferViewDataArr, accessorDataArr, totalByteLength),
       (indices, indices32, indicesSize),
       (indexDataArr, index32DataArr),
