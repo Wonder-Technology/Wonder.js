@@ -61,6 +61,7 @@ let createRenderState =
   let directionLightRecord =
     RecordDirectionLightRenderWorkerService.getRecord(state);
   let pointLightRecord = RecordPointLightRenderWorkerService.getRecord(state);
+
   let basicSourceTextureRecord =
     RecordBasicSourceTextureRenderWorkerService.getRecord(state);
   let arrayBufferViewSourceTextureRecord =

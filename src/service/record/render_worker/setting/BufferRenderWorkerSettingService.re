@@ -1,10 +1,12 @@
 open RenderWorkerSettingType;
 
-let unsafeGetInstanceBuffer = ({instanceBuffer}) => instanceBuffer |> OptionService.unsafeGet;
+let unsafeGetInstanceBuffer = ({instanceBuffer}) =>
+  instanceBuffer |> OptionService.unsafeGet;
 
-let getSourceInstanceCount = (record) => (record |> unsafeGetInstanceBuffer).sourceInstanceCount;
+let getSourceInstanceCount = record =>
+  (record |> unsafeGetInstanceBuffer).sourceInstanceCount;
 
-let getObjectInstanceCountPerSourceInstance = (record) =>
+let getObjectInstanceCountPerSourceInstance = record =>
   (record |> unsafeGetInstanceBuffer).objectInstanceCountPerSourceInstance;
 
 let getTextureCountPerMaterial = ({textureCountPerMaterial}) => textureCountPerMaterial;
@@ -12,5 +14,12 @@ let getTextureCountPerMaterial = ({textureCountPerMaterial}) => textureCountPerM
 let unsafeGetBasicSourceTextureCount = ({basicSourceTextureCount}) =>
   basicSourceTextureCount |> OptionService.unsafeGet;
 
-let unsafeGetArrayBufferViewSourceTextureCount = ({arrayBufferViewSourceTextureCount}) =>
+let unsafeGetArrayBufferViewSourceTextureCount =
+    ({arrayBufferViewSourceTextureCount}) =>
   arrayBufferViewSourceTextureCount |> OptionService.unsafeGet;
+
+let unsafeGetDirectionLightCount = ({directionLightCount}) =>
+  directionLightCount |> OptionService.unsafeGet;
+
+let unsafeGetPointLightCount = ({pointLightCount}) =>
+  pointLightCount |> OptionService.unsafeGet;

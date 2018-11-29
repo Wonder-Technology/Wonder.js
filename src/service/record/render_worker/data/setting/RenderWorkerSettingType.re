@@ -4,7 +4,7 @@ type memory = {maxBigTypeArrayPoolSize: int};
 
 type instanceBuffer = {
   sourceInstanceCount: int,
-  objectInstanceCountPerSourceInstance: int
+  objectInstanceCountPerSourceInstance: int,
 };
 
 type settingRecord = {
@@ -13,5 +13,7 @@ type settingRecord = {
   textureCountPerMaterial: option(int),
   basicSourceTextureCount: option(int),
   arrayBufferViewSourceTextureCount: option(int),
-  memory: option(memory)
+  directionLightCount: option(int),
+  pointLightCount: option(int),
+  memory: option(memory),
 };

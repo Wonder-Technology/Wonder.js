@@ -16,6 +16,7 @@ let execJob = (flags, e, stateData) =>
         positionMap: Some(pointLightData##positionMap),
         renderLightArr: Some(pointLightData##renderLightArr),
       });
+
     StateRenderWorkerService.setState(stateData, state);
     e;
   });

@@ -143,6 +143,7 @@ let send =
                  quadratic,
                  range,
                } as structureMemberNameData = lightGLSLDataStructureMemberNameArr[index];
+
            SendGLSLDataService.sendVec3(.
              gl,
              uniformCacheMap,

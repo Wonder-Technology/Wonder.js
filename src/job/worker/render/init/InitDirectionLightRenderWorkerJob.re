@@ -27,13 +27,21 @@ let _getData = (directionLightData, state) => {
 
 let execJob = (_, e, stateData) =>
   MostUtils.callFunc(() => {
-    let state = StateRenderWorkerService.unsafeGetState(stateData);
+    let {settingRecord} as state =
+      StateRenderWorkerService.unsafeGetState(stateData);
     let data = MessageService.getRecord(e);
     let directionLightData = data##directionLightData;
     let buffer = directionLightData##buffer;
-    let count = BufferDirectionLightService.getBufferMaxCount();
+    let count =
+      BufferRenderWorkerSettingService.unsafeGetPointLightCount(
+        settingRecord,
+      );
     state
-    |> _createRecordWithCreatedTypeArrays(buffer, count, directionLightData##index)
+    |> _createRecordWithCreatedTypeArrays(
+         buffer,
+         count,
+         directionLightData##index,
+       )
     |> _getData(directionLightData)
     |> StateRenderWorkerService.setState(stateData);
     e;

@@ -5,6 +5,7 @@ open RenderWorkerPointLightType;
 let _createRecordWithCreatedTypeArrays = (buffer, count, index, state) => {
   let (colors, intensities, constants, linears, quadratics, ranges) =
     CreateTypeArrayPointLightService.createTypeArrays(buffer, count);
+
   state.pointLightRecord =
     Some({
       index,
@@ -31,11 +32,15 @@ let _getData = (pointLightData, state) => {
 
 let execJob = (_, e, stateData) =>
   MostUtils.callFunc(() => {
-    let state = StateRenderWorkerService.unsafeGetState(stateData);
+    let {settingRecord} as state =
+      StateRenderWorkerService.unsafeGetState(stateData);
     let data = MessageService.getRecord(e);
     let pointLightData = data##pointLightData;
     let buffer = pointLightData##buffer;
-    let count = BufferPointLightService.getBufferMaxCount();
+    let count =
+      BufferRenderWorkerSettingService.unsafeGetPointLightCount(
+        settingRecord,
+      );
     state
     |> _createRecordWithCreatedTypeArrays(
          buffer,

@@ -123,6 +123,7 @@ let _buildData = (operateType, canvas, stateData) => {
   let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
   let (x, y, width, height, _, _) = ScreenService.queryFullScreenData();
+
   {
     "operateType": operateType,
     "canvas": canvas,
@@ -140,6 +141,8 @@ let _buildData = (operateType, canvas, stateData) => {
       "basicSourceTextureCount": buffer.basicSourceTextureCount,
       "arrayBufferViewSourceTextureCount":
         buffer.arrayBufferViewSourceTextureCount,
+      "directionLightCount": buffer.directionLightCount,
+      "pointLightCount": buffer.pointLightCount,
     },
     "gpuData": {
       "useHardwareInstance": useHardwareInstance,

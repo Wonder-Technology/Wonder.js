@@ -148,7 +148,7 @@ let _ =
         );
 
         describe("test send direction light record", () =>
-          describe("send structure record", () =>
+          describe("send structure record", () => {
             describe("send direction", () =>
               testPromise("test one light", () => {
                 let (state, lightGameObject, material, light, cameraTransform) =
@@ -189,11 +189,49 @@ let _ =
                   (),
                 );
               })
-            )
-          )
+            );
+
+            testPromise("send intensity", () => {
+              let (state, lightGameObject1, material, light1, cameraTransform) =
+                FrontRenderLightForNoWorkerAndWorkerJobTool.prepareOneForDirectionLight(
+                  sandbox,
+                  state^,
+                );
+              let intensity1 = 2.0;
+              let state =
+                state
+                |> DirectionLightAPI.setDirectionLightColor(
+                     light1,
+                     [|1., 0.5, 0.5|],
+                   )
+                |> DirectionLightAPI.setDirectionLightIntensity(
+                     light1,
+                     intensity1,
+                   );
+              let (state, posArr, (uniform1f, uniform3f)) =
+                FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(
+                  sandbox,
+                  [|"u_directionLights[0].intensity"|],
+                  state,
+                );
+              RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+                ~state,
+                ~sandbox,
+                ~completeFunc=
+                  _ =>
+                    uniform1f
+                    |> withOneArg(posArr[0])
+                    |> getCall(0)
+                    |> getArgs
+                    |> expect == [posArr[0] |> Obj.magic, intensity1]
+                    |> resolve,
+                (),
+              );
+            });
+          })
         );
         describe("test send point light record", () =>
-          describe("send structure record", () =>
+          describe("send structure record", () => {
             describe("send position", () =>
               testPromise("test four lights", () => {
                 let (
@@ -287,8 +325,78 @@ let _ =
                   (),
                 );
               })
-            )
-          )
+            );
+
+            testPromise("send color", () => {
+              let (state, lightGameObject1, material, light1, cameraTransform) =
+                FrontRenderLightForNoWorkerAndWorkerJobTool.prepareOneForPointLight(
+                  sandbox,
+                  state^,
+                );
+              let color1 = [|0.5, 1.0, 0.5|];
+              let state =
+                state |> PointLightAPI.setPointLightColor(light1, color1);
+              let (state, posArr, (uniform1f, uniform3f)) =
+                FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(
+                  sandbox,
+                  [|"u_pointLights[0].color"|],
+                  state,
+                );
+              RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+                ~state,
+                ~sandbox,
+                ~completeFunc=
+                  _ =>
+                    uniform3f
+                    |> withOneArg(posArr[0])
+                    |> getCall(0)
+                    |> getArgs
+                    |>
+                    expect == [
+                                posArr[0] |> Obj.magic,
+                                color1[0],
+                                color1[1],
+                                color1[2],
+                              ]
+                    |> resolve,
+                (),
+              );
+            });
+            testPromise("send intensity", () => {
+              let (state, lightGameObject1, material, light1, cameraTransform) =
+                FrontRenderLightForNoWorkerAndWorkerJobTool.prepareOneForPointLight(
+                  sandbox,
+                  state^,
+                );
+              let intensity1 = 2.0;
+              let state =
+                state
+                |> PointLightAPI.setPointLightColor(
+                     light1,
+                     [|1., 0.5, 0.5|],
+                   )
+                |> PointLightAPI.setPointLightIntensity(light1, intensity1);
+              let (state, posArr, (uniform1f, uniform3f)) =
+                FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(
+                  sandbox,
+                  [|"u_pointLights[0].intensity"|],
+                  state,
+                );
+              RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+                ~state,
+                ~sandbox,
+                ~completeFunc=
+                  _ =>
+                    uniform1f
+                    |> withOneArg(posArr[0])
+                    |> getCall(0)
+                    |> getArgs
+                    |> expect == [posArr[0] |> Obj.magic, intensity1]
+                    |> resolve,
+                (),
+              );
+            });
+          })
         );
       });
     });

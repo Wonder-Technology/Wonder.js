@@ -6,5 +6,7 @@ let create = () => {
   instanceBuffer: None,
   textureCountPerMaterial: None,
   basicSourceTextureCount: None,
-  arrayBufferViewSourceTextureCount: None
+  arrayBufferViewSourceTextureCount: None,
+  directionLightCount: None,
+  pointLightCount: None,
 };

@@ -15,7 +15,9 @@ let getColorsOffset = count => 0;
 let getColorsLength = count => count * getColorsSize();
 
 let getIntensitiesOffset = count =>
-  getColorsLength(count) * Float32Array._BYTES_PER_ELEMENT;
+  getColorsOffset(count)
+  + getColorsLength(count)
+  * Float32Array._BYTES_PER_ELEMENT;
 
 let getIntensitiesLength = count => count * getIntensitiesSize();
 

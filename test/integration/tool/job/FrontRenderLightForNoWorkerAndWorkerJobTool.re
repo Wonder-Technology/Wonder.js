@@ -33,6 +33,21 @@ let prepareOneForDirectionLight = (sandbox, state) => {
   (state, lightGameObject, material, light, cameraTransform)
 };
 
+
+let prepareOneForPointLight = (sandbox, state) => {
+  let (state, gameObject, _, material, _) =
+    FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+  let (state, lightGameObject1, light1) = PointLightTool.createGameObject(state);
+  let (state, _, cameraTransform, _) = CameraTool.createCameraGameObject(state);
+  (
+    state,
+    lightGameObject1,
+    material,
+    light1,
+    cameraTransform
+  )
+};
+
 let prepareFourForPointLight = (sandbox, state) => {
   let (state, gameObject, _, material, _) =
     FrontRenderLightJobTool.prepareGameObject(sandbox, state);
