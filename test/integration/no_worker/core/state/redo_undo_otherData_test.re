@@ -13,6 +13,7 @@ let _ =
       open DeviceManagerType;
       let record = DeviceManagerTool.getDeviceManagerRecord(state);
       let gl = Obj.magic(RandomTool.getRandomFloat(10.));
+      let depthWrite = Some(true);
       let colorWrite = Some((true, true, true, false));
       let clearColor = Some((1., 0.1, 0.2, 1.));
       let side = Some(BOTH);
@@ -25,6 +26,7 @@ let _ =
           ...state,
           deviceManagerRecord: {
             gl: Some(gl),
+            depthWrite,
             colorWrite,
             clearColor,
             side,
@@ -36,6 +38,7 @@ let _ =
         },
         Some(gl),
         (
+          depthWrite,
           colorWrite,
           clearColor,
           side,
@@ -139,6 +142,7 @@ let _ =
             state,
             gl,
             (
+              depthWrite,
               colorWrite,
               clearColor,
               side,
@@ -154,6 +158,7 @@ let _ =
           let copiedData =
             DeviceManagerTool.getDeviceManagerRecord(copiedState);
           (
+            copiedData.depthWrite,
             copiedData.colorWrite,
             copiedData.clearColor,
             copiedData.side,
@@ -164,6 +169,7 @@ let _ =
           )
           |>
           expect == (
+                      targetData.depthWrite,
                       targetData.colorWrite,
                       targetData.clearColor,
                       targetData.side,

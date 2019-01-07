@@ -168,4 +168,88 @@ describe("DeviceManagerService", () => {
       });
     });
   });
+
+  describe("test stencil", () => {
+    describe("setStencilTest", () =>
+      test("enable stencil test", () => {
+        let stencilTest = 2;
+        let enable = Sinon.createEmptyStubWithJsObjSandbox(sandbox);
+        let gl =
+          FakeGlTool.buildFakeGl(
+            ~sandbox,
+            ~getStencilTest=stencilTest,
+            ~enable,
+            (),
+          )
+          |> Obj.magic;
+        let state = DeviceManagerTool.setGl(gl, state^);
+
+        let state = DeviceManagerAPI.setStencilTest(true, state);
+
+        expect(enable) |> toCalledOnce;
+      })
+    );
+
+    describe("setStencilMask", () =>
+      test("set stencil mask", () => {
+        let mask = 0xFF;
+        let stencilMask = Sinon.createEmptyStubWithJsObjSandbox(sandbox);
+        let gl =
+          FakeGlTool.buildFakeGl(~sandbox, ~stencilMask, ()) |> Obj.magic;
+        let state = DeviceManagerTool.setGl(gl, state^);
+
+        let state = DeviceManagerAPI.setStencilMask(mask, state);
+
+        expect(stencilMask)
+        |> toCalledWith([|mask |> WonderWebgl.GlType.intToHex|]);
+      })
+    );
+
+    describe("setStencilFunc", () =>
+      test("set stencil func", () => {
+        let never = 0;
+        let refVal = 1;
+        let mask = 0x00;
+        let stencilFunc = Sinon.createEmptyStubWithJsObjSandbox(sandbox);
+        let gl =
+          FakeGlTool.buildFakeGl(~sandbox, ~stencilFunc, ~never, ())
+          |> Obj.magic;
+        let state = DeviceManagerTool.setGl(gl, state^);
+
+        let state =
+          DeviceManagerAPI.setStencilFunc(never, refVal, mask, state);
+
+        expect(stencilFunc)
+        |> toCalledWith([|
+             never,
+             refVal,
+             mask |> WonderWebgl.GlType.intToHex |> Obj.magic,
+           |]);
+      })
+    );
+
+    describe("setStencilOp", () =>
+      test("set stencil op", () => {
+        let incr = 0;
+        let decr = 1;
+        let invert = 2;
+        let stencilOp = Sinon.createEmptyStubWithJsObjSandbox(sandbox);
+        let gl =
+          FakeGlTool.buildFakeGl(
+            ~sandbox,
+            ~stencilOp,
+            ~incr,
+            ~decr,
+            ~invert,
+            (),
+          )
+          |> Obj.magic;
+        let state = DeviceManagerTool.setGl(gl, state^);
+
+        let state = DeviceManagerAPI.setStencilOp(incr, decr, invert, state);
+
+        expect(stencilOp) |> toCalledWith([|incr, decr, invert|]);
+      })
+    );
+  });
 });

@@ -42,3 +42,49 @@ let setSide = (targetSide, state) => {
       state.deviceManagerRecord,
     ),
 };
+
+let setStencilTest = (targetStencilTest, state) => {
+  ...state,
+  deviceManagerRecord:
+    state.deviceManagerRecord
+    |> DeviceManagerService.setStencilTest(
+         DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+         targetStencilTest,
+       ),
+};
+
+let setStencilMask = (targetStencilMask, state) => {
+  ...state,
+  deviceManagerRecord:
+    state.deviceManagerRecord
+    |> DeviceManagerService.setStencilMask(
+         DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+         targetStencilMask,
+       ),
+};
+
+let setStencilFunc =
+    (targetStencilFunc, targetStencilRef, targetStencilMask, state) => {
+  ...state,
+  deviceManagerRecord:
+    state.deviceManagerRecord
+    |> DeviceManagerService.setStencilFunc(
+         DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+         targetStencilFunc,
+         targetStencilRef,
+         targetStencilMask,
+       ),
+};
+
+let setStencilOp =
+    (targetStencilSFail, targetStencilDPFail, targetStencilDPPass, state) => {
+  ...state,
+  deviceManagerRecord:
+    state.deviceManagerRecord
+    |> DeviceManagerService.setStencilOp(
+         DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+         targetStencilSFail,
+         targetStencilDPFail,
+         targetStencilDPPass,
+       ),
+};

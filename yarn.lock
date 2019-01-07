@@ -5160,9 +5160,9 @@ wonder-imgui@^0.0.28:
     wonder-log "^0.2.2"
     wonder-webgl "^0.0.2"
 
-wonder-log@^0.2.2, wonder-log@^0.2.7, wonder-log@latest:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/wonder-log/-/wonder-log-0.2.7.tgz#2a2e62f231356cd01f9f7a5c1949d02162382b56"
+wonder-log@^0.2.10, wonder-log@^0.2.2, wonder-log@latest:
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/wonder-log/-/wonder-log-0.2.10.tgz#46d1cc45f7aed70fa8afb1bf5cc3e2bca342fe3d"
 
 wonder-most-animation-frame@0.0.3:
   version "0.0.3"
@@ -5187,9 +5187,9 @@ wonder-webgl@^0.0.2:
   dependencies:
     wonder-log "^0.2.2"
 
-wonder-webgl@^0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/wonder-webgl/-/wonder-webgl-0.0.5.tgz#e31fe338ae6293174199387d6b7232d4c1972674"
+wonder-webgl@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/wonder-webgl/-/wonder-webgl-0.0.6.tgz#47d10a560e451dfb74b7837ac0654d16fde6b10f"
   dependencies:
     wonder-log "^0.2.2"
 

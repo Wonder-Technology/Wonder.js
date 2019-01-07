@@ -5,6 +5,7 @@ let create = () => {
   side: None,
   depthTest: None,
   scissorTest: None,
+  depthWrite: None,
   colorWrite: None,
   clearColor: None,
   viewport: None,
@@ -14,6 +15,7 @@ let create = () => {
 let deepCopyForRestore =
     (
       {
+        depthWrite,
         colorWrite,
         clearColor,
         side,
@@ -24,6 +26,7 @@ let deepCopyForRestore =
       },
     ) => {
   gl: None,
+  depthWrite,
   colorWrite,
   clearColor,
   side,
