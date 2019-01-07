@@ -157,7 +157,7 @@ and glslSenderRecord = {
     ),
   /* drawPointsFuncMap: WonderCommonlib.SparseMapService.t((webgl1Context => unit)), */
   mutable vertexAttribHistoryArray,
-  mutable lastSendMaterialData: option((material, ShaderType.shader)),
+  mutable lastSendMaterialData: option((material, ShaderType.shaderIndex)),
   /* mutable lastSendGeometryData: option(geometry), */
 }
 and renderState = {

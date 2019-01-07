@@ -24,7 +24,7 @@ let _createProgramAndInit =
 
 let _initNewShader =
     (
-      (materialIndex: int, shaderIndex, key),
+      (shaderIndex, key),
       (gl, shaderLibDataArr),
       (
         buildGLSLSourceFunc,
@@ -109,7 +109,7 @@ let _initShader =
       );
 
     _initNewShader(
-      (materialIndex, shaderIndex, key),
+      (shaderIndex, key),
       (gl, shaderLibDataArr),
       (
         buildGLSLSourceFunc,
