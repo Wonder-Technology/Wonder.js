@@ -82,7 +82,7 @@ let reInitComponents =
       (reInitMaterialFunc, createInitMaterialStateFunc),
       state,
     ) => {
-  let state = ClearShaderMainService.clearShaderCache(state);
+  let state = ClearShaderMainService.clearInitShaderCache(state);
 
   let state =
     materialIndices

@@ -318,7 +318,7 @@ let _ =
       });
     });
 
-    describe("clearShaderCache", () =>
+    describe("clearInitShaderCache", () =>
       describe("clear shader cache", () =>
         test(
           {|1.create material1 and init;
@@ -342,7 +342,7 @@ let _ =
 
             let state = GameObjectTool.disposeGameObject(gameObject1, state);
 
-            let state = ShaderAPI.clearShaderCache(state);
+            let state = ShaderAPI.clearInitShaderCache(state);
 
             let (state, gameObject2, material2) =
               LightMaterialTool.createGameObject(state);

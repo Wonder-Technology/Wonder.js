@@ -1,2 +1,2 @@
-let clearShaderCache = state =>
-  ClearShaderMainService.clearShaderCache(state);
+let clearInitShaderCache = state =>
+  ClearShaderMainService.clearInitShaderCache(state);

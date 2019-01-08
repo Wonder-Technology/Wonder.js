@@ -1861,7 +1861,7 @@ let _ =
             state,
           );
         let state = GameObjectAPI.initGameObject(gameObject1, state);
-        let state = GLSLSenderTool.clearShaderCache(state);
+        let state = GLSLSenderTool.clearInitShaderCache(state);
         let state = state |> DirectorTool.runWithDefaultTime;
 
         uniform1i |> withOneArg(pos) |> expect |> toCalledOnce;

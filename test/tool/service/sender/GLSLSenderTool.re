@@ -19,7 +19,7 @@ let disableVertexAttribArray = (state: StateDataMainType.state) => {
      state;
    }; */
 
-let clearShaderCache = (state: StateDataMainType.state) => {
+let clearInitShaderCache = (state: StateDataMainType.state) => {
   ...state,
   glslSenderRecord: {
     ...state.glslSenderRecord,

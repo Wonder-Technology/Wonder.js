@@ -602,7 +602,7 @@ let getAmbientLightColor = SceneAPI.getAmbientLightColor;
 
 let setScreenSize = ScreenAPI.setScreenSize;
 
-let clearShaderCache = ShaderAPI.clearShaderCache;
+let clearInitShaderCache = ShaderAPI.clearInitShaderCache;
 
 let markSourceInstanceModelMatrixIsStatic = SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic;
 
