@@ -7,7 +7,7 @@ let _fillMatrixTypeArr =
       RenderHardwareInstanceJobUtils.fillMatrixTypeArr(transform, matricesArrayForInstance, tuple)
       |> ignore;
       let normalMatrix =
-        [@bs] GetTransformDataRenderService.getNormalMatrixTypeArray(transform, state);
+        [@bs] GetTransformDataGetRenderDataService.getNormalMatrixTypeArray(transform, state);
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (matricesArrayForInstance, offset + 16),
         (normalMatrix, 0),

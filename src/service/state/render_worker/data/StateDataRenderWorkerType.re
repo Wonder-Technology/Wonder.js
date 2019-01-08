@@ -36,7 +36,7 @@ open ComponentType;
 
 open Js.Typed_array;
 
-open StateRenderType;
+open GLSLSenderType;
 
 open GLSLLocationType;
 

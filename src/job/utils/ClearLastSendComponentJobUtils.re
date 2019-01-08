@@ -1,4 +1,4 @@
-open StateRenderType;
+open GLSLSenderType;
 
 let execJob = (glslSenderRecord) => {
   ...glslSenderRecord,

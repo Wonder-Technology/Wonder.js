@@ -3,18 +3,21 @@ open StateDataMainType;
 let getGLSLSenderRecord = state => state.glslSenderRecord;
 
 let disableVertexAttribArray = (state: StateDataMainType.state) => {
-  VertexAttribArrayRenderService.disableVertexAttribArray(
-    DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-    CreateRenderStateMainService.createRenderState(state),
-  )
-  |> ignore;
+  let renderState = CreateRenderStateMainService.createRenderState(state);
+
+  renderState.glslSenderRecord.vertexAttribHistoryArray =
+    VertexAttribArrayService.disableVertexAttribArray(
+      DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+      renderState.glslSenderRecord.vertexAttribHistoryArray,
+    );
+
   state;
 };
 
 /* let clearLastSendGeometry = (state: StateDataMainType.state) => {
-  state.glslSenderRecord.lastSendGeometryData = None;
-  state;
-}; */
+     state.glslSenderRecord.lastSendGeometryData = None;
+     state;
+   }; */
 
 let clearShaderCache = (state: StateDataMainType.state) => {
   ...state,
@@ -27,7 +30,7 @@ let clearShaderCache = (state: StateDataMainType.state) => {
            |> Js.Array.map(
                 (
                   (
-                    {shaderCacheMap}: StateRenderType.uniformRenderObjectSendMaterialData
+                    {shaderCacheMap}: GLSLSenderType.uniformRenderObjectSendMaterialData
                   ) as record,
                 ) =>
                 {

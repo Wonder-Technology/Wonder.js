@@ -140,6 +140,8 @@ let buildFakeGl =
       ~useProgram=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~disableVertexAttribArray=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~commit=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~isEnabled=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~blendFunc=createEmptyStub(refJsObjToSandbox(sandbox^)),
       (),
     ) => {
   "TEXTURE_WRAP_S": textureWrapS,
@@ -268,6 +270,8 @@ let buildFakeGl =
   "createShader": createShader,
   "compileShader": compileShader,
   "commit": commit,
+  "isEnabled": isEnabled,
+  "blendFunc": blendFunc,
 };
 
 let setFakeGl = (fakeGlObj, state) =>

@@ -1,11 +1,11 @@
 let addAmbientLightSendData =
     ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
-  switch field {
+  switch (field) {
   | "send" =>
     HandleUniformShaderCachableFunctionService.addUniformSendDataByType(
       (program, uniformCacheMap, uniformLocationMap),
       sendDataArrTuple,
-      SendAmbientLightUniformRenderService.send
+      SendAmbientLightUniformSendRenderDataService.send,
     )
   | _ =>
     WonderLog.Log.fatal(
@@ -14,19 +14,19 @@ let addAmbientLightSendData =
         ~description={j|unknow field:$field|j},
         ~reason="",
         ~solution={j||j},
-        ~params={j||j}
-      )
+        ~params={j||j},
+      ),
     )
   };
 
 let addDirectionLightSendData =
     ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
-  switch field {
+  switch (field) {
   | "send" =>
     HandleUniformShaderCachableFunctionService.addUniformSendDataByType(
       (program, uniformCacheMap, uniformLocationMap),
       sendDataArrTuple,
-      SendDirectionLightUniformRenderService.send
+      SendDirectionLightUniformSendRenderDataService.send,
     )
   | _ =>
     WonderLog.Log.fatal(
@@ -35,19 +35,19 @@ let addDirectionLightSendData =
         ~description={j|unknow field:$field|j},
         ~reason="",
         ~solution={j||j},
-        ~params={j||j}
-      )
+        ~params={j||j},
+      ),
     )
   };
 
 let addPointLightSendData =
     ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
-  switch field {
+  switch (field) {
   | "send" =>
     HandleUniformShaderCachableFunctionService.addUniformSendDataByType(
       (program, uniformCacheMap, uniformLocationMap),
       sendDataArrTuple,
-      SendPointLightUniformRenderService.send
+      SendPointLightUniformSendRenderDataService.send,
     )
   | _ =>
     WonderLog.Log.fatal(
@@ -56,7 +56,7 @@ let addPointLightSendData =
         ~description={j|unknow field:$field|j},
         ~reason="",
         ~solution={j||j},
-        ~params={j||j}
-      )
+        ~params={j||j},
+      ),
     )
   };

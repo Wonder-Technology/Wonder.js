@@ -4,7 +4,7 @@ open WonderWebgl.Gl;
 
 open RenderConfigType;
 
-open StateRenderType;
+open GLSLSenderType;
 
 open VboBufferType;
 
@@ -40,7 +40,8 @@ let _readAttributes =
              && ! (type_ |> OptionService.isJsonSerializedValueNone) ?
                {
                  let name = name |> OptionService.unsafeGetJsonSerializedValue;
-                 let type_ = type_ |> OptionService.unsafeGetJsonSerializedValue;
+                 let type_ =
+                   type_ |> OptionService.unsafeGetJsonSerializedValue;
 
                  switch (buffer) {
                  | VboBufferType.Instance_m_matrix =>

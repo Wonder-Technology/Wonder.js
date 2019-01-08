@@ -2,8 +2,6 @@ open WonderWebgl.GlType;
 
 open WonderWebgl.Gl;
 
-open StateRenderType;
-
 open SendGLSLDataService;
 
 open RenderConfigType;

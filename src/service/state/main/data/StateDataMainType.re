@@ -50,7 +50,7 @@ open ProgramType;
 
 open GLSLLocationType;
 
-open StateRenderType;
+open GLSLSenderType;
 
 open ShaderChunkType;
 

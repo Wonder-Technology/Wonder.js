@@ -2,7 +2,7 @@ open WonderWebgl.GlType;
 
 open WonderWebgl.Gl;
 
-open StateRenderType;
+open GLSLSenderType;
 
 open SendGLSLDataService;
 
@@ -79,7 +79,8 @@ let readUniformSendData =
          variables |> OptionService.isJsonSerializedValueNone ?
            sendDataArrTuple :
            {
-             let {uniforms} = variables |> OptionService.unsafeGetJsonSerializedValue;
+             let {uniforms} =
+               variables |> OptionService.unsafeGetJsonSerializedValue;
 
              readUniformsFunc(.
                (gl, program, uniformLocationMap, uniformCacheMap),

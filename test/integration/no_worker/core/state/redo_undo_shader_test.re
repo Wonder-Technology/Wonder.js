@@ -11,7 +11,7 @@ let _ =
     let state = ref(MainStateTool.createState());
     let _prepareGLSLSenderData = state => {
       open StateDataMainType;
-      let {attributeSendDataMap, vertexAttribHistoryArray}: StateRenderType.glslSenderRecord =
+      let {attributeSendDataMap, vertexAttribHistoryArray}: GLSLSenderType.glslSenderRecord =
         state.glslSenderRecord;
       let shaderIndex1 = 0;
       let data1 = Obj.magic(0);
@@ -100,8 +100,8 @@ let _ =
               MainStateTool.createNewCompleteState(sandbox),
             );
           let newState = MainStateTool.restore(currentState, state);
-          /* let {lastSendMaterialData, lastSendGeometryData}: StateRenderType.glslSenderRecord = */
-          let {lastSendMaterialData}: StateRenderType.glslSenderRecord =
+          /* let {lastSendMaterialData, lastSendGeometryData}: GLSLSenderType.glslSenderRecord = */
+          let {lastSendMaterialData}: GLSLSenderType.glslSenderRecord =
             newState |> GLSLSenderTool.getGLSLSenderRecord;
           lastSendMaterialData |> expect == None;
         });
@@ -114,7 +114,7 @@ let _ =
               MainStateTool.createNewCompleteState(sandbox),
             );
           let newState = MainStateTool.restore(currentState, state);
-          let {vertexAttribHistoryArray}: StateRenderType.glslSenderRecord =
+          let {vertexAttribHistoryArray}: GLSLSenderType.glslSenderRecord =
             newState |> GLSLSenderTool.getGLSLSenderRecord;
           vertexAttribHistoryArray
           |> expect == WonderCommonlib.ArrayService.createEmpty();
@@ -302,7 +302,7 @@ let _ =
                  uniformLocationData2,
                )
             |> ignore;
-            let {uniformShaderSendNoCachableDataMap}: StateRenderType.glslSenderRecord =
+            let {uniformShaderSendNoCachableDataMap}: GLSLSenderType.glslSenderRecord =
               state.glslSenderRecord;
             let uniformShaderSendNoCachableData1 = Obj.magic(121);
             let uniformShaderSendNoCachableData2 = Obj.magic(122);
@@ -337,7 +337,7 @@ let _ =
             open ShaderType;
             open GLSLLocationType;
             open ProgramType;
-            open StateRenderType;
+            open GLSLSenderType;
             let shaderIndex1 = 3;
             let shaderIndex2 = 4;
             let {shaderIndexMap} as record =
@@ -381,7 +381,7 @@ let _ =
                  uniformLocationData2,
                )
             |> ignore;
-            let {uniformShaderSendNoCachableDataMap}: StateRenderType.glslSenderRecord =
+            let {uniformShaderSendNoCachableDataMap}: GLSLSenderType.glslSenderRecord =
               state.glslSenderRecord;
             let uniformShaderSendNoCachableData1 = Obj.magic(10221);
             let uniformShaderSendNoCachableData2 = Obj.magic(10222);
@@ -599,7 +599,7 @@ let _ =
                   ),
                 ) =
                   _prepare(state^);
-                let {uniformShaderSendNoCachableDataMap}: StateRenderType.glslSenderRecord =
+                let {uniformShaderSendNoCachableDataMap}: GLSLSenderType.glslSenderRecord =
                   newState |> GLSLSenderTool.getGLSLSenderRecord;
 
                 uniformShaderSendNoCachableDataMap

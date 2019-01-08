@@ -8,7 +8,7 @@ open ProgramType;
 
 open GLSLType;
 
-open StateRenderType;
+open GLSLSenderType;
 
 open GLSLLocationType;
 
@@ -26,5 +26,5 @@ type initBasicMaterialState = {
   glslRecord,
   glslSenderRecord,
   glslLocationRecord,
-  glslChunkRecord
+  glslChunkRecord,
 };

@@ -1,4 +1,4 @@
-open StateRenderType;
+open GLSLSenderType;
 
 let create = () => {
   attributeSendDataMap: WonderCommonlib.SparseMapService.createEmpty(),

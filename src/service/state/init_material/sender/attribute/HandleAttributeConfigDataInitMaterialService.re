@@ -4,7 +4,9 @@ open WonderWebgl.Gl;
 
 open RenderConfigType;
 
-open StateRenderType;
+/* open StateRenderType; */
+
+open GLSLSenderType;
 
 let addModelMatrixInstanceArrayBufferSendData =
     (

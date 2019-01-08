@@ -8,7 +8,7 @@ open ProgramType;
 
 open GLSLType;
 
-open StateRenderType;
+open GLSLSenderType;
 
 open GLSLLocationType;
 
@@ -34,5 +34,5 @@ type initLightMaterialState = {
   glslRecord,
   glslSenderRecord,
   glslLocationRecord,
-  glslChunkRecord
+  glslChunkRecord,
 };

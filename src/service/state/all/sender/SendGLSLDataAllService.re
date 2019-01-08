@@ -2,14 +2,14 @@ open WonderWebgl.GlType;
 
 open WonderWebgl.Gl;
 
-open StateRenderType;
+open SubStateSendRenderDataType;
 
 let sendBuffer =
   (.
     gl: webgl1Context,
     (size: int, pos: attributeLocation),
     buffer: buffer,
-    {glslSenderRecord} as state,
+    {vertexAttribHistoryArray} as state,
   ) => {
     GLSLLocationService.isAttributeLocationExist(pos) ?
       {
@@ -18,7 +18,7 @@ let sendBuffer =
         SendGLSLDataService.enableVertexAttribArray(
           gl,
           pos,
-          glslSenderRecord.vertexAttribHistoryArray,
+          vertexAttribHistoryArray,
         );
       } :
       ();
