@@ -29,38 +29,6 @@ let genereateShaderIndex = ({index} as record) => {
      );
 };
 
-let useShaderIndex = (shaderIndex, {usedShaderIndexArray} as record) => {
-  usedShaderIndexArray |> ArrayService.push(shaderIndex) |> ignore;
-
-  record;
-};
-
-let _hasMaterialUseShader = (shaderIndex, material, materialsMap) =>
-  switch (WonderCommonlib.SparseMapService.get(shaderIndex, materialsMap)) {
-  | Some(arr) when arr |> Js.Array.length > 0 => true
-  | _ => false
-  };
-
-let unuseShaderIndex =
-    (shaderIndex, material, {materialsMap, usedShaderIndexArray} as record) => {
-  ArrayMapService.removeValue(shaderIndex, material, materialsMap) |> ignore;
-
-  _hasMaterialUseShader(shaderIndex, material, materialsMap) ?
-    record :
-    {
-      let index = Js.Array.indexOf(shaderIndex, usedShaderIndexArray);
-
-      index === (-1) ?
-        record :
-        {
-          usedShaderIndexArray
-          |> Js.Array.removeCountInPlace(~pos=index, ~count=1);
-
-          record;
-        };
-    };
-};
-
 let clearShaderIndexMap = shaderRecord => {
   shaderRecord.shaderIndexMap = WonderCommonlib.HashMapService.createEmpty();
 

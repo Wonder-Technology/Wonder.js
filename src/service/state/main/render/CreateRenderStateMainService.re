@@ -18,8 +18,6 @@ open RenderArrayBufferViewSourceTextureType;
 
 open DeviceManagerType;
 
-open RenderShaderType;
-
 open RenderSettingType;
 
 open BrowserDetectType;
@@ -189,9 +187,6 @@ let createRenderState =
     gpuDetectRecord,
     globalTempRecord,
     deviceManagerRecord,
-    shaderRecord: {
-      usedShaderIndexArray: shaderRecord.usedShaderIndexArray,
-    },
     settingRecord: {
       gpu: Some(OperateSettingService.unsafeGetGPU(settingRecord)),
       instanceBuffer:

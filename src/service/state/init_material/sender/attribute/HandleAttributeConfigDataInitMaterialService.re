@@ -44,7 +44,7 @@ let addOtherArrayBufferSendData =
          ),
        size: SendGLSLDataService.getBufferSizeByType(type_),
        buffer,
-       sendFunc: SendGLSLDataAllService.sendBuffer,
+       sendFunc: SendGLSLDataSendRenderDataService.sendBuffer,
      }),
   instanceSendNoCachableDataArr,
 );

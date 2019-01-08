@@ -256,9 +256,6 @@ let createRenderState =
     gpuDetectRecord,
     globalTempRecord,
     deviceManagerRecord,
-    shaderRecord: {
-      usedShaderIndexArray: shaderRecord.usedShaderIndexArray,
-    },
     workerDetectRecord: {
       isUseWorker: workerDetectRecord.isUseWorker,
     },

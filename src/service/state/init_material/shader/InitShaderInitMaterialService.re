@@ -42,7 +42,7 @@ let _initNewShader =
       ),
     ) => {
   shaderRecord
-  |> ShaderIndexShaderService.useShaderIndex(shaderIndex)
+  /* |> ShaderIndexShaderService.useShaderIndex(shaderIndex) */
   |> ShaderIndexShaderService.setShaderIndex(key, shaderIndex)
   |> ignore;
 

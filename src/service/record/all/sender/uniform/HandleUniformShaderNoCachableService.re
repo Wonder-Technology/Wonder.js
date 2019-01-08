@@ -44,8 +44,15 @@ let setToUniformSendMap =
        shaderSendNoCachableDataArr,
      );
 
-let unsafeGetUniformSendData = (shaderIndex: int, glslSenderRecord) =>
-  HandleUniformConfigDataMapService.unsafeGetUniformSendData(
-    shaderIndex,
-    glslSenderRecord.uniformShaderSendNoCachableDataMap,
-  );
+let reduceiValidShaderSendNoCachableData = (glslSenderRecord, func, initValue) =>
+  glslSenderRecord.uniformShaderSendNoCachableDataMap
+  |> SparseMapService.reduceiValid(func, initValue);
+
+let removeData = (shaderIndex, glslSenderRecord) => {
+  glslSenderRecord.uniformShaderSendNoCachableDataMap
+  |> Obj.magic
+  |> WonderCommonlib.SparseMapService.deleteVal(shaderIndex)
+  |> ignore;
+
+  glslSenderRecord;
+};

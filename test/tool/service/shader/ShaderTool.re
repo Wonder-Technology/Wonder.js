@@ -11,10 +11,3 @@ let getShaderIndex = (material, state) => {
     renderState,
   );
 };
-
-let getAllShaderIndexArray = state =>
-  StateRenderType.(
-    ShaderIndexRenderShaderService.getAllShaderIndexArray(
-      CreateRenderStateMainService.createRenderState(state).shaderRecord,
-    )
-  );

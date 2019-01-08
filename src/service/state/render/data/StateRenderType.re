@@ -38,8 +38,6 @@ open GlobalTempType;
 
 open DeviceManagerType;
 
-open RenderShaderType;
-
 open RenderSettingType;
 
 open BrowserDetectType;
@@ -64,7 +62,6 @@ type renderState = {
   gpuDetectRecord,
   globalTempRecord,
   deviceManagerRecord,
-  shaderRecord,
   settingRecord,
   workerDetectRecord,
   browserDetectRecord,

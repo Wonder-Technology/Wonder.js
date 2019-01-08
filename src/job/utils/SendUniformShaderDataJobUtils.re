@@ -1,101 +1,119 @@
 open StateRenderType;
 
+let _useProgram = (gl, shaderIndex, renderState) => {
+  let program =
+    ProgramService.unsafeGetProgram(shaderIndex, renderState.programRecord);
+
+  renderState |> UseProgramRenderService.use(gl, program);
+};
+
 let execJob = renderState =>
   ! OperateCameraRenderService.hasCameraRecord(renderState) ?
     renderState :
     {
       let gl =
         DeviceManagerService.unsafeGetGl(. renderState.deviceManagerRecord);
-      ShaderIndexRenderShaderService.getAllShaderIndexArray(
-        renderState.shaderRecord,
-      )
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. renderState: StateRenderType.renderState, shaderIndex) => {
-             let program =
-               ProgramService.unsafeGetProgram(
-                 shaderIndex,
-                 renderState.programRecord,
-               );
 
-             let {glslSenderRecord} as renderState =
-               renderState |> UseProgramRenderService.use(gl, program);
+      let renderState =
+        renderState
+        |> HandleUniformShaderNoCachableService.reduceiValidShaderSendNoCachableData(
+             renderState.glslSenderRecord,
+             (. renderState, dataArr, shaderIndex) => {
+               let renderState = _useProgram(gl, shaderIndex, renderState);
 
-             let getRenderDataSubState =
-               CreateGetRenederDataSubStateRenderService.createState(
-                 renderState,
-               );
-             let sendRenderDataSubState =
-               CreateSendRenederDataSubStateRenderService.createState(
-                 renderState,
-               );
-             let getRenderDataSubState =
-               glslSenderRecord
-               |> HandleUniformShaderNoCachableService.unsafeGetUniformSendData(
-                    shaderIndex,
-                  )
-               |> WonderCommonlib.ArrayService.reduceOneParam(
-                    (.
-                      getRenderDataSubState,
-                      {pos, getDataFunc, sendDataFunc}: GLSLSenderType.uniformShaderSendNoCachableData,
-                    ) => {
-                      GLSLLocationService.isUniformLocationExist(pos) ?
+               let getRenderDataSubState =
+                 dataArr
+                 |> WonderCommonlib.ArrayService.reduceOneParam(
+                      (.
+                        getRenderDataSubState,
+                        {pos, getDataFunc, sendDataFunc}: GLSLSenderType.uniformShaderSendNoCachableData,
+                      ) => {
+                        GLSLLocationService.isUniformLocationExist(pos) ?
+                          sendDataFunc(.
+                            gl,
+                            pos,
+                            getDataFunc(. getRenderDataSubState),
+                          ) :
+                          ();
+
+                        getRenderDataSubState;
+                      },
+                      CreateGetRenederDataSubStateRenderService.createState(
+                        renderState,
+                      ),
+                    );
+
+               renderState;
+             },
+           );
+
+      let renderState =
+        renderState
+        |> HandleUniformShaderCachableService.reduceiValidShaderSendCachableData(
+             renderState.glslSenderRecord,
+             (. renderState, dataArr, shaderIndex) => {
+               let renderState = _useProgram(gl, shaderIndex, renderState);
+
+               let getRenderDataSubState =
+                 dataArr
+                 |> WonderCommonlib.ArrayService.reduceOneParam(
+                      (.
+                        getRenderDataSubState,
+                        {shaderCacheMap, name, pos, getDataFunc, sendDataFunc}: GLSLSenderType.uniformShaderSendCachableData,
+                      ) => {
                         sendDataFunc(.
                           gl,
-                          pos,
+                          shaderCacheMap,
+                          (name, pos),
                           getDataFunc(. getRenderDataSubState),
-                        ) :
-                        ();
-                      getRenderDataSubState;
-                    },
-                    getRenderDataSubState,
-                  );
-             let getRenderDataSubState =
-               glslSenderRecord
-               |> HandleUniformShaderCachableService.unsafeGetUniformSendData(
-                    shaderIndex,
-                  )
-               |> WonderCommonlib.ArrayService.reduceOneParam(
-                    (.
-                      getRenderDataSubState,
-                      {shaderCacheMap, name, pos, getDataFunc, sendDataFunc}: GLSLSenderType.uniformShaderSendCachableData,
-                    ) => {
-                      sendDataFunc(.
-                        gl,
-                        shaderCacheMap,
-                        (name, pos),
-                        getDataFunc(. getRenderDataSubState),
-                      );
-                      getRenderDataSubState;
-                    },
-                    getRenderDataSubState,
-                  );
-             glslSenderRecord
-             |> HandleUniformShaderCachableFunctionService.unsafeGetUniformSendData(
-                  shaderIndex,
-                )
-             |> WonderCommonlib.ArrayService.reduceOneParam(
-                  (.
-                    getRenderDataSubState,
-                    {
-                      program,
-                      shaderCacheMap,
-                      locationMap,
-                      sendCachableFunctionDataFunc,
-                    }: GLSLSenderType.uniformShaderSendCachableFunctionData,
-                  ) => {
-                    sendCachableFunctionDataFunc(.
-                      gl,
-                      (program, shaderCacheMap, locationMap),
-                      sendRenderDataSubState,
-                    );
-                    getRenderDataSubState;
-                  },
-                  getRenderDataSubState,
-                )
-             |> ignore;
+                        );
 
-             renderState;
-           },
-           renderState,
-         );
+                        getRenderDataSubState;
+                      },
+                      CreateGetRenederDataSubStateRenderService.createState(
+                        renderState,
+                      ),
+                    );
+
+               renderState;
+             },
+           );
+
+      let renderState =
+        renderState
+        |> HandleUniformShaderCachableFunctionService.reduceiValidShaderSendCachableFunctionData(
+             renderState.glslSenderRecord,
+             (. renderState, dataArr, shaderIndex) => {
+               let renderState = _useProgram(gl, shaderIndex, renderState);
+
+               let sendRenderDataSubState =
+                 dataArr
+                 |> WonderCommonlib.ArrayService.reduceOneParam(
+                      (.
+                        sendRenderDataSubState,
+                        {
+                          program,
+                          shaderCacheMap,
+                          locationMap,
+                          sendCachableFunctionDataFunc,
+                        }: GLSLSenderType.uniformShaderSendCachableFunctionData,
+                      ) => {
+                        sendCachableFunctionDataFunc(.
+                          gl,
+                          (program, shaderCacheMap, locationMap),
+                          sendRenderDataSubState,
+                        );
+
+                        sendRenderDataSubState;
+                      },
+                      CreateSendRenederDataSubStateRenderService.createState(
+                        renderState,
+                      ),
+                    );
+
+               renderState;
+             },
+           );
+
+      renderState;
     };
