@@ -6,9 +6,10 @@ open RenderConfigType;
 
 let _getShaderLibItems = ({materialShaders}) => {
   let shaderName = "front_render_light";
-  JobConfigService.unsafeFindFirst(
+
+  ArrayService.unsafeFindFirst(
     materialShaders, shaderName, ({name}: material_shader) =>
-    JobConfigService.filterTargetName(name, shaderName)
+    name === shaderName
   ).
     shaderLibs;
 };
@@ -23,7 +24,7 @@ let initMaterial =
       dataTuple,
       (
         InitShaderInitLightMaterialService.initMaterialShader,
-        BuildShaderSourceInitMaterialService.buildGLSLSource,
+        BuildShaderSourceAllService.buildGLSLSource,
         ShaderIndicesService.setShaderIndex,
         _getShaderLibItems,
         GetShaderLibDataArrayInitLightMaterialService.getMaterialShaderLibDataArr,
@@ -38,7 +39,7 @@ let reInitMaterial =
       dataTuple,
       (
         InitShaderInitLightMaterialService.reInitMaterialShader,
-        BuildShaderSourceInitMaterialService.buildGLSLSource,
+        BuildShaderSourceAllService.buildGLSLSource,
         ShaderIndicesService.setShaderIndex,
         _getShaderLibItems,
         GetShaderLibDataArrayInitLightMaterialService.getMaterialShaderLibDataArr,

@@ -60,6 +60,30 @@ let unsafeGetFirst = arr => Array.unsafe_get(arr, 0);
 
 let getFirst = arr => unsafeGetFirst(arr) |> Obj.magic |> Js.toOption;
 
+let unsafeFindFirst = (arr: array('a), targetValue, func) =>
+  arr
+  |> unsafeFind(func)
+  |> WonderLog.Contract.ensureCheck(
+       first => {
+         open WonderLog;
+         open Contract;
+         open Operators;
+         let arrJson = WonderLog.Log.getJsonStr(arr);
+         test(
+           Log.buildAssertMessage(
+             ~expect={j|find $targetValue in $arrJson|j},
+             ~actual={j|not|j},
+           ),
+           () =>
+           first |> assertNullableExist
+         );
+       },
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     );
+
+let findFirst = (arr: array('a), targetValue, func) =>
+  arr |> Js.Array.find(func);
+
 let unsafeGetLast = arr => Array.unsafe_get(arr, Js.Array.length(arr) - 1);
 
 let getLast = arr => unsafeGetLast(arr) |> Obj.magic |> Js.toOption;

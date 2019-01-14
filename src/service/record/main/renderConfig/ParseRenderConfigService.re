@@ -74,22 +74,51 @@ let convertShadersToRecord = shaders => {
       |> field("material_shaders", json =>
            json
            |> array(json =>
-                {
-                  name: json |> field("name", string),
-                  shaderLibs:
-                    json
-                    |> field(
-                         "shader_libs",
-                         array(json =>
-                           (
-                             {
-                               type_: json |> optional(field("type", string)),
-                               name: json |> field("name", string),
-                             }: shaderLibItem
-                           )
+                (
+                  {
+                    name: json |> field("name", string),
+                    shaderLibs:
+                      json
+                      |> field(
+                           "shader_libs",
+                           array(json =>
+                             (
+                               {
+                                 type_:
+                                   json |> optional(field("type", string)),
+                                 name: json |> field("name", string),
+                               }: shaderLibItem
+                             )
+                           ),
                          ),
-                       ),
-                }
+                  }: material_shader
+                )
+              )
+         ),
+    noMaterialShaders:
+      json
+      |> field("no_material_shaders", json =>
+           json
+           |> array(json =>
+                (
+                  {
+                    name: json |> field("name", string),
+                    shaderLibs:
+                      json
+                      |> field(
+                           "shader_libs",
+                           array(json =>
+                             (
+                               {
+                                 type_:
+                                   json |> optional(field("type", string)),
+                                 name: json |> field("name", string),
+                               }: shaderLibItem
+                             )
+                           ),
+                         ),
+                  }: no_material_shader
+                )
               )
          ),
   };

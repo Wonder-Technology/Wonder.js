@@ -42,8 +42,8 @@ let _initNewShader =
       ),
     ) => {
   shaderRecord
-  /* |> ShaderIndexShaderService.useShaderIndex(shaderIndex) */
-  |> ShaderIndexShaderService.setShaderIndex(key, shaderIndex)
+  /* |> ShaderLibShaderIndexShaderService.useShaderIndex(shaderIndex) */
+  |> ShaderLibShaderIndexShaderService.setShaderIndex(key, shaderIndex)
   |> ignore;
 
   let (vsSource, fsSource) =
@@ -96,7 +96,7 @@ let _initShader =
     ) => {
   let key = _buildShaderIndexMapKey(shaderLibDataArr);
 
-  switch (ShaderIndexShaderService.getShaderIndex(key, shaderRecord)) {
+  switch (ShaderLibShaderIndexShaderService.getShaderIndex(key, shaderRecord)) {
   | None =>
     let shaderIndex =
       ShaderIndexShaderService.genereateShaderIndex(shaderRecord);

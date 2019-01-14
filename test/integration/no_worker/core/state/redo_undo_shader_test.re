@@ -14,10 +14,10 @@ let _ =
       let shaderIndex1 = 0;
       let shaderIndex2 = 1;
       record.index = 2;
-      record.shaderIndexMap
+      record.shaderLibShaderIndexMap
       |> WonderCommonlib.HashMapService.set("key1", shaderIndex1)
       |> ignore;
-      record.shaderIndexMap
+      record.shaderLibShaderIndexMap
       |> WonderCommonlib.HashMapService.set("key2", shaderIndex2)
       |> ignore;
       (state, shaderIndex1, shaderIndex2);
@@ -311,10 +311,10 @@ let _ =
             let shaderIndex1 = 0;
             let shaderIndex2 = 1;
             let shaderIndex3 = 2;
-            let {shaderIndexMap} as record =
+            let {shaderLibShaderIndexMap} as record =
               ShaderTool.getShaderRecord(state);
             record.index = 3;
-            shaderIndexMap
+            shaderLibShaderIndexMap
             |> WonderCommonlib.HashMapService.set("key1", shaderIndex1)
             |> WonderCommonlib.HashMapService.set("key2", shaderIndex2)
             |> WonderCommonlib.HashMapService.set("key3", shaderIndex3)
@@ -391,10 +391,10 @@ let _ =
             open GLSLSenderType;
             let shaderIndex1 = 3;
             let shaderIndex2 = 4;
-            let {shaderIndexMap} as record =
+            let {shaderLibShaderIndexMap} as record =
               ShaderTool.getShaderRecord(state);
             record.index = 2;
-            shaderIndexMap
+            shaderLibShaderIndexMap
             |> WonderCommonlib.HashMapService.set("key1", shaderIndex1)
             |> WonderCommonlib.HashMapService.set("key4", shaderIndex2)
             |> ignore;
@@ -517,7 +517,7 @@ let _ =
                           );
               })
             );
-            describe("test shaderIndexMap", () =>
+            describe("test shaderLibShaderIndexMap", () =>
               test("should be target state's one", () => {
                 open ShaderType;
                 let (
@@ -538,11 +538,12 @@ let _ =
                   ),
                 ) =
                   _prepare(state^);
-                let {shaderIndexMap} = newState |> ShaderTool.getShaderRecord;
-                shaderIndexMap
+                let {shaderLibShaderIndexMap} =
+                  newState |> ShaderTool.getShaderRecord;
+                shaderLibShaderIndexMap
                 |>
                 expect == ShaderTool.getShaderRecord(targetState).
-                            shaderIndexMap;
+                            shaderLibShaderIndexMap;
               })
             );
           });

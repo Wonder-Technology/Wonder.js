@@ -1,19 +1,16 @@
 open RenderConfigType;
 
-let findFirstShaderData = (shaderLibName: string, shaderLibs: shaderLibs) =>
-  JobConfigService.unsafeFindFirst(
-    shaderLibs, shaderLibName, (item: shaderLib) =>
-    JobConfigService.filterTargetName(item.name, shaderLibName)
+let _findFirstShaderData = (shaderLibName: string, shaderLibs: shaderLibs) =>
+  ArrayService.unsafeFindFirst(shaderLibs, shaderLibName, (item: shaderLib) =>
+    item.name === shaderLibName
   );
 
 let _getMaterialShaderLibDataArrByGroup =
     (groups: array(shaderMapData), name, shaderLibs, resultDataArr) =>
   Js.Array.concat(
-    JobConfigService.unsafeFindFirst(groups, name, item =>
-      JobConfigService.filterTargetName(item.name, name)
-    ).
+    ArrayService.unsafeFindFirst(groups, name, item => item.name === name).
       value
-    |> Js.Array.map((name: string) => findFirstShaderData(name, shaderLibs)),
+    |> Js.Array.map((name: string) => _findFirstShaderData(name, shaderLibs)),
     resultDataArr,
   );
 
@@ -45,7 +42,7 @@ let getMaterialShaderLibDataArrByStaticBranchInstance =
     ) =>
   resultDataArr
   |> ArrayService.push(
-       findFirstShaderData(
+       _findFirstShaderData(
          if (isSourceInstance) {
            if (isSupportInstance) {
              value[1];
@@ -79,7 +76,7 @@ let getMaterialShaderLibDataArrByDynamicBranch =
     resultDataArr :
     resultDataArr
     |> ArrayService.push(
-         findFirstShaderData(
+         _findFirstShaderData(
            dynamicBranchShaderLibNameOption
            |> OptionService.unsafeGetJsonSerializedValue,
            shaderLibs,
@@ -162,7 +159,7 @@ let getMaterialShaderLibDataArr =
        (. resultDataArr, {type_, name}: shaderLibItem) =>
          OptionService.isJsonSerializedValueNone(type_) ?
            resultDataArr
-           |> ArrayService.push(findFirstShaderData(name, shaderLibs)) :
+           |> ArrayService.push(_findFirstShaderData(name, shaderLibs)) :
            getMaterialShaderLibDataArrByType(
              (
                materialIndex,

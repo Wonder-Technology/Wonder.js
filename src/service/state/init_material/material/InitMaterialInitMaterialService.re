@@ -9,6 +9,7 @@ let _initMaterialShader =
         getShaderLibItemsFunc,
         getMaterialShaderLibDataArrFunc,
       ),
+      /* TODO refactor: only pass state */
       (shaderIndices, renderConfigRecord, state),
     ) => {
   let shaders = GetDataRenderConfigService.getShaders(renderConfigRecord);
@@ -44,11 +45,7 @@ let initMaterial = (gl, dataTuple, funcTuple, stateTuple) =>
 let reInitMaterial =
     (
       gl,
-      (
-        materialIndex: int,
-        isSourceInstance,
-        isSupportInstance,
-      ),
+      (materialIndex: int, isSourceInstance, isSupportInstance),
       (
         reInitMaterialShaderFunc,
         buildGLSLSourceFunc,

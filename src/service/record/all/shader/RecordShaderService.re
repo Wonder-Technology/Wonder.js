@@ -2,12 +2,17 @@ open ShaderType;
 
 let create = () => {
   index: 0,
-  shaderIndexMap: WonderCommonlib.HashMapService.createEmpty(),
+  shaderLibShaderIndexMap: WonderCommonlib.HashMapService.createEmpty(),
+  noMaterialShaderIndexMap: WonderCommonlib.HashMapService.createEmpty(),
   materialsMap: WonderCommonlib.SparseMapService.createEmpty(),
 };
 
-let deepCopyForRestore = ({index, materialsMap, shaderIndexMap}) => {
+let deepCopyForRestore =
+    (
+      {index, materialsMap, shaderLibShaderIndexMap, noMaterialShaderIndexMap},
+    ) => {
   index,
-  shaderIndexMap: shaderIndexMap |> HashMapService.copy,
+  shaderLibShaderIndexMap: shaderLibShaderIndexMap |> HashMapService.copy,
+  noMaterialShaderIndexMap: noMaterialShaderIndexMap |> HashMapService.copy,
   materialsMap: materialsMap |> CopyTypeArrayService.deepCopyArrayArray,
 };

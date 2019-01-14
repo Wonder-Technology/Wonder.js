@@ -19,7 +19,7 @@ type attributeSendData = {
       WonderWebgl.GlType.buffer,
       SubStateSendRenderDataType.sendRenderDataSubState
     ) =>
-    unit
+    unit,
 };
 
 type instanceAttributeSendData = {
@@ -97,6 +97,22 @@ type uniformInstanceSendNoCachableData = {
   sendDataFunc: (. webgl1Context, uniformLocation, Float32Array.t) => unit,
 };
 
+type uniformNoMaterialShaderSendCachableData = {
+  shaderCacheMap,
+  name: string,
+  pos: uniformLocation,
+  getDataFunc:
+    (. SubStateGetRenderDataType.getRenderDataSubState) => array(float),
+  sendDataFunc:
+    (
+      . webgl1Context,
+      shaderCacheMap,
+      (string, uniformLocation),
+      array(float)
+    ) =>
+    unit,
+};
+
 type glslSenderRecord = {
   attributeSendDataMap:
     WonderCommonlib.SparseMapService.t(array(attributeSendData)),
@@ -124,6 +140,10 @@ type glslSenderRecord = {
   uniformInstanceSendNoCachableDataMap:
     WonderCommonlib.SparseMapService.t(
       array(uniformInstanceSendNoCachableData),
+    ),
+  uniformNoMaterialShaderSendCachableDataMap:
+    WonderCommonlib.SparseMapService.t(
+      array(uniformNoMaterialShaderSendCachableData),
     ),
   /* drawPointsFuncMap: WonderCommonlib.SparseMapService.t((webgl1Context => unit)), */
   mutable vertexAttribHistoryArray,

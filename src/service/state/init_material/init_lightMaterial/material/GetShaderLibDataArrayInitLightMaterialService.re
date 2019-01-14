@@ -12,8 +12,8 @@ let _getMaterialShaderLibDataArrByStaticBranch =
     | "modelMatrix_instance"
     | "normalMatrix_instance" =>
       let {value}: shaderMapData =
-        JobConfigService.unsafeFindFirst(staticBranchs, name, item =>
-          JobConfigService.filterTargetName(item.name, name)
+        ArrayService.unsafeFindFirst(staticBranchs, name, item =>
+          item.name === name
         );
       GetShaderLibDataArrayInitMaterialService.getMaterialShaderLibDataArrByStaticBranchInstance(
         (isSourceInstance, isSupportInstance),

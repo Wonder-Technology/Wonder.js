@@ -126,6 +126,14 @@ let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
 
 let isSupportRenderWorkerAndSharedArrayBuffer = WorkerDetectAPI.isSupportRenderWorkerAndSharedArrayBuffer;
 
+let setStencilOp = DeviceManagerAPI.setStencilOp;
+
+let setStencilFunc = DeviceManagerAPI.setStencilFunc;
+
+let setStencilMask = DeviceManagerAPI.setStencilMask;
+
+let setStencilTest = DeviceManagerAPI.setStencilTest;
+
 let setSide = DeviceManagerAPI.setSide;
 
 let setScissorTest = DeviceManagerAPI.setScissorTest;
@@ -809,6 +817,14 @@ let setAPIJsObj = RecordAPIRenderWorkerService.setAPIJsObj;
 let getAPIJsObj = RecordAPIRenderWorkerService.getAPIJsObj;
 
 let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
+
+let setStencilOp = DeviceManagerAPI.setStencilOp;
+
+let setStencilFunc = DeviceManagerAPI.setStencilFunc;
+
+let setStencilMask = DeviceManagerAPI.setStencilMask;
+
+let setStencilTest = DeviceManagerAPI.setStencilTest;
 
 let setSide = DeviceManagerAPI.setSide;
 

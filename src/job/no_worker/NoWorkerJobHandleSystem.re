@@ -13,6 +13,7 @@ let _getInitJobHandles = () => [
   ("init_imgui", InitIMGUIJob.execJob),
   ("init_texture", InitTextureJob.execJob),
   ("init_state", InitStateJob.execJob),
+  ("init_no_material_shader", InitNoMaterialShaderJob.execJob),
   ("init_basic_material", InitBasicMaterialJob.execJob),
   ("init_light_material", InitLightMaterialJob.execJob),
 ];

@@ -4,8 +4,6 @@ open WonderWebgl.Gl;
 
 open RenderConfigType;
 
-open StateRenderType;
-
 let _readAttributes =
   (. (gl, program, attributeLocationMap), sendDataArrTuple, attributes) =>
     attributes |> OptionService.isJsonSerializedValueNone ?

@@ -16,12 +16,15 @@ let create = () => {
     WonderCommonlib.SparseMapService.createEmpty(),
   uniformInstanceSendNoCachableDataMap:
     WonderCommonlib.SparseMapService.createEmpty(),
+  uniformNoMaterialShaderSendCachableDataMap:
+    WonderCommonlib.SparseMapService.createEmpty(),
   /* drawPointsFuncMap: WonderCommonlib.SparseMapService.createEmpty(), */
   vertexAttribHistoryArray: WonderCommonlib.ArrayService.createEmpty(),
   lastSendMaterialData: None,
   /* lastSendGeometryData: None */
 };
 
+/* TODO fix: copy all map! */
 let deepCopyForRestore =
     (
       {

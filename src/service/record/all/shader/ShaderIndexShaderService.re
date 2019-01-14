@@ -1,11 +1,5 @@
 open ShaderType;
 
-let getShaderIndex = (key: string, {shaderIndexMap}) =>
-  shaderIndexMap |> WonderCommonlib.HashMapService.get(key);
-
-let setShaderIndex = (key: string, shaderIndex: int, {shaderIndexMap}) =>
-  shaderIndexMap |> WonderCommonlib.HashMapService.set(key, shaderIndex);
-
 let genereateShaderIndex = ({index} as record) => {
   record.index = succ(index);
   index
@@ -27,10 +21,4 @@ let genereateShaderIndex = ({index} as record) => {
        },
        IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
-};
-
-let clearShaderIndexMap = shaderRecord => {
-  shaderRecord.shaderIndexMap = WonderCommonlib.HashMapService.createEmpty();
-
-  shaderRecord;
 };

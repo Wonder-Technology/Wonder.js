@@ -154,5 +154,29 @@
         }
       ]
     }
+  ],
+  "no_material_shaders": [
+    {
+      "name": "outline_draw_expand_gameObjects",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "normal"
+        },
+        {
+          "name": "modelMatrix_noInstance"
+        },
+        {
+          "name": "outline_expand"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
+    }
   ]
 }

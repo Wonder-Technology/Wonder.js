@@ -6,35 +6,31 @@ open RenderConfigType;
 
 let _getShaderLibItems = ({materialShaders}) => {
   let shaderName = "render_basic";
-  JobConfigService.unsafeFindFirst(
-    materialShaders,
-    shaderName,
-    ({name}: material_shader) => JobConfigService.filterTargetName(name, shaderName)
+
+  ArrayService.unsafeFindFirst(
+    materialShaders, shaderName, ({name}: material_shader) =>
+    name === shaderName
   ).
-    shaderLibs
+    shaderLibs;
 };
 
 let isNeedInitMaterial = (materialIndex, shaderIndices) =>
   ! ShaderIndicesService.hasShaderIndex(materialIndex, shaderIndices);
 
 let initMaterial =
-  [@bs]
-  (
-    (gl, dataTuple, {materialRecord, renderConfigRecord} as state) =>
-      InitMaterialInitMaterialService.initMaterial(
-        gl,
-        dataTuple,
-        (
-          InitShaderInitBasicMaterialService.initMaterialShader,
-          BuildShaderSourceInitMaterialService.buildGLSLSource,
-          ShaderIndicesService.setShaderIndex,
-          _getShaderLibItems,
-          GetShaderLibDataArrayInitBasicMaterialService.getMaterialShaderLibDataArr
-        ),
-        (materialRecord.shaderIndices, renderConfigRecord, state)
-      )
-  );
-
+  (. gl, dataTuple, {materialRecord, renderConfigRecord} as state) =>
+    InitMaterialInitMaterialService.initMaterial(
+      gl,
+      dataTuple,
+      (
+        InitShaderInitBasicMaterialService.initMaterialShader,
+        BuildShaderSourceAllService.buildGLSLSource,
+        ShaderIndicesService.setShaderIndex,
+        _getShaderLibItems,
+        GetShaderLibDataArrayInitBasicMaterialService.getMaterialShaderLibDataArr,
+      ),
+      (materialRecord.shaderIndices, renderConfigRecord, state),
+    );
 
 let reInitMaterial =
   (. gl, dataTuple, {materialRecord, renderConfigRecord} as state) =>
@@ -43,7 +39,7 @@ let reInitMaterial =
       dataTuple,
       (
         InitShaderInitBasicMaterialService.reInitMaterialShader,
-        BuildShaderSourceInitMaterialService.buildGLSLSource,
+        BuildShaderSourceAllService.buildGLSLSource,
         ShaderIndicesService.setShaderIndex,
         _getShaderLibItems,
         GetShaderLibDataArrayInitBasicMaterialService.getMaterialShaderLibDataArr,
@@ -51,14 +47,12 @@ let reInitMaterial =
       (materialRecord.shaderIndices, renderConfigRecord, state),
     );
 
-
-
 let init = (gl, instanceTuple, {materialRecord} as state) => {
   let {index, disposedIndexArray} = materialRecord;
   InitMaterialInitMaterialService.init(
     gl,
     instanceTuple,
     initMaterial,
-    (index, disposedIndexArray, state)
-  )
+    (index, disposedIndexArray, state),
+  );
 };

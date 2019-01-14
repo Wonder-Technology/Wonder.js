@@ -56,7 +56,7 @@ let addElementBufferSendData =
        pos: 0,
        size: 0,
        buffer,
-       sendFunc: DrawGLSLInitMaterialService.bindElementArrayBuffer,
+       sendFunc: DrawGLSLAllService.bindElementArrayBuffer,
      }),
   instanceSendNoCachableDataArr,
 );
@@ -74,7 +74,8 @@ let readAttributeSendData =
          variables |> OptionService.isJsonSerializedValueNone ?
            sendDataArrTuple :
            {
-             let {attributes} = variables |> OptionService.unsafeGetJsonSerializedValue;
+             let {attributes} =
+               variables |> OptionService.unsafeGetJsonSerializedValue;
 
              readAttributesFunc(.
                (gl, program, attributeLocationMap),
@@ -113,25 +114,25 @@ let addAttributeSendData =
       (glslSenderRecord, glslLocationRecord),
     ) => {
   /* WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|not be added before|j},
-                ~actual={j|be|j},
-              ),
-              () =>
-              glslSenderRecord.attributeSendDataMap
-              |> WonderCommonlib.SparseMapService.get(shaderIndex)
-              |> assertNotExist
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  ); */
+       () =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(
+                   ~expect={j|not be added before|j},
+                   ~actual={j|be|j},
+                 ),
+                 () =>
+                 glslSenderRecord.attributeSendDataMap
+                 |> WonderCommonlib.SparseMapService.get(shaderIndex)
+                 |> assertNotExist
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     ); */
   let attributeLocationMap =
     HandleShaderConfigDataMapService.getOrCreateHashMap(
       glslLocationRecord

@@ -518,6 +518,29 @@
     ]
   },
   {
+    "name": "outline_expand",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_outline_expand_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_outline_expand_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_outlineColor",
+          "from": "no_material_shader",
+          "field": "outlineExpand",
+          "type": "float"
+        }
+      ]
+    }
+  },
+  {
     "name": "end",
     "variables": {
       "attributes": [
