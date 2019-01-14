@@ -17,6 +17,6 @@ let bindElementArrayBuffer =
        | _ =>
          record.lastSendElementArrayBuffer = Some(buffer); */
     bindBuffer(getElementArrayBuffer(gl), buffer, gl);
-    state;
+    ();
     /* } */
   };

@@ -57,40 +57,32 @@ let render =
   let getRenderDataSubState =
     CreateGetRenederDataSubStateRenderService.createState(state);
 
-  let getRenderDataSubState =
-    ObjectInstanceCollectionService.reduceObjectInstanceTransformCollection(
-      objectInstanceTransformDataTuple,
-      getRenderDataSubState,
-      (. getRenderDataSubState, objectInstanceTransform) => {
-        let getRenderDataSubState =
-          uniformRenderObjectSendModelData
-          |> WonderCommonlib.ArrayService.reduceOneParam(
-               (.
-                 getRenderDataSubState,
-                 {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData,
-               ) => {
-                 GLSLLocationService.isUniformLocationExist(pos) ?
-                   sendDataFunc(.
-                     gl,
-                     pos,
-                     getDataFunc(.
-                       objectInstanceTransform,
-                       getRenderDataSubState,
-                     ),
-                   ) :
-                   ();
-                 getRenderDataSubState;
-               },
-               getRenderDataSubState,
-             );
-        DrawGLSLService.drawElement(
-          (drawMode, indexType, indexTypeSize, indicesCount),
-          gl,
-        )
-        |> ignore;
-        getRenderDataSubState;
-      },
-    );
+  ObjectInstanceCollectionService.forEachObjectInstanceTransformCollection(
+    objectInstanceTransformDataTuple,
+    (. objectInstanceTransform) => {
+      uniformRenderObjectSendModelData
+      |> WonderCommonlib.ArrayService.forEach(
+           (.
+             {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData,
+           ) =>
+           GLSLLocationService.isUniformLocationExist(pos) ?
+             sendDataFunc(.
+               gl,
+               pos,
+               getDataFunc(. objectInstanceTransform, getRenderDataSubState),
+             ) :
+             ()
+         );
+
+      DrawGLSLService.drawElement(
+        (drawMode, indexType, indexTypeSize, indicesCount),
+        gl,
+      )
+      |> ignore;
+
+      ();
+    },
+  );
 
   state;
 };

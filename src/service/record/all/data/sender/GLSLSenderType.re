@@ -19,7 +19,7 @@ type attributeSendData = {
       WonderWebgl.GlType.buffer,
       SubStateSendRenderDataType.sendRenderDataSubState
     ) =>
-    SubStateSendRenderDataType.sendRenderDataSubState,
+    unit
 };
 
 type instanceAttributeSendData = {

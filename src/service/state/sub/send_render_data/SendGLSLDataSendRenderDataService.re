@@ -10,7 +10,7 @@ let sendBuffer =
     (size: int, pos: attributeLocation),
     buffer: buffer,
     {vertexAttribHistoryArray} as state,
-  ) => {
+  ) =>
     GLSLLocationService.isAttributeLocationExist(pos) ?
       {
         bindBuffer(getArrayBuffer(gl), buffer, gl);
@@ -20,8 +20,7 @@ let sendBuffer =
           pos,
           vertexAttribHistoryArray,
         );
+
+        ();
       } :
       ();
-
-    state;
-  };

@@ -13,20 +13,23 @@ let _fillObjectInstanceData =
       objectInstanceTransformDataTuple,
       matricesArrayForInstance,
       fillMatrixTypeArrFunc,
-      stateOffsetTuple,
+      getRenderDataSubState: SubStateGetRenderDataType.getRenderDataSubState,
+      offset: int,
     ) => {
-  let (getRenderDataSubState, offset) =
+  let _ =
     ObjectInstanceCollectionService.reduceObjectInstanceTransformCollection(
       objectInstanceTransformDataTuple,
-      stateOffsetTuple,
-      (. stateOffsetTuple, objectInstanceTransform) =>
+      offset,
+      (. offset, objectInstanceTransform) =>
       fillMatrixTypeArrFunc(.
         objectInstanceTransform,
         matricesArrayForInstance,
-        stateOffsetTuple,
+        getRenderDataSubState,
+        offset,
       )
     );
-  getRenderDataSubState;
+
+  ();
 };
 
 let _sendTransformMatrixDataBuffer =
@@ -58,38 +61,39 @@ let _sendTransformMatrixDataBufferData =
       glDataTuple,
       shaderIndex,
       stride,
-      {glslSenderRecord},
       sendRenderDataSubState,
-    ) =>
+      {glslSenderRecord} as state,
+    ) => {
   glslSenderRecord
   |> HandleAttributeConfigDataService.unsafeGetInstanceAttributeSendData(
        shaderIndex,
      )
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. sendRenderDataSubState, sendData, index) =>
-         sendRenderDataSubState
-         |> _sendTransformMatrixDataBuffer(
-              glDataTuple,
-              (sendData, stride, index),
-            ),
-       sendRenderDataSubState,
+  |> WonderCommonlib.ArrayService.forEachi((. sendData, index) =>
+       sendRenderDataSubState
+       |> _sendTransformMatrixDataBuffer(
+            glDataTuple,
+            (sendData, stride, index),
+          )
      );
+
+  state;
+};
 
 let _updateAndSendTransformMatrixDataBufferData =
     (
       (gl, extension) as glDataTuple,
       shaderIndex,
       (stride, matricesArrayForInstance, matrixInstanceBuffer),
-      state,
       sendRenderDataSubState,
+      state,
     ) => {
   updateData(gl, matricesArrayForInstance, matrixInstanceBuffer) |> ignore;
   _sendTransformMatrixDataBufferData(
     glDataTuple,
     shaderIndex,
     stride,
-    state,
     sendRenderDataSubState,
+    state,
   );
 };
 
@@ -145,27 +149,28 @@ let _sendTransformMatrixData =
     );
 
   let getRenderDataSubState =
+    CreateGetRenederDataSubStateRenderService.createState(state);
+  let _ =
     fillMatrixTypeArrFunc(.
       transformIndex,
       matricesArrayForInstance,
-      (CreateGetRenederDataSubStateRenderService.createState(state), 0),
+      getRenderDataSubState,
+      0,
     )
     |> _fillObjectInstanceData(
          objectInstanceTransformDataTuple,
          matricesArrayForInstance,
          fillMatrixTypeArrFunc,
+         getRenderDataSubState,
        );
 
-  let sendRenderDataSubState =
-    CreateSendRenederDataSubStateRenderService.createState(state)
-    |> _updateAndSendTransformMatrixDataBufferData(
-         (gl, extension),
-         shaderIndex,
-         (strideForSend, matricesArrayForInstance, matrixInstanceBuffer),
-         state,
-       );
-
-  state;
+  state
+  |> _updateAndSendTransformMatrixDataBufferData(
+       (gl, extension),
+       shaderIndex,
+       (strideForSend, matricesArrayForInstance, matrixInstanceBuffer),
+       CreateSendRenederDataSubStateRenderService.createState(state),
+     );
 };
 
 let _sendStaticTransformMatrixData =
@@ -207,16 +212,13 @@ let _sendStaticTransformMatrixData =
       let sendRenderDataSubState =
         CreateSendRenederDataSubStateRenderService.createState(state);
 
-      let sendRenderDataSubState =
-        _sendTransformMatrixDataBufferData(
-          (gl, extension),
-          shaderIndex,
-          strideForSend,
-          state,
-          sendRenderDataSubState,
-        );
-
-      state;
+      _sendTransformMatrixDataBufferData(
+        (gl, extension),
+        shaderIndex,
+        strideForSend,
+        sendRenderDataSubState,
+        state,
+      );
     } :
     {
       let state =
@@ -391,7 +393,7 @@ let render =
 };
 
 let fillMatrixTypeArr =
-    (transformIndex, matricesArrayForInstance, (state, offset)) =>
+    (transformIndex, matricesArrayForInstance, state, offset) =>
   TypeArrayService.fillFloat32ArrayWithFloat32Array(
     (matricesArrayForInstance, offset),
     (
