@@ -99,7 +99,7 @@ let reInitComponents =
              );
 
            let _ =
-             ShaderAllService.removeShaderIndexFromMaterial(
+             ShaderIndexShaderService.removeShaderIndexFromMaterial(
                currentShaderIndex,
                materialIndex,
                shaderRecord,
