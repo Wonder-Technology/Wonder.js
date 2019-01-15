@@ -3,27 +3,35 @@ open GLSLSenderType;
 let _addUniformSendDataByType =
     (
       (shaderCacheMap, name, pos, type_),
-      /* (
-           renderObjectSendModelDataArr,
-           renderObjectSendMaterialDataArr,
-           shaderSendNoCachableDataArr,
-           shaderSendCachableDataArr,
-           shaderSendCachableFunctionDataArr,
-           instanceSendNoCachableDataArr,
-         ), */
-      noMaterialShaderSendCachableDataArr,
+      {
+        renderObjectSendModelDataArr,
+        renderObjectSendMaterialDataArr,
+        shaderSendNoCachableDataArr,
+        shaderSendCachableDataArr,
+        shaderSendCachableFunctionDataArr,
+        instanceSendNoCachableDataArr,
+        noMaterialShaderSendCachableDataArr,
+      },
       getDataFunc,
-    ) =>
-  noMaterialShaderSendCachableDataArr
-  |> ArrayService.push(
-       {
-         shaderCacheMap,
-         name,
-         pos,
-         sendDataFunc: SendUniformService.getSendCachableDataByType(type_),
-         getDataFunc: getDataFunc |> Obj.magic,
-       }: uniformNoMaterialShaderSendCachableData,
-     );
+    ) => {
+  renderObjectSendModelDataArr,
+  renderObjectSendMaterialDataArr,
+  shaderSendNoCachableDataArr,
+  shaderSendCachableDataArr,
+  shaderSendCachableFunctionDataArr,
+  instanceSendNoCachableDataArr,
+  noMaterialShaderSendCachableDataArr:
+    noMaterialShaderSendCachableDataArr
+    |> ArrayService.push(
+         {
+           shaderCacheMap,
+           name,
+           pos,
+           sendDataFunc: SendUniformService.getSendCachableDataByType(type_),
+           getDataFunc: getDataFunc |> Obj.magic,
+         }: uniformNoMaterialShaderSendCachableData,
+       ),
+};
 
 let addSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr) =>
   switch (field) {

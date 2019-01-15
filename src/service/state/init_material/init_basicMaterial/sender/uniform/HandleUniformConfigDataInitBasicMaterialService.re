@@ -79,7 +79,7 @@ let _readUniforms =
 
 let _readUniformSendData =
   (. shaderLibDataArr, gl, program, (uniformLocationMap, uniformCacheMap)) =>
-    HandleUniformConfigDataInitMaterialService.readUniformSendData(
+    HandleUniformConfigDataAllService.readUniformSendData(
       shaderLibDataArr,
       (gl, program),
       _readUniforms,
@@ -92,7 +92,7 @@ let addUniformSendData =
     (program: program, shaderIndex: int, shaderLibDataArr: shaderLibs),
     recordTuple,
   ) =>
-    HandleUniformConfigDataInitMaterialService.addUniformSendData(
+    HandleUniformConfigDataAllService.addUniformSendData(
       gl,
       (program: program, shaderIndex: int, shaderLibDataArr: shaderLibs),
       _readUniformSendData,

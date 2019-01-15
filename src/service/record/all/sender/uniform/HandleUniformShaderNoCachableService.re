@@ -7,30 +7,34 @@ open GLSLSenderType;
 let addUniformSendDataByType =
     (
       (type_, pos),
-      (
+      {
         renderObjectSendModelDataArr,
         renderObjectSendMaterialDataArr,
         shaderSendNoCachableDataArr,
         shaderSendCachableDataArr,
         shaderSendCachableFunctionDataArr,
         instanceSendNoCachableDataArr,
-      ),
+        noMaterialShaderSendCachableDataArr,
+      },
       getDataFunc,
-    ) => (
+    ) => {
   renderObjectSendModelDataArr,
   renderObjectSendMaterialDataArr,
-  shaderSendNoCachableDataArr
-  |> ArrayService.push(
-       {
-         pos,
-         sendDataFunc: SendUniformService.getSendNoCachableDataByType(type_),
-         getDataFunc: getDataFunc |> Obj.magic,
-       }: uniformShaderSendNoCachableData,
-     ),
+  shaderSendNoCachableDataArr:
+    shaderSendNoCachableDataArr
+    |> ArrayService.push(
+         {
+           pos,
+           sendDataFunc:
+             SendUniformService.getSendNoCachableDataByType(type_),
+           getDataFunc: getDataFunc |> Obj.magic,
+         }: uniformShaderSendNoCachableData,
+       ),
   shaderSendCachableDataArr,
   shaderSendCachableFunctionDataArr,
   instanceSendNoCachableDataArr,
-);
+  noMaterialShaderSendCachableDataArr,
+};
 
 let setToUniformSendMap =
     (

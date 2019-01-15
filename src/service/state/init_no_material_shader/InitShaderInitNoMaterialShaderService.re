@@ -58,7 +58,7 @@ let init =
       shaderLibDataArr,
       (glslSenderRecord, glslLocationRecord),
     );
-  HandleUniformConfigDataInitNoMaterialShaderService.addUniformSendData(
+  HandleUniformConfigDataInitNoMaterialShaderService.addUniformSendData(.
     gl,
     (program, shaderIndex, shaderLibDataArr),
     recordTuple,

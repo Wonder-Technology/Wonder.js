@@ -14,15 +14,17 @@ let _setToUniformSendMap =
         uniformShaderSendCachableDataMap,
         uniformShaderSendCachableFunctionDataMap,
         uniformInstanceSendNoCachableDataMap,
+        uniformNoMaterialShaderSendCachableDataMap,
       },
-      (
+      {
         renderObjectSendModelDataArr,
         renderObjectSendMaterialDataArr,
         shaderSendNoCachableDataArr,
         shaderSendCachableDataArr,
         shaderSendCachableFunctionDataArr,
         instanceSendNoCachableDataArr,
-      ),
+        noMaterialShaderSendCachableDataArr,
+      },
     ) => {
   HandleUniformRenderObjectModelService.setToUniformSendMap(
     shaderIndex,
@@ -60,6 +62,14 @@ let _setToUniformSendMap =
     instanceSendNoCachableDataArr,
   )
   |> ignore;
+
+  HandleUniformInstanceNoCachableService.setToUniformSendMap(
+    shaderIndex,
+    uniformInstanceSendNoCachableDataMap,
+    instanceSendNoCachableDataArr,
+  )
+  |> ignore;
+  uniformNoMaterialShaderSendCachableDataMap;
 };
 
 let readUniformSendData =
@@ -84,7 +94,15 @@ let readUniformSendData =
                uniforms,
              );
            },
-       ([||], [||], [||], [||], [||], [||]),
+       {
+         renderObjectSendModelDataArr: [||],
+         renderObjectSendMaterialDataArr: [||],
+         shaderSendNoCachableDataArr: [||],
+         shaderSendCachableDataArr: [||],
+         shaderSendCachableFunctionDataArr: [||],
+         instanceSendNoCachableDataArr: [||],
+         noMaterialShaderSendCachableDataArr: [||],
+       },
      );
 
 let _checkShouldNotAddBefore = (shaderIndex, glslSenderRecord) =>

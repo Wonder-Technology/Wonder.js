@@ -163,6 +163,30 @@ let buildRenderConfig =
         }
       ]
     }
+  ],
+  "no_material_shaders": [
+    {
+      "name": "outline_draw_expand_gameObjects",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "normal"
+        },
+        {
+          "name": "modelMatrix_noInstance"
+        },
+        {
+          "name": "outline_expand"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
+    }
   ]
 }
         |},
@@ -685,6 +709,29 @@ let buildRenderConfig =
         "name": "webgl1_frontLight_end_fragment"
       }
     ]
+  },
+  {
+    "name": "outline_expand",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_outline_expand_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_outline_expand_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_outlineColor",
+          "from": "no_material_shader",
+          "field": "outlineExpand",
+          "type": "float"
+        }
+      ]
+    }
   },
   {
     "name": "end",

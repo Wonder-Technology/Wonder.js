@@ -31,7 +31,7 @@ let _readUniforms =
                  ),
                  sendDataArrTuple,
                )
-             | "basicMaterial" =>
+             /* | "basicMaterial" =>
                HandleMaterialUniformConfigDataService.addBasicMaterialSendData(
                  (
                    field,
@@ -46,7 +46,7 @@ let _readUniforms =
                    uniformCacheMap,
                  ),
                  sendDataArrTuple,
-               )
+               ) */
              | "lightMaterial" =>
                HandleMaterialUniformConfigDataService.addLightMaterialSendData(
                  (
@@ -110,7 +110,7 @@ let _readUniforms =
 
 let _readUniformSendData =
   (. shaderLibDataArr, gl, program, (uniformLocationMap, uniformCacheMap)) =>
-    HandleUniformConfigDataInitMaterialService.readUniformSendData(
+    HandleUniformConfigDataAllService.readUniformSendData(
       shaderLibDataArr,
       (gl, program),
       _readUniforms,
@@ -123,7 +123,7 @@ let addUniformSendData =
     (program: program, shaderIndex: int, shaderLibDataArr: shaderLibs),
     recordTuple,
   ) =>
-    HandleUniformConfigDataInitMaterialService.addUniformSendData(
+    HandleUniformConfigDataAllService.addUniformSendData(
       gl,
       (program: program, shaderIndex: int, shaderLibDataArr: shaderLibs),
       _readUniformSendData,

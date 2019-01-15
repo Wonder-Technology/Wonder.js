@@ -113,6 +113,18 @@ type uniformNoMaterialShaderSendCachableData = {
     unit,
 };
 
+type allSendUniformData = {
+  renderObjectSendModelDataArr: array(uniformRenderObjectSendModelData),
+  renderObjectSendMaterialDataArr: array(uniformRenderObjectSendMaterialData),
+  shaderSendNoCachableDataArr: array(uniformShaderSendNoCachableData),
+  shaderSendCachableDataArr: array(uniformShaderSendCachableData),
+  shaderSendCachableFunctionDataArr:
+    array(uniformShaderSendCachableFunctionData),
+  instanceSendNoCachableDataArr: array(uniformInstanceSendNoCachableData),
+  noMaterialShaderSendCachableDataArr:
+    array(uniformNoMaterialShaderSendCachableData),
+};
+
 type glslSenderRecord = {
   attributeSendDataMap:
     WonderCommonlib.SparseMapService.t(array(attributeSendData)),

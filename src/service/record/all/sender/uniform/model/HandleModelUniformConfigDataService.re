@@ -1,19 +1,3 @@
-/* let _getModelMatrixNoCachableData =
-     [@bs]
-     (
-       (transform, getLocalToWorldMatrixTypeArrayFunc, state) =>
-         /* UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(transform, globalTempRecord, transformRecord) */
-         getLocalToWorldMatrixTypeArrayFunc(transform, state)
-     );
-
-   let _getNormalMatrixNoCachableData =
-     [@bs]
-     (
-       (transform, getNormalMatrixTypeArrayFunc, state) => {
-         let (normalMatrix, _) = getNormalMatrixTypeArrayFunc(transform, state);
-         normalMatrix
-       }
-     ); */
 let addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
   switch field {
   | "mMatrix" =>
