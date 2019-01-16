@@ -45,4 +45,5 @@ let createState = () => {
   eventRecord: RecordEventMainService.create(),
   imguiRecord: RecordIMGUIMainService.create(),
   apiRecord: RecordAPIMainService.create(),
+  jobDataRecord: RecordJobDataService.create(),
 };

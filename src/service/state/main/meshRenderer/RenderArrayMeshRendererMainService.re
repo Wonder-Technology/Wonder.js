@@ -1,13 +1,11 @@
 open StateDataMainType;
 
-open GameObjectType;
-
 open MeshRendererType;
 
 let _setRenderGameObject =
     (
       meshRenderer: meshRenderer,
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       renderGameObjectMap: renderGameObjectMap,
     ) =>
   renderGameObjectMap

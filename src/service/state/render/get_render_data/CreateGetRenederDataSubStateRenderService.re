@@ -9,6 +9,7 @@ let createState =
         directionLightRecord,
         pointLightRecord,
         transformRecord,
+        jobDataRecord,
       } as state: StateRenderType.renderState,
     ) => {
   cameraRecord,
@@ -17,4 +18,10 @@ let createState =
   directionLightRecord,
   pointLightRecord,
   transformRecord,
+  jobDataRecord: {
+    outlineData: {
+      outlineColor:
+        OperateRenderJobDataService.getOutlineColor(jobDataRecord),
+    },
+  },
 };

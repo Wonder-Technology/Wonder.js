@@ -90,6 +90,8 @@ open ViewType;
 
 open EventType;
 
+open JobDataType;
+
 type stateData = {
   mutable state: option(state),
   mutable isDebug: bool,
@@ -224,19 +226,27 @@ and apiRecord = {
       (state, bool, float),
     "beginGroup": (. WonderImgui.StructureType.position, state) => state,
     "endGroup": (. state) => state,
-    "unsafeGetGameObjectTransformComponent": (gameObject, state) => int,
-    "unsafeGetGameObjectLightMaterialComponent": (gameObject, state) => int,
+    "unsafeGetGameObjectTransformComponent":
+      (GameObjectPrimitiveType.gameObject, state) => int,
+    "unsafeGetGameObjectLightMaterialComponent":
+      (GameObjectPrimitiveType.gameObject, state) => int,
     "unsafeGetGameObjectPerspectiveCameraProjectionComponent":
-      (gameObject, state) => int,
-    "unsafeGetGameObjectBasicCameraViewComponent": (gameObject, state) => int,
-    "hasGameObjectDirectionLightComponent": (gameObject, state) => bool,
-    "hasGameObjectPointLightComponent": (gameObject, state) => bool,
-    "hasGameObjectBasicCameraViewComponent": (gameObject, state) => bool,
-    "getAllGameObjects": (gameObject, state) => array(gameObject),
+      (GameObjectPrimitiveType.gameObject, state) => int,
+    "unsafeGetGameObjectBasicCameraViewComponent":
+      (GameObjectPrimitiveType.gameObject, state) => int,
+    "hasGameObjectDirectionLightComponent":
+      (GameObjectPrimitiveType.gameObject, state) => bool,
+    "hasGameObjectPointLightComponent":
+      (GameObjectPrimitiveType.gameObject, state) => bool,
+    "hasGameObjectBasicCameraViewComponent":
+      (GameObjectPrimitiveType.gameObject, state) => bool,
+    "getAllGameObjects":
+      (GameObjectPrimitiveType.gameObject, state) =>
+      array(GameObjectPrimitiveType.gameObject),
     "getAllDirectionLightComponentsOfGameObject":
-      (gameObject, state) => array(component),
+      (GameObjectPrimitiveType.gameObject, state) => array(component),
     "getAllPointLightComponentsOfGameObject":
-      (gameObject, state) => array(component),
+      (GameObjectPrimitiveType.gameObject, state) => array(component),
     "getAllBasicCameraViewComponents": state => array(component),
     "getAllPerspectiveCameraProjectionComponents": state => array(component),
     "getAllBasicMaterialComponents": state => array(component),
@@ -278,10 +288,14 @@ and apiRecord = {
         Js.Typed_array.Float32Array.elt,
       ),
     "unsafeGetTransformChildren": (transform, state) => array(transform),
-    "unsafeGetTransformGameObject": (transform, state) => gameObject,
-    "unsafeGetDirectionLightGameObject": (component, state) => gameObject,
-    "unsafeGetPointLightGameObject": (component, state) => gameObject,
-    "unsafeGetBasicCameraViewGameObject": (component, state) => gameObject,
+    "unsafeGetTransformGameObject":
+      (transform, state) => GameObjectPrimitiveType.gameObject,
+    "unsafeGetDirectionLightGameObject":
+      (component, state) => GameObjectPrimitiveType.gameObject,
+    "unsafeGetPointLightGameObject":
+      (component, state) => GameObjectPrimitiveType.gameObject,
+    "unsafeGetBasicCameraViewGameObject":
+      (component, state) => GameObjectPrimitiveType.gameObject,
     "convertWorldToScreen":
       (int, int, (float, float, float, float, float), state) =>
       (float, float),
@@ -334,6 +348,7 @@ and state = {
   eventRecord,
   imguiRecord,
   apiRecord,
+  jobDataRecord,
 };
 
 type sharedDataForRestoreState = {

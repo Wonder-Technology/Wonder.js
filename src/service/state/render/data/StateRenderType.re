@@ -1,5 +1,7 @@
 open GLSLSenderType;
 
+open ShaderType;
+
 open GeometryType;
 
 open ProgramType;
@@ -42,6 +44,8 @@ open RenderSettingType;
 
 open BrowserDetectType;
 
+open JobDataType;
+
 type renderState = {
   sceneRecord,
   vboBufferRecord,
@@ -65,4 +69,6 @@ type renderState = {
   settingRecord,
   workerDetectRecord,
   browserDetectRecord,
+  jobDataRecord,
+  shaderRecord,
 };

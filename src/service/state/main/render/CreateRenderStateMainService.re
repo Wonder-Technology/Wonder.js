@@ -35,6 +35,7 @@ let createRenderState =
         deviceManagerRecord,
         shaderRecord,
         browserDetectRecord,
+        jobDataRecord,
       } as state: StateDataMainType.state,
     ) => {
   let {localToWorldMatrices, localToWorldMatrixCacheMap, normalMatrixCacheMap} as transformRecord =
@@ -205,5 +206,7 @@ let createRenderState =
     browserDetectRecord: {
       browser: browserDetectRecord.browser,
     },
+    jobDataRecord,
+    shaderRecord,
   };
 };

@@ -1,5 +1,7 @@
 open ComponentType;
 
+open GameObjectPrimitiveType;
+
 open TransformType;
 
 open GeometryType;
@@ -11,8 +13,6 @@ open MaterialType;
 open InstanceType;
 
 open CameraControllerType;
-
-type gameObject = int;
 
 type gameObjectDisposedUidMap = WonderCommonlib.SparseMapService.t(bool);
 

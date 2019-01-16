@@ -36,4 +36,5 @@ let createState = () => {
   apiRecord: RecordAPIRenderWorkerService.create(),
   imguiRecord: WonderImgui.ManageIMGUIAPI.createRecord(),
   customRecord: RecordRenderWorkerCustomService.create(),
+  jobDataRecord: RecordJobDataService.create(),
 };

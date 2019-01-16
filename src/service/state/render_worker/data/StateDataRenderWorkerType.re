@@ -52,6 +52,8 @@ open GlobalTempType;
 
 open BrowserDetectType;
 
+open JobDataType;
+
 type apiRecord = {
   apiJsObj: {
     .
@@ -159,6 +161,7 @@ and renderWorkerState = {
   mutable imguiRecord: WonderImgui.IMGUIType.imguiRecord,
   mutable apiRecord,
   mutable customRecord,
+  mutable jobDataRecord,
 };
 
 type renderWorkerStateData = {mutable state: option(renderWorkerState)};

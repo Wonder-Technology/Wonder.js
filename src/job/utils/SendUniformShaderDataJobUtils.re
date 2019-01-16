@@ -1,11 +1,7 @@
 open StateRenderType;
 
-let _useProgram = (gl, shaderIndex, renderState) => {
-  let program =
-    ProgramService.unsafeGetProgram(shaderIndex, renderState.programRecord);
-
-  renderState |> UseProgramRenderService.use(gl, program);
-};
+let _useProgram = (gl, shaderIndex, renderState) =>
+  renderState |> UseProgramRenderService.useByShaderIndex(gl, shaderIndex);
 
 let execJob = renderState =>
   ! OperateCameraRenderService.hasCameraRecord(renderState) ?

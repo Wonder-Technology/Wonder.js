@@ -22,6 +22,7 @@ let _getLoopJobHandles = () => [
   ("tick", TickJob.execJob),
   ("update_transform", UpdateTransformJob.execJob),
   ("update_camera", UpdateCameraJob.execJob),
+  ("draw_outline", DrawOutlineJob.execJob),
   ("clear_color", ClearColorJob.execJob),
   ("clear_buffer", ClearBufferJob.execJob),
   ("clear_last_send_component", ClearLastSendComponentJob.execJob),

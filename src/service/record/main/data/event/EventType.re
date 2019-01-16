@@ -133,8 +133,8 @@ type userData;
 
 type customEvent = {
   name: string,
-  target: option(GameObjectType.gameObject),
-  /* currentTarget: option(GameObjectType.gameObject), */
+  target: option(GameObjectPrimitiveType.gameObject),
+  /* currentTarget: option(GameObjectPrimitiveType.gameObject), */
   isStopPropagation: bool,
   phase: option(phaseType),
   /* type_: eventType, */

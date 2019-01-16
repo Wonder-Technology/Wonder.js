@@ -69,7 +69,7 @@ let _getOrCreateBuffer =
   | buffer =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
-        ~title="_sendAttributeData",
+        ~title="_getOrCreateBuffer",
         ~description={j|unknown buffer: $buffer|j},
         ~reason="",
         ~solution={j||j},
@@ -202,8 +202,8 @@ let render =
       bindAndUpdateFunc,
       {programRecord} as state,
     ) => {
-  let program = ProgramService.unsafeGetProgram(shaderIndex, programRecord);
-  let state = state |> UseProgramRenderService.use(gl, program);
+  let state =
+    state |> UseProgramRenderService.useByShaderIndex(gl, shaderIndex);
 
   let sendRenderDataSubState =
     CreateSendRenederDataSubStateRenderService.createState(state);

@@ -1,6 +1,6 @@
 type renderObjectRecord = {
   buffer: WorkerType.sharedArrayBuffer,
-  renderArray: array(ComponentType.component),
+  renderArray: array(GameObjectPrimitiveType.gameObject),
   transformIndices: Js.Typed_array.Uint32Array.t,
   materialIndices: Js.Typed_array.Uint32Array.t,
   meshRendererIndices: Js.Typed_array.Uint32Array.t,

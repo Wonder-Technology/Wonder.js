@@ -50,6 +50,9 @@
         "name": "reallocate_cpu_memory"
     },
     {
+        "name": "draw_outline"
+    },
+    {
         "name": "render_imgui"
     }
 ]

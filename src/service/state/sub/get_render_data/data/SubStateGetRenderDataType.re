@@ -8,6 +8,8 @@ open RenderPointLightType;
 
 open RenderTransformType;
 
+open GetRenderDataJobDataType;
+
 type getRenderDataSubState = {
   cameraRecord: option(RenderCameraType.renderCameraRecord),
   basicMaterialRecord,
@@ -15,4 +17,5 @@ type getRenderDataSubState = {
   directionLightRecord,
   pointLightRecord,
   transformRecord,
+  jobDataRecord,
 };
