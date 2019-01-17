@@ -79,19 +79,8 @@ module DrawOutlineJobUtils = {
           buffer,
           (gl, geometryIndex),
           (
-            (
-              vertexBufferMap,
-              /* texCoordBufferMap,
-                 normalBufferMap, */
-              elementArrayBufferMap,
-            ),
-            (
-              getVerticesFunc,
-              /* getTexCoordsFunc,
-                 getNormalsFunc, */
-              getIndicesFunc,
-              getIndices32Func,
-            ),
+            (vertexBufferMap, elementArrayBufferMap),
+            (getVerticesFunc, getIndicesFunc, getIndices32Func),
           ),
           state,
         ) =>
@@ -103,20 +92,6 @@ module DrawOutlineJobUtils = {
           [@bs] getVerticesFunc,
           state,
         )
-      /* | TexCoord =>
-           ArrayBufferRenderService.getOrCreateBuffer(
-             gl,
-             (geometryIndex, texCoordBufferMap),
-             [@bs] getTexCoordsFunc,
-             state,
-           )
-         | Normal =>
-           ArrayBufferRenderService.getOrCreateBuffer(
-             gl,
-             (geometryIndex, normalBufferMap),
-             [@bs] getNormalsFunc,
-             state,
-           ) */
       | Index =>
         switch (
           GeometryRenderService.unsafeGetIndicesType(geometryIndex, state)
@@ -153,14 +128,10 @@ module DrawOutlineJobUtils = {
       let currentGeometryBufferMapAndGetPointsFuncsTuple = (
         (
           vboBufferRecord.geometryVertexBufferMap,
-          /* vboBufferRecord.geometryTexCoordBufferMap,
-             vboBufferRecord.geometryNormalBufferMap, */
           vboBufferRecord.geometryElementArrayBufferMap,
         ),
         (
           GetGeometryVerticesRenderService.getVertices,
-          /* GetGeometryTexCoordsRenderService.getTexCoords,
-             GetGeometryNormalsRenderService.getNormals, */
           GetGeometryIndicesRenderService.getIndices,
           GetGeometryIndicesRenderService.getIndices32,
         ),
@@ -231,17 +202,9 @@ module DrawOutlineJobUtils = {
           buffer,
           (gl, geometryIndex),
           (
-            (
-              vertexBufferMap,
-              /* texCoordBufferMap,
-               */
-              normalBufferMap,
-              elementArrayBufferMap,
-            ),
+            (vertexBufferMap, normalBufferMap, elementArrayBufferMap),
             (
               getVerticesFunc,
-              /* getTexCoordsFunc,
-               */
               getNormalsFunc,
               getIndicesFunc,
               getIndices32Func,
@@ -257,14 +220,6 @@ module DrawOutlineJobUtils = {
           [@bs] getVerticesFunc,
           state,
         )
-      /* | TexCoord =>
-         ArrayBufferRenderService.getOrCreateBuffer(
-           gl,
-           (geometryIndex, texCoordBufferMap),
-           [@bs] getTexCoordsFunc,
-           state,
-         )
-          */
       | Normal =>
         ArrayBufferRenderService.getOrCreateBuffer(
           gl,
@@ -308,15 +263,11 @@ module DrawOutlineJobUtils = {
       let currentGeometryBufferMapAndGetPointsFuncsTuple = (
         (
           vboBufferRecord.geometryVertexBufferMap,
-          /* vboBufferRecord.geometryTexCoordBufferMap,
-           */
           vboBufferRecord.geometryNormalBufferMap,
           vboBufferRecord.geometryElementArrayBufferMap,
         ),
         (
           GetGeometryVerticesRenderService.getVertices,
-          /* GetGeometryTexCoordsRenderService.getTexCoords,
-           */
           GetGeometryNormalsRenderService.getNormals,
           GetGeometryIndicesRenderService.getIndices,
           GetGeometryIndicesRenderService.getIndices32,
@@ -405,55 +356,6 @@ module DrawOutlineJobUtils = {
          );
   };
 
-  /* let _getGameObjectRenderDataFromRenderObjectData =
-       (gameObjectNeedDrawOutline, renderObjectData) =>
-     switch (renderObjectData) {
-     | None =>
-       WonderLog.Log.fatal(
-         WonderLog.Log.buildFatalMessage(
-           ~title="_getGameObjectRenderDataFromBasicRenderObjectData",
-           ~description=
-             {j|gameObjectNeedDrawOutline:$gameObjectNeedDrawOutline should has render object data|j},
-           ~reason="",
-           ~solution={j||j},
-           ~params={j||j},
-         ),
-       )
-
-     | Some(
-         (
-           {
-             transformIndices,
-             materialIndices,
-             meshRendererIndices,
-             geometryIndices,
-           }: RenderType.renderObjectRecord
-         ),
-       ) =>
-       let transformIndex =
-         RenderObjectBufferTypeArrayService.getComponent(
-           gameObjectNeedDrawOutline,
-           transformIndices,
-         );
-       let materialIndex =
-         RenderObjectBufferTypeArrayService.getComponent(
-           gameObjectNeedDrawOutline,
-           materialIndices,
-         );
-       let meshRendererIndex =
-         RenderObjectBufferTypeArrayService.getComponent(
-           gameObjectNeedDrawOutline,
-           meshRendererIndices,
-         );
-       let geometryIndex =
-         RenderObjectBufferTypeArrayService.getComponent(
-           gameObjectNeedDrawOutline,
-           geometryIndices,
-         );
-
-       (transformIndex, materialIndex, meshRendererIndex, geometryIndex);
-     }; */
-
   let _prepareGl = (gl, {deviceManagerRecord} as state) => {
     let deviceManagerRecord =
       deviceManagerRecord
@@ -466,26 +368,14 @@ module DrawOutlineJobUtils = {
          )
       |> DeviceManagerService.setStencilFunc(gl, Gl.getAlways(gl), 1, 0xFF)
       |> DeviceManagerService.setStencilMask(gl, 0xFF)
-      /* |> DeviceManagerService.setSide(gl, Gl.getBack) */
-      /* |> DeviceManagerService.setDepthTest(gl, true) */
       |> DeviceManagerService.setDepthTest(gl, false)
       |> DeviceManagerService.setDepthWrite(gl, false)
       |> DeviceManagerService.setColorWrite(gl, (false, false, false, false));
 
-    /* |> _notWriteToColorBuffer(gl); */
-
     {...state, deviceManagerRecord};
   };
 
-  /* let _useProgram = (shaderName, state) => {
-       let shaderIndex =
-         NoMaterialShaderIndexShaderService.unsafeGetShaderIndex(shaderName);
-
-       state |> UseProgramRenderService.useByShaderIndex(gl, shaderIndex);
-     }; */
-
   let _useDrawOriginGameObjectsProgram = (gl, shaderIndex, state) =>
-    /* _useProgram("outline_draw_origin_gameObjects", state); */
     state |> UseProgramRenderService.useByShaderIndex(gl, shaderIndex);
 
   let _useDrawExpandGameObjectsProgram = (gl, shaderIndex, state) =>
@@ -523,7 +413,6 @@ module DrawOutlineJobUtils = {
   };
 
   let exec =
-      /* (basicRenderObjectData, lightRenderObjectData), */
       (
         renderDataArr,
         ({jobDataRecord, shaderRecord}: StateRenderType.renderState) as state,
@@ -539,38 +428,6 @@ module DrawOutlineJobUtils = {
         "outline_draw_expand_gameObjects",
         shaderRecord,
       );
-
-    /* WonderLog.Log.print((
-               "zzz:",
-       OperateRenderJobDataService.getBasicGameObjectsNeedDrawOutline(
-                 jobDataRecord,
-               ),
-       OperateRenderJobDataService.getLightGameObjectsNeedDrawOutline(
-                 jobDataRecord,
-               )
-             )) |> ignore;
-
-           let renderDataArr =
-             ArrayService.fastConcat(
-               OperateRenderJobDataService.getBasicGameObjectsNeedDrawOutline(
-                 jobDataRecord,
-               )
-               |> Js.Array.map(gameObjectNeedDrawOutline =>
-                    _getGameObjectRenderDataFromRenderObjectData(
-                      gameObjectNeedDrawOutline,
-                      basicRenderObjectData,
-                    )
-                  ),
-               OperateRenderJobDataService.getLightGameObjectsNeedDrawOutline(
-                 jobDataRecord,
-               )
-               |> Js.Array.map(gameObjectNeedDrawOutline =>
-                    _getGameObjectRenderDataFromRenderObjectData(
-                      gameObjectNeedDrawOutline,
-                      lightRenderObjectData,
-                    )
-                  ),
-             ); */
 
     let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
@@ -593,12 +450,6 @@ module DrawOutlineJobUtils = {
   };
 };
 
-/* let _handleNone = (func, optionData) =>
-   switch (optionData) {
-   | None => func()
-   | Some(x) => Some(x)
-   }; */
-
 let _getMaterialComponent = (gameObject, gameObjectRecord) =>
   switch (
     GetComponentGameObjectService.getBasicMaterialComponent(.
@@ -618,17 +469,6 @@ let _getMaterialComponent = (gameObject, gameObjectRecord) =>
     | None => None
     }
   };
-/* GetComponentGameObjectService.getBasicMaterialComponent(.
-     gameObject,
-     gameObjectRecord,
-   )
-   |> _handleNone(() =>
-        GetComponentGameObjectService.getLightMaterialComponent(.
-          gameObject,
-          gameObjectRecord,
-        )
-        |> _handleNone
-      ); */
 
 let _getRenderDataArr = ({jobDataRecord, gameObjectRecord} as state) =>
   OperateRenderJobDataService.getGameObjectsNeedDrawOutline(jobDataRecord)
@@ -673,14 +513,7 @@ let execJob = (flags, state) => {
   let renderState = CreateRenderStateMainService.createRenderState(state);
 
   let renderState =
-    renderState
-    |> DrawOutlineJobUtils.exec(
-         _getRenderDataArr(state),
-         /* (
-              OperateRenderMainService.getBasicRenderObjectRecord(state),
-              OperateRenderMainService.getLightRenderObjectRecord(state),
-            ) */
-       );
+    renderState |> DrawOutlineJobUtils.exec(_getRenderDataArr(state));
 
   state;
 };

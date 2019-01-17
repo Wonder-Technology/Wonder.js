@@ -631,8 +631,7 @@ let _ =
             open Wonder_jest;
             open Expect;
             open Sinon;
-            /* let (state, gameObject, geometry, material) =
-               prepareGameObjectFunc(sandbox, state^); */
+
             let state = state^;
 
             let getUniformLocation =
@@ -1246,159 +1245,59 @@ let _ =
     });
 
     describe("draw expand gameObjects", () => {
-      describe("send attribute data", ()
-        /* let _testBufferData = (callCountForBasic, callCountForLight, state) => {
-             let (
-               state,
-               _,
-               (basicGameObject, lightGameObject),
-               (
-                 (basicGeometry, (vertices, texCoords, normals, indices)),
-                 lightGeometry,
-               ),
-             ) =
-               TestDraw.prepareGameObjects(sandbox, state^);
-             let array_buffer = 1;
-             let static_draw = 2;
-             let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
-             let state =
-               state
-               |> FakeGlTool.setFakeGl(
-                    FakeGlTool.buildFakeGl(
-                      ~sandbox,
-                      ~array_buffer,
-                      ~static_draw,
-                      ~bufferData,
-                      (),
-                    ),
-                  );
+      describe("send attribute data", () =>
+        describe("send buffer", () => {
+          let _testSend = (name, callCount) => {
+            let (
+              state,
+              _,
+              (basicGameObject, lightGameObject),
+              (
+                (basicGeometry, (vertices, texCoords, normals, indices)),
+                lightGeometry,
+              ),
+            ) =
+              TestDraw.prepareGameObjects(sandbox, state^);
+            let float = 1;
+            let vertexAttribPointer =
+              createEmptyStubWithJsObjSandbox(sandbox);
+            let pos = 0;
+            let getAttribLocation =
+              GLSLLocationTool.getAttribLocation(~pos, sandbox, name);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~float,
+                     ~vertexAttribPointer,
+                     ~getAttribLocation,
+                     (),
+                   ),
+                 );
 
-             let state =
-               state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+            let state =
+              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
 
-             (
-               bufferData
-               |> withThreeArgs(array_buffer, vertices, static_draw)
-               |> getCallCount,
-               bufferData
-               |> withThreeArgs(
-                    array_buffer,
-                    BoxGeometryTool.getBoxGeometryVertices(state),
-                    static_draw,
-                  )
-               |> getCallCount,
-             )
-             |> expect == (callCountForBasic, callCountForLight);
-           }; */
-        =>
-          describe("send buffer", () => {
-            let _testSend = (name, callCount) => {
-              let (
-                state,
-                _,
-                (basicGameObject, lightGameObject),
-                (
-                  (basicGeometry, (vertices, texCoords, normals, indices)),
-                  lightGeometry,
-                ),
-              ) =
-                TestDraw.prepareGameObjects(sandbox, state^);
-              let float = 1;
-              let vertexAttribPointer =
-                createEmptyStubWithJsObjSandbox(sandbox);
-              let pos = 0;
-              let getAttribLocation =
-                GLSLLocationTool.getAttribLocation(~pos, sandbox, name);
-              let state =
-                state
-                |> FakeGlTool.setFakeGl(
-                     FakeGlTool.buildFakeGl(
-                       ~sandbox,
-                       ~float,
-                       ~vertexAttribPointer,
-                       ~getAttribLocation,
-                       (),
-                     ),
-                   );
+            vertexAttribPointer
+            |> withTwoArgs(pos, 3)
+            |> getCallCount
+            |> expect == callCount;
+          };
 
-              let state =
-                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+          describe("send a_position", () =>
+            test("attach buffer to attribute", () =>
+              _testSend("a_position", 4)
+            )
+          );
 
-              vertexAttribPointer
-              |> withTwoArgs(pos, 3)
-              |> getCallCount
-              |> expect == callCount;
-            };
-
-            describe("send a_position", () =>
-              test("attach buffer to attribute", () =>
-                _testSend("a_position", 4)
-              )
-            );
-
-            describe("send a_normal", () =>
-              test("attach buffer to attribute", () =>
-                _testSend("a_normal", 2)
-              )
-            );
-          })
-        );
-      /* describe("init vertex buffer", () =>
-           test("bufferData", () =>
-             _testBufferData(2, 2, state)
-           )
-         ); */
-      /* describe("init index buffer", () =>
-           test("bufferData", () => {
-             let (
-               state,
-               _,
-               (basicGameObject, lightGameObject),
-               (
-                 (basicGeometry, (vertices, texCoords, normals, indices)),
-                 lightGeometry,
-               ),
-             ) =
-               TestDraw.prepareGameObjects(sandbox, state^);
-             let element_array_buffer = 1;
-             let static_draw = 2;
-             let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
-             let state =
-               state
-               |> FakeGlTool.setFakeGl(
-                    FakeGlTool.buildFakeGl(
-                      ~sandbox,
-                      ~element_array_buffer,
-                      ~static_draw,
-                      ~bufferData,
-                      (),
-                    ),
-                  );
-
-             let state =
-               state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-
-             (
-               JudgeTool.isGreaterOrEqualThan(
-                 bufferData
-                 |> withThreeArgs(element_array_buffer, indices, static_draw)
-                 |> getCallCount,
-                 2,
-               ),
-               JudgeTool.isGreaterOrEqualThan(
-                 bufferData
-                 |> withThreeArgs(
-                      element_array_buffer,
-                      BoxGeometryTool.getBoxGeometryIndices(state),
-                      static_draw,
-                    )
-                 |> getCallCount,
-                 2,
-               ),
-             )
-             |> expect == (true, true);
-           })
-         ); */
+          describe("send a_normal", () =>
+            test("attach buffer to attribute", () =>
+              _testSend("a_normal", 2)
+            )
+          );
+        })
+      );
 
       describe("send uniform data", () => {
         describe("test send data per shader", () => {
@@ -1518,16 +1417,6 @@ let _ =
                  );
 
             (
-              /* JudgeTool.isGreaterOrEqualThan(
-                   uniformMatrix4fv
-                   |> withThreeArgs(
-                        pos,
-                        Obj.magic(false),
-                        Obj.magic(targetData1),
-                      )
-                   |> getCallCount,
-                   1,
-                 ), */
               uniformMatrix4fv
               |> withThreeArgs(
                    pos,
@@ -1535,16 +1424,6 @@ let _ =
                    Obj.magic(targetData1),
                  )
               |> getCallCount,
-              /* JudgeTool.isGreaterOrEqualThan(
-                   uniformMatrix4fv
-                   |> withThreeArgs(
-                        pos,
-                        Obj.magic(false),
-                        Obj.magic(targetData2),
-                      )
-                   |> getCallCount,
-                   1,
-                 ), */
               uniformMatrix4fv
               |> withThreeArgs(
                    pos,
