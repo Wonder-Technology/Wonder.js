@@ -166,6 +166,25 @@ let buildRenderConfig =
   ],
   "no_material_shaders": [
     {
+      "name": "outline_draw_origin_gameObjects",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "modelMatrix_noInstance"
+        },
+        {
+          "name": "outline_origin"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
+    },
+    {
       "name": "outline_draw_expand_gameObjects",
       "shader_libs": [
         {
@@ -728,10 +747,23 @@ let buildRenderConfig =
           "name": "u_outlineColor",
           "from": "no_material_shader",
           "field": "outlineExpand",
-          "type": "float"
+          "type": "float3"
         }
       ]
     }
+  },
+  {
+    "name": "outline_origin",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_outline_origin_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_outline_origin_fragment"
+      }
+    ]
   },
   {
     "name": "end",

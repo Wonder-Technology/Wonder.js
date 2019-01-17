@@ -537,7 +537,7 @@ let _ =
           CameraTool.createCameraGameObject(state);
         (state, gameObject, material, cameraTransform);
       };
-      describe("test sended data per shader", () => {
+      describe("test send data per shader", () => {
         let _testSendShaderUniformDataOnlyOnce =
             (name, prepareSendUinformDataFunc, setFakeGlFunc) =>
           RenderJobsTool.testSendShaderUniformDataOnlyOnce(

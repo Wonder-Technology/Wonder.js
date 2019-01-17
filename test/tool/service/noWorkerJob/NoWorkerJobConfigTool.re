@@ -22,6 +22,9 @@ let buildNoWorkerInitPipelineConfigWithoutInitMain = () => {|
           "name": "init_state"
         },
         {
+          "name": "init_no_material_shader"
+        },
+        {
           "name": "init_basic_material"
         },
         {
@@ -46,6 +49,9 @@ let buildNoWorkerInitJobConfigWithoutInitMain = () => {|
     {
         "name": "preget_glslData"
     },
+        {
+          "name": "init_no_material_shader"
+        },
     {
         "name": "init_state"
     },
@@ -164,6 +170,9 @@ let buildNoWorkerLoopJobConfig = () => {|
             },
             {
                 "name": "reallocate_cpu_memory"
+            },
+            {
+                "name": "draw_outline"
             }
 ]
         |};
@@ -264,42 +273,47 @@ let buildNoWorkerJobConfig =
          ]
                  |},
       ~loopJobs=buildNoWorkerLoopJobConfig(),
-      ()
+      (),
     ) => (
   noWorkerSetting,
   initPipelines,
   loopPipelines,
   initJobs,
-  loopJobs
+  loopJobs,
 );
 
 let create =
     (
       (noWorkerSetting, initPipelines, loopPipelines, initJobs, loopJobs),
-      state: StateDataMainType.state
+      state: StateDataMainType.state,
     ) => {
   ...state,
   noWorkerJobRecord:
     Some({
       setting: convertSettingToRecord(noWorkerSetting |> Js.Json.parseExn),
-      initPipelines: convertInitPipelinesToRecord(initPipelines |> Js.Json.parseExn),
-      loopPipelines: convertLoopPipelinesToRecord(loopPipelines |> Js.Json.parseExn),
+      initPipelines:
+        convertInitPipelinesToRecord(initPipelines |> Js.Json.parseExn),
+      loopPipelines:
+        convertLoopPipelinesToRecord(loopPipelines |> Js.Json.parseExn),
       initJobs: convertInitJobsToRecord(initJobs |> Js.Json.parseExn),
-      loopJobs: convertLoopJobsToRecord(loopJobs |> Js.Json.parseExn)
-    })
+      loopJobs: convertLoopJobsToRecord(loopJobs |> Js.Json.parseExn),
+    }),
 };
 
-let getSetting = (state) => state.noWorkerJobRecord |> OperateNoWorkerJobService.getSetting;
+let getSetting = state =>
+  state.noWorkerJobRecord |> OperateNoWorkerJobService.getSetting;
 
-let getInitPipelines = (state) =>
+let getInitPipelines = state =>
   state.noWorkerJobRecord |> OperateNoWorkerJobService.getInitPipelines;
 
-let getInitJobs = (state) => state.noWorkerJobRecord |> OperateNoWorkerJobService.getInitJobs;
+let getInitJobs = state =>
+  state.noWorkerJobRecord |> OperateNoWorkerJobService.getInitJobs;
 
-let getLoopPipelines = (state) =>
+let getLoopPipelines = state =>
   state.noWorkerJobRecord |> OperateNoWorkerJobService.getLoopPipelines;
 
-let getLoopJobs = (state) => state.noWorkerJobRecord |> OperateNoWorkerJobService.getLoopJobs;
+let getLoopJobs = state =>
+  state.noWorkerJobRecord |> OperateNoWorkerJobService.getLoopJobs;
 
-let getInitPipelines = (state) =>
+let getInitPipelines = state =>
   state.noWorkerJobRecord |> OperateNoWorkerJobService.getInitPipelines;

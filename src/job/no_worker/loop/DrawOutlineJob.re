@@ -123,10 +123,11 @@ module DrawOutlineJobUtils = {
                currentGeometryBufferMapAndGetPointsFuncsTuple,
                state,
              );
+
            sendFunc(. gl, (size, pos), arrayBuffer, sendRenderDataSubState);
          });
 
-      state;
+      ();
     };
 
     let _sendUniformRenderObjectModelData =
@@ -154,7 +155,7 @@ module DrawOutlineJobUtils = {
              ()
          );
 
-      state;
+      ();
     };
 
     let draw =
@@ -173,25 +174,26 @@ module DrawOutlineJobUtils = {
              let sendRenderDataSubState =
                CreateSendRenederDataSubStateRenderService.createState(state);
 
-             let state =
-               state
-               |> _sendAttributeData(
-                    gl,
-                    (shaderIndex, geometryIndex),
-                    sendRenderDataSubState,
-                  );
+             _sendAttributeData(
+               gl,
+               (shaderIndex, geometryIndex),
+               sendRenderDataSubState,
+               state,
+             );
 
              let getRenderDataSubState =
                CreateGetRenederDataSubStateRenderService.createState(state);
 
-             let state =
-               state
-               |> _sendUniformRenderObjectModelData(
-                    gl,
-                    shaderIndex,
-                    transformIndex,
-                    getRenderDataSubState,
-                  );
+             _sendUniformRenderObjectModelData(
+               gl,
+               shaderIndex,
+               transformIndex,
+               getRenderDataSubState,
+               state,
+             );
+
+             state
+             |> RenderJobUtils.draw(gl, meshRendererIndex, geometryIndex);
 
              state;
            },
@@ -324,7 +326,7 @@ module DrawOutlineJobUtils = {
            sendFunc(. gl, (size, pos), arrayBuffer, sendRenderDataSubState);
          });
 
-      state;
+      ();
     };
 
     /* TODO refactor: duplicate */
@@ -353,6 +355,29 @@ module DrawOutlineJobUtils = {
              ()
          );
 
+      ();
+    };
+
+    let _sendUniformNoMaterialShaderData =
+        (gl, shaderIndex, getRenderDataSubState, {glslSenderRecord} as state) => {
+      glslSenderRecord
+      |> HandleNoMaterialShaderUniformConfigDataService.unsafeGetUniformSendData(
+           shaderIndex,
+         )
+      |> WonderCommonlib.ArrayService.forEach(
+           (.
+             {shaderCacheMap, name, pos, getDataFunc, sendDataFunc}: uniformNoMaterialShaderSendCachableData,
+           ) =>
+           GLSLLocationService.isUniformLocationExist(pos) ?
+             sendDataFunc(.
+               gl,
+               shaderCacheMap,
+               (name, pos),
+               getDataFunc(. getRenderDataSubState),
+             ) :
+             ()
+         );
+
       state;
     };
 
@@ -374,25 +399,32 @@ module DrawOutlineJobUtils = {
              let sendRenderDataSubState =
                CreateSendRenederDataSubStateRenderService.createState(state);
 
-             let state =
-               state
-               |> _sendAttributeData(
-                    gl,
-                    (shaderIndex, geometryIndex),
-                    sendRenderDataSubState,
-                  );
+             _sendAttributeData(
+               gl,
+               (shaderIndex, geometryIndex),
+               sendRenderDataSubState,
+               state,
+             );
 
              let getRenderDataSubState =
                CreateGetRenederDataSubStateRenderService.createState(state);
 
-             let state =
-               state
-               |> _sendUniformRenderObjectModelData(
-                    gl,
-                    shaderIndex,
-                    transformIndex,
-                    getRenderDataSubState,
-                  );
+             _sendUniformRenderObjectModelData(
+               gl,
+               shaderIndex,
+               transformIndex,
+               getRenderDataSubState,
+               state,
+             );
+             _sendUniformNoMaterialShaderData(
+               gl,
+               shaderIndex,
+               getRenderDataSubState,
+               state,
+             );
+
+             state
+             |> RenderJobUtils.draw(gl, meshRendererIndex, geometryIndex);
 
              state;
            },
@@ -400,145 +432,54 @@ module DrawOutlineJobUtils = {
          );
   };
 
-  let _isInRenderArray = (gameObject, renderArray) =>
-    Js.Array.includes(gameObject, renderArray);
+  /* let _getGameObjectRenderDataFromRenderObjectData =
+       (gameObjectNeedDrawOutline, renderObjectData) =>
+     switch (renderObjectData) {
+     | None =>
+       WonderLog.Log.fatal(
+         WonderLog.Log.buildFatalMessage(
+           ~title="_getGameObjectRenderDataFromBasicRenderObjectData",
+           ~description=
+             {j|gameObjectNeedDrawOutline:$gameObjectNeedDrawOutline should has render object data|j},
+           ~reason="",
+           ~solution={j||j},
+           ~params={j||j},
+         ),
+       )
 
-  let _getGameObjectRenderDataFromRenderObjectData =
-      (
-        gameObjectNeedDrawOutline,
-        {
-          transformIndices,
-          materialIndices,
-          meshRendererIndices,
-          geometryIndices,
-        }: RenderType.renderObjectRecord,
-      ) => {
-    let transformIndex =
-      RenderObjectBufferTypeArrayService.getComponent(
-        gameObjectNeedDrawOutline,
-        transformIndices,
-      );
-    let materialIndex =
-      RenderObjectBufferTypeArrayService.getComponent(
-        gameObjectNeedDrawOutline,
-        materialIndices,
-      );
-    let meshRendererIndex =
-      RenderObjectBufferTypeArrayService.getComponent(
-        gameObjectNeedDrawOutline,
-        meshRendererIndices,
-      );
-    let geometryIndex =
-      RenderObjectBufferTypeArrayService.getComponent(
-        gameObjectNeedDrawOutline,
-        geometryIndices,
-      );
+     | Some(
+         (
+           {
+             transformIndices,
+             materialIndices,
+             meshRendererIndices,
+             geometryIndices,
+           }: RenderType.renderObjectRecord
+         ),
+       ) =>
+       let transformIndex =
+         RenderObjectBufferTypeArrayService.getComponent(
+           gameObjectNeedDrawOutline,
+           transformIndices,
+         );
+       let materialIndex =
+         RenderObjectBufferTypeArrayService.getComponent(
+           gameObjectNeedDrawOutline,
+           materialIndices,
+         );
+       let meshRendererIndex =
+         RenderObjectBufferTypeArrayService.getComponent(
+           gameObjectNeedDrawOutline,
+           meshRendererIndices,
+         );
+       let geometryIndex =
+         RenderObjectBufferTypeArrayService.getComponent(
+           gameObjectNeedDrawOutline,
+           geometryIndices,
+         );
 
-    (transformIndex, materialIndex, meshRendererIndex, geometryIndex);
-  };
-
-  let _getGameObjectRenderDataFromBasicRenderObjectData =
-      (
-        gameObjectNeedDrawOutline,
-        basicRenderObjectData,
-        state: StateRenderType.renderState,
-      ) =>
-    switch (basicRenderObjectData) {
-    | None =>
-      WonderLog.Log.fatal(
-        WonderLog.Log.buildFatalMessage(
-          ~title="_getGameObjectRenderDataFromBasicRenderObjectData",
-          ~description=
-            {j|gameObjectNeedDrawOutline:$gameObjectNeedDrawOutline should has render object data|j},
-          ~reason="",
-          ~solution={j||j},
-          ~params={j||j},
-        ),
-      )
-
-    | Some(basicRenderObjectData) =>
-      _getGameObjectRenderDataFromRenderObjectData(
-        gameObjectNeedDrawOutline,
-        basicRenderObjectData,
-      )
-    };
-
-  let _getGameObjectRenderData =
-      (
-        gameObjectNeedDrawOutline,
-        (basicRenderObjectDataOpt, lightRenderObjectDataOpt),
-        state: StateRenderType.renderState,
-      ) => {
-    WonderLog.Contract.requireCheck(
-      () =>
-        WonderLog.(
-          Contract.(
-            Operators.(
-              test(
-                Log.buildAssertMessage(
-                  ~expect=
-                    {j|gameObjectNeedDrawOutline shouldn't has sourceInstance|j},
-                  ~actual={j|has|j},
-                ),
-                () => {
-                  let sourceInstanceIndices =
-                    switch (lightRenderObjectDataOpt) {
-                    | None =>
-                      switch (basicRenderObjectDataOpt) {
-                      | None => None
-                      | Some(
-                          (
-                            {sourceInstanceIndices}: RenderType.renderObjectRecord
-                          ),
-                        ) =>
-                        Some(sourceInstanceIndices)
-                      }
-                    | Some(
-                        (
-                          {sourceInstanceIndices}: RenderType.renderObjectRecord
-                        ),
-                      ) =>
-                      Some(sourceInstanceIndices)
-                    };
-
-                  switch (sourceInstanceIndices) {
-                  | Some(sourceInstanceIndices) =>
-                    RenderObjectBufferTypeArrayService.getComponent(
-                      gameObjectNeedDrawOutline,
-                      sourceInstanceIndices,
-                    )
-                    |> RenderObjectBufferTypeArrayService.hasSourceInstance
-                    |> assertFalse
-                  | None => assertPass()
-                  };
-                },
-              )
-            )
-          )
-        ),
-      IsDebugMainService.getIsDebug(StateDataMain.stateData),
-    );
-
-    switch (lightRenderObjectDataOpt) {
-    | None =>
-      _getGameObjectRenderDataFromBasicRenderObjectData(
-        gameObjectNeedDrawOutline,
-        basicRenderObjectDataOpt,
-        state,
-      )
-    | Some({renderArray} as lightRenderObjectData) =>
-      _isInRenderArray(gameObjectNeedDrawOutline, renderArray) ?
-        _getGameObjectRenderDataFromRenderObjectData(
-          gameObjectNeedDrawOutline,
-          lightRenderObjectData,
-        ) :
-        _getGameObjectRenderDataFromBasicRenderObjectData(
-          gameObjectNeedDrawOutline,
-          basicRenderObjectDataOpt,
-          state,
-        )
-    };
-  };
+       (transformIndex, materialIndex, meshRendererIndex, geometryIndex);
+     }; */
 
   let _notWriteToDepthBufferAndColorBuffer = (gl, deviceManagerRecord) =>
     deviceManagerRecord
@@ -590,7 +531,7 @@ module DrawOutlineJobUtils = {
        state,
      ) => {}; */
 
-  let _setGlBeforeDrawScaledGameObjects =
+  let _setGlBeforeDrawExpandGameObjects =
       (gl, {deviceManagerRecord} as state) => {
     let deviceManagerRecord =
       deviceManagerRecord
@@ -623,12 +564,11 @@ module DrawOutlineJobUtils = {
   };
 
   let exec =
+      /* (basicRenderObjectData, lightRenderObjectData), */
       (
-        (basicRenderObjectData, lightRenderObjectData),
+        renderDataArr,
         ({jobDataRecord, shaderRecord}: StateRenderType.renderState) as state,
       ) => {
-    /* let {outlineData} = jobDataRecord; */
-
     let drawOriginGameObjectsShaderIndex =
       NoMaterialShaderIndexShaderService.unsafeGetShaderIndex(
         "outline_draw_origin_gameObjects",
@@ -641,15 +581,37 @@ module DrawOutlineJobUtils = {
         shaderRecord,
       );
 
-    let renderDataArr =
-      OperateRenderJobDataService.getGameObjectsNeedDrawOutline(jobDataRecord)
-      |> Js.Array.map(gameObjectNeedDrawOutline =>
-           _getGameObjectRenderData(
-             gameObjectNeedDrawOutline,
-             (basicRenderObjectData, lightRenderObjectData),
-             state,
-           )
-         );
+    /* WonderLog.Log.print((
+               "zzz:",
+       OperateRenderJobDataService.getBasicGameObjectsNeedDrawOutline(
+                 jobDataRecord,
+               ),
+       OperateRenderJobDataService.getLightGameObjectsNeedDrawOutline(
+                 jobDataRecord,
+               )
+             )) |> ignore;
+
+           let renderDataArr =
+             ArrayService.fastConcat(
+               OperateRenderJobDataService.getBasicGameObjectsNeedDrawOutline(
+                 jobDataRecord,
+               )
+               |> Js.Array.map(gameObjectNeedDrawOutline =>
+                    _getGameObjectRenderDataFromRenderObjectData(
+                      gameObjectNeedDrawOutline,
+                      basicRenderObjectData,
+                    )
+                  ),
+               OperateRenderJobDataService.getLightGameObjectsNeedDrawOutline(
+                 jobDataRecord,
+               )
+               |> Js.Array.map(gameObjectNeedDrawOutline =>
+                    _getGameObjectRenderDataFromRenderObjectData(
+                      gameObjectNeedDrawOutline,
+                      lightRenderObjectData,
+                    )
+                  ),
+             ); */
 
     let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
@@ -661,7 +623,7 @@ module DrawOutlineJobUtils = {
          drawOriginGameObjectsShaderIndex,
          renderDataArr,
        )
-    |> _setGlBeforeDrawScaledGameObjects(gl)
+    |> _setGlBeforeDrawExpandGameObjects(gl)
     |> _useDrawExpandGameObjectsProgram(gl, drawExpandGameObjectsShaderIndex)
     |> DrawExpandGameObjects.draw(
          gl,
@@ -672,16 +634,94 @@ module DrawOutlineJobUtils = {
   };
 };
 
+/* let _handleNone = (func, optionData) =>
+   switch (optionData) {
+   | None => func()
+   | Some(x) => Some(x)
+   }; */
+
+let _getMaterialComponent = (gameObject, gameObjectRecord) =>
+  switch (
+    GetComponentGameObjectService.getBasicMaterialComponent(.
+      gameObject,
+      gameObjectRecord,
+    )
+  ) {
+  | Some(material) => Some(material)
+  | None =>
+    switch (
+      GetComponentGameObjectService.getLightMaterialComponent(.
+        gameObject,
+        gameObjectRecord,
+      )
+    ) {
+    | Some(material) => Some(material)
+    | None => None
+    }
+  };
+/* GetComponentGameObjectService.getBasicMaterialComponent(.
+     gameObject,
+     gameObjectRecord,
+   )
+   |> _handleNone(() =>
+        GetComponentGameObjectService.getLightMaterialComponent(.
+          gameObject,
+          gameObjectRecord,
+        )
+        |> _handleNone
+      ); */
+
+let _getRenderDataArr = ({jobDataRecord, gameObjectRecord} as state) =>
+  OperateRenderJobDataService.getGameObjectsNeedDrawOutline(jobDataRecord)
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. renderDataArr, gameObjectNeedDrawOutline) => {
+         let transform =
+           GetComponentGameObjectService.unsafeGetTransformComponent(
+             gameObjectNeedDrawOutline,
+             gameObjectRecord,
+           );
+
+         switch (
+           GetComponentGameObjectService.getGeometryComponent(.
+             gameObjectNeedDrawOutline,
+             gameObjectRecord,
+           )
+           |> Js.Option.andThen((. geometry) =>
+                _getMaterialComponent(
+                  gameObjectNeedDrawOutline,
+                  gameObjectRecord,
+                )
+                |> Js.Option.andThen((. material) =>
+                     GetComponentGameObjectService.getMeshRendererComponent(.
+                       gameObjectNeedDrawOutline,
+                       gameObjectRecord,
+                     )
+                     |> Js.Option.andThen((. meshRenderer) =>
+                          Some((transform, material, meshRenderer, geometry))
+                        )
+                   )
+              )
+         ) {
+         | None => renderDataArr
+         | Some(renderData) => renderDataArr |> ArrayService.push(renderData)
+         };
+       },
+       [||],
+     );
+
 /* TODO support worker job */
 let execJob = (flags, state) => {
   let renderState = CreateRenderStateMainService.createRenderState(state);
 
   let renderState =
     renderState
-    |> DrawOutlineJobUtils.exec((
-         OperateRenderMainService.getBasicRenderObjectRecord(state),
-         OperateRenderMainService.getLightRenderObjectRecord(state),
-       ));
+    |> DrawOutlineJobUtils.exec(
+         _getRenderDataArr(state),
+         /* (
+              OperateRenderMainService.getBasicRenderObjectRecord(state),
+              OperateRenderMainService.getLightRenderObjectRecord(state),
+            ) */
+       );
 
   state;
 };

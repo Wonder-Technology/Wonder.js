@@ -9,7 +9,7 @@ let render =
     (
       gl,
       (
-        renderArray,
+        renderIndexArray,
         transformIndices,
         materialIndices,
         meshRendererIndices,
@@ -18,7 +18,7 @@ let render =
       ),
       state,
     ) =>
-  renderArray
+  renderIndexArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, index) => {
          let transformIndex =

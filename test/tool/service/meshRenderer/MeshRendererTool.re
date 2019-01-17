@@ -1,12 +1,12 @@
 open StateDataMainType;
 
-let getBasicMaterialRenderArray = (state: StateDataMainType.state) =>
-  RenderArrayMeshRendererService.getBasicMaterialRenderArray(
+let getBasicMaterialRenderGameObjectArray = (state: StateDataMainType.state) =>
+  RenderArrayMeshRendererService.getBasicMaterialRenderGameObjectArray(
     RecordMeshRendererMainService.getRecord(state),
   );
 
-let getLightMaterialRenderArray = (state: StateDataMainType.state) =>
-  RenderArrayMeshRendererService.getLightMaterialRenderArray(
+let getLightMaterialRenderGameObjectArray = (state: StateDataMainType.state) =>
+  RenderArrayMeshRendererService.getLightMaterialRenderGameObjectArray(
     RecordMeshRendererMainService.getRecord(state),
   );
 

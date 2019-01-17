@@ -83,16 +83,16 @@ let _ =
 
         getMeshRendererIsRender(meshRenderer1, state) |> expect == false;
       });
-      test("if isRender === false, remove from renderArray", () => {
+      test("if isRender === false, remove from renderIndexArray", () => {
         let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
 
         let state =
           state
           |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
 
-        state |> MeshRendererTool.getBasicMaterialRenderArray |> expect == [||];
+        state |> MeshRendererTool.getBasicMaterialRenderGameObjectArray |> expect == [||];
       });
-      test("if isRender === true, add to renderArray", () => {
+      test("if isRender === true, add to renderIndexArray", () => {
         let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
 
         let state =
@@ -103,7 +103,7 @@ let _ =
           |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, true);
 
         state
-        |> MeshRendererTool.getBasicMaterialRenderArray
+        |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
         |> expect == [|gameObject1|];
       });
 
@@ -119,7 +119,7 @@ let _ =
             |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
 
           state
-          |> MeshRendererTool.getBasicMaterialRenderArray
+          |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
           |> expect == [||];
         });
         test("test isRender === true", () => {
@@ -133,13 +133,13 @@ let _ =
             |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, true);
 
           state
-          |> MeshRendererTool.getBasicMaterialRenderArray
+          |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
           |> expect == [|gameObject1|];
         });
       });
     });
 
-    describe("getBasicMaterialRenderArray", () =>
+    describe("getBasicMaterialRenderGameObjectArray", () =>
       test(
         "get array of gameObject which has meshRenderer component and basicMaterial component",
         () => {
@@ -154,13 +154,13 @@ let _ =
           ) =
             _prepareThree(state^);
           state
-          |> MeshRendererTool.getBasicMaterialRenderArray
+          |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
           |> expect == [|gameObject1, gameObject2|];
         },
       )
     );
 
-    describe("getLightMaterialRenderArray", () =>
+    describe("getLightMaterialRenderGameObjectArray", () =>
       test(
         "get array of gameObject which has meshRenderer component and lightMaterial component",
         () => {
@@ -175,7 +175,7 @@ let _ =
           ) =
             _prepareThree(state^);
           state
-          |> MeshRendererTool.getLightMaterialRenderArray
+          |> MeshRendererTool.getLightMaterialRenderGameObjectArray
           |> expect == [|gameObject3|];
         },
       )
@@ -235,7 +235,7 @@ let _ =
           |> expect == false;
         });
         describe("remove from basicMaterialRenderGameObjectArray", () => {
-          test("test getBasicMaterialRenderArray", () => {
+          test("test getBasicMaterialRenderGameObjectArray", () => {
             let (
               state,
               gameObject1,
@@ -251,7 +251,7 @@ let _ =
                    meshRenderer1,
                  );
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> expect == [|gameObject2|];
           });
           test("test add gameObject after dispose", () => {
@@ -264,7 +264,7 @@ let _ =
                  );
             let (state, gameObject2, meshRenderer2) = _prepareOne(state);
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> expect == [|gameObject2|];
           });
         });
@@ -286,7 +286,7 @@ let _ =
               meshRenderer3,
             );
           };
-          test("test getLightMaterialRenderArray", () => {
+          test("test getLightMaterialRenderGameObjectArray", () => {
             let (
               state,
               gameObject1,
@@ -304,7 +304,7 @@ let _ =
                    meshRenderer2,
                  );
             state
-            |> MeshRendererTool.getLightMaterialRenderArray
+            |> MeshRendererTool.getLightMaterialRenderGameObjectArray
             |> expect == [|gameObject3|];
           });
           test("test add gameObject after dispose", () => {
@@ -327,7 +327,7 @@ let _ =
             let (state, gameObject4, meshRenderer4) =
               MeshRendererTool.createLightMaterialGameObject(state);
             state
-            |> MeshRendererTool.getLightMaterialRenderArray
+            |> MeshRendererTool.getLightMaterialRenderGameObjectArray
             |> expect == [|gameObject4, gameObject3|];
           });
         });

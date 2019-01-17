@@ -1,9 +1,9 @@
 open MeshRendererType;
 
-let getBasicMaterialRenderArray = ({basicMaterialRenderGameObjectMap}) =>
+let getBasicMaterialRenderGameObjectArray = ({basicMaterialRenderGameObjectMap}) =>
   basicMaterialRenderGameObjectMap |> SparseMapService.getValidValues;
 
-let getLightMaterialRenderArray = ({lightMaterialRenderGameObjectMap}) =>
+let getLightMaterialRenderGameObjectArray = ({lightMaterialRenderGameObjectMap}) =>
   lightMaterialRenderGameObjectMap |> SparseMapService.getValidValues;
 
 let removeFromRenderGameObjectMap =

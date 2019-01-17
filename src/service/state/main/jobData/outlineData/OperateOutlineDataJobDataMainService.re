@@ -14,12 +14,79 @@ let getGameObjectsNeedDrawOutline = ({jobDataRecord}) =>
     jobDataRecord,
   );
 
+/* let getBasicGameObjectsNeedDrawOutline = ({jobDataRecord}) =>
+     OperateOutlineDataJobDataService.getBasicGameObjectsNeedDrawOutline(
+       jobDataRecord,
+     );
+
+   let getLightGameObjectsNeedDrawOutline = ({jobDataRecord}) =>
+     OperateOutlineDataJobDataService.getLightGameObjectsNeedDrawOutline(
+       jobDataRecord,
+     ); */
+
 let setGameObjectsNeedDrawOutline =
-    (gameObjectsNeedDrawOutline, {jobDataRecord} as state) => {
+    (gameObjectsNeedDrawOutline, {gameObjectRecord, jobDataRecord} as state) => {
+  /* let (basicGameObjectsNeedDrawOutline, lightGameObjectsNeedDrawOutline) =
+       gameObjectsNeedDrawOutline
+       |> WonderCommonlib.ArrayService.reduceOneParam(
+            (.
+              (basicGameObjectsNeedDrawOutline, lightGameObjectsNeedDrawOutline),
+              gameObjectNeedDrawOutline,
+            ) =>
+              HasComponentGameObjectService.hasBasicMaterialComponent(
+                gameObjectNeedDrawOutline,
+                gameObjectRecord,
+              ) ?
+                (
+                  basicGameObjectsNeedDrawOutline
+                  |> ArrayService.push(gameObjectNeedDrawOutline),
+                  lightGameObjectsNeedDrawOutline,
+                ) :
+                HasComponentGameObjectService.hasLightMaterialComponent(
+                  gameObjectNeedDrawOutline,
+                  gameObjectRecord,
+                ) ?
+                  (
+                    basicGameObjectsNeedDrawOutline,
+                    lightGameObjectsNeedDrawOutline
+                    |> ArrayService.push(gameObjectNeedDrawOutline),
+                  ) :
+                  (
+                    basicGameObjectsNeedDrawOutline,
+                    lightGameObjectsNeedDrawOutline,
+                  ),
+            ([||], [||]),
+          );
+
+     {
+       ...state,
+       jobDataRecord: {
+         ...jobDataRecord,
+         outlineData: {
+           ...jobDataRecord.outlineData,
+           /* basicGameObjectsNeedDrawOutline:
+             ArrayService.fastConcat(
+               jobDataRecord.outlineData.basicGameObjectsNeedDrawOutline,
+               basicGameObjectsNeedDrawOutline,
+             ),
+           lightGameObjectsNeedDrawOutline:
+             ArrayService.fastConcat(
+               jobDataRecord.outlineData.lightGameObjectsNeedDrawOutline,
+               lightGameObjectsNeedDrawOutline,
+             ), */
+
+
+           basicGameObjectsNeedDrawOutline,
+           lightGameObjectsNeedDrawOutline
+         },
+       },
+     }; */
   ...state,
-  jobDataRecord:
-    OperateOutlineDataJobDataService.setGameObjectsNeedDrawOutline(
+  jobDataRecord: {
+    ...jobDataRecord,
+    outlineData: {
+      ...jobDataRecord.outlineData,
       gameObjectsNeedDrawOutline,
-      jobDataRecord,
-    ),
+    },
+  },
 };

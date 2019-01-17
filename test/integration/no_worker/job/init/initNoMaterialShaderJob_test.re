@@ -186,7 +186,7 @@ let _ =
           "name": "u_outlineColor",
           "from": "no_material_shader",
           "field": "outlineExpand",
-          "type": "float"
+          "type": "float3"
         }
       ]
     }

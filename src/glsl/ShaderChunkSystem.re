@@ -32,6 +32,34 @@
       chunkMap:
         createEmpty()
         
+|> set("webgl1_outline_origin_vertex", _buildChunk(({|
+
+|},{|
+
+|}),{|
+
+|},({|
+
+|},{|
+
+|}),{|
+gl_Position = u_pMatrix * u_vMatrix * mMatrix * a_position;
+|}))
+
+|> set("webgl1_outline_origin_fragment", _buildChunk(({|
+
+|},{|
+
+|}),{|
+
+|},({|
+
+|},{|
+
+|}),{|
+gl_FragColor = vec4(1.0);
+|}))
+
 |> set("webgl1_outline_expand_vertex", _buildChunk(({|
 
 |},{|

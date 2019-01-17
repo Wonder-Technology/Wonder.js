@@ -20,7 +20,7 @@ let _setSourceInstance = (index, uid, sourceInstanceIndices, gameObjectRecord) =
 
 let setData =
     (
-      renderArray,
+      renderIndexArray,
       unsafeGetMaterialComponentFunc,
       {
         transformIndices,
@@ -31,8 +31,8 @@ let setData =
       } as renderObjectRecord,
       {gameObjectRecord} as state,
     ) => {
-  let renderArray =
-    OperateRenderMainService.hasCameraRecord(state) ? renderArray : [||];
+  let renderIndexArray =
+    OperateRenderMainService.hasCameraRecord(state) ? renderIndexArray : [||];
 
   let (
     transformIndices,
@@ -40,9 +40,9 @@ let setData =
     meshRendererIndices,
     geometryIndices,
     sourceInstanceIndices,
-    renderArray,
+    renderIndexArray,
   ) =
-    renderArray
+    renderIndexArray
     |> WonderCommonlib.ArrayService.reduceOneParami(
          (.
            (
@@ -51,7 +51,7 @@ let setData =
              meshRendererIndices,
              geometryIndices,
              sourceInstanceIndices,
-             renderArray,
+             renderIndexArray,
            ) as dataTuple,
            uid,
            index,
@@ -92,7 +92,7 @@ let setData =
                  sourceInstanceIndices,
                  gameObjectRecord,
                ),
-               renderArray |> ArrayService.push(index),
+               renderIndexArray |> ArrayService.push(index),
              );
            },
          (
@@ -104,9 +104,10 @@ let setData =
            [||],
          ),
        );
+
   Some({
     ...renderObjectRecord,
-    renderArray,
+    renderIndexArray,
     transformIndices,
     materialIndices,
     meshRendererIndices,

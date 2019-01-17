@@ -18,7 +18,8 @@ let addToRenderGameObjectMap =
       {basicMaterialRenderGameObjectMap, lightMaterialRenderGameObjectMap} as meshRendererRecord,
       gameObjectRecord,
     ) => {
-  ...meshRendererRecord,
+
+      {   ...meshRendererRecord,
   basicMaterialRenderGameObjectMap:
     HasComponentGameObjectService.hasBasicMaterialComponent(
       gameObjectUid,
@@ -34,7 +35,7 @@ let addToRenderGameObjectMap =
     ) ?
       lightMaterialRenderGameObjectMap
       |> _setRenderGameObject(meshRenderer, gameObjectUid) :
-      lightMaterialRenderGameObjectMap,
+      lightMaterialRenderGameObjectMap, }
 };
 
 let removeFromRenderGameObjectMap = (meshRenderer, state) => {

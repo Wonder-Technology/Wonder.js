@@ -315,12 +315,12 @@ let _ =
           )
           |> expect == meshRenderer1;
         });
-        test("update renderArray", () => {
+        test("update renderIndexArray", () => {
           let (state, gameObject1, meshRenderer1) = _prepareAndExec(state);
 
           (
-            MeshRendererTool.getBasicMaterialRenderArray(state),
-            MeshRendererTool.getLightMaterialRenderArray(state),
+            MeshRendererTool.getBasicMaterialRenderGameObjectArray(state),
+            MeshRendererTool.getLightMaterialRenderGameObjectArray(state),
           )
           |> expect == ([|gameObject1|], [||]);
         });

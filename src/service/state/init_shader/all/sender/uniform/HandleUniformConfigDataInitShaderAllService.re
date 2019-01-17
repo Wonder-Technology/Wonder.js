@@ -69,7 +69,13 @@ let _setToUniformSendMap =
     instanceSendNoCachableDataArr,
   )
   |> ignore;
-  uniformNoMaterialShaderSendCachableDataMap;
+
+  HandleNoMaterialShaderUniformConfigDataService.setToUniformSendMap(
+    shaderIndex,
+    uniformNoMaterialShaderSendCachableDataMap,
+    noMaterialShaderSendCachableDataArr,
+  )
+  |> ignore;
 };
 
 let readUniformSendData =

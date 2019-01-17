@@ -115,7 +115,7 @@ let _ =
           let (state, clonedGameObjectArr) =
             _cloneGameObject(gameObject1, 2, state);
           state
-          |> MeshRendererTool.getBasicMaterialRenderArray
+          |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
           |>
           expect == (
                       [|gameObject1|]

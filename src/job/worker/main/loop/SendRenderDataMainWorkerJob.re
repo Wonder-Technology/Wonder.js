@@ -168,13 +168,13 @@ let _buildData = (operateType, {settingRecord, gameObjectRecord} as state) => {
         },
         "basic": {
           "buffer": basicRenderObjectRecord.buffer,
-          "renderArray": basicRenderObjectRecord.renderArray,
+          "renderIndexArray": basicRenderObjectRecord.renderIndexArray,
           "bufferCount":
             BufferSettingService.getBasicMaterialCount(settingRecord),
         },
         "light": {
           "buffer": lightRenderObjectRecord.buffer,
-          "renderArray": lightRenderObjectRecord.renderArray,
+          "renderIndexArray": lightRenderObjectRecord.renderIndexArray,
           "bufferCount":
             BufferSettingService.getLightMaterialCount(settingRecord),
         },

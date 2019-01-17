@@ -42,7 +42,7 @@ let _ =
         |> WonderBsMost.Most.drain
         |> then_(() => {
              let state = MainStateTool.unsafeGetState();
-             let {buffer, renderArray}: RenderType.renderObjectRecord =
+             let {buffer, renderIndexArray}: RenderType.renderObjectRecord =
                RenderMainTool.unsafeGetBasicRenderObjectRecord(state);
              let renderWorkerState =
                RenderWorkerStateTool.createStateAndSetToStateData();
@@ -54,7 +54,7 @@ let _ =
                      "isRender": true,
                      "basic": {
                        "buffer": buffer,
-                       "renderArray": renderArray,
+                       "renderIndexArray": renderIndexArray,
                        "bufferCount":
                          BufferSettingTool.getBasicMaterialCount(state),
                      },
@@ -68,7 +68,7 @@ let _ =
                   let renderWorkerState =
                     RenderWorkerStateTool.unsafeGetState();
                   let {
-                    renderArray,
+                    renderIndexArray,
                     transformIndices,
                     materialIndices,
                     geometryIndices,
@@ -81,7 +81,7 @@ let _ =
                   let defaultSourceInstance =
                     BufferTool.getDefaultSourceInstance();
                   (
-                    renderArray,
+                    renderIndexArray,
                     transformIndices,
                     materialIndices,
                     geometryIndices,

@@ -343,7 +343,7 @@ let _ =
             ) =
               _prepare(state);
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> Js.Array.length
             |> expect == 2;
           });
@@ -356,7 +356,7 @@ let _ =
               _prepare(state);
             let state = state |> DisposeJob.execJob(None);
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> expect == [|gameObject2|];
           });
         });
@@ -686,7 +686,7 @@ let _ =
                    gameObject2,
                  |]);
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> Js.Array.length
             |> expect === 2;
           });
@@ -700,7 +700,7 @@ let _ =
                  |]);
             let state = state |> DisposeJob.execJob(None);
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> Js.Array.length
             |> expect === 0;
           });
@@ -710,7 +710,7 @@ let _ =
             let (state, gameObject1, gameObject2) = _prepare(state);
             let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> Js.Array.length
             |> expect === 2;
           });
@@ -719,7 +719,7 @@ let _ =
             let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
             let state = state |> DisposeJob.execJob(None);
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> Js.Array.length
             |> expect === 1;
           });

@@ -132,7 +132,7 @@ let _ =
             ~completeFunc=
               postMessageToRenderWorker =>
                 MainStateTool.unsafeGetState()
-                |> MeshRendererTool.getBasicMaterialRenderArray
+                |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
                 |> Js.Array.length
                 |> expect === 1
                 |> resolve,

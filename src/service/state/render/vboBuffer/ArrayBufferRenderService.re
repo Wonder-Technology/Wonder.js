@@ -7,11 +7,12 @@ open Js.Typed_array;
 open StateRenderType;
 
 let createBuffer =
-  (. gl, record: Float32Array.t, state) => {
+  (. gl, data: Float32Array.t, state) => {
     let buffer =
       PoolVboBufferService.getArrayBuffer(gl, state.vboBufferRecord);
+
     bindBuffer(getArrayBuffer(gl), buffer, gl);
-    bufferFloat32Data(getArrayBuffer(gl), record, getStaticDraw(gl), gl);
+    bufferFloat32Data(getArrayBuffer(gl), data, getStaticDraw(gl), gl);
     resetBuffer(getArrayBuffer(gl), Js.Nullable.null, gl);
     buffer;
   };

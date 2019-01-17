@@ -10,14 +10,11 @@ let setColor = (color, {outlineData} as jobDataRecord) => {
   },
 };
 
+/* let getBasicGameObjectsNeedDrawOutline = ({outlineData}) =>
+     outlineData.basicGameObjectsNeedDrawOutline;
+
+   let getLightGameObjectsNeedDrawOutline = ({outlineData}) =>
+     outlineData.lightGameObjectsNeedDrawOutline; */
+
 let getGameObjectsNeedDrawOutline = ({outlineData}) =>
   outlineData.gameObjectsNeedDrawOutline;
-
-let setGameObjectsNeedDrawOutline =
-    (gameObjectsNeedDrawOutline, {outlineData} as jobDataRecord) => {
-  ...jobDataRecord,
-  outlineData: {
-    ...outlineData,
-    gameObjectsNeedDrawOutline,
-  },
-};

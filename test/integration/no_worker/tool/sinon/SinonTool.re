@@ -17,7 +17,14 @@ let calledWith = (stub, arg) => stub##calledWith(arg);
 
 let calledWithArg2 = (stub, arg1, arg2) => stub##calledWith(arg1, arg2);
 
-let calledWithArg4 = (stub, arg1, arg2, arg3, arg4) => stub##calledWith(arg1, arg2, arg3, arg4);
+let calledWithArg3 = (stub, arg1, arg2, arg3) =>
+  stub##calledWith(arg1, arg2, arg3);
+
+let calledWithArg4 = (stub, arg1, arg2, arg3, arg4) =>
+  stub##calledWith(arg1, arg2, arg3, arg4);
+
+let calledWithArg5 = (stub, arg1, arg2, arg3, arg4, arg5) =>
+  stub##calledWith(arg1, arg2, arg3, arg4, arg5);
 
 let deferReturns = (timeout, returnedData, stub) =>
   stub |> returns(_defer(timeout, returnedData));

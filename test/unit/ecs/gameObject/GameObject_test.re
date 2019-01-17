@@ -1021,7 +1021,7 @@ let _ =
             MeshRendererTool.createBasicMaterialGameObject(state);
           let state = state |> GameObjectTool.disposeGameObject(gameObject1);
           state
-          |> MeshRendererTool.getBasicMaterialRenderArray
+          |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
           |> expect == [|gameObject2|];
         });
         describe("dispose material component", () => {
