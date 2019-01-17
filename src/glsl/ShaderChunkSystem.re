@@ -43,7 +43,7 @@
 |},{|
 
 |}),{|
-gl_Position = u_pMatrix * u_vMatrix * mMatrix * a_position;
+gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
 |}))
 
 |> set("webgl1_outline_origin_fragment", _buildChunk(({|
@@ -71,7 +71,8 @@ gl_FragColor = vec4(1.0);
 |},{|
 
 |}),{|
-vec3 position = a_position.xyz + v_normal.xyz * 1.0;
+vec3 position = a_position.xyz + a_normal.xyz * 0.08;
+// vec3 position = a_position;
 
 gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(position, 1.0);
 |}))

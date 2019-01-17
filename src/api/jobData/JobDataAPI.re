@@ -1,8 +1,9 @@
 open StateDataMainType;
 
-let getColor = state => OperateOutlineDataJobDataMainService.getColor(state);
+let getOutlineColor = state =>
+  OperateOutlineDataJobDataMainService.getColor(state);
 
-let setColor = (color, state) =>
+let setOutlineColor = (color, state) =>
   OperateOutlineDataJobDataMainService.setColor(color, state);
 
 let setGameObjectsNeedDrawOutline = (gameObjectsNeedDrawOutline, state) =>

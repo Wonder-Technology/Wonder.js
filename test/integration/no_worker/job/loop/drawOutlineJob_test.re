@@ -65,7 +65,7 @@ let _ =
           "name": "normal"
         },
         {
-          "name": "modelMatrix_noInstance"
+          "name": "outline_scaled_modelMatrix"
         },
         {
           "name": "outline_expand"
@@ -176,6 +176,25 @@ let _ =
       ]
     }
   },
+{
+    "name": "outline_scaled_modelMatrix",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "modelMatrix_noInstance_vertex"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_mMatrix",
+          "field": "mMatrix",
+          "type": "mat4",
+          "from": "expand_model"
+        }
+      ]
+    }
+  }
   {
     "name": "end",
     "variables": {
@@ -324,10 +343,35 @@ let _ =
           ~sandbox,
           ~noWorkerJobRecord=_buildNoWorkerJobConfig(),
           ~renderConfigRecord=_buildRenderConfig(),
+          ~context=
+            {|
+        {
+        "alpha": true,
+        "depth": true,
+        "stencil": true,
+        "antialias": true,
+        "premultiplied_alpha": true,
+        "preserve_drawing_buffer": false
+        }
+               |},
           (),
         );
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
+    test("gl context->stencil should be true", () =>
+      state^
+      |> ViewTool.unsafeGetContext
+      |>
+      expect == {
+                  alpha: true,
+                  depth: true,
+                  stencil: true,
+                  antialias: true,
+                  premultipliedAlpha: true,
+                  preserveDrawingBuffer: false,
+                }
+    );
 
     describe(
       "test init outline_draw_origin_gameObjects,outline_draw_expand_gameObjects shaders",
@@ -468,7 +512,7 @@ let _ =
                   {|uniform mat4 u_pMatrix;|},
                   {|uniform mat4 u_mMatrix;|},
                   {|mat4 mMatrix = u_mMatrix;|},
-                  {|gl_Position = u_pMatrix * u_vMatrix * mMatrix * a_position;|},
+                  {|gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);|},
                 ],
               )
               |> expect == true;
@@ -488,26 +532,43 @@ let _ =
           });
 
           describe("test outline_draw_expand_gameObjects glsl", () => {
-            test("test vs", () => {
-              let (state, shaderSource) =
-                _prepareForJudgeGLSLNotExec(sandbox, state^);
+            describe("test vs", () => {
+              test("send a_position, a_normal and mvp matrices", () => {
+                let (state, shaderSource) =
+                  _prepareForJudgeGLSLNotExec(sandbox, state^);
 
-              let state = state |> DirectorTool.init;
+                let state = state |> DirectorTool.init;
 
-              GLSLTool.containMultiline(
-                GLSLTool.getVsSourceByCount(shaderSource, 2),
-                [
-                  {|attribute vec3 a_position;|},
-                  {|attribute vec3 a_normal;|},
-                  {|uniform mat4 u_vMatrix;|},
-                  {|uniform mat4 u_pMatrix;|},
-                  {|uniform mat4 u_mMatrix;|},
-                  {|mat4 mMatrix = u_mMatrix;|},
-                  {|gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(position, 1.0);|},
-                ],
-              )
-              |> expect == true;
+                GLSLTool.containMultiline(
+                  GLSLTool.getVsSourceByCount(shaderSource, 2),
+                  [
+                    {|attribute vec3 a_position;|},
+                    {|attribute vec3 a_normal;|},
+                    {|uniform mat4 u_vMatrix;|},
+                    {|uniform mat4 u_pMatrix;|},
+                    {|uniform mat4 u_mMatrix;|},
+                    {|mat4 mMatrix = u_mMatrix;|},
+                  ],
+                )
+                |> expect == true;
+              });
+              test("move a_position out towards a_normal", () => {
+                let (state, shaderSource) =
+                  _prepareForJudgeGLSLNotExec(sandbox, state^);
+
+                let state = state |> DirectorTool.init;
+
+                GLSLTool.containMultiline(
+                  GLSLTool.getVsSourceByCount(shaderSource, 2),
+                  [
+                    {|vec3 position = a_position.xyz + a_normal.xyz * 0.08;|},
+                    {|gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(position, 1.0);|},
+                  ],
+                )
+                |> expect == true;
+              });
             });
+
             test("test fs", () => {
               let (state, shaderSource) =
                 _prepareForJudgeGLSLNotExec(sandbox, state^);
@@ -579,19 +640,19 @@ let _ =
         )
         |> expect == (true, true, true);
       });
-      test("enable depth test", () => {
-        let enable = createEmptyStubWithJsObjSandbox(sandbox);
+      test("disable depth test", () => {
+        let disable = createEmptyStubWithJsObjSandbox(sandbox);
         let getDepthTest = 1;
         let state =
           state^
           |> FakeGlTool.setFakeGl(
-               FakeGlTool.buildFakeGl(~sandbox, ~enable, ~getDepthTest, ()),
+               FakeGlTool.buildFakeGl(~sandbox, ~disable, ~getDepthTest, ()),
              );
 
         let state =
           state |> DirectorTool.init |> DirectorTool.runWithDefaultTime;
 
-        enable |> expect |> toCalledWith([|getDepthTest|]);
+        disable |> getCall(0) |> expect |> toCalledWith([|getDepthTest|]);
       });
       test("not write to depth buffer and color buffer", () => {
         let depthMask = createEmptyStubWithJsObjSandbox(sandbox);
@@ -969,28 +1030,22 @@ let _ =
               |]);
 
             (
-              JudgeTool.isGreaterOrEqualThan(
-                uniformMatrix4fv
-                |> withThreeArgs(
-                     pos,
-                     Obj.magic(false),
-                     Obj.magic(targetData1),
-                   )
-                |> getCallCount,
-                1,
-              ),
-              JudgeTool.isGreaterOrEqualThan(
-                uniformMatrix4fv
-                |> withThreeArgs(
-                     pos,
-                     Obj.magic(false),
-                     Obj.magic(targetData2),
-                   )
-                |> getCallCount,
-                1,
-              ),
+              uniformMatrix4fv
+              |> withThreeArgs(
+                   pos,
+                   Obj.magic(false),
+                   Obj.magic(targetData1),
+                 )
+              |> getCallCount,
+              uniformMatrix4fv
+              |> withThreeArgs(
+                   pos,
+                   Obj.magic(false),
+                   Obj.magic(targetData2),
+                 )
+              |> getCallCount,
             )
-            |> expect == (true, true);
+            |> expect == (1, 1);
           })
         );
       });
@@ -1436,7 +1491,7 @@ let _ =
           ) =
             _prepareGameObjects(sandbox, state^);
           let color = [|0.1, 0.1, 0.2|];
-          let state = state |> JobDataAPI.setColor(color);
+          let state = state |> JobDataAPI.setOutlineColor(color);
           let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
           let name = "u_outlineColor";
           let pos = 0;
@@ -1463,7 +1518,7 @@ let _ =
         });
 
         describe("test send model data", () =>
-          test("send u_mMatrix", () => {
+          test("send scaled u_mMatrix", () => {
             let (
               state,
               (cameraTransform, basicCameraView),
@@ -1509,6 +1564,8 @@ let _ =
             let state =
               state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
 
+            let scaleVectorForScaledModelMatrix =
+              DrawOutlineJobTool.getScaleVectorForScaledModelMatrix();
             let targetData1 =
               Js.Typed_array.Float32Array.make([|
                 1.,
@@ -1527,7 +1584,13 @@ let _ =
                 2.,
                 3.,
                 1.,
-              |]);
+              |])
+              |> Matrix4Service.scale(
+                   scaleVectorForScaledModelMatrix,
+                   _,
+                   Matrix4Service.createIdentityMatrix4(),
+                 );
+
             let targetData2 =
               Js.Typed_array.Float32Array.make([|
                 1.,
@@ -1546,7 +1609,12 @@ let _ =
                 3.,
                 4.,
                 1.,
-              |]);
+              |])
+              |> Matrix4Service.scale(
+                   scaleVectorForScaledModelMatrix,
+                   _,
+                   Matrix4Service.createIdentityMatrix4(),
+                 );
 
             (
               /* JudgeTool.isGreaterOrEqualThan(
@@ -1584,7 +1652,7 @@ let _ =
                  )
               |> getCallCount,
             )
-            |> expect == (2, 2);
+            |> expect == (1, 1);
           })
         );
       });
@@ -1775,7 +1843,7 @@ let _ =
         let state =
           state |> DirectorTool.init |> DirectorTool.runWithDefaultTime;
 
-        enable |> getCall(4) |> expect |> toCalledWith([|getDepthTest|]);
+        enable |> getCall(3) |> expect |> toCalledWith([|getDepthTest|]);
       });
       test("write to depth buffer and color buffer", () => {
         let depthMask = createEmptyStubWithJsObjSandbox(sandbox);

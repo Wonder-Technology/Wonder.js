@@ -30,7 +30,7 @@ let addModelSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArrT
   | _ =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
-        ~title="_addModelSendData",
+        ~title="addModelSendData",
         ~description={j|unknow field:$field|j},
         ~reason="",
         ~solution={j||j},

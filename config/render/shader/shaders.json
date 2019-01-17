@@ -186,7 +186,7 @@
           "name": "normal"
         },
         {
-          "name": "modelMatrix_noInstance"
+          "name": "outline_scaled_modelMatrix"
         },
         {
           "name": "outline_expand"

@@ -154,5 +154,48 @@
         }
       ]
     }
+  ],
+  "no_material_shaders": [
+    {
+      "name": "outline_draw_origin_gameObjects",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "modelMatrix_noInstance"
+        },
+        {
+          "name": "outline_origin"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
+    },
+    {
+      "name": "outline_draw_expand_gameObjects",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "normal"
+        },
+        {
+          "name": "outline_scaled_modelMatrix"
+        },
+        {
+          "name": "outline_expand"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
+    }
   ]
 }

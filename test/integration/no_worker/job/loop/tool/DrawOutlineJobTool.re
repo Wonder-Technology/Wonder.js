@@ -1,0 +1,1 @@
+let getScaleVectorForScaledModelMatrix = () => (1.03, 1.03, 1.03);

@@ -3,7 +3,7 @@
     "context": {
         "alpha": true,
         "depth": true,
-        "stencil": false,
+        "stencil": true,
         "antialias": true,
         "premultiplied_alpha": true,
         "preserve_drawing_buffer": false

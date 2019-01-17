@@ -195,7 +195,7 @@ let buildRenderConfig =
           "name": "normal"
         },
         {
-          "name": "modelMatrix_noInstance"
+          "name": "outline_scaled_modelMatrix"
         },
         {
           "name": "outline_expand"
@@ -210,6 +210,7 @@ let buildRenderConfig =
 }
         |},
       ~shaderLibs={|
+
 [
   {
     "name": "common",
@@ -753,6 +754,25 @@ let buildRenderConfig =
     }
   },
   {
+    "name": "outline_scaled_modelMatrix",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "modelMatrix_noInstance_vertex"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_mMatrix",
+          "field": "mMatrix",
+          "type": "mat4",
+          "from": "expand_model"
+        }
+      ]
+    }
+  },
+  {
     "name": "outline_origin",
     "glsls": [
       {
@@ -778,11 +798,12 @@ let buildRenderConfig =
 ]
 
 
+
         |},
-      ()
+      (),
     ) => (
   shaders,
-  shaderLibs
+  shaderLibs,
 );
 
 let create = ((shaders, shaderLibs), state: StateDataMainType.state) => {
@@ -790,20 +811,22 @@ let create = ((shaders, shaderLibs), state: StateDataMainType.state) => {
   renderConfigRecord:
     Some({
       shaders: convertShadersToRecord(shaders |> Js.Json.parseExn),
-      shaderLibs: convertShaderLibsToRecord(shaderLibs |> Js.Json.parseExn)
-    })
+      shaderLibs: convertShaderLibsToRecord(shaderLibs |> Js.Json.parseExn),
+    }),
 };
 
-let getRecord = (state) => RecordRenderConfigMainService.getRecord(state);
+let getRecord = state => RecordRenderConfigMainService.getRecord(state);
 
-let getShaders = (state) =>
+let getShaders = state =>
   GetDataRenderConfigService.getShaders(
-    InitBasicMaterialStateTool.createStateWithoutMaterialData(state).renderConfigRecord
+    InitBasicMaterialStateTool.createStateWithoutMaterialData(state).
+      renderConfigRecord,
   );
 
-let getShaderLibs = (state) =>
+let getShaderLibs = state =>
   GetDataRenderConfigService.getShaderLibs(
-    InitBasicMaterialStateTool.createStateWithoutMaterialData(state).renderConfigRecord
+    InitBasicMaterialStateTool.createStateWithoutMaterialData(state).
+      renderConfigRecord,
   );
 
 let getBasicMaterialShaderLibRecordArr = GetShaderLibDataArrayInitBasicMaterialService.getMaterialShaderLibDataArr;

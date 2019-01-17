@@ -49,8 +49,13 @@ let sendMatrix3 =
 
 let sendMatrix4 =
   (. gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
-    /* WonderLog.Log.log(("send matrix4: ", data)) |> ignore; */
-    uniformMatrix4fv(pos, false, data, gl);
+    /* WonderLog.Log.log(("send matrix4: ", pos, data)) |> ignore; */
+    uniformMatrix4fv(
+      pos,
+      false,
+      data,
+      gl,
+    );
 
 let _getCache = (shaderCacheMap, name: string) =>
   shaderCacheMap |> WonderCommonlib.HashMapService.get(name);

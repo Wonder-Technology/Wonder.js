@@ -71,6 +71,16 @@ let initWithJobConfig =
       ~buffer=SettingTool.buildBufferConfigStr(),
       ~noWorkerJobRecord=NoWorkerJobConfigTool.buildNoWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
+      ~context={|
+        {
+        "alpha": true,
+        "depth": true,
+        "stencil": false,
+        "antialias": true,
+        "premultiplied_alpha": true,
+        "preserve_drawing_buffer": false
+        }
+               |},
       (),
     ) => {
   SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer(.);
@@ -80,6 +90,7 @@ let initWithJobConfig =
     ~isDebug,
     ~buffer,
     ~noWorkerJobRecord,
+    ~context,
     (),
   );
 };

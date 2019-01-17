@@ -541,6 +541,25 @@
     }
   },
   {
+    "name": "outline_scaled_modelMatrix",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "modelMatrix_noInstance_vertex"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_mMatrix",
+          "field": "mMatrix",
+          "type": "mat4",
+          "from": "expand_model"
+        }
+      ]
+    }
+  },
+  {
     "name": "outline_origin",
     "glsls": [
       {

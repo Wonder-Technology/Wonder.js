@@ -468,9 +468,9 @@ let registerNoWorkerInitJob = JobAPI.registerNoWorkerInitJob;
 
 let setGameObjectsNeedDrawOutline = JobDataAPI.setGameObjectsNeedDrawOutline;
 
-let setColor = JobDataAPI.setColor;
+let setOutlineColor = JobDataAPI.setOutlineColor;
 
-let getColor = JobDataAPI.getColor;
+let getOutlineColor = JobDataAPI.getOutlineColor;
 
 let isMaxCount = DirectionLightAPI.isMaxCount;
 

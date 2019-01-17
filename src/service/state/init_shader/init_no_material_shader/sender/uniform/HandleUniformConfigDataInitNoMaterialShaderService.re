@@ -32,7 +32,23 @@ let _readUniforms =
                  sendDataArrTuple,
                )
              | "model" =>
-               HandleModelUniformConfigDataService.addModelSendData(
+               HandleNoMaterialShaderModelUniformConfigDataService.addModelSendData(
+                 (
+                   field,
+                   GLSLLocationService.getUniformLocation(
+                     program,
+                     name,
+                     uniformLocationMap,
+                     gl,
+                   ),
+                   name,
+                   type_,
+                   uniformCacheMap,
+                 ),
+                 sendDataArrTuple,
+               )
+             | "expand_model" =>
+               HandleNoMaterialShaderModelUniformConfigDataService.addExpandModelSendData(
                  (
                    field,
                    GLSLLocationService.getUniformLocation(
