@@ -5,7 +5,68 @@ open WonderWebgl;
 module DrawOutlineJobUtils = {
   open StateRenderType;
 
-  /* TODO refactor: duplicate */
+  let _sendUniformRenderObjectModelData =
+      (
+        gl,
+        shaderIndex,
+        transformIndex,
+        getRenderDataSubState,
+        {glslSenderRecord} as state,
+      ) => {
+    open GLSLSenderType;
+
+    glslSenderRecord
+    |> HandleUniformRenderObjectModelService.unsafeGetUniformSendData(
+         shaderIndex,
+       )
+    |> WonderCommonlib.ArrayService.forEach(
+         (.
+           {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData,
+         ) =>
+         GLSLLocationService.isUniformLocationExist(pos) ?
+           sendDataFunc(.
+             gl,
+             pos,
+             getDataFunc(. transformIndex, getRenderDataSubState),
+           ) :
+           ()
+       );
+
+    ();
+  };
+
+  let _sendAttributeData =
+      (
+        gl,
+        (shaderIndex, geometryIndex) as indexTuple,
+        currentGeometryBufferMapAndGetPointsFuncsTuple,
+        sendRenderDataSubState,
+        {vboBufferRecord, glslSenderRecord} as state,
+        getOrCreateBufferFunc,
+      ) => {
+    open GLSLSenderType;
+
+    let dataTuple = (gl, geometryIndex);
+    glslSenderRecord
+    |> HandleAttributeConfigDataService.unsafeGetAttributeSendData(
+         shaderIndex,
+       )
+    |> WonderCommonlib.ArrayService.forEach(
+         (. {pos, size, buffer, sendFunc}) => {
+         let arrayBuffer =
+           getOrCreateBufferFunc(
+             buffer,
+             dataTuple,
+             currentGeometryBufferMapAndGetPointsFuncsTuple,
+             state,
+           );
+
+         sendFunc(. gl, (size, pos), arrayBuffer, sendRenderDataSubState);
+       });
+
+    ();
+  };
+
   module DrawOriginGameObjects = {
     open VboBufferType;
 
@@ -88,12 +149,7 @@ module DrawOutlineJobUtils = {
       };
 
     let _sendAttributeData =
-        (
-          gl,
-          (shaderIndex, geometryIndex) as indexTuple,
-          sendRenderDataSubState,
-          {vboBufferRecord, glslSenderRecord} as state,
-        ) => {
+        (gl, indexTuple, sendRenderDataSubState, {vboBufferRecord} as state) => {
       let currentGeometryBufferMapAndGetPointsFuncsTuple = (
         (
           vboBufferRecord.geometryVertexBufferMap,
@@ -109,53 +165,15 @@ module DrawOutlineJobUtils = {
           GetGeometryIndicesRenderService.getIndices32,
         ),
       );
-      let dataTuple = (gl, geometryIndex);
-      glslSenderRecord
-      |> HandleAttributeConfigDataService.unsafeGetAttributeSendData(
-           shaderIndex,
-         )
-      |> WonderCommonlib.ArrayService.forEach(
-           (. {pos, size, buffer, sendFunc}) => {
-           let arrayBuffer =
-             _getOrCreateBuffer(
-               buffer,
-               dataTuple,
-               currentGeometryBufferMapAndGetPointsFuncsTuple,
-               state,
-             );
 
-           sendFunc(. gl, (size, pos), arrayBuffer, sendRenderDataSubState);
-         });
-
-      ();
-    };
-
-    let _sendUniformRenderObjectModelData =
-        (
-          gl,
-          shaderIndex,
-          transformIndex,
-          getRenderDataSubState,
-          {glslSenderRecord} as state,
-        ) => {
-      glslSenderRecord
-      |> HandleUniformRenderObjectModelService.unsafeGetUniformSendData(
-           shaderIndex,
-         )
-      |> WonderCommonlib.ArrayService.forEach(
-           (.
-             {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData,
-           ) =>
-           GLSLLocationService.isUniformLocationExist(pos) ?
-             sendDataFunc(.
-               gl,
-               pos,
-               getDataFunc(. transformIndex, getRenderDataSubState),
-             ) :
-             ()
-         );
-
-      ();
+      _sendAttributeData(
+        gl,
+        indexTuple,
+        currentGeometryBufferMapAndGetPointsFuncsTuple,
+        sendRenderDataSubState,
+        state,
+        _getOrCreateBuffer,
+      );
     };
 
     let draw =
@@ -286,12 +304,7 @@ module DrawOutlineJobUtils = {
       };
 
     let _sendAttributeData =
-        (
-          gl,
-          (shaderIndex, geometryIndex) as indexTuple,
-          sendRenderDataSubState,
-          {vboBufferRecord, glslSenderRecord} as state,
-        ) => {
+        (gl, indexTuple, sendRenderDataSubState, {vboBufferRecord} as state) => {
       let currentGeometryBufferMapAndGetPointsFuncsTuple = (
         (
           vboBufferRecord.geometryVertexBufferMap,
@@ -309,53 +322,15 @@ module DrawOutlineJobUtils = {
           GetGeometryIndicesRenderService.getIndices32,
         ),
       );
-      let dataTuple = (gl, geometryIndex);
-      glslSenderRecord
-      |> HandleAttributeConfigDataService.unsafeGetAttributeSendData(
-           shaderIndex,
-         )
-      |> WonderCommonlib.ArrayService.forEach(
-           (. {pos, size, buffer, sendFunc}) => {
-           let arrayBuffer =
-             _getOrCreateBuffer(
-               buffer,
-               dataTuple,
-               currentGeometryBufferMapAndGetPointsFuncsTuple,
-               state,
-             );
-           sendFunc(. gl, (size, pos), arrayBuffer, sendRenderDataSubState);
-         });
 
-      ();
-    };
-
-    /* TODO refactor: duplicate */
-    let _sendUniformRenderObjectModelData =
-        (
-          gl,
-          shaderIndex,
-          transformIndex,
-          getRenderDataSubState,
-          {glslSenderRecord} as state,
-        ) => {
-      glslSenderRecord
-      |> HandleUniformRenderObjectModelService.unsafeGetUniformSendData(
-           shaderIndex,
-         )
-      |> WonderCommonlib.ArrayService.forEach(
-           (.
-             {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData,
-           ) =>
-           GLSLLocationService.isUniformLocationExist(pos) ?
-             sendDataFunc(.
-               gl,
-               pos,
-               getDataFunc(. transformIndex, getRenderDataSubState),
-             ) :
-             ()
-         );
-
-      ();
+      _sendAttributeData(
+        gl,
+        indexTuple,
+        currentGeometryBufferMapAndGetPointsFuncsTuple,
+        sendRenderDataSubState,
+        state,
+        _getOrCreateBuffer,
+      );
     };
 
     let _sendUniformNoMaterialShaderData =
@@ -380,8 +355,6 @@ module DrawOutlineJobUtils = {
 
       state;
     };
-
-    /* TODO refactor: duplicate */
 
     let draw =
         (gl, shaderIndex, renderDataArr, state: StateRenderType.renderState) =>

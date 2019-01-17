@@ -286,54 +286,262 @@ let _ =
         (),
       );
 
-    let _prepareBasicGameObject = (sandbox, state) => {
-      open GameObjectAPI;
-      open BasicMaterialAPI;
-      open MeshRendererAPI;
-      open Sinon;
+    module TestDraw = {
+      let prepareBasicGameObject = (sandbox, state) => {
+        open GameObjectAPI;
+        open BasicMaterialAPI;
+        open MeshRendererAPI;
+        open Sinon;
 
-      let (state, material) = createBasicMaterial(state);
-      let (state, geometry, name, pointsData) =
-        SphereGeometryTool.createSphereGeometry(state);
-      let (state, meshRenderer) = createMeshRenderer(state);
-      let (state, gameObject) = state |> createGameObject;
-      let state =
-        state
-        |> addGameObjectBasicMaterialComponent(gameObject, material)
-        |> addGameObjectGeometryComponent(gameObject, geometry)
-        |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+        let (state, material) = createBasicMaterial(state);
+        let (state, geometry, name, pointsData) =
+          SphereGeometryTool.createSphereGeometry(state);
+        let (state, meshRenderer) = createMeshRenderer(state);
+        let (state, gameObject) = state |> createGameObject;
+        let state =
+          state
+          |> addGameObjectBasicMaterialComponent(gameObject, material)
+          |> addGameObjectGeometryComponent(gameObject, geometry)
+          |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
 
-      (
-        state,
-        gameObject,
-        (geometry, name, pointsData),
-        material,
-        meshRenderer,
-      );
+        (
+          state,
+          gameObject,
+          (geometry, name, pointsData),
+          material,
+          meshRenderer,
+        );
+      };
+
+      let prepareGameObjects = (sandbox, state) => {
+        let (state, basicGameObject, (basicGeometry, _, pointsData), _, _) =
+          prepareBasicGameObject(sandbox, state);
+
+        let (state, lightGameObject, lightGeometry, _, _) =
+          FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+        let (state, _, cameraTransform, (basicCameraView, _)) =
+          CameraTool.createCameraGameObject(state);
+
+        let state =
+          state
+          |> JobDataAPI.setGameObjectsNeedDrawOutline([|
+               basicGameObject,
+               lightGameObject,
+             |]);
+
+        (
+          state,
+          (cameraTransform, basicCameraView),
+          (basicGameObject, lightGameObject),
+          ((basicGeometry, pointsData), lightGeometry),
+        );
+      };
+
+      let prepareAndExecForSendVMatrix = () => {
+        let (
+          state,
+          (cameraTransform, basicCameraView),
+          (basicGameObject, lightGameObject),
+          (
+            (basicGeometry, (vertices, texCoords, normals, indices)),
+            lightGeometry,
+          ),
+        ) =
+          prepareGameObjects(sandbox, state^);
+        let state =
+          state
+          |> TransformAPI.setTransformLocalPosition(
+               cameraTransform,
+               (10., 2., 3.),
+             );
+        let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
+        let name = "u_vMatrix";
+        let pos = 0;
+        let getUniformLocation =
+          GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
+        let state =
+          state
+          |> FakeGlTool.setFakeGl(
+               FakeGlTool.buildFakeGl(
+                 ~sandbox,
+                 ~uniformMatrix4fv,
+                 ~getUniformLocation,
+                 (),
+               ),
+             );
+
+        let state =
+          state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+        let targetData =
+          Js.Typed_array.Float32Array.make([|
+            1.,
+            0.,
+            0.,
+            0.,
+            0.,
+            1.,
+            0.,
+            0.,
+            0.,
+            0.,
+            1.,
+            0.,
+            (-10.),
+            (-2.),
+            (-3.),
+            1.,
+          |]);
+
+        (state, uniformMatrix4fv, pos, targetData);
+      };
+
+      let prepareAndExecForSendPMatrix = () => {
+        let (
+          state,
+          (cameraTransform, basicCameraView),
+          (basicGameObject, lightGameObject),
+          (
+            (basicGeometry, (vertices, texCoords, normals, indices)),
+            lightGeometry,
+          ),
+        ) =
+          prepareGameObjects(sandbox, state^);
+        let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
+        let name = "u_pMatrix";
+        let pos = 0;
+        let getUniformLocation =
+          GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
+        let state =
+          state
+          |> FakeGlTool.setFakeGl(
+               FakeGlTool.buildFakeGl(
+                 ~sandbox,
+                 ~uniformMatrix4fv,
+                 ~getUniformLocation,
+                 (),
+               ),
+             );
+
+        let state =
+          state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+        let targetData =
+          PerspectiveCameraProjectionTool.getPMatrixOfCreateBasicCameraViewPerspectiveCamera();
+
+        (state, uniformMatrix4fv, pos, targetData);
+      };
+
+      let prepareAndExecForSendMMatrix = () => {
+        let (
+          state,
+          (cameraTransform, basicCameraView),
+          (basicGameObject, lightGameObject),
+          (
+            (basicGeometry, (vertices, texCoords, normals, indices)),
+            lightGeometry,
+          ),
+        ) =
+          prepareGameObjects(sandbox, state^);
+        let state =
+          state
+          |> TransformAPI.setTransformLocalPosition(
+               GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                 basicGameObject,
+                 state,
+               ),
+               (1., 2., 3.),
+             )
+          |> TransformAPI.setTransformLocalPosition(
+               GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                 lightGameObject,
+                 state,
+               ),
+               (2., 3., 4.),
+             );
+        let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
+        let name = "u_mMatrix";
+        let pos = 0;
+        let getUniformLocation =
+          GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
+        let state =
+          state
+          |> FakeGlTool.setFakeGl(
+               FakeGlTool.buildFakeGl(
+                 ~sandbox,
+                 ~uniformMatrix4fv,
+                 ~getUniformLocation,
+                 (),
+               ),
+             );
+
+        let state =
+          state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+        (state, uniformMatrix4fv, pos);
+      };
+
+      let prepareAndExecForDrawElement = () => {
+        let (
+          state,
+          _,
+          _,
+          (
+            (basicGeometry, (vertices, texCoords, normals, indices)),
+            lightGeometry,
+          ),
+        ) =
+          prepareGameObjects(sandbox, state^);
+        let triangles = 1;
+        let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
+        let state =
+          state
+          |> FakeGlTool.setFakeGl(
+               FakeGlTool.buildFakeGl(
+                 ~sandbox,
+                 ~triangles,
+                 ~drawElements,
+                 (),
+               ),
+             );
+
+        let state =
+          state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+        (state, drawElements, triangles, (basicGeometry, lightGeometry));
+      };
     };
 
-    let _prepareGameObjects = (sandbox, state) => {
-      let (state, basicGameObject, (basicGeometry, _, pointsData), _, _) =
-        _prepareBasicGameObject(sandbox, state);
+    module TestUseProgram = {
+      let prepareAndExec = shaderName => {
+        let program1 = Obj.magic(1);
+        let program2 = Obj.magic(2);
+        let createProgram =
+          createEmptyStubWithJsObjSandbox(sandbox)
+          |> onCall(0)
+          |> returns(program1)
+          |> onCall(1)
+          |> returns(program2);
+        let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
+        let state =
+          state^
+          |> FakeGlTool.setFakeGl(
+               FakeGlTool.buildFakeGl(
+                 ~sandbox,
+                 ~createProgram,
+                 ~useProgram,
+                 (),
+               ),
+             );
 
-      let (state, lightGameObject, lightGeometry, _, _) =
-        FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-      let (state, _, cameraTransform, (basicCameraView, _)) =
-        CameraTool.createCameraGameObject(state);
+        let state =
+          state |> DirectorTool.init |> DirectorTool.runWithDefaultTime;
 
-      let state =
-        state
-        |> JobDataAPI.setGameObjectsNeedDrawOutline([|
-             basicGameObject,
-             lightGameObject,
-           |]);
+        let drawGameObjectsShaderIndex =
+          ShaderTool.getNoMaterialShaderIndex(shaderName, state);
 
-      (
-        state,
-        (cameraTransform, basicCameraView),
-        (basicGameObject, lightGameObject),
-        ((basicGeometry, pointsData), lightGeometry),
-      );
+        (state, useProgram, drawGameObjectsShaderIndex);
+      };
     };
 
     beforeEach(() => {
@@ -678,43 +886,14 @@ let _ =
 
     describe("use draw origin gameObject program", () =>
       test("test", () => {
-        let program1 = Obj.magic(1);
-        let program2 = Obj.magic(2);
-        let createProgram =
-          createEmptyStubWithJsObjSandbox(sandbox)
-          |> onCall(0)
-          |> returns(program1)
-          |> onCall(1)
-          |> returns(program2);
-        let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
-        let state =
-          state^
-          |> FakeGlTool.setFakeGl(
-               FakeGlTool.buildFakeGl(
-                 ~sandbox,
-                 ~createProgram,
-                 ~useProgram,
-                 (),
-               ),
-             );
-
-        let state =
-          state |> DirectorTool.init |> DirectorTool.runWithDefaultTime;
-
-        let drawOriginGameObjectsShaderIndex =
-          ShaderTool.getNoMaterialShaderIndex(
-            "outline_draw_origin_gameObjects",
-            state,
-          );
+        let (state, useProgram, shaderIndex) =
+          TestUseProgram.prepareAndExec("outline_draw_origin_gameObjects");
 
         useProgram
         |> getCall(0)
         |> SinonTool.calledWith(
              _,
-             ProgramTool.unsafeGetProgram(
-               drawOriginGameObjectsShaderIndex,
-               state,
-             ),
+             ProgramTool.unsafeGetProgram(shaderIndex, state),
            )
         |> expect == true;
       })
@@ -732,7 +911,7 @@ let _ =
               lightGeometry,
             ),
           ) =
-            _prepareGameObjects(sandbox, state^);
+            TestDraw.prepareGameObjects(sandbox, state^);
           let array_buffer = 1;
           let static_draw = 2;
           let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
@@ -789,7 +968,7 @@ let _ =
                 lightGeometry,
               ),
             ) =
-              _prepareGameObjects(sandbox, state^);
+              TestDraw.prepareGameObjects(sandbox, state^);
             let element_array_buffer = 1;
             let static_draw = 2;
             let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
@@ -833,62 +1012,9 @@ let _ =
 
       describe("send uniform data", () => {
         describe("test send data per shader", () => {
-          /* TODO refactor: duplicate */
           test("send u_vMatrix", () => {
-            let (
-              state,
-              (cameraTransform, basicCameraView),
-              (basicGameObject, lightGameObject),
-              (
-                (basicGeometry, (vertices, texCoords, normals, indices)),
-                lightGeometry,
-              ),
-            ) =
-              _prepareGameObjects(sandbox, state^);
-            let state =
-              state
-              |> TransformAPI.setTransformLocalPosition(
-                   cameraTransform,
-                   (10., 2., 3.),
-                 );
-            let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
-            let name = "u_vMatrix";
-            let pos = 0;
-            let getUniformLocation =
-              GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~uniformMatrix4fv,
-                     ~getUniformLocation,
-                     (),
-                   ),
-                 );
-
-            let state =
-              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-
-            let targetData =
-              Js.Typed_array.Float32Array.make([|
-                1.,
-                0.,
-                0.,
-                0.,
-                0.,
-                1.,
-                0.,
-                0.,
-                0.,
-                0.,
-                1.,
-                0.,
-                (-10.),
-                (-2.),
-                (-3.),
-                1.,
-              |]);
+            let (state, uniformMatrix4fv, pos, targetData) =
+              TestDraw.prepareAndExecForSendVMatrix();
 
             uniformMatrix4fv
             |> withThreeArgs(pos, Obj.magic(false), Obj.magic(targetData))
@@ -897,43 +1023,8 @@ let _ =
             |> toBeGreaterThanOrEqual(1);
           });
           test("send u_pMatrix", () => {
-            let (
-              state,
-              (cameraTransform, basicCameraView),
-              (basicGameObject, lightGameObject),
-              (
-                (basicGeometry, (vertices, texCoords, normals, indices)),
-                lightGeometry,
-              ),
-            ) =
-              _prepareGameObjects(sandbox, state^);
-            /* let state =
-               state
-               |> TransformAPI.setTransformLocalPosition(
-                    cameraTransform,
-                    (10., 2., 3.),
-                  ); */
-            let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
-            let name = "u_pMatrix";
-            let pos = 0;
-            let getUniformLocation =
-              GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~uniformMatrix4fv,
-                     ~getUniformLocation,
-                     (),
-                   ),
-                 );
-
-            let state =
-              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-
-            let targetData =
-              PerspectiveCameraProjectionTool.getPMatrixOfCreateBasicCameraViewPerspectiveCamera();
+            let (state, uniformMatrix4fv, pos, targetData) =
+              TestDraw.prepareAndExecForSendPMatrix();
 
             uniformMatrix4fv
             |> withThreeArgs(pos, Obj.magic(false), Obj.magic(targetData))
@@ -945,50 +1036,8 @@ let _ =
 
         describe("test send model data", () =>
           test("send u_mMatrix", () => {
-            let (
-              state,
-              (cameraTransform, basicCameraView),
-              (basicGameObject, lightGameObject),
-              (
-                (basicGeometry, (vertices, texCoords, normals, indices)),
-                lightGeometry,
-              ),
-            ) =
-              _prepareGameObjects(sandbox, state^);
-            let state =
-              state
-              |> TransformAPI.setTransformLocalPosition(
-                   GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                     basicGameObject,
-                     state,
-                   ),
-                   (1., 2., 3.),
-                 )
-              |> TransformAPI.setTransformLocalPosition(
-                   GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                     lightGameObject,
-                     state,
-                   ),
-                   (2., 3., 4.),
-                 );
-            let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
-            let name = "u_mMatrix";
-            let pos = 0;
-            let getUniformLocation =
-              GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~uniformMatrix4fv,
-                     ~getUniformLocation,
-                     (),
-                   ),
-                 );
-
-            let state =
-              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+            let (state, uniformMatrix4fv, pos) =
+              TestDraw.prepareAndExecForSendMMatrix();
 
             let targetData1 =
               Js.Typed_array.Float32Array.make([|
@@ -1054,29 +1103,11 @@ let _ =
         test("test drawElements", () => {
           let (
             state,
-            _,
-            _,
-            (
-              (basicGeometry, (vertices, texCoords, normals, indices)),
-              lightGeometry,
-            ),
+            drawElements,
+            triangles,
+            (basicGeometry, lightGeometry),
           ) =
-            _prepareGameObjects(sandbox, state^);
-          let triangles = 1;
-          let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
-          let state =
-            state
-            |> FakeGlTool.setFakeGl(
-                 FakeGlTool.buildFakeGl(
-                   ~sandbox,
-                   ~triangles,
-                   ~drawElements,
-                   (),
-                 ),
-               );
-
-          let state =
-            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+            TestDraw.prepareAndExecForDrawElement();
 
           (
             JudgeTool.isGreaterOrEqualThan(
@@ -1226,7 +1257,7 @@ let _ =
                  lightGeometry,
                ),
              ) =
-               _prepareGameObjects(sandbox, state^);
+               TestDraw.prepareGameObjects(sandbox, state^);
              let array_buffer = 1;
              let static_draw = 2;
              let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
@@ -1271,7 +1302,7 @@ let _ =
                   lightGeometry,
                 ),
               ) =
-                _prepareGameObjects(sandbox, state^);
+                TestDraw.prepareGameObjects(sandbox, state^);
               let float = 1;
               let vertexAttribPointer =
                 createEmptyStubWithJsObjSandbox(sandbox);
@@ -1328,7 +1359,7 @@ let _ =
                  lightGeometry,
                ),
              ) =
-               _prepareGameObjects(sandbox, state^);
+               TestDraw.prepareGameObjects(sandbox, state^);
              let element_array_buffer = 1;
              let static_draw = 2;
              let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
@@ -1371,62 +1402,9 @@ let _ =
 
       describe("send uniform data", () => {
         describe("test send data per shader", () => {
-          /* TODO refactor: duplicate */
           test("send u_vMatrix", () => {
-            let (
-              state,
-              (cameraTransform, basicCameraView),
-              (basicGameObject, lightGameObject),
-              (
-                (basicGeometry, (vertices, texCoords, normals, indices)),
-                lightGeometry,
-              ),
-            ) =
-              _prepareGameObjects(sandbox, state^);
-            let state =
-              state
-              |> TransformAPI.setTransformLocalPosition(
-                   cameraTransform,
-                   (10., 2., 3.),
-                 );
-            let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
-            let name = "u_vMatrix";
-            let pos = 0;
-            let getUniformLocation =
-              GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~uniformMatrix4fv,
-                     ~getUniformLocation,
-                     (),
-                   ),
-                 );
-
-            let state =
-              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-
-            let targetData =
-              Js.Typed_array.Float32Array.make([|
-                1.,
-                0.,
-                0.,
-                0.,
-                0.,
-                1.,
-                0.,
-                0.,
-                0.,
-                0.,
-                1.,
-                0.,
-                (-10.),
-                (-2.),
-                (-3.),
-                1.,
-              |]);
+            let (state, uniformMatrix4fv, pos, targetData) =
+              TestDraw.prepareAndExecForSendVMatrix();
 
             uniformMatrix4fv
             |> withThreeArgs(pos, Obj.magic(false), Obj.magic(targetData))
@@ -1434,43 +1412,8 @@ let _ =
             |> expect == 2;
           });
           test("send u_pMatrix", () => {
-            let (
-              state,
-              (cameraTransform, basicCameraView),
-              (basicGameObject, lightGameObject),
-              (
-                (basicGeometry, (vertices, texCoords, normals, indices)),
-                lightGeometry,
-              ),
-            ) =
-              _prepareGameObjects(sandbox, state^);
-            /* let state =
-               state
-               |> TransformAPI.setTransformLocalPosition(
-                    cameraTransform,
-                    (10., 2., 3.),
-                  ); */
-            let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
-            let name = "u_pMatrix";
-            let pos = 0;
-            let getUniformLocation =
-              GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~uniformMatrix4fv,
-                     ~getUniformLocation,
-                     (),
-                   ),
-                 );
-
-            let state =
-              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-
-            let targetData =
-              PerspectiveCameraProjectionTool.getPMatrixOfCreateBasicCameraViewPerspectiveCamera();
+            let (state, uniformMatrix4fv, pos, targetData) =
+              TestDraw.prepareAndExecForSendPMatrix();
 
             uniformMatrix4fv
             |> withThreeArgs(pos, Obj.magic(false), Obj.magic(targetData))
@@ -1489,7 +1432,7 @@ let _ =
               lightGeometry,
             ),
           ) =
-            _prepareGameObjects(sandbox, state^);
+            TestDraw.prepareGameObjects(sandbox, state^);
           let color = [|0.1, 0.1, 0.2|];
           let state = state |> JobDataAPI.setOutlineColor(color);
           let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
@@ -1519,50 +1462,8 @@ let _ =
 
         describe("test send model data", () =>
           test("send scaled u_mMatrix", () => {
-            let (
-              state,
-              (cameraTransform, basicCameraView),
-              (basicGameObject, lightGameObject),
-              (
-                (basicGeometry, (vertices, texCoords, normals, indices)),
-                lightGeometry,
-              ),
-            ) =
-              _prepareGameObjects(sandbox, state^);
-            let state =
-              state
-              |> TransformAPI.setTransformLocalPosition(
-                   GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                     basicGameObject,
-                     state,
-                   ),
-                   (1., 2., 3.),
-                 )
-              |> TransformAPI.setTransformLocalPosition(
-                   GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                     lightGameObject,
-                     state,
-                   ),
-                   (2., 3., 4.),
-                 );
-            let uniformMatrix4fv = createEmptyStubWithJsObjSandbox(sandbox);
-            let name = "u_mMatrix";
-            let pos = 0;
-            let getUniformLocation =
-              GLSLLocationTool.getUniformLocation(~pos, sandbox, name);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~uniformMatrix4fv,
-                     ~getUniformLocation,
-                     (),
-                   ),
-                 );
-
-            let state =
-              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+            let (state, uniformMatrix4fv, pos) =
+              TestDraw.prepareAndExecForSendMMatrix();
 
             let scaleVectorForScaledModelMatrix =
               DrawOutlineJobTool.getScaleVectorForScaledModelMatrix();
@@ -1661,29 +1562,11 @@ let _ =
         test("test drawElements", () => {
           let (
             state,
-            _,
-            _,
-            (
-              (basicGeometry, (vertices, texCoords, normals, indices)),
-              lightGeometry,
-            ),
+            drawElements,
+            triangles,
+            (basicGeometry, lightGeometry),
           ) =
-            _prepareGameObjects(sandbox, state^);
-          let triangles = 1;
-          let drawElements = createEmptyStubWithJsObjSandbox(sandbox);
-          let state =
-            state
-            |> FakeGlTool.setFakeGl(
-                 FakeGlTool.buildFakeGl(
-                   ~sandbox,
-                   ~triangles,
-                   ~drawElements,
-                   (),
-                 ),
-               );
-
-          let state =
-            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+            TestDraw.prepareAndExecForDrawElement();
 
           (
             drawElements
@@ -1726,43 +1609,14 @@ let _ =
 
     describe("use draw expand gameObject program", () =>
       test("test", () => {
-        let program1 = Obj.magic(1);
-        let program2 = Obj.magic(2);
-        let createProgram =
-          createEmptyStubWithJsObjSandbox(sandbox)
-          |> onCall(0)
-          |> returns(program1)
-          |> onCall(1)
-          |> returns(program2);
-        let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
-        let state =
-          state^
-          |> FakeGlTool.setFakeGl(
-               FakeGlTool.buildFakeGl(
-                 ~sandbox,
-                 ~createProgram,
-                 ~useProgram,
-                 (),
-               ),
-             );
-
-        let state =
-          state |> DirectorTool.init |> DirectorTool.runWithDefaultTime;
-
-        let drawExpandGameObjectsShaderIndex =
-          ShaderTool.getNoMaterialShaderIndex(
-            "outline_draw_expand_gameObjects",
-            state,
-          );
+        let (state, useProgram, shaderIndex) =
+          TestUseProgram.prepareAndExec("outline_draw_expand_gameObjects");
 
         useProgram
         |> getCall(1)
         |> SinonTool.calledWith(
              _,
-             ProgramTool.unsafeGetProgram(
-               drawExpandGameObjectsShaderIndex,
-               state,
-             ),
+             ProgramTool.unsafeGetProgram(shaderIndex, state),
            )
         |> expect == true;
       })
