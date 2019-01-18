@@ -392,7 +392,7 @@ module DrawOutlineJobUtils = {
            0xFF,
          )
       |> DeviceManagerService.setStencilMask(gl, 0x00)
-      |> DeviceManagerService.setSide(gl, DeviceManagerType.BACK)
+      /* |> DeviceManagerService.setSide(gl, DeviceManagerType.BACK) */
       |> DeviceManagerService.setDepthTest(gl, false)
       |> DeviceManagerService.setDepthWrite(gl, false)
       |> DeviceManagerService.setColorWrite(gl, (true, true, true, true));
@@ -405,7 +405,7 @@ module DrawOutlineJobUtils = {
       deviceManagerRecord
       |> DeviceManagerService.setStencilTest(gl, false)
       |> DeviceManagerService.setStencilMask(gl, 0xFF)
-      |> DeviceManagerService.setSide(gl, DeviceManagerType.FRONT)
+      /* |> DeviceManagerService.setSide(gl, DeviceManagerType.FRONT) */
       |> DeviceManagerService.setDepthTest(gl, true)
       |> DeviceManagerService.setDepthWrite(gl, true);
 

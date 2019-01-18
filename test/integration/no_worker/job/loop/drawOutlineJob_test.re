@@ -1181,7 +1181,7 @@ let _ =
         )
         |> expect == (true, true);
       });
-      test("set side to back", () => {
+      test("not set side to back", () => {
         let enable = createEmptyStubWithJsObjSandbox(sandbox);
         let cullFace = createEmptyStubWithJsObjSandbox(sandbox);
         let front = 1;
@@ -1202,11 +1202,11 @@ let _ =
         let state =
           state |> DirectorTool.init |> DirectorTool.runWithDefaultTime;
 
-        (
-          enable |> SinonTool.calledWith(_, getCullFace),
-          cullFace |> getCall(0) |> SinonTool.calledWith(_, front),
-        )
-        |> expect == (true, true);
+        /* enable |> SinonTool.calledWith(_, getCullFace), */
+        cullFace
+        /* |> getCall(0) */
+        |> SinonTool.calledWith(_, front)
+        |> expect == false;
       });
       test("disable depth test", () => {
         let disable = createEmptyStubWithJsObjSandbox(sandbox);
@@ -1537,7 +1537,7 @@ let _ =
         |> SinonTool.calledWith(_, 0xFF)
         |> expect == true;
       });
-      test("set side to front", () => {
+      /* test("set side to front", () => {
         let enable = createEmptyStubWithJsObjSandbox(sandbox);
         let cullFace = createEmptyStubWithJsObjSandbox(sandbox);
         let back = 1;
@@ -1563,7 +1563,7 @@ let _ =
           cullFace |> getCall(1) |> SinonTool.calledWith(_, back),
         )
         |> expect == (true, true);
-      });
+      }); */
       test("enable depth test", () => {
         let enable = createEmptyStubWithJsObjSandbox(sandbox);
         let getDepthTest = 1;
@@ -1576,7 +1576,7 @@ let _ =
         let state =
           state |> DirectorTool.init |> DirectorTool.runWithDefaultTime;
 
-        enable |> getCall(3) |> expect |> toCalledWith([|getDepthTest|]);
+        enable |> getCall(1) |> expect |> toCalledWith([|getDepthTest|]);
       });
       test("write to depth buffer and color buffer", () => {
         let depthMask = createEmptyStubWithJsObjSandbox(sandbox);
