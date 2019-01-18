@@ -20,7 +20,7 @@ let getScaledLocalToWorldMatrixTypeArray =
       transformRecord.localToWorldMatrixCacheMap,
     )
     |> Matrix4Service.scale(
-         (1.03, 1.03, 1.03),
+         (1.01, 1.01, 1.01),
          _,
          Matrix4Service.createIdentityMatrix4(),
        );
