@@ -261,10 +261,10 @@ let _ =
                 _test(0, Left)
               );
               test("test Right", () =>
-                _test(1, Right)
+                _test(2, Right)
               );
               test("test Center", () =>
-                _test(2, Center)
+                _test(1, Center)
               );
             });
 

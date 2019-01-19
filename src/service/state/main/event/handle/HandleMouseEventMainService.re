@@ -30,8 +30,8 @@ let getButton = (mouseDomEvent, {browserDetectRecord} as state) => {
   | Firefox =>
     switch (mouseDomEvent##button) {
     | 0 => Left
-    | 1 => Right
-    | 2 => Center
+    | 1 => Center
+    | 2 => Right
     | button =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(
