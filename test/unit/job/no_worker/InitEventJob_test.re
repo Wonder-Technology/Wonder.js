@@ -250,21 +250,24 @@ let _ =
                 EventTool.triggerDomEvent(
                   "mousedown",
                   EventTool.getPointEventBindedDom(state),
-                  MouseEventTool.buildMouseEvent(~button=eventButton, ()),
+                  MouseEventTool.buildMouseEvent(~which=eventButton, ()),
                 );
                 let state = EventTool.restore(state);
 
                 button^ |> expect == targetButton;
               };
 
+              test("test NoButton", () =>
+                _test(0, NoButton)
+              );
               test("test Left", () =>
-                _test(0, Left)
+                _test(1, Left)
+              );
+              test("test Center", () =>
+                _test(2, Center)
               );
               test("test Right", () =>
                 _test(3, Right)
-              );
-              test("test Center", () =>
-                _test(1, Center)
               );
             });
 
@@ -766,30 +769,33 @@ let _ =
                   state,
                 );
               let state = MainStateTool.setState(state);
-            let state = MainStateTool.setState(state);
-            EventTool.triggerDomEvent(
-              "mousedown",
-              EventTool.getPointEventBindedDom(state),
-              MouseEventTool.buildMouseEvent(~button=eventButton, ()),
-            );
-            EventTool.triggerDomEvent(
-              "mousemove",
-              EventTool.getPointEventBindedDom(state),
-              MouseEventTool.buildMouseEvent(~button=eventButton, ()),
-            );
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                "mousedown",
+                EventTool.getPointEventBindedDom(state),
+                MouseEventTool.buildMouseEvent(~which=eventButton, ()),
+              );
+              EventTool.triggerDomEvent(
+                "mousemove",
+                EventTool.getPointEventBindedDom(state),
+                MouseEventTool.buildMouseEvent(~which=eventButton, ()),
+              );
               let state = EventTool.restore(state);
 
               button^ |> expect == targetButton;
             };
 
+            test("test NoButton", () =>
+              _test(0, NoButton)
+            );
             test("test Left", () =>
-              _test(0, Left)
+              _test(1, Left)
+            );
+            test("test Center", () =>
+              _test(2, Center)
             );
             test("test Right", () =>
               _test(3, Right)
-            );
-            test("test Center", () =>
-              _test(1, Center)
             );
           });
         });
@@ -1879,7 +1885,7 @@ let _ =
                 MouseEventTool.buildMouseEvent(
                   ~pageX=10,
                   ~pageY=20,
-                  ~button=0,
+                  ~which=1,
                   ~movementX=1,
                   ~movementY=2,
                   ~detail=Js.Nullable.return(2),

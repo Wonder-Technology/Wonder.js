@@ -24,6 +24,7 @@ type domEventName =
   | TouchDrag;
 
 type mouseButton =
+  | NoButton
   | Left
   | Right
   | Center;
