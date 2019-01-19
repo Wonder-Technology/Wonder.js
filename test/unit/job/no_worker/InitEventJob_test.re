@@ -261,7 +261,7 @@ let _ =
                 _test(0, Left)
               );
               test("test Right", () =>
-                _test(2, Right)
+                _test(3, Right)
               );
               test("test Center", () =>
                 _test(1, Center)
@@ -747,6 +747,50 @@ let _ =
 
               (movementX^, movementY^) |> expect == (0, 0);
             });
+          });
+
+          describe("test button", () => {
+            let _test = (eventButton, targetButton) => {
+              let state = MouseEventTool.prepare(~sandbox, ());
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              let button = ref(Right);
+
+              let state =
+                ManageEventAPI.onMouseEvent(
+                  MouseDrag,
+                  0,
+                  (. event: mouseEvent, state) => {
+                    button := event.button;
+                    state;
+                  },
+                  state,
+                );
+              let state = MainStateTool.setState(state);
+            let state = MainStateTool.setState(state);
+            EventTool.triggerDomEvent(
+              "mousedown",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(~button=eventButton, ()),
+            );
+            EventTool.triggerDomEvent(
+              "mousemove",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(~button=eventButton, ()),
+            );
+              let state = EventTool.restore(state);
+
+              button^ |> expect == targetButton;
+            };
+
+            test("test Left", () =>
+              _test(0, Left)
+            );
+            test("test Right", () =>
+              _test(3, Right)
+            );
+            test("test Center", () =>
+              _test(1, Center)
+            );
           });
         });
       });
@@ -2376,49 +2420,48 @@ let _ =
         );
       });
     });
-
     /* describe("test state", () => {
-      let _createStateData = () =>
-        CreateStateDataMainService.createStateData();
+         let _createStateData = () =>
+           CreateStateDataMainService.createStateData();
 
-      describe(
-        "event handleFunc can get/set state from/to other stateData instead of StateDataMain.stateData",
-        () =>
-        test("test mouse event handleFunc", () => {
-          let state = MouseEventTool.prepare(~sandbox, ());
-          let stateData = _createStateData();
-          let state =
-            StateAPI.setStateToData(stateData, state)
-            |> StateAPI.setUnsafeGetStateFunc((.) =>
-                 StateAPI.getStateFromData(stateData)
-               )
-            |> StateAPI.setSetStateFunc((. state) =>
-                 StateAPI.setStateToData(stateData, state)
+         describe(
+           "event handleFunc can get/set state from/to other stateData instead of StateDataMain.stateData",
+           () =>
+           test("test mouse event handleFunc", () => {
+             let state = MouseEventTool.prepare(~sandbox, ());
+             let stateData = _createStateData();
+             let state =
+               StateAPI.setStateToData(stateData, state)
+               |> StateAPI.setUnsafeGetStateFunc((.) =>
+                    StateAPI.getStateFromData(stateData)
+                  )
+               |> StateAPI.setSetStateFunc((. state) =>
+                    StateAPI.setStateToData(stateData, state)
+                  );
+             let state = state |> NoWorkerJobTool.execInitJobs;
+             let value = ref(0);
+
+             let state =
+               ManageEventAPI.onMouseEvent(
+                 MouseDown,
+                 0,
+                 (. event: mouseEvent, state) => {
+                   value := 1;
+                   state;
+                 },
+                 state |> StateAPI.deepCopyForRestore,
                );
-          let state = state |> NoWorkerJobTool.execInitJobs;
-          let value = ref(0);
 
-          let state =
-            ManageEventAPI.onMouseEvent(
-              MouseDown,
-              0,
-              (. event: mouseEvent, state) => {
-                value := 1;
-                state;
-              },
-              state |> StateAPI.deepCopyForRestore,
-            );
+             let state = StateAPI.setStateToData(stateData, state);
+             EventTool.triggerDomEvent(
+               "mousedown",
+               EventTool.getPointEventBindedDom(state),
+               MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
+             );
+             let state = EventTool.restore(state);
 
-          let state = StateAPI.setStateToData(stateData, state);
-          EventTool.triggerDomEvent(
-            "mousedown",
-            EventTool.getPointEventBindedDom(state),
-            MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
-          );
-          let state = EventTool.restore(state);
-
-          value^ |> expect == 1;
-        })
-      );
-    }); */
+             value^ |> expect == 1;
+           })
+         );
+       }); */
   });

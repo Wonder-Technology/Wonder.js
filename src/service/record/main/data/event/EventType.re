@@ -38,7 +38,7 @@ type domEvent;
 
 type mouseDomEvent = {
   .
-  "button": int,
+  "which": int,
   "detail": Js.Nullable.t(int),
   "movementX": Js.Nullable.t(int),
   "movementY": Js.Nullable.t(int),

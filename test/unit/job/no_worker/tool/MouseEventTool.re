@@ -21,7 +21,7 @@ let buildMouseEvent =
     ) => {
   "pageX": pageX,
   "pageY": pageY,
-  "button": button,
+  "which": button,
   "movementX": movementX,
   "movementY": movementY,
   "detail": detail,
