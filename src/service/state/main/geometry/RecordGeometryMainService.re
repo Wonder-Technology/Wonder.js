@@ -108,14 +108,14 @@ let create = ({settingRecord} as state) => {
       indicesOffset: 0,
       indices32Offset: 0,
       disposeCount: 0,
-      /* configDataMap: WonderCommonlib.SparseMapService.createEmpty(),
-         computeDataFuncMap: WonderCommonlib.SparseMapService.createEmpty(), */
-      indicesTypeMap: WonderCommonlib.SparseMapService.createEmpty(),
-      gameObjectsMap: WonderCommonlib.SparseMapService.createEmpty(),
+      /* configDataMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+         computeDataFuncMap: WonderCommonlib.MutableSparseMapService.createEmpty(), */
+      indicesTypeMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      gameObjectsMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
-      /* isInitMap: WonderCommonlib.SparseMapService.createEmpty(), */
-      /* groupCountMap: WonderCommonlib.SparseMapService.createEmpty(), */
-      nameMap: WonderCommonlib.SparseMapService.createEmpty(),
+      /* isInitMap: WonderCommonlib.MutableSparseMapService.createEmpty(), */
+      /* groupCountMap: WonderCommonlib.MutableSparseMapService.createEmpty(), */
+      nameMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
     });
   state;
 };
@@ -156,11 +156,11 @@ let deepCopyForRestore = state => {
           indicesInfos
           |> CopyTypeArrayService.copyUint32ArrayWithEndIndex(infosEndIndex),
         disposeCount,
-        indicesTypeMap: indicesTypeMap |> SparseMapService.copy,
+        indicesTypeMap: indicesTypeMap |> WonderCommonlib.MutableSparseMapService.copy,
         gameObjectsMap:
-          gameObjectsMap |> CopyTypeArrayService.deepCopyArrayArray,
+          gameObjectsMap |> CopyTypeArrayService.deepCopyMutableSparseMapOfArray,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
-        nameMap: nameMap |> SparseMapService.copy,
+        nameMap: nameMap |> WonderCommonlib.MutableSparseMapService.copy,
       }),
   };
 };

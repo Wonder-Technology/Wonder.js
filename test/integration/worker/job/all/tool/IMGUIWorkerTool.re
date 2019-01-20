@@ -8,13 +8,13 @@ let buildControlData = () => {
   },
   checkboxData: {
     index: 1,
-    isSelectedMap: WonderCommonlib.SparseMapService.createEmpty(),
+    isSelectedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   },
   sliderData: {
     index: 3,
     valueMap:
-      WonderCommonlib.SparseMapService.createEmpty()
-      |> WonderCommonlib.SparseMapService.set(1, 2.),
+      WonderCommonlib.MutableSparseMapService.createEmpty()
+      |> WonderCommonlib.MutableSparseMapService.set(1, 2.),
   },
 };
 
@@ -24,13 +24,13 @@ let buildControlDataAfterRenderIMGUI = buildedControlData => {
   },
   checkboxData: {
     index: 0,
-    isSelectedMap: WonderCommonlib.SparseMapService.createEmpty(),
+    isSelectedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   },
   sliderData: {
     index: 0,
     valueMap:
-      WonderCommonlib.SparseMapService.createEmpty()
-      |> WonderCommonlib.SparseMapService.set(1, 2.),
+      WonderCommonlib.MutableSparseMapService.createEmpty()
+      |> WonderCommonlib.MutableSparseMapService.set(1, 2.),
   },
 };
 

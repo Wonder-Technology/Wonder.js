@@ -282,9 +282,9 @@ let _ =
 
           (
             LightMaterialTool.hasGameObject(material1, state),
-            nameMap |> WonderCommonlib.SparseMapService.has(material1),
+            nameMap |> WonderCommonlib.MutableSparseMapService.has(material1),
             emptyMapUnitArrayMap
-            |> WonderCommonlib.SparseMapService.has(material1),
+            |> WonderCommonlib.MutableSparseMapService.has(material1),
           )
           |> expect == (false, false, false);
         });

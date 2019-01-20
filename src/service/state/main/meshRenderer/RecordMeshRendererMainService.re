@@ -76,10 +76,10 @@ let create = ({settingRecord} as state) => {
       drawModes,
       isRenders,
       basicMaterialRenderGameObjectMap:
-        WonderCommonlib.SparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
       lightMaterialRenderGameObjectMap:
-        WonderCommonlib.SparseMapService.createEmpty(),
-      gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+      gameObjectMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
     });
   state;
@@ -114,10 +114,10 @@ let deepCopyForRestore = ({settingRecord} as state) => {
                index * getIsRendersSize(),
              ),
         basicMaterialRenderGameObjectMap:
-          basicMaterialRenderGameObjectMap |> SparseMapService.copy,
+          basicMaterialRenderGameObjectMap |> WonderCommonlib.MutableSparseMapService.copy,
         lightMaterialRenderGameObjectMap:
-          lightMaterialRenderGameObjectMap |> SparseMapService.copy,
-        gameObjectMap: gameObjectMap |> SparseMapService.copy,
+          lightMaterialRenderGameObjectMap |> WonderCommonlib.MutableSparseMapService.copy,
+        gameObjectMap: gameObjectMap |> WonderCommonlib.MutableSparseMapService.copy,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
       }),
   };

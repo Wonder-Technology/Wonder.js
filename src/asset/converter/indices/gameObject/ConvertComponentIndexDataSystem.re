@@ -137,7 +137,7 @@ let _buildPerspectiveCameraActualIndexMap = cameras =>
          switch (type_) {
          | "perspective" => (
              perspectiveCameraActualIndexMap
-             |> WonderCommonlib.SparseMapService.set(
+             |> WonderCommonlib.MutableSparseMapService.set(
                   perspectiveCameraIndex,
                   perspectiveCameraActualIndex,
                 ),
@@ -148,7 +148,7 @@ let _buildPerspectiveCameraActualIndexMap = cameras =>
              perspectiveCameraActualIndex,
            )
          },
-       (WonderCommonlib.SparseMapService.createEmpty(), 0),
+       (WonderCommonlib.MutableSparseMapService.createEmpty(), 0),
      );
 
 let _buildPerspectiveCameraProjectionGameObjectIndexData =
@@ -170,7 +170,7 @@ let _buildPerspectiveCameraProjectionGameObjectIndexData =
                componentIndices
                |> ArrayService.push(
                     perspectiveCameraActualIndexMap
-                    |> WonderCommonlib.SparseMapService.unsafeGet(camera),
+                    |> WonderCommonlib.MutableSparseMapService.unsafeGet(camera),
                   ),
              )
            | _ => (gameObjectIndices, componentIndices)
@@ -396,7 +396,7 @@ let _getLightActualIndexMap = (lightType, lights) =>
          switch (type_) {
          | type_ when type_ === lightType => (
              lightActualIndexMap
-             |> WonderCommonlib.SparseMapService.set(
+             |> WonderCommonlib.MutableSparseMapService.set(
                   lightIndex,
                   lightActualIndex,
                 ),
@@ -404,7 +404,7 @@ let _getLightActualIndexMap = (lightType, lights) =>
            )
          | _ => (lightActualIndexMap, lightActualIndex)
          },
-       (WonderCommonlib.SparseMapService.createEmpty(), 0),
+       (WonderCommonlib.MutableSparseMapService.createEmpty(), 0),
      );
 
 let _buildLightGameObjectIndexData =
@@ -429,7 +429,7 @@ let _buildLightGameObjectIndexData =
                  componentIndices
                  |> ArrayService.push(
                       lightActualIndexMap
-                      |> WonderCommonlib.SparseMapService.unsafeGet(light),
+                      |> WonderCommonlib.MutableSparseMapService.unsafeGet(light),
                     ),
                )
              | _ => (gameObjectIndices, componentIndices)

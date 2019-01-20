@@ -15,9 +15,9 @@ let _createTypeArrays = (buffer, basicSourceTextureCount, arrayBufferViewSourceT
       types: Some(types),
       isNeedUpdates: Some(isNeedUpdates),
       flipYs: Some(flipYs),
-      sourceMap: WonderCommonlib.SparseMapService.createEmpty(),
-      glTextureMap: WonderCommonlib.SparseMapService.createEmpty(),
-      bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.createEmpty()
+      sourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      bindTextureUnitCacheMap: WonderCommonlib.MutableSparseMapService.createEmpty()
     });
   let (wrapSs, wrapTs, magFilters, minFilters, formats, types, isNeedUpdates, flipYs, widths, heights) =
     CreateTypeArrayArrayBufferViewSourceTextureService.createTypeArrays(
@@ -38,8 +38,8 @@ let _createTypeArrays = (buffer, basicSourceTextureCount, arrayBufferViewSourceT
       widths: Some(widths),
       heights: Some(heights),
       sourceMap: None,
-      glTextureMap: WonderCommonlib.SparseMapService.createEmpty(),
-      bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.createEmpty()
+      glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      bindTextureUnitCacheMap: WonderCommonlib.MutableSparseMapService.createEmpty()
     });
   state
 };

@@ -25,7 +25,7 @@ let clearInitShaderCache = (state: StateDataMainType.state) => {
     ...state.glslSenderRecord,
     uniformRenderObjectSendMaterialDataMap:
       state.glslSenderRecord.uniformRenderObjectSendMaterialDataMap
-      |> SparseMapService.mapValid((. uniformRenderObjectSendMaterialDataArr) =>
+      |> WonderCommonlib.MutableSparseMapService.mapValid((. uniformRenderObjectSendMaterialDataArr) =>
            uniformRenderObjectSendMaterialDataArr
            |> Js.Array.map(
                 (

@@ -43,7 +43,7 @@ let _buildMultiPrimitivesMeshMap = meshes => {
                     );
                (
                  multiPrimitivesMeshMap
-                 |> WonderCommonlib.SparseMapService.set(
+                 |> WonderCommonlib.MutableSparseMapService.set(
                       meshIndex,
                       newMeshDataArr,
                     ),
@@ -52,7 +52,7 @@ let _buildMultiPrimitivesMeshMap = meshes => {
              } :
              (multiPrimitivesMeshMap, newMeshIndex),
          (
-           WonderCommonlib.SparseMapService.createEmpty(),
+           WonderCommonlib.MutableSparseMapService.createEmpty(),
            meshes |> Js.Array.length,
          ),
        );
@@ -61,7 +61,7 @@ let _buildMultiPrimitivesMeshMap = meshes => {
 
 let _buildNewMeshes = (meshes, multiPrimitivesMeshMap) =>
   multiPrimitivesMeshMap
-  |> SparseMapService.reduceiValid(
+  |> WonderCommonlib.MutableSparseMapService.reduceiValid(
        (. newMeshes, newMeshDataArr, _) =>
          newMeshes
          |> Js.Array.concat(
@@ -87,7 +87,7 @@ let _buildNewNodes = (nodes, multiPrimitivesMeshMap) => {
            | Some(mesh) =>
              switch (
                multiPrimitivesMeshMap
-               |> WonderCommonlib.SparseMapService.get(mesh)
+               |> WonderCommonlib.MutableSparseMapService.get(mesh)
              ) {
              | None => (
                  newNodes |> ArrayService.push(node),

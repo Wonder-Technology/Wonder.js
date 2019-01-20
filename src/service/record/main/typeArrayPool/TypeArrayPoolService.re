@@ -7,7 +7,7 @@ let getFloat32ArrayPoolMap = record => record.float32ArrayPoolMap;
 let getUint16ArrayPoolMap = record => record.uint16ArrayPoolMap;
 
 let _addTypeArrayToPool = (count, typeArray, maxSize, map) =>
-  switch (map |> WonderCommonlib.SparseMapService.get(count)) {
+  switch (map |> WonderCommonlib.MutableSparseMapService.get(count)) {
   | Some(arr) =>
     switch (arr |> Js.Array.length) {
     | len when len >= maxSize => map
@@ -15,7 +15,8 @@ let _addTypeArrayToPool = (count, typeArray, maxSize, map) =>
       arr |> Js.Array.push(typeArray) |> ignore;
       map;
     }
-  | None => map |> WonderCommonlib.SparseMapService.set(count, [|typeArray|])
+  | None =>
+    map |> WonderCommonlib.MutableSparseMapService.set(count, [|typeArray|])
   };
 
 let addFloat32TypeArrayToPool =
@@ -37,7 +38,7 @@ let addUint16TypeArrayToPool =
     );
 
 let _getTypeArrayFromPool = (count, map) =>
-  switch (map |> WonderCommonlib.SparseMapService.get(count)) {
+  switch (map |> WonderCommonlib.MutableSparseMapService.get(count)) {
   | None => None
   | Some(arr) =>
     switch (arr |> Js.Array.length) {
@@ -57,14 +58,18 @@ let getUint16TypeArrayFromPool =
 let _addAllTypeArrayToPool =
     (typeArrayMap, maxSize, map, addTypeArrayToPoolFunc) => {
   typeArrayMap
-  |> SparseMapService.forEachValid((. typeArray) =>
+  |> WonderCommonlib.MutableSparseMapService.forEachValid((. typeArray) =>
        addTypeArrayToPoolFunc(. typeArray, maxSize, map) |> ignore
      );
   map;
 };
 
 let addAllFloat32TypeArrayToPool =
-    (typeArrayMap: array(Float32Array.t), maxSize, map) =>
+    (
+      typeArrayMap: WonderCommonlib.MutableSparseMapService.t(Float32Array.t),
+      maxSize,
+      map,
+    ) =>
   _addAllTypeArrayToPool(
     typeArrayMap,
     maxSize,
@@ -73,7 +78,11 @@ let addAllFloat32TypeArrayToPool =
   );
 
 let addAllUint16TypeArrayToPool =
-    (typeArrayMap: array(Uint16Array.t), maxSize, map) =>
+    (
+      typeArrayMap: WonderCommonlib.MutableSparseMapService.t(Uint16Array.t),
+      maxSize,
+      map,
+    ) =>
   _addAllTypeArrayToPool(
     typeArrayMap,
     maxSize,

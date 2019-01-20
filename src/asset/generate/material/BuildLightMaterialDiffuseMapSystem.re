@@ -152,7 +152,8 @@ let _getImageUint8ArrayData =
 
   let (mimeType, imageUint8Array) =
     switch (
-      imageUint8ArrayDataMap |> WonderCommonlib.SparseMapService.get(texture)
+      imageUint8ArrayDataMap
+      |> WonderCommonlib.MutableSparseMapService.get(texture)
     ) {
     | Some(data) => data
     | None =>
@@ -211,7 +212,7 @@ let _addImageData =
   let source =
     OperateBasicSourceTextureMainService.unsafeGetSource(texture, state);
 
-  switch (imageMap |> SparseMapService.indexOf(source)) {
+  switch (imageMap |> WonderCommonlib.MutableSparseMapService.indexOf(source)) {
   | imageIndex when imageIndex === (-1) =>
     let imageIndex = imageUint8DataArr |> Js.Array.length;
 
@@ -233,15 +234,19 @@ let _addImageData =
 
     let imageUint8ArrayMap =
       imageUint8ArrayMap
-      |> WonderCommonlib.SparseMapService.set(imageIndex, imageUint8Array);
+      |> WonderCommonlib.MutableSparseMapService.set(
+           imageIndex,
+           imageUint8Array,
+         );
 
     let imageResultUint8ArrayMap =
       imageResultUint8ArrayMap
-      |> WonderCommonlib.SparseMapService.set(texture, imageUint8Array);
+      |> WonderCommonlib.MutableSparseMapService.set(texture, imageUint8Array);
 
     (
       imageIndex,
-      imageMap |> WonderCommonlib.SparseMapService.set(imageIndex, source),
+      imageMap
+      |> WonderCommonlib.MutableSparseMapService.set(imageIndex, source),
       imageUint8ArrayMap,
       imageUint8DataArr
       |> ArrayService.push(
@@ -270,10 +275,10 @@ let _addImageData =
   | imageIndex =>
     let imageResultUint8ArrayMap =
       imageResultUint8ArrayMap
-      |> WonderCommonlib.SparseMapService.set(
+      |> WonderCommonlib.MutableSparseMapService.set(
            texture,
            imageUint8ArrayMap
-           |> WonderCommonlib.SparseMapService.unsafeGet(imageIndex),
+           |> WonderCommonlib.MutableSparseMapService.unsafeGet(imageIndex),
          );
 
     (
@@ -313,7 +318,10 @@ let build =
         (
           textureIndexMap,
           samplerIndexMap,
-          imageMap,
+          imageMap:
+            WonderCommonlib.MutableSparseMapService.t(
+              WonderWebgl.DomExtendType.imageElement,
+            ),
           imageUint8ArrayMap,
           imageUint8ArrayDataMap,
           imageResultUint8ArrayMap,
@@ -350,7 +358,9 @@ let build =
     OperateLightMaterialMainService.getDiffuseColor(lightMaterial, state);
   let baseColorFactor = BuildMaterialUtils.buildColorFactor(diffuseColor);
 
-  switch (textureIndexMap |> WonderCommonlib.SparseMapService.get(diffuseMap)) {
+  switch (
+    textureIndexMap |> WonderCommonlib.MutableSparseMapService.get(diffuseMap)
+  ) {
   | Some(existedTextureIndex) => (
       (
         materialDataArr
@@ -380,7 +390,7 @@ let build =
 
     let textureIndexMap =
       textureIndexMap
-      |> WonderCommonlib.SparseMapService.set(diffuseMap, textureIndex);
+      |> WonderCommonlib.MutableSparseMapService.set(diffuseMap, textureIndex);
 
     let (samplerIndex, samplerIndexMap, samplerDataArr) =
       _addSamplerData(diffuseMap, samplerIndexMap, state, samplerDataArr);

@@ -27,7 +27,7 @@ let _ =
       let shaderIndex1 = 0;
       let program1 = Obj.magic(11);
       record.programMap
-      |> WonderCommonlib.SparseMapService.set(shaderIndex1, program1)
+      |> WonderCommonlib.MutableSparseMapService.set(shaderIndex1, program1)
       |> ignore;
       record.lastUsedProgram = program1;
       (state, shaderIndex1, program1);
@@ -55,7 +55,7 @@ let _ =
           let originMaterialArr = [|1|];
           let copiedOriginMaterialArr = originMaterialArr |> Js.Array.copy;
           materialsMap
-          |> WonderCommonlib.SparseMapService.set(
+          |> WonderCommonlib.MutableSparseMapService.set(
                shaderIndex,
                originMaterialArr,
              )
@@ -65,12 +65,12 @@ let _ =
           let {materialsMap} = ShaderTool.getShaderRecord(copiedState);
           let arr =
             materialsMap
-            |> WonderCommonlib.SparseMapService.unsafeGet(shaderIndex);
+            |> WonderCommonlib.MutableSparseMapService.unsafeGet(shaderIndex);
           Array.unsafe_set(arr, 0, 2);
 
           let {materialsMap} = ShaderTool.getShaderRecord(state^);
           materialsMap
-          |> WonderCommonlib.SparseMapService.unsafeGet(shaderIndex)
+          |> WonderCommonlib.MutableSparseMapService.unsafeGet(shaderIndex)
           |> expect == copiedOriginMaterialArr;
         })
       );
@@ -94,13 +94,13 @@ let _ =
             let data = Obj.magic(100);
 
             uniformShaderSendNoCachableDataMap
-            |> WonderCommonlib.SparseMapService.set(shaderIndex, data)
+            |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
             |> ignore;
             uniformShaderSendCachableDataMap
-            |> WonderCommonlib.SparseMapService.set(shaderIndex, data)
+            |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
             |> ignore;
             uniformShaderSendCachableFunctionDataMap
-            |> WonderCommonlib.SparseMapService.set(shaderIndex, data)
+            |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
             |> ignore;
 
             let {
@@ -112,11 +112,11 @@ let _ =
 
             (
               uniformShaderSendNoCachableDataMap
-              |> WonderCommonlib.SparseMapService.has(shaderIndex),
+              |> WonderCommonlib.MutableSparseMapService.has(shaderIndex),
               uniformShaderSendCachableDataMap
-              |> WonderCommonlib.SparseMapService.has(shaderIndex),
+              |> WonderCommonlib.MutableSparseMapService.has(shaderIndex),
               uniformShaderSendCachableFunctionDataMap
-              |> WonderCommonlib.SparseMapService.has(shaderIndex),
+              |> WonderCommonlib.MutableSparseMapService.has(shaderIndex),
             )
             |> expect == (false, false, false);
           },
@@ -135,10 +135,10 @@ let _ =
           let func1 = Obj.magic(1);
           let history1 = Obj.magic(2);
           attributeSendDataMap
-          |> WonderCommonlib.SparseMapService.set(shaderIndex1, data1)
+          |> WonderCommonlib.MutableSparseMapService.set(shaderIndex1, data1)
           |> ignore;
           vertexAttribHistoryArray
-          |> WonderCommonlib.SparseMapService.set(shaderIndex1, history1)
+          |> Array.unsafe_set(_, shaderIndex1, history1)
           |> ignore;
           (state, shaderIndex1, data1, func1, history1);
         };
@@ -323,8 +323,14 @@ let _ =
             let program1 = Obj.magic(11);
             let program2 = Obj.magic(12);
             programMap
-            |> WonderCommonlib.SparseMapService.set(shaderIndex1, program1)
-            |> WonderCommonlib.SparseMapService.set(shaderIndex2, program2)
+            |> WonderCommonlib.MutableSparseMapService.set(
+                 shaderIndex1,
+                 program1,
+               )
+            |> WonderCommonlib.MutableSparseMapService.set(
+                 shaderIndex2,
+                 program2,
+               )
             |> ignore;
             record.lastUsedProgram = program2;
             let {attributeLocationMap, uniformLocationMap} =
@@ -334,21 +340,21 @@ let _ =
             let uniformLocationData1 = Obj.magic(31);
             let uniformLocationData2 = Obj.magic(32);
             attributeLocationMap
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  shaderIndex1,
                  attributeLocationData1,
                )
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  shaderIndex2,
                  attributeLocationData2,
                )
             |> ignore;
             uniformLocationMap
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  shaderIndex1,
                  uniformLocationData1,
                )
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  shaderIndex2,
                  uniformLocationData2,
                )
@@ -358,11 +364,11 @@ let _ =
             let uniformShaderSendNoCachableData1 = Obj.magic(121);
             let uniformShaderSendNoCachableData2 = Obj.magic(122);
             uniformShaderSendNoCachableDataMap
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  shaderIndex1,
                  uniformShaderSendNoCachableData1,
                )
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  shaderIndex2,
                  uniformShaderSendNoCachableData2,
                )
@@ -402,8 +408,14 @@ let _ =
             let program1 = Obj.magic(101);
             let program2 = Obj.magic(102);
             programMap
-            |> WonderCommonlib.SparseMapService.set(shaderIndex1, program1)
-            |> WonderCommonlib.SparseMapService.set(shaderIndex2, program2)
+            |> WonderCommonlib.MutableSparseMapService.set(
+                 shaderIndex1,
+                 program1,
+               )
+            |> WonderCommonlib.MutableSparseMapService.set(
+                 shaderIndex2,
+                 program2,
+               )
             |> ignore;
             record.lastUsedProgram = program2;
             let {attributeLocationMap, uniformLocationMap} =
@@ -413,21 +425,21 @@ let _ =
             let uniformLocationData1 = Obj.magic(301);
             let uniformLocationData2 = Obj.magic(302);
             attributeLocationMap
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  shaderIndex1,
                  attributeLocationData1,
                )
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  shaderIndex2,
                  attributeLocationData2,
                )
             |> ignore;
             uniformLocationMap
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  shaderIndex1,
                  uniformLocationData1,
                )
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  shaderIndex2,
                  uniformLocationData2,
                )
@@ -437,11 +449,11 @@ let _ =
             let uniformShaderSendNoCachableData1 = Obj.magic(10221);
             let uniformShaderSendNoCachableData2 = Obj.magic(10222);
             uniformShaderSendNoCachableDataMap
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  shaderIndex1,
                  uniformShaderSendNoCachableData1,
                )
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  shaderIndex2,
                  uniformShaderSendNoCachableData2,
                )

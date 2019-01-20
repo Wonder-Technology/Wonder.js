@@ -16,9 +16,9 @@ let judgeForOptimize = (state, gameObject1, gameObject2, gameObject3) => {
   open GameObjectType;
   let {transformMap} = GameObjectTool.getGameObjectRecord(state);
   (
-    transformMap |> WonderCommonlib.SparseMapService.has(gameObject1),
-    transformMap |> WonderCommonlib.SparseMapService.has(gameObject2),
-    transformMap |> WonderCommonlib.SparseMapService.has(gameObject3)
+    transformMap |> WonderCommonlib.MutableSparseMapService.has(gameObject1),
+    transformMap |> WonderCommonlib.MutableSparseMapService.has(gameObject2),
+    transformMap |> WonderCommonlib.MutableSparseMapService.has(gameObject3)
   )
   |> expect == (false, false, true)
 };

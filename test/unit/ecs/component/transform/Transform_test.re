@@ -1345,10 +1345,10 @@ let _ =
           let {parentMap, childMap, dirtyMap, gameObjectMap} =
             TransformTool.getRecord(state);
           (
-            parentMap |> WonderCommonlib.SparseMapService.has(transform1),
-            childMap |> WonderCommonlib.SparseMapService.has(transform1),
-            dirtyMap |> WonderCommonlib.SparseMapService.has(transform1),
-            gameObjectMap |> WonderCommonlib.SparseMapService.has(transform1),
+            parentMap |> WonderCommonlib.MutableSparseMapService.has(transform1),
+            childMap |> WonderCommonlib.MutableSparseMapService.has(transform1),
+            dirtyMap |> WonderCommonlib.MutableSparseMapService.has(transform1),
+            gameObjectMap |> WonderCommonlib.MutableSparseMapService.has(transform1),
           )
           |> expect == (false, false, false, false);
         });

@@ -55,7 +55,7 @@ let addSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr) =>
 
 let setToUniformSendMap = (shaderIndex, uniformSendDataMap, sendDataArr) =>
   uniformSendDataMap
-  |> WonderCommonlib.SparseMapService.set(shaderIndex, sendDataArr)
+  |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, sendDataArr)
   |> ignore;
 
 let unsafeGetUniformSendData =

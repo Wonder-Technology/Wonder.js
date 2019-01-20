@@ -2129,8 +2129,8 @@ let _ =
           ((state, (imageUint8ArrayMap, _), rootGameObject)) =>
             AssembleWDBSystemTool.isImageUint8ArrayMapEqual(
               imageUint8ArrayMap,
-              WonderCommonlib.SparseMapService.createEmpty()
-              |> WonderCommonlib.SparseMapService.set(
+              WonderCommonlib.MutableSparseMapService.createEmpty()
+              |> WonderCommonlib.MutableSparseMapService.set(
                    0,
                    ("image/png", 23516),
                  ),
@@ -2147,12 +2147,12 @@ let _ =
           ((state, (imageUint8ArrayMap, _), rootGameObject)) =>
             AssembleWDBSystemTool.isImageUint8ArrayMapEqual(
               imageUint8ArrayMap,
-              WonderCommonlib.SparseMapService.createEmpty()
-              |> WonderCommonlib.SparseMapService.set(
+              WonderCommonlib.MutableSparseMapService.createEmpty()
+              |> WonderCommonlib.MutableSparseMapService.set(
                    0,
                    ("image/png", 427633),
                  )
-              |> WonderCommonlib.SparseMapService.set(
+              |> WonderCommonlib.MutableSparseMapService.set(
                    1,
                    ("image/png", 427633),
                  ),

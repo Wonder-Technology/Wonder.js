@@ -124,7 +124,7 @@ let _checkShouldNotAddBefore = (shaderIndex, glslSenderRecord) =>
               ),
               () =>
               glslSenderRecord.uniformRenderObjectSendModelDataMap
-              |> WonderCommonlib.SparseMapService.get(shaderIndex)
+              |> WonderCommonlib.MutableSparseMapService.get(shaderIndex)
               |> assertNotExist
             )
           )

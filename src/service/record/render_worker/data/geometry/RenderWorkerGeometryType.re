@@ -9,5 +9,5 @@ type geometryRecord = {
   normalsInfos: Js.Typed_array.Uint32Array.t,
   indicesInfos: Js.Typed_array.Uint32Array.t,
   indicesTypeMap:
-    WonderCommonlib.SparseMapService.t(GeometryType.indicesType),
+    WonderCommonlib.MutableSparseMapService.t(GeometryType.indicesType),
 };

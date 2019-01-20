@@ -1,12 +1,12 @@
 let getObjectInstanceTransformIndex =
     (sourceInstance, objectInstanceTransformIndexMap) =>
   objectInstanceTransformIndexMap
-  |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance);
+  |> WonderCommonlib.MutableSparseMapService.unsafeGet(sourceInstance);
 
 let setDefaultObjectInstanceTransformIndex =
     (sourceInstance, objectInstanceTransformIndexMap) =>
   objectInstanceTransformIndexMap
-  |> WonderCommonlib.SparseMapService.set(sourceInstance, 0);
+  |> WonderCommonlib.MutableSparseMapService.set(sourceInstance, 0);
 
 let getObjectInstanceTransformCount = objectInstanceTransformIndex => objectInstanceTransformIndex;
 
@@ -150,7 +150,7 @@ let addObjectInstanceTransform =
 
   (
     objectInstanceTransformIndexMap
-    |> WonderCommonlib.SparseMapService.set(
+    |> WonderCommonlib.MutableSparseMapService.set(
          sourceInstance,
          objectInstanceTransformIndex |> succ,
        ),
@@ -192,7 +192,7 @@ let addObjectInstanceTransform =
 
 let resetObjectInstanceTransformIndexMap =
     (sourceInstance, objectInstanceTransformIndexMap) =>
-  WonderCommonlib.SparseMapService.set(
+  WonderCommonlib.MutableSparseMapService.set(
     sourceInstance,
     0,
     objectInstanceTransformIndexMap,
@@ -207,7 +207,7 @@ let batchRemoveObjectInstanceTransform =
     ) => {
   let objectInstanceTransformIndex =
     objectInstanceTransformIndexMap
-    |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance);
+    |> WonderCommonlib.MutableSparseMapService.unsafeGet(sourceInstance);
   (
     switch (objectInstanceTransformIndex) {
     | 0 => (
@@ -216,7 +216,7 @@ let batchRemoveObjectInstanceTransform =
       )
     | _ => (
         objectInstanceTransformIndexMap
-        |> WonderCommonlib.SparseMapService.set(
+        |> WonderCommonlib.MutableSparseMapService.set(
              sourceInstance,
              objectInstanceTransformIndex
              - Js.Array.length(objectInstanceTransformArray),
@@ -250,7 +250,7 @@ let batchRemoveObjectInstanceTransform =
          open Operators;
          let objectInstanceTransformIndex =
            objectInstanceTransformIndexMap
-           |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance);
+           |> WonderCommonlib.MutableSparseMapService.unsafeGet(sourceInstance);
          test(
            Log.buildAssertMessage(
              ~expect={j|objectInstanceTransformIndex should >= 0|j},

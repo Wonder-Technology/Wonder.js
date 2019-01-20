@@ -2,11 +2,11 @@ open ComponentType;
 
 type transform = int;
 
-type transformParentMap = WonderCommonlib.SparseMapService.t(Js.undefined(transform));
+type transformParentMap = WonderCommonlib.MutableSparseMapService.t(Js.undefined(transform));
 
-type transformChildMap = WonderCommonlib.SparseMapService.t(array(transform));
+type transformChildMap = WonderCommonlib.MutableSparseMapService.t(array(transform));
 
-type transformDirtyMap = WonderCommonlib.SparseMapService.t(bool);
+type transformDirtyMap = WonderCommonlib.MutableSparseMapService.t(bool);
 
 type transformRecord = {
   mutable index: int,
@@ -28,8 +28,8 @@ type transformRecord = {
   mutable childMap: transformChildMap,
   mutable gameObjectMap,
   mutable dirtyMap: transformDirtyMap,
-  mutable localToWorldMatrixCacheMap: WonderCommonlib.SparseMapService.t(Js.Typed_array.Float32Array.t),
-  mutable normalMatrixCacheMap: WonderCommonlib.SparseMapService.t(Js.Typed_array.Float32Array.t),
+  mutable localToWorldMatrixCacheMap: WonderCommonlib.MutableSparseMapService.t(Js.Typed_array.Float32Array.t),
+  mutable normalMatrixCacheMap: WonderCommonlib.MutableSparseMapService.t(Js.Typed_array.Float32Array.t),
   mutable disposedIndexArray: array(transform)
 };
 

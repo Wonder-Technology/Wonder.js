@@ -12,7 +12,42 @@ let _ =
       state :=
         InitBasicMaterialJobTool.initWithJobConfigWithoutBuildFakeDom(
           sandbox,
-          InitRenderJobTool.buildNoWorkerJobConfig(),
+          /* InitRenderJobTool.buildNoWorkerJobConfig(), */
+
+  NoWorkerJobConfigTool.buildNoWorkerJobConfig(
+    ~initPipelines={|
+[
+    {
+      "name": "default",
+      "jobs": [
+        {
+          "name": "init_camera"
+        },
+        {
+          "name": "start_time"
+        },
+        {
+          "name": "preget_glslData"
+        },
+        {
+          "name": "init_state"
+        },
+        {
+          "name": "init_basic_material"
+        },
+        {
+          "name": "init_light_material"
+        },
+        {
+          "name": "init_texture"
+        }
+        ]
+    }
+]
+        |},
+    ~initJobs=NoWorkerJobConfigTool.buildNoWorkerInitJobConfigWithoutInitMain(),
+    ()
+  )
         );
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
@@ -27,12 +62,11 @@ let _ =
           InitBasicMaterialJobTool.prepareGameObject(sandbox, state);
         let state =
           state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+
         let state = state |> InitBasicMaterialJobTool.exec;
-        (
-          BasicMaterialTool.getShaderIndex(material1, state),
-          BasicMaterialTool.getShaderIndex(material2, state),
-        )
-        |> expect == (0, 0);
+
+        BasicMaterialTool.getShaderIndex(material1, state)
+        |> expect == BasicMaterialTool.getShaderIndex(material2, state);
       });
       describe("generate shaderIndex", () => {
         test("set to material record", () => {

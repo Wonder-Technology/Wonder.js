@@ -161,11 +161,11 @@ let create = ({settingRecord} as state) => {
         types,
         isNeedUpdates,
         flipYs,
-        nameMap: WonderCommonlib.SparseMapService.createEmpty(),
-        sourceMap: WonderCommonlib.SparseMapService.createEmpty(),
-        glTextureMap: WonderCommonlib.SparseMapService.createEmpty(),
+        nameMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+        sourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+        glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
         bindTextureUnitCacheMap:
-          WonderCommonlib.SparseMapService.createEmpty(),
+          WonderCommonlib.MutableSparseMapService.createEmpty(),
         disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
         needAddedSourceArray: [||],
         needInitedTextureIndexArray: [||],
@@ -241,11 +241,11 @@ let deepCopyForRestore = ({settingRecord} as state) => {
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
                index * getFlipYsSize(),
              ),
-        nameMap: nameMap |> SparseMapService.copy,
-        sourceMap: sourceMap |> SparseMapService.copy,
-        glTextureMap: glTextureMap |> SparseMapService.copy,
+        nameMap: nameMap |> WonderCommonlib.MutableSparseMapService.copy,
+        sourceMap: sourceMap |> WonderCommonlib.MutableSparseMapService.copy,
+        glTextureMap: glTextureMap |> WonderCommonlib.MutableSparseMapService.copy,
         bindTextureUnitCacheMap:
-          WonderCommonlib.SparseMapService.createEmpty(),
+          WonderCommonlib.MutableSparseMapService.createEmpty(),
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
         needAddedSourceArray: needAddedSourceArray |> Js.Array.copy,
         needInitedTextureIndexArray:

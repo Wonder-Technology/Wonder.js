@@ -9,5 +9,5 @@ type pointLightRecord = {
   quadratics: Js.Typed_array.Float32Array.t,
   ranges: Js.Typed_array.Float32Array.t,
   renderLightArr: array(component),
-  positionMap: WonderCommonlib.SparseMapService.t((float, float, float)),
+  positionMap: WonderCommonlib.MutableSparseMapService.t((float, float, float)),
 };

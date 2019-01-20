@@ -9,25 +9,25 @@ let getOrCreateBuffer =
       (createBufferFunc, getDataFunc),
       state,
     ) =>
-  switch (WonderCommonlib.SparseMapService.get(geometryIndex, bufferMap)) {
+  switch (WonderCommonlib.MutableSparseMapService.get(geometryIndex, bufferMap)) {
   | Some(buffer) => buffer
   | None =>
     let buffer =
       createBufferFunc(. gl, getDataFunc(. geometryIndex, state), state);
     bufferMap
-    |> WonderCommonlib.SparseMapService.set(geometryIndex, buffer)
+    |> WonderCommonlib.MutableSparseMapService.set(geometryIndex, buffer)
     |> ignore;
     buffer;
   };
 
 let getOrCreateIndexBuffer =
     (gl, (geometryIndex: int, bufferMap, indices), createBufferFunc, state) =>
-  switch (WonderCommonlib.SparseMapService.get(geometryIndex, bufferMap)) {
+  switch (WonderCommonlib.MutableSparseMapService.get(geometryIndex, bufferMap)) {
   | Some(buffer) => buffer
   | None =>
     let buffer = createBufferFunc(. gl, indices, state);
     bufferMap
-    |> WonderCommonlib.SparseMapService.set(geometryIndex, buffer)
+    |> WonderCommonlib.MutableSparseMapService.set(geometryIndex, buffer)
     |> ignore;
     buffer;
   };

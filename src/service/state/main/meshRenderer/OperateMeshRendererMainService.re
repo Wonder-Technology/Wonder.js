@@ -43,12 +43,12 @@ let _removeFromRenderGameObjectMap =
   basicMaterialRenderGameObjectMap:
     basicMaterialRenderGameObjectMap
     |> Obj.magic
-    |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
+    |> WonderCommonlib.MutableSparseMapService.deleteVal(meshRenderer)
     |> Obj.magic,
   lightMaterialRenderGameObjectMap:
     lightMaterialRenderGameObjectMap
     |> Obj.magic
-    |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
+    |> WonderCommonlib.MutableSparseMapService.deleteVal(meshRenderer)
     |> Obj.magic,
 };
 

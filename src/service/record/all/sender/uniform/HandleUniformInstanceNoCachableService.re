@@ -38,7 +38,7 @@ let setToUniformSendMap =
       instanceSendNoCachableDataArr,
     ) =>
   uniformInstanceSendNoCachableDataMap
-  |> WonderCommonlib.SparseMapService.set(
+  |> WonderCommonlib.MutableSparseMapService.set(
        shaderIndex,
        instanceSendNoCachableDataArr,
      )

@@ -78,7 +78,7 @@ let setToUniformSendMap =
       renderObjectSendMaterialDataArr,
     ) =>
   uniformRenderObjectSendMaterialDataMap
-  |> WonderCommonlib.SparseMapService.set(
+  |> WonderCommonlib.MutableSparseMapService.set(
        shaderIndex,
        renderObjectSendMaterialDataArr,
      )

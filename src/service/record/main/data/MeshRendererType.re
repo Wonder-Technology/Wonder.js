@@ -3,7 +3,7 @@ open ComponentType;
 type meshRenderer = int;
 
 type renderGameObjectMap =
-  WonderCommonlib.SparseMapService.t(GameObjectPrimitiveType.gameObject);
+  WonderCommonlib.MutableSparseMapService.t(GameObjectPrimitiveType.gameObject);
 
 type isRender =
   | Not_render

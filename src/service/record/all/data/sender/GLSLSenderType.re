@@ -127,37 +127,37 @@ type allSendUniformData = {
 
 type glslSenderRecord = {
   attributeSendDataMap:
-    WonderCommonlib.SparseMapService.t(array(attributeSendData)),
+    WonderCommonlib.MutableSparseMapService.t(array(attributeSendData)),
   instanceAttributeSendDataMap:
-    WonderCommonlib.SparseMapService.t(array(instanceAttributeSendData)),
+    WonderCommonlib.MutableSparseMapService.t(array(instanceAttributeSendData)),
   uniformCacheMap,
   uniformRenderObjectSendModelDataMap:
-    WonderCommonlib.SparseMapService.t(
+    WonderCommonlib.MutableSparseMapService.t(
       array(uniformRenderObjectSendModelData),
     ),
   uniformRenderObjectSendMaterialDataMap:
-    WonderCommonlib.SparseMapService.t(
+    WonderCommonlib.MutableSparseMapService.t(
       array(uniformRenderObjectSendMaterialData),
     ),
   uniformShaderSendNoCachableDataMap:
-    WonderCommonlib.SparseMapService.t(
+    WonderCommonlib.MutableSparseMapService.t(
       array(uniformShaderSendNoCachableData),
     ),
   uniformShaderSendCachableDataMap:
-    WonderCommonlib.SparseMapService.t(array(uniformShaderSendCachableData)),
+    WonderCommonlib.MutableSparseMapService.t(array(uniformShaderSendCachableData)),
   uniformShaderSendCachableFunctionDataMap:
-    WonderCommonlib.SparseMapService.t(
+    WonderCommonlib.MutableSparseMapService.t(
       array(uniformShaderSendCachableFunctionData),
     ),
   uniformInstanceSendNoCachableDataMap:
-    WonderCommonlib.SparseMapService.t(
+    WonderCommonlib.MutableSparseMapService.t(
       array(uniformInstanceSendNoCachableData),
     ),
   uniformNoMaterialShaderSendCachableDataMap:
-    WonderCommonlib.SparseMapService.t(
+    WonderCommonlib.MutableSparseMapService.t(
       array(uniformNoMaterialShaderSendCachableData),
     ),
-  /* drawPointsFuncMap: WonderCommonlib.SparseMapService.t((webgl1Context => unit)), */
+  /* drawPointsFuncMap: WonderCommonlib.MutableSparseMapService.t((webgl1Context => unit)), */
   mutable vertexAttribHistoryArray,
   mutable lastSendMaterialData: option((material, ShaderType.shaderIndex)),
   /* mutable lastSendGeometryData: option(geometry), */

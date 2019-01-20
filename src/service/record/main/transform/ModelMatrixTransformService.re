@@ -14,7 +14,7 @@ let getLocalToWorldMatrixTypeArray =
   (. transform: transform, localToWorldMatrices, localToWorldMatrixCacheMap) =>
     switch (
       localToWorldMatrixCacheMap
-      |> WonderCommonlib.SparseMapService.get(transform)
+      |> WonderCommonlib.MutableSparseMapService.get(transform)
     ) {
     | Some(matrix) => matrix
     | None =>
@@ -23,7 +23,7 @@ let getLocalToWorldMatrixTypeArray =
           transform,
           localToWorldMatrices,
         );
-      WonderCommonlib.SparseMapService.set(
+      WonderCommonlib.MutableSparseMapService.set(
         transform,
         matrix,
         localToWorldMatrixCacheMap,
@@ -56,7 +56,7 @@ let getNormalMatrixTypeArray =
       (localToWorldMatrixCacheMap, normalMatrixCacheMap),
     ) =>
   switch (
-    normalMatrixCacheMap |> WonderCommonlib.SparseMapService.get(transform)
+    normalMatrixCacheMap |> WonderCommonlib.MutableSparseMapService.get(transform)
   ) {
   | Some(matrix) => matrix
   | None =>
@@ -67,7 +67,7 @@ let getNormalMatrixTypeArray =
         (localToWorldMatrixCacheMap, Matrix3Service.createIdentityMatrix3()),
         getLocalToWorldMatrixTypeArray,
       );
-    WonderCommonlib.SparseMapService.set(
+    WonderCommonlib.MutableSparseMapService.set(
       transform,
       matrix,
       normalMatrixCacheMap,

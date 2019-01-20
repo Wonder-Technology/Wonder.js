@@ -15,9 +15,9 @@ let buildPositionMap = (getPositionFunc, state) =>
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. map, i) =>
          map
-         |> WonderCommonlib.SparseMapService.set(
+         |> WonderCommonlib.MutableSparseMapService.set(
               i,
               getPositionFunc(i, state),
             ),
-       WonderCommonlib.SparseMapService.createEmpty(),
+       WonderCommonlib.MutableSparseMapService.createEmpty(),
      );

@@ -2,7 +2,7 @@ open ComponentType;
 
 type basicCameraViewRecord = {
   index: int,
-  isActiveMap: WonderCommonlib.SparseMapService.t(bool),
+  isActiveMap: WonderCommonlib.MutableSparseMapService.t(bool),
   gameObjectMap,
   disposedIndexArray: array(component)
 };

@@ -68,7 +68,7 @@ let buildMap = (index, gameObjectsMap, gameObjectRecord) =>
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. map, materialIndex: int) =>
          map
-         |> WonderCommonlib.SparseMapService.set(
+         |> WonderCommonlib.MutableSparseMapService.set(
               materialIndex,
               isSourceInstance(
                 materialIndex,
@@ -76,5 +76,5 @@ let buildMap = (index, gameObjectsMap, gameObjectRecord) =>
                 gameObjectRecord,
               ),
             ),
-       WonderCommonlib.SparseMapService.createEmpty(),
+       WonderCommonlib.MutableSparseMapService.createEmpty(),
      );

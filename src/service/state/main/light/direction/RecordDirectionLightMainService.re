@@ -65,7 +65,7 @@ let create = ({settingRecord} as state) => {
         intensities,
         disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
         renderLightArr: WonderCommonlib.ArrayService.createEmpty(),
-        gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+        gameObjectMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       }),
   };
 };
@@ -96,7 +96,7 @@ let deepCopyForRestore = state => {
           |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
                index * getIntensitiesSize(),
              ),
-        gameObjectMap: gameObjectMap |> SparseMapService.copy,
+        gameObjectMap: gameObjectMap |> WonderCommonlib.MutableSparseMapService.copy,
         renderLightArr: renderLightArr |> Js.Array.copy,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
       }),

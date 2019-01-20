@@ -1,11 +1,19 @@
 open Js.Typed_array;
 
+/* let copyFloat32Array = (typeArr: Float32Array.t) =>
+   if (typeArr |> Obj.magic === Js.Undefined.empty) {
+     Js.Undefined.empty |> Obj.magic;
+   } else {
+     Float32Array.copy(typeArr) |> Obj.magic;
+   }; */
+
 let copyFloat32Array = (typeArr: Float32Array.t) =>
-  if (typeArr |> Obj.magic === Js.Undefined.empty) {
-    Js.Undefined.empty |> Obj.magic
-  } else {
-    Float32Array.copy(typeArr) |> Obj.magic
-  };
+  /* if (typeArr |> Obj.magic === Js.Undefined.empty) {
+       Js.Undefined.empty |> Obj.magic;
+     } else {
+       Float32Array.copy(typeArr) |> Obj.magic;
+     }; */
+  Float32Array.copy(typeArr);
 
 let copyFloat32ArrayWithEndIndex = (endIndex, typeArr: Float32Array.t) =>
   Float32Array.slice(~start=0, ~end_=endIndex, typeArr);
@@ -21,30 +29,45 @@ let copyUint32ArrayWithEndIndex = (endIndex, typeArr: Uint32Array.t) =>
 
 let copyUint16Array = (typeArr: Uint16Array.t) =>
   if (typeArr |> Obj.magic === Js.Undefined.empty) {
-    Js.Undefined.empty |> Obj.magic
+    Js.Undefined.empty |> Obj.magic;
   } else {
-    Uint16Array.copy(typeArr) |> Obj.magic
+    Uint16Array.copy(typeArr) |> Obj.magic;
   };
 
 let copyUint32Array = (typeArr: Uint32Array.t) =>
   if (typeArr |> Obj.magic === Js.Undefined.empty) {
-    Js.Undefined.empty |> Obj.magic
+    Js.Undefined.empty |> Obj.magic;
   } else {
-    Uint32Array.copy(typeArr) |> Obj.magic
+    Uint32Array.copy(typeArr) |> Obj.magic;
   };
 
-let deepCopyFloat32ArrayArray = (arr: array(Float32Array.t)) =>
-  arr |> Js.Array.map((typeArr) => copyFloat32Array(typeArr));
+let deepCopyMutableSparseMapOfFloat32Array = (arr: array(Float32Array.t)) =>
+  arr |> Js.Array.map(typeArr => copyFloat32Array(typeArr));
+
+let deepCopyMutableSparseMapOfFloat32Array =
+    (arr: WonderCommonlib.MutableSparseMapService.t(Float32Array.t)) =>
+  arr
+  |> WonderCommonlib.MutableSparseMapService.mapValid((. typeArr) =>
+       copyFloat32Array(typeArr)
+     );
 
 /* let deepCopyUint16ArrayArray = (arr: array(Uint16Array.t)) =>
    arr |> Js.Array.map((typeArr) => copyUint16Array(typeArr)); */
-let deepCopyArrayArray = (arr: array(array('a))) =>
+/* let deepCopyMutableSparseMapOfArray = (arr: array(array('a))) =>
+   arr
+   |> Js.Array.map(itemArr =>
+        WonderCommonlib.MutableSparseMapService.isDeleted(itemArr) ?
+          Js.Nullable.undefined |> Obj.magic : itemArr |> Js.Array.copy
+      ); */
+
+let deepCopyMutableSparseMapOfArray =
+    (arr: WonderCommonlib.MutableSparseMapService.t(array('a))) =>
   arr
-  |> Js.Array.map(
-       (itemArr) =>
-         SparseMapService.isDeleted(itemArr) ?
-           Js.Nullable.undefined |> Obj.magic : itemArr |> Js.Array.copy
-     );
+  |> WonderCommonlib.MutableSparseMapService.mapValid((. itemArr)
+       /* WonderCommonlib.MutableSparseMapService.isDeleted(itemArr) ?
+          Js.Nullable.undefined : itemArr |> Js.Array.copy */
+       => itemArr |> Js.Array.copy);
+
 /* let copyFloat32TypeArrayFromSharedArrayBuffer = (buffer) =>
      Js.Typed_array.Float32Array.fromBuffer(WorkerType.sharedArrayBufferToArrayBuffer(buffer));
 

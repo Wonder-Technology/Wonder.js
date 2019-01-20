@@ -154,7 +154,7 @@ let _ =
                );
           let {gameObjectMap} = DirectionLightTool.getRecord(state);
           gameObjectMap
-          |> WonderCommonlib.SparseMapService.has(light1)
+          |> WonderCommonlib.MutableSparseMapService.has(light1)
           |> expect == false;
         });
 

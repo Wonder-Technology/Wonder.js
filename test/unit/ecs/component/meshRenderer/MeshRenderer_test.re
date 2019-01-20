@@ -231,7 +231,7 @@ let _ =
                );
           let {gameObjectMap} = MeshRendererTool.getRecord(state);
           gameObjectMap
-          |> WonderCommonlib.SparseMapService.has(meshRenderer1)
+          |> WonderCommonlib.MutableSparseMapService.has(meshRenderer1)
           |> expect == false;
         });
         describe("remove from basicMaterialRenderGameObjectArray", () => {

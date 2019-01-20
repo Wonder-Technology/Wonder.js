@@ -12,7 +12,7 @@ let _ =
       state :=
         RenderJobsTool.initWithJobConfig(
           sandbox,
-          LoopRenderJobTool.buildNoWorkerJobConfig(),
+          RenderBasicJobTool.buildNoWorkerJobConfig(),
         );
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));

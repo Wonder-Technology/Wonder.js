@@ -52,9 +52,9 @@ let testShadowCopyArrayLikeMapData = (getMapFunc, state) => {
   getMapFunc(state)
   |> Js.Array.forEach(map =>
        map
-       |> WonderCommonlib.SparseMapService.set(
+       |> WonderCommonlib.MutableSparseMapService.set(
             index,
-            WonderCommonlib.SparseMapService.createEmpty(),
+            WonderCommonlib.MutableSparseMapService.createEmpty(),
           )
        |> ignore
      )
@@ -64,7 +64,7 @@ let testShadowCopyArrayLikeMapData = (getMapFunc, state) => {
   |> Js.Array.forEach(map =>
        map
        |> Obj.magic
-       |> WonderCommonlib.SparseMapService.deleteVal(index)
+       |> WonderCommonlib.MutableSparseMapService.deleteVal(index)
        |> ignore
      )
   |> ignore;
@@ -74,7 +74,7 @@ let testShadowCopyArrayLikeMapData = (getMapFunc, state) => {
          (. (sourceArr, targetArr), map) => {
            sourceArr
            |> Js.Array.push(
-                map |> WonderCommonlib.SparseMapService.unsafeGet(index),
+                map |> WonderCommonlib.MutableSparseMapService.unsafeGet(index),
               )
            |> ignore;
            targetArr

@@ -1,8 +1,8 @@
-let getPoints = (index: int, pointsMap) => pointsMap |> WonderCommonlib.SparseMapService.get(index);
+let getPoints = (index: int, pointsMap) => pointsMap |> WonderCommonlib.MutableSparseMapService.get(index);
 
 let unsafeGetPoints = (index: int, pointsMap) =>
   pointsMap
-  |> WonderCommonlib.SparseMapService.unsafeGet(index)
+  |> WonderCommonlib.MutableSparseMapService.unsafeGet(index)
   |> WonderLog.Contract.ensureCheck(
        (points) =>
          WonderLog.(
@@ -31,11 +31,11 @@ let setPointsWithArray =
       | None => [@bs] makeTypeArrayFunc(record)
       | Some(typeArr) => [@bs] fillTypeArrayFunc(typeArr, record, 0)
       };
-    pointsMap |> WonderCommonlib.SparseMapService.set(index, typeArr)
+    pointsMap |> WonderCommonlib.MutableSparseMapService.set(index, typeArr)
   | Some(indices) =>
     [@bs] fillTypeArrayFunc(indices, record, 0) |> ignore;
     pointsMap
   }; */
 
 let setPoints = (index: int, record, pointsMap) =>
-  pointsMap |> Obj.magic |> WonderCommonlib.SparseMapService.set(index, record) |> Obj.magic;
+  pointsMap |> Obj.magic |> WonderCommonlib.MutableSparseMapService.set(index, record) |> Obj.magic;

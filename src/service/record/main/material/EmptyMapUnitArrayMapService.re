@@ -1,5 +1,5 @@
 let _unsafeGetEmptyMapUnitArray = (material, emptyMapUnitArrayMap) =>
-  emptyMapUnitArrayMap |> WonderCommonlib.SparseMapService.unsafeGet(material);
+  emptyMapUnitArrayMap |> WonderCommonlib.MutableSparseMapService.unsafeGet(material);
 
 let addEmptyMapUnit = (material, emptyMapUnit, emptyMapUnitArrayMap) => {
   _unsafeGetEmptyMapUnitArray(material, emptyMapUnitArrayMap)
@@ -15,7 +15,7 @@ let _createArray = textureCountPerMaterial =>
 let initEmptyMapUnitArray =
     (material, textureCountPerMaterial, emptyMapUnitArrayMap) =>
   emptyMapUnitArrayMap
-  |> WonderCommonlib.SparseMapService.set(
+  |> WonderCommonlib.MutableSparseMapService.set(
        material,
        _createArray(textureCountPerMaterial),
      );

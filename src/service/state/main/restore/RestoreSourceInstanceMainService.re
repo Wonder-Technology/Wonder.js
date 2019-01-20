@@ -4,9 +4,9 @@ open SourceInstanceType;
 
 let _buildIsNotSendTransformMatrixDataMap = (isSendTransformMatrixDataMap) =>
   isSendTransformMatrixDataMap
-  |> SparseMapService.reduceiValid(
-       [@bs] ((newMap, _, index) => newMap |> WonderCommonlib.SparseMapService.set(index, false)),
-       WonderCommonlib.SparseMapService.createEmpty()
+  |> WonderCommonlib.MutableSparseMapService.reduceiValid(
+       [@bs] ((newMap, _, index) => newMap |> WonderCommonlib.MutableSparseMapService.set(index, false)),
+       WonderCommonlib.MutableSparseMapService.createEmpty()
      );
 
 let _restoreTypeArrays = (currentSourceInstanceRecord, targetSourceInstanceRecord) =>

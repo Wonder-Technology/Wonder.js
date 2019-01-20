@@ -16,7 +16,7 @@ let getInstanceBuffer = (gl, {matrixInstanceBufferPool}) =>
   _getBufferAndSetBufferMap(gl, matrixInstanceBufferPool);
 
 let _getBufferFromBufferMap = (index: int, bufferMap) =>
-  WonderCommonlib.SparseMapService.get(index, bufferMap);
+  WonderCommonlib.MutableSparseMapService.get(index, bufferMap);
 
 let _addBufferToPool = (geometryIndex, bufferMap, pool) =>
   switch (_getBufferFromBufferMap(geometryIndex, bufferMap)) {
@@ -38,30 +38,30 @@ let addAllBufferToPool =
       },
     ) => {
   geometryVertexBufferMap
-  |> SparseMapService.forEachValid((. buffer) =>
+  |> WonderCommonlib.MutableSparseMapService.forEachValid((. buffer) =>
        vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore
      );
   geometryTexCoordBufferMap
-  |> SparseMapService.forEachValid((. buffer) =>
+  |> WonderCommonlib.MutableSparseMapService.forEachValid((. buffer) =>
        vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore
      );
   geometryNormalBufferMap
-  |> SparseMapService.forEachValid((. buffer) =>
+  |> WonderCommonlib.MutableSparseMapService.forEachValid((. buffer) =>
        vertexArrayBufferPool |> Js.Array.push(buffer) |> ignore
      );
   geometryElementArrayBufferMap
-  |> SparseMapService.forEachValid((. buffer) =>
+  |> WonderCommonlib.MutableSparseMapService.forEachValid((. buffer) =>
        elementArrayBufferPool |> Js.Array.push(buffer) |> ignore
      );
   matrixInstanceBufferMap
-  |> SparseMapService.forEachValid((. buffer) =>
+  |> WonderCommonlib.MutableSparseMapService.forEachValid((. buffer) =>
        matrixInstanceBufferPool |> Js.Array.push(buffer) |> ignore
      );
   (vertexArrayBufferPool, elementArrayBufferPool, matrixInstanceBufferPool);
 };
 
 let _getBufferFromBufferMap = (index: int, bufferMap) =>
-  WonderCommonlib.SparseMapService.get(index, bufferMap);
+  WonderCommonlib.MutableSparseMapService.get(index, bufferMap);
 
 let _addBufferToPool = (geometryIndex, bufferMap, pool) =>
   switch (_getBufferFromBufferMap(geometryIndex, bufferMap)) {
@@ -93,7 +93,7 @@ let addGeometryBufferToPool =
   };
 
 let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
-  WonderCommonlib.SparseMapService.unsafeGet(index, bufferMap)
+  WonderCommonlib.MutableSparseMapService.unsafeGet(index, bufferMap)
   |> WonderLog.Contract.ensureCheck(
        r =>
          WonderLog.(
@@ -105,7 +105,7 @@ let _unsafeGetBufferFromBufferMap = (index: int, bufferMap) =>
                    ~actual={j|not|j},
                  ),
                  () =>
-                 WonderCommonlib.SparseMapService.has(index, bufferMap)
+                 WonderCommonlib.MutableSparseMapService.has(index, bufferMap)
                  |> assertTrue
                )
              )
@@ -120,7 +120,7 @@ let addInstanceBufferToPool =
     {matrixInstanceBufferMap, matrixInstanceBufferPool} as record,
   ) =>
     switch (
-      WonderCommonlib.SparseMapService.get(
+      WonderCommonlib.MutableSparseMapService.get(
         sourceInstanceIndex,
         matrixInstanceBufferMap,
       )

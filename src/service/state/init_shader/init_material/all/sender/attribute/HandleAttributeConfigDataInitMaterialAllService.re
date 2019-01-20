@@ -95,10 +95,10 @@ let _setToAttributeSendMap =
     ) => {
   let {attributeSendDataMap, instanceAttributeSendDataMap} = glslSenderRecord;
   attributeSendDataMap
-  |> WonderCommonlib.SparseMapService.set(shaderIndex, sendDataArr)
+  |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, sendDataArr)
   |> ignore;
   instanceAttributeSendDataMap
-  |> WonderCommonlib.SparseMapService.set(
+  |> WonderCommonlib.MutableSparseMapService.set(
        shaderIndex,
        instanceSendNoCachableDataArr,
      )
@@ -125,7 +125,7 @@ let addAttributeSendData =
                  ),
                  () =>
                  glslSenderRecord.attributeSendDataMap
-                 |> WonderCommonlib.SparseMapService.get(shaderIndex)
+                 |> WonderCommonlib.MutableSparseMapService.get(shaderIndex)
                  |> assertNotExist
                )
              )

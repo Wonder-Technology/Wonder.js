@@ -135,7 +135,7 @@ let _ =
         let originGameObjectsArr = [|1|];
         let copiedOriginGameObjectsArr = originGameObjectsArr |> Js.Array.copy;
         gameObjectsMap
-        |> WonderCommonlib.SparseMapService.set(
+        |> WonderCommonlib.MutableSparseMapService.set(
              geometry1,
              originGameObjectsArr,
            )
@@ -144,12 +144,12 @@ let _ =
         let {gameObjectsMap} = GeometryTool.getRecord(copiedState);
         let arr =
           gameObjectsMap
-          |> WonderCommonlib.SparseMapService.unsafeGet(geometry1);
+          |> WonderCommonlib.MutableSparseMapService.unsafeGet(geometry1);
         Array.unsafe_set(arr, 0, 2);
 
         let {gameObjectsMap} = GeometryTool.getRecord(state);
         gameObjectsMap
-        |> WonderCommonlib.SparseMapService.unsafeGet(geometry1)
+        |> WonderCommonlib.MutableSparseMapService.unsafeGet(geometry1)
         |> expect == copiedOriginGameObjectsArr;
       });
     });

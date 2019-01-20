@@ -6,10 +6,17 @@ open ComponentMapService;
 
 let _getAllComponents = (disposedUidMap, componentMap) =>
   componentMap
-  |> Js.Array.filteri((component, uid) =>
-       ! (disposedUidMap |> WonderCommonlib.SparseMapService.has(uid))
-       && Obj.magic(component) !== Js.Undefined.empty
-     );
+  /* |> WonderCommonlib.MutableSparseMapService.filterValid; */
+  |> Js.Array.filteri((component, uid)
+       =>
+         ! (
+           disposedUidMap |> WonderCommonlib.MutableSparseMapService.has(uid)
+         )
+         && Obj.magic(component) !== Js.Undefined.empty
+       )
+       /* ! WonderCommonlib.NullService.isEmpty(component) */
+  /* Obj.magic(component) !== Js.Undefined.empty */
+  |> WonderCommonlib.SparseMapType.arrayNullableToArrayNotNullable;
 
 let getAllGeometryComponents = ({gameObjectRecord}) => {
   let {geometryMap, disposedUidMap} = gameObjectRecord;

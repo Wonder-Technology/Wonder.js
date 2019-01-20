@@ -20,25 +20,25 @@ let _setDefaultValue =
     ) => {
   ...record,
   distanceMap:
-    distanceMap |> WonderCommonlib.SparseMapService.set(index, 10.),
+    distanceMap |> WonderCommonlib.MutableSparseMapService.set(index, 10.),
   minDistanceMap:
-    minDistanceMap |> WonderCommonlib.SparseMapService.set(index, 0.05),
+    minDistanceMap |> WonderCommonlib.MutableSparseMapService.set(index, 0.05),
   phiMap:
-    phiMap |> WonderCommonlib.SparseMapService.set(index, Js.Math._PI /. 2.),
+    phiMap |> WonderCommonlib.MutableSparseMapService.set(index, Js.Math._PI /. 2.),
   thetaMap:
-    thetaMap |> WonderCommonlib.SparseMapService.set(index, Js.Math._PI /. 2.),
+    thetaMap |> WonderCommonlib.MutableSparseMapService.set(index, Js.Math._PI /. 2.),
   thetaMarginMap:
-    thetaMarginMap |> WonderCommonlib.SparseMapService.set(index, 0.05),
+    thetaMarginMap |> WonderCommonlib.MutableSparseMapService.set(index, 0.05),
   targetMap:
-    targetMap |> WonderCommonlib.SparseMapService.set(index, (0., 0., 0.)),
+    targetMap |> WonderCommonlib.MutableSparseMapService.set(index, (0., 0., 0.)),
   moveSpeedXMap:
-    moveSpeedXMap |> WonderCommonlib.SparseMapService.set(index, 1.),
+    moveSpeedXMap |> WonderCommonlib.MutableSparseMapService.set(index, 1.),
   moveSpeedYMap:
-    moveSpeedYMap |> WonderCommonlib.SparseMapService.set(index, 1.),
+    moveSpeedYMap |> WonderCommonlib.MutableSparseMapService.set(index, 1.),
   rotateSpeedMap:
-    rotateSpeedMap |> WonderCommonlib.SparseMapService.set(index, 1.),
+    rotateSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 1.),
   wheelSpeedMap:
-    wheelSpeedMap |> WonderCommonlib.SparseMapService.set(index, 1.),
+    wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 1.),
 };
 
 let create =

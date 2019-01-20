@@ -33,24 +33,24 @@ let getUniformLocation = (program, name, uniformLocationMap, gl) =>
 
 let getAttributeLocationMap = (shaderIndex: int, glslLocationRecord) =>
   glslLocationRecord.attributeLocationMap
-  |> WonderCommonlib.SparseMapService.get(shaderIndex);
+  |> WonderCommonlib.MutableSparseMapService.get(shaderIndex);
 
 let setAttributeLocationMap =
     (shaderIndex: int, attributeLocationMap, glslLocationRecord) => {
   glslLocationRecord.attributeLocationMap
-  |> WonderCommonlib.SparseMapService.set(shaderIndex, attributeLocationMap)
+  |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, attributeLocationMap)
   |> ignore;
   glslLocationRecord;
 };
 
 let getUniformLocationMap = (shaderIndex: int, glslLocationRecord) =>
   glslLocationRecord.uniformLocationMap
-  |> WonderCommonlib.SparseMapService.get(shaderIndex);
+  |> WonderCommonlib.MutableSparseMapService.get(shaderIndex);
 
 let setUniformLocationMap =
     (shaderIndex: int, uniformLocationMap, glslLocationRecord) => {
   glslLocationRecord.uniformLocationMap
-  |> WonderCommonlib.SparseMapService.set(shaderIndex, uniformLocationMap)
+  |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, uniformLocationMap)
   |> ignore;
 
   glslLocationRecord;

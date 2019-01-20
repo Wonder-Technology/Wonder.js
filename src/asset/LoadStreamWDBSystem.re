@@ -77,7 +77,7 @@ let _streamLoad =
           None,
           0,
           [||],
-          WonderCommonlib.SparseMapService.createEmpty(),
+          WonderCommonlib.MutableSparseMapService.createEmpty(),
         ),
         reader,
       );

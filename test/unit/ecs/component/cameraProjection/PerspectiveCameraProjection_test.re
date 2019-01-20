@@ -219,11 +219,11 @@ let _ =
             state.perspectiveCameraProjectionRecord;
           (
             pMatrixMap
-            |> WonderCommonlib.SparseMapService.has(
+            |> WonderCommonlib.MutableSparseMapService.has(
                  perspectiveCameraProjection1,
                ),
             gameObjectMap
-            |> WonderCommonlib.SparseMapService.has(
+            |> WonderCommonlib.MutableSparseMapService.has(
                  perspectiveCameraProjection1,
                ),
           )
@@ -242,19 +242,19 @@ let _ =
             state.perspectiveCameraProjectionRecord;
           (
             nearMap
-            |> WonderCommonlib.SparseMapService.has(
+            |> WonderCommonlib.MutableSparseMapService.has(
                  perspectiveCameraProjection1,
                ),
             farMap
-            |> WonderCommonlib.SparseMapService.has(
+            |> WonderCommonlib.MutableSparseMapService.has(
                  perspectiveCameraProjection1,
                ),
             fovyMap
-            |> WonderCommonlib.SparseMapService.has(
+            |> WonderCommonlib.MutableSparseMapService.has(
                  perspectiveCameraProjection1,
                ),
             aspectMap
-            |> WonderCommonlib.SparseMapService.has(
+            |> WonderCommonlib.MutableSparseMapService.has(
                  perspectiveCameraProjection1,
                ),
           )

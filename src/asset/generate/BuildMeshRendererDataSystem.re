@@ -12,7 +12,7 @@ let build = (meshRendererDataMap, state) => {
   );
 
   meshRendererDataMap
-  |> SparseMapService.reduceValid(
+  |> WonderCommonlib.MutableSparseMapService.reduceValid(
        (. meshRendererDataArr, meshRenderer) =>
          meshRendererDataArr
          |> ArrayService.push(

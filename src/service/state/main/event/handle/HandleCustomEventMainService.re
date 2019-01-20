@@ -36,7 +36,7 @@ let triggerGameObjectEvent =
   | None => (state, customEvent)
   | Some(gameObjectEventListMap) =>
     switch (
-      gameObjectEventListMap |> WonderCommonlib.SparseMapService.get(target)
+      gameObjectEventListMap |> WonderCommonlib.MutableSparseMapService.get(target)
     ) {
     | None => (state, customEvent)
     | Some(arr) =>

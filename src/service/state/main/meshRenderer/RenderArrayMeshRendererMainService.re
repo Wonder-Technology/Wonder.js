@@ -9,7 +9,7 @@ let _setRenderGameObject =
       renderGameObjectMap: renderGameObjectMap,
     ) =>
   renderGameObjectMap
-  |> WonderCommonlib.SparseMapService.set(meshRenderer, gameObject);
+  |> WonderCommonlib.MutableSparseMapService.set(meshRenderer, gameObject);
 
 let addToRenderGameObjectMap =
     (

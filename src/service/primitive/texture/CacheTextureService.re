@@ -1,5 +1,5 @@
 let isCached = (unit, texture, bindTextureUnitCacheMap) =>
-  switch (bindTextureUnitCacheMap |> WonderCommonlib.SparseMapService.get(unit)) {
+  switch (bindTextureUnitCacheMap |> WonderCommonlib.MutableSparseMapService.get(unit)) {
   | None => false
   | Some(bindedTexture) => bindedTexture === texture
   };
@@ -19,5 +19,5 @@ let addActiveTexture = (unit, texture, bindTextureUnitCacheMap) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   );
-  bindTextureUnitCacheMap |> WonderCommonlib.SparseMapService.set(unit, texture)
+  bindTextureUnitCacheMap |> WonderCommonlib.MutableSparseMapService.set(unit, texture)
 };

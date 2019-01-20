@@ -36,30 +36,30 @@ let _createMatrixFloat32Array = (capacity) =>
   Float32Array.fromLength(capacity |> _getFloat32InstanceArraySize);
 
 let _getCapacity = (sourceInstance, defaultCapacity, capacityMap) =>
-  switch (capacityMap |> WonderCommonlib.SparseMapService.get(sourceInstance)) {
+  switch (capacityMap |> WonderCommonlib.MutableSparseMapService.get(sourceInstance)) {
   | None => defaultCapacity
   | Some(capacity) => capacity
   };
 
 let _setCapacity = (sourceInstance, capacity, capacityMap) => {
-  capacityMap |> WonderCommonlib.SparseMapService.set(sourceInstance, capacity);
+  capacityMap |> WonderCommonlib.MutableSparseMapService.set(sourceInstance, capacity);
   capacityMap
 };
 
 let getOrCreateBuffer = ((gl, sourceInstance, defaultCapacity), (capacityMap, bufferMap), state) =>
-  switch (WonderCommonlib.SparseMapService.get(sourceInstance, bufferMap)) {
+  switch (WonderCommonlib.MutableSparseMapService.get(sourceInstance, bufferMap)) {
   | Some(buffer) => buffer
   | None =>
     let buffer =
       createBuffer(gl, _getCapacity(sourceInstance, defaultCapacity, capacityMap), state);
-    bufferMap |> WonderCommonlib.SparseMapService.set(sourceInstance, buffer) |> ignore;
+    bufferMap |> WonderCommonlib.MutableSparseMapService.set(sourceInstance, buffer) |> ignore;
     buffer
   };
 
 let getOrCreateMatrixFloat32Array =
     (sourceInstance: int, defaultCapacity, (capacityMap, matrixFloat32ArrayMap), state) => {
   let capacity = _getCapacity(sourceInstance, defaultCapacity, capacityMap);
-  switch (matrixFloat32ArrayMap |> WonderCommonlib.SparseMapService.get(sourceInstance)) {
+  switch (matrixFloat32ArrayMap |> WonderCommonlib.MutableSparseMapService.get(sourceInstance)) {
   | Some(typeArr) => typeArr
   | None =>
     switch (
@@ -73,7 +73,7 @@ let getOrCreateMatrixFloat32Array =
     | None =>
       let typeArr = _createMatrixFloat32Array(capacity);
       matrixFloat32ArrayMap
-      |> WonderCommonlib.SparseMapService.set(sourceInstance, typeArr)
+      |> WonderCommonlib.MutableSparseMapService.set(sourceInstance, typeArr)
       |> ignore;
       typeArr
     }
@@ -97,10 +97,10 @@ let setCapacityAndUpdateBufferTypeArray =
     _setCapacity(sourceInstance, currentCapacity^, capacityMap) |> ignore;
     gl |> deleteBuffer(buffer);
     let buffer = createBuffer(gl, currentCapacity^, state);
-    bufferMap |> WonderCommonlib.SparseMapService.set(sourceInstance, buffer) |> ignore;
+    bufferMap |> WonderCommonlib.MutableSparseMapService.set(sourceInstance, buffer) |> ignore;
     let matrixFloat32Array = _createMatrixFloat32Array(currentCapacity^);
     matrixFloat32ArrayMap
-    |> WonderCommonlib.SparseMapService.set(sourceInstance, matrixFloat32Array)
+    |> WonderCommonlib.MutableSparseMapService.set(sourceInstance, matrixFloat32Array)
     |> ignore;
     (buffer, matrixFloat32Array)
   } else {

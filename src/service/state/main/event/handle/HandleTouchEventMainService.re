@@ -63,7 +63,7 @@ let execEventHandle = (eventName, touchDomEvent, {eventRecord} as state) => {
 
   switch (
     touchDomEventDataArrMap
-    |> WonderCommonlib.SparseMapService.get(eventName |> domEventNameToInt)
+    |> WonderCommonlib.MutableSparseMapService.get(eventName |> domEventNameToInt)
   ) {
   | None => state
   | Some(arr) =>

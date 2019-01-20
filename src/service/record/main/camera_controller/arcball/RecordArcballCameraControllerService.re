@@ -2,23 +2,28 @@ open StateDataMainType;
 
 let create = () => {
   index: 0,
-  pointDownEventHandleFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
-  pointUpEventHandleFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
-  pointDragEventHandleFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
-  pointScaleEventHandleFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
-  keydownEventHandleFuncMap: WonderCommonlib.SparseMapService.createEmpty(),
-  dirtyArray: WonderCommonlib.SparseMapService.createEmpty(),
-  distanceMap: WonderCommonlib.SparseMapService.createEmpty(),
-  minDistanceMap: WonderCommonlib.SparseMapService.createEmpty(),
-  phiMap: WonderCommonlib.SparseMapService.createEmpty(),
-  thetaMap: WonderCommonlib.SparseMapService.createEmpty(),
-  thetaMarginMap: WonderCommonlib.SparseMapService.createEmpty(),
-  targetMap: WonderCommonlib.SparseMapService.createEmpty(),
-  moveSpeedXMap: WonderCommonlib.SparseMapService.createEmpty(),
-  moveSpeedYMap: WonderCommonlib.SparseMapService.createEmpty(),
-  rotateSpeedMap: WonderCommonlib.SparseMapService.createEmpty(),
-  wheelSpeedMap: WonderCommonlib.SparseMapService.createEmpty(),
-  gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+  pointDownEventHandleFuncMap:
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
+  pointUpEventHandleFuncMap:
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
+  pointDragEventHandleFuncMap:
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
+  pointScaleEventHandleFuncMap:
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
+  keydownEventHandleFuncMap:
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
+  dirtyArray: WonderCommonlib.ArrayService.createEmpty(),
+  distanceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  minDistanceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  phiMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  thetaMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  thetaMarginMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  targetMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  moveSpeedXMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  moveSpeedYMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  rotateSpeedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  wheelSpeedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  gameObjectMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
 };
 
@@ -48,26 +53,30 @@ let deepCopyForRestore =
     ) => {
   index,
   pointDownEventHandleFuncMap:
-    pointDownEventHandleFuncMap |> SparseMapService.copy,
+    pointDownEventHandleFuncMap |> WonderCommonlib.MutableSparseMapService.copy,
   pointUpEventHandleFuncMap:
-    pointUpEventHandleFuncMap |> SparseMapService.copy,
+    pointUpEventHandleFuncMap |> WonderCommonlib.MutableSparseMapService.copy,
   pointDragEventHandleFuncMap:
-    pointDragEventHandleFuncMap |> SparseMapService.copy,
+    pointDragEventHandleFuncMap |> WonderCommonlib.MutableSparseMapService.copy,
   pointScaleEventHandleFuncMap:
-    pointScaleEventHandleFuncMap |> SparseMapService.copy,
+    pointScaleEventHandleFuncMap
+    |> WonderCommonlib.MutableSparseMapService.copy,
   keydownEventHandleFuncMap:
-    keydownEventHandleFuncMap |> SparseMapService.copy,
-  dirtyArray: dirtyArray |> SparseMapService.copy,
-  distanceMap: distanceMap |> SparseMapService.copy,
-  minDistanceMap: minDistanceMap |> SparseMapService.copy,
-  phiMap: phiMap |> SparseMapService.copy,
-  thetaMap: thetaMap |> SparseMapService.copy,
-  thetaMarginMap: thetaMarginMap |> SparseMapService.copy,
-  targetMap: targetMap |> SparseMapService.copy,
-  moveSpeedXMap: moveSpeedXMap |> SparseMapService.copy,
-  moveSpeedYMap: moveSpeedYMap |> SparseMapService.copy,
-  rotateSpeedMap: rotateSpeedMap |> SparseMapService.copy,
-  wheelSpeedMap: wheelSpeedMap |> SparseMapService.copy,
-  gameObjectMap: gameObjectMap |> SparseMapService.copy,
+    keydownEventHandleFuncMap |> WonderCommonlib.MutableSparseMapService.copy,
+  dirtyArray: dirtyArray |> Js.Array.copy,
+  distanceMap: distanceMap |> WonderCommonlib.MutableSparseMapService.copy,
+  minDistanceMap:
+    minDistanceMap |> WonderCommonlib.MutableSparseMapService.copy,
+  phiMap: phiMap |> WonderCommonlib.MutableSparseMapService.copy,
+  thetaMap: thetaMap |> WonderCommonlib.MutableSparseMapService.copy,
+  thetaMarginMap:
+    thetaMarginMap |> WonderCommonlib.MutableSparseMapService.copy,
+  targetMap: targetMap |> WonderCommonlib.MutableSparseMapService.copy,
+  moveSpeedXMap: moveSpeedXMap |> WonderCommonlib.MutableSparseMapService.copy,
+  moveSpeedYMap: moveSpeedYMap |> WonderCommonlib.MutableSparseMapService.copy,
+  rotateSpeedMap:
+    rotateSpeedMap |> WonderCommonlib.MutableSparseMapService.copy,
+  wheelSpeedMap: wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.copy,
+  gameObjectMap: gameObjectMap |> WonderCommonlib.MutableSparseMapService.copy,
   disposedIndexArray: disposedIndexArray |> Js.Array.copy,
 };

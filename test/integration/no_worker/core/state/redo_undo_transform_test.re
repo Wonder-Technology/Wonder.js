@@ -119,8 +119,8 @@ let _ =
         (localToWorldMatrixCacheMap, normalMatrixCacheMap)
         |>
         expect == (
-                    WonderCommonlib.SparseMapService.createEmpty(),
-                    WonderCommonlib.SparseMapService.createEmpty(),
+                    WonderCommonlib.MutableSparseMapService.createEmpty(),
+                    WonderCommonlib.MutableSparseMapService.createEmpty(),
                   );
       });
 

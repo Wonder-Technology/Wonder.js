@@ -3237,7 +3237,7 @@ let _ =
           GenerateSceneGraphAPI.generateGLBData(
             rootGameObject,
             Js.Nullable.return(
-              WonderCommonlib.SparseMapService.createEmpty(),
+              WonderCommonlib.MutableSparseMapService.createEmpty(),
             ),
             state,
           );
@@ -3428,12 +3428,12 @@ let _ =
           let uint8ArrayData2 = ("image/jpeg", Uint8Array.make([|2|]));
 
           let imageUint8ArrayMap =
-            WonderCommonlib.SparseMapService.createEmpty()
-            |> WonderCommonlib.SparseMapService.set(
+            WonderCommonlib.MutableSparseMapService.createEmpty()
+            |> WonderCommonlib.MutableSparseMapService.set(
                  texture2,
                  uint8ArrayData1,
                )
-            |> WonderCommonlib.SparseMapService.set(texture3, uint8ArrayData2);
+            |> WonderCommonlib.MutableSparseMapService.set(texture3, uint8ArrayData2);
 
           GenerateSceneGraphSystemTool.testGLTFResultByGameObjectWithImageUint8ArrayDataMap(
             rootGameObject,

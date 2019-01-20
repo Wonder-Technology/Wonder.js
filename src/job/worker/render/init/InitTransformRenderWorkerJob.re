@@ -12,8 +12,8 @@ let _createTypeArrays = (buffer, count, state) => {
       localRotations,
       localScales,
       localToWorldMatrixCacheMap:
-        WonderCommonlib.SparseMapService.createEmpty(),
-      normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+      normalMatrixCacheMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
     });
   state;
 };

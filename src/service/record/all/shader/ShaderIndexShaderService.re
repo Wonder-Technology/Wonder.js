@@ -2,6 +2,7 @@ open ShaderType;
 
 let genereateShaderIndex = ({index} as record) => {
   record.index = succ(index);
+
   index
   |> WonderLog.Contract.ensureCheck(
        r => {
@@ -23,9 +24,10 @@ let genereateShaderIndex = ({index} as record) => {
      );
 };
 
-
 let _hasMaterialUseShader = (shaderIndex, material, materialsMap) =>
-  switch (WonderCommonlib.SparseMapService.get(shaderIndex, materialsMap)) {
+  switch (
+    WonderCommonlib.MutableSparseMapService.get(shaderIndex, materialsMap)
+  ) {
   | Some(arr) when arr |> Js.Array.length > 0 => true
   | _ => false
   };

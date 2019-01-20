@@ -1,11 +1,11 @@
 open TypeArrayPoolType;
 
 let deepCopyForRestore = (record) => {
-  float32ArrayPoolMap: WonderCommonlib.SparseMapService.createEmpty(),
-  uint16ArrayPoolMap: WonderCommonlib.SparseMapService.createEmpty()
+  float32ArrayPoolMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  uint16ArrayPoolMap: WonderCommonlib.MutableSparseMapService.createEmpty()
 };
 
 let create = () => {
-  float32ArrayPoolMap: WonderCommonlib.SparseMapService.createEmpty(),
-  uint16ArrayPoolMap: WonderCommonlib.SparseMapService.createEmpty()
+  float32ArrayPoolMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  uint16ArrayPoolMap: WonderCommonlib.MutableSparseMapService.createEmpty()
 };

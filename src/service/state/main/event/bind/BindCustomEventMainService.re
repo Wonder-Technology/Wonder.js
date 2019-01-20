@@ -113,19 +113,19 @@ let bindGameObjectEvent =
           customGameObjectEventArrMap
           |> WonderCommonlib.HashMapService.set(
                eventName,
-               WonderCommonlib.SparseMapService.createEmpty()
-               |> WonderCommonlib.SparseMapService.set(target, [|eventData|]),
+               WonderCommonlib.MutableSparseMapService.createEmpty()
+               |> WonderCommonlib.MutableSparseMapService.set(target, [|eventData|]),
              )
         | Some(targetEventArrMap) =>
           switch (
-            targetEventArrMap |> WonderCommonlib.SparseMapService.get(target)
+            targetEventArrMap |> WonderCommonlib.MutableSparseMapService.get(target)
           ) {
           | None =>
             customGameObjectEventArrMap
             |> WonderCommonlib.HashMapService.set(
                  eventName,
                  targetEventArrMap
-                 |> WonderCommonlib.SparseMapService.set(
+                 |> WonderCommonlib.MutableSparseMapService.set(
                       target,
                       [|eventData|],
                     ),
@@ -135,7 +135,7 @@ let bindGameObjectEvent =
             |> WonderCommonlib.HashMapService.set(
                  eventName,
                  targetEventArrMap
-                 |> WonderCommonlib.SparseMapService.set(
+                 |> WonderCommonlib.MutableSparseMapService.set(
                       target,
                       _addEventDataByPriority(eventData, arr),
                     ),
@@ -163,7 +163,7 @@ let unbindGameObjectEventByTarget =
         | Some(targetEventArrMap) =>
           targetEventArrMap
           |> Obj.magic
-          |> WonderCommonlib.SparseMapService.deleteVal(target)
+          |> WonderCommonlib.MutableSparseMapService.deleteVal(target)
           |> Obj.magic
         },
     },
@@ -186,7 +186,7 @@ let unbindGameObjectEventByHandleFunc =
         | None => customGameObjectEventArrMap
         | Some(targetEventArrMap) =>
           switch (
-            targetEventArrMap |> WonderCommonlib.SparseMapService.get(target)
+            targetEventArrMap |> WonderCommonlib.MutableSparseMapService.get(target)
           ) {
           | None => customGameObjectEventArrMap
           | Some(arr) =>
@@ -194,7 +194,7 @@ let unbindGameObjectEventByHandleFunc =
             |> WonderCommonlib.HashMapService.set(
                  eventName,
                  targetEventArrMap
-                 |> WonderCommonlib.SparseMapService.set(
+                 |> WonderCommonlib.MutableSparseMapService.set(
                       target,
                       _removeFromEventArrByHandleFunc(arr, handleFunc),
                     ),

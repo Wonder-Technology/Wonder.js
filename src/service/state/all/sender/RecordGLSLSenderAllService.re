@@ -1,24 +1,24 @@
 open GLSLSenderType;
 
 let create = () => {
-  attributeSendDataMap: WonderCommonlib.SparseMapService.createEmpty(),
-  instanceAttributeSendDataMap: WonderCommonlib.SparseMapService.createEmpty(),
-  uniformCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
+  attributeSendDataMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  instanceAttributeSendDataMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  uniformCacheMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   uniformRenderObjectSendModelDataMap:
-    WonderCommonlib.SparseMapService.createEmpty(),
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
   uniformRenderObjectSendMaterialDataMap:
-    WonderCommonlib.SparseMapService.createEmpty(),
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
   uniformShaderSendNoCachableDataMap:
-    WonderCommonlib.SparseMapService.createEmpty(),
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
   uniformShaderSendCachableDataMap:
-    WonderCommonlib.SparseMapService.createEmpty(),
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
   uniformShaderSendCachableFunctionDataMap:
-    WonderCommonlib.SparseMapService.createEmpty(),
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
   uniformInstanceSendNoCachableDataMap:
-    WonderCommonlib.SparseMapService.createEmpty(),
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
   uniformNoMaterialShaderSendCachableDataMap:
-    WonderCommonlib.SparseMapService.createEmpty(),
-  /* drawPointsFuncMap: WonderCommonlib.SparseMapService.createEmpty(), */
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
+  /* drawPointsFuncMap: WonderCommonlib.MutableSparseMapService.createEmpty(), */
   vertexAttribHistoryArray: WonderCommonlib.ArrayService.createEmpty(),
   lastSendMaterialData: None,
   /* lastSendGeometryData: None */
@@ -35,9 +35,9 @@ let deepCopyForRestore =
     ) => {
   ...record,
   uniformShaderSendNoCachableDataMap:
-    uniformShaderSendNoCachableDataMap |> SparseMapService.copy,
+    uniformShaderSendNoCachableDataMap |> WonderCommonlib.MutableSparseMapService.copy,
   uniformShaderSendCachableDataMap:
-    uniformShaderSendCachableDataMap |> SparseMapService.copy,
+    uniformShaderSendCachableDataMap |> WonderCommonlib.MutableSparseMapService.copy,
   uniformShaderSendCachableFunctionDataMap:
-    uniformShaderSendCachableFunctionDataMap |> SparseMapService.copy,
+    uniformShaderSendCachableFunctionDataMap |> WonderCommonlib.MutableSparseMapService.copy,
 };

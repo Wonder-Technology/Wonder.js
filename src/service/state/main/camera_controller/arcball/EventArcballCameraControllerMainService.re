@@ -4,7 +4,7 @@ open EventType;
 
 let _setEventHandleFunc = (cameraController, handleFunc, eventHandleFuncMap) =>
   eventHandleFuncMap
-  |> WonderCommonlib.SparseMapService.set(cameraController, handleFunc);
+  |> WonderCommonlib.MutableSparseMapService.set(cameraController, handleFunc);
 
 let _setPointDownEventHandleFunc =
     (cameraController, handleFunc, {pointDownEventHandleFuncMap} as record) => {
@@ -277,7 +277,7 @@ let _disposePointDownEventHandleFuncMap =
 
   switch (
     pointDownEventHandleFuncMap
-    |> WonderCommonlib.SparseMapService.get(cameraController)
+    |> WonderCommonlib.MutableSparseMapService.get(cameraController)
   ) {
   | None => state
   | Some(pointDownEventHandleFunc) =>
@@ -306,7 +306,7 @@ let _disposePointUpEventHandleFuncMap =
 
   switch (
     pointUpEventHandleFuncMap
-    |> WonderCommonlib.SparseMapService.get(cameraController)
+    |> WonderCommonlib.MutableSparseMapService.get(cameraController)
   ) {
   | None => state
   | Some(pointUpEventHandleFunc) =>
@@ -335,7 +335,7 @@ let _disposePointDragEventHandleFuncMap =
 
   switch (
     pointDragEventHandleFuncMap
-    |> WonderCommonlib.SparseMapService.get(cameraController)
+    |> WonderCommonlib.MutableSparseMapService.get(cameraController)
   ) {
   | None => state
   | Some(pointDragEventHandleFunc) =>
@@ -364,7 +364,7 @@ let _disposePointScaleEventHandleFuncMap =
 
   switch (
     pointScaleEventHandleFuncMap
-    |> WonderCommonlib.SparseMapService.get(cameraController)
+    |> WonderCommonlib.MutableSparseMapService.get(cameraController)
   ) {
   | None => state
   | Some(pointScaleEventHandleFunc) =>
@@ -393,7 +393,7 @@ let _disposeKeyDownEventHandleFuncMap =
 
   switch (
     keydownEventHandleFuncMap
-    |> WonderCommonlib.SparseMapService.get(cameraController)
+    |> WonderCommonlib.MutableSparseMapService.get(cameraController)
   ) {
   | None => state
   | Some(keydownEventHandleFunc) =>
@@ -425,5 +425,5 @@ let isBindEvent =
   let {pointDownEventHandleFuncMap} = arcballCameraControllerRecord;
 
   pointDownEventHandleFuncMap
-  |> WonderCommonlib.SparseMapService.has(cameraController);
+  |> WonderCommonlib.MutableSparseMapService.has(cameraController);
 };

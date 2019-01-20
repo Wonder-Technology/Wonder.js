@@ -20,7 +20,7 @@ let build =
   );
 
   arcballCameraControllerDataMap
-  |> SparseMapService.reduceValid(
+  |> WonderCommonlib.MutableSparseMapService.reduceValid(
        (. arcballCameraControllerDataArr, cameraController) =>
          arcballCameraControllerDataArr
          |> ArrayService.push(

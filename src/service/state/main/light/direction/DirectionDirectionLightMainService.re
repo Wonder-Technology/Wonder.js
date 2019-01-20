@@ -19,9 +19,9 @@ let buildDirectionMap = (getDirectionFunc, state) =>
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. map, i) =>
          map
-         |> WonderCommonlib.SparseMapService.set(
+         |> WonderCommonlib.MutableSparseMapService.set(
               i,
               getDirectionFunc(i, state),
             ),
-       WonderCommonlib.SparseMapService.createEmpty(),
+       WonderCommonlib.MutableSparseMapService.createEmpty(),
      );

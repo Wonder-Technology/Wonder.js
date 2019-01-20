@@ -64,7 +64,7 @@ let _setCache = (shaderCacheMap, name: string, record) =>
   shaderCacheMap |> WonderCommonlib.HashMapService.set(name, record);
 
 let getCacheMap = (shaderIndex: int, uniformCacheMap) =>
-  uniformCacheMap |> WonderCommonlib.SparseMapService.get(shaderIndex);
+  uniformCacheMap |> WonderCommonlib.MutableSparseMapService.get(shaderIndex);
 
 let _queryIsNotCacheWithCache = (cache, x, y, z) => {
   let isNotCached = ref(false);

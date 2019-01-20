@@ -266,7 +266,7 @@ let _ =
             let {geometryVertexBufferMap} = VboBufferTool.getRecord(state);
 
             geometryVertexBufferMap
-            |> WonderCommonlib.SparseMapService.has(geometry1)
+            |> WonderCommonlib.MutableSparseMapService.has(geometry1)
             |> expect == false;
           })
         );
@@ -313,7 +313,7 @@ let _ =
             let {geometryVertexBufferMap} = VboBufferTool.getRecord(state);
 
             geometryVertexBufferMap
-            |> WonderCommonlib.SparseMapService.has(geometry1)
+            |> WonderCommonlib.MutableSparseMapService.has(geometry1)
             |> expect == false;
           })
         );
@@ -410,7 +410,7 @@ let _ =
 
             (
               GeometryTool.hasGameObject(geometry1, state),
-              nameMap |> WonderCommonlib.SparseMapService.has(geometry1),
+              nameMap |> WonderCommonlib.MutableSparseMapService.has(geometry1),
             )
             |> expect == (false, false);
           });

@@ -14,36 +14,36 @@ open InstanceType;
 
 open CameraControllerType;
 
-type gameObjectDisposedUidMap = WonderCommonlib.SparseMapService.t(bool);
+type gameObjectDisposedUidMap = WonderCommonlib.MutableSparseMapService.t(bool);
 
 type gameObjectAliveUidArray = array(gameObject);
 
 type gameObjectComponentData = array(component);
 
-type gameObjectTransformMap = WonderCommonlib.SparseMapService.t(transform);
+type gameObjectTransformMap = WonderCommonlib.MutableSparseMapService.t(transform);
 
-type gameObjectCameraViewMap = WonderCommonlib.SparseMapService.t(component);
+type gameObjectCameraViewMap = WonderCommonlib.MutableSparseMapService.t(component);
 
 type gameObjectCameraProjectionMap =
-  WonderCommonlib.SparseMapService.t(component);
+  WonderCommonlib.MutableSparseMapService.t(component);
 
 type gameObjectCameraControllerMap =
-  WonderCommonlib.SparseMapService.t(cameraController);
+  WonderCommonlib.MutableSparseMapService.t(cameraController);
 
-type gameObjectGeometryMap = WonderCommonlib.SparseMapService.t(geometry);
+type gameObjectGeometryMap = WonderCommonlib.MutableSparseMapService.t(geometry);
 
 type gameObjectMeshRendererMap =
-  WonderCommonlib.SparseMapService.t(meshRenderer);
+  WonderCommonlib.MutableSparseMapService.t(meshRenderer);
 
-type gameObjectMaterialMap = WonderCommonlib.SparseMapService.t(material);
+type gameObjectMaterialMap = WonderCommonlib.MutableSparseMapService.t(material);
 
 type gameObjectSourceInstanceMap =
-  WonderCommonlib.SparseMapService.t(sourceInstance);
+  WonderCommonlib.MutableSparseMapService.t(sourceInstance);
 
 type gameObjectObjectInstanceMap =
-  WonderCommonlib.SparseMapService.t(objectInstance);
+  WonderCommonlib.MutableSparseMapService.t(objectInstance);
 
-type gameObjectLightMap = WonderCommonlib.SparseMapService.t(int);
+type gameObjectLightMap = WonderCommonlib.MutableSparseMapService.t(int);
 
 type basicMaterialData = (gameObject, component);
 
@@ -53,7 +53,7 @@ type geometryData = (gameObject, geometry);
 
 type gameObjectRecord = {
   mutable uid: int,
-  mutable nameMap: WonderCommonlib.SparseMapService.t(string),
+  mutable nameMap: WonderCommonlib.MutableSparseMapService.t(string),
   mutable disposeCount: int,
   mutable disposedUidMap: gameObjectDisposedUidMap,
   mutable disposedUidArray: array(int),

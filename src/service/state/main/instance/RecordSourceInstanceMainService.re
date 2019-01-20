@@ -73,11 +73,11 @@ let create = ({settingRecord} as state) => {
       buffer,
       objectInstanceTransformCollections,
       isTransformStatics,
-      objectInstanceTransformIndexMap: WonderCommonlib.SparseMapService.createEmpty(),
-      gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
-      matrixFloat32ArrayMap: WonderCommonlib.SparseMapService.createEmpty(),
-      matrixInstanceBufferCapacityMap: WonderCommonlib.SparseMapService.createEmpty(),
-      isSendTransformMatrixDataMap: WonderCommonlib.SparseMapService.createEmpty(),
+      objectInstanceTransformIndexMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      gameObjectMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      matrixFloat32ArrayMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      matrixInstanceBufferCapacityMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      isSendTransformMatrixDataMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty()
     });
   state
@@ -114,11 +114,11 @@ let deepCopyForRestore = ({settingRecord} as state) => {
           isTransformStatics
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(index * getIsTransformStaticsSize()),
         matrixFloat32ArrayMap:
-          matrixFloat32ArrayMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
-        matrixInstanceBufferCapacityMap: matrixInstanceBufferCapacityMap |> SparseMapService.copy,
-        objectInstanceTransformIndexMap: objectInstanceTransformIndexMap |> SparseMapService.copy,
+          matrixFloat32ArrayMap |> CopyTypeArrayService.deepCopyMutableSparseMapOfFloat32Array,
+        matrixInstanceBufferCapacityMap: matrixInstanceBufferCapacityMap |> WonderCommonlib.MutableSparseMapService.copy,
+        objectInstanceTransformIndexMap: objectInstanceTransformIndexMap |> WonderCommonlib.MutableSparseMapService.copy,
         isSendTransformMatrixDataMap,
-        gameObjectMap: gameObjectMap |> SparseMapService.copy,
+        gameObjectMap: gameObjectMap |> WonderCommonlib.MutableSparseMapService.copy,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy
       })
   }

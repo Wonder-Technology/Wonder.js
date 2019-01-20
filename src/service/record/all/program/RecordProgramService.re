@@ -2,6 +2,6 @@
 open ProgramType;
 
 let create = () => {
-  programMap: WonderCommonlib.SparseMapService.createEmpty(),
+  programMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   lastUsedProgram: None
 };

@@ -3,14 +3,14 @@ let addChildrenToParent = (parent, children, (parentMap, childMap)) => (
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. parentMap, child) =>
          /* TODO duplicate with HierachyTransformService */
-         WonderCommonlib.SparseMapService.set(
+         WonderCommonlib.MutableSparseMapService.set(
            child,
            TransformType.transformToJsUndefine(parent),
            parentMap,
          ),
        parentMap,
      ),
-  WonderCommonlib.SparseMapService.set(parent, children, childMap),
+  WonderCommonlib.MutableSparseMapService.set(parent, children, childMap),
 );
 
 let checkNotDisposedBefore = disposedIndexArray =>

@@ -72,7 +72,7 @@ let read =
       None,
       0,
       [||],
-      WonderCommonlib.SparseMapService.createEmpty(),
+      WonderCommonlib.MutableSparseMapService.createEmpty(),
     ),
     reader,
   );
@@ -104,7 +104,7 @@ let readWithHandleWhenLoadingFunc =
       None,
       0,
       [||],
-      WonderCommonlib.SparseMapService.createEmpty(),
+      WonderCommonlib.MutableSparseMapService.createEmpty(),
     ),
     reader,
   );

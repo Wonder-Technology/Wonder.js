@@ -40,19 +40,19 @@ let addUniformSendDataByType =
 let setToUniformSendMap =
     (shaderIndex, uniformShaderSendCachableDataMap, shaderSendCachableDataArr) =>
   uniformShaderSendCachableDataMap
-  |> WonderCommonlib.SparseMapService.set(
+  |> WonderCommonlib.MutableSparseMapService.set(
        shaderIndex,
        shaderSendCachableDataArr,
      );
 
 let reduceiValidShaderSendCachableData = (glslSenderRecord, func, initValue) =>
   glslSenderRecord.uniformShaderSendCachableDataMap
-  |> SparseMapService.reduceiValid(func, initValue);
+  |> WonderCommonlib.MutableSparseMapService.reduceiValid(func, initValue);
 
 let removeData = (shaderIndex, glslSenderRecord) => {
   glslSenderRecord.uniformShaderSendCachableDataMap
   |> Obj.magic
-  |> WonderCommonlib.SparseMapService.deleteVal(shaderIndex)
+  |> WonderCommonlib.MutableSparseMapService.deleteVal(shaderIndex)
   |> ignore;
 
   glslSenderRecord;

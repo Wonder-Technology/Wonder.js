@@ -5,7 +5,7 @@ open TransformType;
 open IndexComponentService;
 
 let _setDefaultChildren = (index: int, childMap) =>
-  WonderCommonlib.SparseMapService.set(
+  WonderCommonlib.MutableSparseMapService.set(
     index,
     WonderCommonlib.ArrayService.createEmpty(),
     childMap,
@@ -21,7 +21,7 @@ let _setDefaultChildren = (index: int, childMap) =>
      };
    (
      typeArrayPoolRecord,
-     WonderCommonlib.SparseMapService.set(index, defaultMatrixTypeArr, localToWorldMatrixMap)
+     WonderCommonlib.MutableSparseMapService.set(index, defaultMatrixTypeArr, localToWorldMatrixMap)
    )
  };
 
@@ -34,11 +34,11 @@ let _setDefaultChildren = (index: int, childMap) =>
      };
    (
      typeArrayPoolRecord,
-     WonderCommonlib.SparseMapService.set(index, defaultLocalPositionTypeArr, localPositionMap)
+     WonderCommonlib.MutableSparseMapService.set(index, defaultLocalPositionTypeArr, localPositionMap)
    )
  }; */
 let _isNotNeedInitData = (index: int, childMap) =>
-  childMap |> WonderCommonlib.SparseMapService.has(index);
+  childMap |> WonderCommonlib.MutableSparseMapService.has(index);
 
 let _initDataWhenCreate =
     (

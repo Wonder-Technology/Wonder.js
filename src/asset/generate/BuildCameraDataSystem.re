@@ -13,7 +13,7 @@ let buildBasicCameraViewData =
   );
 
   cameraDataMap
-  |> SparseMapService.reduceValid(
+  |> WonderCommonlib.MutableSparseMapService.reduceValid(
        (. cameraDataArr, basicCameraView) =>
          cameraDataArr
          |> ArrayService.push(
@@ -69,7 +69,7 @@ let buildCameraProjectionData =
   );
 
   cameraDataMap
-  |> SparseMapService.reduceValid(
+  |> WonderCommonlib.MutableSparseMapService.reduceValid(
        (. cameraDataArr, perspectiveCameraProjection) =>
          cameraDataArr
          |> ArrayService.push(

@@ -1,8 +1,8 @@
 let getGameObjects = (component, gameObjectsMap) =>
-  WonderCommonlib.SparseMapService.get(component, gameObjectsMap);
+  WonderCommonlib.MutableSparseMapService.get(component, gameObjectsMap);
 
 let unsafeGetGameObjects = (component, gameObjectsMap) =>
-  WonderCommonlib.SparseMapService.unsafeGet(component, gameObjectsMap)
+  WonderCommonlib.MutableSparseMapService.unsafeGet(component, gameObjectsMap)
   |> WonderLog.Contract.ensureCheck(
        gameObjectsMap =>
          WonderLog.(
@@ -26,7 +26,7 @@ let removeGameObject = (gameObject, component, gameObjectsMap) =>
   ArrayMapService.removeValue(component, gameObject, gameObjectsMap);
 
 let removeGameObjects = (component, gameObjectsMap) =>
-  WonderCommonlib.SparseMapService.deleteVal(
+  WonderCommonlib.MutableSparseMapService.deleteVal(
     component,
     gameObjectsMap |> Obj.magic,
   )

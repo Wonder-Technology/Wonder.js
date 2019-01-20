@@ -74,10 +74,13 @@ let _ =
       testPromise("add matrixFloat32ArrayMap->typeArray to pool", () =>
         _test(
           (sourceInstance, renderWorkerState) =>
-            TypeArrayPoolTool.getFloat32ArrayPoolMap(
-              renderWorkerState.typeArrayPoolRecord,
-            )[1024]
-            |> SparseMapService.length
+            WonderCommonlib.MutableSparseMapService.unsafeGet(
+              1024,
+              TypeArrayPoolTool.getFloat32ArrayPoolMap(
+                renderWorkerState.typeArrayPoolRecord,
+              ),
+            )
+            |> Js.Array.length
             |> expect == 1,
           state,
         )
@@ -95,13 +98,19 @@ let _ =
               renderWorkerState.sourceInstanceRecord;
             (
               matrixFloat32ArrayMap
-              |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
+              |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                   sourceInstance,
+                 )
               |> Obj.magic,
               matrixInstanceBufferCapacityMap
-              |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
+              |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                   sourceInstance,
+                 )
               |> Obj.magic,
               isSendTransformMatrixDataMap
-              |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance)
+              |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                   sourceInstance,
+                 )
               |> Obj.magic,
             )
             |>

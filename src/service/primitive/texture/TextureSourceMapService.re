@@ -1,12 +1,12 @@
-let hasSource = (texture, sourceMap) => sourceMap |> WonderCommonlib.SparseMapService.has(texture);
+let hasSource = (texture, sourceMap) => sourceMap |> WonderCommonlib.MutableSparseMapService.has(texture);
 
-let getSource = (texture, sourceMap) => sourceMap |> WonderCommonlib.SparseMapService.get(texture);
+let getSource = (texture, sourceMap) => sourceMap |> WonderCommonlib.MutableSparseMapService.get(texture);
 
 let unsafeGetSource = (texture, sourceMap) =>
-  sourceMap |> WonderCommonlib.SparseMapService.unsafeGet(texture);
+  sourceMap |> WonderCommonlib.MutableSparseMapService.unsafeGet(texture);
 
 let setSource = (texture, source, sourceMap) =>
-  sourceMap |> WonderCommonlib.SparseMapService.set(texture, source);
+  sourceMap |> WonderCommonlib.MutableSparseMapService.set(texture, source);
 
 let addSource = (texture, source, sourceMap) => {
   /* WonderLog.Contract.requireCheck(
@@ -26,5 +26,5 @@ let addSource = (texture, source, sourceMap) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData)
   ); */
-  sourceMap |> WonderCommonlib.SparseMapService.set(texture, source)
+  sourceMap |> WonderCommonlib.MutableSparseMapService.set(texture, source)
 };

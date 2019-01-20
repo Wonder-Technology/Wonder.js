@@ -22,9 +22,6 @@ let buildNoWorkerInitPipelineConfigWithoutInitMain = () => {|
           "name": "init_state"
         },
         {
-          "name": "init_no_material_shader"
-        },
-        {
           "name": "init_basic_material"
         },
         {

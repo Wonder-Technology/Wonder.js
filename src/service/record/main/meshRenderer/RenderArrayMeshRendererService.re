@@ -1,10 +1,10 @@
 open MeshRendererType;
 
 let getBasicMaterialRenderGameObjectArray = ({basicMaterialRenderGameObjectMap}) =>
-  basicMaterialRenderGameObjectMap |> SparseMapService.getValidValues;
+  basicMaterialRenderGameObjectMap |> WonderCommonlib.MutableSparseMapService.getValidValues;
 
 let getLightMaterialRenderGameObjectArray = ({lightMaterialRenderGameObjectMap}) =>
-  lightMaterialRenderGameObjectMap |> SparseMapService.getValidValues;
+  lightMaterialRenderGameObjectMap |> WonderCommonlib.MutableSparseMapService.getValidValues;
 
 let removeFromRenderGameObjectMap =
     (
@@ -15,11 +15,11 @@ let removeFromRenderGameObjectMap =
   basicMaterialRenderGameObjectMap:
     basicMaterialRenderGameObjectMap
     |> Obj.magic
-    |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
+    |> WonderCommonlib.MutableSparseMapService.deleteVal(meshRenderer)
     |> Obj.magic,
   lightMaterialRenderGameObjectMap:
     lightMaterialRenderGameObjectMap
     |> Obj.magic
-    |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
+    |> WonderCommonlib.MutableSparseMapService.deleteVal(meshRenderer)
     |> Obj.magic,
 };

@@ -51,12 +51,12 @@ let _ =
     };
     let _prepareTypeArrayPoolData = state => {
       open StateDataMainType;
-      let float32ArrayPoolMap = [|
-        [|Float32Array.make([|RandomTool.getRandomFloat(3.)|])|],
-      |];
-      let uint16ArrayPoolMap = [|
-        [|Uint16Array.make([|RandomTool.getRandomInt(3)|])|],
-      |];
+      let float32ArrayPoolMap =
+        [|[|Float32Array.make([|RandomTool.getRandomFloat(3.)|])|]|]
+        |> SparseMapTool.createByArr;
+      let uint16ArrayPoolMap =
+        [|[|Uint16Array.make([|RandomTool.getRandomInt(3)|])|]|]
+        |> SparseMapTool.createByArr;
       (
         {
           ...state,
@@ -99,15 +99,15 @@ let _ =
       let bufferInMap4 = Obj.magic(13);
       let bufferInMap5 = Obj.magic(14);
       geometryVertexBufferMap
-      |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap1);
+      |> WonderCommonlib.MutableSparseMapService.set(geometry1, bufferInMap1);
       geometryTexCoordBufferMap
-      |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap2);
+      |> WonderCommonlib.MutableSparseMapService.set(geometry1, bufferInMap2);
       geometryNormalBufferMap
-      |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap3);
+      |> WonderCommonlib.MutableSparseMapService.set(geometry1, bufferInMap3);
       geometryElementArrayBufferMap
-      |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap4);
+      |> WonderCommonlib.MutableSparseMapService.set(geometry1, bufferInMap4);
       matrixInstanceBufferMap
-      |> WonderCommonlib.SparseMapService.set(geometry1, bufferInMap5);
+      |> WonderCommonlib.MutableSparseMapService.set(geometry1, bufferInMap5);
       (
         state,
         geometry1,
@@ -220,8 +220,8 @@ let _ =
           (float32ArrayPoolMap, uint16ArrayPoolMap)
           |>
           expect == (
-                      WonderCommonlib.SparseMapService.createEmpty(),
-                      WonderCommonlib.SparseMapService.createEmpty(),
+                      WonderCommonlib.MutableSparseMapService.createEmpty(),
+                      WonderCommonlib.MutableSparseMapService.createEmpty(),
                     );
         })
       );

@@ -219,6 +219,7 @@ let _ =
                                  {name: "front_render_light", flags: None},
                                  {name: "dispose", flags: None},
                                  {name: "reallocate_cpu_memory", flags: None},
+                                 {name: "draw_outline", flags: None},
                                |],
                              )
                    |> resolve;

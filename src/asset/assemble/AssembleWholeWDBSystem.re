@@ -22,7 +22,7 @@ let _getArrayBuffer = (binBuffer, bufferView, bufferViews: array(bufferView)) =>
 
 let _buildImageArray = (isLoadImage, {images, bufferViews}: wd, binBuffer) => {
   let blobObjectUrlImageArr = [||];
-  let imageUint8ArrayDataMap = WonderCommonlib.SparseMapService.createEmpty();
+  let imageUint8ArrayDataMap = WonderCommonlib.MutableSparseMapService.createEmpty();
 
   ! isLoadImage ?
     resolve((blobObjectUrlImageArr, imageUint8ArrayDataMap)) :
@@ -37,7 +37,7 @@ let _buildImageArray = (isLoadImage, {images, bufferViews}: wd, binBuffer) => {
                  _getArrayBuffer(binBuffer, bufferView, bufferViews);
 
                imageUint8ArrayDataMap
-               |> WonderCommonlib.SparseMapService.set(
+               |> WonderCommonlib.MutableSparseMapService.set(
                     imageIndex,
                     (mimeType, Uint8Array.fromBuffer(arrayBuffer)),
                   )

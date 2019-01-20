@@ -151,7 +151,7 @@ let isDirty = (transform, state) =>
   );
 
 /* let {localToWorldMatrixMap} = getRecord(state);
-   ! (localToWorldMatrixMap |> WonderCommonlib.SparseMapService.has(transform)) */
+   ! (localToWorldMatrixMap |> WonderCommonlib.MutableSparseMapService.has(transform)) */
 let getTransformLocalPositionTypeArray = (transform, state) =>
   OperateTypeArrayTransformService.getLocalPositionTypeArray(
     transform,

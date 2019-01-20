@@ -18,11 +18,11 @@ let _clearCache =
     (transform, {localToWorldMatrixCacheMap, normalMatrixCacheMap} as record) => {
   /* localToWorldMatrixCacheMap
      |> Obj.magic
-     |> WonderCommonlib.SparseMapService.deleteVal(transform)
+     |> WonderCommonlib.MutableSparseMapService.deleteVal(transform)
      |> ignore; */
   normalMatrixCacheMap
   |> Obj.magic
-  |> WonderCommonlib.SparseMapService.deleteVal(transform)
+  |> WonderCommonlib.MutableSparseMapService.deleteVal(transform)
   |> ignore;
   record;
 };

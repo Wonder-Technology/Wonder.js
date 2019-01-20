@@ -1,8 +1,8 @@
 let getGameObject = (component, gameObjectMap) =>
-  WonderCommonlib.SparseMapService.get(component, gameObjectMap);
+  WonderCommonlib.MutableSparseMapService.get(component, gameObjectMap);
 
 let unsafeGetGameObject = (component, gameObjectMap) =>
-  WonderCommonlib.SparseMapService.unsafeGet(component, gameObjectMap)
+  WonderCommonlib.MutableSparseMapService.unsafeGet(component, gameObjectMap)
   |> WonderLog.Contract.ensureCheck(
        gameObject =>
          WonderLog.(

@@ -142,27 +142,27 @@ and customEventData = {
 and eventRecord = {
   domEventStreamSubscription: option(WonderBsMost.Most.subscription),
   mouseDomEventDataArrMap:
-    WonderCommonlib.SparseMapService.t(array(mouseDomEventData)),
+    WonderCommonlib.MutableSparseMapService.t(array(mouseDomEventData)),
   keyboardDomEventDataArrMap:
-    WonderCommonlib.SparseMapService.t(array(keyboardDomEventData)),
+    WonderCommonlib.MutableSparseMapService.t(array(keyboardDomEventData)),
   touchDomEventDataArrMap:
-    WonderCommonlib.SparseMapService.t(array(touchDomEventData)),
+    WonderCommonlib.MutableSparseMapService.t(array(touchDomEventData)),
   customGlobalEventArrMap:
     WonderCommonlib.HashMapService.t(array(customEventData)),
   customGameObjectEventArrMap:
     WonderCommonlib.HashMapService.t(
-      WonderCommonlib.SparseMapService.t(array(customEventData)),
+      WonderCommonlib.MutableSparseMapService.t(array(customEventData)),
     ),
   mouseEventData: EventType.mouseEventData,
   keyboardEventData: EventType.keyboardEventData,
   touchEventData: EventType.touchEventData,
 }
 and pointEventHandleFuncMap =
-  WonderCommonlib.SparseMapService.t(
+  WonderCommonlib.MutableSparseMapService.t(
     (. EventType.customEvent, state) => (state, EventType.customEvent),
   )
 and keyboardEventHandleFuncMap =
-  WonderCommonlib.SparseMapService.t(
+  WonderCommonlib.MutableSparseMapService.t(
     (. EventType.keyboardEvent, state) => state,
   )
 and arcballCameraControllerRecord = {
@@ -173,16 +173,16 @@ and arcballCameraControllerRecord = {
   pointScaleEventHandleFuncMap: pointEventHandleFuncMap,
   keydownEventHandleFuncMap: keyboardEventHandleFuncMap,
   dirtyArray: ArcballCameraControllerType.dirtyArray,
-  distanceMap: WonderCommonlib.SparseMapService.t(float),
-  minDistanceMap: WonderCommonlib.SparseMapService.t(float),
-  phiMap: WonderCommonlib.SparseMapService.t(float),
-  thetaMap: WonderCommonlib.SparseMapService.t(float),
-  thetaMarginMap: WonderCommonlib.SparseMapService.t(float),
-  targetMap: WonderCommonlib.SparseMapService.t(PositionType.position),
-  moveSpeedXMap: WonderCommonlib.SparseMapService.t(float),
-  moveSpeedYMap: WonderCommonlib.SparseMapService.t(float),
-  rotateSpeedMap: WonderCommonlib.SparseMapService.t(float),
-  wheelSpeedMap: WonderCommonlib.SparseMapService.t(float),
+  distanceMap: WonderCommonlib.MutableSparseMapService.t(float),
+  minDistanceMap: WonderCommonlib.MutableSparseMapService.t(float),
+  phiMap: WonderCommonlib.MutableSparseMapService.t(float),
+  thetaMap: WonderCommonlib.MutableSparseMapService.t(float),
+  thetaMarginMap: WonderCommonlib.MutableSparseMapService.t(float),
+  targetMap: WonderCommonlib.MutableSparseMapService.t(PositionType.position),
+  moveSpeedXMap: WonderCommonlib.MutableSparseMapService.t(float),
+  moveSpeedYMap: WonderCommonlib.MutableSparseMapService.t(float),
+  rotateSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
+  wheelSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
   gameObjectMap,
   disposedIndexArray: array(component),
 }

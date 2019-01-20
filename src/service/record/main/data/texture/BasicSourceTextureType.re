@@ -9,11 +9,11 @@ type basicSourceTextureRecord = {
   types: Js.Typed_array.Uint8Array.t,
   isNeedUpdates: Js.Typed_array.Uint8Array.t,
   flipYs: Js.Typed_array.Uint8Array.t,
-  sourceMap: WonderCommonlib.SparseMapService.t(WonderWebgl.DomExtendType.imageElement),
-  glTextureMap: WonderCommonlib.SparseMapService.t(WonderWebgl.GlType.texture),
-  bindTextureUnitCacheMap: WonderCommonlib.SparseMapService.t(int),
+  sourceMap: WonderCommonlib.MutableSparseMapService.t(WonderWebgl.DomExtendType.imageElement),
+  glTextureMap: WonderCommonlib.MutableSparseMapService.t(WonderWebgl.GlType.texture),
+  bindTextureUnitCacheMap: WonderCommonlib.MutableSparseMapService.t(int),
   disposedIndexArray: array(int),
   needAddedSourceArray: array((int, WonderWebgl.DomExtendType.imageElement)),
   needInitedTextureIndexArray: array(int),
-  nameMap: WonderCommonlib.SparseMapService.t(string)
+  nameMap: WonderCommonlib.MutableSparseMapService.t(string)
 };

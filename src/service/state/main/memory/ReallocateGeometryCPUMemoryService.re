@@ -14,9 +14,9 @@ let _updateInfos = (infos, infoIndex, (startIndex, endIndex), offset: int) => {
 
 let _setNewMap = (oldIndex, newIndex, oldMap, newMap) =>
   newMap
-  |> WonderCommonlib.SparseMapService.set(
+  |> WonderCommonlib.MutableSparseMapService.set(
        newIndex,
-       oldMap |> WonderCommonlib.SparseMapService.unsafeGet(oldIndex),
+       oldMap |> WonderCommonlib.MutableSparseMapService.unsafeGet(oldIndex),
      );
 
 let _allocateNewEachData =

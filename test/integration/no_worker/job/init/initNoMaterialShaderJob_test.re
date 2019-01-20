@@ -353,7 +353,7 @@ let _ =
         GLSLTool.containMultiline(
           GLSLTool.getFsSource(shaderSource),
           [
-            {|uniform float u_outlineColor;|},
+            {|uniform vec3 u_outlineColor;|},
             {|gl_FragColor = vec4(u_outlineColor, 1.0);|},
           ],
         )
