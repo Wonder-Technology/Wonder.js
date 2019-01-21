@@ -8,7 +8,7 @@
   let getChunk = (name: string, glslChunkRecord) =>
     glslChunkRecord
     |> _getGLSLChunkMap
-    |> WonderCommonlib.HashMapService.get(name)
+    |> WonderCommonlib.MutableHashMapService.get(name)
     |> Js.Option.getExn;
 
   let _buildChunk =
@@ -28,7 +28,7 @@
 
   let create = () =>
   
-    WonderCommonlib.HashMapService.{
+    WonderCommonlib.MutableHashMapService.{
       chunkMap:
         createEmpty()
         

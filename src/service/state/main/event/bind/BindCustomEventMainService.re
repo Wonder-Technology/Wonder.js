@@ -10,13 +10,13 @@ let _addEventDataByPriority = (eventData, arr) =>
      );
 
 let _addToEventArr = (eventName, eventData, eventArrMap) =>
-  switch (eventArrMap |> WonderCommonlib.HashMapService.get(eventName)) {
+  switch (eventArrMap |> WonderCommonlib.MutableHashMapService.get(eventName)) {
   | None =>
     eventArrMap
-    |> WonderCommonlib.HashMapService.set(eventName, [|eventData|])
+    |> WonderCommonlib.MutableHashMapService.set(eventName, [|eventData|])
   | Some(arr) =>
     eventArrMap
-    |> WonderCommonlib.HashMapService.set(
+    |> WonderCommonlib.MutableHashMapService.set(
          eventName,
          _addEventDataByPriority(eventData, arr),
        )
@@ -44,11 +44,11 @@ let _removeFromEventArrByHandleFunc = (arr, targetHandleFunc) =>
   arr |> Js.Array.filter(({handleFunc}) => handleFunc !== targetHandleFunc);
 
 let _removeFromEventArrMapByHandleFunc = (eventName, handleFunc, eventArrMap) =>
-  switch (eventArrMap |> WonderCommonlib.HashMapService.get(eventName)) {
+  switch (eventArrMap |> WonderCommonlib.MutableHashMapService.get(eventName)) {
   | None => eventArrMap
   | Some(arr) =>
     eventArrMap
-    |> WonderCommonlib.HashMapService.set(
+    |> WonderCommonlib.MutableHashMapService.set(
          eventName,
          _removeFromEventArrByHandleFunc(arr, handleFunc),
        )
@@ -75,7 +75,7 @@ let unbindGlobalEventByHandleFunc =
 let _removeFromEventListMapByEventName = (eventName, eventArrMap) =>
   eventArrMap
   |> Obj.magic
-  |> WonderCommonlib.HashMapService.deleteVal(eventName)
+  |> WonderCommonlib.MutableHashMapService.deleteVal(eventName)
   |> Obj.magic;
 
 let unbindGlobalEventByEventName = (eventName, {eventRecord} as state) => {
@@ -107,11 +107,11 @@ let bindGameObjectEvent =
       customGameObjectEventArrMap:
         switch (
           customGameObjectEventArrMap
-          |> WonderCommonlib.HashMapService.get(eventName)
+          |> WonderCommonlib.MutableHashMapService.get(eventName)
         ) {
         | None =>
           customGameObjectEventArrMap
-          |> WonderCommonlib.HashMapService.set(
+          |> WonderCommonlib.MutableHashMapService.set(
                eventName,
                WonderCommonlib.MutableSparseMapService.createEmpty()
                |> WonderCommonlib.MutableSparseMapService.set(target, [|eventData|]),
@@ -122,7 +122,7 @@ let bindGameObjectEvent =
           ) {
           | None =>
             customGameObjectEventArrMap
-            |> WonderCommonlib.HashMapService.set(
+            |> WonderCommonlib.MutableHashMapService.set(
                  eventName,
                  targetEventArrMap
                  |> WonderCommonlib.MutableSparseMapService.set(
@@ -132,7 +132,7 @@ let bindGameObjectEvent =
                )
           | Some(arr) =>
             customGameObjectEventArrMap
-            |> WonderCommonlib.HashMapService.set(
+            |> WonderCommonlib.MutableHashMapService.set(
                  eventName,
                  targetEventArrMap
                  |> WonderCommonlib.MutableSparseMapService.set(
@@ -157,7 +157,7 @@ let unbindGameObjectEventByTarget =
       customGameObjectEventArrMap:
         switch (
           customGameObjectEventArrMap
-          |> WonderCommonlib.HashMapService.get(eventName)
+          |> WonderCommonlib.MutableHashMapService.get(eventName)
         ) {
         | None => customGameObjectEventArrMap
         | Some(targetEventArrMap) =>
@@ -181,7 +181,7 @@ let unbindGameObjectEventByHandleFunc =
       customGameObjectEventArrMap:
         switch (
           customGameObjectEventArrMap
-          |> WonderCommonlib.HashMapService.get(eventName)
+          |> WonderCommonlib.MutableHashMapService.get(eventName)
         ) {
         | None => customGameObjectEventArrMap
         | Some(targetEventArrMap) =>
@@ -191,7 +191,7 @@ let unbindGameObjectEventByHandleFunc =
           | None => customGameObjectEventArrMap
           | Some(arr) =>
             customGameObjectEventArrMap
-            |> WonderCommonlib.HashMapService.set(
+            |> WonderCommonlib.MutableHashMapService.set(
                  eventName,
                  targetEventArrMap
                  |> WonderCommonlib.MutableSparseMapService.set(

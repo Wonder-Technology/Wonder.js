@@ -15,10 +15,10 @@ let _ =
       let shaderIndex2 = 1;
       record.index = 2;
       record.shaderLibShaderIndexMap
-      |> WonderCommonlib.HashMapService.set("key1", shaderIndex1)
+      |> WonderCommonlib.MutableHashMapService.set("key1", shaderIndex1)
       |> ignore;
       record.shaderLibShaderIndexMap
-      |> WonderCommonlib.HashMapService.set("key2", shaderIndex2)
+      |> WonderCommonlib.MutableHashMapService.set("key2", shaderIndex2)
       |> ignore;
       (state, shaderIndex1, shaderIndex2);
     };
@@ -315,9 +315,9 @@ let _ =
               ShaderTool.getShaderRecord(state);
             record.index = 3;
             shaderLibShaderIndexMap
-            |> WonderCommonlib.HashMapService.set("key1", shaderIndex1)
-            |> WonderCommonlib.HashMapService.set("key2", shaderIndex2)
-            |> WonderCommonlib.HashMapService.set("key3", shaderIndex3)
+            |> WonderCommonlib.MutableHashMapService.set("key1", shaderIndex1)
+            |> WonderCommonlib.MutableHashMapService.set("key2", shaderIndex2)
+            |> WonderCommonlib.MutableHashMapService.set("key3", shaderIndex3)
             |> ignore;
             let {programMap} as record = ProgramTool.getProgramRecord(state);
             let program1 = Obj.magic(11);
@@ -401,8 +401,8 @@ let _ =
               ShaderTool.getShaderRecord(state);
             record.index = 2;
             shaderLibShaderIndexMap
-            |> WonderCommonlib.HashMapService.set("key1", shaderIndex1)
-            |> WonderCommonlib.HashMapService.set("key4", shaderIndex2)
+            |> WonderCommonlib.MutableHashMapService.set("key1", shaderIndex1)
+            |> WonderCommonlib.MutableHashMapService.set("key4", shaderIndex2)
             |> ignore;
             let {programMap} as record = ProgramTool.getProgramRecord(state);
             let program1 = Obj.magic(101);

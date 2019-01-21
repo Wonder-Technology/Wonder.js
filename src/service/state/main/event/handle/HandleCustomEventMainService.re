@@ -20,7 +20,7 @@ let triggerGlobalEvent =
     (({name}: customEvent) as customEvent, {eventRecord} as state) => {
   let {customGlobalEventArrMap} = eventRecord;
 
-  switch (customGlobalEventArrMap |> WonderCommonlib.HashMapService.get(name)) {
+  switch (customGlobalEventArrMap |> WonderCommonlib.MutableHashMapService.get(name)) {
   | None => (state, customEvent)
   | Some(arr) => _triggerHandleFunc(customEvent, arr, state)
   };
@@ -31,7 +31,7 @@ let triggerGameObjectEvent =
   let {customGameObjectEventArrMap} = eventRecord;
 
   switch (
-    customGameObjectEventArrMap |> WonderCommonlib.HashMapService.get(name)
+    customGameObjectEventArrMap |> WonderCommonlib.MutableHashMapService.get(name)
   ) {
   | None => (state, customEvent)
   | Some(gameObjectEventListMap) =>

@@ -100,27 +100,27 @@ and jobRecord = {
   noWorkerInitJobList: list((string, state => state)),
   noWorkerLoopJobList: list((string, state => state)),
   noWorkerCustomInitJobHandleMap:
-    WonderCommonlib.HashMapService.t(
+    WonderCommonlib.MutableHashMapService.t(
       (NoWorkerJobType.jobFlags, state) => state,
     ),
   noWorkerCustomLoopJobHandleMap:
-    WonderCommonlib.HashMapService.t(
+    WonderCommonlib.MutableHashMapService.t(
       (NoWorkerJobType.jobFlags, state) => state,
     ),
   workerCustomMainInitTargetJobMap:
-    WonderCommonlib.HashMapService.t(
+    WonderCommonlib.MutableHashMapService.t(
       (string, JobType.workerCustomJobAction, stateData => unit),
     ),
-  workerCustomMainInitSourceJobMap: WonderCommonlib.HashMapService.t(string),
+  workerCustomMainInitSourceJobMap: WonderCommonlib.MutableHashMapService.t(string),
   workerCustomMainInitRemovedDefaultJobMap:
-    WonderCommonlib.HashMapService.t(bool),
+    WonderCommonlib.MutableHashMapService.t(bool),
   workerCustomMainLoopTargetJobMap:
-    WonderCommonlib.HashMapService.t(
+    WonderCommonlib.MutableHashMapService.t(
       (string, JobType.workerCustomJobAction, stateData => unit),
     ),
-  workerCustomMainLoopSourceJobMap: WonderCommonlib.HashMapService.t(string),
+  workerCustomMainLoopSourceJobMap: WonderCommonlib.MutableHashMapService.t(string),
   workerCustomMainLoopRemovedDefaultJobMap:
-    WonderCommonlib.HashMapService.t(bool),
+    WonderCommonlib.MutableHashMapService.t(bool),
 }
 and mouseDomEventData = {
   priority: int,
@@ -148,9 +148,9 @@ and eventRecord = {
   touchDomEventDataArrMap:
     WonderCommonlib.MutableSparseMapService.t(array(touchDomEventData)),
   customGlobalEventArrMap:
-    WonderCommonlib.HashMapService.t(array(customEventData)),
+    WonderCommonlib.MutableHashMapService.t(array(customEventData)),
   customGameObjectEventArrMap:
-    WonderCommonlib.HashMapService.t(
+    WonderCommonlib.MutableHashMapService.t(
       WonderCommonlib.MutableSparseMapService.t(array(customEventData)),
     ),
   mouseEventData: EventType.mouseEventData,

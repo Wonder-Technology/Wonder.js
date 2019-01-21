@@ -35,14 +35,14 @@ let _addSamplerData = (texture, samplerIndexMap, state, samplerDataArr) => {
 
   let key = _buildSamplerDataMapKey(wrapS, wrapT, magFilter, minFilter);
 
-  switch (samplerIndexMap |> WonderCommonlib.HashMapService.get(key)) {
+  switch (samplerIndexMap |> WonderCommonlib.MutableHashMapService.get(key)) {
   | Some(samplerIndex) => (samplerIndex, samplerIndexMap, samplerDataArr)
   | None =>
     let samplerIndex = samplerDataArr |> Js.Array.length;
 
     (
       samplerIndex,
-      samplerIndexMap |> WonderCommonlib.HashMapService.set(key, samplerIndex),
+      samplerIndexMap |> WonderCommonlib.MutableHashMapService.set(key, samplerIndex),
       samplerDataArr
       |> ArrayService.push(
            {

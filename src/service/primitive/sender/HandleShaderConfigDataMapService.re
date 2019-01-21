@@ -1,6 +1,6 @@
 
 let getOrCreateHashMap = (map) =>
   switch map {
-  | None => WonderCommonlib.HashMapService.createEmpty()
+  | None => WonderCommonlib.MutableHashMapService.createEmpty()
   | Some(map) => map
   };

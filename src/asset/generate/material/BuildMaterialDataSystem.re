@@ -115,7 +115,7 @@ let _buildLightMaterialData =
            ([||], [||], [||], [||]),
            (
              WonderCommonlib.MutableSparseMapService.createEmpty(),
-             WonderCommonlib.HashMapService.createEmpty(),
+             WonderCommonlib.MutableHashMapService.createEmpty(),
              WonderCommonlib.MutableSparseMapService.createEmpty(),
              WonderCommonlib.MutableSparseMapService.createEmpty(),
              WonderCommonlib.MutableSparseMapService.createEmpty(),

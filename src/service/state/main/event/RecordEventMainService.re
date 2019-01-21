@@ -206,8 +206,8 @@ let create = () => {
     WonderCommonlib.MutableSparseMapService.createEmpty(),
   touchDomEventDataArrMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
-  customGlobalEventArrMap: WonderCommonlib.HashMapService.createEmpty(),
-  customGameObjectEventArrMap: WonderCommonlib.HashMapService.createEmpty(),
+  customGlobalEventArrMap: WonderCommonlib.MutableHashMapService.createEmpty(),
+  customGameObjectEventArrMap: WonderCommonlib.MutableHashMapService.createEmpty(),
   mouseEventData: {
     lastX: None,
     lastY: None,

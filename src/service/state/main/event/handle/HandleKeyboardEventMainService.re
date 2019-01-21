@@ -22,7 +22,7 @@ let _handleShiftKey =
     shiftKeyByKeyCodeMap |> WonderCommonlib.MutableSparseMapService.get(keyCode)
   ) {
   | None =>
-    switch (shiftKeyByCharCodeMap |> WonderCommonlib.HashMapService.get(char)) {
+    switch (shiftKeyByCharCodeMap |> WonderCommonlib.MutableHashMapService.get(char)) {
     | None => _getKeyFromSpecialKeyMap(keyCode, char, specialKeyMap)
     | Some(upperCaseChar) => upperCaseChar
     }

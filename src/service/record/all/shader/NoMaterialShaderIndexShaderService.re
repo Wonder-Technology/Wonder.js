@@ -1,7 +1,7 @@
 open ShaderType;
 
 let getShaderIndex = (key: string, {noMaterialShaderIndexMap}) =>
-  noMaterialShaderIndexMap |> WonderCommonlib.HashMapService.get(key);
+  noMaterialShaderIndexMap |> WonderCommonlib.MutableHashMapService.get(key);
 
 let unsafeGetShaderIndex = (key: string, record) =>
   getShaderIndex(key, record) |> OptionService.unsafeGet;
@@ -9,4 +9,4 @@ let unsafeGetShaderIndex = (key: string, record) =>
 let setShaderIndex =
     (key: string, shaderIndex: int, {noMaterialShaderIndexMap}) =>
   noMaterialShaderIndexMap
-  |> WonderCommonlib.HashMapService.set(key, shaderIndex);
+  |> WonderCommonlib.MutableHashMapService.set(key, shaderIndex);

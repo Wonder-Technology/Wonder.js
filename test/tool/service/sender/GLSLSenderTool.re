@@ -35,7 +35,7 @@ let clearInitShaderCache = (state: StateDataMainType.state) => {
                 ) =>
                 {
                   ...record,
-                  shaderCacheMap: WonderCommonlib.HashMapService.createEmpty(),
+                  shaderCacheMap: WonderCommonlib.MutableHashMapService.createEmpty(),
                 }
               )
          ),

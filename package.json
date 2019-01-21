@@ -1,6 +1,6 @@
 {
   "name": "wonder.js",
-  "version": "1.0.0-alpha.24.6",
+  "version": "1.0.0-alpha.24.7",
   "authors": "Wonder",
   "description": "3d webgl engine",
   "homepage": "https://github.com/Wonder-Technology/Wonder.js",
@@ -55,7 +55,7 @@
     "rollup": "^0.51.5",
     "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-node-resolve": "^2.0.0",
-    "wonder-benchmark": "^0.2.11",
+    "wonder-benchmark": "^0.2.12",
     "wonder-bs-jest": "latest",
     "wonder-bs-sinon": "^0.1.7",
     "wonder-generate-index": "latest",
@@ -66,8 +66,8 @@
     "bs-fetch": "^0.3.0",
     "wonder-bs-json": "^0.0.1",
     "wonder-bs-most": "^0.0.3",
-    "wonder-commonlib": "^0.2.23",
-    "wonder-imgui": "^0.0.29",
+    "wonder-commonlib": "^0.2.26",
+    "wonder-imgui": "^0.0.30",
     "wonder-log": "^0.2.10",
     "wonder-most-animation-frame": "0.0.3",
     "wonder-webgl": "^0.0.6"

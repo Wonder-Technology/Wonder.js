@@ -58,10 +58,10 @@ let sendMatrix4 =
     );
 
 let _getCache = (shaderCacheMap, name: string) =>
-  shaderCacheMap |> WonderCommonlib.HashMapService.get(name);
+  shaderCacheMap |> WonderCommonlib.MutableHashMapService.get(name);
 
 let _setCache = (shaderCacheMap, name: string, record) =>
-  shaderCacheMap |> WonderCommonlib.HashMapService.set(name, record);
+  shaderCacheMap |> WonderCommonlib.MutableHashMapService.set(name, record);
 
 let getCacheMap = (shaderIndex: int, uniformCacheMap) =>
   uniformCacheMap |> WonderCommonlib.MutableSparseMapService.get(shaderIndex);

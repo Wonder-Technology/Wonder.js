@@ -8,7 +8,7 @@ let _getAllNoWorkerJobs =
     executableJobs
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. list, {name, flags}: executableJob) =>
-           switch (WonderCommonlib.HashMapService.get(name, jobHandleMap)) {
+           switch (WonderCommonlib.MutableHashMapService.get(name, jobHandleMap)) {
            | None => JobService.handleGetNoneNoWorkerJob(name, list)
            | Some(handleFunc) => list @ [(name, handleFunc(flags))]
            },
@@ -90,7 +90,7 @@ let registerNoWorkerInitJob =
       ...state.jobRecord,
       noWorkerCustomInitJobHandleMap:
         noWorkerCustomInitJobHandleMap
-        |> WonderCommonlib.HashMapService.set(jobName, handleFunc),
+        |> WonderCommonlib.MutableHashMapService.set(jobName, handleFunc),
     },
   };
 };
@@ -105,7 +105,7 @@ let registerNoWorkerLoopJob =
       ...state.jobRecord,
       noWorkerCustomLoopJobHandleMap:
         noWorkerCustomLoopJobHandleMap
-        |> WonderCommonlib.HashMapService.set(jobName, handleFunc),
+        |> WonderCommonlib.MutableHashMapService.set(jobName, handleFunc),
     },
   };
 };

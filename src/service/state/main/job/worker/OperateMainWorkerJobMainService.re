@@ -16,7 +16,7 @@ let _addHandleFuncToList = (action, handleFunc, handleList) =>
   };
 
 let rec _findAllCustomJobHandles = (subJobName, workerCustomMainLoopTargetJobMap, handleList) =>
-  switch (workerCustomMainLoopTargetJobMap |> WonderCommonlib.HashMapService.get(subJobName)) {
+  switch (workerCustomMainLoopTargetJobMap |> WonderCommonlib.MutableHashMapService.get(subJobName)) {
   | None => handleList
   | Some((customJobName, action, handleFunc)) =>
     _addHandleFuncToList(action, handleFunc, handleList)

@@ -4,7 +4,7 @@ let buildEmptyCustomData = () => Obj.magic(-1);
 
 let buildControlData = () => {
   radioButtonData: {
-    isSelectedMap: WonderCommonlib.HashMapService.createEmpty(),
+    isSelectedMap: WonderCommonlib.MutableHashMapService.createEmpty(),
   },
   checkboxData: {
     index: 1,
@@ -20,7 +20,7 @@ let buildControlData = () => {
 
 let buildControlDataAfterRenderIMGUI = buildedControlData => {
   radioButtonData: {
-    isSelectedMap: WonderCommonlib.HashMapService.createEmpty(),
+    isSelectedMap: WonderCommonlib.MutableHashMapService.createEmpty(),
   },
   checkboxData: {
     index: 0,

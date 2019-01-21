@@ -1,11 +1,11 @@
 open GLSLLocationType;
 
 let _getLocation = ((program, name, locationMap), getGlLocationFunc, gl) =>
-  switch (locationMap |> WonderCommonlib.HashMapService.get(name)) {
+  switch (locationMap |> WonderCommonlib.MutableHashMapService.get(name)) {
   | Some(pos) => pos
   | None =>
     let pos = getGlLocationFunc(. program, name, gl);
-    locationMap |> WonderCommonlib.HashMapService.set(name, pos) |> ignore;
+    locationMap |> WonderCommonlib.MutableHashMapService.set(name, pos) |> ignore;
     pos;
   };
 
@@ -59,11 +59,11 @@ let setUniformLocationMap =
 let clearUniformLocationMap = (shaderIndex, glslLocationRecord) =>
   setUniformLocationMap(
     shaderIndex,
-    WonderCommonlib.HashMapService.createEmpty(),
+    WonderCommonlib.MutableHashMapService.createEmpty(),
     glslLocationRecord,
   );
 
-let createLocationMap = () => WonderCommonlib.HashMapService.createEmpty();
+let createLocationMap = () => WonderCommonlib.MutableHashMapService.createEmpty();
 
 let isAttributeLocationExist = pos => pos !== (-1);
 

@@ -475,35 +475,35 @@ let _ =
                           (
                             "Cesium_Milk_Truck_0",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Cesium_Milk_Truck_0",
                                ),
                           ),
                           (
                             "Cesium_Milk_Truck_1",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Cesium_Milk_Truck_1",
                                ),
                           ),
                           (
                             "Cesium_Milk_Truck_2",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Cesium_Milk_Truck_2",
                                ),
                           ),
                           (
                             "Wheels",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Wheels",
                                ),
                           ),
                           (
                             "Wheels",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Wheels",
                                ),
                           ),
@@ -548,7 +548,7 @@ let _ =
                           (
                             "DecalBlendMesh",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "DecalBlendMesh",
                                ),
                           ),
@@ -590,7 +590,7 @@ let _ =
                           (
                             "Stove_1",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Stove_1",
                                ),
                           ),

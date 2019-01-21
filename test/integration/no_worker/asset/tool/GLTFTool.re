@@ -242,10 +242,10 @@ let getBoxTexturedGeometryData = () => (
 );
 
 let getTruckGeometryData = () => {
-  let map = WonderCommonlib.HashMapService.createEmpty();
+  let map = WonderCommonlib.MutableHashMapService.createEmpty();
 
   map
-  |> WonderCommonlib.HashMapService.set(
+  |> WonderCommonlib.MutableHashMapService.set(
        "Cesium_Milk_Truck_0",
        (
          Float32Array.make([|
@@ -480,7 +480,7 @@ let getTruckGeometryData = () => {
          None,
        ),
      )
-  |> WonderCommonlib.HashMapService.set(
+  |> WonderCommonlib.MutableHashMapService.set(
        "Cesium_Milk_Truck_1",
        (
          Float32Array.make([|
@@ -674,7 +674,7 @@ let getTruckGeometryData = () => {
          None,
        ),
      )
-  |> WonderCommonlib.HashMapService.set(
+  |> WonderCommonlib.MutableHashMapService.set(
        "Cesium_Milk_Truck_2",
        (
          Float32Array.make([|
@@ -868,7 +868,7 @@ let getTruckGeometryData = () => {
          None,
        ),
      )
-  |> WonderCommonlib.HashMapService.set(
+  |> WonderCommonlib.MutableHashMapService.set(
        "Wheels",
        (
          Float32Array.make([|
@@ -1318,10 +1318,10 @@ let getBoxMainIndices = () =>
   |]);
 
 let getAlphaBlendModeTestGeometryData = () => {
-  let map = WonderCommonlib.HashMapService.createEmpty();
+  let map = WonderCommonlib.MutableHashMapService.createEmpty();
 
   map
-  |> WonderCommonlib.HashMapService.set(
+  |> WonderCommonlib.MutableHashMapService.set(
        "DecalBlendMesh",
        (
          Float32Array.make([|
@@ -1369,10 +1369,10 @@ let getAlphaBlendModeTestGeometryData = () => {
 };
 
 let getSuperLowPolyStoveGeometryData = () => {
-  let map = WonderCommonlib.HashMapService.createEmpty();
+  let map = WonderCommonlib.MutableHashMapService.createEmpty();
 
   map
-  |> WonderCommonlib.HashMapService.set(
+  |> WonderCommonlib.MutableHashMapService.set(
        "Stove_1",
        (
          Float32Array.make([|
