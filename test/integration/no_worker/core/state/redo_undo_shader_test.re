@@ -75,16 +75,22 @@ let _ =
         })
       );
 
-      describe("deep copy glsl sender record", () =>
+      describe("deep copy glsl sender record", () => {
         test(
-          "copy uniformShaderSendNoCachableDataMap, uniformShaderSendCachableDataMap, uniformShaderSendCachableFunctionDataMap",
+          "copy all send data maps",
           () => {
             open StateDataMainType;
 
             let {
+              attributeSendDataMap,
+              instanceAttributeSendDataMap,
+              uniformRenderObjectSendModelDataMap,
+              uniformRenderObjectSendMaterialDataMap,
               uniformShaderSendNoCachableDataMap,
               uniformShaderSendCachableDataMap,
               uniformShaderSendCachableFunctionDataMap,
+              uniformInstanceSendNoCachableDataMap,
+              uniformNoMaterialShaderSendCachableDataMap,
             }: GLSLSenderType.glslSenderRecord =
               state^.glslSenderRecord;
 
@@ -93,35 +99,131 @@ let _ =
             let shaderIndex = 10;
             let data = Obj.magic(100);
 
+            attributeSendDataMap
+            |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
+            |> ignore;
+            instanceAttributeSendDataMap
+            |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
+            |> ignore;
+            uniformRenderObjectSendModelDataMap
+            |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
+            |> ignore;
+            uniformRenderObjectSendMaterialDataMap
+            |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
+            |> ignore;
             uniformShaderSendNoCachableDataMap
             |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
             |> ignore;
+
             uniformShaderSendCachableDataMap
             |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
             |> ignore;
+
             uniformShaderSendCachableFunctionDataMap
             |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
             |> ignore;
 
+            uniformInstanceSendNoCachableDataMap
+            |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
+            |> ignore;
+
+            uniformNoMaterialShaderSendCachableDataMap
+            |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
+            |> ignore;
+
             let {
+              attributeSendDataMap,
+              instanceAttributeSendDataMap,
+              uniformRenderObjectSendModelDataMap,
+              uniformRenderObjectSendMaterialDataMap,
               uniformShaderSendNoCachableDataMap,
               uniformShaderSendCachableDataMap,
               uniformShaderSendCachableFunctionDataMap,
+              uniformInstanceSendNoCachableDataMap,
+              uniformNoMaterialShaderSendCachableDataMap,
             }: GLSLSenderType.glslSenderRecord =
               copiedState.glslSenderRecord;
 
             (
+              attributeSendDataMap
+              |> WonderCommonlib.MutableSparseMapService.has(shaderIndex),
+              instanceAttributeSendDataMap
+              |> WonderCommonlib.MutableSparseMapService.has(shaderIndex),
+              uniformRenderObjectSendModelDataMap
+              |> WonderCommonlib.MutableSparseMapService.has(shaderIndex),
+              uniformRenderObjectSendMaterialDataMap
+              |> WonderCommonlib.MutableSparseMapService.has(shaderIndex),
               uniformShaderSendNoCachableDataMap
               |> WonderCommonlib.MutableSparseMapService.has(shaderIndex),
               uniformShaderSendCachableDataMap
               |> WonderCommonlib.MutableSparseMapService.has(shaderIndex),
               uniformShaderSendCachableFunctionDataMap
               |> WonderCommonlib.MutableSparseMapService.has(shaderIndex),
+              uniformInstanceSendNoCachableDataMap
+              |> WonderCommonlib.MutableSparseMapService.has(shaderIndex),
+              uniformNoMaterialShaderSendCachableDataMap
+              |> WonderCommonlib.MutableSparseMapService.has(shaderIndex),
             )
-            |> expect == (false, false, false);
+            |>
+            expect == (
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                      );
           },
-        )
-      );
+        );
+        test("not copy uniformCacheMap", () => {
+          open StateDataMainType;
+
+          let {uniformCacheMap}: GLSLSenderType.glslSenderRecord =
+            state^.glslSenderRecord;
+
+          let copiedState = MainStateTool.deepCopyForRestore(state^);
+
+          let shaderIndex = 10;
+          let data = Obj.magic(100);
+
+          uniformCacheMap
+          |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
+          |> ignore;
+
+          let {uniformCacheMap}: GLSLSenderType.glslSenderRecord =
+            copiedState.glslSenderRecord;
+
+          uniformCacheMap
+          |> WonderCommonlib.MutableSparseMapService.has(shaderIndex)
+          |> expect == true;
+        });
+        test("not copy vertexAttribHistoryArray, lastSendMaterialData", () => {
+          open StateDataMainType;
+
+          let (
+                {vertexAttribHistoryArray, lastSendMaterialData}: GLSLSenderType.glslSenderRecord
+              ) as record =
+            state^.glslSenderRecord;
+
+          let copiedState = MainStateTool.deepCopyForRestore(state^);
+
+          let shaderIndex = 10;
+          let data = Obj.magic(100);
+
+          vertexAttribHistoryArray |> Js.Array.push(data) |> ignore;
+
+          record.lastSendMaterialData = Some(data);
+
+          let {vertexAttribHistoryArray, lastSendMaterialData}: GLSLSenderType.glslSenderRecord =
+            copiedState.glslSenderRecord;
+
+          (vertexAttribHistoryArray |> Js.Array.length, lastSendMaterialData)
+          |> expect == (1, None);
+        });
+      });
     });
 
     describe("restore", () => {
@@ -315,9 +417,18 @@ let _ =
               ShaderTool.getShaderRecord(state);
             record.index = 3;
             shaderLibShaderIndexMap
-            |> WonderCommonlib.MutableHashMapService.set("key1", shaderIndex1)
-            |> WonderCommonlib.MutableHashMapService.set("key2", shaderIndex2)
-            |> WonderCommonlib.MutableHashMapService.set("key3", shaderIndex3)
+            |> WonderCommonlib.MutableHashMapService.set(
+                 "key1",
+                 shaderIndex1,
+               )
+            |> WonderCommonlib.MutableHashMapService.set(
+                 "key2",
+                 shaderIndex2,
+               )
+            |> WonderCommonlib.MutableHashMapService.set(
+                 "key3",
+                 shaderIndex3,
+               )
             |> ignore;
             let {programMap} as record = ProgramTool.getProgramRecord(state);
             let program1 = Obj.magic(11);
@@ -401,8 +512,14 @@ let _ =
               ShaderTool.getShaderRecord(state);
             record.index = 2;
             shaderLibShaderIndexMap
-            |> WonderCommonlib.MutableHashMapService.set("key1", shaderIndex1)
-            |> WonderCommonlib.MutableHashMapService.set("key4", shaderIndex2)
+            |> WonderCommonlib.MutableHashMapService.set(
+                 "key1",
+                 shaderIndex1,
+               )
+            |> WonderCommonlib.MutableHashMapService.set(
+                 "key4",
+                 shaderIndex2,
+               )
             |> ignore;
             let {programMap} as record = ProgramTool.getProgramRecord(state);
             let program1 = Obj.magic(101);
