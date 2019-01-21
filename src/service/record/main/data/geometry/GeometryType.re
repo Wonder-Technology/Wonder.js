@@ -10,7 +10,8 @@ type geometryComputeData = {
   indices: array(int),
 };
 
-type geometryDisposedIndexMap = WonderCommonlib.MutableSparseMapService.t(bool);
+type geometryDisposedIndexMap =
+  WonderCommonlib.MutableSparseMapService.t(bool);
 
 type geometryIsInitMap = WonderCommonlib.MutableSparseMapService.t(bool);
 
@@ -38,12 +39,17 @@ type geometryRecord = {
   mutable indices16Offset: int,
   mutable indices32Offset: int,
   mutable disposeCount: int,
-  mutable indicesTypeMap: WonderCommonlib.MutableSparseMapService.t(indicesType),
+  mutable indicesTypeMap:
+    WonderCommonlib.MutableSparseMapService.t(indicesType),
   gameObjectsMap,
   /* groupCountMap: geometryGroupCountMap, */
   mutable disposedIndexArray: array(geometry),
   nameMap: WonderCommonlib.MutableSparseMapService.t(string),
 };
+
+external uint32ToUint16 :
+  Js.Typed_array.Uint32Array.t => Js.Typed_array.Uint16Array.t =
+  "%identity";
 
 external uint32ToUint16 :
   Js.Typed_array.Uint32Array.t => Js.Typed_array.Uint16Array.t =

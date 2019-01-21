@@ -53,14 +53,16 @@ let _normalizeNormals = normals => {
 
 let _createDefaultNormals = count => Float32Array.fromLength(count);
 
-let _computeVertexNormals = (vertices, indices, indicesLen, getIndexFunc) => {
-  let rec _compute = (index, normals) =>
+let computeVertexNormals = (vertices, indices) => {
+  let rec _compute = (indicesLen, index, normals) =>
     index >= indicesLen ?
       normals :
       {
-        let va = getIndexFunc(indices, index) * 3;
-        let vb = getIndexFunc(indices, index + 1) * 3;
-        let vc = getIndexFunc(indices, index + 2) * 3;
+        let va = AbstractIndicesService.unsafeGetIndex(index, indices) * 3;
+        let vb =
+          AbstractIndicesService.unsafeGetIndex(index + 1, indices) * 3;
+        let vc =
+          AbstractIndicesService.unsafeGetIndex(index + 2, indices) * 3;
         let pa = _getPosition(vertices, va);
         let pb = _getPosition(vertices, vb);
         let pc = _getPosition(vertices, vc);
@@ -69,6 +71,7 @@ let _computeVertexNormals = (vertices, indices, indicesLen, getIndexFunc) => {
         let (faceNormalX, faceNormalY, faceNormalZ) as faceNormalTuple =
           Vector3Service.cross(v0, v1);
         _compute(
+          indicesLen,
           index + 3,
           normals
           |> _setNormal(faceNormalTuple, va)
@@ -77,28 +80,10 @@ let _computeVertexNormals = (vertices, indices, indicesLen, getIndexFunc) => {
         );
       };
 
-  _compute(0, _createDefaultNormals(vertices |> Float32Array.length))
+  _compute(
+    AbstractIndicesService.getIndicesLength(indices),
+    0,
+    _createDefaultNormals(vertices |> Float32Array.length),
+  )
   |> _normalizeNormals;
-};
-
-let computeVertexNormalsByIndices = (vertices, indices) => {
-  let indicesLen = indices |> Uint16Array.length;
-
-  _computeVertexNormals(
-    vertices,
-    indices,
-    indicesLen,
-    Uint16Array.unsafe_get,
-  );
-};
-
-let computeVertexNormalsByIndices32 = (vertices, indices32) => {
-  let indicesLen = indices32 |> Uint32Array.length;
-
-  _computeVertexNormals(
-    vertices,
-    indices32,
-    indicesLen,
-    Uint32Array.unsafe_get,
-  );
 };
