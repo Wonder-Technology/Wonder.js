@@ -312,3 +312,9 @@ let hasGeometryTexCoords = (geometry, state) =>
 
 let hasGeometryIndices = (geometry, state) =>
   IndicesGeometryMainService.hasIndices(geometry, state);
+
+let hasGeometryIndices16 = (geometry, state) =>
+  IndicesGeometryMainService.hasIndices16(geometry, state);
+
+let hasGeometryIndices32 = (geometry, state) =>
+  IndicesGeometryMainService.hasIndices32(geometry, state);

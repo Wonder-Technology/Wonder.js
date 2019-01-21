@@ -134,8 +134,8 @@ let _ =
       })
     );
 
-    describe("hasGeometryIndices", () => {
-      test("test indices16", () => {
+    describe("test geometry has indices", () => {
+      let _testIndices16 = (hasIndicesFunc, result) => {
         let (state, geometry) = GeometryAPI.createGeometry(state^);
         let state =
           state
@@ -144,9 +144,10 @@ let _ =
                Uint16Array.make([|1, 2, 3|]),
              );
 
-        GeometryAPI.hasGeometryIndices(geometry, state) |> expect == true;
-      });
-      test("test indices32", () => {
+        hasIndicesFunc(geometry, state) |> expect == result;
+      };
+
+      let _testIndices32 = (hasIndicesFunc, result) => {
         let (state, geometry) = GeometryAPI.createGeometry(state^);
         let state =
           state
@@ -155,7 +156,34 @@ let _ =
                Uint32Array.make([|1, 2, 3|]),
              );
 
-        GeometryAPI.hasGeometryIndices(geometry, state) |> expect == true;
+        hasIndicesFunc(geometry, state) |> expect == result;
+      };
+
+      describe("hasGeometryIndices", () => {
+        test("if has indices16, return true", () =>
+          _testIndices16(GeometryAPI.hasGeometryIndices, true)
+        );
+        test("if has indices32, return true", () =>
+          _testIndices32(GeometryAPI.hasGeometryIndices, true)
+        );
+      });
+
+      describe("hasGeometryIndices16", () => {
+        test("if has indices16, return true", () =>
+          _testIndices16(GeometryAPI.hasGeometryIndices16, true)
+        );
+        test("if has indices32, return false", () =>
+          _testIndices32(GeometryAPI.hasGeometryIndices16, false)
+        );
+      });
+
+      describe("hasGeometryIndices32", () => {
+        test("if has indices16, return false", () =>
+          _testIndices16(GeometryAPI.hasGeometryIndices32, false)
+        );
+        test("if has indices32, return true", () =>
+          _testIndices32(GeometryAPI.hasGeometryIndices32, true)
+        );
       });
     });
 
@@ -410,7 +438,8 @@ let _ =
 
             (
               GeometryTool.hasGameObject(geometry1, state),
-              nameMap |> WonderCommonlib.MutableSparseMapService.has(geometry1),
+              nameMap
+              |> WonderCommonlib.MutableSparseMapService.has(geometry1),
             )
             |> expect == (false, false);
           });

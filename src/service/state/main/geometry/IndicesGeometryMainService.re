@@ -100,3 +100,15 @@ let hasIndices = (index, state) => {
     indicesInfos,
   );
 };
+
+let hasIndices16 = (geometry, state) =>
+  switch (unsafeGetIndicesType(geometry, state)) {
+  | Short => true
+  | _ => false
+  };
+
+let hasIndices32 = (geometry, state) =>
+  switch (unsafeGetIndicesType(geometry, state)) {
+  | Int => true
+  | _ => false
+  };
