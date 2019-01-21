@@ -11,7 +11,7 @@ let _addOtherArrayBufferSendData =
   sendDataArr
   |> ArrayService.push({
        pos:
-         GLSLLocationService.getAttribLocation(
+         GLSLLocationService.getAttribLocationAndCache(
            program,
            name,
            attributeLocationMap,

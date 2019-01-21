@@ -19,7 +19,7 @@ let _readUniforms =
                HandleCameraUniformConfigDataService.addCameraSendData(
                  (
                    field,
-                   GLSLLocationService.getUniformLocation(
+                   GLSLLocationService.getUniformLocationAndCache(
                      program,
                      name,
                      uniformLocationMap,
@@ -35,7 +35,7 @@ let _readUniforms =
                HandleNoMaterialShaderModelUniformConfigDataService.addModelSendData(
                  (
                    field,
-                   GLSLLocationService.getUniformLocation(
+                   GLSLLocationService.getUniformLocationAndCache(
                      program,
                      name,
                      uniformLocationMap,
@@ -51,7 +51,7 @@ let _readUniforms =
                HandleNoMaterialShaderModelUniformConfigDataService.addExpandModelSendData(
                  (
                    field,
-                   GLSLLocationService.getUniformLocation(
+                   GLSLLocationService.getUniformLocationAndCache(
                      program,
                      name,
                      uniformLocationMap,
@@ -67,7 +67,7 @@ let _readUniforms =
                HandleNoMaterialShaderUniformConfigDataService.addSendData(
                  (
                    field,
-                   GLSLLocationService.getUniformLocation(
+                   GLSLLocationService.getUniformLocationAndCache(
                      program,
                      name,
                      uniformLocationMap,

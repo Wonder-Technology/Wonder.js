@@ -9,7 +9,7 @@ let send =
       uniformCacheMap,
       (
         name,
-        GLSLLocationService.getUniformLocation(
+        GLSLLocationService.getUniformLocationAndCache(
           program,
           name,
           uniformLocationMap,

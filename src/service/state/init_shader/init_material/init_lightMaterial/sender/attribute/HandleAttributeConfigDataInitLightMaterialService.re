@@ -17,7 +17,7 @@ let _addNormalMatrixInstanceArrayBufferSendData =
   instanceSendNoCachableDataArr
   |> ArrayService.push({
        pos:
-         GLSLLocationService.getAttribLocation(
+         GLSLLocationService.getAttribLocationAndCache(
            program,
            name,
            attributeLocationMap,
