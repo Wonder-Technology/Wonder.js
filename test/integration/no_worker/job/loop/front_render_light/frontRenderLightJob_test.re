@@ -194,7 +194,7 @@ let _ =
                            (-2.),
                          |]),
                        )
-                    |> setGeometryIndices(
+                    |> setGeometryIndices16(
                          geometry,
                          Uint16Array.make([|0, 2, 1, 2, 3, 1|]),
                        );

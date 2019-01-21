@@ -582,7 +582,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  let texCoords =
                    GeometryAPI.getGeometryTexCoords(geometry, state);
                  let indices =
-                   GeometryAPI.getGeometryIndices(geometry, state);
+                   GeometryAPI.getGeometryIndices16(geometry, state);
 
                  (
                    (vertices, normals, texCoords, indices |. Some, None),

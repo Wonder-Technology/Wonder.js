@@ -114,8 +114,8 @@ let _ =
           open GameObjectAPI;
           let (state, geometry) = createGeometry(state^);
           let newData = Uint16Array.make([|3, 5, 5|]);
-          let state = state |> setGeometryIndices(geometry, newData);
-          getGeometryIndices(geometry, state) |> expect == newData;
+          let state = state |> setGeometryIndices16(geometry, newData);
+          getGeometryIndices16(geometry, state) |> expect == newData;
         })
       );
     });
@@ -139,7 +139,7 @@ let _ =
         let (state, geometry) = GeometryAPI.createGeometry(state^);
         let state =
           state
-          |> GeometryAPI.setGeometryIndices(
+          |> GeometryAPI.setGeometryIndices16(
                geometry,
                Uint16Array.make([|1, 2, 3|]),
              );
@@ -343,7 +343,7 @@ let _ =
             GeometryAPI.getGeometryVertices(geometry2, state),
             GeometryAPI.getGeometryTexCoords(geometry2, state),
             GeometryAPI.getGeometryNormals(geometry2, state),
-            GeometryAPI.getGeometryIndices(geometry2, state),
+            GeometryAPI.getGeometryIndices16(geometry2, state),
           )
           |>
           expect == (
@@ -518,8 +518,8 @@ let _ =
           test("getGeometryNormals should error", () =>
             _testGetFunc(getGeometryNormals)
           );
-          test("getGeometryIndices should error", () =>
-            _testGetFunc(getGeometryIndices)
+          test("getGeometryIndices16 should error", () =>
+            _testGetFunc(getGeometryIndices16)
           );
           test("unsafeGetGeometryGameObjects should error", () =>
             _testGetFunc(unsafeGetGeometryGameObjects)
@@ -533,8 +533,8 @@ let _ =
           test("setGeometryNormals should error", () =>
             _testSetFunc(setGeometryNormals)
           );
-          test("setGeometryIndices should error", () =>
-            _testSetFunc(setGeometryIndices)
+          test("setGeometryIndices16 should error", () =>
+            _testSetFunc(setGeometryIndices16)
           );
         })
       )

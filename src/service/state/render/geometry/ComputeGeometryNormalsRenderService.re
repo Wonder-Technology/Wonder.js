@@ -4,7 +4,7 @@ let computeVertexNormals = (index, state) =>
     | Short =>
       ComputeNormalsService.computeVertexNormalsByIndices(
         GetGeometryVerticesRenderService.getVertices(. index, state),
-        GetGeometryIndicesRenderService.getIndices(. index, state),
+        GetGeometryIndicesRenderService.getIndices16(. index, state),
       )
     | Int =>
       ComputeNormalsService.computeVertexNormalsByIndices32(

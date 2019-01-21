@@ -119,7 +119,7 @@ let _ =
               ~completeFunc=
                 _ => {
                   let indices =
-                    GeometryAPI.getGeometryIndices(
+                    GeometryAPI.getGeometryIndices16(
                       geometry,
                       state,
                     );

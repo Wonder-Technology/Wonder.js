@@ -308,7 +308,7 @@ let _ =
         |> setGeometryVertices(geometry, vertices1)
         |> setGeometryTexCoords(geometry, texCoords1)
         |> setGeometryNormals(geometry, normals1)
-        |> setGeometryIndices(geometry, indices1);
+        |> setGeometryIndices16(geometry, indices1);
 
       let (state, material) = createLightMaterial(state);
 
@@ -437,7 +437,7 @@ let _ =
         |> setGeometryVertices(geometry, vertices1)
         |> setGeometryTexCoords(geometry, texCoords1)
         |> setGeometryNormals(geometry, normals1)
-        |> setGeometryIndices(geometry, indices1);
+        |> setGeometryIndices16(geometry, indices1);
 
       let (state, material) = createLightMaterial(state);
 

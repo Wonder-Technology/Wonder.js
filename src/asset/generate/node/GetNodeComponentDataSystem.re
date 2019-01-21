@@ -20,7 +20,7 @@ let _getGeometryData =
         getVerticesFunc,
         getNormalsFunc,
         getTexCoordsFunc,
-        getIndicesFunc,
+        getIndices16Func,
         getIndices32Func,
       ),
       state,
@@ -39,7 +39,7 @@ let _getGeometryData =
       switch (
         IndicesGeometryMainService.unsafeGetIndicesType(geometry, state)
       ) {
-      | Short => (getIndicesFunc(. geometry, state) |. Some, None)
+      | Short => (getIndices16Func(. geometry, state) |. Some, None)
       | Int => (None, getIndices32Func(. geometry, state) |. Some)
       };
 

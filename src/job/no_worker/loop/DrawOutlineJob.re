@@ -80,7 +80,7 @@ module DrawOutlineJobUtils = {
           (gl, geometryIndex),
           (
             (vertexBufferMap, elementArrayBufferMap),
-            (getVerticesFunc, getIndicesFunc, getIndices32Func),
+            (getVerticesFunc, getIndices16Func, getIndices32Func),
           ),
           state,
         ) =>
@@ -100,7 +100,7 @@ module DrawOutlineJobUtils = {
           ElementArrayBufferRenderService.getOrCreate16Buffer(
             gl,
             (geometryIndex, elementArrayBufferMap),
-            getIndicesFunc(. geometryIndex, state),
+            getIndices16Func(. geometryIndex, state),
             state,
           )
         | Int =>
@@ -132,7 +132,7 @@ module DrawOutlineJobUtils = {
         ),
         (
           GetGeometryVerticesRenderService.getVertices,
-          GetGeometryIndicesRenderService.getIndices,
+          GetGeometryIndicesRenderService.getIndices16,
           GetGeometryIndicesRenderService.getIndices32,
         ),
       );
@@ -206,7 +206,7 @@ module DrawOutlineJobUtils = {
             (
               getVerticesFunc,
               getNormalsFunc,
-              getIndicesFunc,
+              getIndices16Func,
               getIndices32Func,
             ),
           ),
@@ -235,7 +235,7 @@ module DrawOutlineJobUtils = {
           ElementArrayBufferRenderService.getOrCreate16Buffer(
             gl,
             (geometryIndex, elementArrayBufferMap),
-            getIndicesFunc(. geometryIndex, state),
+            getIndices16Func(. geometryIndex, state),
             state,
           )
         | Int =>
@@ -269,7 +269,7 @@ module DrawOutlineJobUtils = {
         (
           GetGeometryVerticesRenderService.getVertices,
           GetGeometryNormalsRenderService.getNormals,
-          GetGeometryIndicesRenderService.getIndices,
+          GetGeometryIndicesRenderService.getIndices16,
           GetGeometryIndicesRenderService.getIndices32,
         ),
       );

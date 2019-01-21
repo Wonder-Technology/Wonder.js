@@ -69,7 +69,7 @@ let createRenderState =
       vertices: geometryRecord.vertices,
       texCoords: geometryRecord.texCoords,
       normals: geometryRecord.normals,
-      indices: geometryRecord.indices,
+      indices16: geometryRecord.indices16,
       indices32: geometryRecord.indices32,
       verticesInfos: geometryRecord.verticesInfos,
       texCoordsInfos: geometryRecord.texCoordsInfos,

@@ -30,7 +30,7 @@ let _ =
         |> setGeometryVertices(geometry, vertices1)
         |> setGeometryTexCoords(geometry, texCoords1)
         |> setGeometryNormals(geometry, normals1)
-        |> setGeometryIndices(geometry, indices1)
+        |> setGeometryIndices16(geometry, indices1)
         |> setGeometryIndices32(geometry, indices32_1);
 
       (
@@ -82,7 +82,7 @@ let _ =
         |> GeometryAPI.setGeometryVertices(geometry2, vertices2)
         |> GeometryAPI.setGeometryTexCoords(geometry1, texCoords2)
         |> GeometryAPI.setGeometryNormals(geometry3, normals2)
-        |> GeometryAPI.setGeometryIndices(geometry2, indices2)
+        |> GeometryAPI.setGeometryIndices16(geometry2, indices2)
         |> GeometryAPI.setGeometryIndices32(geometry2, indices32_2);
 
       (
@@ -170,14 +170,14 @@ let _ =
         let ((currentState, copiedState), _, _, _) = _prepare();
         let restoredState = MainStateTool.restore(currentState, copiedState);
 
-        let {vertices, texCoords, normals, indices, indices32} =
+        let {vertices, texCoords, normals, indices16, indices32} =
           restoredState |> GeometryTool.getRecord;
 
         (
           vertices |> _getMainVertexData,
           texCoords |> _getMainVertexData,
           normals |> _getMainVertexData,
-          indices |> _getMainIndexData,
+          indices16 |> _getMainIndexData,
           indices32 |> _getMainIndex32Data,
         )
         |>
@@ -232,7 +232,7 @@ let _ =
           |> GeometryAPI.getGeometryTexCoords(geometry1)
           |> Float32Array.length,
           restoredState
-          |> GeometryAPI.getGeometryIndices(geometry1)
+          |> GeometryAPI.getGeometryIndices16(geometry1)
           |> Uint16Array.length,
           restoredState
           |> GeometryAPI.getGeometryVertices(geometry2)
@@ -285,7 +285,7 @@ let _ =
 
         (
           GeometryAPI.getGeometryVertices(geometry4, restoredState),
-          GeometryAPI.getGeometryIndices(geometry4, restoredState),
+          GeometryAPI.getGeometryIndices16(geometry4, restoredState),
           GeometryAPI.getGeometryIndices32(geometry4, restoredState),
         )
         |> expect == (vertices, Uint16Array.make([|0, 1, 2|]), indices32);
@@ -324,7 +324,7 @@ let _ =
             restoredState |> GeometryAPI.getGeometryVertices(geometry1),
             restoredState |> GeometryAPI.getGeometryNormals(geometry1),
             restoredState |> GeometryAPI.getGeometryTexCoords(geometry1),
-            restoredState |> GeometryAPI.getGeometryIndices(geometry1),
+            restoredState |> GeometryAPI.getGeometryIndices16(geometry1),
             restoredState |> GeometryAPI.getGeometryIndices32(geometry1),
             restoredState |> GeometryAPI.hasGeometryVertices(geometry2),
             restoredState |> GeometryAPI.hasGeometryNormals(geometry3),
@@ -392,7 +392,7 @@ let _ =
 
             (
               restoredState2 |> GeometryAPI.getGeometryVertices(geometry2),
-              restoredState2 |> GeometryAPI.getGeometryIndices(geometry2),
+              restoredState2 |> GeometryAPI.getGeometryIndices16(geometry2),
               restoredState2 |> GeometryAPI.getGeometryIndices32(geometry2),
               restoredState2 |> GeometryAPI.getGeometryNormals(geometry3),
             )

@@ -388,9 +388,9 @@ let setGeometryIndices32 = GeometryAPI.setGeometryIndices32;
 
 let getGeometryIndices32 = GeometryAPI.getGeometryIndices32;
 
-let setGeometryIndices = GeometryAPI.setGeometryIndices;
+let setGeometryIndices16 = GeometryAPI.setGeometryIndices16;
 
-let getGeometryIndices = GeometryAPI.getGeometryIndices;
+let getGeometryIndices16 = GeometryAPI.getGeometryIndices16;
 
 let setGeometryNormals = GeometryAPI.setGeometryNormals;
 

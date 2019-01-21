@@ -21,7 +21,7 @@ let _getOrCreateBuffer =
           getVerticesFunc,
           getTexCoordsFunc,
           getNormalsFunc,
-          getIndicesFunc,
+          getIndices16Func,
           getIndices32Func,
         ),
       ),
@@ -55,7 +55,7 @@ let _getOrCreateBuffer =
       ElementArrayBufferRenderService.getOrCreate16Buffer(
         gl,
         (geometryIndex, elementArrayBufferMap),
-        getIndicesFunc(. geometryIndex, state),
+        getIndices16Func(. geometryIndex, state),
         state,
       )
     | Int =>
@@ -96,7 +96,7 @@ let _directlySendAttributeData =
       GetGeometryVerticesRenderService.getVertices,
       GetGeometryTexCoordsRenderService.getTexCoords,
       GetGeometryNormalsRenderService.getNormals,
-      GetGeometryIndicesRenderService.getIndices,
+      GetGeometryIndicesRenderService.getIndices16,
       GetGeometryIndicesRenderService.getIndices32,
     ),
   );

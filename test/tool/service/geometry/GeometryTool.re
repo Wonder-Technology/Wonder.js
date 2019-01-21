@@ -39,7 +39,7 @@ let createGameObjectAndSetPointData = (state: StateDataMainType.state) => {
     |> setGeometryVertices(geometry, vertices1)
     |> setGeometryTexCoords(geometry, texCoords1)
     |> setGeometryNormals(geometry, normals1)
-    |> setGeometryIndices(geometry, indices1);
+    |> setGeometryIndices16(geometry, indices1);
   (state, gameObject, geometry, (vertices1, texCoords1, normals1, indices1));
 };
 
@@ -71,9 +71,9 @@ let createThreeGameObjectsAndSetPointData = state => {
     |> setGeometryNormals(geometry1, normals1)
     |> setGeometryNormals(geometry2, normals2)
     |> setGeometryNormals(geometry3, normals3)
-    |> setGeometryIndices(geometry1, indices1)
-    |> setGeometryIndices(geometry2, indices2)
-    |> setGeometryIndices(geometry3, indices3);
+    |> setGeometryIndices16(geometry1, indices1)
+    |> setGeometryIndices16(geometry2, indices2)
+    |> setGeometryIndices16(geometry3, indices3);
   (
     state,
     (gameObject1, gameObject2, gameObject3),
@@ -116,9 +116,9 @@ let createThreeGameObjectsAndSetFullPointData = state => {
     |> setGeometryNormals(geometry1, normals1)
     |> setGeometryNormals(geometry2, normals2)
     |> setGeometryNormals(geometry3, normals3)
-    |> setGeometryIndices(geometry1, indices1)
-    |> setGeometryIndices(geometry2, indices2)
-    |> setGeometryIndices(geometry3, indices3)
+    |> setGeometryIndices16(geometry1, indices1)
+    |> setGeometryIndices16(geometry2, indices2)
+    |> setGeometryIndices16(geometry3, indices3)
     |> setGeometryIndices32(geometry1, indices32_1)
     |> setGeometryIndices32(geometry2, indices32_2)
     |> setGeometryIndices32(geometry3, indices32_3);
@@ -215,7 +215,7 @@ let getMainIndices16 = (geometry, state) =>
         IndicesGeometryMainService.unsafeGetIndicesType(geometry, state)
       ) {
       | Short =>
-        let indices = GeometryAPI.getGeometryIndices(geometry, state);
+        let indices = GeometryAPI.getGeometryIndices16(geometry, state);
 
         let count = 60;
 

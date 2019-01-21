@@ -6,12 +6,12 @@ open ReallocatedPointsGeometryService;
 
 open Js.Typed_array;
 
-let getIndices =
+let getIndices16 =
   (. index: int, {geometryRecord}) => {
-    let {indices, indicesInfos} = geometryRecord;
+    let {indices16, indicesInfos} = geometryRecord;
     getUint16PointData(
       BufferGeometryService.getInfoIndex(index),
-      indices,
+      indices16,
       indicesInfos,
     );
   };

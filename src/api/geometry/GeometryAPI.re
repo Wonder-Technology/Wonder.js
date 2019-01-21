@@ -141,7 +141,7 @@ let setGeometryNormals =
   NormalsGeometryMainService.setNormalsByTypeArray(geometry, data, state);
 };
 
-let getGeometryIndices = (geometry: int, state: StateDataMainType.state) => {
+let getGeometryIndices16 = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -157,10 +157,10 @@ let getGeometryIndices = (geometry: int, state: StateDataMainType.state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  IndicesGeometryMainService.getIndices(. geometry, state);
+  IndicesGeometryMainService.getIndices16(. geometry, state);
 };
 
-let setGeometryIndices =
+let setGeometryIndices16 =
     (
       geometry: int,
       data: Js.Typed_array.Uint16Array.t,
