@@ -41,9 +41,8 @@ let removeFromParentMap = (child: int, record) => {
   parentMap:
     WonderCommonlib.MutableSparseMapService.deleteVal(
       child,
-      record.parentMap |> Obj.magic,
-    )
-    |> Obj.magic,
+      record.parentMap,
+    ),
 };
 
 let unsafeGetChildren = (transform: transform, record) =>

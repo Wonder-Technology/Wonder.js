@@ -114,11 +114,15 @@ let bindGameObjectEvent =
           |> WonderCommonlib.MutableHashMapService.set(
                eventName,
                WonderCommonlib.MutableSparseMapService.createEmpty()
-               |> WonderCommonlib.MutableSparseMapService.set(target, [|eventData|]),
+               |> WonderCommonlib.MutableSparseMapService.set(
+                    target,
+                    [|eventData|],
+                  ),
              )
         | Some(targetEventArrMap) =>
           switch (
-            targetEventArrMap |> WonderCommonlib.MutableSparseMapService.get(target)
+            targetEventArrMap
+            |> WonderCommonlib.MutableSparseMapService.get(target)
           ) {
           | None =>
             customGameObjectEventArrMap
@@ -161,10 +165,12 @@ let unbindGameObjectEventByTarget =
         ) {
         | None => customGameObjectEventArrMap
         | Some(targetEventArrMap) =>
-          targetEventArrMap
-          |> Obj.magic
-          |> WonderCommonlib.MutableSparseMapService.deleteVal(target)
-          |> Obj.magic
+          customGameObjectEventArrMap
+          |> WonderCommonlib.MutableHashMapService.set(
+               eventName,
+               targetEventArrMap
+               |> WonderCommonlib.MutableSparseMapService.deleteVal(target),
+             )
         },
     },
   };
@@ -186,7 +192,8 @@ let unbindGameObjectEventByHandleFunc =
         | None => customGameObjectEventArrMap
         | Some(targetEventArrMap) =>
           switch (
-            targetEventArrMap |> WonderCommonlib.MutableSparseMapService.get(target)
+            targetEventArrMap
+            |> WonderCommonlib.MutableSparseMapService.get(target)
           ) {
           | None => customGameObjectEventArrMap
           | Some(arr) =>

@@ -54,7 +54,6 @@ let reduceiValidShaderSendNoCachableData = (glslSenderRecord, func, initValue) =
 
 let removeData = (shaderIndex, glslSenderRecord) => {
   glslSenderRecord.uniformShaderSendNoCachableDataMap
-  |> Obj.magic
   |> WonderCommonlib.MutableSparseMapService.deleteVal(shaderIndex)
   |> ignore;
 

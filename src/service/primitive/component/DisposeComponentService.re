@@ -23,10 +23,7 @@ let checkComponentShouldAliveWithBatchDispose =
      );
 
 let disposeSparseMapData = (component: int, map) =>
-  map
-  |> Obj.magic
-  |> WonderCommonlib.MutableSparseMapService.deleteVal(component)
-  |> Obj.magic;
+  map |> WonderCommonlib.MutableSparseMapService.deleteVal(component);
 
 let removeFromArray = (target: int, arr) => {
   let index = arr |> Js.Array.indexOf(target);

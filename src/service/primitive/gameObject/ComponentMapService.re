@@ -66,7 +66,7 @@ let addComponent =
 let removeComponent = (uid: int, componentMap) =>
   WonderCommonlib.MutableSparseMapService.deleteVal(
     uid,
-    componentMap |> Obj.magic,
+    componentMap
   );
 
 let hasComponent = (uid: int, componentMap) : bool =>

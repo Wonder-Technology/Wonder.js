@@ -28,6 +28,5 @@ let removeGameObject = (gameObject, component, gameObjectsMap) =>
 let removeGameObjects = (component, gameObjectsMap) =>
   WonderCommonlib.MutableSparseMapService.deleteVal(
     component,
-    gameObjectsMap |> Obj.magic,
-  )
-  |> Obj.magic;
+    gameObjectsMap,
+  );

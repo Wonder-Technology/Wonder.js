@@ -16,14 +16,10 @@ open DirtyTransformService;
 
 let _clearCache =
     (transform, {localToWorldMatrixCacheMap, normalMatrixCacheMap} as record) => {
-  /* localToWorldMatrixCacheMap
-     |> Obj.magic
-     |> WonderCommonlib.MutableSparseMapService.deleteVal(transform)
-     |> ignore; */
   normalMatrixCacheMap
-  |> Obj.magic
   |> WonderCommonlib.MutableSparseMapService.deleteVal(transform)
   |> ignore;
+
   record;
 };
 
