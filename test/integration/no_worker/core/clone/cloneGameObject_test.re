@@ -1559,25 +1559,25 @@ let _ =
             let (_, clonedTransformArr) =
               _getClonedTransformMatrixDataArr(gameObject1, 2, state);
             (
-              state |> unsafeGetTransformParent(clonedTransformArr[0]),
-              state |> unsafeGetTransformParent(clonedTransformArr[1]),
-              state |> unsafeGetTransformParent(clonedTransformArr[2]),
-              state |> unsafeGetTransformParent(clonedTransformArr[3]),
-              state |> unsafeGetTransformParent(clonedTransformArr[4]),
-              state |> unsafeGetTransformParent(clonedTransformArr[5]),
-              state |> unsafeGetTransformParent(clonedTransformArr[6]),
-              state |> unsafeGetTransformParent(clonedTransformArr[7]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[0]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[1]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[2]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[3]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[4]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[5]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[6]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[7]),
             )
             |>
             expect == (
-                        Js.Undefined.empty,
-                        Js.Undefined.empty,
-                        Js.Undefined.return(clonedTransformArr[0]),
-                        Js.Undefined.return(clonedTransformArr[1]),
-                        Js.Undefined.return(clonedTransformArr[0]),
-                        Js.Undefined.return(clonedTransformArr[1]),
-                        Js.Undefined.return(clonedTransformArr[4]),
-                        Js.Undefined.return(clonedTransformArr[5]),
+                        None,
+                        None,
+                        Some(clonedTransformArr[0]),
+                        Some(clonedTransformArr[1]),
+                        Some(clonedTransformArr[0]),
+                        Some(clonedTransformArr[1]),
+                        Some(clonedTransformArr[4]),
+                        Some(clonedTransformArr[5]),
                       );
           });
           test(

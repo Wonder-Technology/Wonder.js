@@ -158,13 +158,17 @@ let _ =
              }
            )
        ); */
+
     describe("unsafeGetTransformParent", () =>
-      test("default value should be Js.Undefined.empty", () => {
+      test("if has no parent, error", () => {
         let (state, transform) = createTransform(state^);
-        unsafeGetTransformParent(transform, state)
-        |> expect == Js.Undefined.empty;
+
+        expect(() =>
+          unsafeGetTransformParent(transform, state)
+        ) |> toThrow;
       })
     );
+
     describe("setTransformParent", () => {
       describe(
         "the change of parent before setted as parent will affect child", () => {
@@ -223,9 +227,7 @@ let _ =
           };
           test("test remove its current parent", () => {
             let (state, _, child, _) = exec();
-            state
-            |> unsafeGetTransformParent(child)
-            |> expect == Js.Undefined.empty;
+            state |> TransformTool.getTransformParent(child) |> expect == None;
           });
           test("test position and local position", () => {
             let (state, parent, child, pos) = exec();
@@ -274,9 +276,7 @@ let _ =
             |> setTransformParent(Js.Nullable.return(parent), child);
           let state =
             state |> setTransformParent(Js.Nullable.return(parent), child);
-          state
-          |> unsafeGetTransformParent(child)
-          |> expect == Js.Undefined.return(parent);
+          state |> unsafeGetTransformParent(child) |> expect == parent;
         });
         test("can set different parent", () => {
           let (state, parent1) = createTransform(state^);
@@ -290,9 +290,7 @@ let _ =
           let state =
             setTransformLocalPosition(parent2, pos2, state)
             |> setTransformParent(Js.Nullable.return(parent2), child);
-          state
-          |> unsafeGetTransformParent(child)
-          |> expect == Js.Undefined.return(parent2);
+          state |> unsafeGetTransformParent(child) |> expect == parent2;
         });
         test("change its current parent's children order", () => {
           let (state, parent) = createTransform(state^);
@@ -356,6 +354,23 @@ let _ =
         })
       );
     });
+
+    describe("hasTransformParent", () => {
+      test("if has no parent, return false", () => {
+        let (state, transform) = createTransform(state^);
+
+        hasTransformParent(transform, state) |> expect == false;
+      });
+      test("else, return true", () => {
+        let (state, parent) = createTransform(state^);
+        let (state, child1) = createTransform(state);
+        let state =
+          state |> setTransformParent(Js.Nullable.return(parent), child1);
+
+        hasTransformParent(child1, state) |> expect == true;
+      });
+    });
+
     describe("setTransformParentKeepOrder", () =>
       test("not change its current parent's children order", () => {
         let (state, parent) = createTransform(state^);
@@ -1303,8 +1318,8 @@ let _ =
           let (state, transform1, transform2) = _prepare();
           let state = state |> dispose(transform1);
           state
-          |> unsafeGetTransformParent(transform2)
-          |> expect == Js.Undefined.empty;
+          |> TransformTool.getTransformParent(transform2)
+          |> expect == None;
         });
         test("should affect children", () => {
           open Vector3Service;
@@ -1345,10 +1360,14 @@ let _ =
           let {parentMap, childMap, dirtyMap, gameObjectMap} =
             TransformTool.getRecord(state);
           (
-            parentMap |> WonderCommonlib.MutableSparseMapService.has(transform1),
-            childMap |> WonderCommonlib.MutableSparseMapService.has(transform1),
-            dirtyMap |> WonderCommonlib.MutableSparseMapService.has(transform1),
-            gameObjectMap |> WonderCommonlib.MutableSparseMapService.has(transform1),
+            parentMap
+            |> WonderCommonlib.MutableSparseMapService.has(transform1),
+            childMap
+            |> WonderCommonlib.MutableSparseMapService.has(transform1),
+            dirtyMap
+            |> WonderCommonlib.MutableSparseMapService.has(transform1),
+            gameObjectMap
+            |> WonderCommonlib.MutableSparseMapService.has(transform1),
           )
           |> expect == (false, false, false, false);
         });

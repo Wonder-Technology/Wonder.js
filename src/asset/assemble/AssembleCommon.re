@@ -5,7 +5,7 @@ let addChildrenToParent = (parent, children, (parentMap, childMap)) => (
          /* TODO duplicate with HierachyTransformService */
          WonderCommonlib.MutableSparseMapService.set(
            child,
-           TransformType.transformToJsUndefine(parent),
+           parent,
            parentMap,
          ),
        parentMap,

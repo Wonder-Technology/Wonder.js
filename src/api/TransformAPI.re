@@ -66,6 +66,27 @@ let unsafeGetTransformParent =
   unsafeGetParent(transform, state |> RecordTransformMainService.getRecord);
 };
 
+let hasTransformParent =
+    (transform: transform, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              transform,
+              isAlive,
+              state |> RecordTransformMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  hasParent(transform, state |> RecordTransformMainService.getRecord);
+};
+
 let _checkParentAndChildTransformShouldAlive =
     (
       parent: Js.nullable(transform),

@@ -129,7 +129,6 @@ let updateAndGetNormalMatrixTypeArray =
   );
 
 let dispose = (transform, state) => {
-  
   let state =
     GameObjectTool.disposeGameObjectTransformComponent(
       0,
@@ -199,3 +198,6 @@ let setAllTypeArrDataToDefault =
     );
   (localToWorldMatrices, localPositions, localRotations, localScales);
 };
+
+let getTransformParent = (transform, state) =>
+  HierachyTransformService.getParent(transform, getRecord(state));

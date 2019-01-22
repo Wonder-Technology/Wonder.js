@@ -1,13 +1,40 @@
 open TransformType;
 
 let _unsafeGetParent = (transform: transform, record) =>
-  WonderCommonlib.MutableSparseMapService.unsafeGet(transform, record.parentMap);
+  WonderCommonlib.MutableSparseMapService.unsafeGet(
+    transform,
+    record.parentMap,
+  );
+
+let hasParent = (transform, record) =>
+  WonderCommonlib.MutableSparseMapService.has(transform, record.parentMap);
 
 let unsafeGetParent = (transform: transform, record) =>
-  WonderCommonlib.MutableSparseMapService.unsafeGet(transform, record.parentMap);
+  WonderCommonlib.MutableSparseMapService.unsafeGet(
+    transform,
+    record.parentMap,
+  )
+  |> WonderLog.Contract.ensureCheck(
+       r =>
+         WonderLog.(
+           Contract.(
+             Operators.(
+               test(
+                 Log.buildAssertMessage(
+                   ~expect={j|parent exist|j},
+                   ~actual={j|not|j},
+                 ),
+                 () =>
+                 r |> assertNullableExist
+               )
+             )
+           )
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     );
 
 let getParent = (transform: transform, record) =>
-  unsafeGetParent(transform, record) |> Js.Undefined.to_opt;
+  WonderCommonlib.MutableSparseMapService.get(transform, record.parentMap);
 
 let removeFromParentMap = (child: int, record) => {
   ...record,
@@ -20,7 +47,10 @@ let removeFromParentMap = (child: int, record) => {
 };
 
 let unsafeGetChildren = (transform: transform, record) =>
-  WonderCommonlib.MutableSparseMapService.unsafeGet(transform, record.childMap)
+  WonderCommonlib.MutableSparseMapService.unsafeGet(
+    transform,
+    record.childMap,
+  )
   |> WonderLog.Contract.ensureCheck(
        children =>
          WonderLog.(
@@ -43,7 +73,11 @@ let unsafeGetChildren = (transform: transform, record) =>
 let _setChildren = (record, parent, children) => {
   ...record,
   childMap:
-    WonderCommonlib.MutableSparseMapService.set(parent, children, record.childMap),
+    WonderCommonlib.MutableSparseMapService.set(
+      parent,
+      children,
+      record.childMap,
+    ),
 };
 
 let _removeChild = (child: int, isKeepOrder, children: array(transform)) =>
@@ -75,7 +109,7 @@ let _setParentToParentMap = (parent: transform, child: int, record) => {
   parentMap:
     WonderCommonlib.MutableSparseMapService.set(
       child,
-      transformToJsUndefine(parent),
+      parent,
       record.parentMap,
     ),
 };
