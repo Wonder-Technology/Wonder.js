@@ -12,6 +12,7 @@ let execJob = (_, e, stateData) =>
           colors: None,
           textureIndices: None,
           mapUnits: None,
+          isDepthTests: None,
           index: basicMaterialData##index,
           disposedIndexArray: basicMaterialData##disposedIndexArray,
           isSourceInstanceMap: basicMaterialData##isSourceInstanceMap

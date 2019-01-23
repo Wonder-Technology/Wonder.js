@@ -122,6 +122,8 @@ let createRenderState =
         basicMaterialRecord.textureIndices |> OptionService.unsafeGet,
       mapUnits:
         RecordBasicMaterialRenderWorkerService.unsafeGetMapUnits(state),
+      isDepthTests:
+        RecordBasicMaterialRenderWorkerService.unsafeGetIsDepthTests(state),
     },
     lightMaterialRecord: {
       shaderIndices:

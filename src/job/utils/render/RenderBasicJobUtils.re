@@ -5,6 +5,27 @@ let _getShaderIndex = (materialIndex, state) =>
     state,
   );
 
+let _setRenderObjectGlState =
+    (
+      gl,
+      materialIndex,
+      (
+        {basicMaterialRecord, deviceManagerRecord}: StateRenderType.renderState
+      ) as state,
+    ) => {
+  let deviceManagerRecord =
+    RenderObjectGlStateUtils.setRenderObjectGlState(
+      gl,
+      OperateTypeArrayBasicMaterialService.getIsDepthTest(
+        materialIndex,
+        basicMaterialRecord.isDepthTests,
+      ),
+      deviceManagerRecord,
+    );
+
+  state;
+};
+
 let render =
     (
       gl,
@@ -47,6 +68,9 @@ let render =
              index,
              sourceInstanceIndices,
            );
+
+         let state = _setRenderObjectGlState(gl, materialIndex, state);
+
          if (RenderObjectBufferTypeArrayService.hasSourceInstance(
                sourceInstance,
              )) {
@@ -75,12 +99,7 @@ let render =
                ),
                state,
              );
-           RenderJobUtils.draw(
-             gl,
-             meshRendererIndex,
-             geometryIndex,
-             state,
-           );
+           RenderJobUtils.draw(gl, meshRendererIndex, geometryIndex, state);
            state;
          };
        },

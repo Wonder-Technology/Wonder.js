@@ -149,6 +149,45 @@ let removeBasicMaterialMap = (material, state) => {
   removeMap(material, state);
 };
 
+let getBasicMaterialIsDepthTest = (material, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordBasicMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  getIsDepthTest(material, state);
+};
+
+let setBasicMaterialIsDepthTest =
+    (material, isDepthTest, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordBasicMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  setIsDepthTest(material, isDepthTest , state);
+};
+
 let unsafeGetBasicMaterialName = (material, state) => {
   WonderLog.Contract.requireCheck(
     () =>

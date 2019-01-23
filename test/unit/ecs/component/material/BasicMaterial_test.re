@@ -106,6 +106,28 @@ let _ =
           |> expect == color;
         })
       );
+
+
+      describe("getBasicMaterialIsDepthTest", () =>
+        test("test default isDepthTest", () => {
+          let (state, material) = createBasicMaterial(state^);
+
+          getBasicMaterialIsDepthTest(material, state) |> expect == true
+        })
+      );
+
+      describe("setBasicMaterialIsDepthTest", () =>
+        test("test set isDepthTest", () => {
+          let (state, material) = createBasicMaterial(state^);
+          let isDepthTest = false;
+
+          let state = state |> setBasicMaterialIsDepthTest(material, false);
+
+          getBasicMaterialIsDepthTest(material, state)
+          |> expect == false
+        })
+      );
+
       describe("unsafeGetBasicMaterialMap", () =>
         test("if has no map, error", () => {
           let (state, material) = createBasicMaterial(state^);

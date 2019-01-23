@@ -28,15 +28,19 @@ let _restoreTypeArrays =
   &&
   currentBasicMaterialRecord.textureIndices === targetBasicMaterialRecord.
                                                   textureIndices
-  && currentBasicMaterialRecord.mapUnits === targetBasicMaterialRecord.mapUnits ?
+  && currentBasicMaterialRecord.mapUnits === targetBasicMaterialRecord.mapUnits
+  &&
+  currentBasicMaterialRecord.isDepthTests === targetBasicMaterialRecord.
+                                                isDepthTests ?
     (currentBasicMaterialRecord, targetBasicMaterialRecord) :
     {
-      let (shaderIndices, colors, textureIndices, mapUnits) =
+      let (shaderIndices, colors, textureIndices, mapUnits, isDepthTests) =
         (
           currentBasicMaterialRecord.shaderIndices,
           currentBasicMaterialRecord.colors,
           currentBasicMaterialRecord.textureIndices,
           currentBasicMaterialRecord.mapUnits,
+          currentBasicMaterialRecord.isDepthTests,
         )
         |> RecordBasicMaterialMainService.setAllTypeArrDataToDefault(
              currentBasicMaterialRecord.index,
@@ -69,6 +73,15 @@ let _restoreTypeArrays =
         (currentBasicMaterialRecord.mapUnits, 0),
         (targetBasicMaterialRecord.mapUnits, 0),
         Js.Typed_array.Uint8Array.length(targetBasicMaterialRecord.mapUnits),
+      )
+      |> ignore;
+      /* TODO test */
+      TypeArrayService.fillUint8ArrayWithUint8Array(
+        (currentBasicMaterialRecord.isDepthTests, 0),
+        (targetBasicMaterialRecord.isDepthTests, 0),
+        Js.Typed_array.Uint8Array.length(
+          targetBasicMaterialRecord.isDepthTests,
+        ),
       )
       |> ignore;
       (currentBasicMaterialRecord, targetBasicMaterialRecord);

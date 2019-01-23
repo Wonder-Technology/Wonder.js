@@ -83,6 +83,7 @@ let createRenderState =
       colors: basicMaterialRecord.colors,
       textureIndices: basicMaterialRecord.textureIndices,
       mapUnits: basicMaterialRecord.mapUnits,
+      isDepthTests: basicMaterialRecord.isDepthTests,
     },
     lightMaterialRecord: {
       shaderIndices: lightMaterialRecord.shaderIndices,

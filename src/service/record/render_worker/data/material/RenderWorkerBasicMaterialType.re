@@ -5,7 +5,8 @@ type basicMaterialRecord = {
   colors: option(Js.Typed_array.Float32Array.t),
   textureIndices: option(Js.Typed_array.Uint32Array.t),
   mapUnits: option(Js.Typed_array.Uint8Array.t),
+  isDepthTests: option(Js.Typed_array.Uint8Array.t),
   index: int,
   disposedIndexArray,
-  isSourceInstanceMap: WonderCommonlib.MutableSparseMapService.t(bool)
+  isSourceInstanceMap: WonderCommonlib.MutableSparseMapService.t(bool),
 };

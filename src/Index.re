@@ -544,6 +544,10 @@ let setBasicMaterialName = BasicMaterialAPI.setBasicMaterialName;
 
 let unsafeGetBasicMaterialName = BasicMaterialAPI.unsafeGetBasicMaterialName;
 
+let setBasicMaterialIsDepthTest = BasicMaterialAPI.setBasicMaterialIsDepthTest;
+
+let getBasicMaterialIsDepthTest = BasicMaterialAPI.getBasicMaterialIsDepthTest;
+
 let removeBasicMaterialMap = BasicMaterialAPI.removeBasicMaterialMap;
 
 let hasBasicMaterialMap = BasicMaterialAPI.hasBasicMaterialMap;

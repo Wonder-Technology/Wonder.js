@@ -356,7 +356,7 @@ module DrawOutlineJobUtils = {
          );
   };
 
-  let _prepareGl = (gl, {deviceManagerRecord} as state) => {
+  let _prepareGlState = (gl, {deviceManagerRecord} as state) => {
     let deviceManagerRecord =
       deviceManagerRecord
       |> DeviceManagerService.setStencilTest(gl, true)
@@ -381,7 +381,7 @@ module DrawOutlineJobUtils = {
   let _useDrawExpandGameObjectsProgram = (gl, shaderIndex, state) =>
     state |> UseProgramRenderService.useByShaderIndex(gl, shaderIndex);
 
-  let _setGlBeforeDrawExpandGameObjects =
+  let _setGlStateBeforeDrawExpandGameObjects =
       (gl, {deviceManagerRecord} as state) => {
     let deviceManagerRecord =
       deviceManagerRecord
@@ -400,7 +400,7 @@ module DrawOutlineJobUtils = {
     {...state, deviceManagerRecord};
   };
 
-  let _restoreGl = (gl, {deviceManagerRecord} as state) => {
+  let _restoreGlState = (gl, {deviceManagerRecord} as state) => {
     let deviceManagerRecord =
       deviceManagerRecord
       |> DeviceManagerService.setStencilTest(gl, false)
@@ -432,21 +432,21 @@ module DrawOutlineJobUtils = {
     let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
     state
-    |> _prepareGl(gl)
+    |> _prepareGlState(gl)
     |> _useDrawOriginGameObjectsProgram(gl, drawOriginGameObjectsShaderIndex)
     |> DrawOriginGameObjects.draw(
          gl,
          drawOriginGameObjectsShaderIndex,
          renderDataArr,
        )
-    |> _setGlBeforeDrawExpandGameObjects(gl)
+    |> _setGlStateBeforeDrawExpandGameObjects(gl)
     |> _useDrawExpandGameObjectsProgram(gl, drawExpandGameObjectsShaderIndex)
     |> DrawExpandGameObjects.draw(
          gl,
          drawExpandGameObjectsShaderIndex,
          renderDataArr,
        )
-    |> _restoreGl(gl);
+    |> _restoreGlState(gl);
   };
 };
 

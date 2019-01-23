@@ -796,7 +796,7 @@ let _ =
       },
     );
 
-    describe("prepare gl", () => {
+    describe("prepare gl state", () => {
       test("enable stencil test", () => {
         let enable = createEmptyStubWithJsObjSandbox(sandbox);
         let getStencilTest = 1;
@@ -1153,7 +1153,7 @@ let _ =
       );
     });
 
-    describe("set gl before draw expand gameObjects", () => {
+    describe("set gl state before draw expand gameObjects", () => {
       test("set stencil func and mask", () => {
         let stencilFunc = createEmptyStubWithJsObjSandbox(sandbox);
         let stencilMask = createEmptyStubWithJsObjSandbox(sandbox);
@@ -1501,7 +1501,7 @@ let _ =
       })
     );
 
-    describe("restore gl", () => {
+    describe("restore gl state", () => {
       test("disable stencil test", () => {
         let disable = createEmptyStubWithJsObjSandbox(sandbox);
         let getStencilTest = 1;
