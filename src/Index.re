@@ -366,6 +366,10 @@ let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCame
 
 let createGameObject = GameObjectAPI.createGameObject;
 
+let hasGeometryIndices32 = GeometryAPI.hasGeometryIndices32;
+
+let hasGeometryIndices16 = GeometryAPI.hasGeometryIndices16;
+
 let hasGeometryIndices = GeometryAPI.hasGeometryIndices;
 
 let hasGeometryTexCoords = GeometryAPI.hasGeometryTexCoords;
@@ -403,6 +407,12 @@ let getGeometryTexCoords = GeometryAPI.getGeometryTexCoords;
 let setGeometryVertices = GeometryAPI.setGeometryVertices;
 
 let getGeometryVertices = GeometryAPI.getGeometryVertices;
+
+let createPlaneGeometry = GeometryAPI.createPlaneGeometry;
+
+let createConeGeometry = GeometryAPI.createConeGeometry;
+
+let createCylinderGeometry = GeometryAPI.createCylinderGeometry;
 
 let createSphereGeometry = GeometryAPI.createSphereGeometry;
 
@@ -798,6 +808,8 @@ let setTransformParentKeepOrder = TransformAPI.setTransformParentKeepOrder;
 
 let setTransformParent = TransformAPI.setTransformParent;
 
+let hasTransformParent = TransformAPI.hasTransformParent;
+
 let unsafeGetTransformParent = TransformAPI.unsafeGetTransformParent;
 
 let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
@@ -1123,6 +1135,8 @@ let unsafeGetTransformChildren = TransformAPI.unsafeGetTransformChildren;
 let setTransformParentKeepOrder = TransformAPI.setTransformParentKeepOrder;
 
 let setTransformParent = TransformAPI.setTransformParent;
+
+let hasTransformParent = TransformAPI.hasTransformParent;
 
 let unsafeGetTransformParent = TransformAPI.unsafeGetTransformParent;
 

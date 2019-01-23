@@ -12,6 +12,37 @@ let createBoxGeometry = state =>
 let createSphereGeometry = (radius, bands, state) =>
   CreateSphereGeometryGeometryMainService.create(radius, bands, state);
 
+let createCylinderGeometry =
+    (radiusTop, radiusBottom, height, radialSegments, heightSegments, state) =>
+  CreateCylinderGeometryGeometryMainService.create(
+    radiusTop,
+    radiusBottom,
+    height,
+    radialSegments,
+    heightSegments,
+    state,
+  );
+
+let createConeGeometry =
+    (radius, height, radialSegments, heightSegments, state) =>
+  CreateConeGeometryGeometryMainService.create(
+    radius,
+    height,
+    radialSegments,
+    heightSegments,
+    state,
+  );
+
+let createPlaneGeometry =
+    (width, height, widthSegments, heightSegments, state) =>
+  CreatePlaneGeometryGeometryMainService.create(
+    width,
+    height,
+    widthSegments,
+    heightSegments,
+    state,
+  );
+
 let getGeometryVertices = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>

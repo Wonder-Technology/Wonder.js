@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>geometry</title>
+</head>
+
+<body>
+    <script src="../e2e/js/AssetTool.js"></script>
+    <script src="../e2e/js/ReplaceFetchTool.js"></script>
+    <script src="../e2e/js/ScheduleTool.js"></script>
+    <script src="../e2e/js/BasicBoxesTool.js"></script>
+    <script src="../e2e/js/LightBoxesTool.js"></script>
+    <script src="../e2e/js/PositionTool.js"></script>
+    <script src="../e2e/js/LightTool.js"></script>
+    <script src="../e2e/js/CameraTool.js"></script>
+    <script src="../e2e/js/GeometryTool.js"></script>
+    <script src="../e2e/js/BasicMaterialTool.js"></script>
+    <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/InstanceBasicBoxesTool.js"></script>
+    <script src="../e2e/js/InstanceLightBoxesTool.js"></script>
+    <script src="../e2e/js/RedoUndoTool.js"></script>
+    <script src="../e2e/js/RandomTool.js"></script>
+    <script src="../../dist/wd.js"></script>
+    <script>
+        window.onload = function () {
+
+            ReplaceFetchTool.replaceFetchForTest();
+
+
+
+            return AssetTool.loadConfig(["./config/setting.json", "./config/"], null, function () {
+
+                return initSample(wd.unsafeGetState());
+            });
+
+
+            function createCylinder(state) {
+                var record = wd.createBasicMaterial(state);
+                var state = record[0];
+                var material = record[1];
+
+                state = wd.setBasicMaterialColor(material, [0.0, 0.5, 0.2], state);
+
+                var record = wd.createMeshRenderer(state);
+                var state = record[0];
+                var meshRenderer = record[1];
+
+                var record = wd.createGameObject(state);
+                var state = record[0];
+                var obj = record[1];
+
+                state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
+                state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
+
+
+                // var record = wd.createCylinderGeometry( 25, 75, 100, 40, 5 , state);
+                // var record = wd.createCylinderGeometry( 2.5, 7.5, 10, 10, 5 , state);
+                var record = wd.createCylinderGeometry( 1, 3, 10, 10, 5 , state);
+                var state = record[0];
+                var geometry = record[1];
+
+
+
+
+                state = wd.addGameObjectGeometryComponent(obj, geometry, state);
+
+                return [state, obj];
+
+            };
+
+
+
+            function createCone(state) {
+                var record = wd.createBasicMaterial(state);
+                var state = record[0];
+                var material = record[1];
+
+                state = wd.setBasicMaterialColor(material, [0.0, 0.5, 0.2], state);
+
+                var record = wd.createMeshRenderer(state);
+                var state = record[0];
+                var meshRenderer = record[1];
+
+                var record = wd.createGameObject(state);
+                var state = record[0];
+                var obj = record[1];
+
+                state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
+                state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
+
+
+                var record = wd.createConeGeometry( 3, 10, 10, 5 , state);
+                var state = record[0];
+                var geometry = record[1];
+
+
+
+
+                state = wd.addGameObjectGeometryComponent(obj, geometry, state);
+
+                return [state, obj];
+
+            }
+
+
+            function createPlane(state) {
+                var record = wd.createBasicMaterial(state);
+                var state = record[0];
+                var material = record[1];
+
+                state = wd.setBasicMaterialColor(material, [0.0, 0.5, 0.2], state);
+
+                var record = wd.createMeshRenderer(state);
+                var state = record[0];
+                var meshRenderer = record[1];
+
+                var record = wd.createGameObject(state);
+                var state = record[0];
+                var obj = record[1];
+
+                state = wd.addGameObjectBasicMaterialComponent(obj, material, state);
+                state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
+
+
+                var record = wd.createPlaneGeometry( 10, 10, 5, 5 , state);
+                var state = record[0];
+                var geometry = record[1];
+
+
+
+
+                state = wd.addGameObjectGeometryComponent(obj, geometry, state);
+
+                return [state, obj];
+
+            }
+
+
+
+            function initSample(state) {
+
+                // var transform = wd.unsafeGetGameObjectTransformComponent(rootGameObject, state);
+
+                // state = wd.setTransformLocalPosition(rootGameObject, [-15, 0, 0], state);
+
+
+
+
+                var [state, cylinder] = createCylinder(state);
+
+                var [state, cone] = createCone(state);
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(cone, state);
+
+                state = wd.setTransformLocalPosition(transform, [15, 0, 0], state);
+
+
+
+                var [state, plane] = createPlane(state);
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(plane, state);
+
+                state = wd.setTransformLocalPosition(transform, [-20, -10, 0], state);
+
+
+
+
+
+
+
+                // var [state, box1] = LightBoxesTool.createBox(state);
+
+
+
+
+
+
+
+
+                // var state = wd.setAmbientLightColor([0.2, 0.2, 0.2], state);
+
+
+                // // var state = LightTool.createLights([-10, 0, 20], [5, 0, 25], state);
+                // var [state, directionLightObj] = LightTool.createDirectionLight(state);
+
+                var data = LightBoxesTool.createCamera(state);
+                var state = data[0];
+                var camera = data[1];
+
+
+                var [state, cameraController] = wd.createArcballCameraController(state);
+
+                var state =
+                    wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+
+
+
+                var state =
+                    wd.setArcballCameraControllerWheelSpeed(cameraController, 5, state);
+
+                var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
+
+
+                var state =
+                    wd.bindArcballCameraControllerEvent(
+                        cameraController, state
+                    );
+
+
+                var state =
+                    wd.activeBasicCameraView(
+                        wd.unsafeGetGameObjectBasicCameraViewComponent(
+                            camera, state
+                        ), state
+                    );
+
+
+
+
+
+
+                wd.startDirector(state);
+            }
+
+        };
+    </script>
+</body>
+
+</html>
