@@ -117,7 +117,7 @@ let _directlySendAttributeData =
   state;
 };
 
-let _sendAttributeData =
+let sendAttributeData =
     (
       gl,
       (shaderIndex, geometryIndex) as indexTuple,
@@ -136,7 +136,7 @@ let _sendAttributeData =
       }; */
   _directlySendAttributeData(gl, indexTuple, sendRenderDataSubState, state);
 
-let _sendUniformRenderObjectModelData =
+let sendUniformRenderObjectModelData =
     (
       gl,
       shaderIndex,
@@ -162,7 +162,7 @@ let _sendUniformRenderObjectModelData =
   state;
 };
 
-let _sendUniformRenderObjectMaterialData =
+let sendUniformRenderObjectMaterialData =
     (
       gl,
       shaderIndex,
@@ -210,7 +210,7 @@ let render =
 
   let state =
     state
-    |> _sendAttributeData(
+    |> sendAttributeData(
          gl,
          (shaderIndex, geometryIndex),
          sendRenderDataSubState,
@@ -221,7 +221,7 @@ let render =
 
   let state =
     state
-    |> _sendUniformRenderObjectModelData(
+    |> sendUniformRenderObjectModelData(
          gl,
          shaderIndex,
          transformIndex,
@@ -240,7 +240,7 @@ let render =
 
     let state =
       state
-      |> _sendUniformRenderObjectMaterialData(
+      |> sendUniformRenderObjectMaterialData(
            gl,
            shaderIndex,
            materialIndex,

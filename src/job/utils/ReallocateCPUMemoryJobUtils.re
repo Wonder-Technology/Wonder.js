@@ -4,7 +4,7 @@ open GameObjectType;
 
 open GeometryType;
 
-let _reallocateGameObjectByDisposeCount =
+let reallocateGameObjectByDisposeCount =
     ({settingRecord, gameObjectRecord} as state) =>
   if (QueryCPUMemoryService.isDisposeTooMany(
         gameObjectRecord.disposeCount,
@@ -49,4 +49,4 @@ let _reallocateGeometry = ({settingRecord} as state) => {
 };
 
 let execJob = state =>
-  state |> _reallocateGameObjectByDisposeCount |> _reallocateGeometry;
+  state |> reallocateGameObjectByDisposeCount |> _reallocateGeometry;
