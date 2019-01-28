@@ -104,6 +104,7 @@ let _directlySendAttributeData =
   glslSenderRecord
   |> HandleAttributeConfigDataService.unsafeGetAttributeSendData(shaderIndex)
   |> WonderCommonlib.ArrayService.forEach((. {pos, size, buffer, sendFunc}) => {
+       /* TODO should return state and arrayBuffer */
        let arrayBuffer =
          _getOrCreateBuffer(
            buffer,
@@ -159,7 +160,7 @@ let sendUniformRenderObjectModelData =
          ()
      );
 
-  state;
+  ();
 };
 
 let sendUniformRenderObjectMaterialData =
@@ -177,14 +178,16 @@ let sendUniformRenderObjectMaterialData =
   |> WonderCommonlib.ArrayService.forEach(
        (.
          {shaderCacheMap, name, pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendMaterialData,
-       ) =>
-       sendDataFunc(.
-         gl,
-         shaderCacheMap,
-         (name, pos),
-         getDataFunc(. materialIndex, getRenderDataSubState),
        )
-     );
+       /* TODO should return shaderCacheMap or state? */
+       =>
+         sendDataFunc(.
+           gl,
+           shaderCacheMap,
+           (name, pos),
+           getDataFunc(. materialIndex, getRenderDataSubState),
+         )
+       );
 
   state;
 };
@@ -219,7 +222,7 @@ let render =
   let getRenderDataSubState =
     CreateGetRenederDataSubStateRenderService.createState(state);
 
-  let state =
+  let () =
     state
     |> sendUniformRenderObjectModelData(
          gl,
