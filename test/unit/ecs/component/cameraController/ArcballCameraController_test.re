@@ -306,7 +306,7 @@ let _ =
                    pointUpHandleFunc,
                  )
               |> ManageEventAPI.onCustomGlobalEvent(
-                   NameEventService.getPointDragEventName(),
+                   NameEventService.getPointDragOverEventName(),
                    0,
                    pointDragHandleFunc,
                  )

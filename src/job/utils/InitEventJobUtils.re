@@ -122,9 +122,19 @@ let bindDomEventToTriggerPointEvent = ({browserDetectRecord} as state) =>
          PointMove,
        )
     |> _bindMouseEventToTriggerPointEvent(
-         MouseDrag,
-         NameEventService.getPointDragEventName(),
-         PointDrag,
+         MouseDragStart,
+         NameEventService.getPointDragStartEventName(),
+         PointDragStart,
+       )
+    |> _bindMouseEventToTriggerPointEvent(
+         MouseDragOver,
+         NameEventService.getPointDragOverEventName(),
+         PointDragOver,
+       )
+    |> _bindMouseEventToTriggerPointEvent(
+         MouseDragDrop,
+         NameEventService.getPointDragDropEventName(),
+         PointDragDrop,
        )
   | Android
   | IOS =>
@@ -150,9 +160,19 @@ let bindDomEventToTriggerPointEvent = ({browserDetectRecord} as state) =>
          PointMove,
        )
     |> _bindTouchEventToTriggerPointEvent(
-         TouchDrag,
-         NameEventService.getPointDragEventName(),
-         PointDrag,
+         TouchDragStart,
+         NameEventService.getPointDragStartEventName(),
+         PointDragStart,
+       )
+    |> _bindTouchEventToTriggerPointEvent(
+         TouchDragOver,
+         NameEventService.getPointDragOverEventName(),
+         PointDragOver,
+       )
+    |> _bindTouchEventToTriggerPointEvent(
+         TouchDragDrop,
+         NameEventService.getPointDragDropEventName(),
+         PointDragDrop,
        )
   | browser =>
     WonderLog.Log.fatal(
@@ -230,8 +250,19 @@ let _execMouseDragingEventHandle = (mouseEventName, event) =>
     HandleMouseEventMainService.setLastXYByLocation,
   );
 
-let _execMouseDragStartEventHandle = () => {
-  StateDataMainService.unsafeGetState(StateDataMain.stateData)
+let _execMouseDragStartEventHandle = event => {
+  let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
+
+  state
+  |> HandleMouseEventMainService.execEventHandle(
+       event
+       |> eventTargetToMouseDomEvent
+       |> HandleMouseEventMainService.convertMouseDomEventToMouseEvent(
+            MouseDragStart,
+            _,
+            state,
+          ),
+     )
   |> HandleMouseEventMainService.setIsDrag(true)
   |> HandleMouseEventMainService.setLastXY(None, None)
   |> StateDataMainService.setState(StateDataMain.stateData)
@@ -240,8 +271,19 @@ let _execMouseDragStartEventHandle = () => {
   ();
 };
 
-let _execMouseDragEndEventHandle = () => {
-  StateDataMainService.unsafeGetState(StateDataMain.stateData)
+let _execMouseDragDropEventHandle = event => {
+  let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
+
+  state
+  |> HandleMouseEventMainService.execEventHandle(
+       event
+       |> eventTargetToMouseDomEvent
+       |> HandleMouseEventMainService.convertMouseDomEventToMouseEvent(
+            MouseDragDrop,
+            _,
+            state,
+          ),
+     )
   |> HandleMouseEventMainService.setIsDrag(false)
   |> StateDataMainService.setState(StateDataMain.stateData)
   |> ignore;
@@ -289,8 +331,12 @@ let _execTouchDragingEventHandle = (touchEventName, event) =>
     HandleTouchEventMainService.setLastXYByLocation,
   );
 
-let _execTouchDragStartEventHandle = () => {
+let _execTouchDragStartEventHandle = event => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
+  |> HandleTouchEventMainService.execEventHandle(
+       TouchDragStart,
+       event |> eventTargetToTouchDomEvent,
+     )
   |> HandleTouchEventMainService.setIsDrag(true)
   |> HandleTouchEventMainService.setLastXY(None, None)
   |> StateDataMainService.setState(StateDataMain.stateData)
@@ -299,8 +345,12 @@ let _execTouchDragStartEventHandle = () => {
   ();
 };
 
-let _execTouchDragEndEventHandle = () => {
+let _execTouchDragDropEventHandle = event => {
   StateDataMainService.unsafeGetState(StateDataMain.stateData)
+  |> HandleTouchEventMainService.execEventHandle(
+       TouchDragDrop,
+       event |> eventTargetToTouchDomEvent,
+     )
   |> HandleTouchEventMainService.setIsDrag(false)
   |> StateDataMainService.setState(StateDataMain.stateData)
   |> ignore;
@@ -336,16 +386,18 @@ let _fromPCDomEventArr = state => [|
   _fromPointDomEvent("mousewheel", state)
   |> WonderBsMost.Most.tap(event => _execMouseEventHandle(MouseWheel, event)),
   _fromPointDomEvent("mousedown", state)
-  |> WonderBsMost.Most.tap(event => _execMouseDragStartEventHandle())
+  |> WonderBsMost.Most.tap(event => _execMouseDragStartEventHandle(event))
   |> WonderBsMost.Most.flatMap(event =>
        _fromPointDomEvent("mousemove", state)
        |> WonderBsMost.Most.until(
             _fromPointDomEvent("mouseup", state)
-            |> WonderBsMost.Most.tap(event => _execMouseDragEndEventHandle()),
+            |> WonderBsMost.Most.tap(event =>
+                 _execMouseDragDropEventHandle(event)
+               ),
           )
      )
   |> WonderBsMost.Most.tap(event =>
-       _execMouseDragingEventHandle(MouseDrag, event)
+       _execMouseDragingEventHandle(MouseDragOver, event)
      ),
   _fromKeyboardDomEvent("keyup", state)
   |> WonderBsMost.Most.tap(event => _execKeyboardEventHandle(KeyUp, event)),
@@ -368,16 +420,18 @@ let _fromMobileDomEventArr = state => [|
        _execTouchMoveEventHandle(TouchMove, event)
      ),
   _fromPointDomEvent("touchstart", state)
-  |> WonderBsMost.Most.tap(event => _execTouchDragStartEventHandle())
+  |> WonderBsMost.Most.tap(event => _execTouchDragStartEventHandle(event))
   |> WonderBsMost.Most.flatMap(event =>
        _fromPointDomEvent("touchmove", state)
        |> WonderBsMost.Most.until(
             _fromPointDomEvent("touchend", state)
-            |> WonderBsMost.Most.tap(event => _execTouchDragEndEventHandle()),
+            |> WonderBsMost.Most.tap(event =>
+                 _execTouchDragDropEventHandle(event)
+               ),
           )
      )
   |> WonderBsMost.Most.tap(event =>
-       _execTouchDragingEventHandle(TouchDrag, event)
+       _execTouchDragingEventHandle(TouchDragOver, event)
      ),
 |];
 

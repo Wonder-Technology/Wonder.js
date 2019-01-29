@@ -4,7 +4,9 @@ type pointEventName =
   | PointUp
   | PointMove
   | PointScale
-  | PointDrag;
+  | PointDragStart
+  | PointDragOver
+  | PointDragDrop;
 
 type domEventName =
   | Contextmenu
@@ -13,7 +15,9 @@ type domEventName =
   | MouseUp
   | MouseMove
   | MouseWheel
-  | MouseDrag
+  | MouseDragStart
+  | MouseDragOver
+  | MouseDragDrop
   | KeyUp
   | KeyDown
   | KeyPress
@@ -21,7 +25,9 @@ type domEventName =
   | TouchEnd
   | TouchMove
   | TouchStart
-  | TouchDrag;
+  | TouchDragStart
+  | TouchDragOver
+  | TouchDragDrop;
 
 type mouseButton =
   | NoButton
@@ -207,4 +213,5 @@ external mouseDomEventToDomEvent : mouseDomEvent => domEvent = "%identity";
 
 external pointDomEventToDomEvent : pointDomEvent => domEvent = "%identity";
 
+external domEventToPointDomEvent : domEvent => pointDomEvent = "%identity";
 external domEventToPointDomEvent : domEvent => pointDomEvent = "%identity";

@@ -232,7 +232,7 @@ let bindEvent = (cameraController, state) => {
 
   let state =
     ManageEventMainService.onCustomGlobalEvent(
-      ~eventName=NameEventService.getPointDragEventName(),
+      ~eventName=NameEventService.getPointDragOverEventName(),
       ~handleFunc=pointDragHandleFunc,
       ~state,
       (),
@@ -341,7 +341,7 @@ let _disposePointDragEventHandleFuncMap =
   | Some(pointDragEventHandleFunc) =>
     let state =
       _unbindPointEvent(
-        NameEventService.getPointDragEventName(),
+        NameEventService.getPointDragOverEventName(),
         pointDragEventHandleFunc,
         state,
       );

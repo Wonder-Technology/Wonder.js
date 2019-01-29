@@ -8,7 +8,11 @@ let getPointMoveEventName = NameEventService.getPointMoveEventName;
 
 let getPointScaleEventName = NameEventService.getPointScaleEventName;
 
-let getPointDragEventName = NameEventService.getPointDragEventName;
+let getPointDragStartEventName = NameEventService.getPointDragStartEventName;
+
+let getPointDragOverEventName = NameEventService.getPointDragOverEventName;
+
+let getPointDragDropEventName = NameEventService.getPointDragDropEventName;
 
 let createCustomEvent = (~eventName, ~userData=None, ()) =>
   ManageEventAPI.createCustomEvent(
