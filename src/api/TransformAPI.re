@@ -628,3 +628,11 @@ let lookAtWithUp =
 
   LookAtTransfromMainService.lookAt(~transform, ~target, ~up, ~state, ());
 };
+
+let getTransformLocalToWorldMatrixTypeArray =
+    (transform: transform, state: StateDataMainType.state) =>
+  UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(
+    transform,
+    state.globalTempRecord,
+    RecordTransformMainService.getRecord(state),
+  );

@@ -70,14 +70,6 @@ let update = (transform, {globalTempRecord} as state) => {
   state;
 };
 
-let updateAndGetLocalToWorldMatrixTypeArray =
-    (transform, state: StateDataMainType.state) =>
-  UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(
-    transform,
-    state.globalTempRecord,
-    RecordTransformMainService.getRecord(state),
-  );
-
 let getDefaultLocalToWorldMatrix = (state: StateDataMainType.state) =>
   RecordTransformMainService.getRecord(state).defaultLocalToWorldMatrix;
 

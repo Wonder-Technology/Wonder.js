@@ -488,7 +488,7 @@ let _ =
         |> getTransformPosition(transform)
         |> expect == TransformTool.getDefaultPosition();
       });
-      test("can get the newest position", () => {
+      test("get the position in world coordinate system", () => {
         let (state, parent) = createTransform(state^);
         let (state, child) = createTransform(state);
         let pos = (1., 2., 3.);
@@ -548,7 +548,7 @@ let _ =
         |> getTransformRotation(transform)
         |> expect == TransformTool.getDefaultRotation();
       });
-      test("can get the newest rotation", () => {
+      test("get the rotation in world coordinate system", () => {
         let (state, parent) = createTransform(state^);
         let (state, child) = createTransform(state);
         let rotation = (1., 2., 3., 2.5);
@@ -630,7 +630,7 @@ let _ =
         |> getTransformEulerAngles(transform)
         |> expect == (0., (-0.), 0.);
       });
-      test("can get the newest eulerAngles", () => {
+      test("get the eulerAngles in world coordinate system", () => {
         let (state, parent) = createTransform(state^);
         let (state, child) = createTransform(state);
         let eulerAngles = (45., 45., 90.);
@@ -730,7 +730,7 @@ let _ =
         |> getTransformScale(transform)
         |> expect == TransformTool.getDefaultScale();
       });
-      test("can get the newest rotation", () => {
+      test("get the scale in world coordinate system", () => {
         let (state, parent) = createTransform(state^);
         let (state, child) = createTransform(state);
         let scale = (1., 2., 3.5);
@@ -903,7 +903,66 @@ let _ =
         |> expect == gameObject;
       })
     );
-    describe("getLocalToWorldMatrixTypeArray", () =>
+
+    describe("getTransformLocalToWorldMatrixTypeArray", () => {
+      test(
+        "get the localToWorldMatrix type array in world coordinate system", () => {
+        open GameObjectAPI;
+        let (state, parent) = createTransform(state^);
+        let (state, child) = createTransform(state);
+        let state =
+          setTransformParent(Js.Nullable.return(parent), child, state);
+        let pos1 = (1., 2., 3.);
+        let state = state |> setTransformLocalPosition(parent, pos1);
+        let pos2 = (0., 10., 3.);
+        let state = state |> setTransformLocalPosition(child, pos2);
+        let parentMat1 =
+          TransformAPI.getTransformLocalToWorldMatrixTypeArray(parent, state);
+        let childMat1 =
+          TransformAPI.getTransformLocalToWorldMatrixTypeArray(child, state);
+
+        (parentMat1, childMat1)
+        |>
+        expect == (
+                    Js.Typed_array.Float32Array.make([|
+                      1.,
+                      0.,
+                      0.,
+                      0.,
+                      0.,
+                      1.,
+                      0.,
+                      0.,
+                      0.,
+                      0.,
+                      1.,
+                      0.,
+                      1.,
+                      2.,
+                      3.,
+                      1.,
+                    |]),
+                    Js.Typed_array.Float32Array.make([|
+                      1.,
+                      0.,
+                      0.,
+                      0.,
+                      0.,
+                      1.,
+                      0.,
+                      0.,
+                      0.,
+                      0.,
+                      1.,
+                      0.,
+                      1.,
+                      12.,
+                      6.,
+                      1.,
+                    |]),
+                  );
+      });
+
       describe("test cache", () => {
         test("cache data after first get", () => {
           open GameObjectAPI;
@@ -911,12 +970,12 @@ let _ =
           let pos1 = (1., 2., 3.);
           let state = state |> setTransformLocalPosition(transform1, pos1);
           let mat1 =
-            TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+            TransformAPI.getTransformLocalToWorldMatrixTypeArray(
               transform1,
               state,
             );
           let mat2 =
-            TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+            TransformAPI.getTransformLocalToWorldMatrixTypeArray(
               transform1,
               state,
             );
@@ -929,7 +988,7 @@ let _ =
             let pos1 = (1., 2., 3.);
             let state = state |> setTransformLocalPosition(transform1, pos1);
             let mat1 =
-              TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+              TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                 transform1,
                 state,
               )
@@ -943,7 +1002,7 @@ let _ =
               let state =
                 state |> setTransformLocalPosition(transform1, pos2);
               let mat2 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   transform1,
                   state,
                 );
@@ -968,7 +1027,7 @@ let _ =
             let pos2 = (2., 2., 3.);
             let state = state |> setTransformPosition(transform1, pos2);
             let mat2 =
-              TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+              TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                 transform1,
                 state,
               );
@@ -980,7 +1039,7 @@ let _ =
             let state = state |> setTransformLocalPosition(transform1, pos2);
             let _ = state |> getTransformPosition(transform1);
             let mat2 =
-              TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+              TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                 transform1,
                 state,
               );
@@ -994,7 +1053,7 @@ let _ =
               let state =
                 state |> setTransformLocalRotation(transform1, rotation2);
               let mat2 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   transform1,
                   state,
                 );
@@ -1006,7 +1065,7 @@ let _ =
             let rotation2 = (2., 2., 3., 1.);
             let state = state |> setTransformRotation(transform1, rotation2);
             let mat2 =
-              TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+              TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                 transform1,
                 state,
               );
@@ -1019,7 +1078,7 @@ let _ =
               let scale2 = (2., 2., 3.);
               let state = state |> setTransformLocalScale(transform1, scale2);
               let mat2 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   transform1,
                   state,
                 );
@@ -1031,7 +1090,7 @@ let _ =
             let scale2 = (2., 2., 3.5);
             let state = state |> setTransformScale(transform1, scale2);
             let mat2 =
-              TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+              TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                 transform1,
                 state,
               );
@@ -1050,13 +1109,13 @@ let _ =
               let pos2 = (0., 10., 3.);
               let state = state |> setTransformLocalPosition(child, pos2);
               let parentMat1 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   parent,
                   state,
                 )
                 |> Js.Typed_array.Float32Array.copy;
               let childMat1 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   child,
                   state,
                 )
@@ -1069,7 +1128,7 @@ let _ =
               let pos2 = (2., 2., 3.);
               let state = state |> setTransformLocalPosition(child, pos2);
               let childMat2 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   child,
                   state,
                 );
@@ -1083,7 +1142,7 @@ let _ =
               let state =
                 state |> setTransformLocalRotation(child, rotation2);
               let childMat2 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   child,
                   state,
                 );
@@ -1096,7 +1155,7 @@ let _ =
               let scale2 = (2., 2., 3.);
               let state = state |> setTransformLocalScale(child, scale2);
               let childMat2 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   child,
                   state,
                 );
@@ -1104,8 +1163,8 @@ let _ =
             });
           });
         });
-      })
-    );
+      });
+    });
 
     describe("getNormalMatrixTypeArray", () =>
       describe("test cache", () => {
@@ -1192,13 +1251,13 @@ let _ =
               let state =
                 state |> setTransformLocalRotation(child, rotation2);
               let parentMat1 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   parent,
                   state,
                 )
                 |> Js.Typed_array.Float32Array.copy;
               let childMat1 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   child,
                   state,
                 )
