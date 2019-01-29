@@ -24,7 +24,7 @@ let _ =
             let _prepareTouchEvent = () =>
               EventArcballCameraControllerTool.prepareTouchEvent(sandbox);
 
-            describe("bind point down event", () => {
+            describe("bind point drag start event", () => {
               let _prepareForPointerLock = (sandbox, state) =>
                 MouseEventTool.prepareForPointerLock(sandbox, state);
 
@@ -78,7 +78,7 @@ let _ =
               });
             });
 
-            describe("bind point up event", () => {
+            describe("bind point drag drop event", () => {
               let _prepareForPointerLock =
                   (sandbox, pointerLockElement, state) => {
                 let document = DomExtend.document |> Obj.magic;
@@ -88,6 +88,8 @@ let _ =
                 let exitPointerLockStub =
                   createEmptyStubWithJsObjSandbox(sandbox);
                 document##exitPointerLock#=exitPointerLockStub;
+
+                MouseEventTool.prepareForPointerLock(sandbox, state);
 
                 (state, exitPointerLockStub);
               };
@@ -111,6 +113,11 @@ let _ =
 
                   let state = MainStateTool.setState(state);
                   EventTool.triggerDomEvent(
+                    "mousedown",
+                    EventTool.getPointEventBindedDom(state),
+                    MouseEventTool.buildMouseEvent(),
+                  );
+                  EventTool.triggerDomEvent(
                     "mouseup",
                     EventTool.getPointEventBindedDom(state),
                     MouseEventTool.buildMouseEvent(),
@@ -133,6 +140,11 @@ let _ =
                     );
 
                   let state = MainStateTool.setState(state);
+                  EventTool.triggerDomEvent(
+                    "mousedown",
+                    EventTool.getPointEventBindedDom(state),
+                    MouseEventTool.buildMouseEvent(),
+                  );
                   EventTool.triggerDomEvent(
                     "mouseup",
                     EventTool.getPointEventBindedDom(state),
@@ -160,6 +172,11 @@ let _ =
                     EventTool.getPointEventBindedDom(state),
                     TouchEventTool.buildTouchEvent(),
                   );
+                  EventTool.triggerDomEvent(
+                    "touchend",
+                    EventTool.getPointEventBindedDom(state),
+                    TouchEventTool.buildTouchEvent(),
+                  );
                   let state = EventTool.restore(state);
 
                   exitPointerLockStub |> expect |> not_ |> toCalled;
@@ -168,7 +185,7 @@ let _ =
             });
           });
 
-          describe("bind point drag event", () =>
+          describe("bind point drag over event", () =>
             describe("change orbit", () =>
               test("set phi and theta", () => {
                 let state = _prepareMouseEvent();
@@ -502,71 +519,71 @@ let _ =
         /* TODO test more unbind events */
       });
 
-      describe("test bind two arcballCameraControllers' event", () => {
+      describe("test bind two arcballCameraControllers' event", ()
         /* let warn = ref(Obj.magic(1));
 
-        beforeEach(() =>
-          warn :=
-            createMethodStubWithJsObjSandbox(sandbox, Console.console, "warn")
-        ); */
-
+           beforeEach(() =>
+             warn :=
+               createMethodStubWithJsObjSandbox(sandbox, Console.console, "warn")
+           ); */
         /* test("should warn: expect only has one arcballCameraController", () => {
-          let state = _prepareMouseEvent();
-          let (state, gameObject1, _, (cameraController1, _, _)) =
-            ArcballCameraControllerTool.createGameObject(state);
-          let (state, gameObject2, _, (cameraController2, _, _)) =
-            ArcballCameraControllerTool.createGameObject(state);
-          let state = state |> NoWorkerJobTool.execInitJobs;
-          let state =
-            ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
-              cameraController1,
-              state,
+             let state = _prepareMouseEvent();
+             let (state, gameObject1, _, (cameraController1, _, _)) =
+               ArcballCameraControllerTool.createGameObject(state);
+             let (state, gameObject2, _, (cameraController2, _, _)) =
+               ArcballCameraControllerTool.createGameObject(state);
+             let state = state |> NoWorkerJobTool.execInitJobs;
+             let state =
+               ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+                 cameraController1,
+                 state,
+               );
+             let state =
+               ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+                 cameraController2,
+                 state,
+               );
+
+             let state = EventTool.restore(state);
+
+             warn^
+             |> withOneArg(
+                  "Warn: expect only has one arcballCameraController, but actual > 1. please dispose others.",
+                )
+             |> getCallCount
+             |> expect == 5;
+           }); */
+        =>
+          test("test bind keydown event", () => {
+            let state = _prepareMouseEvent();
+            let (state, gameObject1, _, (cameraController1, _, _)) =
+              ArcballCameraControllerTool.createGameObject(state);
+            let (state, gameObject2, _, (cameraController2, _, _)) =
+              ArcballCameraControllerTool.createGameObject(state);
+            let state = state |> NoWorkerJobTool.execInitJobs;
+            let state =
+              ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+                cameraController1,
+                state,
+              );
+            let state =
+              ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+                cameraController2,
+                state,
+              );
+
+            let preventDefaultFunc = createEmptyStubWithJsObjSandbox(sandbox);
+
+            let state = MainStateTool.setState(state);
+            EventTool.triggerDomEvent(
+              "mousewheel",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(~preventDefaultFunc, ()),
             );
-          let state =
-            ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
-              cameraController2,
-              state,
-            );
+            let state = EventTool.restore(state);
 
-          let state = EventTool.restore(state);
-
-          warn^
-          |> withOneArg(
-               "Warn: expect only has one arcballCameraController, but actual > 1. please dispose others.",
-             )
-          |> getCallCount
-          |> expect == 5;
-        }); */
-        test("test bind keydown event", () => {
-          let state = _prepareMouseEvent();
-          let (state, gameObject1, _, (cameraController1, _, _)) =
-            ArcballCameraControllerTool.createGameObject(state);
-          let (state, gameObject2, _, (cameraController2, _, _)) =
-            ArcballCameraControllerTool.createGameObject(state);
-          let state = state |> NoWorkerJobTool.execInitJobs;
-          let state =
-            ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
-              cameraController1,
-              state,
-            );
-          let state =
-            ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
-              cameraController2,
-              state,
-            );
-
-          let preventDefaultFunc = createEmptyStubWithJsObjSandbox(sandbox);
-
-          let state = MainStateTool.setState(state);
-          EventTool.triggerDomEvent(
-            "mousewheel",
-            EventTool.getPointEventBindedDom(state),
-            MouseEventTool.buildMouseEvent(~preventDefaultFunc, ()),
-          );
-          let state = EventTool.restore(state);
-
-          preventDefaultFunc |> expect |> toCalledTwice;
-        });
-      });
+            preventDefaultFunc |> expect |> toCalledTwice;
+          })
+        );
     });
   });

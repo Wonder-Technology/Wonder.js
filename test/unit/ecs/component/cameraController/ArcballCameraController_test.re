@@ -322,15 +322,15 @@ let _ =
                  );
             let state =
               state
-              |> ArcballCameraControllerTool.setPointDownEventHandleFunc(
+              |> ArcballCameraControllerTool.setPointDragStartEventHandleFunc(
                    cameraController1,
                    pointDownHandleFunc,
                  )
-              |> ArcballCameraControllerTool.setPointUpEventHandleFunc(
+              |> ArcballCameraControllerTool.setPointDragDropEventHandleFunc(
                    cameraController1,
                    pointUpHandleFunc,
                  )
-              |> ArcballCameraControllerTool.setPointDragEventHandleFunc(
+              |> ArcballCameraControllerTool.setPointDragOverEventHandleFunc(
                    cameraController1,
                    pointDragHandleFunc,
                  )
@@ -410,15 +410,15 @@ let _ =
               };
             let state =
               state
-              |> ArcballCameraControllerTool.setPointDownEventHandleFunc(
+              |> ArcballCameraControllerTool.setPointDragStartEventHandleFunc(
                    cameraController1,
                    pointDownHandleFunc,
                  )
-              |> ArcballCameraControllerTool.setPointUpEventHandleFunc(
+              |> ArcballCameraControllerTool.setPointDragDropEventHandleFunc(
                    cameraController1,
                    pointUpHandleFunc,
                  )
-              |> ArcballCameraControllerTool.setPointDragEventHandleFunc(
+              |> ArcballCameraControllerTool.setPointDragOverEventHandleFunc(
                    cameraController1,
                    pointDragHandleFunc,
                  )
@@ -439,19 +439,19 @@ let _ =
                  );
 
             let {
-              pointDownEventHandleFuncMap,
-              pointUpEventHandleFuncMap,
-              pointDragEventHandleFuncMap,
+              pointDragStartEventHandleFuncMap,
+              pointDragDropEventHandleFuncMap,
+              pointDragOverEventHandleFuncMap,
               pointScaleEventHandleFuncMap,
               keydownEventHandleFuncMap,
             } =
               state.arcballCameraControllerRecord;
             (
-              pointDownEventHandleFuncMap
+              pointDragStartEventHandleFuncMap
               |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
-              pointUpEventHandleFuncMap
+              pointDragDropEventHandleFuncMap
               |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
-              pointDragEventHandleFuncMap
+              pointDragOverEventHandleFuncMap
               |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
               pointScaleEventHandleFuncMap
               |> WonderCommonlib.MutableSparseMapService.has(cameraController1),

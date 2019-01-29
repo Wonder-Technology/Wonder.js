@@ -64,7 +64,7 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("test redo/undo binded eventHandleFunc map", () =>
-      test("test restore pointDragEventHandleFuncMap", () => {
+      test("test restore pointDragOverEventHandleFuncMap", () => {
         createMethodStubWithJsObjSandbox(sandbox, Console.console, "warn");
         let state = _prepareState();
         let (

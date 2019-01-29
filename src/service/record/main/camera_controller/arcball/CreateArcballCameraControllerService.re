@@ -45,7 +45,7 @@ let create =
     (
       {
         index,
-        /* pointDragEventHandleFuncMap,
+        /* pointDragOverEventHandleFuncMap,
            pointScaleEventHandleFuncMap,
            keydownEventHandleFuncMap, */
         dirtyArray,

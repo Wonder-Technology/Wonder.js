@@ -200,7 +200,7 @@ let onKeyboardEvent = ManageEventAPI.onKeyboardEvent;
 
 let onMouseEvent = ManageEventAPI.onMouseEvent;
 
-let getPointDragEventName = NameEventAPI.getPointDragEventName;
+let getPointDragOverEventName = NameEventAPI.getPointDragOverEventName;
 
 let getPointScaleEventName = NameEventAPI.getPointScaleEventName;
 
