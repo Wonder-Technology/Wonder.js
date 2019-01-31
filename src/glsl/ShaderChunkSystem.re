@@ -72,7 +72,6 @@ gl_FragColor = vec4(1.0);
 
 |}),{|
 vec3 position = a_position.xyz + a_normal.xyz * 0.08;
-// vec3 position = a_position;
 
 gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(position, 1.0);
 |}))
@@ -944,7 +943,7 @@ gl_FragColor = vec4(totalColor.rgb, totalColor.a);
 |},{|
 
 |}),{|
-vec4 totalColor = vec4(u_color, 1.0);
+vec4 totalColor = vec4(u_color, u_alpha);
 |}))
 
 |> set("webgl1_basic_map_vertex", _buildChunk(({|
@@ -976,7 +975,7 @@ varying vec2 v_mapCoord0;
 |},{|
 
 |}),{|
-vec4 totalColor = vec4(texture2D(u_mapSampler, v_mapCoord0).rgb * u_color, 1.0);
+vec4 totalColor = vec4(texture2D(u_mapSampler, v_mapCoord0).rgb * u_color, u_alpha);
 |}))
 
     };

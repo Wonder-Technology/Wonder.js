@@ -185,7 +185,45 @@ let setBasicMaterialIsDepthTest =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  setIsDepthTest(material, isDepthTest , state);
+  setIsDepthTest(material, isDepthTest, state);
+};
+
+let getBasicMaterialAlpha = (material, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordBasicMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  getAlpha(material, state);
+};
+
+let setBasicMaterialAlpha = (material, alpha, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              material,
+              isAlive,
+              RecordBasicMaterialMainService.getRecord(state),
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  setAlpha(material, alpha, state);
 };
 
 let unsafeGetBasicMaterialName = (material, state) => {

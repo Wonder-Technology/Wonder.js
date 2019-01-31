@@ -13,3 +13,6 @@ let unsafeGetMapUnits = state =>
 
 let unsafeGetIsDepthTests = state =>
   getRecord(state).isDepthTests |> OptionService.unsafeGet;
+
+let unsafeGetAlphas = state =>
+  getRecord(state).alphas |> OptionService.unsafeGet;

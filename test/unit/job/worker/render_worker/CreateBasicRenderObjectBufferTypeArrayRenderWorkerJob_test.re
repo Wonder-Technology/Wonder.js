@@ -20,7 +20,7 @@ let _ =
           SettingTool.createStateAndSetToStateData(
             ~useWorker="true",
             ~buffer=
-              SettingTool.buildBufferConfigStr(~basicMaterialCount=5, ()),
+              SettingTool.buildBufferConfigStr(~basicMaterialCount=8, ()),
             (),
           );
         let (state, _, _, _) = CameraTool.createCameraGameObject(state);
@@ -96,11 +96,7 @@ let _ =
                                 4,
                                 0,
                                 0,
-                              |]),
-                              Js.Typed_array.Uint32Array.make([|
                                 0,
-                                1,
-                                2,
                                 0,
                                 0,
                               |]),
@@ -110,8 +106,24 @@ let _ =
                                 2,
                                 0,
                                 0,
+                                0,
+                                0,
+                                0,
                               |]),
                               Js.Typed_array.Uint32Array.make([|
+                                0,
+                                1,
+                                2,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                              |]),
+                              Js.Typed_array.Uint32Array.make([|
+                                defaultSourceInstance,
+                                defaultSourceInstance,
+                                defaultSourceInstance,
                                 defaultSourceInstance,
                                 defaultSourceInstance,
                                 defaultSourceInstance,

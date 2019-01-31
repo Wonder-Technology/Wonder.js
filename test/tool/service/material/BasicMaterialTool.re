@@ -147,3 +147,7 @@ let getEmptyMapUnitArray = (material, state) =>
     material,
     getRecord(state).emptyMapUnitArrayMap,
   );
+
+let getDefaultIsDepthTest = () => true;
+
+let getDefaultAlpha = () => BufferBasicMaterialService.getDefaultAlpha();

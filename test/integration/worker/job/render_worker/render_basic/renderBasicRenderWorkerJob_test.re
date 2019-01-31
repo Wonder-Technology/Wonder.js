@@ -17,7 +17,7 @@ let _ =
           ~buffer=
             SettingTool.buildBufferConfigStr(
               ~transformCount=5,
-              ~basicMaterialCount=5,
+              ~basicMaterialCount=10,
               (),
             ),
           (),
@@ -52,10 +52,7 @@ let _ =
       describe("init vbo buffers when first send", () => {
         let _prepare = (sandbox, state) => {
           let (state, gameObject, geometry, _, _) =
-            RenderBasicJobTool.prepareGameObjectWithGeometry(
-              sandbox,
-              state,
-            );
+            RenderBasicJobTool.prepareGameObjectWithGeometry(sandbox, state);
           let (state, _, _, _) = CameraTool.createCameraGameObject(state);
           (state, geometry);
         };
@@ -82,10 +79,7 @@ let _ =
               ~completeFunc=
                 _ => {
                   let vertices =
-                    GeometryAPI.getGeometryVertices(
-                      geometry,
-                      state,
-                    );
+                    GeometryAPI.getGeometryVertices(geometry, state);
                   bufferData
                   |> withThreeArgs(array_buffer, vertices, static_draw)
                   |> expect
@@ -119,10 +113,7 @@ let _ =
               ~completeFunc=
                 _ => {
                   let indices =
-                    GeometryAPI.getGeometryIndices16(
-                      geometry,
-                      state,
-                    );
+                    GeometryAPI.getGeometryIndices16(geometry, state);
                   bufferData
                   |> withThreeArgs(
                        element_array_buffer,

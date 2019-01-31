@@ -289,6 +289,33 @@ let _ =
               state,
             )
           );
+          test("copy isDepthTests", () =>
+            RedoUndoTool.testCopyTypeArraySingleValue(
+              (
+                BasicMaterialTool.createGameObject,
+                (material, state) =>
+                  BasicMaterialAPI.getBasicMaterialIsDepthTest(
+                    material,
+                    state,
+                  ),
+                BasicMaterialAPI.setBasicMaterialIsDepthTest,
+                () => (false, false),
+              ),
+              state,
+            )
+          );
+          test("copy alphas", () =>
+            RedoUndoTool.testCopyTypeArraySingleValue(
+              (
+                BasicMaterialTool.createGameObject,
+                (material, state) =>
+                  BasicMaterialAPI.getBasicMaterialAlpha(material, state),
+                BasicMaterialAPI.setBasicMaterialAlpha,
+                () => (1.5, 0.5),
+              ),
+              state,
+            )
+          );
         })
       );
 
@@ -791,12 +818,29 @@ let _ =
             let currentState =
               currentState
               |> BasicMaterialAPI.setBasicMaterialMap(material4, map2);
+            let currentState =
+              BasicMaterialAPI.setBasicMaterialIsDepthTest(
+                material4,
+                false,
+                currentState,
+              );
+            let currentState =
+              BasicMaterialAPI.setBasicMaterialAlpha(
+                material4,
+                0.5,
+                currentState,
+              );
+
             let currentState = AllMaterialTool.pregetGLSLData(currentState);
             let _ = MainStateTool.restore(currentState, copiedState);
+
             let defaultUnit = BasicSourceTextureTool.getDefaultUnit();
-            let {colors, textureIndices, mapUnits} =
+            let defaultIsDepthTest =
+              BufferMaterialService.getDefaultIsDepthTest();
+            let defaultAlpha = BasicMaterialTool.getDefaultAlpha();
+            let {colors, textureIndices, mapUnits, isDepthTests, alphas} =
               MainStateTool.unsafeGetState() |> BasicMaterialTool.getRecord;
-            (colors, textureIndices, mapUnits)
+            (colors, textureIndices, mapUnits, isDepthTests, alphas)
             |>
             expect == (
                         Float32Array.make([|
@@ -819,6 +863,18 @@ let _ =
                           defaultUnit,
                           defaultUnit,
                           defaultUnit,
+                        |]),
+                        Uint8Array.make([|
+                          defaultIsDepthTest,
+                          defaultIsDepthTest,
+                          defaultIsDepthTest,
+                          defaultIsDepthTest,
+                        |]),
+                        Float32Array.make([|
+                          defaultAlpha,
+                          defaultAlpha,
+                          defaultAlpha,
+                          defaultAlpha,
                         |]),
                       );
           })

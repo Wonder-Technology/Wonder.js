@@ -1,4 +1,4 @@
 @body
-    vec4 totalColor = vec4(u_color, 1.0);
+    vec4 totalColor = vec4(u_color, u_alpha);
 @end
 

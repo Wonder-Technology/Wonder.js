@@ -741,6 +741,66 @@ let _ =
                 )
                 |> expect == (map, map, map);
               });
+              test("test isDepthTest", () => {
+                let (state, gameObject, material) = _prepare();
+                let isDepthTest = false;
+                let state =
+                  state
+                  |> BasicMaterialAPI.setBasicMaterialIsDepthTest(
+                       material,
+                       isDepthTest,
+                     );
+                let (state, _, clonedMaterialArr) =
+                  _clone(gameObject, state);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(~sandbox, ()),
+                     );
+                let state = AllMaterialTool.prepareForInit(state);
+                (
+                  BasicMaterialAPI.getBasicMaterialIsDepthTest(
+                    material,
+                    state,
+                  ),
+                  BasicMaterialAPI.getBasicMaterialIsDepthTest(
+                    clonedMaterialArr[0],
+                    state,
+                  ),
+                  BasicMaterialAPI.getBasicMaterialIsDepthTest(
+                    clonedMaterialArr[1],
+                    state,
+                  ),
+                )
+                |> expect == (isDepthTest, isDepthTest, isDepthTest);
+              });
+              test("test alpha", () => {
+                let (state, gameObject, material) = _prepare();
+                let alpha = 0.5;
+                let state =
+                  state
+                  |> BasicMaterialAPI.setBasicMaterialAlpha(material, alpha);
+                let (state, _, clonedMaterialArr) =
+                  _clone(gameObject, state);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(~sandbox, ()),
+                     );
+                let state = AllMaterialTool.prepareForInit(state);
+                (
+                  BasicMaterialAPI.getBasicMaterialAlpha(material, state),
+                  BasicMaterialAPI.getBasicMaterialAlpha(
+                    clonedMaterialArr[0],
+                    state,
+                  ),
+                  BasicMaterialAPI.getBasicMaterialAlpha(
+                    clonedMaterialArr[1],
+                    state,
+                  ),
+                )
+                |> expect == (alpha, alpha, alpha);
+              });
             });
             describe("test init cloned material", () =>
               test("can correctly set cloned one's shader index", () => {

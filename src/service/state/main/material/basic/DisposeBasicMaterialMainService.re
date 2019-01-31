@@ -27,6 +27,8 @@ let _disposeData =
         colors,
         textureIndices,
         mapUnits,
+        isDepthTests,
+        alphas,
         emptyMapUnitArrayMap,
         defaultColor,
         nameMap,
@@ -61,6 +63,18 @@ let _disposeData =
         BufferBasicMaterialService.getMapUnitIndex(material),
         MapUnitService.getDefaultUnit(),
         mapUnits,
+      ),
+    isDepthTests:
+      DisposeTypeArrayService.deleteAndResetUint8(.
+        BufferBasicMaterialService.getIsDepthTestIndex(material),
+        BufferMaterialService.getDefaultIsDepthTest(),
+        isDepthTests,
+      ),
+    alphas:
+      DisposeTypeArrayService.deleteAndResetFloat32(.
+        BufferBasicMaterialService.getAlphaIndex(material),
+        BufferBasicMaterialService.getDefaultAlpha(),
+        alphas,
       ),
     emptyMapUnitArrayMap:
       emptyMapUnitArrayMap |> disposeSparseMapData(material),

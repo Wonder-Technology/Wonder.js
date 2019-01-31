@@ -6,6 +6,12 @@ let getColor = (material, {basicMaterialRecord}) =>
     basicMaterialRecord.colors,
   );
 
+let getAlpha = (material, {basicMaterialRecord}) =>
+  OperateTypeArrayBasicMaterialService.getAlpha(
+    material,
+    basicMaterialRecord.alphas,
+  );
+
 let getMapUnit = (material, {basicMaterialRecord}) =>
   OperateTypeArrayBasicMaterialService.getMapUnit(.
     material,

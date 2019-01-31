@@ -34,3 +34,9 @@ let convertIsDepthTestToVal = isDepthTest => isDepthTest ? 0 : 1;
 
 let setIsDepthTest = (index, data, typeArr) =>
   TypeArrayService.setUint8_1(getIsDepthTestIndex(index), data, typeArr);
+
+let getAlpha = (index, typeArr) =>
+  TypeArrayService.getFloat1(getAlphaIndex(index), typeArr);
+
+let setAlpha = (index, data, typeArr) =>
+  TypeArrayService.setFloat1(getAlphaIndex(index), data, typeArr);

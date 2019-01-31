@@ -107,12 +107,11 @@ let _ =
         })
       );
 
-
       describe("getBasicMaterialIsDepthTest", () =>
         test("test default isDepthTest", () => {
           let (state, material) = createBasicMaterial(state^);
 
-          getBasicMaterialIsDepthTest(material, state) |> expect == true
+          getBasicMaterialIsDepthTest(material, state) |> expect == true;
         })
       );
 
@@ -121,10 +120,30 @@ let _ =
           let (state, material) = createBasicMaterial(state^);
           let isDepthTest = false;
 
-          let state = state |> setBasicMaterialIsDepthTest(material, false);
+          let state =
+            state |> setBasicMaterialIsDepthTest(material, isDepthTest);
 
           getBasicMaterialIsDepthTest(material, state)
-          |> expect == false
+          |> expect == isDepthTest;
+        })
+      );
+
+      describe("getBasicMaterialAlpha", () =>
+        test("test default alpha", () => {
+          let (state, material) = createBasicMaterial(state^);
+
+          getBasicMaterialAlpha(material, state) |> expect == 1.0;
+        })
+      );
+
+      describe("setBasicMaterialAlpha", () =>
+        test("test set alpha", () => {
+          let (state, material) = createBasicMaterial(state^);
+          let alpha = 0.5;
+
+          let state = state |> setBasicMaterialAlpha(material, alpha);
+
+          getBasicMaterialAlpha(material, state) |> expect == alpha;
         })
       );
 
@@ -218,7 +237,8 @@ let _ =
 
             (
               BasicMaterialTool.hasGameObject(material1, state),
-              nameMap |> WonderCommonlib.MutableSparseMapService.has(material1),
+              nameMap
+              |> WonderCommonlib.MutableSparseMapService.has(material1),
               emptyMapUnitArrayMap
               |> WonderCommonlib.MutableSparseMapService.has(material1),
             )
@@ -338,6 +358,7 @@ let _ =
                             |]);
                 })
               );
+
               describe("remove from mapUnits", () =>
                 test("reset removed one's value", () =>
                   _testRemoveFromTypeArr(
@@ -348,6 +369,36 @@ let _ =
                       BasicMaterialTool.createGameObjectWithMap,
                       BasicMaterialTool.getMapUnit,
                       BasicMaterialTool.setMapUnit,
+                    ),
+                  )
+                )
+              );
+
+              describe("remove from isDepthTests", () =>
+                test("reset removed one's value", () =>
+                  _testRemoveFromTypeArr(
+                    state,
+                    (false, true),
+                    BasicMaterialTool.getDefaultIsDepthTest(),
+                    (
+                      BasicMaterialTool.createGameObjectWithMap,
+                      BasicMaterialAPI.getBasicMaterialIsDepthTest,
+                      BasicMaterialAPI.setBasicMaterialIsDepthTest,
+                    ),
+                  )
+                )
+              );
+
+              describe("remove from isDepthTests", () =>
+                test("reset removed one's value", () =>
+                  _testRemoveFromTypeArr(
+                    state,
+                    (0.1, 0.5),
+                    BasicMaterialTool.getDefaultAlpha(),
+                    (
+                      BasicMaterialTool.createGameObjectWithMap,
+                      BasicMaterialAPI.getBasicMaterialAlpha,
+                      BasicMaterialAPI.setBasicMaterialAlpha,
                     ),
                   )
                 )

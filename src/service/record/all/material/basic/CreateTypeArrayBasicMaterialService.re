@@ -31,4 +31,9 @@ let createTypeArrays = (buffer, basicMaterialCount, textureCountPerMaterial) => 
       getIsDepthTestsOffset(basicMaterialCount, textureCountPerMaterial),
     ~length=getIsDepthTestsLength(basicMaterialCount),
   ),
+  Float32Array.fromBufferRange(
+    WorkerType.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset=getAlphasOffset(basicMaterialCount, textureCountPerMaterial),
+    ~length=getAlphasLength(basicMaterialCount),
+  ),
 );

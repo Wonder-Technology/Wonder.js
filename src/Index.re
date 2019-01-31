@@ -200,7 +200,11 @@ let onKeyboardEvent = ManageEventAPI.onKeyboardEvent;
 
 let onMouseEvent = ManageEventAPI.onMouseEvent;
 
+let getPointDragDropEventName = NameEventAPI.getPointDragDropEventName;
+
 let getPointDragOverEventName = NameEventAPI.getPointDragOverEventName;
+
+let getPointDragStartEventName = NameEventAPI.getPointDragStartEventName;
 
 let getPointScaleEventName = NameEventAPI.getPointScaleEventName;
 
@@ -476,6 +480,30 @@ let registerNoWorkerLoopJob = JobAPI.registerNoWorkerLoopJob;
 
 let registerNoWorkerInitJob = JobAPI.registerNoWorkerInitJob;
 
+let resetDisposeCount = ReallocateCPUMemoryJobAPI.resetDisposeCount;
+
+let initGeometryBufferData = ReallocateCPUMemoryJobAPI.initGeometryBufferData;
+
+let reAllocateToBuffer = ReallocateCPUMemoryJobAPI.reAllocateToBuffer;
+
+let isGeometryBufferNearlyFull = ReallocateCPUMemoryJobAPI.isGeometryBufferNearlyFull;
+
+let isDisposeTooMany = ReallocateCPUMemoryJobAPI.isDisposeTooMany;
+
+let reallocateGameObjectByDisposeCount = ReallocateCPUMemoryJobAPI.reallocateGameObjectByDisposeCount;
+
+let draw = RenderJobAPI.draw;
+
+let sendUniformRenderObjectMaterialData = RenderJobAPI.sendUniformRenderObjectMaterialData;
+
+let sendUniformRenderObjectModelData = RenderJobAPI.sendUniformRenderObjectModelData;
+
+let sendAttributeData = RenderJobAPI.sendAttributeData;
+
+let useByShaderIndex = RenderJobAPI.useByShaderIndex;
+
+let getShaderIndex = RenderJobAPI.getShaderIndex;
+
 let setGameObjectsNeedDrawOutline = JobDataAPI.setGameObjectsNeedDrawOutline;
 
 let setOutlineColor = JobDataAPI.setOutlineColor;
@@ -543,6 +571,10 @@ let reInitMaterials = BasicMaterialAPI.reInitMaterials;
 let setBasicMaterialName = BasicMaterialAPI.setBasicMaterialName;
 
 let unsafeGetBasicMaterialName = BasicMaterialAPI.unsafeGetBasicMaterialName;
+
+let setBasicMaterialAlpha = BasicMaterialAPI.setBasicMaterialAlpha;
+
+let getBasicMaterialAlpha = BasicMaterialAPI.getBasicMaterialAlpha;
 
 let setBasicMaterialIsDepthTest = BasicMaterialAPI.setBasicMaterialIsDepthTest;
 
@@ -769,6 +801,8 @@ let createBasicSourceTexture = BasicSourceTextureAPI.createBasicSourceTexture;
 let getFps = TimeControllerAPI.getFps;
 
 let getGameTime = TimeControllerAPI.getGameTime;
+
+let getTransformLocalToWorldMatrixTypeArray = TransformAPI.getTransformLocalToWorldMatrixTypeArray;
 
 let lookAtWithUp = TransformAPI.lookAtWithUp;
 
@@ -1018,26 +1052,6 @@ let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCame
 
 let createGameObject = GameObjectAPI.createGameObject;
 
-let removeWorkerMainLoopJob = JobAPI.removeWorkerMainLoopJob;
-
-let addWorkerMainLoopJob = JobAPI.addWorkerMainLoopJob;
-
-let removeWorkerMainInitJob = JobAPI.removeWorkerMainInitJob;
-
-let addWorkerMainInitJob = JobAPI.addWorkerMainInitJob;
-
-let removeNoWorkerLoopJob = JobAPI.removeNoWorkerLoopJob;
-
-let removeNoWorkerInitJob = JobAPI.removeNoWorkerInitJob;
-
-let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
-
-let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
-
-let registerNoWorkerLoopJob = JobAPI.registerNoWorkerLoopJob;
-
-let registerNoWorkerInitJob = JobAPI.registerNoWorkerInitJob;
-
 let setMeshRendererIsRender = MeshRendererAPI.setMeshRendererIsRender;
 
 let getMeshRendererIsRender = MeshRendererAPI.getMeshRendererIsRender;
@@ -1097,6 +1111,8 @@ let deepCopyForRestore = StateAPI.deepCopyForRestore;
 let getFps = TimeControllerAPI.getFps;
 
 let getGameTime = TimeControllerAPI.getGameTime;
+
+let getTransformLocalToWorldMatrixTypeArray = TransformAPI.getTransformLocalToWorldMatrixTypeArray;
 
 let lookAtWithUp = TransformAPI.lookAtWithUp;
 

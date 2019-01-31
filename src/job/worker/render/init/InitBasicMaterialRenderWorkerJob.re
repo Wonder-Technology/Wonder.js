@@ -4,7 +4,7 @@ open RenderWorkerBasicMaterialType;
 
 let _createTypeArrays =
     (buffer, basicMaterialCount, textureCountPerMaterial, state) => {
-  let (shaderIndices, colors, textureIndices, mapUnits, isDepthTests) =
+  let (shaderIndices, colors, textureIndices, mapUnits, isDepthTests, alphas) =
     CreateTypeArrayBasicMaterialService.createTypeArrays(
       buffer,
       basicMaterialCount,
@@ -20,6 +20,7 @@ let _createTypeArrays =
       textureIndices: Some(textureIndices),
       mapUnits: Some(mapUnits),
       isDepthTests: Some(isDepthTests),
+      alphas: Some(alphas),
     });
   state;
 };

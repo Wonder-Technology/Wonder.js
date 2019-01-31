@@ -34,13 +34,21 @@ let _restoreTypeArrays =
                                                 isDepthTests ?
     (currentBasicMaterialRecord, targetBasicMaterialRecord) :
     {
-      let (shaderIndices, colors, textureIndices, mapUnits, isDepthTests) =
+      let (
+        shaderIndices,
+        colors,
+        textureIndices,
+        mapUnits,
+        isDepthTests,
+        alphas,
+      ) =
         (
           currentBasicMaterialRecord.shaderIndices,
           currentBasicMaterialRecord.colors,
           currentBasicMaterialRecord.textureIndices,
           currentBasicMaterialRecord.mapUnits,
           currentBasicMaterialRecord.isDepthTests,
+          currentBasicMaterialRecord.alphas,
         )
         |> RecordBasicMaterialMainService.setAllTypeArrDataToDefault(
              currentBasicMaterialRecord.index,
@@ -84,6 +92,13 @@ let _restoreTypeArrays =
         ),
       )
       |> ignore;
+      /* TODO test */
+      TypeArrayService.fillFloat32ArrayWithFloat32Array(
+        (currentBasicMaterialRecord.alphas, 0),
+        (targetBasicMaterialRecord.alphas, 0),
+        Js.Typed_array.Float32Array.length(targetBasicMaterialRecord.alphas),
+      )
+      |> ignore;
       (currentBasicMaterialRecord, targetBasicMaterialRecord);
     };
 
@@ -113,6 +128,8 @@ let restore = (gl, currentState, targetState) => {
         colors: currentBasicMaterialRecord.colors,
         textureIndices: currentBasicMaterialRecord.textureIndices,
         mapUnits: currentBasicMaterialRecord.mapUnits,
+        isDepthTests: currentBasicMaterialRecord.isDepthTests,
+        alphas: currentBasicMaterialRecord.alphas,
       }),
   };
 };

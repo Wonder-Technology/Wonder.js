@@ -20,7 +20,7 @@ let _ =
               ~buffer=
                 SettingTool.buildBufferConfigStr(
                   ~transformCount=5,
-                  ~basicMaterialCount=5,
+                  ~basicMaterialCount=8,
                   ()
                 ),
               ()

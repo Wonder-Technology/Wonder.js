@@ -71,3 +71,27 @@ let setIsDepthTest = (material, isDepthTest, state) => {
       }),
   };
 };
+
+let getAlpha = (material, state) =>
+  OperateTypeArrayBasicMaterialService.getAlpha(
+    material,
+    RecordBasicMaterialMainService.getRecord(state).alphas,
+  );
+
+let setAlpha = (material, alpha, state) => {
+  let {alphas} as basicMaterialRecord =
+    RecordBasicMaterialMainService.getRecord(state);
+  {
+    ...state,
+    basicMaterialRecord:
+      Some({
+        ...basicMaterialRecord,
+        alphas:
+          OperateTypeArrayBasicMaterialService.setAlpha(
+            material,
+            alpha,
+            alphas,
+          ),
+      }),
+  };
+};

@@ -18,14 +18,16 @@ let setAllTypeArrDataToDefault =
       basicMaterialCount: int,
       defaultShaderIndex,
       defaultColor,
-      (shaderIndices, colors, textureIndices, mapUnits, isDepthTests),
+      (shaderIndices, colors, textureIndices, mapUnits, isDepthTests, alphas),
     ) => {
   let defaultUnit = MapUnitService.getDefaultUnit();
   let defaultIsDepthTest = BufferMaterialService.getDefaultIsDepthTest();
-  let (shaderIndices, colors, mapUnits, isDepthTests) =
+  let defaultAlpha = BufferBasicMaterialService.getDefaultAlpha();
+
+  let (shaderIndices, colors, mapUnits, isDepthTests, alphas) =
     WonderCommonlib.ArrayService.range(0, basicMaterialCount - 1)
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. (shaderIndices, colors, mapUnits, isDepthTests), index) => (
+         (. (shaderIndices, colors, mapUnits, isDepthTests, alphas), index) => (
            ShaderIndicesService.setShaderIndex(.
              index,
              defaultShaderIndex,
@@ -34,8 +36,9 @@ let setAllTypeArrDataToDefault =
            setColor(index, defaultColor, colors),
            setMapUnit(. index, defaultUnit, mapUnits),
            setIsDepthTest(index, defaultIsDepthTest, isDepthTests),
+           setAlpha(index, defaultAlpha, alphas),
          ),
-         (shaderIndices, colors, mapUnits, isDepthTests),
+         (shaderIndices, colors, mapUnits, isDepthTests, alphas),
        );
   (
     shaderIndices,
@@ -43,6 +46,7 @@ let setAllTypeArrDataToDefault =
     textureIndices |> Js.Typed_array.Uint32Array.fillInPlace(0),
     mapUnits,
     isDepthTests,
+    alphas,
   );
 };
 
@@ -51,14 +55,22 @@ let _setAllTypeArrDataToDefault =
       basicMaterialCount: int,
       defaultShaderIndex,
       defaultColor,
-      (buffer, shaderIndices, colors, textureIndices, mapUnits, isDepthTests),
+      (
+        buffer,
+        shaderIndices,
+        colors,
+        textureIndices,
+        mapUnits,
+        isDepthTests,
+        alphas,
+      ),
     ) => (
   buffer,
   setAllTypeArrDataToDefault(
     basicMaterialCount,
     defaultShaderIndex,
     defaultColor,
-    (shaderIndices, colors, textureIndices, mapUnits, isDepthTests),
+    (shaderIndices, colors, textureIndices, mapUnits, isDepthTests, alphas),
   ),
 );
 
@@ -70,13 +82,21 @@ let _initBufferData =
       defaultColor,
     ) => {
   let buffer = createBuffer(basicMaterialCount, textureCountPerMaterial);
-  let (shaderIndices, colors, textureIndices, mapUnits, isDepthTests) =
+  let (shaderIndices, colors, textureIndices, mapUnits, isDepthTests, alphas) =
     CreateTypeArrayBasicMaterialService.createTypeArrays(
       buffer,
       basicMaterialCount,
       textureCountPerMaterial,
     );
-  (buffer, shaderIndices, colors, textureIndices, mapUnits, isDepthTests)
+  (
+    buffer,
+    shaderIndices,
+    colors,
+    textureIndices,
+    mapUnits,
+    isDepthTests,
+    alphas,
+  )
   |> _setAllTypeArrDataToDefault(
        basicMaterialCount,
        defaultShaderIndex,
@@ -90,7 +110,7 @@ let create = ({settingRecord} as state) => {
   let defaultColor = [|1., 1., 1.|];
   let (
     buffer,
-    (shaderIndices, colors, textureIndices, mapUnits, isDepthTests),
+    (shaderIndices, colors, textureIndices, mapUnits, isDepthTests, alphas),
   ) =
     _initBufferData(
       BufferSettingService.getBasicMaterialCount(settingRecord),
@@ -107,6 +127,7 @@ let create = ({settingRecord} as state) => {
       textureIndices,
       mapUnits,
       isDepthTests,
+      alphas,
       defaultColor,
       nameMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       emptyMapUnitArrayMap:
@@ -127,6 +148,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         textureIndices,
         mapUnits,
         isDepthTests,
+        alphas,
         defaultColor,
         nameMap,
         emptyMapUnitArrayMap,
@@ -166,11 +188,15 @@ let deepCopyForRestore = ({settingRecord} as state) => {
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
                index * getMapUnitsSize(),
              ),
-        /* TODO test */
         isDepthTests:
           isDepthTests
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
                index * getIsDepthTestsSize(),
+             ),
+        alphas:
+          alphas
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getAlphasSize(),
              ),
         nameMap: nameMap |> WonderCommonlib.MutableSparseMapService.copy,
         defaultColor,

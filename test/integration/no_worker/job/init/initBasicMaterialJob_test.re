@@ -217,21 +217,7 @@ let _ =
                );
           })
         );
-        describe("test basic_color shader lib's glsl", () =>
-          test("test fs glsl", () => {
-            let (_, shaderSource) =
-              InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
-            GLSLTool.containMultiline(
-              GLSLTool.getFsSource(shaderSource),
-              [
-                {|uniform vec3 u_color;|},
-                {|vec4 totalColor = vec4(u_color, 1.0);
-         |},
-              ],
-            )
-            |> expect == true;
-          })
-        );
+
         describe("test map shader lib's glsl", () => {
           describe("if has map, add basic_map shader lib", () => {
             test("test vs glsl", () => {
@@ -262,8 +248,9 @@ let _ =
                   [
                     {|uniform sampler2D u_mapSampler;|},
                     {|uniform vec3 u_color;|},
+                    {|uniform float u_alpha;|},
                     {|varying vec2 v_mapCoord0;|},
-                    {|vec4 totalColor = vec4(texture2D(u_mapSampler, v_mapCoord0).rgb * u_color, 1.0);|},
+                    {|vec4 totalColor = vec4(texture2D(u_mapSampler, v_mapCoord0).rgb * u_color, u_alpha);|},
                   ],
                 )
                 |> expect == true;
@@ -285,7 +272,7 @@ let _ =
               });
             });
           });
-          describe("else, not add", () =>
+          describe("else, add basic_no_map shader lib", () => {
             test("test vs glsl", () => {
               let (_, shaderSource) =
                 InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
@@ -294,8 +281,21 @@ let _ =
                 [{|varying vec2 v_mapCoord0;|}],
               )
               |> expect == false;
-            })
-          );
+            });
+            test("test fs glsl", () => {
+              let (_, shaderSource) =
+                InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
+              GLSLTool.containMultiline(
+                GLSLTool.getFsSource(shaderSource),
+                [
+                  {|uniform vec3 u_color;|},
+                  {|uniform float u_alpha;|},
+                  {|vec4 totalColor = vec4(u_color, u_alpha);|},
+                ],
+              )
+              |> expect == true;
+            });
+          });
         });
         test("test basic_end shader lib's glsl", () => {
           let (_, shaderSource) =

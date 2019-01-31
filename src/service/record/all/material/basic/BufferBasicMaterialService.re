@@ -10,6 +10,8 @@ let getMapUnitsSize = () => 1;
 
 let getIsDepthTestsSize = () => 1;
 
+let getAlphasSize = () => 1;
+
 let getColorsLength = basicMaterialCount =>
   basicMaterialCount * getColorsSize();
 
@@ -51,6 +53,16 @@ let getIsDepthTestsOffset = (basicMaterialCount, textureCountPerMaterial) =>
 
 let getIsDepthTestIndex = index => index * getIsDepthTestsSize();
 
+let getAlphasLength = basicMaterialCount =>
+  basicMaterialCount * getAlphasSize();
+
+let getAlphasOffset = (basicMaterialCount, textureCountPerMaterial) =>
+  getIsDepthTestsOffset(basicMaterialCount, textureCountPerMaterial)
+  + getIsDepthTestsLength(basicMaterialCount)
+  * Uint8Array._BYTES_PER_ELEMENT;
+
+let getAlphaIndex = index => index * getAlphasSize();
+
 let getTotalByteLength = (basicMaterialCount, textureCountPerMaterial) =>
   basicMaterialCount
   * (
@@ -62,9 +74,13 @@ let getTotalByteLength = (basicMaterialCount, textureCountPerMaterial) =>
     * BufferMaterialService.getTextureIndicesSize(textureCountPerMaterial)
     + Uint8Array._BYTES_PER_ELEMENT
     * (getMapUnitsSize() + getIsDepthTestsSize())
+    + Float32Array._BYTES_PER_ELEMENT
+    * getAlphasSize()
   );
 
 let createBuffer = (basicMaterialCount, textureCountPerMaterial) =>
   Worker.newSharedArrayBuffer(
     getTotalByteLength(basicMaterialCount, textureCountPerMaterial),
   );
+
+let getDefaultAlpha = () => 1.;

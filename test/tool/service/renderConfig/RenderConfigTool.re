@@ -361,6 +361,12 @@ let buildRenderConfig =
           "from": "basicMaterial"
         },
         {
+          "name": "u_alpha",
+          "field": "alpha",
+          "type": "float",
+          "from": "basicMaterial"
+        },
+        {
           "name": "u_mapSampler",
           "field": "map",
           "type": "sampler2D",
@@ -383,6 +389,12 @@ let buildRenderConfig =
           "name": "u_color",
           "field": "color",
           "type": "float3",
+          "from": "basicMaterial"
+        },
+        {
+          "name": "u_alpha",
+          "field": "alpha",
+          "type": "float",
           "from": "basicMaterial"
         }
       ]
