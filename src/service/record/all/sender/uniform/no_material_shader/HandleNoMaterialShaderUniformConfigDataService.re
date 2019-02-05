@@ -41,6 +41,20 @@ let addSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr) =>
       sendDataArr,
       GetOutlineDataGetRenderDataService.getColor,
     )
+  /* TODO refactor(extend): move to editor */
+  /* TODO need test in editor*/
+  | "rotationGizmoForEditor" =>
+    switch (name) {
+    | "u_cameraPosInLocalCoordSystem"
+    | "u_color" =>
+      _addUniformSendDataByType(
+        (uniformCacheMap, name, pos, type_),
+        sendDataArr,
+        /* TODO refactor(extend): change to custom shader instead of no material shader! */
+        /* GetBasicMaterialDataGetRenderDataService.getColor */
+        Obj.magic(-1),
+      )
+    }
   | _ =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(

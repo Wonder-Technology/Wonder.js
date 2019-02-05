@@ -759,6 +759,45 @@ mat3 normalMatrix = u_normalMatrix;
 mat4 mMatrix = u_mMatrix;
 |}))
 
+|> set("webgl1_rotation_gizmo_circle_for_editor_vertex", _buildChunk(({|
+
+|},{|
+
+|}),{|
+varying vec3 v_position;
+|},({|
+
+|},{|
+
+|}),{|
+v_position = a_position;
+
+gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
+|}))
+
+|> set("webgl1_rotation_gizmo_circle_for_editor_fragment", _buildChunk(({|
+
+|},{|
+
+|}),{|
+varying vec3 v_position;
+|},({|
+bool isAngleBetweenVertexToCenterAndVertexToCameraLessThan90(vec3 vertexPos, vec3 cameraPosInLocalCoordSystem);
+|},{|
+bool isAngleBetweenVertexToCenterAndVertexToCameraLessThan90(vec3 vertexPos, vec3 cameraPosInLocalCoordSystem){
+return dot(
+normalize(-vertexPos),
+cameraPosInLocalCoordSystem - vertexPos
+) >= 0.0;
+}
+|}),{|
+if(isAngleBetweenVertexToCenterAndVertexToCameraLessThan90(v_position, u_cameraPosInLocalCoordSystem)){
+    discard;
+}
+
+gl_FragColor = vec4(u_color, 1.0);
+|}))
+
 |> set("webgl1_setPos_mvp", _buildChunk(({|
 
 |},{|

@@ -530,6 +530,35 @@
     ]
   },
   {
+    "name": "rotation_gizmo_circle_for_editor",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_rotation_gizmo_circle_for_editor_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_rotation_gizmo_circle_for_editor_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_color",
+          "from": "no_material_shader",
+          "field": "rotationGizmoForEditor",
+          "type": "float3"
+        },
+        {
+          "name": "u_cameraPosInLocalCoordSystem",
+          "from": "no_material_shader",
+          "field": "rotationGizmoForEditor",
+          "type": "float3"
+        }
+      ]
+    }
+  },
+  {
     "name": "outline_expand",
     "glsls": [
       {

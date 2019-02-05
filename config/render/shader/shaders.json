@@ -157,6 +157,25 @@
   ],
   "no_material_shaders": [
     {
+      "name": "rotation_gizmo_for_editor",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "modelMatrix_noInstance"
+        },
+        {
+          "name": "rotation_gizmo_circle_for_editor"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
+    },
+    {
       "name": "outline_draw_origin_gameObjects",
       "shader_libs": [
         {
