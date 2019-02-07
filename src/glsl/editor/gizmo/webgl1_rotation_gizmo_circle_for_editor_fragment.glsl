@@ -20,5 +20,5 @@ if(isAngleBetweenVertexToCenterAndVertexToCameraLessThan90(v_position, u_cameraP
     discard;
 }
 
-gl_FragColor = vec4(u_color, 1.0);
+gl_FragColor = vec4(u_color, u_alpha);
 @end

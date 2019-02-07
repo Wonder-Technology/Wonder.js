@@ -45,6 +45,7 @@ let addSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr) =>
   /* TODO need test in editor*/
   | "rotationGizmoForEditor" =>
     switch (name) {
+    | "u_alpha"
     | "u_cameraPosInLocalCoordSystem"
     | "u_color" =>
       _addUniformSendDataByType(

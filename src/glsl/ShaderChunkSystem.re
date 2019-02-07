@@ -783,6 +783,7 @@ gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
 varying vec3 v_position;
 |},({|
 bool isAngleBetweenVertexToCenterAndVertexToCameraLessThan90(vec3 vertexPos, vec3 cameraPosInLocalCoordSystem);
+// bool isCenterToCameraAndNormalOfCirclePlanePerpendicular(vec3 vertexPos, vec3 cameraPosInLocalCoordSystem)
 |},{|
 bool isAngleBetweenVertexToCenterAndVertexToCameraLessThan90(vec3 vertexPos, vec3 cameraPosInLocalCoordSystem){
 return dot(
@@ -795,7 +796,7 @@ if(isAngleBetweenVertexToCenterAndVertexToCameraLessThan90(v_position, u_cameraP
     discard;
 }
 
-gl_FragColor = vec4(u_color, 1.0);
+gl_FragColor = vec4(u_color, u_alpha);
 |}))
 
 |> set("webgl1_setPos_mvp", _buildChunk(({|
