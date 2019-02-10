@@ -694,3 +694,13 @@ let rotateWorldOnAxis =
     state,
   );
 };
+
+let changeChildOrder =
+    (sourceTransfrom, targetTransform, targetParentTransform, action, state) =>
+  HierachyTransformMainService.changeChildOrder(
+    sourceTransfrom,
+    targetTransform,
+    targetParentTransform,
+    action,
+    state,
+  );

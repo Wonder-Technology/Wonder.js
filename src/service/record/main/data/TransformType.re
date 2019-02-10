@@ -2,6 +2,10 @@ open ComponentType;
 
 type transform = int;
 
+type changeChildOrder =
+  | Before
+  | After;
+
 type transformParentMap =
   WonderCommonlib.MutableSparseMapService.t(transform);
 

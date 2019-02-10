@@ -1849,6 +1849,160 @@ let _ =
       })
     );
 
+    describe("changeChildOrder", () =>
+      describe("change child order", () => {
+        describe("test source and target has the same parent", () => {
+          let _prepare = state => {
+            let (state, parent) = TransformAPI.createTransform(state);
+            let (state, child1) = TransformAPI.createTransform(state);
+            let (state, child2) = TransformAPI.createTransform(state);
+            let (state, child3) = TransformAPI.createTransform(state);
+
+            let state =
+              state
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent),
+                   child1,
+                 )
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent),
+                   child2,
+                 )
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent),
+                   child3,
+                 );
+
+            (state, parent, (child1, child2, child3));
+          };
+
+          test("test before", () => {
+            let (state, parent, (child1, child2, child3)) =
+              _prepare(state^);
+
+            let state =
+              TransformAPI.changeChildOrder(
+                child3,
+                child1,
+                parent,
+                TransformType.Before,
+                state,
+              );
+
+            TransformAPI.unsafeGetTransformChildren(parent, state)
+            |> expect == [|child3, child1, child2|];
+          });
+          test("test after", () => {
+            let (state, parent, (child1, child2, child3)) =
+              _prepare(state^);
+
+            let state =
+              TransformAPI.changeChildOrder(
+                child3,
+                child1,
+                parent,
+                TransformType.After,
+                state,
+              );
+
+            TransformAPI.unsafeGetTransformChildren(parent, state)
+            |> expect == [|child1, child3, child2|];
+          });
+        });
+
+        describe("test source and target has different parents", () => {
+          let _prepare = state => {
+            let (state, parent1) = TransformAPI.createTransform(state);
+            let (state, parent2) = TransformAPI.createTransform(state);
+            let (state, child1) = TransformAPI.createTransform(state);
+            let (state, child2) = TransformAPI.createTransform(state);
+            let (state, child3) = TransformAPI.createTransform(state);
+
+            let state =
+              state
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent1),
+                   child1,
+                 )
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent1),
+                   child2,
+                 )
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent2),
+                   child3,
+                 );
+
+            (state, (parent1, parent2), (child1, child2, child3));
+          };
+
+          test("should contract error", () => {
+            let (state, (parent1, parent2), (child1, child2, child3)) =
+              _prepare(state^);
+
+            expect(() => {
+              let state =
+                TransformAPI.changeChildOrder(
+                  child3,
+                  child1,
+                  parent1,
+                  TransformType.Before,
+                  state,
+                );
+              ();
+            })
+            |> toThrow;
+          });
+        });
+
+        describe("test source not has a parent", () => {
+          let _prepare = state => {
+            let (state, parent1) = TransformAPI.createTransform(state);
+            /* let (state, parent2) =
+               TransformAPI.createTransform(state); */
+            let (state, child1) = TransformAPI.createTransform(state);
+            let (state, child2) = TransformAPI.createTransform(state);
+            let (state, child3) = TransformAPI.createTransform(state);
+
+            let state =
+              state
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent1),
+                   child1,
+                 )
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent1),
+                   child2,
+                 );
+            /* |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(parent2),
+                 child3,
+               ); */
+
+            (state, parent1, (child1, child2, child3));
+          };
+
+          test("should contract error", () => {
+            let (state, parent1, (child1, child2, child3)) =
+              _prepare(state^);
+
+            expect(() => {
+              let state =
+                TransformAPI.changeChildOrder(
+                  child3,
+                  child1,
+                  parent1,
+                  TransformType.Before,
+                  state,
+                );
+              ();
+            })
+            |> toThrow;
+          });
+        });
+      })
+    );
+
     describe("contract check: is alive", () =>
       describe("if transform is disposed", () => {
         let _testGetFunc = getFunc => {
