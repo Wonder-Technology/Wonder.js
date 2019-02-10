@@ -636,3 +636,61 @@ let getTransformLocalToWorldMatrixTypeArray =
     state.globalTempRecord,
     RecordTransformMainService.getRecord(state),
   );
+
+let rotateLocalOnAxis =
+    (
+      transform: transform,
+      (angle, localAxis),
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              transform,
+              isAlive,
+              state |> RecordTransformMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  RotateTransformMainService.rotateLocalOnAxis(
+    transform,
+    (angle, localAxis),
+    state,
+  );
+};
+
+let rotateWorldOnAxis =
+    (
+      transform: transform,
+      (angle, localAxis),
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              transform,
+              isAlive,
+              state |> RecordTransformMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  RotateTransformMainService.rotateWorldOnAxis(
+    transform,
+    (angle, localAxis),
+    state,
+  );
+};

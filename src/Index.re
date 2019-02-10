@@ -802,6 +802,10 @@ let getFps = TimeControllerAPI.getFps;
 
 let getGameTime = TimeControllerAPI.getGameTime;
 
+let rotateWorldOnAxis = TransformAPI.rotateWorldOnAxis;
+
+let rotateLocalOnAxis = TransformAPI.rotateLocalOnAxis;
+
 let getTransformLocalToWorldMatrixTypeArray = TransformAPI.getTransformLocalToWorldMatrixTypeArray;
 
 let lookAtWithUp = TransformAPI.lookAtWithUp;
@@ -1111,6 +1115,10 @@ let deepCopyForRestore = StateAPI.deepCopyForRestore;
 let getFps = TimeControllerAPI.getFps;
 
 let getGameTime = TimeControllerAPI.getGameTime;
+
+let rotateWorldOnAxis = TransformAPI.rotateWorldOnAxis;
+
+let rotateLocalOnAxis = TransformAPI.rotateLocalOnAxis;
 
 let getTransformLocalToWorldMatrixTypeArray = TransformAPI.getTransformLocalToWorldMatrixTypeArray;
 

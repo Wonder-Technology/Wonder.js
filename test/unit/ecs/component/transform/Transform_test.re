@@ -1809,6 +1809,46 @@ let _ =
       )
     );
 
+    describe("rotateLocalOnAxis", () =>
+      test("rotate on local axis in the local coordinate system", () => {
+        let (state, tra1) = createTransform(state^);
+        let pos1 = (0., 1., 0.);
+        let xAxis = (1., 0., 0.);
+        let yAxis = (0., 1., 0.);
+
+        let state = state |> setTransformLocalPosition(tra1, pos1);
+        let state =
+          state
+          |> rotateLocalOnAxis(tra1, (45., yAxis))
+          |> rotateLocalOnAxis(tra1, (45., xAxis))
+          |> rotateLocalOnAxis(tra1, (10., yAxis));
+
+        TransformAPI.getTransformLocalEulerAngles(tra1, state)
+        |>
+        expect == (53.52699620225938, 51.55342957783367, 11.389428193681704);
+      })
+    );
+
+    describe("rotateWorldOnAxis", () =>
+      test("rotate on world axis in the world coordinate system", () => {
+        let (state, tra1) = createTransform(state^);
+        let pos1 = (0., 1., 0.);
+        let xAxis = (1., 0., 0.);
+        let yAxis = (0., 1., 0.);
+
+        let state = state |> setTransformLocalPosition(tra1, pos1);
+        let state =
+          state
+          |> rotateWorldOnAxis(tra1, (45., yAxis))
+          |> rotateWorldOnAxis(tra1, (45., xAxis))
+          |> rotateWorldOnAxis(tra1, (10., yAxis));
+
+        TransformAPI.getTransformLocalEulerAngles(tra1, state)
+        |>
+        expect == (62.04153935036139, 37.965850368256476, 39.36170307898388);
+      })
+    );
+
     describe("contract check: is alive", () =>
       describe("if transform is disposed", () => {
         let _testGetFunc = getFunc => {

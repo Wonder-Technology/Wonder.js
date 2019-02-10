@@ -175,3 +175,14 @@ let getEulerAngles = quat => {
   _getEulerAngles(quat)
   |> Vector3Service.scale(Vector3Type.Float, rad_to_deg);
 };
+
+let setFromAxisAngle = (angle, axis) => {
+  let (axisX, axisY, axisZ) = Wonderjs.Vector3Service.normalize(axis);
+
+  let angle = angle *. 0.5 *. AngleService.getDegToRad();
+
+  let sa = Js.Math.sin(angle);
+  let ca = Js.Math.cos(angle);
+
+  (sa *. axisX, sa *. axisY, sa *. axisZ, ca);
+};
