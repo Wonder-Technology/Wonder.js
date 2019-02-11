@@ -81,10 +81,7 @@ let changeChildOrder =
           ),
           action,
         )
-        |> HierachyTransformService._setChildren(
-             record,
-             targetParentTransform,
-           ),
+        |> HierachyTransformService.setChildren(record, targetParentTransform),
       ),
   };
 };

@@ -64,6 +64,7 @@ module.exports = {
       { name: "shader" },
       { name: "code-climate" },
       { name: "microservice" },
+      { name: "encapsulate" },
       { name: "e2e-test" }
     ],
     test: [

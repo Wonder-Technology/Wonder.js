@@ -69,7 +69,7 @@ let unsafeGetChildren = (transform: transform, record) =>
        IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 
-let _setChildren = (record, parent, children) => {
+let setChildren = (record, parent, children) => {
   ...record,
   childMap:
     WonderCommonlib.MutableSparseMapService.set(
@@ -90,7 +90,7 @@ let removeFromChildMap = (parent: int, child: int, isKeepOrder, record) =>
   isKeepOrder ?
     unsafeGetChildren(parent, record)
     |> Js.Array.filter(transform => transform !== child)
-    |> _setChildren(record, parent) :
+    |> setChildren(record, parent) :
     {
       unsafeGetChildren(parent, record)
       |> _removeChild(child, isKeepOrder)
