@@ -4,14 +4,6 @@ open RenderTransformType;
 
 open GlobalTempType;
 
-/* let getLocalToWorldMatrixTypeArray =
-   (. transform, {transformRecord} as state) =>
-     ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(.
-       transform,
-       transformRecord.localToWorldMatrices,
-       transformRecord.localToWorldMatrixCacheMap,
-     ); */
-
 let getScaledLocalToWorldMatrixTypeArray =
   (. transform, {transformRecord} as state) =>
     ModelMatrixTransformService.getLocalToWorldMatrixTypeArray(.
