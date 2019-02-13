@@ -39,3 +39,7 @@ let getLightCount = state =>
     InitLightMaterialStateTool.createStateWithoutMaterialData(state).
       directionLightRecord,
   );
+
+  let getDirection = (light, state) => {
+DirectionDirectionLightMainService.getDirection(light, state) |> Vector3Tool.truncate(3)
+  };
