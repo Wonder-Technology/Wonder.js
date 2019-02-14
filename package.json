@@ -18,6 +18,7 @@
     "test:ci": "npm run buildAll:ci && jest --maxWorkers=4 --config jest_coverage.json",
     "test:fastRender": "gulp testFastRender",
     "test:fastPf": "gulp testFastPerformance",
+    "test:generatePfBenchmark": "gulp generatePerformanceBenchmark",
     "test:render": "npm run build && gulp testRenderInLocal",
     "test:renderCI": "gulp installPuppeteerInCI && npm run build && gulp testRenderInCI",
     "test:pf": "npm run build && gulp testPerformanceInLocal",
