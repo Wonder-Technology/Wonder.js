@@ -71,8 +71,7 @@ let _isPointerLocked = [%raw
     |}
 ];
 
-let _getMovementDeltaWhenPointerLocked =
-    (mouseDomEvent, {eventRecord} as state) => (
+let _getMovementDeltaWhenPointerLocked = mouseDomEvent => (
   switch (Js.toOption(mouseDomEvent##movementX)) {
   | Some(movementX) => movementX
   | None =>
@@ -101,7 +100,7 @@ let _getMovementDeltaWhenPointerLocked =
 
 let getMovementDelta = (mouseDomEvent, {eventRecord} as state) =>
   _isPointerLocked(.) ?
-    _getMovementDeltaWhenPointerLocked(mouseDomEvent, state) :
+    _getMovementDeltaWhenPointerLocked(mouseDomEvent) :
     HandlePointDomEventMainService.getMovementDelta(
       getLocation(mouseDomEvent, state),
       MouseEventService.getLastXY(eventRecord),
