@@ -1,3 +1,8 @@
+<a name="1.0.0-beta.1"></a>
+# [1.0.0-beta.1](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.25...v1.0.0-beta.1) (2019-02-14)
+
+
+
 <a name="1.0.0-alpha.25"></a>
 # [1.0.0-alpha.25](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.24...v1.0.0-alpha.25) (2019-02-14)
 
