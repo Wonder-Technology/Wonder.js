@@ -550,6 +550,12 @@
           "type": "float3"
         },
         {
+          "name": "u_alpha",
+          "from": "no_material_shader",
+          "field": "rotationGizmoForEditor",
+          "type": "float"
+        },
+        {
           "name": "u_cameraPosInLocalCoordSystem",
           "from": "no_material_shader",
           "field": "rotationGizmoForEditor",
