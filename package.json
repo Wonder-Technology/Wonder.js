@@ -74,7 +74,8 @@
   },
   "resolutions": {
     "wonder-log": "^0.2.10",
-    "wonder-commonlib": "0.2.26",
+    "wonder-webgl": "^0.0.6",
+    "wonder-commonlib": "0.2.27",
     "wonder-bs-jest": "0.2.18",
     "wonder-bs-puppeteer": "^0.1.6"
   }

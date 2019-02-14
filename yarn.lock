@@ -850,7 +850,7 @@ bs-fetch@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/bs-fetch/-/bs-fetch-0.3.0.tgz#60c64457359d0c7e0798d5a04db8987d16c4f8f3"
 
-"bs-glob@github:reasonml-community/bs-glob", bs-glob@reasonml-community/bs-glob:
+bs-glob@reasonml-community/bs-glob:
   version "0.1.1"
   resolved "https://codeload.github.com/reasonml-community/bs-glob/tar.gz/5a6f38370d1c0abd12480b1f7bbcbd577dd45bf9"
   dependencies:
@@ -5132,9 +5132,9 @@ wonder-bs-sinon@^0.1.7:
     sinon "^4.1.2"
     wonder-bs-jest latest
 
-wonder-commonlib@0.2.13, wonder-commonlib@0.2.26, wonder-commonlib@^0.2.23, wonder-commonlib@^0.2.26:
-  version "0.2.26"
-  resolved "https://registry.yarnpkg.com/wonder-commonlib/-/wonder-commonlib-0.2.26.tgz#31a3cef357b11ff55656dfa9155a27a992297954"
+wonder-commonlib@0.2.13, wonder-commonlib@0.2.27, wonder-commonlib@^0.2.23, wonder-commonlib@^0.2.26:
+  version "0.2.27"
+  resolved "https://registry.yarnpkg.com/wonder-commonlib/-/wonder-commonlib-0.2.27.tgz#fe858a98c426ffc84613a1a2018c25535d919aea"
 
 wonder-generate-index@latest:
   version "0.1.0"
@@ -5181,13 +5181,7 @@ wonder-render-test@^0.1.26:
     wonder-commonlib "^0.2.23"
     wonder-log latest
 
-wonder-webgl@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/wonder-webgl/-/wonder-webgl-0.0.2.tgz#9f0669667ab40f4a8d5c1466562ce6b6f7c899dc"
-  dependencies:
-    wonder-log "^0.2.2"
-
-wonder-webgl@^0.0.6:
+wonder-webgl@^0.0.2, wonder-webgl@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/wonder-webgl/-/wonder-webgl-0.0.6.tgz#47d10a560e451dfb74b7837ac0654d16fde6b10f"
   dependencies:
