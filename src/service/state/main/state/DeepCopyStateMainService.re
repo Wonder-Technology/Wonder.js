@@ -46,5 +46,7 @@ let deepCopyForRestore = (state: StateDataMainType.state) => {
       ),
     shaderRecord: RecordShaderService.deepCopyForRestore(state.shaderRecord),
     glslRecord: RecordGLSLService.deepCopyForRestore(state.glslRecord),
+    glslSenderRecord:
+      RecordGLSLSenderAllService.deepCopyForRestore(state.glslSenderRecord),
   };
 };

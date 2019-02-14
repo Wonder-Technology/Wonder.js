@@ -31,7 +31,7 @@ let _setDefaultChildren = (indexArr, childMap) =>
   indexArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. childMap, index) =>
-         WonderCommonlib.SparseMapService.set(
+         WonderCommonlib.MutableSparseMapService.set(
            index,
            WonderCommonlib.ArrayService.createEmpty(),
            childMap,

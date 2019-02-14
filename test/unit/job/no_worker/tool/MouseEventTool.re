@@ -10,7 +10,7 @@ let buildMouseEvent =
     (
       ~pageX=10,
       ~pageY=20,
-      ~button=0,
+      ~which=0,
       ~movementX=1,
       ~movementY=2,
       ~detail=Js.Nullable.undefined,
@@ -21,7 +21,7 @@ let buildMouseEvent =
     ) => {
   "pageX": pageX,
   "pageY": pageY,
-  "button": button,
+  "which": which,
   "movementX": movementX,
   "movementY": movementY,
   "detail": detail,

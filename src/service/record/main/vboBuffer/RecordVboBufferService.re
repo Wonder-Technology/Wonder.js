@@ -1,11 +1,11 @@
 open VboBufferType;
 
 let create = () => {
-  geometryVertexBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
-  geometryTexCoordBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
-  geometryNormalBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
-  geometryElementArrayBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
-  matrixInstanceBufferMap: WonderCommonlib.SparseMapService.createEmpty(),
+  geometryVertexBufferMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  geometryTexCoordBufferMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  geometryNormalBufferMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  geometryElementArrayBufferMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  matrixInstanceBufferMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   vertexArrayBufferPool: WonderCommonlib.ArrayService.createEmpty(),
   elementArrayBufferPool: WonderCommonlib.ArrayService.createEmpty(),
   matrixInstanceBufferPool: WonderCommonlib.ArrayService.createEmpty()

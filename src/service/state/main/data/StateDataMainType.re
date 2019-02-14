@@ -50,7 +50,7 @@ open ProgramType;
 
 open GLSLLocationType;
 
-open StateRenderType;
+open GLSLSenderType;
 
 open ShaderChunkType;
 
@@ -90,6 +90,8 @@ open ViewType;
 
 open EventType;
 
+open JobDataType;
+
 type stateData = {
   mutable state: option(state),
   mutable isDebug: bool,
@@ -98,27 +100,27 @@ and jobRecord = {
   noWorkerInitJobList: list((string, state => state)),
   noWorkerLoopJobList: list((string, state => state)),
   noWorkerCustomInitJobHandleMap:
-    WonderCommonlib.HashMapService.t(
+    WonderCommonlib.MutableHashMapService.t(
       (NoWorkerJobType.jobFlags, state) => state,
     ),
   noWorkerCustomLoopJobHandleMap:
-    WonderCommonlib.HashMapService.t(
+    WonderCommonlib.MutableHashMapService.t(
       (NoWorkerJobType.jobFlags, state) => state,
     ),
   workerCustomMainInitTargetJobMap:
-    WonderCommonlib.HashMapService.t(
+    WonderCommonlib.MutableHashMapService.t(
       (string, JobType.workerCustomJobAction, stateData => unit),
     ),
-  workerCustomMainInitSourceJobMap: WonderCommonlib.HashMapService.t(string),
+  workerCustomMainInitSourceJobMap: WonderCommonlib.MutableHashMapService.t(string),
   workerCustomMainInitRemovedDefaultJobMap:
-    WonderCommonlib.HashMapService.t(bool),
+    WonderCommonlib.MutableHashMapService.t(bool),
   workerCustomMainLoopTargetJobMap:
-    WonderCommonlib.HashMapService.t(
+    WonderCommonlib.MutableHashMapService.t(
       (string, JobType.workerCustomJobAction, stateData => unit),
     ),
-  workerCustomMainLoopSourceJobMap: WonderCommonlib.HashMapService.t(string),
+  workerCustomMainLoopSourceJobMap: WonderCommonlib.MutableHashMapService.t(string),
   workerCustomMainLoopRemovedDefaultJobMap:
-    WonderCommonlib.HashMapService.t(bool),
+    WonderCommonlib.MutableHashMapService.t(bool),
 }
 and mouseDomEventData = {
   priority: int,
@@ -140,47 +142,47 @@ and customEventData = {
 and eventRecord = {
   domEventStreamSubscription: option(WonderBsMost.Most.subscription),
   mouseDomEventDataArrMap:
-    WonderCommonlib.SparseMapService.t(array(mouseDomEventData)),
+    WonderCommonlib.MutableSparseMapService.t(array(mouseDomEventData)),
   keyboardDomEventDataArrMap:
-    WonderCommonlib.SparseMapService.t(array(keyboardDomEventData)),
+    WonderCommonlib.MutableSparseMapService.t(array(keyboardDomEventData)),
   touchDomEventDataArrMap:
-    WonderCommonlib.SparseMapService.t(array(touchDomEventData)),
+    WonderCommonlib.MutableSparseMapService.t(array(touchDomEventData)),
   customGlobalEventArrMap:
-    WonderCommonlib.HashMapService.t(array(customEventData)),
+    WonderCommonlib.MutableHashMapService.t(array(customEventData)),
   customGameObjectEventArrMap:
-    WonderCommonlib.HashMapService.t(
-      WonderCommonlib.SparseMapService.t(array(customEventData)),
+    WonderCommonlib.MutableHashMapService.t(
+      WonderCommonlib.MutableSparseMapService.t(array(customEventData)),
     ),
   mouseEventData: EventType.mouseEventData,
   keyboardEventData: EventType.keyboardEventData,
   touchEventData: EventType.touchEventData,
 }
 and pointEventHandleFuncMap =
-  WonderCommonlib.SparseMapService.t(
+  WonderCommonlib.MutableSparseMapService.t(
     (. EventType.customEvent, state) => (state, EventType.customEvent),
   )
 and keyboardEventHandleFuncMap =
-  WonderCommonlib.SparseMapService.t(
+  WonderCommonlib.MutableSparseMapService.t(
     (. EventType.keyboardEvent, state) => state,
   )
 and arcballCameraControllerRecord = {
   index: int,
-  pointDownEventHandleFuncMap: pointEventHandleFuncMap,
-  pointUpEventHandleFuncMap: pointEventHandleFuncMap,
-  pointDragEventHandleFuncMap: pointEventHandleFuncMap,
+  pointDragStartEventHandleFuncMap: pointEventHandleFuncMap,
+  pointDragDropEventHandleFuncMap: pointEventHandleFuncMap,
+  pointDragOverEventHandleFuncMap: pointEventHandleFuncMap,
   pointScaleEventHandleFuncMap: pointEventHandleFuncMap,
   keydownEventHandleFuncMap: keyboardEventHandleFuncMap,
   dirtyArray: ArcballCameraControllerType.dirtyArray,
-  distanceMap: WonderCommonlib.SparseMapService.t(float),
-  minDistanceMap: WonderCommonlib.SparseMapService.t(float),
-  phiMap: WonderCommonlib.SparseMapService.t(float),
-  thetaMap: WonderCommonlib.SparseMapService.t(float),
-  thetaMarginMap: WonderCommonlib.SparseMapService.t(float),
-  targetMap: WonderCommonlib.SparseMapService.t(PositionType.position),
-  moveSpeedXMap: WonderCommonlib.SparseMapService.t(float),
-  moveSpeedYMap: WonderCommonlib.SparseMapService.t(float),
-  rotateSpeedMap: WonderCommonlib.SparseMapService.t(float),
-  wheelSpeedMap: WonderCommonlib.SparseMapService.t(float),
+  distanceMap: WonderCommonlib.MutableSparseMapService.t(float),
+  minDistanceMap: WonderCommonlib.MutableSparseMapService.t(float),
+  phiMap: WonderCommonlib.MutableSparseMapService.t(float),
+  thetaMap: WonderCommonlib.MutableSparseMapService.t(float),
+  thetaMarginMap: WonderCommonlib.MutableSparseMapService.t(float),
+  targetMap: WonderCommonlib.MutableSparseMapService.t(PositionType.position),
+  moveSpeedXMap: WonderCommonlib.MutableSparseMapService.t(float),
+  moveSpeedYMap: WonderCommonlib.MutableSparseMapService.t(float),
+  rotateSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
+  wheelSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
   gameObjectMap,
   disposedIndexArray: array(component),
 }
@@ -224,19 +226,27 @@ and apiRecord = {
       (state, bool, float),
     "beginGroup": (. WonderImgui.StructureType.position, state) => state,
     "endGroup": (. state) => state,
-    "unsafeGetGameObjectTransformComponent": (gameObject, state) => int,
-    "unsafeGetGameObjectLightMaterialComponent": (gameObject, state) => int,
+    "unsafeGetGameObjectTransformComponent":
+      (GameObjectPrimitiveType.gameObject, state) => int,
+    "unsafeGetGameObjectLightMaterialComponent":
+      (GameObjectPrimitiveType.gameObject, state) => int,
     "unsafeGetGameObjectPerspectiveCameraProjectionComponent":
-      (gameObject, state) => int,
-    "unsafeGetGameObjectBasicCameraViewComponent": (gameObject, state) => int,
-    "hasGameObjectDirectionLightComponent": (gameObject, state) => bool,
-    "hasGameObjectPointLightComponent": (gameObject, state) => bool,
-    "hasGameObjectBasicCameraViewComponent": (gameObject, state) => bool,
-    "getAllGameObjects": (gameObject, state) => array(gameObject),
+      (GameObjectPrimitiveType.gameObject, state) => int,
+    "unsafeGetGameObjectBasicCameraViewComponent":
+      (GameObjectPrimitiveType.gameObject, state) => int,
+    "hasGameObjectDirectionLightComponent":
+      (GameObjectPrimitiveType.gameObject, state) => bool,
+    "hasGameObjectPointLightComponent":
+      (GameObjectPrimitiveType.gameObject, state) => bool,
+    "hasGameObjectBasicCameraViewComponent":
+      (GameObjectPrimitiveType.gameObject, state) => bool,
+    "getAllGameObjects":
+      (GameObjectPrimitiveType.gameObject, state) =>
+      array(GameObjectPrimitiveType.gameObject),
     "getAllDirectionLightComponentsOfGameObject":
-      (gameObject, state) => array(component),
+      (GameObjectPrimitiveType.gameObject, state) => array(component),
     "getAllPointLightComponentsOfGameObject":
-      (gameObject, state) => array(component),
+      (GameObjectPrimitiveType.gameObject, state) => array(component),
     "getAllBasicCameraViewComponents": state => array(component),
     "getAllPerspectiveCameraProjectionComponents": state => array(component),
     "getAllBasicMaterialComponents": state => array(component),
@@ -278,10 +288,14 @@ and apiRecord = {
         Js.Typed_array.Float32Array.elt,
       ),
     "unsafeGetTransformChildren": (transform, state) => array(transform),
-    "unsafeGetTransformGameObject": (transform, state) => gameObject,
-    "unsafeGetDirectionLightGameObject": (component, state) => gameObject,
-    "unsafeGetPointLightGameObject": (component, state) => gameObject,
-    "unsafeGetBasicCameraViewGameObject": (component, state) => gameObject,
+    "unsafeGetTransformGameObject":
+      (transform, state) => GameObjectPrimitiveType.gameObject,
+    "unsafeGetDirectionLightGameObject":
+      (component, state) => GameObjectPrimitiveType.gameObject,
+    "unsafeGetPointLightGameObject":
+      (component, state) => GameObjectPrimitiveType.gameObject,
+    "unsafeGetBasicCameraViewGameObject":
+      (component, state) => GameObjectPrimitiveType.gameObject,
     "convertWorldToScreen":
       (int, int, (float, float, float, float, float), state) =>
       (float, float),
@@ -334,6 +348,7 @@ and state = {
   eventRecord,
   imguiRecord,
   apiRecord,
+  jobDataRecord,
 };
 
 type sharedDataForRestoreState = {

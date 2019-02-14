@@ -1,10 +1,14 @@
 open ComponentType;
 
-let getComponent = (uid: int, componentMap: array(int)) : option(component) =>
-  WonderCommonlib.SparseMapService.get(uid, componentMap);
+let getComponent =
+    (uid: int, componentMap: WonderCommonlib.MutableSparseMapService.t(int))
+    : option(component) =>
+  WonderCommonlib.MutableSparseMapService.get(uid, componentMap);
 
-let unsafeGetComponent = (uid: int, componentMap: array(int)) =>
-  WonderCommonlib.SparseMapService.unsafeGet(uid, componentMap)
+/* let unsafeGetComponent = (uid: int, componentMap: array(int)) => */
+let unsafeGetComponent =
+    (uid: int, componentMap: WonderCommonlib.MutableSparseMapService.t(int)) =>
+  WonderCommonlib.MutableSparseMapService.unsafeGet(uid, componentMap)
   |> WonderLog.Contract.ensureCheck(
        r =>
          WonderLog.(
@@ -24,11 +28,18 @@ let unsafeGetComponent = (uid: int, componentMap: array(int)) =>
        IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 
-let hasComponent = (uid: int, componentMap: array(int)) : bool =>
-  WonderCommonlib.SparseMapService.unsafeGet(uid, componentMap)
+let hasComponent =
+    (uid: int, componentMap: WonderCommonlib.MutableSparseMapService.t(int))
+    : bool =>
+  WonderCommonlib.MutableSparseMapService.unsafeGet(uid, componentMap)
   |> Obj.magic !== Js.Undefined.empty;
 
-let addComponent = (uid: int, component: component, componentMap: array(int)) => {
+let addComponent =
+    (
+      uid: int,
+      component: component,
+      componentMap: WonderCommonlib.MutableSparseMapService.t(int),
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -48,11 +59,15 @@ let addComponent = (uid: int, component: component, componentMap: array(int)) =>
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  WonderCommonlib.SparseMapService.set(uid, component, componentMap) |> ignore;
+  WonderCommonlib.MutableSparseMapService.set(uid, component, componentMap)
+  |> ignore;
 };
 
 let removeComponent = (uid: int, componentMap) =>
-  WonderCommonlib.SparseMapService.deleteVal(uid, componentMap |> Obj.magic);
+  WonderCommonlib.MutableSparseMapService.deleteVal(
+    uid,
+    componentMap
+  );
 
 let hasComponent = (uid: int, componentMap) : bool =>
   componentMap |> hasComponent(uid);

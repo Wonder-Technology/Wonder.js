@@ -349,7 +349,7 @@ let build = meshPointAndNameDataMap => {
     (vertexDataArr, indexDataArr, index32DataArr),
   ) =
     meshPointAndNameDataMap
-    |> SparseMapService.reduceiValid(
+    |> WonderCommonlib.MutableSparseMapService.reduceiValid(
          (.
            (
              (totalByteLength, bufferViewOffset),

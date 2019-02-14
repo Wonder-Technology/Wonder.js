@@ -16,7 +16,7 @@ let isAlive = (objectInstance, {disposedIndexArray} as objectInstanceRecord) =>
 let _unsafeGetSourceInstance =
     (objectInstance: objectInstance, {sourceInstanceMap}) =>
   sourceInstanceMap
-  |> WonderCommonlib.SparseMapService.unsafeGet(objectInstance)
+  |> WonderCommonlib.MutableSparseMapService.unsafeGet(objectInstance)
   |> WonderLog.Contract.ensureCheck(
        sourceInstance =>
          WonderLog.(

@@ -12,6 +12,37 @@ let createBoxGeometry = state =>
 let createSphereGeometry = (radius, bands, state) =>
   CreateSphereGeometryGeometryMainService.create(radius, bands, state);
 
+let createCylinderGeometry =
+    (radiusTop, radiusBottom, height, radialSegments, heightSegments, state) =>
+  CreateCylinderGeometryGeometryMainService.create(
+    radiusTop,
+    radiusBottom,
+    height,
+    radialSegments,
+    heightSegments,
+    state,
+  );
+
+let createConeGeometry =
+    (radius, height, radialSegments, heightSegments, state) =>
+  CreateConeGeometryGeometryMainService.create(
+    radius,
+    height,
+    radialSegments,
+    heightSegments,
+    state,
+  );
+
+let createPlaneGeometry =
+    (width, height, widthSegments, heightSegments, state) =>
+  CreatePlaneGeometryGeometryMainService.create(
+    width,
+    height,
+    widthSegments,
+    heightSegments,
+    state,
+  );
+
 let getGeometryVertices = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -141,7 +172,7 @@ let setGeometryNormals =
   NormalsGeometryMainService.setNormalsByTypeArray(geometry, data, state);
 };
 
-let getGeometryIndices = (geometry: int, state: StateDataMainType.state) => {
+let getGeometryIndices16 = (geometry: int, state: StateDataMainType.state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -157,10 +188,10 @@ let getGeometryIndices = (geometry: int, state: StateDataMainType.state) => {
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  IndicesGeometryMainService.getIndices(. geometry, state);
+  IndicesGeometryMainService.getIndices16(. geometry, state);
 };
 
-let setGeometryIndices =
+let setGeometryIndices16 =
     (
       geometry: int,
       data: Js.Typed_array.Uint16Array.t,
@@ -312,3 +343,9 @@ let hasGeometryTexCoords = (geometry, state) =>
 
 let hasGeometryIndices = (geometry, state) =>
   IndicesGeometryMainService.hasIndices(geometry, state);
+
+let hasGeometryIndices16 = (geometry, state) =>
+  IndicesGeometryMainService.hasIndices16(geometry, state);
+
+let hasGeometryIndices32 = (geometry, state) =>
+  IndicesGeometryMainService.hasIndices32(geometry, state);

@@ -6,7 +6,7 @@ open SourceInstanceType;
 
 type objectInstanceRecord = {
   index: int,
-  sourceInstanceMap: WonderCommonlib.SparseMapService.t(sourceInstance),
+  sourceInstanceMap: WonderCommonlib.MutableSparseMapService.t(sourceInstance),
   disposedIndexArray: array(objectInstance),
   gameObjectMap
 };

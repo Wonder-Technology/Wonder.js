@@ -28,15 +28,27 @@ let _restoreTypeArrays =
   &&
   currentBasicMaterialRecord.textureIndices === targetBasicMaterialRecord.
                                                   textureIndices
-  && currentBasicMaterialRecord.mapUnits === targetBasicMaterialRecord.mapUnits ?
+  && currentBasicMaterialRecord.mapUnits === targetBasicMaterialRecord.mapUnits
+  &&
+  currentBasicMaterialRecord.isDepthTests === targetBasicMaterialRecord.
+                                                isDepthTests ?
     (currentBasicMaterialRecord, targetBasicMaterialRecord) :
     {
-      let (shaderIndices, colors, textureIndices, mapUnits) =
+      let (
+        shaderIndices,
+        colors,
+        textureIndices,
+        mapUnits,
+        isDepthTests,
+        alphas,
+      ) =
         (
           currentBasicMaterialRecord.shaderIndices,
           currentBasicMaterialRecord.colors,
           currentBasicMaterialRecord.textureIndices,
           currentBasicMaterialRecord.mapUnits,
+          currentBasicMaterialRecord.isDepthTests,
+          currentBasicMaterialRecord.alphas,
         )
         |> RecordBasicMaterialMainService.setAllTypeArrDataToDefault(
              currentBasicMaterialRecord.index,
@@ -71,6 +83,20 @@ let _restoreTypeArrays =
         Js.Typed_array.Uint8Array.length(targetBasicMaterialRecord.mapUnits),
       )
       |> ignore;
+      TypeArrayService.fillUint8ArrayWithUint8Array(
+        (currentBasicMaterialRecord.isDepthTests, 0),
+        (targetBasicMaterialRecord.isDepthTests, 0),
+        Js.Typed_array.Uint8Array.length(
+          targetBasicMaterialRecord.isDepthTests,
+        ),
+      )
+      |> ignore;
+      TypeArrayService.fillFloat32ArrayWithFloat32Array(
+        (currentBasicMaterialRecord.alphas, 0),
+        (targetBasicMaterialRecord.alphas, 0),
+        Js.Typed_array.Float32Array.length(targetBasicMaterialRecord.alphas),
+      )
+      |> ignore;
       (currentBasicMaterialRecord, targetBasicMaterialRecord);
     };
 
@@ -100,6 +126,8 @@ let restore = (gl, currentState, targetState) => {
         colors: currentBasicMaterialRecord.colors,
         textureIndices: currentBasicMaterialRecord.textureIndices,
         mapUnits: currentBasicMaterialRecord.mapUnits,
+        isDepthTests: currentBasicMaterialRecord.isDepthTests,
+        alphas: currentBasicMaterialRecord.alphas,
       }),
   };
 };

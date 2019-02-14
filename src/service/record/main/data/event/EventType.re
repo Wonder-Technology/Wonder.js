@@ -4,7 +4,9 @@ type pointEventName =
   | PointUp
   | PointMove
   | PointScale
-  | PointDrag;
+  | PointDragStart
+  | PointDragOver
+  | PointDragDrop;
 
 type domEventName =
   | Contextmenu
@@ -13,7 +15,9 @@ type domEventName =
   | MouseUp
   | MouseMove
   | MouseWheel
-  | MouseDrag
+  | MouseDragStart
+  | MouseDragOver
+  | MouseDragDrop
   | KeyUp
   | KeyDown
   | KeyPress
@@ -21,9 +25,12 @@ type domEventName =
   | TouchEnd
   | TouchMove
   | TouchStart
-  | TouchDrag;
+  | TouchDragStart
+  | TouchDragOver
+  | TouchDragDrop;
 
 type mouseButton =
+  | NoButton
   | Left
   | Right
   | Center;
@@ -38,7 +45,7 @@ type domEvent;
 
 type mouseDomEvent = {
   .
-  "button": int,
+  "which": int,
   "detail": Js.Nullable.t(int),
   "movementX": Js.Nullable.t(int),
   "movementY": Js.Nullable.t(int),
@@ -133,8 +140,8 @@ type userData;
 
 type customEvent = {
   name: string,
-  target: option(GameObjectType.gameObject),
-  /* currentTarget: option(GameObjectType.gameObject), */
+  target: option(GameObjectPrimitiveType.gameObject),
+  /* currentTarget: option(GameObjectPrimitiveType.gameObject), */
   isStopPropagation: bool,
   phase: option(phaseType),
   /* type_: eventType, */
@@ -164,9 +171,9 @@ type mouseEventData = {
 };
 
 type keyboardEventData = {
-  specialKeyMap: WonderCommonlib.SparseMapService.t(string),
-  shiftKeyByKeyCodeMap: WonderCommonlib.SparseMapService.t(string),
-  shiftKeyByCharCodeMap: WonderCommonlib.HashMapService.t(string),
+  specialKeyMap: WonderCommonlib.MutableSparseMapService.t(string),
+  shiftKeyByKeyCodeMap: WonderCommonlib.MutableSparseMapService.t(string),
+  shiftKeyByCharCodeMap: WonderCommonlib.MutableHashMapService.t(string),
 };
 
 type touchEventData = {
@@ -206,4 +213,5 @@ external mouseDomEventToDomEvent : mouseDomEvent => domEvent = "%identity";
 
 external pointDomEventToDomEvent : pointDomEvent => domEvent = "%identity";
 
+external domEventToPointDomEvent : domEvent => pointDomEvent = "%identity";
 external domEventToPointDomEvent : domEvent => pointDomEvent = "%identity";

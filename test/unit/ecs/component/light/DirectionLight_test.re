@@ -154,7 +154,7 @@ let _ =
                );
           let {gameObjectMap} = DirectionLightTool.getRecord(state);
           gameObjectMap
-          |> WonderCommonlib.SparseMapService.has(light1)
+          |> WonderCommonlib.MutableSparseMapService.has(light1)
           |> expect == false;
         });
 
@@ -325,4 +325,63 @@ let _ =
         state |> DirectionLightAPI.isMaxCount |> expect == false;
       });
     });
+
+    describe("getDirection", () =>
+      describe("fix bug", () => {
+        let _prepare = state => {
+          let (state, gameObject, light) =
+            DirectionLightTool.createGameObject(state);
+
+          let localEulerAngles = (45., 22., 60.);
+
+          let state =
+            state
+            |> TransformGameObjectTool.setLocalEulerAngles(
+                 gameObject,
+                 localEulerAngles,
+               );
+
+          let direction = DirectionLightTool.getDirection(light, state);
+
+          (state, direction, gameObject, light);
+        };
+
+        test(
+          "direction shouldn't affected by scale if scale is always postive",
+          () => {
+          let (state, direction, gameObject, light) = _prepare(state^);
+
+          let state =
+            state
+            |> TransformGameObjectTool.setLocalScale(
+                 gameObject,
+                 (0.45, 0.45, 0.45),
+               );
+
+          DirectionLightTool.getDirection(light, state) |> expect == direction;
+        });
+        test(
+          "direction should be affected by scale if scale change to negative from positive",
+          () => {
+            let (state, direction, gameObject, light) = _prepare(state^);
+
+            let state =
+              state
+              |> TransformGameObjectTool.setLocalScale(
+                   gameObject,
+                   (0.45, 0.45, 0.45),
+                 );
+            let state =
+              state
+              |> TransformGameObjectTool.setLocalScale(
+                   gameObject,
+                   ((-0.45), 0.45, 0.45),
+                 );
+
+            DirectionLightTool.getDirection(light, state)
+            |> expect != direction;
+          },
+        );
+      })
+    );
   });

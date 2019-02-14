@@ -82,13 +82,13 @@ let _ =
         let copiedOriginEmptyMapUnitArrayMap =
           originEmptyMapUnitArrayMap |> Js.Array.copy;
         gameObjectsMap
-        |> WonderCommonlib.SparseMapService.set(
+        |> WonderCommonlib.MutableSparseMapService.set(
              basicMaterial1,
              originGameObjectsArr,
            )
         |> ignore;
         emptyMapUnitArrayMap
-        |> WonderCommonlib.SparseMapService.set(
+        |> WonderCommonlib.MutableSparseMapService.set(
              basicMaterial1,
              originEmptyMapUnitArrayMap,
            )
@@ -98,20 +98,20 @@ let _ =
           LightMaterialTool.getRecord(copiedState);
         let arr =
           gameObjectsMap
-          |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1);
+          |> WonderCommonlib.MutableSparseMapService.unsafeGet(basicMaterial1);
         Array.unsafe_set(arr, 0, 2);
         let arr =
           emptyMapUnitArrayMap
-          |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1);
+          |> WonderCommonlib.MutableSparseMapService.unsafeGet(basicMaterial1);
         Array.unsafe_set(arr, 0, 4);
 
         let {gameObjectsMap, emptyMapUnitArrayMap} =
           LightMaterialTool.getRecord(state);
         (
           gameObjectsMap
-          |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1),
+          |> WonderCommonlib.MutableSparseMapService.unsafeGet(basicMaterial1),
           emptyMapUnitArrayMap
-          |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1),
+          |> WonderCommonlib.MutableSparseMapService.unsafeGet(basicMaterial1),
         )
         |>
         expect == (

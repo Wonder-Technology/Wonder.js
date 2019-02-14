@@ -32,13 +32,13 @@ let setIndicesType = (index, indicesType, state) => {
   state;
 };
 
-let getIndices =
+let getIndices16 =
   (. index: int, state) => {
-    let {indices, indices32, indicesInfos} = getRecord(state);
+    let {indices16, indices32, indicesInfos} = getRecord(state);
 
     getUint16PointData(
       BufferGeometryService.getInfoIndex(index),
-      indices,
+      indices16,
       indicesInfos,
     );
   };
@@ -46,18 +46,18 @@ let getIndices =
 let setIndicesByUint16Array = (index: int, data: Uint16Array.t, state) => {
   let state = setIndicesType(index, Short, state);
 
-  let {indicesInfos, indices, indicesOffset, indicesTypeMap} as record =
+  let {indicesInfos, indices16, indices16Offset, indicesTypeMap} as record =
     getRecord(state);
 
-  record.indicesOffset =
+  record.indices16Offset =
     setUint16PointData(
       (
         BufferGeometryService.getInfoIndex(index),
         indicesInfos,
-        indicesOffset,
+        indices16Offset,
         Uint16Array.length(data),
       ),
-      fillUint16ArrayWithOffset(indices, data),
+      fillUint16ArrayWithOffset(indices16, data),
     );
   state;
 };
@@ -100,3 +100,15 @@ let hasIndices = (index, state) => {
     indicesInfos,
   );
 };
+
+let hasIndices16 = (geometry, state) =>
+  switch (unsafeGetIndicesType(geometry, state)) {
+  | Short => true
+  | _ => false
+  };
+
+let hasIndices32 = (geometry, state) =>
+  switch (unsafeGetIndicesType(geometry, state)) {
+  | Int => true
+  | _ => false
+  };

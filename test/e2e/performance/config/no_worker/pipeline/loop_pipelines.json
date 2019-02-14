@@ -3,9 +3,6 @@
         "name": "default",
         "jobs": [
             {
-                "name": "scheduleLoop"
-            },
-            {
                 "name": "tick"
             },
             {
@@ -46,6 +43,9 @@
             },
             {
                 "name": "front_render_light"
+            },
+            {
+                "name": "draw_outline"
             },
             {
                 "name": "render_imgui"

@@ -10,5 +10,5 @@ type lightMaterialRecord = {
   specularMapUnits: option(Js.Typed_array.Uint8Array.t),
   index: int,
   disposedIndexArray,
-  isSourceInstanceMap: WonderCommonlib.SparseMapService.t(bool)
+  isSourceInstanceMap: WonderCommonlib.MutableSparseMapService.t(bool)
 };

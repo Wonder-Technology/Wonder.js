@@ -1,13 +1,8 @@
 open ShaderType;
 
-let getShaderIndex = (key: string, {shaderIndexMap}) =>
-  shaderIndexMap |> WonderCommonlib.HashMapService.get(key);
-
-let setShaderIndex = (key: string, shaderIndex: int, {shaderIndexMap}) =>
-  shaderIndexMap |> WonderCommonlib.HashMapService.set(key, shaderIndex);
-
 let genereateShaderIndex = ({index} as record) => {
   record.index = succ(index);
+
   index
   |> WonderLog.Contract.ensureCheck(
        r => {
@@ -29,40 +24,32 @@ let genereateShaderIndex = ({index} as record) => {
      );
 };
 
-let useShaderIndex = (shaderIndex, {usedShaderIndexArray} as record) => {
-  usedShaderIndexArray |> ArrayService.push(shaderIndex) |> ignore;
-
-  record;
-};
-
 let _hasMaterialUseShader = (shaderIndex, material, materialsMap) =>
-  switch (WonderCommonlib.SparseMapService.get(shaderIndex, materialsMap)) {
+  switch (
+    WonderCommonlib.MutableSparseMapService.get(shaderIndex, materialsMap)
+  ) {
   | Some(arr) when arr |> Js.Array.length > 0 => true
   | _ => false
   };
 
-let unuseShaderIndex =
-    (shaderIndex, material, {materialsMap, usedShaderIndexArray} as record) => {
+let _removeShaderIndexUsedInSendUniformShaderDataJob =
+    (shaderIndex, glslSenderRecord) =>
+  glslSenderRecord
+  |> HandleUniformShaderCachableFunctionService.removeData(shaderIndex)
+  |> HandleUniformShaderCachableService.removeData(shaderIndex)
+  |> HandleUniformShaderNoCachableService.removeData(shaderIndex);
+
+let removeShaderIndexFromMaterial =
+    (shaderIndex, material, {materialsMap} as shaderRecord, glslSenderRecord) => {
   ArrayMapService.removeValue(shaderIndex, material, materialsMap) |> ignore;
 
   _hasMaterialUseShader(shaderIndex, material, materialsMap) ?
-    record :
-    {
-      let index = Js.Array.indexOf(shaderIndex, usedShaderIndexArray);
-
-      index === (-1) ?
-        record :
-        {
-          usedShaderIndexArray
-          |> Js.Array.removeCountInPlace(~pos=index, ~count=1);
-
-          record;
-        };
-    };
-};
-
-let clearShaderIndexMap = shaderRecord => {
-  shaderRecord.shaderIndexMap = WonderCommonlib.HashMapService.createEmpty();
-
-  shaderRecord;
+    (shaderRecord, glslSenderRecord) :
+    (
+      shaderRecord,
+      _removeShaderIndexUsedInSendUniformShaderDataJob(
+        shaderIndex,
+        glslSenderRecord,
+      ),
+    );
 };

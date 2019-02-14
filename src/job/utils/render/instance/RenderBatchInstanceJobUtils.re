@@ -6,6 +6,8 @@ open RenderSourceInstanceType;
 
 open InstanceBufferRenderService;
 
+open GLSLSenderType;
+
 let render =
     (
       gl,
@@ -51,34 +53,36 @@ let render =
     GetGeometryIndicesRenderService.getIndicesCount(. geometryIndex, state);
   let (_, objectInstanceTransformDataTuple) =
     BuildObjectInstanceTransformDataTupleUtils.build(sourceInstance, state);
-  ObjectInstanceCollectionService.reduceObjectInstanceTransformCollection(
+
+  let getRenderDataSubState =
+    CreateGetRenederDataSubStateRenderService.createState(state);
+
+  ObjectInstanceCollectionService.forEachObjectInstanceTransformCollection(
     objectInstanceTransformDataTuple,
-    state,
-    (. state, objectInstanceTransform) => {
-      let state =
-        uniformRenderObjectSendModelData
-        |> WonderCommonlib.ArrayService.reduceOneParam(
-             (.
-               state,
-               {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData,
-             ) => {
-               GLSLLocationService.isUniformLocationExist(pos) ?
-                 sendDataFunc(.
-                   gl,
-                   pos,
-                   getDataFunc(. objectInstanceTransform, state),
-                 ) :
-                 ();
-               state;
-             },
-             state,
-           );
+    (. objectInstanceTransform) => {
+      uniformRenderObjectSendModelData
+      |> WonderCommonlib.ArrayService.forEach(
+           (.
+             {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData,
+           ) =>
+           GLSLLocationService.isUniformLocationExist(pos) ?
+             sendDataFunc(.
+               gl,
+               pos,
+               getDataFunc(. objectInstanceTransform, getRenderDataSubState),
+             ) :
+             ()
+         );
+
       DrawGLSLService.drawElement(
         (drawMode, indexType, indexTypeSize, indicesCount),
         gl,
       )
       |> ignore;
-      state;
+
+      ();
     },
   );
+
+  state;
 };

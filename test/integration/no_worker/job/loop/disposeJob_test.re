@@ -343,7 +343,7 @@ let _ =
             ) =
               _prepare(state);
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> Js.Array.length
             |> expect == 2;
           });
@@ -356,7 +356,7 @@ let _ =
               _prepare(state);
             let state = state |> DisposeJob.execJob(None);
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> expect == [|gameObject2|];
           });
         });
@@ -373,8 +373,10 @@ let _ =
                 let {vertexArrayBufferPool, elementArrayBufferPool} =
                   VboBufferTool.getVboBufferRecord(state);
                 (
-                  vertexArrayBufferPool |> SparseMapService.length,
-                  elementArrayBufferPool |> SparseMapService.length,
+                  vertexArrayBufferPool
+                  |> WonderCommonlib.MutableSparseMapService.length,
+                  elementArrayBufferPool
+                  |> WonderCommonlib.MutableSparseMapService.length,
                 )
                 |> expect == (3, 1);
               });
@@ -394,13 +396,13 @@ let _ =
                   VboBufferTool.getVboBufferRecord(state);
                 (
                   geometryVertexBufferMap
-                  |> WonderCommonlib.SparseMapService.has(geometry1),
+                  |> WonderCommonlib.MutableSparseMapService.has(geometry1),
                   geometryTexCoordBufferMap
-                  |> WonderCommonlib.SparseMapService.has(geometry1),
+                  |> WonderCommonlib.MutableSparseMapService.has(geometry1),
                   geometryNormalBufferMap
-                  |> WonderCommonlib.SparseMapService.has(geometry1),
+                  |> WonderCommonlib.MutableSparseMapService.has(geometry1),
                   geometryElementArrayBufferMap
-                  |> WonderCommonlib.SparseMapService.has(geometry1),
+                  |> WonderCommonlib.MutableSparseMapService.has(geometry1),
                 )
                 |> expect == (false, false, false, false);
               });
@@ -429,8 +431,10 @@ let _ =
                 let {vertexArrayBufferPool, elementArrayBufferPool} =
                   VboBufferTool.getVboBufferRecord(state);
                 (
-                  vertexArrayBufferPool |> SparseMapService.length,
-                  elementArrayBufferPool |> SparseMapService.length,
+                  vertexArrayBufferPool
+                  |> WonderCommonlib.MutableSparseMapService.length,
+                  elementArrayBufferPool
+                  |> WonderCommonlib.MutableSparseMapService.length,
                 )
                 |> expect == (3 * 1, 1 * 1);
               });
@@ -447,13 +451,13 @@ let _ =
                   VboBufferTool.getVboBufferRecord(state);
                 (
                   geometryVertexBufferMap
-                  |> WonderCommonlib.SparseMapService.has(geometry1),
+                  |> WonderCommonlib.MutableSparseMapService.has(geometry1),
                   geometryTexCoordBufferMap
-                  |> WonderCommonlib.SparseMapService.has(geometry1),
+                  |> WonderCommonlib.MutableSparseMapService.has(geometry1),
                   geometryNormalBufferMap
-                  |> WonderCommonlib.SparseMapService.has(geometry1),
+                  |> WonderCommonlib.MutableSparseMapService.has(geometry1),
                   geometryElementArrayBufferMap
-                  |> WonderCommonlib.SparseMapService.has(geometry1),
+                  |> WonderCommonlib.MutableSparseMapService.has(geometry1),
                 )
                 |> expect == (false, false, false, false);
               });
@@ -485,7 +489,7 @@ let _ =
                 let {matrixInstanceBufferPool} =
                   VboBufferTool.getVboBufferRecord(state);
                 matrixInstanceBufferPool
-                |> SparseMapService.length
+                |> WonderCommonlib.MutableSparseMapService.length
                 |> expect == 1;
               });
               test("remove from buffer map", () => {
@@ -495,7 +499,9 @@ let _ =
                 let {matrixInstanceBufferMap} =
                   VboBufferTool.getVboBufferRecord(state);
                 matrixInstanceBufferMap
-                |> WonderCommonlib.SparseMapService.has(sourceInstance1)
+                |> WonderCommonlib.MutableSparseMapService.has(
+                     sourceInstance1,
+                   )
                 |> expect == false;
               });
             })
@@ -589,9 +595,12 @@ let _ =
               _prepare(state);
             let {gameObjectMap} = DirectionLightTool.getRecord(state);
             (
-              gameObjectMap |> Js.Array.includes(gameObject1),
-              gameObjectMap |> Js.Array.includes(gameObject2),
-              gameObjectMap |> Js.Array.includes(gameObject3),
+              gameObjectMap
+              |> WonderCommonlib.MutableSparseMapService.includes(gameObject1),
+              gameObjectMap
+              |> WonderCommonlib.MutableSparseMapService.includes(gameObject2),
+              gameObjectMap
+              |> WonderCommonlib.MutableSparseMapService.includes(gameObject3),
             )
             |> expect == (true, true, true);
           });
@@ -605,9 +614,12 @@ let _ =
             let state = state |> DisposeJob.execJob(None);
             let {gameObjectMap} = DirectionLightTool.getRecord(state);
             (
-              gameObjectMap |> Js.Array.includes(gameObject1),
-              gameObjectMap |> Js.Array.includes(gameObject2),
-              gameObjectMap |> Js.Array.includes(gameObject3),
+              gameObjectMap
+              |> WonderCommonlib.MutableSparseMapService.includes(gameObject1),
+              gameObjectMap
+              |> WonderCommonlib.MutableSparseMapService.includes(gameObject2),
+              gameObjectMap
+              |> WonderCommonlib.MutableSparseMapService.includes(gameObject3),
             )
             |> expect == (false, true, false);
           });
@@ -647,9 +659,12 @@ let _ =
               _prepare(state);
             let {gameObjectMap} = PointLightTool.getRecord(state);
             (
-              gameObjectMap |> Js.Array.includes(gameObject1),
-              gameObjectMap |> Js.Array.includes(gameObject2),
-              gameObjectMap |> Js.Array.includes(gameObject3),
+              gameObjectMap
+              |> WonderCommonlib.MutableSparseMapService.includes(gameObject1),
+              gameObjectMap
+              |> WonderCommonlib.MutableSparseMapService.includes(gameObject2),
+              gameObjectMap
+              |> WonderCommonlib.MutableSparseMapService.includes(gameObject3),
             )
             |> expect == (true, true, true);
           });
@@ -663,9 +678,12 @@ let _ =
             let state = state |> DisposeJob.execJob(None);
             let {gameObjectMap} = PointLightTool.getRecord(state);
             (
-              gameObjectMap |> Js.Array.includes(gameObject1),
-              gameObjectMap |> Js.Array.includes(gameObject2),
-              gameObjectMap |> Js.Array.includes(gameObject3),
+              gameObjectMap
+              |> WonderCommonlib.MutableSparseMapService.includes(gameObject1),
+              gameObjectMap
+              |> WonderCommonlib.MutableSparseMapService.includes(gameObject2),
+              gameObjectMap
+              |> WonderCommonlib.MutableSparseMapService.includes(gameObject3),
             )
             |> expect == (false, true, false);
           });
@@ -686,7 +704,7 @@ let _ =
                    gameObject2,
                  |]);
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> Js.Array.length
             |> expect === 2;
           });
@@ -700,7 +718,7 @@ let _ =
                  |]);
             let state = state |> DisposeJob.execJob(None);
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> Js.Array.length
             |> expect === 0;
           });
@@ -710,7 +728,7 @@ let _ =
             let (state, gameObject1, gameObject2) = _prepare(state);
             let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> Js.Array.length
             |> expect === 2;
           });
@@ -719,7 +737,7 @@ let _ =
             let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
             let state = state |> DisposeJob.execJob(None);
             state
-            |> MeshRendererTool.getBasicMaterialRenderArray
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
             |> Js.Array.length
             |> expect === 1;
           });

@@ -5,7 +5,7 @@ open GameObjectType;
 let isAlive = (uid: int, {gameObjectRecord}) => {
   let {transformMap, disposedUidMap} = gameObjectRecord;
 
-  disposedUidMap |> WonderCommonlib.SparseMapService.has(uid) ?
+  disposedUidMap |> WonderCommonlib.MutableSparseMapService.has(uid) ?
     false :
-    transformMap |> WonderCommonlib.SparseMapService.has(uid) ? true : false;
+    transformMap |> WonderCommonlib.MutableSparseMapService.has(uid) ? true : false;
 };

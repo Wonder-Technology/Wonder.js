@@ -34,9 +34,9 @@ let _ =
             ObjectInstanceTool.getObjectInstanceRecord(state);
           (
             sourceInstanceMap
-            |> WonderCommonlib.SparseMapService.has(objectInstance),
+            |> WonderCommonlib.MutableSparseMapService.has(objectInstance),
             gameObjectMap
-            |> WonderCommonlib.SparseMapService.has(objectInstance),
+            |> WonderCommonlib.MutableSparseMapService.has(objectInstance),
           )
           |> expect == (false, false);
         });

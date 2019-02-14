@@ -148,6 +148,12 @@
           "from": "basicMaterial"
         },
         {
+          "name": "u_alpha",
+          "field": "alpha",
+          "type": "float",
+          "from": "basicMaterial"
+        },
+        {
           "name": "u_mapSampler",
           "field": "map",
           "type": "sampler2D",
@@ -170,6 +176,12 @@
           "name": "u_color",
           "field": "color",
           "type": "float3",
+          "from": "basicMaterial"
+        },
+        {
+          "name": "u_alpha",
+          "field": "alpha",
+          "type": "float",
           "from": "basicMaterial"
         }
       ]
@@ -514,6 +526,61 @@
       {
         "type": "fs",
         "name": "webgl1_frontLight_end_fragment"
+      }
+    ]
+  },
+  {
+    "name": "outline_expand",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_outline_expand_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_outline_expand_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_outlineColor",
+          "from": "no_material_shader",
+          "field": "outlineExpand",
+          "type": "float3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "outline_scaled_modelMatrix",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "modelMatrix_noInstance_vertex"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_mMatrix",
+          "field": "mMatrix",
+          "type": "mat4",
+          "from": "expand_model"
+        }
+      ]
+    }
+  },
+  {
+    "name": "outline_origin",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_outline_origin_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_outline_origin_fragment"
       }
     ]
   },

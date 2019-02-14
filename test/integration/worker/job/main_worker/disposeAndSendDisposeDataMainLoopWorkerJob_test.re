@@ -46,10 +46,8 @@ let _ =
                       let {vertexArrayBufferPool, elementArrayBufferPool} =
                         VboBufferTool.getVboBufferRecord(state);
                       (
-                        vertexArrayBufferPool
-                        |> WonderCommonlib.SparseMapService.has(geometry1),
-                        elementArrayBufferPool
-                        |> WonderCommonlib.SparseMapService.has(geometry1),
+                        vertexArrayBufferPool |> Obj.magic |> Js.Array.includes(geometry1),
+                        elementArrayBufferPool |> Obj.magic|> Js.Array.includes(geometry1),
                       )
                       |> expect == (false, false)
                       |> resolve;
@@ -96,7 +94,7 @@ let _ =
                             TypeArrayPoolTool.getFloat32ArrayPoolMap(
                               state.typeArrayPoolRecord,
                             )
-                            |> SparseMapService.length
+                            |> WonderCommonlib.MutableSparseMapService.length
                             |> expect == 0
                             |> resolve;
                           },
@@ -132,7 +130,7 @@ let _ =
             ~completeFunc=
               postMessageToRenderWorker =>
                 MainStateTool.unsafeGetState()
-                |> MeshRendererTool.getBasicMaterialRenderArray
+                |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
                 |> Js.Array.length
                 |> expect === 1
                 |> resolve,

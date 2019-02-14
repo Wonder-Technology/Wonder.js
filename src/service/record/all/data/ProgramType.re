@@ -1,6 +1,6 @@
 open WonderWebgl.GlType;
 
 type programRecord = {
-  programMap: WonderCommonlib.SparseMapService.t(program),
+  programMap: WonderCommonlib.MutableSparseMapService.t(program),
   mutable lastUsedProgram: option(program)
 };

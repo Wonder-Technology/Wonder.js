@@ -113,13 +113,13 @@ let _createForWorker =
       defaultLocalPosition,
       defaultLocalRotation,
       defaultLocalScale,
-      parentMap: WonderCommonlib.SparseMapService.createEmpty(),
-      childMap: WonderCommonlib.SparseMapService.createEmpty(),
-      gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
-      dirtyMap: WonderCommonlib.SparseMapService.createEmpty(),
+      parentMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      childMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      gameObjectMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      dirtyMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       localToWorldMatrixCacheMap:
-        WonderCommonlib.SparseMapService.createEmpty(),
-      normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+      normalMatrixCacheMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
     });
   state;
@@ -159,13 +159,13 @@ let _createForNoWorker =
       defaultLocalPosition,
       defaultLocalRotation,
       defaultLocalScale,
-      parentMap: WonderCommonlib.SparseMapService.createEmpty(),
-      childMap: WonderCommonlib.SparseMapService.createEmpty(),
-      gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
-      dirtyMap: WonderCommonlib.SparseMapService.createEmpty(),
+      parentMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      childMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      gameObjectMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      dirtyMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       localToWorldMatrixCacheMap:
-        WonderCommonlib.SparseMapService.createEmpty(),
-      normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+      normalMatrixCacheMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
     });
   state;
@@ -276,12 +276,12 @@ let deepCopyForRestore = state => {
                index * getLocalToWorldMatricesSize(),
              ),
         localToWorldMatrixCacheMap:
-          WonderCommonlib.SparseMapService.createEmpty(),
-        normalMatrixCacheMap: WonderCommonlib.SparseMapService.createEmpty(),
-        parentMap: parentMap |> SparseMapService.copy,
-        childMap: childMap |> CopyTypeArrayService.deepCopyArrayArray,
-        dirtyMap: dirtyMap |> SparseMapService.copy,
-        gameObjectMap: gameObjectMap |> SparseMapService.copy,
+          WonderCommonlib.MutableSparseMapService.createEmpty(),
+        normalMatrixCacheMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+        parentMap: parentMap |> WonderCommonlib.MutableSparseMapService.copy,
+        childMap: childMap |> CopyTypeArrayService.deepCopyMutableSparseMapOfArray,
+        dirtyMap: dirtyMap |> WonderCommonlib.MutableSparseMapService.copy,
+        gameObjectMap: gameObjectMap |> WonderCommonlib.MutableSparseMapService.copy,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
       }),
   };

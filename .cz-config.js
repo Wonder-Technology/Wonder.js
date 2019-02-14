@@ -46,7 +46,8 @@ module.exports = {
     { name: "clone" },
     { name: "example" },
     { name: "stream" },
-    { name: "detect" }
+    { name: "detect" },
+    { name: "outline" }
   ],
 
   // it needs to match the value for field type. Eg.: "fix"
@@ -63,6 +64,7 @@ module.exports = {
       { name: "shader" },
       { name: "code-climate" },
       { name: "microservice" },
+      { name: "encapsulate" },
       { name: "e2e-test" }
     ],
     test: [

@@ -300,9 +300,9 @@ let _addPrimitiveData =
 
 let _hasAddDataBefore = (hasAddBeforeMap, key) =>
   hasAddBeforeMap
-  |> WonderCommonlib.SparseMapService.has(key)
+  |> WonderCommonlib.MutableSparseMapService.has(key)
   && hasAddBeforeMap
-  |> WonderCommonlib.SparseMapService.unsafeGet(key) === true;
+  |> WonderCommonlib.MutableSparseMapService.unsafeGet(key) === true;
 
 let _addPBRImageData =
     (
@@ -371,7 +371,7 @@ let _addPBRImageData =
         newBufferViewOffset,
         Some((imageIndex, image)),
         hasImageAddBeforeMap
-        |> WonderCommonlib.SparseMapService.set(imageIndex, true),
+        |> WonderCommonlib.MutableSparseMapService.set(imageIndex, true),
       );
     };
 };
@@ -526,12 +526,12 @@ let _buildNewGLTF =
 
 let _checkPointData = (accessorIndex, (isDuplicate, hasAccessorIndexMap)) =>
   switch (
-    hasAccessorIndexMap |> WonderCommonlib.SparseMapService.get(accessorIndex)
+    hasAccessorIndexMap |> WonderCommonlib.MutableSparseMapService.get(accessorIndex)
   ) {
   | None => (
       isDuplicate,
       hasAccessorIndexMap
-      |> WonderCommonlib.SparseMapService.set(accessorIndex, true),
+      |> WonderCommonlib.MutableSparseMapService.set(accessorIndex, true),
     )
 
   | Some(hasAccessorIndex) => (true, hasAccessorIndexMap)
@@ -547,7 +547,7 @@ let _checkMeshPointDataHasUniqueAccessorIndex = meshes =>
         ),
         () => {
           let hasAccessorIndexMap =
-            WonderCommonlib.SparseMapService.createEmpty();
+            WonderCommonlib.MutableSparseMapService.createEmpty();
 
           let (isDuplicate, _hasAccessorIndexMap) =
             meshes
@@ -706,7 +706,7 @@ let _addMeshAndImageData =
               streamChunkArr,
               newMeshes,
               hasMeshAddBeforeMap
-              |> WonderCommonlib.SparseMapService.set(mesh, true),
+              |> WonderCommonlib.MutableSparseMapService.set(mesh, true),
             );
           };
 
@@ -834,8 +834,8 @@ let buildJsonData =
          },
          (
            (
-             WonderCommonlib.SparseMapService.createEmpty(),
-             WonderCommonlib.SparseMapService.createEmpty(),
+             WonderCommonlib.MutableSparseMapService.createEmpty(),
+             WonderCommonlib.MutableSparseMapService.createEmpty(),
            ),
            [||],
            [||],

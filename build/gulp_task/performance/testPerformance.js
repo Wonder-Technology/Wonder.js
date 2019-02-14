@@ -2,10 +2,14 @@ var gulp = require("gulp");
 var path = require("path");
 var test = require("../e2e/test");
 
+function _getGenerateDataInfo() {
+    return "generate benchmark...";
+};
+
 gulp.task("testPerformanceInCI", function (done) {
     var testPerformance = require(path.join(process.cwd(), "lib/js/test/e2e/performance/TestPerformance.js"));
 
-    test.testInCI("generate benchmark...", "performance", testPerformance.generateBenchmark, testPerformance.runTest, done);
+    test.testInCI(_getGenerateDataInfo(), "performance", testPerformance.generateBenchmark, testPerformance.runTest, done);
 });
 
 gulp.task("testPerformanceInLocal", function (done) {
@@ -13,7 +17,7 @@ gulp.task("testPerformanceInLocal", function (done) {
 
     var reportFilePath = path.join(process.cwd(), "./test/e2e/performance/report/report.html");
 
-    test.testInLocal("generate benchmark...", reportFilePath, "performance", testPerformance.generateBenchmark, testPerformance.generateReport, testPerformance.runTest, done);
+    test.testInLocal(_getGenerateDataInfo(), reportFilePath, "performance", testPerformance.generateBenchmark, testPerformance.generateReport, testPerformance.runTest, done);
 });
 
 gulp.task("testFastPerformance", function (done) {
@@ -21,7 +25,7 @@ gulp.task("testFastPerformance", function (done) {
 
     var reportFilePath = path.join(process.cwd(), "./test/e2e/performance/report/report.html");
 
-    test.fastTest("generate correct image...", reportFilePath, "performance", testPerformance.generateCorrectImage, testPerformance.generateReport, testPerformance.runTest, done);
+    test.fastTest(reportFilePath, testPerformance.generateReport, testPerformance.runTest, done);
 });
 
 
@@ -32,6 +36,18 @@ function _fail(message, done) {
 
     done();
 }
+
+gulp.task("generatePerformanceBenchmark", function (done) {
+    var testPerformance = require(path.join(process.cwd(), "lib/js/test/e2e/performance/TestPerformance.js"));
+
+    console.log(_getGenerateDataInfo());
+
+    testPerformance.generateBenchmark().then(function (browser) {
+        done();
+    }, function (e) {
+        _fail(e, done);
+    })
+});
 
 gulp.task("generatePerformanceReport", function (done) {
     var testPerformance = require(path.join(process.cwd(), "lib/js/test/e2e/performance/TestPerformance.js"));

@@ -30,7 +30,7 @@ var GeometryTool = (function () {
             );
 
 
-            var state = wd.setGeometryIndices(geometry,
+            var state = wd.setGeometryIndices16(geometry,
                 new Uint16Array([
                     0, 1, 2
                 ]),

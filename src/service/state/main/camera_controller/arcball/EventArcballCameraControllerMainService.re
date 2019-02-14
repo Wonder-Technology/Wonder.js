@@ -4,38 +4,42 @@ open EventType;
 
 let _setEventHandleFunc = (cameraController, handleFunc, eventHandleFuncMap) =>
   eventHandleFuncMap
-  |> WonderCommonlib.SparseMapService.set(cameraController, handleFunc);
+  |> WonderCommonlib.MutableSparseMapService.set(cameraController, handleFunc);
 
-let _setPointDownEventHandleFunc =
-    (cameraController, handleFunc, {pointDownEventHandleFuncMap} as record) => {
+let _setPointDragStartEventHandleFunc =
+    (
+      cameraController,
+      handleFunc,
+      {pointDragStartEventHandleFuncMap} as record,
+    ) => {
   ...record,
-  pointDownEventHandleFuncMap:
+  pointDragStartEventHandleFuncMap:
     _setEventHandleFunc(
       cameraController,
       handleFunc,
-      pointDownEventHandleFuncMap,
+      pointDragStartEventHandleFuncMap,
     ),
 };
 
-let _setPointUpEventHandleFunc =
-    (cameraController, handleFunc, {pointUpEventHandleFuncMap} as record) => {
+let _setPointDragDropEventHandleFunc =
+    (cameraController, handleFunc, {pointDragDropEventHandleFuncMap} as record) => {
   ...record,
-  pointUpEventHandleFuncMap:
+  pointDragDropEventHandleFuncMap:
     _setEventHandleFunc(
       cameraController,
       handleFunc,
-      pointUpEventHandleFuncMap,
+      pointDragDropEventHandleFuncMap,
     ),
 };
 
-let _setPointDragEventHandleFunc =
-    (cameraController, handleFunc, {pointDragEventHandleFuncMap} as record) => {
+let _setPointDragOverEventHandleFunc =
+    (cameraController, handleFunc, {pointDragOverEventHandleFuncMap} as record) => {
   ...record,
-  pointDragEventHandleFuncMap:
+  pointDragOverEventHandleFuncMap:
     _setEventHandleFunc(
       cameraController,
       handleFunc,
-      pointDragEventHandleFuncMap,
+      pointDragOverEventHandleFuncMap,
     ),
 };
 
@@ -92,7 +96,7 @@ let _changeOrbit =
 };
 
 let prepareBindEvent = (cameraController, state) => {
-  let pointDownHandleFunc =
+  let pointDragStartHandleFunc =
     (. event: EventType.customEvent, {viewRecord} as state) =>
       BrowserDetectMainService.isMobile(state) ?
         (state, event) :
@@ -106,7 +110,7 @@ let prepareBindEvent = (cameraController, state) => {
           (state, event);
         };
 
-  let pointUpHandleFunc =
+  let pointDragDropHandleFunc =
     (. event: EventType.customEvent, {viewRecord} as state) =>
       BrowserDetectMainService.isMobile(state) ?
         (state, event) :
@@ -123,7 +127,7 @@ let prepareBindEvent = (cameraController, state) => {
           (state, event);
         };
 
-  let pointDragHandleFunc =
+  let pointDragOverHandleFunc =
     (.
       event: EventType.customEvent,
       {arcballCameraControllerRecord} as state,
@@ -183,9 +187,18 @@ let prepareBindEvent = (cameraController, state) => {
     ...state,
     arcballCameraControllerRecord:
       state.arcballCameraControllerRecord
-      |> _setPointDownEventHandleFunc(cameraController, pointDownHandleFunc)
-      |> _setPointUpEventHandleFunc(cameraController, pointUpHandleFunc)
-      |> _setPointDragEventHandleFunc(cameraController, pointDragHandleFunc)
+      |> _setPointDragStartEventHandleFunc(
+           cameraController,
+           pointDragStartHandleFunc,
+         )
+      |> _setPointDragDropEventHandleFunc(
+           cameraController,
+           pointDragDropHandleFunc,
+         )
+      |> _setPointDragOverEventHandleFunc(
+           cameraController,
+           pointDragOverHandleFunc,
+         )
       |> _setPointScaleEventHandleFunc(
            cameraController,
            pointScaleHandleFunc,
@@ -195,9 +208,9 @@ let prepareBindEvent = (cameraController, state) => {
 
   (
     state,
-    pointDownHandleFunc,
-    pointUpHandleFunc,
-    pointDragHandleFunc,
+    pointDragStartHandleFunc,
+    pointDragDropHandleFunc,
+    pointDragOverHandleFunc,
     pointScaleHandleFunc,
     keydownHandleFunc,
   );
@@ -206,9 +219,9 @@ let prepareBindEvent = (cameraController, state) => {
 let bindEvent = (cameraController, state) => {
   let (
     state,
-    pointDownHandleFunc,
-    pointUpHandleFunc,
-    pointDragHandleFunc,
+    pointDragStartHandleFunc,
+    pointDragDropHandleFunc,
+    pointDragOverHandleFunc,
     pointScaleHandleFunc,
     keydownHandleFunc,
   ) =
@@ -216,24 +229,24 @@ let bindEvent = (cameraController, state) => {
 
   let state =
     ManageEventMainService.onCustomGlobalEvent(
-      ~eventName=NameEventService.getPointDownEventName(),
-      ~handleFunc=pointDownHandleFunc,
+      ~eventName=NameEventService.getPointDragStartEventName(),
+      ~handleFunc=pointDragStartHandleFunc,
       ~state,
       (),
     );
 
   let state =
     ManageEventMainService.onCustomGlobalEvent(
-      ~eventName=NameEventService.getPointUpEventName(),
-      ~handleFunc=pointUpHandleFunc,
+      ~eventName=NameEventService.getPointDragDropEventName(),
+      ~handleFunc=pointDragDropHandleFunc,
       ~state,
       (),
     );
 
   let state =
     ManageEventMainService.onCustomGlobalEvent(
-      ~eventName=NameEventService.getPointDragEventName(),
-      ~handleFunc=pointDragHandleFunc,
+      ~eventName=NameEventService.getPointDragOverEventName(),
+      ~handleFunc=pointDragOverHandleFunc,
       ~state,
       (),
     );
@@ -271,20 +284,20 @@ let _unbindKeyboardEvent = (eventName, handleFunc, state) =>
     ~state,
   );
 
-let _disposePointDownEventHandleFuncMap =
+let _disposePointDragStartEventHandleFuncMap =
     (cameraController, {arcballCameraControllerRecord} as state) => {
-  let {pointDownEventHandleFuncMap} = arcballCameraControllerRecord;
+  let {pointDragStartEventHandleFuncMap} = arcballCameraControllerRecord;
 
   switch (
-    pointDownEventHandleFuncMap
-    |> WonderCommonlib.SparseMapService.get(cameraController)
+    pointDragStartEventHandleFuncMap
+    |> WonderCommonlib.MutableSparseMapService.get(cameraController)
   ) {
   | None => state
-  | Some(pointDownEventHandleFunc) =>
+  | Some(pointDragStartEventHandleFunc) =>
     let state =
       _unbindPointEvent(
         NameEventService.getPointDownEventName(),
-        pointDownEventHandleFunc,
+        pointDragStartEventHandleFunc,
         state,
       );
 
@@ -292,28 +305,28 @@ let _disposePointDownEventHandleFuncMap =
       ...state,
       arcballCameraControllerRecord: {
         ...arcballCameraControllerRecord,
-        pointDownEventHandleFuncMap:
-          pointDownEventHandleFuncMap
+        pointDragStartEventHandleFuncMap:
+          pointDragStartEventHandleFuncMap
           |> DisposeComponentService.disposeSparseMapData(cameraController),
       },
     };
   };
 };
 
-let _disposePointUpEventHandleFuncMap =
+let _disposePointDragDropEventHandleFuncMap =
     (cameraController, {arcballCameraControllerRecord} as state) => {
-  let {pointUpEventHandleFuncMap} = arcballCameraControllerRecord;
+  let {pointDragDropEventHandleFuncMap} = arcballCameraControllerRecord;
 
   switch (
-    pointUpEventHandleFuncMap
-    |> WonderCommonlib.SparseMapService.get(cameraController)
+    pointDragDropEventHandleFuncMap
+    |> WonderCommonlib.MutableSparseMapService.get(cameraController)
   ) {
   | None => state
-  | Some(pointUpEventHandleFunc) =>
+  | Some(pointDragDropEventHandleFunc) =>
     let state =
       _unbindPointEvent(
         NameEventService.getPointUpEventName(),
-        pointUpEventHandleFunc,
+        pointDragDropEventHandleFunc,
         state,
       );
 
@@ -321,28 +334,28 @@ let _disposePointUpEventHandleFuncMap =
       ...state,
       arcballCameraControllerRecord: {
         ...arcballCameraControllerRecord,
-        pointUpEventHandleFuncMap:
-          pointUpEventHandleFuncMap
+        pointDragDropEventHandleFuncMap:
+          pointDragDropEventHandleFuncMap
           |> DisposeComponentService.disposeSparseMapData(cameraController),
       },
     };
   };
 };
 
-let _disposePointDragEventHandleFuncMap =
+let _disposePointDragOverEventHandleFuncMap =
     (cameraController, {arcballCameraControllerRecord} as state) => {
-  let {pointDragEventHandleFuncMap} = arcballCameraControllerRecord;
+  let {pointDragOverEventHandleFuncMap} = arcballCameraControllerRecord;
 
   switch (
-    pointDragEventHandleFuncMap
-    |> WonderCommonlib.SparseMapService.get(cameraController)
+    pointDragOverEventHandleFuncMap
+    |> WonderCommonlib.MutableSparseMapService.get(cameraController)
   ) {
   | None => state
-  | Some(pointDragEventHandleFunc) =>
+  | Some(pointDragOverEventHandleFunc) =>
     let state =
       _unbindPointEvent(
-        NameEventService.getPointDragEventName(),
-        pointDragEventHandleFunc,
+        NameEventService.getPointDragOverEventName(),
+        pointDragOverEventHandleFunc,
         state,
       );
 
@@ -350,8 +363,8 @@ let _disposePointDragEventHandleFuncMap =
       ...state,
       arcballCameraControllerRecord: {
         ...arcballCameraControllerRecord,
-        pointDragEventHandleFuncMap:
-          pointDragEventHandleFuncMap
+        pointDragOverEventHandleFuncMap:
+          pointDragOverEventHandleFuncMap
           |> DisposeComponentService.disposeSparseMapData(cameraController),
       },
     };
@@ -364,7 +377,7 @@ let _disposePointScaleEventHandleFuncMap =
 
   switch (
     pointScaleEventHandleFuncMap
-    |> WonderCommonlib.SparseMapService.get(cameraController)
+    |> WonderCommonlib.MutableSparseMapService.get(cameraController)
   ) {
   | None => state
   | Some(pointScaleEventHandleFunc) =>
@@ -393,7 +406,7 @@ let _disposeKeyDownEventHandleFuncMap =
 
   switch (
     keydownEventHandleFuncMap
-    |> WonderCommonlib.SparseMapService.get(cameraController)
+    |> WonderCommonlib.MutableSparseMapService.get(cameraController)
   ) {
   | None => state
   | Some(keydownEventHandleFunc) =>
@@ -414,16 +427,16 @@ let _disposeKeyDownEventHandleFuncMap =
 
 let unbindEvent = (cameraController, state) =>
   state
-  |> _disposePointDownEventHandleFuncMap(cameraController)
-  |> _disposePointUpEventHandleFuncMap(cameraController)
-  |> _disposePointDragEventHandleFuncMap(cameraController)
+  |> _disposePointDragStartEventHandleFuncMap(cameraController)
+  |> _disposePointDragDropEventHandleFuncMap(cameraController)
+  |> _disposePointDragOverEventHandleFuncMap(cameraController)
   |> _disposePointScaleEventHandleFuncMap(cameraController)
   |> _disposeKeyDownEventHandleFuncMap(cameraController);
 
 let isBindEvent =
     (cameraController, {arcballCameraControllerRecord} as state) => {
-  let {pointDownEventHandleFuncMap} = arcballCameraControllerRecord;
+  let {pointDragStartEventHandleFuncMap} = arcballCameraControllerRecord;
 
-  pointDownEventHandleFuncMap
-  |> WonderCommonlib.SparseMapService.has(cameraController);
+  pointDragStartEventHandleFuncMap
+  |> WonderCommonlib.MutableSparseMapService.has(cameraController);
 };

@@ -2,14 +2,16 @@ let computeVertexNormals = (index, state) =>
   GeometryType.(
     switch (GeometryRenderService.unsafeGetIndicesType(index, state)) {
     | Short =>
-      ComputeNormalsService.computeVertexNormalsByIndices(
+      ComputeNormalsService.computeVertexNormals(
         GetGeometryVerticesRenderService.getVertices(. index, state),
-        GetGeometryIndicesRenderService.getIndices(. index, state),
+        GetGeometryIndicesRenderService.getIndices16(. index, state)
+        |> AbstractIndicesType.indices16ToIndices,
       )
     | Int =>
-      ComputeNormalsService.computeVertexNormalsByIndices32(
+      ComputeNormalsService.computeVertexNormals(
         GetGeometryVerticesRenderService.getVertices(. index, state),
-        GetGeometryIndicesRenderService.getIndices32(. index, state),
+        GetGeometryIndicesRenderService.getIndices32(. index, state)
+        |> AbstractIndicesType.indices32ToIndices,
       )
     }
   );

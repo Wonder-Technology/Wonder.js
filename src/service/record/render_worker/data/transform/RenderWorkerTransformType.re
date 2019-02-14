@@ -4,7 +4,7 @@ type transformRecord = {
   mutable localRotations: Js.Typed_array.Float32Array.t,
   mutable localScales: Js.Typed_array.Float32Array.t,
   localToWorldMatrixCacheMap:
-    WonderCommonlib.SparseMapService.t(Js.Typed_array.Float32Array.t),
+    WonderCommonlib.MutableSparseMapService.t(Js.Typed_array.Float32Array.t),
   normalMatrixCacheMap:
-    WonderCommonlib.SparseMapService.t(Js.Typed_array.Float32Array.t),
+    WonderCommonlib.MutableSparseMapService.t(Js.Typed_array.Float32Array.t),
 };

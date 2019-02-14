@@ -28,10 +28,11 @@ let getButton = (mouseDomEvent, {browserDetectRecord} as state) => {
   switch (browser) {
   | Chrome
   | Firefox =>
-    switch (mouseDomEvent##button) {
-    | 0 => Left
-    | 1 => Right
+    switch (mouseDomEvent##which) {
+    | 0 => NoButton
+    | 1 => Left
     | 2 => Center
+    | 3 => Right
     | button =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(
@@ -125,7 +126,7 @@ let execEventHandle =
 
   switch (
     mouseDomEventDataArrMap
-    |> WonderCommonlib.SparseMapService.get(name |> domEventNameToInt)
+    |> WonderCommonlib.MutableSparseMapService.get(name |> domEventNameToInt)
   ) {
   | None => state
   | Some(arr) =>

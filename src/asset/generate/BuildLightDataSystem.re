@@ -18,7 +18,7 @@ let build = (lightDataMap, state) => {
   let pointLightRecord = RecordPointLightMainService.getRecord(state);
 
   lightDataMap
-  |> SparseMapService.reduceValid(
+  |> WonderCommonlib.MutableSparseMapService.reduceValid(
        (. lightDataArr, (type_, light)) =>
          switch (type_) {
          | "directional" =>

@@ -20,12 +20,12 @@ let _getGeometryData =
         getVerticesFunc,
         getNormalsFunc,
         getTexCoordsFunc,
-        getIndicesFunc,
+        getIndices16Func,
         getIndices32Func,
       ),
       state,
     ) =>
-  switch (geometryDataMap |> WonderCommonlib.SparseMapService.get(geometry)) {
+  switch (geometryDataMap |> WonderCommonlib.MutableSparseMapService.get(geometry)) {
   | Some((existedMeshIndex, pointAndNameData)) => (
       Some(existedMeshIndex),
       pointAndNameData,
@@ -39,7 +39,7 @@ let _getGeometryData =
       switch (
         IndicesGeometryMainService.unsafeGetIndicesType(geometry, state)
       ) {
-      | Short => (getIndicesFunc(. geometry, state) |. Some, None)
+      | Short => (getIndices16Func(. geometry, state) |. Some, None)
       | Int => (None, getIndices32Func(. geometry, state) |. Some)
       };
 
@@ -60,7 +60,7 @@ let _getGeometryData =
       pointAndNameData,
       meshIndex |> succ,
       geometryDataMap
-      |> WonderCommonlib.SparseMapService.set(
+      |> WonderCommonlib.MutableSparseMapService.set(
            geometry,
            (meshIndex, pointAndNameData),
          ),
@@ -98,7 +98,7 @@ let _getMaterialData =
   switch (materialCompoent) {
   | None => (None, None, materialIndex, materialDataMap)
   | Some(material) =>
-    switch (materialDataMap |> WonderCommonlib.SparseMapService.get(material)) {
+    switch (materialDataMap |> WonderCommonlib.MutableSparseMapService.get(material)) {
     | Some((existedMaterialIndex, materialData)) => (
         Some(existedMaterialIndex),
         materialData,
@@ -113,7 +113,7 @@ let _getMaterialData =
         materialData,
         materialIndex |> succ,
         materialDataMap
-        |> WonderCommonlib.SparseMapService.set(
+        |> WonderCommonlib.MutableSparseMapService.set(
              material,
              (materialIndex, materialData),
            ),
@@ -281,7 +281,7 @@ let getAllComponentData =
     | None => meshPointAndNameDataMap
     | Some(meshIndex) =>
       meshPointAndNameDataMap
-      |> WonderCommonlib.SparseMapService.set(
+      |> WonderCommonlib.MutableSparseMapService.set(
            meshIndex,
            pointAndNameData |> OptionService.unsafeGet,
          )
@@ -295,7 +295,7 @@ let getAllComponentData =
     | None => meshRendererDataMap
     | Some(meshRendererIndex) =>
       meshRendererDataMap
-      |> WonderCommonlib.SparseMapService.set(
+      |> WonderCommonlib.MutableSparseMapService.set(
            meshRendererIndex,
            meshRendererData |> OptionService.unsafeGet,
          )
@@ -318,7 +318,7 @@ let getAllComponentData =
     | None => resultBasicMaterialDataMap
     | Some(basicMaterialIndex) =>
       resultBasicMaterialDataMap
-      |> WonderCommonlib.SparseMapService.set(
+      |> WonderCommonlib.MutableSparseMapService.set(
            basicMaterialIndex,
            basicMaterialData |> OptionService.unsafeGet,
          )
@@ -341,7 +341,7 @@ let getAllComponentData =
     | None => resultLightMaterialDataMap
     | Some(lightMaterialIndex) =>
       resultLightMaterialDataMap
-      |> WonderCommonlib.SparseMapService.set(
+      |> WonderCommonlib.MutableSparseMapService.set(
            lightMaterialIndex,
            lightMaterialData |> OptionService.unsafeGet,
          )
@@ -355,7 +355,7 @@ let getAllComponentData =
     | None => basicCameraViewDataMap
     | Some(basicCameraViewIndex) =>
       basicCameraViewDataMap
-      |> WonderCommonlib.SparseMapService.set(
+      |> WonderCommonlib.MutableSparseMapService.set(
            basicCameraViewIndex,
            basicCameraViewData |> OptionService.unsafeGet,
          )
@@ -370,7 +370,7 @@ let getAllComponentData =
     | None => cameraProjectionDataMap
     | Some(cameraProjectionIndex) =>
       cameraProjectionDataMap
-      |> WonderCommonlib.SparseMapService.set(
+      |> WonderCommonlib.MutableSparseMapService.set(
            cameraProjectionIndex,
            cameraProjectionData |> OptionService.unsafeGet,
          )
@@ -391,7 +391,7 @@ let getAllComponentData =
     | None => arcballCameraControllerDataMap
     | Some(arcballCameraControllerIndex) =>
       arcballCameraControllerDataMap
-      |> WonderCommonlib.SparseMapService.set(
+      |> WonderCommonlib.MutableSparseMapService.set(
            arcballCameraControllerIndex,
            arcballCameraControllerData |> OptionService.unsafeGet,
          )
@@ -405,7 +405,7 @@ let getAllComponentData =
     | None => lightDataMap
     | Some(lightIndex) =>
       lightDataMap
-      |> WonderCommonlib.SparseMapService.set(
+      |> WonderCommonlib.MutableSparseMapService.set(
            lightIndex,
            lightData |> OptionService.unsafeGet,
          )

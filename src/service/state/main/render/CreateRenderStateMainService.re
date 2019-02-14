@@ -18,8 +18,6 @@ open RenderArrayBufferViewSourceTextureType;
 
 open DeviceManagerType;
 
-open RenderShaderType;
-
 open RenderSettingType;
 
 open BrowserDetectType;
@@ -37,6 +35,7 @@ let createRenderState =
         deviceManagerRecord,
         shaderRecord,
         browserDetectRecord,
+        jobDataRecord,
       } as state: StateDataMainType.state,
     ) => {
   let {localToWorldMatrices, localToWorldMatrixCacheMap, normalMatrixCacheMap} as transformRecord =
@@ -70,7 +69,7 @@ let createRenderState =
       vertices: geometryRecord.vertices,
       texCoords: geometryRecord.texCoords,
       normals: geometryRecord.normals,
-      indices: geometryRecord.indices,
+      indices16: geometryRecord.indices16,
       indices32: geometryRecord.indices32,
       verticesInfos: geometryRecord.verticesInfos,
       texCoordsInfos: geometryRecord.texCoordsInfos,
@@ -84,6 +83,8 @@ let createRenderState =
       colors: basicMaterialRecord.colors,
       textureIndices: basicMaterialRecord.textureIndices,
       mapUnits: basicMaterialRecord.mapUnits,
+      isDepthTests: basicMaterialRecord.isDepthTests,
+      alphas: basicMaterialRecord.alphas,
     },
     lightMaterialRecord: {
       shaderIndices: lightMaterialRecord.shaderIndices,
@@ -189,9 +190,6 @@ let createRenderState =
     gpuDetectRecord,
     globalTempRecord,
     deviceManagerRecord,
-    shaderRecord: {
-      usedShaderIndexArray: shaderRecord.usedShaderIndexArray,
-    },
     settingRecord: {
       gpu: Some(OperateSettingService.unsafeGetGPU(settingRecord)),
       instanceBuffer:
@@ -210,5 +208,7 @@ let createRenderState =
     browserDetectRecord: {
       browser: browserDetectRecord.browser,
     },
+    jobDataRecord,
+    shaderRecord,
   };
 };

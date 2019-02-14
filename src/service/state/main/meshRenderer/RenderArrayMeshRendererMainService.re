@@ -1,17 +1,15 @@
 open StateDataMainType;
 
-open GameObjectType;
-
 open MeshRendererType;
 
 let _setRenderGameObject =
     (
       meshRenderer: meshRenderer,
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       renderGameObjectMap: renderGameObjectMap,
     ) =>
   renderGameObjectMap
-  |> WonderCommonlib.SparseMapService.set(meshRenderer, gameObject);
+  |> WonderCommonlib.MutableSparseMapService.set(meshRenderer, gameObject);
 
 let addToRenderGameObjectMap =
     (
@@ -20,7 +18,8 @@ let addToRenderGameObjectMap =
       {basicMaterialRenderGameObjectMap, lightMaterialRenderGameObjectMap} as meshRendererRecord,
       gameObjectRecord,
     ) => {
-  ...meshRendererRecord,
+
+      {   ...meshRendererRecord,
   basicMaterialRenderGameObjectMap:
     HasComponentGameObjectService.hasBasicMaterialComponent(
       gameObjectUid,
@@ -36,7 +35,7 @@ let addToRenderGameObjectMap =
     ) ?
       lightMaterialRenderGameObjectMap
       |> _setRenderGameObject(meshRenderer, gameObjectUid) :
-      lightMaterialRenderGameObjectMap,
+      lightMaterialRenderGameObjectMap, }
 };
 
 let removeFromRenderGameObjectMap = (meshRenderer, state) => {

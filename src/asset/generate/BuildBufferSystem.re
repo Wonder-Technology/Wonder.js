@@ -14,13 +14,13 @@ let _fillVertexBuffer = (buffer, points, offset) => {
   buffer;
 };
 
-let _fillIndexBuffer = (buffer, indices, offset) => {
+let _fillIndex16Buffer = (buffer, indices16, offset) => {
   TypeArrayService.setUint16Array(
-    indices,
+    indices16,
     Uint16Array.fromBufferRange(
       buffer,
       ~offset,
-      ~length=indices |> Uint16Array.length,
+      ~length=indices16 |> Uint16Array.length,
     ),
   )
   |> ignore;
@@ -76,7 +76,7 @@ let build =
     indexDataArr
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. buffer, (bufferViewOffset, indices)) =>
-           _fillIndexBuffer(buffer, indices, bufferViewOffset),
+           _fillIndex16Buffer(buffer, indices, bufferViewOffset),
          buffer,
        );
 

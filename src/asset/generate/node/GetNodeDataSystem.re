@@ -16,14 +16,14 @@ let _setChildren =
               children:
                 switch (
                   gameObjectChildrenMap
-                  |> WonderCommonlib.SparseMapService.get(gameObject)
+                  |> WonderCommonlib.MutableSparseMapService.get(gameObject)
                 ) {
                 | None => None
                 | Some(children) =>
                   children
                   |> Js.Array.map(childGameObject =>
                        gameObjectNodeIndexMap
-                       |> WonderCommonlib.SparseMapService.unsafeGet(
+                       |> WonderCommonlib.MutableSparseMapService.unsafeGet(
                             childGameObject,
                           )
                      )
@@ -250,7 +250,7 @@ let rec _getNodeData =
            | 0 => gameObjectChildrenMap
            | _ =>
              gameObjectChildrenMap
-             |> WonderCommonlib.SparseMapService.set(
+             |> WonderCommonlib.MutableSparseMapService.set(
                   gameObject,
                   childrenGameObjectArr,
                 )
@@ -258,7 +258,7 @@ let rec _getNodeData =
 
          let gameObjectNodeIndexMap =
            gameObjectNodeIndexMap
-           |> WonderCommonlib.SparseMapService.set(gameObject, nodeIndex);
+           |> WonderCommonlib.MutableSparseMapService.set(gameObject, nodeIndex);
 
          let (
            state,
@@ -453,21 +453,21 @@ let getAllNodeData = (rootGameObject, getPointsDataFuncTuple, state) => {
       state,
       (0, 0, 0, 0, 0, 0, 0, 0, 0),
       (
-        WonderCommonlib.SparseMapService.createEmpty(),
-        WonderCommonlib.SparseMapService.createEmpty(),
-        WonderCommonlib.SparseMapService.createEmpty(),
-        WonderCommonlib.SparseMapService.createEmpty(),
-        WonderCommonlib.SparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
       ),
       (
-        WonderCommonlib.SparseMapService.createEmpty(),
-        WonderCommonlib.SparseMapService.createEmpty(),
-        WonderCommonlib.SparseMapService.createEmpty(),
-        WonderCommonlib.SparseMapService.createEmpty(),
-        WonderCommonlib.SparseMapService.createEmpty(),
-        WonderCommonlib.SparseMapService.createEmpty(),
-        WonderCommonlib.SparseMapService.createEmpty(),
-        WonderCommonlib.SparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
       ),
       (
         [|

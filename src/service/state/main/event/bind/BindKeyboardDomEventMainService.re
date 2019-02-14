@@ -18,11 +18,11 @@ let _removeFromEventArrMapByHandleFunc =
     eventArrMap,
   );
 
-/* switch (eventArrMap |> WonderCommonlib.SparseMapService.get(eventName)) {
+/* switch (eventArrMap |> WonderCommonlib.MutableSparseMapService.get(eventName)) {
    | None => eventArrMap
    | Some(arr) =>
      eventArrMap
-     |> WonderCommonlib.SparseMapService.set(
+     |> WonderCommonlib.MutableSparseMapService.set(
           eventName,
           arr
           |> Js.Array.filter(({handleFunc}: keyboardDomEventData) =>

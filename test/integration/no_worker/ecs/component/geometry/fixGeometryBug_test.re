@@ -58,8 +58,8 @@ let _ =
           |> setGeometryNormals(geometry2, normals2);
         let state =
           state
-          |> setGeometryIndices(geometry1, indices1)
-          |> setGeometryIndices(geometry2, indices2);
+          |> setGeometryIndices16(geometry1, indices1)
+          |> setGeometryIndices16(geometry2, indices2);
         let state =
           state
           |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
@@ -70,14 +70,14 @@ let _ =
           GeometryTool.createGameObject(state);
         let state = state |> setGeometryVertices(geometry3, vertices3);
         let state = state |> setGeometryNormals(geometry3, normals3);
-        let state = state |> setGeometryIndices(geometry3, indices3);
+        let state = state |> setGeometryIndices16(geometry3, indices3);
         (
           getGeometryVertices(geometry2, state),
           getGeometryNormals(geometry2, state),
-          getGeometryIndices(geometry2, state),
+          getGeometryIndices16(geometry2, state),
           getGeometryVertices(geometry3, state),
           getGeometryNormals(geometry3, state),
-          getGeometryIndices(geometry3, state),
+          getGeometryIndices16(geometry3, state),
         )
         |>
         expect == (

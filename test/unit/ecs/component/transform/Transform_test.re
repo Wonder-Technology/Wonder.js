@@ -158,13 +158,17 @@ let _ =
              }
            )
        ); */
+
     describe("unsafeGetTransformParent", () =>
-      test("default value should be Js.Undefined.empty", () => {
+      test("if has no parent, error", () => {
         let (state, transform) = createTransform(state^);
-        unsafeGetTransformParent(transform, state)
-        |> expect == Js.Undefined.empty;
+
+        expect(() =>
+          unsafeGetTransformParent(transform, state)
+        ) |> toThrow;
       })
     );
+
     describe("setTransformParent", () => {
       describe(
         "the change of parent before setted as parent will affect child", () => {
@@ -223,9 +227,7 @@ let _ =
           };
           test("test remove its current parent", () => {
             let (state, _, child, _) = exec();
-            state
-            |> unsafeGetTransformParent(child)
-            |> expect == Js.Undefined.empty;
+            state |> TransformTool.getTransformParent(child) |> expect == None;
           });
           test("test position and local position", () => {
             let (state, parent, child, pos) = exec();
@@ -274,9 +276,7 @@ let _ =
             |> setTransformParent(Js.Nullable.return(parent), child);
           let state =
             state |> setTransformParent(Js.Nullable.return(parent), child);
-          state
-          |> unsafeGetTransformParent(child)
-          |> expect == Js.Undefined.return(parent);
+          state |> unsafeGetTransformParent(child) |> expect == parent;
         });
         test("can set different parent", () => {
           let (state, parent1) = createTransform(state^);
@@ -290,9 +290,7 @@ let _ =
           let state =
             setTransformLocalPosition(parent2, pos2, state)
             |> setTransformParent(Js.Nullable.return(parent2), child);
-          state
-          |> unsafeGetTransformParent(child)
-          |> expect == Js.Undefined.return(parent2);
+          state |> unsafeGetTransformParent(child) |> expect == parent2;
         });
         test("change its current parent's children order", () => {
           let (state, parent) = createTransform(state^);
@@ -356,6 +354,23 @@ let _ =
         })
       );
     });
+
+    describe("hasTransformParent", () => {
+      test("if has no parent, return false", () => {
+        let (state, transform) = createTransform(state^);
+
+        hasTransformParent(transform, state) |> expect == false;
+      });
+      test("else, return true", () => {
+        let (state, parent) = createTransform(state^);
+        let (state, child1) = createTransform(state);
+        let state =
+          state |> setTransformParent(Js.Nullable.return(parent), child1);
+
+        hasTransformParent(child1, state) |> expect == true;
+      });
+    });
+
     describe("setTransformParentKeepOrder", () =>
       test("not change its current parent's children order", () => {
         let (state, parent) = createTransform(state^);
@@ -473,7 +488,7 @@ let _ =
         |> getTransformPosition(transform)
         |> expect == TransformTool.getDefaultPosition();
       });
-      test("can get the newest position", () => {
+      test("get the position in world coordinate system", () => {
         let (state, parent) = createTransform(state^);
         let (state, child) = createTransform(state);
         let pos = (1., 2., 3.);
@@ -533,7 +548,7 @@ let _ =
         |> getTransformRotation(transform)
         |> expect == TransformTool.getDefaultRotation();
       });
-      test("can get the newest rotation", () => {
+      test("get the rotation in world coordinate system", () => {
         let (state, parent) = createTransform(state^);
         let (state, child) = createTransform(state);
         let rotation = (1., 2., 3., 2.5);
@@ -615,7 +630,7 @@ let _ =
         |> getTransformEulerAngles(transform)
         |> expect == (0., (-0.), 0.);
       });
-      test("can get the newest eulerAngles", () => {
+      test("get the eulerAngles in world coordinate system", () => {
         let (state, parent) = createTransform(state^);
         let (state, child) = createTransform(state);
         let eulerAngles = (45., 45., 90.);
@@ -715,7 +730,7 @@ let _ =
         |> getTransformScale(transform)
         |> expect == TransformTool.getDefaultScale();
       });
-      test("can get the newest rotation", () => {
+      test("get the scale in world coordinate system", () => {
         let (state, parent) = createTransform(state^);
         let (state, child) = createTransform(state);
         let scale = (1., 2., 3.5);
@@ -888,7 +903,66 @@ let _ =
         |> expect == gameObject;
       })
     );
-    describe("getLocalToWorldMatrixTypeArray", () =>
+
+    describe("getTransformLocalToWorldMatrixTypeArray", () => {
+      test(
+        "get the localToWorldMatrix type array in world coordinate system", () => {
+        open GameObjectAPI;
+        let (state, parent) = createTransform(state^);
+        let (state, child) = createTransform(state);
+        let state =
+          setTransformParent(Js.Nullable.return(parent), child, state);
+        let pos1 = (1., 2., 3.);
+        let state = state |> setTransformLocalPosition(parent, pos1);
+        let pos2 = (0., 10., 3.);
+        let state = state |> setTransformLocalPosition(child, pos2);
+        let parentMat1 =
+          TransformAPI.getTransformLocalToWorldMatrixTypeArray(parent, state);
+        let childMat1 =
+          TransformAPI.getTransformLocalToWorldMatrixTypeArray(child, state);
+
+        (parentMat1, childMat1)
+        |>
+        expect == (
+                    Js.Typed_array.Float32Array.make([|
+                      1.,
+                      0.,
+                      0.,
+                      0.,
+                      0.,
+                      1.,
+                      0.,
+                      0.,
+                      0.,
+                      0.,
+                      1.,
+                      0.,
+                      1.,
+                      2.,
+                      3.,
+                      1.,
+                    |]),
+                    Js.Typed_array.Float32Array.make([|
+                      1.,
+                      0.,
+                      0.,
+                      0.,
+                      0.,
+                      1.,
+                      0.,
+                      0.,
+                      0.,
+                      0.,
+                      1.,
+                      0.,
+                      1.,
+                      12.,
+                      6.,
+                      1.,
+                    |]),
+                  );
+      });
+
       describe("test cache", () => {
         test("cache data after first get", () => {
           open GameObjectAPI;
@@ -896,12 +970,12 @@ let _ =
           let pos1 = (1., 2., 3.);
           let state = state |> setTransformLocalPosition(transform1, pos1);
           let mat1 =
-            TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+            TransformAPI.getTransformLocalToWorldMatrixTypeArray(
               transform1,
               state,
             );
           let mat2 =
-            TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+            TransformAPI.getTransformLocalToWorldMatrixTypeArray(
               transform1,
               state,
             );
@@ -914,7 +988,7 @@ let _ =
             let pos1 = (1., 2., 3.);
             let state = state |> setTransformLocalPosition(transform1, pos1);
             let mat1 =
-              TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+              TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                 transform1,
                 state,
               )
@@ -928,7 +1002,7 @@ let _ =
               let state =
                 state |> setTransformLocalPosition(transform1, pos2);
               let mat2 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   transform1,
                   state,
                 );
@@ -953,7 +1027,7 @@ let _ =
             let pos2 = (2., 2., 3.);
             let state = state |> setTransformPosition(transform1, pos2);
             let mat2 =
-              TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+              TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                 transform1,
                 state,
               );
@@ -965,7 +1039,7 @@ let _ =
             let state = state |> setTransformLocalPosition(transform1, pos2);
             let _ = state |> getTransformPosition(transform1);
             let mat2 =
-              TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+              TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                 transform1,
                 state,
               );
@@ -979,7 +1053,7 @@ let _ =
               let state =
                 state |> setTransformLocalRotation(transform1, rotation2);
               let mat2 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   transform1,
                   state,
                 );
@@ -991,7 +1065,7 @@ let _ =
             let rotation2 = (2., 2., 3., 1.);
             let state = state |> setTransformRotation(transform1, rotation2);
             let mat2 =
-              TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+              TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                 transform1,
                 state,
               );
@@ -1004,7 +1078,7 @@ let _ =
               let scale2 = (2., 2., 3.);
               let state = state |> setTransformLocalScale(transform1, scale2);
               let mat2 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   transform1,
                   state,
                 );
@@ -1016,7 +1090,7 @@ let _ =
             let scale2 = (2., 2., 3.5);
             let state = state |> setTransformScale(transform1, scale2);
             let mat2 =
-              TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+              TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                 transform1,
                 state,
               );
@@ -1035,13 +1109,13 @@ let _ =
               let pos2 = (0., 10., 3.);
               let state = state |> setTransformLocalPosition(child, pos2);
               let parentMat1 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   parent,
                   state,
                 )
                 |> Js.Typed_array.Float32Array.copy;
               let childMat1 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   child,
                   state,
                 )
@@ -1054,7 +1128,7 @@ let _ =
               let pos2 = (2., 2., 3.);
               let state = state |> setTransformLocalPosition(child, pos2);
               let childMat2 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   child,
                   state,
                 );
@@ -1068,7 +1142,7 @@ let _ =
               let state =
                 state |> setTransformLocalRotation(child, rotation2);
               let childMat2 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   child,
                   state,
                 );
@@ -1081,7 +1155,7 @@ let _ =
               let scale2 = (2., 2., 3.);
               let state = state |> setTransformLocalScale(child, scale2);
               let childMat2 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   child,
                   state,
                 );
@@ -1089,8 +1163,8 @@ let _ =
             });
           });
         });
-      })
-    );
+      });
+    });
 
     describe("getNormalMatrixTypeArray", () =>
       describe("test cache", () => {
@@ -1177,13 +1251,13 @@ let _ =
               let state =
                 state |> setTransformLocalRotation(child, rotation2);
               let parentMat1 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   parent,
                   state,
                 )
                 |> Js.Typed_array.Float32Array.copy;
               let childMat1 =
-                TransformTool.updateAndGetLocalToWorldMatrixTypeArray(
+                TransformAPI.getTransformLocalToWorldMatrixTypeArray(
                   child,
                   state,
                 )
@@ -1303,8 +1377,8 @@ let _ =
           let (state, transform1, transform2) = _prepare();
           let state = state |> dispose(transform1);
           state
-          |> unsafeGetTransformParent(transform2)
-          |> expect == Js.Undefined.empty;
+          |> TransformTool.getTransformParent(transform2)
+          |> expect == None;
         });
         test("should affect children", () => {
           open Vector3Service;
@@ -1345,10 +1419,14 @@ let _ =
           let {parentMap, childMap, dirtyMap, gameObjectMap} =
             TransformTool.getRecord(state);
           (
-            parentMap |> WonderCommonlib.SparseMapService.has(transform1),
-            childMap |> WonderCommonlib.SparseMapService.has(transform1),
-            dirtyMap |> WonderCommonlib.SparseMapService.has(transform1),
-            gameObjectMap |> WonderCommonlib.SparseMapService.has(transform1),
+            parentMap
+            |> WonderCommonlib.MutableSparseMapService.has(transform1),
+            childMap
+            |> WonderCommonlib.MutableSparseMapService.has(transform1),
+            dirtyMap
+            |> WonderCommonlib.MutableSparseMapService.has(transform1),
+            gameObjectMap
+            |> WonderCommonlib.MutableSparseMapService.has(transform1),
           )
           |> expect == (false, false, false, false);
         });
@@ -1729,6 +1807,200 @@ let _ =
           |> expect == ((nan, nan, nan), (89.99999803884896, 0., 0.));
         },
       )
+    );
+
+    describe("rotateLocalOnAxis", () =>
+      test("rotate on local axis in the local coordinate system", () => {
+        let (state, tra1) = createTransform(state^);
+        let pos1 = (0., 1., 0.);
+        let xAxis = (1., 0., 0.);
+        let yAxis = (0., 1., 0.);
+
+        let state = state |> setTransformLocalPosition(tra1, pos1);
+        let state =
+          state
+          |> rotateLocalOnAxis(tra1, (45., yAxis))
+          |> rotateLocalOnAxis(tra1, (45., xAxis))
+          |> rotateLocalOnAxis(tra1, (10., yAxis));
+
+        TransformAPI.getTransformLocalEulerAngles(tra1, state)
+        |>
+        expect == (53.52699620225938, 51.55342957783367, 11.389428193681704);
+      })
+    );
+
+    describe("rotateWorldOnAxis", () =>
+      test("rotate on world axis in the world coordinate system", () => {
+        let (state, tra1) = createTransform(state^);
+        let pos1 = (0., 1., 0.);
+        let xAxis = (1., 0., 0.);
+        let yAxis = (0., 1., 0.);
+
+        let state = state |> setTransformLocalPosition(tra1, pos1);
+        let state =
+          state
+          |> rotateWorldOnAxis(tra1, (45., yAxis))
+          |> rotateWorldOnAxis(tra1, (45., xAxis))
+          |> rotateWorldOnAxis(tra1, (10., yAxis));
+
+        TransformAPI.getTransformLocalEulerAngles(tra1, state)
+        |>
+        expect == (62.04153935036139, 37.965850368256476, 39.36170307898388);
+      })
+    );
+
+    describe("changeChildOrder", () =>
+      describe("change child order", () => {
+        describe("test source and target has the same parent", () => {
+          let _prepare = state => {
+            let (state, parent) = TransformAPI.createTransform(state);
+            let (state, child1) = TransformAPI.createTransform(state);
+            let (state, child2) = TransformAPI.createTransform(state);
+            let (state, child3) = TransformAPI.createTransform(state);
+
+            let state =
+              state
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent),
+                   child1,
+                 )
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent),
+                   child2,
+                 )
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent),
+                   child3,
+                 );
+
+            (state, parent, (child1, child2, child3));
+          };
+
+          test("test before", () => {
+            let (state, parent, (child1, child2, child3)) =
+              _prepare(state^);
+
+            let state =
+              TransformAPI.changeChildOrder(
+                child3,
+                child1,
+                parent,
+                TransformType.Before,
+                state,
+              );
+
+            TransformAPI.unsafeGetTransformChildren(parent, state)
+            |> expect == [|child3, child1, child2|];
+          });
+          test("test after", () => {
+            let (state, parent, (child1, child2, child3)) =
+              _prepare(state^);
+
+            let state =
+              TransformAPI.changeChildOrder(
+                child3,
+                child1,
+                parent,
+                TransformType.After,
+                state,
+              );
+
+            TransformAPI.unsafeGetTransformChildren(parent, state)
+            |> expect == [|child1, child3, child2|];
+          });
+        });
+
+        describe("test source and target has different parents", () => {
+          let _prepare = state => {
+            let (state, parent1) = TransformAPI.createTransform(state);
+            let (state, parent2) = TransformAPI.createTransform(state);
+            let (state, child1) = TransformAPI.createTransform(state);
+            let (state, child2) = TransformAPI.createTransform(state);
+            let (state, child3) = TransformAPI.createTransform(state);
+
+            let state =
+              state
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent1),
+                   child1,
+                 )
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent1),
+                   child2,
+                 )
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent2),
+                   child3,
+                 );
+
+            (state, (parent1, parent2), (child1, child2, child3));
+          };
+
+          test("should contract error", () => {
+            let (state, (parent1, parent2), (child1, child2, child3)) =
+              _prepare(state^);
+
+            expect(() => {
+              let state =
+                TransformAPI.changeChildOrder(
+                  child3,
+                  child1,
+                  parent1,
+                  TransformType.Before,
+                  state,
+                );
+              ();
+            })
+            |> toThrow;
+          });
+        });
+
+        describe("test source not has a parent", () => {
+          let _prepare = state => {
+            let (state, parent1) = TransformAPI.createTransform(state);
+            /* let (state, parent2) =
+               TransformAPI.createTransform(state); */
+            let (state, child1) = TransformAPI.createTransform(state);
+            let (state, child2) = TransformAPI.createTransform(state);
+            let (state, child3) = TransformAPI.createTransform(state);
+
+            let state =
+              state
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent1),
+                   child1,
+                 )
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(parent1),
+                   child2,
+                 );
+            /* |> TransformAPI.setTransformParent(
+                 Js.Nullable.return(parent2),
+                 child3,
+               ); */
+
+            (state, parent1, (child1, child2, child3));
+          };
+
+          test("should contract error", () => {
+            let (state, parent1, (child1, child2, child3)) =
+              _prepare(state^);
+
+            expect(() => {
+              let state =
+                TransformAPI.changeChildOrder(
+                  child3,
+                  child1,
+                  parent1,
+                  TransformType.Before,
+                  state,
+                );
+              ();
+            })
+            |> toThrow;
+          });
+        });
+      })
     );
 
     describe("contract check: is alive", () =>

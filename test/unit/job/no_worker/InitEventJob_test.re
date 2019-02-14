@@ -250,21 +250,24 @@ let _ =
                 EventTool.triggerDomEvent(
                   "mousedown",
                   EventTool.getPointEventBindedDom(state),
-                  MouseEventTool.buildMouseEvent(~button=eventButton, ()),
+                  MouseEventTool.buildMouseEvent(~which=eventButton, ()),
                 );
                 let state = EventTool.restore(state);
 
                 button^ |> expect == targetButton;
               };
 
-              test("test Left", () =>
-                _test(0, Left)
+              test("test NoButton", () =>
+                _test(0, NoButton)
               );
-              test("test Right", () =>
-                _test(1, Right)
+              test("test Left", () =>
+                _test(1, Left)
               );
               test("test Center", () =>
                 _test(2, Center)
+              );
+              test("test Right", () =>
+                _test(3, Right)
               );
             });
 
@@ -557,14 +560,40 @@ let _ =
         });
 
         describe("bind mousedrag event", () => {
-          test("test trigger event when mousemove after mousedown", () => {
+          test("trigger mousedragstart event when mousedown", () => {
             let state = MouseEventTool.prepare(~sandbox, ());
             let state = state |> NoWorkerJobTool.execInitJobs;
             let value = ref(0);
 
             let state =
               ManageEventAPI.onMouseEvent(
-                MouseDrag,
+                MouseDragStart,
+                0,
+                (. event: mouseEvent, state) => {
+                  value := value^ + 1;
+                  state;
+                },
+                state,
+              );
+            let state = MainStateTool.setState(state);
+            EventTool.triggerDomEvent(
+              "mousedown",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(),
+            );
+            let state = EventTool.restore(state);
+
+            value^ |> expect == 1;
+          });
+          test(
+            "trigger mousedragover event when mousemove after mousedown", () => {
+            let state = MouseEventTool.prepare(~sandbox, ());
+            let state = state |> NoWorkerJobTool.execInitJobs;
+            let value = ref(0);
+
+            let state =
+              ManageEventAPI.onMouseEvent(
+                MouseDragOver,
                 0,
                 (. event: mouseEvent, state) => {
                   value := value^ + 1;
@@ -593,14 +622,14 @@ let _ =
             value^ |> expect == 2;
           });
 
-          test("test stop event when mouseup", () => {
+          test("trigger mousedragdrop event when mouseup", () => {
             let state = MouseEventTool.prepare(~sandbox, ());
             let state = state |> NoWorkerJobTool.execInitJobs;
             let value = ref(0);
 
             let state =
               ManageEventAPI.onMouseEvent(
-                MouseDrag,
+                MouseDragDrop,
                 0,
                 (. event: mouseEvent, state) => {
                   value := value^ + 1;
@@ -646,10 +675,15 @@ let _ =
                 };
 
               let state =
-                ManageEventAPI.onMouseEvent(MouseDrag, 0, handleFunc, state);
+                ManageEventAPI.onMouseEvent(
+                  MouseDragOver,
+                  0,
+                  handleFunc,
+                  state,
+                );
               let state =
                 ManageEventAPI.offMouseEventByHandleFunc(
-                  MouseDrag,
+                  MouseDragOver,
                   handleFunc,
                   state,
                 );
@@ -680,7 +714,7 @@ let _ =
 
               let state =
                 ManageEventAPI.onMouseEvent(
-                  MouseDrag,
+                  MouseDragOver,
                   0,
                   (. event: mouseEvent, state) => {
                     let (x, y) = event.movementDelta;
@@ -695,7 +729,7 @@ let _ =
             };
 
             test(
-              "if not set lastXY on mousemove event if mousedrag event is triggering",
+              "if not set lastXY on mousemove event if mousedragover event is triggering",
               () => {
               let (state, (movementX, movementY)) = _prepare();
 
@@ -747,6 +781,53 @@ let _ =
 
               (movementX^, movementY^) |> expect == (0, 0);
             });
+          });
+
+          describe("test button", () => {
+            let _test = (eventButton, targetButton) => {
+              let state = MouseEventTool.prepare(~sandbox, ());
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              let button = ref(Right);
+
+              let state =
+                ManageEventAPI.onMouseEvent(
+                  MouseDragOver,
+                  0,
+                  (. event: mouseEvent, state) => {
+                    button := event.button;
+                    state;
+                  },
+                  state,
+                );
+              let state = MainStateTool.setState(state);
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                "mousedown",
+                EventTool.getPointEventBindedDom(state),
+                MouseEventTool.buildMouseEvent(~which=eventButton, ()),
+              );
+              EventTool.triggerDomEvent(
+                "mousemove",
+                EventTool.getPointEventBindedDom(state),
+                MouseEventTool.buildMouseEvent(~which=eventButton, ()),
+              );
+              let state = EventTool.restore(state);
+
+              button^ |> expect == targetButton;
+            };
+
+            test("test NoButton", () =>
+              _test(0, NoButton)
+            );
+            test("test Left", () =>
+              _test(1, Left)
+            );
+            test("test Center", () =>
+              _test(2, Center)
+            );
+            test("test Right", () =>
+              _test(3, Right)
+            );
           });
         });
       });
@@ -1405,14 +1486,40 @@ let _ =
         });
 
         describe("bind touchdrag event", () => {
-          test("test trigger event when touchmove after touchstart", () => {
+          test("trigger touchdragstart event when touchstart", () => {
             let state = TouchEventTool.prepare(~sandbox, ());
             let state = state |> NoWorkerJobTool.execInitJobs;
             let value = ref(0);
 
             let state =
               ManageEventAPI.onTouchEvent(
-                TouchDrag,
+                TouchDragStart,
+                0,
+                (. event: touchEvent, state) => {
+                  value := value^ + 1;
+                  state;
+                },
+                state,
+              );
+            let state = MainStateTool.setState(state);
+            EventTool.triggerDomEvent(
+              "touchstart",
+              EventTool.getPointEventBindedDom(state),
+              TouchEventTool.buildTouchEvent(),
+            );
+            let state = EventTool.restore(state);
+
+            value^ |> expect == 1;
+          });
+          test(
+            "trigger touchdragover event when touchmove after touchstart", () => {
+            let state = TouchEventTool.prepare(~sandbox, ());
+            let state = state |> NoWorkerJobTool.execInitJobs;
+            let value = ref(0);
+
+            let state =
+              ManageEventAPI.onTouchEvent(
+                TouchDragOver,
                 0,
                 (. event: touchEvent, state) => {
                   value := value^ + 1;
@@ -1441,14 +1548,14 @@ let _ =
             value^ |> expect == 2;
           });
 
-          test("test stop event when touchend", () => {
+          test("trigger touchdragdrop event when touchend", () => {
             let state = TouchEventTool.prepare(~sandbox, ());
             let state = state |> NoWorkerJobTool.execInitJobs;
             let value = ref(0);
 
             let state =
               ManageEventAPI.onTouchEvent(
-                TouchDrag,
+                TouchDragDrop,
                 0,
                 (. event: touchEvent, state) => {
                   value := value^ + 1;
@@ -1494,10 +1601,15 @@ let _ =
                 };
 
               let state =
-                ManageEventAPI.onTouchEvent(TouchDrag, 0, handleFunc, state);
+                ManageEventAPI.onTouchEvent(
+                  TouchDragOver,
+                  0,
+                  handleFunc,
+                  state,
+                );
               let state =
                 ManageEventAPI.offTouchEventByHandleFunc(
-                  TouchDrag,
+                  TouchDragOver,
                   handleFunc,
                   state,
                 );
@@ -1527,7 +1639,7 @@ let _ =
 
               let state =
                 ManageEventAPI.onTouchEvent(
-                  TouchDrag,
+                  TouchDragOver,
                   0,
                   (. event: touchEvent, state) => {
                     let (x, y) = event.movementDelta;
@@ -1542,7 +1654,7 @@ let _ =
             };
 
             test(
-              "if not set lastXY on touchmove event if touchdrag event is triggering",
+              "if not set lastXY on touchmove event if touchdragover event is triggering",
               () => {
               let (state, (movementX, movementY)) = _prepare();
 
@@ -1835,7 +1947,7 @@ let _ =
                 MouseEventTool.buildMouseEvent(
                   ~pageX=10,
                   ~pageY=20,
-                  ~button=0,
+                  ~which=1,
                   ~movementX=1,
                   ~movementY=2,
                   ~detail=Js.Nullable.return(2),
@@ -1923,15 +2035,45 @@ let _ =
           )
         );
 
-        describe("test trigger pointdrag event", () =>
-          test("test trigger event when trigger mousedrag event", () => {
+        describe("test trigger pointdrag event", () => {
+          test(
+            "test trigger pointdragstart event when trigger mousedragstart event",
+            () => {
             let state = MouseEventTool.prepare(~sandbox, ());
             let state = state |> NoWorkerJobTool.execInitJobs;
             let value = ref(0);
 
             let state =
               ManageEventAPI.onCustomGlobalEvent(
-                CustomEventTool.getPointDragEventName(),
+                CustomEventTool.getPointDragStartEventName(),
+                0,
+                (. event, state) => {
+                  value := value^ + 1;
+                  (state, event);
+                },
+                state,
+              );
+
+            let state = MainStateTool.setState(state);
+            EventTool.triggerDomEvent(
+              "mousedown",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(),
+            );
+            let state = EventTool.restore(state);
+
+            value^ |> expect == 1;
+          });
+          test(
+            "test trigger pointdragover event when trigger mousedragover event",
+            () => {
+            let state = MouseEventTool.prepare(~sandbox, ());
+            let state = state |> NoWorkerJobTool.execInitJobs;
+            let value = ref(0);
+
+            let state =
+              ManageEventAPI.onCustomGlobalEvent(
+                CustomEventTool.getPointDragOverEventName(),
                 0,
                 (. event, state) => {
                   value := value^ + 1;
@@ -1959,8 +2101,51 @@ let _ =
             let state = EventTool.restore(state);
 
             value^ |> expect == 2;
-          })
-        );
+          });
+          test(
+            "test trigger pointdragdrop event when trigger mousedragdrop event",
+            () => {
+            let state = MouseEventTool.prepare(~sandbox, ());
+            let state = state |> NoWorkerJobTool.execInitJobs;
+            let value = ref(0);
+
+            let state =
+              ManageEventAPI.onCustomGlobalEvent(
+                CustomEventTool.getPointDragDropEventName(),
+                0,
+                (. event, state) => {
+                  value := value^ + 1;
+                  (state, event);
+                },
+                state,
+              );
+
+            let state = MainStateTool.setState(state);
+            EventTool.triggerDomEvent(
+              "mousedown",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(),
+            );
+            EventTool.triggerDomEvent(
+              "mousemove",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(),
+            );
+            EventTool.triggerDomEvent(
+              "mouseup",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(),
+            );
+            EventTool.triggerDomEvent(
+              "mouseup",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(),
+            );
+            let state = EventTool.restore(state);
+
+            value^ |> expect == 1;
+          });
+        });
       });
 
       describe("bind touch event to trigger point event", () => {
@@ -2344,7 +2529,7 @@ let _ =
 
             let state =
               ManageEventAPI.onCustomGlobalEvent(
-                CustomEventTool.getPointDragEventName(),
+                CustomEventTool.getPointDragOverEventName(),
                 0,
                 (. event, state) => {
                   value := value^ + 1;
@@ -2376,49 +2561,48 @@ let _ =
         );
       });
     });
-
     /* describe("test state", () => {
-      let _createStateData = () =>
-        CreateStateDataMainService.createStateData();
+         let _createStateData = () =>
+           CreateStateDataMainService.createStateData();
 
-      describe(
-        "event handleFunc can get/set state from/to other stateData instead of StateDataMain.stateData",
-        () =>
-        test("test mouse event handleFunc", () => {
-          let state = MouseEventTool.prepare(~sandbox, ());
-          let stateData = _createStateData();
-          let state =
-            StateAPI.setStateToData(stateData, state)
-            |> StateAPI.setUnsafeGetStateFunc((.) =>
-                 StateAPI.getStateFromData(stateData)
-               )
-            |> StateAPI.setSetStateFunc((. state) =>
-                 StateAPI.setStateToData(stateData, state)
+         describe(
+           "event handleFunc can get/set state from/to other stateData instead of StateDataMain.stateData",
+           () =>
+           test("test mouse event handleFunc", () => {
+             let state = MouseEventTool.prepare(~sandbox, ());
+             let stateData = _createStateData();
+             let state =
+               StateAPI.setStateToData(stateData, state)
+               |> StateAPI.setUnsafeGetStateFunc((.) =>
+                    StateAPI.getStateFromData(stateData)
+                  )
+               |> StateAPI.setSetStateFunc((. state) =>
+                    StateAPI.setStateToData(stateData, state)
+                  );
+             let state = state |> NoWorkerJobTool.execInitJobs;
+             let value = ref(0);
+
+             let state =
+               ManageEventAPI.onMouseEvent(
+                 MouseDown,
+                 0,
+                 (. event: mouseEvent, state) => {
+                   value := 1;
+                   state;
+                 },
+                 state |> StateAPI.deepCopyForRestore,
                );
-          let state = state |> NoWorkerJobTool.execInitJobs;
-          let value = ref(0);
 
-          let state =
-            ManageEventAPI.onMouseEvent(
-              MouseDown,
-              0,
-              (. event: mouseEvent, state) => {
-                value := 1;
-                state;
-              },
-              state |> StateAPI.deepCopyForRestore,
-            );
+             let state = StateAPI.setStateToData(stateData, state);
+             EventTool.triggerDomEvent(
+               "mousedown",
+               EventTool.getPointEventBindedDom(state),
+               MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
+             );
+             let state = EventTool.restore(state);
 
-          let state = StateAPI.setStateToData(stateData, state);
-          EventTool.triggerDomEvent(
-            "mousedown",
-            EventTool.getPointEventBindedDom(state),
-            MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
-          );
-          let state = EventTool.restore(state);
-
-          value^ |> expect == 1;
-        })
-      );
-    }); */
+             value^ |> expect == 1;
+           })
+         );
+       }); */
   });

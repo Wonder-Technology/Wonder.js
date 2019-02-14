@@ -82,13 +82,16 @@ let reInitComponents =
       (reInitMaterialFunc, createInitMaterialStateFunc),
       state,
     ) => {
-  let state = ClearShaderMainService.clearShaderCache(state);
+  let state = ClearShaderMainService.clearInitShaderCache(state);
 
   let state =
     materialIndices
     |> WonderCommonlib.ArrayService.removeDuplicateItems
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. {gameObjectRecord, shaderRecord} as state, materialIndex) => {
+         (.
+           {gameObjectRecord, shaderRecord, glslSenderRecord} as state,
+           materialIndex,
+         ) => {
            let currentShaderIndex =
              ShaderIndicesService.getShaderIndex(
                materialIndex,
@@ -96,10 +99,11 @@ let reInitComponents =
              );
 
            let _ =
-             ShaderIndexShaderService.unuseShaderIndex(
+             ShaderIndexShaderService.removeShaderIndexFromMaterial(
                currentShaderIndex,
                materialIndex,
                shaderRecord,
+               glslSenderRecord,
              );
 
            WorkerDetectMainService.isUseWorker(state) ?

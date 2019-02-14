@@ -453,7 +453,7 @@ let _ =
                   GeometryAPI.getGeometryVertices(geometry, state),
                   GeometryAPI.getGeometryNormals(geometry, state),
                   GeometryAPI.getGeometryTexCoords(geometry, state),
-                  GeometryAPI.getGeometryIndices(geometry, state) |. Some,
+                  GeometryAPI.getGeometryIndices16(geometry, state) |. Some,
                   None,
                 )
                 |> expect == GLTFTool.getBoxTexturedGeometryData();
@@ -475,35 +475,35 @@ let _ =
                           (
                             "Cesium_Milk_Truck_0",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Cesium_Milk_Truck_0",
                                ),
                           ),
                           (
                             "Cesium_Milk_Truck_1",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Cesium_Milk_Truck_1",
                                ),
                           ),
                           (
                             "Cesium_Milk_Truck_2",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Cesium_Milk_Truck_2",
                                ),
                           ),
                           (
                             "Wheels",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Wheels",
                                ),
                           ),
                           (
                             "Wheels",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Wheels",
                                ),
                           ),
@@ -548,7 +548,7 @@ let _ =
                           (
                             "DecalBlendMesh",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "DecalBlendMesh",
                                ),
                           ),
@@ -590,7 +590,7 @@ let _ =
                           (
                             "Stove_1",
                             dataMap
-                            |> WonderCommonlib.HashMapService.unsafeGet(
+                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Stove_1",
                                ),
                           ),
@@ -2129,8 +2129,8 @@ let _ =
           ((state, (imageUint8ArrayMap, _), rootGameObject)) =>
             AssembleWDBSystemTool.isImageUint8ArrayMapEqual(
               imageUint8ArrayMap,
-              WonderCommonlib.SparseMapService.createEmpty()
-              |> WonderCommonlib.SparseMapService.set(
+              WonderCommonlib.MutableSparseMapService.createEmpty()
+              |> WonderCommonlib.MutableSparseMapService.set(
                    0,
                    ("image/png", 23516),
                  ),
@@ -2147,12 +2147,12 @@ let _ =
           ((state, (imageUint8ArrayMap, _), rootGameObject)) =>
             AssembleWDBSystemTool.isImageUint8ArrayMapEqual(
               imageUint8ArrayMap,
-              WonderCommonlib.SparseMapService.createEmpty()
-              |> WonderCommonlib.SparseMapService.set(
+              WonderCommonlib.MutableSparseMapService.createEmpty()
+              |> WonderCommonlib.MutableSparseMapService.set(
                    0,
                    ("image/png", 427633),
                  )
-              |> WonderCommonlib.SparseMapService.set(
+              |> WonderCommonlib.MutableSparseMapService.set(
                    1,
                    ("image/png", 427633),
                  ),

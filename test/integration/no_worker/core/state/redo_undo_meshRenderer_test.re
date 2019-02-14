@@ -170,8 +170,8 @@ let _ =
           let (currentState, _, _) =
             MeshRendererTool.createBasicMaterialGameObject(currentState);
           (
-            MeshRendererTool.getBasicMaterialRenderArray(state),
-            MeshRendererTool.getLightMaterialRenderArray(state),
+            MeshRendererTool.getBasicMaterialRenderGameObjectArray(state),
+            MeshRendererTool.getLightMaterialRenderGameObjectArray(state),
           )
           |> expect == ([|gameObject1|], [|gameObject2|]);
         },

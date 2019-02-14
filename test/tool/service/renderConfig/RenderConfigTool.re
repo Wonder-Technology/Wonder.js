@@ -163,10 +163,54 @@ let buildRenderConfig =
         }
       ]
     }
+  ],
+  "no_material_shaders": [
+    {
+      "name": "outline_draw_origin_gameObjects",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "modelMatrix_noInstance"
+        },
+        {
+          "name": "outline_origin"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
+    },
+    {
+      "name": "outline_draw_expand_gameObjects",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "normal"
+        },
+        {
+          "name": "outline_scaled_modelMatrix"
+        },
+        {
+          "name": "outline_expand"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
+    }
   ]
 }
         |},
       ~shaderLibs={|
+
 [
   {
     "name": "common",
@@ -317,6 +361,12 @@ let buildRenderConfig =
           "from": "basicMaterial"
         },
         {
+          "name": "u_alpha",
+          "field": "alpha",
+          "type": "float",
+          "from": "basicMaterial"
+        },
+        {
           "name": "u_mapSampler",
           "field": "map",
           "type": "sampler2D",
@@ -339,6 +389,12 @@ let buildRenderConfig =
           "name": "u_color",
           "field": "color",
           "type": "float3",
+          "from": "basicMaterial"
+        },
+        {
+          "name": "u_alpha",
+          "field": "alpha",
+          "type": "float",
           "from": "basicMaterial"
         }
       ]
@@ -687,6 +743,61 @@ let buildRenderConfig =
     ]
   },
   {
+    "name": "outline_expand",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_outline_expand_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_outline_expand_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_outlineColor",
+          "from": "no_material_shader",
+          "field": "outlineExpand",
+          "type": "float3"
+        }
+      ]
+    }
+  },
+  {
+    "name": "outline_scaled_modelMatrix",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "modelMatrix_noInstance_vertex"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_mMatrix",
+          "field": "mMatrix",
+          "type": "mat4",
+          "from": "expand_model"
+        }
+      ]
+    }
+  },
+  {
+    "name": "outline_origin",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_outline_origin_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_outline_origin_fragment"
+      }
+    ]
+  },
+  {
     "name": "end",
     "variables": {
       "attributes": [
@@ -699,11 +810,12 @@ let buildRenderConfig =
 ]
 
 
+
         |},
-      ()
+      (),
     ) => (
   shaders,
-  shaderLibs
+  shaderLibs,
 );
 
 let create = ((shaders, shaderLibs), state: StateDataMainType.state) => {
@@ -711,20 +823,22 @@ let create = ((shaders, shaderLibs), state: StateDataMainType.state) => {
   renderConfigRecord:
     Some({
       shaders: convertShadersToRecord(shaders |> Js.Json.parseExn),
-      shaderLibs: convertShaderLibsToRecord(shaderLibs |> Js.Json.parseExn)
-    })
+      shaderLibs: convertShaderLibsToRecord(shaderLibs |> Js.Json.parseExn),
+    }),
 };
 
-let getRecord = (state) => RecordRenderConfigMainService.getRecord(state);
+let getRecord = state => RecordRenderConfigMainService.getRecord(state);
 
-let getShaders = (state) =>
+let getShaders = state =>
   GetDataRenderConfigService.getShaders(
-    InitBasicMaterialStateTool.createStateWithoutMaterialData(state).renderConfigRecord
+    InitBasicMaterialStateTool.createStateWithoutMaterialData(state).
+      renderConfigRecord,
   );
 
-let getShaderLibs = (state) =>
+let getShaderLibs = state =>
   GetDataRenderConfigService.getShaderLibs(
-    InitBasicMaterialStateTool.createStateWithoutMaterialData(state).renderConfigRecord
+    InitBasicMaterialStateTool.createStateWithoutMaterialData(state).
+      renderConfigRecord,
   );
 
 let getBasicMaterialShaderLibRecordArr = GetShaderLibDataArrayInitBasicMaterialService.getMaterialShaderLibDataArr;

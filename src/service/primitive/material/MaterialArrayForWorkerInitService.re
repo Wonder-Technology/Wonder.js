@@ -6,11 +6,11 @@ let removeDisposedOnesFromMaterialArrayForWorkerInit =
     let materialMap =
       DisposeECSService.buildMapFromArray(
         materialDataArray |> Js.Array.map(((_, material)) => material),
-        WonderCommonlib.SparseMapService.createEmpty(),
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
       );
     materialArrayForWorkerInit
     |> Js.Array.filter(material =>
-         ! (materialMap |> WonderCommonlib.SparseMapService.has(material))
+         ! (materialMap |> WonderCommonlib.MutableSparseMapService.has(material))
        );
   };
 

@@ -1,5 +1,5 @@
 type renderObjectRecord = {
-  renderArray: array(int),
+  renderIndexArray: array(int),
   transformIndices: Js.Typed_array.Uint32Array.t,
   materialIndices: Js.Typed_array.Uint32Array.t,
   meshRendererIndices: Js.Typed_array.Uint32Array.t,

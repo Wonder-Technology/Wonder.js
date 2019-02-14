@@ -126,6 +126,14 @@ let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
 
 let isSupportRenderWorkerAndSharedArrayBuffer = WorkerDetectAPI.isSupportRenderWorkerAndSharedArrayBuffer;
 
+let setStencilOp = DeviceManagerAPI.setStencilOp;
+
+let setStencilFunc = DeviceManagerAPI.setStencilFunc;
+
+let setStencilMask = DeviceManagerAPI.setStencilMask;
+
+let setStencilTest = DeviceManagerAPI.setStencilTest;
+
 let setSide = DeviceManagerAPI.setSide;
 
 let setScissorTest = DeviceManagerAPI.setScissorTest;
@@ -192,7 +200,11 @@ let onKeyboardEvent = ManageEventAPI.onKeyboardEvent;
 
 let onMouseEvent = ManageEventAPI.onMouseEvent;
 
-let getPointDragEventName = NameEventAPI.getPointDragEventName;
+let getPointDragDropEventName = NameEventAPI.getPointDragDropEventName;
+
+let getPointDragOverEventName = NameEventAPI.getPointDragOverEventName;
+
+let getPointDragStartEventName = NameEventAPI.getPointDragStartEventName;
 
 let getPointScaleEventName = NameEventAPI.getPointScaleEventName;
 
@@ -358,6 +370,10 @@ let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCame
 
 let createGameObject = GameObjectAPI.createGameObject;
 
+let hasGeometryIndices32 = GeometryAPI.hasGeometryIndices32;
+
+let hasGeometryIndices16 = GeometryAPI.hasGeometryIndices16;
+
 let hasGeometryIndices = GeometryAPI.hasGeometryIndices;
 
 let hasGeometryTexCoords = GeometryAPI.hasGeometryTexCoords;
@@ -380,9 +396,9 @@ let setGeometryIndices32 = GeometryAPI.setGeometryIndices32;
 
 let getGeometryIndices32 = GeometryAPI.getGeometryIndices32;
 
-let setGeometryIndices = GeometryAPI.setGeometryIndices;
+let setGeometryIndices16 = GeometryAPI.setGeometryIndices16;
 
-let getGeometryIndices = GeometryAPI.getGeometryIndices;
+let getGeometryIndices16 = GeometryAPI.getGeometryIndices16;
 
 let setGeometryNormals = GeometryAPI.setGeometryNormals;
 
@@ -395,6 +411,12 @@ let getGeometryTexCoords = GeometryAPI.getGeometryTexCoords;
 let setGeometryVertices = GeometryAPI.setGeometryVertices;
 
 let getGeometryVertices = GeometryAPI.getGeometryVertices;
+
+let createPlaneGeometry = GeometryAPI.createPlaneGeometry;
+
+let createConeGeometry = GeometryAPI.createConeGeometry;
+
+let createCylinderGeometry = GeometryAPI.createCylinderGeometry;
 
 let createSphereGeometry = GeometryAPI.createSphereGeometry;
 
@@ -458,6 +480,36 @@ let registerNoWorkerLoopJob = JobAPI.registerNoWorkerLoopJob;
 
 let registerNoWorkerInitJob = JobAPI.registerNoWorkerInitJob;
 
+let resetDisposeCount = ReallocateCPUMemoryJobAPI.resetDisposeCount;
+
+let initGeometryBufferData = ReallocateCPUMemoryJobAPI.initGeometryBufferData;
+
+let reAllocateToBuffer = ReallocateCPUMemoryJobAPI.reAllocateToBuffer;
+
+let isGeometryBufferNearlyFull = ReallocateCPUMemoryJobAPI.isGeometryBufferNearlyFull;
+
+let isDisposeTooMany = ReallocateCPUMemoryJobAPI.isDisposeTooMany;
+
+let reallocateGameObjectByDisposeCount = ReallocateCPUMemoryJobAPI.reallocateGameObjectByDisposeCount;
+
+let draw = RenderJobAPI.draw;
+
+let sendUniformRenderObjectMaterialData = RenderJobAPI.sendUniformRenderObjectMaterialData;
+
+let sendUniformRenderObjectModelData = RenderJobAPI.sendUniformRenderObjectModelData;
+
+let sendAttributeData = RenderJobAPI.sendAttributeData;
+
+let useByShaderIndex = RenderJobAPI.useByShaderIndex;
+
+let getShaderIndex = RenderJobAPI.getShaderIndex;
+
+let setGameObjectsNeedDrawOutline = JobDataAPI.setGameObjectsNeedDrawOutline;
+
+let setOutlineColor = JobDataAPI.setOutlineColor;
+
+let getOutlineColor = JobDataAPI.getOutlineColor;
+
 let isMaxCount = DirectionLightAPI.isMaxCount;
 
 let setDirectionLightIsRender = DirectionLightAPI.setDirectionLightIsRender;
@@ -519,6 +571,14 @@ let reInitMaterials = BasicMaterialAPI.reInitMaterials;
 let setBasicMaterialName = BasicMaterialAPI.setBasicMaterialName;
 
 let unsafeGetBasicMaterialName = BasicMaterialAPI.unsafeGetBasicMaterialName;
+
+let setBasicMaterialAlpha = BasicMaterialAPI.setBasicMaterialAlpha;
+
+let getBasicMaterialAlpha = BasicMaterialAPI.getBasicMaterialAlpha;
+
+let setBasicMaterialIsDepthTest = BasicMaterialAPI.setBasicMaterialIsDepthTest;
+
+let getBasicMaterialIsDepthTest = BasicMaterialAPI.getBasicMaterialIsDepthTest;
 
 let removeBasicMaterialMap = BasicMaterialAPI.removeBasicMaterialMap;
 
@@ -602,7 +662,7 @@ let getAmbientLightColor = SceneAPI.getAmbientLightColor;
 
 let setScreenSize = ScreenAPI.setScreenSize;
 
-let clearShaderCache = ShaderAPI.clearShaderCache;
+let clearInitShaderCache = ShaderAPI.clearInitShaderCache;
 
 let markSourceInstanceModelMatrixIsStatic = SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic;
 
@@ -742,6 +802,14 @@ let getFps = TimeControllerAPI.getFps;
 
 let getGameTime = TimeControllerAPI.getGameTime;
 
+let changeChildOrder = TransformAPI.changeChildOrder;
+
+let rotateWorldOnAxis = TransformAPI.rotateWorldOnAxis;
+
+let rotateLocalOnAxis = TransformAPI.rotateLocalOnAxis;
+
+let getTransformLocalToWorldMatrixTypeArray = TransformAPI.getTransformLocalToWorldMatrixTypeArray;
+
 let lookAtWithUp = TransformAPI.lookAtWithUp;
 
 let lookAt = TransformAPI.lookAt;
@@ -784,6 +852,8 @@ let setTransformParentKeepOrder = TransformAPI.setTransformParentKeepOrder;
 
 let setTransformParent = TransformAPI.setTransformParent;
 
+let hasTransformParent = TransformAPI.hasTransformParent;
+
 let unsafeGetTransformParent = TransformAPI.unsafeGetTransformParent;
 
 let unsafeGetTransformGameObject = TransformAPI.unsafeGetTransformGameObject;
@@ -809,6 +879,14 @@ let setAPIJsObj = RecordAPIRenderWorkerService.setAPIJsObj;
 let getAPIJsObj = RecordAPIRenderWorkerService.getAPIJsObj;
 
 let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
+
+let setStencilOp = DeviceManagerAPI.setStencilOp;
+
+let setStencilFunc = DeviceManagerAPI.setStencilFunc;
+
+let setStencilMask = DeviceManagerAPI.setStencilMask;
+
+let setStencilTest = DeviceManagerAPI.setStencilTest;
 
 let setSide = DeviceManagerAPI.setSide;
 
@@ -980,26 +1058,6 @@ let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCame
 
 let createGameObject = GameObjectAPI.createGameObject;
 
-let removeWorkerMainLoopJob = JobAPI.removeWorkerMainLoopJob;
-
-let addWorkerMainLoopJob = JobAPI.addWorkerMainLoopJob;
-
-let removeWorkerMainInitJob = JobAPI.removeWorkerMainInitJob;
-
-let addWorkerMainInitJob = JobAPI.addWorkerMainInitJob;
-
-let removeNoWorkerLoopJob = JobAPI.removeNoWorkerLoopJob;
-
-let removeNoWorkerInitJob = JobAPI.removeNoWorkerInitJob;
-
-let addNoWorkerLoopJob = JobAPI.addNoWorkerLoopJob;
-
-let addNoWorkerInitJob = JobAPI.addNoWorkerInitJob;
-
-let registerNoWorkerLoopJob = JobAPI.registerNoWorkerLoopJob;
-
-let registerNoWorkerInitJob = JobAPI.registerNoWorkerInitJob;
-
 let setMeshRendererIsRender = MeshRendererAPI.setMeshRendererIsRender;
 
 let getMeshRendererIsRender = MeshRendererAPI.getMeshRendererIsRender;
@@ -1060,6 +1118,14 @@ let getFps = TimeControllerAPI.getFps;
 
 let getGameTime = TimeControllerAPI.getGameTime;
 
+let changeChildOrder = TransformAPI.changeChildOrder;
+
+let rotateWorldOnAxis = TransformAPI.rotateWorldOnAxis;
+
+let rotateLocalOnAxis = TransformAPI.rotateLocalOnAxis;
+
+let getTransformLocalToWorldMatrixTypeArray = TransformAPI.getTransformLocalToWorldMatrixTypeArray;
+
 let lookAtWithUp = TransformAPI.lookAtWithUp;
 
 let lookAt = TransformAPI.lookAt;
@@ -1101,6 +1167,8 @@ let unsafeGetTransformChildren = TransformAPI.unsafeGetTransformChildren;
 let setTransformParentKeepOrder = TransformAPI.setTransformParentKeepOrder;
 
 let setTransformParent = TransformAPI.setTransformParent;
+
+let hasTransformParent = TransformAPI.hasTransformParent;
 
 let unsafeGetTransformParent = TransformAPI.unsafeGetTransformParent;
 

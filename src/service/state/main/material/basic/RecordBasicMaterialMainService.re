@@ -18,13 +18,16 @@ let setAllTypeArrDataToDefault =
       basicMaterialCount: int,
       defaultShaderIndex,
       defaultColor,
-      (shaderIndices, colors, textureIndices, mapUnits),
+      (shaderIndices, colors, textureIndices, mapUnits, isDepthTests, alphas),
     ) => {
   let defaultUnit = MapUnitService.getDefaultUnit();
-  let (shaderIndices, colors, mapUnits) =
+  let defaultIsDepthTest = BufferMaterialService.getDefaultIsDepthTest();
+  let defaultAlpha = BufferBasicMaterialService.getDefaultAlpha();
+
+  let (shaderIndices, colors, mapUnits, isDepthTests, alphas) =
     WonderCommonlib.ArrayService.range(0, basicMaterialCount - 1)
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. (shaderIndices, colors, mapUnits), index) => (
+         (. (shaderIndices, colors, mapUnits, isDepthTests, alphas), index) => (
            ShaderIndicesService.setShaderIndex(.
              index,
              defaultShaderIndex,
@@ -32,14 +35,18 @@ let setAllTypeArrDataToDefault =
            ),
            setColor(index, defaultColor, colors),
            setMapUnit(. index, defaultUnit, mapUnits),
+           setIsDepthTest(index, defaultIsDepthTest, isDepthTests),
+           setAlpha(index, defaultAlpha, alphas),
          ),
-         (shaderIndices, colors, mapUnits),
+         (shaderIndices, colors, mapUnits, isDepthTests, alphas),
        );
   (
     shaderIndices,
     colors,
     textureIndices |> Js.Typed_array.Uint32Array.fillInPlace(0),
     mapUnits,
+    isDepthTests,
+    alphas,
   );
 };
 
@@ -48,14 +55,22 @@ let _setAllTypeArrDataToDefault =
       basicMaterialCount: int,
       defaultShaderIndex,
       defaultColor,
-      (buffer, shaderIndices, colors, textureIndices, mapUnits),
+      (
+        buffer,
+        shaderIndices,
+        colors,
+        textureIndices,
+        mapUnits,
+        isDepthTests,
+        alphas,
+      ),
     ) => (
   buffer,
   setAllTypeArrDataToDefault(
     basicMaterialCount,
     defaultShaderIndex,
     defaultColor,
-    (shaderIndices, colors, textureIndices, mapUnits),
+    (shaderIndices, colors, textureIndices, mapUnits, isDepthTests, alphas),
   ),
 );
 
@@ -67,13 +82,21 @@ let _initBufferData =
       defaultColor,
     ) => {
   let buffer = createBuffer(basicMaterialCount, textureCountPerMaterial);
-  let (shaderIndices, colors, textureIndices, mapUnits) =
+  let (shaderIndices, colors, textureIndices, mapUnits, isDepthTests, alphas) =
     CreateTypeArrayBasicMaterialService.createTypeArrays(
       buffer,
       basicMaterialCount,
       textureCountPerMaterial,
     );
-  (buffer, shaderIndices, colors, textureIndices, mapUnits)
+  (
+    buffer,
+    shaderIndices,
+    colors,
+    textureIndices,
+    mapUnits,
+    isDepthTests,
+    alphas,
+  )
   |> _setAllTypeArrDataToDefault(
        basicMaterialCount,
        defaultShaderIndex,
@@ -85,7 +108,10 @@ let create = ({settingRecord} as state) => {
   let defaultShaderIndex =
     DefaultTypeArrayValueService.getDefaultShaderIndex();
   let defaultColor = [|1., 1., 1.|];
-  let (buffer, (shaderIndices, colors, textureIndices, mapUnits)) =
+  let (
+    buffer,
+    (shaderIndices, colors, textureIndices, mapUnits, isDepthTests, alphas),
+  ) =
     _initBufferData(
       BufferSettingService.getBasicMaterialCount(settingRecord),
       BufferSettingService.getTextureCountPerMaterial(settingRecord),
@@ -100,10 +126,13 @@ let create = ({settingRecord} as state) => {
       colors,
       textureIndices,
       mapUnits,
+      isDepthTests,
+      alphas,
       defaultColor,
-      nameMap: WonderCommonlib.SparseMapService.createEmpty(),
-      emptyMapUnitArrayMap: WonderCommonlib.SparseMapService.createEmpty(),
-      gameObjectsMap: WonderCommonlib.SparseMapService.createEmpty(),
+      nameMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      emptyMapUnitArrayMap:
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+      gameObjectsMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
       materialArrayForWorkerInit: WonderCommonlib.ArrayService.createEmpty(),
     });
@@ -118,6 +147,8 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         colors,
         textureIndices,
         mapUnits,
+        isDepthTests,
+        alphas,
         defaultColor,
         nameMap,
         emptyMapUnitArrayMap,
@@ -157,12 +188,24 @@ let deepCopyForRestore = ({settingRecord} as state) => {
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
                index * getMapUnitsSize(),
              ),
-        nameMap: nameMap |> SparseMapService.copy,
+        isDepthTests:
+          isDepthTests
+          |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
+               index * getIsDepthTestsSize(),
+             ),
+        alphas:
+          alphas
+          |> CopyTypeArrayService.copyFloat32ArrayWithEndIndex(
+               index * getAlphasSize(),
+             ),
+        nameMap: nameMap |> WonderCommonlib.MutableSparseMapService.copy,
         defaultColor,
         emptyMapUnitArrayMap:
-          emptyMapUnitArrayMap |> CopyTypeArrayService.deepCopyArrayArray,
+          emptyMapUnitArrayMap
+          |> CopyTypeArrayService.deepCopyMutableSparseMapOfArray,
         gameObjectsMap:
-          gameObjectsMap |> CopyTypeArrayService.deepCopyArrayArray,
+          gameObjectsMap
+          |> CopyTypeArrayService.deepCopyMutableSparseMapOfArray,
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
         materialArrayForWorkerInit:
           materialArrayForWorkerInit |> Js.Array.copy,

@@ -1,36 +1,41 @@
 open BasicCameraViewType;
 
 let isActive = (cameraView, {isActiveMap}) =>
-  switch (isActiveMap |> WonderCommonlib.SparseMapService.get(cameraView)) {
+  switch (
+    isActiveMap |> WonderCommonlib.MutableSparseMapService.get(cameraView)
+  ) {
   | None => false
   | Some(isActive) => isActive
   };
 
 let _setAllNotActive = isActiveMap =>
-  isActiveMap |> SparseMapService.mapValid((. value) => false);
+  isActiveMap
+  |> WonderCommonlib.MutableSparseMapService.mapValid((. value) => false);
 
 let active = (cameraView, {isActiveMap} as record) => {
   ...record,
   isActiveMap:
     _setAllNotActive(isActiveMap)
-    |> WonderCommonlib.SparseMapService.set(cameraView, true),
+    |> WonderCommonlib.MutableSparseMapService.set(cameraView, true),
 };
 
 let unactive = (cameraView, {isActiveMap} as record) => {
   ...record,
   isActiveMap:
-    isActiveMap |> WonderCommonlib.SparseMapService.set(cameraView, false),
+    isActiveMap
+    |> WonderCommonlib.MutableSparseMapService.set(cameraView, false),
 };
 
 let setActive = (cameraView, active, {isActiveMap} as record) => {
   ...record,
   isActiveMap:
-    isActiveMap |> WonderCommonlib.SparseMapService.set(cameraView, active),
+    isActiveMap
+    |> WonderCommonlib.MutableSparseMapService.set(cameraView, active),
 };
 
 let _getActiveCameraViews = ({isActiveMap} as record) =>
   isActiveMap
-  |> SparseMapService.reducei(
+  |> WonderCommonlib.MutableSparseMapService.reduceiValid(
        (. arr, isActive, cameraView) =>
          isActive === true ? arr |> ArrayService.push(cameraView) : arr,
        [||],
@@ -46,7 +51,7 @@ let _getActiveCameraViews = ({isActiveMap} as record) =>
                    ~actual={j|not|j},
                  ),
                  () =>
-                 r |> SparseMapService.length <= 1
+                 r |> Js.Array.length <= 1
                )
              )
            )

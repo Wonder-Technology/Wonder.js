@@ -27,7 +27,7 @@ let _ =
           getGeometryVertices(geometry, state),
           getGeometryNormals(geometry, state),
           getGeometryTexCoords(geometry, state),
-          getGeometryIndices(geometry, state),
+          getGeometryIndices16(geometry, state),
         )
         |>
         expect == (

@@ -1,1 +1,0 @@
-type shaderRecord = {mutable usedShaderIndexArray: array(int)};

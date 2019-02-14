@@ -678,3 +678,90 @@ let setLookAt = (eye, center, up) => {
     1.,
   |]);
 };
+
+let scale = ((scaleX, scaleY, scaleZ), mat: Float32Array.t, resultFloat32Arr) => {
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    0,
+    Float32Array.unsafe_get(mat, 0) *. scaleX,
+  );
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    1,
+    Float32Array.unsafe_get(mat, 1) *. scaleX,
+  );
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    2,
+    Float32Array.unsafe_get(mat, 2) *. scaleX,
+  );
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    3,
+    Float32Array.unsafe_get(mat, 3) *. scaleX,
+  );
+
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    4,
+    Float32Array.unsafe_get(mat, 4) *. scaleY,
+  );
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    5,
+    Float32Array.unsafe_get(mat, 5) *. scaleY,
+  );
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    6,
+    Float32Array.unsafe_get(mat, 6) *. scaleY,
+  );
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    7,
+    Float32Array.unsafe_get(mat, 7) *. scaleY,
+  );
+
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    8,
+    Float32Array.unsafe_get(mat, 8) *. scaleZ,
+  );
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    9,
+    Float32Array.unsafe_get(mat, 9) *. scaleZ,
+  );
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    10,
+    Float32Array.unsafe_get(mat, 10) *. scaleZ,
+  );
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    11,
+    Float32Array.unsafe_get(mat, 11) *. scaleZ,
+  );
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    12,
+    Float32Array.unsafe_get(mat, 12),
+  );
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    13,
+    Float32Array.unsafe_get(mat, 13),
+  );
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    14,
+    Float32Array.unsafe_get(mat, 14),
+  );
+  Float32Array.unsafe_set(
+    resultFloat32Arr,
+    15,
+    Float32Array.unsafe_get(mat, 15),
+  );
+
+  resultFloat32Arr;
+};

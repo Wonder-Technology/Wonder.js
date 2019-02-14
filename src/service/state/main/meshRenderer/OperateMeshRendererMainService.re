@@ -42,14 +42,10 @@ let _removeFromRenderGameObjectMap =
   ...meshRendererRecord,
   basicMaterialRenderGameObjectMap:
     basicMaterialRenderGameObjectMap
-    |> Obj.magic
-    |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
-    |> Obj.magic,
+    |> WonderCommonlib.MutableSparseMapService.deleteVal(meshRenderer),
   lightMaterialRenderGameObjectMap:
     lightMaterialRenderGameObjectMap
-    |> Obj.magic
-    |> WonderCommonlib.SparseMapService.deleteVal(meshRenderer)
-    |> Obj.magic,
+    |> WonderCommonlib.MutableSparseMapService.deleteVal(meshRenderer),
 };
 
 let setIsRender = (meshRenderer, isRender: bool, {gameObjectRecord} as state) =>

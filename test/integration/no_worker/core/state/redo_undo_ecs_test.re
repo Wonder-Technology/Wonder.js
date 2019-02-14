@@ -174,7 +174,7 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("deepCopyForRestore", () => {
-      describe("deep copy material record", () => {
+      describe("deep copy material record", () =>
         describe("test basic material", () => {
           test("shadow copy nameMap, aterialArrayForWorkerInit", () =>
             StateDataMainType.(
@@ -207,13 +207,13 @@ let _ =
             let copiedOriginEmptyMapUnitArrayMap =
               originEmptyMapUnitArrayMap |> Js.Array.copy;
             gameObjectsMap
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  basicMaterial1,
                  originGameObjectsArr,
                )
             |> ignore;
             emptyMapUnitArrayMap
-            |> WonderCommonlib.SparseMapService.set(
+            |> WonderCommonlib.MutableSparseMapService.set(
                  basicMaterial1,
                  originEmptyMapUnitArrayMap,
                )
@@ -223,20 +223,28 @@ let _ =
               BasicMaterialTool.getRecord(copiedState);
             let arr =
               gameObjectsMap
-              |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1);
+              |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                   basicMaterial1,
+                 );
             Array.unsafe_set(arr, 0, 2);
             let arr =
               emptyMapUnitArrayMap
-              |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1);
+              |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                   basicMaterial1,
+                 );
             Array.unsafe_set(arr, 0, 4);
 
             let {gameObjectsMap, emptyMapUnitArrayMap} =
               BasicMaterialTool.getRecord(state);
             (
               gameObjectsMap
-              |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1),
+              |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                   basicMaterial1,
+                 ),
               emptyMapUnitArrayMap
-              |> WonderCommonlib.SparseMapService.unsafeGet(basicMaterial1),
+              |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                   basicMaterial1,
+                 ),
             )
             |>
             expect == (
@@ -281,9 +289,35 @@ let _ =
               state,
             )
           );
-        });
-
-      });
+          test("copy isDepthTests", () =>
+            RedoUndoTool.testCopyTypeArraySingleValue(
+              (
+                BasicMaterialTool.createGameObject,
+                (material, state) =>
+                  BasicMaterialAPI.getBasicMaterialIsDepthTest(
+                    material,
+                    state,
+                  ),
+                BasicMaterialAPI.setBasicMaterialIsDepthTest,
+                () => (false, false),
+              ),
+              state,
+            )
+          );
+          test("copy alphas", () =>
+            RedoUndoTool.testCopyTypeArraySingleValue(
+              (
+                BasicMaterialTool.createGameObject,
+                (material, state) =>
+                  BasicMaterialAPI.getBasicMaterialAlpha(material, state),
+                BasicMaterialAPI.setBasicMaterialAlpha,
+                () => (1.5, 0.5),
+              ),
+              state,
+            )
+          );
+        })
+      );
 
       describe("deep copy texture record", () => {
         describe("deep copy basic source texture record", () =>
@@ -494,7 +528,7 @@ let _ =
           let {matrixFloat32ArrayMap} = SourceInstanceTool.getRecord(state);
           let originMatrixFloat32Array = Float32Array.make([|1.|]);
           matrixFloat32ArrayMap
-          |> WonderCommonlib.SparseMapService.set(
+          |> WonderCommonlib.MutableSparseMapService.set(
                sourceInstance1,
                originMatrixFloat32Array,
              )
@@ -504,11 +538,15 @@ let _ =
             SourceInstanceTool.getRecord(copiedState);
           let matrixFloat32Array =
             matrixFloat32ArrayMap
-            |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1);
+            |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                 sourceInstance1,
+               );
           Float32Array.unsafe_set(matrixFloat32Array, 0, 1000.) |> ignore;
           let {matrixFloat32ArrayMap} = SourceInstanceTool.getRecord(state);
           matrixFloat32ArrayMap
-          |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance1)
+          |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+               sourceInstance1,
+             )
           |> expect == originMatrixFloat32Array;
         });
         test(
@@ -707,13 +745,13 @@ let _ =
             copiedState.perspectiveCameraProjectionRecord;
           let record = {...record, index: 0};
           Js.Typed_array.Float32Array.unsafe_set(
-            pMatrixMap |> WonderCommonlib.SparseMapService.unsafeGet(0),
+            pMatrixMap |> WonderCommonlib.MutableSparseMapService.unsafeGet(0),
             1,
             10.0,
           );
           let oldPMatrix =
             state.perspectiveCameraProjectionRecord.pMatrixMap
-            |> WonderCommonlib.SparseMapService.unsafeGet(0);
+            |> WonderCommonlib.MutableSparseMapService.unsafeGet(0);
           Js.Typed_array.Float32Array.unsafe_get(oldPMatrix, 1)
           |> expect != 10.0;
         });
@@ -735,7 +773,7 @@ let _ =
         /* expect(1) == 1; */
       };
 
-      describe("restore material record to target state", () => {
+      describe("restore material record to target state", () =>
         describe("test basic material", () =>
           test("test restore typeArrays", () => {
             open BasicMaterialType;
@@ -780,12 +818,29 @@ let _ =
             let currentState =
               currentState
               |> BasicMaterialAPI.setBasicMaterialMap(material4, map2);
+            let currentState =
+              BasicMaterialAPI.setBasicMaterialIsDepthTest(
+                material4,
+                false,
+                currentState,
+              );
+            let currentState =
+              BasicMaterialAPI.setBasicMaterialAlpha(
+                material4,
+                0.5,
+                currentState,
+              );
+
             let currentState = AllMaterialTool.pregetGLSLData(currentState);
             let _ = MainStateTool.restore(currentState, copiedState);
+
             let defaultUnit = BasicSourceTextureTool.getDefaultUnit();
-            let {colors, textureIndices, mapUnits} =
+            let defaultIsDepthTest =
+              BufferMaterialService.getDefaultIsDepthTest();
+            let defaultAlpha = BasicMaterialTool.getDefaultAlpha();
+            let {colors, textureIndices, mapUnits, isDepthTests, alphas} =
               MainStateTool.unsafeGetState() |> BasicMaterialTool.getRecord;
-            (colors, textureIndices, mapUnits)
+            (colors, textureIndices, mapUnits, isDepthTests, alphas)
             |>
             expect == (
                         Float32Array.make([|
@@ -809,12 +864,22 @@ let _ =
                           defaultUnit,
                           defaultUnit,
                         |]),
+                        Uint8Array.make([|
+                          defaultIsDepthTest,
+                          defaultIsDepthTest,
+                          defaultIsDepthTest,
+                          defaultIsDepthTest,
+                        |]),
+                        Float32Array.make([|
+                          defaultAlpha,
+                          defaultAlpha,
+                          defaultAlpha,
+                          defaultAlpha,
+                        |]),
                       );
           })
-        );
-
-        
-      });
+        )
+      );
 
       describe("restore light record to target state", () => {
         let _prepareLightData = (createGameObjectFunc, state) => {
@@ -1320,12 +1385,12 @@ let _ =
             let index = 0;
             let typeArr = Float32Array.make([|1.|]);
             matrixFloat32ArrayMap
-            |> WonderCommonlib.SparseMapService.set(index, typeArr);
+            |> WonderCommonlib.MutableSparseMapService.set(index, typeArr);
             let _ = MainStateTool.restore(currentState, state);
             let {float32ArrayPoolMap}: typeArrayPoolRecord =
               MainStateTool.unsafeGetState().typeArrayPoolRecord;
             float32ArrayPoolMap
-            |> WonderCommonlib.SparseMapService.unsafeGet(
+            |> WonderCommonlib.MutableSparseMapService.unsafeGet(
                  typeArr |> Float32Array.length,
                )
             |> expect == [|typeArr|];
@@ -1339,8 +1404,8 @@ let _ =
           let {isSendTransformMatrixDataMap} =
             SourceInstanceTool.getRecord(state);
           isSendTransformMatrixDataMap
-          |> WonderCommonlib.SparseMapService.set(0, true)
-          |> WonderCommonlib.SparseMapService.set(1, false)
+          |> WonderCommonlib.MutableSparseMapService.set(0, true)
+          |> WonderCommonlib.MutableSparseMapService.set(1, false)
           |> ignore;
           let _ =
             MainStateTool.restore(
@@ -1349,7 +1414,9 @@ let _ =
             );
           let {isSendTransformMatrixDataMap} =
             SourceInstanceTool.getRecord(MainStateTool.unsafeGetState());
-          isSendTransformMatrixDataMap |> expect == [|false, false|];
+          isSendTransformMatrixDataMap
+          |> WonderCommonlib.SparseMapType.arrayNullableToArrayNotNullable
+          |> expect == [|false, false|];
         });
       });
       test("restore basicCameraView record to target state", () =>

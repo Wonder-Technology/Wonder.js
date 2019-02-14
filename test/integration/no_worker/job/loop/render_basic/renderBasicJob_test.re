@@ -12,7 +12,7 @@ let _ =
       state :=
         RenderJobsTool.initWithJobConfig(
           sandbox,
-          LoopRenderJobTool.buildNoWorkerJobConfig(),
+          RenderBasicJobTool.buildNoWorkerJobConfig(),
         );
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
@@ -72,6 +72,65 @@ let _ =
           drawElements |> expect |> toCalledOnce;
         })
       );
+    });
+
+    describe("set render object gl state", () => {
+      let _prepare = (sandbox, state) => {
+        let (state, gameObject, geometry, material, _) =
+          RenderBasicJobTool.prepareGameObject(sandbox, state);
+        let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+        (state, material);
+      };
+
+      describe("set isDepthTest", () => {
+        test("if is depth test, enable depth test", () => {
+          let (state, material) = _prepare(sandbox, state^);
+          let state =
+            BasicMaterialAPI.setBasicMaterialIsDepthTest(
+              material,
+              true,
+              state,
+            );
+          let enable = createEmptyStubWithJsObjSandbox(sandbox);
+          let getDepthTest = 1;
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(~sandbox, ~enable, ~getDepthTest, ()),
+               );
+
+          let state =
+            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+          enable |> withOneArg(getDepthTest) |> expect |> toCalledOnce;
+        });
+        test("else, disable depth test", () => {
+          let (state, material) = _prepare(sandbox, state^);
+          let state =
+            BasicMaterialAPI.setBasicMaterialIsDepthTest(
+              material,
+              false,
+              state,
+            );
+          let disable = createEmptyStubWithJsObjSandbox(sandbox);
+          let getDepthTest = 1;
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(
+                   ~sandbox,
+                   ~disable,
+                   ~getDepthTest,
+                   (),
+                 ),
+               );
+
+          let state =
+            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+          disable |> withOneArg(getDepthTest) |> expect |> toCalledOnce;
+        });
+      });
     });
 
     describe("use program", () => {
@@ -1861,7 +1920,7 @@ let _ =
             state,
           );
         let state = GameObjectAPI.initGameObject(gameObject1, state);
-        let state = GLSLSenderTool.clearShaderCache(state);
+        let state = GLSLSenderTool.clearInitShaderCache(state);
         let state = state |> DirectorTool.runWithDefaultTime;
 
         uniform1i |> withOneArg(pos) |> expect |> toCalledOnce;

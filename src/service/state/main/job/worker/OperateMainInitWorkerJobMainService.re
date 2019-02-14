@@ -22,7 +22,7 @@ let _buildStreamArr =
        ({name}: mainInitPipelineSubJob) =>
          ! (
            state.jobRecord.workerCustomMainInitRemovedDefaultJobMap
-           |> WonderCommonlib.HashMapService.has(name)
+           |> WonderCommonlib.MutableHashMapService.has(name)
          )
      )
   |> WonderCommonlib.ArrayService.reduceOneParam(

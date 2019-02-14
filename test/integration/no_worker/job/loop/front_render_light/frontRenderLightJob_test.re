@@ -12,7 +12,7 @@ let _ =
       state :=
         RenderJobsTool.initWithJobConfig(
           sandbox,
-          LoopRenderJobTool.buildNoWorkerJobConfig(),
+          FrontRenderLightJobTool.buildNoWorkerJobConfig(),
         );
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
@@ -194,7 +194,7 @@ let _ =
                            (-2.),
                          |]),
                        )
-                    |> setGeometryIndices(
+                    |> setGeometryIndices16(
                          geometry,
                          Uint16Array.make([|0, 2, 1, 2, 3, 1|]),
                        );
@@ -537,7 +537,7 @@ let _ =
           CameraTool.createCameraGameObject(state);
         (state, gameObject, material, cameraTransform);
       };
-      describe("test sended data per shader", () => {
+      describe("test send data per shader", () => {
         let _testSendShaderUniformDataOnlyOnce =
             (name, prepareSendUinformDataFunc, setFakeGlFunc) =>
           RenderJobsTool.testSendShaderUniformDataOnlyOnce(
@@ -861,45 +861,27 @@ let _ =
                     |> expect
                     |> toCalledWith([|
                          posArr[0] |> Obj.magic,
-                         0.07056365849307426,
-                         (-0.01377827256865152),
-                         0.997412116116255,
+                         0.07056365770709318,
+                         (-0.01377827170237498),
+                         0.9974121161485315,
                        |]);
                   })
                 );
 
                 describe("convert rotation to direction vector3", () => {
-                  test("test one light", () => {
-                    let (state, lightGameObject1, _, light1, _) =
-                      _prepareOne(sandbox, state^);
-                    let state =
-                      state
-                      |> TransformAPI.setTransformLocalRotation(
-                           GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                             lightGameObject1,
-                             state,
-                           ),
-                           (0.1, 10.5, 1.5, 1.),
-                         );
-                    let (state, posArr, (uniform1f, uniform3f)) =
-                      _setFakeGl(
-                        sandbox,
-                        [|"u_directionLights[0].direction"|],
-                        state,
-                      );
+                  test("test one light", () =>
+                    FrontRenderLightForNoWorkerAndWorkerJobTool.TestSendDirection.testOneLight(
+                      sandbox,
+                      state,
+                      _prepareOne,
+                      (sandbox, callArgArr, uniform3f, state) => {
+                        let state = state |> RenderJobsTool.init;
+                        let state = state |> DirectorTool.runWithDefaultTime;
 
-                    let state = state |> RenderJobsTool.init;
-                    let state = state |> DirectorTool.runWithDefaultTime;
-
-                    uniform3f
-                    |> expect
-                    |> toCalledWith([|
-                         posArr[0] |> Obj.magic,
-                         21.29999999197162,
-                         31.300000005352253,
-                         (-219.5200021448914),
-                       |]);
-                  });
+                        uniform3f |> expect |> toCalledWith(callArgArr);
+                      },
+                    )
+                  );
                   test("test four lights", () => {
                     let (
                       state,
@@ -983,27 +965,27 @@ let _ =
                     expect == (
                                 [
                                   posArr[0] |> Obj.magic,
-                                  21.29999999197162,
-                                  31.300000005352253,
-                                  (-219.5200021448914),
+                                  0.0809289658069698,
+                                  0.7083167921793907,
+                                  (-0.7012402045020751),
                                 ],
                                 [
                                   posArr[1] |> Obj.magic,
-                                  24.30000006876835,
-                                  29.299999954154437,
-                                  (-221.91999913671927),
+                                  0.13442483321879434,
+                                  0.6415023904668499,
+                                  (-0.7552513801638607),
                                 ],
                                 [
                                   posArr[2] |> Obj.magic,
-                                  27.29999987738473,
-                                  27.300000081743512,
-                                  (-228.31999618530273),
+                                  0.16459718450045202,
+                                  0.5214977228899428,
+                                  (-0.8372263086377114),
                                 ],
                                 [
                                   posArr[3] |> Obj.magic,
-                                  30.299999741794302,
-                                  25.30000017213713,
-                                  (-238.71999996955168),
+                                  0.17317784447167245,
+                                  0.41627749786719925,
+                                  (-0.8925931206062305),
                                 ],
                               );
                   });

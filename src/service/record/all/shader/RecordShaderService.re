@@ -2,15 +2,21 @@ open ShaderType;
 
 let create = () => {
   index: 0,
-  shaderIndexMap: WonderCommonlib.HashMapService.createEmpty(),
-  materialsMap: WonderCommonlib.SparseMapService.createEmpty(),
-  usedShaderIndexArray: [||],
+  shaderLibShaderIndexMap: WonderCommonlib.MutableHashMapService.createEmpty(),
+  noMaterialShaderIndexMap:
+    WonderCommonlib.MutableHashMapService.createEmpty(),
+  materialsMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
 };
 
 let deepCopyForRestore =
-    ({index, materialsMap, shaderIndexMap, usedShaderIndexArray}) => {
+    (
+      {index, materialsMap, shaderLibShaderIndexMap, noMaterialShaderIndexMap},
+    ) => {
   index,
-  shaderIndexMap: shaderIndexMap |> HashMapService.copy,
-  materialsMap: materialsMap |> CopyTypeArrayService.deepCopyArrayArray,
-  usedShaderIndexArray: usedShaderIndexArray |> Js.Array.copy,
+  shaderLibShaderIndexMap:
+    shaderLibShaderIndexMap |> WonderCommonlib.MutableHashMapService.copy,
+  noMaterialShaderIndexMap:
+    noMaterialShaderIndexMap |> WonderCommonlib.MutableHashMapService.copy,
+  materialsMap:
+    materialsMap |> CopyTypeArrayService.deepCopyMutableSparseMapOfArray,
 };

@@ -200,11 +200,14 @@ let _createShiftKeyByCharCodeMap = [%raw
 
 let create = () => {
   domEventStreamSubscription: None,
-  mouseDomEventDataArrMap: WonderCommonlib.SparseMapService.createEmpty(),
-  keyboardDomEventDataArrMap: WonderCommonlib.SparseMapService.createEmpty(),
-  touchDomEventDataArrMap: WonderCommonlib.SparseMapService.createEmpty(),
-  customGlobalEventArrMap: WonderCommonlib.HashMapService.createEmpty(),
-  customGameObjectEventArrMap: WonderCommonlib.HashMapService.createEmpty(),
+  mouseDomEventDataArrMap:
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
+  keyboardDomEventDataArrMap:
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
+  touchDomEventDataArrMap:
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
+  customGlobalEventArrMap: WonderCommonlib.MutableHashMapService.createEmpty(),
+  customGameObjectEventArrMap: WonderCommonlib.MutableHashMapService.createEmpty(),
   mouseEventData: {
     lastX: None,
     lastY: None,
@@ -224,19 +227,25 @@ let create = () => {
 
 let _deepCopyDomEventArrMap = domEventArrMap =>
   domEventArrMap
-  |> SparseMapService.copy
-  |> Js.Array.map(arr => arr |> Js.Array.copy);
+  |> WonderCommonlib.MutableSparseMapService.copy
+  |> WonderCommonlib.MutableSparseMapService.mapValid((. arr) =>
+       arr |> Js.Array.copy
+     );
 
 let _deepCopyCustomGlobalEventArrMap = customGlobalEventArrMap =>
   customGlobalEventArrMap
-  |> Js.Dict.map((. arr) => arr |> SparseMapService.copy);
+  |> Js.Dict.map((. arr) =>
+       arr |> WonderCommonlib.MutableSparseMapService.copy
+     );
 
 let _deepCopyCustomGameObjectEventArrMap = customGameObjectEventArrMap =>
   customGameObjectEventArrMap
   |> Js.Dict.map((. eventArrMap) =>
        eventArrMap
-       |> SparseMapService.copy
-       |> Js.Array.map(arr => arr |> Js.Array.copy)
+       |> WonderCommonlib.MutableSparseMapService.copy
+       |> WonderCommonlib.MutableSparseMapService.mapValid((. arr) =>
+            arr |> Js.Array.copy
+          )
      );
 
 let deepCopyForRestore = ({eventRecord} as state) => {

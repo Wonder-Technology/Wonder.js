@@ -6,7 +6,7 @@ let prepareGameObject = (sandbox, (vertices, normals, texCoords, indices), state
     |> setGeometryVertices(geometry, vertices)
     |> setGeometryTexCoords(geometry, texCoords)
     |> setGeometryNormals(geometry, normals)
-    |> setGeometryIndices(geometry, indices);
+    |> setGeometryIndices16(geometry, indices);
   (state, gameObject, geometry)
 };
 

@@ -1,8 +1,8 @@
-type shader = int;
+type shaderIndex = int;
 
 type shaderRecord = {
   mutable index: int,
-  mutable shaderIndexMap: WonderCommonlib.HashMapService.t(shader),
-  mutable materialsMap: WonderCommonlib.SparseMapService.t(array(int)),
-  mutable usedShaderIndexArray: array(shader),
+  mutable noMaterialShaderIndexMap: WonderCommonlib.MutableHashMapService.t(shaderIndex),
+  mutable shaderLibShaderIndexMap: WonderCommonlib.MutableHashMapService.t(shaderIndex),
+  mutable materialsMap: WonderCommonlib.MutableSparseMapService.t(array(int)),
 };

@@ -115,7 +115,7 @@ let _ =
           let (state, clonedGameObjectArr) =
             _cloneGameObject(gameObject1, 2, state);
           state
-          |> MeshRendererTool.getBasicMaterialRenderArray
+          |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
           |>
           expect == (
                       [|gameObject1|]
@@ -740,6 +740,66 @@ let _ =
                   ),
                 )
                 |> expect == (map, map, map);
+              });
+              test("test isDepthTest", () => {
+                let (state, gameObject, material) = _prepare();
+                let isDepthTest = false;
+                let state =
+                  state
+                  |> BasicMaterialAPI.setBasicMaterialIsDepthTest(
+                       material,
+                       isDepthTest,
+                     );
+                let (state, _, clonedMaterialArr) =
+                  _clone(gameObject, state);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(~sandbox, ()),
+                     );
+                let state = AllMaterialTool.prepareForInit(state);
+                (
+                  BasicMaterialAPI.getBasicMaterialIsDepthTest(
+                    material,
+                    state,
+                  ),
+                  BasicMaterialAPI.getBasicMaterialIsDepthTest(
+                    clonedMaterialArr[0],
+                    state,
+                  ),
+                  BasicMaterialAPI.getBasicMaterialIsDepthTest(
+                    clonedMaterialArr[1],
+                    state,
+                  ),
+                )
+                |> expect == (isDepthTest, isDepthTest, isDepthTest);
+              });
+              test("test alpha", () => {
+                let (state, gameObject, material) = _prepare();
+                let alpha = 0.5;
+                let state =
+                  state
+                  |> BasicMaterialAPI.setBasicMaterialAlpha(material, alpha);
+                let (state, _, clonedMaterialArr) =
+                  _clone(gameObject, state);
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(~sandbox, ()),
+                     );
+                let state = AllMaterialTool.prepareForInit(state);
+                (
+                  BasicMaterialAPI.getBasicMaterialAlpha(material, state),
+                  BasicMaterialAPI.getBasicMaterialAlpha(
+                    clonedMaterialArr[0],
+                    state,
+                  ),
+                  BasicMaterialAPI.getBasicMaterialAlpha(
+                    clonedMaterialArr[1],
+                    state,
+                  ),
+                )
+                |> expect == (alpha, alpha, alpha);
               });
             });
             describe("test init cloned material", () =>
@@ -1559,25 +1619,25 @@ let _ =
             let (_, clonedTransformArr) =
               _getClonedTransformMatrixDataArr(gameObject1, 2, state);
             (
-              state |> unsafeGetTransformParent(clonedTransformArr[0]),
-              state |> unsafeGetTransformParent(clonedTransformArr[1]),
-              state |> unsafeGetTransformParent(clonedTransformArr[2]),
-              state |> unsafeGetTransformParent(clonedTransformArr[3]),
-              state |> unsafeGetTransformParent(clonedTransformArr[4]),
-              state |> unsafeGetTransformParent(clonedTransformArr[5]),
-              state |> unsafeGetTransformParent(clonedTransformArr[6]),
-              state |> unsafeGetTransformParent(clonedTransformArr[7]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[0]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[1]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[2]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[3]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[4]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[5]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[6]),
+              state |> TransformTool.getTransformParent(clonedTransformArr[7]),
             )
             |>
             expect == (
-                        Js.Undefined.empty,
-                        Js.Undefined.empty,
-                        Js.Undefined.return(clonedTransformArr[0]),
-                        Js.Undefined.return(clonedTransformArr[1]),
-                        Js.Undefined.return(clonedTransformArr[0]),
-                        Js.Undefined.return(clonedTransformArr[1]),
-                        Js.Undefined.return(clonedTransformArr[4]),
-                        Js.Undefined.return(clonedTransformArr[5]),
+                        None,
+                        None,
+                        Some(clonedTransformArr[0]),
+                        Some(clonedTransformArr[1]),
+                        Some(clonedTransformArr[0]),
+                        Some(clonedTransformArr[1]),
+                        Some(clonedTransformArr[4]),
+                        Some(clonedTransformArr[5]),
                       );
           });
           test(

@@ -7,7 +7,7 @@ open Js.Typed_array;
 let execJob = ({gameObjectRecord} as state) =>
   state
   |> SetRenderObjectBufferDataMainService.setData(
-       RenderArrayMeshRendererService.getLightMaterialRenderArray(
+       RenderArrayMeshRendererService.getLightMaterialRenderGameObjectArray(
          RecordMeshRendererMainService.getRecord(state),
        ),
        GetComponentGameObjectService.unsafeGetLightMaterialComponent,

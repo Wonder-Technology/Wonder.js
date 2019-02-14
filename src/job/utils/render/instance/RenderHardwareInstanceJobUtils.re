@@ -6,32 +6,37 @@ open RenderSourceInstanceType;
 
 open InstanceBufferRenderService;
 
+open GLSLSenderType;
+
 let _fillObjectInstanceData =
     (
       objectInstanceTransformDataTuple,
       matricesArrayForInstance,
       fillMatrixTypeArrFunc,
-      stateOffsetTuple,
+      getRenderDataSubState: SubStateGetRenderDataType.getRenderDataSubState,
+      offset: int,
     ) => {
-  let (state, offset) =
+  let _ =
     ObjectInstanceCollectionService.reduceObjectInstanceTransformCollection(
       objectInstanceTransformDataTuple,
-      stateOffsetTuple,
-      (. stateOffsetTuple, objectInstanceTransform) =>
+      offset,
+      (. offset, objectInstanceTransform) =>
       fillMatrixTypeArrFunc(.
         objectInstanceTransform,
         matricesArrayForInstance,
-        stateOffsetTuple,
+        getRenderDataSubState,
+        offset,
       )
     );
-  state;
+
+  ();
 };
 
 let _sendTransformMatrixDataBuffer =
     (
       (gl, extension),
       ({pos, size, getOffsetFunc}: instanceAttributeSendData, stride, index),
-      state,
+      sendRenderDataSubState: SubStateSendRenderDataType.sendRenderDataSubState,
     ) => {
   WonderWebgl.Gl.vertexAttribPointer(
     pos,
@@ -46,36 +51,50 @@ let _sendTransformMatrixDataBuffer =
   SendGLSLDataService.enableVertexAttribArray(
     gl,
     pos,
-    state.glslSenderRecord.vertexAttribHistoryArray,
+    sendRenderDataSubState.vertexAttribHistoryArray,
   );
-  state;
+  sendRenderDataSubState;
 };
 
 let _sendTransformMatrixDataBufferData =
-    (glDataTuple, shaderIndex, stride, state) =>
-  state.glslSenderRecord
+    (
+      glDataTuple,
+      shaderIndex,
+      stride,
+      sendRenderDataSubState,
+      {glslSenderRecord} as state,
+    ) => {
+  glslSenderRecord
   |> HandleAttributeConfigDataService.unsafeGetInstanceAttributeSendData(
        shaderIndex,
      )
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. state, sendData, index) =>
-         state
-         |> _sendTransformMatrixDataBuffer(
-              glDataTuple,
-              (sendData, stride, index),
-            ),
-       state,
+  |> WonderCommonlib.ArrayService.forEachi((. sendData, index) =>
+       sendRenderDataSubState
+       |> _sendTransformMatrixDataBuffer(
+            glDataTuple,
+            (sendData, stride, index),
+          )
      );
+
+  state;
+};
 
 let _updateAndSendTransformMatrixDataBufferData =
     (
       (gl, extension) as glDataTuple,
       shaderIndex,
       (stride, matricesArrayForInstance, matrixInstanceBuffer),
+      sendRenderDataSubState,
       state,
     ) => {
   updateData(gl, matricesArrayForInstance, matrixInstanceBuffer) |> ignore;
-  _sendTransformMatrixDataBufferData(glDataTuple, shaderIndex, stride, state);
+  _sendTransformMatrixDataBufferData(
+    glDataTuple,
+    shaderIndex,
+    stride,
+    sendRenderDataSubState,
+    state,
+  );
 };
 
 let _sendTransformMatrixData =
@@ -128,20 +147,29 @@ let _sendTransformMatrixData =
       ),
       state,
     );
-  fillMatrixTypeArrFunc(.
-    transformIndex,
-    matricesArrayForInstance,
-    (state, 0),
-  )
-  |> _fillObjectInstanceData(
-       objectInstanceTransformDataTuple,
-       matricesArrayForInstance,
-       fillMatrixTypeArrFunc,
-     )
+
+  let getRenderDataSubState =
+    CreateGetRenederDataSubStateRenderService.createState(state);
+  let _ =
+    fillMatrixTypeArrFunc(.
+      transformIndex,
+      matricesArrayForInstance,
+      getRenderDataSubState,
+      0,
+    )
+    |> _fillObjectInstanceData(
+         objectInstanceTransformDataTuple,
+         matricesArrayForInstance,
+         fillMatrixTypeArrFunc,
+         getRenderDataSubState,
+       );
+
+  state
   |> _updateAndSendTransformMatrixDataBufferData(
        (gl, extension),
        shaderIndex,
        (strideForSend, matricesArrayForInstance, matrixInstanceBuffer),
+       CreateSendRenederDataSubStateRenderService.createState(state),
      );
 };
 
@@ -180,10 +208,15 @@ let _sendStaticTransformMatrixData =
         ),
       )
       |> ignore;
+
+      let sendRenderDataSubState =
+        CreateSendRenederDataSubStateRenderService.createState(state);
+
       _sendTransformMatrixDataBufferData(
         (gl, extension),
         shaderIndex,
         strideForSend,
+        sendRenderDataSubState,
         state,
       );
     } :
@@ -360,11 +393,11 @@ let render =
 };
 
 let fillMatrixTypeArr =
-    (transformIndex, matricesArrayForInstance, (state, offset)) =>
+    (transformIndex, matricesArrayForInstance, state, offset) =>
   TypeArrayService.fillFloat32ArrayWithFloat32Array(
     (matricesArrayForInstance, offset),
     (
-      GetTransformDataRenderService.getLocalToWorldMatrixTypeArray(.
+      GetTransformDataGetRenderDataService.getLocalToWorldMatrixTypeArray(.
         transformIndex,
         state,
       ),

@@ -66,6 +66,27 @@ let unsafeGetTransformParent =
   unsafeGetParent(transform, state |> RecordTransformMainService.getRecord);
 };
 
+let hasTransformParent =
+    (transform: transform, state: StateDataMainType.state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              transform,
+              isAlive,
+              state |> RecordTransformMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  hasParent(transform, state |> RecordTransformMainService.getRecord);
+};
+
 let _checkParentAndChildTransformShouldAlive =
     (
       parent: Js.nullable(transform),
@@ -607,3 +628,79 @@ let lookAtWithUp =
 
   LookAtTransfromMainService.lookAt(~transform, ~target, ~up, ~state, ());
 };
+
+let getTransformLocalToWorldMatrixTypeArray =
+    (transform: transform, state: StateDataMainType.state) =>
+  UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(
+    transform,
+    state.globalTempRecord,
+    RecordTransformMainService.getRecord(state),
+  );
+
+let rotateLocalOnAxis =
+    (
+      transform: transform,
+      (angle, localAxis),
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              transform,
+              isAlive,
+              state |> RecordTransformMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  RotateTransformMainService.rotateLocalOnAxis(
+    transform,
+    (angle, localAxis),
+    state,
+  );
+};
+
+let rotateWorldOnAxis =
+    (
+      transform: transform,
+      (angle, localAxis),
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            AliveComponentService.checkComponentShouldAlive(
+              transform,
+              isAlive,
+              state |> RecordTransformMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  RotateTransformMainService.rotateWorldOnAxis(
+    transform,
+    (angle, localAxis),
+    state,
+  );
+};
+
+let changeChildOrder =
+    (sourceTransfrom, targetTransform, targetParentTransform, action, state) =>
+  HierachyTransformMainService.changeChildOrder(
+    sourceTransfrom,
+    targetTransform,
+    targetParentTransform,
+    action,
+    state,
+  );

@@ -110,7 +110,8 @@ let clone =
       count: int,
       isShareMaterial: bool,
       state: StateDataMainType.state,
-    ) => {
+    )
+    : (StateDataMainType.state, array(array(GameObjectPrimitiveType.gameObject))) => {
   WonderLog.Contract.requireCheck(
     () => {
       open WonderLog;

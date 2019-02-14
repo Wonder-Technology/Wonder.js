@@ -8,7 +8,7 @@
   let getChunk = (name: string, glslChunkRecord) =>
     glslChunkRecord
     |> _getGLSLChunkMap
-    |> WonderCommonlib.HashMapService.get(name)
+    |> WonderCommonlib.MutableHashMapService.get(name)
     |> Js.Option.getExn;
 
   let _buildChunk =
@@ -28,10 +28,68 @@
 
   let create = () =>
   
-    WonderCommonlib.HashMapService.{
+    WonderCommonlib.MutableHashMapService.{
       chunkMap:
         createEmpty()
         
+|> set("webgl1_outline_origin_vertex", _buildChunk(({|
+
+|},{|
+
+|}),{|
+
+|},({|
+
+|},{|
+
+|}),{|
+gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
+|}))
+
+|> set("webgl1_outline_origin_fragment", _buildChunk(({|
+
+|},{|
+
+|}),{|
+
+|},({|
+
+|},{|
+
+|}),{|
+gl_FragColor = vec4(1.0);
+|}))
+
+|> set("webgl1_outline_expand_vertex", _buildChunk(({|
+
+|},{|
+
+|}),{|
+
+|},({|
+
+|},{|
+
+|}),{|
+vec3 position = a_position.xyz + a_normal.xyz * 0.08;
+
+gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(position, 1.0);
+|}))
+
+|> set("webgl1_outline_expand_fragment", _buildChunk(({|
+
+|},{|
+
+|}),{|
+
+|},({|
+
+|},{|
+
+|}),{|
+gl_FragColor = vec4(u_outlineColor, 1.0);
+|}))
+
 |> set("webgl1_frontLight_vertex", _buildChunk(({|
 
 |},{|
@@ -701,6 +759,45 @@ mat3 normalMatrix = u_normalMatrix;
 mat4 mMatrix = u_mMatrix;
 |}))
 
+|> set("webgl1_rotation_gizmo_circle_for_editor_vertex", _buildChunk(({|
+
+|},{|
+
+|}),{|
+varying vec3 v_position;
+|},({|
+
+|},{|
+
+|}),{|
+v_position = a_position;
+
+gl_Position = u_pMatrix * u_vMatrix * mMatrix * vec4(a_position, 1.0);
+|}))
+
+|> set("webgl1_rotation_gizmo_circle_for_editor_fragment", _buildChunk(({|
+
+|},{|
+
+|}),{|
+varying vec3 v_position;
+|},({|
+bool isAngleBetweenVertexToCenterAndVertexToCameraLessThan90(vec3 vertexPos, vec3 cameraPosInLocalCoordSystem);
+|},{|
+bool isAngleBetweenVertexToCenterAndVertexToCameraLessThan90(vec3 vertexPos, vec3 cameraPosInLocalCoordSystem){
+return dot(
+normalize(-vertexPos),
+cameraPosInLocalCoordSystem - vertexPos
+) >= 0.0;
+}
+|}),{|
+if(isAngleBetweenVertexToCenterAndVertexToCameraLessThan90(v_position, u_cameraPosInLocalCoordSystem)){
+    discard;
+}
+
+gl_FragColor = vec4(u_color, u_alpha);
+|}))
+
 |> set("webgl1_setPos_mvp", _buildChunk(({|
 
 |},{|
@@ -885,7 +982,7 @@ gl_FragColor = vec4(totalColor.rgb, totalColor.a);
 |},{|
 
 |}),{|
-vec4 totalColor = vec4(u_color, 1.0);
+vec4 totalColor = vec4(u_color, u_alpha);
 |}))
 
 |> set("webgl1_basic_map_vertex", _buildChunk(({|
@@ -917,7 +1014,7 @@ varying vec2 v_mapCoord0;
 |},{|
 
 |}),{|
-vec4 totalColor = vec4(texture2D(u_mapSampler, v_mapCoord0).rgb * u_color, 1.0);
+vec4 totalColor = vec4(texture2D(u_mapSampler, v_mapCoord0).rgb * u_color, u_alpha);
 |}))
 
     };

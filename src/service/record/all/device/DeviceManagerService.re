@@ -56,6 +56,14 @@ let setColorWrite =
     };
   };
 
+let setDepthWrite = (gl, writeDepth: bool, {depthWrite} as record) =>
+  switch (depthWrite) {
+  | Some(oldWriteDepth) when oldWriteDepth === writeDepth => record
+  | _ =>
+    WonderWebgl.Gl.depthMask(writeDepth, gl);
+    {...record, depthWrite: Some(writeDepth)};
+  };
+
 let _setSide = (gl, targetSide) =>
   DeviceManagerType.(
     switch (targetSide) {
@@ -125,6 +133,47 @@ let setScissorOfGl = (gl, (x, y, width, height), {scissor} as record) =>
     WonderWebgl.Gl.scissor(x, y, width, height, gl);
     {...record, scissor: Some((x, y, width, height))};
   };
+
+let setStencilTest = (gl, targetStencilTest, record) => {
+  targetStencilTest ?
+    gl |> WonderWebgl.Gl.enable(WonderWebgl.Gl.getStencilTest(gl)) :
+    gl |> WonderWebgl.Gl.disable(WonderWebgl.Gl.getStencilTest(gl));
+
+  record;
+};
+
+let setStencilMask = (gl, targetStencilMask, record) => {
+  gl
+  |> WonderWebgl.Gl.stencilMask(
+       WonderWebgl.GlType.intToHex(targetStencilMask),
+     );
+
+  record;
+};
+
+let setStencilFunc =
+    (gl, targetStencilFunc, targetStencilRef, targetStencilMask, record) => {
+  gl
+  |> WonderWebgl.Gl.stencilFunc(
+       targetStencilFunc,
+       targetStencilRef,
+       WonderWebgl.GlType.intToHex(targetStencilMask),
+     );
+
+  record;
+};
+
+let setStencilOp =
+    (gl, targetStencilSFail, targetStencilDPFail, targetStencilDPPass, record) => {
+  gl
+  |> WonderWebgl.Gl.stencilOp(
+       targetStencilSFail,
+       targetStencilDPFail,
+       targetStencilDPPass,
+     );
+
+  record;
+};
 
 let clearBuffer = (gl, bit: int, record) => {
   let record = setColorWrite(gl, (true, true, true, true), record);

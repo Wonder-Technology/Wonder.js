@@ -28,7 +28,7 @@ let _ =
                 "if exceed max size, not add",
                 () => {
                   let maxSize = 1;
-                  let map = WonderCommonlib.SparseMapService.createEmpty();
+                  let map = WonderCommonlib.MutableSparseMapService.createEmpty();
                   let count = 1;
                   let typeArr1 = Float32Array.make([|1.|]);
                   let typeArr2 = Float32Array.make([|2.|]);
@@ -37,8 +37,8 @@ let _ =
                   let map =
                     [@bs] TypeArrayPoolTool.addFloat32TypeArrayToPool(typeArr2, maxSize, map);
                   map
-                  |> WonderCommonlib.SparseMapService.unsafeGet(count)
-                  |> SparseMapService.length
+                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(count)
+                  |> WonderCommonlib.MutableSparseMapService.length
                   |> expect == 1
                 }
               )
@@ -54,7 +54,7 @@ let _ =
                 "if exceed max size, not add",
                 () => {
                   let maxSize = 1;
-                  let map = WonderCommonlib.SparseMapService.createEmpty();
+                  let map = WonderCommonlib.MutableSparseMapService.createEmpty();
                   let count = 1;
                   let typeArr1 = Uint16Array.make([|1|]);
                   let typeArr2 = Uint16Array.make([|2|]);
@@ -63,8 +63,8 @@ let _ =
                   let map =
                     [@bs] TypeArrayPoolTool.addUint16TypeArrayToPool(typeArr2, maxSize, map);
                   map
-                  |> WonderCommonlib.SparseMapService.unsafeGet(count)
-                  |> SparseMapService.length
+                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(count)
+                  |> WonderCommonlib.MutableSparseMapService.length
                   |> expect == 1
                 }
               )

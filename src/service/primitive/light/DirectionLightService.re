@@ -1,2 +1,2 @@
 let getDirection = (index, directionMap) =>
-  WonderCommonlib.SparseMapService.unsafeGet(index, directionMap);
+  WonderCommonlib.MutableSparseMapService.unsafeGet(index, directionMap);

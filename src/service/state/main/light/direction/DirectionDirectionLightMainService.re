@@ -1,7 +1,7 @@
 open StateDataMainType;
 
 let getDirection = (index, {gameObjectRecord, globalTempRecord} as state) =>
-  UpdateTransformMainService.updateAndGetRotationTuple(
+  UpdateTransformMainService.updateAndGetEulerAnglesTuple(
     GetComponentGameObjectService.unsafeGetTransformComponent(
       GameObjectDirectionLightService.unsafeGetGameObject(
         index,
@@ -12,6 +12,7 @@ let getDirection = (index, {gameObjectRecord, globalTempRecord} as state) =>
     globalTempRecord,
     state |> RecordTransformMainService.getRecord,
   )
+  |> QuaternionService.setFromEulerAngles
   |> Vector3Service.transformQuat((0., 0., 1.));
 
 let buildDirectionMap = (getDirectionFunc, state) =>
@@ -19,9 +20,9 @@ let buildDirectionMap = (getDirectionFunc, state) =>
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. map, i) =>
          map
-         |> WonderCommonlib.SparseMapService.set(
+         |> WonderCommonlib.MutableSparseMapService.set(
               i,
               getDirectionFunc(i, state),
             ),
-       WonderCommonlib.SparseMapService.createEmpty(),
+       WonderCommonlib.MutableSparseMapService.createEmpty(),
      );

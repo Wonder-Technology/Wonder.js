@@ -5,7 +5,7 @@ let _getFuncTuple = () => (
     VerticesGeometryMainService.getVertices,
     NormalsGeometryMainService.getNormals,
     TexCoordsGeometryMainService.getTexCoords,
-    IndicesGeometryMainService.getIndices,
+    IndicesGeometryMainService.getIndices16,
     IndicesGeometryMainService.getIndices32,
   ),
   imageUint8Array => imageUint8Array,

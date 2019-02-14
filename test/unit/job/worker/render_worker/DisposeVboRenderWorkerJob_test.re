@@ -86,9 +86,9 @@ let _ =
              } =
                renderWorkerState.vboBufferRecord;
              (
-               vertexArrayBufferPool |> SparseMapService.length,
-               elementArrayBufferPool |> SparseMapService.length,
-               matrixInstanceBufferPool |> SparseMapService.length,
+               vertexArrayBufferPool |> WonderCommonlib.MutableSparseMapService.length,
+               elementArrayBufferPool |> WonderCommonlib.MutableSparseMapService.length,
+               matrixInstanceBufferPool |> WonderCommonlib.MutableSparseMapService.length,
              )
              |> expect == (3 * 3, 1 * 3, 1)
              |> resolve;
@@ -119,25 +119,25 @@ let _ =
                renderWorkerState.vboBufferRecord;
              (
                geometryVertexBufferMap
-               |> WonderCommonlib.SparseMapService.has(geometry1),
+               |> WonderCommonlib.MutableSparseMapService.has(geometry1),
                geometryNormalBufferMap
-               |> WonderCommonlib.SparseMapService.has(geometry1),
+               |> WonderCommonlib.MutableSparseMapService.has(geometry1),
                geometryElementArrayBufferMap
-               |> WonderCommonlib.SparseMapService.has(geometry1),
+               |> WonderCommonlib.MutableSparseMapService.has(geometry1),
                geometryVertexBufferMap
-               |> WonderCommonlib.SparseMapService.has(geometry2),
+               |> WonderCommonlib.MutableSparseMapService.has(geometry2),
                geometryNormalBufferMap
-               |> WonderCommonlib.SparseMapService.has(geometry2),
+               |> WonderCommonlib.MutableSparseMapService.has(geometry2),
                geometryElementArrayBufferMap
-               |> WonderCommonlib.SparseMapService.has(geometry2),
+               |> WonderCommonlib.MutableSparseMapService.has(geometry2),
                geometryVertexBufferMap
-               |> WonderCommonlib.SparseMapService.has(geometry3),
+               |> WonderCommonlib.MutableSparseMapService.has(geometry3),
                geometryNormalBufferMap
-               |> WonderCommonlib.SparseMapService.has(geometry3),
+               |> WonderCommonlib.MutableSparseMapService.has(geometry3),
                geometryElementArrayBufferMap
-               |> WonderCommonlib.SparseMapService.has(geometry3),
+               |> WonderCommonlib.MutableSparseMapService.has(geometry3),
                matrixInstanceBufferMap
-               |> WonderCommonlib.SparseMapService.has(sourceInstance4),
+               |> WonderCommonlib.MutableSparseMapService.has(sourceInstance4),
              )
              |>
              expect == (

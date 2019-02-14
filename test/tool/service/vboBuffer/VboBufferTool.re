@@ -33,22 +33,22 @@ let addVboBufferToGeometryBufferMapByRecord =
         geometryElementArrayBufferMap,
       } as vboBufferRecord: VboBufferType.vboBufferRecord,
     ) => {
-  WonderCommonlib.SparseMapService.set(
+  WonderCommonlib.MutableSparseMapService.set(
     geometryIndex,
     Obj.magic(0),
     geometryVertexBufferMap,
   );
-  WonderCommonlib.SparseMapService.set(
+  WonderCommonlib.MutableSparseMapService.set(
     geometryIndex,
     Obj.magic(1),
     geometryTexCoordBufferMap,
   );
-  WonderCommonlib.SparseMapService.set(
+  WonderCommonlib.MutableSparseMapService.set(
     geometryIndex,
     Obj.magic(2),
     geometryNormalBufferMap,
   );
-  WonderCommonlib.SparseMapService.set(
+  WonderCommonlib.MutableSparseMapService.set(
     geometryIndex,
     Obj.magic(3),
     geometryElementArrayBufferMap,
@@ -62,7 +62,7 @@ let addVboBufferToSourceInstanceBufferMapByRecord =
       {matrixInstanceBufferMap} as vboBufferRecord: VboBufferType.vboBufferRecord,
     ) => {
   open VboBufferType;
-  WonderCommonlib.SparseMapService.set(
+  WonderCommonlib.MutableSparseMapService.set(
     sourceInstanceIndex,
     Obj.magic(0),
     matrixInstanceBufferMap,
@@ -191,7 +191,7 @@ let getOrCreateGeometryElementArrayBuffer =
     ElementArrayBufferRenderService.getOrCreate16Buffer(
       gl,
       (geometryIndex, elementArrayBufferMap),
-      GetGeometryIndicesRenderService.getIndices(.
+      GetGeometryIndicesRenderService.getIndices16(.
         geometryIndex,
         renderState,
       ),

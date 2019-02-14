@@ -70,14 +70,6 @@ let update = (transform, {globalTempRecord} as state) => {
   state;
 };
 
-let updateAndGetLocalToWorldMatrixTypeArray =
-    (transform, state: StateDataMainType.state) =>
-  UpdateTransformMainService.updateAndGetLocalToWorldMatrixTypeArray(
-    transform,
-    state.globalTempRecord,
-    RecordTransformMainService.getRecord(state),
-  );
-
 let getDefaultLocalToWorldMatrix = (state: StateDataMainType.state) =>
   RecordTransformMainService.getRecord(state).defaultLocalToWorldMatrix;
 
@@ -129,7 +121,6 @@ let updateAndGetNormalMatrixTypeArray =
   );
 
 let dispose = (transform, state) => {
-  
   let state =
     GameObjectTool.disposeGameObjectTransformComponent(
       0,
@@ -151,7 +142,7 @@ let isDirty = (transform, state) =>
   );
 
 /* let {localToWorldMatrixMap} = getRecord(state);
-   ! (localToWorldMatrixMap |> WonderCommonlib.SparseMapService.has(transform)) */
+   ! (localToWorldMatrixMap |> WonderCommonlib.MutableSparseMapService.has(transform)) */
 let getTransformLocalPositionTypeArray = (transform, state) =>
   OperateTypeArrayTransformService.getLocalPositionTypeArray(
     transform,
@@ -199,3 +190,6 @@ let setAllTypeArrDataToDefault =
     );
   (localToWorldMatrices, localPositions, localRotations, localScales);
 };
+
+let getTransformParent = (transform, state) =>
+  HierachyTransformService.getParent(transform, getRecord(state));

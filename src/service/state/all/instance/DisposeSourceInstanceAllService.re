@@ -2,7 +2,7 @@ open DisposeComponentService;
 
 let disposeMatrixFloat32ArrayMap =
     (sourceInstance, maxBigTypeArrayPoolSize, matrixFloat32ArrayMap, typeArrayPoolRecord) => {
-  switch (matrixFloat32ArrayMap |> WonderCommonlib.SparseMapService.get(sourceInstance)) {
+  switch (matrixFloat32ArrayMap |> WonderCommonlib.MutableSparseMapService.get(sourceInstance)) {
   | Some(typeArr) =>
     [@bs]
     TypeArrayPoolService.addFloat32TypeArrayToPool(

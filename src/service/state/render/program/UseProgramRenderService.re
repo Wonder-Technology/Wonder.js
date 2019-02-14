@@ -6,12 +6,18 @@ open WonderWebgl.GlType;
 
 open WonderWebgl.Gl;
 
-let use = (gl, program: program, {programRecord} as state) =>
-  switch programRecord.lastUsedProgram {
+let _use = (gl, program: program, {programRecord} as state) =>
+  switch (programRecord.lastUsedProgram) {
   | Some(lastUsedProgram) when program === lastUsedProgram => state
   | _ =>
     programRecord.lastUsedProgram = Some(program);
     useProgram(program, gl);
     /* let state = state |> SendGLSLDataService.disableVertexAttribArray(gl); */
-    state
+    state;
   };
+
+let useByShaderIndex = (gl, shaderIndex, {programRecord} as state) => {
+  let program = ProgramService.unsafeGetProgram(shaderIndex, programRecord);
+
+  state |> _use(gl, program);
+};

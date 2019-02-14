@@ -1,8 +1,5 @@
 [
     {
-        "name": "scheduleLoop"
-    },
-    {
         "name": "tick"
     },
     {
@@ -23,7 +20,7 @@
     {
         "name": "clear_color",
         "flags": [
-            "#000000"
+            "#AAAAAA"
         ]
     },
     {
@@ -51,6 +48,9 @@
     },
     {
         "name": "reallocate_cpu_memory"
+    },
+    {
+        "name": "draw_outline"
     },
     {
         "name": "render_imgui"

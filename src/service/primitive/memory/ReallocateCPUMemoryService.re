@@ -1,1 +1,1 @@
-let isDisposed = (key, disposedMap) => disposedMap |> WonderCommonlib.SparseMapService.has(key);
+let isDisposed = (key, disposedMap) => disposedMap |> WonderCommonlib.MutableSparseMapService.has(key);

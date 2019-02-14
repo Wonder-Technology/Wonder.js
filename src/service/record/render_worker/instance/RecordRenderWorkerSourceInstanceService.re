@@ -4,9 +4,9 @@ let create = () => {
   objectInstanceTransformIndexMap: None,
   objectInstanceTransformCollections: None,
   isTransformStatics: None,
-  matrixFloat32ArrayMap: WonderCommonlib.SparseMapService.createEmpty(),
-  matrixInstanceBufferCapacityMap: WonderCommonlib.SparseMapService.createEmpty(),
-  isSendTransformMatrixDataMap: WonderCommonlib.SparseMapService.createEmpty()
+  matrixFloat32ArrayMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  matrixInstanceBufferCapacityMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  isSendTransformMatrixDataMap: WonderCommonlib.MutableSparseMapService.createEmpty()
 };
 
 let unsafeGetObjectInstanceTransformIndexMap = (record) =>

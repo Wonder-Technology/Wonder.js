@@ -160,7 +160,7 @@ let _loadBlobImageFromImageArrayBufferData =
 
          switch (
            loadBlobImageMap
-           |> WonderCommonlib.SparseMapService.get(imageIndex)
+           |> WonderCommonlib.MutableSparseMapService.get(imageIndex)
          ) {
          | Some(image) =>
            resultLoadedStreamChunkDataArr
@@ -194,7 +194,7 @@ let _loadBlobImageFromImageArrayBufferData =
                 |> ignore;
 
                 loadBlobImageMap
-                |> WonderCommonlib.SparseMapService.set(imageIndex, image)
+                |> WonderCommonlib.MutableSparseMapService.set(imageIndex, image)
                 |> ignore;
               })
            |> Most.map(_ => ())

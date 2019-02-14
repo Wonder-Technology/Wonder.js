@@ -15,8 +15,8 @@ external arrayBufferToSharedArrayBuffer :
   "%identity";
 
 external sparseMapImageBitmapToSparseMapImageElement :
-  WonderCommonlib.SparseMapService.t(imageBitmap) =>
-  WonderCommonlib.SparseMapService.t(WonderWebgl.DomExtendType.imageElement) =
+  WonderCommonlib.MutableSparseMapService.t(imageBitmap) =>
+  WonderCommonlib.MutableSparseMapService.t(WonderWebgl.DomExtendType.imageElement) =
   "%identity";
 
 external imageBitmapToImageElement :

@@ -3,18 +3,18 @@ open StateDataMainType;
 let create = () => {
   noWorkerInitJobList: [],
   noWorkerLoopJobList: [],
-  noWorkerCustomInitJobHandleMap: WonderCommonlib.HashMapService.createEmpty(),
-  noWorkerCustomLoopJobHandleMap: WonderCommonlib.HashMapService.createEmpty(),
+  noWorkerCustomInitJobHandleMap: WonderCommonlib.MutableHashMapService.createEmpty(),
+  noWorkerCustomLoopJobHandleMap: WonderCommonlib.MutableHashMapService.createEmpty(),
   workerCustomMainInitTargetJobMap:
-    WonderCommonlib.HashMapService.createEmpty(),
+    WonderCommonlib.MutableHashMapService.createEmpty(),
   workerCustomMainInitSourceJobMap:
-    WonderCommonlib.HashMapService.createEmpty(),
+    WonderCommonlib.MutableHashMapService.createEmpty(),
   workerCustomMainInitRemovedDefaultJobMap:
-    WonderCommonlib.HashMapService.createEmpty(),
+    WonderCommonlib.MutableHashMapService.createEmpty(),
   workerCustomMainLoopTargetJobMap:
-    WonderCommonlib.HashMapService.createEmpty(),
+    WonderCommonlib.MutableHashMapService.createEmpty(),
   workerCustomMainLoopSourceJobMap:
-    WonderCommonlib.HashMapService.createEmpty(),
+    WonderCommonlib.MutableHashMapService.createEmpty(),
   workerCustomMainLoopRemovedDefaultJobMap:
-    WonderCommonlib.HashMapService.createEmpty(),
+    WonderCommonlib.MutableHashMapService.createEmpty(),
 };

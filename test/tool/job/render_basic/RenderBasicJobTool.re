@@ -89,3 +89,40 @@ let prepareForDrawElements = (sandbox, state) => {
   let (state, _, _, _) = CameraTool.createCameraGameObject(state);
   (state, geometry, meshRenderer);
 };
+
+let buildNoWorkerJobConfig = () =>
+  NoWorkerJobConfigTool.buildNoWorkerJobConfig(
+    ~initPipelines=
+      {|
+[
+    {
+      "name": "default",
+      "jobs": [
+        {
+          "name": "init_camera"
+        },
+        {
+          "name": "start_time"
+        },
+        {
+          "name": "preget_glslData"
+        },
+        {
+          "name": "init_state"
+        },
+        {
+          "name": "init_basic_material"
+        },
+        {
+          "name": "init_texture"
+        }
+        ]
+    }
+]
+        |},
+    ~initJobs=
+      NoWorkerJobConfigTool.buildNoWorkerInitJobConfigWithoutInitMain(),
+    ~loopPipelines=NoWorkerJobConfigTool.buildNoWorkerLoopPipelineConfig(),
+    ~loopJobs=NoWorkerJobConfigTool.buildNoWorkerLoopJobConfig(),
+    (),
+  );

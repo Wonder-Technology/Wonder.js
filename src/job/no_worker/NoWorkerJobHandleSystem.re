@@ -13,6 +13,7 @@ let _getInitJobHandles = () => [
   ("init_imgui", InitIMGUIJob.execJob),
   ("init_texture", InitTextureJob.execJob),
   ("init_state", InitStateJob.execJob),
+  ("init_no_material_shader", InitNoMaterialShaderJob.execJob),
   ("init_basic_material", InitBasicMaterialJob.execJob),
   ("init_light_material", InitLightMaterialJob.execJob),
 ];
@@ -21,6 +22,7 @@ let _getLoopJobHandles = () => [
   ("tick", TickJob.execJob),
   ("update_transform", UpdateTransformJob.execJob),
   ("update_camera", UpdateCameraJob.execJob),
+  ("draw_outline", DrawOutlineJob.execJob),
   ("clear_color", ClearColorJob.execJob),
   ("clear_buffer", ClearBufferJob.execJob),
   ("clear_last_send_component", ClearLastSendComponentJob.execJob),

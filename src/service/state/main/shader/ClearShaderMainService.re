@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-let clearShaderCache = ({shaderRecord} as state) => {
+let clearInitShaderCache = ({shaderRecord} as state) => {
   ...state,
-  shaderRecord: ShaderIndexShaderService.clearShaderIndexMap(shaderRecord),
+  shaderRecord: ShaderLibShaderIndexShaderService.clearShaderIndexMap(shaderRecord),
 };

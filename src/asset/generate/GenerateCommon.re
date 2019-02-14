@@ -9,8 +9,8 @@ let checkShouldHasNoSlot = map =>
           ),
           () =>
           map
-          |> SparseMapService.getValidValues
-          |> SparseMapService.length == (map |> SparseMapService.length)
+          |> WonderCommonlib.MutableSparseMapService.getValidValues
+          |> WonderCommonlib.MutableSparseMapService.length == (map |> WonderCommonlib.MutableSparseMapService.length)
         )
       )
     )

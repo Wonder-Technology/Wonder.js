@@ -69,9 +69,9 @@ let _ =
               let (state, gameObject4, geometry4) = createGameObject(state);
               let state =
                 state
-                |> setGeometryIndices(geometry1, indices1)
-                |> setGeometryIndices(geometry3, indices3)
-                |> setGeometryIndices(geometry4, indices4)
+                |> setGeometryIndices16(geometry1, indices1)
+                |> setGeometryIndices16(geometry3, indices3)
+                |> setGeometryIndices16(geometry4, indices4)
                 |> setGeometryIndices32(geometry2, indices32_2);
 
               let state =
@@ -82,8 +82,8 @@ let _ =
                    );
 
               (
-                getGeometryIndices(geometry3, state),
-                getGeometryIndices(geometry4, state),
+                getGeometryIndices16(geometry3, state),
+                getGeometryIndices16(geometry4, state),
                 getGeometryIndices32(geometry2, state),
               )
               |> expect == (indices3, indices4, indices32_2);
@@ -113,12 +113,12 @@ let _ =
                 getGeometryVertices(geometry2, state),
                 getGeometryTexCoords(geometry2, state),
                 getGeometryNormals(geometry2, state),
-                getGeometryIndices(geometry2, state),
+                getGeometryIndices16(geometry2, state),
                 getGeometryIndices32(geometry2, state),
                 getGeometryVertices(geometry3, state),
                 getGeometryTexCoords(geometry3, state),
                 getGeometryNormals(geometry3, state),
-                getGeometryIndices(geometry3, state),
+                getGeometryIndices16(geometry3, state),
                 getGeometryIndices32(geometry3, state),
               )
               |>
@@ -158,13 +158,13 @@ let _ =
                      gameObject2,
                      geometry2,
                    );
-              let {vertices, texCoords, normals, indices, indices32} =
+              let {vertices, texCoords, normals, indices16, indices32} =
                 state |> GeometryTool.getRecord;
               (
                 vertices |> Float32Array.slice(~start=0, ~end_=10),
                 texCoords |> Float32Array.slice(~start=0, ~end_=10),
                 normals |> Float32Array.slice(~start=0, ~end_=10),
-                indices |> Uint16Array.slice(~start=0, ~end_=10),
+                indices16 |> Uint16Array.slice(~start=0, ~end_=10),
                 indices32 |> Uint32Array.slice(~start=0, ~end_=10),
               )
               |>
@@ -281,7 +281,7 @@ let _ =
             verticesOffset,
             texCoordsOffset,
             normalsOffset,
-            indicesOffset,
+            indices16Offset,
             indices32Offset,
           } =
             state |> GeometryTool.getRecord;
@@ -289,7 +289,7 @@ let _ =
             verticesOffset,
             texCoordsOffset,
             normalsOffset,
-            indicesOffset,
+            indices16Offset,
             indices32Offset,
           )
           |>

@@ -114,8 +114,8 @@ let _ =
           open GameObjectAPI;
           let (state, geometry) = createGeometry(state^);
           let newData = Uint16Array.make([|3, 5, 5|]);
-          let state = state |> setGeometryIndices(geometry, newData);
-          getGeometryIndices(geometry, state) |> expect == newData;
+          let state = state |> setGeometryIndices16(geometry, newData);
+          getGeometryIndices16(geometry, state) |> expect == newData;
         })
       );
     });
@@ -134,19 +134,20 @@ let _ =
       })
     );
 
-    describe("hasGeometryIndices", () => {
-      test("test indices16", () => {
+    describe("test geometry has indices", () => {
+      let _testIndices16 = (hasIndicesFunc, result) => {
         let (state, geometry) = GeometryAPI.createGeometry(state^);
         let state =
           state
-          |> GeometryAPI.setGeometryIndices(
+          |> GeometryAPI.setGeometryIndices16(
                geometry,
                Uint16Array.make([|1, 2, 3|]),
              );
 
-        GeometryAPI.hasGeometryIndices(geometry, state) |> expect == true;
-      });
-      test("test indices32", () => {
+        hasIndicesFunc(geometry, state) |> expect == result;
+      };
+
+      let _testIndices32 = (hasIndicesFunc, result) => {
         let (state, geometry) = GeometryAPI.createGeometry(state^);
         let state =
           state
@@ -155,7 +156,34 @@ let _ =
                Uint32Array.make([|1, 2, 3|]),
              );
 
-        GeometryAPI.hasGeometryIndices(geometry, state) |> expect == true;
+        hasIndicesFunc(geometry, state) |> expect == result;
+      };
+
+      describe("hasGeometryIndices", () => {
+        test("if has indices16, return true", () =>
+          _testIndices16(GeometryAPI.hasGeometryIndices, true)
+        );
+        test("if has indices32, return true", () =>
+          _testIndices32(GeometryAPI.hasGeometryIndices, true)
+        );
+      });
+
+      describe("hasGeometryIndices16", () => {
+        test("if has indices16, return true", () =>
+          _testIndices16(GeometryAPI.hasGeometryIndices16, true)
+        );
+        test("if has indices32, return false", () =>
+          _testIndices32(GeometryAPI.hasGeometryIndices16, false)
+        );
+      });
+
+      describe("hasGeometryIndices32", () => {
+        test("if has indices16, return false", () =>
+          _testIndices16(GeometryAPI.hasGeometryIndices32, false)
+        );
+        test("if has indices32, return true", () =>
+          _testIndices32(GeometryAPI.hasGeometryIndices32, true)
+        );
       });
     });
 
@@ -266,7 +294,7 @@ let _ =
             let {geometryVertexBufferMap} = VboBufferTool.getRecord(state);
 
             geometryVertexBufferMap
-            |> WonderCommonlib.SparseMapService.has(geometry1)
+            |> WonderCommonlib.MutableSparseMapService.has(geometry1)
             |> expect == false;
           })
         );
@@ -313,7 +341,7 @@ let _ =
             let {geometryVertexBufferMap} = VboBufferTool.getRecord(state);
 
             geometryVertexBufferMap
-            |> WonderCommonlib.SparseMapService.has(geometry1)
+            |> WonderCommonlib.MutableSparseMapService.has(geometry1)
             |> expect == false;
           })
         );
@@ -343,7 +371,7 @@ let _ =
             GeometryAPI.getGeometryVertices(geometry2, state),
             GeometryAPI.getGeometryTexCoords(geometry2, state),
             GeometryAPI.getGeometryNormals(geometry2, state),
-            GeometryAPI.getGeometryIndices(geometry2, state),
+            GeometryAPI.getGeometryIndices16(geometry2, state),
           )
           |>
           expect == (
@@ -410,7 +438,8 @@ let _ =
 
             (
               GeometryTool.hasGameObject(geometry1, state),
-              nameMap |> WonderCommonlib.SparseMapService.has(geometry1),
+              nameMap
+              |> WonderCommonlib.MutableSparseMapService.has(geometry1),
             )
             |> expect == (false, false);
           });
@@ -518,8 +547,8 @@ let _ =
           test("getGeometryNormals should error", () =>
             _testGetFunc(getGeometryNormals)
           );
-          test("getGeometryIndices should error", () =>
-            _testGetFunc(getGeometryIndices)
+          test("getGeometryIndices16 should error", () =>
+            _testGetFunc(getGeometryIndices16)
           );
           test("unsafeGetGeometryGameObjects should error", () =>
             _testGetFunc(unsafeGetGeometryGameObjects)
@@ -533,8 +562,8 @@ let _ =
           test("setGeometryNormals should error", () =>
             _testSetFunc(setGeometryNormals)
           );
-          test("setGeometryIndices should error", () =>
-            _testSetFunc(setGeometryIndices)
+          test("setGeometryIndices16 should error", () =>
+            _testSetFunc(setGeometryIndices16)
           );
         })
       )

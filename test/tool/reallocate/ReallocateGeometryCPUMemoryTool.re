@@ -62,7 +62,7 @@ let judgeForOptimize =
       getGeometryVertices(geometry3, state),
       getGeometryTexCoords(geometry3, state),
       getGeometryNormals(geometry3, state),
-      getGeometryIndices(geometry3, state),
+      getGeometryIndices16(geometry3, state),
       getGeometryIndices32(geometry3, state),
     )
     |> expect == (vertices3, texCoords3, normals3, indices3, indices32_3)

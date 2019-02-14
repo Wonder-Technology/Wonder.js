@@ -18,6 +18,7 @@
     "<rootDir>/lib/es6_global/src/service/primitive/",
     "<rootDir>/lib/es6_global/src/service/.+/FixedLayoutControlIMGUI.*",
     "<rootDir>/lib/es6_global/src/external/",
+    "<rootDir>/lib/es6_global/src/api/job/",
     "<rootDir>/lib/es6_global/src/.+/LoaderManagerAPI.js",
     "<rootDir>/lib/es6_global/src/.+/NameEventAPI.js",
     "<rootDir>/lib/es6_global/src/.+/WorkerDetectAPI.js",

@@ -47,6 +47,7 @@ let createRenderState =
         sourceInstanceRecord,
         shaderRecord,
         browserDetectRecord,
+        jobDataRecord,
       } as state: StateDataRenderWorkerType.renderWorkerState,
     ) => {
   let {localToWorldMatrices, localToWorldMatrixCacheMap, normalMatrixCacheMap} as transformRecord =
@@ -104,7 +105,7 @@ let createRenderState =
       vertices: geometryRecord.vertices,
       texCoords: geometryRecord.texCoords,
       normals: geometryRecord.normals,
-      indices: geometryRecord.indices,
+      indices16: geometryRecord.indices16,
       indices32: geometryRecord.indices32,
       verticesInfos: geometryRecord.verticesInfos,
       texCoordsInfos: geometryRecord.texCoordsInfos,
@@ -121,6 +122,9 @@ let createRenderState =
         basicMaterialRecord.textureIndices |> OptionService.unsafeGet,
       mapUnits:
         RecordBasicMaterialRenderWorkerService.unsafeGetMapUnits(state),
+      isDepthTests:
+        RecordBasicMaterialRenderWorkerService.unsafeGetIsDepthTests(state),
+      alphas: RecordBasicMaterialRenderWorkerService.unsafeGetAlphas(state)
     },
     lightMaterialRecord: {
       shaderIndices:
@@ -256,14 +260,13 @@ let createRenderState =
     gpuDetectRecord,
     globalTempRecord,
     deviceManagerRecord,
-    shaderRecord: {
-      usedShaderIndexArray: shaderRecord.usedShaderIndexArray,
-    },
     workerDetectRecord: {
       isUseWorker: workerDetectRecord.isUseWorker,
     },
     browserDetectRecord: {
       browser: browserDetectRecord.browser,
     },
+    jobDataRecord,
+    shaderRecord,
   };
 };

@@ -66,7 +66,7 @@ let _ =
           let (state, gameObject2, geometry2) =
             GeometryTool.createGameObject(state);
           let state =
-            GeometryAPI.setGeometryIndices(
+            GeometryAPI.setGeometryIndices16(
               geometry2,
               Js.Typed_array.Uint16Array.make([|1, 3, 2|]),
               state,

@@ -22,7 +22,10 @@ let initGameObject = (gameObject, state: StateDataMainType.state) =>
   |> GameObjectAPI.initGameObject(gameObject);
 
 let batchDisposeGameObject =
-    (gameObjectArray: array(gameObject), state: StateDataMainType.state) => {
+    (
+      gameObjectArray: array(GameObjectPrimitiveType.gameObject),
+      state: StateDataMainType.state,
+    ) => {
   let (
     state,
     geometryNeedDisposeVboBufferArr,
@@ -52,7 +55,10 @@ let batchDisposeGameObject =
 };
 
 let batchDisposeGameObjectKeepOrder =
-    (gameObjectArray: array(gameObject), state: StateDataMainType.state) => {
+    (
+      gameObjectArray: array(GameObjectPrimitiveType.gameObject),
+      state: StateDataMainType.state,
+    ) => {
   let (
     state,
     geometryNeedDisposeVboBufferArr,
@@ -81,16 +87,22 @@ let batchDisposeGameObjectKeepOrder =
 };
 
 let disposeGameObject =
-    (gameObject: gameObject, state: StateDataMainType.state) =>
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) =>
   batchDisposeGameObject([|gameObject|], state);
 
 let disposeGameObjectKeepOrder =
-    (gameObject: gameObject, state: StateDataMainType.state) =>
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) =>
   batchDisposeGameObjectKeepOrder([|gameObject|], state);
 
 let disposeGameObjectBasicCameraViewComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) =>
@@ -101,7 +113,7 @@ let disposeGameObjectBasicCameraViewComponent =
 
 let disposeGameObjectPerspectiveCameraProjectionComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) =>
@@ -112,7 +124,7 @@ let disposeGameObjectPerspectiveCameraProjectionComponent =
 
 let disposeGameObjectArcballCameraControllerComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) =>
@@ -123,7 +135,7 @@ let disposeGameObjectArcballCameraControllerComponent =
 
 let disposeGameObjectTransformComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       isKeepOrder,
       state: StateDataMainType.state,
@@ -136,7 +148,7 @@ let disposeGameObjectTransformComponent =
 
 let disposeGameObjectGeometryComponentWithoutVboBufferAndNotReallocate =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -150,7 +162,7 @@ let disposeGameObjectGeometryComponentWithoutVboBufferAndNotReallocate =
 
 let disposeGameObjectGeometryComponentWithoutVboBuffer =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -165,7 +177,7 @@ let disposeGameObjectGeometryComponentWithoutVboBuffer =
 
 let disposeGameObjectBasicMaterialComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) =>
@@ -176,7 +188,7 @@ let disposeGameObjectBasicMaterialComponent =
 
 let disposeGameObjectLightMaterialComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) =>
@@ -187,7 +199,7 @@ let disposeGameObjectLightMaterialComponent =
 
 let disposeGameObjectMeshRendererComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) =>
@@ -198,7 +210,7 @@ let disposeGameObjectMeshRendererComponent =
 
 let disposeGameObjectDirectionLightComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) =>
@@ -209,7 +221,7 @@ let disposeGameObjectDirectionLightComponent =
 
 let disposeGameObjectPointLightComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) =>
@@ -220,7 +232,7 @@ let disposeGameObjectPointLightComponent =
 
 let disposeGameObjectSourceInstanceComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -239,7 +251,7 @@ let disposeGameObjectSourceInstanceComponent =
 
 let disposeGameObjectObjectInstanceComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) =>

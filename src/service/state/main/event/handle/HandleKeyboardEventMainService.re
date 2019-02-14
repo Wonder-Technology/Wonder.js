@@ -7,7 +7,7 @@ let _getKeyCode = keyboardDomEvent => keyboardDomEvent##keyCode;
 let _getShiftKey = keyboardDomEvent => keyboardDomEvent##shiftKey;
 
 let _getKeyFromSpecialKeyMap = (keyCode, char, specialKeyMap) =>
-  switch (specialKeyMap |> WonderCommonlib.SparseMapService.get(keyCode)) {
+  switch (specialKeyMap |> WonderCommonlib.MutableSparseMapService.get(keyCode)) {
   | None => char
   | Some(key) => key
   };
@@ -19,10 +19,10 @@ let _handleShiftKey =
       (shiftKeyByKeyCodeMap, shiftKeyByCharCodeMap, specialKeyMap),
     ) =>
   switch (
-    shiftKeyByKeyCodeMap |> WonderCommonlib.SparseMapService.get(keyCode)
+    shiftKeyByKeyCodeMap |> WonderCommonlib.MutableSparseMapService.get(keyCode)
   ) {
   | None =>
-    switch (shiftKeyByCharCodeMap |> WonderCommonlib.HashMapService.get(char)) {
+    switch (shiftKeyByCharCodeMap |> WonderCommonlib.MutableHashMapService.get(char)) {
     | None => _getKeyFromSpecialKeyMap(keyCode, char, specialKeyMap)
     | Some(upperCaseChar) => upperCaseChar
     }
@@ -64,7 +64,7 @@ let execEventHandle = (eventName, keyboardDomEvent, {eventRecord} as state) => {
 
   switch (
     keyboardDomEventDataArrMap
-    |> WonderCommonlib.SparseMapService.get(eventName |> domEventNameToInt)
+    |> WonderCommonlib.MutableSparseMapService.get(eventName |> domEventNameToInt)
   ) {
   | None => state
   | Some(arr) =>

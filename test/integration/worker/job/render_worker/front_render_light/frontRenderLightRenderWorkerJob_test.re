@@ -150,45 +150,25 @@ let _ =
         describe("test send direction light record", () =>
           describe("send structure record", () => {
             describe("send direction", () =>
-              testPromise("test one light", () => {
-                let (state, lightGameObject, material, light, cameraTransform) =
-                  FrontRenderLightForNoWorkerAndWorkerJobTool.prepareOneForDirectionLight(
-                    sandbox,
-                    state^,
-                  );
-                let state =
-                  state
-                  |> TransformAPI.setTransformLocalRotation(
-                       GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                         lightGameObject,
-                         state,
-                       ),
-                       (0.1, 10.5, 1.5, 1.),
-                     );
-
-                let (state, posArr, (uniform1f, uniform3f)) =
-                  FrontRenderLightForNoWorkerAndWorkerJobTool.setFakeGlForLight(
-                    sandbox,
-                    [|"u_directionLights[0].direction"|],
-                    state,
-                  );
-                RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
-                  ~state,
-                  ~sandbox,
-                  ~completeFunc=
-                    _ =>
-                      uniform3f
-                      |> expect
-                      |> toCalledWith([|
-                           posArr[0] |> Obj.magic,
-                           21.29999999197162,
-                           31.300000005352253,
-                           (-219.5200021448914),
-                         |])
-                      |> resolve,
-                  (),
-                );
-              })
+              testPromise("test one light", () =>
+                FrontRenderLightForNoWorkerAndWorkerJobTool.TestSendDirection.testOneLight(
+                  sandbox,
+                  state,
+                  FrontRenderLightForNoWorkerAndWorkerJobTool.prepareOneForDirectionLight,
+                  (sandbox, callArgArr, uniform3f, state) =>
+                  RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+                    ~state,
+                    ~sandbox,
+                    ~completeFunc=
+                      _ =>
+                        uniform3f
+                        |> expect
+                        |> toCalledWith(callArgArr)
+                        |> resolve,
+                    (),
+                  )
+                )
+              )
             );
 
             testPromise("send intensity", () => {

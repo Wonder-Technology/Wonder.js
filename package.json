@@ -1,6 +1,6 @@
 {
   "name": "wonder.js",
-  "version": "1.0.0-alpha.24.1",
+  "version": "1.0.0-alpha.24.20",
   "authors": "Wonder",
   "description": "3d webgl engine",
   "homepage": "https://github.com/Wonder-Technology/Wonder.js",
@@ -18,6 +18,7 @@
     "test:ci": "npm run buildAll:ci && jest --maxWorkers=4 --config jest_coverage.json",
     "test:fastRender": "gulp testFastRender",
     "test:fastPf": "gulp testFastPerformance",
+    "test:generatePfBenchmark": "gulp generatePerformanceBenchmark",
     "test:render": "npm run build && gulp testRenderInLocal",
     "test:renderCI": "gulp installPuppeteerInCI && npm run build && gulp testRenderInCI",
     "test:pf": "npm run build && gulp testPerformanceInLocal",
@@ -55,26 +56,27 @@
     "rollup": "^0.51.5",
     "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-node-resolve": "^2.0.0",
-    "wonder-benchmark": "^0.2.11",
+    "wonder-benchmark": "^0.2.12",
     "wonder-bs-jest": "latest",
     "wonder-bs-sinon": "^0.1.7",
     "wonder-generate-index": "latest",
-    "wonder-glsl-compiler": "^0.1.11",
+    "wonder-glsl-compiler": "^0.1.12",
     "wonder-render-test": "^0.1.26"
   },
   "dependencies": {
     "bs-fetch": "^0.3.0",
     "wonder-bs-json": "^0.0.1",
     "wonder-bs-most": "^0.0.3",
-    "wonder-commonlib": "^0.2.23",
-    "wonder-imgui": "^0.0.28",
+    "wonder-commonlib": "^0.2.26",
+    "wonder-imgui": "^0.0.30",
     "wonder-log": "^0.2.10",
     "wonder-most-animation-frame": "0.0.3",
-    "wonder-webgl": "^0.0.5"
+    "wonder-webgl": "^0.0.6"
   },
   "resolutions": {
     "wonder-log": "^0.2.10",
-    "wonder-commonlib": "0.2.23",
+    "wonder-webgl": "^0.0.6",
+    "wonder-commonlib": "0.2.27",
     "wonder-bs-jest": "0.2.18",
     "wonder-bs-puppeteer": "^0.1.6"
   }

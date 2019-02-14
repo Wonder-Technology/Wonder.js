@@ -2,13 +2,13 @@ open PerspectiveCameraProjectionType;
 
 let create = () => {
   index: 0,
-  gameObjectMap: WonderCommonlib.SparseMapService.createEmpty(),
+  gameObjectMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   dirtyArray: WonderCommonlib.ArrayService.createEmpty(),
-  pMatrixMap: WonderCommonlib.SparseMapService.createEmpty(),
-  nearMap: WonderCommonlib.SparseMapService.createEmpty(),
-  farMap: WonderCommonlib.SparseMapService.createEmpty(),
-  fovyMap: WonderCommonlib.SparseMapService.createEmpty(),
-  aspectMap: WonderCommonlib.SparseMapService.createEmpty(),
+  pMatrixMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  nearMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  farMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  fovyMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  aspectMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
 };
 
@@ -27,12 +27,12 @@ let deepCopyForRestore =
       },
     ) => {
   index,
-  pMatrixMap: pMatrixMap |> CopyTypeArrayService.deepCopyFloat32ArrayArray,
-  dirtyArray: dirtyArray |> SparseMapService.copy,
-  nearMap: nearMap |> SparseMapService.copy,
-  farMap: farMap |> SparseMapService.copy,
-  fovyMap: fovyMap |> SparseMapService.copy,
-  aspectMap: aspectMap |> SparseMapService.copy,
-  gameObjectMap: gameObjectMap |> SparseMapService.copy,
+  pMatrixMap: pMatrixMap |> CopyTypeArrayService.deepCopyMutableSparseMapOfFloat32Array,
+  dirtyArray: dirtyArray |> WonderCommonlib.MutableSparseMapService.copy,
+  nearMap: nearMap |> WonderCommonlib.MutableSparseMapService.copy,
+  farMap: farMap |> WonderCommonlib.MutableSparseMapService.copy,
+  fovyMap: fovyMap |> WonderCommonlib.MutableSparseMapService.copy,
+  aspectMap: aspectMap |> WonderCommonlib.MutableSparseMapService.copy,
+  gameObjectMap: gameObjectMap |> WonderCommonlib.MutableSparseMapService.copy,
   disposedIndexArray: disposedIndexArray |> Js.Array.copy,
 };

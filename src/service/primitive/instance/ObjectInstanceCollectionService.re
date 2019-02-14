@@ -1,22 +1,26 @@
-let getObjectInstanceTransformIndex = (sourceInstance, objectInstanceTransformIndexMap) =>
-  objectInstanceTransformIndexMap |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance);
+let getObjectInstanceTransformIndex =
+    (sourceInstance, objectInstanceTransformIndexMap) =>
+  objectInstanceTransformIndexMap
+  |> WonderCommonlib.MutableSparseMapService.unsafeGet(sourceInstance);
 
-let setDefaultObjectInstanceTransformIndex = (sourceInstance, objectInstanceTransformIndexMap) =>
-  objectInstanceTransformIndexMap |> WonderCommonlib.SparseMapService.set(sourceInstance, 0);
+let setDefaultObjectInstanceTransformIndex =
+    (sourceInstance, objectInstanceTransformIndexMap) =>
+  objectInstanceTransformIndexMap
+  |> WonderCommonlib.MutableSparseMapService.set(sourceInstance, 0);
 
-let getObjectInstanceTransformCount = (objectInstanceTransformIndex) => objectInstanceTransformIndex;
+let getObjectInstanceTransformCount = objectInstanceTransformIndex => objectInstanceTransformIndex;
 
 let _getStartIndexAndEndIndex =
     (
       sourceInstance,
       objectInstanceCountPerSourceInstance,
       objectInstanceTransformIndex,
-      objectInstanceTransformCollections
+      objectInstanceTransformCollections,
     ) => {
   let startIndex =
     BufferSourceInstanceService.getObjectInstanceTransformCollectionsIndex(
       sourceInstance,
-      objectInstanceCountPerSourceInstance
+      objectInstanceCountPerSourceInstance,
     );
   (startIndex, startIndex + (objectInstanceTransformIndex |> pred))
   |> WonderLog.Contract.ensureCheck(
@@ -26,22 +30,28 @@ let _getStartIndexAndEndIndex =
          open Operators;
          test(
            Log.buildAssertMessage(
-             ~expect={j|endIndex should <= objectInstanceTransformCollections->length|j},
-             ~actual={j|not|j}
+             ~expect=
+               {j|endIndex should <= objectInstanceTransformCollections->length|j},
+             ~actual={j|not|j},
            ),
            () =>
-             endIndex <= (objectInstanceTransformCollections |> Js.Typed_array.Uint32Array.length)
+           endIndex
+           <= (
+                objectInstanceTransformCollections
+                |> Js.Typed_array.Uint32Array.length
+              )
          );
          test(
            Log.buildAssertMessage(
              ~expect={j|endIndex + 1 should >= startIndex|j},
-             ~actual={j|not|j}
+             ~actual={j|not|j},
            ),
-           () => endIndex + 1 >= startIndex
-         )
+           () =>
+           endIndex + 1 >= startIndex
+         );
        },
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     )
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     );
 };
 
 let reduceObjectInstanceTransformCollection =
@@ -50,10 +60,10 @@ let reduceObjectInstanceTransformCollection =
         sourceInstance,
         objectInstanceCountPerSourceInstance,
         objectInstanceTransformIndex,
-        objectInstanceTransformCollections
+        objectInstanceTransformCollections,
       ),
       initialValue,
-      reduceFunc
+      reduceFunc,
     ) => {
   let result = ref(initialValue);
   let (startIndex, endIndex) =
@@ -61,13 +71,43 @@ let reduceObjectInstanceTransformCollection =
       sourceInstance,
       objectInstanceCountPerSourceInstance,
       objectInstanceTransformIndex,
-      objectInstanceTransformCollections
+      objectInstanceTransformCollections,
     );
   for (i in startIndex to endIndex) {
     result :=
-      [@bs] reduceFunc(result^, TypeArrayService.getUint32_1(i, objectInstanceTransformCollections))
+      reduceFunc(.
+        result^,
+        TypeArrayService.getUint32_1(i, objectInstanceTransformCollections),
+      );
   };
-  result^
+  result^;
+};
+
+let forEachObjectInstanceTransformCollection =
+    (
+      (
+        sourceInstance,
+        objectInstanceCountPerSourceInstance,
+        objectInstanceTransformIndex,
+        objectInstanceTransformCollections,
+      ),
+      func,
+    ) => {
+  /* let result = ref(initialValue); */
+  let (startIndex, endIndex) =
+    _getStartIndexAndEndIndex(
+      sourceInstance,
+      objectInstanceCountPerSourceInstance,
+      objectInstanceTransformIndex,
+      objectInstanceTransformCollections,
+    );
+  for (i in startIndex to endIndex) {
+    func(.
+      TypeArrayService.getUint32_1(i, objectInstanceTransformCollections),
+    );
+  };
+
+  ();
 };
 
 let getObjectInstanceTransformArray =
@@ -75,24 +115,24 @@ let getObjectInstanceTransformArray =
       sourceInstance,
       objectInstanceCountPerSourceInstance,
       objectInstanceTransformIndexMap,
-      objectInstanceTransformCollections
+      objectInstanceTransformCollections,
     ) => {
   let objectInstanceTransformIndex =
-    getObjectInstanceTransformIndex(sourceInstance, objectInstanceTransformIndexMap);
+    getObjectInstanceTransformIndex(
+      sourceInstance,
+      objectInstanceTransformIndexMap,
+    );
   reduceObjectInstanceTransformCollection(
     (
       sourceInstance,
       objectInstanceCountPerSourceInstance,
       objectInstanceTransformIndex,
-      objectInstanceTransformCollections
+      objectInstanceTransformCollections,
     ),
     [||],
-    [@bs]
-    (
-      (objectInstanceTransformArray, objectInstanceTransform) =>
-        objectInstanceTransformArray |> ArrayService.push(objectInstanceTransform)
-    )
-  )
+    (. objectInstanceTransformArray, objectInstanceTransform) =>
+    objectInstanceTransformArray |> ArrayService.push(objectInstanceTransform)
+  );
 };
 
 let addObjectInstanceTransform =
@@ -100,63 +140,86 @@ let addObjectInstanceTransform =
       sourceInstance,
       objectInstanceTransform,
       objectInstanceCountPerSourceInstance,
-      (objectInstanceTransformIndexMap, objectInstanceTransformCollections)
+      (objectInstanceTransformIndexMap, objectInstanceTransformCollections),
     ) => {
   let objectInstanceTransformIndex =
-    getObjectInstanceTransformIndex(sourceInstance, objectInstanceTransformIndexMap);
+    getObjectInstanceTransformIndex(
+      sourceInstance,
+      objectInstanceTransformIndexMap,
+    );
 
   (
     objectInstanceTransformIndexMap
-    |> WonderCommonlib.SparseMapService.set(sourceInstance, objectInstanceTransformIndex |> succ),
+    |> WonderCommonlib.MutableSparseMapService.set(
+         sourceInstance,
+         objectInstanceTransformIndex |> succ,
+       ),
     TypeArrayService.setUint32_1(
       BufferSourceInstanceService.getObjectInstanceTransformIndex(
         sourceInstance,
         objectInstanceTransformIndex,
-        objectInstanceCountPerSourceInstance
+        objectInstanceCountPerSourceInstance,
       ),
       objectInstanceTransform,
-      objectInstanceTransformCollections
-    )
+      objectInstanceTransformCollections,
+    ),
   )
   |> WonderLog.Contract.ensureCheck(
-       ((objectInstanceTransformIndexMap, objectInstanceTransformCollections)) => {
+       (
+         (objectInstanceTransformIndexMap, objectInstanceTransformCollections),
+       ) => {
          open WonderLog;
          open Contract;
          open Operators;
          let objectInstanceTransformIndex =
-           getObjectInstanceTransformIndex(sourceInstance, objectInstanceTransformIndexMap);
+           getObjectInstanceTransformIndex(
+             sourceInstance,
+             objectInstanceTransformIndexMap,
+           );
          test(
            Log.buildAssertMessage(
-             ~expect={j|objectInstanceTransformIndex should <= objectInstanceCountPerSourceInstance:$objectInstanceCountPerSourceInstance|j},
-             ~actual={j|is $objectInstanceTransformIndex|j}
+             ~expect=
+               {j|objectInstanceTransformIndex should <= objectInstanceCountPerSourceInstance:$objectInstanceCountPerSourceInstance|j},
+             ~actual={j|is $objectInstanceTransformIndex|j},
            ),
-           () => objectInstanceTransformIndex <= objectInstanceCountPerSourceInstance
-         )
+           () =>
+           objectInstanceTransformIndex <= objectInstanceCountPerSourceInstance
+         );
        },
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     )
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     );
 };
 
-let resetObjectInstanceTransformIndexMap = (sourceInstance, objectInstanceTransformIndexMap) =>
-  WonderCommonlib.SparseMapService.set(sourceInstance, 0, objectInstanceTransformIndexMap);
+let resetObjectInstanceTransformIndexMap =
+    (sourceInstance, objectInstanceTransformIndexMap) =>
+  WonderCommonlib.MutableSparseMapService.set(
+    sourceInstance,
+    0,
+    objectInstanceTransformIndexMap,
+  );
 
 let batchRemoveObjectInstanceTransform =
     (
       sourceInstance,
       objectInstanceTransformArray,
       objectInstanceCountPerSourceInstance,
-      (objectInstanceTransformIndexMap, objectInstanceTransformCollections)
+      (objectInstanceTransformIndexMap, objectInstanceTransformCollections),
     ) => {
   let objectInstanceTransformIndex =
-    objectInstanceTransformIndexMap |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance);
+    objectInstanceTransformIndexMap
+    |> WonderCommonlib.MutableSparseMapService.unsafeGet(sourceInstance);
   (
-    switch objectInstanceTransformIndex {
-    | 0 => (objectInstanceTransformIndexMap, objectInstanceTransformCollections)
+    switch (objectInstanceTransformIndex) {
+    | 0 => (
+        objectInstanceTransformIndexMap,
+        objectInstanceTransformCollections,
+      )
     | _ => (
         objectInstanceTransformIndexMap
-        |> WonderCommonlib.SparseMapService.set(
+        |> WonderCommonlib.MutableSparseMapService.set(
              sourceInstance,
-             objectInstanceTransformIndex - Js.Array.length(objectInstanceTransformArray)
+             objectInstanceTransformIndex
+             - Js.Array.length(objectInstanceTransformArray),
            ),
         objectInstanceTransformArray
         |> Js.Array.reducei(
@@ -164,34 +227,39 @@ let batchRemoveObjectInstanceTransform =
                objectInstanceTransformCollections
                |> DisposeTypeArrayService.deleteSingleValueBySwapUint32TypeArr(
                     objectInstanceTransformCollections
-                    |> Js.Typed_array.Uint32Array.indexOf(objectInstanceTransform),
+                    |> Js.Typed_array.Uint32Array.indexOf(
+                         objectInstanceTransform,
+                       ),
                     BufferSourceInstanceService.getObjectInstanceTransformIndex(
                       sourceInstance,
                       objectInstanceTransformIndex - i,
-                      objectInstanceCountPerSourceInstance
-                    )
+                      objectInstanceCountPerSourceInstance,
+                    ),
                   ),
-             objectInstanceTransformCollections
-           )
+             objectInstanceTransformCollections,
+           ),
       )
     }
   )
   |> WonderLog.Contract.ensureCheck(
-       ((objectInstanceTransformIndexMap, objectInstanceTransformCollections)) => {
+       (
+         (objectInstanceTransformIndexMap, objectInstanceTransformCollections),
+       ) => {
          open WonderLog;
          open Contract;
          open Operators;
          let objectInstanceTransformIndex =
            objectInstanceTransformIndexMap
-           |> WonderCommonlib.SparseMapService.unsafeGet(sourceInstance);
+           |> WonderCommonlib.MutableSparseMapService.unsafeGet(sourceInstance);
          test(
            Log.buildAssertMessage(
              ~expect={j|objectInstanceTransformIndex should >= 0|j},
-             ~actual={j|is $objectInstanceTransformIndex|j}
+             ~actual={j|is $objectInstanceTransformIndex|j},
            ),
-           () => objectInstanceTransformIndex >= 0
-         )
+           () =>
+           objectInstanceTransformIndex >= 0
+         );
        },
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
-     )
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     );
 };

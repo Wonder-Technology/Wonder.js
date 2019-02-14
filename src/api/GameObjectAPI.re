@@ -25,7 +25,10 @@ open AliveGameObjectMainService;
 let createGameObject = (state: StateDataMainType.state) => create(state);
 
 let _checkGameObjectShouldAlive =
-    (gameObject: gameObject, state: StateDataMainType.state) =>
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) =>
   WonderLog.(
     Contract.(
       test(
@@ -41,7 +44,7 @@ let _checkGameObjectShouldAlive =
 
 let addGameObjectBasicCameraViewComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -57,7 +60,7 @@ let addGameObjectBasicCameraViewComponent =
 
 let disposeGameObjectBasicCameraViewComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -72,7 +75,10 @@ let disposeGameObjectBasicCameraViewComponent =
 };
 
 let unsafeGetGameObjectBasicCameraViewComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -84,7 +90,10 @@ let unsafeGetGameObjectBasicCameraViewComponent =
 };
 
 let hasGameObjectBasicCameraViewComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -97,7 +106,7 @@ let hasGameObjectBasicCameraViewComponent =
 
 let addGameObjectPerspectiveCameraProjectionComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -113,7 +122,7 @@ let addGameObjectPerspectiveCameraProjectionComponent =
 
 let disposeGameObjectPerspectiveCameraProjectionComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -132,7 +141,10 @@ let disposeGameObjectPerspectiveCameraProjectionComponent =
 };
 
 let unsafeGetGameObjectPerspectiveCameraProjectionComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -147,7 +159,10 @@ let unsafeGetGameObjectPerspectiveCameraProjectionComponent =
 };
 
 let hasGameObjectPerspectiveCameraProjectionComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -160,7 +175,7 @@ let hasGameObjectPerspectiveCameraProjectionComponent =
 
 let addGameObjectArcballCameraControllerComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -176,7 +191,7 @@ let addGameObjectArcballCameraControllerComponent =
 
 let disposeGameObjectArcballCameraControllerComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -195,7 +210,10 @@ let disposeGameObjectArcballCameraControllerComponent =
 };
 
 let unsafeGetGameObjectArcballCameraControllerComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -210,7 +228,10 @@ let unsafeGetGameObjectArcballCameraControllerComponent =
 };
 
 let hasGameObjectArcballCameraControllerComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -223,7 +244,7 @@ let hasGameObjectArcballCameraControllerComponent =
 
 let addGameObjectTransformComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -239,7 +260,7 @@ let addGameObjectTransformComponent =
 
 let disposeGameObjectTransformComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       isKeepOrder,
       state: StateDataMainType.state,
@@ -261,7 +282,10 @@ let disposeGameObjectTransformComponent =
 };
 
 let unsafeGetGameObjectTransformComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -273,7 +297,10 @@ let unsafeGetGameObjectTransformComponent =
 };
 
 let hasGameObjectTransformComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -286,7 +313,7 @@ let hasGameObjectTransformComponent =
 
 let addGameObjectGeometryComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -302,7 +329,7 @@ let addGameObjectGeometryComponent =
 
 let disposeGameObjectGeometryComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -318,7 +345,7 @@ let disposeGameObjectGeometryComponent =
 
 let removeGameObjectGeometryComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -339,7 +366,7 @@ let removeGameObjectGeometryComponent =
 
 let removeGameObjectBasicMaterialComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -360,7 +387,7 @@ let removeGameObjectBasicMaterialComponent =
 
 let removeGameObjectLightMaterialComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -380,7 +407,10 @@ let removeGameObjectLightMaterialComponent =
 };
 
 let unsafeGetGameObjectGeometryComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -392,7 +422,10 @@ let unsafeGetGameObjectGeometryComponent =
 };
 
 let hasGameObjectGeometryComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -405,7 +438,7 @@ let hasGameObjectGeometryComponent =
 
 let addGameObjectBasicMaterialComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -421,7 +454,7 @@ let addGameObjectBasicMaterialComponent =
 
 let disposeGameObjectBasicMaterialComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -436,7 +469,10 @@ let disposeGameObjectBasicMaterialComponent =
 };
 
 let unsafeGetGameObjectBasicMaterialComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -448,7 +484,10 @@ let unsafeGetGameObjectBasicMaterialComponent =
 };
 
 let hasGameObjectBasicMaterialComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -461,7 +500,7 @@ let hasGameObjectBasicMaterialComponent =
 
 let addGameObjectLightMaterialComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -477,7 +516,7 @@ let addGameObjectLightMaterialComponent =
 
 let disposeGameObjectLightMaterialComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -492,7 +531,10 @@ let disposeGameObjectLightMaterialComponent =
 };
 
 let unsafeGetGameObjectLightMaterialComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -504,7 +546,10 @@ let unsafeGetGameObjectLightMaterialComponent =
 };
 
 let hasGameObjectLightMaterialComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -517,7 +562,7 @@ let hasGameObjectLightMaterialComponent =
 
 let addGameObjectMeshRendererComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -533,7 +578,7 @@ let addGameObjectMeshRendererComponent =
 
 let disposeGameObjectMeshRendererComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -548,7 +593,10 @@ let disposeGameObjectMeshRendererComponent =
 };
 
 let unsafeGetGameObjectMeshRendererComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -560,7 +608,10 @@ let unsafeGetGameObjectMeshRendererComponent =
 };
 
 let hasGameObjectMeshRendererComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -573,7 +624,7 @@ let hasGameObjectMeshRendererComponent =
 
 let addGameObjectDirectionLightComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -589,7 +640,7 @@ let addGameObjectDirectionLightComponent =
 
 let disposeGameObjectDirectionLightComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -604,7 +655,10 @@ let disposeGameObjectDirectionLightComponent =
 };
 
 let unsafeGetGameObjectDirectionLightComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -616,7 +670,10 @@ let unsafeGetGameObjectDirectionLightComponent =
 };
 
 let hasGameObjectDirectionLightComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -629,7 +686,7 @@ let hasGameObjectDirectionLightComponent =
 
 let addGameObjectPointLightComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -645,7 +702,7 @@ let addGameObjectPointLightComponent =
 
 let disposeGameObjectPointLightComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -660,7 +717,10 @@ let disposeGameObjectPointLightComponent =
 };
 
 let unsafeGetGameObjectPointLightComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -672,7 +732,10 @@ let unsafeGetGameObjectPointLightComponent =
 };
 
 let hasGameObjectPointLightComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -685,7 +748,7 @@ let hasGameObjectPointLightComponent =
 
 let addGameObjectSourceInstanceComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -700,7 +763,10 @@ let addGameObjectSourceInstanceComponent =
 };
 
 let unsafeGetGameObjectSourceInstanceComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -712,7 +778,10 @@ let unsafeGetGameObjectSourceInstanceComponent =
 };
 
 let hasGameObjectSourceInstanceComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -725,7 +794,7 @@ let hasGameObjectSourceInstanceComponent =
 
 let disposeGameObjectSourceInstanceComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -741,7 +810,7 @@ let disposeGameObjectSourceInstanceComponent =
 
 let addGameObjectObjectInstanceComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -756,7 +825,10 @@ let addGameObjectObjectInstanceComponent =
 };
 
 let unsafeGetGameObjectObjectInstanceComponent =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -769,7 +841,7 @@ let unsafeGetGameObjectObjectInstanceComponent =
 
 let disposeGameObjectObjectInstanceComponent =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       component: component,
       state: StateDataMainType.state,
     ) => {
@@ -784,11 +856,17 @@ let disposeGameObjectObjectInstanceComponent =
 };
 
 let isGameObjectAlive =
-    (gameObject: gameObject, state: StateDataMainType.state) =>
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) =>
   isAlive(gameObject, state);
 
 let disposeGameObject =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -800,7 +878,10 @@ let disposeGameObject =
 };
 
 let disposeGameObjectKeepOrder =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -812,7 +893,10 @@ let disposeGameObjectKeepOrder =
 };
 
 let disposeGameObjectKeepOrderRemoveGeometry =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -824,7 +908,10 @@ let disposeGameObjectKeepOrderRemoveGeometry =
 };
 
 let disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -836,7 +923,10 @@ let disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial =
 };
 
 let disposeGameObjectDisposeGeometryRemoveMaterial =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -847,7 +937,11 @@ let disposeGameObjectDisposeGeometryRemoveMaterial =
   deferDisposeDisposeGeometryRemoveMaterial(gameObject, state);
 };
 
-let initGameObject = (gameObject: gameObject, state: StateDataMainType.state) => {
+let initGameObject =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -859,7 +953,10 @@ let initGameObject = (gameObject: gameObject, state: StateDataMainType.state) =>
 };
 
 let batchDisposeGameObject =
-    (gameObjectArray: array(gameObject), state: StateDataMainType.state) => {
+    (
+      gameObjectArray: array(GameObjectPrimitiveType.gameObject),
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -878,7 +975,10 @@ let batchDisposeGameObject =
 };
 
 let batchDisposeGameObjectKeepOrder =
-    (gameObjectArray: array(gameObject), state: StateDataMainType.state) => {
+    (
+      gameObjectArray: array(GameObjectPrimitiveType.gameObject),
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -898,7 +998,7 @@ let batchDisposeGameObjectKeepOrder =
 
 let cloneGameObject =
     (
-      gameObject: gameObject,
+      gameObject: GameObjectPrimitiveType.gameObject,
       count: int,
       isShareMaterial: bool,
       state: StateDataMainType.state,
@@ -906,7 +1006,10 @@ let cloneGameObject =
   clone(gameObject, count, isShareMaterial, state);
 
 let getGameObjectName =
-    (gameObject: gameObject, state: StateDataMainType.state)
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    )
     : option(string) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -919,7 +1022,10 @@ let getGameObjectName =
 };
 
 let unsafeGetGameObjectName =
-    (gameObject: gameObject, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -931,7 +1037,11 @@ let unsafeGetGameObjectName =
 };
 
 let setGameObjectName =
-    (gameObject: gameObject, name, state: StateDataMainType.state) => {
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      name,
+      state: StateDataMainType.state,
+    ) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(

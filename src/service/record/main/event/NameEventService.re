@@ -8,4 +8,8 @@ let getPointMoveEventName = () => "wd_pointmove";
 
 let getPointScaleEventName = () => "wd_pointscale";
 
-let getPointDragEventName = () => "wd_pointdrag";
+let getPointDragStartEventName = () => "wd_pointdragstart";
+
+let getPointDragOverEventName = () => "wd_pointdragover";
+
+let getPointDragDropEventName = () => "wd_pointdragdrop";

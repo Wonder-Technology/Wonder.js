@@ -17,7 +17,7 @@ let _buildLightMaterialData =
     (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     lightMaterialDataMap
-    |> SparseMapService.reduceValid(
+    |> WonderCommonlib.MutableSparseMapService.reduceValid(
          (.
            (
              (
@@ -114,11 +114,11 @@ let _buildLightMaterialData =
          (
            ([||], [||], [||], [||]),
            (
-             WonderCommonlib.SparseMapService.createEmpty(),
-             WonderCommonlib.HashMapService.createEmpty(),
-             WonderCommonlib.SparseMapService.createEmpty(),
-             WonderCommonlib.SparseMapService.createEmpty(),
-             WonderCommonlib.SparseMapService.createEmpty(),
+             WonderCommonlib.MutableSparseMapService.createEmpty(),
+             WonderCommonlib.MutableHashMapService.createEmpty(),
+             WonderCommonlib.MutableSparseMapService.createEmpty(),
+             WonderCommonlib.MutableSparseMapService.createEmpty(),
+             WonderCommonlib.MutableSparseMapService.createEmpty(),
            ),
            (totalByteLength, byteOffset, bufferViewDataArr),
          ),
@@ -164,7 +164,7 @@ let build =
 
   let basicMaterialDataArr =
     basicMaterialDataMap
-    |> SparseMapService.reduceValid(
+    |> WonderCommonlib.MutableSparseMapService.reduceValid(
          (. basicMaterialDataArr, (basicMaterial, name)) =>
            BuildBasicMaterialNoMapSystem.build(
              (basicMaterial, name),

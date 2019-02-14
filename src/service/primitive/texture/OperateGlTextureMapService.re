@@ -1,8 +1,8 @@
 let getTexture = (texture, glTextureMap) =>
-  glTextureMap |> WonderCommonlib.SparseMapService.get(texture);
+  glTextureMap |> WonderCommonlib.MutableSparseMapService.get(texture);
 
 let unsafeGetTexture = (texture, glTextureMap) =>
   getTexture(texture, glTextureMap) |> OptionService.unsafeGet;
 
 let setTexture = (texture, glTexture, glTextureMap) =>
-  glTextureMap |> WonderCommonlib.SparseMapService.set(texture, glTexture);
+  glTextureMap |> WonderCommonlib.MutableSparseMapService.set(texture, glTexture);
