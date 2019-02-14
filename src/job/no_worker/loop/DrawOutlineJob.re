@@ -36,10 +36,8 @@ module DrawOutlineJobUtils = {
 
              RenderJobUtils.sendUniformRenderObjectModelData(
                gl,
-               shaderIndex,
-               transformIndex,
-               getRenderDataSubState,
-               state,
+               (shaderIndex, transformIndex),
+               (getRenderDataSubState, state),
              );
 
              state
@@ -109,10 +107,8 @@ module DrawOutlineJobUtils = {
 
              RenderJobUtils.sendUniformRenderObjectModelData(
                gl,
-               shaderIndex,
-               transformIndex,
-               getRenderDataSubState,
-               state,
+               (shaderIndex, transformIndex),
+               (getRenderDataSubState, state),
              );
              _sendUniformNoMaterialShaderData(
                gl,
@@ -137,11 +133,12 @@ module DrawOutlineJobUtils = {
       |> DeviceManagerService.setStencilTest(gl, true)
       |> DeviceManagerService.setStencilOp(
            gl,
-           Gl.getKeep(gl),
-           Gl.getKeep(gl),
-           Gl.getReplace(gl),
+           (Gl.getKeep(gl), Gl.getKeep(gl), Gl.getReplace(gl)),
          )
-      |> DeviceManagerService.setStencilFunc(gl, Gl.getAlways(gl), 1, 0xFF)
+      |> DeviceManagerService.setStencilFunc(
+           gl,
+           (Gl.getAlways(gl), 1, 0xFF),
+         )
       |> DeviceManagerService.setStencilMask(gl, 0xFF)
       |> DeviceManagerService.setDepthTest(gl, false)
       |> DeviceManagerService.setDepthWrite(gl, false)
@@ -162,9 +159,7 @@ module DrawOutlineJobUtils = {
       deviceManagerRecord
       |> DeviceManagerService.setStencilFunc(
            gl,
-           Gl.getNotEqual(gl),
-           1,
-           0xFF,
+           (Gl.getNotEqual(gl), 1, 0xFF),
          )
       |> DeviceManagerService.setStencilMask(gl, 0x00)
       /* |> DeviceManagerService.setSide(gl, DeviceManagerType.BACK) */

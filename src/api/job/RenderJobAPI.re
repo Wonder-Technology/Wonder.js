@@ -37,10 +37,11 @@ let sendUniformRenderObjectModelData =
   let renderState =
     RenderJobUtils.sendUniformRenderObjectModelData(
       gl,
-      shaderIndex,
-      transformIndex,
-      CreateGetRenederDataSubStateRenderService.createState(renderState),
-      renderState,
+      (shaderIndex, transformIndex),
+      (
+        CreateGetRenederDataSubStateRenderService.createState(renderState),
+        renderState,
+      ),
     );
 
   state;
@@ -53,8 +54,7 @@ let sendUniformRenderObjectMaterialData =
   let renderState =
     RenderJobUtils.sendUniformRenderObjectMaterialData(
       gl,
-      shaderIndex,
-      materialIndex,
+      (shaderIndex, materialIndex),
       CreateGetRenederDataSubStateRenderService.createState(renderState),
       renderState,
     );

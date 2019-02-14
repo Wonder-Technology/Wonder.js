@@ -70,9 +70,7 @@ let setStencilFunc =
     state.deviceManagerRecord
     |> DeviceManagerService.setStencilFunc(
          DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-         targetStencilFunc,
-         targetStencilRef,
-         targetStencilMask,
+         (targetStencilFunc, targetStencilRef, targetStencilMask),
        ),
 };
 
@@ -83,8 +81,6 @@ let setStencilOp =
     state.deviceManagerRecord
     |> DeviceManagerService.setStencilOp(
          DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-         targetStencilSFail,
-         targetStencilDPFail,
-         targetStencilDPPass,
+         (targetStencilSFail, targetStencilDPFail, targetStencilDPPass),
        ),
 };

@@ -61,8 +61,7 @@ let _sendTransformMatrixDataBufferData =
       glDataTuple,
       shaderIndex,
       stride,
-      sendRenderDataSubState,
-      {glslSenderRecord} as state,
+      (sendRenderDataSubState, {glslSenderRecord} as state),
     ) => {
   glslSenderRecord
   |> HandleAttributeConfigDataService.unsafeGetInstanceAttributeSendData(
@@ -84,16 +83,14 @@ let _updateAndSendTransformMatrixDataBufferData =
       (gl, extension) as glDataTuple,
       shaderIndex,
       (stride, matricesArrayForInstance, matrixInstanceBuffer),
-      sendRenderDataSubState,
-      state,
+      (sendRenderDataSubState, state),
     ) => {
   updateData(gl, matricesArrayForInstance, matrixInstanceBuffer) |> ignore;
   _sendTransformMatrixDataBufferData(
     glDataTuple,
     shaderIndex,
     stride,
-    sendRenderDataSubState,
-    state,
+    (sendRenderDataSubState, state),
   );
 };
 
@@ -164,13 +161,12 @@ let _sendTransformMatrixData =
          getRenderDataSubState,
        );
 
-  state
-  |> _updateAndSendTransformMatrixDataBufferData(
-       (gl, extension),
-       shaderIndex,
-       (strideForSend, matricesArrayForInstance, matrixInstanceBuffer),
-       CreateSendRenederDataSubStateRenderService.createState(state),
-     );
+  _updateAndSendTransformMatrixDataBufferData(
+    (gl, extension),
+    shaderIndex,
+    (strideForSend, matricesArrayForInstance, matrixInstanceBuffer),
+    (CreateSendRenederDataSubStateRenderService.createState(state), state),
+  );
 };
 
 let _sendStaticTransformMatrixData =
@@ -216,8 +212,7 @@ let _sendStaticTransformMatrixData =
         (gl, extension),
         shaderIndex,
         strideForSend,
-        sendRenderDataSubState,
-        state,
+        (sendRenderDataSubState, state),
       );
     } :
     {

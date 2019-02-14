@@ -152,7 +152,7 @@ let setStencilMask = (gl, targetStencilMask, record) => {
 };
 
 let setStencilFunc =
-    (gl, targetStencilFunc, targetStencilRef, targetStencilMask, record) => {
+    (gl, (targetStencilFunc, targetStencilRef, targetStencilMask), record) => {
   gl
   |> WonderWebgl.Gl.stencilFunc(
        targetStencilFunc,
@@ -164,7 +164,11 @@ let setStencilFunc =
 };
 
 let setStencilOp =
-    (gl, targetStencilSFail, targetStencilDPFail, targetStencilDPPass, record) => {
+    (
+      gl,
+      (targetStencilSFail, targetStencilDPFail, targetStencilDPPass),
+      record,
+    ) => {
   gl
   |> WonderWebgl.Gl.stencilOp(
        targetStencilSFail,
