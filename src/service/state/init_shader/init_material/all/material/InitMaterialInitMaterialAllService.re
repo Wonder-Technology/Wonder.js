@@ -9,7 +9,6 @@ let _initMaterialShader =
         getShaderLibItemsFunc,
         getMaterialShaderLibDataArrFunc,
       ),
-      /* TODO refactor: only pass state */
       (shaderIndices, renderConfigRecord, state),
     ) => {
   let shaders = GetDataRenderConfigService.getShaders(renderConfigRecord);

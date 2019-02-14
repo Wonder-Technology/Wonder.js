@@ -83,7 +83,6 @@ let _restoreTypeArrays =
         Js.Typed_array.Uint8Array.length(targetBasicMaterialRecord.mapUnits),
       )
       |> ignore;
-      /* TODO test */
       TypeArrayService.fillUint8ArrayWithUint8Array(
         (currentBasicMaterialRecord.isDepthTests, 0),
         (targetBasicMaterialRecord.isDepthTests, 0),
@@ -92,7 +91,6 @@ let _restoreTypeArrays =
         ),
       )
       |> ignore;
-      /* TODO test */
       TypeArrayService.fillFloat32ArrayWithFloat32Array(
         (currentBasicMaterialRecord.alphas, 0),
         (targetBasicMaterialRecord.alphas, 0),

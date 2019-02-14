@@ -2,7 +2,6 @@ let addChildrenToParent = (parent, children, (parentMap, childMap)) => (
   children
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. parentMap, child) =>
-         /* TODO duplicate with HierachyTransformService */
          WonderCommonlib.MutableSparseMapService.set(
            child,
            parent,
