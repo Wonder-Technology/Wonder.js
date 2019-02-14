@@ -802,6 +802,8 @@ let getFps = TimeControllerAPI.getFps;
 
 let getGameTime = TimeControllerAPI.getGameTime;
 
+let changeChildOrder = TransformAPI.changeChildOrder;
+
 let rotateWorldOnAxis = TransformAPI.rotateWorldOnAxis;
 
 let rotateLocalOnAxis = TransformAPI.rotateLocalOnAxis;
@@ -1115,6 +1117,8 @@ let deepCopyForRestore = StateAPI.deepCopyForRestore;
 let getFps = TimeControllerAPI.getFps;
 
 let getGameTime = TimeControllerAPI.getGameTime;
+
+let changeChildOrder = TransformAPI.changeChildOrder;
 
 let rotateWorldOnAxis = TransformAPI.rotateWorldOnAxis;
 
