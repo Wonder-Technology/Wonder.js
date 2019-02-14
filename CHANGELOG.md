@@ -1,3 +1,53 @@
+<a name="1.0.0-beta.1"></a>
+# [1.0.0-beta.1](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.25...v1.0.0-beta.1) (2019-02-14)
+
+
+
+<a name="1.0.0-alpha.25"></a>
+# [1.0.0-alpha.25](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.24...v1.0.0-alpha.25) (2019-02-14)
+
+
+### Bug Fixes
+
+* **event:** fix mouse event->button ([c6848b6](https://github.com/Wonder-Technology/Wonder.js/commit/c6848b6))
+* **event:** fix mouse event->button: add NoButton ([b036a14](https://github.com/Wonder-Technology/Wonder.js/commit/b036a14))
+* **event:** fix mouse event->button: use event.which instead of event.button ([1ad9cde](https://github.com/Wonder-Technology/Wonder.js/commit/1ad9cde))
+* **light:** fix "direction light"->get direction ([8e78a9f](https://github.com/Wonder-Technology/Wonder.js/commit/8e78a9f))
+* **redo-undo:** fix "deep copy glslSenderRecord": now copy all uniform and attribute send data map ([98cb9c8](https://github.com/Wonder-Technology/Wonder.js/commit/98cb9c8))
+* **worker:** fix "direction/point light" bug ([cbf158c](https://github.com/Wonder-Technology/Wonder.js/commit/cbf158c))
+
+
+### Features
+
+* **api:** extract ReallocateCPUMemoryJobAPI, RenderJobAPI ([24b0e8a](https://github.com/Wonder-Technology/Wonder.js/commit/24b0e8a))
+* **api:** ReallocateCPUMemoryJobAPI add more apis ([60376fd](https://github.com/Wonder-Technology/Wonder.js/commit/60376fd))
+* **api:** TransformAPI add getTransformLocalToWorldMatrixTypeArray ([9e7df14](https://github.com/Wonder-Technology/Wonder.js/commit/9e7df14))
+* **basicMaterial:** add alpha; add isDepthTest logic in clone and dispose basic material; ([0309134](https://github.com/Wonder-Technology/Wonder.js/commit/0309134))
+* **basicMaterial:** support "isDepthTest" ([2054e70](https://github.com/Wonder-Technology/Wonder.js/commit/2054e70))
+* **camera:** EventArcballCameraControllerMainService now bind "point drag start", "point drag drop" event ([255b368](https://github.com/Wonder-Technology/Wonder.js/commit/255b368))
+* **clone:** cloneGameObjectMainService->clone: specific return type ([63ff0b9](https://github.com/Wonder-Technology/Wonder.js/commit/63ff0b9))
+* **data-json:** shader_libs.json add "rotationGizmoForEditor" related content!(forget to add before...) ([be62805](https://github.com/Wonder-Technology/Wonder.js/commit/be62805))
+* **event:** add "drag start", "drag drop" event;rename "drag" event to "drag over" event; ([2c95c3a](https://github.com/Wonder-Technology/Wonder.js/commit/2c95c3a))
+* **geometry:** add "abstract indices" type and service ([289f9d3](https://github.com/Wonder-Technology/Wonder.js/commit/289f9d3))
+* **geometry:** add "hasGeometryIndices16", "hasGeometryIndices32" apis ([51d65d2](https://github.com/Wonder-Technology/Wonder.js/commit/51d65d2))
+* **geometry:** add cylinder, cone, plane geometrys; add geometrys.html(pass run test); ([ab42b1a](https://github.com/Wonder-Technology/Wonder.js/commit/ab42b1a))
+* **gl:** add stencil related apis ([bc07b05](https://github.com/Wonder-Technology/Wonder.js/commit/bc07b05))
+* **outline:** fix: now not set side to back when draw expand gameObjects ([e6b78ae](https://github.com/Wonder-Technology/Wonder.js/commit/e6b78ae))
+* update wonder-commonlib version ([eb3c508](https://github.com/Wonder-Technology/Wonder.js/commit/eb3c508))
+* **hashMapService:** use MutableHashMapService ([20d8751](https://github.com/Wonder-Technology/Wonder.js/commit/20d8751))
+* **job:** add DrawOutlineJob job(pass compile) ([2ff5ad0](https://github.com/Wonder-Technology/Wonder.js/commit/2ff5ad0))
+* **outline:** add outline.html(pass run test); fix many bugs and pass unit tests; ([fbf23cb](https://github.com/Wonder-Technology/Wonder.js/commit/fbf23cb))
+* **outline:** decrease scale vector of u_mMatrix to 1.01 ([5dbadbe](https://github.com/Wonder-Technology/Wonder.js/commit/5dbadbe))
+* **shader:** "no material shader"->rotation_gizmo_for_editor add "send u_alpha" ([a4bb951](https://github.com/Wonder-Technology/Wonder.js/commit/a4bb951))
+* **shader:** add "no material shader"->rotation_gizmo_for_editor ([c7f8017](https://github.com/Wonder-Technology/Wonder.js/commit/c7f8017))
+* **shader:** add "no material shader"(pass compile) ([0151f86](https://github.com/Wonder-Technology/Wonder.js/commit/0151f86))
+* **sparseMap:** use WonderCommonlib.MutableSparseMapService ([2e50af2](https://github.com/Wonder-Technology/Wonder.js/commit/2e50af2))
+* **transform:** TransformAPI add changeChildOrder ([cc80575](https://github.com/Wonder-Technology/Wonder.js/commit/cc80575))
+* **transform:** TransformAPI add rotateLocalOnAxis,rotateWorldOnAxis ([c54f6ce](https://github.com/Wonder-Technology/Wonder.js/commit/c54f6ce))
+* **transform:** TransformAPI: unsafeGetTransformParent should return transform instead of Js.Undefined(transform);add hasTransformParent api; ([31a442e](https://github.com/Wonder-Technology/Wonder.js/commit/31a442e))
+
+
+
 <a name="1.0.0-alpha.24"></a>
 # [1.0.0-alpha.24](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.23...v1.0.0-alpha.24) (2018-11-28)
 

@@ -1,151 +1,12 @@
-open StateDataMainType;
-
 open WonderWebgl;
 
 module DrawOutlineJobUtils = {
-  open StateRenderType;
-
-  let _sendUniformRenderObjectModelData =
-      (
-        gl,
-        shaderIndex,
-        transformIndex,
-        getRenderDataSubState,
-        {glslSenderRecord} as state,
-      ) => {
-    open GLSLSenderType;
-
-    glslSenderRecord
-    |> HandleUniformRenderObjectModelService.unsafeGetUniformSendData(
-         shaderIndex,
-       )
-    |> WonderCommonlib.ArrayService.forEach(
-         (.
-           {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData,
-         ) =>
-         GLSLLocationService.isUniformLocationExist(pos) ?
-           sendDataFunc(.
-             gl,
-             pos,
-             getDataFunc(. transformIndex, getRenderDataSubState),
-           ) :
-           ()
-       );
-
-    ();
-  };
-
-  let _sendAttributeData =
-      (
-        gl,
-        (shaderIndex, geometryIndex) as indexTuple,
-        currentGeometryBufferMapAndGetPointsFuncsTuple,
-        sendRenderDataSubState,
-        {vboBufferRecord, glslSenderRecord} as state,
-        getOrCreateBufferFunc,
-      ) => {
-    open GLSLSenderType;
-
-    let dataTuple = (gl, geometryIndex);
-    glslSenderRecord
-    |> HandleAttributeConfigDataService.unsafeGetAttributeSendData(
-         shaderIndex,
-       )
-    |> WonderCommonlib.ArrayService.forEach(
-         (. {pos, size, buffer, sendFunc}) => {
-         let arrayBuffer =
-           getOrCreateBufferFunc(
-             buffer,
-             dataTuple,
-             currentGeometryBufferMapAndGetPointsFuncsTuple,
-             state,
-           );
-
-         sendFunc(. gl, (size, pos), arrayBuffer, sendRenderDataSubState);
-       });
-
-    ();
-  };
-
   module DrawOriginGameObjects = {
     open VboBufferType;
 
     open StateRenderType;
 
     open GLSLSenderType;
-
-    let _getOrCreateBuffer =
-        (
-          buffer,
-          (gl, geometryIndex),
-          (
-            (vertexBufferMap, elementArrayBufferMap),
-            (getVerticesFunc, getIndices16Func, getIndices32Func),
-          ),
-          state,
-        ) =>
-      switch (buffer) {
-      | Vertex =>
-        ArrayBufferRenderService.getOrCreateBuffer(
-          gl,
-          (geometryIndex, vertexBufferMap),
-          [@bs] getVerticesFunc,
-          state,
-        )
-      | Index =>
-        switch (
-          GeometryRenderService.unsafeGetIndicesType(geometryIndex, state)
-        ) {
-        | Short =>
-          ElementArrayBufferRenderService.getOrCreate16Buffer(
-            gl,
-            (geometryIndex, elementArrayBufferMap),
-            getIndices16Func(. geometryIndex, state),
-            state,
-          )
-        | Int =>
-          ElementArrayBufferRenderService.getOrCreate32Buffer(
-            gl,
-            (geometryIndex, elementArrayBufferMap),
-            getIndices32Func(. geometryIndex, state),
-            state,
-          )
-        }
-      | buffer =>
-        WonderLog.Log.fatal(
-          WonderLog.Log.buildFatalMessage(
-            ~title="_getOrCreateBuffer",
-            ~description={j|unknown buffer: $buffer|j},
-            ~reason="",
-            ~solution={j||j},
-            ~params={j||j},
-          ),
-        )
-      };
-
-    let _sendAttributeData =
-        (gl, indexTuple, sendRenderDataSubState, {vboBufferRecord} as state) => {
-      let currentGeometryBufferMapAndGetPointsFuncsTuple = (
-        (
-          vboBufferRecord.geometryVertexBufferMap,
-          vboBufferRecord.geometryElementArrayBufferMap,
-        ),
-        (
-          GetGeometryVerticesRenderService.getVertices,
-          GetGeometryIndicesRenderService.getIndices16,
-          GetGeometryIndicesRenderService.getIndices32,
-        ),
-      );
-
-      _sendAttributeData(
-        gl,
-        indexTuple,
-        currentGeometryBufferMapAndGetPointsFuncsTuple,
-        sendRenderDataSubState,
-        state,
-        _getOrCreateBuffer,
-      );
-    };
 
     let draw =
         (gl, shaderIndex, renderDataArr, state: StateRenderType.renderState) =>
@@ -163,7 +24,7 @@ module DrawOutlineJobUtils = {
              let sendRenderDataSubState =
                CreateSendRenederDataSubStateRenderService.createState(state);
 
-             _sendAttributeData(
+             RenderJobUtils.sendAttributeData(
                gl,
                (shaderIndex, geometryIndex),
                sendRenderDataSubState,
@@ -173,12 +34,10 @@ module DrawOutlineJobUtils = {
              let getRenderDataSubState =
                CreateGetRenederDataSubStateRenderService.createState(state);
 
-             _sendUniformRenderObjectModelData(
+             RenderJobUtils.sendUniformRenderObjectModelData(
                gl,
-               shaderIndex,
-               transformIndex,
-               getRenderDataSubState,
-               state,
+               (shaderIndex, transformIndex),
+               (getRenderDataSubState, state),
              );
 
              state
@@ -196,93 +55,6 @@ module DrawOutlineJobUtils = {
     open StateRenderType;
 
     open GLSLSenderType;
-
-    let _getOrCreateBuffer =
-        (
-          buffer,
-          (gl, geometryIndex),
-          (
-            (vertexBufferMap, normalBufferMap, elementArrayBufferMap),
-            (
-              getVerticesFunc,
-              getNormalsFunc,
-              getIndices16Func,
-              getIndices32Func,
-            ),
-          ),
-          state,
-        ) =>
-      switch (buffer) {
-      | Vertex =>
-        ArrayBufferRenderService.getOrCreateBuffer(
-          gl,
-          (geometryIndex, vertexBufferMap),
-          [@bs] getVerticesFunc,
-          state,
-        )
-      | Normal =>
-        ArrayBufferRenderService.getOrCreateBuffer(
-          gl,
-          (geometryIndex, normalBufferMap),
-          [@bs] getNormalsFunc,
-          state,
-        )
-      | Index =>
-        switch (
-          GeometryRenderService.unsafeGetIndicesType(geometryIndex, state)
-        ) {
-        | Short =>
-          ElementArrayBufferRenderService.getOrCreate16Buffer(
-            gl,
-            (geometryIndex, elementArrayBufferMap),
-            getIndices16Func(. geometryIndex, state),
-            state,
-          )
-        | Int =>
-          ElementArrayBufferRenderService.getOrCreate32Buffer(
-            gl,
-            (geometryIndex, elementArrayBufferMap),
-            getIndices32Func(. geometryIndex, state),
-            state,
-          )
-        }
-      | buffer =>
-        WonderLog.Log.fatal(
-          WonderLog.Log.buildFatalMessage(
-            ~title="_getOrCreateBuffer",
-            ~description={j|unknown buffer: $buffer|j},
-            ~reason="",
-            ~solution={j||j},
-            ~params={j||j},
-          ),
-        )
-      };
-
-    let _sendAttributeData =
-        (gl, indexTuple, sendRenderDataSubState, {vboBufferRecord} as state) => {
-      let currentGeometryBufferMapAndGetPointsFuncsTuple = (
-        (
-          vboBufferRecord.geometryVertexBufferMap,
-          vboBufferRecord.geometryNormalBufferMap,
-          vboBufferRecord.geometryElementArrayBufferMap,
-        ),
-        (
-          GetGeometryVerticesRenderService.getVertices,
-          GetGeometryNormalsRenderService.getNormals,
-          GetGeometryIndicesRenderService.getIndices16,
-          GetGeometryIndicesRenderService.getIndices32,
-        ),
-      );
-
-      _sendAttributeData(
-        gl,
-        indexTuple,
-        currentGeometryBufferMapAndGetPointsFuncsTuple,
-        sendRenderDataSubState,
-        state,
-        _getOrCreateBuffer,
-      );
-    };
 
     let _sendUniformNoMaterialShaderData =
         (gl, shaderIndex, getRenderDataSubState, {glslSenderRecord} as state) => {
@@ -323,7 +95,7 @@ module DrawOutlineJobUtils = {
              let sendRenderDataSubState =
                CreateSendRenederDataSubStateRenderService.createState(state);
 
-             _sendAttributeData(
+             RenderJobUtils.sendAttributeData(
                gl,
                (shaderIndex, geometryIndex),
                sendRenderDataSubState,
@@ -333,12 +105,10 @@ module DrawOutlineJobUtils = {
              let getRenderDataSubState =
                CreateGetRenederDataSubStateRenderService.createState(state);
 
-             _sendUniformRenderObjectModelData(
+             RenderJobUtils.sendUniformRenderObjectModelData(
                gl,
-               shaderIndex,
-               transformIndex,
-               getRenderDataSubState,
-               state,
+               (shaderIndex, transformIndex),
+               (getRenderDataSubState, state),
              );
              _sendUniformNoMaterialShaderData(
                gl,
@@ -356,17 +126,19 @@ module DrawOutlineJobUtils = {
          );
   };
 
-  let _prepareGlState = (gl, {deviceManagerRecord} as state) => {
+  let _prepareGlState =
+      (gl, ({deviceManagerRecord}: StateRenderType.renderState) as state) => {
     let deviceManagerRecord =
       deviceManagerRecord
       |> DeviceManagerService.setStencilTest(gl, true)
       |> DeviceManagerService.setStencilOp(
            gl,
-           Gl.getKeep(gl),
-           Gl.getKeep(gl),
-           Gl.getReplace(gl),
+           (Gl.getKeep(gl), Gl.getKeep(gl), Gl.getReplace(gl)),
          )
-      |> DeviceManagerService.setStencilFunc(gl, Gl.getAlways(gl), 1, 0xFF)
+      |> DeviceManagerService.setStencilFunc(
+           gl,
+           (Gl.getAlways(gl), 1, 0xFF),
+         )
       |> DeviceManagerService.setStencilMask(gl, 0xFF)
       |> DeviceManagerService.setDepthTest(gl, false)
       |> DeviceManagerService.setDepthWrite(gl, false)
@@ -382,14 +154,12 @@ module DrawOutlineJobUtils = {
     state |> UseProgramRenderService.useByShaderIndex(gl, shaderIndex);
 
   let _setGlStateBeforeDrawExpandGameObjects =
-      (gl, {deviceManagerRecord} as state) => {
+      (gl, ({deviceManagerRecord}: StateRenderType.renderState) as state) => {
     let deviceManagerRecord =
       deviceManagerRecord
       |> DeviceManagerService.setStencilFunc(
            gl,
-           Gl.getNotEqual(gl),
-           1,
-           0xFF,
+           (Gl.getNotEqual(gl), 1, 0xFF),
          )
       |> DeviceManagerService.setStencilMask(gl, 0x00)
       /* |> DeviceManagerService.setSide(gl, DeviceManagerType.BACK) */
@@ -400,7 +170,8 @@ module DrawOutlineJobUtils = {
     {...state, deviceManagerRecord};
   };
 
-  let _restoreGlState = (gl, {deviceManagerRecord} as state) => {
+  let _restoreGlState =
+      (gl, ({deviceManagerRecord}: StateRenderType.renderState) as state) => {
     let deviceManagerRecord =
       deviceManagerRecord
       |> DeviceManagerService.setStencilTest(gl, false)
@@ -470,7 +241,8 @@ let _getMaterialComponent = (gameObject, gameObjectRecord) =>
     }
   };
 
-let _getRenderDataArr = ({jobDataRecord, gameObjectRecord} as state) =>
+let _getRenderDataArr =
+    (({jobDataRecord, gameObjectRecord}: StateDataMainType.state) as state) =>
   OperateRenderJobDataService.getGameObjectsNeedDrawOutline(jobDataRecord)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. renderDataArr, gameObjectNeedDrawOutline) => {
@@ -509,7 +281,7 @@ let _getRenderDataArr = ({jobDataRecord, gameObjectRecord} as state) =>
      );
 
 /* TODO support worker job */
-let execJob = (flags, state) => {
+let execJob = (flags, state: StateDataMainType.state) => {
   let renderState = CreateRenderStateMainService.createRenderState(state);
 
   let renderState =

@@ -140,10 +140,8 @@ let sendAttributeData =
 let sendUniformRenderObjectModelData =
     (
       gl,
-      shaderIndex,
-      transformIndex,
-      getRenderDataSubState,
-      {glslSenderRecord} as state,
+      (shaderIndex, transformIndex),
+      (getRenderDataSubState, {glslSenderRecord} as state),
     ) => {
   glslSenderRecord
   |> HandleUniformRenderObjectModelService.unsafeGetUniformSendData(
@@ -166,8 +164,7 @@ let sendUniformRenderObjectModelData =
 let sendUniformRenderObjectMaterialData =
     (
       gl,
-      shaderIndex,
-      materialIndex,
+      (shaderIndex, materialIndex),
       getRenderDataSubState,
       {glslSenderRecord} as state,
     ) => {
@@ -223,13 +220,11 @@ let render =
     CreateGetRenederDataSubStateRenderService.createState(state);
 
   let () =
-    state
-    |> sendUniformRenderObjectModelData(
-         gl,
-         shaderIndex,
-         transformIndex,
-         getRenderDataSubState,
-       );
+    sendUniformRenderObjectModelData(
+      gl,
+      (shaderIndex, transformIndex),
+      (getRenderDataSubState, state),
+    );
 
   let {lastSendMaterialData} as record = state.glslSenderRecord;
   switch (lastSendMaterialData) {
@@ -245,8 +240,7 @@ let render =
       state
       |> sendUniformRenderObjectMaterialData(
            gl,
-           shaderIndex,
-           materialIndex,
+           (shaderIndex, materialIndex),
            getRenderDataSubState,
          );
 

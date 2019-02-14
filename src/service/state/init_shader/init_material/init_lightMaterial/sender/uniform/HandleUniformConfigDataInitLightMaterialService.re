@@ -65,6 +65,30 @@ let _addPointLightSendData =
     )
   };
 
+let _readLightUniform =
+    (
+      from,
+      (field, program, uniformCacheMap, uniformLocationMap),
+      sendDataArrTuple,
+    ) =>
+  switch (from) {
+  | "ambientLight" =>
+    _addAmbientLightSendData(
+      (field, program, uniformCacheMap, uniformLocationMap),
+      sendDataArrTuple,
+    )
+  | "directionLight" =>
+    _addDirectionLightSendData(
+      (field, program, uniformCacheMap, uniformLocationMap),
+      sendDataArrTuple,
+    )
+  | "pointLight" =>
+    _addPointLightSendData(
+      (field, program, uniformCacheMap, uniformLocationMap),
+      sendDataArrTuple,
+    )
+  };
+
 let _readUniforms =
   (.
     (gl, program, uniformLocationMap, uniformCacheMap),
@@ -94,22 +118,6 @@ let _readUniforms =
                  ),
                  sendDataArrTuple,
                )
-             /* | "basicMaterial" =>
-                HandleMaterialUniformConfigDataService.addBasicMaterialSendData(
-                  (
-                    field,
-                    GLSLLocationService.getUniformLocationAndCache(
-                      program,
-                      name,
-                      uniformLocationMap,
-                      gl,
-                    ),
-                    name,
-                    type_,
-                    uniformCacheMap,
-                  ),
-                  sendDataArrTuple,
-                ) */
              | "lightMaterial" =>
                HandleMaterialUniformConfigDataService.addLightMaterialSendData(
                  (
@@ -126,18 +134,11 @@ let _readUniforms =
                  ),
                  sendDataArrTuple,
                )
-             | "ambientLight" =>
-               _addAmbientLightSendData(
-                 (field, program, uniformCacheMap, uniformLocationMap),
-                 sendDataArrTuple,
-               )
-             | "directionLight" =>
-               _addDirectionLightSendData(
-                 (field, program, uniformCacheMap, uniformLocationMap),
-                 sendDataArrTuple,
-               )
+             | "ambientLight"
+             | "directionLight"
              | "pointLight" =>
-               _addPointLightSendData(
+               _readLightUniform(
+                 from,
                  (field, program, uniformCacheMap, uniformLocationMap),
                  sendDataArrTuple,
                )

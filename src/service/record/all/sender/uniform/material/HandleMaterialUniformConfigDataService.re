@@ -31,12 +31,8 @@ let addBasicMaterialSendData =
     )
   };
 
-let addLightMaterialSendData =
-    (
-      (field, pos, name, type_, uniformCacheMap),
-      /* (getDiffuseColorFunc, getSpecularColorFunc, getShininessFunc), */
-      sendDataArrTuple,
-    ) =>
+let _addLightMaterialSendColorData =
+    (field, (uniformCacheMap, name, pos, type_), sendDataArrTuple) =>
   switch (field) {
   | "diffuseColor" =>
     HandleUniformRenderObjectMaterialService.addUniformSendDataByType(
@@ -50,12 +46,11 @@ let addLightMaterialSendData =
       sendDataArrTuple,
       GetLightMaterialDataGetRenderDataService.getSpecularColor,
     )
-  | "shininess" =>
-    HandleUniformRenderObjectMaterialService.addUniformSendDataByType(
-      (uniformCacheMap, name, pos, type_),
-      sendDataArrTuple,
-      GetLightMaterialDataGetRenderDataService.getShininess,
-    )
+  };
+
+let _addLightMaterialSendMapData =
+    (field, (uniformCacheMap, name, pos, type_), sendDataArrTuple) =>
+  switch (field) {
   | "diffuseMap" =>
     HandleUniformRenderObjectMaterialService.addUniformTextureSendDataByType(
       (uniformCacheMap, name, pos, type_),
@@ -67,6 +62,41 @@ let addLightMaterialSendData =
       (uniformCacheMap, name, pos, type_),
       sendDataArrTuple,
       GetLightMaterialDataGetRenderDataService.getSpecularMapUnit,
+    )
+  | _ =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_addLightMaterialSendData",
+        ~description={j|unknow field:$field|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j},
+      ),
+    )
+  };
+
+let addLightMaterialSendData =
+    ((field, pos, name, type_, uniformCacheMap), sendDataArrTuple) =>
+  switch (field) {
+  | "diffuseColor"
+  | "specularColor" =>
+    _addLightMaterialSendColorData(
+      field,
+      (uniformCacheMap, name, pos, type_),
+      sendDataArrTuple,
+    )
+  | "shininess" =>
+    HandleUniformRenderObjectMaterialService.addUniformSendDataByType(
+      (uniformCacheMap, name, pos, type_),
+      sendDataArrTuple,
+      GetLightMaterialDataGetRenderDataService.getShininess,
+    )
+  | "diffuseMap"
+  | "specularMap" =>
+    _addLightMaterialSendMapData(
+      field,
+      (uniformCacheMap, name, pos, type_),
+      sendDataArrTuple,
     )
   | _ =>
     WonderLog.Log.fatal(
