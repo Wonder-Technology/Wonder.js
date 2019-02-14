@@ -84,7 +84,8 @@ let buildNoWorkerJobConfig = () =>
         |},
     ~initJobs=
       NoWorkerJobConfigTool.buildNoWorkerInitJobConfigWithoutInitMain(),
-    ~loopPipelines={|
+    ~loopPipelines=
+      {|
 [
     {
         "name": "default",
