@@ -63,3 +63,19 @@ let update = ({arcballCameraControllerRecord} as state) =>
        state,
      )
   |> _clearDirtyArray;
+
+let _getAllArcballCameraControllers =
+    ({arcballCameraControllerRecord} as state) => {
+  let {index, disposedIndexArray} = arcballCameraControllerRecord;
+
+  GetAllComponentService.getAllComponents(index, disposedIndexArray);
+};
+
+let updateAll = ({arcballCameraControllerRecord} as state) =>
+  _getAllArcballCameraControllers(state)
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. state, cameraController) =>
+         _updateTransform(cameraController, state),
+       state,
+     )
+  |> _clearDirtyArray;
