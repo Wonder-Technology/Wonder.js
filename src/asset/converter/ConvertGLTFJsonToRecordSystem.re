@@ -133,6 +133,7 @@ let _convertScenes = json =>
                                )
                              ),
                            ),
+                      isRoot: json |> optional(field("isRoot", bool)),
                     }
                   ),
                 ),
@@ -536,6 +537,9 @@ let _convertNodes = json =>
                         |> optimizedOptional(
                              optimizedField("cameraController", int),
                            ),
+                      isRoot:
+                        json
+                        |> optimizedOptional(optimizedField("isRoot", bool)),
                     }
                   ),
                 ),

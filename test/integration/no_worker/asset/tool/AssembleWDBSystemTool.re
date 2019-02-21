@@ -134,6 +134,15 @@ let getAllSortedTransforms = (rootGameObject, state) => {
 let getAllGameObjects = (rootGameObject, state) =>
   GameObjectAPI.getAllGameObjects(rootGameObject, state);
 
+let getAllChildrenData = allGameObjectData =>
+  allGameObjectData |> Js.Array.sliceFrom(1);
+
+let getAllGameObjectsIsRoot = (rootGameObject, state) =>
+  getAllGameObjects(rootGameObject, state)
+  |> Js.Array.map(gameObject =>
+       GameObjectAPI.unsafeGetGameObjectIsRoot(gameObject, state)
+     );
+
 let getAllMeshRenderers = (rootGameObject, state) =>
   getAllGameObjects(rootGameObject, state)
   |> Js.Array.filter(gameObject =>
@@ -252,7 +261,8 @@ let isImageUint8ArrayMapEqual =
     (sourceImageUint8ArrayMap, targetImageUint8ArrayMap) =>
   Js.Typed_array.(
     sourceImageUint8ArrayMap
-    |> WonderCommonlib.MutableSparseMapService.mapValid((. (mimeType, uint8Array)) =>
+    |> WonderCommonlib.MutableSparseMapService.mapValid(
+         (. (mimeType, uint8Array)) =>
          (mimeType, uint8Array |> Uint8Array.byteLength |> Obj.magic)
        )
     |>

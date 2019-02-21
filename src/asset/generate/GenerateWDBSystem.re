@@ -1,8 +1,7 @@
 let generateWDB = (rootGameObject, imageBase64Map, funcTuple, state) => {
   let (gltf, imageResultUint8ArrayMap, binBuffer) =
     GenerateGLBSystem.generateGLBData(
-      rootGameObject,
-      imageBase64Map,
+      (rootGameObject, imageBase64Map),
       funcTuple,
       state,
     );

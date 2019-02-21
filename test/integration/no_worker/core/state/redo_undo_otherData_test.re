@@ -53,10 +53,10 @@ let _ =
       open StateDataMainType;
       let float32ArrayPoolMap =
         [|[|Float32Array.make([|RandomTool.getRandomFloat(3.)|])|]|]
-        |> SparseMapTool.createByArr;
+        |> MutableSparseMapTool.createByArr;
       let uint16ArrayPoolMap =
         [|[|Uint16Array.make([|RandomTool.getRandomInt(3)|])|]|]
-        |> SparseMapTool.createByArr;
+        |> MutableSparseMapTool.createByArr;
       (
         {
           ...state,

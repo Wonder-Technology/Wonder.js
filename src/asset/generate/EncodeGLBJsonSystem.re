@@ -93,6 +93,7 @@ let _encodeNodeExtras = (extras, list) =>
           basicMaterial,
           lightMaterial,
           cameraController,
+          isRoot,
         }: nodeExtras
       ),
     ) =>
@@ -120,6 +121,12 @@ let _encodeNodeExtras = (extras, list) =>
       _encodeNodeMaterial(basicMaterial, lightMaterial, extraList);
 
     let extraList = _encodeNodeCameraController(cameraController, extraList);
+
+    let extraList =
+      switch (isRoot) {
+      | None => extraList
+      | Some(isRoot) => [("isRoot", isRoot |> bool), ...extraList]
+      };
 
     [("extras", extraList |> object_), ...list];
   };
@@ -206,11 +213,11 @@ let _encodeExtras =
       basicMaterialDataArr,
       arcballCameraControllerDataArr,
     ) => {
-  let extrasList = [];
+  let extraList = [];
 
-  let extrasList =
+  let extraList =
     switch (basicCameraViewDataArr |> Js.Array.length) {
-    | 0 => extrasList
+    | 0 => extraList
     | _ => [
         (
           "basicCameraViews",
@@ -220,13 +227,13 @@ let _encodeExtras =
              )
           |> jsonArray,
         ),
-        ...extrasList,
+        ...extraList,
       ]
     };
 
-  let extrasList =
+  let extraList =
     switch (meshRendererDataArr |> Js.Array.length) {
-    | 0 => extrasList
+    | 0 => extraList
     | _ => [
         (
           "meshRenderers",
@@ -236,13 +243,13 @@ let _encodeExtras =
              )
           |> jsonArray,
         ),
-        ...extrasList,
+        ...extraList,
       ]
     };
 
-  let extrasList =
+  let extraList =
     switch (basicMaterialDataArr |> Js.Array.length) {
-    | 0 => extrasList
+    | 0 => extraList
     | _ => [
         (
           "basicMaterials",
@@ -269,13 +276,13 @@ let _encodeExtras =
              })
           |> jsonArray,
         ),
-        ...extrasList,
+        ...extraList,
       ]
     };
 
-  let extrasList =
+  let extraList =
     switch (arcballCameraControllerDataArr |> Js.Array.length) {
-    | 0 => extrasList
+    | 0 => extraList
     | _ => [
         (
           "arcballCameraControllers",
@@ -315,19 +322,19 @@ let _encodeExtras =
              )
           |> jsonArray,
         ),
-        ...extrasList,
+        ...extraList,
       ]
     };
 
-  ("extras", extrasList |> object_);
+  ("extras", extraList |> object_);
 };
 
 let _encodeSceneExtras = imguiData => {
-  let extrasList = [];
+  let extraList = [];
 
-  let extrasList =
+  let extraList =
     switch (imguiData) {
-    | (None, None) => extrasList
+    | (None, None) => extraList
 
     | (Some(customData), Some(imguiFuncStr)) => [
         (
@@ -338,7 +345,7 @@ let _encodeSceneExtras = imguiData => {
           ]
           |> object_,
         ),
-        ...extrasList,
+        ...extraList,
       ]
     | _ =>
       WonderLog.Log.fatal(
@@ -352,7 +359,7 @@ let _encodeSceneExtras = imguiData => {
       )
     };
 
-  [("extras", extrasList |> object_)];
+  [("extras", extraList |> object_)];
 };
 
 let _encodeScenes = (extensionsUsedArr, (lightDataArr, imguiData), state) => {

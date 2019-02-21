@@ -51,7 +51,9 @@ let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
        let (gltf, imageResultUint8ArrayMap, binBuffer) =
          GenerateSceneGraphAPI.generateGLBData(
            rootGameObject,
-           Js.Nullable.return(WonderCommonlib.MutableSparseMapService.createEmpty()),
+           Js.Nullable.return(
+             WonderCommonlib.MutableSparseMapService.createEmpty(),
+           ),
            state,
          );
 
@@ -83,7 +85,9 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
 
        GenerateSceneGraphAPI.generateWDB(
          rootGameObject,
-         Js.Nullable.return(WonderCommonlib.MutableSparseMapService.createEmpty()),
+         Js.Nullable.return(
+           WonderCommonlib.MutableSparseMapService.createEmpty(),
+         ),
          state,
        )
        |> resolve;
@@ -138,7 +142,9 @@ let testGLTFResultByGLTF =
        let (gltf, _, binBuffer) =
          GenerateSceneGraphAPI.generateGLBData(
            rootGameObject,
-           Js.Nullable.return(WonderCommonlib.MutableSparseMapService.createEmpty()),
+           Js.Nullable.return(
+             WonderCommonlib.MutableSparseMapService.createEmpty(),
+           ),
            state,
          );
 
@@ -150,7 +156,9 @@ let testGLTFResultByGameObject = (rootGameObject, targetJsonStr, state) => {
   let (gltf, _, binBuffer) =
     GenerateSceneGraphAPI.generateGLBData(
       rootGameObject,
-      Js.Nullable.return(WonderCommonlib.MutableSparseMapService.createEmpty()),
+      Js.Nullable.return(
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+      ),
       state,
     );
 
@@ -180,7 +188,9 @@ let testAssembleResultByGameObject =
   let (state, _, data) =
     GenerateSceneGraphAPI.generateWDB(
       rootGameObject,
-      Js.Nullable.return(WonderCommonlib.MutableSparseMapService.createEmpty()),
+      Js.Nullable.return(
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+      ),
       state,
     );
 

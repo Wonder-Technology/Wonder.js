@@ -447,11 +447,11 @@ let batchSetLightMaterialData = ({lightMaterials}, lightMaterialArr, state) =>
        state,
      );
 
-let _batchSetGameObjectName = (targets, names, setNameFunc, state) =>
+let _batchSetGameObjectData = (targets, dataArr, setDataFunc, state) =>
   targets
   |> WonderCommonlib.ArrayService.reduceOneParami(
        (. state, target, index) =>
-         setNameFunc(. target, Array.unsafe_get(names, index), state),
+         setDataFunc(. target, Array.unsafe_get(dataArr, index), state),
        state,
      );
 
@@ -492,10 +492,35 @@ let batchSetNames =
       state,
     ) =>
   state
-  |> _batchSetGameObjectName(
+  |> _batchSetGameObjectData(
        gameObjectArr,
        gameObjects.names,
        NameGameObjectMainService.setName,
      )
   |> _batchSetTextureName(basicSourceTextureArr, basicSourceTextures)
   |> _batchSetGeometryName(geometrys, geometryArr);
+
+let batchSetIsRoot = (gameObjectArr, gameObjects: WDType.gameObjects, state) =>
+  gameObjectArr
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. state, gameObject, index) =>
+         AssembleIsRootUtils.doesGameObjectHasIsRootData(index, gameObjects) ?
+           IsRootGameObjectMainService.setIsRoot(.
+             gameObject,
+             AssembleIsRootUtils.unsafeGetGameObjectIsRootData(
+               index,
+               gameObjects,
+             ),
+             state,
+           ) :
+           state,
+       /* switch (
+            gameObjects.isRoots
+            |> WonderCommonlib.MutableSparseMapService.get(index)
+          ) {
+          | Some(isRoot) =>
+            IsRootGameObjectMainService.setIsRoot(. gameObject, isRoot, state)
+          | None => state
+          }, */
+       state,
+     );

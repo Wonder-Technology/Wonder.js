@@ -8,8 +8,7 @@ open GenerateSceneGraphType;
 
 let generateGLBData =
     (
-      rootGameObject,
-      imageUint8ArrayDataMap,
+      (rootGameObject, imageUint8ArrayDataMap),
       (getPointsDataFuncTuple, getResultUint8ArrayDataFunc),
       state,
     ) => {

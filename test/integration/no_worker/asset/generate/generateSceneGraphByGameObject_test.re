@@ -3433,7 +3433,10 @@ let _ =
                  texture2,
                  uint8ArrayData1,
                )
-            |> WonderCommonlib.MutableSparseMapService.set(texture3, uint8ArrayData2);
+            |> WonderCommonlib.MutableSparseMapService.set(
+                 texture3,
+                 uint8ArrayData2,
+               );
 
           GenerateSceneGraphSystemTool.testGLTFResultByGameObjectWithImageUint8ArrayDataMap(
             rootGameObject,
@@ -3442,6 +3445,170 @@ let _ =
                    |j},
             Js.Nullable.return(imageUint8ArrayMap),
             state,
+          );
+        });
+      })
+    );
+
+    describe("test isRoot", () =>
+      describe("test gltf", () => {
+        describe("if scene only has one child", () => {
+          let _prepareGameObject = state => {
+            open GameObjectAPI;
+
+            let state = state^;
+
+            let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+            let sceneGameObjectTransform =
+              GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                rootGameObject,
+                state,
+              );
+
+            let (
+              state,
+              gameObject1,
+              (transform1, (localPos1, localRotation1, localScale1)),
+              geometry1,
+              (material1, diffuseColor1),
+              meshRenderer1,
+            ) =
+              _createGameObject1(state);
+
+            /* let (state, gameObject2, transform2) =
+               _createGameObjectWithMap("2", "2.png", state); */
+
+            let state = state |> SceneAPI.addSceneChild(transform1);
+            /* |> SceneAPI.addSceneChild(transform2); */
+
+            let isRoot1 = true;
+            let isRoot2 = false;
+            let state =
+              GameObjectAPI.setGameObjectIsRoot(
+                rootGameObject,
+                isRoot1,
+                state,
+              );
+            let state =
+              GameObjectAPI.setGameObjectIsRoot(gameObject1, isRoot2, state);
+
+            (state, rootGameObject, (isRoot1, isRoot2));
+          };
+
+          test("scenes shouldn't has isRoot data", () => {
+            let (state, rootGameObject, _) = _prepareGameObject(state);
+
+            GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+              rootGameObject,
+              {j|
+"scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0],"extras":{}}]
+          |j},
+              state,
+            );
+          });
+          test(
+            {|nodes->first one->isRoot should be scene->isRoot;
+               second one->isRoot should be scene->child->isRoot;|},
+            () => {
+              let (state, rootGameObject, (isRoot1, isRoot2)) =
+                _prepareGameObject(state);
+
+              GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+                rootGameObject,
+                {j|
+"nodes":[{"children":[1],"extras":{"isRoot":$isRoot1}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"isRoot":$isRoot2,"lightMaterial":0,"meshRenderer":0}}]
+          |j},
+                state,
+              );
+            },
+          );
+        });
+
+        describe("else", () => {
+          let _prepareGameObject = state => {
+            open GameObjectAPI;
+
+            let state = state^;
+
+            let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+            let sceneGameObjectTransform =
+              GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                rootGameObject,
+                state,
+              );
+
+            let (
+              state,
+              gameObject1,
+              (transform1, (localPos1, localRotation1, localScale1)),
+              geometry1,
+              (material1, diffuseColor1),
+              meshRenderer1,
+            ) =
+              _createGameObject1(state);
+
+            let (
+              state,
+              gameObject2,
+              (transform2, (localPos2, localRotation2, localScale2)),
+              geometry2,
+              (material2, diffuseColor2),
+              meshRenderer2,
+            ) =
+              _createGameObject1(state);
+
+            let state =
+              state
+              |> SceneAPI.addSceneChild(transform1)
+              |> SceneAPI.addSceneChild(transform2);
+
+            let isRoot1 = false;
+            let isRoot2 = false;
+            let isRoot3 = true;
+            let state =
+              GameObjectAPI.setGameObjectIsRoot(
+                rootGameObject,
+                isRoot1,
+                state,
+              );
+            let state =
+              GameObjectAPI.setGameObjectIsRoot(gameObject1, isRoot2, state);
+            let state =
+              GameObjectAPI.setGameObjectIsRoot(gameObject2, isRoot3, state);
+
+            (state, rootGameObject, (isRoot1, isRoot2, isRoot3));
+          };
+
+          test("scenes shouldn't has isRoot data", () => {
+            let (state, rootGameObject, _) = _prepareGameObject(state);
+
+            GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+              rootGameObject,
+              {j|
+"scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0],"extras":{}}]
+          |j},
+              state,
+            );
+          });
+          test(
+            {|nodes->first one->isRoot should be scene->isRoot;
+               second one->isRoot should be scene->first child->isRoot;
+               third one->isRoot should be scene->second child->isRoot;
+               |},
+            () => {
+              let (state, rootGameObject, (isRoot1, isRoot2, isRoot3)) =
+                _prepareGameObject(state);
+
+              GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+                rootGameObject,
+                {j|
+  "nodes":[{"children":[1,2],"extras":{"isRoot":$isRoot1}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"isRoot":$isRoot2,"lightMaterial":0,"meshRenderer":0}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":1,"extras":{"isRoot":$isRoot3,"lightMaterial":1,"meshRenderer":1}}]
+          |j},
+                state,
+              );
+            },
           );
         });
       })

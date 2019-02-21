@@ -2,61 +2,6 @@ open Js.Promise;
 
 open Js.Typed_array;
 
-let _convertIMGUI = extras =>
-  switch (extras) {
-  | None => None
-  | Some(({imgui}: GLTFType.sceneExtras)) =>
-    switch (imgui) {
-    | None => None
-    | Some({imguiFunc, customData}) =>
-      Some({imguiFunc, customData}: SceneGraphType.imgui)
-    }
-  };
-
-let _convertToScene =
-    (
-      ambientLightArr: array(WDType.ambientLight),
-      {scenes, scene}: GLTFType.gltf,
-    )
-    : WDType.scene => {
-  WonderLog.Contract.requireCheck(
-    () => {
-      open WonderLog;
-      open Contract;
-      open Operators;
-      test(
-        Log.buildAssertMessage(
-          ~expect={j|only has one scene|j},
-          ~actual={j|not|j},
-        ),
-        () =>
-        scenes |> Js.Array.length == 1
-      );
-
-      test(
-        Log.buildAssertMessage(
-          ~expect={j|has one ambientLight at most|j},
-          ~actual={j|not|j},
-        ),
-        () =>
-        ambientLightArr |> Js.Array.length <= 1
-      );
-    },
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-
-  let {nodes, extras}: GLTFType.scene =
-    ConvertCommon.getScene(scenes, scene);
-
-  {
-    gameObjects: nodes |> OptionService.unsafeGet,
-    ambientLight:
-      ambientLightArr |> Js.Array.length == 1 ?
-        Some({color: ambientLightArr[0].color}) : None,
-    imgui: _convertIMGUI(extras),
-  };
-};
-
 let _checkAndWarn = (({meshes}: GLTFType.gltf) as gltf) => {
   let hasTexCoord_1 = ref(false);
 
@@ -109,7 +54,7 @@ let _buildWDBJsonUint8Array = (gltf: GLTFType.gltf) => {
                version: asset.version,
                generator: GLTFUtils.getGenerator(),
              },
-             scene: _convertToScene(ambientLightArr, gltf),
+             scene: ConvertSceneSystem.convertToScene(ambientLightArr, gltf),
              gameObjects: ConvertGameObjectsSystem.convert(gltf),
              indices,
              transforms,

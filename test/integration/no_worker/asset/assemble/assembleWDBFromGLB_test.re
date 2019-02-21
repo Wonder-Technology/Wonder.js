@@ -69,6 +69,106 @@ let _ =
           (),
         )
       );
+
+      describe("test set isRoot", () => {
+        describe(
+          "if scene gameObject only has one child, its isRoot should be decided by the child",
+          () => {
+            testPromise("test1", () =>
+              AssembleWDBSystemTool.testGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfSceneAndOneNodeIsRoot(
+                    true,
+                    false,
+                  ),
+                ~state,
+                ~testFunc=
+                  ((state, _, rootGameObject)) =>
+                    GameObjectAPI.unsafeGetGameObjectIsRoot(
+                      rootGameObject,
+                      state,
+                    )
+                    |> expect == false,
+                (),
+              )
+            );
+            testPromise("test2", () =>
+              AssembleWDBSystemTool.testGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfSceneAndOneNodeIsRoot(
+                    false,
+                    true,
+                  ),
+                ~state,
+                ~testFunc=
+                  ((state, _, rootGameObject)) =>
+                    GameObjectAPI.unsafeGetGameObjectIsRoot(
+                      rootGameObject,
+                      state,
+                    )
+                    |> expect == true,
+                (),
+              )
+            );
+            testPromise("test3", () =>
+              AssembleWDBSystemTool.testGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfSceneAndOneNodeIsRoot(
+                    true,
+                    true,
+                  ),
+                ~state,
+                ~testFunc=
+                  ((state, _, rootGameObject)) =>
+                    GameObjectAPI.unsafeGetGameObjectIsRoot(
+                      rootGameObject,
+                      state,
+                    )
+                    |> expect == true,
+                (),
+              )
+            );
+          },
+        );
+
+        describe("else, its isRoot should decided by the itself", () =>
+          testPromise("test", () =>
+            AssembleWDBSystemTool.testGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfSceneAndTwoNodeIsRoot(
+                  true,
+                  false,
+                ),
+              ~state,
+              ~testFunc=
+                ((state, _, rootGameObject)) =>
+                  GameObjectAPI.unsafeGetGameObjectIsRoot(
+                    rootGameObject,
+                    state,
+                  )
+                  |> expect == true,
+              (),
+            )
+          )
+        );
+
+        describe("test truck glb", () =>
+          testPromise("root gameObject->isRoot should be true", () =>
+            AssembleWDBSystemTool.testGLB(
+              sandbox^,
+              GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+              ((state, _, rootGameObject)) =>
+                GameObjectAPI.unsafeGetGameObjectIsRoot(rootGameObject, state)
+                |> expect == true,
+              state^,
+            )
+          )
+        );
+      });
     });
 
     describe("test imgui", () => {
@@ -269,6 +369,39 @@ let _ =
           )
         )
       );
+
+      describe("set gameObject isRoot", () => {
+        testPromise("if gltf->node->extras has no isRoot, set false", () =>
+          AssembleWDBSystemTool.testGLB(
+            sandbox^,
+            GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+            ((state, _, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllGameObjectsIsRoot(
+                rootGameObject,
+                state,
+              )
+              |> AssembleWDBSystemTool.getAllChildrenData
+              |> expect == [|false, false, false, false, false, false, false|],
+            state^,
+          )
+        );
+        testPromise("else, set it", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfNodeIsRoot(true),
+            ~state,
+            ~testFunc=
+              ((state, _, rootGameObject)) =>
+                AssembleWDBSystemTool.getAllGameObjectsIsRoot(
+                  rootGameObject,
+                  state,
+                )
+                |> expect == [|true, true|],
+            (),
+          )
+        );
+      });
 
       describe("test gameObject count", () =>
         testPromise("test 2CylinderEngine glb", () => {

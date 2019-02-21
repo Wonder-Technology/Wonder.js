@@ -40,6 +40,7 @@ type asset = {
 type gameObjects = {
   count: int,
   names: array(string),
+  isRoots: WonderCommonlib.MutableSparseMapService.t(bool),
 };
 
 type transform = {
@@ -221,6 +222,7 @@ type scene = {
   gameObjects: array(gameObjectIndex),
   ambientLight: option(ambientLight),
   imgui: option(SceneGraphType.imgui),
+  isRoot: bool,
 };
 
 type wd = {

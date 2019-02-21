@@ -13,8 +13,7 @@ let _getFuncTuple = () => (
 
 let generateGLBData = (rootGameObject, imageUint8ArrayMap, state) =>
   GenerateGLBSystem.generateGLBData(
-    rootGameObject,
-    imageUint8ArrayMap,
+    (rootGameObject, imageUint8ArrayMap),
     _getFuncTuple(),
     state,
   );

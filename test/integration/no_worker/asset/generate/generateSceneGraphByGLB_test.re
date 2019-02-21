@@ -31,6 +31,111 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
+    describe("test BoxTextured glb", () => {
+      testPromise("test nodes", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLB(
+          sandbox^,
+          GLBTool.buildGLBFilePath("BoxTextured.glb"),
+          ((gltf, _, binBuffer)) =>
+            gltf
+            |> GenerateSceneGraphSystemTool.contain(
+                 {|
+  "nodes":[{"name":"gameObject_0","children":[1],"rotation":[-0.7071067690849304,0,0,0.7071067690849304], "extras":{"isRoot":true}},{"name":"Mesh","mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}}]
+  |},
+               ),
+          state,
+        );
+      });
+
+      testPromise("test images", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLB(
+          sandbox^,
+          GLBTool.buildGLBFilePath("BoxTextured.glb"),
+          ((gltf, _, binBuffer)) =>
+            gltf
+            |> GenerateSceneGraphSystemTool.contain(
+                 {|
+  "images":[{"name": "CesiumLogoFlat.png", "bufferView":4,"mimeType":"image/png"}]
+  |},
+               ),
+          state,
+        );
+      });
+
+      testPromise("test bufferViews", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLB(
+          sandbox^,
+          GLBTool.buildGLBFilePath("BoxTextured.glb"),
+          ((gltf, _, binBuffer)) =>
+            gltf
+            |> GenerateSceneGraphSystemTool.contain(
+                 {|
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 288
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 288,
+      "byteLength": 288
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 576,
+      "byteLength": 192
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 768,
+      "byteLength": 72
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 840,
+      "byteLength": 2
+    }
+  ]
+
+  |},
+               ),
+          state,
+        );
+      });
+
+      describe("test texture", () =>
+        testPromise("test source", () => {
+          let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+          GenerateSceneGraphSystemTool.testAssembleResultByGLB(
+            sandbox^,
+            GLBTool.buildGLBFilePath("BoxTextured.glb"),
+            ((state, _, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllDiffuseMaps(rootGameObject, state)
+              |> Js.Array.map(diffuseMap =>
+                   BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+                     diffuseMap,
+                     state,
+                   )
+                 )
+              |>
+              expect == [|
+                          {"name": "CesiumLogoFlat.png", "src": "object_url1"}
+                          |> Obj.magic,
+                        |],
+            state,
+          );
+        })
+      );
+    });
+
     describe("test SuperLowPolyStove glb", () => {
       testPromise("test bufferViews", () => {
         let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
@@ -135,111 +240,6 @@ let _ =
       );
     });
 
-    describe("test BoxTextured glb", () => {
-      testPromise("test nodes", () => {
-        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
-
-        GenerateSceneGraphSystemTool.testGLTFResultByGLB(
-          sandbox^,
-          GLBTool.buildGLBFilePath("BoxTextured.glb"),
-          ((gltf, _, binBuffer)) =>
-            gltf
-            |> GenerateSceneGraphSystemTool.contain(
-                 {|
-  "nodes":[{"name":"gameObject_0","children":[1],"rotation":[-0.7071067690849304,0,0,0.7071067690849304]},{"name":"Mesh","mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}}]
-  |},
-               ),
-          state,
-        );
-      });
-
-      testPromise("test images", () => {
-        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
-
-        GenerateSceneGraphSystemTool.testGLTFResultByGLB(
-          sandbox^,
-          GLBTool.buildGLBFilePath("BoxTextured.glb"),
-          ((gltf, _, binBuffer)) =>
-            gltf
-            |> GenerateSceneGraphSystemTool.contain(
-                 {|
-  "images":[{"name": "CesiumLogoFlat.png", "bufferView":4,"mimeType":"image/png"}]
-  |},
-               ),
-          state,
-        );
-      });
-
-      testPromise("test bufferViews", () => {
-        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
-
-        GenerateSceneGraphSystemTool.testGLTFResultByGLB(
-          sandbox^,
-          GLBTool.buildGLBFilePath("BoxTextured.glb"),
-          ((gltf, _, binBuffer)) =>
-            gltf
-            |> GenerateSceneGraphSystemTool.contain(
-                 {|
-  "bufferViews": [
-    {
-      "buffer": 0,
-      "byteOffset": 0,
-      "byteLength": 288
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 288,
-      "byteLength": 288
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 576,
-      "byteLength": 192
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 768,
-      "byteLength": 72
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 840,
-      "byteLength": 2
-    }
-  ]
-
-  |},
-               ),
-          state,
-        );
-      });
-
-      describe("test texture", () =>
-        testPromise("test source", () => {
-          let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
-
-          GenerateSceneGraphSystemTool.testAssembleResultByGLB(
-            sandbox^,
-            GLBTool.buildGLBFilePath("BoxTextured.glb"),
-            ((state, _, rootGameObject)) =>
-              AssembleWDBSystemTool.getAllDiffuseMaps(rootGameObject, state)
-              |> Js.Array.map(diffuseMap =>
-                   BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
-                     diffuseMap,
-                     state,
-                   )
-                 )
-              |>
-              expect == [|
-                          {"name": "CesiumLogoFlat.png", "src": "object_url1"}
-                          |> Obj.magic,
-                        |],
-            state,
-          );
-        })
-      );
-    });
-
     describe("test CesiumMilkTruck glb", () => {
       testPromise("test imageResultUint8ArrayMap", () => {
         let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
@@ -272,7 +272,7 @@ let _ =
             gltf
             |> GenerateSceneGraphSystemTool.contain(
                  {|
-                  "nodes":[{"name":"gameObject_0","children":[1,3,5,6,7]},{"name":"gameObject_3","children":[2],"translation":[1.432669997215271,0.4277220070362091,-2.98022992950564e-8]},{"name":"Wheels","rotation":[0,0,0.08848590403795242,-0.9960774183273315],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}},{"name":"gameObject_1","children":[4],"translation":[-1.352329969406128,0.4277220070362091,-2.98022992950564e-8]},{"name":"Wheels","rotation":[0,0,0.08848590403795242,-0.9960774183273315],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":1}},{"name":"Cesium_Milk_Truck_0","mesh":1,"extras":{"lightMaterial":1,"meshRenderer":2}},{"name":"Cesium_Milk_Truck_1","mesh":2,"extras":{"lightMaterial":2,"meshRenderer":3}},{"name":"Cesium_Milk_Truck_2","mesh":3,"extras":{"lightMaterial":3,"meshRenderer":4}}]
+                  "nodes":[{"name":"gameObject_0","children":[1,3,5,6,7],"extras":{"isRoot":true}},{"name":"gameObject_3","children":[2],"translation":[1.432669997215271,0.4277220070362091,-2.98022992950564e-8]},{"name":"Wheels","rotation":[0,0,0.08848590403795242,-0.9960774183273315],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}},{"name":"gameObject_1","children":[4],"translation":[-1.352329969406128,0.4277220070362091,-2.98022992950564e-8]},{"name":"Wheels","rotation":[0,0,0.08848590403795242,-0.9960774183273315],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":1}},{"name":"Cesium_Milk_Truck_0","mesh":1,"extras":{"lightMaterial":1,"meshRenderer":2}},{"name":"Cesium_Milk_Truck_1","mesh":2,"extras":{"lightMaterial":2,"meshRenderer":3}},{"name":"Cesium_Milk_Truck_2","mesh":3,"extras":{"lightMaterial":3,"meshRenderer":4}}]
 |},
                ),
           state,
@@ -491,6 +491,21 @@ let _ =
     );
 
     describe("test perspectiveCameraProjection", () => {
+      testPromise("test scenes", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
+          ~targetJsonStr=
+            {|
+"scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0],"extras":{}}]
+            |},
+          ~state,
+          (),
+        );
+      });
+
       testPromise("test nodes", () => {
         let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
@@ -499,7 +514,7 @@ let _ =
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
           ~targetJsonStr=
             {|
-            "nodes":[{"children":[1,2,3]},{"name":"gameObject_0","rotation":[-0.382999986410141,0,0,0.9237499833106995],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}},{"name":"gameObject_1","translation":[0.5,0.5,3],"camera":0,"extras":{"basicCameraView":0}},{"name":"gameObject_2","translation":[0.5,0.5,3],"extras":{"basicCameraView":1}}]
+"nodes":[{"children":[1,2,3],"extras":{"isRoot":true}},{"name":"gameObject_0","rotation":[-0.382999986410141,0,0,0.9237499833106995],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}},{"name":"gameObject_1","translation":[0.5,0.5,3],"camera":0,"extras":{"basicCameraView":0}},{"name":"gameObject_2","translation":[0.5,0.5,3],"extras":{"basicCameraView":1}}]
             |},
           ~state,
           (),
@@ -602,7 +617,7 @@ let _ =
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfBasicCameraView(),
           ~targetJsonStr=
             {|
-              "nodes":[{"name":"gameObject_0","children":[1,2],"mesh":0,"camera":0,"extras":{"lightMaterial":0,"meshRenderer":0,"basicCameraView":0}},{"name":"gameObject_1","mesh":0,"camera":1,"extras":{"lightMaterial":0,"meshRenderer":1,"basicCameraView":1}},{"name":"gameObject_2","mesh":0,"extras":{"lightMaterial":0,"meshRenderer":2,"basicCameraView":2}}],
+              "nodes":[{"name":"gameObject_0","children":[1,2],"mesh":0,"camera":0,"extras":{"isRoot": true,"lightMaterial":0,"meshRenderer":0,"basicCameraView":0}},{"name":"gameObject_1","mesh":0,"camera":1,"extras":{"lightMaterial":0,"meshRenderer":1,"basicCameraView":1}},{"name":"gameObject_2","mesh":0,"extras":{"lightMaterial":0,"meshRenderer":2,"basicCameraView":2}}],
             |},
           ~state,
           (),
@@ -714,7 +729,7 @@ let _ =
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
           ~targetJsonStr=
             {|
-              "nodes":[{"name":"gameObject_0","children":[1,2,3]},{"name":"gameObject_1","translation":[-1.352329969406128,0.4277220070362091,-2.98022992950564e-8],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}},{"name":"gameObject_2","translation":[10.5,0.4277220070362091,20.100000381469727],"extensions":{"KHR_lights":{"light":0}}},{"name":"gameObject_3","translation":[2.5,0,-2.9000000953674316],"rotation":[0,0,0,1.1180340051651],"scale":[1,1,2],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":1},"extensions":{"KHR_lights":{"light":1}}}],
+              "nodes":[{"name":"gameObject_0","children":[1,2,3],"extras":{"isRoot":true}},{"name":"gameObject_1","translation":[-1.352329969406128,0.4277220070362091,-2.98022992950564e-8],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}},{"name":"gameObject_2","translation":[10.5,0.4277220070362091,20.100000381469727],"extensions":{"KHR_lights":{"light":0}}},{"name":"gameObject_3","translation":[2.5,0,-2.9000000953674316],"rotation":[0,0,0,1.1180340051651],"scale":[1,1,2],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":1},"extensions":{"KHR_lights":{"light":1}}}],
 |},
           ~state,
           (),

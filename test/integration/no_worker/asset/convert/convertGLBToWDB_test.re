@@ -530,6 +530,55 @@ let _ =
           (),
         );
       });
+
+      describe("test isRoot", () => {
+        test("if not has extras, set true", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+            ~state,
+            ~testFunc=({scene}) => scene.isRoot |> expect == true,
+            (),
+          )
+        );
+
+        describe("else", () => {
+          test("if extras has no isRoot, set true", () => {
+            let customData = {| [1, 2] |};
+            let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
+
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+              ~state,
+              ~testFunc=({scene}) => scene.isRoot |> expect == true,
+              (),
+            );
+          });
+          test("else, set it", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfSceneIsRoot(true),
+              ~state,
+              ~testFunc=({scene}) => scene.isRoot |> expect == true,
+              (),
+            )
+          );
+        });
+
+        describe("test truck glb", () =>
+          test("scene->isRoot should be true", () =>
+            ConvertGLBTool.testResult(
+              sandbox^,
+              GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+              (({scene}, binBuffer)) =>
+              scene.isRoot |> expect == true
+            )
+          )
+        );
+      });
     });
 
     describe("test directionLights", () =>
@@ -580,7 +629,14 @@ let _ =
           ~state,
           ~testFunc=
             ({gameObjects}) =>
-              gameObjects |> expect == {count: 1, names: [|"gameObject_0"|]},
+              gameObjects
+              |>
+              expect == {
+                          count: 1,
+                          names: [|"gameObject_0"|],
+                          isRoots:
+                            WonderCommonlib.MutableSparseMapService.createEmpty(),
+                        },
           (),
         )
       );
@@ -603,7 +659,25 @@ let _ =
                         "Cesium_Milk_Truck_1",
                         "Cesium_Milk_Truck_2",
                       |],
+                      isRoots:
+                        WonderCommonlib.MutableSparseMapService.createEmpty(),
                     }
+        )
+      );
+
+      describe("test isRoot", () =>
+        test("if extras has isRoot, set it", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfNodeIsRoot(true),
+            ~state,
+            ~testFunc=
+              ({gameObjects}) =>
+                gameObjects.isRoots
+                |> expect == MutableSparseMapTool.createByArr([|true, true|]),
+            (),
+          )
         )
       );
     });

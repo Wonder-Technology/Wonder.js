@@ -2,11 +2,23 @@ open StateDataMainType;
 
 open WDType;
 
-let build = ({scene}, ({gameObjectRecord} as state, gameObjectArr)) => {
+let build = ({scene} as wd, ({gameObjectRecord} as state, gameObjectArr)) => {
   let gameObjects = scene.gameObjects;
 
   switch (gameObjects |> Js.Array.length) {
-  | 1 => (state, Array.unsafe_get(gameObjectArr, gameObjects[0]))
+  | 1 =>
+    let rootGameObject = Array.unsafe_get(gameObjectArr, gameObjects[0]);
+
+    let state =
+      AssembleIsRootUtils.doesGameObjectHasIsRootData(0, wd.gameObjects) ?
+        state :
+        IsRootGameObjectMainService.setIsRoot(.
+          rootGameObject,
+          scene.isRoot,
+          state,
+        );
+
+    (state, rootGameObject);
   | _ =>
     let (state, gameObject) = CreateGameObjectMainService.create(state);
     let ({parentMap, childMap}: TransformType.transformRecord) as transformRecord =
@@ -26,6 +38,14 @@ let build = ({scene}, ({gameObjectRecord} as state, gameObjectArr)) => {
            ),
         (parentMap, childMap),
       );
+
+    let state =
+      IsRootGameObjectMainService.setIsRoot(.
+        gameObject,
+        scene.isRoot,
+        state,
+      );
+
     (
       {
         ...state,

@@ -4,6 +4,7 @@ type nodeExtras = {
   basicMaterial: option(int),
   lightMaterial: option(int),
   cameraController: option(int),
+  isRoot: option(bool),
 };
 
 type nodeKHRLightsExtension = {light: int};

@@ -453,6 +453,98 @@ let buildGLTFJsonOfIMGUI = (customData, imguiFunc) =>
     (),
   );
 
+let buildGLTFJsonOfSceneIsRoot = isRoot =>
+  buildGLTFJson(
+    ~scene={|0|},
+    ~scenes=
+      {j|  [
+        {
+        "nodes": [0],
+        "extras": {
+            "isRoot": $isRoot
+        }
+    }
+    ]|j},
+    (),
+  );
+
+let buildGLTFJsonOfNodeIsRoot = isRoot =>
+  buildGLTFJson(
+    ~nodes=
+      {j| [
+        {
+            "children": [
+                1
+            ],
+            "extras": {
+                "isRoot": $isRoot
+            }
+        },
+        {
+            "mesh": 0,
+            "extras": {
+                "isRoot": $isRoot
+            }
+        }
+        ]
+    |j},
+    (),
+  );
+
+let buildGLTFJsonOfSceneAndOneNodeIsRoot = (isSceneRoot, isNodeRoot) =>
+  buildGLTFJson(
+    ~scene={|0|},
+    ~scenes=
+      {j|  [
+        {
+        "nodes": [0],
+        "extras": {
+            "isRoot": $isSceneRoot
+        }
+    }
+    ]|j},
+    ~nodes=
+      {j| [
+        {
+            "extras": {
+                "isRoot": $isNodeRoot
+            }
+        }
+        ]
+    |j},
+    (),
+  );
+
+let buildGLTFJsonOfSceneAndTwoNodeIsRoot = (isSceneRoot, isNodeRoot) =>
+  buildGLTFJson(
+    ~scene={|0|},
+    ~scenes=
+      {j|  [
+        {
+        "nodes": [0, 1],
+        "extras": {
+            "isRoot": $isSceneRoot
+        }
+    }
+    ]|j},
+    ~nodes=
+      {j| [
+        {
+            "extras": {
+                "isRoot": $isNodeRoot
+            }
+        },
+        {
+            "mesh": 0,
+            "extras": {
+                "isRoot": $isNodeRoot
+            }
+        }
+        ]
+    |j},
+    (),
+  );
+
 let buildGLTFJsonOfMultiPrimitives = () =>
   buildGLTFJson(
     ~nodes=

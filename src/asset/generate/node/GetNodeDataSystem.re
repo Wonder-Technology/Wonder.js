@@ -45,6 +45,7 @@ let _addNodeData =
         defaultLocalRotation,
         defaultLocalScale,
       ),
+      isRoot,
       (
         meshIndex,
         meshRendererIndex,
@@ -112,14 +113,16 @@ let _addNodeData =
          camera: cameraProjectionIndex,
          extras:
            switch (
+             isRoot,
              basicCameraViewIndex,
              meshRendererIndex,
              basicMaterialIndex,
              lightMaterialIndex,
              arcballCameraControllerIndex,
            ) {
-           | (None, None, None, None, None) => None
+           | (None, None, None, None, None, None) => None
            | (
+               isRoot,
                basicCameraViewIndex,
                meshRendererIndex,
                basicMaterialIndex,
@@ -128,6 +131,7 @@ let _addNodeData =
              ) =>
              Some(
                {
+                 isRoot,
                  basicCameraView: basicCameraViewIndex,
                  meshRenderer: meshRendererIndex,
                  basicMaterial: basicMaterialIndex,
@@ -258,7 +262,13 @@ let rec _getNodeData =
 
          let gameObjectNodeIndexMap =
            gameObjectNodeIndexMap
-           |> WonderCommonlib.MutableSparseMapService.set(gameObject, nodeIndex);
+           |> WonderCommonlib.MutableSparseMapService.set(
+                gameObject,
+                nodeIndex,
+              );
+
+         let isRoot =
+           IsRootGameObjectMainService.getIsRoot(gameObject, state);
 
          let (
            state,
@@ -366,6 +376,7 @@ let rec _getNodeData =
                  defaultLocalRotation,
                  defaultLocalScale,
                ),
+               isRoot,
                (
                  meshIndex,
                  meshRendererIndex,

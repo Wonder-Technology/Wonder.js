@@ -24,7 +24,10 @@ type sceneKHRLightsExtension = {light: int};
 
 type sceneExtensions = {khr_lights: option(sceneKHRLightsExtension)};
 
-type sceneExtras = {imgui: option(SceneGraphType.imgui)};
+type sceneExtras = {
+  imgui: option(SceneGraphType.imgui),
+  isRoot: option(bool),
+};
 
 type scene = {
   nodes: option(array(nodeIndex)),
@@ -180,6 +183,7 @@ type nodeExtras = {
   basicMaterial: option(int),
   lightMaterial: option(int),
   cameraController: option(cameraControllerIndex),
+  isRoot: option(bool),
 };
 
 type nodeKHRLightsExtension = {light: int};
