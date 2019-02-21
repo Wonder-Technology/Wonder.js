@@ -1052,6 +1052,37 @@ let setGameObjectName =
   NameGameObjectMainService.setName(. gameObject, name, state);
 };
 
+let unsafeGetGameObjectIsRoot =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  IsRootGameObjectMainService.unsafeGetIsRoot(gameObject, state);
+};
+
+let setGameObjectIsRoot =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      isRoot,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  IsRootGameObjectMainService.setIsRoot(. gameObject, isRoot, state);
+};
+
 let getAllChildrenTransform = (gameObject, state) => {
   WonderLog.Contract.requireCheck(
     () =>

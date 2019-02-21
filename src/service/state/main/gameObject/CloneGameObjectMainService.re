@@ -41,6 +41,21 @@ let _setGameObjectName = (sourceGameObject, clonedGameObjectArr, state) =>
        )
   };
 
+let _setGameObjectIsRoot = (sourceGameObject, clonedGameObjectArr, state) => {
+  let isRoot = IsRootGameObjectMainService.unsafeGetIsRoot(sourceGameObject, state);
+
+  clonedGameObjectArr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. state, clonedGameObject) =>
+         IsRootGameObjectMainService.setIsRoot(.
+           clonedGameObject,
+           isRoot,
+           state,
+         ),
+       state,
+     );
+};
+
 let rec _clone =
         (
           (
@@ -56,7 +71,10 @@ let rec _clone =
   let (gameObjectRecord, clonedGameObjectArr) =
     _createGameObjectArr(countRangeArr, state.gameObjectRecord);
 
-  let state = _setGameObjectName(uid, clonedGameObjectArr, state);
+  let state =
+    state
+    |> _setGameObjectName(uid, clonedGameObjectArr)
+    |> _setGameObjectIsRoot(uid, clonedGameObjectArr);
 
   let totalClonedGameObjectArr =
     totalClonedGameObjectArr |> ArrayService.push(clonedGameObjectArr);
@@ -111,7 +129,10 @@ let clone =
       isShareMaterial: bool,
       state: StateDataMainType.state,
     )
-    : (StateDataMainType.state, array(array(GameObjectPrimitiveType.gameObject))) => {
+    : (
+        StateDataMainType.state,
+        array(array(GameObjectPrimitiveType.gameObject)),
+      ) => {
   WonderLog.Contract.requireCheck(
     () => {
       open WonderLog;

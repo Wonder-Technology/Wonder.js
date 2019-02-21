@@ -7,13 +7,16 @@ let _ =
     open Expect;
     open! Expect.Operators;
     open Sinon;
+
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
+
     beforeEach(() => {
       sandbox := createSandbox();
       state := TestTool.init(~sandbox, ());
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
     describe("createGameObject", () => {
       test("create a new gameObject which is just uidStr(string)", () => {
         let (_, gameObject) = createGameObject(state^);
@@ -31,6 +34,7 @@ let _ =
         })
       );
     });
+
     describe("test operate component", () => {
       describe("test transform component", () => {
         describe("addGameObjectTransformComponent", () => {
@@ -850,6 +854,28 @@ let _ =
       })
     );
 
+    describe("unsafeGetGameObjectIsRoot", () =>
+      test("default is false", () => {
+        let (state, gameObject) = createGameObject(state^);
+
+        GameObjectAPI.unsafeGetGameObjectIsRoot(gameObject, state)
+        |> expect == false;
+      })
+    );
+
+    describe("setGameObjectIsRoot", () =>
+      test("set isRoot", () => {
+        let (state, gameObject) = createGameObject(state^);
+        let isRoot = true;
+
+        let state =
+          GameObjectAPI.setGameObjectIsRoot(gameObject, isRoot, state);
+
+        GameObjectAPI.unsafeGetGameObjectIsRoot(gameObject, state)
+        |> expect == isRoot;
+      })
+    );
+
     describe("removeGameObjectGeometryComponent", () => {
       let _prepareAndExec = state => {
         let (state, gameObject1, geometry1) =
@@ -961,7 +987,7 @@ let _ =
         });
       });
 
-      describe("dispose name map", () =>
+      describe("dispose from nameMap", () =>
         test("test", () => {
           TestTool.openContractCheck();
           let (state, gameObject1) = createGameObject(state^);
@@ -975,10 +1001,33 @@ let _ =
 
           let state = state |> GameObjectTool.disposeGameObject(gameObject1);
 
-          expect(() =>
-            state |> GameObjectAPI.unsafeGetGameObjectName(gameObject1)
+          (
+            NameGameObjectMainService.getName(gameObject1, state),
+            NameGameObjectMainService.getName(gameObject2, state),
           )
-          |> toThrowMessage("expect gameObject alive, but actual not");
+          |> expect == (None, name2 |. Some);
+        })
+      );
+
+      describe("dispose from isRootMap", () =>
+        test("test", () => {
+          TestTool.openContractCheck();
+          let (state, gameObject1) = createGameObject(state^);
+          let (state, gameObject2) = createGameObject(state);
+          let isRoot1 = true;
+          let isRoot2 = true;
+          let state =
+            state
+            |> GameObjectAPI.setGameObjectIsRoot(gameObject1, isRoot1)
+            |> GameObjectAPI.setGameObjectIsRoot(gameObject2, isRoot2);
+
+          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+
+          (
+            IsRootGameObjectMainService.unsafeGetIsRoot(gameObject1, state),
+            IsRootGameObjectMainService.unsafeGetIsRoot(gameObject2, state),
+          )
+          |> expect == (false, isRoot2);
         })
       );
 
@@ -1285,9 +1334,12 @@ let _ =
 
               let {nameMap} = GameObjectTool.getGameObjectRecord(state);
               (
-                nameMap |> WonderCommonlib.MutableSparseMapService.has(gameObject1),
-                nameMap |> WonderCommonlib.MutableSparseMapService.has(gameObject2),
-                nameMap |> WonderCommonlib.MutableSparseMapService.has(gameObject3),
+                nameMap
+                |> WonderCommonlib.MutableSparseMapService.has(gameObject1),
+                nameMap
+                |> WonderCommonlib.MutableSparseMapService.has(gameObject2),
+                nameMap
+                |> WonderCommonlib.MutableSparseMapService.has(gameObject3),
               )
               |> expect == (false, false, true);
             })
@@ -1482,7 +1534,8 @@ let _ =
                 let lightMap =
                   getDataMapFunc(GameObjectTool.getGameObjectRecord(state));
                 (
-                  lightMap |> WonderCommonlib.MutableSparseMapService.has(gameObject1),
+                  lightMap
+                  |> WonderCommonlib.MutableSparseMapService.has(gameObject1),
                   lightMap
                   |> WonderCommonlib.MutableSparseMapService.has(gameObject2),
                   lightMap

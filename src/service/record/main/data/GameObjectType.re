@@ -14,15 +14,18 @@ open InstanceType;
 
 open CameraControllerType;
 
-type gameObjectDisposedUidMap = WonderCommonlib.MutableSparseMapService.t(bool);
+type gameObjectDisposedUidMap =
+  WonderCommonlib.MutableSparseMapService.t(bool);
 
 type gameObjectAliveUidArray = array(gameObject);
 
 type gameObjectComponentData = array(component);
 
-type gameObjectTransformMap = WonderCommonlib.MutableSparseMapService.t(transform);
+type gameObjectTransformMap =
+  WonderCommonlib.MutableSparseMapService.t(transform);
 
-type gameObjectCameraViewMap = WonderCommonlib.MutableSparseMapService.t(component);
+type gameObjectCameraViewMap =
+  WonderCommonlib.MutableSparseMapService.t(component);
 
 type gameObjectCameraProjectionMap =
   WonderCommonlib.MutableSparseMapService.t(component);
@@ -30,12 +33,14 @@ type gameObjectCameraProjectionMap =
 type gameObjectCameraControllerMap =
   WonderCommonlib.MutableSparseMapService.t(cameraController);
 
-type gameObjectGeometryMap = WonderCommonlib.MutableSparseMapService.t(geometry);
+type gameObjectGeometryMap =
+  WonderCommonlib.MutableSparseMapService.t(geometry);
 
 type gameObjectMeshRendererMap =
   WonderCommonlib.MutableSparseMapService.t(meshRenderer);
 
-type gameObjectMaterialMap = WonderCommonlib.MutableSparseMapService.t(material);
+type gameObjectMaterialMap =
+  WonderCommonlib.MutableSparseMapService.t(material);
 
 type gameObjectSourceInstanceMap =
   WonderCommonlib.MutableSparseMapService.t(sourceInstance);
@@ -54,6 +59,7 @@ type geometryData = (gameObject, geometry);
 type gameObjectRecord = {
   mutable uid: int,
   mutable nameMap: WonderCommonlib.MutableSparseMapService.t(string),
+  mutable isRootMap: WonderCommonlib.MutableSparseMapService.t(bool),
   mutable disposeCount: int,
   mutable disposedUidMap: gameObjectDisposedUidMap,
   mutable disposedUidArray: array(int),

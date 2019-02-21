@@ -58,6 +58,23 @@ let _ =
         )
         |> expect == (name, name);
       });
+      test("test isRoot", () => {
+        let (state, gameObject1) = createGameObject(state^);
+        let isRoot = true;
+        let state =
+          state |> GameObjectAPI.setGameObjectIsRoot(gameObject1, isRoot);
+
+        let (state, clonedGameObjectArr) =
+          _cloneGameObject(gameObject1, 2, state);
+
+        let clonedGameObjectArr =
+          clonedGameObjectArr |> CloneTool.getFlattenClonedGameObjectArr;
+        (
+          GameObjectAPI.unsafeGetGameObjectIsRoot(clonedGameObjectArr[0], state),
+          GameObjectAPI.unsafeGetGameObjectIsRoot(clonedGameObjectArr[1], state),
+        )
+        |> expect == (isRoot, isRoot);
+      });
     });
 
     describe("clone components", () => {

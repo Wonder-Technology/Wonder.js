@@ -578,7 +578,10 @@ let _ =
       });
       describe("deep copy gameObject record", () =>
         test(
-          "shadow copy disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,
+          "shadow copy
+          nameMap,
+          isRootMap,
+          disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,
 
           disposedUidArrayForKeepOrderRemoveGeometry,
           disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
@@ -589,6 +592,8 @@ let _ =
               MainStateTool.testShadowCopyArrayLikeMapData(
                 state => {
                   let {
+                    nameMap,
+                    isRootMap,
                     disposedUidMap,
                     disposedUidArray,
                     disposedUidArrayForKeepOrder,
@@ -620,6 +625,8 @@ let _ =
                   } =
                     GameObjectTool.getGameObjectRecord(state);
                   [|
+                    nameMap |> Obj.magic,
+                    isRootMap |> Obj.magic,
                     disposedUidMap |> Obj.magic,
                     disposedUidArray |> Obj.magic,
                     disposedUidArrayForKeepOrder |> Obj.magic,

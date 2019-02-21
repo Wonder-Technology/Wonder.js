@@ -3,6 +3,7 @@ open GameObjectType;
 let create = () => {
   uid: 0,
   nameMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  isRootMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   disposeCount: 0,
   disposedUidMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   disposedUidArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -36,7 +37,8 @@ let create = () => {
   basicCameraViewMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   perspectiveCameraProjectionMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
-  arcballCameraControllerMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  arcballCameraControllerMap:
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
   meshRendererMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   basicMaterialMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   lightMaterialMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -51,6 +53,8 @@ let deepCopyForRestore =
       {
         uid,
         nameMap,
+        /* TODO test */
+        isRootMap,
         disposeCount,
         disposedUidMap,
         disposedUidArray,
@@ -89,30 +93,44 @@ let deepCopyForRestore =
   ...record,
   uid,
   nameMap: nameMap |> WonderCommonlib.MutableSparseMapService.copy,
+  isRootMap: isRootMap |> WonderCommonlib.MutableSparseMapService.copy,
   disposeCount,
-  disposedUidMap: disposedUidMap |> WonderCommonlib.MutableSparseMapService.copy,
-  disposedUidArray: disposedUidArray |> WonderCommonlib.MutableSparseMapService.copy,
+  disposedUidMap:
+    disposedUidMap |> WonderCommonlib.MutableSparseMapService.copy,
+  disposedUidArray:
+    disposedUidArray |> WonderCommonlib.MutableSparseMapService.copy,
   disposedUidArrayForKeepOrder:
-    disposedUidArrayForKeepOrder |> WonderCommonlib.MutableSparseMapService.copy,
+    disposedUidArrayForKeepOrder
+    |> WonderCommonlib.MutableSparseMapService.copy,
   disposedUidArrayForKeepOrderRemoveGeometry:
-    disposedUidArrayForKeepOrderRemoveGeometry |> WonderCommonlib.MutableSparseMapService.copy,
+    disposedUidArrayForKeepOrderRemoveGeometry
+    |> WonderCommonlib.MutableSparseMapService.copy,
   disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial:
-    disposedUidArrayForKeepOrderRemoveGeometry |> WonderCommonlib.MutableSparseMapService.copy,
+    disposedUidArrayForKeepOrderRemoveGeometry
+    |> WonderCommonlib.MutableSparseMapService.copy,
   disposedUidArrayForDisposeGeometryRemoveMaterial:
-    disposedUidArrayForDisposeGeometryRemoveMaterial |> WonderCommonlib.MutableSparseMapService.copy,
+    disposedUidArrayForDisposeGeometryRemoveMaterial
+    |> WonderCommonlib.MutableSparseMapService.copy,
   disposedBasicCameraViewArray:
-    disposedBasicCameraViewArray |> WonderCommonlib.MutableSparseMapService.copy,
-  disposedTransformArray: disposedTransformArray |> WonderCommonlib.MutableSparseMapService.copy,
+    disposedBasicCameraViewArray
+    |> WonderCommonlib.MutableSparseMapService.copy,
+  disposedTransformArray:
+    disposedTransformArray |> WonderCommonlib.MutableSparseMapService.copy,
   disposedTransformArrayForKeepOrder:
-    disposedTransformArrayForKeepOrder |> WonderCommonlib.MutableSparseMapService.copy,
+    disposedTransformArrayForKeepOrder
+    |> WonderCommonlib.MutableSparseMapService.copy,
   disposedPerspectiveCameraProjectionArray:
-    disposedPerspectiveCameraProjectionArray |> WonderCommonlib.MutableSparseMapService.copy,
+    disposedPerspectiveCameraProjectionArray
+    |> WonderCommonlib.MutableSparseMapService.copy,
   disposedArcballCameraControllerArray:
-    disposedPerspectiveCameraProjectionArray |> WonderCommonlib.MutableSparseMapService.copy,
+    disposedPerspectiveCameraProjectionArray
+    |> WonderCommonlib.MutableSparseMapService.copy,
   disposedBasicMaterialDataArray:
-    disposedBasicMaterialDataArray |> WonderCommonlib.MutableSparseMapService.copy,
+    disposedBasicMaterialDataArray
+    |> WonderCommonlib.MutableSparseMapService.copy,
   disposedLightMaterialDataArray:
-    disposedLightMaterialDataArray |> WonderCommonlib.MutableSparseMapService.copy,
+    disposedLightMaterialDataArray
+    |> WonderCommonlib.MutableSparseMapService.copy,
   disposedGeometryDataArray:
     disposedGeometryDataArray |> WonderCommonlib.MutableSparseMapService.copy,
   disposedSourceInstanceArray:
@@ -121,22 +139,32 @@ let deepCopyForRestore =
     disposedObjectInstanceArray |> WonderCommonlib.MutableSparseMapService.copy,
   disposedDirectionLightArray:
     disposedDirectionLightArray |> WonderCommonlib.MutableSparseMapService.copy,
-  disposedPointLightArray: disposedPointLightArray |> WonderCommonlib.MutableSparseMapService.copy,
+  disposedPointLightArray:
+    disposedPointLightArray |> WonderCommonlib.MutableSparseMapService.copy,
   disposedMeshRendererComponentArray:
-    disposedMeshRendererComponentArray |> WonderCommonlib.MutableSparseMapService.copy,
+    disposedMeshRendererComponentArray
+    |> WonderCommonlib.MutableSparseMapService.copy,
   aliveUidArray: aliveUidArray |> WonderCommonlib.MutableSparseMapService.copy,
   geometryMap: geometryMap |> WonderCommonlib.MutableSparseMapService.copy,
   transformMap: transformMap |> WonderCommonlib.MutableSparseMapService.copy,
-  basicCameraViewMap: basicCameraViewMap |> WonderCommonlib.MutableSparseMapService.copy,
+  basicCameraViewMap:
+    basicCameraViewMap |> WonderCommonlib.MutableSparseMapService.copy,
   perspectiveCameraProjectionMap:
-    perspectiveCameraProjectionMap |> WonderCommonlib.MutableSparseMapService.copy,
+    perspectiveCameraProjectionMap
+    |> WonderCommonlib.MutableSparseMapService.copy,
   arcballCameraControllerMap:
     arcballCameraControllerMap |> WonderCommonlib.MutableSparseMapService.copy,
-  meshRendererMap: meshRendererMap |> WonderCommonlib.MutableSparseMapService.copy,
-  basicMaterialMap: basicMaterialMap |> WonderCommonlib.MutableSparseMapService.copy,
-  lightMaterialMap: lightMaterialMap |> WonderCommonlib.MutableSparseMapService.copy,
-  sourceInstanceMap: sourceInstanceMap |> WonderCommonlib.MutableSparseMapService.copy,
-  objectInstanceMap: objectInstanceMap |> WonderCommonlib.MutableSparseMapService.copy,
-  directionLightMap: directionLightMap |> WonderCommonlib.MutableSparseMapService.copy,
+  meshRendererMap:
+    meshRendererMap |> WonderCommonlib.MutableSparseMapService.copy,
+  basicMaterialMap:
+    basicMaterialMap |> WonderCommonlib.MutableSparseMapService.copy,
+  lightMaterialMap:
+    lightMaterialMap |> WonderCommonlib.MutableSparseMapService.copy,
+  sourceInstanceMap:
+    sourceInstanceMap |> WonderCommonlib.MutableSparseMapService.copy,
+  objectInstanceMap:
+    objectInstanceMap |> WonderCommonlib.MutableSparseMapService.copy,
+  directionLightMap:
+    directionLightMap |> WonderCommonlib.MutableSparseMapService.copy,
   pointLightMap: pointLightMap |> WonderCommonlib.MutableSparseMapService.copy,
 };
