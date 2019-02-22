@@ -1,6 +1,3 @@
-let _buildDefaultName = geometryIndex =>
-  ConvertCommon.buildDefaultGeometryName(geometryIndex);
-
 let _convertToGeometry = (mesh, index) : option(WDType.geometry) => {
   WonderLog.Contract.requireCheck(
     () =>
@@ -41,11 +38,7 @@ let _convertToGeometry = (mesh, index) : option(WDType.geometry) => {
         ConvertCommon.getPrimitiveData(primitives);
       let {position, normal, texCoord_0}: GLTFType.attributes = attributes;
       Some({
-        name:
-          switch (name) {
-          | None => _buildDefaultName(index)
-          | Some(name) => name
-          },
+        name,
         position,
         normal,
         texCoord: texCoord_0,

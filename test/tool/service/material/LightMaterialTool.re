@@ -194,3 +194,6 @@ let getEmptyMapUnitArray = (material, state) =>
     material,
     getRecord(state).emptyMapUnitArrayMap,
   );
+
+let getName = (material, state) =>
+  NameLightMaterialMainService.getName(material, state);

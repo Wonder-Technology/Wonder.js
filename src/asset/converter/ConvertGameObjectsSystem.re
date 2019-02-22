@@ -1,25 +1,28 @@
-let _buildDefaultName = nodeIndex =>
-  ConvertCommon.buildDefaultGameObjectName(nodeIndex);
+/* let _buildDefaultName = nodeIndex =>
+   ConvertCommon.buildDefaultGameObjectName(nodeIndex); */
 
 let _getNames = ({nodes, meshes}: GLTFType.gltf) =>
   nodes
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. nameArr, ({name}: GLTFType.node) as node, index) =>
+       (. nameMap, ({name}: GLTFType.node) as node, index) =>
          switch (name) {
-         | Some(name) => nameArr |> ArrayService.push(name)
+         | Some(name) =>
+           nameMap |> WonderCommonlib.MutableSparseMapService.set(index, name)
          | None =>
            switch (node.mesh) {
-           | None => nameArr |> ArrayService.push(_buildDefaultName(index))
+           | None => nameMap
            | Some(mesh) =>
              let {name}: GLTFType.mesh = Array.unsafe_get(meshes, mesh);
 
              switch (name) {
-             | Some(name) => nameArr |> ArrayService.push(name)
-             | None => nameArr |> ArrayService.push(_buildDefaultName(index))
+             | Some(name) =>
+               nameMap
+               |> WonderCommonlib.MutableSparseMapService.set(index, name)
+             | None => nameMap
              };
            }
          },
-       [||],
+       WonderCommonlib.MutableSparseMapService.createEmpty(),
      );
 
 let _getIsRoots = ({nodes, meshes}: GLTFType.gltf) =>

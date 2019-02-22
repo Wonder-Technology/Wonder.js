@@ -794,7 +794,7 @@ let _ =
               |>
               expect == [|
                           (
-                            "geometry_0",
+                            None,
                             (
                               GLTFTool.getBoxMainVertices(),
                               GLTFTool.getBoxMainNormals(),
@@ -804,7 +804,7 @@ let _ =
                             ),
                           ),
                           (
-                            "geometry_1",
+                            None,
                             (
                               vertices2,
                               normals2,
@@ -814,7 +814,7 @@ let _ =
                             ),
                           ),
                           (
-                            "geometry_2",
+                            None,
                             (
                               vertices3,
                               normals3,
@@ -1255,7 +1255,7 @@ let _ =
                 |>
                 expect == [|
                             (
-                              "geometry_0",
+                              None,
                               (
                                 GLTFTool.getBoxMainVertices(),
                                 GLTFTool.getBoxMainNormals(),
@@ -1265,7 +1265,7 @@ let _ =
                               ),
                             ),
                             (
-                              "geometry_0",
+                              None,
                               (
                                 GLTFTool.getBoxMainVertices(),
                                 GLTFTool.getBoxMainNormals(),
@@ -1275,7 +1275,7 @@ let _ =
                               ),
                             ),
                             (
-                              "geometry_1",
+                              None,
                               (
                                 vertices3,
                                 normals3,

@@ -425,8 +425,37 @@ let batchSetBasicMaterialData = ({basicMaterials}, basicMaterialArr, state) =>
        (. state, {color, name}, index) => {
          let material = basicMaterialArr[index];
 
-         OperateBasicMaterialMainService.setColor(material, color, state)
-         |> NameBasicMaterialMainService.setName(material, name);
+         let state =
+           color |> OptionService.isJsonSerializedValueNone ?
+             state :
+             OperateBasicMaterialMainService.setColor(
+               material,
+               color |> OptionService.unsafeGetJsonSerializedValue,
+               state,
+             );
+         /* let state =
+            switch (color) {
+            | None => state
+            | Some(color) =>
+              OperateBasicMaterialMainService.setColor(material, color, state)
+            }; */
+
+         /* let state =
+            switch (name) {
+            | None => state
+            | Some(name) =>
+              NameBasicMaterialMainService.setName(material, name, state)
+            }; */
+         let state =
+           name |> OptionService.isJsonSerializedValueNone ?
+             state :
+             NameBasicMaterialMainService.setName(
+               material,
+               name |> OptionService.unsafeGetJsonSerializedValue,
+               state,
+             );
+
+         state;
        },
        state,
      );
@@ -437,21 +466,55 @@ let batchSetLightMaterialData = ({lightMaterials}, lightMaterialArr, state) =>
        (. state, {diffuseColor, name}, index) => {
          let material = lightMaterialArr[index];
 
-         OperateLightMaterialMainService.setDiffuseColor(
-           material,
-           diffuseColor,
-           state,
-         )
-         |> NameLightMaterialMainService.setName(material, name);
+         let state =
+           diffuseColor |> OptionService.isJsonSerializedValueNone ?
+             state :
+             OperateLightMaterialMainService.setDiffuseColor(
+               material,
+               diffuseColor |> OptionService.unsafeGetJsonSerializedValue,
+               state,
+             );
+
+         /* switch (diffuseColor) {
+            | None => state
+            | Some(color) =>
+              OperateLightMaterialMainService.setDiffuseColor(
+                material,
+                color,
+                state,
+              )
+            }; */
+
+         let state =
+           name |> OptionService.isJsonSerializedValueNone ?
+             state :
+             NameLightMaterialMainService.setName(
+               material,
+               name |> OptionService.unsafeGetJsonSerializedValue,
+               state,
+             );
+         /* let state =
+            switch (name) {
+            | None => state
+            | Some(name) =>
+              NameLightMaterialMainService.setName(material, name, state)
+            }; */
+
+         state;
        },
        state,
      );
 
-let _batchSetGameObjectData = (targets, dataArr, setDataFunc, state) =>
-  targets
+let _batchSetGameObjectData = (gameObjectArr, dataMap, setDataFunc, state) =>
+  gameObjectArr
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. state, target, index) =>
-         setDataFunc(. target, Array.unsafe_get(dataArr, index), state),
+       (. state, gameObject, index) =>
+         switch (
+           dataMap |> WonderCommonlib.MutableSparseMapService.get(index)
+         ) {
+         | None => state
+         | Some(data) => setDataFunc(. gameObject, data, state)
+         },
        state,
      );
 
@@ -459,11 +522,24 @@ let _batchSetTextureName = (basicSourceTextureArr, basicSourceTextures, state) =
   basicSourceTextureArr
   |> ArrayService.reduceOneParamValidi(
        (. state, basicSourceTexture, index) =>
-         NameBasicSourceTextureMainService.setName(.
-           basicSourceTexture,
-           Array.unsafe_get(basicSourceTextures, index).name,
-           state,
-         ),
+         Array.unsafe_get(basicSourceTextures, index).name
+         |> OptionService.isJsonSerializedValueNone ?
+           state :
+           NameBasicSourceTextureMainService.setName(.
+             basicSourceTexture,
+             Array.unsafe_get(basicSourceTextures, index).name
+             |> OptionService.unsafeGetJsonSerializedValue,
+             state,
+           ),
+       /* switch (Array.unsafe_get(basicSourceTextures, index).name) {
+          | None => state
+          | Some(name) =>
+            NameBasicSourceTextureMainService.setName(.
+              basicSourceTexture,
+              name,
+              state,
+            )
+          }, */
        state,
      );
 
@@ -477,9 +553,24 @@ let _batchSetGeometryName = (geometrys, geometryArr, state) =>
              let {name}: WDType.geometry =
                geometryData |> OptionService.unsafeGetJsonSerializedValue;
 
-             let geometry = Array.unsafe_get(geometryArr, geometryIndex);
+             name |> OptionService.isJsonSerializedValueNone ?
+               state :
+               {
+                 let geometry = Array.unsafe_get(geometryArr, geometryIndex);
 
-             NameGeometryMainService.setName(geometry, name, state);
+                 NameGeometryMainService.setName(
+                   geometry,
+                   name |> OptionService.unsafeGetJsonSerializedValue,
+                   state,
+                 );
+               };
+             /* switch (name) {
+                | None => state
+                | Some(name) =>
+                  let geometry = Array.unsafe_get(geometryArr, geometryIndex);
+
+                  NameGeometryMainService.setName(geometry, name, state);
+                }; */
            },
        state,
      );
@@ -501,26 +592,9 @@ let batchSetNames =
   |> _batchSetGeometryName(geometrys, geometryArr);
 
 let batchSetIsRoot = (gameObjectArr, gameObjects: WDType.gameObjects, state) =>
-  gameObjectArr
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. state, gameObject, index) =>
-         AssembleIsRootUtils.doesGameObjectHasIsRootData(index, gameObjects) ?
-           IsRootGameObjectMainService.setIsRoot(.
-             gameObject,
-             AssembleIsRootUtils.unsafeGetGameObjectIsRootData(
-               index,
-               gameObjects,
-             ),
-             state,
-           ) :
-           state,
-       /* switch (
-            gameObjects.isRoots
-            |> WonderCommonlib.MutableSparseMapService.get(index)
-          ) {
-          | Some(isRoot) =>
-            IsRootGameObjectMainService.setIsRoot(. gameObject, isRoot, state)
-          | None => state
-          }, */
-       state,
+  state
+  |> _batchSetGameObjectData(
+       gameObjectArr,
+       gameObjects.isRoots,
+       IsRootGameObjectMainService.setIsRoot,
      );

@@ -39,7 +39,7 @@ type asset = {
 
 type gameObjects = {
   count: int,
-  names: array(string),
+  names: WonderCommonlib.MutableSparseMapService.t(string),
   isRoots: WonderCommonlib.MutableSparseMapService.t(bool),
 };
 
@@ -52,7 +52,7 @@ type transform = {
 type meshRenderer = {drawMode: DrawModeType.drawMode};
 
 type geometry = {
-  name: string,
+  name: option(string),
   position: accessorIndex,
   normal: option(accessorIndex),
   texCoord: option(accessorIndex),
@@ -68,15 +68,15 @@ type perspectiveCameraProjection = {
 
 type lightMaterial = {
   /* TODO add doubleSided: option(bool), */
-  diffuseColor: array(float),
+  diffuseColor: option(array(float)),
   /* specularColor: option(array(float)),
      shininess: option(float) */
-  name: string,
+  name: option(string),
 };
 
 type basicMaterial = {
-  color: array(float),
-  name: string,
+  color: option(array(float)),
+  name: option(string),
 };
 
 type accessorComponentType =
@@ -140,7 +140,7 @@ type image = {
 };
 
 type basicSourceTexture = {
-  name: string,
+  name: option(string),
   format: SourceTextureType.format,
 };
 
