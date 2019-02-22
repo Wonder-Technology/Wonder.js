@@ -211,7 +211,7 @@ let getAllGeometryData = (rootGameObject, state) =>
   getAllGeometrys(rootGameObject, state)
   |> Js.Array.map(geometry =>
        (
-         GeometryTool.getName(geometry, state),
+         GeometryAPI.unsafeGetGeometryName(geometry, state),
          (
            GeometryTool.getMainVertices(geometry, state),
            GeometryTool.getMainNormals(geometry, state),

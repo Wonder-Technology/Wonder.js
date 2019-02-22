@@ -1,8 +1,11 @@
+let _buildDefaultBasicMaterialName = materialIndex =>
+  ConvertCommon.buildDefaultBasicMaterialName(materialIndex);
+
 let _convertColor = colorFactor =>
-  colorFactor
-  |> Js.Option.map((. colorFactor) =>
-       [|colorFactor[0], colorFactor[1], colorFactor[2]|]
-     );
+  switch (colorFactor) {
+  | None => [|1., 1., 1.|]
+  | Some(colorFactor) => [|colorFactor[0], colorFactor[1], colorFactor[2]|]
+  };
 
 let convertToBasicMaterials =
     ({extras}: GLTFType.gltf)
@@ -17,7 +20,14 @@ let convertToBasicMaterials =
            (. arr, {colorFactor, name}: GLTFType.basicMaterial, index) =>
              arr
              |> ArrayService.push(
-                  {name, color: colorFactor |> _convertColor}: WDType.basicMaterial,
+                  {
+                    name:
+                      switch (name) {
+                      | None => _buildDefaultBasicMaterialName(index)
+                      | Some(name) => name
+                      },
+                    color: _convertColor(colorFactor),
+                  }: WDType.basicMaterial,
                 ),
            [||],
          )
@@ -25,10 +35,20 @@ let convertToBasicMaterials =
     }
   };
 
+let _buildDefaultLightMaterialName = materialIndex =>
+  ConvertCommon.buildDefaultLightMaterialName(materialIndex);
+
 let _convertPBRData = (name, diffuseColorFactor, arr, index) =>
   arr
   |> ArrayService.push(
-       {name, diffuseColor: diffuseColorFactor |> _convertColor}: WDType.lightMaterial,
+       {
+         name:
+           switch (name) {
+           | None => _buildDefaultLightMaterialName(index)
+           | Some(name) => name
+           },
+         diffuseColor: _convertColor(diffuseColorFactor),
+       }: WDType.lightMaterial,
      );
 
 let _convertMetallicRoughness = (name, pbrMetallicRoughness, arr, index) =>

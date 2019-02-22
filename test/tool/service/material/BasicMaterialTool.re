@@ -151,6 +151,3 @@ let getEmptyMapUnitArray = (material, state) =>
 let getDefaultIsDepthTest = () => true;
 
 let getDefaultAlpha = () => BufferBasicMaterialService.getDefaultAlpha();
-
-let getName = (material, state) =>
-  NameBasicMaterialMainService.getName(material, state);

@@ -352,18 +352,18 @@ let _ =
             ((state, _, rootGameObject)) =>
               _getAllGameObjects(rootGameObject, state)
               |> Js.Array.map(gameObject =>
-                   GameObjectAPI.getGameObjectName(gameObject, state)
+                   GameObjectAPI.unsafeGetGameObjectName(gameObject, state)
                  )
               |>
               expect == [|
-                          None,
-                          None,
-                          None,
-                          Some("Cesium_Milk_Truck_0"),
-                          Some("Cesium_Milk_Truck_1"),
-                          Some("Cesium_Milk_Truck_2"),
-                          Some("Wheels"),
-                          Some("Wheels"),
+                          "gameObject_0",
+                          "gameObject_3",
+                          "gameObject_1",
+                          "Cesium_Milk_Truck_0",
+                          "Cesium_Milk_Truck_1",
+                          "Cesium_Milk_Truck_2",
+                          "Wheels",
+                          "Wheels",
                         |],
             state^,
           )
@@ -606,35 +606,35 @@ let _ =
               |>
               expect == [|
                           (
-                            Some("Cesium_Milk_Truck_0"),
+                            "Cesium_Milk_Truck_0",
                             dataMap
                             |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Cesium_Milk_Truck_0",
                                ),
                           ),
                           (
-                            Some("Cesium_Milk_Truck_1"),
+                            "Cesium_Milk_Truck_1",
                             dataMap
                             |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Cesium_Milk_Truck_1",
                                ),
                           ),
                           (
-                            Some("Cesium_Milk_Truck_2"),
+                            "Cesium_Milk_Truck_2",
                             dataMap
                             |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Cesium_Milk_Truck_2",
                                ),
                           ),
                           (
-                            Some("Wheels"),
+                            "Wheels",
                             dataMap
                             |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Wheels",
                                ),
                           ),
                           (
-                            Some("Wheels"),
+                            "Wheels",
                             dataMap
                             |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Wheels",
@@ -679,7 +679,7 @@ let _ =
               expect == (
                           9,
                           (
-                            Some("DecalBlendMesh"),
+                            "DecalBlendMesh",
                             dataMap
                             |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "DecalBlendMesh",
@@ -721,7 +721,7 @@ let _ =
               expect == (
                           2,
                           (
-                            Some("Stove_1"),
+                            "Stove_1",
                             dataMap
                             |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                  "Stove_1",
@@ -1533,12 +1533,12 @@ let _ =
                         state,
                       )
                       |> Js.Array.map(diffuseMap =>
-                           BasicSourceTextureAPI.getBasicSourceTextureName(
+                           BasicSourceTextureAPI.unsafeGetBasicSourceTextureName(
                              diffuseMap,
                              state,
                            )
                          )
-                      |> expect == [|None|],
+                      |> expect == [|"texture_0"|],
                     state^,
                   )
                 )
@@ -1739,12 +1739,12 @@ let _ =
                         state,
                       )
                       |> Js.Array.map(diffuseMap =>
-                           BasicSourceTextureAPI.getBasicSourceTextureName(
+                           BasicSourceTextureAPI.unsafeGetBasicSourceTextureName(
                              diffuseMap,
                              state,
                            )
                          )
-                      |> expect == [|None, None, None|],
+                      |> expect == [|"texture_0", "texture_1", "texture_1"|],
                     state^,
                   )
                 )
@@ -1927,12 +1927,12 @@ let _ =
                         state,
                       )
                       |> Js.Array.map(diffuseMap =>
-                           BasicSourceTextureAPI.getBasicSourceTextureName(
+                           BasicSourceTextureAPI.unsafeGetBasicSourceTextureName(
                              diffuseMap,
                              state,
                            )
                          )
-                      |> expect == [|None, None|],
+                      |> expect == [|"texture_0", "texture_2"|],
                     state^,
                   )
                 )
@@ -2072,23 +2072,26 @@ let _ =
                       state,
                     )
                     |> Js.Array.map(basicMaterial =>
-                         BasicMaterialTool.getName(basicMaterial, state)
+                         BasicMaterialAPI.unsafeGetBasicMaterialName(
+                           basicMaterial,
+                           state,
+                         )
                        ),
                     AssembleWDBSystemTool.getAllLightMaterials(
                       rootGameObject,
                       state,
                     )
                     |> Js.Array.map(lightMaterial =>
-                         LightMaterialTool.getName(lightMaterial, state)
+                         LightMaterialAPI.unsafeGetLightMaterialName(
+                           lightMaterial,
+                           state,
+                         )
                        ),
                   )
                   |>
                   expect == (
-                              [|Some("basicMaterial_0")|],
-                              [|
-                                Some("lightMaterial_1"),
-                                Some("lightMaterial_0"),
-                              |],
+                              [|"basicMaterial_0"|],
+                              [|"lightMaterial_1", "lightMaterial_0"|],
                             ),
               (),
             )

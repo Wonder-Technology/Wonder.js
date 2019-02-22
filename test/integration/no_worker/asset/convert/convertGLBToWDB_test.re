@@ -265,21 +265,21 @@ let _ =
                 expect == [|
                             ConvertTool.getJsonSerializedNone(),
                             Some({
-                              name: ConvertTool.getJsonSerializedNone(),
+                              name: "geometry_1",
                               position: 0,
                               normal: ConvertTool.getJsonSerializedNone(),
                               texCoord: ConvertTool.getJsonSerializedNone(),
                               index: 1,
                             }),
                             Some({
-                              name: ConvertTool.getJsonSerializedNone(),
+                              name: "geometry_2",
                               position: 2,
                               normal: ConvertTool.getJsonSerializedNone(),
                               texCoord: ConvertTool.getJsonSerializedNone(),
                               index: 3,
                             }),
                             Some({
-                              name: ConvertTool.getJsonSerializedNone(),
+                              name: "geometry_3",
                               position: 4,
                               normal: ConvertTool.getJsonSerializedNone(),
                               texCoord: ConvertTool.getJsonSerializedNone(),
@@ -413,7 +413,7 @@ let _ =
             ~state,
             ~testFunc=
               ({lightMaterials}) =>
-                lightMaterials[0].name |> expect == Some("material"),
+                lightMaterials[0].name |> expect == "material",
             (),
           )
         )
@@ -432,8 +432,8 @@ let _ =
                 expect == [|
                             {
                               diffuseColor:
-                                ConvertGLBTool.getDefaultDiffuseColor() |. Some,
-                              name: Some("defaultLightMaterial"),
+                                ConvertGLBTool.getDefaultDiffuseColor(),
+                              name: "defaultLightMaterial",
                             },
                           |],
             (),
@@ -450,7 +450,7 @@ let _ =
                 |>
                 expect == [|
                             Some({
-                              name: ConvertTool.getJsonSerializedNone(),
+                              name: "geometry_0",
                               position: 0,
                               normal: ConvertTool.getJsonSerializedNone(),
                               texCoord: ConvertTool.getJsonSerializedNone(),
@@ -633,7 +633,7 @@ let _ =
               |>
               expect == {
                           count: 1,
-                          names: [||],
+                          names: [|"gameObject_0"|],
                           isRoots:
                             WonderCommonlib.MutableSparseMapService.createEmpty(),
                         },
@@ -650,14 +650,14 @@ let _ =
           expect == {
                       count: 8,
                       names: [|
-                        Js.Nullable.null,
-                        Js.Nullable.null,
-                        Js.Nullable.return("Wheels"),
-                        Js.Nullable.null,
-                        Js.Nullable.return("Wheels"),
-                        Js.Nullable.return("Cesium_Milk_Truck_0"),
-                        Js.Nullable.return("Cesium_Milk_Truck_1"),
-                        Js.Nullable.return("Cesium_Milk_Truck_2"),
+                        "gameObject_0",
+                        "gameObject_1",
+                        "Wheels",
+                        "gameObject_3",
+                        "Wheels",
+                        "Cesium_Milk_Truck_0",
+                        "Cesium_Milk_Truck_1",
+                        "Cesium_Milk_Truck_2",
                       |],
                       isRoots:
                         WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -953,8 +953,8 @@ let _ =
               |>
               expect == [|
                           {
-                            color: ConvertTool.getJsonSerializedNone(),
-                            name: ConvertTool.getJsonSerializedNone(),
+                            color: ConvertGLBTool.getDefaultDiffuseColor(),
+                            name: "basicMaterial_0",
                           },
                         |],
           (),
@@ -975,13 +975,7 @@ let _ =
             ~testFunc=
               ({basicMaterials}) =>
                 basicMaterials
-                |>
-                expect == [|
-                            {
-                              color: [|0.1, 0.2, 0.3|] |. Some,
-                              name: "name" |. Some,
-                            },
-                          |],
+                |> expect == [|{color: [|0.1, 0.2, 0.3|], name: "name"}|],
             (),
           )
         )
@@ -998,8 +992,8 @@ let _ =
           |>
           expect == [|
                       {
-                        diffuseColor: ConvertTool.getJsonSerializedNone(),
-                        name: "Texture" |. Some,
+                        diffuseColor: ConvertGLBTool.getDefaultDiffuseColor(),
+                        name: "Texture",
                       },
                     |]
         )
@@ -1014,28 +1008,28 @@ let _ =
             |>
             expect == [|
                         {
-                          diffuseColor: ConvertTool.getJsonSerializedNone(),
-                          name: "truck" |. Some,
+                          diffuseColor: ConvertGLBTool.getDefaultDiffuseColor(),
+                          name: "truck",
                         },
                         {
-                          diffuseColor:
-                            [|0.0, 0.04050629958510399, 0.021240700036287309|]
-                            |. Some,
-                          name: "glass" |. Some,
+                          diffuseColor: [|
+                            0.0,
+                            0.04050629958510399,
+                            0.021240700036287309,
+                          |],
+                          name: "glass",
                         },
                         {
-                          diffuseColor:
-                            [|
-                              0.06400000303983689,
-                              0.06400000303983689,
-                              0.06400000303983689,
-                            |]
-                            |. Some,
-                          name: "window_trim" |. Some,
+                          diffuseColor: [|
+                            0.06400000303983689,
+                            0.06400000303983689,
+                            0.06400000303983689,
+                          |],
+                          name: "window_trim",
                         },
                         {
-                          diffuseColor: ConvertTool.getJsonSerializedNone(),
-                          name: "wheels" |. Some,
+                          diffuseColor: ConvertGLBTool.getDefaultDiffuseColor(),
+                          name: "wheels",
                         },
                       |]
           )
@@ -1051,12 +1045,7 @@ let _ =
           (({basicSourceTextures}, binBuffer)) =>
           basicSourceTextures
           |>
-          expect == [|
-                      {
-                        name: ConvertTool.getJsonSerializedNone(),
-                        format: SourceTextureType.Rgba,
-                      },
-                    |]
+          expect == [|{name: "texture_0", format: SourceTextureType.Rgba}|]
         )
       );
       test("test basicSourceTextures", () =>
@@ -1069,30 +1058,12 @@ let _ =
           expect == [|
                       ConvertTool.getJsonSerializedNone(),
                       ConvertTool.getJsonSerializedNone(),
-                      {
-                        name: ConvertTool.getJsonSerializedNone(),
-                        format: SourceTextureType.Rgb,
-                      },
-                      {
-                        name: ConvertTool.getJsonSerializedNone(),
-                        format: SourceTextureType.Rgba,
-                      },
-                      {
-                        name: ConvertTool.getJsonSerializedNone(),
-                        format: SourceTextureType.Rgba,
-                      },
-                      {
-                        name: ConvertTool.getJsonSerializedNone(),
-                        format: SourceTextureType.Rgba,
-                      },
-                      {
-                        name: ConvertTool.getJsonSerializedNone(),
-                        format: SourceTextureType.Rgba,
-                      },
-                      {
-                        name: ConvertTool.getJsonSerializedNone(),
-                        format: SourceTextureType.Rgba,
-                      },
+                      {name: "texture_2", format: SourceTextureType.Rgb},
+                      {name: "texture_3", format: SourceTextureType.Rgba},
+                      {name: "texture_4", format: SourceTextureType.Rgba},
+                      {name: "texture_5", format: SourceTextureType.Rgba},
+                      {name: "texture_6", format: SourceTextureType.Rgba},
+                      {name: "texture_7", format: SourceTextureType.Rgba},
                     |]
         )
       );
@@ -1303,7 +1274,7 @@ let _ =
               |>
               expect == [|
                           Some({
-                            name: ConvertTool.getJsonSerializedNone(),
+                            name: "geometry_0",
                             position: 0,
                             normal: Some(1),
                             texCoord: Some(2),

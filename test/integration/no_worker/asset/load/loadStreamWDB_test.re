@@ -258,7 +258,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                (totalLoadedByteLengthArr, contentLengthArr, wdbPathArr)
                |>
                expect == (
-                           [|1000, 24984|],
+                           [|1000, 24996|],
                            [|contentLength, contentLength|],
                            [|"./BoxTextured.wdb", "./BoxTextured.wdb"|],
                          )
@@ -694,35 +694,35 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  |>
                  expect == [|
                              (
-                               Some("Cesium_Milk_Truck_0"),
+                               "Cesium_Milk_Truck_0",
                                dataMap
                                |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                     "Cesium_Milk_Truck_0",
                                   ),
                              ),
                              (
-                               Some("Cesium_Milk_Truck_1"),
+                               "Cesium_Milk_Truck_1",
                                dataMap
                                |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                     "Cesium_Milk_Truck_1",
                                   ),
                              ),
                              (
-                               Some("Cesium_Milk_Truck_2"),
+                               "Cesium_Milk_Truck_2",
                                dataMap
                                |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                     "Cesium_Milk_Truck_2",
                                   ),
                              ),
                              (
-                               Some("Wheels"),
+                               "Wheels",
                                dataMap
                                |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                     "Wheels",
                                   ),
                              ),
                              (
-                               Some("Wheels"),
+                               "Wheels",
                                dataMap
                                |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                     "Wheels",
@@ -800,7 +800,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  expect == (
                              9,
                              (
-                               Some("DecalBlendMesh"),
+                               "DecalBlendMesh",
                                dataMap
                                |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                     "DecalBlendMesh",
@@ -884,7 +884,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  expect == (
                              2,
                              (
-                               Some("Stove_1"),
+                               "Stove_1",
                                dataMap
                                |> WonderCommonlib.MutableHashMapService.unsafeGet(
                                     "Stove_1",
@@ -2156,7 +2156,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  ArrayService.unsafeGetFirst(wdbPathArr)
                  |> Js.String.includes("test/res/wdb/BoxTextured.wdb"),
                )
-               |> expect == ([|24916|], [|contentLength|], 1, true)
+               |> expect == ([|24940|], [|contentLength|], 1, true)
                |> resolve
              );
         });

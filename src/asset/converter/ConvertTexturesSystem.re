@@ -1,3 +1,6 @@
+let _buildDefaultName = textureIndex =>
+  ConvertCommon.buildDefaultTextureName(textureIndex);
+
 /* let _getNames = (textures, images) =>
    textures
    |> WonderCommonlib.ArrayService.reduceOneParami(
@@ -64,7 +67,11 @@ let convertToBasicSourceTextures =
                  arr,
                  index,
                  {
-                   name,
+                   name:
+                     switch (name) {
+                     | Some(name) => name
+                     | None => _buildDefaultName(index)
+                     },
                    format: {
                      let ({uri, mimeType}: GLTFType.image) as image =
                        Array.unsafe_get(
