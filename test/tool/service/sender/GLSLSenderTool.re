@@ -25,7 +25,8 @@ let clearInitShaderCache = (state: StateDataMainType.state) => {
     ...state.glslSenderRecord,
     uniformRenderObjectSendMaterialDataMap:
       state.glslSenderRecord.uniformRenderObjectSendMaterialDataMap
-      |> WonderCommonlib.MutableSparseMapService.mapValid((. uniformRenderObjectSendMaterialDataArr) =>
+      |> WonderCommonlib.MutableSparseMapService.mapValid(
+           (. uniformRenderObjectSendMaterialDataArr) =>
            uniformRenderObjectSendMaterialDataArr
            |> Js.Array.map(
                 (
@@ -35,12 +36,16 @@ let clearInitShaderCache = (state: StateDataMainType.state) => {
                 ) =>
                 {
                   ...record,
-                  shaderCacheMap: WonderCommonlib.MutableHashMapService.createEmpty(),
+                  shaderCacheMap:
+                    WonderCommonlib.MutableHashMapService.createEmpty(),
                 }
               )
          ),
   },
 };
+
+let getUniformShaderSendNoCachableDataMap = state =>
+  state.glslSenderRecord.uniformShaderSendNoCachableDataMap;
 
 module JudgeSendUniformData = {
   let prepareSendUniformData = (sandbox, prepareGameObjectFunc, state) => {

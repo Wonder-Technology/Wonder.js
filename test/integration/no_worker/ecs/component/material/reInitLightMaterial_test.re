@@ -403,7 +403,6 @@ let _ =
           )
           /* |> expect == (2, 3, [|2, 3|]); */
           |> expect == (2, 3);
-
         });
       });
 
@@ -504,5 +503,32 @@ let _ =
           });
         },
       );
+
+      describe(
+        {|fix "reInit material->removeShaderIndexFromMaterial" bug|}, () => {
+        beforeEach(() => state := TestTool.initWithJobConfig(~sandbox, ()));
+
+        test(
+          "reInit material which isn't inited before shouldn't affect shader data map;",
+          () => {
+          let (state, material) =
+            LightMaterialAPI.createLightMaterial(state^);
+
+          let (state, _, cameraTransform, _) =
+            CameraTool.createCameraGameObject(state);
+
+          let state = AllMaterialTool.prepareForInit(state);
+
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+
+          let state = LightMaterialAPI.reInitMaterials([|material|], state);
+
+          GLSLSenderTool.getUniformShaderSendNoCachableDataMap(state)
+          |> WonderCommonlib.MutableSparseMapService.length
+          |> expect == 1;
+        });
+      });
     });
   });
