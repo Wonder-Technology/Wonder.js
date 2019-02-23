@@ -53,10 +53,19 @@ let reduceiValidShaderSendCachableFunctionData =
   glslSenderRecord.uniformShaderSendCachableFunctionDataMap
   |> WonderCommonlib.MutableSparseMapService.reduceiValid(func, initValue);
 
-let removeData = (shaderIndex, glslSenderRecord) => {
-  glslSenderRecord.uniformShaderSendCachableFunctionDataMap
-  |> WonderCommonlib.MutableSparseMapService.deleteVal(shaderIndex)
-  |> ignore;
+let removeData =
+    (
+      shaderIndex,
+      {uniformShaderSendCachableFunctionDataMap} as glslSenderRecord,
+    ) => {
+  WonderCommonlib.MutableSparseMapService.has(
+    shaderIndex,
+    uniformShaderSendCachableFunctionDataMap,
+  ) ?
+    uniformShaderSendCachableFunctionDataMap
+    |> WonderCommonlib.MutableSparseMapService.deleteVal(shaderIndex)
+    |> ignore :
+    ();
 
   glslSenderRecord;
 };

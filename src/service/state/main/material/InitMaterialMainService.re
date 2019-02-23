@@ -98,13 +98,15 @@ let reInitComponents =
                shaderIndices,
              );
 
-           let _ =
+           ShaderIndexShaderService.isDefaultShaderIndex(currentShaderIndex) ?
+             () :
              ShaderIndexShaderService.removeShaderIndexFromMaterial(
                currentShaderIndex,
                materialIndex,
                shaderRecord,
                glslSenderRecord,
-             );
+             )
+             |> ignore;
 
            WorkerDetectMainService.isUseWorker(state) ?
              WonderLog.Log.fatal(

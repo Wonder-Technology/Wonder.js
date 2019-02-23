@@ -53,3 +53,6 @@ let removeShaderIndexFromMaterial =
       ),
     );
 };
+
+let isDefaultShaderIndex = shaderIndex =>
+  shaderIndex === DefaultTypeArrayValueService.getDefaultShaderIndex();
