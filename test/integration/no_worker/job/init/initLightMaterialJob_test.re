@@ -474,8 +474,10 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                       {|uniform sampler2D u_diffuseMapSampler;|},
                       {|uniform vec3 u_diffuse;|},
                       {|varying vec2 v_diffuseMapTexCoord;|},
-                      {|vec3 getMaterialDiffuse() {
-        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord).rgb * u_diffuse;
+                      {|vec4 getMaterialDiffuse() {
+        vec4 texelColor = texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord);
+
+        return vec4(texelColor.rgb * u_diffuse, texelColor.a);
     }|},
                     ],
                   )
@@ -512,8 +514,8 @@ vec3 getPointLightDirByLightPos(vec3 lightPos, vec3 worldPosition){
                   [
                     {|uniform vec3 u_diffuse;|},
                     {|
-    vec3 getMaterialDiffuse() {
-        return u_diffuse;
+    vec4 getMaterialDiffuse() {
+        return vec4(u_diffuse, 1.0);
     }
                           |},
                   ],
@@ -868,112 +870,114 @@ vec3 getViewDir(){
                     |},
                   {|
                     vec3 calcAmbientColor(vec3 materialDiffuse){
-                            vec3 materialLight = getMaterialLight();
+        vec3 materialLight = getMaterialLight();
 
-                            return (u_ambient + materialLight) * materialDiffuse.rgb;
-                    }
+        return (u_ambient + materialLight) * materialDiffuse;
+}
 
-                    vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir)
-                    {
-                            vec3 materialDiffuse = getMaterialDiffuse();
-                            vec3 materialSpecular = u_specular;
-                            vec3 materialEmission = getMaterialEmission();
+                    vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir, vec3 materialDiffuse)
+{
+        vec3 materialSpecular = u_specular;
+        vec3 materialEmission = getMaterialEmission();
 
-                            float specularStrength = getSpecularStrength();
+        float specularStrength = getSpecularStrength();
 
-                            float dotResultBetweenNormAndLight = dot(normal, lightDir);
-                            float diff = max(dotResultBetweenNormAndLight, 0.0);
+        float dotResultBetweenNormAndLight = dot(normal, lightDir);
+        float diff = max(dotResultBetweenNormAndLight, 0.0);
 
-                            vec3 emissionColor = materialEmission;
+        vec3 emissionColor = materialEmission;
 
-                            vec3 ambientColor = calcAmbientColor(materialDiffuse);
-
-
-                            // if(u_lightModel == 3){
-                            //     return emissionColor + ambientColor;
-                            // }
-
-                    //        vec4 diffuseColor = vec4(color * materialDiffuse.rgb * diff * intensity, materialDiffuse.a);
-                            vec3 diffuseColor = color * materialDiffuse.rgb * diff * intensity;
-
-                            float spec = 0.0;
-
-                            // if(u_lightModel == 2){
-                            //         spec = getPhongShininess(u_shininess, normal, lightDir, viewDir, diff);
-                            // }
-                            // else if(u_lightModel == 1){
-                            //         spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);
-                            // }
-
-                            spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);
+        vec3 ambientColor = calcAmbientColor(materialDiffuse);
 
 
-                            vec3 specularColor = spec * materialSpecular * specularStrength * intensity;
+        // if(u_lightModel == 3){
+        //     return emissionColor + ambientColor;
+        // }
 
-                    //        return vec4(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor), diffuseColor.a);
-                            return emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor);
-                    }
+        vec3 diffuseColor = color * materialDiffuse.rgb * diff * intensity;
+
+        float spec = 0.0;
+
+        // if(u_lightModel == 2){
+        //         spec = getPhongShininess(u_shininess, normal, lightDir, viewDir, diff);
+        // }
+        // else if(u_lightModel == 1){
+        //         spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);
+        // }
+
+        spec = getBlinnShininess(u_shininess, normal, lightDir, viewDir, diff);
+
+
+        vec3 specularColor = spec * materialSpecular * specularStrength * intensity;
+
+       return vec3(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor));
+}
 
 
 
 
-                    #if POINT_LIGHTS_COUNT > 0
-                            vec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir)
-                    {
-                            //lightDir is not normalize computing distance
-                            float distance = length(lightDir);
+#if POINT_LIGHTS_COUNT > 0
+        vec3 calcPointLight(vec3 lightDir, PointLight light, vec3 normal, vec3 viewDir, vec3 materialDiffuse)
+{
+        //lightDir is not normalize computing distance
+        float distance = length(lightDir);
 
-                            float attenuation = 0.0;
+        float attenuation = 0.0;
 
-                            if(distance < light.range)
-                            {
-                                attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-                            }
+        if(distance < light.range)
+        {
+            attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+        }
 
-                            lightDir = normalize(lightDir);
+        lightDir = normalize(lightDir);
 
-                            return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
-                    }
-                    #endif
-
-
-
-                    #if DIRECTION_LIGHTS_COUNT > 0
-                            vec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir)
-                    {
-                            float attenuation = 1.0;
-
-                            // lightDir = normalize(lightDir);
-
-                            return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir);
-                    }
-                    #endif
+        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir, materialDiffuse);
+}
+#endif
 
 
 
-                    vec4 calcTotalLight(vec3 norm, vec3 viewDir){
-                        vec4 totalLight = vec4(0.0, 0.0, 0.0, 1.0);
+#if DIRECTION_LIGHTS_COUNT > 0
+        vec3 calcDirectionLight(vec3 lightDir, DirectionLight light, vec3 normal, vec3 viewDir, vec3 materialDiffuse)
+{
+        float attenuation = 1.0;
+
+        // lightDir = normalize(lightDir);
+
+        return calcLight(lightDir, light.color, light.intensity, attenuation, normal, viewDir, materialDiffuse);
+}
+#endif
 
 
-                        #if (DIRECTION_LIGHTS_COUNT == 0 && POINT_LIGHTS_COUNT == 0 )
-                            return vec4(calcAmbientColor(getMaterialDiffuse()), 1.0);
-                        #endif
+
+vec4 calcTotalLight(vec3 norm, vec3 viewDir){
+    vec3 totalLight = vec3(0.0, 0.0, 0.0);
+
+    vec4 materialDiffuse = getMaterialDiffuse();
+
+    float alpha = materialDiffuse.a;
+    vec3 materialDiffuseRGB = materialDiffuse.rgb;
 
 
-                        #if POINT_LIGHTS_COUNT > 0
-                                    for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
-                                    totalLight += vec4(calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir), 0.0);
-                            }
-                        #endif
+    #if (DIRECTION_LIGHTS_COUNT == 0 && POINT_LIGHTS_COUNT == 0 )
+        return vec4(calcAmbientColor(materialDiffuseRGB), alpha);
+    #endif
 
-                        #if DIRECTION_LIGHTS_COUNT > 0
-                                    for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){
-                                    totalLight += vec4(calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir), 0.0);
-                            }
-                        #endif
 
-                            return totalLight;
-                    }
+    #if POINT_LIGHTS_COUNT > 0
+                for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
+                totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir, materialDiffuseRGB);
+        }
+    #endif
+
+    #if DIRECTION_LIGHTS_COUNT > 0
+                for(int i = 0; i < DIRECTION_LIGHTS_COUNT; i++){
+                totalLight += calcDirectionLight(getDirectionLightDir(i), u_directionLights[i], norm, viewDir, materialDiffuseRGB);
+        }
+    #endif
+
+        return vec4(totalLight, alpha);
+}
 
 
 
@@ -1012,12 +1016,8 @@ vec3 getViewDir(){
               GLSLTool.contain(
                 GLSLTool.getFsSource(shaderSource),
                 {|
-vec4 calcTotalLight(vec3 norm, vec3 viewDir){
-    vec4 totalLight = vec4(0.0, 0.0, 0.0, 1.0);
-
-
     #if (DIRECTION_LIGHTS_COUNT == 0 && POINT_LIGHTS_COUNT == 0 )
-        return vec4(calcAmbientColor(getMaterialDiffuse()), 1.0);
+        return vec4(calcAmbientColor(materialDiffuseRGB), alpha);
     #endif
       |},
               )

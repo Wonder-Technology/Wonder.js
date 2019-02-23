@@ -3,7 +3,9 @@
 @end
 
 @funcDefine
-    vec3 getMaterialDiffuse() {
-        return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord).rgb * u_diffuse;
+    vec4 getMaterialDiffuse() {
+        vec4 texelColor = texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord);
+
+        return vec4(texelColor.rgb * u_diffuse, texelColor.a);
     }
 @end
