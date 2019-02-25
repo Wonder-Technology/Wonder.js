@@ -1,3 +1,31 @@
+<a name="1.0.0-beta.2"></a>
+# [1.0.0-beta.2](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2019-02-25)
+
+
+### Bug Fixes
+
+* **e2e-test:** fix fast test render/pf gulp task ([b14113c](https://github.com/Wonder-Technology/Wonder.js/commit/b14113c))
+* **glsl:** fix map glsl: use map.a as total color.a ([aeb7ffc](https://github.com/Wonder-Technology/Wonder.js/commit/aeb7ffc))
+* **redo-undo:** "deep copy deviceManager record" now remain gl ([50aed82](https://github.com/Wonder-Technology/Wonder.js/commit/50aed82))
+* **shader:** fix "reInit material->removeShaderIndexFromMaterial" bug ([27f4c7c](https://github.com/Wonder-Technology/Wonder.js/commit/27f4c7c))
+
+
+### Features
+
+* **asset:** support isRoot ([c747b65](https://github.com/Wonder-Technology/Wonder.js/commit/c747b65))
+* **camera:** updateArcballCameraControllerMainService add updateAll ([4b70166](https://github.com/Wonder-Technology/Wonder.js/commit/4b70166))
+* **event:** arcball camera controller->keydown: if is combined key, not set target ([6f91cd5](https://github.com/Wonder-Technology/Wonder.js/commit/6f91cd5))
+* **gameObject:** add isRoot ([cfb8a18](https://github.com/Wonder-Technology/Wonder.js/commit/cfb8a18))
+* **redo-undo:** "restore deviceManager record" should use current state->deviceManager record as restored data ([86af773](https://github.com/Wonder-Technology/Wonder.js/commit/86af773))
+* **texture:** basicSourceTextureAPI add getAllTextures ([59aaca1](https://github.com/Wonder-Technology/Wonder.js/commit/59aaca1))
+
+
+### Performance Improvements
+
+* **wdb:** reduce wdb size ([e7dab08](https://github.com/Wonder-Technology/Wonder.js/commit/e7dab08))
+
+
+
 <a name="1.0.0-beta.1"></a>
 # [1.0.0-beta.1](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-alpha.25...v1.0.0-beta.1) (2019-02-14)
 
