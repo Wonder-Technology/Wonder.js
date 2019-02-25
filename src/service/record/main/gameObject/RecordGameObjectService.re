@@ -53,7 +53,6 @@ let deepCopyForRestore =
       {
         uid,
         nameMap,
-        /* TODO test */
         isRootMap,
         disposeCount,
         disposedUidMap,
