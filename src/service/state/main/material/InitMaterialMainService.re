@@ -75,6 +75,32 @@ let handleInitComponent =
       } :
     state;
 
+let _reInitComponentsIfNoWorker =
+    (
+      materialIndex,
+      (gameObjectsMap, index, disposedIndexArray),
+      (reInitMaterialFunc, createInitMaterialStateFunc),
+      {gameObjectRecord} as state,
+    ) => {
+  let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+  let isSupportInstance = JudgeInstanceMainService.isSupportInstance(state);
+  reInitMaterialFunc(.
+    gl,
+    (
+      materialIndex,
+      JudgeInstanceMainService.isSourceInstance(
+        materialIndex,
+        gameObjectsMap,
+        gameObjectRecord,
+      ),
+      isSupportInstance,
+    ),
+    createInitMaterialStateFunc((index, disposedIndexArray), state),
+  )
+  |> ignore;
+  state;
+};
+
 let reInitComponents =
     (
       materialIndices: array(int),
@@ -118,32 +144,12 @@ let reInitComponents =
                  ~params={j||j},
                ),
              ) :
-             {
-               let gl =
-                 DeviceManagerService.unsafeGetGl(.
-                   state.deviceManagerRecord,
-                 );
-               let isSupportInstance =
-                 JudgeInstanceMainService.isSupportInstance(state);
-               reInitMaterialFunc(.
-                 gl,
-                 (
-                   materialIndex,
-                   JudgeInstanceMainService.isSourceInstance(
-                     materialIndex,
-                     gameObjectsMap,
-                     gameObjectRecord,
-                   ),
-                   isSupportInstance,
-                 ),
-                 createInitMaterialStateFunc(
-                   (index, disposedIndexArray),
-                   state,
-                 ),
-               )
-               |> ignore;
-               state;
-             };
+             _reInitComponentsIfNoWorker(
+               materialIndex,
+               (gameObjectsMap, index, disposedIndexArray),
+               (reInitMaterialFunc, createInitMaterialStateFunc),
+               state,
+             );
          },
          state,
        );

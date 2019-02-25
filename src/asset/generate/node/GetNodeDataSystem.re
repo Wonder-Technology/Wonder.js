@@ -33,20 +33,93 @@ let _setChildren =
        [||],
      );
 
-let _addNodeData =
+let _addTransformVector3Data =
+    (transform, localData, defaultData, getDataFunc) =>
+  switch (getDataFunc(transform, localData)) {
+  | (x, y, z)
+      when x === defaultData[0] && y === defaultData[1] && z === defaultData[2] =>
+    None
+  | localData => Some(localData)
+  };
+
+let _addTransformRotationData =
+    (transform, localRotations, defaultLocalRotation) =>
+  switch (
+    ModelMatrixTransformService.getLocalRotationTuple(
+      transform,
+      localRotations,
+    )
+  ) {
+  | (x, y, z, w)
+      when
+        x === defaultLocalRotation[0]
+        && y === defaultLocalRotation[1]
+        && z === defaultLocalRotation[2]
+        && w === defaultLocalRotation[3] =>
+    None
+  | localRotation => Some(localRotation)
+  };
+
+let _addNodeExtraData =
     (
-      gameObject,
-      (
-        transform,
-        localPositions,
-        localRotations,
-        localScales,
-        defaultLocalPosition,
-        defaultLocalRotation,
-        defaultLocalScale,
-      ),
       isRoot,
       (
+        basicCameraViewIndex,
+        meshRendererIndex,
+        basicMaterialIndex,
+        lightMaterialIndex,
+        arcballCameraControllerIndex,
+      ),
+    ) =>
+  switch (
+    isRoot,
+    basicCameraViewIndex,
+    meshRendererIndex,
+    basicMaterialIndex,
+    lightMaterialIndex,
+    arcballCameraControllerIndex,
+  ) {
+  | (None, None, None, None, None, None) => None
+  | (
+      isRoot,
+      basicCameraViewIndex,
+      meshRendererIndex,
+      basicMaterialIndex,
+      lightMaterialIndex,
+      arcballCameraControllerIndex,
+    ) =>
+    Some(
+      {
+        isRoot,
+        basicCameraView: basicCameraViewIndex,
+        meshRenderer: meshRendererIndex,
+        basicMaterial: basicMaterialIndex,
+        lightMaterial: lightMaterialIndex,
+        cameraController: arcballCameraControllerIndex,
+      }: nodeExtras,
+    )
+  };
+
+let _addNodeExtensionData = lightIndex =>
+  switch (lightIndex) {
+  | None => None
+  | Some(lightIndex) => Some({khr_lights: Some({light: lightIndex})})
+  };
+
+let _addNodeAndItsComponentData =
+    (
+      gameObject,
+      isRoot,
+      (
+        (
+          transform,
+          localPositions,
+          localRotations,
+          localScales,
+          defaultLocalPosition,
+          defaultLocalRotation,
+          defaultLocalScale,
+        ),
         meshIndex,
         meshRendererIndex,
         basicCameraViewIndex,
@@ -64,92 +137,107 @@ let _addNodeData =
          gameObject,
          children: None,
          translation:
-           switch (
-             ModelMatrixTransformService.getLocalPositionTuple(
-               transform,
-               localPositions,
-             )
-           ) {
-           | (x, y, z)
-               when
-                 x === defaultLocalPosition[0]
-                 && y === defaultLocalPosition[1]
-                 && z === defaultLocalPosition[2] =>
-             None
-           | localPosition => Some(localPosition)
-           },
+           _addTransformVector3Data(
+             transform,
+             localPositions,
+             defaultLocalPosition,
+             ModelMatrixTransformService.getLocalPositionTuple,
+           ),
          rotation:
-           switch (
-             ModelMatrixTransformService.getLocalRotationTuple(
-               transform,
-               localRotations,
-             )
-           ) {
-           | (x, y, z, w)
-               when
-                 x === defaultLocalRotation[0]
-                 && y === defaultLocalRotation[1]
-                 && z === defaultLocalRotation[2]
-                 && w === defaultLocalRotation[3] =>
-             None
-           | localRotation => Some(localRotation)
-           },
+           _addTransformRotationData(
+             transform,
+             localRotations,
+             defaultLocalRotation,
+           ),
          scale:
-           switch (
-             ModelMatrixTransformService.getLocalScaleTuple(
-               transform,
-               localScales,
-             )
-           ) {
-           | (x, y, z)
-               when
-                 x === defaultLocalScale[0]
-                 && y === defaultLocalScale[1]
-                 && z === defaultLocalScale[2] =>
-             None
-           | localScale => Some(localScale)
-           },
+           _addTransformVector3Data(
+             transform,
+             localScales,
+             defaultLocalScale,
+             ModelMatrixTransformService.getLocalScaleTuple,
+           ),
          mesh: meshIndex,
          camera: cameraProjectionIndex,
          extras:
-           switch (
+           _addNodeExtraData(
              isRoot,
-             basicCameraViewIndex,
-             meshRendererIndex,
-             basicMaterialIndex,
-             lightMaterialIndex,
-             arcballCameraControllerIndex,
-           ) {
-           | (None, None, None, None, None, None) => None
-           | (
-               isRoot,
+             (
                basicCameraViewIndex,
                meshRendererIndex,
                basicMaterialIndex,
                lightMaterialIndex,
                arcballCameraControllerIndex,
-             ) =>
-             Some(
-               {
-                 isRoot,
-                 basicCameraView: basicCameraViewIndex,
-                 meshRenderer: meshRendererIndex,
-                 basicMaterial: basicMaterialIndex,
-                 lightMaterial: lightMaterialIndex,
-                 cameraController: arcballCameraControllerIndex,
-               }: nodeExtras,
-             )
-           },
-         extensions:
-           switch (lightIndex) {
-           | None => None
-           | Some(lightIndex) =>
-             Some({khr_lights: Some({light: lightIndex})})
-           },
+             ),
+           ),
+         extensions: _addNodeExtensionData(lightIndex),
        }: nodeData,
      );
 
-let rec _getNodeData =
+let _getNodeData =
+    (
+      transform,
+      nodeIndex,
+      (gameObjectChildrenMap, gameObjectNodeIndexMap),
+      state,
+    ) => {
+  let (
+    {
+      defaultLocalPosition,
+      defaultLocalRotation,
+      defaultLocalScale,
+      localPositions,
+      localRotations,
+      localScales,
+    } as transformRecord
+  ): TransformType.transformRecord =
+    RecordTransformMainService.getRecord(state);
+
+  let gameObject =
+    GameObjectTransformService.unsafeGetGameObject(
+      transform,
+      transformRecord,
+    );
+
+  let childrenTransformArr = _getChildren(transform, transformRecord);
+
+  let childrenGameObjectArr =
+    childrenTransformArr
+    |> Js.Array.map(transform =>
+         GameObjectTransformService.unsafeGetGameObject(
+           transform,
+           transformRecord,
+         )
+       );
+
+  let gameObjectChildrenMap =
+    switch (childrenGameObjectArr |> Js.Array.length) {
+    | 0 => gameObjectChildrenMap
+    | _ =>
+      gameObjectChildrenMap
+      |> WonderCommonlib.MutableSparseMapService.set(
+           gameObject,
+           childrenGameObjectArr,
+         )
+    };
+
+  let gameObjectNodeIndexMap =
+    gameObjectNodeIndexMap
+    |> WonderCommonlib.MutableSparseMapService.set(gameObject, nodeIndex);
+
+  let isRoot = IsRootGameObjectMainService.getIsRoot(gameObject, state);
+
+  (
+    transformRecord,
+    gameObject,
+    childrenTransformArr,
+    childrenGameObjectArr,
+    gameObjectChildrenMap,
+    gameObjectNodeIndexMap,
+    isRoot,
+  );
+};
+
+let rec _getNodeAndItsComponentsData =
         (
           state,
           (
@@ -228,47 +316,20 @@ let rec _getNodeData =
              localPositions,
              localRotations,
              localScales,
-           } as transformRecord
-         ): TransformType.transformRecord =
-           RecordTransformMainService.getRecord(state);
-
-         let gameObject =
-           GameObjectTransformService.unsafeGetGameObject(
+           }: TransformType.transformRecord,
+           gameObject,
+           childrenTransformArr,
+           childrenGameObjectArr,
+           gameObjectChildrenMap,
+           gameObjectNodeIndexMap,
+           isRoot,
+         ) =
+           _getNodeData(
              transform,
-             transformRecord,
+             nodeIndex,
+             (gameObjectChildrenMap, gameObjectNodeIndexMap),
+             state,
            );
-
-         let childrenTransformArr = _getChildren(transform, transformRecord);
-
-         let childrenGameObjectArr =
-           childrenTransformArr
-           |> Js.Array.map(transform =>
-                GameObjectTransformService.unsafeGetGameObject(
-                  transform,
-                  transformRecord,
-                )
-              );
-
-         let gameObjectChildrenMap =
-           switch (childrenGameObjectArr |> Js.Array.length) {
-           | 0 => gameObjectChildrenMap
-           | _ =>
-             gameObjectChildrenMap
-             |> WonderCommonlib.MutableSparseMapService.set(
-                  gameObject,
-                  childrenGameObjectArr,
-                )
-           };
-
-         let gameObjectNodeIndexMap =
-           gameObjectNodeIndexMap
-           |> WonderCommonlib.MutableSparseMapService.set(
-                gameObject,
-                nodeIndex,
-              );
-
-         let isRoot =
-           IsRootGameObjectMainService.getIsRoot(gameObject, state);
 
          let (
            state,
@@ -333,7 +394,7 @@ let rec _getNodeData =
              getPointsDataFuncTuple,
            );
 
-         _getNodeData(
+         _getNodeAndItsComponentsData(
            state,
            (
              nodeIndex |> succ,
@@ -365,19 +426,19 @@ let rec _getNodeData =
            ),
            (
              childrenTransformArr,
-             _addNodeData(
+             _addNodeAndItsComponentData(
                gameObject,
-               (
-                 transform,
-                 localPositions,
-                 localRotations,
-                 localScales,
-                 defaultLocalPosition,
-                 defaultLocalRotation,
-                 defaultLocalScale,
-               ),
                isRoot,
                (
+                 (
+                   transform,
+                   localPositions,
+                   localRotations,
+                   localScales,
+                   defaultLocalPosition,
+                   defaultLocalRotation,
+                   defaultLocalScale,
+                 ),
                  meshIndex,
                  meshRendererIndex,
                  basicCameraViewIndex,
@@ -460,7 +521,7 @@ let getAllNodeData = (rootGameObject, getPointsDataFuncTuple, state) => {
     ),
     nodeDataArr,
   ) =
-    _getNodeData(
+    _getNodeAndItsComponentsData(
       state,
       (0, 0, 0, 0, 0, 0, 0, 0, 0),
       (

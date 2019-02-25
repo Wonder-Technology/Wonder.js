@@ -206,128 +206,133 @@ let _encodeCameras = cameraProjectionDataArr => (
   |> jsonArray,
 );
 
+let _encodeBasicCameraViewExtra = (basicCameraViewDataArr, extraList) =>
+  switch (basicCameraViewDataArr |> Js.Array.length) {
+  | 0 => extraList
+  | _ => [
+      (
+        "basicCameraViews",
+        basicCameraViewDataArr
+        |> Js.Array.map((({isActive}: basicCameraViewData) as data) =>
+             [("isActive", isActive |> bool)] |> object_
+           )
+        |> jsonArray,
+      ),
+      ...extraList,
+    ]
+  };
+
+let _encodeMeshRendererExtra = (meshRendererDataArr, extraList) =>
+  switch (meshRendererDataArr |> Js.Array.length) {
+  | 0 => extraList
+  | _ => [
+      (
+        "meshRenderers",
+        meshRendererDataArr
+        |> Js.Array.map((({drawMode}: meshRendererData) as data) =>
+             [("drawMode", drawMode |> int)] |> object_
+           )
+        |> jsonArray,
+      ),
+      ...extraList,
+    ]
+  };
+
+let _encodeBasicMaterialExtra = (basicMaterialDataArr, extraList) =>
+  switch (basicMaterialDataArr |> Js.Array.length) {
+  | 0 => extraList
+  | _ => [
+      (
+        "basicMaterials",
+        basicMaterialDataArr
+        |> Js.Array.map((({colorFactor, name}: basicMaterialData) as data) => {
+             let list = [];
+
+             let list =
+               switch (colorFactor) {
+               | None => list
+               | Some(colorFactor) => [
+                   ("colorFactor", colorFactor |> numberArray),
+                   ...list,
+                 ]
+               };
+
+             let list =
+               switch (name) {
+               | None => list
+               | Some(name) => [("name", name |> string), ...list]
+               };
+
+             list |> object_;
+           })
+        |> jsonArray,
+      ),
+      ...extraList,
+    ]
+  };
+
+let _encodeArcballCameraControllerExtra =
+    (arcballCameraControllerDataArr, extraList) =>
+  switch (arcballCameraControllerDataArr |> Js.Array.length) {
+  | 0 => extraList
+  | _ => [
+      (
+        "arcballCameraControllers",
+        arcballCameraControllerDataArr
+        |> Js.Array.map(
+             (
+               (
+                 {
+                   distance,
+                   minDistance,
+                   phi,
+                   theta,
+                   thetaMargin,
+                   target,
+                   moveSpeedX,
+                   moveSpeedY,
+                   rotateSpeed,
+                   wheelSpeed,
+                   isBindEvent,
+                 }: arcballCameraControllerData
+               ) as data,
+             ) =>
+             [
+               ("distance", distance |> float),
+               ("minDistance", minDistance |> float),
+               ("phi", phi |> float),
+               ("theta", theta |> float),
+               ("thetaMargin", thetaMargin |> float),
+               ("target", target |> targetTupleToArray |> numberArray),
+               ("moveSpeedX", moveSpeedX |> float),
+               ("moveSpeedY", moveSpeedY |> float),
+               ("rotateSpeed", rotateSpeed |> float),
+               ("wheelSpeed", wheelSpeed |> float),
+               ("isBindEvent", isBindEvent |> bool),
+             ]
+             |> object_
+           )
+        |> jsonArray,
+      ),
+      ...extraList,
+    ]
+  };
+
 let _encodeExtras =
     (
       basicCameraViewDataArr,
       meshRendererDataArr,
       basicMaterialDataArr,
       arcballCameraControllerDataArr,
-    ) => {
-  let extraList = [];
-
-  let extraList =
-    switch (basicCameraViewDataArr |> Js.Array.length) {
-    | 0 => extraList
-    | _ => [
-        (
-          "basicCameraViews",
-          basicCameraViewDataArr
-          |> Js.Array.map((({isActive}: basicCameraViewData) as data) =>
-               [("isActive", isActive |> bool)] |> object_
-             )
-          |> jsonArray,
-        ),
-        ...extraList,
-      ]
-    };
-
-  let extraList =
-    switch (meshRendererDataArr |> Js.Array.length) {
-    | 0 => extraList
-    | _ => [
-        (
-          "meshRenderers",
-          meshRendererDataArr
-          |> Js.Array.map((({drawMode}: meshRendererData) as data) =>
-               [("drawMode", drawMode |> int)] |> object_
-             )
-          |> jsonArray,
-        ),
-        ...extraList,
-      ]
-    };
-
-  let extraList =
-    switch (basicMaterialDataArr |> Js.Array.length) {
-    | 0 => extraList
-    | _ => [
-        (
-          "basicMaterials",
-          basicMaterialDataArr
-          |> Js.Array.map((({colorFactor, name}: basicMaterialData) as data) => {
-               let list = [];
-
-               let list =
-                 switch (colorFactor) {
-                 | None => list
-                 | Some(colorFactor) => [
-                     ("colorFactor", colorFactor |> numberArray),
-                     ...list,
-                   ]
-                 };
-
-               let list =
-                 switch (name) {
-                 | None => list
-                 | Some(name) => [("name", name |> string), ...list]
-                 };
-
-               list |> object_;
-             })
-          |> jsonArray,
-        ),
-        ...extraList,
-      ]
-    };
-
-  let extraList =
-    switch (arcballCameraControllerDataArr |> Js.Array.length) {
-    | 0 => extraList
-    | _ => [
-        (
-          "arcballCameraControllers",
-          arcballCameraControllerDataArr
-          |> Js.Array.map(
-               (
-                 (
-                   {
-                     distance,
-                     minDistance,
-                     phi,
-                     theta,
-                     thetaMargin,
-                     target,
-                     moveSpeedX,
-                     moveSpeedY,
-                     rotateSpeed,
-                     wheelSpeed,
-                     isBindEvent,
-                   }: arcballCameraControllerData
-                 ) as data,
-               ) =>
-               [
-                 ("distance", distance |> float),
-                 ("minDistance", minDistance |> float),
-                 ("phi", phi |> float),
-                 ("theta", theta |> float),
-                 ("thetaMargin", thetaMargin |> float),
-                 ("target", target |> targetTupleToArray |> numberArray),
-                 ("moveSpeedX", moveSpeedX |> float),
-                 ("moveSpeedY", moveSpeedY |> float),
-                 ("rotateSpeed", rotateSpeed |> float),
-                 ("wheelSpeed", wheelSpeed |> float),
-                 ("isBindEvent", isBindEvent |> bool),
-               ]
-               |> object_
-             )
-          |> jsonArray,
-        ),
-        ...extraList,
-      ]
-    };
-
-  ("extras", extraList |> object_);
-};
+    ) => (
+  "extras",
+  []
+  |> _encodeBasicCameraViewExtra(basicCameraViewDataArr)
+  |> _encodeMeshRendererExtra(meshRendererDataArr)
+  |> _encodeBasicMaterialExtra(basicMaterialDataArr)
+  |> _encodeArcballCameraControllerExtra(arcballCameraControllerDataArr)
+  |> object_,
+);
 
 let _encodeSceneExtras = imguiData => {
   let extraList = [];
