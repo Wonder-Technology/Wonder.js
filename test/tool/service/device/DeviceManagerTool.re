@@ -3,6 +3,8 @@ open StateDataMainType;
 let getDeviceManagerRecord = (state: StateDataMainType.state) =>
   state.deviceManagerRecord;
 
+let getGl = state => DeviceManagerAPI.unsafeGetGl(state) |. Some;
+
 let setGl = (gl, state) => {
   ...state,
   deviceManagerRecord:

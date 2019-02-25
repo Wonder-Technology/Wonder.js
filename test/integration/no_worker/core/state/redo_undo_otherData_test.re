@@ -7,48 +7,10 @@ let _ =
     open Expect;
     open Expect.Operators;
     open Sinon;
+
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
-    let _prepareDeviceManagerData = state => {
-      open DeviceManagerType;
-      let record = DeviceManagerTool.getDeviceManagerRecord(state);
-      let gl = Obj.magic(RandomTool.getRandomFloat(10.));
-      let depthWrite = Some(true);
-      let colorWrite = Some((true, true, true, false));
-      let clearColor = Some((1., 0.1, 0.2, 1.));
-      let side = Some(BOTH);
-      let depthTest = Some(true);
-      let scissorTest = Some(true);
-      let viewport = Some((1, 3, 10, 20));
-      let scissor = Some((2, 4, 11, 21));
-      (
-        {
-          ...state,
-          deviceManagerRecord: {
-            gl: Some(gl),
-            depthWrite,
-            colorWrite,
-            clearColor,
-            side,
-            depthTest,
-            scissorTest,
-            viewport,
-            scissor,
-          },
-        },
-        Some(gl),
-        (
-          depthWrite,
-          colorWrite,
-          clearColor,
-          side,
-          depthTest,
-          scissorTest,
-          viewport,
-          scissor,
-        ),
-      );
-    };
+
     let _prepareTypeArrayPoolData = state => {
       open StateDataMainType;
       let float32ArrayPoolMap =
@@ -121,65 +83,14 @@ let _ =
         (buffer1, buffer2, buffer3, buffer4, buffer5),
       );
     };
+
     beforeEach(() => {
       sandbox := createSandbox();
       state := TestTool.initWithJobConfig(~sandbox, ());
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
     describe("deepCopyForRestore", () => {
-      describe("deep copy deviceManager record", () => {
-        test("gl not changed", () => {
-          open DeviceManagerType;
-          let (state, oldGl, _) = _prepareDeviceManagerData(state^);
-          let copiedState = MainStateTool.deepCopyForRestore(state);
-          let {gl}: deviceManagerRecord =
-            DeviceManagerTool.getDeviceManagerRecord(copiedState);
-          gl |> expect == oldGl;
-        });
-        test("directly use readonly record", () => {
-          open StateDataMainType;
-          let (
-            state,
-            gl,
-            (
-              depthWrite,
-              colorWrite,
-              clearColor,
-              side,
-              depthTest,
-              scissorTest,
-              viewport,
-              scissor,
-            ),
-          ) =
-            _prepareDeviceManagerData(state^);
-          let copiedState = MainStateTool.deepCopyForRestore(state);
-          let targetData = DeviceManagerTool.getDeviceManagerRecord(state);
-          let copiedData =
-            DeviceManagerTool.getDeviceManagerRecord(copiedState);
-          (
-            copiedData.depthWrite,
-            copiedData.colorWrite,
-            copiedData.clearColor,
-            copiedData.side,
-            copiedData.depthTest,
-            copiedData.scissorTest,
-            copiedData.viewport,
-            copiedData.scissor,
-          )
-          |>
-          expect == (
-                      targetData.depthWrite,
-                      targetData.colorWrite,
-                      targetData.clearColor,
-                      targetData.side,
-                      targetData.depthTest,
-                      targetData.scissorTest,
-                      targetData.viewport,
-                      targetData.scissor,
-                    );
-        });
-      });
       describe("deep copy vbo buffer record", () =>
         test("clear all buffer map and all buffer pool record", () => {
           open VboBufferType;

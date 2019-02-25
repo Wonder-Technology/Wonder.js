@@ -24,8 +24,7 @@ let restore =
     targetState
     |> RestoreSourceInstanceMainService.restore(currentState, sharedData);
   let targetState =
-    targetState
-    |> RestoreDeviceManagerMainService.restore(currentState, sharedData);
+    targetState |> RestoreDeviceManagerMainService.restore(currentState);
   let gl =
     DeviceManagerService.unsafeGetGl(. targetState.deviceManagerRecord);
   targetState
