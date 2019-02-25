@@ -128,13 +128,13 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
     describe("deepCopyForRestore", () => {
       describe("deep copy deviceManager record", () => {
-        test("clear gl", () => {
+        test("gl not changed", () => {
           open DeviceManagerType;
-          let (state, gl, _) = _prepareDeviceManagerData(state^);
+          let (state, oldGl, _) = _prepareDeviceManagerData(state^);
           let copiedState = MainStateTool.deepCopyForRestore(state);
           let {gl}: deviceManagerRecord =
             DeviceManagerTool.getDeviceManagerRecord(copiedState);
-          gl |> expect == None;
+          gl |> expect == oldGl;
         });
         test("directly use readonly record", () => {
           open StateDataMainType;

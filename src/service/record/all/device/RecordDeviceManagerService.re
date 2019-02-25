@@ -15,6 +15,7 @@ let create = () => {
 let deepCopyForRestore =
     (
       {
+        gl,
         depthWrite,
         colorWrite,
         clearColor,
@@ -25,7 +26,7 @@ let deepCopyForRestore =
         scissor,
       },
     ) => {
-  gl: None,
+  gl,
   depthWrite,
   colorWrite,
   clearColor,
