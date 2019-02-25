@@ -18,6 +18,7 @@
     <script src="../e2e/js/GeometryTool.js"></script>
     <script src="../e2e/js/BasicMaterialTool.js"></script>
     <script src="../e2e/js/LightMaterialTool.js"></script>
+    <script src="../e2e/js/IMGUITool.js"></script>
     <script src="../../dist/wd.js"></script>
     <script>
         window.onload = function () {
@@ -27,35 +28,47 @@
                         ["./1.png", "1"],
                         ["./2.jpg", "2"]
                     ],
-                    wd.unsafeGetState(), function (state) {
+                    function (state) {
                         var state = wd.unsafeGetState();
 
+                        // var state = ImguiTool.setSetting([0.045, 0.012], state);
+                        var state = ImguiTool.setSetting([0.0, 0.0], state);
 
                         var state = wd.setIMGUIFunc(
                             1, (labelFunc, api, record) => {
-                                var record = api.label(
-                                    [20, 20, 300, 100], "ab", 0, record
+
+                                var record = api.box(
+                                    [20, 20, 300, 300], 
+                                    
+                                    [1.0,1.0,1.0],
+                                    // [0.0,0.0,0.0],
+                                    
+                                    record
                                 );
 
+                                // var record = api.label(
+                                //     [20, 20, 300, 100], "ab", 0, record
+                                // );
 
 
-                                var record = api.image(
-                                    [50, 150, 50, 100], [0, 0, 1, 1], "1", record
-                                );
+
+                                // var record = api.image(
+                                //     [50, 150, 50, 100], [0, 0, 1, 1], "1", record
+                                // );
 
 
-                                var record = api.image(
-                                    [200, 300, 100, 100], [0, 0, 1, 1], "2", record
-                                );
+                                // var record = api.image(
+                                //     [200, 300, 100, 100], [0, 0, 1, 1], "2", record
+                                // );
 
 
-                                var record = api.label(
-                                    [20, 150, 300, 100], "c", 1, record
-                                );
+                                // var record = api.label(
+                                //     [20, 150, 300, 100], "c", 1, record
+                                // );
 
-                                var record = api.image(
-                                    [500, 300, 100, 100], [0, 0, 1, 1], "2", record
-                                );
+                                // var record = api.image(
+                                //     [500, 300, 100, 100], [0, 0, 1, 1], "2", record
+                                // );
 
 
 
@@ -110,10 +123,10 @@
                         var state = wd.addGameObjectArcballCameraControllerComponent(camera, cameraController, state);
 
 
-                        state =
-                            wd.setCurrentCameraGameObject(
-                                camera, state
-                            );
+                        // state =
+                        //     wd.setCurrentCameraGameObject(
+                        //         camera, state
+                        //     );
 
 
 
@@ -125,7 +138,7 @@
 
 
                         wd.startDirector(state);
-                    });
+                    }, wd.unsafeGetState());
             });
         };
     </script>
