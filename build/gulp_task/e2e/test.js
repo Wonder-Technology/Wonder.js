@@ -243,9 +243,7 @@ module.exports = {
     },
 
 
-    fastTest: function (generateDataInfo, reportFilePath, type, generateCorrectDataFunc, generateReportFunc, runTestFunc, done) {
-        var configFilePath = this.getE2eConfigFilePath();
-
+    fastTest: function (reportFilePath, generateReportFunc, runTestFunc, done) {
         _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, [], done);
     }
 
