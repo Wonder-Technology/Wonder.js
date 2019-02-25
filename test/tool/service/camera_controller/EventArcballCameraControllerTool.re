@@ -91,3 +91,5 @@ let prepareTouchEvent = sandbox => {
 
   state;
 };
+
+let prepareKeyboardEvent = sandbox => KeyboardEventTool.prepare(~sandbox, ());

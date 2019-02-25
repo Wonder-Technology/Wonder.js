@@ -15,7 +15,7 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("bind arcballCameraController's event", () => {
-      let _prepareMouseEvent = () =>
+      let _prepareKeyboardEvent = () =>
         EventArcballCameraControllerTool.prepareMouseEvent(sandbox);
 
       describe("test bind one arcballCameraController's event", () => {
@@ -29,7 +29,7 @@ let _ =
                 MouseEventTool.prepareForPointerLock(sandbox, state);
 
               test("if is mouse event, request canvas pointerLock", () => {
-                let state = _prepareMouseEvent();
+                let state = _prepareKeyboardEvent();
                 let (state, requestPointerLockStub) =
                   _prepareForPointerLock(sandbox, state);
                 let (state, _, _, (cameraController, _, _)) =
@@ -98,7 +98,7 @@ let _ =
                 test(
                   "if document.pointerLockElement === canvas, exitPointerLock",
                   () => {
-                  let state = _prepareMouseEvent();
+                  let state = _prepareKeyboardEvent();
                   let canvas = ViewTool.unsafeGetCanvas(state) |> Obj.magic;
                   let (state, exitPointerLockStub) =
                     _prepareForPointerLock(sandbox, canvas, state);
@@ -127,7 +127,7 @@ let _ =
                   exitPointerLockStub |> expect |> toCalledOnce;
                 });
                 test("else, not exitPointerLock", () => {
-                  let state = _prepareMouseEvent();
+                  let state = _prepareKeyboardEvent();
                   let (state, exitPointerLockStub) =
                     _prepareForPointerLock(sandbox, Obj.magic(1), state);
                   let (state, _, _, (cameraController, _, _)) =
@@ -188,7 +188,7 @@ let _ =
           describe("bind point drag over event", () =>
             describe("change orbit", () =>
               test("set phi and theta", () => {
-                let state = _prepareMouseEvent();
+                let state = _prepareKeyboardEvent();
                 let (state, _) =
                   MouseEventTool.prepareForPointerLock(sandbox, state);
                 let (
@@ -253,7 +253,7 @@ let _ =
 
           describe("bind point scale event", () => {
             test("preventDefault", () => {
-              let state = _prepareMouseEvent();
+              let state = _prepareKeyboardEvent();
               let (
                 state,
                 gameObject,
@@ -297,7 +297,7 @@ let _ =
             });
 
             test("set distance", () => {
-              let state = _prepareMouseEvent();
+              let state = _prepareKeyboardEvent();
               let (
                 state,
                 gameObject,
@@ -347,53 +347,79 @@ let _ =
             });
           });
 
-          describe("bind keydown event", () =>
-            describe("set target", () => {
-              let _prepareMouseEvent = () => {
-                let state = _prepareMouseEvent();
-                let (
+          describe("bind keydown event", () => {
+            let _prepareKeyboardEvent = () => {
+              let state =
+                EventArcballCameraControllerTool.prepareKeyboardEvent(
+                  sandbox,
+                );
+              let (
+                state,
+                gameObject,
+                transform,
+                (
+                  cameraController,
+                  basicCameraView,
+                  perspectiveCameraProjection,
+                ),
+              ) =
+                ArcballCameraControllerTool.createGameObject(state);
+              let (posX, posY, posZ) as pos = (1., 2., 3.);
+              let state =
+                state
+                |> TransformAPI.setTransformLocalPosition(transform, pos);
+              let _ = TransformAPI.getTransformPosition(transform, state);
+              let target = pos;
+              let moveSpeedX = 0.1;
+              let moveSpeedY = 0.2;
+              let state =
+                state
+                |> setArcballCameraControllerTarget(cameraController, target)
+                |> setArcballCameraControllerMoveSpeedX(
+                     cameraController,
+                     moveSpeedX,
+                   )
+                |> setArcballCameraControllerMoveSpeedY(
+                     cameraController,
+                     moveSpeedY,
+                   );
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              let state =
+                ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+                  cameraController,
                   state,
-                  gameObject,
-                  transform,
-                  (
-                    cameraController,
-                    basicCameraView,
-                    perspectiveCameraProjection,
-                  ),
-                ) =
-                  ArcballCameraControllerTool.createGameObject(state);
-                let (posX, posY, posZ) as pos = (1., 2., 3.);
-                let state =
-                  state
-                  |> TransformAPI.setTransformLocalPosition(transform, pos);
-                let _ = TransformAPI.getTransformPosition(transform, state);
-                let target = pos;
-                let moveSpeedX = 0.1;
-                let moveSpeedY = 0.2;
-                let state =
-                  state
-                  |> setArcballCameraControllerTarget(
-                       cameraController,
-                       target,
-                     )
-                  |> setArcballCameraControllerMoveSpeedX(
-                       cameraController,
-                       moveSpeedX,
-                     )
-                  |> setArcballCameraControllerMoveSpeedY(
-                       cameraController,
-                       moveSpeedY,
-                     );
-                let state = state |> NoWorkerJobTool.execInitJobs;
-                let state =
-                  ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
-                    cameraController,
-                    state,
-                  );
+                );
 
-                (state, cameraController, (moveSpeedX, moveSpeedY), pos);
-              };
+              (state, cameraController, (moveSpeedX, moveSpeedY), pos);
+            };
 
+            test("if is combined key, not set target", () => {
+              let (
+                state,
+                cameraController,
+                (moveSpeedX, moveSpeedY),
+                (posX, posY, posZ),
+              ) =
+                _prepareKeyboardEvent();
+
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                "keydown",
+                EventTool.getKeyboardEventBindedDom(state),
+                KeyboardEventTool.buildKeyboardEvent(
+                  ~keyCode=65,
+                  ~ctrlKey=true,
+                  (),
+                ),
+              );
+              let state = EventTool.restore(state);
+
+              state
+              |> unsafeGetArcballCameraControllerTarget(cameraController)
+              |> expect == (posX, posY, posZ);
+            });
+
+            describe("else, set target", () => {
               test("test move left", () => {
                 let (
                   state,
@@ -401,7 +427,7 @@ let _ =
                   (moveSpeedX, moveSpeedY),
                   (posX, posY, posZ),
                 ) =
-                  _prepareMouseEvent();
+                  _prepareKeyboardEvent();
 
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
@@ -422,7 +448,7 @@ let _ =
                   (moveSpeedX, moveSpeedY),
                   (posX, posY, posZ),
                 ) =
-                  _prepareMouseEvent();
+                  _prepareKeyboardEvent();
 
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
@@ -443,7 +469,7 @@ let _ =
                   (moveSpeedX, moveSpeedY),
                   (posX, posY, posZ),
                 ) =
-                  _prepareMouseEvent();
+                  _prepareKeyboardEvent();
 
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
@@ -464,7 +490,7 @@ let _ =
                   (moveSpeedX, moveSpeedY),
                   (posX, posY, posZ),
                 ) =
-                  _prepareMouseEvent();
+                  _prepareKeyboardEvent();
 
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
@@ -478,13 +504,13 @@ let _ =
                 |> unsafeGetArcballCameraControllerTarget(cameraController)
                 |> expect == (posX, posY -. moveSpeedY, posZ);
               });
-            })
-          );
+            });
+          });
         });
 
         describe("add event handleFunc to state", () =>
           test("test unbind keydown event", () => {
-            let state = _prepareMouseEvent();
+            let state = _prepareKeyboardEvent();
             let (
               state,
               gameObject,
@@ -527,7 +553,7 @@ let _ =
                createMethodStubWithJsObjSandbox(sandbox, Console.console, "warn")
            ); */
         /* test("should warn: expect only has one arcballCameraController", () => {
-             let state = _prepareMouseEvent();
+             let state = _prepareKeyboardEvent();
              let (state, gameObject1, _, (cameraController1, _, _)) =
                ArcballCameraControllerTool.createGameObject(state);
              let (state, gameObject2, _, (cameraController2, _, _)) =
@@ -555,7 +581,7 @@ let _ =
            }); */
         =>
           test("test bind keydown event", () => {
-            let state = _prepareMouseEvent();
+            let state = _prepareKeyboardEvent();
             let (state, gameObject1, _, (cameraController1, _, _)) =
               ArcballCameraControllerTool.createGameObject(state);
             let (state, gameObject2, _, (cameraController2, _, _)) =

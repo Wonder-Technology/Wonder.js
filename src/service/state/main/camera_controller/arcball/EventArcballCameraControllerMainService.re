@@ -22,7 +22,11 @@ let _setPointDragStartEventHandleFunc =
 };
 
 let _setPointDragDropEventHandleFunc =
-    (cameraController, handleFunc, {pointDragDropEventHandleFuncMap} as record) => {
+    (
+      cameraController,
+      handleFunc,
+      {pointDragDropEventHandleFuncMap} as record,
+    ) => {
   ...record,
   pointDragDropEventHandleFuncMap:
     _setEventHandleFunc(
@@ -33,7 +37,11 @@ let _setPointDragDropEventHandleFunc =
 };
 
 let _setPointDragOverEventHandleFunc =
-    (cameraController, handleFunc, {pointDragOverEventHandleFuncMap} as record) => {
+    (
+      cameraController,
+      handleFunc,
+      {pointDragOverEventHandleFuncMap} as record,
+    ) => {
   ...record,
   pointDragOverEventHandleFuncMap:
     _setEventHandleFunc(
@@ -94,6 +102,9 @@ let _changeOrbit =
        /. (100. /. rotateSpeed),
      );
 };
+
+let _isCombinedKey = ({ctrlKey, altKey, shiftKey, metaKey}: keyboardEvent) =>
+  ctrlKey || altKey || shiftKey || metaKey;
 
 let prepareBindEvent = (cameraController, state) => {
   let pointDragStartHandleFunc =
@@ -177,11 +188,13 @@ let prepareBindEvent = (cameraController, state) => {
       event: EventType.keyboardEvent,
       {arcballCameraControllerRecord} as state,
     ) =>
-      TargetArcballCameraControllerMainService.setTargetByKeyboardEvent(
-        cameraController,
-        event,
-        state,
-      );
+      _isCombinedKey(event) ?
+        state :
+        TargetArcballCameraControllerMainService.setTargetByKeyboardEvent(
+          cameraController,
+          event,
+          state,
+        );
 
   let state = {
     ...state,
