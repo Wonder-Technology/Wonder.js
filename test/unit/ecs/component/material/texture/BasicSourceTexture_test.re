@@ -7,13 +7,16 @@ let _ =
     open Expect;
     open Expect.Operators;
     open Sinon;
+
     let sandbox = getSandboxDefaultVal();
     let state = ref(CreateStateMainService.createState());
+
     beforeEach(() => {
       sandbox := createSandbox();
       state := TestTool.init(~sandbox, ());
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
     describe("createBasicSourceTexture", () => {
       test("create a new texture which is just index(int)", () => {
         let (_, texture) = createBasicSourceTexture(state^);
@@ -39,6 +42,7 @@ let _ =
         |> toThrowMessage("expect index: 2 <= maxIndex: 1, but actual not");
       });
     });
+
     describe("test default data", () => {
       describe("is need updates", () =>
         test("default is need update", () => {
@@ -56,6 +60,7 @@ let _ =
         })
       );
     });
+
     describe("getBasicSourceTextureWidth", () => {
       describe("if set source", () => {
         let _prepare = state => {
@@ -83,6 +88,7 @@ let _ =
         |> toThrowMessage("source should exist");
       });
     });
+
     describe("getBasicSourceTextureHeight", () => {
       describe("if set source", () => {
         let _prepare = state => {
@@ -110,6 +116,7 @@ let _ =
         |> toThrowMessage("source should exist");
       });
     });
+
     describe("setBasicSourceTextureWrapS", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
@@ -118,6 +125,7 @@ let _ =
         getBasicSourceTextureWrapS(texture, state) |> expect == wrap;
       })
     );
+
     describe("setBasicSourceTextureWrapT", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
@@ -126,6 +134,7 @@ let _ =
         getBasicSourceTextureWrapT(texture, state) |> expect == wrap;
       })
     );
+
     describe("setBasicSourceTextureMagFilter", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
@@ -134,6 +143,7 @@ let _ =
         getBasicSourceTextureMagFilter(texture, state) |> expect == filter;
       })
     );
+
     describe("setBasicSourceTextureMinFilter", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
@@ -142,6 +152,7 @@ let _ =
         getBasicSourceTextureMinFilter(texture, state) |> expect == filter;
       })
     );
+
     describe("setBasicSourceTextureFormat", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
@@ -150,6 +161,7 @@ let _ =
         getBasicSourceTextureFormat(texture, state) |> expect == format;
       })
     );
+
     describe("setBasicSourceTextureType", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
@@ -158,11 +170,22 @@ let _ =
         getBasicSourceTextureType(texture, state) |> expect == type_;
       })
     );
+
     describe("setBasicSourceTextureFlipY", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
         let state = state |> setBasicSourceTextureFlipY(texture, false);
         getBasicSourceTextureFlipY(texture, state) |> expect == false;
+      })
+    );
+
+    describe("getAllTextures", () =>
+      test("get all created textures", () => {
+        let (state, texture1) = createBasicSourceTexture(state^);
+        let (state, texture2) = createBasicSourceTexture(state);
+
+        BasicSourceTextureAPI.getAllTextures(state)
+        |> expect == [|texture1, texture2|];
       })
     );
   });
