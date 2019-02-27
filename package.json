@@ -1,6 +1,6 @@
 {
   "name": "wonder.js",
-  "version": "1.0.0-beta.2.4",
+  "version": "1.0.0-beta.2.5",
   "authors": "Wonder",
   "description": "3d webgl engine",
   "homepage": "https://github.com/Wonder-Technology/Wonder.js",
@@ -45,7 +45,7 @@
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
-    "babel-jest": "^24.1.0",
+    "babel-jest": "23.6.0",
     "bs-platform": "4.0.18",
     "cz-customizable": "^5.2.0",
     "express": "^4.16.1",
@@ -57,7 +57,7 @@
     "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-node-resolve": "^2.0.0",
     "wonder-benchmark": "^0.2.13",
-    "wonder-bs-jest": "0.2.25",
+    "wonder-bs-jest": "0.2.26",
     "wonder-bs-sinon": "latest",
     "wonder-generate-index": "latest",
     "wonder-glsl-compiler": "^0.1.13",
@@ -65,6 +65,7 @@
   },
   "dependencies": {
     "bs-fetch": "^0.3.0",
+    "jest": "23.6.0",
     "wonder-bs-json": "^0.0.1",
     "wonder-bs-most": "^0.0.3",
     "wonder-commonlib": "^0.2.28",
@@ -77,7 +78,7 @@
     "wonder-log": "^0.2.11",
     "wonder-webgl": "^0.0.7",
     "wonder-commonlib": "0.2.28",
-    "wonder-bs-jest": "0.2.25",
+    "wonder-bs-jest": "0.2.26",
     "wonder-bs-puppeteer": "^0.1.6"
   }
 }
