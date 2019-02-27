@@ -133,7 +133,7 @@ let prepareBindEvent = (cameraController, state) => {
             DomExtend.document |> DomExtendType.documentToPointerLockDocument;
 
           document##pointerLockElement === canvas ?
-            DomExtend.exitPointerLock(.) : ();
+            DomExtend.exitPointerLock() : ();
 
           (state, event);
         };

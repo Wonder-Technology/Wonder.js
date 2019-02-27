@@ -62,6 +62,6 @@ let requestPointerLock = [%raw
   |}
 ];
 
-let exitPointerLock = [%raw (.) => {|
+let exitPointerLock = [%raw (param) => {|
   document.exitPointerLock();
   |}];
