@@ -1,5 +1,5 @@
 let getSelf = [%bs.raw {|
-    function(){
+    function(param){
       if(typeof window !== "undefined"){
         if(typeof window.fake_self_wonder !== "undefined"){
           return window.fake_self_wonder;

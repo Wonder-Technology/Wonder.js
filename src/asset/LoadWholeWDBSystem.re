@@ -16,7 +16,7 @@ let load =
       state,
     ) =>
   fromPromise(
-    fetchFunc(wdbPath)
+    fetchFunc(. wdbPath)
     |> then_(response => {
          handleWhenLoadingFunc(
            FetchCommon.getContentLength(response),

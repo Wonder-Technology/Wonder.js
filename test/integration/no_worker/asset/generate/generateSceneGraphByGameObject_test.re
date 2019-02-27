@@ -480,7 +480,7 @@ let _ =
       );
     };
 
-    beforeAllPromise(() => ConvertTool.buildFakeLoadImage());
+    beforeAllPromise(() => ConvertTool.buildFakeLoadImage(.));
     beforeEach(() => {
       sandbox := createSandbox();
 
@@ -859,9 +859,10 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
-          {j|
-"extras":{"imgui":{"customData":"[1,\\"cc\\"]","imguiFunc":"function imguiFunc(customData, apiJsObj, state) {\\n        var imageFunc = apiJsObj.image;\\n        return imageFunc(customData[0], customData[1], state);\\n      }"}}
-            |j},
+          "
+            \"extras\":{\"imgui\":{\"customData\":\"[1,\\\"cc\\\"]\",\"imguiFunc\"
+            :\"function(customData,apiJsObj,state){\\nvarimageFunc=apiJsObj.image;\\nreturnimageFunc(customData[0],customData[1],state);\\n}\"}}}]
+            ",
           state,
         );
       });

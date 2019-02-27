@@ -3,13 +3,13 @@ open Js.Promise;
 open WonderBsMost.Most;
 
 let createFetchJsonStream = (filePath, fetchFunc) =>
-  fromPromise(fetchFunc(filePath) |> then_(Fetch.Response.json));
+  fromPromise(fetchFunc(.filePath) |> then_(Fetch.Response.json));
 
 let createFetchArrayBufferStream = (filePath, fetchFunc) =>
-  fromPromise(fetchFunc(filePath) |> then_(Fetch.Response.arrayBuffer));
+  fromPromise(fetchFunc(.filePath) |> then_(Fetch.Response.arrayBuffer));
 
 let createFetchBlobStream = (filePath, fetchFunc) =>
-  fromPromise(fetchFunc(filePath) |> then_(Fetch.Response.blob));
+  fromPromise(fetchFunc(.filePath) |> then_(Fetch.Response.blob));
 
 let isSupportStreamLoad = [%raw
   response => {|

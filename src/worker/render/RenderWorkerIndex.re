@@ -6,7 +6,7 @@ let useThisToImportRenderWorkerSystem = RenderWorkerSystem.onerrorHandler;
 
 let defineOnError: unit => unit = [%bs.raw
   {|
-       function() {
+       function(param) {
            onerror = (msg, fileName, lineno) => {
 RenderWorkerSystem$Wonderjs.onerrorHandler(msg, fileName, lineno);
            }
@@ -16,7 +16,7 @@ RenderWorkerSystem$Wonderjs.onerrorHandler(msg, fileName, lineno);
 
 /* let defineOnMessage: unit => unit = [%bs.raw
   {|
-       function() {
+       function(param) {
            onmessage = (e) => {
 RenderWorkerSystem$Wonderjs.onmessage(e);
            }

@@ -17,7 +17,7 @@ let addTransferControlToOffscreen = [%bs.raw
 ];
 
 let buildFakeCanvas = () =>
-  DomService.buildCanvas() |> addTransferControlToOffscreen;
+  DomService.buildCanvas(.) |> addTransferControlToOffscreen;
 
 let buildFakeCanvasForNotPassCanvasId = sandbox =>
   SettingTool.buildFakeCanvasForNotPassCanvasIdWithCanvas(

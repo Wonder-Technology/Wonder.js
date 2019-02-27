@@ -112,7 +112,7 @@ let load =
        let default11Image = image |> ImageType.imageToDomExtendImageElement;
 
        Most.fromPromise(
-         fetchFunc(wdbPath)
+         fetchFunc(.wdbPath)
          |> then_(response =>
               ! Fetch.Response.ok(response) ?
                 {

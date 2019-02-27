@@ -5,6 +5,6 @@ let isSupportRenderWorkerAndSharedArrayBuffer = () => {
     false :
     DetectService.hasProperty(
       "transferControlToOffscreen",
-      DomService.buildCanvas() |> Obj.magic,
+      DomService.buildCanvas(.) |> Obj.magic,
     );
 };

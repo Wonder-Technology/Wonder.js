@@ -64,12 +64,12 @@ let buildFakeURL = [%raw
     |}
 ];
 
-let getURL = [%raw () => {|
+let getURL = [%raw (.) => {|
   return window.URL;
   |}];
 
 let prepare = sandbox => {
-  ConvertTool.buildFakeLoadImage();
+  ConvertTool.buildFakeLoadImage(.);
   buildFakeTextDecoder(convertUint8ArrayToBuffer);
   buildFakeTextEncoder(.);
   buildFakeURL(sandbox);

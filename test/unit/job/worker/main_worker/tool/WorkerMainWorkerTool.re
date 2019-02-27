@@ -1,6 +1,6 @@
 let buildFakeWorker = [%bs.raw
   {|
-  function build(){
+  function build(param){
   function Worker(path) {
     this.path = path;
   }

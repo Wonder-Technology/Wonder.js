@@ -9,7 +9,7 @@ let unsafeGetSource = (texture, state) => {
 
 let buildFakeCreateImageBitmapFunc = [%bs.raw
   {|
-  function(){
+  function(param){
     window.createImageBitmap = function(imageData, config){
     return new Promise(function(resolve, reject){
       resolve([imageData.uint8ClampedArray.arrayBuffer, imageData.width, imageData.height, config ]);
@@ -34,7 +34,7 @@ window.Uint8ClampedArray = function(arrayBuffer){
 
 let clearFakeCreateImageBitmapFunc = [%bs.raw
   {|
-  function(){
+  function(param){
     window.createImageBitmap = undefined;
   }
   |}
