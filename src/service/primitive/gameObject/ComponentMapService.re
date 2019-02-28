@@ -32,7 +32,8 @@ let hasComponent =
     (uid: int, componentMap: WonderCommonlib.MutableSparseMapService.t(int))
     : bool =>
   WonderCommonlib.MutableSparseMapService.unsafeGet(uid, componentMap)
-  |> Obj.magic !== Js.Undefined.empty;
+  |> Obj.magic
+  |> MutableSparseMapService.isNotEmpty;
 
 let addComponent =
     (
@@ -64,12 +65,9 @@ let addComponent =
 };
 
 let removeComponent = (uid: int, componentMap) =>
-  WonderCommonlib.MutableSparseMapService.deleteVal(
-    uid,
-    componentMap
-  );
+  WonderCommonlib.MutableSparseMapService.deleteVal(uid, componentMap);
 
-let hasComponent = (uid: int, componentMap) : bool =>
+let hasComponent = (uid: int, componentMap): bool =>
   componentMap |> hasComponent(uid);
 
 let batchGetComponent = (uidArray: array(int), componentMap) =>

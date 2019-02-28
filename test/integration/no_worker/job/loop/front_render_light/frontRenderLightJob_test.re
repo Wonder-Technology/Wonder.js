@@ -386,62 +386,43 @@ let _ =
         });
       });
       describe("send buffer", () => {
-        /* describe("optimize", () => {
-             let _prepare = (sandbox, state) => {
-               let (state, _, geometry, _, _) =
-                 FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-               let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-               (state, geometry);
-             };
-             test("if lastSendGeometryData === geometryIndex, not send", () => {
-               let (state, geometry) = _prepare(sandbox, state^);
-               let (state, _, _, _, _) =
-                 FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
-                   sandbox,
-                   geometry,
-                   GameObjectAPI.addGameObjectGeometryComponent,
-                   state,
+        describe("optimize", () => {
+          let _prepare = (sandbox, state) => {
+            let (state, _, geometry, _, _) =
+              FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+            (state, geometry);
+          };
+
+          test("if lastSendGeometryData === geometryIndex, not send", () => {
+            let (state, geometry) = _prepare(sandbox, state^);
+            let (state, _, _, _, _) =
+              FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
+                sandbox,
+                geometry,
+                GameObjectAPI.addGameObjectGeometryComponent,
+                state,
+              );
+            let float = 1;
+            let vertexAttribPointer =
+              createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~float,
+                     ~vertexAttribPointer,
+                     (),
+                   ),
                  );
-               let float = 1;
-               let vertexAttribPointer =
-                 createEmptyStubWithJsObjSandbox(sandbox);
-               let state =
-                 state
-                 |> FakeGlTool.setFakeGl(
-                      FakeGlTool.buildFakeGl(
-                        ~sandbox,
-                        ~float,
-                        ~vertexAttribPointer,
-                        (),
-                      ),
-                    );
-               let state = state |> RenderJobsTool.init;
-               let state = state |> DirectorTool.runWithDefaultTime;
-               vertexAttribPointer |> getCallCount |> expect == 2 * 1;
-             });
-             test("else, send", () => {
-               let (state, geometry) = _prepare(sandbox, state^);
-               let (state, _, _, _, _) =
-                 FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-               let float = 1;
-               let vertexAttribPointer =
-                 createEmptyStubWithJsObjSandbox(sandbox);
-               let state =
-                 state
-                 |> FakeGlTool.setFakeGl(
-                      FakeGlTool.buildFakeGl(
-                        ~sandbox,
-                        ~float,
-                        ~vertexAttribPointer,
-                        (),
-                      ),
-                    );
-               let state = state |> RenderJobsTool.init;
-               let state = state |> DirectorTool.runWithDefaultTime;
-               let state = state |> DirectorTool.runWithDefaultTime;
-               vertexAttribPointer |> getCallCount |> expect == 4 * 2;
-             });
-           }); */
+            let state = state |> RenderJobsTool.init;
+            let state = state |> DirectorTool.runWithDefaultTime;
+            let state = state |> DirectorTool.runWithDefaultTime;
+            vertexAttribPointer |> getCallCount |> expect == 2 * 1;
+          });
+        });
+
         describe("send a_position", () =>
           test("attach buffer to attribute", () => {
             let state = _prepare(sandbox, state^);
@@ -961,33 +942,33 @@ let _ =
                       |> getCall(0)
                       |> getArgs,
                     )
-                    |>
-                    expect == (
-                                [
-                                  posArr[0] |> Obj.magic,
-                                  0.0809289658069698,
-                                  0.7083167921793907,
-                                  (-0.7012402045020751),
-                                ],
-                                [
-                                  posArr[1] |> Obj.magic,
-                                  0.13442483321879434,
-                                  0.6415023904668499,
-                                  (-0.7552513801638607),
-                                ],
-                                [
-                                  posArr[2] |> Obj.magic,
-                                  0.16459718450045202,
-                                  0.5214977228899428,
-                                  (-0.8372263086377114),
-                                ],
-                                [
-                                  posArr[3] |> Obj.magic,
-                                  0.17317784447167245,
-                                  0.41627749786719925,
-                                  (-0.8925931206062305),
-                                ],
-                              );
+                    |> expect
+                    == (
+                         [
+                           posArr[0] |> Obj.magic,
+                           0.0809289658069698,
+                           0.7083167921793907,
+                           (-0.7012402045020751),
+                         ],
+                         [
+                           posArr[1] |> Obj.magic,
+                           0.13442483321879434,
+                           0.6415023904668499,
+                           (-0.7552513801638607),
+                         ],
+                         [
+                           posArr[2] |> Obj.magic,
+                           0.16459718450045202,
+                           0.5214977228899428,
+                           (-0.8372263086377114),
+                         ],
+                         [
+                           posArr[3] |> Obj.magic,
+                           0.17317784447167245,
+                           0.41627749786719925,
+                           (-0.8925931206062305),
+                         ],
+                       );
                   });
                 });
               });
@@ -1223,13 +1204,13 @@ let _ =
                     |> getCall(0)
                     |> getArgs,
                   )
-                  |>
-                  expect == (
-                              [posArr[0] |> Obj.magic, 1., 2., 3.],
-                              [posArr[1] |> Obj.magic, 2., 2., 3.],
-                              [posArr[2] |> Obj.magic, 3., 2., 3.],
-                              [posArr[3] |> Obj.magic, 4., 2., 3.],
-                            );
+                  |> expect
+                  == (
+                       [posArr[0] |> Obj.magic, 1., 2., 3.],
+                       [posArr[1] |> Obj.magic, 2., 2., 3.],
+                       [posArr[2] |> Obj.magic, 3., 2., 3.],
+                       [posArr[3] |> Obj.magic, 4., 2., 3.],
+                     );
                 })
               );
               describe("send color", () =>

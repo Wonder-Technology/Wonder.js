@@ -20,7 +20,7 @@ let _setSourceInstance = (index, uid, sourceInstanceIndices, gameObjectRecord) =
 
 let setData =
     (
-      renderIndexArray,
+      renderGameObjectArray,
       unsafeGetMaterialComponentFunc,
       {
         transformIndices,
@@ -31,8 +31,9 @@ let setData =
       } as renderObjectRecord,
       {gameObjectRecord} as state,
     ) => {
-  let renderIndexArray =
-    OperateRenderMainService.hasCameraRecord(state) ? renderIndexArray : [||];
+  let renderGameObjectArray =
+    OperateRenderMainService.hasCameraRecord(state) ?
+      renderGameObjectArray : [||];
 
   let (
     transformIndices,
@@ -42,7 +43,13 @@ let setData =
     sourceInstanceIndices,
     renderIndexArray,
   ) =
-    renderIndexArray
+    renderGameObjectArray
+    |> Js.Array.filter(uid =>
+         HasComponentGameObjectService.hasGeometryComponent(
+           uid,
+           gameObjectRecord,
+         )
+       )
     |> WonderCommonlib.ArrayService.reduceOneParami(
          (.
            (
@@ -55,46 +62,44 @@ let setData =
            ) as dataTuple,
            uid,
            index,
-         ) =>
-           switch (
-             GetComponentGameObjectService.getGeometryComponent(.
+         ) => {
+           let geometryIndex =
+             GetComponentGameObjectService.unsafeGetGeometryComponent(
                uid,
                gameObjectRecord,
-             )
-           ) {
-           | None => dataTuple
-           | Some(geometryIndex) =>
-             let materialIndex =
-               unsafeGetMaterialComponentFunc(. uid, gameObjectRecord);
+             );
 
-             (
-               setComponent(
-                 index,
-                 GetComponentGameObjectService.unsafeGetTransformComponent(
-                   uid,
-                   gameObjectRecord,
-                 ),
-                 transformIndices,
-               ),
-               setComponent(index, materialIndex, materialIndices),
-               setComponent(
-                 index,
-                 GetComponentGameObjectService.unsafeGetMeshRendererComponent(
-                   uid,
-                   gameObjectRecord,
-                 ),
-                 meshRendererIndices,
-               ),
-               setComponent(index, geometryIndex, geometryIndices),
-               _setSourceInstance(
-                 index,
+           let materialIndex =
+             unsafeGetMaterialComponentFunc(. uid, gameObjectRecord);
+
+           (
+             setComponent(
+               index,
+               GetComponentGameObjectService.unsafeGetTransformComponent(
                  uid,
-                 sourceInstanceIndices,
                  gameObjectRecord,
                ),
-               renderIndexArray |> ArrayService.push(index),
-             );
-           },
+               transformIndices,
+             ),
+             setComponent(index, materialIndex, materialIndices),
+             setComponent(
+               index,
+               GetComponentGameObjectService.unsafeGetMeshRendererComponent(
+                 uid,
+                 gameObjectRecord,
+               ),
+               meshRendererIndices,
+             ),
+             setComponent(index, geometryIndex, geometryIndices),
+             _setSourceInstance(
+               index,
+               uid,
+               sourceInstanceIndices,
+               gameObjectRecord,
+             ),
+             renderIndexArray |> ArrayService.push(index),
+           );
+         },
          (
            transformIndices,
            materialIndices,

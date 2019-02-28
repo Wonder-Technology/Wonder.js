@@ -16,8 +16,11 @@ let getIndicesType = (index, state) => {
   IndicesTypeGeometryType.getIndicesType(index, indicesTypeMap);
 };
 
-let unsafeGetIndicesType = (index, state) =>
-  getIndicesType(index, state) |> OptionService.unsafeGet;
+let unsafeGetIndicesType = (index, state) => {
+  let {indicesTypeMap} as record = getRecord(state);
+
+  IndicesTypeGeometryType.unsafeGetIndicesType(index, indicesTypeMap);
+};
 
 let setIndicesType = (index, indicesType, state) => {
   let {indicesTypeMap} as record = getRecord(state);

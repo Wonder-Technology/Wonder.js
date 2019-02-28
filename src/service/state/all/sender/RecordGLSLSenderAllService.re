@@ -22,7 +22,7 @@ let create = () => {
   /* drawPointsFuncMap: WonderCommonlib.MutableSparseMapService.createEmpty(), */
   vertexAttribHistoryArray: WonderCommonlib.ArrayService.createEmpty(),
   lastSendMaterialData: None,
-  /* lastSendGeometryData: None */
+  lastSendGeometryData: None,
 };
 
 let deepCopyForRestore =

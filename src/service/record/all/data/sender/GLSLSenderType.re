@@ -129,7 +129,9 @@ type glslSenderRecord = {
   attributeSendDataMap:
     WonderCommonlib.MutableSparseMapService.t(array(attributeSendData)),
   instanceAttributeSendDataMap:
-    WonderCommonlib.MutableSparseMapService.t(array(instanceAttributeSendData)),
+    WonderCommonlib.MutableSparseMapService.t(
+      array(instanceAttributeSendData),
+    ),
   uniformCacheMap,
   uniformRenderObjectSendModelDataMap:
     WonderCommonlib.MutableSparseMapService.t(
@@ -144,7 +146,9 @@ type glslSenderRecord = {
       array(uniformShaderSendNoCachableData),
     ),
   uniformShaderSendCachableDataMap:
-    WonderCommonlib.MutableSparseMapService.t(array(uniformShaderSendCachableData)),
+    WonderCommonlib.MutableSparseMapService.t(
+      array(uniformShaderSendCachableData),
+    ),
   uniformShaderSendCachableFunctionDataMap:
     WonderCommonlib.MutableSparseMapService.t(
       array(uniformShaderSendCachableFunctionData),
@@ -160,5 +164,5 @@ type glslSenderRecord = {
   /* drawPointsFuncMap: WonderCommonlib.MutableSparseMapService.t((webgl1Context => unit)), */
   mutable vertexAttribHistoryArray,
   mutable lastSendMaterialData: option((material, ShaderType.shaderIndex)),
-  /* mutable lastSendGeometryData: option(geometry), */
+  mutable lastSendGeometryData: option(GeometryType.geometry),
 };

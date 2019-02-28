@@ -564,7 +564,7 @@ let _ =
                     let state = state |> DirectorTool.runWithDefaultTime;
                     let callCount = bindBuffer |> getCallCount;
                     let state = state |> DirectorTool.runWithDefaultTime;
-                    bindBuffer |> getCallCount |> expect == callCount + 3;
+                    bindBuffer |> getCallCount |> expect == callCount + 1;
                   });
                   describe("vertexAttribPointer instance data", () => {
                     let _prepareForTestVertexAttribPointer = (sandbox, state) =>
@@ -584,7 +584,7 @@ let _ =
                       let callCount = vertexAttribPointer |> getCallCount;
                       let state = state |> DirectorTool.runWithDefaultTime;
                       vertexAttribPointer
-                      |> getCall(callCount + 1)
+                      |> getCall(callCount)
                       |> expect
                       |> toCalledWith([|
                            pos1,
