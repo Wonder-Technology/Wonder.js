@@ -47,7 +47,7 @@ var InstanceBasicBoxesTool = (function () {
 
 
     var createAndDisposeSourceInstanceGameObjects = function (sourceInstanceCount, objectInstanceCount, boxes, state) {
-        var state = wd.batchDisposeGameObject(window.boxes, state);
+        var state = wd.batchDisposeGameObject(boxes, state);
 
 
 
@@ -62,7 +62,6 @@ var InstanceBasicBoxesTool = (function () {
 
 
 
-        window.boxes = newBoxes;
 
 
 
@@ -71,7 +70,7 @@ var InstanceBasicBoxesTool = (function () {
             state = wd.initGameObject(box, state);
         }
 
-        return state;
+        return [state, newBoxes];
     };
 
 
@@ -242,7 +241,7 @@ var InstanceBasicBoxesTool = (function () {
 
 
 
-        setPositionWithRange: function (boxes,playgroundSize, state) {
+        setPositionWithRange: function (boxes, playgroundSize, state) {
             for (let i = 0, len = boxes.length; i < len; i++) {
                 let box = boxes[i];
 
@@ -292,20 +291,26 @@ var InstanceBasicBoxesTool = (function () {
 
 
         createAndDisposeSourceInstanceGameObjects: function (sourceInstanceCount, objectInstanceCount, boxes, state) {
-            window.boxes = [];
+            var removedBoxes = boxes;
 
             return ScheduleTool.scheduleLoop(function (_, state) {
-                return createAndDisposeSourceInstanceGameObjects(sourceInstanceCount, objectInstanceCount, boxes, state)
+                var record = createAndDisposeSourceInstanceGameObjects(sourceInstanceCount, objectInstanceCount, removedBoxes, state)
+                removedBoxes = record[1];
+                var state = record[0];
+
+                return state;
             }, state)
         },
 
 
         createAndDisposeSourceInstanceGameObjectsWorker: function (sourceInstanceCount, objectInstanceCount, boxes, state) {
-            window.boxes = [];
+            var removedBoxes = boxes;
 
 
             return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
-                var state = createAndDisposeSourceInstanceGameObjects(sourceInstanceCount, objectInstanceCount, boxes, wd.getStateFromData(stateData));
+                var record = createAndDisposeSourceInstanceGameObjects(sourceInstanceCount, objectInstanceCount, removedBoxes, wd.getStateFromData(stateData));
+                removedBoxes = record[1];
+                var state = record[0];
 
 
                 wd.setState(state);
@@ -314,11 +319,11 @@ var InstanceBasicBoxesTool = (function () {
 
 
         createAndDisposeObjectInstanceGameObjects: function (boxes, state) {
-            window.boxes = [];
+            var removedBoxes = boxes;
 
             return ScheduleTool.scheduleLoop(function (_, state) {
                 for (let i = 0, len = window.boxes.length; i < len; i++) {
-                    let box = window.boxes[i];
+                    let box = removedBoxes[i];
                     state = wd.disposeGameObject(box, state);
                 }
 
@@ -338,7 +343,6 @@ var InstanceBasicBoxesTool = (function () {
 
 
 
-                window.boxes = newBoxes;
 
 
 
@@ -346,6 +350,8 @@ var InstanceBasicBoxesTool = (function () {
                     let box = newBoxes[i];
                     state = wd.initGameObject(box, state);
                 }
+
+                removedBoxes = newBoxes;
 
                 return state;
 

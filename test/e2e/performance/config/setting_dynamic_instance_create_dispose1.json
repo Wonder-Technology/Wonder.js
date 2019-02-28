@@ -9,8 +9,8 @@
         "preserve_drawing_buffer": false
     },
     "buffer": {
-        "geometry_point_count": 100000,
-        "geometry_count": 5000,
+        "geometry_point_count": 1000000,
+        "geometry_count": 50000,
         "transform_count": 30000,
         "direction_light_count": 100,
         "point_light_count": 100,
@@ -21,8 +21,8 @@
         "arrayBuffer_view_source_texture_count": 30000,
         "texture_count_per_material": 16,
         "instance_buffer": {
-            "sourceInstance_count": 410,
-            "objectInstance_count_per_source_instance": 20
+            "sourceInstance_count": 1000,
+            "objectInstance_count_per_source_instance": 50
         }
     },
     "gpu": {

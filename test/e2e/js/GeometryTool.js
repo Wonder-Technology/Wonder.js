@@ -126,11 +126,12 @@ var GeometryTool = (function () {
             return [state, gameObjects];
         },
 
+
         createAndDisposeGameObjects: function (count, gameObjects, state) {
-            window.gameObjects = [];
+            var removedGameObjects = gameObjects;
 
             return ScheduleTool.scheduleLoop(function (_, state) {
-                var state = wd.batchDisposeGameObject(window.gameObjects, state);
+                var state = wd.batchDisposeGameObject(removedGameObjects, state);
 
 
                 var record = GeometryTool.createBasicTriangleWithoutClone(count, 10, state);
@@ -142,7 +143,6 @@ var GeometryTool = (function () {
                 var state = record[0];
                 var newGameObjects = record[1];
 
-                window.gameObjects = newGameObjects;
 
 
                 for (var i = 0, len = newGameObjects.length; i < len; i++) {
@@ -150,20 +150,22 @@ var GeometryTool = (function () {
                     state = wd.initGameObject(gameObject, state);
                 }
 
+                removedGameObjects = newGameObjects;
+
                 return state;
 
             }, state)
         },
         createAndDisposeClonedGameObjects: function (count, gameObjects, state) {
-            window.sourceGameObject = gameObjects[0];
-            window.gameObjects = [];
+            var removedGameObjects = gameObjects;
+            var sourceGameObject = gameObjects[0];
 
             return ScheduleTool.scheduleLoop(function (_, state) {
-                var state = wd.batchDisposeGameObject(window.gameObjects, state);
+                var state = wd.batchDisposeGameObject(removedGameObjects, state);
 
 
 
-                var record = wd.cloneGameObject(window.sourceGameObject, count, true, state);
+                var record = wd.cloneGameObject(sourceGameObject, count, true, state);
                 var state = record[0];
                 var newGameObjects = record[1];
 
@@ -185,13 +187,15 @@ var GeometryTool = (function () {
                 var state = record[0];
                 var newGameObjects = record[1];
 
-                window.gameObjects = newGameObjects;
 
 
                 for (var i = 0, len = newGameObjects.length; i < len; i++) {
                     var gameObject = newGameObjects[i];
                     state = wd.initGameObject(gameObject, state);
                 }
+
+                removedGameObjects = newGameObjects;
+                sourceGameObject = newGameObjects[0];
 
                 return state;
 

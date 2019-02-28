@@ -3,6 +3,9 @@
         "name": "tick"
     },
     {
+        "name": "scheduleLoop"
+    },
+    {
         "name": "update_transform"
     },
     {
