@@ -33,7 +33,7 @@ let hasComponent =
     : bool =>
   WonderCommonlib.MutableSparseMapService.unsafeGet(uid, componentMap)
   |> Obj.magic
-  |> MutableSparseMapService.isNotEmpty;
+  |> NullService.isInMap;
 
 let addComponent =
     (

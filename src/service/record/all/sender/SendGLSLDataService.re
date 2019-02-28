@@ -50,15 +50,10 @@ let sendMatrix3 =
 let sendMatrix4 =
   (. gl, pos: uniformLocation, data: Js.Typed_array.Float32Array.t) =>
     /* WonderLog.Log.log(("send matrix4: ", pos, data)) |> ignore; */
-    uniformMatrix4fv(
-      pos,
-      false,
-      data,
-      gl,
-    );
+    uniformMatrix4fv(pos, false, data, gl);
 
-let _getCache = (shaderCacheMap, name: string) =>
-  shaderCacheMap |> WonderCommonlib.MutableHashMapService.get(name);
+let _fastGetCache = (shaderCacheMap, name: string) =>
+  shaderCacheMap |> MutableHashMapService.fastGet(name);
 
 let _setCache = (shaderCacheMap, name: string, record) =>
   shaderCacheMap |> WonderCommonlib.MutableHashMapService.set(name, record);
@@ -84,21 +79,27 @@ let _queryIsNotCacheWithCache = (cache, x, y, z) => {
 };
 
 let _isNotCacheVector3AndSetCache =
-    (shaderCacheMap, name: string, (x: float, y: float, z: float)) =>
-  switch (_getCache(shaderCacheMap, name)) {
-  | None =>
-    _setCache(shaderCacheMap, name, [|x, y, z|]) |> ignore;
-    true;
-  | Some(cache) => _queryIsNotCacheWithCache(cache, x, y, z)
-  };
+    (shaderCacheMap, name: string, (x: float, y: float, z: float)) => {
+  let (has, cache) = _fastGetCache(shaderCacheMap, name);
 
-let _isNotCacheNumberAndSetCache = (shaderCacheMap, name: string, value) =>
-  switch (_getCache(shaderCacheMap, name)) {
-  | Some(cache) when cache === value => false
-  | _ =>
-    _setCache(shaderCacheMap, name, value) |> ignore;
-    true;
-  };
+  has ?
+    _queryIsNotCacheWithCache(cache, x, y, z) :
+    {
+      _setCache(shaderCacheMap, name, [|x, y, z|]) |> ignore;
+      true;
+    };
+};
+
+let _isNotCacheNumberAndSetCache = (shaderCacheMap, name: string, value) => {
+  let (has, cache) = _fastGetCache(shaderCacheMap, name);
+
+  has && cache === value ?
+    false :
+    {
+      _setCache(shaderCacheMap, name, value) |> ignore;
+      true;
+    };
+};
 
 let sendFloat =
   (.
