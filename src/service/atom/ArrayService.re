@@ -135,21 +135,47 @@ let fastConcat = (arr1, arr2) =>
        arr1,
      );
 
-let rec _findInSourceArr = (targetItem, resultArr, posInSourceArr, sourceArr) => {
+let rec _includeInSourceArr =
+        (targetItem, resultArr, posInSourceArr, sourceArr, sourceArrLength) => {
+  let sourceItem = Array.unsafe_get(sourceArr, posInSourceArr);
+
+  posInSourceArr >= sourceArrLength ?
+    (resultArr, 0) :
+    sourceItem !== targetItem ?
+      _includeInSourceArr(
+        targetItem,
+        resultArr,
+        posInSourceArr |> succ,
+        sourceArr,
+        sourceArrLength,
+      ) :
+      (resultArr |> push(sourceItem), posInSourceArr |> succ);
+};
+
+let rec _excludeInSourceArr =
+        (targetItem, resultArr, posInSourceArr, sourceArr, sourceArrLength) => {
   let sourceItem = Array.unsafe_get(sourceArr, posInSourceArr);
 
   sourceItem === targetItem ?
     (resultArr, posInSourceArr |> succ) :
-    _findInSourceArr(
+    _excludeInSourceArr(
       targetItem,
       resultArr |> push(sourceItem),
       posInSourceArr |> succ,
       sourceArr,
+      sourceArrLength,
     );
 };
 
-let batchRemove =
-    (targetArr: array(int), sourceArr: array(int)): array(int) => {
+let _fastHandleRelation =
+    (
+      targetArr: array(int),
+      sourceArr: array(int),
+      handleLengthEqualFunc,
+      handleInSourceArrFunc,
+      handleResultArrFunc,
+    )
+    : array(int) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -196,25 +222,54 @@ let batchRemove =
         IsDebugMainService.getIsDebug(StateDataMain.stateData),
       );
 
-      [||];
+      handleLengthEqualFunc(targetArr, sourceArr);
     } :
     {
       sourceArr |> Js.Array.sortInPlaceWith((a, b) => a - b) |> ignore;
       targetArr |> Js.Array.sortInPlaceWith((a, b) => a - b) |> ignore;
 
+      let sourceArrLength = Js.Array.length(sourceArr);
+
       let (resultArr, posInSourceArr) =
+        /* ([||], 0); */
         targetArr
         |> WonderCommonlib.ArrayService.reduceOneParam(
              (. (resultArr, posInSourceArr), targetItem) =>
-               _findInSourceArr(
+               handleInSourceArrFunc(
                  targetItem,
                  resultArr,
                  posInSourceArr,
                  sourceArr,
+                 sourceArrLength,
                ),
              ([||], 0),
            );
 
-      fastConcat(resultArr, Js.Array.sliceFrom(posInSourceArr, sourceArr));
+      handleResultArrFunc(posInSourceArr, sourceArr, resultArr);
     };
 };
+
+let fastExclude =
+    (targetArr: array(int), sourceArr: array(int)): array(int) =>
+  _fastHandleRelation(
+    targetArr,
+    sourceArr,
+    (_, _) => [||],
+    _excludeInSourceArr,
+    (posInSourceArr, sourceArr, resultArr) =>
+      fastConcat(resultArr, Js.Array.sliceFrom(posInSourceArr, sourceArr)),
+  );
+
+let fastIntersect =
+    (targetArr: array(int), sourceArr: array(int)): array(int) =>
+  _fastHandleRelation(
+    targetArr,
+    sourceArr,
+    (targetArr, _) => targetArr,
+    _includeInSourceArr,
+    (posInSourceArr, sourceArr, resultArr) => resultArr,
+  );
+
+let batchRemove =
+    (targetArr: array(int), sourceArr: array(int)): array(int) =>
+  fastExclude(targetArr, sourceArr);

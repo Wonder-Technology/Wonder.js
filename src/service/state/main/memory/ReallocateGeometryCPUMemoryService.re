@@ -255,11 +255,7 @@ let _setNewDataToState =
 };
 
 let getAllAliveGeometrys = (index, {disposedIndexArray}) =>
-  AliveComponentService.getAllAliveComponents(
-    index,
-    disposedIndexArray,
-    DisposeGeometryMainService.isAlive,
-  );
+  AliveComponentService.getAllAliveComponents(index, disposedIndexArray);
 
 let reAllocateToBuffer = (newBufferData, {index} as geometryRecord) => {
   let newAliveIndexArray = getAllAliveGeometrys(index, geometryRecord);
