@@ -40,12 +40,13 @@ let _setNewDataToState =
   objectInstanceMap: newObjectInstanceMap,
 };
 
-let _setNewMap = (uid, oldMap, newMap) =>
-  switch (oldMap |> WonderCommonlib.MutableSparseMapService.get(uid)) {
-  | None => newMap
-  | Some(component) =>
-    newMap |> WonderCommonlib.MutableSparseMapService.set(uid, component)
-  };
+let _setNewMap = (uid, oldMap, newMap) => {
+  let (has, component) = MutableSparseMapService.fastGet(uid, oldMap);
+
+  has ?
+    newMap |> WonderCommonlib.MutableSparseMapService.set(uid, component) :
+    newMap;
+};
 
 let _allocateNewMaps =
     (
