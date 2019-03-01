@@ -2,25 +2,6 @@ open StateDataMainType;
 
 open GameObjectType;
 
-let _disposeGameObjectData = (uidArray, {gameObjectRecord} as state) => {
-  let (nameMap, isRootMap) =
-    uidArray
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. (nameMap, isRootMap), uid) => (
-           nameMap |> DisposeComponentService.disposeSparseMapData(uid),
-           isRootMap |> DisposeComponentService.disposeSparseMapData(uid),
-         ),
-         (gameObjectRecord.nameMap, gameObjectRecord.isRootMap),
-       );
-
-  gameObjectRecord.nameMap = nameMap;
-  gameObjectRecord.isRootMap = isRootMap;
-
-  state.gameObjectRecord = gameObjectRecord;
-
-  state;
-};
-
 let _setDisposedUidMap = (uidArray, {gameObjectRecord} as state) => {
   ...state,
   gameObjectRecord: {
@@ -43,8 +24,7 @@ let rec batchDispose =
           (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
           state,
         ) => {
-  let state =
-    state |> _disposeGameObjectData(uidArray) |> _setDisposedUidMap(uidArray);
+  let state = state |> _setDisposedUidMap(uidArray);
 
   let {disposeCount} as record = state.gameObjectRecord;
 

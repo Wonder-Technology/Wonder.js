@@ -736,11 +736,8 @@ let _ =
               _createCameraGameObjects(state);
 
             GameObjectAPI.getAllPerspectiveCameraProjectionComponents(state)
-            |>
-            expect == [|
-                        perspectiveCameraProjection1,
-                        perspectiveCameraProjection2,
-                      |];
+            |> expect
+            == [|perspectiveCameraProjection1, perspectiveCameraProjection2|];
           });
           test("test dispose", () => {
             let (
@@ -986,50 +983,6 @@ let _ =
           |> expect == (false, false, false, true);
         });
       });
-
-      describe("dispose from nameMap", () =>
-        test("test", () => {
-          TestTool.openContractCheck();
-          let (state, gameObject1) = createGameObject(state^);
-          let (state, gameObject2) = createGameObject(state);
-          let name1 = "a1";
-          let name2 = "a2";
-          let state =
-            state
-            |> GameObjectAPI.setGameObjectName(gameObject1, name1)
-            |> GameObjectAPI.setGameObjectName(gameObject2, name2);
-
-          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
-
-          (
-            NameGameObjectMainService.getName(gameObject1, state),
-            NameGameObjectMainService.getName(gameObject2, state),
-          )
-          |> expect == (None, name2 |. Some);
-        })
-      );
-
-      describe("dispose from isRootMap", () =>
-        test("test", () => {
-          TestTool.openContractCheck();
-          let (state, gameObject1) = createGameObject(state^);
-          let (state, gameObject2) = createGameObject(state);
-          let isRoot1 = true;
-          let isRoot2 = true;
-          let state =
-            state
-            |> GameObjectAPI.setGameObjectIsRoot(gameObject1, isRoot1)
-            |> GameObjectAPI.setGameObjectIsRoot(gameObject2, isRoot2);
-
-          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
-
-          (
-            IsRootGameObjectMainService.unsafeGetIsRoot(gameObject1, state),
-            IsRootGameObjectMainService.unsafeGetIsRoot(gameObject2, state),
-          )
-          |> expect == (false, isRoot2);
-        })
-      );
 
       describe("dispose all components", () => {
         test("dispose transform component", () => {
@@ -1339,6 +1292,38 @@ let _ =
                 nameMap
                 |> WonderCommonlib.MutableSparseMapService.has(gameObject2),
                 nameMap
+                |> WonderCommonlib.MutableSparseMapService.has(gameObject3),
+              )
+              |> expect == (false, false, true);
+            })
+          );
+
+          describe("reallocate isRoot map", () =>
+            test("new isRootMap should only has alive data", () => {
+              open GameObjectType;
+              let state =
+                SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
+              let (state, gameObject1) = createGameObject(state);
+              let (state, gameObject2) = createGameObject(state);
+              let (state, gameObject3) = createGameObject(state);
+              let state =
+                state
+                |> GameObjectAPI.setGameObjectIsRoot(gameObject1, true)
+                |> GameObjectAPI.setGameObjectIsRoot(gameObject2, true)
+                |> GameObjectAPI.setGameObjectIsRoot(gameObject3, true);
+
+              let state =
+                state |> GameObjectTool.disposeGameObject(gameObject1);
+              let state =
+                state |> GameObjectTool.disposeGameObject(gameObject2);
+
+              let {isRootMap} = GameObjectTool.getGameObjectRecord(state);
+              (
+                isRootMap
+                |> WonderCommonlib.MutableSparseMapService.has(gameObject1),
+                isRootMap
+                |> WonderCommonlib.MutableSparseMapService.has(gameObject2),
+                isRootMap
                 |> WonderCommonlib.MutableSparseMapService.has(gameObject3),
               )
               |> expect == (false, false, true);
@@ -2503,25 +2488,25 @@ let _ =
             cameraProjection,
             state,
           )
-          |>
-          expect == Js.Typed_array.Float32Array.make([|
-                      1.7320507764816284,
-                      0.,
-                      0.,
-                      0.,
-                      0.,
-                      1.7320507764816284,
-                      0.,
-                      0.,
-                      0.,
-                      0.,
-                      (-1.0002000331878662),
-                      (-1.),
-                      0.,
-                      0.,
-                      (-0.20002000033855438),
-                      0.,
-                    |]);
+          |> expect
+          == Js.Typed_array.Float32Array.make([|
+               1.7320507764816284,
+               0.,
+               0.,
+               0.,
+               0.,
+               1.7320507764816284,
+               0.,
+               0.,
+               0.,
+               0.,
+               (-1.0002000331878662),
+               (-1.),
+               0.,
+               0.,
+               (-0.20002000033855438),
+               0.,
+             |]);
         });
       })
     );

@@ -47,7 +47,8 @@ module.exports = {
     { name: "example" },
     { name: "stream" },
     { name: "detect" },
-    { name: "outline" }
+    { name: "outline" },
+    { name: "memory" }
   ],
 
   // it needs to match the value for field type. Eg.: "fix"

@@ -6,6 +6,7 @@ let _setNewDataToState =
       record,
       (
         newNameMap,
+        newIsRootMap,
         newCurrentGeometryDataMap,
         newTransformMap,
         newMeshRendererMap,
@@ -22,6 +23,7 @@ let _setNewDataToState =
     ) => {
   ...record,
   nameMap: newNameMap,
+  isRootMap: newIsRootMap,
   disposedUidMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   aliveUidArray: newAliveUidArray,
   geometryMap: newCurrentGeometryDataMap,
@@ -50,6 +52,7 @@ let _allocateNewMaps =
       newAliveUidArray,
       {
         nameMap,
+        isRootMap,
         geometryMap,
         transformMap,
         meshRendererMap,
@@ -69,6 +72,7 @@ let _allocateNewMaps =
        (.
          (
            newNameMap,
+           newIsRootMap,
            newCurrentGeometryDataMap,
            newTransformMap,
            newMeshRendererMap,
@@ -85,11 +89,13 @@ let _allocateNewMaps =
          uid,
        ) => (
          _setNewMap(uid, nameMap, newNameMap),
+         _setNewMap(uid, isRootMap, newIsRootMap),
          _setNewMap(uid, geometryMap, newCurrentGeometryDataMap),
          newTransformMap
          |> WonderCommonlib.MutableSparseMapService.set(
               uid,
-              transformMap |> WonderCommonlib.MutableSparseMapService.unsafeGet(uid),
+              transformMap
+              |> WonderCommonlib.MutableSparseMapService.unsafeGet(uid),
             ),
          _setNewMap(uid, meshRendererMap, newMeshRendererMap),
          _setNewMap(uid, basicCameraViewMap, newBasicCameraViewMap),
@@ -124,6 +130,7 @@ let _allocateNewMaps =
          WonderCommonlib.MutableSparseMapService.createEmpty(),
          WonderCommonlib.MutableSparseMapService.createEmpty(),
          WonderCommonlib.MutableSparseMapService.createEmpty(),
+         WonderCommonlib.MutableSparseMapService.createEmpty(),
        ),
      );
 
@@ -131,7 +138,7 @@ let reAllocate = ({aliveUidArray, disposedUidMap} as record) => {
   let newAliveUidArray =
     aliveUidArray
     |> Js.Array.filter(aliveUid =>
-         ! ReallocateCPUMemoryService.isDisposed(aliveUid, disposedUidMap)
+         !ReallocateCPUMemoryService.isDisposed(aliveUid, disposedUidMap)
        );
   record
   |> _allocateNewMaps(newAliveUidArray)
