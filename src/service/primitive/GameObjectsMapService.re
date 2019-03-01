@@ -30,3 +30,10 @@ let removeGameObjects = (component, gameObjectsMap) =>
     component,
     gameObjectsMap,
   );
+
+let batchRemoveGameObjects = (gameObjectArr, component, gameObjectsMap) =>
+  ArrayMapService.batchRemoveValueArr(
+    component,
+    gameObjectArr,
+    gameObjectsMap,
+  );

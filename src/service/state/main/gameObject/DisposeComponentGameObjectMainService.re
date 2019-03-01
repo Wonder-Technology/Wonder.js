@@ -78,9 +78,9 @@ let deferDisposeBasicMaterialComponent =
       ...gameObjectRecord,
       basicMaterialMap:
         _removeComponent(uid, gameObjectRecord.basicMaterialMap),
-      disposedBasicMaterialDataArray:
-        gameObjectRecord.disposedBasicMaterialDataArray
-        |> ArrayService.push((uid, component)),
+      disposedBasicMaterialDataMap:
+        gameObjectRecord.disposedBasicMaterialDataMap
+        |> ArrayMapService.addValue(component, uid),
     },
   };
 
@@ -91,9 +91,9 @@ let deferDisposeLightMaterialComponent =
       ...gameObjectRecord,
       lightMaterialMap:
         _removeComponent(uid, gameObjectRecord.lightMaterialMap),
-      disposedLightMaterialDataArray:
-        gameObjectRecord.disposedLightMaterialDataArray
-        |> ArrayService.push((uid, component)),
+      disposedLightMaterialDataMap:
+        gameObjectRecord.disposedLightMaterialDataMap
+        |> ArrayMapService.addValue(component, uid),
     },
   };
 
@@ -103,9 +103,9 @@ let deferDisposeGeometryComponent =
     gameObjectRecord: {
       ...gameObjectRecord,
       geometryMap: _removeComponent(uid, gameObjectRecord.geometryMap),
-      disposedGeometryDataArray:
-        gameObjectRecord.disposedGeometryDataArray
-        |> ArrayService.push((uid, component)),
+      disposedGeometryDataMap:
+        gameObjectRecord.disposedGeometryDataMap
+        |> ArrayMapService.addValue(component, uid),
     },
   };
 
@@ -234,9 +234,9 @@ let batchDisposeTransformComponent =
   );
 
 let batchDisposeGeometryComponentData =
-    ({settingRecord} as state, compnentDataArray) =>
+    ({settingRecord} as state, compnentDataMap) =>
   DisposeGeometryMainService.handleBatchDisposeComponentData(.
-    compnentDataArray,
+    compnentDataMap,
     state,
   );
 
@@ -283,17 +283,17 @@ let batchDisposeGeometryComponent =
   );
 };
 
-let batchDisposeBasicMaterialComponent = (state, compnentDataArray) =>
+let batchDisposeBasicMaterialComponent = (state, compnentDataMap) =>
   DisposeBasicMaterialMainService.handleBatchDisposeComponent(.
-    compnentDataArray,
+    compnentDataMap,
     state,
   );
 
-let batchDisposeBasicMaterialComponentForWorker = (state, componentDataArray) => {
+let batchDisposeBasicMaterialComponentForWorker = (state, componentDataMap) => {
   open BasicMaterialType;
   let state =
     DisposeBasicMaterialMainService.handleBatchDisposeComponent(.
-      componentDataArray,
+      componentDataMap,
       state,
     );
   let {materialArrayForWorkerInit} as record =
@@ -306,23 +306,23 @@ let batchDisposeBasicMaterialComponentForWorker = (state, componentDataArray) =>
         materialArrayForWorkerInit:
           materialArrayForWorkerInit
           |> MaterialArrayForWorkerInitService.removeDisposedOnesFromMaterialArrayForWorkerInit(
-               componentDataArray,
+               componentDataMap,
              ),
       }),
   };
 };
 
-let batchDisposeLightMaterialComponent = (state, componentDataArray) =>
+let batchDisposeLightMaterialComponent = (state, componentDataMap) =>
   DisposeLightMaterialMainService.handleBatchDisposeComponent(.
-    componentDataArray,
+    componentDataMap,
     state,
   );
 
-let batchDisposeLightMaterialComponentForWorker = (state, componentDataArray) => {
+let batchDisposeLightMaterialComponentForWorker = (state, componentDataMap) => {
   open LightMaterialType;
   let state =
     DisposeLightMaterialMainService.handleBatchDisposeComponent(.
-      componentDataArray,
+      componentDataMap,
       state,
     );
   let {materialArrayForWorkerInit} as record =
@@ -335,7 +335,7 @@ let batchDisposeLightMaterialComponentForWorker = (state, componentDataArray) =>
         materialArrayForWorkerInit:
           materialArrayForWorkerInit
           |> MaterialArrayForWorkerInitService.removeDisposedOnesFromMaterialArrayForWorkerInit(
-               componentDataArray,
+               componentDataMap,
              ),
       }),
   };

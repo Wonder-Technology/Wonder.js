@@ -216,7 +216,7 @@ let _ =
               basicMaterial1,
               state,
             )
-            |> expect == [|gameObject3, gameObject2|];
+            |> expect == [|gameObject2, gameObject3|];
           })
         );
         describe("test dispose not shared material", () => {
@@ -348,14 +348,14 @@ let _ =
                        );
                   textureIndices
                   |> Uint32Array.slice(~start=0, ~end_=5)
-                  |>
-                  expect == Uint32Array.make([|
-                              defaultTextureIndex,
-                              defaultTextureIndex,
-                              3,
-                              0,
-                              0,
-                            |]);
+                  |> expect
+                  == Uint32Array.make([|
+                       defaultTextureIndex,
+                       defaultTextureIndex,
+                       3,
+                       0,
+                       0,
+                     |]);
                 })
               );
 

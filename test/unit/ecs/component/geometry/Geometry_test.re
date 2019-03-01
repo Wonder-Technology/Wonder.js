@@ -373,48 +373,92 @@ let _ =
             GeometryAPI.getGeometryNormals(geometry2, state),
             GeometryAPI.getGeometryIndices16(geometry2, state),
           )
-          |>
-          expect == (
-                      Float32Array.make([||]),
-                      Float32Array.make([||]),
-                      Float32Array.make([||]),
-                      Uint16Array.make([||]),
-                    );
+          |> expect
+          == (
+               Float32Array.make([||]),
+               Float32Array.make([||]),
+               Float32Array.make([||]),
+               Uint16Array.make([||]),
+             );
         });
 
         describe("test dispose shared geometry", () =>
-          test("remove gameObject", () => {
-            let (state, geometry1) = createGeometry(state^);
-            let (state, gameObject1) = GameObjectAPI.createGameObject(state);
-            let state =
-              state
-              |> GameObjectAPI.addGameObjectGeometryComponent(
-                   gameObject1,
-                   geometry1,
-                 );
-            let (state, gameObject2) = GameObjectAPI.createGameObject(state);
-            let state =
-              state
-              |> GameObjectAPI.addGameObjectGeometryComponent(
-                   gameObject2,
-                   geometry1,
-                 );
-            let (state, gameObject3) = GameObjectAPI.createGameObject(state);
-            let state =
-              state
-              |> GameObjectAPI.addGameObjectGeometryComponent(
-                   gameObject3,
-                   geometry1,
-                 );
-            let state =
-              state
-              |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
-                   gameObject1,
-                   geometry1,
-                 );
+          describe("remove gamemObject", () => {
+            let _prepare = state => {
+              let (state, geometry1) = createGeometry(state^);
+              let (state, gameObject1) =
+                GameObjectAPI.createGameObject(state);
+              let state =
+                state
+                |> GameObjectAPI.addGameObjectGeometryComponent(
+                     gameObject1,
+                     geometry1,
+                   );
+              let (state, gameObject2) =
+                GameObjectAPI.createGameObject(state);
+              let state =
+                state
+                |> GameObjectAPI.addGameObjectGeometryComponent(
+                     gameObject2,
+                     geometry1,
+                   );
+              let (state, gameObject3) =
+                GameObjectAPI.createGameObject(state);
+              let state =
+                state
+                |> GameObjectAPI.addGameObjectGeometryComponent(
+                     gameObject3,
+                     geometry1,
+                   );
 
-            GeometryAPI.unsafeGetGeometryGameObjects(geometry1, state)
-            |> expect == [|gameObject3, gameObject2|];
+              (state, (gameObject1, gameObject2, gameObject3), geometry1);
+            };
+
+            test("test remove one gameObjecct", () => {
+              let (state, (gameObject1, gameObject2, gameObject3), geometry1) =
+                _prepare(state);
+
+              let state =
+                state
+                |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
+                     gameObject1,
+                     geometry1,
+                   );
+
+              GeometryAPI.unsafeGetGeometryGameObjects(geometry1, state)
+              |> expect == [|gameObject2, gameObject3|];
+            });
+            test("test remove two gameObjeccts", () => {
+              let (state, (gameObject1, gameObject2, gameObject3), geometry1) =
+                _prepare(state);
+
+              let state =
+                state
+                |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
+                     gameObject1,
+                     geometry1,
+                   )
+                |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
+                     gameObject2,
+                     geometry1,
+                   );
+
+              GeometryAPI.unsafeGetGeometryGameObjects(geometry1, state)
+              |> expect == [|gameObject3|];
+            });
+            test("test remove all gameObjeccts", () => {
+              let (state, (gameObject1, gameObject2, gameObject3), geometry1) =
+                _prepare(state);
+
+              let state =
+                state
+                |> GameObjectTool.batchDisposeGameObjectsGeometryComponentWithoutVboBuffer(
+                     [|gameObject1, gameObject2, gameObject3|],
+                     geometry1,
+                   );
+
+              GeometryTool.hasGameObject(geometry1, state) |> expect == false;
+            });
           })
         );
         describe("test dispose not shared geometry", () => {

@@ -265,7 +265,46 @@ let _ =
 
     describe("disposeComponent", () =>
       describe("dispose data", () => {
-        test("remove from gameObjectsMap, nameMap, emptyMapUnitArrayMap", () => {
+        describe("test dispose shared material", () =>
+          test("remove gameObject", () => {
+            let (state, lightMaterial1) = createLightMaterial(state^);
+            let (state, gameObject1) = GameObjectAPI.createGameObject(state);
+            let state =
+              state
+              |> GameObjectAPI.addGameObjectLightMaterialComponent(
+                   gameObject1,
+                   lightMaterial1,
+                 );
+            let (state, gameObject2) = GameObjectAPI.createGameObject(state);
+            let state =
+              state
+              |> GameObjectAPI.addGameObjectLightMaterialComponent(
+                   gameObject2,
+                   lightMaterial1,
+                 );
+            let (state, gameObject3) = GameObjectAPI.createGameObject(state);
+            let state =
+              state
+              |> GameObjectAPI.addGameObjectLightMaterialComponent(
+                   gameObject3,
+                   lightMaterial1,
+                 );
+            let state =
+              state
+              |> GameObjectTool.disposeGameObjectLightMaterialComponent(
+                   gameObject1,
+                   lightMaterial1,
+                 );
+
+            LightMaterialAPI.unsafeGetLightMaterialGameObjects(
+              lightMaterial1,
+              state,
+            )
+            |> expect == [|gameObject2, gameObject3|];
+          })
+        );
+
+        test("remove from nameMap, emptyMapUnitArrayMap", () => {
           open LightMaterialType;
           let (state, gameObject1, material1) =
             LightMaterialTool.createGameObject(state^);
@@ -277,16 +316,15 @@ let _ =
                  gameObject1,
                  material1,
                );
-          let {gameObjectsMap, nameMap, emptyMapUnitArrayMap} =
+          let {nameMap, emptyMapUnitArrayMap} =
             LightMaterialTool.getRecord(state);
 
           (
-            LightMaterialTool.hasGameObject(material1, state),
             nameMap |> WonderCommonlib.MutableSparseMapService.has(material1),
             emptyMapUnitArrayMap
             |> WonderCommonlib.MutableSparseMapService.has(material1),
           )
-          |> expect == (false, false, false);
+          |> expect == (false, false);
         });
 
         describe("test remove from type array", () => {
@@ -419,14 +457,14 @@ let _ =
                      );
                 textureIndices
                 |> Uint32Array.slice(~start=0, ~end_=5)
-                |>
-                expect == Uint32Array.make([|
-                            defaultTextureIndex,
-                            defaultTextureIndex,
-                            3,
-                            0,
-                            0,
-                          |]);
+                |> expect
+                == Uint32Array.make([|
+                     defaultTextureIndex,
+                     defaultTextureIndex,
+                     3,
+                     0,
+                     0,
+                   |]);
               })
             );
             describe("remove from diffuseMapUnits", () =>
@@ -458,43 +496,6 @@ let _ =
               )
             );
           });
-        });
-
-        test("remove gameObject", () => {
-          let (state, lightMaterial1) = createLightMaterial(state^);
-          let (state, gameObject1) = GameObjectAPI.createGameObject(state);
-          let state =
-            state
-            |> GameObjectAPI.addGameObjectLightMaterialComponent(
-                 gameObject1,
-                 lightMaterial1,
-               );
-          let (state, gameObject2) = GameObjectAPI.createGameObject(state);
-          let state =
-            state
-            |> GameObjectAPI.addGameObjectLightMaterialComponent(
-                 gameObject2,
-                 lightMaterial1,
-               );
-          let (state, gameObject3) = GameObjectAPI.createGameObject(state);
-          let state =
-            state
-            |> GameObjectAPI.addGameObjectLightMaterialComponent(
-                 gameObject3,
-                 lightMaterial1,
-               );
-          let state =
-            state
-            |> GameObjectTool.disposeGameObjectLightMaterialComponent(
-                 gameObject1,
-                 lightMaterial1,
-               );
-
-          LightMaterialAPI.unsafeGetLightMaterialGameObjects(
-            lightMaterial1,
-            state,
-          )
-          |> expect == [|gameObject3, gameObject2|];
         });
 
         describe("fix bug", () =>

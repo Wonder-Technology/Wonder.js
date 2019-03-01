@@ -1,5 +1,5 @@
 [@bs.send.pipe: array('a)]
-external unsafeFind : ('a => [@bs.uncurry] bool) => 'a = "find";
+external unsafeFind: ('a => [@bs.uncurry] bool) => 'a = "find";
 
 let deleteBySwap = (index: int, lastIndex: int, arr: array('item)) => {
   WonderLog.Contract.requireCheck(
@@ -134,3 +134,35 @@ let fastConcat = (arr1, arr2) =>
        (. arr1, value2) => arr1 |> push(value2),
        arr1,
      );
+
+let batchRemove = (targetItemArr: array(int), arr: array(int)) =>
+  Js.Array.length(targetItemArr) === Js.Array.length(arr) ?
+    {
+      WonderLog.Contract.requireCheck(
+        () =>
+          WonderLog.(
+            Contract.(
+              test(
+                Log.buildAssertMessage(
+                  ~expect={j|targetItemArr == arr|j},
+                  ~actual={j|not|j},
+                ),
+                () =>
+                targetItemArr
+                |> Js.Array.copy
+                |> Js.Array.sortInPlaceWith((a, b) => a - b)
+                == (
+                     arr
+                     |> Js.Array.copy
+                     |> Js.Array.sortInPlaceWith((a, b) => a - b)
+                   )
+                |> assertTrue
+              )
+            )
+          ),
+        IsDebugMainService.getIsDebug(StateDataMain.stateData),
+      );
+
+      [||];
+    } :
+    arr |> Js.Array.filter(item => !Js.Array.includes(item, targetItemArr));

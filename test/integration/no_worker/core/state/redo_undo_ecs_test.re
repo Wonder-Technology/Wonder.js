@@ -585,7 +585,7 @@ let _ =
 
           disposedUidArrayForKeepOrderRemoveGeometry,
           disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
-          \n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialDataArray,\n        disposedLightMaterialDataArray,\n                disposedGeometryArray,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n                disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
+          \n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialDataMap,\n        disposedLightMaterialDataMap,\n                disposedGeometryDataMap,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n                disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
           () =>
           StateDataMainType.(
             GameObjectType.(
@@ -603,9 +603,9 @@ let _ =
                     disposedTransformArray,
                     disposedTransformArrayForKeepOrder,
                     disposedPerspectiveCameraProjectionArray,
-                    disposedBasicMaterialDataArray,
-                    disposedLightMaterialDataArray,
-                    disposedGeometryDataArray,
+                    disposedBasicMaterialDataMap,
+                    disposedLightMaterialDataMap,
+                    disposedGeometryDataMap,
                     disposedSourceInstanceArray,
                     disposedObjectInstanceArray,
                     disposedDirectionLightArray,
@@ -637,9 +637,9 @@ let _ =
                     disposedTransformArray |> Obj.magic,
                     disposedTransformArrayForKeepOrder |> Obj.magic,
                     disposedPerspectiveCameraProjectionArray |> Obj.magic,
-                    disposedBasicMaterialDataArray |> Obj.magic,
-                    disposedLightMaterialDataArray |> Obj.magic,
-                    disposedGeometryDataArray |> Obj.magic,
+                    disposedBasicMaterialDataMap |> Obj.magic,
+                    disposedLightMaterialDataMap |> Obj.magic,
+                    disposedGeometryDataMap |> Obj.magic,
                     disposedSourceInstanceArray |> Obj.magic,
                     disposedObjectInstanceArray |> Obj.magic,
                     disposedDirectionLightArray |> Obj.magic,

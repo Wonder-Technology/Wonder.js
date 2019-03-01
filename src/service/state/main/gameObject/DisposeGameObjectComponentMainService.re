@@ -10,12 +10,14 @@ let _getSharableComponentDataArr =
     (uidArray, getComponentFunc, gameObjectRecord) =>
   uidArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. dataArr, uid) =>
+       (. dataMap, uid) =>
          switch (getComponentFunc(. uid, gameObjectRecord)) {
-         | None => dataArr
-         | Some(component) => dataArr |> ArrayService.push((uid, component))
+         | None => dataMap
+         | Some(component) =>
+           dataMap |> ArrayMapService.addValue(component, uid)
+         /* dataArr |> ArrayService.push((uid, component)) */
          },
-       [||],
+       WonderCommonlib.MutableSparseMapService.createEmpty(),
      );
 
 let _batchDisposeSharableComponents =
@@ -28,7 +30,7 @@ let _batchDisposeSharableComponents =
       ),
       {gameObjectRecord} as state,
     ) => {
-  let geometryDataArr =
+  let geometryDataMap =
     _getSharableComponentDataArr(
       uidArray,
       GetComponentGameObjectService.getGeometryComponent,
@@ -40,16 +42,16 @@ let _batchDisposeSharableComponents =
       (
         RemoveComponentGameObjectMainService.batchRemoveGeometryComponent(
           state,
-          geometryDataArr,
+          geometryDataMap,
         ),
         [||],
       ) :
       DisposeComponentGameObjectMainService.batchDisposeGeometryComponentData(
         state,
-        geometryDataArr,
+        geometryDataMap,
       );
 
-  let basicMaterialDataArr =
+  let basicMaterialDataMap =
     _getSharableComponentDataArr(
       uidArray,
       GetComponentGameObjectService.getBasicMaterialComponent,
@@ -60,11 +62,11 @@ let _batchDisposeSharableComponents =
     isRemoveMaterial ?
       RemoveComponentGameObjectMainService.batchRemoveBasicMaterialComponent(
         state,
-        basicMaterialDataArr,
+        basicMaterialDataMap,
       ) :
-      batchDisposeBasicMaterialComponentFunc(state, basicMaterialDataArr);
+      batchDisposeBasicMaterialComponentFunc(state, basicMaterialDataMap);
 
-  let lightMaterialDataArr =
+  let lightMaterialDataMap =
     _getSharableComponentDataArr(
       uidArray,
       GetComponentGameObjectService.getLightMaterialComponent,
@@ -75,9 +77,9 @@ let _batchDisposeSharableComponents =
     isRemoveMaterial ?
       RemoveComponentGameObjectMainService.batchRemoveLightMaterialComponent(
         state,
-        lightMaterialDataArr,
+        lightMaterialDataMap,
       ) :
-      batchDisposeLightMaterialComponentFunc(state, lightMaterialDataArr);
+      batchDisposeLightMaterialComponentFunc(state, lightMaterialDataMap);
 
   (state, geometryNeedDisposeVboBufferArr);
 };

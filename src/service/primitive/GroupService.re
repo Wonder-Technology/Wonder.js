@@ -21,15 +21,66 @@
           getGroupCount(component, groupCountMap) |> pred
         ); */
 
-let isGroup = (geometry, gameObjectsMap) =>
-  switch (GameObjectsMapService.getGameObjects(geometry, gameObjectsMap)) {
-  | Some(arr) when arr |> Js.Array.length > 1 => true
+let isGroup = (component, gameObjectsMap) =>
+  /* switch (GameObjectsMapService.getGameObjects(component, gameObjectsMap)) {
+     | Some(arr) when arr |> Js.Array.length > 1 => true
+     | _ => false
+     }; */
+  switch (GameObjectsMapService.getGameObjects(component, gameObjectsMap)) {
+  | Some(arr) when arr |> Js.Array.length > 0 => true
   | _ => false
   };
 
-let removeGameObject = (gameObject, geometry, gameObjectsMap) =>
+/* let isGroupGeometry = (component, gameObjectsMap) =>
+   /* WonderLog.Contract.requireCheck(
+        () =>
+          WonderLog.(
+            Contract.(
+              Operators.(
+                test(
+                  Log.buildAssertMessage(
+                    ~expect=
+                      {j|gameObjectsMap->gameObjectArr.length >= gameObjects.length|j},
+                    ~actual={j|not|j},
+                  ),
+                  () =>
+                  switch (
+                    GameObjectsMapService.getGameObjects(
+                      component,
+                      gameObjectsMap,
+                    )
+                  ) {
+                  | Some(arr) =>
+                    Js.Array.length(arr) >= Js.Array.length(gameObjects)
+                  | _ => assertPass()
+                  }
+                )
+              )
+            )
+          ),
+        IsDebugMainService.getIsDebug(StateDataMain.stateData),
+      );
+
+      switch (GameObjectsMapService.getGameObjects(component, gameObjectsMap)) {
+      | Some(arr) when Js.Array.length(arr) === Js.Array.length(gameObjects) =>
+        true
+      | _ => false
+      }; */
+   switch (GameObjectsMapService.getGameObjects(component, gameObjectsMap)) {
+   | Some(arr) when arr |> Js.Array.length > 0 => true
+   | _ => false
+   }; */
+
+let removeGameObject = (gameObject, component, gameObjectsMap) =>
   GameObjectsMapService.removeGameObject(
     gameObject,
-    geometry,
+    component,
+    gameObjectsMap,
+  );
+
+let batchRemoveGameObjects = (gameObjectArr, component, gameObjectsMap) =>
+  GameObjectsMapService.batchRemoveGameObjects(
+    gameObjectArr,
+    component,
     gameObjectsMap,
   );

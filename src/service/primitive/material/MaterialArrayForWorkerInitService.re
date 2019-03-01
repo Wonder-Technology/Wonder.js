@@ -1,16 +1,19 @@
 let removeDisposedOnesFromMaterialArrayForWorkerInit =
-    (materialDataArray, materialArrayForWorkerInit) =>
-  switch (materialDataArray |> Js.Array.length) {
+    (materialDataMap, materialArrayForWorkerInit) =>
+  switch (materialDataMap |> WonderCommonlib.MutableSparseMapService.length) {
   | 0 => materialArrayForWorkerInit
   | _ =>
     let materialMap =
       DisposeECSService.buildMapFromArray(
-        materialDataArray |> Js.Array.map(((_, material)) => material),
+        materialDataMap |> WonderCommonlib.MutableSparseMapService.getValidKeys,
         WonderCommonlib.MutableSparseMapService.createEmpty(),
       );
     materialArrayForWorkerInit
     |> Js.Array.filter(material =>
-         ! (materialMap |> WonderCommonlib.MutableSparseMapService.has(material))
+         !(
+           materialMap
+           |> WonderCommonlib.MutableSparseMapService.has(material)
+         )
        );
   };
 

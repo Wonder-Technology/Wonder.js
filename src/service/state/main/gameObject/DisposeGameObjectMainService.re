@@ -103,9 +103,9 @@ let clearDeferDisposeData = state => {
       WonderCommonlib.ArrayService.createEmpty(),
     disposedArcballCameraControllerArray:
       WonderCommonlib.ArrayService.createEmpty(),
-    disposedBasicMaterialDataArray: WonderCommonlib.ArrayService.createEmpty(),
-    disposedLightMaterialDataArray: WonderCommonlib.ArrayService.createEmpty(),
-    disposedGeometryDataArray: WonderCommonlib.ArrayService.createEmpty(),
+    disposedBasicMaterialDataMap: WonderCommonlib.ArrayService.createEmpty(),
+    disposedLightMaterialDataMap: WonderCommonlib.ArrayService.createEmpty(),
+    disposedGeometryDataMap: WonderCommonlib.ArrayService.createEmpty(),
     disposedSourceInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedObjectInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedDirectionLightArray: WonderCommonlib.ArrayService.createEmpty(),
