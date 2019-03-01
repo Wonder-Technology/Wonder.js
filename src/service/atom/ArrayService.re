@@ -135,8 +135,41 @@ let fastConcat = (arr1, arr2) =>
        arr1,
      );
 
-let batchRemove = (targetItemArr: array(int), arr: array(int)) =>
-  Js.Array.length(targetItemArr) === Js.Array.length(arr) ?
+let rec _findInSourceArr = (targetItem, resultArr, posInSourceArr, sourceArr) => {
+  let sourceItem = Array.unsafe_get(sourceArr, posInSourceArr);
+
+  sourceItem === targetItem ?
+    (resultArr, posInSourceArr |> succ) :
+    _findInSourceArr(
+      targetItem,
+      resultArr |> push(sourceItem),
+      posInSourceArr |> succ,
+      sourceArr,
+    );
+};
+
+let batchRemove =
+    (targetArr: array(int), sourceArr: array(int)): array(int) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|targetArr's length <= sourceArr's length|j},
+                ~actual={j|not|j},
+              ),
+              () =>
+              Js.Array.length(targetArr) <= Js.Array.length(sourceArr)
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  Js.Array.length(targetArr) === Js.Array.length(sourceArr) ?
     {
       WonderLog.Contract.requireCheck(
         () =>
@@ -144,15 +177,15 @@ let batchRemove = (targetItemArr: array(int), arr: array(int)) =>
             Contract.(
               test(
                 Log.buildAssertMessage(
-                  ~expect={j|targetItemArr == arr|j},
+                  ~expect={j|targetArr == sourceArr|j},
                   ~actual={j|not|j},
                 ),
                 () =>
-                targetItemArr
+                targetArr
                 |> Js.Array.copy
                 |> Js.Array.sortInPlaceWith((a, b) => a - b)
                 == (
-                     arr
+                     sourceArr
                      |> Js.Array.copy
                      |> Js.Array.sortInPlaceWith((a, b) => a - b)
                    )
@@ -165,4 +198,23 @@ let batchRemove = (targetItemArr: array(int), arr: array(int)) =>
 
       [||];
     } :
-    arr |> Js.Array.filter(item => !Js.Array.includes(item, targetItemArr));
+    {
+      sourceArr |> Js.Array.sortInPlaceWith((a, b) => a - b) |> ignore;
+      targetArr |> Js.Array.sortInPlaceWith((a, b) => a - b) |> ignore;
+
+      let (resultArr, posInSourceArr) =
+        targetArr
+        |> WonderCommonlib.ArrayService.reduceOneParam(
+             (. (resultArr, posInSourceArr), targetItem) =>
+               _findInSourceArr(
+                 targetItem,
+                 resultArr,
+                 posInSourceArr,
+                 sourceArr,
+               ),
+             ([||], 0),
+           );
+
+      fastConcat(resultArr, Js.Array.sliceFrom(posInSourceArr, sourceArr));
+    };
+};

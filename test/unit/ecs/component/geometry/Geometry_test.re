@@ -434,17 +434,13 @@ let _ =
 
               let state =
                 state
-                |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
-                     gameObject1,
-                     geometry1,
-                   )
-                |> GameObjectTool.disposeGameObjectGeometryComponentWithoutVboBuffer(
-                     gameObject2,
+                |> GameObjectTool.batchDisposeGameObjectsGeometryComponentWithoutVboBuffer(
+                     [|gameObject3, gameObject2|],
                      geometry1,
                    );
 
               GeometryAPI.unsafeGetGeometryGameObjects(geometry1, state)
-              |> expect == [|gameObject3|];
+              |> expect == [|gameObject1|];
             });
             test("test remove all gameObjeccts", () => {
               let (state, (gameObject1, gameObject2, gameObject3), geometry1) =
