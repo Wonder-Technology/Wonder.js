@@ -37,13 +37,13 @@ let _ =
         state |> getTransformLocalRotation(child),
         state |> getTransformRotation(child),
       )
-      |>
-      expect == (
-                  parentLocalRotation,
-                  parentRotation,
-                  childLocalRotation,
-                  childRotation,
-                );
+      |> expect
+      == (
+           parentLocalRotation,
+           parentRotation,
+           childLocalRotation,
+           childRotation,
+         );
 
     let _judgeScaleOneToOne =
         (
@@ -58,8 +58,8 @@ let _ =
         state |> getTransformLocalScale(child),
         state |> getTransformScale(child),
       )
-      |>
-      expect == (parentLocalScale, parentScale, childLocalScale, childScale);
+      |> expect
+      == (parentLocalScale, parentScale, childLocalScale, childScale);
 
     let _judgeOneToTwo =
         (
@@ -77,15 +77,15 @@ let _ =
         state |> getTransformLocalPosition(child2),
         state |> getTransformPosition(child2),
       )
-      |>
-      expect == (
-                  parentLocalPos,
-                  parentPos,
-                  child1LocalPos,
-                  child1Pos,
-                  child2LocalPos,
-                  child2Pos,
-                );
+      |> expect
+      == (
+           parentLocalPos,
+           parentPos,
+           child1LocalPos,
+           child1Pos,
+           child2LocalPos,
+           child2Pos,
+         );
     let _prepareOne = () => {
       let (state, transform) = createTransform(state^);
       let pos1 = (1., 2., 3.);
@@ -344,13 +344,13 @@ let _ =
             state |> TransformAPI.getTransformPosition(transform3),
             state |> TransformAPI.getTransformPosition(transform4),
           )
-          |>
-          expect == (
-                      pos1,
-                      pos2,
-                      Vector3Service.add(Vector3Type.Float, pos3, pos1),
-                      Vector3Service.add(Vector3Type.Float, pos4, pos2),
-                    );
+          |> expect
+          == (
+               pos1,
+               pos2,
+               Vector3Service.add(Vector3Type.Float, pos3, pos1),
+               Vector3Service.add(Vector3Type.Float, pos4, pos2),
+             );
         })
       );
     });
@@ -659,13 +659,13 @@ let _ =
             state |> getTransformLocalEulerAngles(child),
             state |> getTransformEulerAngles(child),
           )
-          |>
-          expect == (
-                      parentLocalEulerAngles,
-                      parentEulerAngles,
-                      childLocalEulerAngles,
-                      childEulerAngles,
-                    );
+          |> expect
+          == (
+               parentLocalEulerAngles,
+               parentEulerAngles,
+               childLocalEulerAngles,
+               childEulerAngles,
+             );
 
         test("change parent's eulerAngles should affect children", () => {
           open Vector3Service;
@@ -922,45 +922,45 @@ let _ =
           TransformAPI.getTransformLocalToWorldMatrixTypeArray(child, state);
 
         (parentMat1, childMat1)
-        |>
-        expect == (
-                    Js.Typed_array.Float32Array.make([|
-                      1.,
-                      0.,
-                      0.,
-                      0.,
-                      0.,
-                      1.,
-                      0.,
-                      0.,
-                      0.,
-                      0.,
-                      1.,
-                      0.,
-                      1.,
-                      2.,
-                      3.,
-                      1.,
-                    |]),
-                    Js.Typed_array.Float32Array.make([|
-                      1.,
-                      0.,
-                      0.,
-                      0.,
-                      0.,
-                      1.,
-                      0.,
-                      0.,
-                      0.,
-                      0.,
-                      1.,
-                      0.,
-                      1.,
-                      12.,
-                      6.,
-                      1.,
-                    |]),
-                  );
+        |> expect
+        == (
+             Js.Typed_array.Float32Array.make([|
+               1.,
+               0.,
+               0.,
+               0.,
+               0.,
+               1.,
+               0.,
+               0.,
+               0.,
+               0.,
+               1.,
+               0.,
+               1.,
+               2.,
+               3.,
+               1.,
+             |]),
+             Js.Typed_array.Float32Array.make([|
+               1.,
+               0.,
+               0.,
+               0.,
+               0.,
+               1.,
+               0.,
+               0.,
+               0.,
+               0.,
+               1.,
+               0.,
+               1.,
+               12.,
+               6.,
+               1.,
+             |]),
+           );
       });
 
       describe("test cache", () => {
@@ -1503,11 +1503,8 @@ let _ =
                 TransformTool.getLocalToWorldMatrix(transform1, state),
                 TransformTool.getLocalToWorldMatrix(transform2, state),
               )
-              |>
-              expect == (
-                          TransformTool.getDefaultLocalToWorldMatrix(state),
-                          mat2,
-                        );
+              |> expect
+              == (TransformTool.getDefaultLocalToWorldMatrix(state), mat2);
             });
           });
           describe("remove from localPositions", () => {
@@ -1551,11 +1548,8 @@ let _ =
                 TransformAPI.getTransformLocalPosition(transform1, state),
                 TransformAPI.getTransformLocalPosition(transform2, state),
               )
-              |>
-              expect == (
-                          TransformTool.getDefaultLocalPositionTuple(state),
-                          pos2,
-                        );
+              |> expect
+              == (TransformTool.getDefaultLocalPositionTuple(state), pos2);
             });
           });
 
@@ -1606,11 +1600,11 @@ let _ =
                 TransformAPI.getTransformLocalRotation(transform1, state),
                 TransformAPI.getTransformLocalRotation(transform2, state),
               )
-              |>
-              expect == (
-                          TransformTool.getDefaultLocalRotationTuple(state),
-                          rotation2,
-                        );
+              |> expect
+              == (
+                   TransformTool.getDefaultLocalRotationTuple(state),
+                   rotation2,
+                 );
             });
           });
 
@@ -1655,11 +1649,8 @@ let _ =
                 TransformAPI.getTransformLocalScale(transform1, state),
                 TransformAPI.getTransformLocalScale(transform2, state),
               )
-              |>
-              expect == (
-                          TransformTool.getDefaultLocalScaleTuple(state),
-                          scale2,
-                        );
+              |> expect
+              == (TransformTool.getDefaultLocalScaleTuple(state), scale2);
             });
           });
         });
@@ -1703,11 +1694,11 @@ let _ =
               state |> getTransformLocalPosition(transform3),
               state |> getTransformPosition(transform3),
             )
-            |>
-            expect == (
-                        TransformTool.getDefaultPosition(),
-                        TransformTool.getDefaultPosition(),
-                      );
+            |> expect
+            == (
+                 TransformTool.getDefaultPosition(),
+                 TransformTool.getDefaultPosition(),
+               );
             /* let (state, transform4) = createTransform(state); */
             /* (transform3, transform4) |> expect == (transform2, transform1) */
           })
@@ -1824,8 +1815,8 @@ let _ =
           |> rotateLocalOnAxis(tra1, (10., yAxis));
 
         TransformAPI.getTransformLocalEulerAngles(tra1, state)
-        |>
-        expect == (53.52699620225938, 51.55342957783367, 11.389428193681704);
+        |> expect
+        == (53.52699620225938, 51.55342957783367, 11.389428193681704);
       })
     );
 
@@ -1844,8 +1835,8 @@ let _ =
           |> rotateWorldOnAxis(tra1, (10., yAxis));
 
         TransformAPI.getTransformLocalEulerAngles(tra1, state)
-        |>
-        expect == (62.04153935036139, 37.965850368256476, 39.36170307898388);
+        |> expect
+        == (62.04153935036139, 37.965850368256476, 39.36170307898388);
       })
     );
 
@@ -2071,6 +2062,7 @@ let _ =
         );
       })
     );
+
     describe("fix bug", () => {
       test(
         "the second transform's default localToWorldMatrix should be identity matrix4 when create two transforms",
@@ -2079,8 +2071,8 @@ let _ =
           let (state, transform1) = createTransform(state^);
           let (state, transform2) = createTransform(state);
           TransformTool.getLocalToWorldMatrixTypeArray(transform2, state)
-          |>
-          expect == TransformTool.getDefaultLocalToWorldMatrixTypeArray(state);
+          |> expect
+          == TransformTool.getDefaultLocalToWorldMatrixTypeArray(state);
         },
       );
       test(
@@ -2092,6 +2084,45 @@ let _ =
         state
         |> getTransformLocalPosition(transform0)
         |> expect == (0.10000000149011612, 0., 0.);
+      });
+
+      describe("fix rotate on axis", () => {
+        let _test = (expectedLocalEulerAngles, toFixFunc) => {
+          let (state, transform) = createTransform(state^);
+
+          let localRotation = (
+            (-0.02508343756198883),
+            0.,
+            0.,
+            0.5063101649284363,
+          );
+
+          let state =
+            setTransformLocalRotation(transform, localRotation, state);
+
+          let state = toFixFunc(transform, state);
+
+          let state =
+            rotateWorldOnAxis(transform, (45., (1., 0., 0.)), state);
+
+          getTransformLocalEulerAngles(transform, state)
+          |> Vector3Tool.truncate(3)
+          |> expect == expectedLocalEulerAngles;
+        };
+
+        test("the euler angle after rotate on axis is wrong", () =>
+          _test((9.811, 0., 0.), (_, state) => state)
+        );
+
+        test("should set euler angle before rotate on axis", () =>
+          _test((43.543, 0., 0.), (transform, state) =>
+            setTransformLocalEulerAngles(
+              transform,
+              getTransformLocalEulerAngles(transform, state),
+              state,
+            )
+          )
+        );
       });
     });
   });

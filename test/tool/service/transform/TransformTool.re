@@ -133,7 +133,7 @@ let dispose = (transform, state) => {
 };
 
 let isDisposed = (transform, state) =>
-  ! DisposeTransformMainService.isAlive(transform, getRecord(state));
+  !DisposeTransformMainService.isAlive(transform, getRecord(state));
 
 let isDirty = (transform, state) =>
   DirtyTransformService.isDirty(
@@ -193,3 +193,14 @@ let setAllTypeArrDataToDefault =
 
 let getTransformParent = (transform, state) =>
   HierachyTransformService.getParent(transform, getRecord(state));
+
+let truncateRotation = (~rotation, ~digit=3, ()) => {
+  let (x, y, z, w) = rotation;
+
+  (
+    x->FloatTool.truncateFloatValue(digit),
+    x->FloatTool.truncateFloatValue(digit),
+    z->FloatTool.truncateFloatValue(digit),
+    w->FloatTool.truncateFloatValue(digit),
+  );
+};
