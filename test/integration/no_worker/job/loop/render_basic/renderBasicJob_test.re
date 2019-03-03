@@ -440,9 +440,10 @@ let _ =
                      (),
                    ),
                  );
+
             let state = state |> RenderJobsTool.init;
             let state = state |> DirectorTool.runWithDefaultTime;
-            let state = state |> DirectorTool.runWithDefaultTime;
+
             vertexAttribPointer |> getCallCount |> expect == 1;
           });
           test("else, send", () => {
@@ -462,8 +463,10 @@ let _ =
                      (),
                    ),
                  );
+
             let state = state |> RenderJobsTool.init;
             let state = state |> DirectorTool.runWithDefaultTime;
+
             vertexAttribPointer |> getCallCount |> expect == 2;
           });
         });
@@ -540,9 +543,11 @@ let _ =
                        (),
                      ),
                    );
+
               let state = state |> RenderJobsTool.init;
               let state = state |> DirectorTool.runWithDefaultTime;
               let state = state |> DirectorTool.runWithDefaultTime;
+
               enableVertexAttribArray
               |> withOneArg(pos)
               |> getCallCount
@@ -571,15 +576,16 @@ let _ =
                        (),
                      ),
                    );
+
               let state = state |> RenderJobsTool.init;
               let state = state |> DirectorTool.runWithDefaultTime;
               let state = state |> GLSLSenderTool.disableVertexAttribArray;
-              /* |> GLSLSenderTool.clearLastSendGeometry; */
+
               let state = state |> DirectorTool.runWithDefaultTime;
               enableVertexAttribArray
               |> withOneArg(pos)
               |> getCallCount
-              |> expect == 1;
+              |> expect == 2;
             });
             /* test
                ("differenc shader's vertexAttribHistory of the same attribute record pos are independent",

@@ -416,9 +416,10 @@ let _ =
                      (),
                    ),
                  );
+
             let state = state |> RenderJobsTool.init;
             let state = state |> DirectorTool.runWithDefaultTime;
-            let state = state |> DirectorTool.runWithDefaultTime;
+
             vertexAttribPointer |> getCallCount |> expect == 2 * 1;
           });
         });
