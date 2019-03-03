@@ -29,6 +29,17 @@ gulp.task("testFastPerformance", function (done) {
 });
 
 
+gulp.task("testFastPerformanceOneCount", function (done) {
+    var testPerformance = require(path.join(process.cwd(), "lib/js/test/e2e/performance/TestPerformance.js"));
+
+    var reportFilePath = path.join(process.cwd(), "./test/e2e/performance/report/report.html");
+
+    var utils = require("../common/commonUtils");
+
+    test.fastTest(reportFilePath, testPerformance.generateReport, testPerformance.runOneCountTest , done);
+});
+
+
 function _fail(message, done) {
     console.log("fail");
 
