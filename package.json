@@ -1,6 +1,6 @@
 {
   "name": "wonder.js",
-  "version": "1.0.0-beta.2.10",
+  "version": "1.0.0-beta.2.12",
   "authors": "Wonder",
   "description": "3d webgl engine",
   "homepage": "https://github.com/Wonder-Technology/Wonder.js",
@@ -70,7 +70,7 @@
     "wonder-bs-json": "^0.0.1",
     "wonder-bs-most": "^0.0.3",
     "wonder-commonlib": "^0.2.28",
-    "wonder-imgui": "^0.0.31",
+    "wonder-imgui": "^0.0.33",
     "wonder-log": "^0.2.11",
     "wonder-most-animation-frame": "0.0.3",
     "wonder-webgl": "^0.0.7"
