@@ -27,7 +27,7 @@ var BasicBoxesTool = (function () {
     };
 
     var createAndDisposeGameObjects = function (count, boxes, state) {
-        var state = wd.batchDisposeGameObject(window.boxes, state);
+        var state = wd.batchDisposeGameObject(boxes, state);
 
         var record = BasicBoxesTool.createBoxesWithoutClone(count, state);
         var state = record[0];
@@ -39,7 +39,6 @@ var BasicBoxesTool = (function () {
         var state = record[0];
         var newBoxes = record[1];
 
-        window.boxes = newBoxes;
 
 
         for (var i = 0, len = newBoxes.length; i < len; i++) {
@@ -47,11 +46,13 @@ var BasicBoxesTool = (function () {
             state = wd.initGameObject(box, state);
         }
 
-        return state;
+        return [state, newBoxes];
     };
 
+
+
     var createAndDisposeGameObjectsByClone = function (count, boxes, state) {
-        var state = wd.batchDisposeGameObject(window.boxes, state);
+        var state = wd.batchDisposeGameObject(boxes, state);
 
         var record = BasicBoxesTool.createBoxesByClone(count, state);
         var state = record[0];
@@ -63,7 +64,6 @@ var BasicBoxesTool = (function () {
         var state = record[0];
         var newBoxes = record[1];
 
-        window.boxes = newBoxes;
 
 
         for (var i = 0, len = newBoxes.length; i < len; i++) {
@@ -71,7 +71,7 @@ var BasicBoxesTool = (function () {
             state = wd.initGameObject(box, state);
         }
 
-        return state;
+        return [state, newBoxes];
     };
 
 
@@ -82,11 +82,7 @@ var BasicBoxesTool = (function () {
 
 
     var createAndDisposeGameObjectsWithMapByClone = function (count, boxes, map, state) {
-        var state = wd.batchDisposeGameObject(window.boxes, state);
-
-        // var record = BasicBoxesTool.createBoxWithMap(map, state);
-        // var state = record[0];
-        // var newBoxes = [record[1]];
+        var state = wd.batchDisposeGameObject(boxes, state);
 
 
 
@@ -97,24 +93,10 @@ var BasicBoxesTool = (function () {
 
 
 
-        // var record = BasicBoxesTool.createBoxesByClone(count, state);
-        // var state = record[0];
-        // var newBoxes = record[1];
-
-
-
-
-        // var record = BasicBoxesTool.createBoxWithMap(map, state);
-        // var state = record[0];
-        // var newBoxes = [ record[1] ];
-
-
-
         var record = BasicBoxesTool.setPosition(newBoxes, state);
         var state = record[0];
         var newBoxes = record[1];
 
-        window.boxes = newBoxes;
 
 
         for (var i = 0, len = newBoxes.length; i < len; i++) {
@@ -122,7 +104,7 @@ var BasicBoxesTool = (function () {
             state = wd.initGameObject(box, state);
         }
 
-        return state;
+        return [state, newBoxes];
     };
 
 
@@ -257,7 +239,6 @@ var BasicBoxesTool = (function () {
             return PositionTool.setPositionWithRange(boxes, range, state);
         },
 
-
         setData: function (boxes, state) {
             return ScheduleTool.scheduleLoop(function (_, state) {
                 return _setData(boxes, state)
@@ -275,7 +256,6 @@ var BasicBoxesTool = (function () {
 
 
 
-
         setParent: function (boxes, state) {
             for (var i = 1, len = 10; i < len; i++) {
                 var box = boxes[i];
@@ -290,101 +270,114 @@ var BasicBoxesTool = (function () {
                 return _setData(boxes, state);
             }, state)
         },
-        createAndDisposeClonedGameObjects: function (count, boxes, state) {
-            window.mapBox = boxes[0];
-            window.boxes = [];
+        // createAndDisposeClonedGameObjects: function (count, boxes, state) {
+        //     window.mapBox = boxes[0];
+        //     window.boxes = [];
 
-            return ScheduleTool.scheduleLoop(function (_, state) {
-                var state = wd.batchDisposeGameObject(window.boxes, state);
+        //     return ScheduleTool.scheduleLoop(function (_, state) {
+        //         var state = wd.batchDisposeGameObject(window.boxes, state);
 
-                var record = wd.cloneGameObject(window.mapBox, count, true, state);
-                var state = record[0];
-                var newBoxes = record[1];
-
-
-                var flatten = (arr) => {
-                    return arr.reduce((a, b) => {
-                        var arr = a.concat(b);
-                        return arr;
-                    }, []);
-                };
-                newBoxes = flatten(newBoxes);
+        //         var record = wd.cloneGameObject(window.mapBox, count, true, state);
+        //         var state = record[0];
+        //         var newBoxes = record[1];
 
 
+        //         var flatten = (arr) => {
+        //             return arr.reduce((a, b) => {
+        //                 var arr = a.concat(b);
+        //                 return arr;
+        //             }, []);
+        //         };
+        //         newBoxes = flatten(newBoxes);
 
 
-                //  var record = BasicBoxesTool.createBoxesWithoutClone(count, state);
-                //  var state = record[0];
-                //  var newBoxes = record[1];
 
 
-                var record = BasicBoxesTool.setPosition(newBoxes, state);
-                var state = record[0];
-                var newBoxes = record[1];
-
-                window.boxes = newBoxes;
+        //         //  var record = BasicBoxesTool.createBoxesWithoutClone(count, state);
+        //         //  var state = record[0];
+        //         //  var newBoxes = record[1];
 
 
-                for (var i = 0, len = newBoxes.length; i < len; i++) {
-                    var box = newBoxes[i];
-                    state = wd.initGameObject(box, state);
-                }
+        //         var record = BasicBoxesTool.setPosition(newBoxes, state);
+        //         var state = record[0];
+        //         var newBoxes = record[1];
 
-                return state;
+        //         window.boxes = newBoxes;
 
-            }, state)
-        },
+
+        //         for (var i = 0, len = newBoxes.length; i < len; i++) {
+        //             var box = newBoxes[i];
+        //             state = wd.initGameObject(box, state);
+        //         }
+
+        //         return state;
+
+        //     }, state)
+        // },
+
+
         createAndDisposeGameObjects: function (count, boxes, state) {
-            window.boxes = [];
+            var removedBoxes = boxes;
 
             return ScheduleTool.scheduleLoop(function (_, state) {
-                return createAndDisposeGameObjects(count, boxes,
-                    state
-                )
+                var record = createAndDisposeGameObjects(count, removedBoxes, state);
+                removedBoxes = record[1];
+                return record[0];
             }, state);
         },
 
 
 
         createAndDisposeGameObjectsByClone: function (count, boxes, state) {
-            window.boxes = [];
+            var removedBoxes = boxes;
 
             return ScheduleTool.scheduleLoop(function (_, state) {
-                return createAndDisposeGameObjectsByClone(count, boxes,
+                var record = createAndDisposeGameObjectsByClone(count, removedBoxes,
                     state
-                )
+                );
+                removedBoxes = record[1];
+
+                return record[0];
             }, state);
         },
 
 
         createAndDisposeGameObjectsWithMapByClone: function (count, boxes, map, state) {
-            window.boxes = [];
+            var removedBoxes = boxes;
 
             return ScheduleTool.scheduleLoop(function (_, state) {
-                return createAndDisposeGameObjectsWithMapByClone(count, boxes, map, state
-                )
+                var record = createAndDisposeGameObjectsWithMapByClone(count, removedBoxes, map, state
+                );
+                removedBoxes = record[1];
+
+                return record[0];
             }, state);
         },
         createAndDisposeGameObjectsWorker: function (count, boxes, state) {
-            window.boxes = [];
+            var removedBoxes = boxes;
 
             return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
-                var state = createAndDisposeGameObjects(count, boxes,
+                var record = createAndDisposeGameObjects(count, removedBoxes,
                     wd.getStateFromData(stateData)
                 );
+                removedBoxes = record[1];
+                var state = record[0];
 
                 wd.setState(state);
             }, state);
         },
         createAndDisposeGameObjectsWorkerWithMapByClone: function (count, boxes, map, state) {
-            window.boxes = [];
+            var removedBoxes = boxes;
 
             return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
-                var state = createAndDisposeGameObjectsWithMapByClone(count, boxes, map, wd.getStateFromData(stateData)
+                var record = createAndDisposeGameObjectsWithMapByClone(count, removedBoxes, map, wd.getStateFromData(stateData)
                 );
+                removedBoxes = record[1];
+                var state = record[0];
 
                 wd.setState(state);
             }, state);
+
         },
         createCamera: function (state) {
             return CameraTool.createCamera(state)

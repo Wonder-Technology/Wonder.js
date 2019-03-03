@@ -1666,7 +1666,7 @@ let _ =
                   sandbox^,
                   GLBTool.buildGLBFilePath("BoxTextured.glb"),
                   ((state, _, rootGameObject)) =>
-                    GLBTool.getURL()##revokeObjectURL
+                    (GLBTool.getURL(.))##revokeObjectURL
                     |> getCallCount
                     |> expect == 1,
                   state^,
@@ -1860,7 +1860,7 @@ let _ =
                   sandbox^,
                   GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
                   ((state, _, rootGameObject)) =>
-                    GLBTool.getURL()##revokeObjectURL
+                    (GLBTool.getURL(.))##revokeObjectURL
                     |> getCallCount
                     |> expect == 2,
                   state^,
@@ -2045,7 +2045,7 @@ let _ =
                   sandbox^,
                   GLBTool.buildGLBFilePath("SuperLowPolyStove.glb"),
                   ((state, _, rootGameObject)) =>
-                    GLBTool.getURL()##revokeObjectURL
+                    (GLBTool.getURL(.))##revokeObjectURL
                     |> getCallCount
                     |> expect == 2,
                   state^,

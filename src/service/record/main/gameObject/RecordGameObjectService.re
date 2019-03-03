@@ -22,9 +22,9 @@ let create = () => {
     WonderCommonlib.ArrayService.createEmpty(),
   disposedArcballCameraControllerArray:
     WonderCommonlib.ArrayService.createEmpty(),
-  disposedBasicMaterialDataArray: WonderCommonlib.ArrayService.createEmpty(),
-  disposedLightMaterialDataArray: WonderCommonlib.ArrayService.createEmpty(),
-  disposedGeometryDataArray: WonderCommonlib.ArrayService.createEmpty(),
+  disposedBasicMaterialDataMap: WonderCommonlib.ArrayService.createEmpty(),
+  disposedLightMaterialDataMap: WonderCommonlib.ArrayService.createEmpty(),
+  disposedGeometryDataMap: WonderCommonlib.ArrayService.createEmpty(),
   disposedSourceInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedObjectInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedDirectionLightArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -66,9 +66,9 @@ let deepCopyForRestore =
         disposedTransformArrayForKeepOrder,
         disposedPerspectiveCameraProjectionArray,
         disposedArcballCameraControllerArray,
-        disposedBasicMaterialDataArray,
-        disposedLightMaterialDataArray,
-        disposedGeometryDataArray,
+        disposedBasicMaterialDataMap,
+        disposedLightMaterialDataMap,
+        disposedGeometryDataMap,
         disposedSourceInstanceArray,
         disposedObjectInstanceArray,
         disposedDirectionLightArray,
@@ -124,14 +124,14 @@ let deepCopyForRestore =
   disposedArcballCameraControllerArray:
     disposedPerspectiveCameraProjectionArray
     |> WonderCommonlib.MutableSparseMapService.copy,
-  disposedBasicMaterialDataArray:
-    disposedBasicMaterialDataArray
+  disposedBasicMaterialDataMap:
+    disposedBasicMaterialDataMap
     |> WonderCommonlib.MutableSparseMapService.copy,
-  disposedLightMaterialDataArray:
-    disposedLightMaterialDataArray
+  disposedLightMaterialDataMap:
+    disposedLightMaterialDataMap
     |> WonderCommonlib.MutableSparseMapService.copy,
-  disposedGeometryDataArray:
-    disposedGeometryDataArray |> WonderCommonlib.MutableSparseMapService.copy,
+  disposedGeometryDataMap:
+    disposedGeometryDataMap |> WonderCommonlib.MutableSparseMapService.copy,
   disposedSourceInstanceArray:
     disposedSourceInstanceArray |> WonderCommonlib.MutableSparseMapService.copy,
   disposedObjectInstanceArray:

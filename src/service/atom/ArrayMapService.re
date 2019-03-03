@@ -1,31 +1,50 @@
-let addValue = (key, value, arrayMap) =>
-  switch (arrayMap |> WonderCommonlib.MutableSparseMapService.get(key)) {
-  | None => arrayMap |> WonderCommonlib.MutableSparseMapService.set(key, [|value|])
-  | Some(valueArr) =>
-    valueArr |> ArrayService.push(value) |> ignore;
-    arrayMap;
-  };
+let addValue = (key, value, arrayMap) => {
+  let (has, valueArr) = MutableSparseMapService.fastGet(key, arrayMap);
 
-let addValueWithoutDuplicate = (key, value, arrayMap) =>
-  switch (arrayMap |> WonderCommonlib.MutableSparseMapService.get(key)) {
-  | None => arrayMap |> WonderCommonlib.MutableSparseMapService.set(key, [|value|])
-  | Some(valueArr) =>
+  has ?
+    {
+      valueArr |> ArrayService.push(value) |> ignore;
+      arrayMap;
+    } :
+    arrayMap |> WonderCommonlib.MutableSparseMapService.set(key, [|value|]);
+};
+
+let addValueWithoutDuplicate = (key, value, arrayMap) => {
+  let (has, valueArr) = MutableSparseMapService.fastGet(key, arrayMap);
+
+  has ?
     valueArr |> Js.Array.includes(value) ?
       arrayMap :
       {
         valueArr |> ArrayService.push(value) |> ignore;
         arrayMap;
-      }
-  };
+      } :
+    arrayMap |> WonderCommonlib.MutableSparseMapService.set(key, [|value|]);
+};
 
-let removeValue = (key, value, arrayMap) =>
-  switch (arrayMap |> WonderCommonlib.MutableSparseMapService.get(key)) {
-  | None => arrayMap
-  | Some(arr) =>
-    arr |> DisposeComponentService.removeFromArray(value) |> ignore;
+let removeValue = (key, value, arrayMap) => {
+  let (has, arr) = MutableSparseMapService.fastGet(key, arrayMap);
 
+  has ?
+    {
+      arr |> DisposeComponentService.removeFromArray(value) |> ignore;
+
+      arrayMap;
+    } :
     arrayMap;
-  };
+};
+
+let batchRemoveValueArr = (key, valueArr, arrayMap) => {
+  let (has, arr) = MutableSparseMapService.fastGet(key, arrayMap);
+
+  has ?
+    arrayMap
+    |> WonderCommonlib.MutableSparseMapService.set(
+         key,
+         ArrayService.batchRemove(valueArr, arr),
+       ) :
+    arrayMap;
+};
 
 let checkDuplicate = (expectedMessage, key, value, arrayMap) =>
   WonderLog.(
@@ -34,7 +53,9 @@ let checkDuplicate = (expectedMessage, key, value, arrayMap) =>
         test(
           Log.buildAssertMessage(~expect=expectedMessage, ~actual={j|not|j}),
           () =>
-          switch (arrayMap |> WonderCommonlib.MutableSparseMapService.get(key)) {
+          switch (
+            arrayMap |> WonderCommonlib.MutableSparseMapService.get(key)
+          ) {
           | None => assertPass()
           | Some(arr) =>
             let (map, hasDuplicateItems) =
@@ -42,16 +63,23 @@ let checkDuplicate = (expectedMessage, key, value, arrayMap) =>
               |> WonderCommonlib.ArrayService.reduceOneParam(
                    (. (map, hasDuplicateItems), value) =>
                      switch (
-                       map |> WonderCommonlib.MutableSparseMapService.get(value)
+                       map
+                       |> WonderCommonlib.MutableSparseMapService.get(value)
                      ) {
                      | None => (
                          map
-                         |> WonderCommonlib.MutableSparseMapService.set(value, true),
+                         |> WonderCommonlib.MutableSparseMapService.set(
+                              value,
+                              true,
+                            ),
                          hasDuplicateItems,
                        )
                      | Some(_) => (map, true)
                      },
-                   (WonderCommonlib.MutableSparseMapService.createEmpty(), false),
+                   (
+                     WonderCommonlib.MutableSparseMapService.createEmpty(),
+                     false,
+                   ),
                  );
 
             hasDuplicateItems |> assertFalse;

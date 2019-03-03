@@ -29,7 +29,7 @@ var LightBoxesTool = (function () {
 
 
     var createAndDisposeGameObjects = function (count, boxes, state) {
-        var state = wd.batchDisposeGameObject(window.boxes, state);
+        var state = wd.batchDisposeGameObject(boxes, state);
 
         var record = LightBoxesTool.createBoxesWithoutClone(count, state);
         // var record = LightBoxesTool.createBoxesByClone(count, state);
@@ -45,7 +45,6 @@ var LightBoxesTool = (function () {
         var state = record[0];
         var newBoxes = record[1];
 
-        window.boxes = newBoxes;
 
 
         for (var i = 0, len = newBoxes.length; i < len; i++) {
@@ -53,12 +52,12 @@ var LightBoxesTool = (function () {
             state = wd.initGameObject(box, state);
         }
 
-        return state;
+        return [state, newBoxes];
     };
 
 
     var createAndDisposeGameObjectsWithMapByClone = function (count, boxes, map1, map2, state) {
-        var state = wd.batchDisposeGameObject(window.boxes, state);
+        var state = wd.batchDisposeGameObject(boxes, state);
 
 
         var record = LightBoxesTool.createBoxesByCloneWithMap(count, map1, map2, state);
@@ -71,7 +70,6 @@ var LightBoxesTool = (function () {
         var state = record[0];
         var newBoxes = record[1];
 
-        window.boxes = newBoxes;
 
 
         for (var i = 0, len = newBoxes.length; i < len; i++) {
@@ -79,7 +77,7 @@ var LightBoxesTool = (function () {
             state = wd.initGameObject(box, state);
         }
 
-        return state;
+        return [state, newBoxes];
     };
 
 
@@ -269,21 +267,29 @@ var LightBoxesTool = (function () {
 
 
         createAndDisposeGameObjects: function (count, boxes, state) {
-            window.boxes = [];
+            var removedBoxes = boxes;
 
             return ScheduleTool.scheduleLoop(function (_, state) {
-                return createAndDisposeGameObjects(count, boxes,
+                var record = createAndDisposeGameObjects(count, removedBoxes,
                     state
-                )
+                );
+                removedBoxes = record[1];
+
+                return record[0];
             }, state);
         },
 
 
         createAndDisposeGameObjectsWithMapByClone: function (count, boxes, map1, map2, state) {
-            window.boxes = [];
+            var removedBoxes = boxes;
 
             return ScheduleTool.scheduleLoop(function (_, state) {
-                return createAndDisposeGameObjectsWithMapByClone(count, boxes, map1, map2, state)
+                var record = createAndDisposeGameObjectsWithMapByClone(count, removedBoxes, map1, map2, state)
+
+                removedBoxes = record[1];
+
+                return record[0];
+
             }, state);
         },
 
@@ -294,12 +300,14 @@ var LightBoxesTool = (function () {
 
 
         createAndDisposeGameObjectsWorker: function (count, boxes, state) {
-            window.boxes = [];
+            var removedBoxes = boxes;
 
             return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
-                var state = createAndDisposeGameObjects(count, boxes,
+                var record = createAndDisposeGameObjects(count, removedBoxes,
                     wd.getStateFromData(stateData)
                 );
+                removedBoxes = record[1];
+                var state = record[0];
 
                 wd.setState(state);
             }, state);
@@ -308,11 +316,13 @@ var LightBoxesTool = (function () {
 
 
         createAndDisposeGameObjectsWorkerWithMapByClone: function (count, boxes, map1, map2, state) {
-            window.boxes = [];
+            var removedBoxes = boxes;
 
             return ScheduleTool.scheduleWorkerMainLoopUnSafeJob(function (stateData) {
-                var state = createAndDisposeGameObjectsWithMapByClone(count, boxes, map1, map2, wd.getStateFromData(stateData)
+                var record = createAndDisposeGameObjectsWithMapByClone(count, removedBoxes, map1, map2, wd.getStateFromData(stateData)
                 );
+                removedBoxes = record[1];
+                var state = record[0];
 
                 wd.setState(state);
             }, state);

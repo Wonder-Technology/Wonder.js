@@ -6,6 +6,9 @@
                 "name": "tick"
             },
             {
+                "name": "scheduleLoop"
+            },
+            {
                 "name": "dispose"
             },
             {

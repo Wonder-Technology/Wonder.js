@@ -2,7 +2,7 @@ open WorkerType;
 
 let _isSupportSharedArrayBuffer = [%bs.raw
   {|
-    function(){
+    function(param){
         return typeof SharedArrayBuffer !== "undefined"
     }
     |}

@@ -51,35 +51,16 @@ let _disposeData =
   };
 };
 
-let _disposeDataWithGameObject =
-    (
-      gameObject,
-      geometry,
-      {disposeCount, disposedIndexArray, gameObjectsMap, nameMap} as geometryRecord,
-    ) => {
-  let geometryRecord = _disposeData(geometry, geometryRecord);
-
-  {
-    ...geometryRecord,
-    gameObjectsMap:
-      GameObjectsMapService.removeGameObject(
-        gameObject,
-        geometry,
-        gameObjectsMap,
-      ),
-  };
-};
-
 let handleBatchDisposeComponentData =
-  (. geometryDataArray, state) => {
+  (. geometryDataMap, state) => {
     WonderLog.Contract.requireCheck(
       () =>
         WonderLog.(
           Contract.(
             Operators.(
               DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
-                geometryDataArray
-                |> Js.Array.map(((_, geometry)) => geometry),
+                geometryDataMap
+                |> WonderCommonlib.MutableSparseMapService.getValidKeys,
                 isAliveWithRecord,
                 state |> RecordGeometryMainService.getRecord,
               )
@@ -88,35 +69,30 @@ let handleBatchDisposeComponentData =
         ),
       IsDebugMainService.getIsDebug(StateDataMain.stateData),
     );
+
     let geometryRecord = state |> RecordGeometryMainService.getRecord;
     let (geometryNeedDisposeVboBufferArr, geometryRecord) =
-      geometryDataArray
-      |> WonderCommonlib.ArrayService.reduceOneParam(
+      geometryDataMap
+      |> WonderCommonlib.MutableSparseMapService.reduceiValid(
            (.
              (geometryNeedDisposeVboBufferArr, geometryRecord),
-             (gameObject, geometry),
-           ) =>
-             switch (
-               GroupGeometryService.isGroupGeometry(geometry, geometryRecord)
-             ) {
-             | false => (
-                 geometryNeedDisposeVboBufferArr
-                 |> ArrayService.push(geometry),
-                 _disposeDataWithGameObject(
-                   gameObject,
-                   geometry,
-                   geometryRecord,
-                 ),
-               )
-             | true => (
-                 geometryNeedDisposeVboBufferArr,
-                 GroupGeometryService.removeGameObject(
-                   gameObject,
-                   geometry,
-                   geometryRecord,
-                 ),
-               )
-             },
+             gameObjectArr,
+             geometry,
+           ) => {
+             let geometryRecord =
+               GroupGeometryService.batchRemoveGameObjects(
+                 gameObjectArr,
+                 geometry,
+                 geometryRecord,
+               );
+
+             GroupGeometryService.isGroupGeometry(geometry, geometryRecord) ?
+               (geometryNeedDisposeVboBufferArr, geometryRecord) :
+               (
+                 geometryNeedDisposeVboBufferArr |> ArrayService.push(geometry),
+                 _disposeData(geometry, geometryRecord),
+               );
+           },
            ([||], geometryRecord),
          );
 

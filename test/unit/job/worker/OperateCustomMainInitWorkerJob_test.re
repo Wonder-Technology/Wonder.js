@@ -162,7 +162,9 @@ let _ =
                              AFTER,
                              (stateData) => {
                                let state = StateDataMainService.unsafeGetState(stateData);
-                               customData |> ArrayService.push(1) |> ignore
+                               customData |> ArrayService.push(1) |> ignore;
+
+                               ()
                              }
                            )
                         |> JobAPI.removeWorkerMainInitJob("customJob");

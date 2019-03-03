@@ -1,5 +1,5 @@
 let getImageData = (source, width, height) => {
-  let canvas = DomService.buildCanvas() |> Obj.magic;
+  let canvas = DomService.buildCanvas(.) |> Obj.magic;
   let ctx = Canvas.getCanvasContext(canvas);
   canvas##width#=width;
   canvas##height#=height;

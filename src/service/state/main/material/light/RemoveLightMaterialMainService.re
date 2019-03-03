@@ -2,40 +2,33 @@ open StateDataMainType;
 
 open LightMaterialType;
 
-let _handleRemoveComponent = (gameObject, lightMaterial, lightMaterialRecord) =>
-  GroupLightMaterialService.removeGameObject(
-    gameObject,
-    lightMaterial,
-    lightMaterialRecord,
-  );
-
-let handleRemoveComponent = (gameObject, lightMaterial, state) => {
-  let lightMaterialRecord = state |> RecordLightMaterialMainService.getRecord;
+let handleRemoveComponent = (gameObject, material, state) => {
+  let materialRecord = state |> RecordLightMaterialMainService.getRecord;
 
   {
     ...state,
     lightMaterialRecord:
       Some(
-        _handleRemoveComponent(
+        GroupLightMaterialService.removeGameObject(
           gameObject,
-          lightMaterial,
-          lightMaterialRecord,
+          material,
+          materialRecord,
         ),
       ),
   };
 };
 
-let handleBatchRemoveComponent = (lightMaterialDataArray, state) => {
+let handleBatchRemoveComponent = (materialDataMap, state) => {
   ...state,
   lightMaterialRecord:
     Some(
-      lightMaterialDataArray
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. lightMaterialRecord, (gameObject, lightMaterial)) =>
-             _handleRemoveComponent(
-               gameObject,
-               lightMaterial,
-               lightMaterialRecord,
+      materialDataMap
+      |> WonderCommonlib.MutableSparseMapService.reduceiValid(
+           (. materialRecord, gameObjectArr, material) =>
+             GroupLightMaterialService.batchRemoveGameObjects(
+               gameObjectArr,
+               material,
+               materialRecord,
              ),
            state |> RecordLightMaterialMainService.getRecord,
          ),

@@ -257,7 +257,7 @@ let performanceTestData = {
                                                         function initSample(state) {
                                         var n1 = performance.now();
 
-                                                            var data = BasicBoxesTool.createBoxesByClone(1, state);
+                                                            var data = BasicBoxesTool.createBoxesByClone(1000, state);
 
                                                             var state = data[0];
                                                             var boxes = data[1];
@@ -273,7 +273,7 @@ let performanceTestData = {
                                                             var state = data[0];
 
 
-                                                            var state = BasicBoxesTool.createAndDisposeGameObjects(1000, boxes, state);
+                                                            var state = BasicBoxesTool.createAndDisposeGameObjects(1000, boxes,  state);
 
 
 
@@ -333,7 +333,7 @@ let performanceTestData = {
                                                         function initSample(map1, state) {
                                         var n1 = performance.now();
 
-                                                            var data = BasicBoxesTool.createBoxesByCloneWithMap(1, map1, state);
+                                                            var data = BasicBoxesTool.createBoxesByCloneWithMap(1000, map1, state);
 
                                                             var state = data[0];
                                                             var boxes = data[1];
@@ -410,7 +410,7 @@ let performanceTestData = {
                                                         function initSample(state) {
                   var n1 = performance.now();
 
-                  var data = GeometryTool.createBasicTriangleByClone(1, 10, state);
+                  var data = GeometryTool.createBasicTriangleByClone(1000, 10, state);
 
                   var state = data[0];
                   var boxes = data[1];
@@ -709,7 +709,7 @@ let performanceTestData = {
                                             function initSample(state) {
                             var n1 = performance.now();
 
-                                            var data = InstanceBasicBoxesTool.createBoxes(1, 1, false, state);
+                                            var data = InstanceBasicBoxesTool.createBoxes(200, 5, false, state);
 
                                                 var state = data[0];
                                                 var boxes = data[1];
@@ -772,7 +772,7 @@ let performanceTestData = {
                                             function initSample(state) {
                             var n1 = performance.now();
 
-                                            var data = InstanceBasicBoxesTool.createBoxes(1, 1, false, state);
+                                            var data = InstanceBasicBoxesTool.createBoxes(1, 2000, false, state);
 
                                                 var state = data[0];
                                                 var boxes = data[1];
@@ -939,7 +939,7 @@ let performanceTestData = {
                                                      function initSample(map1, map2, state) {
                                      var n1 = performance.now();
 
-                                                         var data = LightBoxesTool.createBoxesByCloneWithMap(1, map1, map2, state);
+                                                         var data = LightBoxesTool.createBoxesByCloneWithMap(1000, map1, map2, state);
 
                                                          var state = data[0];
                                                          var boxes = data[1];
@@ -1199,7 +1199,7 @@ let performanceTestData = {
                                             function initSample(state) {
                             var n1 = performance.now();
 
-                                            var data = InstanceLightBoxesTool.createBoxes(1, 1, false, state);
+                                            var data = InstanceLightBoxesTool.createBoxes(100, 4, false, state);
 
                                                 var state = data[0];
                                                 var boxes = data[1];
@@ -1268,7 +1268,7 @@ let performanceTestData = {
                                             function initSample(state) {
                             var n1 = performance.now();
 
-                                            var data = InstanceLightBoxesTool.createBoxes(1, 1, false, state);
+                                            var data = InstanceLightBoxesTool.createBoxes(1, 1000, false, state);
 
                                                 var state = data[0];
                                                 var boxes = data[1];

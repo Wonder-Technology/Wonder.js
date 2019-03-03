@@ -638,9 +638,6 @@ vec3 getMaterialEmission() {
 vec4 getMaterialDiffuse() {
         return vec4(u_diffuse, 1.0);
     }
-    // vec4 getDiffuseMapColor() {
-    //     return vec4(0.0,0.0,0.0,1.0);
-    // }
 |}),{|
 
 |}))
@@ -673,11 +670,7 @@ varying vec2 v_diffuseMapTexCoord;
 |},({|
 
 |},{|
-// vec4 getDiffuseMapColor() {
-    //     return texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord);
-    // }
-
-    vec4 getMaterialDiffuse() {
+vec4 getMaterialDiffuse() {
         vec4 texelColor = texture2D(u_diffuseMapSampler, v_diffuseMapTexCoord);
 
         return vec4(texelColor.rgb * u_diffuse, texelColor.a);

@@ -2,40 +2,33 @@ open StateDataMainType;
 
 open BasicMaterialType;
 
-let _handleRemoveComponent = (gameObject, basicMaterial, basicMaterialRecord) =>
-  GroupBasicMaterialService.removeGameObject(
-    gameObject,
-    basicMaterial,
-    basicMaterialRecord,
-  );
-
-let handleRemoveComponent = (gameObject, basicMaterial, state) => {
-  let basicMaterialRecord = state |> RecordBasicMaterialMainService.getRecord;
+let handleRemoveComponent = (gameObject, material, state) => {
+  let materialRecord = state |> RecordBasicMaterialMainService.getRecord;
 
   {
     ...state,
     basicMaterialRecord:
       Some(
-        _handleRemoveComponent(
+        GroupBasicMaterialService.removeGameObject(
           gameObject,
-          basicMaterial,
-          basicMaterialRecord,
+          material,
+          materialRecord,
         ),
       ),
   };
 };
 
-let handleBatchRemoveComponent = (basicMaterialDataArray, state) => {
+let handleBatchRemoveComponent = (materialDataMap, state) => {
   ...state,
   basicMaterialRecord:
     Some(
-      basicMaterialDataArray
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. basicMaterialRecord, (gameObject, basicMaterial)) =>
-             _handleRemoveComponent(
-               gameObject,
-               basicMaterial,
-               basicMaterialRecord,
+      materialDataMap
+      |> WonderCommonlib.MutableSparseMapService.reduceiValid(
+           (. materialRecord, gameObjectArr, material) =>
+             GroupBasicMaterialService.batchRemoveGameObjects(
+               gameObjectArr,
+               material,
+               materialRecord,
              ),
            state |> RecordBasicMaterialMainService.getRecord,
          ),

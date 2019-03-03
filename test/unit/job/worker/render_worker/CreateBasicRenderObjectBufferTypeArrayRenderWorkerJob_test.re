@@ -9,7 +9,7 @@ let _ =
     open Sinon;
     let sandbox = getSandboxDefaultVal();
     beforeEach(() => {
-      SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer(.);
+      SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
       sandbox := createSandbox();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));

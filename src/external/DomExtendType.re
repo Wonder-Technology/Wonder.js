@@ -3,7 +3,7 @@ type pointerLockElement = {. "requestPointerLock": (. unit) => unit};
 type pointerLockDocument = {
   .
   "pointerLockElement": pointerLockElement,
-  "exitPointerLock": (. unit) => unit,
+  "exitPointerLock": unit => unit,
 };
 
 external canvasToPointerLockElement :

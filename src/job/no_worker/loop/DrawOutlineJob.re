@@ -183,6 +183,13 @@ module DrawOutlineJobUtils = {
     {...state, deviceManagerRecord};
   };
 
+  let _clearLastSendComponent =
+      (({glslSenderRecord}: StateRenderType.renderState) as state) => {
+    ...state,
+    glslSenderRecord:
+      glslSenderRecord |> ClearLastSendComponentJobUtils.execJob,
+  };
+
   let exec =
       (
         renderDataArr,
@@ -210,6 +217,7 @@ module DrawOutlineJobUtils = {
          drawOriginGameObjectsShaderIndex,
          renderDataArr,
        )
+    |> _clearLastSendComponent
     |> _setGlStateBeforeDrawExpandGameObjects(gl)
     |> _useDrawExpandGameObjectsProgram(gl, drawExpandGameObjectsShaderIndex)
     |> DrawExpandGameObjects.draw(

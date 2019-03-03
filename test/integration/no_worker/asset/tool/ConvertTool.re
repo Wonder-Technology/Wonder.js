@@ -1,5 +1,5 @@
 let buildFakeLoadImage = [%raw
-  () => {|
+  (.) => {|
         window.loadImageBase64_wonder = function(base64Str, resolve, reject){
             resolve(base64Str)
         }

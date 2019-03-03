@@ -56,6 +56,9 @@ type lightMaterialData = (gameObject, component);
 
 type geometryData = (gameObject, geometry);
 
+type disposedComponentDataMap =
+  WonderCommonlib.MutableSparseMapService.t(array(gameObject));
+
 type gameObjectRecord = {
   mutable uid: int,
   mutable nameMap: WonderCommonlib.MutableSparseMapService.t(string),
@@ -73,9 +76,9 @@ type gameObjectRecord = {
   mutable disposedTransformArrayForKeepOrder: array(int),
   mutable disposedPerspectiveCameraProjectionArray: array(int),
   mutable disposedArcballCameraControllerArray: array(int),
-  mutable disposedBasicMaterialDataArray: array(basicMaterialData),
-  mutable disposedLightMaterialDataArray: array(lightMaterialData),
-  mutable disposedGeometryDataArray: array(geometryData),
+  mutable disposedBasicMaterialDataMap: disposedComponentDataMap,
+  mutable disposedLightMaterialDataMap: disposedComponentDataMap,
+  mutable disposedGeometryDataMap: disposedComponentDataMap,
   mutable disposedSourceInstanceArray: array(int),
   mutable disposedObjectInstanceArray: array(int),
   mutable disposedDirectionLightArray: array(int),

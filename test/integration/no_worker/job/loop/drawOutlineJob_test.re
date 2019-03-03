@@ -313,6 +313,30 @@ let _ =
         );
       };
 
+      let prepareOneGameObject = (sandbox, state) => {
+        /* let (state, basicGameObject, (basicGeometry, _, pointsData), _, _) =
+           prepareBasicGameObject(sandbox, state); */
+
+        let (state, lightGameObject, lightGeometry, _, _) =
+          FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+        let (state, _, cameraTransform, (basicCameraView, _)) =
+          CameraTool.createCameraGameObject(state);
+
+        let state =
+          state
+          |> JobDataAPI.setGameObjectsNeedDrawOutline([|
+               /* basicGameObject, */
+               lightGameObject,
+             |]);
+
+        (
+          state,
+          (cameraTransform, basicCameraView),
+          lightGameObject,
+          lightGeometry,
+        );
+      };
+
       let prepareGameObjects = (sandbox, state) => {
         let (state, basicGameObject, (basicGeometry, _, pointsData), _, _) =
           prepareBasicGameObject(sandbox, state);
@@ -570,15 +594,15 @@ let _ =
     test("gl context->stencil should be true", () =>
       state^
       |> ViewTool.unsafeGetContext
-      |>
-      expect == {
-                  alpha: true,
-                  depth: true,
-                  stencil: true,
-                  antialias: true,
-                  premultipliedAlpha: true,
-                  preserveDrawingBuffer: false,
-                }
+      |> expect
+      == {
+           alpha: true,
+           depth: true,
+           stencil: true,
+           antialias: true,
+           premultipliedAlpha: true,
+           preserveDrawingBuffer: false,
+         }
     );
 
     describe(
@@ -1153,6 +1177,39 @@ let _ =
       );
     });
 
+    describe("clear last send component", () =>
+      describe("clear lastSendGeometryData", () =>
+        test("send a_position twice", () => {
+          let (state, _, lightGameObject, lightGeometry) =
+            TestDraw.prepareOneGameObject(sandbox, state^);
+          let float = 1;
+          let vertexAttribPointer = createEmptyStubWithJsObjSandbox(sandbox);
+          let pos = 0;
+          let getAttribLocation =
+            GLSLLocationTool.getAttribLocation(~pos, sandbox, "a_position");
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(
+                   ~sandbox,
+                   ~float,
+                   ~vertexAttribPointer,
+                   ~getAttribLocation,
+                   (),
+                 ),
+               );
+
+          let state =
+            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+          vertexAttribPointer
+          |> withTwoArgs(pos, 3)
+          |> getCallCount
+          |> expect == 2;
+        })
+      )
+    );
+
     describe("set gl state before draw expand gameObjects", () => {
       test("set stencil func and mask", () => {
         let stencilFunc = createEmptyStubWithJsObjSandbox(sandbox);
@@ -1538,32 +1595,32 @@ let _ =
         |> expect == true;
       });
       /* test("set side to front", () => {
-        let enable = createEmptyStubWithJsObjSandbox(sandbox);
-        let cullFace = createEmptyStubWithJsObjSandbox(sandbox);
-        let back = 1;
-        let getCullFace = 2;
-        let state =
-          state^
-          |> FakeGlTool.setFakeGl(
-               FakeGlTool.buildFakeGl(
-                 ~sandbox,
-                 ~enable,
-                 ~cullFace,
-                 ~back,
-                 ~getCullFace,
-                 (),
-               ),
-             );
+           let enable = createEmptyStubWithJsObjSandbox(sandbox);
+           let cullFace = createEmptyStubWithJsObjSandbox(sandbox);
+           let back = 1;
+           let getCullFace = 2;
+           let state =
+             state^
+             |> FakeGlTool.setFakeGl(
+                  FakeGlTool.buildFakeGl(
+                    ~sandbox,
+                    ~enable,
+                    ~cullFace,
+                    ~back,
+                    ~getCullFace,
+                    (),
+                  ),
+                );
 
-        let state =
-          state |> DirectorTool.init |> DirectorTool.runWithDefaultTime;
+           let state =
+             state |> DirectorTool.init |> DirectorTool.runWithDefaultTime;
 
-        (
-          enable |> SinonTool.calledWith(_, getCullFace),
-          cullFace |> getCall(1) |> SinonTool.calledWith(_, back),
-        )
-        |> expect == (true, true);
-      }); */
+           (
+             enable |> SinonTool.calledWith(_, getCullFace),
+             cullFace |> getCall(1) |> SinonTool.calledWith(_, back),
+           )
+           |> expect == (true, true);
+         }); */
       test("enable depth test", () => {
         let enable = createEmptyStubWithJsObjSandbox(sandbox);
         let getDepthTest = 1;

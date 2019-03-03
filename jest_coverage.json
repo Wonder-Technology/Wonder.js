@@ -7,7 +7,9 @@
   "transformIgnorePatterns": [
     "<rootDir>/node_modules/(?!(.*bs-)|wonder-commonlib|wonder-log|wonder-most-animation-frame|wonder-webgl|wonder-imgui)"
   ],
-  "setupTestFrameworkScriptFile": "<rootDir>/test/helper/jest/specHelper.js",
+  "setupFilesAfterEnv": [
+    "<rootDir>/test/helper/jest/specHelper.js"
+  ],
   "notify": false,
   "verbose": true,
   "collectCoverage": true,
@@ -27,7 +29,7 @@
     "<rootDir>/lib/es6_global/src/.+/RenderWorkerSystem.*"
   ],
   "collectCoverageFrom": [
-    "lib/es6_global/src/**/*.{js}",
+    "lib/es6_global/src/**/*.js",
     "!**/node_modules/**",
     "!**/vendor/**"
   ],

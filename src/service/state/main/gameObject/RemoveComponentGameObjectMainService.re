@@ -16,9 +16,9 @@ let removeGeometryComponent =
   }
   |> RemoveGeometryMainService.handleRemoveComponent(uid, component);
 
-let batchRemoveGeometryComponent = (state, geometryDataArray) =>
+let batchRemoveGeometryComponent = (state, geometryDataMap) =>
   RemoveGeometryMainService.handleBatchRemoveComponent(
-    geometryDataArray,
+    geometryDataMap,
     state,
   );
 
@@ -34,9 +34,9 @@ let removeBasicMaterialComponent =
   }
   |> RemoveBasicMaterialMainService.handleRemoveComponent(uid, component);
 
-let batchRemoveBasicMaterialComponent = (state, basicMaterialDataArray) =>
+let batchRemoveBasicMaterialComponent = (state, basicMaterialDataMap) =>
   RemoveBasicMaterialMainService.handleBatchRemoveComponent(
-    basicMaterialDataArray,
+    basicMaterialDataMap,
     state,
   );
 
@@ -52,8 +52,8 @@ let removeLightMaterialComponent =
   }
   |> RemoveLightMaterialMainService.handleRemoveComponent(uid, component);
 
-let batchRemoveLightMaterialComponent = (state, lightMaterialDataArray) =>
+let batchRemoveLightMaterialComponent = (state, lightMaterialDataMap) =>
   RemoveLightMaterialMainService.handleBatchRemoveComponent(
-    lightMaterialDataArray,
+    lightMaterialDataMap,
     state,
   );

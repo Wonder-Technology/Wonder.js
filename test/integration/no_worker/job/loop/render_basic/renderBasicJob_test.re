@@ -411,60 +411,63 @@ let _ =
         });
       });
       describe("send buffer", () => {
-        /* describe("optimize", () => {
-             let _prepare = (sandbox, state) => {
-               let (state, _, geometry, _, _) =
-                 RenderBasicJobTool.prepareGameObject(sandbox, state);
-               let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-               (state, geometry);
-             };
-             test("if lastSendGeometryData === geometryIndex, not send", () => {
-               let (state, geometry) = _prepare(sandbox, state^);
-               let (state, _, _, _, _) =
-                 RenderBasicJobTool.prepareGameObjectWithSharedGeometry(
-                   sandbox,
-                   geometry,
-                   state,
+        describe("optimize", () => {
+          let _prepare = (sandbox, state) => {
+            let (state, _, geometry, _, _) =
+              RenderBasicJobTool.prepareGameObject(sandbox, state);
+            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+            (state, geometry);
+          };
+
+          test("if lastSendGeometryData === geometryIndex, not send", () => {
+            let (state, geometry) = _prepare(sandbox, state^);
+            let (state, _, _, _, _) =
+              RenderBasicJobTool.prepareGameObjectWithSharedGeometry(
+                sandbox,
+                geometry,
+                state,
+              );
+            let float = 1;
+            let vertexAttribPointer =
+              createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~float,
+                     ~vertexAttribPointer,
+                     (),
+                   ),
                  );
-               let float = 1;
-               let vertexAttribPointer =
-                 createEmptyStubWithJsObjSandbox(sandbox);
-               let state =
-                 state
-                 |> FakeGlTool.setFakeGl(
-                      FakeGlTool.buildFakeGl(
-                        ~sandbox,
-                        ~float,
-                        ~vertexAttribPointer,
-                        (),
-                      ),
-                    );
-               let state = state |> RenderJobsTool.init;
-               let state = state |> DirectorTool.runWithDefaultTime;
-               vertexAttribPointer |> getCallCount |> expect == 1;
-             });
-             test("else, send", () => {
-               let (state, geometry) = _prepare(sandbox, state^);
-               let (state, _, _, _, _) =
-                 RenderBasicJobTool.prepareGameObject(sandbox, state);
-               let float = 1;
-               let vertexAttribPointer =
-                 createEmptyStubWithJsObjSandbox(sandbox);
-               let state =
-                 state
-                 |> FakeGlTool.setFakeGl(
-                      FakeGlTool.buildFakeGl(
-                        ~sandbox,
-                        ~float,
-                        ~vertexAttribPointer,
-                        (),
-                      ),
-                    );
-               let state = state |> RenderJobsTool.init;
-               let state = state |> DirectorTool.runWithDefaultTime;
-               vertexAttribPointer |> getCallCount |> expect == 2;
-             });
-           }); */
+            let state = state |> RenderJobsTool.init;
+            let state = state |> DirectorTool.runWithDefaultTime;
+            let state = state |> DirectorTool.runWithDefaultTime;
+            vertexAttribPointer |> getCallCount |> expect == 1;
+          });
+          test("else, send", () => {
+            let (state, geometry) = _prepare(sandbox, state^);
+            let (state, _, _, _, _) =
+              RenderBasicJobTool.prepareGameObject(sandbox, state);
+            let float = 1;
+            let vertexAttribPointer =
+              createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~float,
+                     ~vertexAttribPointer,
+                     (),
+                   ),
+                 );
+            let state = state |> RenderJobsTool.init;
+            let state = state |> DirectorTool.runWithDefaultTime;
+            vertexAttribPointer |> getCallCount |> expect == 2;
+          });
+        });
+
         describe("send a_position", () => {
           test("bind array buffer", () => {
             let state = _prepare(sandbox, state^);
@@ -576,7 +579,7 @@ let _ =
               enableVertexAttribArray
               |> withOneArg(pos)
               |> getCallCount
-              |> expect == 2;
+              |> expect == 1;
             });
             /* test
                ("differenc shader's vertexAttribHistory of the same attribute record pos are independent",
@@ -2214,7 +2217,7 @@ let _ =
     });
 
     describe("fix bug", () => {
-      let _prepareGameObjectHasNoGeometry = (sandbox, state) => {
+      let _createGameObjectHasNoGeometry = (sandbox, state) => {
         open GameObjectAPI;
         open BasicMaterialAPI;
         open MeshRendererAPI;
@@ -2226,6 +2229,16 @@ let _ =
           state
           |> addGameObjectBasicMaterialComponent(gameObject, material)
           |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+
+        (state, gameObject);
+      };
+
+      let _prepareGameObjectHasNoGeometry = (sandbox, state) => {
+        open GameObjectAPI;
+        open BasicMaterialAPI;
+        open MeshRendererAPI;
+        open Sinon;
+        let (state, _) = _createGameObjectHasNoGeometry(sandbox, state);
 
         let (state, _, _, _) = CameraTool.createCameraGameObject(state);
 

@@ -1,4 +1,4 @@
-let _fetch = filePath => Fetch.fetch(filePath);
+let _fetch = (. filePath) => Fetch.fetch(filePath);
 
 let loadConfig = jsonPathArr =>
   LoaderManagerSystem.loadConfig(

@@ -155,7 +155,11 @@ let disposeGameObjectGeometryComponentWithoutVboBufferAndNotReallocate =
   let (state, geometryNeedDisposeVboBufferArr) =
     DisposeComponentGameObjectMainService.batchDisposeGeometryComponentData(
       state,
-      [|(gameObject, component)|],
+      WonderCommonlib.MutableSparseMapService.createEmpty()
+      |> WonderCommonlib.MutableSparseMapService.set(
+           component,
+           [|gameObject|],
+         ),
     );
   state;
 };
@@ -169,7 +173,23 @@ let disposeGameObjectGeometryComponentWithoutVboBuffer =
   let (state, geometryNeedDisposeVboBufferArr) =
     DisposeComponentGameObjectMainService.batchDisposeGeometryComponentData(
       state,
-      [|(gameObject, component)|],
+      WonderCommonlib.MutableSparseMapService.createEmpty()
+      |> WonderCommonlib.MutableSparseMapService.set(
+           component,
+           [|gameObject|],
+         ),
+    );
+  let state = state |> ReallocateCPUMemoryJob.execJob(None);
+  state;
+};
+
+let batchDisposeGameObjectsGeometryComponentWithoutVboBuffer =
+    (gameObjectArr, component: component, state: StateDataMainType.state) => {
+  let (state, geometryNeedDisposeVboBufferArr) =
+    DisposeComponentGameObjectMainService.batchDisposeGeometryComponentData(
+      state,
+      WonderCommonlib.MutableSparseMapService.createEmpty()
+      |> WonderCommonlib.MutableSparseMapService.set(component, gameObjectArr),
     );
   let state = state |> ReallocateCPUMemoryJob.execJob(None);
   state;
@@ -183,7 +203,8 @@ let disposeGameObjectBasicMaterialComponent =
     ) =>
   DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(
     state,
-    [|(gameObject, component)|],
+    WonderCommonlib.MutableSparseMapService.createEmpty()
+    |> WonderCommonlib.MutableSparseMapService.set(component, [|gameObject|]),
   );
 
 let disposeGameObjectLightMaterialComponent =
@@ -194,7 +215,8 @@ let disposeGameObjectLightMaterialComponent =
     ) =>
   DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
     state,
-    [|(gameObject, component)|],
+    WonderCommonlib.MutableSparseMapService.createEmpty()
+    |> WonderCommonlib.MutableSparseMapService.set(component, [|gameObject|]),
   );
 
 let disposeGameObjectMeshRendererComponent =
@@ -270,7 +292,7 @@ let addChild =
           parentGameObject,
           gameObjectRecord,
         )
-        |. Some,
+        ->Some,
         GetComponentGameObjectService.unsafeGetTransformComponent(
           childGameObject,
           gameObjectRecord,

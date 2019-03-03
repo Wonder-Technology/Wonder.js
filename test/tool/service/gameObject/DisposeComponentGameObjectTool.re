@@ -51,9 +51,9 @@ let deferDisposeBasicMaterialComponent =
     ...state,
     gameObjectRecord: {
       ...state.gameObjectRecord,
-      disposedBasicMaterialDataArray:
-        state.gameObjectRecord.disposedBasicMaterialDataArray
-        |> ArrayService.push((gameObject, component)),
+      disposedBasicMaterialDataMap:
+        state.gameObjectRecord.disposedBasicMaterialDataMap
+        |> ArrayMapService.addValue(component, gameObject),
     },
   };
 
@@ -62,20 +62,20 @@ let deferDisposeLightMaterialComponent =
     ...state,
     gameObjectRecord: {
       ...state.gameObjectRecord,
-      disposedLightMaterialDataArray:
-        state.gameObjectRecord.disposedLightMaterialDataArray
-        |> ArrayService.push((gameObject, component)),
+      disposedLightMaterialDataMap:
+        state.gameObjectRecord.disposedLightMaterialDataMap
+        |> ArrayMapService.addValue(component, gameObject),
     },
   };
 
 let deferDisposeGeometryComponent =
-  (. gameObject, component: component, state) => {
+  (. gameObject, component: component, {gameObjectRecord} as state) => {
     ...state,
     gameObjectRecord: {
       ...state.gameObjectRecord,
-      disposedGeometryDataArray:
-        state.gameObjectRecord.disposedGeometryDataArray
-        |> ArrayService.push((gameObject, component)),
+      disposedGeometryDataMap:
+        gameObjectRecord.disposedGeometryDataMap
+        |> ArrayMapService.addValue(component, gameObject),
     },
   };
 

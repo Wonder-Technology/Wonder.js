@@ -47,7 +47,7 @@ let initWithJobConfigWithoutBuildFakeDom =
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
       (),
     ) => {
-  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer(.);
+  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
   SettingTool.createStateAndSetToStateData(
     ~isDebug,
     ~canvasId,
@@ -83,7 +83,7 @@ let initWithJobConfig =
                |},
       (),
     ) => {
-  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer(.);
+  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
   SettingTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
   initWithJobConfigWithoutBuildFakeDom(
     ~sandbox,
@@ -116,7 +116,7 @@ let createWithJobConfigWithoutBuildFakeDom =
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
       (),
     ) => {
-  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer(.);
+  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
   SettingTool.createStateAndSetToStateData(
     ~isDebug,
     ~canvasId,
@@ -138,7 +138,7 @@ let createWithJobConfig =
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
       (),
     ) => {
-  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer(.);
+  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
   SettingTool.buildFakeDomForNotPassCanvasId(sandbox) |> ignore;
   createWithJobConfigWithoutBuildFakeDom(
     ~sandbox,

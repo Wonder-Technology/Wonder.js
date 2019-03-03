@@ -3,24 +3,29 @@ open WorkerJobType;
 open JobType;
 
 let getExecutableJob = (jobs, jobItemName) =>
-  JobConfigService.unsafeFindFirst(
-    jobs,
-    jobItemName,
-    ({name: jobName}: job) => JobConfigService.filterTargetName(jobName, jobItemName)
+  JobConfigService.unsafeFindFirst(jobs, jobItemName, ({name: jobName}: job) =>
+    JobConfigService.filterTargetName(jobName, jobItemName)
   );
 
 let _addHandleFuncToList = (action, handleFunc, handleList) =>
-  switch action {
+  switch (action) {
   | BEFORE => [handleFunc, ...handleList]
   | AFTER => handleList @ [handleFunc]
   };
 
-let rec _findAllCustomJobHandles = (subJobName, workerCustomMainLoopTargetJobMap, handleList) =>
-  switch (workerCustomMainLoopTargetJobMap |> WonderCommonlib.MutableHashMapService.get(subJobName)) {
+let rec _findAllCustomJobHandles =
+        (subJobName, workerCustomMainLoopTargetJobMap, handleList) =>
+  switch (
+    workerCustomMainLoopTargetJobMap
+    |> WonderCommonlib.MutableHashMapService.get(subJobName)
+  ) {
   | None => handleList
   | Some((customJobName, action, handleFunc)) =>
     _addHandleFuncToList(action, handleFunc, handleList)
-    |> _findAllCustomJobHandles(customJobName, workerCustomMainLoopTargetJobMap)
+    |> _findAllCustomJobHandles(
+         customJobName,
+         workerCustomMainLoopTargetJobMap,
+       )
   };
 
 let _buildCustomStreamArr = (customJobHandleList, stateData) =>
@@ -29,19 +34,20 @@ let _buildCustomStreamArr = (customJobHandleList, stateData) =>
        (streamArr, customHandle) =>
          streamArr
          |> ArrayService.push(
-              MostUtils.callFunc(
-                () => {
-                  customHandle(stateData);
-                  None
-                }
-              )
+              MostUtils.callFunc(() => {
+                customHandle(stateData);
+                None;
+              }),
             ),
-       [||]
+       [||],
      );
 
 let addCustomJobHandleToStreamArr =
     (subJobName, workerCustomMainTargetJobMap, stateData, streamArr) =>
-  switch (_findAllCustomJobHandles(subJobName, workerCustomMainTargetJobMap, [])) {
+  switch (
+    _findAllCustomJobHandles(subJobName, workerCustomMainTargetJobMap, [])
+  ) {
   | list when list |> List.length === 0 => streamArr
-  | list => streamArr |> Js.Array.concat(_buildCustomStreamArr(list, stateData))
+  | list =>
+    streamArr |> Js.Array.concat(_buildCustomStreamArr(list, stateData))
   };

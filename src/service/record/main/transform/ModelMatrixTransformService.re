@@ -11,26 +11,27 @@ open HierachyTransformService;
 open Matrix4Service;
 
 let getLocalToWorldMatrixTypeArray =
-  (. transform: transform, localToWorldMatrices, localToWorldMatrixCacheMap) =>
-    switch (
-      localToWorldMatrixCacheMap
-      |> WonderCommonlib.MutableSparseMapService.get(transform)
-    ) {
-    | Some(matrix) => matrix
-    | None =>
-      let matrix =
-        OperateTypeArrayTransformService.getLocalToWorldMatrixTypeArray(
+  (. transform: transform, localToWorldMatrices, localToWorldMatrixCacheMap) => {
+    let (has, matrix) =
+      localToWorldMatrixCacheMap |> MutableSparseMapService.fastGet(transform);
+
+    has ?
+      matrix :
+      {
+        let matrix =
+          OperateTypeArrayTransformService.getLocalToWorldMatrixTypeArray(
+            transform,
+            localToWorldMatrices,
+          );
+        WonderCommonlib.MutableSparseMapService.set(
           transform,
-          localToWorldMatrices,
-        );
-      WonderCommonlib.MutableSparseMapService.set(
-        transform,
-        matrix,
-        localToWorldMatrixCacheMap,
-      )
-      |> ignore;
-      matrix;
-    };
+          matrix,
+          localToWorldMatrixCacheMap,
+        )
+        |> ignore;
+        matrix;
+      };
+  };
 
 let _getNormalMatrixTypeArray =
     (
@@ -54,27 +55,32 @@ let getNormalMatrixTypeArray =
       transform: transform,
       localToWorldMatrices,
       (localToWorldMatrixCacheMap, normalMatrixCacheMap),
-    ) =>
-  switch (
-    normalMatrixCacheMap |> WonderCommonlib.MutableSparseMapService.get(transform)
-  ) {
-  | Some(matrix) => matrix
-  | None =>
-    let matrix =
-      _getNormalMatrixTypeArray(
+    ) => {
+  let (has, matrix) =
+    normalMatrixCacheMap |> MutableSparseMapService.fastGet(transform);
+
+  has ?
+    matrix :
+    {
+      let matrix =
+        _getNormalMatrixTypeArray(
+          transform,
+          localToWorldMatrices,
+          (
+            localToWorldMatrixCacheMap,
+            Matrix3Service.createIdentityMatrix3(),
+          ),
+          getLocalToWorldMatrixTypeArray,
+        );
+      WonderCommonlib.MutableSparseMapService.set(
         transform,
-        localToWorldMatrices,
-        (localToWorldMatrixCacheMap, Matrix3Service.createIdentityMatrix3()),
-        getLocalToWorldMatrixTypeArray,
-      );
-    WonderCommonlib.MutableSparseMapService.set(
-      transform,
-      matrix,
-      normalMatrixCacheMap,
-    )
-    |> ignore;
-    matrix;
-  };
+        matrix,
+        normalMatrixCacheMap,
+      )
+      |> ignore;
+      matrix;
+    };
+};
 
 /* let getLocalPositionTypeArray = (transform: transform, localPositions) =>
    OperateTypeArrayTransformService.getLocalPositionTypeArray(transform, localPositions); */

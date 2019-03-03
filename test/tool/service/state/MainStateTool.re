@@ -10,7 +10,7 @@ let unsafeGetState = () =>
 let setState = state => StateDataMainService.setState(getStateData(), state);
 
 let createState = () => {
-  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer(.);
+  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
   StateAPI.createState();
 };
 

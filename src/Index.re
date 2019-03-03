@@ -242,6 +242,10 @@ let getAllGameObjects = GameObjectAPI.getAllGameObjects;
 
 let getAllChildrenTransform = GameObjectAPI.getAllChildrenTransform;
 
+let setGameObjectIsRoot = GameObjectAPI.setGameObjectIsRoot;
+
+let unsafeGetGameObjectIsRoot = GameObjectAPI.unsafeGetGameObjectIsRoot;
+
 let setGameObjectName = GameObjectAPI.setGameObjectName;
 
 let unsafeGetGameObjectName = GameObjectAPI.unsafeGetGameObjectName;
@@ -754,6 +758,8 @@ let unsafeGetArrayBufferViewSourceTextureSource = ArrayBufferViewSourceTextureAP
 
 let createArrayBufferViewSourceTexture = ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture;
 
+let getAllTextures = BasicSourceTextureAPI.getAllTextures;
+
 let setBasicSourceTextureName = BasicSourceTextureAPI.setBasicSourceTextureName;
 
 let unsafeGetBasicSourceTextureName = BasicSourceTextureAPI.unsafeGetBasicSourceTextureName;
@@ -929,6 +935,10 @@ let getAllDirectionLightComponentsOfGameObject = GameObjectAPI.getAllDirectionLi
 let getAllGameObjects = GameObjectAPI.getAllGameObjects;
 
 let getAllChildrenTransform = GameObjectAPI.getAllChildrenTransform;
+
+let setGameObjectIsRoot = GameObjectAPI.setGameObjectIsRoot;
+
+let unsafeGetGameObjectIsRoot = GameObjectAPI.unsafeGetGameObjectIsRoot;
 
 let setGameObjectName = GameObjectAPI.setGameObjectName;
 
