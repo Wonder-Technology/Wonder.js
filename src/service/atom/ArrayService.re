@@ -136,7 +136,7 @@ let fastConcat = (arr1, arr2) =>
      );
 
 let rec _includeInSourceArr =
-        (targetItem, resultArr, posInSourceArr, sourceArr, sourceArrLength) => {
+        (targetItem, resultArr, (posInSourceArr, sourceArr, sourceArrLength)) => {
   let sourceItem = Array.unsafe_get(sourceArr, posInSourceArr);
 
   posInSourceArr >= sourceArrLength ?
@@ -145,15 +145,13 @@ let rec _includeInSourceArr =
       _includeInSourceArr(
         targetItem,
         resultArr,
-        posInSourceArr |> succ,
-        sourceArr,
-        sourceArrLength,
+        (posInSourceArr |> succ, sourceArr, sourceArrLength),
       ) :
       (resultArr |> push(sourceItem), posInSourceArr |> succ);
 };
 
 let rec _excludeInSourceArr =
-        (targetItem, resultArr, posInSourceArr, sourceArr, sourceArrLength) => {
+        (targetItem, resultArr, (posInSourceArr, sourceArr, sourceArrLength)) => {
   let sourceItem = Array.unsafe_get(sourceArr, posInSourceArr);
 
   sourceItem === targetItem ?
@@ -161,19 +159,14 @@ let rec _excludeInSourceArr =
     _excludeInSourceArr(
       targetItem,
       resultArr |> push(sourceItem),
-      posInSourceArr |> succ,
-      sourceArr,
-      sourceArrLength,
+      (posInSourceArr |> succ, sourceArr, sourceArrLength),
     );
 };
 
 let _fastHandleRelation =
     (
-      targetArr: array(int),
-      sourceArr: array(int),
-      handleLengthEqualFunc,
-      handleInSourceArrFunc,
-      handleResultArrFunc,
+      (targetArr: array(int), sourceArr: array(int)),
+      (handleLengthEqualFunc, handleInSourceArrFunc, handleResultArrFunc),
     )
     : array(int) => {
   WonderLog.Contract.requireCheck(
@@ -231,16 +224,13 @@ let _fastHandleRelation =
       let sourceArrLength = Js.Array.length(sourceArr);
 
       let (resultArr, posInSourceArr) =
-        /* ([||], 0); */
         targetArr
         |> WonderCommonlib.ArrayService.reduceOneParam(
              (. (resultArr, posInSourceArr), targetItem) =>
                handleInSourceArrFunc(
                  targetItem,
                  resultArr,
-                 posInSourceArr,
-                 sourceArr,
-                 sourceArrLength,
+                 (posInSourceArr, sourceArr, sourceArrLength),
                ),
              ([||], 0),
            );
@@ -252,22 +242,24 @@ let _fastHandleRelation =
 let fastExclude =
     (targetArr: array(int), sourceArr: array(int)): array(int) =>
   _fastHandleRelation(
-    targetArr,
-    sourceArr,
-    (_, _) => [||],
-    _excludeInSourceArr,
-    (posInSourceArr, sourceArr, resultArr) =>
-      fastConcat(resultArr, Js.Array.sliceFrom(posInSourceArr, sourceArr)),
+    (targetArr, sourceArr),
+    (
+      (_, _) => [||],
+      _excludeInSourceArr,
+      (posInSourceArr, sourceArr, resultArr) =>
+        fastConcat(resultArr, Js.Array.sliceFrom(posInSourceArr, sourceArr)),
+    ),
   );
 
 let fastIntersect =
     (targetArr: array(int), sourceArr: array(int)): array(int) =>
   _fastHandleRelation(
-    targetArr,
-    sourceArr,
-    (targetArr, _) => targetArr,
-    _includeInSourceArr,
-    (posInSourceArr, sourceArr, resultArr) => resultArr,
+    (targetArr, sourceArr),
+    (
+      (targetArr, _) => targetArr,
+      _includeInSourceArr,
+      (posInSourceArr, sourceArr, resultArr) => resultArr,
+    ),
   );
 
 let batchRemove =
