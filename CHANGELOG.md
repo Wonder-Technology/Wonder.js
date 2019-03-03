@@ -1,3 +1,33 @@
+<a name="1.0.0-beta.3"></a>
+# [1.0.0-beta.3](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2019-03-03)
+
+
+### Bug Fixes
+
+* **memory:** fix reallocate gameObject data ([b6934d5](https://github.com/Wonder-Technology/Wonder.js/commit/b6934d5))
+* **outline:** fix "draw outline": add "clear last send component" before draw expand gameObject ([51b914d](https://github.com/Wonder-Technology/Wonder.js/commit/51b914d))
+* **pf-test:** fix pf test->schedule related test cases ([91a6099](https://github.com/Wonder-Technology/Wonder.js/commit/91a6099))
+* **render:** fix ClearLastSendComponentJob: add "clear lastSendGeometryData" ([7217fdd](https://github.com/Wonder-Technology/Wonder.js/commit/7217fdd))
+
+
+### Features
+
+* fix DomExtend->exitPointerLock for bsb compile ([d279cc7](https://github.com/Wonder-Technology/Wonder.js/commit/d279cc7))
+* update bs-platform to 4.0.18 ([b95a0b5](https://github.com/Wonder-Technology/Wonder.js/commit/b95a0b5))
+* update wonder-log, wonder-webgl version ([63a4a66](https://github.com/Wonder-Technology/Wonder.js/commit/63a4a66))
+
+
+### Performance Improvements
+
+* **benchmark:** optimize for "basic_boxes_create_20k_boxes"(clone) benchmark ([bcab6eb](https://github.com/Wonder-Technology/Wonder.js/commit/bcab6eb))
+* **benchmark:** optimize for "create 7k basic boxes(not cloned)" benchmark ([d9b12fc](https://github.com/Wonder-Technology/Wonder.js/commit/d9b12fc))
+* **dispose:** optimize AliveComponentService->getAllAliveComponents ([e251c67](https://github.com/Wonder-Technology/Wonder.js/commit/e251c67))
+* **dispose:** optimize ArrayService->batchRemove ([01d6dd1](https://github.com/Wonder-Technology/Wonder.js/commit/01d6dd1))
+* **dispose:** optimize batch dispose geometry/basicMaterial/lightMaterial ([30629d7](https://github.com/Wonder-Technology/Wonder.js/commit/30629d7))
+* **memory:** optimize ReallocateGameObjectCPUMemoryService->_setNewMap ([5591100](https://github.com/Wonder-Technology/Wonder.js/commit/5591100))
+
+
+
 <a name="1.0.0-beta.2"></a>
 # [1.0.0-beta.2](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2019-02-25)
 
