@@ -33,8 +33,8 @@ let batchDisposeGameObject =
   ) =
     DisposeGameObjectMainService.batchDispose(
       (
-        DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
-        DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent,
+        DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponentData,
+        DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponentData,
       ),
       gameObjectArray,
       (false, false, false),
@@ -66,8 +66,8 @@ let batchDisposeGameObjectKeepOrder =
   ) =
     DisposeGameObjectMainService.batchDispose(
       (
-        DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
-        DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent,
+        DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponentData,
+        DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponentData,
       ),
       gameObjectArray,
       (true, false, false),
@@ -201,7 +201,7 @@ let disposeGameObjectBasicMaterialComponent =
       component: component,
       state: StateDataMainType.state,
     ) =>
-  DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(
+  DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponentData(
     state,
     WonderCommonlib.MutableSparseMapService.createEmpty()
     |> WonderCommonlib.MutableSparseMapService.set(component, [|gameObject|]),
@@ -213,7 +213,7 @@ let disposeGameObjectLightMaterialComponent =
       component: component,
       state: StateDataMainType.state,
     ) =>
-  DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
+  DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponentData(
     state,
     WonderCommonlib.MutableSparseMapService.createEmpty()
     |> WonderCommonlib.MutableSparseMapService.set(component, [|gameObject|]),
@@ -263,8 +263,8 @@ let disposeGameObjectSourceInstanceComponent =
       state,
       (false, false, false),
       DisposeGameObjectMainService.batchDispose((
-        DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
-        DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent,
+        DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponentData,
+        DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponentData,
       )),
       [|component|],
     );

@@ -187,13 +187,13 @@ let batchDisposeGeometryComponentData =
   );
 
 let batchDisposeBasicMaterialComponent = (state, componentDataArray) =>
-  DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(
+  DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponentData(
     state,
     componentDataArray,
   );
 
 let batchDisposeLightMaterialComponent = (state, componentDataArray) =>
-  DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
+  DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponentData(
     state,
     componentDataArray,
   );

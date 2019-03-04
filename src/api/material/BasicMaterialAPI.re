@@ -293,3 +293,9 @@ let getAllBasicMaterials = state => {
 
   GetAllComponentService.getAllComponents(index, disposedIndexArray);
 };
+
+let batchDisposeBasicMaterial = (materialArr, state) =>
+  DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent(
+    materialArr,
+    state,
+  );

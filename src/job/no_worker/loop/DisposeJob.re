@@ -9,8 +9,8 @@ let execJob = (flags, state) => {
     sourceInstanceNeedDisposeVboBufferArr,
   ) =
     DisposeJobUtils.execJob(
-      DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponent,
-      DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent,
+      DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponentData,
+      DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponentData,
       state,
     );
   {

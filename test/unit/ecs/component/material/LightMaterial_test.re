@@ -578,6 +578,67 @@ let _ =
       });
     });
 
+    describe("batchDisposeLightMaterial", () => {
+      let _exec = (materialArr, state) => {
+        let state = state |> batchDisposeLightMaterial(materialArr);
+        let state = DisposeJob.execJob(None, state);
+
+        state;
+      };
+
+      describe("if material has gameObjects", () => {
+        let _prepareAndExec = state => {
+          let (state, material1) = createLightMaterial(state^);
+          let (state, gameObject1, material2) =
+            LightMaterialTool.createGameObject(state);
+          let (state, gameObject2, material3) =
+            LightMaterialTool.createGameObject(state);
+
+          let state = _exec([|material2, material3|], state);
+
+          (state, (material1, material2, material3));
+        };
+
+        test("remove from gameObject", () => {
+          let (state, (material1, material2, material3)) =
+            _prepareAndExec(state);
+
+          (
+            LightMaterialTool.hasGameObject(material2, state),
+            LightMaterialTool.hasGameObject(material3, state),
+          )
+          |> expect == (false, false);
+        });
+
+        test("dispose material data", () => {
+          let (state, (material1, material2, material3)) =
+            _prepareAndExec(state);
+
+          (
+            LightMaterialTool.isMaterialDisposed(material1, state),
+            LightMaterialTool.isMaterialDisposed(material2, state),
+            LightMaterialTool.isMaterialDisposed(material3, state),
+          )
+          |> expect == (false, true, true);
+        });
+      });
+
+      describe("else", () =>
+        test("dispose material data", () => {
+          let (state, material1) = createLightMaterial(state^);
+          let (state, material2) = createLightMaterial(state);
+
+          let state = _exec([|material1, material2|], state);
+
+          (
+            LightMaterialTool.isMaterialDisposed(material1, state),
+            LightMaterialTool.isMaterialDisposed(material2, state),
+          )
+          |> expect == (true, true);
+        })
+      );
+    });
+
     describe("contract check: is alive", () =>
       describe("if material is disposed", () => {
         let _testGetFunc = getFunc => {
