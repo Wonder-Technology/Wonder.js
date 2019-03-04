@@ -27,9 +27,8 @@ let _checkAndWarn = (({meshes}: GLTFType.gltf) as gltf) => {
 let _buildWDBJsonUint8Array = (gltf: GLTFType.gltf) => {
   let gltf = _checkAndWarn(gltf);
   let ({asset, scenes, scene, nodes, extensions}: GLTFType.gltf) as gltf =
-    gltf
-    |> ConvertMultiPrimitivesSystem.convertMultiPrimitivesToNodes
-    |> ConvertDefaultMaterialSystem.convert;
+    gltf |> ConvertMultiPrimitivesSystem.convertMultiPrimitivesToNodes;
+  /* |> ConvertDefaultMaterialSystem.convert; */
 
   let transforms = ConvertTransformsSystem.convertToTransforms(gltf);
 
@@ -130,7 +129,7 @@ let _getEmptyEncodedUint8Data = () => {
   TypeArrayService.getUint8_1(0, emptyUint8DataArr);
 };
 
-let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer) : ArrayBuffer.t => {
+let _convertGLBToWDB = (gltf: GLTFType.gltf, binBuffer): ArrayBuffer.t => {
   let (bufferViewDataArr, streamChunkArr, jsonUint8Array) =
     _buildWDBJsonUint8Array(gltf);
 

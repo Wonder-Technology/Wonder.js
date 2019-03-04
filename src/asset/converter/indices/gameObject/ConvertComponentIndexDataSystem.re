@@ -104,8 +104,7 @@ let convertToBasicCameraViewGameObjectIndexData = nodes => {
            index,
          ) =>
            switch (extras) {
-           | Some(({basicCameraView}))
-               when basicCameraView |> Js.Option.isSome =>
+           | Some({basicCameraView}) when basicCameraView |> Js.Option.isSome =>
              _convertToGameObjectIndexDataFromExtras(
                basicCameraView |> OptionService.unsafeGet,
                (gameObjectIndices, componentIndices),
@@ -170,7 +169,9 @@ let _buildPerspectiveCameraProjectionGameObjectIndexData =
                componentIndices
                |> ArrayService.push(
                     perspectiveCameraActualIndexMap
-                    |> WonderCommonlib.MutableSparseMapService.unsafeGet(camera),
+                    |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                         camera,
+                       ),
                   ),
              )
            | _ => (gameObjectIndices, componentIndices)
@@ -179,14 +180,13 @@ let _buildPerspectiveCameraProjectionGameObjectIndexData =
        ([||], [||]),
      );
 
-let buildEmptyGameObjectIndexData = () : WDType.componentGameObjectIndexData => {
+let buildEmptyGameObjectIndexData = (): WDType.componentGameObjectIndexData => {
   gameObjectIndices: [||],
   componentIndices: [||],
 };
 
 let convertToPerspectiveCameraProjectionGameObjectIndexData =
-    (nodes, cameras)
-    : WDType.componentGameObjectIndexData =>
+    (nodes, cameras): WDType.componentGameObjectIndexData =>
   switch (cameras) {
   | None => buildEmptyGameObjectIndexData()
   | Some(cameras) =>
@@ -207,8 +207,7 @@ let convertToPerspectiveCameraProjectionGameObjectIndexData =
   };
 
 let convertToArcballCameraControllerGameObjectIndexData =
-    nodes
-    : WDType.componentGameObjectIndexData => {
+    nodes: WDType.componentGameObjectIndexData => {
   let (gameObjectIndices, componentIndices) =
     nodes
     |> WonderCommonlib.ArrayService.reduceOneParami(
@@ -351,7 +350,7 @@ let convertToGeometryGameObjectIndexData = nodes => {
   |> _checkGameObjectAndComponentIndicesCountShouldEqual;
 };
 
-let convertToMeshRendererGameObjectIndexData = nodes => {
+let convertToMeshRendererGameObjectIndexData = (nodes, meshes) => {
   let (gameObjectIndices, componentIndices) =
     nodes
     |> WonderCommonlib.ArrayService.reduceOneParami(
@@ -370,13 +369,17 @@ let convertToMeshRendererGameObjectIndexData = nodes => {
            | _ =>
              switch (mesh) {
              | None => (gameObjectIndices, componentIndices)
-             | Some(mesh) => (
-                 gameObjectIndices |> ArrayService.push(index),
-                 componentIndices
-                 |> ArrayService.push(
-                      (gameObjectIndices |> Js.Array.length) - 1,
-                    ),
-               )
+             | Some(mesh) =>
+               Array.unsafe_get(meshes, mesh)
+               |> ConvertMeshUtils.doesMeshHasMaterial ?
+                 (
+                   gameObjectIndices |> ArrayService.push(index),
+                   componentIndices
+                   |> ArrayService.push(
+                        (gameObjectIndices |> Js.Array.length) - 1,
+                      ),
+                 ) :
+                 (gameObjectIndices, componentIndices)
              }
            },
          ([||], [||]),
@@ -429,7 +432,9 @@ let _buildLightGameObjectIndexData =
                  componentIndices
                  |> ArrayService.push(
                       lightActualIndexMap
-                      |> WonderCommonlib.MutableSparseMapService.unsafeGet(light),
+                      |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                           light,
+                         ),
                     ),
                )
              | _ => (gameObjectIndices, componentIndices)
@@ -440,8 +445,7 @@ let _buildLightGameObjectIndexData =
      );
 
 let convertToLightGameObjectIndexData =
-    (lightType, nodes, extensions)
-    : WDType.componentGameObjectIndexData =>
+    (lightType, nodes, extensions): WDType.componentGameObjectIndexData =>
   switch (extensions) {
   | None => buildEmptyGameObjectIndexData()
   | Some(({khr_lights}: GLTFType.extensions)) =>

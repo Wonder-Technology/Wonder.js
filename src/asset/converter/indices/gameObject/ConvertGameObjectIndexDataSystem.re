@@ -46,6 +46,7 @@ let convertToGameObjectIndexData =
     meshRendererGameObjectIndexData:
       ConvertComponentIndexDataSystem.convertToMeshRendererGameObjectIndexData(
         nodes,
+        meshes
       ),
     directionLightGameObjectIndexData:
       ConvertComponentIndexDataSystem.convertToLightGameObjectIndexData(

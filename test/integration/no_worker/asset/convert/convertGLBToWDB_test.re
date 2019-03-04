@@ -373,7 +373,7 @@ let _ =
       });
     });
 
-    describe("test set default material", () => {
+    /* describe("test set default material", () => {
       describe("test if node has any one material extras", () =>
         test("not add default lightMaterial", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
@@ -419,7 +419,7 @@ let _ =
         )
       );
 
-      describe("else, test mesh has no material", () => {
+      describe("else, if mesh has no material", () => {
         test("add default lightMaterial", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
@@ -477,7 +477,7 @@ let _ =
           )
         );
       });
-    });
+    }); */
 
     test("test asset", () =>
       ConvertGLBTool.testGLTFResultByGLTF(
