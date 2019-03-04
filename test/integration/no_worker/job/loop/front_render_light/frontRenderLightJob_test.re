@@ -386,7 +386,7 @@ let _ =
         });
       });
       describe("send buffer", () => {
-        describe("optimize", () => {
+        /* describe("optimize", () => {
           let _prepare = (sandbox, state) => {
             let (state, _, geometry, _, _) =
               FrontRenderLightJobTool.prepareGameObject(sandbox, state);
@@ -422,6 +422,55 @@ let _ =
 
             vertexAttribPointer |> getCallCount |> expect == 2 * 1;
           });
+        }); */
+
+        describe("fix bug", () => {
+          let _prepare = (sandbox, state) => {
+            let (state, _, geometry, _, _) =
+              FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+            (state, geometry);
+          };
+
+          test(
+            {|
+        create gameObject gameObject1 with geometry geometry1;
+        create gameObject gameObject2 which share geometry geometry1 and set map to its material;
+        loopBody;
+
+        should send gameObject1 and gameObject2 attribute data;
+        |},
+            () => {
+              let (state, geometry) = _prepare(sandbox, state^);
+              let (state, _, _, material2, _) =
+                FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
+                  sandbox,
+                  geometry,
+                  GameObjectAPI.addGameObjectGeometryComponent,
+                  state,
+                );
+              let (state, (texture1, texture2)) =
+                LightMaterialTool.createAndSetMaps(material2, state);
+              let float = 1;
+              let vertexAttribPointer =
+                createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(
+                       ~sandbox,
+                       ~float,
+                       ~vertexAttribPointer,
+                       (),
+                     ),
+                   );
+
+              let state = state |> RenderJobsTool.init;
+              let state = state |> DirectorTool.runWithDefaultTime;
+
+              vertexAttribPointer |> getCallCount |> expect == 5;
+            },
+          );
         });
 
         describe("send a_position", () =>
