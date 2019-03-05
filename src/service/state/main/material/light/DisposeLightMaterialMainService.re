@@ -88,7 +88,7 @@ let _disposeData =
   };
 };
 
-let handleBatchDisposeComponent =
+let handleBatchDisposeComponentData =
   (. materialDataMap, {settingRecord} as state) => {
     WonderLog.Contract.requireCheck(
       () =>
@@ -111,35 +111,100 @@ let handleBatchDisposeComponent =
     let textureCountPerMaterial =
       BufferSettingService.getTextureCountPerMaterial(settingRecord);
 
-    materialDataMap
-    |> WonderCommonlib.MutableSparseMapService.reduceiValid(
-         (. lightMaterialRecord, gameObjectArr, material) => {
-           let lightMaterialRecord =
-             GroupLightMaterialService.batchRemoveGameObjects(
-               gameObjectArr,
+    let lightMaterialRecord =
+      materialDataMap
+      |> WonderCommonlib.MutableSparseMapService.reduceiValid(
+           (. lightMaterialRecord, gameObjectArr, material) => {
+             let lightMaterialRecord =
+               GroupLightMaterialService.batchRemoveGameObjects(
+                 gameObjectArr,
+                 material,
+                 lightMaterialRecord,
+               );
+
+             GroupLightMaterialService.isGroupLightMaterial(
                material,
                lightMaterialRecord,
-             );
+             ) ?
+               lightMaterialRecord :
+               {
+                 ...
+                   lightMaterialRecord
+                   |> _disposeData(material, textureCountPerMaterial),
+                 disposedIndexArray:
+                   DisposeMaterialService.addDisposeIndex(
+                     material,
+                     disposedIndexArray,
+                   ),
+               };
+           },
+           lightMaterialRecord,
+         );
 
-           GroupLightMaterialService.isGroupLightMaterial(
-             material,
-             lightMaterialRecord,
-           ) ?
-             lightMaterialRecord :
-             {
-               ...
-                 lightMaterialRecord
-                 |> _disposeData(material, textureCountPerMaterial),
-               disposedIndexArray:
-                 DisposeMaterialService.addDisposeIndex(
-                   material,
-                   disposedIndexArray,
-                 ),
-             };
-         },
-         lightMaterialRecord,
-       )
-    |> ignore;
+    state.lightMaterialRecord = Some(lightMaterialRecord);
 
     state;
   };
+
+let handleBatchDisposeComponent =
+    (materialHasNoGameObjectArray, {settingRecord} as state) => {
+  WonderLog.Contract.requireCheck(
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+
+      DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
+        materialHasNoGameObjectArray,
+        isAlive,
+        state |> RecordLightMaterialMainService.getRecord,
+      );
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|material has no gameObject|j},
+          ~actual={j|has|j},
+        ),
+        () => {
+          let materialRecord =
+            state |> RecordLightMaterialMainService.getRecord;
+
+          materialHasNoGameObjectArray
+          |> Js.Array.filter(material =>
+               GameObjectLightMaterialService.getGameObjects(
+                 material,
+                 materialRecord,
+               )
+               |> Js.Option.isSome
+             )
+          |> Js.Array.length == 0;
+        },
+      );
+    },
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  let {disposedIndexArray} as lightMaterialRecord =
+    RecordLightMaterialMainService.getRecord(state);
+  let textureCountPerMaterial =
+    BufferSettingService.getTextureCountPerMaterial(settingRecord);
+
+  let lightMaterialRecord =
+    materialHasNoGameObjectArray
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. lightMaterialRecord, material) => {
+           ...
+             lightMaterialRecord
+             |> _disposeData(material, textureCountPerMaterial),
+           disposedIndexArray:
+             DisposeMaterialService.addDisposeIndex(
+               material,
+               disposedIndexArray,
+             ),
+         },
+         lightMaterialRecord,
+       );
+
+  state.lightMaterialRecord = Some(lightMaterialRecord);
+
+  state;
+};

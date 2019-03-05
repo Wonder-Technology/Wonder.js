@@ -33,11 +33,8 @@ let _getBufferData =
                 byteStride |> OptionService.isJsonSerializedValueNone ?
                   assertPass() :
                   byteStride
-                  |>
-                  OptionService.unsafeGetJsonSerializedValue == BufferUtils.getAccessorTypeSize(
-                                                                  accessor.
-                                                                    type_,
-                                                                )
+                  |> OptionService.unsafeGetJsonSerializedValue
+                  == BufferUtils.getAccessorTypeSize(accessor.type_)
                   * bytes_per_element;
               },
             )
@@ -90,13 +87,13 @@ let _getBufferIndex16Data = (componentType, accessorIndex, dataViewArr, wd) =>
       )
       |> Obj.magic,
     )
-    |. Some
+    ->Some
   | UNSIGNED_SHORT =>
     _getBufferPointData(
       (accessorIndex, Uint16Array._BYTES_PER_ELEMENT, dataViewArr, wd),
       Uint16Array.fromBufferRange,
     )
-    |. Some
+    ->Some
   | _ => None
   };
 
@@ -107,7 +104,7 @@ let _getBufferIndex32Data = (componentType, accessorIndex, dataViewArr, wd) =>
       (accessorIndex, Uint32Array._BYTES_PER_ELEMENT, dataViewArr, wd),
       Uint32Array.fromBufferRange,
     )
-    |. Some
+    ->Some
   | _ => None
   };
 

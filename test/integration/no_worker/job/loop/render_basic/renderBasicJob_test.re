@@ -411,7 +411,7 @@ let _ =
         });
       });
       describe("send buffer", () => {
-        describe("optimize", () => {
+        /* describe("optimize", () => {
           let _prepare = (sandbox, state) => {
             let (state, _, geometry, _, _) =
               RenderBasicJobTool.prepareGameObject(sandbox, state);
@@ -469,7 +469,7 @@ let _ =
 
             vertexAttribPointer |> getCallCount |> expect == 2;
           });
-        });
+        }); */
 
         describe("send a_position", () => {
           test("bind array buffer", () => {

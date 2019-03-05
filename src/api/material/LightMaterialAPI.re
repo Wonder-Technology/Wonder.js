@@ -371,3 +371,9 @@ let getAllLightMaterials = state => {
 
   GetAllComponentService.getAllComponents(index, disposedIndexArray);
 };
+
+let batchDisposeLightMaterial = (materialArr, state) =>
+  DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
+    materialArr,
+    state,
+  );

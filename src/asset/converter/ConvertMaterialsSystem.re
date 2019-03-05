@@ -8,8 +8,7 @@ let _convertColor = colorFactor =>
   };
 
 let convertToBasicMaterials =
-    ({extras}: GLTFType.gltf)
-    : array(WDType.basicMaterial) =>
+    ({extras}: GLTFType.gltf): array(WDType.basicMaterial) =>
   switch (extras) {
   | None => [||]
   | Some({basicMaterials}) =>
@@ -53,14 +52,23 @@ let _convertPBRData = (name, diffuseColorFactor, arr, index) =>
 
 let _convertMetallicRoughness = (name, pbrMetallicRoughness, arr, index) =>
   switch (pbrMetallicRoughness) {
-  | None => arr
+  | None =>
+    /* arr */
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="_convertMetallicRoughness",
+        ~description={j|pbrMetallicRoughness shouldn't be None|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j},
+      ),
+    )
   | Some(({baseColorFactor}: GLTFType.pbrMetallicRoughness)) =>
     _convertPBRData(name, baseColorFactor, arr, index)
   };
 
 let convertToLightMaterials =
-    ({materials}: GLTFType.gltf)
-    : array(WDType.lightMaterial) =>
+    ({materials}: GLTFType.gltf): array(WDType.lightMaterial) =>
   switch (materials) {
   | None => [||]
   | Some(materials) =>

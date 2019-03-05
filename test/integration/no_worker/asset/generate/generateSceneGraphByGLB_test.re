@@ -514,7 +514,7 @@ let _ =
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
           ~targetJsonStr=
             {|
-"nodes":[{"children":[1,2,3],"extras":{"isRoot":true}},{"name":"gameObject_0","rotation":[-0.382999986410141,0,0,0.9237499833106995],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}},{"name":"gameObject_1","translation":[0.5,0.5,3],"camera":0,"extras":{"basicCameraView":0}},{"name":"gameObject_2","translation":[0.5,0.5,3],"extras":{"basicCameraView":1}}]
+,"nodes":[{"children":[1,2,3],"extras":{"isRoot":true}},{"name":"gameObject_0","rotation":[-0.382999986410141,0,0,0.9237499833106995],"mesh":0},{"name":"gameObject_1","translation":[0.5,0.5,3],"camera":0,"extras":{"basicCameraView":0}},{"name":"gameObject_2","translation":[0.5,0.5,3],"extras":{"basicCameraView":1}}]
             |},
           ~state,
           (),

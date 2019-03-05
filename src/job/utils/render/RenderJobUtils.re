@@ -124,16 +124,18 @@ let sendAttributeData =
       (shaderIndex, geometryIndex) as indexTuple,
       sendRenderDataSubState,
       state,
-    ) => {
-  let {lastSendGeometryData} as record = state.glslSenderRecord;
-  switch (lastSendGeometryData) {
-  | Some(lastSendGeometryData) when lastSendGeometryData === geometryIndex => state
-  | _ =>
-    record.lastSendGeometryData = Some(geometryIndex);
-
-    _directlySendAttributeData(gl, indexTuple, sendRenderDataSubState, state);
-  };
-};
+    ) =>
+  /*
+   TODO when use vao and sort geometry, use lastSendGeometryData optimize!!!
+   (because if not, should judge both last send geometry index and last send attribute data type(e.g. texCoords, ...)!!!)
+   let {lastSendGeometryData} as record = state.glslSenderRecord;
+      switch (lastSendGeometryData) {
+      | Some(lastSendGeometryData) when lastSendGeometryData === geometryIndex => state
+      | _ =>
+        record.lastSendGeometryData = Some(geometryIndex);
+        _directlySendAttributeData(gl, indexTuple, state);
+      }; */
+  _directlySendAttributeData(gl, indexTuple, sendRenderDataSubState, state);
 
 let sendUniformRenderObjectModelData =
     (

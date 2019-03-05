@@ -240,26 +240,30 @@ let batchDisposeGeometryComponentData =
     state,
   );
 
-let batchDisposeGeometryComponent =
-    (componentArray, {settingRecord} as state) => {
+let _batchDisposeSharableComponent =
+    (
+      componentArray,
+      (
+        getRecordFunc,
+        getGameObjectsFunc,
+        deferDisposeComponentFunc,
+        handleBatchDisposeComponentFunc,
+      ),
+      {settingRecord} as state,
+    ) => {
   let (componentHasNoGameObjectArr, state) =
     componentArray
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. (componentHasNoGameObjectArr, state), component) => {
-           let geometryRecord = state |> RecordGeometryMainService.getRecord;
+           let geometryRecord = state |> getRecordFunc;
 
-           switch (
-             GameObjectGeometryService.getGameObjects(
-               component,
-               geometryRecord,
-             )
-           ) {
+           switch (getGameObjectsFunc(component, geometryRecord)) {
            | Some(gameObjects) => (
                componentHasNoGameObjectArr,
                gameObjects
                |> WonderCommonlib.ArrayService.reduceOneParam(
                     (. state, gameObject) =>
-                      deferDisposeGeometryComponent(.
+                      deferDisposeComponentFunc(.
                         gameObject,
                         component,
                         state,
@@ -277,22 +281,33 @@ let batchDisposeGeometryComponent =
          ([||], state),
        );
 
-  DisposeGeometryMainService.handleBatchDisposeComponent(
-    componentHasNoGameObjectArr,
-    state,
-  );
+  handleBatchDisposeComponentFunc(componentHasNoGameObjectArr, state);
 };
 
-let batchDisposeBasicMaterialComponent = (state, compnentDataMap) =>
-  DisposeBasicMaterialMainService.handleBatchDisposeComponent(.
+let batchDisposeGeometryComponent =
+    (componentArray, {settingRecord} as state) =>
+  _batchDisposeSharableComponent(
+    componentArray,
+    (
+      RecordGeometryMainService.getRecord,
+      GameObjectGeometryService.getGameObjects,
+      deferDisposeGeometryComponent,
+      DisposeGeometryMainService.handleBatchDisposeComponent,
+    ),
+    state,
+  );
+
+let batchDisposeBasicMaterialComponentData = (state, compnentDataMap) =>
+  DisposeBasicMaterialMainService.handleBatchDisposeComponentData(.
     compnentDataMap,
     state,
   );
 
-let batchDisposeBasicMaterialComponentForWorker = (state, componentDataMap) => {
+let batchDisposeBasicMaterialComponentDataForWorker =
+    (state, componentDataMap) => {
   open BasicMaterialType;
   let state =
-    DisposeBasicMaterialMainService.handleBatchDisposeComponent(.
+    DisposeBasicMaterialMainService.handleBatchDisposeComponentData(.
       componentDataMap,
       state,
     );
@@ -312,16 +327,30 @@ let batchDisposeBasicMaterialComponentForWorker = (state, componentDataMap) => {
   };
 };
 
-let batchDisposeLightMaterialComponent = (state, componentDataMap) =>
-  DisposeLightMaterialMainService.handleBatchDisposeComponent(.
+let batchDisposeBasicMaterialComponent =
+    (componentArray, {settingRecord} as state) =>
+  _batchDisposeSharableComponent(
+    componentArray,
+    (
+      RecordBasicMaterialMainService.getRecord,
+      GameObjectBasicMaterialService.getGameObjects,
+      deferDisposeBasicMaterialComponent,
+      DisposeBasicMaterialMainService.handleBatchDisposeComponent,
+    ),
+    state,
+  );
+
+let batchDisposeLightMaterialComponentData = (state, componentDataMap) =>
+  DisposeLightMaterialMainService.handleBatchDisposeComponentData(.
     componentDataMap,
     state,
   );
 
-let batchDisposeLightMaterialComponentForWorker = (state, componentDataMap) => {
+let batchDisposeLightMaterialComponentDataForWorker =
+    (state, componentDataMap) => {
   open LightMaterialType;
   let state =
-    DisposeLightMaterialMainService.handleBatchDisposeComponent(.
+    DisposeLightMaterialMainService.handleBatchDisposeComponentData(.
       componentDataMap,
       state,
     );
@@ -340,6 +369,19 @@ let batchDisposeLightMaterialComponentForWorker = (state, componentDataMap) => {
       }),
   };
 };
+
+let batchDisposeLightMaterialComponent =
+    (componentArray, {settingRecord} as state) =>
+  _batchDisposeSharableComponent(
+    componentArray,
+    (
+      RecordLightMaterialMainService.getRecord,
+      GameObjectLightMaterialService.getGameObjects,
+      deferDisposeLightMaterialComponent,
+      DisposeLightMaterialMainService.handleBatchDisposeComponent,
+    ),
+    state,
+  );
 
 let batchDisposeDirectionLightComponent =
     (state, componentArray: array(component)) => {
