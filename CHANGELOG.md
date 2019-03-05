@@ -1,3 +1,19 @@
+<a name="1.0.0-rc.1"></a>
+# [1.0.0-rc.1](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-beta.3...v1.0.0-rc.1) (2019-03-05)
+
+
+### Bug Fixes
+
+* **asset:** convert: now not create default material ([3fed95d](https://github.com/Wonder-Technology/Wonder.js/commit/3fed95d))
+* **render:** not judge lastSendGeometryData ([5267e39](https://github.com/Wonder-Technology/Wonder.js/commit/5267e39))
+
+
+### Features
+
+* **api:** basicMaterialAPI add batchDisposeBasicMaterial; LightMaterialAPI add batchDisposeLightMaterial; ([aa06435](https://github.com/Wonder-Technology/Wonder.js/commit/aa06435))
+
+
+
 <a name="1.0.0-beta.3"></a>
 # [1.0.0-beta.3](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2019-03-03)
 
