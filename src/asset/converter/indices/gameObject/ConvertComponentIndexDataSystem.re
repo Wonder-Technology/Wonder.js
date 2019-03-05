@@ -350,6 +350,20 @@ let convertToGeometryGameObjectIndexData = nodes => {
   |> _checkGameObjectAndComponentIndicesCountShouldEqual;
 };
 
+let _convertToMeshRendererGameObjectIndexDataFromMesh =
+    (meshes, mesh, index, (gameObjectIndices, componentIndices)) =>
+  switch (mesh) {
+  | None => (gameObjectIndices, componentIndices)
+  | Some(mesh) =>
+    Array.unsafe_get(meshes, mesh) |> ConvertMeshUtils.doesMeshHasMaterial ?
+      (
+        gameObjectIndices |> ArrayService.push(index),
+        componentIndices
+        |> ArrayService.push((gameObjectIndices |> Js.Array.length) - 1),
+      ) :
+      (gameObjectIndices, componentIndices)
+  };
+
 let convertToMeshRendererGameObjectIndexData = (nodes, meshes) => {
   let (gameObjectIndices, componentIndices) =
     nodes
@@ -367,20 +381,12 @@ let convertToMeshRendererGameObjectIndexData = (nodes, meshes) => {
                index,
              )
            | _ =>
-             switch (mesh) {
-             | None => (gameObjectIndices, componentIndices)
-             | Some(mesh) =>
-               Array.unsafe_get(meshes, mesh)
-               |> ConvertMeshUtils.doesMeshHasMaterial ?
-                 (
-                   gameObjectIndices |> ArrayService.push(index),
-                   componentIndices
-                   |> ArrayService.push(
-                        (gameObjectIndices |> Js.Array.length) - 1,
-                      ),
-                 ) :
-                 (gameObjectIndices, componentIndices)
-             }
+             _convertToMeshRendererGameObjectIndexDataFromMesh(
+               meshes,
+               mesh,
+               index,
+               (gameObjectIndices, componentIndices),
+             )
            },
          ([||], [||]),
        );
