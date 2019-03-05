@@ -1,8 +1,6 @@
 var gulp = require("gulp");
-var gulpSync = require("gulp-sync")(gulp);
 
 require("./build/gulp_task/create_inner_file/shaderChunk");
-require("./build/gulp_task/rollup/rollup");
 require("./build/gulp_task/performance/testPerformance");
 require("./build/gulp_task/render/testRender");
 require("./build/gulp_task/e2e/upgradeConfig");

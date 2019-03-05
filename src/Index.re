@@ -568,6 +568,8 @@ let unsafeGetPointLightGameObject = PointLightAPI.unsafeGetPointLightGameObject;
 
 let createPointLight = PointLightAPI.createPointLight;
 
+let batchDisposeBasicMaterial = BasicMaterialAPI.batchDisposeBasicMaterial;
+
 let getAllBasicMaterials = BasicMaterialAPI.getAllBasicMaterials;
 
 let reInitMaterials = BasicMaterialAPI.reInitMaterials;
@@ -599,6 +601,8 @@ let getBasicMaterialColor = BasicMaterialAPI.getBasicMaterialColor;
 let unsafeGetBasicMaterialGameObjects = BasicMaterialAPI.unsafeGetBasicMaterialGameObjects;
 
 let createBasicMaterial = BasicMaterialAPI.createBasicMaterial;
+
+let batchDisposeLightMaterial = LightMaterialAPI.batchDisposeLightMaterial;
 
 let getAllLightMaterials = LightMaterialAPI.getAllLightMaterials;
 
