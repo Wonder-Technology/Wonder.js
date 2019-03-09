@@ -106,6 +106,8 @@ let _changeOrbit =
 let _isCombinedKey = ({ctrlKey, altKey, shiftKey, metaKey}: keyboardEvent) =>
   ctrlKey || altKey || shiftKey || metaKey;
 
+let isTriggerKeydownEventHandler = event => !_isCombinedKey(event);
+
 let prepareBindEvent = (cameraController, state) => {
   let pointDragStartHandleFunc =
     (. event: EventType.customEvent, {viewRecord} as state) =>
@@ -188,13 +190,11 @@ let prepareBindEvent = (cameraController, state) => {
       event: EventType.keyboardEvent,
       {arcballCameraControllerRecord} as state,
     ) =>
-      _isCombinedKey(event) ?
-        state :
-        TargetArcballCameraControllerMainService.setTargetByKeyboardEvent(
-          cameraController,
-          event,
-          state,
-        );
+      TargetArcballCameraControllerMainService.setTargetByKeyboardEvent(
+        cameraController,
+        event,
+        state,
+      );
 
   let state = {
     ...state,
@@ -275,7 +275,10 @@ let bindEvent = (cameraController, state) => {
   let state =
     ManageEventMainService.onKeyboardEvent(
       ~eventName=EventType.KeyDown,
-      ~handleFunc=keydownHandleFunc,
+      ~handleFunc=
+        (. event, state) =>
+          isTriggerKeydownEventHandler(event) ?
+            keydownHandleFunc(. event, state) : state,
       ~state,
       (),
     );
