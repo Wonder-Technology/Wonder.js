@@ -869,13 +869,7 @@ vec3 getViewDir(){
                     }
                     |},
                   {|
-                    vec3 calcAmbientColor(vec3 materialDiffuse){
-        vec3 materialLight = getMaterialLight();
-
-        return (u_ambient + materialLight) * materialDiffuse;
-}
-
-                    vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir, vec3 materialDiffuse)
+vec3 calcLight(vec3 lightDir, vec3 color, float intensity, float attenuation, vec3 normal, vec3 viewDir, vec3 materialDiffuse)
 {
         vec3 materialSpecular = u_specular;
         vec3 materialEmission = getMaterialEmission();
@@ -887,7 +881,6 @@ vec3 getViewDir(){
 
         vec3 emissionColor = materialEmission;
 
-        vec3 ambientColor = calcAmbientColor(materialDiffuse);
 
 
         // if(u_lightModel == 3){
@@ -910,7 +903,7 @@ vec3 getViewDir(){
 
         vec3 specularColor = spec * materialSpecular * specularStrength * intensity;
 
-       return vec3(emissionColor + ambientColor + attenuation * (diffuseColor.rgb + specularColor));
+       return vec3(emissionColor + attenuation * (diffuseColor.rgb + specularColor));
 }
 
 
@@ -950,6 +943,8 @@ vec3 getViewDir(){
 
 
 
+                    |},
+                  {|
 vec4 calcTotalLight(vec3 norm, vec3 viewDir){
     vec3 totalLight = vec3(0.0, 0.0, 0.0);
 
@@ -957,13 +952,8 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
 
     float alpha = materialDiffuse.a;
     vec3 materialDiffuseRGB = materialDiffuse.rgb;
-
-
-    #if (DIRECTION_LIGHTS_COUNT == 0 && POINT_LIGHTS_COUNT == 0 )
-        return vec4(calcAmbientColor(materialDiffuseRGB), alpha);
-    #endif
-
-
+                      |},
+                  {|
     #if POINT_LIGHTS_COUNT > 0
                 for(int i = 0; i < POINT_LIGHTS_COUNT; i++){
                 totalLight += calcPointLight(getPointLightDir(i), u_pointLights[i], norm, viewDir, materialDiffuseRGB);
@@ -976,12 +966,12 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
         }
     #endif
 
+        totalLight += u_ambient;
+
         return vec4(totalLight, alpha);
 }
-
-
-
-
+                      |},
+                  {|
                     void main(void){
                     vec3 normal = normalize(getNormal());
 
@@ -1001,7 +991,7 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
 
                     gl_FragColor = totalColor;
                     }
-                    |},
+                      |},
                 ],
               )
               |> expect == true;
@@ -1017,7 +1007,7 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
                 GLSLTool.getFsSource(shaderSource),
                 {|
     #if (DIRECTION_LIGHTS_COUNT == 0 && POINT_LIGHTS_COUNT == 0 )
-        return vec4(calcAmbientColor(materialDiffuseRGB), alpha);
+        return vec4(u_ambient * materialDiffuseRGB, alpha);
     #endif
       |},
               )
