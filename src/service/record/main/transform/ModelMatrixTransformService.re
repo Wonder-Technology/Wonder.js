@@ -37,14 +37,14 @@ let _getNormalMatrixTypeArray =
     (
       transform,
       localToWorldMatrices,
-      (localToWorldTargetTypeArr, normalTargetTypeArr),
+      (localToWorldMatrixCacheMap, normalTargetTypeArr),
       getLocalToWorldMatrixTypeArrayFunc,
     ) =>
   Matrix4Service.invertTo3x3(
     getLocalToWorldMatrixTypeArrayFunc(.
       transform,
       localToWorldMatrices,
-      localToWorldTargetTypeArr,
+      localToWorldMatrixCacheMap,
     ),
     normalTargetTypeArr,
   )
@@ -55,6 +55,7 @@ let getNormalMatrixTypeArray =
       transform: transform,
       localToWorldMatrices,
       (localToWorldMatrixCacheMap, normalMatrixCacheMap),
+      globalTempRecord,
     ) => {
   let (has, matrix) =
     normalMatrixCacheMap |> MutableSparseMapService.fastGet(transform);
@@ -62,13 +63,16 @@ let getNormalMatrixTypeArray =
   has ?
     matrix :
     {
+      let (_, has, unUsedFloat9Array) =
+        GlobalTempService.popUnUsedFloat9Array(globalTempRecord);
+
       let matrix =
         _getNormalMatrixTypeArray(
           transform,
           localToWorldMatrices,
           (
             localToWorldMatrixCacheMap,
-            Matrix3Service.createIdentityMatrix3(),
+            has ? unUsedFloat9Array : Matrix3Service.createIdentityMatrix3(),
           ),
           getLocalToWorldMatrixTypeArray,
         );

@@ -13,7 +13,7 @@ let getLocalToWorldMatrixTypeArray =
     );
 
 let getNormalMatrixTypeArray =
-  (. transform, {transformRecord}) =>
+  (. transform, {transformRecord, globalTempRecord}) =>
     ModelMatrixTransformService.getNormalMatrixTypeArray(
       transform,
       transformRecord.localToWorldMatrices,
@@ -21,4 +21,5 @@ let getNormalMatrixTypeArray =
         transformRecord.localToWorldMatrixCacheMap,
         transformRecord.normalMatrixCacheMap,
       ),
+      globalTempRecord,
     );

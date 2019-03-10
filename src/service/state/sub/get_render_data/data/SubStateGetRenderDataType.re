@@ -10,6 +10,8 @@ open RenderTransformType;
 
 open GetRenderDataJobDataType;
 
+open GlobalTempType;
+
 type getRenderDataSubState = {
   cameraRecord: option(RenderCameraType.renderCameraRecord),
   basicMaterialRecord,
@@ -18,4 +20,5 @@ type getRenderDataSubState = {
   pointLightRecord,
   transformRecord,
   jobDataRecord,
+  globalTempRecord,
 };

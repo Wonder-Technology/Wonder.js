@@ -15,12 +15,24 @@ open ModelMatrixTransformService;
 open DirtyTransformService;
 
 let _clearCache =
-    (transform, {localToWorldMatrixCacheMap, normalMatrixCacheMap} as record) => {
+    (
+      transform,
+      globalTempRecord,
+      {localToWorldMatrixCacheMap, normalMatrixCacheMap} as record,
+    ) => {
+  let (has, normalMatrix) =
+    normalMatrixCacheMap |> MutableSparseMapService.fastGet(transform);
+
+  let globalTempRecord =
+    has ?
+      GlobalTempService.addUnUsedFloat9(normalMatrix, globalTempRecord) :
+      globalTempRecord;
+
   normalMatrixCacheMap
   |> WonderCommonlib.MutableSparseMapService.deleteVal(transform)
   |> ignore;
 
-  record;
+  (record, globalTempRecord);
 };
 
 let rec update =
@@ -33,8 +45,9 @@ let rec update =
   | false => transformRecord
   | true =>
     /* TODO perf: translation not clear normalMatrixCacheMap, only rotation/scale clear */
-    let transformRecord =
-      mark(transform, false, transformRecord) |> _clearCache(transform);
+    let (transformRecord, globalTempRecord) =
+      mark(transform, false, transformRecord)
+      |> _clearCache(transform, globalTempRecord);
     switch (getParent(transform, transformRecord)) {
     | Some(parent) =>
       let transformRecord =
@@ -99,6 +112,7 @@ let updateAndGetNormalMatrixTypeArray =
     transform,
     localToWorldMatrices,
     (localToWorldMatrixCacheMap, normalMatrixCacheMap),
+    globalTempRecord,
   );
 };
 
@@ -151,9 +165,11 @@ let updateAndSetRotationByTuple =
   | Some(parent) =>
     setLocalRotationByTuple(
       transform,
-      updateAndGetRotationTuple(parent, globalTempRecord, record)
-      |> QuaternionService.invert
-      |. QuaternionService.multiply(rotation),
+      (
+        updateAndGetRotationTuple(parent, globalTempRecord, record)
+        |> QuaternionService.invert
+      )
+      ->(QuaternionService.multiply(rotation)),
       record,
     )
   };
