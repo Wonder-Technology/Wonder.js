@@ -88,7 +88,8 @@ module.exports = {
       { name: "code-climate" },
       { name: "readme" },
       { name: "changelog" },
-      { name: "npm" }
+      { name: "npm" },
+      { name: "example" }
     ]
   },
   // override the messages, defaults are as follows

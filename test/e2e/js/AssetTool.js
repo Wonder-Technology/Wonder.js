@@ -96,15 +96,17 @@ var AssetTool = (function () {
 
 
 
-            var record = LightTool.createDirectionLight(state);
-            var state = record[0];
-            var directionLightObj = record[1];
-
-
-
+            var [state, directionLightObj] = LightTool.createDirectionLight(state);
             var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
 
-            state = wd.setTransformLocalEulerAngles(transform, [-45, 45, 0], state);
+            var state = wd.setTransformLocalEulerAngles(transform, [45, 180, 0], state);
+
+
+
+
+            // var transform = wd.unsafeGetGameObjectTransformComponent(directionLightObj, state);
+
+            // state = wd.setTransformLocalEulerAngles(transform, [-45, 45, 0], state);
 
 
 
