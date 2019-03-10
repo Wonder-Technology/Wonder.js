@@ -1,3 +1,24 @@
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-rc.1...v1.0.0) (2019-03-10)
+
+
+### Bug Fixes
+
+* cameraTool.js->createCamera now not set aspect ([25a6d13](https://github.com/Wonder-Technology/Wonder.js/commit/25a6d13))
+* **shader:** fix ambient color ([d9fa1ed](https://github.com/Wonder-Technology/Wonder.js/commit/d9fa1ed))
+
+
+### Features
+
+* **camera:** eventArcballCameraControllerMainService add isTriggerKeydownEventHandler func ([6b03e45](https://github.com/Wonder-Technology/Wonder.js/commit/6b03e45))
+
+
+### Performance Improvements
+
+* **memory:** optimize getNormalMatrixTypeArray: now reuse normal matrix cache typeArr ([8c322a9](https://github.com/Wonder-Technology/Wonder.js/commit/8c322a9))
+
+
+
 <a name="1.0.0-rc.1"></a>
 # [1.0.0-rc.1](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.0-beta.3...v1.0.0-rc.1) (2019-03-05)
 
