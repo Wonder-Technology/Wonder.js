@@ -61,12 +61,11 @@ Wonder.js is a Functional, High performance 3D WebGL Engine.
 </head>
 
 <body>
-    <script src="https://github.com/Wonder-Technology/Wonder.js/tree/master/examples/wd.js"></script>
+    <script src="https://wonder-technology.github.io/wonder-demo.github.io/examples/wd.js"></script>
 
     <script>
         window.onload = function () {
-            return wd.loadConfig(["https://github.com/Wonder-Technology/Wonder.js/tree/master/examples/config/setting.json", "https://github.com/Wonder-Technology/Wonder.js/tree/master/examples/config/"]).forEach(function (state) {
-            }).then(function () {
+            return wd.loadConfig(["https://wonder-technology.github.io/wonder-demo.github.io/examples/config/setting.json", "https://wonder-technology.github.io/wonder-demo.github.io/examples/config/"]).forEach(function (state) {
                 return initSample(wd.unsafeGetState());
             })
 
