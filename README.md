@@ -37,6 +37,18 @@ Wonder.js is a Functional, High performance 3D WebGL Engine.
 - Event
 - Instance
 
+
+
+
+# Useful links
+
+- [website](https://www.wonder-3d.com/)
+- [online editor](https://editor.wonder-3d.com/)
+- [document](https://www.wonder-3d.com/docs/docs/doc1-1/)
+- [forum](https://forum.wonder-3d.com/)
+- [Github](https://github.com/Wonder-Technology)
+
+
 ## Support Environment
 
 ### PC
@@ -181,19 +193,6 @@ npm config set puppeteer_download_host=https://npm.taobao.org/mirrors
 
 cyarn install //execute in project root dir
 ```
-
-
-# Useful links
-
-- [website](https://www.wonder-3d.com/)
-
-- [online editor](https://editor.wonder-3d.com/)
-
-- [document](https://www.wonder-3d.com/docs/docs/doc1-1/)
-
-- [forum](https://forum.wonder-3d.com/)
-
-- [Github](https://github.com/Wonder-Technology)
 
 
 # License
