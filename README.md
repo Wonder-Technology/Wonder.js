@@ -42,7 +42,7 @@ Wonder.js is a Functional, High performance 3D WebGL Engine.
 
 # Useful links
 
-- [website](https://www.wonder-3d.com/)
+- [official site](https://www.wonder-3d.com/)
 - [online editor](https://editor.wonder-3d.com/)
 - [document](https://www.wonder-3d.com/docs/docs/doc1-1/)
 - [forum](https://forum.wonder-3d.com/)
