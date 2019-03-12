@@ -69,7 +69,8 @@ Wonder.js is a Functional, High performance 3D WebGL Engine.
 
 - [Online Editor](https://editor.wonder-3d.com/)
 
-Here show a cube example:
+
+Here show a cube example(more is in examples/ folder):
 
 ```html
 <!DOCTYPE html>
