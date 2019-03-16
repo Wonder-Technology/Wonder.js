@@ -50,6 +50,7 @@
     "@babel/core": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
     "babel-jest": "^24.1.0",
+    "jest": "^24.1.0",
     "bs-platform": "4.0.18",
     "cz-customizable": "^5.2.0",
     "express": "^4.16.1",
@@ -68,7 +69,6 @@
   },
   "dependencies": {
     "bs-fetch": "^0.3.0",
-    "jest": "^24.1.0",
     "wonder-bs-json": "^0.0.1",
     "wonder-bs-most": "^0.0.3",
     "wonder-commonlib": "^0.2.28",
