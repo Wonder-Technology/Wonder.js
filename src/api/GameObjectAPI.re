@@ -42,6 +42,70 @@ let _checkGameObjectShouldAlive =
     )
   );
 
+let addGameObjectScriptComponent =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  addScriptComponent(gameObject, component, state);
+};
+
+/* TODO
+   let disposeGameObjectScriptComponent =
+       (
+         gameObject: GameObjectPrimitiveType.gameObject,
+         component: component,
+         state: StateDataMainType.state,
+       ) => {
+     WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     );
+     deferDisposeScriptComponent(. gameObject, component, state);
+   };
+
+   let unsafeGetGameObjectScriptComponent =
+       (
+         gameObject: GameObjectPrimitiveType.gameObject,
+         state: StateDataMainType.state,
+       ) => {
+     WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     );
+     unsafeGetScriptComponent(gameObject, state.gameObjectRecord);
+   };
+
+   let hasGameObjectScriptComponent =
+       (
+         gameObject: GameObjectPrimitiveType.gameObject,
+         state: StateDataMainType.state,
+       ) => {
+     WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     );
+     hasScriptComponent(gameObject, state.gameObjectRecord);
+   };
+    */
+
 let addGameObjectBasicCameraViewComponent =
     (
       gameObject: GameObjectPrimitiveType.gameObject,

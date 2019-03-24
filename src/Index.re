@@ -372,6 +372,8 @@ let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectB
 
 let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
 
+let addGameObjectScriptComponent = GameObjectAPI.addGameObjectScriptComponent;
+
 let createGameObject = GameObjectAPI.createGameObject;
 
 let hasGeometryIndices32 = GeometryAPI.hasGeometryIndices32;
@@ -670,6 +672,22 @@ let getAmbientLightColor = SceneAPI.getAmbientLightColor;
 
 let setScreenSize = ScreenAPI.setScreenSize;
 
+let unsafeGetScriptAttribute = ScriptAPI.unsafeGetScriptAttribute;
+
+let addScriptAttribute = ScriptAPI.addScriptAttribute;
+
+let addScriptEventFunction = ScriptAPI.addScriptEventFunction;
+
+let unsafeGetGameObject = ScriptAPI.unsafeGetGameObject;
+
+let createScript = ScriptAPI.createScript;
+
+let addScriptAttributeField = ScriptAttributeAPI.addScriptAttributeField;
+
+let createScriptAttribute = ScriptAttributeAPI.createScriptAttribute;
+
+let createScriptEventFunctionData = ScriptEventFunctionAPI.createScriptEventFunctionData;
+
 let clearInitShaderCache = ShaderAPI.clearInitShaderCache;
 
 let markSourceInstanceModelMatrixIsStatic = SourceInstanceAPI.markSourceInstanceModelMatrixIsStatic;
@@ -878,15 +896,19 @@ let getRenderWorkerCustomData = WorkerDataAPI.getRenderWorkerCustomData;
 
 let create = RecordAPIMainService.create;
 
-let setAPIJsObj = RecordAPIMainService.setAPIJsObj;
+let create = RecordIMGUIAPIMainService.create;
 
-let getAPIJsObj = RecordAPIMainService.getAPIJsObj;
+let getIMGUIAPIJsObj = RecordIMGUIAPIMainService.getIMGUIAPIJsObj;
+
+let create = RecordScriptAPIMainService.create;
+
+let getScriptAPIJsObj = RecordScriptAPIMainService.getScriptAPIJsObj;
 
 let create = RecordAPIRenderWorkerService.create;
 
-let setAPIJsObj = RecordAPIRenderWorkerService.setAPIJsObj;
+let setIMGUIAPIJsObj = RecordAPIRenderWorkerService.setIMGUIAPIJsObj;
 
-let getAPIJsObj = RecordAPIRenderWorkerService.getAPIJsObj;
+let getIMGUIAPIJsObj = RecordAPIRenderWorkerService.getIMGUIAPIJsObj;
 
 let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
 
@@ -1070,6 +1092,8 @@ let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectB
 
 let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
 
+let addGameObjectScriptComponent = GameObjectAPI.addGameObjectScriptComponent;
+
 let createGameObject = GameObjectAPI.createGameObject;
 
 let setMeshRendererIsRender = MeshRendererAPI.setMeshRendererIsRender;
@@ -1192,12 +1216,16 @@ let createTransform = TransformAPI.createTransform;
 
 let create = RecordAPIMainService.create;
 
-let setAPIJsObj = RecordAPIMainService.setAPIJsObj;
+let create = RecordIMGUIAPIMainService.create;
 
-let getAPIJsObj = RecordAPIMainService.getAPIJsObj;
+let getIMGUIAPIJsObj = RecordIMGUIAPIMainService.getIMGUIAPIJsObj;
+
+let create = RecordScriptAPIMainService.create;
+
+let getScriptAPIJsObj = RecordScriptAPIMainService.getScriptAPIJsObj;
 
 let create = RecordAPIRenderWorkerService.create;
 
-let setAPIJsObj = RecordAPIRenderWorkerService.setAPIJsObj;
+let setIMGUIAPIJsObj = RecordAPIRenderWorkerService.setIMGUIAPIJsObj;
 
-let getAPIJsObj = RecordAPIRenderWorkerService.getAPIJsObj;
+let getIMGUIAPIJsObj = RecordAPIRenderWorkerService.getIMGUIAPIJsObj;

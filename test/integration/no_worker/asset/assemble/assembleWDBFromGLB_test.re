@@ -243,15 +243,15 @@ let _ =
             (),
           );
         });
-        testPromise("test use apiJsObj", () => {
+        testPromise("test use imguiAPIJsObj", () => {
           let (state, gameObject, material) =
             LightMaterialTool.createGameObject(state^);
           let customData = [|gameObject|] |> Obj.magic |> Js.Json.stringify;
           let imguiFunc =
             (
-              (. customData, apiJsObj, state) => {
+              (. customData, imguiAPIJsObj, state) => {
                 let gameObject = Array.unsafe_get(customData, 0);
-                let unsafeGetGameObjectLightMaterialComponent = apiJsObj##unsafeGetGameObjectLightMaterialComponent;
+                let unsafeGetGameObjectLightMaterialComponent = imguiAPIJsObj##unsafeGetGameObjectLightMaterialComponent;
 
                 let material =
                   unsafeGetGameObjectLightMaterialComponent(.
@@ -286,9 +286,9 @@ let _ =
                 |>
                 expect == (
                             {|
-                         function (customData, apiJsObj, state) {
+                         function (customData, imguiAPIJsObj, state) {
                            var gameObject = customData[0];
-                           var unsafeGetGameObjectLightMaterialComponent = apiJsObj.unsafeGetGameObjectLightMaterialComponent;
+                           var unsafeGetGameObjectLightMaterialComponent = imguiAPIJsObj.unsafeGetGameObjectLightMaterialComponent;
                            unsafeGetGameObjectLightMaterialComponent(gameObject, state);
                            return state;
                          }

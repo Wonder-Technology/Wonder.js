@@ -66,7 +66,7 @@ let update = ({arcballCameraControllerRecord} as state) =>
 
 let _getAllArcballCameraControllers =
     ({arcballCameraControllerRecord} as state) => {
-  let {index, disposedIndexArray} = arcballCameraControllerRecord;
+  let {index, disposedIndexArray}: arcballCameraControllerRecord = arcballCameraControllerRecord;
 
   GetAllComponentService.getAllComponents(index, disposedIndexArray);
 };

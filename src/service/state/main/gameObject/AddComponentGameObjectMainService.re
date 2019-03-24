@@ -18,6 +18,21 @@ let _addComponentWithState =
   handleAddComponentFunc(. component, uid, state);
 };
 
+let addScriptComponent =
+    (
+      uid: int,
+      component: component,
+      {scriptRecord, gameObjectRecord} as state,
+    ) => {
+  state.scriptRecord =
+    _addComponent(
+      (uid, component, gameObjectRecord.scriptMap),
+      AddScriptMainService.handleAddComponent,
+      scriptRecord,
+    );
+  state;
+};
+
 let addBasicCameraViewComponent =
     (
       uid: int,

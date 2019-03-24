@@ -60,5 +60,16 @@ let initGameObject = (uid: int, {gameObjectRecord} as state) => {
     | None => state
     };
 
+  /* TODO test */
+  let state =
+    OperateScriptEventFunctionDataMainService.getGameObjectAllInitEventFunctionData(
+      uid,
+      state,
+    )
+    |> OperateScriptEventFunctionDataMainService.execAllEventFunction(
+         _,
+         state,
+       );
+
   state;
 };

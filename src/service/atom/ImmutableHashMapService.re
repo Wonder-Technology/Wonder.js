@@ -1,0 +1,1 @@
+let getValues = map => Js.Dict.values(map);

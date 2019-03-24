@@ -92,7 +92,7 @@ let handleBatchDisposeComponent =
       IsDebugMainService.getIsDebug(StateDataMain.stateData),
     );
 
-    let {disposedIndexArray} = arcballCameraControllerRecord;
+    let {disposedIndexArray}: arcballCameraControllerRecord = arcballCameraControllerRecord;
 
     let state = {
       ...state,

@@ -158,7 +158,8 @@ let _ =
               (cameraController1, cameraController2),
             ) =
               _prepare(state);
-            let {disposedIndexArray} = state.arcballCameraControllerRecord;
+            let {disposedIndexArray}: arcballCameraControllerRecord =
+              state.arcballCameraControllerRecord;
             (
               disposedIndexArray |> Js.Array.includes(cameraController1),
               disposedIndexArray |> Js.Array.includes(cameraController2),
@@ -173,7 +174,8 @@ let _ =
             ) =
               _prepare(state);
             let state = state |> DisposeJob.execJob(None);
-            let {disposedIndexArray} = state.arcballCameraControllerRecord;
+            let {disposedIndexArray}: arcballCameraControllerRecord =
+              state.arcballCameraControllerRecord;
             (
               disposedIndexArray |> Js.Array.includes(cameraController1),
               disposedIndexArray |> Js.Array.includes(cameraController2),

@@ -835,11 +835,11 @@ let _ =
         let customData = Obj.magic((1, "cc"));
 
         let imguiFunc =
-          (. customData, apiJsObj, state) => {
+          (. customData, imguiAPIJsObj, state) => {
             let (a, b) = Obj.magic(customData);
-            let apiJsObj = Obj.magic(apiJsObj);
+            let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
-            let imageFunc = apiJsObj##image |> Obj.magic;
+            let imageFunc = imguiAPIJsObj##image |> Obj.magic;
             let state = imageFunc(. a, b, state);
 
             state;
@@ -861,7 +861,7 @@ let _ =
           rootGameObject,
           "
             \"extras\":{\"imgui\":{\"customData\":\"[1,\\\"cc\\\"]\",\"imguiFunc\"
-            :\"function(customData,apiJsObj,state){\\nvarimageFunc=apiJsObj.image;\\nreturnimageFunc(customData[0],customData[1],state);\\n}\"}}}]
+            :\"function(customData,imguiAPIJsObj,state){\\nvarimageFunc=imguiAPIJsObj.image;\\nreturnimageFunc(customData[0],customData[1],state);\\n}\"}}}]
             ",
           state,
         );

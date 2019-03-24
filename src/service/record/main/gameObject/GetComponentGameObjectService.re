@@ -4,6 +4,12 @@ open GameObjectType;
 
 open ComponentMapService;
 
+let getScriptComponent =
+  (. uid: int, {scriptMap}) => scriptMap |> getComponent(uid);
+
+let unsafeGetScriptComponent = (uid: int, {scriptMap}) =>
+  scriptMap |> unsafeGetComponent(uid);
+
 let getBasicCameraViewComponent =
   (. uid: int, {basicCameraViewMap}) =>
     basicCameraViewMap |> getComponent(uid);

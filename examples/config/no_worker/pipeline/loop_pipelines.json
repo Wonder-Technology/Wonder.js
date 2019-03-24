@@ -18,6 +18,9 @@
                 "name": "update_camera"
             },
             {
+                "name": "update_script"
+            },
+            {
                 "name": "get_camera_data"
             },
             {

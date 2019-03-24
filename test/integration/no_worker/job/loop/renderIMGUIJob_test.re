@@ -130,9 +130,9 @@ let _ =
           let state =
             ManageIMGUIAPI.setIMGUIFunc(
               Obj.magic(-1),
-              (. _, apiJsObj, state) => {
-                let apiJsObj = Obj.magic(apiJsObj);
-                let imageFunc = apiJsObj##image;
+              (. _, imguiAPIJsObj, state) => {
+                let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
+                let imageFunc = imguiAPIJsObj##image;
                 let state =
                   imageFunc(.
                     (imageX1, imageY1, imageWidth1, imageHeight1),
@@ -268,15 +268,15 @@ let _ =
             let state =
               ManageIMGUIAPI.setIMGUIFunc(
                 buttonData |> Obj.magic,
-                (. customData, apiJsObj, state) => {
+                (. customData, imguiAPIJsObj, state) => {
                   let (
                     (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
                     str1,
                   ) =
                     customData |> Obj.magic;
-                  let apiJsObj = Obj.magic(apiJsObj);
+                  let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
-                  let buttonFunc = apiJsObj##button;
+                  let buttonFunc = imguiAPIJsObj##button;
 
                   let (state, isButtonClick) =
                     buttonFunc(.
@@ -379,15 +379,15 @@ let _ =
             let state =
               ManageIMGUIAPI.setIMGUIFunc(
                 buttonData |> Obj.magic,
-                (. customData, apiJsObj, state) => {
+                (. customData, imguiAPIJsObj, state) => {
                   let (
                     (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
                     str1,
                   ) =
                     customData |> Obj.magic;
-                  let apiJsObj = Obj.magic(apiJsObj);
+                  let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
-                  let buttonFunc = apiJsObj##button;
+                  let buttonFunc = imguiAPIJsObj##button;
 
                   let (state, isButtonClick) =
                     buttonFunc(.
@@ -443,15 +443,15 @@ let _ =
             let state =
               ManageIMGUIAPI.setIMGUIFunc(
                 buttonData |> Obj.magic,
-                (. customData, apiJsObj, state) => {
+                (. customData, imguiAPIJsObj, state) => {
                   let (
                     (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
                     str1,
                   ) =
                     customData |> Obj.magic;
-                  let apiJsObj = Obj.magic(apiJsObj);
+                  let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
-                  let buttonFunc = apiJsObj##button;
+                  let buttonFunc = imguiAPIJsObj##button;
 
                   let (state, isButtonClick) =
                     buttonFunc(.

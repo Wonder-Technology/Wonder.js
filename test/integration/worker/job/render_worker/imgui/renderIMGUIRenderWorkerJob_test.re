@@ -219,7 +219,7 @@ let _ =
           let state =
             ManageIMGUIAPI.setIMGUIFunc(
               Obj.magic(WonderImgui.RenderIMGUITool.buildImageData()),
-              (. customData, apiJsObj, state) => {
+              (. customData, imguiAPIJsObj, state) => {
                 let (
                   (
                     (imageX1, imageY1, imageWidth1, imageHeight1),
@@ -230,9 +230,9 @@ let _ =
                   _,
                 ) =
                   Obj.magic(customData);
-                let apiJsObj = Obj.magic(apiJsObj);
+                let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
-                let imageFunc = apiJsObj##image;
+                let imageFunc = imguiAPIJsObj##image;
 
                 let state =
                   imageFunc(.
@@ -275,16 +275,16 @@ let _ =
                 let state =
                   ManageIMGUIAPI.setIMGUIFunc(
                     Obj.magic(customData),
-                    (. customData, apiJsObj, state) => {
+                    (. customData, imguiAPIJsObj, state) => {
                       let (
                         (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
                         str1,
                       ) =
                         Obj.magic(customData);
-                      let apiJsObj = Obj.magic(apiJsObj);
+                      let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
-                      let buttonFunc = apiJsObj##button;
-                      let setCustomDataFunc = apiJsObj##setCustomDataFromRenderWorkerToMainWorker;
+                      let buttonFunc = imguiAPIJsObj##button;
+                      let setCustomDataFunc = imguiAPIJsObj##setCustomDataFromRenderWorkerToMainWorker;
 
                       let (state, isClick) =
                         buttonFunc(.

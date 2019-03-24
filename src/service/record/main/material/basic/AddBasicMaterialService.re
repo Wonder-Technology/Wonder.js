@@ -1,7 +1,5 @@
 open MaterialType;
 
-open StateDataMainType;
-
 open BasicMaterialType;
 
 let handleAddComponent =

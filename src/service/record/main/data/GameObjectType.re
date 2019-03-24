@@ -50,6 +50,8 @@ type gameObjectObjectInstanceMap =
 
 type gameObjectLightMap = WonderCommonlib.MutableSparseMapService.t(int);
 
+type gameObjectScriptMap = WonderCommonlib.MutableSparseMapService.t(int);
+
 type basicMaterialData = (gameObject, component);
 
 type lightMaterialData = (gameObject, component);
@@ -97,4 +99,5 @@ type gameObjectRecord = {
   mutable objectInstanceMap: gameObjectObjectInstanceMap,
   mutable directionLightMap: gameObjectLightMap,
   mutable pointLightMap: gameObjectLightMap,
+  mutable scriptMap: gameObjectScriptMap,
 };

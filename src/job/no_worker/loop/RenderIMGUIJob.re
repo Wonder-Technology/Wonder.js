@@ -4,7 +4,7 @@ let execJob = (flags, state) =>
   WonderImgui.ManageIMGUIService.render(
     DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
     RecordIMGUIMainService.getIOData(state),
-    RecordAPIMainService.getAPIJsObj(state) |> Obj.magic,
+    RecordIMGUIAPIMainService.getIMGUIAPIJsObj(state) |> Obj.magic,
     (
       ManageIMGUIMainService.getRecord |> Obj.magic,
       ManageIMGUIMainService.setRecord |> Obj.magic,

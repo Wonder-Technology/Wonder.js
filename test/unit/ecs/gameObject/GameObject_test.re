@@ -1143,7 +1143,8 @@ let _ =
           let (state, gameObject2, _, (cameraController2, _, _)) =
             ArcballCameraControllerTool.createGameObject(state);
           let state = state |> GameObjectTool.disposeGameObject(gameObject1);
-          let {disposedIndexArray} = state.arcballCameraControllerRecord;
+          let {disposedIndexArray}: arcballCameraControllerRecord =
+            state.arcballCameraControllerRecord;
           (
             disposedIndexArray |> Js.Array.includes(cameraController1),
             disposedIndexArray |> Js.Array.includes(cameraController2),

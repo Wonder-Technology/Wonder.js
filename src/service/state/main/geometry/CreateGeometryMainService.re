@@ -2,8 +2,6 @@ open StateDataMainType;
 
 open GeometryType;
 
-open GeometryType;
-
 let create =
   (. {settingRecord} as state) => {
     let {disposedIndexArray, index} as geometryRecord =

@@ -8,6 +8,7 @@ let _getInitJobHandles = () => [
   ("detect_gl", DetectGlJob.execJob),
   ("init_event", InitEventJob.execJob),
   ("init_camera", InitCameraJob.execJob),
+  ("init_script", InitScriptJob.execJob),
   ("start_time", StartTimeJob.execJob),
   ("preget_glslData", PregetGLSLDataJob.execJob),
   ("init_imgui", InitIMGUIJob.execJob),
@@ -20,6 +21,7 @@ let _getInitJobHandles = () => [
 
 let _getLoopJobHandles = () => [
   ("tick", TickJob.execJob),
+  ("update_script", UpdateScriptJob.execJob),
   ("update_transform", UpdateTransformJob.execJob),
   ("update_camera", UpdateCameraJob.execJob),
   ("draw_outline", DrawOutlineJob.execJob),

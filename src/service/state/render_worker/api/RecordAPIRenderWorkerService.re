@@ -1,11 +1,11 @@
 open StateDataRenderWorkerType;
 
-let getAPIJsObj = state => state.apiRecord.apiJsObj;
+let getIMGUIAPIJsObj = state => state.apiRecord.imguiAPIJsObj;
 
-let setAPIJsObj = (apiJsObj, state) => {...state, apiRecord: apiJsObj};
+let setIMGUIAPIJsObj = (imguiAPIJsObj, state) => {...state, apiRecord: imguiAPIJsObj};
 
 let create = () => {
-  apiJsObj: {
+  imguiAPIJsObj: {
     "label": FixedLayoutControlIMGUIRenderWorkerService.label,
     "image": FixedLayoutControlIMGUIRenderWorkerService.image,
     "button": FixedLayoutControlIMGUIRenderWorkerService.button,

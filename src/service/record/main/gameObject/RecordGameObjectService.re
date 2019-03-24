@@ -46,6 +46,7 @@ let create = () => {
   objectInstanceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   directionLightMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   pointLightMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  scriptMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
 };
 
 let deepCopyForRestore =
@@ -87,6 +88,7 @@ let deepCopyForRestore =
         objectInstanceMap,
         directionLightMap,
         pointLightMap,
+        scriptMap,
       } as record,
     ) => {
   ...record,
@@ -166,4 +168,6 @@ let deepCopyForRestore =
   directionLightMap:
     directionLightMap |> WonderCommonlib.MutableSparseMapService.copy,
   pointLightMap: pointLightMap |> WonderCommonlib.MutableSparseMapService.copy,
+  /* TODO test */
+  scriptMap: scriptMap |> WonderCommonlib.MutableSparseMapService.copy,
 };

@@ -1,4 +1,4 @@
-let buildEmptyIMGUIFuncStr = () => {|function (customData, apiJsObj, record){ return record; }|};
+let buildEmptyIMGUIFuncStr = () => {|function (customData, imguiAPIJsObj, record){ return record; }|};
 
 
 let getIMGUIFunc = ManageIMGUIMainService.getIMGUIFunc;

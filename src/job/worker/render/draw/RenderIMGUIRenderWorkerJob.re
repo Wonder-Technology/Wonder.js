@@ -29,7 +29,7 @@ let execJob = (flags, e, stateData) =>
       WonderImgui.ManageIMGUIService.render(
         DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
         imguiData##ioData,
-        Obj.magic(RecordAPIRenderWorkerService.getAPIJsObj(state)),
+        Obj.magic(RecordAPIRenderWorkerService.getIMGUIAPIJsObj(state)),
         (
           ManageIMGUIRenderWorkerService.getRecord |> Obj.magic,
           ManageIMGUIRenderWorkerService.setRecord |> Obj.magic,

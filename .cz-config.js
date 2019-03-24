@@ -15,8 +15,7 @@ module.exports = {
   ],
 
   scopes: [
-    // { name: "exampleScope" },
-    // { name: "changeMe" }
+    { name: "script" },
     { name: "state" },
     { name: "api" },
     { name: "data-json" },

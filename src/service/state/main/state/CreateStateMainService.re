@@ -27,6 +27,7 @@ let createState = () => {
   pointLightRecord: None,
   geometryRecord: None,
   meshRendererRecord: None,
+  scriptRecord: RecordScriptMainService.create(),
   shaderRecord: RecordShaderService.create(),
   glslRecord: RecordGLSLService.create(),
   programRecord: RecordProgramService.create(),

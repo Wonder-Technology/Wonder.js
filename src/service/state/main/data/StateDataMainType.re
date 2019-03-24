@@ -111,14 +111,16 @@ and jobRecord = {
     WonderCommonlib.MutableHashMapService.t(
       (string, JobType.workerCustomJobAction, stateData => unit),
     ),
-  workerCustomMainInitSourceJobMap: WonderCommonlib.MutableHashMapService.t(string),
+  workerCustomMainInitSourceJobMap:
+    WonderCommonlib.MutableHashMapService.t(string),
   workerCustomMainInitRemovedDefaultJobMap:
     WonderCommonlib.MutableHashMapService.t(bool),
   workerCustomMainLoopTargetJobMap:
     WonderCommonlib.MutableHashMapService.t(
       (string, JobType.workerCustomJobAction, stateData => unit),
     ),
-  workerCustomMainLoopSourceJobMap: WonderCommonlib.MutableHashMapService.t(string),
+  workerCustomMainLoopSourceJobMap:
+    WonderCommonlib.MutableHashMapService.t(string),
   workerCustomMainLoopRemovedDefaultJobMap:
     WonderCommonlib.MutableHashMapService.t(bool),
 }
@@ -186,8 +188,26 @@ and arcballCameraControllerRecord = {
   gameObjectMap,
   disposedIndexArray: array(component),
 }
+and scriptAPIJsObj = {
+  .
+  "unsafeGetScriptAttribute":
+    (int, string, state) => ScriptAttributeType.scriptAttribute,
+  "unsafeGetScriptAttributeFieldValue":
+    (string, ScriptAttributeType.scriptAttribute) =>
+    ScriptAttributeType.scriptAttributeValue,
+  "setScriptAttributeFieldValue":
+    (
+      int,
+      string,
+      string,
+      Wonderjs.ScriptAttributeType.scriptAttributeValue,
+      state
+    ) =>
+    state,
+}
 and apiRecord = {
-  apiJsObj: {
+  scriptAPIJsObj,
+  imguiAPIJsObj: {
     .
     "label":
       (
@@ -303,6 +323,31 @@ and apiRecord = {
       state => CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
   },
 }
+and eventFunction = (. ScriptType.script, scriptAPIJsObj, state) => state
+and eventFunctionDataJsObj = {
+  .
+  "init": Js.Nullable.t(eventFunction),
+  "update": Js.Nullable.t(eventFunction),
+}
+and eventFunctionData = {
+  init: eventFunction,
+  update: eventFunction,
+}
+and scriptRecord = {
+  index: int,
+  disposedIndexArray: array(ScriptType.script),
+  gameObjectMap,
+  scriptEventFunctionDataMap:
+    WonderCommonlib.ImmutableSparseMapService.t(
+      WonderCommonlib.ImmutableHashMapService.t(eventFunctionData),
+    ),
+  scriptAttributeMap:
+    WonderCommonlib.ImmutableSparseMapService.t(
+      WonderCommonlib.ImmutableHashMapService.t(
+        ScriptAttributeType.scriptAttribute,
+      ),
+    ),
+}
 and state = {
   settingRecord,
   jobRecord,
@@ -330,6 +375,7 @@ and state = {
   mutable geometryRecord: option(geometryRecord),
   mutable meshRendererRecord: option(meshRendererRecord),
   mutable arcballCameraControllerRecord,
+  mutable scriptRecord,
   shaderRecord,
   glslRecord,
   programRecord,
