@@ -5,7 +5,7 @@ module.exports = {
   types: [
     { value: "feat", name: "feat:     A new feature" },
     { value: "fix", name: "fix:      A bug fix" },
-    { value: "docs", name: "docs:     Documentation only changes" },
+    { value: "example", name: "example:     example only changes" },
     { value: "style", name: "style:    Changes that do not affect the meaning of the code\n            (white-space, formatting, missing semi-colons, etc)" },
     { value: "refactor", name: "refactor: A code change that neither fixes a bug nor adds a feature" },
     { value: "perf", name: "perf:     A code change that improves performance" },
@@ -43,7 +43,6 @@ module.exports = {
     { name: "camera" },
     { name: "dispose" },
     { name: "clone" },
-    { name: "example" },
     { name: "stream" },
     { name: "detect" },
     { name: "outline" },
@@ -87,8 +86,7 @@ module.exports = {
       { name: "code-climate" },
       { name: "readme" },
       { name: "changelog" },
-      { name: "npm" },
-      { name: "example" }
+      { name: "npm" }
     ]
   },
   // override the messages, defaults are as follows
