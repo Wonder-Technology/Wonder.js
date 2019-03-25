@@ -195,12 +195,37 @@ and scriptAPIJsObj = {
   "unsafeGetScriptAttributeFieldValue":
     (string, ScriptAttributeType.scriptAttribute) =>
     ScriptAttributeType.scriptAttributeValue,
+  "unsafeGetScriptGameObject": (int, state) => int,
+  "unsafeGetGameObjectTransformComponent":
+    (
+      GameObjectPrimitiveType.gameObject,
+      state
+    ) =>
+    int,
   "setScriptAttributeFieldValue":
     (
       int,
       string,
       string,
-      Wonderjs.ScriptAttributeType.scriptAttributeValue,
+      ScriptAttributeType.scriptAttributeValue,
+      state
+    ) =>
+    state,
+  "getTransformLocalPosition":
+    (transform, state) =>
+    (
+      Js.Typed_array.Float32Array.elt,
+      Js.Typed_array.Float32Array.elt,
+      Js.Typed_array.Float32Array.elt,
+    ),
+  "setTransformLocalPosition":
+    (
+      transform,
+      (
+        Js.Typed_array.Float32Array.elt,
+        Js.Typed_array.Float32Array.elt,
+        Js.Typed_array.Float32Array.elt,
+      ),
       state
     ) =>
     state,

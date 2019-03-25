@@ -4,7 +4,7 @@ open StateDataMainType;
 
 let createScript = state => CreateScriptMainService.create(. state);
 
-let unsafeGetGameObject = (script, state) =>
+let unsafeGetScriptGameObject = (script, state) =>
   GameObjectScriptMainService.unsafeGetGameObject(script, state.scriptRecord);
 
 let addScriptEventFunction =

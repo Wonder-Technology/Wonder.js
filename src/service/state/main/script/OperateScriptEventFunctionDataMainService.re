@@ -27,7 +27,7 @@ let getAllInitEventFunctionData = ({scriptRecord} as state) =>
   _getAllEventFunctionData(_mapEventFunctionDataFunc, state);
 
 let execAllEventFunction = (allEventFunctionData, state) => {
-  let apiJsObj = RecordScriptAPIMainService.getScriptAPIJsObj(state);
+  let apiJsObj = OperateScriptAPIMainService.getScriptAPIJsObj(state);
 
   allEventFunctionData
   |> WonderCommonlib.ArrayService.reduceOneParam(

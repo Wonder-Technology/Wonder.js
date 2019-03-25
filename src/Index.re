@@ -678,7 +678,7 @@ let addScriptAttribute = ScriptAPI.addScriptAttribute;
 
 let addScriptEventFunction = ScriptAPI.addScriptEventFunction;
 
-let unsafeGetGameObject = ScriptAPI.unsafeGetGameObject;
+let unsafeGetScriptGameObject = ScriptAPI.unsafeGetScriptGameObject;
 
 let createScript = ScriptAPI.createScript;
 
@@ -900,9 +900,9 @@ let create = RecordIMGUIAPIMainService.create;
 
 let getIMGUIAPIJsObj = RecordIMGUIAPIMainService.getIMGUIAPIJsObj;
 
-let create = RecordScriptAPIMainService.create;
+let getScriptAPIJsObj = OperateScriptAPIMainService.getScriptAPIJsObj;
 
-let getScriptAPIJsObj = RecordScriptAPIMainService.getScriptAPIJsObj;
+let create = RecordScriptAPIMainService.create;
 
 let create = RecordAPIRenderWorkerService.create;
 
@@ -1219,10 +1219,6 @@ let create = RecordAPIMainService.create;
 let create = RecordIMGUIAPIMainService.create;
 
 let getIMGUIAPIJsObj = RecordIMGUIAPIMainService.getIMGUIAPIJsObj;
-
-let create = RecordScriptAPIMainService.create;
-
-let getScriptAPIJsObj = RecordScriptAPIMainService.getScriptAPIJsObj;
 
 let create = RecordAPIRenderWorkerService.create;
 

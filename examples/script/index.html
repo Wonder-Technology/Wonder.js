@@ -41,31 +41,49 @@
             };
 
             function _update1(script, api, state) {
-                var scriptAttribute1 =
-                    api.unsafeGetScriptAttribute(
-                        script,
-                        "scriptAttribute1",
-                        state
+                // var scriptAttribute1 =
+                //     api.unsafeGetScriptAttribute(
+                //         script,
+                //         "scriptAttribute1",
+                //         state
+                //     );
+
+                // var a = api.unsafeGetScriptAttributeFieldValue(
+                //     "a",
+                //     scriptAttribute1
+                // );
+
+                // console.log("a: ", a)
+
+                // var state =
+                //     api.setScriptAttributeFieldValue(
+                //         script,
+                //         "scriptAttribute1",
+
+                //         "a",
+
+                //         a + 1,
+
+
+                //         state
+                //     );
+
+                var gameObject =
+                    api.unsafeGetScriptGameObject(
+                        script, state
                     );
 
-                var a = api.unsafeGetScriptAttributeFieldValue(
-                    "a",
-                    scriptAttribute1
-                );
+                var transform =
+                    api.unsafeGetGameObjectTransformComponent(gameObject, state);
 
-                console.log("a: ", a)
+                var [x, y, z] =
+                    api.getTransformLocalPosition(
+                        transform, state
+                    );
 
                 var state =
-                    api.setScriptAttributeFieldValue(
-                        script,
-                        "scriptAttribute1",
-
-                        "a",
-
-                        a + 1,
-
-
-                        state
+                    api.setTransformLocalPosition(
+                        transform, [x >= 20 ? -20 : x + 1, y, z], state
                     );
 
                 return state
