@@ -4,6 +4,7 @@ let _getMainInitJobHandles = () => [
   ("detect_environment", DetectEnvironmentWorkerJob.execJob),
   ("init_imgui", InitIMGUIMainWorkerJob.execJob),
   ("init_event", InitEventMainWorkerJob.execJob),
+  ("init_script", InitScriptMainWorkerJob.execJob),
   ("init_camera", InitCameraMainWorkerJob.execJob),
   ("create_worker_instance", CreateWorkerInstanceMainWorkerJob.execJob),
   ("send_job_data", SendJobDataMainWorkerJob.execJob),
@@ -21,6 +22,7 @@ let _getMainLoopJobHandles = () => [
   ("tick", TickMainWorkerJob.execJob),
   ("update_transform", UpdateTransformMainWorkerJob.execJob),
   ("update_camera", UpdateCameraMainWorkerJob.execJob),
+  ("update_script", UpdateScriptMainWorkerJob.execJob),
   ("get_camera_data", GetCameraDataMainWorkerJob.execJob),
   (
     "dispose_and_send_dispose_data",
