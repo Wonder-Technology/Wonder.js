@@ -41,61 +41,63 @@
             };
 
             function _update1(script, api, state) {
-                // var scriptAttribute1 =
-                //     api.unsafeGetScriptAttribute(
-                //         script,
-                //         "scriptAttribute1",
-                //         state
-                //     );
-
-                // var a = api.unsafeGetScriptAttributeFieldValue(
-                //     "a",
-                //     scriptAttribute1
-                // );
-
-                // console.log("a: ", a)
-
-                // var state =
-                //     api.setScriptAttributeFieldValue(
-                //         script,
-                //         "scriptAttribute1",
-
-                //         "a",
-
-                //         a + 1,
-
-
-                //         state
-                //     );
-
-                var gameObject =
-                    api.unsafeGetScriptGameObject(
-                        script, state
+                var scriptAttribute1 =
+                    api.unsafeGetScriptAttribute(
+                        script,
+                        "scriptAttribute1",
+                        state
                     );
 
-                var transform =
-                    api.unsafeGetGameObjectTransformComponent(gameObject, state);
+                var a = api.unsafeGetScriptAttributeFieldValue(
+                    "a",
+                    scriptAttribute1
+                );
 
-                var [x, y, z] =
-                    api.getTransformLocalPosition(
-                        transform, state
+                console.log("a: ", a)
+
+                var state =
+                    api.setScriptAttributeFieldValue(
+                        script,
+                        "scriptAttribute1",
+
+                        "a",
+
+                        a + 1,
+
+
+                        state
                     );
 
+                // var gameObject =
+                //     api.unsafeGetScriptGameObject(
+                //         script, state
+                //     );
+
+                // var transform =
+                //     api.unsafeGetGameObjectTransformComponent(gameObject, state);
+
+                // var [x, y, z] =
+                //     api.getTransformLocalPosition(
+                //         transform, state
+                //     );
 
 
-                if (x >= 20) {
-                    var state = api.disposeGameObject(gameObject, state);
 
-                    return state;
-                }
-                else {
-                    var state =
-                        api.setTransformLocalPosition(
-                            transform, [x >= 20 ? -20 : x + 1, y, z], state
-                        );
+                // if (x >= 20) {
+                //     var state = api.disposeGameObject(gameObject, state);
 
-                    return state;
-                }
+                //     return state;
+                // }
+                // else {
+                //     var state =
+                //         api.setTransformLocalPosition(
+                //             transform, [x >= 20 ? -20 : x + 1, y, z], state
+                //         );
+
+                //     return state;
+                // }
+
+                return state;
 
 
                 // var state =
@@ -265,6 +267,17 @@
                     );
 
                 var state = _addScript(box, state);
+
+                var [state, newBoxes] = wd.cloneGameObject(box, 2, true, state);
+
+
+                var flatten = (arr) => {
+                    return arr.reduce((a, b) => {
+                        var arr = a.concat(b);
+                        return arr;
+                    }, []);
+                };
+                var newBoxes = flatten(newBoxes);
 
 
                 wd.startDirector(state);

@@ -61,6 +61,23 @@ let _batchAddComponentWithState =
      );
 };
 
+let _batchAddScriptComponent =
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {gameObjectRecord, scriptRecord} as state,
+    ) => {
+  ...state,
+  scriptRecord:
+    _batchAddComponent(
+      (uidArr, componentArr, gameObjectRecord.scriptMap),
+      AddScriptMainService.handleAddComponent,
+      scriptRecord,
+    ),
+};
+
+let batchAddScriptComponentForClone = _batchAddScriptComponent;
+
 let _batchAddBasicCameraViewComponent =
     (
       uidArr: array(int),

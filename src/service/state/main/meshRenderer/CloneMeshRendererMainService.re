@@ -5,9 +5,9 @@ let _getData =
     OperateMeshRendererMainService.getDrawMode(sourceComponent, state);
 
 let _setData =
-  (. sourceComponent, drawMode, state) =>
+  (. targetComponent, drawMode, state) =>
     state
-    |> OperateMeshRendererMainService.setDrawMode(sourceComponent, drawMode);
+    |> OperateMeshRendererMainService.setDrawMode(targetComponent, drawMode);
 
 let handleCloneComponent = (sourceComponent, countRangeArr, state) => {
   let drawMode = _getData(. sourceComponent, state);

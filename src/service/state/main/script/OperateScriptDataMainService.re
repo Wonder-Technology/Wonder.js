@@ -138,3 +138,66 @@ let setScriptAttributeFieldValue =
       state,
     )
   };
+
+let unsafeGetScriptAllEventFunctionData = (script, {scriptRecord} as state) => {
+  let {scriptEventFunctionDataMap} = scriptRecord;
+
+  scriptEventFunctionDataMap
+  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(script);
+};
+
+let setScriptAllEventFunctionData =
+    (script, allEventFunctionData, {scriptRecord} as state) => {
+  let {scriptEventFunctionDataMap} = scriptRecord;
+
+  {
+    ...state,
+    scriptRecord: {
+      ...scriptRecord,
+      scriptEventFunctionDataMap:
+        scriptEventFunctionDataMap
+        |> WonderCommonlib.ImmutableSparseMapService.set(
+             script,
+             allEventFunctionData,
+           ),
+    },
+  };
+};
+
+let unsafeGetScriptAllAttributes = (script, {scriptRecord} as state) => {
+  let {scriptAttributeMap} = scriptRecord;
+
+  scriptAttributeMap
+  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(script);
+};
+
+let setScriptAllAttributes = (script, allAttributes, {scriptRecord} as state) => {
+  let {scriptAttributeMap} = scriptRecord;
+
+  {
+    ...state,
+    scriptRecord: {
+      ...scriptRecord,
+      scriptAttributeMap:
+        scriptAttributeMap
+        |> WonderCommonlib.ImmutableSparseMapService.set(
+             script,
+             allAttributes,
+           ),
+    },
+  };
+};
+
+let resetScriptAllAttributesFieldValue = allAttributes =>
+  allAttributes
+  |> ImmutableHashMapService.map((. attributes) =>
+       attributes
+       |> ImmutableHashMapService.map(
+            (.
+              (
+                {value, defaultValue}: ScriptAttributeType.scriptAttributeField
+              ) as scriptAttributeField,
+            ) =>
+            {...scriptAttributeField, value: defaultValue}
+          )
+     );

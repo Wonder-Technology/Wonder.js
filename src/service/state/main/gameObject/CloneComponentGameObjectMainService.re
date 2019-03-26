@@ -4,6 +4,14 @@ open StateDataMainType;
 
 open ComponentType;
 
+let cloneScriptComponent =
+    (sourceComponent: component, countRangeArr: array(int), state) =>
+  CloneScriptMainService.handleCloneComponent(
+    sourceComponent,
+    countRangeArr,
+    state,
+  );
+
 let cloneBasicCameraViewComponent =
     (sourceComponent: component, countRangeArr: array(int), state) =>
   CloneBasicCameraViewMainService.handleCloneComponent(

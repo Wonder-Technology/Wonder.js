@@ -73,6 +73,21 @@ let _cloneComponentExceptTransform =
   |> _clone(
        (
          uid,
+         GetComponentGameObjectService.getScriptComponent(.
+           uid,
+           gameObjectRecord,
+         ),
+         countRangeArr,
+         clonedGameObjectArr,
+       ),
+       (
+         CloneComponentGameObjectMainService.cloneScriptComponent,
+         BatchAddGameObjectComponentMainService.batchAddScriptComponentForClone,
+       ),
+     )
+  |> _clone(
+       (
+         uid,
          GetComponentGameObjectService.getBasicCameraViewComponent(.
            uid,
            gameObjectRecord,

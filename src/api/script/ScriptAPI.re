@@ -2,7 +2,7 @@
 
 open StateDataMainType;
 
-let createScript = state => CreateScriptMainService.create(. state);
+let createScript = state => CreateScriptMainService.create(state);
 
 let unsafeGetScriptGameObject = (script, state) =>
   GameObjectScriptMainService.unsafeGetGameObject(script, state.scriptRecord);
