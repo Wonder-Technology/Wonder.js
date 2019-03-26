@@ -196,20 +196,8 @@ and scriptAPIJsObj = {
     (string, ScriptAttributeType.scriptAttribute) =>
     ScriptAttributeType.scriptAttributeValue,
   "unsafeGetScriptGameObject": (int, state) => int,
-  "unsafeGetGameObjectTransformComponent":
-    (
-      GameObjectPrimitiveType.gameObject,
-      state
-    ) =>
-    int,
   "setScriptAttributeFieldValue":
-    (
-      int,
-      string,
-      string,
-      ScriptAttributeType.scriptAttributeValue,
-      state
-    ) =>
+    (int, string, string, ScriptAttributeType.scriptAttributeValue, state) =>
     state,
   "getTransformLocalPosition":
     (transform, state) =>
@@ -229,6 +217,9 @@ and scriptAPIJsObj = {
       state
     ) =>
     state,
+  "unsafeGetGameObjectTransformComponent":
+    (GameObjectPrimitiveType.gameObject, state) => int,
+  "disposeGameObject": (GameObjectPrimitiveType.gameObject, state) => state,
 }
 and apiRecord = {
   scriptAPIJsObj,
@@ -353,10 +344,12 @@ and eventFunctionDataJsObj = {
   .
   "init": Js.Nullable.t(eventFunction),
   "update": Js.Nullable.t(eventFunction),
+  "dispose": Js.Nullable.t(eventFunction),
 }
 and eventFunctionData = {
   init: eventFunction,
   update: eventFunction,
+  dispose: eventFunction,
 }
 and scriptRecord = {
   index: int,

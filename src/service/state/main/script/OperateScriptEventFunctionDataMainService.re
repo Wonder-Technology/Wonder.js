@@ -1,5 +1,15 @@
 open StateDataMainType;
 
+let _pushEventFunctionData =
+    (script, scriptEventFunctionData, mapEventFunctionDataFunc, arr) =>
+  arr
+  |> ArrayService.push((
+       script,
+       scriptEventFunctionData
+       |> ImmutableHashMapService.getValues
+       |> Js.Array.map(mapEventFunctionDataFunc),
+     ));
+
 let _getAllEventFunctionData =
     (mapEventFunctionDataFunc, {scriptRecord} as state) => {
   let {scriptEventFunctionDataMap} = scriptRecord;
@@ -7,13 +17,12 @@ let _getAllEventFunctionData =
   scriptEventFunctionDataMap
   |> WonderCommonlib.ImmutableSparseMapService.reduceiValid(
        (. arr, scriptEventFunctionData, script) =>
-         arr
-         |> ArrayService.push((
-              script,
-              scriptEventFunctionData
-              |> ImmutableHashMapService.getValues
-              |> Js.Array.map(mapEventFunctionDataFunc),
-            )),
+         _pushEventFunctionData(
+           script,
+           scriptEventFunctionData,
+           mapEventFunctionDataFunc,
+           arr,
+         ),
        WonderCommonlib.ArrayService.createEmpty(),
      );
 };
@@ -21,10 +30,10 @@ let _getAllEventFunctionData =
 let getAllUpdateEventFunctionData = ({scriptRecord} as state) =>
   _getAllEventFunctionData(({update}) => update, state);
 
-let _mapEventFunctionDataFunc = ({init}) => init;
+let _mapInitEventFunctionDataFunc = ({init}) => init;
 
 let getAllInitEventFunctionData = ({scriptRecord} as state) =>
-  _getAllEventFunctionData(_mapEventFunctionDataFunc, state);
+  _getAllEventFunctionData(_mapInitEventFunctionDataFunc, state);
 
 let execAllEventFunction = (allEventFunctionData, state) => {
   let apiJsObj = OperateScriptAPIMainService.getScriptAPIJsObj(state);
@@ -59,12 +68,31 @@ let getGameObjectAllInitEventFunctionData =
     ) {
     | None => WonderCommonlib.ArrayService.createEmpty()
     | Some(scriptEventFunctionData) =>
-      WonderCommonlib.ArrayService.createEmpty()
-      |> ArrayService.push((
-           script,
-           scriptEventFunctionData
-           |> ImmutableHashMapService.getValues
-           |> Js.Array.map(_mapEventFunctionDataFunc),
-         ))
+      _pushEventFunctionData(
+        script,
+        scriptEventFunctionData,
+        _mapInitEventFunctionDataFunc,
+        WonderCommonlib.ArrayService.createEmpty(),
+      )
     };
   };
+
+let _mapDisposeEventFunctionDataFunc = ({dispose}) => dispose;
+
+let getScriptAllDisposeEventFunctionData =
+    (scriptArray, {scriptRecord} as state) => {
+  let {scriptEventFunctionDataMap} = scriptRecord;
+
+  scriptArray
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. arr, script) =>
+         _pushEventFunctionData(
+           script,
+           scriptEventFunctionDataMap
+           |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(script),
+           _mapDisposeEventFunctionDataFunc,
+           arr,
+         ),
+       WonderCommonlib.ArrayService.createEmpty(),
+     );
+};

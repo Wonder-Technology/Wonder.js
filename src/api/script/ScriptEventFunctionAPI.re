@@ -10,4 +10,5 @@ let createScriptEventFunctionData =
     (jsObj: eventFunctionDataJsObj): eventFunctionData => {
   init: _createScriptEventFunction(jsObj##init),
   update: _createScriptEventFunction(jsObj##update),
+  dispose: _createScriptEventFunction(jsObj##dispose),
 };

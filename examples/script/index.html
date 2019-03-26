@@ -81,12 +81,35 @@
                         transform, state
                     );
 
-                var state =
-                    api.setTransformLocalPosition(
-                        transform, [x >= 20 ? -20 : x + 1, y, z], state
-                    );
 
-                return state
+
+                if (x >= 20) {
+                    var state = api.disposeGameObject(gameObject, state);
+
+                    return state;
+                }
+                else {
+                    var state =
+                        api.setTransformLocalPosition(
+                            transform, [x >= 20 ? -20 : x + 1, y, z], state
+                        );
+
+                    return state;
+                }
+
+
+                // var state =
+                //     api.setTransformLocalPosition(
+                //         transform, [x >= 20 ? -20 : x + 1, y, z], state
+                //     );
+
+                // return state
+            };
+
+            function _dispose1(script, api, state) {
+                console.log("script: ", script);
+
+                return state;
             };
 
             function _addScript(box, state) {
@@ -102,6 +125,9 @@
                             },
                             "update": (script, api, state) => {
                                 return _update1(script, api, state);
+                            },
+                            "dispose": (script, api, state) => {
+                                return _dispose1(script, api, state);
                             }
                         }
                     );

@@ -58,23 +58,23 @@ let addGameObjectScriptComponent =
   addScriptComponent(gameObject, component, state);
 };
 
-/* TODO
-   let disposeGameObjectScriptComponent =
-       (
-         gameObject: GameObjectPrimitiveType.gameObject,
-         component: component,
-         state: StateDataMainType.state,
-       ) => {
-     WonderLog.Contract.requireCheck(
-       () =>
-         WonderLog.(
-           Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
-     deferDisposeScriptComponent(. gameObject, component, state);
-   };
+let disposeGameObjectScriptComponent =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  deferDisposeScriptComponent(. gameObject, component, state);
+};
 
+/* TODO
    let unsafeGetGameObjectScriptComponent =
        (
          gameObject: GameObjectPrimitiveType.gameObject,

@@ -5,6 +5,18 @@ open ComponentType;
 let _removeComponent = (uid: int, componentMap) =>
   componentMap |> ComponentMapService.removeComponent(uid) |> Obj.magic;
 
+let deferDisposeScriptComponent =
+  (. uid, component: component, {gameObjectRecord} as state) => {
+    ...state,
+    gameObjectRecord: {
+      ...gameObjectRecord,
+      scriptMap: _removeComponent(uid, gameObjectRecord.scriptMap),
+      disposedScriptArray:
+        state.gameObjectRecord.disposedScriptArray
+        |> ArrayService.push(component),
+    },
+  };
+
 let deferDisposeBasicCameraViewComponent =
   (. uid, component: component, {gameObjectRecord} as state) => {
     ...state,
@@ -172,6 +184,16 @@ let deferDisposeMeshRendererComponent =
         |> ArrayService.push(component),
     },
   };
+
+let batchDisposeScriptComponent = (state, componentArray: array(component)) =>
+  /* ...state,
+     scriptRecord:
+       ComponentMapService.batchDisposeComponent(
+         scriptRecord,
+         DisposeScriptMainService.handleBatchDisposeComponent,
+         componentArray,
+       ), */
+  DisposeScriptMainService.handleBatchDisposeComponent(componentArray, state);
 
 let batchDisposeBasicCameraViewComponent =
     ({basicCameraViewRecord} as state, componentArray: array(component)) => {

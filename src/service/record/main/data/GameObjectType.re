@@ -86,6 +86,7 @@ type gameObjectRecord = {
   mutable disposedDirectionLightArray: array(int),
   mutable disposedPointLightArray: array(int),
   mutable disposedMeshRendererComponentArray: array(int),
+  mutable disposedScriptArray: array(int),
   mutable aliveUidArray: gameObjectAliveUidArray,
   mutable geometryMap: gameObjectGeometryMap,
   mutable transformMap: gameObjectTransformMap,

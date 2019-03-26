@@ -14,6 +14,7 @@ let create = () => {
     WonderCommonlib.ArrayService.createEmpty(),
   disposedUidArrayForDisposeGeometryRemoveMaterial:
     WonderCommonlib.ArrayService.createEmpty(),
+  disposedScriptArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedBasicCameraViewArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedTransformArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedTransformArrayForKeepOrder:

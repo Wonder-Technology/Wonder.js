@@ -6,6 +6,9 @@ open ComponentMapService;
 
 open BasicCameraViewType;
 
+let batchGetScriptComponent = (uidArray: array(int), {gameObjectRecord}) =>
+  batchGetComponent(uidArray, gameObjectRecord.scriptMap);
+
 let batchGetBasicCameraViewComponent =
     (uidArray: array(int), {gameObjectRecord}) =>
   batchGetComponent(uidArray, gameObjectRecord.basicCameraViewMap);

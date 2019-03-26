@@ -114,12 +114,22 @@ let batchDispose =
 
   let state =
     state
+    |> BatchGetComponentGameObjectMainService.batchGetScriptComponent(
+         uidArray,
+       )
+    |> DisposeComponentGameObjectMainService.batchDisposeScriptComponent(
+         state,
+       );
+
+  let state =
+    state
     |> BatchGetComponentGameObjectMainService.batchGetBasicCameraViewComponent(
          uidArray,
        )
     |> DisposeComponentGameObjectMainService.batchDisposeBasicCameraViewComponent(
          state,
        );
+
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetPerspectiveCameraProjectionComponent(
@@ -180,6 +190,7 @@ let batchDispose =
     |> DisposeComponentGameObjectMainService.batchDisposeObjectInstanceComponent(
          state,
        );
+
   (
     state,
     geometryNeedDisposeVboBufferArr,

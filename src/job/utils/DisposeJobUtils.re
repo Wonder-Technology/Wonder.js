@@ -22,6 +22,8 @@ let _disposeComponents =
     disposedDirectionLightArray,
     disposedPointLightArray,
     disposedMeshRendererComponentArray,
+    /* TODO test */
+    disposedScriptArray,
   } = gameObjectRecord;
   let state =
     disposedBasicCameraViewArray
@@ -91,6 +93,13 @@ let _disposeComponents =
     |> DisposeComponentGameObjectMainService.batchDisposeMeshRendererComponent(
          state,
        );
+
+  let state =
+    disposedScriptArray
+    |> DisposeComponentGameObjectMainService.batchDisposeScriptComponent(
+         state,
+       );
+
   (
     state,
     geometryNeedDisposeVboBufferArr,
