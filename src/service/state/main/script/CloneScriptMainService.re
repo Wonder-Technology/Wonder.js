@@ -10,7 +10,6 @@ let _getData =
       sourceComponent,
       state,
     )
-    /* TODO test */
     |> OperateScriptDataMainService.resetScriptAllAttributesFieldValue,
   );
 
@@ -26,7 +25,6 @@ let _setData =
          allAttributes,
        );
 
-/* TODO test */
 let handleCloneComponent =
     (sourceComponent, countRangeArr, {scriptRecord} as state) => {
   let data = _getData(. sourceComponent, state);

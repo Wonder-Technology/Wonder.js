@@ -193,6 +193,63 @@ let _ =
           })
         );
       });
+
+      describe("test script component", () => {
+        let _prepare = () => {
+          open ScriptAPI;
+          let (state, gameObject) = createGameObject(state^);
+          let (state, script) = createScript(state);
+          let state =
+            state |> addGameObjectScriptComponent(gameObject, script);
+          (state, gameObject, script);
+        };
+
+        describe("addGameObjectScriptComponent", () => {
+          test("if this type of component is already exist, error", () => {
+            open ScriptAPI;
+            let (state, gameObject, _) = _prepare();
+
+            expect(() => {
+              let (state, script) = createScript(state);
+              addGameObjectScriptComponent(gameObject, script, state);
+            })
+            |> toThrowMessage(
+                 "expect this type of the component shouldn't be added before, but actual not",
+               );
+          });
+          test("can get component's gameObject", () => {
+            open ScriptAPI;
+            let (state, gameObject, _) = _prepare();
+
+            state
+            |> unsafeGetScriptGameObject(
+                 unsafeGetGameObjectScriptComponent(gameObject, state),
+               )
+            |> expect == gameObject;
+          });
+        });
+
+        describe("unsafeGetGameObjectScriptComponent", () =>
+          test("get script component", () => {
+            let (state, gameObject, script) = _prepare();
+
+            state
+            |> unsafeGetGameObjectScriptComponent(gameObject)
+            |> expect == script;
+          })
+        );
+
+        describe("hasGameObjectScriptComponent", () =>
+          test("has script component", () => {
+            let (state, gameObject, _) = _prepare();
+
+            state
+            |> hasGameObjectScriptComponent(gameObject)
+            |> expect == true;
+          })
+        );
+      });
+
       describe("test basicCameraView component", () => {
         let _prepare = () => {
           open BasicCameraViewAPI;
@@ -1016,6 +1073,21 @@ let _ =
           )
           |> toThrowMessage("expect gameObject alive, but actual not");
         });
+        test("dispose script component", () => {
+          open GameObjectType;
+          let (state, gameObject1, script1) =
+            ScriptTool.createGameObject(state^);
+          let (state, gameObject2, script2) =
+            ScriptTool.createGameObject(state);
+
+          let state = state |> GameObjectTool.disposeGameObject(gameObject1);
+
+          (
+            ScriptTool.isAlive(script1, state),
+            ScriptTool.isAlive(script2, state),
+          )
+          |> expect == (false, true);
+        });
         test("dispose meshRenderer component", () => {
           let (state, gameObject1, meshRenderer1) =
             MeshRendererTool.createBasicMaterialGameObject(state^);
@@ -1350,6 +1422,33 @@ let _ =
                 transformMap
                 |> WonderCommonlib.MutableSparseMapService.has(gameObject2),
                 transformMap
+                |> WonderCommonlib.MutableSparseMapService.has(gameObject3),
+              )
+              |> expect == (false, false, true);
+            });
+            test("new scriptMap should only has alive data", () => {
+              open GameObjectType;
+              let state =
+                SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
+              let (state, gameObject1, script1) =
+                ScriptTool.createGameObject(state);
+              let (state, gameObject2, script2) =
+                ScriptTool.createGameObject(state);
+              let (state, gameObject3, script3) =
+                ScriptTool.createGameObject(state);
+
+              let state =
+                state |> GameObjectTool.disposeGameObject(gameObject1);
+              let state =
+                state |> GameObjectTool.disposeGameObject(gameObject2);
+
+              let {scriptMap} = GameObjectTool.getGameObjectRecord(state);
+              (
+                scriptMap
+                |> WonderCommonlib.MutableSparseMapService.has(gameObject1),
+                scriptMap
+                |> WonderCommonlib.MutableSparseMapService.has(gameObject2),
+                scriptMap
                 |> WonderCommonlib.MutableSparseMapService.has(gameObject3),
               )
               |> expect == (false, false, true);
@@ -2341,6 +2440,7 @@ let _ =
           })
         )
       );
+
     describe("initGameObject", () =>
       describe("init components", () => {
         beforeEach(() =>
@@ -2476,12 +2576,9 @@ let _ =
           let (state, gameObject, _, (_, cameraProjection)) =
             CameraTool.createCameraGameObject(state^);
 
-          let attachShader = createEmptyStubWithJsObjSandbox(sandbox);
           let state =
             state
-            |> FakeGlTool.setFakeGl(
-                 FakeGlTool.buildFakeGl(~sandbox, ~attachShader, ()),
-               );
+            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
           let state = AllMaterialTool.prepareForInit(state);
           let state = state |> initGameObject(gameObject);
 
@@ -2509,8 +2606,31 @@ let _ =
                0.,
              |]);
         });
+
+        test("exec script component->all init event functions", () => {
+          let (state, gameObject, script) =
+            ScriptTool.createGameObject(state^);
+          let state =
+            ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+              ~script,
+              ~state,
+              (),
+            );
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+          let state = AllMaterialTool.prepareForInit(state);
+
+          let state = state |> initGameObject(gameObject);
+
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.judgeExecInitEventFunc(
+            script,
+            state,
+          );
+        });
       })
     );
+
     describe("contract check: is alive", () =>
       describe("if gameObject is disposed", () => {
         let _getErrorMsg = () => "expect gameObject alive, but actual not";

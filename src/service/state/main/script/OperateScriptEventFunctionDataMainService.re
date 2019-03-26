@@ -86,13 +86,19 @@ let getScriptAllDisposeEventFunctionData =
   scriptArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. arr, script) =>
-         _pushEventFunctionData(
-           script,
+         switch (
            scriptEventFunctionDataMap
-           |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(script),
-           _mapDisposeEventFunctionDataFunc,
-           arr,
-         ),
+           |> WonderCommonlib.ImmutableSparseMapService.get(script)
+         ) {
+         | None => arr
+         | Some(scriptEventFunctionData) =>
+           _pushEventFunctionData(
+             script,
+             scriptEventFunctionData,
+             _mapDisposeEventFunctionDataFunc,
+             arr,
+           )
+         },
        WonderCommonlib.ArrayService.createEmpty(),
      );
 };

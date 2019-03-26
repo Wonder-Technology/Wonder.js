@@ -122,6 +122,9 @@ let buildNoWorkerLoopJobConfig = () => {|
         "name": "tick"
     },
     {
+        "name": "update_script"
+    },
+    {
         "name": "update_transform"
     },
     {
@@ -266,6 +269,9 @@ let buildNoWorkerJobConfig =
              },
              {
                  "name": "init_texture"
+             },
+             {
+                 "name": "init_script"
              }
          ]
                  |},

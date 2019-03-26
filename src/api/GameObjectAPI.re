@@ -74,37 +74,35 @@ let disposeGameObjectScriptComponent =
   deferDisposeScriptComponent(. gameObject, component, state);
 };
 
-/* TODO
-   let unsafeGetGameObjectScriptComponent =
-       (
-         gameObject: GameObjectPrimitiveType.gameObject,
-         state: StateDataMainType.state,
-       ) => {
-     WonderLog.Contract.requireCheck(
-       () =>
-         WonderLog.(
-           Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
-     unsafeGetScriptComponent(gameObject, state.gameObjectRecord);
-   };
+let unsafeGetGameObjectScriptComponent =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  unsafeGetScriptComponent(gameObject, state.gameObjectRecord);
+};
 
-   let hasGameObjectScriptComponent =
-       (
-         gameObject: GameObjectPrimitiveType.gameObject,
-         state: StateDataMainType.state,
-       ) => {
-     WonderLog.Contract.requireCheck(
-       () =>
-         WonderLog.(
-           Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
-     hasScriptComponent(gameObject, state.gameObjectRecord);
-   };
-    */
+let hasGameObjectScriptComponent =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  hasScriptComponent(gameObject, state.gameObjectRecord);
+};
 
 let addGameObjectBasicCameraViewComponent =
     (

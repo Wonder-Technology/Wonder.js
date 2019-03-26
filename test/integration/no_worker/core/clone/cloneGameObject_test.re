@@ -70,8 +70,14 @@ let _ =
         let clonedGameObjectArr =
           clonedGameObjectArr |> CloneTool.getFlattenClonedGameObjectArr;
         (
-          GameObjectAPI.unsafeGetGameObjectIsRoot(clonedGameObjectArr[0], state),
-          GameObjectAPI.unsafeGetGameObjectIsRoot(clonedGameObjectArr[1], state),
+          GameObjectAPI.unsafeGetGameObjectIsRoot(
+            clonedGameObjectArr[0],
+            state,
+          ),
+          GameObjectAPI.unsafeGetGameObjectIsRoot(
+            clonedGameObjectArr[1],
+            state,
+          ),
         )
         |> expect == (isRoot, isRoot);
       });
@@ -133,14 +139,14 @@ let _ =
             _cloneGameObject(gameObject1, 2, state);
           state
           |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
-          |>
-          expect == (
-                      [|gameObject1|]
-                      |> Js.Array.concat(
-                           clonedGameObjectArr
-                           |> CloneTool.getFlattenClonedGameObjectArr,
-                         )
-                    );
+          |> expect
+          == (
+               [|gameObject1|]
+               |> Js.Array.concat(
+                    clonedGameObjectArr
+                    |> CloneTool.getFlattenClonedGameObjectArr,
+                  )
+             );
         });
 
         describe("cloned one' data === source one's data", () => {
@@ -252,6 +258,134 @@ let _ =
                  ),
             )
             |> expect == ([|5, 6, 7, 8|], [|4, 5, 6, 7|]);
+          })
+        );
+      });
+
+      describe("test clone script component", () => {
+        let _clone = (gameObject, state) => {
+          let (state, clonedGameObjectArr) =
+            _cloneGameObject(gameObject, 2, state);
+          (
+            state,
+            clonedGameObjectArr |> CloneTool.getFlattenClonedGameObjectArr,
+            clonedGameObjectArr
+            |> CloneTool.getFlattenClonedGameObjectArr
+            |> Js.Array.map(clonedGameObject =>
+                 unsafeGetGameObjectScriptComponent(clonedGameObject, state)
+               ),
+          );
+        };
+
+        test("create new script component", () => {
+          let (state, gameObject1, script1) =
+            ScriptTool.createGameObject(state^);
+          let state =
+            ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+              ~script=script1,
+              ~state,
+              (),
+            );
+
+          let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+
+          clonedComponentArr |> expect == [|script1 + 1, script1 + 2|];
+        });
+
+        describe("test cloned one' data === source one's data", () =>
+          test("test scriptAllEventFunctionData", () => {
+            let (state, gameObject1, script1) =
+              ScriptTool.createGameObject(state^);
+            let state =
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+                ~script=script1,
+                ~state,
+                (),
+              );
+            let allEventFunctionData =
+              ScriptTool.unsafeGetScriptAllEventFunctionData(script1, state);
+
+            let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+
+            (
+              ScriptTool.unsafeGetScriptAllEventFunctionData(
+                clonedComponentArr[0],
+                state,
+              ),
+              ScriptTool.unsafeGetScriptAllEventFunctionData(
+                clonedComponentArr[1],
+                state,
+              ),
+            )
+            |> expect == (allEventFunctionData, allEventFunctionData);
+          })
+        );
+
+        describe("test cloned one' data !== source one's data", () =>
+          test("reset  scriptAllAttributes->value to defaultValue", () => {
+            let (state, gameObject1, script1) =
+              ScriptTool.createGameObject(state^);
+            let state =
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+                ~script=script1,
+                ~state,
+                (),
+              );
+            let state =
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.setScriptAttributeFieldAValue(
+                script1,
+                3,
+                state,
+              );
+
+            let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+
+            (
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldAValue(
+                clonedComponentArr[0],
+                state,
+              ),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldAValue(
+                clonedComponentArr[1],
+                state,
+              ),
+            )
+            |> expect
+            == (
+                 ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldADefaultValue(),
+                 ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldADefaultValue(),
+               );
+          })
+        );
+
+        describe(
+          "change cloned one's attribute shouldn't affect source one's attribute",
+          () =>
+          test("test change int attribute field", () => {
+            let (state, gameObject1, script1) =
+              ScriptTool.createGameObject(state^);
+            let state =
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+                ~script=script1,
+                ~state,
+                (),
+              );
+
+            let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+
+            let state =
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.setScriptAttributeFieldAValue(
+                clonedComponentArr[0],
+                3,
+                state,
+              );
+
+            ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldAValue(
+              script1,
+              state,
+            )
+            |> expect
+            == ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldADefaultValue();
           })
         );
       });
@@ -653,11 +787,8 @@ let _ =
                   state,
                 ),
               )
-              |>
-              expect == (
-                          [|clonedGameObjectArr[0]|],
-                          [|clonedGameObjectArr[1]|],
-                        );
+              |> expect
+              == ([|clonedGameObjectArr[0]|], [|clonedGameObjectArr[1]|]);
             });
 
             describe("cloned one' data === source one's data", () => {
@@ -1645,17 +1776,17 @@ let _ =
               state |> TransformTool.getTransformParent(clonedTransformArr[6]),
               state |> TransformTool.getTransformParent(clonedTransformArr[7]),
             )
-            |>
-            expect == (
-                        None,
-                        None,
-                        Some(clonedTransformArr[0]),
-                        Some(clonedTransformArr[1]),
-                        Some(clonedTransformArr[0]),
-                        Some(clonedTransformArr[1]),
-                        Some(clonedTransformArr[4]),
-                        Some(clonedTransformArr[5]),
-                      );
+            |> expect
+            == (
+                 None,
+                 None,
+                 Some(clonedTransformArr[0]),
+                 Some(clonedTransformArr[1]),
+                 Some(clonedTransformArr[0]),
+                 Some(clonedTransformArr[1]),
+                 Some(clonedTransformArr[4]),
+                 Some(clonedTransformArr[5]),
+               );
           });
           test(
             "test set cloned transform's localPosition by corresponding source transform's localPosition",
@@ -1693,13 +1824,13 @@ let _ =
               |> Js.Array.map(transform =>
                    getTransformPosition(transform, state)
                  )
-              |>
-              expect == [|
-                          pos1,
-                          add(Float, pos1, pos2),
-                          add(Float, pos1, pos3),
-                          add(Float, add(Float, pos1, pos3), pos4),
-                        |];
+              |> expect
+              == [|
+                   pos1,
+                   add(Float, pos1, pos2),
+                   add(Float, pos1, pos3),
+                   add(Float, add(Float, pos1, pos3), pos4),
+                 |];
             },
           );
         });

@@ -31,7 +31,6 @@ let _batchExecDisposeEventFunction = (scriptArray, {scriptRecord} as state) =>
        ),
      );
 
-/* TODO test */
 let handleBatchDisposeComponent =
     (scriptArray: array(ComponentType.component), {scriptRecord} as state) => {
   WonderLog.Contract.requireCheck(

@@ -372,6 +372,10 @@ let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectB
 
 let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
 
+let hasGameObjectScriptComponent = GameObjectAPI.hasGameObjectScriptComponent;
+
+let unsafeGetGameObjectScriptComponent = GameObjectAPI.unsafeGetGameObjectScriptComponent;
+
 let disposeGameObjectScriptComponent = GameObjectAPI.disposeGameObjectScriptComponent;
 
 let addGameObjectScriptComponent = GameObjectAPI.addGameObjectScriptComponent;
@@ -1093,6 +1097,10 @@ let unsafeGetGameObjectBasicCameraViewComponent = GameObjectAPI.unsafeGetGameObj
 let disposeGameObjectBasicCameraViewComponent = GameObjectAPI.disposeGameObjectBasicCameraViewComponent;
 
 let addGameObjectBasicCameraViewComponent = GameObjectAPI.addGameObjectBasicCameraViewComponent;
+
+let hasGameObjectScriptComponent = GameObjectAPI.hasGameObjectScriptComponent;
+
+let unsafeGetGameObjectScriptComponent = GameObjectAPI.unsafeGetGameObjectScriptComponent;
 
 let disposeGameObjectScriptComponent = GameObjectAPI.disposeGameObjectScriptComponent;
 

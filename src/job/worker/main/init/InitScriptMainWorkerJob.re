@@ -4,12 +4,8 @@ let execJob = (_, stateData) =>
   MostUtils.callFunc(() => {
     let state = StateDataMainService.unsafeGetState(stateData);
 
-    OperateScriptEventFunctionDataMainService.execAllEventFunction(
-      OperateScriptEventFunctionDataMainService.getAllInitEventFunctionData(
-        state,
-      ),
-      state,
-    )
+    state
+    |> InitScriptJobUtils.exec
     |> StateDataMainService.setState(stateData);
 
     None;

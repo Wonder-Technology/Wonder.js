@@ -89,7 +89,10 @@ let buildMainInitPipelinesConfigWithoutCreateWorkerInstanceAndMessage = () => {|
     },
     {
         "name": "set_full_screen"
-    }
+    },
+            {
+              "name": "init_script"
+            }
           ]
         },
         {
@@ -259,6 +262,9 @@ let buildMainInitJobConfigWithoutCreateWorkerInstance = () => {|
     },
     {
         "name": "set_full_screen"
+    },
+    {
+        "name": "init_script"
     },
     {
         "name": "send_init_render_data",

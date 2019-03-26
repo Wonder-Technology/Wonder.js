@@ -143,7 +143,7 @@ let unsafeGetScriptAllEventFunctionData = (script, {scriptRecord} as state) => {
   let {scriptEventFunctionDataMap} = scriptRecord;
 
   scriptEventFunctionDataMap
-  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(script);
+  |> ImmutableSparseMapService.unsafeGetAndCheck(script);
 };
 
 let setScriptAllEventFunctionData =
@@ -167,8 +167,7 @@ let setScriptAllEventFunctionData =
 let unsafeGetScriptAllAttributes = (script, {scriptRecord} as state) => {
   let {scriptAttributeMap} = scriptRecord;
 
-  scriptAttributeMap
-  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(script);
+  scriptAttributeMap |> ImmutableSparseMapService.unsafeGetAndCheck(script);
 };
 
 let setScriptAllAttributes = (script, allAttributes, {scriptRecord} as state) => {

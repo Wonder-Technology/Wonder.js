@@ -4,6 +4,9 @@ open GameObjectType;
 
 open ComponentMapService;
 
+let hasScriptComponent = (uid: int, gameObjectRecord): bool =>
+  hasComponent(uid, gameObjectRecord.scriptMap);
+
 let hasBasicCameraViewComponent = (uid: int, gameObjectRecord): bool =>
   hasComponent(uid, gameObjectRecord.basicCameraViewMap);
 

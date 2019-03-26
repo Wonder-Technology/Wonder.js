@@ -1,9 +1,3 @@
 open StateDataMainType;
 
-let execJob = (flags, state) =>
-  OperateScriptEventFunctionDataMainService.execAllEventFunction(
-    OperateScriptEventFunctionDataMainService.getAllInitEventFunctionData(
-      state,
-    ),
-    state,
-  );
+let execJob = (flags, state) => state |> InitScriptJobUtils.exec;

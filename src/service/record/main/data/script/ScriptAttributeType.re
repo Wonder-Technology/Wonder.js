@@ -27,3 +27,13 @@ type scriptAttributeField = {
 
 type scriptAttribute =
   WonderCommonlib.ImmutableHashMapService.t(scriptAttributeField);
+
+external intToScriptAttributeValue: int => scriptAttributeValue = "%identity";
+
+external floatToScriptAttributeValue: float => scriptAttributeValue =
+  "%identity";
+
+external scriptAttributeValueToInt: scriptAttributeValue => int = "%identity";
+
+external scriptAttributeValueToFloat: scriptAttributeValue => float =
+  "%identity";
