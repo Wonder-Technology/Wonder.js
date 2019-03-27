@@ -112,116 +112,35 @@ let _ =
                    let state = MainStateTool.unsafeGetState();
                    (
                      NoWorkerJobConfigTool.getSetting(state),
-                     NoWorkerJobConfigTool.getInitPipelines(state),
-                     NoWorkerJobConfigTool.getLoopPipelines(state),
-                     NoWorkerJobConfigTool.getInitJobs(state),
-                     NoWorkerJobConfigTool.getLoopJobs(state),
+                     Array.unsafe_get(
+                       NoWorkerJobConfigTool.getInitPipelines(state),
+                       0,
+                     ).
+                       jobs
+                     |> Js.Array.length
+                     |> JudgeTool.isGreaterThan(_, 0),
+                     Array.unsafe_get(
+                       NoWorkerJobConfigTool.getLoopPipelines(state),
+                       0,
+                     ).
+                       jobs
+                     |> Js.Array.length
+                     |> JudgeTool.isGreaterThan(_, 0),
+                     NoWorkerJobConfigTool.getInitJobs(state)
+                     |> Js.Array.length
+                     |> JudgeTool.isGreaterThan(_, 0),
+                     NoWorkerJobConfigTool.getLoopJobs(state)
+                     |> Js.Array.length
+                     |> JudgeTool.isGreaterThan(_, 0),
                    )
-                   |>
-                   expect == (
-                               {
-                                 initPipeline: "default",
-                                 loopPipeline: "default",
-                               },
-                               [|
-                                 {
-                                   name: "default",
-                                   jobs: [|
-                                     {name: "create_canvas"},
-                                     {name: "create_gl"},
-                                     {name: "set_full_screen"},
-                                     {name: "set_viewport"},
-                                     {name: "detect_gl"},
-                                     {name: "init_camera"},
-                                     {name: "start_time"},
-                                     {name: "preget_glslData"},
-                                     {name: "init_state"},
-                                     {name: "init_basic_material"},
-                                     {name: "init_light_material"},
-                                     {name: "init_texture"},
-                                   |],
-                                 },
-                               |],
-                               [|
-                                 {
-                                   name: "default",
-                                   jobs: [|
-                                     {name: "tick"},
-                                     {name: "dispose"},
-                                     {name: "reallocate_cpu_memory"},
-                                     {name: "update_transform"},
-                                     {name: "update_camera"},
-                                     {name: "get_camera_data"},
-                                     {
-                                       name: "create_basic_render_object_buffer",
-                                     },
-                                     {
-                                       name: "create_light_render_object_buffer",
-                                     },
-                                     {name: "clear_color"},
-                                     {name: "clear_buffer"},
-                                     {name: "clear_last_send_component"},
-                                     {name: "send_uniform_shader_data"},
-                                     {name: "render_basic"},
-                                     {name: "front_render_light"},
-                                   |],
-                                 },
-                               |],
-                               [|
-                                 {name: "create_canvas", flags: None},
-                                 {name: "create_gl", flags: None},
-                                 {name: "set_full_screen", flags: None},
-                                 {name: "set_viewport", flags: None},
-                                 {name: "detect_gl", flags: None},
-                                 {name: "init_camera", flags: None},
-                                 {name: "start_time", flags: None},
-                                 {name: "preget_glslData", flags: None},
-                                 {name: "init_state", flags: None},
-                                 {name: "init_basic_material", flags: None},
-                                 {name: "init_light_material", flags: None},
-                                 {name: "init_texture", flags: None},
-                               |],
-                               [|
-                                 {name: "tick", flags: None},
-                                 {name: "update_transform", flags: None},
-                                 {name: "update_camera", flags: None},
-                                 {name: "get_camera_data", flags: None},
-                                 {
-                                   name: "create_basic_render_object_buffer",
-                                   flags: None,
-                                 },
-                                 {
-                                   name: "create_light_render_object_buffer",
-                                   flags: None,
-                                 },
-                                 {
-                                   name: "clear_color",
-                                   flags: Some([|"#000000"|]),
-                                 },
-                                 {
-                                   name: "clear_buffer",
-                                   flags:
-                                     Some([|
-                                       "COLOR_BUFFER",
-                                       "DEPTH_BUFFER",
-                                       "STENCIL_BUFFER",
-                                     |]),
-                                 },
-                                 {
-                                   name: "clear_last_send_component",
-                                   flags: None,
-                                 },
-                                 {
-                                   name: "send_uniform_shader_data",
-                                   flags: None,
-                                 },
-                                 {name: "render_basic", flags: None},
-                                 {name: "front_render_light", flags: None},
-                                 {name: "dispose", flags: None},
-                                 {name: "reallocate_cpu_memory", flags: None},
-                                 {name: "draw_outline", flags: None},
-                               |],
-                             )
+                   |> expect
+                   == (
+                        {initPipeline: "default", loopPipeline: "default"},
+                        true,
+                        true,
+                        true,
+                        true,
+                      )
                    |> resolve;
                  });
             },
@@ -233,25 +152,25 @@ let _ =
           |> then_(() => {
                let state = MainStateTool.unsafeGetState();
                RenderConfigTool.getShaders(state).staticBranchs
-               |>
-               expect == [|
-                           {
-                             name: "modelMatrix_instance",
-                             value: [|
-                               "modelMatrix_noInstance",
-                               "modelMatrix_hardware_instance",
-                               "modelMatrix_batch_instance",
-                             |],
-                           },
-                           {
-                             name: "normalMatrix_instance",
-                             value: [|
-                               "normalMatrix_noInstance",
-                               "normalMatrix_hardware_instance",
-                               "normalMatrix_batch_instance",
-                             |],
-                           },
-                         |]
+               |> expect
+               == [|
+                    {
+                      name: "modelMatrix_instance",
+                      value: [|
+                        "modelMatrix_noInstance",
+                        "modelMatrix_hardware_instance",
+                        "modelMatrix_batch_instance",
+                      |],
+                    },
+                    {
+                      name: "normalMatrix_instance",
+                      value: [|
+                        "normalMatrix_noInstance",
+                        "normalMatrix_hardware_instance",
+                        "normalMatrix_batch_instance",
+                      |],
+                    },
+                  |]
                |> resolve;
              });
         });
@@ -261,34 +180,34 @@ let _ =
           |> then_(() => {
                let state = MainStateTool.unsafeGetState();
                RenderConfigTool.getShaderLibs(state)[0]
-               |>
-               expect == {
-                           name: "common",
-                           glsls:
-                             Some([|
-                               {type_: "vs", name: "common_vertex"},
-                               {type_: "fs", name: "common_fragment"},
-                             |]),
-                           variables:
-                             Some({
-                               uniforms:
-                                 Some([|
-                                   {
-                                     name: "u_vMatrix",
-                                     field: "vMatrix",
-                                     type_: "mat4",
-                                     from: "camera",
-                                   },
-                                   {
-                                     name: "u_pMatrix",
-                                     field: "pMatrix",
-                                     type_: "mat4",
-                                     from: "camera",
-                                   },
-                                 |]),
-                               attributes: None,
-                             }),
-                         }
+               |> expect
+               == {
+                    name: "common",
+                    glsls:
+                      Some([|
+                        {type_: "vs", name: "common_vertex"},
+                        {type_: "fs", name: "common_fragment"},
+                      |]),
+                    variables:
+                      Some({
+                        uniforms:
+                          Some([|
+                            {
+                              name: "u_vMatrix",
+                              field: "vMatrix",
+                              type_: "mat4",
+                              from: "camera",
+                            },
+                            {
+                              name: "u_pMatrix",
+                              field: "pMatrix",
+                              type_: "mat4",
+                              from: "camera",
+                            },
+                          |]),
+                        attributes: None,
+                      }),
+                  }
                |> resolve;
              });
         });
@@ -315,11 +234,8 @@ let _ =
               |> then_(() => {
                    let state = MainStateTool.unsafeGetState();
                    NoWorkerJobConfigTool.getSetting(state)
-                   |>
-                   expect == {
-                               initPipeline: "default",
-                               loopPipeline: "default",
-                             }
+                   |> expect
+                   == {initPipeline: "default", loopPipeline: "default"}
                    |> resolve;
                  });
             },
