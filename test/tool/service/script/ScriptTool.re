@@ -14,15 +14,10 @@ let isAlive = (script, state) =>
   DisposeScriptMainService.isAlive(script, state.scriptRecord);
 
 let buildEventFunctionJsObj =
-    (
-      ~initFunc=(. _, _, state) => state,
-      ~updateFunc=(. _, _, state) => state,
-      ~disposeFunc=(. _, _, state) => state,
-      (),
-    ) => {
-  "init": Js.Nullable.return(initFunc),
-  "update": Js.Nullable.return(updateFunc),
-  "dispose": Js.Nullable.return(disposeFunc),
+    (~initFunc=None, ~updateFunc=None, ~disposeFunc=None, ()) => {
+  "init": initFunc |> Js.Nullable.fromOption,
+  "update": updateFunc |> Js.Nullable.fromOption,
+  "dispose": disposeFunc |> Js.Nullable.fromOption,
 };
 
 let createIntFieldValue = value =>
@@ -353,7 +348,11 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
       ) => {
     let scriptAttributeName = getScriptAttributeName();
     let scriptEventFunctionData =
-      buildScriptEventFunctionData(~initFunc, ~updateFunc, ~disposeFunc);
+      buildScriptEventFunctionData(
+        ~initFunc=Some(initFunc),
+        ~updateFunc=Some(updateFunc),
+        ~disposeFunc=Some(disposeFunc),
+      );
     let scriptAttribute = buildScriptAttribute(scriptAttributeName);
     let state =
       ScriptAPI.addScriptAttribute(
@@ -420,56 +419,34 @@ module TestCaseWithOneEventFuncAndTwoAttributes = {
       (scriptAttribute1Name, scriptAttribute2Name) =>
     ScriptEventFunctionAPI.createScriptEventFunctionData(
       buildEventFunctionJsObj(
-        /* ~initFunc=
-           (. script, api, state) => {
-             let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
-
-             let scriptAttribute =
-               unsafeGetScriptAttribute(script, scriptAttribute1Name, state);
-
-             let state =
-               API.setScriptAttributeIntFieldValue(
-                 api,
-                 script,
-                 scriptAttribute1Name,
-                 "a",
-                 API.unsafeGetScriptAttributeIntFieldValue(
-                   api,
-                   "a",
-                   scriptAttribute,
-                 )
-                 + 1,
-                 state,
-               );
-
-             state;
-           }, */
         ~updateFunc=
-          (. script, api, state) => {
-            let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
+          Some(
+            (. script, api, state) => {
+              let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
 
-            let scriptAttribute1 =
-              unsafeGetScriptAttribute(script, scriptAttribute1Name, state);
-            let scriptAttribute2 =
-              unsafeGetScriptAttribute(script, scriptAttribute2Name, state);
+              let scriptAttribute1 =
+                unsafeGetScriptAttribute(script, scriptAttribute1Name, state);
+              let scriptAttribute2 =
+                unsafeGetScriptAttribute(script, scriptAttribute2Name, state);
 
-            let state =
-              API.setScriptAttributeFloatFieldValue(
-                api,
-                script,
-                scriptAttribute1Name,
-                "b",
-                API.unsafeGetScriptAttributeFloatFieldValue(
+              let state =
+                API.setScriptAttributeFloatFieldValue(
                   api,
+                  script,
+                  scriptAttribute1Name,
                   "b",
-                  scriptAttribute2,
-                )
-                +. 10.,
-                state,
-              );
+                  API.unsafeGetScriptAttributeFloatFieldValue(
+                    api,
+                    "b",
+                    scriptAttribute2,
+                  )
+                  +. 10.,
+                  state,
+                );
 
-            state;
-          },
+              state;
+            },
+          ),
         (),
       ),
     );
@@ -597,62 +574,66 @@ module TestCaseWithTwoEventFuncsAndTwoAttributes = {
     ScriptEventFunctionAPI.createScriptEventFunctionData(
       buildEventFunctionJsObj(
         ~updateFunc=
-          (. script, api, state) => {
-            let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
+          Some(
+            (. script, api, state) => {
+              let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
 
-            let scriptAttribute1 =
-              unsafeGetScriptAttribute(script, scriptAttribute1Name, state);
-            let scriptAttribute2 =
-              unsafeGetScriptAttribute(script, scriptAttribute2Name, state);
+              let scriptAttribute1 =
+                unsafeGetScriptAttribute(script, scriptAttribute1Name, state);
+              let scriptAttribute2 =
+                unsafeGetScriptAttribute(script, scriptAttribute2Name, state);
 
-            let state =
-              API.setScriptAttributeIntFieldValue(
-                api,
-                script,
-                scriptAttribute1Name,
-                "a",
-                API.unsafeGetScriptAttributeIntFieldValue(
+              let state =
+                API.setScriptAttributeIntFieldValue(
                   api,
+                  script,
+                  scriptAttribute1Name,
                   "a",
-                  scriptAttribute2,
-                )
-                + 10,
-                state,
-              );
+                  API.unsafeGetScriptAttributeIntFieldValue(
+                    api,
+                    "a",
+                    scriptAttribute2,
+                  )
+                  + 10,
+                  state,
+                );
 
-            state;
-          },
+              state;
+            },
+          ),
         (),
       ),
     ),
     ScriptEventFunctionAPI.createScriptEventFunctionData(
       buildEventFunctionJsObj(
         ~updateFunc=
-          (. script, api, state) => {
-            let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
+          Some(
+            (. script, api, state) => {
+              let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
 
-            let scriptAttribute1 =
-              unsafeGetScriptAttribute(script, scriptAttribute1Name, state);
-            let scriptAttribute2 =
-              unsafeGetScriptAttribute(script, scriptAttribute2Name, state);
+              let scriptAttribute1 =
+                unsafeGetScriptAttribute(script, scriptAttribute1Name, state);
+              let scriptAttribute2 =
+                unsafeGetScriptAttribute(script, scriptAttribute2Name, state);
 
-            let state =
-              API.setScriptAttributeFloatFieldValue(
-                api,
-                script,
-                scriptAttribute1Name,
-                "b",
-                API.unsafeGetScriptAttributeFloatFieldValue(
+              let state =
+                API.setScriptAttributeFloatFieldValue(
                   api,
+                  script,
+                  scriptAttribute1Name,
                   "b",
-                  scriptAttribute2,
-                )
-                +. 10.,
-                state,
-              );
+                  API.unsafeGetScriptAttributeFloatFieldValue(
+                    api,
+                    "b",
+                    scriptAttribute2,
+                  )
+                  +. 10.,
+                  state,
+                );
 
-            state;
-          },
+              state;
+            },
+          ),
         (),
       ),
     ),

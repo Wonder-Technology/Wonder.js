@@ -38,21 +38,27 @@ let _ =
         let scriptEventFunctionData1 =
           ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
             ~initFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc()
+              ->Some,
             ~updateFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc()
+              ->Some,
             ~disposeFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc()
+              ->Some,
           );
         let scriptEventFunctionDataName1 = "scriptEventFunctionData1";
         let scriptEventFunctionData2 =
           ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
             ~initFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc()
+              ->Some,
             ~updateFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc()
+              ->Some,
             ~disposeFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc()
+              ->Some,
           );
         let scriptEventFunctionDataName2 = "scriptEventFunctionData2";
         let state =
@@ -129,21 +135,27 @@ let _ =
         let scriptEventFunctionData1 =
           ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
             ~initFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc()
+              ->Some,
             ~updateFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc()
+              ->Some,
             ~disposeFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc()
+              ->Some,
           );
         let scriptEventFunctionDataName1 = "scriptEventFunctionData1";
         let scriptEventFunctionData2 =
           ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
             ~initFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc()
+              ->Some,
             ~updateFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc()
+              ->Some,
             ~disposeFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc()
+              ->Some,
           );
         let scriptEventFunctionDataName2 = "scriptEventFunctionData2";
         let state =
@@ -227,11 +239,14 @@ let _ =
         let scriptEventFunctionData1 =
           ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
             ~initFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc()
+              ->Some,
             ~updateFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc()
+              ->Some,
             ~disposeFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc()
+              ->Some,
           );
         let scriptEventFunctionDataName1 = "scriptEventFunctionData1";
         let state =
@@ -245,11 +260,14 @@ let _ =
         let scriptEventFunctionData2 =
           ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
             ~initFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc()
+              ->Some,
             ~updateFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc()
+              ->Some,
             ~disposeFunc=
-              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc()
+              ->Some,
           );
 
         let state =

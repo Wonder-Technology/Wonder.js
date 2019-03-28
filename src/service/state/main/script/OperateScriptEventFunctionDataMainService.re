@@ -7,7 +7,9 @@ let _pushEventFunctionData =
        script,
        scriptEventFunctionData
        |> WonderCommonlib.ImmutableHashMapService.getValidValues
-       |> Js.Array.map(mapEventFunctionDataFunc),
+       |> Js.Array.map(mapEventFunctionDataFunc)
+       |> Js.Array.filter(func => func |> Js.Option.isSome)
+       |> Js.Array.map(func => func |> OptionService.unsafeGet),
      ));
 
 let _getAllEventFunctionData =

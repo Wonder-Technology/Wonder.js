@@ -710,8 +710,6 @@ let addScriptAttributeField = ScriptAttributeAPI.addScriptAttributeField;
 
 let createScriptAttribute = ScriptAttributeAPI.createScriptAttribute;
 
-let setScriptInitEventFunction = ScriptEventFunctionAPI.setScriptInitEventFunction;
-
 let createScriptEventFunctionData = ScriptEventFunctionAPI.createScriptEventFunctionData;
 
 let clearInitShaderCache = ShaderAPI.clearInitShaderCache;

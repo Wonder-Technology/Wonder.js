@@ -351,12 +351,10 @@ and eventFunctionDataJsObj = {
   "dispose": Js.Nullable.t(eventFunction),
 }
 and eventFunctionData = {
-  init: eventFunction,
-  update: eventFunction,
-  dispose: eventFunction,
+  init: option(eventFunction),
+  update: option(eventFunction),
+  dispose: option(eventFunction),
 }
-/* and scriptEventFunction =
-  WonderCommonlib.ImmutableHashMapService.t(eventFunction) */
 and scriptRecord = {
   index: int,
   disposedIndexArray: array(ScriptType.script),

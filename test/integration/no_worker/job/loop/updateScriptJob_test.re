@@ -38,6 +38,63 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("exec all update event functions", () => {
+      test("only exec existed update event functions", () => {
+        let (state, gameObject, script) =
+          ScriptTool.createGameObject(state^);
+        let scriptEventFunctionDataName1 = "scriptEventFunctionData1";
+        let scriptEventFunctionDataName2 = "scriptEventFunctionData2";
+        let scriptEventFunctionData1 =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
+            ~initFunc=None,
+            ~updateFunc=None,
+            ~disposeFunc=None,
+          );
+        let scriptEventFunctionData2 =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
+            ~initFunc=None,
+            ~updateFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc()
+              ->Some,
+            ~disposeFunc=None,
+          );
+        let state =
+          ScriptAPI.addScriptEventFunctionData(
+            script,
+            scriptEventFunctionDataName1,
+            scriptEventFunctionData1,
+            state,
+          );
+        let state =
+          ScriptAPI.addScriptEventFunctionData(
+            script,
+            scriptEventFunctionDataName2,
+            scriptEventFunctionData2,
+            state,
+          );
+        let scriptAttributeName =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getScriptAttributeName();
+        let scriptAttribute =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptAttribute(
+            scriptAttributeName,
+          );
+        let state =
+          ScriptAPI.addScriptAttribute(
+            script,
+            scriptAttributeName,
+            scriptAttribute,
+            state,
+          );
+
+        let state = DirectorTool.runWithDefaultTime(state);
+
+        ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldBValue(
+          script,
+          state,
+        )
+        |> expect
+        == ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldBValueAfterExecUpdateEventFunc();
+      });
+
       describe("test one script component with one event function data", () => {
         describe("test one script component with one attribute", () => {
           test("test attribute", () => {
