@@ -37,20 +37,42 @@ let _mapInitEventFunctionDataFunc = ({init}) => init;
 let getAllInitEventFunctionData = ({scriptRecord} as state) =>
   _getAllEventFunctionData(_mapInitEventFunctionDataFunc, state);
 
-let execAllEventFunction = (allEventFunctionData, state) => {
-  let apiJsObj = OperateScriptAPIMainService.getScriptAPIJsObj(state);
-
-  allEventFunctionData
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. state, (script, funcArr)) =>
-         funcArr
-         |> WonderCommonlib.ArrayService.reduceOneParam(
-              (. state, func) => func(. script, apiJsObj, state),
-              state,
-            ),
-       state,
-     );
+let enableScriptEventFunction = ({scriptRecord} as state) => {
+  ...state,
+  scriptRecord: {
+    ...scriptRecord,
+    isScriptEventFunctionEnable: true,
+  },
 };
+
+let disableScriptEventFunction = ({scriptRecord} as state) => {
+  ...state,
+  scriptRecord: {
+    ...scriptRecord,
+    isScriptEventFunctionEnable: false,
+  },
+};
+
+let isScriptEventFunctionEnable = ({scriptRecord} as state) =>
+  scriptRecord.isScriptEventFunctionEnable;
+
+let execAllEventFunction = (allEventFunctionData, state) =>
+  isScriptEventFunctionEnable(state) ?
+    {
+      let apiJsObj = OperateScriptAPIMainService.getScriptAPIJsObj(state);
+
+      allEventFunctionData
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. state, (script, funcArr)) =>
+             funcArr
+             |> WonderCommonlib.ArrayService.reduceOneParam(
+                  (. state, func) => func(. script, apiJsObj, state),
+                  state,
+                ),
+           state,
+         );
+    } :
+    state;
 
 let getGameObjectAllInitEventFunctionData =
     (gameObject, {scriptRecord, gameObjectRecord} as state) =>

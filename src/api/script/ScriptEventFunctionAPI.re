@@ -9,3 +9,14 @@ let createScriptEventFunctionData =
   update: _createScriptEventFunction(jsObj##update),
   dispose: _createScriptEventFunction(jsObj##dispose),
 };
+
+let enableScriptEventFunction = state =>
+  OperateScriptEventFunctionDataMainService.enableScriptEventFunction(state);
+
+let disableScriptEventFunction = state =>
+  OperateScriptEventFunctionDataMainService.disableScriptEventFunction(state);
+
+let isScriptEventFunctionEnable = state =>
+  OperateScriptEventFunctionDataMainService.isScriptEventFunctionEnable(
+    state,
+  );

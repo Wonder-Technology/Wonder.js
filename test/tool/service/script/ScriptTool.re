@@ -393,6 +393,8 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
 
   let getAttributeFieldAValueAfterExecInitEventFunc = () => 2;
 
+  let getAttributeFieldBValueBeforeExecUpdateEventFunc = () => 0.1;
+
   let getAttributeFieldBValueAfterExecUpdateEventFunc = () => 0.1 +. 10.;
 
   let judgeExecInitEventFunc = (script, state) => {

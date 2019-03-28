@@ -26,6 +26,7 @@ let _ =
         |},
         (),
       );
+
     beforeEach(() => {
       sandbox := createSandbox();
       state :=

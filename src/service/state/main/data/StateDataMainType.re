@@ -357,6 +357,7 @@ and eventFunctionData = {
 }
 and scriptRecord = {
   index: int,
+  isScriptEventFunctionEnable: bool,
   disposedIndexArray: array(ScriptType.script),
   gameObjectMap,
   scriptEventFunctionDataMap:
