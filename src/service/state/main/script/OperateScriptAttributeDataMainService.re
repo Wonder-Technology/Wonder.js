@@ -40,9 +40,11 @@ let addScriptAttributeField = (fieldName, attributeFieldJsObj, attribute) =>
        _createScriptAttributeField(attributeFieldJsObj),
      );
 
-/* let createScriptAttribute = () => {
+let removeScriptAttributeField = (fieldName, attribute) =>
+  attribute |> WonderCommonlib.ImmutableHashMapService.deleteVal(fieldName);
 
-   }; */
+let getScriptAttributeEntries = attribute =>
+  attribute |> WonderCommonlib.ImmutableHashMapService.getValidEntries;
 
 let getScriptAttributeField = (fieldName, attribute) =>
   attribute |> WonderCommonlib.ImmutableHashMapService.get(fieldName);
@@ -66,15 +68,22 @@ let setScriptAttributeFieldValue = (fieldName, value, attribute) =>
        )
   };
 
-/* let getScriptAttributeFieldDefaultValue =
-       (script, attributeName, fieldName, state) => {};
+let getScriptAttributeFieldDefaultValue = (fieldName, attribute) =>
+  getScriptAttributeField(fieldName, attribute)
+  |> Js.Option.map((. {defaultValue}) => defaultValue);
 
-   let setScriptAttributeFieldDefaultValue =
-       (
-         script,
-         /* attribute, */
-         attributeName,
+let unsafeGetScriptAttributeFieldDefaultValue = (fieldName, attribute) =>
+  getScriptAttributeFieldDefaultValue(fieldName, attribute)
+  |> OptionService.unsafeGet;
+
+let setScriptAttributeFieldDefaultValueAndValue =
+    (fieldName, value, attribute) =>
+  switch (getScriptAttributeField(fieldName, attribute)) {
+  | None => attribute
+  | Some(field) =>
+    attribute
+    |> WonderCommonlib.ImmutableHashMapService.set(
          fieldName,
-         defaultValue,
-         state,
-       ) => {}; */
+         {...field, defaultValue: value, value},
+       )
+  };

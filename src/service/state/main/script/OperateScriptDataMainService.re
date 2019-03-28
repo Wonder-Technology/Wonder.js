@@ -103,6 +103,134 @@ let addScriptAttribute =
   };
 };
 
+let _removeScriptData = (script, scriptDataName, dataMap, scriptDataMap) =>
+  dataMap
+  |> WonderCommonlib.ImmutableHashMapService.deleteVal(scriptDataName)
+  |> WonderCommonlib.ImmutableSparseMapService.set(script, _, scriptDataMap);
+
+let _removeScriptEventFunctionData =
+    (
+      script,
+      scriptEventFunctionDataName,
+      eventFunctionDataMap,
+      scriptEventFunctionDataMap,
+    ) =>
+  _removeScriptData(
+    script,
+    scriptEventFunctionDataName,
+    eventFunctionDataMap,
+    scriptEventFunctionDataMap,
+  );
+
+let _removeScriptAttribute =
+    (script, scriptAttributeName, attributeMap, scriptAttributeMap) =>
+  _removeScriptData(
+    script,
+    scriptAttributeName,
+    attributeMap,
+    scriptAttributeMap,
+  );
+
+let removeScriptEventFunctionData =
+    (script, scriptEventFunctionDataName, {scriptRecord} as state) => {
+  let {scriptEventFunctionDataMap} as scriptRecord = scriptRecord;
+
+  {
+    ...state,
+    scriptRecord: {
+      ...scriptRecord,
+      scriptEventFunctionDataMap:
+        switch (
+          scriptEventFunctionDataMap
+          |> WonderCommonlib.ImmutableSparseMapService.get(script)
+        ) {
+        | None => scriptEventFunctionDataMap
+        | Some(eventFunctionDataMap) =>
+          _removeScriptEventFunctionData(
+            script,
+            scriptEventFunctionDataName,
+            eventFunctionDataMap,
+            scriptEventFunctionDataMap,
+          )
+        },
+    },
+  };
+};
+
+let removeScriptAttribute =
+    (script, scriptAttributeName, {scriptRecord} as state) => {
+  let {scriptAttributeMap} as scriptRecord = scriptRecord;
+
+  {
+    ...state,
+    scriptRecord: {
+      ...scriptRecord,
+      scriptAttributeMap:
+        switch (
+          scriptAttributeMap
+          |> WonderCommonlib.ImmutableSparseMapService.get(script)
+        ) {
+        | None => scriptAttributeMap
+        | Some(attributeMap) =>
+          _removeScriptAttribute(
+            script,
+            scriptAttributeName,
+            attributeMap,
+            scriptAttributeMap,
+          )
+        },
+    },
+  };
+};
+
+let replaceScriptEventFunctionData =
+    (script, scriptEventFunctionDataName, scriptEventFunctionData, state) =>
+  removeScriptEventFunctionData(script, scriptEventFunctionDataName, state)
+  |> addScriptEventFunctionData(
+       script,
+       scriptEventFunctionDataName,
+       scriptEventFunctionData,
+     );
+
+let replaceScriptAttribute =
+    (script, scriptAttributeName, scriptAttribute, state) =>
+  removeScriptAttribute(script, scriptAttributeName, state)
+  |> addScriptAttribute(script, scriptAttributeName, scriptAttribute);
+
+let getScriptEventFunctionDataEntries = (script, {scriptRecord} as state) => {
+  let {scriptEventFunctionDataMap} as scriptRecord = scriptRecord;
+
+  scriptEventFunctionDataMap
+  |> WonderCommonlib.ImmutableSparseMapService.get(script)
+  |> Js.Option.andThen((. eventFunctionDataMap) =>
+       (
+         eventFunctionDataMap
+         |> WonderCommonlib.ImmutableHashMapService.getValidEntries
+       )
+       ->Some
+     );
+};
+
+let unsafeGetScriptEventFunctionDataEntries =
+    (script, {scriptRecord} as state) =>
+  getScriptEventFunctionDataEntries(script, state) |> OptionService.unsafeGet;
+
+let getScriptAttributeEntries = (script, {scriptRecord} as state) => {
+  let {scriptAttributeMap} as scriptRecord = scriptRecord;
+
+  scriptAttributeMap
+  |> WonderCommonlib.ImmutableSparseMapService.get(script)
+  |> Js.Option.andThen((. attributeMap) =>
+       (
+         attributeMap |> WonderCommonlib.ImmutableHashMapService.getValidEntries
+       )
+       ->Some
+     );
+};
+
+let unsafeGetScriptAttributeEntries = (script, {scriptRecord} as state) =>
+  getScriptAttributeEntries(script, state) |> OptionService.unsafeGet;
+
 let getScriptAttribute =
     (script, scriptAttributeName, {scriptRecord} as state) => {
   let {scriptAttributeMap} as scriptRecord = scriptRecord;
@@ -122,22 +250,49 @@ let unsafeGetScriptAttribute =
 
 let setScriptAttribute = addScriptAttribute;
 
-let setScriptAttributeFieldValue =
-    (script, scriptAttributeName, fieldName, value, {scriptRecord} as state) =>
+let _setScriptAttributeFieldData =
+    (
+      script,
+      (scriptAttributeName, fieldName, data),
+      setScriptAttributeFieldDataFunc,
+      {scriptRecord} as state,
+    ) =>
   switch (getScriptAttribute(script, scriptAttributeName, state)) {
   | None => state
   | Some(scriptAttribute) =>
     setScriptAttribute(
       script,
       scriptAttributeName,
-      scriptAttribute
-      |> OperateScriptAttributeDataMainService.setScriptAttributeFieldValue(
-           fieldName,
-           value,
-         ),
+      scriptAttribute |> setScriptAttributeFieldDataFunc(fieldName, data),
       state,
     )
   };
+
+let setScriptAttributeFieldValue =
+    (
+      script,
+      (scriptAttributeName, fieldName, value),
+      {scriptRecord} as state,
+    ) =>
+  _setScriptAttributeFieldData(
+    script,
+    (scriptAttributeName, fieldName, value),
+    OperateScriptAttributeDataMainService.setScriptAttributeFieldValue,
+    state,
+  );
+
+let setScriptAttributeFieldDefaultValueAndValue =
+    (
+      script,
+      (scriptAttributeName, fieldName, value),
+      {scriptRecord} as state,
+    ) =>
+  _setScriptAttributeFieldData(
+    script,
+    (scriptAttributeName, fieldName, value),
+    OperateScriptAttributeDataMainService.setScriptAttributeFieldDefaultValueAndValue,
+    state,
+  );
 
 let unsafeGetScriptAllEventFunctionData = (script, {scriptRecord} as state) => {
   let {scriptEventFunctionDataMap} = scriptRecord;
@@ -189,9 +344,9 @@ let setScriptAllAttributes = (script, allAttributes, {scriptRecord} as state) =>
 
 let resetScriptAllAttributesFieldValue = allAttributes =>
   allAttributes
-  |> ImmutableHashMapService.map((. attributes) =>
+  |> WonderCommonlib.ImmutableHashMapService.map((. attributes) =>
        attributes
-       |> ImmutableHashMapService.map(
+       |> WonderCommonlib.ImmutableHashMapService.map(
             (.
               (
                 {value, defaultValue}: ScriptAttributeType.scriptAttributeField

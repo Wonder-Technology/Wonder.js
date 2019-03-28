@@ -31,6 +31,182 @@ let _ =
       );
     });
 
+    describe("removeScriptEventFunctionData", () =>
+      test(
+        "remove script's eventFunctionData by scriptEventFunctionDataName", () => {
+        let (state, script) = ScriptAPI.createScript(state^);
+        let scriptEventFunctionData1 =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
+            ~initFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc(),
+            ~updateFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc(),
+            ~disposeFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
+          );
+        let scriptEventFunctionDataName1 = "scriptEventFunctionData1";
+        let scriptEventFunctionData2 =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
+            ~initFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc(),
+            ~updateFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc(),
+            ~disposeFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
+          );
+        let scriptEventFunctionDataName2 = "scriptEventFunctionData2";
+        let state =
+          ScriptAPI.addScriptEventFunctionData(
+            script,
+            scriptEventFunctionDataName1,
+            scriptEventFunctionData1,
+            state,
+          );
+        let state =
+          ScriptAPI.addScriptEventFunctionData(
+            script,
+            scriptEventFunctionDataName2,
+            scriptEventFunctionData2,
+            state,
+          );
+
+        let state =
+          ScriptAPI.removeScriptEventFunctionData(
+            script,
+            scriptEventFunctionDataName2,
+            state,
+          );
+
+        ScriptAPI.unsafeGetScriptEventFunctionDataEntries(script, state)
+        |> expect
+        == [|(scriptEventFunctionDataName1, scriptEventFunctionData1)|];
+      })
+    );
+
+    describe("removeScriptAttribute", () =>
+      test("remove script's eventFunctionData by scriptAttributeName", () => {
+        let (state, script) = ScriptAPI.createScript(state^);
+        let scriptAttributeName1 = "scriptAttribute1";
+        let scriptAttribute1 =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptAttribute(
+            scriptAttributeName1,
+          );
+        let scriptAttributeName2 = "scriptAttribute2";
+        let scriptAttribute2 =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptAttribute(
+            scriptAttributeName2,
+          );
+        let state =
+          ScriptAPI.addScriptAttribute(
+            script,
+            scriptAttributeName1,
+            scriptAttribute1,
+            state,
+          );
+        let state =
+          ScriptAPI.addScriptAttribute(
+            script,
+            scriptAttributeName2,
+            scriptAttribute2,
+            state,
+          );
+
+        let state =
+          ScriptAPI.removeScriptAttribute(
+            script,
+            scriptAttributeName2,
+            state,
+          );
+
+        ScriptAPI.unsafeGetScriptAttributeEntries(script, state)
+        |> expect == [|(scriptAttributeName1, scriptAttribute1)|];
+      })
+    );
+
+    describe("unsafeGetScriptEventFunctionDataEntries", () =>
+      test("unsafe get scrip's all scriptEventFunction data entries", () => {
+        let (state, script) = ScriptAPI.createScript(state^);
+        let scriptEventFunctionData1 =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
+            ~initFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc(),
+            ~updateFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc(),
+            ~disposeFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
+          );
+        let scriptEventFunctionDataName1 = "scriptEventFunctionData1";
+        let scriptEventFunctionData2 =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
+            ~initFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc(),
+            ~updateFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc(),
+            ~disposeFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
+          );
+        let scriptEventFunctionDataName2 = "scriptEventFunctionData2";
+        let state =
+          ScriptAPI.addScriptEventFunctionData(
+            script,
+            scriptEventFunctionDataName1,
+            scriptEventFunctionData1,
+            state,
+          );
+        let state =
+          ScriptAPI.addScriptEventFunctionData(
+            script,
+            scriptEventFunctionDataName2,
+            scriptEventFunctionData2,
+            state,
+          );
+
+        ScriptAPI.unsafeGetScriptEventFunctionDataEntries(script, state)
+        |> expect
+        == [|
+             (scriptEventFunctionDataName1, scriptEventFunctionData1),
+             (scriptEventFunctionDataName2, scriptEventFunctionData2),
+           |];
+      })
+    );
+
+    describe("unsafeGetScriptAttributeEntries", () =>
+      test("unsafe get scrip's all scriptAttributes entries", () => {
+        let (state, script) = ScriptAPI.createScript(state^);
+        let scriptAttributeName1 = "scriptAttribute1";
+        let scriptAttribute1 =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptAttribute(
+            scriptAttributeName1,
+          );
+        let scriptAttributeName2 = "scriptAttribute2";
+        let scriptAttribute2 =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptAttribute(
+            scriptAttributeName2,
+          );
+        let state =
+          ScriptAPI.addScriptAttribute(
+            script,
+            scriptAttributeName1,
+            scriptAttribute1,
+            state,
+          );
+        let state =
+          ScriptAPI.addScriptAttribute(
+            script,
+            scriptAttributeName2,
+            scriptAttribute2,
+            state,
+          );
+
+        ScriptAPI.unsafeGetScriptAttributeEntries(script, state)
+        |> expect
+        == [|
+             (scriptAttributeName1, scriptAttribute1),
+             (scriptAttributeName2, scriptAttribute2),
+           |];
+      })
+    );
+
     describe("unsafeGetScriptGameObject", () =>
       test("get script's gameObject", () => {
         let (state, script) = ScriptAPI.createScript(state^);
@@ -42,6 +218,126 @@ let _ =
         state
         |> ScriptAPI.unsafeGetScriptGameObject(script)
         |> expect == gameObject;
+      })
+    );
+
+    describe("replaceScriptEventFunctionData", () =>
+      test("replace script's event function data", () => {
+        let (state, script) = ScriptAPI.createScript(state^);
+        let scriptEventFunctionData1 =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
+            ~initFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc(),
+            ~updateFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc(),
+            ~disposeFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
+          );
+        let scriptEventFunctionDataName1 = "scriptEventFunctionData1";
+        let state =
+          ScriptAPI.addScriptEventFunctionData(
+            script,
+            scriptEventFunctionDataName1,
+            scriptEventFunctionData1,
+            state,
+          );
+
+        let scriptEventFunctionData2 =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptEventFunctionData(
+            ~initFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildUpdateEventFunc(),
+            ~updateFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildInitEventFunc(),
+            ~disposeFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
+          );
+
+        let state =
+          ScriptAPI.replaceScriptEventFunctionData(
+            script,
+            scriptEventFunctionDataName1,
+            scriptEventFunctionData2,
+            state,
+          );
+
+        ScriptAPI.unsafeGetScriptEventFunctionDataEntries(script, state)
+        |> expect
+        == [|(scriptEventFunctionDataName1, scriptEventFunctionData2)|];
+      })
+    );
+
+    describe("replaceScriptAttribute", () =>
+      test("replace script's event function data", () => {
+        let (state, script) = ScriptAPI.createScript(state^);
+        let scriptAttributeName1 = "scriptAttribute1";
+        let scriptAttribute1 =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptAttribute(
+            scriptAttributeName1,
+          );
+        let scriptAttributeName2 = "scriptAttribute2";
+        let state =
+          ScriptAPI.addScriptAttribute(
+            script,
+            scriptAttributeName1,
+            scriptAttribute1,
+            state,
+          );
+
+        let scriptAttribute2 =
+          ScriptTool.TestCaseWithOneEventFuncAndTwoAttributes.buildScriptAttribute2(
+            scriptAttributeName2,
+          );
+
+        let state =
+          ScriptAPI.replaceScriptAttribute(
+            script,
+            scriptAttributeName1,
+            scriptAttribute2,
+            state,
+          );
+
+        ScriptAPI.unsafeGetScriptAttributeEntries(script, state)
+        |> expect == [|(scriptAttributeName1, scriptAttribute2)|];
+      })
+    );
+
+    describe("setScriptAttributeFieldDefaultValueAndValue", () =>
+      test(
+        "set script->attribute->field->default value and value to be target value",
+        () => {
+        let (state, script) = ScriptAPI.createScript(state^);
+        let state =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+            ~script,
+            ~state,
+            (),
+          );
+        let newValue = 3;
+
+        let state =
+          ScriptAPI.setScriptAttributeFieldDefaultValueAndValue(
+            script,
+            ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getScriptAttributeName(),
+            "a",
+            newValue |> ScriptAttributeType.intToScriptAttributeValue,
+            state,
+          );
+
+        (
+          ScriptTool.unsafeGetScriptAttributeIntFieldValue(
+            script,
+            ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getScriptAttributeName(),
+            "a",
+            state,
+          ),
+          ScriptTool.unsafeGetScriptAttributeIntFieldDefaultValue(
+            script,
+            ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getScriptAttributeName(),
+            "a",
+            state,
+          ),
+        )
+        |> expect == (newValue, newValue);
       })
     );
 
@@ -61,7 +357,8 @@ let _ =
           ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
             ~script=script1,
             ~state,
-            ~disposeFunc=ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc,
+            ~disposeFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
             (),
           );
 
@@ -142,4 +439,4 @@ let _ =
         })
       );
     });
-  });  
+  });

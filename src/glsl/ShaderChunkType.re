@@ -4,7 +4,9 @@ type glslChunk = {
   mutable varDeclare: string,
   mutable funcDeclare: string,
   mutable funcDefine: string,
-  mutable body: string
+  mutable body: string,
 };
 
-type glslChunkRecord = {chunkMap: Js.Dict.t(glslChunk)};
+type glslChunkRecord = {
+  chunkMap: WonderCommonlib.MutableHashMapService.t(glslChunk),
+};

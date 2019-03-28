@@ -197,7 +197,11 @@ and scriptAPIJsObj = {
     ScriptAttributeType.scriptAttributeValue,
   "unsafeGetScriptGameObject": (int, state) => int,
   "setScriptAttributeFieldValue":
-    (int, string, string, ScriptAttributeType.scriptAttributeValue, state) =>
+    (
+      int,
+      (string, string, ScriptAttributeType.scriptAttributeValue),
+      state
+    ) =>
     state,
   "getTransformLocalPosition":
     (transform, state) =>
@@ -351,6 +355,8 @@ and eventFunctionData = {
   update: eventFunction,
   dispose: eventFunction,
 }
+/* and scriptEventFunction =
+  WonderCommonlib.ImmutableHashMapService.t(eventFunction) */
 and scriptRecord = {
   index: int,
   disposedIndexArray: array(ScriptType.script),

@@ -59,11 +59,14 @@
                 var state =
                     api.setScriptAttributeFieldValue(
                         script,
+                        [
+
                         "scriptAttribute1",
 
                         "a",
 
                         a + 1,
+                        ],
 
 
                         state
@@ -187,7 +190,7 @@
 
 
                 var state =
-                    wd.addScriptEventFunction(
+                    wd.addScriptEventFunctionData(
                         scriptComponent,
                         "scriptEventFunctionData1",
                         scriptEventFunctionData1,

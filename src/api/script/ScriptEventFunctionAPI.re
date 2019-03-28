@@ -12,3 +12,11 @@ let createScriptEventFunctionData =
   update: _createScriptEventFunction(jsObj##update),
   dispose: _createScriptEventFunction(jsObj##dispose),
 };
+
+
+let setScriptInitEventFunction =
+    (jsObj: eventFunctionDataJsObj, state) => {
+  /* init: _createScriptEventFunction(jsObj##init),
+  update: _createScriptEventFunction(jsObj##update),
+  dispose: _createScriptEventFunction(jsObj##dispose), */
+};

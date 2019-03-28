@@ -6,7 +6,7 @@ let _pushEventFunctionData =
   |> ArrayService.push((
        script,
        scriptEventFunctionData
-       |> ImmutableHashMapService.getValues
+       |> WonderCommonlib.ImmutableHashMapService.getValidValues
        |> Js.Array.map(mapEventFunctionDataFunc),
      ));
 

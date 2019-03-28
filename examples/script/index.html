@@ -58,15 +58,18 @@
                 var state =
                     api.setScriptAttributeFieldValue(
                         script,
-                        "scriptAttribute1",
+                        [
 
-                        "a",
+                            "scriptAttribute1",
 
-                        a + 1,
+                            "a",
 
-
+                            a + 1
+                        ],
                         state
                     );
+
+
 
                 // var gameObject =
                 //     api.unsafeGetScriptGameObject(
@@ -186,7 +189,7 @@
 
 
                 var state =
-                    wd.addScriptEventFunction(
+                    wd.addScriptEventFunctionData(
                         scriptComponent,
                         "scriptEventFunctionData1",
                         scriptEventFunctionData1,

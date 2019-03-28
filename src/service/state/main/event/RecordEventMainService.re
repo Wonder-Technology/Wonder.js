@@ -207,7 +207,8 @@ let create = () => {
   touchDomEventDataArrMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
   customGlobalEventArrMap: WonderCommonlib.MutableHashMapService.createEmpty(),
-  customGameObjectEventArrMap: WonderCommonlib.MutableHashMapService.createEmpty(),
+  customGameObjectEventArrMap:
+    WonderCommonlib.MutableHashMapService.createEmpty(),
   mouseEventData: {
     lastX: None,
     lastY: None,
@@ -234,13 +235,13 @@ let _deepCopyDomEventArrMap = domEventArrMap =>
 
 let _deepCopyCustomGlobalEventArrMap = customGlobalEventArrMap =>
   customGlobalEventArrMap
-  |> Js.Dict.map((. arr) =>
+  |> WonderCommonlib.MutableHashMapService.map((. arr) =>
        arr |> WonderCommonlib.MutableSparseMapService.copy
      );
 
 let _deepCopyCustomGameObjectEventArrMap = customGameObjectEventArrMap =>
   customGameObjectEventArrMap
-  |> Js.Dict.map((. eventArrMap) =>
+  |> WonderCommonlib.MutableHashMapService.map((. eventArrMap) =>
        eventArrMap
        |> WonderCommonlib.MutableSparseMapService.copy
        |> WonderCommonlib.MutableSparseMapService.mapValid((. arr) =>

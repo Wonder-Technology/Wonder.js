@@ -678,19 +678,39 @@ let getAmbientLightColor = SceneAPI.getAmbientLightColor;
 
 let setScreenSize = ScreenAPI.setScreenSize;
 
+let setScriptAttributeFieldDefaultValueAndValue = ScriptAPI.setScriptAttributeFieldDefaultValueAndValue;
+
 let unsafeGetScriptAttribute = ScriptAPI.unsafeGetScriptAttribute;
+
+let unsafeGetScriptAttributeEntries = ScriptAPI.unsafeGetScriptAttributeEntries;
+
+let replaceScriptAttribute = ScriptAPI.replaceScriptAttribute;
+
+let removeScriptAttribute = ScriptAPI.removeScriptAttribute;
 
 let addScriptAttribute = ScriptAPI.addScriptAttribute;
 
-let addScriptEventFunction = ScriptAPI.addScriptEventFunction;
+let unsafeGetScriptEventFunctionDataEntries = ScriptAPI.unsafeGetScriptEventFunctionDataEntries;
+
+let replaceScriptEventFunctionData = ScriptAPI.replaceScriptEventFunctionData;
+
+let removeScriptEventFunctionData = ScriptAPI.removeScriptEventFunctionData;
+
+let addScriptEventFunctionData = ScriptAPI.addScriptEventFunctionData;
 
 let unsafeGetScriptGameObject = ScriptAPI.unsafeGetScriptGameObject;
 
 let createScript = ScriptAPI.createScript;
 
+let getScriptAttributeEntries = ScriptAttributeAPI.getScriptAttributeEntries;
+
+let removeScriptAttributeField = ScriptAttributeAPI.removeScriptAttributeField;
+
 let addScriptAttributeField = ScriptAttributeAPI.addScriptAttributeField;
 
 let createScriptAttribute = ScriptAttributeAPI.createScriptAttribute;
+
+let setScriptInitEventFunction = ScriptEventFunctionAPI.setScriptInitEventFunction;
 
 let createScriptEventFunctionData = ScriptEventFunctionAPI.createScriptEventFunctionData;
 

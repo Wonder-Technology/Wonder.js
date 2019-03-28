@@ -85,7 +85,8 @@ let _ =
               ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
                 ~script=script1,
                 ~state,
-                ~updateFunc=ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc,
+                ~updateFunc=
+                  ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
                 (),
               );
             let state =
