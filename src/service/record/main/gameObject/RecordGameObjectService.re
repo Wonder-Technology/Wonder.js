@@ -169,6 +169,5 @@ let deepCopyForRestore =
   directionLightMap:
     directionLightMap |> WonderCommonlib.MutableSparseMapService.copy,
   pointLightMap: pointLightMap |> WonderCommonlib.MutableSparseMapService.copy,
-  /* TODO test */
   scriptMap: scriptMap |> WonderCommonlib.MutableSparseMapService.copy,
 };

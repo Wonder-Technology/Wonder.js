@@ -22,7 +22,6 @@ let _disposeComponents =
     disposedDirectionLightArray,
     disposedPointLightArray,
     disposedMeshRendererComponentArray,
-    /* TODO test */
     disposedScriptArray,
   } = gameObjectRecord;
   let state =

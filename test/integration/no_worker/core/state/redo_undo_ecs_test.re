@@ -246,11 +246,8 @@ let _ =
                    basicMaterial1,
                  ),
             )
-            |>
-            expect == (
-                        copiedOriginGameObjectsArr,
-                        copiedOriginEmptyMapUnitArrayMap,
-                      );
+            |> expect
+            == (copiedOriginGameObjectsArr, copiedOriginEmptyMapUnitArrayMap);
           });
           test("copy colors", () =>
             RedoUndoTool.testCopyTypeArraySingleValue(
@@ -576,6 +573,7 @@ let _ =
           )
         );
       });
+
       describe("deep copy gameObject record", () =>
         test(
           "shadow copy
@@ -585,7 +583,7 @@ let _ =
 
           disposedUidArrayForKeepOrderRemoveGeometry,
           disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
-          \n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialDataMap,\n        disposedLightMaterialDataMap,\n                disposedGeometryDataMap,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n                disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap",
+          \n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialDataMap,\n        disposedLightMaterialDataMap,\n                disposedGeometryDataMap,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n                disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap, scriptMap",
           () =>
           StateDataMainType.(
             GameObjectType.(
@@ -622,6 +620,7 @@ let _ =
                     pointLightMap,
                     sourceInstanceMap,
                     objectInstanceMap,
+                    scriptMap,
                   } =
                     GameObjectTool.getGameObjectRecord(state);
                   [|
@@ -656,6 +655,7 @@ let _ =
                     pointLightMap |> Obj.magic,
                     sourceInstanceMap |> Obj.magic,
                     objectInstanceMap |> Obj.magic,
+                    scriptMap |> Obj.magic,
                   |];
                 },
                 state^,
@@ -664,6 +664,7 @@ let _ =
           )
         )
       );
+
       describe("deep copy objectInstance record", () =>
         test(
           "shadow copy sourceInstanceMap, gameObjectMap, disposedIndexArray",
@@ -686,6 +687,7 @@ let _ =
           )
         )
       );
+
       describe("deep copy basicCameraView record", () =>
         test("shadow copy isActiveMap, gameObjectMap, disposedIndexArray", () =>
           BasicCameraViewType.(
@@ -704,6 +706,7 @@ let _ =
           )
         )
       );
+
       describe("deep copy perspectiveCameraProjection record", () => {
         test(
           "shadow copy dirtyArray, nearMap, farMap, fovyMap, aspectMap, gameObjectMap, disposedIndexArray",
@@ -848,42 +851,42 @@ let _ =
             let {colors, textureIndices, mapUnits, isDepthTests, alphas} =
               MainStateTool.unsafeGetState() |> BasicMaterialTool.getRecord;
             (colors, textureIndices, mapUnits, isDepthTests, alphas)
-            |>
-            expect == (
-                        Float32Array.make([|
-                          1.,
-                          1.,
-                          1.,
-                          1.,
-                          0.5,
-                          0.,
-                          1.,
-                          1.,
-                          1.,
-                          1.,
-                          1.,
-                          1.,
-                        |]),
-                        Uint32Array.make([|0, 0, 0, 0|]),
-                        Uint8Array.make([|
-                          defaultUnit,
-                          defaultUnit,
-                          defaultUnit,
-                          defaultUnit,
-                        |]),
-                        Uint8Array.make([|
-                          defaultIsDepthTest,
-                          defaultIsDepthTest,
-                          defaultIsDepthTest,
-                          defaultIsDepthTest,
-                        |]),
-                        Float32Array.make([|
-                          defaultAlpha,
-                          defaultAlpha,
-                          defaultAlpha,
-                          defaultAlpha,
-                        |]),
-                      );
+            |> expect
+            == (
+                 Float32Array.make([|
+                   1.,
+                   1.,
+                   1.,
+                   1.,
+                   0.5,
+                   0.,
+                   1.,
+                   1.,
+                   1.,
+                   1.,
+                   1.,
+                   1.,
+                 |]),
+                 Uint32Array.make([|0, 0, 0, 0|]),
+                 Uint8Array.make([|
+                   defaultUnit,
+                   defaultUnit,
+                   defaultUnit,
+                   defaultUnit,
+                 |]),
+                 Uint8Array.make([|
+                   defaultIsDepthTest,
+                   defaultIsDepthTest,
+                   defaultIsDepthTest,
+                   defaultIsDepthTest,
+                 |]),
+                 Float32Array.make([|
+                   defaultAlpha,
+                   defaultAlpha,
+                   defaultAlpha,
+                   defaultAlpha,
+                 |]),
+               );
           })
         )
       );
@@ -956,24 +959,24 @@ let _ =
               colors |> Float32Array.slice(~start=0, ~end_=12),
               intensities |> Float32Array.slice(~start=0, ~end_=4),
             )
-            |>
-            expect == (
-                        Float32Array.make([|
-                          1.,
-                          1.,
-                          1.,
-                          0.,
-                          0.5,
-                          0.,
-                          1.,
-                          1.,
-                          1.,
-                          1.,
-                          1.,
-                          1.,
-                        |]),
-                        Float32Array.make([|1., 1., 1., 1.|]),
-                      );
+            |> expect
+            == (
+                 Float32Array.make([|
+                   1.,
+                   1.,
+                   1.,
+                   0.,
+                   0.5,
+                   0.,
+                   1.,
+                   1.,
+                   1.,
+                   1.,
+                   1.,
+                   1.,
+                 |]),
+                 Float32Array.make([|1., 1., 1., 1.|]),
+               );
           })
         );
         describe("test point light", () =>
@@ -1023,24 +1026,24 @@ let _ =
               colors |> Float32Array.slice(~start=0, ~end_=12),
               ranges |> Float32Array.slice(~start=0, ~end_=4),
             )
-            |>
-            expect == (
-                        Float32Array.make([|
-                          1.,
-                          1.,
-                          1.,
-                          0.,
-                          0.5,
-                          0.,
-                          1.,
-                          1.,
-                          1.,
-                          1.,
-                          1.,
-                          1.,
-                        |]),
-                        Float32Array.make([|65., 65., 65., 65.|]),
-                      );
+            |> expect
+            == (
+                 Float32Array.make([|
+                   1.,
+                   1.,
+                   1.,
+                   0.,
+                   0.5,
+                   0.,
+                   1.,
+                   1.,
+                   1.,
+                   1.,
+                   1.,
+                   1.,
+                 |]),
+                 Float32Array.make([|65., 65., 65., 65.|]),
+               );
           })
         );
       });
@@ -1115,51 +1118,51 @@ let _ =
               types,
               isNeedUpdates,
             )
-            |>
-            expect == (
-                        Uint8Array.make([|
-                          defaultWrapS,
-                          1,
-                          defaultWrapS,
-                          defaultWrapS,
-                        |]),
-                        Uint8Array.make([|
-                          defaultWrapT,
-                          1,
-                          defaultWrapT,
-                          defaultWrapT,
-                        |]),
-                        Uint8Array.make([|
-                          defaultMagFilter,
-                          1,
-                          defaultMagFilter,
-                          defaultMagFilter,
-                        |]),
-                        Uint8Array.make([|
-                          defaultMinFilter,
-                          1,
-                          defaultMinFilter,
-                          defaultMinFilter,
-                        |]),
-                        Uint8Array.make([|
-                          defaultFormat,
-                          2,
-                          defaultFormat,
-                          defaultFormat,
-                        |]),
-                        Uint8Array.make([|
-                          defaultType,
-                          1,
-                          defaultType,
-                          defaultType,
-                        |]),
-                        Uint8Array.make([|
-                          defaultIsNeedUpdate,
-                          defaultIsNeedUpdate,
-                          defaultIsNeedUpdate,
-                          defaultIsNeedUpdate,
-                        |]),
-                      );
+            |> expect
+            == (
+                 Uint8Array.make([|
+                   defaultWrapS,
+                   1,
+                   defaultWrapS,
+                   defaultWrapS,
+                 |]),
+                 Uint8Array.make([|
+                   defaultWrapT,
+                   1,
+                   defaultWrapT,
+                   defaultWrapT,
+                 |]),
+                 Uint8Array.make([|
+                   defaultMagFilter,
+                   1,
+                   defaultMagFilter,
+                   defaultMagFilter,
+                 |]),
+                 Uint8Array.make([|
+                   defaultMinFilter,
+                   1,
+                   defaultMinFilter,
+                   defaultMinFilter,
+                 |]),
+                 Uint8Array.make([|
+                   defaultFormat,
+                   2,
+                   defaultFormat,
+                   defaultFormat,
+                 |]),
+                 Uint8Array.make([|
+                   defaultType,
+                   1,
+                   defaultType,
+                   defaultType,
+                 |]),
+                 Uint8Array.make([|
+                   defaultIsNeedUpdate,
+                   defaultIsNeedUpdate,
+                   defaultIsNeedUpdate,
+                   defaultIsNeedUpdate,
+                 |]),
+               );
           })
         );
         describe("test restore arrayBufferView source texture record", () =>
@@ -1241,63 +1244,63 @@ let _ =
               widths,
               heights,
             )
-            |>
-            expect == (
-                        Uint8Array.make([|
-                          defaultWrapS,
-                          1,
-                          defaultWrapS,
-                          defaultWrapS,
-                        |]),
-                        Uint8Array.make([|
-                          defaultWrapT,
-                          1,
-                          defaultWrapT,
-                          defaultWrapT,
-                        |]),
-                        Uint8Array.make([|
-                          defaultMagFilter,
-                          1,
-                          defaultMagFilter,
-                          defaultMagFilter,
-                        |]),
-                        Uint8Array.make([|
-                          defaultMinFilter,
-                          1,
-                          defaultMinFilter,
-                          defaultMinFilter,
-                        |]),
-                        Uint8Array.make([|
-                          defaultFormat,
-                          2,
-                          defaultFormat,
-                          defaultFormat,
-                        |]),
-                        Uint8Array.make([|
-                          defaultType,
-                          1,
-                          defaultType,
-                          defaultType,
-                        |]),
-                        Uint8Array.make([|
-                          defaultIsNeedUpdate,
-                          defaultIsNeedUpdate,
-                          defaultIsNeedUpdate,
-                          defaultIsNeedUpdate,
-                        |]),
-                        Uint16Array.make([|
-                          defaultWidth,
-                          2,
-                          defaultWidth,
-                          defaultWidth,
-                        |]),
-                        Uint16Array.make([|
-                          defaultHeight,
-                          4,
-                          defaultHeight,
-                          defaultHeight,
-                        |]),
-                      );
+            |> expect
+            == (
+                 Uint8Array.make([|
+                   defaultWrapS,
+                   1,
+                   defaultWrapS,
+                   defaultWrapS,
+                 |]),
+                 Uint8Array.make([|
+                   defaultWrapT,
+                   1,
+                   defaultWrapT,
+                   defaultWrapT,
+                 |]),
+                 Uint8Array.make([|
+                   defaultMagFilter,
+                   1,
+                   defaultMagFilter,
+                   defaultMagFilter,
+                 |]),
+                 Uint8Array.make([|
+                   defaultMinFilter,
+                   1,
+                   defaultMinFilter,
+                   defaultMinFilter,
+                 |]),
+                 Uint8Array.make([|
+                   defaultFormat,
+                   2,
+                   defaultFormat,
+                   defaultFormat,
+                 |]),
+                 Uint8Array.make([|
+                   defaultType,
+                   1,
+                   defaultType,
+                   defaultType,
+                 |]),
+                 Uint8Array.make([|
+                   defaultIsNeedUpdate,
+                   defaultIsNeedUpdate,
+                   defaultIsNeedUpdate,
+                   defaultIsNeedUpdate,
+                 |]),
+                 Uint16Array.make([|
+                   defaultWidth,
+                   2,
+                   defaultWidth,
+                   defaultWidth,
+                 |]),
+                 Uint16Array.make([|
+                   defaultHeight,
+                   4,
+                   defaultHeight,
+                   defaultHeight,
+                 |]),
+               );
           })
         );
       });
@@ -1373,11 +1376,11 @@ let _ =
           let {isTransformStatics, objectInstanceTransformCollections} =
             MainStateTool.unsafeGetState() |> SourceInstanceTool.getRecord;
           (isTransformStatics, objectInstanceTransformCollections)
-          |>
-          expect == (
-                      Uint8Array.make([|1, 0, 1|]),
-                      Uint32Array.make([|2, 3, 0, 5, 6, 7, 0, 0, 0|]),
-                    );
+          |> expect
+          == (
+               Uint8Array.make([|1, 0, 1|]),
+               Uint32Array.make([|2, 3, 0, 5, 6, 7, 0, 0, 0|]),
+             );
         });
         test(
           "add current state->sourceInstanceRecord->matrixFloat32ArrayMap typeArr to pool",
