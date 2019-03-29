@@ -49,8 +49,8 @@
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
-    "babel-jest": "^24.1.0",
-    "jest": "^24.1.0",
+    "babel-jest": "24.3.1",
+    "jest": "24.3.1",
     "bs-platform": "4.0.18",
     "cz-customizable": "^5.2.0",
     "express": "^4.16.1",
@@ -61,7 +61,7 @@
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0",
     "wonder-benchmark": "^0.2.13",
-    "wonder-bs-jest": "0.2.25",
+    "wonder-bs-jest": "0.3.0",
     "wonder-bs-sinon": "latest",
     "wonder-generate-index": "latest",
     "wonder-glsl-compiler": "^0.1.13",
@@ -81,7 +81,7 @@
     "wonder-log": "^0.2.11",
     "wonder-webgl": "^0.0.7",
     "wonder-commonlib": "0.2.31",
-    "wonder-bs-jest": "0.2.25",
+    "wonder-bs-jest": "0.3.0",
     "wonder-bs-puppeteer": "^0.1.6"
   }
 }
