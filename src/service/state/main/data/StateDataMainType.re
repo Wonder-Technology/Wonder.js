@@ -191,27 +191,28 @@ and arcballCameraControllerRecord = {
 and scriptAPIJsObj = {
   .
   "unsafeGetScriptAttribute":
-    (int, string, state) => ScriptAttributeType.scriptAttribute,
+    (. int, string, state) => ScriptAttributeType.scriptAttribute,
   "unsafeGetScriptAttributeFieldValue":
-    (string, ScriptAttributeType.scriptAttribute) =>
+    (. string, ScriptAttributeType.scriptAttribute) =>
     ScriptAttributeType.scriptAttributeValue,
-  "unsafeGetScriptGameObject": (int, state) => int,
+  "unsafeGetScriptGameObject": (. int, state) => int,
   "setScriptAttributeFieldValue":
     (
+      .
       int,
       (string, string, ScriptAttributeType.scriptAttributeValue),
       state
     ) =>
     state,
   "getTransformLocalPosition":
-    (transform, state) =>
+    (. transform, state) =>
     (
       Js.Typed_array.Float32Array.elt,
       Js.Typed_array.Float32Array.elt,
       Js.Typed_array.Float32Array.elt,
     ),
   "setTransformLocalPosition":
-    (
+    (. 
       transform,
       (
         Js.Typed_array.Float32Array.elt,
@@ -222,8 +223,8 @@ and scriptAPIJsObj = {
     ) =>
     state,
   "unsafeGetGameObjectTransformComponent":
-    (GameObjectPrimitiveType.gameObject, state) => int,
-  "disposeGameObject": (GameObjectPrimitiveType.gameObject, state) => state,
+    (. GameObjectPrimitiveType.gameObject, state) => int,
+  "disposeGameObject": (. GameObjectPrimitiveType.gameObject, state) => state,
 }
 and apiRecord = {
   scriptAPIJsObj,

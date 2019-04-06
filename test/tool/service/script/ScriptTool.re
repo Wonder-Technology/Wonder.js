@@ -135,7 +135,7 @@ module API = {
     let unsafeGetScriptAttributeFieldValue =
       api##unsafeGetScriptAttributeFieldValue;
 
-    unsafeGetScriptAttributeFieldValue(fieldName, scriptAttribute)
+    unsafeGetScriptAttributeFieldValue(. fieldName, scriptAttribute)
     |> ScriptAttributeType.scriptAttributeValueToInt;
   };
 
@@ -144,6 +144,7 @@ module API = {
     let setScriptAttributeFieldValue = api##setScriptAttributeFieldValue;
 
     setScriptAttributeFieldValue(
+      .
       script,
       (
         scriptAttributeName,
@@ -159,7 +160,7 @@ module API = {
     let unsafeGetScriptAttributeFieldValue =
       api##unsafeGetScriptAttributeFieldValue;
 
-    unsafeGetScriptAttributeFieldValue(fieldName, scriptAttribute)
+    unsafeGetScriptAttributeFieldValue(. fieldName, scriptAttribute)
     |> ScriptAttributeType.scriptAttributeValueToFloat;
   };
 
@@ -168,6 +169,7 @@ module API = {
     let setScriptAttributeFieldValue = api##setScriptAttributeFieldValue;
 
     setScriptAttributeFieldValue(
+      .
       script,
       (
         scriptAttributeName,
@@ -249,14 +251,15 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
 
       let transform =
         unsafeGetGameObjectTransformComponent(
-          unsafeGetScriptGameObject(script, state),
+          .
+          unsafeGetScriptGameObject(. script, state),
           state,
         );
 
-      let (x, y, z) = getTransformLocalPosition(transform, state);
+      let (x, y, z) = getTransformLocalPosition(. transform, state);
 
       let state =
-        setTransformLocalPosition(transform, (x +. 10., y, z), state);
+        setTransformLocalPosition(. transform, (x +. 10., y, z), state);
 
       state;
     };
@@ -268,7 +271,7 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
       let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
 
       let scriptAttribute =
-        unsafeGetScriptAttribute(script, scriptAttributeName, state);
+        unsafeGetScriptAttribute(. script, scriptAttributeName, state);
 
       let state =
         API.setScriptAttributeIntFieldValue(
@@ -291,7 +294,7 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
       let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
 
       let scriptAttribute =
-        unsafeGetScriptAttribute(script, scriptAttributeName, state);
+        unsafeGetScriptAttribute(. script, scriptAttributeName, state);
 
       let state =
         API.setScriptAttributeFloatFieldValue(
@@ -427,9 +430,9 @@ module TestCaseWithOneEventFuncAndTwoAttributes = {
               let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
 
               let scriptAttribute1 =
-                unsafeGetScriptAttribute(script, scriptAttribute1Name, state);
+                unsafeGetScriptAttribute(. script, scriptAttribute1Name, state);
               let scriptAttribute2 =
-                unsafeGetScriptAttribute(script, scriptAttribute2Name, state);
+                unsafeGetScriptAttribute(. script, scriptAttribute2Name, state);
 
               let state =
                 API.setScriptAttributeFloatFieldValue(
@@ -581,9 +584,9 @@ module TestCaseWithTwoEventFuncsAndTwoAttributes = {
               let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
 
               let scriptAttribute1 =
-                unsafeGetScriptAttribute(script, scriptAttribute1Name, state);
+                unsafeGetScriptAttribute(. script, scriptAttribute1Name, state);
               let scriptAttribute2 =
-                unsafeGetScriptAttribute(script, scriptAttribute2Name, state);
+                unsafeGetScriptAttribute(. script, scriptAttribute2Name, state);
 
               let state =
                 API.setScriptAttributeIntFieldValue(
@@ -614,9 +617,9 @@ module TestCaseWithTwoEventFuncsAndTwoAttributes = {
               let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
 
               let scriptAttribute1 =
-                unsafeGetScriptAttribute(script, scriptAttribute1Name, state);
+                unsafeGetScriptAttribute(. script, scriptAttribute1Name, state);
               let scriptAttribute2 =
-                unsafeGetScriptAttribute(script, scriptAttribute2Name, state);
+                unsafeGetScriptAttribute(. script, scriptAttribute2Name, state);
 
               let state =
                 API.setScriptAttributeFloatFieldValue(
