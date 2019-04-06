@@ -62,4 +62,22 @@ let _ =
         SceneAPI.getSceneGameObject(state) |> expect == gameObject2;
       })
     );
+
+    describe("findGameObjectsByName", () =>
+      test("find gameObjects by name in scene", () => {
+        let (state, gameObject1) = GameObjectAPI.createGameObject(state^);
+        let (state, gameObject2) = GameObjectAPI.createGameObject(state);
+        let name1 = "aaa";
+        let name2 = "bbb";
+        let state =
+          state
+          |> GameObjectAPI.setGameObjectName(gameObject1, name1)
+          |> GameObjectAPI.setGameObjectName(gameObject2, name2);
+        let state =
+          SceneAPI.addSceneChildren([|gameObject1, gameObject2|], state);
+
+        SceneAPI.findGameObjectsByName(name2, state)
+        |> expect == [|gameObject2|];
+      })
+    );
   });

@@ -198,8 +198,7 @@ and scriptAPIJsObj = {
   "unsafeGetScriptGameObject": (. int, state) => int,
   "setScriptAttributeFieldValue":
     (
-      .
-      int,
+      . int,
       (string, string, ScriptAttributeType.scriptAttributeValue),
       state
     ) =>
@@ -212,8 +211,8 @@ and scriptAPIJsObj = {
       Js.Typed_array.Float32Array.elt,
     ),
   "setTransformLocalPosition":
-    (. 
-      transform,
+    (
+      . transform,
       (
         Js.Typed_array.Float32Array.elt,
         Js.Typed_array.Float32Array.elt,
@@ -225,6 +224,8 @@ and scriptAPIJsObj = {
   "unsafeGetGameObjectTransformComponent":
     (. GameObjectPrimitiveType.gameObject, state) => int,
   "disposeGameObject": (. GameObjectPrimitiveType.gameObject, state) => state,
+  "findGameObjectsByName":
+    (. string, state) => array(GameObjectPrimitiveType.gameObject),
 }
 and apiRecord = {
   scriptAPIJsObj,

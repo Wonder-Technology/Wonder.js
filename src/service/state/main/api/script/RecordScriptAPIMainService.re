@@ -33,4 +33,6 @@ let create = () => {
   "disposeGameObject":
     (. gameObject, state) =>
       GameObjectAPI.disposeGameObject(gameObject, state),
+  "findGameObjectsByName":
+    (. name, state) => SceneAPI.findGameObjectsByName(name, state),
 };
