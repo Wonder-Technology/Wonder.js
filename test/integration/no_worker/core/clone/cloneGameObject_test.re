@@ -263,9 +263,9 @@ let _ =
       });
 
       describe("test clone script component", () => {
-        let _clone = (gameObject, state) => {
+        let _clone = (~gameObject, ~state, ~count=2, ()) => {
           let (state, clonedGameObjectArr) =
-            _cloneGameObject(gameObject, 2, state);
+            _cloneGameObject(gameObject, count, state);
           (
             state,
             clonedGameObjectArr |> CloneTool.getFlattenClonedGameObjectArr,
@@ -287,9 +287,99 @@ let _ =
               (),
             );
 
-          let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+          let (state, _, clonedComponentArr) =
+            _clone(~gameObject=gameObject1, ~state, ());
 
           clonedComponentArr |> expect == [|script1 + 1, script1 + 2|];
+        });
+        test(
+          "if source one has no scriptAllEventFunctionData, cloned one also has no",
+          () => {
+          let (state, gameObject1, script1) =
+            ScriptTool.createGameObject(state^);
+
+          let (state, _, clonedComponentArr) =
+            _clone(~gameObject=gameObject1, ~state, ~count=1, ());
+
+          ScriptTool.hasScriptAllEventFunctionData(
+            clonedComponentArr[0],
+            state,
+          )
+          |> expect == false;
+        });
+        test(
+          "if source one has no scriptAllAttributes, cloned one also has no",
+          () => {
+          let (state, gameObject1, script1) =
+            ScriptTool.createGameObject(state^);
+
+          let (state, _, clonedComponentArr) =
+            _clone(~gameObject=gameObject1, ~state, ~count=1, ());
+
+          ScriptTool.hasScriptAllAttributes(clonedComponentArr[0], state)
+          |> expect == false;
+        });
+        test("cloned gameObject should has script component", () => {
+          let (state, gameObject1, script1) =
+            ScriptTool.createGameObject(state^);
+
+          let (state, clonedGameObjectArr, clonedComponentArr) =
+            _clone(~gameObject=gameObject1, ~state, ~count=1, ());
+
+          GameObjectAPI.hasGameObjectScriptComponent(
+            clonedGameObjectArr[0],
+            state,
+          )
+          |> expect == true;
+        });
+        test(
+          "cloned gameObject->script component should has script event function",
+          () => {
+          let (state, gameObject1, script1) =
+            ScriptTool.createGameObject(state^);
+          let state =
+            ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+              ~script=script1,
+              ~state,
+              (),
+            );
+          let allEventFunctionData =
+            ScriptTool.unsafeGetScriptAllEventFunctionData(script1, state);
+
+          let (state, clonedGameObjectArr, clonedComponentArr) =
+            _clone(~gameObject=gameObject1, ~state, ~count=1, ());
+
+          ScriptTool.unsafeGetScriptAllEventFunctionData(
+            GameObjectAPI.unsafeGetGameObjectScriptComponent(
+              clonedGameObjectArr[0],
+              state,
+            ),
+            state,
+          )
+          |> expect == allEventFunctionData;
+        });
+        test(
+          "cloned gameObject->script component should has script attribute", () => {
+          let (state, gameObject1, script1) =
+            ScriptTool.createGameObject(state^);
+          let state =
+            ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+              ~script=script1,
+              ~state,
+              (),
+            );
+
+          let (state, clonedGameObjectArr, clonedComponentArr) =
+            _clone(~gameObject=gameObject1, ~state, ~count=1, ());
+
+          ScriptTool.hasScriptAllAttributes(
+            GameObjectAPI.unsafeGetGameObjectScriptComponent(
+              clonedGameObjectArr[0],
+              state,
+            ),
+            state,
+          )
+          |> expect == true;
         });
 
         describe("test cloned one' data === source one's data", () =>
@@ -305,7 +395,8 @@ let _ =
             let allEventFunctionData =
               ScriptTool.unsafeGetScriptAllEventFunctionData(script1, state);
 
-            let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+            let (state, _, clonedComponentArr) =
+              _clone(~gameObject=gameObject1, ~state, ());
 
             (
               ScriptTool.unsafeGetScriptAllEventFunctionData(
@@ -322,7 +413,7 @@ let _ =
         );
 
         describe("test cloned one' data !== source one's data", () =>
-          test("reset  scriptAllAttributes->value to defaultValue", () => {
+          test("reset scriptAllAttributes->value to defaultValue", () => {
             let (state, gameObject1, script1) =
               ScriptTool.createGameObject(state^);
             let state =
@@ -338,7 +429,8 @@ let _ =
                 state,
               );
 
-            let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+            let (state, _, clonedComponentArr) =
+              _clone(~gameObject=gameObject1, ~state, ());
 
             (
               ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldAValue(
@@ -371,7 +463,8 @@ let _ =
                 (),
               );
 
-            let (state, _, clonedComponentArr) = _clone(gameObject1, state);
+            let (state, _, clonedComponentArr) =
+              _clone(~gameObject=gameObject1, ~state, ());
 
             let state =
               ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.setScriptAttributeFieldAValue(

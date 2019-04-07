@@ -2,28 +2,49 @@ open StateDataMainType;
 
 let _getData =
   (. sourceComponent, state) => (
-    OperateScriptDataMainService.unsafeGetScriptAllEventFunctionData(
+    OperateScriptDataMainService.getScriptAllEventFunctionData(
       sourceComponent,
       state,
     ),
-    OperateScriptDataMainService.unsafeGetScriptAllAttributes(
+    OperateScriptDataMainService.getScriptAllAttributes(
       sourceComponent,
       state,
     )
-    |> OperateScriptDataMainService.resetScriptAllAttributesFieldValue,
+    |> Js.Option.andThen((. allAttributes) =>
+         (
+           allAttributes
+           |> OperateScriptDataMainService.resetScriptAllAttributesFieldValue
+         )
+         ->Some
+       ),
   );
 
 let _setData =
-  (. targetComponent, (allEventFunctionData, allAttributes), state) =>
-    state
-    |> OperateScriptDataMainService.setScriptAllEventFunctionData(
-         targetComponent,
-         allEventFunctionData,
-       )
-    |> OperateScriptDataMainService.setScriptAllAttributes(
-         targetComponent,
-         allAttributes,
-       );
+  (. targetComponent, (allEventFunctionDataOpt, allAttributesOpt), state) => {
+    let state =
+      switch (allEventFunctionDataOpt) {
+      | Some(allEventFunctionData) =>
+        state
+        |> OperateScriptDataMainService.setScriptAllEventFunctionData(
+             targetComponent,
+             allEventFunctionData,
+           )
+      | None => state
+      };
+
+    let state =
+      switch (allAttributesOpt) {
+      | Some(allAttributes) =>
+        state
+        |> OperateScriptDataMainService.setScriptAllAttributes(
+             targetComponent,
+             allAttributes,
+           )
+      | None => state
+      };
+
+    state;
+  };
 
 let handleCloneComponent =
     (sourceComponent, countRangeArr, {scriptRecord} as state) => {

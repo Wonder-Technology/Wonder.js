@@ -294,6 +294,13 @@ let setScriptAttributeFieldDefaultValueAndValue =
     state,
   );
 
+let getScriptAllEventFunctionData = (script, {scriptRecord} as state) => {
+  let {scriptEventFunctionDataMap} = scriptRecord;
+
+  scriptEventFunctionDataMap
+  |> WonderCommonlib.ImmutableSparseMapService.get(script);
+};
+
 let unsafeGetScriptAllEventFunctionData = (script, {scriptRecord} as state) => {
   let {scriptEventFunctionDataMap} = scriptRecord;
 
@@ -317,6 +324,12 @@ let setScriptAllEventFunctionData =
            ),
     },
   };
+};
+
+let getScriptAllAttributes = (script, {scriptRecord} as state) => {
+  let {scriptAttributeMap} = scriptRecord;
+
+  scriptAttributeMap |> WonderCommonlib.ImmutableSparseMapService.get(script);
 };
 
 let unsafeGetScriptAllAttributes = (script, {scriptRecord} as state) => {
