@@ -76,6 +76,7 @@ let deepCopyForRestore =
         disposedDirectionLightArray,
         disposedPointLightArray,
         disposedMeshRendererComponentArray,
+        disposedScriptArray,
         aliveUidArray,
         geometryMap,
         transformMap,
@@ -146,6 +147,8 @@ let deepCopyForRestore =
   disposedMeshRendererComponentArray:
     disposedMeshRendererComponentArray
     |> WonderCommonlib.MutableSparseMapService.copy,
+  disposedScriptArray:
+    disposedScriptArray |> WonderCommonlib.MutableSparseMapService.copy,
   aliveUidArray: aliveUidArray |> WonderCommonlib.MutableSparseMapService.copy,
   geometryMap: geometryMap |> WonderCommonlib.MutableSparseMapService.copy,
   transformMap: transformMap |> WonderCommonlib.MutableSparseMapService.copy,

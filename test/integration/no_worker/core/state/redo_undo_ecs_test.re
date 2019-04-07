@@ -576,14 +576,17 @@ let _ =
 
       describe("deep copy gameObject record", () =>
         test(
-          "shadow copy
+          {|shadow copy
           nameMap,
           isRootMap,
-          disposedUidMap,\n\n        disposedUidArray,\n        disposedUidArrayForKeepOrder,
+          disposedUidMap,        disposedUidArray,        disposedUidArrayForKeepOrder,
 
           disposedUidArrayForKeepOrderRemoveGeometry,
           disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
-          \n        disposedBasicCameraViewArray,\n        disposedTransformArray,\n        disposedTransformArrayForKeepOrder,\n        disposedPerspectiveCameraProjectionArray,\n        disposedBasicMaterialDataMap,\n        disposedLightMaterialDataMap,\n                disposedGeometryDataMap,\n        disposedSourceInstanceArray,\n        disposedObjectInstanceArray,\n                disposedDirectionLightArray,\n        disposedPointLightArray,\n        disposedMeshRendererComponentArray,\n        disposedMeshRendererUidArray,\n                \n                \n                aliveUidArray, transformMap, basicCameraViewMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap, scriptMap",
+                  disposedBasicCameraViewArray,        disposedTransformArray,        disposedTransformArrayForKeepOrder,        disposedPerspectiveCameraProjectionArray,        disposedBasicMaterialDataMap,        disposedLightMaterialDataMap,                disposedGeometryDataMap,        disposedSourceInstanceArray,        disposedObjectInstanceArray,                disposedDirectionLightArray,        disposedPointLightArray,        disposedMeshRendererComponentArray,
+          disposedScriptArray,
+
+          disposedMeshRendererUidArray,                                                aliveUidArray, transformMap, basicCameraViewMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap, scriptMap|},
           () =>
           StateDataMainType.(
             GameObjectType.(
@@ -609,6 +612,7 @@ let _ =
                     disposedDirectionLightArray,
                     disposedPointLightArray,
                     disposedMeshRendererComponentArray,
+                    disposedScriptArray,
                     aliveUidArray,
                     transformMap,
                     basicCameraViewMap,
@@ -644,6 +648,7 @@ let _ =
                     disposedDirectionLightArray |> Obj.magic,
                     disposedPointLightArray |> Obj.magic,
                     disposedMeshRendererComponentArray |> Obj.magic,
+                    disposedScriptArray |> Obj.magic,
                     aliveUidArray |> Obj.magic,
                     transformMap |> Obj.magic,
                     basicCameraViewMap |> Obj.magic,
