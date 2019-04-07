@@ -92,6 +92,7 @@ let clearDeferDisposeData = state => {
     disposedPointLightArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedMeshRendererComponentArray:
       WonderCommonlib.ArrayService.createEmpty(),
+    disposedScriptArray: WonderCommonlib.ArrayService.createEmpty(),
   },
 };
 

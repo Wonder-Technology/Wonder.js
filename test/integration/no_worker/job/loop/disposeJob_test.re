@@ -838,50 +838,9 @@ let _ =
     describe("clear all defer disposed data", () =>
       describe(
         "not dispose the same one again in the second job execution", () => {
-        let _testDisposeGameObject = disposeGameObjectFunc => {
-          open GameObjectType;
-
-          TestTool.closeContractCheck();
-
-          let (state, gameObject1, geometry1) =
-            BoxGeometryTool.createGameObject(state^);
-          let (state, gameObject2, geometry2) =
-            BoxGeometryTool.createGameObject(state);
-          let (state, gameObject3, _) =
-            BoxGeometryTool.createGameObject(state);
-          let (state, gameObject4, _) =
-            BoxGeometryTool.createGameObject(state);
-
-          let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
-          let state = state |> DisposeJob.execJob(None);
-          /* let (state, gameObject3, geometry3) =
-               BoxGeometryTool.createGameObject(state);
-             let state = state |> DisposeJob.execJob(None);
-
-             geometry3 |> expect == geometry1; */
-
-          let {
-            disposedUidArrayForKeepOrder,
-            disposedUidArrayForKeepOrderRemoveGeometry,
-            disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
-            disposedUidArrayForDisposeGeometryRemoveMaterial,
-          } =
-            GameObjectTool.getGameObjectRecord(state);
-
-          (
-            disposedUidArrayForKeepOrder,
-            disposedUidArrayForKeepOrderRemoveGeometry,
-            disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
-            disposedUidArrayForDisposeGeometryRemoveMaterial,
-          )
-          |> expect == ([||], [||], [||], [||]);
-        };
-
         test("test dispose gameObject", () => {
           open GameObjectType;
-
           TestTool.closeContractCheck();
-
           let (state, gameObject1, geometry1) =
             BoxGeometryTool.createGameObject(state^);
           let (state, gameObject2, geometry2) =
@@ -901,7 +860,6 @@ let _ =
             disposedUidArrayForDisposeGeometryRemoveMaterial,
           } =
             GameObjectTool.getGameObjectRecord(state);
-
           (
             disposedUidArrayForKeepOrder,
             disposedUidArrayForKeepOrderRemoveGeometry,
@@ -910,6 +868,26 @@ let _ =
           )
           |> expect == ([||], [||], [||], [||]);
         });
+
+        describe("test dispose component", () =>
+          test("test dispose script component", () => {
+            open GameObjectType;
+            let (state, gameObject1, script1) =
+              ScriptTool.createGameObject(state^);
+
+            let state =
+              state
+              |> GameObjectAPI.disposeGameObjectScriptComponent(
+                   gameObject1,
+                   script1,
+                 );
+            let state = state |> DisposeJob.execJob(None);
+
+            let {disposedScriptArray} =
+              GameObjectTool.getGameObjectRecord(state);
+            disposedScriptArray |> expect == [||];
+          })
+        );
       })
     );
   });
