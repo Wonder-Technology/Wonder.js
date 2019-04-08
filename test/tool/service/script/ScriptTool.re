@@ -199,7 +199,7 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
     let scriptAttribute = ScriptAttributeAPI.createScriptAttribute();
 
     let scriptAttribute =
-      ScriptAttributeAPI.addScriptAttributeField(
+      ScriptAttributeAPI.addScriptAttributeFieldJsObj(
         "a",
         {
           "type": "int",
@@ -210,7 +210,7 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
       );
 
     let scriptAttribute =
-      ScriptAttributeAPI.addScriptAttributeField(
+      ScriptAttributeAPI.addScriptAttributeFieldJsObj(
         "b",
         {"type": "float", "defaultValue": 0.1 |> createFloatFieldValue},
         scriptAttribute,
@@ -473,14 +473,14 @@ module TestCaseWithOneEventFuncAndTwoAttributes = {
     let scriptAttribute = ScriptAttributeAPI.createScriptAttribute();
 
     let scriptAttribute =
-      ScriptAttributeAPI.addScriptAttributeField(
+      ScriptAttributeAPI.addScriptAttributeFieldJsObj(
         "a",
         {"type": "int", "defaultValue": 1 |> createIntFieldValue},
         scriptAttribute,
       );
 
     let scriptAttribute =
-      ScriptAttributeAPI.addScriptAttributeField(
+      ScriptAttributeAPI.addScriptAttributeFieldJsObj(
         "b",
         {"type": "float", "defaultValue": 0.1 |> createFloatFieldValue},
         scriptAttribute,
@@ -493,14 +493,14 @@ module TestCaseWithOneEventFuncAndTwoAttributes = {
     let scriptAttribute = ScriptAttributeAPI.createScriptAttribute();
 
     let scriptAttribute =
-      ScriptAttributeAPI.addScriptAttributeField(
+      ScriptAttributeAPI.addScriptAttributeFieldJsObj(
         "a",
         {"type": "int", "defaultValue": 11 |> createIntFieldValue},
         scriptAttribute,
       );
 
     let scriptAttribute =
-      ScriptAttributeAPI.addScriptAttributeField(
+      ScriptAttributeAPI.addScriptAttributeFieldJsObj(
         "b",
         {"type": "float", "defaultValue": 2.1 |> createFloatFieldValue},
         scriptAttribute,
@@ -677,14 +677,14 @@ module TestCaseWithTwoEventFuncsAndTwoAttributes = {
     let scriptAttribute = ScriptAttributeAPI.createScriptAttribute();
 
     let scriptAttribute =
-      ScriptAttributeAPI.addScriptAttributeField(
+      ScriptAttributeAPI.addScriptAttributeFieldJsObj(
         "a",
         {"type": "int", "defaultValue": 1 |> createIntFieldValue},
         scriptAttribute,
       );
 
     let scriptAttribute =
-      ScriptAttributeAPI.addScriptAttributeField(
+      ScriptAttributeAPI.addScriptAttributeFieldJsObj(
         "b",
         {"type": "float", "defaultValue": 0.1 |> createFloatFieldValue},
         scriptAttribute,
@@ -697,14 +697,14 @@ module TestCaseWithTwoEventFuncsAndTwoAttributes = {
     let scriptAttribute = ScriptAttributeAPI.createScriptAttribute();
 
     let scriptAttribute =
-      ScriptAttributeAPI.addScriptAttributeField(
+      ScriptAttributeAPI.addScriptAttributeFieldJsObj(
         "a",
         {"type": "int", "defaultValue": 11 |> createIntFieldValue},
         scriptAttribute,
       );
 
     let scriptAttribute =
-      ScriptAttributeAPI.addScriptAttributeField(
+      ScriptAttributeAPI.addScriptAttributeFieldJsObj(
         "b",
         {"type": "float", "defaultValue": 2.1 |> createFloatFieldValue},
         scriptAttribute,

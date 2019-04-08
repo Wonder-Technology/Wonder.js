@@ -706,7 +706,7 @@ let getScriptAttributeEntries = ScriptAttributeAPI.getScriptAttributeEntries;
 
 let removeScriptAttributeField = ScriptAttributeAPI.removeScriptAttributeField;
 
-let addScriptAttributeField = ScriptAttributeAPI.addScriptAttributeField;
+let addScriptAttributeFieldJsObj = ScriptAttributeAPI.addScriptAttributeFieldJsObj;
 
 let createScriptAttribute = ScriptAttributeAPI.createScriptAttribute;
 

@@ -1,8 +1,8 @@
 let createScriptAttribute = () =>
   OperateScriptAttributeDataMainService.createScriptAttribute();
 
-let addScriptAttributeField = (fieldName, attributeFieldJsObj, attribute) =>
-  OperateScriptAttributeDataMainService.addScriptAttributeField(
+let addScriptAttributeFieldJsObj = (fieldName, attributeFieldJsObj, attribute) =>
+  OperateScriptAttributeDataMainService.addScriptAttributeFieldJsObj(
     fieldName,
     attributeFieldJsObj,
     attribute,

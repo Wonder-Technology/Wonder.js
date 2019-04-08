@@ -33,7 +33,7 @@ let _createScriptAttributeField =
   value: attributeFieldJsObj##defaultValue,
 };
 
-let addScriptAttributeField = (fieldName, attributeFieldJsObj, attribute) =>
+let addScriptAttributeFieldJsObj = (fieldName, attributeFieldJsObj, attribute) =>
   attribute
   |> WonderCommonlib.ImmutableHashMapService.set(
        fieldName,
