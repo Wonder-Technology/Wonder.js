@@ -23,11 +23,16 @@ let removeScriptEventFunctionData =
   );
 
 let replaceScriptEventFunctionData =
-    (script, scriptEventFunctionDataName, scriptEventFunctionData, state) =>
+    (
+      script,
+      (sourceScriptEventFunctionDataName, targetScriptEventFunctionDataName),
+      targetScriptEventFunctionData,
+      state,
+    ) =>
   OperateScriptDataMainService.replaceScriptEventFunctionData(
     script,
-    scriptEventFunctionDataName,
-    scriptEventFunctionData,
+    (sourceScriptEventFunctionDataName, targetScriptEventFunctionDataName),
+    targetScriptEventFunctionData,
     state,
   );
 
@@ -53,23 +58,39 @@ let removeScriptAttribute = (script, scriptAttributeName, state) =>
   );
 
 let replaceScriptAttribute =
-    (script, scriptAttributeName, scriptAttribute, state) =>
+    (
+      script,
+      (sourceScriptAttributeName, targetScriptAttributeName),
+      targetScriptAttribute,
+      state,
+    ) =>
   OperateScriptDataMainService.replaceScriptAttribute(
     script,
-    scriptAttributeName,
-    scriptAttribute,
+    (sourceScriptAttributeName, targetScriptAttributeName),
+    targetScriptAttribute,
     state,
   );
 
 let unsafeGetScriptAttributeEntries = (script, state) =>
   OperateScriptDataMainService.unsafeGetScriptAttributeEntries(script, state);
 
-let unsafeGetScriptAttribute = (script, attributeName, state) =>
+let unsafeGetScriptAttribute = (script, scriptAttributeName, state) =>
   OperateScriptDataMainService.unsafeGetScriptAttribute(
     script,
-    attributeName,
+    scriptAttributeName,
     state,
   );
+
+let unsafeGetScriptAttributeFieldDefaultValue =
+    (script, scriptAttributeName, fieldName, state) =>
+  OperateScriptDataMainService.unsafeGetScriptAttribute(
+    script,
+    scriptAttributeName,
+    state,
+  )
+  |> OperateScriptAttributeDataMainService.unsafeGetScriptAttributeFieldDefaultValue(
+       fieldName,
+     );
 
 let setScriptAttributeFieldDefaultValueAndValue =
     (script, scriptAttributeName, fieldName, value, state) =>

@@ -273,7 +273,7 @@ let _ =
         let state =
           ScriptAPI.replaceScriptEventFunctionData(
             script,
-            scriptEventFunctionDataName1,
+            (scriptEventFunctionDataName1, scriptEventFunctionDataName1),
             scriptEventFunctionData2,
             state,
           );
@@ -309,13 +309,44 @@ let _ =
         let state =
           ScriptAPI.replaceScriptAttribute(
             script,
-            scriptAttributeName1,
+            (scriptAttributeName1, scriptAttributeName2),
             scriptAttribute2,
             state,
           );
 
         ScriptAPI.unsafeGetScriptAttributeEntries(script, state)
-        |> expect == [|(scriptAttributeName1, scriptAttribute2)|];
+        |> expect == [|(scriptAttributeName2, scriptAttribute2)|];
+      })
+    );
+
+    describe("unsafeGetScriptAttributeFieldDefaultValue", () =>
+      test("unsafe get script->attribute->field->default value", () => {
+        let (state, script) = ScriptAPI.createScript(state^);
+        let state =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+            ~script,
+            ~state,
+            (),
+          );
+        let newValue = 3;
+
+        let state =
+          ScriptAPI.setScriptAttributeFieldDefaultValueAndValue(
+            script,
+            ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getScriptAttributeName(),
+            "a",
+            newValue |> ScriptAttributeType.intToScriptAttributeValue,
+            state,
+          );
+
+        ScriptAPI.unsafeGetScriptAttributeFieldDefaultValue(
+          script,
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getScriptAttributeName(),
+          "a",
+          state,
+        )
+        |> ScriptAttributeType.scriptAttributeValueToInt
+        |> expect == newValue;
       })
     );
 

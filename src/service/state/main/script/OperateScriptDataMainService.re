@@ -184,18 +184,36 @@ let removeScriptAttribute =
 };
 
 let replaceScriptEventFunctionData =
-    (script, scriptEventFunctionDataName, scriptEventFunctionData, state) =>
-  removeScriptEventFunctionData(script, scriptEventFunctionDataName, state)
+    (
+      script,
+      (sourceScriptEventFunctionDataName, targetScriptEventFunctionDataName),
+      targetScriptEventFunctionData,
+      state,
+    ) =>
+  removeScriptEventFunctionData(
+    script,
+    sourceScriptEventFunctionDataName,
+    state,
+  )
   |> addScriptEventFunctionData(
        script,
-       scriptEventFunctionDataName,
-       scriptEventFunctionData,
+       targetScriptEventFunctionDataName,
+       targetScriptEventFunctionData,
      );
 
 let replaceScriptAttribute =
-    (script, scriptAttributeName, scriptAttribute, state) =>
-  removeScriptAttribute(script, scriptAttributeName, state)
-  |> addScriptAttribute(script, scriptAttributeName, scriptAttribute);
+    (
+      script,
+      (sourceScriptAttributeName, targetScriptAttributeName),
+      targetScriptAttribute,
+      state,
+    ) =>
+  removeScriptAttribute(script, sourceScriptAttributeName, state)
+  |> addScriptAttribute(
+       script,
+       targetScriptAttributeName,
+       targetScriptAttribute,
+     );
 
 let getScriptEventFunctionDataEntries = (script, {scriptRecord} as state) => {
   let {scriptEventFunctionDataMap} as scriptRecord = scriptRecord;
