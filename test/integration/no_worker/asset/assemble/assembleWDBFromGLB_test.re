@@ -235,11 +235,8 @@ let _ =
                   |> OptionService.unsafeGet
                   |> Obj.magic,
                 )
-                |>
-                expect == (
-                            imguiFunc,
-                            customData |> Obj.magic |> Js.Json.parseExn,
-                          ),
+                |> expect
+                == (imguiFunc, customData |> Obj.magic |> Js.Json.parseExn),
             (),
           );
         });
@@ -251,7 +248,8 @@ let _ =
             (
               (. customData, imguiAPIJsObj, state) => {
                 let gameObject = Array.unsafe_get(customData, 0);
-                let unsafeGetGameObjectLightMaterialComponent = imguiAPIJsObj##unsafeGetGameObjectLightMaterialComponent;
+                let unsafeGetGameObjectLightMaterialComponent =
+                  imguiAPIJsObj##unsafeGetGameObjectLightMaterialComponent;
 
                 let material =
                   unsafeGetGameObjectLightMaterialComponent(.
@@ -283,9 +281,9 @@ let _ =
                   |> OptionService.unsafeGet
                   |> Obj.magic,
                 )
-                |>
-                expect == (
-                            {|
+                |> expect
+                == (
+                     {|
                          function (customData, imguiAPIJsObj, state) {
                            var gameObject = customData[0];
                            var unsafeGetGameObjectLightMaterialComponent = imguiAPIJsObj.unsafeGetGameObjectLightMaterialComponent;
@@ -293,10 +291,10 @@ let _ =
                            return state;
                          }
                        |}
-                            |> StringTool.removeNewLines
-                            |> StringTool.removeSpaces,
-                            [|gameObject|],
-                          ),
+                     |> StringTool.removeNewLines
+                     |> StringTool.removeSpaces,
+                     [|gameObject|],
+                   ),
             (),
           );
         });
@@ -354,17 +352,17 @@ let _ =
               |> Js.Array.map(gameObject =>
                    GameObjectAPI.unsafeGetGameObjectName(gameObject, state)
                  )
-              |>
-              expect == [|
-                          "gameObject_0",
-                          "gameObject_3",
-                          "gameObject_1",
-                          "Cesium_Milk_Truck_0",
-                          "Cesium_Milk_Truck_1",
-                          "Cesium_Milk_Truck_2",
-                          "Wheels",
-                          "Wheels",
-                        |],
+              |> expect
+              == [|
+                   "gameObject_0",
+                   "gameObject_3",
+                   "gameObject_1",
+                   "Cesium_Milk_Truck_0",
+                   "Cesium_Milk_Truck_1",
+                   "Cesium_Milk_Truck_2",
+                   "Wheels",
+                   "Wheels",
+                 |],
             state^,
           )
         )
@@ -461,18 +459,18 @@ let _ =
                 _getAllChildrenTransform(rootGameObject, state);
               TransformTool.getRecord(state).parentMap
               |> Obj.magic
-              |>
-              expect == [|
-                          Js.Undefined.empty |> Obj.magic,
-                          Js.Undefined.empty |> Obj.magic,
-                          1,
-                          2,
-                          1,
-                          4,
-                          1,
-                          1,
-                          1,
-                        |];
+              |> expect
+              == [|
+                   Js.Undefined.empty |> Obj.magic,
+                   Js.Undefined.empty |> Obj.magic,
+                   1,
+                   2,
+                   1,
+                   4,
+                   1,
+                   1,
+                   1,
+                 |];
             },
             state^,
           )
@@ -492,51 +490,41 @@ let _ =
                      TransformAPI.getTransformLocalScale(transform, state),
                    )
                  )
-              |>
-              expect == [|
-                          ((0., 0., 0.), (0., 0., 0., 1.), (1., 1., 1.)),
-                          (
-                            (
-                              (-1.352329969406128),
-                              0.4277220070362091,
-                              (-2.98022992950564e-8),
-                            ),
-                            (0., 0., 0., 1.),
-                            (1., 1., 1.),
-                          ),
-                          (
-                            (0., 0., 0.),
-                            (
-                              0.,
-                              0.,
-                              0.08848590403795242,
-                              (-0.9960774183273315),
-                            ),
-                            (1., 1., 1.),
-                          ),
-                          (
-                            (
-                              1.432669997215271,
-                              0.4277220070362091,
-                              (-2.98022992950564e-8),
-                            ),
-                            (0., 0., 0., 1.),
-                            (1., 1., 1.),
-                          ),
-                          (
-                            (0., 0., 0.),
-                            (
-                              0.,
-                              0.,
-                              0.08848590403795242,
-                              (-0.9960774183273315),
-                            ),
-                            (1., 1., 1.),
-                          ),
-                          ((0., 0., 0.), (0., 0., 0., 1.), (1., 1., 1.)),
-                          ((0., 0., 0.), (0., 0., 0., 1.), (1., 1., 1.)),
-                          ((0., 0., 0.), (0., 0., 0., 1.), (1., 1., 1.)),
-                        |],
+              |> expect
+              == [|
+                   ((0., 0., 0.), (0., 0., 0., 1.), (1., 1., 1.)),
+                   (
+                     (
+                       (-1.352329969406128),
+                       0.4277220070362091,
+                       (-2.98022992950564e-8),
+                     ),
+                     (0., 0., 0., 1.),
+                     (1., 1., 1.),
+                   ),
+                   (
+                     (0., 0., 0.),
+                     (0., 0., 0.08848590403795242, (-0.9960774183273315)),
+                     (1., 1., 1.),
+                   ),
+                   (
+                     (
+                       1.432669997215271,
+                       0.4277220070362091,
+                       (-2.98022992950564e-8),
+                     ),
+                     (0., 0., 0., 1.),
+                     (1., 1., 1.),
+                   ),
+                   (
+                     (0., 0., 0.),
+                     (0., 0., 0.08848590403795242, (-0.9960774183273315)),
+                     (1., 1., 1.),
+                   ),
+                   ((0., 0., 0.), (0., 0., 0., 1.), (1., 1., 1.)),
+                   ((0., 0., 0.), (0., 0., 0., 1.), (1., 1., 1.)),
+                   ((0., 0., 0.), (0., 0., 0., 1.), (1., 1., 1.)),
+                 |],
             state^,
           )
         )
@@ -586,7 +574,7 @@ let _ =
                   GeometryAPI.getGeometryVertices(geometry, state),
                   GeometryAPI.getGeometryNormals(geometry, state),
                   GeometryAPI.getGeometryTexCoords(geometry, state),
-                  GeometryAPI.getGeometryIndices16(geometry, state) |. Some,
+                  GeometryAPI.getGeometryIndices16(geometry, state)->Some,
                   None,
                 )
                 |> expect == GLTFTool.getBoxTexturedGeometryData();
@@ -603,44 +591,44 @@ let _ =
               let dataMap = GLTFTool.getTruckGeometryData();
 
               AssembleWDBSystemTool.getAllGeometryData(rootGameObject, state)
-              |>
-              expect == [|
-                          (
-                            "Cesium_Milk_Truck_0",
-                            dataMap
-                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                 "Cesium_Milk_Truck_0",
-                               ),
-                          ),
-                          (
-                            "Cesium_Milk_Truck_1",
-                            dataMap
-                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                 "Cesium_Milk_Truck_1",
-                               ),
-                          ),
-                          (
-                            "Cesium_Milk_Truck_2",
-                            dataMap
-                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                 "Cesium_Milk_Truck_2",
-                               ),
-                          ),
-                          (
-                            "Wheels",
-                            dataMap
-                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                 "Wheels",
-                               ),
-                          ),
-                          (
-                            "Wheels",
-                            dataMap
-                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                 "Wheels",
-                               ),
-                          ),
-                        |];
+              |> expect
+              == [|
+                   (
+                     "Cesium_Milk_Truck_0",
+                     dataMap
+                     |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                          "Cesium_Milk_Truck_0",
+                        ),
+                   ),
+                   (
+                     "Cesium_Milk_Truck_1",
+                     dataMap
+                     |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                          "Cesium_Milk_Truck_1",
+                        ),
+                   ),
+                   (
+                     "Cesium_Milk_Truck_2",
+                     dataMap
+                     |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                          "Cesium_Milk_Truck_2",
+                        ),
+                   ),
+                   (
+                     "Wheels",
+                     dataMap
+                     |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                          "Wheels",
+                        ),
+                   ),
+                   (
+                     "Wheels",
+                     dataMap
+                     |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                          "Wheels",
+                        ),
+                   ),
+                 |];
             },
             state^,
           )
@@ -675,17 +663,17 @@ let _ =
               let dataMap = GLTFTool.getAlphaBlendModeTestGeometryData();
 
               (allGeometryData |> Js.Array.length, allGeometryData[1])
-              |>
-              expect == (
-                          9,
-                          (
-                            "DecalBlendMesh",
-                            dataMap
-                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                 "DecalBlendMesh",
-                               ),
-                          ),
-                        );
+              |> expect
+              == (
+                   9,
+                   (
+                     "DecalBlendMesh",
+                     dataMap
+                     |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                          "DecalBlendMesh",
+                        ),
+                   ),
+                 );
             },
             state^,
           );
@@ -717,17 +705,17 @@ let _ =
               let dataMap = GLTFTool.getSuperLowPolyStoveGeometryData();
 
               (allGeometryData |> Js.Array.length, allGeometryData[1])
-              |>
-              expect == (
-                          2,
-                          (
-                            "Stove_1",
-                            dataMap
-                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                 "Stove_1",
-                               ),
-                          ),
-                        );
+              |> expect
+              == (
+                   2,
+                   (
+                     "Stove_1",
+                     dataMap
+                     |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                          "Stove_1",
+                        ),
+                   ),
+                 );
             },
             state^,
           );
@@ -749,8 +737,8 @@ let _ =
                      state,
                    )
                  )
-              |>
-              expect == [|false, false, true, false, true, true, true, true|],
+              |> expect
+              == [|false, false, true, false, true, true, true, true|],
             state^,
           )
         );
@@ -779,14 +767,14 @@ let _ =
               |> Js.Array.map(geometry =>
                    GeometryAPI.unsafeGetGeometryName(geometry, state)
                  )
-              |>
-              expect == [|
-                          "Cesium_Milk_Truck_0",
-                          "Cesium_Milk_Truck_1",
-                          "Cesium_Milk_Truck_2",
-                          "Wheels",
-                          "Wheels",
-                        |],
+              |> expect
+              == [|
+                   "Cesium_Milk_Truck_0",
+                   "Cesium_Milk_Truck_1",
+                   "Cesium_Milk_Truck_2",
+                   "Wheels",
+                   "Wheels",
+                 |],
             state^,
           )
         );
@@ -954,13 +942,8 @@ let _ =
                          ),
                        )
                      )
-                  |>
-                  expect == [|
-                              (2, false),
-                              (1, false),
-                              (3, false),
-                              (0, false),
-                            |],
+                  |> expect
+                  == [|(2, false), (1, false), (3, false), (0, false)|],
               (),
             );
           });
@@ -999,13 +982,8 @@ let _ =
                            ),
                          )
                        )
-                    |>
-                    expect == [|
-                                (2, true),
-                                (1, false),
-                                (3, false),
-                                (0, false),
-                              |],
+                    |> expect
+                    == [|(2, true), (1, false), (3, false), (0, false)|],
                 (),
               );
             })
@@ -1055,11 +1033,8 @@ let _ =
                        ),
                      )
                    )
-                |>
-                expect == [|
-                            (2., 28.64788975654116),
-                            (1., 34.37746770784939),
-                          |],
+                |> expect
+                == [|(2., 28.64788975654116), (1., 34.37746770784939)|],
             (),
           )
         );
@@ -1456,14 +1431,8 @@ let _ =
                        state,
                      )
                    )
-                |>
-                expect == [|
-                            "truck",
-                            "glass",
-                            "window_trim",
-                            "wheels",
-                            "wheels",
-                          |],
+                |> expect
+                == [|"truck", "glass", "window_trim", "wheels", "wheels"|],
               state^,
             )
           )
@@ -1482,18 +1451,18 @@ let _ =
                        state,
                      )
                    )
-                |>
-                expect == [|
-                            LightMaterialTool.getDefaultDiffuseColor(state),
-                            [|0., 0.04050629958510399, 0.021240700036287308|],
-                            [|
-                              0.06400000303983688,
-                              0.06400000303983688,
-                              0.06400000303983688,
-                            |],
-                            LightMaterialTool.getDefaultDiffuseColor(state),
-                            LightMaterialTool.getDefaultDiffuseColor(state),
-                          |],
+                |> expect
+                == [|
+                     LightMaterialTool.getDefaultDiffuseColor(state),
+                     [|0., 0.04050629958510399, 0.021240700036287308|],
+                     [|
+                       0.06400000303983688,
+                       0.06400000303983688,
+                       0.06400000303983688,
+                     |],
+                     LightMaterialTool.getDefaultDiffuseColor(state),
+                     LightMaterialTool.getDefaultDiffuseColor(state),
+                   |],
               state^,
             )
           );
@@ -1595,15 +1564,15 @@ let _ =
                          )
                        )
                     |> Obj.magic
-                    |>
-                    expect == [|
-                                (
-                                  SourceTextureType.Linear,
-                                  SourceTextureType.Nearest_mipmap_linear,
-                                  SourceTextureType.Repeat,
-                                  SourceTextureType.Repeat,
-                                ),
-                              |],
+                    |> expect
+                    == [|
+                         (
+                           SourceTextureType.Linear,
+                           SourceTextureType.Nearest_mipmap_linear,
+                           SourceTextureType.Repeat,
+                           SourceTextureType.Repeat,
+                         ),
+                       |],
                   state^,
                 )
               );
@@ -1624,14 +1593,14 @@ let _ =
                              state,
                            )
                          )
-                      |>
-                      expect == [|
-                                  {
-                                    "name": "CesiumLogoFlat.png",
-                                    "src": "object_url0",
-                                  }
-                                  |> Obj.magic,
-                                |],
+                      |> expect
+                      == [|
+                           {
+                             "name": "CesiumLogoFlat.png",
+                             "src": "object_url0",
+                           }
+                           |> Obj.magic,
+                         |],
                     state^,
                   )
                 );
@@ -1666,7 +1635,7 @@ let _ =
                   sandbox^,
                   GLBTool.buildGLBFilePath("BoxTextured.glb"),
                   ((state, _, rootGameObject)) =>
-                    (GLBTool.getURL(.))##revokeObjectURL
+                    GLBTool.getURL(.)##revokeObjectURL
                     |> getCallCount
                     |> expect == 1,
                   state^,
@@ -1709,18 +1678,18 @@ let _ =
                              state,
                            )
                          )
-                      |>
-                      expect == [|
-                                  SourceTextureType.Rgba,
-                                  SourceTextureType.Rgba,
-                                  SourceTextureType.Rgba,
-                                  SourceTextureType.Rgba,
-                                  SourceTextureType.Rgba,
-                                  SourceTextureType.Rgba,
-                                  SourceTextureType.Rgba,
-                                  SourceTextureType.Rgba,
-                                  SourceTextureType.Rgb,
-                                |],
+                      |> expect
+                      == [|
+                           SourceTextureType.Rgba,
+                           SourceTextureType.Rgba,
+                           SourceTextureType.Rgba,
+                           SourceTextureType.Rgba,
+                           SourceTextureType.Rgba,
+                           SourceTextureType.Rgba,
+                           SourceTextureType.Rgba,
+                           SourceTextureType.Rgba,
+                           SourceTextureType.Rgb,
+                         |],
                     state^,
                   )
                 );
@@ -1801,27 +1770,27 @@ let _ =
                          )
                        )
                     |> Obj.magic
-                    |>
-                    expect == [|
-                                (
-                                  SourceTextureType.Linear,
-                                  SourceTextureType.Nearest_mipmap_linear,
-                                  SourceTextureType.Repeat,
-                                  SourceTextureType.Repeat,
-                                ),
-                                (
-                                  SourceTextureType.Linear,
-                                  SourceTextureType.Nearest_mipmap_linear,
-                                  SourceTextureType.Repeat,
-                                  SourceTextureType.Repeat,
-                                ),
-                                (
-                                  SourceTextureType.Linear,
-                                  SourceTextureType.Nearest_mipmap_linear,
-                                  SourceTextureType.Repeat,
-                                  SourceTextureType.Repeat,
-                                ),
-                              |],
+                    |> expect
+                    == [|
+                         (
+                           SourceTextureType.Linear,
+                           SourceTextureType.Nearest_mipmap_linear,
+                           SourceTextureType.Repeat,
+                           SourceTextureType.Repeat,
+                         ),
+                         (
+                           SourceTextureType.Linear,
+                           SourceTextureType.Nearest_mipmap_linear,
+                           SourceTextureType.Repeat,
+                           SourceTextureType.Repeat,
+                         ),
+                         (
+                           SourceTextureType.Linear,
+                           SourceTextureType.Nearest_mipmap_linear,
+                           SourceTextureType.Repeat,
+                           SourceTextureType.Repeat,
+                         ),
+                       |],
                   state^,
                 )
               );
@@ -1840,15 +1809,15 @@ let _ =
                            state,
                          )
                        )
-                    |>
-                    expect == [|
-                                {"name": "image_0", "src": "object_url0"}
-                                |> Obj.magic,
-                                {"name": "image_0", "src": "object_url0"}
-                                |> Obj.magic,
-                                {"name": "image_0", "src": "object_url0"}
-                                |> Obj.magic,
-                              |],
+                    |> expect
+                    == [|
+                         {"name": "image_0", "src": "object_url0"}
+                         |> Obj.magic,
+                         {"name": "image_0", "src": "object_url0"}
+                         |> Obj.magic,
+                         {"name": "image_0", "src": "object_url0"}
+                         |> Obj.magic,
+                       |],
                   state^,
                 )
               );
@@ -1860,7 +1829,7 @@ let _ =
                   sandbox^,
                   GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
                   ((state, _, rootGameObject)) =>
-                    (GLBTool.getURL(.))##revokeObjectURL
+                    GLBTool.getURL(.)##revokeObjectURL
                     |> getCallCount
                     |> expect == 2,
                   state^,
@@ -1883,11 +1852,11 @@ let _ =
                        state,
                      )
                    )
-                |>
-                expect == [|
-                            LightMaterialTool.getDefaultDiffuseColor(state),
-                            LightMaterialTool.getDefaultDiffuseColor(state),
-                          |],
+                |> expect
+                == [|
+                     LightMaterialTool.getDefaultDiffuseColor(state),
+                     LightMaterialTool.getDefaultDiffuseColor(state),
+                   |],
               state^,
             )
           );
@@ -1989,21 +1958,21 @@ let _ =
                          )
                        )
                     |> Obj.magic
-                    |>
-                    expect == [|
-                                (
-                                  SourceTextureType.Linear,
-                                  SourceTextureType.Linear_mipmap_linear,
-                                  SourceTextureType.Repeat,
-                                  SourceTextureType.Repeat,
-                                ),
-                                (
-                                  SourceTextureType.Linear,
-                                  SourceTextureType.Linear_mipmap_linear,
-                                  SourceTextureType.Repeat,
-                                  SourceTextureType.Repeat,
-                                ),
-                              |],
+                    |> expect
+                    == [|
+                         (
+                           SourceTextureType.Linear,
+                           SourceTextureType.Linear_mipmap_linear,
+                           SourceTextureType.Repeat,
+                           SourceTextureType.Repeat,
+                         ),
+                         (
+                           SourceTextureType.Linear,
+                           SourceTextureType.Linear_mipmap_linear,
+                           SourceTextureType.Repeat,
+                           SourceTextureType.Repeat,
+                         ),
+                       |],
                   state^,
                 )
               );
@@ -2023,19 +1992,19 @@ let _ =
                            state,
                          )
                        )
-                    |>
-                    expect == [|
-                                {
-                                  "name": "MetalBrillante_diffuse.png",
-                                  "src": "object_url0",
-                                }
-                                |> Obj.magic,
-                                {
-                                  "name": "MetalNegro_diffuse.png",
-                                  "src": "object_url1",
-                                }
-                                |> Obj.magic,
-                              |],
+                    |> expect
+                    == [|
+                         {
+                           "name": "MetalBrillante_diffuse.png",
+                           "src": "object_url0",
+                         }
+                         |> Obj.magic,
+                         {
+                           "name": "MetalNegro_diffuse.png",
+                           "src": "object_url1",
+                         }
+                         |> Obj.magic,
+                       |],
                   state^,
                 )
               );
@@ -2045,7 +2014,7 @@ let _ =
                   sandbox^,
                   GLBTool.buildGLBFilePath("SuperLowPolyStove.glb"),
                   ((state, _, rootGameObject)) =>
-                    (GLBTool.getURL(.))##revokeObjectURL
+                    GLBTool.getURL(.)##revokeObjectURL
                     |> getCallCount
                     |> expect == 2,
                   state^,
@@ -2088,11 +2057,11 @@ let _ =
                          )
                        ),
                   )
-                  |>
-                  expect == (
-                              [|"basicMaterial_0"|],
-                              [|"lightMaterial_1", "lightMaterial_0"|],
-                            ),
+                  |> expect
+                  == (
+                       [|"basicMaterial_0"|],
+                       [|"lightMaterial_1", "lightMaterial_0"|],
+                     ),
               (),
             )
           )
@@ -2252,6 +2221,108 @@ let _ =
         )
       )
     );
+
+    describe("test scripts", () => {
+      describe("test add script components", () =>
+        testPromise("test", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfScript(),
+            ~state,
+            ~testFunc=
+              ((state, _, rootGameObject)) =>
+                _getAllGameObjects(rootGameObject, state)
+                |> Js.Array.map(gameObject =>
+                     GameObjectAPI.hasGameObjectScriptComponent(
+                       gameObject,
+                       state,
+                     )
+                   )
+                |> expect == [|true|],
+            (),
+          )
+        )
+      );
+
+      describe("test event function", () => {
+        testPromise("test exec init event function", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfScript(
+                ~eventFunctionDataMap=
+                  AssetScriptTool.buildEventFunctionDataMap(
+                    ~initFunc=Some(AssetScriptTool.buildEventFunc()),
+                    (),
+                  ),
+                ~attributeMap=AssetScriptTool.buildAttributeMap(),
+                (),
+              ),
+            ~state,
+            ~testFunc=
+              ((state, _, rootGameObject)) => {
+                let state =
+                  ScriptTool.ExecEventFunction.execAllInitEventFunction(
+                    state,
+                  );
+
+                AssembleWDBSystemTool.getAllScripts(rootGameObject, state)
+                |> Js.Array.map(script =>
+                     ScriptTool.unsafeGetScriptAttributeIntFieldValue(
+                       script,
+                       AssetScriptTool.getScriptAttributeName(),
+                       AssetScriptTool.getScriptAttributeFieldName(),
+                       state,
+                     )
+                   )
+                |> expect
+                == [|
+                     AssetScriptTool.getAttributeFieldAValueAfterExecEventeFunc(),
+                   |];
+              },
+            (),
+          )
+        );
+        testPromise("test exec update event function", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfScript(
+                ~eventFunctionDataMap=
+                  AssetScriptTool.buildEventFunctionDataMap(
+                    ~updateFunc=Some(AssetScriptTool.buildEventFunc2()),
+                    (),
+                  ),
+                ~attributeMap=AssetScriptTool.buildAttributeMap(),
+                (),
+              ),
+            ~state,
+            ~testFunc=
+              ((state, _, rootGameObject)) => {
+                let state =
+                  ScriptTool.ExecEventFunction.execAllUpdateEventFunction(
+                    state,
+                  );
+
+                AssembleWDBSystemTool.getAllScripts(rootGameObject, state)
+                |> Js.Array.map(script =>
+                     ScriptTool.unsafeGetScriptAttributeIntFieldValue(
+                       script,
+                       AssetScriptTool.getScriptAttributeName(),
+                       AssetScriptTool.getScriptAttributeFieldName(),
+                       state,
+                     )
+                   )
+                |> expect
+                == [|
+                     AssetScriptTool.getAttributeFieldAValueAfterExecEventeFunc2(),
+                   |];
+              },
+            (),
+          )
+        );
+      });
+    });
 
     describe("test imageUint8ArrayDataMap", () => {
       testPromise(

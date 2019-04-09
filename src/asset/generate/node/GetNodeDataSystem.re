@@ -20,14 +20,16 @@ let _setChildren =
                 ) {
                 | None => None
                 | Some(children) =>
-                  children
-                  |> Js.Array.map(childGameObject =>
-                       gameObjectNodeIndexMap
-                       |> WonderCommonlib.MutableSparseMapService.unsafeGet(
-                            childGameObject,
-                          )
-                     )
-                  |. Some
+                  (
+                    children
+                    |> Js.Array.map(childGameObject =>
+                         gameObjectNodeIndexMap
+                         |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                              childGameObject,
+                            )
+                       )
+                  )
+                  ->Some
                 },
             }),
        [||],
@@ -111,6 +113,7 @@ let rec _getNodeAndItsComponentsData =
               cameraProjectionIndex,
               arcballCameraControllerIndex,
               lightIndex,
+              scriptIndex,
             ),
             (
               geometryDataMap,
@@ -128,6 +131,7 @@ let rec _getNodeAndItsComponentsData =
               cameraProjectionDataMap,
               arcballCameraControllerDataMap,
               lightDataMap,
+              scriptDataMap,
             ),
             (transformArr, nodeDataArr),
           ),
@@ -148,6 +152,7 @@ let rec _getNodeAndItsComponentsData =
              cameraProjectionIndex,
              arcballCameraControllerIndex,
              lightIndex,
+             scriptIndex,
            ),
            (
              geometryDataMap,
@@ -165,6 +170,7 @@ let rec _getNodeAndItsComponentsData =
              cameraProjectionDataMap,
              arcballCameraControllerDataMap,
              lightDataMap,
+             scriptDataMap,
            ),
            nodeDataArr,
          ),
@@ -204,6 +210,7 @@ let rec _getNodeAndItsComponentsData =
              cameraProjectionIndex,
              arcballCameraControllerIndex,
              lightIndex,
+             scriptIndex,
            ),
            (
              newMeshIndex,
@@ -214,6 +221,7 @@ let rec _getNodeAndItsComponentsData =
              newCameraProjectionIndex,
              newArcbbllCameraControllerIndex,
              newLightIndex,
+             newScriptIndex,
            ),
            (geometryDataMap, basicMaterialDataMap, lightMaterialDataMap),
            (
@@ -225,6 +233,7 @@ let rec _getNodeAndItsComponentsData =
              cameraProjectionDataMap,
              arcballCameraControllerDataMap,
              lightDataMap,
+             scriptDataMap,
            ),
          ) =
            GetNodeComponentDataSystem.getAllComponentData(
@@ -240,6 +249,7 @@ let rec _getNodeAndItsComponentsData =
                  cameraProjectionIndex,
                  arcballCameraControllerIndex,
                  lightIndex,
+                 scriptIndex,
                ),
                (geometryDataMap, basicMaterialDataMap, lightMaterialDataMap),
                (
@@ -251,6 +261,7 @@ let rec _getNodeAndItsComponentsData =
                  cameraProjectionDataMap,
                  arcballCameraControllerDataMap,
                  lightDataMap,
+                 scriptDataMap,
                ),
              ),
              getPointsDataFuncTuple,
@@ -269,6 +280,7 @@ let rec _getNodeAndItsComponentsData =
                newCameraProjectionIndex,
                newArcbbllCameraControllerIndex,
                newLightIndex,
+               newScriptIndex,
              ),
              (
                geometryDataMap,
@@ -286,6 +298,7 @@ let rec _getNodeAndItsComponentsData =
                cameraProjectionDataMap,
                arcballCameraControllerDataMap,
                lightDataMap,
+               scriptDataMap,
              ),
              (
                childrenTransformArr,
@@ -310,6 +323,7 @@ let rec _getNodeAndItsComponentsData =
                    basicMaterialIndex,
                    lightMaterialIndex,
                    lightIndex,
+                   scriptIndex,
                  ),
                  nodeDataArr,
                ),
@@ -330,6 +344,7 @@ let rec _getNodeAndItsComponentsData =
            cameraProjectionIndex,
            arcballCameraControllerIndex,
            lightIndex,
+           scriptIndex,
          ),
          (
            geometryDataMap,
@@ -347,6 +362,7 @@ let rec _getNodeAndItsComponentsData =
            cameraProjectionDataMap,
            arcballCameraControllerDataMap,
            lightDataMap,
+           scriptDataMap,
          ),
          nodeDataArr,
        ),
@@ -355,17 +371,18 @@ let rec _getNodeAndItsComponentsData =
 let getAllNodeData = (rootGameObject, getPointsDataFuncTuple, state) => {
   let (
     state,
-    (
-      nodeIndex,
-      meshIndex,
-      meshRendererIndex,
-      basictMaterialIndex,
-      lightMaterialIndex,
-      basicCameraViewIndex,
-      cameraProjectionIndex,
-      arcballCameraControllerIndex,
-      lightIndex,
-    ),
+    /* (
+         nodeIndex,
+         meshIndex,
+         meshRendererIndex,
+         basictMaterialIndex,
+         lightMaterialIndex,
+         basicCameraViewIndex,
+         cameraProjectionIndex,
+         arcballCameraControllerIndex,
+         lightIndex,
+       ), */
+    _,
     (
       geometryDataMap,
       basicMaterialDataMap,
@@ -382,13 +399,14 @@ let getAllNodeData = (rootGameObject, getPointsDataFuncTuple, state) => {
       cameraProjectionDataMap,
       arcballCameraControllerDataMap,
       lightDataMap,
+      scriptDataMap,
     ),
     nodeDataArr,
   ) =
     _getNodeAndItsComponentsData(
       state,
       (
-        (0, 0, 0, 0, 0, 0, 0, 0, 0),
+        (0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
         (
           WonderCommonlib.MutableSparseMapService.createEmpty(),
           WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -397,6 +415,7 @@ let getAllNodeData = (rootGameObject, getPointsDataFuncTuple, state) => {
           WonderCommonlib.MutableSparseMapService.createEmpty(),
         ),
         (
+          WonderCommonlib.MutableSparseMapService.createEmpty(),
           WonderCommonlib.MutableSparseMapService.createEmpty(),
           WonderCommonlib.MutableSparseMapService.createEmpty(),
           WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -419,39 +438,6 @@ let getAllNodeData = (rootGameObject, getPointsDataFuncTuple, state) => {
       getPointsDataFuncTuple,
     );
 
-  (
-    state,
-    (
-      nodeIndex,
-      meshIndex,
-      meshRendererIndex,
-      basictMaterialIndex,
-      lightMaterialIndex,
-      basicCameraViewIndex,
-      cameraProjectionIndex,
-      arcballCameraControllerIndex,
-      lightIndex,
-    ),
-    (
-      geometryDataMap,
-      basicMaterialDataMap,
-      lightMaterialDataMap,
-      gameObjectChildrenMap,
-      gameObjectNodeIndexMap,
-    ),
-    (
-      meshPointAndNameDataMap,
-      meshRendererDataMap,
-      resultBasicMaterialDataMap,
-      resultLightMaterialDataMap,
-      basicCameraViewDataMap,
-      cameraProjectionDataMap,
-      arcballCameraControllerDataMap,
-      lightDataMap,
-    ),
-    nodeDataArr,
-  );
-
   let nodeDataArr =
     _setChildren(gameObjectChildrenMap, gameObjectNodeIndexMap, nodeDataArr);
 
@@ -466,6 +452,7 @@ let getAllNodeData = (rootGameObject, getPointsDataFuncTuple, state) => {
       cameraProjectionDataMap,
       arcballCameraControllerDataMap,
       lightDataMap,
+      scriptDataMap,
     ),
     nodeDataArr,
   );

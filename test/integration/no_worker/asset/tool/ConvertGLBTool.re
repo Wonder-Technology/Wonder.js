@@ -41,8 +41,7 @@ let testGLTFResultByGLTF =
 let getDefaultDiffuseColor = () => [|1., 1., 1.|];
 
 let buildComponentIndexData =
-    (gameObjectIndices, componentIndices)
-    : WDType.componentGameObjectIndexData => {
+    (gameObjectIndices, componentIndices): WDType.componentGameObjectIndexData => {
   gameObjectIndices,
   componentIndices,
 };
@@ -107,6 +106,8 @@ let buildGLTFJson =
       ~meshRenderers={|[]|},
       ~basicMaterials={|[]|},
       ~arcballCameraControllers={|
+        []|},
+      ~scripts={|
         []|},
       ~nodes={| [
         {
@@ -302,7 +303,8 @@ let buildGLTFJson =
         "basicCameraViews": $basicCameraViews,
         "meshRenderers": $meshRenderers,
         "basicMaterials": $basicMaterials,
-        "arcballCameraControllers": $arcballCameraControllers
+        "arcballCameraControllers": $arcballCameraControllers,
+        "scripts": $scripts
     }
 }
         |j};
@@ -1038,6 +1040,48 @@ let buildGLTFJsonOfArcballCameraController = (~isBindEvent=true, ()) => {
             "rotateSpeed":0.3,
             "wheelSpeed":0.9,
             "isBindEvent": $isBindEvent
+        }
+    ]
+        |j},
+    (),
+  );
+};
+
+let buildGLTFJsonOfScript =
+    (
+      ~eventFunctionDataMap=AssetScriptTool.buildEventFunctionDataMap(),
+      ~attributeMap=AssetScriptTool.buildAttributeMap(),
+      (),
+    ) => {
+  let eventFunctionDataMapStr =
+    ConvertScriptDataUtils._convertEventFunctionDataMapToStr(
+      eventFunctionDataMap,
+    );
+
+  /* WonderLog.Log.print(eventFunctionDataMap) |> ignore; */
+
+  let attributeMapStr =
+    ConvertScriptDataUtils._convertAttributeMapToStr(attributeMap);
+
+  /* WonderLog.Log.print(attributeMap) |> ignore; */
+
+  buildGLTFJson(
+    ~nodes=
+      {| [
+        {
+            "mesh": 0,
+            "extras": {
+                "script": 0
+            }
+        }
+    ]|},
+    ~scripts=
+      {j|
+[
+        {
+
+"eventFunctionDataMap": $eventFunctionDataMapStr,
+"attributeMap": $attributeMapStr
         }
     ]
         |j},

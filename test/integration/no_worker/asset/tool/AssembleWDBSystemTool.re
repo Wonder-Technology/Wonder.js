@@ -222,6 +222,31 @@ let getAllGeometryData = (rootGameObject, state) =>
        )
      );
 
+let getAllScripts = (rootGameObject, state) =>
+  getAllGameObjects(rootGameObject, state)
+  |> Js.Array.filter(gameObject =>
+       GameObjectAPI.hasGameObjectScriptComponent(gameObject, state)
+     )
+  |> Js.Array.map(gameObject =>
+       GameObjectAPI.unsafeGetGameObjectScriptComponent(gameObject, state)
+     );
+
+
+/* let getAllScriptData = (rootGameObject, state) =>
+  getAllScripts(rootGameObject, state)
+  |> Js.Array.map(light =>
+       (
+         PointLightAPI.getPointLightColor(light, state),
+         PointLightAPI.getPointLightIntensity(light, state),
+         PointLightAPI.getPointLightConstant(light, state),
+         PointLightAPI.getPointLightLinear(light, state),
+         PointLightAPI.getPointLightQuadratic(light, state),
+         PointLightAPI.getPointLightRange(light, state),
+       )
+     ); */
+
+
+
 let batchCreate = BatchCreateSystem.batchCreate;
 
 let getAllBasicMaterials = (rootGameObject, state) =>

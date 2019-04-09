@@ -137,6 +137,21 @@ let setScriptAttributeIntFieldValue =
     state,
   );
 
+module ExecEventFunction = {
+  let execAllInitEventFunction = state => InitScriptJobUtils.exec(state);
+
+  let execAllUpdateEventFunction = state => UpdateScriptJobUtils.exec(state);
+
+  let execScriptArrDisposeEventFunction = (scriptArray, state) =>
+    OperateScriptEventFunctionDataMainService.execAllEventFunction(
+      OperateScriptEventFunctionDataMainService.getScriptAllDisposeEventFunctionData(
+        scriptArray,
+        state,
+      ),
+      state,
+    );
+};
+
 module API = {
   let unsafeGetScriptAttributeIntFieldValue =
       (api, fieldName, scriptAttribute) => {
@@ -269,6 +284,8 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
       state;
     };
 
+  let getScriptAttributeFieldAName = () => "a";
+
   let buildInitEventFunc = () =>
     (. script, api, state) => {
       let scriptAttributeName = getScriptAttributeName();
@@ -278,14 +295,26 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
       let scriptAttribute =
         unsafeGetScriptAttribute(. script, scriptAttributeName, state);
 
+      let unsafeGetScriptAttributeFieldValue =
+        api##unsafeGetScriptAttributeFieldValue;
+      let setScriptAttributeFieldValue = api##setScriptAttributeFieldValue;
+
       let state =
-        API.setScriptAttributeIntFieldValue(
-          api,
+        setScriptAttributeFieldValue(.
           script,
-          scriptAttributeName,
-          "a",
-          API.unsafeGetScriptAttributeIntFieldValue(api, "a", scriptAttribute)
-          + 1,
+          (
+            scriptAttributeName,
+            getScriptAttributeFieldAName(),
+            (
+              unsafeGetScriptAttributeFieldValue(.
+                getScriptAttributeFieldAName(),
+                scriptAttribute,
+              )
+              |> ScriptAttributeType.scriptAttributeValueToInt
+            )
+            + 1
+            |> ScriptAttributeType.intToScriptAttributeValue,
+          ),
           state,
         );
 
@@ -387,7 +416,7 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
     unsafeGetScriptAttributeIntFieldValue(
       script,
       getScriptAttributeName(),
-      "a",
+      getScriptAttributeFieldAName(),
       state,
     );
 
@@ -418,7 +447,7 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
     setScriptAttributeIntFieldValue(
       script,
       getScriptAttributeName(),
-      "a",
+      getScriptAttributeFieldAName(),
       value,
       state,
     );

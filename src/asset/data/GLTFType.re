@@ -18,7 +18,17 @@ type nodeIndex = int;
 
 type meshIndex = int;
 
+type meshRendererIndex = int;
+
+type basicCameraViewIndex = int;
+
+type basicMaterialIndex = int;
+
+type lightMaterialIndex = int;
+
 type cameraControllerIndex = int;
+
+type scriptIndex = int;
 
 type sceneKHRLightsExtension = {light: int};
 
@@ -178,11 +188,12 @@ type basicMaterial = {
 };
 
 type nodeExtras = {
-  basicCameraView: option(int),
-  meshRenderer: option(int),
-  basicMaterial: option(int),
-  lightMaterial: option(int),
+  basicCameraView: option(basicCameraViewIndex),
+  meshRenderer: option(meshRendererIndex),
+  basicMaterial: option(basicMaterialIndex),
+  lightMaterial: option(lightMaterialIndex),
   cameraController: option(cameraControllerIndex),
+  script: option(scriptIndex),
   isRoot: option(bool),
 };
 
@@ -242,12 +253,15 @@ type meshRenderer = {drawMode: Js.Typed_array.Uint8Array.elt};
 
 type basicCameraView = {isActive: bool};
 
+type script = CommonAssetType.script;
+
 type gltfExtras = {
   basicCameraViews: option(array(basicCameraView)),
   arcballCameraControllers:
     option(array(SceneGraphType.arcballCameraController)),
   basicMaterials: option(array(basicMaterial)),
   meshRenderers: option(array(meshRenderer)),
+  scripts: option(array(script)),
 };
 
 type gltf = {
@@ -269,8 +283,8 @@ type gltf = {
   extras: option(gltfExtras),
 };
 
-external arrayFloat3ToTuple : array(float) => (float, float, float) =
+external arrayFloat3ToTuple: array(float) => (float, float, float) =
   "%identity";
 
-external arrayFloat4ToTuple : array(float) => (float, float, float, float) =
+external arrayFloat4ToTuple: array(float) => (float, float, float, float) =
   "%identity";

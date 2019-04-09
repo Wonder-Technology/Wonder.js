@@ -125,11 +125,11 @@ let _ =
                      state,
                    )
                  )
-              |>
-              expect == [|
-                          {"name": "CesiumLogoFlat.png", "src": "object_url1"}
-                          |> Obj.magic,
-                        |],
+              |> expect
+              == [|
+                   {"name": "CesiumLogoFlat.png", "src": "object_url1"}
+                   |> Obj.magic,
+                 |],
             state,
           );
         })
@@ -222,17 +222,17 @@ let _ =
                 );
 
               (allGeometryData |> Js.Array.length, allGeometryData[1])
-              |>
-              expect == (
-                          2,
-                          (
-                            "Stove_1",
-                            dataMap
-                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                 "Stove_1",
-                               ),
-                          ),
-                        );
+              |> expect
+              == (
+                   2,
+                   (
+                     "Stove_1",
+                     dataMap
+                     |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                          "Stove_1",
+                        ),
+                   ),
+                 );
             },
             state,
           );
@@ -249,15 +249,15 @@ let _ =
           GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
           ((_, imageResultUint8ArrayMap, _)) =>
             imageResultUint8ArrayMap
-            |>
-            expect == [|
-                        BufferUtils.convertBase64ToBinary(
-                          GenerateSceneGraphSystemTool.buildBase64Str1(),
-                        ),
-                        BufferUtils.convertBase64ToBinary(
-                          GenerateSceneGraphSystemTool.buildBase64Str1(),
-                        ),
-                      |],
+            |> expect
+            == [|
+                 BufferUtils.convertBase64ToBinary(
+                   GenerateSceneGraphSystemTool.buildBase64Str1(),
+                 ),
+                 BufferUtils.convertBase64ToBinary(
+                   GenerateSceneGraphSystemTool.buildBase64Str1(),
+                 ),
+               |],
           state,
         );
       });
@@ -307,44 +307,44 @@ let _ =
               let dataMap = GLTFTool.getTruckGeometryData();
 
               AssembleWDBSystemTool.getAllGeometryData(rootGameObject, state)
-              |>
-              expect == [|
-                          (
-                            "Cesium_Milk_Truck_0",
-                            dataMap
-                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                 "Cesium_Milk_Truck_0",
-                               ),
-                          ),
-                          (
-                            "Cesium_Milk_Truck_1",
-                            dataMap
-                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                 "Cesium_Milk_Truck_1",
-                               ),
-                          ),
-                          (
-                            "Cesium_Milk_Truck_2",
-                            dataMap
-                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                 "Cesium_Milk_Truck_2",
-                               ),
-                          ),
-                          (
-                            "Wheels",
-                            dataMap
-                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                 "Wheels",
-                               ),
-                          ),
-                          (
-                            "Wheels",
-                            dataMap
-                            |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                 "Wheels",
-                               ),
-                          ),
-                        |];
+              |> expect
+              == [|
+                   (
+                     "Cesium_Milk_Truck_0",
+                     dataMap
+                     |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                          "Cesium_Milk_Truck_0",
+                        ),
+                   ),
+                   (
+                     "Cesium_Milk_Truck_1",
+                     dataMap
+                     |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                          "Cesium_Milk_Truck_1",
+                        ),
+                   ),
+                   (
+                     "Cesium_Milk_Truck_2",
+                     dataMap
+                     |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                          "Cesium_Milk_Truck_2",
+                        ),
+                   ),
+                   (
+                     "Wheels",
+                     dataMap
+                     |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                          "Wheels",
+                        ),
+                   ),
+                   (
+                     "Wheels",
+                     dataMap
+                     |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                          "Wheels",
+                        ),
+                   ),
+                 |];
             },
             state,
           );
@@ -463,27 +463,18 @@ let _ =
                      state,
                    )
                  )
-              |>
-              expect == [|
-                          {"name": "image_3", "src": "object_url2"}
-                          |> Obj.magic,
-                          {"name": "image_3", "src": "object_url2"}
-                          |> Obj.magic,
-                          {"name": "image_3", "src": "object_url2"}
-                          |> Obj.magic,
-                          {"name": "image_3", "src": "object_url2"}
-                          |> Obj.magic,
-                          {"name": "image_3", "src": "object_url2"}
-                          |> Obj.magic,
-                          {"name": "image_3", "src": "object_url2"}
-                          |> Obj.magic,
-                          {"name": "image_3", "src": "object_url2"}
-                          |> Obj.magic,
-                          {"name": "image_3", "src": "object_url2"}
-                          |> Obj.magic,
-                          {"name": "image_2", "src": "object_url3"}
-                          |> Obj.magic,
-                        |],
+              |> expect
+              == [|
+                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
+                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
+                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
+                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
+                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
+                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
+                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
+                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
+                   {"name": "image_2", "src": "object_url3"} |> Obj.magic,
+                 |],
             state,
           );
         })
@@ -649,6 +640,47 @@ let _ =
             {|
               "cameras":[{"type":"perspective","perspective":{"aspectRatio":2,"zfar":1000,"znear":2,"yfov":0.5}},{"type":"perspective","perspective":{"zfar":100000,"znear":1,"yfov":0.5999999999999999}}]
             |},
+          ~state,
+          (),
+        );
+      });
+    });
+
+    describe("test script", () => {
+      testPromise("test nodes", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfScript(),
+          ~targetJsonStr=
+            {|
+  "nodes": [
+    {
+      "name": "gameObject_0",
+      "mesh": 0,
+      "extras": {
+        "isRoot": true,
+        "lightMaterial": 0,
+        "script": 0,
+        "meshRenderer": 0
+      }
+    }
+  ]
+            |},
+          ~state,
+          (),
+        );
+      });
+
+      testPromise("test extras->scripts", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfScript(),
+          ~targetJsonStr=
+            "\"scripts\":[{\"eventFunctionDataMap\":{\"eventFunctionData\":[\"function(script,api,state){\\nvarscriptAttributeName=\\\"scriptAttribute\\\";\\nvarunsafeGetScriptAttribute=api.unsafeGetScriptAttribute;\\nvarscriptAttribute=unsafeGetScriptAttribute(script,scriptAttributeName,state);\\nvarunsafeGetScriptAttributeFieldValue=api.unsafeGetScriptAttributeFieldValue;\\nvarsetScriptAttributeFieldValue=api.setScriptAttributeFieldValue;\\nreturnsetScriptAttributeFieldValue(script,\\n/*tuple*/\\n[scriptAttributeName,\\\"a\\\",unsafeGetScriptAttributeFieldValue(\\\"a\\\",scriptAttribute)+1|0],state);\\n}\",\"function(script,api,state){\\nvarscriptAttributeName=\\\"scriptAttribute\\\";\\nvarunsafeGetScriptAttribute=api.unsafeGetScriptAttribute;\\nvarscriptAttribute=unsafeGetScriptAttribute(script,scriptAttributeName,state);\\nvarunsafeGetScriptAttributeFieldValue=api.unsafeGetScriptAttributeFieldValue;\\nvarsetScriptAttributeFieldValue=api.setScriptAttributeFieldValue;\\nreturnsetScriptAttributeFieldValue(script,\\n/*tuple*/\\n[scriptAttributeName,\\\"a\\\",unsafeGetScriptAttributeFieldValue(\\\"a\\\",scriptAttribute)+1|0],state);\\n}\",null]},\"attributeMap\":{\"scriptAttribute\":{\"a\":[0,1,1],\"b\":[1,0.1,0.1]}}}]",
           ~state,
           (),
         );

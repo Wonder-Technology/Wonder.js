@@ -36,6 +36,7 @@ let _addNodeExtraData =
         basicMaterialIndex,
         lightMaterialIndex,
         arcballCameraControllerIndex,
+        scriptIndex,
       ),
     ) =>
   switch (
@@ -45,8 +46,9 @@ let _addNodeExtraData =
     basicMaterialIndex,
     lightMaterialIndex,
     arcballCameraControllerIndex,
+    scriptIndex,
   ) {
-  | (None, None, None, None, None, None) => None
+  | (None, None, None, None, None, None, None) => None
   | (
       isRoot,
       basicCameraViewIndex,
@@ -54,6 +56,7 @@ let _addNodeExtraData =
       basicMaterialIndex,
       lightMaterialIndex,
       arcballCameraControllerIndex,
+      scriptIndex,
     ) =>
     Some(
       {
@@ -63,6 +66,7 @@ let _addNodeExtraData =
         basicMaterial: basicMaterialIndex,
         lightMaterial: lightMaterialIndex,
         cameraController: arcballCameraControllerIndex,
+        script: scriptIndex,
       }: nodeExtras,
     )
   };
@@ -95,6 +99,7 @@ let addNodeAndItsComponentData =
         basicMaterialIndex,
         lightMaterialIndex,
         lightIndex,
+        scriptIndex,
       ),
       nodeDataArr,
     ) =>
@@ -134,6 +139,7 @@ let addNodeAndItsComponentData =
                basicMaterialIndex,
                lightMaterialIndex,
                arcballCameraControllerIndex,
+               scriptIndex,
              ),
            ),
          extensions: _addNodeExtensionData(lightIndex),

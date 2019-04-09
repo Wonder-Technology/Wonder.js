@@ -23,6 +23,7 @@ let generateGLBData =
       cameraProjectionDataMap,
       arcballCameraControllerDataMap,
       lightDataMap,
+      scriptDataMap,
     ),
     nodeDataArr,
   ) =
@@ -87,6 +88,8 @@ let generateGLBData =
 
   let lightDataArr = BuildLightDataSystem.build(lightDataMap, state);
 
+  let scriptDataArr = BuildScriptDataSystem.build(scriptDataMap, state);
+
   let extensionsUsedArr =
     BuildExtensionDataSystem.buildExtensionsUsed(lightDataArr);
 
@@ -108,6 +111,7 @@ let generateGLBData =
         cameraProjectionDataArr,
         arcballCameraControllerDataArr,
         lightDataArr,
+        scriptDataArr,
         BuildIMGUIDataSystem.build(state),
         extensionsUsedArr,
       ),

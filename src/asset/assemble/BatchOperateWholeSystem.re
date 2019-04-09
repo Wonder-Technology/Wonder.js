@@ -253,6 +253,7 @@ let batchOperate =
           lightMaterialArr,
           directionLightArr,
           pointLightArr,
+          scriptArr,
         ),
         basicSourceTextureArr,
       ),
@@ -290,6 +291,8 @@ let batchOperate =
       gameObjectDirectionLights,
       pointLightGameObjects,
       gameObjectPointLights,
+      scriptGameObjects,
+      gameObjectScripts,
     ),
     state,
   ) =
@@ -306,6 +309,7 @@ let batchOperate =
         lightMaterialArr,
         directionLightArr,
         pointLightArr,
+        scriptArr,
       ),
       indices,
       wd,
@@ -359,6 +363,7 @@ let batchOperate =
     |> BatchOperateSystem.batchSetMeshRendererData(wd, meshRendererArr)
     |> BatchOperateSystem.batchSetBasicMaterialData(wd, basicMaterialArr)
     |> BatchOperateSystem.batchSetLightMaterialData(wd, lightMaterialArr)
+    |> BatchOperateSystem.batchSetScriptData(wd, scriptArr)
     |> BatchOperateLightSystem.batchSetDirectionLightData(
          wd,
          directionLightArr,
@@ -404,6 +409,10 @@ let batchOperate =
     |> BatchAddGameObjectComponentMainService.batchAddPointLightComponentForCreate(
          pointLightGameObjects,
          gameObjectPointLights,
+       )
+    |> BatchAddGameObjectComponentMainService.batchAddScriptComponentForCreate(
+         scriptGameObjects,
+         gameObjectScripts,
        )
     |> BatchSetWholeTextureAllDataSystem.batchSet(basicSourceTextureData),
     imageUint8ArrayDataMap,

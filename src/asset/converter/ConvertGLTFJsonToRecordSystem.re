@@ -210,6 +210,11 @@ let _convertExtensions = json =>
        ),
      );
 
+let _getScriptMap = (key, json) => {
+  let dict: Js.Dict.t(Js.Json.t) = Obj.magic(json: Js.Json.t);
+  Js.Dict.get(dict, key) |> Obj.magic;
+};
+
 let _convertExtras = json =>
   json
   |> optional(
@@ -282,6 +287,29 @@ let _convertExtras = json =>
                     ),
                   ),
                 ),
+           scripts:
+             json
+             |> optional(
+                  field(
+                    "scripts",
+                    array(json =>
+                      (
+                        /* WonderLog.Log.print(json) |> ignore; */
+                        {
+                          eventFunctionDataMap:
+                            _getScriptMap("eventFunctionDataMap", json),
+                          /* json
+                              |> field("eventFunctionDataMap",dict |> Obj.magic)
+                             |> WonderLog.Log.print  */
+                          attributeMap:
+                            /* json |> field("attributeMap", dict |> Obj.magic), */
+                            _getScriptMap("attributeMap", json),
+                        }: script
+                      )
+                    ),
+                  ),
+                ),
+           /* |> WonderLog.Log.print  */
          }
        ),
      );
@@ -537,6 +565,9 @@ let _convertNodes = json =>
                         |> optimizedOptional(
                              optimizedField("cameraController", int),
                            ),
+                      script:
+                        json
+                        |> optimizedOptional(optimizedField("script", int)),
                       isRoot:
                         json
                         |> optimizedOptional(optimizedField("isRoot", bool)),
@@ -566,7 +597,7 @@ let _convertNodes = json =>
        ),
      );
 
-let convert = json : GLTFType.gltf => {
+let convert = json => {
   extensionsUsed: json |> optional(field("extensionsUsed", array(string))),
   extensions: _convertExtensions(json),
   extras: _convertExtras(json),

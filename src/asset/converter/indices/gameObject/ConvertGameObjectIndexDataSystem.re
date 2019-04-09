@@ -46,7 +46,7 @@ let convertToGameObjectIndexData =
     meshRendererGameObjectIndexData:
       ConvertComponentIndexDataSystem.convertToMeshRendererGameObjectIndexData(
         nodes,
-        meshes
+        meshes,
       ),
     directionLightGameObjectIndexData:
       ConvertComponentIndexDataSystem.convertToLightGameObjectIndexData(
@@ -59,6 +59,10 @@ let convertToGameObjectIndexData =
         "point",
         nodes,
         extensions,
+      ),
+    scriptGameObjectIndexData:
+      ConvertComponentIndexDataSystem.convertToScriptGameObjectIndexData(
+        nodes,
       ),
   };
 };

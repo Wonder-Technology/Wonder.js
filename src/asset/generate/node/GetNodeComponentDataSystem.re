@@ -25,7 +25,9 @@ let _getGeometryData =
       ),
       state,
     ) =>
-  switch (geometryDataMap |> WonderCommonlib.MutableSparseMapService.get(geometry)) {
+  switch (
+    geometryDataMap |> WonderCommonlib.MutableSparseMapService.get(geometry)
+  ) {
   | Some((existedMeshIndex, pointAndNameData)) => (
       Some(existedMeshIndex),
       pointAndNameData,
@@ -39,8 +41,8 @@ let _getGeometryData =
       switch (
         IndicesGeometryMainService.unsafeGetIndicesType(geometry, state)
       ) {
-      | Short => (getIndices16Func(. geometry, state) |. Some, None)
-      | Int => (None, getIndices32Func(. geometry, state) |. Some)
+      | Short => (getIndices16Func(. geometry, state)->Some, None)
+      | Int => (None, getIndices32Func(. geometry, state)->Some)
       };
 
     let pointAndNameData =
@@ -98,7 +100,9 @@ let _getMaterialData =
   switch (materialCompoent) {
   | None => (None, None, materialIndex, materialDataMap)
   | Some(material) =>
-    switch (materialDataMap |> WonderCommonlib.MutableSparseMapService.get(material)) {
+    switch (
+      materialDataMap |> WonderCommonlib.MutableSparseMapService.get(material)
+    ) {
     | Some((existedMaterialIndex, materialData)) => (
         Some(existedMaterialIndex),
         materialData,
@@ -239,6 +243,14 @@ let _getLightData = ((gameObject, lightIndex), {gameObjectRecord} as state) =>
     (Some(lightIndex), lightData, lightIndex |> succ);
   };
 
+let _getScriptData =
+    ((gameObject, scriptIndex), {gameObjectRecord} as state) =>
+  _getComponentData(
+    (gameObject, scriptIndex),
+    GetComponentGameObjectService.getScriptComponent,
+    state,
+  );
+
 let getAllComponentData =
     (
       (
@@ -253,6 +265,7 @@ let getAllComponentData =
           cameraProjectionIndex,
           arcballCameraControllerIndex,
           lightIndex,
+          scriptIndex,
         ),
         (geometryDataMap, basicMaterialDataMap, lightMaterialDataMap),
         (
@@ -264,6 +277,7 @@ let getAllComponentData =
           cameraProjectionDataMap,
           arcballCameraControllerDataMap,
           lightDataMap,
+          scriptDataMap,
         ),
       ),
       getPointsDataFuncTuple,
@@ -411,6 +425,20 @@ let getAllComponentData =
          )
     };
 
+  let (scriptIndex, scriptData, newScriptIndex) =
+    _getScriptData((gameObject, scriptIndex), state);
+
+  let scriptDataMap =
+    switch (scriptIndex) {
+    | None => scriptDataMap
+    | Some(scriptIndex) =>
+      scriptDataMap
+      |> WonderCommonlib.MutableSparseMapService.set(
+           scriptIndex,
+           scriptData |> OptionService.unsafeGet,
+         )
+    };
+
   (
     state,
     (
@@ -422,6 +450,7 @@ let getAllComponentData =
       cameraProjectionIndex,
       arcballCameraControllerIndex,
       lightIndex,
+      scriptIndex,
     ),
     (
       newMeshIndex,
@@ -432,6 +461,7 @@ let getAllComponentData =
       newCameraProjectionIndex,
       newCameraControllerIndex,
       newLightIndex,
+      newScriptIndex,
     ),
     (geometryDataMap, basicMaterialDataMap, lightMaterialDataMap),
     (
@@ -443,6 +473,7 @@ let getAllComponentData =
       cameraProjectionDataMap,
       arcballCameraControllerDataMap,
       lightDataMap,
+      scriptDataMap,
     ),
   );
 };

@@ -318,3 +318,5 @@ let batchAddMeshRendererComponentForCreate = _batchAddMeshRendererComponent;
 let batchAddDirectionLightComponentForCreate = _batchAddDirectionLightComponent;
 
 let batchAddPointLightComponentForCreate = _batchAddPointLightComponent;
+
+let batchAddScriptComponentForCreate = _batchAddScriptComponent;

@@ -54,7 +54,7 @@ let handleCloneComponent =
     countRangeArr
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. (state, componentArr), _) => {
-           let (state, index) = CreateScriptMainService.create(state);
+           let (state, index) = CreateScriptMainService.create(. state);
 
            let state = _setData(. index, data, state);
 

@@ -21,6 +21,7 @@ let getBatchComponentGameObjectData =
         lightMaterialArr,
         directionLightArr,
         pointLightArr,
+        scriptArr,
       ),
       indices,
       wd,
@@ -72,6 +73,13 @@ let getBatchComponentGameObjectData =
     indices.gameObjectIndices.lightMaterialGameObjectIndexData.componentIndices
     |> getBatchArrByIndices(lightMaterialArr);
 
+  let scriptGameObjects =
+    indices.gameObjectIndices.scriptGameObjectIndexData.gameObjectIndices
+    |> getBatchArrByIndices(gameObjectArr);
+  let gameObjectScripts =
+    indices.gameObjectIndices.scriptGameObjectIndexData.componentIndices
+    |> getBatchArrByIndices(scriptArr);
+
   (
     (
       parentTransforms,
@@ -114,6 +122,8 @@ let getBatchComponentGameObjectData =
       |> getBatchArrByIndices(gameObjectArr),
       indices.gameObjectIndices.pointLightGameObjectIndexData.componentIndices
       |> getBatchArrByIndices(pointLightArr),
+      scriptGameObjects,
+      gameObjectScripts,
     ),
     state,
   );
@@ -443,6 +453,29 @@ let batchSetLightMaterialData = ({lightMaterials}, lightMaterialArr, state) =>
            state,
          )
          |> NameLightMaterialMainService.setName(material, name);
+       },
+       state,
+     );
+
+let batchSetScriptData = ({scripts}, scriptArr, state) =>
+  scripts
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. state, {eventFunctionDataMap, attributeMap}: script, index) => {
+         let script = scriptArr[index];
+
+         state
+         |> OperateScriptDataMainService.addEventFunctionDataMap(
+              script,
+              ConvertScriptDataUtils.convertEventFunctionDataMapJsonToRecord(
+                eventFunctionDataMap,
+              ),
+            )
+         |> OperateScriptDataMainService.addAttributeMap(
+              script,
+              ConvertScriptDataUtils.convertAttributeMapJsonToRecord(
+                attributeMap,
+              ),
+            );
        },
        state,
      );

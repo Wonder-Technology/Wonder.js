@@ -36,218 +36,218 @@ let _ =
           open GLTFType;
           let gltfRecord = _prepare();
           gltfRecord.nodes
-          |>
-          expect == [|
-                      ConvertGLBTool.buildNode(
-                        ~children=Some([|3, 2, 1, 4, 5|]),
-                        (),
-                      ),
-                      ConvertGLBTool.buildNode(
-                        ~name=Some("node1"),
-                        ~mesh=Some(1),
-                        ~matrix=
-                          Some([|
-                            1.0,
-                            0.0,
-                            0.0,
-                            0.0,
-                            0.0,
-                            1.0,
-                            0.0,
-                            0.0,
-                            0.0,
-                            0.0,
-                            1.0,
-                            0.0,
-                            10.0,
-                            30.0,
-                            50.0,
-                            1.0,
-                          |]),
-                        (),
-                      ),
-                      ConvertGLBTool.buildNode(
-                        ~name=Some("node2"),
-                        ~children=Some([|1, 6, 7|]),
-                        ~matrix=
-                          Some([|
-                            1.0,
-                            0.0,
-                            0.0,
-                            0.0,
-                            0.0,
-                            1.0,
-                            0.0,
-                            0.0,
-                            0.0,
-                            0.0,
-                            1.0,
-                            0.0,
-                            1.0,
-                            2.0,
-                            3.0,
-                            1.0,
-                          |]),
-                        (),
-                      ),
-                      ConvertGLBTool.buildNode(~children=Some([|8, 9|]), ()),
-                      ConvertGLBTool.buildNode(~mesh=Some(3), ()),
-                      ConvertGLBTool.buildNode(~mesh=Some(4), ()),
-                      ConvertGLBTool.buildNode(
-                        ~name=Some("node2_0"),
-                        ~mesh=Some(3),
-                        (),
-                      ),
-                      ConvertGLBTool.buildNode(
-                        ~name=Some("node2_1"),
-                        ~mesh=Some(4),
-                        (),
-                      ),
-                      ConvertGLBTool.buildNode(~mesh=Some(5), ()),
-                      ConvertGLBTool.buildNode(~mesh=Some(6), ()),
-                    |];
+          |> expect
+          == [|
+               ConvertGLBTool.buildNode(
+                 ~children=Some([|3, 2, 1, 4, 5|]),
+                 (),
+               ),
+               ConvertGLBTool.buildNode(
+                 ~name=Some("node1"),
+                 ~mesh=Some(1),
+                 ~matrix=
+                   Some([|
+                     1.0,
+                     0.0,
+                     0.0,
+                     0.0,
+                     0.0,
+                     1.0,
+                     0.0,
+                     0.0,
+                     0.0,
+                     0.0,
+                     1.0,
+                     0.0,
+                     10.0,
+                     30.0,
+                     50.0,
+                     1.0,
+                   |]),
+                 (),
+               ),
+               ConvertGLBTool.buildNode(
+                 ~name=Some("node2"),
+                 ~children=Some([|1, 6, 7|]),
+                 ~matrix=
+                   Some([|
+                     1.0,
+                     0.0,
+                     0.0,
+                     0.0,
+                     0.0,
+                     1.0,
+                     0.0,
+                     0.0,
+                     0.0,
+                     0.0,
+                     1.0,
+                     0.0,
+                     1.0,
+                     2.0,
+                     3.0,
+                     1.0,
+                   |]),
+                 (),
+               ),
+               ConvertGLBTool.buildNode(~children=Some([|8, 9|]), ()),
+               ConvertGLBTool.buildNode(~mesh=Some(3), ()),
+               ConvertGLBTool.buildNode(~mesh=Some(4), ()),
+               ConvertGLBTool.buildNode(
+                 ~name=Some("node2_0"),
+                 ~mesh=Some(3),
+                 (),
+               ),
+               ConvertGLBTool.buildNode(
+                 ~name=Some("node2_1"),
+                 ~mesh=Some(4),
+                 (),
+               ),
+               ConvertGLBTool.buildNode(~mesh=Some(5), ()),
+               ConvertGLBTool.buildNode(~mesh=Some(6), ()),
+             |];
         });
         test("test meshes", () => {
           open GLTFType;
           let gltfRecord = _prepare();
           gltfRecord.meshes
-          |>
-          expect == [|
-                      {
-                        name: Some("mesh0"),
-                        primitives: [|
-                          ConvertGLBTool.buildPrimitive(
-                            ~attributes={
-                              position: 2,
-                              normal: None,
-                              texCoord_0: None,
-                              texCoord_1: None,
-                            },
-                            ~indices=Some(0),
-                            ~material=Some(0),
-                            (),
-                          ),
-                          ConvertGLBTool.buildPrimitive(
-                            ~attributes={
-                              position: 6,
-                              normal: None,
-                              texCoord_0: None,
-                              texCoord_1: None,
-                            },
-                            ~indices=Some(4),
-                            ~material=Some(1),
-                            (),
-                          ),
-                        |],
-                      },
-                      {
-                        name: None,
-                        primitives: [|
-                          ConvertGLBTool.buildPrimitive(
-                            ~attributes={
-                              position: 9,
-                              normal: None,
-                              texCoord_0: None,
-                              texCoord_1: None,
-                            },
-                            ~indices=Some(7),
-                            ~material=Some(2),
-                            (),
-                          ),
-                        |],
-                      },
-                      {
-                        name: None,
-                        primitives: [|
-                          ConvertGLBTool.buildPrimitive(
-                            ~attributes={
-                              position: 10,
-                              normal: None,
-                              texCoord_0: None,
-                              texCoord_1: None,
-                            },
-                            ~indices=Some(8),
-                            ~material=Some(2),
-                            (),
-                          ),
-                          ConvertGLBTool.buildPrimitive(
-                            ~attributes={
-                              position: 6,
-                              normal: None,
-                              texCoord_0: None,
-                              texCoord_1: None,
-                            },
-                            ~indices=Some(4),
-                            ~material=Some(1),
-                            (),
-                          ),
-                        |],
-                      },
-                      {
-                        name: Some("mesh0_0"),
-                        primitives: [|
-                          ConvertGLBTool.buildPrimitive(
-                            ~attributes={
-                              position: 2,
-                              normal: None,
-                              texCoord_0: None,
-                              texCoord_1: None,
-                            },
-                            ~indices=Some(0),
-                            ~material=Some(0),
-                            (),
-                          ),
-                        |],
-                      },
-                      {
-                        name: Some("mesh0_1"),
-                        primitives: [|
-                          ConvertGLBTool.buildPrimitive(
-                            ~attributes={
-                              position: 6,
-                              normal: None,
-                              texCoord_0: None,
-                              texCoord_1: None,
-                            },
-                            ~indices=Some(4),
-                            ~material=Some(1),
-                            (),
-                          ),
-                        |],
-                      },
-                      {
-                        name: None,
-                        primitives: [|
-                          ConvertGLBTool.buildPrimitive(
-                            ~attributes={
-                              position: 10,
-                              normal: None,
-                              texCoord_0: None,
-                              texCoord_1: None,
-                            },
-                            ~indices=Some(8),
-                            ~material=Some(2),
-                            (),
-                          ),
-                        |],
-                      },
-                      {
-                        name: None,
-                        primitives: [|
-                          ConvertGLBTool.buildPrimitive(
-                            ~attributes={
-                              position: 6,
-                              normal: None,
-                              texCoord_0: None,
-                              texCoord_1: None,
-                            },
-                            ~indices=Some(4),
-                            ~material=Some(1),
-                            (),
-                          ),
-                        |],
-                      },
-                    |];
+          |> expect
+          == [|
+               {
+                 name: Some("mesh0"),
+                 primitives: [|
+                   ConvertGLBTool.buildPrimitive(
+                     ~attributes={
+                       position: 2,
+                       normal: None,
+                       texCoord_0: None,
+                       texCoord_1: None,
+                     },
+                     ~indices=Some(0),
+                     ~material=Some(0),
+                     (),
+                   ),
+                   ConvertGLBTool.buildPrimitive(
+                     ~attributes={
+                       position: 6,
+                       normal: None,
+                       texCoord_0: None,
+                       texCoord_1: None,
+                     },
+                     ~indices=Some(4),
+                     ~material=Some(1),
+                     (),
+                   ),
+                 |],
+               },
+               {
+                 name: None,
+                 primitives: [|
+                   ConvertGLBTool.buildPrimitive(
+                     ~attributes={
+                       position: 9,
+                       normal: None,
+                       texCoord_0: None,
+                       texCoord_1: None,
+                     },
+                     ~indices=Some(7),
+                     ~material=Some(2),
+                     (),
+                   ),
+                 |],
+               },
+               {
+                 name: None,
+                 primitives: [|
+                   ConvertGLBTool.buildPrimitive(
+                     ~attributes={
+                       position: 10,
+                       normal: None,
+                       texCoord_0: None,
+                       texCoord_1: None,
+                     },
+                     ~indices=Some(8),
+                     ~material=Some(2),
+                     (),
+                   ),
+                   ConvertGLBTool.buildPrimitive(
+                     ~attributes={
+                       position: 6,
+                       normal: None,
+                       texCoord_0: None,
+                       texCoord_1: None,
+                     },
+                     ~indices=Some(4),
+                     ~material=Some(1),
+                     (),
+                   ),
+                 |],
+               },
+               {
+                 name: Some("mesh0_0"),
+                 primitives: [|
+                   ConvertGLBTool.buildPrimitive(
+                     ~attributes={
+                       position: 2,
+                       normal: None,
+                       texCoord_0: None,
+                       texCoord_1: None,
+                     },
+                     ~indices=Some(0),
+                     ~material=Some(0),
+                     (),
+                   ),
+                 |],
+               },
+               {
+                 name: Some("mesh0_1"),
+                 primitives: [|
+                   ConvertGLBTool.buildPrimitive(
+                     ~attributes={
+                       position: 6,
+                       normal: None,
+                       texCoord_0: None,
+                       texCoord_1: None,
+                     },
+                     ~indices=Some(4),
+                     ~material=Some(1),
+                     (),
+                   ),
+                 |],
+               },
+               {
+                 name: None,
+                 primitives: [|
+                   ConvertGLBTool.buildPrimitive(
+                     ~attributes={
+                       position: 10,
+                       normal: None,
+                       texCoord_0: None,
+                       texCoord_1: None,
+                     },
+                     ~indices=Some(8),
+                     ~material=Some(2),
+                     (),
+                   ),
+                 |],
+               },
+               {
+                 name: None,
+                 primitives: [|
+                   ConvertGLBTool.buildPrimitive(
+                     ~attributes={
+                       position: 6,
+                       normal: None,
+                       texCoord_0: None,
+                       texCoord_1: None,
+                     },
+                     ~indices=Some(4),
+                     ~material=Some(1),
+                     (),
+                   ),
+                 |],
+               },
+             |];
         });
       });
 
@@ -261,31 +261,31 @@ let _ =
             ~testFunc=
               ({geometrys, images}) =>
                 geometrys
-                |>
-                expect == [|
-                            ConvertTool.getJsonSerializedNone(),
-                            Some({
-                              name: "geometry_1",
-                              position: 0,
-                              normal: ConvertTool.getJsonSerializedNone(),
-                              texCoord: ConvertTool.getJsonSerializedNone(),
-                              index: 1,
-                            }),
-                            Some({
-                              name: "geometry_2",
-                              position: 2,
-                              normal: ConvertTool.getJsonSerializedNone(),
-                              texCoord: ConvertTool.getJsonSerializedNone(),
-                              index: 3,
-                            }),
-                            Some({
-                              name: "geometry_3",
-                              position: 4,
-                              normal: ConvertTool.getJsonSerializedNone(),
-                              texCoord: ConvertTool.getJsonSerializedNone(),
-                              index: 5,
-                            }),
-                          |],
+                |> expect
+                == [|
+                     ConvertTool.getJsonSerializedNone(),
+                     Some({
+                       name: "geometry_1",
+                       position: 0,
+                       normal: ConvertTool.getJsonSerializedNone(),
+                       texCoord: ConvertTool.getJsonSerializedNone(),
+                       index: 1,
+                     }),
+                     Some({
+                       name: "geometry_2",
+                       position: 2,
+                       normal: ConvertTool.getJsonSerializedNone(),
+                       texCoord: ConvertTool.getJsonSerializedNone(),
+                       index: 3,
+                     }),
+                     Some({
+                       name: "geometry_3",
+                       position: 4,
+                       normal: ConvertTool.getJsonSerializedNone(),
+                       texCoord: ConvertTool.getJsonSerializedNone(),
+                       index: 5,
+                     }),
+                   |],
             (),
           )
         );
@@ -299,14 +299,14 @@ let _ =
             ~testFunc=
               ({meshRenderers}) =>
                 meshRenderers
-                |>
-                expect == [|
-                            Some({drawMode: DrawModeType.Triangles}),
-                            Some({drawMode: DrawModeType.Triangles}),
-                            Some({drawMode: DrawModeType.Triangles}),
-                            Some({drawMode: DrawModeType.Triangles}),
-                            Some({drawMode: DrawModeType.Triangles}),
-                          |],
+                |> expect
+                == [|
+                     Some({drawMode: DrawModeType.Triangles}),
+                     Some({drawMode: DrawModeType.Triangles}),
+                     Some({drawMode: DrawModeType.Triangles}),
+                     Some({drawMode: DrawModeType.Triangles}),
+                     Some({drawMode: DrawModeType.Triangles}),
+                   |],
             (),
           )
         );
@@ -337,11 +337,11 @@ let _ =
                   ~testFunc=
                     ({indices}) =>
                       indices.gameObjectIndices.geometryGameObjectIndexData
-                      |>
-                      expect == {
-                                  gameObjectIndices: [|1, 3, 4, 5, 6|],
-                                  componentIndices: [|1, 2, 3, 2, 3|],
-                                },
+                      |> expect
+                      == {
+                           gameObjectIndices: [|1, 3, 4, 5, 6|],
+                           componentIndices: [|1, 2, 3, 2, 3|],
+                         },
                   (),
                 )
               )
@@ -359,11 +359,11 @@ let _ =
                   ~testFunc=
                     ({indices}) =>
                       indices.gameObjectIndices.meshRendererGameObjectIndexData
-                      |>
-                      expect == {
-                                  gameObjectIndices: [|1, 3, 4, 5, 6|],
-                                  componentIndices: [|0, 1, 2, 3, 4|],
-                                },
+                      |> expect
+                      == {
+                           gameObjectIndices: [|1, 3, 4, 5, 6|],
+                           componentIndices: [|0, 1, 2, 3, 4|],
+                         },
                   (),
                 )
               )
@@ -374,110 +374,110 @@ let _ =
     });
 
     /* describe("test set default material", () => {
-      describe("test if node has any one material extras", () =>
-        test("not add default lightMaterial", () =>
-          ConvertGLBTool.testGLTFResultByGLTF(
-            ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=
-              ConvertGLBTool.buildGLTFJson(
-                ~nodes=
-                  {|[
-    {
-      "mesh" : 0,
-      "extras": {
-        "lightMaterial": 0
-      }
-    }
-  ] |},
-                ~materials=
-                  {|[
-        {
-            "pbrMetallicRoughness": {
-            },
-            "name": "material"
-        }
-    ]|},
-                ~meshes=
-                  {|[
-    {
-      "primitives" : [ {
-        "attributes" : {
-          "POSITION" : 1
-        },
-        "indices" : 0
-      } ]
-    }
-  ]|},
-                (),
-              ),
-            ~state,
-            ~testFunc=
-              ({lightMaterials}) =>
-                lightMaterials[0].name |> expect == "material",
-            (),
-          )
-        )
-      );
+           describe("test if node has any one material extras", () =>
+             test("not add default lightMaterial", () =>
+               ConvertGLBTool.testGLTFResultByGLTF(
+                 ~sandbox=sandbox^,
+                 ~embeddedGLTFJsonStr=
+                   ConvertGLBTool.buildGLTFJson(
+                     ~nodes=
+                       {|[
+         {
+           "mesh" : 0,
+           "extras": {
+             "lightMaterial": 0
+           }
+         }
+       ] |},
+                     ~materials=
+                       {|[
+             {
+                 "pbrMetallicRoughness": {
+                 },
+                 "name": "material"
+             }
+         ]|},
+                     ~meshes=
+                       {|[
+         {
+           "primitives" : [ {
+             "attributes" : {
+               "POSITION" : 1
+             },
+             "indices" : 0
+           } ]
+         }
+       ]|},
+                     (),
+                   ),
+                 ~state,
+                 ~testFunc=
+                   ({lightMaterials}) =>
+                     lightMaterials[0].name |> expect == "material",
+                 (),
+               )
+             )
+           );
 
-      describe("else, if mesh has no material", () => {
-        test("add default lightMaterial", () =>
-          ConvertGLBTool.testGLTFResultByGLTF(
-            ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
-            ~state,
-            ~testFunc=
-              ({lightMaterials}) =>
-                lightMaterials
-                |>
-                expect == [|
-                            {
-                              diffuseColor:
-                                ConvertGLBTool.getDefaultDiffuseColor(),
-                              name: "defaultLightMaterial",
-                            },
-                          |],
-            (),
-          )
-        );
-        test("test geometrys", () =>
-          ConvertGLBTool.testGLTFResultByGLTF(
-            ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
-            ~state,
-            ~testFunc=
-              ({geometrys}) =>
-                geometrys
-                |>
-                expect == [|
-                            Some({
-                              name: "geometry_0",
-                              position: 0,
-                              normal: ConvertTool.getJsonSerializedNone(),
-                              texCoord: ConvertTool.getJsonSerializedNone(),
-                              index: 1,
-                            }),
-                          |],
-            (),
-          )
-        );
-        test("test default material's lightMaterialGameObjectIndexData", () =>
-          ConvertGLBTool.testGLTFResultByGLTF(
-            ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
-            ~state,
-            ~testFunc=
-              ({indices}) =>
-                indices.gameObjectIndices.lightMaterialGameObjectIndexData
-                |>
-                expect == ConvertGLBTool.buildComponentIndexData(
-                            [|0|],
-                            [|0|],
-                          ),
-            (),
-          )
-        );
-      });
-    }); */
+           describe("else, if mesh has no material", () => {
+             test("add default lightMaterial", () =>
+               ConvertGLBTool.testGLTFResultByGLTF(
+                 ~sandbox=sandbox^,
+                 ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
+                 ~state,
+                 ~testFunc=
+                   ({lightMaterials}) =>
+                     lightMaterials
+                     |>
+                     expect == [|
+                                 {
+                                   diffuseColor:
+                                     ConvertGLBTool.getDefaultDiffuseColor(),
+                                   name: "defaultLightMaterial",
+                                 },
+                               |],
+                 (),
+               )
+             );
+             test("test geometrys", () =>
+               ConvertGLBTool.testGLTFResultByGLTF(
+                 ~sandbox=sandbox^,
+                 ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
+                 ~state,
+                 ~testFunc=
+                   ({geometrys}) =>
+                     geometrys
+                     |>
+                     expect == [|
+                                 Some({
+                                   name: "geometry_0",
+                                   position: 0,
+                                   normal: ConvertTool.getJsonSerializedNone(),
+                                   texCoord: ConvertTool.getJsonSerializedNone(),
+                                   index: 1,
+                                 }),
+                               |],
+                 (),
+               )
+             );
+             test("test default material's lightMaterialGameObjectIndexData", () =>
+               ConvertGLBTool.testGLTFResultByGLTF(
+                 ~sandbox=sandbox^,
+                 ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
+                 ~state,
+                 ~testFunc=
+                   ({indices}) =>
+                     indices.gameObjectIndices.lightMaterialGameObjectIndexData
+                     |>
+                     expect == ConvertGLBTool.buildComponentIndexData(
+                                 [|0|],
+                                 [|0|],
+                               ),
+                 (),
+               )
+             );
+           });
+         }); */
 
     test("test asset", () =>
       ConvertGLBTool.testGLTFResultByGLTF(
@@ -525,8 +525,8 @@ let _ =
           ~testFunc=
             ({scene}) =>
               scene.imgui
-              |>
-              expect == Some({customData: customData |> Obj.magic, imguiFunc}),
+              |> expect
+              == Some({customData: customData |> Obj.magic, imguiFunc}),
           (),
         );
       });
@@ -605,17 +605,17 @@ let _ =
           ~testFunc=
             ({pointLights}) =>
               pointLights
-              |>
-              expect == [|
-                          {
-                            color: [|0., 0., 0.|],
-                            intensity: 2.5,
-                            constantAttenuation: 1.,
-                            linearAttenuation: 1.5,
-                            quadraticAttenuation: 0.,
-                            range: 55.5,
-                          },
-                        |],
+              |> expect
+              == [|
+                   {
+                     color: [|0., 0., 0.|],
+                     intensity: 2.5,
+                     constantAttenuation: 1.,
+                     linearAttenuation: 1.5,
+                     quadraticAttenuation: 0.,
+                     range: 55.5,
+                   },
+                 |],
           (),
         )
       )
@@ -630,13 +630,13 @@ let _ =
           ~testFunc=
             ({gameObjects}) =>
               gameObjects
-              |>
-              expect == {
-                          count: 1,
-                          names: [|"gameObject_0"|],
-                          isRoots:
-                            WonderCommonlib.MutableSparseMapService.createEmpty(),
-                        },
+              |> expect
+              == {
+                   count: 1,
+                   names: [|"gameObject_0"|],
+                   isRoots:
+                     WonderCommonlib.MutableSparseMapService.createEmpty(),
+                 },
           (),
         )
       );
@@ -646,22 +646,21 @@ let _ =
           GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
           (({gameObjects}, binBuffer)) =>
           gameObjects
-          |>
-          expect == {
-                      count: 8,
-                      names: [|
-                        "gameObject_0",
-                        "gameObject_1",
-                        "Wheels",
-                        "gameObject_3",
-                        "Wheels",
-                        "Cesium_Milk_Truck_0",
-                        "Cesium_Milk_Truck_1",
-                        "Cesium_Milk_Truck_2",
-                      |],
-                      isRoots:
-                        WonderCommonlib.MutableSparseMapService.createEmpty(),
-                    }
+          |> expect
+          == {
+               count: 8,
+               names: [|
+                 "gameObject_0",
+                 "gameObject_1",
+                 "Wheels",
+                 "gameObject_3",
+                 "Wheels",
+                 "Cesium_Milk_Truck_0",
+                 "Cesium_Milk_Truck_1",
+                 "Cesium_Milk_Truck_2",
+               |],
+               isRoots: WonderCommonlib.MutableSparseMapService.createEmpty(),
+             }
         )
       );
 
@@ -704,12 +703,12 @@ let _ =
               ~testFunc=
                 ({basicCameraViews}) =>
                   basicCameraViews
-                  |>
-                  expect == [|
-                              {isActive: true},
-                              {isActive: false},
-                              {isActive: false},
-                            |],
+                  |> expect
+                  == [|
+                       {isActive: true},
+                       {isActive: false},
+                       {isActive: false},
+                     |],
               (),
             )
           );
@@ -722,12 +721,12 @@ let _ =
               ~testFunc=
                 ({basicCameraViews}) =>
                   basicCameraViews
-                  |>
-                  expect == [|
-                              {isActive: false},
-                              {isActive: true},
-                              {isActive: false},
-                            |],
+                  |> expect
+                  == [|
+                       {isActive: false},
+                       {isActive: true},
+                       {isActive: false},
+                     |],
               (),
             )
           );
@@ -753,21 +752,21 @@ let _ =
             ~testFunc=
               ({perspectiveCameraProjections}) =>
                 perspectiveCameraProjections
-                |>
-                expect == [|
-                            {
-                              near: 1.0,
-                              far: ConvertTool.getJsonSerializedNone(),
-                              aspect: ConvertTool.getJsonSerializedNone(),
-                              fovy: 34.37746770784939,
-                            },
-                            {
-                              near: 2.0,
-                              far: Some(1000.0),
-                              aspect: Some(2.0),
-                              fovy: 28.64788975654116,
-                            },
-                          |],
+                |> expect
+                == [|
+                     {
+                       near: 1.0,
+                       far: ConvertTool.getJsonSerializedNone(),
+                       aspect: ConvertTool.getJsonSerializedNone(),
+                       fovy: 34.37746770784939,
+                     },
+                     {
+                       near: 2.0,
+                       far: Some(1000.0),
+                       aspect: Some(2.0),
+                       fovy: 28.64788975654116,
+                     },
+                   |],
             (),
           )
         );
@@ -796,25 +795,76 @@ let _ =
             ~testFunc=
               ({arcballCameraControllers}) =>
                 arcballCameraControllers
-                |>
-                expect == [|
-                            {
-                              distance: 1.5,
-                              minDistance: 1.,
-                              phi: 0.8,
-                              theta: 0.6,
-                              thetaMargin: 1.5,
-                              target: (0.0, 0.5, 0.1),
-                              moveSpeedX: 2.1,
-                              moveSpeedY: 3.1,
-                              rotateSpeed: 0.3,
-                              wheelSpeed: 0.9,
-                              isBindEvent: true,
-                            },
-                          |],
+                |> expect
+                == [|
+                     {
+                       distance: 1.5,
+                       minDistance: 1.,
+                       phi: 0.8,
+                       theta: 0.6,
+                       thetaMargin: 1.5,
+                       target: (0.0, 0.5, 0.1),
+                       moveSpeedX: 2.1,
+                       moveSpeedY: 3.1,
+                       rotateSpeed: 0.3,
+                       wheelSpeed: 0.9,
+                       isBindEvent: true,
+                     },
+                   |],
             (),
           )
         );
+      })
+    );
+
+    describe("test script data", () =>
+      describe("test scripts", () => {
+        test("test no data", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+            ~state,
+            ~testFunc=({scripts}) => scripts |> expect == [||],
+            (),
+          )
+        );
+        test("test has data", () => {
+          let eventFunctionDataMap =
+            AssetScriptTool.buildEventFunctionDataMap();
+          let attributeMap = AssetScriptTool.buildAttributeMap();
+          let eventFunctionDataMapStr =
+            ConvertScriptDataUtils._convertEventFunctionDataMapToStr(
+              eventFunctionDataMap,
+            );
+          let attributeMapStr =
+            ConvertScriptDataUtils._convertAttributeMapToStr(attributeMap);
+
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfScript(
+                ~eventFunctionDataMap,
+                ~attributeMap,
+                (),
+              ),
+            ~state,
+            ~testFunc=
+              ({scripts}) =>
+                scripts
+                |> expect
+                == [|
+                     {
+                       eventFunctionDataMap:
+                         eventFunctionDataMapStr
+                         |> Js.Json.parseExn
+                         |> Obj.magic,
+                       attributeMap:
+                         attributeMapStr |> Js.Json.parseExn |> Obj.magic,
+                     },
+                   |],
+            (),
+          );
+        });
       })
     );
 
@@ -827,14 +877,14 @@ let _ =
           ~testFunc=
             ({transforms}) =>
               transforms
-              |>
-              expect == [|
-                          {
-                            translation: Some((10., 20., 30.)),
-                            rotation: Some((0., 0., 0., 1.)),
-                            scale: Some((1., 1., 1.)),
-                          },
-                        |],
+              |> expect
+              == [|
+                   {
+                     translation: Some((10., 20., 30.)),
+                     rotation: Some((0., 0., 0., 1.)),
+                     scale: Some((1., 1., 1.)),
+                   },
+                 |],
           (),
         )
       );
@@ -846,24 +896,24 @@ let _ =
           ~testFunc=
             ({transforms}) =>
               transforms
-              |>
-              expect == [|
-                          {
-                            translation: Some((11., 0.5, (-10.5))),
-                            rotation: ConvertTool.getJsonSerializedNone(),
-                            scale: ConvertTool.getJsonSerializedNone(),
-                          },
-                          {
-                            translation: Some((10., 30., 50.)),
-                            rotation: Some((0., 0., 0., 1.)),
-                            scale: Some((1., 1., 1.)),
-                          },
-                          {
-                            translation: ConvertTool.getJsonSerializedNone(),
-                            rotation: Some((1., 0.1, 1.5, 0.5)),
-                            scale: Some((2.5, 2.5, 3.)),
-                          },
-                        |],
+              |> expect
+              == [|
+                   {
+                     translation: Some((11., 0.5, (-10.5))),
+                     rotation: ConvertTool.getJsonSerializedNone(),
+                     scale: ConvertTool.getJsonSerializedNone(),
+                   },
+                   {
+                     translation: Some((10., 30., 50.)),
+                     rotation: Some((0., 0., 0., 1.)),
+                     scale: Some((1., 1., 1.)),
+                   },
+                   {
+                     translation: ConvertTool.getJsonSerializedNone(),
+                     rotation: Some((1., 0.1, 1.5, 0.5)),
+                     scale: Some((2.5, 2.5, 3.)),
+                   },
+                 |],
           (),
         )
       );
@@ -903,20 +953,20 @@ let _ =
             ~testFunc=
               ({transforms}) =>
                 transforms
-                |>
-                expect == [|
-                            {
-                              translation: Some((0., 0., 0.)),
-                              rotation:
-                                Some((
-                                  (-0.7071067811865475),
-                                  0.,
-                                  0.,
-                                  0.7071067811865476,
-                                )),
-                              scale: Some((1., 1., 1.)),
-                            },
-                          |],
+                |> expect
+                == [|
+                     {
+                       translation: Some((0., 0., 0.)),
+                       rotation:
+                         Some((
+                           (-0.7071067811865475),
+                           0.,
+                           0.,
+                           0.7071067811865476,
+                         )),
+                       scale: Some((1., 1., 1.)),
+                     },
+                   |],
             (),
           )
         )
@@ -950,13 +1000,13 @@ let _ =
           ~testFunc=
             ({basicMaterials}) =>
               basicMaterials
-              |>
-              expect == [|
-                          {
-                            color: ConvertGLBTool.getDefaultDiffuseColor(),
-                            name: "basicMaterial_0",
-                          },
-                        |],
+              |> expect
+              == [|
+                   {
+                     color: ConvertGLBTool.getDefaultDiffuseColor(),
+                     name: "basicMaterial_0",
+                   },
+                 |],
           (),
         )
       );
@@ -989,13 +1039,13 @@ let _ =
           GLBTool.buildGLBFilePath("BoxTextured.glb"),
           (({lightMaterials}, _)) =>
           lightMaterials
-          |>
-          expect == [|
-                      {
-                        diffuseColor: ConvertGLBTool.getDefaultDiffuseColor(),
-                        name: "Texture",
-                      },
-                    |]
+          |> expect
+          == [|
+               {
+                 diffuseColor: ConvertGLBTool.getDefaultDiffuseColor(),
+                 name: "Texture",
+               },
+             |]
         )
       );
       describe("test has data", () =>
@@ -1005,33 +1055,33 @@ let _ =
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
             (({lightMaterials}, binBuffer)) =>
             lightMaterials
-            |>
-            expect == [|
-                        {
-                          diffuseColor: ConvertGLBTool.getDefaultDiffuseColor(),
-                          name: "truck",
-                        },
-                        {
-                          diffuseColor: [|
-                            0.0,
-                            0.04050629958510399,
-                            0.021240700036287309,
-                          |],
-                          name: "glass",
-                        },
-                        {
-                          diffuseColor: [|
-                            0.06400000303983689,
-                            0.06400000303983689,
-                            0.06400000303983689,
-                          |],
-                          name: "window_trim",
-                        },
-                        {
-                          diffuseColor: ConvertGLBTool.getDefaultDiffuseColor(),
-                          name: "wheels",
-                        },
-                      |]
+            |> expect
+            == [|
+                 {
+                   diffuseColor: ConvertGLBTool.getDefaultDiffuseColor(),
+                   name: "truck",
+                 },
+                 {
+                   diffuseColor: [|
+                     0.0,
+                     0.04050629958510399,
+                     0.021240700036287309,
+                   |],
+                   name: "glass",
+                 },
+                 {
+                   diffuseColor: [|
+                     0.06400000303983689,
+                     0.06400000303983689,
+                     0.06400000303983689,
+                   |],
+                   name: "window_trim",
+                 },
+                 {
+                   diffuseColor: ConvertGLBTool.getDefaultDiffuseColor(),
+                   name: "wheels",
+                 },
+               |]
           )
         )
       );
@@ -1044,8 +1094,8 @@ let _ =
           GLBTool.buildGLBFilePath("BoxTextured.glb"),
           (({basicSourceTextures}, binBuffer)) =>
           basicSourceTextures
-          |>
-          expect == [|{name: "texture_0", format: SourceTextureType.Rgba}|]
+          |> expect
+          == [|{name: "texture_0", format: SourceTextureType.Rgba}|]
         )
       );
       test("test basicSourceTextures", () =>
@@ -1054,17 +1104,17 @@ let _ =
           GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
           (({basicSourceTextures}, binBuffer)) =>
           basicSourceTextures
-          |>
-          expect == [|
-                      ConvertTool.getJsonSerializedNone(),
-                      ConvertTool.getJsonSerializedNone(),
-                      {name: "texture_2", format: SourceTextureType.Rgb},
-                      {name: "texture_3", format: SourceTextureType.Rgba},
-                      {name: "texture_4", format: SourceTextureType.Rgba},
-                      {name: "texture_5", format: SourceTextureType.Rgba},
-                      {name: "texture_6", format: SourceTextureType.Rgba},
-                      {name: "texture_7", format: SourceTextureType.Rgba},
-                    |]
+          |> expect
+          == [|
+               ConvertTool.getJsonSerializedNone(),
+               ConvertTool.getJsonSerializedNone(),
+               {name: "texture_2", format: SourceTextureType.Rgb},
+               {name: "texture_3", format: SourceTextureType.Rgba},
+               {name: "texture_4", format: SourceTextureType.Rgba},
+               {name: "texture_5", format: SourceTextureType.Rgba},
+               {name: "texture_6", format: SourceTextureType.Rgba},
+               {name: "texture_7", format: SourceTextureType.Rgba},
+             |]
         )
       );
     });
@@ -1076,15 +1126,15 @@ let _ =
           GLBTool.buildGLBFilePath("BoxTextured.glb"),
           (({samplers}, _)) =>
           samplers
-          |>
-          expect == [|
-                      {
-                        magFilter: Linear,
-                        minFilter: Nearest_mipmap_linear,
-                        wrapS: Repeat,
-                        wrapT: Repeat,
-                      },
-                    |]
+          |> expect
+          == [|
+               {
+                 magFilter: Linear,
+                 minFilter: Nearest_mipmap_linear,
+                 wrapS: Repeat,
+                 wrapT: Repeat,
+               },
+             |]
         )
       )
     );
@@ -1098,14 +1148,14 @@ let _ =
             let images = images |> OptionService.unsafeGet;
 
             images
-            |>
-            expect == [|
-                        {
-                          name: "CesiumLogoFlat.png",
-                          bufferView: 4,
-                          mimeType: "image/png",
-                        },
-                      |];
+            |> expect
+            == [|
+                 {
+                   name: "CesiumLogoFlat.png",
+                   bufferView: 4,
+                   mimeType: "image/png",
+                 },
+               |];
           },
         )
       );
@@ -1118,21 +1168,13 @@ let _ =
             let images = images |> OptionService.unsafeGet;
 
             images
-            |>
-            expect == [|
-                        ConvertTool.getJsonSerializedNone(),
-                        ConvertTool.getJsonSerializedNone(),
-                        {
-                          name: "image_2",
-                          bufferView: 4,
-                          mimeType: "image/jpeg",
-                        },
-                        {
-                          name: "image_3",
-                          bufferView: 9,
-                          mimeType: "image/png",
-                        },
-                      |];
+            |> expect
+            == [|
+                 ConvertTool.getJsonSerializedNone(),
+                 ConvertTool.getJsonSerializedNone(),
+                 {name: "image_2", bufferView: 4, mimeType: "image/jpeg"},
+                 {name: "image_3", bufferView: 9, mimeType: "image/png"},
+               |];
           },
         )
       );
@@ -1145,39 +1187,39 @@ let _ =
           GLBTool.buildGLBFilePath("BoxTextured.glb"),
           (({bufferViews}, binBuffer)) =>
           bufferViews
-          |>
-          expect == [|
-                      {
-                        buffer: 0,
-                        byteOffset: 0,
-                        byteLength: 288,
-                        byteStride: Some(12),
-                      },
-                      {
-                        buffer: 0,
-                        byteOffset: 288,
-                        byteLength: 288,
-                        byteStride: Some(12),
-                      },
-                      {
-                        buffer: 0,
-                        byteOffset: 576,
-                        byteLength: 192,
-                        byteStride: Some(8),
-                      },
-                      {
-                        buffer: 0,
-                        byteOffset: 768,
-                        byteLength: 72,
-                        byteStride: ConvertTool.getJsonSerializedNone(),
-                      },
-                      {
-                        buffer: 0,
-                        byteOffset: 840,
-                        byteLength: 23516,
-                        byteStride: ConvertTool.getJsonSerializedNone(),
-                      },
-                    |]
+          |> expect
+          == [|
+               {
+                 buffer: 0,
+                 byteOffset: 0,
+                 byteLength: 288,
+                 byteStride: Some(12),
+               },
+               {
+                 buffer: 0,
+                 byteOffset: 288,
+                 byteLength: 288,
+                 byteStride: Some(12),
+               },
+               {
+                 buffer: 0,
+                 byteOffset: 576,
+                 byteLength: 192,
+                 byteStride: Some(8),
+               },
+               {
+                 buffer: 0,
+                 byteOffset: 768,
+                 byteLength: 72,
+                 byteStride: ConvertTool.getJsonSerializedNone(),
+               },
+               {
+                 buffer: 0,
+                 byteOffset: 840,
+                 byteLength: 23516,
+                 byteStride: ConvertTool.getJsonSerializedNone(),
+               },
+             |]
         )
       );
 
@@ -1187,16 +1229,16 @@ let _ =
           GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
           (({bufferViews}, binBuffer)) =>
           (bufferViews |> Js.Array.length, bufferViews[37])
-          |>
-          expect == (
-                      38,
-                      {
-                        buffer: 0,
-                        byteOffset: 772816,
-                        byteLength: 6,
-                        byteStride: ConvertTool.getJsonSerializedNone(),
-                      },
-                    )
+          |> expect
+          == (
+               38,
+               {
+                 buffer: 0,
+                 byteOffset: 772816,
+                 byteLength: 6,
+                 byteStride: ConvertTool.getJsonSerializedNone(),
+               },
+             )
         )
       );
     });
@@ -1227,37 +1269,37 @@ let _ =
           GLBTool.buildGLBFilePath("BoxTextured.glb"),
           (({accessors}, binBuffer)) =>
           accessors
-          |>
-          expect == [|
-                      {
-                        bufferView: 0,
-                        byteOffset: 0,
-                        componentType: FLOAT,
-                        count: 24,
-                        type_: VEC3,
-                      },
-                      {
-                        bufferView: 1,
-                        byteOffset: 0,
-                        componentType: FLOAT,
-                        count: 24,
-                        type_: VEC3,
-                      },
-                      {
-                        bufferView: 2,
-                        byteOffset: 0,
-                        componentType: FLOAT,
-                        count: 24,
-                        type_: VEC2,
-                      },
-                      {
-                        bufferView: 3,
-                        byteOffset: 0,
-                        componentType: UNSIGNED_SHORT,
-                        count: 36,
-                        type_: SCALAR,
-                      },
-                    |]
+          |> expect
+          == [|
+               {
+                 bufferView: 0,
+                 byteOffset: 0,
+                 componentType: FLOAT,
+                 count: 24,
+                 type_: VEC3,
+               },
+               {
+                 bufferView: 1,
+                 byteOffset: 0,
+                 componentType: FLOAT,
+                 count: 24,
+                 type_: VEC3,
+               },
+               {
+                 bufferView: 2,
+                 byteOffset: 0,
+                 componentType: FLOAT,
+                 count: 24,
+                 type_: VEC2,
+               },
+               {
+                 bufferView: 3,
+                 byteOffset: 0,
+                 componentType: UNSIGNED_SHORT,
+                 count: 36,
+                 type_: SCALAR,
+               },
+             |]
         )
       )
     );
@@ -1271,16 +1313,16 @@ let _ =
           ~testFunc=
             ({geometrys}) =>
               geometrys
-              |>
-              expect == [|
-                          Some({
-                            name: "geometry_0",
-                            position: 0,
-                            normal: Some(1),
-                            texCoord: Some(2),
-                            index: 3,
-                          }),
-                        |],
+              |> expect
+              == [|
+                   Some({
+                     name: "geometry_0",
+                     position: 0,
+                     normal: Some(1),
+                     texCoord: Some(2),
+                     index: 3,
+                   }),
+                 |],
           (),
         )
       );
@@ -1339,11 +1381,11 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
               ~testFunc=
                 ({meshRenderers}) =>
                   meshRenderers
-                  |>
-                  expect == [|
-                              Some({drawMode: DrawModeType.Lines}),
-                              Some({drawMode: DrawModeType.Line_strip}),
-                            |],
+                  |> expect
+                  == [|
+                       Some({drawMode: DrawModeType.Lines}),
+                       Some({drawMode: DrawModeType.Line_strip}),
+                     |],
               (),
             )
           );
@@ -1355,14 +1397,14 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
                 GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
                 (({meshRenderers}, binBuffer)) =>
                 meshRenderers
-                |>
-                expect == [|
-                            Some({drawMode: DrawModeType.Triangles}),
-                            Some({drawMode: DrawModeType.Triangles}),
-                            Some({drawMode: DrawModeType.Triangles}),
-                            Some({drawMode: DrawModeType.Triangles}),
-                            Some({drawMode: DrawModeType.Triangles}),
-                          |]
+                |> expect
+                == [|
+                     Some({drawMode: DrawModeType.Triangles}),
+                     Some({drawMode: DrawModeType.Triangles}),
+                     Some({drawMode: DrawModeType.Triangles}),
+                     Some({drawMode: DrawModeType.Triangles}),
+                     Some({drawMode: DrawModeType.Triangles}),
+                   |]
               )
             )
           );
@@ -1402,11 +1444,11 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
               GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
               (({indices}, _)) =>
               indices.gameObjectIndices.childrenTransformIndexData
-              |>
-              expect == _buildTransformIndexData(
-                          [|0, 1, 3|],
-                          [|[|3, 1, 5, 6, 7|], [|2|], [|4|]|],
-                        )
+              |> expect
+              == _buildTransformIndexData(
+                   [|0, 1, 3|],
+                   [|[|3, 1, 5, 6, 7|], [|2|], [|4|]|],
+                 )
             )
           );
         });
@@ -1445,11 +1487,8 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
               ~testFunc=
                 ({indices}) =>
                   indices.gameObjectIndices.basicCameraViewGameObjectIndexData
-                  |>
-                  expect == _buildComponentIndexData(
-                              [|0, 1, 2|],
-                              [|1, 0, 2|],
-                            ),
+                  |> expect
+                  == _buildComponentIndexData([|0, 1, 2|], [|1, 0, 2|]),
               (),
             )
           );
@@ -1504,11 +1543,11 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
               GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
               (({indices}, _)) =>
               indices.gameObjectIndices.meshRendererGameObjectIndexData
-              |>
-              expect == _buildComponentIndexData(
-                          [|2, 4, 5, 6, 7|],
-                          [|0, 1, 2, 3, 4|],
-                        )
+              |> expect
+              == _buildComponentIndexData(
+                   [|2, 4, 5, 6, 7|],
+                   [|0, 1, 2, 3, 4|],
+                 )
             )
           );
         });
@@ -1563,11 +1602,11 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
                 GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
                 (({indices}, _)) =>
                 indices.gameObjectIndices.lightMaterialGameObjectIndexData
-                |>
-                expect == _buildComponentIndexData(
-                            [|2, 4, 5, 6, 7|],
-                            [|3, 3, 0, 1, 2|],
-                          )
+                |> expect
+                == _buildComponentIndexData(
+                     [|2, 4, 5, 6, 7|],
+                     [|3, 3, 0, 1, 2|],
+                   )
               )
             );
           });
@@ -1588,14 +1627,11 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
                       indices.gameObjectIndices.
                         lightMaterialGameObjectIndexData,
                     )
-                    |>
-                    expect == (
-                                _buildComponentIndexData([|0|], [|0|]),
-                                _buildComponentIndexData(
-                                  [|1, 2|],
-                                  [|1, 0|],
-                                ),
-                              ),
+                    |> expect
+                    == (
+                         _buildComponentIndexData([|0|], [|0|]),
+                         _buildComponentIndexData([|1, 2|], [|1, 0|]),
+                       ),
                 (),
               )
             )
@@ -1621,11 +1657,11 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
               GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
               (({indices}, _)) =>
               indices.gameObjectIndices.transformGameObjectIndexData
-              |>
-              expect == _buildComponentIndexData(
-                          [|0, 1, 2, 3, 4, 5, 6, 7|],
-                          [|0, 1, 2, 3, 4, 5, 6, 7|],
-                        )
+              |> expect
+              == _buildComponentIndexData(
+                   [|0, 1, 2, 3, 4, 5, 6, 7|],
+                   [|0, 1, 2, 3, 4, 5, 6, 7|],
+                 )
             )
           );
         });
@@ -1649,11 +1685,11 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
               GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
               (({indices}, _)) =>
               indices.gameObjectIndices.geometryGameObjectIndexData
-              |>
-              expect == _buildComponentIndexData(
-                          [|2, 4, 5, 6, 7|],
-                          [|1, 1, 2, 3, 4|],
-                        )
+              |> expect
+              == _buildComponentIndexData(
+                   [|2, 4, 5, 6, 7|],
+                   [|1, 1, 2, 3, 4|],
+                 )
             )
           );
         });

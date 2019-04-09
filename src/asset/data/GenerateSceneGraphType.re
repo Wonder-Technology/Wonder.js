@@ -4,6 +4,7 @@ type nodeExtras = {
   basicMaterial: option(int),
   lightMaterial: option(int),
   cameraController: option(int),
+  script: option(int),
   isRoot: option(bool),
 };
 
@@ -113,6 +114,13 @@ type lightData = {
   range: option(float),
 };
 
+type scriptData = {
+  eventFunctionDataMapStr: string,
+  attributeMapStr: string,
+};
+
+/* type scriptData = CommonAssetType.script; */
+
 type point =
   | Vertex
   | Normal
@@ -120,13 +128,13 @@ type point =
   | Index
   | Index32;
 
-external positionTupleToArray : PositionType.position => array(float) =
+external positionTupleToArray: PositionType.position => array(float) =
   "%identity";
 
-external rotationTupleToArray : RotationType.rotation => array(float) =
+external rotationTupleToArray: RotationType.rotation => array(float) =
   "%identity";
 
-external scaleTupleToArray : ScaleType.scale => array(float) = "%identity";
+external scaleTupleToArray: ScaleType.scale => array(float) = "%identity";
 
-external targetTupleToArray : SceneGraphType.target => array(float) =
+external targetTupleToArray: SceneGraphType.target => array(float) =
   "%identity";

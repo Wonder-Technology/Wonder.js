@@ -357,20 +357,18 @@ and eventFunctionData = {
   update: option(eventFunction),
   dispose: option(eventFunction),
 }
+and eventFunctionDataMap =
+  WonderCommonlib.ImmutableHashMapService.t(eventFunctionData)
 and scriptRecord = {
   index: int,
   isScriptEventFunctionEnable: bool,
   disposedIndexArray: array(ScriptType.script),
   gameObjectMap,
   scriptEventFunctionDataMap:
-    WonderCommonlib.ImmutableSparseMapService.t(
-      WonderCommonlib.ImmutableHashMapService.t(eventFunctionData),
-    ),
+    WonderCommonlib.ImmutableSparseMapService.t(eventFunctionDataMap),
   scriptAttributeMap:
     WonderCommonlib.ImmutableSparseMapService.t(
-      WonderCommonlib.ImmutableHashMapService.t(
-        ScriptAttributeType.scriptAttribute,
-      ),
+      ScriptAttributeType.attributeMap,
     ),
 }
 and state = {

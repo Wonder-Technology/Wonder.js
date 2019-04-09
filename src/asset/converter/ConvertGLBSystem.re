@@ -84,6 +84,9 @@ let _buildWDBJsonUint8Array = (gltf: GLTFType.gltf) => {
              buffers: ConvertBuffersSystem.convertToBuffers(gltf),
              directionLights: directionLightArr,
              pointLights: pointLightArr,
+             scripts:
+               ConvertScriptsSystem.convertToScripts(gltf)
+               /* |> WonderLog.Log.printJson, */
            }: WDType.wd
          )
          |> Obj.magic
@@ -227,7 +230,7 @@ let _checkGLB = dataView => {
   dataView;
 };
 
-let convertGLBData = (gltf, binBuffer) =>
+let convertGLBData = (gltf: Js.Json.t, binBuffer) =>
   _convertGLBToWDB(ConvertGLTFJsonToRecordSystem.convert(gltf), binBuffer);
 
 let convertGLB = (glb: ArrayBuffer.t) => {

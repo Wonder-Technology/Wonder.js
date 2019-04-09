@@ -92,10 +92,7 @@ let _batchCreateMeshRenderer = ({meshRenderers}, {settingRecord} as state) =>
   );
 
 let _batchCreateBasicCameraView =
-    (
-      {basicCameraViews, perspectiveCameraProjections},
-      {basicCameraViewRecord} as state,
-    ) =>
+    ({basicCameraViews}, {basicCameraViewRecord} as state) =>
   _batchCreateComponent(
     basicCameraViews,
     CreateBasicCameraViewMainService.create,
@@ -122,6 +119,9 @@ let _createArcballCameraControllerOneByOne =
     state,
   );
 
+let _batchCreateScript = ({scripts}, {scriptRecord} as state) =>
+  _batchCreateComponent(scripts, CreateScriptMainService.create, state);
+
 let _batchCreateBasicMaterial = ({basicMaterials}, {settingRecord} as state) =>
   _batchCreateComponent(
     basicMaterials,
@@ -136,7 +136,7 @@ let _batchCreateLightMaterial = ({lightMaterials}, {settingRecord} as state) =>
     state,
   );
 
-let _batchCreateBasicSourceTextureArr =
+let _batchCreateBasicSourceTexture =
     ({basicSourceTextures}, {settingRecord} as state) => {
   let basicSourceTextureRecord =
     RecordBasicSourceTextureMainService.getRecord(state);
@@ -188,7 +188,7 @@ let _batchCreateLightComponent = (components, createFunc, state) =>
        (state, [||]),
      );
 
-let _batchCreateDirectionLightArr =
+let _batchCreateDirectionLight =
     (isRenderLight, {directionLights}, {directionLightRecord} as state) =>
   _batchCreateLightComponent(
     directionLights,
@@ -196,7 +196,7 @@ let _batchCreateDirectionLightArr =
     state,
   );
 
-let _batchCreatePointLightArr =
+let _batchCreatePointLight =
     (isRenderLight, {pointLights}, {pointLightRecord} as state) =>
   _batchCreateLightComponent(
     pointLights,
@@ -217,13 +217,12 @@ let batchCreate = (isRenderLight, wd, state) => {
   let (state, basicMaterialArr) = _batchCreateBasicMaterial(wd, state);
   let (state, lightMaterialArr) = _batchCreateLightMaterial(wd, state);
   let (state, basicSourceTextureArr) =
-    _batchCreateBasicSourceTextureArr(wd, state);
-  /* let (state, arrayBufferViewSourceTextureArr) =
-     _batchCreateArrayBufferViewSourceTextureArr(wd, state); */
+    _batchCreateBasicSourceTexture(wd, state);
   let (state, directionLightArr) =
-    _batchCreateDirectionLightArr(isRenderLight, wd, state);
+    _batchCreateDirectionLight(isRenderLight, wd, state);
   let (state, pointLightArr) =
-    _batchCreatePointLightArr(isRenderLight, wd, state);
+    _batchCreatePointLight(isRenderLight, wd, state);
+  let (state, scriptArr) = _batchCreateScript(wd, state);
 
   (
     state,
@@ -239,6 +238,7 @@ let batchCreate = (isRenderLight, wd, state) => {
       lightMaterialArr,
       directionLightArr,
       pointLightArr,
+      scriptArr,
     ),
     basicSourceTextureArr,
   );

@@ -791,39 +791,27 @@ let _ =
             rootGameObject,
             ((state, _, rootGameObject)) =>
               AssembleWDBSystemTool.getAllGeometryData(rootGameObject, state)
-              |>
-              expect == [|
-                          (
-                            "geometry_0",
-                            (
-                              GLTFTool.getBoxMainVertices(),
-                              GLTFTool.getBoxMainNormals(),
-                              GLTFTool.getBoxMainTexCoords(),
-                              GLTFTool.getBoxMainIndices() |. Some,
-                              None,
-                            ),
-                          ),
-                          (
-                            "geometry_1",
-                            (
-                              vertices2,
-                              normals2,
-                              texCoords2,
-                              indices2 |. Some,
-                              None,
-                            ),
-                          ),
-                          (
-                            "geometry_2",
-                            (
-                              vertices3,
-                              normals3,
-                              texCoords3,
-                              indices3 |. Some,
-                              None,
-                            ),
-                          ),
-                        |],
+              |> expect
+              == [|
+                   (
+                     "geometry_0",
+                     (
+                       GLTFTool.getBoxMainVertices(),
+                       GLTFTool.getBoxMainNormals(),
+                       GLTFTool.getBoxMainTexCoords(),
+                       GLTFTool.getBoxMainIndices()->Some,
+                       None,
+                     ),
+                   ),
+                   (
+                     "geometry_1",
+                     (vertices2, normals2, texCoords2, indices2->Some, None),
+                   ),
+                   (
+                     "geometry_2",
+                     (vertices3, normals3, texCoords3, indices3->Some, None),
+                   ),
+                 |],
             state,
           );
         })
@@ -1253,39 +1241,39 @@ let _ =
                   rootGameObject,
                   state,
                 )
-                |>
-                expect == [|
-                            (
-                              "geometry_0",
-                              (
-                                GLTFTool.getBoxMainVertices(),
-                                GLTFTool.getBoxMainNormals(),
-                                GLTFTool.getBoxMainTexCoords(),
-                                GLTFTool.getBoxMainIndices() |. Some,
-                                None,
-                              ),
-                            ),
-                            (
-                              "geometry_0",
-                              (
-                                GLTFTool.getBoxMainVertices(),
-                                GLTFTool.getBoxMainNormals(),
-                                GLTFTool.getBoxMainTexCoords(),
-                                GLTFTool.getBoxMainIndices() |. Some,
-                                None,
-                              ),
-                            ),
-                            (
-                              "geometry_1",
-                              (
-                                vertices3,
-                                normals3,
-                                texCoords3,
-                                indices3 |. Some,
-                                None,
-                              ),
-                            ),
-                          |];
+                |> expect
+                == [|
+                     (
+                       "geometry_0",
+                       (
+                         GLTFTool.getBoxMainVertices(),
+                         GLTFTool.getBoxMainNormals(),
+                         GLTFTool.getBoxMainTexCoords(),
+                         GLTFTool.getBoxMainIndices()->Some,
+                         None,
+                       ),
+                     ),
+                     (
+                       "geometry_0",
+                       (
+                         GLTFTool.getBoxMainVertices(),
+                         GLTFTool.getBoxMainNormals(),
+                         GLTFTool.getBoxMainTexCoords(),
+                         GLTFTool.getBoxMainIndices()->Some,
+                         None,
+                       ),
+                     ),
+                     (
+                       "geometry_1",
+                       (
+                         vertices3,
+                         normals3,
+                         texCoords3,
+                         indices3->Some,
+                         None,
+                       ),
+                     ),
+                   |];
               },
               state,
             );
@@ -2751,6 +2739,159 @@ let _ =
       });
     });
 
+    describe("test script", () => {
+      let _createScriptGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, gameObject, script) = ScriptTool.createGameObject(state);
+        let state =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+            ~script,
+            ~state,
+            (),
+          );
+
+        (
+          state,
+          gameObject,
+          unsafeGetGameObjectTransformComponent(gameObject, state),
+          script,
+        );
+      };
+
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, rootGameObject) = state^ |> createGameObject;
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let (state, gameObject1, transform1, script1) =
+          _createScriptGameObject(state);
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          geometry2,
+          (material2, diffuseColor2),
+          meshRenderer2,
+        ) =
+          _createGameObject1(state);
+
+        /* let state = GameObjectTool.disposeGameObject(gameObject1, state);
+           let (
+             state,
+             gameObject3,
+             transform3,
+             (basicCameraView3, perspectiveCameraProjection3),
+           ) =
+             _createCameraGameObject(state);
+
+           let (
+             state,
+             gameObject4,
+             transform4,
+             (basicCameraView4, perspectiveCameraProjection4),
+           ) =
+             _createCameraGameObject(state);
+
+           let state =
+             BasicCameraViewAPI.activeBasicCameraView(basicCameraView3, state); */
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             );
+
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          script1,
+        );
+      };
+
+      test("test nodes", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          script1,
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+"nodes":[{"children":[1,2]},{"extras":{"script":$script1}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}}]
+                   |j},
+          state,
+        );
+      });
+      test("test extras", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (material2, diffuseColor2),
+          script1,
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+"\"extras\":{\"scripts\":[{\"eventFunctionDataMap\":{\"scriptEventFunctionData1\":[\"function(script,api,state){\\nvarscriptAttributeName=\\\"scriptAttribute1\\\";\\nvarunsafeGetScriptAttribute=api.unsafeGetScriptAttribute;\\nvarscriptAttribute=unsafeGetScriptAttribute(script,scriptAttributeName,state);\\nvarunsafeGetScriptAttributeFieldValue=api.unsafeGetScriptAttributeFieldValue;\\nvarsetScriptAttributeFieldValue=api.setScriptAttributeFieldValue;\\nreturnsetScriptAttributeFieldValue(script,\\n/*tuple*/\\n[scriptAttributeName,\\\"a\\\",unsafeGetScriptAttributeFieldValue(\\\"a\\\",scriptAttribute)+1|0],state);\\n}\",\"function(script,api,state){\\nvarscriptAttributeName=\\\"scriptAttribute1\\\";\\nvarunsafeGetScriptAttribute=api.unsafeGetScriptAttribute;\\nvarscriptAttribute=unsafeGetScriptAttribute(script,scriptAttributeName,state);\\nreturnsetScriptAttributeFloatFieldValue(api,script,scriptAttributeName,\\\"b\\\",unsafeGetScriptAttributeFloatFieldValue$1(api,\\\"b\\\",scriptAttribute)+10,state);\\n}\",\"function(script,api,state){\\nvarunsafeGetScriptGameObject=api.unsafeGetScriptGameObject;\\nvarunsafeGetGameObjectTransformComponent=api.unsafeGetGameObjectTransformComponent;\\nvargetTransformLocalPosition=api.getTransformLocalPosition;\\nvarsetTransformLocalPosition=api.setTransformLocalPosition;\\nvartransform=unsafeGetGameObjectTransformComponent(unsafeGetScriptGameObject(script,state),state);\\nvarmatch=getTransformLocalPosition(transform,state);\\nreturnsetTransformLocalPosition(transform,\\n/*tuple*/\\n[match[0]+10,match[1],match[2]],state);\\n}\"]},\"attributeMap\":{\"scriptAttribute1\":{\"a\":[0,1,1],\"b\":[1,0.1,0.1]}}}]",
+          state,
+        );
+      });
+
+      describe("test event function", () =>
+        testPromise("test exec init event function", () => {
+          let (
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            (material2, diffuseColor2),
+            script1,
+          ) =
+            _prepareGameObject(state);
+
+          GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
+            sandbox^,
+            rootGameObject,
+            ((state, _, rootGameObject)) => {
+              let state =
+                ScriptTool.ExecEventFunction.execAllInitEventFunction(state);
+
+              AssembleWDBSystemTool.getAllScripts(rootGameObject, state)
+              |> Js.Array.map(script =>
+                   ScriptTool.unsafeGetScriptAttributeIntFieldValue(
+                     script,
+                     ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getScriptAttributeName(),
+                     ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getScriptAttributeFieldAName(),
+                     state,
+                   )
+                 )
+              |> expect
+              == [|
+                   ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldAValueAfterExecInitEventFunc(),
+                 |];
+            },
+            state,
+          );
+        })
+      );
+    });
+
     describe("test light", () => {
       let _createDirectionLightGameObject = state => {
         open GameObjectAPI;
@@ -3028,17 +3169,10 @@ let _ =
           rootGameObject,
           ((state, _, rootGameObject)) =>
             AssembleWDBSystemTool.getAllPointLightData(rootGameObject, state)
-            |>
-            expect == [|
-                        (
-                          color3,
-                          intensity3,
-                          constant3,
-                          linear3,
-                          quadratic3,
-                          range3,
-                        ),
-                      |],
+            |> expect
+            == [|
+                 (color3, intensity3, constant3, linear3, quadratic3, range3),
+               |],
           state,
         );
       });

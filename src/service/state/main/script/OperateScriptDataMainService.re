@@ -34,6 +34,24 @@ let _addScriptAttribute =
     scriptAttributeMap,
   );
 
+let addEventFunctionDataMap =
+    (script, eventFunctionDataMap, {scriptRecord} as state) => {
+  let {scriptEventFunctionDataMap} as scriptRecord = scriptRecord;
+
+  {
+    ...state,
+    scriptRecord: {
+      ...scriptRecord,
+      scriptEventFunctionDataMap:
+        scriptEventFunctionDataMap
+        |> WonderCommonlib.ImmutableSparseMapService.set(
+             script,
+             eventFunctionDataMap,
+           ),
+    },
+  };
+};
+
 let addScriptEventFunctionData =
     (
       script,
@@ -67,6 +85,20 @@ let addScriptEventFunctionData =
             scriptEventFunctionDataMap,
           )
         },
+    },
+  };
+};
+
+let addAttributeMap = (script, attributeMap, {scriptRecord} as state) => {
+  let {scriptAttributeMap} as scriptRecord = scriptRecord;
+
+  {
+    ...state,
+    scriptRecord: {
+      ...scriptRecord,
+      scriptAttributeMap:
+        scriptAttributeMap
+        |> WonderCommonlib.ImmutableSparseMapService.set(script, attributeMap),
     },
   };
 };

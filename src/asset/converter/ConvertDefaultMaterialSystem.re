@@ -1,4 +1,4 @@
-let _createDefaultMaterial = () : GLTFType.material => {
+let _createDefaultMaterial = (): GLTFType.material => {
   name: Some("defaultLightMaterial"),
   pbrMetallicRoughness:
     Some({
@@ -19,7 +19,7 @@ let _addDefaultMaterial = ({materials} as gltf: GLTFType.gltf) => {
     | None => (0, Some([|defaultMaterial|]))
     | Some(materials) => (
         materials |> Js.Array.length,
-        materials |> ArrayService.push(defaultMaterial) |. Some,
+        (materials |> ArrayService.push(defaultMaterial))->Some,
       )
     };
 
@@ -67,6 +67,7 @@ let _setDefaultMaterial =
                           basicMaterial: None,
                           lightMaterial: Some(defaultMaterialIndex),
                           cameraController: None,
+                          script: None,
                           isRoot: None,
                         })
                       | Some(extras) =>
@@ -84,8 +85,7 @@ let _setDefaultMaterial =
 };
 
 let convert =
-    ({materials, nodes, meshes} as gltf: GLTFType.gltf)
-    : GLTFType.gltf => {
+    ({materials, nodes, meshes} as gltf: GLTFType.gltf): GLTFType.gltf => {
   let isNeedAddDefaultMaterial =
     nodes
     |> WonderCommonlib.ArrayService.reduceOneParam(

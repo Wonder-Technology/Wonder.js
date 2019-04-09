@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-let create = ({settingRecord} as state) => {
+let create = (. {settingRecord} as state) => {
   let {disposedIndexArray, index} as scriptRecord =
     RecordScriptMainService.getRecord(state);
   let (index, newIndex, disposedIndexArray) =

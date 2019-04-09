@@ -234,6 +234,34 @@ let convertToArcballCameraControllerGameObjectIndexData =
   |> _checkGameObjectAndComponentIndicesCountShouldEqual;
 };
 
+let convertToScriptGameObjectIndexData =
+    nodes: WDType.componentGameObjectIndexData => {
+  let (gameObjectIndices, componentIndices) =
+    nodes
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (.
+           (gameObjectIndices, componentIndices),
+           {extras}: GLTFType.node,
+           index,
+         ) =>
+           switch (extras) {
+           | None => (gameObjectIndices, componentIndices)
+           | Some(({script}: GLTFType.nodeExtras)) =>
+             switch (script) {
+             | None => (gameObjectIndices, componentIndices)
+             | Some(script) => (
+                 gameObjectIndices |> ArrayService.push(index),
+                 componentIndices |> ArrayService.push(script),
+               )
+             }
+           },
+         ([||], [||]),
+       );
+
+  ({gameObjectIndices, componentIndices}: WDType.componentGameObjectIndexData)
+  |> _checkGameObjectAndComponentIndicesCountShouldEqual;
+};
+
 /* let _isLines = mode => mode === 1;
 
    let _isTriangles = mode => mode === 4; */

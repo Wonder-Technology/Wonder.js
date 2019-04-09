@@ -106,7 +106,8 @@ let getActiveCameraNodeIndex = ({nodes, cameras, extras}: GLTFType.gltf) =>
       switch (_getActiveBasicCameraViewIndex(basicCameraViews)) {
       | None => None
       | Some(basicCameraViewIndex) =>
-        basicCameraViewIndex |> _getFirstNodeIndexWhichUseBasicCameraView(nodes)
+        basicCameraViewIndex
+        |> _getFirstNodeIndexWhichUseBasicCameraView(nodes)
       }
     | _ => _getFirstNodeIndexWhichUseFirstCamera(nodes)
     }
@@ -146,11 +147,10 @@ let convertToArcballCameraControllers = ({extras}: GLTFType.gltf) =>
   | Some({arcballCameraControllers}) =>
     switch (arcballCameraControllers) {
     | None => [||]
-    | Some(arcballCameraControllers) =>
-      arcballCameraControllers
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. arr, data) => arr |> ArrayService.push(data),
-           [||],
-         )
+    | Some(arcballCameraControllers) => arcballCameraControllers
+    /* |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. arr, data) => arr |> ArrayService.push(data),
+         [||],
+       ) */
     }
   };

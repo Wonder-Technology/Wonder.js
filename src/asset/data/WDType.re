@@ -174,6 +174,7 @@ type gameObjectIndices = {
   pointLightGameObjectIndexData: componentGameObjectIndexData,
   geometryGameObjectIndexData: componentGameObjectIndexData,
   meshRendererGameObjectIndexData: componentGameObjectIndexData,
+  scriptGameObjectIndexData: componentGameObjectIndexData,
 };
 
 type mapMaterialIndexData = {
@@ -225,6 +226,8 @@ type scene = {
   isRoot: bool,
 };
 
+type script = CommonAssetType.script;
+
 type wd = {
   asset,
   scene,
@@ -246,4 +249,5 @@ type wd = {
   meshRenderers: array(option(meshRenderer)),
   basicMaterials: array(basicMaterial),
   lightMaterials: array(lightMaterial),
+  scripts: array(script),
 };

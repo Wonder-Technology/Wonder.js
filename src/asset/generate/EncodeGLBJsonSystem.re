@@ -73,13 +73,10 @@ let _encodeNodeMaterial = (basicMaterial, lightMaterial, extraList) => {
   extraList;
 };
 
-let _encodeNodeCameraController = (cameraController, extraList) =>
-  switch (cameraController) {
+let _encodeNodeComponentExtra = (componentName, component, extraList) =>
+  switch (component) {
   | None => extraList
-  | Some(cameraController) => [
-      ("cameraController", cameraController |> int),
-      ...extraList,
-    ]
+  | Some(component) => [(componentName, component |> int), ...extraList]
   };
 
 let _encodeNodeExtras = (extras, list) =>
@@ -93,6 +90,7 @@ let _encodeNodeExtras = (extras, list) =>
           basicMaterial,
           lightMaterial,
           cameraController,
+          script,
           isRoot,
         }: nodeExtras
       ),
@@ -100,27 +98,14 @@ let _encodeNodeExtras = (extras, list) =>
     let extraList = [];
 
     let extraList =
-      switch (basicCameraView) {
-      | None => extraList
-      | Some(basicCameraView) => [
-          ("basicCameraView", basicCameraView |> int),
-          ...extraList,
-        ]
-      };
-
-    let extraList =
-      switch (meshRenderer) {
-      | None => extraList
-      | Some(meshRenderer) => [
-          ("meshRenderer", meshRenderer |> int),
-          ...extraList,
-        ]
-      };
+      extraList
+      |> _encodeNodeComponentExtra("basicCameraView", basicCameraView)
+      |> _encodeNodeComponentExtra("meshRenderer", meshRenderer)
+      |> _encodeNodeComponentExtra("cameraController", cameraController)
+      |> _encodeNodeComponentExtra("script", script);
 
     let extraList =
       _encodeNodeMaterial(basicMaterial, lightMaterial, extraList);
-
-    let extraList = _encodeNodeCameraController(cameraController, extraList);
 
     let extraList =
       switch (isRoot) {
@@ -318,12 +303,39 @@ let _encodeArcballCameraControllerExtra =
     ]
   };
 
+let _encodeScriptExtra = (scriptDataArr, extraList) =>
+  switch (scriptDataArr |> Js.Array.length) {
+  | 0 => extraList
+  | _ => [
+      (
+        "scripts",
+        scriptDataArr
+        |> Js.Array.map(
+             (
+               ({eventFunctionDataMapStr, attributeMapStr}: scriptData) as data,
+             ) =>
+             [
+               (
+                 "eventFunctionDataMap",
+                 eventFunctionDataMapStr |> Js.Json.parseExn,
+               ),
+               ("attributeMap", attributeMapStr |> Js.Json.parseExn),
+             ]
+             |> object_
+           )
+        |> jsonArray,
+      ),
+      ...extraList,
+    ]
+  };
+
 let _encodeExtras =
     (
       basicCameraViewDataArr,
       meshRendererDataArr,
       basicMaterialDataArr,
       arcballCameraControllerDataArr,
+      scriptDataArr,
     ) => (
   "extras",
   []
@@ -331,6 +343,7 @@ let _encodeExtras =
   |> _encodeMeshRendererExtra(meshRendererDataArr)
   |> _encodeBasicMaterialExtra(basicMaterialDataArr)
   |> _encodeArcballCameraControllerExtra(arcballCameraControllerDataArr)
+  |> _encodeScriptExtra(scriptDataArr)
   |> object_,
 );
 
@@ -712,6 +725,7 @@ let encode =
         cameraProjectionDataArr,
         arcballCameraControllerDataArr,
         lightDataArr,
+        scriptDataArr,
         imguiData,
         extensionsUsedArr,
       ),
@@ -727,6 +741,7 @@ let encode =
       meshRendererDataArr,
       basicMaterialDataArr,
       arcballCameraControllerDataArr,
+      scriptDataArr,
     ),
     _encodeNodes(nodeDataArr, state),
     _encodeLightMaterials(lightMaterialDataArr),
