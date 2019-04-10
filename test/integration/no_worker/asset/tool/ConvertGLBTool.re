@@ -1049,21 +1049,24 @@ let buildGLTFJsonOfArcballCameraController = (~isBindEvent=true, ()) => {
 
 let buildGLTFJsonOfScript =
     (
-      ~eventFunctionDataMap=AssetScriptTool.buildEventFunctionDataMap(),
-      ~attributeMap=AssetScriptTool.buildAttributeMap(),
+      ~eventFunctionDataMap=Some(AssetScriptTool.buildEventFunctionDataMap()),
+      ~attributeMap=Some(AssetScriptTool.buildAttributeMap()),
       (),
     ) => {
   let eventFunctionDataMapStr =
-    ConvertScriptDataUtils._convertEventFunctionDataMapToStr(
-      eventFunctionDataMap,
-    );
-
-  /* WonderLog.Log.print(eventFunctionDataMap) |> ignore; */
+    switch (eventFunctionDataMap) {
+    | None => ConvertScriptDataUtils._buildEmptyMapStr()
+    | Some(eventFunctionDataMap) =>
+      eventFunctionDataMap
+      |> ConvertScriptDataUtils._convertEventFunctionDataMapToStr
+    };
 
   let attributeMapStr =
-    ConvertScriptDataUtils._convertAttributeMapToStr(attributeMap);
-
-  /* WonderLog.Log.print(attributeMap) |> ignore; */
+    switch (attributeMap) {
+    | None => ConvertScriptDataUtils._buildEmptyMapStr()
+    | Some(attributeMap) =>
+      attributeMap |> ConvertScriptDataUtils._convertAttributeMapToStr
+    };
 
   buildGLTFJson(
     ~nodes=

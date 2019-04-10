@@ -828,42 +828,78 @@ let _ =
             (),
           )
         );
-        test("test has data", () => {
-          let eventFunctionDataMap =
-            AssetScriptTool.buildEventFunctionDataMap();
-          let attributeMap = AssetScriptTool.buildAttributeMap();
-          let eventFunctionDataMapStr =
-            ConvertScriptDataUtils._convertEventFunctionDataMapToStr(
-              eventFunctionDataMap,
-            );
-          let attributeMapStr =
-            ConvertScriptDataUtils._convertAttributeMapToStr(attributeMap);
 
-          ConvertGLBTool.testGLTFResultByGLTF(
-            ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=
-              ConvertGLBTool.buildGLTFJsonOfScript(
-                ~eventFunctionDataMap,
-                ~attributeMap,
-                (),
-              ),
-            ~state,
-            ~testFunc=
-              ({scripts}) =>
-                scripts
-                |> expect
-                == [|
-                     {
-                       eventFunctionDataMap:
-                         eventFunctionDataMapStr
-                         |> Js.Json.parseExn
-                         |> Obj.magic,
-                       attributeMap:
-                         attributeMapStr |> Js.Json.parseExn |> Obj.magic,
-                     },
-                   |],
-            (),
-          );
+        describe("test has data", () => {
+          test("test only has event function data", () => {
+            let eventFunctionDataMap =
+              AssetScriptTool.buildEventFunctionDataMap();
+            let eventFunctionDataMapStr =
+              ConvertScriptDataUtils._convertEventFunctionDataMapToStr(
+                eventFunctionDataMap,
+              );
+
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfScript(
+                  ~eventFunctionDataMap=Some(eventFunctionDataMap),
+                  ~attributeMap=None,
+                  (),
+                ),
+              ~state,
+              ~testFunc=
+                ({scripts}) =>
+                  scripts
+                  |> expect
+                  == [|
+                       {
+                         eventFunctionDataMap:
+                           eventFunctionDataMapStr
+                           |> Js.Json.parseExn
+                           |> Obj.magic,
+                         attributeMap: Js.Dict.empty(),
+                       },
+                     |],
+              (),
+            );
+          });
+          test("test has event function data and attribute data", () => {
+            let eventFunctionDataMap =
+              AssetScriptTool.buildEventFunctionDataMap();
+            let attributeMap = AssetScriptTool.buildAttributeMap();
+            let eventFunctionDataMapStr =
+              ConvertScriptDataUtils._convertEventFunctionDataMapToStr(
+                eventFunctionDataMap,
+              );
+            let attributeMapStr =
+              ConvertScriptDataUtils._convertAttributeMapToStr(attributeMap);
+
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfScript(
+                  ~eventFunctionDataMap=Some(eventFunctionDataMap),
+                  ~attributeMap=Some(attributeMap),
+                  (),
+                ),
+              ~state,
+              ~testFunc=
+                ({scripts}) =>
+                  scripts
+                  |> expect
+                  == [|
+                       {
+                         eventFunctionDataMap:
+                           eventFunctionDataMapStr
+                           |> Js.Json.parseExn
+                           |> Obj.magic,
+                         attributeMap:
+                           attributeMapStr |> Js.Json.parseExn |> Obj.magic,
+                       },
+                     |],
+              (),
+            );
+          });
         });
       })
     );

@@ -2254,8 +2254,9 @@ let _ =
                   AssetScriptTool.buildEventFunctionDataMap(
                     ~initFunc=Some(AssetScriptTool.buildEventFunc()),
                     (),
-                  ),
-                ~attributeMap=AssetScriptTool.buildAttributeMap(),
+                  )
+                  ->Some,
+                ~attributeMap=AssetScriptTool.buildAttributeMap()->Some,
                 (),
               ),
             ~state,
@@ -2292,8 +2293,9 @@ let _ =
                   AssetScriptTool.buildEventFunctionDataMap(
                     ~updateFunc=Some(AssetScriptTool.buildEventFunc2()),
                     (),
-                  ),
-                ~attributeMap=AssetScriptTool.buildAttributeMap(),
+                  )
+                  ->Some,
+                ~attributeMap=AssetScriptTool.buildAttributeMap()->Some,
                 (),
               ),
             ~state,

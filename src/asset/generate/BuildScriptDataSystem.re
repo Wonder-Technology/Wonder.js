@@ -22,26 +22,7 @@ let build = (scriptDataMap, {scriptRecord} as state) => {
                     script,
                     state,
                   ),
-                /* OperateScriptDataMainService.unsafeGetScriptEventFunctionDataEntries(
-                     script,
-                     state,
-                   )
-                   |> Js.Array.map(((name, eventFunctionData)) =>
-                        (
-                          name,
-                          SerializeService.serializeFunction(
-                            eventFunctionData,
-                          ),
-                        )
-                      ), */
                 attributeMapStr:
-                  /* OperateScriptDataMainService.unsafeGetScriptAttributeEntries(
-                       script,
-                       state,
-                     )
-                     |> Js.Array.map(((name, attribute)) =>
-                          (name, SerializeService.serializeFunction(attribute))
-                        ), */
                   ConvertScriptDataUtils.unsafeGetAttributeMapStr(
                     script,
                     state,

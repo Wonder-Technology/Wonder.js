@@ -33,12 +33,19 @@ let _convertEventFunctionDataMapToStr = eventDataMap =>
   |> Obj.magic
   |> Js.Json.stringify;
 
+let _buildEmptyMapStr = () => "{}";
+
 let unsafeGetEventFunctionDataMapStr = (script, {scriptRecord} as state) => {
   let {scriptEventFunctionDataMap} as scriptRecord = scriptRecord;
 
-  scriptEventFunctionDataMap
-  |> ImmutableSparseMapService.unsafeGetAndCheck(script)
-  |> _convertEventFunctionDataMapToStr;
+  switch (
+    scriptEventFunctionDataMap
+    |> WonderCommonlib.ImmutableSparseMapService.get(script)
+  ) {
+  | None => _buildEmptyMapStr()
+  | Some(eventFunctionDataMap) =>
+    eventFunctionDataMap |> _convertEventFunctionDataMapToStr
+  };
 };
 
 let _convertAttributeMapToStr = attributeMap =>
@@ -47,9 +54,17 @@ let _convertAttributeMapToStr = attributeMap =>
 let unsafeGetAttributeMapStr = (script, {scriptRecord} as state) => {
   let {scriptAttributeMap} as scriptRecord = scriptRecord;
 
-  scriptAttributeMap
-  |> ImmutableSparseMapService.unsafeGetAndCheck(script)
-  |> _convertAttributeMapToStr;
+  /* scriptAttributeMap
+     |> ImmutableSparseMapService.unsafeGetAndCheck(script)
+     |> _convertAttributeMapToStr; */
+
+  switch (
+    scriptAttributeMap
+    |> WonderCommonlib.ImmutableSparseMapService.get(script)
+  ) {
+  | None => _buildEmptyMapStr()
+  | Some(attributeMap) => attributeMap |> _convertAttributeMapToStr
+  };
 };
 
 let convertEventFunctionDataMapJsonToRecord =
