@@ -416,15 +416,19 @@ let batchSetMeshRendererData = ({meshRenderers}, meshRendererArr, state) =>
          meshRendererData |> OptionService.isJsonSerializedValueNone ?
            state :
            {
-             let {drawMode} =
+             let {drawMode, isRender} =
                meshRendererData |> OptionService.unsafeGetJsonSerializedValue;
              let meshRenderer = meshRendererArr[index];
 
-             OperateMeshRendererMainService.setDrawMode(
-               meshRenderer,
-               drawMode |> DrawModeType.drawModeToUint8,
-               state,
-             );
+             state
+             |> OperateMeshRendererMainService.setDrawMode(
+                  meshRenderer,
+                  drawMode |> DrawModeType.drawModeToUint8,
+                )
+             |> OperateMeshRendererMainService.setIsRender(
+                  meshRenderer,
+                  isRender,
+                );
            },
        state,
      );
@@ -460,10 +464,15 @@ let batchSetLightMaterialData = ({lightMaterials}, lightMaterialArr, state) =>
 let batchSetScriptData = ({scripts}, scriptArr, state) =>
   scripts
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. state, {eventFunctionDataMap, attributeMap}: script, index) => {
+       (.
+         state,
+         {isActive, eventFunctionDataMap, attributeMap}: script,
+         index,
+       ) => {
          let script = scriptArr[index];
 
          state
+         |> IsActiveScriptMainService.setIsActive(script, isActive)
          |> OperateScriptDataMainService.addEventFunctionDataMap(
               script,
               ConvertScriptDataUtils.convertEventFunctionDataMapJsonToRecord(
@@ -533,6 +542,26 @@ let batchSetNames =
   |> _batchSetTextureName(basicSourceTextureArr, basicSourceTextures)
   |> _batchSetGeometryName(geometrys, geometryArr);
 
+let batchSetIsActive = (gameObjectArr, gameObjects: WDType.gameObjects, state) =>
+  gameObjectArr
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. state, gameObject, index) =>
+         AssembleIsActiveUtils.doesGameObjectHasIsActiveData(
+           index,
+           gameObjects,
+         ) ?
+           SetIsActiveGameObjectMainService.setIsActive(
+             gameObject,
+             AssembleIsActiveUtils.unsafeGetGameObjectIsActiveData(
+               index,
+               gameObjects,
+             ),
+             state,
+           ) :
+           state,
+       state,
+     );
+
 let batchSetIsRoot = (gameObjectArr, gameObjects: WDType.gameObjects, state) =>
   gameObjectArr
   |> WonderCommonlib.ArrayService.reduceOneParami(
@@ -547,13 +576,5 @@ let batchSetIsRoot = (gameObjectArr, gameObjects: WDType.gameObjects, state) =>
              state,
            ) :
            state,
-       /* switch (
-            gameObjects.isRoots
-            |> WonderCommonlib.MutableSparseMapService.get(index)
-          ) {
-          | Some(isRoot) =>
-            IsRootGameObjectMainService.setIsRoot(. gameObject, isRoot, state)
-          | None => state
-          }, */
        state,
      );

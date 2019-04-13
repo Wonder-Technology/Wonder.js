@@ -368,6 +368,39 @@ let _ =
         )
       );
 
+      describe("set gameObject isActive", () => {
+        testPromise("if gltf->node->extras has no isActive, set true", () =>
+          AssembleWDBSystemTool.testGLB(
+            sandbox^,
+            GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
+            ((state, _, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllGameObjectsIsActive(
+                rootGameObject,
+                state,
+              )
+              |> AssembleWDBSystemTool.getAllChildrenData
+              |> expect == [|true, true, true, true, true, true, true|],
+            state^,
+          )
+        );
+        testPromise("else, set it", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfNodeIsActive(false),
+            ~state,
+            ~testFunc=
+              ((state, _, rootGameObject)) =>
+                AssembleWDBSystemTool.getAllGameObjectsIsActive(
+                  rootGameObject,
+                  state,
+                )
+                |> expect == [|false, false|],
+            (),
+          )
+        );
+      });
+
       describe("set gameObject isRoot", () => {
         testPromise("if gltf->node->extras has no isRoot, set false", () =>
           AssembleWDBSystemTool.testGLB(
@@ -2108,6 +2141,35 @@ let _ =
           state^,
         )
       );
+      testPromise("test set isRender", () =>
+        AssembleWDBSystemTool.testGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJsonOfMeshRenderer(
+              ~isMeshRenderer1Render=true,
+              ~isMeshRenderer2Render=false,
+              (),
+            ),
+          ~state,
+          ~testFunc=
+            ((state, _, rootGameObject)) =>
+              _getAllGameObjects(rootGameObject, state)
+              |> Js.Array.map(gameObject =>
+                   GameObjectAPI.unsafeGetGameObjectMeshRendererComponent(
+                     gameObject,
+                     state,
+                   )
+                 )
+              |> Js.Array.map(meshRenderer =>
+                   MeshRendererAPI.getMeshRendererIsRender(
+                     meshRenderer,
+                     state,
+                   )
+                 )
+              |> expect == [|false|],
+          (),
+        )
+      );
       testPromise("test set drawMode", () =>
         AssembleWDBSystemTool.testGLTF(
           ~sandbox=sandbox^,
@@ -2241,6 +2303,28 @@ let _ =
                 |> expect == [|true|],
             (),
           )
+        )
+      );
+
+      testPromise("test set isActive", () =>
+        AssembleWDBSystemTool.testGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJsonOfScript(
+              ~isActive=false,
+              ~eventFunctionDataMap=None,
+              ~attributeMap=None,
+              (),
+            ),
+          ~state,
+          ~testFunc=
+            ((state, _, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllScripts(rootGameObject, state)
+              |> Js.Array.map(script =>
+                   ScriptAPI.unsafeGetScriptIsActive(script, state)
+                 )
+              |> expect == [|false|],
+          (),
         )
       );
 

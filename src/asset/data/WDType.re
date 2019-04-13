@@ -41,6 +41,7 @@ type gameObjects = {
   count: int,
   names: array(string),
   isRoots: WonderCommonlib.MutableSparseMapService.t(bool),
+  isActives: WonderCommonlib.MutableSparseMapService.t(bool),
 };
 
 type transform = {
@@ -49,7 +50,10 @@ type transform = {
   scale: option((float, float, float)),
 };
 
-type meshRenderer = {drawMode: DrawModeType.drawMode};
+type meshRenderer = {
+  drawMode: DrawModeType.drawMode,
+  isRender: bool,
+};
 
 type geometry = {
   name: string,

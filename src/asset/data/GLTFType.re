@@ -195,6 +195,7 @@ type nodeExtras = {
   cameraController: option(cameraControllerIndex),
   script: option(scriptIndex),
   isRoot: option(bool),
+  isActive: option(bool),
 };
 
 type nodeKHRLightsExtension = {light: int};
@@ -249,7 +250,10 @@ type khrLightsExtension = {lights: array(light)};
 
 type extensions = {khr_lights: option(khrLightsExtension)};
 
-type meshRenderer = {drawMode: Js.Typed_array.Uint8Array.elt};
+type meshRenderer = {
+  drawMode: Js.Typed_array.Uint8Array.elt,
+  isRender: bool,
+};
 
 type basicCameraView = {isActive: bool};
 

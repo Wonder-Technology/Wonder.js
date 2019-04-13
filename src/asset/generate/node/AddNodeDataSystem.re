@@ -29,7 +29,7 @@ let _addTransformRotationData =
 
 let _addNodeExtraData =
     (
-      isRoot,
+      (isActive, isRoot),
       (
         basicCameraViewIndex,
         meshRendererIndex,
@@ -40,6 +40,7 @@ let _addNodeExtraData =
       ),
     ) =>
   switch (
+    isActive,
     isRoot,
     basicCameraViewIndex,
     meshRendererIndex,
@@ -48,8 +49,9 @@ let _addNodeExtraData =
     arcballCameraControllerIndex,
     scriptIndex,
   ) {
-  | (None, None, None, None, None, None, None) => None
+  | (None, None, None, None, None, None, None, None) => None
   | (
+      isActive,
       isRoot,
       basicCameraViewIndex,
       meshRendererIndex,
@@ -60,6 +62,7 @@ let _addNodeExtraData =
     ) =>
     Some(
       {
+        isActive,
         isRoot,
         basicCameraView: basicCameraViewIndex,
         meshRenderer: meshRendererIndex,
@@ -80,7 +83,7 @@ let _addNodeExtensionData = lightIndex =>
 let addNodeAndItsComponentData =
     (
       gameObject,
-      isRoot,
+      (isActive, isRoot),
       (
         (
           transform,
@@ -132,7 +135,7 @@ let addNodeAndItsComponentData =
          camera: cameraProjectionIndex,
          extras:
            _addNodeExtraData(
-             isRoot,
+             (isActive, isRoot),
              (
                basicCameraViewIndex,
                meshRendererIndex,

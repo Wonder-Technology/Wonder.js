@@ -17,6 +17,8 @@ let build = (scriptDataMap, {scriptRecord} as state) => {
          scriptDataArr
          |> ArrayService.push(
               {
+                isActive:
+                  IsActiveScriptMainService.unsafeGetIsActive(script, state),
                 eventFunctionDataMapStr:
                   ConvertScriptDataUtils.unsafeGetEventFunctionDataMapStr(
                     script,

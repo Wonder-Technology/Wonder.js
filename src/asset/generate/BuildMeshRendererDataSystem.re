@@ -22,6 +22,11 @@ let build = (meshRendererDataMap, state) => {
                     meshRenderer,
                     state,
                   ),
+                isRender:
+                  OperateMeshRendererMainService.getIsRender(
+                    meshRenderer,
+                    state,
+                  ),
               }: GenerateSceneGraphType.meshRendererData,
             ),
        [||],

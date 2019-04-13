@@ -646,6 +646,42 @@ let _ =
       });
     });
 
+    describe("test meshRenderer", () => {
+      testPromise("test nodes", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfMeshRenderer(),
+          ~targetJsonStr=
+            {|
+"nodes":[{"name":"gameObject_0","mesh":0,"extras":{"isRoot":true,"lightMaterial":0,"meshRenderer":0}}]
+            |},
+          ~state,
+          (),
+        );
+      });
+
+      testPromise("test extras->meshRenderers", () => {
+        let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJsonOfMeshRenderer(
+              ~isMeshRenderer2Render=false,
+              (),
+            ),
+          ~targetJsonStr=
+            {|
+"meshRenderers":[{"isRender":false,"drawMode":3}]
+            |},
+          ~state,
+          (),
+        );
+      });
+    });
+
     describe("test script", () => {
       testPromise("test nodes", () => {
         let _ = GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
@@ -678,9 +714,10 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
-          ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfScript(),
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJsonOfScript(~isActive=false, ()),
           ~targetJsonStr=
-            "\"scripts\":[{\"eventFunctionDataMap\":{\"eventFunctionData\":[\"function(script,api,state){\\nvarscriptAttributeName=\\\"scriptAttribute\\\";\\nvarunsafeGetScriptAttribute=api.unsafeGetScriptAttribute;\\nvarscriptAttribute=unsafeGetScriptAttribute(script,scriptAttributeName,state);\\nvarunsafeGetScriptAttributeFieldValue=api.unsafeGetScriptAttributeFieldValue;\\nvarsetScriptAttributeFieldValue=api.setScriptAttributeFieldValue;\\nreturnsetScriptAttributeFieldValue(script,\\n/*tuple*/\\n[scriptAttributeName,\\\"a\\\",unsafeGetScriptAttributeFieldValue(\\\"a\\\",scriptAttribute)+1|0],state);\\n}\",\"function(script,api,state){\\nvarscriptAttributeName=\\\"scriptAttribute\\\";\\nvarunsafeGetScriptAttribute=api.unsafeGetScriptAttribute;\\nvarscriptAttribute=unsafeGetScriptAttribute(script,scriptAttributeName,state);\\nvarunsafeGetScriptAttributeFieldValue=api.unsafeGetScriptAttributeFieldValue;\\nvarsetScriptAttributeFieldValue=api.setScriptAttributeFieldValue;\\nreturnsetScriptAttributeFieldValue(script,\\n/*tuple*/\\n[scriptAttributeName,\\\"a\\\",unsafeGetScriptAttributeFieldValue(\\\"a\\\",scriptAttribute)+1|0],state);\\n}\",null]},\"attributeMap\":{\"scriptAttribute\":{\"a\":[0,1,1],\"b\":[1,0.1,0.1]}}}]",
+            "\"scripts\":[{\"isActive\":false,\"eventFunctionDataMap\":{\"eventFunctionData\":[\"function(script,api,state){\\nvarscriptAttributeName=\\\"scriptAttribute\\\";\\nvarunsafeGetScriptAttribute=api.unsafeGetScriptAttribute;\\nvarscriptAttribute=unsafeGetScriptAttribute(script,scriptAttributeName,state);\\nvarunsafeGetScriptAttributeFieldValue=api.unsafeGetScriptAttributeFieldValue;\\nvarsetScriptAttributeFieldValue=api.setScriptAttributeFieldValue;\\nreturnsetScriptAttributeFieldValue(script,\\n/*tuple*/\\n[scriptAttributeName,\\\"a\\\",unsafeGetScriptAttributeFieldValue(\\\"a\\\",scriptAttribute)+1|0],state);\\n}\",\"function(script,api,state){\\nvarscriptAttributeName=\\\"scriptAttribute\\\";\\nvarunsafeGetScriptAttribute=api.unsafeGetScriptAttribute;\\nvarscriptAttribute=unsafeGetScriptAttribute(script,scriptAttributeName,state);\\nvarunsafeGetScriptAttributeFieldValue=api.unsafeGetScriptAttributeFieldValue;\\nvarsetScriptAttributeFieldValue=api.setScriptAttributeFieldValue;\\nreturnsetScriptAttributeFieldValue(script,\\n/*tuple*/\\n[scriptAttributeName,\\\"a\\\",unsafeGetScriptAttributeFieldValue(\\\"a\\\",scriptAttribute)+1|0],state);\\n}\",null]},\"attributeMap\":{\"scriptAttribute\":{\"a\":[0,1,1],\"b\":[1,0.1,0.1]}}}]",
           ~state,
           (),
         );

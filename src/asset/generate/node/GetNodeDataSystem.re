@@ -86,6 +86,9 @@ let _getNodeData =
     gameObjectNodeIndexMap
     |> WonderCommonlib.MutableSparseMapService.set(gameObject, nodeIndex);
 
+  let isActive =
+    GetIsActiveGameObjectMainService.getIsActive(gameObject, state);
+
   let isRoot = IsRootGameObjectMainService.getIsRoot(gameObject, state);
 
   (
@@ -95,6 +98,7 @@ let _getNodeData =
     childrenGameObjectArr,
     gameObjectChildrenMap,
     gameObjectNodeIndexMap,
+    isActive,
     isRoot,
   );
 };
@@ -190,6 +194,7 @@ let rec _getNodeAndItsComponentsData =
            childrenGameObjectArr,
            gameObjectChildrenMap,
            gameObjectNodeIndexMap,
+           isActive,
            isRoot,
          ) =
            _getNodeData(
@@ -304,7 +309,7 @@ let rec _getNodeAndItsComponentsData =
                childrenTransformArr,
                AddNodeDataSystem.addNodeAndItsComponentData(
                  gameObject,
-                 isRoot,
+                 (isActive, isRoot),
                  (
                    (
                      transform,

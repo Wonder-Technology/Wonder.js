@@ -64,16 +64,18 @@ let testGLTF =
     embeddedGLTFJsonStr |> Js.Json.parseExn,
     binBuffer,
   )
-  |. AssembleWholeWDBSystem.assemble(
-       (
-         isSetIMGUIFunc,
-         isBindEvent,
-         isActiveCamera,
-         isRenderLight,
-         isLoadImage,
-       ),
-       state^,
-     )
+  ->(
+      AssembleWholeWDBSystem.assemble(
+        (
+          isSetIMGUIFunc,
+          isBindEvent,
+          isActiveCamera,
+          isRenderLight,
+          isLoadImage,
+        ),
+        state^,
+      )
+    )
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => testFunc(result^) |> resolve);
 };
@@ -136,6 +138,12 @@ let getAllGameObjects = (rootGameObject, state) =>
 
 let getAllChildrenData = allGameObjectData =>
   allGameObjectData |> Js.Array.sliceFrom(1);
+
+let getAllGameObjectsIsActive = (rootGameObject, state) =>
+  getAllGameObjects(rootGameObject, state)
+  |> Js.Array.map(gameObject =>
+       GameObjectAPI.unsafeGetGameObjectIsActive(gameObject, state)
+     );
 
 let getAllGameObjectsIsRoot = (rootGameObject, state) =>
   getAllGameObjects(rootGameObject, state)
@@ -231,21 +239,18 @@ let getAllScripts = (rootGameObject, state) =>
        GameObjectAPI.unsafeGetGameObjectScriptComponent(gameObject, state)
      );
 
-
 /* let getAllScriptData = (rootGameObject, state) =>
-  getAllScripts(rootGameObject, state)
-  |> Js.Array.map(light =>
-       (
-         PointLightAPI.getPointLightColor(light, state),
-         PointLightAPI.getPointLightIntensity(light, state),
-         PointLightAPI.getPointLightConstant(light, state),
-         PointLightAPI.getPointLightLinear(light, state),
-         PointLightAPI.getPointLightQuadratic(light, state),
-         PointLightAPI.getPointLightRange(light, state),
-       )
-     ); */
-
-
+   getAllScripts(rootGameObject, state)
+   |> Js.Array.map(light =>
+        (
+          PointLightAPI.getPointLightColor(light, state),
+          PointLightAPI.getPointLightIntensity(light, state),
+          PointLightAPI.getPointLightConstant(light, state),
+          PointLightAPI.getPointLightLinear(light, state),
+          PointLightAPI.getPointLightQuadratic(light, state),
+          PointLightAPI.getPointLightRange(light, state),
+        )
+      ); */
 
 let batchCreate = BatchCreateSystem.batchCreate;
 
@@ -290,12 +295,12 @@ let isImageUint8ArrayMapEqual =
          (. (mimeType, uint8Array)) =>
          (mimeType, uint8Array |> Uint8Array.byteLength |> Obj.magic)
        )
-    |>
-    Obj.magic == (
-                   targetImageUint8ArrayMap
-                   |> WonderCommonlib.MutableSparseMapService.mapValid(
-                        (. (mimeType, uint8ArrayByteLength)) =>
-                        (mimeType, uint8ArrayByteLength)
-                      )
-                 )
+    |> Obj.magic
+    == (
+         targetImageUint8ArrayMap
+         |> WonderCommonlib.MutableSparseMapService.mapValid(
+              (. (mimeType, uint8ArrayByteLength)) =>
+              (mimeType, uint8ArrayByteLength)
+            )
+       )
   );

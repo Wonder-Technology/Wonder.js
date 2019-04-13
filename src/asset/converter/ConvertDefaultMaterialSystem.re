@@ -68,6 +68,7 @@ let _setDefaultMaterial =
                           lightMaterial: Some(defaultMaterialIndex),
                           cameraController: None,
                           script: None,
+                          isActive: None,
                           isRoot: None,
                         })
                       | Some(extras) =>

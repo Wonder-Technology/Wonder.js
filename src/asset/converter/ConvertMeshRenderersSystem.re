@@ -23,6 +23,7 @@ let _convertByMesh = (meshes, geometryGameObjectIndices, geometryIndices) =>
                | Some(6) => DrawModeType.Triangle_fan
                | None => DrawModeType.Triangles
                },
+             isRender: true,
            }: WDType.meshRenderer,
          ) :
          None;
@@ -43,11 +44,14 @@ let convertToMeshRenderers =
     | Some(meshRenderers) when Js.Array.length(meshRenderers) > 0 =>
       meshRenderers
       |> WonderCommonlib.ArrayService.reduceOneParami(
-           (. arr, {drawMode}: GLTFType.meshRenderer, index) =>
+           (. arr, {drawMode, isRender}: GLTFType.meshRenderer, index) =>
              arr
              |> ArrayService.push(
                   Some(
-                    {drawMode: drawMode |> DrawModeType.uint8ToDrawMode}: WDType.meshRenderer,
+                    {
+                      drawMode: drawMode |> DrawModeType.uint8ToDrawMode,
+                      isRender,
+                    }: WDType.meshRenderer,
                   ),
                 ),
            [||],

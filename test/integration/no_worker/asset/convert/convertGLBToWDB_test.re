@@ -301,11 +301,11 @@ let _ =
                 meshRenderers
                 |> expect
                 == [|
-                     Some({drawMode: DrawModeType.Triangles}),
-                     Some({drawMode: DrawModeType.Triangles}),
-                     Some({drawMode: DrawModeType.Triangles}),
-                     Some({drawMode: DrawModeType.Triangles}),
-                     Some({drawMode: DrawModeType.Triangles}),
+                     Some({drawMode: DrawModeType.Triangles, isRender: true}),
+                     Some({drawMode: DrawModeType.Triangles, isRender: true}),
+                     Some({drawMode: DrawModeType.Triangles, isRender: true}),
+                     Some({drawMode: DrawModeType.Triangles, isRender: true}),
+                     Some({drawMode: DrawModeType.Triangles, isRender: true}),
                    |],
             (),
           )
@@ -634,6 +634,8 @@ let _ =
               == {
                    count: 1,
                    names: [|"gameObject_0"|],
+                   isActives:
+                     WonderCommonlib.MutableSparseMapService.createEmpty(),
                    isRoots:
                      WonderCommonlib.MutableSparseMapService.createEmpty(),
                  },
@@ -659,8 +661,26 @@ let _ =
                  "Cesium_Milk_Truck_1",
                  "Cesium_Milk_Truck_2",
                |],
+               isActives:
+                 WonderCommonlib.MutableSparseMapService.createEmpty(),
                isRoots: WonderCommonlib.MutableSparseMapService.createEmpty(),
              }
+        )
+      );
+
+      describe("test isActive", () =>
+        test("if extras has isActive, set it", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfNodeIsActive(true),
+            ~state,
+            ~testFunc=
+              ({gameObjects}) =>
+                gameObjects.isActives
+                |> expect == MutableSparseMapTool.createByArr([|true, true|]),
+            (),
+          )
         )
       );
 
@@ -819,6 +839,47 @@ let _ =
 
     describe("test script data", () =>
       describe("test scripts", () => {
+        describe("test isActive", () => {
+          test("test is active", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfScript(
+                  ~isActive=true,
+                  ~eventFunctionDataMap=None,
+                  ~attributeMap=None,
+                  (),
+                ),
+              ~state,
+              ~testFunc=
+                ({scripts}) =>
+                  scripts
+                  |> expect
+                  == [|ConvertGLBTool.buildScript(~isActive=true, ())|],
+              (),
+            )
+          );
+          test("test is not active", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfScript(
+                  ~isActive=false,
+                  ~eventFunctionDataMap=None,
+                  ~attributeMap=None,
+                  (),
+                ),
+              ~state,
+              ~testFunc=
+                ({scripts}) =>
+                  scripts
+                  |> expect
+                  == [|ConvertGLBTool.buildScript(~isActive=false, ())|],
+              (),
+            )
+          );
+        });
+
         test("test no data", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
@@ -852,13 +913,13 @@ let _ =
                   scripts
                   |> expect
                   == [|
-                       {
-                         eventFunctionDataMap:
+                       ConvertGLBTool.buildScript(
+                         ~eventFunctionDataMap=
                            eventFunctionDataMapStr
                            |> Js.Json.parseExn
                            |> Obj.magic,
-                         attributeMap: Js.Dict.empty(),
-                       },
+                         (),
+                       ),
                      |],
               (),
             );
@@ -888,14 +949,15 @@ let _ =
                   scripts
                   |> expect
                   == [|
-                       {
-                         eventFunctionDataMap:
+                       ConvertGLBTool.buildScript(
+                         ~eventFunctionDataMap=
                            eventFunctionDataMapStr
                            |> Js.Json.parseExn
                            |> Obj.magic,
-                         attributeMap:
+                         ~attributeMap=
                            attributeMapStr |> Js.Json.parseExn |> Obj.magic,
-                       },
+                         (),
+                       ),
                      |],
               (),
             );
@@ -1390,12 +1452,23 @@ let _ =
       );
     });
 
-    describe("test meshRenderers", () =>
-      describe(
-        {|meshRenderers.length should === custom geometry gameObjects.length;
-meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
-|},
-        () => {
+    describe("test meshRenderers", () => {
+      describe("meshRenderers.length should === gameObjects.length", () =>
+        test("test single primitive", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+            ~state,
+            ~testFunc=
+              ({meshRenderers}) =>
+                meshRenderers |> Js.Array.length |> expect == 1,
+            (),
+          )
+        )
+      );
+
+      describe("test isRender", () => {
+        describe("if has no extras, isRender should be true", () =>
           test("test single primitive", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
@@ -1404,23 +1477,75 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
               ~testFunc=
                 ({meshRenderers}) =>
                   meshRenderers
-                  |> expect == [|Some({drawMode: DrawModeType.Triangles})|],
+                  |> expect
+                  == [|
+                       Some(
+                         ConvertGLBTool.buildMeshRenderer(~isRender=true, ()),
+                       ),
+                     |],
               (),
             )
-          );
-          test("test extras", () =>
+          )
+        );
+
+        describe(
+          "else, isRender should === extras->meshRenderers->isRender", () =>
+          test("test", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
               ~embeddedGLTFJsonStr=
-                ConvertGLBTool.buildGLTFJsonOfMeshRenderer(),
+                ConvertGLBTool.buildGLTFJsonOfMeshRenderer(
+                  ~isMeshRenderer1Render=true,
+                  ~isMeshRenderer2Render=false,
+                  (),
+                ),
               ~state,
               ~testFunc=
                 ({meshRenderers}) =>
                   meshRenderers
                   |> expect
                   == [|
-                       Some({drawMode: DrawModeType.Lines}),
-                       Some({drawMode: DrawModeType.Line_strip}),
+                       Some(
+                         ConvertGLBTool.buildMeshRenderer(
+                           ~isRender=true,
+                           ~drawMode=DrawModeType.Lines,
+                           (),
+                         ),
+                       ),
+                       Some(
+                         ConvertGLBTool.buildMeshRenderer(
+                           ~isRender=false,
+                           ~drawMode=DrawModeType.Line_strip,
+                           (),
+                         ),
+                       ),
+                     |],
+              (),
+            )
+          )
+        );
+      });
+
+      describe("test drawMode", () => {
+        describe(
+          "if not has extras, drawMode should === gameObjects->mesh->drawMode",
+          () => {
+          test("test single primitive", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+              ~state,
+              ~testFunc=
+                ({meshRenderers}) =>
+                  meshRenderers
+                  |> expect
+                  == [|
+                       Some(
+                         ConvertGLBTool.buildMeshRenderer(
+                           ~drawMode=DrawModeType.Triangles,
+                           (),
+                         ),
+                       ),
                      |],
               (),
             )
@@ -1435,18 +1560,74 @@ meshRenderers->drawMode should === custom geometry gameObjects->mesh->drawMode;
                 meshRenderers
                 |> expect
                 == [|
-                     Some({drawMode: DrawModeType.Triangles}),
-                     Some({drawMode: DrawModeType.Triangles}),
-                     Some({drawMode: DrawModeType.Triangles}),
-                     Some({drawMode: DrawModeType.Triangles}),
-                     Some({drawMode: DrawModeType.Triangles}),
+                     Some(
+                       ConvertGLBTool.buildMeshRenderer(
+                         ~drawMode=DrawModeType.Triangles,
+                         (),
+                       ),
+                     ),
+                     Some(
+                       ConvertGLBTool.buildMeshRenderer(
+                         ~drawMode=DrawModeType.Triangles,
+                         (),
+                       ),
+                     ),
+                     Some(
+                       ConvertGLBTool.buildMeshRenderer(
+                         ~drawMode=DrawModeType.Triangles,
+                         (),
+                       ),
+                     ),
+                     Some(
+                       ConvertGLBTool.buildMeshRenderer(
+                         ~drawMode=DrawModeType.Triangles,
+                         (),
+                       ),
+                     ),
+                     Some(
+                       ConvertGLBTool.buildMeshRenderer(
+                         ~drawMode=DrawModeType.Triangles,
+                         (),
+                       ),
+                     ),
                    |]
               )
             )
           );
-        },
-      )
-    );
+        });
+
+        describe(
+          "else, drawMode should === extras->meshRenderers->drawMode", () =>
+          test("test", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfMeshRenderer(),
+              ~state,
+              ~testFunc=
+                ({meshRenderers}) =>
+                  meshRenderers
+                  |> expect
+                  == [|
+                       Some(
+                         ConvertGLBTool.buildMeshRenderer(
+                           ~drawMode=DrawModeType.Lines,
+                           (),
+                         ),
+                       ),
+                       Some(
+                         ConvertGLBTool.buildMeshRenderer(
+                           ~drawMode=DrawModeType.Line_strip,
+                           (),
+                         ),
+                       ),
+                     |],
+              (),
+            )
+          )
+        );
+      });
+    });
 
     describe("test indices", () => {
       describe("test gameObjectIndices", () => {

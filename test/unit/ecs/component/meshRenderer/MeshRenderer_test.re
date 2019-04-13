@@ -221,7 +221,49 @@ let _ =
       )
     );
 
-    describe("test add component", () =>
+    describe("test add component", () => {
+      test("if isRender === false, not add to renderIndexArray", () => {
+        open MeshRendererAPI;
+        open GameObjectAPI;
+        open BasicMaterialAPI;
+        let (state, meshRenderer) = createMeshRenderer(state^);
+        let (state, gameObject) = state |> createGameObject;
+        let (state, material) = createBasicMaterial(state);
+        let state =
+          state |> addGameObjectBasicMaterialComponent(gameObject, material);
+        let state =
+          state
+          |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer, false);
+
+        let state =
+          state
+          |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+
+        state
+        |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
+        |> expect == [||];
+      });
+      test("else, add to renderIndexArray", () => {
+        open MeshRendererAPI;
+        open GameObjectAPI;
+        open BasicMaterialAPI;
+        let (state, meshRenderer) = createMeshRenderer(state^);
+        let (state, gameObject) = state |> createGameObject;
+        let (state, material) = createBasicMaterial(state);
+        let state =
+          state |> addGameObjectBasicMaterialComponent(gameObject, material);
+        let state =
+          state |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer, true);
+
+        let state =
+          state
+          |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+
+        state
+        |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
+        |> expect == [|gameObject|];
+      });
+
       describe(
         "should add meshRenderer component after add material component", () => {
         test("test basic material", () => {
@@ -254,8 +296,8 @@ let _ =
                "should add material component before add meshRenderer component",
              );
         });
-      })
-    );
+      });
+    });
 
     describe("disposeComponent", () => {
       describe("dispose data", () => {

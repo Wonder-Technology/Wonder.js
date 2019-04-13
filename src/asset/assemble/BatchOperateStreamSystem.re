@@ -65,6 +65,7 @@ let batchOperate =
          (gameObjects, basicSourceTextures),
          (geometrys, geometryArr),
        )
+    |> BatchOperateSystem.batchSetIsActive(gameObjectArr, gameObjects)
     |> BatchOperateSystem.batchSetIsRoot(gameObjectArr, gameObjects);
 
   let (

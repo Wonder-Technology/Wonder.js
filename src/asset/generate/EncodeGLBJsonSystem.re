@@ -91,6 +91,7 @@ let _encodeNodeExtras = (extras, list) =>
           lightMaterial,
           cameraController,
           script,
+          isActive,
           isRoot,
         }: nodeExtras
       ),
@@ -106,6 +107,12 @@ let _encodeNodeExtras = (extras, list) =>
 
     let extraList =
       _encodeNodeMaterial(basicMaterial, lightMaterial, extraList);
+
+    let extraList =
+      switch (isActive) {
+      | None => extraList
+      | Some(isActive) => [("isActive", isActive |> bool), ...extraList]
+      };
 
     let extraList =
       switch (isRoot) {
@@ -214,8 +221,9 @@ let _encodeMeshRendererExtra = (meshRendererDataArr, extraList) =>
       (
         "meshRenderers",
         meshRendererDataArr
-        |> Js.Array.map((({drawMode}: meshRendererData) as data) =>
-             [("drawMode", drawMode |> int)] |> object_
+        |> Js.Array.map((({isRender, drawMode}: meshRendererData) as data) =>
+             [("isRender", isRender |> bool), ("drawMode", drawMode |> int)]
+             |> object_
            )
         |> jsonArray,
       ),
@@ -312,9 +320,12 @@ let _encodeScriptExtra = (scriptDataArr, extraList) =>
         scriptDataArr
         |> Js.Array.map(
              (
-               ({eventFunctionDataMapStr, attributeMapStr}: scriptData) as data,
+               (
+                 {isActive, eventFunctionDataMapStr, attributeMapStr}: scriptData
+               ) as data,
              ) =>
              [
+               ("isActive", isActive |> bool),
                (
                  "eventFunctionDataMap",
                  eventFunctionDataMapStr |> Js.Json.parseExn,

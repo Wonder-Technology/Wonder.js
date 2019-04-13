@@ -265,7 +265,10 @@ let _convertExtras = json =>
                     "meshRenderers",
                     array(json =>
                       (
-                        {drawMode: json |> field("drawMode", int)}: meshRenderer
+                        {
+                          drawMode: json |> field("drawMode", int),
+                          isRender: json |> field("isRender", bool),
+                        }: meshRenderer
                       )
                     ),
                   ),
@@ -296,6 +299,7 @@ let _convertExtras = json =>
                       (
                         /* WonderLog.Log.print(json) |> ignore; */
                         {
+                          isActive: json |> field("isActive", bool),
                           eventFunctionDataMap:
                             _getScriptMap("eventFunctionDataMap", json),
                           /* json
@@ -568,6 +572,11 @@ let _convertNodes = json =>
                       script:
                         json
                         |> optimizedOptional(optimizedField("script", int)),
+                      isActive:
+                        json
+                        |> optimizedOptional(
+                             optimizedField("isActive", bool),
+                           ),
                       isRoot:
                         json
                         |> optimizedOptional(optimizedField("isRoot", bool)),

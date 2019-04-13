@@ -5,6 +5,7 @@ type nodeExtras = {
   lightMaterial: option(int),
   cameraController: option(int),
   script: option(int),
+  isActive: option(bool),
   isRoot: option(bool),
 };
 
@@ -75,7 +76,10 @@ type imageData = {
   byteOffset: int,
 };
 
-type meshRendererData = {drawMode: Js.Typed_array.Uint8Array.elt};
+type meshRendererData = {
+  drawMode: Js.Typed_array.Uint8Array.elt,
+  isRender: bool,
+};
 
 type basicMaterialData = {
   colorFactor: option(array(float)),
@@ -115,6 +119,7 @@ type lightData = {
 };
 
 type scriptData = {
+  isActive: bool,
   eventFunctionDataMapStr: string,
   attributeMapStr: string,
 };

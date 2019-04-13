@@ -661,7 +661,8 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-              "extras":{"meshRenderers":[{"drawMode":4},{"drawMode":4},{"drawMode":4}]}
+"extras":{"meshRenderers":[{"isRen
+der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMode":4}]}
                 |j},
           state,
         );
@@ -2379,7 +2380,7 @@ let _ =
           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
             rootGameObject,
             {j|
-              "extras":{"meshRenderers":[{"drawMode":4}],"basicCameraViews":[{"isActive":true},{"isActive":false}]}
+              "extras":{"meshRenderers":[{"isRender":true,"drawMode":4}],"basicCameraViews":[{"isActive":true},{"isActive":false}]}
                    |j},
             state,
           );
@@ -2739,6 +2740,92 @@ let _ =
       });
     });
 
+    describe("test meshRenderer", () => {
+      let _createMeshRendererGameObject = (isRender, state) => {
+        open GameObjectAPI;
+        open LightMaterialAPI;
+        open MeshRendererAPI;
+
+        let (state, material) = createLightMaterial(state);
+
+        let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
+        let (state, meshRenderer) = createMeshRenderer(state);
+
+        let state =
+          state
+          |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer, isRender);
+
+        let (state, gameObject) = state |> createGameObject;
+        let state =
+          state
+          |> addGameObjectLightMaterialComponent(gameObject, material)
+          |> addGameObjectGeometryComponent(gameObject, geometry)
+          |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+
+        (
+          state,
+          gameObject,
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject,
+            state,
+          ),
+          meshRenderer,
+        );
+      };
+
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, rootGameObject) = state^ |> createGameObject;
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let (state, gameObject1, transform1, meshRenderer1) =
+          _createMeshRendererGameObject(true, state);
+
+        let (state, gameObject2, transform2, meshRenderer2) =
+          _createMeshRendererGameObject(false, state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             );
+
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (meshRenderer1, meshRenderer2),
+        );
+      };
+
+      test("test meshRenderers", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (meshRenderer1, meshRenderer2),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+"extras":{"meshRenderers":[{"isRender":true,"drawMode":4},{"isRender":false,"drawMode":4}]}
+                |j},
+          state,
+        );
+      });
+    });
+
     describe("test script", () => {
       let _createScriptGameObject = state => {
         open GameObjectAPI;
@@ -2850,7 +2937,7 @@ let _ =
 
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
-"\"extras\":{\"scripts\":[{\"eventFunctionDataMap\":{\"scriptEventFunctionData1\":[\"function(script,api,state){\\nvarscriptAttributeName=\\\"scriptAttribute1\\\";\\nvarunsafeGetScriptAttribute=api.unsafeGetScriptAttribute;\\nvarscriptAttribute=unsafeGetScriptAttribute(script,scriptAttributeName,state);\\nvarunsafeGetScriptAttributeFieldValue=api.unsafeGetScriptAttributeFieldValue;\\nvarsetScriptAttributeFieldValue=api.setScriptAttributeFieldValue;\\nreturnsetScriptAttributeFieldValue(script,\\n/*tuple*/\\n[scriptAttributeName,\\\"a\\\",unsafeGetScriptAttributeFieldValue(\\\"a\\\",scriptAttribute)+1|0],state);\\n}\",\"function(script,api,state){\\nvarscriptAttributeName=\\\"scriptAttribute1\\\";\\nvarunsafeGetScriptAttribute=api.unsafeGetScriptAttribute;\\nvarscriptAttribute=unsafeGetScriptAttribute(script,scriptAttributeName,state);\\nreturnsetScriptAttributeFloatFieldValue(api,script,scriptAttributeName,\\\"b\\\",unsafeGetScriptAttributeFloatFieldValue$1(api,\\\"b\\\",scriptAttribute)+10,state);\\n}\",\"function(script,api,state){\\nvarunsafeGetScriptGameObject=api.unsafeGetScriptGameObject;\\nvarunsafeGetGameObjectTransformComponent=api.unsafeGetGameObjectTransformComponent;\\nvargetTransformLocalPosition=api.getTransformLocalPosition;\\nvarsetTransformLocalPosition=api.setTransformLocalPosition;\\nvartransform=unsafeGetGameObjectTransformComponent(unsafeGetScriptGameObject(script,state),state);\\nvarmatch=getTransformLocalPosition(transform,state);\\nreturnsetTransformLocalPosition(transform,\\n/*tuple*/\\n[match[0]+10,match[1],match[2]],state);\\n}\"]},\"attributeMap\":{\"scriptAttribute1\":{\"a\":[0,1,1],\"b\":[1,0.1,0.1]}}}]",
+          "\"extras\":{\"scripts\":[{\"isActive\":true,\"eventFunctionDataMap\":{\"scriptEventFunctionData1\":[\"function(script,api,state){\\nvarscriptAttributeName=\\\"scriptAttribute1\\\";\\nvarunsafeGetScriptAttribute=api.unsafeGetScriptAttribute;\\nvarscriptAttribute=unsafeGetScriptAttribute(script,scriptAttributeName,state);\\nvarunsafeGetScriptAttributeFieldValue=api.unsafeGetScriptAttributeFieldValue;\\nvarsetScriptAttributeFieldValue=api.setScriptAttributeFieldValue;\\nreturnsetScriptAttributeFieldValue(script,\\n/*tuple*/\\n[scriptAttributeName,\\\"a\\\",unsafeGetScriptAttributeFieldValue(\\\"a\\\",scriptAttribute)+1|0],state);\\n}\",\"function(script,api,state){\\nvarscriptAttributeName=\\\"scriptAttribute1\\\";\\nvarunsafeGetScriptAttribute=api.unsafeGetScriptAttribute;\\nvarscriptAttribute=unsafeGetScriptAttribute(script,scriptAttributeName,state);\\nreturnsetScriptAttributeFloatFieldValue(api,script,scriptAttributeName,\\\"b\\\",unsafeGetScriptAttributeFloatFieldValue$1(api,\\\"b\\\",scriptAttribute)+10,state);\\n}\",\"function(script,api,state){\\nvarunsafeGetScriptGameObject=api.unsafeGetScriptGameObject;\\nvarunsafeGetGameObjectTransformComponent=api.unsafeGetGameObjectTransformComponent;\\nvargetTransformLocalPosition=api.getTransformLocalPosition;\\nvarsetTransformLocalPosition=api.setTransformLocalPosition;\\nvartransform=unsafeGetGameObjectTransformComponent(unsafeGetScriptGameObject(script,state),state);\\nvarmatch=getTransformLocalPosition(transform,state);\\nreturnsetTransformLocalPosition(transform,\\n/*tuple*/\\n[match[0]+10,match[1],match[2]],state);\\n}\"]},\"attributeMap\":{\"scriptAttribute1\":{\"a\":[0,1,1],\"b\":[1,0.1,0.1]}}}]",
           state,
         );
       });
@@ -3293,7 +3380,7 @@ let _ =
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-      "extras":{"basicMaterials":[{"colorFactor":[$color1,1]}],"meshRenderers":[{"drawMode":$drawMode1},{"drawMode":$drawMode2}]}
+      "extras":{"basicMaterials":[{"colorFactor":[$color1,1]}],"meshRenderers":[{"isRender":true, "drawMode":$drawMode1},{"isRender":true,"drawMode":$drawMode2}]}
                    |j},
           state,
         );
@@ -3584,6 +3671,74 @@ let _ =
         });
       })
     );
+
+    describe("test gameObject->isActive", () => {
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let state = state^;
+
+        let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let (
+          state,
+          gameObject1,
+          (transform1, (localPos1, localRotation1, localScale1)),
+          geometry1,
+          (material1, diffuseColor1),
+          meshRenderer1,
+        ) =
+          _createGameObject1(state);
+        let state =
+          state |> GameObjectAPI.setGameObjectIsActive(gameObject1, false);
+
+        let (
+          state,
+          gameObject2,
+          (transform2, (localPos2, localRotation2, localScale2)),
+          geometry2,
+          (material2, diffuseColor2),
+          meshRenderer2,
+        ) =
+          _createGameObject1(state);
+        let state =
+          state |> GameObjectAPI.setGameObjectIsActive(gameObject2, false);
+
+        let state =
+          state
+          |> SceneAPI.addSceneChild(transform1)
+          |> SceneAPI.addSceneChild(transform2);
+
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (gameObject1, gameObject2),
+        );
+      };
+
+      test("test nodes", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (gameObject1, gameObject2),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+"nodes":[{"children":[1,2]},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"isActive":false,"lightMaterial":0,"meshRenderer":0}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":1,"extras":{"isActive":false,"lightMaterial":1,"meshRenderer":1}}]
+          |j},
+          state,
+        );
+      });
+    });
 
     describe("test isRoot", () =>
       describe("test gltf", () => {

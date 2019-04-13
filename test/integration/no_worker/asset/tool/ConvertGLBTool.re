@@ -46,6 +46,26 @@ let buildComponentIndexData =
   componentIndices,
 };
 
+let buildScript =
+    (
+      ~isActive=true,
+      ~eventFunctionDataMap=Js.Dict.empty(),
+      ~attributeMap=Js.Dict.empty(),
+      (),
+    )
+    : WDType.script => {
+  isActive,
+  eventFunctionDataMap,
+  attributeMap,
+};
+
+let buildMeshRenderer =
+    (~isRender=true, ~drawMode=DrawModeType.Triangles, ())
+    : WDType.meshRenderer => {
+  isRender,
+  drawMode,
+};
+
 let buildNode =
     (
       ~name=None,
@@ -467,6 +487,29 @@ let buildGLTFJsonOfSceneIsRoot = isRoot =>
         }
     }
     ]|j},
+    (),
+  );
+
+let buildGLTFJsonOfNodeIsActive = isActive =>
+  buildGLTFJson(
+    ~nodes=
+      {j| [
+        {
+            "children": [
+                1
+            ],
+            "extras": {
+                "isActive": $isActive
+            }
+        },
+        {
+            "mesh": 0,
+            "extras": {
+                "isActive": $isActive
+            }
+        }
+        ]
+    |j},
     (),
   );
 
@@ -1049,6 +1092,7 @@ let buildGLTFJsonOfArcballCameraController = (~isBindEvent=true, ()) => {
 
 let buildGLTFJsonOfScript =
     (
+      ~isActive=true,
       ~eventFunctionDataMap=Some(AssetScriptTool.buildEventFunctionDataMap()),
       ~attributeMap=Some(AssetScriptTool.buildAttributeMap()),
       (),
@@ -1082,7 +1126,7 @@ let buildGLTFJsonOfScript =
       {j|
 [
         {
-
+"isActive": $isActive,
 "eventFunctionDataMap": $eventFunctionDataMapStr,
 "attributeMap": $attributeMapStr
         }
@@ -1092,7 +1136,8 @@ let buildGLTFJsonOfScript =
   );
 };
 
-let buildGLTFJsonOfMeshRenderer = () =>
+let buildGLTFJsonOfMeshRenderer =
+    (~isMeshRenderer1Render=true, ~isMeshRenderer2Render=true, ()) =>
   buildGLTFJson(
     ~nodes=
       {| [
@@ -1107,10 +1152,12 @@ let buildGLTFJsonOfMeshRenderer = () =>
       {j|
 [
         {
-            "drawMode": 1
+            "drawMode": 1,
+            "isRender": $isMeshRenderer1Render
         },
         {
-            "drawMode": 3
+            "drawMode": 3,
+            "isRender": $isMeshRenderer2Render
         }
     ]
         |j},

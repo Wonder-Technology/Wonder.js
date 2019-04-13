@@ -22,6 +22,23 @@ let _getNames = ({nodes, meshes}: GLTFType.gltf) =>
        [||],
      );
 
+let _getIsActives = ({nodes, meshes}: GLTFType.gltf) =>
+  nodes
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. isActiveMap, {extras}: GLTFType.node, index) =>
+         switch (extras) {
+         | None => isActiveMap
+         | Some(({isActive}: GLTFType.nodeExtras)) =>
+           switch (isActive) {
+           | None => isActiveMap
+           | Some(isActive) =>
+             isActiveMap
+             |> WonderCommonlib.MutableSparseMapService.set(index, isActive)
+           }
+         },
+       WonderCommonlib.MutableSparseMapService.createEmpty(),
+     );
+
 let _getIsRoots = ({nodes, meshes}: GLTFType.gltf) =>
   nodes
   |> WonderCommonlib.ArrayService.reduceOneParami(
@@ -39,8 +56,9 @@ let _getIsRoots = ({nodes, meshes}: GLTFType.gltf) =>
        WonderCommonlib.MutableSparseMapService.createEmpty(),
      );
 
-let convert = (({nodes}: GLTFType.gltf) as gltf) : WDType.gameObjects => {
+let convert = (({nodes}: GLTFType.gltf) as gltf): WDType.gameObjects => {
   count: ConvertCommon.getCount(nodes),
   names: _getNames(gltf),
+  isActives: _getIsActives(gltf),
   isRoots: _getIsRoots(gltf),
 };
