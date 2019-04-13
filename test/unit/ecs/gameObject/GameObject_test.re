@@ -1014,6 +1014,57 @@ let _ =
       });
     });
 
+    describe("unsafeGetGameObjectIsActive", () =>
+      test("default value is true", () => {
+        let (state, gameObject) = createGameObject(state^);
+
+        GameObjectAPI.unsafeGetGameObjectIsActive(gameObject, state)
+        |> expect == true;
+      })
+    );
+
+    describe("setGameObjectIsActive", () => {
+      test("set gameObject->is active", () => {
+        let (state, gameObject) = createGameObject(state^);
+
+        let state =
+          state |> GameObjectAPI.setGameObjectIsActive(gameObject, false);
+
+        GameObjectAPI.unsafeGetGameObjectIsActive(gameObject, state)
+        |> expect == false;
+      });
+
+      describe("set gameObject->components", () => {
+        test("set meshRender->is render", () => {
+          let (state, gameObject, meshRenderer) =
+            MeshRendererTool.createLightMaterialGameObject(state^);
+
+          let state =
+            state
+            |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer, true);
+
+          let state =
+            state |> GameObjectAPI.setGameObjectIsActive(gameObject, false);
+
+          meshRenderer
+          |> MeshRendererAPI.getMeshRendererIsRender(_, state)
+          |> expect == false;
+        });
+        test("set script->is active", () => {
+          let (state, gameObject, script) =
+            ScriptTool.createGameObject(state^);
+          let state = state |> ScriptAPI.setScriptIsActive(script, true);
+
+          let state =
+            state |> GameObjectAPI.setGameObjectIsActive(gameObject, false);
+
+          GameObjectAPI.unsafeGetGameObjectScriptComponent(gameObject, state)
+          |> ScriptAPI.unsafeGetScriptIsActive(_, state)
+          |> expect == false;
+        });
+      });
+    });
+
     describe("dispose", () => {
       describe("test alive", () => {
         test("disposed one shouldn't alive before reallocate", () => {
@@ -1365,6 +1416,38 @@ let _ =
                 nameMap
                 |> WonderCommonlib.MutableSparseMapService.has(gameObject2),
                 nameMap
+                |> WonderCommonlib.MutableSparseMapService.has(gameObject3),
+              )
+              |> expect == (false, false, true);
+            })
+          );
+
+          describe("reallocate isActive map", () =>
+            test("new isActiveMap should only has alive data", () => {
+              open GameObjectType;
+              let state =
+                SettingTool.setMemory(state^, ~maxDisposeCount=2, ());
+              let (state, gameObject1) = createGameObject(state);
+              let (state, gameObject2) = createGameObject(state);
+              let (state, gameObject3) = createGameObject(state);
+              let state =
+                state
+                |> GameObjectAPI.setGameObjectIsActive(gameObject1, true)
+                |> GameObjectAPI.setGameObjectIsActive(gameObject2, true)
+                |> GameObjectAPI.setGameObjectIsActive(gameObject3, true);
+
+              let state =
+                state |> GameObjectTool.disposeGameObject(gameObject1);
+              let state =
+                state |> GameObjectTool.disposeGameObject(gameObject2);
+
+              let {isActiveMap} = GameObjectTool.getGameObjectRecord(state);
+              (
+                isActiveMap
+                |> WonderCommonlib.MutableSparseMapService.has(gameObject1),
+                isActiveMap
+                |> WonderCommonlib.MutableSparseMapService.has(gameObject2),
+                isActiveMap
                 |> WonderCommonlib.MutableSparseMapService.has(gameObject3),
               )
               |> expect == (false, false, true);

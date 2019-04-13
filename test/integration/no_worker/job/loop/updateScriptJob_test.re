@@ -39,6 +39,45 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("exec all update event functions", () => {
+      test("only exec actived scripts' update event functions", () => {
+        let (state, gameObject, script1) =
+          ScriptTool.createGameObject(state^);
+        let (state, gameObject, script2) =
+          ScriptTool.createGameObject(state);
+        let state =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+            ~script=script1,
+            ~state,
+            (),
+          );
+        let state =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+            ~script=script2,
+            ~state,
+            (),
+          );
+
+        let state = state |> ScriptAPI.setScriptIsActive(script1, false);
+
+        let state = DirectorTool.runWithDefaultTime(state);
+
+        (
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldBValue(
+            script1,
+            state,
+          ),
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldBValue(
+            script2,
+            state,
+          ),
+        )
+        |> expect
+        == (
+             ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldBValueBeforeExecUpdateEventFunc(),
+             ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldBValueAfterExecUpdateEventFunc(),
+           );
+      });
+
       test("only exec existed update event functions", () => {
         let (state, gameObject, script) =
           ScriptTool.createGameObject(state^);

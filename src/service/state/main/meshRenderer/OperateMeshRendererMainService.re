@@ -48,41 +48,63 @@ let _removeFromRenderGameObjectMap =
     |> WonderCommonlib.MutableSparseMapService.deleteVal(meshRenderer),
 };
 
+let _setIsRender =
+    (meshRenderer, isRender: bool, {gameObjectRecord} as state) => {
+  let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
+
+  let {isRenders} as meshRendererRecord =
+    isRender ?
+      RenderArrayMeshRendererMainService.addToRenderGameObjectMap(
+        meshRenderer,
+        GameObjectMeshRendererService.unsafeGetGameObject(
+          meshRenderer,
+          meshRendererRecord,
+        ),
+        meshRendererRecord,
+        gameObjectRecord,
+      ) :
+      RenderArrayMeshRendererService.removeFromRenderGameObjectMap(
+        meshRenderer,
+        meshRendererRecord,
+      );
+
+  {
+    ...state,
+    meshRendererRecord:
+      Some({
+        ...meshRendererRecord,
+        isRenders:
+          OperateTypeArrayMeshRendererService.setIsRender(
+            meshRenderer,
+            isRender === true ?
+              BufferMeshRendererService.getRender() :
+              BufferMeshRendererService.getNotRender(),
+            isRenders,
+          ),
+      }),
+  };
+};
+
 let setIsRender = (meshRenderer, isRender: bool, {gameObjectRecord} as state) =>
   isRender === getIsRender(meshRenderer, state) ?
     state :
-    {
-      let meshRendererRecord = RecordMeshRendererMainService.getRecord(state);
-
-      let {isRenders} as meshRendererRecord =
-        isRender ?
-          RenderArrayMeshRendererMainService.addToRenderGameObjectMap(
-            meshRenderer,
-            GameObjectMeshRendererService.unsafeGetGameObject(
-              meshRenderer,
-              meshRendererRecord,
-            ),
-            meshRendererRecord,
-            gameObjectRecord,
-          ) :
-          RenderArrayMeshRendererService.removeFromRenderGameObjectMap(
-            meshRenderer,
-            meshRendererRecord,
-          );
-
-      {
-        ...state,
-        meshRendererRecord:
-          Some({
-            ...meshRendererRecord,
-            isRenders:
-              OperateTypeArrayMeshRendererService.setIsRender(
-                meshRenderer,
-                isRender === true ?
-                  BufferMeshRendererService.getRender() :
-                  BufferMeshRendererService.getNotRender(),
-                isRenders,
-              ),
-          }),
-      };
-    };
+    (
+      switch (
+        GameObjectMeshRendererService.getGameObject(
+          meshRenderer,
+          RecordMeshRendererMainService.getRecord(state),
+        )
+      ) {
+      | Some(gameObject) =>
+        !GetIsActiveGameObjectMainService.unsafeGetIsActive(gameObject, state)
+        && isRender ?
+          {
+            WonderLog.Log.warn(
+              {j|meshRenderer:$meshRenderer -> gameObject:$gameObject isn't active, can't set meshRenderer->isRender to true|j},
+            );
+            state;
+          } :
+          _setIsRender(meshRenderer, isRender, state)
+      | None => _setIsRender(meshRenderer, isRender, state)
+      }
+    );

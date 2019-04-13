@@ -15,7 +15,7 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    test("exec all init event functions", () => {
+    test("exec all actived scripts' init event functions", () => {
       let (state, gameObject, script1) = ScriptTool.createGameObject(state^);
       let (state, gameObject, script2) = ScriptTool.createGameObject(state);
       let state =
@@ -30,6 +30,8 @@ let _ =
           ~state,
           (),
         );
+
+      let state = state |> ScriptAPI.setScriptIsActive(script2, false);
 
       let state = state |> InitScriptJobTool.exec;
 
@@ -46,7 +48,7 @@ let _ =
       |> expect
       == (
            ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldAValueAfterExecInitEventFunc(),
-           ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldAValueAfterExecInitEventFunc(),
+           ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getAttributeFieldAValueBeforeExecInitEventFunc(),
          );
     });
   });

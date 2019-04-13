@@ -16,6 +16,21 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
+    describe("test deep copy script record", () =>
+      test("shadow copy gameObjectMap, isActiveMap", () =>
+        StateDataMainType.(
+          MainStateTool.testShadowCopyArrayLikeMapData(
+            state => {
+              let {gameObjectMap, isActiveMap} = state.scriptRecord;
+
+              [|gameObjectMap |> Obj.magic, isActiveMap |> Obj.magic|];
+            },
+            state^,
+          )
+        )
+      )
+    );
+
     describe("test restore", () =>
       test("test restore script attribute", () => {
         let (state, gameObject1, script1) =

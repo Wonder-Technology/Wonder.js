@@ -42,7 +42,8 @@ let _setGameObjectName = (sourceGameObject, clonedGameObjectArr, state) =>
   };
 
 let _setGameObjectIsRoot = (sourceGameObject, clonedGameObjectArr, state) => {
-  let isRoot = IsRootGameObjectMainService.unsafeGetIsRoot(sourceGameObject, state);
+  let isRoot =
+    IsRootGameObjectMainService.unsafeGetIsRoot(sourceGameObject, state);
 
   clonedGameObjectArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -50,6 +51,25 @@ let _setGameObjectIsRoot = (sourceGameObject, clonedGameObjectArr, state) => {
          IsRootGameObjectMainService.setIsRoot(.
            clonedGameObject,
            isRoot,
+           state,
+         ),
+       state,
+     );
+};
+
+let _setGameObjectIsActive = (sourceGameObject, clonedGameObjectArr, state) => {
+  let isActive =
+    GetIsActiveGameObjectMainService.unsafeGetIsActive(
+      sourceGameObject,
+      state,
+    );
+
+  clonedGameObjectArr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. state, clonedGameObject) =>
+         SetIsActiveGameObjectMainService.setIsActive(
+           clonedGameObject,
+           isActive,
            state,
          ),
        state,
@@ -74,6 +94,7 @@ let rec _clone =
   let state =
     state
     |> _setGameObjectName(uid, clonedGameObjectArr)
+    |> _setGameObjectIsActive(uid, clonedGameObjectArr)
     |> _setGameObjectIsRoot(uid, clonedGameObjectArr);
 
   let totalClonedGameObjectArr =

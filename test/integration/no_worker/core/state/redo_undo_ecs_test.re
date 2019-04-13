@@ -578,6 +578,7 @@ let _ =
         test(
           {|shadow copy
           nameMap,
+isActiveMap,
           isRootMap,
           disposedUidMap,        disposedUidArray,        disposedUidArrayForKeepOrder,
 
@@ -594,6 +595,7 @@ let _ =
                 state => {
                   let {
                     nameMap,
+                    isActiveMap,
                     isRootMap,
                     disposedUidMap,
                     disposedUidArray,
@@ -629,6 +631,7 @@ let _ =
                     GameObjectTool.getGameObjectRecord(state);
                   [|
                     nameMap |> Obj.magic,
+                    isActiveMap |> Obj.magic,
                     isRootMap |> Obj.magic,
                     disposedUidMap |> Obj.magic,
                     disposedUidArray |> Obj.magic,

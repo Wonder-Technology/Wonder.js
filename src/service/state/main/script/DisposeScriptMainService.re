@@ -1,10 +1,12 @@
 open StateDataMainType;
 
-let isAlive = (script, {disposedIndexArray}: scriptRecord) =>
-  DisposeComponentService.isAlive(script, disposedIndexArray);
-
 let _disposeData = (script, {scriptRecord} as state) => {
-  let {gameObjectMap, scriptEventFunctionDataMap, scriptAttributeMap} = scriptRecord;
+  let {
+    gameObjectMap,
+    isActiveMap,
+    scriptEventFunctionDataMap,
+    scriptAttributeMap,
+  } = scriptRecord;
 
   {
     ...state,
@@ -12,6 +14,10 @@ let _disposeData = (script, {scriptRecord} as state) => {
       ...scriptRecord,
       gameObjectMap:
         DisposeComponentService.disposeSparseMapData(script, gameObjectMap),
+      /* TODO test */
+      isActiveMap:
+        isActiveMap
+        |> WonderCommonlib.MutableSparseMapService.deleteVal(script),
       scriptEventFunctionDataMap:
         scriptEventFunctionDataMap
         |> WonderCommonlib.ImmutableSparseMapService.deleteVal(script),
@@ -25,7 +31,7 @@ let _disposeData = (script, {scriptRecord} as state) => {
 let _batchExecDisposeEventFunction = (scriptArray, {scriptRecord} as state) =>
   state
   |> OperateScriptEventFunctionDataMainService.execAllEventFunction(
-       OperateScriptEventFunctionDataMainService.getScriptAllDisposeEventFunctionData(
+       OperateScriptEventFunctionDataMainService.getActiveScriptAllDisposeEventFunctionData(
          scriptArray,
          state,
        ),
@@ -40,7 +46,7 @@ let handleBatchDisposeComponent =
           Operators.(
             DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
               scriptArray,
-              isAlive,
+              DisposeScriptService.isAlive,
               scriptRecord,
             )
           )

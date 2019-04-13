@@ -11,7 +11,7 @@ let createGameObject = state => {
 };
 
 let isAlive = (script, state) =>
-  DisposeScriptMainService.isAlive(script, state.scriptRecord);
+  DisposeScriptService.isAlive(script, state.scriptRecord);
 
 let buildEventFunctionJsObj =
     (~initFunc=None, ~updateFunc=None, ~disposeFunc=None, ()) => {
@@ -144,7 +144,7 @@ module ExecEventFunction = {
 
   let execScriptArrDisposeEventFunction = (scriptArray, state) =>
     OperateScriptEventFunctionDataMainService.execAllEventFunction(
-      OperateScriptEventFunctionDataMainService.getScriptAllDisposeEventFunctionData(
+      OperateScriptEventFunctionDataMainService.getActiveScriptAllDisposeEventFunctionData(
         scriptArray,
         state,
       ),
@@ -348,6 +348,8 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
       state;
     };
 
+  let getLocalPositionBeforeExec = () => (0., 0., 0.);
+
   let getLocalPositionAfterExec = () => (10., 0., 0.);
 
   let getLocalPosition = (script, state) =>
@@ -427,6 +429,8 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
       "b",
       state,
     );
+
+  let getAttributeFieldAValueBeforeExecInitEventFunc = () => 1;
 
   let getAttributeFieldAValueAfterExecInitEventFunc = () => 2;
 

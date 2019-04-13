@@ -3,6 +3,7 @@ open GameObjectType;
 let create = () => {
   uid: 0,
   nameMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  isActiveMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   isRootMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   disposeCount: 0,
   disposedUidMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -55,6 +56,7 @@ let deepCopyForRestore =
       {
         uid,
         nameMap,
+        isActiveMap,
         isRootMap,
         disposeCount,
         disposedUidMap,
@@ -96,6 +98,8 @@ let deepCopyForRestore =
   ...record,
   uid,
   nameMap: nameMap |> WonderCommonlib.MutableSparseMapService.copy,
+  /* TODO test */
+  isActiveMap: isActiveMap |> WonderCommonlib.MutableSparseMapService.copy,
   isRootMap: isRootMap |> WonderCommonlib.MutableSparseMapService.copy,
   disposeCount,
   disposedUidMap:

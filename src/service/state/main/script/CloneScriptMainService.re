@@ -2,6 +2,7 @@ open StateDataMainType;
 
 let _getData =
   (. sourceComponent, state) => (
+    IsActiveScriptMainService.getIsActive(sourceComponent, state),
     OperateScriptDataMainService.getScriptAllEventFunctionData(
       sourceComponent,
       state,
@@ -20,7 +21,19 @@ let _getData =
   );
 
 let _setData =
-  (. targetComponent, (allEventFunctionDataOpt, allAttributesOpt), state) => {
+  (.
+    targetComponent,
+    (isActiveOpt, allEventFunctionDataOpt, allAttributesOpt),
+    state,
+  ) => {
+    let state =
+      switch (isActiveOpt) {
+      | Some(isActive) =>
+        state
+        |> IsActiveScriptMainService.setIsActive(targetComponent, isActive)
+      | None => state
+      };
+
     let state =
       switch (allEventFunctionDataOpt) {
       | Some(allEventFunctionData) =>

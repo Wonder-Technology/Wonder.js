@@ -65,6 +65,7 @@ type gameObjectRecord = {
   mutable uid: int,
   mutable nameMap: WonderCommonlib.MutableSparseMapService.t(string),
   mutable isRootMap: WonderCommonlib.MutableSparseMapService.t(bool),
+  mutable isActiveMap: WonderCommonlib.MutableSparseMapService.t(bool),
   mutable disposeCount: int,
   mutable disposedUidMap: gameObjectDisposedUidMap,
   mutable disposedUidArray: array(int),

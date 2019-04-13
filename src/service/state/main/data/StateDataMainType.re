@@ -364,6 +364,7 @@ and scriptRecord = {
   isScriptEventFunctionEnable: bool,
   disposedIndexArray: array(ScriptType.script),
   gameObjectMap,
+  isActiveMap: WonderCommonlib.MutableSparseMapService.t(bool),
   scriptEventFunctionDataMap:
     WonderCommonlib.ImmutableSparseMapService.t(eventFunctionDataMap),
   scriptAttributeMap:

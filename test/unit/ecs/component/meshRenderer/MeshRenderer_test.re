@@ -74,46 +74,55 @@ let _ =
     );
 
     describe("setMeshRendererIsRender", () => {
-      test("set is render", () => {
-        let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+      describe("if meshRenderer->gameObject isn't active", () => {
+        test("set meshRenderer->isRender to true should warn", () => {
+          let warn =
+            createMethodStubWithJsObjSandbox(
+              sandbox,
+              Console.console,
+              "warn",
+            );
+          let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+          let state =
+            state |> GameObjectAPI.setGameObjectIsActive(gameObject1, false);
 
-        let state =
-          state
-          |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
+          let state =
+            state
+            |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, true);
 
-        getMeshRendererIsRender(meshRenderer1, state) |> expect == false;
+          warn
+          |> withOneArg(
+               {j|meshRenderer:$meshRenderer1 -> gameObject:$gameObject1 isn't active, can't set meshRenderer->isRender to true|j},
+             )
+          |> expect
+          |> toCalledOnce;
+        });
+        test("set meshRenderer->isRender to true should not work", () => {
+          let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+          let state =
+            state |> GameObjectAPI.setGameObjectIsActive(gameObject1, false);
+
+          let state =
+            state
+            |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, true);
+
+          getMeshRendererIsRender(meshRenderer1, state) |> expect == false;
+        });
       });
-      test("if isRender === false, remove from renderIndexArray", () => {
-        let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
 
-        let state =
-          state
-          |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
-
-        state |> MeshRendererTool.getBasicMaterialRenderGameObjectArray |> expect == [||];
-      });
-      test("if isRender === true, add to renderIndexArray", () => {
-        let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
-
-        let state =
-          state
-          |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
-        let state =
-          state
-          |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, true);
-
-        state
-        |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
-        |> expect == [|gameObject1|];
-      });
-
-      describe("test isRender not change", () => {
-        test("test isRender === false", () => {
+      describe("else, set meshRenderer->isRender to true should work", () => {
+        test("set is render", () => {
           let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
 
           let state =
             state
             |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
+
+          getMeshRendererIsRender(meshRenderer1, state) |> expect == false;
+        });
+        test("if isRender === false, remove from renderIndexArray", () => {
+          let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+
           let state =
             state
             |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
@@ -122,12 +131,12 @@ let _ =
           |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
           |> expect == [||];
         });
-        test("test isRender === true", () => {
+        test("if isRender === true, add to renderIndexArray", () => {
           let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
 
           let state =
             state
-            |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, true);
+            |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
           let state =
             state
             |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, true);
@@ -135,6 +144,37 @@ let _ =
           state
           |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
           |> expect == [|gameObject1|];
+        });
+
+        describe("test isRender not change", () => {
+          test("test isRender === false", () => {
+            let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+
+            let state =
+              state
+              |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
+            let state =
+              state
+              |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, false);
+
+            state
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
+            |> expect == [||];
+          });
+          test("test isRender === true", () => {
+            let (state, gameObject1, meshRenderer1) = _prepareOne(state^);
+
+            let state =
+              state
+              |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, true);
+            let state =
+              state
+              |> MeshRendererAPI.setMeshRendererIsRender(meshRenderer1, true);
+
+            state
+            |> MeshRendererTool.getBasicMaterialRenderGameObjectArray
+            |> expect == [|gameObject1|];
+          });
         });
       });
     });
@@ -370,8 +410,8 @@ let _ =
               MeshRendererTool.createLightMaterialGameObject(state^);
             let (state, gameObject2, meshRenderer2) =
               MeshRendererTool.createLightMaterialGameObject(state);
-            let isRender1 = ! MeshRendererTool.getDefaultIsRender();
-            let isRender2 = ! MeshRendererTool.getDefaultIsRender();
+            let isRender1 = !MeshRendererTool.getDefaultIsRender();
+            let isRender2 = !MeshRendererTool.getDefaultIsRender();
             let state =
               state
               |> MeshRendererAPI.setMeshRendererIsRender(

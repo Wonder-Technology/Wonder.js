@@ -382,7 +382,28 @@ let _ =
           |> expect == true;
         });
 
-        describe("test cloned one' data === source one's data", () =>
+        describe("test cloned one' data === source one's data", () => {
+          test("cloned gameObject->script component should set isActive", () => {
+            let (state, gameObject1, script1) =
+              ScriptTool.createGameObject(state^);
+            let state =
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+                ~script=script1,
+                ~state,
+                (),
+              );
+
+            let state = state |> ScriptAPI.setScriptIsActive(script1, false);
+
+            let (state, _, clonedComponentArr) =
+              _clone(~gameObject=gameObject1, ~state, ());
+
+            (
+              ScriptAPI.unsafeGetScriptIsActive(clonedComponentArr[0], state),
+              ScriptAPI.unsafeGetScriptIsActive(clonedComponentArr[1], state),
+            )
+            |> expect == (false, false);
+          });
           test("test scriptAllEventFunctionData", () => {
             let (state, gameObject1, script1) =
               ScriptTool.createGameObject(state^);
@@ -409,8 +430,8 @@ let _ =
               ),
             )
             |> expect == (allEventFunctionData, allEventFunctionData);
-          })
-        );
+          });
+        });
 
         describe("test cloned one' data !== source one's data", () =>
           test("reset scriptAllAttributes->value to defaultValue", () => {

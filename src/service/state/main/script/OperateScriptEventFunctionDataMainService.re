@@ -19,22 +19,24 @@ let _getAllEventFunctionData =
   scriptEventFunctionDataMap
   |> WonderCommonlib.ImmutableSparseMapService.reduceiValid(
        (. arr, scriptEventFunctionData, script) =>
-         _pushEventFunctionData(
-           script,
-           scriptEventFunctionData,
-           mapEventFunctionDataFunc,
+         IsActiveScriptMainService.unsafeGetIsActive(script, state) ?
+           _pushEventFunctionData(
+             script,
+             scriptEventFunctionData,
+             mapEventFunctionDataFunc,
+             arr,
+           ) :
            arr,
-         ),
        WonderCommonlib.ArrayService.createEmpty(),
      );
 };
 
-let getAllUpdateEventFunctionData = ({scriptRecord} as state) =>
+let getAllActiveUpdateEventFunctionData = ({scriptRecord} as state) =>
   _getAllEventFunctionData(({update}) => update, state);
 
 let _mapInitEventFunctionDataFunc = ({init}) => init;
 
-let getAllInitEventFunctionData = ({scriptRecord} as state) =>
+let getAllActiveInitEventFunctionData = ({scriptRecord} as state) =>
   _getAllEventFunctionData(_mapInitEventFunctionDataFunc, state);
 
 let enableScriptEventFunction = ({scriptRecord} as state) => {
@@ -103,11 +105,14 @@ let getGameObjectAllInitEventFunctionData =
 
 let _mapDisposeEventFunctionDataFunc = ({dispose}) => dispose;
 
-let getScriptAllDisposeEventFunctionData =
+let getActiveScriptAllDisposeEventFunctionData =
     (scriptArray, {scriptRecord} as state) => {
   let {scriptEventFunctionDataMap} = scriptRecord;
 
   scriptArray
+  |> Js.Array.filter(script =>
+       IsActiveScriptMainService.unsafeGetIsActive(script, state)
+     )
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. arr, script) =>
          switch (

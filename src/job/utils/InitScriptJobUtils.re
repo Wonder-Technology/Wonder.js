@@ -1,6 +1,6 @@
 let exec = state =>
   OperateScriptEventFunctionDataMainService.execAllEventFunction(
-    OperateScriptEventFunctionDataMainService.getAllInitEventFunctionData(
+    OperateScriptEventFunctionDataMainService.getAllActiveInitEventFunctionData(
       state,
     ),
     state,

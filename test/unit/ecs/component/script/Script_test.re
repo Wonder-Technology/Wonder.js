@@ -390,6 +390,70 @@ let _ =
       })
     );
 
+    describe("unsafeGetScriptIsActive", () =>
+      test("default value is true", () => {
+        let (state, script) = ScriptAPI.createScript(state^);
+
+        ScriptAPI.unsafeGetScriptIsActive(script, state) |> expect == true;
+      })
+    );
+
+    describe("setScriptIsActive", () => {
+      describe("if script->gameObject isn't active", () => {
+        test("set script to active should warn", () => {
+          let warn =
+            createMethodStubWithJsObjSandbox(
+              sandbox,
+              Console.console,
+              "warn",
+            );
+          let (state, gameObject, script) =
+            ScriptTool.createGameObject(state^);
+          let state =
+            state |> GameObjectAPI.setGameObjectIsActive(gameObject, false);
+
+          let state = state |> ScriptAPI.setScriptIsActive(script, true);
+
+          warn
+          |> withOneArg(
+               {j|script:$script -> gameObject:$gameObject isn't active, can't set script to active|j},
+             )
+          |> expect
+          |> toCalledOnce;
+        });
+        test("set script to active should not work", () => {
+          let (state, gameObject, script) =
+            ScriptTool.createGameObject(state^);
+          let state =
+            state |> GameObjectAPI.setGameObjectIsActive(gameObject, false);
+
+          let state = state |> ScriptAPI.setScriptIsActive(script, true);
+
+          ScriptAPI.unsafeGetScriptIsActive(script, state) |> expect == false;
+        });
+      });
+
+      describe("else", () =>
+        test("set script to active should work", () => {
+          let warn =
+            createMethodStubWithJsObjSandbox(
+              sandbox,
+              Console.console,
+              "warn",
+            );
+          let (state, gameObject, script) =
+            ScriptTool.createGameObject(state^);
+
+          let state =
+            state |> GameObjectAPI.setGameObjectIsActive(gameObject, true);
+
+          let state = state |> ScriptAPI.setScriptIsActive(script, true);
+
+          ScriptAPI.unsafeGetScriptIsActive(script, state) |> expect == true;
+        })
+      );
+    });
+
     describe("dispose component", () => {
       let _prepareTwo = state => {
         let (state, gameObject1, _, (script1, _)) =
@@ -399,7 +463,7 @@ let _ =
         (state, gameObject1, script1, gameObject2, script2);
       };
 
-      test("exec script's all dispose event functions", () => {
+      test("exec actived script's all dispose event functions", () => {
         let (state, gameObject1, script1) =
           ScriptTool.createGameObject(state^);
         let state =
@@ -410,6 +474,19 @@ let _ =
               ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
             (),
           );
+
+        let (state, gameObject2, script2) =
+          ScriptTool.createGameObject(state);
+        let state =
+          ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildScriptData(
+            ~script=script2,
+            ~state,
+            ~disposeFunc=
+              ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.buildSetLocalPositionEventFunc(),
+            (),
+          );
+
+        let state = state |> ScriptAPI.setScriptIsActive(script2, false);
 
         let transform1 =
           GameObjectAPI.unsafeGetGameObjectTransformComponent(
@@ -422,10 +499,27 @@ let _ =
                gameObject1,
                script1,
              );
+        let transform2 =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject2,
+            state,
+          );
+        let state =
+          state
+          |> GameObjectTool.disposeGameObjectScriptComponent(
+               gameObject2,
+               script2,
+             );
 
-        TransformAPI.getTransformLocalPosition(transform1, state)
+        (
+          TransformAPI.getTransformLocalPosition(transform1, state),
+          TransformAPI.getTransformLocalPosition(transform2, state),
+        )
         |> expect
-        == ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getLocalPositionAfterExec();
+        == (
+             ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getLocalPositionAfterExec(),
+             ScriptTool.TestCaseWithOneEventFuncAndOneAttribute.getLocalPositionBeforeExec(),
+           );
       });
 
       describe("dispose data", () => {
@@ -443,6 +537,23 @@ let _ =
 
           let {gameObjectMap} = state.scriptRecord;
           gameObjectMap
+          |> WonderCommonlib.MutableSparseMapService.has(script1)
+          |> expect == false;
+        });
+        test("remove from isActiveMap", () => {
+          open StateDataMainType;
+          let (state, gameObject1, script1) =
+            ScriptTool.createGameObject(state^);
+
+          let state =
+            state
+            |> GameObjectTool.disposeGameObjectScriptComponent(
+                 gameObject1,
+                 script1,
+               );
+
+          let {isActiveMap} = state.scriptRecord;
+          isActiveMap
           |> WonderCommonlib.MutableSparseMapService.has(script1)
           |> expect == false;
         });

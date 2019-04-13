@@ -1190,3 +1190,31 @@ let getAllLightMaterialComponents = GetComponentGameObjectMainService.getAllLigh
 let getAllDirectionLightComponents = GetComponentGameObjectMainService.getAllDirectionLightComponents;
 
 let getAllPointLightComponents = GetComponentGameObjectMainService.getAllPointLightComponents;
+
+let unsafeGetGameObjectIsActive = (gameObject, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  GetIsActiveGameObjectMainService.unsafeGetIsActive(gameObject, state);
+};
+
+let setGameObjectIsActive = (gameObject, isScriptActive, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  SetIsActiveGameObjectMainService.setIsActive(
+    gameObject,
+    isScriptActive,
+    state,
+  );
+};
