@@ -130,9 +130,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
         let readStub =
           readStub
           |> onCall(0)
-          |> returns(
-               _buildChunkData(~arrayBuffer=wdbArrayBuffer |. Some, ()),
-             )
+          |> returns(_buildChunkData(~arrayBuffer=wdbArrayBuffer->Some, ()))
           |> onCall(1)
           |> returns(_buildChunkData(~arrayBuffer=None, ~done_=true, ()));
 
@@ -194,9 +192,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             |> returns(
                  _buildChunkData(
                    ~arrayBuffer=
-                     boxTexturedWDBArrayBuffer^
-                     |> ArrayBuffer.slice(~start=0, ~end_=1000)
-                     |. Some,
+                     (
+                       boxTexturedWDBArrayBuffer^
+                       |> ArrayBuffer.slice(~start=0, ~end_=1000)
+                     )
+                     ->Some,
                    (),
                  ),
                )
@@ -204,9 +204,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             |> returns(
                  _buildChunkData(
                    ~arrayBuffer=
-                     boxTexturedWDBArrayBuffer^
-                     |> ArrayBuffer.sliceFrom(1000)
-                     |. Some,
+                     (
+                       boxTexturedWDBArrayBuffer^
+                       |> ArrayBuffer.sliceFrom(1000)
+                     )
+                     ->Some,
                    (),
                  ),
                )
@@ -256,12 +258,12 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           )
           |> then_(() =>
                (totalLoadedByteLengthArr, contentLengthArr, wdbPathArr)
-               |>
-               expect == (
-                           [|1000, 25004|],
-                           [|contentLength, contentLength|],
-                           [|"./BoxTextured.wdb", "./BoxTextured.wdb"|],
-                         )
+               |> expect
+               == (
+                    [|1000, 25016|],
+                    [|contentLength, contentLength|],
+                    [|"./BoxTextured.wdb", "./BoxTextured.wdb"|],
+                  )
                |> resolve
              );
         });
@@ -300,14 +302,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                let state = DirectorTool.runWithDefaultTime(state);
 
                sourcesBeforeStartLoop^
-               |>
-               expect == (
-                           ArrayTool.range(
-                             0,
-                             Js.Array.length(sourcesBeforeStartLoop^) - 1,
-                           )
-                           |> Js.Array.map(_ => default11Image)
-                         )
+               |> expect
+               == (
+                    ArrayTool.range(
+                      0,
+                      Js.Array.length(sourcesBeforeStartLoop^) - 1,
+                    )
+                    |> Js.Array.map(_ => default11Image)
+                  )
                |> resolve;
              });
         };
@@ -405,11 +407,8 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                let state = DirectorTool.runWithDefaultTime(state);
 
                (geometrysBeforeStartLoop^, geometrysWhenDone^)
-               |>
-               expect == (
-                           resultGeometrysBeforeStartLoop,
-                           resultGeometrysWhenDone,
-                         )
+               |> expect
+               == (resultGeometrysBeforeStartLoop, resultGeometrysWhenDone)
                |> resolve;
              });
         };
@@ -470,13 +469,13 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  param,
                  sourcesWhenDone^,
                )
-               |>
-               expect == (
-                           blobDataLength,
-                           arrayBufferByteLength,
-                           resultParam,
-                           resultSourcesWhenDone,
-                         )
+               |> expect
+               == (
+                    blobDataLength,
+                    arrayBufferByteLength,
+                    resultParam,
+                    resultSourcesWhenDone,
+                  )
                |> resolve;
              });
         };
@@ -585,7 +584,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                    GeometryAPI.getGeometryIndices16(geometry, state);
 
                  (
-                   (vertices, normals, texCoords, indices |. Some, None),
+                   (vertices, normals, texCoords, indices->Some, None),
                    (
                      bufferData
                      |> withThreeArgs(array_buffer, vertices, static_draw)
@@ -605,11 +604,8 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                      |> getCallCount,
                    ),
                  )
-                 |>
-                 expect == (
-                             GLTFTool.getBoxTexturedGeometryData(),
-                             (1, 1, 1, 1),
-                           )
+                 |> expect
+                 == (GLTFTool.getBoxTexturedGeometryData(), (1, 1, 1, 1))
                  |> resolve;
                });
           });
@@ -691,44 +687,44 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  let dataMap = GLTFTool.getTruckGeometryData();
 
                  dataArr
-                 |>
-                 expect == [|
-                             (
-                               "Cesium_Milk_Truck_0",
-                               dataMap
-                               |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                    "Cesium_Milk_Truck_0",
-                                  ),
-                             ),
-                             (
-                               "Cesium_Milk_Truck_1",
-                               dataMap
-                               |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                    "Cesium_Milk_Truck_1",
-                                  ),
-                             ),
-                             (
-                               "Cesium_Milk_Truck_2",
-                               dataMap
-                               |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                    "Cesium_Milk_Truck_2",
-                                  ),
-                             ),
-                             (
-                               "Wheels",
-                               dataMap
-                               |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                    "Wheels",
-                                  ),
-                             ),
-                             (
-                               "Wheels",
-                               dataMap
-                               |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                    "Wheels",
-                                  ),
-                             ),
-                           |]
+                 |> expect
+                 == [|
+                      (
+                        "Cesium_Milk_Truck_0",
+                        dataMap
+                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                             "Cesium_Milk_Truck_0",
+                           ),
+                      ),
+                      (
+                        "Cesium_Milk_Truck_1",
+                        dataMap
+                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                             "Cesium_Milk_Truck_1",
+                           ),
+                      ),
+                      (
+                        "Cesium_Milk_Truck_2",
+                        dataMap
+                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                             "Cesium_Milk_Truck_2",
+                           ),
+                      ),
+                      (
+                        "Wheels",
+                        dataMap
+                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                             "Wheels",
+                           ),
+                      ),
+                      (
+                        "Wheels",
+                        dataMap
+                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                             "Wheels",
+                           ),
+                      ),
+                    |]
                  |> resolve;
                });
           });
@@ -796,17 +792,17 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  let dataMap = GLTFTool.getAlphaBlendModeTestGeometryData();
 
                  (dataArr |> Js.Array.length, dataArr[1])
-                 |>
-                 expect == (
-                             9,
-                             (
-                               "DecalBlendMesh",
-                               dataMap
-                               |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                    "DecalBlendMesh",
-                                  ),
-                             ),
-                           )
+                 |> expect
+                 == (
+                      9,
+                      (
+                        "DecalBlendMesh",
+                        dataMap
+                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                             "DecalBlendMesh",
+                           ),
+                      ),
+                    )
                  |> resolve;
                });
           });
@@ -880,17 +876,17 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  let dataMap = GLTFTool.getSuperLowPolyStoveGeometryData();
 
                  (dataArr |> Js.Array.length, dataArr[1])
-                 |>
-                 expect == (
-                             2,
-                             (
-                               "Stove_1",
-                               dataMap
-                               |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                                    "Stove_1",
-                                  ),
-                             ),
-                           )
+                 |> expect
+                 == (
+                      2,
+                      (
+                        "Stove_1",
+                        dataMap
+                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                             "Stove_1",
+                           ),
+                      ),
+                    )
                  |> resolve;
                });
           });
@@ -1039,13 +1035,13 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                           param, */
                        sourcesWhenDone^,
                      )
-                     |>
-                     expect == (
-                                 blobDataLength,
-                                 /* arrayBufferByteLength,
-                                    resultParam, */
-                                 resultSourcesWhenDone,
-                               )
+                     |> expect
+                     == (
+                          blobDataLength,
+                          /* arrayBufferByteLength,
+                             resultParam, */
+                          resultSourcesWhenDone,
+                        )
                      |> resolve;
                    });
               };
@@ -1059,9 +1055,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=0, ~end_=32768)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=0, ~end_=32768)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1102,9 +1100,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=0, ~end_=32768)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=0, ~end_=32768)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1112,9 +1112,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=32768, ~end_=40000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=32768, ~end_=40000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1155,9 +1157,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=0, ~end_=32768)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=0, ~end_=32768)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1165,9 +1169,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=32768, ~end_=40000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=32768, ~end_=40000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1175,10 +1181,15 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             /* |> ArrayBuffer.slice(~start=40000, ~end_=80000) */
-                             |> ArrayBuffer.slice(~start=40000, ~end_=470000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               /* |> ArrayBuffer.slice(~start=40000, ~end_=80000) */
+                               |> ArrayBuffer.slice(
+                                    ~start=40000,
+                                    ~end_=470000,
+                                  )
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1224,9 +1235,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=0, ~end_=32768)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=0, ~end_=32768)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1234,9 +1247,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=32768, ~end_=40000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=32768, ~end_=40000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1244,9 +1259,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=40000, ~end_=80000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=40000, ~end_=80000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1254,9 +1271,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.sliceFrom(80000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.sliceFrom(80000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1386,9 +1405,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=0, ~end_=300)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=0, ~end_=300)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1414,9 +1435,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=0, ~end_=300)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=0, ~end_=300)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1424,9 +1447,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=300, ~end_=1650)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=300, ~end_=1650)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1452,9 +1477,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=0, ~end_=300)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=0, ~end_=300)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1462,9 +1489,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=300, ~end_=1650)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=300, ~end_=1650)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1472,9 +1501,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=1650, ~end_=3000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=1650, ~end_=3000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1602,9 +1633,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=0, ~end_=300)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=0, ~end_=300)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1612,9 +1645,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=300, ~end_=1650)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=300, ~end_=1650)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1622,9 +1657,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=1650, ~end_=3000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=1650, ~end_=3000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1632,9 +1669,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=3000, ~end_=10000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=3000, ~end_=10000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1663,9 +1702,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=0, ~end_=300)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=0, ~end_=300)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1673,9 +1714,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=300, ~end_=1650)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=300, ~end_=1650)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1683,9 +1726,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=1650, ~end_=3000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=1650, ~end_=3000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1693,9 +1738,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=3000, ~end_=10000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=3000, ~end_=10000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1703,9 +1750,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=10000, ~end_=50000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=10000, ~end_=50000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1731,9 +1780,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=0, ~end_=300)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=0, ~end_=300)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1741,9 +1792,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=300, ~end_=1650)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=300, ~end_=1650)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1751,9 +1804,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=1650, ~end_=3000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=1650, ~end_=3000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1761,9 +1816,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=3000, ~end_=10000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=3000, ~end_=10000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1771,9 +1828,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=10000, ~end_=50000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=10000, ~end_=50000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1781,9 +1840,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=50000, ~end_=523828)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(
+                                    ~start=50000,
+                                    ~end_=523828,
+                                  )
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1809,9 +1873,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=0, ~end_=300)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=0, ~end_=300)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1819,9 +1885,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=300, ~end_=1650)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=300, ~end_=1650)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1829,9 +1897,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=1650, ~end_=3000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=1650, ~end_=3000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1839,9 +1909,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=3000, ~end_=10000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=3000, ~end_=10000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1849,9 +1921,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=10000, ~end_=50000)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(~start=10000, ~end_=50000)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1859,9 +1933,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.slice(~start=50000, ~end_=523828)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.slice(
+                                    ~start=50000,
+                                    ~end_=523828,
+                                  )
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1869,9 +1948,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     |> returns(
                          _buildChunkData(
                            ~arrayBuffer=
-                             cesiumMilkTruckWDBArrayBuffer^
-                             |> ArrayBuffer.sliceFrom(523828)
-                             |. Some,
+                             (
+                               cesiumMilkTruckWDBArrayBuffer^
+                               |> ArrayBuffer.sliceFrom(523828)
+                             )
+                             ->Some,
                            (),
                          ),
                        )
@@ -1949,9 +2030,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   |> returns(
                        _buildChunkData(
                          ~arrayBuffer=
-                           alphaBlendModeTestWDBArrayBuffer^
-                           |> ArrayBuffer.slice(~start=0, ~end_=65536)
-                           |. Some,
+                           (
+                             alphaBlendModeTestWDBArrayBuffer^
+                             |> ArrayBuffer.slice(~start=0, ~end_=65536)
+                           )
+                           ->Some,
                          (),
                        ),
                      )
@@ -2011,7 +2094,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             let state =
               LoadStreamWDBTool.setImageData(
                 ({imageIndex: 0, image}: StreamType.loadedStreamImageBlobData)
-                |. Some,
+                ->Some,
                 basicSourceTextureArr,
                 {textureIndices: [|0, 1|], imageIndices: [|0, 0|]}: WDType.imageTextureIndexData,
                 state,
@@ -2156,7 +2239,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  ArrayService.unsafeGetFirst(wdbPathArr)
                  |> Js.String.includes("test/res/wdb/BoxTextured.wdb"),
                )
-               |> expect == ([|24948|], [|contentLength|], 1, true)
+               |> expect == ([|24960|], [|contentLength|], 1, true)
                |> resolve
              );
         });
