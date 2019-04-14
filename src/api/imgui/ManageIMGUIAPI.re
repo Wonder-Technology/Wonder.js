@@ -2,6 +2,8 @@ open StateDataMainType;
 
 let setIMGUIFunc = ManageIMGUIMainService.setIMGUIFunc;
 
+let clearIMGUIFunc = ManageIMGUIMainService.clearIMGUIFunc;
+
 let getSetting = state =>
   WonderImgui.ManageIMGUIAPI.getSetting(
     RecordIMGUIMainService.getWonderIMGUIRecord(state),

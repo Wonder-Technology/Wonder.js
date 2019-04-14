@@ -14,6 +14,47 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
+    describe("clearIMGUIFunc", () =>
+      test("set empty imgui func", () => {
+        let state = AssetIMGUITool.prepareFontAsset(state^);
+        let gl = FakeGlTool.buildFakeGl(~sandbox, ()) |> Obj.magic;
+        let state = state |> FakeGlTool.setFakeGl(gl);
+        let state = InitIMGUIJob.execJob(None, state);
+        let program = Obj.magic(1);
+        let state = ProgramTool.setLastUsedProgram(program, state);
+
+        let func = (_, _, state) => {
+          Js.log("log");
+
+          state;
+        };
+
+        let state =
+          ManageIMGUIAPI.setIMGUIFunc(
+            Obj.magic(-1),
+            Obj.magic(func),
+            state,
+          );
+
+        let state = ManageIMGUIAPI.clearIMGUIFunc(state);
+
+        let func = ManageIMGUIMainService.getIMGUIFunc(state);
+
+        SerializeTool.serializeFunction(func)
+        |> StringTool.removeNewLines
+        |> StringTool.removeSpaces
+        |> expect
+        == (
+             StringTool.removeNewLines(
+               {| function (param, param$1, state) {
+          return state;
+          }|},
+             )
+             |> StringTool.removeSpaces
+           );
+      })
+    );
+
     describe("sendUniformProjectionMatData", () =>
       test("clear last send program", () => {
         let state = AssetIMGUITool.prepareFontAsset(state^);

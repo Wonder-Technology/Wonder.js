@@ -216,6 +216,10 @@ let getPointUpEventName = NameEventAPI.getPointUpEventName;
 
 let getPointDownEventName = NameEventAPI.getPointDownEventName;
 
+let setGameObjectIsActive = GameObjectAPI.setGameObjectIsActive;
+
+let unsafeGetGameObjectIsActive = GameObjectAPI.unsafeGetGameObjectIsActive;
+
 let getAllPointLightComponents = GameObjectAPI.getAllPointLightComponents;
 
 let getAllDirectionLightComponents = GameObjectAPI.getAllDirectionLightComponents;
@@ -470,6 +474,8 @@ let setSetting = ManageIMGUIAPI.setSetting;
 
 let getSetting = ManageIMGUIAPI.getSetting;
 
+let clearIMGUIFunc = ManageIMGUIAPI.clearIMGUIFunc;
+
 let setIMGUIFunc = ManageIMGUIAPI.setIMGUIFunc;
 
 let removeWorkerMainLoopJob = JobAPI.removeWorkerMainLoopJob;
@@ -664,6 +670,8 @@ let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameO
 
 let createMeshRenderer = MeshRendererAPI.createMeshRenderer;
 
+let findGameObjectsByName = SceneAPI.findGameObjectsByName;
+
 let addSceneChildren = SceneAPI.addSceneChildren;
 
 let addSceneChild = SceneAPI.addSceneChild;
@@ -678,7 +686,13 @@ let getAmbientLightColor = SceneAPI.getAmbientLightColor;
 
 let setScreenSize = ScreenAPI.setScreenSize;
 
+let setScriptIsActive = ScriptAPI.setScriptIsActive;
+
+let unsafeGetScriptIsActive = ScriptAPI.unsafeGetScriptIsActive;
+
 let setScriptAttributeFieldDefaultValueAndValue = ScriptAPI.setScriptAttributeFieldDefaultValueAndValue;
+
+let unsafeGetScriptAttributeFieldDefaultValue = ScriptAPI.unsafeGetScriptAttributeFieldDefaultValue;
 
 let unsafeGetScriptAttribute = ScriptAPI.unsafeGetScriptAttribute;
 
@@ -709,6 +723,12 @@ let removeScriptAttributeField = ScriptAttributeAPI.removeScriptAttributeField;
 let addScriptAttributeFieldJsObj = ScriptAttributeAPI.addScriptAttributeFieldJsObj;
 
 let createScriptAttribute = ScriptAttributeAPI.createScriptAttribute;
+
+let isScriptEventFunctionEnable = ScriptEventFunctionAPI.isScriptEventFunctionEnable;
+
+let disableScriptEventFunction = ScriptEventFunctionAPI.disableScriptEventFunction;
+
+let enableScriptEventFunction = ScriptEventFunctionAPI.enableScriptEventFunction;
 
 let createScriptEventFunctionData = ScriptEventFunctionAPI.createScriptEventFunctionData;
 
@@ -960,6 +980,10 @@ let loopBody = DirectorAPI.loopBody;
 
 let initDirector = DirectorAPI.initDirector;
 
+let setGameObjectIsActive = GameObjectAPI.setGameObjectIsActive;
+
+let unsafeGetGameObjectIsActive = GameObjectAPI.unsafeGetGameObjectIsActive;
+
 let getAllPointLightComponents = GameObjectAPI.getAllPointLightComponents;
 
 let getAllDirectionLightComponents = GameObjectAPI.getAllDirectionLightComponents;
@@ -1137,6 +1161,8 @@ let getMeshRendererDrawMode = MeshRendererAPI.getMeshRendererDrawMode;
 let unsafeGetMeshRendererGameObject = MeshRendererAPI.unsafeGetMeshRendererGameObject;
 
 let createMeshRenderer = MeshRendererAPI.createMeshRenderer;
+
+let findGameObjectsByName = SceneAPI.findGameObjectsByName;
 
 let addSceneChildren = SceneAPI.addSceneChildren;
 

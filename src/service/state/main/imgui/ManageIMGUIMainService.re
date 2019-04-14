@@ -28,6 +28,9 @@ let setIMGUIFunc = (customData, func, state) => {
     };
 };
 
+let clearIMGUIFunc = state =>
+  setIMGUIFunc(Obj.magic(-1), Obj.magic((_, _, state) => state), state);
+
 let isSetIMGUIFuncInRenderWorkerForWorker = state =>
   state.imguiRecord.isSetIMGUIFuncInRenderWorkerForWorker === true;
 
