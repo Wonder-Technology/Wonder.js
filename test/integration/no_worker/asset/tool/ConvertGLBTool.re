@@ -6,7 +6,7 @@ let testResult = (sandbox, glbFilePath, testFunc) => {
   let wdb = ConverterAPI.convertGLBToWDB(buffer##buffer);
 
   let (wdFileContent, _, binBuffer) =
-    BufferUtils.decodeWDB(wdb, AssembleWholeWDBSystem._checkWDB);
+    BufferUtils.decodeWDB(wdb, AssembleWholeWDBSystem.checkWDB);
 
   testFunc((wdFileContent |> Js.Json.parseExn |> Obj.magic, binBuffer));
 };
@@ -33,7 +33,7 @@ let testGLTFResultByGLTF =
     );
 
   let (wdFileContent, _, binBuffer) =
-    BufferUtils.decodeWDB(wdb, AssembleWholeWDBSystem._checkWDB);
+    BufferUtils.decodeWDB(wdb, AssembleWholeWDBSystem.checkWDB);
 
   testFunc(wdFileContent |> Js.Json.parseExn |> Obj.magic);
 };

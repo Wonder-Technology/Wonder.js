@@ -2,7 +2,7 @@ open Js.Typed_array;
 
 open GenerateSceneGraphType;
 
-let _getComponentType = pointType =>
+let getComponentType = pointType =>
   switch (pointType) {
   | Vertex
   | Normal
@@ -11,7 +11,7 @@ let _getComponentType = pointType =>
   | Index32 => 5125
   };
 
-let _getType = pointType =>
+let getType = pointType =>
   switch (pointType) {
   | Vertex
   | Normal => "VEC3"
@@ -46,8 +46,8 @@ let _addBufferViewData =
            bufferView: bufferViewDataArr |> Js.Array.length,
            /* byteOffset:  0, */
            count: pointsCount,
-           componentType: _getComponentType(pointType),
-           type_: _getType(pointType),
+           componentType: getComponentType(pointType),
+           type_: getType(pointType),
          }),
       bufferViewDataArr
       |> ArrayService.push({

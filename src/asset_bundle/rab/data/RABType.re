@@ -58,7 +58,6 @@ type geometry = {
 };
 
 type resourceAssetBundleContent = {
-  /* manifest: empty, */
   textures: array(texture),
   images: array(image),
   basicMaterials: array(basicMaterial),
@@ -104,6 +103,7 @@ type scriptAttributeData = {
   attribute: ScriptAttributeType.scriptAttribute,
 };
 
+/* TODO editor: material, geometry should remove duplicate */
 type resourceData = {
   basicMaterials: array(materialComponent),
   lightMaterials: array(materialComponent),

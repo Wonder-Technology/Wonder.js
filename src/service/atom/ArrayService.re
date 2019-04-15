@@ -110,6 +110,34 @@ let removeDuplicateItems = (buildKeyFunc, arr) => {
   resultArr;
 };
 
+let hasDuplicateItems = (buildKeyFunc, arr) => {
+  let (isDuplicate, _) =
+    arr
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. (isDuplicate, map), item) =>
+           isDuplicate ?
+             (true, map) :
+             {
+               let key = buildKeyFunc(. item);
+
+               switch (WonderCommonlib.ImmutableHashMapService.get(key, map)) {
+               | None => (
+                   false,
+                   WonderCommonlib.ImmutableHashMapService.set(
+                     key,
+                     item,
+                     map,
+                   ),
+                 )
+               | Some(_) => (true, map)
+               };
+             },
+         (false, WonderCommonlib.ImmutableHashMapService.createEmpty()),
+       );
+
+  isDuplicate;
+};
+
 let isNotValid = value =>
   Obj.magic(value) === Js.Nullable.null
   || Obj.magic(value) === Js.Nullable.undefined;

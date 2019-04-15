@@ -10,8 +10,18 @@ let checkShouldHasNoSlot = map =>
           () =>
           map
           |> WonderCommonlib.MutableSparseMapService.getValidValues
-          |> WonderCommonlib.MutableSparseMapService.length == (map |> WonderCommonlib.MutableSparseMapService.length)
+          |> WonderCommonlib.MutableSparseMapService.length
+          == (map |> WonderCommonlib.MutableSparseMapService.length)
         )
       )
     )
   );
+
+let buildBufferViewData = (byteOffset, byteLength) => (
+  0,
+  byteOffset,
+  byteLength,
+  None,
+);
+
+let buildAccessorByteOffset = () => 0;

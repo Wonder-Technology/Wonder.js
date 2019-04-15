@@ -26,14 +26,7 @@ let _getUint8Array = (uint8Array, base64, editorState) =>
      }; */
   uint8Array |> OptionService.unsafeGet;
 
-let _computeBufferViewDataByteLength = bufferViewArr =>
-  switch (bufferViewArr |> ArrayService.getLast) {
-  | None => 0
-  | Some({byteOffset, byteLength}) =>
-    byteOffset + BufferUtils.alignedLength(byteLength)
-  };
-
-let _setImageIndexMap = (imageDataIndex, imageDataArr, imageIndexMap) => {
+let _setImageIndexMap = (imageDataIndex, imageArr, imageIndexMap) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -60,13 +53,13 @@ let _setImageIndexMap = (imageDataIndex, imageDataArr, imageIndexMap) => {
   imageIndexMap
   |> WonderCommonlib.ImmutableSparseMapService.set(
        imageDataIndex,
-       imageDataArr |> Js.Array.length,
+       imageArr |> Js.Array.length,
      );
 };
 
 /* TODO test: only save texture used image data */
 let _buildImageData = ({textures, imageDataMap}) => {
-  let (imageIndexMap, imageDataArr, bufferViewArr, uint8ArrayArr, byteOffset) =
+  let (imageIndexMap, imageArr, bufferViewArr, uint8ArrayArr, byteOffset) =
     textures
     |> Js.Array.map(({imageDataIndex}) => imageDataIndex)
     |> WonderCommonlib.ArrayService.removeDuplicateItems
@@ -74,7 +67,7 @@ let _buildImageData = ({textures, imageDataMap}) => {
          (.
            (
              imageIndexMap,
-             imageDataArr,
+             imageArr,
              bufferViewArr,
              uint8ArrayArr,
              byteOffset,
@@ -92,8 +85,8 @@ let _buildImageData = ({textures, imageDataMap}) => {
            let alignedByteLength = BufferUtils.alignedLength(byteLength);
 
            (
-             _setImageIndexMap(imageDataIndex, imageDataArr, imageIndexMap),
-             imageDataArr
+             _setImageIndexMap(imageDataIndex, imageArr, imageIndexMap),
+             imageArr
              |> ArrayService.push({
                   name,
                   mimeType,
@@ -115,10 +108,10 @@ let _buildImageData = ({textures, imageDataMap}) => {
 
   (
     imageIndexMap,
-    imageDataArr,
+    imageArr,
     bufferViewArr,
     uint8ArrayArr,
-    _computeBufferViewDataByteLength(bufferViewArr),
+    RABUtils.computeBufferViewDataByteLength(bufferViewArr),
   );
 };
 
@@ -315,7 +308,7 @@ let _buildMaterialData =
   (basicMaterialArr, lightMaterialArr);
 };
 
-let _getGeometryData =
+let _buildGeometryBufferData =
     (
       geometryComponent,
       (bufferViewArr, byteOffset, arrayBufferArr),
@@ -357,7 +350,7 @@ let _buildGeometryData =
            geometryComponent,
          ) => {
            let (vertexBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
-             _getGeometryData(
+             _buildGeometryBufferData(
                geometryComponent,
                (bufferViewArr, byteOffset, arrayBufferArr),
                (
@@ -370,7 +363,7 @@ let _buildGeometryData =
              );
 
            let (normalBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
-             _getGeometryData(
+             _buildGeometryBufferData(
                geometryComponent,
                (bufferViewArr, byteOffset, arrayBufferArr),
                (
@@ -383,7 +376,7 @@ let _buildGeometryData =
              );
 
            let (texCoordBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
-             _getGeometryData(
+             _buildGeometryBufferData(
                geometryComponent,
                (bufferViewArr, byteOffset, arrayBufferArr),
                (
@@ -396,7 +389,7 @@ let _buildGeometryData =
              );
 
            let (indexBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
-             _getGeometryData(
+             _buildGeometryBufferData(
                geometryComponent,
                (bufferViewArr, byteOffset, arrayBufferArr),
                (
@@ -446,7 +439,8 @@ let _buildGeometryData =
     arrayBufferArr,
     bufferViewArr,
     bufferViewArr |> Js.Array.length === 0 ?
-      imageAlignedByteLength : _computeBufferViewDataByteLength(bufferViewArr),
+      imageAlignedByteLength :
+      RABUtils.computeBufferViewDataByteLength(bufferViewArr),
   );
 };
 
@@ -498,7 +492,7 @@ let _buildScriptAttributeData = ({scriptAttributeDataArr}) =>
 let buildJsonData = (resourceData, state) => {
   let (
     imageIndexMap,
-    imageDataArr,
+    imageArr,
     imageBufferViewArr,
     imageUint8ArrayArr,
     imageAlignedByteLength,
@@ -530,7 +524,7 @@ let buildJsonData = (resourceData, state) => {
   (
     state,
     (
-      imageDataArr,
+      imageArr,
       textureArr,
       basicMaterialArr,
       lightMaterialArr,
@@ -545,34 +539,31 @@ let buildJsonData = (resourceData, state) => {
 };
 
 let buildJsonUint8Array =
-    (
-      bufferAlignedByteLength,
-      (
-        bufferViewArr,
-        imageDataArr,
-        textureArr,
-        basicMaterialArr,
-        lightMaterialArr,
-        geometryArr,
-        scriptEventFunctionArr,
-        scriptAttributeArr,
-      ),
-    ) => {
+    /* (
+         bufferViewArr,
+         imageArr,
+         textureArr,
+         basicMaterialArr,
+         lightMaterialArr,
+         geometryArr,
+         scriptEventFunctionArr,
+         scriptAttributeArr,
+       ), */
+    resourceAssetBundleContent => {
   let encoder = TextEncoder.newTextEncoder();
 
   encoder
   |> TextEncoder.encodeUint8Array(
-       {
-         images: imageDataArr,
-         textures: textureArr,
-         basicMaterials: basicMaterialArr,
-         lightMaterials: lightMaterialArr,
-         scriptEventFunctions: scriptEventFunctionArr,
-         scriptAttributes: scriptAttributeArr,
-         geometrys: geometryArr,
-         bufferViews: bufferViewArr,
-       }
-       |> Obj.magic
-       |> Js.Json.stringify,
+       /* {
+            images: imageArr,
+            textures: textureArr,
+            basicMaterials: basicMaterialArr,
+            lightMaterials: lightMaterialArr,
+            scriptEventFunctions: scriptEventFunctionArr,
+            scriptAttributes: scriptAttributeArr,
+            geometrys: geometryArr,
+            bufferViews: bufferViewArr,
+          } */
+       resourceAssetBundleContent |> Obj.magic |> Js.Json.stringify,
      );
 };

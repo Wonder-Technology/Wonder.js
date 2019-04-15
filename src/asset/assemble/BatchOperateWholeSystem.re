@@ -4,110 +4,6 @@ open WDType;
 
 open Js.Typed_array;
 
-let _getAccessorComponentType = ({accessors}, accessorIndex) => {
-  let accessor = Array.unsafe_get(accessors, accessorIndex);
-
-  accessor.componentType;
-};
-
-let _getBufferData =
-    (
-      {accessors, bufferViews, buffers},
-      (accessorIndex, dataViewArr, bytes_per_element),
-    ) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|not support interleaved buffer data|j},
-                ~actual={j|is interleaved|j},
-              ),
-              () => {
-                let accessor = Array.unsafe_get(accessors, accessorIndex);
-                let {byteStride} =
-                  Array.unsafe_get(bufferViews, accessor.bufferView);
-
-                byteStride |> OptionService.isJsonSerializedValueNone ?
-                  assertPass() :
-                  byteStride
-                  |> OptionService.unsafeGetJsonSerializedValue
-                  == BufferUtils.getAccessorTypeSize(accessor.type_)
-                  * bytes_per_element;
-              },
-            )
-          )
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-
-  let accessor = Array.unsafe_get(accessors, accessorIndex);
-  let bufferView = Array.unsafe_get(bufferViews, accessor.bufferView);
-  let dataView = Array.unsafe_get(dataViewArr, bufferView.buffer);
-
-  let offset = accessor.byteOffset + bufferView.byteOffset;
-
-  (
-    dataView |> DataView.buffer,
-    offset,
-    BufferUtils.computeTypeArrayLengthByAccessorData(
-      accessor.count,
-      accessor.type_,
-    ),
-  );
-};
-
-let _getBufferPointData =
-    (
-      (accessorIndex, bytes_per_element, dataViewArr, wd),
-      fromBufferRangeFunc,
-    ) => {
-  let (arrayBuffer, offset, length) =
-    _getBufferData(wd, (accessorIndex, dataViewArr, bytes_per_element));
-
-  fromBufferRangeFunc(arrayBuffer, ~offset, ~length);
-};
-
-let _getBufferAttributeData = (accessorIndex, dataViewArr, wd) =>
-  _getBufferPointData(
-    (accessorIndex, Float32Array._BYTES_PER_ELEMENT, dataViewArr, wd),
-    Float32Array.fromBufferRange,
-  );
-
-let _getBufferIndex16Data = (componentType, accessorIndex, dataViewArr, wd) =>
-  switch (componentType) {
-  | UNSIGNED_BYTE =>
-    Uint16Array.from(
-      _getBufferPointData(
-        (accessorIndex, Uint8Array._BYTES_PER_ELEMENT, dataViewArr, wd),
-        Uint8Array.fromBufferRange,
-      )
-      |> Obj.magic,
-    )
-    ->Some
-  | UNSIGNED_SHORT =>
-    _getBufferPointData(
-      (accessorIndex, Uint16Array._BYTES_PER_ELEMENT, dataViewArr, wd),
-      Uint16Array.fromBufferRange,
-    )
-    ->Some
-  | _ => None
-  };
-
-let _getBufferIndex32Data = (componentType, accessorIndex, dataViewArr, wd) =>
-  switch (componentType) {
-  | UNSIGNED_INT =>
-    _getBufferPointData(
-      (accessorIndex, Uint32Array._BYTES_PER_ELEMENT, dataViewArr, wd),
-      Uint32Array.fromBufferRange,
-    )
-    ->Some
-  | _ => None
-  };
-
 let _batchSetGeometryData =
     ({geometrys} as wd, geometryArr, bufferArr, state) => {
   let dataViewArr =
@@ -128,7 +24,11 @@ let _batchSetGeometryData =
              let state =
                VerticesGeometryMainService.setVerticesByTypeArray(
                  geometry,
-                 _getBufferAttributeData(position, dataViewArr, wd),
+                 BatchOperateWholeGeometrySystem.getBufferAttributeData(
+                   position,
+                   dataViewArr,
+                   wd,
+                 ),
                  state,
                );
              let state =
@@ -136,7 +36,7 @@ let _batchSetGeometryData =
                  state :
                  NormalsGeometryMainService.setNormalsByTypeArray(
                    geometry,
-                   _getBufferAttributeData(
+                   BatchOperateWholeGeometrySystem.getBufferAttributeData(
                      normal |> OptionService.unsafeGetJsonSerializedValue,
                      dataViewArr,
                      wd,
@@ -148,7 +48,7 @@ let _batchSetGeometryData =
                  state :
                  TexCoordsGeometryMainService.setTexCoordsByTypeArray(
                    geometry,
-                   _getBufferAttributeData(
+                   BatchOperateWholeGeometrySystem.getBufferAttributeData(
                      texCoord |> OptionService.unsafeGetJsonSerializedValue,
                      dataViewArr,
                      wd,
@@ -156,10 +56,19 @@ let _batchSetGeometryData =
                    state,
                  );
 
-             let componentType = _getAccessorComponentType(wd, index);
+             let componentType =
+               BatchOperateWholeGeometrySystem.getAccessorComponentType(
+                 wd,
+                 index,
+               );
              let state =
                switch (
-                 _getBufferIndex16Data(componentType, index, dataViewArr, wd)
+                 BatchOperateWholeGeometrySystem.getBufferIndex16Data(
+                   componentType,
+                   index,
+                   dataViewArr,
+                   wd,
+                 )
                ) {
                | Some(data) =>
                  IndicesGeometryMainService.setIndicesByUint16Array(
@@ -169,7 +78,7 @@ let _batchSetGeometryData =
                  )
                | None =>
                  switch (
-                   _getBufferIndex32Data(
+                   BatchOperateWholeGeometrySystem.getBufferIndex32Data(
                      componentType,
                      index,
                      dataViewArr,

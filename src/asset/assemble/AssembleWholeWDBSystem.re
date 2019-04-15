@@ -112,7 +112,7 @@ let _buildBufferArray = (buffers: array(int), binBuffer) => {
   [|binBuffer|];
 };
 
-let _checkWDB = dataView => {
+let checkWDB = dataView => {
   WonderLog.Contract.requireCheck(
     () => {
       open WonderLog;
@@ -189,7 +189,7 @@ let assembleWDBData =
 
 let assemble = (wdb, configTuple, state) => {
   let (wdFileContent, streamChunk, binBuffer) =
-    BufferUtils.decodeWDB(wdb, _checkWDB);
+    BufferUtils.decodeWDB(wdb, checkWDB);
 
   assembleWDBData(
     wdFileContent |> Js.Json.parseExn |> Obj.magic,
