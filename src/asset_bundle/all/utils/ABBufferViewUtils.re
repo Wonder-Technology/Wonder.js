@@ -1,0 +1,1 @@
+let buildNoneBufferViewIndex = () => (-1);

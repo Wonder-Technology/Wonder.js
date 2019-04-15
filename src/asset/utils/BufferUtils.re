@@ -115,7 +115,7 @@ let getWDBChunkHeaderByteLength = () => 4;
 let getWDBHeaderTotalByteLength = () =>
   getHeaderByteLength() + getWDBChunkHeaderByteLength() * 3;
 
-let alignedLength = (value: int) : int =>
+let alignedLength = (value: int): int =>
   switch (value) {
   | 0 => value
   | value =>
@@ -261,3 +261,10 @@ let mergeUint8Array = (sourceUint8Array, targetUint8Array, offset) => {
 
   sourceUint8Array;
 };
+
+let mergeArrayBuffer = (sourceUint8Array, targetArrayBuffer, offset) =>
+  mergeUint8Array(
+    sourceUint8Array,
+    Uint8Array.fromBuffer(targetArrayBuffer),
+    offset,
+  );
