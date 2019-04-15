@@ -20,6 +20,7 @@ module.exports = {
     { name: "api" },
     { name: "data-json" },
     { name: "texture" },
+    { name: "asset-bundle" },
     { name: "asset" },
     { name: "shader" },
     { name: "glsl" },
