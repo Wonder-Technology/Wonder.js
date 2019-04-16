@@ -2,14 +2,13 @@ open WABType;
 
 open Js.Typed_array;
 
-let _getHeaderTotalByteLength = () => 4;
-
 let _computeByteLength = jsonUint8Array => {
   let jsonByteLength = jsonUint8Array |> Uint8Array.byteLength;
 
   let jsonAlignedByteLength = jsonByteLength |> BufferUtils.alignedLength;
 
-  let totalByteLength = _getHeaderTotalByteLength() + jsonAlignedByteLength;
+  let totalByteLength =
+    GenerateWABUtils.getHeaderTotalByteLength() + jsonAlignedByteLength;
 
   (jsonByteLength, jsonAlignedByteLength, totalByteLength);
 };

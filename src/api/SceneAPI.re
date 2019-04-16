@@ -14,9 +14,4 @@ let addSceneChild = GameObjectSceneMainService.addChild;
 
 let addSceneChildren = GameObjectSceneMainService.addChildren;
 
-let findGameObjectsByName = (name, state) =>
-  state
-  |> AllGameObjectMainService.getAllGameObjects(getSceneGameObject(state))
-  |> Js.Array.filter(gameObject =>
-       NameGameObjectMainService.getName(gameObject, state) === Some(name)
-     );
+let findGameObjectsByName = GameObjectSceneMainService.findGameObjectsByName;

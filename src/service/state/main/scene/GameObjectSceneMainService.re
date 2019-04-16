@@ -18,7 +18,7 @@ let addChild = (childGameObject, {gameObjectRecord} as state) => {
           getSceneGameObject(state),
           gameObjectRecord,
         )
-        |. Some,
+        ->Some,
         GetComponentGameObjectService.unsafeGetTransformComponent(
           childGameObject,
           gameObjectRecord,
@@ -33,4 +33,11 @@ let addChildren = (childGameObjectArr, {gameObjectRecord} as state) =>
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, childGameObject) => addChild(childGameObject, state),
        state,
+     );
+
+let findGameObjectsByName = (name, state) =>
+  state
+  |> AllGameObjectMainService.getAllGameObjects(getSceneGameObject(state))
+  |> Js.Array.filter(gameObject =>
+       NameGameObjectMainService.getName(gameObject, state) === Some(name)
      );

@@ -1,0 +1,1 @@
+let getHeaderTotalByteLength = () => 4;
