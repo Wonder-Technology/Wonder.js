@@ -20,13 +20,13 @@ open DependencyDataType;
 
 /* TODO need test */
 let rec _isCircleDependency =
-        (dependencyRelation, recordedAbPathArr, isCircleOpt, abPathArr) =>
+        (dependencyRelation, recordedAbPathArr, isCircleOpt, abRelativePathArr) =>
   switch (isCircleOpt) {
   | Some(isCircle) => (isCircle, recordedAbPathArr)
   | None =>
     ArrayService.hasDuplicateItems((. item) => item, recordedAbPathArr) ?
       (true, recordedAbPathArr) :
-      abPathArr
+      abRelativePathArr
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (. (isCircle, recordedAbPathArr), abRelativePath) =>
              switch (
@@ -40,12 +40,12 @@ let rec _isCircleDependency =
                  Some(false),
                  [||],
                )
-             | Some(abPathArr) =>
+             | Some(abRelativePathArr) =>
                _isCircleDependency(
                  dependencyRelation,
-                 ArrayService.fastConcat(recordedAbPathArr, abPathArr),
+                 ArrayService.fastConcat(recordedAbPathArr, abRelativePathArr),
                  None,
-                 abPathArr,
+                 abRelativePathArr,
                )
              },
            (false, recordedAbPathArr),
@@ -56,7 +56,7 @@ let checkCircleDependency = dependencyRelation =>
   dependencyRelation
   |> WonderCommonlib.ImmutableHashMapService.getValidValues
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. isCircle, abPathArr) =>
+       (. isCircle, abRelativePathArr) =>
          isCircle ?
            isCircle :
            {
@@ -65,7 +65,7 @@ let checkCircleDependency = dependencyRelation =>
                  dependencyRelation,
                  WonderCommonlib.ArrayService.createEmpty(),
                  None,
-                 abPathArr,
+                 abRelativePathArr,
                );
 
              isCircle;
@@ -73,29 +73,58 @@ let checkCircleDependency = dependencyRelation =>
        false,
      );
 
-let _createDependencyRelation = () =>
-  WonderCommonlib.ImmutableHashMapService.createEmpty();
+/* let _createDependencyRelation = () =>
+     WonderCommonlib.ImmutableHashMapService.createEmpty();
 
-let calcWholeDependencyRelation =
-    ({imageDependencyRelation, geometryDependencyRelation}) =>
-  ArrayService.fastConcat(
-    imageDependencyRelation |> ImmutableHashMapService.getValidKeys,
-    geometryDependencyRelation |> ImmutableHashMapService.getValidKeys,
-  )
-  |> ArrayService.removeDuplicateItems((. item) => item)
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. wholeDependencyRelation, abRelativePath) =>
-         wholeDependencyRelation
-         |> WonderCommonlib.ImmutableHashMapService.set(
-              abRelativePath,
-              imageDependencyRelation
-              |> WonderCommonlib.ImmutableHashMapService.get(abRelativePath)
-              |> Js.Option.getWithDefault(
-                   geometryDependencyRelation
-                   |> WonderCommonlib.ImmutableHashMapService.unsafeGet(
-                        abRelativePath,
-                      ),
-                 ),
-            ),
-       _createDependencyRelation(),
-     );
+   let calcWholeDependencyRelation =
+       ({imageDependencyRelation, geometryDependencyRelation}) =>
+     ArrayService.fastConcat(
+       imageDependencyRelation |> ImmutableHashMapService.getValidKeys,
+       geometryDependencyRelation |> ImmutableHashMapService.getValidKeys,
+     )
+     |> ArrayService.removeDuplicateItems((. item) => item)
+     |> WonderCommonlib.ArrayService.reduceOneParam(
+          (. wholeDependencyRelation, abRelativePath) =>
+            wholeDependencyRelation
+            |> WonderCommonlib.ImmutableHashMapService.set(
+                 abRelativePath,
+                 imageDependencyRelation
+                 |> WonderCommonlib.ImmutableHashMapService.get(abRelativePath)
+                 |> Js.Option.getWithDefault(
+                      geometryDependencyRelation
+                      |> WonderCommonlib.ImmutableHashMapService.unsafeGet(
+                           abRelativePath,
+                         ),
+                    ),
+               ),
+          _createDependencyRelation(),
+        ); */
+
+module RAB = {
+  open Js.Typed_array;
+
+  let readHeader = dataView => {
+    let (jsonByteLength, byteOffset) =
+      DataViewCommon.getUint32_1(. 0, dataView);
+
+    let (bufferByteLength, byteOffset) =
+      DataViewCommon.getUint32_1(. byteOffset, dataView);
+
+    (byteOffset, jsonByteLength, bufferByteLength);
+  };
+
+  let getJsonStr = (jsonByteLength, rab) => {
+    let decoder = TextDecoder.newTextDecoder("utf-8");
+
+    decoder
+    |> TextDecoder.decodeUint8Array(
+         Uint8Array.fromBufferRange(
+           rab,
+           ~offset=GenerateABUtils.getHeaderTotalByteLength(),
+           ~length=jsonByteLength,
+         ),
+       );
+  };
+};
+
+module SAB = {};

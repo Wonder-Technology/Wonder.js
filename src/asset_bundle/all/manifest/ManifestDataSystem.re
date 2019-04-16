@@ -22,16 +22,10 @@ module All = {
     |}
   ];
 
-  let buildManifestData =
-      (wholeDependencyRelation, arrayBuffer, buildManifestFunc) =>
+  let buildManifestData = (dependencyRelation, arrayBuffer, buildManifestFunc) =>
     _getHashId(arrayBuffer)
     |> then_(hashId =>
-         buildManifestFunc(
-           hashId,
-           wholeDependencyRelation,
-           /* {hashId, dependencyRelation: wholeDependencyRelation}: AllABType.manifest */
-         )
-         |> resolve
+         buildManifestFunc(hashId, dependencyRelation) |> resolve
        )
     |> Most.fromPromise;
 
@@ -89,13 +83,11 @@ module All = {
 };
 
 module SAB = {
-  let addManifestData = (wholeDependencyRelation, sab) => {
+  let addManifestData = (dependencyRelation, sab) => {
     let manifestJsonUint8Array =
       All.buildManifestData(
-        wholeDependencyRelation, sab, (hashId, wholeDependencyRelation) =>
-        (
-          {hashId, dependencyRelation: wholeDependencyRelation}: SABType.manifest
-        )
+        dependencyRelation, sab, (hashId, dependencyRelation) =>
+        ({hashId, dependencyRelation}: SABType.manifest)
       )
       |> GenerateABUtils.buildJsonUint8Array;
 
@@ -108,13 +100,11 @@ module SAB = {
 };
 
 module RAB = {
-  let addManifestData = (wholeDependencyRelation, rab) => {
+  let addManifestData = (dependencyRelation, rab) => {
     let manifestJsonUint8Array =
       All.buildManifestData(
-        wholeDependencyRelation, rab, (hashId, wholeDependencyRelation) =>
-        (
-          {hashId, dependencyRelation: wholeDependencyRelation}: RABType.manifest
-        )
+        dependencyRelation, rab, (hashId, dependencyRelation) =>
+        ({hashId, dependencyRelation}: RABType.manifest)
       )
       |> GenerateABUtils.buildJsonUint8Array;
 
@@ -130,14 +120,7 @@ let addManifestData =
     (
       dependencyRelation: DependencyDataType.dependencyRelation,
       (sabArr, rabArr),
-    ) => {
-  let wholeDependencyRelation =
-    DependencyDataUtils.calcWholeDependencyRelation(dependencyRelation);
-
-  (
-    sabArr
-    |> Js.Array.map(sab => RAB.addManifestData(wholeDependencyRelation, sab)),
-    rabArr
-    |> Js.Array.map(rab => RAB.addManifestData(wholeDependencyRelation, rab)),
-  );
-};
+    ) => (
+  sabArr |> Js.Array.map(sab => RAB.addManifestData(dependencyRelation, sab)),
+  rabArr |> Js.Array.map(rab => RAB.addManifestData(dependencyRelation, rab)),
+);

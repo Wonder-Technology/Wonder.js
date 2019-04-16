@@ -3,8 +3,31 @@ open DependencyDataType;
 open Js.Typed_array;
 
 module All = {
-  let hasDependencyData = (rabPath, dependencyRelation) =>
-    dependencyRelation |> WonderCommonlib.ImmutableHashMapService.has(rabPath);
+  let hasDependencyData =
+      (
+        bufferDataName,
+        abRelativePath,
+        dependencyRelation,
+        abBufferDataNameMap: bufferDataNameMap,
+      ) =>
+    FindDependencyDataSystem.findAllDependencyAbRelativePath(
+      abRelativePath,
+      dependencyRelation,
+    )
+    |> Js.Array.filter(dependencyAbRelativePath =>
+         switch (
+           abBufferDataNameMap
+           |> WonderCommonlib.ImmutableHashMapService.get(
+                dependencyAbRelativePath,
+              )
+         ) {
+         | None => false
+         | Some(bufferDataNameMap) =>
+           bufferDataNameMap
+           |> WonderCommonlib.ImmutableHashMapService.has(bufferDataName)
+         }
+       )
+    |> Js.Array.length > 0;
 };
 
 module RAB = {
@@ -22,7 +45,7 @@ module RAB = {
 
   let _removeImageDuplicateBufferData =
       (
-        (dependencyRelation, rabPath),
+        (dependencyRelation, allRabDependentImageNameMap, rabRelativePath),
         {images, bufferViews}: RABType.resourceAssetBundleContent,
         buffer,
       ) => {
@@ -31,9 +54,14 @@ module RAB = {
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (.
              (imageArr, bufferViewArr, arrayBufferArr, byteOffset),
-             ({bufferView}: RABType.image) as imageData,
+             ({name, bufferView}: RABType.image) as imageData,
            ) =>
-             All.hasDependencyData(rabPath, dependencyRelation) ?
+             All.hasDependencyData(
+               name,
+               rabRelativePath,
+               dependencyRelation,
+               allRabDependentImageNameMap,
+             ) ?
                (
                  imageArr
                  |> ArrayService.push(
@@ -87,8 +115,12 @@ module RAB = {
 
   let _buildGeometryBufferData =
       (
-        dependencyRelation,
-        rabPath,
+        (
+          geometryName,
+          rabRelativePath,
+          dependencyRelation,
+          allRabDependentGeometryNameMap,
+        ),
         (buffer, bufferViews),
         (
           imageBufferViewIndex,
@@ -99,7 +131,12 @@ module RAB = {
         ),
       ) =>
     ABBufferViewUtils.isNoneBufferViewIndex(bufferView)
-    || All.hasDependencyData(rabPath, dependencyRelation) ?
+    || All.hasDependencyData(
+         geometryName,
+         rabRelativePath,
+         dependencyRelation,
+         allRabDependentGeometryNameMap,
+       ) ?
       (
         ABBufferViewUtils.buildNoneBufferViewIndex(),
         bufferViewArr,
@@ -125,7 +162,7 @@ module RAB = {
 
   let _removeGeometryDuplicateBufferData =
       (
-        (dependencyRelation, rabPath),
+        (dependencyRelation, allRabDependentGeometryNameMap, rabRelativePath),
         (imageAlignedByteLength, imageBufferViewArr),
         {geometrys, bufferViews}: RABType.resourceAssetBundleContent,
         buffer,
@@ -139,6 +176,7 @@ module RAB = {
              (geometryArr, arrayBufferArr, bufferViewArr, byteOffset),
              (
                {
+                 name,
                  vertexBufferView,
                  normalBufferView,
                  texCoordBufferView,
@@ -148,8 +186,12 @@ module RAB = {
            ) => {
              let (vertexBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
                _buildGeometryBufferData(
-                 dependencyRelation,
-                 rabPath,
+                 (
+                   name,
+                   rabRelativePath,
+                   dependencyRelation,
+                   allRabDependentGeometryNameMap,
+                 ),
                  (buffer, bufferViews),
                  (
                    imageBufferViewIndex,
@@ -162,8 +204,12 @@ module RAB = {
 
              let (normalBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
                _buildGeometryBufferData(
-                 dependencyRelation,
-                 rabPath,
+                 (
+                   name,
+                   rabRelativePath,
+                   dependencyRelation,
+                   allRabDependentGeometryNameMap,
+                 ),
                  (buffer, bufferViews),
                  (
                    imageBufferViewIndex,
@@ -181,8 +227,12 @@ module RAB = {
                arrayBufferArr,
              ) =
                _buildGeometryBufferData(
-                 dependencyRelation,
-                 rabPath,
+                 (
+                   name,
+                   rabRelativePath,
+                   dependencyRelation,
+                   allRabDependentGeometryNameMap,
+                 ),
                  (buffer, bufferViews),
                  (
                    imageBufferViewIndex,
@@ -195,8 +245,12 @@ module RAB = {
 
              let (indexBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
                _buildGeometryBufferData(
-                 dependencyRelation,
-                 rabPath,
+                 (
+                   name,
+                   rabRelativePath,
+                   dependencyRelation,
+                   allRabDependentGeometryNameMap,
+                 ),
                  (buffer, bufferViews),
                  (
                    imageBufferViewIndex,
@@ -236,49 +290,51 @@ module RAB = {
     );
   };
 
-  let _getJsonStr = (jsonByteLength, asb) => {
-    let decoder = TextDecoder.newTextDecoder("utf-8");
+  /* let _getJsonStr = (jsonByteLength, rab) => {
+       let decoder = TextDecoder.newTextDecoder("utf-8");
 
-    decoder
-    |> TextDecoder.decodeUint8Array(
-         Uint8Array.fromBufferRange(
-           asb,
-           ~offset=GenerateABUtils.getHeaderTotalByteLength(),
-           ~length=jsonByteLength,
-         ),
-       );
-  };
+       decoder
+       |> TextDecoder.decodeUint8Array(
+            Uint8Array.fromBufferRange(
+              rab,
+              ~offset=GenerateABUtils.getHeaderTotalByteLength(),
+              ~length=jsonByteLength,
+            ),
+          );
+     }; */
 
-  let _getBuffer = (jsonByteLength, asb) =>
-    asb
+  let _getBuffer = (jsonByteLength, rab) =>
+    rab
     |> ArrayBuffer.sliceFrom(
          GenerateABUtils.getHeaderTotalByteLength()
          + jsonByteLength
          |> BufferUtils.alignedLength,
        );
 
-  let _readHeader = dataView => {
-    let (jsonByteLength, byteOffset) =
-      DataViewCommon.getUint32_1(. 0, dataView);
+  /* let _readHeader = dataView => {
+       let (jsonByteLength, byteOffset) =
+         DataViewCommon.getUint32_1(. 0, dataView);
 
-    let (bufferByteLength, byteOffset) =
-      DataViewCommon.getUint32_1(. byteOffset, dataView);
+       let (bufferByteLength, byteOffset) =
+         DataViewCommon.getUint32_1(. byteOffset, dataView);
 
-    (byteOffset, jsonByteLength, bufferByteLength);
-  };
+       (byteOffset, jsonByteLength, bufferByteLength);
+     }; */
 
   let removeRABDuplicateBufferData =
+      /* {imageDependencyRelation, geometryDependencyRelation}, */
       (
-        {imageDependencyRelation, geometryDependencyRelation},
-        (rabPath, rabArrayBuffer),
+        dependencyRelation,
+        (allRabDependentImageNameMap, allRabDependentGeometryNameMap),
+        (rabRelativePath, rab),
       ) => {
-    let dataView = DataViewCommon.create(rabArrayBuffer);
+    let dataView = DataViewCommon.create(rab);
 
     let (byteOffset, jsonByteLength, bufferByteLength) =
-      _readHeader(dataView);
+      DependencyDataUtils.RAB.readHeader(dataView);
 
-    let jsonStr = _getJsonStr(jsonByteLength, rabArrayBuffer);
-    let buffer = _getBuffer(jsonByteLength, rabArrayBuffer);
+    let jsonStr = DependencyDataUtils.RAB.getJsonStr(jsonByteLength, rab);
+    let buffer = _getBuffer(jsonByteLength, rab);
 
     let resourceAssetBundleContent: RABType.resourceAssetBundleContent =
       jsonStr |> Js.Json.parseExn |> Obj.magic;
@@ -290,7 +346,7 @@ module RAB = {
       imageAlignedByteLength,
     ) =
       _removeImageDuplicateBufferData(
-        (imageDependencyRelation, rabPath),
+        (dependencyRelation, allRabDependentImageNameMap, rabRelativePath),
         resourceAssetBundleContent,
         buffer,
       );
@@ -302,7 +358,7 @@ module RAB = {
       bufferTotalAlignedByteLength,
     ) =
       _removeGeometryDuplicateBufferData(
-        (geometryDependencyRelation, rabPath),
+        (dependencyRelation, allRabDependentGeometryNameMap, rabRelativePath),
         (imageAlignedByteLength, imageBufferViewArr),
         resourceAssetBundleContent,
         buffer,
@@ -345,7 +401,7 @@ module SAB = {
 
   let _removeImageDuplicateBufferData =
       (
-        (dependencyRelation, sabPath),
+        (dependencyRelation, allSabDependentImageNameMap, sabRelativePath),
         {images, bufferViews, accessors}: SABType.sceneAssetBundleContent,
         buffer,
       ) =>
@@ -357,9 +413,14 @@ module SAB = {
         |> WonderCommonlib.ArrayService.reduceOneParam(
              (.
                (imageArr, bufferViewArr, arrayBufferArr, byteOffset),
-               ({bufferView}: WDType.image) as imageData,
+               ({name, bufferView}: WDType.image) as imageData,
              ) =>
-               All.hasDependencyData(sabPath, dependencyRelation) ?
+               All.hasDependencyData(
+                 name,
+                 sabRelativePath,
+                 dependencyRelation,
+                 allSabDependentImageNameMap,
+               ) ?
                  (
                    imageArr
                    |> ArrayService.push(
@@ -420,9 +481,12 @@ module SAB = {
 
   let _buildGeometryAttributeBufferData =
       (
-        dependencyRelation,
-        sabPath,
-        /* (buffer, bufferViews, accessors), */
+        (
+          geometryName,
+          sabRelativePath,
+          dependencyRelation,
+          allSabDependentGeometryNameMap,
+        ),
         dataViewArr,
         pointType,
         ({bufferViews, accessors}: SABType.sceneAssetBundleContent) as sceneAssetBundleContent,
@@ -434,7 +498,6 @@ module SAB = {
         ),
         (
           imageBufferViewIndex,
-          /* bufferView, */
           accessor,
           accessorArr,
           bufferViewArr,
@@ -443,7 +506,12 @@ module SAB = {
         ),
       ) =>
     isNoneAccessorIndexFunc(accessor)
-    || All.hasDependencyData(sabPath, dependencyRelation) ?
+    || All.hasDependencyData(
+         geometryName,
+         sabRelativePath,
+         dependencyRelation,
+         allSabDependentGeometryNameMap,
+       ) ?
       (
         buildNoneAccessorIndexFunc(),
         accessorArr,
@@ -498,8 +566,12 @@ module SAB = {
 
   let _buildGeometryIndexBufferData =
       (
-        dependencyRelation,
-        sabPath,
+        (
+          name,
+          sabRelativePath,
+          dependencyRelation,
+          allSabDependentGeometryNameMap,
+        ),
         dataViewArr,
         ({bufferViews, accessors}: SABType.sceneAssetBundleContent) as sceneAssetBundleContent,
         (
@@ -512,7 +584,12 @@ module SAB = {
         ),
       ) =>
     ABBufferViewUtils.isNoneAccessorIndex(accessor)
-    || All.hasDependencyData(sabPath, dependencyRelation) ?
+    || All.hasDependencyData(
+         name,
+         sabRelativePath,
+         dependencyRelation,
+         allSabDependentGeometryNameMap,
+       ) ?
       (
         ABBufferViewUtils.buildNoneAccessorIndex(),
         accessorArr,
@@ -603,7 +680,7 @@ module SAB = {
 
   let _removeGeometryDuplicateBufferData =
       (
-        (dependencyRelation, sabPath),
+        (dependencyRelation, allSabDependentGeometryNameMap, sabRelativePath),
         (imageAlignedByteLength, imageBufferViewArr),
         ({geometrys, bufferViews, accessors}: SABType.sceneAssetBundleContent) as sceneAssetBundleContent,
         buffer,
@@ -634,7 +711,9 @@ module SAB = {
                  byteOffset,
                ) :
                {
-                 let ({position, normal, texCoord, index}: WDType.geometry) as geometry =
+                 let (
+                       {name, position, normal, texCoord, index}: WDType.geometry
+                     ) as geometry =
                    geometryData |> OptionService.unsafeGetJsonSerializedValue;
 
                  let (
@@ -645,8 +724,12 @@ module SAB = {
                    arrayBufferArr,
                  ) =
                    _buildGeometryAttributeBufferData(
-                     dependencyRelation,
-                     sabPath,
+                     (
+                       name,
+                       sabRelativePath,
+                       dependencyRelation,
+                       allSabDependentGeometryNameMap,
+                     ),
                      dataViewArr,
                      GenerateSceneGraphType.Vertex,
                      sceneAssetBundleContent,
@@ -674,8 +757,12 @@ module SAB = {
                    arrayBufferArr,
                  ) =
                    _buildGeometryAttributeBufferData(
-                     dependencyRelation,
-                     sabPath,
+                     (
+                       name,
+                       sabRelativePath,
+                       dependencyRelation,
+                       allSabDependentGeometryNameMap,
+                     ),
                      dataViewArr,
                      GenerateSceneGraphType.Normal,
                      sceneAssetBundleContent,
@@ -704,8 +791,12 @@ module SAB = {
                    arrayBufferArr,
                  ) =
                    _buildGeometryAttributeBufferData(
-                     dependencyRelation,
-                     sabPath,
+                     (
+                       name,
+                       sabRelativePath,
+                       dependencyRelation,
+                       allSabDependentGeometryNameMap,
+                     ),
                      dataViewArr,
                      GenerateSceneGraphType.TexCoord,
                      sceneAssetBundleContent,
@@ -734,8 +825,12 @@ module SAB = {
                    arrayBufferArr,
                  ) =
                    _buildGeometryIndexBufferData(
-                     dependencyRelation,
-                     sabPath,
+                     (
+                       name,
+                       sabRelativePath,
+                       dependencyRelation,
+                       allSabDependentGeometryNameMap,
+                     ),
                      dataViewArr,
                      sceneAssetBundleContent,
                      (
@@ -782,11 +877,12 @@ module SAB = {
 
   let removeSABDuplicateBufferData =
       (
-        {imageDependencyRelation, geometryDependencyRelation},
-        (sabPath, sabArrayBuffer),
+        dependencyRelation,
+        (allSabDependentImageNameMap, allSabDependentGeometryNameMap),
+        (sabRelativePath, sab),
       ) => {
     let (wdFileContent, _, buffer) =
-      BufferUtils.decodeWDB(sabArrayBuffer, AssembleWholeWDBSystem.checkWDB);
+      BufferUtils.decodeWDB(sab, AssembleWholeWDBSystem.checkWDB);
 
     let sceneAssetBundleContent: SABType.sceneAssetBundleContent =
       wdFileContent |> Js.Json.parseExn |> Obj.magic;
@@ -798,7 +894,7 @@ module SAB = {
       imageAlignedByteLength,
     ) =
       _removeImageDuplicateBufferData(
-        (imageDependencyRelation, sabPath),
+        (dependencyRelation, allSabDependentImageNameMap, sabRelativePath),
         sceneAssetBundleContent,
         buffer,
       );
@@ -811,7 +907,7 @@ module SAB = {
       bufferTotalAlignedByteLength,
     ) =
       _removeGeometryDuplicateBufferData(
-        (geometryDependencyRelation, sabPath),
+        (dependencyRelation, allSabDependentGeometryNameMap, sabRelativePath),
         (imageAlignedByteLength, imageBufferViewArr),
         sceneAssetBundleContent,
         buffer,
@@ -843,13 +939,34 @@ module SAB = {
 };
 
 let removeDuplicateBufferData =
-    (dependencyRelation, (sabDataArr, rabDataArr)) => (
+    (
+      dependencyRelation,
+      (
+        (allRabDependentImageNameMap, allRabDependentGeometryNameMap),
+        (allSabDependentImageNameMap, allSabDependentGeometryNameMap),
+      ),
+      (sabDataArr, rabDataArr),
+    ) => (
   sabDataArr
-  |> Js.Array.map(((sabPath, sab) as data) =>
-       (sabPath, SAB.removeSABDuplicateBufferData(dependencyRelation, data))
+  |> Js.Array.map(((sabRelativePath, sab) as data) =>
+       (
+         sabRelativePath,
+         SAB.removeSABDuplicateBufferData(
+           dependencyRelation,
+           (allSabDependentImageNameMap, allSabDependentGeometryNameMap),
+           data,
+         ),
+       )
      ),
   rabDataArr
-  |> Js.Array.map(((rabPath, rab) as data) =>
-       (rabPath, RAB.removeRABDuplicateBufferData(dependencyRelation, data))
+  |> Js.Array.map(((rabRelativePath, rab) as data) =>
+       (
+         rabRelativePath,
+         RAB.removeRABDuplicateBufferData(
+           dependencyRelation,
+           (allRabDependentImageNameMap, allRabDependentGeometryNameMap),
+           data,
+         ),
+       )
      ),
 );
