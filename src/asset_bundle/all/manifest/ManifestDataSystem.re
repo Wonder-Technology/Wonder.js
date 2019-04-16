@@ -92,50 +92,98 @@ module All = {
 };
 
 module SAB = {
-  let addManifestData = (dependencyRelation, (sabRelativePath, sab)) => {
-    let manifestJsonUint8Array =
-      All.buildManifestData(
-        dependencyRelation,
-        (sabRelativePath, sab),
-        (hashId, dependencyRelation) =>
-        ({hashId, dependencyRelation}: SABType.manifest)
-      )
-      |> GenerateABUtils.buildJsonUint8Array;
+  let addManifestData = (dependencyRelation, (sabRelativePath, sab)) =>
+    All.buildManifestData(
+      dependencyRelation,
+      (sabRelativePath, sab),
+      (hashId, dependencyRelation) =>
+      ({hashId, dependencyRelation}: SABType.manifest)
+    )
+    |> Most.map((manifestData: SABType.manifest) => {
+         let manifestJsonUint8Array =
+           manifestData |> GenerateABUtils.buildJsonUint8Array;
 
-    All.generateAB(
-      BufferUtils.alignedLength(sab |> ArrayBuffer.byteLength),
-      manifestJsonUint8Array,
-      sab,
-    );
-  };
+         (
+           manifestData.hashId,
+           sabRelativePath,
+           All.generateAB(
+             BufferUtils.alignedLength(sab |> ArrayBuffer.byteLength),
+             manifestJsonUint8Array,
+             sab,
+           ),
+         );
+       });
 };
 
 module RAB = {
-  let addManifestData = (dependencyRelation, (rabRelativePath, rab)) => {
-    let manifestJsonUint8Array =
-      All.buildManifestData(
-        dependencyRelation,
-        (rabRelativePath, rab),
-        (hashId, dependencyRelation) =>
-        ({hashId, dependencyRelation}: RABType.manifest)
-      )
-      |> GenerateABUtils.buildJsonUint8Array;
+  let addManifestData = (dependencyRelation, (rabRelativePath, rab)) =>
+    All.buildManifestData(
+      dependencyRelation,
+      (rabRelativePath, rab),
+      (hashId, dependencyRelation) =>
+      ({hashId, dependencyRelation}: RABType.manifest)
+    )
+    |> Most.map((manifestData: RABType.manifest) => {
+         let manifestJsonUint8Array =
+           manifestData |> GenerateABUtils.buildJsonUint8Array;
 
-    All.generateAB(
-      BufferUtils.alignedLength(rab |> ArrayBuffer.byteLength),
-      manifestJsonUint8Array,
-      rab,
-    );
-  };
+         (
+           manifestData.hashId,
+           rabRelativePath,
+           All.generateAB(
+             BufferUtils.alignedLength(rab |> ArrayBuffer.byteLength),
+             manifestJsonUint8Array,
+             rab,
+           ),
+         );
+       });
 };
 
 let addManifestData =
     (
       dependencyRelation: DependencyDataType.dependencyRelation,
       (sabDataArr, rabDataArr),
-    ) => (
-  sabDataArr
-  |> Js.Array.map(data => SAB.addManifestData(dependencyRelation, data)),
+    ) => {
+  let wholeHashIdMap = WonderCommonlib.ImmutableHashMapService.createEmpty();
+
   rabDataArr
-  |> Js.Array.map(data => RAB.addManifestData(dependencyRelation, data)),
-);
+  |> Js.Array.map(data => RAB.addManifestData(dependencyRelation, data))
+  |> Most.mergeArray
+  |> Most.reduce(
+       ((wholeHashIdMap, newRabDataArr), (hashId, rabRelativePath, rab)) => (
+         wholeHashIdMap
+         |> WonderCommonlib.ImmutableHashMapService.set(
+              rabRelativePath,
+              hashId,
+            ),
+         newRabDataArr |> ArrayService.push(rab),
+       ),
+       (
+         WonderCommonlib.ImmutableHashMapService.createEmpty(),
+         WonderCommonlib.ArrayService.createEmpty(),
+       ),
+     )
+  |> then_(((wholeHashIdMap, newRabDataArr)) =>
+       sabDataArr
+       |> Js.Array.map(data => SAB.addManifestData(dependencyRelation, data))
+       |> Most.mergeArray
+       |> Most.reduce(
+            (
+              (wholeHashIdMap, newSabDataArr),
+              (hashId, sabRelativePath, sab),
+            ) => (
+              wholeHashIdMap
+              |> WonderCommonlib.ImmutableHashMapService.set(
+                   sabRelativePath,
+                   hashId,
+                 ),
+              newSabDataArr |> ArrayService.push(sab),
+            ),
+            (wholeHashIdMap, WonderCommonlib.ArrayService.createEmpty()),
+          )
+       |> then_(((wholeHashIdMap, newSabDataArr)) =>
+            (wholeHashIdMap, newRabDataArr, newSabDataArr) |> resolve
+          )
+     )
+  |> Most.fromPromise;
+};
