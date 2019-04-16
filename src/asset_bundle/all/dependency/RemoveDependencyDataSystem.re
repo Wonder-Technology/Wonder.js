@@ -243,7 +243,7 @@ module RAB = {
     |> TextDecoder.decodeUint8Array(
          Uint8Array.fromBufferRange(
            asb,
-           ~offset=RABUtils.getHeaderTotalByteLength(),
+           ~offset=GenerateABUtils.getHeaderTotalByteLength(),
            ~length=jsonByteLength,
          ),
        );
@@ -252,7 +252,7 @@ module RAB = {
   let _getBuffer = (jsonByteLength, asb) =>
     asb
     |> ArrayBuffer.sliceFrom(
-         RABUtils.getHeaderTotalByteLength()
+         GenerateABUtils.getHeaderTotalByteLength()
          + jsonByteLength
          |> BufferUtils.alignedLength,
        );

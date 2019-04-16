@@ -1,11 +1,13 @@
 open Js.Typed_array;
 
-let _writeHeader = (jsonByteLength, bufferAlignedByteLength, dataView) =>
+let getHeaderTotalByteLength = () => 8;
+
+let writeHeader = (jsonByteLength, bufferAlignedByteLength, dataView) =>
   dataView
   |> DataViewCommon.writeUint32_1(jsonByteLength, 0)
   |> DataViewCommon.writeUint32_1(bufferAlignedByteLength, _, dataView);
 
-let _getEmptyEncodedUint8Data = () => {
+let getEmptyEncodedUint8Data = () => {
   let encoder = TextEncoder.newTextEncoder();
   let emptyUint8DataArr = encoder |> TextEncoder.encodeUint8Array(" ");
 
@@ -36,7 +38,7 @@ let _writeUint8ArrayToArrayBufferWithEmptyData =
   (resultByteOffset, uint8Array, dataView);
 };
 
-let _writeJson =
+let writeJson =
     (
       byteOffset,
       (emptyEncodedUint8Data, jsonAlignedByteLength, jsonUint8Array),
@@ -93,13 +95,13 @@ let _writeBuffer =
   uint8Array |> Uint8Array.buffer;
 };
 
-let _computeByteLength = (bufferTotalAlignedByteLength, jsonUint8Array) => {
+let computeByteLength = (bufferTotalAlignedByteLength, jsonUint8Array) => {
   let jsonByteLength = jsonUint8Array |> Uint8Array.byteLength;
 
   let jsonAlignedByteLength = jsonByteLength |> BufferUtils.alignedLength;
 
   let totalByteLength =
-    RABUtils.getHeaderTotalByteLength()
+    getHeaderTotalByteLength()
     + jsonAlignedByteLength
     + bufferTotalAlignedByteLength;
 
@@ -117,33 +119,39 @@ let generateAB =
       jsonUint8Array,
     ) => {
   let (jsonByteLength, jsonAlignedByteLength, totalByteLength) =
-    _computeByteLength(bufferTotalAlignedByteLength, jsonUint8Array);
+    computeByteLength(bufferTotalAlignedByteLength, jsonUint8Array);
 
   let ab = ArrayBuffer.make(totalByteLength);
   let dataView = DataViewCommon.create(ab);
 
   let byteOffset =
-    _writeHeader(jsonByteLength, bufferTotalAlignedByteLength, dataView);
+    writeHeader(jsonByteLength, bufferTotalAlignedByteLength, dataView);
 
-  let emptyEncodedUint8Data = _getEmptyEncodedUint8Data();
+  let emptyEncodedUint8Data = getEmptyEncodedUint8Data();
 
   let (byteOffset, _, dataView) =
-    _writeJson(
+    writeJson(
       byteOffset,
       (emptyEncodedUint8Data, jsonAlignedByteLength, jsonUint8Array),
       dataView,
     );
 
-  let _ =
-    _writeBuffer(
-      byteOffset,
-      (
-        (imageBufferViewArr, geometryBufferViewArr),
-        imageUint8ArrayArr,
-        geometryArrayBufferArr,
-      ),
-      dataView |> DataView.buffer,
-    );
+  _writeBuffer(
+    byteOffset,
+    (
+      (imageBufferViewArr, geometryBufferViewArr),
+      imageUint8ArrayArr,
+      geometryArrayBufferArr,
+    ),
+    dataView |> DataView.buffer,
+  );
+};
 
-  ab;
+let buildJsonUint8Array = jsonRecord => {
+  let encoder = TextEncoder.newTextEncoder();
+
+  encoder
+  |> TextEncoder.encodeUint8Array(
+       jsonRecord |> Obj.magic |> Js.Json.stringify,
+     );
 };

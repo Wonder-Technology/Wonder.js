@@ -101,7 +101,7 @@ open Js.Typed_array;
      let jsonAlignedByteLength = jsonByteLength |> BufferUtils.alignedLength;
 
      let totalByteLength =
-       RABUtils.getHeaderTotalByteLength()
+       GenerateABUtils.getHeaderTotalByteLength()
        + jsonAlignedByteLength
        + bufferTotalAlignedByteLength;
 

@@ -1,13 +1,13 @@
 open AllABType;
 
 type imageDependencyRelation =
-  WonderCommonlib.ImmutableHashMapService.t(array(abPath));
+  WonderCommonlib.ImmutableHashMapService.t(array(abRelativePath));
 
 type geometryDependencyRelation =
-  WonderCommonlib.ImmutableHashMapService.t(array(abPath));
+  WonderCommonlib.ImmutableHashMapService.t(array(abRelativePath));
 
 /* type dependencyRelation =
-   WonderCommonlib.ImmutableHashMapService.t(array(abPath)); */
+   WonderCommonlib.ImmutableHashMapService.t(array(abRelativePath)); */
 
 type dependencyRelation = {
   imageDependencyRelation,

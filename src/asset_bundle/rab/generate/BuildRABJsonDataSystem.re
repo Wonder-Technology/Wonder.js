@@ -549,21 +549,5 @@ let buildJsonUint8Array =
          scriptEventFunctionArr,
          scriptAttributeArr,
        ), */
-    resourceAssetBundleContent => {
-  let encoder = TextEncoder.newTextEncoder();
-
-  encoder
-  |> TextEncoder.encodeUint8Array(
-       /* {
-            images: imageArr,
-            textures: textureArr,
-            basicMaterials: basicMaterialArr,
-            lightMaterials: lightMaterialArr,
-            scriptEventFunctions: scriptEventFunctionArr,
-            scriptAttributes: scriptAttributeArr,
-            geometrys: geometryArr,
-            bufferViews: bufferViewArr,
-          } */
-       resourceAssetBundleContent |> Obj.magic |> Js.Json.stringify,
-     );
-};
+    resourceAssetBundleContent =>
+  GenerateABUtils.buildJsonUint8Array(resourceAssetBundleContent);

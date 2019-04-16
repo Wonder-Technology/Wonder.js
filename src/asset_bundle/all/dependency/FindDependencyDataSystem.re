@@ -28,10 +28,10 @@ let rec _isCircleDependency =
       (true, recordedAbPathArr) :
       abPathArr
       |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. (isCircle, recordedAbPathArr), abPath) =>
+           (. (isCircle, recordedAbPathArr), abRelativePath) =>
              switch (
                dependencyRelation
-               |> WonderCommonlib.ImmutableHashMapService.get(abPath)
+               |> WonderCommonlib.ImmutableHashMapService.get(abRelativePath)
              ) {
              | None =>
                _isCircleDependency(
@@ -71,4 +71,31 @@ let checkCircleDependency = dependencyRelation =>
              isCircle;
            },
        false,
+     );
+
+let _createDependencyRelation = () =>
+  WonderCommonlib.ImmutableHashMapService.createEmpty();
+
+let calcWholeDependencyRelation =
+    ({imageDependencyRelation, geometryDependencyRelation}) =>
+  ArrayService.fastConcat(
+    imageDependencyRelation |> ImmutableHashMapService.getValidKeys,
+    geometryDependencyRelation |> ImmutableHashMapService.getValidKeys,
+  )
+  |> ArrayService.removeDuplicateItems((. item) => item)
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. wholeDependencyRelation, abRelativePath) =>
+         wholeDependencyRelation
+         |> WonderCommonlib.ImmutableHashMapService.set(
+              abRelativePath,
+              imageDependencyRelation
+              |> WonderCommonlib.ImmutableHashMapService.get(abRelativePath)
+              |> Js.Option.getWithDefault(
+                   geometryDependencyRelation
+                   |> WonderCommonlib.ImmutableHashMapService.unsafeGet(
+                        abRelativePath,
+                      ),
+                 ),
+            ),
+       _createDependencyRelation(),
      );
