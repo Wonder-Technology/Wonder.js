@@ -22,11 +22,14 @@ module All = {
     |}
   ];
 
-  let buildManifestData = (wholeDependencyRelation, arrayBuffer) =>
+  let buildManifestData =
+      (wholeDependencyRelation, arrayBuffer, buildManifestFunc) =>
     _getHashId(arrayBuffer)
     |> then_(hashId =>
-         (
-           {hashId, dependencyRelation: wholeDependencyRelation}: AllABType.manifest
+         buildManifestFunc(
+           hashId,
+           wholeDependencyRelation,
+           /* {hashId, dependencyRelation: wholeDependencyRelation}: AllABType.manifest */
          )
          |> resolve
        )
@@ -88,7 +91,12 @@ module All = {
 module SAB = {
   let addManifestData = (wholeDependencyRelation, sab) => {
     let manifestJsonUint8Array =
-      All.buildManifestData(wholeDependencyRelation, sab)
+      All.buildManifestData(
+        wholeDependencyRelation, sab, (hashId, wholeDependencyRelation) =>
+        (
+          {hashId, dependencyRelation: wholeDependencyRelation}: SABType.manifest
+        )
+      )
       |> GenerateABUtils.buildJsonUint8Array;
 
     All.generateAB(
@@ -102,7 +110,12 @@ module SAB = {
 module RAB = {
   let addManifestData = (wholeDependencyRelation, rab) => {
     let manifestJsonUint8Array =
-      All.buildManifestData(wholeDependencyRelation, rab)
+      All.buildManifestData(
+        wholeDependencyRelation, rab, (hashId, wholeDependencyRelation) =>
+        (
+          {hashId, dependencyRelation: wholeDependencyRelation}: RABType.manifest
+        )
+      )
       |> GenerateABUtils.buildJsonUint8Array;
 
     All.generateAB(
@@ -119,7 +132,7 @@ let addManifestData =
       (sabArr, rabArr),
     ) => {
   let wholeDependencyRelation =
-    FindDependencyDataSystem.calcWholeDependencyRelation(dependencyRelation);
+    DependencyDataUtils.calcWholeDependencyRelation(dependencyRelation);
 
   (
     sabArr

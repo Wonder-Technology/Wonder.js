@@ -68,6 +68,14 @@ type resourceAssetBundleContent = {
   bufferViews: array(bufferView),
 };
 
+type manifest = {
+  hashId: string,
+  dependencyRelation:
+    WonderCommonlib.ImmutableHashMapService.t(
+      array(AllABType.abRelativePath),
+    ),
+};
+
 type materialComponent = int;
 
 type geometryComponent = int;
