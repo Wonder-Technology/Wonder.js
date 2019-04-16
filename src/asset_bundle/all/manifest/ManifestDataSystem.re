@@ -64,8 +64,8 @@ module All = {
         manifestJsonUint8Array,
       );
 
-    let ab = ArrayBuffer.make(totalByteLength);
-    let dataView = DataViewCommon.create(ab);
+    /* let ab = ArrayBuffer.make(totalByteLength); */
+    let dataView = DataViewCommon.create(ArrayBuffer.make(totalByteLength));
 
     let byteOffset =
       GenerateABUtils.writeHeader(

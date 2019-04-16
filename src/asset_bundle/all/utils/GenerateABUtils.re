@@ -121,8 +121,7 @@ let generateAB =
   let (jsonByteLength, jsonAlignedByteLength, totalByteLength) =
     computeByteLength(bufferTotalAlignedByteLength, jsonUint8Array);
 
-  let ab = ArrayBuffer.make(totalByteLength);
-  let dataView = DataViewCommon.create(ab);
+  let dataView = DataViewCommon.create(ArrayBuffer.make(totalByteLength));
 
   let byteOffset =
     writeHeader(jsonByteLength, bufferTotalAlignedByteLength, dataView);
