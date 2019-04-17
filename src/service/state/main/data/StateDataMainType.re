@@ -1,3 +1,5 @@
+open AssetBundleType;
+
 open WonderWebgl.GlType;
 
 open ComponentType;
@@ -372,6 +374,53 @@ and scriptRecord = {
       ScriptAttributeType.attributeMap,
     ),
 }
+and assembleRABData = {
+  isAssembled: WonderCommonlib.ImmutableHashMapService.t(bool),
+  textureMap:
+    WonderCommonlib.ImmutableHashMapService.t(
+      WonderCommonlib.ImmutableHashMapService.t(
+        BasicSourceTextureType.basicSourceTexture,
+      ),
+    ),
+  imageMap:
+    WonderCommonlib.ImmutableHashMapService.t
+      (
+        WonderCommonlib.ImmutableHashMapService.t
+          /* (WonderWebgl.DomExtendType.imageElement, Js.Typed_array.Uint8Array.t), */
+          (WonderWebgl.DomExtendType.imageElement),
+      ),
+      /* (ImageType.image), */
+  basicMaterialMap:
+    WonderCommonlib.ImmutableHashMapService.t(
+      WonderCommonlib.ImmutableHashMapService.t(
+        BasicMaterialType.basicMaterial,
+      ),
+    ),
+  lightMaterialMap:
+    WonderCommonlib.ImmutableHashMapService.t(
+      WonderCommonlib.ImmutableHashMapService.t(
+        LightMaterialType.lightMaterial,
+      ),
+    ),
+  geometryMap:
+    WonderCommonlib.ImmutableHashMapService.t(
+      WonderCommonlib.ImmutableHashMapService.t(GeometryType.geometry),
+    ),
+  scriptEventFunctionDataMap:
+    WonderCommonlib.ImmutableHashMapService.t(
+      WonderCommonlib.ImmutableHashMapService.t(eventFunctionData),
+    ),
+  scriptAttributeMap:
+    WonderCommonlib.ImmutableHashMapService.t(
+      WonderCommonlib.ImmutableHashMapService.t(
+        ScriptAttributeType.scriptAttribute,
+      ),
+    ),
+}
+and assetBundleRecord = {
+  assembleRABData,
+  assembleSABData,
+}
 and state = {
   settingRecord,
   jobRecord,
@@ -419,6 +468,7 @@ and state = {
   imguiRecord,
   apiRecord,
   jobDataRecord,
+  assetBundleRecord,
 };
 
 type sharedDataForRestoreState = {

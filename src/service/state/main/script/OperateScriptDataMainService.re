@@ -36,7 +36,7 @@ let _addScriptAttribute =
 
 let addEventFunctionDataMap =
     (script, eventFunctionDataMap, {scriptRecord} as state) => {
-  let {scriptEventFunctionDataMap} as scriptRecord = scriptRecord;
+  let ({scriptEventFunctionDataMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   {
     ...state,
@@ -59,7 +59,7 @@ let addScriptEventFunctionData =
       scriptEventFunctionData,
       {scriptRecord} as state,
     ) => {
-  let {scriptEventFunctionDataMap} as scriptRecord = scriptRecord;
+  let ({scriptEventFunctionDataMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   {
     ...state,
@@ -90,7 +90,7 @@ let addScriptEventFunctionData =
 };
 
 let addAttributeMap = (script, attributeMap, {scriptRecord} as state) => {
-  let {scriptAttributeMap} as scriptRecord = scriptRecord;
+  let ({scriptAttributeMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   {
     ...state,
@@ -105,7 +105,7 @@ let addAttributeMap = (script, attributeMap, {scriptRecord} as state) => {
 
 let addScriptAttribute =
     (script, scriptAttributeName, scriptAttribute, {scriptRecord} as state) => {
-  let {scriptAttributeMap} as scriptRecord = scriptRecord;
+  let ({scriptAttributeMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   {
     ...state,
@@ -165,7 +165,7 @@ let _removeScriptAttribute =
 
 let removeScriptEventFunctionData =
     (script, scriptEventFunctionDataName, {scriptRecord} as state) => {
-  let {scriptEventFunctionDataMap} as scriptRecord = scriptRecord;
+  let ({scriptEventFunctionDataMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   {
     ...state,
@@ -191,7 +191,7 @@ let removeScriptEventFunctionData =
 
 let removeScriptAttribute =
     (script, scriptAttributeName, {scriptRecord} as state) => {
-  let {scriptAttributeMap} as scriptRecord = scriptRecord;
+  let ({scriptAttributeMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   {
     ...state,
@@ -248,7 +248,7 @@ let replaceScriptAttribute =
      );
 
 let getScriptEventFunctionDataEntries = (script, {scriptRecord} as state) => {
-  let {scriptEventFunctionDataMap} as scriptRecord = scriptRecord;
+  let ({scriptEventFunctionDataMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   scriptEventFunctionDataMap
   |> WonderCommonlib.ImmutableSparseMapService.get(script)
@@ -266,7 +266,7 @@ let unsafeGetScriptEventFunctionDataEntries =
   getScriptEventFunctionDataEntries(script, state) |> OptionService.unsafeGet;
 
 let getScriptAttributeEntries = (script, {scriptRecord} as state) => {
-  let {scriptAttributeMap} as scriptRecord = scriptRecord;
+  let ({scriptAttributeMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   scriptAttributeMap
   |> WonderCommonlib.ImmutableSparseMapService.get(script)
@@ -283,7 +283,7 @@ let unsafeGetScriptAttributeEntries = (script, {scriptRecord} as state) =>
 
 let getScriptAttribute =
     (script, scriptAttributeName, {scriptRecord} as state) => {
-  let {scriptAttributeMap} as scriptRecord = scriptRecord;
+  let ({scriptAttributeMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   scriptAttributeMap
   |> WonderCommonlib.ImmutableSparseMapService.get(script)
@@ -345,14 +345,14 @@ let setScriptAttributeFieldDefaultValueAndValue =
   );
 
 let getScriptAllEventFunctionData = (script, {scriptRecord} as state) => {
-  let {scriptEventFunctionDataMap} = scriptRecord;
+  let ({scriptEventFunctionDataMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   scriptEventFunctionDataMap
   |> WonderCommonlib.ImmutableSparseMapService.get(script);
 };
 
 let unsafeGetScriptAllEventFunctionData = (script, {scriptRecord} as state) => {
-  let {scriptEventFunctionDataMap} = scriptRecord;
+  let ({scriptEventFunctionDataMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   scriptEventFunctionDataMap
   |> ImmutableSparseMapService.unsafeGetAndCheck(script);
@@ -360,7 +360,7 @@ let unsafeGetScriptAllEventFunctionData = (script, {scriptRecord} as state) => {
 
 let setScriptAllEventFunctionData =
     (script, allEventFunctionData, {scriptRecord} as state) => {
-  let {scriptEventFunctionDataMap} = scriptRecord;
+  let ({scriptEventFunctionDataMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   {
     ...state,
@@ -377,19 +377,19 @@ let setScriptAllEventFunctionData =
 };
 
 let getScriptAllAttributes = (script, {scriptRecord} as state) => {
-  let {scriptAttributeMap} = scriptRecord;
+  let ({scriptAttributeMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   scriptAttributeMap |> WonderCommonlib.ImmutableSparseMapService.get(script);
 };
 
 let unsafeGetScriptAllAttributes = (script, {scriptRecord} as state) => {
-  let {scriptAttributeMap} = scriptRecord;
+  let ({scriptAttributeMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   scriptAttributeMap |> ImmutableSparseMapService.unsafeGetAndCheck(script);
 };
 
 let setScriptAllAttributes = (script, allAttributes, {scriptRecord} as state) => {
-  let {scriptAttributeMap} = scriptRecord;
+  let ({scriptAttributeMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   {
     ...state,

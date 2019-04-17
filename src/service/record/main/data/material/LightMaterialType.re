@@ -2,6 +2,8 @@ open ComponentType;
 
 open MaterialType;
 
+type lightMaterial = int;
+
 type lightMaterialRecord = {
   index: int,
   buffer: WorkerType.sharedArrayBuffer,
@@ -12,7 +14,8 @@ type lightMaterialRecord = {
   textureIndices: Js.Typed_array.Uint32Array.t,
   diffuseMapUnits: Js.Typed_array.Uint8Array.t,
   specularMapUnits: Js.Typed_array.Uint8Array.t,
-  emptyMapUnitArrayMap: WonderCommonlib.MutableSparseMapService.t(array(int)),
+  emptyMapUnitArrayMap:
+    WonderCommonlib.MutableSparseMapService.t(array(int)),
   defaultDiffuseColor: array(float),
   defaultSpecularColor: array(float),
   defaultShininess: float,

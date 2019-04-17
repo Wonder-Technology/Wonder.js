@@ -32,50 +32,18 @@ let load = abPath =>
   |> then_(ab => ab |> LoadType.fetchArrayBufferToArrayBuffer |> resolve)
   |> Most.fromPromise;
 
-let isAssetBundleArrayBufferCached = () => {};
+/* TODO need rewrite by editor */
+let isAssetBundleArrayBufferCached = (abRelativePath, hashId) => false;
 
-let getAssetBundleArrayBufferCache = () => {};
+let getAssetBundleArrayBufferCache = abRelativePath =>
+  WonderLog.Log.fatal(
+    WonderLog.Log.buildFatalMessage(
+      ~title="getAssetBundleArrayBufferCache",
+      ~description={j|need rewrite|j},
+      ~reason="",
+      ~solution={j||j},
+      ~params={j||j},
+    ),
+  );
 
-let cacheAssetBundleArrayBuffer = () => {};
-/* let cache = () => {};
-
-   let getAllDependencies = () => {}; */
-
-/* let loadAllDependencies = (abPath, wholeManifest) => {}; */
-
-/* let loadFromCacheAndDownload = (abPath) => {
-
-   }; */
-
-/* usage:
-
-    load(
-   getAssetBundlePath() + "whole.wab"
-    )
-    |> Most.flatMap((wab) => {
-   let manifest =  WAB.parseManifest(wab);
-
-   let wholeDependencyRelationMap = getWholeDependencyRelationMap(manifest);
-
-   findAllDependencyAbRelativePath(
-   "sab/a.sab",
-   wholeDependencyRelationMap
-   )
-   /* |> WonderCommonlib.ArrayService.reduceOneParam */
-   |> Js.Array.map((abRelativePath) => {
-   load(
-   getAssetBundlePath() + abRelativePath
-    )
-    |> Most.map((ab) => {
-   assemble(
-     abRelativePath, ab
-   )
-    })
-
-   })
-   |> Most.mergeArray
-
-
-
-    })
-      */
+let cacheAssetBundleArrayBuffer = (abRelativePath, ab, hashId) => ab;

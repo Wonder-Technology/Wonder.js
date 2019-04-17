@@ -260,7 +260,7 @@ let _buildMaterialData =
            |> ArrayService.push({
                 name,
                 color:
-                  BasicMaterialAPI.getBasicMaterialColor(
+                  OperateBasicMaterialMainService.getColor(
                     materialComponent,
                     state,
                   ),
@@ -283,7 +283,7 @@ let _buildMaterialData =
            |> ArrayService.push({
                 name,
                 diffuseColor:
-                  LightMaterialAPI.getLightMaterialDiffuseColor(
+                  OperateLightMaterialMainService.getDiffuseColor(
                     materialComponent,
                     state,
                   ),
@@ -296,7 +296,7 @@ let _buildMaterialData =
                     textureIndexMap,
                   ),
                 shininess:
-                  LightMaterialAPI.getLightMaterialShininess(
+                  OperateLightMaterialMainService.getShininess(
                     materialComponent,
                     state,
                   ),
@@ -354,9 +354,12 @@ let _buildGeometryData =
                geometryComponent,
                (bufferViewArr, byteOffset, arrayBufferArr),
                (
-                 GeometryAPI.hasGeometryVertices,
+                 VerticesGeometryMainService.hasVertices,
                  (geometryComponent, state) =>
-                   GeometryAPI.getGeometryVertices(geometryComponent, state)
+                   VerticesGeometryMainService.getVertices(.
+                     geometryComponent,
+                     state,
+                   )
                    |> Float32Array.buffer,
                ),
                state,
@@ -367,9 +370,12 @@ let _buildGeometryData =
                geometryComponent,
                (bufferViewArr, byteOffset, arrayBufferArr),
                (
-                 GeometryAPI.hasGeometryNormals,
+                 NormalsGeometryMainService.hasNormals,
                  (geometryComponent, state) =>
-                   GeometryAPI.getGeometryNormals(geometryComponent, state)
+                   NormalsGeometryMainService.getNormals(.
+                     geometryComponent,
+                     state,
+                   )
                    |> Float32Array.buffer,
                ),
                state,
@@ -380,9 +386,12 @@ let _buildGeometryData =
                geometryComponent,
                (bufferViewArr, byteOffset, arrayBufferArr),
                (
-                 GeometryAPI.hasGeometryTexCoords,
+                 TexCoordsGeometryMainService.hasTexCoords,
                  (geometryComponent, state) =>
-                   GeometryAPI.getGeometryTexCoords(geometryComponent, state)
+                   TexCoordsGeometryMainService.getTexCoords(.
+                     geometryComponent,
+                     state,
+                   )
                    |> Float32Array.buffer,
                ),
                state,
@@ -393,15 +402,18 @@ let _buildGeometryData =
                geometryComponent,
                (bufferViewArr, byteOffset, arrayBufferArr),
                (
-                 GeometryAPI.hasGeometryIndices,
+                 IndicesGeometryMainService.hasIndices,
                  (geometryComponent, state) =>
-                   GeometryAPI.hasGeometryIndices16(geometryComponent, state) ?
-                     GeometryAPI.getGeometryIndices16(
+                   IndicesGeometryMainService.hasIndices16(
+                     geometryComponent,
+                     state,
+                   ) ?
+                     IndicesGeometryMainService.getIndices16(.
                        geometryComponent,
                        state,
                      )
                      |> Uint16Array.buffer :
-                     GeometryAPI.getGeometryIndices32(
+                     IndicesGeometryMainService.getIndices32(.
                        geometryComponent,
                        state,
                      )
@@ -415,10 +427,16 @@ let _buildGeometryData =
              geometryArr
              |> ArrayService.push({
                   name:
-                    GeometryAPI.unsafeGetGeometryName(
+                    NameGeometryMainService.unsafeGetName(
                       geometryComponent,
                       state,
                     ),
+                  indexDataType:
+                    IndicesGeometryMainService.hasIndices16(
+                      geometryComponent,
+                      state,
+                    ) ?
+                      RABType.Index16 : RABType.Index32,
                   vertexBufferView: imageBufferViewIndex + vertexBufferView,
                   normalBufferView: imageBufferViewIndex + normalBufferView,
                   texCoordBufferView:

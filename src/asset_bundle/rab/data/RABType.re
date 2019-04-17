@@ -49,8 +49,13 @@ type scriptAttribute = {
   attributeStr: string,
 };
 
+type geometryIndexData =
+  | Index16
+  | Index32;
+
 type geometry = {
   name: string,
+  indexDataType: geometryIndexData,
   vertexBufferView: bufferViewIndex,
   normalBufferView: bufferViewIndex,
   texCoordBufferView: bufferViewIndex,

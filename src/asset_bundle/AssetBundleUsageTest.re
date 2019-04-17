@@ -80,6 +80,9 @@ let dynamicLoadAB = needRewriteAPI => {
 
          /* let state = StateAPI.unsafeGetState(); */
 
+         let wholeDependencyRelationMap =
+           ParseABSystem.WAB.getWholeDependencyRelationMap(manifest);
+
          ImportABSystem.loadAndAssembleAllDependencies(
            abRelativePath,
            manifest,
@@ -95,6 +98,7 @@ let dynamicLoadAB = needRewriteAPI => {
               ImportABSystem.loadAndAssembleAB(
                 abRelativePath,
                 manifest,
+                wholeDependencyRelationMap,
                 (
                   getAssetBundlePath,
                   isAssetBundleArrayBufferCached,
@@ -119,10 +123,11 @@ let goToNextScene = (sabRelativePath, needRewriteAPI, state) =>
   AssembleABSystem.isAssembled(sabRelativePath, state) ?
     {
       let sabAllGameObjects =
-        OperateAssembleABResultSystem.SAB.findAllGameObjects(
+        OperateSABAssetBundleMainService.unsafeFindAllGameObjects(
           sabRelativePath,
           state,
         );
+      /* |> OptionService.unsafeGet; */
 
       let state =
         state
@@ -144,11 +149,12 @@ let replaceToRabLightMaterial = (rabRelativePath, needRewriteAPI, state) =>
   AssembleABSystem.isAssembled(rabRelativePath, state) ?
     {
       let lightMaterial1 =
-        OperateAssembleABResultSystem.RAB.findLightMaterialByName(
+        OperateRABAssetBundleMainService.unsafeFindLightMaterialByName(
           rabRelativePath,
           "lightMaterial1",
           state,
         );
+      /* |> OptionService.unsafeGet; */
 
       let gameObjectName = "gameObject10";
 

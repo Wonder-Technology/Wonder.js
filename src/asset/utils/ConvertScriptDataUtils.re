@@ -36,7 +36,7 @@ let _convertEventFunctionDataMapToStr = eventDataMap =>
 let _buildEmptyMapStr = () => "{}";
 
 let unsafeGetEventFunctionDataMapStr = (script, {scriptRecord} as state) => {
-  let {scriptEventFunctionDataMap} as scriptRecord = scriptRecord;
+  let ({scriptEventFunctionDataMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   switch (
     scriptEventFunctionDataMap
@@ -52,7 +52,7 @@ let _convertAttributeMapToStr = attributeMap =>
   attributeMap |> Obj.magic |> Js.Json.stringify;
 
 let unsafeGetAttributeMapStr = (script, {scriptRecord} as state) => {
-  let {scriptAttributeMap} as scriptRecord = scriptRecord;
+  let ({scriptAttributeMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   /* scriptAttributeMap
      |> ImmutableSparseMapService.unsafeGetAndCheck(script)

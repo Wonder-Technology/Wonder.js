@@ -14,7 +14,7 @@ let _pushEventFunctionData =
 
 let _getAllEventFunctionData =
     (mapEventFunctionDataFunc, {scriptRecord} as state) => {
-  let {scriptEventFunctionDataMap} = scriptRecord;
+  let ({scriptEventFunctionDataMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   scriptEventFunctionDataMap
   |> WonderCommonlib.ImmutableSparseMapService.reduceiValid(
@@ -86,7 +86,7 @@ let getGameObjectAllInitEventFunctionData =
   ) {
   | None => WonderCommonlib.ArrayService.createEmpty()
   | Some(script) =>
-    let {scriptEventFunctionDataMap} = scriptRecord;
+    let ({scriptEventFunctionDataMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
     switch (
       scriptEventFunctionDataMap
@@ -107,7 +107,7 @@ let _mapDisposeEventFunctionDataFunc = ({dispose}) => dispose;
 
 let getActiveScriptAllDisposeEventFunctionData =
     (scriptArray, {scriptRecord} as state) => {
-  let {scriptEventFunctionDataMap} = scriptRecord;
+  let ({scriptEventFunctionDataMap}: StateDataMainType.scriptRecord) as scriptRecord = scriptRecord;
 
   scriptArray
   |> Js.Array.filter(script =>

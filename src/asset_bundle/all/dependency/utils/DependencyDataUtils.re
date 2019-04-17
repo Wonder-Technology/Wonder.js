@@ -20,7 +20,12 @@ open DependencyDataType;
 
 /* TODO need test */
 let rec _isCircleDependency =
-        (dependencyRelation, recordedAbPathArr, isCircleOpt, abRelativePathArr) =>
+        (
+          dependencyRelation,
+          recordedAbPathArr,
+          isCircleOpt,
+          abRelativePathArr,
+        ) =>
   switch (isCircleOpt) {
   | Some(isCircle) => (isCircle, recordedAbPathArr)
   | None =>
@@ -43,7 +48,10 @@ let rec _isCircleDependency =
              | Some(abRelativePathArr) =>
                _isCircleDependency(
                  dependencyRelation,
-                 ArrayService.fastConcat(recordedAbPathArr, abRelativePathArr),
+                 ArrayService.fastConcat(
+                   recordedAbPathArr,
+                   abRelativePathArr,
+                 ),
                  None,
                  abRelativePathArr,
                )
@@ -125,6 +133,14 @@ module RAB = {
          ),
        );
   };
+
+  let getBuffer = (jsonByteLength, rab) =>
+    rab
+    |> ArrayBuffer.sliceFrom(
+         GenerateABUtils.getHeaderTotalByteLength()
+         + jsonByteLength
+         |> BufferUtils.alignedLength,
+       );
 };
 
 module SAB = {};

@@ -1,3 +1,5 @@
+type basicSourceTexture = int;
+
 type basicSourceTextureRecord = {
   index: int,
   /* buffer: WorkerType.sharedArrayBuffer, */

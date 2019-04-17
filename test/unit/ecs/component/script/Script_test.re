@@ -569,8 +569,11 @@ let _ =
                  script1,
                );
 
-          let {scriptEventFunctionDataMap, scriptAttributeMap} =
+          let (
+                {scriptEventFunctionDataMap, scriptAttributeMap}: StateDataMainType.scriptRecord
+              ) as scriptRecord =
             state.scriptRecord;
+
           (
             scriptEventFunctionDataMap
             |> WonderCommonlib.MutableSparseMapService.has(script1),

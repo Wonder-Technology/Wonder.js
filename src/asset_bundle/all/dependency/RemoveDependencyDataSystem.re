@@ -31,18 +31,6 @@ module All = {
 };
 
 module RAB = {
-  let _getArrayBufferFromBufferViews =
-      (buffer, bufferView, bufferViews: array(RABType.bufferView)) => {
-    let {byteOffset, byteLength}: RABType.bufferView =
-      Array.unsafe_get(bufferViews, bufferView);
-
-    buffer
-    |> Js.Typed_array.ArrayBuffer.slice(
-         ~start=byteOffset,
-         ~end_=byteOffset + byteLength,
-       );
-  };
-
   let _removeImageDuplicateBufferData =
       (
         (dependencyRelation, allRabDependentImageNameMap, rabRelativePath),
@@ -77,7 +65,7 @@ module RAB = {
                ) :
                {
                  let arrayBuffer =
-                   _getArrayBufferFromBufferViews(
+                   ABArrayBufferUtils.RAB.getArrayBufferFromBufferViews(
                      buffer,
                      bufferView,
                      bufferViews,
@@ -145,7 +133,11 @@ module RAB = {
       ) :
       {
         let arrayBuffer =
-          _getArrayBufferFromBufferViews(buffer, bufferView, bufferViews);
+          ABArrayBufferUtils.RAB.getArrayBufferFromBufferViews(
+            buffer,
+            bufferView,
+            bufferViews,
+          );
 
         let byteLength = arrayBuffer |> ArrayBuffer.byteLength;
 
@@ -290,39 +282,7 @@ module RAB = {
     );
   };
 
-  /* let _getJsonStr = (jsonByteLength, rab) => {
-       let decoder = TextDecoder.newTextDecoder("utf-8");
-
-       decoder
-       |> TextDecoder.decodeUint8Array(
-            Uint8Array.fromBufferRange(
-              rab,
-              ~offset=GenerateABUtils.getHeaderTotalByteLength(),
-              ~length=jsonByteLength,
-            ),
-          );
-     }; */
-
-  let _getBuffer = (jsonByteLength, rab) =>
-    rab
-    |> ArrayBuffer.sliceFrom(
-         GenerateABUtils.getHeaderTotalByteLength()
-         + jsonByteLength
-         |> BufferUtils.alignedLength,
-       );
-
-  /* let _readHeader = dataView => {
-       let (jsonByteLength, byteOffset) =
-         DataViewCommon.getUint32_1(. 0, dataView);
-
-       let (bufferByteLength, byteOffset) =
-         DataViewCommon.getUint32_1(. byteOffset, dataView);
-
-       (byteOffset, jsonByteLength, bufferByteLength);
-     }; */
-
   let removeRABDuplicateBufferData =
-      /* {imageDependencyRelation, geometryDependencyRelation}, */
       (
         dependencyRelation,
         (allRabDependentImageNameMap, allRabDependentGeometryNameMap),
@@ -334,7 +294,7 @@ module RAB = {
       DependencyDataUtils.RAB.readHeader(dataView);
 
     let jsonStr = DependencyDataUtils.RAB.getJsonStr(jsonByteLength, rab);
-    let buffer = _getBuffer(jsonByteLength, rab);
+    let buffer = DependencyDataUtils.RAB.getBuffer(jsonByteLength, rab);
 
     let resourceAssetBundleContent: RABType.resourceAssetBundleContent =
       jsonStr |> Js.Json.parseExn |> Obj.magic;

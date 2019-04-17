@@ -4,6 +4,7 @@ let loadAndAssembleAB =
     (
       abRelativePath,
       wholeManifest,
+      wholeDependencyRelationMap,
       (
         getAssetBundlePathFunc,
         isAssetBundleArrayBufferCachedFunc,
@@ -27,15 +28,15 @@ let loadAndAssembleAB =
         |> Most.tap(ab =>
              cacheAssetBundleArrayBufferFunc(abRelativePath, ab, hashId)
            )
-        |> Most.map(ab => {
-             let state =
-               StateDataMainService.unsafeGetState(StateDataMain.stateData);
-
-             let state = AssembleABSystem.assemble(abRelativePath, ab, state);
-
-             StateDataMainService.setState(StateDataMain.stateData, state)
-             |> ignore;
-           });
+        |> Most.flatMap(ab =>
+             AssembleABSystem.assemble(
+               abRelativePath,
+               ab,
+               wholeDependencyRelationMap,
+               /* StateDataMainService.setState(StateDataMain.stateData, state)
+                  |> ignore; */
+             )
+           );
     };
 };
 
@@ -50,8 +51,6 @@ let loadAndAssembleAllDependencies =
         cacheAssetBundleArrayBufferFunc,
       ),
     ) => {
-  /* state, */
-
   let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
   AssembleABSystem.isAssembled(abRelativePath, state) ?
@@ -70,6 +69,7 @@ let loadAndAssembleAllDependencies =
              loadAndAssembleAB(
                abRelativePath,
                wholeManifest,
+               wholeDependencyRelationMap,
                (
                  getAssetBundlePathFunc,
                  isAssetBundleArrayBufferCachedFunc,

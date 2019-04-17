@@ -47,4 +47,5 @@ let createState = () => {
   imguiRecord: RecordIMGUIMainService.create(),
   apiRecord: RecordAPIMainService.create(),
   jobDataRecord: RecordJobDataService.create(),
+  assetBundleRecord: RecordAssetBundleMainService.create(),
 };

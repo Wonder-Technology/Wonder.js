@@ -2,6 +2,8 @@ open ComponentType;
 
 open MaterialType;
 
+type basicMaterial = int;
+
 type basicMaterialRecord = {
   index: int,
   buffer: WorkerType.sharedArrayBuffer,
