@@ -6,8 +6,8 @@ let markAssembled = (rabRelativePath, {assetBundleRecord} as state) => {
     ...assetBundleRecord,
     assembleRABData: {
       ...assetBundleRecord.assembleRABData,
-      isAssembled:
-        assetBundleRecord.assembleRABData.isAssembled
+      isAssembledMap:
+        assetBundleRecord.assembleRABData.isAssembledMap
         |> WonderCommonlib.ImmutableHashMapService.set(rabRelativePath, true),
     },
   },
@@ -15,7 +15,7 @@ let markAssembled = (rabRelativePath, {assetBundleRecord} as state) => {
 
 let isAssembled = (rabRelativePath, {assetBundleRecord} as state) =>
   switch (
-    assetBundleRecord.assembleRABData.isAssembled
+    assetBundleRecord.assembleRABData.isAssembledMap
     |> WonderCommonlib.ImmutableHashMapService.get(rabRelativePath)
   ) {
   | None => false
@@ -101,9 +101,9 @@ let setAssembleRABData =
   };
 };
 
-let findDataInAllDependencyAbByName =
-    (allDependencyAbRelativePath, name, state, findDataByNameFunc) =>
-  allDependencyAbRelativePath
+let findDataInAllDependencyRAbByName =
+    (allDependencyRAbRelativePath, name, state, findDataByNameFunc) =>
+  allDependencyRAbRelativePath
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. result, dependencyAbRelativePath) =>
          result |> Js.Option.isSome ?
@@ -111,80 +111,120 @@ let findDataInAllDependencyAbByName =
        None,
      );
 
-let unsafeFindDataInAllDependencyAbByName =
-    (allDependencyAbRelativePath, name, state, findDataByNameFunc) =>
-  switch (
-    findDataInAllDependencyAbByName(
-      allDependencyAbRelativePath,
-      name,
-      state,
-      findDataByNameFunc,
-    )
-  ) {
-  | None =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="unsafeFindDataInAllDependencyAbByName",
-        ~description={j|shouldn't find nothing|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j},
-      ),
-    )
-  | Some(result) => result
-  };
+let unsafeFindDataInAllDependencyRAbByName =
+    (allDependencyRAbRelativePath, name, state, findDataByNameFunc) =>
+  findDataInAllDependencyRAbByName(
+    allDependencyRAbRelativePath,
+    name,
+    state,
+    findDataByNameFunc,
+  )
+  |> OptionService.unsafeGetWithMessage(
+       WonderLog.Log.buildAssertMessage(
+         ~expect={j|data by name:$name exist in all dependency rabs|j},
+         ~actual={j|not|j},
+       ),
+     );
+
+/* switch (
+     findDataInAllDependencyRAbByName(
+       allDependencyRAbRelativePath,
+       name,
+       state,
+       findDataByNameFunc,
+     )
+   ) {
+   | None =>
+     WonderLog.Log.fatal(
+       WonderLog.Log.buildFatalMessage(
+         ~title="unsafeFindDataInAllDependencyRAbByName",
+         ~description={j|shouldn't find nothing|j},
+         ~reason="",
+         ~solution={j||j},
+         ~params={j||j},
+       ),
+     )
+   | Some(result) => result
+   }; */
 
 let findLightMaterialByName = (rabRelativePath, name, state) => Some(0);
 
 let unsafeFindLightMaterialByName = (rabRelativePath, name, state) =>
-  switch (findLightMaterialByName(rabRelativePath, name, state)) {
-  | None =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="unsafeFindLightMaterialByName",
-        ~description={j|shouldn't find nothing|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j},
-      ),
-    )
-  | Some(result) => result
-  };
+  findLightMaterialByName(rabRelativePath, name, state)
+  |> OptionService.unsafeGetWithMessage(
+       WonderLog.Log.buildAssertMessage(
+         ~expect=
+           {j|lightMaterial by name:$name exist in rabRelativePath:$rabRelativePath|j},
+         ~actual={j|not|j},
+       ),
+     );
+
+/* switch (findLightMaterialByName(rabRelativePath, name, state)) {
+   | None =>
+     WonderLog.Log.fatal(
+       WonderLog.Log.buildFatalMessage(
+         ~title="unsafeFindLightMaterialByName",
+         ~description={j|shouldn't find nothing|j},
+         ~reason="",
+         ~solution={j||j},
+         ~params={j||j},
+       ),
+     )
+   | Some(result) => result
+   }; */
 
 let findImageByName = (rabRelativePath, name, state) => Obj.magic(-1)->Some;
 
 let unsafeFindImageByName = (rabRelativePath, name, state) =>
-  switch (findImageByName(rabRelativePath, name, state)) {
-  | None =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="unsafeFindImageByName",
-        ~description={j|shouldn't find nothing|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j},
-      ),
-    )
-  | Some(result) => result
-  };
+  findImageByName(rabRelativePath, name, state)
+  |> OptionService.unsafeGetWithMessage(
+       WonderLog.Log.buildAssertMessage(
+         ~expect=
+           {j|image by name:$name exist in rabRelativePath:$rabRelativePath|j},
+         ~actual={j|not|j},
+       ),
+     );
+
+/* switch (findImageByName(rabRelativePath, name, state)) {
+   | None =>
+     WonderLog.Log.fatal(
+       WonderLog.Log.buildFatalMessage(
+         ~title="unsafeFindImageByName",
+         ~description={j|shouldn't find nothing|j},
+         ~reason="",
+         ~solution={j||j},
+         ~params={j||j},
+       ),
+     )
+   | Some(result) => result
+   }; */
 
 let findGeometryByName = (rabRelativePath, name, state) =>
   Obj.magic(-1)->Some;
 
 let unsafeFindGeometryByName = (rabRelativePath, name, state) =>
-  switch (findGeometryByName(rabRelativePath, name, state)) {
-  | None =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="unsafeFindGeometryByName",
-        ~description={j|shouldn't find nothing|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j},
-      ),
-    )
-  | Some(result) => result
-  };
+  findGeometryByName(rabRelativePath, name, state)
+  |> OptionService.unsafeGetWithMessage(
+       WonderLog.Log.buildAssertMessage(
+         ~expect=
+           {j|geometry by name:$name exist in rabRelativePath:$rabRelativePath|j},
+         ~actual={j|not|j},
+       ),
+     );
+
+/* switch (findGeometryByName(rabRelativePath, name, state)) {
+   | None =>
+     WonderLog.Log.fatal(
+       WonderLog.Log.buildFatalMessage(
+         ~title="unsafeFindGeometryByName",
+         ~description={j|shouldn't find nothing|j},
+         ~reason="",
+         ~solution={j||j},
+         ~params={j||j},
+       ),
+     )
+   | Some(result) => result
+   }; */
 /* let findBasicMaterialByName = (rabRelativePath, name, state) => 0;
 
 

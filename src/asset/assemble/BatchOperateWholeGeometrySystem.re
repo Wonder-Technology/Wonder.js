@@ -105,3 +105,75 @@ let getBufferIndex32Data = (componentType, accessorIndex, dataViewArr, wd) =>
     ->Some
   | _ => None
   };
+
+let setGeometryData =
+    (
+      geometry,
+      wd,
+      dataViewArr,
+      {position, normal, texCoord, index}: WDType.geometry,
+      state,
+    ) => {
+  let state =
+    VerticesGeometryMainService.setVerticesByTypeArray(
+      geometry,
+      getBufferAttributeData(position, dataViewArr, wd),
+      state,
+    );
+  let state =
+    normal |> OptionService.isJsonSerializedValueNone ?
+      state :
+      NormalsGeometryMainService.setNormalsByTypeArray(
+        geometry,
+        getBufferAttributeData(
+          normal |> OptionService.unsafeGetJsonSerializedValue,
+          dataViewArr,
+          wd,
+        ),
+        state,
+      );
+  let state =
+    texCoord |> OptionService.isJsonSerializedValueNone ?
+      state :
+      TexCoordsGeometryMainService.setTexCoordsByTypeArray(
+        geometry,
+        getBufferAttributeData(
+          texCoord |> OptionService.unsafeGetJsonSerializedValue,
+          dataViewArr,
+          wd,
+        ),
+        state,
+      );
+
+  let componentType = getAccessorComponentType(wd, index);
+  let state =
+    switch (getBufferIndex16Data(componentType, index, dataViewArr, wd)) {
+    | Some(data) =>
+      IndicesGeometryMainService.setIndicesByUint16Array(
+        geometry,
+        data,
+        state,
+      )
+    | None =>
+      switch (getBufferIndex32Data(componentType, index, dataViewArr, wd)) {
+      | Some(data) =>
+        IndicesGeometryMainService.setIndicesByUint32Array(
+          geometry,
+          data,
+          state,
+        )
+      | None =>
+        WonderLog.Log.fatal(
+          WonderLog.Log.buildFatalMessage(
+            ~title="_batchSetGeometryData",
+            ~description={j|unknown componentType: $componentType|j},
+            ~reason="",
+            ~solution={j||j},
+            ~params={j||j},
+          ),
+        )
+      }
+    };
+
+  state;
+};

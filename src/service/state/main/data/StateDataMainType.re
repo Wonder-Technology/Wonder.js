@@ -375,7 +375,7 @@ and scriptRecord = {
     ),
 }
 and assembleRABData = {
-  isAssembled: WonderCommonlib.ImmutableHashMapService.t(bool),
+  isAssembledMap: WonderCommonlib.ImmutableHashMapService.t(bool),
   textureMap:
     WonderCommonlib.ImmutableHashMapService.t(
       WonderCommonlib.ImmutableHashMapService.t(
@@ -383,13 +383,12 @@ and assembleRABData = {
       ),
     ),
   imageMap:
-    WonderCommonlib.ImmutableHashMapService.t
-      (
-        WonderCommonlib.ImmutableHashMapService.t
-          /* (WonderWebgl.DomExtendType.imageElement, Js.Typed_array.Uint8Array.t), */
-          (WonderWebgl.DomExtendType.imageElement),
-      ),
-      /* (ImageType.image), */
+    WonderCommonlib.ImmutableHashMapService.t(
+      WonderCommonlib.ImmutableHashMapService.t
+        /* (WonderWebgl.DomExtendType.imageElement, Js.Typed_array.Uint8Array.t), */
+        (WonderWebgl.DomExtendType.imageElement),
+    ),
+  /* (ImageType.image), */
   basicMaterialMap:
     WonderCommonlib.ImmutableHashMapService.t(
       WonderCommonlib.ImmutableHashMapService.t(
@@ -420,6 +419,7 @@ and assembleRABData = {
 and assetBundleRecord = {
   assembleRABData,
   assembleSABData,
+  wabData,
 }
 and state = {
   settingRecord,

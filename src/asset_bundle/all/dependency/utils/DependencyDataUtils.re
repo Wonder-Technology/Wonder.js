@@ -108,7 +108,7 @@ let checkCircleDependency = dependencyRelation =>
           _createDependencyRelation(),
         ); */
 
-module RAB = {
+module All = {
   open Js.Typed_array;
 
   let readHeader = dataView => {
@@ -142,5 +142,7 @@ module RAB = {
          |> BufferUtils.alignedLength,
        );
 };
+
+module RAB = {};
 
 module SAB = {};

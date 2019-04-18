@@ -16,96 +16,18 @@ let _batchSetGeometryData =
          geometryData |> OptionService.isJsonSerializedValueNone ?
            state :
            {
-             let {position, normal, texCoord, index}: WDType.geometry =
+             let ({position, normal, texCoord, index}: WDType.geometry) as geometryData =
                geometryData |> OptionService.unsafeGetJsonSerializedValue;
 
              let geometry = Array.unsafe_get(geometryArr, geometryIndex);
 
-             let state =
-               VerticesGeometryMainService.setVerticesByTypeArray(
-                 geometry,
-                 BatchOperateWholeGeometrySystem.getBufferAttributeData(
-                   position,
-                   dataViewArr,
-                   wd,
-                 ),
-                 state,
-               );
-             let state =
-               normal |> OptionService.isJsonSerializedValueNone ?
-                 state :
-                 NormalsGeometryMainService.setNormalsByTypeArray(
-                   geometry,
-                   BatchOperateWholeGeometrySystem.getBufferAttributeData(
-                     normal |> OptionService.unsafeGetJsonSerializedValue,
-                     dataViewArr,
-                     wd,
-                   ),
-                   state,
-                 );
-             let state =
-               texCoord |> OptionService.isJsonSerializedValueNone ?
-                 state :
-                 TexCoordsGeometryMainService.setTexCoordsByTypeArray(
-                   geometry,
-                   BatchOperateWholeGeometrySystem.getBufferAttributeData(
-                     texCoord |> OptionService.unsafeGetJsonSerializedValue,
-                     dataViewArr,
-                     wd,
-                   ),
-                   state,
-                 );
-
-             let componentType =
-               BatchOperateWholeGeometrySystem.getAccessorComponentType(
-                 wd,
-                 index,
-               );
-             let state =
-               switch (
-                 BatchOperateWholeGeometrySystem.getBufferIndex16Data(
-                   componentType,
-                   index,
-                   dataViewArr,
-                   wd,
-                 )
-               ) {
-               | Some(data) =>
-                 IndicesGeometryMainService.setIndicesByUint16Array(
-                   geometry,
-                   data,
-                   state,
-                 )
-               | None =>
-                 switch (
-                   BatchOperateWholeGeometrySystem.getBufferIndex32Data(
-                     componentType,
-                     index,
-                     dataViewArr,
-                     wd,
-                   )
-                 ) {
-                 | Some(data) =>
-                   IndicesGeometryMainService.setIndicesByUint32Array(
-                     geometry,
-                     data,
-                     state,
-                   )
-                 | None =>
-                   WonderLog.Log.fatal(
-                     WonderLog.Log.buildFatalMessage(
-                       ~title="_batchSetGeometryData",
-                       ~description=
-                         {j|unknown componentType: $componentType|j},
-                       ~reason="",
-                       ~solution={j||j},
-                       ~params={j||j},
-                     ),
-                   )
-                 }
-               };
-
-             state;
+             BatchOperateWholeGeometrySystem.setGeometryData(
+               geometry,
+               wd,
+               dataViewArr,
+               geometryData,
+               state,
+             );
            },
        state,
      );
@@ -133,7 +55,7 @@ let _getBatchTextureData =
   ),
 );
 
-let _getBatchAllTypeTextureData =
+let getBatchAllTypeTextureData =
     (lightMaterialArr, basicSourceTextureArr, blobObjectUrlImageArr, wd) =>
   _getBatchTextureData(
     lightMaterialArr,
@@ -234,7 +156,7 @@ let batchOperate =
     );
 
   let basicSourceTextureData =
-    _getBatchAllTypeTextureData(
+    getBatchAllTypeTextureData(
       lightMaterialArr,
       basicSourceTextureArr,
       blobObjectUrlImageArr,

@@ -4,7 +4,7 @@ open StateDataMainType;
 
 let create = () => {
   assembleRABData: {
-    isAssembled: WonderCommonlib.ImmutableHashMapService.createEmpty(),
+    isAssembledMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     textureMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     imageMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     basicMaterialMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
@@ -15,7 +15,12 @@ let create = () => {
     scriptAttributeMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
   },
   assembleSABData: {
-    isAssembled: WonderCommonlib.ImmutableHashMapService.createEmpty(),
+    isLoadedMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
+    sabMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     gameObjectMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
+  },
+  wabData: {
+    wholeDependencyRelationMap:
+      WonderCommonlib.ImmutableHashMapService.createEmpty(),
   },
 };

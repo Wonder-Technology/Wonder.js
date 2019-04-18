@@ -10,7 +10,7 @@ module All = {
         dependencyRelation,
         abBufferDataNameMap: bufferDataNameMap,
       ) =>
-    FindDependencyDataSystem.findAllDependencyAbRelativePath(
+    FindDependencyDataSystem.findAllDependencyRAbRelativePath(
       abRelativePath,
       dependencyRelation,
     )
@@ -291,10 +291,10 @@ module RAB = {
     let dataView = DataViewCommon.create(rab);
 
     let (byteOffset, jsonByteLength, bufferByteLength) =
-      DependencyDataUtils.RAB.readHeader(dataView);
+      DependencyDataUtils.All.readHeader(dataView);
 
-    let jsonStr = DependencyDataUtils.RAB.getJsonStr(jsonByteLength, rab);
-    let buffer = DependencyDataUtils.RAB.getBuffer(jsonByteLength, rab);
+    let jsonStr = DependencyDataUtils.All.getJsonStr(jsonByteLength, rab);
+    let buffer = DependencyDataUtils.All.getBuffer(jsonByteLength, rab);
 
     let resourceAssetBundleContent: RABType.resourceAssetBundleContent =
       jsonStr |> Js.Json.parseExn |> Obj.magic;

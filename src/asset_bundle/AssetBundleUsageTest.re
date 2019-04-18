@@ -32,30 +32,30 @@ let dynamicLoadAB = needRewriteAPI => {
           let wholeDependencyRelationMap =
             ParseABSystem.WAB.getWholeDependencyRelationMap(manifest);
 
-          FindDependencyDataSystem.findAllDependencyAbRelativePath(
+          FindDependencyDataSystem.findAllDependencyRAbRelativePath(
             "sab/a.sab",
             wholeDependencyRelationMap,
           )
           |> WonderCommonlib.ArrayService.reduceOneParam(
-               (. stream, abRelativePath) =>
+               (. stream, abPath) =>
                  stream
                  |> Most.flatMap(state =>
                       LoadABSystem.load(
-                        PathABSystem.getAssetBundlePath() ++ abRelativePath,
+                        PathABSystem.getAssetBundlePath() ++ abPath,
                       )
                       |> Most.map(ab =>
-                           AssembleABSystem.assemble(abRelativePath, ab, state)
+                           AssembleABSystem.assemble(abPath, ab, state)
                          )
                     ),
                Most.just(state),
              );
-          /* |> Js.Array.map(abRelativePath =>
+          /* |> Js.Array.map(abPath =>
                   LoadABSystem.load(
-                    PathABSystem.getAssetBundlePath() ++ abRelativePath,
+                    PathABSystem.getAssetBundlePath() ++ abPath,
                   )
                   |> Most.map(ab => {
 
-                      AssembleABSystem.assemble(abRelativePath, ab)
+                      AssembleABSystem.assemble(abPath, ab)
 
 
                   })
@@ -73,41 +73,58 @@ let dynamicLoadAB = needRewriteAPI => {
 
   let abRelativePath = "sab/a.sab";
 
+  let wabRelativePath = "whole.wab";
+
+  let abPath = getAssetBundlePath() ++ abRelativePath;
+
+  let wabPath = getAssetBundlePath() ++ wabRelativePath;
+
   let _ =
-    LoadABSystem.load(getAssetBundlePath() ++ "whole.wab")
+    LoadABSystem.load(wabPath)
     |> Most.flatMap(wab => {
          let manifest = ParseABSystem.WAB.parseManifest(wab);
 
          /* let state = StateAPI.unsafeGetState(); */
 
+         let state =
+           StateDataMainService.unsafeGetState(StateDataMain.stateData);
+
          let wholeDependencyRelationMap =
            ParseABSystem.WAB.getWholeDependencyRelationMap(manifest);
 
-         ImportABSystem.loadAndAssembleAllDependencies(
-           abRelativePath,
-           manifest,
-           (
-             getAssetBundlePath,
-             isAssetBundleArrayBufferCached,
-             getAssetBundleArrayBufferCache,
-             cacheAssetBundleArrayBuffer,
+         state
+         |> OperateWABAssetBundleMainService.setWholeDependencyRelationMap(
+              wabRelativePath,
+              wholeDependencyRelationMap,
+            )
+         |> StateDataMainService.setState(StateDataMain.stateData)
+         |> ignore;
+
+         MostUtils.concatArray([|
+           ImportABSystem.RAB.loadAndAssembleAllDependencyRAB(
+             abRelativePath,
+             manifest,
+             (
+               getAssetBundlePath,
+               isAssetBundleArrayBufferCached,
+               getAssetBundleArrayBufferCache,
+               cacheAssetBundleArrayBuffer,
+             ),
+             /* state, */
            ),
-           /* state, */
-         )
-         |> Most.flatMap(() =>
-              ImportABSystem.loadAndAssembleAB(
-                abRelativePath,
-                manifest,
-                wholeDependencyRelationMap,
-                (
-                  getAssetBundlePath,
-                  isAssetBundleArrayBufferCached,
-                  getAssetBundleArrayBufferCache,
-                  cacheAssetBundleArrayBuffer,
-                ),
-                /* state, */
-              )
-            ) /* |> Most. */;
+           ImportABSystem.SAB.loadSABAndSetToState(
+             abRelativePath,
+             manifest,
+             wholeDependencyRelationMap,
+             (
+               getAssetBundlePath,
+               isAssetBundleArrayBufferCached,
+               getAssetBundleArrayBufferCache,
+               cacheAssetBundleArrayBuffer,
+             ),
+             /* state, */
+           ),
+         |]);
        })
     |> Most.subscribe({
          "next": _ => (),
@@ -118,35 +135,60 @@ let dynamicLoadAB = needRewriteAPI => {
 };
 
 /* let addSabAllGameObjectsToScene = (needRewriteAPI, state) => { */
-let goToNextScene = (sabRelativePath, needRewriteAPI, state) =>
-  /* let sabRelativePath = "sab/a.sab"; */
-  AssembleABSystem.isAssembled(sabRelativePath, state) ?
-    {
-      let sabAllGameObjects =
-        OperateSABAssetBundleMainService.unsafeFindAllGameObjects(
-          sabRelativePath,
-          state,
-        );
-      /* |> OptionService.unsafeGet; */
+let goToNextScene = (wabRelativePath, sabRelativePath, needRewriteAPI) => {
+  let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
-      let state =
-        state
-        |> ImportABSystem.disposeSceneAllChildren
-        |> GameObjectSceneMainService.addChildren(sabAllGameObjects);
+  OperateSABAssetBundleMainService.isLoaded(sabRelativePath, state) ?
+    AssembleABSystem.SAB.assemble(
+      sabRelativePath,
+      OperateSABAssetBundleMainService.unsafeGetSAB(sabRelativePath, state),
+      OperateWABAssetBundleMainService.unsafeGetWholeDependencyRelationMap(
+        wabRelativePath,
+        state,
+      ),
+    )
+    |> Most.tap(sceneGameObject => {
+         let state =
+           StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
-      sabAllGameObjects
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. state, gameObject) =>
-             GameObjectAPI.initGameObject(gameObject, state),
+         let state = state |> GameObjectAPI.initGameObject(sceneGameObject);
+
+         let state =
+           state
+           |> ImportABSystem.disposeSceneAllChildren
+           |> ImportABSystem.setSABSceneGameObjectToBeScene(sceneGameObject);
+
+         StateDataMainService.setState(StateDataMain.stateData, state)
+         |> ignore;
+       })
+    |> Most.map(_ => ()) :
+    /* let sabAllGameObjects =
+         OperateSABAssetBundleMainService.unsafeFindAllGameObjects(
+           sabRelativePath,
            state,
          );
-    } :
+       /* |> OptionService.unsafeGet; */
+
+       let state =
+         state
+         |> ImportABSystem.disposeSceneAllChildren
+         |> GameObjectSceneMainService.addChildren(sabAllGameObjects);
+
+       sabAllGameObjects
+       |> WonderCommonlib.ArrayService.reduceOneParam(
+            (. state, gameObject) =>
+              GameObjectAPI.initGameObject(gameObject, state),
+            state,
+          ); */
     /* wait for finish */
     /* TODO show loading bar? */
-    state;
+    /* state; */
+    Most.empty();
+};
+/* let sabRelativePath = "sab/a.sab"; */
 
 let replaceToRabLightMaterial = (rabRelativePath, needRewriteAPI, state) =>
-  AssembleABSystem.isAssembled(rabRelativePath, state) ?
+  OperateRABAssetBundleMainService.isAssembled(rabRelativePath, state) ?
     {
       let lightMaterial1 =
         OperateRABAssetBundleMainService.unsafeFindLightMaterialByName(

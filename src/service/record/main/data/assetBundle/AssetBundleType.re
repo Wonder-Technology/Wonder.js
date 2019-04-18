@@ -41,13 +41,28 @@
        ),
    }; */
 
+/* type imguiData = {
+     imguiFunc: string,
+     customData: WonderImgui.IMGUIType.customDataForIMGUIFunc,
+   }; */
+
 type assembleSABData = {
-  isAssembled: WonderCommonlib.ImmutableHashMapService.t(bool),
+  isLoadedMap: WonderCommonlib.ImmutableHashMapService.t(bool),
+  sabMap:
+    WonderCommonlib.ImmutableHashMapService.t(Js.Typed_array.ArrayBuffer.t),
   gameObjectMap:
     WonderCommonlib.ImmutableHashMapService.t(
       WonderCommonlib.ImmutableHashMapService.t(
         GameObjectPrimitiveType.gameObject,
       ),
+    ),
+  /* imguiDataMap: WonderCommonlib.ImmutableHashMapService.t(imguiData), */
+};
+
+type wabData = {
+  wholeDependencyRelationMap:
+    WonderCommonlib.ImmutableHashMapService.t(
+      DependencyDataType.dependencyRelation,
     ),
 };
 

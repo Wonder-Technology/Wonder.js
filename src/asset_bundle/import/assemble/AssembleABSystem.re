@@ -2,53 +2,565 @@ open Js.Typed_array;
 
 open WonderBsMost;
 
-/* TODO finish */
-module SAB = {
-  let isSAB = abRelativePath => abRelativePath |> Js.String.includes(".sab");
-
-  let assemble = (sabRelativePath, sab, wholeDependencyRelationMap) =>
-    Most.empty()
-    |> Most.tap(() => {
-         let state =
-           StateDataMainService.unsafeGetState(StateDataMain.stateData);
-
-         state
-         |> OperateSABAssetBundleMainService.markAssembled(sabRelativePath)
-         |> StateDataMainService.setState(StateDataMain.stateData)
-         |> ignore;
-       });
-};
-
-module RAB = {
-  let isRAB = abRelativePath => abRelativePath |> Js.String.includes(".rab");
-
-  let _getContentData = rab => {
-    let dataView = DataViewCommon.create(rab);
+module All = {
+  let getContentData = ab => {
+    let dataView = DataViewCommon.create(ab);
 
     let (byteOffset, manifestJsonByteLength, contentBufferByteLength) =
-      GenerateManifestABUtils.RAB.readHeader(dataView);
+      GenerateManifestABUtils.All.readHeader(dataView);
 
     let contentArrayBuffer =
-      GenerateManifestABUtils.RAB.getContentBuffer(
+      GenerateManifestABUtils.All.getContentBuffer(
         manifestJsonByteLength,
-        rab,
+        ab,
       );
 
     let contentDataView = DataViewCommon.create(contentArrayBuffer);
 
     let (byteOffset, jsonByteLength, bufferByteLength) =
-      DependencyDataUtils.RAB.readHeader(contentDataView);
+      DependencyDataUtils.All.readHeader(contentDataView);
 
     let jsonStr =
-      DependencyDataUtils.RAB.getJsonStr(jsonByteLength, contentArrayBuffer);
+      DependencyDataUtils.All.getJsonStr(jsonByteLength, contentArrayBuffer);
     let buffer =
-      DependencyDataUtils.RAB.getBuffer(jsonByteLength, contentArrayBuffer);
+      DependencyDataUtils.All.getBuffer(jsonByteLength, contentArrayBuffer);
 
-    let resourceAssetBundleContent: RABType.resourceAssetBundleContent =
-      jsonStr |> Js.Json.parseExn |> Obj.magic;
-
-    (resourceAssetBundleContent, buffer);
+    (jsonStr |> Js.Json.parseExn |> Obj.magic, buffer);
   };
+};
+
+/* TODO finish */
+module SAB = {
+  open SABType;
+
+  open WDType;
+
+  open Js.Promise;
+
+  let isSAB = abRelativePath => abRelativePath |> Js.String.includes(".sab");
+
+  let _isImageBufferDataDependencyAndRemoved = ({name, bufferView, mimeType}) =>
+    ABBufferViewUtils.isNoneBufferViewIndex(bufferView);
+
+  let _buildImageArray =
+      ({images, bufferViews}, binBuffer, allDependencyRAbRelativePath, state) => {
+    let blobObjectUrlImageArr = [||];
+    /* let imageUint8ArrayDataMap =
+       WonderCommonlib.MutableSparseMapService.createEmpty(); */
+
+    images |> OptionService.isJsonSerializedValueNone ?
+      blobObjectUrlImageArr |> resolve :
+      images
+      |> OptionService.unsafeGetJsonSerializedValue
+      |> ArrayService.reduceOneParamValidi(
+           (.
+             streamArr,
+             ({name, bufferView, mimeType}: image) as imageData,
+             imageIndex,
+           ) =>
+             streamArr
+             |> ArrayService.push(
+                  _isImageBufferDataDependencyAndRemoved(imageData) ?
+                    OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
+                      allDependencyRAbRelativePath,
+                      name,
+                      state,
+                      OperateRABAssetBundleMainService.findImageByName,
+                    )
+                    |> Most.just :
+                    {
+                      let arrayBuffer =
+                        ABArrayBufferUtils.SAB.getArrayBufferFromBufferViews(
+                          binBuffer,
+                          bufferView,
+                          bufferViews,
+                        );
+
+                      /* imageUint8ArrayDataMap
+                         |> WonderCommonlib.MutableSparseMapService.set(
+                              imageIndex,
+                              (mimeType, Uint8Array.fromBuffer(arrayBuffer)),
+                            )
+                         |> ignore; */
+
+                      AssembleUtils.buildLoadImageStream(
+                        arrayBuffer,
+                        mimeType,
+                        {j|load image error. imageName: $name|j},
+                      );
+                    }
+                    |> WonderBsMost.Most.tap(image => {
+                         ImageUtils.setImageName(image, name);
+
+                         Array.unsafe_set(
+                           blobObjectUrlImageArr,
+                           imageIndex,
+                           image,
+                         );
+                       }),
+                ),
+           [||],
+         )
+      |> WonderBsMost.Most.mergeArray
+      |> WonderBsMost.Most.drain
+      |> then_(() => blobObjectUrlImageArr |> resolve);
+  };
+
+  let _isGeometryBufferDataDependencyAndRemoved =
+      ({name, position, normal, texCoord, index}) =>
+    ABBufferViewUtils.isNoneAccessorIndex(position)
+    && OptionService.isJsonSerializedValueNone(normal)
+    && OptionService.isJsonSerializedValueNone(texCoord)
+    && ABBufferViewUtils.isNoneAccessorIndex(index);
+
+  let _replaceCreatedGeometryToDependencyGeometry =
+      (
+        {geometrys, bufferViews, accessors},
+        binBuffer,
+        allDependencyRAbRelativePath,
+        state,
+        createdGeometryArr,
+      ) =>
+    geometrys
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (.
+           geometryArr,
+           /* {name, position, normal, texCoord, index} as geometryData, */
+           geometryData,
+           geometryIndex,
+         ) => {
+           let geometry =
+             geometryData |> OptionService.isJsonSerializedValueNone ?
+               Array.unsafe_get(createdGeometryArr, geometryIndex) :
+               {
+                 let {name, position, normal, texCoord, index} as geometryData =
+                   geometryData |> OptionService.unsafeGetJsonSerializedValue;
+
+                 _isGeometryBufferDataDependencyAndRemoved(geometryData) ?
+                   OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
+                     allDependencyRAbRelativePath,
+                     name,
+                     state,
+                     OperateRABAssetBundleMainService.findGeometryByName,
+                   ) :
+                   Array.unsafe_get(createdGeometryArr, geometryIndex);
+               };
+
+           geometryArr |> ArrayService.push(geometry);
+         },
+         WonderCommonlib.ArrayService.createEmpty(),
+       );
+
+  let _checkDependencyGeometryhasVertices =
+      (geometryArr, geometryIndex, state) =>
+    WonderLog.Contract.requireCheck(
+      () =>
+        WonderLog.(
+          Contract.(
+            Operators.(
+              test(
+                Log.buildAssertMessage(
+                  ~expect={j|dependency geometry has vertices|j},
+                  ~actual={j|not|j},
+                ),
+                () => {
+                  let geometry = Array.unsafe_get(geometryArr, geometryIndex);
+
+                  VerticesGeometryMainService.hasVertices(geometry, state)
+                  |> assertTrue;
+                },
+              )
+            )
+          )
+        ),
+      IsDebugMainService.getIsDebug(StateDataMain.stateData),
+    );
+
+  let _batchSetGeometryData =
+      ({geometrys} as sceneAssetBundleContent, geometryArr, bufferArr, state) => {
+    let dataViewArr =
+      bufferArr |> Js.Array.map(buffer => DataViewCommon.create(buffer));
+
+    geometrys
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (. state, geometryData, geometryIndex) =>
+           geometryData |> OptionService.isJsonSerializedValueNone ?
+             state :
+             {
+               let ({position, normal, texCoord, index}: WDType.geometry) as geometryData =
+                 geometryData |> OptionService.unsafeGetJsonSerializedValue;
+
+               _isGeometryBufferDataDependencyAndRemoved(geometryData) ?
+                 {
+                   _checkDependencyGeometryhasVertices(
+                     geometryArr,
+                     geometryIndex,
+                     state,
+                   );
+
+                   state;
+                 } :
+                 {
+                   let geometry = Array.unsafe_get(geometryArr, geometryIndex);
+
+                   BatchOperateWholeGeometrySystem.setGeometryData(
+                     geometry,
+                     sceneAssetBundleContent,
+                     dataViewArr,
+                     geometryData,
+                     state,
+                   );
+                 };
+             },
+         state,
+       );
+  };
+
+  let _batchOperate =
+      (
+        {geometrys, indices, gameObjects, basicSourceTextures} as sceneAssetBundleContent,
+        blobObjectUrlImageArr,
+        bufferArr,
+        /* (isBindEvent, isActiveCamera), */
+        (
+          state,
+          gameObjectArr,
+          (
+            transformArr,
+            geometryArr,
+            meshRendererArr,
+            basicCameraViewArr,
+            perspectiveCameraProjectionArr,
+            arcballCameraControllerArr,
+            basicMaterialArr,
+            lightMaterialArr,
+            directionLightArr,
+            pointLightArr,
+            scriptArr,
+          ),
+          basicSourceTextureArr,
+        ),
+      ) => {
+    let state =
+      state
+      |> BatchOperateSystem.batchSetNames(
+           (gameObjectArr, basicSourceTextureArr),
+           (gameObjects, basicSourceTextures),
+           (geometrys, geometryArr),
+         )
+      |> BatchOperateSystem.batchSetIsActive(gameObjectArr, gameObjects)
+      |> BatchOperateSystem.batchSetIsRoot(gameObjectArr, gameObjects);
+
+    let (
+      (
+        parentTransforms,
+        childrenTransforms,
+        transformGameObjects,
+        gameObjectTransforms,
+        geometryGameObjects,
+        gameObjectGeometrys,
+        basicCameraViewGameObjects,
+        gameObjectBasicCameraViews,
+        perspectiveCameraProjectionGameObjects,
+        gameObjectPerspectiveCameraProjection,
+        arcballCameraControllerGameObjects,
+        gameObjectArcballCameraController,
+        basicMaterialGameObjects,
+        gameObjectBasicMaterials,
+        lightMaterialGameObjects,
+        gameObjectLightMaterials,
+        meshRendererGameObjects,
+        gameObjectMeshRenderers,
+        directionLightGameObjects,
+        gameObjectDirectionLights,
+        pointLightGameObjects,
+        gameObjectPointLights,
+        scriptGameObjects,
+        gameObjectScripts,
+      ),
+      state,
+    ) =
+      BatchOperateSystem.getBatchComponentGameObjectData(
+        (
+          gameObjectArr,
+          transformArr,
+          geometryArr,
+          meshRendererArr,
+          basicCameraViewArr,
+          perspectiveCameraProjectionArr,
+          arcballCameraControllerArr,
+          basicMaterialArr,
+          lightMaterialArr,
+          directionLightArr,
+          pointLightArr,
+          scriptArr,
+        ),
+        indices,
+        sceneAssetBundleContent,
+        state,
+      );
+
+    let state =
+      BatchSetTextureAllDataSystem.batchSetFormat(
+        basicSourceTextureArr,
+        basicSourceTextures,
+        state,
+      );
+
+    let basicSourceTextureData =
+      BatchOperateWholeSystem.getBatchAllTypeTextureData(
+        lightMaterialArr,
+        basicSourceTextureArr,
+        blobObjectUrlImageArr,
+        sceneAssetBundleContent,
+      );
+
+    /* let imageUint8ArrayDataMap =
+       BatchSetWholeTextureAllDataSystem.convertKeyFromImageIndexToBasicSourceTexture(
+         indices.imageTextureIndices,
+         basicSourceTextureArr,
+         imageUint8ArrayDataMap,
+       ); */
+
+    (
+      state
+      |> BatchOperateSystem.batchSetTransformData(
+           sceneAssetBundleContent,
+           gameObjectTransforms,
+         )
+      |> BatchOperateSystem.batchSetTransformParent(
+           parentTransforms,
+           childrenTransforms,
+         )
+      |> _batchSetGeometryData(
+           sceneAssetBundleContent,
+           geometryArr,
+           bufferArr,
+         )
+      |> BatchOperateSystem.batchSetBasicCameraViewData(
+           sceneAssetBundleContent,
+           basicCameraViewArr,
+           /* isActiveCamera, */
+           true,
+         )
+      |> BatchOperateSystem.batchSetPerspectiveCameraProjectionData(
+           sceneAssetBundleContent,
+           perspectiveCameraProjectionArr,
+         )
+      |> BatchOperateSystem.batchSetArcballCameraControllerData(
+           sceneAssetBundleContent,
+           arcballCameraControllerArr,
+           /* isBindEvent, */
+           true,
+         )
+      |> BatchOperateSystem.batchSetMeshRendererData(
+           sceneAssetBundleContent,
+           meshRendererArr,
+         )
+      |> BatchOperateSystem.batchSetBasicMaterialData(
+           sceneAssetBundleContent,
+           basicMaterialArr,
+         )
+      |> BatchOperateSystem.batchSetLightMaterialData(
+           sceneAssetBundleContent,
+           lightMaterialArr,
+         )
+      |> BatchOperateSystem.batchSetScriptData(
+           sceneAssetBundleContent,
+           scriptArr,
+         )
+      |> BatchOperateLightSystem.batchSetDirectionLightData(
+           sceneAssetBundleContent,
+           directionLightArr,
+         )
+      |> BatchOperateLightSystem.batchSetPointLightData(
+           sceneAssetBundleContent,
+           pointLightArr,
+         )
+      |> BatchOperateLightSystem.setAmbientLightData(sceneAssetBundleContent)
+      |> BatchAddGameObjectComponentMainService.batchAddTransformComponentForCreate(
+           transformGameObjects,
+           gameObjectTransforms,
+         )
+      |> BatchAddGameObjectComponentMainService.batchAddGeometryComponentForCreate(
+           geometryGameObjects,
+           gameObjectGeometrys,
+         )
+      |> BatchAddGameObjectComponentMainService.batchAddBasicCameraViewComponentForCreate(
+           basicCameraViewGameObjects,
+           gameObjectBasicCameraViews,
+         )
+      |> BatchAddGameObjectComponentMainService.batchAddPerspectiveCameraProjectionComponentForCreate(
+           perspectiveCameraProjectionGameObjects,
+           gameObjectPerspectiveCameraProjection,
+         )
+      |> BatchAddGameObjectComponentMainService.batchAddArcballCameraControllerComponentForCreate(
+           arcballCameraControllerGameObjects,
+           gameObjectArcballCameraController,
+         )
+      |> BatchAddGameObjectComponentMainService.batchAddBasicMaterialComponentForCreate(
+           basicMaterialGameObjects,
+           gameObjectBasicMaterials,
+         )
+      |> BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForCreate(
+           lightMaterialGameObjects,
+           gameObjectLightMaterials,
+         )
+      |> BatchAddGameObjectComponentMainService.batchAddMeshRendererComponentForCreate(
+           meshRendererGameObjects,
+           gameObjectMeshRenderers,
+         )
+      |> BatchAddGameObjectComponentMainService.batchAddDirectionLightComponentForCreate(
+           directionLightGameObjects,
+           gameObjectDirectionLights,
+         )
+      |> BatchAddGameObjectComponentMainService.batchAddPointLightComponentForCreate(
+           pointLightGameObjects,
+           gameObjectPointLights,
+         )
+      |> BatchAddGameObjectComponentMainService.batchAddScriptComponentForCreate(
+           scriptGameObjects,
+           gameObjectScripts,
+         )
+      |> BatchSetWholeTextureAllDataSystem.batchSet(basicSourceTextureData),
+      /* imageUint8ArrayDataMap, */
+      gameObjectArr,
+    );
+  };
+
+  let assemble = (sabRelativePath, sab, wholeDependencyRelationMap) => {
+    let allDependencyRAbRelativePath =
+      FindDependencyDataSystem.findAllDependencyRAbRelativePath(
+        sabRelativePath,
+        wholeDependencyRelationMap,
+      );
+
+    let (sceneAssetBundleContent: SABType.sceneAssetBundleContent, binBuffer) =
+      All.getContentData(sab);
+
+    /* let state = StateDataMainService.unsafeGetState(StateDataMain.stateData); */
+
+    /* Most.empty()
+       |> Most.tap(() => {
+            let state =
+              StateDataMainService.unsafeGetState(StateDataMain.stateData);
+
+            state
+            |> OperateSABAssetBundleMainService.markAssembled(sabRelativePath)
+            |> StateDataMainService.setState(StateDataMain.stateData)
+            |> ignore;
+          }); */
+
+    let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
+
+    _buildImageArray(
+      sceneAssetBundleContent,
+      binBuffer,
+      allDependencyRAbRelativePath,
+      state,
+    )
+    |> then_(blobObjectUrlImageArr => {
+         let state =
+           StateDataMainService.unsafeGetState(StateDataMain.stateData);
+
+         let imguiData = sceneAssetBundleContent.scene.imgui;
+         let hasIMGUIFunc =
+           !OptionService.isJsonSerializedValueNone(imguiData);
+         let state =
+           /* isSetIMGUIFunc && hasIMGUIFunc ? */
+           hasIMGUIFunc ?
+             state |> SetIMGUIFuncSystem.setIMGUIFunc(sceneAssetBundleContent) :
+             state;
+
+         /* let state =
+            hasIMGUIFunc ?
+              OperateSABAssetBundleMainService.setIMGUIData(
+                sabRelativePath,
+                imguiData,
+                state,
+              ) :
+              state; */
+
+         let (
+           state,
+           gameObjectArr,
+           (
+             transformArr,
+             geometryArr,
+             meshRendererArr,
+             basicCameraViewArr,
+             perspectiveCameraProjectionArr,
+             arcballCameraControllerArr,
+             basicMaterialArr,
+             lightMaterialArr,
+             directionLightArr,
+             pointLightArr,
+             scriptArr,
+           ),
+           basicSourceTextureArr,
+         ) =
+           state
+           |> BatchCreateSystem.batchCreate(
+                /* isRenderLight, */
+                true,
+                sceneAssetBundleContent,
+              );
+
+         let geometryArr =
+           _replaceCreatedGeometryToDependencyGeometry(
+             sceneAssetBundleContent,
+             binBuffer,
+             allDependencyRAbRelativePath,
+             state,
+             geometryArr,
+           );
+
+         let (state, gameObjectArr) =
+           /* state */
+           _batchOperate(
+             sceneAssetBundleContent,
+             /* imageDataTuple, */
+             blobObjectUrlImageArr,
+             AssembleWholeWDBUtils.buildBufferArray(sceneAssetBundleContent.buffers, binBuffer),
+             /* _buildBufferArray(buffers, binBuffer), */
+             /* (isBindEvent, isActiveCamera), */
+             (
+               state,
+               gameObjectArr,
+               (
+                 transformArr,
+                 geometryArr,
+                 meshRendererArr,
+                 basicCameraViewArr,
+                 perspectiveCameraProjectionArr,
+                 arcballCameraControllerArr,
+                 basicMaterialArr,
+                 lightMaterialArr,
+                 directionLightArr,
+                 pointLightArr,
+                 scriptArr,
+               ),
+               basicSourceTextureArr,
+             ),
+           );
+
+         let (state, rootGameObject) =
+           BuildRootGameObjectSystem.build(
+             sceneAssetBundleContent,
+             (state, gameObjectArr),
+           );
+
+         StateDataMainService.setState(StateDataMain.stateData, state)
+         |> ignore;
+
+         rootGameObject |> resolve;
+       })
+    |> WonderBsMost.Most.fromPromise;
+  };
+};
+
+module RAB = {
+  let isRAB = abRelativePath => abRelativePath |> Js.String.includes(".rab");
 
   let _buildLoadImageStream = (arrayBuffer, mimeType, errorMsg) => {
     let blob = Blob.newBlobFromArrayBuffer(arrayBuffer, mimeType);
@@ -65,7 +577,7 @@ module RAB = {
       (
         {images, bufferViews}: RABType.resourceAssetBundleContent,
         buffer,
-        allDependencyAbRelativePath,
+        allDependencyRAbRelativePath,
         state,
       ) =>
     images
@@ -78,8 +590,8 @@ module RAB = {
            streamArr
            |> ArrayService.push(
                 _isImageBufferDataDependencyAndRemoved(imageData) ?
-                  OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyAbByName(
-                    allDependencyAbRelativePath,
+                  OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
+                    allDependencyRAbRelativePath,
                     name,
                     state,
                     OperateRABAssetBundleMainService.findImageByName,
@@ -296,10 +808,10 @@ module RAB = {
           indexBufferView,
         }: RABType.geometry,
       ) =>
-    ABBufferViewUtils.isNoneAccessorIndex(vertexBufferView)
+    ABBufferViewUtils.isNoneBufferViewIndex(vertexBufferView)
     && OptionService.isJsonSerializedValueNone(normalBufferView)
     && OptionService.isJsonSerializedValueNone(texCoordBufferView)
-    && ABBufferViewUtils.isNoneAccessorIndex(indexBufferView);
+    && ABBufferViewUtils.isNoneBufferViewIndex(indexBufferView);
 
   let _setGeometryDataFromBuffer =
       (
@@ -328,7 +840,7 @@ module RAB = {
   let _buildGeometryData =
       (
         {geometrys, bufferViews}: RABType.resourceAssetBundleContent,
-        allDependencyAbRelativePath,
+        allDependencyRAbRelativePath,
         buffer,
         state,
       ) =>
@@ -351,8 +863,8 @@ module RAB = {
              _isGeometryBufferDataDependencyAndRemoved(geometryData) ?
                (
                  state,
-                 OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyAbByName(
-                   allDependencyAbRelativePath,
+                 OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
+                   allDependencyRAbRelativePath,
                    name,
                    state,
                    OperateRABAssetBundleMainService.findGeometryByName,
@@ -514,20 +1026,24 @@ module RAB = {
        );
 
   let assemble = (rabRelativePath, rab, wholeDependencyRelationMap) => {
-    let allDependencyAbRelativePath =
-      FindDependencyDataSystem.findAllDependencyAbRelativePath(
+    let allDependencyRAbRelativePath =
+      FindDependencyDataSystem.findAllDependencyRAbRelativePath(
         rabRelativePath,
         wholeDependencyRelationMap,
       );
 
-    let (resourceAssetBundleContent, buffer) = _getContentData(rab);
+    let (
+      resourceAssetBundleContent: RABType.resourceAssetBundleContent,
+      buffer,
+    ) =
+      All.getContentData(rab);
 
     let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
     _buildImageData(
       resourceAssetBundleContent,
       buffer,
-      allDependencyAbRelativePath,
+      allDependencyRAbRelativePath,
       state,
     )
     |> Most.fromPromise
@@ -552,7 +1068,7 @@ module RAB = {
          let (geometryMap, state) =
            _buildGeometryData(
              resourceAssetBundleContent,
-             allDependencyAbRelativePath,
+             allDependencyRAbRelativePath,
              buffer,
              state,
            );
@@ -586,32 +1102,32 @@ module RAB = {
   };
 };
 
-let assemble = (abRelativePath, ab, wholeDependencyRelationMap) =>
-  RAB.isRAB(abRelativePath) ?
-    RAB.assemble(abRelativePath, ab, wholeDependencyRelationMap) :
-    SAB.isSAB(abRelativePath) ?
-      SAB.assemble(abRelativePath, ab, wholeDependencyRelationMap) :
-      WonderLog.Log.fatal(
-        WonderLog.Log.buildFatalMessage(
-          ~title="assemble",
-          ~description={j|unknown abRelativePath: $abRelativePath|j},
-          ~reason="",
-          ~solution={j||j},
-          ~params={j||j},
-        ),
-      );
+/* let assemble = (abRelativePath, ab, wholeDependencyRelationMap) =>
+   RAB.isRAB(abRelativePath) ?
+     RAB.assemble(abRelativePath, ab, wholeDependencyRelationMap) :
+     SAB.isSAB(abRelativePath) ?
+       SAB.assemble(abRelativePath, ab, wholeDependencyRelationMap) :
+       WonderLog.Log.fatal(
+         WonderLog.Log.buildFatalMessage(
+           ~title="assemble",
+           ~description={j|unknown abRelativePath: $abRelativePath|j},
+           ~reason="",
+           ~solution={j||j},
+           ~params={j||j},
+         ),
+       ); */
 
-let isAssembled = (abRelativePath, state) =>
-  RAB.isRAB(abRelativePath) ?
-    OperateRABAssetBundleMainService.isAssembled(abRelativePath, state) :
-    SAB.isSAB(abRelativePath) ?
-      OperateSABAssetBundleMainService.isAssembled(abRelativePath, state) :
-      WonderLog.Log.fatal(
-        WonderLog.Log.buildFatalMessage(
-          ~title="isAssembled",
-          ~description={j|unknown abRelativePath: $abRelativePath|j},
-          ~reason="",
-          ~solution={j||j},
-          ~params={j||j},
-        ),
-      );
+/* let isAssembled = (abRelativePath, state) =>
+   RAB.isRAB(abRelativePath) ?
+     OperateRABAssetBundleMainService.isAssembled(abRelativePath, state) :
+     SAB.isSAB(abRelativePath) ?
+       OperateSABAssetBundleMainService.isAssembled(abRelativePath, state) :
+       WonderLog.Log.fatal(
+         WonderLog.Log.buildFatalMessage(
+           ~title="isAssembled",
+           ~description={j|unknown abRelativePath: $abRelativePath|j},
+           ~reason="",
+           ~solution={j||j},
+           ~params={j||j},
+         ),
+       ); */

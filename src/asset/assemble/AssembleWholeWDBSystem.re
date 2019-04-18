@@ -22,9 +22,10 @@ let _getArrayBuffer = (binBuffer, bufferView, bufferViews: array(bufferView)) =>
 
 let _buildImageArray = (isLoadImage, {images, bufferViews}: wd, binBuffer) => {
   let blobObjectUrlImageArr = [||];
-  let imageUint8ArrayDataMap = WonderCommonlib.MutableSparseMapService.createEmpty();
+  let imageUint8ArrayDataMap =
+    WonderCommonlib.MutableSparseMapService.createEmpty();
 
-  ! isLoadImage ?
+  !isLoadImage ?
     resolve((blobObjectUrlImageArr, imageUint8ArrayDataMap)) :
     (
       images |> OptionService.isJsonSerializedValueNone ?
@@ -89,28 +90,6 @@ let _buildImageArray = (isLoadImage, {images, bufferViews}: wd, binBuffer) => {
      typeArr |> Uint8Array.buffer;
    }; */
 
-let _buildBufferArray = (buffers: array(int), binBuffer) => {
-  WonderLog.Contract.requireCheck(
-    () => {
-      open WonderLog;
-      open Contract;
-      open Operators;
-
-      let bufferLen = buffers |> Js.Array.length;
-      test(
-        Log.buildAssertMessage(
-          ~expect={j|has only one buffer|j},
-          ~actual={j|has $bufferLen|j},
-        ),
-        () =>
-        bufferLen == 1
-      );
-    },
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
-
-  [|binBuffer|];
-};
 
 let checkWDB = dataView => {
   WonderLog.Contract.requireCheck(
@@ -160,11 +139,16 @@ let assembleWDBData =
         isLoadImage,
       ),
       state,
-    ) =>
+    ) => {
+  StateDataMainService.setState(StateDataMain.stateData, state) |> ignore;
+
   _buildImageArray(isLoadImage, wd, binBuffer)
   |> then_(imageDataTuple => {
+       let state =
+         StateDataMainService.unsafeGetState(StateDataMain.stateData);
+
        let hasIMGUIFunc =
-         ! OptionService.isJsonSerializedValueNone(wd.scene.imgui);
+         !OptionService.isJsonSerializedValueNone(wd.scene.imgui);
        let state =
          isSetIMGUIFunc && hasIMGUIFunc ?
            state |> SetIMGUIFuncSystem.setIMGUIFunc(wd) : state;
@@ -175,7 +159,7 @@ let assembleWDBData =
          |> BatchOperateWholeSystem.batchOperate(
               wd,
               imageDataTuple,
-              _buildBufferArray(buffers, binBuffer),
+              AssembleWholeWDBUtils. buildBufferArray(buffers, binBuffer),
               (isBindEvent, isActiveCamera),
             );
 
@@ -186,6 +170,7 @@ let assembleWDBData =
        |> resolve;
      })
   |> WonderBsMost.Most.fromPromise;
+};
 
 let assemble = (wdb, configTuple, state) => {
   let (wdFileContent, streamChunk, binBuffer) =

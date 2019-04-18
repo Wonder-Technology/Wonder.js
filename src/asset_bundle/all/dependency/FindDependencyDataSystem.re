@@ -43,9 +43,9 @@ module RAB = {
     let dataView = DataViewCommon.create(rab);
 
     let (byteOffset, jsonByteLength, bufferByteLength) =
-      DependencyDataUtils.RAB.readHeader(dataView);
+      DependencyDataUtils.All.readHeader(dataView);
 
-    let jsonStr = DependencyDataUtils.RAB.getJsonStr(jsonByteLength, rab);
+    let jsonStr = DependencyDataUtils.All.getJsonStr(jsonByteLength, rab);
 
     let resourceAssetBundleContent: RABType.resourceAssetBundleContent =
       jsonStr |> Js.Json.parseExn |> Obj.magic;
@@ -252,7 +252,7 @@ let rec _find =
        )
   };
 
-let findAllDependencyAbRelativePath = (abRelativePath, dependencyRelation) =>
+let findAllDependencyRAbRelativePath = (abRelativePath, dependencyRelation) =>
   _find(
     abRelativePath,
     dependencyRelation,
