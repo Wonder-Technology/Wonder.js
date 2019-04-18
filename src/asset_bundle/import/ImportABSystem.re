@@ -68,7 +68,7 @@ module SAB = {
 
            state
            |> OperateSABAssetBundleMainService.markLoaded(sabRelativePath)
-           |> OperateSABAssetBundleMainService.setSAB(sabRelativePath, sab)
+           |> OperateSABAssetBundleMainService.setLoadedSAB(sabRelativePath, sab)
            |> StateDataMainService.setState(StateDataMain.stateData)
            |> ignore;
          })

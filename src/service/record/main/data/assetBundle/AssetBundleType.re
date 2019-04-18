@@ -48,14 +48,8 @@
 
 type assembleSABData = {
   isLoadedMap: WonderCommonlib.ImmutableHashMapService.t(bool),
-  sabMap:
+  loadedSABMap:
     WonderCommonlib.ImmutableHashMapService.t(Js.Typed_array.ArrayBuffer.t),
-  gameObjectMap:
-    WonderCommonlib.ImmutableHashMapService.t(
-      WonderCommonlib.ImmutableHashMapService.t(
-        GameObjectPrimitiveType.gameObject,
-      ),
-    ),
   /* imguiDataMap: WonderCommonlib.ImmutableHashMapService.t(imguiData), */
 };
 

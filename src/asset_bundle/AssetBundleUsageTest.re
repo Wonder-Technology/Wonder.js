@@ -141,7 +141,7 @@ let goToNextScene = (wabRelativePath, sabRelativePath, needRewriteAPI) => {
   OperateSABAssetBundleMainService.isLoaded(sabRelativePath, state) ?
     AssembleABSystem.SAB.assemble(
       sabRelativePath,
-      OperateSABAssetBundleMainService.unsafeGetSAB(sabRelativePath, state),
+      OperateSABAssetBundleMainService.unsafeGetLoadedSAB(sabRelativePath, state),
       OperateWABAssetBundleMainService.unsafeGetWholeDependencyRelationMap(
         wabRelativePath,
         state,

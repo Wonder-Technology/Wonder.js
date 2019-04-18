@@ -27,21 +27,28 @@ open StateDataMainType;
      },
    }; */
 
-let getSAB = (sabRelativePath, {assetBundleRecord} as state) =>
-  assetBundleRecord.assembleSABData.sabMap
+let getLoadedSAB = (sabRelativePath, {assetBundleRecord} as state) =>
+  assetBundleRecord.assembleSABData.loadedSABMap
   |> WonderCommonlib.ImmutableHashMapService.get(sabRelativePath);
 
-let unsafeGetSAB = (sabRelativePath, state) =>
-  getSAB(sabRelativePath, state) |> OptionService.unsafeGet;
+let unsafeGetLoadedSAB = (sabRelativePath, state) =>
+  getLoadedSAB(sabRelativePath, state)
+  |> OptionService.unsafeGetWithMessage(
+       WonderLog.Log.buildAssertMessage(
+         ~expect=
+           {j|sab arrayBuffer in sabRelativePath:$sabRelativePath loaded|j},
+         ~actual={j|not|j},
+       ),
+     );
 
-let setSAB = (sabRelativePath, sab, {assetBundleRecord} as state) => {
+let setLoadedSAB = (sabRelativePath, sab, {assetBundleRecord} as state) => {
   ...state,
   assetBundleRecord: {
     ...assetBundleRecord,
     assembleSABData: {
       ...assetBundleRecord.assembleSABData,
-      sabMap:
-        assetBundleRecord.assembleSABData.sabMap
+      loadedSABMap:
+        assetBundleRecord.assembleSABData.loadedSABMap
         |> WonderCommonlib.ImmutableHashMapService.set(sabRelativePath, sab),
     },
   },
@@ -68,9 +75,3 @@ let isLoaded = (sabRelativePath, {assetBundleRecord} as state) =>
   | None => false
   | Some(isLoaded) => isLoaded
   };
-
-/* let unsafeFindGameObjectByName = (sabRelativePath, gameObjectName, state) => 0;
-
-/* let findAllGameObjects = (sabRelativePath, state) => [|0|]->Some; */
-
-let unsafeFindAllGameObjects = (sabRelativePath, state) => [|0|]; */

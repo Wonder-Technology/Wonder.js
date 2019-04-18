@@ -16,8 +16,7 @@ let create = () => {
   },
   assembleSABData: {
     isLoadedMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
-    sabMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
-    gameObjectMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
+    loadedSABMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
   },
   wabData: {
     wholeDependencyRelationMap:
