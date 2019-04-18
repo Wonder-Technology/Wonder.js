@@ -1,6 +1,7 @@
 open StateDataMainType;
 
-let markAssembled = (rabRelativePath, {assetBundleRecord} as state) => {
+let _markIsAssembled =
+    (rabRelativePath, isAssembled, {assetBundleRecord} as state) => {
   ...state,
   assetBundleRecord: {
     ...assetBundleRecord,
@@ -8,10 +9,19 @@ let markAssembled = (rabRelativePath, {assetBundleRecord} as state) => {
       ...assetBundleRecord.assembleRABData,
       isAssembledMap:
         assetBundleRecord.assembleRABData.isAssembledMap
-        |> WonderCommonlib.ImmutableHashMapService.set(rabRelativePath, true),
+        |> WonderCommonlib.ImmutableHashMapService.set(
+             rabRelativePath,
+             isAssembled,
+           ),
     },
   },
 };
+
+let markAssembled = (rabRelativePath, {assetBundleRecord} as state) =>
+  _markIsAssembled(rabRelativePath, true, state);
+
+let markNotAssembled = (rabRelativePath, {assetBundleRecord} as state) =>
+  _markIsAssembled(rabRelativePath, false, state);
 
 let isAssembled = (rabRelativePath, {assetBundleRecord} as state) =>
   switch (
@@ -21,6 +31,57 @@ let isAssembled = (rabRelativePath, {assetBundleRecord} as state) =>
   | None => false
   | Some(isAssembled) => isAssembled
   };
+
+let releaseAssembleRABData = (rabRelativePath, {assetBundleRecord} as state) => {
+  let {assembleRABData} = assetBundleRecord;
+
+  {
+    ...state,
+    assetBundleRecord: {
+      ...assetBundleRecord,
+      assembleRABData: {
+        ...assembleRABData,
+        imageMap:
+          assembleRABData.imageMap
+          |> WonderCommonlib.ImmutableHashMapService.deleteVal(
+               rabRelativePath,
+             ),
+        textureMap:
+          assembleRABData.textureMap
+          |> WonderCommonlib.ImmutableHashMapService.deleteVal(
+               rabRelativePath,
+             ),
+        basicMaterialMap:
+          assembleRABData.basicMaterialMap
+          |> WonderCommonlib.ImmutableHashMapService.deleteVal(
+               rabRelativePath,
+             ),
+        lightMaterialMap:
+          assembleRABData.lightMaterialMap
+          |> WonderCommonlib.ImmutableHashMapService.deleteVal(
+               rabRelativePath,
+             ),
+        geometryMap:
+          assembleRABData.geometryMap
+          |> WonderCommonlib.ImmutableHashMapService.deleteVal(
+               rabRelativePath,
+             ),
+        scriptEventFunctionDataMap:
+          assembleRABData.scriptEventFunctionDataMap
+          |> WonderCommonlib.ImmutableHashMapService.deleteVal(
+               rabRelativePath,
+             ),
+        scriptAttributeMap:
+          assembleRABData.scriptAttributeMap
+          |> WonderCommonlib.ImmutableHashMapService.deleteVal(
+               rabRelativePath,
+             ),
+      },
+    },
+  }
+  /* TODO test */
+  |> markNotAssembled(rabRelativePath);
+};
 
 let setAssembleRABData =
     (

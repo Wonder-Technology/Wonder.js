@@ -54,7 +54,7 @@ let setLoadedSAB = (sabRelativePath, sab, {assetBundleRecord} as state) => {
   },
 };
 
-let markLoaded = (sabRelativePath, {assetBundleRecord} as state) => {
+let _markIsLoaded = (sabRelativePath, isLoaded, {assetBundleRecord} as state) => {
   ...state,
   assetBundleRecord: {
     ...assetBundleRecord,
@@ -62,10 +62,19 @@ let markLoaded = (sabRelativePath, {assetBundleRecord} as state) => {
       ...assetBundleRecord.assembleSABData,
       isLoadedMap:
         assetBundleRecord.assembleSABData.isLoadedMap
-        |> WonderCommonlib.ImmutableHashMapService.set(sabRelativePath, true),
+        |> WonderCommonlib.ImmutableHashMapService.set(
+             sabRelativePath,
+             isLoaded,
+           ),
     },
   },
 };
+
+let markLoaded = (sabRelativePath, {assetBundleRecord} as state) =>
+  _markIsLoaded(sabRelativePath, true, state);
+
+let markNotLoaded = (sabRelativePath, {assetBundleRecord} as state) =>
+  _markIsLoaded(sabRelativePath, false, state);
 
 let isLoaded = (sabRelativePath, {assetBundleRecord} as state) =>
   switch (
@@ -75,3 +84,21 @@ let isLoaded = (sabRelativePath, {assetBundleRecord} as state) =>
   | None => false
   | Some(isLoaded) => isLoaded
   };
+
+let releaseLoadedSAB = (sabRelativePath, {assetBundleRecord} as state) =>
+  {
+    ...state,
+    assetBundleRecord: {
+      ...assetBundleRecord,
+      assembleSABData: {
+        ...assetBundleRecord.assembleSABData,
+        loadedSABMap:
+          assetBundleRecord.assembleSABData.loadedSABMap
+          |> WonderCommonlib.ImmutableHashMapService.deleteVal(
+               sabRelativePath,
+             ),
+      },
+    },
+  }
+  /* TODO test */
+  |> markNotLoaded(sabRelativePath);
