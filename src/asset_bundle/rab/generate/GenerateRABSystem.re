@@ -137,7 +137,7 @@ let generateRAB =
     jsonUint8Array,
   );
 
-let generate = (resourceData, state) => {
+let generateSingleRAB = (resourceData, state) => {
   let (
     state,
     (

@@ -16,13 +16,13 @@ let _ =
     beforeEach(() => {
       sandbox := createSandbox();
       state := TestTool.init(~sandbox, ());
+
+      GenerateSingleRABTool.prepare(sandbox^);
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("test images", () =>
       test("test", () => {
-        GenerateSingleRABTool.prepare(sandbox^);
-
         let image1 = GenerateSingleRABTool.ResourceData.buildImageData();
 
         let imageDataMap =
@@ -77,8 +77,6 @@ let _ =
       test(
         "if lightMaterial->maps not contain in resourceData->textures, contract error",
         () => {
-        GenerateSingleRABTool.prepare(sandbox^);
-
         let image1 = GenerateSingleRABTool.ResourceData.buildImageData();
 
         let imageDataMap =
@@ -123,8 +121,6 @@ let _ =
         "test texture resource data not contain in lightMaterial resource data",
         () => {
         test("test lightMaterial has no diffuseMap", () => {
-          GenerateSingleRABTool.prepare(sandbox^);
-
           let image1 = GenerateSingleRABTool.ResourceData.buildImageData();
 
           let imageDataMap =
@@ -185,8 +181,6 @@ let _ =
              );
         });
         test("test lightMaterial has one diffuseMap", () => {
-          GenerateSingleRABTool.prepare(sandbox^);
-
           let image1 = GenerateSingleRABTool.ResourceData.buildImageData();
 
           let imageDataMap =
@@ -265,8 +259,6 @@ let _ =
 
     describe("test geometrys", () =>
       test("test", () => {
-        GenerateSingleRABTool.prepare(sandbox^);
-
         let (
           state,
           gameObject,

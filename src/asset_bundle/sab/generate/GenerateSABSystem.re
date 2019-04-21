@@ -34,7 +34,7 @@ let generateSAB =
     jsonUint8Array,
   );
 
-let generate = (sceneGameObject, imageUint8ArrayMap, state) => {
+let generateSingleSAB = (sceneGameObject, imageUint8ArrayMap, state) => {
   let (gltf, imageResultUint8ArrayMap, binBuffer) =
     GenerateGLBSystem.generateGLBData(
       (sceneGameObject, imageUint8ArrayMap),
@@ -54,7 +54,7 @@ let generate = (sceneGameObject, imageUint8ArrayMap, state) => {
 
   (
     state,
-    imageResultUint8ArrayMap,
+    /* imageResultUint8ArrayMap, */
     ConvertGLBSystem.convertGLBData(gltf, binBuffer),
   );
 };

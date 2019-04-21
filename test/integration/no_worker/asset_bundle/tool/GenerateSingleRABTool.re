@@ -2,14 +2,7 @@ open RABType;
 
 open Js.Typed_array;
 
-let prepare = sandbox => {
-  open GLBTool;
-
-  ConvertTool.buildFakeLoadImage(.);
-  buildFakeTextDecoder(convertUint8ArrayToBuffer);
-  buildFakeTextEncoder(.);
-  buildFakeURL(sandbox);
-};
+let prepare = sandbox => GenerateSingleABTool.prepare(sandbox);
 
 let getDefaultShininess = () => 32.0;
 
