@@ -11,7 +11,7 @@ let _ =
     let state = ref(MainStateTool.createState());
     let _cloneGameObject = (gameObject, count, state) =>
       CloneTool.cloneGameObject(gameObject, count, false, state);
-    let _getClonedTransformMatrixDataArr = (gameObject, count, state) => {
+    let _cloneAndGetClonedTransformMatrixDataArr = (gameObject, count, state) => {
       let (state, clonedGameObjectArr) =
         _cloneGameObject(gameObject, count, state);
       (
@@ -1329,12 +1329,13 @@ let _ =
           });
         });
       });
+
       describe("test clone transform component", () => {
         let _prepare = () => {
           let (state, gameObject1, transform1) =
             GameObjectTool.createGameObject(state^);
           let (clonedGameObjectArr, clonedTransformArr) =
-            _getClonedTransformMatrixDataArr(gameObject1, 2, state);
+            _cloneAndGetClonedTransformMatrixDataArr(gameObject1, 2, state);
           (
             state,
             gameObject1,
@@ -1358,7 +1359,7 @@ let _ =
             let pos1 = (1., 2., 3.);
             let state = state |> setTransformLocalPosition(transform1, pos1);
             let (_, clonedTransformArr) =
-              _getClonedTransformMatrixDataArr(gameObject1, 2, state);
+              _cloneAndGetClonedTransformMatrixDataArr(gameObject1, 2, state);
             clonedTransformArr
             |> Js.Array.map(transform =>
                  getTransformLocalPosition(transform, state)
@@ -1376,7 +1377,7 @@ let _ =
               let state =
                 state |> setTransformLocalPosition(transform1, pos1);
               let (_, clonedTransformArr) =
-                _getClonedTransformMatrixDataArr(gameObject1, 2, state);
+                _cloneAndGetClonedTransformMatrixDataArr(gameObject1, 2, state);
               let pos2 = (2., 4., 6.);
               let state =
                 state
@@ -1404,7 +1405,7 @@ let _ =
             let state =
               state |> setTransformLocalRotation(transform1, rotation1);
             let (_, clonedTransformArr) =
-              _getClonedTransformMatrixDataArr(gameObject1, 2, state);
+              _cloneAndGetClonedTransformMatrixDataArr(gameObject1, 2, state);
             clonedTransformArr
             |> Js.Array.map(transform =>
                  getTransformLocalRotation(transform, state)
@@ -1423,7 +1424,7 @@ let _ =
             let scale1 = (1., 2., 3.);
             let state = state |> setTransformLocalScale(transform1, scale1);
             let (_, clonedTransformArr) =
-              _getClonedTransformMatrixDataArr(gameObject1, 2, state);
+              _cloneAndGetClonedTransformMatrixDataArr(gameObject1, 2, state);
             clonedTransformArr
             |> Js.Array.map(transform =>
                  getTransformLocalScale(transform, state)
@@ -1431,6 +1432,20 @@ let _ =
             |> expect == [|scale1, scale1|];
           })
         );
+
+        test("mark cloned transform dirty", () => {
+          open TransformAPI;
+          let (state, gameObject1, transform1) =
+            GameObjectTool.createGameObject(state^);
+
+          let (_, clonedTransformArr) =
+            _cloneAndGetClonedTransformMatrixDataArr(gameObject1, 2, state);
+
+          clonedTransformArr
+          |> Js.Array.map(transform
+               => TransformTool.isDirty(transform, state))
+          |> expect == [|true, true|];
+        });
 
         test("add cloned transform's gameObject to map", () => {
           let (state, _, _, clonedGameObjectArr, clonedTransformArr) =
@@ -1879,7 +1894,7 @@ let _ =
             ) =
               _prepare();
             let (_, clonedTransformArr) =
-              _getClonedTransformMatrixDataArr(gameObject1, 2, state);
+              _cloneAndGetClonedTransformMatrixDataArr(gameObject1, 2, state);
             (
               state |> TransformTool.getTransformParent(clonedTransformArr[0]),
               state |> TransformTool.getTransformParent(clonedTransformArr[1]),
@@ -1933,7 +1948,7 @@ let _ =
               let state =
                 state |> setTransformLocalPosition(transform4, pos4);
               let (clonedGameObjectArr, clonedTransformArr) =
-                _getClonedTransformMatrixDataArr(gameObject1, 1, state);
+                _cloneAndGetClonedTransformMatrixDataArr(gameObject1, 1, state);
               clonedTransformArr
               |> Js.Array.map(transform =>
                    getTransformPosition(transform, state)

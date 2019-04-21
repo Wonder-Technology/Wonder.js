@@ -6,49 +6,56 @@ let handleCloneComponent =
     (
       sourceComponent: transform,
       countRangeArr: array(int),
-      {settingRecord, typeArrayPoolRecord} as state
+      {settingRecord, typeArrayPoolRecord} as state,
     ) => {
   let componentArr = [||];
   let transformRecord = state |> RecordTransformMainService.getRecord;
   let localPosition =
     ModelMatrixTransformService.getLocalPositionTuple(
       sourceComponent,
-      transformRecord.localPositions
+      transformRecord.localPositions,
     );
   let localRotation =
     ModelMatrixTransformService.getLocalRotationTuple(
       sourceComponent,
-      transformRecord.localRotations
+      transformRecord.localRotations,
     );
   let localScale =
     ModelMatrixTransformService.getLocalScaleTuple(
       sourceComponent,
-      transformRecord.localScales
+      transformRecord.localScales,
     );
   let (transformRecord, componentArr) =
     countRangeArr
     |> WonderCommonlib.ArrayService.reduceOneParam(
-         [@bs]
-         (
-           ((transformRecord, componentArr), _) => {
-             let (transformRecord, index) =
-               CreateTransformMainService.createWithoutMarkNotDirtyWithRecord(
-                 settingRecord,
-                 transformRecord
-               );
-             (
-               transformRecord
-               |> ModelMatrixTransformService.setLocalPositionByTuple(index, localPosition)
-               |> ModelMatrixTransformService.setLocalRotationByTuple(index, localRotation)
-               |> ModelMatrixTransformService.setLocalScaleByTuple(index, localScale)
-               |> DirtyTransformService.mark(index, true),
-               componentArr |> ArrayService.push(index)
-             )
-           }
-         ),
-         (transformRecord, [||])
+         (. (transformRecord, componentArr), _) => {
+           let (transformRecord, index) =
+             CreateTransformMainService.createWithoutMarkNotDirtyWithRecord(
+               settingRecord,
+               transformRecord,
+             );
+           (
+             transformRecord
+             |> ModelMatrixTransformService.setLocalPositionByTuple(
+                  index,
+                  localPosition,
+                )
+             |> ModelMatrixTransformService.setLocalRotationByTuple(
+                  index,
+                  localRotation,
+                )
+             |> ModelMatrixTransformService.setLocalScaleByTuple(
+                  index,
+                  localScale,
+                ),
+             componentArr |> ArrayService.push(index),
+           );
+         },
+         (transformRecord, [||]),
        );
   state.transformRecord =
-    Some(transformRecord |> DirtyTransformService.mark(sourceComponent, true));
-  (state, componentArr)
+    Some(
+      transformRecord |> DirtyTransformService.mark(sourceComponent, true),
+    );
+  (state, componentArr);
 };
