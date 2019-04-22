@@ -84,9 +84,7 @@ let _buildWDBJsonUint8Array = (gltf: GLTFType.gltf) => {
              buffers: ConvertBuffersSystem.convertToBuffers(gltf),
              directionLights: directionLightArr,
              pointLights: pointLightArr,
-             scripts:
-               ConvertScriptsSystem.convertToScripts(gltf)
-               /* |> WonderLog.Log.printJson, */
+             scripts: ConvertScriptsSystem.convertToScripts(gltf),
            }: WDType.wd
          )
          |> Obj.magic

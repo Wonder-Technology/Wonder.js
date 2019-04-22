@@ -7,10 +7,10 @@ module All = {
     let dataView = DataViewCommon.create(ab);
 
     let (byteOffset, manifestJsonByteLength, contentBufferByteLength) =
-      GenerateManifestABUtils.All.readHeader(dataView);
+      GenerateManifestABUtils.RABAndSAB.readHeader(dataView);
 
     let contentArrayBuffer =
-      GenerateManifestABUtils.All.getContentBuffer(
+      GenerateManifestABUtils.RABAndSAB.getContentBuffer(
         manifestJsonByteLength,
         ab,
       );

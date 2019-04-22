@@ -84,10 +84,7 @@ let generate = (dependencyRelation, (sabDataArr, rabDataArr), state) => {
 
   RemoveDependencyDataSystem.removeDuplicateBufferData(
     dependencyRelation,
-    FindDependencyDataSystem.buildImageAndGeometryNameMap(
-      sabDataArr,
-      rabDataArr,
-    ),
+    FindDependencyDataSystem.buildImageAndGeometryNameMap(rabDataArr),
     (sabDataArr, rabDataArr),
   )
   |> ManifestDataSystem.addManifestData(dependencyRelation)

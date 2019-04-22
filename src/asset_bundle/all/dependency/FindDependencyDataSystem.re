@@ -21,7 +21,7 @@ module RAB = {
       (
         rabRelativePath,
         {geometrys}: RABType.resourceAssetBundleContent,
-        allRabDependentGeometryNameMap,
+        allRabGeometryNameMap,
       ) =>
     geometrys
     |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -32,13 +32,13 @@ module RAB = {
     |> WonderCommonlib.ImmutableHashMapService.set(
          rabRelativePath,
          _,
-         allRabDependentGeometryNameMap,
+         allRabGeometryNameMap,
        );
 
   let buildImageAndGeometryNameMap =
       (
         (rabRelativePath, rab),
-        (allRabDepdentImageNameMap, allRabDependentGeometryNameMap),
+        (allRabDepdentImageNameMap, allRabGeometryNameMap),
       ) => {
     let dataView = DataViewCommon.create(rab);
 
@@ -59,128 +59,27 @@ module RAB = {
       _buildGeometryNameMap(
         rabRelativePath,
         resourceAssetBundleContent,
-        allRabDependentGeometryNameMap,
+        allRabGeometryNameMap,
       ),
     );
   };
 };
 
-module SAB = {
-  let _buildImageNameMap =
-      (
-        sabRelativePath,
-        {images}: SABType.sceneAssetBundleContent,
-        allSabDependentImageNameMap,
-      ) =>
-    switch (images) {
-    | None => allSabDependentImageNameMap
-    | Some(images) =>
-      images
-      |> WonderCommonlib.ArrayService.reduceOneParam(
-           (. nameMap, {name}: WDType.image) =>
-             nameMap
-             |> WonderCommonlib.ImmutableHashMapService.set(name, true),
-           WonderCommonlib.ImmutableHashMapService.createEmpty(),
-         )
-      |> WonderCommonlib.ImmutableHashMapService.set(
-           sabRelativePath,
-           _,
-           allSabDependentImageNameMap,
-         )
-    };
-
-  let _buildGeometryNameMap =
-      (
-        sabRelativePath,
-        {geometrys}: SABType.sceneAssetBundleContent,
-        allSabDependentGeometryNameMap,
-      ) =>
-    geometrys
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. nameMap, geometryData) =>
-           geometryData |> OptionService.isJsonSerializedValueNone ?
-             nameMap :
-             {
-               let {name}: WDType.geometry =
-                 geometryData |> OptionService.unsafeGetJsonSerializedValue;
-
-               nameMap
-               |> WonderCommonlib.ImmutableHashMapService.set(name, true);
-             },
-         WonderCommonlib.ImmutableHashMapService.createEmpty(),
-       )
-    |> WonderCommonlib.ImmutableHashMapService.set(
-         sabRelativePath,
-         _,
-         allSabDependentGeometryNameMap,
-       );
-
-  let buildImageAndGeometryNameMap =
-      (
-        (sabRelativePath, sab),
-        (allSabDependentImageNameMap, allSabDependentGeometryNameMap),
-      ) => {
-    let (wdFileContent, _, _) =
-      BufferUtils.decodeWDB(sab, AssembleWholeWDBSystem.checkWDB);
-
-    let sceneAssetBundleContent: SABType.sceneAssetBundleContent =
-      wdFileContent |> Js.Json.parseExn |> Obj.magic;
-
-    (
-      _buildImageNameMap(
-        sabRelativePath,
-        sceneAssetBundleContent,
-        allSabDependentImageNameMap,
-      ),
-      _buildGeometryNameMap(
-        sabRelativePath,
-        sceneAssetBundleContent,
-        allSabDependentGeometryNameMap,
-      ),
-    );
-  };
-};
-
-let buildImageAndGeometryNameMap = (sabDataArr, rabDataArr) =>
-  (
-    sabDataArr
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (.
-           (allSabDependentImageNameMap, allSabDependentGeometryNameMap),
-           sabData,
-         ) =>
-           SAB.buildImageAndGeometryNameMap(
-             sabData,
-             (allSabDependentImageNameMap, allSabDependentGeometryNameMap),
-           ),
-         (
-           WonderCommonlib.ImmutableHashMapService.createEmpty(),
-           WonderCommonlib.ImmutableHashMapService.createEmpty(),
-         ),
-       ),
-    rabDataArr
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (.
-           (allSabDependentImageNameMap, allSabDependentGeometryNameMap),
+let buildImageAndGeometryNameMap = rabDataArr =>
+  rabDataArr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. (allRabImageNameMap, allRabGeometryNameMap), rabData) =>
+         RAB.buildImageAndGeometryNameMap(
            rabData,
-         ) =>
-           RAB.buildImageAndGeometryNameMap(
-             rabData,
-             (allSabDependentImageNameMap, allSabDependentGeometryNameMap),
-           ),
-         (
-           WonderCommonlib.ImmutableHashMapService.createEmpty(),
-           WonderCommonlib.ImmutableHashMapService.createEmpty(),
+           (allRabImageNameMap, allRabGeometryNameMap),
          ),
-       ),
-  )
-  |> WonderLog.Contract.ensureCheck(
        (
-         (
-           (allSabDependentImageNameMap, allSabDependentGeometryNameMap),
-           (allRabDependentImageNameMap, allRabDependentGeometryNameMap),
-         ),
-       ) => {
+         WonderCommonlib.ImmutableHashMapService.createEmpty(),
+         WonderCommonlib.ImmutableHashMapService.createEmpty(),
+       ),
+     )
+  |> WonderLog.Contract.ensureCheck(
+       ((allRabImageNameMap, allRabGeometryNameMap)) => {
          open WonderLog;
          open Contract;
          open Operators;
@@ -197,27 +96,11 @@ let buildImageAndGeometryNameMap = (sabDataArr, rabDataArr) =>
 
          test(
            Log.buildAssertMessage(
-             ~expect={j|one dependent sab->image has no duplicate name|j},
-             ~actual={j|has|j},
-           ),
-           () =>
-           _judge(allSabDependentImageNameMap)
-         );
-         test(
-           Log.buildAssertMessage(
-             ~expect={j|one dependent sab->geometry has no duplicate name|j},
-             ~actual={j|has|j},
-           ),
-           () =>
-           _judge(allSabDependentGeometryNameMap)
-         );
-         test(
-           Log.buildAssertMessage(
              ~expect={j|one dependent rab->image has no duplicate name|j},
              ~actual={j|has|j},
            ),
            () =>
-           _judge(allRabDependentImageNameMap)
+           _judge(allRabImageNameMap)
          );
          test(
            Log.buildAssertMessage(
@@ -225,7 +108,7 @@ let buildImageAndGeometryNameMap = (sabDataArr, rabDataArr) =>
              ~actual={j|has|j},
            ),
            () =>
-           _judge(allRabDependentGeometryNameMap)
+           _judge(allRabGeometryNameMap)
          );
        },
        IsDebugMainService.getIsDebug(StateDataMain.stateData),

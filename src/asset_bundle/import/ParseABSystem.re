@@ -41,3 +41,29 @@ module WAB = {
     wholeHashIdMap
     |> WonderCommonlib.ImmutableHashMapService.unsafeGet(abRelativePath);
 };
+
+module RAB = {
+  let parseManifest = rab: RABType.manifest => {
+    let dataView = DataViewCommon.create(rab);
+
+    let (byteOffset, manifestJsonByteLength, contentBufferByteLength) =
+      GenerateManifestABUtils.RABAndSAB.readHeader(dataView);
+
+    GenerateManifestABUtils.RABAndSAB.getManifest(manifestJsonByteLength, rab)
+    |> Js.Json.parseExn
+    |> Obj.magic;
+  };
+};
+
+module SAB = {
+  let parseManifest = sab: SABType.manifest => {
+    let dataView = DataViewCommon.create(sab);
+
+    let (byteOffset, manifestJsonByteLength, contentBufferByteLength) =
+      GenerateManifestABUtils.RABAndSAB.readHeader(dataView);
+
+    GenerateManifestABUtils.RABAndSAB.getManifest(manifestJsonByteLength, sab)
+    |> Js.Json.parseExn
+    |> Obj.magic;
+  };
+};

@@ -2,7 +2,7 @@ open RABType;
 
 open Js.Typed_array;
 
-let prepare = sandbox => GenerateSingleABTool.prepare(sandbox);
+let prepare = sandbox => PrepareABTool.prepare(sandbox);
 
 let getDefaultShininess = () => 32.0;
 
@@ -258,4 +258,28 @@ module ResourceData = {
     scriptAttributeDataArr,
     imageDataMap,
   };
+};
+
+let generateOneRAB = state => {
+  let image1 = ResourceData.buildImageData();
+
+  let imageDataMap =
+    WonderCommonlib.ImmutableSparseMapService.createEmpty()
+    |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
+
+  let (state, textureResourceData1) =
+    ResourceData.createTextureResourceData(
+      ~state,
+      ~imageDataIndex=0,
+      (),
+    );
+
+  let resourceData1 =
+    ResourceData.buildResourceData(
+      ~textures=[|textureResourceData1|],
+      ~imageDataMap,
+      (),
+    );
+
+  GenerateRABSystem.generateSingleRAB(resourceData1, state);
 };

@@ -1,4 +1,3 @@
-
 let prepare = sandbox => {
   open GLBTool;
 

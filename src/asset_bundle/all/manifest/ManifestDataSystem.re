@@ -18,7 +18,6 @@ module All = {
 
       return result;
     });
-
     |}
   ];
 
@@ -156,7 +155,7 @@ let addManifestData =
               rabRelativePath,
               hashId,
             ),
-         newRabDataArr |> ArrayService.push(rab),
+         newRabDataArr |> ArrayService.push((rabRelativePath, rab)),
        ),
        (
          WonderCommonlib.ImmutableHashMapService.createEmpty(),
@@ -177,7 +176,7 @@ let addManifestData =
                    sabRelativePath,
                    hashId,
                  ),
-              newSabDataArr |> ArrayService.push(sab),
+              newSabDataArr |> ArrayService.push((sabRelativePath, sab)),
             ),
             (wholeHashIdMap, WonderCommonlib.ArrayService.createEmpty()),
           )
