@@ -40,7 +40,7 @@ let _addBufferViewData =
       BufferUtils.alignedLength(bufferViewByteLength);
 
     (
-      accessorDataArr |> Js.Array.length |. Some,
+      (accessorDataArr |> Js.Array.length)->Some,
       accessorDataArr
       |> ArrayService.push({
            bufferView: bufferViewDataArr |> Js.Array.length,
@@ -338,10 +338,8 @@ let build = meshPointAndNameDataMap => {
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
-  let verticesSize = 3;
-  let normalsSize = 3;
-  let texCoordsSize = 2;
-  let indicesSize = 1;
+  let (verticesSize, normalsSize, texCoordsSize, indicesSize) =
+    BuildGeometryDataUtils.getPointSize();
 
   let (
     (totalByteLength, bufferViewOffset),

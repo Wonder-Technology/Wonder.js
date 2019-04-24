@@ -9,23 +9,19 @@ let _checkNotExceedMaxCountByIndex = (maxCount, indexArr) => {
   indexArr;
 };
 
-let _batchCreateGameObject = ({gameObjects}, {gameObjectRecord} as state) => {
-  let {count}: gameObjects = gameObjects;
+let _batchCreateGameObject = ({gameObjects}, {gameObjectRecord} as state) =>
+  ArrayService.range(0, gameObjects.count - 1)
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. (state, uidArr), _) => {
+         let (gameObjectRecord, index) =
+           CreateGameObjectGameObjectService.create(state.gameObjectRecord);
 
-  let {uid, aliveUidArray}: GameObjectType.gameObjectRecord = gameObjectRecord;
-  let uidArr = ArrayService.range(uid, uid + count - 1);
-  (
-    {
-      ...state,
-      gameObjectRecord: {
-        ...gameObjectRecord,
-        uid: uid + count,
-        aliveUidArray: aliveUidArray |> Js.Array.concat(uidArr),
-      },
-    },
-    uidArr,
-  );
-};
+         state.gameObjectRecord = gameObjectRecord;
+
+         (state, uidArr |> ArrayService.push(index));
+       },
+       (state, [||]),
+     );
 
 let _setDefaultChildren = (indexArr, childMap) =>
   indexArr

@@ -450,7 +450,7 @@ module SAB = {
           allRabGeometryNameMap,
         ),
         dataViewArr,
-        pointType,
+        (pointType, pointSize),
         ({bufferViews, accessors}: SABType.sceneAssetBundleContent) as sceneAssetBundleContent,
         (
           isNoneAccessorIndexFunc,
@@ -508,7 +508,7 @@ module SAB = {
                  bufferView:
                    (bufferViewArr |> Js.Array.length) + imageBufferViewIndex,
                  byteOffset: GenerateCommon.buildAccessorByteOffset(),
-                 count: points |> Float32Array.length,
+                 count: (points |> Float32Array.length) / pointSize,
                  componentType:
                    BuildGeometryDataSystem.getComponentType(pointType)
                    |> ConvertUtils.convertComponentType,
@@ -530,6 +530,7 @@ module SAB = {
       (
         (name, sabRelativePath, dependencyRelation, allRabGeometryNameMap),
         dataViewArr,
+        pointSize,
         ({bufferViews, accessors}: SABType.sceneAssetBundleContent) as sceneAssetBundleContent,
         (
           imageBufferViewIndex,
@@ -572,7 +573,7 @@ module SAB = {
           ) {
           | Some(data) => (
               data |> TypeArrayUtils.convertUint16ToUint8,
-              data |> Uint16Array.length,
+              (data |> Uint16Array.length) / pointSize,
               GenerateSceneGraphType.Index,
             )
           | None =>
@@ -586,7 +587,7 @@ module SAB = {
             ) {
             | Some(data) => (
                 data |> TypeArrayUtils.convertUint32ToUint8,
-                data |> Uint32Array.length,
+                (data |> Uint32Array.length) / pointSize,
                 GenerateSceneGraphType.Index32,
               )
             | None =>
@@ -673,6 +674,9 @@ module SAB = {
                      ) as geometry =
                    geometryData |> OptionService.unsafeGetJsonSerializedValue;
 
+                 let (verticesSize, normalsSize, texCoordsSize, indicesSize) =
+                   BuildGeometryDataUtils.getPointSize();
+
                  let (
                    positionAccessor,
                    accessorArr,
@@ -688,7 +692,7 @@ module SAB = {
                        allRabGeometryNameMap,
                      ),
                      dataViewArr,
-                     GenerateSceneGraphType.Vertex,
+                     (GenerateSceneGraphType.Vertex, verticesSize),
                      sceneAssetBundleContent,
                      (
                        ABBufferViewUtils.isNoneAccessorIndex,
@@ -721,7 +725,7 @@ module SAB = {
                        allRabGeometryNameMap,
                      ),
                      dataViewArr,
-                     GenerateSceneGraphType.Normal,
+                     (GenerateSceneGraphType.Normal, normalsSize),
                      sceneAssetBundleContent,
                      (
                        OptionService.isJsonSerializedValueNone,
@@ -755,7 +759,7 @@ module SAB = {
                        allRabGeometryNameMap,
                      ),
                      dataViewArr,
-                     GenerateSceneGraphType.TexCoord,
+                     (GenerateSceneGraphType.TexCoord, texCoordsSize),
                      sceneAssetBundleContent,
                      (
                        OptionService.isJsonSerializedValueNone,
@@ -789,6 +793,7 @@ module SAB = {
                        allRabGeometryNameMap,
                      ),
                      dataViewArr,
+                     indicesSize,
                      sceneAssetBundleContent,
                      (
                        imageBufferViewIndex,

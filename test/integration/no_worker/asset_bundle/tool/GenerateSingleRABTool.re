@@ -223,10 +223,10 @@ module ResourceData = {
       (
         ~state,
         ~name="geometry1",
-        ~vertices=Float32Array.make([|10.|]),
+        ~vertices=Float32Array.make([|10.,5.,3.|]),
         ~normals=None,
         ~texCoords=None,
-        ~indices16=Some(Uint16Array.make([|2|])),
+        ~indices16=Some(Uint16Array.make([|0|])),
         ~indices32=None,
         (),
       ) => {

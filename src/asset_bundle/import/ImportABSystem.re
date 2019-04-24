@@ -68,7 +68,10 @@ module SAB = {
 
            state
            |> OperateSABAssetBundleMainService.markLoaded(sabRelativePath)
-           |> OperateSABAssetBundleMainService.setLoadedSAB(sabRelativePath, sab)
+           |> OperateSABAssetBundleMainService.setLoadedSAB(
+                sabRelativePath,
+                sab,
+              )
            |> StateDataMainService.setState(StateDataMain.stateData)
            |> ignore;
          })
@@ -131,24 +134,27 @@ module RAB = {
       abRelativePath,
       wholeDependencyRelationMap,
     )
-    |> Js.Array.map(rabRelativePath
-         /* let state = StateDataMainService.unsafeGetState(StateDataMain.stateData); */
-         => () =>
-           _loadAndAssembleRAB(
-             rabRelativePath,
-             wholeManifest,
-             wholeDependencyRelationMap,
-             (
-               getAssetBundlePathFunc,
-               isAssetBundleArrayBufferCachedFunc,
-               getAssetBundleArrayBufferCacheFunc,
-               cacheAssetBundleArrayBufferFunc,
-             ),
-             /* state, */
-           )
+    |> Js.Array.map(
+         (
+           rabRelativePath,
+           /* let state = StateDataMainService.unsafeGetState(StateDataMain.stateData); */
+           (),
+         ) =>
+         _loadAndAssembleRAB(
+           rabRelativePath,
+           wholeManifest,
+           wholeDependencyRelationMap,
+           (
+             getAssetBundlePathFunc,
+             isAssetBundleArrayBufferCachedFunc,
+             getAssetBundleArrayBufferCacheFunc,
+             cacheAssetBundleArrayBufferFunc,
+           ),
+           /* state, */
          )
+       )
     /* |> Most.mergeArray; */
-    |> MostUtils.concatExecStreamArr
+    |> MostUtils.concatExecStreamArr;
     /* |> WonderCommonlib.ArrayService.reduceOneParam(
          (. stream, rabRelativePath) =>
            stream

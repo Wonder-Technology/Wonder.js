@@ -107,10 +107,7 @@ return digestStub;
 };
 
 module TestWithOneRAB = {
-
-  let getWholeDependencyRelationMap = () =>
-    buildDependencyRelation([||]);
-
+  let getWholeDependencyRelationMap = () => buildDependencyRelation([||]);
 
   let getRabRelativePath = () => {
     let rab1RelativePath = "rab1.rab";
@@ -122,10 +119,11 @@ module TestWithOneRAB = {
   let generateAllAB = (rab1, state) => {
     let rab1RelativePath = getRabRelativePath();
 
+    state |> StateAPI.setState |> ignore;
+
     GenerateAllABSystem.generate(
       buildDependencyRelation([|[|rab1RelativePath|]|]),
       ([||], [|buildRABData(rab1RelativePath, rab1)|]),
-      state,
     );
   };
 
@@ -146,7 +144,6 @@ module TestWithOneRAB = {
 
     ParseABSystem.RAB.parseManifest(newRab1);
   };
-
 
   let getNewRab = ((_, newRabDataArr, _)) => {
     let (_, newRab1) = newRabDataArr[0];
@@ -169,6 +166,8 @@ module TestWithTwoRAB = {
   let generateAllAB = ((rab1, rab2), state) => {
     let (rab1RelativePath, rab2RelativePath) = getRabRelativePaths();
 
+    state |> StateAPI.setState |> ignore;
+
     GenerateAllABSystem.generate(
       buildDependencyRelation([|[|rab2RelativePath, rab1RelativePath|]|]),
       (
@@ -178,7 +177,6 @@ module TestWithTwoRAB = {
           buildRABData(rab2RelativePath, rab2),
         |],
       ),
-      state,
     );
   };
 
@@ -213,6 +211,9 @@ module TestWithTwoRAB = {
 };
 
 module TestWithOneSABAndOneRAB = {
+  let getWholeDependencyRelationMap = (rab1RelativePath, sab1RelativePath) =>
+    buildDependencyRelation([|[|sab1RelativePath, rab1RelativePath|]|]);
+
   let getABRelativePaths = () => {
     let rab1RelativePath = "rab1.rab";
     let sab1RelativePath = "sab1.sab";
@@ -223,14 +224,22 @@ module TestWithOneSABAndOneRAB = {
   let generateAllAB = ((rab1, sab1), state) => {
     let (rab1RelativePath, sab1RelativePath) = getABRelativePaths();
 
+    state |> StateAPI.setState |> ignore;
+
     GenerateAllABSystem.generate(
       buildDependencyRelation([|[|sab1RelativePath, rab1RelativePath|]|]),
       (
         [|buildSABData(sab1RelativePath, sab1)|],
         [|buildRABData(rab1RelativePath, rab1)|],
       ),
-      state,
     );
+  };
+
+  let getNewABs = ((_, newRabDataArr, newSabDataArr)) => {
+    let (_, newRab1) = newRabDataArr[0];
+    let (_, newSab1) = newSabDataArr[0];
+
+    (newRab1, newSab1);
   };
 
   let getNewABContents = ((_, newRabDataArr, newSabDataArr)) => {
@@ -284,13 +293,14 @@ module TestWABWithOneSABAndOneRAB = {
   let generateAllAB = ((rab1, sab1), state) => {
     let (rab1RelativePath, sab1RelativePath) = getABRelativePaths();
 
+    state |> StateAPI.setState |> ignore;
+
     GenerateAllABSystem.generate(
       buildDependencyRelation([|[|sab1RelativePath, rab1RelativePath|]|]),
       (
         [|buildSABData(sab1RelativePath, sab1)|],
         [|buildRABData(rab1RelativePath, rab1)|],
       ),
-      state,
     );
   };
 
@@ -309,4 +319,189 @@ module TestWABWithOneSABAndOneRAB = {
   let getNewWabManifest = ((newWAB, _, _)) =>
     /* let (_, newRab1) = newRabDataArr[0]; */
     ParseABSystem.WAB.parseManifest(newWAB);
+};
+
+module TestDuplicateDataForSAB = {
+  module TestDuplicateImageData = {
+    let _createTexture1 = state => {
+      let (state, texture) =
+        BasicSourceTextureAPI.createBasicSourceTexture(state);
+
+      let name = "texture_1";
+
+      let state =
+        BasicSourceTextureAPI.setBasicSourceTextureName(texture, name, state);
+
+      let state =
+        BasicSourceTextureAPI.setBasicSourceTextureWrapS(
+          texture,
+          SourceTextureType.Repeat,
+          state,
+        )
+        |> BasicSourceTextureAPI.setBasicSourceTextureMagFilter(
+             texture,
+             SourceTextureType.Linear,
+           );
+
+      let width = 30;
+      let height = 50;
+
+      let source = BasicSourceTextureTool.buildSource(width, height);
+
+      let state =
+        BasicSourceTextureAPI.setBasicSourceTextureSource(
+          texture,
+          source,
+          state,
+        );
+
+      (state, (texture, name), (source, width, height));
+    };
+
+    let createGameObject1 = (imageName, state) => {
+      open GameObjectAPI;
+      open LightMaterialAPI;
+      open MeshRendererAPI;
+
+      let (state, material) = createLightMaterial(state);
+
+      let (state, (texture, _), (source, width, height)) =
+        _createTexture1(state);
+
+      ImageUtils.setImageName(source, imageName);
+
+      let state =
+        LightMaterialAPI.setLightMaterialDiffuseMap(material, texture, state);
+
+      let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
+      let (state, meshRenderer) = createMeshRenderer(state);
+      let (state, gameObject) = state |> createGameObject;
+      let state =
+        state
+        |> addGameObjectLightMaterialComponent(gameObject, material)
+        |> addGameObjectGeometryComponent(gameObject, geometry)
+        |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+
+      let transform =
+        GameObjectAPI.unsafeGetGameObjectTransformComponent(
+          gameObject,
+          state,
+        );
+
+      (state, gameObject, transform, (material, texture));
+    };
+  };
+
+  module TestDuplicateGeometryData = {
+    let _createGameObject =
+        (geometryName, (vertices, normals, texCoords, indices16), state) => {
+      open GameObjectAPI;
+      open LightMaterialAPI;
+      open GeometryAPI;
+      open MeshRendererAPI;
+      open Js.Typed_array;
+
+      let (state, geometry) = createGeometry(state);
+      let (state, gameObject) = GameObjectAPI.createGameObject(state);
+      let state =
+        state
+        |> GameObjectAPI.addGameObjectGeometryComponent(gameObject, geometry);
+      let state = state |> setGeometryName(geometry, geometryName);
+
+      let state =
+        state
+        |> setGeometryVertices(geometry, vertices)
+        |> setGeometryTexCoords(geometry, texCoords)
+        |> setGeometryNormals(geometry, normals)
+        |> setGeometryIndices16(geometry, indices16);
+
+      let (state, material) = createLightMaterial(state);
+
+      let (state, meshRenderer) = createMeshRenderer(state);
+
+      let state =
+        state
+        |> addGameObjectLightMaterialComponent(gameObject, material)
+        |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+
+      let transform =
+        GameObjectAPI.unsafeGetGameObjectTransformComponent(
+          gameObject,
+          state,
+        );
+
+      (
+        state,
+        gameObject,
+        transform,
+        (geometry, (vertices, texCoords, normals, indices16)),
+        material,
+        meshRenderer,
+      );
+    };
+
+    let createGameObject1 = (geometryName, state) => {
+      let vertices1 =
+        Float32Array.make([|
+          (-0.04454309865832329),
+          (-0.1662379950284958),
+          1.0180000066757202,
+          2.602089970253733e-18,
+          (-6.938890181594472e-18),
+          1.0180000066757202,
+          (-0.08605089783668518),
+          (-0.14904500544071198),
+          1.0180000066757202,
+        |]);
+      let texCoords1 =
+        Float32Array.make([|
+          0.7119140028953552,
+          0.12024599313735962,
+          0.7552189826965332,
+          0.15945100784301758,
+          0.7032840251922607,
+          0.13282698392868042,
+        |]);
+      let normals1 =
+        Float32Array.make([|
+          (-0.7455800175666809),
+          0.47522100806236267,
+          (-0.4671989977359772),
+          (-0.7843430042266846),
+          0.4080820083618164,
+          (-0.4671989977359772),
+          0.7455800175666809,
+          (-0.47522100806236267),
+          (-0.46720001101493835),
+        |]);
+      let indices1 = Uint16Array.make([|0, 2, 1|]);
+
+      _createGameObject(
+        geometryName,
+        (vertices1, normals1, texCoords1, indices1),
+        state,
+      );
+    };
+
+    let createGameObject2 = (geometryName, state) => {
+      let vertices1 =
+        Float32Array.make([|
+          (-0.08605089783668518),
+          (-0.14904500544071198),
+          1.0180000066757202,
+          2.,
+          3.,
+          4.,
+        |]);
+      let texCoords1 = Float32Array.make([||]);
+      let normals1 = Float32Array.make([||]);
+      let indices1 = Uint16Array.make([|1, 0|]);
+
+      _createGameObject(
+        geometryName,
+        (vertices1, normals1, texCoords1, indices1),
+        state,
+      );
+    };
+  };
 };

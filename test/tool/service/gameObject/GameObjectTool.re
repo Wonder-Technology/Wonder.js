@@ -40,7 +40,7 @@ let batchDisposeGameObject =
       (false, false, false),
       state,
     );
-  let state = state |> ReallocateCPUMemoryJob.execJob(None);
+  let state = state |> ReallocateMemoryTool.reallocateAll;
   {
     ...state,
     vboBufferRecord:
@@ -190,7 +190,7 @@ let disposeGameObjectGeometryComponentWithoutVboBuffer =
            [|gameObject|],
          ),
     );
-  let state = state |> ReallocateCPUMemoryJob.execJob(None);
+  let state = state |> ReallocateMemoryTool.reallocateAll;
   state;
 };
 
@@ -202,7 +202,7 @@ let batchDisposeGameObjectsGeometryComponentWithoutVboBuffer =
       WonderCommonlib.MutableSparseMapService.createEmpty()
       |> WonderCommonlib.MutableSparseMapService.set(component, gameObjectArr),
     );
-  let state = state |> ReallocateCPUMemoryJob.execJob(None);
+  let state = state |> ReallocateMemoryTool.reallocateAll;
   state;
 };
 
@@ -347,10 +347,21 @@ let testDisposeKeepOrder =
     |> TransformAPI.setTransformParent(Js.Nullable.return(tra), tra2)
     |> TransformAPI.setTransformParent(Js.Nullable.return(tra), tra3);
   let state = state |> disposeGameObjectKeepOrderRemoveGeometryFunc(child1);
-  let state = DisposeJob.execJob(None, state);
+  let state = state |> DisposeJobTool.disposeAndReallocate;
 
   TransformAPI.unsafeGetTransformChildren(tra, state)
   |> expect == [|tra2, tra3|];
 };
 
 let isAlive = AliveGameObjectMainService.isAlive;
+
+let findGameObjectsByName = (targetGameObject, name, state) =>
+  state
+  |> AllGameObjectMainService.getAllGameObjects(targetGameObject)
+  |> Js.Array.filter(gameObject =>
+       NameGameObjectMainService.getName(gameObject, state) === Some(name)
+     );
+
+let unsafeFindGameObjectByName = (targetGameObject, name, state) =>
+  findGameObjectsByName(targetGameObject, name, state)
+  |> ArrayService.unsafeGetFirst;

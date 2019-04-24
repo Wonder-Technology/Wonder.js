@@ -34,7 +34,6 @@ let _ =
                 [|"r1.rab", "s1.sab"|],
               |]),
               ([||], [||]),
-              state^,
             )
           )
           |> toThrowMessage("dependencyRelation shouldn't be circle")
@@ -48,7 +47,6 @@ let _ =
                 [|"s1.sab", "r1.rab"|],
               |]),
               ([||], [||]),
-              state^,
             )
           )
           |> toThrowMessage("dependencyRelation shouldn't be circle")
@@ -63,7 +61,6 @@ let _ =
                 [|"s1.sab", "r1.rab"|],
               |]),
               ([||], [||]),
-              state^,
             )
           )
           |> toThrowMessage("dependencyRelation shouldn't be circle")
@@ -80,7 +77,6 @@ let _ =
                 [|"r1.rab", "r2.rab"|],
               |]),
               ([||], [||]),
-              state^,
             )
           )
           |> not_
@@ -415,87 +411,7 @@ let _ =
 
       describe("remove duplicate buffer data from sab", () => {
         describe("remove duplicate image buffer data", () =>
-          describe("judge duplicate by image name", () => {
-            let _createTexture1 = state => {
-              let (state, texture) =
-                BasicSourceTextureAPI.createBasicSourceTexture(state);
-
-              let name = "texture_1";
-
-              let state =
-                BasicSourceTextureAPI.setBasicSourceTextureName(
-                  texture,
-                  name,
-                  state,
-                );
-
-              let state =
-                BasicSourceTextureAPI.setBasicSourceTextureWrapS(
-                  texture,
-                  SourceTextureType.Repeat,
-                  state,
-                )
-                |> BasicSourceTextureAPI.setBasicSourceTextureMagFilter(
-                     texture,
-                     SourceTextureType.Linear,
-                   );
-
-              let width = 30;
-              let height = 50;
-
-              let source = BasicSourceTextureTool.buildSource(width, height);
-
-              let state =
-                BasicSourceTextureAPI.setBasicSourceTextureSource(
-                  texture,
-                  source,
-                  state,
-                );
-
-              (state, (texture, name), (source, width, height));
-            };
-
-            let _createGameObject1 = (imageName, state) => {
-              open GameObjectAPI;
-              open LightMaterialAPI;
-              open MeshRendererAPI;
-
-              let (state, material) = createLightMaterial(state);
-
-              let (state, (texture, _), (source, width, height)) =
-                _createTexture1(state);
-
-              ImageUtils.setImageName(source, imageName);
-
-              let state =
-                LightMaterialAPI.setLightMaterialDiffuseMap(
-                  material,
-                  texture,
-                  state,
-                );
-
-              let (state, geometry) =
-                BoxGeometryTool.createBoxGeometry(state);
-              let (state, meshRenderer) = createMeshRenderer(state);
-              let (state, gameObject) = state |> createGameObject;
-              let state =
-                state
-                |> addGameObjectLightMaterialComponent(gameObject, material)
-                |> addGameObjectGeometryComponent(gameObject, geometry)
-                |> addGameObjectMeshRendererComponent(
-                     gameObject,
-                     meshRenderer,
-                   );
-
-              let transform =
-                GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                  gameObject,
-                  state,
-                );
-
-              (state, gameObject, transform, (material, texture));
-            };
-
+          describe("judge duplicate by image name", () =>
             testPromise("test", () => {
               let imageName = "image1";
 
@@ -527,7 +443,10 @@ let _ =
                 GenerateRABSystem.generateSingleRAB(resourceData1, state);
 
               let (state, gameObject2, transform2, (material2, texture2)) =
-                _createGameObject1(imageName, state);
+                GenerateAllABTool.TestDuplicateDataForSAB.TestDuplicateImageData.createGameObject1(
+                  imageName,
+                  state,
+                );
 
               let state = state |> SceneAPI.addSceneChild(transform2);
 
@@ -574,100 +493,12 @@ let _ =
                       )
                    |> resolve;
                  });
-            });
-          })
+            })
+          )
         );
 
         describe("remove duplicate geometry buffer data", () =>
-          describe("judge duplicate by geometry name", () => {
-            let _createGameObject1 = (geometryName, state) => {
-              open GameObjectAPI;
-              open LightMaterialAPI;
-              open GeometryAPI;
-              open MeshRendererAPI;
-              open Js.Typed_array;
-
-              let (state, geometry) = createGeometry(state);
-              let (state, gameObject) =
-                GameObjectAPI.createGameObject(state);
-              let state =
-                state
-                |> GameObjectAPI.addGameObjectGeometryComponent(
-                     gameObject,
-                     geometry,
-                   );
-              let vertices1 =
-                Float32Array.make([|
-                  (-0.04454309865832329),
-                  (-0.1662379950284958),
-                  1.0180000066757202,
-                  2.602089970253733e-18,
-                  (-6.938890181594472e-18),
-                  1.0180000066757202,
-                  (-0.08605089783668518),
-                  (-0.14904500544071198),
-                  1.0180000066757202,
-                |]);
-              let texCoords1 =
-                Float32Array.make([|
-                  0.7119140028953552,
-                  0.12024599313735962,
-                  0.7552189826965332,
-                  0.15945100784301758,
-                  0.7032840251922607,
-                  0.13282698392868042,
-                |]);
-              let normals1 =
-                Float32Array.make([|
-                  (-0.7455800175666809),
-                  0.47522100806236267,
-                  (-0.4671989977359772),
-                  (-0.7843430042266846),
-                  0.4080820083618164,
-                  (-0.4671989977359772),
-                  0.7455800175666809,
-                  (-0.47522100806236267),
-                  (-0.46720001101493835),
-                |]);
-              let indices1 = Uint16Array.make([|0, 2, 1|]);
-
-              let state = state |> setGeometryName(geometry, geometryName);
-
-              let state =
-                state
-                |> setGeometryVertices(geometry, vertices1)
-                |> setGeometryTexCoords(geometry, texCoords1)
-                |> setGeometryNormals(geometry, normals1)
-                |> setGeometryIndices16(geometry, indices1);
-
-              let (state, material) = createLightMaterial(state);
-
-              let (state, meshRenderer) = createMeshRenderer(state);
-
-              let state =
-                state
-                |> addGameObjectLightMaterialComponent(gameObject, material)
-                |> addGameObjectMeshRendererComponent(
-                     gameObject,
-                     meshRenderer,
-                   );
-
-              let transform =
-                GameObjectAPI.unsafeGetGameObjectTransformComponent(
-                  gameObject,
-                  state,
-                );
-
-              (
-                state,
-                gameObject,
-                transform,
-                (geometry, (vertices1, texCoords1, normals1, indices1)),
-                material,
-                meshRenderer,
-              );
-            };
-
+          describe("judge duplicate by geometry name", () =>
             testPromise("test", () => {
               let geometryName = "geometry1";
               let (
@@ -702,7 +533,10 @@ let _ =
                 meshRenderer2,
                 material2,
               ) =
-                _createGameObject1(geometryName, state);
+                GenerateAllABTool.TestDuplicateDataForSAB.TestDuplicateGeometryData.createGameObject1(
+                  geometryName,
+                  state,
+                );
 
               let state = state |> SceneAPI.addSceneChild(transform2);
 
@@ -751,8 +585,8 @@ let _ =
                       )
                    |> resolve;
                  });
-            });
-          })
+            })
+          )
         );
       });
     });

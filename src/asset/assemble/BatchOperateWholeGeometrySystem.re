@@ -156,6 +156,7 @@ let setGeometryData =
     );
 
   let componentType = getAccessorComponentType(wd, index);
+
   let state =
     switch (getBufferIndex16Data(componentType, index, dataViewArr, wd)) {
     | Some(data) =>

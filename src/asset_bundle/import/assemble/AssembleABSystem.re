@@ -29,7 +29,6 @@ module All = {
   };
 };
 
-/* TODO finish */
 module SAB = {
   open SABType;
 
@@ -451,19 +450,6 @@ module SAB = {
 
     let (sceneAssetBundleContent: SABType.sceneAssetBundleContent, binBuffer) =
       All.getContentData(sab);
-
-    /* let state = StateDataMainService.unsafeGetState(StateDataMain.stateData); */
-
-    /* Most.empty()
-       |> Most.tap(() => {
-            let state =
-              StateDataMainService.unsafeGetState(StateDataMain.stateData);
-
-            state
-            |> OperateSABAssetBundleMainService.markAssembled(sabRelativePath)
-            |> StateDataMainService.setState(StateDataMain.stateData)
-            |> ignore;
-          }); */
 
     let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
 

@@ -79,7 +79,7 @@ let _checkCircleDependency = dependencyRelation =>
 
    }; */
 
-let generate = (dependencyRelation, (sabDataArr, rabDataArr), state) => {
+let generate = (dependencyRelation, (sabDataArr, rabDataArr)) => {
   _checkCircleDependency(dependencyRelation);
 
   RemoveDependencyDataSystem.removeDuplicateBufferData(

@@ -75,7 +75,7 @@ let reAllocate = state => {
     ReallocateGeometryCPUMemoryService.reAllocateToTheSameBuffer(
       GeometryTool.getRecord(state),
     )
-    |. Some,
+    ->Some,
 };
 
 let reAllocateGeometryToNewBuffer = ({settingRecord} as state) => {
