@@ -80,7 +80,7 @@ let dynamicLoadAB = needRewriteAPI => {
   let wabPath = getAssetBundlePath() ++ wabRelativePath;
 
   let _ =
-    LoadABSystem.load(wabPath)
+    LoadABSystem.load(wabPath, LoaderManagerAPI._fetch)
     |> Most.flatMap(wab => {
          let manifest = ParseABSystem.WAB.parseManifest(wab);
 
@@ -110,6 +110,7 @@ let dynamicLoadAB = needRewriteAPI => {
                  isAssetBundleArrayBufferCached,
                  getAssetBundleArrayBufferCache,
                  cacheAssetBundleArrayBuffer,
+                 LoaderManagerAPI._fetch,
                ),
                /* state, */
              ),
@@ -117,12 +118,13 @@ let dynamicLoadAB = needRewriteAPI => {
              ImportABSystem.SAB.loadSABAndSetToState(
                abRelativePath,
                manifest,
-               wholeDependencyRelationMap,
+               /* wholeDependencyRelationMap, */
                (
                  getAssetBundlePath,
                  isAssetBundleArrayBufferCached,
                  getAssetBundleArrayBufferCache,
                  cacheAssetBundleArrayBuffer,
+                 LoaderManagerAPI._fetch,
                ),
                /* state, */
              ),

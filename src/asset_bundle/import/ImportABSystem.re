@@ -11,6 +11,7 @@ module All = {
           isAssetBundleArrayBufferCachedFunc,
           getAssetBundleArrayBufferCacheFunc,
           cacheAssetBundleArrayBufferFunc,
+          fetchFunc,
         ),
       ) => {
     let hashId =
@@ -18,19 +19,10 @@ module All = {
 
     isAssetBundleArrayBufferCachedFunc(abRelativePath, hashId) ?
       getAssetBundleArrayBufferCacheFunc(abRelativePath) |> Most.just :
-      LoadABSystem.load(getAssetBundlePathFunc() ++ abRelativePath)
+      LoadABSystem.load(getAssetBundlePathFunc() ++ abRelativePath, fetchFunc)
       |> Most.tap(ab =>
            cacheAssetBundleArrayBufferFunc(abRelativePath, ab, hashId)
          );
-    /* |> Most.flatMap(ab =>
-         AssembleABSystem.assemble(
-           abRelativePath,
-           ab,
-           wholeDependencyRelationMap,
-           /* StateDataMainService.setState(StateDataMain.stateData, state)
-              |> ignore; */
-         )
-       ); */
   };
 };
 
@@ -39,15 +31,19 @@ module SAB = {
       (
         sabRelativePath,
         wholeManifest,
-        wholeDependencyRelationMap,
+        /* wholeDependencyRelationMap, */
         (
           getAssetBundlePathFunc,
           isAssetBundleArrayBufferCachedFunc,
           getAssetBundleArrayBufferCacheFunc,
           cacheAssetBundleArrayBufferFunc,
+          fetchFunc,
         ),
       ) => {
     let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
+
+    let wholeDependencyRelationMap =
+      ParseABSystem.WAB.getWholeDependencyRelationMap(wholeManifest);
 
     OperateSABAssetBundleMainService.isLoaded(sabRelativePath, state) ?
       Most.empty() :
@@ -60,6 +56,7 @@ module SAB = {
           isAssetBundleArrayBufferCachedFunc,
           getAssetBundleArrayBufferCacheFunc,
           cacheAssetBundleArrayBufferFunc,
+          fetchFunc,
         ),
       )
       |> Most.tap(sab => {
@@ -90,6 +87,7 @@ module RAB = {
           isAssetBundleArrayBufferCachedFunc,
           getAssetBundleArrayBufferCacheFunc,
           cacheAssetBundleArrayBufferFunc,
+          fetchFunc,
         ),
       ) => {
     let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
@@ -105,6 +103,7 @@ module RAB = {
           isAssetBundleArrayBufferCachedFunc,
           getAssetBundleArrayBufferCacheFunc,
           cacheAssetBundleArrayBufferFunc,
+          fetchFunc,
         ),
       )
       |> Most.flatMap(rab =>
@@ -125,6 +124,7 @@ module RAB = {
           isAssetBundleArrayBufferCachedFunc,
           getAssetBundleArrayBufferCacheFunc,
           cacheAssetBundleArrayBufferFunc,
+          fetchFunc,
         ),
       ) => {
     let wholeDependencyRelationMap =
@@ -149,6 +149,7 @@ module RAB = {
              isAssetBundleArrayBufferCachedFunc,
              getAssetBundleArrayBufferCacheFunc,
              cacheAssetBundleArrayBufferFunc,
+             fetchFunc,
            ),
            /* state, */
          )

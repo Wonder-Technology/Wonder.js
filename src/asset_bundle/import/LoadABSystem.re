@@ -2,15 +2,9 @@ open Js.Promise;
 
 open WonderBsMost;
 
-/* module WAB = {
-   let load = (wabPath) => {
-
-   };
-
-   }; */
-
-let load = abPath =>
-  Fetch.fetch(abPath)
+let load = (abPath, fetchFunc) =>
+  /* Fetch.fetch(abPath) */
+  fetchFunc(. abPath)
   |> then_(response =>
        !Fetch.Response.ok(response) ?
          {
@@ -46,4 +40,4 @@ let getAssetBundleArrayBufferCache = abRelativePath =>
     ),
   );
 
-let cacheAssetBundleArrayBuffer = (abRelativePath, ab, hashId) => ab;
+let cacheAssetBundleArrayBuffer = (abRelativePath, ab, hashId) => ();
