@@ -37,11 +37,11 @@ module RAB = {
         {images, bufferViews}: RABType.resourceAssetBundleContent,
         buffer,
       ) => {
-    let (imageArr, bufferViewArr, arrayBufferArr, byteOffset) =
+    let (imageArr, bufferViewArr, uint8ArrayArr, byteOffset) =
       images
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (.
-             (imageArr, bufferViewArr, arrayBufferArr, byteOffset),
+             (imageArr, bufferViewArr, uint8ArrayArr, byteOffset),
              ({name, bufferView}: RABType.image) as imageData,
            ) =>
              All.hasDependencyData(
@@ -60,7 +60,7 @@ module RAB = {
                       }: RABType.image,
                     ),
                  bufferViewArr,
-                 arrayBufferArr,
+                 uint8ArrayArr,
                  byteOffset,
                ) :
                {
@@ -85,7 +85,7 @@ module RAB = {
                    |> ArrayService.push(
                         {byteOffset, byteLength}: RABType.bufferView,
                       ),
-                   arrayBufferArr |> ArrayService.push(arrayBuffer),
+                   uint8ArrayArr |> ArrayService.push(arrayBuffer),
                    byteOffset + alignedByteLength,
                  );
                },
@@ -96,7 +96,7 @@ module RAB = {
       /* imageIndexMap, */
       imageArr,
       bufferViewArr,
-      arrayBufferArr,
+      uint8ArrayArr,
       RABUtils.computeBufferViewDataByteLength(bufferViewArr),
     );
   };
@@ -115,7 +115,7 @@ module RAB = {
           bufferView,
           bufferViewArr,
           byteOffset,
-          arrayBufferArr,
+          uint8ArrayArr,
         ),
       ) =>
     ABBufferViewUtils.isNoneBufferViewIndex(bufferView)
@@ -129,7 +129,7 @@ module RAB = {
         ABBufferViewUtils.buildNoneBufferViewIndex(),
         bufferViewArr,
         byteOffset,
-        arrayBufferArr,
+        uint8ArrayArr,
       ) :
       {
         let arrayBuffer =
@@ -139,7 +139,9 @@ module RAB = {
             bufferViews,
           );
 
-        let byteLength = arrayBuffer |> ArrayBuffer.byteLength;
+        let uint8Array = Uint8Array.fromBuffer(arrayBuffer);
+
+        let byteLength = uint8Array |> Uint8Array.byteLength;
 
         let alignedByteLength = BufferUtils.alignedLength(byteLength);
 
@@ -148,7 +150,7 @@ module RAB = {
           bufferViewArr
           |> ArrayService.push({byteOffset, byteLength}: RABType.bufferView),
           byteOffset + alignedByteLength,
-          arrayBufferArr |> ArrayService.push(arrayBuffer),
+          uint8ArrayArr |> ArrayService.push(uint8Array),
         );
       };
 
@@ -161,11 +163,11 @@ module RAB = {
       ) => {
     let imageBufferViewIndex = imageBufferViewArr |> Js.Array.length;
 
-    let (geometryArr, arrayBufferArr, bufferViewArr, byteOffset) =
+    let (geometryArr, uint8ArrayArr, bufferViewArr, byteOffset) =
       geometrys
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (.
-             (geometryArr, arrayBufferArr, bufferViewArr, byteOffset),
+             (geometryArr, uint8ArrayArr, bufferViewArr, byteOffset),
              (
                {
                  name,
@@ -176,7 +178,7 @@ module RAB = {
                }: RABType.geometry
              ) as geometry,
            ) => {
-             let (vertexBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
+             let (vertexBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
                _buildGeometryBufferData(
                  (
                    name,
@@ -190,11 +192,11 @@ module RAB = {
                    vertexBufferView,
                    bufferViewArr,
                    byteOffset,
-                   arrayBufferArr,
+                   uint8ArrayArr,
                  ),
                );
 
-             let (normalBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
+             let (normalBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
                _buildGeometryBufferData(
                  (
                    name,
@@ -208,7 +210,7 @@ module RAB = {
                    normalBufferView,
                    bufferViewArr,
                    byteOffset,
-                   arrayBufferArr,
+                   uint8ArrayArr,
                  ),
                );
 
@@ -216,7 +218,7 @@ module RAB = {
                texCoordBufferView,
                bufferViewArr,
                byteOffset,
-               arrayBufferArr,
+               uint8ArrayArr,
              ) =
                _buildGeometryBufferData(
                  (
@@ -231,11 +233,11 @@ module RAB = {
                    texCoordBufferView,
                    bufferViewArr,
                    byteOffset,
-                   arrayBufferArr,
+                   uint8ArrayArr,
                  ),
                );
 
-             let (indexBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
+             let (indexBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
                _buildGeometryBufferData(
                  (
                    name,
@@ -249,7 +251,7 @@ module RAB = {
                    indexBufferView,
                    bufferViewArr,
                    byteOffset,
-                   arrayBufferArr,
+                   uint8ArrayArr,
                  ),
                );
 
@@ -264,7 +266,7 @@ module RAB = {
                       indexBufferView,
                     }: RABType.geometry,
                   ),
-               arrayBufferArr,
+               uint8ArrayArr,
                bufferViewArr,
                byteOffset,
              );
@@ -274,7 +276,7 @@ module RAB = {
 
     (
       geometryArr,
-      arrayBufferArr,
+      uint8ArrayArr,
       bufferViewArr,
       bufferViewArr |> Js.Array.length === 0 ?
         imageAlignedByteLength :
@@ -313,7 +315,7 @@ module RAB = {
 
     let (
       geometryArr,
-      geometryArrayBufferArr,
+      geometryUint8ArrayArr,
       geometryBufferViewArr,
       bufferTotalAlignedByteLength,
     ) =
@@ -338,7 +340,7 @@ module RAB = {
         (imageBufferViewArr, geometryBufferViewArr),
         imageArrayBufferArr
         |> Js.Array.map(arrayBuffer => Uint8Array.fromBuffer(arrayBuffer)),
-        geometryArrayBufferArr,
+        geometryUint8ArrayArr,
       ),
       bufferTotalAlignedByteLength,
       jsonUint8Array,
@@ -368,11 +370,11 @@ module SAB = {
     switch (images) {
     | None => ([||], [||], [||], 0)
     | Some(images) =>
-      let (imageArr, bufferViewArr, arrayBufferArr, byteOffset) =
+      let (imageArr, bufferViewArr, uint8ArrayArr, byteOffset) =
         images
         |> WonderCommonlib.ArrayService.reduceOneParam(
              (.
-               (imageArr, bufferViewArr, arrayBufferArr, byteOffset),
+               (imageArr, bufferViewArr, uint8ArrayArr, byteOffset),
                ({name, bufferView}: WDType.image) as imageData,
              ) =>
                All.hasDependencyData(
@@ -391,7 +393,7 @@ module SAB = {
                         }: WDType.image,
                       ),
                    bufferViewArr,
-                   arrayBufferArr,
+                   uint8ArrayArr,
                    byteOffset,
                  ) :
                  {
@@ -424,7 +426,7 @@ module SAB = {
                      |> ArrayService.push(
                           {buffer, byteOffset, byteLength, byteStride}: WDType.bufferView,
                         ),
-                     arrayBufferArr |> ArrayService.push(arrayBuffer),
+                     uint8ArrayArr |> ArrayService.push(arrayBuffer),
                      byteOffset + alignedByteLength,
                    );
                  },
@@ -434,7 +436,7 @@ module SAB = {
       (
         imageArr,
         bufferViewArr,
-        arrayBufferArr,
+        uint8ArrayArr,
         SABUtils.computeBufferViewDataByteLength(bufferViewArr),
       );
     };
@@ -462,7 +464,7 @@ module SAB = {
           accessorArr,
           bufferViewArr,
           byteOffset,
-          arrayBufferArr,
+          uint8ArrayArr,
         ),
       ) =>
     isNoneAccessorIndexFunc(accessor)
@@ -477,7 +479,7 @@ module SAB = {
         accessorArr,
         bufferViewArr,
         byteOffset,
-        arrayBufferArr,
+        uint8ArrayArr,
       ) :
       {
         let accessor = getAccessorIndexFunc(accessor);
@@ -489,9 +491,9 @@ module SAB = {
             sceneAssetBundleContent,
           );
 
-        let arrayBuffer = points |> Float32Array.buffer;
+        let uint8Array = points |> TypeArrayUtils.convertFloat32ToUint8;
 
-        let byteLength = arrayBuffer |> ArrayBuffer.byteLength;
+        let byteLength = uint8Array |> Uint8Array.byteLength;
 
         let alignedByteLength = BufferUtils.alignedLength(byteLength);
 
@@ -520,7 +522,7 @@ module SAB = {
                {buffer, byteOffset, byteLength, byteStride}: WDType.bufferView,
              ),
           byteOffset + alignedByteLength,
-          arrayBufferArr |> ArrayService.push(arrayBuffer),
+          uint8ArrayArr |> ArrayService.push(uint8Array),
         );
       };
 
@@ -535,7 +537,7 @@ module SAB = {
           accessorArr,
           bufferViewArr,
           byteOffset,
-          arrayBufferArr,
+          uint8ArrayArr,
         ),
       ) =>
     ABBufferViewUtils.isNoneAccessorIndex(accessor)
@@ -550,7 +552,7 @@ module SAB = {
         accessorArr,
         bufferViewArr,
         byteOffset,
-        arrayBufferArr,
+        uint8ArrayArr,
       ) :
       {
         let componentType =
@@ -559,7 +561,7 @@ module SAB = {
             accessor,
           );
 
-        let (arrayBuffer, pointsCount, pointType) =
+        let (uint8Array, pointsCount, pointType) =
           switch (
             BatchOperateWholeGeometrySystem.getBufferIndex16Data(
               componentType,
@@ -569,7 +571,7 @@ module SAB = {
             )
           ) {
           | Some(data) => (
-              data |> Uint16Array.buffer,
+              data |> TypeArrayUtils.convertUint16ToUint8,
               data |> Uint16Array.length,
               GenerateSceneGraphType.Index,
             )
@@ -583,7 +585,7 @@ module SAB = {
               )
             ) {
             | Some(data) => (
-                data |> Uint32Array.buffer,
+                data |> TypeArrayUtils.convertUint32ToUint8,
                 data |> Uint32Array.length,
                 GenerateSceneGraphType.Index32,
               )
@@ -600,7 +602,7 @@ module SAB = {
             }
           };
 
-        let byteLength = arrayBuffer |> ArrayBuffer.byteLength;
+        let byteLength = uint8Array |> Uint8Array.byteLength;
 
         let alignedByteLength = BufferUtils.alignedLength(byteLength);
 
@@ -629,7 +631,7 @@ module SAB = {
                {buffer, byteOffset, byteLength, byteStride}: WDType.bufferView,
              ),
           byteOffset + alignedByteLength,
-          arrayBufferArr |> ArrayService.push(arrayBuffer),
+          uint8ArrayArr |> ArrayService.push(uint8Array),
         );
       };
 
@@ -644,13 +646,13 @@ module SAB = {
 
     let dataViewArr = [|DataViewCommon.create(buffer)|];
 
-    let (geometryArr, arrayBufferArr, accessorArr, bufferViewArr, byteOffset) =
+    let (geometryArr, uint8ArrayArr, accessorArr, bufferViewArr, byteOffset) =
       geometrys
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (.
              (
                geometryArr,
-               arrayBufferArr,
+               uint8ArrayArr,
                accessorArr,
                bufferViewArr,
                byteOffset,
@@ -660,7 +662,7 @@ module SAB = {
              geometryData |> OptionService.isJsonSerializedValueNone ?
                (
                  geometryArr |> ArrayService.push(None),
-                 arrayBufferArr,
+                 uint8ArrayArr,
                  accessorArr,
                  bufferViewArr,
                  byteOffset,
@@ -676,7 +678,7 @@ module SAB = {
                    accessorArr,
                    bufferViewArr,
                    byteOffset,
-                   arrayBufferArr,
+                   uint8ArrayArr,
                  ) =
                    _buildGeometryAttributeBufferData(
                      (
@@ -700,7 +702,7 @@ module SAB = {
                        accessorArr,
                        bufferViewArr,
                        byteOffset,
-                       arrayBufferArr,
+                       uint8ArrayArr,
                      ),
                    );
 
@@ -709,7 +711,7 @@ module SAB = {
                    accessorArr,
                    bufferViewArr,
                    byteOffset,
-                   arrayBufferArr,
+                   uint8ArrayArr,
                  ) =
                    _buildGeometryAttributeBufferData(
                      (
@@ -734,7 +736,7 @@ module SAB = {
                        accessorArr,
                        bufferViewArr,
                        byteOffset,
-                       arrayBufferArr,
+                       uint8ArrayArr,
                      ),
                    );
 
@@ -743,7 +745,7 @@ module SAB = {
                    accessorArr,
                    bufferViewArr,
                    byteOffset,
-                   arrayBufferArr,
+                   uint8ArrayArr,
                  ) =
                    _buildGeometryAttributeBufferData(
                      (
@@ -768,7 +770,7 @@ module SAB = {
                        accessorArr,
                        bufferViewArr,
                        byteOffset,
-                       arrayBufferArr,
+                       uint8ArrayArr,
                      ),
                    );
 
@@ -777,7 +779,7 @@ module SAB = {
                    accessorArr,
                    bufferViewArr,
                    byteOffset,
-                   arrayBufferArr,
+                   uint8ArrayArr,
                  ) =
                    _buildGeometryIndexBufferData(
                      (
@@ -794,7 +796,7 @@ module SAB = {
                        accessorArr,
                        bufferViewArr,
                        byteOffset,
-                       arrayBufferArr,
+                       uint8ArrayArr,
                      ),
                    );
 
@@ -810,7 +812,7 @@ module SAB = {
                         }
                         ->Some,
                       ),
-                   arrayBufferArr,
+                   uint8ArrayArr,
                    accessorArr,
                    bufferViewArr,
                    byteOffset,
@@ -821,7 +823,7 @@ module SAB = {
 
     (
       geometryArr,
-      arrayBufferArr,
+      uint8ArrayArr,
       accessorArr,
       bufferViewArr,
       bufferViewArr |> Js.Array.length === 0 ?
@@ -856,7 +858,7 @@ module SAB = {
 
     let (
       geometryArr,
-      geometryArrayBufferArr,
+      geometryUint8ArrayArr,
       geometryAccessorArr,
       geometryBufferViewArr,
       bufferTotalAlignedByteLength,
@@ -885,7 +887,7 @@ module SAB = {
         (imageBufferViewArr, geometryBufferViewArr),
         imageArrayBufferArr
         |> Js.Array.map(arrayBuffer => Uint8Array.fromBuffer(arrayBuffer)),
-        geometryArrayBufferArr,
+        geometryUint8ArrayArr,
       ),
       bufferTotalAlignedByteLength,
       jsonUint8Array,

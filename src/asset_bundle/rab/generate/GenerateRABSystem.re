@@ -56,7 +56,7 @@ open Js.Typed_array;
          (
            (imageBufferViewArr, geometryBufferViewArr),
            imageUint8ArrayArr,
-           geometryArrayBufferArr,
+           geometryUint8ArrayArr,
          ),
          arrayBuffer,
        ) => {
@@ -81,7 +81,7 @@ open Js.Typed_array;
        |> WonderCommonlib.ArrayService.reduceOneParami(
             (. uint8Array, {byteOffset, byteLength}, index) => {
               let geometryArrayBuffer =
-                Array.unsafe_get(geometryArrayBufferArr, index);
+                Array.unsafe_get(geometryUint8ArrayArr, index);
 
               BufferUtils.mergeArrayBuffer(
                 uint8Array,
@@ -113,7 +113,7 @@ let generateRAB =
       (
         (imageBufferViewArr, geometryBufferViewArr),
         imageUint8ArrayArr,
-        geometryArrayBufferArr,
+        geometryUint8ArrayArr,
       ),
       bufferTotalAlignedByteLength,
       jsonUint8Array,
@@ -131,7 +131,7 @@ let generateRAB =
            ),
       ),
       imageUint8ArrayArr,
-      geometryArrayBufferArr,
+      geometryUint8ArrayArr,
     ),
     bufferTotalAlignedByteLength,
     jsonUint8Array,
@@ -150,7 +150,7 @@ let generateSingleRAB = (resourceData, state) => {
       scriptAttributeArr,
     ),
     (imageBufferViewArr, geometryBufferViewArr),
-    (imageUint8ArrayArr, geometryArrayBufferArr),
+    (imageUint8ArrayArr, geometryUint8ArrayArr),
     bufferTotalAlignedByteLength,
   ) =
     BuildRABJsonDataSystem.buildJsonData(resourceData, state);
@@ -184,7 +184,7 @@ let generateSingleRAB = (resourceData, state) => {
       (
         (imageBufferViewArr, geometryBufferViewArr),
         imageUint8ArrayArr,
-        geometryArrayBufferArr,
+        geometryUint8ArrayArr,
       ),
       bufferTotalAlignedByteLength,
       jsonUint8Array,

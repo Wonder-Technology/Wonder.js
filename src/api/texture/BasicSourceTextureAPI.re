@@ -418,7 +418,7 @@ let setBasicSourceTextureName =
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  NameBasicSourceTextureMainService.setName(. texture, name, state);
+  NameBasicSourceTextureMainService.setName(texture, name, state);
 
 let getAllTextures = state => {
   let {index, disposedIndexArray} =

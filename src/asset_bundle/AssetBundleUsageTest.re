@@ -100,30 +100,32 @@ let dynamicLoadAB = needRewriteAPI => {
          |> StateDataMainService.setState(StateDataMain.stateData)
          |> ignore;
 
-         MostUtils.concatArray([|
-           ImportABSystem.RAB.loadAndAssembleAllDependencyRAB(
-             abRelativePath,
-             manifest,
-             (
-               getAssetBundlePath,
-               isAssetBundleArrayBufferCached,
-               getAssetBundleArrayBufferCache,
-               cacheAssetBundleArrayBuffer,
+         MostUtils.concatExecStreamArr([|
+           () =>
+             ImportABSystem.RAB.loadAndAssembleAllDependencyRAB(
+               abRelativePath,
+               manifest,
+               (
+                 getAssetBundlePath,
+                 isAssetBundleArrayBufferCached,
+                 getAssetBundleArrayBufferCache,
+                 cacheAssetBundleArrayBuffer,
+               ),
+               /* state, */
              ),
-             /* state, */
-           ),
-           ImportABSystem.SAB.loadSABAndSetToState(
-             abRelativePath,
-             manifest,
-             wholeDependencyRelationMap,
-             (
-               getAssetBundlePath,
-               isAssetBundleArrayBufferCached,
-               getAssetBundleArrayBufferCache,
-               cacheAssetBundleArrayBuffer,
+           () =>
+             ImportABSystem.SAB.loadSABAndSetToState(
+               abRelativePath,
+               manifest,
+               wholeDependencyRelationMap,
+               (
+                 getAssetBundlePath,
+                 isAssetBundleArrayBufferCached,
+                 getAssetBundleArrayBufferCache,
+                 cacheAssetBundleArrayBuffer,
+               ),
+               /* state, */
              ),
-             /* state, */
-           ),
          |]);
        })
     |> Most.subscribe({

@@ -501,7 +501,7 @@ let _batchSetTextureName = (basicSourceTextureArr, basicSourceTextures, state) =
   basicSourceTextureArr
   |> ArrayService.reduceOneParamValidi(
        (. state, basicSourceTexture, index) =>
-         NameBasicSourceTextureMainService.setName(.
+         NameBasicSourceTextureMainService.setName(
            basicSourceTexture,
            Array.unsafe_get(basicSourceTextures, index).name,
            state,

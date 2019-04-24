@@ -311,15 +311,15 @@ let _buildMaterialData =
 let _buildGeometryBufferData =
     (
       geometryComponent,
-      (bufferViewArr, byteOffset, arrayBufferArr),
-      (hasGeometryPointsFunc, getPointsArrayBufferFunc),
+      (bufferViewArr, byteOffset, uint8ArrayArr),
+      (hasGeometryPointsFunc, getPointsUint8ArrayFunc),
       state,
     ) =>
   hasGeometryPointsFunc(geometryComponent, state) ?
     {
-      let arrayBuffer = getPointsArrayBufferFunc(geometryComponent, state);
+      let uint8Array = getPointsUint8ArrayFunc(geometryComponent, state);
 
-      let byteLength = arrayBuffer |> ArrayBuffer.byteLength;
+      let byteLength = uint8Array |> Uint8Array.byteLength;
 
       let alignedByteLength = BufferUtils.alignedLength(byteLength);
 
@@ -327,14 +327,14 @@ let _buildGeometryBufferData =
         bufferViewArr |> Js.Array.length,
         bufferViewArr |> ArrayService.push({byteOffset, byteLength}),
         byteOffset + alignedByteLength,
-        arrayBufferArr |> ArrayService.push(arrayBuffer),
+        uint8ArrayArr |> ArrayService.push(uint8Array),
       );
     } :
     (
       ABBufferViewUtils.buildNoneBufferViewIndex(),
       bufferViewArr,
       byteOffset,
-      arrayBufferArr,
+      uint8ArrayArr,
     );
 
 let _buildGeometryData =
@@ -342,17 +342,17 @@ let _buildGeometryData =
     (imageAlignedByteLength, imageBufferViewArr, {geometrys}, state) => {
   let imageBufferViewIndex = imageBufferViewArr |> Js.Array.length;
 
-  let (state, geometryArr, arrayBufferArr, bufferViewArr, byteOffset) =
+  let (state, geometryArr, uint8ArrayArr, bufferViewArr, byteOffset) =
     geometrys
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (.
-           (state, geometryArr, arrayBufferArr, bufferViewArr, byteOffset),
+           (state, geometryArr, uint8ArrayArr, bufferViewArr, byteOffset),
            geometryComponent,
          ) => {
-           let (vertexBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
+           let (vertexBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
              _buildGeometryBufferData(
                geometryComponent,
-               (bufferViewArr, byteOffset, arrayBufferArr),
+               (bufferViewArr, byteOffset, uint8ArrayArr),
                (
                  VerticesGeometryMainService.hasVertices,
                  (geometryComponent, state) =>
@@ -360,15 +360,15 @@ let _buildGeometryData =
                      geometryComponent,
                      state,
                    )
-                   |> Float32Array.buffer,
+                   |> TypeArrayUtils.convertFloat32ToUint8,
                ),
                state,
              );
 
-           let (normalBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
+           let (normalBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
              _buildGeometryBufferData(
                geometryComponent,
-               (bufferViewArr, byteOffset, arrayBufferArr),
+               (bufferViewArr, byteOffset, uint8ArrayArr),
                (
                  NormalsGeometryMainService.hasNormals,
                  (geometryComponent, state) =>
@@ -376,15 +376,15 @@ let _buildGeometryData =
                      geometryComponent,
                      state,
                    )
-                   |> Float32Array.buffer,
+                   |> TypeArrayUtils.convertFloat32ToUint8,
                ),
                state,
              );
 
-           let (texCoordBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
+           let (texCoordBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
              _buildGeometryBufferData(
                geometryComponent,
-               (bufferViewArr, byteOffset, arrayBufferArr),
+               (bufferViewArr, byteOffset, uint8ArrayArr),
                (
                  TexCoordsGeometryMainService.hasTexCoords,
                  (geometryComponent, state) =>
@@ -392,15 +392,15 @@ let _buildGeometryData =
                      geometryComponent,
                      state,
                    )
-                   |> Float32Array.buffer,
+                   |> TypeArrayUtils.convertFloat32ToUint8,
                ),
                state,
              );
 
-           let (indexBufferView, bufferViewArr, byteOffset, arrayBufferArr) =
+           let (indexBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
              _buildGeometryBufferData(
                geometryComponent,
-               (bufferViewArr, byteOffset, arrayBufferArr),
+               (bufferViewArr, byteOffset, uint8ArrayArr),
                (
                  IndicesGeometryMainService.hasIndices,
                  (geometryComponent, state) =>
@@ -412,12 +412,12 @@ let _buildGeometryData =
                        geometryComponent,
                        state,
                      )
-                     |> Uint16Array.buffer :
+                     |> TypeArrayUtils.convertUint16ToUint8 :
                      IndicesGeometryMainService.getIndices32(.
                        geometryComponent,
                        state,
                      )
-                     |> Uint32Array.buffer,
+                     |> TypeArrayUtils.convertUint32ToUint8,
                ),
                state,
              );
@@ -443,7 +443,7 @@ let _buildGeometryData =
                     imageBufferViewIndex + texCoordBufferView,
                   indexBufferView: imageBufferViewIndex + indexBufferView,
                 }),
-             arrayBufferArr,
+             uint8ArrayArr,
              bufferViewArr,
              byteOffset,
            );
@@ -454,7 +454,7 @@ let _buildGeometryData =
   (
     state,
     geometryArr,
-    arrayBufferArr,
+    uint8ArrayArr,
     bufferViewArr,
     bufferViewArr |> Js.Array.length === 0 ?
       imageAlignedByteLength :

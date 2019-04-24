@@ -106,6 +106,8 @@ let getBufferIndex32Data = (componentType, accessorIndex, dataViewArr, wd) =>
   | _ => None
   };
 
+let _makeEmptyAttributePoints = () => Float32Array.make([||]);
+
 let setGeometryData =
     (
       geometry,
@@ -120,30 +122,38 @@ let setGeometryData =
       getBufferAttributeData(position, dataViewArr, wd),
       state,
     );
-  let state =
+
+  let normals =
     normal |> OptionService.isJsonSerializedValueNone ?
-      state :
-      NormalsGeometryMainService.setNormalsByTypeArray(
-        geometry,
-        getBufferAttributeData(
-          normal |> OptionService.unsafeGetJsonSerializedValue,
-          dataViewArr,
-          wd,
-        ),
-        state,
+      _makeEmptyAttributePoints() :
+      getBufferAttributeData(
+        normal |> OptionService.unsafeGetJsonSerializedValue,
+        dataViewArr,
+        wd,
       );
+
   let state =
-    texCoord |> OptionService.isJsonSerializedValueNone ?
-      state :
-      TexCoordsGeometryMainService.setTexCoordsByTypeArray(
-        geometry,
-        getBufferAttributeData(
-          texCoord |> OptionService.unsafeGetJsonSerializedValue,
-          dataViewArr,
-          wd,
-        ),
-        state,
+    NormalsGeometryMainService.setNormalsByTypeArray(
+      geometry,
+      normals,
+      state,
+    );
+
+  let texCoords =
+    normal |> OptionService.isJsonSerializedValueNone ?
+      _makeEmptyAttributePoints() :
+      getBufferAttributeData(
+        normal |> OptionService.unsafeGetJsonSerializedValue,
+        dataViewArr,
+        wd,
       );
+
+  let state =
+    TexCoordsGeometryMainService.setTexCoordsByTypeArray(
+      geometry,
+      texCoords,
+      state,
+    );
 
   let componentType = getAccessorComponentType(wd, index);
   let state =

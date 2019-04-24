@@ -140,4 +140,6 @@ let findAllDependencyRAbRelativePath = (abRelativePath, dependencyRelation) =>
     abRelativePath,
     dependencyRelation,
     WonderCommonlib.ArrayService.createEmpty(),
-  );
+  )
+  |> Js.Array.reverseInPlace
+  |> ArrayService.removeDuplicateItems((. item) => item);

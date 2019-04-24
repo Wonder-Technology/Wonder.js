@@ -60,44 +60,58 @@ module SAB = {
            ) =>
              streamArr
              |> ArrayService.push(
-                  _isImageBufferDataDependencyAndRemoved(imageData) ?
-                    OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
-                      allDependencyRAbRelativePath,
-                      name,
-                      state,
-                      OperateRABAssetBundleMainService.findImageByName,
-                    )
-                    |> Most.just :
-                    {
-                      let arrayBuffer =
-                        ABArrayBufferUtils.SAB.getArrayBufferFromBufferViews(
-                          binBuffer,
-                          bufferView,
-                          bufferViews,
-                        );
+                  (
+                    _isImageBufferDataDependencyAndRemoved(imageData) ?
+                      OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
+                        allDependencyRAbRelativePath,
+                        name,
+                        state,
+                        OperateRABAssetBundleMainService.findImageByName,
+                      )
+                      |> Most.just :
+                      {
+                        let arrayBuffer =
+                          ABArrayBufferUtils.SAB.getArrayBufferFromBufferViews(
+                            binBuffer,
+                            bufferView,
+                            bufferViews,
+                          );
 
-                      /* imageUint8ArrayDataMap
-                         |> WonderCommonlib.MutableSparseMapService.set(
-                              imageIndex,
-                              (mimeType, Uint8Array.fromBuffer(arrayBuffer)),
-                            )
-                         |> ignore; */
+                        /* imageUint8ArrayDataMap
+                           |> WonderCommonlib.MutableSparseMapService.set(
+                                imageIndex,
+                                (mimeType, Uint8Array.fromBuffer(arrayBuffer)),
+                              )
+                           |> ignore; */
 
-                      AssembleUtils.buildLoadImageStream(
-                        arrayBuffer,
-                        mimeType,
-                        {j|load image error. imageName: $name|j},
-                      );
-                    }
-                    |> WonderBsMost.Most.tap(image => {
-                         ImageUtils.setImageName(image, name);
-
-                         Array.unsafe_set(
-                           blobObjectUrlImageArr,
-                           imageIndex,
-                           image,
-                         );
-                       }),
+                        AssembleUtils.buildLoadImageStream(
+                          arrayBuffer,
+                          mimeType,
+                          {j|load image error. imageName: $name|j},
+                        )
+                        |> WonderBsMost.Most.tap(image =>
+                             ImageUtils.setImageName(
+                               image,
+                               name,
+                               /* Array.unsafe_set(
+                                    blobObjectUrlImageArr,
+                                    imageIndex,
+                                    image,
+                                  ); */
+                             )
+                           )
+                        |> Most.map(image =>
+                             ImageType.imageToDomExtendImageElement(image)
+                           );
+                      }
+                  )
+                  |> WonderBsMost.Most.tap(image =>
+                       Array.unsafe_set(
+                         blobObjectUrlImageArr,
+                         imageIndex,
+                         image,
+                       )
+                     ),
                 ),
            [||],
          )
@@ -521,7 +535,10 @@ module SAB = {
              sceneAssetBundleContent,
              /* imageDataTuple, */
              blobObjectUrlImageArr,
-             AssembleWholeWDBUtils.buildBufferArray(sceneAssetBundleContent.buffers, binBuffer),
+             AssembleWholeWDBUtils.buildBufferArray(
+               sceneAssetBundleContent.buffers,
+               binBuffer,
+             ),
              /* _buildBufferArray(buffers, binBuffer), */
              /* (isBindEvent, isActiveCamera), */
              (
@@ -562,13 +579,6 @@ module SAB = {
 module RAB = {
   let isRAB = abRelativePath => abRelativePath |> Js.String.includes(".rab");
 
-  let _buildLoadImageStream = (arrayBuffer, mimeType, errorMsg) => {
-    let blob = Blob.newBlobFromArrayBuffer(arrayBuffer, mimeType);
-
-    LoadImageSystem.loadBlobImage(blob |> Blob.createObjectURL, errorMsg)
-    |> Most.tap(image => Blob.revokeObjectURL(blob));
-  };
-
   let _isImageBufferDataDependencyAndRemoved =
       ({name, bufferView, mimeType}: RABType.image) =>
     ABBufferViewUtils.isNoneBufferViewIndex(bufferView);
@@ -589,42 +599,36 @@ module RAB = {
          ) =>
            streamArr
            |> ArrayService.push(
-                _isImageBufferDataDependencyAndRemoved(imageData) ?
-                  OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
-                    allDependencyRAbRelativePath,
-                    name,
-                    state,
-                    OperateRABAssetBundleMainService.findImageByName,
-                  )
-                  |> Most.just :
-                  {
-                    let arrayBuffer =
-                      ABArrayBufferUtils.RAB.getArrayBufferFromBufferViews(
-                        buffer,
-                        bufferView,
-                        bufferViews,
-                      );
+                (
+                  _isImageBufferDataDependencyAndRemoved(imageData) ?
+                    OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
+                      allDependencyRAbRelativePath,
+                      name,
+                      state,
+                      OperateRABAssetBundleMainService.findImageByName,
+                    )
+                    |> Most.just :
+                    {
+                      let arrayBuffer =
+                        ABArrayBufferUtils.RAB.getArrayBufferFromBufferViews(
+                          buffer,
+                          bufferView,
+                          bufferViews,
+                        );
 
-                    _buildLoadImageStream(
-                      arrayBuffer,
-                      mimeType,
-                      {j|load image error. imageName: $name|j},
-                    );
-                  }
-                  |> Most.map(image => {
-                       ImageUtils.setImageName(image, name);
+                      AssembleUtils.buildLoadImageStream(
+                        arrayBuffer,
+                        mimeType,
+                        {j|load image error. imageName: $name|j},
+                      )
+                      |> Most.map(image => {
+                           ImageUtils.setImageName(image, name);
 
-                       image;
-                     })
-                  |> Most.map(image =>
-                       (
-                         image |> ImageType.imageToDomExtendImageElement,
-                         /* Uint8Array.fromBuffer(arrayBuffer), */
-                         imageIndex,
-                         name,
-                         /* mimeType, */
-                       )
-                     ),
+                           ImageType.imageToDomExtendImageElement(image);
+                         });
+                    }
+                )
+                |> Most.map(image => (image, imageIndex, name)),
               ),
          [||],
        )
@@ -686,7 +690,7 @@ module RAB = {
                 )
              |> OperateBasicSourceTextureMainService.setType(texture, type_)
              |> OperateBasicSourceTextureMainService.setFlipY(texture, flipY)
-             |> NameBasicMaterialMainService.setName(texture, name)
+             |> NameBasicSourceTextureMainService.setName(texture, name)
              |> OperateBasicSourceTextureMainService.setSource(
                   texture,
                   imageMapByIndex
@@ -717,8 +721,6 @@ module RAB = {
     basicMaterials
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. (basicMaterialMap, state), {name, color}: RABType.basicMaterial) => {
-           /* materialIndex, */
-
            let (state, material) =
              CreateBasicMaterialMainService.create(. state);
 
@@ -809,8 +811,8 @@ module RAB = {
         }: RABType.geometry,
       ) =>
     ABBufferViewUtils.isNoneBufferViewIndex(vertexBufferView)
-    && OptionService.isJsonSerializedValueNone(normalBufferView)
-    && OptionService.isJsonSerializedValueNone(texCoordBufferView)
+    && ABBufferViewUtils.isNoneBufferViewIndex(normalBufferView)
+    && ABBufferViewUtils.isNoneBufferViewIndex(texCoordBufferView)
     && ABBufferViewUtils.isNoneBufferViewIndex(indexBufferView);
 
   let _setGeometryDataFromBuffer =
@@ -819,23 +821,22 @@ module RAB = {
         (buffer, bufferView, bufferViews),
         (convertArrayBufferToPointsFunc, setPointsFunc),
         state,
-      ) =>
-    ABBufferViewUtils.isNoneBufferViewIndex(bufferView) ?
-      state :
-      {
-        let arrayBuffer =
-          ABArrayBufferUtils.RAB.getArrayBufferFromBufferViews(
-            buffer,
-            bufferView,
-            bufferViews,
-          );
-
-        setPointsFunc(
-          geometry,
-          convertArrayBufferToPointsFunc(arrayBuffer),
-          state,
+      ) => {
+    let arrayBuffer =
+      ABBufferViewUtils.isNoneBufferViewIndex(bufferView) ?
+        ArrayBuffer.make(0) :
+        ABArrayBufferUtils.RAB.getArrayBufferFromBufferViews(
+          buffer,
+          bufferView,
+          bufferViews,
         );
-      };
+
+    setPointsFunc(
+      geometry,
+      convertArrayBufferToPointsFunc(arrayBuffer),
+      state,
+    );
+  };
 
   let _buildGeometryData =
       (
@@ -1101,33 +1102,3 @@ module RAB = {
        });
   };
 };
-
-/* let assemble = (abRelativePath, ab, wholeDependencyRelationMap) =>
-   RAB.isRAB(abRelativePath) ?
-     RAB.assemble(abRelativePath, ab, wholeDependencyRelationMap) :
-     SAB.isSAB(abRelativePath) ?
-       SAB.assemble(abRelativePath, ab, wholeDependencyRelationMap) :
-       WonderLog.Log.fatal(
-         WonderLog.Log.buildFatalMessage(
-           ~title="assemble",
-           ~description={j|unknown abRelativePath: $abRelativePath|j},
-           ~reason="",
-           ~solution={j||j},
-           ~params={j||j},
-         ),
-       ); */
-
-/* let isAssembled = (abRelativePath, state) =>
-   RAB.isRAB(abRelativePath) ?
-     OperateRABAssetBundleMainService.isAssembled(abRelativePath, state) :
-     SAB.isSAB(abRelativePath) ?
-       OperateSABAssetBundleMainService.isAssembled(abRelativePath, state) :
-       WonderLog.Log.fatal(
-         WonderLog.Log.buildFatalMessage(
-           ~title="isAssembled",
-           ~description={j|unknown abRelativePath: $abRelativePath|j},
-           ~reason="",
-           ~solution={j||j},
-           ~params={j||j},
-         ),
-       ); */

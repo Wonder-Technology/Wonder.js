@@ -56,7 +56,7 @@ let _writeBuffer =
       (
         (imageBufferViewArr, geometryBufferViewArr),
         imageUint8ArrayArr,
-        geometryArrayBufferArr,
+        geometryUint8ArrayArr: array(Uint8Array.t),
       ),
       arrayBuffer,
     ) => {
@@ -80,12 +80,12 @@ let _writeBuffer =
     geometryBufferViewArr
     |> WonderCommonlib.ArrayService.reduceOneParami(
          (. uint8Array, (byteOffset, byteLength), index) => {
-           let geometryArrayBuffer =
-             Array.unsafe_get(geometryArrayBufferArr, index);
+           let geometryUint8Array =
+             Array.unsafe_get(geometryUint8ArrayArr, index);
 
-           BufferUtils.mergeArrayBuffer(
+           BufferUtils.mergeUint8Array(
              uint8Array,
-             geometryArrayBuffer,
+             geometryUint8Array,
              headerAndJsonAlignedByteOffset + byteOffset,
            );
          },
@@ -113,7 +113,7 @@ let generateAB =
       (
         (imageBufferViewArr, geometryBufferViewArr),
         imageUint8ArrayArr,
-        geometryArrayBufferArr,
+        geometryUint8ArrayArr,
       ),
       bufferTotalAlignedByteLength,
       jsonUint8Array,
@@ -140,7 +140,7 @@ let generateAB =
     (
       (imageBufferViewArr, geometryBufferViewArr),
       imageUint8ArrayArr,
-      geometryArrayBufferArr,
+      geometryUint8ArrayArr,
     ),
     dataView |> DataView.buffer,
   );

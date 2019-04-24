@@ -107,6 +107,11 @@ return digestStub;
 };
 
 module TestWithOneRAB = {
+
+  let getWholeDependencyRelationMap = () =>
+    buildDependencyRelation([||]);
+
+
   let getRabRelativePath = () => {
     let rab1RelativePath = "rab1.rab";
     /* let rab2RelativePath = "rab2.rab"; */
@@ -141,9 +146,19 @@ module TestWithOneRAB = {
 
     ParseABSystem.RAB.parseManifest(newRab1);
   };
+
+
+  let getNewRab = ((_, newRabDataArr, _)) => {
+    let (_, newRab1) = newRabDataArr[0];
+
+    newRab1;
+  };
 };
 
 module TestWithTwoRAB = {
+  let getWholeDependencyRelationMap = (rab1RelativePath, rab2RelativePath) =>
+    buildDependencyRelation([|[|rab2RelativePath, rab1RelativePath|]|]);
+
   let getRabRelativePaths = () => {
     let rab1RelativePath = "rab1.rab";
     let rab2RelativePath = "rab2.rab";
@@ -165,6 +180,13 @@ module TestWithTwoRAB = {
       ),
       state,
     );
+  };
+
+  let getNewRabs = ((_, newRabDataArr, _)) => {
+    let (_, newRab1) = newRabDataArr[0];
+    let (_, newRab2) = newRabDataArr[1];
+
+    (newRab1, newRab2);
   };
 
   let getNewRabContents = ((_, newRabDataArr, _)) => {
@@ -286,7 +308,5 @@ module TestWABWithOneSABAndOneRAB = {
 
   let getNewWabManifest = ((newWAB, _, _)) =>
     /* let (_, newRab1) = newRabDataArr[0]; */
-    ParseABSystem.WAB.parseManifest(
-      newWAB,
-    );
+    ParseABSystem.WAB.parseManifest(newWAB);
 };

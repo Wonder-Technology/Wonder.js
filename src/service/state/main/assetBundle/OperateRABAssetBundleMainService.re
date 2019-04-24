@@ -208,7 +208,36 @@ let unsafeFindDataInAllDependencyRAbByName =
    | Some(result) => result
    }; */
 
-let findLightMaterialByName = (rabRelativePath, name, state) => Some(0);
+let _findDataByName = (rabRelativePath, name, dataMap) =>
+  dataMap
+  |> WonderCommonlib.ImmutableHashMapService.get(rabRelativePath)
+  |> Js.Option.andThen((. map) =>
+       map |> WonderCommonlib.ImmutableHashMapService.get(name)
+     );
+
+let findBasicMaterialByName = (rabRelativePath, name, state) =>
+  _findDataByName(
+    rabRelativePath,
+    name,
+    state.assetBundleRecord.assembleRABData.basicMaterialMap,
+  );
+
+let unsafeFindBasicMaterialByName = (rabRelativePath, name, state) =>
+  findBasicMaterialByName(rabRelativePath, name, state)
+  |> OptionService.unsafeGetWithMessage(
+       WonderLog.Log.buildAssertMessage(
+         ~expect=
+           {j|basicMaterial by name:$name exist in rabRelativePath:$rabRelativePath|j},
+         ~actual={j|not|j},
+       ),
+     );
+
+let findLightMaterialByName = (rabRelativePath, name, state) =>
+  _findDataByName(
+    rabRelativePath,
+    name,
+    state.assetBundleRecord.assembleRABData.lightMaterialMap,
+  );
 
 let unsafeFindLightMaterialByName = (rabRelativePath, name, state) =>
   findLightMaterialByName(rabRelativePath, name, state)
@@ -220,21 +249,12 @@ let unsafeFindLightMaterialByName = (rabRelativePath, name, state) =>
        ),
      );
 
-/* switch (findLightMaterialByName(rabRelativePath, name, state)) {
-   | None =>
-     WonderLog.Log.fatal(
-       WonderLog.Log.buildFatalMessage(
-         ~title="unsafeFindLightMaterialByName",
-         ~description={j|shouldn't find nothing|j},
-         ~reason="",
-         ~solution={j||j},
-         ~params={j||j},
-       ),
-     )
-   | Some(result) => result
-   }; */
-
-let findImageByName = (rabRelativePath, name, state) => Obj.magic(-1)->Some;
+let findImageByName = (rabRelativePath, name, state) =>
+  _findDataByName(
+    rabRelativePath,
+    name,
+    state.assetBundleRecord.assembleRABData.imageMap,
+  );
 
 let unsafeFindImageByName = (rabRelativePath, name, state) =>
   findImageByName(rabRelativePath, name, state)
@@ -246,22 +266,29 @@ let unsafeFindImageByName = (rabRelativePath, name, state) =>
        ),
      );
 
-/* switch (findImageByName(rabRelativePath, name, state)) {
-   | None =>
-     WonderLog.Log.fatal(
-       WonderLog.Log.buildFatalMessage(
-         ~title="unsafeFindImageByName",
-         ~description={j|shouldn't find nothing|j},
-         ~reason="",
-         ~solution={j||j},
-         ~params={j||j},
+let findTextureByName = (rabRelativePath, name, state) =>
+  _findDataByName(
+    rabRelativePath,
+    name,
+    state.assetBundleRecord.assembleRABData.textureMap,
+  );
+
+let unsafeFindTextureByName = (rabRelativePath, name, state) =>
+  findTextureByName(rabRelativePath, name, state)
+  |> OptionService.unsafeGetWithMessage(
+       WonderLog.Log.buildAssertMessage(
+         ~expect=
+           {j|texture by name:$name exist in rabRelativePath:$rabRelativePath|j},
+         ~actual={j|not|j},
        ),
-     )
-   | Some(result) => result
-   }; */
+     );
 
 let findGeometryByName = (rabRelativePath, name, state) =>
-  Obj.magic(-1)->Some;
+  _findDataByName(
+    rabRelativePath,
+    name,
+    state.assetBundleRecord.assembleRABData.geometryMap,
+  );
 
 let unsafeFindGeometryByName = (rabRelativePath, name, state) =>
   findGeometryByName(rabRelativePath, name, state)
@@ -273,28 +300,36 @@ let unsafeFindGeometryByName = (rabRelativePath, name, state) =>
        ),
      );
 
-/* switch (findGeometryByName(rabRelativePath, name, state)) {
-   | None =>
-     WonderLog.Log.fatal(
-       WonderLog.Log.buildFatalMessage(
-         ~title="unsafeFindGeometryByName",
-         ~description={j|shouldn't find nothing|j},
-         ~reason="",
-         ~solution={j||j},
-         ~params={j||j},
+let findScriptEventFunctionDataByName = (rabRelativePath, name, state) =>
+  _findDataByName(
+    rabRelativePath,
+    name,
+    state.assetBundleRecord.assembleRABData.scriptEventFunctionDataMap,
+  );
+
+let unsafeFindScriptEventFunctionDataByName = (rabRelativePath, name, state) =>
+  findScriptEventFunctionDataByName(rabRelativePath, name, state)
+  |> OptionService.unsafeGetWithMessage(
+       WonderLog.Log.buildAssertMessage(
+         ~expect=
+           {j|scriptEventFunction data by name:$name exist in rabRelativePath:$rabRelativePath|j},
+         ~actual={j|not|j},
        ),
-     )
-   | Some(result) => result
-   }; */
-/* let findBasicMaterialByName = (rabRelativePath, name, state) => 0;
+     );
 
+let findScriptAttributeByName = (rabRelativePath, name, state) =>
+  _findDataByName(
+    rabRelativePath,
+    name,
+    state.assetBundleRecord.assembleRABData.scriptAttributeMap,
+  );
 
-   let findBasicSourceTextureByName = (rabRelativePath, name, state) => 0;
-
-   let findGeometryByName = (rabRelativePath, name, state) => 0;
-
-   let findScriptEventFunctionByName = (rabRelativePath, name, state) =>
-     Obj.magic(-1);
-
-   let findScriptAttributeByName = (rabRelativePath, name, state) =>
-     Obj.magic(-1); */
+let unsafeFindScriptAttributeByName = (rabRelativePath, name, state) =>
+  findScriptAttributeByName(rabRelativePath, name, state)
+  |> OptionService.unsafeGetWithMessage(
+       WonderLog.Log.buildAssertMessage(
+         ~expect=
+           {j|scriptAttribute by name:$name exist in rabRelativePath:$rabRelativePath|j},
+         ~actual={j|not|j},
+       ),
+     );

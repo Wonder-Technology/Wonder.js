@@ -133,7 +133,7 @@ module RAB = {
     )
     |> Js.Array.map(rabRelativePath
          /* let state = StateDataMainService.unsafeGetState(StateDataMain.stateData); */
-         =>
+         => () =>
            _loadAndAssembleRAB(
              rabRelativePath,
              wholeManifest,
@@ -147,7 +147,8 @@ module RAB = {
              /* state, */
            )
          )
-    |> Most.mergeArray;
+    /* |> Most.mergeArray; */
+    |> MostUtils.concatExecStreamArr
     /* |> WonderCommonlib.ArrayService.reduceOneParam(
          (. stream, rabRelativePath) =>
            stream
