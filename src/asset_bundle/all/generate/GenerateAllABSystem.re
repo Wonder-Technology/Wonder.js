@@ -3,7 +3,7 @@ open WonderBsMost;
 /* open DependencyDataType; */
 
 /* TODO need test */
-let rec _isCircleDependency =
+/* let rec _isCircleDependency =
         (
           dependencyRelation,
           recordedAbPathArr,
@@ -73,7 +73,7 @@ let _checkCircleDependency = dependencyRelation =>
         ~params={j||j},
       ),
     ) :
-    ();
+    (); */
 
 /* let _checkSABDependencyRelation = () => {
 
@@ -91,9 +91,8 @@ let buildDependencyRelation = dependencyRelationArrArr =>
        WonderCommonlib.ImmutableHashMapService.createEmpty(),
      );
 
-let generate = (dependencyRelation, (sabDataArr, rabDataArr)) => {
-  _checkCircleDependency(dependencyRelation);
-
+let generate = (dependencyRelation, (sabDataArr, rabDataArr)) =>
+  /* _checkCircleDependency(dependencyRelation); */
   RemoveDependencyDataSystem.removeDuplicateBufferData(
     dependencyRelation,
     FindDependencyDataSystem.buildImageAndGeometryNameMap(rabDataArr),
@@ -107,4 +106,3 @@ let generate = (dependencyRelation, (sabDataArr, rabDataArr)) => {
          newSabDataArr,
        )
      );
-};

@@ -24,7 +24,7 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    describe("check dependency relation", () => {
+    /* describe("check dependency relation", () => {
       describe("if has circle dependency, fatal", () => {
         testPromise("test1", () =>
           expect(() =>
@@ -68,7 +68,7 @@ let _ =
         );
       });
 
-      describe("else, not fatal", () =>
+      describe("else, not fatal", () => {
         testPromise("test1", () =>
           expect(() =>
             GenerateAllABSystem.generate(
@@ -82,9 +82,24 @@ let _ =
           |> not_
           |> toThrow
           |> resolve
-        )
-      );
-    });
+        );
+        testPromise("test2", () =>
+          expect(() =>
+            GenerateAllABSystem.generate(
+              GenerateAllABTool.buildDependencyRelation([|
+                [|"s1.sab", "r1.rab", "r2.rab"|],
+                [|"r1.rab", "r3.rab"|],
+                [|"r2.rab", "r3.rab"|],
+              |]),
+              ([||], [||]),
+            )
+          )
+          |> not_
+          |> toThrow
+          |> resolve
+        );
+      });
+    }); */
 
     describe("remove duplicate buffer data", () => {
       describe("remove duplicate buffer data from rab", () => {
