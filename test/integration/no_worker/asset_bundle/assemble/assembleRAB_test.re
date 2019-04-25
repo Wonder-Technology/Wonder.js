@@ -525,8 +525,8 @@ let _ =
             ~sandbox,
             ~buffer=
               SettingTool.buildBufferConfigStr(
-                ~geometryPointCount=6,
-                ~geometryCount=6,
+                ~geometryPointCount=10,
+                ~geometryCount=10,
                 (),
               ),
             (),

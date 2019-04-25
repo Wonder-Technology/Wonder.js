@@ -1,6 +1,6 @@
 module RAB = {
   let getAllDependencyRABCount = (abRelativePath, wabRelativePath, state) =>
-    FindDependencyDataSystem.findAllDependencyRAbRelativePath(
+    FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
       abRelativePath,
       OperateWABAssetBundleMainService.unsafeGetWholeDependencyRelationMap(
         wabRelativePath,
@@ -10,7 +10,7 @@ module RAB = {
     |> Js.Array.length;
 
   let getLoadedDependencyRABCount = (abRelativePath, wabRelativePath, state) =>
-    FindDependencyDataSystem.findAllDependencyRAbRelativePath(
+    FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
       abRelativePath,
       OperateWABAssetBundleMainService.unsafeGetWholeDependencyRelationMap(
         wabRelativePath,

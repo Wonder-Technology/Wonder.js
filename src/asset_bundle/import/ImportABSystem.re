@@ -130,31 +130,34 @@ module RAB = {
     let wholeDependencyRelationMap =
       ParseABSystem.WAB.getWholeDependencyRelationMap(wholeManifest);
 
-    FindDependencyDataSystem.findAllDependencyRAbRelativePath(
+    FindDependencyDataSystem.findAllDependencyRAbRelativePathByBreadthSearch(
       abRelativePath,
       wholeDependencyRelationMap,
     )
     |> Js.Array.map(
          (
-           rabRelativePath,
+           rabRelativePathArr,
            /* let state = StateDataMainService.unsafeGetState(StateDataMain.stateData); */
            (),
          ) =>
-         _loadAndAssembleRAB(
-           rabRelativePath,
-           wholeManifest,
-           wholeDependencyRelationMap,
-           (
-             getAssetBundlePathFunc,
-             isAssetBundleArrayBufferCachedFunc,
-             getAssetBundleArrayBufferCacheFunc,
-             cacheAssetBundleArrayBufferFunc,
-             fetchFunc,
-           ),
-           /* state, */
-         )
+         rabRelativePathArr
+         |> Js.Array.map(rabRelativePath =>
+              _loadAndAssembleRAB(
+                rabRelativePath,
+                wholeManifest,
+                wholeDependencyRelationMap,
+                (
+                  getAssetBundlePathFunc,
+                  isAssetBundleArrayBufferCachedFunc,
+                  getAssetBundleArrayBufferCacheFunc,
+                  cacheAssetBundleArrayBufferFunc,
+                  fetchFunc,
+                ),
+              )
+            )
+         /* TODO need test in run test */
+         |> Most.mergeArray
        )
-    /* |> Most.mergeArray; */
     |> MostUtils.concatExecStreamArr;
     /* |> WonderCommonlib.ArrayService.reduceOneParam(
          (. stream, rabRelativePath) =>

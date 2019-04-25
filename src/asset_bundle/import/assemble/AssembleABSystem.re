@@ -443,7 +443,7 @@ module SAB = {
 
   let assemble = (sabRelativePath, sab, wholeDependencyRelationMap) => {
     let allDependencyRAbRelativePath =
-      FindDependencyDataSystem.findAllDependencyRAbRelativePath(
+      FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
         sabRelativePath,
         wholeDependencyRelationMap,
       );
@@ -1014,7 +1014,7 @@ module RAB = {
 
   let assemble = (rabRelativePath, rab, wholeDependencyRelationMap) => {
     let allDependencyRAbRelativePath =
-      FindDependencyDataSystem.findAllDependencyRAbRelativePath(
+      FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
         rabRelativePath,
         wholeDependencyRelationMap,
       );
