@@ -1,16 +1,7 @@
 open Js.Typed_array;
 
 let buildDependencyRelation = dependencyRelationArrArr =>
-  dependencyRelationArrArr
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. relationMap, dependencyRelationArr) =>
-         relationMap
-         |> WonderCommonlib.ImmutableHashMapService.set(
-              dependencyRelationArr |> ArrayService.unsafeGetFirst,
-              dependencyRelationArr |> Js.Array.sliceFrom(1),
-            ),
-       WonderCommonlib.ImmutableHashMapService.createEmpty(),
-     );
+  GenerateAllABSystem.buildDependencyRelation(dependencyRelationArrArr);
 
 let buildRABData = (rabRelativePath, rab) => (rabRelativePath, rab);
 
@@ -338,73 +329,8 @@ module TestWABWithOneSABAndOneRAB = {
 
 module TestDuplicateDataForSAB = {
   module TestDuplicateImageData = {
-    let _createTexture1 = state => {
-      let (state, texture) =
-        BasicSourceTextureAPI.createBasicSourceTexture(state);
-
-      let name = "texture_1";
-
-      let state =
-        BasicSourceTextureAPI.setBasicSourceTextureName(texture, name, state);
-
-      let state =
-        BasicSourceTextureAPI.setBasicSourceTextureWrapS(
-          texture,
-          SourceTextureType.Repeat,
-          state,
-        )
-        |> BasicSourceTextureAPI.setBasicSourceTextureMagFilter(
-             texture,
-             SourceTextureType.Linear,
-           );
-
-      let width = 30;
-      let height = 50;
-
-      let source = BasicSourceTextureTool.buildSource(width, height);
-
-      let state =
-        BasicSourceTextureAPI.setBasicSourceTextureSource(
-          texture,
-          source,
-          state,
-        );
-
-      (state, (texture, name), (source, width, height));
-    };
-
-    let createGameObject1 = (imageName, state) => {
-      open GameObjectAPI;
-      open LightMaterialAPI;
-      open MeshRendererAPI;
-
-      let (state, material) = createLightMaterial(state);
-
-      let (state, (texture, _), (source, width, height)) =
-        _createTexture1(state);
-
-      ImageUtils.setImageName(source, imageName);
-
-      let state =
-        LightMaterialAPI.setLightMaterialDiffuseMap(material, texture, state);
-
-      let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
-      let (state, meshRenderer) = createMeshRenderer(state);
-      let (state, gameObject) = state |> createGameObject;
-      let state =
-        state
-        |> addGameObjectLightMaterialComponent(gameObject, material)
-        |> addGameObjectGeometryComponent(gameObject, geometry)
-        |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
-
-      let transform =
-        GameObjectAPI.unsafeGetGameObjectTransformComponent(
-          gameObject,
-          state,
-        );
-
-      (state, gameObject, transform, (material, texture));
-    };
+    let createGameObject1 = (imageName, state) =>
+      GenerateSABTool.createGameObjectWithMap(imageName, state);
   };
 
   module TestDuplicateGeometryData = {

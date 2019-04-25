@@ -46,8 +46,7 @@ let generateSingleSAB = (sceneGameObject, imageUint8ArrayMap, state) => {
           IndicesGeometryMainService.getIndices16,
           IndicesGeometryMainService.getIndices32,
         ),
-        imageUint8Array =>
-          _writeUint32DataToUint8Array(imageUint8Array |> Uint8Array.length),
+        imageUint8Array => imageUint8Array,
       ),
       state,
     );
