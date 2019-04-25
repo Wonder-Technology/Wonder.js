@@ -94,6 +94,8 @@ open EventType;
 
 open JobDataType;
 
+open ScriptAPIType;
+
 type stateData = {
   mutable state: option(state),
   mutable isDebug: bool,
@@ -189,45 +191,6 @@ and arcballCameraControllerRecord = {
   wheelSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
   gameObjectMap,
   disposedIndexArray: array(component),
-}
-and scriptAPIJsObj = {
-  .
-  "unsafeGetScriptAttribute":
-    (. int, string, state) => ScriptAttributeType.scriptAttribute,
-  "unsafeGetScriptAttributeFieldValue":
-    (. string, ScriptAttributeType.scriptAttribute) =>
-    ScriptAttributeType.scriptAttributeValue,
-  "unsafeGetScriptGameObject": (. int, state) => int,
-  "setScriptAttributeFieldValue":
-    (
-      . int,
-      (string, string, ScriptAttributeType.scriptAttributeValue),
-      state
-    ) =>
-    state,
-  "getTransformLocalPosition":
-    (. transform, state) =>
-    (
-      Js.Typed_array.Float32Array.elt,
-      Js.Typed_array.Float32Array.elt,
-      Js.Typed_array.Float32Array.elt,
-    ),
-  "setTransformLocalPosition":
-    (
-      . transform,
-      (
-        Js.Typed_array.Float32Array.elt,
-        Js.Typed_array.Float32Array.elt,
-        Js.Typed_array.Float32Array.elt,
-      ),
-      state
-    ) =>
-    state,
-  "unsafeGetGameObjectTransformComponent":
-    (. GameObjectPrimitiveType.gameObject, state) => int,
-  "disposeGameObject": (. GameObjectPrimitiveType.gameObject, state) => state,
-  "findGameObjectsByName":
-    (. string, state) => array(GameObjectPrimitiveType.gameObject),
 }
 and apiRecord = {
   scriptAPIJsObj,

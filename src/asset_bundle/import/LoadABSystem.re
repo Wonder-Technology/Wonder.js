@@ -2,7 +2,9 @@ open Js.Promise;
 
 open WonderBsMost;
 
-let load = (abPath, fetchFunc) =>
+open Js.Typed_array;
+
+let load = (abPath: string, fetchFunc) =>
   /* Fetch.fetch(abPath) */
   fetchFunc(. abPath)
   |> then_(response =>
@@ -27,9 +29,12 @@ let load = (abPath, fetchFunc) =>
   |> Most.fromPromise;
 
 /* TODO need rewrite by editor */
-let isAssetBundleArrayBufferCached = (abRelativePath, hashId) => false;
+let getAssetBundlePath = () => "";
 
-let getAssetBundleArrayBufferCache = abRelativePath =>
+let isAssetBundleArrayBufferCached = (abRelativePath: string, hashId: string) =>
+  false;
+
+let getAssetBundleArrayBufferCache = (abRelativePath: string): ArrayBuffer.t =>
   WonderLog.Log.fatal(
     WonderLog.Log.buildFatalMessage(
       ~title="getAssetBundleArrayBufferCache",
@@ -40,4 +45,6 @@ let getAssetBundleArrayBufferCache = abRelativePath =>
     ),
   );
 
-let cacheAssetBundleArrayBuffer = (abRelativePath, ab, hashId) => ();
+let cacheAssetBundleArrayBuffer =
+    (abRelativePath: string, ab: ArrayBuffer.t, hashId: string): unit =>
+  ();

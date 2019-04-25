@@ -4,6 +4,7 @@ let getScriptAttributeFieldName = () => "a";
 
 let buildEventFunc = () =>
   (. script, api, state) => {
+    let api = Obj.magic(api);
     let scriptAttributeName = getScriptAttributeName();
 
     let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
@@ -41,6 +42,7 @@ let getAttributeFieldAValueAfterExecEventeFunc = () => 2;
 
 let buildEventFunc2 = () =>
   (. script, api, state) => {
+    let api = Obj.magic(api);
     let scriptAttributeName = getScriptAttributeName();
 
     let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;

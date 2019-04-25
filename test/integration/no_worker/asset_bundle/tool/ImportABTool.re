@@ -59,7 +59,7 @@ module RAB = {
         ~isAssetBundleArrayBufferCachedFunc=LoadABSystem.isAssetBundleArrayBufferCached,
         ~getAssetBundleArrayBufferCacheFunc=LoadABSystem.getAssetBundleArrayBufferCache,
         ~cacheAssetBundleArrayBufferFunc=LoadABSystem.cacheAssetBundleArrayBuffer,
-        ~fetchFunc=LoaderManagerAPI._fetch,
+        ~fetchFunc=FetchCommon.fetch,
         (),
       ) =>
     ImportABSystem.RAB.loadAndAssembleAllDependencyRAB(
@@ -136,7 +136,7 @@ module SAB = {
         ~isAssetBundleArrayBufferCachedFunc=LoadABSystem.isAssetBundleArrayBufferCached,
         ~getAssetBundleArrayBufferCacheFunc=LoadABSystem.getAssetBundleArrayBufferCache,
         ~cacheAssetBundleArrayBufferFunc=LoadABSystem.cacheAssetBundleArrayBuffer,
-        ~fetchFunc=LoaderManagerAPI._fetch,
+        ~fetchFunc=FetchCommon.fetch,
         (),
       ) =>
     ImportABSystem.SAB.loadSABAndSetToState(

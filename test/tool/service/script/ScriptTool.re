@@ -155,6 +155,7 @@ module ExecEventFunction = {
 module API = {
   let unsafeGetScriptAttributeIntFieldValue =
       (api, fieldName, scriptAttribute) => {
+    let api = Obj.magic(api);
     let unsafeGetScriptAttributeFieldValue =
       api##unsafeGetScriptAttributeFieldValue;
 
@@ -164,6 +165,7 @@ module API = {
 
   let setScriptAttributeIntFieldValue =
       (api, script, scriptAttributeName, fieldName, fieldValue, state) => {
+    let api = Obj.magic(api);
     let setScriptAttributeFieldValue = api##setScriptAttributeFieldValue;
 
     setScriptAttributeFieldValue(.
@@ -179,6 +181,7 @@ module API = {
 
   let unsafeGetScriptAttributeFloatFieldValue =
       (api, fieldName, scriptAttribute) => {
+    let api = Obj.magic(api);
     let unsafeGetScriptAttributeFieldValue =
       api##unsafeGetScriptAttributeFieldValue;
 
@@ -188,6 +191,7 @@ module API = {
 
   let setScriptAttributeFloatFieldValue =
       (api, script, scriptAttributeName, fieldName, fieldValue, state) => {
+    let api = Obj.magic(api);
     let setScriptAttributeFieldValue = api##setScriptAttributeFieldValue;
 
     setScriptAttributeFieldValue(.
@@ -264,6 +268,7 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
 
   let buildSetLocalPositionEventFunc = () =>
     (. script, api, state) => {
+      let api = Obj.magic(api);
       let unsafeGetScriptGameObject = api##unsafeGetScriptGameObject;
       let unsafeGetGameObjectTransformComponent =
         api##unsafeGetGameObjectTransformComponent;
@@ -288,6 +293,7 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
 
   let buildInitEventFunc = () =>
     (. script, api, state) => {
+      let api = Obj.magic(api);
       let scriptAttributeName = getScriptAttributeName();
 
       let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
@@ -323,6 +329,7 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
 
   let buildUpdateEventFunc = () =>
     (. script, api, state) => {
+      let api = Obj.magic(api);
       let scriptAttributeName = getScriptAttributeName();
 
       let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
@@ -465,6 +472,7 @@ module TestCaseWithOneEventFuncAndTwoAttributes = {
         ~updateFunc=
           Some(
             (. script, api, state) => {
+              let api = Obj.magic(api);
               let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
 
               let scriptAttribute1 =
@@ -627,6 +635,7 @@ module TestCaseWithTwoEventFuncsAndTwoAttributes = {
         ~updateFunc=
           Some(
             (. script, api, state) => {
+              let api = Obj.magic(api);
               let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
 
               let scriptAttribute1 =
@@ -668,6 +677,7 @@ module TestCaseWithTwoEventFuncsAndTwoAttributes = {
         ~updateFunc=
           Some(
             (. script, api, state) => {
+              let api = Obj.magic(api);
               let unsafeGetScriptAttribute = api##unsafeGetScriptAttribute;
 
               let scriptAttribute1 =
