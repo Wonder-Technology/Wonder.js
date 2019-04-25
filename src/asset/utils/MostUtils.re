@@ -72,11 +72,9 @@ let concatExecStreamArr =
     |> Js.Array.sliceFrom(1)
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. stream1, buildStream2Func) =>
-           /* let stream1 =  */
            _isFromEventStream(stream1) === true ?
              stream1 |> concatMap(() => buildStream2Func(.)) :
              stream1 |> concatMap(() => buildStream2Func(.)),
-         /* stream1 |> concat(stream2) : stream1 |> concat(stream2) */
          (Array.unsafe_get(streamArr, 0))(.),
        )
   };

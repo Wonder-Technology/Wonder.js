@@ -51,12 +51,17 @@
             });
 
 
+
             function _init1(script, api, state) {
+                function _getAssetBundlePath() {
+                    return "asset_bundle2/";
+                };
+
 
                 // var loadAssetBundle = api.loadAssetBundle;
                 // var flatMapStream = api.flatMapStream;
 
-                var abRelativePath = "sab1.sab";
+                var sabRelativePath = "sab1.sab";
 
 
                 var wabRelativePath = "wab1.wab";
@@ -65,7 +70,7 @@
 
 
                 api.loadAssetBundle(
-                    wabRelativePath
+                    _getAssetBundlePath() + wabRelativePath
                 ).flatMap((wab) => {
                     console.log("wab: ", wab);
 
@@ -89,32 +94,28 @@
                     api.setState(state);
 
 
-                    return api.concatExecStreamArr(
-                        [() =>
-                            api.loadAndAssembleAllDependencyRAB(
-                                abRelativePath,
-                                manifest,
-                                [
-                                    api.getAssetBundlePath,
-                                    api.isAssetBundleArrayBufferCached,
-                                    api.getAssetBundleArrayBufferCache,
-                                    api.cacheAssetBundleArrayBuffer
-                                ]
-
-                            ),
-                        () =>
-                            api.loadSABAndSetToState(
-                                abRelativePath,
-                                manifest,
-                                [
-                                    api.getAssetBundlePath,
-                                    api.isAssetBundleArrayBufferCached,
-                                    api.getAssetBundleArrayBufferCache,
-                                    api.cacheAssetBundleArrayBuffer
-                                ]
-
-                            )
+                    return api.loadAndAssembleAllDependencyRAB(
+                        sabRelativePath,
+                        manifest,
+                        [
+                            _getAssetBundlePath,
+                            api.isAssetBundleArrayBufferCached,
+                            api.getAssetBundleArrayBufferCache,
+                            api.cacheAssetBundleArrayBuffer
                         ]
+
+                    ).concat(
+                        api.loadSABAndSetToState(
+                            sabRelativePath,
+                            manifest,
+                            [
+                                _getAssetBundlePath,
+                                api.isAssetBundleArrayBufferCached,
+                                api.getAssetBundleArrayBufferCache,
+                                api.cacheAssetBundleArrayBuffer
+                            ]
+
+                        )
                     )
                 })
                     .subscribe({
@@ -147,8 +148,8 @@
 
 
                 setTimeout(() => {
-                    var wabRelativePath = "wab1.wab";
-                    var sabRelativePath = "sab1.sab";
+                    // var wabRelativePath = "wab1.wab";
+                    // var sabRelativePath = "sab1.sab";
 
                     var state = api.unsafeGetState();
 
@@ -196,7 +197,6 @@
                                     "complete": () => {
                                         console.log("complete");
                                     }
-
                                 }
 
 

@@ -25,7 +25,7 @@ let _handleStreamError = e => {
 };
 
 let dynamicLoadAB = needRewriteAPI => {
-  /* LoadABSystem.load(PathABSystem.getAssetBundlePath() ++ "whole.wab")
+  /* LoadABSystem.load(PathABSystem.getAssetBundlePath(.) ++ "whole.wab")
      |> Most.flatMap(wab => {
           let manifest = ParseABSystem.WAB.parseManifest(wab);
 
@@ -41,7 +41,7 @@ let dynamicLoadAB = needRewriteAPI => {
                  stream
                  |> Most.flatMap(state =>
                       LoadABSystem.load(
-                        PathABSystem.getAssetBundlePath() ++ abPath,
+                        PathABSystem.getAssetBundlePath(.) ++ abPath,
                       )
                       |> Most.map(ab =>
                            AssembleABSystem.assemble(abPath, ab, state)
@@ -51,7 +51,7 @@ let dynamicLoadAB = needRewriteAPI => {
              );
           /* |> Js.Array.map(abPath =>
                   LoadABSystem.load(
-                    PathABSystem.getAssetBundlePath() ++ abPath,
+                    PathABSystem.getAssetBundlePath(.) ++ abPath,
                   )
                   |> Most.map(ab => {
 
@@ -75,9 +75,9 @@ let dynamicLoadAB = needRewriteAPI => {
 
   let wabRelativePath = "whole.wab";
 
-  let abPath = getAssetBundlePath() ++ abRelativePath;
+  let abPath = getAssetBundlePath(.) ++ abRelativePath;
 
-  let wabPath = getAssetBundlePath() ++ wabRelativePath;
+  let wabPath = getAssetBundlePath(.) ++ wabRelativePath;
 
   let _ =
     LoadABSystem.load(wabPath, FetchCommon.fetch)
@@ -100,35 +100,30 @@ let dynamicLoadAB = needRewriteAPI => {
          |> StateDataMainService.setState(StateDataMain.stateData)
          |> ignore;
 
-         MostUtils.concatExecStreamArr([|
-           (.) =>
-             ImportABSystem.RAB.loadAndAssembleAllDependencyRAB(
-               abRelativePath,
-               manifest,
-               (
-                 getAssetBundlePath,
-                 isAssetBundleArrayBufferCached,
-                 getAssetBundleArrayBufferCache,
-                 cacheAssetBundleArrayBuffer,
-                 FetchCommon.fetch,
-               ),
-               /* state, */
-             ),
-           (.) =>
-             ImportABSystem.SAB.loadSABAndSetToState(
-               abRelativePath,
-               manifest,
-               /* wholeDependencyRelationMap, */
-               (
-                 getAssetBundlePath,
-                 isAssetBundleArrayBufferCached,
-                 getAssetBundleArrayBufferCache,
-                 cacheAssetBundleArrayBuffer,
-                 FetchCommon.fetch,
-               ),
-               /* state, */
-             ),
-         |]);
+         ImportABSystem.RAB.loadAndAssembleAllDependencyRAB(
+           abRelativePath,
+           manifest,
+           (
+             getAssetBundlePath,
+             isAssetBundleArrayBufferCached,
+             getAssetBundleArrayBufferCache,
+             cacheAssetBundleArrayBuffer,
+             FetchCommon.fetch,
+           ),
+         )
+         |> Most.concat(
+              ImportABSystem.SAB.loadSABAndSetToState(
+                abRelativePath,
+                manifest,
+                (
+                  getAssetBundlePath,
+                  isAssetBundleArrayBufferCached,
+                  getAssetBundleArrayBufferCache,
+                  cacheAssetBundleArrayBuffer,
+                  FetchCommon.fetch,
+                ),
+              ),
+            );
        })
     |> Most.subscribe({
          "next": _ => (),

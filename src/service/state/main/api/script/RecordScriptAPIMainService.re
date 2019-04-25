@@ -47,9 +47,9 @@ let create = () => {
   "setState":
     (. state) =>
       StateDataMainService.setState(StateDataMain.stateData, state),
-  "concatExecStreamArr":
-    (. streamArr) => MostUtils.concatExecStreamArr(streamArr),
-  "getAssetBundlePath": () => LoadABSystem.getAssetBundlePath(),
+  /* "concatExecStreamArr":
+     (. streamArr) => MostUtils.concatExecStreamArr(streamArr), */
+  "getAssetBundlePath": (.) => LoadABSystem.getAssetBundlePath(),
   "isAssetBundleArrayBufferCached":
     (. abRelativePath, hashId) =>
       LoadABSystem.isAssetBundleArrayBufferCached(abRelativePath, hashId),

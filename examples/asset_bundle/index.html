@@ -57,29 +57,103 @@
             return AssetTool.loadConfig(["../config/setting.json", "../config/"], null, function () {
 
 
-                var image = new Image();
-                image.src = "../asset/image/2.png";
+                var image1 = new Image();
+                image1.src = "../asset/image/1.jpg";
 
-                image.onload = function () {
-                    var imageName = "image_2";
-                    var mimeType = "image/png";
+                image1.onload = function () {
+                    var image1Name = "image_1";
+                    var mimeType1 = "image/jpg";
 
-                    image.name = imageName;
+                    image1.name = image1Name;
 
 
-                    return initSample(
-                        image,
-                        imageName,
-                        _convertImageToUint8Array(image, mimeType),
-                        mimeType,
-                        wd.unsafeGetState());
 
+
+
+
+                    var image2 = new Image();
+                    image2.src = "../asset/image/2.png";
+
+                    image2.onload = function () {
+                        var image2Name = "image_2";
+                        var mimeType2 = "image/png";
+
+                        image2.name = image2Name;
+
+
+                        return initSample(
+                            [
+
+                                image1,
+                                image1Name,
+                                _convertImageToUint8Array(image1, mimeType1),
+                                mimeType1,
+                            ],
+                            [
+
+                                image2,
+                                image2Name,
+                                _convertImageToUint8Array(image2, mimeType2),
+                                mimeType2,
+                            ],
+                            wd.unsafeGetState()
+                        );
+
+                    };
                 };
-
-
-
-
             });
+
+
+
+            function createBox(material, state) {
+                // var record = wd.createLightMaterial(state);
+                // var state = record[0];
+                // var material = record[1];
+
+                // state = wd.setLightMaterialDiffuseColor(material, [1.0, 0.5, 0.2], state);
+                // state = wd.setLightMaterialSpecularColor(material, [0.3, 0.1, 0.6], state);
+
+                // state = wd.setLightMaterialDiffuseMap(material, texture1, state);
+
+
+                var record = wd.createMeshRenderer(state);
+                var state = record[0];
+                var meshRenderer = record[1];
+
+                var record = wd.createGameObject(state);
+                var state = record[0];
+                var obj = record[1];
+
+                state = wd.addGameObjectLightMaterialComponent(obj, material, state);
+                state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
+
+
+                var record = wd.createBoxGeometry(state);
+                var state = record[0];
+                var geometry = record[1];
+                var geometryName = "boxGeometry";
+                var state =
+                    wd.setGeometryName(
+                        geometry, geometryName, state
+                    );
+
+
+
+
+                state = wd.addGameObjectGeometryComponent(obj, geometry, state);
+
+
+
+
+                // var transform = wd.unsafeGetGameObjectTransformComponent(obj, state);
+
+                // state = wd.setTransformLocalPosition(transform, [0, 20, 0], state);
+
+
+
+
+                return [state, obj];
+            }
 
 
             function createSphere(texture1, state) {
@@ -105,7 +179,7 @@
                 state = wd.addGameObjectMeshRendererComponent(obj, meshRenderer, state);
 
 
-                var record = wd.createSphereGeometry(5.0, 5, state);
+                var record = wd.createSphereGeometry(5.0, 100, state);
                 var state = record[0];
                 var geometry = record[1];
                 var geometryName = "sphereGeometry";
@@ -134,27 +208,214 @@
 
 
 
-            function initSample(image, imageName,
-                imageUint8Array,
-                mimeType,
+            function _update1(script, api, state) {
+                var scriptAttribute1 =
+                    api.unsafeGetScriptAttribute(
+                        script,
+                        "scriptAttribute1",
+                        state
+                    );
+
+                var a = api.unsafeGetScriptAttributeFieldValue(
+                    "a",
+                    scriptAttribute1
+                );
+
+                console.log("a: ", a)
+
+                var state =
+                    api.setScriptAttributeFieldValue(
+                        script,
+                        [
+
+                            "scriptAttribute1",
+
+                            "a",
+
+                            a + 1
+                        ],
+                        state
+                    );
+
+
+
+                // var gameObject =
+                //     api.unsafeGetScriptGameObject(
+                //         script, state
+                //     );
+
+                // var transform =
+                //     api.unsafeGetGameObjectTransformComponent(gameObject, state);
+
+                // var [x, y, z] =
+                //     api.getTransformLocalPosition(
+                //         transform, state
+                //     );
+
+
+
+                // if (x >= 20) {
+                //     var state = api.disposeGameObject(gameObject, state);
+
+                //     return state;
+                // }
+                // else {
+                //     var state =
+                //         api.setTransformLocalPosition(
+                //             transform, [x >= 20 ? -20 : x + 1, y, z], state
+                //         );
+
+                //     return state;
+                // }
+
+                return state;
+
+
+                // var state =
+                //     api.setTransformLocalPosition(
+                //         transform, [x >= 20 ? -20 : x + 1, y, z], state
+                //     );
+
+                // return state
+            };
+
+
+
+            function initSample(
+                [image1,
+                    image1Name,
+                    image1Uint8Array,
+                    mimeType1],
+                [image2,
+                    image2Name,
+                    image2Uint8Array,
+                    mimeType2],
                 state) {
 
-                var [state, box] = LightBoxesTool.createBox(state);
 
 
-                var record = wd.createBasicSourceTexture(state)
-                var state = record[0];
-                var texture1 = record[1];
-                var textureName = "texture1";
+
+                var [state, texture1] = wd.createBasicSourceTexture(state)
+                var texture1Name = "texture1";
                 var state =
                     wd.setBasicSourceTextureName(
-                        texture1, textureName, state
+                        texture1, texture1Name, state
                     );
-                var state = wd.setBasicSourceTextureSource(texture1, image, state);
+                var state = wd.setBasicSourceTextureSource(texture1, image1, state);
+
+
+
+
+
+                var [state, texture2] = wd.createBasicSourceTexture(state)
+                var texture2Name = "texture2";
+                var state =
+                    wd.setBasicSourceTextureName(
+                        texture2, texture2Name, state
+                    );
+                var state = wd.setBasicSourceTextureSource(texture2, image2, state);
+
+
+
+                var [state, lightMaterial1] = wd.createLightMaterial(state);
+
+                var state =
+                    wd.setLightMaterialDiffuseMap(
+                        lightMaterial1, texture2, state
+                    );
+
+                var lightMaterial1Name = "lightMaterial1";
+                var state =
+                    wd.setLightMaterialName(
+                        lightMaterial1, lightMaterial1Name, state
+                    );
+
+
+                var state = wd.setLightMaterialDiffuseColor(lightMaterial1, [1.0, 0.5, 0.2], state);
+                // state = wd.setLightMaterialSpecularColor(material, [0.3, 0.1, 0.6], state);
+
+
+
+
+
+
+
+
+
+
+
+                var scriptEventFunctionData1Name = "scriptEventFunctionData1";
+
+                var scriptEventFunctionData1 =
+                    wd.createScriptEventFunctionData(
+                        {
+                            // "init": (script, api, state) => {
+                            //     return _init1(script, api, state);
+                            // },
+                            "update": (script, api, state) => {
+                                return _update1(script, api, state);
+                            },
+                            // "dispose": (script, api, state) => {
+                            //     return _dispose1(script, api, state);
+                            // }
+                        }
+                    );
+
+
+
+                var scriptAttribute1Name = "scriptAttribute1";
+
+                var scriptAttribute1 =
+                    wd.createScriptAttribute(
+                    );
+
+                var scriptAttribute1 =
+                    wd.addScriptAttributeFieldJsObj(
+                        "a", {
+                            "type": "int",
+                            "defaultValue": 0
+                        },
+                        scriptAttribute1
+                    );
+                var scriptAttribute1 =
+                    wd.addScriptAttributeFieldJsObj(
+                        "b", {
+                            "type": "float",
+                            "defaultValue": 0.1
+                        },
+                        scriptAttribute1
+                    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
                 var [state, sphere, sphereGeometry] = createSphere(texture1, state);
+
+
+
+                var [state, box] = createBox(lightMaterial1, state);
+
 
 
                 var state = wd.setAmbientLightColor([0.2, 0.2, 0.2], state);
@@ -213,7 +474,7 @@
 
 
 
-                    var [state, rab] =
+                    var [state, rab1] =
                         wd.generateSingleRAB(
                             wd.buildResourceData(
                                 [],
@@ -227,14 +488,81 @@
                                 [
                                     sphereGeometry
                                 ],
-                                [],
-                                [],
                                 [
                                     [
-                                        imageUint8Array,
-                                        imageName, mimeType
+                                        scriptEventFunctionData1Name,
+                                        scriptEventFunctionData1
                                     ]
                                 ],
+                                [
+                                    [
+                                        scriptAttribute1Name,
+                                        scriptAttribute1
+                                    ]
+                                ],
+                                [
+                                    [
+                                        image1Uint8Array,
+                                        image1Name,
+                                        mimeType1
+                                    ]
+                                ]
+                            ),
+                            state
+                        );
+
+
+
+                    var [state, rab2] =
+                        wd.generateSingleRAB(
+                            wd.buildResourceData(
+                                [],
+                                [
+                                    lightMaterial1
+                                ],
+                                [
+                                    [
+                                        texture2,
+                                        0
+                                    ]
+                                ],
+                                [
+                                    sphereGeometry
+                                ],
+                                [
+                                ],
+                                [
+                                ],
+                                [
+                                    [
+                                        image2Uint8Array,
+                                        image2Name,
+                                        mimeType2
+                                    ]
+                                ]
+                            ),
+                            state
+                        );
+
+
+
+                    var [state, rab3] =
+                        wd.generateSingleRAB(
+                            wd.buildResourceData(
+                                [],
+                                [
+                                ],
+                                [
+                                ],
+                                [
+                                    sphereGeometry
+                                ],
+                                [
+                                ],
+                                [
+                                ],
+                                [
+                                ]
                             ),
                             state
                         );
@@ -244,18 +572,17 @@
 
 
 
-
-
-
-                    var [state, sab] =
+                    var [state, sab1] =
                         wd.generateSingleSAB(
                             wd.getSceneGameObject(state),
                             [],
                             state
                         );
 
-                    var rabRelativePath = "rab1.rab";
-                    var sabRelativePath = "sab1.sab";
+                    var rab1RelativePath = "rab1.rab";
+                    var rab2RelativePath = "rab2.rab";
+                    var rab3RelativePath = "rab3.rab";
+                    var sab1RelativePath = "sab1.sab";
 
                     wd.setState(state);
 
@@ -263,19 +590,37 @@
                         wd.buildDependencyRelation(
                             [
                                 [
-                                    sabRelativePath,
-                                    rabRelativePath,
-
+                                    sab1RelativePath,
+                                    rab1RelativePath,
+                                    rab2RelativePath
+                                ],
+                                [
+                                    rab1RelativePath,
+                                    rab3RelativePath
+                                ],
+                                [
+                                    rab2RelativePath,
+                                    rab3RelativePath
                                 ]
                             ]
                         ),
                         [
-                            [[
-                                sabRelativePath, sab
-                            ]],
-                            [[
-                                rabRelativePath, rab
-                            ]],
+                            [
+                                [
+                                    sab1RelativePath, sab1
+                                ]
+                            ],
+                            [
+                                [
+                                    rab1RelativePath, rab1
+                                ],
+                                [
+                                    rab2RelativePath, rab2
+                                ],
+                                [
+                                    rab3RelativePath, rab3
+                                ]
+                            ]
                         ]
                     )
                         .subscribe(
@@ -306,6 +651,16 @@
                                         newRabDataArr[0][1],
 
                                         "newRAB1.rab",
+                                    );
+                                    AssetTool.download(
+                                        newRabDataArr[1][1],
+
+                                        "newRAB2.rab",
+                                    );
+                                    AssetTool.download(
+                                        newRabDataArr[2][1],
+
+                                        "newRAB3.rab",
                                     );
 
 
