@@ -101,7 +101,7 @@ let dynamicLoadAB = needRewriteAPI => {
          |> ignore;
 
          MostUtils.concatExecStreamArr([|
-           () =>
+           (.) =>
              ImportABSystem.RAB.loadAndAssembleAllDependencyRAB(
                abRelativePath,
                manifest,
@@ -114,7 +114,7 @@ let dynamicLoadAB = needRewriteAPI => {
                ),
                /* state, */
              ),
-           () =>
+           (.) =>
              ImportABSystem.SAB.loadSABAndSetToState(
                abRelativePath,
                manifest,
@@ -154,21 +154,25 @@ let goToNextScene = (wabRelativePath, sabRelativePath, needRewriteAPI) => {
         state,
       ),
     )
-    |> Most.tap(sceneGameObject => {
-         let state =
-           StateDataMainService.unsafeGetState(StateDataMain.stateData);
+    |> Most.subscribe({
+         "next": sceneGameObject => {
+           let state =
+             StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
-         let state = state |> GameObjectAPI.initGameObject(sceneGameObject);
+           let state = state |> GameObjectAPI.initGameObject(sceneGameObject);
 
-         let state =
-           state
-           |> ImportABSystem.disposeSceneAllChildren
-           |> ImportABSystem.setSABSceneGameObjectToBeScene(sceneGameObject);
+           let state =
+             state
+             |> ImportABSystem.disposeSceneAllChildren
+             |> ImportABSystem.setSABSceneGameObjectToBeScene(sceneGameObject);
 
-         StateDataMainService.setState(StateDataMain.stateData, state)
-         |> ignore;
+           StateDataMainService.setState(StateDataMain.stateData, state)
+           |> ignore;
+         },
+         "error": e => _handleStreamError(e),
+         "complete": () => (),
        })
-    |> Most.map(_ => ()) :
+    |> ignore :
     /* let sabAllGameObjects =
          OperateSABAssetBundleMainService.unsafeFindAllGameObjects(
            sabRelativePath,
@@ -190,7 +194,8 @@ let goToNextScene = (wabRelativePath, sabRelativePath, needRewriteAPI) => {
     /* wait for finish */
     /* TODO show loading bar? */
     /* state; */
-    Most.empty();
+    /* Most.empty(); */
+    ();
 };
 /* let sabRelativePath = "sab/a.sab"; */
 

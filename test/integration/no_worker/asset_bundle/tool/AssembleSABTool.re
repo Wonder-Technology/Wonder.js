@@ -15,13 +15,13 @@ module TestWithOneSABAndOneRAB = {
       );
 
     MostUtils.concatExecStreamArr([|
-      () =>
+      (.) =>
         AssembleABSystem.RAB.assemble(
           rab1RelativePath,
           newRab1,
           wholeDependencyRelationMap,
         ),
-      () =>
+      (.) =>
         AssembleABSystem.SAB.assemble(
           sab1RelativePath,
           newSab1,

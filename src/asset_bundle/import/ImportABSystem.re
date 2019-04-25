@@ -134,29 +134,25 @@ module RAB = {
       abRelativePath,
       wholeDependencyRelationMap,
     )
-    |> Js.Array.map(
-         (
-           rabRelativePathArr,
-           /* let state = StateDataMainService.unsafeGetState(StateDataMain.stateData); */
-           (),
-         ) =>
-         rabRelativePathArr
-         |> Js.Array.map(rabRelativePath =>
-              _loadAndAssembleRAB(
-                rabRelativePath,
-                wholeManifest,
-                wholeDependencyRelationMap,
-                (
-                  getAssetBundlePathFunc,
-                  isAssetBundleArrayBufferCachedFunc,
-                  getAssetBundleArrayBufferCacheFunc,
-                  cacheAssetBundleArrayBufferFunc,
-                  fetchFunc,
-                ),
+    |> Js.Array.map(rabRelativePathArr =>
+         (.) =>
+           rabRelativePathArr
+           |> Js.Array.map(rabRelativePath =>
+                _loadAndAssembleRAB(
+                  rabRelativePath,
+                  wholeManifest,
+                  wholeDependencyRelationMap,
+                  (
+                    getAssetBundlePathFunc,
+                    isAssetBundleArrayBufferCachedFunc,
+                    getAssetBundleArrayBufferCacheFunc,
+                    cacheAssetBundleArrayBufferFunc,
+                    fetchFunc,
+                  ),
+                )
               )
-            )
-         /* TODO need test in run test */
-         |> Most.mergeArray
+           /* TODO need test in run test */
+           |> Most.mergeArray
        )
     |> MostUtils.concatExecStreamArr;
     /* |> WonderCommonlib.ArrayService.reduceOneParam(

@@ -37,6 +37,9 @@ let create = () => {
       GameObjectAPI.disposeGameObject(gameObject, state),
   "initGameObject":
     (. gameObject, state) => GameObjectAPI.initGameObject(gameObject, state),
+  "getAllGameObjects":
+    (. gameObject, state) =>
+      GameObjectAPI.getAllGameObjects(gameObject, state),
   "findGameObjectsByName":
     (. name, state) => SceneAPI.findGameObjectsByName(name, state),
   "unsafeGetState": () =>
@@ -46,11 +49,6 @@ let create = () => {
       StateDataMainService.setState(StateDataMain.stateData, state),
   "concatExecStreamArr":
     (. streamArr) => MostUtils.concatExecStreamArr(streamArr),
-  "flatMapStream": (. handle, stream) => Most.flatMap(handle, stream),
-  "subscribeStream": (. observer) => Most.subscribe(observer),
-  "tapStream": (. handle, stream) => Most.tap(handle, stream),
-  "mapStream": (. handle, stream) => Most.map(handle, stream),
-  "emptyStream": () => Most.empty(),
   "getAssetBundlePath": () => LoadABSystem.getAssetBundlePath(),
   "isAssetBundleArrayBufferCached":
     (. abRelativePath, hashId) =>

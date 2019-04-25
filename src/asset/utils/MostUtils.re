@@ -6,11 +6,9 @@ external fromWorkerEvent:
   "fromEvent";
 
 let _isFromEventStream = [%bs.raw
-  {|
-  function(stream) {
+  stream => {|
     var source = stream.source;
     return !!source.event && !!source.source;
-  }
   |}
 ];
 
@@ -65,7 +63,8 @@ let concatStreamFuncArray = (stateData, streamFuncArr) => {
      );
 };
 
-let concatExecStreamArr = streamArr =>
+let concatExecStreamArr =
+    (streamArr: array((. unit) => WonderBsMost.Most.stream(unit))) =>
   switch (Js.Array.length(streamArr)) {
   | 0 => WonderBsMost.Most.just(Obj.magic(1))
   | _ =>
@@ -75,10 +74,10 @@ let concatExecStreamArr = streamArr =>
          (. stream1, buildStream2Func) =>
            /* let stream1 =  */
            _isFromEventStream(stream1) === true ?
-             stream1 |> concatMap(() => buildStream2Func()) :
-             stream1 |> concatMap(() => buildStream2Func()),
+             stream1 |> concatMap(() => buildStream2Func(.)) :
+             stream1 |> concatMap(() => buildStream2Func(.)),
          /* stream1 |> concat(stream2) : stream1 |> concat(stream2) */
-         (streamArr[0])(),
+         (Array.unsafe_get(streamArr, 0))(.),
        )
   };
 

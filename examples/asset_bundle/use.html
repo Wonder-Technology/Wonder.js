@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>cube</title>
+</head>
+
+<body>
+    <script src="../../test/e2e/js/AssetTool.js"></script>
+    <script src="../../test/e2e/js/BasicBoxesTool.js"></script>
+    <script src="../../test/e2e/js/LightBoxesTool.js"></script>
+    <script src="../../test/e2e/js/PositionTool.js"></script>
+    <script src="../../test/e2e/js/LightTool.js"></script>
+    <script src="../../test/e2e/js/CameraTool.js"></script>
+    <script src="../../test/e2e/js/LightMaterialTool.js"></script>
+    <script src="../../dist/wd.js"></script>
+
+    <script>
+
+        window.onload = function () {
+            return AssetTool.loadConfig(["../config/setting.json", "../config/"], null, function () {
+
+
+                // var image = new Image();
+                // image.src = "../asset/image/2.png";
+
+                // image.onload = function () {
+                //     var imageName = "image_2";
+                //     var mimeType = "image/png";
+
+                //     image.name = imageName;
+
+
+                //     return initSample(
+                //         image,
+                //         imageName,
+                //         _convertImageToUint8Array(image, mimeType),
+                //         mimeType,
+                //         wd.unsafeGetState());
+
+                // };
+
+
+                return initSample(
+                    wd.unsafeGetState());
+
+
+
+
+            });
+
+
+            function _init1(script, api, state) {
+
+                // var loadAssetBundle = api.loadAssetBundle;
+                // var flatMapStream = api.flatMapStream;
+
+                var abRelativePath = "sab1.sab";
+
+
+                var wabRelativePath = "wab1.wab";
+
+
+
+
+                api.loadAssetBundle(
+                    wabRelativePath
+                ).flatMap((wab) => {
+                    console.log("wab: ", wab);
+
+                    var manifest = api.parseWABManifest(
+                        wab
+                    );
+
+
+                    var wholeDependencyRelationMap =
+                        api.getWholeDependencyRelationMap(manifest);
+
+                    var state = api.unsafeGetState();
+
+
+                    var state =
+                        api.setWholeDependencyRelationMap(
+                            wabRelativePath,
+                            wholeDependencyRelationMap, state
+                        );
+
+                    api.setState(state);
+
+
+                    return api.concatExecStreamArr(
+                        [() =>
+                            api.loadAndAssembleAllDependencyRAB(
+                                abRelativePath,
+                                manifest,
+                                [
+                                    api.getAssetBundlePath,
+                                    api.isAssetBundleArrayBufferCached,
+                                    api.getAssetBundleArrayBufferCache,
+                                    api.cacheAssetBundleArrayBuffer
+                                ]
+
+                            ),
+                        () =>
+                            api.loadSABAndSetToState(
+                                abRelativePath,
+                                manifest,
+                                [
+                                    api.getAssetBundlePath,
+                                    api.isAssetBundleArrayBufferCached,
+                                    api.getAssetBundleArrayBufferCache,
+                                    api.cacheAssetBundleArrayBuffer
+                                ]
+
+                            )
+                        ]
+                    )
+                })
+                    .subscribe({
+                        "next": _ => {
+                            console.log("next")
+                        },
+                        "error": e => {
+                            console.log("error: ", e);
+                        },
+                        "complete": () => {
+                            console.log("complete");
+                        }
+
+                    });
+
+
+                // var scriptAttribute2 =
+                //     api.unsafeGetScriptAttribute(
+                //         script,
+                //         "scriptAttribute2",
+                //         state
+                //     );
+
+                // var a = api.unsafeGetScriptAttributeFieldValue(
+                //     "a",
+                //     scriptAttribute2
+                // );
+
+                // console.log("init->a: ", a)
+
+
+                setTimeout(() => {
+                    var wabRelativePath = "wab1.wab";
+                    var sabRelativePath = "sab1.sab";
+
+                    var state = api.unsafeGetState();
+
+                    if (api.isSABLoaded(
+                        sabRelativePath, state
+                    )) {
+                        api.assembleSAB(
+                            sabRelativePath,
+
+                            api.unsafeGetLoadedSAB(
+                                sabRelativePath, state
+                            ),
+                            api.unsafeGetWholeDependencyRelationMap(
+                                wabRelativePath, state
+                            )
+                        ).
+
+                            subscribe(
+                                {
+                                    "next": (sceneGameObject) => {
+                                        var state = api.unsafeGetState();
+
+
+                                        var allGameObjects = api.getAllGameObjects(sceneGameObject, state);
+
+                                        var state =
+                                            allGameObjects.reduce((state, gameObject) => {
+                                                return api.initGameObject(
+                                                    gameObject, state
+                                                );
+                                            }, state);
+
+
+                                        var state =
+                                            api.disposeSceneAllChildren(state);
+
+                                        var state =
+                                            api.setSABSceneGameObjectToBeScene(sceneGameObject, state);
+
+                                        api.setState(state);
+                                    },
+                                    "error": e => {
+                                        console.log("error: ", e);
+                                    },
+                                    "complete": () => {
+                                        console.log("complete");
+                                    }
+
+                                }
+
+
+                            )
+                    }
+                    else {
+                        console.log("sab not loaded! need wait")
+                    }
+
+                }, 500);
+
+                return state
+            };
+
+
+            function _addScript(box, state) {
+                var [state, scriptComponent] = wd.createScript(state);
+
+                var scriptEventFunctionData1 =
+                    wd.createScriptEventFunctionData(
+                        // "scriptEventFunctionData1"
+                        {
+                            "init": (script, api, state) => {
+                                return _init1(script, api, state);
+                            }
+                        }
+                    );
+
+
+                // var scriptEventFunctionData1 =
+                //     wd.addScriptEventFunctionData(
+                //         "update",
+                //         (script, api, state) => {
+                //             return _update1(script, api, state);
+                //         },
+
+                //         scriptEventFunctionData1
+                //     );
+
+
+
+
+                var state =
+                    wd.addScriptEventFunctionData(
+                        scriptComponent,
+                        "scriptEventFunctionData1",
+                        scriptEventFunctionData1,
+                        state
+
+                    );
+
+
+                var state =
+                    wd.addGameObjectScriptComponent(
+                        box, scriptComponent, state
+                    );
+
+                return state;
+            };
+
+
+            function initSample(
+                state) {
+
+                var [state, box] = BasicBoxesTool.createBox(state);
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(box, state);
+
+                var state = wd.setTransformLocalPosition(transform, [-10, 0, 0], state);
+
+
+                // var record = wd.createBasicSourceTexture(state)
+                // var state = record[0];
+                // var texture1 = record[1];
+                // var textureName = "texture1";
+                // var state =
+                //     wd.setBasicSourceTextureName(
+                //         texture1, textureName, state
+                //     );
+                // var state = wd.setBasicSourceTextureSource(texture1, image, state);
+
+
+
+                // var [state, sphere, sphereGeometry] = createSphere(texture1, state);
+
+
+                var state = wd.setAmbientLightColor([0.2, 0.2, 0.2], state);
+
+
+                var [state, directionLightGameObject] = LightTool.createDirectionLight(state);
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(directionLightGameObject, state);
+
+                var state = wd.setTransformLocalEulerAngles(transform, [0, 180, 0], state);
+
+
+
+
+                var [state, cameraGameObject] = LightBoxesTool.createCamera(state);
+
+
+
+                var [state, cameraController] = wd.createArcballCameraController(state);
+
+                var state =
+                    wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+
+
+                var state =
+                    wd.setArcballCameraControllerWheelSpeed(cameraController, 1, state);
+
+                var state = wd.addGameObjectArcballCameraControllerComponent(cameraGameObject, cameraController, state);
+
+
+                var state =
+                    wd.bindArcballCameraControllerEvent(
+                        cameraController, state
+                    );
+
+
+
+
+
+
+
+                var state = _addScript(box, state);
+
+
+
+
+                var state = wd.addSceneChildren(
+                    [
+                        // sphere,
+                        box,
+                        cameraGameObject,
+                        directionLightGameObject
+                    ],
+                    state
+                );
+
+
+                wd.startDirector(state);
+
+
+
+
+                // setTimeout(() => {
+                //     var state = wd.unsafeGetState();
+
+
+
+
+                //     var [state, rab] =
+                //         wd.generateSingleRAB(
+                //             wd.buildResourceData(
+                //                 [],
+                //                 [],
+                //                 [
+                //                     [
+                //                         texture1,
+                //                         0
+                //                     ]
+                //                 ],
+                //                 [
+                //                     sphereGeometry
+                //                 ],
+                //                 [],
+                //                 [],
+                //                 [
+                //                     [
+                //                         imageUint8Array,
+                //                         imageName, mimeType
+                //                     ]
+                //                 ],
+                //             ),
+                //             state
+                //         );
+
+
+
+
+
+
+
+
+
+                //     var [state, sab] =
+                //         wd.generateSingleSAB(
+                //             wd.getSceneGameObject(state),
+                //             [],
+                //             state
+                //         );
+
+                //     var rabRelativePath = "rab1.rab";
+                //     var sabRelativePath = "sab1.sab";
+
+                //     wd.setState(state);
+
+                //     wd.generateAllABs(
+                //         wd.buildDependencyRelation(
+                //             [
+                //                 [
+                //                     sabRelativePath,
+                //                     rabRelativePath,
+
+                //                 ]
+                //             ]
+                //         ),
+                //         [
+                //             [[
+                //                 sabRelativePath, sab
+                //             ]],
+                //             [[
+                //                 rabRelativePath, rab
+                //             ]],
+                //         ]
+                //     )
+                //         .subscribe(
+                //             {
+                //                 "next": (
+                //                     [
+                //                         wab,
+                //                         newRabDataArr,
+                //                         newSabDataArr
+                //                     ]
+                //                 ) => {
+                //                     console.log("next",
+                //                         wab,
+                //                         newRabDataArr,
+                //                         newSabDataArr
+                //                     );
+
+
+
+                //                     AssetTool.download(
+                //                         wab,
+
+                //                         "wab1.wab",
+                //                     );
+
+
+                //                     AssetTool.download(
+                //                         newRabDataArr[0][1],
+
+                //                         "newRAB1.rab",
+                //                     );
+
+
+                //                     AssetTool.download(
+                //                         newSabDataArr[0][1],
+
+                //                         "newSAB1.sab",
+                //                     );
+
+                //                 },
+                //                 "error": e => {
+                //                     console.log("error", e);
+                //                 },
+                //                 "complete": () => {
+                //                     console.log("complete");
+                //                 },
+                //             }
+                //         )
+
+
+
+                // }, 500)
+            }
+        };
+    </script>
+</body>
+
+</html>

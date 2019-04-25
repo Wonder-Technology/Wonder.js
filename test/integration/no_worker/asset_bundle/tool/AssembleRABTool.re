@@ -33,13 +33,13 @@ module TestWithTwoRABs = {
       );
 
     MostUtils.concatExecStreamArr([|
-      () =>
+      (.) =>
         AssembleABSystem.RAB.assemble(
           rab1RelativePath,
           newRab1,
           wholeDependencyRelationMap,
         ),
-      () =>
+      (.) =>
         AssembleABSystem.RAB.assemble(
           rab2RelativePath,
           newRab2,
