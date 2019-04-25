@@ -140,10 +140,10 @@ let setGeometryData =
     );
 
   let texCoords =
-    normal |> OptionService.isJsonSerializedValueNone ?
+    texCoord |> OptionService.isJsonSerializedValueNone ?
       _makeEmptyAttributePoints() :
       getBufferAttributeData(
-        normal |> OptionService.unsafeGetJsonSerializedValue,
+        texCoord |> OptionService.unsafeGetJsonSerializedValue,
         dataViewArr,
         wd,
       );
