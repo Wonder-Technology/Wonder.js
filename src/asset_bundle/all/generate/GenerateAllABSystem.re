@@ -79,6 +79,18 @@ let _checkCircleDependency = dependencyRelation =>
 
    }; */
 
+let buildDependencyRelation = dependencyRelationArrArr =>
+  dependencyRelationArrArr
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. relationMap, dependencyRelationArr) =>
+         relationMap
+         |> WonderCommonlib.ImmutableHashMapService.set(
+              dependencyRelationArr |> ArrayService.unsafeGetFirst,
+              dependencyRelationArr |> Js.Array.sliceFrom(1),
+            ),
+       WonderCommonlib.ImmutableHashMapService.createEmpty(),
+     );
+
 let generate = (dependencyRelation, (sabDataArr, rabDataArr)) => {
   _checkCircleDependency(dependencyRelation);
 

@@ -1,3 +1,13 @@
+let buildDependencyRelation = GenerateAllABAPI.buildDependencyRelation;
+
+let generateAllABs = GenerateAllABAPI.generateAllABs;
+
+let buildResourceData = GenerateSingleRABAPI.buildResourceData;
+
+let generateSingleRAB = GenerateSingleRABAPI.generateSingleRAB;
+
+let generateSingleSAB = GenerateSingleSABAPI.generateSingleSAB;
+
 let assembleStreamWDB = AssembleStreamWDBAPI.assembleStreamWDB;
 
 let assembleWholeWDB = AssembleWholeWDBAPI.assembleWholeWDB;
