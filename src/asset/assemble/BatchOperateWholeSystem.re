@@ -90,14 +90,15 @@ let batchOperate =
       ),
     ) => {
   let state =
-    state
-    |> BatchOperateSystem.batchSetNames(
-         (gameObjectArr, basicSourceTextureArr),
-         (gameObjects, basicSourceTextures),
-         (geometrys, geometryArr),
-       )
-    |> BatchOperateSystem.batchSetIsActive(gameObjectArr, gameObjects)
-    |> BatchOperateSystem.batchSetIsRoot(gameObjectArr, gameObjects);
+    BatchOperateSystem.batchSetNamesAndGameObjectIsActiveAndIsRoot(
+      wd,
+      (
+        state,
+        gameObjectArr,
+        (transformArr, geometryArr),
+        basicSourceTextureArr,
+      ),
+    );
 
   let (
     (
@@ -172,79 +173,55 @@ let batchOperate =
 
   (
     state
-    |> BatchOperateSystem.batchSetTransformData(wd, gameObjectTransforms)
-    |> BatchOperateSystem.batchSetTransformParent(
-         parentTransforms,
-         childrenTransforms,
+    |> BatchOperateSystem.batchSetComponentData(
+         wd,
+         (isBindEvent, isActiveCamera),
+         (
+           transformArr,
+           geometryArr,
+           meshRendererArr,
+           basicCameraViewArr,
+           perspectiveCameraProjectionArr,
+           arcballCameraControllerArr,
+           basicMaterialArr,
+           lightMaterialArr,
+           directionLightArr,
+           pointLightArr,
+           scriptArr,
+         ),
+         (parentTransforms, childrenTransforms, gameObjectTransforms),
        )
     |> _batchSetGeometryData(wd, geometryArr, bufferArr)
-    |> BatchOperateSystem.batchSetBasicCameraViewData(
+    |> BatchOperateSystem.batchAddComponent(
          wd,
-         basicCameraViewArr,
-         isActiveCamera,
-       )
-    |> BatchOperateSystem.batchSetPerspectiveCameraProjectionData(
-         wd,
-         perspectiveCameraProjectionArr,
-       )
-    |> BatchOperateSystem.batchSetArcballCameraControllerData(
-         wd,
-         arcballCameraControllerArr,
-         isBindEvent,
-       )
-    |> BatchOperateSystem.batchSetMeshRendererData(wd, meshRendererArr)
-    |> BatchOperateSystem.batchSetBasicMaterialData(wd, basicMaterialArr)
-    |> BatchOperateSystem.batchSetLightMaterialData(wd, lightMaterialArr)
-    |> BatchOperateSystem.batchSetScriptData(wd, scriptArr)
-    |> BatchOperateLightSystem.batchSetDirectionLightData(
-         wd,
-         directionLightArr,
-       )
-    |> BatchOperateLightSystem.batchSetPointLightData(wd, pointLightArr)
-    |> BatchOperateLightSystem.setAmbientLightData(wd)
-    |> BatchAddGameObjectComponentMainService.batchAddTransformComponentForCreate(
-         transformGameObjects,
-         gameObjectTransforms,
+         (
+           transformGameObjects,
+           gameObjectTransforms,
+           geometryGameObjects,
+           gameObjectGeometrys,
+           basicCameraViewGameObjects,
+           gameObjectBasicCameraViews,
+           perspectiveCameraProjectionGameObjects,
+           gameObjectPerspectiveCameraProjection,
+           arcballCameraControllerGameObjects,
+           gameObjectArcballCameraController,
+           basicMaterialGameObjects,
+           gameObjectBasicMaterials,
+           lightMaterialGameObjects,
+           gameObjectLightMaterials,
+           meshRendererGameObjects,
+           gameObjectMeshRenderers,
+           directionLightGameObjects,
+           gameObjectDirectionLights,
+           pointLightGameObjects,
+           gameObjectPointLights,
+           scriptGameObjects,
+           gameObjectScripts,
+         ),
        )
     |> BatchAddGameObjectComponentMainService.batchAddGeometryComponentForCreate(
          geometryGameObjects,
          gameObjectGeometrys,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddBasicCameraViewComponentForCreate(
-         basicCameraViewGameObjects,
-         gameObjectBasicCameraViews,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddPerspectiveCameraProjectionComponentForCreate(
-         perspectiveCameraProjectionGameObjects,
-         gameObjectPerspectiveCameraProjection,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddArcballCameraControllerComponentForCreate(
-         arcballCameraControllerGameObjects,
-         gameObjectArcballCameraController,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddBasicMaterialComponentForCreate(
-         basicMaterialGameObjects,
-         gameObjectBasicMaterials,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForCreate(
-         lightMaterialGameObjects,
-         gameObjectLightMaterials,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddMeshRendererComponentForCreate(
-         meshRendererGameObjects,
-         gameObjectMeshRenderers,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddDirectionLightComponentForCreate(
-         directionLightGameObjects,
-         gameObjectDirectionLights,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddPointLightComponentForCreate(
-         pointLightGameObjects,
-         gameObjectPointLights,
-       )
-    |> BatchAddGameObjectComponentMainService.batchAddScriptComponentForCreate(
-         scriptGameObjects,
-         gameObjectScripts,
        )
     |> BatchSetWholeTextureAllDataSystem.batchSet(basicSourceTextureData),
     imageUint8ArrayDataMap,

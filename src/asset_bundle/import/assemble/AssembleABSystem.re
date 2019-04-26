@@ -255,14 +255,15 @@ module SAB = {
         ),
       ) => {
     let state =
-      state
-      |> BatchOperateSystem.batchSetNames(
-           (gameObjectArr, basicSourceTextureArr),
-           (gameObjects, basicSourceTextures),
-           (geometrys, geometryArr),
-         )
-      |> BatchOperateSystem.batchSetIsActive(gameObjectArr, gameObjects)
-      |> BatchOperateSystem.batchSetIsRoot(gameObjectArr, gameObjects);
+      BatchOperateSystem.batchSetNamesAndGameObjectIsActiveAndIsRoot(
+        sceneAssetBundleContent,
+        (
+          state,
+          gameObjectArr,
+          (transformArr, geometryArr),
+          basicSourceTextureArr,
+        ),
+      );
 
     let (
       (
@@ -337,103 +338,59 @@ module SAB = {
 
     (
       state
-      |> BatchOperateSystem.batchSetTransformData(
+      |> BatchOperateSystem.batchSetComponentData(
            sceneAssetBundleContent,
-           gameObjectTransforms,
-         )
-      |> BatchOperateSystem.batchSetTransformParent(
-           parentTransforms,
-           childrenTransforms,
+           (true, true),
+           (
+             transformArr,
+             geometryArr,
+             meshRendererArr,
+             basicCameraViewArr,
+             perspectiveCameraProjectionArr,
+             arcballCameraControllerArr,
+             basicMaterialArr,
+             lightMaterialArr,
+             directionLightArr,
+             pointLightArr,
+             scriptArr,
+           ),
+           (parentTransforms, childrenTransforms, gameObjectTransforms),
          )
       |> _batchSetGeometryData(
            sceneAssetBundleContent,
            geometryArr,
            bufferArr,
          )
-      |> BatchOperateSystem.batchSetBasicCameraViewData(
+      |> BatchOperateSystem.batchAddComponent(
            sceneAssetBundleContent,
-           basicCameraViewArr,
-           /* isActiveCamera, */
-           true,
-         )
-      |> BatchOperateSystem.batchSetPerspectiveCameraProjectionData(
-           sceneAssetBundleContent,
-           perspectiveCameraProjectionArr,
-         )
-      |> BatchOperateSystem.batchSetArcballCameraControllerData(
-           sceneAssetBundleContent,
-           arcballCameraControllerArr,
-           /* isBindEvent, */
-           true,
-         )
-      |> BatchOperateSystem.batchSetMeshRendererData(
-           sceneAssetBundleContent,
-           meshRendererArr,
-         )
-      |> BatchOperateSystem.batchSetBasicMaterialData(
-           sceneAssetBundleContent,
-           basicMaterialArr,
-         )
-      |> BatchOperateSystem.batchSetLightMaterialData(
-           sceneAssetBundleContent,
-           lightMaterialArr,
-         )
-      |> BatchOperateSystem.batchSetScriptData(
-           sceneAssetBundleContent,
-           scriptArr,
-         )
-      |> BatchOperateLightSystem.batchSetDirectionLightData(
-           sceneAssetBundleContent,
-           directionLightArr,
-         )
-      |> BatchOperateLightSystem.batchSetPointLightData(
-           sceneAssetBundleContent,
-           pointLightArr,
-         )
-      |> BatchOperateLightSystem.setAmbientLightData(sceneAssetBundleContent)
-      |> BatchAddGameObjectComponentMainService.batchAddTransformComponentForCreate(
-           transformGameObjects,
-           gameObjectTransforms,
+           (
+             transformGameObjects,
+             gameObjectTransforms,
+             geometryGameObjects,
+             gameObjectGeometrys,
+             basicCameraViewGameObjects,
+             gameObjectBasicCameraViews,
+             perspectiveCameraProjectionGameObjects,
+             gameObjectPerspectiveCameraProjection,
+             arcballCameraControllerGameObjects,
+             gameObjectArcballCameraController,
+             basicMaterialGameObjects,
+             gameObjectBasicMaterials,
+             lightMaterialGameObjects,
+             gameObjectLightMaterials,
+             meshRendererGameObjects,
+             gameObjectMeshRenderers,
+             directionLightGameObjects,
+             gameObjectDirectionLights,
+             pointLightGameObjects,
+             gameObjectPointLights,
+             scriptGameObjects,
+             gameObjectScripts,
+           ),
          )
       |> BatchAddGameObjectComponentMainService.batchAddGeometryComponentForCreate(
            geometryGameObjects,
            gameObjectGeometrys,
-         )
-      |> BatchAddGameObjectComponentMainService.batchAddBasicCameraViewComponentForCreate(
-           basicCameraViewGameObjects,
-           gameObjectBasicCameraViews,
-         )
-      |> BatchAddGameObjectComponentMainService.batchAddPerspectiveCameraProjectionComponentForCreate(
-           perspectiveCameraProjectionGameObjects,
-           gameObjectPerspectiveCameraProjection,
-         )
-      |> BatchAddGameObjectComponentMainService.batchAddArcballCameraControllerComponentForCreate(
-           arcballCameraControllerGameObjects,
-           gameObjectArcballCameraController,
-         )
-      |> BatchAddGameObjectComponentMainService.batchAddBasicMaterialComponentForCreate(
-           basicMaterialGameObjects,
-           gameObjectBasicMaterials,
-         )
-      |> BatchAddGameObjectComponentMainService.batchAddLightMaterialComponentForCreate(
-           lightMaterialGameObjects,
-           gameObjectLightMaterials,
-         )
-      |> BatchAddGameObjectComponentMainService.batchAddMeshRendererComponentForCreate(
-           meshRendererGameObjects,
-           gameObjectMeshRenderers,
-         )
-      |> BatchAddGameObjectComponentMainService.batchAddDirectionLightComponentForCreate(
-           directionLightGameObjects,
-           gameObjectDirectionLights,
-         )
-      |> BatchAddGameObjectComponentMainService.batchAddPointLightComponentForCreate(
-           pointLightGameObjects,
-           gameObjectPointLights,
-         )
-      |> BatchAddGameObjectComponentMainService.batchAddScriptComponentForCreate(
-           scriptGameObjects,
-           gameObjectScripts,
          )
       |> BatchSetWholeTextureAllDataSystem.batchSet(basicSourceTextureData),
       /* imageUint8ArrayDataMap, */
@@ -917,18 +874,6 @@ module RAB = {
                    );
 
                  (state, geometry);
-                 /* let state =
-                    ABBufferViewUtils.isNoneBufferViewIndex(vertexBufferView) ?
-                      state :
-                      VerticesGeometryMainService.setVerticesByTypeArray(
-                        geometry,
-                        VerticesGeometryMainService.getVertices(.
-                          geometry,
-                          state,
-                        ),
-                        state,
-                      );
-                       */
                };
 
            (

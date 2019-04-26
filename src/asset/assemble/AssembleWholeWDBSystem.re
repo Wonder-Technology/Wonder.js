@@ -49,7 +49,7 @@ let _buildImageArray = (isLoadImage, {images, bufferViews}: wd, binBuffer) => {
                     AssembleUtils.buildLoadImageStream(
                       arrayBuffer,
                       mimeType,
-                      {j|load image error. imageIndex: $imageIndex|j},
+                      {j|load image error. imageName: $name|j},
                     )
                     |> WonderBsMost.Most.tap(image => {
                          ImageUtils.setImageName(image, name);

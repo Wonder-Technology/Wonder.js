@@ -134,8 +134,8 @@ let _splitLoadedStreamChunkArrByJudgeHasAllGeometryPointDataOrHasImageData =
        );
 
   nextStreamChunkIndex === Js.Array.length(streamChunkArr)
-  ||
-  Array.unsafe_get(streamChunkArr, nextStreamChunkIndex).type_ === StreamType.Vertex ?
+  || Array.unsafe_get(streamChunkArr, nextStreamChunkIndex).type_
+  === StreamType.Vertex ?
     (
       [||],
       loadedStreamChunkDataArrWhichHasAllData
@@ -178,7 +178,7 @@ let _loadBlobImageFromImageArrayBufferData =
            AssembleUtils.buildLoadImageStream(
              arrayBuffer,
              mimeType,
-             {j|load image error. imageIndex: $imageIndex|j},
+             {j|load image error. imageName: $name|j},
            )
            |> Most.tap(image => {
                 ImageUtils.setImageName(image, name);
@@ -194,7 +194,10 @@ let _loadBlobImageFromImageArrayBufferData =
                 |> ignore;
 
                 loadBlobImageMap
-                |> WonderCommonlib.MutableSparseMapService.set(imageIndex, image)
+                |> WonderCommonlib.MutableSparseMapService.set(
+                     imageIndex,
+                     image,
+                   )
                 |> ignore;
               })
            |> Most.map(_ => ())
