@@ -28,22 +28,25 @@ let load = (abPath: string, fetchFunc) =>
   |> Most.fromPromise;
 
 /* TODO need rewrite by editor */
-let getAssetBundlePath = () => "";
+let getAssetBundlePath = (.) => "";
 
-let isAssetBundleArrayBufferCached = (abRelativePath: string, hashId: string) =>
-  false;
+let initAssetBundleArrayBufferCache = (.) => Most.empty();
 
-let getAssetBundleArrayBufferCache = (abRelativePath: string): ArrayBuffer.t =>
-  WonderLog.Log.fatal(
-    WonderLog.Log.buildFatalMessage(
-      ~title="getAssetBundleArrayBufferCache",
-      ~description={j|need rewrite|j},
-      ~reason="",
-      ~solution={j||j},
-      ~params={j||j},
-    ),
-  );
+let isAssetBundleArrayBufferCached =
+  (. abRelativePath: string, hashId: string) => Most.just(false);
+
+let getAssetBundleArrayBufferCache =
+  (. abRelativePath: string) =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="getAssetBundleArrayBufferCache",
+        ~description={j|need rewrite|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j},
+      ),
+    );
 
 let cacheAssetBundleArrayBuffer =
-    (abRelativePath: string, ab: ArrayBuffer.t, hashId: string): unit =>
-  ();
+  (. abRelativePath: string, ab: ArrayBuffer.t, hashId: string) =>
+    Most.empty();

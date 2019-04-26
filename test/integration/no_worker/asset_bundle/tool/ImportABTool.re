@@ -56,6 +56,7 @@ module RAB = {
                          (),
                        ),
         ~getAssetBundlePathFunc=(.) => "",
+        ~initAssetBundleArrayBufferCache=LoadABSystem.initAssetBundleArrayBufferCache,
         ~isAssetBundleArrayBufferCachedFunc=LoadABSystem.isAssetBundleArrayBufferCached,
         ~getAssetBundleArrayBufferCacheFunc=LoadABSystem.getAssetBundleArrayBufferCache,
         ~cacheAssetBundleArrayBufferFunc=LoadABSystem.cacheAssetBundleArrayBuffer,
@@ -67,6 +68,7 @@ module RAB = {
       wholeManifest,
       (
         getAssetBundlePathFunc,
+        initAssetBundleArrayBufferCache,
         isAssetBundleArrayBufferCachedFunc,
         getAssetBundleArrayBufferCacheFunc,
         cacheAssetBundleArrayBufferFunc,
@@ -133,6 +135,7 @@ module SAB = {
                          (),
                        ),
         ~getAssetBundlePathFunc=(.) => "",
+        ~initAssetBundleArrayBufferCache=LoadABSystem.initAssetBundleArrayBufferCache,
         ~isAssetBundleArrayBufferCachedFunc=LoadABSystem.isAssetBundleArrayBufferCached,
         ~getAssetBundleArrayBufferCacheFunc=LoadABSystem.getAssetBundleArrayBufferCache,
         ~cacheAssetBundleArrayBufferFunc=LoadABSystem.cacheAssetBundleArrayBuffer,
@@ -145,6 +148,7 @@ module SAB = {
       /* wholeDependencyRelationMap, */
       (
         getAssetBundlePathFunc,
+        initAssetBundleArrayBufferCache,
         isAssetBundleArrayBufferCachedFunc,
         getAssetBundleArrayBufferCacheFunc,
         cacheAssetBundleArrayBufferFunc,

@@ -65,7 +65,7 @@ let _ =
 
              ImportABTool.SAB.loadSABAndSetToState(
                ~sabRelativePath=sab1RelativePath,
-               ~isAssetBundleArrayBufferCachedFunc=(_, _) => false,
+               /* ~isAssetBundleArrayBufferCachedFunc=(_, _) => false, */
                ~fetchFunc=fetch,
                (),
              )
@@ -76,6 +76,40 @@ let _ =
       });
 
       describe("else", () => {
+        testPromise("init cache", () => {
+          let (rab1RelativePath, rab2RelativePath, sab1RelativePath) =
+            ImportABTool.SAB.getABRelativePaths();
+
+          GenerateAllABTool.TestWithTwoRAB.generateTwoRABs(state^)
+          |> then_(((rab1, rab2)) => {
+               let fetch =
+                 _buildFakeFetch(
+                   ~sandbox,
+                   ~arrayBuffer1=rab1,
+                   ~arrayBuffer2=rab2,
+                 );
+
+               let valueRef = ref(0);
+
+               ImportABTool.SAB.loadSABAndSetToState(
+                 ~sabRelativePath=sab1RelativePath,
+                 ~initAssetBundleArrayBufferCache=
+                   (.) => {
+                     valueRef := 2;
+
+                     Most.empty();
+                   },
+                 ~isAssetBundleArrayBufferCachedFunc=
+                   (. _, _) => false |> Most.just,
+                 ~fetchFunc=fetch,
+                 (),
+               )
+               |> MostTool.testStream(() =>
+                    valueRef^ |> expect == 2 |> resolve
+                  );
+             });
+        });
+
         testPromise("if dependency rab is cached, not load it", () => {
           let (rab1RelativePath, rab2RelativePath, sab1RelativePath) =
             ImportABTool.SAB.getABRelativePaths();
@@ -91,8 +125,10 @@ let _ =
 
                ImportABTool.SAB.loadSABAndSetToState(
                  ~sabRelativePath=sab1RelativePath,
-                 ~isAssetBundleArrayBufferCachedFunc=(_, _) => true,
-                 ~getAssetBundleArrayBufferCacheFunc=_ => rab1,
+                 ~isAssetBundleArrayBufferCachedFunc=
+                   (. _, _) => true |> Most.just,
+                 ~getAssetBundleArrayBufferCacheFunc=
+                   (. _) => rab1 |> Most.just,
                  ~fetchFunc=fetch,
                  (),
                )
@@ -119,10 +155,14 @@ let _ =
                  ImportABTool.SAB.loadSABAndSetToState(
                    ~sabRelativePath=sab1RelativePath,
                    ~isAssetBundleArrayBufferCachedFunc=
-                     (abRelativePath, hashId) =>
-                       JudgeTool.isEqual(abRelativePath, rab1RelativePath) ?
-                         true : false,
-                   ~getAssetBundleArrayBufferCacheFunc=_ => rab1,
+                     (. abRelativePath, hashId) =>
+                       (
+                         JudgeTool.isEqual(abRelativePath, rab1RelativePath) ?
+                           true : false
+                       )
+                       |> Most.just,
+                   ~getAssetBundleArrayBufferCacheFunc=
+                     (. _) => rab1 |> Most.just,
                    ~fetchFunc=fetch,
                    (),
                  )
@@ -154,7 +194,7 @@ let _ =
                  ImportABTool.SAB.loadSABAndSetToState(
                    ~sabRelativePath=sab1RelativePath,
                    ~isAssetBundleArrayBufferCachedFunc=
-                     (abRelativePath, hashId) => false,
+                     (. abRelativePath, hashId) => false |> Most.just,
                    ~fetchFunc=fetch,
                    (),
                  )
@@ -187,7 +227,7 @@ let _ =
                  ImportABTool.SAB.loadSABAndSetToState(
                    ~sabRelativePath=sab1RelativePath,
                    ~isAssetBundleArrayBufferCachedFunc=
-                     (abRelativePath, hashId) => false,
+                     (. abRelativePath, hashId) => false |> Most.just,
                    ~fetchFunc=fetch,
                    (),
                  )

@@ -15,6 +15,8 @@ let _handleStreamError = e => {
 
 let dynamicLoadAB = needRewriteAPI => {
   let getAssetBundlePath = needRewriteAPI##getAssetBundlePath;
+  let initAssetBundleArrayBufferCache =
+    needRewriteAPI##initAssetBundleArrayBufferCache;
   let isAssetBundleArrayBufferCached =
     needRewriteAPI##isAssetBundleArrayBufferCached;
   let getAssetBundleArrayBufferCache =
@@ -54,6 +56,7 @@ let dynamicLoadAB = needRewriteAPI => {
            manifest,
            (
              getAssetBundlePath,
+             initAssetBundleArrayBufferCache,
              isAssetBundleArrayBufferCached,
              getAssetBundleArrayBufferCache,
              cacheAssetBundleArrayBuffer,
@@ -66,6 +69,7 @@ let dynamicLoadAB = needRewriteAPI => {
                 manifest,
                 (
                   getAssetBundlePath,
+                  initAssetBundleArrayBufferCache,
                   isAssetBundleArrayBufferCached,
                   getAssetBundleArrayBufferCache,
                   cacheAssetBundleArrayBuffer,

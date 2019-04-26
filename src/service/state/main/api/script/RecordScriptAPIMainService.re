@@ -73,16 +73,12 @@ let create = () => {
       StateDataMainService.setState(StateDataMain.stateData, state),
   /* "concatExecStreamArr":
      (. streamArr) => MostUtils.concatExecStreamArr(streamArr), */
-  "getAssetBundlePath": (.) => LoadABSystem.getAssetBundlePath(),
-  "isAssetBundleArrayBufferCached":
-    (. abRelativePath, hashId) =>
-      LoadABSystem.isAssetBundleArrayBufferCached(abRelativePath, hashId),
-  "getAssetBundleArrayBufferCache":
-    (. abRelativePath) =>
-      LoadABSystem.getAssetBundleArrayBufferCache(abRelativePath),
-  "cacheAssetBundleArrayBuffer":
-    (. abRelativePath, ab, hashId) =>
-      LoadABSystem.cacheAssetBundleArrayBuffer(abRelativePath, ab, hashId),
+  "fromPromiseStream": (. promise) => Most.fromPromise(promise),
+  "getAssetBundlePath": LoadABSystem.getAssetBundlePath,
+  "initAssetBundleArrayBufferCache": LoadABSystem.initAssetBundleArrayBufferCache,
+  "isAssetBundleArrayBufferCached": LoadABSystem.isAssetBundleArrayBufferCached,
+  "getAssetBundleArrayBufferCache": LoadABSystem.getAssetBundleArrayBufferCache,
+  "cacheAssetBundleArrayBuffer": LoadABSystem.cacheAssetBundleArrayBuffer,
   "loadAssetBundle":
     (. abPath) => LoadABSystem.load(abPath, FetchCommon.fetch),
   "parseWABManifest": (. wab) => ParseABSystem.WAB.parseManifest(wab),
@@ -102,6 +98,7 @@ let create = () => {
       wholeManifest,
       (
         getAssetBundlePathFunc,
+        initAssetBundleArrayBufferCacheFunc,
         isAssetBundleArrayBufferCachedFunc,
         getAssetBundleArrayBufferCacheFunc,
         cacheAssetBundleArrayBufferFunc,
@@ -112,6 +109,7 @@ let create = () => {
         wholeManifest,
         (
           getAssetBundlePathFunc,
+          initAssetBundleArrayBufferCacheFunc,
           isAssetBundleArrayBufferCachedFunc,
           getAssetBundleArrayBufferCacheFunc,
           cacheAssetBundleArrayBufferFunc,
@@ -124,6 +122,7 @@ let create = () => {
       wholeManifest,
       (
         getAssetBundlePathFunc,
+        initAssetBundleArrayBufferCacheFunc,
         isAssetBundleArrayBufferCachedFunc,
         getAssetBundleArrayBufferCacheFunc,
         cacheAssetBundleArrayBufferFunc,
@@ -134,6 +133,7 @@ let create = () => {
         wholeManifest,
         (
           getAssetBundlePathFunc,
+          initAssetBundleArrayBufferCacheFunc,
           isAssetBundleArrayBufferCachedFunc,
           getAssetBundleArrayBufferCacheFunc,
           cacheAssetBundleArrayBufferFunc,

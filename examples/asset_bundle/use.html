@@ -53,8 +53,170 @@
 
 
             function _init1(script, api, state) {
+                var databaseName = "Wonder_Database";
+                var tableName = "Wonder_AssetBundle_Cache";
+                var cacheFieldName = "Cache";
+                var hashIdFieldName = "HashId";
+                var abRelativePathFieldName = "ABRelativePath";
+
+
                 function _getAssetBundlePath() {
                     return "asset_bundle2/";
+                };
+
+                function _initAssetBundleArrayBufferCache() {
+                    if (!!window.db) {
+                        console.log("already init before");
+
+                        return api.fromPromiseStream(
+                            new Promise((resolve) => {
+                                resolve();
+                            }, (reject) => {
+                                reject("error");
+                            })
+                        )
+                    };
+
+
+                    var request = window.indexedDB.open(databaseName);
+
+                    return api.fromPromiseStream(
+                        new Promise((resolve, reject) => {
+                            request.onerror = (event) => {
+                                reject("open database error: ", event.target.errorCode);
+                            };
+
+                            request.onsuccess = (event) => {
+                                var db = event.target.result;
+
+                                console.log("open onsuccess");
+
+                                window.db = db;
+
+                                resolve();
+                            };
+
+                            request.onupgradeneeded = (event) => {
+                                var db = event.target.result;
+
+                                console.log("open onupgradeneeded");
+
+                                if (!db.objectStoreNames.contains(tableName)) {
+                                    var objectStore = db.createObjectStore(
+                                        tableName,
+                                        {
+                                            keyPath: abRelativePathFieldName,
+                                            autoIncrement: false
+                                        }
+                                    );
+
+                                    // objectStore.createIndex(cacheFieldName, cacheFieldName, { unique: false });
+                                    // objectStore.createIndex(hashIdFieldName, hashIdFieldName, { unique: true });
+                                    // objectStore.createIndex(abRelativePathFieldName, abRelativePathFieldName, { unique: true });
+                                }
+                                else {
+                                    reject("database->table error: shouldn't exist table: ", tableName);
+                                }
+                            };
+                        })
+                    )
+                };
+
+
+                function _isAssetBundleArrayBufferCached(abRelativePath, hashId) {
+                    var transaction = window.db.transaction([tableName]);
+                    var objectStore = transaction.objectStore(tableName);
+                    // var abRelativePath = objectStore.index(abRelativePathFieldName);
+                    var request = objectStore.get(abRelativePath);
+
+
+
+                    return api.fromPromiseStream(
+                        new Promise((resolve, reject) => {
+                            request.onerror = (event) => {
+                                reject("error: ", event.target.errorCode);
+                            };
+
+                            request.onsuccess = (event) => {
+                                if (request.result) {
+
+                                    console.log("is cached: ", abRelativePath, request.result[hashIdFieldName] === hashId);
+
+                                    resolve(request.result[hashIdFieldName] === hashId);
+                                } else {
+                                    console.log("get no data");
+
+                                    resolve(false);
+                                }
+                            };
+                        })
+                    )
+                };
+
+
+                function _getAssetBundleArrayBufferCache(abRelativePath) {
+                    var transaction = window.db.transaction([tableName]);
+                    var objectStore = transaction.objectStore(tableName);
+                    // var abRelativePath = objectStore.index(abRelativePathFieldName);
+                    // var request = abRelativePath.get(abRelativePath);
+                    // var abRelativePath = objectStore.index(abRelativePathFieldName);
+                    var request = objectStore.get(abRelativePath);
+
+
+
+                    return api.fromPromiseStream(
+                        new Promise((resolve, reject) => {
+                            request.onerror = (event) => {
+                                reject("error: ", event.target.errorCode);
+                            };
+
+                            request.onsuccess = (event) => {
+                                if (request.result) {
+
+                                    console.log("get cached data:", abRelativePath, request.result[cacheFieldName]);
+
+                                    resolve(request.result[cacheFieldName]);
+                                } else {
+                                    console.log("get no data");
+
+                                    resolve(null);
+                                }
+                            };
+                        })
+                    )
+                };
+
+
+                function _cacheAssetBundleArrayBuffer(abRelativePath, ab, hashId) {
+                    var transaction = window.db.transaction([tableName], "readwrite");
+                    var objectStore = transaction.objectStore(tableName);
+                    // var abRelativePath = objectStore.index(abRelativePathFieldName);
+                    // var request = abRelativePath.get(abRelativePath);
+                    // var request = objectStore.get(abRelativePath);
+                    var data = {};
+                    data[abRelativePathFieldName] = abRelativePath;
+                    data[cacheFieldName] = ab;
+                    data[hashIdFieldName] = hashId;
+
+                    var request =
+                        objectStore.put(
+                            data
+                        );
+
+
+                    return api.fromPromiseStream(
+                        new Promise((resolve, reject) => {
+                            request.onerror = (event) => {
+                                reject("cache fail: ", event.target.errorCode);
+                            };
+
+                            request.onsuccess = (event) => {
+                                console.log("cache success: ", abRelativePath);
+
+                                resolve();
+                            };
+                        })
+                    )
                 };
 
 
@@ -103,9 +265,10 @@
                         manifest,
                         [
                             _getAssetBundlePath,
-                            api.isAssetBundleArrayBufferCached,
-                            api.getAssetBundleArrayBufferCache,
-                            api.cacheAssetBundleArrayBuffer
+                            _initAssetBundleArrayBufferCache,
+                            _isAssetBundleArrayBufferCached,
+                            _getAssetBundleArrayBufferCache,
+                            _cacheAssetBundleArrayBuffer
                         ]
 
                     ).concat(
@@ -114,9 +277,10 @@
                             manifest,
                             [
                                 _getAssetBundlePath,
-                                api.isAssetBundleArrayBufferCached,
-                                api.getAssetBundleArrayBufferCache,
-                                api.cacheAssetBundleArrayBuffer
+                                _initAssetBundleArrayBufferCache,
+                                _isAssetBundleArrayBufferCached,
+                                _getAssetBundleArrayBufferCache,
+                                _cacheAssetBundleArrayBuffer
                             ]
 
                         )

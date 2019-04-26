@@ -1,5 +1,7 @@
 open Wonder_jest;
 
+open Js.Promise;
+
 let _ =
   describe("LoadABSystem", () => {
     open Expect;
@@ -16,25 +18,27 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("isAssetBundleArrayBufferCached", () =>
-      test("return false", () =>
-        LoadABSystem.isAssetBundleArrayBufferCached("", "") |> expect == false
+      testPromise("return false", () =>
+        LoadABSystem.isAssetBundleArrayBufferCached(. "", "")
+        |> MostTool.testStream(result => result |> expect == false |> resolve)
       )
     );
 
     describe("getAssetBundleArrayBufferCache", () =>
       test("fatal", () =>
         expect(() =>
-          LoadABSystem.getAssetBundleArrayBufferCache("")
+          LoadABSystem.getAssetBundleArrayBufferCache(. "")
         )
         |> toThrow
       )
     );
 
     describe("cacheAssetBundleArrayBuffer", () =>
-      test("do nothing", () => {
+      testPromise("do nothing", () => {
         let ab = Obj.magic(-1);
 
-        LoadABSystem.cacheAssetBundleArrayBuffer("", ab, "") |> expect == ();
+        LoadABSystem.cacheAssetBundleArrayBuffer(. "", ab, "")
+        |> MostTool.testStream(() => 1 |> expect == 1 |> resolve);
       })
     );
   });
