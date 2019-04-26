@@ -54,7 +54,7 @@ let _ =
             );
 
           let (state, rab1) =
-            GenerateRABSystem.generateSingleRAB(resourceData1, state);
+            GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
           let (state, gameObject2, transform2, (material2, texture2)) =
             GenerateAllABTool.TestDuplicateDataForSAB.TestDuplicateImageData.createGameObject1(
@@ -72,7 +72,7 @@ let _ =
             GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
           let (state, sab1) =
-            GenerateSABSystem.generateSingleSAB(
+            GenerateSingleSABSystem.generateSingleSAB(
               SceneAPI.getSceneGameObject(state),
               WonderCommonlib.MutableSparseMapService.createEmpty(),
               state,
@@ -151,7 +151,7 @@ let _ =
               );
 
             let (state, rab1) =
-              GenerateRABSystem.generateSingleRAB(resourceData1, state);
+              GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
             let (state, gameObject2, transform2, (material2, texture2)) =
               GenerateAllABTool.TestDuplicateDataForSAB.TestDuplicateImageData.createGameObject1(
@@ -177,7 +177,7 @@ let _ =
               GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
             let (state, sab1) =
-              GenerateSABSystem.generateSingleSAB(
+              GenerateSingleSABSystem.generateSingleSAB(
                 SceneAPI.getSceneGameObject(state),
                 WonderCommonlib.MutableSparseMapService.createEmpty(),
                 state,
@@ -246,7 +246,7 @@ let _ =
           );
 
         let (state, rab1) =
-          GenerateRABSystem.generateSingleRAB(resourceData1, state);
+          GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         let gameObject2Name = "gameObject2";
 
@@ -293,7 +293,7 @@ let _ =
           |> SceneAPI.addSceneChild(transform3);
 
         let (state, sab1) =
-          GenerateSABSystem.generateSingleSAB(
+          GenerateSingleSABSystem.generateSingleSAB(
             SceneAPI.getSceneGameObject(state),
             WonderCommonlib.MutableSparseMapService.createEmpty(),
             state,

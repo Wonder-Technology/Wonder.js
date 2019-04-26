@@ -43,9 +43,9 @@ module RAB = {
     let dataView = DataViewCommon.create(rab);
 
     let (byteOffset, jsonByteLength, bufferByteLength) =
-      DependencyDataUtils.All.readHeader(dataView);
+      GenerateABUtils.readHeader(dataView);
 
-    let jsonStr = DependencyDataUtils.All.getJsonStr(jsonByteLength, rab);
+    let jsonStr = GenerateABUtils.getJsonStr(jsonByteLength, rab);
 
     let resourceAssetBundleContent: RABType.resourceAssetBundleContent =
       jsonStr |> Js.Json.parseExn |> Obj.magic;

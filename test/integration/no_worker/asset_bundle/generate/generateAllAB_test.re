@@ -134,7 +134,7 @@ let _ =
                 );
 
               let (state, rab1) =
-                GenerateRABSystem.generateSingleRAB(resourceData1, state);
+                GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
               let image2 =
                 GenerateSingleRABTool.ResourceData.buildImageData(
@@ -162,7 +162,7 @@ let _ =
                 );
 
               let (state, rab2) =
-                GenerateRABSystem.generateSingleRAB(resourceData2, state);
+                GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
 
               GenerateAllABTool.TestWithTwoRAB.generateAllAB(
                 (rab1, rab2),
@@ -235,7 +235,7 @@ let _ =
                 );
 
               let (state, rab1) =
-                GenerateRABSystem.generateSingleRAB(resourceData1, state);
+                GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
               let image2 =
                 GenerateSingleRABTool.ResourceData.buildImageData(
@@ -263,7 +263,7 @@ let _ =
                 );
 
               let (state, rab2) =
-                GenerateRABSystem.generateSingleRAB(resourceData2, state);
+                GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
 
               GenerateAllABTool.TestWithTwoRAB.generateAllAB(
                 (rab1, rab2),
@@ -361,10 +361,10 @@ let _ =
                 );
 
               let (state, rab1) =
-                GenerateRABSystem.generateSingleRAB(resourceData1, state);
+                GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
               let (state, rab2) =
-                GenerateRABSystem.generateSingleRAB(resourceData2, state);
+                GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
 
               GenerateAllABTool.TestWithTwoRAB.generateAllAB(
                 (rab1, rab2),
@@ -455,7 +455,7 @@ let _ =
                 );
 
               let (state, rab1) =
-                GenerateRABSystem.generateSingleRAB(resourceData1, state);
+                GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
               let (state, gameObject2, transform2, (material2, texture2)) =
                 GenerateAllABTool.TestDuplicateDataForSAB.TestDuplicateImageData.createGameObject1(
@@ -469,7 +469,7 @@ let _ =
                 GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
               let (state, sab1) =
-                GenerateSABSystem.generateSingleSAB(
+                GenerateSingleSABSystem.generateSingleSAB(
                   SceneAPI.getSceneGameObject(state),
                   WonderCommonlib.MutableSparseMapService.createEmpty(),
                   state,
@@ -538,7 +538,7 @@ let _ =
                 );
 
               let (state, rab1) =
-                GenerateRABSystem.generateSingleRAB(resourceData1, state);
+                GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
               let (
                 state,
@@ -556,7 +556,7 @@ let _ =
               let state = state |> SceneAPI.addSceneChild(transform2);
 
               let (state, sab1) =
-                GenerateSABSystem.generateSingleSAB(
+                GenerateSingleSABSystem.generateSingleSAB(
                   SceneAPI.getSceneGameObject(state),
                   WonderCommonlib.MutableSparseMapService.createEmpty(),
                   state,

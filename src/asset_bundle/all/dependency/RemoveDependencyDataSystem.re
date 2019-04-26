@@ -293,10 +293,10 @@ module RAB = {
     let dataView = DataViewCommon.create(rab);
 
     let (byteOffset, jsonByteLength, bufferByteLength) =
-      DependencyDataUtils.All.readHeader(dataView);
+      GenerateABUtils.readHeader(dataView);
 
-    let jsonStr = DependencyDataUtils.All.getJsonStr(jsonByteLength, rab);
-    let buffer = DependencyDataUtils.All.getBuffer(jsonByteLength, rab);
+    let jsonStr = GenerateABUtils.getJsonStr(jsonByteLength, rab);
+    let buffer = GenerateABUtils.getBuffer(jsonByteLength, rab);
 
     let resourceAssetBundleContent: RABType.resourceAssetBundleContent =
       jsonStr |> Js.Json.parseExn |> Obj.magic;
@@ -327,7 +327,7 @@ module RAB = {
       );
 
     let jsonUint8Array =
-      BuildRABJsonDataSystem.buildJsonUint8Array({
+      BuildSingleRABJsonDataSystem.buildJsonUint8Array({
         ...resourceAssetBundleContent,
         images: imageArr,
         geometrys: geometryArr,
@@ -335,7 +335,7 @@ module RAB = {
           Js.Array.concat(geometryBufferViewArr, imageBufferViewArr),
       });
 
-    GenerateRABSystem.generateRAB(
+    GenerateSingleRABSystem.generateRAB(
       (
         (imageBufferViewArr, geometryBufferViewArr),
         imageArrayBufferArr
@@ -441,6 +441,19 @@ module SAB = {
       );
     };
 
+  let _buildAccessorData =
+      (bufferViewArr, imageBufferViewIndex, pointsCount, pointType)
+      : WDType.accessor => {
+    bufferView: (bufferViewArr |> Js.Array.length) + imageBufferViewIndex,
+    byteOffset: GenerateCommon.buildAccessorByteOffset(),
+    count: pointsCount,
+    componentType:
+      BuildGeometryDataSystem.getComponentType(pointType)
+      |> ConvertUtils.convertComponentType,
+    type_:
+      BuildGeometryDataSystem.getType(pointType) |> BufferUtils.convertType,
+  };
+
   let _buildGeometryAttributeBufferData =
       (
         (
@@ -504,18 +517,12 @@ module SAB = {
           buildAccessorIndexFunc(accessorArr |> Js.Array.length),
           accessorArr
           |> ArrayService.push(
-               {
-                 bufferView:
-                   (bufferViewArr |> Js.Array.length) + imageBufferViewIndex,
-                 byteOffset: GenerateCommon.buildAccessorByteOffset(),
-                 count: (points |> Float32Array.length) / pointSize,
-                 componentType:
-                   BuildGeometryDataSystem.getComponentType(pointType)
-                   |> ConvertUtils.convertComponentType,
-                 type_:
-                   BuildGeometryDataSystem.getType(pointType)
-                   |> BufferUtils.convertType,
-               }: WDType.accessor,
+               _buildAccessorData(
+                 bufferViewArr,
+                 imageBufferViewIndex,
+                 (points |> Float32Array.length) / pointSize,
+                 pointType,
+               ),
              ),
           bufferViewArr
           |> ArrayService.push(
@@ -614,18 +621,12 @@ module SAB = {
           accessorArr |> Js.Array.length,
           accessorArr
           |> ArrayService.push(
-               {
-                 bufferView:
-                   (bufferViewArr |> Js.Array.length) + imageBufferViewIndex,
-                 byteOffset: GenerateCommon.buildAccessorByteOffset(),
-                 count: pointsCount,
-                 componentType:
-                   BuildGeometryDataSystem.getComponentType(pointType)
-                   |> ConvertUtils.convertComponentType,
-                 type_:
-                   BuildGeometryDataSystem.getType(pointType)
-                   |> BufferUtils.convertType,
-               }: WDType.accessor,
+               _buildAccessorData(
+                 bufferViewArr,
+                 imageBufferViewIndex,
+                 pointsCount,
+                 pointType,
+               ),
              ),
           bufferViewArr
           |> ArrayService.push(
@@ -876,7 +877,7 @@ module SAB = {
       );
 
     let jsonUint8Array =
-      BuildSABJsonDataSystem.buildJsonUint8Array(
+      BuildSingleSABJsonDataSystem.buildJsonUint8Array(
         {
           ...sceneAssetBundleContent,
           images: imageArr |> Js.Array.length === 0 ? None : Some(imageArr),
@@ -887,7 +888,7 @@ module SAB = {
         }: SABType.sceneAssetBundleContent,
       );
 
-    GenerateSABSystem.generateSAB(
+    GenerateSingleSABSystem.generateSAB(
       (
         (imageBufferViewArr, geometryBufferViewArr),
         imageArrayBufferArr

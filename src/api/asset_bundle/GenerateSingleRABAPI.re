@@ -1,6 +1,6 @@
 open RABType;
 
-let generateSingleRAB = GenerateRABSystem.generateSingleRAB;
+let generateSingleRAB = GenerateSingleRABSystem.generateSingleRAB;
 
 let buildResourceData =
     (

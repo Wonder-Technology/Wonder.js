@@ -11,10 +11,10 @@ module ResourceAssetBundleContent = {
     let dataView = DataViewCommon.create(rab);
 
     let (byteOffset, jsonByteLength, bufferByteLength) =
-      DependencyDataUtils.All.readHeader(dataView);
+      GenerateABUtils.readHeader(dataView);
 
-    let jsonStr = DependencyDataUtils.All.getJsonStr(jsonByteLength, rab);
-    let buffer = DependencyDataUtils.All.getBuffer(jsonByteLength, rab);
+    let jsonStr = GenerateABUtils.getJsonStr(jsonByteLength, rab);
+    let buffer = GenerateABUtils.getBuffer(jsonByteLength, rab);
 
     let resourceAssetBundleContent: RABType.resourceAssetBundleContent =
       jsonStr |> Js.Json.parseExn |> Obj.magic;
@@ -223,7 +223,7 @@ module ResourceData = {
       (
         ~state,
         ~name="geometry1",
-        ~vertices=Float32Array.make([|10.,5.,3.|]),
+        ~vertices=Float32Array.make([|10., 5., 3.|]),
         ~normals=None,
         ~texCoords=None,
         ~indices16=Some(Uint16Array.make([|0|])),
@@ -397,5 +397,5 @@ let generateOneRAB = state => {
       (),
     );
 
-  GenerateRABSystem.generateSingleRAB(resourceData1, state);
+  GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 };

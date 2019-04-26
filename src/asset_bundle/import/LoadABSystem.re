@@ -5,7 +5,6 @@ open WonderBsMost;
 open Js.Typed_array;
 
 let load = (abPath: string, fetchFunc) =>
-  /* Fetch.fetch(abPath) */
   fetchFunc(. abPath)
   |> then_(response =>
        !Fetch.Response.ok(response) ?

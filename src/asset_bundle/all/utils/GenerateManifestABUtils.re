@@ -32,7 +32,3 @@ module RABAndSAB = {
        );
   };
 };
-
-module RAB = {};
-
-module SAB = {};

@@ -15,7 +15,7 @@ let generateSAB =
       bufferTotalAlignedByteLength,
       jsonUint8Array,
     ) =>
-  GenerateABUtils.generateAB(
+  GenerateSingleABUtils.generateAB(
     (
       (
         imageBufferViewArr
@@ -51,9 +51,5 @@ let generateSingleSAB = (sceneGameObject, imageUint8ArrayMap, state) => {
       state,
     );
 
-  (
-    state,
-    /* imageResultUint8ArrayMap, */
-    ConvertGLBSystem.convertGLBData(gltf, binBuffer),
-  );
+  (state, ConvertGLBSystem.convertGLBData(gltf, binBuffer));
 };

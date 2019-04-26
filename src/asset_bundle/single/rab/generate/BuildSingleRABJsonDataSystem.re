@@ -2,28 +2,7 @@ open Js.Typed_array;
 
 open RABType;
 
-/* let _buildEmptyUint8Array = () => Uint8Array.make([||]); */
-
 let _getUint8Array = (uint8Array, base64, editorState) =>
-  /* switch (uint8Array) {
-     | Some(uint8Array) => uint8Array
-     | None =>
-       switch (base64) {
-       | Some(base64) => BufferUtils.convertBase64ToUint8Array(base64)
-       | None =>
-         ConsoleUtils.error(
-           LogUtils.buildErrorMessage(
-             ~description={j|image->base64 should exist|j},
-             ~reason="",
-             ~solution={j||j},
-             ~params={j||j},
-           ),
-           editorState,
-         );
-
-         _buildEmptyUint8Array();
-       }
-     }; */
   uint8Array |> OptionService.unsafeGet;
 
 let _setImageIndexMap = (imageDataIndex, imageArr, imageIndexMap) => {
@@ -57,7 +36,6 @@ let _setImageIndexMap = (imageDataIndex, imageArr, imageIndexMap) => {
      );
 };
 
-/* TODO test: only save texture used image data */
 let _buildImageData = ({textures, imageDataMap}) => {
   let (imageIndexMap, imageArr, bufferViewArr, uint8ArrayArr, byteOffset) =
     textures
@@ -80,7 +58,6 @@ let _buildImageData = ({textures, imageDataMap}) => {
                   imageDataIndex,
                 );
 
-           /* let uint8Array = _getUint8Array(uint8Array, base64, editorState); */
            let byteLength = uint8Array |> Uint8Array.length;
            let alignedByteLength = BufferUtils.alignedLength(byteLength);
 
@@ -150,12 +127,9 @@ let _buildTextureData = (imageIndexMap, {textures}, state) =>
   textures
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. (textureIndexMap, textureArr), {textureComponent, imageDataIndex}) => (
-         /* let {textureComponent, imageDataIndex}: NodeAssetType.textureNodeData =
-            TextureNodeAssetService.getNodeData(node); */
          _setTextureIndexMap(textureComponent, textureArr, textureIndexMap),
          textureArr
          |> ArrayService.push({
-              /* name: NodeNameAssetLogicService.getNodeName(node, state), */
               name:
                 NameBasicSourceTextureMainService.unsafeGetName(
                   textureComponent,
@@ -338,7 +312,6 @@ let _buildGeometryBufferData =
     );
 
 let _buildGeometryData =
-    /* imageUint8ArrayMap, */
     (imageAlignedByteLength, imageBufferViewArr, {geometrys}, state) => {
   let imageBufferViewIndex = imageBufferViewArr |> Js.Array.length;
 
@@ -556,16 +529,5 @@ let buildJsonData = (resourceData, state) => {
   );
 };
 
-let buildJsonUint8Array =
-    /* (
-         bufferViewArr,
-         imageArr,
-         textureArr,
-         basicMaterialArr,
-         lightMaterialArr,
-         geometryArr,
-         scriptEventFunctionArr,
-         scriptAttributeArr,
-       ), */
-    resourceAssetBundleContent =>
+let buildJsonUint8Array = resourceAssetBundleContent =>
   GenerateABUtils.buildJsonUint8Array(resourceAssetBundleContent);

@@ -69,7 +69,7 @@ let generateOneSAB = state => {
 
   let state = state |> SceneAPI.addSceneChild(transform);
 
-  GenerateSABSystem.generateSingleSAB(
+  GenerateSingleSABSystem.generateSingleSAB(
     SceneAPI.getSceneGameObject(state),
     WonderCommonlib.MutableSparseMapService.createEmpty(),
     state,

@@ -54,7 +54,7 @@ let _ =
             );
 
           let (state, rab1) =
-            GenerateRABSystem.generateSingleRAB(resourceData1, state);
+            GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
           let image2 =
             GenerateSingleRABTool.ResourceData.buildImageData(
@@ -81,7 +81,7 @@ let _ =
             );
 
           let (state, rab2) =
-            GenerateRABSystem.generateSingleRAB(resourceData2, state);
+            GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
 
           GenerateAllABTool.TestWithTwoRAB.generateAllAB((rab1, rab2), state)
           |> MostTool.testStream(data => {
@@ -141,7 +141,7 @@ let _ =
             );
 
           let (state, rab1) =
-            GenerateRABSystem.generateSingleRAB(resourceData1, state);
+            GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
           let image2 =
             GenerateSingleRABTool.ResourceData.buildImageData(
@@ -171,7 +171,7 @@ let _ =
             );
 
           let (state, rab2) =
-            GenerateRABSystem.generateSingleRAB(resourceData2, state);
+            GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
 
           GenerateAllABTool.TestWithTwoRAB.generateAllAB((rab1, rab2), state)
           |> MostTool.testStream(data => {
@@ -264,7 +264,7 @@ let _ =
           );
 
         let (state, rab1) =
-          GenerateRABSystem.generateSingleRAB(resourceData1, state);
+          GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
         |> MostTool.testStream(data => {
@@ -353,7 +353,7 @@ let _ =
           );
 
         let (state, rab1) =
-          GenerateRABSystem.generateSingleRAB(resourceData1, state);
+          GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
         |> MostTool.testStream(data => {
@@ -407,7 +407,7 @@ let _ =
           );
 
         let (state, rab1) =
-          GenerateRABSystem.generateSingleRAB(resourceData1, state);
+          GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
         |> MostTool.testStream(data => {
@@ -484,7 +484,7 @@ let _ =
           );
 
         let (state, rab1) =
-          GenerateRABSystem.generateSingleRAB(resourceData1, state);
+          GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
         |> MostTool.testStream(data => {
@@ -598,10 +598,10 @@ let _ =
             );
 
           let (state, rab1) =
-            GenerateRABSystem.generateSingleRAB(resourceData1, state);
+            GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
           let (state, rab2) =
-            GenerateRABSystem.generateSingleRAB(resourceData2, state);
+            GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
 
           GenerateAllABTool.TestWithTwoRAB.generateAllAB((rab1, rab2), state)
           |> MostTool.testStream(data => {
@@ -684,7 +684,7 @@ let _ =
           );
 
         let (state, rab1) =
-          GenerateRABSystem.generateSingleRAB(resourceData1, state);
+          GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
         |> MostTool.testStream(data => {
@@ -741,7 +741,7 @@ let _ =
           );
 
         let (state, rab1) =
-          GenerateRABSystem.generateSingleRAB(resourceData1, state);
+          GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
         |> MostTool.testStream(data => {
@@ -774,7 +774,7 @@ let _ =
           GenerateSingleRABTool.ResourceData.buildResourceData();
 
         let (state, rab1) =
-          GenerateRABSystem.generateSingleRAB(resourceData1, state^);
+          GenerateSingleRABSystem.generateSingleRAB(resourceData1, state^);
 
         GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
         |> MostTool.testStream(data => {

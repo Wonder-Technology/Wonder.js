@@ -45,7 +45,7 @@ let _ =
           );
 
         let (state, rab) =
-          GenerateRABSystem.generateSingleRAB(resourceData, state);
+          GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
 
         let content =
           GenerateSingleRABTool.ResourceAssetBundleContent.getResourceAssetBundleContent(
@@ -110,7 +110,7 @@ let _ =
           );
 
         expect(() =>
-          GenerateRABSystem.generateSingleRAB(resourceData, state)
+          GenerateSingleRABSystem.generateSingleRAB(resourceData, state)
         )
         |> toThrowMessage(
              "expect lightMaterial->maps contain in resourceData->textures",
@@ -154,7 +154,7 @@ let _ =
             );
 
           let (state, rab) =
-            GenerateRABSystem.generateSingleRAB(resourceData, state);
+            GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
 
           let content =
             GenerateSingleRABTool.ResourceAssetBundleContent.getResourceAssetBundleContent(
@@ -223,7 +223,7 @@ let _ =
             );
 
           let (state, rab) =
-            GenerateRABSystem.generateSingleRAB(resourceData, state);
+            GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
 
           let content =
             GenerateSingleRABTool.ResourceAssetBundleContent.getResourceAssetBundleContent(
@@ -280,7 +280,7 @@ let _ =
           );
 
         let (state, rab) =
-          GenerateRABSystem.generateSingleRAB(resourceData, state);
+          GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
 
         let content =
           GenerateSingleRABTool.ResourceAssetBundleContent.getResourceAssetBundleContent(

@@ -1,5 +1,3 @@
-/* open Js.Promise; */
-
 open WonderBsMost;
 
 let _handleStreamError = e => {
@@ -13,56 +11,9 @@ let _handleStreamError = e => {
     ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
-  /* WonderLog.Log.fatal(
-       WonderLog.Log.buildFatalMessage(
-         ~title="InitEventJob",
-         ~description={j|from dom event stream error|j},
-         ~reason="",
-         ~solution={j||j},
-         ~params={j|message:$message\nstack:$stack|j},
-       ),
-     ); */
 };
 
 let dynamicLoadAB = needRewriteAPI => {
-  /* LoadABSystem.load(PathABSystem.getAssetBundlePath(.) ++ "whole.wab")
-     |> Most.flatMap(wab => {
-          let manifest = ParseABSystem.WAB.parseManifest(wab);
-
-          let wholeDependencyRelationMap =
-            ParseABSystem.WAB.getWholeDependencyRelationMap(manifest);
-
-          FindDependencyDataSystem.findAllDependencyRAbRelativePath(
-            "sab/a.sab",
-            wholeDependencyRelationMap,
-          )
-          |> WonderCommonlib.ArrayService.reduceOneParam(
-               (. stream, abPath) =>
-                 stream
-                 |> Most.flatMap(state =>
-                      LoadABSystem.load(
-                        PathABSystem.getAssetBundlePath(.) ++ abPath,
-                      )
-                      |> Most.map(ab =>
-                           AssembleABSystem.assemble(abPath, ab, state)
-                         )
-                    ),
-               Most.just(state),
-             );
-          /* |> Js.Array.map(abPath =>
-                  LoadABSystem.load(
-                    PathABSystem.getAssetBundlePath(.) ++ abPath,
-                  )
-                  |> Most.map(ab => {
-
-                      AssembleABSystem.assemble(abPath, ab)
-
-
-                  })
-                )
-             |> Most.mergeArray; */
-        }); */
-
   let getAssetBundlePath = needRewriteAPI##getAssetBundlePath;
   let isAssetBundleArrayBufferCached =
     needRewriteAPI##isAssetBundleArrayBufferCached;
@@ -83,8 +34,6 @@ let dynamicLoadAB = needRewriteAPI => {
     LoadABSystem.load(wabPath, FetchCommon.fetch)
     |> Most.flatMap(wab => {
          let manifest = ParseABSystem.WAB.parseManifest(wab);
-
-         /* let state = StateAPI.unsafeGetState(); */
 
          let state =
            StateDataMainService.unsafeGetState(StateDataMain.stateData);
@@ -133,7 +82,6 @@ let dynamicLoadAB = needRewriteAPI => {
   ();
 };
 
-/* let addSabAllGameObjectsToScene = (needRewriteAPI, state) => { */
 let goToNextScene = (wabRelativePath, sabRelativePath, needRewriteAPI) => {
   let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
@@ -168,31 +116,9 @@ let goToNextScene = (wabRelativePath, sabRelativePath, needRewriteAPI) => {
          "complete": () => (),
        })
     |> ignore :
-    /* let sabAllGameObjects =
-         OperateSABAssetBundleMainService.unsafeFindAllGameObjects(
-           sabRelativePath,
-           state,
-         );
-       /* |> OptionService.unsafeGet; */
-
-       let state =
-         state
-         |> ImportABSystem.disposeSceneAllChildren
-         |> GameObjectSceneMainService.addChildren(sabAllGameObjects);
-
-       sabAllGameObjects
-       |> WonderCommonlib.ArrayService.reduceOneParam(
-            (. state, gameObject) =>
-              GameObjectAPI.initGameObject(gameObject, state),
-            state,
-          ); */
     /* wait for finish */
-    /* TODO show loading bar? */
-    /* state; */
-    /* Most.empty(); */
     ();
 };
-/* let sabRelativePath = "sab/a.sab"; */
 
 let replaceToRabLightMaterial = (rabRelativePath, needRewriteAPI, state) =>
   OperateRABAssetBundleMainService.isAssembled(rabRelativePath, state) ?
@@ -203,7 +129,6 @@ let replaceToRabLightMaterial = (rabRelativePath, needRewriteAPI, state) =>
           "lightMaterial1",
           state,
         );
-      /* |> OptionService.unsafeGet; */
 
       let gameObjectName = "gameObject10";
 

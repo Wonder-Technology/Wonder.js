@@ -18,12 +18,12 @@ module All = {
     let contentDataView = DataViewCommon.create(contentArrayBuffer);
 
     let (byteOffset, jsonByteLength, bufferByteLength) =
-      DependencyDataUtils.All.readHeader(contentDataView);
+      GenerateABUtils.readHeader(contentDataView);
 
     let jsonStr =
-      DependencyDataUtils.All.getJsonStr(jsonByteLength, contentArrayBuffer);
+      GenerateABUtils.getJsonStr(jsonByteLength, contentArrayBuffer);
     let buffer =
-      DependencyDataUtils.All.getBuffer(jsonByteLength, contentArrayBuffer);
+      GenerateABUtils.getBuffer(jsonByteLength, contentArrayBuffer);
 
     (jsonStr |> Js.Json.parseExn |> Obj.magic, buffer);
   };
@@ -44,8 +44,6 @@ module SAB = {
   let _buildImageArray =
       ({images, bufferViews}, binBuffer, allDependencyRAbRelativePath, state) => {
     let blobObjectUrlImageArr = [||];
-    /* let imageUint8ArrayDataMap =
-       WonderCommonlib.MutableSparseMapService.createEmpty(); */
 
     images |> OptionService.isJsonSerializedValueNone ?
       blobObjectUrlImageArr |> resolve :
@@ -76,28 +74,13 @@ module SAB = {
                             bufferViews,
                           );
 
-                        /* imageUint8ArrayDataMap
-                           |> WonderCommonlib.MutableSparseMapService.set(
-                                imageIndex,
-                                (mimeType, Uint8Array.fromBuffer(arrayBuffer)),
-                              )
-                           |> ignore; */
-
                         AssembleUtils.buildLoadImageStream(
                           arrayBuffer,
                           mimeType,
                           {j|load image error. imageName: $name|j},
                         )
                         |> WonderBsMost.Most.tap(image =>
-                             ImageUtils.setImageName(
-                               image,
-                               name,
-                               /* Array.unsafe_set(
-                                    blobObjectUrlImageArr,
-                                    imageIndex,
-                                    image,
-                                  ); */
-                             )
+                             ImageUtils.setImageName(image, name)
                            )
                         |> Most.map(image =>
                              ImageType.imageToDomExtendImageElement(image)
@@ -136,12 +119,7 @@ module SAB = {
       ) =>
     geometrys
     |> WonderCommonlib.ArrayService.reduceOneParami(
-         (.
-           geometryArr,
-           /* {name, position, normal, texCoord, index} as geometryData, */
-           geometryData,
-           geometryIndex,
-         ) => {
+         (. geometryArr, geometryData, geometryIndex) => {
            let geometry =
              geometryData |> OptionService.isJsonSerializedValueNone ?
                Array.unsafe_get(createdGeometryArr, geometryIndex) :
@@ -164,7 +142,7 @@ module SAB = {
          WonderCommonlib.ArrayService.createEmpty(),
        );
 
-  let _checkDependencyGeometryhasVertices =
+  let _checkDependencyGeometryShouldHasVertices =
       (geometryArr, geometryIndex, state) =>
     WonderLog.Contract.requireCheck(
       () =>
@@ -205,7 +183,7 @@ module SAB = {
 
                _isGeometryBufferDataDependencyAndRemoved(geometryData) ?
                  {
-                   _checkDependencyGeometryhasVertices(
+                   _checkDependencyGeometryShouldHasVertices(
                      geometryArr,
                      geometryIndex,
                      state,
@@ -234,7 +212,6 @@ module SAB = {
         {geometrys, indices, gameObjects, basicSourceTextures} as sceneAssetBundleContent,
         blobObjectUrlImageArr,
         bufferArr,
-        /* (isBindEvent, isActiveCamera), */
         (
           state,
           gameObjectArr,
@@ -329,13 +306,6 @@ module SAB = {
         sceneAssetBundleContent,
       );
 
-    /* let imageUint8ArrayDataMap =
-       BatchSetWholeTextureAllDataSystem.convertKeyFromImageIndexToBasicSourceTexture(
-         indices.imageTextureIndices,
-         basicSourceTextureArr,
-         imageUint8ArrayDataMap,
-       ); */
-
     (
       state
       |> BatchOperateSystem.batchSetComponentData(
@@ -393,7 +363,6 @@ module SAB = {
            gameObjectGeometrys,
          )
       |> BatchSetWholeTextureAllDataSystem.batchSet(basicSourceTextureData),
-      /* imageUint8ArrayDataMap, */
       gameObjectArr,
     );
   };
@@ -424,19 +393,9 @@ module SAB = {
          let hasIMGUIFunc =
            !OptionService.isJsonSerializedValueNone(imguiData);
          let state =
-           /* isSetIMGUIFunc && hasIMGUIFunc ? */
            hasIMGUIFunc ?
              state |> SetIMGUIFuncSystem.setIMGUIFunc(sceneAssetBundleContent) :
              state;
-
-         /* let state =
-            hasIMGUIFunc ?
-              OperateSABAssetBundleMainService.setIMGUIData(
-                sabRelativePath,
-                imguiData,
-                state,
-              ) :
-              state; */
 
          let (
            state,
@@ -457,11 +416,7 @@ module SAB = {
            basicSourceTextureArr,
          ) =
            state
-           |> BatchCreateSystem.batchCreate(
-                /* isRenderLight, */
-                true,
-                sceneAssetBundleContent,
-              );
+           |> BatchCreateSystem.batchCreate(true, sceneAssetBundleContent);
 
          let geometryArr =
            _replaceCreatedGeometryToDependencyGeometry(
@@ -473,17 +428,13 @@ module SAB = {
            );
 
          let (state, gameObjectArr) =
-           /* state */
            _batchOperate(
              sceneAssetBundleContent,
-             /* imageDataTuple, */
              blobObjectUrlImageArr,
              AssembleWholeWDBUtils.buildBufferArray(
                sceneAssetBundleContent.buffers,
                binBuffer,
              ),
-             /* _buildBufferArray(buffers, binBuffer), */
-             /* (isBindEvent, isActiveCamera), */
              (
                state,
                gameObjectArr,
