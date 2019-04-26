@@ -183,15 +183,28 @@ module RAB = {
   };
 };
 
-let setSABSceneGameObjectToBeScene = (sceneGameObject, state) =>
-  GameObjectSceneMainService.setSceneGameObject(sceneGameObject, state);
+let setSABSceneGameObjectToBeScene = (sabSceneGameObject, state) =>
+  GameObjectSceneMainService.setSceneGameObject(sabSceneGameObject, state);
+
+let initAllSABGameObjects = (sabSceneGameObject, state) =>
+  state
+  |> AllGameObjectMainService.getAllGameObjects(sabSceneGameObject)
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. state, gameObject) =>
+         InitGameObjectMainService.initGameObject(gameObject, state),
+       state,
+     );
+
+let addSABSceneGameObjectChildrenToScene = (sabSceneGameObject, state) =>
+  state
+  |> AllGameObjectMainService.getAllChildren(sabSceneGameObject)
+  |> GameObjectSceneMainService.addChildren(_, state);
 
 let disposeSceneAllChildren = state => {
   let scene = state |> GameObjectSceneMainService.getSceneGameObject;
 
   state
-  |> AllGameObjectMainService.getAllGameObjects(scene)
-  |> Js.Array.sliceFrom(1)
+  |> AllGameObjectMainService.getAllChildren(scene)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, gameObject) =>
          state |> DisposeGameObjectMainService.deferDispose(gameObject),

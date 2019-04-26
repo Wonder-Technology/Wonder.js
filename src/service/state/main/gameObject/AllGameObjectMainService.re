@@ -52,6 +52,9 @@ let getAllGameObjects = (gameObject, state) => {
   );
 };
 
+let getAllChildren = (gameObject, state) =>
+  state |> getAllGameObjects(gameObject) |> Js.Array.sliceFrom(1);
+
 let _getAllComponentsOfGameObject =
     (gameObject, getComponentFunc, {gameObjectRecord} as state) => {
   let (_, components) =

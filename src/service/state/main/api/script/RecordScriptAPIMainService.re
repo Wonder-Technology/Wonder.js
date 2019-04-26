@@ -141,6 +141,18 @@ let create = () => {
   "disposeSceneAllChildren":
     (. state) => ImportABSystem.disposeSceneAllChildren(state),
   "setSABSceneGameObjectToBeScene":
-    (. sceneGameObject, state) =>
-      ImportABSystem.setSABSceneGameObjectToBeScene(sceneGameObject, state),
+    (. sabSceneGameObject, state) =>
+      ImportABSystem.setSABSceneGameObjectToBeScene(
+        sabSceneGameObject,
+        state,
+      ),
+  "initAllSABGameObjects":
+    (. sabSceneGameObject, state) =>
+      ImportABSystem.initAllSABGameObjects(sabSceneGameObject, state),
+  "addSABSceneGameObjectChildrenToScene":
+    (. sabSceneGameObject, state) =>
+      ImportABSystem.addSABSceneGameObjectChildrenToScene(
+        sabSceneGameObject,
+        state,
+      ),
 };

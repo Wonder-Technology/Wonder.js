@@ -173,21 +173,22 @@
                                         var state = api.unsafeGetState();
 
 
-                                        var allGameObjects = api.getAllGameObjects(sceneGameObject, state);
+
+                                        var state = api.initAllSABGameObjects(
+                                            sceneGameObject, state
+                                        );
+
+
+                                        // var state =
+                                        //     api.disposeSceneAllChildren(state);
+
+                                        // var state =
+                                        //     api.setSABSceneGameObjectToBeScene(sceneGameObject, state);
+
 
                                         var state =
-                                            allGameObjects.reduce((state, gameObject) => {
-                                                return api.initGameObject(
-                                                    gameObject, state
-                                                );
-                                            }, state);
+                                            api.addSABSceneGameObjectChildrenToScene(sceneGameObject, state);
 
-
-                                        var state =
-                                            api.disposeSceneAllChildren(state);
-
-                                        var state =
-                                            api.setSABSceneGameObjectToBeScene(sceneGameObject, state);
 
                                         api.setState(state);
                                     },

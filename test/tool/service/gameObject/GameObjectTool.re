@@ -365,3 +365,6 @@ let findGameObjectsByName = (targetGameObject, name, state) =>
 let unsafeFindGameObjectByName = (targetGameObject, name, state) =>
   findGameObjectsByName(targetGameObject, name, state)
   |> ArrayService.unsafeGetFirst;
+
+let isDeferDisposed = (gameObject, state) =>
+  state.gameObjectRecord.disposedUidArray |> Js.Array.includes(gameObject);
