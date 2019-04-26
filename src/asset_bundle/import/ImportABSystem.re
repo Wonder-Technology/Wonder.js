@@ -34,7 +34,6 @@ module SAB = {
       (
         sabRelativePath,
         wholeManifest,
-        /* wholeDependencyRelationMap, */
         (
           getAssetBundlePathFunc,
           isAssetBundleArrayBufferCachedFunc,
@@ -43,9 +42,6 @@ module SAB = {
           fetchFunc,
         ),
       ) =>
-    /* let state = StateDataMainService.unsafeGetState(StateDataMain.stateData); */
-    /* let wholeDependencyRelationMap =
-       ParseABSystem.WAB.getWholeDependencyRelationMap(wholeManifest); */
     Most.just(sabRelativePath)
     |> Most.flatMap(sabRelativePath => {
          let state =
@@ -87,20 +83,6 @@ module SAB = {
               })
            |> Most.map(_ => ());
        });
-  /* OperateSABAssetBundleMainService.isLoaded(sabRelativePath, state) ?
-     Most.empty() :
-     All.loadAB(
-       sabRelativePath,
-       wholeManifest,
-       wholeDependencyRelationMap,
-       (
-         getAssetBundlePathFunc,
-         isAssetBundleArrayBufferCachedFunc,
-         getAssetBundleArrayBufferCacheFunc,
-         cacheAssetBundleArrayBufferFunc,
-         fetchFunc,
-       ),
-     ) */
 };
 
 module RAB = {
@@ -116,31 +98,34 @@ module RAB = {
           cacheAssetBundleArrayBufferFunc,
           fetchFunc,
         ),
-      ) => {
-    let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
+      ) =>
+    Most.just(rabRelativePath)
+    |> Most.flatMap(rabRelativePath => {
+         let state =
+           StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
-    OperateRABAssetBundleMainService.isAssembled(rabRelativePath, state) ?
-      Most.empty() :
-      All.loadAB(
-        rabRelativePath,
-        wholeManifest,
-        wholeDependencyRelationMap,
-        (
-          getAssetBundlePathFunc,
-          isAssetBundleArrayBufferCachedFunc,
-          getAssetBundleArrayBufferCacheFunc,
-          cacheAssetBundleArrayBufferFunc,
-          fetchFunc,
-        ),
-      )
-      |> Most.flatMap(rab =>
-           AssembleABSystem.RAB.assemble(
+         OperateRABAssetBundleMainService.isAssembled(rabRelativePath, state) ?
+           Most.empty() :
+           All.loadAB(
              rabRelativePath,
-             rab,
+             wholeManifest,
              wholeDependencyRelationMap,
+             (
+               getAssetBundlePathFunc,
+               isAssetBundleArrayBufferCachedFunc,
+               getAssetBundleArrayBufferCacheFunc,
+               cacheAssetBundleArrayBufferFunc,
+               fetchFunc,
+             ),
            )
-         );
-  };
+           |> Most.flatMap(rab =>
+                AssembleABSystem.RAB.assemble(
+                  rabRelativePath,
+                  rab,
+                  wholeDependencyRelationMap,
+                )
+              );
+       });
 
   let loadAndAssembleAllDependencyRAB =
       (
