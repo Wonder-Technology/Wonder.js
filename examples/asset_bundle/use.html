@@ -147,15 +147,16 @@
                 // console.log("init->a: ", a)
 
 
-                setTimeout(() => {
-                    // var wabRelativePath = "wab1.wab";
-                    // var sabRelativePath = "sab1.sab";
-
+                var intervalId = setInterval(() => {
                     var state = api.unsafeGetState();
 
                     if (api.isSABLoaded(
                         sabRelativePath, state
                     )) {
+                        console.log("assemble sab");
+
+                        clearInterval(intervalId);
+
                         api.assembleSAB(
                             sabRelativePath,
 
@@ -171,8 +172,6 @@
                                 {
                                     "next": (sceneGameObject) => {
                                         var state = api.unsafeGetState();
-
-
 
                                         var state = api.initAllSABGameObjects(
                                             sceneGameObject, state
@@ -204,10 +203,21 @@
                             )
                     }
                     else {
-                        console.log("sab not loaded! need wait")
+                        console.log("sab not loaded! need wait",
+                            api.getAllDependencyRABCount(
+                                sabRelativePath,
+                                wabRelativePath,
+                                state,
+                            ),
+                            api.getLoadedDependencyRABCount(
+                                sabRelativePath,
+                                wabRelativePath,
+                                state,
+                            )
+                        )
                     }
 
-                }, 500);
+                }, 30);
 
                 return state
             };

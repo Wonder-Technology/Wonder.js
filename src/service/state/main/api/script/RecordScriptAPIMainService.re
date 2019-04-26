@@ -155,4 +155,18 @@ let create = () => {
         sabSceneGameObject,
         state,
       ),
+  "getAllDependencyRABCount":
+    (. abRelativePath, wabRelativePath, state) =>
+      ProgressABSystem.RAB.getAllDependencyRABCount(
+        abRelativePath,
+        wabRelativePath,
+        state,
+      ),
+  "getLoadedDependencyRABCount":
+    (. abRelativePath, wabRelativePath, state) =>
+      ProgressABSystem.RAB.getLoadedDependencyRABCount(
+        abRelativePath,
+        wabRelativePath,
+        state,
+      ),
 };
