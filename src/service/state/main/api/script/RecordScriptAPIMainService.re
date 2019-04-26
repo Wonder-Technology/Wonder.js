@@ -21,6 +21,30 @@ let create = () => {
         (scriptAttributeName, fieldName, value),
         state,
       ),
+  "replaceScriptEventFunctionData":
+    (.
+      script,
+      (sourceScriptEventFunctionDataName, targetScriptEventFunctionDataName),
+      targetScriptEventFunctionData,
+      state,
+    ) =>
+      ScriptAPI.replaceScriptEventFunctionData(
+        script,
+        (
+          sourceScriptEventFunctionDataName,
+          targetScriptEventFunctionDataName,
+        ),
+        targetScriptEventFunctionData,
+        state,
+      ),
+  "addScriptAttribute":
+    (. script, scriptAttributeName, scriptAttribute, state) =>
+      ScriptAPI.addScriptAttribute(
+        script,
+        scriptAttributeName,
+        scriptAttribute,
+        state,
+      ),
   "unsafeGetScriptGameObject":
     (. script, state) => ScriptAPI.unsafeGetScriptGameObject(script, state),
   "getTransformLocalPosition":
@@ -167,6 +191,23 @@ let create = () => {
       ProgressABSystem.RAB.getLoadedDependencyRABCount(
         abRelativePath,
         wabRelativePath,
+        state,
+      ),
+  "isRABAssembled":
+    (. rabRelativePath, state) =>
+      OperateRABAssetBundleMainService.isAssembled(rabRelativePath, state),
+  "unsafeFindScriptEventFunctionDataByName":
+    (. rabRelativePath, name, state) =>
+      OperateRABAssetBundleMainService.unsafeFindScriptEventFunctionDataByName(
+        rabRelativePath,
+        name,
+        state,
+      ),
+  "unsafeFindScriptAttributeByName":
+    (. rabRelativePath, name, state) =>
+      OperateRABAssetBundleMainService.unsafeFindScriptAttributeByName(
+        rabRelativePath,
+        name,
         state,
       ),
 };

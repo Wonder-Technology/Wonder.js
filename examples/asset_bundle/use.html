@@ -64,6 +64,10 @@
                 var sabRelativePath = "sab1.sab";
 
 
+                var rab1RelativePath = "rab1.rab";
+                var rab2RelativePath = "rab2.rab";
+
+
                 var wabRelativePath = "wab1.wab";
 
 
@@ -147,77 +151,136 @@
                 // console.log("init->a: ", a)
 
 
-                var intervalId = setInterval(() => {
+                // var intervalId = setInterval(() => {
+                //     var state = api.unsafeGetState();
+
+                //     if (api.isSABLoaded(
+                //         sabRelativePath, state
+                //     )) {
+                //         console.log("assemble sab");
+
+                //         clearInterval(intervalId);
+
+                //         api.assembleSAB(
+                //             sabRelativePath,
+
+                //             api.unsafeGetLoadedSAB(
+                //                 sabRelativePath, state
+                //             ),
+                //             api.unsafeGetWholeDependencyRelationMap(
+                //                 wabRelativePath, state
+                //             )
+                //         ).
+
+                //             subscribe(
+                //                 {
+                //                     "next": (sceneGameObject) => {
+                //                         var state = api.unsafeGetState();
+
+                //                         var state = api.initAllSABGameObjects(
+                //                             sceneGameObject, state
+                //                         );
+
+
+                //                         // var state =
+                //                         //     api.disposeSceneAllChildren(state);
+
+                //                         // var state =
+                //                         //     api.setSABSceneGameObjectToBeScene(sceneGameObject, state);
+
+
+                //                         var state =
+                //                             api.addSABSceneGameObjectChildrenToScene(sceneGameObject, state);
+
+
+                //                         api.setState(state);
+                //                     },
+                //                     "error": e => {
+                //                         console.log("error: ", e);
+                //                     },
+                //                     "complete": () => {
+                //                         console.log("complete");
+                //                     }
+                //                 }
+
+
+                //             )
+                //     }
+                //     else {
+                //         console.log("sab not loaded! need wait",
+                //             api.getAllDependencyRABCount(
+                //                 sabRelativePath,
+                //                 wabRelativePath,
+                //                 state,
+                //             ),
+                //             api.getLoadedDependencyRABCount(
+                //                 sabRelativePath,
+                //                 wabRelativePath,
+                //                 state,
+                //             )
+                //         )
+                //     }
+
+                // }, 30);
+
+
+
+
+
+                var intervalId2 = setInterval(() => {
                     var state = api.unsafeGetState();
 
-                    if (api.isSABLoaded(
-                        sabRelativePath, state
+                    if (api.isRABAssembled(
+                        rab1RelativePath, state
                     )) {
-                        console.log("assemble sab");
+                        console.log("get script data from rab1");
 
-                        clearInterval(intervalId);
+                        clearInterval(intervalId2);
 
-                        api.assembleSAB(
-                            sabRelativePath,
-
-                            api.unsafeGetLoadedSAB(
-                                sabRelativePath, state
-                            ),
-                            api.unsafeGetWholeDependencyRelationMap(
-                                wabRelativePath, state
-                            )
-                        ).
-
-                            subscribe(
-                                {
-                                    "next": (sceneGameObject) => {
-                                        var state = api.unsafeGetState();
-
-                                        var state = api.initAllSABGameObjects(
-                                            sceneGameObject, state
-                                        );
+                        var scriptEventFunctionData1 =
+                            api.unsafeFindScriptEventFunctionDataByName(
+                                rab1RelativePath, "scriptEventFunctionData1", state
+                            );
 
 
-                                        // var state =
-                                        //     api.disposeSceneAllChildren(state);
 
-                                        // var state =
-                                        //     api.setSABSceneGameObjectToBeScene(sceneGameObject, state);
-
-
-                                        var state =
-                                            api.addSABSceneGameObjectChildrenToScene(sceneGameObject, state);
+                        var scriptAttribute1 =
+                            api.unsafeFindScriptAttributeByName(
+                                rab1RelativePath, "scriptAttribute1", state
+                            );
 
 
-                                        api.setState(state);
-                                    },
-                                    "error": e => {
-                                        console.log("error: ", e);
-                                    },
-                                    "complete": () => {
-                                        console.log("complete");
-                                    }
-                                }
+                        var state =
+                            api.replaceScriptEventFunctionData(script,
+                                [
+                                    "scriptEventFunctionData1", "scriptEventFunctionData1"
+                                ],
+                                scriptEventFunctionData1, state
+                            );
 
 
-                            )
+
+                        var state =
+                            api.addScriptAttribute(
+                                script,
+                                "scriptAttribute1",
+                                scriptAttribute1,
+                                state
+                            );
+
+                        var state =
+                            api.initGameObject(
+                                api.unsafeGetScriptGameObject(script, state), state
+                            );
+
+                        api.setState(state);
                     }
                     else {
-                        console.log("sab not loaded! need wait",
-                            api.getAllDependencyRABCount(
-                                sabRelativePath,
-                                wabRelativePath,
-                                state,
-                            ),
-                            api.getLoadedDependencyRABCount(
-                                sabRelativePath,
-                                wabRelativePath,
-                                state,
-                            )
-                        )
+                        console.log("rab1 not assembled! need wait");
                     }
-
                 }, 30);
+
+
 
                 return state
             };
