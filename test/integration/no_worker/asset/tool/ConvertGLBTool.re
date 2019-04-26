@@ -66,6 +66,14 @@ let buildMeshRenderer =
   drawMode,
 };
 
+let buildBasicSourceTexture =
+    (~name="texture_0", ~format=SourceTextureType.Rgba, ~flipY=false, ())
+    : WDType.basicSourceTexture => {
+  name,
+  format,
+  flipY,
+};
+
 let buildNode =
     (
       ~name=None,
@@ -1135,6 +1143,22 @@ let buildGLTFJsonOfScript =
     (),
   );
 };
+
+let buildGLTFJsonOfTexture = flipY =>
+  buildGLTFJson(
+    ~textures=
+      {j|  [
+             {
+                 "sampler": 0,
+                 "source": 0,
+                 "extras": {
+                   "flipY": $flipY
+                 }
+
+             }
+         ]|j},
+    (),
+  );
 
 let buildGLTFJsonOfMeshRenderer =
     (~isMeshRenderer1Render=true, ~isMeshRenderer2Render=true, ()) =>

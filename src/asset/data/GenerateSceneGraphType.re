@@ -66,6 +66,7 @@ type textureData = {
   name: option(string),
   sampler: int,
   source: int,
+  flipY: bool,
 };
 
 type imageData = {

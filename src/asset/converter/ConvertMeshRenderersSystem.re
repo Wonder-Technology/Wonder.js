@@ -38,24 +38,27 @@ let convertToMeshRenderers =
       {extras, meshes}: GLTFType.gltf,
     ) =>
   switch (extras) {
-  | None => _convertByMesh(meshes, geometryGameObjectIndices, geometryIndices)
-  | Some({meshRenderers}) =>
-    switch (meshRenderers) {
-    | Some(meshRenderers) when Js.Array.length(meshRenderers) > 0 =>
-      meshRenderers
-      |> WonderCommonlib.ArrayService.reduceOneParami(
-           (. arr, {drawMode, isRender}: GLTFType.meshRenderer, index) =>
-             arr
-             |> ArrayService.push(
-                  Some(
-                    {
-                      drawMode: drawMode |> DrawModeType.uint8ToDrawMode,
-                      isRender,
-                    }: WDType.meshRenderer,
-                  ),
+  | Some({meshRenderers})
+      when
+        meshRenderers
+        |> Js.Option.isSome
+        && meshRenderers
+        |> OptionService.unsafeGet
+        |> Js.Array.length > 0 =>
+    meshRenderers
+    |> OptionService.unsafeGet
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (. arr, {drawMode, isRender}: GLTFType.meshRenderer, index) =>
+           arr
+           |> ArrayService.push(
+                Some(
+                  {
+                    drawMode: drawMode |> DrawModeType.uint8ToDrawMode,
+                    isRender,
+                  }: WDType.meshRenderer,
                 ),
-           [||],
-         )
-    | _ => _convertByMesh(meshes, geometryGameObjectIndices, geometryIndices)
-    }
+              ),
+         [||],
+       )
+  | _ => _convertByMesh(meshes, geometryGameObjectIndices, geometryIndices)
   };

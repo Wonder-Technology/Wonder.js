@@ -141,36 +141,18 @@ let _batchCreateBasicSourceTexture =
     basicSourceTextureRecord.disposedIndexArray,
   );
 
-  let (state, indexArr) =
-    basicSourceTextures
-    |> ArrayService.reduceOneParamValidi(
-         (. (state, indexArr), _, basicSourceTextureIndex) => {
-           let (state, index) =
-             CreateBasicSourceTextureMainService.create(. state);
+  basicSourceTextures
+  |> ArrayService.reduceOneParamValidi(
+       (. (state, indexArr), _, basicSourceTextureIndex) => {
+         let (state, index) =
+           CreateBasicSourceTextureMainService.create(. state);
 
-           Array.unsafe_set(indexArr, basicSourceTextureIndex, index);
+         Array.unsafe_set(indexArr, basicSourceTextureIndex, index);
 
-           (state, indexArr);
-         },
-         (state, [||]),
-       );
-
-  /* let (state, indexArr) =
-     _batchCreateComponent(
-       basicSourceTextures,
-       CreateBasicSourceTextureMainService.create,
-       state,
-     ); */
-
-  let state =
-    indexArr
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. state, index) =>
-           OperateBasicSourceTextureMainService.setFlipY(index, false, state),
-         state,
-       );
-
-  (state, indexArr);
+         (state, indexArr);
+       },
+       (state, [||]),
+     );
 };
 
 let _batchCreateLightComponent = (components, createFunc, state) =>

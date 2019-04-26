@@ -146,6 +146,7 @@ type image = {
 type basicSourceTexture = {
   name: string,
   format: SourceTextureType.format,
+  flipY: bool,
 };
 
 type sampler = {

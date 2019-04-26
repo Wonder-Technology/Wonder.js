@@ -42,7 +42,8 @@ let _addSamplerData = (texture, samplerIndexMap, state, samplerDataArr) => {
 
     (
       samplerIndex,
-      samplerIndexMap |> WonderCommonlib.MutableHashMapService.set(key, samplerIndex),
+      samplerIndexMap
+      |> WonderCommonlib.MutableHashMapService.set(key, samplerIndex),
       samplerDataArr
       |> ArrayService.push(
            {
@@ -300,6 +301,7 @@ let _addTextureData =
          name: NameBasicSourceTextureMainService.getName(texture, state),
          sampler: samplerIndex,
          source: imageIndex,
+         flipY: OperateBasicSourceTextureMainService.getFlipY(texture, state),
        }: GenerateSceneGraphType.textureData,
      );
 

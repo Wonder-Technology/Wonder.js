@@ -144,10 +144,13 @@ type sampler = {
   wrapT: option(int),
 };
 
+type textureExtra = {flipY: bool};
+
 type texture = {
   sampler: option(samplerIndex),
   source: option(imageIndex),
   name: option(string),
+  extras: option(textureExtra),
 };
 
 type textureInfo = {

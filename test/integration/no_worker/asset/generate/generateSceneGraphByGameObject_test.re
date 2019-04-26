@@ -725,7 +725,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-  "textures":[{"sampler":0,"source":0,"name":"$name2"},{"sampler":1,"source":1}],"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728},{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],"images":[{"bufferView":12,"mimeType":"image/png"},{"bufferView":13,"mimeType":"image/png"}]
+  "textures":[{"extras":{"flipY":true},"sampler":0,"source":0,"name":"$name2"},{"extras":{"flipY":true},"sampler":1,"source":1}],"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728},{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],"images":[{"bufferView":12,"mimeType":"image/png"},{"bufferView":13,"mimeType":"image/png"}]
                 |j},
           state,
         );
@@ -1025,8 +1025,8 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-       "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor1,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],
-                     "textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],"images":[{"bufferView":8,"mimeType":"image/png"}]                       |j},
+ "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[0,0.5,1,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"extras":{"flipY":true},"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],"images":[{"bufferView":8,"mimeType":"image/png"}]
+                     |j},
           state,
         );
       });
@@ -1309,7 +1309,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
             rootGameObject,
             {j|
-                 "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor1,1]}},{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor2,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
+                 "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor1,1]}},{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor2,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"extras":{"flipY":true},"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
                  "images":[{"bufferView":8,"mimeType":"image/png"}]
                    |j},
             state,
@@ -1587,7 +1587,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-                 "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor1,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0,"name":"$name2"}],"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728}],
+                 "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor1,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"extras":{"flipY":true},"sampler":0,"source":0,"name":"$name2"}],"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728}],
                  "images":[{"bufferView":12,"mimeType":"image/png"}]
                    |j},
           state,
@@ -1690,7 +1690,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-                 "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor2,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
+                 "materials":[{"pbrMetallicRoughness":{"baseColorFactor":[$diffuseColor2,1]}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}}],"textures":[{"extras":{"flipY":true},"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
                  "images":[{"bufferView":12,"mimeType":"image/png"}]
                    |j},
           state,
@@ -1891,7 +1891,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-                 "materials":[{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":1}}}],"textures":[{"sampler":0,"source":0},{"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
+                 "materials":[{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":0}}},{"pbrMetallicRoughness":{"baseColorTexture":{"index":1}}}],"textures":[{"extras":{"flipY":true},"sampler":0,"source":0},{"extras":{"flipY":true},"sampler":0,"source":0}],"samplers":[{"wrapS":33071,"wrapT":10497,"magFilter":9729,"minFilter":9987}],
                  "images":[{"bufferView":16,"mimeType":"image/png"}]
                    |j},
           state,
@@ -2018,6 +2018,119 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           state,
         );
       });
+    });
+
+    describe("test flipY", () => {
+      let _createGameObjectWithMap = (textureName, state) => {
+        open GameObjectAPI;
+        open LightMaterialAPI;
+        open MeshRendererAPI;
+
+        let (state, material) = createLightMaterial(state);
+
+        let (state, (texture, _), (source, width, height)) =
+          _createTexture1(state);
+
+        let state =
+          state
+          |> BasicSourceTextureAPI.setBasicSourceTextureFlipY(texture, true);
+
+        let state =
+          BasicSourceTextureAPI.setBasicSourceTextureName(
+            texture,
+            textureName,
+            state,
+          );
+
+        let state =
+          LightMaterialAPI.setLightMaterialDiffuseMap(
+            material,
+            texture,
+            state,
+          );
+
+        let (state, meshRenderer) = createMeshRenderer(state);
+        let (state, gameObject) = state |> createGameObject;
+        let state =
+          state
+          |> addGameObjectLightMaterialComponent(gameObject, material)
+          /* |> addGameObjectGeometryComponent(gameObject, geometry) */
+          |> addGameObjectMeshRendererComponent(gameObject, meshRenderer);
+
+        let transform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            gameObject,
+            state,
+          );
+
+        (state, gameObject, transform);
+      };
+
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, rootGameObject) = state^ |> createGameObject;
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let textureName1 = "texture_name1";
+
+        let (state, gameObject1, transform1) =
+          _createGameObjectWithMap(textureName1, state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             );
+
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (gameObject1, textureName1),
+        );
+      };
+
+      testPromise(
+        {|
+          1.create one gameObject g1 with one map whose flipY is true;
+          2.generate wdb;
+          3.assemble wdb;
+
+          the assembled->rootGameObject->g1->map->flipY should be true
+          |},
+        () => {
+          let (
+            state,
+            (rootGameObject, sceneGameObjectTransform),
+            (gameObject1, textureName1),
+          ) =
+            _prepareGameObject(state);
+
+          GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
+            sandbox^,
+            rootGameObject,
+            ((state, _, rootGameObject)) =>
+              AssembleWDBSystemTool.getAllDiffuseMaps(rootGameObject, state)
+              |> Js.Array.map(map =>
+                   BasicSourceTextureAPI.getBasicSourceTextureFlipY(
+                     map,
+                     state,
+                   )
+                 )
+              |> expect == [|true|],
+            state,
+          );
+        },
+      );
     });
 
     describe("test perspectiveCameraProjection", () => {

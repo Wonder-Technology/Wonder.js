@@ -118,7 +118,7 @@ let batchOperate =
     );
 
   let state =
-    BatchSetTextureAllDataSystem.batchSetFormat(
+    BatchSetTextureAllDataSystem.batchSetFormatAndFlipY(
       basicSourceTextureArr,
       basicSourceTextures,
       state,

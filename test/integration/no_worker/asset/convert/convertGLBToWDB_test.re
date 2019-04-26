@@ -1186,6 +1186,35 @@ let _ =
     });
 
     describe("test basicSourceTextures", () => {
+      describe("test flipY", () => {
+        test("if not has extras, set false", () =>
+          ConvertGLBTool.testResult(
+            sandbox^,
+            GLBTool.buildGLBFilePath("BoxTextured.glb"),
+            (({basicSourceTextures}, binBuffer)) =>
+            basicSourceTextures
+            |> expect
+            == [|ConvertGLBTool.buildBasicSourceTexture(~flipY=false, ())|]
+          )
+        );
+
+        test("else, set from it", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfTexture(true),
+            ~state,
+            ~testFunc=
+              ({basicSourceTextures}) =>
+                basicSourceTextures
+                |> expect
+                == [|
+                     ConvertGLBTool.buildBasicSourceTexture(~flipY=true, ()),
+                   |],
+            (),
+          )
+        );
+      });
+
       test("test BoxTextured glb", () =>
         ConvertGLBTool.testResult(
           sandbox^,
@@ -1193,10 +1222,10 @@ let _ =
           (({basicSourceTextures}, binBuffer)) =>
           basicSourceTextures
           |> expect
-          == [|{name: "texture_0", format: SourceTextureType.Rgba}|]
+          == [|ConvertGLBTool.buildBasicSourceTexture(~flipY=false, ())|]
         )
       );
-      test("test basicSourceTextures", () =>
+      test("test AlphaBlendModeTest glb", () =>
         ConvertGLBTool.testResult(
           sandbox^,
           GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
@@ -1206,12 +1235,42 @@ let _ =
           == [|
                ConvertTool.getJsonSerializedNone(),
                ConvertTool.getJsonSerializedNone(),
-               {name: "texture_2", format: SourceTextureType.Rgb},
-               {name: "texture_3", format: SourceTextureType.Rgba},
-               {name: "texture_4", format: SourceTextureType.Rgba},
-               {name: "texture_5", format: SourceTextureType.Rgba},
-               {name: "texture_6", format: SourceTextureType.Rgba},
-               {name: "texture_7", format: SourceTextureType.Rgba},
+               ConvertGLBTool.buildBasicSourceTexture(
+                 ~name="texture_2",
+                 ~format=SourceTextureType.Rgb,
+                 ~flipY=false,
+                 (),
+               ),
+               ConvertGLBTool.buildBasicSourceTexture(
+                 ~name="texture_3",
+                 ~format=SourceTextureType.Rgba,
+                 ~flipY=false,
+                 (),
+               ),
+               ConvertGLBTool.buildBasicSourceTexture(
+                 ~name="texture_4",
+                 ~format=SourceTextureType.Rgba,
+                 ~flipY=false,
+                 (),
+               ),
+               ConvertGLBTool.buildBasicSourceTexture(
+                 ~name="texture_5",
+                 ~format=SourceTextureType.Rgba,
+                 ~flipY=false,
+                 (),
+               ),
+               ConvertGLBTool.buildBasicSourceTexture(
+                 ~name="texture_6",
+                 ~format=SourceTextureType.Rgba,
+                 ~flipY=false,
+                 (),
+               ),
+               ConvertGLBTool.buildBasicSourceTexture(
+                 ~name="texture_7",
+                 ~format=SourceTextureType.Rgba,
+                 ~flipY=false,
+                 (),
+               ),
              |]
         )
       );

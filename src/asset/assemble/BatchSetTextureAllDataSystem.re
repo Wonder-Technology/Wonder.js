@@ -110,15 +110,22 @@ let batchSetBasicSourceTextureData =
        state,
      );
 
-let batchSetFormat = (basicSourceTextureArr, basicSourceTextures, state) =>
+let batchSetFormatAndFlipY =
+    (basicSourceTextureArr, basicSourceTextures, state) =>
   basicSourceTextureArr
   |> ArrayService.reduceOneParamValidi(
-       (. state, basicSourceTexture, index) =>
-         OperateBasicSourceTextureMainService.setFormat(
-           basicSourceTexture,
-           Array.unsafe_get(basicSourceTextures, index).format
-           |> SourceTextureType.formatToUint8,
-           state,
-         ),
+       (. state, basicSourceTexture, index) => {
+         let {format, flipY} = Array.unsafe_get(basicSourceTextures, index);
+
+         state
+         |> OperateBasicSourceTextureMainService.setFormat(
+              basicSourceTexture,
+              format |> SourceTextureType.formatToUint8,
+            )
+         |> OperateBasicSourceTextureMainService.setFlipY(
+              basicSourceTexture,
+              flipY,
+            );
+       },
        state,
      );

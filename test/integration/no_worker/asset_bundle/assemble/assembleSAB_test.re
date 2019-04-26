@@ -118,6 +118,109 @@ let _ =
       )
     );
 
+    describe("build texture data", () =>
+      describe("test flipY", () =>
+        testPromise(
+          "assembled sab gameObjects->texture->flipY not affected by dependency rab->texture->flipY",
+          () => {
+            let imageName = "image1";
+
+            let image1 =
+              GenerateSingleRABTool.ResourceData.buildImageData(
+                ~name=imageName,
+                (),
+              );
+
+            let imageDataMap =
+              WonderCommonlib.ImmutableSparseMapService.createEmpty()
+              |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
+
+            let (state, textureResourceData1) =
+              GenerateSingleRABTool.ResourceData.createTextureResourceData(
+                ~state=state^,
+                ~imageDataIndex=0,
+                ~flipY=false,
+                (),
+              );
+
+            let resourceData1 =
+              GenerateSingleRABTool.ResourceData.buildResourceData(
+                ~textures=[|textureResourceData1|],
+                ~imageDataMap,
+                (),
+              );
+
+            let (state, rab1) =
+              GenerateRABSystem.generateSingleRAB(resourceData1, state);
+
+            let (state, gameObject2, transform2, (material2, texture2)) =
+              GenerateAllABTool.TestDuplicateDataForSAB.TestDuplicateImageData.createGameObject1(
+                imageName,
+                state,
+              );
+
+            let state =
+              state
+              |> BasicSourceTextureAPI.setBasicSourceTextureFlipY(
+                   texture2,
+                   true,
+                 );
+
+            let gameObject2Name = "g2";
+            let state =
+              state
+              |> GameObjectAPI.setGameObjectName(gameObject2, gameObject2Name);
+
+            let state = state |> SceneAPI.addSceneChild(transform2);
+
+            let (canvas, context, (base64Str1, base64Str2)) =
+              GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+            let (state, sab1) =
+              GenerateSABSystem.generateSingleSAB(
+                SceneAPI.getSceneGameObject(state),
+                WonderCommonlib.MutableSparseMapService.createEmpty(),
+                state,
+              );
+
+            GenerateAllABTool.TestWithOneSABAndOneRAB.generateAllAB(
+              (rab1, sab1),
+              state,
+            )
+            |> MostTool.testStream(data => {
+                 let (rab1RelativePath, sab1RelativePath) =
+                   GenerateAllABTool.TestWithOneSABAndOneRAB.getABRelativePaths();
+
+                 AssembleSABTool.TestWithOneSABAndOneRAB.assemble(data)
+                 |> MostTool.testStream(rootGameObject => {
+                      let state = StateAPI.unsafeGetState();
+
+                      GameObjectTool.unsafeFindGameObjectByName(
+                        rootGameObject,
+                        gameObject2Name,
+                        state,
+                      )
+                      |> GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(
+                           _,
+                           state,
+                         )
+                      |> LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(
+                           _,
+                           state,
+                         )
+                      |> BasicSourceTextureAPI.getBasicSourceTextureFlipY(
+                           _,
+                           state,
+                         )
+                      |> expect == true
+                      |> resolve;
+                    });
+               });
+          },
+        )
+      )
+    );
+
     describe("build geometry data", () => {
       let _prepare = () => {
         let geometryName = "geometry1";

@@ -81,6 +81,13 @@ let _convertTextures = json =>
              name: json |> optional(field("name", string)),
              sampler: json |> optional(field("sampler", int)),
              source: json |> optional(field("source", int)),
+             extras:
+               json
+               |> optional(
+                    field("extras", json =>
+                      {flipY: json |> field("flipY", bool)}
+                    ),
+                  ),
            }
          ),
        ),

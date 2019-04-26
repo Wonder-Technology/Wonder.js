@@ -54,7 +54,11 @@ let convertToBasicSourceTextures =
   | Some(textures) =>
     textures
     |> WonderCommonlib.ArrayService.reduceOneParami(
-         (. arr, ({name, source}: GLTFType.texture) as texture, index) =>
+         (.
+           arr,
+           ({name, source, extras}: GLTFType.texture) as texture,
+           index,
+         ) =>
            switch (source) {
            | None => arr
            | Some(source) =>
@@ -88,6 +92,12 @@ let convertToBasicSourceTextures =
 
                      _getFormat(mimeType |> OptionService.unsafeGet);
                    },
+                   /* TODO test */
+                   flipY:
+                     switch (extras) {
+                     | Some({flipY}) => flipY
+                     | None => false
+                     },
                  }: WDType.basicSourceTexture,
                );
 
@@ -163,7 +173,7 @@ let _convertWrap = wrap =>
     }
   };
 
-let convertToSamplers = ({samplers}: GLTFType.gltf) : array(WDType.sampler) =>
+let convertToSamplers = ({samplers}: GLTFType.gltf): array(WDType.sampler) =>
   switch (samplers) {
   | None => [||]
   | Some(samplers) =>
