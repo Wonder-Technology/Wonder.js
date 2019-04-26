@@ -421,11 +421,17 @@ let _ =
                    {|
   "textures": [
     {
+      "extras": {
+        "flipY": false
+      },
       "sampler": 0,
       "source": 0,
       "name": "texture_1"
     },
     {
+      "extras": {
+        "flipY": false
+      },
       "sampler": 0,
       "source": 0,
       "name": "texture_0"

@@ -40,7 +40,7 @@ let batchDisposeGameObject =
       (false, false, false),
       state,
     );
-  let state = state |> ReallocateMemoryTool.reallocateAll;
+  let state = state |> ReallocateCPUMemoryJob.execJob(None);
   {
     ...state,
     vboBufferRecord:
@@ -190,7 +190,7 @@ let disposeGameObjectGeometryComponentWithoutVboBuffer =
            [|gameObject|],
          ),
     );
-  let state = state |> ReallocateMemoryTool.reallocateAll;
+  let state = state |> ReallocateCPUMemoryJob.execJob(None);
   state;
 };
 
@@ -202,7 +202,7 @@ let batchDisposeGameObjectsGeometryComponentWithoutVboBuffer =
       WonderCommonlib.MutableSparseMapService.createEmpty()
       |> WonderCommonlib.MutableSparseMapService.set(component, gameObjectArr),
     );
-  let state = state |> ReallocateMemoryTool.reallocateAll;
+  let state = state |> ReallocateCPUMemoryJob.execJob(None);
   state;
 };
 
@@ -347,7 +347,7 @@ let testDisposeKeepOrder =
     |> TransformAPI.setTransformParent(Js.Nullable.return(tra), tra2)
     |> TransformAPI.setTransformParent(Js.Nullable.return(tra), tra3);
   let state = state |> disposeGameObjectKeepOrderRemoveGeometryFunc(child1);
-  let state = state |> DisposeJobTool.disposeAndReallocate;
+  let state = DisposeJob.execJob(None, state);
 
   TransformAPI.unsafeGetTransformChildren(tra, state)
   |> expect == [|tra2, tra3|];
