@@ -229,4 +229,22 @@ let create = () => {
         name,
         state,
       ),
+  "releaseLoadedSAB":
+    (. sabRelativePath, state) =>
+      OperateSABAssetBundleMainService.releaseLoadedSAB(
+        sabRelativePath,
+        state,
+      ),
+  "releaseLoadedRAB":
+    (. rabRelativePath, state) =>
+      OperateRABAssetBundleMainService.releaseLoadedRAB(
+        rabRelativePath,
+        state,
+      ),
+  "releaseAssembleRABData":
+    (. rabRelativePath, state) =>
+      OperateRABAssetBundleMainService.releaseAssembleRABData(
+        rabRelativePath,
+        state,
+      ),
 };

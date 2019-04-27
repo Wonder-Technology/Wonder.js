@@ -105,7 +105,6 @@ let releaseLoadedRAB = (rabRelativePath, {assetBundleRecord} as state) =>
       },
     },
   }
-  /* TODO test */
   |> markNotLoaded(rabRelativePath);
 
 let releaseAssembleRABData = (rabRelativePath, {assetBundleRecord} as state) => {
@@ -155,7 +154,6 @@ let releaseAssembleRABData = (rabRelativePath, {assetBundleRecord} as state) => 
       },
     },
   }
-  /* TODO test */
   |> markNotAssembled(rabRelativePath);
 };
 
@@ -174,16 +172,6 @@ let setAssembleRABData =
       {assetBundleRecord} as state,
     ) => {
   let {assembleRABData} = assetBundleRecord;
-
-  /* let {
-       imageMap,
-       textureMap,
-       basicMaterialMap,
-       lightMaterialMap,
-       geometryMap,
-       scriptEventFunctionDataMap,
-       scriptAttributeMap,
-     } = assembleRABData; */
 
   {
     ...state,

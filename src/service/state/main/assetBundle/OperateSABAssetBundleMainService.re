@@ -86,11 +86,7 @@ let isLoaded = (sabRelativePath, {assetBundleRecord} as state) =>
   };
 
 let canAssemble =
-    (
-      sabRelativePath,
-      wabRelativePath,
-      {assetBundleRecord} as state,
-    ) =>
+    (sabRelativePath, wabRelativePath, {assetBundleRecord} as state) =>
   isLoaded(sabRelativePath, state)
   && (
     switch (
@@ -131,5 +127,4 @@ let releaseLoadedSAB = (sabRelativePath, {assetBundleRecord} as state) =>
       },
     },
   }
-  /* TODO test */
   |> markNotLoaded(sabRelativePath);

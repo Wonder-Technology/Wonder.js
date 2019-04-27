@@ -23,9 +23,6 @@ let _ =
             ~state,
             ~wabRelativePath=_getWABRelativePath(),
             ~sabRelativePath=ImportABTool.SAB.getSABRelativePath(),
-            /* ~wholeDependencyRelationMap=ImportABTool.RAB.buildWholeDependencyRelationMap(
-                 ImportABTool.SAB.getABRelativePaths(),
-               ), */
             (),
           ) =>
         OperateSABAssetBundleMainService.canAssemble(
@@ -101,6 +98,47 @@ let _ =
 
           _canAssemble(~state, ()) |> expect == true;
         });
+      });
+    });
+
+    describe("releaseLoadedSAB", () => {
+      let _prepare = state => {
+        let sabRelativePath = "sab1.sab";
+        let sab = Obj.magic(100);
+        let state =
+          state
+          |> OperateSABAssetBundleMainService.setLoadedSAB(
+               sabRelativePath,
+               sab,
+             )
+          |> OperateSABAssetBundleMainService.markLoaded(sabRelativePath);
+
+        (state, sabRelativePath, sab);
+      };
+
+      test("delete loaded sab", () => {
+        let (state, sabRelativePath, sab) = _prepare(state^);
+
+        let state =
+          OperateSABAssetBundleMainService.releaseLoadedSAB(
+            sabRelativePath,
+            state,
+          );
+
+        OperateSABAssetBundleMainService.getLoadedSAB(sabRelativePath, state)
+        |> expect == None;
+      });
+      test("mark not loaded", () => {
+        let (state, sabRelativePath, sab) = _prepare(state^);
+
+        let state =
+          OperateSABAssetBundleMainService.releaseLoadedSAB(
+            sabRelativePath,
+            state,
+          );
+
+        OperateSABAssetBundleMainService.isLoaded(sabRelativePath, state)
+        |> expect == false;
       });
     });
   });
