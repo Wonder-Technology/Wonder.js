@@ -92,7 +92,7 @@ let create = () => {
         wholeDependencyRelationMap,
         state,
       ),
-  "loadAndAssembleAllDependencyRAB":
+  "loadAllDependencyRABAndSetToState":
     (.
       abRelativePath,
       wholeManifest,
@@ -104,7 +104,7 @@ let create = () => {
         cacheAssetBundleArrayBufferFunc,
       ),
     ) =>
-      ImportABSystem.RAB.loadAndAssembleAllDependencyRAB(
+      ImportABSystem.RAB.loadAllDependencyRABAndSetToState(
         abRelativePath,
         wholeManifest,
         (
@@ -140,9 +140,28 @@ let create = () => {
           FetchCommon.fetch,
         ),
       ),
-  "isSABLoaded":
-    (. sabRelativePath, state) =>
-      OperateSABAssetBundleMainService.isLoaded(sabRelativePath, state),
+  "assembleAllDependencyRAB":
+    (. sabRelativePath, wholeDependencyRelationMap) =>
+      ImportABSystem.RAB.assembleAllDependencyRAB(
+        sabRelativePath,
+        wholeDependencyRelationMap,
+      ),
+  "loadWABAndSetToState":
+    (. wabRelativePath, getAssetBundlePathFunc) =>
+      ImportABSystem.WAB.loadWABAndSetToState(
+        wabRelativePath,
+        (getAssetBundlePathFunc, FetchCommon.fetch),
+      ),
+  "isWABLoaded":
+    (. wabRelativePath, state) =>
+      OperateWABAssetBundleMainService.isLoaded(wabRelativePath, state),
+  "canAssembleSAB":
+    (. sabRelativePath, wabRelativePath, state) =>
+      OperateSABAssetBundleMainService.canAssemble(
+        sabRelativePath,
+        wabRelativePath,
+        state,
+      ),
   "assembleSAB":
     (. sabRelativePath, sab, wholeDependencyRelationMap) =>
       AssembleABSystem.SAB.assemble(
@@ -179,16 +198,16 @@ let create = () => {
         sabSceneGameObject,
         state,
       ),
-  "getAllDependencyRABCount":
+  "getAllNeededABCount":
     (. abRelativePath, wabRelativePath, state) =>
-      ProgressABSystem.RAB.getAllDependencyRABCount(
+      ProgressABSystem.RAB.getAllNeededABCount(
         abRelativePath,
         wabRelativePath,
         state,
       ),
-  "getLoadedDependencyRABCount":
+  "getLoadedNeededABCount":
     (. abRelativePath, wabRelativePath, state) =>
-      ProgressABSystem.RAB.getLoadedDependencyRABCount(
+      ProgressABSystem.RAB.getLoadedNeededABCount(
         abRelativePath,
         wabRelativePath,
         state,

@@ -54,6 +54,9 @@ type assembleSABData = {
 };
 
 type wabData = {
+  isLoadedMap: WonderCommonlib.ImmutableHashMapService.t(bool),
+  loadedWABMap:
+    WonderCommonlib.ImmutableHashMapService.t(Js.Typed_array.ArrayBuffer.t),
   wholeDependencyRelationMap:
     WonderCommonlib.ImmutableHashMapService.t(
       DependencyDataType.dependencyRelation,

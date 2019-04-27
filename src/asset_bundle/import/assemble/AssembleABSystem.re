@@ -36,7 +36,6 @@ module SAB = {
 
   open Js.Promise;
 
-  let isSAB = abRelativePath => abRelativePath |> Js.String.includes(".sab");
 
   let _isImageBufferDataDependencyAndRemoved = ({name, bufferView, mimeType}) =>
     ABBufferViewUtils.isNoneBufferViewIndex(bufferView);
@@ -471,7 +470,6 @@ module SAB = {
 };
 
 module RAB = {
-  let isRAB = abRelativePath => abRelativePath |> Js.String.includes(".rab");
 
   let _isImageBufferDataDependencyAndRemoved =
       ({name, bufferView, mimeType}: RABType.image) =>

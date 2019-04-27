@@ -39,7 +39,7 @@ module RAB = {
       ) =>
     WABType.{wholeHashIdMap, wholeDependencyRelationMap};
 
-  let loadAndAssembleAllDependencyRAB =
+  let loadAllDependencyRABAndSetToState =
       (
         ~abRelativePath,
         ~wholeManifest=buldWholeManifest(
@@ -63,7 +63,7 @@ module RAB = {
         ~fetchFunc=FetchCommon.fetch,
         (),
       ) =>
-    ImportABSystem.RAB.loadAndAssembleAllDependencyRAB(
+    ImportABSystem.RAB.loadAllDependencyRABAndSetToState(
       abRelativePath,
       wholeManifest,
       (
@@ -75,6 +75,19 @@ module RAB = {
         fetchFunc,
       ),
     );
+
+  let assembleAllDependencyRAB =
+      (
+        ~abRelativePath,
+        ~wholeDependencyRelationMap=buildWholeDependencyRelationMap(
+                                      getRabRelativePaths(),
+                                    ),
+        (),
+      ) =>
+    ImportABSystem.RAB.assembleAllDependencyRAB(
+      abRelativePath,
+      wholeDependencyRelationMap,
+    );
 };
 
 module SAB = {
@@ -84,6 +97,20 @@ module SAB = {
     let sab1RelativePath = "sab1.sab";
 
     (rab1RelativePath, rab2RelativePath, sab1RelativePath);
+  };
+
+  let getSABRelativePath = () => {
+    let (rab1RelativePath, rab2RelativePath, sab1RelativePath) =
+      getABRelativePaths();
+
+    sab1RelativePath;
+  };
+
+  let getRABRelativePaths = () => {
+    let (rab1RelativePath, rab2RelativePath, sab1RelativePath) =
+      getABRelativePaths();
+
+    (rab1RelativePath, rab2RelativePath);
   };
 
   let buildWholeHashIdMap =
@@ -154,5 +181,23 @@ module SAB = {
         cacheAssetBundleArrayBufferFunc,
         fetchFunc,
       ),
+    );
+};
+
+module WAB = {
+  let getWABRelativePath = () => "wab1.wab";
+
+  let buildWAB = () => Obj.magic(-1);
+
+  let loadWABAndSetToState =
+      (
+        ~wabRelativePath,
+        ~getAssetBundlePathFunc=(.) => "",
+        ~fetchFunc=FetchCommon.fetch,
+        (),
+      ) =>
+    ImportABSystem.WAB.loadWABAndSetToState(
+      wabRelativePath,
+      (getAssetBundlePathFunc, fetchFunc),
     );
 };

@@ -177,9 +177,7 @@
 
                                     resolve(request.result[cacheFieldName]);
                                 } else {
-                                    console.log("get no data");
-
-                                    resolve(null);
+                                    reject("get no cache")
                                 }
                             };
                         })
@@ -234,9 +232,8 @@
 
 
 
-
-                api.loadAssetBundle(
-                    _getAssetBundlePath() + wabRelativePath
+                api.loadWABAndSetToState(
+                    wabRelativePath, _getAssetBundlePath
                 ).flatMap((wab) => {
                     console.log("wab: ", wab);
 
@@ -260,7 +257,7 @@
                     api.setState(state);
 
 
-                    return api.loadAndAssembleAllDependencyRAB(
+                    return api.loadAllDependencyRABAndSetToState(
                         sabRelativePath,
                         manifest,
                         [
@@ -270,8 +267,7 @@
                             _getAssetBundleArrayBufferCache,
                             _cacheAssetBundleArrayBuffer
                         ]
-
-                    ).concat(
+                    ).merge(
                         api.loadSABAndSetToState(
                             sabRelativePath,
                             manifest,
@@ -284,6 +280,8 @@
                             ]
 
                         )
+                    ).concat(
+                        api.assembleAllDependencyRAB(sabRelativePath, wholeDependencyRelationMap)
                     )
                 })
                     .subscribe({
@@ -315,77 +313,87 @@
                 // console.log("init->a: ", a)
 
 
-                // var intervalId = setInterval(() => {
-                //     var state = api.unsafeGetState();
+                var intervalId = setInterval(() => {
+                    var state = api.unsafeGetState();
 
-                //     if (api.isSABLoaded(
-                //         sabRelativePath, state
-                //     )) {
-                //         console.log("assemble sab");
+                    if (!api.isWABLoaded(
+                        wabRelativePath,
+                        state
+                    )) {
+                        console.log("wab is not loaded");
 
-                //         clearInterval(intervalId);
+                        return;
+                    }
 
-                //         api.assembleSAB(
-                //             sabRelativePath,
+                    if (api.canAssembleSAB(
+                        sabRelativePath,
+                        wabRelativePath,
+                        state
+                    )) {
+                        console.log("assemble sab");
 
-                //             api.unsafeGetLoadedSAB(
-                //                 sabRelativePath, state
-                //             ),
-                //             api.unsafeGetWholeDependencyRelationMap(
-                //                 wabRelativePath, state
-                //             )
-                //         ).
+                        clearInterval(intervalId);
 
-                //             subscribe(
-                //                 {
-                //                     "next": (sceneGameObject) => {
-                //                         var state = api.unsafeGetState();
+                        api.assembleSAB(
+                            sabRelativePath,
 
-                //                         var state = api.initAllSABGameObjects(
-                //                             sceneGameObject, state
-                //                         );
+                            api.unsafeGetLoadedSAB(
+                                sabRelativePath, state
+                            ),
+                            api.unsafeGetWholeDependencyRelationMap(
+                                wabRelativePath, state
+                            )
+                        ).
 
+                            subscribe(
+                                {
+                                    "next": (sceneGameObject) => {
+                                        var state = api.unsafeGetState();
 
-                //                         // var state =
-                //                         //     api.disposeSceneAllChildren(state);
-
-                //                         // var state =
-                //                         //     api.setSABSceneGameObjectToBeScene(sceneGameObject, state);
-
-
-                //                         var state =
-                //                             api.addSABSceneGameObjectChildrenToScene(sceneGameObject, state);
-
-
-                //                         api.setState(state);
-                //                     },
-                //                     "error": e => {
-                //                         console.log("error: ", e);
-                //                     },
-                //                     "complete": () => {
-                //                         console.log("complete");
-                //                     }
-                //                 }
+                                        var state = api.initAllSABGameObjects(
+                                            sceneGameObject, state
+                                        );
 
 
-                //             )
-                //     }
-                //     else {
-                //         console.log("sab not loaded! need wait",
-                //             api.getAllDependencyRABCount(
-                //                 sabRelativePath,
-                //                 wabRelativePath,
-                //                 state,
-                //             ),
-                //             api.getLoadedDependencyRABCount(
-                //                 sabRelativePath,
-                //                 wabRelativePath,
-                //                 state,
-                //             )
-                //         )
-                //     }
+                                        // var state =
+                                        //     api.disposeSceneAllChildren(state);
 
-                // }, 30);
+                                        // var state =
+                                        //     api.setSABSceneGameObjectToBeScene(sceneGameObject, state);
+
+
+                                        var state =
+                                            api.addSABSceneGameObjectChildrenToScene(sceneGameObject, state);
+
+
+                                        api.setState(state);
+                                    },
+                                    "error": e => {
+                                        console.log("error: ", e);
+                                    },
+                                    "complete": () => {
+                                        console.log("complete");
+                                    }
+                                }
+
+
+                            )
+                    }
+                    else {
+                        console.log("sab can't be assembled! need wait",
+                            api.getAllNeededABCount(
+                                sabRelativePath,
+                                wabRelativePath,
+                                state,
+                            ),
+                            api.getLoadedNeededABCount(
+                                sabRelativePath,
+                                wabRelativePath,
+                                state,
+                            )
+                        )
+                    }
+                }, 30);
 
 
 

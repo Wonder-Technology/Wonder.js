@@ -4,6 +4,8 @@ open StateDataMainType;
 
 let create = () => {
   assembleRABData: {
+    isLoadedMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
+    loadedRABMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     isAssembledMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     textureMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     imageMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
@@ -19,6 +21,8 @@ let create = () => {
     loadedSABMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
   },
   wabData: {
+    isLoadedMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
+    loadedWABMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     wholeDependencyRelationMap:
       WonderCommonlib.ImmutableHashMapService.createEmpty(),
   },

@@ -24,7 +24,7 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    describe("loadAndAssembleAllDependencyRAB", () => {
+    describe("loadAllDependencyRABAndSetToState", () => {
       let _buildFakeFetchArrayBufferResponse = arrayBuffer =>
         {"ok": true, "arrayBuffer": () => arrayBuffer |> Js.Promise.resolve}
         |> Js.Promise.resolve;
@@ -55,7 +55,7 @@ let _ =
 
              let valueRef = ref(0);
 
-             ImportABTool.RAB.loadAndAssembleAllDependencyRAB(
+             ImportABTool.RAB.loadAllDependencyRABAndSetToState(
                ~abRelativePath=rab3RelativePath,
                ~initAssetBundleArrayBufferCache=
                  (.) => {
@@ -72,7 +72,7 @@ let _ =
            });
       });
 
-      testPromise("if dependency rab is assembled, not load", () => {
+      testPromise("if dependency rab is loaded, not load", () => {
         let (rab1RelativePath, rab2RelativePath, rab3RelativePath) =
           ImportABTool.RAB.getRabRelativePaths();
 
@@ -82,10 +82,10 @@ let _ =
 
              let state =
                state
-               |> OperateRABAssetBundleMainService.markAssembled(
+               |> OperateRABAssetBundleMainService.markLoaded(
                     rab1RelativePath,
                   )
-               |> OperateRABAssetBundleMainService.markAssembled(
+               |> OperateRABAssetBundleMainService.markLoaded(
                     rab2RelativePath,
                   );
 
@@ -98,7 +98,7 @@ let _ =
                  ~arrayBuffer2=rab2,
                );
 
-             ImportABTool.RAB.loadAndAssembleAllDependencyRAB(
+             ImportABTool.RAB.loadAllDependencyRABAndSetToState(
                ~abRelativePath=rab3RelativePath,
                ~isAssetBundleArrayBufferCachedFunc=
                  (. _, _) => false |> Most.just,
@@ -125,7 +125,7 @@ let _ =
                    ~arrayBuffer2=rab2,
                  );
 
-               ImportABTool.RAB.loadAndAssembleAllDependencyRAB(
+               ImportABTool.RAB.loadAllDependencyRABAndSetToState(
                  ~abRelativePath=rab3RelativePath,
                  ~isAssetBundleArrayBufferCachedFunc=
                    (. _, _) => true |> Most.just,
@@ -154,7 +154,7 @@ let _ =
                      ~arrayBuffer2=rab2,
                    );
 
-                 ImportABTool.RAB.loadAndAssembleAllDependencyRAB(
+                 ImportABTool.RAB.loadAllDependencyRABAndSetToState(
                    ~abRelativePath=rab3RelativePath,
                    ~isAssetBundleArrayBufferCachedFunc=
                      (. abRelativePath, hashId) =>
@@ -196,7 +196,7 @@ let _ =
                      ~arrayBuffer2=rab2,
                    );
 
-                 ImportABTool.RAB.loadAndAssembleAllDependencyRAB(
+                 ImportABTool.RAB.loadAllDependencyRABAndSetToState(
                    ~abRelativePath=rab3RelativePath,
                    ~isAssetBundleArrayBufferCachedFunc=
                      (. abRelativePath, hashId) =>
@@ -226,45 +226,58 @@ let _ =
                     );
                });
           });
-          testPromise("assemble dependency rab", () => {
-            let (rab1RelativePath, rab2RelativePath, rab3RelativePath) =
-              ImportABTool.RAB.getRabRelativePaths();
-
-            GenerateAllABTool.TestWithTwoRAB.generateTwoRABs(state^)
-            |> then_(((rab1, rab2)) => {
-                 let fetch =
-                   _buildFakeFetch(
-                     ~sandbox,
-                     ~arrayBuffer1=rab1,
-                     ~arrayBuffer2=rab2,
-                   );
-
-                 ImportABTool.RAB.loadAndAssembleAllDependencyRAB(
-                   ~abRelativePath=rab3RelativePath,
-                   ~isAssetBundleArrayBufferCachedFunc=
-                     (. abRelativePath, hashId) => false |> Most.just,
-                   ~fetchFunc=fetch,
-                   (),
-                 )
-                 |> MostTool.testStream(() => {
-                      let state = StateAPI.unsafeGetState();
-
-                      (
-                        OperateRABAssetBundleMainService.isAssembled(
-                          rab1RelativePath,
-                          state,
-                        ),
-                        OperateRABAssetBundleMainService.isAssembled(
-                          rab2RelativePath,
-                          state,
-                        ),
-                      )
-                      |> expect == (true, true)
-                      |> resolve;
-                    });
-               });
-          });
         });
       });
     });
+
+    describe("assembleAllDependencyRAB", () =>
+      testPromise("assemble all dependency rabs by concat", () => {
+        let (rab1RelativePath, rab2RelativePath, rab3RelativePath) =
+          ImportABTool.RAB.getRabRelativePaths();
+
+        GenerateAllABTool.TestWithTwoRAB.generateTwoRABs(state^)
+        |> then_(((rab1, rab2)) => {
+             let state = StateAPI.unsafeGetState();
+
+             state
+             |> OperateRABAssetBundleMainService.setLoadedRAB(
+                  rab1RelativePath,
+                  rab1,
+                )
+             |> OperateRABAssetBundleMainService.setLoadedRAB(
+                  rab2RelativePath,
+                  rab2,
+                )
+             |> StateAPI.setState
+             |> ignore;
+
+             ImportABTool.RAB.assembleAllDependencyRAB(
+               ~abRelativePath=rab3RelativePath,
+               ~wholeDependencyRelationMap=
+                 ImportABTool.RAB.buildWholeDependencyRelationMap((
+                   rab1RelativePath,
+                   rab2RelativePath,
+                   rab3RelativePath,
+                 )),
+               (),
+             )
+             |> MostTool.testStream(() => {
+                  let state = StateAPI.unsafeGetState();
+
+                  (
+                    OperateRABAssetBundleMainService.isAssembled(
+                      rab1RelativePath,
+                      state,
+                    ),
+                    OperateRABAssetBundleMainService.isAssembled(
+                      rab2RelativePath,
+                      state,
+                    ),
+                  )
+                  |> expect == (true, true)
+                  |> resolve;
+                });
+           });
+      })
+    );
   });

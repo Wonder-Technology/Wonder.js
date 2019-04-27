@@ -85,6 +85,37 @@ let isLoaded = (sabRelativePath, {assetBundleRecord} as state) =>
   | Some(isLoaded) => isLoaded
   };
 
+let canAssemble =
+    (
+      sabRelativePath,
+      wabRelativePath,
+      {assetBundleRecord} as state,
+    ) =>
+  isLoaded(sabRelativePath, state)
+  && (
+    switch (
+      OperateWABAssetBundleMainService.getWholeDependencyRelationMap(
+        wabRelativePath,
+        state,
+      )
+    ) {
+    | None => false
+    | Some(wholeDependencyRelationMap) =>
+      FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+        sabRelativePath,
+        wholeDependencyRelationMap,
+      )
+      |> Js.Array.filter(rabRelativePath =>
+           !
+             OperateRABAssetBundleMainService.isAssembled(
+               rabRelativePath,
+               state,
+             )
+         )
+      |> Js.Array.length === 0
+    }
+  );
+
 let releaseLoadedSAB = (sabRelativePath, {assetBundleRecord} as state) =>
   {
     ...state,

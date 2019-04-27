@@ -1,5 +1,63 @@
 open StateDataMainType;
 
+let getLoadedRAB = (rabRelativePath, {assetBundleRecord} as state) =>
+  assetBundleRecord.assembleRABData.loadedRABMap
+  |> WonderCommonlib.ImmutableHashMapService.get(rabRelativePath);
+
+let unsafeGetLoadedRAB = (rabRelativePath, state) =>
+  getLoadedRAB(rabRelativePath, state)
+  |> OptionService.unsafeGetWithMessage(
+       WonderLog.Log.buildAssertMessage(
+         ~expect=
+           {j|rab arrayBuffer in rabRelativePath:$rabRelativePath loaded|j},
+         ~actual={j|not|j},
+       ),
+     );
+
+let setLoadedRAB = (rabRelativePath, rab, {assetBundleRecord} as state) => {
+  ...state,
+  assetBundleRecord: {
+    ...assetBundleRecord,
+    assembleRABData: {
+      ...assetBundleRecord.assembleRABData,
+      loadedRABMap:
+        assetBundleRecord.assembleRABData.loadedRABMap
+        |> WonderCommonlib.ImmutableHashMapService.set(rabRelativePath, rab),
+    },
+  },
+};
+
+let _markIsLoaded = (rabRelativePath, isLoaded, {assetBundleRecord} as state) => {
+  ...state,
+  assetBundleRecord: {
+    ...assetBundleRecord,
+    assembleRABData: {
+      ...assetBundleRecord.assembleRABData,
+      isLoadedMap:
+        assetBundleRecord.assembleRABData.isLoadedMap
+        |> WonderCommonlib.ImmutableHashMapService.set(
+             rabRelativePath,
+             isLoaded,
+           ),
+    },
+  },
+};
+
+let markLoaded = (rabRelativePath, {assetBundleRecord} as state) =>
+  _markIsLoaded(rabRelativePath, true, state);
+
+let markNotLoaded = (rabRelativePath, {assetBundleRecord} as state) =>
+  _markIsLoaded(rabRelativePath, false, state);
+
+let isLoaded = (rabRelativePath, {assetBundleRecord} as state) =>
+  switch (
+    assetBundleRecord.assembleRABData.isLoadedMap
+    |> WonderCommonlib.ImmutableHashMapService.get(rabRelativePath)
+  ) {
+  | None => false
+  | Some(isLoaded) => isLoaded
+  };
+
 let _markIsAssembled =
     (rabRelativePath, isAssembled, {assetBundleRecord} as state) => {
   ...state,
@@ -31,6 +89,24 @@ let isAssembled = (rabRelativePath, {assetBundleRecord} as state) =>
   | None => false
   | Some(isAssembled) => isAssembled
   };
+
+let releaseLoadedRAB = (rabRelativePath, {assetBundleRecord} as state) =>
+  {
+    ...state,
+    assetBundleRecord: {
+      ...assetBundleRecord,
+      assembleRABData: {
+        ...assetBundleRecord.assembleRABData,
+        loadedRABMap:
+          assetBundleRecord.assembleRABData.loadedRABMap
+          |> WonderCommonlib.ImmutableHashMapService.deleteVal(
+               rabRelativePath,
+             ),
+      },
+    },
+  }
+  /* TODO test */
+  |> markNotLoaded(rabRelativePath);
 
 let releaseAssembleRABData = (rabRelativePath, {assetBundleRecord} as state) => {
   let {assembleRABData} = assetBundleRecord;

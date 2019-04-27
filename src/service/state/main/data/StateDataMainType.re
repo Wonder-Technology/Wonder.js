@@ -338,6 +338,9 @@ and scriptRecord = {
     ),
 }
 and assembleRABData = {
+  isLoadedMap: WonderCommonlib.ImmutableHashMapService.t(bool),
+  loadedRABMap:
+    WonderCommonlib.ImmutableHashMapService.t(Js.Typed_array.ArrayBuffer.t),
   isAssembledMap: WonderCommonlib.ImmutableHashMapService.t(bool),
   textureMap:
     WonderCommonlib.ImmutableHashMapService.t(
