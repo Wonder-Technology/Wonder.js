@@ -15,7 +15,7 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("bind arcballCameraController's event", () => {
-      let _prepareKeyboardEvent = () =>
+      let _prepareMouseEvent = () =>
         EventArcballCameraControllerTool.prepareMouseEvent(sandbox);
 
       describe("test bind one arcballCameraController's event", () => {
@@ -29,7 +29,7 @@ let _ =
                 MouseEventTool.prepareForPointerLock(sandbox, state);
 
               test("if is mouse event, request canvas pointerLock", () => {
-                let state = _prepareKeyboardEvent();
+                let state = _prepareMouseEvent();
                 let (state, requestPointerLockStub) =
                   _prepareForPointerLock(sandbox, state);
                 let (state, _, _, (cameraController, _, _)) =
@@ -83,11 +83,11 @@ let _ =
                   (sandbox, pointerLockElement, state) => {
                 let document = DomExtend.document |> Obj.magic;
 
-                document##pointerLockElement#=pointerLockElement;
+                document##pointerLockElement #= pointerLockElement;
 
                 let exitPointerLockStub =
                   createEmptyStubWithJsObjSandbox(sandbox);
-                document##exitPointerLock#=exitPointerLockStub;
+                document##exitPointerLock #= exitPointerLockStub;
 
                 MouseEventTool.prepareForPointerLock(sandbox, state);
 
@@ -98,7 +98,7 @@ let _ =
                 test(
                   "if document.pointerLockElement === canvas, exitPointerLock",
                   () => {
-                  let state = _prepareKeyboardEvent();
+                  let state = _prepareMouseEvent();
                   let canvas = ViewTool.unsafeGetCanvas(state) |> Obj.magic;
                   let (state, exitPointerLockStub) =
                     _prepareForPointerLock(sandbox, canvas, state);
@@ -127,7 +127,7 @@ let _ =
                   exitPointerLockStub |> expect |> toCalledOnce;
                 });
                 test("else, not exitPointerLock", () => {
-                  let state = _prepareKeyboardEvent();
+                  let state = _prepareMouseEvent();
                   let (state, exitPointerLockStub) =
                     _prepareForPointerLock(sandbox, Obj.magic(1), state);
                   let (state, _, _, (cameraController, _, _)) =
@@ -188,7 +188,7 @@ let _ =
           describe("bind point drag over event", () =>
             describe("change orbit", () =>
               test("set phi and theta", () => {
-                let state = _prepareKeyboardEvent();
+                let state = _prepareMouseEvent();
                 let (state, _) =
                   MouseEventTool.prepareForPointerLock(sandbox, state);
                 let (
@@ -253,7 +253,7 @@ let _ =
 
           describe("bind point scale event", () => {
             test("preventDefault", () => {
-              let state = _prepareKeyboardEvent();
+              let state = _prepareMouseEvent();
               let (
                 state,
                 gameObject,
@@ -297,7 +297,7 @@ let _ =
             });
 
             test("set distance", () => {
-              let state = _prepareKeyboardEvent();
+              let state = _prepareMouseEvent();
               let (
                 state,
                 gameObject,
@@ -348,7 +348,7 @@ let _ =
           });
 
           describe("bind keydown event", () => {
-            let _prepareKeyboardEvent = () => {
+            let _prepareKeyEvent = () => {
               let state =
                 EventArcballCameraControllerTool.prepareKeyboardEvent(
                   sandbox,
@@ -400,7 +400,7 @@ let _ =
                 (moveSpeedX, moveSpeedY),
                 (posX, posY, posZ),
               ) =
-                _prepareKeyboardEvent();
+                _prepareKeyEvent();
 
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
@@ -427,7 +427,7 @@ let _ =
                   (moveSpeedX, moveSpeedY),
                   (posX, posY, posZ),
                 ) =
-                  _prepareKeyboardEvent();
+                  _prepareKeyEvent();
 
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
@@ -448,7 +448,7 @@ let _ =
                   (moveSpeedX, moveSpeedY),
                   (posX, posY, posZ),
                 ) =
-                  _prepareKeyboardEvent();
+                  _prepareKeyEvent();
 
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
@@ -469,7 +469,7 @@ let _ =
                   (moveSpeedX, moveSpeedY),
                   (posX, posY, posZ),
                 ) =
-                  _prepareKeyboardEvent();
+                  _prepareKeyEvent();
 
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
@@ -490,7 +490,7 @@ let _ =
                   (moveSpeedX, moveSpeedY),
                   (posX, posY, posZ),
                 ) =
-                  _prepareKeyboardEvent();
+                  _prepareKeyEvent();
 
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
@@ -508,9 +508,14 @@ let _ =
           });
         });
 
-        describe("add event handleFunc to state", () =>
-          test("test unbind keydown event", () => {
-            let state = _prepareKeyboardEvent();
+        describe("add event handleFunc to state", () => {
+          let _prepareForPointerLock = (sandbox, state) =>
+            MouseEventTool.prepareForPointerLock(sandbox, state);
+
+          test("test unbind point drag start event", () => {
+            let state = _prepareMouseEvent();
+            let (state, requestPointerLockStub) =
+              _prepareForPointerLock(sandbox, state);
             let (
               state,
               gameObject,
@@ -526,6 +531,47 @@ let _ =
             let preventDefaultFunc = createEmptyStubWithJsObjSandbox(sandbox);
 
             let state =
+              ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+                cameraController,
+                state,
+              );
+            let state =
+              ArcballCameraControllerAPI.unbindArcballCameraControllerEvent(
+                cameraController,
+                state,
+              );
+            let state = MainStateTool.setState(state);
+            EventTool.triggerDomEvent(
+              "mousedown",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(~preventDefaultFunc, ()),
+            );
+            let state = EventTool.restore(state);
+
+            requestPointerLockStub |> expect |> not_ |> toCalled;
+          });
+          test("test unbind point scale event", () => {
+            let state = _prepareMouseEvent();
+            let (
+              state,
+              gameObject,
+              transform,
+              (
+                cameraController,
+                basicCameraView,
+                perspectiveCameraProjection,
+              ),
+            ) =
+              ArcballCameraControllerTool.createGameObject(state);
+            let state = state |> NoWorkerJobTool.execInitJobs;
+            let preventDefaultFunc = createEmptyStubWithJsObjSandbox(sandbox);
+
+            let state =
+              ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+                cameraController,
+                state,
+              );
+            let state =
               state
               |> GameObjectTool.disposeGameObjectArcballCameraControllerComponent(
                    gameObject,
@@ -540,76 +586,41 @@ let _ =
             let state = EventTool.restore(state);
 
             preventDefaultFunc |> expect |> not_ |> toCalled;
-          })
-        );
-        /* TODO test more unbind events */
+          });
+        });
       });
 
-      describe("test bind two arcballCameraControllers' event", ()
-        /* let warn = ref(Obj.magic(1));
-
-           beforeEach(() =>
-             warn :=
-               createMethodStubWithJsObjSandbox(sandbox, Console.console, "warn")
-           ); */
-        /* test("should warn: expect only has one arcballCameraController", () => {
-             let state = _prepareKeyboardEvent();
-             let (state, gameObject1, _, (cameraController1, _, _)) =
-               ArcballCameraControllerTool.createGameObject(state);
-             let (state, gameObject2, _, (cameraController2, _, _)) =
-               ArcballCameraControllerTool.createGameObject(state);
-             let state = state |> NoWorkerJobTool.execInitJobs;
-             let state =
-               ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
-                 cameraController1,
-                 state,
-               );
-             let state =
-               ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
-                 cameraController2,
-                 state,
-               );
-
-             let state = EventTool.restore(state);
-
-             warn^
-             |> withOneArg(
-                  "Warn: expect only has one arcballCameraController, but actual > 1. please dispose others.",
-                )
-             |> getCallCount
-             |> expect == 5;
-           }); */
-        =>
-          test("test bind keydown event", () => {
-            let state = _prepareKeyboardEvent();
-            let (state, gameObject1, _, (cameraController1, _, _)) =
-              ArcballCameraControllerTool.createGameObject(state);
-            let (state, gameObject2, _, (cameraController2, _, _)) =
-              ArcballCameraControllerTool.createGameObject(state);
-            let state = state |> NoWorkerJobTool.execInitJobs;
-            let state =
-              ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
-                cameraController1,
-                state,
-              );
-            let state =
-              ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
-                cameraController2,
-                state,
-              );
-
-            let preventDefaultFunc = createEmptyStubWithJsObjSandbox(sandbox);
-
-            let state = MainStateTool.setState(state);
-            EventTool.triggerDomEvent(
-              "mousewheel",
-              EventTool.getPointEventBindedDom(state),
-              MouseEventTool.buildMouseEvent(~preventDefaultFunc, ()),
+      describe("test bind two arcballCameraControllers' event", () =>
+        test("test bind point scale event", () => {
+          let state = _prepareMouseEvent();
+          let (state, gameObject1, _, (cameraController1, _, _)) =
+            ArcballCameraControllerTool.createGameObject(state);
+          let (state, gameObject2, _, (cameraController2, _, _)) =
+            ArcballCameraControllerTool.createGameObject(state);
+          let state = state |> NoWorkerJobTool.execInitJobs;
+          let state =
+            ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+              cameraController1,
+              state,
             );
-            let state = EventTool.restore(state);
+          let state =
+            ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+              cameraController2,
+              state,
+            );
 
-            preventDefaultFunc |> expect |> toCalledTwice;
-          })
-        );
+          let preventDefaultFunc = createEmptyStubWithJsObjSandbox(sandbox);
+
+          let state = MainStateTool.setState(state);
+          EventTool.triggerDomEvent(
+            "mousewheel",
+            EventTool.getPointEventBindedDom(state),
+            MouseEventTool.buildMouseEvent(~preventDefaultFunc, ()),
+          );
+          let state = EventTool.restore(state);
+
+          preventDefaultFunc |> expect |> toCalledTwice;
+        })
+      );
     });
   });

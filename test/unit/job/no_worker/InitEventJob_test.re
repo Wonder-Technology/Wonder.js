@@ -783,6 +783,63 @@ let _ =
             });
           });
 
+          describe("test locationInView", () => {
+            let _prepare = () => {
+              let state =
+                MouseEventTool.prepare(
+                  ~sandbox,
+                  ~offsetLeft=0,
+                  ~offsetTop=2,
+                  (),
+                );
+              MouseEventTool.setNotPointerLocked(.);
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              /* let (valueX, valueY) = (ref(0), ref(0)); */
+              let locationInViewArr = [||];
+
+              let state =
+                ManageEventAPI.onMouseEvent(
+                  MouseDragOver,
+                  0,
+                  (. event: mouseEvent, state) => {
+                    /* let (x, y) = event.locationInView; */
+                    /* valueX := x;
+                       valueY := y; */
+                    locationInViewArr
+                    |> ArrayService.push(event.locationInView);
+                    state;
+                  },
+                  state,
+                );
+
+              (state, locationInViewArr);
+            };
+
+            test("test view has no offsetParent", () => {
+              let (state, locationInViewArr) = _prepare();
+
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                "mousedown",
+                EventTool.getPointEventBindedDom(state),
+                MouseEventTool.buildMouseEvent(~pageX=50, ~pageY=80, ()),
+              );
+              EventTool.triggerDomEvent(
+                "mousemove",
+                EventTool.getPointEventBindedDom(state),
+                MouseEventTool.buildMouseEvent(~pageX=55, ~pageY=110, ()),
+              );
+              EventTool.triggerDomEvent(
+                "mousemove",
+                EventTool.getPointEventBindedDom(state),
+                MouseEventTool.buildMouseEvent(~pageX=60, ~pageY=110, ()),
+              );
+              let state = EventTool.restore(state);
+
+              locationInViewArr |> expect == [||];
+            });
+          });
+
           describe("test button", () => {
             let _test = (eventButton, targetButton) => {
               let state = MouseEventTool.prepare(~sandbox, ());
@@ -1292,20 +1349,20 @@ let _ =
                 let state = EventTool.restore(state);
 
                 value^
-                |>
-                expect == {
-                            clientX: 0,
-                            clientY: 0,
-                            pageX: 10,
-                            pageY: 20,
-                            identifier: 0,
-                            screenX: 0,
-                            screenY: 0,
-                            radiusX: 0,
-                            radiusY: 0,
-                            rotationAngle: 0,
-                            force: 0,
-                          };
+                |> expect
+                == {
+                     clientX: 0,
+                     clientY: 0,
+                     pageX: 10,
+                     pageY: 20,
+                     identifier: 0,
+                     screenX: 0,
+                     screenY: 0,
+                     radiusX: 0,
+                     radiusY: 0,
+                     rotationAngle: 0,
+                     force: 0,
+                   };
               })
             );
 
@@ -1879,7 +1936,7 @@ let _ =
                       |> OptionService.unsafeGet
                       |> Obj.magic;
 
-                    value := Obj.magic(event)##pageX;
+                    value :=  Obj.magic(event)##pageX;
 
                     (state, customEvent);
                   },
@@ -1962,15 +2019,15 @@ let _ =
               let state = EventTool.restore(state);
 
               resultArr
-              |>
-              expect == [|
-                          PointDown,
-                          (10, 20) |> Obj.magic,
-                          (10 - 1, 20 - 2) |> Obj.magic,
-                          Some(Left) |> Obj.magic,
-                          Some((-1) * 2) |> Obj.magic,
-                          (1, 2) |> Obj.magic,
-                        |];
+              |> expect
+              == [|
+                   PointDown,
+                   (10, 20) |> Obj.magic,
+                   (10 - 1, 20 - 2) |> Obj.magic,
+                   Some(Left) |> Obj.magic,
+                   Some((-1) * 2) |> Obj.magic,
+                   (1, 2) |> Obj.magic,
+                 |];
             });
           });
 
@@ -2291,7 +2348,7 @@ let _ =
                       |> Obj.magic;
                     let changedTouches = Obj.magic(event)##changedTouches;
 
-                    value := changedTouches[0]##pageX;
+                    value :=  changedTouches[0]##pageX;
 
                     (state, customEvent);
                   },
@@ -2375,15 +2432,15 @@ let _ =
               let state = EventTool.restore(state);
 
               resultArr
-              |>
-              expect == [|
-                          PointDown,
-                          (10, 20) |> Obj.magic,
-                          (10 - 1, 20 - 2) |> Obj.magic,
-                          None |> Obj.magic,
-                          None |> Obj.magic,
-                          (0, 0) |> Obj.magic,
-                        |];
+              |> expect
+              == [|
+                   PointDown,
+                   (10, 20) |> Obj.magic,
+                   (10 - 1, 20 - 2) |> Obj.magic,
+                   None |> Obj.magic,
+                   None |> Obj.magic,
+                   (0, 0) |> Obj.magic,
+                 |];
             });
           });
 

@@ -378,9 +378,9 @@ let _fromPCDomEventArr = state => [|
   _fromPointDomEvent("mouseup", state)
   |> WonderBsMost.Most.tap(event => _execMouseEventHandle(MouseUp, event)),
   _fromPointDomEvent("mousemove", state)
-  |> WonderBsMost.Most.tap(event =>
-       _execMouseMoveEventHandle(MouseMove, event)
-     ),
+  |> WonderBsMost.Most.tap(event => {
+       _execMouseMoveEventHandle(MouseMove, event);
+     }),
   _fromPointDomEvent("mousewheel", state)
   |> WonderBsMost.Most.tap(event => _execMouseEventHandle(MouseWheel, event)),
   _fromPointDomEvent("mousedown", state)

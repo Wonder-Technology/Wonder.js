@@ -200,7 +200,6 @@
 
 
 
-
                 var isDrawing = false;
 
                 var drawPointArr = [];
@@ -249,16 +248,14 @@
                     drawPointArr = [];
                 }, true)
 
+
+
+
                 var state =
                     wd.onCustomGlobalEvent(
                         wd.getPointDragOverEventName(),
                         0,
                         (event, state) => {
-                            var userData = wd.getCustomEventUserData(event);
-                            console.log("over",
-                                wd.getPointEventMovementDeltaOfEvent(userData),
-                                wd.getPointEventLocationInViewOfEvent(userData),
-                            )
                             if (!isDrawing) {
                                 return [state, event];
                             }
@@ -268,7 +265,7 @@
                                 _getInterctedPoint(event, cameraGameObject, state, box2)
                             );
 
-                            console.log("is draw: ", drawPointArr)
+                            // console.log("is draw: ", drawPointArr)
 
                             return [state, event];
 

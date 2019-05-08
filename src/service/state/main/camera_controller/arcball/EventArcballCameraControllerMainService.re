@@ -312,7 +312,7 @@ let _disposePointDragStartEventHandleFuncMap =
   | Some(pointDragStartEventHandleFunc) =>
     let state =
       _unbindPointEvent(
-        NameEventService.getPointDownEventName(),
+        NameEventService.getPointDragStartEventName(),
         pointDragStartEventHandleFunc,
         state,
       );
@@ -341,7 +341,7 @@ let _disposePointDragDropEventHandleFuncMap =
   | Some(pointDragDropEventHandleFunc) =>
     let state =
       _unbindPointEvent(
-        NameEventService.getPointUpEventName(),
+        NameEventService.getPointDragDropEventName(),
         pointDragDropEventHandleFunc,
         state,
       );
