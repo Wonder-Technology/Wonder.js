@@ -5,13 +5,7 @@ open EventType;
 let _getBody = () => DomExtend.document##body |> bodyToEventTarget;
 
 let _fromPointDomEvent = (eventName, state) =>
-  WonderBsMost.Most.fromEvent(
-    eventName,
-    /* TODO add test */
-    /* ViewService.unsafeGetCanvas(state.viewRecord) |> canvasToEventTarget, */
-    _getBody(),
-    false,
-  );
+  WonderBsMost.Most.fromEvent(eventName, _getBody(), false);
 
 let _fromKeyboardDomEvent = (eventName, state) =>
   WonderBsMost.Most.fromEvent(eventName, _getBody(), false);

@@ -21,7 +21,7 @@ let _extend = [%raw
 
 let getBody = state => DomExtend.document##body |> EventType.bodyToEventTarget;
 
-let getPointEventBindedDom = state => ViewTool.unsafeGetCanvas(state);
+let getPointEventBindedDom = state => getBody(state);
 
 let getKeyboardEventBindedDom = state => getBody(state);
 
