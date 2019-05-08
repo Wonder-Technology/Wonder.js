@@ -396,6 +396,8 @@ let addGameObjectScriptComponent = GameObjectAPI.addGameObjectScriptComponent;
 
 let createGameObject = GameObjectAPI.createGameObject;
 
+let getGeometryIndicesCount = GeometryAPI.getGeometryIndicesCount;
+
 let hasGeometryIndices32 = GeometryAPI.hasGeometryIndices32;
 
 let hasGeometryIndices16 = GeometryAPI.hasGeometryIndices16;
@@ -487,6 +489,14 @@ let getSetting = ManageIMGUIAPI.getSetting;
 let clearIMGUIFunc = ManageIMGUIAPI.clearIMGUIFunc;
 
 let setIMGUIFunc = ManageIMGUIAPI.setIMGUIFunc;
+
+let getIntersectedPointWithMesh = JieHuoAPI.getIntersectedPointWithMesh;
+
+let isIntersectWithMesh = JieHuoAPI.isIntersectWithMesh;
+
+let checkIntersectMesh = JieHuoAPI.checkIntersectMesh;
+
+let createPerspectiveCameraRayFromEvent = JieHuoAPI.createPerspectiveCameraRayFromEvent;
 
 let removeWorkerMainLoopJob = JobAPI.removeWorkerMainLoopJob;
 

@@ -8,16 +8,16 @@ let compute = (radius, bands) => {
   let indices = [||];
 
   for (latNumber in 0 to latitudeBands) {
-    let latNumber = latNumber |> NumberType.intToFloat;
-    let latitudeBands = latitudeBands |> NumberType.intToFloat;
+    let latNumber = latNumber |> NumberType.convertIntToFloat;
+    let latitudeBands = latitudeBands |> NumberType.convertIntToFloat;
 
     let theta = latNumber *. Js.Math._PI /. latitudeBands;
     let sinTheta = Js.Math.sin(theta);
     let cosTheta = Js.Math.cos(theta);
 
     for (longNumber in 0 to longitudeBands) {
-      let longNumber = longNumber |> NumberType.intToFloat;
-      let longitudeBands = longitudeBands |> NumberType.intToFloat;
+      let longNumber = longNumber |> NumberType.convertIntToFloat;
+      let longitudeBands = longitudeBands |> NumberType.convertIntToFloat;
 
       let phi = longNumber *. 2. *. Js.Math._PI /. longitudeBands;
       let sinPhi = Js.Math.sin(phi);

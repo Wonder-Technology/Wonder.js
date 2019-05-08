@@ -89,7 +89,7 @@ let _changeOrbit =
          cameraController,
          arcballCameraControllerRecord,
        )
-       +. (x |> NumberType.intToFloat)
+       +. (x |> NumberType.convertIntToFloat)
        /. (100. /. rotateSpeed),
      )
   |> OperateArcballCameraControllerService.setTheta(
@@ -98,7 +98,7 @@ let _changeOrbit =
          cameraController,
          arcballCameraControllerRecord,
        )
-       -. (y |> NumberType.intToFloat)
+       -. (y |> NumberType.convertIntToFloat)
        /. (100. /. rotateSpeed),
      );
 };

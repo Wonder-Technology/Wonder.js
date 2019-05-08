@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>cube</title>
+</head>
+
+<body>
+    <script src="../../test/e2e/js/AssetTool.js"></script>
+    <script src="../../test/e2e/js/BasicBoxesTool.js"></script>
+    <script src="../../test/e2e/js/LightBoxesTool.js"></script>
+    <script src="../../test/e2e/js/PositionTool.js"></script>
+    <script src="../../test/e2e/js/LightTool.js"></script>
+    <script src="../../test/e2e/js/CameraTool.js"></script>
+    <script src="../../test/e2e/js/LightMaterialTool.js"></script>
+    <script src="../../dist/wd.js"></script>
+
+
+    <canvas id="ui-canvas" style="
+    position:absolute;
+    left:0;
+    top:0;
+    z-index:100;
+    "></canvas>
+
+    <button id="begin_draw" style="width:100px;height:100px;
+    position:absolute;
+    left:0px;
+    top:0px;
+    z-index:101;
+    ">开始</button>
+
+
+    <button id="end_draw" style="width:100px;height:100px;
+    position:absolute;
+    left:200px;
+    top:0px;
+    z-index:101;
+    ">结束</button>
+
+
+    <button id="clear_draw" style="width:100px;height:100px;
+    position:absolute;
+    left:400px;
+    top:0px;
+    z-index:101;
+    ">清空</button>
+
+
+    <script>
+        window.onload = function () {
+            return AssetTool.loadConfig(["./config/setting.json", "./config/"], null, function () {
+                return initSample(wd.unsafeGetState());
+            });
+
+
+            function _getInterctedPoint(event, cameraGameObject, state, box2) {
+                var ray = wd.createPerspectiveCameraRayFromEvent(
+                    event,
+                    cameraGameObject, state
+                );
+
+                var checkResult =
+                    wd.checkIntersectMesh(
+                        ray,
+                        wd.unsafeGetGameObjectGeometryComponent(
+                            box2, state,
+
+                        ),
+                        wd.getTransformLocalToWorldMatrixTypeArray(
+                            wd.unsafeGetGameObjectTransformComponent(
+                                box2, state
+                            ), state
+                        ),
+                        1,
+                        state
+                    );
+
+                var point =
+                    wd.getIntersectedPointWithMesh(
+                        checkResult
+                    );
+
+                // console.log(point);
+
+                return point;
+
+            };
+
+            function _getScreenSize() {
+                return [window.innerWidth, window.innerHeight];
+            };
+
+            function initSample(state) {
+                var uiCanvas = document.querySelector("#ui-canvas");
+
+                uiCanvas.width = window.innerWidth;
+                uiCanvas.height = window.innerHeight;
+
+                uiCanvas.style.width = "100%";
+                uiCanvas.style.height = "100%";
+
+
+                var uiContext = uiCanvas.getContext("2d");
+
+
+
+
+
+
+
+
+
+
+                var [state, box1] = LightBoxesTool.createBox(state);
+
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(box1, state);
+
+                var state = wd.setTransformLocalPosition(transform, [0, 0, -30], state);
+
+
+
+                var [state, box2] = BasicBoxesTool.createBox(state);
+
+
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(box2, state);
+
+                var state = wd.setTransformLocalPosition(transform, [0, 0, 0], state);
+
+
+
+
+
+
+
+                var [state, box3] = LightBoxesTool.createBox(state);
+
+
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(box3, state);
+
+                var state = wd.setTransformLocalScale(transform, [0.2, 0.2, 0.2], state);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                var state = wd.setAmbientLightColor([0.2, 0.2, 0.2], state);
+
+
+                var [state, directionLightGameObject] = LightTool.createDirectionLight(state);
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(directionLightGameObject, state);
+
+                var state = wd.setTransformLocalEulerAngles(transform, [0, 180, 0], state);
+
+
+
+
+                var [state, cameraGameObject] = LightBoxesTool.createCamera(state);
+
+
+
+                var [state, cameraController] = wd.createArcballCameraController(state);
+
+                var state =
+                    wd.setArcballCameraControllerMinDistance(cameraController, 0.001, state);
+                var state =
+                    wd.setArcballCameraControllerDistance(cameraController, 0.001, state);
+
+
+
+                var state =
+                    wd.setArcballCameraControllerWheelSpeed(cameraController, 1, state);
+
+                var state = wd.addGameObjectArcballCameraControllerComponent(cameraGameObject, cameraController, state);
+
+
+                var state =
+                    wd.bindArcballCameraControllerEvent(
+                        cameraController, state
+                    );
+
+
+
+
+
+
+
+                var isDrawing = false;
+
+                var drawPointArr = [];
+
+
+                document.querySelector("#begin_draw").addEventListener("mousedown", function () {
+                    var state = wd.unsafeGetState();
+
+                    var state =
+                        wd.unbindArcballCameraControllerEvent(
+                            cameraController, state
+                        );
+
+                    wd.setState(state);
+
+                    isDrawing = true;
+
+                }, true)
+
+
+
+
+
+                document.querySelector("#end_draw").addEventListener("mousedown", function () {
+                    var state = wd.unsafeGetState();
+
+
+                    var state =
+                        wd.bindArcballCameraControllerEvent(
+                            cameraController, state
+                        );
+
+                    wd.setState(state);
+
+
+                    isDrawing = false;
+                }, true)
+
+
+
+
+
+
+                document.querySelector("#clear_draw").addEventListener("mousedown", function () {
+                    isDrawing = false;
+                    drawPointArr = [];
+                }, true)
+
+                var state =
+                    wd.onCustomGlobalEvent(
+                        wd.getPointDragOverEventName(),
+                        0,
+                        (event, state) => {
+                            var userData = wd.getCustomEventUserData(event);
+                            console.log("over",
+                                wd.getPointEventMovementDeltaOfEvent(userData),
+                                wd.getPointEventLocationInViewOfEvent(userData),
+                            )
+                            if (!isDrawing) {
+                                return [state, event];
+                            }
+
+
+                            drawPointArr.push(
+                                _getInterctedPoint(event, cameraGameObject, state, box2)
+                            );
+
+                            console.log("is draw: ", drawPointArr)
+
+                            return [state, event];
+
+                        }, state
+                    );
+
+
+
+                var state = wd.registerNoWorkerLoopJob("update_ui", (_, state) => {
+                    uiContext.clearRect(0, 0, uiCanvas.width, uiCanvas.height);
+
+
+                    drawPointArr.forEach((pointInWorld) => {
+                        var [screenWidth, screenHeight] = _getScreenSize();
+
+                        var pointInScreen =
+                            wd.convertWorldToScreen(
+                                wd.unsafeGetGameObjectBasicCameraViewComponent(
+                                    cameraGameObject, state
+                                ),
+                                wd.unsafeGetGameObjectPerspectiveCameraProjectionComponent(
+                                    cameraGameObject, state
+                                ),
+                                [
+                                    pointInWorld[0],
+                                    pointInWorld[1],
+                                    pointInWorld[2],
+                                    screenWidth, screenHeight
+                                ],
+                                state
+                            );
+
+
+                        uiContext.fillStyle = "#0000ff";
+                        uiContext.fillRect(pointInScreen[0], pointInScreen[1], 50, 30);
+                    })
+
+
+
+
+                    return state;
+                }, state);
+
+
+
+
+
+
+
+
+                wd.startDirector(state);
+            }
+        };
+    </script>
+</body>
+
+</html>

@@ -7,7 +7,9 @@ let _getBody = () => DomExtend.document##body |> bodyToEventTarget;
 let _fromPointDomEvent = (eventName, state) =>
   WonderBsMost.Most.fromEvent(
     eventName,
-    ViewService.unsafeGetCanvas(state.viewRecord) |> canvasToEventTarget,
+    /* TODO add test */
+    /* ViewService.unsafeGetCanvas(state.viewRecord) |> canvasToEventTarget, */
+    _getBody(),
     false,
   );
 
@@ -42,9 +44,11 @@ let _bindDomEventToTriggerPointEvent =
           ManageEventMainService.triggerCustomGlobalEvent(
             CreateCustomEventMainService.create(
               customEventName,
-              convertDomEventToPointEventFunc(pointEventName, mouseEvent)
-              |> pointEventToUserData
-              |. Some,
+              (
+                convertDomEventToPointEventFunc(pointEventName, mouseEvent)
+                |> pointEventToUserData
+              )
+              ->Some,
             ),
             state,
           );

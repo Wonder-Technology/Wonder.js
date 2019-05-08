@@ -349,3 +349,13 @@ let hasGeometryIndices16 = (geometry, state) =>
 
 let hasGeometryIndices32 = (geometry, state) =>
   IndicesGeometryMainService.hasIndices32(geometry, state);
+
+let getGeometryIndicesCount = (geometry, state) => {
+  let {indicesInfos} = RecordGeometryMainService.getRecord(state);
+  let (startIndex, endIndex) =
+    ReallocatedPointsGeometryService.getInfo(
+      BufferGeometryService.getInfoIndex(geometry),
+      indicesInfos,
+    );
+  endIndex - startIndex;
+};

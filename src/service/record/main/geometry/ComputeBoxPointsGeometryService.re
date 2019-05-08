@@ -126,8 +126,8 @@ let _generateFace =
         vertices,
       );
       _generateTexCoord(
-        NumberType.intToFloat(i) /. NumberType.intToFloat(uSegment),
-        NumberType.intToFloat(j) /. NumberType.intToFloat(vSegment),
+        NumberType.convertIntToFloat(i) /. NumberType.convertIntToFloat(uSegment),
+        NumberType.convertIntToFloat(j) /. NumberType.convertIntToFloat(vSegment),
         texCoords,
       );
       _generateNormal(side, faceNormals, normals);
