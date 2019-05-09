@@ -789,7 +789,7 @@ let _ =
                 MouseEventTool.prepare(
                   ~sandbox,
                   ~offsetLeft=0,
-                  ~offsetTop=2,
+                  ~offsetTop=0,
                   (),
                 );
               MouseEventTool.setNotPointerLocked(.);
@@ -836,7 +836,7 @@ let _ =
               );
               let state = EventTool.restore(state);
 
-              locationInViewArr |> expect == [||];
+              locationInViewArr |> expect == [|(55, 110), (60, 110)|];
             });
           });
 

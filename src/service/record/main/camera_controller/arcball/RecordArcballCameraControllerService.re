@@ -2,15 +2,15 @@ open StateDataMainType;
 
 let create = () => {
   index: 0,
-  pointDragStartEventHandleFuncMap:
+  pointDragStartEventHandleFuncListMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
-  pointDragDropEventHandleFuncMap:
+  pointDragDropEventHandleFuncListMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
-  pointDragOverEventHandleFuncMap:
+  pointDragOverEventHandleFuncListMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
-  pointScaleEventHandleFuncMap:
+  pointScaleEventHandleFuncListMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
-  keydownEventHandleFuncMap:
+  keydownEventHandleFuncListMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
   dirtyArray: WonderCommonlib.ArrayService.createEmpty(),
   distanceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -31,11 +31,11 @@ let deepCopyForRestore =
     (
       {
         index,
-        pointDragStartEventHandleFuncMap,
-        pointDragDropEventHandleFuncMap,
-        pointDragOverEventHandleFuncMap,
-        pointScaleEventHandleFuncMap,
-        keydownEventHandleFuncMap,
+        pointDragStartEventHandleFuncListMap,
+        pointDragDropEventHandleFuncListMap,
+        pointDragOverEventHandleFuncListMap,
+        pointScaleEventHandleFuncListMap,
+        keydownEventHandleFuncListMap,
         dirtyArray,
         distanceMap,
         minDistanceMap,
@@ -52,17 +52,21 @@ let deepCopyForRestore =
       },
     ) => {
   index,
-  pointDragStartEventHandleFuncMap:
-    pointDragStartEventHandleFuncMap |> WonderCommonlib.MutableSparseMapService.copy,
-  pointDragDropEventHandleFuncMap:
-    pointDragDropEventHandleFuncMap |> WonderCommonlib.MutableSparseMapService.copy,
-  pointDragOverEventHandleFuncMap:
-    pointDragOverEventHandleFuncMap |> WonderCommonlib.MutableSparseMapService.copy,
-  pointScaleEventHandleFuncMap:
-    pointScaleEventHandleFuncMap
+  pointDragStartEventHandleFuncListMap:
+    pointDragStartEventHandleFuncListMap
     |> WonderCommonlib.MutableSparseMapService.copy,
-  keydownEventHandleFuncMap:
-    keydownEventHandleFuncMap |> WonderCommonlib.MutableSparseMapService.copy,
+  pointDragDropEventHandleFuncListMap:
+    pointDragDropEventHandleFuncListMap
+    |> WonderCommonlib.MutableSparseMapService.copy,
+  pointDragOverEventHandleFuncListMap:
+    pointDragOverEventHandleFuncListMap
+    |> WonderCommonlib.MutableSparseMapService.copy,
+  pointScaleEventHandleFuncListMap:
+    pointScaleEventHandleFuncListMap
+    |> WonderCommonlib.MutableSparseMapService.copy,
+  keydownEventHandleFuncListMap:
+    keydownEventHandleFuncListMap
+    |> WonderCommonlib.MutableSparseMapService.copy,
   dirtyArray: dirtyArray |> Js.Array.copy,
   distanceMap: distanceMap |> WonderCommonlib.MutableSparseMapService.copy,
   minDistanceMap:

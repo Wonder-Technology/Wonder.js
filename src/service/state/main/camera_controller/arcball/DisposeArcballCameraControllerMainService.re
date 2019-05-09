@@ -10,9 +10,6 @@ let _disposeData = (cameraController, state) => {
     |> EventArcballCameraControllerMainService.unbindEvent(cameraController);
 
   let {
-    pointDragOverEventHandleFuncMap,
-    pointScaleEventHandleFuncMap,
-    keydownEventHandleFuncMap,
     dirtyArray,
     distanceMap,
     minDistanceMap,

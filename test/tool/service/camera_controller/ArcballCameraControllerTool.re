@@ -82,66 +82,59 @@ let setArcballCameraControllerData = (cameraController, state) => {
 
 let getDirtyArray = state => state.arcballCameraControllerRecord.dirtyArray;
 
-let getPointDragStartEventHandleFuncMap =
-    ({arcballCameraControllerRecord} as state) =>
-  arcballCameraControllerRecord.pointDragStartEventHandleFuncMap;
+/* let getPointDragStartEventHandleFuncMap =
+     ({arcballCameraControllerRecord} as state) =>
+   arcballCameraControllerRecord.pointDragStartEventHandleFuncMap; */
 
-let setPointDragStartEventHandleFunc =
+let addPointDragStartEventHandleFunc =
     (cameraController, handleFunc, {arcballCameraControllerRecord} as state) => {
   ...state,
   arcballCameraControllerRecord:
-    EventArcballCameraControllerMainService._setPointDragStartEventHandleFunc(
+    EventArcballCameraControllerMainService._addPointDragStartEventHandleFunc(
       cameraController,
       handleFunc,
       arcballCameraControllerRecord,
     ),
 };
 
-let getPointDragDropEventHandleFuncMap = ({arcballCameraControllerRecord} as state) =>
-  arcballCameraControllerRecord.pointDragDropEventHandleFuncMap;
-
-let setPointDragDropEventHandleFunc =
+let addPointDragDropEventHandleFunc =
     (cameraController, handleFunc, {arcballCameraControllerRecord} as state) => {
   ...state,
   arcballCameraControllerRecord:
-    EventArcballCameraControllerMainService._setPointDragDropEventHandleFunc(
+    EventArcballCameraControllerMainService._addPointDragDropEventHandleFunc(
       cameraController,
       handleFunc,
       arcballCameraControllerRecord,
     ),
 };
 
-let getPointDragOverEventHandleFuncMap =
-    ({arcballCameraControllerRecord} as state) =>
-  arcballCameraControllerRecord.pointDragOverEventHandleFuncMap;
-
-let setPointDragOverEventHandleFunc =
+let addPointDragOverEventHandleFunc =
     (cameraController, handleFunc, {arcballCameraControllerRecord} as state) => {
   ...state,
   arcballCameraControllerRecord:
-    EventArcballCameraControllerMainService._setPointDragOverEventHandleFunc(
+    EventArcballCameraControllerMainService._addPointDragOverEventHandleFunc(
       cameraController,
       handleFunc,
       arcballCameraControllerRecord,
     ),
 };
 
-let setPointScaleEventHandleFunc =
+let addPointScaleEventHandleFunc =
     (cameraController, handleFunc, {arcballCameraControllerRecord} as state) => {
   ...state,
   arcballCameraControllerRecord:
-    EventArcballCameraControllerMainService._setPointScaleEventHandleFunc(
+    EventArcballCameraControllerMainService._addPointScaleEventHandleFunc(
       cameraController,
       handleFunc,
       arcballCameraControllerRecord,
     ),
 };
 
-let setKeydownEventHandleFunc =
+let addKeydownEventHandleFunc =
     (cameraController, handleFunc, {arcballCameraControllerRecord} as state) => {
   ...state,
   arcballCameraControllerRecord:
-    EventArcballCameraControllerMainService._setKeydownEventHandleFunc(
+    EventArcballCameraControllerMainService._addKeydownEventHandleFunc(
       cameraController,
       handleFunc,
       arcballCameraControllerRecord,

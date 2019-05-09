@@ -222,42 +222,64 @@ let _ =
               state.arcballCameraControllerRecord;
             (
               distanceMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
               minDistanceMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
               phiMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
               thetaMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
               thetaMarginMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
               targetMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
               moveSpeedXMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
               moveSpeedYMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
               rotateSpeedMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
               wheelSpeedMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
               gameObjectMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
             )
-            |>
-            expect == (
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                      );
+            |> expect
+            == (
+                 false,
+                 false,
+                 false,
+                 false,
+                 false,
+                 false,
+                 false,
+                 false,
+                 false,
+                 false,
+                 false,
+               );
           },
         );
 
@@ -322,23 +344,23 @@ let _ =
                  );
             let state =
               state
-              |> ArcballCameraControllerTool.setPointDragStartEventHandleFunc(
+              |> ArcballCameraControllerTool.addPointDragStartEventHandleFunc(
                    cameraController1,
                    pointDownHandleFunc,
                  )
-              |> ArcballCameraControllerTool.setPointDragDropEventHandleFunc(
+              |> ArcballCameraControllerTool.addPointDragDropEventHandleFunc(
                    cameraController1,
                    pointUpHandleFunc,
                  )
-              |> ArcballCameraControllerTool.setPointDragOverEventHandleFunc(
+              |> ArcballCameraControllerTool.addPointDragOverEventHandleFunc(
                    cameraController1,
                    pointDragHandleFunc,
                  )
-              |> ArcballCameraControllerTool.setPointScaleEventHandleFunc(
+              |> ArcballCameraControllerTool.addPointScaleEventHandleFunc(
                    cameraController1,
                    pointScaleHandleFunc,
                  )
-              |> ArcballCameraControllerTool.setKeydownEventHandleFunc(
+              |> ArcballCameraControllerTool.addKeydownEventHandleFunc(
                    cameraController1,
                    keydownHandleFunc,
                  );
@@ -410,23 +432,23 @@ let _ =
               };
             let state =
               state
-              |> ArcballCameraControllerTool.setPointDragStartEventHandleFunc(
+              |> ArcballCameraControllerTool.addPointDragStartEventHandleFunc(
                    cameraController1,
                    pointDownHandleFunc,
                  )
-              |> ArcballCameraControllerTool.setPointDragDropEventHandleFunc(
+              |> ArcballCameraControllerTool.addPointDragDropEventHandleFunc(
                    cameraController1,
                    pointUpHandleFunc,
                  )
-              |> ArcballCameraControllerTool.setPointDragOverEventHandleFunc(
+              |> ArcballCameraControllerTool.addPointDragOverEventHandleFunc(
                    cameraController1,
                    pointDragHandleFunc,
                  )
-              |> ArcballCameraControllerTool.setPointScaleEventHandleFunc(
+              |> ArcballCameraControllerTool.addPointScaleEventHandleFunc(
                    cameraController1,
                    pointScaleHandleFunc,
                  )
-              |> ArcballCameraControllerTool.setKeydownEventHandleFunc(
+              |> ArcballCameraControllerTool.addKeydownEventHandleFunc(
                    cameraController1,
                    keydownHandleFunc,
                  );
@@ -439,24 +461,34 @@ let _ =
                  );
 
             let {
-              pointDragStartEventHandleFuncMap,
-              pointDragDropEventHandleFuncMap,
-              pointDragOverEventHandleFuncMap,
-              pointScaleEventHandleFuncMap,
-              keydownEventHandleFuncMap,
+              pointDragStartEventHandleFuncListMap,
+              pointDragDropEventHandleFuncListMap,
+              pointDragOverEventHandleFuncListMap,
+              pointScaleEventHandleFuncListMap,
+              keydownEventHandleFuncListMap,
             } =
               state.arcballCameraControllerRecord;
             (
-              pointDragStartEventHandleFuncMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
-              pointDragDropEventHandleFuncMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
-              pointDragOverEventHandleFuncMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
-              pointScaleEventHandleFuncMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
-              keydownEventHandleFuncMap
-              |> WonderCommonlib.MutableSparseMapService.has(cameraController1),
+              pointDragStartEventHandleFuncListMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+              pointDragDropEventHandleFuncListMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+              pointDragOverEventHandleFuncListMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+              pointScaleEventHandleFuncListMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+              keydownEventHandleFuncListMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
             )
             |> expect == (false, false, false, false, false);
           });

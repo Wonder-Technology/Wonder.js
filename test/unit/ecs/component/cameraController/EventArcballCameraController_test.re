@@ -587,6 +587,55 @@ let _ =
 
             preventDefaultFunc |> expect |> not_ |> toCalled;
           });
+
+          describe("fix bug", () =>
+            test(
+              "unbind should unbind cameraController's all binded functions",
+              () => {
+              let state = _prepareMouseEvent();
+              let (state, requestPointerLockStub) =
+                _prepareForPointerLock(sandbox, state);
+              let (
+                state,
+                gameObject,
+                transform,
+                (
+                  cameraController,
+                  basicCameraView,
+                  perspectiveCameraProjection,
+                ),
+              ) =
+                ArcballCameraControllerTool.createGameObject(state);
+              let state = state |> NoWorkerJobTool.execInitJobs;
+              let preventDefaultFunc =
+                createEmptyStubWithJsObjSandbox(sandbox);
+
+              let state =
+                ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+                  cameraController,
+                  state,
+                );
+              let state =
+                ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
+                  cameraController,
+                  state,
+                );
+              let state =
+                ArcballCameraControllerAPI.unbindArcballCameraControllerEvent(
+                  cameraController,
+                  state,
+                );
+              let state = MainStateTool.setState(state);
+              EventTool.triggerDomEvent(
+                "mousedown",
+                EventTool.getPointEventBindedDom(state),
+                MouseEventTool.buildMouseEvent(~preventDefaultFunc, ()),
+              );
+              let state = EventTool.restore(state);
+
+              requestPointerLockStub |> expect |> not_ |> toCalled;
+            })
+          );
         });
       });
 

@@ -163,21 +163,21 @@ and eventRecord = {
   keyboardEventData: EventType.keyboardEventData,
   touchEventData: EventType.touchEventData,
 }
-and pointEventHandleFuncMap =
+and pointEventHandleFuncListMap =
   WonderCommonlib.MutableSparseMapService.t(
-    (. EventType.customEvent, state) => (state, EventType.customEvent),
+    list((. EventType.customEvent, state) => (state, EventType.customEvent)),
   )
-and keyboardEventHandleFuncMap =
+and keyboardEventHandleFuncListMap =
   WonderCommonlib.MutableSparseMapService.t(
-    (. EventType.keyboardEvent, state) => state,
+    list((. EventType.keyboardEvent, state) => state),
   )
 and arcballCameraControllerRecord = {
   index: int,
-  pointDragStartEventHandleFuncMap: pointEventHandleFuncMap,
-  pointDragDropEventHandleFuncMap: pointEventHandleFuncMap,
-  pointDragOverEventHandleFuncMap: pointEventHandleFuncMap,
-  pointScaleEventHandleFuncMap: pointEventHandleFuncMap,
-  keydownEventHandleFuncMap: keyboardEventHandleFuncMap,
+  pointDragStartEventHandleFuncListMap: pointEventHandleFuncListMap,
+  pointDragDropEventHandleFuncListMap: pointEventHandleFuncListMap,
+  pointDragOverEventHandleFuncListMap: pointEventHandleFuncListMap,
+  pointScaleEventHandleFuncListMap: pointEventHandleFuncListMap,
+  keydownEventHandleFuncListMap: keyboardEventHandleFuncListMap,
   dirtyArray: ArcballCameraControllerType.dirtyArray,
   distanceMap: WonderCommonlib.MutableSparseMapService.t(float),
   minDistanceMap: WonderCommonlib.MutableSparseMapService.t(float),
