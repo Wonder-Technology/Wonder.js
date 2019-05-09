@@ -10,4 +10,5 @@ let convertWorldToScreen =
     cameraProjection,
     (worldX, worldY, worldZ, screenWidth, screenHeight),
     state,
-  );
+  )
+  |> Js.Nullable.fromOption;

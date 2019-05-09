@@ -305,7 +305,7 @@ and apiRecord = {
       (component, state) => GameObjectPrimitiveType.gameObject,
     "convertWorldToScreen":
       (int, int, (float, float, float, float, float), state) =>
-      (float, float),
+      Js.Nullable.t((float, float)),
     "getRenderWorkerCustomData":
       state => CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
   },

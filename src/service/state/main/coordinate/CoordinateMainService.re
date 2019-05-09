@@ -22,13 +22,14 @@ let convertWorldToScreen =
     |> Vector4Service.transformMat4Tuple((worldX, worldY, worldZ, 1.));
 
   w < 0. ?
-    ((-100.), (-100.)) :
+    None :
     {
       let (x, y, z) as ndcSpacePos = (x /. w, y /. w, z /. w);
 
       (
         Js.Math.round((x +. 1.) /. 2. *. screenWidth),
         Js.Math.round((1. -. y) /. 2. *. screenHeight),
-      );
+      )
+      ->Some;
     };
 };
