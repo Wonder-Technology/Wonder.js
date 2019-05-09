@@ -191,20 +191,14 @@ let getOrCreateGeometryElementArrayBuffer =
     ElementArrayBufferRenderService.getOrCreate16Buffer(
       gl,
       (geometryIndex, elementArrayBufferMap),
-      GetGeometryIndicesRenderService.getIndices16(.
-        geometryIndex,
-        renderState,
-      ),
+      GetGeometryIndicesRenderService.getIndices16,
       renderState,
     )
   | Int =>
     ElementArrayBufferRenderService.getOrCreate32Buffer(
       gl,
       (geometryIndex, elementArrayBufferMap),
-      GetGeometryIndicesRenderService.getIndices32(.
-        geometryIndex,
-        renderState,
-      ),
+      GetGeometryIndicesRenderService.getIndices32,
       renderState,
     )
   };

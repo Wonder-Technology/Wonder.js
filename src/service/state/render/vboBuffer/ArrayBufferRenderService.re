@@ -12,7 +12,9 @@ let createBuffer =
       PoolVboBufferService.getArrayBuffer(gl, state.vboBufferRecord);
 
     bindBuffer(getArrayBuffer(gl), buffer, gl);
+
     bufferFloat32Data(getArrayBuffer(gl), data, getStaticDraw(gl), gl);
+
     resetBuffer(getArrayBuffer(gl), Js.Nullable.null, gl);
     buffer;
   };

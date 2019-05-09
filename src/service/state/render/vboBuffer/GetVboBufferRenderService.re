@@ -25,14 +25,20 @@ let getOrCreateBuffer =
 };
 
 let getOrCreateIndexBuffer =
-    (gl, (geometryIndex: int, bufferMap, indices), createBufferFunc, state) => {
+    (
+      gl,
+      (geometryIndex: int, bufferMap, getDataFunc),
+      createBufferFunc,
+      state,
+    ) => {
   let (has, buffer) =
     MutableSparseMapService.fastGet(geometryIndex, bufferMap);
 
   has ?
     buffer :
     {
-      let buffer = createBufferFunc(. gl, indices, state);
+      let buffer =
+        createBufferFunc(. gl, getDataFunc(. geometryIndex, state), state);
       bufferMap
       |> WonderCommonlib.MutableSparseMapService.set(geometryIndex, buffer)
       |> ignore;

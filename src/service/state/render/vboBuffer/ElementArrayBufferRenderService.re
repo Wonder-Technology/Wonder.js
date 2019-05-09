@@ -38,18 +38,20 @@ let create32Buffer =
     buffer;
   };
 
-let getOrCreate16Buffer = (gl, (geometryIndex, bufferMap), indices, state) =>
+let getOrCreate16Buffer =
+    (gl, (geometryIndex, bufferMap), getDataFunc, state) =>
   GetVboBufferRenderService.getOrCreateIndexBuffer(
     gl,
-    (geometryIndex, bufferMap, indices),
+    (geometryIndex, bufferMap, getDataFunc),
     create16Buffer,
     state,
   );
 
-let getOrCreate32Buffer = (gl, (geometryIndex, bufferMap), indices, state) =>
+let getOrCreate32Buffer =
+    (gl, (geometryIndex, bufferMap), getDataFunc, state) =>
   GetVboBufferRenderService.getOrCreateIndexBuffer(
     gl,
-    (geometryIndex, bufferMap, indices),
+    (geometryIndex, bufferMap, getDataFunc),
     create32Buffer,
     state,
   );

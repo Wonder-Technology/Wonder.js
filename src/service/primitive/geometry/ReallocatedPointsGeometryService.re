@@ -67,7 +67,7 @@ let setInfo = (infoIndex, startIndex, endIndex, infos) => {
   |> TypeArrayService.setUint32_1(infoIndex + 1, endIndex);
 };
 
-let hasPointData = (infoIndex, infos) =>{
+let hasPointData = (infoIndex, infos) => {
   let (startIndex, endIndex) = getInfo(infoIndex, infos);
   endIndex > startIndex;
 };
@@ -75,7 +75,7 @@ let hasPointData = (infoIndex, infos) =>{
 let getFloat32PointData = (infoIndex, points: Float32Array.t, infos) => {
   let (startIndex, endIndex) = getInfo(infoIndex, infos);
 
-  TypeArrayService.getFloat32ArraySubarray(points, startIndex, endIndex);
+  TypeArrayService.getFloat32Array(points, startIndex, endIndex);
 };
 
 let _setPointData =
@@ -92,7 +92,7 @@ let setFloat32PointData = (dataTuple, fillFloat32ArrayFunc) =>
 
 let getUint16PointData = (infoIndex: int, points: Uint16Array.t, infos) => {
   let (startIndex, endIndex) = getInfo(infoIndex, infos);
-  getUint16ArraySubarray(points, startIndex, endIndex);
+  getUint16Array(points, startIndex, endIndex);
 };
 
 let setUint16PointData = (dataTuple, fillUint16ArraryFunc) =>
@@ -100,7 +100,7 @@ let setUint16PointData = (dataTuple, fillUint16ArraryFunc) =>
 
 let getUint32PointData = (infoIndex: int, points: Uint32Array.t, infos) => {
   let (startIndex, endIndex) = getInfo(infoIndex, infos);
-  getUint32ArraySubarray(points, startIndex, endIndex);
+  getUint32Array(points, startIndex, endIndex);
 };
 
 let setUint32PointData = (dataTuple, fillUint32ArraryFunc) =>

@@ -55,14 +55,14 @@ let _getOrCreateBuffer =
       ElementArrayBufferRenderService.getOrCreate16Buffer(
         gl,
         (geometryIndex, elementArrayBufferMap),
-        getIndices16Func(. geometryIndex, state),
+        getIndices16Func,
         state,
       )
     | Int =>
       ElementArrayBufferRenderService.getOrCreate32Buffer(
         gl,
         (geometryIndex, elementArrayBufferMap),
-        getIndices32Func(. geometryIndex, state),
+        getIndices32Func,
         state,
       )
     }
