@@ -120,11 +120,8 @@ let getRotationTuple = matTypeArr => {
     );
   } else if (Float32Array.unsafe_get(matTypeArr, 0)
              > Float32Array.unsafe_get(matTypeArr, 5)
-             &&
-             Float32Array.unsafe_get(matTypeArr, 0) > Float32Array.unsafe_get(
-                                                         matTypeArr,
-                                                         10,
-                                                       )) {
+             && Float32Array.unsafe_get(matTypeArr, 0)
+             > Float32Array.unsafe_get(matTypeArr, 10)) {
     let s =
       Js.Math.sqrt(
         1.0
@@ -762,6 +759,38 @@ let scale = ((scaleX, scaleY, scaleZ), mat: Float32Array.t, resultFloat32Arr) =>
     15,
     Float32Array.unsafe_get(mat, 15),
   );
+
+  resultFloat32Arr;
+};
+
+/* TODO test */
+let copy = float32Arr => {
+  let resultFloat32Arr = createIdentityMatrix4();
+
+  Float32Array.unsafe_set(resultFloat32Arr, 0, Float32Array.unsafe_get(float32Arr, 0));
+  Float32Array.unsafe_set(resultFloat32Arr, 1, Float32Array.unsafe_get(float32Arr, 1));
+  Float32Array.unsafe_set(resultFloat32Arr, 2, Float32Array.unsafe_get(float32Arr, 2));
+  Float32Array.unsafe_set(resultFloat32Arr, 3, Float32Array.unsafe_get(float32Arr, 3));
+  Float32Array.unsafe_set(resultFloat32Arr, 4, Float32Array.unsafe_get(float32Arr, 4));
+  Float32Array.unsafe_set(resultFloat32Arr, 5, Float32Array.unsafe_get(float32Arr, 5));
+  Float32Array.unsafe_set(resultFloat32Arr, 6, Float32Array.unsafe_get(float32Arr, 6));
+  Float32Array.unsafe_set(resultFloat32Arr, 7, Float32Array.unsafe_get(float32Arr, 7));
+  Float32Array.unsafe_set(resultFloat32Arr, 8, Float32Array.unsafe_get(float32Arr, 8));
+  Float32Array.unsafe_set(resultFloat32Arr, 9, Float32Array.unsafe_get(float32Arr, 9));
+  Float32Array.unsafe_set(resultFloat32Arr, 10, Float32Array.unsafe_get(float32Arr, 10));
+  Float32Array.unsafe_set(resultFloat32Arr, 11, Float32Array.unsafe_get(float32Arr, 11));
+  Float32Array.unsafe_set(resultFloat32Arr, 12, Float32Array.unsafe_get(float32Arr, 12));
+  Float32Array.unsafe_set(resultFloat32Arr, 13, Float32Array.unsafe_get(float32Arr, 13));
+  Float32Array.unsafe_set(resultFloat32Arr, 14, Float32Array.unsafe_get(float32Arr, 14));
+  Float32Array.unsafe_set(resultFloat32Arr, 15, Float32Array.unsafe_get(float32Arr, 15));
+
+  resultFloat32Arr;
+};
+
+let setTranslation = ((x, y, z), resultFloat32Arr) => {
+  Float32Array.unsafe_set(resultFloat32Arr, 12, x);
+  Float32Array.unsafe_set(resultFloat32Arr, 13, y);
+  Float32Array.unsafe_set(resultFloat32Arr, 14, z);
 
   resultFloat32Arr;
 };

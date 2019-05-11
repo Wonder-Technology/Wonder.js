@@ -1,8 +1,8 @@
 open SendGLSLDataService;
 
-let getSendNoCachableDataByType = (type_) =>
+let getSendNoCachableDataByType = type_ =>
   SendGLSLDataService.(
-    switch type_ {
+    switch (type_) {
     | "mat4" => sendMatrix4 |> Obj.magic
     | "mat3" => sendMatrix3 |> Obj.magic
     | _ =>
@@ -12,15 +12,17 @@ let getSendNoCachableDataByType = (type_) =>
           ~description={j|unknown type:$type_|j},
           ~reason="",
           ~solution={j||j},
-          ~params={j||j}
-        )
+          ~params={j||j},
+        ),
       )
     }
   );
 
-let getSendCachableDataByType = (type_) =>
+let getSendCachableDataByType = type_ =>
   SendGLSLDataService.(
-    switch type_ {
+    switch (type_) {
+    /* TODO test "samplerCube" */
+    | "samplerCube"
     | "sampler2D" => sendInt |> Obj.magic
     | "vec3" => sendVec3 |> Obj.magic
     | "float3" => sendFloat3 |> Obj.magic
@@ -32,8 +34,8 @@ let getSendCachableDataByType = (type_) =>
           ~description={j|unknown type:$type_|j},
           ~reason="",
           ~solution={j||j},
-          ~params={j||j}
-        )
+          ~params={j||j},
+        ),
       )
     }
   );

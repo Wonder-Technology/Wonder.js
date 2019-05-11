@@ -57,5 +57,8 @@
     },
     {
         "name": "render_imgui"
+    },
+    {
+        "name": "render_skybox"
     }
 ]

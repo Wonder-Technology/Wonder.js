@@ -49,6 +49,9 @@
         },
         {
           "name": "init_script"
+        },
+        {
+          "name": "init_skybox"
         }
       ]
     }

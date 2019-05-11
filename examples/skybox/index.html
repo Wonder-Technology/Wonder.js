@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>skybox</title>
+</head>
+
+<body>
+    <script src="../../test/e2e/js/AssetTool.js"></script>
+    <script src="../../test/e2e/js/LightBoxesTool.js"></script>
+    <script src="../../test/e2e/js/PositionTool.js"></script>
+    <script src="../../test/e2e/js/LightTool.js"></script>
+    <script src="../../test/e2e/js/CameraTool.js"></script>
+    <script src="../../test/e2e/js/LightMaterialTool.js"></script>
+    <script src="../../dist/wd.js"></script>
+
+    <script>
+        window.onload = function () {
+            return AssetTool.loadConfig(["../config/setting.json", "../config/"], null, function () {
+                var nx = new Image();
+                nx.src = "../asset/image/skybox/nx.jpg";
+                nx.onload = () => {
+
+                    var px = new Image();
+                    px.src = "../asset/image/skybox/px.jpg";
+                    px.onload = () => {
+
+
+
+                        var ny = new Image();
+                        ny.src = "../asset/image/skybox/ny.jpg";
+                        ny.onload = () => {
+
+
+
+                            var py = new Image();
+                            py.src = "../asset/image/skybox/py.jpg";
+                            py.onload = () => {
+
+
+                                var nz = new Image();
+                                nz.src = "../asset/image/skybox/nz.jpg";
+                                nz.onload = () => {
+
+                                    var pz = new Image();
+                                    pz.src = "../asset/image/skybox/pz.jpg";
+                                    pz.onload = () => {
+
+                                        return initSample(
+                                            [
+                                                px, nx, py, ny, pz, nz
+                                            ],
+                                            wd.unsafeGetState());
+
+
+                                    };
+
+                                };
+
+
+
+                            };
+
+
+
+
+                        };
+
+
+                    };
+
+
+                };
+
+
+
+            });
+
+            function initSample(
+                [
+                    px, nx, py, ny, pz, nz
+                ],
+                state
+            ) {
+                var state = wd.setSkyboxImage(
+                    [
+                        px, nx, py, ny, pz, nz
+                    ], state
+                );
+
+
+                var [state, box] = LightBoxesTool.createBox(state);
+
+
+                var state = wd.setAmbientLightColor([0.2, 0.2, 0.2], state);
+
+
+                var [state, directionLightGameObject] = LightTool.createDirectionLight(state);
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(directionLightGameObject, state);
+
+                var state = wd.setTransformLocalEulerAngles(transform, [0, 180, 0], state);
+
+
+
+
+                var [state, cameraGameObject] = LightBoxesTool.createCamera(state);
+
+
+
+                var [state, cameraController] = wd.createArcballCameraController(state);
+
+                var state =
+                    wd.setArcballCameraControllerDistance(cameraController, 50, state);
+
+
+
+                var state =
+                    wd.setArcballCameraControllerWheelSpeed(cameraController, 1, state);
+
+                var state = wd.addGameObjectArcballCameraControllerComponent(cameraGameObject, cameraController, state);
+
+
+                var state =
+                    wd.bindArcballCameraControllerEvent(
+                        cameraController, state
+                    );
+
+
+                wd.startDirector(state);
+            }
+        };
+    </script>
+</body>
+
+</html>

@@ -542,6 +542,10 @@ let useByShaderIndex = RenderJobAPI.useByShaderIndex;
 
 let getShaderIndex = RenderJobAPI.getShaderIndex;
 
+let setSkyboxNeedUpdateCubeTexture = JobDataAPI.setSkyboxNeedUpdateCubeTexture;
+
+let setSkyboxImage = JobDataAPI.setSkyboxImage;
+
 let setGameObjectsNeedDrawOutline = JobDataAPI.setGameObjectsNeedDrawOutline;
 
 let setOutlineColor = JobDataAPI.setOutlineColor;

@@ -17,6 +17,7 @@ let _getInitJobHandles = () => [
   ("init_no_material_shader", InitNoMaterialShaderJob.execJob),
   ("init_basic_material", InitBasicMaterialJob.execJob),
   ("init_light_material", InitLightMaterialJob.execJob),
+  ("init_skybox", InitSkyboxJob.execJob),
 ];
 
 let _getLoopJobHandles = () => [
@@ -43,6 +44,7 @@ let _getLoopJobHandles = () => [
   ("render_basic", RenderBasicJob.execJob),
   ("front_render_light", FrontRenderLightJob.execJob),
   ("render_imgui", RenderIMGUIJob.execJob),
+  ("render_skybox", RenderSkyboxJob.execJob),
 ];
 
 let createInitJobHandleMap = () =>
