@@ -7,13 +7,14 @@ let _getBody = () => DomExtend.document##body |> bodyToEventTarget;
 let _fromPointDomEvent = (eventName, state) =>
   WonderBsMost.Most.fromEvent(eventName, _getBody(), false);
 
+let _fromMobilePointDomEvent = eventName => {
+  let fromEvent = Obj.magic(WonderBsMost.Most.fromEvent);
+
+  fromEvent(eventName, _getBody(), {"passive": false});
+};
+
 let _fromTouchMoveDomEventAndPreventnDefault = state =>
-  Obj.magic(
-    WonderBsMost.Most.fromEvent,
-    "touchmove",
-    _getBody(),
-    {"passive": false},
-  )
+  _fromMobilePointDomEvent("touchmove")
   |> WonderBsMost.Most.tap(event =>
        HandlePointDomEventMainService.preventDefault(
          event |> eventTargetToTouchDomEvent |> touchDomEventToPointDomEvent,
@@ -419,23 +420,23 @@ let _fromPCDomEventArr = state => [|
 |];
 
 let _fromMobileDomEventArr = state => [|
-  _fromPointDomEvent("touchend", state)
-  |> WonderBsMost.Most.since(_fromPointDomEvent("touchstart", state))
+  _fromMobilePointDomEvent("touchend")
+  |> WonderBsMost.Most.since(_fromMobilePointDomEvent("touchstart"))
   |> WonderBsMost.Most.tap(event => _execTouchEventHandle(TouchTap, event)),
-  _fromPointDomEvent("touchend", state)
+  _fromMobilePointDomEvent("touchend")
   |> WonderBsMost.Most.tap(event => _execTouchEventHandle(TouchEnd, event)),
-  _fromPointDomEvent("touchstart", state)
+  _fromMobilePointDomEvent("touchstart")
   |> WonderBsMost.Most.tap(event => _execTouchEventHandle(TouchStart, event)),
   _fromTouchMoveDomEventAndPreventnDefault(state)
   |> WonderBsMost.Most.tap(event =>
        _execTouchMoveEventHandle(TouchMove, event)
      ),
-  _fromPointDomEvent("touchstart", state)
+  _fromMobilePointDomEvent("touchstart")
   |> WonderBsMost.Most.tap(event => _execTouchDragStartEventHandle(event))
   |> WonderBsMost.Most.flatMap(event =>
        _fromTouchMoveDomEventAndPreventnDefault(state)
        |> WonderBsMost.Most.until(
-            _fromPointDomEvent("touchend", state)
+            _fromMobilePointDomEvent("touchend")
             |> WonderBsMost.Most.tap(event =>
                  _execTouchDragDropEventHandle(event)
                ),
