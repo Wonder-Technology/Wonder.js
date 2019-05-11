@@ -57,9 +57,9 @@ let _convertTouchDomEventToTouchEvent =
 let execEventHandle = (eventName, touchDomEvent, {eventRecord} as state) => {
   let {touchDomEventDataArrMap} = eventRecord;
 
-  HandlePointDomEventMainService.preventDefault(
+  /* HandlePointDomEventMainService.preventDefault(
     touchDomEvent |> touchDomEventToPointDomEvent,
-  );
+  ); */
 
   switch (
     touchDomEventDataArrMap
