@@ -1492,6 +1492,43 @@ let _ =
         describe("bind touchmove event", () => {
           _testTouchEvent(TouchMove, "touchmove");
 
+          test("preventDefault", () => {
+            let state = TouchEventTool.prepare(~sandbox, ());
+            let state = state |> NoWorkerJobTool.execInitJobs;
+            let preventDefaultFunc = createEmptyStubWithJsObjSandbox(sandbox);
+            let stopPropagationFunc =
+              createEmptyStubWithJsObjSandbox(sandbox);
+
+            let state =
+              ManageEventAPI.onTouchEvent(
+                TouchMove,
+                0,
+                (. event: touchEvent, state) => state,
+                state,
+              );
+
+            let state = MainStateTool.setState(state);
+            EventTool.triggerDomEvent(
+              "touchmove",
+              EventTool.getPointEventBindedDom(state),
+              TouchEventTool.buildTouchEvent(
+                ~changedTouches=[|
+                  TouchEventTool.buildTouchData(~pageX=10, ~pageY=20, ()),
+                |],
+                ~preventDefaultFunc,
+                ~stopPropagationFunc,
+                (),
+              ),
+            );
+            let state = EventTool.restore(state);
+
+            (
+              preventDefaultFunc |> getCallCount,
+              stopPropagationFunc |> getCallCount,
+            )
+            |> expect == (1, 1);
+          });
+
           describe("test touch event", () =>
             describe("test movementDelta", () =>
               test("set lastX, lastY after handle", () => {

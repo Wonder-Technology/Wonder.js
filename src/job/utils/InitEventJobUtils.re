@@ -7,6 +7,19 @@ let _getBody = () => DomExtend.document##body |> bodyToEventTarget;
 let _fromPointDomEvent = (eventName, state) =>
   WonderBsMost.Most.fromEvent(eventName, _getBody(), false);
 
+let _fromTouchMoveDomEventAndPreventnDefault = state =>
+  Obj.magic(
+    WonderBsMost.Most.fromEvent,
+    "touchmove",
+    _getBody(),
+    {"passive": false},
+  )
+  |> WonderBsMost.Most.tap(event =>
+       HandlePointDomEventMainService.preventDefault(
+         event |> eventTargetToTouchDomEvent |> touchDomEventToPointDomEvent,
+       )
+     );
+
 let _fromKeyboardDomEvent = (eventName, state) =>
   WonderBsMost.Most.fromEvent(eventName, _getBody(), false);
 
@@ -378,9 +391,9 @@ let _fromPCDomEventArr = state => [|
   _fromPointDomEvent("mouseup", state)
   |> WonderBsMost.Most.tap(event => _execMouseEventHandle(MouseUp, event)),
   _fromPointDomEvent("mousemove", state)
-  |> WonderBsMost.Most.tap(event => {
-       _execMouseMoveEventHandle(MouseMove, event);
-     }),
+  |> WonderBsMost.Most.tap(event =>
+       _execMouseMoveEventHandle(MouseMove, event)
+     ),
   _fromPointDomEvent("mousewheel", state)
   |> WonderBsMost.Most.tap(event => _execMouseEventHandle(MouseWheel, event)),
   _fromPointDomEvent("mousedown", state)
@@ -413,14 +426,14 @@ let _fromMobileDomEventArr = state => [|
   |> WonderBsMost.Most.tap(event => _execTouchEventHandle(TouchEnd, event)),
   _fromPointDomEvent("touchstart", state)
   |> WonderBsMost.Most.tap(event => _execTouchEventHandle(TouchStart, event)),
-  _fromPointDomEvent("touchmove", state)
+  _fromTouchMoveDomEventAndPreventnDefault(state)
   |> WonderBsMost.Most.tap(event =>
        _execTouchMoveEventHandle(TouchMove, event)
      ),
   _fromPointDomEvent("touchstart", state)
   |> WonderBsMost.Most.tap(event => _execTouchDragStartEventHandle(event))
   |> WonderBsMost.Most.flatMap(event =>
-       _fromPointDomEvent("touchmove", state)
+       _fromTouchMoveDomEventAndPreventnDefault(state)
        |> WonderBsMost.Most.until(
             _fromPointDomEvent("touchend", state)
             |> WonderBsMost.Most.tap(event =>
