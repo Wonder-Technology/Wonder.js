@@ -151,10 +151,6 @@ let _getRenderData = (skyboxGameObject, {gameObjectRecord}) => (
     skyboxGameObject,
     gameObjectRecord,
   ),
-  GetComponentGameObjectService.unsafeGetMeshRendererComponent(
-    skyboxGameObject,
-    gameObjectRecord,
-  ),
   GetComponentGameObjectService.unsafeGetGeometryComponent(
     skyboxGameObject,
     gameObjectRecord,
@@ -203,7 +199,7 @@ let _draw =
     (
       gl,
       shaderIndex,
-      (transformIndex, meshRendererIndex, geometryIndex),
+      (transformIndex, geometryIndex),
       state: StateRenderType.renderState,
     ) => {
   let sendRenderDataSubState =
@@ -226,7 +222,12 @@ let _draw =
     state,
   );
 
-  state |> RenderJobUtils.draw(gl, meshRendererIndex, geometryIndex);
+  state
+  |> RenderJobUtils.draw(
+       gl,
+       DrawModeType.Triangles |> DrawModeType.drawModeToUint8,
+       geometryIndex,
+     );
 
   state;
 };

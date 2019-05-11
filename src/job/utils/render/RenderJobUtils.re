@@ -248,10 +248,10 @@ let render =
   };
 };
 
-let draw = (gl, meshRendererIndex, geometryIndex, state) =>
+let draw = (gl, glDrawMode, geometryIndex, state) =>
   DrawGLSLService.drawElement(
     (
-      DrawModeMeshRendererService.getGlDrawMode(gl, meshRendererIndex, state),
+      glDrawMode,
       GeometryRenderService.getIndexType(gl, geometryIndex, state),
       GeometryRenderService.getIndexTypeSize(gl, geometryIndex, state),
       GetGeometryIndicesRenderService.getIndicesCount(. geometryIndex, state),

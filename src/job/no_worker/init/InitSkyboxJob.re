@@ -5,26 +5,6 @@ let _createSkyboxGameObject = state => {
 
   let (state, geometry) = CreateBoxGeometryGeometryMainService.create(state);
 
-  let (state, meshRenderer) = CreateMeshRendererMainService.create(. state);
-  /* TODO remove lightMaterial */
-  let (state, material) = CreateLightMaterialMainService.create(. state);
-
-  let state =
-    state
-    |> AddComponentGameObjectMainService.addLightMaterialComponent(
-         gameObject,
-         material,
-       );
-  let state =
-    state
-    |> AddComponentGameObjectMainService.addMeshRendererComponent(
-         gameObject,
-         meshRenderer,
-       );
-
-  let state =
-    OperateMeshRendererMainService.setIsRender(meshRenderer, false, state);
-
   let state =
     state
     |> AddComponentGameObjectMainService.addGeometryComponent(

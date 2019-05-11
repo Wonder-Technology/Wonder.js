@@ -33,7 +33,15 @@ module DrawOutlineJobUtils = {
              );
 
              state
-             |> RenderJobUtils.draw(gl, meshRendererIndex, geometryIndex);
+             |> RenderJobUtils.draw(
+                  gl,
+                  DrawModeMeshRendererService.getGlDrawMode(
+                    gl,
+                    meshRendererIndex,
+                    state,
+                  ),
+                  geometryIndex,
+                );
 
              state;
            },
@@ -102,7 +110,15 @@ module DrawOutlineJobUtils = {
              );
 
              state
-             |> RenderJobUtils.draw(gl, meshRendererIndex, geometryIndex);
+             |> RenderJobUtils.draw(
+                  gl,
+                  DrawModeMeshRendererService.getGlDrawMode(
+                    gl,
+                    meshRendererIndex,
+                    state,
+                  ),
+                  geometryIndex,
+                );
 
              state;
            },
