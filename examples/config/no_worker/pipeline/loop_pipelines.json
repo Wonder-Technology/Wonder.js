@@ -51,10 +51,10 @@
                 "name": "draw_outline"
             },
             {
-                "name": "render_imgui"
+                "name": "render_skybox"
             },
             {
-                "name": "render_skybox"
+                "name": "render_imgui"
             }
         ]
     }
