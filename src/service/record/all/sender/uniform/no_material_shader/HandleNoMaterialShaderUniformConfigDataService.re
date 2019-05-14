@@ -77,7 +77,10 @@ let addSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr) =>
         sendDataArr,
         /* TODO refactor(extend): change to custom shader instead of no material shader! */
         /* GetBasicMaterialDataGetRenderDataService.getColor */
-        (Obj.magic(-1), Obj.magic(-1)),
+        (
+          Obj.magic(-1),
+          SendUniformService.getSendCachableDataByType(type_),
+        ),
       )
     }
   | _ =>
