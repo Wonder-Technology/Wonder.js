@@ -203,12 +203,12 @@ module TestWithTwoRAB = {
   let generateTwoRABs = state => {
     let resourceData1 = GenerateSingleRABTool.ResourceData.buildResourceData();
 
-    let (state, rab1) =
+    let (rab1) =
       GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
     let resourceData2 = GenerateSingleRABTool.ResourceData.buildResourceData();
 
-    let (state, rab2) =
+    let (rab2) =
       GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
 
     generateAllAB((rab1, rab2), state)

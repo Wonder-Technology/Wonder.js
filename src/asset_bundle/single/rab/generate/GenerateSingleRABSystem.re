@@ -33,7 +33,6 @@ let generateRAB =
 
 let generateSingleRAB = (resourceData, state) => {
   let (
-    state,
     (
       imageArr,
       textureArr,
@@ -61,16 +60,13 @@ let generateSingleRAB = (resourceData, state) => {
       bufferViews: Js.Array.concat(geometryBufferViewArr, imageBufferViewArr),
     });
 
-  let rab =
-    generateRAB(
-      (
-        (imageBufferViewArr, geometryBufferViewArr),
-        imageUint8ArrayArr,
-        geometryUint8ArrayArr,
-      ),
-      bufferTotalAlignedByteLength,
-      jsonUint8Array,
-    );
-
-  (state, rab);
+  generateRAB(
+    (
+      (imageBufferViewArr, geometryBufferViewArr),
+      imageUint8ArrayArr,
+      geometryUint8ArrayArr,
+    ),
+    bufferTotalAlignedByteLength,
+    jsonUint8Array,
+  );
 };

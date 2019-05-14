@@ -53,7 +53,7 @@ let _ =
               (),
             );
 
-          let (state, rab1) =
+          let (rab1) =
             GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
           let (state, gameObject2, transform2, (material2, texture2)) =
@@ -71,7 +71,7 @@ let _ =
           let (canvas, context, (base64Str1, base64Str2)) =
             GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-          let (state, sab1) =
+          let (sab1) =
             GenerateSingleSABSystem.generateSingleSAB(
               SceneAPI.getSceneGameObject(state),
               WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -150,7 +150,7 @@ let _ =
                 (),
               );
 
-            let (state, rab1) =
+            let (rab1) =
               GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
             let (state, gameObject2, transform2, (material2, texture2)) =
@@ -176,7 +176,7 @@ let _ =
             let (canvas, context, (base64Str1, base64Str2)) =
               GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-            let (state, sab1) =
+            let (sab1) =
               GenerateSingleSABSystem.generateSingleSAB(
                 SceneAPI.getSceneGameObject(state),
                 WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -245,7 +245,7 @@ let _ =
             (),
           );
 
-        let (state, rab1) =
+        let (rab1) =
           GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         let gameObject2Name = "gameObject2";
@@ -292,7 +292,7 @@ let _ =
           |> SceneAPI.addSceneChild(transform2)
           |> SceneAPI.addSceneChild(transform3);
 
-        let (state, sab1) =
+        let (sab1) =
           GenerateSingleSABSystem.generateSingleSAB(
             SceneAPI.getSceneGameObject(state),
             WonderCommonlib.MutableSparseMapService.createEmpty(),

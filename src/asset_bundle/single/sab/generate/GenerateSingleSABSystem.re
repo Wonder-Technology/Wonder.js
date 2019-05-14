@@ -51,5 +51,5 @@ let generateSingleSAB = (sceneGameObject, imageUint8ArrayMap, state) => {
       state,
     );
 
-  (state, ConvertGLBSystem.convertGLBData(gltf, binBuffer));
+  ConvertGLBSystem.convertGLBData(gltf, binBuffer);
 };

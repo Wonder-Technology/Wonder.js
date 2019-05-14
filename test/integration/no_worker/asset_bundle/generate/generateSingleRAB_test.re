@@ -44,7 +44,7 @@ let _ =
             (),
           );
 
-        let (state, rab) =
+        let rab =
           GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
 
         let content =
@@ -153,7 +153,7 @@ let _ =
               (),
             );
 
-          let (state, rab) =
+          let rab =
             GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
 
           let content =
@@ -222,7 +222,7 @@ let _ =
               (),
             );
 
-          let (state, rab) =
+          let rab =
             GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
 
           let content =
@@ -279,7 +279,7 @@ let _ =
             (),
           );
 
-        let (state, rab) =
+        let rab =
           GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
 
         let content =

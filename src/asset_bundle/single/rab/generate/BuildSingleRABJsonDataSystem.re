@@ -315,11 +315,11 @@ let _buildGeometryData =
     (imageAlignedByteLength, imageBufferViewArr, {geometrys}, state) => {
   let imageBufferViewIndex = imageBufferViewArr |> Js.Array.length;
 
-  let (state, geometryArr, uint8ArrayArr, bufferViewArr, byteOffset) =
+  let (geometryArr, uint8ArrayArr, bufferViewArr, byteOffset) =
     geometrys
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (.
-           (state, geometryArr, uint8ArrayArr, bufferViewArr, byteOffset),
+           (geometryArr, uint8ArrayArr, bufferViewArr, byteOffset),
            geometryComponent,
          ) => {
            let (vertexBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
@@ -396,7 +396,6 @@ let _buildGeometryData =
              );
 
            (
-             state,
              geometryArr
              |> ArrayService.push({
                   name:
@@ -421,11 +420,10 @@ let _buildGeometryData =
              byteOffset,
            );
          },
-         (state, [||], [||], [||], imageAlignedByteLength),
+         ([||], [||], [||], imageAlignedByteLength),
        );
 
   (
-    state,
     geometryArr,
     uint8ArrayArr,
     bufferViewArr,
@@ -495,7 +493,6 @@ let buildJsonData = (resourceData, state) => {
   let (basicMaterialArr, lightMaterialArr) =
     _buildMaterialData(textureIndexMap, resourceData, state);
   let (
-    state,
     geometryArr,
     geometryArrayBufferArr,
     geometryBufferViewArr,
@@ -513,7 +510,6 @@ let buildJsonData = (resourceData, state) => {
   let scriptAttributeArr = _buildScriptAttributeData(resourceData);
 
   (
-    state,
     (
       imageArr,
       textureArr,

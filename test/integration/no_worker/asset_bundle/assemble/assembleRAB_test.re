@@ -53,7 +53,7 @@ let _ =
               (),
             );
 
-          let (state, rab1) =
+          let rab1 =
             GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
           let image2 =
@@ -80,7 +80,7 @@ let _ =
               (),
             );
 
-          let (state, rab2) =
+          let rab2 =
             GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
 
           GenerateAllABTool.TestWithTwoRAB.generateAllAB((rab1, rab2), state)
@@ -140,7 +140,7 @@ let _ =
               (),
             );
 
-          let (state, rab1) =
+          let rab1 =
             GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
           let image2 =
@@ -170,7 +170,7 @@ let _ =
               (),
             );
 
-          let (state, rab2) =
+          let rab2 =
             GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
 
           GenerateAllABTool.TestWithTwoRAB.generateAllAB((rab1, rab2), state)
@@ -263,7 +263,7 @@ let _ =
             (),
           );
 
-        let (state, rab1) =
+        let rab1 =
           GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
@@ -352,7 +352,7 @@ let _ =
             (),
           );
 
-        let (state, rab1) =
+        let rab1 =
           GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
@@ -406,7 +406,7 @@ let _ =
             (),
           );
 
-        let (state, rab1) =
+        let rab1 =
           GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
@@ -483,7 +483,7 @@ let _ =
             (),
           );
 
-        let (state, rab1) =
+        let rab1 =
           GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
@@ -597,10 +597,10 @@ let _ =
               (),
             );
 
-          let (state, rab1) =
+          let rab1 =
             GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
-          let (state, rab2) =
+          let rab2 =
             GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
 
           GenerateAllABTool.TestWithTwoRAB.generateAllAB((rab1, rab2), state)
@@ -683,7 +683,7 @@ let _ =
             (),
           );
 
-        let (state, rab1) =
+        let rab1 =
           GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
@@ -740,7 +740,7 @@ let _ =
             (),
           );
 
-        let (state, rab1) =
+        let rab1 =
           GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
@@ -773,10 +773,10 @@ let _ =
         let resourceData1 =
           GenerateSingleRABTool.ResourceData.buildResourceData();
 
-        let (state, rab1) =
+        let rab1 =
           GenerateSingleRABSystem.generateSingleRAB(resourceData1, state^);
 
-        GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
+        GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state^)
         |> MostTool.testStream(data => {
              let rab1RelativePath =
                GenerateAllABTool.TestWithOneRAB.getRabRelativePath();
