@@ -38,69 +38,61 @@ let _unsafeGetNZImage = state =>
 let _unsafeGetSkyboxGameObject = state =>
   state.jobDataRecord.skyboxData.skyboxGameObject |> OptionService.unsafeGet;
 
-/* let  */
+let _getTextureFormat = (gl, imageExtname) =>
+  imageExtname
+  |> ImageService.getMimeTypeByExtname
+  |> TextureFormatService.getFormatByMimeType
+  |> TextureFormatService.getGlFormat(gl);
+
+let _drawTexture = (gl, target, source) => {
+  let glFormat =
+    _getTextureFormat(
+      gl,
+      FileNameService.getFileExtName(Obj.magic(source)##src),
+    );
+
+  gl
+  |> WonderWebgl.Gl.texImage2D(
+       target,
+       0,
+       glFormat,
+       glFormat,
+       gl |> WonderWebgl.Gl.getUnsignedByte,
+       source,
+     );
+};
 
 let _updateCubeTexture = (gl, target, state) => {
-  gl
-  |> WonderWebgl.Gl.texImage2D(
-       gl |> WonderWebgl.Gl.getTextureCubeMapPositiveX,
-       0,
-       gl |> WonderWebgl.Gl.getRgb,
-       gl |> WonderWebgl.Gl.getRgb,
-       gl |> WonderWebgl.Gl.getUnsignedByte,
-       _unsafeGetPXImage(state)
-       |> WonderWebgl.GlType.imageElementToTextureSource,
-     );
-  gl
-  |> WonderWebgl.Gl.texImage2D(
-       gl |> WonderWebgl.Gl.getTextureCubeMapNegativeX,
-       0,
-       gl |> WonderWebgl.Gl.getRgb,
-       gl |> WonderWebgl.Gl.getRgb,
-       gl |> WonderWebgl.Gl.getUnsignedByte,
-       _unsafeGetNXImage(state)
-       |> WonderWebgl.GlType.imageElementToTextureSource,
-     );
-  gl
-  |> WonderWebgl.Gl.texImage2D(
-       gl |> WonderWebgl.Gl.getTextureCubeMapPositiveY,
-       0,
-       gl |> WonderWebgl.Gl.getRgb,
-       gl |> WonderWebgl.Gl.getRgb,
-       gl |> WonderWebgl.Gl.getUnsignedByte,
-       _unsafeGetPYImage(state)
-       |> WonderWebgl.GlType.imageElementToTextureSource,
-     );
-  gl
-  |> WonderWebgl.Gl.texImage2D(
-       gl |> WonderWebgl.Gl.getTextureCubeMapNegativeY,
-       0,
-       gl |> WonderWebgl.Gl.getRgb,
-       gl |> WonderWebgl.Gl.getRgb,
-       gl |> WonderWebgl.Gl.getUnsignedByte,
-       _unsafeGetNYImage(state)
-       |> WonderWebgl.GlType.imageElementToTextureSource,
-     );
-  gl
-  |> WonderWebgl.Gl.texImage2D(
-       gl |> WonderWebgl.Gl.getTextureCubeMapPositiveZ,
-       0,
-       gl |> WonderWebgl.Gl.getRgb,
-       gl |> WonderWebgl.Gl.getRgb,
-       gl |> WonderWebgl.Gl.getUnsignedByte,
-       _unsafeGetPZImage(state)
-       |> WonderWebgl.GlType.imageElementToTextureSource,
-     );
-  gl
-  |> WonderWebgl.Gl.texImage2D(
-       gl |> WonderWebgl.Gl.getTextureCubeMapNegativeZ,
-       0,
-       gl |> WonderWebgl.Gl.getRgb,
-       gl |> WonderWebgl.Gl.getRgb,
-       gl |> WonderWebgl.Gl.getUnsignedByte,
-       _unsafeGetNZImage(state)
-       |> WonderWebgl.GlType.imageElementToTextureSource,
-     );
+  _drawTexture(
+    gl,
+    gl |> WonderWebgl.Gl.getTextureCubeMapPositiveX,
+    _unsafeGetPXImage(state) |> WonderWebgl.GlType.imageElementToTextureSource,
+  );
+  _drawTexture(
+    gl,
+    gl |> WonderWebgl.Gl.getTextureCubeMapNegativeX,
+    _unsafeGetNXImage(state) |> WonderWebgl.GlType.imageElementToTextureSource,
+  );
+  _drawTexture(
+    gl,
+    gl |> WonderWebgl.Gl.getTextureCubeMapPositiveY,
+    _unsafeGetPYImage(state) |> WonderWebgl.GlType.imageElementToTextureSource,
+  );
+  _drawTexture(
+    gl,
+    gl |> WonderWebgl.Gl.getTextureCubeMapNegativeY,
+    _unsafeGetNYImage(state) |> WonderWebgl.GlType.imageElementToTextureSource,
+  );
+  _drawTexture(
+    gl,
+    gl |> WonderWebgl.Gl.getTextureCubeMapPositiveZ,
+    _unsafeGetPZImage(state) |> WonderWebgl.GlType.imageElementToTextureSource,
+  );
+  _drawTexture(
+    gl,
+    gl |> WonderWebgl.Gl.getTextureCubeMapNegativeZ,
+    _unsafeGetNZImage(state) |> WonderWebgl.GlType.imageElementToTextureSource,
+  );
 
   gl
   |> WonderWebgl.Gl.texParameteri(

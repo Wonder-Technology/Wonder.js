@@ -1,5 +1,21 @@
 open SourceTextureType;
 
+let getFormatByMimeType = mimeType =>
+  switch (mimeType) {
+  | "image/png" => SourceTextureType.Rgba
+  | "image/jpeg" => SourceTextureType.Rgb
+  | mimeType =>
+    WonderLog.Log.fatal(
+      WonderLog.Log.buildFatalMessage(
+        ~title="getFormatByMimeType",
+        ~description={j|unknown mimeType|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j|mimeType: $mimeType|j},
+      ),
+    )
+  };
+
 let getGlFormat = (gl, format) =>
   switch (format) {
   | Rgb => gl |> WonderWebgl.Gl.getRgb
