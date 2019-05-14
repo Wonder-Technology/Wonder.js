@@ -492,6 +492,10 @@ let clearIMGUIFunc = ManageIMGUIAPI.clearIMGUIFunc;
 
 let setIMGUIFunc = ManageIMGUIAPI.setIMGUIFunc;
 
+let loadImageDataArr = JieHuoAPI.loadImageDataArr;
+
+let loadImage = JieHuoAPI.loadImage;
+
 let getIntersectedPointWithMesh = JieHuoAPI.getIntersectedPointWithMesh;
 
 let isIntersectWithMesh = JieHuoAPI.isIntersectWithMesh;
