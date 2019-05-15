@@ -36,7 +36,6 @@ module SAB = {
 
   open Js.Promise;
 
-
   let _isImageBufferDataDependencyAndRemoved = ({name, bufferView, mimeType}) =>
     ABBufferViewUtils.isNoneBufferViewIndex(bufferView);
 
@@ -460,7 +459,10 @@ module SAB = {
              (state, gameObjectArr),
            );
 
-         StateDataMainService.setState(StateDataMain.stateData, state)
+         state
+         /* TODO add test */
+         |> OperateSABAssetBundleMainService.markAssembled(sabRelativePath)
+         |> StateDataMainService.setState(StateDataMain.stateData)
          |> ignore;
 
          rootGameObject |> resolve;
@@ -470,7 +472,6 @@ module SAB = {
 };
 
 module RAB = {
-
   let _isImageBufferDataDependencyAndRemoved =
       ({name, bufferView, mimeType}: RABType.image) =>
     ABBufferViewUtils.isNoneBufferViewIndex(bufferView);

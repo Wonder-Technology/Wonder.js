@@ -215,6 +215,9 @@ let create = () => {
   "isRABAssembled":
     (. rabRelativePath, state) =>
       OperateRABAssetBundleMainService.isAssembled(rabRelativePath, state),
+  "isSABAssembled":
+    (. sabRelativePath, state) =>
+      OperateSABAssetBundleMainService.isAssembled(sabRelativePath, state),
   "unsafeFindScriptEventFunctionDataByName":
     (. rabRelativePath, name, state) =>
       OperateRABAssetBundleMainService.unsafeFindScriptEventFunctionDataByName(
