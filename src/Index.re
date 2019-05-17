@@ -1,3 +1,7 @@
+let setScriptAPIJsObj = APIAPI.setScriptAPIJsObj;
+
+let getScriptAPIJsObj = APIAPI.getScriptAPIJsObj;
+
 let buildDependencyRelation = GenerateAllABAPI.buildDependencyRelation;
 
 let generateAllABs = GenerateAllABAPI.generateAllABs;
@@ -983,6 +987,10 @@ let create = RecordAPIRenderWorkerService.create;
 let setIMGUIAPIJsObj = RecordAPIRenderWorkerService.setIMGUIAPIJsObj;
 
 let getIMGUIAPIJsObj = RecordAPIRenderWorkerService.getIMGUIAPIJsObj;
+
+let setScriptAPIJsObj = APIAPI.setScriptAPIJsObj;
+
+let getScriptAPIJsObj = APIAPI.getScriptAPIJsObj;
 
 let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
 
