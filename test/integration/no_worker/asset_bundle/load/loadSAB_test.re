@@ -97,10 +97,15 @@ let _ =
                    (.) => {
                      valueRef := 2;
 
-                     Most.empty();
+                     Js.Promise.make((~resolve, ~reject) =>
+                       (PromiseType.convertResolveToUnit(resolve))(.)
+                     );
                    },
                  ~isAssetBundleArrayBufferCachedFunc=
-                   (. _, _) => false |> Most.just,
+                   (. _, _) =>
+                     Js.Promise.make((~resolve, ~reject) =>
+                       resolve(. false)
+                     ),
                  ~fetchFunc=fetch,
                  (),
                )
@@ -126,9 +131,11 @@ let _ =
                ImportABTool.SAB.loadSABAndSetToState(
                  ~sabRelativePath=sab1RelativePath,
                  ~isAssetBundleArrayBufferCachedFunc=
-                   (. _, _) => true |> Most.just,
+                   (. _, _) =>
+                     Js.Promise.make((~resolve, ~reject) => resolve(. true)),
                  ~getAssetBundleArrayBufferCacheFunc=
-                   (. _) => rab1 |> Most.just,
+                   (. _) =>
+                     Js.Promise.make((~resolve, ~reject) => resolve(. rab1)),
                  ~fetchFunc=fetch,
                  (),
                )
@@ -156,13 +163,17 @@ let _ =
                    ~sabRelativePath=sab1RelativePath,
                    ~isAssetBundleArrayBufferCachedFunc=
                      (. abRelativePath, hashId) =>
-                       (
-                         JudgeTool.isEqual(abRelativePath, rab1RelativePath) ?
-                           true : false
-                       )
-                       |> Most.just,
+                       Js.Promise.make((~resolve, ~reject) =>
+                         resolve(.
+                           JudgeTool.isEqual(abRelativePath, rab1RelativePath) ?
+                             true : false,
+                         )
+                       ),
                    ~getAssetBundleArrayBufferCacheFunc=
-                     (. _) => rab1 |> Most.just,
+                     (. _) =>
+                       Js.Promise.make((~resolve, ~reject) =>
+                         resolve(. rab1)
+                       ),
                    ~fetchFunc=fetch,
                    (),
                  )
@@ -194,7 +205,10 @@ let _ =
                  ImportABTool.SAB.loadSABAndSetToState(
                    ~sabRelativePath=sab1RelativePath,
                    ~isAssetBundleArrayBufferCachedFunc=
-                     (. abRelativePath, hashId) => false |> Most.just,
+                     (. abRelativePath, hashId) =>
+                       Js.Promise.make((~resolve, ~reject) =>
+                         resolve(. false)
+                       ),
                    ~fetchFunc=fetch,
                    (),
                  )
@@ -227,7 +241,10 @@ let _ =
                  ImportABTool.SAB.loadSABAndSetToState(
                    ~sabRelativePath=sab1RelativePath,
                    ~isAssetBundleArrayBufferCachedFunc=
-                     (. abRelativePath, hashId) => false |> Most.just,
+                     (. abRelativePath, hashId) =>
+                       Js.Promise.make((~resolve, ~reject) =>
+                         resolve(. false)
+                       ),
                    ~fetchFunc=fetch,
                    (),
                  )

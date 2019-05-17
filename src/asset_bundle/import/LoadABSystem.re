@@ -30,10 +30,15 @@ let load = (abPath: string, fetchFunc) =>
 /* TODO need rewrite by editor */
 let getAssetBundlePath = (.) => "";
 
-let initAssetBundleArrayBufferCache = (.) => Most.empty();
+let initAssetBundleArrayBufferCache =
+  (.) =>
+    Js.Promise.make((~resolve, ~reject) =>
+      (PromiseType.convertResolveToUnit(resolve))(.)
+    );
 
 let isAssetBundleArrayBufferCached =
-  (. abRelativePath: string, hashId: string) => Most.just(false);
+  (. abRelativePath: string, hashId: string) =>
+    Js.Promise.make((~resolve, ~reject) => resolve(. false));
 
 let getAssetBundleArrayBufferCache =
   (. abRelativePath: string) =>
@@ -49,4 +54,6 @@ let getAssetBundleArrayBufferCache =
 
 let cacheAssetBundleArrayBuffer =
   (. abRelativePath: string, ab: ArrayBuffer.t, hashId: string) =>
-    Most.empty();
+    Js.Promise.make((~resolve, ~reject) =>
+      (PromiseType.convertResolveToUnit(resolve))(.)
+    );
