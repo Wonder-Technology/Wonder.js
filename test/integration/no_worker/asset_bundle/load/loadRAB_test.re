@@ -40,41 +40,6 @@ let _ =
         fetch;
       };
 
-      testPromise("init cache", () => {
-        let (rab1RelativePath, rab2RelativePath, rab3RelativePath) =
-          ImportABTool.RAB.getRabRelativePaths();
-
-        GenerateAllABTool.TestWithTwoRAB.generateTwoRABs(state^)
-        |> then_(((rab1, rab2)) => {
-             let fetch =
-               _buildFakeFetch(
-                 ~sandbox,
-                 ~arrayBuffer1=rab1,
-                 ~arrayBuffer2=rab2,
-               );
-
-             let valueRef = ref(0);
-
-             ImportABTool.RAB.loadAllDependencyRABAndSetToState(
-               ~abRelativePath=rab3RelativePath,
-               ~initAssetBundleArrayBufferCache=
-                 (.) => {
-                   valueRef := 2;
-
-                   Js.Promise.make((~resolve, ~reject) =>
-                     (PromiseType.convertResolveToUnit(resolve))(.)
-                   );
-                 },
-               ~isAssetBundleArrayBufferCachedFunc=
-                 (. _, _) =>
-                   Js.Promise.make((~resolve, ~reject) => resolve(. false)),
-               ~fetchFunc=fetch,
-               (),
-             )
-             |> MostTool.testStream(() => valueRef^ |> expect == 2 |> resolve);
-           });
-      });
-
       testPromise("if dependency rab is loaded, not load", () => {
         let (rab1RelativePath, rab2RelativePath, rab3RelativePath) =
           ImportABTool.RAB.getRabRelativePaths();
