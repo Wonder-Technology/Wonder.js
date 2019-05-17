@@ -1,7 +1,7 @@
 open StateDataMainType;
 
 let _getMainInitJobHandles = () => [
-  ("detect_environment", DetectEnvironmentWorkerJob.execJob),
+  ("detect_environment", DetectEnvironmentMainWorkerJob.execJob),
   ("init_imgui", InitIMGUIMainWorkerJob.execJob),
   ("init_event", InitEventMainWorkerJob.execJob),
   ("init_script", InitScriptMainWorkerJob.execJob),

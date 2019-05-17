@@ -110,7 +110,7 @@ let init = (completeFunc, state) => {
      );
 };
 
-let execMainLoopJobs = (sandbox, completeFunc) => {
+let execMainLoopJobsWithJobHandleMap = (sandbox, jobHandleMap, completeFunc) => {
   let state = MainInitJobMainWorkerTool.prepare();
   let renderWorker =
     WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state);
@@ -119,14 +119,21 @@ let execMainLoopJobs = (sandbox, completeFunc) => {
   state
   |> WorkerJobWorkerTool.getMainLoopJobStream(
        MainStateTool.getStateData(),
-       (
-         WorkerJobHandleSystem.createMainLoopJobHandleMap,
-         WorkerJobHandleSystem.getMainLoopJobHandle,
-       ),
+       (() => jobHandleMap, WorkerJobHandleSystem.getMainLoopJobHandle),
      )
   |> WonderBsMost.Most.drain
   |> then_(() => completeFunc(postMessageToRenderWorker));
 };
+
+let execMainLoopJobs = (sandbox, completeFunc) =>
+  execMainLoopJobsWithJobHandleMap(
+    sandbox,
+    WorkerJobHandleSystem.createMainLoopJobHandleMap(),
+    completeFunc,
+  );
+
+let createMainLoopJobHandleMap = mainLoopJobHandles =>
+  HandleJobService.createJobHandleMap(mainLoopJobHandles);
 
 let render = (sandbox, postMessageToRenderWorker, completeFunc) => {
   let state = MainStateTool.unsafeGetState();
