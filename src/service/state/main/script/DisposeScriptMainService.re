@@ -14,7 +14,6 @@ let _disposeData = (script, {scriptRecord} as state) => {
       ...scriptRecord,
       gameObjectMap:
         DisposeComponentService.disposeSparseMapData(script, gameObjectMap),
-      /* TODO test */
       isActiveMap:
         isActiveMap
         |> WonderCommonlib.MutableSparseMapService.deleteVal(script),

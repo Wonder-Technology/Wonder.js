@@ -71,7 +71,6 @@ let convertToBasicSourceTextures =
                        mimeType |> OptionService.unsafeGet,
                      );
                    },
-                   /* TODO test */
                    flipY:
                      switch (extras) {
                      | Some({flipY}) => flipY

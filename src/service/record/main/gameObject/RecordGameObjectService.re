@@ -98,7 +98,6 @@ let deepCopyForRestore =
   ...record,
   uid,
   nameMap: nameMap |> WonderCommonlib.MutableSparseMapService.copy,
-  /* TODO test */
   isActiveMap: isActiveMap |> WonderCommonlib.MutableSparseMapService.copy,
   isRootMap: isRootMap |> WonderCommonlib.MutableSparseMapService.copy,
   disposeCount,
