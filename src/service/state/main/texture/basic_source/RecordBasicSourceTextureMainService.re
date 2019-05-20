@@ -162,6 +162,7 @@ let create = ({settingRecord} as state) => {
         isNeedUpdates,
         flipYs,
         nameMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+        materialsMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
         sourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
         glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
         bindTextureUnitCacheMap:
@@ -187,6 +188,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         isNeedUpdates,
         flipYs,
         nameMap,
+        materialsMap,
         sourceMap,
         glTextureMap,
         bindTextureUnitCacheMap,
@@ -242,8 +244,12 @@ let deepCopyForRestore = ({settingRecord} as state) => {
                index * getFlipYsSize(),
              ),
         nameMap: nameMap |> WonderCommonlib.MutableSparseMapService.copy,
+        /* TODO test */
+        materialsMap:
+          materialsMap |> WonderCommonlib.MutableSparseMapService.copy,
         sourceMap: sourceMap |> WonderCommonlib.MutableSparseMapService.copy,
-        glTextureMap: glTextureMap |> WonderCommonlib.MutableSparseMapService.copy,
+        glTextureMap:
+          glTextureMap |> WonderCommonlib.MutableSparseMapService.copy,
         bindTextureUnitCacheMap:
           WonderCommonlib.MutableSparseMapService.createEmpty(),
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,

@@ -20,6 +20,13 @@ let unsafeGetMap = (material, state) =>
   getMap(material, state) |> OptionService.unsafeGet;
 
 let setMap = (material, texture, {settingRecord} as state) => {
+  let state =
+    state
+    |> GroupTextureMainService.addMaterial(
+         (material, MaterialType.BasicMaterial),
+         texture,
+       );
+
   let {textureIndices, mapUnits, emptyMapUnitArrayMap} as basicMaterialRecord =
     RecordBasicMaterialMainService.getRecord(state);
   let (textureIndices, mapUnits, emptyMapUnitArrayMap) =
@@ -54,6 +61,13 @@ let hasMap = (material, state) =>
   getMap(material, state) |> Js.Option.isSome;
 
 let removeMap = (material, {settingRecord} as state) => {
+  let state =
+    state
+    |> GroupTextureMainService.removeMaterial(
+         (material, MaterialType.BasicMaterial),
+         unsafeGetMap(material, state),
+       );
+
   let {textureIndices, mapUnits, emptyMapUnitArrayMap} as basicMaterialRecord =
     RecordBasicMaterialMainService.getRecord(state);
   let (textureIndices, mapUnits, emptyMapUnitArrayMap) =

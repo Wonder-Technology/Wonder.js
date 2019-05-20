@@ -42,7 +42,11 @@ let setMap =
     (
       material,
       texture,
-      (getMapUnitFunc, setMapUnitFunc, setTextureIndexFunc),
+      (
+        getMapUnitFunc,
+        setMapUnitFunc,
+        setTextureIndexFunc,
+      ),
       (
         textureCountPerMaterial,
         textureIndices,
