@@ -44,6 +44,8 @@ let loadConfig = LoaderManagerAPI.loadConfig;
 
 let isBindArcballCameraControllerEvent = ArcballCameraControllerAPI.isBindArcballCameraControllerEvent;
 
+let unbindArcballCameraControllerPointScaleEvent = ArcballCameraControllerAPI.unbindArcballCameraControllerPointScaleEvent;
+
 let unbindArcballCameraControllerEvent = ArcballCameraControllerAPI.unbindArcballCameraControllerEvent;
 
 let bindArcballCameraControllerEvent = ArcballCameraControllerAPI.bindArcballCameraControllerEvent;
