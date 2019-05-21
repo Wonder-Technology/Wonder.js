@@ -148,29 +148,28 @@ let create = ({settingRecord} as state) => {
   ) =
     _initBufferData(basicSourceTextureCount, buffer);
   state.basicSourceTextureRecord =
-    Some
-      /* index: 0, */
-      /* buffer, */
-      ({
-        index: 0,
-        wrapSs,
-        wrapTs,
-        magFilters,
-        minFilters,
-        formats,
-        types,
-        isNeedUpdates,
-        flipYs,
-        nameMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-        materialsMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-        sourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-        glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-        bindTextureUnitCacheMap:
-          WonderCommonlib.MutableSparseMapService.createEmpty(),
-        disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
-        needAddedSourceArray: [||],
-        needInitedTextureIndexArray: [||],
-      });
+    Some({
+      index: 0,
+      wrapSs,
+      wrapTs,
+      magFilters,
+      minFilters,
+      formats,
+      types,
+      isNeedUpdates,
+      flipYs,
+      nameMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      materialsMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      sourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      bindTextureUnitCacheMap:
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+      disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+      needAddedSourceArray: WonderCommonlib.ArrayService.createEmpty(),
+      needInitedTextureIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+      needDisposedTextureIndexArray:
+        WonderCommonlib.ArrayService.createEmpty(),
+    });
   state;
 };
 
@@ -195,6 +194,7 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         disposedIndexArray,
         needAddedSourceArray,
         needInitedTextureIndexArray,
+        needDisposedTextureIndexArray,
       } as record =
     state |> getRecord;
   {
@@ -256,6 +256,9 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         needAddedSourceArray: needAddedSourceArray |> Js.Array.copy,
         needInitedTextureIndexArray:
           needInitedTextureIndexArray |> Js.Array.copy,
+        /* TODO test */
+        needDisposedTextureIndexArray:
+          needDisposedTextureIndexArray |> Js.Array.copy,
       }),
   };
 };

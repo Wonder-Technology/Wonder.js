@@ -46,14 +46,14 @@ let _buildIMGUIData = ({viewRecord} as state) => {
           ) {
           | None => None
           | Some(customData) =>
-            customData |> SerializeService.serializeValueWithFunction |. Some
+            (customData |> SerializeService.serializeValueWithFunction)->Some
           },
         "imguiFunc":
           switch (
             WonderImgui.ManageIMGUIAPI.getIMGUIFunc(wonderImguiIMGUIRecord)
           ) {
           | None => None
-          | Some(func) => func |> SerializeService.serializeFunction |. Some
+          | Some(func) => (func |> SerializeService.serializeFunction)->Some
           },
       },
     );
@@ -148,6 +148,9 @@ let _buildData = (operateType, {settingRecord, gameObjectRecord} as state) => {
               ),
             "needInitedTextureIndexArray":
               basicSourceTextureRecord.needInitedTextureIndexArray
+              |> WonderCommonlib.ArrayService.removeDuplicateItems,
+            "needDisposedTextureIndexArray":
+              basicSourceTextureRecord.needDisposedTextureIndexArray
               |> WonderCommonlib.ArrayService.removeDuplicateItems,
           },
           "arrayBufferViewSourceTextureData": {

@@ -21,6 +21,7 @@ type basicSourceTextureRecord = {
   disposedIndexArray: array(int),
   needAddedSourceArray: array((int, WonderWebgl.DomExtendType.imageElement)),
   needInitedTextureIndexArray: array(int),
+  needDisposedTextureIndexArray: array(int),
   nameMap: WonderCommonlib.MutableSparseMapService.t(string),
   materialsMap:
     WonderCommonlib.MutableSparseMapService.t(

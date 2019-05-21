@@ -4,7 +4,7 @@ open ArrayBufferViewSourceTextureType;
 
 open DisposeComponentService;
 
-let _disposeData =
+/* let _disposeData =
     (
       texture,
       gl,
@@ -104,13 +104,15 @@ let _disposeData =
       needAddedSourceArray,
     ),
   needInitedTextureIndexArray:
-    needInitedTextureIndexArray
-    |> Js.Array.filter(needInitedTexture => needInitedTexture !== texture),
+          DisposeTextureMainService.disposeNeedInitedSourceArray(
+            texture,
+            needInitedTextureIndexArray,
+          ),
   nameMap: nameMap |> disposeSparseMapData(texture),
-};
+}; */
 
 let handleDispose = (materialData, textureArr, state) => {
-  let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+  /* let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
   let arrayBufferViewSourceTextureRecord =
     textureArr
@@ -150,5 +152,7 @@ let handleDispose = (materialData, textureArr, state) => {
     ...state,
     arrayBufferViewSourceTextureRecord:
       Some(arrayBufferViewSourceTextureRecord),
-  };
+  }; */
+  /* TODO finish */
+  state
 };

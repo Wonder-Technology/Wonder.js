@@ -105,6 +105,7 @@ let _getWorkerJobHandles = () => [
   ("get_dispose_data", GetDisposeDataRenderWorkerJob.execJob),
   ("dispose_vbo", DisposeVboRenderWorkerJob.execJob),
   ("dispose_sourceInstance", DisposeSourceInstanceRenderWorkerJob.execJob),
+  ("dispose_texture", DisposeTextureRenderWorkerJob.execJob),
   ("send_finish_dispose_data", SendFinishDisposeDataRenderWorkerJob.execJob),
 ];
 

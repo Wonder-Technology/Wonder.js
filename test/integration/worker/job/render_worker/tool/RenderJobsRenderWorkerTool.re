@@ -190,6 +190,7 @@ let dispose = (postMessageToRenderWorker, completeFunc) => {
          "operateType": "DISPOSE",
          "geometryNeedDisposeVboBufferArr": Sinon.matchAny,
          "sourceInstanceNeedDisposeVboBufferArr": Sinon.matchAny,
+         "needDisposedBasicSourceTextureIndexArray": Sinon.matchAny,
        })
     |> Obj.magic
     |> getSpecificArg(0)
@@ -207,6 +208,7 @@ let dispose = (postMessageToRenderWorker, completeFunc) => {
   [|
     DisposeVboRenderWorkerJob.execJob(None),
     DisposeSourceInstanceRenderWorkerJob.execJob(None),
+    DisposeTextureRenderWorkerJob.execJob(None),
   |]
   |> concatStreamFuncArray(disposeData, RenderWorkerStateTool.getStateData())
   |> WonderBsMost.Most.drain

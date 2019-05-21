@@ -8,11 +8,14 @@ let _buildData =
       (
         geometryNeedDisposeVboBufferArr,
         sourceInstanceNeedDisposeVboBufferArr,
+        needDisposedBasicSourceTextureIndexArray,
       ),
     ) => {
   "operateType": operateType,
   "geometryNeedDisposeVboBufferArr": geometryNeedDisposeVboBufferArr,
   "sourceInstanceNeedDisposeVboBufferArr": sourceInstanceNeedDisposeVboBufferArr,
+  "needDisposedBasicSourceTextureIndexArray": needDisposedBasicSourceTextureIndexArray,
+  /* TODO add "needDisposedTextureIndexArray": */
 };
 
 let _sendDisposeData = (operateType, needDisposeVboBufferArrTuple, state) =>
@@ -20,6 +23,9 @@ let _sendDisposeData = (operateType, needDisposeVboBufferArrTuple, state) =>
   |> WorkerService.postMessage(
        _buildData(operateType, needDisposeVboBufferArrTuple),
      );
+
+let _clearData = state =>
+  state |> DisposeTextureMainService.clearNeedDisposedTextureIndexArray;
 
 let execJob = (flags, stateData) =>
   MostUtils.callFunc(() => {
@@ -35,14 +41,25 @@ let execJob = (flags, stateData) =>
         DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponentDataForWorker,
         state,
       );
+
+    let needDisposedBasicSourceTextureIndexArray =
+      RecordBasicSourceTextureMainService.getRecord(state).
+        needDisposedTextureIndexArray
+      |> WonderCommonlib.ArrayService.removeDuplicateItems;
+
     _sendDisposeData(
       operateType,
       (
         geometryNeedDisposeVboBufferArr,
         sourceInstanceNeedDisposeVboBufferArr,
+        needDisposedBasicSourceTextureIndexArray,
       ),
       state,
     );
+
+    let state = state |> _clearData;
+
     StateDataMainService.setState(stateData, state);
+
     Some(operateType);
   });

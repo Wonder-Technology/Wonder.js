@@ -153,6 +153,9 @@
                         "name": "dispose_sourceInstance"
                     },
                     {
+                        "name": "dispose_texture"
+                    },
+                    {
                         "name": "send_finish_dispose_data"
                     }
                 ]
