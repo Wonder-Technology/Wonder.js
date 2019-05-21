@@ -40,6 +40,14 @@ let createAndSetMaps = (material, state) => {
   setMaps(material, texture1, texture2, state);
 };
 
+let createAndSetArrayBufferViewMaps = (material, state) => {
+  let (state, texture1) =
+    ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(state);
+  let (state, texture2) =
+    ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(state);
+  setMaps(material, texture1, texture2, state);
+};
+
 let createMaterialWithMap = state => {
   let (state, material) = LightMaterialAPI.createLightMaterial(state);
 
@@ -56,7 +64,34 @@ let createMaterialWithMap = state => {
     |> BasicSourceTextureAPI.setBasicSourceTextureSource(diffuseMap, source1);
   let state =
     state
-    |> BasicSourceTextureAPI.setBasicSourceTextureSource(specularMap, source1);
+    |> BasicSourceTextureAPI.setBasicSourceTextureSource(specularMap, source2);
+
+  (state, material, (diffuseMap, specularMap, source1, source2));
+};
+
+let createMaterialWithArrayBufferViewMap = state => {
+  let (state, material) = LightMaterialAPI.createLightMaterial(state);
+
+  let (state, (diffuseMap, specularMap)) =
+    createAndSetArrayBufferViewMaps(material, state);
+
+  (state, material, (diffuseMap, specularMap));
+
+  let source1 = ArrayBufferViewSourceTextureTool.buildSource();
+  let source2 = ArrayBufferViewSourceTextureTool.buildSource2();
+
+  let state =
+    state
+    |> ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureSource(
+         diffuseMap,
+         source1,
+       );
+  let state =
+    state
+    |> ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureSource(
+         specularMap,
+         source2,
+       );
 
   (state, material, (diffuseMap, specularMap, source1, source2));
 };

@@ -9,13 +9,14 @@ let _buildData =
         geometryNeedDisposeVboBufferArr,
         sourceInstanceNeedDisposeVboBufferArr,
         needDisposedBasicSourceTextureIndexArray,
+        needDisposedArrayBufferViewTextureIndexArray,
       ),
     ) => {
   "operateType": operateType,
   "geometryNeedDisposeVboBufferArr": geometryNeedDisposeVboBufferArr,
   "sourceInstanceNeedDisposeVboBufferArr": sourceInstanceNeedDisposeVboBufferArr,
   "needDisposedBasicSourceTextureIndexArray": needDisposedBasicSourceTextureIndexArray,
-  /* TODO add "needDisposedTextureIndexArray": */
+  "needDisposedArrayBufferViewTextureIndexArray": needDisposedArrayBufferViewTextureIndexArray,
 };
 
 let _sendDisposeData = (operateType, needDisposeVboBufferArrTuple, state) =>
@@ -46,6 +47,10 @@ let execJob = (flags, stateData) =>
       RecordBasicSourceTextureMainService.getRecord(state).
         needDisposedTextureIndexArray
       |> WonderCommonlib.ArrayService.removeDuplicateItems;
+    let needDisposedArrayBufferViewTextureIndexArray =
+      RecordArrayBufferViewSourceTextureMainService.getRecord(state).
+        needDisposedTextureIndexArray
+      |> WonderCommonlib.ArrayService.removeDuplicateItems;
 
     _sendDisposeData(
       operateType,
@@ -53,6 +58,7 @@ let execJob = (flags, stateData) =>
         geometryNeedDisposeVboBufferArr,
         sourceInstanceNeedDisposeVboBufferArr,
         needDisposedBasicSourceTextureIndexArray,
+        needDisposedArrayBufferViewTextureIndexArray,
       ),
       state,
     );

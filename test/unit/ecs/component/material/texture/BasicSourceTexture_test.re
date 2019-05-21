@@ -280,7 +280,7 @@ let _ =
               state,
             ),
             BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
-              diffuseMap,
+              specularMap,
               state,
             ),
           )

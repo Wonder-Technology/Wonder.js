@@ -17,6 +17,22 @@ let createMaterialWithMap = state => {
   (state, material, (texture, source));
 };
 
+let createMaterialWithArrayBufferViewMap = state => {
+  let (state, material) = BasicMaterialAPI.createBasicMaterial(state);
+  let (state, texture) =
+    ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(state);
+  let source = ArrayBufferViewSourceTextureTool.buildSource();
+  let state =
+    state
+    |> ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureSource(
+         texture,
+         source,
+       );
+  let state = BasicMaterialAPI.setBasicMaterialMap(material, texture, state);
+
+  (state, material, (texture, source));
+};
+
 let createGameObject = state => {
   open BasicMaterialAPI;
   open GameObjectAPI;

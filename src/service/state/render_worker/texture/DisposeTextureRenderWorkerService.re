@@ -1,11 +1,11 @@
 open StateDataRenderWorkerType;
 
-open RenderWorkerBasicSourceTextureType;
-
-let disposeGlTextureMap = (texture, state) => {
+let disposeBasicSourceTextureGlTextureMap = (texture, state) => {
   let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
-  let {glTextureMap} as basicSourceTextureRecord =
+  let (
+        {glTextureMap}: RenderWorkerBasicSourceTextureType.basicSourceTextureRecord
+      ) as basicSourceTextureRecord =
     RecordBasicSourceTextureRenderWorkerService.getRecord(state);
 
   {
@@ -13,6 +13,29 @@ let disposeGlTextureMap = (texture, state) => {
     basicSourceTextureRecord:
       Some({
         ...basicSourceTextureRecord,
+        glTextureMap:
+          DisposeTextureService.disposeGlTextureMap(
+            texture,
+            gl,
+            glTextureMap,
+          ),
+      }),
+  };
+};
+
+let disposeArrayBufferViewSourceTextureGlTextureMap = (texture, state) => {
+  let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+
+  let (
+        {glTextureMap}: RenderWorkerArrayBufferViewSourceTextureType.arrayBufferViewSourceTextureRecord
+      ) as arrayBufferViewSourceTextureRecord =
+    RecordArrayBufferViewSourceTextureRenderWorkerService.getRecord(state);
+
+  {
+    ...state,
+    arrayBufferViewSourceTextureRecord:
+      Some({
+        ...arrayBufferViewSourceTextureRecord,
         glTextureMap:
           DisposeTextureService.disposeGlTextureMap(
             texture,

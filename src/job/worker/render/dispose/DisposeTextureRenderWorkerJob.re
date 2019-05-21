@@ -12,7 +12,18 @@ let execJob = (flags, e, stateData) =>
       data##needDisposedBasicSourceTextureIndexArray
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (. state, texture) =>
-             DisposeTextureRenderWorkerService.disposeGlTextureMap(
+             DisposeTextureRenderWorkerService.disposeBasicSourceTextureGlTextureMap(
+               texture,
+               state,
+             ),
+           state,
+         );
+
+    let state =
+      data##needDisposedArrayBufferViewSourceTextureIndexArray
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. state, texture) =>
+             DisposeTextureRenderWorkerService.disposeArrayBufferViewSourceTextureGlTextureMap(
                texture,
                state,
              ),

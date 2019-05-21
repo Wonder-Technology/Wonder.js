@@ -176,8 +176,6 @@ let create = ({settingRecord} as state) => {
 let deepCopyForRestore = ({settingRecord} as state) => {
   let {
         index,
-        /*
-         buffer, */
         wrapSs,
         wrapTs,
         magFilters,
@@ -244,7 +242,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
                index * getFlipYsSize(),
              ),
         nameMap: nameMap |> WonderCommonlib.MutableSparseMapService.copy,
-        /* TODO test */
         materialsMap:
           materialsMap |> WonderCommonlib.MutableSparseMapService.copy,
         sourceMap: sourceMap |> WonderCommonlib.MutableSparseMapService.copy,
@@ -256,7 +253,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         needAddedSourceArray: needAddedSourceArray |> Js.Array.copy,
         needInitedTextureIndexArray:
           needInitedTextureIndexArray |> Js.Array.copy,
-        /* TODO test */
         needDisposedTextureIndexArray:
           needDisposedTextureIndexArray |> Js.Array.copy,
       }),
