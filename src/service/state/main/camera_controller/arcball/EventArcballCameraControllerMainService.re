@@ -498,6 +498,9 @@ let unbindEvent = (cameraController, state) =>
   |> _disposePointScaleEventHandleFuncListMap(cameraController)
   |> _disposeKeyDownEventHandleFuncListMap(cameraController);
 
+let unbindPointScaleEvent = (cameraController, state) =>
+  state |> _disposePointScaleEventHandleFuncListMap(cameraController);
+
 let isBindEvent =
     (cameraController, {arcballCameraControllerRecord} as state) => {
   let {pointDragStartEventHandleFuncListMap} = arcballCameraControllerRecord;

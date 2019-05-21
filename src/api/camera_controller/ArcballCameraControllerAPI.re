@@ -180,6 +180,12 @@ let unbindArcballCameraControllerEvent = (cameraController, state) =>
     state,
   );
 
+let unbindArcballCameraControllerPointScaleEvent = (cameraController, state) =>
+  EventArcballCameraControllerMainService.unbindPointScaleEvent(
+    cameraController,
+    state,
+  );
+
 let isBindArcballCameraControllerEvent = (cameraController, state) =>
   EventArcballCameraControllerMainService.isBindEvent(
     cameraController,
