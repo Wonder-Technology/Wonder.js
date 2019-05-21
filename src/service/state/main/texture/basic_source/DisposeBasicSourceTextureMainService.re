@@ -95,7 +95,7 @@ let _disposeData =
   nameMap: nameMap |> disposeSparseMapData(texture),
 };
 
-let handleBatchDispose = (materialData, textureArr, state) => {
+let handleDispose = (materialData, textureArr, state) => {
   let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
   let basicSourceTextureRecord =

@@ -566,8 +566,7 @@ let _ =
               );
             let state =
               state
-              |> GameObjectTool.disposeGameObjectArcballCameraControllerComponent(
-                   gameObject,
+              |> ArcballCameraControllerAPI.unbindArcballCameraControllerPointScaleEvent(
                    cameraController,
                  );
             let state = MainStateTool.setState(state);

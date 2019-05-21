@@ -60,3 +60,13 @@ let getDefaultWidth = () =>
 
 let getDefaultHeight = () =>
   BufferArrayBufferViewSourceTextureService.getDefaultHeight();
+
+let getMaterialDataArr = (texture, state) =>
+  MaterialsMapService.getMaterialDataArr(
+    texture,
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state).
+      materialsMap,
+  );
+
+let unsafeGetMaterialDataArr = (texture, state) =>
+  getMaterialDataArr(texture, state) |> OptionService.unsafeGet;

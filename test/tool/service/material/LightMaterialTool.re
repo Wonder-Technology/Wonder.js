@@ -23,7 +23,7 @@ let createGameObjectWithShareMaterial = (material, state) => {
   (state, gameObject, material);
 };
 
-let createAndSetMapsWithMap = (material, diffuseMap, specularMap, state) => {
+let setMaps = (material, diffuseMap, specularMap, state) => {
   let state =
     state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, diffuseMap);
   let state =
@@ -37,7 +37,7 @@ let createAndSetMaps = (material, state) => {
     BasicSourceTextureAPI.createBasicSourceTexture(state);
   let (state, texture2) =
     BasicSourceTextureAPI.createBasicSourceTexture(state);
-  createAndSetMapsWithMap(material, texture1, texture2, state);
+  setMaps(material, texture1, texture2, state);
 };
 
 let createMaterialWithMap = state => {
@@ -194,3 +194,6 @@ let getEmptyMapUnitArray = (material, state) =>
     material,
     getRecord(state).emptyMapUnitArrayMap,
   );
+
+let disposeLightMaterial = (material, state) =>
+  LightMaterialAPI.batchDisposeLightMaterial([|material|], state);

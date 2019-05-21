@@ -162,7 +162,7 @@ let removeSpecularMap = (material, {settingRecord} as state) => {
     state
     |> GroupTextureMainService.removeMaterial(
          (material, MaterialType.LightMaterial),
-         unsafeGetDiffuseMap(material, state),
+         unsafeGetSpecularMap(material, state),
        );
 
   let {textureIndices, specularMapUnits, emptyMapUnitArrayMap} as lightMaterialRecord =

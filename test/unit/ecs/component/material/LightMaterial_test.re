@@ -232,6 +232,54 @@ let _ =
           |> expect == (false, false);
         });
 
+        describe("remove map from group", () => {
+          test("test basicSourceTexture", () => {
+            let (state, material, (map1, map2)) = _prepare(state^);
+
+            let state = _exec(material, state);
+
+            (
+              BasicSourceTextureTool.unsafeGetMaterialDataArr(map1, state)
+              |> Js.Array.length,
+              BasicSourceTextureTool.unsafeGetMaterialDataArr(map2, state)
+              |> Js.Array.length,
+            )
+            |> expect == (0, 0);
+          });
+          test("test arrayBufferViewSourceTexture", () => {
+            let (state, material) = createLightMaterial(state^);
+            let (state, map1) =
+              ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(
+                state,
+              );
+            let (state, map2) =
+              ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(
+                state,
+              );
+
+            let state =
+              state
+              |> LightMaterialAPI.setLightMaterialSpecularMap(material, map1)
+              |> LightMaterialAPI.setLightMaterialDiffuseMap(material, map2);
+
+            let state = _exec(material, state);
+
+            (
+              ArrayBufferViewSourceTextureTool.unsafeGetMaterialDataArr(
+                map1,
+                state,
+              )
+              |> Js.Array.length,
+              ArrayBufferViewSourceTextureTool.unsafeGetMaterialDataArr(
+                map2,
+                state,
+              )
+              |> Js.Array.length,
+            )
+            |> expect == (0, 0);
+          });
+        });
+
         describe("test set new map after remove", () =>
           test("should get correct map", () => {
             let (state, material, (map1, map2)) = _prepare(state^);
@@ -265,6 +313,12 @@ let _ =
 
     describe("disposeComponent", () =>
       describe("dispose data", () => {
+        beforeEach(() =>
+          state :=
+            state^
+            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()))
+        );
+
         describe("test dispose shared material", () =>
           test("remove gameObject", () => {
             let (state, lightMaterial1) = createLightMaterial(state^);
@@ -439,6 +493,11 @@ let _ =
                       ),
                     (),
                   );
+                let state =
+                  state
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(~sandbox, ()),
+                     );
                 let (state, gameObject1, (material1, _)) =
                   LightMaterialTool.createGameObjectWithMap(state);
                 let {textureIndices} = LightMaterialTool.getRecord(state);
@@ -566,6 +625,8 @@ let _ =
           (component1, component2, component3),
         ) =
           _createLightMaterialGameObjects(state);
+        let state =
+          state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
 
         let state =
           state
@@ -588,7 +649,10 @@ let _ =
 
       describe("if material has gameObjects", () => {
         let _prepareAndExec = state => {
-          let (state, material1) = createLightMaterial(state^);
+          let state =
+            state^
+            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+          let (state, material1) = createLightMaterial(state);
           let (state, gameObject1, material2) =
             LightMaterialTool.createGameObject(state);
           let (state, gameObject2, material3) =
@@ -625,7 +689,10 @@ let _ =
 
       describe("else", () =>
         test("dispose material data", () => {
-          let (state, material1) = createLightMaterial(state^);
+          let state =
+            state^
+            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+          let (state, material1) = createLightMaterial(state);
           let (state, material2) = createLightMaterial(state);
 
           let state = _exec([|material1, material2|], state);
@@ -643,8 +710,10 @@ let _ =
       describe("if material is disposed", () => {
         let _testGetFunc = getFunc => {
           open GameObjectAPI;
-          open GameObjectAPI;
-          let (state, material) = createLightMaterial(state^);
+          let state =
+            state^
+            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+          let (state, material) = createLightMaterial(state);
           let (state, gameObject) = state |> createGameObject;
           let state =
             state |> addGameObjectLightMaterialComponent(gameObject, material);

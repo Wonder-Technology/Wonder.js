@@ -5,11 +5,27 @@ open BasicSourceTextureType;
 let getRecord = state =>
   state.basicSourceTextureRecord |> OptionService.unsafeGet;
 
+let getTexture = (texture, state) =>
+  OperateGlTextureMapService.getTexture(
+    texture,
+    getRecord(state).glTextureMap,
+  );
+
 let unsafeGetTexture = (texture, state) =>
   OperateGlTextureMapService.unsafeGetTexture(
     texture,
     getRecord(state).glTextureMap,
   );
+
+let setGlTexture = (texture, glTexture, state) => {
+  OperateGlTextureMapService.setTexture(
+    texture,
+    glTexture,
+    getRecord(state).glTextureMap,
+  );
+
+  state;
+};
 
 let isNeedUpdate = (texture, state) =>
   OperateTypeArrayBasicSourceTextureService.getIsNeedUpdate(.
@@ -73,6 +89,54 @@ let getIsNeedUpdate = (texture, state) =>
 let setIsNeedUpdate = (texture, isNeedUpdate, state) =>
   OperateBasicSourceTextureMainService.setIsNeedUpdate(
     texture,
-    isNeedUpdate,
+    isNeedUpdate ?
+      BufferSourceTextureService.getNeedUpdate() :
+      BufferSourceTextureService.getNotNeedUpdate(),
     state,
   );
+
+let getMaterialDataArr = (texture, state) =>
+  MaterialsMapService.getMaterialDataArr(
+    texture,
+    RecordBasicSourceTextureMainService.getRecord(state).materialsMap,
+  );
+
+let unsafeGetMaterialDataArr = (texture, state) =>
+  getMaterialDataArr(texture, state) |> OptionService.unsafeGet;
+
+let getBindTextureUnitCacheMap = (texture, state) => {
+  let basicSourceTextureRecord =
+    RecordBasicSourceTextureMainService.getRecord(state);
+
+  basicSourceTextureRecord.bindTextureUnitCacheMap
+  |> WonderCommonlib.MutableSparseMapService.get(texture);
+};
+
+let setBindTextureUnitCacheMap = (texture, unit, state) => {
+  let basicSourceTextureRecord =
+    RecordBasicSourceTextureMainService.getRecord(state);
+
+  {
+    ...state,
+    basicSourceTextureRecord:
+      Some({
+        ...basicSourceTextureRecord,
+        bindTextureUnitCacheMap:
+          basicSourceTextureRecord.bindTextureUnitCacheMap
+          |> WonderCommonlib.MutableSparseMapService.set(texture, unit),
+      }),
+  };
+};
+
+let getBasicSourceTextureSource = (texture, state: StateDataMainType.state) => {
+  let {sourceMap} = RecordBasicSourceTextureMainService.getRecord(state);
+
+  TextureSourceMapService.getSource(texture, sourceMap);
+};
+
+let getNeedAddedSourceArray = state =>
+  RecordBasicSourceTextureMainService.getRecord(state).needAddedSourceArray;
+
+let getNeedInitedTextureIndexArray = state =>
+  RecordBasicSourceTextureMainService.getRecord(state).
+    needInitedTextureIndexArray;
