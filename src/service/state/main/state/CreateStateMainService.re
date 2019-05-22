@@ -18,6 +18,7 @@ let createState = () => {
   perspectiveCameraProjectionRecord:
     RecordPerspectiveCameraProjectionService.create(),
   arcballCameraControllerRecord: RecordArcballCameraControllerService.create(),
+  flyCameraControllerRecord: RecordFlyCameraControllerService.create(),
   basicMaterialRecord: None,
   lightMaterialRecord: None,
   sourceTextureRecord: None,
