@@ -71,7 +71,7 @@
     "bs-fetch": "^0.3.0",
     "wonder-bs-json": "^0.0.1",
     "wonder-bs-most": "^0.0.3",
-    "wonder-commonlib": "^0.2.31",
+    "wonder-commonlib": "^0.2.32",
     "wonder-imgui": "^0.0.34",
     "wonder-log": "^0.2.11",
     "wonder-most-animation-frame": "0.0.3",
@@ -80,7 +80,7 @@
   "resolutions": {
     "wonder-log": "^0.2.11",
     "wonder-webgl": "^0.0.10",
-    "wonder-commonlib": "0.2.31",
+    "wonder-commonlib": "0.2.32",
     "wonder-bs-jest": "0.3.0",
     "wonder-bs-puppeteer": "^0.1.6"
   }

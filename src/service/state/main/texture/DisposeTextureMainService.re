@@ -105,3 +105,20 @@ let clearNeedDisposedTextureIndexArray = state => {
       needDisposedTextureIndexArray: [||],
     }),
 };
+
+let disposeBindTextureUnitCacheMap = (texture, bindTextureUnitCacheMap) =>
+  switch (
+    bindTextureUnitCacheMap
+    |> WonderCommonlib.MutableSparseMapService.getValidDataArr
+    |> Js.Array.filter(((unit, bindedTexture)) => bindedTexture === texture)
+  ) {
+  | arr when Js.Array.length(arr) > 0 =>
+    arr
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. bindTextureUnitCacheMap, (unit, texture)) =>
+           bindTextureUnitCacheMap
+           |> DisposeComponentService.disposeSparseMapData(unit),
+         bindTextureUnitCacheMap,
+       )
+  | _ => bindTextureUnitCacheMap
+  };

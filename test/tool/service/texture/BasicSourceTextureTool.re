@@ -104,15 +104,15 @@ let getMaterialDataArr = (texture, state) =>
 let unsafeGetMaterialDataArr = (texture, state) =>
   getMaterialDataArr(texture, state) |> OptionService.unsafeGet;
 
-let getBindTextureUnitCacheMap = (texture, state) => {
+let getBindTextureUnitCacheMap = (unit, state) => {
   let basicSourceTextureRecord =
     RecordBasicSourceTextureMainService.getRecord(state);
 
   basicSourceTextureRecord.bindTextureUnitCacheMap
-  |> WonderCommonlib.MutableSparseMapService.get(texture);
+  |> WonderCommonlib.MutableSparseMapService.get(unit);
 };
 
-let setBindTextureUnitCacheMap = (texture, unit, state) => {
+let setBindTextureUnitCacheMap = (unit, bindedTexture, state) => {
   let basicSourceTextureRecord =
     RecordBasicSourceTextureMainService.getRecord(state);
 
@@ -123,10 +123,26 @@ let setBindTextureUnitCacheMap = (texture, unit, state) => {
         ...basicSourceTextureRecord,
         bindTextureUnitCacheMap:
           basicSourceTextureRecord.bindTextureUnitCacheMap
-          |> WonderCommonlib.MutableSparseMapService.set(texture, unit),
+          |> WonderCommonlib.MutableSparseMapService.set(unit, bindedTexture),
       }),
   };
 };
+
+/* let setBindTextureUnitMap = (texture, unit, state) => {
+  let basicSourceTextureRecord =
+    RecordBasicSourceTextureMainService.getRecord(state);
+
+  {
+    ...state,
+    basicSourceTextureRecord:
+      Some({
+        ...basicSourceTextureRecord,
+        bindTextureUnitMap:
+          basicSourceTextureRecord.bindTextureUnitMap
+          |> WonderCommonlib.MutableSparseMapService.set(texture, unit),
+      }),
+  };
+}; */
 
 let getBasicSourceTextureSource = (texture, state: StateDataMainType.state) => {
   let {sourceMap} = RecordBasicSourceTextureMainService.getRecord(state);

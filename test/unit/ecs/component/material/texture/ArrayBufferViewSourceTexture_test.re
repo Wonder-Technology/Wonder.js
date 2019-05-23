@@ -263,47 +263,6 @@ let _ =
         });
 
         describe("else", () => {
-          test("remove from sourceMap, bindTextureUnitCacheMap, nameMap", () => {
-            let (
-              state,
-              material1,
-              (diffuseMap, specularMap, source1, source2),
-            ) =
-              LightMaterialTool.createMaterialWithArrayBufferViewMap(state^);
-            let state =
-              state
-              |> ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureName(
-                   diffuseMap,
-                   "name",
-                 )
-              |> ArrayBufferViewSourceTextureTool.setBindTextureUnitCacheMap(
-                   diffuseMap,
-                   1,
-                 );
-
-            let state =
-              LightMaterialAPI.batchDisposeLightMaterial(
-                [|material1|],
-                state,
-              );
-
-            (
-              ArrayBufferViewSourceTextureTool.getArrayBufferViewSourceTextureName(
-                diffuseMap,
-                state,
-              ),
-              ArrayBufferViewSourceTextureTool.getArrayBufferViewSourceTextureSource(
-                diffuseMap,
-                state,
-              ),
-              ArrayBufferViewSourceTextureTool.getBindTextureUnitCacheMap(
-                diffuseMap,
-                state,
-              ),
-            )
-            |> expect == (None, None, None);
-          });
-
           describe("test remove from type array", () => {
             let _testRemoveFromTypeArr =
                 (

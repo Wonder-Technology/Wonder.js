@@ -113,7 +113,10 @@ let _disposeData = (texture, textureIndexInTypeArr, state) => {
           ),
         sourceMap: sourceMap |> disposeSparseMapData(texture),
         bindTextureUnitCacheMap:
-          bindTextureUnitCacheMap |> disposeSparseMapData(texture),
+          DisposeTextureMainService.disposeBindTextureUnitCacheMap(
+            texture,
+            bindTextureUnitCacheMap,
+          ),
         needAddedSourceArray:
           DisposeTextureMainService.disposeNeedAddedSourceArray(
             texture,
@@ -131,14 +134,6 @@ let _disposeData = (texture, textureIndexInTypeArr, state) => {
 
 let handleDispose = (materialData, textureArr, state) =>
   textureArr
-  /* |> Js.Array.map(texture =>
-       IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
-         texture,
-         IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
-           state,
-         ),
-       )
-     ) */
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, texture) => {
          let arrayBufferViewSourceTextureRecord =

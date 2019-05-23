@@ -89,7 +89,10 @@ let _disposeData = (texture, state) => {
           ),
         sourceMap: sourceMap |> disposeSparseMapData(texture),
         bindTextureUnitCacheMap:
-          bindTextureUnitCacheMap |> disposeSparseMapData(texture),
+          DisposeTextureMainService.disposeBindTextureUnitCacheMap(
+            texture,
+            bindTextureUnitCacheMap,
+          ),
         needAddedSourceArray:
           DisposeTextureMainService.disposeNeedAddedSourceArray(
             texture,

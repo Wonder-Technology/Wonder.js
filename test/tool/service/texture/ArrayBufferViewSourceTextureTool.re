@@ -70,15 +70,15 @@ let getMaterialDataArr = (texture, state) =>
       materialsMap,
   );
 
-let getBindTextureUnitCacheMap = (texture, state) => {
+/* let getBindTextureUnitCacheMap = (texture, state) => {
   let arrayBufferViewSourceTextureRecord =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
 
   arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap
   |> WonderCommonlib.MutableSparseMapService.get(texture);
-};
+}; */
 
-let setBindTextureUnitCacheMap = (texture, unit, state) => {
+/* let setBindTextureUnitCacheMap = (texture, unit, state) => {
   let arrayBufferViewSourceTextureRecord =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
 
@@ -92,7 +92,7 @@ let setBindTextureUnitCacheMap = (texture, unit, state) => {
           |> WonderCommonlib.MutableSparseMapService.set(texture, unit),
       }),
   };
-};
+}; */
 
 let unsafeGetMaterialDataArr = (texture, state) =>
   getMaterialDataArr(texture, state) |> OptionService.unsafeGet;
