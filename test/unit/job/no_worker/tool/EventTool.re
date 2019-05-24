@@ -184,4 +184,5 @@ let restore = state => {
 let triggerFirstMouseDragOverEvent = (mouseEvent, state) => {
   triggerDomEvent("mousemove", getPointEventBindedDom(state), mouseEvent);
   triggerDomEvent("mousemove", getPointEventBindedDom(state), mouseEvent);
+  triggerDomEvent("mousemove", getPointEventBindedDom(state), mouseEvent);
 };

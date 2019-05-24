@@ -405,7 +405,7 @@ let _fromPCDomEventArr = state => [|
          fix chrome bug for getMovementDeltaWhenPointerLocked:
          the first movementDelta->x >100!
                 */
-       |> WonderBsMost.Most.skip(1)
+       |> WonderBsMost.Most.skip(2)
        |> WonderBsMost.Most.until(
             _fromPointDomEvent("mouseup", state)
             |> WonderBsMost.Most.tap(event =>
