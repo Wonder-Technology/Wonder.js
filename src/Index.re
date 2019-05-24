@@ -532,6 +532,8 @@ let registerNoWorkerInitJob = JobAPI.registerNoWorkerInitJob;
 
 let resetDisposeCount = ReallocateCPUMemoryJobAPI.resetDisposeCount;
 
+let reallocateGeometry = ReallocateCPUMemoryJobAPI.reallocateGeometry;
+
 let initGeometryBufferData = ReallocateCPUMemoryJobAPI.initGeometryBufferData;
 
 let reAllocateToBuffer = ReallocateCPUMemoryJobAPI.reAllocateToBuffer;
