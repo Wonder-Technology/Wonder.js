@@ -1,64 +1,82 @@
 open StateRenderType;
 
 let _handleUpdateBasicSourceTexture =
-  [@bs]
-  (
+  (.
+    basicSourceTexture,
     (
-      basicSourceTextureInTypeArray,
-      (
-        gl,
-        {basicSourceTextureRecord, arrayBufferViewSourceTextureRecord, browserDetectRecord} as state
-      )
-    ) => {
-      let (basicSourceTextureRecord, browserDetectRecord) =
-        UpdateBasicSourceTextureRenderService.isNeedUpdate(
+      gl,
+      {
+        basicSourceTextureRecord,
+        arrayBufferViewSourceTextureRecord,
+        browserDetectRecord,
+      } as state,
+    ),
+  ) => {
+    let basicSourceTextureInTypeArray = basicSourceTexture;
+
+    let (basicSourceTextureRecord, browserDetectRecord) =
+      UpdateBasicSourceTextureRenderService.isNeedUpdate(
+        basicSourceTextureInTypeArray,
+        basicSourceTextureRecord,
+      ) ?
+        UpdateBasicSourceTextureRenderService.update(
+          gl,
           basicSourceTextureInTypeArray,
-          basicSourceTextureRecord
-        ) ?
-          UpdateBasicSourceTextureRenderService.update(
-            gl,
-            basicSourceTextureInTypeArray,
-            (basicSourceTextureRecord, browserDetectRecord)
-          ) :
-          (basicSourceTextureRecord, browserDetectRecord);
-      state
-    }
-  );
+          (basicSourceTextureRecord, browserDetectRecord),
+        ) :
+        (basicSourceTextureRecord, browserDetectRecord);
+    state;
+  };
 
 let _handleUpdateArrayBufferViewSourceTexture =
-  [@bs]
-  (
+  (.
+    arrayBufferViewTexture,
     (
-      arrayBufferViewTextureInTypeArray,
-      (
-        gl,
-        {basicSourceTextureRecord, arrayBufferViewSourceTextureRecord, browserDetectRecord} as state
-      )
-    ) => {
-      let (arrayBufferViewSourceTextureRecord, browserDetectRecord) =
-        UpdateArrayBufferViewSourceTextureRenderService.isNeedUpdate(
-          arrayBufferViewTextureInTypeArray,
-          arrayBufferViewSourceTextureRecord
-        ) ?
-          UpdateArrayBufferViewSourceTextureRenderService.update(
-            gl,
-            arrayBufferViewTextureInTypeArray,
-            (arrayBufferViewSourceTextureRecord, browserDetectRecord)
-          ) :
-          (arrayBufferViewSourceTextureRecord, browserDetectRecord);
-      state
-    }
-  );
+      gl,
+      {
+        basicSourceTextureRecord,
+        arrayBufferViewSourceTextureRecord,
+        browserDetectRecord,
+      } as state,
+    ),
+  ) => {
+    let arrayBufferViewTextureInTypeArray =
+      IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+        arrayBufferViewTexture,
+        arrayBufferViewSourceTextureRecord.textureIndexOffset,
+      );
+
+    let (arrayBufferViewSourceTextureRecord, browserDetectRecord) =
+      UpdateArrayBufferViewSourceTextureRenderService.isNeedUpdate(
+        arrayBufferViewTextureInTypeArray,
+        arrayBufferViewSourceTextureRecord,
+      ) ?
+        UpdateArrayBufferViewSourceTextureRenderService.update(
+          gl,
+          (arrayBufferViewTexture,
+          arrayBufferViewTextureInTypeArray),
+          (arrayBufferViewSourceTextureRecord, browserDetectRecord),
+        ) :
+        (arrayBufferViewSourceTextureRecord, browserDetectRecord);
+    state;
+  };
 
 let handleUpdate =
     (
       gl,
       texture,
-      {basicSourceTextureRecord, arrayBufferViewSourceTextureRecord, browserDetectRecord} as state
+      {
+        basicSourceTextureRecord,
+        arrayBufferViewSourceTextureRecord,
+        browserDetectRecord,
+      } as state,
     ) =>
   IndexSourceTextureService.handleByJudgeSourceTextureIndex(
     texture,
     arrayBufferViewSourceTextureRecord.textureIndexOffset,
     (gl, state),
-    (_handleUpdateBasicSourceTexture, _handleUpdateArrayBufferViewSourceTexture)
+    (
+      _handleUpdateBasicSourceTexture,
+      _handleUpdateArrayBufferViewSourceTexture,
+    ),
   );

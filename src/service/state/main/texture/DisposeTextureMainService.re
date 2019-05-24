@@ -18,26 +18,30 @@ let disposeBasicSourceTextureGlTextureMap = (texture, state) =>
         };
       } :
       {
-        /* TODO optimize: add gl texture to pool? */
-        let gl =
-          DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
-
         let {glTextureMap} as basicSourceTextureRecord =
           RecordBasicSourceTextureMainService.getRecord(state);
 
-        {
-          ...state,
-          basicSourceTextureRecord:
-            Some({
-              ...basicSourceTextureRecord,
-              glTextureMap:
-                DisposeTextureService.disposeGlTextureMap(
-                  texture,
-                  gl,
-                  glTextureMap,
-                ),
-            }),
-        };
+        DisposeTextureService.needDisposeGlTextureMap(texture, glTextureMap) ?
+          {
+            /* TODO optimize: add gl texture to pool? */
+            let gl =
+              DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+
+            {
+              ...state,
+              basicSourceTextureRecord:
+                Some({
+                  ...basicSourceTextureRecord,
+                  glTextureMap:
+                    DisposeTextureService.disposeGlTextureMap(
+                      texture,
+                      gl,
+                      glTextureMap,
+                    ),
+                }),
+            };
+          } :
+          state;
       }
   );
 
@@ -60,27 +64,32 @@ let disposeArrayBufferViewSourceTextureGlTextureMap = (texture, state) =>
       };
     } :
     {
-      /* TODO optimize: add gl texture to pool? */
-      let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
-
       let (
             {glTextureMap}: ArrayBufferViewSourceTextureType.arrayBufferViewSourceTextureRecord
           ) as arrayBufferViewSourceTextureRecord =
         RecordArrayBufferViewSourceTextureMainService.getRecord(state);
 
-      {
-        ...state,
-        arrayBufferViewSourceTextureRecord:
-          Some({
-            ...arrayBufferViewSourceTextureRecord,
-            glTextureMap:
-              DisposeTextureService.disposeGlTextureMap(
-                texture,
-                gl,
-                glTextureMap,
-              ),
-          }),
-      };
+      DisposeTextureService.needDisposeGlTextureMap(texture, glTextureMap) ?
+        {
+          /* TODO optimize: add gl texture to pool? */
+          let gl =
+            DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+
+          {
+            ...state,
+            arrayBufferViewSourceTextureRecord:
+              Some({
+                ...arrayBufferViewSourceTextureRecord,
+                glTextureMap:
+                  DisposeTextureService.disposeGlTextureMap(
+                    texture,
+                    gl,
+                    glTextureMap,
+                  ),
+              }),
+          };
+        } :
+        state;
     };
 
 let disposeNeedAddedSourceArray = (texture, needAddedSourceArray) =>

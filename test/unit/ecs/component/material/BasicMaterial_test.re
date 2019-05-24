@@ -313,6 +313,7 @@ let _ =
                     setValueFunc,
                   ),
                 );
+
               describe("remove from textureIndices", () =>
                 test("reset material's all texture indices", () => {
                   open Js.Typed_array;

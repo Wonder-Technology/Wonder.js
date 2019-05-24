@@ -22,9 +22,16 @@ let _ =
 
     describe("test dispose gameObject before assemble", () =>
       testPromise(
-        "all components should create component from disposedIndexArray when assemble except basicSourceTexture component",
+        "all components should create component from disposedIndexArray when assemble",
         () => {
-          let (state, gameObject1, geometry1, _, _, _) =
+          let (
+            state,
+            gameObject1,
+            geometry1,
+            _,
+            _,
+            (diffuseMap1, specularMap1),
+          ) =
             FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(
               sandbox,
               state^,
@@ -68,7 +75,7 @@ let _ =
                   state,
                 ),
               )
-              |> expect == ([|geometry1|], [|specularMap2 + 1|]);
+              |> expect == ([|geometry1|], [|specularMap1|]);
             },
             state,
           );
