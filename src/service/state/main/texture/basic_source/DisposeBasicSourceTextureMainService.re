@@ -4,6 +4,9 @@ open BasicSourceTextureType;
 
 open DisposeComponentService;
 
+let isAlive = (texture, {disposedIndexArray}) =>
+  DisposeTextureService.isAlive(texture, disposedIndexArray);
+
 let _disposeData = (texture, state) => {
   let {
         wrapSs,
@@ -108,7 +111,23 @@ let _disposeData = (texture, state) => {
   };
 };
 
-let handleDispose = (materialData, textureArr, state) =>
+let handleDispose = (materialData, textureArr, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            DisposeComponentService.checkComponentShouldAliveWithBatchDispose(
+              textureArr,
+              isAlive,
+              state |> RecordBasicSourceTextureMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
   textureArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, texture) => {
@@ -142,7 +161,7 @@ let handleDispose = (materialData, textureArr, state) =>
                  Some({
                    ...basicSourceTextureRecord,
                    disposedIndexArray:
-                     DisposeMaterialService.addDisposeIndex(
+                     DisposeTextureService.addDisposeIndex(
                        texture,
                        basicSourceTextureRecord.disposedIndexArray,
                      ),
@@ -152,3 +171,4 @@ let handleDispose = (materialData, textureArr, state) =>
        },
        state,
      );
+};

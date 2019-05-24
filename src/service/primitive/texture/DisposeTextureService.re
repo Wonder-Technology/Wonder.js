@@ -11,3 +11,9 @@ let disposeGlTextureMap = (texture, gl, glTextureMap) =>
     glTextureMap |> WonderCommonlib.MutableSparseMapService.deleteVal(texture);
   | None => glTextureMap
   };
+
+let addDisposeIndex = (texture, disposedIndexArray) =>
+  disposedIndexArray |> ArrayService.push(texture);
+
+let isAlive = (texture, disposedIndexArray) =>
+  DisposeComponentService.isAlive(texture, disposedIndexArray);

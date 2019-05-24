@@ -129,20 +129,20 @@ let setBindTextureUnitCacheMap = (unit, bindedTexture, state) => {
 };
 
 /* let setBindTextureUnitMap = (texture, unit, state) => {
-  let basicSourceTextureRecord =
-    RecordBasicSourceTextureMainService.getRecord(state);
+     let basicSourceTextureRecord =
+       RecordBasicSourceTextureMainService.getRecord(state);
 
-  {
-    ...state,
-    basicSourceTextureRecord:
-      Some({
-        ...basicSourceTextureRecord,
-        bindTextureUnitMap:
-          basicSourceTextureRecord.bindTextureUnitMap
-          |> WonderCommonlib.MutableSparseMapService.set(texture, unit),
-      }),
-  };
-}; */
+     {
+       ...state,
+       basicSourceTextureRecord:
+         Some({
+           ...basicSourceTextureRecord,
+           bindTextureUnitMap:
+             basicSourceTextureRecord.bindTextureUnitMap
+             |> WonderCommonlib.MutableSparseMapService.set(texture, unit),
+         }),
+     };
+   }; */
 
 let getBasicSourceTextureSource = (texture, state: StateDataMainType.state) => {
   let {sourceMap} = RecordBasicSourceTextureMainService.getRecord(state);
@@ -156,3 +156,6 @@ let getNeedAddedSourceArray = state =>
 let getNeedInitedTextureIndexArray = state =>
   RecordBasicSourceTextureMainService.getRecord(state).
     needInitedTextureIndexArray;
+
+let getDisposedIndexArray = state =>
+  RecordBasicSourceTextureMainService.getRecord(state).disposedIndexArray;

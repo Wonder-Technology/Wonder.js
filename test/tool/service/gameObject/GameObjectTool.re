@@ -368,3 +368,10 @@ let unsafeFindGameObjectByName = (targetGameObject, name, state) =>
 
 let isDeferDisposed = (gameObject, state) =>
   state.gameObjectRecord.disposedUidArray |> Js.Array.includes(gameObject);
+
+let disposeAllGameObjects = (rootGameObject, state) =>
+  GameObjectAPI.getAllGameObjects(rootGameObject, state)
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. state, gameObject) => disposeGameObject(gameObject, state),
+       state,
+     );

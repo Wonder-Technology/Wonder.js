@@ -82,4 +82,31 @@ let _ =
         },
       )
     );
+
+    describe("test dispose gameObject after assemble", () =>
+      describe("test basic source texture", () =>
+        testPromise(
+          "if the wdb use shared texture, the disposedIndexArray after dispose should has no duplicate items",
+          () => {
+            let state = state^;
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+
+            AssembleWDBSystemTool.testGLB(
+              sandbox^,
+              GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
+              ((state, _, rootGameObject)) => {
+                let state =
+                  GameObjectTool.disposeAllGameObjects(rootGameObject, state);
+
+                BasicSourceTextureTool.getDisposedIndexArray(state)
+                |> expect == [|1, 0|];
+              },
+              state,
+            );
+          },
+        )
+      )
+    );
   });
