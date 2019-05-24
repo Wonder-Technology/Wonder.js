@@ -5,15 +5,8 @@ open ArrayBufferViewSourceTextureType;
 let unsafeGetSource = (texture, state) => {
   let {sourceMap} =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
-  TextureSourceMapService.unsafeGetSource(
-    IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
-      texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
-        state,
-      ),
-    ),
-    sourceMap,
-  );
+
+  TextureSourceMapService.unsafeGetSource(texture, sourceMap);
 };
 
 let setSource = (texture, source, state) =>
@@ -21,34 +14,14 @@ let setSource = (texture, source, state) =>
     {
       let {sourceMap, needAddedSourceArray} =
         RecordArrayBufferViewSourceTextureMainService.getRecord(state);
-      TextureSourceMapService.setSource(
-        IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
-          texture,
-          IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
-            state,
-          ),
-        ),
-        source,
-        sourceMap,
-      )
-      |> ignore;
+      TextureSourceMapService.setSource(texture, source, sourceMap) |> ignore;
       needAddedSourceArray |> ArrayService.push((texture, source)) |> ignore;
       state;
     } :
     {
       let {sourceMap} =
         RecordArrayBufferViewSourceTextureMainService.getRecord(state);
-      TextureSourceMapService.setSource(
-        IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
-          texture,
-          IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
-            state,
-          ),
-        ),
-        source,
-        sourceMap,
-      )
-      |> ignore;
+      TextureSourceMapService.setSource(texture, source, sourceMap) |> ignore;
       state;
     };
 
@@ -238,7 +211,7 @@ let setType = (texture, type_, state) => {
   state;
 };
 
-let getFlipY = (texture, state) : bool => {
+let getFlipY = (texture, state): bool => {
   let {flipYs} =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
   OperateTypeArrayArrayBufferViewSourceTextureService.getFlipY(

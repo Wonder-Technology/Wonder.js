@@ -149,9 +149,6 @@ let _buildData = (operateType, {settingRecord, gameObjectRecord} as state) => {
             "needInitedTextureIndexArray":
               basicSourceTextureRecord.needInitedTextureIndexArray
               |> WonderCommonlib.ArrayService.removeDuplicateItems,
-            "needDisposedTextureIndexArray":
-              basicSourceTextureRecord.needDisposedTextureIndexArray
-              |> WonderCommonlib.ArrayService.removeDuplicateItems,
           },
           "arrayBufferViewSourceTextureData": {
             "needAddedSourceArray":

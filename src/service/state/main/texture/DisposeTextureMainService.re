@@ -1,44 +1,45 @@
 open StateDataMainType;
 
-open BasicSourceTextureType;
-
 let disposeBasicSourceTextureGlTextureMap = (texture, state) =>
-  WorkerDetectMainService.isUseWorker(state) ?
-    {
-      let {needDisposedTextureIndexArray} as basicSourceTextureRecord =
-        RecordBasicSourceTextureMainService.getRecord(state);
-
+  BasicSourceTextureType.(
+    WorkerDetectMainService.isUseWorker(state) ?
       {
-        ...state,
-        basicSourceTextureRecord:
-          Some({
-            ...basicSourceTextureRecord,
-            needDisposedTextureIndexArray:
-              needDisposedTextureIndexArray |> ArrayService.push(texture),
-          }),
-      };
-    } :
-    {
-      /* TODO optimize: add gl texture to pool? */
-      let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+        let {needDisposedTextureIndexArray} as basicSourceTextureRecord =
+          RecordBasicSourceTextureMainService.getRecord(state);
 
-      let {glTextureMap} as basicSourceTextureRecord =
-        RecordBasicSourceTextureMainService.getRecord(state);
-
+        {
+          ...state,
+          basicSourceTextureRecord:
+            Some({
+              ...basicSourceTextureRecord,
+              needDisposedTextureIndexArray:
+                needDisposedTextureIndexArray |> ArrayService.push(texture),
+            }),
+        };
+      } :
       {
-        ...state,
-        basicSourceTextureRecord:
-          Some({
-            ...basicSourceTextureRecord,
-            glTextureMap:
-              DisposeTextureService.disposeGlTextureMap(
-                texture,
-                gl,
-                glTextureMap,
-              ),
-          }),
-      };
-    };
+        /* TODO optimize: add gl texture to pool? */
+        let gl =
+          DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+
+        let {glTextureMap} as basicSourceTextureRecord =
+          RecordBasicSourceTextureMainService.getRecord(state);
+
+        {
+          ...state,
+          basicSourceTextureRecord:
+            Some({
+              ...basicSourceTextureRecord,
+              glTextureMap:
+                DisposeTextureService.disposeGlTextureMap(
+                  texture,
+                  gl,
+                  glTextureMap,
+                ),
+            }),
+        };
+      }
+  );
 
 let disposeArrayBufferViewSourceTextureGlTextureMap = (texture, state) =>
   WorkerDetectMainService.isUseWorker(state) ?

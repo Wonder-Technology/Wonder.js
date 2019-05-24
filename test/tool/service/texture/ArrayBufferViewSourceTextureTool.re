@@ -71,28 +71,28 @@ let getMaterialDataArr = (texture, state) =>
   );
 
 /* let getBindTextureUnitCacheMap = (texture, state) => {
-  let arrayBufferViewSourceTextureRecord =
-    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+     let arrayBufferViewSourceTextureRecord =
+       RecordArrayBufferViewSourceTextureMainService.getRecord(state);
 
-  arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap
-  |> WonderCommonlib.MutableSparseMapService.get(texture);
-}; */
+     arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap
+     |> WonderCommonlib.MutableSparseMapService.get(texture);
+   }; */
 
 /* let setBindTextureUnitCacheMap = (texture, unit, state) => {
-  let arrayBufferViewSourceTextureRecord =
-    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+     let arrayBufferViewSourceTextureRecord =
+       RecordArrayBufferViewSourceTextureMainService.getRecord(state);
 
-  {
-    ...state,
-    arrayBufferViewSourceTextureRecord:
-      Some({
-        ...arrayBufferViewSourceTextureRecord,
-        bindTextureUnitCacheMap:
-          arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap
-          |> WonderCommonlib.MutableSparseMapService.set(texture, unit),
-      }),
-  };
-}; */
+     {
+       ...state,
+       arrayBufferViewSourceTextureRecord:
+         Some({
+           ...arrayBufferViewSourceTextureRecord,
+           bindTextureUnitCacheMap:
+             arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap
+             |> WonderCommonlib.MutableSparseMapService.set(texture, unit),
+         }),
+     };
+   }; */
 
 let unsafeGetMaterialDataArr = (texture, state) =>
   getMaterialDataArr(texture, state) |> OptionService.unsafeGet;
@@ -138,3 +138,31 @@ let setGlTexture = (texture, glTexture, state) => {
 
   state;
 };
+
+let getBindTextureUnitCacheMap = (unit, state) => {
+  let arrayBufferViewSourceTextureRecord =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+
+  arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap
+  |> WonderCommonlib.MutableSparseMapService.get(unit);
+};
+
+let setBindTextureUnitCacheMap = (unit, bindedTexture, state) => {
+  let arrayBufferViewSourceTextureRecord =
+    RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+
+  {
+    ...state,
+    arrayBufferViewSourceTextureRecord:
+      Some({
+        ...arrayBufferViewSourceTextureRecord,
+        bindTextureUnitCacheMap:
+          arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap
+          |> WonderCommonlib.MutableSparseMapService.set(unit, bindedTexture),
+      }),
+  };
+};
+
+let getArrayBufferViewSourceTextureName =
+    (texture, state: StateDataMainType.state) =>
+  NameArrayBufferViewSourceTextureMainService.getName(texture, state);

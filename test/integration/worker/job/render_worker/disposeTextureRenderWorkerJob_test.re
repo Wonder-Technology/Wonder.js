@@ -65,6 +65,7 @@ let _ =
                 _ => {
                   let renderWorkerState =
                     RenderWorkerStateTool.unsafeGetState();
+
                   judgeFunc(map, glTexture, renderWorkerState) |> resolve;
                 },
               (),

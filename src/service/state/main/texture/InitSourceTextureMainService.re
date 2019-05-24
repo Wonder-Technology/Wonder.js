@@ -15,17 +15,17 @@ let _handleInitTextureWorker = (texture, state) =>
       ),
       state,
       (
-        (. basicSourceTextureInTypeArray, {settingRecord} as state) => {
+        (. basicSourceTexture, {settingRecord} as state) => {
           RecordBasicSourceTextureMainService.getRecord(state).
             needInitedTextureIndexArray
-          |> ArrayService.push(texture)
+          |> ArrayService.push(basicSourceTexture)
           |> ignore;
           state;
         },
-        (. arrayBufferViewTextureInTypeArray, {settingRecord} as state) => {
+        (. arrayBufferViewTexture, {settingRecord} as state) => {
           RecordArrayBufferViewSourceTextureMainService.getRecord(state).
             needInitedTextureIndexArray
-          |> ArrayService.push(texture)
+          |> ArrayService.push(arrayBufferViewTexture)
           |> ignore;
           state;
         },
@@ -44,19 +44,19 @@ let _handleInitTextureNoWorker = (texture, state) =>
       ),
       state,
       (
-        (. basicSourceTextureInTypeArray, {settingRecord} as state) => {
+        (. basicSourceTexture, {settingRecord} as state) => {
           InitTextureService.initTexture(
             DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-            basicSourceTextureInTypeArray,
+            basicSourceTexture,
             RecordBasicSourceTextureMainService.getRecord(state).glTextureMap,
           )
           |> ignore;
           state;
         },
-        (. arrayBufferViewTextureInTypeArray, {settingRecord} as state) => {
+        (. arrayBufferViewTexture, {settingRecord} as state) => {
           InitTextureService.initTexture(
             DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-            arrayBufferViewTextureInTypeArray,
+            arrayBufferViewTexture,
             RecordArrayBufferViewSourceTextureMainService.getRecord(state).
               glTextureMap,
           )

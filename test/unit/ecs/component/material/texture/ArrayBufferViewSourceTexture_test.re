@@ -263,6 +263,87 @@ let _ =
         });
 
         describe("else", () => {
+          test("remove from sourceMap, nameMap", () => {
+            let (
+              state,
+              material1,
+              (diffuseMap, specularMap, source1, source2),
+            ) =
+              LightMaterialTool.createMaterialWithArrayBufferViewMap(state^);
+            let state =
+              state
+              |> ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureName(
+                   diffuseMap,
+                   "name",
+                 );
+
+            let state =
+              LightMaterialAPI.batchDisposeLightMaterial(
+                [|material1|],
+                state,
+              );
+
+            (
+              ArrayBufferViewSourceTextureTool.getArrayBufferViewSourceTextureName(
+                diffuseMap,
+                state,
+              ),
+              ArrayBufferViewSourceTextureTool.getArrayBufferViewSourceTextureSource(
+                diffuseMap,
+                state,
+              ),
+            )
+            |> expect == (None, None);
+          });
+          test("remove from bindTextureUnitCacheMap", () => {
+            let (
+              state,
+              material1,
+              (diffuseMap1, specularMap1, source1_1, source1_2),
+            ) =
+              LightMaterialTool.createMaterialWithArrayBufferViewMap(state^);
+            let (
+              state,
+              material2,
+              (diffuseMap2, specularMap2, source2_1, source2_2),
+            ) =
+              LightMaterialTool.createMaterialWithArrayBufferViewMap(state);
+
+            let unit0 = 0;
+            let unit1 = 1;
+
+            let state =
+              state
+              |> ArrayBufferViewSourceTextureTool.setBindTextureUnitCacheMap(
+                   unit1,
+                   diffuseMap1,
+                 )
+              |> ArrayBufferViewSourceTextureTool.setBindTextureUnitCacheMap(
+                   unit0,
+                   diffuseMap2,
+                 );
+
+            let state =
+              LightMaterialAPI.batchDisposeLightMaterial(
+                [|material1|],
+                state,
+              );
+
+            (
+              ArrayBufferViewSourceTextureTool.getBindTextureUnitCacheMap(
+                unit1,
+                state,
+              )
+              |> Js.Option.isNone,
+              ArrayBufferViewSourceTextureTool.getBindTextureUnitCacheMap(
+                unit0,
+                state,
+              )
+              |> Js.Option.isNone,
+            )
+            |> expect == (true, false);
+          });
+
           describe("test remove from type array", () => {
             let _testRemoveFromTypeArr =
                 (

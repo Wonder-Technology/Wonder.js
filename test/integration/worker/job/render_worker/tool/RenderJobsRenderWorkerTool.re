@@ -186,25 +186,19 @@ let dispose = (postMessageToRenderWorker, completeFunc) => {
   open Sinon;
   let args =
     postMessageToRenderWorker
-    |> withOneArg({
-         "operateType": "DISPOSE",
-         "geometryNeedDisposeVboBufferArr": Sinon.matchAny,
-         "sourceInstanceNeedDisposeVboBufferArr": Sinon.matchAny,
-         "needDisposedBasicSourceTextureIndexArray": Sinon.matchAny,
-       })
+    |> withOneArg(
+         DisposeRenderWorkerJobTool.buildDisposeData(
+           ~geometryNeedDisposeVboBufferArr=Sinon.matchAny,
+           ~sourceInstanceNeedDisposeVboBufferArr=Sinon.matchAny,
+           ~needDisposedBasicSourceTextureIndexArray=Sinon.matchAny,
+           ~needDisposedArrayBufferViewTextureIndexArray=Sinon.matchAny,
+           (),
+         ),
+       )
     |> Obj.magic
     |> getSpecificArg(0)
     |> List.hd;
-  let disposeData = {
-    "data": args,
-    /* DisposeAndSendDisposeDataMainWorkerJob._buildData(
-         "",
-         (
-           geometryNeedDisposeVboBufferArr,
-           sourceInstanceNeedDisposeVboBufferArr
-         )
-       ) */
-  };
+  let disposeData = {"data": args};
   [|
     DisposeVboRenderWorkerJob.execJob(None),
     DisposeSourceInstanceRenderWorkerJob.execJob(None),

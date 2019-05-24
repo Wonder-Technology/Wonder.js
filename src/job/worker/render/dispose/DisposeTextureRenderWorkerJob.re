@@ -20,7 +20,7 @@ let execJob = (flags, e, stateData) =>
          );
 
     let state =
-      data##needDisposedArrayBufferViewSourceTextureIndexArray
+      data##needDisposedArrayBufferViewTextureIndexArray
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (. state, texture) =>
              DisposeTextureRenderWorkerService.disposeArrayBufferViewSourceTextureGlTextureMap(

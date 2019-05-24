@@ -165,19 +165,6 @@ let _ =
 
     describe("send data to render worker", () =>
       describe("send dispose data", () => {
-        let _buildDisposeData =
-            (
-              ~geometryNeedDisposeVboBufferArr=[||],
-              ~sourceInstanceNeedDisposeVboBufferArr=[||],
-              ~needDisposedBasicSourceTextureIndexArray=[||],
-              (),
-            ) => {
-          "operateType": "DISPOSE",
-          "geometryNeedDisposeVboBufferArr": geometryNeedDisposeVboBufferArr,
-          "sourceInstanceNeedDisposeVboBufferArr": sourceInstanceNeedDisposeVboBufferArr,
-          "needDisposedBasicSourceTextureIndexArray": needDisposedBasicSourceTextureIndexArray,
-        };
-
         testPromise("send dispose geometry and sourceInstance data", () => {
           let (
             state,
@@ -220,7 +207,7 @@ let _ =
                 postMessageToRenderWorker
                 |> expect
                 |> toCalledWith([|
-                     _buildDisposeData(
+                     DisposeRenderWorkerJobTool.buildDisposeData(
                        ~geometryNeedDisposeVboBufferArr=[|
                          geometry1,
                          geometry2,
@@ -262,7 +249,7 @@ let _ =
                 postMessageToRenderWorker
                 |> expect
                 |> toCalledWith([|
-                     _buildDisposeData(
+                     DisposeRenderWorkerJobTool.buildDisposeData(
                        ~needDisposedBasicSourceTextureIndexArray=[|
                          diffuseMap,
                          specularMap,

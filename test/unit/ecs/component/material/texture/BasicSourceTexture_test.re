@@ -300,10 +300,6 @@ let _ =
               |> BasicSourceTextureAPI.setBasicSourceTextureName(
                    diffuseMap,
                    "name",
-                 )
-              |> BasicSourceTextureTool.setBindTextureUnitCacheMap(
-                   diffuseMap,
-                   1,
                  );
 
             let state =
