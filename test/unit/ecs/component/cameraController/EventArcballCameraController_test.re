@@ -267,14 +267,13 @@ let _ =
                   EventTool.getPointEventBindedDom(state),
                   MouseEventTool.buildMouseEvent(),
                 );
-                EventTool.triggerDomEvent(
-                  "mousemove",
-                  EventTool.getPointEventBindedDom(state),
+                EventTool.triggerFirstMouseDragOverEvent(
                   MouseEventTool.buildMouseEvent(
                     ~movementX=1,
                     ~movementY=2,
                     (),
                   ),
+                  state,
                 );
                 let state = EventTool.restore(state);
 

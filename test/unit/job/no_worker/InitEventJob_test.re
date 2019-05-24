@@ -607,10 +607,9 @@ let _ =
               EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
-            EventTool.triggerDomEvent(
-              "mousemove",
-              EventTool.getPointEventBindedDom(state),
+            EventTool.triggerFirstMouseDragOverEvent(
               MouseEventTool.buildMouseEvent(),
+              state,
             );
             EventTool.triggerDomEvent(
               "mousemove",
@@ -744,10 +743,9 @@ let _ =
                 EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(),
               );
-              EventTool.triggerDomEvent(
-                "mousemove",
-                EventTool.getPointEventBindedDom(state),
+              EventTool.triggerFirstMouseDragOverEvent(
                 MouseEventTool.buildMouseEvent(~pageX=10, ~pageY=20, ()),
+                state,
               );
               EventTool.triggerDomEvent(
                 "mousemove",
@@ -772,10 +770,9 @@ let _ =
                 EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(),
               );
-              EventTool.triggerDomEvent(
-                "mousemove",
-                EventTool.getPointEventBindedDom(state),
+              EventTool.triggerFirstMouseDragOverEvent(
                 MouseEventTool.buildMouseEvent(~pageX=50, ~pageY=80, ()),
+                state,
               );
               let state = EventTool.restore(state);
 
@@ -824,10 +821,9 @@ let _ =
                 EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(~pageX=50, ~pageY=80, ()),
               );
-              EventTool.triggerDomEvent(
-                "mousemove",
-                EventTool.getPointEventBindedDom(state),
+              EventTool.triggerFirstMouseDragOverEvent(
                 MouseEventTool.buildMouseEvent(~pageX=55, ~pageY=110, ()),
+                state,
               );
               EventTool.triggerDomEvent(
                 "mousemove",
@@ -863,10 +859,9 @@ let _ =
                 EventTool.getPointEventBindedDom(state),
                 MouseEventTool.buildMouseEvent(~which=eventButton, ()),
               );
-              EventTool.triggerDomEvent(
-                "mousemove",
-                EventTool.getPointEventBindedDom(state),
+              EventTool.triggerFirstMouseDragOverEvent(
                 MouseEventTool.buildMouseEvent(~which=eventButton, ()),
+                state,
               );
               let state = EventTool.restore(state);
 
@@ -2182,10 +2177,9 @@ let _ =
               EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
-            EventTool.triggerDomEvent(
-              "mousemove",
-              EventTool.getPointEventBindedDom(state),
+            EventTool.triggerFirstMouseDragOverEvent(
               MouseEventTool.buildMouseEvent(),
+              state,
             );
             EventTool.triggerDomEvent(
               "mousemove",
@@ -2220,10 +2214,9 @@ let _ =
               EventTool.getPointEventBindedDom(state),
               MouseEventTool.buildMouseEvent(),
             );
-            EventTool.triggerDomEvent(
-              "mousemove",
-              EventTool.getPointEventBindedDom(state),
+            EventTool.triggerFirstMouseDragOverEvent(
               MouseEventTool.buildMouseEvent(),
+              state,
             );
             EventTool.triggerDomEvent(
               "mouseup",
