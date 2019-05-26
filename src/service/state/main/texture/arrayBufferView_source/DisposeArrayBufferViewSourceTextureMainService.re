@@ -135,7 +135,7 @@ let _disposeData = (texture, textureIndexInTypeArr, state) => {
   };
 };
 
-let handleDispose = (materialData, textureArr, state) => {
+let handleDispose = (isRemoveTexture, materialData, textureArr, state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -165,43 +165,51 @@ let handleDispose = (materialData, textureArr, state) => {
              arrayBufferViewSourceTextureRecord,
            );
 
-         GroupArrayBufferViewSourceTextureService.isGroupArrayBufferViewSourceTexture(
-           texture,
-           arrayBufferViewSourceTextureRecord,
-         ) ?
+         isRemoveTexture ?
            {
              ...state,
              arrayBufferViewSourceTextureRecord:
                Some(arrayBufferViewSourceTextureRecord),
            } :
-           {
-             let textureIndexInTypeArr =
-               IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
-                 texture,
-                 IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
-                   state,
-                 ),
-               );
-
-             let state =
-               state |> _disposeData(texture, textureIndexInTypeArr);
-
-             let arrayBufferViewSourceTextureRecord =
-               RecordArrayBufferViewSourceTextureMainService.getRecord(state);
-
+           GroupArrayBufferViewSourceTextureService.isGroupArrayBufferViewSourceTexture(
+             texture,
+             arrayBufferViewSourceTextureRecord,
+           ) ?
              {
                ...state,
                arrayBufferViewSourceTextureRecord:
-                 Some({
-                   ...arrayBufferViewSourceTextureRecord,
-                   disposedIndexArray:
-                     DisposeTextureService.addDisposeIndex(
-                       textureIndexInTypeArr,
-                       arrayBufferViewSourceTextureRecord.disposedIndexArray,
-                     ),
-                 }),
+                 Some(arrayBufferViewSourceTextureRecord),
+             } :
+             {
+               let textureIndexInTypeArr =
+                 IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+                   texture,
+                   IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+                     state,
+                   ),
+                 );
+
+               let state =
+                 state |> _disposeData(texture, textureIndexInTypeArr);
+
+               let arrayBufferViewSourceTextureRecord =
+                 RecordArrayBufferViewSourceTextureMainService.getRecord(
+                   state,
+                 );
+
+               {
+                 ...state,
+                 arrayBufferViewSourceTextureRecord:
+                   Some({
+                     ...arrayBufferViewSourceTextureRecord,
+                     disposedIndexArray:
+                       DisposeTextureService.addDisposeIndex(
+                         textureIndexInTypeArr,
+                         arrayBufferViewSourceTextureRecord.disposedIndexArray,
+                       ),
+                   }),
+               };
              };
-           };
        },
        state,
      );

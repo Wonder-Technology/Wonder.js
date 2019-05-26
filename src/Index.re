@@ -280,6 +280,8 @@ let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
 let initGameObject = GameObjectAPI.initGameObject;
 
+let disposeGameObjectRemoveTexture = GameObjectAPI.disposeGameObjectRemoveTexture;
+
 let disposeGameObjectDisposeGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectDisposeGeometryRemoveMaterial;
 
 let disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial;
@@ -1069,6 +1071,8 @@ let batchDisposeGameObjectKeepOrder = GameObjectAPI.batchDisposeGameObjectKeepOr
 let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
 let initGameObject = GameObjectAPI.initGameObject;
+
+let disposeGameObjectRemoveTexture = GameObjectAPI.disposeGameObjectRemoveTexture;
 
 let disposeGameObjectDisposeGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectDisposeGeometryRemoveMaterial;
 

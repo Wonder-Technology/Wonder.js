@@ -74,6 +74,7 @@ type gameObjectRecord = {
   mutable disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial:
     array(int),
   mutable disposedUidArrayForDisposeGeometryRemoveMaterial: array(int),
+  mutable disposedUidArrayForRemoveTexture: array(int),
   mutable disposedBasicCameraViewArray: array(int),
   mutable disposedTransformArray: array(int),
   mutable disposedTransformArrayForKeepOrder: array(int),

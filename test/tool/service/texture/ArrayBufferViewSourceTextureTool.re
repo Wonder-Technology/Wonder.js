@@ -166,3 +166,18 @@ let setBindTextureUnitCacheMap = (unit, bindedTexture, state) => {
 let getArrayBufferViewSourceTextureName =
     (texture, state: StateDataMainType.state) =>
   NameArrayBufferViewSourceTextureMainService.getName(texture, state);
+
+let hasMaterial = (texture, material, state) =>
+  switch (
+    MaterialsMapService.getMaterialDataArr(
+      texture,
+      RecordArrayBufferViewSourceTextureMainService.getRecord(state).
+        materialsMap,
+    )
+  ) {
+  | Some(arr) =>
+    arr
+    |> Js.Array.find(((materialInData, _)) => materialInData === material)
+    |> Js.Option.isSome
+  | _ => false
+  };

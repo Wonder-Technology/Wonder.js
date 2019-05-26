@@ -11,10 +11,11 @@ open DisposeComponentService;
 let isAlive = (material, {disposedIndexArray}) =>
   DisposeMaterialMainService.isAlive(material, disposedIndexArray);
 
-let _disposeData = (material, textureCountPerMaterial, state) => {
+let _disposeData = (isRemoveTexture, material, textureCountPerMaterial, state) => {
   let state =
     state
     |> DisposeMaterialMainService.disposeMaps(
+         isRemoveTexture,
          (material, MaterialType.LightMaterial),
          [|
            OperateLightMaterialMainService.getDiffuseMap(material, state),
@@ -98,7 +99,7 @@ let _disposeData = (material, textureCountPerMaterial, state) => {
 };
 
 let handleBatchDisposeComponentData =
-  (. materialDataMap, {settingRecord} as state) => {
+  (. isRemoveTexture, materialDataMap, {settingRecord} as state) => {
     WonderLog.Contract.requireCheck(
       () =>
         WonderLog.(
@@ -138,7 +139,12 @@ let handleBatchDisposeComponentData =
              {...state, lightMaterialRecord: Some(lightMaterialRecord)} :
              {
                let state =
-                 state |> _disposeData(material, textureCountPerMaterial);
+                 state
+                 |> _disposeData(
+                      isRemoveTexture,
+                      material,
+                      textureCountPerMaterial,
+                    );
 
                let lightMaterialRecord =
                  RecordLightMaterialMainService.getRecord(state);
@@ -204,7 +210,8 @@ let handleBatchDisposeComponent =
   materialHasNoGameObjectArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, material) => {
-         let state = state |> _disposeData(material, textureCountPerMaterial);
+         let state =
+           state |> _disposeData(false, material, textureCountPerMaterial);
 
          let lightMaterialRecord =
            RecordLightMaterialMainService.getRecord(state);

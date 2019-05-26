@@ -57,16 +57,18 @@ let addAllMaps = (mapArr, state) =>
        ),
      );
 
-let disposeMaps = (materialData, mapArr, state) => {
+let disposeMaps = (isRemoveTexture, materialData, mapArr, state) => {
   let (basicSourceTextureArr, arrayBufferViewSourceTextureArr) =
     addAllMaps(mapArr, state);
 
   state
   |> DisposeBasicSourceTextureMainService.handleDispose(
+       isRemoveTexture,
        materialData,
        basicSourceTextureArr,
      )
   |> DisposeArrayBufferViewSourceTextureMainService.handleDispose(
+       isRemoveTexture,
        materialData,
        arrayBufferViewSourceTextureArr,
      );

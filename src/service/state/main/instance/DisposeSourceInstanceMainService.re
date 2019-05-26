@@ -12,13 +12,13 @@ let isAlive = (sourceInstance, {disposedIndexArray}) =>
 let _disposeObjectInstanceGameObject =
     (
       objectInstanceGameObjectArr,
-      (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+      (isKeepOrder, isRemoveGeometry, isRemoveMaterial, isRemoveTexture),
       batchDisposeGameObjectFunc,
       state,
     ) =>
   batchDisposeGameObjectFunc(
     objectInstanceGameObjectArr,
-    (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+    (isKeepOrder, isRemoveGeometry, isRemoveMaterial, isRemoveTexture),
     state,
   )
   |> WonderLog.Contract.ensureCheck(
@@ -57,7 +57,7 @@ let _disposeObjectInstanceGameObject =
 let _disposeData =
     (
       sourceInstance: sourceInstance,
-      (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+      (isKeepOrder, isRemoveGeometry, isRemoveMaterial, isRemoveTexture),
       batchDisposeGameObjectFunc,
       {typeArrayPoolRecord, settingRecord} as state,
     ) => {
@@ -117,7 +117,7 @@ let _disposeData =
     state
     |> _disposeObjectInstanceGameObject(
          objectInstanceGameObjectArr,
-         (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+         (isKeepOrder, isRemoveGeometry, isRemoveMaterial, isRemoveTexture),
          batchDisposeGameObjectFunc,
        );
   state;
@@ -126,9 +126,9 @@ let _disposeData =
 let handleBatchDisposeComponent =
   (.
     sourceInstanceArray: array(sourceInstance),
-    (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+    (isKeepOrder, isRemoveGeometry, isRemoveMaterial, isRemoveTexture),
     batchDisposeGameObjectFunc:
-      (array(int), (bool, bool, bool), StateDataMainType.state) =>
+      (array(int), (bool, bool, bool, bool), StateDataMainType.state) =>
       (StateDataMainType.state, array(int), array(int)),
     state,
   ) => {
@@ -165,7 +165,12 @@ let handleBatchDisposeComponent =
              state
              |> _disposeData(
                   sourceInstance,
-                  (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+                  (
+                    isKeepOrder,
+                    isRemoveGeometry,
+                    isRemoveMaterial,
+                    isRemoveTexture,
+                  ),
                   batchDisposeGameObjectFunc,
                 ),
            state,

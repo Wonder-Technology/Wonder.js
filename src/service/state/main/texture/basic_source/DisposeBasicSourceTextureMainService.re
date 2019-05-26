@@ -111,7 +111,7 @@ let _disposeData = (texture, state) => {
   };
 };
 
-let handleDispose = (materialData, textureArr, state) => {
+let handleDispose = (isRemoveTexture, materialData, textureArr, state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -141,33 +141,38 @@ let handleDispose = (materialData, textureArr, state) => {
              basicSourceTextureRecord,
            );
 
-         GroupBasicSourceTextureService.isGroupBasicSourceTexture(
-           texture,
-           basicSourceTextureRecord,
-         ) ?
+         isRemoveTexture ?
            {
              ...state,
              basicSourceTextureRecord: Some(basicSourceTextureRecord),
            } :
-           {
-             let state = state |> _disposeData(texture);
-
-             let basicSourceTextureRecord =
-               RecordBasicSourceTextureMainService.getRecord(state);
-
+           GroupBasicSourceTextureService.isGroupBasicSourceTexture(
+             texture,
+             basicSourceTextureRecord,
+           ) ?
              {
                ...state,
-               basicSourceTextureRecord:
-                 Some({
-                   ...basicSourceTextureRecord,
-                   disposedIndexArray:
-                     DisposeTextureService.addDisposeIndex(
-                       texture,
-                       basicSourceTextureRecord.disposedIndexArray,
-                     ),
-                 }),
+               basicSourceTextureRecord: Some(basicSourceTextureRecord),
+             } :
+             {
+               let state = state |> _disposeData(texture);
+
+               let basicSourceTextureRecord =
+                 RecordBasicSourceTextureMainService.getRecord(state);
+
+               {
+                 ...state,
+                 basicSourceTextureRecord:
+                   Some({
+                     ...basicSourceTextureRecord,
+                     disposedIndexArray:
+                       DisposeTextureService.addDisposeIndex(
+                         texture,
+                         basicSourceTextureRecord.disposedIndexArray,
+                       ),
+                   }),
+               };
              };
-           };
        },
        state,
      );

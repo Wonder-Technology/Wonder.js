@@ -319,17 +319,20 @@ let batchDisposeGeometryComponent =
     state,
   );
 
-let batchDisposeBasicMaterialComponentData = (state, compnentDataMap) =>
+let batchDisposeBasicMaterialComponentData =
+    (state, compnentDataMap, isRemoveTexture) =>
   DisposeBasicMaterialMainService.handleBatchDisposeComponentData(.
+    isRemoveTexture,
     compnentDataMap,
     state,
   );
 
 let batchDisposeBasicMaterialComponentDataForWorker =
-    (state, componentDataMap) => {
+    (state, componentDataMap, isRemoveTexture) => {
   open BasicMaterialType;
   let state =
     DisposeBasicMaterialMainService.handleBatchDisposeComponentData(.
+      isRemoveTexture,
       componentDataMap,
       state,
     );
@@ -362,17 +365,20 @@ let batchDisposeBasicMaterialComponent =
     state,
   );
 
-let batchDisposeLightMaterialComponentData = (state, componentDataMap) =>
+let batchDisposeLightMaterialComponentData =
+    (state, componentDataMap, isRemoveTexture) =>
   DisposeLightMaterialMainService.handleBatchDisposeComponentData(.
+    isRemoveTexture,
     componentDataMap,
     state,
   );
 
 let batchDisposeLightMaterialComponentDataForWorker =
-    (state, componentDataMap) => {
+    (state, componentDataMap, isRemoveTexture) => {
   open LightMaterialType;
   let state =
     DisposeLightMaterialMainService.handleBatchDisposeComponentData(.
+      isRemoveTexture,
       componentDataMap,
       state,
     );
@@ -434,13 +440,13 @@ let batchDisposePointLightComponent =
 let batchDisposeSourceInstanceComponent =
     (
       state: StateDataMainType.state,
-      (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+      (isKeepOrder, isRemoveGeometry, isRemoveMaterial, isRemoveTexture),
       disposeGameObjectFunc,
       componentArray: array(component),
     ) =>
   DisposeSourceInstanceMainService.handleBatchDisposeComponent(.
     componentArray,
-    (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+    (isKeepOrder, isRemoveGeometry, isRemoveMaterial, isRemoveTexture),
     disposeGameObjectFunc,
     state,
   );

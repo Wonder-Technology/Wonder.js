@@ -37,7 +37,7 @@ let batchDisposeGameObject =
         DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponentData,
       ),
       gameObjectArray,
-      (false, false, false),
+      (false, false, false, false),
       state,
     );
   let state = state |> ReallocateCPUMemoryJob.execJob(None);
@@ -70,7 +70,7 @@ let batchDisposeGameObjectKeepOrder =
         DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponentData,
       ),
       gameObjectArray,
-      (true, false, false),
+      (true, false, false, false),
       state,
     );
   {
@@ -216,6 +216,7 @@ let disposeGameObjectBasicMaterialComponent =
     state,
     WonderCommonlib.MutableSparseMapService.createEmpty()
     |> WonderCommonlib.MutableSparseMapService.set(component, [|gameObject|]),
+    false,
   );
 
 let disposeGameObjectLightMaterialComponent =
@@ -228,6 +229,7 @@ let disposeGameObjectLightMaterialComponent =
     state,
     WonderCommonlib.MutableSparseMapService.createEmpty()
     |> WonderCommonlib.MutableSparseMapService.set(component, [|gameObject|]),
+    false,
   );
 
 let disposeGameObjectMeshRendererComponent =
@@ -272,7 +274,7 @@ let disposeGameObjectSourceInstanceComponent =
   let (state, _) =
     DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
       state,
-      (false, false, false),
+      (false, false, false, false),
       DisposeGameObjectMainService.batchDispose((
         DisposeComponentGameObjectMainService.batchDisposeBasicMaterialComponentData,
         DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponentData,

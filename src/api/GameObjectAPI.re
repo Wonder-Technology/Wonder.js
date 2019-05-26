@@ -999,6 +999,21 @@ let disposeGameObjectDisposeGeometryRemoveMaterial =
   deferDisposeDisposeGeometryRemoveMaterial(gameObject, state);
 };
 
+let disposeGameObjectRemoveTexture =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  deferDisposeRemoveTexture(gameObject, state);
+};
+
 let initGameObject =
     (
       gameObject: GameObjectPrimitiveType.gameObject,

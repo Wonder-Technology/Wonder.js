@@ -159,3 +159,17 @@ let getNeedInitedTextureIndexArray = state =>
 
 let getDisposedIndexArray = state =>
   RecordBasicSourceTextureMainService.getRecord(state).disposedIndexArray;
+
+let hasMaterial = (texture, material, state) =>
+  switch (
+    MaterialsMapService.getMaterialDataArr(
+      texture,
+      RecordBasicSourceTextureMainService.getRecord(state).materialsMap,
+    )
+  ) {
+  | Some(arr) =>
+    arr
+    |> Js.Array.find(((materialInData, _)) => materialInData === material)
+    |> Js.Option.isSome
+  | _ => false
+  };
