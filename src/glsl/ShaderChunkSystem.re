@@ -60,7 +60,9 @@ varying vec3 v_texCoord;
 |},{|
 
 |}),{|
-gl_FragColor = textureCube(u_skyboxCubeMapSampler, v_texCoord);
+//gl_FragColor = textureCube(u_skyboxCubeMapSampler, v_texCoord);
+vec3 dir = vec3(-v_texCoord.x, v_texCoord.y, v_texCoord.z);
+gl_FragColor = textureCube(u_skyboxCubeMapSampler, dir);
 |}))
 
 |> set("webgl1_outline_origin_vertex", _buildChunk(({|
