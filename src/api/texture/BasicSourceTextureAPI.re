@@ -426,3 +426,10 @@ let getAllTextures = state => {
 
   GetAllComponentService.getAllComponents(index, disposedIndexArray);
 };
+
+let disposeBasicSourceTexture = (texture, isRemoveTexture, state) =>
+  DisposeBasicSourceTextureMainService.handleDisposeTexture(
+    texture,
+    isRemoveTexture,
+    state,
+  );

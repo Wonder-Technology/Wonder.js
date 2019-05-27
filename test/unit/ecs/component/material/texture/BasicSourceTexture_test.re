@@ -191,7 +191,7 @@ let _ =
       })
     );
 
-    describe("dispose", () =>
+    describe("dispose from material", () =>
       describe("dispose from material", () => {
         beforeEach(() =>
           state :=
@@ -285,6 +285,24 @@ let _ =
             ),
           )
           |> expect == (source1, source2);
+        });
+
+        test("if is remove texture, not dispose data", () => {
+          let (state, material1, (diffuseMap, specularMap, source1, source2)) =
+            LightMaterialTool.createMaterialWithMap(state^);
+
+          let state =
+            LightMaterialAPI.batchDisposeLightMaterialRemoveTexture(
+              [|material1|],
+              state,
+            );
+
+          BasicSourceTextureTool.getBasicSourceTextureSource(
+            diffuseMap,
+            state,
+          )
+          |> Js.Option.isNone
+          |> expect == false;
         });
 
         describe("else", () => {
@@ -579,4 +597,62 @@ let _ =
         });
       })
     );
+
+    describe("disposeBasicSourceTexture", () => {
+      test("clear texture's materials", () => {
+        let (state, material1, (diffuseMap, specularMap, source1, source2)) =
+          LightMaterialTool.createMaterialWithMap(state^);
+        let (state, material2) = LightMaterialAPI.createLightMaterial(state);
+        let (state, (diffuseMap, specularMap)) =
+          state
+          |> LightMaterialTool.setMaps(material2, diffuseMap, specularMap);
+
+        let state =
+          state
+          |> BasicSourceTextureAPI.disposeBasicSourceTexture(
+               specularMap,
+               false,
+             );
+
+        (
+          BasicSourceTextureTool.getMaterialDataArr(diffuseMap, state)
+          |> OptionService.unsafeGet
+          |> Js.Array.length,
+          BasicSourceTextureTool.getMaterialDataArr(specularMap, state)
+          |> Js.Option.isNone,
+        )
+        |> expect == (2, true);
+      });
+
+      test("if is remove texture, not dispose data", () => {
+        let (state, material1, (diffuseMap, specularMap, source1, source2)) =
+          LightMaterialTool.createMaterialWithMap(state^);
+
+        let state =
+          state
+          |> BasicSourceTextureAPI.disposeBasicSourceTexture(
+               specularMap,
+               true,
+             );
+
+        BasicSourceTextureTool.getBasicSourceTextureSource(specularMap, state)
+        |> Js.Option.isNone
+        |> expect == false;
+      });
+      test("else, dispose data", () => {
+        let (state, material1, (diffuseMap, specularMap, source1, source2)) =
+          LightMaterialTool.createMaterialWithMap(state^);
+
+        let state =
+          state
+          |> BasicSourceTextureAPI.disposeBasicSourceTexture(
+               specularMap,
+               false,
+             );
+
+        BasicSourceTextureTool.getBasicSourceTextureSource(specularMap, state)
+        |> Js.Option.isNone
+        |> expect == true;
+      });
+    });
   });

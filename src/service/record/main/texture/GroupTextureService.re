@@ -9,3 +9,7 @@ let isGroup = (texture, materialsMap) =>
 
 let removeMaterial = (materialData, texture, materialsMap) =>
   MaterialsMapService.removeMaterial(materialData, texture, materialsMap);
+
+
+let clearMaterial = ( texture, materialsMap) =>
+  MaterialsMapService.clearMaterial( texture, materialsMap);

@@ -177,3 +177,74 @@ let handleDispose = (isRemoveTexture, materialData, textureArr, state) => {
        state,
      );
 };
+
+let handleDisposeTexture = ( texture, isRemoveTexture, state) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            DisposeComponentService.checkComponentShouldAlive(
+              texture,
+              isAlive,
+              state |> RecordBasicSourceTextureMainService.getRecord,
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  let basicSourceTextureRecord =
+    RecordBasicSourceTextureMainService.getRecord(state);
+
+  let basicSourceTextureRecord =
+    GroupBasicSourceTextureService.clearMaterial(
+      texture,
+      basicSourceTextureRecord,
+    );
+
+  isRemoveTexture ?
+    {...state, basicSourceTextureRecord: Some(basicSourceTextureRecord)} :
+    {
+      let state = state |> _disposeData(texture);
+
+      let basicSourceTextureRecord =
+        RecordBasicSourceTextureMainService.getRecord(state);
+
+      {
+        ...state,
+        basicSourceTextureRecord:
+          Some({
+            ...basicSourceTextureRecord,
+            disposedIndexArray:
+              DisposeTextureService.addDisposeIndex(
+                texture,
+                basicSourceTextureRecord.disposedIndexArray,
+              ),
+          }),
+      };
+    }
+    |> WonderLog.Contract.ensureCheck(
+         state =>
+           WonderLog.(
+             Contract.(
+               Operators.(
+                 test(
+                   Log.buildAssertMessage(
+                     ~expect={j|texture:$texture not to be group|j},
+                     ~actual={j|is|j},
+                   ),
+                   () =>
+                   GroupBasicSourceTextureService.isGroupBasicSourceTexture(
+                     texture,
+                     RecordBasicSourceTextureMainService.getRecord(state),
+                   )
+                   |> assertFalse
+                 )
+               )
+             )
+           ),
+         IsDebugMainService.getIsDebug(StateDataMain.stateData),
+       );
+};

@@ -39,3 +39,6 @@ let removeMaterial = ((material, materialType), texture, materialsMap) => {
        ) :
     materialsMap;
 };
+
+let clearMaterial = (texture, materialsMap) =>
+  materialsMap |> WonderCommonlib.MutableSparseMapService.deleteVal(texture);

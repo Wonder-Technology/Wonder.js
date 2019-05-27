@@ -18,3 +18,11 @@ let removeMaterial = (materialData, texture, {materialsMap} as record) => {
   materialsMap:
     GroupTextureService.removeMaterial(materialData, texture, materialsMap),
 };
+
+let clearMaterial = (texture, {materialsMap} as record) => {
+  ...record,
+  materialsMap: GroupTextureService.clearMaterial(texture, materialsMap),
+};
+
+let getMaterialDataArr = (texture, {materialsMap} as record) =>
+  MaterialsMapService.getMaterialDataArr(texture, materialsMap);
