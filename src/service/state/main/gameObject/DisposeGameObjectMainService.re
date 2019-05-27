@@ -36,7 +36,13 @@ let rec batchDispose =
   ) =
     state
     |> DisposeGameObjectComponentMainService.batchDispose(
-         (uidArray, isKeepOrder, isRemoveGeometry, isRemoveMaterial, isRemoveTexture),
+         (
+           uidArray,
+           isKeepOrder,
+           isRemoveGeometry,
+           isRemoveMaterial,
+           isRemoveTexture,
+         ),
          (
            batchDisposeBasicMaterialComponentFunc,
            batchDisposeLightMaterialComponentFunc,
@@ -75,7 +81,6 @@ let clearDeferDisposeData = state => {
       WonderCommonlib.ArrayService.createEmpty(),
     disposedUidArrayForDisposeGeometryRemoveMaterial:
       WonderCommonlib.ArrayService.createEmpty(),
-    /* TODO test */
     disposedUidArrayForRemoveTexture:
       WonderCommonlib.ArrayService.createEmpty(),
     disposedBasicCameraViewArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -88,6 +93,8 @@ let clearDeferDisposeData = state => {
       WonderCommonlib.ArrayService.createEmpty(),
     disposedBasicMaterialDataMap: WonderCommonlib.ArrayService.createEmpty(),
     disposedLightMaterialDataMap: WonderCommonlib.ArrayService.createEmpty(),
+    disposedLightMaterialRemoveTextureDataMap:
+      WonderCommonlib.ArrayService.createEmpty(),
     disposedGeometryDataMap: WonderCommonlib.ArrayService.createEmpty(),
     disposedSourceInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedObjectInstanceArray: WonderCommonlib.ArrayService.createEmpty(),

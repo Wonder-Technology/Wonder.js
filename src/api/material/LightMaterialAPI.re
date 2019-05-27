@@ -375,5 +375,13 @@ let getAllLightMaterials = state => {
 let batchDisposeLightMaterial = (materialArr, state) =>
   DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
     materialArr,
+    false,
+    state,
+  );
+
+let batchDisposeLightMaterialRemoveTexture = (materialArr, state) =>
+  DisposeComponentGameObjectMainService.batchDisposeLightMaterialComponent(
+    materialArr,
+    true,
     state,
   );

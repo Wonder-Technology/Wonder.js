@@ -109,6 +109,19 @@ let deferDisposeLightMaterialComponent =
     },
   };
 
+let deferDisposeLightMaterialComponentRemoveTexture =
+  (. uid, component: component, {gameObjectRecord} as state) => {
+    ...state,
+    gameObjectRecord: {
+      ...gameObjectRecord,
+      lightMaterialMap:
+        _removeComponent(uid, gameObjectRecord.lightMaterialMap),
+      disposedLightMaterialRemoveTextureDataMap:
+        gameObjectRecord.disposedLightMaterialRemoveTextureDataMap
+        |> ArrayMapService.addValue(component, uid),
+    },
+  };
+
 let deferDisposeGeometryComponent =
   (. uid, component: component, {gameObjectRecord} as state) => {
     ...state,
@@ -399,14 +412,18 @@ let batchDisposeLightMaterialComponentDataForWorker =
 };
 
 let batchDisposeLightMaterialComponent =
-    (componentArray, {settingRecord} as state) =>
+    (componentArray, isRemoveTexture, {settingRecord} as state) =>
   _batchDisposeSharableComponent(
     componentArray,
     (
       RecordLightMaterialMainService.getRecord,
       GameObjectLightMaterialService.getGameObjects,
-      deferDisposeLightMaterialComponent,
-      DisposeLightMaterialMainService.handleBatchDisposeComponent,
+      isRemoveTexture ?
+        deferDisposeLightMaterialComponentRemoveTexture :
+        deferDisposeLightMaterialComponent,
+      DisposeLightMaterialMainService.handleBatchDisposeComponent(
+        isRemoveTexture,
+      ),
     ),
     state,
   );

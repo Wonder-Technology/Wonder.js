@@ -835,9 +835,9 @@ let _ =
       });
     });
 
-    describe("clear all defer disposed data", () =>
-      describe(
-        "not dispose the same one again in the second job execution", () => {
+    describe(
+      "clear all defer disposed data(not dispose the same one again in the second job execution)",
+      () => {
         test("test dispose gameObject", () => {
           open GameObjectType;
           TestTool.closeContractCheck();
@@ -858,6 +858,7 @@ let _ =
             disposedUidArrayForKeepOrderRemoveGeometry,
             disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
             disposedUidArrayForDisposeGeometryRemoveMaterial,
+            disposedUidArrayForRemoveTexture,
           } =
             GameObjectTool.getGameObjectRecord(state);
           (
@@ -865,11 +866,12 @@ let _ =
             disposedUidArrayForKeepOrderRemoveGeometry,
             disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
             disposedUidArrayForDisposeGeometryRemoveMaterial,
+            disposedUidArrayForRemoveTexture,
           )
-          |> expect == ([||], [||], [||], [||]);
+          |> expect == ([||], [||], [||], [||], [||]);
         });
 
-        describe("test dispose component", () =>
+        describe("test dispose component", () => {
           test("test dispose script component", () => {
             open GameObjectType;
             let (state, gameObject1, script1) =
@@ -886,8 +888,39 @@ let _ =
             let {disposedScriptArray} =
               GameObjectTool.getGameObjectRecord(state);
             disposedScriptArray |> expect == [||];
-          })
-        );
-      })
+          });
+          test("test dispose light component", () => {
+            open GameObjectType;
+            let (state, gameObject1, material1) =
+              LightMaterialTool.createGameObject(state^);
+            let (state, gameObject2, (material2, (texture2_1, texture2_2))) =
+              LightMaterialTool.createGameObjectWithMap(state);
+
+            let state =
+              state
+              |> GameObjectAPI.disposeGameObjectLightMaterialComponent(
+                   gameObject1,
+                   material1,
+                 )
+              |> GameObjectAPI.disposeGameObjectLightMaterialComponentRemoveTexture(
+                   gameObject2,
+                   material2,
+                 );
+
+            let state = state |> DisposeJob.execJob(None);
+
+            let {
+              disposedLightMaterialDataMap,
+              disposedLightMaterialRemoveTextureDataMap,
+            } =
+              GameObjectTool.getGameObjectRecord(state);
+            (
+              disposedLightMaterialDataMap,
+              disposedLightMaterialRemoveTextureDataMap,
+            )
+            |> expect == ([||], [||]);
+          });
+        });
+      },
     );
   });

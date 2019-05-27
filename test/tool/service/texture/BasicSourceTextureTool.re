@@ -173,3 +173,9 @@ let hasMaterial = (texture, material, state) =>
     |> Js.Option.isSome
   | _ => false
   };
+
+let isAlive = (texture, engineState) =>
+  DisposeBasicSourceTextureMainService.isAlive(
+    texture,
+    RecordBasicSourceTextureMainService.getRecord(engineState),
+  );

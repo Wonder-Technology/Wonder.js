@@ -168,7 +168,7 @@ let handleBatchDisposeComponentData =
   };
 
 let handleBatchDisposeComponent =
-    (materialHasNoGameObjectArray, {settingRecord} as state) => {
+    (isRemoveTexture, materialHasNoGameObjectArray, {settingRecord} as state) => {
   WonderLog.Contract.requireCheck(
     () => {
       open WonderLog;
@@ -211,7 +211,8 @@ let handleBatchDisposeComponent =
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, material) => {
          let state =
-           state |> _disposeData(false, material, textureCountPerMaterial);
+           state
+           |> _disposeData(isRemoveTexture, material, textureCountPerMaterial);
 
          let lightMaterialRecord =
            RecordLightMaterialMainService.getRecord(state);

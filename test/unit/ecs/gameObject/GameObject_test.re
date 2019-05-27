@@ -2179,8 +2179,16 @@ let _ =
           let state = DisposeJob.execJob(None, state);
 
           (
-            ArrayBufferViewSourceTextureTool.hasMaterial(diffuseMap, material, state),
-            ArrayBufferViewSourceTextureTool.hasMaterial(specularMap, material, state),
+            ArrayBufferViewSourceTextureTool.hasMaterial(
+              diffuseMap,
+              material,
+              state,
+            ),
+            ArrayBufferViewSourceTextureTool.hasMaterial(
+              specularMap,
+              material,
+              state,
+            ),
             ArrayBufferViewSourceTextureTool.getArrayBufferViewSourceTextureSource(
               diffuseMap,
               state,
@@ -2194,6 +2202,48 @@ let _ =
         })
       );
     });
+
+    describe("disposeGameObjectLightMaterialComponent", () =>
+      test("dispose material->maps", () => {
+        let (state, gameObject1, (material1, (texture1_1, texture1_2))) =
+          LightMaterialTool.createGameObjectWithMap(state^);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObjectLightMaterialComponent(
+               gameObject1,
+               material1,
+             );
+        let state = state |> DisposeJob.execJob(None);
+
+        (
+          BasicSourceTextureTool.isAlive(texture1_1, state),
+          BasicSourceTextureTool.isAlive(texture1_2, state),
+        )
+        |> expect == (false, false);
+      })
+    );
+
+    describe("disposeGameObjectLightMaterialComponentRemoveTexture", () =>
+      test("remove material->maps", () => {
+        let (state, gameObject1, (material1, (texture1_1, texture1_2))) =
+          LightMaterialTool.createGameObjectWithMap(state^);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObjectLightMaterialComponentRemoveTexture(
+               gameObject1,
+               material1,
+             );
+        let state = state |> DisposeJob.execJob(None);
+
+        (
+          BasicSourceTextureTool.isAlive(texture1_1, state),
+          BasicSourceTextureTool.isAlive(texture1_2, state),
+        )
+        |> expect == (true, true);
+      })
+    );
 
     describe("test batchDispose gameObject", ()
       /* describe(

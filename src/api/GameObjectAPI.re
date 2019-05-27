@@ -592,6 +592,26 @@ let disposeGameObjectLightMaterialComponent =
   deferDisposeLightMaterialComponent(. gameObject, component, state);
 };
 
+let disposeGameObjectLightMaterialComponentRemoveTexture =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  deferDisposeLightMaterialComponentRemoveTexture(.
+    gameObject,
+    component,
+    state,
+  );
+};
+
 let unsafeGetGameObjectLightMaterialComponent =
     (
       gameObject: GameObjectPrimitiveType.gameObject,

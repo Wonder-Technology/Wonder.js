@@ -82,6 +82,7 @@ type gameObjectRecord = {
   mutable disposedArcballCameraControllerArray: array(int),
   mutable disposedBasicMaterialDataMap: disposedComponentDataMap,
   mutable disposedLightMaterialDataMap: disposedComponentDataMap,
+  mutable disposedLightMaterialRemoveTextureDataMap: disposedComponentDataMap,
   mutable disposedGeometryDataMap: disposedComponentDataMap,
   mutable disposedSourceInstanceArray: array(int),
   mutable disposedObjectInstanceArray: array(int),
