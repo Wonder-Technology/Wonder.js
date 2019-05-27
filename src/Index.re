@@ -88,6 +88,28 @@ let unsafeGetArcballCameraControllerGameObject = ArcballCameraControllerAPI.unsa
 
 let createArcballCameraController = ArcballCameraControllerAPI.createArcballCameraController;
 
+let isBindFlyCameraControllerEvent = FlyCameraControllerAPI.isBindFlyCameraControllerEvent;
+
+let unbindFlyCameraControllerEvent = FlyCameraControllerAPI.unbindFlyCameraControllerEvent;
+
+let bindFlyCameraControllerEvent = FlyCameraControllerAPI.bindFlyCameraControllerEvent;
+
+let setFlyCameraControllerRotateSpeed = FlyCameraControllerAPI.setFlyCameraControllerRotateSpeed;
+
+let unsafeGetFlyCameraControllerRotateSpeed = FlyCameraControllerAPI.unsafeGetFlyCameraControllerRotateSpeed;
+
+let setFlyCameraControllerMoveSpeedY = FlyCameraControllerAPI.setFlyCameraControllerMoveSpeedY;
+
+let unsafeGetFlyCameraControllerMoveSpeedY = FlyCameraControllerAPI.unsafeGetFlyCameraControllerMoveSpeedY;
+
+let setFlyCameraControllerMoveSpeedX = FlyCameraControllerAPI.setFlyCameraControllerMoveSpeedX;
+
+let unsafeGetFlyCameraControllerMoveSpeedX = FlyCameraControllerAPI.unsafeGetFlyCameraControllerMoveSpeedX;
+
+let unsafeGetFlyCameraControllerGameObject = FlyCameraControllerAPI.unsafeGetFlyCameraControllerGameObject;
+
+let createFlyCameraController = FlyCameraControllerAPI.createFlyCameraController;
+
 let getActiveBasicCameraView = BasicCameraViewAPI.getActiveBasicCameraView;
 
 let setActiveBasicCameraView = BasicCameraViewAPI.setActiveBasicCameraView;
@@ -369,6 +391,8 @@ let unsafeGetGameObjectArcballCameraControllerComponent = GameObjectAPI.unsafeGe
 let disposeGameObjectArcballCameraControllerComponent = GameObjectAPI.disposeGameObjectArcballCameraControllerComponent;
 
 let addGameObjectArcballCameraControllerComponent = GameObjectAPI.addGameObjectArcballCameraControllerComponent;
+
+let addGameObjectFlyCameraControllerComponent = GameObjectAPI.addGameObjectFlyCameraControllerComponent;
 
 let hasGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.hasGameObjectPerspectiveCameraProjectionComponent;
 
@@ -1143,6 +1167,8 @@ let unsafeGetGameObjectArcballCameraControllerComponent = GameObjectAPI.unsafeGe
 let disposeGameObjectArcballCameraControllerComponent = GameObjectAPI.disposeGameObjectArcballCameraControllerComponent;
 
 let addGameObjectArcballCameraControllerComponent = GameObjectAPI.addGameObjectArcballCameraControllerComponent;
+
+let addGameObjectFlyCameraControllerComponent = GameObjectAPI.addGameObjectFlyCameraControllerComponent;
 
 let hasGameObjectPerspectiveCameraProjectionComponent = GameObjectAPI.hasGameObjectPerspectiveCameraProjectionComponent;
 

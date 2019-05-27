@@ -235,6 +235,42 @@ let hasGameObjectPerspectiveCameraProjectionComponent =
   hasPerspectiveCameraProjectionComponent(gameObject, state.gameObjectRecord);
 };
 
+let addGameObjectFlyCameraControllerComponent =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  addFlyCameraControllerComponent(gameObject, component, state);
+};
+
+/* let disposeGameObjectFlyCameraControllerComponent =
+       (
+         gameObject: GameObjectPrimitiveType.gameObject,
+         component: component,
+         state: StateDataMainType.state,
+       ) => {
+     WonderLog.Contract.requireCheck(
+       () =>
+         WonderLog.(
+           Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+         ),
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
+     );
+     deferDisposeArcballCameraControllerComponent(.
+       gameObject,
+       component,
+       state,
+     );
+   }; */
+
 let addGameObjectArcballCameraControllerComponent =
     (
       gameObject: GameObjectPrimitiveType.gameObject,

@@ -5,7 +5,6 @@ let isAlive =
   DisposeComponentService.isAlive(cameraController, disposedIndexArray);
 
 let _disposeData = (cameraController, state) => {
-  /* TODO change this function, use fly camera */
   let {flyCameraControllerRecord} as state =
     state |> EventFlyCameraControllerMainService.unbindEvent(cameraController);
 
@@ -14,6 +13,7 @@ let _disposeData = (cameraController, state) => {
     moveSpeedXMap,
     moveSpeedYMap,
     rotateSpeedMap,
+    rotationMap,
     gameObjectMap,
   }: flyCameraControllerRecord = flyCameraControllerRecord;
 
@@ -32,6 +32,9 @@ let _disposeData = (cameraController, state) => {
         |> DisposeComponentService.disposeSparseMapData(cameraController),
       rotateSpeedMap:
         rotateSpeedMap
+        |> DisposeComponentService.disposeSparseMapData(cameraController),
+      rotationMap:
+        rotationMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),
       gameObjectMap:
         gameObjectMap

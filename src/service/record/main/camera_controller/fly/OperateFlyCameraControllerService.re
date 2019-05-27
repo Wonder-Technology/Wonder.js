@@ -17,6 +17,7 @@ let setMoveSpeedX =
       {moveSpeedXMap, dirtyArray} as record: flyCameraControllerRecord,
     ) => {
   ...record,
+  dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
   moveSpeedXMap:
     WonderCommonlib.MutableSparseMapService.set(
       cameraController,
@@ -40,6 +41,7 @@ let setMoveSpeedY =
       {moveSpeedYMap, dirtyArray} as record: flyCameraControllerRecord,
     ) => {
   ...record,
+  dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
   moveSpeedYMap:
     WonderCommonlib.MutableSparseMapService.set(
       cameraController,
@@ -63,10 +65,34 @@ let setRotateSpeed =
       {rotateSpeedMap, dirtyArray} as record: flyCameraControllerRecord,
     ) => {
   ...record,
+  dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
   rotateSpeedMap:
     WonderCommonlib.MutableSparseMapService.set(
       cameraController,
       rotateSpeed,
       rotateSpeedMap,
+    ),
+};
+
+let unsafeGetRotation = (cameraController, record: flyCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(
+    cameraController,
+    record.rotationMap,
+  )
+  |> OptionService.unsafeGet;
+
+let setRotation =
+    (
+      cameraController,
+      rotation,
+      {rotationMap, dirtyArray} as record: flyCameraControllerRecord,
+    ) => {
+  ...record,
+  dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
+  rotationMap:
+    WonderCommonlib.MutableSparseMapService.set(
+      cameraController,
+      rotation,
+      rotationMap,
     ),
 };

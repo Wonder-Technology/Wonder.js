@@ -2,6 +2,8 @@ open StateDataMainType;
 
 open EventType;
 
+open FlyCameraControllerType;
+
 let _addEventHandleFunc =
     (cameraController, handleFunc, eventHandleFuncListMap) =>
   switch (
@@ -26,7 +28,7 @@ let _addPointDragStartEventHandleFunc =
     (
       cameraController,
       handleFunc,
-      {pointDragStartEventHandleFuncListMap} as record,
+      {pointDragStartEventHandleFuncListMap} as record: flyCameraControllerRecord,
     ) => {
   ...record,
   pointDragStartEventHandleFuncListMap:
@@ -41,7 +43,7 @@ let _addPointDragDropEventHandleFunc =
     (
       cameraController,
       handleFunc,
-      {pointDragDropEventHandleFuncListMap} as record,
+      {pointDragDropEventHandleFuncListMap} as record: flyCameraControllerRecord,
     ) => {
   ...record,
   pointDragDropEventHandleFuncListMap:
@@ -56,7 +58,7 @@ let _addPointDragOverEventHandleFunc =
     (
       cameraController,
       handleFunc,
-      {pointDragOverEventHandleFuncListMap} as record,
+      {pointDragOverEventHandleFuncListMap} as record: flyCameraControllerRecord,
     ) => {
   ...record,
   pointDragOverEventHandleFuncListMap:
@@ -71,7 +73,7 @@ let _addPointScaleEventHandleFunc =
     (
       cameraController,
       handleFunc,
-      {pointScaleEventHandleFuncListMap} as record,
+      {pointScaleEventHandleFuncListMap} as record: flyCameraControllerRecord,
     ) => {
   ...record,
   pointScaleEventHandleFuncListMap:
@@ -83,7 +85,11 @@ let _addPointScaleEventHandleFunc =
 };
 
 let _addKeydownEventHandleFunc =
-    (cameraController, handleFunc, {keydownEventHandleFuncListMap} as record) => {
+    (
+      cameraController,
+      handleFunc,
+      {keydownEventHandleFuncListMap} as record: flyCameraControllerRecord,
+    ) => {
   ...record,
   keydownEventHandleFuncListMap:
     _addEventHandleFunc(
@@ -94,32 +100,32 @@ let _addKeydownEventHandleFunc =
 };
 
 let _changeOrbit =
-    (cameraController, {movementDelta}, arcballCameraControllerRecord) => {
+    (
+      cameraController,
+      {movementDelta},
+      {flyCameraControllerRecord, viewRecord} as state,
+    ) => {
   let (x, y) = movementDelta;
   let rotateSpeed =
-    OperateArcballCameraControllerService.unsafeGetRotateSpeed(
+    OperateFlyCameraControllerService.unsafeGetRotateSpeed(
       cameraController,
-      arcballCameraControllerRecord,
+      flyCameraControllerRecord,
     );
+  let canvasHeight =
+    (
+      ViewService.unsafeGetCanvas(viewRecord)
+      |> WonderWebgl.DomExtendType.htmlElementToJsObj
+    )##height;
 
-  arcballCameraControllerRecord
-  |> OperateArcballCameraControllerService.setPhi(
+  let factor = rotateSpeed /. canvasHeight;
+
+  flyCameraControllerRecord
+  |> OperateFlyCameraControllerService.setRotation(
        cameraController,
-       OperateArcballCameraControllerService.unsafeGetPhi(
-         cameraController,
-         arcballCameraControllerRecord,
-       )
-       +. (x |> NumberType.convertIntToFloat)
-       /. (100. /. rotateSpeed),
-     )
-  |> OperateArcballCameraControllerService.setTheta(
-       cameraController,
-       OperateArcballCameraControllerService.unsafeGetTheta(
-         cameraController,
-         arcballCameraControllerRecord,
-       )
-       -. (y |> NumberType.convertIntToFloat)
-       /. (100. /. rotateSpeed),
+       {
+         rotationX: factor *. (x |> float_of_int),
+         rotationY: factor *. (y |> float_of_int),
+       },
      );
 };
 
@@ -161,29 +167,23 @@ let prepareBindEvent = (cameraController, state) => {
         };
 
   let pointDragOverHandleFunc =
-    (.
-      event: EventType.customEvent,
-      {arcballCameraControllerRecord} as state,
-    ) => (
+    (. event: EventType.customEvent, {flyCameraControllerRecord} as state) => (
       {
         ...state,
-        arcballCameraControllerRecord:
+        flyCameraControllerRecord:
           _changeOrbit(
             cameraController,
             event.userData
             |> OptionService.unsafeGet
             |> EventType.userDataToPointEvent,
-            arcballCameraControllerRecord,
+            state,
           ),
       },
       event,
     );
 
   let pointScaleHandleFunc =
-    (.
-      event: EventType.customEvent,
-      {arcballCameraControllerRecord} as state,
-    ) => {
+    (. event: EventType.customEvent, {flyCameraControllerRecord} as state) => {
       let pointEvent =
         event.userData
         |> OptionService.unsafeGet
@@ -194,32 +194,24 @@ let prepareBindEvent = (cameraController, state) => {
       (
         {
           ...state,
-          arcballCameraControllerRecord:
-            OperateArcballCameraControllerService.setDistanceByEvent(
-              cameraController,
-              pointEvent,
-              arcballCameraControllerRecord,
-            ),
+          flyCameraControllerRecord,
+          /* OperateArcballCameraControllerService.setDistanceByEvent(
+               cameraController,
+               pointEvent,
+               flyCameraControllerRecord,
+             ), */
         },
         event,
       );
     };
-
+  /* TODO set camera transform */
   let keydownHandleFunc =
-    (.
-      event: EventType.keyboardEvent,
-      {arcballCameraControllerRecord} as state,
-    ) =>
-      TargetArcballCameraControllerMainService.setTargetByKeyboardEvent(
-        cameraController,
-        event,
-        state,
-      );
+    (. event: EventType.keyboardEvent, {flyCameraControllerRecord} as state) => state;
 
   let state = {
     ...state,
-    arcballCameraControllerRecord:
-      state.arcballCameraControllerRecord
+    flyCameraControllerRecord:
+      state.flyCameraControllerRecord
       |> _addPointDragStartEventHandleFunc(
            cameraController,
            pointDragStartHandleFunc,
@@ -321,8 +313,8 @@ let _unbindKeyboardEvent = (eventName, handleFunc, state) =>
   );
 
 let _disposePointDragStartEventHandleFuncListMap =
-    (cameraController, {arcballCameraControllerRecord} as state) => {
-  let {pointDragStartEventHandleFuncListMap} = arcballCameraControllerRecord;
+    (cameraController, {flyCameraControllerRecord} as state) => {
+  let {pointDragStartEventHandleFuncListMap}: flyCameraControllerRecord = flyCameraControllerRecord;
 
   switch (
     pointDragStartEventHandleFuncListMap
@@ -344,8 +336,8 @@ let _disposePointDragStartEventHandleFuncListMap =
 
     {
       ...state,
-      arcballCameraControllerRecord: {
-        ...arcballCameraControllerRecord,
+      flyCameraControllerRecord: {
+        ...flyCameraControllerRecord,
         pointDragStartEventHandleFuncListMap:
           pointDragStartEventHandleFuncListMap
           |> DisposeComponentService.disposeSparseMapData(cameraController),
@@ -355,8 +347,8 @@ let _disposePointDragStartEventHandleFuncListMap =
 };
 
 let _disposePointDragDropEventHandleFuncListMap =
-    (cameraController, {arcballCameraControllerRecord} as state) => {
-  let {pointDragDropEventHandleFuncListMap} = arcballCameraControllerRecord;
+    (cameraController, {flyCameraControllerRecord} as state) => {
+  let {pointDragDropEventHandleFuncListMap}: flyCameraControllerRecord = flyCameraControllerRecord;
 
   switch (
     pointDragDropEventHandleFuncListMap
@@ -378,8 +370,8 @@ let _disposePointDragDropEventHandleFuncListMap =
 
     {
       ...state,
-      arcballCameraControllerRecord: {
-        ...arcballCameraControllerRecord,
+      flyCameraControllerRecord: {
+        ...flyCameraControllerRecord,
         pointDragDropEventHandleFuncListMap:
           pointDragDropEventHandleFuncListMap
           |> DisposeComponentService.disposeSparseMapData(cameraController),
@@ -389,8 +381,8 @@ let _disposePointDragDropEventHandleFuncListMap =
 };
 
 let _disposePointDragOverEventHandleFuncListMap =
-    (cameraController, {arcballCameraControllerRecord} as state) => {
-  let {pointDragOverEventHandleFuncListMap} = arcballCameraControllerRecord;
+    (cameraController, {flyCameraControllerRecord} as state) => {
+  let {pointDragOverEventHandleFuncListMap}: flyCameraControllerRecord = flyCameraControllerRecord;
 
   switch (
     pointDragOverEventHandleFuncListMap
@@ -412,8 +404,8 @@ let _disposePointDragOverEventHandleFuncListMap =
 
     {
       ...state,
-      arcballCameraControllerRecord: {
-        ...arcballCameraControllerRecord,
+      flyCameraControllerRecord: {
+        ...flyCameraControllerRecord,
         pointDragOverEventHandleFuncListMap:
           pointDragOverEventHandleFuncListMap
           |> DisposeComponentService.disposeSparseMapData(cameraController),
@@ -423,8 +415,8 @@ let _disposePointDragOverEventHandleFuncListMap =
 };
 
 let _disposePointScaleEventHandleFuncListMap =
-    (cameraController, {arcballCameraControllerRecord} as state) => {
-  let {pointScaleEventHandleFuncListMap} = arcballCameraControllerRecord;
+    (cameraController, {flyCameraControllerRecord} as state) => {
+  let {pointScaleEventHandleFuncListMap}: flyCameraControllerRecord = flyCameraControllerRecord;
 
   switch (
     pointScaleEventHandleFuncListMap
@@ -446,8 +438,8 @@ let _disposePointScaleEventHandleFuncListMap =
 
     {
       ...state,
-      arcballCameraControllerRecord: {
-        ...arcballCameraControllerRecord,
+      flyCameraControllerRecord: {
+        ...flyCameraControllerRecord,
         pointScaleEventHandleFuncListMap:
           pointScaleEventHandleFuncListMap
           |> DisposeComponentService.disposeSparseMapData(cameraController),
@@ -457,8 +449,8 @@ let _disposePointScaleEventHandleFuncListMap =
 };
 
 let _disposeKeyDownEventHandleFuncListMap =
-    (cameraController, {arcballCameraControllerRecord} as state) => {
-  let {keydownEventHandleFuncListMap} = arcballCameraControllerRecord;
+    (cameraController, {flyCameraControllerRecord} as state) => {
+  let {keydownEventHandleFuncListMap}: flyCameraControllerRecord = flyCameraControllerRecord;
 
   switch (
     keydownEventHandleFuncListMap
@@ -476,8 +468,8 @@ let _disposeKeyDownEventHandleFuncListMap =
 
     {
       ...state,
-      arcballCameraControllerRecord: {
-        ...arcballCameraControllerRecord,
+      flyCameraControllerRecord: {
+        ...flyCameraControllerRecord,
         keydownEventHandleFuncListMap:
           keydownEventHandleFuncListMap
           |> DisposeComponentService.disposeSparseMapData(cameraController),
@@ -494,9 +486,8 @@ let unbindEvent = (cameraController, state) =>
   |> _disposePointScaleEventHandleFuncListMap(cameraController)
   |> _disposeKeyDownEventHandleFuncListMap(cameraController);
 
-let isBindEvent =
-    (cameraController, {arcballCameraControllerRecord} as state) => {
-  let {pointDragStartEventHandleFuncListMap} = arcballCameraControllerRecord;
+let isBindEvent = (cameraController, {flyCameraControllerRecord} as state) => {
+  let {pointDragStartEventHandleFuncListMap}: flyCameraControllerRecord = flyCameraControllerRecord;
 
   pointDragStartEventHandleFuncListMap
   |> WonderCommonlib.MutableSparseMapService.has(cameraController);

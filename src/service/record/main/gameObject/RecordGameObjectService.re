@@ -41,6 +41,8 @@ let create = () => {
     WonderCommonlib.MutableSparseMapService.createEmpty(),
   arcballCameraControllerMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
+  flyCameraControllerMap:
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
   meshRendererMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   basicMaterialMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   lightMaterialMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -85,6 +87,7 @@ let deepCopyForRestore =
         basicCameraViewMap,
         perspectiveCameraProjectionMap,
         arcballCameraControllerMap,
+        flyCameraControllerMap,
         meshRendererMap,
         basicMaterialMap,
         lightMaterialMap,
@@ -163,6 +166,8 @@ let deepCopyForRestore =
     |> WonderCommonlib.MutableSparseMapService.copy,
   arcballCameraControllerMap:
     arcballCameraControllerMap |> WonderCommonlib.MutableSparseMapService.copy,
+  flyCameraControllerMap:
+    flyCameraControllerMap |> WonderCommonlib.MutableSparseMapService.copy,
   meshRendererMap:
     meshRendererMap |> WonderCommonlib.MutableSparseMapService.copy,
   basicMaterialMap:

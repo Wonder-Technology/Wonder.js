@@ -182,6 +182,10 @@ and flyCameraControllerRecord = {
   moveSpeedXMap: WonderCommonlib.MutableSparseMapService.t(float),
   moveSpeedYMap: WonderCommonlib.MutableSparseMapService.t(float),
   rotateSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
+  rotationMap:
+    WonderCommonlib.MutableSparseMapService.t(
+      FlyCameraControllerType.rotation,
+    ),
   gameObjectMap,
   disposedIndexArray: array(component),
 }

@@ -94,6 +94,7 @@ type gameObjectRecord = {
   mutable basicCameraViewMap: gameObjectCameraViewMap,
   mutable perspectiveCameraProjectionMap: gameObjectCameraProjectionMap,
   mutable arcballCameraControllerMap: gameObjectCameraControllerMap,
+  mutable flyCameraControllerMap: gameObjectCameraControllerMap,
   mutable meshRendererMap: gameObjectMeshRendererMap,
   mutable basicMaterialMap: gameObjectMaterialMap,
   mutable lightMaterialMap: gameObjectMaterialMap,

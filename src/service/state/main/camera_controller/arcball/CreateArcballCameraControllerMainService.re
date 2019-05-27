@@ -6,6 +6,8 @@ let create =
       CreateArcballCameraControllerService.create(
         state.arcballCameraControllerRecord,
       );
+
     state.arcballCameraControllerRecord = arcballCameraControllerRecord;
+
     (state, index);
   };
