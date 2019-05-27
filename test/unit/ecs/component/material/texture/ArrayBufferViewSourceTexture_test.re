@@ -502,7 +502,7 @@ let _ =
             );
           });
 
-          describe("remove from glTextureMap", () => {
+          /* describe("remove from glTextureMap", () => {
             let _prepareAndExec = state => {
               let (
                 state,
@@ -541,7 +541,7 @@ let _ =
               ArrayBufferViewSourceTextureTool.getTexture(diffuseMap, state)
               |> expect == None;
             });
-          });
+          }); */
 
           describe("test remove worker data", () => {
             test("remove from needAddedSourceArray", () => {

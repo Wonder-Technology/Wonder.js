@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-let disposeBasicSourceTextureGlTextureMap = (texture, state) =>
+/* let disposeBasicSourceTextureGlTextureMap = (texture, state) =>
   BasicSourceTextureType.(
     WorkerDetectMainService.isUseWorker(state) ?
       {
@@ -90,7 +90,7 @@ let disposeArrayBufferViewSourceTextureGlTextureMap = (texture, state) =>
           };
         } :
         state;
-    };
+    }; */
 
 let disposeNeedAddedSourceArray = (texture, needAddedSourceArray) =>
   needAddedSourceArray

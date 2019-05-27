@@ -1,7 +1,7 @@
 let needDisposeGlTextureMap = (texture, glTextureMap) =>
   glTextureMap |> WonderCommonlib.MutableSparseMapService.has(texture);
 
-let disposeGlTextureMap = (texture, gl, glTextureMap) =>
+/* let disposeGlTextureMap = (texture, gl, glTextureMap) =>
   switch (
     glTextureMap |> WonderCommonlib.MutableSparseMapService.get(texture)
   ) {
@@ -10,7 +10,7 @@ let disposeGlTextureMap = (texture, gl, glTextureMap) =>
 
     glTextureMap |> WonderCommonlib.MutableSparseMapService.deleteVal(texture);
   | None => glTextureMap
-  };
+  }; */
 
 let addDisposeIndex = (texture, disposedIndexArray) =>
   disposedIndexArray |> ArrayService.push(texture);

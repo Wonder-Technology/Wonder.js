@@ -28,11 +28,16 @@ let _disposeData = (texture, textureIndexInTypeArr, state) => {
       } as arrayBufferViewSourceTextureRecord =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
 
+  /*
+  TODO remove related logic:
+e.g. needDisposedTextureIndexArray
+
+
   let state =
     state
     |> DisposeTextureMainService.disposeArrayBufferViewSourceTextureGlTextureMap(
          texture,
-       );
+       ); */
 
   {
     ...state,

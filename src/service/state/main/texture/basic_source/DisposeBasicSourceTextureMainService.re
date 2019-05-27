@@ -26,11 +26,11 @@ let _disposeData = (texture, state) => {
       } as basicSourceTextureRecord =
     RecordBasicSourceTextureMainService.getRecord(state);
 
-  let state =
+  /* let state =
     state
     |> DisposeTextureMainService.disposeBasicSourceTextureGlTextureMap(
          texture,
-       );
+       ); */
 
   {
     ...state,

@@ -1,6 +1,6 @@
 open StateDataRenderWorkerType;
 
-let disposeBasicSourceTextureGlTextureMap = (texture, state) => {
+/* let disposeBasicSourceTextureGlTextureMap = (texture, state) => {
   let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
   let (
@@ -44,4 +44,4 @@ let disposeArrayBufferViewSourceTextureGlTextureMap = (texture, state) => {
           ),
       }),
   };
-};
+}; */

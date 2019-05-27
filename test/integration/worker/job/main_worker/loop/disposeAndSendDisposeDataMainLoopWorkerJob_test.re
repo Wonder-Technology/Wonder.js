@@ -226,7 +226,7 @@ let _ =
             (),
           );
         });
-        testPromise("send dispose basic source texture data", () => {
+        /* testPromise("send dispose basic source texture data", () => {
           TestMainWorkerTool.closeContractCheck();
           let (state, material1, (diffuseMap, specularMap, source1, source2)) =
             LightMaterialTool.createMaterialWithMap(state^);
@@ -260,7 +260,7 @@ let _ =
                 |> resolve,
             (),
           );
-        });
+        }); */
       })
     );
   });

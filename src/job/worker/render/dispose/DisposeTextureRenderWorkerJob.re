@@ -8,7 +8,7 @@ let execJob = (flags, e, stateData) =>
 
     let data = MessageService.getRecord(e);
 
-    let state =
+    /* let state =
       data##needDisposedBasicSourceTextureIndexArray
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (. state, texture) =>
@@ -28,7 +28,7 @@ let execJob = (flags, e, stateData) =>
                state,
              ),
            state,
-         );
+         ); */
 
     StateRenderWorkerService.setState(stateData, state);
     e;
