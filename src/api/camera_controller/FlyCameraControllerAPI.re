@@ -29,22 +29,22 @@ let unsafeGetFlyCameraControllerGameObject = (cameraController, state) => {
   unsafeGetGameObject(cameraController, state.flyCameraControllerRecord);
 };
 
-let unsafeGetFlyCameraControllerMoveSpeedX = (cameraController, state) =>
-  state.flyCameraControllerRecord |> unsafeGetMoveSpeedX(cameraController);
+let unsafeGetFlyCameraControllerMoveSpeed = (cameraController, state) =>
+  state.flyCameraControllerRecord |> unsafeGetMoveSpeed(cameraController);
 
-let setFlyCameraControllerMoveSpeedX = (cameraController, value: float, state) => {
+let setFlyCameraControllerMoveSpeed = (cameraController, value: float, state) => {
   ...state,
   flyCameraControllerRecord:
-    setMoveSpeedX(cameraController, value, state.flyCameraControllerRecord),
+    setMoveSpeed(cameraController, value, state.flyCameraControllerRecord),
 };
 
-let unsafeGetFlyCameraControllerMoveSpeedY = (cameraController, state) =>
-  state.flyCameraControllerRecord |> unsafeGetMoveSpeedY(cameraController);
+let unsafeGetFlyCameraControllerWheelSpeed = (cameraController, state) =>
+  state.flyCameraControllerRecord |> unsafeGetWheelSpeed(cameraController);
 
-let setFlyCameraControllerMoveSpeedY = (cameraController, value: float, state) => {
+let setFlyCameraControllerWheelSpeed = (cameraController, value: float, state) => {
   ...state,
   flyCameraControllerRecord:
-    setMoveSpeedY(cameraController, value, state.flyCameraControllerRecord),
+    setWheelSpeed(cameraController, value, state.flyCameraControllerRecord),
 };
 
 let unsafeGetFlyCameraControllerRotateSpeed = (cameraController, state) =>
@@ -61,13 +61,7 @@ let bindFlyCameraControllerEvent = (cameraController, state) =>
   EventFlyCameraControllerMainService.bindEvent(cameraController, state);
 
 let unbindFlyCameraControllerEvent = (cameraController, state) =>
-  EventFlyCameraControllerMainService.unbindEvent(
-    cameraController,
-    state,
-  );
+  EventFlyCameraControllerMainService.unbindEvent(cameraController, state);
 
 let isBindFlyCameraControllerEvent = (cameraController, state) =>
-  EventFlyCameraControllerMainService.isBindEvent(
-    cameraController,
-    state,
-  );
+  EventFlyCameraControllerMainService.isBindEvent(cameraController, state);

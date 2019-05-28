@@ -13,6 +13,7 @@ let _disposeComponents =
     disposedTransformArray,
     disposedTransformArrayForKeepOrder,
     disposedPerspectiveCameraProjectionArray,
+    disposedFlyCameraControllerArray,
     disposedArcballCameraControllerArray,
     disposedBasicMaterialDataMap,
     disposedLightMaterialDataMap,
@@ -32,6 +33,11 @@ let _disposeComponents =
   let state =
     disposedPerspectiveCameraProjectionArray
     |> DisposeComponentGameObjectMainService.batchDisposePerspectiveCameraProjectionComponent(
+         state,
+       );
+  let state =
+    disposedFlyCameraControllerArray
+    |> DisposeComponentGameObjectMainService.batchDisposeFlyCameraControllerComponent(
          state,
        );
   let state =

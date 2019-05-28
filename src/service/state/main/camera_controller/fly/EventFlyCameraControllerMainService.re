@@ -126,7 +126,79 @@ let _changeOrbit =
          rotationX: factor *. (x |> float_of_int),
          rotationY: factor *. (y |> float_of_int),
        },
+     )
+  |> OperateFlyCameraControllerService.setPosition(
+       cameraController,
+       (0., 0., 0.),
      );
+};
+
+let _changePositionByKeyDown =
+    (
+      cameraController,
+      keyboardEvent: keyboardEvent,
+      {flyCameraControllerRecord, gameObjectRecord} as state,
+    ) => {
+  let moveSpeed =
+    OperateFlyCameraControllerService.unsafeGetMoveSpeed(
+      cameraController,
+      flyCameraControllerRecord,
+    );
+
+  let (dx, dy, dz) =
+    switch (keyboardEvent.key) {
+    | "a"
+    | "left" => (-. moveSpeed, 0., 0.)
+    | "d"
+    | "right" => (moveSpeed, 0., 0.)
+    | "w"
+    | "up" => (0., 0., -. moveSpeed)
+    | "s"
+    | "down" => (0., 0., moveSpeed)
+    | "q" => (0., moveSpeed, 0.)
+    | "e" => (0., -. moveSpeed, 0.)
+    | _ => (0., 0., 0.)
+    };
+
+  switch (dx, dy, dz) {
+  | (0., 0., 0.) => state
+  | (dx, dy, dz) => {
+      ...state,
+      flyCameraControllerRecord:
+        flyCameraControllerRecord
+        |> OperateFlyCameraControllerService.setRotation(
+             cameraController,
+             {rotationX: 0., rotationY: 0.},
+           )
+        |> OperateFlyCameraControllerService.setPosition(
+             cameraController,
+             (dx, dy, dz),
+           ),
+    }
+  };
+};
+
+let _changePositionByPointScale =
+    (cameraController, pointEvent: pointEvent, flyCameraControllerRecord) => {
+  let wheelSpeed =
+    OperateFlyCameraControllerService.unsafeGetWheelSpeed(
+      cameraController,
+      flyCameraControllerRecord,
+    );
+
+  switch (pointEvent.wheel) {
+  | None => flyCameraControllerRecord
+  | Some(wheel) =>
+    flyCameraControllerRecord
+    |> OperateFlyCameraControllerService.setRotation(
+         cameraController,
+         {rotationX: 0., rotationY: 0.},
+       )
+    |> OperateFlyCameraControllerService.setPosition(
+         cameraController,
+         (0., 0., -. wheelSpeed *. (wheel |> float_of_int)),
+       )
+  };
 };
 
 let _isCombinedKey = ({ctrlKey, altKey, shiftKey, metaKey}: keyboardEvent) =>
@@ -194,19 +266,19 @@ let prepareBindEvent = (cameraController, state) => {
       (
         {
           ...state,
-          flyCameraControllerRecord,
-          /* OperateArcballCameraControllerService.setDistanceByEvent(
-               cameraController,
-               pointEvent,
-               flyCameraControllerRecord,
-             ), */
+          flyCameraControllerRecord:
+            _changePositionByPointScale(
+              cameraController,
+              pointEvent,
+              flyCameraControllerRecord,
+            ),
         },
         event,
       );
     };
-  /* TODO set camera transform */
   let keydownHandleFunc =
-    (. event: EventType.keyboardEvent, {flyCameraControllerRecord} as state) => state;
+    (. event: EventType.keyboardEvent, {flyCameraControllerRecord} as state) =>
+      _changePositionByKeyDown(cameraController, event, state);
 
   let state = {
     ...state,

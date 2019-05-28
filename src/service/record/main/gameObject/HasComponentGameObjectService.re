@@ -14,6 +14,9 @@ let hasPerspectiveCameraProjectionComponent =
     (uid: int, gameObjectRecord): bool =>
   hasComponent(uid, gameObjectRecord.perspectiveCameraProjectionMap);
 
+let hasFlyCameraControllerComponent = (uid: int, gameObjectRecord): bool =>
+  hasComponent(uid, gameObjectRecord.flyCameraControllerMap);
+
 let hasArcballCameraControllerComponent = (uid: int, gameObjectRecord): bool =>
   hasComponent(uid, gameObjectRecord.arcballCameraControllerMap);
 

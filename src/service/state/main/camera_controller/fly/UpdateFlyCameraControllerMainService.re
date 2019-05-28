@@ -30,17 +30,41 @@ let _updateTransform =
       RecordTransformMainService.getRecord(state).localRotations,
     );
 
+  let cameraLocalPositionTuple =
+    ModelMatrixTransformService.getLocalRotationTuple(
+      transform,
+      RecordTransformMainService.getRecord(state).localRotations,
+    )
+    |> Vector3Service.transformQuat(
+         OperateFlyCameraControllerService.unsafeGetPosition(
+           cameraController,
+           flyCameraControllerRecord,
+         ),
+       )
+    |> Vector3Service.add(
+         Vector3Type.Float,
+         ModelMatrixTransformService.getLocalPositionTuple(
+           transform,
+           RecordTransformMainService.getRecord(state).localPositions,
+         ),
+       );
+
   {
     ...state,
     transformRecord:
       Some(
-        ModelMatrixTransformService.setLocalEulerAnglesByTuple(
-          transform,
-          (cameraRotationX -. rotationX, cameraRotationY -. rotationY, 0.),
-          transformRecord,
-        ),
+        transformRecord
+        |> ModelMatrixTransformService.setLocalPositionByTuple(
+             transform,
+             cameraLocalPositionTuple,
+           )
+        |> ModelMatrixTransformService.setLocalEulerAnglesByTuple(
+             transform,
+             (cameraRotationX -. rotationY, cameraRotationY -. rotationX, 0.),
+           ),
       ),
   };
+  state;
 };
 
 let _clearDirtyArray = ({flyCameraControllerRecord} as state) => {

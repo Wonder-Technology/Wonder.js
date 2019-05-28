@@ -22,6 +22,7 @@ let create = () => {
     WonderCommonlib.ArrayService.createEmpty(),
   disposedPerspectiveCameraProjectionArray:
     WonderCommonlib.ArrayService.createEmpty(),
+  disposedFlyCameraControllerArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedArcballCameraControllerArray:
     WonderCommonlib.ArrayService.createEmpty(),
   disposedBasicMaterialDataMap: WonderCommonlib.ArrayService.createEmpty(),
@@ -71,6 +72,7 @@ let deepCopyForRestore =
         disposedTransformArray,
         disposedTransformArrayForKeepOrder,
         disposedPerspectiveCameraProjectionArray,
+        disposedFlyCameraControllerArray,
         disposedArcballCameraControllerArray,
         disposedBasicMaterialDataMap,
         disposedLightMaterialDataMap,
@@ -132,8 +134,11 @@ let deepCopyForRestore =
   disposedPerspectiveCameraProjectionArray:
     disposedPerspectiveCameraProjectionArray
     |> WonderCommonlib.MutableSparseMapService.copy,
+  disposedFlyCameraControllerArray:
+    disposedFlyCameraControllerArray
+    |> WonderCommonlib.MutableSparseMapService.copy,
   disposedArcballCameraControllerArray:
-    disposedPerspectiveCameraProjectionArray
+    disposedArcballCameraControllerArray
     |> WonderCommonlib.MutableSparseMapService.copy,
   disposedBasicMaterialDataMap:
     disposedBasicMaterialDataMap

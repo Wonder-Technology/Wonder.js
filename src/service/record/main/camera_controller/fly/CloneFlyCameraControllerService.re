@@ -8,8 +8,8 @@ let handleCloneComponent =
       countRangeArr: array(int),
       record: flyCameraControllerRecord,
     ) => {
-  let moveSpeedX = unsafeGetMoveSpeedX(sourceComponent, record);
-  let moveSpeedY = unsafeGetMoveSpeedY(sourceComponent, record);
+  let moveSpeed = unsafeGetMoveSpeed(sourceComponent, record);
+  let wheelSpeed = unsafeGetWheelSpeed(sourceComponent, record);
   let rotateSpeed = unsafeGetRotateSpeed(sourceComponent, record);
 
   countRangeArr
@@ -19,8 +19,8 @@ let handleCloneComponent =
            CreateFlyCameraControllerService.create(record);
          (
            record
-           |> setMoveSpeedX(index, moveSpeedX)
-           |> setMoveSpeedY(index, moveSpeedY)
+           |> setMoveSpeed(index, moveSpeed)
+           |> setWheelSpeed(index, wheelSpeed)
            |> setRotateSpeed(index, rotateSpeed),
            componentArr |> ArrayService.push(index),
          );

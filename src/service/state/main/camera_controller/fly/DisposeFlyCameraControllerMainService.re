@@ -10,10 +10,11 @@ let _disposeData = (cameraController, state) => {
 
   let {
     dirtyArray,
-    moveSpeedXMap,
-    moveSpeedYMap,
+    moveSpeedMap,
+    wheelSpeedMap,
     rotateSpeedMap,
     rotationMap,
+    positionMap,
     gameObjectMap,
   }: flyCameraControllerRecord = flyCameraControllerRecord;
 
@@ -24,17 +25,20 @@ let _disposeData = (cameraController, state) => {
       dirtyArray:
         dirtyArray
         |> Js.Array.filter(dirtyIndex => dirtyIndex !== cameraController),
-      moveSpeedXMap:
-        moveSpeedXMap
+      moveSpeedMap:
+        moveSpeedMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),
-      moveSpeedYMap:
-        moveSpeedYMap
+      wheelSpeedMap:
+        wheelSpeedMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),
       rotateSpeedMap:
         rotateSpeedMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),
       rotationMap:
         rotationMap
+        |> DisposeComponentService.disposeSparseMapData(cameraController),
+      positionMap:
+        positionMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),
       gameObjectMap:
         gameObjectMap

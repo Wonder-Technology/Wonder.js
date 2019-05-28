@@ -2,51 +2,50 @@ open StateDataMainType;
 
 open EventType;
 
-let unsafeGetMoveSpeedX =
-    (cameraController, record: flyCameraControllerRecord) =>
+let unsafeGetMoveSpeed = (cameraController, record: flyCameraControllerRecord) =>
   WonderCommonlib.MutableSparseMapService.get(
     cameraController,
-    record.moveSpeedXMap,
+    record.moveSpeedMap,
   )
   |> OptionService.unsafeGet;
 
-let setMoveSpeedX =
+let setMoveSpeed =
     (
       cameraController,
-      moveSpeedX,
-      {moveSpeedXMap, dirtyArray} as record: flyCameraControllerRecord,
+      moveSpeed,
+      {moveSpeedMap, dirtyArray} as record: flyCameraControllerRecord,
     ) => {
   ...record,
   dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
-  moveSpeedXMap:
+  moveSpeedMap:
     WonderCommonlib.MutableSparseMapService.set(
       cameraController,
-      moveSpeedX,
-      moveSpeedXMap,
+      moveSpeed,
+      moveSpeedMap,
     ),
 };
 
-let unsafeGetMoveSpeedY =
+let unsafeGetWheelSpeed =
     (cameraController, record: flyCameraControllerRecord) =>
   WonderCommonlib.MutableSparseMapService.get(
     cameraController,
-    record.moveSpeedYMap,
+    record.wheelSpeedMap,
   )
   |> OptionService.unsafeGet;
 
-let setMoveSpeedY =
+let setWheelSpeed =
     (
       cameraController,
-      moveSpeedY,
-      {moveSpeedYMap, dirtyArray} as record: flyCameraControllerRecord,
+      wheelSpeed,
+      {wheelSpeedMap, dirtyArray} as record: flyCameraControllerRecord,
     ) => {
   ...record,
   dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
-  moveSpeedYMap:
+  wheelSpeedMap:
     WonderCommonlib.MutableSparseMapService.set(
       cameraController,
-      moveSpeedY,
-      moveSpeedYMap,
+      wheelSpeed,
+      wheelSpeedMap,
     ),
 };
 
@@ -94,5 +93,28 @@ let setRotation =
       cameraController,
       rotation,
       rotationMap,
+    ),
+};
+
+let unsafeGetPosition = (cameraController, record: flyCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(
+    cameraController,
+    record.positionMap,
+  )
+  |> OptionService.unsafeGet;
+
+let setPosition =
+    (
+      cameraController,
+      position,
+      {positionMap, dirtyArray} as record: flyCameraControllerRecord,
+    ) => {
+  ...record,
+  dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
+  positionMap:
+    WonderCommonlib.MutableSparseMapService.set(
+      cameraController,
+      position,
+      positionMap,
     ),
 };
