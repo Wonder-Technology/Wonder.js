@@ -137,7 +137,7 @@ let deepCopyForRestore =
     disposedPerspectiveCameraProjectionArray
     |> WonderCommonlib.MutableSparseMapService.copy,
   disposedArcballCameraControllerArray:
-    disposedPerspectiveCameraProjectionArray
+    disposedArcballCameraControllerArray
     |> WonderCommonlib.MutableSparseMapService.copy,
   disposedBasicMaterialDataMap:
     disposedBasicMaterialDataMap

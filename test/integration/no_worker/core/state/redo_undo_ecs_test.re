@@ -604,7 +604,10 @@ isActiveMap,
 disposedUidArrayForRemoveTexture,
 
 
-                  disposedBasicCameraViewArray,        disposedTransformArray,        disposedTransformArrayForKeepOrder,        disposedPerspectiveCameraProjectionArray,        disposedBasicMaterialDataMap,
+                  disposedBasicCameraViewArray,        disposedTransformArray,        disposedTransformArrayForKeepOrder,        disposedPerspectiveCameraProjectionArray,
+                  disposedArcballCameraControllerArray,
+
+                  disposedBasicMaterialDataMap,
 
                   disposedLightMaterialDataMap,
                   disposedLightMaterialRemoveTextureDataMap
@@ -633,6 +636,7 @@ disposedUidArrayForRemoveTexture,
                     disposedTransformArray,
                     disposedTransformArrayForKeepOrder,
                     disposedPerspectiveCameraProjectionArray,
+                    disposedArcballCameraControllerArray,
                     disposedBasicMaterialDataMap,
                     disposedLightMaterialDataMap,
                     disposedLightMaterialRemoveTextureDataMap,
@@ -672,6 +676,7 @@ disposedUidArrayForRemoveTexture,
                     disposedTransformArray |> Obj.magic,
                     disposedTransformArrayForKeepOrder |> Obj.magic,
                     disposedPerspectiveCameraProjectionArray |> Obj.magic,
+                    disposedArcballCameraControllerArray |> Obj.magic,
                     disposedBasicMaterialDataMap |> Obj.magic,
                     disposedLightMaterialDataMap |> Obj.magic,
                     disposedLightMaterialRemoveTextureDataMap |> Obj.magic,
