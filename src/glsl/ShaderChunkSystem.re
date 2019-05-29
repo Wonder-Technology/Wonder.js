@@ -60,9 +60,7 @@ varying vec3 v_texCoord;
 |},{|
 
 |}),{|
-//gl_FragColor = textureCube(u_skyboxCubeMapSampler, v_texCoord);
-vec3 dir = vec3(-v_texCoord.x, v_texCoord.y, v_texCoord.z);
-gl_FragColor = textureCube(u_skyboxCubeMapSampler, dir);
+gl_FragColor = textureCube(u_skyboxCubeMapSampler, vec3(-v_texCoord.x, v_texCoord.y, v_texCoord.z));
 |}))
 
 |> set("webgl1_outline_origin_vertex", _buildChunk(({|
@@ -283,7 +281,7 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
         }
     #endif
 
-        totalLight += u_ambient;
+        totalLight += u_ambient * materialDiffuseRGB;
 
         return vec4(totalLight, alpha);
 }

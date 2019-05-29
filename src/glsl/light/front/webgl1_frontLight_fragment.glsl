@@ -122,7 +122,7 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
         }
     #endif
 
-        totalLight += u_ambient;
+        totalLight += u_ambient * materialDiffuseRGB;
 
         return vec4(totalLight, alpha);
 }
