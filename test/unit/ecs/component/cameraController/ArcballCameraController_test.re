@@ -287,17 +287,17 @@ let _ =
             let (state, gameObject1, _, (cameraController1, _, _)) =
               ArcballCameraControllerTool.createGameObject(state^);
             let value = ref(0);
-            let pointDownHandleFunc =
+            let pointDragStartHandleFunc =
               (. event, state) => {
                 value := value^ + 1;
                 (state, event);
               };
-            let pointUpHandleFunc =
+            let pointDragDropHandleFunc =
               (. event, state) => {
                 value := value^ + 1;
                 (state, event);
               };
-            let pointDragHandleFunc =
+            let pointDragOverHandleFunc =
               (. event, state) => {
                 value := value^ + 1;
                 (state, event);
@@ -316,15 +316,15 @@ let _ =
               state
               |> ArcballCameraControllerTool.addPointDragStartEventHandleFunc(
                    cameraController1,
-                   pointDownHandleFunc,
+                   pointDragStartHandleFunc,
                  )
               |> ArcballCameraControllerTool.addPointDragDropEventHandleFunc(
                    cameraController1,
-                   pointUpHandleFunc,
+                   pointDragDropHandleFunc,
                  )
               |> ArcballCameraControllerTool.addPointDragOverEventHandleFunc(
                    cameraController1,
-                   pointDragHandleFunc,
+                   pointDragOverHandleFunc,
                  )
               |> ArcballCameraControllerTool.addPointScaleEventHandleFunc(
                    cameraController1,
