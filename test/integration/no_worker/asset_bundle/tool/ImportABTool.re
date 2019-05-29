@@ -68,7 +68,6 @@ module RAB = {
       wholeManifest,
       (
         getAssetBundlePathFunc,
-        initAssetBundleArrayBufferCache,
         isAssetBundleArrayBufferCachedFunc,
         getAssetBundleArrayBufferCacheFunc,
         cacheAssetBundleArrayBufferFunc,
@@ -175,7 +174,6 @@ module SAB = {
       /* wholeDependencyRelationMap, */
       (
         getAssetBundlePathFunc,
-        initAssetBundleArrayBufferCache,
         isAssetBundleArrayBufferCachedFunc,
         getAssetBundleArrayBufferCacheFunc,
         cacheAssetBundleArrayBufferFunc,

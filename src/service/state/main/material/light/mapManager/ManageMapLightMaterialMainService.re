@@ -20,6 +20,13 @@ let unsafeGetDiffuseMap = (material, {settingRecord} as state) =>
   getDiffuseMap(material, state) |> OptionService.unsafeGet;
 
 let setDiffuseMap = (material, texture, {settingRecord} as state) => {
+  let state =
+    state
+    |> GroupTextureMainService.addMaterial(
+         (material, MaterialType.LightMaterial),
+         texture,
+       );
+
   let {textureIndices, diffuseMapUnits, emptyMapUnitArrayMap} as lightMaterialRecord =
     RecordLightMaterialMainService.getRecord(state);
   let (textureIndices, diffuseMapUnits, emptyMapUnitArrayMap) =
@@ -36,6 +43,7 @@ let setDiffuseMap = (material, texture, {settingRecord} as state) => {
         textureIndices,
         diffuseMapUnits,
         emptyMapUnitArrayMap,
+        /* (basicSourceTextureRecord, arrayBufferViewSourceTextureRecord), */
       ),
     );
   {
@@ -54,6 +62,13 @@ let hasDiffuseMap = (material, {settingRecord} as state) =>
   getDiffuseMap(material, state) |> Js.Option.isSome;
 
 let removeDiffuseMap = (material, {settingRecord} as state) => {
+  let state =
+    state
+    |> GroupTextureMainService.removeMaterial(
+         (material, MaterialType.LightMaterial),
+         unsafeGetDiffuseMap(material, state),
+       );
+
   let {textureIndices, diffuseMapUnits, emptyMapUnitArrayMap} as lightMaterialRecord =
     RecordLightMaterialMainService.getRecord(state);
   let (textureIndices, diffuseMapUnits, emptyMapUnitArrayMap) =
@@ -101,6 +116,13 @@ let unsafeGetSpecularMap = (material, {settingRecord} as state) =>
   getSpecularMap(material, state) |> OptionService.unsafeGet;
 
 let setSpecularMap = (material, texture, {settingRecord} as state) => {
+  let state =
+    state
+    |> GroupTextureMainService.addMaterial(
+         (material, MaterialType.LightMaterial),
+         texture,
+       );
+
   let {textureIndices, specularMapUnits, emptyMapUnitArrayMap} as lightMaterialRecord =
     RecordLightMaterialMainService.getRecord(state);
   let (textureIndices, specularMapUnits, emptyMapUnitArrayMap) =
@@ -136,6 +158,13 @@ let hasSpecularMap = (material, {settingRecord} as state) =>
   getSpecularMap(material, state) |> Js.Option.isSome;
 
 let removeSpecularMap = (material, {settingRecord} as state) => {
+  let state =
+    state
+    |> GroupTextureMainService.removeMaterial(
+         (material, MaterialType.LightMaterial),
+         unsafeGetSpecularMap(material, state),
+       );
+
   let {textureIndices, specularMapUnits, emptyMapUnitArrayMap} as lightMaterialRecord =
     RecordLightMaterialMainService.getRecord(state);
   let (textureIndices, specularMapUnits, emptyMapUnitArrayMap) =

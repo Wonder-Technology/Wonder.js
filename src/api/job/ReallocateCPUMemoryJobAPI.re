@@ -21,7 +21,7 @@ let reAllocateToBuffer = (newBufferData, state) => {
       newBufferData,
       RecordGeometryMainService.getRecord(state),
     )
-    |. Some,
+    ->Some,
 };
 
 let initGeometryBufferData = ({settingRecord}) => {
@@ -34,6 +34,9 @@ let initGeometryBufferData = ({settingRecord}) => {
     geometryCount,
   );
 };
+
+let reallocateGeometry = (percent, state) =>
+  ReallocateCPUMemoryJobUtils.reallocateGeometry(percent, state);
 
 let resetDisposeCount = state => {
   ...state,

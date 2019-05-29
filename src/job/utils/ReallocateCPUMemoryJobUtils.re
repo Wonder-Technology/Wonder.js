@@ -22,7 +22,7 @@ let reallocateGameObjectByDisposeCount =
     state;
   };
 
-let _reallocateGeometry = ({settingRecord} as state) => {
+let reallocateGeometry = (percent, {settingRecord} as state) => {
   ...state,
   geometryRecord:
     Some(
@@ -34,7 +34,7 @@ let _reallocateGeometry = ({settingRecord} as state) => {
               settingRecord,
             )
             || QueryCPUMemoryService.isGeometryBufferNearlyFull(
-                 0.9,
+                 percent,
                  geometryRecord,
                )) {
           geometryRecord.disposeCount = 0;
@@ -49,4 +49,4 @@ let _reallocateGeometry = ({settingRecord} as state) => {
 };
 
 let execJob = state =>
-  state |> reallocateGameObjectByDisposeCount |> _reallocateGeometry;
+  state |> reallocateGameObjectByDisposeCount |> reallocateGeometry(0.9);

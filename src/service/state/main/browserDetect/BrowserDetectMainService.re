@@ -60,7 +60,7 @@ let detectMobileNotSupportWorker = state =>
   isMobile(state) ?
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(
-        ~title="DetectEnvironmentWorkerJob->execJob",
+        ~title="DetectEnvironmentMainWorkerJob->execJob",
         ~description={j|mobile not support worker|j},
         ~reason="",
         ~solution={j||j},

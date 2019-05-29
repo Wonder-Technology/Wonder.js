@@ -5,13 +5,13 @@ open RenderArrayBufferViewSourceTextureType;
 open BrowserDetectType;
 
 /* let _setUnpackAlignmentaToOne = [%bs.raw
-  {|
-         function(gl){
+     {|
+            function(gl){
 
-     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-         }
-         |}
-]; */
+        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+            }
+            |}
+   ]; */
 
 let _drawTexture =
     (gl, (target, index, source, glFormat, glType), (width, height)) => {
@@ -59,7 +59,7 @@ let _allocateSourceToTexture = (sizeTuple, gl, paramTuple, source) =>
 let update =
     (
       gl,
-      textureInTypeArray,
+      (texture, textureInTypeArray),
       (arrayBufferViewSourceTextureRecord, browserDetectRecord),
     ) => {
   let {
@@ -76,7 +76,8 @@ let update =
     heights,
     setFlipYFunc,
   } = arrayBufferViewSourceTextureRecord;
-  switch (TextureSourceMapService.getSource(textureInTypeArray, sourceMap)) {
+
+  switch (TextureSourceMapService.getSource(texture, sourceMap)) {
   | None => (arrayBufferViewSourceTextureRecord, browserDetectRecord)
   | Some(source) =>
     let width =

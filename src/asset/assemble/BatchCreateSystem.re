@@ -137,10 +137,6 @@ let _batchCreateBasicSourceTexture =
   let basicSourceTextureRecord =
     RecordBasicSourceTextureMainService.getRecord(state);
 
-  AssembleCommon.checkNotDisposedBefore(
-    basicSourceTextureRecord.disposedIndexArray,
-  );
-
   basicSourceTextures
   |> ArrayService.reduceOneParamValidi(
        (. (state, indexArr), _, basicSourceTextureIndex) => {

@@ -64,6 +64,12 @@ let setDepthWrite = (gl, writeDepth: bool, {depthWrite} as record) =>
     {...record, depthWrite: Some(writeDepth)};
   };
 
+let setDepthFunc = (gl, targetFunc, record) => {
+  gl |> WonderWebgl.Gl.depthFunc(targetFunc);
+
+  record;
+};
+
 let _setSide = (gl, targetSide) =>
   DeviceManagerType.(
     switch (targetSide) {

@@ -215,6 +215,22 @@
           "name": "end"
         }
       ]
+    },
+    {
+      "name": "skybox",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "skybox"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
     }
   ]
 }

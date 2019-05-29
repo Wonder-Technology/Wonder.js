@@ -210,11 +210,13 @@ let prepareBindEvent = (cameraController, state) => {
       event: EventType.keyboardEvent,
       {arcballCameraControllerRecord} as state,
     ) =>
-      TargetArcballCameraControllerMainService.setTargetByKeyboardEvent(
-        cameraController,
-        event,
-        state,
-      );
+      isTriggerKeydownEventHandler(event) ?
+        TargetArcballCameraControllerMainService.setTargetByKeyboardEvent(
+          cameraController,
+          event,
+          state,
+        ) :
+        state;
 
   let state = {
     ...state,
@@ -295,10 +297,7 @@ let bindEvent = (cameraController, state) => {
   let state =
     ManageEventMainService.onKeyboardEvent(
       ~eventName=EventType.KeyDown,
-      ~handleFunc=
-        (. event, state) =>
-          isTriggerKeydownEventHandler(event) ?
-            keydownHandleFunc(. event, state) : state,
+      ~handleFunc=keydownHandleFunc,
       ~state,
       (),
     );
@@ -471,6 +470,11 @@ let _disposeKeyDownEventHandleFuncListMap =
       |> List.fold_left(
            (state, func) =>
              _unbindKeyboardEvent(EventType.KeyDown, func, state),
+           /* ManageEventMainService.offKeyboardEventByHandleFunc(
+                ~eventName,
+                ~handleFunc,
+                ~state,
+              ); */
            state,
          );
 
@@ -493,6 +497,9 @@ let unbindEvent = (cameraController, state) =>
   |> _disposePointDragOverEventHandleFuncListMap(cameraController)
   |> _disposePointScaleEventHandleFuncListMap(cameraController)
   |> _disposeKeyDownEventHandleFuncListMap(cameraController);
+
+let unbindPointScaleEvent = (cameraController, state) =>
+  state |> _disposePointScaleEventHandleFuncListMap(cameraController);
 
 let isBindEvent =
     (cameraController, {arcballCameraControllerRecord} as state) => {

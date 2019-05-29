@@ -1,3 +1,7 @@
+let setScriptAPIJsObj = APIAPI.setScriptAPIJsObj;
+
+let getScriptAPIJsObj = APIAPI.getScriptAPIJsObj;
+
 let buildDependencyRelation = GenerateAllABAPI.buildDependencyRelation;
 
 let generateAllABs = GenerateAllABAPI.generateAllABs;
@@ -39,6 +43,8 @@ let loadWholeWDB = LoaderManagerAPI.loadWholeWDB;
 let loadConfig = LoaderManagerAPI.loadConfig;
 
 let isBindArcballCameraControllerEvent = ArcballCameraControllerAPI.isBindArcballCameraControllerEvent;
+
+let unbindArcballCameraControllerPointScaleEvent = ArcballCameraControllerAPI.unbindArcballCameraControllerPointScaleEvent;
 
 let unbindArcballCameraControllerEvent = ArcballCameraControllerAPI.unbindArcballCameraControllerEvent;
 
@@ -296,6 +302,8 @@ let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
 let initGameObject = GameObjectAPI.initGameObject;
 
+let disposeGameObjectRemoveTexture = GameObjectAPI.disposeGameObjectRemoveTexture;
+
 let disposeGameObjectDisposeGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectDisposeGeometryRemoveMaterial;
 
 let disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial;
@@ -506,6 +514,8 @@ let createRenderGroup = RenderGroupAPI.createRenderGroup;
 
 let buildRenderGroup = RenderGroupAPI.buildRenderGroup;
 
+let sliderFloat = FixedLayoutControlIMGUIAPI.sliderFloat;
+
 let image = FixedLayoutControlIMGUIAPI.image;
 
 let label = FixedLayoutControlIMGUIAPI.label;
@@ -519,6 +529,10 @@ let getSetting = ManageIMGUIAPI.getSetting;
 let clearIMGUIFunc = ManageIMGUIAPI.clearIMGUIFunc;
 
 let setIMGUIFunc = ManageIMGUIAPI.setIMGUIFunc;
+
+let loadImageDataArr = JieHuoAPI.loadImageDataArr;
+
+let loadImage = JieHuoAPI.loadImage;
 
 let getIntersectedPointWithMesh = JieHuoAPI.getIntersectedPointWithMesh;
 
@@ -550,6 +564,8 @@ let registerNoWorkerInitJob = JobAPI.registerNoWorkerInitJob;
 
 let resetDisposeCount = ReallocateCPUMemoryJobAPI.resetDisposeCount;
 
+let reallocateGeometry = ReallocateCPUMemoryJobAPI.reallocateGeometry;
+
 let initGeometryBufferData = ReallocateCPUMemoryJobAPI.initGeometryBufferData;
 
 let reAllocateToBuffer = ReallocateCPUMemoryJobAPI.reAllocateToBuffer;
@@ -571,6 +587,10 @@ let sendAttributeData = RenderJobAPI.sendAttributeData;
 let useByShaderIndex = RenderJobAPI.useByShaderIndex;
 
 let getShaderIndex = RenderJobAPI.getShaderIndex;
+
+let setSkyboxNeedUpdateCubeTexture = JobDataAPI.setSkyboxNeedUpdateCubeTexture;
+
+let setSkyboxImage = JobDataAPI.setSkyboxImage;
 
 let setGameObjectsNeedDrawOutline = JobDataAPI.setGameObjectsNeedDrawOutline;
 
@@ -1004,6 +1024,10 @@ let setIMGUIAPIJsObj = RecordAPIRenderWorkerService.setIMGUIAPIJsObj;
 
 let getIMGUIAPIJsObj = RecordAPIRenderWorkerService.getIMGUIAPIJsObj;
 
+let setScriptAPIJsObj = APIAPI.setScriptAPIJsObj;
+
+let getScriptAPIJsObj = APIAPI.getScriptAPIJsObj;
+
 let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
 
 let setStencilOp = DeviceManagerAPI.setStencilOp;
@@ -1077,6 +1101,8 @@ let batchDisposeGameObjectKeepOrder = GameObjectAPI.batchDisposeGameObjectKeepOr
 let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
 let initGameObject = GameObjectAPI.initGameObject;
+
+let disposeGameObjectRemoveTexture = GameObjectAPI.disposeGameObjectRemoveTexture;
 
 let disposeGameObjectDisposeGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectDisposeGeometryRemoveMaterial;
 

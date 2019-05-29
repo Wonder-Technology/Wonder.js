@@ -12,12 +12,7 @@ let _testRemoveFromTypeArr =
       (gameObject2, material2),
       (value1, value2),
       defaultValue,
-      (
-        disposeGameObjectMaterialComponentFunc,
-        createGameObjectFunc,
-        getValueFunc,
-        setValueFunc,
-      ),
+      (disposeGameObjectMaterialComponentFunc, getValueFunc, setValueFunc),
     ) => {
   open Wonder_jest;
   open Expect;
@@ -54,12 +49,7 @@ let testRemoveFromTypeArr =
     (gameObject2, material2),
     (value1, value2),
     defaultValue,
-    (
-      disposeGameObjectMaterialComponentFunc,
-      createGameObjectFunc,
-      getValueFunc,
-      setValueFunc,
-    ),
+    (disposeGameObjectMaterialComponentFunc, getValueFunc, setValueFunc),
   );
 };
 
@@ -83,12 +73,7 @@ let testRemoveFromTypeArrWithMap =
     (gameObject2, material2),
     (value1, value2),
     defaultValue,
-    (
-      disposeGameObjectMaterialComponentFunc,
-      createGameObjectFunc,
-      getValueFunc,
-      setValueFunc,
-    ),
+    (disposeGameObjectMaterialComponentFunc, getValueFunc, setValueFunc),
   );
 };
 

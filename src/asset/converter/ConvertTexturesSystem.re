@@ -30,22 +30,6 @@ let _buildDefaultName = textureIndex =>
    | None => false
    }; */
 
-let _getFormat = mimeType =>
-  switch (mimeType) {
-  | "image/png" => SourceTextureType.Rgba
-  | "image/jpeg" => SourceTextureType.Rgb
-  | mimeType =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_getFormat",
-        ~description={j|unknown mimeType|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j|mimeType: $mimeType|j},
-      ),
-    )
-  };
-
 let convertToBasicSourceTextures =
     (({textures, images}: GLTFType.gltf) as gltf)
     : array(WDType.basicSourceTexture) =>
@@ -83,16 +67,10 @@ let convertToBasicSourceTextures =
                          source,
                        );
 
-                     /* _isBase64Image(uri) ?
-                        _getFormat(
-                          uri
-                          |> OptionService.unsafeGet
-                          |> BufferUtils.getBase64MimeType,
-                        ) : */
-
-                     _getFormat(mimeType |> OptionService.unsafeGet);
+                     TextureFormatService.getFormatByMimeType(
+                       mimeType |> OptionService.unsafeGet,
+                     );
                    },
-                   /* TODO test */
                    flipY:
                      switch (extras) {
                      | Some({flipY}) => flipY

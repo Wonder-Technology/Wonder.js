@@ -142,7 +142,7 @@ let _ =
           ) =
             _prepareGameObject(state);
 
-          let (state, sab) =
+          let sab =
             GenerateSingleSABSystem.generateSingleSAB(
               rootGameObject,
               WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -197,7 +197,7 @@ let _ =
           let (state, rootGameObject, (imageName, base64Str1)) =
             _prepareGameObject(state);
 
-          let (state, sab) =
+          let sab =
             GenerateSingleSABSystem.generateSingleSAB(
               rootGameObject,
               WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -219,7 +219,7 @@ let _ =
           let (state, rootGameObject, (_, base64Str1)) =
             _prepareGameObject(state);
 
-          let (state, sab) =
+          let sab =
             GenerateSingleSABSystem.generateSingleSAB(
               rootGameObject,
               WonderCommonlib.MutableSparseMapService.createEmpty(),

@@ -2085,7 +2085,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                    (. state, basicSourceTexture) =>
                      BasicSourceTextureTool.setIsNeedUpdate(
                        basicSourceTexture,
-                       BasicSourceTextureTool.getNotNeedUpdate(),
+                       false,
                        state,
                      ),
                    state^,

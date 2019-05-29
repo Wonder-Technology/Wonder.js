@@ -17,6 +17,22 @@ let createMaterialWithMap = state => {
   (state, material, (texture, source));
 };
 
+let createMaterialWithArrayBufferViewMap = state => {
+  let (state, material) = BasicMaterialAPI.createBasicMaterial(state);
+  let (state, texture) =
+    ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(state);
+  let source = ArrayBufferViewSourceTextureTool.buildSource();
+  let state =
+    state
+    |> ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureSource(
+         texture,
+         source,
+       );
+  let state = BasicMaterialAPI.setBasicMaterialMap(material, texture, state);
+
+  (state, material, (texture, source));
+};
+
 let createGameObject = state => {
   open BasicMaterialAPI;
   open GameObjectAPI;
@@ -27,12 +43,18 @@ let createGameObject = state => {
   (state, gameObject, material);
 };
 
+let setMaps = (material, map, state) => {
+  let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
+
+  (state, map);
+};
+
 let createGameObjectWithMap = state => {
   let (state, gameObject, material) = createGameObject(state);
   let (state, texture) =
     BasicSourceTextureAPI.createBasicSourceTexture(state);
-  let state =
-    state |> BasicMaterialAPI.setBasicMaterialMap(material, texture);
+  let (state, texture) = setMaps(material, texture, state);
+
   (state, gameObject, (material, texture));
 };
 
@@ -151,3 +173,6 @@ let getEmptyMapUnitArray = (material, state) =>
 let getDefaultIsDepthTest = () => true;
 
 let getDefaultAlpha = () => BufferBasicMaterialService.getDefaultAlpha();
+
+let disposeBasicMaterial = (material, state) =>
+  BasicMaterialAPI.batchDisposeBasicMaterial([|material|], state);

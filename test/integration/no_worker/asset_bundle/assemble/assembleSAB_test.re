@@ -53,7 +53,7 @@ let _ =
               (),
             );
 
-          let (state, rab1) =
+          let rab1 =
             GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
           let (state, gameObject2, transform2, (material2, texture2)) =
@@ -66,12 +66,12 @@ let _ =
             state
             |> GameObjectAPI.setGameObjectName(gameObject2, gameObject2Name);
 
-          let state = state |> SceneAPI.addSceneChild(transform2);
+          let state = state |> SceneAPI.addSceneChild(gameObject2);
 
           let (canvas, context, (base64Str1, base64Str2)) =
             GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-          let (state, sab1) =
+          let sab1 =
             GenerateSingleSABSystem.generateSingleSAB(
               SceneAPI.getSceneGameObject(state),
               WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -150,7 +150,7 @@ let _ =
                 (),
               );
 
-            let (state, rab1) =
+            let rab1 =
               GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
             let (state, gameObject2, transform2, (material2, texture2)) =
@@ -171,12 +171,12 @@ let _ =
               state
               |> GameObjectAPI.setGameObjectName(gameObject2, gameObject2Name);
 
-            let state = state |> SceneAPI.addSceneChild(transform2);
+            let state = state |> SceneAPI.addSceneChild(gameObject2);
 
             let (canvas, context, (base64Str1, base64Str2)) =
               GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-            let (state, sab1) =
+            let sab1 =
               GenerateSingleSABSystem.generateSingleSAB(
                 SceneAPI.getSceneGameObject(state),
                 WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -245,7 +245,7 @@ let _ =
             (),
           );
 
-        let (state, rab1) =
+        let rab1 =
           GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
         let gameObject2Name = "gameObject2";
@@ -289,10 +289,10 @@ let _ =
 
         let state =
           state
-          |> SceneAPI.addSceneChild(transform2)
-          |> SceneAPI.addSceneChild(transform3);
+          |> SceneAPI.addSceneChild(gameObject2)
+          |> SceneAPI.addSceneChild(gameObject3);
 
-        let (state, sab1) =
+        let sab1 =
           GenerateSingleSABSystem.generateSingleSAB(
             SceneAPI.getSceneGameObject(state),
             WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -408,4 +408,44 @@ let _ =
         })
       );
     });
+
+    describe("mark is assembled", () =>
+      testPromise("test", () => {
+        let sab1 =
+          GenerateSingleSABSystem.generateSingleSAB(
+            SceneAPI.getSceneGameObject(state^),
+            WonderCommonlib.MutableSparseMapService.createEmpty(),
+            state^,
+          );
+
+        GenerateAllABTool.TestWithOneSAB.generateAllAB(sab1, state^)
+        |> MostTool.testStream(data => {
+             let state = StateAPI.unsafeGetState();
+
+             let sab1RelativePath =
+               GenerateAllABTool.TestWithOneSAB.getSABRelativePath();
+
+             let isAssembledBeforeAssemble =
+               OperateSABAssetBundleMainService.isAssembled(
+                 sab1RelativePath,
+                 state,
+               );
+
+             AssembleSABTool.TestWithOneSAB.assemble(data)
+             |> MostTool.testStream(rootGameObject => {
+                  let state = StateAPI.unsafeGetState();
+
+                  (
+                    isAssembledBeforeAssemble,
+                    OperateSABAssetBundleMainService.isAssembled(
+                      sab1RelativePath,
+                      state,
+                    ),
+                  )
+                  |> expect == (false, true)
+                  |> resolve;
+                });
+           });
+      })
+    );
   });

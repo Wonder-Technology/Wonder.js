@@ -6,64 +6,59 @@ let _batchSetNewMap =
     (
       (materialArr, textureArr, mapCount),
       (setMapUnitFunc, setTextureIndexFunc),
-      (
-        textureCountPerMaterial,
-        textureIndices,
-        mapUnits,
-        emptyMapUnitArrayMap,
-      ),
+      textureCountPerMaterial,
+      state,
     ) => {
   let newTextureCount = mapCount |> succ;
 
-  materialArr
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. (textureIndices, mapUnits, emptyMapUnitArrayMap), material, index) => {
-         let texture = Array.unsafe_get(textureArr, index);
+  let state =
+    materialArr
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (. state, material, index) => {
+           let texture = Array.unsafe_get(textureArr, index);
 
-         let (mapUnit, emptyMapUnitArrayMap) =
-           EmptyMapUnitArrayMapService.unsafeGetEmptyMapUnitAndPop(
-             material,
-             emptyMapUnitArrayMap,
-           );
+           state
+           |> GroupTextureMainService.addMaterial(
+                (material, MaterialType.LightMaterial),
+                texture,
+              );
+         },
+         state,
+       );
 
-         (
-           setTextureIndexFunc(.
-             (material, mapUnit, textureCountPerMaterial),
-             texture,
-             textureIndices,
-           ),
-           setMapUnitFunc(. material, mapUnit, mapUnits),
-           emptyMapUnitArrayMap,
-         );
-       },
-       (textureIndices, mapUnits, emptyMapUnitArrayMap),
-     );
-};
-
-let batchSetNewDiffueMaps =
-    (
-      diffuseMapLightMaterials,
-      lightMaterialDiffuseMaps,
-      {settingRecord} as state,
-    ) => {
   let (
         {textureIndices, diffuseMapUnits, emptyMapUnitArrayMap}: LightMaterialType.lightMaterialRecord
       ) as lightMaterialRecord =
     RecordLightMaterialMainService.getRecord(state);
-  let (textureIndices, diffuseMapUnits, emptyMapUnitArrayMap) =
-    _batchSetNewMap(
-      (diffuseMapLightMaterials, lightMaterialDiffuseMaps, 0),
-      (
-        OperateTypeArrayLightMaterialService.setDiffuseMapUnit,
-        OperateTypeArrayLightMaterialService.setTextureIndex,
-      ),
-      (
-        BufferSettingService.getTextureCountPerMaterial(settingRecord),
-        textureIndices,
-        diffuseMapUnits,
-        emptyMapUnitArrayMap,
-      ),
-    );
+
+  let (textureIndices, mapUnits, emptyMapUnitArrayMap) =
+    materialArr
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (.
+           (textureIndices, mapUnits, emptyMapUnitArrayMap),
+           material,
+           index,
+         ) => {
+           let texture = Array.unsafe_get(textureArr, index);
+
+           let (mapUnit, emptyMapUnitArrayMap) =
+             EmptyMapUnitArrayMapService.unsafeGetEmptyMapUnitAndPop(
+               material,
+               emptyMapUnitArrayMap,
+             );
+
+           (
+             setTextureIndexFunc(.
+               (material, mapUnit, textureCountPerMaterial),
+               texture,
+               textureIndices,
+             ),
+             setMapUnitFunc(. material, mapUnit, mapUnits),
+             emptyMapUnitArrayMap,
+           );
+         },
+         (textureIndices, diffuseMapUnits, emptyMapUnitArrayMap),
+       );
 
   {
     ...state,
@@ -76,6 +71,22 @@ let batchSetNewDiffueMaps =
       }),
   };
 };
+
+let batchSetNewDiffueMaps =
+    (
+      diffuseMapLightMaterials,
+      lightMaterialDiffuseMaps,
+      {settingRecord} as state,
+    ) =>
+  _batchSetNewMap(
+    (diffuseMapLightMaterials, lightMaterialDiffuseMaps, 0),
+    (
+      OperateTypeArrayLightMaterialService.setDiffuseMapUnit,
+      OperateTypeArrayLightMaterialService.setTextureIndex,
+    ),
+    BufferSettingService.getTextureCountPerMaterial(settingRecord),
+    state,
+  );
 
 let batchSetBasicSourceTextureData =
     (

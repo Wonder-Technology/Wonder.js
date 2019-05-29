@@ -99,7 +99,16 @@ let render =
                ),
                state,
              );
-           RenderJobUtils.draw(gl, meshRendererIndex, geometryIndex, state);
+           RenderJobUtils.draw(
+             gl,
+             DrawModeMeshRendererService.getGlDrawMode(
+               gl,
+               meshRendererIndex,
+               state,
+             ),
+             geometryIndex,
+             state,
+           );
            state;
          };
        },

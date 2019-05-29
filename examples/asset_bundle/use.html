@@ -257,32 +257,39 @@
                     api.setState(state);
 
 
-                    return api.loadAllDependencyRABAndSetToState(
-                        sabRelativePath,
-                        manifest,
-                        [
-                            _getAssetBundlePath,
-                            _initAssetBundleArrayBufferCache,
-                            _isAssetBundleArrayBufferCached,
-                            _getAssetBundleArrayBufferCache,
-                            _cacheAssetBundleArrayBuffer
-                        ]
-                    ).merge(
-                        api.loadSABAndSetToState(
+                    return
+                    api.fromPromiseStream(
+                        _initAssetBundleArrayBufferCache()
+                    ).concat(
+                        api.loadAllDependencyRABAndSetToState(
                             sabRelativePath,
                             manifest,
                             [
                                 _getAssetBundlePath,
-                                _initAssetBundleArrayBufferCache,
+                                // _initAssetBundleArrayBufferCache,
                                 _isAssetBundleArrayBufferCached,
                                 _getAssetBundleArrayBufferCache,
                                 _cacheAssetBundleArrayBuffer
                             ]
+                        ).merge(
+                            api.loadSABAndSetToState(
+                                sabRelativePath,
+                                manifest,
+                                [
+                                    _getAssetBundlePath,
+                                    // _initAssetBundleArrayBufferCache,
+                                    _isAssetBundleArrayBufferCached,
+                                    _getAssetBundleArrayBufferCache,
+                                    _cacheAssetBundleArrayBuffer
+                                ]
 
+                            )
                         )
                     ).concat(
                         api.assembleAllDependencyRAB(sabRelativePath, wholeDependencyRelationMap)
                     )
+
+
                 })
                     .subscribe({
                         "next": _ => {

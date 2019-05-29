@@ -21,7 +21,7 @@ let prepareGameObjectWithMap = (sandbox, diffuseMap, specularMap, state) => {
   open Sinon;
   let (state, material) = createLightMaterial(state);
   let (state, (texture1, texture2)) =
-    LightMaterialTool.createAndSetMapsWithMap(
+    LightMaterialTool.setMaps(
       material,
       diffuseMap,
       specularMap,

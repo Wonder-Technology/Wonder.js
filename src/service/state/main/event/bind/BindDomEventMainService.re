@@ -1,5 +1,7 @@
 let addToEventArr = (eventName, eventData, getPriorityFunc, eventArrMap) =>
-  switch (eventArrMap |> WonderCommonlib.MutableSparseMapService.get(eventName)) {
+  switch (
+    eventArrMap |> WonderCommonlib.MutableSparseMapService.get(eventName)
+  ) {
   | None =>
     eventArrMap
     |> WonderCommonlib.MutableSparseMapService.set(eventName, [|eventData|])
@@ -17,7 +19,9 @@ let addToEventArr = (eventName, eventData, getPriorityFunc, eventArrMap) =>
 
 let removeFromEventArrMapByHandleFunc =
     (eventName, (getHandleFuncFunc, targetHandleFunc), eventArrMap) =>
-  switch (eventArrMap |> WonderCommonlib.MutableSparseMapService.get(eventName)) {
+  switch (
+    eventArrMap |> WonderCommonlib.MutableSparseMapService.get(eventName)
+  ) {
   | None => eventArrMap
   | Some(arr) =>
     eventArrMap

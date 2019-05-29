@@ -11,16 +11,23 @@ type arrayBufferViewSourceTextureRecord = {
   flipYs: Js.Typed_array.Uint8Array.t,
   widths: Js.Typed_array.Uint16Array.t,
   heights: Js.Typed_array.Uint16Array.t,
-  sourceMap: WonderCommonlib.MutableSparseMapService.t(Js.Typed_array.Uint8Array.t),
-  glTextureMap: WonderCommonlib.MutableSparseMapService.t(WonderWebgl.GlType.texture),
+  sourceMap:
+    WonderCommonlib.MutableSparseMapService.t(Js.Typed_array.Uint8Array.t),
+  glTextureMap:
+    WonderCommonlib.MutableSparseMapService.t(WonderWebgl.GlType.texture),
   bindTextureUnitCacheMap: WonderCommonlib.MutableSparseMapService.t(int),
   disposedIndexArray: array(int),
   needAddedSourceArray: array((int, Js.Typed_array.Uint8Array.t)),
   needInitedTextureIndexArray: array(int),
+  needDisposedTextureIndexArray: array(int),
   nameMap: WonderCommonlib.MutableSparseMapService.t(string),
+  materialsMap:
+    WonderCommonlib.MutableSparseMapService.t(
+      array((int, MaterialType.materialType)),
+    ),
 };
 
-external arrayArrayBufferViewSourceToSparseMap :
+external arrayArrayBufferViewSourceToSparseMap:
   array(Js.Typed_array.Uint8Array.t) =>
   WonderCommonlib.MutableSparseMapService.t(Js.Typed_array.Uint8Array.t) =
   "%identity";

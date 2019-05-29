@@ -11,8 +11,8 @@ let setIsDrag = HandleTouchEventMainService.setIsDrag;
 let buildTouchData = (~pageX=10, ~pageY=20, ()) => {
   "clientX": 0,
   "clientY": 0,
-  "pageX",
-  "pageY",
+  "pageX": pageX,
+  "pageY": pageY,
   "identifier": 0,
   "screenX": 0,
   "screenY": 0,
@@ -27,13 +27,16 @@ let buildTouchEvent =
       ~touches=[|buildTouchData()|],
       ~changedTouches=[|buildTouchData()|],
       ~targetTouches=[|buildTouchData()|],
+      ~preventDefaultFunc=() => (),
+      ~stopPropagationFunc=() => (),
       (),
     ) => {
   "touches": touches,
   "changedTouches": changedTouches,
   "targetTouches": targetTouches,
+  "preventDefault": preventDefaultFunc,
+  "stopPropagation": stopPropagationFunc,
 };
-
 
 let prepareWithState =
     (
@@ -56,8 +59,6 @@ let prepareWithState =
 
   MainStateTool.unsafeGetState();
 };
-
-
 
 let prepare =
     (

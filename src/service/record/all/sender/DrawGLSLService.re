@@ -10,7 +10,7 @@ let drawElement =
 
 let drawArray = (drawMode: int, verticesCount: int, gl) => {
   let startOffset = 0;
-  drawArray(drawMode, startOffset, verticesCount, gl);
+  drawArrays(drawMode, startOffset, verticesCount, gl);
   ();
 };
 

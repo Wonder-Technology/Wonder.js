@@ -20,6 +20,7 @@ let _bind =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
+
   switch (OperateGlTextureMapService.getTexture(texture, glTextureMap)) {
   | None => dataTuple
   | Some(glTexture) =>
@@ -45,13 +46,13 @@ let _bind =
 
 let _bindBasicSourceTexture =
   (.
-    basicSourceTextureInTypeArray,
+    basicSourceTexture,
     (gl, unit, {basicSourceTextureRecord, browserDetectRecord} as state),
   ) => {
     _bind(
       gl,
       unit,
-      basicSourceTextureInTypeArray,
+      basicSourceTexture,
       (
         basicSourceTextureRecord.bindTextureUnitCacheMap,
         basicSourceTextureRecord.glTextureMap,
@@ -63,7 +64,7 @@ let _bindBasicSourceTexture =
 
 let _bindArrayBufferViewSourceTexture =
   (.
-    arrayBufferViewTextureInTypeArray,
+    arrayBufferViewTexture,
     (
       gl,
       unit,
@@ -73,7 +74,7 @@ let _bindArrayBufferViewSourceTexture =
     _bind(
       gl,
       unit,
-      arrayBufferViewTextureInTypeArray,
+      arrayBufferViewTexture,
       (
         arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
         arrayBufferViewSourceTextureRecord.glTextureMap,

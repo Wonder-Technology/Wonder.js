@@ -97,20 +97,22 @@ type uniformInstanceSendNoCachableData = {
   sendDataFunc: (. webgl1Context, uniformLocation, Float32Array.t) => unit,
 };
 
-type uniformNoMaterialShaderSendCachableData = {
+type sendNoMaterialShaderDataFunc;
+
+type uniformNoMaterialShaderSendData = {
   shaderCacheMap,
   name: string,
   pos: uniformLocation,
   getDataFunc:
     (. SubStateGetRenderDataType.getRenderDataSubState) => array(float),
-  sendDataFunc:
-    (
-      . webgl1Context,
-      shaderCacheMap,
-      (string, uniformLocation),
-      array(float)
-    ) =>
-    unit,
+  sendDataFunc: sendNoMaterialShaderDataFunc,
+  /* (
+       . webgl1Context,
+       shaderCacheMap,
+       (string, uniformLocation),
+       array(float)
+     ) =>
+     unit, */
 };
 
 type allSendUniformData = {
@@ -121,8 +123,7 @@ type allSendUniformData = {
   shaderSendCachableFunctionDataArr:
     array(uniformShaderSendCachableFunctionData),
   instanceSendNoCachableDataArr: array(uniformInstanceSendNoCachableData),
-  noMaterialShaderSendCachableDataArr:
-    array(uniformNoMaterialShaderSendCachableData),
+  noMaterialShaderSendCachableDataArr: array(uniformNoMaterialShaderSendData),
 };
 
 type glslSenderRecord = {
@@ -159,7 +160,7 @@ type glslSenderRecord = {
     ),
   uniformNoMaterialShaderSendCachableDataMap:
     WonderCommonlib.MutableSparseMapService.t(
-      array(uniformNoMaterialShaderSendCachableData),
+      array(uniformNoMaterialShaderSendData),
     ),
   /* drawPointsFuncMap: WonderCommonlib.MutableSparseMapService.t((webgl1Context => unit)), */
   mutable vertexAttribHistoryArray,

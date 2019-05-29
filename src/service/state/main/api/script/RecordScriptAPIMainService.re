@@ -109,7 +109,6 @@ let create = () => {
         wholeManifest,
         (
           getAssetBundlePathFunc,
-          initAssetBundleArrayBufferCacheFunc,
           isAssetBundleArrayBufferCachedFunc,
           getAssetBundleArrayBufferCacheFunc,
           cacheAssetBundleArrayBufferFunc,
@@ -122,7 +121,6 @@ let create = () => {
       wholeManifest,
       (
         getAssetBundlePathFunc,
-        initAssetBundleArrayBufferCacheFunc,
         isAssetBundleArrayBufferCachedFunc,
         getAssetBundleArrayBufferCacheFunc,
         cacheAssetBundleArrayBufferFunc,
@@ -133,7 +131,6 @@ let create = () => {
         wholeManifest,
         (
           getAssetBundlePathFunc,
-          initAssetBundleArrayBufferCacheFunc,
           isAssetBundleArrayBufferCachedFunc,
           getAssetBundleArrayBufferCacheFunc,
           cacheAssetBundleArrayBufferFunc,
@@ -215,6 +212,9 @@ let create = () => {
   "isRABAssembled":
     (. rabRelativePath, state) =>
       OperateRABAssetBundleMainService.isAssembled(rabRelativePath, state),
+  "isSABAssembled":
+    (. sabRelativePath, state) =>
+      OperateSABAssetBundleMainService.isAssembled(sabRelativePath, state),
   "unsafeFindScriptEventFunctionDataByName":
     (. rabRelativePath, name, state) =>
       OperateRABAssetBundleMainService.unsafeFindScriptEventFunctionDataByName(

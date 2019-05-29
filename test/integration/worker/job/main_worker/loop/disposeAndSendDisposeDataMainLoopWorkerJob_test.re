@@ -20,6 +20,7 @@ let _ =
         );
     });
     afterEach(() => TestWorkerTool.clear(sandbox));
+
     describe("not dispose the data of render worker state", () =>
       describe("dispose components", () => {
         describe("test disposeGameObjectBoxGeometryComponent", () =>
@@ -46,8 +47,12 @@ let _ =
                       let {vertexArrayBufferPool, elementArrayBufferPool} =
                         VboBufferTool.getVboBufferRecord(state);
                       (
-                        vertexArrayBufferPool |> Obj.magic |> Js.Array.includes(geometry1),
-                        elementArrayBufferPool |> Obj.magic|> Js.Array.includes(geometry1),
+                        vertexArrayBufferPool
+                        |> Obj.magic
+                        |> Js.Array.includes(geometry1),
+                        elementArrayBufferPool
+                        |> Obj.magic
+                        |> Js.Array.includes(geometry1),
                       )
                       |> expect == (false, false)
                       |> resolve;
@@ -109,6 +114,7 @@ let _ =
         );
       })
     );
+
     describe("dispose gameObjects", () => {
       let _prepare = state =>
         DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeGameObjects(
@@ -156,67 +162,105 @@ let _ =
            }
          ) */
     });
+
     describe("send data to render worker", () =>
-      testPromise("send dispose data", () => {
-        let (
-          state,
-          (gameObject1, gameObject2, gameObject3),
-          (geometry1, geometry2, geometry3),
-        ) =
-          DisposeForNoWorkerAndWorkerJobTool.prepareGeometryGameObjects(
+      describe("send dispose data", () => {
+        testPromise("send dispose geometry and sourceInstance data", () => {
+          let (
             state,
+            (gameObject1, gameObject2, gameObject3),
+            (geometry1, geometry2, geometry3),
+          ) =
+            DisposeForNoWorkerAndWorkerJobTool.prepareGeometryGameObjects(
+              state,
+            );
+          let (state, gameObject4, (geometry4, _, _, sourceInstance4, _)) =
+            RenderBasicHardwareInstanceTool.createSourceInstanceGameObject(
+              sandbox,
+              state,
+            );
+          let (state, gameObject5, (geometry5, _, _, sourceInstance5, _)) =
+            FrontRenderLightHardwareInstanceTool.createSourceInstanceGameObject(
+              sandbox,
+              state,
+            );
+          let state =
+            state
+            |> GameObjectAPI.batchDisposeGameObject([|
+                 gameObject1,
+                 gameObject2,
+                 gameObject3,
+                 gameObject4,
+                 gameObject5,
+               |]);
+          let state =
+            state
+            |> FakeGlWorkerTool.setFakeGl(
+                 FakeGlWorkerTool.buildFakeGl(~sandbox, ()),
+               );
+          let state = MainStateTool.setState(state);
+          RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+            ~state,
+            ~sandbox,
+            ~completeFunc=
+              postMessageToRenderWorker =>
+                postMessageToRenderWorker
+                |> expect
+                |> toCalledWith([|
+                     DisposeRenderWorkerJobTool.buildDisposeData(
+                       ~geometryNeedDisposeVboBufferArr=[|
+                         geometry1,
+                         geometry2,
+                         geometry3,
+                         geometry4,
+                         geometry5,
+                       |],
+                       ~sourceInstanceNeedDisposeVboBufferArr=[|
+                         sourceInstance4,
+                         sourceInstance5,
+                       |],
+                       (),
+                     ),
+                   |])
+                |> resolve,
+            (),
           );
-        let (state, gameObject4, (geometry4, _, _, sourceInstance4, _)) =
-          RenderBasicHardwareInstanceTool.createSourceInstanceGameObject(
-            sandbox,
-            state,
+        });
+        /* testPromise("send dispose basic source texture data", () => {
+          TestMainWorkerTool.closeContractCheck();
+          let (state, material1, (diffuseMap, specularMap, source1, source2)) =
+            LightMaterialTool.createMaterialWithMap(state^);
+
+          let state =
+            LightMaterialAPI.batchDisposeLightMaterial([|material1|], state);
+
+          let state =
+            state
+            |> FakeGlWorkerTool.setFakeGl(
+                 FakeGlWorkerTool.buildFakeGl(~sandbox, ()),
+               );
+          let state = MainStateTool.setState(state);
+
+          RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+            ~state,
+            ~sandbox,
+            ~completeFunc=
+              postMessageToRenderWorker =>
+                postMessageToRenderWorker
+                |> expect
+                |> toCalledWith([|
+                     DisposeRenderWorkerJobTool.buildDisposeData(
+                       ~needDisposedBasicSourceTextureIndexArray=[|
+                         diffuseMap,
+                         specularMap,
+                       |],
+                       (),
+                     ),
+                   |])
+                |> resolve,
+            (),
           );
-        let (state, gameObject5, (geometry5, _, _, sourceInstance5, _)) =
-          FrontRenderLightHardwareInstanceTool.createSourceInstanceGameObject(
-            sandbox,
-            state,
-          );
-        let state =
-          state
-          |> GameObjectAPI.batchDisposeGameObject([|
-               gameObject1,
-               gameObject2,
-               gameObject3,
-               gameObject4,
-               gameObject5,
-             |]);
-        let state =
-          state
-          |> FakeGlWorkerTool.setFakeGl(
-               FakeGlWorkerTool.buildFakeGl(~sandbox, ()),
-             );
-        let state = MainStateTool.setState(state);
-        RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
-          ~state,
-          ~sandbox,
-          ~completeFunc=
-            postMessageToRenderWorker =>
-              postMessageToRenderWorker
-              |> expect
-              |> toCalledWith([|
-                   {
-                     "operateType": "DISPOSE",
-                     "geometryNeedDisposeVboBufferArr": [|
-                       geometry1,
-                       geometry2,
-                       geometry3,
-                       geometry4,
-                       geometry5,
-                     |],
-                     "sourceInstanceNeedDisposeVboBufferArr": [|
-                       sourceInstance4,
-                       sourceInstance5,
-                     |],
-                   },
-                 |])
-              |> resolve,
-          (),
-        );
+        }); */
       })
     );
   });

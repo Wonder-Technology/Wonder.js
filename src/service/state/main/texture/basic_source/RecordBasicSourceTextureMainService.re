@@ -148,36 +148,34 @@ let create = ({settingRecord} as state) => {
   ) =
     _initBufferData(basicSourceTextureCount, buffer);
   state.basicSourceTextureRecord =
-    Some
-      /* index: 0, */
-      /* buffer, */
-      ({
-        index: 0,
-        wrapSs,
-        wrapTs,
-        magFilters,
-        minFilters,
-        formats,
-        types,
-        isNeedUpdates,
-        flipYs,
-        nameMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-        sourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-        glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-        bindTextureUnitCacheMap:
-          WonderCommonlib.MutableSparseMapService.createEmpty(),
-        disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
-        needAddedSourceArray: [||],
-        needInitedTextureIndexArray: [||],
-      });
+    Some({
+      index: 0,
+      wrapSs,
+      wrapTs,
+      magFilters,
+      minFilters,
+      formats,
+      types,
+      isNeedUpdates,
+      flipYs,
+      nameMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      materialsMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      sourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      bindTextureUnitCacheMap:
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
+      disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+      needAddedSourceArray: WonderCommonlib.ArrayService.createEmpty(),
+      needInitedTextureIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+      needDisposedTextureIndexArray:
+        WonderCommonlib.ArrayService.createEmpty(),
+    });
   state;
 };
 
 let deepCopyForRestore = ({settingRecord} as state) => {
   let {
         index,
-        /*
-         buffer, */
         wrapSs,
         wrapTs,
         magFilters,
@@ -187,12 +185,14 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         isNeedUpdates,
         flipYs,
         nameMap,
+        materialsMap,
         sourceMap,
         glTextureMap,
         bindTextureUnitCacheMap,
         disposedIndexArray,
         needAddedSourceArray,
         needInitedTextureIndexArray,
+        needDisposedTextureIndexArray,
       } as record =
     state |> getRecord;
   {
@@ -242,14 +242,19 @@ let deepCopyForRestore = ({settingRecord} as state) => {
                index * getFlipYsSize(),
              ),
         nameMap: nameMap |> WonderCommonlib.MutableSparseMapService.copy,
+        materialsMap:
+          materialsMap |> WonderCommonlib.MutableSparseMapService.copy,
         sourceMap: sourceMap |> WonderCommonlib.MutableSparseMapService.copy,
-        glTextureMap: glTextureMap |> WonderCommonlib.MutableSparseMapService.copy,
+        glTextureMap:
+          glTextureMap |> WonderCommonlib.MutableSparseMapService.copy,
         bindTextureUnitCacheMap:
           WonderCommonlib.MutableSparseMapService.createEmpty(),
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
         needAddedSourceArray: needAddedSourceArray |> Js.Array.copy,
         needInitedTextureIndexArray:
           needInitedTextureIndexArray |> Js.Array.copy,
+        needDisposedTextureIndexArray:
+          needDisposedTextureIndexArray |> Js.Array.copy,
       }),
   };
 };

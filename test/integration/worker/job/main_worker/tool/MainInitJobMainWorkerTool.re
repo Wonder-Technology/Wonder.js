@@ -3,7 +3,11 @@ open StateDataMainType;
 let prepare = () =>
   WorkerWorkerTool.setFakeWorkersAndSetState(MainStateTool.unsafeGetState());
 
-let test = (sandbox, getWorkerFunc, judgeFunc, state) => {
+let createMainInitJobHandleMap = mainInitJobHandles =>
+  HandleJobService.createJobHandleMap(mainInitJobHandles);
+
+let testWithJobHandleMap =
+    (sandbox, jobHandleMap, getWorkerFunc, judgeFunc, state) => {
   open Js.Promise;
   let worker = getWorkerFunc(state);
   let postMessageToWorker = WorkerWorkerTool.stubPostMessage(sandbox, worker);
@@ -11,10 +15,7 @@ let test = (sandbox, getWorkerFunc, judgeFunc, state) => {
   MainStateTool.unsafeGetState()
   |> WorkerJobWorkerTool.getMainInitJobStream(
        MainStateTool.getStateData(),
-       (
-         WorkerJobHandleSystem.createMainInitJobHandleMap,
-         WorkerJobHandleSystem.getMainInitJobHandle,
-       ),
+       (() => jobHandleMap, WorkerJobHandleSystem.getMainInitJobHandle),
      )
   |> WonderBsMost.Most.forEach(data =>
        switch (data) {
@@ -45,3 +46,12 @@ let test = (sandbox, getWorkerFunc, judgeFunc, state) => {
      )
   |> then_(() => judgeFunc(postMessageToWorker) |> resolve);
 };
+
+let test = (sandbox, getWorkerFunc, judgeFunc, state) =>
+  testWithJobHandleMap(
+    sandbox,
+    WorkerJobHandleSystem.createMainInitJobHandleMap(),
+    getWorkerFunc,
+    judgeFunc,
+    state,
+  );

@@ -17,6 +17,7 @@ let _disposeComponents =
     disposedArcballCameraControllerArray,
     disposedBasicMaterialDataMap,
     disposedLightMaterialDataMap,
+    disposedLightMaterialRemoveTextureDataMap,
     disposedGeometryDataMap,
     disposedSourceInstanceArray,
     disposedObjectInstanceArray,
@@ -57,12 +58,27 @@ let _disposeComponents =
          state,
          true,
        );
+
   let state =
-    disposedBasicMaterialDataMap
-    |> batchDisposeBasicMaterialComponentFunc(state);
+    batchDisposeBasicMaterialComponentFunc(
+      state,
+      disposedBasicMaterialDataMap,
+      false,
+    );
+
   let state =
-    disposedLightMaterialDataMap
-    |> batchDisposeLightMaterialComponentFunc(state);
+    batchDisposeLightMaterialComponentFunc(
+      state,
+      disposedLightMaterialDataMap,
+      false,
+    );
+  let state =
+    batchDisposeLightMaterialComponentFunc(
+      state,
+      disposedLightMaterialRemoveTextureDataMap,
+      true,
+    );
+
   let (state, geometryNeedDisposeVboBufferArr) =
     disposedGeometryDataMap
     |> DisposeComponentGameObjectMainService.batchDisposeGeometryComponentData(
@@ -72,9 +88,9 @@ let _disposeComponents =
     disposedSourceInstanceArray
     |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
          state,
-         (false, false, false),
+         (false, false, false, false),
          DisposeGameObjectMainService.batchDispose((
-           batchDisposeLightMaterialComponentFunc,
+           batchDisposeBasicMaterialComponentFunc,
            batchDisposeLightMaterialComponentFunc,
          )),
        );
@@ -124,6 +140,7 @@ let _disposeGameObjects =
     disposedUidArrayForKeepOrderRemoveGeometry,
     disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
     disposedUidArrayForDisposeGeometryRemoveMaterial,
+    disposedUidArrayForRemoveTexture,
   } = gameObjectRecord;
 
   let (
@@ -138,7 +155,7 @@ let _disposeGameObjects =
            batchDisposeLightMaterialComponentFunc,
          ),
          disposedUidArray,
-         (false, false, false),
+         (false, false, false, false),
        );
   let (
     state,
@@ -152,7 +169,7 @@ let _disposeGameObjects =
            batchDisposeLightMaterialComponentFunc,
          ),
          disposedUidArrayForKeepOrder,
-         (true, false, false),
+         (true, false, false, false),
        );
   let (
     state,
@@ -166,7 +183,7 @@ let _disposeGameObjects =
            batchDisposeLightMaterialComponentFunc,
          ),
          disposedUidArrayForKeepOrderRemoveGeometry,
-         (true, true, false),
+         (true, true, false, false),
        );
   let (
     state,
@@ -180,7 +197,7 @@ let _disposeGameObjects =
            batchDisposeLightMaterialComponentFunc,
          ),
          disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
-         (true, true, true),
+         (true, true, true, false),
        );
   let (
     state,
@@ -194,7 +211,21 @@ let _disposeGameObjects =
            batchDisposeLightMaterialComponentFunc,
          ),
          disposedUidArrayForDisposeGeometryRemoveMaterial,
-         (false, false, true),
+         (false, false, true, false),
+       );
+  let (
+    state,
+    geometryNeedDisposeVboBufferArrForRemoveTexture,
+    sourceInstanceNeedDisposeVboBufferArrForRemoveTexture,
+  ) =
+    state
+    |> DisposeGameObjectMainService.batchDispose(
+         (
+           batchDisposeBasicMaterialComponentFunc,
+           batchDisposeLightMaterialComponentFunc,
+         ),
+         disposedUidArrayForRemoveTexture,
+         (false, false, false, true),
        );
 
   let state = state |> DisposeGameObjectMainService.clearDeferDisposeData;
@@ -207,6 +238,7 @@ let _disposeGameObjects =
          geometryNeedDisposeVboBufferArrForKeepOrderRemoveGeometry,
          geometryNeedDisposeVboBufferArrForKeepOrderRemoveGeometryRemoveMaterial,
          geometryNeedDisposeVboBufferArrForDisposeGeometryRemoveMaterial,
+         geometryNeedDisposeVboBufferArrForRemoveTexture,
        |]),
     sourceInstanceNeedDisposeVboBufferArrForNotKeepOrder
     |> Js.Array.concatMany([|
@@ -214,6 +246,7 @@ let _disposeGameObjects =
          sourceInstanceNeedDisposeVboBufferArrForKeepOrderRemoveGeometry,
          sourceInstanceNeedDisposeVboBufferArrForKeepOrderRemoveGeometryRemoveMaterial,
          sourceInstanceNeedDisposeVboBufferArrForDisposeGeometryRemoveMaterial,
+         sourceInstanceNeedDisposeVboBufferArrForRemoveTexture,
        |]),
   );
 };

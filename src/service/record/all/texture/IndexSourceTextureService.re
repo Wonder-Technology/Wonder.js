@@ -1,8 +1,8 @@
 let getBasicSourceTextureIndexOffset = () => 0;
 
-let getArrayBufferViewSourceTextureIndexOffset = (basicSourceTextureCount) => basicSourceTextureCount;
+let getArrayBufferViewSourceTextureIndexOffset = basicSourceTextureCount => basicSourceTextureCount;
 
-let generateBasicSourceTextureIndex = (basicSourceTextureIndex) =>
+let generateBasicSourceTextureIndex = basicSourceTextureIndex =>
   getBasicSourceTextureIndexOffset() + basicSourceTextureIndex;
 
 let generateArrayBufferViewSourceTextureIndex =
@@ -11,28 +11,37 @@ let generateArrayBufferViewSourceTextureIndex =
   + arrayBufferViewSourceTextureIndex;
 
 let getArrayBufferViewSourceTextureIndexInTypeArray =
-    (arrayBufferViewSourceTextureIndex, arrayBufferViewSourceTextureIndexOffset) =>
+    (
+      arrayBufferViewSourceTextureIndex,
+      arrayBufferViewSourceTextureIndexOffset,
+    ) =>
   arrayBufferViewSourceTextureIndex
   - arrayBufferViewSourceTextureIndexOffset
   |> WonderLog.Contract.ensureCheck(
-       (index) =>
+       index =>
          WonderLog.(
            Contract.(
              Operators.(
                test(
-                 Log.buildAssertMessage(~expect={j|index should >= 0|j}, ~actual={j|is $index|j}),
-                 () => index >= 0
+                 Log.buildAssertMessage(
+                   ~expect={j|index should >= 0|j},
+                   ~actual={j|is $index|j},
+                 ),
+                 () =>
+                 index >= 0
                )
              )
            )
          ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData)
+       IsDebugMainService.getIsDebug(StateDataMain.stateData),
      );
 
-let isBasicSourceTextureIndex = (textureIndex, arrayBufferViewSourceTextureIndexOffset) =>
+let isBasicSourceTextureIndex =
+    (textureIndex, arrayBufferViewSourceTextureIndexOffset) =>
   textureIndex < arrayBufferViewSourceTextureIndexOffset;
 
-let isArrayBufferViewSourceTextureIndex = (textureIndex, arrayBufferViewSourceTextureIndexOffset) =>
+let isArrayBufferViewSourceTextureIndex =
+    (textureIndex, arrayBufferViewSourceTextureIndexOffset) =>
   textureIndex >= arrayBufferViewSourceTextureIndexOffset;
 
 let handleByJudgeSourceTextureIndex =
@@ -40,15 +49,21 @@ let handleByJudgeSourceTextureIndex =
       textureIndex,
       arrayBufferViewSourceTextureIndexOffset,
       funcDataTuple,
-      (handleBasicSourceTextureIndexFunc, handleArrayBufferViewSourceTextureIndexFunc)
-    ) =>
-  isBasicSourceTextureIndex(textureIndex, arrayBufferViewSourceTextureIndexOffset) ?
-    [@bs] handleBasicSourceTextureIndexFunc(textureIndex, funcDataTuple) :
-    [@bs]
-    handleArrayBufferViewSourceTextureIndexFunc(
-      getArrayBufferViewSourceTextureIndexInTypeArray(
-        textureIndex,
-        arrayBufferViewSourceTextureIndexOffset
+      (
+        handleBasicSourceTextureIndexFunc,
+        handleArrayBufferViewSourceTextureIndexFunc,
       ),
-      funcDataTuple
+    ) =>
+  isBasicSourceTextureIndex(
+    textureIndex,
+    arrayBufferViewSourceTextureIndexOffset,
+  ) ?
+    handleBasicSourceTextureIndexFunc(. textureIndex, funcDataTuple) :
+    handleArrayBufferViewSourceTextureIndexFunc(.
+      /* getArrayBufferViewSourceTextureIndexInTypeArray(
+           textureIndex,
+           arrayBufferViewSourceTextureIndexOffset
+         ), */
+      textureIndex,
+      funcDataTuple,
     );

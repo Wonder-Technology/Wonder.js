@@ -2133,6 +2133,118 @@ let _ =
       });
     });
 
+    describe("disposeGameObjectRemoveTexture", () => {
+      describe("test basicSourceTexture", () =>
+        test("remove texture instead of dispose", () => {
+          let (state, material, (diffuseMap, specularMap, source1, source2)) =
+            LightMaterialTool.createMaterialWithMap(state^);
+          let (state, gameObject, material) =
+            LightMaterialTool.createGameObjectWithShareMaterial(
+              material,
+              state,
+            );
+
+          let state =
+            state |> GameObjectAPI.disposeGameObjectRemoveTexture(gameObject);
+          let state = DisposeJob.execJob(None, state);
+
+          (
+            BasicSourceTextureTool.hasMaterial(diffuseMap, material, state),
+            BasicSourceTextureTool.hasMaterial(specularMap, material, state),
+            BasicSourceTextureTool.getBasicSourceTextureSource(
+              diffuseMap,
+              state,
+            ),
+            BasicSourceTextureTool.getBasicSourceTextureSource(
+              specularMap,
+              state,
+            ),
+          )
+          |> expect == (false, false, Some(source1), Some(source2));
+        })
+      );
+
+      describe("test arrayBufferViewSourceTexture", () =>
+        test("remove texture instead of dispose", () => {
+          let (state, material, (diffuseMap, specularMap, source1, source2)) =
+            LightMaterialTool.createMaterialWithArrayBufferViewMap(state^);
+          let (state, gameObject, material) =
+            LightMaterialTool.createGameObjectWithShareMaterial(
+              material,
+              state,
+            );
+
+          let state =
+            state |> GameObjectAPI.disposeGameObjectRemoveTexture(gameObject);
+          let state = DisposeJob.execJob(None, state);
+
+          (
+            ArrayBufferViewSourceTextureTool.hasMaterial(
+              diffuseMap,
+              material,
+              state,
+            ),
+            ArrayBufferViewSourceTextureTool.hasMaterial(
+              specularMap,
+              material,
+              state,
+            ),
+            ArrayBufferViewSourceTextureTool.getArrayBufferViewSourceTextureSource(
+              diffuseMap,
+              state,
+            ),
+            ArrayBufferViewSourceTextureTool.getArrayBufferViewSourceTextureSource(
+              specularMap,
+              state,
+            ),
+          )
+          |> expect == (false, false, Some(source1), Some(source2));
+        })
+      );
+    });
+
+    describe("disposeGameObjectLightMaterialComponent", () =>
+      test("dispose material->maps", () => {
+        let (state, gameObject1, (material1, (texture1_1, texture1_2))) =
+          LightMaterialTool.createGameObjectWithMap(state^);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObjectLightMaterialComponent(
+               gameObject1,
+               material1,
+             );
+        let state = state |> DisposeJob.execJob(None);
+
+        (
+          BasicSourceTextureTool.isAlive(texture1_1, state),
+          BasicSourceTextureTool.isAlive(texture1_2, state),
+        )
+        |> expect == (false, false);
+      })
+    );
+
+    describe("disposeGameObjectLightMaterialComponentRemoveTexture", () =>
+      test("remove material->maps", () => {
+        let (state, gameObject1, (material1, (texture1_1, texture1_2))) =
+          LightMaterialTool.createGameObjectWithMap(state^);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObjectLightMaterialComponentRemoveTexture(
+               gameObject1,
+               material1,
+             );
+        let state = state |> DisposeJob.execJob(None);
+
+        (
+          BasicSourceTextureTool.isAlive(texture1_1, state),
+          BasicSourceTextureTool.isAlive(texture1_2, state),
+        )
+        |> expect == (true, true);
+      })
+    );
+
     describe("test batchDispose gameObject", ()
       /* describe(
            "batch dispose all components",

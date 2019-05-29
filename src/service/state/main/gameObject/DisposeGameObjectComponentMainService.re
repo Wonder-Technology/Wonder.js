@@ -23,7 +23,7 @@ let _getSharableComponentDataArr =
 let _batchDisposeSharableComponents =
     (
       uidArray,
-      (isRemoveGeometry, isRemoveMaterial),
+      (isRemoveGeometry, isRemoveMaterial, isRemoveTexture),
       (
         batchDisposeBasicMaterialComponentFunc,
         batchDisposeLightMaterialComponentFunc,
@@ -64,7 +64,11 @@ let _batchDisposeSharableComponents =
         state,
         basicMaterialDataMap,
       ) :
-      batchDisposeBasicMaterialComponentFunc(state, basicMaterialDataMap);
+      batchDisposeBasicMaterialComponentFunc(
+        state,
+        basicMaterialDataMap,
+        isRemoveTexture,
+      );
 
   let lightMaterialDataMap =
     _getSharableComponentDataArr(
@@ -79,14 +83,24 @@ let _batchDisposeSharableComponents =
         state,
         lightMaterialDataMap,
       ) :
-      batchDisposeLightMaterialComponentFunc(state, lightMaterialDataMap);
+      batchDisposeLightMaterialComponentFunc(
+        state,
+        lightMaterialDataMap,
+        isRemoveTexture,
+      );
 
   (state, geometryNeedDisposeVboBufferArr);
 };
 
 let batchDispose =
     (
-      (uidArray: array(int), isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+      (
+        uidArray: array(int),
+        isKeepOrder,
+        isRemoveGeometry,
+        isRemoveMaterial,
+        isRemoveTexture,
+      ),
       (
         batchDisposeBasicMaterialComponentFunc,
         batchDisposeLightMaterialComponentFunc,
@@ -104,7 +118,7 @@ let batchDispose =
   let (state, geometryNeedDisposeVboBufferArr) =
     _batchDisposeSharableComponents(
       uidArray,
-      (isRemoveGeometry, isRemoveMaterial),
+      (isRemoveGeometry, isRemoveMaterial, isRemoveTexture),
       (
         batchDisposeBasicMaterialComponentFunc,
         batchDisposeLightMaterialComponentFunc,
@@ -176,7 +190,7 @@ let batchDispose =
        )
     |> DisposeComponentGameObjectMainService.batchDisposeSourceInstanceComponent(
          state,
-         (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+         (isKeepOrder, isRemoveGeometry, isRemoveMaterial, isRemoveTexture),
          batchDisposeFunc((
            batchDisposeBasicMaterialComponentFunc,
            batchDisposeLightMaterialComponentFunc,

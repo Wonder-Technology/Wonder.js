@@ -18,6 +18,7 @@ let create = () => {
   },
   assembleSABData: {
     isLoadedMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
+    isAssembledMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     loadedSABMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
   },
   wabData: {

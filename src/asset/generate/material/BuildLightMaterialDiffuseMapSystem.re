@@ -122,22 +122,9 @@ let _convertBase64MimeTypeToWDBMimeType = mimeType =>
   };
 
 let _getImageMimeType = source =>
-  switch (FileNameService.getFileExtName(Obj.magic(source)##name)) {
-  | None
-  | Some(".png") => "image/png"
-  | Some(".jpg")
-  | Some(".jpeg") => "image/jpeg"
-  | mimeType =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_getImageMimeType",
-        ~description={j|unknown image mimeType: $mimeType|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j},
-      ),
-    )
-  };
+  ImageService.getMimeTypeByExtname(
+    FileNameService.getFileExtName(Obj.magic(source)##name),
+  );
 
 let _getImageBase64 = (texture, source) =>
   _convertImageToBase64(

@@ -161,7 +161,12 @@ let _ =
       let state =
         state |> setArrayBufferViewSourceTextureMinFilter(texture2, Linear);
       let state = state |> setArrayBufferViewSourceTextureType(texture2, 1);
-      let state = state |> setArrayBufferViewSourceTextureFormat(texture2, 2);
+      let state =
+        state
+        |> setArrayBufferViewSourceTextureFormat(
+             texture2,
+             SourceTextureType.Alpha,
+           );
       let state = state |> setArrayBufferViewSourceTextureWidth(texture2, 2);
       let state = state |> setArrayBufferViewSourceTextureHeight(texture2, 4);
       (state, texture1, texture2, texture3);
@@ -319,7 +324,9 @@ let _ =
       describe("deep copy texture record", () => {
         describe("deep copy basic source texture record", () =>
           test(
-            "shadow copy sourceMap,glTextureMap, \n                    bindTextureUnitCacheMap, disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray\n                    \n                    ",
+            "shadow copy sourceMap,glTextureMap, \n                    bindTextureUnitCacheMap, disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray
+            materialsMap, needDisposedTextureIndexArray
+            \n                    \n                    ",
             () =>
             StateDataMainType.(
               BasicSourceTextureType.(
@@ -332,6 +339,8 @@ let _ =
                       disposedIndexArray,
                       needAddedSourceArray,
                       needInitedTextureIndexArray,
+                      materialsMap,
+                      needDisposedTextureIndexArray,
                     } =
                       BasicSourceTextureTool.getRecord(state);
                     [|
@@ -341,6 +350,8 @@ let _ =
                       disposedIndexArray |> Obj.magic,
                       needAddedSourceArray |> Obj.magic,
                       needInitedTextureIndexArray |> Obj.magic,
+                      materialsMap |> Obj.magic,
+                      needDisposedTextureIndexArray |> Obj.magic,
                     |];
                   },
                   state^,
@@ -349,9 +360,10 @@ let _ =
             )
           )
         );
+
         describe("deep copy arrayBufferView source texture record", () =>
           test(
-            "shadow copy sourceMap,glTextureMap, \n                    bindTextureUnitCacheMap, disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray\n                    \n                    ",
+            "shadow copy sourceMap,glTextureMap, \n                    bindTextureUnitCacheMap, disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray, materialsMap, needDisposedTextureIndexArray\n                    \n                    ",
             () =>
             StateDataMainType.(
               ArrayBufferViewSourceTextureType.(
@@ -364,6 +376,8 @@ let _ =
                       disposedIndexArray,
                       needAddedSourceArray,
                       needInitedTextureIndexArray,
+                      materialsMap,
+                      needDisposedTextureIndexArray,
                     } =
                       ArrayBufferViewSourceTextureTool.getRecord(state);
                     [|
@@ -373,6 +387,8 @@ let _ =
                       disposedIndexArray |> Obj.magic,
                       needAddedSourceArray |> Obj.magic,
                       needInitedTextureIndexArray |> Obj.magic,
+                      materialsMap |> Obj.magic,
+                      needDisposedTextureIndexArray |> Obj.magic,
                     |];
                   },
                   state^,
@@ -382,6 +398,7 @@ let _ =
           )
         );
       });
+
       describe("deep copy light record", () => {
         describe("test direction light", () => {
           describe("copy type array record", () => {
@@ -584,7 +601,19 @@ isActiveMap,
 
           disposedUidArrayForKeepOrderRemoveGeometry,
           disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
-                  disposedBasicCameraViewArray,        disposedTransformArray,        disposedTransformArrayForKeepOrder,        disposedPerspectiveCameraProjectionArray,        disposedBasicMaterialDataMap,        disposedLightMaterialDataMap,                disposedGeometryDataMap,        disposedSourceInstanceArray,        disposedObjectInstanceArray,                disposedDirectionLightArray,        disposedPointLightArray,        disposedMeshRendererComponentArray,
+disposedUidArrayForRemoveTexture,
+
+
+                  disposedBasicCameraViewArray,        disposedTransformArray,        disposedTransformArrayForKeepOrder,        disposedPerspectiveCameraProjectionArray,
+                  disposedArcballCameraControllerArray,
+
+                  disposedBasicMaterialDataMap,
+
+                  disposedLightMaterialDataMap,
+                  disposedLightMaterialRemoveTextureDataMap
+
+
+                  disposedGeometryDataMap,        disposedSourceInstanceArray,        disposedObjectInstanceArray,                disposedDirectionLightArray,        disposedPointLightArray,        disposedMeshRendererComponentArray,
           disposedScriptArray,
 
           disposedMeshRendererUidArray,                                                aliveUidArray, transformMap, basicCameraViewMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap, scriptMap|},
@@ -602,12 +631,15 @@ isActiveMap,
                     disposedUidArrayForKeepOrder,
                     disposedUidArrayForKeepOrderRemoveGeometry,
                     disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
+                    disposedUidArrayForRemoveTexture,
                     disposedBasicCameraViewArray,
                     disposedTransformArray,
                     disposedTransformArrayForKeepOrder,
                     disposedPerspectiveCameraProjectionArray,
+                    disposedArcballCameraControllerArray,
                     disposedBasicMaterialDataMap,
                     disposedLightMaterialDataMap,
+                    disposedLightMaterialRemoveTextureDataMap,
                     disposedGeometryDataMap,
                     disposedSourceInstanceArray,
                     disposedObjectInstanceArray,
@@ -639,12 +671,15 @@ isActiveMap,
                     disposedUidArrayForKeepOrderRemoveGeometry |> Obj.magic,
                     disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial
                     |> Obj.magic,
+                    disposedUidArrayForRemoveTexture |> Obj.magic,
                     disposedBasicCameraViewArray |> Obj.magic,
                     disposedTransformArray |> Obj.magic,
                     disposedTransformArrayForKeepOrder |> Obj.magic,
                     disposedPerspectiveCameraProjectionArray |> Obj.magic,
+                    disposedArcballCameraControllerArray |> Obj.magic,
                     disposedBasicMaterialDataMap |> Obj.magic,
                     disposedLightMaterialDataMap |> Obj.magic,
+                    disposedLightMaterialRemoveTextureDataMap |> Obj.magic,
                     disposedGeometryDataMap |> Obj.magic,
                     disposedSourceInstanceArray |> Obj.magic,
                     disposedObjectInstanceArray |> Obj.magic,

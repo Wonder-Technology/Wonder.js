@@ -206,11 +206,15 @@ let create = ({settingRecord} as state) => {
       heights,
       sourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       nameMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      materialsMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-      bindTextureUnitCacheMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      bindTextureUnitCacheMap:
+        WonderCommonlib.MutableSparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
-      needAddedSourceArray: [||],
-      needInitedTextureIndexArray: [||],
+      needAddedSourceArray: WonderCommonlib.ArrayService.createEmpty(),
+      needInitedTextureIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+      needDisposedTextureIndexArray:
+        WonderCommonlib.ArrayService.createEmpty(),
     });
   state;
 };
@@ -218,8 +222,6 @@ let create = ({settingRecord} as state) => {
 let deepCopyForRestore = ({settingRecord} as state) => {
   let {
         index,
-        /* index,
-           buffer, */
         wrapSs,
         wrapTs,
         magFilters,
@@ -231,12 +233,14 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         widths,
         heights,
         nameMap,
+        materialsMap,
         sourceMap,
         glTextureMap,
         bindTextureUnitCacheMap,
         disposedIndexArray,
         needAddedSourceArray,
         needInitedTextureIndexArray,
+        needDisposedTextureIndexArray,
       } as record =
     state |> getRecord;
   {
@@ -296,14 +300,19 @@ let deepCopyForRestore = ({settingRecord} as state) => {
                index * getHeightsSize(),
              ),
         nameMap: nameMap |> WonderCommonlib.MutableSparseMapService.copy,
+        materialsMap:
+          materialsMap |> WonderCommonlib.MutableSparseMapService.copy,
         sourceMap: sourceMap |> WonderCommonlib.MutableSparseMapService.copy,
-        glTextureMap: glTextureMap |> WonderCommonlib.MutableSparseMapService.copy,
+        glTextureMap:
+          glTextureMap |> WonderCommonlib.MutableSparseMapService.copy,
         bindTextureUnitCacheMap:
           WonderCommonlib.MutableSparseMapService.createEmpty(),
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
         needAddedSourceArray: needAddedSourceArray |> Js.Array.copy,
         needInitedTextureIndexArray:
           needInitedTextureIndexArray |> Js.Array.copy,
+        needDisposedTextureIndexArray:
+          needDisposedTextureIndexArray |> Js.Array.copy,
       }),
   };
 };

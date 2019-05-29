@@ -40,38 +40,6 @@ let _ =
         fetch;
       };
 
-      testPromise("init cache", () => {
-        let (rab1RelativePath, rab2RelativePath, rab3RelativePath) =
-          ImportABTool.RAB.getRabRelativePaths();
-
-        GenerateAllABTool.TestWithTwoRAB.generateTwoRABs(state^)
-        |> then_(((rab1, rab2)) => {
-             let fetch =
-               _buildFakeFetch(
-                 ~sandbox,
-                 ~arrayBuffer1=rab1,
-                 ~arrayBuffer2=rab2,
-               );
-
-             let valueRef = ref(0);
-
-             ImportABTool.RAB.loadAllDependencyRABAndSetToState(
-               ~abRelativePath=rab3RelativePath,
-               ~initAssetBundleArrayBufferCache=
-                 (.) => {
-                   valueRef := 2;
-
-                   Most.empty();
-                 },
-               ~isAssetBundleArrayBufferCachedFunc=
-                 (. _, _) => false |> Most.just,
-               ~fetchFunc=fetch,
-               (),
-             )
-             |> MostTool.testStream(() => valueRef^ |> expect == 2 |> resolve);
-           });
-      });
-
       testPromise("if dependency rab is loaded, not load", () => {
         let (rab1RelativePath, rab2RelativePath, rab3RelativePath) =
           ImportABTool.RAB.getRabRelativePaths();
@@ -101,7 +69,8 @@ let _ =
              ImportABTool.RAB.loadAllDependencyRABAndSetToState(
                ~abRelativePath=rab3RelativePath,
                ~isAssetBundleArrayBufferCachedFunc=
-                 (. _, _) => false |> Most.just,
+                 (. _, _) =>
+                   Js.Promise.make((~resolve, ~reject) => resolve(. false)),
                ~fetchFunc=fetch,
                (),
              )
@@ -128,9 +97,11 @@ let _ =
                ImportABTool.RAB.loadAllDependencyRABAndSetToState(
                  ~abRelativePath=rab3RelativePath,
                  ~isAssetBundleArrayBufferCachedFunc=
-                   (. _, _) => true |> Most.just,
+                   (. _, _) =>
+                     Js.Promise.make((~resolve, ~reject) => resolve(. true)),
                  ~getAssetBundleArrayBufferCacheFunc=
-                   (. _) => rab1 |> Most.just,
+                   (. _) =>
+                     Js.Promise.make((~resolve, ~reject) => resolve(. rab1)),
                  ~fetchFunc=fetch,
                  (),
                )
@@ -158,13 +129,17 @@ let _ =
                    ~abRelativePath=rab3RelativePath,
                    ~isAssetBundleArrayBufferCachedFunc=
                      (. abRelativePath, hashId) =>
-                       (
-                         JudgeTool.isEqual(abRelativePath, rab1RelativePath) ?
-                           true : false
-                       )
-                       |> Most.just,
+                       Js.Promise.make((~resolve, ~reject) =>
+                         resolve(.
+                           JudgeTool.isEqual(abRelativePath, rab1RelativePath) ?
+                             true : false,
+                         )
+                       ),
                    ~getAssetBundleArrayBufferCacheFunc=
-                     (. _) => rab1 |> Most.just,
+                     (. _) =>
+                       Js.Promise.make((~resolve, ~reject) =>
+                         resolve(. rab1)
+                       ),
                    ~fetchFunc=fetch,
                    (),
                  )
@@ -200,20 +175,26 @@ let _ =
                    ~abRelativePath=rab3RelativePath,
                    ~isAssetBundleArrayBufferCachedFunc=
                      (. abRelativePath, hashId) =>
-                       (
-                         JudgeTool.isEqual(abRelativePath, rab1RelativePath) ?
-                           true : false
-                       )
-                       |> Most.just,
+                       Js.Promise.make((~resolve, ~reject) =>
+                         resolve(.
+                           JudgeTool.isEqual(abRelativePath, rab1RelativePath) ?
+                             true : false,
+                         )
+                       ),
                    ~getAssetBundleArrayBufferCacheFunc=
-                     (. _) => rab1 |> Most.just,
+                     (. _) =>
+                       Js.Promise.make((~resolve, ~reject) =>
+                         resolve(. rab1)
+                       ),
                    ~cacheAssetBundleArrayBufferFunc=
                      (. abRelativePath, ab, hashId) => {
                        cachedABRelativePathRef := abRelativePath;
 
                        cachedABHashIdRef := hashId;
 
-                       Most.empty();
+                       Js.Promise.make((~resolve, ~reject) =>
+                         (PromiseType.convertResolveToUnit(resolve))(.)
+                       );
                      },
                    ~fetchFunc=fetch,
                    (),

@@ -1,7 +1,7 @@
 open StateDataMainType;
 
 let _getMainInitJobHandles = () => [
-  ("detect_environment", DetectEnvironmentWorkerJob.execJob),
+  ("detect_environment", DetectEnvironmentMainWorkerJob.execJob),
   ("init_imgui", InitIMGUIMainWorkerJob.execJob),
   ("init_event", InitEventMainWorkerJob.execJob),
   ("init_script", InitScriptMainWorkerJob.execJob),
@@ -105,6 +105,7 @@ let _getWorkerJobHandles = () => [
   ("get_dispose_data", GetDisposeDataRenderWorkerJob.execJob),
   ("dispose_vbo", DisposeVboRenderWorkerJob.execJob),
   ("dispose_sourceInstance", DisposeSourceInstanceRenderWorkerJob.execJob),
+  ("dispose_texture", DisposeTextureRenderWorkerJob.execJob),
   ("send_finish_dispose_data", SendFinishDisposeDataRenderWorkerJob.execJob),
 ];
 
