@@ -63,5 +63,11 @@ let bindFlyCameraControllerEvent = (cameraController, state) =>
 let unbindFlyCameraControllerEvent = (cameraController, state) =>
   EventFlyCameraControllerMainService.unbindEvent(cameraController, state);
 
+let unbindFlyCameraControllerPointScaleEvent = (cameraController, state) =>
+  EventFlyCameraControllerMainService.unbindPointScaleEvent(
+    cameraController,
+    state,
+  );
+
 let isBindFlyCameraControllerEvent = (cameraController, state) =>
   EventFlyCameraControllerMainService.isBindEvent(cameraController, state);

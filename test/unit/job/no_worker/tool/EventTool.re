@@ -91,8 +91,8 @@ let triggerDomEvent = [%raw
                         _extend(evObj, event);
                     }
 
-                        dom = oTarget;
-                        dom.dispatchEvent(evObj);
+                    dom = oTarget;
+                    dom.dispatchEvent(evObj);
                 }
                 /* else if (isHostMethod(document, "createEventObject")) {
                         dom = oTarget;

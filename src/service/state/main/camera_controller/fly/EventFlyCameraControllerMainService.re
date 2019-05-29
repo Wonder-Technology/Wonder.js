@@ -129,7 +129,7 @@ let _changeOrbit =
      );
 };
 
-let _changePositionByKeyDown =
+let _translationByKeyDown =
     (
       cameraController,
       keyboardEvent: keyboardEvent,
@@ -170,7 +170,7 @@ let _changePositionByKeyDown =
   };
 };
 
-let _changePositionByPointScale =
+let _translationByPointScale =
     (cameraController, pointEvent: pointEvent, flyCameraControllerRecord) => {
   let wheelSpeed =
     OperateFlyCameraControllerService.unsafeGetWheelSpeed(
@@ -255,7 +255,7 @@ let prepareBindEvent = (cameraController, state) => {
         {
           ...state,
           flyCameraControllerRecord:
-            _changePositionByPointScale(
+            _translationByPointScale(
               cameraController,
               pointEvent,
               flyCameraControllerRecord,
@@ -266,7 +266,8 @@ let prepareBindEvent = (cameraController, state) => {
     };
   let keydownHandleFunc =
     (. event: EventType.keyboardEvent, {flyCameraControllerRecord} as state) =>
-      _changePositionByKeyDown(cameraController, event, state);
+      isTriggerKeydownEventHandler(event) ?
+        _translationByKeyDown(cameraController, event, state) : state;
 
   let state = {
     ...state,
@@ -347,10 +348,7 @@ let bindEvent = (cameraController, state) => {
   let state =
     ManageEventMainService.onKeyboardEvent(
       ~eventName=EventType.KeyDown,
-      ~handleFunc=
-        (. event, state) =>
-          isTriggerKeydownEventHandler(event) ?
-            keydownHandleFunc(. event, state) : state,
+      ~handleFunc=keydownHandleFunc,
       ~state,
       (),
     );
@@ -545,6 +543,9 @@ let unbindEvent = (cameraController, state) =>
   |> _disposePointDragOverEventHandleFuncListMap(cameraController)
   |> _disposePointScaleEventHandleFuncListMap(cameraController)
   |> _disposeKeyDownEventHandleFuncListMap(cameraController);
+
+let unbindPointScaleEvent = (cameraController, state) =>
+  state |> _disposePointScaleEventHandleFuncListMap(cameraController);
 
 let isBindEvent = (cameraController, {flyCameraControllerRecord} as state) => {
   let {pointDragStartEventHandleFuncListMap}: flyCameraControllerRecord = flyCameraControllerRecord;
