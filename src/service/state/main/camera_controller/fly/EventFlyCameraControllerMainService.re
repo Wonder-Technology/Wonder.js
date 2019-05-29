@@ -117,14 +117,14 @@ let _changeOrbit =
       |> WonderWebgl.DomExtendType.htmlElementToJsObj
     )##height;
 
-  let factor = rotateSpeed /. canvasHeight;
+  let factor = canvasHeight === 0. ? 0. : rotateSpeed /. canvasHeight;
 
   flyCameraControllerRecord
-  |> OperateFlyCameraControllerService.setRotation(
+  |> OperateFlyCameraControllerService.setEulerAngleDiff(
        cameraController,
        {
-         rotationX: factor *. (x |> float_of_int),
-         rotationY: factor *. (y |> float_of_int),
+         diffX: factor *. (y |> float_of_int),
+         diffY: factor *. (x |> float_of_int),
        },
      );
 };
@@ -162,7 +162,7 @@ let _changePositionByKeyDown =
       ...state,
       flyCameraControllerRecord:
         flyCameraControllerRecord
-        |> OperateFlyCameraControllerService.setPosition(
+        |> OperateFlyCameraControllerService.setTranslationDiff(
              cameraController,
              (dx, dy, dz),
            ),
@@ -182,7 +182,7 @@ let _changePositionByPointScale =
   | None => flyCameraControllerRecord
   | Some(wheel) =>
     flyCameraControllerRecord
-    |> OperateFlyCameraControllerService.setPosition(
+    |> OperateFlyCameraControllerService.setTranslationDiff(
          cameraController,
          (0., 0., -. wheelSpeed *. (wheel |> float_of_int)),
        )

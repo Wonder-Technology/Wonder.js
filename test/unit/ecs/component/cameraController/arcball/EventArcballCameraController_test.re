@@ -16,13 +16,13 @@ let _ =
 
     describe("bind arcballCameraController's event", () => {
       let _prepareMouseEvent = () =>
-        EventArcballCameraControllerTool.prepareMouseEvent(sandbox);
+        EventCameraControllerTool.prepareMouseEvent(sandbox);
 
       describe("test bind one arcballCameraController's event", () => {
         describe("bind event", () => {
           describe("support pointer lock", () => {
             let _prepareTouchEvent = () =>
-              EventArcballCameraControllerTool.prepareTouchEvent(sandbox);
+              EventCameraControllerTool.prepareTouchEvent(sandbox);
 
             describe("bind point drag start event", () => {
               let _prepareForPointerLock = (sandbox, state) =>
@@ -350,7 +350,7 @@ let _ =
           describe("bind keydown event", () => {
             let _prepareKeyEvent = () => {
               let state =
-                EventArcballCameraControllerTool.prepareKeyboardEvent(
+                EventCameraControllerTool.prepareKeyboardEvent(
                   sandbox,
                 );
               let (

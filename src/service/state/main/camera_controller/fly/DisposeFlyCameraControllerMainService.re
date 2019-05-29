@@ -13,8 +13,8 @@ let _disposeData = (cameraController, state) => {
     moveSpeedMap,
     wheelSpeedMap,
     rotateSpeedMap,
-    rotationMap,
-    positionMap,
+    eulerAngleDiffMap,
+    translationDiffMap,
     gameObjectMap,
   }: flyCameraControllerRecord = flyCameraControllerRecord;
 
@@ -34,11 +34,11 @@ let _disposeData = (cameraController, state) => {
       rotateSpeedMap:
         rotateSpeedMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),
-      rotationMap:
-        rotationMap
+      eulerAngleDiffMap:
+        eulerAngleDiffMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),
-      positionMap:
-        positionMap
+      translationDiffMap:
+        translationDiffMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),
       gameObjectMap:
         gameObjectMap

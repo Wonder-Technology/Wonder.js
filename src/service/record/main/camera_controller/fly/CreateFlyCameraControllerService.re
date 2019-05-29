@@ -7,7 +7,7 @@ open FlyCameraControllerType;
 let _setDefaultValue =
     (
       index,
-      {moveSpeedMap, wheelSpeedMap, rotateSpeedMap, rotationMap, positionMap} as record: flyCameraControllerRecord,
+      {moveSpeedMap, wheelSpeedMap, rotateSpeedMap, eulerAngleDiffMap, translationDiffMap} as record: flyCameraControllerRecord,
     ) => {
   ...record,
   moveSpeedMap:
@@ -16,14 +16,14 @@ let _setDefaultValue =
     wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 2.0),
   rotateSpeedMap:
     rotateSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 100.),
-  rotationMap:
-    rotationMap
+  eulerAngleDiffMap:
+    eulerAngleDiffMap
     |> WonderCommonlib.MutableSparseMapService.set(
          index,
-         {rotationX: 0., rotationY: 0.},
+         {diffX: 0., diffY: 0.},
        ),
-  positionMap:
-    positionMap
+  translationDiffMap:
+    translationDiffMap
     |> WonderCommonlib.MutableSparseMapService.set(index, (0., 0., 0.)),
 };
 

@@ -144,6 +144,17 @@ let disposeGameObjectArcballCameraControllerComponent =
     [|component|],
   );
 
+let disposeGameObjectFlyCameraControllerComponent =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) =>
+  DisposeComponentGameObjectMainService.batchDisposeFlyCameraControllerComponent(
+    state,
+    [|component|],
+  );
+
 let disposeGameObjectTransformComponent =
     (
       gameObject: GameObjectPrimitiveType.gameObject,

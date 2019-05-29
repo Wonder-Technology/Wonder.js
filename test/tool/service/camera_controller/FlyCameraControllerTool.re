@@ -29,6 +29,38 @@ let createGameObject = state => {
   );
 };
 
+let unsafeGetEulerAngleDiff = (cameraController, state) =>
+  state.flyCameraControllerRecord
+  |> OperateFlyCameraControllerService.unsafeGetEulerAngleDiff(
+       cameraController,
+     );
+
+let setEulerAngleDiff = (cameraController, value, state) => {
+  ...state,
+  flyCameraControllerRecord:
+    OperateFlyCameraControllerService.setEulerAngleDiff(
+      cameraController,
+      value,
+      state.flyCameraControllerRecord,
+    ),
+};
+
+let unsafeGetTranslationDiff = (cameraController, state) =>
+  state.flyCameraControllerRecord
+  |> OperateFlyCameraControllerService.unsafeGetTranslationDiff(
+       cameraController,
+     );
+
+let setTranslationDiff = (cameraController, value, state) => {
+  ...state,
+  flyCameraControllerRecord:
+    OperateFlyCameraControllerService.setTranslationDiff(
+      cameraController,
+      value,
+      state.flyCameraControllerRecord,
+    ),
+};
+
 /* let setFlyCameraControllerData = (cameraController, state) => {
      open FlyCameraControllerAPI;
 

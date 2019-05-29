@@ -56,471 +56,409 @@ let _ =
         |> expect == gameObject;
       })
     );
-    /* describe("bind/unbind FlyCameraController event", () => {
-         let _prepareMouseEvent = sandbox => {
-           let state =
-             EventFlyCameraControllerTool.prepareMouseEvent(sandbox);
-           let (state, gameObject, _, (cameraController, _, _)) =
-             FlyCameraControllerTool.createGameObject(state);
-           let state = state |> NoWorkerJobTool.execInitJobs;
-           let rotateSpeed = 2.5;
-           let phi = 1.;
-           let theta = 0.5;
+    describe("bind/unbind FlyCameraController event", () => {
+      let _prepareMouseEvent = sandbox => {
+        let state = EventCameraControllerTool.prepareMouseEvent(sandbox);
+        let (state, gameObject, _, (cameraController, _, _)) =
+          FlyCameraControllerTool.createGameObject(state);
+        let state = state |> NoWorkerJobTool.execInitJobs;
+        let rotateSpeed = 2.5;
+        let eulerAngleDiff = {diffX: 1., diffY: 0.};
+        let translationDiff = (0., 0., 2.);
 
-           let state =
-             state
-             |> setFlyCameraControllerRotateSpeed(
-                  cameraController,
-                  rotateSpeed,
-                )
-             |> setFlyCameraControllerPhi(cameraController, phi)
-             |> setFlyCameraControllerTheta(cameraController, theta);
-
-           (state, cameraController, phi, theta);
-         };
-
-         let _triggerEvent = state => {
-           let state = MainStateTool.setState(state);
-           EventTool.triggerDomEvent(
-             "mousedown",
-             EventTool.getPointEventBindedDom(state),
-             MouseEventTool.buildMouseEvent(),
-           );
-           EventTool.triggerDomEvent(
-             "mousemove",
-             EventTool.getPointEventBindedDom(state),
-             MouseEventTool.buildMouseEvent(~movementX=1, ~movementY=2, ()),
-           );
-           let state = EventTool.restore(state);
-
-           state;
-         };
-
-         describe(
-           "if unbind event, FlyCameraController event shouldn't work", () =>
-           test("test point drag event", () => {
-             let (state, cameraController, phi, theta) =
-               _prepareMouseEvent(sandbox);
-             let state =
-               FlyCameraControllerAPI.unbindFlyCameraControllerEvent(
-                 cameraController,
-                 state,
-               );
-
-             let state = _triggerEvent(state);
-
-             (
-               state |> unsafeGetFlyCameraControllerPhi(cameraController),
-               state |> unsafeGetFlyCameraControllerTheta(cameraController),
+        let state =
+          state
+          |> setFlyCameraControllerRotateSpeed(cameraController, rotateSpeed)
+          |> FlyCameraControllerTool.setEulerAngleDiff(
+               cameraController,
+               eulerAngleDiff,
              )
-             |> expect == (phi, theta);
-           })
-         );
+          |> FlyCameraControllerTool.setTranslationDiff(
+               cameraController,
+               translationDiff,
+             );
 
-         describe(
-           "if bind event after unbind event, FlyCameraController event should work",
-           () =>
-           test("test point drag event", () => {
-             let (state, cameraController, phi, theta) =
-               _prepareMouseEvent(sandbox);
-             let (state, _) =
-               MouseEventTool.prepareForPointerLock(sandbox, state);
-             let state =
-               FlyCameraControllerAPI.unbindFlyCameraControllerEvent(
+        (state, cameraController, eulerAngleDiff, translationDiff);
+      };
+
+      let _triggerEvent = state => {
+        let state = MainStateTool.setState(state);
+        EventTool.triggerDomEvent(
+          "mousedown",
+          EventTool.getPointEventBindedDom(state),
+          MouseEventTool.buildMouseEvent(),
+        );
+        EventTool.triggerDomEvent(
+          "mousemove",
+          EventTool.getPointEventBindedDom(state),
+          MouseEventTool.buildMouseEvent(~movementX=1, ~movementY=2, ()),
+        );
+        let state = EventTool.restore(state);
+
+        state;
+      };
+
+      describe("if unbind event, FlyCameraController event shouldn't work", () =>
+        test("test point drag event", () => {
+          let (state, cameraController, eulerAngleDiff, translationDiff) =
+            _prepareMouseEvent(sandbox);
+          let state =
+            FlyCameraControllerAPI.unbindFlyCameraControllerEvent(
+              cameraController,
+              state,
+            );
+
+          let state = _triggerEvent(state);
+
+          (
+            state
+            |> FlyCameraControllerTool.unsafeGetEulerAngleDiff(
                  cameraController,
-                 state,
-               );
-             let state =
-               FlyCameraControllerAPI.bindFlyCameraControllerEvent(
+               ),
+            state
+            |> FlyCameraControllerTool.unsafeGetTranslationDiff(
                  cameraController,
-                 state,
-               );
+               ),
+          )
+          |> expect == (eulerAngleDiff, translationDiff);
+        })
+      );
 
-             let state = _triggerEvent(state);
+      describe(
+        "if bind event after unbind event, FlyCameraController event should work",
+        () =>
+        test("test point drag event", () => {
+          let (state, cameraController, eulerAngleDiff, translationDiff) =
+            _prepareMouseEvent(sandbox);
+          let (state, _) =
+            MouseEventTool.prepareForPointerLock(sandbox, state);
+          let state =
+            FlyCameraControllerAPI.unbindFlyCameraControllerEvent(
+              cameraController,
+              state,
+            );
+          let state =
+            FlyCameraControllerAPI.bindFlyCameraControllerEvent(
+              cameraController,
+              state,
+            );
 
-             (
-               state |> unsafeGetFlyCameraControllerPhi(cameraController),
-               state |> unsafeGetFlyCameraControllerTheta(cameraController),
-             )
-             |> expect != (phi, theta);
-           })
-         );
-       }); */
-    /* describe("dispose component", () => {
-             let _prepareTwo = state => {
-               let (state, gameObject1, _, (cameraController1, _, _)) =
-                 FlyCameraControllerTool.createGameObject(state^);
-               let (state, gameObject2, _, (cameraController2, _, _)) =
-                 FlyCameraControllerTool.createGameObject(state);
-               (
-                 state,
+          let state = _triggerEvent(state);
+
+          (
+            state
+            |> FlyCameraControllerTool.unsafeGetEulerAngleDiff(
+                 cameraController,
+               ),
+            state
+            |> FlyCameraControllerTool.unsafeGetTranslationDiff(
+                 cameraController,
+               ),
+          )
+          |> expect != (eulerAngleDiff, translationDiff);
+        })
+      );
+    });
+
+    describe("dispose component", () => {
+      let _prepareTwo = state => {
+        let (state, gameObject1, _, (cameraController1, _, _)) =
+          FlyCameraControllerTool.createGameObject(state^);
+        let (state, gameObject2, _, (cameraController2, _, _)) =
+          FlyCameraControllerTool.createGameObject(state);
+        (
+          state,
+          gameObject1,
+          cameraController1,
+          gameObject2,
+          cameraController2,
+        );
+      };
+
+      describe("dispose data", () => {
+        test("dirtyArray: remove from array(include duplicated ones)", () => {
+          let (state, gameObject1, _, (cameraController1, _, _)) =
+            FlyCameraControllerTool.createGameObject(state^);
+          let state =
+            FlyCameraControllerAPI.setFlyCameraControllerRotateSpeed(
+              cameraController1,
+              11.,
+              state,
+            );
+
+          let state =
+            state
+            |> GameObjectTool.disposeGameObjectFlyCameraControllerComponent(
                  gameObject1,
                  cameraController1,
-                 gameObject2,
-                 cameraController2,
-               );
-             };
-
-             describe("dispose data", () => {
-               test("dirtyArray: remove from array(include duplicated ones)", () => {
-                 let (state, gameObject1, _, (cameraController1, _, _)) =
-                   FlyCameraControllerTool.createGameObject(state^);
-                 let state =
-                   FlyCameraControllerAPI.setFlyCameraControllerDistance(
-                     cameraController1,
-                     11.,
-                     state,
-                   )
-                   |> FlyCameraControllerAPI.setFlyCameraControllerPhi(
-                        cameraController1,
-                        0.1,
-                      );
-
-                 let state =
-                   state
-                   |> GameObjectTool.disposeGameObjectFlyCameraControllerComponent(
-                        gameObject1,
-                        cameraController1,
-                      );
-                 let {dirtyArray} = state.FlyCameraControllerRecord;
-                 dirtyArray |> expect == [||];
-               });
-               test(
-                 "remove from distanceMap, minDistanceMap, phiMap, thetaMap, thetaMarginMap, targetMap, moveSpeedXMap, moveSpeedYMap, rotateSpeedMap, wheelSpeedMap, gameObjectMap",
-                 () => {
-                   let (
-                     state,
-                     gameObject1,
-                     cameraController1,
-                     gameObject2,
-                     cameraController2,
-                   ) =
-                     _prepareTwo(state);
-                   let state =
-                     state
-                     |> GameObjectTool.disposeGameObjectFlyCameraControllerComponent(
-                          gameObject1,
-                          cameraController1,
-                        );
-                   let {
-                     distanceMap,
-                     minDistanceMap,
-                     phiMap,
-                     thetaMap,
-                     thetaMarginMap,
-                     targetMap,
-                     moveSpeedXMap,
-                     moveSpeedYMap,
-                     rotateSpeedMap,
-                     wheelSpeedMap,
-                     gameObjectMap,
-                   } =
-                     state.FlyCameraControllerRecord;
-                   (
-                     distanceMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     minDistanceMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     phiMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     thetaMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     thetaMarginMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     targetMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     moveSpeedXMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     moveSpeedYMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     rotateSpeedMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     wheelSpeedMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     gameObjectMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                   )
-                   |> expect
-                   == (
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                        false,
-                      );
-                 },
                );
 
-               describe("remove from eventHandleFunc map", () => {
-                 test("unbind event", () => {
-                   let state = MouseEventTool.prepare(~sandbox, ());
-                   let (state, gameObject1, _, (cameraController1, _, _)) =
-                     FlyCameraControllerTool.createGameObject(state);
-                   let state = state |> NoWorkerJobTool.execInitJobs;
-                   let value = ref(0);
-                   let pointDownHandleFunc =
-                     (. event, state) => {
-                       value := value^ + 20;
-                       (state, event);
-                     };
-                   let pointUpHandleFunc =
-                     (. event, state) => {
-                       value := value^ + 21;
-                       (state, event);
-                     };
-                   let pointDragHandleFunc =
-                     (. event, state) => {
-                       value := value^ + 1;
-                       (state, event);
-                     };
-                   let pointScaleHandleFunc =
-                     (. event, state) => {
-                       value := value^ + 2;
-                       (state, event);
-                     };
-                   let keydownHandleFunc =
-                     (. event, state) => {
-                       value := value^ + 3;
-                       state;
-                     };
-                   let state =
-                     state
-                     |> ManageEventAPI.onCustomGlobalEvent(
-                          NameEventService.getPointDownEventName(),
-                          0,
-                          pointDownHandleFunc,
-                        )
-                     |> ManageEventAPI.onCustomGlobalEvent(
-                          NameEventService.getPointUpEventName(),
-                          0,
-                          pointUpHandleFunc,
-                        )
-                     |> ManageEventAPI.onCustomGlobalEvent(
-                          NameEventService.getPointDragOverEventName(),
-                          0,
-                          pointDragHandleFunc,
-                        )
-                     |> ManageEventAPI.onCustomGlobalEvent(
-                          NameEventService.getPointScaleEventName(),
-                          0,
-                          pointScaleHandleFunc,
-                        )
-                     |> ManageEventAPI.onKeyboardEvent(
-                          EventType.KeyDown,
-                          0,
-                          keydownHandleFunc,
-                        );
-                   let state =
-                     state
-                     |> FlyCameraControllerTool.addPointDragStartEventHandleFunc(
-                          cameraController1,
-                          pointDownHandleFunc,
-                        )
-                     |> FlyCameraControllerTool.addPointDragDropEventHandleFunc(
-                          cameraController1,
-                          pointUpHandleFunc,
-                        )
-                     |> FlyCameraControllerTool.addPointDragOverEventHandleFunc(
-                          cameraController1,
-                          pointDragHandleFunc,
-                        )
-                     |> FlyCameraControllerTool.addPointScaleEventHandleFunc(
-                          cameraController1,
-                          pointScaleHandleFunc,
-                        )
-                     |> FlyCameraControllerTool.addKeydownEventHandleFunc(
-                          cameraController1,
-                          keydownHandleFunc,
-                        );
+          state.flyCameraControllerRecord.dirtyArray |> expect == [||];
+        });
+        test(
+          "remove from eulerAngleDiffMap, translationDiffMap, moveSpeedMap, rotateSpeedMap, wheelSpeedMap, gameObjectMap",
+          () => {
+            let (
+              state,
+              gameObject1,
+              cameraController1,
+              gameObject2,
+              cameraController2,
+            ) =
+              _prepareTwo(state);
+            let state =
+              state
+              |> GameObjectTool.disposeGameObjectFlyCameraControllerComponent(
+                   gameObject1,
+                   cameraController1,
+                 );
+            let {
+              moveSpeedMap,
+              wheelSpeedMap,
+              rotateSpeedMap,
+              eulerAngleDiffMap,
+              translationDiffMap,
+              gameObjectMap,
+            } =
+              state.flyCameraControllerRecord;
+            (
+              moveSpeedMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+              eulerAngleDiffMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+              translationDiffMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+              wheelSpeedMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+              gameObjectMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+            )
+            |> expect == (false, false, false, false, false);
+          },
+        );
 
-                   let state =
-                     state
-                     |> GameObjectTool.disposeGameObjectFlyCameraControllerComponent(
-                          gameObject1,
-                          cameraController1,
-                        );
-
-                   let state = MainStateTool.setState(state);
-                   EventTool.triggerDomEvent(
-                     "mousewheel",
-                     EventTool.getPointEventBindedDom(state),
-                     MouseEventTool.buildMouseEvent(),
-                   );
-                   EventTool.triggerDomEvent(
-                     "mousedown",
-                     EventTool.getPointEventBindedDom(state),
-                     MouseEventTool.buildMouseEvent(),
-                   );
-                   EventTool.triggerDomEvent(
-                     "mousemove",
-                     EventTool.getPointEventBindedDom(state),
-                     MouseEventTool.buildMouseEvent(),
-                   );
-                   EventTool.triggerDomEvent(
-                     "mouseup",
-                     EventTool.getPointEventBindedDom(state),
-                     MouseEventTool.buildMouseEvent(),
-                   );
-                   EventTool.triggerDomEvent(
-                     "keydown",
-                     EventTool.getPointEventBindedDom(state),
-                     MouseEventTool.buildMouseEvent(),
-                   );
-                   let state = EventTool.restore(state);
-                   value^ |> expect == 0;
-                 });
-                 test("remove from map", () => {
-                   let (state, gameObject1, _, (cameraController1, _, _)) =
-                     FlyCameraControllerTool.createGameObject(state^);
-                   let value = ref(0);
-                   let pointDownHandleFunc =
-                     (. event, state) => {
-                       value := value^ + 1;
-                       (state, event);
-                     };
-                   let pointUpHandleFunc =
-                     (. event, state) => {
-                       value := value^ + 1;
-                       (state, event);
-                     };
-                   let pointDragHandleFunc =
-                     (. event, state) => {
-                       value := value^ + 1;
-                       (state, event);
-                     };
-                   let pointScaleHandleFunc =
-                     (. event, state) => {
-                       value := value^ + 2;
-                       (state, event);
-                     };
-                   let keydownHandleFunc =
-                     (. event, state) => {
-                       value := value^ + 3;
-                       state;
-                     };
-                   let state =
-                     state
-                     |> FlyCameraControllerTool.addPointDragStartEventHandleFunc(
-                          cameraController1,
-                          pointDownHandleFunc,
-                        )
-                     |> FlyCameraControllerTool.addPointDragDropEventHandleFunc(
-                          cameraController1,
-                          pointUpHandleFunc,
-                        )
-                     |> FlyCameraControllerTool.addPointDragOverEventHandleFunc(
-                          cameraController1,
-                          pointDragHandleFunc,
-                        )
-                     |> FlyCameraControllerTool.addPointScaleEventHandleFunc(
-                          cameraController1,
-                          pointScaleHandleFunc,
-                        )
-                     |> FlyCameraControllerTool.addKeydownEventHandleFunc(
-                          cameraController1,
-                          keydownHandleFunc,
-                        );
-
-                   let state =
-                     state
-                     |> GameObjectTool.disposeGameObjectFlyCameraControllerComponent(
-                          gameObject1,
-                          cameraController1,
-                        );
-
-                   let {
-                     pointDragStartEventHandleFuncListMap,
-                     pointDragDropEventHandleFuncListMap,
-                     pointDragOverEventHandleFuncListMap,
-                     pointScaleEventHandleFuncListMap,
-                     keydownEventHandleFuncListMap,
-                   } =
-                     state.FlyCameraControllerRecord;
-                   (
-                     pointDragStartEventHandleFuncListMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     pointDragDropEventHandleFuncListMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     pointDragOverEventHandleFuncListMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     pointScaleEventHandleFuncListMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                     keydownEventHandleFuncListMap
-                     |> WonderCommonlib.MutableSparseMapService.has(
-                          cameraController1,
-                        ),
-                   )
-                   |> expect == (false, false, false, false, false);
-                 });
-               });
-
-               describe("fix bug", () =>
-                 test(
-                   {|dispose component;
-         loopBody;
-         loopBody;
-
-       component should be removed from gameObject
-         |},
-                   () => {
-                     let (state, gameObject1, _, (cameraController1, _, _)) =
-                       FlyCameraControllerTool.createGameObject(state^);
-                     let state =
-                       state
-                       |> GameObjectAPI.disposeGameObjectFlyCameraControllerComponent(
-                            gameObject1,
-                            cameraController1,
-                          );
-
-                     let state = state |> DisposeJob.execJob(None);
-                     let state = state |> DisposeJob.execJob(None);
-
-                     GameObjectAPI.hasGameObjectFlyCameraControllerComponent(
-                       gameObject1,
-                       state,
-                     )
-                     |> expect == false;
-                   },
+        describe("remove from eventHandleFunc map", () => {
+          test("unbind event", () => {
+            let state = MouseEventTool.prepare(~sandbox, ());
+            let (state, gameObject1, _, (cameraController1, _, _)) =
+              FlyCameraControllerTool.createGameObject(state);
+            let state = state |> NoWorkerJobTool.execInitJobs;
+            let value = ref(0);
+            let pointDownHandleFunc =
+              (. event, state) => {
+                value := value^ + 25;
+                (state, event);
+              };
+            let pointUpHandleFunc =
+              (. event, state) => {
+                value := value^ + 28;
+                (state, event);
+              };
+            let pointDragHandleFunc =
+              (. event, state) => {
+                value := value^ + 1;
+                (state, event);
+              };
+            let pointScaleHandleFunc =
+              (. event, state) => {
+                value := value^ + 2;
+                (state, event);
+              };
+            let keydownHandleFunc =
+              (. event, state) => {
+                value := value^ + 3;
+                state;
+              };
+            let state =
+              state
+              |> ManageEventAPI.onCustomGlobalEvent(
+                   NameEventService.getPointDownEventName(),
+                   0,
+                   pointDownHandleFunc,
                  )
-               );
-             });
-           }); */
+              |> ManageEventAPI.onCustomGlobalEvent(
+                   NameEventService.getPointUpEventName(),
+                   0,
+                   pointUpHandleFunc,
+                 )
+              |> ManageEventAPI.onCustomGlobalEvent(
+                   NameEventService.getPointDragOverEventName(),
+                   0,
+                   pointDragHandleFunc,
+                 )
+              |> ManageEventAPI.onCustomGlobalEvent(
+                   NameEventService.getPointScaleEventName(),
+                   0,
+                   pointScaleHandleFunc,
+                 )
+              |> ManageEventAPI.onKeyboardEvent(
+                   EventType.KeyDown,
+                   0,
+                   keydownHandleFunc,
+                 );
+            let state =
+              state
+              |> FlyCameraControllerTool.addPointDragStartEventHandleFunc(
+                   cameraController1,
+                   pointDownHandleFunc,
+                 )
+              |> FlyCameraControllerTool.addPointDragDropEventHandleFunc(
+                   cameraController1,
+                   pointUpHandleFunc,
+                 )
+              |> FlyCameraControllerTool.addPointDragOverEventHandleFunc(
+                   cameraController1,
+                   pointDragHandleFunc,
+                 )
+              |> FlyCameraControllerTool.addPointScaleEventHandleFunc(
+                   cameraController1,
+                   pointScaleHandleFunc,
+                 )
+              |> FlyCameraControllerTool.addKeydownEventHandleFunc(
+                   cameraController1,
+                   keydownHandleFunc,
+                 );
+
+            let state =
+              state
+              |> GameObjectTool.disposeGameObjectFlyCameraControllerComponent(
+                   gameObject1,
+                   cameraController1,
+                 );
+
+            let state = MainStateTool.setState(state);
+            EventTool.triggerDomEvent(
+              "mousewheel",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(),
+            );
+            EventTool.triggerDomEvent(
+              "mousedown",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(),
+            );
+            EventTool.triggerDomEvent(
+              "mousemove",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(),
+            );
+            EventTool.triggerDomEvent(
+              "mouseup",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(),
+            );
+            EventTool.triggerDomEvent(
+              "keydown",
+              EventTool.getPointEventBindedDom(state),
+              MouseEventTool.buildMouseEvent(),
+            );
+            let state = EventTool.restore(state);
+            value^ |> expect == 0;
+          });
+          test("remove from map", () => {
+            let (state, gameObject1, _, (cameraController1, _, _)) =
+              FlyCameraControllerTool.createGameObject(state^);
+            let value = ref(0);
+            let pointDownHandleFunc =
+              (. event, state) => {
+                value := value^ + 1;
+                (state, event);
+              };
+            let pointUpHandleFunc =
+              (. event, state) => {
+                value := value^ + 1;
+                (state, event);
+              };
+            let pointDragHandleFunc =
+              (. event, state) => {
+                value := value^ + 1;
+                (state, event);
+              };
+            let pointScaleHandleFunc =
+              (. event, state) => {
+                value := value^ + 2;
+                (state, event);
+              };
+            let keydownHandleFunc =
+              (. event, state) => {
+                value := value^ + 3;
+                state;
+              };
+            let state =
+              state
+              |> FlyCameraControllerTool.addPointDragStartEventHandleFunc(
+                   cameraController1,
+                   pointDownHandleFunc,
+                 )
+              |> FlyCameraControllerTool.addPointDragDropEventHandleFunc(
+                   cameraController1,
+                   pointUpHandleFunc,
+                 )
+              |> FlyCameraControllerTool.addPointDragOverEventHandleFunc(
+                   cameraController1,
+                   pointDragHandleFunc,
+                 )
+              |> FlyCameraControllerTool.addPointScaleEventHandleFunc(
+                   cameraController1,
+                   pointScaleHandleFunc,
+                 )
+              |> FlyCameraControllerTool.addKeydownEventHandleFunc(
+                   cameraController1,
+                   keydownHandleFunc,
+                 );
+
+            let state =
+              state
+              |> GameObjectTool.disposeGameObjectFlyCameraControllerComponent(
+                   gameObject1,
+                   cameraController1,
+                 );
+
+            let {
+              pointDragStartEventHandleFuncListMap,
+              pointDragDropEventHandleFuncListMap,
+              pointDragOverEventHandleFuncListMap,
+              pointScaleEventHandleFuncListMap,
+              keydownEventHandleFuncListMap,
+            }: flyCameraControllerRecord =
+              state.flyCameraControllerRecord;
+            (
+              pointDragStartEventHandleFuncListMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+              pointDragDropEventHandleFuncListMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+              pointDragOverEventHandleFuncListMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+              pointScaleEventHandleFuncListMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+              keydownEventHandleFuncListMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
+            )
+            |> expect == (false, false, false, false, false);
+          });
+        });
+      });
+    });
     /* describe("unsafeGetDistance", () =>
          test("test", () => {
            let (state, cameraController) =
@@ -603,15 +541,15 @@ let _ =
            |> expect == value;
          })
        );
-       describe("unsafeGetPhi", () =>
+       describe("unsafeGeteulerAngleDiff", () =>
          test("test", () => {
            let (state, cameraController) =
              createFlyCameraController(state^);
            let value = 65.;
            let state =
-             state |> setFlyCameraControllerPhi(cameraController, value);
+             state |> setFlyCameraControllereulerAngleDiff(cameraController, value);
            state
-           |> unsafeGetFlyCameraControllerPhi(cameraController)
+           |> unsafeGetFlyCameraControllereulerAngleDiff(cameraController)
            |> expect == value;
          })
        );
@@ -626,22 +564,22 @@ let _ =
            |> unsafeGetFlyCameraControllerTheta(cameraController)
            |> expect == value;
          });
-         test("constrain theta", () => {
+         test("constrain translationDiff", () => {
            let (state, cameraController) =
              createFlyCameraController(state^);
-           let theta = 3.2;
-           let thetaMargin = 1.;
+           let translationDiff = 3.2;
+           let translationDiffMargin = 1.;
            let state =
              state
              |> setFlyCameraControllerThetaMargin(
                   cameraController,
-                  thetaMargin,
+                  translationDiffMargin,
                 )
-             |> setFlyCameraControllerTheta(cameraController, theta);
+             |> setFlyCameraControllerTheta(cameraController, translationDiff);
            state
            |> unsafeGetFlyCameraControllerTheta(cameraController)
            |> expect == Js.Math._PI
-           -. thetaMargin;
+           -. translationDiffMargin;
          });
        });
        describe("unsafeGetThetaMargin", () => {
@@ -656,22 +594,22 @@ let _ =
            |> unsafeGetFlyCameraControllerThetaMargin(cameraController)
            |> expect == value;
          });
-         test("constrain theta", () => {
+         test("constrain translationDiff", () => {
            let (state, cameraController) =
              createFlyCameraController(state^);
-           let theta = 3.2;
-           let thetaMargin = 1.;
+           let translationDiff = 3.2;
+           let translationDiffMargin = 1.;
            let state =
              state
-             |> setFlyCameraControllerTheta(cameraController, theta)
+             |> setFlyCameraControllerTheta(cameraController, translationDiff)
              |> setFlyCameraControllerThetaMargin(
                   cameraController,
-                  thetaMargin,
+                  translationDiffMargin,
                 );
            state
            |> unsafeGetFlyCameraControllerTheta(cameraController)
            |> expect == Js.Math._PI
-           -. thetaMargin;
+           -. translationDiffMargin;
          });
        });
        describe("unsafeGetTarget", () =>

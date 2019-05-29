@@ -1,8 +1,8 @@
 open CameraControllerType;
 
-type rotation = {
-  rotationX: float,
-  rotationY: float,
+type eulerAngleDiffType = {
+  diffX: float,
+  diffY: float,
 };
 
 type dirtyArray = array(cameraController);

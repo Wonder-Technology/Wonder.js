@@ -4,11 +4,11 @@ open FlyCameraControllerType;
 
 let _resetFlyCameraDiffValue = (cameraController, flyCameraControllerRecord) =>
   flyCameraControllerRecord
-  |> OperateFlyCameraControllerService.setRotation(
+  |> OperateFlyCameraControllerService.setEulerAngleDiff(
        cameraController,
-       {rotationX: 0., rotationY: 0.},
+       {diffX: 0., diffY: 0.},
      )
-  |> OperateFlyCameraControllerService.setPosition(
+  |> OperateFlyCameraControllerService.setTranslationDiff(
        cameraController,
        (0., 0., 0.),
      );
@@ -29,8 +29,8 @@ let _updateTransform =
       gameObjectRecord,
     );
 
-  let {rotationX, rotationY} =
-    OperateFlyCameraControllerService.unsafeGetRotation(
+  let {diffX, diffY} =
+    OperateFlyCameraControllerService.unsafeGetEulerAngleDiff(
       cameraController,
       flyCameraControllerRecord,
     );
@@ -47,7 +47,7 @@ let _updateTransform =
       RecordTransformMainService.getRecord(state).localRotations,
     )
     |> Vector3Service.transformQuat(
-         OperateFlyCameraControllerService.unsafeGetPosition(
+         OperateFlyCameraControllerService.unsafeGetTranslationDiff(
            cameraController,
            flyCameraControllerRecord,
          ),
@@ -71,7 +71,7 @@ let _updateTransform =
            )
         |> ModelMatrixTransformService.setLocalEulerAnglesByTuple(
              transform,
-             (cameraRotationX -. rotationY, cameraRotationY -. rotationX, 0.),
+             (cameraRotationX -. diffX, cameraRotationY -. diffY, 0.),
            ),
       ),
     flyCameraControllerRecord:
