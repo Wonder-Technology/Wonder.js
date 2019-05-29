@@ -19,8 +19,7 @@ let _ =
         EventCameraControllerTool.prepareMouseEvent(sandbox);
 
       let _prepareKeyEvent = () => {
-        let state =
-          EventArcballCameraControllerTool.prepareKeyboardEvent(sandbox);
+        let state = EventCameraControllerTool.prepareKeyboardEvent(sandbox);
         let (
           state,
           gameObject,
