@@ -2,6 +2,17 @@ open StateDataMainType;
 
 open FlyCameraControllerType;
 
+let _resetFlyCameraDiffValue = (cameraController, flyCameraControllerRecord) =>
+  flyCameraControllerRecord
+  |> OperateFlyCameraControllerService.setRotation(
+       cameraController,
+       {rotationX: 0., rotationY: 0.},
+     )
+  |> OperateFlyCameraControllerService.setPosition(
+       cameraController,
+       (0., 0., 0.),
+     );
+
 let _updateTransform =
     (
       cameraController,
@@ -63,6 +74,8 @@ let _updateTransform =
              (cameraRotationX -. rotationY, cameraRotationY -. rotationX, 0.),
            ),
       ),
+    flyCameraControllerRecord:
+      _resetFlyCameraDiffValue(cameraController, flyCameraControllerRecord),
   };
   state;
 };

@@ -126,10 +126,6 @@ let _changeOrbit =
          rotationX: factor *. (x |> float_of_int),
          rotationY: factor *. (y |> float_of_int),
        },
-     )
-  |> OperateFlyCameraControllerService.setPosition(
-       cameraController,
-       (0., 0., 0.),
      );
 };
 
@@ -166,10 +162,6 @@ let _changePositionByKeyDown =
       ...state,
       flyCameraControllerRecord:
         flyCameraControllerRecord
-        |> OperateFlyCameraControllerService.setRotation(
-             cameraController,
-             {rotationX: 0., rotationY: 0.},
-           )
         |> OperateFlyCameraControllerService.setPosition(
              cameraController,
              (dx, dy, dz),
@@ -190,10 +182,6 @@ let _changePositionByPointScale =
   | None => flyCameraControllerRecord
   | Some(wheel) =>
     flyCameraControllerRecord
-    |> OperateFlyCameraControllerService.setRotation(
-         cameraController,
-         {rotationX: 0., rotationY: 0.},
-       )
     |> OperateFlyCameraControllerService.setPosition(
          cameraController,
          (0., 0., -. wheelSpeed *. (wheel |> float_of_int)),
