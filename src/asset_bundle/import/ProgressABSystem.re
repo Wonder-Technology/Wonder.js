@@ -1,7 +1,7 @@
 module RAB = {
   let getAllNeededABCount = (abRelativePath, wabRelativePath, state) =>
     (
-      FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+      FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
         abRelativePath,
         OperateWABAssetBundleMainService.unsafeGetWholeDependencyRelationMap(
           wabRelativePath,
@@ -14,7 +14,7 @@ module RAB = {
 
   let getLoadedNeededABCount = (abRelativePath, wabRelativePath, state) =>
     (
-      FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+      FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
         abRelativePath,
         OperateWABAssetBundleMainService.unsafeGetWholeDependencyRelationMap(
           wabRelativePath,

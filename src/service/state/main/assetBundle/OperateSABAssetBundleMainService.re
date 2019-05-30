@@ -129,7 +129,7 @@ let canAssemble =
     ) {
     | None => false
     | Some(wholeDependencyRelationMap) =>
-      FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+      FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
         sabRelativePath,
         wholeDependencyRelationMap,
       )

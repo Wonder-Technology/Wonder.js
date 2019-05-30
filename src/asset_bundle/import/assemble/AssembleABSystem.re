@@ -40,7 +40,7 @@ module SAB = {
     ABBufferViewUtils.isNoneBufferViewIndex(bufferView);
 
   let _buildImageArray =
-      ({images, bufferViews}, binBuffer, allDependencyRAbRelativePath, state) => {
+      ({images, bufferViews}, binBuffer, allDependencyRABRelativePath, state) => {
     let blobObjectUrlImageArr = [||];
 
     images |> OptionService.isJsonSerializedValueNone ?
@@ -57,8 +57,8 @@ module SAB = {
              |> ArrayService.push(
                   (
                     _isImageBufferDataDependencyAndRemoved(imageData) ?
-                      OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
-                        allDependencyRAbRelativePath,
+                      OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRABByName(
+                        allDependencyRABRelativePath,
                         name,
                         state,
                         OperateRABAssetBundleMainService.findImageByName,
@@ -111,7 +111,7 @@ module SAB = {
       (
         {geometrys, bufferViews, accessors},
         binBuffer,
-        allDependencyRAbRelativePath,
+        allDependencyRABRelativePath,
         state,
         createdGeometryArr,
       ) =>
@@ -126,8 +126,8 @@ module SAB = {
                    geometryData |> OptionService.unsafeGetJsonSerializedValue;
 
                  _isGeometryBufferDataDependencyAndRemoved(geometryData) ?
-                   OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
-                     allDependencyRAbRelativePath,
+                   OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRABByName(
+                     allDependencyRABRelativePath,
                      name,
                      state,
                      OperateRABAssetBundleMainService.findGeometryByName,
@@ -366,8 +366,8 @@ module SAB = {
   };
 
   let assemble = (sabRelativePath, sab, wholeDependencyRelationMap) => {
-    let allDependencyRAbRelativePath =
-      FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+    let allDependencyRABRelativePath =
+      FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
         sabRelativePath,
         wholeDependencyRelationMap,
       );
@@ -380,7 +380,7 @@ module SAB = {
     _buildImageArray(
       sceneAssetBundleContent,
       binBuffer,
-      allDependencyRAbRelativePath,
+      allDependencyRABRelativePath,
       state,
     )
     |> then_(blobObjectUrlImageArr => {
@@ -420,7 +420,7 @@ module SAB = {
            _replaceCreatedGeometryToDependencyGeometry(
              sceneAssetBundleContent,
              binBuffer,
-             allDependencyRAbRelativePath,
+             allDependencyRABRelativePath,
              state,
              geometryArr,
            );
@@ -480,7 +480,7 @@ module RAB = {
       (
         {images, bufferViews}: RABType.resourceAssetBundleContent,
         buffer,
-        allDependencyRAbRelativePath,
+        allDependencyRABRelativePath,
         state,
       ) =>
     images
@@ -494,8 +494,8 @@ module RAB = {
            |> ArrayService.push(
                 (
                   _isImageBufferDataDependencyAndRemoved(imageData) ?
-                    OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
-                      allDependencyRAbRelativePath,
+                    OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRABByName(
+                      allDependencyRABRelativePath,
                       name,
                       state,
                       OperateRABAssetBundleMainService.findImageByName,
@@ -734,7 +734,7 @@ module RAB = {
   let _buildGeometryData =
       (
         {geometrys, bufferViews}: RABType.resourceAssetBundleContent,
-        allDependencyRAbRelativePath,
+        allDependencyRABRelativePath,
         buffer,
         state,
       ) =>
@@ -757,8 +757,8 @@ module RAB = {
              _isGeometryBufferDataDependencyAndRemoved(geometryData) ?
                (
                  state,
-                 OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
-                   allDependencyRAbRelativePath,
+                 OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRABByName(
+                   allDependencyRABRelativePath,
                    name,
                    state,
                    OperateRABAssetBundleMainService.findGeometryByName,
@@ -908,8 +908,8 @@ module RAB = {
        );
 
   let assemble = (rabRelativePath, rab, wholeDependencyRelationMap) => {
-    let allDependencyRAbRelativePath =
-      FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+    let allDependencyRABRelativePath =
+      FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
         rabRelativePath,
         wholeDependencyRelationMap,
       );
@@ -925,7 +925,7 @@ module RAB = {
     _buildImageData(
       resourceAssetBundleContent,
       buffer,
-      allDependencyRAbRelativePath,
+      allDependencyRABRelativePath,
       state,
     )
     |> Most.fromPromise
@@ -950,7 +950,7 @@ module RAB = {
          let (geometryMap, state) =
            _buildGeometryData(
              resourceAssetBundleContent,
-             allDependencyRAbRelativePath,
+             allDependencyRABRelativePath,
              buffer,
              state,
            );

@@ -17,6 +17,10 @@ module All = {
     let hashId =
       ParseABSystem.WAB.unsafeGetHashId(abRelativePath, wholeManifest);
 
+      WonderLog.Log.print(( "All->loadAB: ", abRelativePath , 
+      isAssetBundleArrayBufferCachedFunc(. abRelativePath, hashId)
+      )) |> ignore;
+
     isAssetBundleArrayBufferCachedFunc(. abRelativePath, hashId)
     |> Most.fromPromise
     |> Most.flatMap(isCached =>
@@ -161,7 +165,7 @@ module RAB = {
     let wholeDependencyRelationMap =
       ParseABSystem.WAB.getWholeDependencyRelationMap(wholeManifest);
 
-    FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+    FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
       abRelativePath,
       wholeDependencyRelationMap,
     )
@@ -183,7 +187,7 @@ module RAB = {
   };
 
   let assembleAllDependencyRAB = (abRelativePath, wholeDependencyRelationMap) =>
-    FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+    FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
       abRelativePath,
       wholeDependencyRelationMap,
     )

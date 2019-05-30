@@ -10,7 +10,7 @@ module All = {
         dependencyRelation,
         abBufferDataNameMap: bufferDataNameMap,
       ) =>
-    FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+    FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
       abRelativePath,
       dependencyRelation,
     )
