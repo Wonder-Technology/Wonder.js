@@ -1377,7 +1377,11 @@ let _ =
               let state =
                 state |> setTransformLocalPosition(transform1, pos1);
               let (_, clonedTransformArr) =
-                _cloneAndGetClonedTransformMatrixDataArr(gameObject1, 2, state);
+                _cloneAndGetClonedTransformMatrixDataArr(
+                  gameObject1,
+                  2,
+                  state,
+                );
               let pos2 = (2., 4., 6.);
               let state =
                 state
@@ -1442,8 +1446,9 @@ let _ =
             _cloneAndGetClonedTransformMatrixDataArr(gameObject1, 2, state);
 
           clonedTransformArr
-          |> Js.Array.map(transform
-               => TransformTool.isDirty(transform, state))
+          |> Js.Array.map(transform =>
+               TransformTool.isDirty(transform, state)
+             )
           |> expect == [|true, true|];
         });
 
@@ -1675,11 +1680,71 @@ let _ =
         });
       });
 
-      describe("test clone cameraController component", () => {
+      describe("test clone fly cameraController component", () => {
         let _prepare = state => {
           open StateDataMainType;
-          let (state, _) =
-            ArcballCameraControllerAPI.createArcballCameraController(state);
+          let (state, gameObject1, _, (cameraController1, _, _)) =
+            FlyCameraControllerTool.createGameObject(state);
+
+          let moveSpeed = 12.2;
+          let cloneCount = 2;
+          FlyCameraControllerAPI.setFlyCameraControllerMoveSpeed(
+            cameraController1,
+            moveSpeed,
+            state,
+          );
+
+          let (state, clonedGameObjectArr) =
+            _cloneGameObject(gameObject1, cloneCount, state);
+          (
+            state,
+            gameObject1,
+            cameraController1,
+            clonedGameObjectArr,
+            clonedGameObjectArr
+            |> CloneTool.getFlattenClonedGameObjectArr
+            |> Js.Array.map(clonedGameObject =>
+                 unsafeGetGameObjectFlyCameraControllerComponent(
+                   clonedGameObject,
+                   state,
+                 )
+               ),
+            cloneCount,
+            moveSpeed,
+          );
+        };
+        test("test clone specific count of cameraControllers", () => {
+          let (_, _, _, _, clonedArcballCameraControllerArr, cloneCount, _) =
+            _prepare(state^);
+          clonedArcballCameraControllerArr
+          |> Js.Array.length
+          |> expect == cloneCount;
+        });
+        test(
+          "set cloned cameraController's distance by source one's distance", () => {
+          let (
+            state,
+            _,
+            cameraController1,
+            _,
+            clonedArcballCameraControllerArr,
+            cloneCount,
+            moveSpeed,
+          ) =
+            _prepare(state^);
+          clonedArcballCameraControllerArr
+          |> Js.Array.map(cameraController =>
+               FlyCameraControllerAPI.unsafeGetFlyCameraControllerMoveSpeed(
+                 cameraController,
+                 state,
+               )
+             )
+          |> expect == [|moveSpeed, moveSpeed|];
+        });
+      });
+      describe("test clone arcball cameraController component", () => {
+        let _prepare = state => {
+          open StateDataMainType;
           let (state, gameObject1, _, (cameraController1, _, _)) =
             ArcballCameraControllerTool.createGameObject(state);
 
@@ -1948,7 +2013,11 @@ let _ =
               let state =
                 state |> setTransformLocalPosition(transform4, pos4);
               let (clonedGameObjectArr, clonedTransformArr) =
-                _cloneAndGetClonedTransformMatrixDataArr(gameObject1, 1, state);
+                _cloneAndGetClonedTransformMatrixDataArr(
+                  gameObject1,
+                  1,
+                  state,
+                );
               clonedTransformArr
               |> Js.Array.map(transform =>
                    getTransformPosition(transform, state)
