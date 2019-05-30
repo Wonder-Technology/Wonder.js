@@ -112,6 +112,23 @@ let _batchAddPerspectiveCameraProjectionComponent =
 
 let batchAddPerspectiveCameraProjectionComponentForClone = _batchAddPerspectiveCameraProjectionComponent;
 
+let _batchAddFlyCameraControllerComponent =
+    (
+      uidArr: array(int),
+      componentArr: array(component),
+      {flyCameraControllerRecord, gameObjectRecord} as state,
+    ) => {
+  ...state,
+  flyCameraControllerRecord:
+    _batchAddComponent(
+      (uidArr, componentArr, gameObjectRecord.flyCameraControllerMap),
+      AddFlyCameraControllerService.handleAddComponent,
+      flyCameraControllerRecord,
+    ),
+};
+
+let batchAddFlyCameraControllerComponentForClone = _batchAddFlyCameraControllerComponent;
+
 let _batchAddArcballCameraControllerComponent =
     (
       uidArr: array(int),
@@ -306,6 +323,8 @@ let batchAddGeometryComponentForCreate = _batchAddGeometryComponent;
 let batchAddBasicCameraViewComponentForCreate = _batchAddBasicCameraViewComponent;
 
 let batchAddPerspectiveCameraProjectionComponentForCreate = _batchAddPerspectiveCameraProjectionComponent;
+
+let batchAddFlyCameraControllerComponentForCreate = _batchAddFlyCameraControllerComponent;
 
 let batchAddArcballCameraControllerComponentForCreate = _batchAddArcballCameraControllerComponent;
 

@@ -754,6 +754,10 @@ let batchAddComponent =
        perspectiveCameraProjectionGameObjects,
        gameObjectPerspectiveCameraProjection,
      )
+  /* |> BatchAddGameObjectComponentMainService.batchAddFlyCameraControllerComponentForCreate(
+       flyCameraControllerGameObjects,
+       gameObjectArcballCameraController,
+     ) */
   |> BatchAddGameObjectComponentMainService.batchAddArcballCameraControllerComponentForCreate(
        arcballCameraControllerGameObjects,
        gameObjectArcballCameraController,
