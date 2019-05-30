@@ -6,15 +6,16 @@ require("./build/gulp_task/render/testRender");
 require("./build/gulp_task/e2e/upgradeConfig");
 
 
+require("./build/gulp_task/install/installWithPuppeteer");
 
 
 
 
 
-var generate = require("wonder-generate-index");
 var path = require("path");
 
 gulp.task("generateIndex", function (done) {
+    var generate = require("wonder-generate-index");
     var rootDir = path.join(process.cwd(), "src"),
         destDir = "./src/";
 

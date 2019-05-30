@@ -1,10 +1,10 @@
 var test = require("./test");
 var gulp = require("gulp");
 var fs = require("fs");
-var git = require("gulp-git");
 
 gulp.task("upgradeBaseCommitId", function (done) {
-    var configFilePath = test.getE2eConfigFilePath();
+    var git = require("gulp-git");
+    var configFilePath = test.getE2EConfigFilePath();
 
     git.revParse({ args: "HEAD" }, function (err, commitId) {
         if (!!err) {

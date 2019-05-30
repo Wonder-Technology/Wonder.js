@@ -1,7 +1,7 @@
 var gulp = require("gulp");
-var git = require("gulp-git");
 var path = require("path");
 var fs = require("fs");
+var exec = require("child_process").exec;
 
 function _getErrorMessage(e) {
     if (e[0] === undefined) {
@@ -75,7 +75,6 @@ function _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, browse
 
 
 function _runBuild(cb) {
-    var exec = require("child_process").exec;
 
     console.log("build...");
 
@@ -100,6 +99,8 @@ function _writeGenerateBasedCommitIdToConfig(commitId, config, type, configFileP
 }
 
 function _restoreToCurrentCommid(e, currentCommitId, done) {
+    var git = require("gulp-git");
+
     git.reset(currentCommitId, { args: '--hard' }, function (err) {
         if (!!err) {
             _fail(err, done);
@@ -119,11 +120,12 @@ module.exports = {
     deepCopyJson: function (json) {
         return _deepCopyJson(json);
     },
-    getE2eConfigFilePath: function () {
+    getE2EConfigFilePath: function () {
         return path.join(process.cwd(), "test/e2e/config/e2eConfig.json");
     },
     testInCI: function (generateDataInfo, type, generateCorrectDataFunc, runTestFunc, done) {
-        var configFilePath = this.getE2eConfigFilePath();
+        var git = require("gulp-git");
+        var configFilePath = this.getE2EConfigFilePath();
 
         git.revParse({ args: "HEAD" }, function (err, commitId) {
             var currentCommitId = commitId;
@@ -181,7 +183,10 @@ module.exports = {
         });
     },
     testInLocal: function (generateDataInfo, reportFilePath, type, generateCorrectDataFunc, generateReportFunc, runTestFunc, done) {
-        var configFilePath = this.getE2eConfigFilePath();
+        var git = require("gulp-git");
+        var installWithPuppeteer = require("../install/installWithPuppeteer").installWithPuppeteer;
+
+        var configFilePath = this.getE2EConfigFilePath();
 
         git.revParse({ args: "HEAD" }, function (err, commitId) {
             var currentCommitId = commitId;
@@ -212,31 +217,45 @@ module.exports = {
                     return;
                 }
 
-                _runBuild(function () {
-                    console.log(generateDataInfo);
+                console.log("reinstall node_modules...");
 
-                    generateCorrectDataFunc().then(function (browser) {
-                        console.log("reset hard to currentCommitId:", currentCommitId, "...");
 
-                        git.reset(currentCommitId, { args: '--hard' }, function (err) {
-                            if (!!err) {
-                                _fail(err, done);
+                installWithPuppeteer(() => {
+                    _runBuild(function () {
+                        console.log(generateDataInfo);
 
-                                return;
-                            }
+                        generateCorrectDataFunc().then(function (browser) {
+                            console.log("reset hard to currentCommitId:", currentCommitId, "...");
 
-                            _writeGenerateBasedCommitIdToConfig(basedCommitId, config, type, configFilePath);
+                            git.reset(currentCommitId, { args: '--hard' }, function (err) {
+                                if (!!err) {
+                                    _fail(err, done);
 
-                            _runBuild(function () {
-                                _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, [browser], done);
+                                    return;
+                                }
+
+                                _writeGenerateBasedCommitIdToConfig(basedCommitId, config, type, configFilePath);
+
+
+                                console.log("reinstall node_modules...");
+
+                                installWithPuppeteer(() => {
+                                    _runBuild(function () {
+                                        _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, [browser], done);
+                                    });
+                                }, (err) => {
+                                    _fail(err, done);
+                                });
                             });
-                        });
-                    }, function (e) {
-                        console.log("restore to origin commitId...");
+                        }, function (e) {
+                            console.log("restore to origin commitId...");
 
-                        _restoreToCurrentCommid(e, currentCommitId, done);
-                    })
-                });
+                            _restoreToCurrentCommid(e, currentCommitId, done);
+                        })
+                    });
+                }, (err) => {
+                    _fail(err, done);
+                })
             });
         });
 
