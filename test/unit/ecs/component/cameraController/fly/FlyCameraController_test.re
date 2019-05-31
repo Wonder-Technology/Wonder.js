@@ -342,6 +342,7 @@ let _ =
         );
       });
     });
+
     describe("unsafeGetWheelSpeed", () =>
       test("test", () => {
         let (state, cameraController) = createFlyCameraController(state^);
@@ -353,6 +354,7 @@ let _ =
         |> expect == value;
       })
     );
+
     describe("unsafeGetRotateSpeed", () =>
       test("test", () => {
         let (state, cameraController) = createFlyCameraController(state^);
@@ -364,6 +366,7 @@ let _ =
         |> expect == value;
       })
     );
+
     describe("unsafeGetMoveSpeed", () =>
       test("test", () => {
         let (state, cameraController) = createFlyCameraController(state^);
@@ -375,6 +378,7 @@ let _ =
         |> expect == value;
       })
     );
+
     describe("unsafeGetEulerAngleDiff", () =>
       test("test", () => {
         let (state, cameraController) = createFlyCameraController(state^);
@@ -390,6 +394,7 @@ let _ =
         |> expect == value;
       })
     );
+
     describe("unsafeGetTranslationDiff", () =>
       test("test", () => {
         let (state, cameraController) = createFlyCameraController(state^);

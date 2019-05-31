@@ -57,7 +57,29 @@ let _ =
         (state, cameraController, moveSpeed, positionDiff);
       };
 
-      describe("test bind one flyCameraController's event", () =>
+      describe("test bind one flyCameraController's event", () => {
+        let _prepareFlyCameraEvent = canvasHeight => {
+          let state = _prepareMouseEvent(canvasHeight);
+          let (state, _) =
+            MouseEventTool.prepareForPointerLock(sandbox, state);
+          let (
+            state,
+            gameObject,
+            transform,
+            (cameraController, basicCameraView, perspectiveCameraProjection),
+          ) =
+            FlyCameraControllerTool.createGameObject(state);
+
+          let state = state |> NoWorkerJobTool.execInitJobs;
+          let state =
+            FlyCameraControllerAPI.bindFlyCameraControllerEvent(
+              cameraController,
+              state,
+            );
+
+          (cameraController, MainStateTool.setState(state));
+        };
+
         describe("bind event", () => {
           describe("support pointer lock", () => {
             let _prepareTouchEvent = () =>
@@ -67,7 +89,7 @@ let _ =
               let _prepareForPointerLock = (sandbox, state) =>
                 MouseEventTool.prepareForPointerLock(sandbox, state);
 
-              test("if is mouse event, request canvas pointerLock", () => {
+              let _prepareFlyCameraRequestLockAndEvent = () => {
                 let state = _prepareMouseEvent(100.);
                 let (state, requestPointerLockStub) =
                   _prepareForPointerLock(sandbox, state);
@@ -81,7 +103,13 @@ let _ =
                     state,
                   );
 
-                let state = MainStateTool.setState(state);
+                (requestPointerLockStub, MainStateTool.setState(state));
+              };
+
+              test("if is mouse event, request canvas pointerLock", () => {
+                let (requestPointerLockStub, state) =
+                  _prepareFlyCameraRequestLockAndEvent();
+
                 EventTool.triggerDomEvent(
                   "mousedown",
                   EventTool.getPointEventBindedDom(state),
@@ -93,19 +121,9 @@ let _ =
               });
               test(
                 "else if is touch event, not request canvas pointerLock", () => {
-                let state = _prepareTouchEvent();
-                let (state, requestPointerLockStub) =
-                  _prepareForPointerLock(sandbox, state);
-                let (state, _, _, (cameraController, _, _)) =
-                  FlyCameraControllerTool.createGameObject(state);
-                let state = state |> NoWorkerJobTool.execInitJobs;
-                let state =
-                  FlyCameraControllerAPI.bindFlyCameraControllerEvent(
-                    cameraController,
-                    state,
-                  );
+                let (requestPointerLockStub, state) =
+                  _prepareFlyCameraRequestLockAndEvent();
 
-                let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "touchstart",
                   EventTool.getPointEventBindedDom(state),
@@ -132,6 +150,20 @@ let _ =
 
                 (state, exitPointerLockStub);
               };
+              let _prepareFlycameraExitLockAndBindEvent = (canvas, state) => {
+                let (state, exitPointerLockStub) =
+                  _prepareForPointerLock(sandbox, canvas, state);
+                let (state, _, _, (cameraController, _, _)) =
+                  FlyCameraControllerTool.createGameObject(state);
+                let state = state |> NoWorkerJobTool.execInitJobs;
+                let state =
+                  FlyCameraControllerAPI.bindFlyCameraControllerEvent(
+                    cameraController,
+                    state,
+                  );
+
+                (exitPointerLockStub, MainStateTool.setState(state));
+              };
 
               describe("if is mouse event", () => {
                 test(
@@ -139,18 +171,9 @@ let _ =
                   () => {
                   let state = _prepareMouseEvent(100.);
                   let canvas = ViewTool.unsafeGetCanvas(state) |> Obj.magic;
-                  let (state, exitPointerLockStub) =
-                    _prepareForPointerLock(sandbox, canvas, state);
-                  let (state, _, _, (cameraController, _, _)) =
-                    FlyCameraControllerTool.createGameObject(state);
-                  let state = state |> NoWorkerJobTool.execInitJobs;
-                  let state =
-                    FlyCameraControllerAPI.bindFlyCameraControllerEvent(
-                      cameraController,
-                      state,
-                    );
+                  let (exitPointerLockStub, state) =
+                    _prepareFlycameraExitLockAndBindEvent(canvas, state);
 
-                  let state = MainStateTool.setState(state);
                   EventTool.triggerDomEvent(
                     "mousedown",
                     EventTool.getPointEventBindedDom(state),
@@ -167,18 +190,12 @@ let _ =
                 });
                 test("else, not exitPointerLock", () => {
                   let state = _prepareMouseEvent(100.);
-                  let (state, exitPointerLockStub) =
-                    _prepareForPointerLock(sandbox, Obj.magic(1), state);
-                  let (state, _, _, (cameraController, _, _)) =
-                    FlyCameraControllerTool.createGameObject(state);
-                  let state = state |> NoWorkerJobTool.execInitJobs;
-                  let state =
-                    FlyCameraControllerAPI.bindFlyCameraControllerEvent(
-                      cameraController,
+                  let (exitPointerLockStub, state) =
+                    _prepareFlycameraExitLockAndBindEvent(
+                      Obj.magic(1),
                       state,
                     );
 
-                  let state = MainStateTool.setState(state);
                   EventTool.triggerDomEvent(
                     "mousedown",
                     EventTool.getPointEventBindedDom(state),
@@ -197,15 +214,11 @@ let _ =
 
               describe("else if is touch event", () =>
                 test("not exitPointerLock", () => {
-                  let state = _prepareTouchEvent();
+                  let state = _prepareMouseEvent(100.);
                   let canvas = ViewTool.unsafeGetCanvas(state) |> Obj.magic;
-                  let (state, exitPointerLockStub) =
-                    _prepareForPointerLock(sandbox, canvas, state);
-                  let (state, _, _, (cameraController, _, _)) =
-                    FlyCameraControllerTool.createGameObject(state);
-                  let state = state |> NoWorkerJobTool.execInitJobs;
+                  let (exitPointerLockStub, state) =
+                    _prepareFlycameraExitLockAndBindEvent(canvas, state);
 
-                  let state = MainStateTool.setState(state);
                   EventTool.triggerDomEvent(
                     "touchstart",
                     EventTool.getPointEventBindedDom(state),
@@ -227,20 +240,7 @@ let _ =
           describe("bind point drag over event", () =>
             describe("change orbit", () =>
               test("set euler angle diff value", () => {
-                let state = _prepareMouseEvent(100.);
-                let (state, _) =
-                  MouseEventTool.prepareForPointerLock(sandbox, state);
-                let (
-                  state,
-                  gameObject,
-                  transform,
-                  (
-                    cameraController,
-                    basicCameraView,
-                    perspectiveCameraProjection,
-                  ),
-                ) =
-                  FlyCameraControllerTool.createGameObject(state);
+                let (cameraController, state) = _prepareFlyCameraEvent(100.);
 
                 let rotateSpeed = 200.;
                 let eulerAngleDiff = {diffX: 0., diffY: 0.};
@@ -256,14 +256,6 @@ let _ =
                        eulerAngleDiff,
                      );
 
-                let state = state |> NoWorkerJobTool.execInitJobs;
-                let state =
-                  FlyCameraControllerAPI.bindFlyCameraControllerEvent(
-                    cameraController,
-                    state,
-                  );
-
-                let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "mousedown",
                   EventTool.getPointEventBindedDom(state),
@@ -287,24 +279,7 @@ let _ =
           );
           describe("bind point scale event", () => {
             test("preventDefault", () => {
-              let state = _prepareMouseEvent(100.);
-              let (
-                state,
-                gameObject,
-                transform,
-                (
-                  cameraController,
-                  basicCameraView,
-                  perspectiveCameraProjection,
-                ),
-              ) =
-                FlyCameraControllerTool.createGameObject(state);
-              let state = state |> NoWorkerJobTool.execInitJobs;
-              let state =
-                FlyCameraControllerAPI.bindFlyCameraControllerEvent(
-                  cameraController,
-                  state,
-                );
+              let (cameraController, state) = _prepareFlyCameraEvent(100.);
 
               let preventDefaultFunc =
                 createEmptyStubWithJsObjSandbox(sandbox);
@@ -331,18 +306,7 @@ let _ =
             });
 
             test("set translation diff value", () => {
-              let state = _prepareMouseEvent(100.);
-              let (
-                state,
-                gameObject,
-                transform,
-                (
-                  cameraController,
-                  basicCameraView,
-                  perspectiveCameraProjection,
-                ),
-              ) =
-                FlyCameraControllerTool.createGameObject(state);
+              let (cameraController, state) = _prepareFlyCameraEvent(100.);
               let wheelSpeed = 2.5;
               let state =
                 state
@@ -350,12 +314,6 @@ let _ =
                      cameraController,
                      wheelSpeed,
                    );
-              let state = state |> NoWorkerJobTool.execInitJobs;
-              let state =
-                FlyCameraControllerAPI.bindFlyCameraControllerEvent(
-                  cameraController,
-                  state,
-                );
 
               let state = MainStateTool.setState(state);
               EventTool.triggerDomEvent(
@@ -396,144 +354,85 @@ let _ =
             });
 
             describe("else, set translation diff value", () => {
-              test("test move left", () => {
-                let (
-                  state,
-                  cameraController,
-                  moveSpeed,
-                  (diffX, diffY, diffZ),
-                ) =
+              let _judgeTranslationDiffValue = (keyCode, expectFunc) => {
+                let (state, cameraController, moveSpeed, diffTuple) =
                   _prepareKeyEvent();
 
                 let state = MainStateTool.setState(state);
                 EventTool.triggerDomEvent(
                   "keydown",
                   EventTool.getKeyboardEventBindedDom(state),
-                  KeyboardEventTool.buildKeyboardEvent(~keyCode=65, ()),
+                  KeyboardEventTool.buildKeyboardEvent(~keyCode, ()),
                 );
                 let state = EventTool.restore(state);
 
-                state
-                |> unsafeGetTranslationDiff(cameraController)
-                |> expect == (diffX -. moveSpeed, diffY, diffZ);
-              });
-              test("test move right", () => {
-                let (
-                  state,
-                  cameraController,
+                expectFunc(
+                  state |> unsafeGetTranslationDiff(cameraController),
                   moveSpeed,
-                  (diffX, diffY, diffZ),
-                ) =
-                  _prepareKeyEvent();
-
-                let state = MainStateTool.setState(state);
-                EventTool.triggerDomEvent(
-                  "keydown",
-                  EventTool.getKeyboardEventBindedDom(state),
-                  KeyboardEventTool.buildKeyboardEvent(~keyCode=39, ()),
+                  expect,
+                  diffTuple,
                 );
-                let state = EventTool.restore(state);
+              };
 
-                state
-                |> unsafeGetTranslationDiff(cameraController)
-                |> expect == (diffX +. moveSpeed, diffY, diffZ);
-              });
-              test("test move up", () => {
-                let (
-                  state,
-                  cameraController,
-                  moveSpeed,
-                  (diffX, diffY, diffZ),
-                ) =
-                  _prepareKeyEvent();
-
-                let state = MainStateTool.setState(state);
-                EventTool.triggerDomEvent(
-                  "keydown",
-                  EventTool.getKeyboardEventBindedDom(state),
-                  KeyboardEventTool.buildKeyboardEvent(~keyCode=81, ()),
-                );
-                let state = EventTool.restore(state);
-
-                state
-                |> unsafeGetTranslationDiff(cameraController)
-                |> expect == (diffX, diffY +. moveSpeed, diffZ);
-              });
-              test("test move down", () => {
-                let (
-                  state,
-                  cameraController,
-                  moveSpeed,
-                  (diffX, diffY, diffZ),
-                ) =
-                  _prepareKeyEvent();
-
-                let state = MainStateTool.setState(state);
-                EventTool.triggerDomEvent(
-                  "keydown",
-                  EventTool.getKeyboardEventBindedDom(state),
-                  KeyboardEventTool.buildKeyboardEvent(~keyCode=69, ()),
-                );
-                let state = EventTool.restore(state);
-
-                state
-                |> unsafeGetTranslationDiff(cameraController)
-                |> expect == (diffX, diffY -. moveSpeed, diffZ);
-              });
-              test("test move front", () => {
-                let (
-                  state,
-                  cameraController,
-                  moveSpeed,
-                  (diffX, diffY, diffZ),
-                ) =
-                  _prepareKeyEvent();
-
-                let state = MainStateTool.setState(state);
-                EventTool.triggerDomEvent(
-                  "keydown",
-                  EventTool.getKeyboardEventBindedDom(state),
-                  KeyboardEventTool.buildKeyboardEvent(~keyCode=87, ()),
-                );
-                let state = EventTool.restore(state);
-
-                state
-                |> unsafeGetTranslationDiff(cameraController)
-                |> expect == (diffX, diffY, diffZ -. moveSpeed);
-              });
-              test("test move back", () => {
-                let (
-                  state,
-                  cameraController,
-                  moveSpeed,
-                  (diffX, diffY, diffZ),
-                ) =
-                  _prepareKeyEvent();
-
-                let state = MainStateTool.setState(state);
-                EventTool.triggerDomEvent(
-                  "keydown",
-                  EventTool.getKeyboardEventBindedDom(state),
-                  KeyboardEventTool.buildKeyboardEvent(~keyCode=83, ()),
-                );
-                let state = EventTool.restore(state);
-
-                state
-                |> unsafeGetTranslationDiff(cameraController)
-                |> expect == (diffX, diffY, diffZ +. moveSpeed);
-              });
+              test("test move left", () =>
+                _judgeTranslationDiffValue(
+                  65,
+                  (translationDiff, moveSpeed, expect, (diffX, diffY, diffZ)) =>
+                  translationDiff
+                  |> expect == (diffX -. moveSpeed, diffY, diffZ)
+                )
+              );
+              test("test move right", () =>
+                _judgeTranslationDiffValue(
+                  39,
+                  (translationDiff, moveSpeed, expect, (diffX, diffY, diffZ)) =>
+                  translationDiff
+                  |> expect == (diffX +. moveSpeed, diffY, diffZ)
+                )
+              );
+              test("test move up", () =>
+                _judgeTranslationDiffValue(
+                  81,
+                  (translationDiff, moveSpeed, expect, (diffX, diffY, diffZ)) =>
+                  translationDiff
+                  |> expect == (diffX, diffY +. moveSpeed, diffZ)
+                )
+              );
+              test("test move down", () =>
+                _judgeTranslationDiffValue(
+                  69,
+                  (translationDiff, moveSpeed, expect, (diffX, diffY, diffZ)) =>
+                  translationDiff
+                  |> expect == (diffX, diffY -. moveSpeed, diffZ)
+                )
+              );
+              test("test move front", () =>
+                _judgeTranslationDiffValue(
+                  87,
+                  (translationDiff, moveSpeed, expect, (diffX, diffY, diffZ)) =>
+                  translationDiff
+                  |> expect == (diffX, diffY, diffZ -. moveSpeed)
+                )
+              );
+              test("test move back", () =>
+                _judgeTranslationDiffValue(
+                  83,
+                  (translationDiff, moveSpeed, expect, (diffX, diffY, diffZ)) =>
+                  translationDiff
+                  |> expect == (diffX, diffY, diffZ +. moveSpeed)
+                )
+              );
             });
           });
-        })
-      );
+        });
+      });
+
       describe("add event handleFunc to state", () => {
         let _prepareForPointerLock = (sandbox, state) =>
           MouseEventTool.prepareForPointerLock(sandbox, state);
 
-        test("test unbind point drag start event", () => {
+        let _prepareFlyCameraBindEvent = () => {
           let state = _prepareMouseEvent(100.);
-          let (state, requestPointerLockStub) =
-            _prepareForPointerLock(sandbox, state);
           let (
             state,
             gameObject,
@@ -544,11 +443,22 @@ let _ =
           let state = state |> NoWorkerJobTool.execInitJobs;
           let preventDefaultFunc = createEmptyStubWithJsObjSandbox(sandbox);
 
-          let state =
-            FlyCameraControllerAPI.bindFlyCameraControllerEvent(
-              cameraController,
-              state,
-            );
+          (
+            cameraController,
+            preventDefaultFunc,
+            state
+            |> FlyCameraControllerAPI.bindFlyCameraControllerEvent(
+                 cameraController,
+               ),
+          );
+        };
+
+        test("test unbind point drag start event", () => {
+          let (cameraController, preventDefaultFunc, state) =
+            _prepareFlyCameraBindEvent();
+
+          let (state, requestPointerLockStub) =
+            _prepareForPointerLock(sandbox, state);
           let state =
             FlyCameraControllerAPI.unbindFlyCameraControllerEvent(
               cameraController,
@@ -565,22 +475,9 @@ let _ =
           requestPointerLockStub |> expect |> not_ |> toCalled;
         });
         test("test unbind point scale event", () => {
-          let state = _prepareMouseEvent(100.);
-          let (
-            state,
-            gameObject,
-            transform,
-            (cameraController, basicCameraView, perspectiveCameraProjection),
-          ) =
-            FlyCameraControllerTool.createGameObject(state);
-          let state = state |> NoWorkerJobTool.execInitJobs;
-          let preventDefaultFunc = createEmptyStubWithJsObjSandbox(sandbox);
+          let (cameraController, preventDefaultFunc, state) =
+            _prepareFlyCameraBindEvent();
 
-          let state =
-            FlyCameraControllerAPI.bindFlyCameraControllerEvent(
-              cameraController,
-              state,
-            );
           let state =
             state
             |> FlyCameraControllerAPI.unbindFlyCameraControllerPointScaleEvent(
@@ -620,6 +517,7 @@ let _ =
           |> expect == (diffX, diffY, diffZ);
         });
       });
+
       describe("test bind two flyCameraControllers' event", () =>
         test("test bind point scale event", () => {
           let state = _prepareMouseEvent(100.);

@@ -2,6 +2,8 @@ open Wonder_jest;
 
 open GameObjectAPI;
 
+/* TODO add test */
+
 let _ =
   describe("GameObject", () => {
     open Expect;
