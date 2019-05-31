@@ -34,9 +34,7 @@ gulp.task("testFastPerformanceOneCount", function (done) {
 
     var reportFilePath = path.join(process.cwd(), "./test/e2e/performance/report/report.html");
 
-    var utils = require("../common/commonUtils");
-
-    test.fastTest(reportFilePath, testPerformance.generateReport, testPerformance.runOneCountTest , done);
+    test.fastTest(reportFilePath, testPerformance.generateReport, testPerformance.runOneCountTest, done);
 });
 
 
@@ -48,16 +46,21 @@ function _fail(message, done) {
     done();
 }
 
+
+function _getCorrectDir() {
+    return "./test/e2e/performance/benchmark/"
+};
+
+function _getTempDir() {
+    return "./_temp/"
+};
+
+
 gulp.task("generatePerformanceBenchmark", function (done) {
     var testPerformance = require(path.join(process.cwd(), "lib/js/test/e2e/performance/TestPerformance.js"));
 
-    console.log(_getGenerateDataInfo());
 
-    testPerformance.generateBenchmark().then(function (browser) {
-        done();
-    }, function (e) {
-        _fail(e, done);
-    })
+    test.generateCorrectData("performance", testPerformance.generateBenchmark, _getTempDir, _getCorrectDir, done);
 });
 
 gulp.task("generatePerformanceReport", function (done) {
