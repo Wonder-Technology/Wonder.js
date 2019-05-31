@@ -5,9 +5,9 @@ open PerformanceTestDataType;
 let performanceTestData = {
   commonData: {
     isClosePage: true,
-    execCountWhenTest: 10,
-    execCountWhenGenerateBenchmark: 15,
-    compareCount: 4,
+    execCountWhenTest: 1,
+    execCountWhenGenerateBenchmark: 1,
+    compareCount: 1,
     maxAllowDiffTimePercent: 100,
     maxAllowDiffMemoryPercent: 350,
     benchmarkPath: "./test/e2e/performance/benchmark/",
