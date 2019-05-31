@@ -110,8 +110,7 @@ module SAB = {
   let _replaceCreatedGeometryToDependencyGeometry =
       (
         {geometrys, bufferViews, accessors},
-        binBuffer,
-        allDependencyRABRelativePath,
+        (binBuffer, allDependencyRABRelativePath),
         state,
         createdGeometryArr,
       ) =>
@@ -365,6 +364,15 @@ module SAB = {
     );
   };
 
+  let _handleIMGUI = (sceneAssetBundleContent, state) => {
+    let imguiData = sceneAssetBundleContent.scene.imgui;
+    let hasIMGUIFunc = !OptionService.isJsonSerializedValueNone(imguiData);
+
+    hasIMGUIFunc ?
+      state |> SetIMGUIFuncSystem.setIMGUIFunc(sceneAssetBundleContent) :
+      state;
+  };
+
   let assemble = (sabRelativePath, sab, wholeDependencyRelationMap) => {
     let allDependencyRABRelativePath =
       FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
@@ -387,13 +395,7 @@ module SAB = {
          let state =
            StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
-         let imguiData = sceneAssetBundleContent.scene.imgui;
-         let hasIMGUIFunc =
-           !OptionService.isJsonSerializedValueNone(imguiData);
-         let state =
-           hasIMGUIFunc ?
-             state |> SetIMGUIFuncSystem.setIMGUIFunc(sceneAssetBundleContent) :
-             state;
+         let state = _handleIMGUI(sceneAssetBundleContent, state);
 
          let (
            state,
@@ -419,8 +421,7 @@ module SAB = {
          let geometryArr =
            _replaceCreatedGeometryToDependencyGeometry(
              sceneAssetBundleContent,
-             binBuffer,
-             allDependencyRABRelativePath,
+             (binBuffer, allDependencyRABRelativePath),
              state,
              geometryArr,
            );
@@ -730,6 +731,77 @@ module RAB = {
     );
   };
 
+  let _setGeometryAllPointDataFromBuffer =
+      (
+        geometry,
+        (
+          buffer,
+          (
+            vertexBufferView,
+            normalBufferView,
+            texCoordBufferView,
+            indexBufferView,
+          ),
+          bufferViews,
+        ),
+        indexDataType,
+        state,
+      ) => {
+    let state =
+      _setGeometryDataFromBuffer(
+        geometry,
+        (buffer, vertexBufferView, bufferViews),
+        (
+          Float32Array.fromBuffer,
+          VerticesGeometryMainService.setVerticesByTypeArray,
+        ),
+        state,
+      );
+
+    let state =
+      _setGeometryDataFromBuffer(
+        geometry,
+        (buffer, normalBufferView, bufferViews),
+        (
+          Float32Array.fromBuffer,
+          NormalsGeometryMainService.setNormalsByTypeArray,
+        ),
+        state,
+      );
+
+    let state =
+      _setGeometryDataFromBuffer(
+        geometry,
+        (buffer, texCoordBufferView, bufferViews),
+        (
+          Float32Array.fromBuffer,
+          TexCoordsGeometryMainService.setTexCoordsByTypeArray,
+        ),
+        state,
+      );
+
+    let state =
+      _setGeometryDataFromBuffer(
+        geometry,
+        (buffer, indexBufferView, bufferViews),
+        switch (indexDataType) {
+        | RABType.Index16 => (
+            Uint16Array.fromBuffer,
+            IndicesGeometryMainService.setIndicesByUint16Array,
+          )
+        | RABType.Index32 =>
+          (
+            Uint32Array.fromBuffer,
+            IndicesGeometryMainService.setIndicesByUint32Array,
+          )
+          |> Obj.magic
+        },
+        state,
+      );
+
+    state;
+  };
+
   let _buildGeometryData =
       (
         {geometrys, bufferViews}: RABType.resourceAssetBundleContent,
@@ -771,54 +843,19 @@ module RAB = {
                    state |> NameGeometryMainService.setName(geometry, name);
 
                  let state =
-                   _setGeometryDataFromBuffer(
+                   _setGeometryAllPointDataFromBuffer(
                      geometry,
-                     (buffer, vertexBufferView, bufferViews),
                      (
-                       Float32Array.fromBuffer,
-                       VerticesGeometryMainService.setVerticesByTypeArray,
-                     ),
-                     state,
-                   );
-
-                 let state =
-                   _setGeometryDataFromBuffer(
-                     geometry,
-                     (buffer, normalBufferView, bufferViews),
-                     (
-                       Float32Array.fromBuffer,
-                       NormalsGeometryMainService.setNormalsByTypeArray,
-                     ),
-                     state,
-                   );
-
-                 let state =
-                   _setGeometryDataFromBuffer(
-                     geometry,
-                     (buffer, texCoordBufferView, bufferViews),
-                     (
-                       Float32Array.fromBuffer,
-                       TexCoordsGeometryMainService.setTexCoordsByTypeArray,
-                     ),
-                     state,
-                   );
-
-                 let state =
-                   _setGeometryDataFromBuffer(
-                     geometry,
-                     (buffer, indexBufferView, bufferViews),
-                     switch (indexDataType) {
-                     | RABType.Index16 => (
-                         Uint16Array.fromBuffer,
-                         IndicesGeometryMainService.setIndicesByUint16Array,
-                       )
-                     | RABType.Index32 =>
+                       buffer,
                        (
-                         Uint32Array.fromBuffer,
-                         IndicesGeometryMainService.setIndicesByUint32Array,
-                       )
-                       |> Obj.magic
-                     },
+                         vertexBufferView,
+                         normalBufferView,
+                         texCoordBufferView,
+                         indexBufferView,
+                       ),
+                       bufferViews,
+                     ),
+                     indexDataType,
                      state,
                    );
 

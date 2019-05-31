@@ -342,11 +342,13 @@ let _encodeScriptExtra = (scriptDataArr, extraList) =>
 
 let _encodeExtras =
     (
-      basicCameraViewDataArr,
-      meshRendererDataArr,
-      basicMaterialDataArr,
-      arcballCameraControllerDataArr,
-      scriptDataArr,
+      (
+        basicCameraViewDataArr,
+        meshRendererDataArr,
+        basicMaterialDataArr,
+        arcballCameraControllerDataArr,
+        scriptDataArr,
+      ),
     ) => (
   "extras",
   []
@@ -751,13 +753,13 @@ let encode =
     ("scene", 0 |> int),
     _encodeScenes(extensionsUsedArr, (lightDataArr, imguiData), state),
     _encodeCameras(cameraProjectionDataArr),
-    _encodeExtras(
+    _encodeExtras((
       basicCameraViewDataArr,
       meshRendererDataArr,
       basicMaterialDataArr,
       arcballCameraControllerDataArr,
       scriptDataArr,
-    ),
+    )),
     _encodeNodes(nodeDataArr, state),
     _encodeLightMaterials(lightMaterialDataArr),
     _encodeTextures(textureDataArr),

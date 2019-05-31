@@ -145,6 +145,77 @@ let findAllDependencyRABRelativePathByDepthSearch =
   |> Js.Array.reverseInPlace
   |> ArrayService.removeDuplicateItems((. item) => item);
 
+let _isFindByBreadthSearchEnd =
+    (
+      thisLayerAddedDependentAbRelativePathArr,
+      thisLayerRemainedDependentAbRelativePathArr,
+    ) =>
+  thisLayerAddedDependentAbRelativePathArr
+  |> Js.Array.length === 0
+  && thisLayerRemainedDependentAbRelativePathArr
+  |> Js.Array.length === 0;
+
+let _addRemainedDependentAbRelativePathToThisLayer =
+    (
+      dependencyRelation,
+      (
+        allDependentAbRelativePathArr,
+        thisLayerRemainedDependentAbRelativePathArr,
+        thisLayerAddedDependentAbRelativePathArr,
+      ),
+    ) => {
+  let dependentAbRelativePath =
+    thisLayerRemainedDependentAbRelativePathArr |> ArrayService.unsafeGetFirst;
+
+  let thisLayerRemainedDependentAbRelativePathArr =
+    thisLayerRemainedDependentAbRelativePathArr |> Js.Array.sliceFrom(1);
+
+  let thisLayerAddedDependentAbRelativePathArr =
+    switch (
+      dependencyRelation
+      |> WonderCommonlib.ImmutableHashMapService.get(dependentAbRelativePath)
+    ) {
+    | None => thisLayerAddedDependentAbRelativePathArr
+    | Some(abRelativePathArr) =>
+      ArrayService.fastConcat(
+        thisLayerAddedDependentAbRelativePathArr,
+        abRelativePathArr,
+      )
+    };
+
+  (
+    allDependentAbRelativePathArr,
+    thisLayerRemainedDependentAbRelativePathArr,
+    thisLayerAddedDependentAbRelativePathArr,
+  );
+};
+
+let _addThisLayerAbRelativePathArrToAll =
+    (
+      dependencyRelation,
+      (
+        allDependentAbRelativePathArr,
+        thisLayerRemainedDependentAbRelativePathArr,
+        thisLayerAddedDependentAbRelativePathArr,
+      ),
+    ) => {
+  let allDependentAbRelativePathArr =
+    allDependentAbRelativePathArr
+    |> ArrayService.push(thisLayerAddedDependentAbRelativePathArr);
+
+  let thisLayerRemainedDependentAbRelativePathArr =
+    thisLayerAddedDependentAbRelativePathArr |> Js.Array.copy;
+
+  let thisLayerAddedDependentAbRelativePathArr =
+    WonderCommonlib.ArrayService.createEmpty();
+
+  (
+    allDependentAbRelativePathArr,
+    thisLayerRemainedDependentAbRelativePathArr,
+    thisLayerAddedDependentAbRelativePathArr,
+  );
+};
+
 let rec _findByBreadthSearch =
         (
           dependencyRelation,
@@ -152,10 +223,10 @@ let rec _findByBreadthSearch =
           thisLayerAddedDependentAbRelativePathArr,
           thisLayerRemainedDependentAbRelativePathArr,
         ) =>
-  thisLayerAddedDependentAbRelativePathArr
-  |> Js.Array.length === 0
-  && thisLayerRemainedDependentAbRelativePathArr
-  |> Js.Array.length === 0 ?
+  _isFindByBreadthSearchEnd(
+    thisLayerAddedDependentAbRelativePathArr,
+    thisLayerRemainedDependentAbRelativePathArr,
+  ) ?
     allDependentAbRelativePathArr :
     {
       let (
@@ -164,53 +235,22 @@ let rec _findByBreadthSearch =
         thisLayerAddedDependentAbRelativePathArr,
       ) =
         thisLayerRemainedDependentAbRelativePathArr |> Js.Array.length > 0 ?
-          {
-            let dependentAbRelativePath =
-              thisLayerRemainedDependentAbRelativePathArr
-              |> ArrayService.unsafeGetFirst;
-
-            let thisLayerRemainedDependentAbRelativePathArr =
-              thisLayerRemainedDependentAbRelativePathArr
-              |> Js.Array.sliceFrom(1);
-
-            let thisLayerAddedDependentAbRelativePathArr =
-              switch (
-                dependencyRelation
-                |> WonderCommonlib.ImmutableHashMapService.get(
-                     dependentAbRelativePath,
-                   )
-              ) {
-              | None => thisLayerAddedDependentAbRelativePathArr
-              | Some(abRelativePathArr) =>
-                ArrayService.fastConcat(
-                  thisLayerAddedDependentAbRelativePathArr,
-                  abRelativePathArr,
-                )
-              };
-
+          _addRemainedDependentAbRelativePathToThisLayer(
+            dependencyRelation,
             (
               allDependentAbRelativePathArr,
               thisLayerRemainedDependentAbRelativePathArr,
               thisLayerAddedDependentAbRelativePathArr,
-            );
-          } :
-          {
-            let allDependentAbRelativePathArr =
-              allDependentAbRelativePathArr
-              |> ArrayService.push(thisLayerAddedDependentAbRelativePathArr);
-
-            let thisLayerRemainedDependentAbRelativePathArr =
-              thisLayerAddedDependentAbRelativePathArr |> Js.Array.copy;
-
-            let thisLayerAddedDependentAbRelativePathArr =
-              WonderCommonlib.ArrayService.createEmpty();
-
+            ),
+          ) :
+          _addThisLayerAbRelativePathArrToAll(
+            dependencyRelation,
             (
               allDependentAbRelativePathArr,
               thisLayerRemainedDependentAbRelativePathArr,
               thisLayerAddedDependentAbRelativePathArr,
-            );
-          };
+            ),
+          );
 
       _findByBreadthSearch(
         dependencyRelation,
