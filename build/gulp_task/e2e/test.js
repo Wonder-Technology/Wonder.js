@@ -107,9 +107,10 @@ function _restoreToCurrentCommid(e, currentCommitId, done) {
             return;
         }
 
-        _runBuild(function () {
-            _fail(e, done);
-        });
+        // _runBuild(function () {
+        //     _fail(e, done);
+        // });
+        _fail(e, done);
     });
 }
 
