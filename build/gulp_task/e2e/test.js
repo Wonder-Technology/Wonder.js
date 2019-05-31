@@ -112,7 +112,10 @@ function _restoreToCurrentCommid(e, currentCommitId, done) {
         //     _fail(e, done);
         // });
         installWithPuppeteer(() => {
-            _fail(e, done);
+            var failMessage = _getErrorMessage(e);
+
+            _fail(failMessage, done);
+            // _fail(e, done);
         }, (err) => {
             _fail(err, done);
         });
@@ -120,15 +123,17 @@ function _restoreToCurrentCommid(e, currentCommitId, done) {
 }
 
 module.exports = {
-    fail: function (message, done) {
-        _fail(message, done);
-    },
+    fail: _fail,
+    getErrorMessage: _getErrorMessage,
+    exit: _exit,
+    restoreToCurrentCommid: _restoreToCurrentCommid,
     deepCopyJson: function (json) {
         return _deepCopyJson(json);
     },
     getE2EConfigFilePath: function () {
         return path.join(process.cwd(), "test/e2e/config/e2eConfig.json");
     },
+    runBuild: _runBuild,
     testInCI: function (generateDataInfo, type, generateCorrectDataFunc, runTestFunc, done) {
         var git = require("gulp-git");
         var configFilePath = this.getE2EConfigFilePath();
@@ -223,9 +228,6 @@ module.exports = {
                     return;
                 }
 
-                console.log("reinstall node_modules...");
-
-
                 installWithPuppeteer(() => {
                     _runBuild(function () {
                         console.log(generateDataInfo);
@@ -260,13 +262,12 @@ module.exports = {
                         })
                     });
                 }, (err) => {
-                    _fail(err, done);
+                            _restoreToCurrentCommid(e, currentCommitId, done);
                 })
             });
         });
 
     },
-
 
     fastTest: function (reportFilePath, generateReportFunc, runTestFunc, done) {
         _runTestInLocal(reportFilePath, runTestFunc, generateReportFunc, [], done);

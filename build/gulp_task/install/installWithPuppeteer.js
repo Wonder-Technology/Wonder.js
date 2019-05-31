@@ -4,7 +4,7 @@ var exec = require("child_process").exec;
 function _installWithPuppeteer(handleSuccessFunc, handleErrorFunc) {
     console.log("reinstall node_modules...");
 
-    exec("sudo npm config set puppeteer_download_host=https://npm.taobao.org/mirrors && sudo rm -rf node_modules/ yarn.lock && sudo cyarn install", { maxBuffer: 8192 * 4000 }, function (err, stdout, stderr) {
+    exec("sudo npm config set puppeteer_download_host=https://npm.taobao.org/mirrors && sudo rm -rf node_modules/ yarn.lock && sudo yarn install", { maxBuffer: 8192 * 4000 }, function (err, stdout, stderr) {
         if (err) {
             handleErrorFunc(err);
             return;

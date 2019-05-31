@@ -25,6 +25,7 @@
 		"test:generatePfBenchmark": "gulp generatePerformanceBenchmark",
 		"test:render": "npm run build && gulp testRenderInLocal",
 		"test:renderCI": "npm run build && gulp testRenderInCI",
+		"test:generateCorrectImage": "gulp generateCorrectImage",
 		"test:pf": "npm run build && gulp testPerformanceInLocal",
 		"test:pfCI": "npm run build && gulp testPerformanceInCI",
 		"test:watch": "jest --watch --verbose false --config jest.json",
