@@ -6,13 +6,17 @@ var exec = require("child_process").exec;
 function _installWithPuppeteer(handleSuccessFunc, handleErrorFunc) {
     var packageFilePath = path.join(process.cwd(), "./package.json");
 
-    console.log("remove puppeteer in package.json...");
 
 
+    console.log("specific puppeteer version in package.json...");
 
     var packageContent = JSON.parse(fs.readFileSync(packageFilePath));
 
-    delete packageContent.devDependencies.puppeteer;
+    var originPuppeteer = packageContent.devDependencies.puppeteer;
+
+
+
+    packageContent.devDependencies.puppeteer = "1.17.0";
 
 
 
@@ -22,49 +26,55 @@ function _installWithPuppeteer(handleSuccessFunc, handleErrorFunc) {
 
 
 
-    console.log("reinstall node_modules without puppeteer...");
+    console.log("reinstall node_modules without download puppeteer->chrome...");
 
 
 
 
-
-    exec("sudo rm -rf node_modules/ yarn.lock && sudo yarn install", { maxBuffer: 8192 * 4000 }, function (err, stdout, stderr) {
+    exec("sudo rm -rf node_modules/ yarn.lock && sudo env PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true yarn install", { maxBuffer: 8192 * 4000 }, function (err, stdout, stderr) {
         if (err) {
             handleErrorFunc(err);
             return;
         }
 
-        console.log("sudo cp -rf ../Wonder-Benchmark/node_modules/puppeteer ./node_modules/puppeteer");
 
-        exec("sudo cp -rf ../Wonder-Benchmark/node_modules/puppeteer ./node_modules/puppeteer", { maxBuffer: 8192 * 4000 }, function (err, stdout, stderr) {
+        console.log("copy downloaded chrome");
+
+        exec("sudo mkdir ./node_modules/puppeteer/.local-chromum && sudo mkdir ./node_modules/puppeteer/.local-chromum/mac-662092 && sudo mkdir ./node_modules/puppeteer/.local-chromum/mac-662092/chrome-mac", { maxBuffer: 8192 * 4000 }, function (err, stdout, stderr) {
             if (err) {
                 handleErrorFunc(err);
                 return;
             }
 
 
-            console.log("sudo install in puppeteer...");
-
-
-
-            exec("sudo cyarn install", { cwd: path.join(process.cwd(), "node_modules/puppeteer"), maxBuffer: 8192 * 4000 }, function (err, stdout, stderr) {
+            exec("sudo cp -rf ../File/chrome-mac/ ./node_modules/puppeteer/.local-chromum/mac-662092/chrome-mac", { maxBuffer: 8192 * 4000 }, function (err, stdout, stderr) {
                 if (err) {
                     handleErrorFunc(err);
                     return;
                 }
 
-                console.log("restore package.json");
+
+                console.log("make ~/.bash_profile work(already have set process.env.PUPPETEER_EXECUTABLE_PATH in it)");
 
 
-                packageContent.devDependencies.puppeteer = "^1.12.2";
+                exec("source ~/.bash_profile", { cwd: __dirname }, function (err, stdout, stderr) {
+
+                    console.log("restore puppeteer version package.json");
+
+
+                    packageContent.devDependencies.puppeteer = originPuppeteer;
 
 
 
-                fs.writeFileSync(packageFilePath,
-                    JSON.stringify(packageContent, null, "\t")
-                );
+                    fs.writeFileSync(packageFilePath,
+                        JSON.stringify(packageContent, null, "\t")
+                    );
 
-                handleSuccessFunc();
+                    handleSuccessFunc();
+                });
+
+
+
             });
         });
 
