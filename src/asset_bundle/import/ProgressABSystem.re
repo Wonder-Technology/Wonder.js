@@ -25,7 +25,7 @@ module RAB = {
        )
     |> Js.Array.length;
 
-  let _getLoadedSABCount = (abRelativePath, state) =>
+  let _getLoadedABSelfCount = (abRelativePath, state) =>
     JudgeABTypeUtils.isSAB(abRelativePath) ?
       OperateSABAssetBundleMainService.isLoaded(abRelativePath, state) ?
         1 : 0 :
@@ -44,5 +44,5 @@ module RAB = {
 
   let getLoadedNeededABCount = (abRelativePath, wabRelativePath, state) =>
     _getLoadedDependencyRABCount(abRelativePath, wabRelativePath, state)
-    + _getLoadedSABCount(abRelativePath, state);
+    + _getLoadedABSelfCount(abRelativePath, state);
 };
