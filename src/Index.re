@@ -336,6 +336,8 @@ let hasGameObjectLightMaterialComponent = GameObjectAPI.hasGameObjectLightMateri
 
 let unsafeGetGameObjectLightMaterialComponent = GameObjectAPI.unsafeGetGameObjectLightMaterialComponent;
 
+let disposeGameObjectLightMaterialComponentRemoveTexture = GameObjectAPI.disposeGameObjectLightMaterialComponentRemoveTexture;
+
 let disposeGameObjectLightMaterialComponent = GameObjectAPI.disposeGameObjectLightMaterialComponent;
 
 let addGameObjectLightMaterialComponent = GameObjectAPI.addGameObjectLightMaterialComponent;
@@ -656,6 +658,8 @@ let unsafeGetBasicMaterialGameObjects = BasicMaterialAPI.unsafeGetBasicMaterialG
 
 let createBasicMaterial = BasicMaterialAPI.createBasicMaterial;
 
+let batchDisposeLightMaterialRemoveTexture = LightMaterialAPI.batchDisposeLightMaterialRemoveTexture;
+
 let batchDisposeLightMaterial = LightMaterialAPI.batchDisposeLightMaterial;
 
 let getAllLightMaterials = LightMaterialAPI.getAllLightMaterials;
@@ -863,6 +867,8 @@ let setArrayBufferViewSourceTextureSource = ArrayBufferViewSourceTextureAPI.setA
 let unsafeGetArrayBufferViewSourceTextureSource = ArrayBufferViewSourceTextureAPI.unsafeGetArrayBufferViewSourceTextureSource;
 
 let createArrayBufferViewSourceTexture = ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture;
+
+let disposeBasicSourceTexture = BasicSourceTextureAPI.disposeBasicSourceTexture;
 
 let getAllTextures = BasicSourceTextureAPI.getAllTextures;
 
@@ -1127,6 +1133,8 @@ let addGameObjectMeshRendererComponent = GameObjectAPI.addGameObjectMeshRenderer
 let hasGameObjectLightMaterialComponent = GameObjectAPI.hasGameObjectLightMaterialComponent;
 
 let unsafeGetGameObjectLightMaterialComponent = GameObjectAPI.unsafeGetGameObjectLightMaterialComponent;
+
+let disposeGameObjectLightMaterialComponentRemoveTexture = GameObjectAPI.disposeGameObjectLightMaterialComponentRemoveTexture;
 
 let disposeGameObjectLightMaterialComponent = GameObjectAPI.disposeGameObjectLightMaterialComponent;
 
