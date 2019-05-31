@@ -99,6 +99,7 @@ function _writeGenerateBasedCommitIdToConfig(commitId, config, type, configFileP
 }
 
 function _restoreToCurrentCommid(e, currentCommitId, done) {
+    var installWithPuppeteer = require("../install/installWithPuppeteer").installWithPuppeteer;
     var git = require("gulp-git");
 
     git.reset(currentCommitId, { args: '--hard' }, function (err) {
@@ -110,7 +111,11 @@ function _restoreToCurrentCommid(e, currentCommitId, done) {
         // _runBuild(function () {
         //     _fail(e, done);
         // });
-        _fail(e, done);
+        installWithPuppeteer(() => {
+            _fail(e, done);
+        }, (err) => {
+            _fail(err, done);
+        });
     });
 }
 
