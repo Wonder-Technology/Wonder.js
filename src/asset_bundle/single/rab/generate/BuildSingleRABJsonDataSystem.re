@@ -433,11 +433,10 @@ let _buildGeometryData =
   );
 };
 
-/* TODO refactor: editor->BuildJsonDataUtils should use this code */
 let _convertEventFunctionToStr = eventFunction =>
   SerializeService.serializeFunction(eventFunction);
 
-let _convertEventFunctionDataToStr =
+let convertEventFunctionDataToStr =
     ({init, update, dispose}: Wonderjs.StateDataMainType.eventFunctionData) =>
   (
     {
@@ -465,17 +464,17 @@ let _buildScriptEventFunctionData = ({scriptEventFunctionDataArr}) =>
        {
          name,
          eventFunctionDataStr:
-           _convertEventFunctionDataToStr(eventFunctionData),
+           convertEventFunctionDataToStr(eventFunctionData),
        }
      );
 
-let _convertAttributeToStr = attribute =>
+let convertAttributeToStr = attribute =>
   attribute |> Obj.magic |> Js.Json.stringify;
 
 let _buildScriptAttributeData = ({scriptAttributeDataArr}) =>
   scriptAttributeDataArr
   |> Js.Array.map(({name, attribute}) =>
-       {name, attributeStr: _convertAttributeToStr(attribute)}
+       {name, attributeStr: convertAttributeToStr(attribute)}
      );
 
 let buildJsonData = (resourceData, state) => {

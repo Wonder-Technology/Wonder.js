@@ -106,7 +106,6 @@ let _batchCreatePerspectiveCameraProjection =
     state,
   );
 
-/* TODO use batch create */
 let _createArcballCameraControllerOneByOne =
     ({arcballCameraControllers}, {arcballCameraControllerRecord} as state) =>
   _batchCreateComponent(

@@ -460,7 +460,6 @@ module SAB = {
            );
 
          state
-         /* TODO add test */
          |> OperateSABAssetBundleMainService.markAssembled(sabRelativePath)
          |> StateDataMainService.setState(StateDataMain.stateData)
          |> ignore;
@@ -835,8 +834,7 @@ module RAB = {
          (WonderCommonlib.ImmutableHashMapService.createEmpty(), state),
        );
 
-  /* TODO refactor: editor use this */
-  let _convertEventFunctionDataStrToRecord =
+  let convertEventFunctionDataStrToRecord =
       (eventFunctionDataStr: string): StateDataMainType.eventFunctionData => {
     open StateDataMainType;
 
@@ -869,7 +867,7 @@ module RAB = {
            {name, eventFunctionDataStr}: RABType.scriptEventFunction,
          ) => {
            let eventFunctionData =
-             _convertEventFunctionDataStrToRecord(eventFunctionDataStr);
+             convertEventFunctionDataStrToRecord(eventFunctionDataStr);
 
            (
              scriptEventFunctionDataMap
@@ -883,8 +881,7 @@ module RAB = {
          (WonderCommonlib.ImmutableHashMapService.createEmpty(), state),
        );
 
-  /* TODO refactor: editor use this */
-  let _convertAttributeStrToRecord =
+  let convertAttributeStrToRecord =
       attributeMapStr: ScriptAttributeType.scriptAttribute =>
     attributeMapStr |> Js.Json.parseExn |> Obj.magic;
 
@@ -896,7 +893,7 @@ module RAB = {
            (scriptAttributeMap, state),
            {name, attributeStr}: RABType.scriptAttribute,
          ) => {
-           let attribute = _convertAttributeStrToRecord(attributeStr);
+           let attribute = convertAttributeStrToRecord(attributeStr);
 
            (
              scriptAttributeMap

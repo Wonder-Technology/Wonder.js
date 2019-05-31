@@ -113,7 +113,6 @@ type scriptAttributeData = {
   attribute: ScriptAttributeType.scriptAttribute,
 };
 
-/* TODO editor: material, geometry should remove duplicate */
 type resourceData = {
   basicMaterials: array(materialComponent),
   lightMaterials: array(materialComponent),

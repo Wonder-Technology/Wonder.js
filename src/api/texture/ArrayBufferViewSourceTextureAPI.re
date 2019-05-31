@@ -7,7 +7,6 @@ open ArrayBufferViewSourceTextureType;
 let createArrayBufferViewSourceTexture = state =>
   CreateArrayBufferViewSourceTextureMainService.create(. state);
 
-/* TODO check alive */
 let unsafeGetArrayBufferViewSourceTextureSource =
     (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
