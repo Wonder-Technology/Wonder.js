@@ -206,6 +206,34 @@ let convertToPerspectiveCameraProjectionGameObjectIndexData =
     |> _checkGameObjectAndComponentIndicesCountShouldEqual;
   };
 
+let convertToFlyCameraControllerGameObjectIndexData =
+    nodes: WDType.componentGameObjectIndexData => {
+  let (gameObjectIndices, componentIndices) =
+    nodes
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (.
+           (gameObjectIndices, componentIndices),
+           {extras}: GLTFType.node,
+           index,
+         ) =>
+           switch (extras) {
+           | None => (gameObjectIndices, componentIndices)
+           | Some(({flyCameraController}: GLTFType.nodeExtras)) =>
+             switch (flyCameraController) {
+             | None => (gameObjectIndices, componentIndices)
+             | Some(flyCameraController) => (
+                 gameObjectIndices |> ArrayService.push(index),
+                 componentIndices |> ArrayService.push(flyCameraController),
+               )
+             }
+           },
+         ([||], [||]),
+       );
+
+  ({gameObjectIndices, componentIndices}: WDType.componentGameObjectIndexData)
+  |> _checkGameObjectAndComponentIndicesCountShouldEqual;
+};
+
 let convertToArcballCameraControllerGameObjectIndexData =
     nodes: WDType.componentGameObjectIndexData => {
   let (gameObjectIndices, componentIndices) =
@@ -218,12 +246,13 @@ let convertToArcballCameraControllerGameObjectIndexData =
          ) =>
            switch (extras) {
            | None => (gameObjectIndices, componentIndices)
-           | Some(({cameraController}: GLTFType.nodeExtras)) =>
-             switch (cameraController) {
+           | Some(({arcballCameraController}: GLTFType.nodeExtras)) =>
+             switch (arcballCameraController) {
              | None => (gameObjectIndices, componentIndices)
-             | Some(cameraController) => (
+             | Some(arcballCameraController) => (
                  gameObjectIndices |> ArrayService.push(index),
-                 componentIndices |> ArrayService.push(cameraController),
+                 componentIndices
+                 |> ArrayService.push(arcballCameraController),
                )
              }
            },

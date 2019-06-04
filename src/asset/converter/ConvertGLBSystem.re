@@ -63,6 +63,8 @@ let _buildWDBJsonUint8Array = (gltf: GLTFType.gltf) => {
                ConvertCamerasSystem.convertToPerspectiveCameraProjections(
                  gltf,
                ),
+             flyCameraControllers:
+               ConvertCamerasSystem.convertToFlyCameraControllers(gltf),
              arcballCameraControllers:
                ConvertCamerasSystem.convertToArcballCameraControllers(gltf),
              basicMaterials:
