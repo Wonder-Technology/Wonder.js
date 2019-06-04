@@ -106,7 +106,7 @@ let getBatchComponentGameObjectData =
       |> getBatchArrByIndices(gameObjectArr),
       indices.gameObjectIndices.flyCameraControllerGameObjectIndexData.
         componentIndices
-      |> getBatchArrByIndices(arcballCameraControllerArr),
+      |> getBatchArrByIndices(flyCameraControllerArr),
       indices.gameObjectIndices.arcballCameraControllerGameObjectIndexData.
         gameObjectIndices
       |> getBatchArrByIndices(gameObjectArr),

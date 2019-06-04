@@ -90,7 +90,6 @@ let _buildImageArray = (isLoadImage, {images, bufferViews}: wd, binBuffer) => {
      typeArr |> Uint8Array.buffer;
    }; */
 
-
 let checkWDB = dataView => {
   WonderLog.Contract.requireCheck(
     () => {
@@ -159,7 +158,7 @@ let assembleWDBData =
          |> BatchOperateWholeSystem.batchOperate(
               wd,
               imageDataTuple,
-              AssembleWholeWDBUtils. buildBufferArray(buffers, binBuffer),
+              AssembleWholeWDBUtils.buildBufferArray(buffers, binBuffer),
               (isBindEvent, isActiveCamera),
             );
 
