@@ -61,49 +61,21 @@ let setTranslationDiff = (cameraController, value, state) => {
     ),
 };
 
-/* let setFlyCameraControllerData = (cameraController, state) => {
-     open FlyCameraControllerAPI;
+let setFlyCameraControllerData = (cameraController, state) => {
+  open FlyCameraControllerAPI;
 
-     let distance = 1.6;
-     let minDistance = 0.5;
-     let phi = 1.7;
-     let theta = 0.5;
-     let thetaMargin = 0.3;
-     let target = (0.1, 0.2, 0.5);
-     let moveSpeedX = 0.1;
-     let moveSpeedY = 0.2;
-     let rotateSpeed = 0.3;
-     let wheelSpeed = 0.4;
+  let moveSpeed = 0.1;
+  let rotateSpeed = 0.3;
+  let wheelSpeed = 0.4;
 
-     let state =
-       state
-       |> setFlyCameraControllerMinDistance(cameraController, minDistance)
-       |> setFlyCameraControllerDistance(cameraController, distance)
-       |> setFlyCameraControllerPhi(cameraController, phi)
-       |> setFlyCameraControllerTheta(cameraController, theta)
-       |> setFlyCameraControllerThetaMargin(cameraController, thetaMargin)
-       |> setFlyCameraControllerTarget(cameraController, target)
-       |> setFlyCameraControllerMoveSpeedX(cameraController, moveSpeedX)
-       |> setFlyCameraControllerMoveSpeedY(cameraController, moveSpeedY)
-       |> setFlyCameraControllerRotateSpeed(cameraController, rotateSpeed)
-       |> setFlyCameraControllerWheelSpeed(cameraController, wheelSpeed);
+  let state =
+    state
+    |> setFlyCameraControllerMoveSpeed(cameraController, moveSpeed)
+    |> setFlyCameraControllerRotateSpeed(cameraController, rotateSpeed)
+    |> setFlyCameraControllerWheelSpeed(cameraController, wheelSpeed);
 
-     (
-       state,
-       (
-         distance,
-         minDistance,
-         phi,
-         theta,
-         thetaMargin,
-         target,
-         moveSpeedX,
-         moveSpeedY,
-         rotateSpeed,
-         wheelSpeed,
-       ),
-     );
-   }; */
+  (state, (moveSpeed, rotateSpeed, wheelSpeed));
+};
 
 let getDirtyArray = state => state.flyCameraControllerRecord.dirtyArray;
 
