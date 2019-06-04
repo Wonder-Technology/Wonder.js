@@ -21,6 +21,7 @@ let generateGLBData =
       lightMaterialDataMap,
       basicCameraViewDataMap,
       cameraProjectionDataMap,
+      flyCameraControllerDataMap,
       arcballCameraControllerDataMap,
       lightDataMap,
       scriptDataMap,
@@ -80,8 +81,14 @@ let generateGLBData =
       state,
     );
 
+  let flyCameraControllerDataArr =
+    BuildFlyCameraControllerDataSystem.build(
+      flyCameraControllerDataMap,
+      state,
+    );
+
   let arcballCameraControllerDataArr =
-    BuildCameraControllerDataSystem.build(
+    BuildArcballCameraControllerDataSystem.build(
       arcballCameraControllerDataMap,
       state,
     );
@@ -109,6 +116,7 @@ let generateGLBData =
         imageUint8DataArr,
         basicCameraViewDataArr,
         cameraProjectionDataArr,
+        flyCameraControllerDataArr,
         arcballCameraControllerDataArr,
         lightDataArr,
         scriptDataArr,

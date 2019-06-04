@@ -89,7 +89,8 @@ let _encodeNodeExtras = (extras, list) =>
           meshRenderer,
           basicMaterial,
           lightMaterial,
-          cameraController,
+          flyCameraController,
+          arcballCameraController,
           script,
           isActive,
           isRoot,
@@ -102,7 +103,14 @@ let _encodeNodeExtras = (extras, list) =>
       extraList
       |> _encodeNodeComponentExtra("basicCameraView", basicCameraView)
       |> _encodeNodeComponentExtra("meshRenderer", meshRenderer)
-      |> _encodeNodeComponentExtra("cameraController", cameraController)
+      |> _encodeNodeComponentExtra(
+           "flyCameraController",
+           flyCameraController,
+         )
+      |> _encodeNodeComponentExtra(
+           "arcballCameraController",
+           arcballCameraController,
+         )
       |> _encodeNodeComponentExtra("script", script);
 
     let extraList =
@@ -264,6 +272,33 @@ let _encodeBasicMaterialExtra = (basicMaterialDataArr, extraList) =>
     ]
   };
 
+let _encodeFlyCameraControllerExtra = (flyCameraControllerDataArr, extraList) =>
+  switch (flyCameraControllerDataArr |> Js.Array.length) {
+  | 0 => extraList
+  | _ => [
+      (
+        "flyCameraControllers",
+        flyCameraControllerDataArr
+        |> Js.Array.map(
+             (
+               (
+                 {moveSpeed, rotateSpeed, wheelSpeed, isBindEvent}: flyCameraControllerData
+               ) as data,
+             ) =>
+             [
+               ("moveSpeed", moveSpeed |> float),
+               ("rotateSpeed", rotateSpeed |> float),
+               ("wheelSpeed", wheelSpeed |> float),
+               ("isBindEvent", isBindEvent |> bool),
+             ]
+             |> object_
+           )
+        |> jsonArray,
+      ),
+      ...extraList,
+    ]
+  };
+
 let _encodeArcballCameraControllerExtra =
     (arcballCameraControllerDataArr, extraList) =>
   switch (arcballCameraControllerDataArr |> Js.Array.length) {
@@ -345,6 +380,7 @@ let _encodeExtras =
       basicCameraViewDataArr,
       meshRendererDataArr,
       basicMaterialDataArr,
+      flyCameraControllerDataArr,
       arcballCameraControllerDataArr,
       scriptDataArr,
     ) => (
@@ -353,6 +389,7 @@ let _encodeExtras =
   |> _encodeBasicCameraViewExtra(basicCameraViewDataArr)
   |> _encodeMeshRendererExtra(meshRendererDataArr)
   |> _encodeBasicMaterialExtra(basicMaterialDataArr)
+  |> _encodeFlyCameraControllerExtra(flyCameraControllerDataArr)
   |> _encodeArcballCameraControllerExtra(arcballCameraControllerDataArr)
   |> _encodeScriptExtra(scriptDataArr)
   |> object_,
@@ -738,6 +775,7 @@ let encode =
         imageUint8DataArr,
         basicCameraViewDataArr,
         cameraProjectionDataArr,
+        flyCameraControllerDataArr,
         arcballCameraControllerDataArr,
         lightDataArr,
         scriptDataArr,
@@ -755,6 +793,7 @@ let encode =
       basicCameraViewDataArr,
       meshRendererDataArr,
       basicMaterialDataArr,
+      flyCameraControllerDataArr,
       arcballCameraControllerDataArr,
       scriptDataArr,
     ),
