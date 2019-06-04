@@ -16,6 +16,7 @@ let getBatchComponentGameObjectData =
         meshRendererArr,
         basicCameraViewArr,
         perspectiveCameraProjectionArr,
+        flyCameraControllerArr,
         arcballCameraControllerArr,
         basicMaterialArr,
         lightMaterialArr,
@@ -100,6 +101,12 @@ let getBatchComponentGameObjectData =
       indices.gameObjectIndices.perspectiveCameraProjectionGameObjectIndexData.
         componentIndices
       |> getBatchArrByIndices(perspectiveCameraProjectionArr),
+      indices.gameObjectIndices.flyCameraControllerGameObjectIndexData.
+        gameObjectIndices
+      |> getBatchArrByIndices(gameObjectArr),
+      indices.gameObjectIndices.flyCameraControllerGameObjectIndexData.
+        componentIndices
+      |> getBatchArrByIndices(arcballCameraControllerArr),
       indices.gameObjectIndices.arcballCameraControllerGameObjectIndexData.
         gameObjectIndices
       |> getBatchArrByIndices(gameObjectArr),
@@ -323,6 +330,51 @@ let batchSetPerspectiveCameraProjectionData =
          perspectiveCameraProjectionRecord,
        ),
 };
+
+let batchSetFlyCameraControllerData =
+    (
+      {flyCameraControllers},
+      flyCameraControllerArr,
+      isBindEventConfig,
+      {flyCameraControllerRecord} as state,
+    ) =>
+  flyCameraControllers
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (.
+         state,
+         {moveSpeed, rotateSpeed, wheelSpeed, isBindEvent}: SceneGraphType.flyCameraController,
+         index,
+       ) => {
+         let cameraController = flyCameraControllerArr[index];
+
+         let state =
+           isBindEventConfig && isBindEvent ?
+             EventFlyCameraControllerMainService.bindEvent(
+               cameraController,
+               state,
+             ) :
+             state;
+
+         {
+           ...state,
+           flyCameraControllerRecord:
+             state.flyCameraControllerRecord
+             |> OperateFlyCameraControllerService.setMoveSpeed(
+                  cameraController,
+                  moveSpeed,
+                )
+             |> OperateFlyCameraControllerService.setRotateSpeed(
+                  cameraController,
+                  rotateSpeed,
+                )
+             |> OperateFlyCameraControllerService.setWheelSpeed(
+                  cameraController,
+                  wheelSpeed,
+                ),
+         };
+       },
+       state,
+     );
 
 let batchSetArcballCameraControllerData =
     (
@@ -625,6 +677,7 @@ let batchSetComponentData =
         meshRendererArr,
         basicCameraViewArr,
         perspectiveCameraProjectionArr,
+        flyCameraControllerArr,
         arcballCameraControllerArr,
         basicMaterialArr,
         lightMaterialArr,
@@ -669,6 +722,7 @@ let batchSetComponentData =
        wd,
        perspectiveCameraProjectionArr,
      )
+  |> batchSetFlyCameraControllerData(wd, flyCameraControllerArr, isBindEvent)
   |> batchSetArcballCameraControllerData(
        wd,
        arcballCameraControllerArr,
@@ -720,6 +774,8 @@ let batchAddComponent =
         gameObjectBasicCameraViews,
         perspectiveCameraProjectionGameObjects,
         gameObjectPerspectiveCameraProjection,
+        flyCameraControllerGameObjects,
+        gameObjectFlyCameraController,
         arcballCameraControllerGameObjects,
         gameObjectArcballCameraController,
         basicMaterialGameObjects,
@@ -754,10 +810,10 @@ let batchAddComponent =
        perspectiveCameraProjectionGameObjects,
        gameObjectPerspectiveCameraProjection,
      )
-  /* |> BatchAddGameObjectComponentMainService.batchAddFlyCameraControllerComponentForCreate(
+  |> BatchAddGameObjectComponentMainService.batchAddFlyCameraControllerComponentForCreate(
        flyCameraControllerGameObjects,
-       gameObjectArcballCameraController,
-     ) */
+       gameObjectFlyCameraController,
+     )
   |> BatchAddGameObjectComponentMainService.batchAddArcballCameraControllerComponentForCreate(
        arcballCameraControllerGameObjects,
        gameObjectArcballCameraController,
