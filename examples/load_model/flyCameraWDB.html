@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>load model</title>
+</head>
+
+<body>
+    <script src="../../test/e2e/js/AssetTool.js"></script>
+    <script src="../../test/e2e/js/LightBoxesTool.js"></script>
+    <script src="../../test/e2e/js/LightTool.js"></script>
+    <script src="../../test/e2e/js/CameraTool.js"></script>
+    <script src="../../test/e2e/js/LightMaterialTool.js"></script>
+    <script src="../../dist/wd.js"></script>
+
+    <script>
+        window.onload = function () {
+            return AssetTool.loadConfig(["../config/setting.json", "../config/"], null, function () {
+                var state = wd.unsafeGetState();
+
+                var [state, box] = LightBoxesTool.createBox(state);
+
+                var state = wd.setAmbientLightColor([0.2, 0.2, 0.2], state);
+
+                var [state, directionLightGameObject] = LightTool.createDirectionLight(state);
+
+                var transform = wd.unsafeGetGameObjectTransformComponent(directionLightGameObject, state);
+
+                var state = wd.setTransformLocalEulerAngles(transform, [0, 180, 0], state);
+
+                var [state, cameraGameObject] = LightBoxesTool.createCamera(state);
+
+                var [state, cameraController] = wd.createFlyCameraController(state);
+
+                var state = wd.addGameObjectFlyCameraControllerComponent(cameraGameObject, cameraController, state);
+
+                let cameraTransform = wd.unsafeGetGameObjectTransformComponent(cameraGameObject, state);
+
+                var state = wd.setTransformLocalPosition(cameraTransform, [0, 0, 80], state);
+
+                var state =
+                    wd.setFlyCameraControllerMoveSpeed(cameraController, 0.6, state);
+
+                var state =
+                    wd.bindFlyCameraControllerEvent(
+                        cameraController, state
+                    );
+
+                var state =
+                    wd.addSceneChildren([box, directionLightGameObject, cameraGameObject], state);
+
+
+                var [state, map, wdb] =
+                    wd.generateWDB(
+                        wd.getSceneGameObject(state), null, state
+                    );
+
+
+                return wd.assembleWholeWDB(wdb,
+                    true, true, true, true, true,
+                    state)
+                    .forEach(([state, _, sceneGameObject]) => {
+                        wd.setState(state);
+                    })
+                    .then(() => {
+                        return initSample(wd.unsafeGetState());
+                    })
+            });
+
+            function initSample(state) {
+                var state = AssetTool.createLightsAndCamera(state);
+
+                wd.startDirector(state);
+            }
+
+        };
+    </script>
+</body>
+
+</html>

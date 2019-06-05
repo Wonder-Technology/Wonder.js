@@ -789,14 +789,14 @@ let encode =
     ("scene", 0 |> int),
     _encodeScenes(extensionsUsedArr, (lightDataArr, imguiData), state),
     _encodeCameras(cameraProjectionDataArr),
-    _encodeExtras((
+    _encodeExtras(
       basicCameraViewDataArr,
       meshRendererDataArr,
       basicMaterialDataArr,
       flyCameraControllerDataArr,
       arcballCameraControllerDataArr,
       scriptDataArr,
-    )),
+    ),
     _encodeNodes(nodeDataArr, state),
     _encodeLightMaterials(lightMaterialDataArr),
     _encodeTextures(textureDataArr),
