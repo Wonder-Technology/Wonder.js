@@ -793,7 +793,41 @@ let _ =
       });
     });
 
-    describe("test cameraController data", () =>
+    describe("test cameraController data", () => {
+      describe("test flyCameraControllers", () => {
+        test("test no data", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+            ~state,
+            ~testFunc=
+              ({flyCameraControllers}) =>
+                flyCameraControllers |> expect == [||],
+            (),
+          )
+        );
+        test("test has data", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfFlyCameraController(),
+            ~state,
+            ~testFunc=
+              ({flyCameraControllers}) =>
+                flyCameraControllers
+                |> expect
+                == [|
+                     {
+                       moveSpeed: 2.1,
+                       rotateSpeed: 2.3,
+                       wheelSpeed: 3.9,
+                       isBindEvent: true,
+                     },
+                   |],
+            (),
+          )
+        );
+      });
       describe("test arcballCameraControllers", () => {
         test("test no data", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
@@ -834,8 +868,8 @@ let _ =
             (),
           )
         );
-      })
-    );
+      });
+    });
 
     describe("test script data", () =>
       describe("test scripts", () => {
