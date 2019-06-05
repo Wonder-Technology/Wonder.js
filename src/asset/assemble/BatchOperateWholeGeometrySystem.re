@@ -108,6 +108,34 @@ let getBufferIndex32Data = (componentType, accessorIndex, dataViewArr, wd) =>
 
 let _makeEmptyAttributePoints = () => Float32Array.make([||]);
 
+let _setIndexData = (geometry, (wd, dataViewArr, index), state) => {
+  let componentType = getAccessorComponentType(wd, index);
+
+  switch (getBufferIndex16Data(componentType, index, dataViewArr, wd)) {
+  | Some(data) =>
+    IndicesGeometryMainService.setIndicesByUint16Array(geometry, data, state)
+  | None =>
+    switch (getBufferIndex32Data(componentType, index, dataViewArr, wd)) {
+    | Some(data) =>
+      IndicesGeometryMainService.setIndicesByUint32Array(
+        geometry,
+        data,
+        state,
+      )
+    | None =>
+      WonderLog.Log.fatal(
+        WonderLog.Log.buildFatalMessage(
+          ~title="_batchSetGeometryData",
+          ~description={j|unknown componentType: $componentType|j},
+          ~reason="",
+          ~solution={j||j},
+          ~params={j||j},
+        ),
+      )
+    }
+  };
+};
+
 let setGeometryData =
     (
       geometry,
@@ -155,36 +183,7 @@ let setGeometryData =
       state,
     );
 
-  let componentType = getAccessorComponentType(wd, index);
-
-  let state =
-    switch (getBufferIndex16Data(componentType, index, dataViewArr, wd)) {
-    | Some(data) =>
-      IndicesGeometryMainService.setIndicesByUint16Array(
-        geometry,
-        data,
-        state,
-      )
-    | None =>
-      switch (getBufferIndex32Data(componentType, index, dataViewArr, wd)) {
-      | Some(data) =>
-        IndicesGeometryMainService.setIndicesByUint32Array(
-          geometry,
-          data,
-          state,
-        )
-      | None =>
-        WonderLog.Log.fatal(
-          WonderLog.Log.buildFatalMessage(
-            ~title="_batchSetGeometryData",
-            ~description={j|unknown componentType: $componentType|j},
-            ~reason="",
-            ~solution={j||j},
-            ~params={j||j},
-          ),
-        )
-      }
-    };
+  let state = _setIndexData(geometry, (wd, dataViewArr, index), state);
 
   state;
 };

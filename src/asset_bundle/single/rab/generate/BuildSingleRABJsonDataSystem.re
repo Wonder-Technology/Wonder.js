@@ -311,6 +311,80 @@ let _buildGeometryBufferData =
       uint8ArrayArr,
     );
 
+let _buildGeometryAllPointData =
+    (geometryComponent, (bufferViewArr, byteOffset, uint8ArrayArr), state) => {
+  let (vertexBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
+    _buildGeometryBufferData(
+      geometryComponent,
+      (bufferViewArr, byteOffset, uint8ArrayArr),
+      (
+        VerticesGeometryMainService.hasVertices,
+        (geometryComponent, state) =>
+          VerticesGeometryMainService.getVertices(. geometryComponent, state)
+          |> TypeArrayUtils.convertFloat32ToUint8,
+      ),
+      state,
+    );
+
+  let (normalBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
+    _buildGeometryBufferData(
+      geometryComponent,
+      (bufferViewArr, byteOffset, uint8ArrayArr),
+      (
+        NormalsGeometryMainService.hasNormals,
+        (geometryComponent, state) =>
+          NormalsGeometryMainService.getNormals(. geometryComponent, state)
+          |> TypeArrayUtils.convertFloat32ToUint8,
+      ),
+      state,
+    );
+
+  let (texCoordBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
+    _buildGeometryBufferData(
+      geometryComponent,
+      (bufferViewArr, byteOffset, uint8ArrayArr),
+      (
+        TexCoordsGeometryMainService.hasTexCoords,
+        (geometryComponent, state) =>
+          TexCoordsGeometryMainService.getTexCoords(.
+            geometryComponent,
+            state,
+          )
+          |> TypeArrayUtils.convertFloat32ToUint8,
+      ),
+      state,
+    );
+
+  let (indexBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
+    _buildGeometryBufferData(
+      geometryComponent,
+      (bufferViewArr, byteOffset, uint8ArrayArr),
+      (
+        IndicesGeometryMainService.hasIndices,
+        (geometryComponent, state) =>
+          IndicesGeometryMainService.hasIndices16(geometryComponent, state) ?
+            IndicesGeometryMainService.getIndices16(.
+              geometryComponent,
+              state,
+            )
+            |> TypeArrayUtils.convertUint16ToUint8 :
+            IndicesGeometryMainService.getIndices32(.
+              geometryComponent,
+              state,
+            )
+            |> TypeArrayUtils.convertUint32ToUint8,
+      ),
+      state,
+    );
+
+  (
+    (vertexBufferView, normalBufferView, texCoordBufferView, indexBufferView),
+    bufferViewArr,
+    byteOffset,
+    uint8ArrayArr,
+  );
+};
+
 let _buildGeometryData =
     (imageAlignedByteLength, imageBufferViewArr, {geometrys}, state) => {
   let imageBufferViewIndex = imageBufferViewArr |> Js.Array.length;
@@ -322,76 +396,20 @@ let _buildGeometryData =
            (geometryArr, uint8ArrayArr, bufferViewArr, byteOffset),
            geometryComponent,
          ) => {
-           let (vertexBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
-             _buildGeometryBufferData(
+           let (
+             (
+               vertexBufferView,
+               normalBufferView,
+               texCoordBufferView,
+               indexBufferView,
+             ),
+             bufferViewArr,
+             byteOffset,
+             uint8ArrayArr,
+           ) =
+             _buildGeometryAllPointData(
                geometryComponent,
                (bufferViewArr, byteOffset, uint8ArrayArr),
-               (
-                 VerticesGeometryMainService.hasVertices,
-                 (geometryComponent, state) =>
-                   VerticesGeometryMainService.getVertices(.
-                     geometryComponent,
-                     state,
-                   )
-                   |> TypeArrayUtils.convertFloat32ToUint8,
-               ),
-               state,
-             );
-
-           let (normalBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
-             _buildGeometryBufferData(
-               geometryComponent,
-               (bufferViewArr, byteOffset, uint8ArrayArr),
-               (
-                 NormalsGeometryMainService.hasNormals,
-                 (geometryComponent, state) =>
-                   NormalsGeometryMainService.getNormals(.
-                     geometryComponent,
-                     state,
-                   )
-                   |> TypeArrayUtils.convertFloat32ToUint8,
-               ),
-               state,
-             );
-
-           let (texCoordBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
-             _buildGeometryBufferData(
-               geometryComponent,
-               (bufferViewArr, byteOffset, uint8ArrayArr),
-               (
-                 TexCoordsGeometryMainService.hasTexCoords,
-                 (geometryComponent, state) =>
-                   TexCoordsGeometryMainService.getTexCoords(.
-                     geometryComponent,
-                     state,
-                   )
-                   |> TypeArrayUtils.convertFloat32ToUint8,
-               ),
-               state,
-             );
-
-           let (indexBufferView, bufferViewArr, byteOffset, uint8ArrayArr) =
-             _buildGeometryBufferData(
-               geometryComponent,
-               (bufferViewArr, byteOffset, uint8ArrayArr),
-               (
-                 IndicesGeometryMainService.hasIndices,
-                 (geometryComponent, state) =>
-                   IndicesGeometryMainService.hasIndices16(
-                     geometryComponent,
-                     state,
-                   ) ?
-                     IndicesGeometryMainService.getIndices16(.
-                       geometryComponent,
-                       state,
-                     )
-                     |> TypeArrayUtils.convertUint16ToUint8 :
-                     IndicesGeometryMainService.getIndices32(.
-                       geometryComponent,
-                       state,
-                     )
-                     |> TypeArrayUtils.convertUint32ToUint8,
-               ),
                state,
              );
 
@@ -433,11 +451,10 @@ let _buildGeometryData =
   );
 };
 
-/* TODO refactor: editor->BuildJsonDataUtils should use this code */
 let _convertEventFunctionToStr = eventFunction =>
   SerializeService.serializeFunction(eventFunction);
 
-let _convertEventFunctionDataToStr =
+let convertEventFunctionDataToStr =
     ({init, update, dispose}: Wonderjs.StateDataMainType.eventFunctionData) =>
   (
     {
@@ -465,17 +482,17 @@ let _buildScriptEventFunctionData = ({scriptEventFunctionDataArr}) =>
        {
          name,
          eventFunctionDataStr:
-           _convertEventFunctionDataToStr(eventFunctionData),
+           convertEventFunctionDataToStr(eventFunctionData),
        }
      );
 
-let _convertAttributeToStr = attribute =>
+let convertAttributeToStr = attribute =>
   attribute |> Obj.magic |> Js.Json.stringify;
 
 let _buildScriptAttributeData = ({scriptAttributeDataArr}) =>
   scriptAttributeDataArr
   |> Js.Array.map(({name, attribute}) =>
-       {name, attributeStr: _convertAttributeToStr(attribute)}
+       {name, attributeStr: convertAttributeToStr(attribute)}
      );
 
 let buildJsonData = (resourceData, state) => {

@@ -7,7 +7,6 @@ open BasicSourceTextureType;
 let createBasicSourceTexture = state =>
   CreateBasicSourceTextureMainService.create(. state);
 
-/* TODO check alive */
 let unsafeGetBasicSourceTextureSource =
     (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(

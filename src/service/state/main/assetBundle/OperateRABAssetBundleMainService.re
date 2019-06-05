@@ -226,9 +226,9 @@ let setAssembleRABData =
   };
 };
 
-let findDataInAllDependencyRAbByName =
-    (allDependencyRAbRelativePath, name, state, findDataByNameFunc) =>
-  allDependencyRAbRelativePath
+let findDataInAllDependencyRABByName =
+    (allDependencyRABRelativePath, name, state, findDataByNameFunc) =>
+  allDependencyRABRelativePath
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. result, dependencyAbRelativePath) =>
          result |> Js.Option.isSome ?
@@ -236,10 +236,10 @@ let findDataInAllDependencyRAbByName =
        None,
      );
 
-let unsafeFindDataInAllDependencyRAbByName =
-    (allDependencyRAbRelativePath, name, state, findDataByNameFunc) =>
-  findDataInAllDependencyRAbByName(
-    allDependencyRAbRelativePath,
+let unsafeFindDataInAllDependencyRABByName =
+    (allDependencyRABRelativePath, name, state, findDataByNameFunc) =>
+  findDataInAllDependencyRABByName(
+    allDependencyRABRelativePath,
     name,
     state,
     findDataByNameFunc,
@@ -252,8 +252,8 @@ let unsafeFindDataInAllDependencyRAbByName =
      );
 
 /* switch (
-     findDataInAllDependencyRAbByName(
-       allDependencyRAbRelativePath,
+     findDataInAllDependencyRABByName(
+       allDependencyRABRelativePath,
        name,
        state,
        findDataByNameFunc,
@@ -262,7 +262,7 @@ let unsafeFindDataInAllDependencyRAbByName =
    | None =>
      WonderLog.Log.fatal(
        WonderLog.Log.buildFatalMessage(
-         ~title="unsafeFindDataInAllDependencyRAbByName",
+         ~title="unsafeFindDataInAllDependencyRABByName",
          ~description={j|shouldn't find nothing|j},
          ~reason="",
          ~solution={j||j},

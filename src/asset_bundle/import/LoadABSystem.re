@@ -27,7 +27,6 @@ let load = (abPath: string, fetchFunc) =>
   |> then_(ab => ab |> LoadType.fetchArrayBufferToArrayBuffer |> resolve)
   |> Most.fromPromise;
 
-/* TODO need rewrite by editor */
 let getAssetBundlePath = (.) => "";
 
 let initAssetBundleArrayBufferCache =

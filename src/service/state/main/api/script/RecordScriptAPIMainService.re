@@ -98,7 +98,6 @@ let create = () => {
       wholeManifest,
       (
         getAssetBundlePathFunc,
-        initAssetBundleArrayBufferCacheFunc,
         isAssetBundleArrayBufferCachedFunc,
         getAssetBundleArrayBufferCacheFunc,
         cacheAssetBundleArrayBufferFunc,

@@ -26,7 +26,12 @@
     "<rootDir>/lib/es6_global/src/.+/WorkerDetectAPI.js",
     "<rootDir>/lib/es6_global/src/Index.*",
     "<rootDir>/lib/es6_global/src/.+/RenderWorkerIndex.*",
-    "<rootDir>/lib/es6_global/src/.+/RenderWorkerSystem.*"
+    "<rootDir>/lib/es6_global/src/.+/RenderWorkerSystem.*",
+    "<rootDir>/lib/es6_global/src/.+/*SkyboxJob*",
+    "<rootDir>/lib/es6_global/src/.+/JieHuoAPI",
+    "<rootDir>/lib/es6_global/src/jiehuo/",
+    "<rootDir>/lib/es6_global/src/.+/RecordScriptAPIMain*",
+    "<rootDir>/lib/es6_global/src/.+/FetchCommon*"
   ],
   "collectCoverageFrom": [
     "lib/es6_global/src/**/*.js",

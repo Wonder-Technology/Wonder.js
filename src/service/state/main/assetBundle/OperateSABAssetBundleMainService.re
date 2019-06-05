@@ -1,31 +1,4 @@
-/* TODO finish */
-
 open StateDataMainType;
-
-/* let getIMGUIData = (sabRelativePath, {assetBundleRecord} as state) =>
-     assetBundleRecord.assembleSABData.imguiDataMap
-     |> WonderCommonlib.ImmutableHashMapService.get(sabRelativePath);
-
-   let setIMGUIData =
-       (
-         sabRelativePath,
-         imguiData: AssetBundleType.imguiData,
-         {assetBundleRecord} as state,
-       ) => {
-     ...state,
-     assetBundleRecord: {
-       ...assetBundleRecord,
-       assembleSABData: {
-         ...assetBundleRecord.assembleSABData,
-         imguiDataMap:
-           assetBundleRecord.assembleSABData.imguiDataMap
-           |> WonderCommonlib.ImmutableHashMapService.set(
-                sabRelativePath,
-                imguiData,
-              ),
-       },
-     },
-   }; */
 
 let getLoadedSAB = (sabRelativePath, {assetBundleRecord} as state) =>
   assetBundleRecord.assembleSABData.loadedSABMap
@@ -129,7 +102,7 @@ let canAssemble =
     ) {
     | None => false
     | Some(wholeDependencyRelationMap) =>
-      FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+      FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
         sabRelativePath,
         wholeDependencyRelationMap,
       )

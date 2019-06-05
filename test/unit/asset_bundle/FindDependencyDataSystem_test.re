@@ -15,7 +15,7 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    describe("findAllDependencyRAbRelativePathByDepthSearch", () => {
+    describe("findAllDependencyRABRelativePathByDepthSearch", () => {
       test("test1", () => {
         let abRelativePath = "a.sab";
 
@@ -33,7 +33,7 @@ let _ =
             [|rab1RelativePath, rab3RelativePath|],
           |]);
 
-        FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+        FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
           abRelativePath,
           wholeDependencyRelationMap,
         )
@@ -57,7 +57,7 @@ let _ =
             [|rab3RelativePath, rab4RelativePath|],
           |]);
 
-        FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+        FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
           abRelativePath,
           wholeDependencyRelationMap,
         )
@@ -72,7 +72,7 @@ let _ =
       });
     });
 
-    describe("findAllDependencyRAbRelativePathByBreadthSearch", () => {
+    describe("findAllDependencyRABRelativePathByBreadthSearch", () => {
       test("test1", () => {
         let abRelativePath = "a.sab";
 
@@ -90,7 +90,7 @@ let _ =
             [|rab1RelativePath, rab3RelativePath|],
           |]);
 
-        FindDependencyDataSystem.findAllDependencyRAbRelativePathByBreadthSearch(
+        FindDependencyDataSystem.findAllDependencyRABRelativePathByBreadthSearch(
           abRelativePath,
           wholeDependencyRelationMap,
         )
@@ -118,7 +118,7 @@ let _ =
             [|rab3RelativePath, rab4RelativePath, rab5RelativePath|],
           |]);
 
-        FindDependencyDataSystem.findAllDependencyRAbRelativePathByBreadthSearch(
+        FindDependencyDataSystem.findAllDependencyRABRelativePathByBreadthSearch(
           abRelativePath,
           wholeDependencyRelationMap,
         )

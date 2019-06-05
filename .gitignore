@@ -22,7 +22,10 @@ test/e2e/performance/report
 
 test/e2e/render/report
 
-test/e2e/render/screenshot
+test/e2e/render/screenshot/current/
+
+
+_temp/
 
 .bsb.lock
 

@@ -40,7 +40,7 @@ module SAB = {
     ABBufferViewUtils.isNoneBufferViewIndex(bufferView);
 
   let _buildImageArray =
-      ({images, bufferViews}, binBuffer, allDependencyRAbRelativePath, state) => {
+      ({images, bufferViews}, binBuffer, allDependencyRABRelativePath, state) => {
     let blobObjectUrlImageArr = [||];
 
     images |> OptionService.isJsonSerializedValueNone ?
@@ -57,8 +57,8 @@ module SAB = {
              |> ArrayService.push(
                   (
                     _isImageBufferDataDependencyAndRemoved(imageData) ?
-                      OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
-                        allDependencyRAbRelativePath,
+                      OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRABByName(
+                        allDependencyRABRelativePath,
                         name,
                         state,
                         OperateRABAssetBundleMainService.findImageByName,
@@ -110,8 +110,7 @@ module SAB = {
   let _replaceCreatedGeometryToDependencyGeometry =
       (
         {geometrys, bufferViews, accessors},
-        binBuffer,
-        allDependencyRAbRelativePath,
+        (binBuffer, allDependencyRABRelativePath),
         state,
         createdGeometryArr,
       ) =>
@@ -126,8 +125,8 @@ module SAB = {
                    geometryData |> OptionService.unsafeGetJsonSerializedValue;
 
                  _isGeometryBufferDataDependencyAndRemoved(geometryData) ?
-                   OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
-                     allDependencyRAbRelativePath,
+                   OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRABByName(
+                     allDependencyRABRelativePath,
                      name,
                      state,
                      OperateRABAssetBundleMainService.findGeometryByName,
@@ -372,9 +371,18 @@ module SAB = {
     );
   };
 
+  let _handleIMGUI = (sceneAssetBundleContent, state) => {
+    let imguiData = sceneAssetBundleContent.scene.imgui;
+    let hasIMGUIFunc = !OptionService.isJsonSerializedValueNone(imguiData);
+
+    hasIMGUIFunc ?
+      state |> SetIMGUIFuncSystem.setIMGUIFunc(sceneAssetBundleContent) :
+      state;
+  };
+
   let assemble = (sabRelativePath, sab, wholeDependencyRelationMap) => {
-    let allDependencyRAbRelativePath =
-      FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+    let allDependencyRABRelativePath =
+      FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
         sabRelativePath,
         wholeDependencyRelationMap,
       );
@@ -387,20 +395,14 @@ module SAB = {
     _buildImageArray(
       sceneAssetBundleContent,
       binBuffer,
-      allDependencyRAbRelativePath,
+      allDependencyRABRelativePath,
       state,
     )
     |> then_(blobObjectUrlImageArr => {
          let state =
            StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
-         let imguiData = sceneAssetBundleContent.scene.imgui;
-         let hasIMGUIFunc =
-           !OptionService.isJsonSerializedValueNone(imguiData);
-         let state =
-           hasIMGUIFunc ?
-             state |> SetIMGUIFuncSystem.setIMGUIFunc(sceneAssetBundleContent) :
-             state;
+         let state = _handleIMGUI(sceneAssetBundleContent, state);
 
          let (
            state,
@@ -427,8 +429,7 @@ module SAB = {
          let geometryArr =
            _replaceCreatedGeometryToDependencyGeometry(
              sceneAssetBundleContent,
-             binBuffer,
-             allDependencyRAbRelativePath,
+             (binBuffer, allDependencyRABRelativePath),
              state,
              geometryArr,
            );
@@ -469,7 +470,6 @@ module SAB = {
            );
 
          state
-         /* TODO add test */
          |> OperateSABAssetBundleMainService.markAssembled(sabRelativePath)
          |> StateDataMainService.setState(StateDataMain.stateData)
          |> ignore;
@@ -489,7 +489,7 @@ module RAB = {
       (
         {images, bufferViews}: RABType.resourceAssetBundleContent,
         buffer,
-        allDependencyRAbRelativePath,
+        allDependencyRABRelativePath,
         state,
       ) =>
     images
@@ -503,8 +503,8 @@ module RAB = {
            |> ArrayService.push(
                 (
                   _isImageBufferDataDependencyAndRemoved(imageData) ?
-                    OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
-                      allDependencyRAbRelativePath,
+                    OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRABByName(
+                      allDependencyRABRelativePath,
                       name,
                       state,
                       OperateRABAssetBundleMainService.findImageByName,
@@ -740,10 +740,81 @@ module RAB = {
     );
   };
 
+  let _setGeometryAllPointDataFromBuffer =
+      (
+        geometry,
+        (
+          buffer,
+          (
+            vertexBufferView,
+            normalBufferView,
+            texCoordBufferView,
+            indexBufferView,
+          ),
+          bufferViews,
+        ),
+        indexDataType,
+        state,
+      ) => {
+    let state =
+      _setGeometryDataFromBuffer(
+        geometry,
+        (buffer, vertexBufferView, bufferViews),
+        (
+          Float32Array.fromBuffer,
+          VerticesGeometryMainService.setVerticesByTypeArray,
+        ),
+        state,
+      );
+
+    let state =
+      _setGeometryDataFromBuffer(
+        geometry,
+        (buffer, normalBufferView, bufferViews),
+        (
+          Float32Array.fromBuffer,
+          NormalsGeometryMainService.setNormalsByTypeArray,
+        ),
+        state,
+      );
+
+    let state =
+      _setGeometryDataFromBuffer(
+        geometry,
+        (buffer, texCoordBufferView, bufferViews),
+        (
+          Float32Array.fromBuffer,
+          TexCoordsGeometryMainService.setTexCoordsByTypeArray,
+        ),
+        state,
+      );
+
+    let state =
+      _setGeometryDataFromBuffer(
+        geometry,
+        (buffer, indexBufferView, bufferViews),
+        switch (indexDataType) {
+        | RABType.Index16 => (
+            Uint16Array.fromBuffer,
+            IndicesGeometryMainService.setIndicesByUint16Array,
+          )
+        | RABType.Index32 =>
+          (
+            Uint32Array.fromBuffer,
+            IndicesGeometryMainService.setIndicesByUint32Array,
+          )
+          |> Obj.magic
+        },
+        state,
+      );
+
+    state;
+  };
+
   let _buildGeometryData =
       (
         {geometrys, bufferViews}: RABType.resourceAssetBundleContent,
-        allDependencyRAbRelativePath,
+        allDependencyRABRelativePath,
         buffer,
         state,
       ) =>
@@ -766,8 +837,8 @@ module RAB = {
              _isGeometryBufferDataDependencyAndRemoved(geometryData) ?
                (
                  state,
-                 OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRAbByName(
-                   allDependencyRAbRelativePath,
+                 OperateRABAssetBundleMainService.unsafeFindDataInAllDependencyRABByName(
+                   allDependencyRABRelativePath,
                    name,
                    state,
                    OperateRABAssetBundleMainService.findGeometryByName,
@@ -781,54 +852,19 @@ module RAB = {
                    state |> NameGeometryMainService.setName(geometry, name);
 
                  let state =
-                   _setGeometryDataFromBuffer(
+                   _setGeometryAllPointDataFromBuffer(
                      geometry,
-                     (buffer, vertexBufferView, bufferViews),
                      (
-                       Float32Array.fromBuffer,
-                       VerticesGeometryMainService.setVerticesByTypeArray,
-                     ),
-                     state,
-                   );
-
-                 let state =
-                   _setGeometryDataFromBuffer(
-                     geometry,
-                     (buffer, normalBufferView, bufferViews),
-                     (
-                       Float32Array.fromBuffer,
-                       NormalsGeometryMainService.setNormalsByTypeArray,
-                     ),
-                     state,
-                   );
-
-                 let state =
-                   _setGeometryDataFromBuffer(
-                     geometry,
-                     (buffer, texCoordBufferView, bufferViews),
-                     (
-                       Float32Array.fromBuffer,
-                       TexCoordsGeometryMainService.setTexCoordsByTypeArray,
-                     ),
-                     state,
-                   );
-
-                 let state =
-                   _setGeometryDataFromBuffer(
-                     geometry,
-                     (buffer, indexBufferView, bufferViews),
-                     switch (indexDataType) {
-                     | RABType.Index16 => (
-                         Uint16Array.fromBuffer,
-                         IndicesGeometryMainService.setIndicesByUint16Array,
-                       )
-                     | RABType.Index32 =>
+                       buffer,
                        (
-                         Uint32Array.fromBuffer,
-                         IndicesGeometryMainService.setIndicesByUint32Array,
-                       )
-                       |> Obj.magic
-                     },
+                         vertexBufferView,
+                         normalBufferView,
+                         texCoordBufferView,
+                         indexBufferView,
+                       ),
+                       bufferViews,
+                     ),
+                     indexDataType,
                      state,
                    );
 
@@ -844,8 +880,7 @@ module RAB = {
          (WonderCommonlib.ImmutableHashMapService.createEmpty(), state),
        );
 
-  /* TODO refactor: editor use this */
-  let _convertEventFunctionDataStrToRecord =
+  let convertEventFunctionDataStrToRecord =
       (eventFunctionDataStr: string): StateDataMainType.eventFunctionData => {
     open StateDataMainType;
 
@@ -878,7 +913,7 @@ module RAB = {
            {name, eventFunctionDataStr}: RABType.scriptEventFunction,
          ) => {
            let eventFunctionData =
-             _convertEventFunctionDataStrToRecord(eventFunctionDataStr);
+             convertEventFunctionDataStrToRecord(eventFunctionDataStr);
 
            (
              scriptEventFunctionDataMap
@@ -892,8 +927,7 @@ module RAB = {
          (WonderCommonlib.ImmutableHashMapService.createEmpty(), state),
        );
 
-  /* TODO refactor: editor use this */
-  let _convertAttributeStrToRecord =
+  let convertAttributeStrToRecord =
       attributeMapStr: ScriptAttributeType.scriptAttribute =>
     attributeMapStr |> Js.Json.parseExn |> Obj.magic;
 
@@ -905,7 +939,7 @@ module RAB = {
            (scriptAttributeMap, state),
            {name, attributeStr}: RABType.scriptAttribute,
          ) => {
-           let attribute = _convertAttributeStrToRecord(attributeStr);
+           let attribute = convertAttributeStrToRecord(attributeStr);
 
            (
              scriptAttributeMap
@@ -917,8 +951,8 @@ module RAB = {
        );
 
   let assemble = (rabRelativePath, rab, wholeDependencyRelationMap) => {
-    let allDependencyRAbRelativePath =
-      FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+    let allDependencyRABRelativePath =
+      FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
         rabRelativePath,
         wholeDependencyRelationMap,
       );
@@ -934,7 +968,7 @@ module RAB = {
     _buildImageData(
       resourceAssetBundleContent,
       buffer,
-      allDependencyRAbRelativePath,
+      allDependencyRABRelativePath,
       state,
     )
     |> Most.fromPromise
@@ -959,7 +993,7 @@ module RAB = {
          let (geometryMap, state) =
            _buildGeometryData(
              resourceAssetBundleContent,
-             allDependencyRAbRelativePath,
+             allDependencyRABRelativePath,
              buffer,
              state,
            );
