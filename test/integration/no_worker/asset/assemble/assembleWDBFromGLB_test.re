@@ -1291,7 +1291,7 @@ let _ =
             (),
           )
         );
-        testPromise("test set wheelSpeed fff", () =>
+        testPromise("test set wheelSpeed", () =>
           AssembleWDBSystemTool.testGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=
