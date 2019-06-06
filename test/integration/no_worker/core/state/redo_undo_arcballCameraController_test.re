@@ -85,12 +85,9 @@ let _ =
 
         let copiedState = state |> MainStateTool.deepCopyForRestore;
 
-        let (state, gameObject2, _, (cameraController2, _, _)) =
-          ArcballCameraControllerTool.createGameObject(state);
-
         let state =
-          ArcballCameraControllerAPI.bindArcballCameraControllerEvent(
-            cameraController2,
+          ArcballCameraControllerAPI.unbindArcballCameraControllerEvent(
+            cameraController,
             state,
           );
 
@@ -110,8 +107,7 @@ let _ =
       })
     );
     /* TODO test other eventHandleFuncMap */
-
-    describe("deep copy perspectiveCameraProjection record", () =>
+    describe("deep copy arcballCameraController record", () =>
       test("shadow copy distanceMap", () => {
         open StateDataMainType;
         let state = _prepareState();
