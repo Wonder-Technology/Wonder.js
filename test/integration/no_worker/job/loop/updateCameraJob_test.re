@@ -330,6 +330,10 @@ let _ =
 
         let state =
           state
+          |> FlyCameraControllerAPI.setFlyCameraControllerMoveSpeed(
+               cameraController,
+               1.2,
+             )
           |> FlyCameraControllerTool.setDirectionArray(directionArray)
           |> FlyCameraControllerTool.setEulerAngleDiff(
                cameraController,
