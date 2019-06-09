@@ -312,6 +312,7 @@ let _ =
               pointDragOverEventHandleFuncListMap,
               pointScaleEventHandleFuncListMap,
               keydownEventHandleFuncListMap,
+              keyupEventHandleFuncListMap,
             }: flyCameraControllerRecord =
               state.flyCameraControllerRecord;
 
@@ -336,8 +337,12 @@ let _ =
               |> WonderCommonlib.MutableSparseMapService.has(
                    cameraController1,
                  ),
+              keyupEventHandleFuncListMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
             )
-            |> expect == (false, false, false, false, false);
+            |> expect == (false, false, false, false, false, false);
           })
         );
       });

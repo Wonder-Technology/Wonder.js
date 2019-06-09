@@ -331,6 +331,7 @@ let _ =
               |> expect == (0., 0., (-7.5));
             });
           });
+
           describe("bind keydown event", () => {
             test(
               "if is combined key, not add direction into directionArray ", () => {
@@ -366,10 +367,7 @@ let _ =
                   );
                   let state = EventTool.restore(state);
 
-                  state
-                  |> getDirectionArray
-                  |> Js.Array.includes(direction)
-                  |> expect == true;
+                  state |> getDirectionArray |> expect == [|direction|];
                 };
 
                 test("test move left", () =>
@@ -393,7 +391,7 @@ let _ =
               });
               describe("test keydown multiple direction", () => {
                 let _judgeMultipleChangeDirectionArray =
-                    ((keyCode1, keyCode2), (direction1, direction2)) => {
+                    ((keydownCode1, keydownCode2), (direction1, direction2)) => {
                   let (state, cameraController, moveSpeed, diffTuple) =
                     _prepareKeyEvent();
 
@@ -402,7 +400,7 @@ let _ =
                     "keydown",
                     EventTool.getKeyboardEventBindedDom(state),
                     KeyboardEventTool.buildKeyboardEvent(
-                      ~keyCode=keyCode1,
+                      ~keyCode=keydownCode1,
                       (),
                     ),
                   );
@@ -410,7 +408,7 @@ let _ =
                     "keydown",
                     EventTool.getKeyboardEventBindedDom(state),
                     KeyboardEventTool.buildKeyboardEvent(
-                      ~keyCode=keyCode2,
+                      ~keyCode=keydownCode2,
                       (),
                     ),
                   );
@@ -419,11 +417,7 @@ let _ =
 
                   let directionArray = state |> getDirectionArray;
 
-                  (
-                    directionArray |> Js.Array.includes(direction1),
-                    directionArray |> Js.Array.includes(direction2),
-                  )
-                  |> expect == (true, true);
+                  directionArray |> expect == [|direction1, direction2|];
                 };
 
                 test("test move left and up", () =>
@@ -456,6 +450,68 @@ let _ =
               });
             });
           });
+
+          describe("bind keyup event", () =>
+            describe("test remove direction from directionArray", () => {
+              let _judgeChangeDirectionArray =
+                  ((keydownCode1, keydownCode2), keyupCode, direction) => {
+                let (state, cameraController, moveSpeed, diffTuple) =
+                  _prepareKeyEvent();
+
+                let state = MainStateTool.setState(state);
+                EventTool.triggerDomEvent(
+                  "keydown",
+                  EventTool.getKeyboardEventBindedDom(state),
+                  KeyboardEventTool.buildKeyboardEvent(
+                    ~keyCode=keydownCode1,
+                    (),
+                  ),
+                );
+                EventTool.triggerDomEvent(
+                  "keydown",
+                  EventTool.getKeyboardEventBindedDom(state),
+                  KeyboardEventTool.buildKeyboardEvent(
+                    ~keyCode=keydownCode2,
+                    (),
+                  ),
+                );
+                EventTool.triggerDomEvent(
+                  "keyup",
+                  EventTool.getKeyboardEventBindedDom(state),
+                  KeyboardEventTool.buildKeyboardEvent(
+                    ~keyCode=keyupCode,
+                    (),
+                  ),
+                );
+                let state =
+                  MainStateTool.unsafeGetState() |> EventTool.restore;
+
+                state |> getDirectionArray |> expect == [|direction|];
+              };
+
+              test("test keydown left and up, then keyup left", () =>
+                _judgeChangeDirectionArray((65, 81), 65, Up)
+              );
+              test("test keydown left and up, then keyup up", () =>
+                _judgeChangeDirectionArray((65, 81), 81, Left)
+              );
+              test("test keydown left and up, then keyup up", () =>
+                _judgeChangeDirectionArray((65, 81), 81, Left)
+              );
+              test("test move right and down, then keyup right", () =>
+                _judgeChangeDirectionArray((39, 69), 39, Down)
+              );
+              test("test move up and front, then keyup front", () =>
+                _judgeChangeDirectionArray((81, 87), 87, Up)
+              );
+              test("test move down and back, then keyup down", () =>
+                _judgeChangeDirectionArray((69, 83), 69, Back)
+              );
+              test("test move front and left, then keyup left", () =>
+                _judgeChangeDirectionArray((87, 65), 65, Front)
+              );
+            })
+          );
         });
       });
 
