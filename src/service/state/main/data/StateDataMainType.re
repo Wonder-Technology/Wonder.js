@@ -178,7 +178,7 @@ and flyCameraControllerRecord = {
   pointDragOverEventHandleFuncListMap: pointEventHandleFuncListMap,
   pointScaleEventHandleFuncListMap: pointEventHandleFuncListMap,
   keydownEventHandleFuncListMap: keyboardEventHandleFuncListMap,
-  /* keyupEventHandleFuncListMap: keyboardEventHandleFuncListMap, */
+  keyupEventHandleFuncListMap: keyboardEventHandleFuncListMap,
   dirtyArray: FlyCameraControllerType.dirtyArray,
   moveSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
   wheelSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),

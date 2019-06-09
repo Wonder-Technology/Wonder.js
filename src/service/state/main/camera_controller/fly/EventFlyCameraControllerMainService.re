@@ -99,6 +99,21 @@ let _addKeydownEventHandleFunc =
     ),
 };
 
+let _addKeyupEventHandleFunc =
+    (
+      cameraController,
+      handleFunc,
+      {keyupEventHandleFuncListMap} as record: flyCameraControllerRecord,
+    ) => {
+  ...record,
+  keyupEventHandleFuncListMap:
+    _addEventHandleFunc(
+      cameraController,
+      handleFunc,
+      keyupEventHandleFuncListMap,
+    ),
+};
+
 let _changeOrbit =
     (
       cameraController,
@@ -136,14 +151,14 @@ let _addUniqueDirection = (direction, array) =>
        FlyCameraControllerType.convertDirectionToString(item)
      );
 
-let _translationByKeyDown =
+let _moveSpecificDirection =
     (
       cameraController,
       keyboardEvent: keyboardEvent,
       {flyCameraControllerRecord, gameObjectRecord} as state,
     ) => {
   let directionArray =
-    OperateFlyCameraControllerService.unsafeGetDirectionArray(
+    OperateFlyCameraControllerService.getDirectionArray(
       flyCameraControllerRecord,
     );
 
@@ -159,6 +174,46 @@ let _translationByKeyDown =
     | "down" => directionArray |> _addUniqueDirection(Back)
     | "q" => directionArray |> _addUniqueDirection(Up)
     | "e" => directionArray |> _addUniqueDirection(Down)
+    | _ => directionArray
+    };
+
+  {
+    ...state,
+    flyCameraControllerRecord:
+      flyCameraControllerRecord
+      |> OperateFlyCameraControllerService.setDirectionArray(
+           cameraController,
+           directionArray,
+         ),
+  };
+};
+
+let _removeSpecificDirection = (direction, array) =>
+  array |> Js.Array.filter(item => item != direction);
+
+let _staticSpecificDirection =
+    (
+      cameraController,
+      keyboardEvent: keyboardEvent,
+      {flyCameraControllerRecord, gameObjectRecord} as state,
+    ) => {
+  let directionArray =
+    OperateFlyCameraControllerService.getDirectionArray(
+      flyCameraControllerRecord,
+    );
+
+  let directionArray =
+    switch (keyboardEvent.key) {
+    | "a"
+    | "left" => directionArray |> _removeSpecificDirection(Left)
+    | "d"
+    | "right" => directionArray |> _removeSpecificDirection(Right)
+    | "w"
+    | "up" => directionArray |> _removeSpecificDirection(Front)
+    | "s"
+    | "down" => directionArray |> _removeSpecificDirection(Back)
+    | "q" => directionArray |> _removeSpecificDirection(Up)
+    | "e" => directionArray |> _removeSpecificDirection(Down)
     | _ => directionArray
     };
 
@@ -270,7 +325,11 @@ let prepareBindEvent = (cameraController, state) => {
   let keydownHandleFunc =
     (. event: EventType.keyboardEvent, {flyCameraControllerRecord} as state) =>
       isTriggerKeydownEventHandler(event) ?
-        _translationByKeyDown(cameraController, event, state) : state;
+        _moveSpecificDirection(cameraController, event, state) : state;
+
+  let keyupHandleFunc =
+    (. event: EventType.keyboardEvent, {flyCameraControllerRecord} as state) =>
+      _staticSpecificDirection(cameraController, event, state);
 
   let state = {
     ...state,
@@ -292,7 +351,8 @@ let prepareBindEvent = (cameraController, state) => {
            cameraController,
            pointScaleHandleFunc,
          )
-      |> _addKeydownEventHandleFunc(cameraController, keydownHandleFunc),
+      |> _addKeydownEventHandleFunc(cameraController, keydownHandleFunc)
+      |> _addKeyupEventHandleFunc(cameraController, keyupHandleFunc),
   };
 
   (
@@ -302,6 +362,7 @@ let prepareBindEvent = (cameraController, state) => {
     pointDragOverHandleFunc,
     pointScaleHandleFunc,
     keydownHandleFunc,
+    keyupHandleFunc,
   );
 };
 
@@ -313,6 +374,7 @@ let bindEvent = (cameraController, state) => {
     pointDragOverHandleFunc,
     pointScaleHandleFunc,
     keydownHandleFunc,
+    keyupHandleFunc,
   ) =
     prepareBindEvent(cameraController, state);
 
@@ -352,6 +414,14 @@ let bindEvent = (cameraController, state) => {
     ManageEventMainService.onKeyboardEvent(
       ~eventName=EventType.KeyDown,
       ~handleFunc=keydownHandleFunc,
+      ~state,
+      (),
+    );
+
+  let state =
+    ManageEventMainService.onKeyboardEvent(
+      ~eventName=EventType.KeyUp,
+      ~handleFunc=keyupHandleFunc,
       ~state,
       (),
     );
@@ -508,7 +578,6 @@ let _disposePointScaleEventHandleFuncListMap =
     };
   };
 };
-
 let _disposeKeyDownEventHandleFuncListMap =
     (cameraController, {flyCameraControllerRecord} as state) => {
   let {keydownEventHandleFuncListMap}: flyCameraControllerRecord = flyCameraControllerRecord;
@@ -539,13 +608,44 @@ let _disposeKeyDownEventHandleFuncListMap =
   };
 };
 
+let _disposeKeyUpEventHandleFuncListMap =
+    (cameraController, {flyCameraControllerRecord} as state) => {
+  let {keyupEventHandleFuncListMap}: flyCameraControllerRecord = flyCameraControllerRecord;
+
+  switch (
+    keyupEventHandleFuncListMap
+    |> WonderCommonlib.MutableSparseMapService.get(cameraController)
+  ) {
+  | None => state
+  | Some(keyupEventHandleFuncList) =>
+    let state =
+      keyupEventHandleFuncList
+      |> List.fold_left(
+           (state, func) =>
+             _unbindKeyboardEvent(EventType.KeyUp, func, state),
+           state,
+         );
+
+    {
+      ...state,
+      flyCameraControllerRecord: {
+        ...flyCameraControllerRecord,
+        keyupEventHandleFuncListMap:
+          keyupEventHandleFuncListMap
+          |> DisposeComponentService.disposeSparseMapData(cameraController),
+      },
+    };
+  };
+};
+
 let unbindEvent = (cameraController, state) =>
   state
   |> _disposePointDragStartEventHandleFuncListMap(cameraController)
   |> _disposePointDragDropEventHandleFuncListMap(cameraController)
   |> _disposePointDragOverEventHandleFuncListMap(cameraController)
   |> _disposePointScaleEventHandleFuncListMap(cameraController)
-  |> _disposeKeyDownEventHandleFuncListMap(cameraController);
+  |> _disposeKeyDownEventHandleFuncListMap(cameraController)
+  |> _disposeKeyUpEventHandleFuncListMap(cameraController);
 
 let unbindPointScaleEvent = (cameraController, state) =>
   state |> _disposePointScaleEventHandleFuncListMap(cameraController);

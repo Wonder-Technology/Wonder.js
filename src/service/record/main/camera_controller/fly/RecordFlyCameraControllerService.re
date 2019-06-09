@@ -10,6 +10,8 @@ let create = () => {
     WonderCommonlib.MutableSparseMapService.createEmpty(),
   pointScaleEventHandleFuncListMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
+  keyupEventHandleFuncListMap:
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
   keydownEventHandleFuncListMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
   dirtyArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -31,6 +33,7 @@ let deepCopyForRestore =
         pointDragDropEventHandleFuncListMap,
         pointDragOverEventHandleFuncListMap,
         pointScaleEventHandleFuncListMap,
+        keyupEventHandleFuncListMap,
         keydownEventHandleFuncListMap,
         dirtyArray,
         moveSpeedMap,
@@ -59,6 +62,8 @@ let deepCopyForRestore =
   keydownEventHandleFuncListMap:
     keydownEventHandleFuncListMap
     |> WonderCommonlib.MutableSparseMapService.copy,
+  keyupEventHandleFuncListMap:
+    keyupEventHandleFuncListMap |> WonderCommonlib.MutableSparseMapService.copy,
   dirtyArray: dirtyArray |> Js.Array.copy,
   moveSpeedMap: moveSpeedMap |> WonderCommonlib.MutableSparseMapService.copy,
   wheelSpeedMap: wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.copy,
