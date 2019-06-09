@@ -56,6 +56,8 @@ let push = (item, arr) => {
   arr;
 };
 
+let hasItem = arr => arr |> Js.Array.length > 0;
+
 let unsafeGetFirst = arr => Array.unsafe_get(arr, 0);
 
 let getFirst = arr => unsafeGetFirst(arr) |> Obj.magic |> Js.toOption;
