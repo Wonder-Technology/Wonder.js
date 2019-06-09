@@ -120,3 +120,25 @@ let setTranslationDiff =
       translationDiffMap,
     ),
 };
+
+let unsafeGetDirectionArray = (record: flyCameraControllerRecord) =>
+  record.directionArray;
+
+let hasDirection = (record: flyCameraControllerRecord) =>
+  record.directionArray |> ArrayService.hasItem;
+
+let setDirectionArray =
+    (
+      cameraController,
+      directionArray,
+      {directionArray, dirtyArray} as record: flyCameraControllerRecord,
+    ) => {
+  ...record,
+  dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
+  directionArray,
+};
+
+let clearDirectionArray = (record: flyCameraControllerRecord) => {
+  ...record,
+  directionArray: WonderCommonlib.ArrayService.createEmpty(),
+};

@@ -129,44 +129,47 @@ let _changeOrbit =
      );
 };
 
+let _addUniqueDirection = (direction, array) =>
+  array
+  |> ArrayService.push(direction)
+  |> ArrayService.removeDuplicateItems((. item) =>
+       FlyCameraControllerType.convertDirectionToString(item)
+     );
+
 let _translationByKeyDown =
     (
       cameraController,
       keyboardEvent: keyboardEvent,
       {flyCameraControllerRecord, gameObjectRecord} as state,
     ) => {
-  let moveSpeed =
-    OperateFlyCameraControllerService.unsafeGetMoveSpeed(
-      cameraController,
+  let directionArray =
+    OperateFlyCameraControllerService.unsafeGetDirectionArray(
       flyCameraControllerRecord,
     );
 
-  let (dx, dy, dz) =
+  let directionArray =
     switch (keyboardEvent.key) {
     | "a"
-    | "left" => (-. moveSpeed, 0., 0.)
+    | "left" => directionArray |> _addUniqueDirection(Left)
     | "d"
-    | "right" => (moveSpeed, 0., 0.)
+    | "right" => directionArray |> _addUniqueDirection(Right)
     | "w"
-    | "up" => (0., 0., -. moveSpeed)
+    | "up" => directionArray |> _addUniqueDirection(Front)
     | "s"
-    | "down" => (0., 0., moveSpeed)
-    | "q" => (0., moveSpeed, 0.)
-    | "e" => (0., -. moveSpeed, 0.)
-    | _ => (0., 0., 0.)
+    | "down" => directionArray |> _addUniqueDirection(Back)
+    | "q" => directionArray |> _addUniqueDirection(Up)
+    | "e" => directionArray |> _addUniqueDirection(Down)
+    | _ => directionArray
     };
 
-  switch (dx, dy, dz) {
-  | (0., 0., 0.) => state
-  | (dx, dy, dz) => {
-      ...state,
-      flyCameraControllerRecord:
-        flyCameraControllerRecord
-        |> OperateFlyCameraControllerService.setTranslationDiff(
-             cameraController,
-             (dx, dy, dz),
-           ),
-    }
+  {
+    ...state,
+    flyCameraControllerRecord:
+      flyCameraControllerRecord
+      |> OperateFlyCameraControllerService.setDirectionArray(
+           cameraController,
+           directionArray,
+         ),
   };
 };
 

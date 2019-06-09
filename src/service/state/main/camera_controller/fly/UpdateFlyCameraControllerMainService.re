@@ -2,6 +2,35 @@ open StateDataMainType;
 
 open FlyCameraControllerType;
 
+let _getTranslationPosition = (cameraController, flyCameraControllerRecord) => {
+  let moveSpeed =
+    OperateFlyCameraControllerService.unsafeGetMoveSpeed(
+      cameraController,
+      flyCameraControllerRecord,
+    );
+
+  OperateFlyCameraControllerService.hasDirection(flyCameraControllerRecord) ?
+    OperateFlyCameraControllerService.unsafeGetDirectionArray(
+      flyCameraControllerRecord,
+    )
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. (dx, dy, dz), direction) =>
+           switch (direction) {
+           | Left => (-. moveSpeed, dy, dz)
+           | Right => (moveSpeed, dy, dz)
+           | Up => (dx, moveSpeed, dz)
+           | Down => (dx, -. moveSpeed, dz)
+           | Front => (dx, dy, -. moveSpeed)
+           | Back => (dx, dy, moveSpeed)
+           },
+         (0., 0., 0.),
+       ) :
+    OperateFlyCameraControllerService.unsafeGetTranslationDiff(
+      cameraController,
+      flyCameraControllerRecord,
+    );
+};
+
 let _resetFlyCameraDiffValue = (cameraController, flyCameraControllerRecord) =>
   flyCameraControllerRecord
   |> OperateFlyCameraControllerService.setEulerAngleDiff(
@@ -20,7 +49,7 @@ let _updateTransform =
     ) => {
   let transformRecord = RecordTransformMainService.getRecord(state);
 
-  let transform =
+  let cameraTransform =
     GetComponentGameObjectService.unsafeGetTransformComponent(
       GameObjectFlyCameraControllerService.unsafeGetGameObject(
         cameraController,
@@ -37,25 +66,23 @@ let _updateTransform =
 
   let (cameraRotationX, cameraRotationY, _) =
     ModelMatrixTransformService.getLocalEulerAnglesTuple(
-      transform,
+      cameraTransform,
       RecordTransformMainService.getRecord(state).localRotations,
     );
 
   let cameraLocalPositionTuple =
     ModelMatrixTransformService.getLocalRotationTuple(
-      transform,
+      cameraTransform,
       RecordTransformMainService.getRecord(state).localRotations,
     )
     |> Vector3Service.transformQuat(
-         OperateFlyCameraControllerService.unsafeGetTranslationDiff(
-           cameraController,
-           flyCameraControllerRecord,
-         ),
+         _getTranslationPosition(cameraController, flyCameraControllerRecord)
+         |> WonderLog.Log.print,
        )
     |> Vector3Service.add(
          Vector3Type.Float,
          ModelMatrixTransformService.getLocalPositionTuple(
-           transform,
+           cameraTransform,
            RecordTransformMainService.getRecord(state).localPositions,
          ),
        );
@@ -66,11 +93,11 @@ let _updateTransform =
       Some(
         transformRecord
         |> ModelMatrixTransformService.setLocalPositionByTuple(
-             transform,
+             cameraTransform,
              cameraLocalPositionTuple,
            )
         |> ModelMatrixTransformService.setLocalEulerAnglesByTuple(
-             transform,
+             cameraTransform,
              (cameraRotationX -. diffX, cameraRotationY -. diffY, 0.),
            ),
       ),
