@@ -286,6 +286,7 @@ let _ =
           (
             ~eulerAngleDiff={diffX: 0., diffY: 0.},
             ~translationDiff=(0., 0., 0.),
+            ~directionArray=[||],
             (),
           ) => {
         let state =
@@ -329,6 +330,7 @@ let _ =
 
         let state =
           state
+          |> FlyCameraControllerTool.setDirectionArray(directionArray)
           |> FlyCameraControllerTool.setEulerAngleDiff(
                cameraController,
                eulerAngleDiff,
@@ -343,7 +345,7 @@ let _ =
 
       describe("update one flyCameraController", () =>
         describe("update transform", () => {
-          test("set local eulerAngle ", () => {
+          test("trigger point drag event", () => {
             let (state, transform) =
               _prepare(~eulerAngleDiff={diffX: 1.2, diffY: 2.2}, ());
 
@@ -357,7 +359,7 @@ let _ =
                  (-1.6704253016336438e-9),
                );
           });
-          test("set local position ", () => {
+          test("trigger point scale event", () => {
             let (state, transform) =
               _prepare(~translationDiff=(1.5, 0., 0.), ());
 
@@ -372,6 +374,15 @@ let _ =
             TransformAPI.getTransformLocalPosition(transform, state)
             |> expect
             == (1.1685607433319092, 0.7882041335105896, (-0.5130302309989929));
+          });
+          test("trigger keydown event", () => {
+            let (state, transform) =
+              _prepare(~directionArray=[|Left, Up|], ());
+
+            let state = state |> NoWorkerJobTool.execLoopJobs;
+
+            TransformAPI.getTransformLocalPosition(transform, state)
+            |> expect == ((-1.2000000476837158), 1.2000000476837158, 0.);
           });
         })
       );

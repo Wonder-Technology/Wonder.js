@@ -79,6 +79,17 @@ let setFlyCameraControllerData = (cameraController, state) => {
 
 let getDirtyArray = state => state.flyCameraControllerRecord.dirtyArray;
 
+let getDirectionArray = state =>
+  state.flyCameraControllerRecord.directionArray;
+
+let setDirectionArray = (array, {flyCameraControllerRecord} as state) => {
+  ...state,
+  flyCameraControllerRecord: {
+    ...flyCameraControllerRecord,
+    directionArray: array,
+  },
+};
+
 let addPointDragStartEventHandleFunc =
     (cameraController, handleFunc, {flyCameraControllerRecord} as state) => {
   ...state,

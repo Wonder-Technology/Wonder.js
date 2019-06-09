@@ -332,7 +332,8 @@ let _ =
             });
           });
           describe("bind keydown event", () => {
-            test("if is combined key, not set translation diff value ", () => {
+            test(
+              "if is combined key, not add direction into directionArray ", () => {
               let (state, cameraController, moveSpeed, (diffX, diffY, diffZ)) =
                 _prepareKeyEvent();
 
@@ -348,80 +349,111 @@ let _ =
               );
               let state = EventTool.restore(state);
 
-              state
-              |> unsafeGetTranslationDiff(cameraController)
-              |> expect == (diffX, diffY, diffZ);
+              state |> getDirectionArray |> Js.Array.length |> expect == 0;
             });
 
-            describe("else, set translation diff value", () => {
-              let _judgeTranslationDiffValue = (keyCode, expectFunc) => {
-                let (state, cameraController, moveSpeed, diffTuple) =
-                  _prepareKeyEvent();
+            describe("else, add direction into directionArray", () => {
+              describe("test keydown one direction", () => {
+                let _judgeChangeDirectionArray = (keyCode, direction) => {
+                  let (state, cameraController, moveSpeed, diffTuple) =
+                    _prepareKeyEvent();
 
-                let state = MainStateTool.setState(state);
-                EventTool.triggerDomEvent(
-                  "keydown",
-                  EventTool.getKeyboardEventBindedDom(state),
-                  KeyboardEventTool.buildKeyboardEvent(~keyCode, ()),
+                  let state = MainStateTool.setState(state);
+                  EventTool.triggerDomEvent(
+                    "keydown",
+                    EventTool.getKeyboardEventBindedDom(state),
+                    KeyboardEventTool.buildKeyboardEvent(~keyCode, ()),
+                  );
+                  let state = EventTool.restore(state);
+
+                  state
+                  |> getDirectionArray
+                  |> Js.Array.includes(direction)
+                  |> expect == true;
+                };
+
+                test("test move left", () =>
+                  _judgeChangeDirectionArray(65, Left)
                 );
-                let state = EventTool.restore(state);
-
-                expectFunc(
-                  state |> unsafeGetTranslationDiff(cameraController),
-                  moveSpeed,
-                  expect,
-                  diffTuple,
+                test("test move right", () =>
+                  _judgeChangeDirectionArray(39, Right)
                 );
-              };
+                test("test move up", () =>
+                  _judgeChangeDirectionArray(81, Up)
+                );
+                test("test move down", () =>
+                  _judgeChangeDirectionArray(69, Down)
+                );
+                test("test move front", () =>
+                  _judgeChangeDirectionArray(87, Front)
+                );
+                test("test move back", () =>
+                  _judgeChangeDirectionArray(83, Back)
+                );
+              });
+              describe("test keydown multiple direction", () => {
+                let _judgeMultipleChangeDirectionArray =
+                    ((keyCode1, keyCode2), (direction1, direction2)) => {
+                  let (state, cameraController, moveSpeed, diffTuple) =
+                    _prepareKeyEvent();
 
-              test("test move left", () =>
-                _judgeTranslationDiffValue(
-                  65,
-                  (translationDiff, moveSpeed, expect, (diffX, diffY, diffZ)) =>
-                  translationDiff
-                  |> expect == (diffX -. moveSpeed, diffY, diffZ)
-                )
-              );
-              test("test move right", () =>
-                _judgeTranslationDiffValue(
-                  39,
-                  (translationDiff, moveSpeed, expect, (diffX, diffY, diffZ)) =>
-                  translationDiff
-                  |> expect == (diffX +. moveSpeed, diffY, diffZ)
-                )
-              );
-              test("test move up", () =>
-                _judgeTranslationDiffValue(
-                  81,
-                  (translationDiff, moveSpeed, expect, (diffX, diffY, diffZ)) =>
-                  translationDiff
-                  |> expect == (diffX, diffY +. moveSpeed, diffZ)
-                )
-              );
-              test("test move down", () =>
-                _judgeTranslationDiffValue(
-                  69,
-                  (translationDiff, moveSpeed, expect, (diffX, diffY, diffZ)) =>
-                  translationDiff
-                  |> expect == (diffX, diffY -. moveSpeed, diffZ)
-                )
-              );
-              test("test move front", () =>
-                _judgeTranslationDiffValue(
-                  87,
-                  (translationDiff, moveSpeed, expect, (diffX, diffY, diffZ)) =>
-                  translationDiff
-                  |> expect == (diffX, diffY, diffZ -. moveSpeed)
-                )
-              );
-              test("test move back", () =>
-                _judgeTranslationDiffValue(
-                  83,
-                  (translationDiff, moveSpeed, expect, (diffX, diffY, diffZ)) =>
-                  translationDiff
-                  |> expect == (diffX, diffY, diffZ +. moveSpeed)
-                )
-              );
+                  let state = MainStateTool.setState(state);
+                  EventTool.triggerDomEvent(
+                    "keydown",
+                    EventTool.getKeyboardEventBindedDom(state),
+                    KeyboardEventTool.buildKeyboardEvent(
+                      ~keyCode=keyCode1,
+                      (),
+                    ),
+                  );
+                  EventTool.triggerDomEvent(
+                    "keydown",
+                    EventTool.getKeyboardEventBindedDom(state),
+                    KeyboardEventTool.buildKeyboardEvent(
+                      ~keyCode=keyCode2,
+                      (),
+                    ),
+                  );
+                  let state =
+                    MainStateTool.unsafeGetState() |> EventTool.restore;
+
+                  let directionArray = state |> getDirectionArray;
+
+                  (
+                    directionArray |> Js.Array.includes(direction1),
+                    directionArray |> Js.Array.includes(direction2),
+                  )
+                  |> expect == (true, true);
+                };
+
+                test("test move left and up", () =>
+                  _judgeMultipleChangeDirectionArray((65, 81), (Left, Up))
+                );
+                test("test move right and down", () =>
+                  _judgeMultipleChangeDirectionArray(
+                    (39, 69),
+                    (Right, Down),
+                  )
+                );
+                test("test move up and front", () =>
+                  _judgeMultipleChangeDirectionArray((81, 87), (Up, Front))
+                );
+                test("test move down and back", () =>
+                  _judgeMultipleChangeDirectionArray((69, 83), (Down, Back))
+                );
+                test("test move front and left", () =>
+                  _judgeMultipleChangeDirectionArray(
+                    (87, 65),
+                    (Front, Left),
+                  )
+                );
+                test("test move back", () =>
+                  _judgeMultipleChangeDirectionArray(
+                    (83, 39),
+                    (Back, Right),
+                  )
+                );
+              });
             });
           });
         });
