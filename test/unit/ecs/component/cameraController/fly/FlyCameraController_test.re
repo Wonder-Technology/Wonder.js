@@ -32,12 +32,6 @@ let _ =
           |> (record => expect(record.index) == 1);
         })
       );
-      test("add to dirty array", () => {
-        let (state, cameraController) = createFlyCameraController(state^);
-        state
-        |> FlyCameraControllerTool.getDirtyArray
-        |> expect == [|cameraController|];
-      });
     });
 
     describe("unsafeGetFlyCameraControllerGameObject", () =>
@@ -175,25 +169,6 @@ let _ =
       };
 
       describe("dispose data", () => {
-        test("dirtyArray: remove from array(include duplicated ones)", () => {
-          let (state, gameObject1, _, (cameraController1, _, _)) =
-            FlyCameraControllerTool.createGameObject(state^);
-          let state =
-            FlyCameraControllerAPI.setFlyCameraControllerRotateSpeed(
-              cameraController1,
-              11.,
-              state,
-            );
-
-          let state =
-            state
-            |> GameObjectTool.disposeGameObjectFlyCameraControllerComponent(
-                 gameObject1,
-                 cameraController1,
-               );
-
-          state.flyCameraControllerRecord.dirtyArray |> expect == [||];
-        });
         test(
           "remove from eulerAngleDiffMap, translationDiffMap, moveSpeedMap, rotateSpeedMap, wheelSpeedMap, gameObjectMap",
           () => {

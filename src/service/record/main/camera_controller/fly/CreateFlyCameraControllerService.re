@@ -7,7 +7,13 @@ open FlyCameraControllerType;
 let _setDefaultValue =
     (
       index,
-      {moveSpeedMap, wheelSpeedMap, rotateSpeedMap, eulerAngleDiffMap, translationDiffMap} as record: flyCameraControllerRecord,
+      {
+        moveSpeedMap,
+        wheelSpeedMap,
+        rotateSpeedMap,
+        eulerAngleDiffMap,
+        translationDiffMap,
+      } as record: flyCameraControllerRecord,
     ) => {
   ...record,
   moveSpeedMap:
@@ -31,7 +37,6 @@ let create =
     (
       {
         index,
-        dirtyArray,
         moveSpeedMap,
         wheelSpeedMap,
         rotateSpeedMap,
@@ -42,13 +47,5 @@ let create =
   let (index, newIndex, disposedIndexArray) =
     generateIndex(index, disposedIndexArray);
   let record = _setDefaultValue(index, record);
-  (
-    {
-      ...record,
-      index: newIndex,
-      dirtyArray: DirtyArrayService.addToDirtyArray(index, dirtyArray),
-      disposedIndexArray,
-    },
-    index,
-  );
+  ({...record, index: newIndex, disposedIndexArray}, index);
 };

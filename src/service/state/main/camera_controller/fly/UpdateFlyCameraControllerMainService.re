@@ -107,23 +107,6 @@ let _updateTransform =
   state;
 };
 
-let _clearDirtyArray = ({flyCameraControllerRecord} as state) => {
-  ...state,
-  flyCameraControllerRecord: {
-    ...flyCameraControllerRecord,
-    dirtyArray: DirtyArrayService.create(),
-  },
-};
-
-let update = ({flyCameraControllerRecord} as state) =>
-  flyCameraControllerRecord.dirtyArray
-  |> WonderCommonlib.ArrayService.removeDuplicateItems
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. state, dirtyIndex) => _updateTransform(dirtyIndex, state),
-       state,
-     )
-  |> _clearDirtyArray;
-
 let _getAllFlyCameraControllers = ({flyCameraControllerRecord} as state) => {
   let {index, disposedIndexArray}: flyCameraControllerRecord = flyCameraControllerRecord;
 
@@ -136,5 +119,4 @@ let updateAll = ({flyCameraControllerRecord} as state) =>
        (. state, cameraController) =>
          _updateTransform(cameraController, state),
        state,
-     )
-  |> _clearDirtyArray;
+     );

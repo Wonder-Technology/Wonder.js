@@ -77,8 +77,6 @@ let setFlyCameraControllerData = (cameraController, state) => {
   (state, (moveSpeed, rotateSpeed, wheelSpeed));
 };
 
-let getDirtyArray = state => state.flyCameraControllerRecord.dirtyArray;
-
 let getDirectionArray = state =>
   state.flyCameraControllerRecord.directionArray;
 
