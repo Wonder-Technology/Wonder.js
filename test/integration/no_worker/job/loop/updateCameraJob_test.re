@@ -226,8 +226,8 @@ let _ =
             let state = state |> NoWorkerJobTool.execLoopJobs;
 
             TransformAPI.getTransformLocalPosition(transform, state)
-            |> expect
-            == (1.6475868225097656, 4.19395637512207, 4.008556842803955);
+            |> Vector3Tool.truncate(3)
+            |> expect == (1.648, 4.194, 4.009);
           });
 
           test("lookAt target", () => {
@@ -270,17 +270,16 @@ let _ =
           let state = state |> NoWorkerJobTool.execLoopJobs;
 
           (
-            TransformAPI.getTransformLocalPosition(transform1, state),
-            TransformAPI.getTransformLocalPosition(transform2, state),
+            TransformAPI.getTransformLocalPosition(transform1, state)
+            |> Vector3Tool.truncate(3),
+            TransformAPI.getTransformLocalPosition(transform2, state)
+            |> Vector3Tool.truncate(3),
           )
-          |> expect
-          == (
-               (1.6475868225097656, 4.19395637512207, 4.008556842803955),
-               (6.123233998228043e-16, 6.123233998228043e-16, 10.),
-             );
+          |> expect == ((1.648, 4.194, 4.009), (0., 0., 10.));
         })
       );
     });
+
     describe("update flyCameraController", () => {
       let _prepare =
           (
@@ -344,50 +343,72 @@ let _ =
                translationDiff,
              );
 
-        (state, transform);
+        (state, transform, cameraController);
       };
 
       describe("update one flyCameraController", () =>
         describe("update transform", () => {
-          test("trigger point drag event", () => {
-            let (state, transform) =
-              _prepare(~eulerAngleDiff={diffX: 1.2, diffY: 2.2}, ());
+          describe("set local rotation", () =>
+            test("trigger point drag event", () => {
+              let (state, transform, cameraController) =
+                _prepare(~eulerAngleDiff={diffX: 5.2, diffY: 6.2}, ());
 
-            let state = state |> NoWorkerJobTool.execLoopJobs;
+              let state = state |> NoWorkerJobTool.execLoopJobs;
 
-            TransformAPI.getTransformLocalEulerAngles(transform, state)
-            |> expect
-            == (
-                 (-1.1999999217979254),
-                 (-2.1999998811124652),
-                 (-1.6704253016336438e-9),
-               );
+              TransformAPI.getTransformLocalEulerAngles(transform, state)
+              |> Vector3Tool.truncate(3)
+              |> expect == ((-5.2), (-6.2), (-0.));
+            })
+          );
+
+          describe("set local position", () => {
+            test("trigger point scale event", () => {
+              let (state, transform, cameraController) =
+                _prepare(~translationDiff=(1.5, 0., 0.), ());
+
+              let state =
+                TransformAPI.setTransformLocalEulerAngles(
+                  transform,
+                  (45., 20., 34.),
+                  state,
+                )
+                |> NoWorkerJobTool.execLoopJobs;
+
+              TransformAPI.getTransformLocalPosition(transform, state)
+              |> Vector3Tool.truncate(3)
+              |> expect == (1.169, 0.788, (-0.513));
+            });
+            test("trigger keydown event", () => {
+              let (state, transform, cameraController) =
+                _prepare(~directionArray=[|Left, Up|], ());
+
+              let state = state |> NoWorkerJobTool.execLoopJobs;
+
+              TransformAPI.getTransformLocalPosition(transform, state)
+              |> Vector3Tool.truncate(3)
+              |> expect == ((-1.2), 1.2, 0.);
+            });
           });
-          test("trigger point scale event", () => {
-            let (state, transform) =
-              _prepare(~translationDiff=(1.5, 0., 0.), ());
+        })
+      );
+      describe("test restore data", () =>
+        test("restore flyCamera diff value after update camera", () => {
+          let (state, transform, cameraController) =
+            _prepare(~translationDiff=(1.5, 0., 0.), ());
 
-            let state =
-              TransformAPI.setTransformLocalEulerAngles(
-                transform,
-                (45., 20., 34.),
-                state,
-              )
-              |> NoWorkerJobTool.execLoopJobs;
+          let state = state |> NoWorkerJobTool.execLoopJobs;
 
-            TransformAPI.getTransformLocalPosition(transform, state)
-            |> expect
-            == (1.1685607433319092, 0.7882041335105896, (-0.5130302309989929));
-          });
-          test("trigger keydown event", () => {
-            let (state, transform) =
-              _prepare(~directionArray=[|Left, Up|], ());
-
-            let state = state |> NoWorkerJobTool.execLoopJobs;
-
-            TransformAPI.getTransformLocalPosition(transform, state)
-            |> expect == ((-1.2000000476837158), 1.2000000476837158, 0.);
-          });
+          (
+            FlyCameraControllerTool.unsafeGetTranslationDiff(
+              cameraController,
+              state,
+            ),
+            FlyCameraControllerTool.unsafeGetEulerAngleDiff(
+              cameraController,
+              state,
+            ),
+          )
+          |> expect == ((0., 0., 0.), {diffX: 0., diffY: 0.});
         })
       );
     });

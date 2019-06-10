@@ -78,8 +78,7 @@ let _updateTransform =
       RecordTransformMainService.getRecord(state).localRotations,
     )
     |> Vector3Service.transformQuat(
-         _getTranslationPosition(cameraController, flyCameraControllerRecord)
-         |> WonderLog.Log.print,
+         _getTranslationPosition(cameraController, flyCameraControllerRecord),
        )
     |> Vector3Service.add(
          Vector3Type.Float,
