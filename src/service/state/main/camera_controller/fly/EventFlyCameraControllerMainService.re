@@ -146,6 +146,7 @@ let _changeOrbit =
 
 let _addUniqueDirection = (direction, array) =>
   array
+  |> Js.Array.copy
   |> ArrayService.push(direction)
   |> ArrayService.removeDuplicateItems((. item) =>
        FlyCameraControllerType.convertDirectionToString(item)
