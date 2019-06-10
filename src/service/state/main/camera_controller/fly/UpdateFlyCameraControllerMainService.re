@@ -9,6 +9,8 @@ let _getTranslationPosition = (cameraController, flyCameraControllerRecord) => {
       flyCameraControllerRecord,
     );
 
+  /* TODO handle point scale+ keydown */
+
   OperateFlyCameraControllerService.hasDirection(flyCameraControllerRecord) ?
     OperateFlyCameraControllerService.getDirectionArray(
       flyCameraControllerRecord,
@@ -113,7 +115,7 @@ let _getAllFlyCameraControllers = ({flyCameraControllerRecord} as state) => {
   GetAllComponentService.getAllComponents(index, disposedIndexArray);
 };
 
-let updateAll = ({flyCameraControllerRecord} as state) =>
+let update = ({flyCameraControllerRecord} as state) =>
   _getAllFlyCameraControllers(state)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, cameraController) =>
