@@ -365,7 +365,8 @@ let _ =
                     EventTool.getKeyboardEventBindedDom(state),
                     KeyboardEventTool.buildKeyboardEvent(~keyCode, ()),
                   );
-                  let state = EventTool.restore(state);
+                  let state =
+                    MainStateTool.unsafeGetState() |> EventTool.restore;
 
                   state |> getDirectionArray |> expect == [|direction|];
                 };
@@ -389,7 +390,35 @@ let _ =
                   _judgeChangeDirectionArray(83, Back)
                 );
               });
+
               describe("test keydown multiple direction", () => {
+                describe("test should remove duplicate direction", () =>
+                  test("test move up and up", () => {
+                    let keyCode = 65;
+                    let direction = Left;
+
+                    let (state, cameraController, moveSpeed, diffTuple) =
+                      _prepareKeyEvent();
+
+                    let state = MainStateTool.setState(state);
+                    EventTool.triggerDomEvent(
+                      "keydown",
+                      EventTool.getKeyboardEventBindedDom(state),
+                      KeyboardEventTool.buildKeyboardEvent(~keyCode, ()),
+                    );
+                    EventTool.triggerDomEvent(
+                      "keydown",
+                      EventTool.getKeyboardEventBindedDom(state),
+                      KeyboardEventTool.buildKeyboardEvent(~keyCode, ()),
+                    );
+                    let state =
+                      MainStateTool.unsafeGetState() |> EventTool.restore;
+                    let directionArray = state |> getDirectionArray;
+
+                    directionArray |> expect == [|direction|];
+                  })
+                );
+
                 let _judgeMultipleChangeDirectionArray =
                     ((keydownCode1, keydownCode2), (direction1, direction2)) => {
                   let (state, cameraController, moveSpeed, diffTuple) =
