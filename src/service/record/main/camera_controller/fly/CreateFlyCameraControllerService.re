@@ -17,9 +17,9 @@ let _setDefaultValue =
     ) => {
   ...record,
   moveSpeedMap:
-    moveSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 0.3),
+    moveSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 0.5),
   wheelSpeedMap:
-    wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 1.5),
+    wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 2.5),
   rotateSpeedMap:
     rotateSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 100.),
   eulerAngleDiffMap:

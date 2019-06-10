@@ -3,34 +3,37 @@ open StateDataMainType;
 open FlyCameraControllerType;
 
 let _getTranslationPosition = (cameraController, flyCameraControllerRecord) => {
+  let initPosition = (0., 0., 0.);
   let moveSpeed =
     OperateFlyCameraControllerService.unsafeGetMoveSpeed(
       cameraController,
       flyCameraControllerRecord,
     );
 
-  /* TODO handle point scale+ keydown */
+  let positionTuple =
+    OperateFlyCameraControllerService.hasDirection(flyCameraControllerRecord) ?
+      OperateFlyCameraControllerService.getDirectionArray(
+        flyCameraControllerRecord,
+      )
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. (dx, dy, dz), direction) =>
+             switch (direction) {
+             | Left => (-. moveSpeed, dy, dz)
+             | Right => (moveSpeed, dy, dz)
+             | Up => (dx, moveSpeed, dz)
+             | Down => (dx, -. moveSpeed, dz)
+             | Front => (dx, dy, -. moveSpeed)
+             | Back => (dx, dy, moveSpeed)
+             },
+           initPosition,
+         ) :
+      initPosition;
 
-  OperateFlyCameraControllerService.hasDirection(flyCameraControllerRecord) ?
-    OperateFlyCameraControllerService.getDirectionArray(
-      flyCameraControllerRecord,
-    )
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. (dx, dy, dz), direction) =>
-           switch (direction) {
-           | Left => (-. moveSpeed, dy, dz)
-           | Right => (moveSpeed, dy, dz)
-           | Up => (dx, moveSpeed, dz)
-           | Down => (dx, -. moveSpeed, dz)
-           | Front => (dx, dy, -. moveSpeed)
-           | Back => (dx, dy, moveSpeed)
-           },
-         (0., 0., 0.),
-       ) :
-    OperateFlyCameraControllerService.unsafeGetTranslationDiff(
-      cameraController,
-      flyCameraControllerRecord,
-    );
+  OperateFlyCameraControllerService.unsafeGetTranslationDiff(
+    cameraController,
+    flyCameraControllerRecord,
+  )
+  |> Vector3Service.add(Vector3Type.Float, positionTuple);
 };
 
 let _resetFlyCameraDiffValue = (cameraController, flyCameraControllerRecord) =>

@@ -333,6 +333,10 @@ let _ =
                cameraController,
                1.2,
              )
+          |> FlyCameraControllerAPI.setFlyCameraControllerWheelSpeed(
+               cameraController,
+               2.5,
+             )
           |> FlyCameraControllerTool.setDirectionArray(directionArray)
           |> FlyCameraControllerTool.setEulerAngleDiff(
                cameraController,
@@ -387,6 +391,20 @@ let _ =
               TransformAPI.getTransformLocalPosition(transform, state)
               |> Vector3Tool.truncate(3)
               |> expect == ((-1.2), 1.2, 0.);
+            });
+            test("tigger point scale and keydown event", () => {
+              let (state, transform, cameraController) =
+                _prepare(
+                  ~directionArray=[|Left, Front|],
+                  ~translationDiff=(0., 0., (-2.5)),
+                  (),
+                );
+
+              let state = state |> NoWorkerJobTool.execLoopJobs;
+
+              TransformAPI.getTransformLocalPosition(transform, state)
+              |> Vector3Tool.truncate(3)
+              |> expect == ((-1.2), 0., (-3.7));
             });
           });
         })
