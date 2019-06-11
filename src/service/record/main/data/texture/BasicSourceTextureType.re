@@ -17,7 +17,6 @@ type basicSourceTextureRecord = {
     ),
   glTextureMap:
     WonderCommonlib.MutableSparseMapService.t(WonderWebgl.GlType.texture),
-  bindTextureUnitCacheMap: WonderCommonlib.MutableSparseMapService.t(int),
   disposedIndexArray: array(int),
   needAddedSourceArray: array((int, WonderWebgl.DomExtendType.imageElement)),
   needInitedTextureIndexArray: array(int),

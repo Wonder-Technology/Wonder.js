@@ -19,7 +19,6 @@ let _disposeData = (texture, state) => {
         flipYs,
         sourceMap,
         glTextureMap,
-        bindTextureUnitCacheMap,
         needAddedSourceArray,
         needInitedTextureIndexArray,
         nameMap,
@@ -91,11 +90,6 @@ let _disposeData = (texture, state) => {
             flipYs,
           ),
         sourceMap: sourceMap |> disposeSparseMapData(texture),
-        bindTextureUnitCacheMap:
-          DisposeTextureMainService.disposeBindTextureUnitCacheMap(
-            texture,
-            bindTextureUnitCacheMap,
-          ),
         needAddedSourceArray:
           DisposeTextureMainService.disposeNeedAddedSourceArray(
             texture,

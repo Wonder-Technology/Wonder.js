@@ -109,8 +109,6 @@ let createRenderState =
       flipYs: basicSourceTextureRecord.flipYs,
       sourceMap: basicSourceTextureRecord.sourceMap,
       glTextureMap: basicSourceTextureRecord.glTextureMap,
-      bindTextureUnitCacheMap:
-        basicSourceTextureRecord.bindTextureUnitCacheMap,
       setFlipYFunc: OperateSourceTextureMainService.setFlipY,
     },
     arrayBufferViewSourceTextureRecord: {
@@ -126,8 +124,6 @@ let createRenderState =
       heights: arrayBufferViewSourceTextureRecord.heights,
       sourceMap: arrayBufferViewSourceTextureRecord.sourceMap,
       glTextureMap: arrayBufferViewSourceTextureRecord.glTextureMap,
-      bindTextureUnitCacheMap:
-        arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
       textureIndexOffset:
         IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
           state,

@@ -1021,28 +1021,27 @@ let _ =
             (state, (texture2D, glTexture), (activeTexture, bindTexture));
           };
           test(
-            "if texture of the specific unit is cached, not bind and active it again",
-            () => {
+            /* "if texture of the specific unit is cached, not bind and active it again", */
+            "test not cache texture", () => {
             let (state, _, (activeTexture, _)) = _prepare(state^);
             let state =
               state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
             let state = state |> DirectorTool.runWithDefaultTime;
-            activeTexture |> expect |> toCalledOnce;
+            activeTexture |> expect |> toCalledTwice;
           });
-          describe("else", () => {
-            test("active texture unit 0", () => {
-              let (state, _, (activeTexture, _)) = _prepare(state^);
-              let state =
-                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-              activeTexture |> expect |> toCalledWith([|0|]);
-            });
-            test("bind gl texture to TEXTURE_2D target", () => {
-              let (state, (texture2D, glTexture), (_, bindTexture)) =
-                _prepare(state^);
-              let state =
-                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
-              bindTexture |> expect |> toCalledWith([|texture2D, glTexture|]);
-            });
+
+          test("active texture unit 0", () => {
+            let (state, _, (activeTexture, _)) = _prepare(state^);
+            let state =
+              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+            activeTexture |> expect |> toCalledWith([|0|]);
+          });
+          test("bind gl texture to TEXTURE_2D target", () => {
+            let (state, (texture2D, glTexture), (_, bindTexture)) =
+              _prepare(state^);
+            let state =
+              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+            bindTexture |> expect |> toCalledWith([|texture2D, glTexture|]);
           });
         });
       });

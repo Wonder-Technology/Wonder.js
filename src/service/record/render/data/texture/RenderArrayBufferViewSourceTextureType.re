@@ -13,7 +13,6 @@ type arrayBufferViewSourceTextureRecord = {
     WonderCommonlib.MutableSparseMapService.t(Js.Typed_array.Uint8Array.t),
   glTextureMap:
     WonderCommonlib.MutableSparseMapService.t(WonderWebgl.GlType.texture),
-  bindTextureUnitCacheMap: WonderCommonlib.MutableSparseMapService.t(int),
   setFlipYFunc:
     (
       WonderWebgl.GlType.webgl1Context,

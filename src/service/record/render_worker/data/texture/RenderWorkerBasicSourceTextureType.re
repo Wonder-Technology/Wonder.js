@@ -12,5 +12,4 @@ type basicSourceTextureRecord = {
   sourceMap: WonderCommonlib.MutableSparseMapService.t(imageBitmap),
   glTextureMap:
     WonderCommonlib.MutableSparseMapService.t(WonderWebgl.GlType.texture),
-  bindTextureUnitCacheMap: WonderCommonlib.MutableSparseMapService.t(int),
 };

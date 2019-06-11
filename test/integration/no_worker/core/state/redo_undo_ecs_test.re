@@ -324,7 +324,7 @@ let _ =
       describe("deep copy texture record", () => {
         describe("deep copy basic source texture record", () =>
           test(
-            "shadow copy sourceMap,glTextureMap, \n                    bindTextureUnitCacheMap, disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray
+            "shadow copy sourceMap,glTextureMap, \n                     disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray
             materialsMap, needDisposedTextureIndexArray
             \n                    \n                    ",
             () =>
@@ -335,7 +335,6 @@ let _ =
                     let {
                       sourceMap,
                       glTextureMap,
-                      bindTextureUnitCacheMap,
                       disposedIndexArray,
                       needAddedSourceArray,
                       needInitedTextureIndexArray,
@@ -346,7 +345,6 @@ let _ =
                     [|
                       sourceMap |> Obj.magic,
                       glTextureMap |> Obj.magic,
-                      bindTextureUnitCacheMap |> Obj.magic,
                       disposedIndexArray |> Obj.magic,
                       needAddedSourceArray |> Obj.magic,
                       needInitedTextureIndexArray |> Obj.magic,
@@ -363,7 +361,7 @@ let _ =
 
         describe("deep copy arrayBufferView source texture record", () =>
           test(
-            "shadow copy sourceMap,glTextureMap, \n                    bindTextureUnitCacheMap, disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray, materialsMap, needDisposedTextureIndexArray\n                    \n                    ",
+            "shadow copy sourceMap,glTextureMap, \n                     disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray, materialsMap, needDisposedTextureIndexArray\n                    \n                    ",
             () =>
             StateDataMainType.(
               ArrayBufferViewSourceTextureType.(
@@ -372,7 +370,6 @@ let _ =
                     let {
                       sourceMap,
                       glTextureMap,
-                      bindTextureUnitCacheMap,
                       disposedIndexArray,
                       needAddedSourceArray,
                       needInitedTextureIndexArray,
@@ -383,7 +380,6 @@ let _ =
                     [|
                       sourceMap |> Obj.magic,
                       glTextureMap |> Obj.magic,
-                      bindTextureUnitCacheMap |> Obj.magic,
                       disposedIndexArray |> Obj.magic,
                       needAddedSourceArray |> Obj.magic,
                       needInitedTextureIndexArray |> Obj.magic,

@@ -15,7 +15,6 @@ type arrayBufferViewSourceTextureRecord = {
     WonderCommonlib.MutableSparseMapService.t(Js.Typed_array.Uint8Array.t),
   glTextureMap:
     WonderCommonlib.MutableSparseMapService.t(WonderWebgl.GlType.texture),
-  bindTextureUnitCacheMap: WonderCommonlib.MutableSparseMapService.t(int),
   disposedIndexArray: array(int),
   needAddedSourceArray: array((int, Js.Typed_array.Uint8Array.t)),
   needInitedTextureIndexArray: array(int),

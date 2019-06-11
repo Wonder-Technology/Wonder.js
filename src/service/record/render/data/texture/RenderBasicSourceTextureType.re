@@ -13,7 +13,6 @@ type basicSourceTextureRecord = {
     ),
   glTextureMap:
     WonderCommonlib.MutableSparseMapService.t(WonderWebgl.GlType.texture),
-  bindTextureUnitCacheMap: WonderCommonlib.MutableSparseMapService.t(int),
   setFlipYFunc:
     (
       WonderWebgl.GlType.webgl1Context,

@@ -104,30 +104,6 @@ let getMaterialDataArr = (texture, state) =>
 let unsafeGetMaterialDataArr = (texture, state) =>
   getMaterialDataArr(texture, state) |> OptionService.unsafeGet;
 
-let getBindTextureUnitCacheMap = (unit, state) => {
-  let basicSourceTextureRecord =
-    RecordBasicSourceTextureMainService.getRecord(state);
-
-  basicSourceTextureRecord.bindTextureUnitCacheMap
-  |> WonderCommonlib.MutableSparseMapService.get(unit);
-};
-
-let setBindTextureUnitCacheMap = (unit, bindedTexture, state) => {
-  let basicSourceTextureRecord =
-    RecordBasicSourceTextureMainService.getRecord(state);
-
-  {
-    ...state,
-    basicSourceTextureRecord:
-      Some({
-        ...basicSourceTextureRecord,
-        bindTextureUnitCacheMap:
-          basicSourceTextureRecord.bindTextureUnitCacheMap
-          |> WonderCommonlib.MutableSparseMapService.set(unit, bindedTexture),
-      }),
-  };
-};
-
 /* let setBindTextureUnitMap = (texture, unit, state) => {
      let basicSourceTextureRecord =
        RecordBasicSourceTextureMainService.getRecord(state);
@@ -159,8 +135,6 @@ let getNeedInitedTextureIndexArray = state =>
 
 let getDisposedIndexArray = state =>
   RecordBasicSourceTextureMainService.getRecord(state).disposedIndexArray;
-
-
 
 let getMaterialDataArr = (texture, state) =>
   MaterialsMapService.getMaterialDataArr(

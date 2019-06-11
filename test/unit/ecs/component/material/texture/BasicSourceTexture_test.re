@@ -338,48 +338,6 @@ let _ =
             )
             |> expect == (None, None);
           });
-          test("remove from bindTextureUnitCacheMap", () => {
-            let (
-              state,
-              material1,
-              (diffuseMap1, specularMap1, source1_1, source1_2),
-            ) =
-              LightMaterialTool.createMaterialWithMap(state^);
-            let (
-              state,
-              material2,
-              (diffuseMap2, specularMap2, source2_1, source2_2),
-            ) =
-              LightMaterialTool.createMaterialWithMap(state);
-
-            let unit0 = 0;
-            let unit1 = 1;
-
-            let state =
-              state
-              |> BasicSourceTextureTool.setBindTextureUnitCacheMap(
-                   unit1,
-                   diffuseMap1,
-                 )
-              |> BasicSourceTextureTool.setBindTextureUnitCacheMap(
-                   unit0,
-                   diffuseMap2,
-                 );
-
-            let state =
-              LightMaterialAPI.batchDisposeLightMaterial(
-                [|material1|],
-                state,
-              );
-
-            (
-              BasicSourceTextureTool.getBindTextureUnitCacheMap(unit1, state)
-              |> Js.Option.isNone,
-              BasicSourceTextureTool.getBindTextureUnitCacheMap(unit0, state)
-              |> Js.Option.isNone,
-            )
-            |> expect == (true, false);
-          });
 
           describe("test remove from type array", () => {
             let _testRemoveFromTypeArr =
@@ -514,40 +472,40 @@ let _ =
           });
 
           /* describe("remove from glTextureMap", () => {
-            let _prepareAndExec = state => {
-              let (
-                state,
-                material1,
-                (diffuseMap, specularMap, source1, source2),
-              ) =
-                LightMaterialTool.createMaterialWithMap(state^);
-              let glTexture = Obj.magic(100);
-              let state =
-                state
-                |> BasicSourceTextureTool.setGlTexture(diffuseMap, glTexture);
-              let gl = DeviceManagerAPI.unsafeGetGl(state) |> Obj.magic;
+               let _prepareAndExec = state => {
+                 let (
+                   state,
+                   material1,
+                   (diffuseMap, specularMap, source1, source2),
+                 ) =
+                   LightMaterialTool.createMaterialWithMap(state^);
+                 let glTexture = Obj.magic(100);
+                 let state =
+                   state
+                   |> BasicSourceTextureTool.setGlTexture(diffuseMap, glTexture);
+                 let gl = DeviceManagerAPI.unsafeGetGl(state) |> Obj.magic;
 
-              let state =
-                LightMaterialAPI.batchDisposeLightMaterial(
-                  [|material1|],
-                  state,
-                );
+                 let state =
+                   LightMaterialAPI.batchDisposeLightMaterial(
+                     [|material1|],
+                     state,
+                   );
 
-              (state, gl, glTexture, diffuseMap);
-            };
+                 (state, gl, glTexture, diffuseMap);
+               };
 
-            test("delete gl texture", () => {
-              let (state, gl, glTexture, _) = _prepareAndExec(state);
+               test("delete gl texture", () => {
+                 let (state, gl, glTexture, _) = _prepareAndExec(state);
 
-              gl##deleteTexture |> expect |> toCalledWith([|glTexture|]);
-            });
-            test("remove from glTextureMap", () => {
-              let (state, gl, _, diffuseMap) = _prepareAndExec(state);
+                 gl##deleteTexture |> expect |> toCalledWith([|glTexture|]);
+               });
+               test("remove from glTextureMap", () => {
+                 let (state, gl, _, diffuseMap) = _prepareAndExec(state);
 
-              BasicSourceTextureTool.getTexture(diffuseMap, state)
-              |> expect == None;
-            });
-          }); */
+                 BasicSourceTextureTool.getTexture(diffuseMap, state)
+                 |> expect == None;
+               });
+             }); */
 
           describe("test remove worker data", () => {
             test("remove from needAddedSourceArray", () => {

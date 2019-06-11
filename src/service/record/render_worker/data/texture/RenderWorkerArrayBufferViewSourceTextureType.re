@@ -17,5 +17,4 @@ type arrayBufferViewSourceTextureRecord = {
     ),
   glTextureMap:
     WonderCommonlib.MutableSparseMapService.t(WonderWebgl.GlType.texture),
-  bindTextureUnitCacheMap: WonderCommonlib.MutableSparseMapService.t(int),
 };

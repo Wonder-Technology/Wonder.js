@@ -162,8 +162,6 @@ let create = ({settingRecord} as state) => {
       materialsMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       sourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-      bindTextureUnitCacheMap:
-        WonderCommonlib.MutableSparseMapService.createEmpty(),
       disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
       needAddedSourceArray: WonderCommonlib.ArrayService.createEmpty(),
       needInitedTextureIndexArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -188,7 +186,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         materialsMap,
         sourceMap,
         glTextureMap,
-        bindTextureUnitCacheMap,
         disposedIndexArray,
         needAddedSourceArray,
         needInitedTextureIndexArray,
@@ -247,8 +244,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
         sourceMap: sourceMap |> WonderCommonlib.MutableSparseMapService.copy,
         glTextureMap:
           glTextureMap |> WonderCommonlib.MutableSparseMapService.copy,
-        bindTextureUnitCacheMap:
-          WonderCommonlib.MutableSparseMapService.createEmpty(),
         disposedIndexArray: disposedIndexArray |> Js.Array.copy,
         needAddedSourceArray: needAddedSourceArray |> Js.Array.copy,
         needInitedTextureIndexArray:

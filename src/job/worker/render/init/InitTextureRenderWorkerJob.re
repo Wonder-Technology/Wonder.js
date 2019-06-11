@@ -35,8 +35,6 @@ let _createTypeArrays =
       flipYs: Some(flipYs),
       sourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
       glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-      bindTextureUnitCacheMap:
-        WonderCommonlib.MutableSparseMapService.createEmpty(),
     });
   let (
     wrapSs,
@@ -69,8 +67,6 @@ let _createTypeArrays =
       heights: Some(heights),
       sourceMap: None,
       glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-      bindTextureUnitCacheMap:
-        WonderCommonlib.MutableSparseMapService.createEmpty(),
     });
   state;
 };

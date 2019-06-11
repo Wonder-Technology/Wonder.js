@@ -387,42 +387,42 @@ let _ =
       });
       describe("send buffer", () => {
         /* describe("optimize", () => {
-          let _prepare = (sandbox, state) => {
-            let (state, _, geometry, _, _) =
-              FrontRenderLightJobTool.prepareGameObject(sandbox, state);
-            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-            (state, geometry);
-          };
+             let _prepare = (sandbox, state) => {
+               let (state, _, geometry, _, _) =
+                 FrontRenderLightJobTool.prepareGameObject(sandbox, state);
+               let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+               (state, geometry);
+             };
 
-          test("if lastSendGeometryData === geometryIndex, not send", () => {
-            let (state, geometry) = _prepare(sandbox, state^);
-            let (state, _, _, _, _) =
-              FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
-                sandbox,
-                geometry,
-                GameObjectAPI.addGameObjectGeometryComponent,
-                state,
-              );
-            let float = 1;
-            let vertexAttribPointer =
-              createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~float,
-                     ~vertexAttribPointer,
-                     (),
-                   ),
+             test("if lastSendGeometryData === geometryIndex, not send", () => {
+               let (state, geometry) = _prepare(sandbox, state^);
+               let (state, _, _, _, _) =
+                 FrontRenderLightJobTool.prepareGameObjectWithSharedGeometry(
+                   sandbox,
+                   geometry,
+                   GameObjectAPI.addGameObjectGeometryComponent,
+                   state,
                  );
+               let float = 1;
+               let vertexAttribPointer =
+                 createEmptyStubWithJsObjSandbox(sandbox);
+               let state =
+                 state
+                 |> FakeGlTool.setFakeGl(
+                      FakeGlTool.buildFakeGl(
+                        ~sandbox,
+                        ~float,
+                        ~vertexAttribPointer,
+                        (),
+                      ),
+                    );
 
-            let state = state |> RenderJobsTool.init;
-            let state = state |> DirectorTool.runWithDefaultTime;
+               let state = state |> RenderJobsTool.init;
+               let state = state |> DirectorTool.runWithDefaultTime;
 
-            vertexAttribPointer |> getCallCount |> expect == 2 * 1;
-          });
-        }); */
+               vertexAttribPointer |> getCallCount |> expect == 2 * 1;
+             });
+           }); */
 
         describe("fix bug", () => {
           let _prepare = (sandbox, state) => {
@@ -1827,49 +1827,47 @@ let _ =
           );
         };
         test(
-          "if texture of the specific unit is cached, not bind and active it again",
-          () => {
+          /* "if texture of the specific unit is cached, not bind and active it again", */
+          "test not cache texture", () => {
           let (state, _, _, _, (activeTexture, _)) = _prepare(state^);
 
           let state =
             state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
           let state = state |> DirectorTool.runWithDefaultTime;
 
-          activeTexture |> expect |> toCalledTwice;
+          activeTexture |> getCallCount |> expect == 4;
         });
 
-        describe("else", () => {
-          test("active texture unit", () => {
-            let (state, _, _, _, (activeTexture, _)) = _prepare(state^);
+        test("active texture unit", () => {
+          let (state, _, _, _, (activeTexture, _)) = _prepare(state^);
 
-            let state =
-              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+          let state =
+            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
 
-            (
-              SinonTool.calledWith(activeTexture, 0),
-              SinonTool.calledWith(activeTexture, 1),
-            )
-            |> expect == (true, true);
-          });
-          test("bind gl texture to TEXTURE_2D target", () => {
-            let (
-              state,
-              (texture2D, glTexture1, glTexture2, _),
-              _,
-              _,
-              (_, bindTexture),
-            ) =
-              _prepare(state^);
+          (
+            SinonTool.calledWith(activeTexture, 0),
+            SinonTool.calledWith(activeTexture, 1),
+          )
+          |> expect == (true, true);
+        });
+        test("bind gl texture to TEXTURE_2D target", () => {
+          let (
+            state,
+            (texture2D, glTexture1, glTexture2, _),
+            _,
+            _,
+            (_, bindTexture),
+          ) =
+            _prepare(state^);
 
-            let state =
-              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+          let state =
+            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
 
-            (
-              SinonTool.calledWithArg2(bindTexture, texture2D, glTexture1),
-              SinonTool.calledWithArg2(bindTexture, texture2D, glTexture2),
-            )
-            |> expect == (true, true);
-          });
+          (
+            SinonTool.calledWithArg2(bindTexture, texture2D, glTexture1),
+            SinonTool.calledWithArg2(bindTexture, texture2D, glTexture2),
+          )
+          |> expect == (true, true);
         });
 
         describe("test remove map", () =>

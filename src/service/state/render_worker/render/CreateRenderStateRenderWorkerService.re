@@ -164,8 +164,6 @@ let createRenderState =
         basicSourceTextureRecord.sourceMap
         |> WorkerType.sparseMapImageBitmapToSparseMapImageElement,
       glTextureMap: basicSourceTextureRecord.glTextureMap,
-      bindTextureUnitCacheMap:
-        basicSourceTextureRecord.bindTextureUnitCacheMap,
       setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY,
     },
     arrayBufferViewSourceTextureRecord: {
@@ -195,8 +193,6 @@ let createRenderState =
       sourceMap:
         arrayBufferViewSourceTextureRecord.sourceMap |> OptionService.unsafeGet,
       glTextureMap: arrayBufferViewSourceTextureRecord.glTextureMap,
-      bindTextureUnitCacheMap:
-        arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
       textureIndexOffset:
         IndexSourceTextureRenderWorkerService.getArrayBufferViewSourceTextureIndexOffset(
           state,
