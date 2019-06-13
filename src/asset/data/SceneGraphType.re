@@ -1,5 +1,12 @@
 type target = (float, float, float);
 
+type flyCameraController = {
+  moveSpeed: float,
+  rotateSpeed: float,
+  wheelSpeed: float,
+  isBindEvent: bool,
+};
+
 type arcballCameraController = {
   distance: float,
   minDistance: float,

@@ -171,6 +171,27 @@ and keyboardEventHandleFuncListMap =
   WonderCommonlib.MutableSparseMapService.t(
     list((. EventType.keyboardEvent, state) => state),
   )
+and flyCameraControllerRecord = {
+  index: int,
+  pointDragStartEventHandleFuncListMap: pointEventHandleFuncListMap,
+  pointDragDropEventHandleFuncListMap: pointEventHandleFuncListMap,
+  pointDragOverEventHandleFuncListMap: pointEventHandleFuncListMap,
+  pointScaleEventHandleFuncListMap: pointEventHandleFuncListMap,
+  keydownEventHandleFuncListMap: keyboardEventHandleFuncListMap,
+  keyupEventHandleFuncListMap: keyboardEventHandleFuncListMap,
+  moveSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
+  wheelSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
+  rotateSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
+  eulerAngleDiffMap:
+    WonderCommonlib.MutableSparseMapService.t(
+      FlyCameraControllerType.eulerAngleDiffType,
+    ),
+  translationDiffMap:
+    WonderCommonlib.MutableSparseMapService.t(PositionType.position),
+  gameObjectMap,
+  disposedIndexArray: array(component),
+  directionArray: array(FlyCameraControllerType.direction),
+}
 and arcballCameraControllerRecord = {
   index: int,
   pointDragStartEventHandleFuncListMap: pointEventHandleFuncListMap,
@@ -414,6 +435,7 @@ and state = {
   mutable geometryRecord: option(geometryRecord),
   mutable meshRendererRecord: option(meshRendererRecord),
   mutable arcballCameraControllerRecord,
+  mutable flyCameraControllerRecord,
   mutable scriptRecord,
   shaderRecord,
   glslRecord,

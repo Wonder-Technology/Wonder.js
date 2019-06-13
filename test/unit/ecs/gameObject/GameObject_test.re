@@ -373,6 +373,68 @@ let _ =
         );
       });
 
+      describe("test flyCameraController component", () => {
+        let _prepare = () => {
+          open FlyCameraControllerAPI;
+          let (state, gameObject) = createGameObject(state^);
+          let (state, flyCameraController) =
+            createFlyCameraController(state);
+          let state =
+            state
+            |> addGameObjectFlyCameraControllerComponent(
+                 gameObject,
+                 flyCameraController,
+               );
+          (state, gameObject, flyCameraController);
+        };
+        describe("addGameObjectFlyCameraControllerComponent", () => {
+          test("if this type of component is already exist, error", () => {
+            open FlyCameraControllerAPI;
+            let (state, gameObject, _) = _prepare();
+            expect(() => {
+              let (state, flyCameraController) =
+                createFlyCameraController(state);
+              addGameObjectFlyCameraControllerComponent(
+                gameObject,
+                flyCameraController,
+                state,
+              );
+            })
+            |> toThrowMessage(
+                 "expect this type of the component shouldn't be added before, but actual not",
+               );
+          });
+          test("can get component's gameObject", () => {
+            open FlyCameraControllerAPI;
+            let (state, gameObject, _) = _prepare();
+            state
+            |> unsafeGetFlyCameraControllerGameObject(
+                 unsafeGetGameObjectFlyCameraControllerComponent(
+                   gameObject,
+                   state,
+                 ),
+               )
+            |> expect == gameObject;
+          });
+        });
+        describe("unsafeGetGameObjectFlyCameraControllerComponent", () =>
+          test("get flyCameraController component", () => {
+            let (state, gameObject, flyCameraController) = _prepare();
+            state
+            |> unsafeGetGameObjectFlyCameraControllerComponent(gameObject)
+            |> expect == (flyCameraController |> Obj.magic);
+          })
+        );
+        describe("hasGameObjectFlyCameraControllerComponent", () =>
+          test("has flyCameraController component", () => {
+            let (state, gameObject, _) = _prepare();
+            state
+            |> hasGameObjectFlyCameraControllerComponent(gameObject)
+            |> expect == true;
+          })
+        );
+      });
+
       describe("test arcballCameraController component", () => {
         let _prepare = () => {
           open ArcballCameraControllerAPI;

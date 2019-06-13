@@ -174,10 +174,11 @@ let _getComponentData =
   switch (getComponentFunc(. gameObject, gameObjectRecord)) {
   | None => (None, None, componentIndex)
 
-  | Some(component) =>
-    let componentData = Some(component);
-
-    (Some(componentIndex), componentData, componentIndex |> succ);
+  | Some(component) => (
+      Some(componentIndex),
+      Some(component),
+      componentIndex |> succ,
+    )
   };
 
 let _getMeshRendererData =
@@ -201,6 +202,14 @@ let _getCameraProjectionData =
   _getComponentData(
     (gameObject, cameraProjectionIndex),
     GetComponentGameObjectService.getPerspectiveCameraProjectionComponent,
+    state,
+  );
+
+let _getFlyCameraControllerData =
+    ((gameObject, flyCameraControllerIndex), {gameObjectRecord} as state) =>
+  _getComponentData(
+    (gameObject, flyCameraControllerIndex),
+    GetComponentGameObjectService.getFlyCameraControllerComponent,
     state,
   );
 
@@ -263,6 +272,7 @@ let getAllComponentData =
           lightMaterialIndex,
           basicCameraViewIndex,
           cameraProjectionIndex,
+          flyCameraControllerIndex,
           arcballCameraControllerIndex,
           lightIndex,
           scriptIndex,
@@ -275,6 +285,7 @@ let getAllComponentData =
           resultLightMaterialDataMap,
           basicCameraViewDataMap,
           cameraProjectionDataMap,
+          flyCameraControllerDataMap,
           arcballCameraControllerDataMap,
           lightDataMap,
           scriptDataMap,
@@ -391,9 +402,30 @@ let getAllComponentData =
     };
 
   let (
+    flyCameraControllerIndex,
+    flyCameraControllerData,
+    newFlyCameraControllerIndex,
+  ) =
+    _getFlyCameraControllerData(
+      (gameObject, flyCameraControllerIndex),
+      state,
+    );
+
+  let flyCameraControllerDataMap =
+    switch (flyCameraControllerIndex) {
+    | None => flyCameraControllerDataMap
+    | Some(flyCameraControllerIndex) =>
+      flyCameraControllerDataMap
+      |> WonderCommonlib.MutableSparseMapService.set(
+           flyCameraControllerIndex,
+           flyCameraControllerData |> OptionService.unsafeGet,
+         )
+    };
+
+  let (
     arcballCameraControllerIndex,
     arcballCameraControllerData,
-    newCameraControllerIndex,
+    newArcballCameraControllerIndex,
   ) =
     _getArcballCameraControllerData(
       (gameObject, arcballCameraControllerIndex),
@@ -448,6 +480,7 @@ let getAllComponentData =
       lightMaterialIndex,
       basicCameraViewIndex,
       cameraProjectionIndex,
+      flyCameraControllerIndex,
       arcballCameraControllerIndex,
       lightIndex,
       scriptIndex,
@@ -459,7 +492,8 @@ let getAllComponentData =
       newLightMaterialIndex,
       newBasicCameraViewIndex,
       newCameraProjectionIndex,
-      newCameraControllerIndex,
+      newFlyCameraControllerIndex,
+      newArcballCameraControllerIndex,
       newLightIndex,
       newScriptIndex,
     ),
@@ -471,6 +505,7 @@ let getAllComponentData =
       resultLightMaterialDataMap,
       basicCameraViewDataMap,
       cameraProjectionDataMap,
+      flyCameraControllerDataMap,
       arcballCameraControllerDataMap,
       lightDataMap,
       scriptDataMap,

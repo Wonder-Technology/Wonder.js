@@ -118,6 +118,21 @@ let _cloneComponentExceptTransform =
   |> _clone(
        (
          uid,
+         GetComponentGameObjectService.getFlyCameraControllerComponent(.
+           uid,
+           gameObjectRecord,
+         ),
+         countRangeArr,
+         clonedGameObjectArr,
+       ),
+       (
+         CloneComponentGameObjectMainService.cloneFlyCameraControllerComponent,
+         BatchAddGameObjectComponentMainService.batchAddFlyCameraControllerComponentForClone,
+       ),
+     )
+  |> _clone(
+       (
+         uid,
          GetComponentGameObjectService.getArcballCameraControllerComponent(.
            uid,
            gameObjectRecord,

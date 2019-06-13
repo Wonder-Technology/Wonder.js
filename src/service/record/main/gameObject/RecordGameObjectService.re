@@ -23,6 +23,7 @@ let create = () => {
     WonderCommonlib.ArrayService.createEmpty(),
   disposedPerspectiveCameraProjectionArray:
     WonderCommonlib.ArrayService.createEmpty(),
+  disposedFlyCameraControllerArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedArcballCameraControllerArray:
     WonderCommonlib.ArrayService.createEmpty(),
   disposedBasicMaterialDataMap: WonderCommonlib.ArrayService.createEmpty(),
@@ -43,6 +44,8 @@ let create = () => {
   perspectiveCameraProjectionMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
   arcballCameraControllerMap:
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
+  flyCameraControllerMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
   meshRendererMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   basicMaterialMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -73,6 +76,7 @@ let deepCopyForRestore =
         disposedTransformArray,
         disposedTransformArrayForKeepOrder,
         disposedPerspectiveCameraProjectionArray,
+        disposedFlyCameraControllerArray,
         disposedArcballCameraControllerArray,
         disposedBasicMaterialDataMap,
         disposedLightMaterialDataMap,
@@ -90,6 +94,7 @@ let deepCopyForRestore =
         basicCameraViewMap,
         perspectiveCameraProjectionMap,
         arcballCameraControllerMap,
+        flyCameraControllerMap,
         meshRendererMap,
         basicMaterialMap,
         lightMaterialMap,
@@ -136,6 +141,9 @@ let deepCopyForRestore =
   disposedPerspectiveCameraProjectionArray:
     disposedPerspectiveCameraProjectionArray
     |> WonderCommonlib.MutableSparseMapService.copy,
+  disposedFlyCameraControllerArray:
+    disposedFlyCameraControllerArray
+    |> WonderCommonlib.MutableSparseMapService.copy,
   disposedArcballCameraControllerArray:
     disposedArcballCameraControllerArray
     |> WonderCommonlib.MutableSparseMapService.copy,
@@ -173,6 +181,8 @@ let deepCopyForRestore =
     |> WonderCommonlib.MutableSparseMapService.copy,
   arcballCameraControllerMap:
     arcballCameraControllerMap |> WonderCommonlib.MutableSparseMapService.copy,
+  flyCameraControllerMap:
+    flyCameraControllerMap |> WonderCommonlib.MutableSparseMapService.copy,
   meshRendererMap:
     meshRendererMap |> WonderCommonlib.MutableSparseMapService.copy,
   basicMaterialMap:

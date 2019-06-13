@@ -25,6 +25,14 @@ let unsafeGetPerspectiveCameraProjectionComponent =
     (uid: int, {perspectiveCameraProjectionMap}) =>
   perspectiveCameraProjectionMap |> unsafeGetComponent(uid);
 
+let getFlyCameraControllerComponent =
+  (. uid: int, {flyCameraControllerMap}) =>
+    flyCameraControllerMap |> getComponent(uid);
+
+let unsafeGetFlyCameraControllerComponent =
+    (uid: int, {flyCameraControllerMap}) =>
+  flyCameraControllerMap |> unsafeGetComponent(uid);
+
 let getArcballCameraControllerComponent =
   (. uid: int, {arcballCameraControllerMap}) =>
     arcballCameraControllerMap |> getComponent(uid);

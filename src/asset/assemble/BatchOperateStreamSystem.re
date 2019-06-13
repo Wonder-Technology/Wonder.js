@@ -48,6 +48,7 @@ let batchOperate =
           meshRendererArr,
           basicCameraViewArr,
           perspectiveCameraProjectionArr,
+          flyCameraControllerArr,
           arcballCameraControllerArr,
           basicMaterialArr,
           lightMaterialArr,
@@ -69,7 +70,6 @@ let batchOperate =
       ),
     );
 
-
   let (
     (
       parentTransforms,
@@ -82,6 +82,8 @@ let batchOperate =
       gameObjectBasicCameraViews,
       perspectiveCameraProjectionGameObjects,
       gameObjectPerspectiveCameraProjection,
+      flyCameraControllerGameObjects,
+      gameObjectFlyCameraController,
       arcballCameraControllerGameObjects,
       gameObjectArcballCameraController,
       basicMaterialGameObjects,
@@ -107,6 +109,7 @@ let batchOperate =
         meshRendererArr,
         basicCameraViewArr,
         perspectiveCameraProjectionArr,
+        flyCameraControllerArr,
         arcballCameraControllerArr,
         basicMaterialArr,
         lightMaterialArr,
@@ -145,6 +148,7 @@ let batchOperate =
            meshRendererArr,
            basicCameraViewArr,
            perspectiveCameraProjectionArr,
+           flyCameraControllerArr,
            arcballCameraControllerArr,
            basicMaterialArr,
            lightMaterialArr,
@@ -154,7 +158,6 @@ let batchOperate =
          ),
          (parentTransforms, childrenTransforms, gameObjectTransforms),
        )
-
     |> BatchOperateSystem.batchAddComponent(
          wd,
          (
@@ -166,6 +169,8 @@ let batchOperate =
            gameObjectBasicCameraViews,
            perspectiveCameraProjectionGameObjects,
            gameObjectPerspectiveCameraProjection,
+           flyCameraControllerGameObjects,
+           gameObjectFlyCameraController,
            arcballCameraControllerGameObjects,
            gameObjectArcballCameraController,
            basicMaterialGameObjects,

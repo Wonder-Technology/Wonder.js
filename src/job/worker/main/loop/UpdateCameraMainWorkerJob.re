@@ -7,7 +7,8 @@ let execJob = (flags, stateData) =>
     let state =
       state
       |> UpdatePerspectiveCameraProjectionMainService.update
-      |> UpdateArcballCameraControllerMainService.update;
+      |> UpdateArcballCameraControllerMainService.update
+      |> UpdateFlyCameraControllerMainService.update;
 
     StateDataMainService.setState(stateData, state);
 

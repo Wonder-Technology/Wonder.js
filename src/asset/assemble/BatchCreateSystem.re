@@ -106,6 +106,15 @@ let _batchCreatePerspectiveCameraProjection =
     state,
   );
 
+/* TODO use batch create */
+let _createFlyCameraControllerOneByOne =
+    ({flyCameraControllers}, {flyCameraControllerRecord} as state) =>
+  _batchCreateComponent(
+    flyCameraControllers,
+    CreateFlyCameraControllerMainService.create,
+    state,
+  );
+
 let _createArcballCameraControllerOneByOne =
     ({arcballCameraControllers}, {arcballCameraControllerRecord} as state) =>
   _batchCreateComponent(
@@ -185,6 +194,8 @@ let batchCreate = (isRenderLight, wd, state) => {
   let (state, basicCameraViewArr) = _batchCreateBasicCameraView(wd, state);
   let (state, perspectiveCameraProjectionArr) =
     _batchCreatePerspectiveCameraProjection(wd, state);
+  let (state, flyCameraControllerArr) =
+    _createFlyCameraControllerOneByOne(wd, state);
   let (state, arcballCameraControllerArr) =
     _createArcballCameraControllerOneByOne(wd, state);
   let (state, basicMaterialArr) = _batchCreateBasicMaterial(wd, state);
@@ -206,6 +217,7 @@ let batchCreate = (isRenderLight, wd, state) => {
       meshRendererArr,
       basicCameraViewArr,
       perspectiveCameraProjectionArr,
+      flyCameraControllerArr,
       arcballCameraControllerArr,
       basicMaterialArr,
       lightMaterialArr,

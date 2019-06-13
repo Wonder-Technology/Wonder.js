@@ -35,6 +35,7 @@ let _addNodeExtraData =
         meshRendererIndex,
         basicMaterialIndex,
         lightMaterialIndex,
+        flyCameraControllerIndex,
         arcballCameraControllerIndex,
         scriptIndex,
       ),
@@ -46,10 +47,11 @@ let _addNodeExtraData =
     meshRendererIndex,
     basicMaterialIndex,
     lightMaterialIndex,
+    flyCameraControllerIndex,
     arcballCameraControllerIndex,
     scriptIndex,
   ) {
-  | (None, None, None, None, None, None, None, None) => None
+  | (None, None, None, None, None, None, None, None, None) => None
   | (
       isActive,
       isRoot,
@@ -57,6 +59,7 @@ let _addNodeExtraData =
       meshRendererIndex,
       basicMaterialIndex,
       lightMaterialIndex,
+      flyCameraControllerIndex,
       arcballCameraControllerIndex,
       scriptIndex,
     ) =>
@@ -68,7 +71,8 @@ let _addNodeExtraData =
         meshRenderer: meshRendererIndex,
         basicMaterial: basicMaterialIndex,
         lightMaterial: lightMaterialIndex,
-        cameraController: arcballCameraControllerIndex,
+        flyCameraController: flyCameraControllerIndex,
+        arcballCameraController: arcballCameraControllerIndex,
         script: scriptIndex,
       }: nodeExtras,
     )
@@ -98,6 +102,7 @@ let addNodeAndItsComponentData =
         meshRendererIndex,
         basicCameraViewIndex,
         cameraProjectionIndex,
+        flyCameraControllerIndex,
         arcballCameraControllerIndex,
         basicMaterialIndex,
         lightMaterialIndex,
@@ -141,6 +146,7 @@ let addNodeAndItsComponentData =
                meshRendererIndex,
                basicMaterialIndex,
                lightMaterialIndex,
+               flyCameraControllerIndex,
                arcballCameraControllerIndex,
                scriptIndex,
              ),

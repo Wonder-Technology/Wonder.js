@@ -11,6 +11,7 @@
     "start": "node ./server/app.js",
     "watch": "bsb -clean-world -make-world -w",
     "build": "bsb -clean-world -make-world",
+    "webpack": "gulp createShaderChunkSystemFile && gulp generateIndex && npm run webpack:dev",
     "buildAll": "gulp createShaderChunkSystemFile && gulp generateIndex && npm run build && npm run webpack:dev",
     "buildAll:prod": "gulp createShaderChunkSystemFile && gulp generateIndex && npm run build && npm run webpack:prod",
     "buildAll:ci": "npm run build && gulp createShaderChunkSystemFile && gulp generateIndex && npm run build && npm run webpack:dev",

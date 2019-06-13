@@ -2598,6 +2598,139 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
       });
     });
 
+    describe("test flyCameraController", () => {
+      let _createCameraGameObject = (isBindEvent, state) => {
+        let (state, gameObject, transform, (cameraController, _, _)) =
+          FlyCameraControllerTool.createGameObject(state);
+
+        let (state, (moveSpeed, rotateSpeed, wheelSpeed)) =
+          FlyCameraControllerTool.setFlyCameraControllerData(
+            cameraController,
+            state,
+          );
+
+        let state =
+          isBindEvent ?
+            FlyCameraControllerAPI.bindFlyCameraControllerEvent(
+              cameraController,
+              state,
+            ) :
+            FlyCameraControllerAPI.unbindFlyCameraControllerEvent(
+              cameraController,
+              state,
+            );
+
+        (
+          state,
+          transform,
+          (moveSpeed, rotateSpeed, wheelSpeed, isBindEvent),
+        );
+      };
+
+      let _prepareGameObject = state => {
+        open GameObjectAPI;
+
+        let (state, rootGameObject) = state^ |> createGameObject;
+
+        let sceneGameObjectTransform =
+          GameObjectAPI.unsafeGetGameObjectTransformComponent(
+            rootGameObject,
+            state,
+          );
+
+        let (
+          state,
+          transform1,
+          (moveSpeed1, rotateSpeed1, wheelSpeed1, isBindEvent1),
+        ) =
+          _createCameraGameObject(false, state);
+
+        let (
+          state,
+          transform2,
+          (moveSpeed2, rotateSpeed2, wheelSpeed2, isBindEvent2),
+        ) =
+          _createCameraGameObject(true, state);
+
+        let (
+          state,
+          gameObject3,
+          (transform3, (localPos3, localRotation3, localScale3)),
+          geometry3,
+          (material3, diffuseColor3),
+          meshRenderer3,
+        ) =
+          _createGameObject1(state);
+
+        let state =
+          state
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform1,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform2,
+             )
+          |> TransformAPI.setTransformParent(
+               Js.Nullable.return(sceneGameObjectTransform),
+               transform3,
+             );
+
+        let (canvas, context, (base64Str1, base64Str2)) =
+          GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+        (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (
+            (moveSpeed1, rotateSpeed1, wheelSpeed1, isBindEvent1),
+            (moveSpeed2, rotateSpeed2, wheelSpeed2, isBindEvent2),
+          ),
+        );
+      };
+
+      test("test nodes", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (
+            (moveSpeed1, rotateSpeed1, wheelSpeed1, isBindEvent1),
+            (moveSpeed2, rotateSpeed2, wheelSpeed2, isBindEvent2),
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+            "nodes":[{"children":[1,2,3]},{"camera":0,"extras":{"flyCameraController":0,"basicCameraView":0}},{"camera":1,"extras":{"flyCameraController":1,"basicCameraView":1}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}}]
+                   |j},
+          state,
+        );
+      });
+      test("test flyCameraController", () => {
+        let (
+          state,
+          (rootGameObject, sceneGameObjectTransform),
+          (
+            (moveSpeed1, rotateSpeed1, wheelSpeed1, isBindEvent1),
+            (moveSpeed2, rotateSpeed2, wheelSpeed2, isBindEvent2),
+          ),
+        ) =
+          _prepareGameObject(state);
+
+        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+          rootGameObject,
+          {j|
+              "extras":{"flyCameraControllers":[{"moveSpeed":$moveSpeed1,"rotateSpeed":$rotateSpeed1,"wheelSpeed":$wheelSpeed1,"isBindEvent":$isBindEvent1},
+              {"moveSpeed":$moveSpeed2,"rotateSpeed":$rotateSpeed2,"wheelSpeed":$wheelSpeed2,"isBindEvent":$isBindEvent2}]
+                      |j},
+          state,
+        );
+      });
+    });
+
     describe("test arcballCameraController", () => {
       let _createCameraGameObject = (isBindEvent, state) => {
         let (state, gameObject, transform, (cameraController, _, _)) =
@@ -2802,7 +2935,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-            "nodes":[{"children":[1,2,3]},{"camera":0,"extras":{"cameraController":0,"basicCameraView":0}},{"camera":1,"extras":{"cameraController":1,"basicCameraView":1}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}}]
+            "nodes":[{"children":[1,2,3]},{"camera":0,"extras":{"arcballCameraController":0,"basicCameraView":0}},{"camera":1,"extras":{"arcballCameraController":1,"basicCameraView":1}},{"translation":[10,11,12.5],"rotation":[0,1,2.5,1],"scale":[2,3.5,1.5],"mesh":0,"extras":{"lightMaterial":0,"meshRenderer":0}}]
                    |j},
           state,
         );

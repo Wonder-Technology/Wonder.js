@@ -1,7 +1,5 @@
 open StateDataMainType;
 
-open ArcballCameraControllerType;
-
 open DisposeArcballCameraControllerMainService;
 
 open GameObjectArcballCameraControllerService;

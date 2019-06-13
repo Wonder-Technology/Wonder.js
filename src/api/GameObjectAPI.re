@@ -235,6 +235,68 @@ let hasGameObjectPerspectiveCameraProjectionComponent =
   hasPerspectiveCameraProjectionComponent(gameObject, state.gameObjectRecord);
 };
 
+let addGameObjectFlyCameraControllerComponent =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  addFlyCameraControllerComponent(gameObject, component, state);
+};
+
+let disposeGameObjectFlyCameraControllerComponent =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  deferDisposeFlyCameraControllerComponent(. gameObject, component, state);
+};
+
+let unsafeGetGameObjectFlyCameraControllerComponent =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  unsafeGetFlyCameraControllerComponent(gameObject, state.gameObjectRecord);
+};
+
+let hasGameObjectFlyCameraControllerComponent =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  hasFlyCameraControllerComponent(gameObject, state.gameObjectRecord);
+};
+
 let addGameObjectArcballCameraControllerComponent =
     (
       gameObject: GameObjectPrimitiveType.gameObject,
