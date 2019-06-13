@@ -43,7 +43,9 @@
                 var state = wd.setTransformLocalPosition(cameraTransform, [0, 0, 80], state);
 
                 var state =
-                    wd.setFlyCameraControllerMoveSpeed(cameraController, 0.6, state);
+                    wd.setFlyCameraControllerMoveSpeed(cameraController, 0.5, state);
+                var state =
+                    wd.setFlyCameraControllerWheelSpeed(cameraController, 2.5, state);
 
                 var state =
                     wd.bindFlyCameraControllerEvent(

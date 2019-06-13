@@ -50,12 +50,35 @@
                 var state =
                     wd.addSceneChildren([box, directionLightGameObject, cameraGameObject], state);
 
+                var sceneGameObject = wd.getSceneGameObject(state);
 
                 var [state, map, wdb] =
                     wd.generateWDB(
-                        wd.getSceneGameObject(state), null, state
+                        sceneGameObject, null, state
                     );
 
+                var childrenArray =
+                    wd.unsafeGetTransformChildren(wd.unsafeGetGameObjectTransformComponent(sceneGameObject, state), state);
+
+                console.log(childrenArray);
+
+                // var state =
+                //     childrenArray.reduce((state, childTransform) => {
+                //         var game = wd.unsafeGetTransformGameObject(childTransform, state);
+
+                //         var state =
+                //             wd.disposeGameObject(
+                //                 game, state
+                //             );
+
+                //         return state;
+                //     }, state);
+
+
+                // var childrenArray2 =
+                //     wd.unsafeGetTransformChildren(wd.unsafeGetGameObjectTransformComponent(sceneGameObject, state), state);
+
+                // console.log("fck", childrenArray2);
 
                 return wd.assembleWholeWDB(wdb,
                     true, true, true, true, true,
