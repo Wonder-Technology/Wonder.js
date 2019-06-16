@@ -77,17 +77,6 @@ let setFlyCameraControllerData = (cameraController, state) => {
   (state, (moveSpeed, rotateSpeed, wheelSpeed));
 };
 
-let getDirectionArray = state =>
-  state.flyCameraControllerRecord.directionArray;
-
-let setDirectionArray = (array, {flyCameraControllerRecord} as state) => {
-  ...state,
-  flyCameraControllerRecord: {
-    ...flyCameraControllerRecord,
-    directionArray: array,
-  },
-};
-
 let addPointDragStartEventHandleFunc =
     (cameraController, handleFunc, {flyCameraControllerRecord} as state) => {
   ...state,

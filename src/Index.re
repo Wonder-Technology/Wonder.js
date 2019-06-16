@@ -102,6 +102,12 @@ let unbindFlyCameraControllerEvent = FlyCameraControllerAPI.unbindFlyCameraContr
 
 let bindFlyCameraControllerEvent = FlyCameraControllerAPI.bindFlyCameraControllerEvent;
 
+let setFlyCameraControllerDirectionArray = FlyCameraControllerAPI.setFlyCameraControllerDirectionArray;
+
+let hasFlyCameraControllerDirection = FlyCameraControllerAPI.hasFlyCameraControllerDirection;
+
+let unsafeGetFlyCameraControllerDirectionArray = FlyCameraControllerAPI.unsafeGetFlyCameraControllerDirectionArray;
+
 let setFlyCameraControllerRotateSpeed = FlyCameraControllerAPI.setFlyCameraControllerRotateSpeed;
 
 let unsafeGetFlyCameraControllerRotateSpeed = FlyCameraControllerAPI.unsafeGetFlyCameraControllerRotateSpeed;

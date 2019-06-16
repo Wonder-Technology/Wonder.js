@@ -57,6 +57,23 @@ let setFlyCameraControllerRotateSpeed =
     setRotateSpeed(cameraController, value, state.flyCameraControllerRecord),
 };
 
+let unsafeGetFlyCameraControllerDirectionArray = (cameraController, state) =>
+  state.flyCameraControllerRecord |> unsafeGetDirectionArray(cameraController);
+
+let hasFlyCameraControllerDirection = (cameraController, state) =>
+  state.flyCameraControllerRecord |> hasDirection(cameraController);
+
+let setFlyCameraControllerDirectionArray =
+    (cameraController, directionArray, state) => {
+  ...state,
+  flyCameraControllerRecord:
+    setDirectionArray(
+      cameraController,
+      directionArray,
+      state.flyCameraControllerRecord,
+    ),
+};
+
 let bindFlyCameraControllerEvent = (cameraController, state) =>
   EventFlyCameraControllerMainService.bindEvent(cameraController, state);
 

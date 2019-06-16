@@ -190,7 +190,10 @@ and flyCameraControllerRecord = {
     WonderCommonlib.MutableSparseMapService.t(PositionType.position),
   gameObjectMap,
   disposedIndexArray: array(component),
-  directionArray: array(FlyCameraControllerType.direction),
+  directionArrayMap:
+    WonderCommonlib.MutableSparseMapService.t(
+      array(FlyCameraControllerType.direction),
+    ),
 }
 and arcballCameraControllerRecord = {
   index: int,

@@ -350,7 +350,12 @@ let _ =
               );
               let state = EventTool.restore(state);
 
-              state |> getDirectionArray |> Js.Array.length |> expect == 0;
+              state
+              |> FlyCameraControllerAPI.unsafeGetFlyCameraControllerDirectionArray(
+                   cameraController,
+                 )
+              |> Js.Array.length
+              |> expect == 0;
             });
 
             describe("else, add direction into directionArray", () => {
@@ -368,7 +373,11 @@ let _ =
                   let state =
                     MainStateTool.unsafeGetState() |> EventTool.restore;
 
-                  state |> getDirectionArray |> expect == [|direction|];
+                  state
+                  |> FlyCameraControllerAPI.unsafeGetFlyCameraControllerDirectionArray(
+                       cameraController,
+                     )
+                  |> expect == [|direction|];
                 };
 
                 test("test move left", () =>
@@ -413,9 +422,12 @@ let _ =
                     );
                     let state =
                       MainStateTool.unsafeGetState() |> EventTool.restore;
-                    let directionArray = state |> getDirectionArray;
 
-                    directionArray |> expect == [|direction|];
+                    state
+                    |> FlyCameraControllerAPI.unsafeGetFlyCameraControllerDirectionArray(
+                         cameraController,
+                       )
+                    |> expect == [|direction|];
                   })
                 );
 
@@ -444,9 +456,11 @@ let _ =
                   let state =
                     MainStateTool.unsafeGetState() |> EventTool.restore;
 
-                  let directionArray = state |> getDirectionArray;
-
-                  directionArray |> expect == [|direction1, direction2|];
+                  state
+                  |> FlyCameraControllerAPI.unsafeGetFlyCameraControllerDirectionArray(
+                       cameraController,
+                     )
+                  |> expect == [|direction1, direction2|];
                 };
 
                 test("test move left and up", () =>
@@ -515,7 +529,11 @@ let _ =
                 let state =
                   MainStateTool.unsafeGetState() |> EventTool.restore;
 
-                state |> getDirectionArray |> expect == [|direction|];
+                state
+                |> FlyCameraControllerAPI.unsafeGetFlyCameraControllerDirectionArray(
+                     cameraController,
+                   )
+                |> expect == [|direction|];
               };
 
               test("test keydown left and up, then keyup left", () =>

@@ -19,9 +19,9 @@ let create = () => {
   rotateSpeedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   eulerAngleDiffMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   translationDiffMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  directionArrayMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   gameObjectMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
-  directionArray: WonderCommonlib.ArrayService.createEmpty(),
 };
 
 let deepCopyForRestore =
@@ -41,7 +41,7 @@ let deepCopyForRestore =
         translationDiffMap,
         gameObjectMap,
         disposedIndexArray,
-        directionArray,
+        directionArrayMap,
       }: flyCameraControllerRecord,
     ) => {
   index,
@@ -70,7 +70,8 @@ let deepCopyForRestore =
     eulerAngleDiffMap |> WonderCommonlib.MutableSparseMapService.copy,
   translationDiffMap:
     translationDiffMap |> WonderCommonlib.MutableSparseMapService.copy,
+  directionArrayMap:
+    directionArrayMap |> WonderCommonlib.MutableSparseMapService.copy,
   gameObjectMap: gameObjectMap |> WonderCommonlib.MutableSparseMapService.copy,
   disposedIndexArray: disposedIndexArray |> Js.Array.copy,
-  directionArray: directionArray |> Js.Array.copy,
 };

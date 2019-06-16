@@ -13,6 +13,7 @@ let _setDefaultValue =
         rotateSpeedMap,
         eulerAngleDiffMap,
         translationDiffMap,
+        directionArrayMap,
       } as record: flyCameraControllerRecord,
     ) => {
   ...record,
@@ -31,6 +32,9 @@ let _setDefaultValue =
   translationDiffMap:
     translationDiffMap
     |> WonderCommonlib.MutableSparseMapService.set(index, (0., 0., 0.)),
+  directionArrayMap:
+    directionArrayMap
+    |> WonderCommonlib.MutableSparseMapService.set(index, [||]),
 };
 
 let create =

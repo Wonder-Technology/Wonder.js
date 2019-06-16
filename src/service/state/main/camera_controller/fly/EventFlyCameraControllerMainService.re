@@ -159,7 +159,8 @@ let _moveSpecificDirection =
       {flyCameraControllerRecord, gameObjectRecord} as state,
     ) => {
   let directionArray =
-    OperateFlyCameraControllerService.getDirectionArray(
+    OperateFlyCameraControllerService.unsafeGetDirectionArray(
+      cameraController,
       flyCameraControllerRecord,
     );
 
@@ -182,7 +183,10 @@ let _moveSpecificDirection =
     ...state,
     flyCameraControllerRecord:
       flyCameraControllerRecord
-      |> OperateFlyCameraControllerService.setDirectionArray(directionArray),
+      |> OperateFlyCameraControllerService.setDirectionArray(
+           cameraController,
+           directionArray,
+         ),
   };
 };
 
@@ -196,7 +200,8 @@ let _staticSpecificDirection =
       {flyCameraControllerRecord, gameObjectRecord} as state,
     ) => {
   let directionArray =
-    OperateFlyCameraControllerService.getDirectionArray(
+    OperateFlyCameraControllerService.unsafeGetDirectionArray(
+      cameraController,
       flyCameraControllerRecord,
     );
 
@@ -219,7 +224,10 @@ let _staticSpecificDirection =
     ...state,
     flyCameraControllerRecord:
       flyCameraControllerRecord
-      |> OperateFlyCameraControllerService.setDirectionArray(directionArray),
+      |> OperateFlyCameraControllerService.setDirectionArray(
+           cameraController,
+           directionArray,
+         ),
   };
 };
 
