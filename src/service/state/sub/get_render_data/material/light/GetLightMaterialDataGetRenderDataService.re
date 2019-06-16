@@ -18,14 +18,26 @@ let getShininess = (material, {lightMaterialRecord}) =>
     lightMaterialRecord.shininess,
   );
 
-let getDiffuseMapUnit = (material, {lightMaterialRecord}) =>
-  OperateTypeArrayLightMaterialService.getDiffuseMapUnit(.
+let getDiffuseTexture = (material, {lightMaterialRecord}) =>
+  OperateTypeArrayLightMaterialService.getTextureIndex(.
     material,
-    lightMaterialRecord.diffuseMapUnits,
+    lightMaterialRecord.diffuseTextureIndices,
+  );
+
+let getSpecularTexture = (material, {lightMaterialRecord}) =>
+  OperateTypeArrayLightMaterialService.getTextureIndex(.
+    material,
+    lightMaterialRecord.specularTextureIndices,
+  );
+
+let getDiffuseMapUnit = (material, {lightMaterialRecord}) =>
+  MapUnitLightMaterialService.unsafeGetDiffuseMapUnit(
+    material,
+    lightMaterialRecord,
   );
 
 let getSpecularMapUnit = (material, {lightMaterialRecord}) =>
-  OperateTypeArrayLightMaterialService.getSpecularMapUnit(.
+  MapUnitLightMaterialService.unsafeGetSpecularMapUnit(
     material,
-    lightMaterialRecord.specularMapUnits,
+    lightMaterialRecord,
   );

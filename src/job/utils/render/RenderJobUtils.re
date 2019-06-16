@@ -236,6 +236,8 @@ let render =
     let getRenderDataSubState =
       CreateGetRenederDataSubStateRenderService.createState(state);
 
+    let state = bindAndUpdateFunc(. gl, materialIndex, state);
+
     let state =
       state
       |> sendUniformRenderObjectMaterialData(
@@ -244,7 +246,7 @@ let render =
            getRenderDataSubState,
          );
 
-    bindAndUpdateFunc(. gl, materialIndex, state);
+    state;
   };
 };
 

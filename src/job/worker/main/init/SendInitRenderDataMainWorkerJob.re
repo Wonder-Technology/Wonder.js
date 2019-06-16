@@ -137,7 +137,6 @@ let _buildData = (operateType, canvas, stateData) => {
       "basicMaterialCount": buffer.basicMaterialCount,
       "lightMaterialCount": buffer.lightMaterialCount,
       "meshRendererCount": buffer.meshRendererCount,
-      "textureCountPerMaterial": buffer.textureCountPerMaterial,
       "basicSourceTextureCount": buffer.basicSourceTextureCount,
       "arrayBufferViewSourceTextureCount":
         buffer.arrayBufferViewSourceTextureCount,

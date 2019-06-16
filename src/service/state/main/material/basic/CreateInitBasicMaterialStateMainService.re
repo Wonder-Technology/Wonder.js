@@ -11,18 +11,22 @@ let createInitMaterialState =
         glslRecord,
         glslSenderRecord,
         glslLocationRecord,
-        glslChunkRecord
-      } as state: StateDataMainType.state
+        glslChunkRecord,
+      } as state: StateDataMainType.state,
     ) => {
-  let {shaderIndices, mapUnits} = RecordBasicMaterialMainService.getRecord(state);
+  let {shaderIndices} = RecordBasicMaterialMainService.getRecord(state);
   {
-    materialRecord: {index, disposedIndexArray, shaderIndices, mapUnits},
+    materialRecord: {
+      index,
+      disposedIndexArray,
+      shaderIndices,
+    },
     renderConfigRecord: RecordRenderConfigMainService.getRecord(state),
     shaderRecord,
     programRecord,
     glslRecord,
     glslSenderRecord,
     glslLocationRecord,
-    glslChunkRecord
-  }
+    glslChunkRecord,
+  };
 };

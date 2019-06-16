@@ -26,7 +26,6 @@ type buffer = {
   lightMaterialCount: int,
   directionLightCount: int,
   pointLightCount: int,
-  textureCountPerMaterial: int,
   basicSourceTextureCount: int,
   arrayBufferViewSourceTextureCount: int,
   meshRendererCount: int,

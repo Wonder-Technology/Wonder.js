@@ -52,6 +52,10 @@ let init = (completeFunc, state) => {
   let renderWorkerState = RenderWorkerStateTool.getState();
   /* let renderWorkerState = RenderWorkerStateTool.createStateAndSetToStateData(); */
   renderWorkerState.workerDetectRecord = Some({isUseWorker: true});
+
+  let renderWorkerState =
+    renderWorkerState |> GPUDetectRenderWorkerTool.setMaxTextureUnit(16);
+
   RenderWorkerStateTool.setState(renderWorkerState);
   let state =
     state

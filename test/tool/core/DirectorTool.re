@@ -1,6 +1,7 @@
 let prepare = (state: StateDataMainType.state) => {
   TimeControllerTool.setStartTime(0.);
-  state;
+
+  state |> GPUDetectTool.setMaxTextureUnit(16);
 };
 
 let init = (state: StateDataMainType.state) =>

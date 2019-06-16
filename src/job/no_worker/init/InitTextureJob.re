@@ -1,5 +1,17 @@
 open StateDataMainType;
 
+let _initRenderTextureData = state => {
+  ...state,
+  renderRecord: Some({
+    ... RecordRenderMainService.getRecord(state),
+    textureRecord:
+      Some({
+        activableTextureUnitArray:
+          OperateTextureRenderMainService.createActivableTextureUnitArray(state) 
+      }),
+  }),
+};
+
 let execJob = (flags, {gameObjectRecord} as state) => {
   let basicSourceTextureRecord =
     RecordBasicSourceTextureMainService.getRecord(state);
@@ -31,5 +43,6 @@ let execJob = (flags, {gameObjectRecord} as state) => {
             arrayBufferViewSourceTextureRecord.glTextureMap,
           ),
       }),
-  };
+  }
+  |> _initRenderTextureData
 };

@@ -16,6 +16,8 @@ open RenderSourceInstanceType;
 
 open RenderArrayBufferViewSourceTextureType;
 
+open RenderAllTextureType;
+
 open DeviceManagerType;
 
 open RenderSettingType;
@@ -81,19 +83,19 @@ let createRenderState =
     basicMaterialRecord: {
       shaderIndices: basicMaterialRecord.shaderIndices,
       colors: basicMaterialRecord.colors,
-      textureIndices: basicMaterialRecord.textureIndices,
-      mapUnits: basicMaterialRecord.mapUnits,
       isDepthTests: basicMaterialRecord.isDepthTests,
       alphas: basicMaterialRecord.alphas,
     },
     lightMaterialRecord: {
+      diffuseMapUnitMap: RecordLightMaterialService.createDiffuseMapUnitMap(),
+      specularMapUnitMap:
+        RecordLightMaterialService.createSpecularMapUnitMap(),
       shaderIndices: lightMaterialRecord.shaderIndices,
       diffuseColors: lightMaterialRecord.diffuseColors,
       specularColors: lightMaterialRecord.specularColors,
       shininess: lightMaterialRecord.shininess,
-      textureIndices: lightMaterialRecord.textureIndices,
-      diffuseMapUnits: lightMaterialRecord.diffuseMapUnits,
-      specularMapUnits: lightMaterialRecord.specularMapUnits,
+      diffuseTextureIndices: lightMaterialRecord.diffuseTextureIndices,
+      specularTextureIndices: lightMaterialRecord.specularTextureIndices,
     },
     meshRendererRecord: {
       drawModes: meshRendererRecord.drawModes,
@@ -129,6 +131,11 @@ let createRenderState =
           state,
         ),
       setFlipYFunc: OperateSourceTextureMainService.setFlipY,
+    },
+    allTextureRecord: {
+      activableTextureUnitArray:
+        OperateTextureRenderMainService.getActivableTextureUnitArray(state),
+      activedTextureUnitIndex: 0,
     },
     sceneRecord: {
       ambientLight: {
@@ -195,8 +202,6 @@ let createRenderState =
               settingRecord,
             ),
         }),
-      textureCountPerMaterial:
-        Some(BufferSettingService.getTextureCountPerMaterial(settingRecord)),
     },
     workerDetectRecord: {
       isUseWorker: isUseWorker,

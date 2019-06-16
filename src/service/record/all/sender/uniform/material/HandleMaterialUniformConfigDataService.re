@@ -13,12 +13,6 @@ let addBasicMaterialSendData =
       sendDataArrTuple,
       GetBasicMaterialDataGetRenderDataService.getAlpha,
     )
-  | "map" =>
-    HandleUniformRenderObjectMaterialService.addUniformTextureSendDataByType(
-      (uniformCacheMap, name, pos, type_),
-      sendDataArrTuple,
-      GetBasicMaterialDataGetRenderDataService.getMapUnit,
-    )
   | _ =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(

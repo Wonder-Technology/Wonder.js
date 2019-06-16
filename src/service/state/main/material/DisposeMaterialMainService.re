@@ -3,18 +3,11 @@ open StateDataMainType;
 open SettingType;
 
 let disposeTextureIndices =
-    (material, textureCountPerMaterial, textureIndices) => {
+    (material, getTextureIndicesIndexFunc, textureIndices) => {
   open Js.Typed_array;
-  let sourceIndex =
-    BufferMaterialService.getTextureIndicesIndex(
-      material,
-      textureCountPerMaterial,
-    );
-  let defaultIndex = BufferMaterialService.getDefaultTextureIndex();
-  for (i in
-       0 to
-       BufferMaterialService.getTextureIndicesSize(textureCountPerMaterial)
-       - 1) {
+  let sourceIndex = getTextureIndicesIndexFunc(material);
+  let defaultIndex = TextureIndexService.getDefaultTextureIndex();
+  for (i in 0 to BufferMaterialService.getTextureIndicesSize() - 1) {
     Uint32Array.unsafe_set(textureIndices, sourceIndex + i, defaultIndex);
   };
   textureIndices;

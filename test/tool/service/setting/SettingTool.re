@@ -140,12 +140,11 @@ let buildBufferConfigStr =
       ~geometryPointCount=300,
       ~geometryCount=30,
       ~transformCount=50,
-      ~basicMaterialCount=50,
-      ~lightMaterialCount=50,
+      ~basicMaterialCount=48,
+      ~lightMaterialCount=48,
       ~directionLightCount=50,
       ~pointLightCount=50,
       ~meshRendererCount=50,
-      ~textureCountPerMaterial=3,
       ~basicSourceTextureCount=50,
       ~arrayBufferViewSourceTextureCount=50,
       ~sourceInstanceCount=2,
@@ -164,7 +163,6 @@ let buildBufferConfigStr =
   "basic_source_texture_count": $basicSourceTextureCount,
    "arrayBuffer_view_source_texture_count": $arrayBufferViewSourceTextureCount,
 
-  "texture_count_per_material": $textureCountPerMaterial,
 
   "instance_buffer": {
     "sourceInstance_count": $sourceInstanceCount,

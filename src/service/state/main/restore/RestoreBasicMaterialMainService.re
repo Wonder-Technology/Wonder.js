@@ -25,28 +25,14 @@ let _restoreTypeArrays =
   currentBasicMaterialRecord.shaderIndices
   === targetBasicMaterialRecord.shaderIndices
   && currentBasicMaterialRecord.colors === targetBasicMaterialRecord.colors
-  &&
-  currentBasicMaterialRecord.textureIndices === targetBasicMaterialRecord.
-                                                  textureIndices
-  && currentBasicMaterialRecord.mapUnits === targetBasicMaterialRecord.mapUnits
-  &&
-  currentBasicMaterialRecord.isDepthTests === targetBasicMaterialRecord.
-                                                isDepthTests ?
+  && currentBasicMaterialRecord.isDepthTests
+  === targetBasicMaterialRecord.isDepthTests ?
     (currentBasicMaterialRecord, targetBasicMaterialRecord) :
     {
-      let (
-        shaderIndices,
-        colors,
-        textureIndices,
-        mapUnits,
-        isDepthTests,
-        alphas,
-      ) =
+      let (shaderIndices, colors, isDepthTests, alphas) =
         (
           currentBasicMaterialRecord.shaderIndices,
           currentBasicMaterialRecord.colors,
-          currentBasicMaterialRecord.textureIndices,
-          currentBasicMaterialRecord.mapUnits,
           currentBasicMaterialRecord.isDepthTests,
           currentBasicMaterialRecord.alphas,
         )
@@ -67,20 +53,6 @@ let _restoreTypeArrays =
         (currentBasicMaterialRecord.colors, 0),
         (targetBasicMaterialRecord.colors, 0),
         Js.Typed_array.Float32Array.length(targetBasicMaterialRecord.colors),
-      )
-      |> ignore;
-      TypeArrayService.fillUint32ArrayWithUint32Array(
-        (currentBasicMaterialRecord.textureIndices, 0),
-        (targetBasicMaterialRecord.textureIndices, 0),
-        Js.Typed_array.Uint32Array.length(
-          targetBasicMaterialRecord.textureIndices,
-        ),
-      )
-      |> ignore;
-      TypeArrayService.fillUint8ArrayWithUint8Array(
-        (currentBasicMaterialRecord.mapUnits, 0),
-        (targetBasicMaterialRecord.mapUnits, 0),
-        Js.Typed_array.Uint8Array.length(targetBasicMaterialRecord.mapUnits),
       )
       |> ignore;
       TypeArrayService.fillUint8ArrayWithUint8Array(
@@ -124,8 +96,6 @@ let restore = (gl, currentState, targetState) => {
         buffer: currentBasicMaterialRecord.buffer,
         shaderIndices: currentBasicMaterialRecord.shaderIndices,
         colors: currentBasicMaterialRecord.colors,
-        textureIndices: currentBasicMaterialRecord.textureIndices,
-        mapUnits: currentBasicMaterialRecord.mapUnits,
         isDepthTests: currentBasicMaterialRecord.isDepthTests,
         alphas: currentBasicMaterialRecord.alphas,
       }),

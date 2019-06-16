@@ -11,23 +11,12 @@ open DisposeComponentService;
 let isAlive = (material, {disposedIndexArray}) =>
   DisposeMaterialMainService.isAlive(material, disposedIndexArray);
 
-let _disposeData = (isRemoveTexture, material, textureCountPerMaterial, state) => {
-  let state =
-    state
-    |> DisposeMaterialMainService.disposeMaps(
-         isRemoveTexture,
-         (material, MaterialType.BasicMaterial),
-         [|OperateBasicMaterialMainService.getMap(material, state)|],
-       );
-
+let _disposeData = (material, state) => {
   let {
         shaderIndices,
         colors,
-        textureIndices,
-        mapUnits,
         isDepthTests,
         alphas,
-        emptyMapUnitArrayMap,
         defaultColor,
         nameMap,
         gameObjectsMap,
@@ -54,18 +43,6 @@ let _disposeData = (isRemoveTexture, material, textureCountPerMaterial, state) =
             defaultColor,
             colors,
           ),
-        textureIndices:
-          DisposeMaterialMainService.disposeTextureIndices(
-            material,
-            textureCountPerMaterial,
-            textureIndices,
-          ),
-        mapUnits:
-          DisposeTypeArrayService.deleteAndResetUint8(.
-            BufferBasicMaterialService.getMapUnitIndex(material),
-            MapUnitService.getDefaultUnit(),
-            mapUnits,
-          ),
         isDepthTests:
           DisposeTypeArrayService.deleteAndResetUint8(.
             BufferBasicMaterialService.getIsDepthTestIndex(material),
@@ -78,15 +55,13 @@ let _disposeData = (isRemoveTexture, material, textureCountPerMaterial, state) =
             BufferBasicMaterialService.getDefaultAlpha(),
             alphas,
           ),
-        emptyMapUnitArrayMap:
-          emptyMapUnitArrayMap |> disposeSparseMapData(material),
         nameMap: nameMap |> disposeSparseMapData(material),
       }),
   };
 };
 
 let handleBatchDisposeComponentData =
-  (. isRemoveTexture, materialDataMap, {settingRecord} as state) => {
+  (. materialDataMap, {settingRecord} as state) => {
     WonderLog.Contract.requireCheck(
       () =>
         WonderLog.(
@@ -103,8 +78,6 @@ let handleBatchDisposeComponentData =
         ),
       IsDebugMainService.getIsDebug(StateDataMain.stateData),
     );
-    let textureCountPerMaterial =
-      BufferSettingService.getTextureCountPerMaterial(settingRecord);
 
     materialDataMap
     |> WonderCommonlib.MutableSparseMapService.reduceiValid(
@@ -125,13 +98,7 @@ let handleBatchDisposeComponentData =
            ) ?
              {...state, basicMaterialRecord: Some(basicMaterialRecord)} :
              {
-               let state =
-                 state
-                 |> _disposeData(
-                      isRemoveTexture,
-                      material,
-                      textureCountPerMaterial,
-                    );
+               let state = state |> _disposeData(material);
 
                let basicMaterialRecord =
                  RecordBasicMaterialMainService.getRecord(state);
@@ -193,14 +160,11 @@ let handleBatchDisposeComponent =
 
   let {disposedIndexArray} as basicMaterialRecord =
     RecordBasicMaterialMainService.getRecord(state);
-  let textureCountPerMaterial =
-    BufferSettingService.getTextureCountPerMaterial(settingRecord);
 
   materialHasNoGameObjectArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, material) => {
-         let state =
-           state |> _disposeData(false, material, textureCountPerMaterial);
+         let state = state |> _disposeData(material);
 
          let basicMaterialRecord =
            RecordBasicMaterialMainService.getRecord(state);

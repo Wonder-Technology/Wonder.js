@@ -144,6 +144,15 @@ let _buildInitTextureStream = (e, stateData) =>
             arrayBufferViewSourceTextureRecord.glTextureMap,
           ),
       });
+
+    state.allTextureRecord =
+      Some({
+        activableTextureUnitArray:
+          OperateAllTextureRenderWorkerService.createActivableTextureUnitArray(
+            state,
+          ),
+      });
+
     state;
   });
 

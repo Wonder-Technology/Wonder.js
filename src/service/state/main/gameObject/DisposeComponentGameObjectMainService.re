@@ -355,19 +355,17 @@ let batchDisposeGeometryComponent =
   );
 
 let batchDisposeBasicMaterialComponentData =
-    (state, compnentDataMap, isRemoveTexture) =>
+    (state, compnentDataMap, _isRemoveTexture) =>
   DisposeBasicMaterialMainService.handleBatchDisposeComponentData(.
-    isRemoveTexture,
     compnentDataMap,
     state,
   );
 
 let batchDisposeBasicMaterialComponentDataForWorker =
-    (state, componentDataMap, isRemoveTexture) => {
+    (state, componentDataMap, _isRemoveTexture) => {
   open BasicMaterialType;
   let state =
     DisposeBasicMaterialMainService.handleBatchDisposeComponentData(.
-      isRemoveTexture,
       componentDataMap,
       state,
     );

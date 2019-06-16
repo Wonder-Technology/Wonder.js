@@ -26,7 +26,6 @@ let setSetting = ({canvasId, memory, buffer, isDebug, context, gpu, worker}) => 
         meshRendererCount: 10 * 1000,
         basicSourceTextureCount: 64,
         arrayBufferViewSourceTextureCount: 64,
-        textureCountPerMaterial: 8,
         instanceBuffer: {
           sourceInstanceCount: 2,
           objectInstanceCountPerSourceInstance: 10000,

@@ -1370,8 +1370,8 @@ let _ =
 
       describe("replace components", () => {
         test("replace basic material component", () => {
-          let (state, gameObject1, (material1, _)) =
-            BasicMaterialTool.createGameObjectWithMap(state^);
+          let (state, gameObject1, material1) =
+            BasicMaterialTool.createGameObject(state^);
 
           let state =
             GameObjectAPI.disposeGameObjectBasicMaterialComponent(
@@ -1379,8 +1379,10 @@ let _ =
               material1,
               state,
             );
-          let (state, material2, _) =
-            BasicMaterialTool.createMaterialWithMap(state);
+          let (state, _) = BasicMaterialAPI.createBasicMaterial(state);
+          let (state, _) = BasicMaterialAPI.createBasicMaterial(state);
+          let (state, material2) =
+            BasicMaterialAPI.createBasicMaterial(state);
           let state =
             GameObjectAPI.addGameObjectBasicMaterialComponent(
               gameObject1,
@@ -2734,38 +2736,7 @@ let _ =
           getCallCount(attachShader) |> expect == 2;
         });
 
-        describe("init maps", () => {
-          describe("init basic material->map", () => {
-            test("if has no map, not init map", () => {
-              let (state, gameObject, _, _) =
-                InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
-              let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
-              let state =
-                state
-                |> FakeGlTool.setFakeGl(
-                     FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ()),
-                   );
-              let state = AllMaterialTool.prepareForInit(state);
-              let state = state |> initGameObject(gameObject);
-              getCallCount(createTexture) |> expect == 0;
-            });
-            test("else, init map", () => {
-              let (state, gameObject, _, _) =
-                InitBasicMaterialJobTool.prepareGameObjectWithCreatedMap(
-                  sandbox,
-                  state^,
-                );
-              let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
-              let state =
-                state
-                |> FakeGlTool.setFakeGl(
-                     FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ()),
-                   );
-              let state = AllMaterialTool.prepareForInit(state);
-              let state = state |> initGameObject(gameObject);
-              getCallCount(createTexture) |> expect == 1;
-            });
-          });
+        describe("init maps", () =>
           describe("init light material->map", () => {
             describe("test basic source texture", () => {
               test("if has no map, not init map", () => {
@@ -2826,8 +2797,8 @@ let _ =
                 getCallCount(createTexture) |> expect == 2;
               })
             );
-          });
-        });
+          })
+        );
 
         test("init perspectiveCameraProjection component", () => {
           let (state, gameObject, _, (_, cameraProjection)) =

@@ -4,7 +4,7 @@ open BasicMaterialType;
 
 let getRecord = state => RecordBasicMaterialMainService.getRecord(state);
 
-let createMaterialWithMap = state => {
+/* let createMaterialWithMap = state => {
   let (state, material) = BasicMaterialAPI.createBasicMaterial(state);
   let (state, texture) =
     BasicSourceTextureAPI.createBasicSourceTexture(state);
@@ -31,7 +31,7 @@ let createMaterialWithArrayBufferViewMap = state => {
   let state = BasicMaterialAPI.setBasicMaterialMap(material, texture, state);
 
   (state, material, (texture, source));
-};
+}; */
 
 let createGameObject = state => {
   open BasicMaterialAPI;
@@ -43,7 +43,7 @@ let createGameObject = state => {
   (state, gameObject, material);
 };
 
-let setMaps = (material, map, state) => {
+/* let setMaps = (material, map, state) => {
   let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
 
   (state, map);
@@ -56,7 +56,7 @@ let createGameObjectWithMap = state => {
   let (state, texture) = setMaps(material, texture, state);
 
   (state, gameObject, (material, texture));
-};
+}; */
 
 let createGameObjectWithMaterial = (material, state) => {
   open GameObjectAPI;
@@ -125,31 +125,6 @@ let isMaterialDisposed = (material, state) => {
   disposedIndexArray |> Js.Array.includes(material);
 };
 
-let getMapUnit = (material, state) =>
-  OperateTypeArrayBasicMaterialService.getMapUnit(.
-    material,
-    getRecord(state).mapUnits,
-  );
-
-let setMapUnit = (material, unit, state) => {
-  OperateTypeArrayBasicMaterialService.setMapUnit(.
-    material,
-    unit,
-    getRecord(state).mapUnits,
-  )
-  |> ignore;
-  state;
-};
-
-let getTextureIndicesIndex = (material, state) =>
-  BufferBasicMaterialService.getTextureIndicesIndex(
-    material,
-    BufferSettingService.getTextureCountPerMaterial(state.settingRecord),
-  );
-
-let getDefaultTextureIndex = () =>
-  BufferMaterialService.getDefaultTextureIndex();
-
 let hasGameObject = (material, state) =>
   switch (
     GameObjectBasicMaterialService.getGameObjects(material, getRecord(state))
@@ -162,12 +137,6 @@ let isNeedInitMaterial = (material, state) =>
   InitInitBasicMaterialService.isNeedInitMaterial(
     material,
     getRecord(state).shaderIndices,
-  );
-
-let getEmptyMapUnitArray = (material, state) =>
-  EmptyMapUnitArrayMapService._unsafeGetEmptyMapUnitArray(
-    material,
-    getRecord(state).emptyMapUnitArrayMap,
   );
 
 let getDefaultIsDepthTest = () => true;

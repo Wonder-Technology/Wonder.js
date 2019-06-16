@@ -4,27 +4,26 @@ open RenderLightMaterialType;
 
 let bindAndUpdate =
   (. gl, material, {settingRecord, lightMaterialRecord} as state) => {
-    let {textureIndices, diffuseMapUnits, specularMapUnits} = lightMaterialRecord;
-    let diffuseMapUnit =
-      OperateTypeArrayLightMaterialService.getDiffuseMapUnit(.
-        material,
-        diffuseMapUnits,
-      );
-    let specularMapUnit =
-      OperateTypeArrayLightMaterialService.getSpecularMapUnit(.
-        material,
-        specularMapUnits,
-      );
+    let {diffuseTextureIndices, specularTextureIndices} = lightMaterialRecord;
 
-    let (textureIndices, settingRecord, state) =
-      (textureIndices, settingRecord, state)
+    let state =
+      state
       |> BindAndUpdateMapMaterialRenderService.bindAndUpdate(
-           (gl, material, diffuseMapUnit),
-           OperateTypeArrayLightMaterialService.getTextureIndex,
+           (gl, material),
+           OperateTypeArrayLightMaterialService.getTextureIndex(.
+             material,
+             diffuseTextureIndices,
+           ),
+           MapUnitLightMaterialRenderService.setDiffuseMapUnit,
          )
       |> BindAndUpdateMapMaterialRenderService.bindAndUpdate(
-           (gl, material, specularMapUnit),
-           OperateTypeArrayLightMaterialService.getTextureIndex,
+           (gl, material),
+           OperateTypeArrayLightMaterialService.getTextureIndex(.
+             material,
+             specularTextureIndices,
+           ),
+           MapUnitLightMaterialRenderService.setSpecularMapUnit,
          );
+
     state;
   };

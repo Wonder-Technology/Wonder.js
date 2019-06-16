@@ -64,9 +64,17 @@ let prepareStateAndCreateTwoGameObjects = sandbox => {
     InitArrayBufferViewTextureRenderWorkerTool.prepareState(sandbox);
   let (state, (map1, map2), (source1, source2)) = createTwoMaps(state);
   let (state, gameObject1, _, _, _, map1) =
-    RenderBasicJobTool.prepareGameObjectWithMap(sandbox, map1, state);
+    FrontRenderLightJobTool.prepareGameObjectWithDiffuseMap(
+      sandbox,
+      map1,
+      state,
+    );
   let (state, gameObject2, _, _, _, map2) =
-    RenderBasicJobTool.prepareGameObjectWithMap(sandbox, map2, state);
+    FrontRenderLightJobTool.prepareGameObjectWithDiffuseMap(
+      sandbox,
+      map2,
+      state,
+    );
   let state = WorkerWorkerTool.setFakeWorkersAndSetState(state);
   let (state, _, _, _) = CameraTool.createCameraGameObject(state);
   (state, (gameObject1, gameObject2), (map1, map2), (source1, source2));

@@ -14,30 +14,12 @@ let _ =
       state := TestTool.init(~sandbox, ());
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
-    describe("createBasicMaterial", () => {
+    describe("createBasicMaterial", () =>
       test("create a new material which is just index(int)", () => {
         let (_, material) = createBasicMaterial(state^);
         expect(material) == 0;
-      });
-      describe("set default value", () =>
-        test("init emptyMapUnitArray", () => {
-          state :=
-            TestTool.initWithoutBuildFakeDom(
-              ~sandbox,
-              ~buffer=
-                SettingTool.buildBufferConfigStr(
-                  ~textureCountPerMaterial=3,
-                  (),
-                ),
-              (),
-            );
-
-          let (state, material) = createBasicMaterial(state^);
-          BasicMaterialTool.getEmptyMapUnitArray(material, state)
-          |> expect == [|2, 1, 0|];
-        })
-      );
-    });
+      })
+    );
     describe("init", () =>
       describe("contract check", () =>
         test("shouldn't dispose any material before init", () => {
@@ -146,37 +128,6 @@ let _ =
           getBasicMaterialAlpha(material, state) |> expect == alpha;
         })
       );
-
-      describe("unsafeGetBasicMaterialMap", () =>
-        test("if has no map, error", () => {
-          let (state, material) = createBasicMaterial(state^);
-          expect(() =>
-            BasicMaterialAPI.unsafeGetBasicMaterialMap(material, state)
-          )
-          |> toThrowMessage("expect data exist");
-        })
-      );
-      describe("setBasicMaterialMap", () => {
-        let _prepare = state => {
-          let (state, material) = createBasicMaterial(state);
-          let (state, map1) =
-            BasicSourceTextureAPI.createBasicSourceTexture(state);
-          let (state, map2) =
-            BasicSourceTextureAPI.createBasicSourceTexture(state);
-          let state =
-            state |> BasicMaterialAPI.setBasicMaterialMap(material, map2);
-          (state, material, map2);
-        };
-        test("set map unit to 0", () => {
-          let (state, material, map) = _prepare(state^);
-          BasicMaterialTool.getMapUnit(material, state) |> expect == 0;
-        });
-        test("save texture index", () => {
-          let (state, material, map) = _prepare(state^);
-          BasicMaterialAPI.unsafeGetBasicMaterialMap(material, state)
-          |> expect == map;
-        });
-      });
     });
 
     describe("disposeComponent", () => {
@@ -220,7 +171,7 @@ let _ =
           })
         );
         describe("test dispose not shared material", () => {
-          test("remove from gameObjectsMap, nameMap, emptyMapUnitArrayMap", () => {
+          test("remove from gameObjectsMap, nameMap", () => {
             open BasicMaterialType;
             let (state, gameObject1, material1) =
               BasicMaterialTool.createGameObject(state^);
@@ -232,17 +183,15 @@ let _ =
                    gameObject1,
                    material1,
                  );
-            let {gameObjectsMap, nameMap, emptyMapUnitArrayMap} =
+            let {gameObjectsMap, nameMap} =
               BasicMaterialTool.getRecord(state);
 
             (
               BasicMaterialTool.hasGameObject(material1, state),
               nameMap
               |> WonderCommonlib.MutableSparseMapService.has(material1),
-              emptyMapUnitArrayMap
-              |> WonderCommonlib.MutableSparseMapService.has(material1),
             )
-            |> expect == (false, false, false);
+            |> expect == (false, false);
           });
 
           describe("test remove from type array", () => {
@@ -294,117 +243,6 @@ let _ =
                 )
               )
             );
-            describe("test map typeArrays", () => {
-              let _testRemoveFromTypeArr =
-                  (
-                    state,
-                    valueTuple,
-                    defaultValue,
-                    (createGameObjectFunc, getValueFunc, setValueFunc),
-                  ) =>
-                AllMaterialTool.testRemoveFromTypeArrWithMap(
-                  state,
-                  valueTuple,
-                  defaultValue,
-                  (
-                    GameObjectTool.disposeGameObjectBasicMaterialComponent,
-                    createGameObjectFunc,
-                    getValueFunc,
-                    setValueFunc,
-                  ),
-                );
-
-              describe("remove from textureIndices", () =>
-                test("reset material's all texture indices", () => {
-                  open Js.Typed_array;
-                  open BasicMaterialType;
-                  let state =
-                    TestTool.initWithoutBuildFakeDom(
-                      ~sandbox,
-                      ~buffer=
-                        SettingTool.buildBufferConfigStr(
-                          ~textureCountPerMaterial=2,
-                          (),
-                        ),
-                      (),
-                    );
-                  let (state, gameObject1, (material1, _)) =
-                    BasicMaterialTool.createGameObjectWithMap(state);
-                  let {textureIndices} = BasicMaterialTool.getRecord(state);
-                  let sourceIndex =
-                    BasicMaterialTool.getTextureIndicesIndex(
-                      material1,
-                      state,
-                    );
-                  Uint32Array.unsafe_set(textureIndices, sourceIndex, 1);
-                  Uint32Array.unsafe_set(textureIndices, sourceIndex + 1, 2);
-                  Uint32Array.unsafe_set(textureIndices, sourceIndex + 2, 3);
-                  let defaultTextureIndex =
-                    BasicMaterialTool.getDefaultTextureIndex();
-                  let state =
-                    state
-                    |> GameObjectTool.disposeGameObjectBasicMaterialComponent(
-                         gameObject1,
-                         material1,
-                       );
-                  textureIndices
-                  |> Uint32Array.slice(~start=0, ~end_=5)
-                  |> expect
-                  == Uint32Array.make([|
-                       defaultTextureIndex,
-                       defaultTextureIndex,
-                       3,
-                       0,
-                       0,
-                     |]);
-                })
-              );
-
-              describe("remove from mapUnits", () =>
-                test("reset removed one's value", () =>
-                  _testRemoveFromTypeArr(
-                    state,
-                    (1, 2),
-                    BasicSourceTextureTool.getDefaultUnit(),
-                    (
-                      BasicMaterialTool.createGameObjectWithMap,
-                      BasicMaterialTool.getMapUnit,
-                      BasicMaterialTool.setMapUnit,
-                    ),
-                  )
-                )
-              );
-
-              describe("remove from isDepthTests", () =>
-                test("reset removed one's value", () =>
-                  _testRemoveFromTypeArr(
-                    state,
-                    (false, true),
-                    BasicMaterialTool.getDefaultIsDepthTest(),
-                    (
-                      BasicMaterialTool.createGameObjectWithMap,
-                      BasicMaterialAPI.getBasicMaterialIsDepthTest,
-                      BasicMaterialAPI.setBasicMaterialIsDepthTest,
-                    ),
-                  )
-                )
-              );
-
-              describe("remove from isDepthTests", () =>
-                test("reset removed one's value", () =>
-                  _testRemoveFromTypeArr(
-                    state,
-                    (0.1, 0.5),
-                    BasicMaterialTool.getDefaultAlpha(),
-                    (
-                      BasicMaterialTool.createGameObjectWithMap,
-                      BasicMaterialAPI.getBasicMaterialAlpha,
-                      BasicMaterialAPI.setBasicMaterialAlpha,
-                    ),
-                  )
-                )
-              );
-            });
           });
         });
 

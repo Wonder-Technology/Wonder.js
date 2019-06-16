@@ -981,30 +981,6 @@ let _ =
                 )
                 |> expect == (color, color, color);
               });
-              test("test map", () => {
-                let (state, gameObject, (material, map)) =
-                  BasicMaterialTool.createGameObjectWithMap(state^);
-                let (state, _, clonedMaterialArr) =
-                  _clone(gameObject, state);
-                let state =
-                  state
-                  |> FakeGlTool.setFakeGl(
-                       FakeGlTool.buildFakeGl(~sandbox, ()),
-                     );
-                let state = AllMaterialTool.prepareForInit(state);
-                (
-                  BasicMaterialAPI.unsafeGetBasicMaterialMap(material, state),
-                  BasicMaterialAPI.unsafeGetBasicMaterialMap(
-                    clonedMaterialArr[0],
-                    state,
-                  ),
-                  BasicMaterialAPI.unsafeGetBasicMaterialMap(
-                    clonedMaterialArr[1],
-                    state,
-                  ),
-                )
-                |> expect == (map, map, map);
-              });
               test("test isDepthTest", () => {
                 let (state, gameObject, material) = _prepare();
                 let isDepthTest = false;

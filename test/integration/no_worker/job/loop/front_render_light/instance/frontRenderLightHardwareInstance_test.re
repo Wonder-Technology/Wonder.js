@@ -18,8 +18,8 @@ let _ =
           SettingTool.buildBufferConfigStr(
             ~geometryPointCount=300,
             ~transformCount=500,
-            ~basicMaterialCount=50,
-            ~lightMaterialCount=50,
+            ~basicMaterialCount=48,
+            ~lightMaterialCount=48,
             ~sourceInstanceCount=3,
             ~objectInstanceCountPerSourceInstance=100,
             (),

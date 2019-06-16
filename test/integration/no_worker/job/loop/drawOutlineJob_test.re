@@ -194,7 +194,20 @@ let _ =
         }
       ]
     }
-  }
+  },
+  {
+    "name": "outline_origin",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_outline_origin_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_outline_origin_fragment"
+      }
+    ]
+  },
   {
     "name": "end",
     "variables": {

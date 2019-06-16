@@ -63,13 +63,15 @@ let _ =
         describe("test send init data to render worker", () => {
           let _initTwoGameObjects = (map1, map2, state) => {
             let (state, gameObject1, material1) =
-              BasicMaterialTool.createGameObject(state);
+              LightMaterialTool.createGameObject(state);
             let (state, gameObject2, material2) =
-              BasicMaterialTool.createGameObject(state);
+              LightMaterialTool.createGameObject(state);
             let state =
-              state |> BasicMaterialAPI.setBasicMaterialMap(material1, map1);
+              state
+              |> LightMaterialAPI.setLightMaterialDiffuseMap(material1, map1);
             let state =
-              state |> BasicMaterialAPI.setBasicMaterialMap(material2, map2);
+              state
+              |> LightMaterialAPI.setLightMaterialDiffuseMap(material2, map2);
             let state = GameObjectAPI.initGameObject(gameObject1, state);
             let state = GameObjectAPI.initGameObject(gameObject2, state);
             state;

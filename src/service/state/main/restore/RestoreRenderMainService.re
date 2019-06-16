@@ -7,6 +7,17 @@ let restore = (currentState, targetState) => {
     RecordRenderMainService.getRecord(targetState);
   {
     ...targetState,
-    renderRecord: Some({basicRenderObjectRecord, lightRenderObjectRecord, cameraRecord: None})
-  }
+    renderRecord:
+      Some({
+        basicRenderObjectRecord,
+        lightRenderObjectRecord,
+        cameraRecord: None,
+        textureRecord:
+          Some({
+            activableTextureUnitArray:
+              OperateTextureRenderMainService.unsafeGetData(targetState).
+                activableTextureUnitArray,
+          }),
+      }),
+  };
 };

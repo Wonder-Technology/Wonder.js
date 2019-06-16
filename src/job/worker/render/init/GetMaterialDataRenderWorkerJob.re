@@ -1,5 +1,7 @@
 open RenderWorkerBasicMaterialType;
 
+open RenderWorkerLightMaterialType;
+
 let execJob = (_, e, stateData) =>
   MostUtils.callFunc(() => {
     let state = StateRenderWorkerService.unsafeGetState(stateData);
@@ -9,8 +11,6 @@ let execJob = (_, e, stateData) =>
       Some({
         shaderIndices: None,
         colors: None,
-        textureIndices: None,
-        mapUnits: None,
         isDepthTests: None,
         alphas: None,
         index: basicMaterialData##index,
@@ -25,9 +25,8 @@ let execJob = (_, e, stateData) =>
         specularColors: None,
         shininess: None,
         index: lightMaterialData##index,
-        textureIndices: None,
-        diffuseMapUnits: None,
-        specularMapUnits: None,
+        diffuseTextureIndices: None,
+        specularTextureIndices: None,
         disposedIndexArray: lightMaterialData##disposedIndexArray,
         isSourceInstanceMap: lightMaterialData##isSourceInstanceMap,
       });

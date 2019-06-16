@@ -674,14 +674,6 @@ let setBasicMaterialIsDepthTest = BasicMaterialAPI.setBasicMaterialIsDepthTest;
 
 let getBasicMaterialIsDepthTest = BasicMaterialAPI.getBasicMaterialIsDepthTest;
 
-let removeBasicMaterialMap = BasicMaterialAPI.removeBasicMaterialMap;
-
-let hasBasicMaterialMap = BasicMaterialAPI.hasBasicMaterialMap;
-
-let setBasicMaterialMap = BasicMaterialAPI.setBasicMaterialMap;
-
-let unsafeGetBasicMaterialMap = BasicMaterialAPI.unsafeGetBasicMaterialMap;
-
 let setBasicMaterialColor = BasicMaterialAPI.setBasicMaterialColor;
 
 let getBasicMaterialColor = BasicMaterialAPI.getBasicMaterialColor;

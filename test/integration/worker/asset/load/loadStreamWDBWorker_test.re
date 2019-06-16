@@ -21,62 +21,66 @@ let _ =
       BasicSourceTextureRenderWorkerTool.clearFakeCreateImageBitmapFunc()
     );
 
-    testPromise("test set the same texture's source which has set the default source before", () => {
-      let (
-        state,
-        context,
-        (
-          imageDataArrayBuffer1,
-          imageDataArrayBuffer2,
-          imageDataArrayBuffer3,
-          imageDataArrayBuffer4,
-        ),
-        (map1, map2),
-        (source1, source2),
-      ) =
-        BasicSourceTextureRenderWorkerTool.prepareStateAndCreateTwoMaps(
-          sandbox,
+    testPromise(
+      "test set the same texture's source which has set the default source before",
+      () => {
+        let (
+          state,
+          context,
+          (
+            imageDataArrayBuffer1,
+            imageDataArrayBuffer2,
+            imageDataArrayBuffer3,
+            imageDataArrayBuffer4,
+          ),
+          (map1, map2),
+          (source1, source2),
+        ) =
+          BasicSourceTextureRenderWorkerTool.prepareStateAndCreateTwoMaps(
+            sandbox,
+          );
+        let state =
+          state
+          |> FakeGlWorkerTool.setFakeGl(
+               FakeGlWorkerTool.buildFakeGl(~sandbox, ()),
+             );
+
+        let (state, gameObject1, material1) =
+          LightMaterialTool.createGameObject(state);
+        let state =
+          state
+          |> LightMaterialAPI.setLightMaterialDiffuseMap(material1, map1);
+        BrowserDetectTool.setChrome();
+        RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+          ~state,
+          ~sandbox,
+          ~completeFunc=
+            _ => {
+              let state = StateAPI.unsafeGetState();
+
+              let state =
+                state
+                |> BasicSourceTextureAPI.setBasicSourceTextureSource(
+                     map1,
+                     source2,
+                   );
+
+              RenderJobsRenderWorkerTool.mainLoopAndRender(
+                ~state,
+                ~sandbox,
+                ~completeFunc=
+                  _ =>
+                    BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+                      map1,
+                      state,
+                    )
+                    |> expect == source2
+                    |> resolve,
+                (),
+              );
+            },
+          (),
         );
-      let state =
-        state
-        |> FakeGlWorkerTool.setFakeGl(
-             FakeGlWorkerTool.buildFakeGl(~sandbox, ()),
-           );
-
-      let (state, gameObject1, material1) =
-        BasicMaterialTool.createGameObject(state);
-      let state =
-        state |> BasicMaterialAPI.setBasicMaterialMap(material1, map1);
-      BrowserDetectTool.setChrome();
-      RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
-        ~state,
-        ~sandbox,
-        ~completeFunc=
-          _ => {
-            let state = StateAPI.unsafeGetState();
-
-            let state =
-              state
-              |> BasicSourceTextureAPI.setBasicSourceTextureSource(
-                   map1,
-                   source2,
-                 );
-
-            RenderJobsRenderWorkerTool.mainLoopAndRender(
-              ~state,
-              ~sandbox,
-              ~completeFunc=
-                _ =>
-                  BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
-                    map1,
-                    state,
-                  )
-                  |> expect == source2
-                  |> resolve,
-              (),
-            );
-          },
-        (),
-      );
-    });
+      },
+    );
   });

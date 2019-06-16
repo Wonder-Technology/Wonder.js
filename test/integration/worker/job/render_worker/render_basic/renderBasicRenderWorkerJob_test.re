@@ -7,8 +7,10 @@ let _ =
     open Expect;
     open Expect.Operators;
     open Sinon;
+
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
+
     beforeEach(() => {
       sandbox := createSandbox();
       state :=
@@ -17,13 +19,14 @@ let _ =
           ~buffer=
             SettingTool.buildBufferConfigStr(
               ~transformCount=5,
-              ~basicMaterialCount=10,
+              ~basicMaterialCount=12,
               (),
             ),
           (),
         );
     });
     afterEach(() => TestWorkerTool.clear(sandbox));
+
     describe("use program", () => {
       let _prepare = (sandbox, state) =>
         RenderBasicForNoWorkerAndWorkerJobTool.prepareForUseProgramCase(
@@ -36,6 +39,7 @@ let _ =
           _prepare,
           state,
         );
+
       testPromise("test use", () => {
         let (state, program, useProgram) =
           _prepareForUseProgram(sandbox, state^);
@@ -48,6 +52,7 @@ let _ =
         );
       });
     });
+
     describe("send attribute data", () =>
       describe("init vbo buffers when first send", () => {
         let _prepare = (sandbox, state) => {
@@ -483,166 +488,6 @@ let _ =
                 (),
               );
             },
-          )
-        );
-      })
-    );
-    describe("update map", () =>
-      describe("set flipY", () => {
-        let _prepare = () => {
-          let imageDataArrayBuffer1 = Obj.magic(11);
-          let imageDataArrayBuffer2 = Obj.magic(12);
-          let imageDataArrayBuffer3 = Obj.magic(13);
-          let imageDataArrayBuffer4 = Obj.magic(14);
-          let (state, context) =
-            InitBasicSourceTextureRenderWorkerTool.prepareState(
-              sandbox,
-              (
-                imageDataArrayBuffer1,
-                imageDataArrayBuffer2,
-                imageDataArrayBuffer3,
-                imageDataArrayBuffer4,
-              ),
-            );
-          let (state, gameObject1, _, _, _, map1) =
-            RenderBasicJobTool.prepareGameObjectWithCreatedMap(
-              sandbox,
-              state,
-            );
-          let (state, gameObject2, _, _, _, map2) =
-            RenderBasicJobTool.prepareGameObjectWithCreatedMap(
-              sandbox,
-              state,
-            );
-          let source1 = BasicSourceTextureTool.buildSource(100, 200);
-          let source2 = BasicSourceTextureTool.buildSource(110, 210);
-          let state =
-            state
-            |> BasicSourceTextureAPI.setBasicSourceTextureSource(
-                 map1,
-                 source1,
-               );
-          let state =
-            state
-            |> BasicSourceTextureAPI.setBasicSourceTextureSource(
-                 map2,
-                 source2,
-               );
-          let state = WorkerWorkerTool.setFakeWorkersAndSetState(state);
-          let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-          let unpackFlipYWebgl = Obj.magic(2);
-          let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
-          let state =
-            state
-            |> FakeGlWorkerTool.setFakeGl(
-                 FakeGlWorkerTool.buildFakeGl(
-                   ~sandbox,
-                   ~unpackFlipYWebgl,
-                   ~pixelStorei,
-                   (),
-                 ),
-               );
-          (
-            state,
-            context,
-            (
-              imageDataArrayBuffer1,
-              imageDataArrayBuffer2,
-              imageDataArrayBuffer3,
-              imageDataArrayBuffer4,
-            ),
-            (gameObject1, gameObject2),
-            (map1, map2),
-            (source1, source2),
-            (unpackFlipYWebgl, pixelStorei),
-          );
-        };
-        beforeAllPromise(() =>
-          BasicSourceTextureRenderWorkerTool.buildFakeCreateImageBitmapFunc()
-        );
-        afterAllPromise(() =>
-          BasicSourceTextureRenderWorkerTool.clearFakeCreateImageBitmapFunc()
-        );
-        describe("test for chrome", () =>
-          testPromise("not flip", () => {
-            let (
-              state,
-              context,
-              (
-                imageDataArrayBuffer1,
-                imageDataArrayBuffer2,
-                imageDataArrayBuffer3,
-                imageDataArrayBuffer4,
-              ),
-              (gameObject1, gameObject2),
-              (map1, map2),
-              (source1, source2),
-              (unpackFlipYWebgl, pixelStorei),
-            ) =
-              _prepare();
-            let state =
-              state
-              |> BasicSourceTextureAPI.setBasicSourceTextureFlipY(map1, true)
-              |> BasicSourceTextureAPI.setBasicSourceTextureFlipY(map2, true);
-            BrowserDetectTool.setChrome();
-            RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
-              ~state,
-              ~sandbox,
-              ~completeFunc=
-                _ =>
-                  pixelStorei
-                  |> withTwoArgs(unpackFlipYWebgl, true)
-                  |> expect
-                  |> not_
-                  |> toCalled
-                  |> resolve,
-              (),
-            );
-          })
-        );
-        describe("test for firefox", () =>
-          describe("set flipY", () =>
-            testPromise("test", () => {
-              let (
-                state,
-                context,
-                (
-                  imageDataArrayBuffer1,
-                  imageDataArrayBuffer2,
-                  imageDataArrayBuffer3,
-                  imageDataArrayBuffer4,
-                ),
-                (gameObject1, gameObject2),
-                (map1, map2),
-                (source1, source2),
-                (unpackFlipYWebgl, pixelStorei),
-              ) =
-                _prepare();
-              let state =
-                state
-                |> BasicSourceTextureAPI.setBasicSourceTextureFlipY(
-                     map1,
-                     true,
-                   )
-                |> BasicSourceTextureAPI.setBasicSourceTextureFlipY(
-                     map2,
-                     false,
-                   );
-              BrowserDetectTool.setFirefox();
-
-              RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
-                ~state,
-                ~sandbox,
-                ~completeFunc=
-                  _ =>
-                    pixelStorei
-                    |> withTwoArgs(unpackFlipYWebgl, true)
-                    |> expect
-                    |> toCalledOnce
-                    |> resolve,
-                (),
-              );
-            })
           )
         );
       })

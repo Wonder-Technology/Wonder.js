@@ -172,27 +172,6 @@ let _ =
         );
 
         describe("remove material from group", () => {
-          test("test basic material", () => {
-            let (state, material1, (map, source)) =
-              BasicMaterialTool.createMaterialWithArrayBufferViewMap(state^);
-            let (state, material2) =
-              BasicMaterialAPI.createBasicMaterial(state);
-            let (state, _) =
-              BasicMaterialTool.setMaps(material2, map, state);
-
-            let state =
-              BasicMaterialAPI.batchDisposeBasicMaterial(
-                [|material1|],
-                state,
-              );
-
-            ArrayBufferViewSourceTextureTool.unsafeGetMaterialDataArr(
-              map,
-              state,
-            )
-            |> Js.Array.length
-            |> expect == 1;
-          });
           test("test light material", () => {
             let (
               state,
@@ -310,11 +289,13 @@ let _ =
               open Sinon;
 
               let (state, material1, (texture1, source1)) =
-                BasicMaterialTool.createMaterialWithArrayBufferViewMap(
+                LightMaterialTool.createMaterialWithArrayBufferViewDiffuseMap(
                   state^,
                 );
               let (state, material2, (texture2, source2)) =
-                BasicMaterialTool.createMaterialWithArrayBufferViewMap(state);
+                LightMaterialTool.createMaterialWithArrayBufferViewDiffuseMap(
+                  state,
+                );
 
               let state = state |> setValueFunc(texture1, value1);
               let state = state |> setValueFunc(texture2, value2);
@@ -329,7 +310,7 @@ let _ =
                 (SourceTextureType.Repeat, SourceTextureType.Mirrored_repeat),
                 BufferArrayBufferViewSourceTextureService.getDefaultWrapS(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureWrapS,
                   ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureWrapS,
                 ),
@@ -341,7 +322,7 @@ let _ =
                 (SourceTextureType.Repeat, SourceTextureType.Mirrored_repeat),
                 BufferArrayBufferViewSourceTextureService.getDefaultWrapT(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureWrapT,
                   ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureWrapT,
                 ),
@@ -356,7 +337,7 @@ let _ =
                 ),
                 BufferArrayBufferViewSourceTextureService.getDefaultMagFilter(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureMagFilter,
                   ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureMagFilter,
                 ),
@@ -371,7 +352,7 @@ let _ =
                 ),
                 BufferArrayBufferViewSourceTextureService.getDefaultMinFilter(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureMinFilter,
                   ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureMinFilter,
                 ),
@@ -383,7 +364,7 @@ let _ =
                 (SourceTextureType.Rgba, SourceTextureType.Alpha),
                 BufferArrayBufferViewSourceTextureService.getDefaultFormat(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureFormat,
                   ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureFormat,
                 ),
@@ -398,7 +379,7 @@ let _ =
                 ),
                 BufferArrayBufferViewSourceTextureService.getDefaultType(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureType,
                   ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureType,
                 ),
@@ -422,7 +403,7 @@ let _ =
                 (true, false),
                 true,
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureFlipY,
                   ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureFlipY,
                 ),
@@ -434,7 +415,7 @@ let _ =
                 (1, 2),
                 BufferArrayBufferViewSourceTextureService.getDefaultWidth(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureWidth,
                   ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureWidth,
                 ),
@@ -446,7 +427,7 @@ let _ =
                 (1, 2),
                 BufferArrayBufferViewSourceTextureService.getDefaultHeight(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   ArrayBufferViewSourceTextureAPI.getArrayBufferViewSourceTextureHeight,
                   ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureHeight,
                 ),
@@ -455,45 +436,45 @@ let _ =
           });
 
           /* describe("remove from glTextureMap", () => {
-            let _prepareAndExec = state => {
-              let (
-                state,
-                material1,
-                (diffuseMap, specularMap, source1, source2),
-              ) =
-                LightMaterialTool.createMaterialWithArrayBufferViewMap(
-                  state^,
-                );
-              let glTexture = Obj.magic(100);
-              let state =
-                state
-                |> ArrayBufferViewSourceTextureTool.setGlTexture(
-                     diffuseMap,
-                     glTexture,
+               let _prepareAndExec = state => {
+                 let (
+                   state,
+                   material1,
+                   (diffuseMap, specularMap, source1, source2),
+                 ) =
+                   LightMaterialTool.createMaterialWithArrayBufferViewMap(
+                     state^,
                    );
-              let gl = DeviceManagerAPI.unsafeGetGl(state) |> Obj.magic;
+                 let glTexture = Obj.magic(100);
+                 let state =
+                   state
+                   |> ArrayBufferViewSourceTextureTool.setGlTexture(
+                        diffuseMap,
+                        glTexture,
+                      );
+                 let gl = DeviceManagerAPI.unsafeGetGl(state) |> Obj.magic;
 
-              let state =
-                LightMaterialAPI.batchDisposeLightMaterial(
-                  [|material1|],
-                  state,
-                );
+                 let state =
+                   LightMaterialAPI.batchDisposeLightMaterial(
+                     [|material1|],
+                     state,
+                   );
 
-              (state, gl, glTexture, diffuseMap);
-            };
+                 (state, gl, glTexture, diffuseMap);
+               };
 
-            test("delete gl texture", () => {
-              let (state, gl, glTexture, _) = _prepareAndExec(state);
+               test("delete gl texture", () => {
+                 let (state, gl, glTexture, _) = _prepareAndExec(state);
 
-              gl##deleteTexture |> expect |> toCalledWith([|glTexture|]);
-            });
-            test("remove from glTextureMap", () => {
-              let (state, gl, _, diffuseMap) = _prepareAndExec(state);
+                 gl##deleteTexture |> expect |> toCalledWith([|glTexture|]);
+               });
+               test("remove from glTextureMap", () => {
+                 let (state, gl, _, diffuseMap) = _prepareAndExec(state);
 
-              ArrayBufferViewSourceTextureTool.getTexture(diffuseMap, state)
-              |> expect == None;
-            });
-          }); */
+                 ArrayBufferViewSourceTextureTool.getTexture(diffuseMap, state)
+                 |> expect == None;
+               });
+             }); */
 
           describe("test remove worker data", () => {
             test("remove from needAddedSourceArray", () => {

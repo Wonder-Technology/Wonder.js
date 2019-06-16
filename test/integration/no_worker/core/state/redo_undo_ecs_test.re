@@ -198,61 +198,37 @@ let _ =
               )
             )
           );
-          test("deep copy gameObjectsMap, emptyMapUnitArrayMap", () => {
+          test("deep copy gameObjectsMap", () => {
             open StateDataMainType;
             open BasicMaterialType;
             let (state, gameObject1, basicMaterial1) =
               BasicMaterialTool.createGameObject(state^);
-            let {gameObjectsMap, emptyMapUnitArrayMap} =
-              BasicMaterialTool.getRecord(state);
+            let {gameObjectsMap} = BasicMaterialTool.getRecord(state);
             let originGameObjectsArr = [|1|];
             let originEmptyMapUnitArrayMap = [|2, 1, 0|];
             let copiedOriginGameObjectsArr =
               originGameObjectsArr |> Js.Array.copy;
-            let copiedOriginEmptyMapUnitArrayMap =
-              originEmptyMapUnitArrayMap |> Js.Array.copy;
             gameObjectsMap
             |> WonderCommonlib.MutableSparseMapService.set(
                  basicMaterial1,
                  originGameObjectsArr,
                )
             |> ignore;
-            emptyMapUnitArrayMap
-            |> WonderCommonlib.MutableSparseMapService.set(
-                 basicMaterial1,
-                 originEmptyMapUnitArrayMap,
-               )
-            |> ignore;
             let copiedState = MainStateTool.deepCopyForRestore(state);
-            let {gameObjectsMap, emptyMapUnitArrayMap} =
-              BasicMaterialTool.getRecord(copiedState);
+            let {gameObjectsMap} = BasicMaterialTool.getRecord(copiedState);
             let arr =
               gameObjectsMap
               |> WonderCommonlib.MutableSparseMapService.unsafeGet(
                    basicMaterial1,
                  );
             Array.unsafe_set(arr, 0, 2);
-            let arr =
-              emptyMapUnitArrayMap
-              |> WonderCommonlib.MutableSparseMapService.unsafeGet(
-                   basicMaterial1,
-                 );
-            Array.unsafe_set(arr, 0, 4);
 
-            let {gameObjectsMap, emptyMapUnitArrayMap} =
-              BasicMaterialTool.getRecord(state);
-            (
-              gameObjectsMap
-              |> WonderCommonlib.MutableSparseMapService.unsafeGet(
-                   basicMaterial1,
-                 ),
-              emptyMapUnitArrayMap
-              |> WonderCommonlib.MutableSparseMapService.unsafeGet(
-                   basicMaterial1,
-                 ),
-            )
-            |> expect
-            == (copiedOriginGameObjectsArr, copiedOriginEmptyMapUnitArrayMap);
+            let {gameObjectsMap} = BasicMaterialTool.getRecord(state);
+            gameObjectsMap
+            |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                 basicMaterial1,
+               )
+            |> expect == copiedOriginGameObjectsArr;
           });
           test("copy colors", () =>
             RedoUndoTool.testCopyTypeArraySingleValue(
@@ -263,30 +239,6 @@ let _ =
                   |> TypeArrayTool.truncateArray,
                 BasicMaterialAPI.setBasicMaterialColor,
                 () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|]),
-              ),
-              state,
-            )
-          );
-          test("copy textureIndices", () =>
-            RedoUndoTool.testCopyTypeArraySingleValue(
-              (
-                BasicMaterialTool.createGameObject,
-                (material, state) =>
-                  BasicMaterialAPI.unsafeGetBasicMaterialMap(material, state),
-                BasicMaterialAPI.setBasicMaterialMap,
-                () => (0, 1),
-              ),
-              state,
-            )
-          );
-          test("copy mapUnits", () =>
-            RedoUndoTool.testCopyTypeArraySingleValue(
-              (
-                BasicMaterialTool.createGameObject,
-                (material, state) =>
-                  BasicMaterialTool.getMapUnit(material, state),
-                BasicMaterialTool.setMapUnit,
-                () => (1, 2),
               ),
               state,
             )
@@ -833,11 +785,7 @@ disposedUidArrayForRemoveTexture,
               TestTool.initWithJobConfigWithoutBuildFakeDom(
                 ~sandbox,
                 ~buffer=
-                  SettingTool.buildBufferConfigStr(
-                    ~basicMaterialCount=4,
-                    ~textureCountPerMaterial=1,
-                    (),
-                  ),
+                  SettingTool.buildBufferConfigStr(~basicMaterialCount=4, ()),
                 (),
               );
 
@@ -863,13 +811,6 @@ disposedUidArrayForRemoveTexture,
                 [|1., 0.1, 1.|],
                 currentState,
               );
-            let (currentState, map1) =
-              BasicSourceTextureAPI.createBasicSourceTexture(currentState);
-            let (currentState, map2) =
-              BasicSourceTextureAPI.createBasicSourceTexture(currentState);
-            let currentState =
-              currentState
-              |> BasicMaterialAPI.setBasicMaterialMap(material4, map2);
             let currentState =
               BasicMaterialAPI.setBasicMaterialIsDepthTest(
                 material4,
@@ -886,13 +827,12 @@ disposedUidArrayForRemoveTexture,
             let currentState = AllMaterialTool.pregetGLSLData(currentState);
             let _ = MainStateTool.restore(currentState, copiedState);
 
-            let defaultUnit = BasicSourceTextureTool.getDefaultUnit();
             let defaultIsDepthTest =
               BufferMaterialService.getDefaultIsDepthTest();
             let defaultAlpha = BasicMaterialTool.getDefaultAlpha();
-            let {colors, textureIndices, mapUnits, isDepthTests, alphas} =
+            let {colors, isDepthTests, alphas} =
               MainStateTool.unsafeGetState() |> BasicMaterialTool.getRecord;
-            (colors, textureIndices, mapUnits, isDepthTests, alphas)
+            (colors, isDepthTests, alphas)
             |> expect
             == (
                  Float32Array.make([|
@@ -908,13 +848,6 @@ disposedUidArrayForRemoveTexture,
                    1.,
                    1.,
                    1.,
-                 |]),
-                 Uint32Array.make([|0, 0, 0, 0|]),
-                 Uint8Array.make([|
-                   defaultUnit,
-                   defaultUnit,
-                   defaultUnit,
-                   defaultUnit,
                  |]),
                  Uint8Array.make([|
                    defaultIsDepthTest,

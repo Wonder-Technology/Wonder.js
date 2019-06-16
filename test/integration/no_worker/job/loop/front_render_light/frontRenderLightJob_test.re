@@ -7,7 +7,9 @@ let _ =
     open Sinon;
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
+
     beforeEach(() => {
+      TestTool.openContractCheck();
       sandbox := createSandbox();
       state :=
         RenderJobsTool.initWithJobConfig(
@@ -1446,6 +1448,7 @@ let _ =
           });
         });
       });
+
       describe("test send light material data", () => {
         GLSLSenderTool.JudgeSendUniformData.testSendFloat(
           sandbox,
@@ -1497,9 +1500,9 @@ let _ =
           ~prepareGameObjectFunc=FrontRenderLightJobTool.prepareGameObject,
           (),
         );
+
         describe("test with map", () =>
-          describe(
-            "send u_diffuseMapSampler, u_diffuse, u_specularMapSampler", () => {
+          describe("send u_diffuseMapSampler, u_specularMapSampler", () => {
             let _prepare = state => {
               let (state, gameObject, _, _, _, _) =
                 FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(
@@ -1509,10 +1512,8 @@ let _ =
               let (state, _, _, _) =
                 CameraTool.createCameraGameObject(state);
               let uniform1i = createEmptyStubWithJsObjSandbox(sandbox);
-              let uniform3f = createEmptyStubWithJsObjSandbox(sandbox);
               let pos1 = 0;
               let pos2 = 1;
-              let pos3 = 2;
               let getUniformLocation =
                 GLSLLocationTool.getUniformLocation(
                   ~pos=pos1,
@@ -1526,41 +1527,35 @@ let _ =
                   sandbox,
                   "u_specularMapSampler",
                 );
-              let getUniformLocation =
-                GLSLLocationTool.stubLocation(
-                  getUniformLocation,
-                  pos3,
-                  sandbox,
-                  "u_diffuse",
-                );
               let state =
                 state
                 |> FakeGlTool.setFakeGl(
                      FakeGlTool.buildFakeGl(
                        ~sandbox,
                        ~uniform1i,
-                       ~uniform3f,
                        ~getUniformLocation,
                        (),
                      ),
                    );
-              (state, (pos1, pos2, pos3), (uniform1i, uniform3f));
+              (state, (pos1, pos2), uniform1i);
             };
+
             test("test send", () => {
-              let (state, (pos1, pos2, pos3), (uniform1i, uniform3f)) =
-                _prepare(state^);
+              let (state, (pos1, pos2), uniform1i) = _prepare(state^);
+
               let state =
                 state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
               (
                 SinonTool.calledWithArg2(uniform1i, pos1, 0),
                 SinonTool.calledWithArg2(uniform1i, pos2, 1),
-                SinonTool.calledWith(uniform3f, pos3),
               )
-              |> expect == (true, true, true);
+              |> expect == (true, true);
             });
           })
         );
       });
+
       GLSLSenderTool.JudgeSendUniformData.testSendMatrix4(
         sandbox,
         "u_mMatrix",
@@ -1712,11 +1707,8 @@ let _ =
 
       describe("fix bug", () => {
         let _prepare = state => {
-          let (state, gameObject1, _, _, _, _) =
-            RenderBasicJobTool.prepareGameObjectWithCreatedMap(
-              sandbox,
-              state,
-            );
+          let (state, gameObject1, _, _, _) =
+            RenderBasicJobTool.prepareGameObject(sandbox, state);
           let (state, gameObject2, _, _, _, _) =
             FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(
               sandbox,

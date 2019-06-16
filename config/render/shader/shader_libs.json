@@ -121,48 +121,6 @@
     ]
   },
   {
-    "name": "basic_map",
-    "glsls": [
-      {
-        "type": "vs",
-        "name": "webgl1_basic_map_vertex"
-      },
-      {
-        "type": "fs",
-        "name": "webgl1_basic_map_fragment"
-      }
-    ],
-    "variables": {
-      "attributes": [
-        {
-          "name": "a_texCoord",
-          "buffer": 2,
-          "type": "vec2"
-        }
-      ],
-      "uniforms": [
-        {
-          "name": "u_color",
-          "field": "color",
-          "type": "float3",
-          "from": "basicMaterial"
-        },
-        {
-          "name": "u_alpha",
-          "field": "alpha",
-          "type": "float",
-          "from": "basicMaterial"
-        },
-        {
-          "name": "u_mapSampler",
-          "field": "map",
-          "type": "sampler2D",
-          "from": "basicMaterial"
-        }
-      ]
-    }
-  },
-  {
     "name": "no_basic_map",
     "glsls": [
       {

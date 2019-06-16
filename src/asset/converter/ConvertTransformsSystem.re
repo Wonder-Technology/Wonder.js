@@ -182,7 +182,6 @@ let _createState = () => {
           lightMaterialCount: 50,
           directionLightCount: 50,
           pointLightCount: 50,
-          textureCountPerMaterial: 50,
           basicSourceTextureCount: 50,
           arrayBufferViewSourceTextureCount: 50,
           meshRendererCount: 50,

@@ -34,7 +34,8 @@ let isNeedUpdate = (texture, state) =>
   )
   === BufferSourceTextureService.getNeedUpdate();
 
-let getDefaultUnit = () => MapUnitService.getDefaultUnit();
+let getDefaultTextureIndex = () =>
+  TextureIndexService.getDefaultTextureIndex();
 
 let getNearest = () => SourceTextureTool.getNearest();
 

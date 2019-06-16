@@ -323,16 +323,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
         describe("test CesiumMilkTruck wdb", () => {
           beforeEach(() =>
             state :=
-              TestTool.initWithJobConfigWithoutBuildFakeDom(
-                ~sandbox,
-                ~buffer=
-                  SettingTool.buildBufferConfigStr(
-                    ~geometryPointCount=30000,
-                    ~geometryCount=10,
-                    (),
-                  ),
-                ~noWorkerJobRecord=LoopRenderJobTool.buildNoWorkerJobConfig(),
-                (),
+              RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
+                sandbox,
+                LoopRenderJobTool.buildNoWorkerJobConfig(),
+                SettingTool.buildBufferConfigStr(
+                  ~geometryPointCount=30000,
+                  ~geometryCount=10,
+                  (),
+                ),
               )
           );
 
@@ -633,16 +631,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
         describe("test CesiumMilkTruck wdb", () => {
           beforeEach(() =>
             state :=
-              TestTool.initWithJobConfigWithoutBuildFakeDom(
-                ~sandbox,
-                ~buffer=
-                  SettingTool.buildBufferConfigStr(
-                    ~geometryPointCount=30000,
-                    ~geometryCount=10,
-                    (),
-                  ),
-                ~noWorkerJobRecord=LoopRenderJobTool.buildNoWorkerJobConfig(),
-                (),
+              RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
+                sandbox,
+                LoopRenderJobTool.buildNoWorkerJobConfig(),
+                SettingTool.buildBufferConfigStr(
+                  ~geometryPointCount=30000,
+                  ~geometryCount=10,
+                  (),
+                ),
               )
           );
 
@@ -941,16 +937,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
 
           beforeEach(() =>
             state :=
-              TestTool.initWithJobConfigWithoutBuildFakeDom(
-                ~sandbox,
-                ~buffer=
-                  SettingTool.buildBufferConfigStr(
-                    ~geometryPointCount=30000,
-                    ~geometryCount=10,
-                    (),
-                  ),
-                ~noWorkerJobRecord=LoopRenderJobTool.buildNoWorkerJobConfig(),
-                (),
+              RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
+                sandbox,
+                LoopRenderJobTool.buildNoWorkerJobConfig(),
+                SettingTool.buildBufferConfigStr(
+                  ~geometryPointCount=30000,
+                  ~geometryCount=10,
+                  (),
+                ),
               )
           );
 

@@ -21,6 +21,9 @@ let render =
   renderIndexArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, index) => {
+         let state =
+           OperateAllTextureRenderService.resetActivedTextureUnitIndex(state);
+
          let transformIndex =
            RenderObjectBufferTypeArrayService.getComponent(
              index,

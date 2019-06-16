@@ -18,6 +18,8 @@ open RenderBasicSourceTextureType;
 
 open RenderArrayBufferViewSourceTextureType;
 
+open RenderAllTextureType;
+
 open RenderSceneType;
 
 open RenderDirectionLightType;
@@ -59,6 +61,7 @@ type renderState = {
   meshRendererRecord,
   basicSourceTextureRecord,
   arrayBufferViewSourceTextureRecord,
+  allTextureRecord,
   directionLightRecord,
   pointLightRecord,
   transformRecord,

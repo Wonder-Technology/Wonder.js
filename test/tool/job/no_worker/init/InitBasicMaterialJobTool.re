@@ -2,7 +2,6 @@ let initWithJobConfigWithoutBuildFakeDom = (sandbox, noWorkerJobRecord) =>
   TestTool.initWithJobConfigWithoutBuildFakeDom(
     ~sandbox,
     ~noWorkerJobRecord,
-    /* ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), */
     (),
   );
 
@@ -14,22 +13,6 @@ let prepareGameObject = (sandbox, state) => {
   open BasicMaterialAPI;
   open Sinon;
   let (state, material) = createBasicMaterial(state);
-  let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
-  let (state, gameObject) = state |> createGameObject;
-  let state =
-    state
-    |> addGameObjectBasicMaterialComponent(gameObject, material)
-    |> addGameObjectGeometryComponent(gameObject, geometry);
-  (state, gameObject, geometry, material);
-};
-
-let prepareGameObjectWithCreatedMap = (sandbox, state) => {
-  open GameObjectAPI;
-  open BasicMaterialAPI;
-  open Sinon;
-  let (state, material) = createBasicMaterial(state);
-  let (state, map) = BasicSourceTextureAPI.createBasicSourceTexture(state);
-  let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
   let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
   let (state, gameObject) = state |> createGameObject;
   let state =
@@ -59,20 +42,6 @@ let prepareForJudgeGLSLNotExec = (sandbox, state) =>
 
 let prepareForJudgeGLSL = (sandbox, state) => {
   let (state, shaderSource, _) = prepareForJudgeGLSLNotExec(sandbox, state);
-  let state = state |> exec;
-  (state, shaderSource);
-};
-
-let prepareForJudgeGLSLNotExecWithMap = (sandbox, state) =>
-  _prepareForJudgeGLSLNotExec(
-    sandbox,
-    prepareGameObjectWithCreatedMap,
-    state,
-  );
-
-let prepareForJudgeGLSLWithMap = (sandbox, state) => {
-  let (state, shaderSource, _) =
-    prepareForJudgeGLSLNotExecWithMap(sandbox, state);
   let state = state |> exec;
   (state, shaderSource);
 };

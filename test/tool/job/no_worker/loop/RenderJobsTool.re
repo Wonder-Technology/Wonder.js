@@ -1,11 +1,5 @@
-/* let _getDefaultRenderJobConfig = () => RenderJobConfigTool.buildRenderJobConfig(); */
 let initWithJobConfig = (sandbox, noWorkerJobRecord) =>
-  TestTool.initWithJobConfig(
-    ~sandbox,
-    /* ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), */
-    ~noWorkerJobRecord,
-    (),
-  )
+  TestTool.initWithJobConfig(~sandbox, ~noWorkerJobRecord, ())
   |> DirectorTool.prepare;
 
 let initWithJobConfigAndBufferConfig = (sandbox, noWorkerJobRecord, buffer) =>
@@ -15,7 +9,6 @@ let initWithJobConfigAndBufferConfig = (sandbox, noWorkerJobRecord, buffer) =>
 let initWithJobConfigWithoutBuildFakeDom = (sandbox, noWorkerJobRecord) =>
   TestTool.initWithJobConfigWithoutBuildFakeDom(
     ~sandbox,
-    /* ~bufferConfig=Js.Nullable.return(GeometryTool.buildBufferConfig(1000)), */
     ~noWorkerJobRecord,
     (),
   )
@@ -32,7 +25,6 @@ let initWithJobConfigAndBufferConfigWithoutBuildFakeDom =
   |> DirectorTool.prepare;
 
 let prepareGameObject = (sandbox, state) => {
-  open GameObjectAPI;
   open GameObjectAPI;
   open BasicMaterialAPI;
   open MeshRendererAPI;

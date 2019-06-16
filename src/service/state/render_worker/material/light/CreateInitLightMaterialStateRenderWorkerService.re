@@ -38,12 +38,12 @@ let createInitMaterialState =
       disposedIndexArray,
       shaderIndices:
         RecordLightMaterialRenderWorkerService.unsafeGetShaderIndices(state),
-      diffuseMapUnits:
-        RecordLightMaterialRenderWorkerService.unsafeGetDiffuseMapUnits(
+      diffuseTextureIndices:
+        RecordLightMaterialRenderWorkerService.unsafeGetDiffuseTextureIndices(
           state,
         ),
-      specularMapUnits:
-        RecordLightMaterialRenderWorkerService.unsafeGetSpecularMapUnits(
+      specularTextureIndices:
+        RecordLightMaterialRenderWorkerService.unsafeGetSpecularTextureIndices(
           state,
         ),
     },

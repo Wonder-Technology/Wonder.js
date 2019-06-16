@@ -14,30 +14,12 @@ let _ =
       state := TestTool.init(~sandbox, ());
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
-    describe("createLightMaterial", () => {
+    describe("createLightMaterial", () =>
       test("create a new material which is just index(int)", () => {
         let (_, material) = createLightMaterial(state^);
         expect(material) == 0;
-      });
-      describe("set default value", () =>
-        test("init emptyMapUnitArray", () => {
-          state :=
-            TestTool.initWithoutBuildFakeDom(
-              ~sandbox,
-              ~buffer=
-                SettingTool.buildBufferConfigStr(
-                  ~textureCountPerMaterial=3,
-                  (),
-                ),
-              (),
-            );
-
-          let (state, material) = createLightMaterial(state^);
-          LightMaterialTool.getEmptyMapUnitArray(material, state)
-          |> expect == [|2, 1, 0|];
-        })
-      );
-    });
+      })
+    );
     /* describe(
          "init",
          () =>
@@ -358,7 +340,7 @@ let _ =
           })
         );
 
-        test("remove from nameMap, emptyMapUnitArrayMap", () => {
+        test("remove from nameMap", () => {
           open LightMaterialType;
           let (state, gameObject1, material1) =
             LightMaterialTool.createGameObject(state^);
@@ -370,15 +352,11 @@ let _ =
                  gameObject1,
                  material1,
                );
-          let {nameMap, emptyMapUnitArrayMap} =
-            LightMaterialTool.getRecord(state);
+          let {nameMap} = LightMaterialTool.getRecord(state);
 
-          (
-            nameMap |> WonderCommonlib.MutableSparseMapService.has(material1),
-            emptyMapUnitArrayMap
-            |> WonderCommonlib.MutableSparseMapService.has(material1),
-          )
-          |> expect == (false, false);
+          nameMap
+          |> WonderCommonlib.MutableSparseMapService.has(material1)
+          |> expect == false;
         });
 
         describe("test remove from type array", () => {
@@ -479,78 +457,64 @@ let _ =
                   setValueFunc,
                 ),
               );
-            describe("remove from textureIndices", () =>
-              test("reset material's all texture indices", () => {
-                open Js.Typed_array;
-                open LightMaterialType;
-                let state =
-                  TestTool.initWithoutBuildFakeDom(
-                    ~sandbox,
-                    ~buffer=
-                      SettingTool.buildBufferConfigStr(
-                        ~textureCountPerMaterial=2,
-                        (),
-                      ),
-                    (),
-                  );
-                let state =
-                  state
-                  |> FakeGlTool.setFakeGl(
-                       FakeGlTool.buildFakeGl(~sandbox, ()),
-                     );
-                let (state, gameObject1, (material1, _)) =
-                  LightMaterialTool.createGameObjectWithMap(state);
-                let {textureIndices} = LightMaterialTool.getRecord(state);
-                let sourceIndex =
-                  LightMaterialTool.getTextureIndicesIndex(material1, state);
-                Uint32Array.unsafe_set(textureIndices, sourceIndex, 1);
-                Uint32Array.unsafe_set(textureIndices, sourceIndex + 1, 2);
-                Uint32Array.unsafe_set(textureIndices, sourceIndex + 2, 3);
-                let defaultTextureIndex =
-                  LightMaterialTool.getDefaultTextureIndex();
-                let state =
-                  state
-                  |> GameObjectTool.disposeGameObjectLightMaterialComponent(
-                       gameObject1,
-                       material1,
-                     );
-                textureIndices
-                |> Uint32Array.slice(~start=0, ~end_=5)
-                |> expect
-                == Uint32Array.make([|
-                     defaultTextureIndex,
-                     defaultTextureIndex,
-                     3,
-                     0,
-                     0,
-                   |]);
-              })
-            );
-            describe("remove from diffuseMapUnits", () =>
-              test("reset removed one's value", () =>
-                _testRemoveFromTypeArr(
+
+            let _test = (material2TextureIndex, getTextureIndicesFunc, state) => {
+              open Js.Typed_array;
+              open LightMaterialType;
+              let (state, gameObject1, (material1, _)) =
+                LightMaterialTool.createGameObjectWithMap(state^);
+              let (state, gameObject2, (material2, _)) =
+                LightMaterialTool.createGameObjectWithMap(state);
+
+              let state =
+                state
+                |> GameObjectTool.disposeGameObjectLightMaterialComponent(
+                     gameObject1,
+                     material1,
+                   );
+
+              let defaultTextureIndex =
+                LightMaterialTool.getDefaultTextureIndex();
+              getTextureIndicesFunc(state)
+              |> Uint32Array.slice(~start=0, ~end_=3)
+              |> expect
+              == Uint32Array.make([|
+                   defaultTextureIndex,
+                   material2TextureIndex,
+                   defaultTextureIndex,
+                 |]);
+            };
+
+            beforeEach(() => {
+              state :=
+                TestTool.initWithoutBuildFakeDom(
+                  ~sandbox,
+                  ~buffer=SettingTool.buildBufferConfigStr(),
+                  (),
+                );
+              state :=
+                state^
+                |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+            });
+
+            describe("remove from diffuseTextureIndices", () =>
+              test("reset to default value", () =>
+                _test(
+                  2,
+                  state =>
+                    LightMaterialTool.getRecord(state).diffuseTextureIndices,
                   state,
-                  (1, 2),
-                  BasicSourceTextureTool.getDefaultUnit(),
-                  (
-                    LightMaterialTool.createGameObjectWithMap,
-                    LightMaterialTool.getDiffuseMapUnit,
-                    LightMaterialTool.setDiffuseMapUnit,
-                  ),
                 )
               )
             );
-            describe("remove from specularMapUnits", () =>
-              test("reset removed one's value", () =>
-                _testRemoveFromTypeArr(
+
+            describe("remove from specularTextureIndices", () =>
+              test("reset to default value", () =>
+                _test(
+                  3,
+                  state =>
+                    LightMaterialTool.getRecord(state).specularTextureIndices,
                   state,
-                  (1, 2),
-                  BasicSourceTextureTool.getDefaultUnit(),
-                  (
-                    LightMaterialTool.createGameObjectWithMap,
-                    LightMaterialTool.getSpecularMapUnit,
-                    LightMaterialTool.setSpecularMapUnit,
-                  ),
                 )
               )
             );

@@ -199,25 +199,7 @@ let _ =
             |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()))
         );
 
-        describe("remove material from group", () => {
-          test("test basic material", () => {
-            let (state, material1, (map, source)) =
-              BasicMaterialTool.createMaterialWithMap(state^);
-            let (state, material2) =
-              BasicMaterialAPI.createBasicMaterial(state);
-            let (state, _) =
-              BasicMaterialTool.setMaps(material2, map, state);
-
-            let state =
-              BasicMaterialAPI.batchDisposeBasicMaterial(
-                [|material1|],
-                state,
-              );
-
-            BasicSourceTextureTool.unsafeGetMaterialDataArr(map, state)
-            |> Js.Array.length
-            |> expect == 1;
-          });
+        describe("remove material from group", () =>
           test("test light material", () => {
             let (
               state,
@@ -254,8 +236,8 @@ let _ =
               |> Js.Array.length,
             )
             |> expect == (1, 1);
-          });
-        });
+          })
+        );
 
         test(
           "if other materials use the texture, not dispose texture data", () => {
@@ -353,9 +335,9 @@ let _ =
               open Sinon;
 
               let (state, material1, (texture1, source1)) =
-                BasicMaterialTool.createMaterialWithMap(state^);
+                LightMaterialTool.createMaterialWithDiffuseMap(state^);
               let (state, material2, (texture2, source2)) =
-                BasicMaterialTool.createMaterialWithMap(state);
+                LightMaterialTool.createMaterialWithDiffuseMap(state);
 
               let state = state |> setValueFunc(texture1, value1);
               let state = state |> setValueFunc(texture2, value2);
@@ -370,7 +352,7 @@ let _ =
                 (SourceTextureType.Repeat, SourceTextureType.Mirrored_repeat),
                 BufferBasicSourceTextureService.getDefaultWrapS(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   BasicSourceTextureAPI.getBasicSourceTextureWrapS,
                   BasicSourceTextureAPI.setBasicSourceTextureWrapS,
                 ),
@@ -382,7 +364,7 @@ let _ =
                 (SourceTextureType.Repeat, SourceTextureType.Mirrored_repeat),
                 BufferBasicSourceTextureService.getDefaultWrapT(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   BasicSourceTextureAPI.getBasicSourceTextureWrapT,
                   BasicSourceTextureAPI.setBasicSourceTextureWrapT,
                 ),
@@ -397,7 +379,7 @@ let _ =
                 ),
                 BufferBasicSourceTextureService.getDefaultMagFilter(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   BasicSourceTextureAPI.getBasicSourceTextureMagFilter,
                   BasicSourceTextureAPI.setBasicSourceTextureMagFilter,
                 ),
@@ -412,7 +394,7 @@ let _ =
                 ),
                 BufferBasicSourceTextureService.getDefaultMinFilter(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   BasicSourceTextureAPI.getBasicSourceTextureMinFilter,
                   BasicSourceTextureAPI.setBasicSourceTextureMinFilter,
                 ),
@@ -424,7 +406,7 @@ let _ =
                 (SourceTextureType.Rgba, SourceTextureType.Alpha),
                 BufferBasicSourceTextureService.getDefaultFormat(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   BasicSourceTextureAPI.getBasicSourceTextureFormat,
                   BasicSourceTextureAPI.setBasicSourceTextureFormat,
                 ),
@@ -439,7 +421,7 @@ let _ =
                 ),
                 BufferBasicSourceTextureService.getDefaultType(),
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   BasicSourceTextureAPI.getBasicSourceTextureType,
                   BasicSourceTextureAPI.setBasicSourceTextureType,
                 ),
@@ -451,7 +433,7 @@ let _ =
                 (true, false),
                 true,
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   BasicSourceTextureTool.getIsNeedUpdate,
                   BasicSourceTextureTool.setIsNeedUpdate,
                 ),
@@ -463,7 +445,7 @@ let _ =
                 (true, false),
                 true,
                 (
-                  BasicMaterialTool.disposeBasicMaterial,
+                  LightMaterialTool.disposeLightMaterial,
                   BasicSourceTextureAPI.getBasicSourceTextureFlipY,
                   BasicSourceTextureAPI.setBasicSourceTextureFlipY,
                 ),

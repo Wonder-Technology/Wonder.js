@@ -28,25 +28,26 @@ let _getMaterialShaderLibDataArrByStaticBranch =
 
 let _isPass =
   (. materialIndex, condition, {materialRecord} as state) =>
-    switch (condition) {
-    | "basic_has_map" =>
-      MapUnitService.hasMap(
-        OperateTypeArrayBasicMaterialService.getMapUnit(.
-          materialIndex,
-          materialRecord.mapUnits,
-        ),
-      )
-    | _ =>
-      WonderLog.Log.fatal(
-        WonderLog.Log.buildFatalMessage(
-          ~title="_isPass",
-          ~description={j|unknown condition:$condition|j},
-          ~reason="",
-          ~solution={j||j},
-          ~params={j||j},
-        ),
-      )
-    };
+    /* switch (condition) {
+       | "basic_has_map" =>
+         MapUnitService.hasMap(
+           OperateTypeArrayBasicMaterialService.getActivableTextureUnit(.
+             materialIndex,
+             materialRecord.mapUnits,
+           ),
+         )
+       | _ =>
+         WonderLog.Log.fatal(
+           WonderLog.Log.buildFatalMessage(
+             ~title="_isPass",
+             ~description={j|unknown condition:$condition|j},
+             ~reason="",
+             ~solution={j||j},
+             ~params={j||j},
+           ),
+         )
+       }; */
+    true;
 
 let getMaterialShaderLibDataArr =
   (.

@@ -7,12 +7,13 @@ let _ =
     open Expect;
     open Expect.Operators;
     open Sinon;
+
     let sandbox = getSandboxDefaultVal();
     let state = ref(CreateStateMainService.createState());
-    beforeEach(()
-      => sandbox := createSandbox());
-      /* state := TestMainWorkerTool.initWithJobConfig(~sandbox, ()) */
+
+    beforeEach(() => sandbox := createSandbox());
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
     describe("test change texture", () =>
       describe("test basic material", () => {
         describe("test basic source texture", () =>
@@ -87,13 +88,16 @@ let _ =
                   _ => {
                     let state = MainStateTool.unsafeGetState();
                     let material1 =
-                      GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent(
+                      GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(
                         gameObject1,
                         state,
                       );
                     let state =
                       state
-                      |> BasicMaterialAPI.setBasicMaterialMap(material1, map2);
+                      |> LightMaterialAPI.setLightMaterialDiffuseMap(
+                           material1,
+                           map2,
+                         );
                     RenderJobsRenderWorkerTool.mainLoopAndRender(
                       ~state,
                       ~sandbox,
@@ -156,13 +160,16 @@ let _ =
                   _ => {
                     let state = MainStateTool.unsafeGetState();
                     let material1 =
-                      GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent(
+                      GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(
                         gameObject1,
                         state,
                       );
                     let state =
                       state
-                      |> BasicMaterialAPI.setBasicMaterialMap(material1, map2);
+                      |> LightMaterialAPI.setLightMaterialDiffuseMap(
+                           material1,
+                           map2,
+                         );
                     RenderJobsRenderWorkerTool.mainLoopAndRender(
                       ~state,
                       ~sandbox,

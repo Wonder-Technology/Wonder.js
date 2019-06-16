@@ -16,6 +16,20 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material, meshRenderer);
 };
 
+let prepareGameObjectWithDiffuseMap = (sandbox, diffuseMap, state) => {
+  let (state, gameObject, geometry, material, meshRenderer) =
+    prepareGameObject(sandbox, state);
+  let state =
+    state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, diffuseMap);
+  (state, gameObject, geometry, material, meshRenderer, diffuseMap);
+};
+
+let prepareGameObjectWithCreatedDiffuseMap = (sandbox, state) => {
+  let (state, map) = BasicSourceTextureAPI.createBasicSourceTexture(state);
+
+  prepareGameObjectWithDiffuseMap(sandbox, map, state);
+};
+
 let prepareGameObjectWithCreatedMap = (sandbox, state) => {
   let (state, gameObject, geometry, material, meshRenderer) =
     prepareGameObject(sandbox, state);

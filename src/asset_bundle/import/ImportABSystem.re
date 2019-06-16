@@ -17,10 +17,6 @@ module All = {
     let hashId =
       ParseABSystem.WAB.unsafeGetHashId(abRelativePath, wholeManifest);
 
-      WonderLog.Log.print(( "All->loadAB: ", abRelativePath , 
-      isAssetBundleArrayBufferCachedFunc(. abRelativePath, hashId)
-      )) |> ignore;
-
     isAssetBundleArrayBufferCachedFunc(. abRelativePath, hashId)
     |> Most.fromPromise
     |> Most.flatMap(isCached =>

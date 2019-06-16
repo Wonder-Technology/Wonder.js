@@ -49,7 +49,7 @@ let _ =
         );
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
-    describe("test get attribute location", () => {
+    describe("test get attribute location", () =>
       describe("test get a_position location", () => {
         test("test get location", () => {
           let (state, gameObject, geometry, material) =
@@ -87,62 +87,15 @@ let _ =
             |> toCalledOnce;
           })
         );
-      });
-      describe("test get a_texCoord location", () => {
-        test("test get location", () => {
-          let (state, gameObject, geometry, material) =
-            InitBasicMaterialJobTool.prepareGameObjectWithCreatedMap(
-              sandbox,
-              state^,
-            );
-          let getAttribLocation =
-            GLSLLocationTool.getAttribLocation(sandbox, "a_texCoord");
-          let state =
-            state
-            |> FakeGlTool.setFakeGl(
-                 FakeGlTool.buildFakeGl(~sandbox, ~getAttribLocation, ()),
-               );
-          let state = state |> InitBasicMaterialJobTool.exec;
-          getAttribLocation
-          |> withTwoArgs(matchAny, "a_texCoord")
-          |> expect
-          |> toCalledOnce;
-        });
-        describe("test cache", () =>
-          test("if cached, not query gl location", () => {
-            let (state, gameObject, geometry, material) =
-              InitBasicMaterialJobTool.prepareGameObjectWithCreatedMap(
-                sandbox,
-                state^,
-              );
-            let (state, _, _, material2) =
-              InitBasicMaterialJobTool.prepareGameObjectWithCreatedMap(
-                sandbox,
-                state,
-              );
-            let getAttribLocation =
-              GLSLLocationTool.getAttribLocation(sandbox, "a_texCoord");
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(~sandbox, ~getAttribLocation, ()),
-                 );
-            let state = state |> InitBasicMaterialJobTool.exec;
-            getAttribLocation
-            |> withTwoArgs(matchAny, "a_texCoord")
-            |> expect
-            |> toCalledOnce;
-          })
-        );
-      });
-    });
+      })
+    );
     describe("test get uniform location", () => {
       let _testGetLocation = name =>
         InitMaterialTool.testGetLocation(
           sandbox,
           name,
           (
-            InitBasicMaterialJobTool.prepareGameObjectWithCreatedMap,
+            InitBasicMaterialJobTool.prepareGameObject,
             InitBasicMaterialJobTool.exec,
           ),
           state,
@@ -167,9 +120,6 @@ let _ =
       });
       test("test get u_color location", () =>
         _testGetLocation("u_color")
-      );
-      test("test get u_mapSampler location", () =>
-        _testGetLocation("u_mapSampler")
       );
     });
     describe("test glsl", () => {
@@ -218,62 +168,8 @@ let _ =
           })
         );
 
-        describe("test map shader lib's glsl", () => {
-          describe("if has map, add basic_map shader lib", () => {
-            test("test vs glsl", () => {
-              let (_, shaderSource) =
-                InitBasicMaterialJobTool.prepareForJudgeGLSLWithMap(
-                  sandbox,
-                  state^,
-                );
-              GLSLTool.containMultiline(
-                GLSLTool.getVsSource(shaderSource),
-                [
-                  {|varying vec2 v_mapCoord0;|},
-                  {|v_mapCoord0 = a_texCoord;|},
-                ],
-              )
-              |> expect == true;
-            });
-
-            describe("test fs glsl", () => {
-              test("test", () => {
-                let (_, shaderSource) =
-                  InitBasicMaterialJobTool.prepareForJudgeGLSLWithMap(
-                    sandbox,
-                    state^,
-                  );
-                GLSLTool.containMultiline(
-                  GLSLTool.getFsSource(shaderSource),
-                  [
-                    {|uniform sampler2D u_mapSampler;|},
-                    {|uniform vec3 u_color;|},
-                    {|uniform float u_alpha;|},
-                    {|varying vec2 v_mapCoord0;|},
-                    {|vec4 texelColor = texture2D(u_mapSampler, v_mapCoord0);|},
-                    {|vec4 totalColor = vec4(texelColor.rgb * u_color, texelColor.a * u_alpha);|},
-                  ],
-                )
-                |> expect == true;
-              });
-              test("should contain u_color only once", () => {
-                let (_, shaderSource) =
-                  InitBasicMaterialJobTool.prepareForJudgeGLSLWithMap(
-                    sandbox,
-                    state^,
-                  );
-
-                GLSLTool.containSpecifyCount(
-                  GLSLTool.getFsSource(shaderSource),
-                  {|uniform vec3 u_color;|},
-                  ~count=1,
-                  (),
-                )
-                |> expect == true;
-              });
-            });
-          });
-          describe("else, add basic_no_map shader lib", () => {
+        describe("test map shader lib's glsl", () =>
+          describe("add basic_no_map shader lib", () => {
             test("test vs glsl", () => {
               let (_, shaderSource) =
                 InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);
@@ -296,8 +192,8 @@ let _ =
               )
               |> expect == true;
             });
-          });
-        });
+          })
+        );
         test("test basic_end shader lib's glsl", () => {
           let (_, shaderSource) =
             InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state^);

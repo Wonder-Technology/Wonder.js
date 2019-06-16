@@ -11,7 +11,7 @@ open DisposeComponentService;
 let isAlive = (material, {disposedIndexArray}) =>
   DisposeMaterialMainService.isAlive(material, disposedIndexArray);
 
-let _disposeData = (isRemoveTexture, material, textureCountPerMaterial, state) => {
+let _disposeData = (isRemoveTexture, material, state) => {
   let state =
     state
     |> DisposeMaterialMainService.disposeMaps(
@@ -28,10 +28,8 @@ let _disposeData = (isRemoveTexture, material, textureCountPerMaterial, state) =
         diffuseColors,
         specularColors,
         shininess,
-        textureIndices,
-        diffuseMapUnits,
-        specularMapUnits,
-        emptyMapUnitArrayMap,
+        diffuseTextureIndices,
+        specularTextureIndices,
         defaultDiffuseColor,
         defaultSpecularColor,
         defaultShininess,
@@ -73,26 +71,18 @@ let _disposeData = (isRemoveTexture, material, textureCountPerMaterial, state) =
             defaultShininess,
             shininess,
           ),
-        textureIndices:
+        diffuseTextureIndices:
           DisposeMaterialMainService.disposeTextureIndices(
             material,
-            textureCountPerMaterial,
-            textureIndices,
+            BufferLightMaterialService.getDiffuseTextureIndicesIndex,
+            diffuseTextureIndices,
           ),
-        diffuseMapUnits:
-          DisposeTypeArrayService.deleteAndResetUint8(.
-            BufferLightMaterialService.getDiffuseMapUnitIndex(material),
-            MapUnitService.getDefaultUnit(),
-            diffuseMapUnits,
+        specularTextureIndices:
+          DisposeMaterialMainService.disposeTextureIndices(
+            material,
+            BufferLightMaterialService.getSpecularTextureIndicesIndex,
+            specularTextureIndices,
           ),
-        specularMapUnits:
-          DisposeTypeArrayService.deleteAndResetUint8(.
-            BufferLightMaterialService.getDiffuseMapUnitIndex(material),
-            MapUnitService.getDefaultUnit(),
-            specularMapUnits,
-          ),
-        emptyMapUnitArrayMap:
-          emptyMapUnitArrayMap |> disposeSparseMapData(material),
         nameMap: nameMap |> disposeSparseMapData(material),
       }),
   };
@@ -116,8 +106,6 @@ let handleBatchDisposeComponentData =
         ),
       IsDebugMainService.getIsDebug(StateDataMain.stateData),
     );
-    let textureCountPerMaterial =
-      BufferSettingService.getTextureCountPerMaterial(settingRecord);
 
     materialDataMap
     |> WonderCommonlib.MutableSparseMapService.reduceiValid(
@@ -138,13 +126,7 @@ let handleBatchDisposeComponentData =
            ) ?
              {...state, lightMaterialRecord: Some(lightMaterialRecord)} :
              {
-               let state =
-                 state
-                 |> _disposeData(
-                      isRemoveTexture,
-                      material,
-                      textureCountPerMaterial,
-                    );
+               let state = state |> _disposeData(isRemoveTexture, material);
 
                let lightMaterialRecord =
                  RecordLightMaterialMainService.getRecord(state);
@@ -204,15 +186,10 @@ let handleBatchDisposeComponent =
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
-  let textureCountPerMaterial =
-    BufferSettingService.getTextureCountPerMaterial(settingRecord);
-
   materialHasNoGameObjectArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, material) => {
-         let state =
-           state
-           |> _disposeData(isRemoveTexture, material, textureCountPerMaterial);
+         let state = state |> _disposeData(isRemoveTexture, material);
 
          let lightMaterialRecord =
            RecordLightMaterialMainService.getRecord(state);

@@ -45,7 +45,10 @@ let _ =
 
         let (state, _, _, _) = CameraTool.createCameraGameObject(state);
         let (state, gameObject1, _, _, _, _) =
-          RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
+          FrontRenderLightJobTool.prepareGameObjectWithCreatedDiffuseMap(
+            sandbox,
+            state,
+          );
         let state = AllMaterialTool.pregetGLSLData(state);
         let bindTexture = createEmptyStubWithJsObjSandbox(sandbox);
         let state =
@@ -57,12 +60,19 @@ let _ =
           state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
         let copiedState = StateAPI.deepCopyForRestore(state);
         let (state, gameObject2, _, _, _, _) =
-          RenderBasicJobTool.prepareGameObjectWithCreatedMap(sandbox, state);
+          FrontRenderLightJobTool.prepareGameObjectWithCreatedDiffuseMap(
+            sandbox,
+            state,
+          );
         let state = state |> GameObjectAPI.initGameObject(gameObject2);
         let state = state |> DirectorTool.runWithDefaultTime;
+
+        let bindTextureCallCount = bindTexture |> getCallCount;
+
         let restoredState = MainStateTool.restore(state, copiedState);
         let restoredState = restoredState |> DirectorTool.runWithDefaultTime;
-        bindTexture |> getCallCount |> expect == 3;
+
+        bindTexture |> getCallCount |> expect == bindTextureCallCount + 1;
       },
     );
   });
