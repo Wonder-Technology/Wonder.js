@@ -125,9 +125,9 @@ let createRenderState =
       alphas: RecordBasicMaterialRenderWorkerService.unsafeGetAlphas(state),
     },
     lightMaterialRecord: {
-      diffuseMapUnitMap: RecordLightMaterialService.createDiffuseMapUnitMap(),
+      diffuseMapUnitMap: RecordRenderLightMaterialService.createDiffuseMapUnitMap(),
       specularMapUnitMap:
-        RecordLightMaterialService.createSpecularMapUnitMap(),
+        RecordRenderLightMaterialService.createSpecularMapUnitMap(),
       shaderIndices:
         RecordLightMaterialRenderWorkerService.unsafeGetShaderIndices(state),
       diffuseColors:

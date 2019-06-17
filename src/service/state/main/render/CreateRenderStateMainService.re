@@ -87,9 +87,9 @@ let createRenderState =
       alphas: basicMaterialRecord.alphas,
     },
     lightMaterialRecord: {
-      diffuseMapUnitMap: RecordLightMaterialService.createDiffuseMapUnitMap(),
+      diffuseMapUnitMap: RecordRenderLightMaterialService.createDiffuseMapUnitMap(),
       specularMapUnitMap:
-        RecordLightMaterialService.createSpecularMapUnitMap(),
+        RecordRenderLightMaterialService.createSpecularMapUnitMap(),
       shaderIndices: lightMaterialRecord.shaderIndices,
       diffuseColors: lightMaterialRecord.diffuseColors,
       specularColors: lightMaterialRecord.specularColors,
