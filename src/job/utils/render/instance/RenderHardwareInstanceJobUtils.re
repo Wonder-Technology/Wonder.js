@@ -1,12 +1,12 @@
 open StateRenderType;
 
-open VboBufferType;
+open AllVboBufferType;
 
 open RenderSourceInstanceType;
 
 open InstanceBufferRenderService;
 
-open GLSLSenderType;
+open AllGLSLSenderType;
 
 let _fillObjectInstanceData =
     (
@@ -278,7 +278,7 @@ let _prepareData =
       state,
     ) => {
   let extension =
-    GPUDetectService.unsafeGetInstanceExtension(state.gpuDetectRecord);
+    AllGPUDetectService.unsafeGetInstanceExtension(state.gpuDetectRecord);
   let (objectInstanceTransformIndex, objectInstanceTransformDataTuple) =
     BuildObjectInstanceTransformDataTupleUtils.build(sourceInstance, state);
   let instanceRenderListCount =

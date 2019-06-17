@@ -31,7 +31,7 @@ let _ =
       );
     };
     let _prepareVboBufferData = state => {
-      open VboBufferType;
+      open AllVboBufferType;
       let {
         geometryVertexBufferMap,
         geometryTexCoordBufferMap,
@@ -93,7 +93,7 @@ let _ =
     describe("deepCopyForRestore", () => {
       describe("deep copy vbo buffer record", () =>
         test("clear all buffer map and all buffer pool record", () => {
-          open VboBufferType;
+          open AllVboBufferType;
           let (state, _, _, _) = _prepareVboBufferData(state^);
           let copiedState = MainStateTool.deepCopyForRestore(state);
           let {
@@ -123,7 +123,7 @@ let _ =
       describe("deep copy typeArrayPool record", () =>
         test("clear pool map", () => {
           open StateDataMainType;
-          open TypeArrayPoolType;
+          open AllTypeArrayPoolType;
           let (state, _) = _prepareTypeArrayPoolData(state^);
           let copiedState = MainStateTool.deepCopyForRestore(state);
           let {float32ArrayPoolMap, uint16ArrayPoolMap}: typeArrayPoolRecord =
@@ -193,7 +193,7 @@ let _ =
       });
       describe("restore global temp record to target state", () =>
         test("use current record->float16Array1", () => {
-          open GlobalTempType;
+          open AllGlobalTempType;
           let state = state^;
           let currentState = MainStateTool.createNewCompleteState(sandbox);
           let record = currentState.globalTempRecord;
@@ -206,7 +206,7 @@ let _ =
       );
       describe("restore vbo buffer record to target state", () => {
         test("clear buffer map record", () => {
-          open VboBufferType;
+          open AllVboBufferType;
           let (state, _, _, _) = _prepareVboBufferData(state^);
           let (currentState, _, _, _) =
             _prepareVboBufferData(
@@ -233,7 +233,7 @@ let _ =
         test(
           "add current state->vboBufferRecord->geometryVertexBufferMap, geometryTexCoordBufferMap, geometryNormalBufferMap, geometryElementArrayBufferMap, matrixInstanceBufferMap buffer to pool",
           () => {
-            open VboBufferType;
+            open AllVboBufferType;
             let (
               state,
               geometry1,

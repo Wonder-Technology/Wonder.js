@@ -18,11 +18,11 @@ open RenderArrayBufferViewSourceTextureType;
 
 open RenderAllTextureType;
 
-open DeviceManagerType;
+open AllDeviceManagerType;
 
 open RenderSettingType;
 
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 let createRenderState =
     (

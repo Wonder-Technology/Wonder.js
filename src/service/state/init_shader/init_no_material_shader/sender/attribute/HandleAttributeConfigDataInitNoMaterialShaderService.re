@@ -2,16 +2,16 @@ open WonderWebgl.GlType;
 
 open WonderWebgl.Gl;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
-open GLSLSenderType;
+open AllGLSLSenderType;
 
 let _addOtherArrayBufferSendData =
     ((gl, program, name, buffer, type_, attributeLocationMap), sendDataArr) =>
   sendDataArr
   |> ArrayService.push({
        pos:
-         GLSLLocationService.getAttribLocationAndCache(
+         AllGLSLLocationService.getAttribLocationAndCache(
            program,
            name,
            attributeLocationMap,
@@ -46,7 +46,7 @@ let _readAttributes =
                let type_ = type_ |> OptionService.unsafeGetJsonSerializedValue;
 
                switch (buffer) {
-               /* | VboBufferType.Instance_m_matrix =>
+               /* | AllVboBufferType.Instance_m_matrix =>
                   HandleAttributeConfigDataInitMaterialAllService.addModelMatrixInstanceArrayBufferSendData(
                     (gl, program, name, attributeLocationMap),
                     sendDataArr,
@@ -113,7 +113,7 @@ let addAttributeSendData =
   let attributeLocationMap =
     HandleShaderConfigDataMapService.getOrCreateHashMap(
       glslLocationRecord
-      |> GLSLLocationService.getAttributeLocationMap(shaderIndex),
+      |> AllGLSLLocationService.getAttributeLocationMap(shaderIndex),
     );
   (
     _readAttributeSendData(shaderLibDataArr, gl, program, attributeLocationMap)
@@ -123,7 +123,7 @@ let addAttributeSendData =
          glslSenderRecord,
        ),
     glslLocationRecord
-    |> GLSLLocationService.setAttributeLocationMap(
+    |> AllGLSLLocationService.setAttributeLocationMap(
          shaderIndex,
          attributeLocationMap,
        ),

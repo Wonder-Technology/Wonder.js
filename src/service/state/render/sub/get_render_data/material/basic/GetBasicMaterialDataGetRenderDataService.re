@@ -1,13 +1,13 @@
 open SubStateGetRenderDataType;
 
 let getColor = (material, {basicMaterialRecord}) =>
-  OperateTypeArrayBasicMaterialService.getColor(
+  OperateTypeArrayAllBasicMaterialService.getColor(
     material,
     basicMaterialRecord.colors,
   );
 
 let getAlpha = (material, {basicMaterialRecord}) =>
-  OperateTypeArrayBasicMaterialService.getAlpha(
+  OperateTypeArrayAllBasicMaterialService.getAlpha(
     material,
     basicMaterialRecord.alphas,
   );

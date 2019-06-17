@@ -1,4 +1,4 @@
-open BufferBasicMaterialService;
+open BufferAllBasicMaterialService;
 
 let getColor = (index, typeArr) =>
   TypeArrayService.getFloat3(getColorIndex(index), typeArr);

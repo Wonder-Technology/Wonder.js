@@ -1,8 +1,8 @@
 open WonderWebgl.GlType;
 
-open GLSLSenderType;
+open AllGLSLSenderType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let _setToUniformSendMap =
     (
@@ -144,7 +144,7 @@ let addUniformSendData =
   let uniformLocationMap =
     HandleShaderConfigDataMapService.getOrCreateHashMap(
       glslLocationRecord
-      |> GLSLLocationService.getUniformLocationMap(shaderIndex),
+      |> AllGLSLLocationService.getUniformLocationMap(shaderIndex),
     );
   (
     readUniformSendDataFunc(.
@@ -161,7 +161,7 @@ let addUniformSendData =
     )
     |> _setToUniformSendMap(shaderIndex, glslSenderRecord),
     glslLocationRecord
-    |> GLSLLocationService.setUniformLocationMap(
+    |> AllGLSLLocationService.setUniformLocationMap(
          shaderIndex,
          uniformLocationMap,
        ),

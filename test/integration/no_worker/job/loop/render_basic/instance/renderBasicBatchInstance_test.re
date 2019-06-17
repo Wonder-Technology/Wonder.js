@@ -260,7 +260,7 @@ let _ =
       });
       describe("dispose", () => {
         test("not add buffer to pool", () => {
-          open VboBufferType;
+          open AllVboBufferType;
           let (
             state,
             gameObject,

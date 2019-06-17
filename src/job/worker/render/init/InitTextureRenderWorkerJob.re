@@ -19,7 +19,7 @@ let _createTypeArrays =
     isNeedUpdates,
     flipYs,
   ) =
-    CreateTypeArrayBasicSourceTextureService.createTypeArrays(
+    CreateTypeArrayAllBasicSourceTextureService.createTypeArrays(
       buffer,
       basicSourceTextureCount,
     );
@@ -48,7 +48,7 @@ let _createTypeArrays =
     widths,
     heights,
   ) =
-    CreateTypeArrayArrayBufferViewSourceTextureService.createTypeArrays(
+    CreateTypeArrayAllArrayBufferViewSourceTextureService.createTypeArrays(
       buffer,
       basicSourceTextureCount,
       arrayBufferViewSourceTextureCount,
@@ -122,7 +122,7 @@ let _buildInitTextureStream = (e, stateData) =>
         ...basicSourceTextureRecord,
         glTextureMap:
           InitTextureService.initTextures(
-            DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+            AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
             ArrayService.range(
               0,
               textureData##basicSourceTextureData##index - 1,
@@ -135,8 +135,8 @@ let _buildInitTextureStream = (e, stateData) =>
         ...arrayBufferViewSourceTextureRecord,
         glTextureMap:
           InitTextureService.initTextures(
-            DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-            IndexArrayBufferViewSourceTextureService.getAllArrayBufferViewSourceTextureIndexWhenInit(
+            AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+            IndexAllArrayBufferViewSourceTextureService.getAllArrayBufferViewSourceTextureIndexWhenInit(
               textureData##arrayBufferViewSourceTextureData##index,
               state.settingRecord
               |> BufferRenderWorkerSettingService.unsafeGetBasicSourceTextureCount,

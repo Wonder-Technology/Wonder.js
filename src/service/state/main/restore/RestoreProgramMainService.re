@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open ProgramType;
+open AllProgramType;
 
 let restore = (currentState, targetState) => {
   let {programMap} = currentState.programRecord;

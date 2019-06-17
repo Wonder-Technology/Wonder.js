@@ -1,16 +1,16 @@
 open MaterialType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
-open ShaderType;
+open AllShaderType;
 
-open ProgramType;
+open AllProgramType;
 
-open GLSLType;
+open AllGLSLType;
 
-open GLSLSenderType;
+open AllGLSLSenderType;
 
-open GLSLLocationType;
+open AllGLSLLocationType;
 
 open GeometryType;
 

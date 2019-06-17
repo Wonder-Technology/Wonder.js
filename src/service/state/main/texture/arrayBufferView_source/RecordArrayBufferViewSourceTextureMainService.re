@@ -57,52 +57,52 @@ let setAllTypeArrDataToDefault =
          ),
          indexInTypeArray,
        ) => (
-         OperateTypeArrayArrayBufferViewSourceTextureService.setWrapS(
+         OperateTypeArrayAllArrayBufferViewSourceTextureService.setWrapS(
            indexInTypeArray,
            defaultWrapS,
            wrapSs,
          ),
-         OperateTypeArrayArrayBufferViewSourceTextureService.setWrapT(
+         OperateTypeArrayAllArrayBufferViewSourceTextureService.setWrapT(
            indexInTypeArray,
            defaultWrapT,
            wrapTs,
          ),
-         OperateTypeArrayArrayBufferViewSourceTextureService.setMagFilter(
+         OperateTypeArrayAllArrayBufferViewSourceTextureService.setMagFilter(
            indexInTypeArray,
            defaultMagFilter,
            magFilters,
          ),
-         OperateTypeArrayArrayBufferViewSourceTextureService.setMinFilter(
+         OperateTypeArrayAllArrayBufferViewSourceTextureService.setMinFilter(
            indexInTypeArray,
            defaultMinFilter,
            minFilters,
          ),
-         OperateTypeArrayArrayBufferViewSourceTextureService.setFormat(
+         OperateTypeArrayAllArrayBufferViewSourceTextureService.setFormat(
            indexInTypeArray,
            defaultFormat,
            formats,
          ),
-         OperateTypeArrayArrayBufferViewSourceTextureService.setType(
+         OperateTypeArrayAllArrayBufferViewSourceTextureService.setType(
            indexInTypeArray,
            defaultType,
            types,
          ),
-         OperateTypeArrayArrayBufferViewSourceTextureService.setIsNeedUpdate(
+         OperateTypeArrayAllArrayBufferViewSourceTextureService.setIsNeedUpdate(
            indexInTypeArray,
            defaultIsNeedUpdate,
            isNeedUpdates,
          ),
-         OperateTypeArrayArrayBufferViewSourceTextureService.setFlipY(
+         OperateTypeArrayAllArrayBufferViewSourceTextureService.setFlipY(
            indexInTypeArray,
            defaultFlipY,
            flipYs,
          ),
-         OperateTypeArrayArrayBufferViewSourceTextureService.setWidth(
+         OperateTypeArrayAllArrayBufferViewSourceTextureService.setWidth(
            indexInTypeArray,
            defaultWidth,
            widths,
          ),
-         OperateTypeArrayArrayBufferViewSourceTextureService.setHeight(
+         OperateTypeArrayAllArrayBufferViewSourceTextureService.setHeight(
            indexInTypeArray,
            defaultHeight,
            heights,
@@ -142,7 +142,7 @@ let _initBufferData =
     widths,
     heights,
   ) =
-    CreateTypeArrayArrayBufferViewSourceTextureService.createTypeArrays(
+    CreateTypeArrayAllArrayBufferViewSourceTextureService.createTypeArrays(
       buffer,
       basicSourceTextureCount,
       arrayBufferViewSourceTextureCount,

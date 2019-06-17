@@ -1,7 +1,7 @@
 open StateDataMainType;
 
 let execJob = (_, {imguiRecord, viewRecord} as state) => {
-  let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+  let gl = AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
   let state = state |> IOIMGUIMainService.bindEvent;
 

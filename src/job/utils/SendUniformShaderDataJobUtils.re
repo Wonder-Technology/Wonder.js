@@ -15,9 +15,9 @@ let _sendNoCachableData = (gl, renderState) =>
            |> WonderCommonlib.ArrayService.reduceOneParam(
                 (.
                   getRenderDataSubState,
-                  {pos, getDataFunc, sendDataFunc}: GLSLSenderType.uniformShaderSendNoCachableData,
+                  {pos, getDataFunc, sendDataFunc}: AllGLSLSenderType.uniformShaderSendNoCachableData,
                 ) => {
-                  GLSLLocationService.isUniformLocationExist(pos) ?
+                  AllGLSLLocationService.isUniformLocationExist(pos) ?
                     sendDataFunc(.
                       gl,
                       pos,
@@ -48,7 +48,7 @@ let _sendCachableData = (gl, renderState) =>
            |> WonderCommonlib.ArrayService.reduceOneParam(
                 (.
                   getRenderDataSubState,
-                  {shaderCacheMap, name, pos, getDataFunc, sendDataFunc}: GLSLSenderType.uniformShaderSendCachableData,
+                  {shaderCacheMap, name, pos, getDataFunc, sendDataFunc}: AllGLSLSenderType.uniformShaderSendCachableData,
                 ) => {
                   sendDataFunc(.
                     gl,
@@ -85,7 +85,7 @@ let _sendCachableFunctionData = (gl, renderState) =>
                     shaderCacheMap,
                     locationMap,
                     sendCachableFunctionDataFunc,
-                  }: GLSLSenderType.uniformShaderSendCachableFunctionData,
+                  }: AllGLSLSenderType.uniformShaderSendCachableFunctionData,
                 ) => {
                   sendCachableFunctionDataFunc(.
                     gl,
@@ -109,7 +109,7 @@ let execJob = renderState =>
     renderState :
     {
       let gl =
-        DeviceManagerService.unsafeGetGl(. renderState.deviceManagerRecord);
+        AllDeviceManagerService.unsafeGetGl(. renderState.deviceManagerRecord);
 
       renderState
       |> _sendNoCachableData(gl)

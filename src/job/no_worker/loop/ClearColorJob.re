@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let execJob = (flags, state) => {
   ...state,

@@ -1,4 +1,4 @@
-open VboBufferType;
+open AllVboBufferType;
 
 open StateDataMainType;
 

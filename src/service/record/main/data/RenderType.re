@@ -15,6 +15,6 @@ type textureRecord = {
 type renderRecord = {
   mutable basicRenderObjectRecord: option(renderObjectRecord),
   mutable lightRenderObjectRecord: option(renderObjectRecord),
-  mutable cameraRecord: option(RenderCameraType.renderCameraRecord),
+  mutable cameraRecord: option(AllRenderCameraType.renderCameraRecord),
   textureRecord: option(textureRecord),
 };

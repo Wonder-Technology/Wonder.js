@@ -1,6 +1,6 @@
 open Js.Typed_array;
 
-open GlobalTempType;
+open AllGlobalTempType;
 
 let create = () => {
   float16Array1:

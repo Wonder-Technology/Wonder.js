@@ -1,4 +1,4 @@
-open DeviceManagerType;
+open AllDeviceManagerType;
 
 open WonderWebgl.GlType;
 
@@ -71,7 +71,7 @@ let setDepthFunc = (gl, targetFunc, record) => {
 };
 
 let _setSide = (gl, targetSide) =>
-  DeviceManagerType.(
+  AllDeviceManagerType.(
     switch (targetSide) {
     | NONE =>
       gl |> WonderWebgl.Gl.enable(WonderWebgl.Gl.getCullFace(gl));

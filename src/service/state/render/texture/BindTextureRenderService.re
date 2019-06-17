@@ -88,7 +88,7 @@ let bind =
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
-  IndexSourceTextureService.handleByJudgeSourceTextureIndex(
+  IndexAllSourceTextureService.handleByJudgeSourceTextureIndex(
     texture,
     arrayBufferViewSourceTextureRecord.textureIndexOffset,
     (gl, unit, state),

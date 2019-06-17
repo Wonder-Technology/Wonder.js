@@ -1,4 +1,4 @@
-open DeviceManagerType;
+open AllDeviceManagerType;
 
 let create = () => {
   gl: None,

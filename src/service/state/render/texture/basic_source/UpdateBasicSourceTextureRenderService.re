@@ -2,7 +2,7 @@ open StateRenderType;
 
 open RenderBasicSourceTextureType;
 
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 let _drawTexture = (gl, (target, index, source, glFormat, glType)) =>
   gl
@@ -41,46 +41,46 @@ let update =
     let width = TextureSizeService.getWidth(source);
     let height = TextureSizeService.getHeight(source);
     let glWrapS =
-      OperateTypeArrayBasicSourceTextureService.getWrapS(
+      OperateTypeArrayAllBasicSourceTextureService.getWrapS(
         textureInTypeArray,
         wrapSs,
       )
       |> SourceTextureType.uint8ToWrap
       |> TextureWrapService.getGlWrap(gl);
     let glWrapT =
-      OperateTypeArrayBasicSourceTextureService.getWrapT(
+      OperateTypeArrayAllBasicSourceTextureService.getWrapT(
         textureInTypeArray,
         wrapTs,
       )
       |> SourceTextureType.uint8ToWrap
       |> TextureWrapService.getGlWrap(gl);
     let magFilter =
-      OperateTypeArrayBasicSourceTextureService.getMagFilter(
+      OperateTypeArrayAllBasicSourceTextureService.getMagFilter(
         textureInTypeArray,
         magFilters,
       )
       |> SourceTextureType.uint8ToFilter;
     let minFilter =
-      OperateTypeArrayBasicSourceTextureService.getMinFilter(
+      OperateTypeArrayAllBasicSourceTextureService.getMinFilter(
         textureInTypeArray,
         minFilters,
       )
       |> SourceTextureType.uint8ToFilter;
     let glFormat =
-      OperateTypeArrayBasicSourceTextureService.getFormat(
+      OperateTypeArrayAllBasicSourceTextureService.getFormat(
         textureInTypeArray,
         formats,
       )
       |> SourceTextureType.uint8ToFormat
       |> TextureFormatService.getGlFormat(gl);
     let glType =
-      OperateTypeArrayBasicSourceTextureService.getType(
+      OperateTypeArrayAllBasicSourceTextureService.getType(
         textureInTypeArray,
         types,
       )
       |> TextureTypeService.getGlType(gl);
     let flipY =
-      OperateTypeArrayBasicSourceTextureService.isFlipY(
+      OperateTypeArrayAllBasicSourceTextureService.isFlipY(
         textureInTypeArray,
         flipYs,
       );
@@ -111,5 +111,5 @@ let isNeedUpdate = (textureInTypeArray, basicSourceTextureRecord) =>
     textureInTypeArray,
     BufferBasicSourceTextureService.getDefaultIsNeedUpdate(),
     basicSourceTextureRecord.isNeedUpdates,
-    OperateTypeArrayBasicSourceTextureService.getIsNeedUpdate,
+    OperateTypeArrayAllBasicSourceTextureService.getIsNeedUpdate,
   );

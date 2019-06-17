@@ -1,7 +1,7 @@
-open GPUDetectType;
+open AllGPUDetectType;
 
 let isSupportInstance = (useHardwareInstance, gpuDetectRecord) =>
-  useHardwareInstance && GPUDetectService.hasExtension(gpuDetectRecord.extensionInstancedArrays);
+  useHardwareInstance && AllGPUDetectService.hasExtension(gpuDetectRecord.extensionInstancedArrays);
 
 let unsafeGetIsSourceInstance = (materialIndex, isSourceInstanceMap) =>
   isSourceInstanceMap |> WonderCommonlib.MutableSparseMapService.unsafeGet(materialIndex);

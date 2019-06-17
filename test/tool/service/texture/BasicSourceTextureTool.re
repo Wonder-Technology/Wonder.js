@@ -28,7 +28,7 @@ let setGlTexture = (texture, glTexture, state) => {
 };
 
 let isNeedUpdate = (texture, state) =>
-  OperateTypeArrayBasicSourceTextureService.getIsNeedUpdate(.
+  OperateTypeArrayAllBasicSourceTextureService.getIsNeedUpdate(.
     texture,
     getRecord(state).isNeedUpdates,
   )

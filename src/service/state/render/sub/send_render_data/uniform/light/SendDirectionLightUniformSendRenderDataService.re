@@ -61,7 +61,7 @@ let send =
              uniformCacheMap,
              (
                direction,
-               GLSLLocationService.getUniformLocationAndCache(
+               AllGLSLLocationService.getUniformLocationAndCache(
                  program,
                  direction,
                  uniformLocationMap,
@@ -75,7 +75,7 @@ let send =
              uniformCacheMap,
              (
                color,
-               GLSLLocationService.getUniformLocationAndCache(
+               AllGLSLLocationService.getUniformLocationAndCache(
                  program,
                  color,
                  uniformLocationMap,
@@ -92,7 +92,7 @@ let send =
              uniformCacheMap,
              (
                intensity,
-               GLSLLocationService.getUniformLocationAndCache(
+               AllGLSLLocationService.getUniformLocationAndCache(
                  program,
                  intensity,
                  uniformLocationMap,

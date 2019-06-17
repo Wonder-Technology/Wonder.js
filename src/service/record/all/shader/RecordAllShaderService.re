@@ -1,4 +1,4 @@
-open ShaderType;
+open AllShaderType;
 
 let create = () => {
   index: 0,

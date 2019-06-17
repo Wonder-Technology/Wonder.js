@@ -122,7 +122,7 @@ let _setAllTypeArrDataToDefault =
 let _initBufferData = count => {
   let buffer = createBuffer(count);
   let (colors, intensities, constants, linears, quadratics, ranges) =
-    CreateTypeArrayPointLightService.createTypeArrays(buffer, count);
+    CreateTypeArrayAllPointLightService.createTypeArrays(buffer, count);
   (buffer, colors, intensities, constants, linears, quadratics, ranges)
   |> _setAllTypeArrDataToDefault(count);
 };

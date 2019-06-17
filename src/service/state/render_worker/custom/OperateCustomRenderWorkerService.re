@@ -17,7 +17,7 @@ let getCustomDataFromRenderWorkerToMainWorker = state =>
 
 let setCustomDataFromRenderWorkerToMainWorker =
   (.
-    customData: CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
+    customData: CustomAllWorkerDataType.customDataFromRenderWorkerToMainWorker,
     state,
   ) => {
     state.customRecord = {
@@ -32,7 +32,7 @@ let getCustomDataFromMainWorkerToRenderWorker = state =>
 
 let setCustomDataFromMainWorkerToRenderWorker =
   (.
-    customData: CustomWorkerDataType.customDataFromMainWorkerToRenderWorker,
+    customData: CustomAllWorkerDataType.customDataFromMainWorkerToRenderWorker,
     state,
   ) => {
     state.customRecord = {

@@ -1,6 +1,6 @@
 open StateRenderType;
 
-open GPUDetectType;
+open AllGPUDetectType;
 
 open RenderWorkerGeometryType;
 
@@ -30,9 +30,9 @@ open RenderWorkerRenderType;
 
 open RenderWorkerWorkerDetectType;
 
-open DeviceManagerType;
+open AllDeviceManagerType;
 
-open ShaderType;
+open AllShaderType;
 
 let createRenderState =
     (

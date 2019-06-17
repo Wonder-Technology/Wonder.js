@@ -1,12 +1,12 @@
-open ShaderType;
+open AllShaderType;
 
-open GLSLType;
+open AllGLSLType;
 
 open ShaderChunkType;
 
 open ShaderChunkSystem;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let webgl1_main_begin: string = "void main(void){\n";
 

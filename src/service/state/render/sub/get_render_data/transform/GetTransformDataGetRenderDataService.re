@@ -2,7 +2,7 @@ open SubStateGetRenderDataType;
 
 open RenderTransformType;
 
-open GlobalTempType;
+open AllGlobalTempType;
 
 let getLocalToWorldMatrixTypeArray =
   (. transform, {transformRecord} as state) =>

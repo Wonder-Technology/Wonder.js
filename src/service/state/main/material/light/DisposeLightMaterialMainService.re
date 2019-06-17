@@ -53,34 +53,34 @@ let _disposeData = (isRemoveTexture, material, state) => {
         shaderIndices,
         diffuseColors:
           DisposeTypeArrayService.deleteAndResetFloat32TypeArr(.
-            BufferLightMaterialService.getDiffuseColorIndex(material),
-            BufferLightMaterialService.getDiffuseColorsSize(),
+            BufferAllLightMaterialService.getDiffuseColorIndex(material),
+            BufferAllLightMaterialService.getDiffuseColorsSize(),
             defaultDiffuseColor,
             diffuseColors,
           ),
         specularColors:
           DisposeTypeArrayService.deleteAndResetFloat32TypeArr(.
-            BufferLightMaterialService.getSpecularColorIndex(material),
-            BufferLightMaterialService.getSpecularColorsSize(),
+            BufferAllLightMaterialService.getSpecularColorIndex(material),
+            BufferAllLightMaterialService.getSpecularColorsSize(),
             defaultSpecularColor,
             specularColors,
           ),
         shininess:
           DisposeTypeArrayService.deleteAndResetFloat32(.
-            BufferLightMaterialService.getShininessIndex(material),
+            BufferAllLightMaterialService.getShininessIndex(material),
             defaultShininess,
             shininess,
           ),
         diffuseTextureIndices:
           DisposeMaterialMainService.disposeTextureIndices(
             material,
-            BufferLightMaterialService.getDiffuseTextureIndicesIndex,
+            BufferAllLightMaterialService.getDiffuseTextureIndicesIndex,
             diffuseTextureIndices,
           ),
         specularTextureIndices:
           DisposeMaterialMainService.disposeTextureIndices(
             material,
-            BufferLightMaterialService.getSpecularTextureIndicesIndex,
+            BufferAllLightMaterialService.getSpecularTextureIndicesIndex,
             specularTextureIndices,
           ),
         nameMap: nameMap |> disposeSparseMapData(material),

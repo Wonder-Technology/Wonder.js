@@ -1,4 +1,4 @@
-open GlobalTempType;
+open AllGlobalTempType;
 
 open StateDataMainType;
 

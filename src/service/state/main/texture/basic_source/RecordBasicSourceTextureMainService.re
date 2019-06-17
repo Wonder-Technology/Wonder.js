@@ -50,42 +50,42 @@ let setAllTypeArrDataToDefault =
          ),
          indexInTypeArray,
        ) => (
-         OperateTypeArrayBasicSourceTextureService.setWrapS(
+         OperateTypeArrayAllBasicSourceTextureService.setWrapS(
            indexInTypeArray,
            defaultWrapS,
            wrapSs,
          ),
-         OperateTypeArrayBasicSourceTextureService.setWrapT(
+         OperateTypeArrayAllBasicSourceTextureService.setWrapT(
            indexInTypeArray,
            defaultWrapT,
            wrapTs,
          ),
-         OperateTypeArrayBasicSourceTextureService.setMagFilter(
+         OperateTypeArrayAllBasicSourceTextureService.setMagFilter(
            indexInTypeArray,
            defaultMagFilter,
            magFilters,
          ),
-         OperateTypeArrayBasicSourceTextureService.setMinFilter(
+         OperateTypeArrayAllBasicSourceTextureService.setMinFilter(
            indexInTypeArray,
            defaultMinFilter,
            minFilters,
          ),
-         OperateTypeArrayBasicSourceTextureService.setFormat(
+         OperateTypeArrayAllBasicSourceTextureService.setFormat(
            indexInTypeArray,
            defaultFormat,
            formats,
          ),
-         OperateTypeArrayBasicSourceTextureService.setType(
+         OperateTypeArrayAllBasicSourceTextureService.setType(
            indexInTypeArray,
            defaultType,
            types,
          ),
-         OperateTypeArrayBasicSourceTextureService.setIsNeedUpdate(
+         OperateTypeArrayAllBasicSourceTextureService.setIsNeedUpdate(
            indexInTypeArray,
            defaultIsNeedUpdate,
            isNeedUpdates,
          ),
-         OperateTypeArrayBasicSourceTextureService.setFlipY(
+         OperateTypeArrayAllBasicSourceTextureService.setFlipY(
            indexInTypeArray,
            defaultFlipY,
            flipYs,
@@ -115,7 +115,7 @@ let _initBufferData = (basicSourceTextureCount, buffer) => {
     isNeedUpdates,
     flipYs,
   ) =
-    CreateTypeArrayBasicSourceTextureService.createTypeArrays(
+    CreateTypeArrayAllBasicSourceTextureService.createTypeArrays(
       buffer,
       basicSourceTextureCount,
     );

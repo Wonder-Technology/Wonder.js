@@ -75,7 +75,7 @@ let setRecord = (record, state) => {
 
 let sendUniformProjectionMatData = (gl, canvasSize, state) => {
   ...state,
-  programRecord: ProgramService.clearLastSendProgram(state.programRecord),
+  programRecord: AllProgramService.clearLastSendProgram(state.programRecord),
   imguiRecord: {
     ...state.imguiRecord,
     wonderImguiIMGUIRecord:

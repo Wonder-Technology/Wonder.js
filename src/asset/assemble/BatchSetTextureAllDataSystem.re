@@ -62,7 +62,7 @@ let batchSetNewDiffueMaps =
     ) =>
   _batchSetNewMap(
     (diffuseMapLightMaterials, lightMaterialDiffuseMaps, 0),
-    OperateTypeArrayLightMaterialService.setTextureIndex,
+    OperateTypeArrayAllLightMaterialService.setTextureIndex,
     state,
   );
 

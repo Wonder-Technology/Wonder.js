@@ -1,6 +1,6 @@
 open ComponentType;
 
-open InstanceType;
+open AllInstanceType;
 
 type sourceInstanceRecord = {
   index: int,

@@ -2,7 +2,7 @@ open StateDataMainType;
 
 open GameObjectType;
 
-open VboBufferType;
+open AllVboBufferType;
 
 open ComponentType;
 

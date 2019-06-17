@@ -11,7 +11,7 @@ let sendBuffer =
     buffer: buffer,
     {vertexAttribHistoryArray} as state,
   ) =>
-    GLSLLocationService.isAttributeLocationExist(pos) ?
+    AllGLSLLocationService.isAttributeLocationExist(pos) ?
       {
         bindBuffer(getArrayBuffer(gl), buffer, gl);
         vertexAttribPointer(pos, size, getFloat(gl), false, 0, 0, gl);

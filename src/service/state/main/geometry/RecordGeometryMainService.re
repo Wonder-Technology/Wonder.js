@@ -53,7 +53,7 @@ let _initBufferData = (geometryPointCount, geometryCount) => {
     normalsInfos,
     indicesInfos,
   ) =
-    CreateTypeArrayGeometryService.createTypeArrays(
+    CreateTypeArrayAllGeometryService.createTypeArrays(
       buffer,
       geometryPointCount,
       geometryCount,

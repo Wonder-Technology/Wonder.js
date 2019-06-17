@@ -1,12 +1,12 @@
 open StateRenderType;
 
-open VboBufferType;
+open AllVboBufferType;
 
 open RenderSourceInstanceType;
 
 open InstanceBufferRenderService;
 
-open GLSLSenderType;
+open AllGLSLSenderType;
 
 let render =
     (
@@ -70,7 +70,7 @@ let render =
            (.
              {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData,
            ) =>
-           GLSLLocationService.isUniformLocationExist(pos) ?
+           AllGLSLLocationService.isUniformLocationExist(pos) ?
              sendDataFunc(.
                gl,
                pos,

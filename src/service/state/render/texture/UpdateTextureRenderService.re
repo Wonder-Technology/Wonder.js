@@ -41,7 +41,7 @@ let _handleUpdateArrayBufferViewSourceTexture =
     ),
   ) => {
     let arrayBufferViewTextureInTypeArray =
-      IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+      IndexAllSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
         arrayBufferViewTexture,
         arrayBufferViewSourceTextureRecord.textureIndexOffset,
       );
@@ -71,7 +71,7 @@ let handleUpdate =
         browserDetectRecord,
       } as state,
     ) =>
-  IndexSourceTextureService.handleByJudgeSourceTextureIndex(
+  IndexAllSourceTextureService.handleByJudgeSourceTextureIndex(
     texture,
     arrayBufferViewSourceTextureRecord.textureIndexOffset,
     (gl, state),

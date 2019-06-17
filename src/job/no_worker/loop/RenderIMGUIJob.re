@@ -2,7 +2,7 @@ open StateDataMainType;
 
 let execJob = (flags, state) =>
   WonderImgui.ManageIMGUIService.render(
-    DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
     RecordIMGUIMainService.getIOData(state),
     RecordIMGUIAPIMainService.getIMGUIAPIJsObj(state) |> Obj.magic,
     (

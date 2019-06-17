@@ -1,4 +1,4 @@
-open VboBufferType;
+open AllVboBufferType;
 
 let _getBufferAndSetBufferMap = (gl, bufferPool) =>
   switch (bufferPool |> Js.Array.pop) {

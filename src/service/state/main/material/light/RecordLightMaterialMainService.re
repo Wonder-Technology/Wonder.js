@@ -6,9 +6,9 @@ open LightMaterialType;
 
 open Js.Typed_array;
 
-open BufferLightMaterialService;
+open BufferAllLightMaterialService;
 
-open OperateTypeArrayLightMaterialService;
+open OperateTypeArrayAllLightMaterialService;
 
 let getRecord = ({lightMaterialRecord}) =>
   lightMaterialRecord |> OptionService.unsafeGet;
@@ -152,7 +152,7 @@ let _initBufferData =
     diffuseTextureIndices,
     specularTextureIndices,
   ) =
-    CreateTypeArrayLightMaterialService.createTypeArrays(
+    CreateTypeArrayAllLightMaterialService.createTypeArrays(
       buffer,
       lightMaterialCount,
     );

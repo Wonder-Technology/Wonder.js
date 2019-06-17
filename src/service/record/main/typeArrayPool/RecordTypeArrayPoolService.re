@@ -1,4 +1,4 @@
-open TypeArrayPoolType;
+open AllTypeArrayPoolType;
 
 let deepCopyForRestore = (record) => {
   float32ArrayPoolMap: WonderCommonlib.MutableSparseMapService.createEmpty(),

@@ -281,7 +281,7 @@ let _ =
 
         describe("dispose vbo buffer data", () =>
           test("test", () => {
-            open VboBufferType;
+            open AllVboBufferType;
 
             let ((gameObject1, gameObject2), geometry1, state) =
               _prepare(state);
@@ -329,7 +329,7 @@ let _ =
 
         describe("dispose vbo buffer data", () =>
           test("test", () => {
-            open VboBufferType;
+            open AllVboBufferType;
 
             let (geometry1, state) = _prepare(state);
 

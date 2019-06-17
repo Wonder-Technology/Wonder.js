@@ -8,7 +8,7 @@ open Js.Typed_array;
 
 open BufferMeshRendererService;
 
-open OperateTypeArrayMeshRendererService;
+open OperateTypeArrayAllMeshRendererService;
 
 let getRecord = ({meshRendererRecord}) =>
   meshRendererRecord |> OptionService.unsafeGet;
@@ -46,7 +46,7 @@ let _setAllTypeArrDataToDefault =
 let _initBufferData = (meshRendererCount, defaultDrawMode, defaultIsRender) => {
   let buffer = createBuffer(meshRendererCount);
   let (drawModes, isRenders) =
-    CreateTypeArrayMeshRendererService.createTypeArrays(
+    CreateTypeArrayAllMeshRendererService.createTypeArrays(
       buffer,
       meshRendererCount,
     );

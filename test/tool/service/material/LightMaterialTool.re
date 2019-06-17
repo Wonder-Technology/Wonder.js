@@ -205,10 +205,10 @@ let isMaterialDisposed = (material, state) => {
 };
 
 let getDiffuseTextureIndicesIndex = (material, state) =>
-  BufferLightMaterialService.getDiffuseTextureIndicesIndex(material);
+  BufferAllLightMaterialService.getDiffuseTextureIndicesIndex(material);
 
 let getSpecularTextureIndicesIndex = (material, state) =>
-  BufferLightMaterialService.getSpecularTextureIndicesIndex(material);
+  BufferAllLightMaterialService.getSpecularTextureIndicesIndex(material);
 
 let getDefaultTextureIndex = () =>
   TextureIndexService.getDefaultTextureIndex();

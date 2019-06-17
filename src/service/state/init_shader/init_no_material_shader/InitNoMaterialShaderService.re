@@ -1,6 +1,6 @@
 open StateInitNoMaterialShaderType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let init =
     (
@@ -63,7 +63,7 @@ let init =
            );
 
          let shaderRecord =
-           NoMaterialShaderIndexShaderService.setShaderIndex(
+           NoMaterialShaderIndexAllShaderService.setShaderIndex(
              name,
              shaderIndex,
              state.shaderRecord,

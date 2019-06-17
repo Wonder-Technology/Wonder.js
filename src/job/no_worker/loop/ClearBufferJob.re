@@ -1,11 +1,11 @@
 open StateDataMainType;
 
 let execJob = (flags, state) => {
-  let gl = [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
+  let gl = [@bs] AllDeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
   {
     ...state,
     deviceManagerRecord:
-      DeviceManagerService.clearBuffer(
+      AllDeviceManagerService.clearBuffer(
         gl,
         ClearBufferJobUtils.getBit(gl, JobConfigService.unsafeGetFlags(flags)),
         state.deviceManagerRecord

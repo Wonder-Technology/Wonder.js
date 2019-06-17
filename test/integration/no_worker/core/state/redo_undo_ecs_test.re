@@ -1362,7 +1362,7 @@ disposedUidArrayForRemoveTexture,
           () => {
             open StateDataMainType;
             open SourceInstanceType;
-            open TypeArrayPoolType;
+            open AllTypeArrayPoolType;
             let state = state^;
             let currentState = MainStateTool.createNewCompleteState(sandbox);
             let {matrixFloat32ArrayMap} =
@@ -1384,7 +1384,7 @@ disposedUidArrayForRemoveTexture,
         test("mark is-not-send-modelMatrixData", () => {
           open StateDataMainType;
           open SourceInstanceType;
-          open TypeArrayPoolType;
+          open AllTypeArrayPoolType;
           let state = state^;
           let {isSendTransformMatrixDataMap} =
             SourceInstanceTool.getRecord(state);

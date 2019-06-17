@@ -1,4 +1,4 @@
-open GLSLType;
+open AllGLSLType;
 
 let create = () => {precision: None};
 

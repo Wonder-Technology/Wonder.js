@@ -14,7 +14,7 @@ let generateArrayBufferViewSourceTextureIndex =
 
 let unsafeGetTexture = (texture, state) =>
   OperateGlTextureMapService.unsafeGetTexture(
-    IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+    IndexAllSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
       IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
         state,
@@ -24,8 +24,8 @@ let unsafeGetTexture = (texture, state) =>
   );
 
 let isNeedUpdate = (texture, state) =>
-  OperateTypeArrayArrayBufferViewSourceTextureService.getIsNeedUpdate(.
-    IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+  OperateTypeArrayAllArrayBufferViewSourceTextureService.getIsNeedUpdate(.
+    IndexAllSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
       IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
         state,

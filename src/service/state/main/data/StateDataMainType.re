@@ -44,15 +44,15 @@ open DirectionLightType;
 
 open PointLightType;
 
-open ShaderType;
+open AllShaderType;
 
-open GLSLType;
+open AllGLSLType;
 
-open ProgramType;
+open AllProgramType;
 
-open GLSLLocationType;
+open AllGLSLLocationType;
 
-open GLSLSenderType;
+open AllGLSLSenderType;
 
 open ShaderChunkType;
 
@@ -62,37 +62,37 @@ open TimeControllerType;
 
 open Js.Typed_array;
 
-open VboBufferType;
+open AllVboBufferType;
 
-open DeviceManagerType;
+open AllDeviceManagerType;
 
-open GPUDetectType;
+open AllGPUDetectType;
 
 open SourceInstanceType;
 
 open ObjectInstanceType;
 
-open GlobalTempType;
+open AllGlobalTempType;
 
-open TypeArrayPoolType;
+open AllTypeArrayPoolType;
 
 open NoWorkerJobType;
 
 open WorkerJobType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 open WorkerInstanceType;
 
 open WorkerDetectType;
 
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 open ViewType;
 
 open EventType;
 
-open JobDataType;
+open AllJobDataType;
 
 open ScriptAPIType;
 
@@ -331,7 +331,7 @@ and apiRecord = {
       (int, int, (float, float, float, float, float), state) =>
       Js.Nullable.t((float, float)),
     "getRenderWorkerCustomData":
-      state => CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
+      state => CustomAllWorkerDataType.customDataFromRenderWorkerToMainWorker,
   },
 }
 and eventFunction = (. ScriptType.script, scriptAPIJsObj, state) => state

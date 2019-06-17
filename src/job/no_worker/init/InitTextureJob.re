@@ -24,7 +24,7 @@ let execJob = (flags, {gameObjectRecord} as state) => {
         ...basicSourceTextureRecord,
         glTextureMap:
           InitTextureService.initTextures(
-            DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+            AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
             ArrayService.range(0, basicSourceTextureRecord.index - 1),
             basicSourceTextureRecord.glTextureMap,
           ),
@@ -34,8 +34,8 @@ let execJob = (flags, {gameObjectRecord} as state) => {
         ...arrayBufferViewSourceTextureRecord,
         glTextureMap:
           InitTextureService.initTextures(
-            DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-            IndexArrayBufferViewSourceTextureService.getAllArrayBufferViewSourceTextureIndexWhenInit(
+            AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+            IndexAllArrayBufferViewSourceTextureService.getAllArrayBufferViewSourceTextureIndexWhenInit(
               arrayBufferViewSourceTextureRecord.index,
               state.settingRecord
               |> BufferSettingService.getBasicSourceTextureCount,

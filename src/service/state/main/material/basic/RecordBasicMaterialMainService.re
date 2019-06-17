@@ -6,9 +6,9 @@ open BasicMaterialType;
 
 open Js.Typed_array;
 
-open BufferBasicMaterialService;
+open BufferAllBasicMaterialService;
 
-open OperateTypeArrayBasicMaterialService;
+open OperateTypeArrayAllBasicMaterialService;
 
 let getRecord = ({basicMaterialRecord}) =>
   basicMaterialRecord |> OptionService.unsafeGet;
@@ -21,7 +21,7 @@ let setAllTypeArrDataToDefault =
       (shaderIndices, colors, isDepthTests, alphas),
     ) => {
   let defaultIsDepthTest = BufferMaterialService.getDefaultIsDepthTest();
-  let defaultAlpha = BufferBasicMaterialService.getDefaultAlpha();
+  let defaultAlpha = BufferAllBasicMaterialService.getDefaultAlpha();
 
   let (shaderIndices, colors, isDepthTests, alphas) =
     WonderCommonlib.ArrayService.range(0, basicMaterialCount - 1)
@@ -60,7 +60,7 @@ let _setAllTypeArrDataToDefault =
 let _initBufferData = (basicMaterialCount, defaultShaderIndex, defaultColor) => {
   let buffer = createBuffer(basicMaterialCount);
   let (shaderIndices, colors, isDepthTests, alphas) =
-    CreateTypeArrayBasicMaterialService.createTypeArrays(
+    CreateTypeArrayAllBasicMaterialService.createTypeArrays(
       buffer,
       basicMaterialCount,
     );

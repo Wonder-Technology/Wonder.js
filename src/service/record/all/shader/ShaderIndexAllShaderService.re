@@ -1,4 +1,4 @@
-open ShaderType;
+open AllShaderType;
 
 let genereateShaderIndex = ({index} as record) => {
   record.index = succ(index);

@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 let _isFirefox: (. unit) => bool = [%bs.raw
   {|

@@ -1,2 +1,2 @@
 let setRenderObjectGlState = (gl, isDepthTest, deviceManagerRecord) =>
-  deviceManagerRecord |> DeviceManagerService.setDepthTest(gl, isDepthTest);
+  deviceManagerRecord |> AllDeviceManagerService.setDepthTest(gl, isDepthTest);

@@ -22,7 +22,7 @@ let _ =
           describe(
             "test fatal",
             () => {
-              open RenderConfigType;
+              open AllRenderConfigType;
               test(
                 "if shaderLibItem->type_ unknown, fatal",
                 () => {

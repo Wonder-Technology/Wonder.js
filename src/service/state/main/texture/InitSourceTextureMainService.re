@@ -8,7 +8,7 @@ let _handleInitTextureWorker = (texture, state) =>
   switch (texture) {
   | None => state
   | Some(texture) =>
-    IndexSourceTextureService.handleByJudgeSourceTextureIndex(
+    IndexAllSourceTextureService.handleByJudgeSourceTextureIndex(
       texture,
       IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
         state,
@@ -37,7 +37,7 @@ let _handleInitTextureNoWorker = (texture, state) =>
   switch (texture) {
   | None => state
   | Some(texture) =>
-    IndexSourceTextureService.handleByJudgeSourceTextureIndex(
+    IndexAllSourceTextureService.handleByJudgeSourceTextureIndex(
       texture,
       IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
         state,
@@ -46,7 +46,7 @@ let _handleInitTextureNoWorker = (texture, state) =>
       (
         (. basicSourceTexture, {settingRecord} as state) => {
           InitTextureService.initTexture(
-            DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+            AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
             basicSourceTexture,
             RecordBasicSourceTextureMainService.getRecord(state).glTextureMap,
           )
@@ -55,7 +55,7 @@ let _handleInitTextureNoWorker = (texture, state) =>
         },
         (. arrayBufferViewTexture, {settingRecord} as state) => {
           InitTextureService.initTexture(
-            DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+            AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
             arrayBufferViewTexture,
             RecordArrayBufferViewSourceTextureMainService.getRecord(state).
               glTextureMap,

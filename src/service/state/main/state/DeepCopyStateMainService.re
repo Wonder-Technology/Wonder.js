@@ -46,11 +46,11 @@ let deepCopyForRestore = (state: StateDataMainType.state) => {
     vboBufferRecord:
       RecordVboBufferService.deepCopyForRestore(state.vboBufferRecord),
     deviceManagerRecord:
-      RecordDeviceManagerService.deepCopyForRestore(
+      RecordAllDeviceManagerService.deepCopyForRestore(
         state.deviceManagerRecord,
       ),
-    shaderRecord: RecordShaderService.deepCopyForRestore(state.shaderRecord),
-    glslRecord: RecordGLSLService.deepCopyForRestore(state.glslRecord),
+    shaderRecord: RecordAllShaderService.deepCopyForRestore(state.shaderRecord),
+    glslRecord: RecordAllGLSLService.deepCopyForRestore(state.glslRecord),
     glslSenderRecord:
       RecordGLSLSenderAllService.deepCopyForRestore(state.glslSenderRecord),
   };

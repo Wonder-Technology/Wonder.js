@@ -5,7 +5,7 @@ let execJob = (_, state) => {
      RecordLightMaterialMainService.getRecord(state); */
 
   InitNoMaterialShaderService.init(
-    DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
     /* (
          JudgeInstanceMainService.buildMap(
            index,

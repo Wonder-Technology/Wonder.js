@@ -2,7 +2,7 @@ open StateRenderType;
 
 open RenderArrayBufferViewSourceTextureType;
 
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 /* let _setUnpackAlignmentaToOne = [%bs.raw
      {|
@@ -81,56 +81,56 @@ let update =
   | None => (arrayBufferViewSourceTextureRecord, browserDetectRecord)
   | Some(source) =>
     let width =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getWidth(
+      OperateTypeArrayAllArrayBufferViewSourceTextureService.getWidth(
         textureInTypeArray,
         widths,
       );
     let height =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getHeight(
+      OperateTypeArrayAllArrayBufferViewSourceTextureService.getHeight(
         textureInTypeArray,
         heights,
       );
     let glWrapS =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getWrapS(
+      OperateTypeArrayAllArrayBufferViewSourceTextureService.getWrapS(
         textureInTypeArray,
         wrapSs,
       )
       |> SourceTextureType.uint8ToWrap
       |> TextureWrapService.getGlWrap(gl);
     let glWrapT =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getWrapT(
+      OperateTypeArrayAllArrayBufferViewSourceTextureService.getWrapT(
         textureInTypeArray,
         wrapTs,
       )
       |> SourceTextureType.uint8ToWrap
       |> TextureWrapService.getGlWrap(gl);
     let magFilter =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getMagFilter(
+      OperateTypeArrayAllArrayBufferViewSourceTextureService.getMagFilter(
         textureInTypeArray,
         magFilters,
       )
       |> SourceTextureType.uint8ToFilter;
     let minFilter =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getMinFilter(
+      OperateTypeArrayAllArrayBufferViewSourceTextureService.getMinFilter(
         textureInTypeArray,
         minFilters,
       )
       |> SourceTextureType.uint8ToFilter;
     let glFormat =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getFormat(
+      OperateTypeArrayAllArrayBufferViewSourceTextureService.getFormat(
         textureInTypeArray,
         formats,
       )
       |> SourceTextureType.uint8ToFormat
       |> TextureFormatService.getGlFormat(gl);
     let glType =
-      OperateTypeArrayArrayBufferViewSourceTextureService.getType(
+      OperateTypeArrayAllArrayBufferViewSourceTextureService.getType(
         textureInTypeArray,
         types,
       )
       |> TextureTypeService.getGlType(gl);
     let flipY =
-      OperateTypeArrayArrayBufferViewSourceTextureService.isFlipY(
+      OperateTypeArrayAllArrayBufferViewSourceTextureService.isFlipY(
         textureInTypeArray,
         flipYs,
       );
@@ -161,5 +161,5 @@ let isNeedUpdate = (textureInTypeArray, arrayBufferViewSourceTextureRecord) =>
     textureInTypeArray,
     BufferArrayBufferViewSourceTextureService.getDefaultIsNeedUpdate(),
     arrayBufferViewSourceTextureRecord.isNeedUpdates,
-    OperateTypeArrayArrayBufferViewSourceTextureService.getIsNeedUpdate,
+    OperateTypeArrayAllArrayBufferViewSourceTextureService.getIsNeedUpdate,
   );

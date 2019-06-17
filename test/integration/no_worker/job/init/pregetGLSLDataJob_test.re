@@ -50,7 +50,7 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
     describe("get gpu detect precision", () => {
       test("test vs top", () => {
-        let state = GPUDetectTool.setPrecision(GPUDetectType.HIGHP, state^);
+        let state = GPUDetectTool.setPrecision(AllGPUDetectType.HIGHP, state^);
         let (_, shaderSource) =
           InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state);
         GLSLTool.containSpecifyCount(
@@ -75,20 +75,20 @@ precision highp int;
           )
           |> expect == true;
         test("test highp precision", () => {
-          let state = GPUDetectTool.setPrecision(GPUDetectType.HIGHP, state^);
+          let state = GPUDetectTool.setPrecision(AllGPUDetectType.HIGHP, state^);
           let (_, shaderSource) =
             InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state);
           judge(shaderSource);
         });
         test("test mediump precision", () => {
           let state =
-            GPUDetectTool.setPrecision(GPUDetectType.MEDIUMP, state^);
+            GPUDetectTool.setPrecision(AllGPUDetectType.MEDIUMP, state^);
           let (_, shaderSource) =
             InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state);
           judge(shaderSource);
         });
         test("test lowp precision", () => {
-          let state = GPUDetectTool.setPrecision(GPUDetectType.LOWP, state^);
+          let state = GPUDetectTool.setPrecision(AllGPUDetectType.LOWP, state^);
           let (_, shaderSource) =
             InitBasicMaterialJobTool.prepareForJudgeGLSL(sandbox, state);
           judge(shaderSource);

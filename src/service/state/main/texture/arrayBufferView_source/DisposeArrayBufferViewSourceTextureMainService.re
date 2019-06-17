@@ -181,7 +181,7 @@ let handleDispose = (isRemoveTexture, materialData, textureArr, state) => {
              } :
              {
                let textureIndexInTypeArr =
-                 IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+                 IndexAllSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
                    texture,
                    IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
                      state,

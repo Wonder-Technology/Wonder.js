@@ -287,7 +287,7 @@ let setFakeGlToRenderWorkerState =
     ...state,
     deviceManagerRecord:
       state.deviceManagerRecord
-      |> DeviceManagerService.setGl(Obj.magic(fakeGlObj)),
+      |> AllDeviceManagerService.setGl(Obj.magic(fakeGlObj)),
   }
   |> RenderWorkerStateTool.setState;
 /*

@@ -25,7 +25,7 @@ let _clearCache =
 
   let globalTempRecord =
     has ?
-      GlobalTempService.addUnUsedFloat9(normalMatrix, globalTempRecord) :
+      AllGlobalTempService.addUnUsedFloat9(normalMatrix, globalTempRecord) :
       globalTempRecord;
 
   normalMatrixCacheMap
@@ -70,7 +70,7 @@ let rec update =
           getLocalPositionTuple(transform, localPositions),
           getLocalRotationTuple(transform, localRotations),
           getLocalScaleTuple(transform, localScales),
-          GlobalTempService.getFloat32Array1(globalTempRecord),
+          AllGlobalTempService.getFloat32Array1(globalTempRecord),
         ),
         childLocalToWorldMatrix,
       )

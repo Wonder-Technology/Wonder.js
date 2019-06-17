@@ -36,7 +36,7 @@ let _buildInitTextureStream = (e, stateData) =>
           ...basicSourceTextureRecord,
           glTextureMap:
             InitTextureService.initTexturesWithIndexArray(
-              [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+              [@bs] AllDeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
               textureData##basicSourceTextureData##needInitedTextureIndexArray,
               basicSourceTextureRecord.glTextureMap
             )
@@ -46,7 +46,7 @@ let _buildInitTextureStream = (e, stateData) =>
           ...arrayBufferViewSourceTextureRecord,
           glTextureMap:
             InitTextureService.initTexturesWithIndexArray(
-              [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
+              [@bs] AllDeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
               textureData##arrayBufferViewSourceTextureData##needInitedTextureIndexArray,
               arrayBufferViewSourceTextureRecord.glTextureMap
             )

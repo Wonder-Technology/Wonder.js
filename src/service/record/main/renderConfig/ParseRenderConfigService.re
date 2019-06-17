@@ -1,4 +1,4 @@
-open RenderConfigType;
+open AllRenderConfigType;
 
 /* let convertRenderSettingToRecord = (render_setting) => {
      open WonderBsJson.Json;
@@ -175,7 +175,7 @@ let _convertVariableToRecord = json =>
                                buffer:
                                  json
                                  |> field("buffer", int)
-                                 |> VboBufferType.intToBufferEnum,
+                                 |> AllVboBufferType.intToBufferEnum,
                                type_:
                                  json |> optional(field("type", string)),
                              }

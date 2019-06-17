@@ -1,4 +1,4 @@
-open GLSLLocationType;
+open AllGLSLLocationType;
 
 let _getLocationAndCache =
     ((program, name, locationMap), getGlLocationFunc, gl) =>

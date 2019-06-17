@@ -132,8 +132,8 @@ let _prepareGlState =
     (gl, ({deviceManagerRecord}: StateRenderType.renderState) as state) => {
   let deviceManagerRecord =
     deviceManagerRecord
-    |> DeviceManagerService.setDepthFunc(gl, gl |> WonderWebgl.Gl.getLEqual)
-    |> DeviceManagerService.setSide(gl, DeviceManagerType.BACK);
+    |> AllDeviceManagerService.setDepthFunc(gl, gl |> WonderWebgl.Gl.getLEqual)
+    |> AllDeviceManagerService.setSide(gl, AllDeviceManagerType.BACK);
 
   {...state, deviceManagerRecord};
 };
@@ -163,9 +163,9 @@ let _sendUniformNoMaterialShaderData =
      )
   |> WonderCommonlib.ArrayService.forEach(
        (.
-         {shaderCacheMap, name, pos, getDataFunc, sendDataFunc}: GLSLSenderType.uniformNoMaterialShaderSendData,
+         {shaderCacheMap, name, pos, getDataFunc, sendDataFunc}: AllGLSLSenderType.uniformNoMaterialShaderSendData,
        ) =>
-       GLSLLocationService.isUniformLocationExist(pos) ?
+       AllGLSLLocationService.isUniformLocationExist(pos) ?
          switch (name) {
          | "u_skyboxVMatrix" =>
            (Obj.magic(sendDataFunc))(.
@@ -228,8 +228,8 @@ let _restoreGlState =
     (gl, ({deviceManagerRecord}: StateRenderType.renderState) as state) => {
   let deviceManagerRecord =
     deviceManagerRecord
-    |> DeviceManagerService.setDepthFunc(gl, gl |> WonderWebgl.Gl.getLess)
-    |> DeviceManagerService.setSide(gl, DeviceManagerType.FRONT);
+    |> AllDeviceManagerService.setDepthFunc(gl, gl |> WonderWebgl.Gl.getLess)
+    |> AllDeviceManagerService.setSide(gl, AllDeviceManagerType.FRONT);
 
   {...state, deviceManagerRecord};
 };
@@ -237,7 +237,7 @@ let _restoreGlState =
 let execJob = (flags, state) => {
   let cubeTexture = _unsafeGetCubeTexture(state);
 
-  let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+  let gl = AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
   let target = gl |> WonderWebgl.Gl.getTextureCubeMap;
 
@@ -249,12 +249,12 @@ let execJob = (flags, state) => {
       _updateCubeTexture(gl, target, state) : state;
 
   let drawSkyboxShaderIndex =
-    NoMaterialShaderIndexShaderService.unsafeGetShaderIndex(
+    NoMaterialShaderIndexAllShaderService.unsafeGetShaderIndex(
       "skybox",
       state.shaderRecord,
     );
 
-  let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+  let gl = AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
   let renderState = CreateRenderStateMainService.createRenderState(state);
 

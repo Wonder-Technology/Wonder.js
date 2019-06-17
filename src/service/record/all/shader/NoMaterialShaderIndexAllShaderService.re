@@ -1,4 +1,4 @@
-open ShaderType;
+open AllShaderType;
 
 let getShaderIndex = (key: string, {noMaterialShaderIndexMap}) =>
   noMaterialShaderIndexMap |> WonderCommonlib.MutableHashMapService.get(key);

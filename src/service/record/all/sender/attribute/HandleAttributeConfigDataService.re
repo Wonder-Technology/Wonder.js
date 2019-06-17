@@ -4,9 +4,9 @@ open WonderWebgl.Gl;
 
 open DrawGLSLService;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
-open GLSLSenderType;
+open AllGLSLSenderType;
 
 let unsafeGetAttributeSendData = (shaderIndex: int, glslSenderRecord) => {
   let {attributeSendDataMap} = glslSenderRecord;

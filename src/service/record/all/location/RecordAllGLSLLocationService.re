@@ -1,4 +1,4 @@
-open GLSLLocationType;
+open AllGLSLLocationType;
 
 let create = () => {
   attributeLocationMap: WonderCommonlib.MutableSparseMapService.createEmpty(),

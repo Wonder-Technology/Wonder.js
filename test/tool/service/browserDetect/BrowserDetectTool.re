@@ -1,4 +1,4 @@
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 let setChrome = () => {
   let state = MainStateTool.unsafeGetState();

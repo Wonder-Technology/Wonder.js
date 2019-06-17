@@ -1,4 +1,4 @@
-open JobDataType;
+open AllJobDataType;
 
 let create = () => {
   outlineData: {

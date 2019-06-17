@@ -1,4 +1,4 @@
-open RenderConfigType;
+open AllRenderConfigType;
 
 let getShaders = ({shaders}) => shaders;
 

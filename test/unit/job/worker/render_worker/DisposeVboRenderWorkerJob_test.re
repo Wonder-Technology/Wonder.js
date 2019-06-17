@@ -64,7 +64,7 @@ let _ =
           },
         });
       testPromise("add buffer to pool", () => {
-        open VboBufferType;
+        open AllVboBufferType;
         let (
           state,
           (gameObject1, gameObject2, gameObject3, gameObject4),
@@ -95,7 +95,7 @@ let _ =
            });
       });
       testPromise("remove from buffer map", () => {
-        open VboBufferType;
+        open AllVboBufferType;
         let (
           state,
           (gameObject1, gameObject2, gameObject3, gameObject4),

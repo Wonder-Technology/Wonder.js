@@ -6,7 +6,7 @@ open SettingType;
 
 open SettingGPUType;
 
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 let _buildMaterialData =
     (buffer, index, disposedIndexArray, isSourceInstanceMap) => {

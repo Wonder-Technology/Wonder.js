@@ -44,7 +44,7 @@ type glsl = {
 
 type attribute = {
   name: option(string),
-  buffer: VboBufferType.bufferEnum,
+  buffer: AllVboBufferType.bufferEnum,
   type_: option(string),
 };
 

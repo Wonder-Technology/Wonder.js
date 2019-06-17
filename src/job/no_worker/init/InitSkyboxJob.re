@@ -30,7 +30,7 @@ let execJob = (flags, state) => {
         skyboxGameObject: Some(skyboxGameObject),
         cubeTexture:
           (
-            DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord)
+            AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord)
             |> WonderWebgl.Gl.createTexture
           )
           ->Some,

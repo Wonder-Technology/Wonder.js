@@ -40,36 +40,36 @@ let convertNeedAddedSourceArrayToImageDataArr = needAddedSourceArray =>
 
 let getWrapS = (texture, state) => {
   let {wrapSs} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.getWrapS(texture, wrapSs);
+  OperateTypeArrayAllBasicSourceTextureService.getWrapS(texture, wrapSs);
 };
 
 let setWrapS = (texture, wrapS, state) => {
   let {wrapSs} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.setWrapS(texture, wrapS, wrapSs)
+  OperateTypeArrayAllBasicSourceTextureService.setWrapS(texture, wrapS, wrapSs)
   |> ignore;
   state;
 };
 
 let getWrapT = (texture, state) => {
   let {wrapTs} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.getWrapT(texture, wrapTs);
+  OperateTypeArrayAllBasicSourceTextureService.getWrapT(texture, wrapTs);
 };
 
 let setWrapT = (texture, wrapT, state) => {
   let {wrapTs} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.setWrapT(texture, wrapT, wrapTs)
+  OperateTypeArrayAllBasicSourceTextureService.setWrapT(texture, wrapT, wrapTs)
   |> ignore;
   state;
 };
 
 let getMagFilter = (texture, state) => {
   let {magFilters} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.getMagFilter(texture, magFilters);
+  OperateTypeArrayAllBasicSourceTextureService.getMagFilter(texture, magFilters);
 };
 
 let setMagFilter = (texture, filter, state) => {
   let {magFilters} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.setMagFilter(
+  OperateTypeArrayAllBasicSourceTextureService.setMagFilter(
     texture,
     filter,
     magFilters,
@@ -80,12 +80,12 @@ let setMagFilter = (texture, filter, state) => {
 
 let getMinFilter = (texture, state) => {
   let {minFilters} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.getMinFilter(texture, minFilters);
+  OperateTypeArrayAllBasicSourceTextureService.getMinFilter(texture, minFilters);
 };
 
 let setMinFilter = (texture, filter, state) => {
   let {minFilters} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.setMinFilter(
+  OperateTypeArrayAllBasicSourceTextureService.setMinFilter(
     texture,
     filter,
     minFilters,
@@ -96,12 +96,12 @@ let setMinFilter = (texture, filter, state) => {
 
 let getFormat = (texture, state) => {
   let {formats} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.getFormat(texture, formats);
+  OperateTypeArrayAllBasicSourceTextureService.getFormat(texture, formats);
 };
 
 let setFormat = (texture, format, state) => {
   let {formats} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.setFormat(
+  OperateTypeArrayAllBasicSourceTextureService.setFormat(
     texture,
     format,
     formats,
@@ -112,25 +112,25 @@ let setFormat = (texture, format, state) => {
 
 let getType = (texture, state) => {
   let {types} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.getType(texture, types);
+  OperateTypeArrayAllBasicSourceTextureService.getType(texture, types);
 };
 
 let setType = (texture, filter, state) => {
   let {types} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.setType(texture, filter, types)
+  OperateTypeArrayAllBasicSourceTextureService.setType(texture, filter, types)
   |> ignore;
   state;
 };
 
 let getFlipY = (texture, state) : bool => {
   let {flipYs} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.getFlipY(texture, flipYs)
+  OperateTypeArrayAllBasicSourceTextureService.getFlipY(texture, flipYs)
   |> BufferSourceTextureService.getFlipYFromTypeArrayValue;
 };
 
 let setFlipY = (texture, flipY: bool, state) => {
   let {flipYs} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.setFlipY(
+  OperateTypeArrayAllBasicSourceTextureService.setFlipY(
     texture,
     BufferSourceTextureService.getFlipYTypeArrayValue(flipY),
     flipYs,
@@ -176,7 +176,7 @@ let getHeight = (texture, state) => {
 let getIsNeedUpdate = (texture, state) => {
   let {isNeedUpdates} = RecordBasicSourceTextureMainService.getRecord(state);
 
-  OperateTypeArrayBasicSourceTextureService.getIsNeedUpdate(.
+  OperateTypeArrayAllBasicSourceTextureService.getIsNeedUpdate(.
     texture,
     isNeedUpdates,
   );
@@ -184,7 +184,7 @@ let getIsNeedUpdate = (texture, state) => {
 
 let setIsNeedUpdate = (texture, isNeedUpdate, state) => {
   let {isNeedUpdates} = RecordBasicSourceTextureMainService.getRecord(state);
-  OperateTypeArrayBasicSourceTextureService.setIsNeedUpdate(
+  OperateTypeArrayAllBasicSourceTextureService.setIsNeedUpdate(
     texture,
     isNeedUpdate,
     isNeedUpdates,

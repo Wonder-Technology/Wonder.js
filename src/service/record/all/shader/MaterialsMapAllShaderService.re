@@ -1,4 +1,4 @@
-open ShaderType;
+open AllShaderType;
 
 let addMaterialWithoutDuplicate = (shaderIndex, material, {materialsMap} as record) => {
   ArrayMapService.addValueWithoutDuplicate(

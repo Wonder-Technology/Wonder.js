@@ -1,6 +1,6 @@
 open StateDataRenderWorkerType;
 
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 open BrowserType;
 
@@ -36,7 +36,7 @@ let createImageBitmapFromImageData =
     )
   | Firefox => _createImageBitmapForFirefox(imageData)
   | _ =>
-    RecordBrowserDetectAllService.fatalUnknownBrowser(
+    RecordAllBrowserDetectService.fatalUnknownBrowser(
       "_createImageBitmap",
       browser,
     )

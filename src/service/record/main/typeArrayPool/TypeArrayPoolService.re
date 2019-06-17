@@ -1,6 +1,6 @@
 open Js.Typed_array;
 
-open TypeArrayPoolType;
+open AllTypeArrayPoolType;
 
 let getFloat32ArrayPoolMap = record => record.float32ArrayPoolMap;
 

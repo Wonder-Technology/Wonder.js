@@ -1,6 +1,6 @@
 open StateRenderType;
 
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 let _isPowerOfTwo = value =>
   value land (value - 1) === 0 && value !== 0 && value !== 1;
@@ -136,7 +136,7 @@ let update =
   && (_isFilterMipmaps(magFilter) || _isFilterMipmaps(minFilter)) ?
     gl |> WonderWebgl.Gl.generateMipmap(target) : ();
 
-  OperateTypeArraySourceTextureService.setIsNeedUpdate(
+  OperateTypeArrayAllSourceTextureService.setIsNeedUpdate(
     textureInTypeArray,
     BufferSourceTextureService.getNotNeedUpdate(),
     isNeedUpdates,

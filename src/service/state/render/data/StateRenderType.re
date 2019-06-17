@@ -1,10 +1,10 @@
-open GLSLSenderType;
+open AllGLSLSenderType;
 
-open ShaderType;
+open AllShaderType;
 
 open GeometryType;
 
-open ProgramType;
+open AllProgramType;
 
 open RenderMeshRendererType;
 
@@ -30,23 +30,23 @@ open RenderTransformType;
 
 open RenderWorkerDetectType;
 
-open VboBufferType;
+open AllVboBufferType;
 
-open TypeArrayPoolType;
+open AllTypeArrayPoolType;
 
 open RenderSourceInstanceType;
 
-open GPUDetectType;
+open AllGPUDetectType;
 
-open GlobalTempType;
+open AllGlobalTempType;
 
-open DeviceManagerType;
+open AllDeviceManagerType;
 
 open RenderSettingType;
 
-open BrowserDetectType;
+open AllBrowserDetectType;
 
-open JobDataType;
+open AllJobDataType;
 
 type renderState = {
   sceneRecord,
@@ -55,7 +55,7 @@ type renderState = {
   glslSenderRecord,
   programRecord,
   geometryRecord,
-  cameraRecord: option(RenderCameraType.renderCameraRecord),
+  cameraRecord: option(AllRenderCameraType.renderCameraRecord),
   basicMaterialRecord,
   lightMaterialRecord,
   meshRendererRecord,

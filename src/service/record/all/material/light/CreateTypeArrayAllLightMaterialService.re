@@ -1,6 +1,6 @@
 open Js.Typed_array;
 
-open BufferLightMaterialService;
+open BufferAllLightMaterialService;
 
 let createTypeArrays = (buffer, lightMaterialCount) => (
   Uint32Array.fromBufferRange(

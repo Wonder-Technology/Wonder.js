@@ -8,8 +8,8 @@ let getGl = state => DeviceManagerAPI.unsafeGetGl(state) |. Some;
 let setGl = (gl, state) => {
   ...state,
   deviceManagerRecord:
-    DeviceManagerService.setGl(gl, state.deviceManagerRecord),
+    AllDeviceManagerService.setGl(gl, state.deviceManagerRecord),
 };
 
 let setSide = (gl, targetSide, record) =>
-  DeviceManagerService.setSide(gl, targetSide, record);
+  AllDeviceManagerService.setSide(gl, targetSide, record);

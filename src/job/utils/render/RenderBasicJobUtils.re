@@ -16,7 +16,7 @@ let _setRenderObjectGlState =
   let deviceManagerRecord =
     RenderObjectGlStateUtils.setRenderObjectGlState(
       gl,
-      OperateTypeArrayBasicMaterialService.getIsDepthTest(
+      OperateTypeArrayAllBasicMaterialService.getIsDepthTest(
         materialIndex,
         basicMaterialRecord.isDepthTests,
       ),

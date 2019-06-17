@@ -55,7 +55,7 @@ let _sendAttenuation =
     uniformCacheMap,
     (
       constant,
-      GLSLLocationService.getUniformLocationAndCache(
+      AllGLSLLocationService.getUniformLocationAndCache(
         program,
         constant,
         uniformLocationMap,
@@ -69,7 +69,7 @@ let _sendAttenuation =
     uniformCacheMap,
     (
       linear,
-      GLSLLocationService.getUniformLocationAndCache(
+      AllGLSLLocationService.getUniformLocationAndCache(
         program,
         linear,
         uniformLocationMap,
@@ -83,7 +83,7 @@ let _sendAttenuation =
     uniformCacheMap,
     (
       quadratic,
-      GLSLLocationService.getUniformLocationAndCache(
+      AllGLSLLocationService.getUniformLocationAndCache(
         program,
         quadratic,
         uniformLocationMap,
@@ -97,7 +97,7 @@ let _sendAttenuation =
     uniformCacheMap,
     (
       range,
-      GLSLLocationService.getUniformLocationAndCache(
+      AllGLSLLocationService.getUniformLocationAndCache(
         program,
         range,
         uniformLocationMap,
@@ -149,7 +149,7 @@ let send =
              uniformCacheMap,
              (
                position,
-               GLSLLocationService.getUniformLocationAndCache(
+               AllGLSLLocationService.getUniformLocationAndCache(
                  program,
                  position,
                  uniformLocationMap,
@@ -163,7 +163,7 @@ let send =
              uniformCacheMap,
              (
                color,
-               GLSLLocationService.getUniformLocationAndCache(
+               AllGLSLLocationService.getUniformLocationAndCache(
                  program,
                  color,
                  uniformLocationMap,
@@ -177,7 +177,7 @@ let send =
              uniformCacheMap,
              (
                intensity,
-               GLSLLocationService.getUniformLocationAndCache(
+               AllGLSLLocationService.getUniformLocationAndCache(
                  program,
                  intensity,
                  uniformLocationMap,

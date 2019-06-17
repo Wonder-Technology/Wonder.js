@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open VboBufferType;
+open AllVboBufferType;
 
 open ComponentType;
 

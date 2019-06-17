@@ -1,8 +1,8 @@
-open InstanceType;
+open AllInstanceType;
 
 open SourceInstanceType;
 
-open VboBufferType;
+open AllVboBufferType;
 
 open DisposeComponentService;
 

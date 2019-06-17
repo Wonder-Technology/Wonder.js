@@ -1,6 +1,6 @@
 open WonderWebgl.GlType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let _readUniforms =
   (.
@@ -19,7 +19,7 @@ let _readUniforms =
                HandleCameraUniformConfigDataService.addCameraSendData(
                  (
                    field,
-                   GLSLLocationService.getUniformLocationAndCache(
+                   AllGLSLLocationService.getUniformLocationAndCache(
                      program,
                      name,
                      uniformLocationMap,
@@ -35,7 +35,7 @@ let _readUniforms =
                HandleNoMaterialShaderModelUniformConfigDataService.addModelSendData(
                  (
                    field,
-                   GLSLLocationService.getUniformLocationAndCache(
+                   AllGLSLLocationService.getUniformLocationAndCache(
                      program,
                      name,
                      uniformLocationMap,
@@ -51,7 +51,7 @@ let _readUniforms =
                HandleNoMaterialShaderModelUniformConfigDataService.addExpandModelSendData(
                  (
                    field,
-                   GLSLLocationService.getUniformLocationAndCache(
+                   AllGLSLLocationService.getUniformLocationAndCache(
                      program,
                      name,
                      uniformLocationMap,
@@ -67,7 +67,7 @@ let _readUniforms =
                HandleNoMaterialShaderUniformConfigDataService.addSendData(
                  (
                    field,
-                   GLSLLocationService.getUniformLocationAndCache(
+                   AllGLSLLocationService.getUniformLocationAndCache(
                      program,
                      name,
                      uniformLocationMap,

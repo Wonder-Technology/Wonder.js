@@ -1,4 +1,4 @@
-open GLSLSenderType;
+open AllGLSLSenderType;
 
 let _addUniformSendDataByType =
     (

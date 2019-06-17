@@ -10,7 +10,7 @@ let bindAndUpdate =
       state
       |> BindAndUpdateMapMaterialRenderService.bindAndUpdate(
            (gl, material),
-           OperateTypeArrayLightMaterialService.getTextureIndex(.
+           OperateTypeArrayAllLightMaterialService.getTextureIndex(.
              material,
              diffuseTextureIndices,
            ),
@@ -18,7 +18,7 @@ let bindAndUpdate =
          )
       |> BindAndUpdateMapMaterialRenderService.bindAndUpdate(
            (gl, material),
-           OperateTypeArrayLightMaterialService.getTextureIndex(.
+           OperateTypeArrayAllLightMaterialService.getTextureIndex(.
              material,
              specularTextureIndices,
            ),

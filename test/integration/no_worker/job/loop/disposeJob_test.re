@@ -366,7 +366,7 @@ let _ =
           describe("dispose data in dispose job", () =>
             describe("dispose vbo buffer data", () => {
               test("add buffer to pool", () => {
-                open VboBufferType;
+                open AllVboBufferType;
                 let (state, gameObject1, geometry1) =
                   DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeGeometryVboBuffer(
                     state,
@@ -383,7 +383,7 @@ let _ =
                 |> expect == (3, 1);
               });
               test("remove from buffer map", () => {
-                open VboBufferType;
+                open AllVboBufferType;
                 let (state, gameObject1, geometry1) =
                   DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeGeometryVboBuffer(
                     state,
@@ -427,7 +427,7 @@ let _ =
                 (state, gameObject1, geometry1);
               };
               test("add buffer to pool", () => {
-                open VboBufferType;
+                open AllVboBufferType;
                 let (state, gameObject1, geometry1) = _prepare(state);
                 let state = state |> DisposeJob.execJob(None);
                 let {vertexArrayBufferPool, elementArrayBufferPool} =
@@ -441,7 +441,7 @@ let _ =
                 |> expect == (3 * 1, 1 * 1);
               });
               test("remove from buffer map", () => {
-                open VboBufferType;
+                open AllVboBufferType;
                 let (state, gameObject1, geometry1) = _prepare(state);
                 let state = state |> DisposeJob.execJob(None);
                 let {
@@ -485,7 +485,7 @@ let _ =
                 (state, gameObject1, sourceInstance1);
               };
               test("add buffer to pool", () => {
-                open VboBufferType;
+                open AllVboBufferType;
                 let (state, gameObject1, sourceInstance1) = _prepare(state);
                 let state = state |> DisposeJob.execJob(None);
                 let {matrixInstanceBufferPool} =
@@ -495,7 +495,7 @@ let _ =
                 |> expect == 1;
               });
               test("remove from buffer map", () => {
-                open VboBufferType;
+                open AllVboBufferType;
                 let (state, gameObject1, sourceInstance1) = _prepare(state);
                 let state = state |> DisposeJob.execJob(None);
                 let {matrixInstanceBufferMap} =

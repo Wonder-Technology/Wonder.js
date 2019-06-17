@@ -3,10 +3,10 @@ open StateDataMainType;
 let getProgramRecord = state => state.programRecord;
 
 let getProgram = (shaderIndex: int, state: StateDataMainType.state) =>
-  ProgramService.getProgram(shaderIndex, state.programRecord);
+  AllProgramService.getProgram(shaderIndex, state.programRecord);
 
 let unsafeGetProgram = (shaderIndex: int, state: StateDataMainType.state) =>
-  ProgramService.unsafeGetProgram(shaderIndex, state.programRecord);
+  AllProgramService.unsafeGetProgram(shaderIndex, state.programRecord);
 
 let clearLastUsedProgram = (state: StateDataMainType.state) => {
   ...state,

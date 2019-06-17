@@ -3,31 +3,31 @@ open SubStateGetRenderDataType;
 open RenderLightMaterialType;
 
 let getDiffuseColor = (material, {lightMaterialRecord}) =>
-  OperateTypeArrayLightMaterialService.getDiffuseColor(
+  OperateTypeArrayAllLightMaterialService.getDiffuseColor(
     material,
     lightMaterialRecord.diffuseColors,
   );
 
 let getSpecularColor = (material, {lightMaterialRecord}) =>
-  OperateTypeArrayLightMaterialService.getSpecularColor(
+  OperateTypeArrayAllLightMaterialService.getSpecularColor(
     material,
     lightMaterialRecord.specularColors,
   );
 
 let getShininess = (material, {lightMaterialRecord}) =>
-  OperateTypeArrayLightMaterialService.getShininess(
+  OperateTypeArrayAllLightMaterialService.getShininess(
     material,
     lightMaterialRecord.shininess,
   );
 
 let getDiffuseTexture = (material, {lightMaterialRecord}) =>
-  OperateTypeArrayLightMaterialService.getTextureIndex(.
+  OperateTypeArrayAllLightMaterialService.getTextureIndex(.
     material,
     lightMaterialRecord.diffuseTextureIndices,
   );
 
 let getSpecularTexture = (material, {lightMaterialRecord}) =>
-  OperateTypeArrayLightMaterialService.getTextureIndex(.
+  OperateTypeArrayAllLightMaterialService.getTextureIndex(.
     material,
     lightMaterialRecord.specularTextureIndices,
   );

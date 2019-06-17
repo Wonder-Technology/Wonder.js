@@ -1,4 +1,4 @@
-open BufferLightMaterialService;
+open BufferAllLightMaterialService;
 
 let getDiffuseColor = (index, typeArr) =>
   TypeArrayService.getFloat3(getDiffuseColorIndex(index), typeArr);
@@ -18,11 +18,11 @@ let getShininess = (index, typeArr) =>
 let setShininess = (index, data, typeArr) =>
   TypeArrayService.setFloat1(getShininessIndex(index), data, typeArr);
 
-let getTextureIndex = OperateTypeArrayMaterialService.getTextureIndex;
+let getTextureIndex = OperateTypeArrayAllMaterialService.getTextureIndex;
 
 let setTextureIndex =
   (. indexTuple, data, typeArr) =>
-    OperateTypeArrayMaterialService.setTextureIndex(
+    OperateTypeArrayAllMaterialService.setTextureIndex(
       indexTuple,
       data,
       typeArr,

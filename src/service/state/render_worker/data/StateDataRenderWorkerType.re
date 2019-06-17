@@ -1,4 +1,4 @@
-open GPUDetectType;
+open AllGPUDetectType;
 
 open RenderWorkerSettingType;
 
@@ -38,23 +38,23 @@ open ComponentType;
 
 open Js.Typed_array;
 
-open GLSLSenderType;
+open AllGLSLSenderType;
 
-open GLSLLocationType;
+open AllGLSLLocationType;
 
 open MaterialType;
 
 open ShaderChunkType;
 
-open VboBufferType;
+open AllVboBufferType;
 
-open TypeArrayPoolType;
+open AllTypeArrayPoolType;
 
-open GlobalTempType;
+open AllGlobalTempType;
 
-open BrowserDetectType;
+open AllBrowserDetectType;
 
-open JobDataType;
+open AllJobDataType;
 
 type apiRecord = {
   imguiAPIJsObj: {
@@ -119,13 +119,13 @@ type apiRecord = {
       renderWorkerState,
     "getCustomDataFromMainWorkerToRenderWorker":
       renderWorkerState =>
-      CustomWorkerDataType.customDataFromMainWorkerToRenderWorker,
+      CustomAllWorkerDataType.customDataFromMainWorkerToRenderWorker,
     "getCustomDataFromRenderWorkerToMainWorker":
       renderWorkerState =>
-      CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
+      CustomAllWorkerDataType.customDataFromRenderWorkerToMainWorker,
     "setCustomDataFromRenderWorkerToMainWorker":
       (
-        . CustomWorkerDataType.customDataFromRenderWorkerToMainWorker,
+        . CustomAllWorkerDataType.customDataFromRenderWorkerToMainWorker,
         renderWorkerState
       ) =>
       renderWorkerState,
@@ -134,12 +134,12 @@ type apiRecord = {
 and renderWorkerState = {
   mutable sceneRecord,
   mutable settingRecord,
-  mutable renderConfigRecord: option(RenderConfigType.renderConfigRecord),
+  mutable renderConfigRecord: option(AllRenderConfigType.renderConfigRecord),
   mutable gpuDetectRecord,
-  mutable deviceManagerRecord: DeviceManagerType.deviceManagerRecord,
-  mutable shaderRecord: ShaderType.shaderRecord,
-  mutable programRecord: ProgramType.programRecord,
-  mutable glslRecord: GLSLType.glslRecord,
+  mutable deviceManagerRecord: AllDeviceManagerType.deviceManagerRecord,
+  mutable shaderRecord: AllShaderType.shaderRecord,
+  mutable programRecord: AllProgramType.programRecord,
+  mutable glslRecord: AllGLSLType.glslRecord,
   mutable glslSenderRecord,
   mutable glslLocationRecord,
   mutable glslChunkRecord,

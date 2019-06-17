@@ -3,33 +3,33 @@ open StateDataMainType;
 open SourceTextureType;
 
 let getBasicSourceTextureIndexOffset = () =>
-  IndexSourceTextureService.getBasicSourceTextureIndexOffset();
+  IndexAllSourceTextureService.getBasicSourceTextureIndexOffset();
 
 let getArrayBufferViewSourceTextureIndexOffset = ({settingRecord} as state) =>
-  IndexSourceTextureService.getArrayBufferViewSourceTextureIndexOffset(
+  IndexAllSourceTextureService.getArrayBufferViewSourceTextureIndexOffset(
     BufferSettingService.getBasicSourceTextureCount(settingRecord),
   );
 
 let generateBasicSourceTextureIndex = basicSourceTextureIndex =>
-  IndexSourceTextureService.generateBasicSourceTextureIndex(
+  IndexAllSourceTextureService.generateBasicSourceTextureIndex(
     basicSourceTextureIndex,
   );
 
 let generateArrayBufferViewSourceTextureIndex =
     (arrayBufferViewSourceTextureIndex, {settingRecord} as state) =>
-  IndexSourceTextureService.generateArrayBufferViewSourceTextureIndex(
+  IndexAllSourceTextureService.generateArrayBufferViewSourceTextureIndex(
     arrayBufferViewSourceTextureIndex,
     BufferSettingService.getBasicSourceTextureCount(settingRecord),
   );
 
 let isBasicSourceTextureIndex = (texture, state) =>
-  IndexSourceTextureService.isBasicSourceTextureIndex(
+  IndexAllSourceTextureService.isBasicSourceTextureIndex(
     texture,
     getArrayBufferViewSourceTextureIndexOffset(state),
   );
 
 let isArrayBufferViewSourceTextureIndex = (texture, state) =>
-  IndexSourceTextureService.isArrayBufferViewSourceTextureIndex(
+  IndexAllSourceTextureService.isArrayBufferViewSourceTextureIndex(
     texture,
     getArrayBufferViewSourceTextureIndexOffset(state),
   );

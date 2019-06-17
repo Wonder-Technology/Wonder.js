@@ -1,4 +1,4 @@
-open RenderConfigType;
+open AllRenderConfigType;
 
 let _findFirstShaderData = (shaderLibName: string, shaderLibs: shaderLibs) =>
   ArrayService.unsafeFindFirst(shaderLibs, shaderLibName, (item: shaderLib) =>

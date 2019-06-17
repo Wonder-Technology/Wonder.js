@@ -7,7 +7,7 @@ let disableVertexAttribArray = (state: StateDataMainType.state) => {
 
   renderState.glslSenderRecord.vertexAttribHistoryArray =
     VertexAttribArrayService.disableVertexAttribArray(
-      DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+      AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
       renderState.glslSenderRecord.vertexAttribHistoryArray,
     );
 
@@ -31,7 +31,7 @@ let clearInitShaderCache = (state: StateDataMainType.state) => {
            |> Js.Array.map(
                 (
                   (
-                    {shaderCacheMap}: GLSLSenderType.uniformRenderObjectSendMaterialData
+                    {shaderCacheMap}: AllGLSLSenderType.uniformRenderObjectSendMaterialData
                   ) as record,
                 ) =>
                 {

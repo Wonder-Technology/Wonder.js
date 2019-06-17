@@ -2,7 +2,7 @@ open WonderWebgl.Gl;
 
 open WonderWebgl.GlType;
 
-open GPUDetectType;
+open AllGPUDetectType;
 
 let _getElementIndexUint = gl =>
   switch (gl |> getExtension("OES_element_index_uint") |> Js.toOption) {

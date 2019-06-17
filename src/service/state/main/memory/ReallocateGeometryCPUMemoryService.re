@@ -1,6 +1,6 @@
 open GeometryType;
 
-open VboBufferType;
+open AllVboBufferType;
 
 let _updateInfos = (infos, infoIndex, (startIndex, endIndex), offset: int) => {
   let increment = endIndex - startIndex;

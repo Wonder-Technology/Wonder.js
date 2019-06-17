@@ -11,7 +11,7 @@ open GLSLSenderPrimitiveType;
 type attributeSendData = {
   pos: attributeLocation,
   size: int,
-  buffer: VboBufferType.bufferEnum,
+  buffer: AllVboBufferType.bufferEnum,
   sendFunc:
     (
       . webgl1Context,
@@ -79,11 +79,11 @@ type uniformShaderSendCachableData = {
 type uniformShaderSendCachableFunctionData = {
   program,
   shaderCacheMap,
-  locationMap: GLSLLocationType.uniformLocationMapOfShader,
+  locationMap: AllGLSLLocationType.uniformLocationMapOfShader,
   sendCachableFunctionDataFunc:
     (
       . webgl1Context,
-      (program, shaderCacheMap, GLSLLocationType.uniformLocationMapOfShader),
+      (program, shaderCacheMap, AllGLSLLocationType.uniformLocationMapOfShader),
       SubStateSendRenderDataType.sendRenderDataSubState
     ) =>
     unit,
@@ -164,6 +164,6 @@ type glslSenderRecord = {
     ),
   /* drawPointsFuncMap: WonderCommonlib.MutableSparseMapService.t((webgl1Context => unit)), */
   mutable vertexAttribHistoryArray,
-  mutable lastSendMaterialData: option((material, ShaderType.shaderIndex)),
+  mutable lastSendMaterialData: option((material, AllShaderType.shaderIndex)),
   mutable lastSendGeometryData: option(GeometryType.geometry),
 };

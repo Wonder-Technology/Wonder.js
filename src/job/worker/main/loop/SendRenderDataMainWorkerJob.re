@@ -2,7 +2,7 @@ open StateDataMainType;
 
 open RenderType;
 
-open RenderCameraType;
+open AllRenderCameraType;
 
 let _buildMaterialData =
     (materialArrayForWorkerInit, gameObjectsMap, gameObjectRecord) =>

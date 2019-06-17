@@ -11,7 +11,7 @@ let _createTypeArrays = (buffer, lightMaterialCount, state) => {
     diffuseTextureIndices,
     specularTextureIndices,
   ) =
-    CreateTypeArrayLightMaterialService.createTypeArrays(
+    CreateTypeArrayAllLightMaterialService.createTypeArrays(
       buffer,
       lightMaterialCount,
     );

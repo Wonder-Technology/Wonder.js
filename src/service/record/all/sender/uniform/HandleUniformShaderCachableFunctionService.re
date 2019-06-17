@@ -2,7 +2,7 @@ open WonderWebgl.GlType;
 
 open WonderWebgl.Gl;
 
-open GLSLSenderType;
+open AllGLSLSenderType;
 
 let addUniformSendDataByType =
     (

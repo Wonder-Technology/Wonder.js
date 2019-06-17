@@ -1,4 +1,4 @@
-open RenderConfigType;
+open AllRenderConfigType;
 
 open ParseRenderConfigService;
 

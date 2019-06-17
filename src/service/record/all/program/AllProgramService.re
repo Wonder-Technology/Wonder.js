@@ -1,4 +1,4 @@
-open ProgramType;
+open AllProgramType;
 
 open WonderWebgl.Gl;
 

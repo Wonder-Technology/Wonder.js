@@ -1,4 +1,4 @@
-open GlobalTempType;
+open AllGlobalTempType;
 
 let getFloat32Array1 = record => record.float16Array1;
 

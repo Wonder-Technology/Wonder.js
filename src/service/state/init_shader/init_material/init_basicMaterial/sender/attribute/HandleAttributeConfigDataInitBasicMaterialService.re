@@ -2,7 +2,7 @@ open WonderWebgl.GlType;
 
 open WonderWebgl.Gl;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let _readAttributes =
   (. (gl, program, attributeLocationMap), sendDataArrTuple, attributes) =>
@@ -19,7 +19,7 @@ let _readAttributes =
                  let type_ = type_ |> OptionService.unsafeGetJsonSerializedValue;
 
                  switch (buffer) {
-                 | VboBufferType.Instance_m_matrix =>
+                 | AllVboBufferType.Instance_m_matrix =>
                    HandleAttributeConfigDataInitMaterialAllService.addModelMatrixInstanceArrayBufferSendData(
                      (gl, program, name, attributeLocationMap),
                      sendDataArrTuple,

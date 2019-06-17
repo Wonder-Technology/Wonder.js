@@ -8,8 +8,8 @@ let execJob = (_, state) => {
     ...state,
     deviceManagerRecord:
       state.deviceManagerRecord
-      |> DeviceManagerService.setViewportOfGl(
-           DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+      |> AllDeviceManagerService.setViewportOfGl(
+           AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
            viewportData,
          ),
   };

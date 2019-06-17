@@ -15,7 +15,7 @@ let _createTypeArrays =
     normalsInfos,
     indicesInfos,
   ) =
-    CreateTypeArrayGeometryService.createTypeArrays(
+    CreateTypeArrayAllGeometryService.createTypeArrays(
       buffer,
       geometryPointCount,
       geometryCount,

@@ -278,5 +278,5 @@ let setFakeGl = (fakeGlObj, state: StateDataMainType.state) => {
   ...state,
   deviceManagerRecord:
     state.deviceManagerRecord
-    |> DeviceManagerService.setGl(fakeGlObj |> Obj.magic),
+    |> AllDeviceManagerService.setGl(fakeGlObj |> Obj.magic),
 };

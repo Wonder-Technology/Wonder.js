@@ -1,8 +1,8 @@
 open StateInitLightMaterialType;
 
-open ShaderType;
+open AllShaderType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let _join = (array: array(shaderLib)) => {
   let output = ref("");
@@ -19,8 +19,8 @@ let _createProgramAndInit =
     (gl, shaderIndex, (vsSource, fsSource), programRecord) =>
   gl
   |> WonderWebgl.Gl.createProgram
-  |> ProgramService.registerProgram(shaderIndex, programRecord)
-  |> ProgramService.initShader(vsSource, fsSource, gl);
+  |> AllProgramService.registerProgram(shaderIndex, programRecord)
+  |> AllProgramService.initShader(vsSource, fsSource, gl);
 
 let _initNewShader =
     (
@@ -42,8 +42,8 @@ let _initNewShader =
       ),
     ) => {
   shaderRecord
-  /* |> ShaderLibShaderIndexShaderService.useShaderIndex(shaderIndex) */
-  |> ShaderLibShaderIndexShaderService.setShaderIndex(key, shaderIndex)
+  /* |> ShaderLibShaderIndexAllShaderService.useShaderIndex(shaderIndex) */
+  |> ShaderLibShaderIndexAllShaderService.setShaderIndex(key, shaderIndex)
   |> ignore;
 
   let (vsSource, fsSource) =
@@ -96,13 +96,13 @@ let _initShader =
     ) => {
   let key = _buildShaderIndexMapKey(shaderLibDataArr);
 
-  switch (ShaderLibShaderIndexShaderService.getShaderIndex(key, shaderRecord)) {
+  switch (ShaderLibShaderIndexAllShaderService.getShaderIndex(key, shaderRecord)) {
   | None =>
     let shaderIndex =
-      ShaderIndexShaderService.genereateShaderIndex(shaderRecord);
+      ShaderIndexAllShaderService.genereateShaderIndex(shaderRecord);
 
     let shaderRecord =
-      MaterialsMapShaderService.addMaterialWithoutDuplicate(
+      MaterialsMapAllShaderService.addMaterialWithoutDuplicate(
         shaderIndex,
         materialIndex,
         shaderRecord,
@@ -128,7 +128,7 @@ let _initShader =
     );
   | Some(shaderIndex) =>
     let _ =
-      MaterialsMapShaderService.addMaterialWithoutDuplicate(
+      MaterialsMapAllShaderService.addMaterialWithoutDuplicate(
         shaderIndex,
         materialIndex,
         shaderRecord,

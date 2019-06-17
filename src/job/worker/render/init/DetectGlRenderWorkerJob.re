@@ -6,8 +6,8 @@ let execJob = (_, e, stateData) =>
     let data = MessageService.getRecord(e);
     state.gpuDetectRecord =
       state.gpuDetectRecord
-      |> GPUDetectService.detect(
-           DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+      |> AllGPUDetectService.detect(
+           AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
          );
     StateRenderWorkerService.setState(stateData, state);
     e;

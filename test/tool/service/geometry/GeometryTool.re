@@ -292,7 +292,7 @@ let getMainIndices32 = (geometry, state) =>
 
 let getIndexType = (state: StateRenderType.renderState) =>
   WonderWebgl.Gl.getUnsignedShort(
-    DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
   );
 
 let getIndexTypeSize = (state: StateRenderType.renderState) => Js.Typed_array.Uint16Array._BYTES_PER_ELEMENT;

@@ -2,7 +2,7 @@ open StateDataRenderWorkerType;
 
 open RenderWorkerBasicSourceTextureType;
 
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 open BrowserType;
 
@@ -13,7 +13,7 @@ open BrowserType;
        let {flipYs} =
          RecordBasicSourceTextureRenderWorkerService.getRecord(state);
        let flipY =
-         OperateTypeArrayBasicSourceTextureService.isFlipY(
+         OperateTypeArrayAllBasicSourceTextureService.isFlipY(
            texture,
            flipYs |> OptionService.unsafeGet,
          );
@@ -23,7 +23,7 @@ open BrowserType;
        );
      | Firefox => _createImageBitmapForFirefox(imageData)
      | _ =>
-       RecordBrowserDetectAllService.fatalUnknownBrowser(
+       RecordAllBrowserDetectService.fatalUnknownBrowser(
          "_createImageBitmap",
          browser,
        )
@@ -59,7 +59,7 @@ let _getFlipYFunc = (texture, state) => {
   let {flipYs} =
     RecordBasicSourceTextureRenderWorkerService.getRecord(state);
 
-  OperateTypeArrayBasicSourceTextureService.isFlipY(
+  OperateTypeArrayAllBasicSourceTextureService.isFlipY(
     texture,
     flipYs |> OptionService.unsafeGet,
   );

@@ -13,7 +13,7 @@ let getShaderIndex = (material, state) => {
 };
 
 let getNoMaterialShaderIndex = (shaderName, {shaderRecord}) =>
-  NoMaterialShaderIndexShaderService.unsafeGetShaderIndex(
+  NoMaterialShaderIndexAllShaderService.unsafeGetShaderIndex(
     shaderName,
     shaderRecord,
   );
