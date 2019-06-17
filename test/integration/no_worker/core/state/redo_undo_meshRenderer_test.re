@@ -136,6 +136,7 @@ let _ =
           (currentState, gameObject4, meshRenderer4),
         );
       };
+
       test("set restored state to stateData", () => {
         let ((state, _, _, _, _, _, _), (currentState, _, _)) =
           _prepare(state);
