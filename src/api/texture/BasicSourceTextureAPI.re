@@ -7,7 +7,6 @@ open BasicSourceTextureType;
 let createBasicSourceTexture = state =>
   CreateBasicSourceTextureMainService.create(. state);
 
-/* TODO check alive */
 let unsafeGetBasicSourceTextureSource =
     (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
@@ -426,3 +425,10 @@ let getAllTextures = state => {
 
   GetAllComponentService.getAllComponents(index, disposedIndexArray);
 };
+
+let disposeBasicSourceTexture = (texture, isRemoveTexture, state) =>
+  DisposeBasicSourceTextureMainService.handleDisposeTexture(
+    texture,
+    isRemoveTexture,
+    state,
+  );

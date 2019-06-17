@@ -1,3 +1,7 @@
+let setScriptAPIJsObj = APIAPI.setScriptAPIJsObj;
+
+let getScriptAPIJsObj = APIAPI.getScriptAPIJsObj;
+
 let buildDependencyRelation = GenerateAllABAPI.buildDependencyRelation;
 
 let generateAllABs = GenerateAllABAPI.generateAllABs;
@@ -39,6 +43,8 @@ let loadWholeWDB = LoaderManagerAPI.loadWholeWDB;
 let loadConfig = LoaderManagerAPI.loadConfig;
 
 let isBindArcballCameraControllerEvent = ArcballCameraControllerAPI.isBindArcballCameraControllerEvent;
+
+let unbindArcballCameraControllerPointScaleEvent = ArcballCameraControllerAPI.unbindArcballCameraControllerPointScaleEvent;
 
 let unbindArcballCameraControllerEvent = ArcballCameraControllerAPI.unbindArcballCameraControllerEvent;
 
@@ -90,9 +96,17 @@ let createArcballCameraController = ArcballCameraControllerAPI.createArcballCame
 
 let isBindFlyCameraControllerEvent = FlyCameraControllerAPI.isBindFlyCameraControllerEvent;
 
+let unbindFlyCameraControllerPointScaleEvent = FlyCameraControllerAPI.unbindFlyCameraControllerPointScaleEvent;
+
 let unbindFlyCameraControllerEvent = FlyCameraControllerAPI.unbindFlyCameraControllerEvent;
 
 let bindFlyCameraControllerEvent = FlyCameraControllerAPI.bindFlyCameraControllerEvent;
+
+let setFlyCameraControllerDirectionArray = FlyCameraControllerAPI.setFlyCameraControllerDirectionArray;
+
+let hasFlyCameraControllerDirection = FlyCameraControllerAPI.hasFlyCameraControllerDirection;
+
+let unsafeGetFlyCameraControllerDirectionArray = FlyCameraControllerAPI.unsafeGetFlyCameraControllerDirectionArray;
 
 let setFlyCameraControllerRotateSpeed = FlyCameraControllerAPI.setFlyCameraControllerRotateSpeed;
 
@@ -296,6 +310,8 @@ let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
 let initGameObject = GameObjectAPI.initGameObject;
 
+let disposeGameObjectRemoveTexture = GameObjectAPI.disposeGameObjectRemoveTexture;
+
 let disposeGameObjectDisposeGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectDisposeGeometryRemoveMaterial;
 
 let disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial;
@@ -349,6 +365,8 @@ let addGameObjectMeshRendererComponent = GameObjectAPI.addGameObjectMeshRenderer
 let hasGameObjectLightMaterialComponent = GameObjectAPI.hasGameObjectLightMaterialComponent;
 
 let unsafeGetGameObjectLightMaterialComponent = GameObjectAPI.unsafeGetGameObjectLightMaterialComponent;
+
+let disposeGameObjectLightMaterialComponentRemoveTexture = GameObjectAPI.disposeGameObjectLightMaterialComponentRemoveTexture;
 
 let disposeGameObjectLightMaterialComponent = GameObjectAPI.disposeGameObjectLightMaterialComponent;
 
@@ -506,6 +524,8 @@ let createRenderGroup = RenderGroupAPI.createRenderGroup;
 
 let buildRenderGroup = RenderGroupAPI.buildRenderGroup;
 
+let sliderFloat = FixedLayoutControlIMGUIAPI.sliderFloat;
+
 let image = FixedLayoutControlIMGUIAPI.image;
 
 let label = FixedLayoutControlIMGUIAPI.label;
@@ -519,6 +539,10 @@ let getSetting = ManageIMGUIAPI.getSetting;
 let clearIMGUIFunc = ManageIMGUIAPI.clearIMGUIFunc;
 
 let setIMGUIFunc = ManageIMGUIAPI.setIMGUIFunc;
+
+let loadImageDataArr = JieHuoAPI.loadImageDataArr;
+
+let loadImage = JieHuoAPI.loadImage;
 
 let getIntersectedPointWithMesh = JieHuoAPI.getIntersectedPointWithMesh;
 
@@ -550,6 +574,8 @@ let registerNoWorkerInitJob = JobAPI.registerNoWorkerInitJob;
 
 let resetDisposeCount = ReallocateCPUMemoryJobAPI.resetDisposeCount;
 
+let reallocateGeometry = ReallocateCPUMemoryJobAPI.reallocateGeometry;
+
 let initGeometryBufferData = ReallocateCPUMemoryJobAPI.initGeometryBufferData;
 
 let reAllocateToBuffer = ReallocateCPUMemoryJobAPI.reAllocateToBuffer;
@@ -571,6 +597,10 @@ let sendAttributeData = RenderJobAPI.sendAttributeData;
 let useByShaderIndex = RenderJobAPI.useByShaderIndex;
 
 let getShaderIndex = RenderJobAPI.getShaderIndex;
+
+let setSkyboxNeedUpdateCubeTexture = JobDataAPI.setSkyboxNeedUpdateCubeTexture;
+
+let setSkyboxImage = JobDataAPI.setSkyboxImage;
 
 let setGameObjectsNeedDrawOutline = JobDataAPI.setGameObjectsNeedDrawOutline;
 
@@ -650,14 +680,6 @@ let setBasicMaterialIsDepthTest = BasicMaterialAPI.setBasicMaterialIsDepthTest;
 
 let getBasicMaterialIsDepthTest = BasicMaterialAPI.getBasicMaterialIsDepthTest;
 
-let removeBasicMaterialMap = BasicMaterialAPI.removeBasicMaterialMap;
-
-let hasBasicMaterialMap = BasicMaterialAPI.hasBasicMaterialMap;
-
-let setBasicMaterialMap = BasicMaterialAPI.setBasicMaterialMap;
-
-let unsafeGetBasicMaterialMap = BasicMaterialAPI.unsafeGetBasicMaterialMap;
-
 let setBasicMaterialColor = BasicMaterialAPI.setBasicMaterialColor;
 
 let getBasicMaterialColor = BasicMaterialAPI.getBasicMaterialColor;
@@ -665,6 +687,8 @@ let getBasicMaterialColor = BasicMaterialAPI.getBasicMaterialColor;
 let unsafeGetBasicMaterialGameObjects = BasicMaterialAPI.unsafeGetBasicMaterialGameObjects;
 
 let createBasicMaterial = BasicMaterialAPI.createBasicMaterial;
+
+let batchDisposeLightMaterialRemoveTexture = LightMaterialAPI.batchDisposeLightMaterialRemoveTexture;
 
 let batchDisposeLightMaterial = LightMaterialAPI.batchDisposeLightMaterial;
 
@@ -874,6 +898,8 @@ let unsafeGetArrayBufferViewSourceTextureSource = ArrayBufferViewSourceTextureAP
 
 let createArrayBufferViewSourceTexture = ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture;
 
+let disposeBasicSourceTexture = BasicSourceTextureAPI.disposeBasicSourceTexture;
+
 let getAllTextures = BasicSourceTextureAPI.getAllTextures;
 
 let setBasicSourceTextureName = BasicSourceTextureAPI.setBasicSourceTextureName;
@@ -1004,6 +1030,10 @@ let setIMGUIAPIJsObj = RecordAPIRenderWorkerService.setIMGUIAPIJsObj;
 
 let getIMGUIAPIJsObj = RecordAPIRenderWorkerService.getIMGUIAPIJsObj;
 
+let setScriptAPIJsObj = APIAPI.setScriptAPIJsObj;
+
+let getScriptAPIJsObj = APIAPI.getScriptAPIJsObj;
+
 let convertWorldToScreen = CoordinateAPI.convertWorldToScreen;
 
 let setStencilOp = DeviceManagerAPI.setStencilOp;
@@ -1078,6 +1108,8 @@ let batchDisposeGameObject = GameObjectAPI.batchDisposeGameObject;
 
 let initGameObject = GameObjectAPI.initGameObject;
 
+let disposeGameObjectRemoveTexture = GameObjectAPI.disposeGameObjectRemoveTexture;
+
 let disposeGameObjectDisposeGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectDisposeGeometryRemoveMaterial;
 
 let disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial = GameObjectAPI.disposeGameObjectKeepOrderRemoveGeometryRemoveMaterial;
@@ -1131,6 +1163,8 @@ let addGameObjectMeshRendererComponent = GameObjectAPI.addGameObjectMeshRenderer
 let hasGameObjectLightMaterialComponent = GameObjectAPI.hasGameObjectLightMaterialComponent;
 
 let unsafeGetGameObjectLightMaterialComponent = GameObjectAPI.unsafeGetGameObjectLightMaterialComponent;
+
+let disposeGameObjectLightMaterialComponentRemoveTexture = GameObjectAPI.disposeGameObjectLightMaterialComponentRemoveTexture;
 
 let disposeGameObjectLightMaterialComponent = GameObjectAPI.disposeGameObjectLightMaterialComponent;
 

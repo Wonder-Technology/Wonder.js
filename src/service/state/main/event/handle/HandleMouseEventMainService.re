@@ -108,8 +108,7 @@ let getMovementDelta = (mouseDomEvent, {eventRecord} as state) =>
     );
 
 let convertMouseDomEventToMouseEvent =
-    (eventName, mouseDomEvent, state)
-    : mouseEvent => {
+    (eventName, mouseDomEvent, state): mouseEvent => {
   name: eventName,
   location: getLocation(mouseDomEvent, state),
   locationInView: getLocationInView(mouseDomEvent, state),

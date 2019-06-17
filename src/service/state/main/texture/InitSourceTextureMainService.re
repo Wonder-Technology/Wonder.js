@@ -5,88 +5,83 @@ open BasicSourceTextureType;
 open ArrayBufferViewSourceTextureType;
 
 let _handleInitTextureWorker = (texture, state) =>
-  switch texture {
+  switch (texture) {
   | None => state
   | Some(texture) =>
     IndexSourceTextureService.handleByJudgeSourceTextureIndex(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state),
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
       state,
       (
-        [@bs]
-        (
-          (basicSourceTextureInTypeArray, {settingRecord} as state) => {
-            RecordBasicSourceTextureMainService.getRecord(state).needInitedTextureIndexArray
-            |> ArrayService.push(texture)
-            |> ignore;
-            state
-          }
-        ),
-        [@bs]
-        (
-          (arrayBufferViewTextureInTypeArray, {settingRecord} as state) => {
-            RecordArrayBufferViewSourceTextureMainService.getRecord(state).
-              needInitedTextureIndexArray
-            |> ArrayService.push(texture)
-            |> ignore;
-            state
-          }
-        )
-      )
+        (. basicSourceTexture, {settingRecord} as state) => {
+          RecordBasicSourceTextureMainService.getRecord(state).
+            needInitedTextureIndexArray
+          |> ArrayService.push(basicSourceTexture)
+          |> ignore;
+          state;
+        },
+        (. arrayBufferViewTexture, {settingRecord} as state) => {
+          RecordArrayBufferViewSourceTextureMainService.getRecord(state).
+            needInitedTextureIndexArray
+          |> ArrayService.push(arrayBufferViewTexture)
+          |> ignore;
+          state;
+        },
+      ),
     )
   };
 
 let _handleInitTextureNoWorker = (texture, state) =>
-  switch texture {
+  switch (texture) {
   | None => state
   | Some(texture) =>
     IndexSourceTextureService.handleByJudgeSourceTextureIndex(
       texture,
-      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(state),
+      IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
+        state,
+      ),
       state,
       (
-        [@bs]
-        (
-          (basicSourceTextureInTypeArray, {settingRecord} as state) => {
-            InitTextureService.initTexture(
-              [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-              basicSourceTextureInTypeArray,
-              RecordBasicSourceTextureMainService.getRecord(state).glTextureMap
-            )
-            |> ignore;
-            state
-          }
-        ),
-        [@bs]
-        (
-          (arrayBufferViewTextureInTypeArray, {settingRecord} as state) => {
-            InitTextureService.initTexture(
-              [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-              arrayBufferViewTextureInTypeArray,
-              RecordArrayBufferViewSourceTextureMainService.getRecord(state).glTextureMap
-            )
-            |> ignore;
-            state
-          }
-        )
-      )
+        (. basicSourceTexture, {settingRecord} as state) => {
+          InitTextureService.initTexture(
+            DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+            basicSourceTexture,
+            RecordBasicSourceTextureMainService.getRecord(state).glTextureMap,
+          )
+          |> ignore;
+          state;
+        },
+        (. arrayBufferViewTexture, {settingRecord} as state) => {
+          InitTextureService.initTexture(
+            DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+            arrayBufferViewTexture,
+            RecordArrayBufferViewSourceTextureMainService.getRecord(state).
+              glTextureMap,
+          )
+          |> ignore;
+          state;
+        },
+      ),
     )
   };
 
 let initTexture = (texture, state) =>
   WorkerDetectMainService.isUseWorker(state) ?
-    _handleInitTextureWorker(texture, state) : _handleInitTextureNoWorker(texture, state);
+    _handleInitTextureWorker(texture, state) :
+    _handleInitTextureNoWorker(texture, state);
 
-let clearNeedInitedTextureIndexArray = (state) => {
+let clearNeedInitedTextureIndexArray = state => {
   ...state,
   basicSourceTextureRecord:
     Some({
       ...RecordBasicSourceTextureMainService.getRecord(state),
-      needInitedTextureIndexArray: [||]
+      needInitedTextureIndexArray: [||],
     }),
   arrayBufferViewSourceTextureRecord:
     Some({
       ...RecordArrayBufferViewSourceTextureMainService.getRecord(state),
-      needInitedTextureIndexArray: [||]
-    })
+      needInitedTextureIndexArray: [||],
+    }),
 };

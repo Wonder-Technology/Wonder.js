@@ -9,7 +9,6 @@ let _disposeData = (cameraController, state) => {
     state |> EventFlyCameraControllerMainService.unbindEvent(cameraController);
 
   let {
-    dirtyArray,
     moveSpeedMap,
     wheelSpeedMap,
     rotateSpeedMap,
@@ -22,9 +21,6 @@ let _disposeData = (cameraController, state) => {
     ...state,
     flyCameraControllerRecord: {
       ...flyCameraControllerRecord,
-      dirtyArray:
-        dirtyArray
-        |> Js.Array.filter(dirtyIndex => dirtyIndex !== cameraController),
       moveSpeedMap:
         moveSpeedMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),

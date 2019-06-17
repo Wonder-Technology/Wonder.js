@@ -3,7 +3,8 @@ type nodeExtras = {
   meshRenderer: option(int),
   basicMaterial: option(int),
   lightMaterial: option(int),
-  cameraController: option(int),
+  flyCameraController: option(int),
+  arcballCameraController: option(int),
   script: option(int),
   isActive: option(bool),
   isRoot: option(bool),
@@ -101,6 +102,8 @@ type perspectiveCameraData = {
 };
 
 type arcballCameraControllerData = SceneGraphType.arcballCameraController;
+
+type flyCameraControllerData = SceneGraphType.flyCameraController;
 
 type cameraProjectionData = {
   type_: string,

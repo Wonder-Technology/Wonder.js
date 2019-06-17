@@ -260,7 +260,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                (totalLoadedByteLengthArr, contentLengthArr, wdbPathArr)
                |> expect
                == (
-                    [|1000, 25032|],
+                    [|1000, 25040|],
                     [|contentLength, contentLength|],
                     [|"./BoxTextured.wdb", "./BoxTextured.wdb"|],
                   )
@@ -323,16 +323,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
         describe("test CesiumMilkTruck wdb", () => {
           beforeEach(() =>
             state :=
-              TestTool.initWithJobConfigWithoutBuildFakeDom(
-                ~sandbox,
-                ~buffer=
-                  SettingTool.buildBufferConfigStr(
-                    ~geometryPointCount=30000,
-                    ~geometryCount=10,
-                    (),
-                  ),
-                ~noWorkerJobRecord=LoopRenderJobTool.buildNoWorkerJobConfig(),
-                (),
+              RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
+                sandbox,
+                LoopRenderJobTool.buildNoWorkerJobConfig(),
+                SettingTool.buildBufferConfigStr(
+                  ~geometryPointCount=30000,
+                  ~geometryCount=10,
+                  (),
+                ),
               )
           );
 
@@ -633,16 +631,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
         describe("test CesiumMilkTruck wdb", () => {
           beforeEach(() =>
             state :=
-              TestTool.initWithJobConfigWithoutBuildFakeDom(
-                ~sandbox,
-                ~buffer=
-                  SettingTool.buildBufferConfigStr(
-                    ~geometryPointCount=30000,
-                    ~geometryCount=10,
-                    (),
-                  ),
-                ~noWorkerJobRecord=LoopRenderJobTool.buildNoWorkerJobConfig(),
-                (),
+              RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
+                sandbox,
+                LoopRenderJobTool.buildNoWorkerJobConfig(),
+                SettingTool.buildBufferConfigStr(
+                  ~geometryPointCount=30000,
+                  ~geometryCount=10,
+                  (),
+                ),
               )
           );
 
@@ -941,16 +937,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
 
           beforeEach(() =>
             state :=
-              TestTool.initWithJobConfigWithoutBuildFakeDom(
-                ~sandbox,
-                ~buffer=
-                  SettingTool.buildBufferConfigStr(
-                    ~geometryPointCount=30000,
-                    ~geometryCount=10,
-                    (),
-                  ),
-                ~noWorkerJobRecord=LoopRenderJobTool.buildNoWorkerJobConfig(),
-                (),
+              RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
+                sandbox,
+                LoopRenderJobTool.buildNoWorkerJobConfig(),
+                SettingTool.buildBufferConfigStr(
+                  ~geometryPointCount=30000,
+                  ~geometryCount=10,
+                  (),
+                ),
               )
           );
 
@@ -2085,7 +2079,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                    (. state, basicSourceTexture) =>
                      BasicSourceTextureTool.setIsNeedUpdate(
                        basicSourceTexture,
-                       BasicSourceTextureTool.getNotNeedUpdate(),
+                       false,
                        state,
                      ),
                    state^,
@@ -2239,7 +2233,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  ArrayService.unsafeGetFirst(wdbPathArr)
                  |> Js.String.includes("test/res/wdb/BoxTextured.wdb"),
                )
-               |> expect == ([|24972|], [|contentLength|], 1, true)
+               |> expect == ([|24984|], [|contentLength|], 1, true)
                |> resolve
              );
         });

@@ -30,14 +30,11 @@ let _ =
              );
         TestMainWorkerTool.closeContractCheck();
         WorkerJobWorkerTool.execRenderWorkerJob(
-          ~e=
-            Some({
-              "data": {
-                "bufferData": {
-                  "textureCountPerMaterial": 16,
-                },
-              },
-            }),
+          ~e=Some({
+               "data": {
+                 "bufferData": {},
+               },
+             }),
           ~execJobFunc=DetectGlRenderWorkerJob.execJob,
           ~completeFunc=
             state => {

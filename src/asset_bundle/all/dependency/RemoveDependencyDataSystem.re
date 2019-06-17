@@ -10,7 +10,7 @@ module All = {
         dependencyRelation,
         abBufferDataNameMap: bufferDataNameMap,
       ) =>
-    FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+    FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
       abRelativePath,
       dependencyRelation,
     )
@@ -361,6 +361,35 @@ module SAB = {
        );
   };
 
+  let _addImageBufferData =
+      (
+        imageData,
+        (buffer, bufferView, bufferViews),
+        (imageArr, bufferViewArr, uint8ArrayArr, byteOffset),
+      ) => {
+    let arrayBuffer =
+      _getArrayBufferFromBufferViews(buffer, bufferView, bufferViews);
+
+    let byteLength = arrayBuffer |> ArrayBuffer.byteLength;
+    let alignedByteLength = BufferUtils.alignedLength(byteLength);
+
+    let (buffer, byteOffset, byteLength, byteStride) =
+      GenerateCommon.buildBufferViewData(byteOffset, byteLength);
+
+    (
+      imageArr
+      |> ArrayService.push(
+           {...imageData, bufferView: bufferViewArr |> Js.Array.length}: WDType.image,
+         ),
+      bufferViewArr
+      |> ArrayService.push(
+           {buffer, byteOffset, byteLength, byteStride}: WDType.bufferView,
+         ),
+      uint8ArrayArr |> ArrayService.push(arrayBuffer),
+      byteOffset + alignedByteLength,
+    );
+  };
+
   let _removeImageDuplicateBufferData =
       (
         (dependencyRelation, allRabImageNameMap, sabRelativePath),
@@ -396,40 +425,11 @@ module SAB = {
                    uint8ArrayArr,
                    byteOffset,
                  ) :
-                 {
-                   let arrayBuffer =
-                     _getArrayBufferFromBufferViews(
-                       buffer,
-                       bufferView,
-                       bufferViews,
-                     );
-
-                   let byteLength = arrayBuffer |> ArrayBuffer.byteLength;
-                   let alignedByteLength =
-                     BufferUtils.alignedLength(byteLength);
-
-                   let (buffer, byteOffset, byteLength, byteStride) =
-                     GenerateCommon.buildBufferViewData(
-                       byteOffset,
-                       byteLength,
-                     );
-
-                   (
-                     imageArr
-                     |> ArrayService.push(
-                          {
-                            ...imageData,
-                            bufferView: bufferViewArr |> Js.Array.length,
-                          }: WDType.image,
-                        ),
-                     bufferViewArr
-                     |> ArrayService.push(
-                          {buffer, byteOffset, byteLength, byteStride}: WDType.bufferView,
-                        ),
-                     uint8ArrayArr |> ArrayService.push(arrayBuffer),
-                     byteOffset + alignedByteLength,
-                   );
-                 },
+                 _addImageBufferData(
+                   imageData,
+                   (buffer, bufferView, bufferViews),
+                   (imageArr, bufferViewArr, uint8ArrayArr, byteOffset),
+                 ),
              ([||], [||], [||], 0),
            );
 
@@ -637,6 +637,129 @@ module SAB = {
         );
       };
 
+  let _buildGeometryAllAttributeBufferData =
+      (
+        (name, sabRelativePath, dependencyRelation, allRabGeometryNameMap),
+        dataViewArr,
+        sceneAssetBundleContent,
+        (position, normal, texCoord, index),
+        (
+          imageBufferViewIndex,
+          accessorArr,
+          bufferViewArr,
+          byteOffset,
+          uint8ArrayArr,
+        ),
+      ) => {
+    let (verticesSize, normalsSize, texCoordsSize, indicesSize) =
+      BuildGeometryDataUtils.getPointSize();
+
+    let (
+      positionAccessor,
+      accessorArr,
+      bufferViewArr,
+      byteOffset,
+      uint8ArrayArr,
+    ) =
+      _buildGeometryAttributeBufferData(
+        (name, sabRelativePath, dependencyRelation, allRabGeometryNameMap),
+        dataViewArr,
+        (GenerateSceneGraphType.Vertex, verticesSize),
+        sceneAssetBundleContent,
+        (
+          ABBufferViewUtils.isNoneAccessorIndex,
+          ABBufferViewUtils.buildNoneBufferViewIndex,
+          accessor => accessor,
+          accessor => accessor,
+        ),
+        (
+          imageBufferViewIndex,
+          position,
+          accessorArr,
+          bufferViewArr,
+          byteOffset,
+          uint8ArrayArr,
+        ),
+      );
+
+    let (
+      normalAccessor,
+      accessorArr,
+      bufferViewArr,
+      byteOffset,
+      uint8ArrayArr,
+    ) =
+      _buildGeometryAttributeBufferData(
+        (name, sabRelativePath, dependencyRelation, allRabGeometryNameMap),
+        dataViewArr,
+        (GenerateSceneGraphType.Normal, normalsSize),
+        sceneAssetBundleContent,
+        (
+          OptionService.isJsonSerializedValueNone,
+          () => None,
+          accessor => OptionService.unsafeGetJsonSerializedValue(accessor),
+          accessor => Some(accessor),
+        ),
+        (
+          imageBufferViewIndex,
+          normal,
+          accessorArr,
+          bufferViewArr,
+          byteOffset,
+          uint8ArrayArr,
+        ),
+      );
+
+    let (
+      texCoordAccessor,
+      accessorArr,
+      bufferViewArr,
+      byteOffset,
+      uint8ArrayArr,
+    ) =
+      _buildGeometryAttributeBufferData(
+        (name, sabRelativePath, dependencyRelation, allRabGeometryNameMap),
+        dataViewArr,
+        (GenerateSceneGraphType.TexCoord, texCoordsSize),
+        sceneAssetBundleContent,
+        (
+          OptionService.isJsonSerializedValueNone,
+          () => None,
+          accessor => OptionService.unsafeGetJsonSerializedValue(accessor),
+          accessor => Some(accessor),
+        ),
+        (
+          imageBufferViewIndex,
+          texCoord,
+          accessorArr,
+          bufferViewArr,
+          byteOffset,
+          uint8ArrayArr,
+        ),
+      );
+
+    let (indexAccessor, accessorArr, bufferViewArr, byteOffset, uint8ArrayArr) =
+      _buildGeometryIndexBufferData(
+        (name, sabRelativePath, dependencyRelation, allRabGeometryNameMap),
+        dataViewArr,
+        indicesSize,
+        sceneAssetBundleContent,
+        (
+          imageBufferViewIndex,
+          index,
+          accessorArr,
+          bufferViewArr,
+          byteOffset,
+          uint8ArrayArr,
+        ),
+      );
+
+    (
+      (positionAccessor, normalAccessor, texCoordAccessor, indexAccessor),
+      (accessorArr, bufferViewArr, byteOffset, uint8ArrayArr),
+    );
+  };
+
   let _removeGeometryDuplicateBufferData =
       (
         (dependencyRelation, allRabGeometryNameMap, sabRelativePath),
@@ -675,17 +798,16 @@ module SAB = {
                      ) as geometry =
                    geometryData |> OptionService.unsafeGetJsonSerializedValue;
 
-                 let (verticesSize, normalsSize, texCoordsSize, indicesSize) =
-                   BuildGeometryDataUtils.getPointSize();
-
                  let (
-                   positionAccessor,
-                   accessorArr,
-                   bufferViewArr,
-                   byteOffset,
-                   uint8ArrayArr,
+                   (
+                     positionAccessor,
+                     normalAccessor,
+                     texCoordAccessor,
+                     indexAccessor,
+                   ),
+                   (accessorArr, bufferViewArr, byteOffset, uint8ArrayArr),
                  ) =
-                   _buildGeometryAttributeBufferData(
+                   _buildGeometryAllAttributeBufferData(
                      (
                        name,
                        sabRelativePath,
@@ -693,119 +815,16 @@ module SAB = {
                        allRabGeometryNameMap,
                      ),
                      dataViewArr,
-                     (GenerateSceneGraphType.Vertex, verticesSize),
                      sceneAssetBundleContent,
-                     (
-                       ABBufferViewUtils.isNoneAccessorIndex,
-                       ABBufferViewUtils.buildNoneBufferViewIndex,
-                       accessor => accessor,
-                       accessor => accessor,
-                     ),
+                     (position, normal, texCoord, index),
                      (
                        imageBufferViewIndex,
-                       position,
                        accessorArr,
                        bufferViewArr,
                        byteOffset,
                        uint8ArrayArr,
                      ),
                    );
-
-                 let (
-                   normalAccessor,
-                   accessorArr,
-                   bufferViewArr,
-                   byteOffset,
-                   uint8ArrayArr,
-                 ) =
-                   _buildGeometryAttributeBufferData(
-                     (
-                       name,
-                       sabRelativePath,
-                       dependencyRelation,
-                       allRabGeometryNameMap,
-                     ),
-                     dataViewArr,
-                     (GenerateSceneGraphType.Normal, normalsSize),
-                     sceneAssetBundleContent,
-                     (
-                       OptionService.isJsonSerializedValueNone,
-                       () => None,
-                       accessor =>
-                         OptionService.unsafeGetJsonSerializedValue(accessor),
-                       accessor => Some(accessor),
-                     ),
-                     (
-                       imageBufferViewIndex,
-                       normal,
-                       accessorArr,
-                       bufferViewArr,
-                       byteOffset,
-                       uint8ArrayArr,
-                     ),
-                   );
-
-                 let (
-                   texCoordAccessor,
-                   accessorArr,
-                   bufferViewArr,
-                   byteOffset,
-                   uint8ArrayArr,
-                 ) =
-                   _buildGeometryAttributeBufferData(
-                     (
-                       name,
-                       sabRelativePath,
-                       dependencyRelation,
-                       allRabGeometryNameMap,
-                     ),
-                     dataViewArr,
-                     (GenerateSceneGraphType.TexCoord, texCoordsSize),
-                     sceneAssetBundleContent,
-                     (
-                       OptionService.isJsonSerializedValueNone,
-                       () => None,
-                       accessor =>
-                         OptionService.unsafeGetJsonSerializedValue(accessor),
-                       accessor => Some(accessor),
-                     ),
-                     (
-                       imageBufferViewIndex,
-                       texCoord,
-                       accessorArr,
-                       bufferViewArr,
-                       byteOffset,
-                       uint8ArrayArr,
-                     ),
-                   );
-
-                 let (
-                   indexAccessor,
-                   accessorArr,
-                   bufferViewArr,
-                   byteOffset,
-                   uint8ArrayArr,
-                 ) =
-                   _buildGeometryIndexBufferData(
-                     (
-                       name,
-                       sabRelativePath,
-                       dependencyRelation,
-                       allRabGeometryNameMap,
-                     ),
-                     dataViewArr,
-                     indicesSize,
-                     sceneAssetBundleContent,
-                     (
-                       imageBufferViewIndex,
-                       index,
-                       accessorArr,
-                       bufferViewArr,
-                       byteOffset,
-                       uint8ArrayArr,
-                     ),
-                   );
-
                  (
                    geometryArr
                    |> ArrayService.push(

@@ -28,7 +28,6 @@ let _buildWDBJsonUint8Array = (gltf: GLTFType.gltf) => {
   let gltf = _checkAndWarn(gltf);
   let ({asset, scenes, scene, nodes, extensions}: GLTFType.gltf) as gltf =
     gltf |> ConvertMultiPrimitivesSystem.convertMultiPrimitivesToNodes;
-  /* |> ConvertDefaultMaterialSystem.convert; */
 
   let transforms = ConvertTransformsSystem.convertToTransforms(gltf);
 
@@ -63,6 +62,8 @@ let _buildWDBJsonUint8Array = (gltf: GLTFType.gltf) => {
                ConvertCamerasSystem.convertToPerspectiveCameraProjections(
                  gltf,
                ),
+             flyCameraControllers:
+               ConvertCamerasSystem.convertToFlyCameraControllers(gltf),
              arcballCameraControllers:
                ConvertCamerasSystem.convertToArcballCameraControllers(gltf),
              basicMaterials:

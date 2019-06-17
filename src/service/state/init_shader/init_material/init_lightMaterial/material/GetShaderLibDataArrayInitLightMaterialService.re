@@ -31,30 +31,30 @@ let _isPass =
   (. materialIndex, condition, {materialRecord} as state) =>
     switch (condition) {
     | "light_has_map" =>
-      MapUnitService.hasMap(
-        OperateTypeArrayLightMaterialService.getDiffuseMapUnit(.
+      TextureIndexService.isTextureNotDefaultValue(
+        OperateTypeArrayLightMaterialService.getTextureIndex(.
           materialIndex,
-          materialRecord.diffuseMapUnits,
+          materialRecord.diffuseTextureIndices,
         ),
       )
-      || MapUnitService.hasMap(
-           OperateTypeArrayLightMaterialService.getSpecularMapUnit(.
+      || TextureIndexService.isTextureNotDefaultValue(
+           OperateTypeArrayLightMaterialService.getTextureIndex(.
              materialIndex,
-             materialRecord.specularMapUnits,
+             materialRecord.specularTextureIndices,
            ),
          )
     | "has_diffuse_map" =>
-      MapUnitService.hasMap(
-        OperateTypeArrayLightMaterialService.getDiffuseMapUnit(.
+      TextureIndexService.isTextureNotDefaultValue(
+        OperateTypeArrayLightMaterialService.getTextureIndex(.
           materialIndex,
-          materialRecord.diffuseMapUnits,
+          materialRecord.diffuseTextureIndices,
         ),
       )
     | "has_specular_map" =>
-      MapUnitService.hasMap(
-        OperateTypeArrayLightMaterialService.getSpecularMapUnit(.
+      TextureIndexService.isTextureNotDefaultValue(
+        OperateTypeArrayLightMaterialService.getTextureIndex(.
           materialIndex,
-          materialRecord.specularMapUnits,
+          materialRecord.specularTextureIndices,
         ),
       )
     | _ =>

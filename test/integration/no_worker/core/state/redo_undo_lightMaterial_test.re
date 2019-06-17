@@ -69,13 +69,12 @@ let _ =
           )
         )
       );
-      test("deep copy gameObjectsMap, emptyMapUnitArrayMap", () => {
+      test("deep copy gameObjectsMap", () => {
         open StateDataMainType;
         open LightMaterialType;
         let (state, gameObject1, basicMaterial1) =
           LightMaterialTool.createGameObject(state^);
-        let {gameObjectsMap, emptyMapUnitArrayMap} =
-          LightMaterialTool.getRecord(state);
+        let {gameObjectsMap} = LightMaterialTool.getRecord(state);
         let originGameObjectsArr = [|1|];
         let originEmptyMapUnitArrayMap = [|2, 1, 0|];
         let copiedOriginGameObjectsArr = originGameObjectsArr |> Js.Array.copy;
@@ -87,37 +86,17 @@ let _ =
              originGameObjectsArr,
            )
         |> ignore;
-        emptyMapUnitArrayMap
-        |> WonderCommonlib.MutableSparseMapService.set(
-             basicMaterial1,
-             originEmptyMapUnitArrayMap,
-           )
-        |> ignore;
         let copiedState = MainStateTool.deepCopyForRestore(state);
-        let {gameObjectsMap, emptyMapUnitArrayMap} =
-          LightMaterialTool.getRecord(copiedState);
+        let {gameObjectsMap} = LightMaterialTool.getRecord(copiedState);
         let arr =
           gameObjectsMap
           |> WonderCommonlib.MutableSparseMapService.unsafeGet(basicMaterial1);
         Array.unsafe_set(arr, 0, 2);
-        let arr =
-          emptyMapUnitArrayMap
-          |> WonderCommonlib.MutableSparseMapService.unsafeGet(basicMaterial1);
-        Array.unsafe_set(arr, 0, 4);
 
-        let {gameObjectsMap, emptyMapUnitArrayMap} =
-          LightMaterialTool.getRecord(state);
-        (
-          gameObjectsMap
-          |> WonderCommonlib.MutableSparseMapService.unsafeGet(basicMaterial1),
-          emptyMapUnitArrayMap
-          |> WonderCommonlib.MutableSparseMapService.unsafeGet(basicMaterial1),
-        )
-        |>
-        expect == (
-                    copiedOriginGameObjectsArr,
-                    copiedOriginEmptyMapUnitArrayMap,
-                  );
+        let {gameObjectsMap} = LightMaterialTool.getRecord(state);
+        gameObjectsMap
+        |> WonderCommonlib.MutableSparseMapService.unsafeGet(basicMaterial1)
+        |> expect == copiedOriginGameObjectsArr;
       });
     });
 
@@ -128,11 +107,7 @@ let _ =
           TestTool.initWithJobConfigWithoutBuildFakeDom(
             ~sandbox,
             ~buffer=
-              SettingTool.buildBufferConfigStr(
-                ~lightMaterialCount=4,
-                ~textureCountPerMaterial=2,
-                (),
-              ),
+              SettingTool.buildBufferConfigStr(~lightMaterialCount=4, ()),
             (),
           );
 
@@ -166,66 +141,63 @@ let _ =
         let state = state |> LightMaterialTool.createAndSetMaps(material4);
         let currentState = AllMaterialTool.pregetGLSLData(currentState);
         let _ = MainStateTool.restore(currentState, copiedState);
-        let defaultUnit = BasicSourceTextureTool.getDefaultUnit();
         let {
           diffuseColors,
           specularColors,
-          textureIndices,
-          diffuseMapUnits,
-          specularMapUnits,
+          diffuseTextureIndices,
+          specularTextureIndices,
         } =
           MainStateTool.unsafeGetState() |> LightMaterialTool.getRecord;
+        let defaultTextureIndex = LightMaterialTool.getDefaultTextureIndex();
         (
           diffuseColors,
           specularColors,
-          textureIndices,
-          diffuseMapUnits,
-          specularMapUnits,
+          diffuseTextureIndices,
+          specularTextureIndices,
         )
-        |>
-        expect == (
-                    Float32Array.make([|
-                      1.,
-                      1.,
-                      1.,
-                      1.,
-                      0.5,
-                      0.,
-                      1.,
-                      1.,
-                      1.,
-                      1.,
-                      1.,
-                      1.,
-                    |]),
-                    Float32Array.make([|
-                      1.,
-                      1.,
-                      1.,
-                      0.,
-                      1.,
-                      0.5,
-                      1.,
-                      1.,
-                      1.,
-                      1.,
-                      1.,
-                      1.,
-                    |]),
-                    Uint32Array.make([|0, 0, 0, 0, 0, 0, 0, 0|]),
-                    Uint8Array.make([|
-                      defaultUnit,
-                      defaultUnit,
-                      defaultUnit,
-                      defaultUnit,
-                    |]),
-                    Uint8Array.make([|
-                      defaultUnit,
-                      defaultUnit,
-                      defaultUnit,
-                      defaultUnit,
-                    |]),
-                  );
+        |> expect
+        == (
+             Float32Array.make([|
+               1.,
+               1.,
+               1.,
+               1.,
+               0.5,
+               0.,
+               1.,
+               1.,
+               1.,
+               1.,
+               1.,
+               1.,
+             |]),
+             Float32Array.make([|
+               1.,
+               1.,
+               1.,
+               0.,
+               1.,
+               0.5,
+               1.,
+               1.,
+               1.,
+               1.,
+               1.,
+               1.,
+             |]),
+             Uint32Array.make([|
+               defaultTextureIndex,
+               defaultTextureIndex,
+               defaultTextureIndex,
+               defaultTextureIndex,
+             |]),
+             Uint32Array.make([|
+               defaultTextureIndex,
+               defaultTextureIndex,
+               defaultTextureIndex,
+               defaultTextureIndex,
+             |]),
+           );
       })
     );
   });

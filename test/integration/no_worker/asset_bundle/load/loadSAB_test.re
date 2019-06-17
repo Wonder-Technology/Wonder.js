@@ -76,40 +76,6 @@ let _ =
       });
 
       describe("else", () => {
-        testPromise("init cache", () => {
-          let (rab1RelativePath, rab2RelativePath, sab1RelativePath) =
-            ImportABTool.SAB.getABRelativePaths();
-
-          GenerateAllABTool.TestWithTwoRAB.generateTwoRABs(state^)
-          |> then_(((rab1, rab2)) => {
-               let fetch =
-                 _buildFakeFetch(
-                   ~sandbox,
-                   ~arrayBuffer1=rab1,
-                   ~arrayBuffer2=rab2,
-                 );
-
-               let valueRef = ref(0);
-
-               ImportABTool.SAB.loadSABAndSetToState(
-                 ~sabRelativePath=sab1RelativePath,
-                 ~initAssetBundleArrayBufferCache=
-                   (.) => {
-                     valueRef := 2;
-
-                     Most.empty();
-                   },
-                 ~isAssetBundleArrayBufferCachedFunc=
-                   (. _, _) => false |> Most.just,
-                 ~fetchFunc=fetch,
-                 (),
-               )
-               |> MostTool.testStream(() =>
-                    valueRef^ |> expect == 2 |> resolve
-                  );
-             });
-        });
-
         testPromise("if dependency rab is cached, not load it", () => {
           let (rab1RelativePath, rab2RelativePath, sab1RelativePath) =
             ImportABTool.SAB.getABRelativePaths();
@@ -126,9 +92,11 @@ let _ =
                ImportABTool.SAB.loadSABAndSetToState(
                  ~sabRelativePath=sab1RelativePath,
                  ~isAssetBundleArrayBufferCachedFunc=
-                   (. _, _) => true |> Most.just,
+                   (. _, _) =>
+                     Js.Promise.make((~resolve, ~reject) => resolve(. true)),
                  ~getAssetBundleArrayBufferCacheFunc=
-                   (. _) => rab1 |> Most.just,
+                   (. _) =>
+                     Js.Promise.make((~resolve, ~reject) => resolve(. rab1)),
                  ~fetchFunc=fetch,
                  (),
                )
@@ -156,13 +124,17 @@ let _ =
                    ~sabRelativePath=sab1RelativePath,
                    ~isAssetBundleArrayBufferCachedFunc=
                      (. abRelativePath, hashId) =>
-                       (
-                         JudgeTool.isEqual(abRelativePath, rab1RelativePath) ?
-                           true : false
-                       )
-                       |> Most.just,
+                       Js.Promise.make((~resolve, ~reject) =>
+                         resolve(.
+                           JudgeTool.isEqual(abRelativePath, rab1RelativePath) ?
+                             true : false,
+                         )
+                       ),
                    ~getAssetBundleArrayBufferCacheFunc=
-                     (. _) => rab1 |> Most.just,
+                     (. _) =>
+                       Js.Promise.make((~resolve, ~reject) =>
+                         resolve(. rab1)
+                       ),
                    ~fetchFunc=fetch,
                    (),
                  )
@@ -194,7 +166,10 @@ let _ =
                  ImportABTool.SAB.loadSABAndSetToState(
                    ~sabRelativePath=sab1RelativePath,
                    ~isAssetBundleArrayBufferCachedFunc=
-                     (. abRelativePath, hashId) => false |> Most.just,
+                     (. abRelativePath, hashId) =>
+                       Js.Promise.make((~resolve, ~reject) =>
+                         resolve(. false)
+                       ),
                    ~fetchFunc=fetch,
                    (),
                  )
@@ -227,7 +202,10 @@ let _ =
                  ImportABTool.SAB.loadSABAndSetToState(
                    ~sabRelativePath=sab1RelativePath,
                    ~isAssetBundleArrayBufferCachedFunc=
-                     (. abRelativePath, hashId) => false |> Most.just,
+                     (. abRelativePath, hashId) =>
+                       Js.Promise.make((~resolve, ~reject) =>
+                         resolve(. false)
+                       ),
                    ~fetchFunc=fetch,
                    (),
                  )

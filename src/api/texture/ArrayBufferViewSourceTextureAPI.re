@@ -7,7 +7,6 @@ open ArrayBufferViewSourceTextureType;
 let createArrayBufferViewSourceTexture = state =>
   CreateArrayBufferViewSourceTextureMainService.create(. state);
 
-/* TODO check alive */
 let unsafeGetArrayBufferViewSourceTextureSource =
     (texture, state: StateDataMainType.state) =>
   /* WonderLog.Contract.requireCheck(
@@ -280,7 +279,8 @@ let getArrayBufferViewSourceTextureFormat =
          ),
        IsDebugMainService.getIsDebug(StateDataMain.stateData)
      ); */
-  OperateArrayBufferViewSourceTextureMainService.getFormat(texture, state);
+  OperateArrayBufferViewSourceTextureMainService.getFormat(texture, state)
+  |> uint8ToFormat;
 
 let setArrayBufferViewSourceTextureFormat =
     (texture, format, state: StateDataMainType.state) =>
@@ -301,7 +301,7 @@ let setArrayBufferViewSourceTextureFormat =
      ); */
   OperateArrayBufferViewSourceTextureMainService.setFormat(
     texture,
-    format,
+    format |> formatToUint8,
     state,
   );
 

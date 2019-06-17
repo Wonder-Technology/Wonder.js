@@ -21,7 +21,7 @@ let rec batchDispose =
             batchDisposeLightMaterialComponentFunc,
           ),
           uidArray: array(int),
-          (isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+          (isKeepOrder, isRemoveGeometry, isRemoveMaterial, isRemoveTexture),
           state,
         ) => {
   let state = state |> _setDisposedUidMap(uidArray);
@@ -36,7 +36,13 @@ let rec batchDispose =
   ) =
     state
     |> DisposeGameObjectComponentMainService.batchDispose(
-         (uidArray, isKeepOrder, isRemoveGeometry, isRemoveMaterial),
+         (
+           uidArray,
+           isKeepOrder,
+           isRemoveGeometry,
+           isRemoveMaterial,
+           isRemoveTexture,
+         ),
          (
            batchDisposeBasicMaterialComponentFunc,
            batchDisposeLightMaterialComponentFunc,
@@ -75,6 +81,8 @@ let clearDeferDisposeData = state => {
       WonderCommonlib.ArrayService.createEmpty(),
     disposedUidArrayForDisposeGeometryRemoveMaterial:
       WonderCommonlib.ArrayService.createEmpty(),
+    disposedUidArrayForRemoveTexture:
+      WonderCommonlib.ArrayService.createEmpty(),
     disposedBasicCameraViewArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedTransformArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedTransformArrayForKeepOrder:
@@ -87,6 +95,8 @@ let clearDeferDisposeData = state => {
       WonderCommonlib.ArrayService.createEmpty(),
     disposedBasicMaterialDataMap: WonderCommonlib.ArrayService.createEmpty(),
     disposedLightMaterialDataMap: WonderCommonlib.ArrayService.createEmpty(),
+    disposedLightMaterialRemoveTextureDataMap:
+      WonderCommonlib.ArrayService.createEmpty(),
     disposedGeometryDataMap: WonderCommonlib.ArrayService.createEmpty(),
     disposedSourceInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
     disposedObjectInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -129,6 +139,13 @@ let deferDisposeKeepOrderRemoveGeometryRemoveMaterial = (uid: int, state) =>
 let deferDisposeDisposeGeometryRemoveMaterial = (uid: int, state) => {
   state.gameObjectRecord.disposedUidArrayForDisposeGeometryRemoveMaterial =
     state.gameObjectRecord.disposedUidArrayForDisposeGeometryRemoveMaterial
+    |> ArrayService.push(uid);
+  state;
+};
+
+let deferDisposeRemoveTexture = (uid: int, state) => {
+  state.gameObjectRecord.disposedUidArrayForRemoveTexture =
+    state.gameObjectRecord.disposedUidArrayForRemoveTexture
     |> ArrayService.push(uid);
   state;
 };

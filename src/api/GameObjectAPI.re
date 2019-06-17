@@ -654,6 +654,26 @@ let disposeGameObjectLightMaterialComponent =
   deferDisposeLightMaterialComponent(. gameObject, component, state);
 };
 
+let disposeGameObjectLightMaterialComponentRemoveTexture =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      component: component,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  deferDisposeLightMaterialComponentRemoveTexture(.
+    gameObject,
+    component,
+    state,
+  );
+};
+
 let unsafeGetGameObjectLightMaterialComponent =
     (
       gameObject: GameObjectPrimitiveType.gameObject,
@@ -1059,6 +1079,21 @@ let disposeGameObjectDisposeGeometryRemoveMaterial =
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
   deferDisposeDisposeGeometryRemoveMaterial(gameObject, state);
+};
+
+let disposeGameObjectRemoveTexture =
+    (
+      gameObject: GameObjectPrimitiveType.gameObject,
+      state: StateDataMainType.state,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(Operators.(_checkGameObjectShouldAlive(gameObject, state)))
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+  deferDisposeRemoveTexture(gameObject, state);
 };
 
 let initGameObject =

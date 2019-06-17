@@ -10,23 +10,25 @@ let createInitMaterialState =
         glslRecord,
         glslSenderRecord,
         glslLocationRecord,
-        glslChunkRecord
-      } as state: StateDataRenderWorkerType.renderWorkerState
+        glslChunkRecord,
+      } as state: StateDataRenderWorkerType.renderWorkerState,
     ) => {
-  let {index, disposedIndexArray} = RecordBasicMaterialRenderWorkerService.getRecord(state);
+  let {index, disposedIndexArray} =
+    RecordBasicMaterialRenderWorkerService.getRecord(state);
   {
     materialRecord: {
       index,
       disposedIndexArray,
-      shaderIndices: RecordBasicMaterialRenderWorkerService.unsafeGetShaderIndices(state),
-      mapUnits: RecordBasicMaterialRenderWorkerService.unsafeGetMapUnits(state)
+      shaderIndices:
+        RecordBasicMaterialRenderWorkerService.unsafeGetShaderIndices(state),
     },
-    renderConfigRecord: RecordRenderConfigRenderWorkerService.getRecord(state),
+    renderConfigRecord:
+      RecordRenderConfigRenderWorkerService.getRecord(state),
     shaderRecord,
     programRecord,
     glslRecord,
     glslSenderRecord,
     glslLocationRecord,
-    glslChunkRecord
-  }
+    glslChunkRecord,
+  };
 };

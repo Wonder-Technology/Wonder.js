@@ -2,7 +2,7 @@ open GLSLSenderType;
 
 let _addUniformSendDataByType =
     (
-      (shaderCacheMap, name, pos, type_),
+      (shaderCacheMap, name, pos),
       {
         renderObjectSendModelDataArr,
         renderObjectSendMaterialDataArr,
@@ -12,7 +12,7 @@ let _addUniformSendDataByType =
         instanceSendNoCachableDataArr,
         noMaterialShaderSendCachableDataArr,
       },
-      getDataFunc,
+      (getDataFunc, sendDataFunc),
     ) => {
   renderObjectSendModelDataArr,
   renderObjectSendMaterialDataArr,
@@ -27,9 +27,10 @@ let _addUniformSendDataByType =
            shaderCacheMap,
            name,
            pos,
-           sendDataFunc: SendUniformService.getSendCachableDataByType(type_),
+           sendDataFunc,
+           /* SendUniformService.getSendCachableDataByType(type_), */
            getDataFunc: getDataFunc |> Obj.magic,
-         }: uniformNoMaterialShaderSendCachableData,
+         }: uniformNoMaterialShaderSendData,
        ),
 };
 
@@ -37,9 +38,32 @@ let addSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr) =>
   switch (field) {
   | "outlineExpand" =>
     _addUniformSendDataByType(
-      (uniformCacheMap, name, pos, type_),
+      (uniformCacheMap, name, pos),
       sendDataArr,
-      GetOutlineDataGetRenderDataService.getColor,
+      (
+        GetOutlineDataGetRenderDataService.getColor,
+        SendUniformService.getSendCachableDataByType(type_),
+      ),
+    )
+  /* TODO test or remove */
+  | "skyboxVMatrix" =>
+    _addUniformSendDataByType(
+      (uniformCacheMap, name, pos),
+      sendDataArr,
+      /* GetSkyboxDataGetRenderDataService.getSkyboxVMatrix, */
+      (
+        GetSkyboxDataGetRenderDataService.getSkyboxVMatrix,
+        SendUniformService.getSendNoCachableDataByType(type_),
+      ),
+    )
+  | "skyboxCubeMap" =>
+    _addUniformSendDataByType(
+      (uniformCacheMap, name, pos),
+      sendDataArr,
+      (
+        GetSkyboxDataGetRenderDataService.unsafeGetGlCubeTexture,
+        SendUniformService.getSendCachableDataByType(type_),
+      ),
     )
   /* TODO refactor(extend): move to editor */
   /* TODO need test in editor*/
@@ -49,11 +73,14 @@ let addSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr) =>
     | "u_cameraPosInLocalCoordSystem"
     | "u_color" =>
       _addUniformSendDataByType(
-        (uniformCacheMap, name, pos, type_),
+        (uniformCacheMap, name, pos),
         sendDataArr,
         /* TODO refactor(extend): change to custom shader instead of no material shader! */
         /* GetBasicMaterialDataGetRenderDataService.getColor */
-        Obj.magic(-1),
+        (
+          Obj.magic(-1),
+          SendUniformService.getSendCachableDataByType(type_),
+        ),
       )
     }
   | _ =>

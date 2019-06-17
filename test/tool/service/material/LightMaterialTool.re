@@ -23,7 +23,7 @@ let createGameObjectWithShareMaterial = (material, state) => {
   (state, gameObject, material);
 };
 
-let createAndSetMapsWithMap = (material, diffuseMap, specularMap, state) => {
+let setMaps = (material, diffuseMap, specularMap, state) => {
   let state =
     state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, diffuseMap);
   let state =
@@ -37,7 +37,33 @@ let createAndSetMaps = (material, state) => {
     BasicSourceTextureAPI.createBasicSourceTexture(state);
   let (state, texture2) =
     BasicSourceTextureAPI.createBasicSourceTexture(state);
-  createAndSetMapsWithMap(material, texture1, texture2, state);
+  setMaps(material, texture1, texture2, state);
+};
+
+let createAndSetArrayBufferViewMaps = (material, state) => {
+  let (state, texture1) =
+    ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(state);
+  let (state, texture2) =
+    ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(state);
+  setMaps(material, texture1, texture2, state);
+};
+
+let createMaterialWithDiffuseMap = state => {
+  let (state, material) = LightMaterialAPI.createLightMaterial(state);
+
+  let (state, diffuseMap) =
+    BasicSourceTextureAPI.createBasicSourceTexture(state);
+
+  let state =
+    state |> LightMaterialAPI.setLightMaterialDiffuseMap(material, diffuseMap);
+
+  let source1 = BasicSourceTextureTool.buildSource(10, 20);
+
+  let state =
+    state
+    |> BasicSourceTextureAPI.setBasicSourceTextureSource(diffuseMap, source1);
+
+  (state, material, (diffuseMap, source1));
 };
 
 let createMaterialWithMap = state => {
@@ -56,7 +82,51 @@ let createMaterialWithMap = state => {
     |> BasicSourceTextureAPI.setBasicSourceTextureSource(diffuseMap, source1);
   let state =
     state
-    |> BasicSourceTextureAPI.setBasicSourceTextureSource(specularMap, source1);
+    |> BasicSourceTextureAPI.setBasicSourceTextureSource(specularMap, source2);
+
+  (state, material, (diffuseMap, specularMap, source1, source2));
+};
+
+let createMaterialWithArrayBufferViewDiffuseMap = state => {
+  let (state, material) = LightMaterialAPI.createLightMaterial(state);
+  let (state, texture) =
+    ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(state);
+  let source = ArrayBufferViewSourceTextureTool.buildSource();
+  let state =
+    state
+    |> ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureSource(
+         texture,
+         source,
+       );
+  let state =
+    LightMaterialAPI.setLightMaterialDiffuseMap(material, texture, state);
+
+  (state, material, (texture, source));
+};
+
+let createMaterialWithArrayBufferViewMap = state => {
+  let (state, material) = LightMaterialAPI.createLightMaterial(state);
+
+  let (state, (diffuseMap, specularMap)) =
+    createAndSetArrayBufferViewMaps(material, state);
+
+  (state, material, (diffuseMap, specularMap));
+
+  let source1 = ArrayBufferViewSourceTextureTool.buildSource();
+  let source2 = ArrayBufferViewSourceTextureTool.buildSource2();
+
+  let state =
+    state
+    |> ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureSource(
+         diffuseMap,
+         source1,
+       );
+  let state =
+    state
+    |> ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureSource(
+         specularMap,
+         source2,
+       );
 
   (state, material, (diffuseMap, specularMap, source1, source2));
 };
@@ -134,46 +204,14 @@ let isMaterialDisposed = (material, state) => {
   disposedIndexArray |> Js.Array.includes(material);
 };
 
-let getDiffuseMapUnit = (material, state) =>
-  OperateTypeArrayLightMaterialService.getDiffuseMapUnit(.
-    material,
-    getRecord(state).diffuseMapUnits,
-  );
+let getDiffuseTextureIndicesIndex = (material, state) =>
+  BufferLightMaterialService.getDiffuseTextureIndicesIndex(material);
 
-let setDiffuseMapUnit = (material, unit, state) => {
-  OperateTypeArrayLightMaterialService.setDiffuseMapUnit(.
-    material,
-    unit,
-    getRecord(state).diffuseMapUnits,
-  )
-  |> ignore;
-  state;
-};
-
-let getSpecularMapUnit = (material, state) =>
-  OperateTypeArrayLightMaterialService.getSpecularMapUnit(.
-    material,
-    getRecord(state).specularMapUnits,
-  );
-
-let setSpecularMapUnit = (material, unit, state) => {
-  OperateTypeArrayLightMaterialService.setSpecularMapUnit(.
-    material,
-    unit,
-    getRecord(state).specularMapUnits,
-  )
-  |> ignore;
-  state;
-};
-
-let getTextureIndicesIndex = (material, state) =>
-  BufferLightMaterialService.getTextureIndicesIndex(
-    material,
-    BufferSettingService.getTextureCountPerMaterial(state.settingRecord),
-  );
+let getSpecularTextureIndicesIndex = (material, state) =>
+  BufferLightMaterialService.getSpecularTextureIndicesIndex(material);
 
 let getDefaultTextureIndex = () =>
-  BufferMaterialService.getDefaultTextureIndex();
+  TextureIndexService.getDefaultTextureIndex();
 
 let hasGameObject = (material, state) =>
   switch (
@@ -189,8 +227,5 @@ let isNeedInitMaterial = (material, state) =>
     getRecord(state).shaderIndices,
   );
 
-let getEmptyMapUnitArray = (material, state) =>
-  EmptyMapUnitArrayMapService._unsafeGetEmptyMapUnitArray(
-    material,
-    getRecord(state).emptyMapUnitArrayMap,
-  );
+let disposeLightMaterial = (material, state) =>
+  LightMaterialAPI.batchDisposeLightMaterial([|material|], state);

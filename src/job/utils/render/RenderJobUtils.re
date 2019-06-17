@@ -236,6 +236,8 @@ let render =
     let getRenderDataSubState =
       CreateGetRenederDataSubStateRenderService.createState(state);
 
+    let state = bindAndUpdateFunc(. gl, materialIndex, state);
+
     let state =
       state
       |> sendUniformRenderObjectMaterialData(
@@ -244,14 +246,14 @@ let render =
            getRenderDataSubState,
          );
 
-    bindAndUpdateFunc(. gl, materialIndex, state);
+    state;
   };
 };
 
-let draw = (gl, meshRendererIndex, geometryIndex, state) =>
+let draw = (gl, glDrawMode, geometryIndex, state) =>
   DrawGLSLService.drawElement(
     (
-      DrawModeMeshRendererService.getGlDrawMode(gl, meshRendererIndex, state),
+      glDrawMode,
       GeometryRenderService.getIndexType(gl, geometryIndex, state),
       GeometryRenderService.getIndexTypeSize(gl, geometryIndex, state),
       GetGeometryIndicesRenderService.getIndicesCount(. geometryIndex, state),

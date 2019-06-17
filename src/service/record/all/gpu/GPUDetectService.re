@@ -61,11 +61,13 @@ let _detectPrecision = (gl, record) => {
     gl |> getShaderPrecisionFormat(fragmentShader, mediumFloat);
   let highpAvailable =
     vertexShaderPrecisionHighpFloat##precision > 0
-    && fragmentShaderPrecisionHighpFloat##precision > 0;
+    &&
+    fragmentShaderPrecisionHighpFloat##precision > 0;
   let mediumpAvailable =
     vertexShaderPrecisionMediumpFloat##precision > 0
-    && fragmentShaderPrecisionMediumpFloat##precision > 0;
-  if (! highpAvailable) {
+    &&
+    fragmentShaderPrecisionMediumpFloat##precision > 0;
+  if (!highpAvailable) {
     if (mediumpAvailable) {
       WonderLog.Log.warn({j|not support highp, using mediump instead|j});
       {...record, precision: Some(MEDIUMP)};
@@ -80,39 +82,16 @@ let _detectPrecision = (gl, record) => {
   };
 };
 
-let _getTextureCapability = (gl, textureCountPerMaterial, record) =>
-  {
-    ...record,
-    maxTextureUnit: Some(gl |> getParameter(gl |> getMaxTextureImageUnits)),
-  }
-  |> WonderLog.Contract.ensureCheck(
-       ({maxTextureUnit}) => {
-         open WonderLog;
-         open Contract;
-         open Operators;
-         let maxTextureUnit = maxTextureUnit |> OptionService.unsafeGet;
-         test(
-           Log.buildAssertMessage(
-             ~expect=
-               {j|maxTextureUnit:$maxTextureUnit >= textureCountPerMaterial:$textureCountPerMaterial|j},
-             ~actual={j|not|j},
-           ),
-           () =>
-           maxTextureUnit >= textureCountPerMaterial
-         );
-       },
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
+let _getTextureCapability = (gl, record) => {
+  ...record,
+  maxTextureUnit: Some(gl |> getParameter(gl |> getMaxTextureImageUnits)),
+};
 
-let _detectCapability = (gl, textureCountPerMaterial, record) =>
-  record
-  |> _getTextureCapability(gl, textureCountPerMaterial)
-  |> _detectPrecision(gl);
+let _detectCapability = (gl, record) =>
+  record |> _getTextureCapability(gl) |> _detectPrecision(gl);
 
-let detect = (gl, textureCountPerMaterial, record) =>
-  record
-  |> _detectExtension(gl)
-  |> _detectCapability(gl, textureCountPerMaterial);
+let detect = (gl, record) =>
+  record |> _detectExtension(gl) |> _detectCapability(gl);
 
 let hasExtension = extension => Js.Option.isSome(extension);
 

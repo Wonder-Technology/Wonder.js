@@ -19,12 +19,6 @@
   ],
   "dynamic_branchs": [
     {
-      "name": "basic_map",
-      "condition": "basic_has_map",
-      "pass": "basic_map",
-      "fail": "no_basic_map"
-    },
-    {
       "name": "common_light_map",
       "condition": "light_has_map",
       "pass": "common_light_map"
@@ -73,8 +67,7 @@
           "name": "basic"
         },
         {
-          "type": "dynamic_branch",
-          "name": "basic_map"
+          "name": "no_basic_map"
         },
         {
           "name": "basic_end"
@@ -209,6 +202,22 @@
         },
         {
           "name": "outline_expand"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
+    },
+    {
+      "name": "skybox",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "skybox"
         },
         {
           "type": "group",

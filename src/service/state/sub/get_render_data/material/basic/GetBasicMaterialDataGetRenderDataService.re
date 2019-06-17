@@ -11,9 +11,3 @@ let getAlpha = (material, {basicMaterialRecord}) =>
     material,
     basicMaterialRecord.alphas,
   );
-
-let getMapUnit = (material, {basicMaterialRecord}) =>
-  OperateTypeArrayBasicMaterialService.getMapUnit(.
-    material,
-    basicMaterialRecord.mapUnits,
-  );

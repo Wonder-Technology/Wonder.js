@@ -227,6 +227,23 @@ let _convertExtras = json =>
   |> optional(
        field("extras", json =>
          {
+           flyCameraControllers:
+             json
+             |> optional(
+                  field(
+                    "flyCameraControllers",
+                    array(json =>
+                      (
+                        {
+                          moveSpeed: json |> field("moveSpeed", float),
+                          rotateSpeed: json |> field("rotateSpeed", float),
+                          wheelSpeed: json |> field("wheelSpeed", float),
+                          isBindEvent: json |> field("isBindEvent", bool),
+                        }: SceneGraphType.flyCameraController
+                      )
+                    ),
+                  ),
+                ),
            arcballCameraControllers:
              json
              |> optional(
@@ -571,10 +588,15 @@ let _convertNodes = json =>
                         |> optimizedOptional(
                              optimizedField("lightMaterial", int),
                            ),
-                      cameraController:
+                      flyCameraController:
                         json
                         |> optimizedOptional(
-                             optimizedField("cameraController", int),
+                             optimizedField("flyCameraController", int),
+                           ),
+                      arcballCameraController:
+                        json
+                        |> optimizedOptional(
+                             optimizedField("arcballCameraController", int),
                            ),
                       script:
                         json

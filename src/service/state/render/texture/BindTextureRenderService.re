@@ -1,7 +1,6 @@
 open StateRenderType;
 
-let _bind =
-    (gl, unit, texture, (bindTextureUnitCacheMap, glTextureMap) as dataTuple) => {
+let _bind = (gl, unit, texture, glTextureMap) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -20,50 +19,33 @@ let _bind =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
+
   switch (OperateGlTextureMapService.getTexture(texture, glTextureMap)) {
-  | None => dataTuple
+  | None => glTextureMap
   | Some(glTexture) =>
-    CacheTextureService.isCached(unit, texture, bindTextureUnitCacheMap) ?
-      dataTuple :
-      {
-        let bindTextureUnitCacheMap =
-          CacheTextureService.addActiveTexture(
-            unit,
-            texture,
-            bindTextureUnitCacheMap,
-          );
-        let target = WonderWebgl.Gl.getTexture2D(gl);
-        gl
-        |> WonderWebgl.Gl.activeTexture(
-             WonderWebgl.Gl.getTextureUnit0(gl) + unit,
-           );
-        gl |> WonderWebgl.Gl.bindTexture(target, glTexture);
-        (bindTextureUnitCacheMap, glTextureMap);
-      }
+    let target = WonderWebgl.Gl.getTexture2D(gl);
+    gl
+    |> WonderWebgl.Gl.activeTexture(
+         WonderWebgl.Gl.getTextureUnit0(gl) + unit,
+       );
+    gl |> WonderWebgl.Gl.bindTexture(target, glTexture);
+    glTextureMap;
   };
 };
 
 let _bindBasicSourceTexture =
   (.
-    basicSourceTextureInTypeArray,
+    basicSourceTexture,
     (gl, unit, {basicSourceTextureRecord, browserDetectRecord} as state),
   ) => {
-    _bind(
-      gl,
-      unit,
-      basicSourceTextureInTypeArray,
-      (
-        basicSourceTextureRecord.bindTextureUnitCacheMap,
-        basicSourceTextureRecord.glTextureMap,
-      ),
-    )
+    _bind(gl, unit, basicSourceTexture, basicSourceTextureRecord.glTextureMap)
     |> ignore;
     state;
   };
 
 let _bindArrayBufferViewSourceTexture =
   (.
-    arrayBufferViewTextureInTypeArray,
+    arrayBufferViewTexture,
     (
       gl,
       unit,
@@ -73,11 +55,8 @@ let _bindArrayBufferViewSourceTexture =
     _bind(
       gl,
       unit,
-      arrayBufferViewTextureInTypeArray,
-      (
-        arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
-        arrayBufferViewSourceTextureRecord.glTextureMap,
-      ),
+      arrayBufferViewTexture,
+      arrayBufferViewSourceTextureRecord.glTextureMap,
     )
     |> ignore;
     state;
@@ -108,6 +87,7 @@ let bind =
       ),
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
+
   IndexSourceTextureService.handleByJudgeSourceTextureIndex(
     texture,
     arrayBufferViewSourceTextureRecord.textureIndexOffset,

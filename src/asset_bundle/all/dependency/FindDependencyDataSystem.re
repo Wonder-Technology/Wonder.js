@@ -135,7 +135,7 @@ let rec _findByDepthSearch =
        )
   };
 
-let findAllDependencyRAbRelativePathByDepthSearch =
+let findAllDependencyRABRelativePathByDepthSearch =
     (abRelativePath, dependencyRelation) =>
   _findByDepthSearch(
     abRelativePath,
@@ -145,6 +145,77 @@ let findAllDependencyRAbRelativePathByDepthSearch =
   |> Js.Array.reverseInPlace
   |> ArrayService.removeDuplicateItems((. item) => item);
 
+let _isFindByBreadthSearchEnd =
+    (
+      thisLayerAddedDependentAbRelativePathArr,
+      thisLayerRemainedDependentAbRelativePathArr,
+    ) =>
+  thisLayerAddedDependentAbRelativePathArr
+  |> Js.Array.length === 0
+  && thisLayerRemainedDependentAbRelativePathArr
+  |> Js.Array.length === 0;
+
+let _addRemainedDependentAbRelativePathToThisLayer =
+    (
+      dependencyRelation,
+      (
+        allDependentAbRelativePathArr,
+        thisLayerRemainedDependentAbRelativePathArr,
+        thisLayerAddedDependentAbRelativePathArr,
+      ),
+    ) => {
+  let dependentAbRelativePath =
+    thisLayerRemainedDependentAbRelativePathArr |> ArrayService.unsafeGetFirst;
+
+  let thisLayerRemainedDependentAbRelativePathArr =
+    thisLayerRemainedDependentAbRelativePathArr |> Js.Array.sliceFrom(1);
+
+  let thisLayerAddedDependentAbRelativePathArr =
+    switch (
+      dependencyRelation
+      |> WonderCommonlib.ImmutableHashMapService.get(dependentAbRelativePath)
+    ) {
+    | None => thisLayerAddedDependentAbRelativePathArr
+    | Some(abRelativePathArr) =>
+      ArrayService.fastConcat(
+        thisLayerAddedDependentAbRelativePathArr,
+        abRelativePathArr,
+      )
+    };
+
+  (
+    allDependentAbRelativePathArr,
+    thisLayerRemainedDependentAbRelativePathArr,
+    thisLayerAddedDependentAbRelativePathArr,
+  );
+};
+
+let _addThisLayerAbRelativePathArrToAll =
+    (
+      dependencyRelation,
+      (
+        allDependentAbRelativePathArr,
+        thisLayerRemainedDependentAbRelativePathArr,
+        thisLayerAddedDependentAbRelativePathArr,
+      ),
+    ) => {
+  let allDependentAbRelativePathArr =
+    allDependentAbRelativePathArr
+    |> ArrayService.push(thisLayerAddedDependentAbRelativePathArr);
+
+  let thisLayerRemainedDependentAbRelativePathArr =
+    thisLayerAddedDependentAbRelativePathArr |> Js.Array.copy;
+
+  let thisLayerAddedDependentAbRelativePathArr =
+    WonderCommonlib.ArrayService.createEmpty();
+
+  (
+    allDependentAbRelativePathArr,
+    thisLayerRemainedDependentAbRelativePathArr,
+    thisLayerAddedDependentAbRelativePathArr,
+  );
+};
+
 let rec _findByBreadthSearch =
         (
           dependencyRelation,
@@ -152,10 +223,10 @@ let rec _findByBreadthSearch =
           thisLayerAddedDependentAbRelativePathArr,
           thisLayerRemainedDependentAbRelativePathArr,
         ) =>
-  thisLayerAddedDependentAbRelativePathArr
-  |> Js.Array.length === 0
-  && thisLayerRemainedDependentAbRelativePathArr
-  |> Js.Array.length === 0 ?
+  _isFindByBreadthSearchEnd(
+    thisLayerAddedDependentAbRelativePathArr,
+    thisLayerRemainedDependentAbRelativePathArr,
+  ) ?
     allDependentAbRelativePathArr :
     {
       let (
@@ -164,53 +235,22 @@ let rec _findByBreadthSearch =
         thisLayerAddedDependentAbRelativePathArr,
       ) =
         thisLayerRemainedDependentAbRelativePathArr |> Js.Array.length > 0 ?
-          {
-            let dependentAbRelativePath =
-              thisLayerRemainedDependentAbRelativePathArr
-              |> ArrayService.unsafeGetFirst;
-
-            let thisLayerRemainedDependentAbRelativePathArr =
-              thisLayerRemainedDependentAbRelativePathArr
-              |> Js.Array.sliceFrom(1);
-
-            let thisLayerAddedDependentAbRelativePathArr =
-              switch (
-                dependencyRelation
-                |> WonderCommonlib.ImmutableHashMapService.get(
-                     dependentAbRelativePath,
-                   )
-              ) {
-              | None => thisLayerAddedDependentAbRelativePathArr
-              | Some(abRelativePathArr) =>
-                ArrayService.fastConcat(
-                  thisLayerAddedDependentAbRelativePathArr,
-                  abRelativePathArr,
-                )
-              };
-
+          _addRemainedDependentAbRelativePathToThisLayer(
+            dependencyRelation,
             (
               allDependentAbRelativePathArr,
               thisLayerRemainedDependentAbRelativePathArr,
               thisLayerAddedDependentAbRelativePathArr,
-            );
-          } :
-          {
-            let allDependentAbRelativePathArr =
-              allDependentAbRelativePathArr
-              |> ArrayService.push(thisLayerAddedDependentAbRelativePathArr);
-
-            let thisLayerRemainedDependentAbRelativePathArr =
-              thisLayerAddedDependentAbRelativePathArr |> Js.Array.copy;
-
-            let thisLayerAddedDependentAbRelativePathArr =
-              WonderCommonlib.ArrayService.createEmpty();
-
+            ),
+          ) :
+          _addThisLayerAbRelativePathArrToAll(
+            dependencyRelation,
             (
               allDependentAbRelativePathArr,
               thisLayerRemainedDependentAbRelativePathArr,
               thisLayerAddedDependentAbRelativePathArr,
-            );
-          };
+            ),
+          );
 
       _findByBreadthSearch(
         dependencyRelation,
@@ -228,7 +268,7 @@ let _isInclude = (dependentAbRelativePath, allRemainedDependentAbRelativePath) =
      )
   |> Js.Array.length > 0;
 
-let findAllDependencyRAbRelativePathByBreadthSearch =
+let findAllDependencyRABRelativePathByBreadthSearch =
     (abRelativePath, dependencyRelation) =>
   switch (
     dependencyRelation
@@ -236,7 +276,7 @@ let findAllDependencyRAbRelativePathByBreadthSearch =
   ) {
   | None => WonderCommonlib.ArrayService.createEmpty()
   | Some(dependentAbRelativePathArr) =>
-    let allDependencyRAbRelativePath =
+    let allDependencyRABRelativePath =
       _findByBreadthSearch(
         dependencyRelation,
         WonderCommonlib.ArrayService.createEmpty(),
@@ -248,10 +288,10 @@ let findAllDependencyRAbRelativePathByBreadthSearch =
            |> ArrayService.removeDuplicateItems((. item) => item)
          );
 
-    allDependencyRAbRelativePath
+    allDependencyRABRelativePath
     |> Js.Array.mapi((dependentAbRelativePathArr, index) => {
          let allRemainedDependentAbRelativePath =
-           allDependencyRAbRelativePath |> Js.Array.sliceFrom(index |> succ);
+           allDependencyRABRelativePath |> Js.Array.sliceFrom(index |> succ);
 
          dependentAbRelativePathArr
          |> Js.Array.filter(dependentAbRelativePath =>

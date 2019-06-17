@@ -21,6 +21,9 @@ let render =
   renderIndexArray
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, index) => {
+         let state =
+           OperateAllTextureRenderService.resetActivedTextureUnitIndex(state);
+
          let transformIndex =
            RenderObjectBufferTypeArrayService.getComponent(
              index,
@@ -75,7 +78,16 @@ let render =
                ),
                state,
              );
-           RenderJobUtils.draw(gl, meshRendererIndex, geometryIndex, state);
+           RenderJobUtils.draw(
+             gl,
+             DrawModeMeshRendererService.getGlDrawMode(
+               gl,
+               meshRendererIndex,
+               state,
+             ),
+             geometryIndex,
+             state,
+           );
            state;
          };
        },

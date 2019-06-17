@@ -15,6 +15,7 @@ let create = () => {
     WonderCommonlib.ArrayService.createEmpty(),
   disposedUidArrayForDisposeGeometryRemoveMaterial:
     WonderCommonlib.ArrayService.createEmpty(),
+  disposedUidArrayForRemoveTexture: WonderCommonlib.ArrayService.createEmpty(),
   disposedScriptArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedBasicCameraViewArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedTransformArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -27,6 +28,8 @@ let create = () => {
     WonderCommonlib.ArrayService.createEmpty(),
   disposedBasicMaterialDataMap: WonderCommonlib.ArrayService.createEmpty(),
   disposedLightMaterialDataMap: WonderCommonlib.ArrayService.createEmpty(),
+  disposedLightMaterialRemoveTextureDataMap:
+    WonderCommonlib.ArrayService.createEmpty(),
   disposedGeometryDataMap: WonderCommonlib.ArrayService.createEmpty(),
   disposedSourceInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
   disposedObjectInstanceArray: WonderCommonlib.ArrayService.createEmpty(),
@@ -68,6 +71,7 @@ let deepCopyForRestore =
         disposedUidArrayForKeepOrderRemoveGeometry,
         disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
         disposedUidArrayForDisposeGeometryRemoveMaterial,
+        disposedUidArrayForRemoveTexture,
         disposedBasicCameraViewArray,
         disposedTransformArray,
         disposedTransformArrayForKeepOrder,
@@ -76,6 +80,7 @@ let deepCopyForRestore =
         disposedArcballCameraControllerArray,
         disposedBasicMaterialDataMap,
         disposedLightMaterialDataMap,
+        disposedLightMaterialRemoveTextureDataMap,
         disposedGeometryDataMap,
         disposedSourceInstanceArray,
         disposedObjectInstanceArray,
@@ -103,7 +108,6 @@ let deepCopyForRestore =
   ...record,
   uid,
   nameMap: nameMap |> WonderCommonlib.MutableSparseMapService.copy,
-  /* TODO test */
   isActiveMap: isActiveMap |> WonderCommonlib.MutableSparseMapService.copy,
   isRootMap: isRootMap |> WonderCommonlib.MutableSparseMapService.copy,
   disposeCount,
@@ -122,6 +126,9 @@ let deepCopyForRestore =
     |> WonderCommonlib.MutableSparseMapService.copy,
   disposedUidArrayForDisposeGeometryRemoveMaterial:
     disposedUidArrayForDisposeGeometryRemoveMaterial
+    |> WonderCommonlib.MutableSparseMapService.copy,
+  disposedUidArrayForRemoveTexture:
+    disposedUidArrayForRemoveTexture
     |> WonderCommonlib.MutableSparseMapService.copy,
   disposedBasicCameraViewArray:
     disposedBasicCameraViewArray
@@ -145,6 +152,9 @@ let deepCopyForRestore =
     |> WonderCommonlib.MutableSparseMapService.copy,
   disposedLightMaterialDataMap:
     disposedLightMaterialDataMap
+    |> WonderCommonlib.MutableSparseMapService.copy,
+  disposedLightMaterialRemoveTextureDataMap:
+    disposedLightMaterialRemoveTextureDataMap
     |> WonderCommonlib.MutableSparseMapService.copy,
   disposedGeometryDataMap:
     disposedGeometryDataMap |> WonderCommonlib.MutableSparseMapService.copy,

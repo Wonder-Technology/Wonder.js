@@ -11,29 +11,18 @@ open DisposeComponentService;
 let isAlive = (material, {disposedIndexArray}) =>
   DisposeMaterialMainService.isAlive(material, disposedIndexArray);
 
-/*!
-  not dispose texture when dispose material!
-  because different materials may use same texture, if dispose one material's texture which is shared, then will affect other materials!
-
-  so need user mannually dispose texture!
-  */
-let _disposeData =
-    (
-      material,
-      textureCountPerMaterial,
-      {
+let _disposeData = (material, state) => {
+  let {
         shaderIndices,
         colors,
-        textureIndices,
-        mapUnits,
         isDepthTests,
         alphas,
-        emptyMapUnitArrayMap,
         defaultColor,
         nameMap,
         gameObjectsMap,
-      } as basicMaterialRecord,
-    ) => {
+      } as basicMaterialRecord =
+    RecordBasicMaterialMainService.getRecord(state);
+
   let shaderIndices =
     DisposeMaterialService.disposeData(
       material,
@@ -42,42 +31,32 @@ let _disposeData =
     );
 
   {
-    ...basicMaterialRecord,
-    shaderIndices,
-    colors:
-      DisposeTypeArrayService.deleteAndResetFloat32TypeArr(.
-        BufferBasicMaterialService.getColorIndex(material),
-        BufferBasicMaterialService.getColorsSize(),
-        defaultColor,
-        colors,
-      ),
-    textureIndices:
-      DisposeMaterialMainService.disposeTextureIndices(
-        material,
-        textureCountPerMaterial,
-        textureIndices,
-      ),
-    mapUnits:
-      DisposeTypeArrayService.deleteAndResetUint8(.
-        BufferBasicMaterialService.getMapUnitIndex(material),
-        MapUnitService.getDefaultUnit(),
-        mapUnits,
-      ),
-    isDepthTests:
-      DisposeTypeArrayService.deleteAndResetUint8(.
-        BufferBasicMaterialService.getIsDepthTestIndex(material),
-        BufferMaterialService.getDefaultIsDepthTest(),
-        isDepthTests,
-      ),
-    alphas:
-      DisposeTypeArrayService.deleteAndResetFloat32(.
-        BufferBasicMaterialService.getAlphaIndex(material),
-        BufferBasicMaterialService.getDefaultAlpha(),
-        alphas,
-      ),
-    emptyMapUnitArrayMap:
-      emptyMapUnitArrayMap |> disposeSparseMapData(material),
-    nameMap: nameMap |> disposeSparseMapData(material),
+    ...state,
+    basicMaterialRecord:
+      Some({
+        ...basicMaterialRecord,
+        shaderIndices,
+        colors:
+          DisposeTypeArrayService.deleteAndResetFloat32TypeArr(.
+            BufferBasicMaterialService.getColorIndex(material),
+            BufferBasicMaterialService.getColorsSize(),
+            defaultColor,
+            colors,
+          ),
+        isDepthTests:
+          DisposeTypeArrayService.deleteAndResetUint8(.
+            BufferBasicMaterialService.getIsDepthTestIndex(material),
+            BufferMaterialService.getDefaultIsDepthTest(),
+            isDepthTests,
+          ),
+        alphas:
+          DisposeTypeArrayService.deleteAndResetFloat32(.
+            BufferBasicMaterialService.getAlphaIndex(material),
+            BufferBasicMaterialService.getDefaultAlpha(),
+            alphas,
+          ),
+        nameMap: nameMap |> disposeSparseMapData(material),
+      }),
   };
 };
 
@@ -99,44 +78,47 @@ let handleBatchDisposeComponentData =
         ),
       IsDebugMainService.getIsDebug(StateDataMain.stateData),
     );
-    let {disposedIndexArray} as basicMaterialRecord =
-      RecordBasicMaterialMainService.getRecord(state);
-    let textureCountPerMaterial =
-      BufferSettingService.getTextureCountPerMaterial(settingRecord);
 
-    let basicMaterialRecord =
-      materialDataMap
-      |> WonderCommonlib.MutableSparseMapService.reduceiValid(
-           (. basicMaterialRecord, gameObjectArr, material) => {
-             let basicMaterialRecord =
-               GroupBasicMaterialService.batchRemoveGameObjects(
-                 gameObjectArr,
-                 material,
-                 basicMaterialRecord,
-               );
+    materialDataMap
+    |> WonderCommonlib.MutableSparseMapService.reduceiValid(
+         (. state, gameObjectArr, material) => {
+           let basicMaterialRecord =
+             RecordBasicMaterialMainService.getRecord(state);
 
-             GroupBasicMaterialService.isGroupBasicMaterial(
+           let basicMaterialRecord =
+             GroupBasicMaterialService.batchRemoveGameObjects(
+               gameObjectArr,
                material,
                basicMaterialRecord,
-             ) ?
-               basicMaterialRecord :
+             );
+
+           GroupBasicMaterialService.isGroupBasicMaterial(
+             material,
+             basicMaterialRecord,
+           ) ?
+             {...state, basicMaterialRecord: Some(basicMaterialRecord)} :
+             {
+               let state = state |> _disposeData(material);
+
+               let basicMaterialRecord =
+                 RecordBasicMaterialMainService.getRecord(state);
+
                {
-                 ...
-                   basicMaterialRecord
-                   |> _disposeData(material, textureCountPerMaterial),
-                 disposedIndexArray:
-                   DisposeMaterialService.addDisposeIndex(
-                     material,
-                     disposedIndexArray,
-                   ),
+                 ...state,
+                 basicMaterialRecord:
+                   Some({
+                     ...basicMaterialRecord,
+                     disposedIndexArray:
+                       DisposeMaterialService.addDisposeIndex(
+                         material,
+                         basicMaterialRecord.disposedIndexArray,
+                       ),
+                   }),
                };
-           },
-           basicMaterialRecord,
-         );
-
-    state.basicMaterialRecord = Some(basicMaterialRecord);
-
-    state;
+             };
+         },
+         state,
+       );
   };
 
 let handleBatchDisposeComponent =
@@ -178,26 +160,28 @@ let handleBatchDisposeComponent =
 
   let {disposedIndexArray} as basicMaterialRecord =
     RecordBasicMaterialMainService.getRecord(state);
-  let textureCountPerMaterial =
-    BufferSettingService.getTextureCountPerMaterial(settingRecord);
 
-  let basicMaterialRecord =
-    materialHasNoGameObjectArray
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (. basicMaterialRecord, material) => {
-           ...
-             basicMaterialRecord
-             |> _disposeData(material, textureCountPerMaterial),
-           disposedIndexArray:
-             DisposeMaterialService.addDisposeIndex(
-               material,
-               disposedIndexArray,
-             ),
-         },
-         basicMaterialRecord,
-       );
+  materialHasNoGameObjectArray
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. state, material) => {
+         let state = state |> _disposeData(material);
 
-  state.basicMaterialRecord = Some(basicMaterialRecord);
+         let basicMaterialRecord =
+           RecordBasicMaterialMainService.getRecord(state);
 
-  state;
+         {
+           ...state,
+           basicMaterialRecord:
+             Some({
+               ...basicMaterialRecord,
+               disposedIndexArray:
+                 DisposeMaterialService.addDisposeIndex(
+                   material,
+                   basicMaterialRecord.disposedIndexArray,
+                 ),
+             }),
+         };
+       },
+       state,
+     );
 };

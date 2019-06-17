@@ -2,6 +2,44 @@ open StateDataMainType;
 
 open FlyCameraControllerType;
 
+let _getTranslationPosition = (cameraController, flyCameraControllerRecord) => {
+  let initPosition = (0., 0., 0.);
+  let moveSpeed =
+    OperateFlyCameraControllerService.unsafeGetMoveSpeed(
+      cameraController,
+      flyCameraControllerRecord,
+    );
+
+  let positionTuple =
+    OperateFlyCameraControllerService.hasDirection(
+      cameraController,
+      flyCameraControllerRecord,
+    ) ?
+      OperateFlyCameraControllerService.unsafeGetDirectionArray(
+        cameraController,
+        flyCameraControllerRecord,
+      )
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. (dx, dy, dz), direction) =>
+             switch (direction) {
+             | Left => (-. moveSpeed, dy, dz)
+             | Right => (moveSpeed, dy, dz)
+             | Up => (dx, moveSpeed, dz)
+             | Down => (dx, -. moveSpeed, dz)
+             | Front => (dx, dy, -. moveSpeed)
+             | Back => (dx, dy, moveSpeed)
+             },
+           initPosition,
+         ) :
+      initPosition;
+
+  OperateFlyCameraControllerService.unsafeGetTranslationDiff(
+    cameraController,
+    flyCameraControllerRecord,
+  )
+  |> Vector3Service.add(Vector3Type.Float, positionTuple);
+};
+
 let _resetFlyCameraDiffValue = (cameraController, flyCameraControllerRecord) =>
   flyCameraControllerRecord
   |> OperateFlyCameraControllerService.setEulerAngleDiff(
@@ -20,7 +58,7 @@ let _updateTransform =
     ) => {
   let transformRecord = RecordTransformMainService.getRecord(state);
 
-  let transform =
+  let cameraTransform =
     GetComponentGameObjectService.unsafeGetTransformComponent(
       GameObjectFlyCameraControllerService.unsafeGetGameObject(
         cameraController,
@@ -37,25 +75,22 @@ let _updateTransform =
 
   let (cameraRotationX, cameraRotationY, _) =
     ModelMatrixTransformService.getLocalEulerAnglesTuple(
-      transform,
+      cameraTransform,
       RecordTransformMainService.getRecord(state).localRotations,
     );
 
   let cameraLocalPositionTuple =
     ModelMatrixTransformService.getLocalRotationTuple(
-      transform,
+      cameraTransform,
       RecordTransformMainService.getRecord(state).localRotations,
     )
     |> Vector3Service.transformQuat(
-         OperateFlyCameraControllerService.unsafeGetTranslationDiff(
-           cameraController,
-           flyCameraControllerRecord,
-         ),
+         _getTranslationPosition(cameraController, flyCameraControllerRecord),
        )
     |> Vector3Service.add(
          Vector3Type.Float,
          ModelMatrixTransformService.getLocalPositionTuple(
-           transform,
+           cameraTransform,
            RecordTransformMainService.getRecord(state).localPositions,
          ),
        );
@@ -66,11 +101,11 @@ let _updateTransform =
       Some(
         transformRecord
         |> ModelMatrixTransformService.setLocalPositionByTuple(
-             transform,
+             cameraTransform,
              cameraLocalPositionTuple,
            )
         |> ModelMatrixTransformService.setLocalEulerAnglesByTuple(
-             transform,
+             cameraTransform,
              (cameraRotationX -. diffX, cameraRotationY -. diffY, 0.),
            ),
       ),
@@ -80,34 +115,16 @@ let _updateTransform =
   state;
 };
 
-let _clearDirtyArray = ({flyCameraControllerRecord} as state) => {
-  ...state,
-  flyCameraControllerRecord: {
-    ...flyCameraControllerRecord,
-    dirtyArray: DirtyArrayService.create(),
-  },
-};
-
-let update = ({flyCameraControllerRecord} as state) =>
-  flyCameraControllerRecord.dirtyArray
-  |> WonderCommonlib.ArrayService.removeDuplicateItems
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. state, dirtyIndex) => _updateTransform(dirtyIndex, state),
-       state,
-     )
-  |> _clearDirtyArray;
-
 let _getAllFlyCameraControllers = ({flyCameraControllerRecord} as state) => {
   let {index, disposedIndexArray}: flyCameraControllerRecord = flyCameraControllerRecord;
 
   GetAllComponentService.getAllComponents(index, disposedIndexArray);
 };
 
-let updateAll = ({flyCameraControllerRecord} as state) =>
+let update = ({flyCameraControllerRecord} as state) =>
   _getAllFlyCameraControllers(state)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, cameraController) =>
          _updateTransform(cameraController, state),
        state,
-     )
-  |> _clearDirtyArray;
+     );

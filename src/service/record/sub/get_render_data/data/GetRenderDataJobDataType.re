@@ -1,3 +1,8 @@
 type outlineData = {outlineColor: array(float)};
 
-type jobDataRecord = {outlineData};
+type skyboxData = {cubeTexture: option(WonderWebgl.GlType.texture)};
+
+type jobDataRecord = {
+  outlineData,
+  skyboxData,
+};

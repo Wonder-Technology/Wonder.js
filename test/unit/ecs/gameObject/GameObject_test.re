@@ -373,6 +373,68 @@ let _ =
         );
       });
 
+      describe("test flyCameraController component", () => {
+        let _prepare = () => {
+          open FlyCameraControllerAPI;
+          let (state, gameObject) = createGameObject(state^);
+          let (state, flyCameraController) =
+            createFlyCameraController(state);
+          let state =
+            state
+            |> addGameObjectFlyCameraControllerComponent(
+                 gameObject,
+                 flyCameraController,
+               );
+          (state, gameObject, flyCameraController);
+        };
+        describe("addGameObjectFlyCameraControllerComponent", () => {
+          test("if this type of component is already exist, error", () => {
+            open FlyCameraControllerAPI;
+            let (state, gameObject, _) = _prepare();
+            expect(() => {
+              let (state, flyCameraController) =
+                createFlyCameraController(state);
+              addGameObjectFlyCameraControllerComponent(
+                gameObject,
+                flyCameraController,
+                state,
+              );
+            })
+            |> toThrowMessage(
+                 "expect this type of the component shouldn't be added before, but actual not",
+               );
+          });
+          test("can get component's gameObject", () => {
+            open FlyCameraControllerAPI;
+            let (state, gameObject, _) = _prepare();
+            state
+            |> unsafeGetFlyCameraControllerGameObject(
+                 unsafeGetGameObjectFlyCameraControllerComponent(
+                   gameObject,
+                   state,
+                 ),
+               )
+            |> expect == gameObject;
+          });
+        });
+        describe("unsafeGetGameObjectFlyCameraControllerComponent", () =>
+          test("get flyCameraController component", () => {
+            let (state, gameObject, flyCameraController) = _prepare();
+            state
+            |> unsafeGetGameObjectFlyCameraControllerComponent(gameObject)
+            |> expect == (flyCameraController |> Obj.magic);
+          })
+        );
+        describe("hasGameObjectFlyCameraControllerComponent", () =>
+          test("has flyCameraController component", () => {
+            let (state, gameObject, _) = _prepare();
+            state
+            |> hasGameObjectFlyCameraControllerComponent(gameObject)
+            |> expect == true;
+          })
+        );
+      });
+
       describe("test arcballCameraController component", () => {
         let _prepare = () => {
           open ArcballCameraControllerAPI;
@@ -1308,8 +1370,8 @@ let _ =
 
       describe("replace components", () => {
         test("replace basic material component", () => {
-          let (state, gameObject1, (material1, _)) =
-            BasicMaterialTool.createGameObjectWithMap(state^);
+          let (state, gameObject1, material1) =
+            BasicMaterialTool.createGameObject(state^);
 
           let state =
             GameObjectAPI.disposeGameObjectBasicMaterialComponent(
@@ -1317,8 +1379,10 @@ let _ =
               material1,
               state,
             );
-          let (state, material2, _) =
-            BasicMaterialTool.createMaterialWithMap(state);
+          let (state, _) = BasicMaterialAPI.createBasicMaterial(state);
+          let (state, _) = BasicMaterialAPI.createBasicMaterial(state);
+          let (state, material2) =
+            BasicMaterialAPI.createBasicMaterial(state);
           let state =
             GameObjectAPI.addGameObjectBasicMaterialComponent(
               gameObject1,
@@ -2133,6 +2197,118 @@ let _ =
       });
     });
 
+    describe("disposeGameObjectRemoveTexture", () => {
+      describe("test basicSourceTexture", () =>
+        test("remove texture instead of dispose", () => {
+          let (state, material, (diffuseMap, specularMap, source1, source2)) =
+            LightMaterialTool.createMaterialWithMap(state^);
+          let (state, gameObject, material) =
+            LightMaterialTool.createGameObjectWithShareMaterial(
+              material,
+              state,
+            );
+
+          let state =
+            state |> GameObjectAPI.disposeGameObjectRemoveTexture(gameObject);
+          let state = DisposeJob.execJob(None, state);
+
+          (
+            BasicSourceTextureTool.hasMaterial(diffuseMap, material, state),
+            BasicSourceTextureTool.hasMaterial(specularMap, material, state),
+            BasicSourceTextureTool.getBasicSourceTextureSource(
+              diffuseMap,
+              state,
+            ),
+            BasicSourceTextureTool.getBasicSourceTextureSource(
+              specularMap,
+              state,
+            ),
+          )
+          |> expect == (false, false, Some(source1), Some(source2));
+        })
+      );
+
+      describe("test arrayBufferViewSourceTexture", () =>
+        test("remove texture instead of dispose", () => {
+          let (state, material, (diffuseMap, specularMap, source1, source2)) =
+            LightMaterialTool.createMaterialWithArrayBufferViewMap(state^);
+          let (state, gameObject, material) =
+            LightMaterialTool.createGameObjectWithShareMaterial(
+              material,
+              state,
+            );
+
+          let state =
+            state |> GameObjectAPI.disposeGameObjectRemoveTexture(gameObject);
+          let state = DisposeJob.execJob(None, state);
+
+          (
+            ArrayBufferViewSourceTextureTool.hasMaterial(
+              diffuseMap,
+              material,
+              state,
+            ),
+            ArrayBufferViewSourceTextureTool.hasMaterial(
+              specularMap,
+              material,
+              state,
+            ),
+            ArrayBufferViewSourceTextureTool.getArrayBufferViewSourceTextureSource(
+              diffuseMap,
+              state,
+            ),
+            ArrayBufferViewSourceTextureTool.getArrayBufferViewSourceTextureSource(
+              specularMap,
+              state,
+            ),
+          )
+          |> expect == (false, false, Some(source1), Some(source2));
+        })
+      );
+    });
+
+    describe("disposeGameObjectLightMaterialComponent", () =>
+      test("dispose material->maps", () => {
+        let (state, gameObject1, (material1, (texture1_1, texture1_2))) =
+          LightMaterialTool.createGameObjectWithMap(state^);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObjectLightMaterialComponent(
+               gameObject1,
+               material1,
+             );
+        let state = state |> DisposeJob.execJob(None);
+
+        (
+          BasicSourceTextureTool.isAlive(texture1_1, state),
+          BasicSourceTextureTool.isAlive(texture1_2, state),
+        )
+        |> expect == (false, false);
+      })
+    );
+
+    describe("disposeGameObjectLightMaterialComponentRemoveTexture", () =>
+      test("remove material->maps", () => {
+        let (state, gameObject1, (material1, (texture1_1, texture1_2))) =
+          LightMaterialTool.createGameObjectWithMap(state^);
+
+        let state =
+          state
+          |> GameObjectAPI.disposeGameObjectLightMaterialComponentRemoveTexture(
+               gameObject1,
+               material1,
+             );
+        let state = state |> DisposeJob.execJob(None);
+
+        (
+          BasicSourceTextureTool.isAlive(texture1_1, state),
+          BasicSourceTextureTool.isAlive(texture1_2, state),
+        )
+        |> expect == (true, true);
+      })
+    );
+
     describe("test batchDispose gameObject", ()
       /* describe(
            "batch dispose all components",
@@ -2560,38 +2736,7 @@ let _ =
           getCallCount(attachShader) |> expect == 2;
         });
 
-        describe("init maps", () => {
-          describe("init basic material->map", () => {
-            test("if has no map, not init map", () => {
-              let (state, gameObject, _, _) =
-                InitBasicMaterialJobTool.prepareGameObject(sandbox, state^);
-              let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
-              let state =
-                state
-                |> FakeGlTool.setFakeGl(
-                     FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ()),
-                   );
-              let state = AllMaterialTool.prepareForInit(state);
-              let state = state |> initGameObject(gameObject);
-              getCallCount(createTexture) |> expect == 0;
-            });
-            test("else, init map", () => {
-              let (state, gameObject, _, _) =
-                InitBasicMaterialJobTool.prepareGameObjectWithCreatedMap(
-                  sandbox,
-                  state^,
-                );
-              let createTexture = createEmptyStubWithJsObjSandbox(sandbox);
-              let state =
-                state
-                |> FakeGlTool.setFakeGl(
-                     FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ()),
-                   );
-              let state = AllMaterialTool.prepareForInit(state);
-              let state = state |> initGameObject(gameObject);
-              getCallCount(createTexture) |> expect == 1;
-            });
-          });
+        describe("init maps", () =>
           describe("init light material->map", () => {
             describe("test basic source texture", () => {
               test("if has no map, not init map", () => {
@@ -2652,8 +2797,8 @@ let _ =
                 getCallCount(createTexture) |> expect == 2;
               })
             );
-          });
-        });
+          })
+        );
 
         test("init perspectiveCameraProjection component", () => {
           let (state, gameObject, _, (_, cameraProjection)) =

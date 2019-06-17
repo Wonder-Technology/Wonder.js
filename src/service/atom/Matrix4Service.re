@@ -120,11 +120,8 @@ let getRotationTuple = matTypeArr => {
     );
   } else if (Float32Array.unsafe_get(matTypeArr, 0)
              > Float32Array.unsafe_get(matTypeArr, 5)
-             &&
-             Float32Array.unsafe_get(matTypeArr, 0) > Float32Array.unsafe_get(
-                                                         matTypeArr,
-                                                         10,
-                                                       )) {
+             && Float32Array.unsafe_get(matTypeArr, 0)
+             > Float32Array.unsafe_get(matTypeArr, 10)) {
     let s =
       Js.Math.sqrt(
         1.0
@@ -762,6 +759,16 @@ let scale = ((scaleX, scaleY, scaleZ), mat: Float32Array.t, resultFloat32Arr) =>
     15,
     Float32Array.unsafe_get(mat, 15),
   );
+
+  resultFloat32Arr;
+};
+
+let copy = float32Arr => float32Arr |> Float32Array.copy;
+
+let setTranslation = ((x, y, z), resultFloat32Arr) => {
+  Float32Array.unsafe_set(resultFloat32Arr, 12, x);
+  Float32Array.unsafe_set(resultFloat32Arr, 13, y);
+  Float32Array.unsafe_set(resultFloat32Arr, 14, z);
 
   resultFloat32Arr;
 };

@@ -121,48 +121,6 @@
     ]
   },
   {
-    "name": "basic_map",
-    "glsls": [
-      {
-        "type": "vs",
-        "name": "webgl1_basic_map_vertex"
-      },
-      {
-        "type": "fs",
-        "name": "webgl1_basic_map_fragment"
-      }
-    ],
-    "variables": {
-      "attributes": [
-        {
-          "name": "a_texCoord",
-          "buffer": 2,
-          "type": "vec2"
-        }
-      ],
-      "uniforms": [
-        {
-          "name": "u_color",
-          "field": "color",
-          "type": "float3",
-          "from": "basicMaterial"
-        },
-        {
-          "name": "u_alpha",
-          "field": "alpha",
-          "type": "float",
-          "from": "basicMaterial"
-        },
-        {
-          "name": "u_mapSampler",
-          "field": "map",
-          "type": "sampler2D",
-          "from": "basicMaterial"
-        }
-      ]
-    }
-  },
-  {
     "name": "no_basic_map",
     "glsls": [
       {
@@ -618,6 +576,35 @@
         "name": "webgl1_outline_origin_fragment"
       }
     ]
+  },
+  {
+    "name": "skybox",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_skybox_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_skybox_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_skyboxCubeMapSampler",
+          "from": "no_material_shader",
+          "field": "skyboxCubeMap",
+          "type": "samplerCube"
+        },
+        {
+          "name": "u_skyboxVMatrix",
+          "from": "no_material_shader",
+          "field": "skyboxVMatrix",
+          "type": "mat4"
+        }
+      ]
+    }
   },
   {
     "name": "end",

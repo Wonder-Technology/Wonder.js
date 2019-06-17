@@ -20,6 +20,8 @@ open RenderWorkerPointLightType;
 
 open RenderWorkerBasicSourceTextureType;
 
+open RenderAllTextureType;
+
 open RenderWorkerSourceInstanceType;
 
 open RenderWorkerTransformType;
@@ -67,6 +69,10 @@ let createRenderState =
     RecordBasicSourceTextureRenderWorkerService.getRecord(state);
   let arrayBufferViewSourceTextureRecord =
     RecordArrayBufferViewSourceTextureRenderWorkerService.getRecord(state);
+
+  let allTextureRecord =
+    RecordArrayBufferViewSourceTextureRenderWorkerService.getRecord(state);
+
   let workerDetectRecord =
     RecordWorkerDetectRenderWorkerService.getRecord(state);
   let browserDetectRecord =
@@ -94,10 +100,6 @@ let createRenderState =
               settingRecord,
             ),
         }),
-      textureCountPerMaterial:
-        BufferRenderWorkerSettingService.getTextureCountPerMaterial(
-          settingRecord,
-        ),
     },
     glslSenderRecord,
     programRecord,
@@ -118,15 +120,14 @@ let createRenderState =
       shaderIndices:
         RecordBasicMaterialRenderWorkerService.unsafeGetShaderIndices(state),
       colors: basicMaterialRecord.colors |> OptionService.unsafeGet,
-      textureIndices:
-        basicMaterialRecord.textureIndices |> OptionService.unsafeGet,
-      mapUnits:
-        RecordBasicMaterialRenderWorkerService.unsafeGetMapUnits(state),
       isDepthTests:
         RecordBasicMaterialRenderWorkerService.unsafeGetIsDepthTests(state),
-      alphas: RecordBasicMaterialRenderWorkerService.unsafeGetAlphas(state)
+      alphas: RecordBasicMaterialRenderWorkerService.unsafeGetAlphas(state),
     },
     lightMaterialRecord: {
+      diffuseMapUnitMap: RecordLightMaterialService.createDiffuseMapUnitMap(),
+      specularMapUnitMap:
+        RecordLightMaterialService.createSpecularMapUnitMap(),
       shaderIndices:
         RecordLightMaterialRenderWorkerService.unsafeGetShaderIndices(state),
       diffuseColors:
@@ -134,16 +135,10 @@ let createRenderState =
       specularColors:
         lightMaterialRecord.specularColors |> OptionService.unsafeGet,
       shininess: lightMaterialRecord.shininess |> OptionService.unsafeGet,
-      textureIndices:
-        lightMaterialRecord.textureIndices |> OptionService.unsafeGet,
-      diffuseMapUnits:
-        RecordLightMaterialRenderWorkerService.unsafeGetDiffuseMapUnits(
-          state,
-        ),
-      specularMapUnits:
-        RecordLightMaterialRenderWorkerService.unsafeGetSpecularMapUnits(
-          state,
-        ),
+      diffuseTextureIndices:
+        lightMaterialRecord.diffuseTextureIndices |> OptionService.unsafeGet,
+      specularTextureIndices:
+        lightMaterialRecord.specularTextureIndices |> OptionService.unsafeGet,
     },
     meshRendererRecord: {
       drawModes: meshRendererRecord.drawModes,
@@ -164,8 +159,6 @@ let createRenderState =
         basicSourceTextureRecord.sourceMap
         |> WorkerType.sparseMapImageBitmapToSparseMapImageElement,
       glTextureMap: basicSourceTextureRecord.glTextureMap,
-      bindTextureUnitCacheMap:
-        basicSourceTextureRecord.bindTextureUnitCacheMap,
       setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY,
     },
     arrayBufferViewSourceTextureRecord: {
@@ -195,13 +188,18 @@ let createRenderState =
       sourceMap:
         arrayBufferViewSourceTextureRecord.sourceMap |> OptionService.unsafeGet,
       glTextureMap: arrayBufferViewSourceTextureRecord.glTextureMap,
-      bindTextureUnitCacheMap:
-        arrayBufferViewSourceTextureRecord.bindTextureUnitCacheMap,
       textureIndexOffset:
         IndexSourceTextureRenderWorkerService.getArrayBufferViewSourceTextureIndexOffset(
           state,
         ),
       setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY,
+    },
+    allTextureRecord: {
+      activableTextureUnitArray:
+        OperateAllTextureRenderWorkerService.getActivableTextureUnitArray(
+          state,
+        ),
+      activedTextureUnitIndex: 0,
     },
     directionLightRecord: {
       index: directionLightRecord.index,

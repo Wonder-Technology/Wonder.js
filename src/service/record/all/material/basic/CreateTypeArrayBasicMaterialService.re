@@ -2,7 +2,7 @@ open Js.Typed_array;
 
 open BufferBasicMaterialService;
 
-let createTypeArrays = (buffer, basicMaterialCount, textureCountPerMaterial) => (
+let createTypeArrays = (buffer, basicMaterialCount) => (
   Uint32Array.fromBufferRange(
     WorkerType.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=ShaderIndicesService.getShaderIndicesOffset(basicMaterialCount),
@@ -13,27 +13,14 @@ let createTypeArrays = (buffer, basicMaterialCount, textureCountPerMaterial) => 
     ~offset=getColorsOffset(basicMaterialCount),
     ~length=getColorsLength(basicMaterialCount),
   ),
-  Uint32Array.fromBufferRange(
-    WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=
-      getTextureIndicesOffset(basicMaterialCount, textureCountPerMaterial),
-    ~length=
-      getTextureIndicesLength(basicMaterialCount, textureCountPerMaterial),
-  ),
   Uint8Array.fromBufferRange(
     WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getMapUnitsOffset(basicMaterialCount, textureCountPerMaterial),
-    ~length=getMapUnitsLength(basicMaterialCount),
-  ),
-  Uint8Array.fromBufferRange(
-    WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=
-      getIsDepthTestsOffset(basicMaterialCount, textureCountPerMaterial),
+    ~offset=getIsDepthTestsOffset(basicMaterialCount),
     ~length=getIsDepthTestsLength(basicMaterialCount),
   ),
   Float32Array.fromBufferRange(
     WorkerType.sharedArrayBufferToArrayBuffer(buffer),
-    ~offset=getAlphasOffset(basicMaterialCount, textureCountPerMaterial),
+    ~offset=getAlphasOffset(basicMaterialCount),
     ~length=getAlphasLength(basicMaterialCount),
   ),
 );

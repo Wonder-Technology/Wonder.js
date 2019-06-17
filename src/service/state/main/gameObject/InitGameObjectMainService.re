@@ -9,12 +9,7 @@ let _initMaterialComponent = (uid, {gameObjectRecord} as state) => {
       )
     ) {
     | Some(material) =>
-      let state =
-        InitBasicMaterialMainService.handleInitComponent(material, state);
-      InitSourceTextureMainService.initTexture(
-        OperateBasicMaterialMainService.getMap(material, state),
-        state,
-      );
+      InitBasicMaterialMainService.handleInitComponent(material, state)
     | None => state
     };
   let state =

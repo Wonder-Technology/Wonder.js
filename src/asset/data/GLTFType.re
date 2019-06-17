@@ -195,7 +195,8 @@ type nodeExtras = {
   meshRenderer: option(meshRendererIndex),
   basicMaterial: option(basicMaterialIndex),
   lightMaterial: option(lightMaterialIndex),
-  cameraController: option(cameraControllerIndex),
+  flyCameraController: option(cameraControllerIndex),
+  arcballCameraController: option(cameraControllerIndex),
   script: option(scriptIndex),
   isRoot: option(bool),
   isActive: option(bool),
@@ -264,6 +265,7 @@ type script = CommonAssetType.script;
 
 type gltfExtras = {
   basicCameraViews: option(array(basicCameraView)),
+  flyCameraControllers: option(array(SceneGraphType.flyCameraController)),
   arcballCameraControllers:
     option(array(SceneGraphType.arcballCameraController)),
   basicMaterials: option(array(basicMaterial)),

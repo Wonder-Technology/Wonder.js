@@ -14,30 +14,12 @@ let _ =
       state := TestTool.init(~sandbox, ());
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
-    describe("createLightMaterial", () => {
+    describe("createLightMaterial", () =>
       test("create a new material which is just index(int)", () => {
         let (_, material) = createLightMaterial(state^);
         expect(material) == 0;
-      });
-      describe("set default value", () =>
-        test("init emptyMapUnitArray", () => {
-          state :=
-            TestTool.initWithoutBuildFakeDom(
-              ~sandbox,
-              ~buffer=
-                SettingTool.buildBufferConfigStr(
-                  ~textureCountPerMaterial=3,
-                  (),
-                ),
-              (),
-            );
-
-          let (state, material) = createLightMaterial(state^);
-          LightMaterialTool.getEmptyMapUnitArray(material, state)
-          |> expect == [|2, 1, 0|];
-        })
-      );
-    });
+      })
+    );
     /* describe(
          "init",
          () =>
@@ -232,6 +214,54 @@ let _ =
           |> expect == (false, false);
         });
 
+        describe("remove map from group", () => {
+          test("test basicSourceTexture", () => {
+            let (state, material, (map1, map2)) = _prepare(state^);
+
+            let state = _exec(material, state);
+
+            (
+              BasicSourceTextureTool.unsafeGetMaterialDataArr(map1, state)
+              |> Js.Array.length,
+              BasicSourceTextureTool.unsafeGetMaterialDataArr(map2, state)
+              |> Js.Array.length,
+            )
+            |> expect == (0, 0);
+          });
+          test("test arrayBufferViewSourceTexture", () => {
+            let (state, material) = createLightMaterial(state^);
+            let (state, map1) =
+              ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(
+                state,
+              );
+            let (state, map2) =
+              ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(
+                state,
+              );
+
+            let state =
+              state
+              |> LightMaterialAPI.setLightMaterialSpecularMap(material, map1)
+              |> LightMaterialAPI.setLightMaterialDiffuseMap(material, map2);
+
+            let state = _exec(material, state);
+
+            (
+              ArrayBufferViewSourceTextureTool.unsafeGetMaterialDataArr(
+                map1,
+                state,
+              )
+              |> Js.Array.length,
+              ArrayBufferViewSourceTextureTool.unsafeGetMaterialDataArr(
+                map2,
+                state,
+              )
+              |> Js.Array.length,
+            )
+            |> expect == (0, 0);
+          });
+        });
+
         describe("test set new map after remove", () =>
           test("should get correct map", () => {
             let (state, material, (map1, map2)) = _prepare(state^);
@@ -265,6 +295,12 @@ let _ =
 
     describe("disposeComponent", () =>
       describe("dispose data", () => {
+        beforeEach(() =>
+          state :=
+            state^
+            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()))
+        );
+
         describe("test dispose shared material", () =>
           test("remove gameObject", () => {
             let (state, lightMaterial1) = createLightMaterial(state^);
@@ -304,7 +340,7 @@ let _ =
           })
         );
 
-        test("remove from nameMap, emptyMapUnitArrayMap", () => {
+        test("remove from nameMap", () => {
           open LightMaterialType;
           let (state, gameObject1, material1) =
             LightMaterialTool.createGameObject(state^);
@@ -316,15 +352,11 @@ let _ =
                  gameObject1,
                  material1,
                );
-          let {nameMap, emptyMapUnitArrayMap} =
-            LightMaterialTool.getRecord(state);
+          let {nameMap} = LightMaterialTool.getRecord(state);
 
-          (
-            nameMap |> WonderCommonlib.MutableSparseMapService.has(material1),
-            emptyMapUnitArrayMap
-            |> WonderCommonlib.MutableSparseMapService.has(material1),
-          )
-          |> expect == (false, false);
+          nameMap
+          |> WonderCommonlib.MutableSparseMapService.has(material1)
+          |> expect == false;
         });
 
         describe("test remove from type array", () => {
@@ -425,73 +457,64 @@ let _ =
                   setValueFunc,
                 ),
               );
-            describe("remove from textureIndices", () =>
-              test("reset material's all texture indices", () => {
-                open Js.Typed_array;
-                open LightMaterialType;
-                let state =
-                  TestTool.initWithoutBuildFakeDom(
-                    ~sandbox,
-                    ~buffer=
-                      SettingTool.buildBufferConfigStr(
-                        ~textureCountPerMaterial=2,
-                        (),
-                      ),
-                    (),
-                  );
-                let (state, gameObject1, (material1, _)) =
-                  LightMaterialTool.createGameObjectWithMap(state);
-                let {textureIndices} = LightMaterialTool.getRecord(state);
-                let sourceIndex =
-                  LightMaterialTool.getTextureIndicesIndex(material1, state);
-                Uint32Array.unsafe_set(textureIndices, sourceIndex, 1);
-                Uint32Array.unsafe_set(textureIndices, sourceIndex + 1, 2);
-                Uint32Array.unsafe_set(textureIndices, sourceIndex + 2, 3);
-                let defaultTextureIndex =
-                  LightMaterialTool.getDefaultTextureIndex();
-                let state =
-                  state
-                  |> GameObjectTool.disposeGameObjectLightMaterialComponent(
-                       gameObject1,
-                       material1,
-                     );
-                textureIndices
-                |> Uint32Array.slice(~start=0, ~end_=5)
-                |> expect
-                == Uint32Array.make([|
-                     defaultTextureIndex,
-                     defaultTextureIndex,
-                     3,
-                     0,
-                     0,
-                   |]);
-              })
-            );
-            describe("remove from diffuseMapUnits", () =>
-              test("reset removed one's value", () =>
-                _testRemoveFromTypeArr(
+
+            let _test = (material2TextureIndex, getTextureIndicesFunc, state) => {
+              open Js.Typed_array;
+              open LightMaterialType;
+              let (state, gameObject1, (material1, _)) =
+                LightMaterialTool.createGameObjectWithMap(state^);
+              let (state, gameObject2, (material2, _)) =
+                LightMaterialTool.createGameObjectWithMap(state);
+
+              let state =
+                state
+                |> GameObjectTool.disposeGameObjectLightMaterialComponent(
+                     gameObject1,
+                     material1,
+                   );
+
+              let defaultTextureIndex =
+                LightMaterialTool.getDefaultTextureIndex();
+              getTextureIndicesFunc(state)
+              |> Uint32Array.slice(~start=0, ~end_=3)
+              |> expect
+              == Uint32Array.make([|
+                   defaultTextureIndex,
+                   material2TextureIndex,
+                   defaultTextureIndex,
+                 |]);
+            };
+
+            beforeEach(() => {
+              state :=
+                TestTool.initWithoutBuildFakeDom(
+                  ~sandbox,
+                  ~buffer=SettingTool.buildBufferConfigStr(),
+                  (),
+                );
+              state :=
+                state^
+                |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+            });
+
+            describe("remove from diffuseTextureIndices", () =>
+              test("reset to default value", () =>
+                _test(
+                  2,
+                  state =>
+                    LightMaterialTool.getRecord(state).diffuseTextureIndices,
                   state,
-                  (1, 2),
-                  BasicSourceTextureTool.getDefaultUnit(),
-                  (
-                    LightMaterialTool.createGameObjectWithMap,
-                    LightMaterialTool.getDiffuseMapUnit,
-                    LightMaterialTool.setDiffuseMapUnit,
-                  ),
                 )
               )
             );
-            describe("remove from specularMapUnits", () =>
-              test("reset removed one's value", () =>
-                _testRemoveFromTypeArr(
+
+            describe("remove from specularTextureIndices", () =>
+              test("reset to default value", () =>
+                _test(
+                  3,
+                  state =>
+                    LightMaterialTool.getRecord(state).specularTextureIndices,
                   state,
-                  (1, 2),
-                  BasicSourceTextureTool.getDefaultUnit(),
-                  (
-                    LightMaterialTool.createGameObjectWithMap,
-                    LightMaterialTool.getSpecularMapUnit,
-                    LightMaterialTool.setSpecularMapUnit,
-                  ),
                 )
               )
             );
@@ -566,6 +589,8 @@ let _ =
           (component1, component2, component3),
         ) =
           _createLightMaterialGameObjects(state);
+        let state =
+          state |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
 
         let state =
           state
@@ -578,73 +603,283 @@ let _ =
       });
     });
 
-    describe("batchDisposeLightMaterial", () => {
-      let _exec = (materialArr, state) => {
-        let state = state |> batchDisposeLightMaterial(materialArr);
-        let state = DisposeJob.execJob(None, state);
+    describe("test batch dispose lightMaterial", () => {
+      let _prepareAndExecForHasGameObject = (state, execFunc) => {
+        let state =
+          state^
+          |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+        let (state, material1) = createLightMaterial(state);
+        let (state, gameObject1, (material2, (texture2_1, texture2_2))) =
+          LightMaterialTool.createGameObjectWithMap(state);
+        let (state, gameObject2, (material3, (texture3_1, texture3_2))) =
+          LightMaterialTool.createGameObjectWithMap(state);
 
-        state;
+        let state = execFunc([|material2, material3|], state);
+
+        (
+          state,
+          (
+            material1,
+            (material2, (texture2_1, texture2_2)),
+            (material3, (texture3_1, texture3_2)),
+          ),
+        );
       };
 
-      describe("if material has gameObjects", () => {
-        let _prepareAndExec = state => {
-          let (state, material1) = createLightMaterial(state^);
-          let (state, gameObject1, material2) =
-            LightMaterialTool.createGameObject(state);
-          let (state, gameObject2, material3) =
-            LightMaterialTool.createGameObject(state);
+      let _prepareAndExecForHasNoGameObject = (state, execFunc) => {
+        let state =
+          state^
+          |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+        let (state, material1) = createLightMaterial(state);
+        let (state, material2, (texture2_1, texture2_2, _, _)) =
+          LightMaterialTool.createMaterialWithMap(state);
+        let (state, material3, (texture3_1, texture3_2, _, _)) =
+          LightMaterialTool.createMaterialWithMap(state);
 
-          let state = _exec([|material2, material3|], state);
+        let state = execFunc([|material2, material3|], state);
 
-          (state, (material1, material2, material3));
+        (
+          state,
+          (
+            material1,
+            (material2, (texture2_1, texture2_2)),
+            (material3, (texture3_1, texture3_2)),
+          ),
+        );
+      };
+
+      describe("batchDisposeLightMaterial", () => {
+        let _exec = (materialArr, state) => {
+          let state = state |> batchDisposeLightMaterial(materialArr);
+          let state = DisposeJob.execJob(None, state);
+
+          state;
         };
 
-        test("remove from gameObject", () => {
-          let (state, (material1, material2, material3)) =
-            _prepareAndExec(state);
+        describe("if material has gameObjects", () => {
+          test("remove from gameObject", () => {
+            let (
+              state,
+              (
+                material1,
+                (material2, (texture2_1, texture2_2)),
+                (material3, (texture3_1, texture3_2)),
+              ),
+            ) =
+              _prepareAndExecForHasGameObject(state, _exec);
 
-          (
-            LightMaterialTool.hasGameObject(material2, state),
-            LightMaterialTool.hasGameObject(material3, state),
-          )
-          |> expect == (false, false);
+            (
+              LightMaterialTool.hasGameObject(material2, state),
+              LightMaterialTool.hasGameObject(material3, state),
+            )
+            |> expect == (false, false);
+          });
+
+          describe("dispose material data", () => {
+            test("dispose material", () => {
+              let (
+                state,
+                (
+                  material1,
+                  (material2, (texture2_1, texture2_2)),
+                  (material3, (texture3_1, texture3_2)),
+                ),
+              ) =
+                _prepareAndExecForHasGameObject(state, _exec);
+
+              (
+                LightMaterialTool.isMaterialDisposed(material1, state),
+                LightMaterialTool.isMaterialDisposed(material2, state),
+                LightMaterialTool.isMaterialDisposed(material3, state),
+              )
+              |> expect == (false, true, true);
+            });
+            test("dispose material->maps", () => {
+              let (
+                state,
+                (
+                  material1,
+                  (material2, (texture2_1, texture2_2)),
+                  (material3, (texture3_1, texture3_2)),
+                ),
+              ) =
+                _prepareAndExecForHasGameObject(state, _exec);
+
+              (
+                BasicSourceTextureTool.isAlive(texture2_1, state),
+                BasicSourceTextureTool.isAlive(texture2_2, state),
+                BasicSourceTextureTool.isAlive(texture3_1, state),
+                BasicSourceTextureTool.isAlive(texture3_2, state),
+              )
+              |> expect == (false, false, false, false);
+            });
+          });
         });
 
-        test("dispose material data", () => {
-          let (state, (material1, material2, material3)) =
-            _prepareAndExec(state);
+        describe("else", () =>
+          describe("dispose material data", () => {
+            test("dispose material", () => {
+              let (
+                state,
+                (
+                  material1,
+                  (material2, (texture2_1, texture2_2)),
+                  (material3, (texture3_1, texture3_2)),
+                ),
+              ) =
+                _prepareAndExecForHasNoGameObject(state, _exec);
 
-          (
-            LightMaterialTool.isMaterialDisposed(material1, state),
-            LightMaterialTool.isMaterialDisposed(material2, state),
-            LightMaterialTool.isMaterialDisposed(material3, state),
-          )
-          |> expect == (false, true, true);
-        });
+              (
+                LightMaterialTool.isMaterialDisposed(material1, state),
+                LightMaterialTool.isMaterialDisposed(material2, state),
+                LightMaterialTool.isMaterialDisposed(material3, state),
+              )
+              |> expect == (false, true, true);
+            });
+            test("dispose material->maps", () => {
+              let (
+                state,
+                (
+                  material1,
+                  (material2, (texture2_1, texture2_2)),
+                  (material3, (texture3_1, texture3_2)),
+                ),
+              ) =
+                _prepareAndExecForHasNoGameObject(state, _exec);
+
+              (
+                BasicSourceTextureTool.isAlive(texture2_1, state),
+                BasicSourceTextureTool.isAlive(texture2_2, state),
+                BasicSourceTextureTool.isAlive(texture3_1, state),
+                BasicSourceTextureTool.isAlive(texture3_2, state),
+              )
+              |> expect == (false, false, false, false);
+            });
+          })
+        );
       });
 
-      describe("else", () =>
-        test("dispose material data", () => {
-          let (state, material1) = createLightMaterial(state^);
-          let (state, material2) = createLightMaterial(state);
+      describe("batchDisposeLightMaterialRemoveTexture", () => {
+        let _exec = (materialArr, state) => {
+          let state =
+            state |> batchDisposeLightMaterialRemoveTexture(materialArr);
+          let state = DisposeJob.execJob(None, state);
 
-          let state = _exec([|material1, material2|], state);
+          state;
+        };
 
-          (
-            LightMaterialTool.isMaterialDisposed(material1, state),
-            LightMaterialTool.isMaterialDisposed(material2, state),
-          )
-          |> expect == (true, true);
-        })
-      );
+        describe("if material has gameObjects", () => {
+          test("remove from gameObject", () => {
+            let (
+              state,
+              (
+                material1,
+                (material2, (texture2_1, texture2_2)),
+                (material3, (texture3_1, texture3_2)),
+              ),
+            ) =
+              _prepareAndExecForHasGameObject(state, _exec);
+
+            (
+              LightMaterialTool.hasGameObject(material2, state),
+              LightMaterialTool.hasGameObject(material3, state),
+            )
+            |> expect == (false, false);
+          });
+
+          describe("dispose material data", () => {
+            test("dispose material", () => {
+              let (
+                state,
+                (
+                  material1,
+                  (material2, (texture2_1, texture2_2)),
+                  (material3, (texture3_1, texture3_2)),
+                ),
+              ) =
+                _prepareAndExecForHasGameObject(state, _exec);
+
+              (
+                LightMaterialTool.isMaterialDisposed(material1, state),
+                LightMaterialTool.isMaterialDisposed(material2, state),
+                LightMaterialTool.isMaterialDisposed(material3, state),
+              )
+              |> expect == (false, true, true);
+            });
+            test("remove material->maps", () => {
+              let (
+                state,
+                (
+                  material1,
+                  (material2, (texture2_1, texture2_2)),
+                  (material3, (texture3_1, texture3_2)),
+                ),
+              ) =
+                _prepareAndExecForHasGameObject(state, _exec);
+
+              (
+                BasicSourceTextureTool.isAlive(texture2_1, state),
+                BasicSourceTextureTool.isAlive(texture2_2, state),
+                BasicSourceTextureTool.isAlive(texture3_1, state),
+                BasicSourceTextureTool.isAlive(texture3_2, state),
+              )
+              |> expect == (true, true, true, true);
+            });
+          });
+        });
+
+        describe("else", () =>
+          describe("dispose material data", () => {
+            test("dispose material", () => {
+              let (
+                state,
+                (
+                  material1,
+                  (material2, (texture2_1, texture2_2)),
+                  (material3, (texture3_1, texture3_2)),
+                ),
+              ) =
+                _prepareAndExecForHasNoGameObject(state, _exec);
+
+              (
+                LightMaterialTool.isMaterialDisposed(material1, state),
+                LightMaterialTool.isMaterialDisposed(material2, state),
+                LightMaterialTool.isMaterialDisposed(material3, state),
+              )
+              |> expect == (false, true, true);
+            });
+            test("dispose material->maps", () => {
+              let (
+                state,
+                (
+                  material1,
+                  (material2, (texture2_1, texture2_2)),
+                  (material3, (texture3_1, texture3_2)),
+                ),
+              ) =
+                _prepareAndExecForHasNoGameObject(state, _exec);
+
+              (
+                BasicSourceTextureTool.isAlive(texture2_1, state),
+                BasicSourceTextureTool.isAlive(texture2_2, state),
+                BasicSourceTextureTool.isAlive(texture3_1, state),
+                BasicSourceTextureTool.isAlive(texture3_2, state),
+              )
+              |> expect == (true, true, true, true);
+            });
+          })
+        );
+      });
     });
 
     describe("contract check: is alive", () =>
       describe("if material is disposed", () => {
         let _testGetFunc = getFunc => {
           open GameObjectAPI;
-          open GameObjectAPI;
-          let (state, material) = createLightMaterial(state^);
+          let state =
+            state^
+            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+          let (state, material) = createLightMaterial(state);
           let (state, gameObject) = state |> createGameObject;
           let state =
             state |> addGameObjectLightMaterialComponent(gameObject, material);

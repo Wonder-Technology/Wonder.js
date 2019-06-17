@@ -13,10 +13,9 @@ let setMoveSpeed =
     (
       cameraController,
       moveSpeed,
-      {moveSpeedMap, dirtyArray} as record: flyCameraControllerRecord,
+      {moveSpeedMap} as record: flyCameraControllerRecord,
     ) => {
   ...record,
-  dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
   moveSpeedMap:
     WonderCommonlib.MutableSparseMapService.set(
       cameraController,
@@ -37,10 +36,9 @@ let setWheelSpeed =
     (
       cameraController,
       wheelSpeed,
-      {wheelSpeedMap, dirtyArray} as record: flyCameraControllerRecord,
+      {wheelSpeedMap} as record: flyCameraControllerRecord,
     ) => {
   ...record,
-  dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
   wheelSpeedMap:
     WonderCommonlib.MutableSparseMapService.set(
       cameraController,
@@ -61,10 +59,9 @@ let setRotateSpeed =
     (
       cameraController,
       rotateSpeed,
-      {rotateSpeedMap, dirtyArray} as record: flyCameraControllerRecord,
+      {rotateSpeedMap} as record: flyCameraControllerRecord,
     ) => {
   ...record,
-  dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
   rotateSpeedMap:
     WonderCommonlib.MutableSparseMapService.set(
       cameraController,
@@ -85,10 +82,9 @@ let setEulerAngleDiff =
     (
       cameraController,
       value,
-      {eulerAngleDiffMap, dirtyArray} as record: flyCameraControllerRecord,
+      {eulerAngleDiffMap} as record: flyCameraControllerRecord,
     ) => {
   ...record,
-  dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
   eulerAngleDiffMap:
     WonderCommonlib.MutableSparseMapService.set(
       cameraController,
@@ -109,14 +105,40 @@ let setTranslationDiff =
     (
       cameraController,
       value,
-      {translationDiffMap, dirtyArray} as record: flyCameraControllerRecord,
+      {translationDiffMap} as record: flyCameraControllerRecord,
     ) => {
   ...record,
-  dirtyArray: DirtyArrayService.addToDirtyArray(cameraController, dirtyArray),
   translationDiffMap:
     WonderCommonlib.MutableSparseMapService.set(
       cameraController,
       value,
       translationDiffMap,
+    ),
+};
+
+let unsafeGetDirectionArray =
+    (cameraController, record: flyCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(
+    cameraController,
+    record.directionArrayMap,
+  )
+  |> OptionService.unsafeGet;
+
+let hasDirection = (cameraController, record: flyCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(
+    cameraController,
+    record.directionArrayMap,
+  )
+  |> OptionService.unsafeGet
+  |> ArrayService.hasItem;
+
+let setDirectionArray =
+    (cameraController, directionArray, record: flyCameraControllerRecord) => {
+  ...record,
+  directionArrayMap:
+    WonderCommonlib.MutableSparseMapService.set(
+      cameraController,
+      directionArray,
+      record.directionArrayMap,
     ),
 };

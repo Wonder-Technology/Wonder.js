@@ -63,13 +63,15 @@ let _ =
         describe("test send init data to render worker", () => {
           let _initTwoGameObjects = (map1, map2, state) => {
             let (state, gameObject1, material1) =
-              BasicMaterialTool.createGameObject(state);
+              LightMaterialTool.createGameObject(state);
             let (state, gameObject2, material2) =
-              BasicMaterialTool.createGameObject(state);
+              LightMaterialTool.createGameObject(state);
             let state =
-              state |> BasicMaterialAPI.setBasicMaterialMap(material1, map1);
+              state
+              |> LightMaterialAPI.setLightMaterialDiffuseMap(material1, map1);
             let state =
-              state |> BasicMaterialAPI.setBasicMaterialMap(material2, map2);
+              state
+              |> LightMaterialAPI.setLightMaterialDiffuseMap(material2, map2);
             let state = GameObjectAPI.initGameObject(gameObject1, state);
             let state = GameObjectAPI.initGameObject(gameObject2, state);
             state;
@@ -340,7 +342,16 @@ let _ =
                                 "buffer": Sinon.matchAny,
                                 "arrayBufferViewSourceTextureData": {
                                   "index": 2,
-                                  "sourceMap": [|source1, source2|],
+                                  "sourceMap":
+                                    WonderCommonlib.MutableSparseMapService.createEmpty()
+                                    |> WonderCommonlib.MutableSparseMapService.set(
+                                         map1,
+                                         source1,
+                                       )
+                                    |> WonderCommonlib.MutableSparseMapService.set(
+                                         map2,
+                                         source2,
+                                       ),
                                 },
                                 "basicSourceTextureData": Sinon.matchAny,
                               },
@@ -432,21 +443,21 @@ let _ =
                         )
                         |> Obj.magic,
                       )
-                      |>
-                      expect == (
-                                  [|
-                                    imageDataArrayBuffer1,
-                                    source1##width,
-                                    source1##height,
-                                    {"imageOrientation": "flipY"} |> Obj.magic,
-                                  |],
-                                  [|
-                                    imageDataArrayBuffer2,
-                                    source2##width,
-                                    source2##height,
-                                    {"imageOrientation": "flipY"} |> Obj.magic,
-                                  |],
-                                )
+                      |> expect
+                      == (
+                           [|
+                             imageDataArrayBuffer1,
+                             source1##width,
+                             source1##height,
+                             {"imageOrientation": "flipY"} |> Obj.magic,
+                           |],
+                           [|
+                             imageDataArrayBuffer2,
+                             source2##width,
+                             source2##height,
+                             {"imageOrientation": "flipY"} |> Obj.magic,
+                           |],
+                         )
                       |> resolve,
                     state,
                   );
@@ -492,21 +503,21 @@ let _ =
                         )
                         |> Obj.magic,
                       )
-                      |>
-                      expect == (
-                                  [|
-                                    imageDataArrayBuffer1,
-                                    source1##width,
-                                    source1##height,
-                                    {"imageOrientation": "none"} |> Obj.magic,
-                                  |],
-                                  [|
-                                    imageDataArrayBuffer2,
-                                    source2##width,
-                                    source2##height,
-                                    {"imageOrientation": "none"} |> Obj.magic,
-                                  |],
-                                )
+                      |> expect
+                      == (
+                           [|
+                             imageDataArrayBuffer1,
+                             source1##width,
+                             source1##height,
+                             {"imageOrientation": "none"} |> Obj.magic,
+                           |],
+                           [|
+                             imageDataArrayBuffer2,
+                             source2##width,
+                             source2##height,
+                             {"imageOrientation": "none"} |> Obj.magic,
+                           |],
+                         )
                       |> resolve,
                     state,
                   );
@@ -541,21 +552,21 @@ let _ =
                       )
                       |> Obj.magic,
                     )
-                    |>
-                    expect == (
-                                [|
-                                  imageDataArrayBuffer1,
-                                  source1##width,
-                                  source1##height,
-                                  Js.Undefined.empty |> Obj.magic,
-                                |],
-                                [|
-                                  imageDataArrayBuffer2,
-                                  source2##width,
-                                  source2##height,
-                                  Js.Undefined.empty |> Obj.magic,
-                                |],
-                              )
+                    |> expect
+                    == (
+                         [|
+                           imageDataArrayBuffer1,
+                           source1##width,
+                           source1##height,
+                           Js.Undefined.empty |> Obj.magic,
+                         |],
+                         [|
+                           imageDataArrayBuffer2,
+                           source2##width,
+                           source2##height,
+                           Js.Undefined.empty |> Obj.magic,
+                         |],
+                       )
                     |> resolve,
                   state,
                 );

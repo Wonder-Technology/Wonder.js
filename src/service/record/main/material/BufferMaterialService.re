@@ -1,14 +1,10 @@
-let getDefaultTextureIndex = () => 0;
-
 let getDefaultIsDepthTest = () => 0;
 
-let getTextureIndicesSize = textureCountPerMaterial => textureCountPerMaterial;
+let getTextureIndicesSize = () => 1;
 
-let getTextureIndicesLength = (materialCount, textureCountPerMaterial) =>
-  materialCount * getTextureIndicesSize(textureCountPerMaterial);
+let getTextureIndicesLength = materialCount =>
+  materialCount * getTextureIndicesSize();
 
-let getTextureIndicesIndex = (index, textureCountPerMaterial) =>
-  index * getTextureIndicesSize(textureCountPerMaterial);
+let getTextureIndicesIndex = index => index * getTextureIndicesSize();
 
-let getTextureIndexIndex = (index, textureIndex, textureCountPerMaterial) =>
-  getTextureIndicesIndex(index, textureCountPerMaterial) + textureIndex;
+let getTextureIndexIndex = index => getTextureIndicesIndex(index);

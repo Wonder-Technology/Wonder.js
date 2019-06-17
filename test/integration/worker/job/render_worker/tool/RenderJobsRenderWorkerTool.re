@@ -52,6 +52,10 @@ let init = (completeFunc, state) => {
   let renderWorkerState = RenderWorkerStateTool.getState();
   /* let renderWorkerState = RenderWorkerStateTool.createStateAndSetToStateData(); */
   renderWorkerState.workerDetectRecord = Some({isUseWorker: true});
+
+  let renderWorkerState =
+    renderWorkerState |> GPUDetectRenderWorkerTool.setMaxTextureUnit(16);
+
   RenderWorkerStateTool.setState(renderWorkerState);
   let state =
     state
@@ -110,7 +114,7 @@ let init = (completeFunc, state) => {
      );
 };
 
-let execMainLoopJobs = (sandbox, completeFunc) => {
+let execMainLoopJobsWithJobHandleMap = (sandbox, jobHandleMap, completeFunc) => {
   let state = MainInitJobMainWorkerTool.prepare();
   let renderWorker =
     WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state);
@@ -119,14 +123,21 @@ let execMainLoopJobs = (sandbox, completeFunc) => {
   state
   |> WorkerJobWorkerTool.getMainLoopJobStream(
        MainStateTool.getStateData(),
-       (
-         WorkerJobHandleSystem.createMainLoopJobHandleMap,
-         WorkerJobHandleSystem.getMainLoopJobHandle,
-       ),
+       (() => jobHandleMap, WorkerJobHandleSystem.getMainLoopJobHandle),
      )
   |> WonderBsMost.Most.drain
   |> then_(() => completeFunc(postMessageToRenderWorker));
 };
+
+let execMainLoopJobs = (sandbox, completeFunc) =>
+  execMainLoopJobsWithJobHandleMap(
+    sandbox,
+    WorkerJobHandleSystem.createMainLoopJobHandleMap(),
+    completeFunc,
+  );
+
+let createMainLoopJobHandleMap = mainLoopJobHandles =>
+  HandleJobService.createJobHandleMap(mainLoopJobHandles);
 
 let render = (sandbox, postMessageToRenderWorker, completeFunc) => {
   let state = MainStateTool.unsafeGetState();
@@ -179,27 +190,23 @@ let dispose = (postMessageToRenderWorker, completeFunc) => {
   open Sinon;
   let args =
     postMessageToRenderWorker
-    |> withOneArg({
-         "operateType": "DISPOSE",
-         "geometryNeedDisposeVboBufferArr": Sinon.matchAny,
-         "sourceInstanceNeedDisposeVboBufferArr": Sinon.matchAny,
-       })
+    |> withOneArg(
+         DisposeRenderWorkerJobTool.buildDisposeData(
+           ~geometryNeedDisposeVboBufferArr=Sinon.matchAny,
+           ~sourceInstanceNeedDisposeVboBufferArr=Sinon.matchAny,
+           ~needDisposedBasicSourceTextureIndexArray=Sinon.matchAny,
+           ~needDisposedArrayBufferViewTextureIndexArray=Sinon.matchAny,
+           (),
+         ),
+       )
     |> Obj.magic
     |> getSpecificArg(0)
     |> List.hd;
-  let disposeData = {
-    "data": args,
-    /* DisposeAndSendDisposeDataMainWorkerJob._buildData(
-         "",
-         (
-           geometryNeedDisposeVboBufferArr,
-           sourceInstanceNeedDisposeVboBufferArr
-         )
-       ) */
-  };
+  let disposeData = {"data": args};
   [|
     DisposeVboRenderWorkerJob.execJob(None),
     DisposeSourceInstanceRenderWorkerJob.execJob(None),
+    DisposeTextureRenderWorkerJob.execJob(None),
   |]
   |> concatStreamFuncArray(disposeData, RenderWorkerStateTool.getStateData())
   |> WonderBsMost.Most.drain

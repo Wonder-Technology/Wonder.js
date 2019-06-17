@@ -446,7 +446,7 @@ let _ =
                   ~geometryPointCount=300000,
                   ~geometryCount=50,
                   ~transformCount=500,
-                  ~lightMaterialCount=500,
+                  ~lightMaterialCount=480,
                   ~meshRendererCount=500,
                   (),
                 ),
@@ -676,7 +676,7 @@ let _ =
                   ~geometryPointCount=8000000,
                   ~geometryCount=50,
                   ~transformCount=500,
-                  ~lightMaterialCount=500,
+                  ~lightMaterialCount=480,
                   ~meshRendererCount=500,
                   (),
                 ),
@@ -1230,6 +1230,155 @@ let _ =
                   |> expect == [|Some(2.), None|];
                 },
               (),
+            );
+          });
+        });
+      })
+    );
+
+    describe("test flyCameraControllers", () =>
+      describe("test set data", () => {
+        let _getAllFlyCameraControllerComponent = (rootGameObject, state) =>
+          _getAllGameObjects(rootGameObject, state)
+          |> Js.Array.filter(gameObject =>
+               GameObjectAPI.hasGameObjectFlyCameraControllerComponent(
+                 gameObject,
+                 state,
+               )
+             )
+          |> Js.Array.map(gameObject =>
+               GameObjectAPI.unsafeGetGameObjectFlyCameraControllerComponent(
+                 gameObject,
+                 state,
+               )
+             );
+
+        testPromise("test set moveSpeed", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfFlyCameraController(),
+            ~state,
+            ~testFunc=
+              ((state, _, rootGameObject)) =>
+                _getAllFlyCameraControllerComponent(rootGameObject, state)
+                |> Js.Array.map(cameraController =>
+                     FlyCameraControllerAPI.unsafeGetFlyCameraControllerMoveSpeed(
+                       cameraController,
+                       state,
+                     )
+                   )
+                |> expect == [|2.1|],
+            (),
+          )
+        );
+        testPromise("test set rotateSpeed", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfFlyCameraController(),
+            ~state,
+            ~testFunc=
+              ((state, _, rootGameObject)) =>
+                _getAllFlyCameraControllerComponent(rootGameObject, state)
+                |> Js.Array.map(cameraController =>
+                     FlyCameraControllerAPI.unsafeGetFlyCameraControllerRotateSpeed(
+                       cameraController,
+                       state,
+                     )
+                   )
+                |> expect == [|2.3|],
+            (),
+          )
+        );
+        testPromise("test set wheelSpeed", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfFlyCameraController(),
+            ~state,
+            ~testFunc=
+              ((state, _, rootGameObject)) =>
+                _getAllFlyCameraControllerComponent(rootGameObject, state)
+                |> Js.Array.map(cameraController =>
+                     FlyCameraControllerAPI.unsafeGetFlyCameraControllerWheelSpeed(
+                       cameraController,
+                       state,
+                     )
+                   )
+                |> expect == [|3.9|],
+            (),
+          )
+        );
+
+        describe("test set isBindEvent", () => {
+          testPromise("if isBindEvent===false, not bind event", () =>
+            AssembleWDBSystemTool.testGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfFlyCameraController(),
+              ~isBindEvent=false,
+              ~state,
+              ~testFunc=
+                ((state, _, rootGameObject)) =>
+                  _getAllFlyCameraControllerComponent(rootGameObject, state)
+                  |> Js.Array.map(cameraController =>
+                       FlyCameraControllerAPI.isBindFlyCameraControllerEvent(
+                         cameraController,
+                         state,
+                       )
+                     )
+                  |> expect == [|false|],
+              (),
+            )
+          );
+
+          describe("else, judge by data", () => {
+            testPromise("test not bind", () =>
+              AssembleWDBSystemTool.testGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfFlyCameraController(
+                    ~isBindEvent=false,
+                    (),
+                  ),
+                ~isBindEvent=true,
+                ~state,
+                ~testFunc=
+                  ((state, _, rootGameObject)) =>
+                    _getAllFlyCameraControllerComponent(rootGameObject, state)
+                    |> Js.Array.map(cameraController =>
+                         FlyCameraControllerAPI.isBindFlyCameraControllerEvent(
+                           cameraController,
+                           state,
+                         )
+                       )
+                    |> expect == [|false|],
+                (),
+              )
+            );
+            testPromise("test bind", () =>
+              AssembleWDBSystemTool.testGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfFlyCameraController(
+                    ~isBindEvent=true,
+                    (),
+                  ),
+                ~isBindEvent=true,
+                ~state,
+                ~testFunc=
+                  ((state, _, rootGameObject)) =>
+                    _getAllFlyCameraControllerComponent(rootGameObject, state)
+                    |> Js.Array.map(cameraController =>
+                         FlyCameraControllerAPI.isBindFlyCameraControllerEvent(
+                           cameraController,
+                           state,
+                         )
+                       )
+                    |> expect == [|true|],
+                (),
+              )
             );
           });
         });

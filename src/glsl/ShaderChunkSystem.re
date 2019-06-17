@@ -32,6 +32,37 @@
       chunkMap:
         createEmpty()
         
+|> set("webgl1_skybox_vertex", _buildChunk(({|
+
+|},{|
+
+|}),{|
+varying vec3 v_texCoord;
+|},({|
+
+|},{|
+
+|}),{|
+v_texCoord = a_position;
+
+vec4 pos = u_pMatrix * u_skyboxVMatrix * vec4(a_position, 1.0);
+gl_Position = pos.xyww;
+|}))
+
+|> set("webgl1_skybox_fragment", _buildChunk(({|
+
+|},{|
+
+|}),{|
+varying vec3 v_texCoord;
+|},({|
+
+|},{|
+
+|}),{|
+gl_FragColor = textureCube(u_skyboxCubeMapSampler, vec3(-v_texCoord.x, v_texCoord.y, v_texCoord.z));
+|}))
+
 |> set("webgl1_outline_origin_vertex", _buildChunk(({|
 
 |},{|
@@ -250,7 +281,7 @@ vec4 calcTotalLight(vec3 norm, vec3 viewDir){
         }
     #endif
 
-        totalLight += u_ambient;
+        totalLight += u_ambient * materialDiffuseRGB;
 
         return vec4(totalLight, alpha);
 }

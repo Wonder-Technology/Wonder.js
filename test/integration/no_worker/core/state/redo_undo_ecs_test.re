@@ -161,7 +161,12 @@ let _ =
       let state =
         state |> setArrayBufferViewSourceTextureMinFilter(texture2, Linear);
       let state = state |> setArrayBufferViewSourceTextureType(texture2, 1);
-      let state = state |> setArrayBufferViewSourceTextureFormat(texture2, 2);
+      let state =
+        state
+        |> setArrayBufferViewSourceTextureFormat(
+             texture2,
+             SourceTextureType.Alpha,
+           );
       let state = state |> setArrayBufferViewSourceTextureWidth(texture2, 2);
       let state = state |> setArrayBufferViewSourceTextureHeight(texture2, 4);
       (state, texture1, texture2, texture3);
@@ -193,61 +198,37 @@ let _ =
               )
             )
           );
-          test("deep copy gameObjectsMap, emptyMapUnitArrayMap", () => {
+          test("deep copy gameObjectsMap", () => {
             open StateDataMainType;
             open BasicMaterialType;
             let (state, gameObject1, basicMaterial1) =
               BasicMaterialTool.createGameObject(state^);
-            let {gameObjectsMap, emptyMapUnitArrayMap} =
-              BasicMaterialTool.getRecord(state);
+            let {gameObjectsMap} = BasicMaterialTool.getRecord(state);
             let originGameObjectsArr = [|1|];
             let originEmptyMapUnitArrayMap = [|2, 1, 0|];
             let copiedOriginGameObjectsArr =
               originGameObjectsArr |> Js.Array.copy;
-            let copiedOriginEmptyMapUnitArrayMap =
-              originEmptyMapUnitArrayMap |> Js.Array.copy;
             gameObjectsMap
             |> WonderCommonlib.MutableSparseMapService.set(
                  basicMaterial1,
                  originGameObjectsArr,
                )
             |> ignore;
-            emptyMapUnitArrayMap
-            |> WonderCommonlib.MutableSparseMapService.set(
-                 basicMaterial1,
-                 originEmptyMapUnitArrayMap,
-               )
-            |> ignore;
             let copiedState = MainStateTool.deepCopyForRestore(state);
-            let {gameObjectsMap, emptyMapUnitArrayMap} =
-              BasicMaterialTool.getRecord(copiedState);
+            let {gameObjectsMap} = BasicMaterialTool.getRecord(copiedState);
             let arr =
               gameObjectsMap
               |> WonderCommonlib.MutableSparseMapService.unsafeGet(
                    basicMaterial1,
                  );
             Array.unsafe_set(arr, 0, 2);
-            let arr =
-              emptyMapUnitArrayMap
-              |> WonderCommonlib.MutableSparseMapService.unsafeGet(
-                   basicMaterial1,
-                 );
-            Array.unsafe_set(arr, 0, 4);
 
-            let {gameObjectsMap, emptyMapUnitArrayMap} =
-              BasicMaterialTool.getRecord(state);
-            (
-              gameObjectsMap
-              |> WonderCommonlib.MutableSparseMapService.unsafeGet(
-                   basicMaterial1,
-                 ),
-              emptyMapUnitArrayMap
-              |> WonderCommonlib.MutableSparseMapService.unsafeGet(
-                   basicMaterial1,
-                 ),
-            )
-            |> expect
-            == (copiedOriginGameObjectsArr, copiedOriginEmptyMapUnitArrayMap);
+            let {gameObjectsMap} = BasicMaterialTool.getRecord(state);
+            gameObjectsMap
+            |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                 basicMaterial1,
+               )
+            |> expect == copiedOriginGameObjectsArr;
           });
           test("copy colors", () =>
             RedoUndoTool.testCopyTypeArraySingleValue(
@@ -258,30 +239,6 @@ let _ =
                   |> TypeArrayTool.truncateArray,
                 BasicMaterialAPI.setBasicMaterialColor,
                 () => ([|0.1, 0., 0.|], [|0.2, 0., 0.|]),
-              ),
-              state,
-            )
-          );
-          test("copy textureIndices", () =>
-            RedoUndoTool.testCopyTypeArraySingleValue(
-              (
-                BasicMaterialTool.createGameObject,
-                (material, state) =>
-                  BasicMaterialAPI.unsafeGetBasicMaterialMap(material, state),
-                BasicMaterialAPI.setBasicMaterialMap,
-                () => (0, 1),
-              ),
-              state,
-            )
-          );
-          test("copy mapUnits", () =>
-            RedoUndoTool.testCopyTypeArraySingleValue(
-              (
-                BasicMaterialTool.createGameObject,
-                (material, state) =>
-                  BasicMaterialTool.getMapUnit(material, state),
-                BasicMaterialTool.setMapUnit,
-                () => (1, 2),
               ),
               state,
             )
@@ -319,7 +276,9 @@ let _ =
       describe("deep copy texture record", () => {
         describe("deep copy basic source texture record", () =>
           test(
-            "shadow copy sourceMap,glTextureMap, \n                    bindTextureUnitCacheMap, disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray\n                    \n                    ",
+            "shadow copy sourceMap,glTextureMap, \n                     disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray
+            materialsMap, needDisposedTextureIndexArray
+            \n                    \n                    ",
             () =>
             StateDataMainType.(
               BasicSourceTextureType.(
@@ -328,19 +287,21 @@ let _ =
                     let {
                       sourceMap,
                       glTextureMap,
-                      bindTextureUnitCacheMap,
                       disposedIndexArray,
                       needAddedSourceArray,
                       needInitedTextureIndexArray,
+                      materialsMap,
+                      needDisposedTextureIndexArray,
                     } =
                       BasicSourceTextureTool.getRecord(state);
                     [|
                       sourceMap |> Obj.magic,
                       glTextureMap |> Obj.magic,
-                      bindTextureUnitCacheMap |> Obj.magic,
                       disposedIndexArray |> Obj.magic,
                       needAddedSourceArray |> Obj.magic,
                       needInitedTextureIndexArray |> Obj.magic,
+                      materialsMap |> Obj.magic,
+                      needDisposedTextureIndexArray |> Obj.magic,
                     |];
                   },
                   state^,
@@ -349,9 +310,10 @@ let _ =
             )
           )
         );
+
         describe("deep copy arrayBufferView source texture record", () =>
           test(
-            "shadow copy sourceMap,glTextureMap, \n                    bindTextureUnitCacheMap, disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray\n                    \n                    ",
+            "shadow copy sourceMap,glTextureMap, \n                     disposedIndexArray,needAddedSourceArray,needInitedTextureIndexArray, materialsMap, needDisposedTextureIndexArray\n                    \n                    ",
             () =>
             StateDataMainType.(
               ArrayBufferViewSourceTextureType.(
@@ -360,19 +322,21 @@ let _ =
                     let {
                       sourceMap,
                       glTextureMap,
-                      bindTextureUnitCacheMap,
                       disposedIndexArray,
                       needAddedSourceArray,
                       needInitedTextureIndexArray,
+                      materialsMap,
+                      needDisposedTextureIndexArray,
                     } =
                       ArrayBufferViewSourceTextureTool.getRecord(state);
                     [|
                       sourceMap |> Obj.magic,
                       glTextureMap |> Obj.magic,
-                      bindTextureUnitCacheMap |> Obj.magic,
                       disposedIndexArray |> Obj.magic,
                       needAddedSourceArray |> Obj.magic,
                       needInitedTextureIndexArray |> Obj.magic,
+                      materialsMap |> Obj.magic,
+                      needDisposedTextureIndexArray |> Obj.magic,
                     |];
                   },
                   state^,
@@ -382,6 +346,7 @@ let _ =
           )
         );
       });
+
       describe("deep copy light record", () => {
         describe("test direction light", () => {
           describe("copy type array record", () => {
@@ -584,7 +549,20 @@ isActiveMap,
 
           disposedUidArrayForKeepOrderRemoveGeometry,
           disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
-                  disposedBasicCameraViewArray,        disposedTransformArray,        disposedTransformArrayForKeepOrder,        disposedPerspectiveCameraProjectionArray,        disposedBasicMaterialDataMap,        disposedLightMaterialDataMap,                disposedGeometryDataMap,        disposedSourceInstanceArray,        disposedObjectInstanceArray,                disposedDirectionLightArray,        disposedPointLightArray,        disposedMeshRendererComponentArray,
+disposedUidArrayForRemoveTexture,
+
+
+                  disposedBasicCameraViewArray,        disposedTransformArray,        disposedTransformArrayForKeepOrder,        disposedPerspectiveCameraProjectionArray,
+                  disposedFlyCameraControllerArray,
+                  disposedArcballCameraControllerArray,
+
+                  disposedBasicMaterialDataMap,
+
+                  disposedLightMaterialDataMap,
+                  disposedLightMaterialRemoveTextureDataMap
+
+
+                  disposedGeometryDataMap,        disposedSourceInstanceArray,        disposedObjectInstanceArray,                disposedDirectionLightArray,        disposedPointLightArray,        disposedMeshRendererComponentArray,
           disposedScriptArray,
 
           disposedMeshRendererUidArray,                                                aliveUidArray, transformMap, basicCameraViewMap, geometryMap, meshRendererMap, basicMaterialMap, lightMaterialMap, directionLightMap, pointLightMap, sourceInstanceMap, objectInstanceMap, scriptMap|},
@@ -602,12 +580,16 @@ isActiveMap,
                     disposedUidArrayForKeepOrder,
                     disposedUidArrayForKeepOrderRemoveGeometry,
                     disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial,
+                    disposedUidArrayForRemoveTexture,
                     disposedBasicCameraViewArray,
                     disposedTransformArray,
                     disposedTransformArrayForKeepOrder,
                     disposedPerspectiveCameraProjectionArray,
+                    disposedFlyCameraControllerArray,
+                    disposedArcballCameraControllerArray,
                     disposedBasicMaterialDataMap,
                     disposedLightMaterialDataMap,
+                    disposedLightMaterialRemoveTextureDataMap,
                     disposedGeometryDataMap,
                     disposedSourceInstanceArray,
                     disposedObjectInstanceArray,
@@ -639,12 +621,16 @@ isActiveMap,
                     disposedUidArrayForKeepOrderRemoveGeometry |> Obj.magic,
                     disposedUidArrayForKeepOrderRemoveGeometryRemoveMaterial
                     |> Obj.magic,
+                    disposedUidArrayForRemoveTexture |> Obj.magic,
                     disposedBasicCameraViewArray |> Obj.magic,
                     disposedTransformArray |> Obj.magic,
                     disposedTransformArrayForKeepOrder |> Obj.magic,
                     disposedPerspectiveCameraProjectionArray |> Obj.magic,
+                    disposedFlyCameraControllerArray |> Obj.magic,
+                    disposedArcballCameraControllerArray |> Obj.magic,
                     disposedBasicMaterialDataMap |> Obj.magic,
                     disposedLightMaterialDataMap |> Obj.magic,
+                    disposedLightMaterialRemoveTextureDataMap |> Obj.magic,
                     disposedGeometryDataMap |> Obj.magic,
                     disposedSourceInstanceArray |> Obj.magic,
                     disposedObjectInstanceArray |> Obj.magic,
@@ -799,11 +785,7 @@ isActiveMap,
               TestTool.initWithJobConfigWithoutBuildFakeDom(
                 ~sandbox,
                 ~buffer=
-                  SettingTool.buildBufferConfigStr(
-                    ~basicMaterialCount=4,
-                    ~textureCountPerMaterial=1,
-                    (),
-                  ),
+                  SettingTool.buildBufferConfigStr(~basicMaterialCount=4, ()),
                 (),
               );
 
@@ -829,13 +811,6 @@ isActiveMap,
                 [|1., 0.1, 1.|],
                 currentState,
               );
-            let (currentState, map1) =
-              BasicSourceTextureAPI.createBasicSourceTexture(currentState);
-            let (currentState, map2) =
-              BasicSourceTextureAPI.createBasicSourceTexture(currentState);
-            let currentState =
-              currentState
-              |> BasicMaterialAPI.setBasicMaterialMap(material4, map2);
             let currentState =
               BasicMaterialAPI.setBasicMaterialIsDepthTest(
                 material4,
@@ -852,13 +827,12 @@ isActiveMap,
             let currentState = AllMaterialTool.pregetGLSLData(currentState);
             let _ = MainStateTool.restore(currentState, copiedState);
 
-            let defaultUnit = BasicSourceTextureTool.getDefaultUnit();
             let defaultIsDepthTest =
               BufferMaterialService.getDefaultIsDepthTest();
             let defaultAlpha = BasicMaterialTool.getDefaultAlpha();
-            let {colors, textureIndices, mapUnits, isDepthTests, alphas} =
+            let {colors, isDepthTests, alphas} =
               MainStateTool.unsafeGetState() |> BasicMaterialTool.getRecord;
-            (colors, textureIndices, mapUnits, isDepthTests, alphas)
+            (colors, isDepthTests, alphas)
             |> expect
             == (
                  Float32Array.make([|
@@ -874,13 +848,6 @@ isActiveMap,
                    1.,
                    1.,
                    1.,
-                 |]),
-                 Uint32Array.make([|0, 0, 0, 0|]),
-                 Uint8Array.make([|
-                   defaultUnit,
-                   defaultUnit,
-                   defaultUnit,
-                   defaultUnit,
                  |]),
                  Uint8Array.make([|
                    defaultIsDepthTest,

@@ -19,9 +19,9 @@ let initWithJobConfig =
       ~workerJobRecord=WorkerJobTool.buildWorkerJobConfig(),
       ~renderConfigRecord=RenderConfigTool.buildRenderConfig(),
       ~buffer=SettingTool.buildBufferConfigStr(),
-      ()
+      (),
     ) => {
-  [@bs] SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer();
+  SharedArrayBufferTool.setSharedArrayBufferToBeArrayBuffer(.);
   SettingWorkerTool.createStateAndSetToStateData(
     ~state={
       let state = CreateStateMainService.createState();
@@ -29,9 +29,9 @@ let initWithJobConfig =
         ...state,
         workerDetectRecord: {
           ...state.workerDetectRecord,
-          isSupportRenderWorkerAndSharedArrayBuffer: true
-        }
-      }
+          isSupportRenderWorkerAndSharedArrayBuffer: true,
+        },
+      };
     },
     ~buffer,
     ~isDebug,
@@ -39,11 +39,11 @@ let initWithJobConfig =
     ~canvasId,
     ~context,
     ~useHardwareInstance,
-    ()
+    (),
   )
   |> WorkerJobTool.create(workerJobRecord)
   |> RenderConfigTool.create(renderConfigRecord)
-  |> MainStateTool.setState
+  |> MainStateTool.setState;
 };
 
 let openContractCheck = () =>

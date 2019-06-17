@@ -160,8 +160,6 @@ let _isLoadStreamChunk = (jsonChunkLength, totalLoadedByteLength) =>
   + jsonChunkLength;
 
 let _handleDone = (controller, assembleData, handleWhenDoneFunc) => {
-  WonderLog.Log.log("done") |> ignore;
-
   _close(controller);
 
   switch (assembleData) {
@@ -325,9 +323,9 @@ and _handleLoadBinBufferChunk =
          ),
          (loadedUint8ArrayArr, totalUint8Array),
          (
-           allChunkLengths |. Some,
+           allChunkLengths->Some,
            streamChunkArr,
-           assembleData |. Some,
+           assembleData->Some,
            nextStreamChunkIndex,
            loadedStreamChunkArrWhichNotHasAllData,
            loadBlobImageMap,
@@ -360,8 +358,6 @@ and _handleLoading =
   /* TODO use requestIdleCallback + timeout? */
 
   let value = streamData##value;
-
-  WonderLog.Log.log(("value", value |> Uint8Array.byteLength)) |> ignore;
 
   let loadedUint8ArrayArr = loadedUint8ArrayArr |> ArrayService.push(value);
 
@@ -442,7 +438,7 @@ and _handleLoading =
           ),
           (loadedUint8ArrayArr, totalUint8Array),
           (
-            allChunkLengths |. Some,
+            allChunkLengths->Some,
             streamChunkArr,
             assembleData,
             nextStreamChunkIndex,

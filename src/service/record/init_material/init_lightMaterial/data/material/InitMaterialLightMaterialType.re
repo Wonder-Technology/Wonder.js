@@ -4,6 +4,6 @@ type materialRecord = {
   index: int,
   disposedIndexArray,
   shaderIndices: Js.Typed_array.Uint32Array.t,
-  diffuseMapUnits: Js.Typed_array.Uint8Array.t,
-  specularMapUnits: Js.Typed_array.Uint8Array.t
+  diffuseTextureIndices: Js.Typed_array.Uint32Array.t,
+  specularTextureIndices: Js.Typed_array.Uint32Array.t,
 };

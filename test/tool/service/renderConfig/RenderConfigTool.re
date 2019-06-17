@@ -28,12 +28,6 @@ let buildRenderConfig =
   ],
   "dynamic_branchs": [
     {
-      "name": "basic_map",
-      "condition": "basic_has_map",
-      "pass": "basic_map",
-      "fail": "no_basic_map"
-    },
-    {
       "name": "common_light_map",
       "condition": "light_has_map",
       "pass": "common_light_map"
@@ -82,8 +76,7 @@ let buildRenderConfig =
           "name": "basic"
         },
         {
-          "type": "dynamic_branch",
-          "name": "basic_map"
+          "name": "no_basic_map"
         },
         {
           "name": "basic_end"
@@ -166,6 +159,25 @@ let buildRenderConfig =
   ],
   "no_material_shaders": [
     {
+      "name": "rotation_gizmo_for_editor",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "modelMatrix_noInstance"
+        },
+        {
+          "name": "rotation_gizmo_circle_for_editor"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
+    },
+    {
       "name": "outline_draw_origin_gameObjects",
       "shader_libs": [
         {
@@ -205,12 +217,27 @@ let buildRenderConfig =
           "name": "end"
         }
       ]
+    },
+    {
+      "name": "skybox",
+      "shader_libs": [
+        {
+          "type": "group",
+          "name": "top"
+        },
+        {
+          "name": "skybox"
+        },
+        {
+          "type": "group",
+          "name": "end"
+        }
+      ]
     }
   ]
 }
         |},
       ~shaderLibs={|
-
 [
   {
     "name": "common",
@@ -332,48 +359,6 @@ let buildRenderConfig =
         "name": "webgl1_basic_vertex"
       }
     ]
-  },
-  {
-    "name": "basic_map",
-    "glsls": [
-      {
-        "type": "vs",
-        "name": "webgl1_basic_map_vertex"
-      },
-      {
-        "type": "fs",
-        "name": "webgl1_basic_map_fragment"
-      }
-    ],
-    "variables": {
-      "attributes": [
-        {
-          "name": "a_texCoord",
-          "buffer": 2,
-          "type": "vec2"
-        }
-      ],
-      "uniforms": [
-        {
-          "name": "u_color",
-          "field": "color",
-          "type": "float3",
-          "from": "basicMaterial"
-        },
-        {
-          "name": "u_alpha",
-          "field": "alpha",
-          "type": "float",
-          "from": "basicMaterial"
-        },
-        {
-          "name": "u_mapSampler",
-          "field": "map",
-          "type": "sampler2D",
-          "from": "basicMaterial"
-        }
-      ]
-    }
   },
   {
     "name": "no_basic_map",
@@ -743,6 +728,41 @@ let buildRenderConfig =
     ]
   },
   {
+    "name": "rotation_gizmo_circle_for_editor",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_rotation_gizmo_circle_for_editor_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_rotation_gizmo_circle_for_editor_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_color",
+          "from": "no_material_shader",
+          "field": "rotationGizmoForEditor",
+          "type": "float3"
+        },
+        {
+          "name": "u_alpha",
+          "from": "no_material_shader",
+          "field": "rotationGizmoForEditor",
+          "type": "float"
+        },
+        {
+          "name": "u_cameraPosInLocalCoordSystem",
+          "from": "no_material_shader",
+          "field": "rotationGizmoForEditor",
+          "type": "float3"
+        }
+      ]
+    }
+  },
+  {
     "name": "outline_expand",
     "glsls": [
       {
@@ -798,6 +818,35 @@ let buildRenderConfig =
     ]
   },
   {
+    "name": "skybox",
+    "glsls": [
+      {
+        "type": "vs",
+        "name": "webgl1_skybox_vertex"
+      },
+      {
+        "type": "fs",
+        "name": "webgl1_skybox_fragment"
+      }
+    ],
+    "variables": {
+      "uniforms": [
+        {
+          "name": "u_skyboxCubeMapSampler",
+          "from": "no_material_shader",
+          "field": "skyboxCubeMap",
+          "type": "samplerCube"
+        },
+        {
+          "name": "u_skyboxVMatrix",
+          "from": "no_material_shader",
+          "field": "skyboxVMatrix",
+          "type": "mat4"
+        }
+      ]
+    }
+  },
+  {
     "name": "end",
     "variables": {
       "attributes": [
@@ -808,9 +857,6 @@ let buildRenderConfig =
     }
   }
 ]
-
-
-
         |},
       (),
     ) => (

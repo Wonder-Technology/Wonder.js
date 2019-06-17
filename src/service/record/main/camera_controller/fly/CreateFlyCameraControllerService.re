@@ -7,13 +7,20 @@ open FlyCameraControllerType;
 let _setDefaultValue =
     (
       index,
-      {moveSpeedMap, wheelSpeedMap, rotateSpeedMap, eulerAngleDiffMap, translationDiffMap} as record: flyCameraControllerRecord,
+      {
+        moveSpeedMap,
+        wheelSpeedMap,
+        rotateSpeedMap,
+        eulerAngleDiffMap,
+        translationDiffMap,
+        directionArrayMap,
+      } as record: flyCameraControllerRecord,
     ) => {
   ...record,
   moveSpeedMap:
-    moveSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 1.2),
+    moveSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 0.5),
   wheelSpeedMap:
-    wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 2.0),
+    wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 2.5),
   rotateSpeedMap:
     rotateSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 100.),
   eulerAngleDiffMap:
@@ -25,13 +32,15 @@ let _setDefaultValue =
   translationDiffMap:
     translationDiffMap
     |> WonderCommonlib.MutableSparseMapService.set(index, (0., 0., 0.)),
+  directionArrayMap:
+    directionArrayMap
+    |> WonderCommonlib.MutableSparseMapService.set(index, [||]),
 };
 
 let create =
     (
       {
         index,
-        dirtyArray,
         moveSpeedMap,
         wheelSpeedMap,
         rotateSpeedMap,
@@ -42,13 +51,5 @@ let create =
   let (index, newIndex, disposedIndexArray) =
     generateIndex(index, disposedIndexArray);
   let record = _setDefaultValue(index, record);
-  (
-    {
-      ...record,
-      index: newIndex,
-      dirtyArray: DirtyArrayService.addToDirtyArray(index, dirtyArray),
-      disposedIndexArray,
-    },
-    index,
-  );
+  ({...record, index: newIndex, disposedIndexArray}, index);
 };

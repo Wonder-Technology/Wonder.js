@@ -91,6 +91,7 @@ let initWithJobConfig =
     ~buffer,
     ~noWorkerJobRecord,
     ~context,
+    ~renderConfigRecord,
     (),
   );
 };

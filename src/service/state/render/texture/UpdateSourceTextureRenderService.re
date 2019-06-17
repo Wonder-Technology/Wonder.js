@@ -105,6 +105,7 @@ let update =
       (allocateSourceToTextureFunc, setFlipYFunc),
     ) => {
   let isSourcePowerOfTwo = _isSourcePowerOfTwo(width, height);
+
   setFlipYFunc(gl, flipY, browserDetectRecord);
 
   gl

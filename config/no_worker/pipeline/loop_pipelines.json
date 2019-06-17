@@ -51,6 +51,9 @@
                 "name": "draw_outline"
             },
             {
+                "name": "render_skybox"
+            },
+            {
                 "name": "render_imgui"
             }
         ]

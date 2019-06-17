@@ -76,7 +76,7 @@ let _buildTextureData = state => {
 let _getFntData = imguiRecord =>
   switch (WonderImgui.AssetIMGUIAPI.getFntData(imguiRecord)) {
   | None => None
-  | Some(fntData) => fntData |> Obj.magic |> Js.Json.stringify |. Some
+  | Some(fntData) => (fntData |> Obj.magic |> Js.Json.stringify)->Some
   };
 
 let _buildIMGUIData = state => {
@@ -137,7 +137,6 @@ let _buildData = (operateType, canvas, stateData) => {
       "basicMaterialCount": buffer.basicMaterialCount,
       "lightMaterialCount": buffer.lightMaterialCount,
       "meshRendererCount": buffer.meshRendererCount,
-      "textureCountPerMaterial": buffer.textureCountPerMaterial,
       "basicSourceTextureCount": buffer.basicSourceTextureCount,
       "arrayBufferViewSourceTextureCount":
         buffer.arrayBufferViewSourceTextureCount,

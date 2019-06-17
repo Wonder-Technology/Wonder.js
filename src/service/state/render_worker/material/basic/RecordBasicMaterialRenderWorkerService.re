@@ -8,9 +8,6 @@ let getRecord = ({basicMaterialRecord}) =>
 let unsafeGetShaderIndices = state =>
   getRecord(state).shaderIndices |> OptionService.unsafeGet;
 
-let unsafeGetMapUnits = state =>
-  getRecord(state).mapUnits |> OptionService.unsafeGet;
-
 let unsafeGetIsDepthTests = state =>
   getRecord(state).isDepthTests |> OptionService.unsafeGet;
 

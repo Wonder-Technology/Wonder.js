@@ -1,31 +1,4 @@
-/* TODO finish */
-
 open StateDataMainType;
-
-/* let getIMGUIData = (sabRelativePath, {assetBundleRecord} as state) =>
-     assetBundleRecord.assembleSABData.imguiDataMap
-     |> WonderCommonlib.ImmutableHashMapService.get(sabRelativePath);
-
-   let setIMGUIData =
-       (
-         sabRelativePath,
-         imguiData: AssetBundleType.imguiData,
-         {assetBundleRecord} as state,
-       ) => {
-     ...state,
-     assetBundleRecord: {
-       ...assetBundleRecord,
-       assembleSABData: {
-         ...assetBundleRecord.assembleSABData,
-         imguiDataMap:
-           assetBundleRecord.assembleSABData.imguiDataMap
-           |> WonderCommonlib.ImmutableHashMapService.set(
-                sabRelativePath,
-                imguiData,
-              ),
-       },
-     },
-   }; */
 
 let getLoadedSAB = (sabRelativePath, {assetBundleRecord} as state) =>
   assetBundleRecord.assembleSABData.loadedSABMap
@@ -85,6 +58,38 @@ let isLoaded = (sabRelativePath, {assetBundleRecord} as state) =>
   | Some(isLoaded) => isLoaded
   };
 
+let _markIsAssembled =
+    (sabRelativePath, isAssembled, {assetBundleRecord} as state) => {
+  ...state,
+  assetBundleRecord: {
+    ...assetBundleRecord,
+    assembleSABData: {
+      ...assetBundleRecord.assembleSABData,
+      isAssembledMap:
+        assetBundleRecord.assembleSABData.isAssembledMap
+        |> WonderCommonlib.ImmutableHashMapService.set(
+             sabRelativePath,
+             isAssembled,
+           ),
+    },
+  },
+};
+
+let markAssembled = (sabRelativePath, {assetBundleRecord} as state) =>
+  _markIsAssembled(sabRelativePath, true, state);
+
+let markNotAssembled = (sabRelativePath, {assetBundleRecord} as state) =>
+  _markIsAssembled(sabRelativePath, false, state);
+
+let isAssembled = (sabRelativePath, {assetBundleRecord} as state) =>
+  switch (
+    assetBundleRecord.assembleSABData.isAssembledMap
+    |> WonderCommonlib.ImmutableHashMapService.get(sabRelativePath)
+  ) {
+  | None => false
+  | Some(isAssembled) => isAssembled
+  };
+
 let canAssemble =
     (sabRelativePath, wabRelativePath, {assetBundleRecord} as state) =>
   isLoaded(sabRelativePath, state)
@@ -97,7 +102,7 @@ let canAssemble =
     ) {
     | None => false
     | Some(wholeDependencyRelationMap) =>
-      FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+      FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
         sabRelativePath,
         wholeDependencyRelationMap,
       )

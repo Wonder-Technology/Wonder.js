@@ -17,13 +17,14 @@ let _ =
           ~buffer=
             SettingTool.buildBufferConfigStr(
               ~transformCount=10,
-              ~basicMaterialCount=10,
+              ~basicMaterialCount=12,
               (),
             ),
           (),
         );
     });
     afterEach(() => TestWorkerTool.clear(sandbox));
+
     describe("use program", () => {
       let _prepare = (sandbox, state) =>
         FrontRenderLightForNoWorkerAndWorkerJobTool.prepareForUseProgramCase(
@@ -36,6 +37,7 @@ let _ =
           _prepare,
           state,
         );
+
       testPromise("test use", () => {
         let (state, program, useProgram) =
           _prepareForUseProgram(sandbox, state^);
@@ -48,6 +50,7 @@ let _ =
         );
       });
     });
+
     describe("send uniform data", () => {
       describe("test send u_normalMatrix", () =>
         testPromise("test send", () => {

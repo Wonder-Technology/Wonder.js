@@ -92,7 +92,7 @@ let _ =
         })
       );
     });
-    describe("bind and update sourceInstance's gameObject's map", () => {
+    /* describe("bind and update sourceInstance's gameObject's map", () => {
       test("bind map", () => {
         let (state, gameObject, _, _) =
           RenderBasicBatchInstanceTool.prepare(sandbox, 2, state^);
@@ -125,7 +125,7 @@ let _ =
           state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
         RenderBasicMaterialMapTool.testUpdateMap(sandbox, state);
       });
-    });
+    }); */
     describe("draw", () => {
       describe("test source gameObject has box geometry component", () =>
         RenderBatchInstanceTool.testDrawElements(

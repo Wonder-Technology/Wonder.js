@@ -1,115 +1,15 @@
-let getMap =
-    (
-      material,
-      textureCountPerMaterial,
-      (getMapUnitFunc, getTextureIndexFunc),
-      (textureIndices, mapUnits),
-    ) => {
-  let mapUnit = getMapUnitFunc(. material, mapUnits);
+let getMap = (material, getTextureIndexFunc, textureIndices) => {
+  let textureIndex = getTextureIndexFunc(. material, textureIndices);
 
-  MapUnitService.hasMap(mapUnit) ?
-    Some(
-      getTextureIndexFunc(.
-        (material, mapUnit, textureCountPerMaterial),
-        textureIndices,
-      ),
-    ) :
-    None;
+  TextureIndexService.isTextureNotDefaultValue(textureIndex) ?
+    Some(textureIndex) : None;
 };
 
-let _changeMap =
-    (
-      (material, texture),
-      mapUnit,
-      setTextureIndexFunc,
-      (
-        textureCountPerMaterial,
-        textureIndices,
-        mapUnits,
-        emptyMapUnitArrayMap,
-      ),
-    ) => (
-  setTextureIndexFunc(.
-    (material, mapUnit, textureCountPerMaterial),
-    texture,
-    textureIndices,
-  ),
-  mapUnits,
-  emptyMapUnitArrayMap,
-);
+let setMap = (material, texture, setTextureIndexFunc, textureIndices) =>
+  setTextureIndexFunc(. material, texture, textureIndices);
 
-let setMap =
-    (
-      material,
-      texture,
-      (getMapUnitFunc, setMapUnitFunc, setTextureIndexFunc),
-      (
-        textureCountPerMaterial,
-        textureIndices,
-        mapUnits,
-        emptyMapUnitArrayMap,
-      ),
-    ) => {
-  let mapUnit = getMapUnitFunc(. material, mapUnits);
-  MapUnitService.hasMap(mapUnit) ?
-    _changeMap(
-      (material, texture),
-      mapUnit,
-      setTextureIndexFunc,
-      (
-        textureCountPerMaterial,
-        textureIndices,
-        mapUnits,
-        emptyMapUnitArrayMap,
-      ),
-    ) :
-    {
-      let (mapUnit, emptyMapUnitArrayMap) =
-        EmptyMapUnitArrayMapService.unsafeGetEmptyMapUnitAndPop(
-          material,
-          emptyMapUnitArrayMap,
-        );
+let removeMap = (material, setTextureIndexFunc, textureIndices) => {
+  let defaultTexture = TextureIndexService.getDefaultTextureIndex();
 
-      (
-        setTextureIndexFunc(.
-          (material, mapUnit, textureCountPerMaterial),
-          texture,
-          textureIndices,
-        ),
-        setMapUnitFunc(. material, mapUnit, mapUnits),
-        emptyMapUnitArrayMap,
-      );
-    };
-};
-
-let removeMap =
-    (
-      material,
-      (getMapUnitFunc, setMapUnitFunc, setTextureIndexFunc),
-      (
-        textureCountPerMaterial,
-        textureIndices,
-        mapUnits,
-        emptyMapUnitArrayMap,
-      ),
-    ) => {
-  let defaultTexture = BufferMaterialService.getDefaultTextureIndex();
-
-  let mapUnit = getMapUnitFunc(. material, mapUnits);
-
-  MapUnitService.hasMap(mapUnit) ?
-    (
-      setTextureIndexFunc(.
-        (material, defaultTexture, textureCountPerMaterial),
-        defaultTexture,
-        textureIndices,
-      ),
-      setMapUnitFunc(. material, MapUnitService.getDefaultUnit(), mapUnits),
-      EmptyMapUnitArrayMapService.addEmptyMapUnit(
-        material,
-        mapUnit,
-        emptyMapUnitArrayMap,
-      ),
-    ) :
-    (textureIndices, mapUnits, emptyMapUnitArrayMap);
+  setTextureIndexFunc(. material, defaultTexture, textureIndices);
 };

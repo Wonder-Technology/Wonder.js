@@ -103,28 +103,28 @@ let _ =
           GPUDetectTool.getRecord(state).maxTextureUnit
           |> expect == Some(maxTextureUnit);
         });
-        describe("contract check", () =>
-          test("maxTextureUnit should >= textureCountPerMaterial", () => {
-            let (maxTextureUnit, fakeGl) = _prepare();
-            expect(() =>
-              TestTool.initWithJobConfigWithoutBuildFakeDom(
-                ~sandbox,
-                ~noWorkerJobRecord=_buildNoWorkerJobConfig(),
-                ~buffer=
-                  SettingTool.buildBufferConfigStr(
-                    ~textureCountPerMaterial=17,
-                    (),
-                  ),
-                (),
-              )
-              |> FakeGlTool.setFakeGl(fakeGl)
-              |> DirectorTool.init
-            )
-            |> toThrowMessage(
-                 "expect maxTextureUnit:16 >= textureCountPerMaterial:17, but actual not",
-               );
-          })
-        );
+        /* describe("contract check", () =>
+             test("maxTextureUnit should >= textureCountPerMaterial", () => {
+               let (maxTextureUnit, fakeGl) = _prepare();
+               expect(() =>
+                 TestTool.initWithJobConfigWithoutBuildFakeDom(
+                   ~sandbox,
+                   ~noWorkerJobRecord=_buildNoWorkerJobConfig(),
+                   ~buffer=
+                     SettingTool.buildBufferConfigStr(
+                       ~textureCountPerMaterial=17,
+                       (),
+                     ),
+                   (),
+                 )
+                 |> FakeGlTool.setFakeGl(fakeGl)
+                 |> DirectorTool.init
+               )
+               |> toThrowMessage(
+                    "expect maxTextureUnit:16 >= textureCountPerMaterial:17, but actual not",
+                  );
+             })
+           ); */
       });
       describe("detect precision", () => {
         let _prepare = sandbox => {

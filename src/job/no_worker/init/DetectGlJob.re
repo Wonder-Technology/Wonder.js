@@ -6,6 +6,5 @@ let execJob = (_, state) => {
     state.gpuDetectRecord
     |> GPUDetectService.detect(
          [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord),
-         BufferSettingService.getTextureCountPerMaterial(state.settingRecord)
        )
 };

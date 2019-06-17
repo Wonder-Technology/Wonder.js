@@ -20,7 +20,7 @@ let _ =
     describe("isAssetBundleArrayBufferCached", () =>
       testPromise("return false", () =>
         LoadABSystem.isAssetBundleArrayBufferCached(. "", "")
-        |> MostTool.testStream(result => result |> expect == false |> resolve)
+        |> then_(result => result |> expect == false |> resolve)
       )
     );
 
@@ -38,7 +38,7 @@ let _ =
         let ab = Obj.magic(-1);
 
         LoadABSystem.cacheAssetBundleArrayBuffer(. "", ab, "")
-        |> MostTool.testStream(() => 1 |> expect == 1 |> resolve);
+        |> then_(_ => 1 |> expect == 1 |> resolve);
       })
     );
   });

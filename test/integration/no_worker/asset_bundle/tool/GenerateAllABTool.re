@@ -203,16 +203,44 @@ module TestWithTwoRAB = {
   let generateTwoRABs = state => {
     let resourceData1 = GenerateSingleRABTool.ResourceData.buildResourceData();
 
-    let (state, rab1) =
+    let rab1 =
       GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
     let resourceData2 = GenerateSingleRABTool.ResourceData.buildResourceData();
 
-    let (state, rab2) =
+    let rab2 =
       GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
 
     generateAllAB((rab1, rab2), state)
     |> MostTool.testStream(data => getNewRabs(data) |> Js.Promise.resolve);
+  };
+};
+
+module TestWithOneSAB = {
+  let getWholeDependencyRelationMap = ( sab1RelativePath) =>
+    buildDependencyRelation([||]);
+
+  let getSABRelativePath = () => {
+    let sab1RelativePath = "sab1.sab";
+
+    sab1RelativePath;
+  };
+
+  let generateAllAB = (sab1, state) => {
+    let sab1RelativePath = getSABRelativePath();
+
+    state |> StateAPI.setState |> ignore;
+
+    GenerateAllABSystem.generate(
+      buildDependencyRelation([||]),
+      ([|buildSABData(sab1RelativePath, sab1)|], [||]),
+    );
+  };
+
+  let getNewSAB = ((_, newRabDataArr, newSabDataArr)) => {
+    let (_, newSab1) = newSabDataArr[0];
+
+    newSab1;
   };
 };
 

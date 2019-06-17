@@ -1,6 +1,6 @@
 {
   "name": "wonder.js",
-  "version": "1.1.0-alpha.1.9",
+  "version": "1.2.0-alpha.1",
   "authors": "Wonder",
   "description": "3d webgl engine",
   "homepage": "https://github.com/Wonder-Technology/Wonder.js",
@@ -26,10 +26,12 @@
     "test:generatePfBenchmark": "gulp generatePerformanceBenchmark",
     "test:render": "npm run build && gulp testRenderInLocal",
     "test:renderCI": "npm run build && gulp testRenderInCI",
+    "test:generateCorrectImage": "gulp generateCorrectImage",
     "test:pf": "npm run build && gulp testPerformanceInLocal",
     "test:pfCI": "npm run build && gulp testPerformanceInCI",
     "test:watch": "jest --watch --verbose false --config jest.json",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
+    "installWithPuppeteer": "npm link gulp && gulp installWithPuppeteer"
   },
   "config": {
     "commitizen": {
@@ -51,20 +53,20 @@
     "@babel/core": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
     "babel-jest": "24.3.1",
-    "jest": "24.3.1",
     "bs-platform": "4.0.18",
     "cz-customizable": "^5.2.0",
     "express": "^4.16.1",
     "gulp": "^3.9.1",
     "gulp-git": "^2.5.0",
     "http": "^0.0.0",
-    "puppeteer": "^1.12.2",
+    "jest": "24.3.1",
+    "puppeteer": "1.17.0",
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0",
     "wonder-benchmark": "^0.2.13",
     "wonder-bs-jest": "0.3.0",
-    "wonder-bs-sinon": "latest",
-    "wonder-generate-index": "latest",
+    "wonder-bs-sinon": "0.1.9",
+    "wonder-generate-index": "0.1.0",
     "wonder-glsl-compiler": "^0.1.13",
     "wonder-render-test": "^0.1.27"
   },
@@ -72,16 +74,16 @@
     "bs-fetch": "^0.3.0",
     "wonder-bs-json": "^0.0.1",
     "wonder-bs-most": "^0.0.3",
-    "wonder-commonlib": "^0.2.31",
+    "wonder-commonlib": "^0.2.32",
     "wonder-imgui": "^0.0.34",
     "wonder-log": "^0.2.11",
     "wonder-most-animation-frame": "0.0.3",
-    "wonder-webgl": "^0.0.7"
+    "wonder-webgl": "^0.0.11"
   },
   "resolutions": {
     "wonder-log": "^0.2.11",
-    "wonder-webgl": "^0.0.7",
-    "wonder-commonlib": "0.2.31",
+    "wonder-webgl": "^0.0.11",
+    "wonder-commonlib": "0.2.32",
     "wonder-bs-jest": "0.3.0",
     "wonder-bs-puppeteer": "^0.1.6"
   }

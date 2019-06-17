@@ -18,15 +18,18 @@ module All = {
       ParseABSystem.WAB.unsafeGetHashId(abRelativePath, wholeManifest);
 
     isAssetBundleArrayBufferCachedFunc(. abRelativePath, hashId)
+    |> Most.fromPromise
     |> Most.flatMap(isCached =>
          isCached ?
-           getAssetBundleArrayBufferCacheFunc(. abRelativePath) :
+           getAssetBundleArrayBufferCacheFunc(. abRelativePath)
+           |> Most.fromPromise :
            LoadABSystem.load(
              getAssetBundlePathFunc(.) ++ abRelativePath,
              fetchFunc,
            )
            |> Most.flatMap(ab =>
                 cacheAssetBundleArrayBufferFunc(. abRelativePath, ab, hashId)
+                |> Most.fromPromise
                 |> Most.map(() => ab)
                 |> Most.concat(Most.just(ab))
               )
@@ -41,64 +44,53 @@ module SAB = {
         wholeManifest,
         (
           getAssetBundlePathFunc,
-          initAssetBundleArrayBufferCacheFunc,
           isAssetBundleArrayBufferCachedFunc,
           getAssetBundleArrayBufferCacheFunc,
           cacheAssetBundleArrayBufferFunc,
           fetchFunc,
         ),
       ) =>
-    initAssetBundleArrayBufferCacheFunc(.)
-    |> Most.concat(
-         Most.just(sabRelativePath)
-         |> Most.flatMap(sabRelativePath => {
-              let state =
-                StateDataMainService.unsafeGetState(StateDataMain.stateData);
+    Most.just(sabRelativePath)
+    |> Most.flatMap(sabRelativePath => {
+         let state =
+           StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
-              let wholeDependencyRelationMap =
-                ParseABSystem.WAB.getWholeDependencyRelationMap(
-                  wholeManifest,
-                );
+         let wholeDependencyRelationMap =
+           ParseABSystem.WAB.getWholeDependencyRelationMap(wholeManifest);
 
-              OperateSABAssetBundleMainService.isLoaded(
-                sabRelativePath,
-                state,
-              ) ?
-                Most.empty() :
-                All.loadAB(
-                  sabRelativePath,
-                  wholeManifest,
-                  wholeDependencyRelationMap,
-                  (
-                    getAssetBundlePathFunc,
-                    isAssetBundleArrayBufferCachedFunc,
-                    getAssetBundleArrayBufferCacheFunc,
-                    cacheAssetBundleArrayBufferFunc,
-                    fetchFunc,
-                  ),
-                )
-                |> Most.tap(sab => {
-                     let state =
-                       StateDataMainService.unsafeGetState(
-                         StateDataMain.stateData,
-                       );
+         OperateSABAssetBundleMainService.isLoaded(sabRelativePath, state) ?
+           Most.empty() :
+           All.loadAB(
+             sabRelativePath,
+             wholeManifest,
+             wholeDependencyRelationMap,
+             (
+               getAssetBundlePathFunc,
+               isAssetBundleArrayBufferCachedFunc,
+               getAssetBundleArrayBufferCacheFunc,
+               cacheAssetBundleArrayBufferFunc,
+               fetchFunc,
+             ),
+           )
+           |> Most.tap(sab => {
+                let state =
+                  StateDataMainService.unsafeGetState(
+                    StateDataMain.stateData,
+                  );
 
-                     state
-                     |> OperateSABAssetBundleMainService.markLoaded(
-                          sabRelativePath,
-                        )
-                     |> OperateSABAssetBundleMainService.setLoadedSAB(
-                          sabRelativePath,
-                          sab,
-                        )
-                     |> StateDataMainService.setState(
-                          StateDataMain.stateData,
-                        )
-                     |> ignore;
-                   })
-                |> Most.map(_ => ());
-            }),
-       );
+                state
+                |> OperateSABAssetBundleMainService.markLoaded(
+                     sabRelativePath,
+                   )
+                |> OperateSABAssetBundleMainService.setLoadedSAB(
+                     sabRelativePath,
+                     sab,
+                   )
+                |> StateDataMainService.setState(StateDataMain.stateData)
+                |> ignore;
+              })
+           |> Most.map(_ => ());
+       });
 };
 
 module RAB = {
@@ -160,7 +152,6 @@ module RAB = {
         wholeManifest,
         (
           getAssetBundlePathFunc,
-          initAssetBundleArrayBufferCacheFunc,
           isAssetBundleArrayBufferCachedFunc,
           getAssetBundleArrayBufferCacheFunc,
           cacheAssetBundleArrayBufferFunc,
@@ -170,32 +161,29 @@ module RAB = {
     let wholeDependencyRelationMap =
       ParseABSystem.WAB.getWholeDependencyRelationMap(wholeManifest);
 
-    initAssetBundleArrayBufferCacheFunc(.)
-    |> Most.concat(
-         FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
-           abRelativePath,
+    FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
+      abRelativePath,
+      wholeDependencyRelationMap,
+    )
+    |> Most.from
+    |> Most.flatMap(rabRelativePath =>
+         _loadRABAndSetToState(
+           rabRelativePath,
+           wholeManifest,
            wholeDependencyRelationMap,
+           (
+             getAssetBundlePathFunc,
+             isAssetBundleArrayBufferCachedFunc,
+             getAssetBundleArrayBufferCacheFunc,
+             cacheAssetBundleArrayBufferFunc,
+             fetchFunc,
+           ),
          )
-         |> Most.from
-         |> Most.flatMap(rabRelativePath =>
-              _loadRABAndSetToState(
-                rabRelativePath,
-                wholeManifest,
-                wholeDependencyRelationMap,
-                (
-                  getAssetBundlePathFunc,
-                  isAssetBundleArrayBufferCachedFunc,
-                  getAssetBundleArrayBufferCacheFunc,
-                  cacheAssetBundleArrayBufferFunc,
-                  fetchFunc,
-                ),
-              )
-            ),
        );
   };
 
   let assembleAllDependencyRAB = (abRelativePath, wholeDependencyRelationMap) =>
-    FindDependencyDataSystem.findAllDependencyRAbRelativePathByDepthSearch(
+    FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
       abRelativePath,
       wholeDependencyRelationMap,
     )
@@ -218,7 +206,8 @@ module RAB = {
 };
 
 module WAB = {
-  let loadWABAndSetToState = (wabRelativePath, (getAssetBundlePathFunc, fetchFunc)) =>
+  let loadWABAndSetToState =
+      (wabRelativePath, (getAssetBundlePathFunc, fetchFunc)) =>
     Most.just(wabRelativePath)
     |> Most.flatMap(wabRelativePath => {
          let state =
@@ -250,7 +239,7 @@ module WAB = {
                    )
                 |> StateDataMainService.setState(StateDataMain.stateData)
                 |> ignore;
-              })
+              });
        });
 };
 

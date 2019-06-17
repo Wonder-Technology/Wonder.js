@@ -141,6 +141,19 @@ let convertToPerspectiveCameraProjections = ({cameras}: GLTFType.gltf) =>
        )
   };
 
+let convertToFlyCameraControllers = ({extras}: GLTFType.gltf) =>
+  switch (extras) {
+  | None => [||]
+  | Some({flyCameraControllers}) =>
+    switch (flyCameraControllers) {
+    | None => [||]
+    | Some(flyCameraControllers) => flyCameraControllers
+    /* |> WonderCommonlib.ArrayService.reduceOneParam(
+         (. arr, data) => arr |> ArrayService.push(data),
+         [||],
+       ) */
+    }
+  };
 let convertToArcballCameraControllers = ({extras}: GLTFType.gltf) =>
   switch (extras) {
   | None => [||]

@@ -20,18 +20,6 @@ let prepareGameObject = (sandbox, state) => {
   (state, gameObject, geometry, material, meshRenderer);
 };
 
-let prepareGameObjectWithMap = (sandbox, map, state) => {
-  let (state, gameObject, geometry, material, meshRenderer) =
-    prepareGameObject(sandbox, state);
-  let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
-  (state, gameObject, geometry, material, meshRenderer, map);
-};
-
-let prepareGameObjectWithCreatedMap = (sandbox, state) => {
-  let (state, map) = BasicSourceTextureAPI.createBasicSourceTexture(state);
-  prepareGameObjectWithMap(sandbox, map, state);
-};
-
 let prepareGameObjectWithGeometry = (sandbox, state) => {
   open GameObjectAPI;
   open BasicMaterialAPI;

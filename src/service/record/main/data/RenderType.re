@@ -8,8 +8,13 @@ type renderObjectRecord = {
   sourceInstanceIndices: Js.Typed_array.Uint32Array.t,
 };
 
+type textureRecord = {
+  activableTextureUnitArray: array(TextureType.textureUnit),
+};
+
 type renderRecord = {
   mutable basicRenderObjectRecord: option(renderObjectRecord),
   mutable lightRenderObjectRecord: option(renderObjectRecord),
   mutable cameraRecord: option(RenderCameraType.renderCameraRecord),
+  textureRecord: option(textureRecord),
 };

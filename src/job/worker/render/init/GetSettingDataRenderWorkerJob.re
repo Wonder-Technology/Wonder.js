@@ -14,8 +14,6 @@ let execJob = (_, e, stateData) =>
           sourceInstanceCount: instanceBufferData##sourceInstanceCount,
           objectInstanceCountPerSourceInstance: instanceBufferData##objectInstanceCountPerSourceInstance,
         }),
-      textureCountPerMaterial:
-        Some(data##bufferData##textureCountPerMaterial),
       basicSourceTextureCount:
         Some(data##bufferData##basicSourceTextureCount),
       arrayBufferViewSourceTextureCount:

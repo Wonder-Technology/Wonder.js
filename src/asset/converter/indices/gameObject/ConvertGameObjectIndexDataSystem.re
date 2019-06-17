@@ -23,6 +23,10 @@ let convertToGameObjectIndexData =
         nodes,
         cameras,
       ),
+    flyCameraControllerGameObjectIndexData:
+      ConvertComponentIndexDataSystem.convertToFlyCameraControllerGameObjectIndexData(
+        nodes,
+      ),
     arcballCameraControllerGameObjectIndexData:
       ConvertComponentIndexDataSystem.convertToArcballCameraControllerGameObjectIndexData(
         nodes,

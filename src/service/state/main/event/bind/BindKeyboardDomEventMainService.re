@@ -18,19 +18,6 @@ let _removeFromEventArrMapByHandleFunc =
     eventArrMap,
   );
 
-/* switch (eventArrMap |> WonderCommonlib.MutableSparseMapService.get(eventName)) {
-   | None => eventArrMap
-   | Some(arr) =>
-     eventArrMap
-     |> WonderCommonlib.MutableSparseMapService.set(
-          eventName,
-          arr
-          |> Js.Array.filter(({handleFunc}: keyboardDomEventData) =>
-               handleFunc !== targetHandleFunc
-             ),
-        )
-   }; */
-
 let bind = (eventName, priority, handleFunc, {eventRecord} as state) => {
   let {keyboardDomEventDataArrMap} = eventRecord;
 

@@ -26,21 +26,6 @@ let setColor = (material, color: array(float), state) => {
   };
 };
 
-let getMap = (material, state) =>
-  ManageMapBasicMaterialMainService.getMap(material, state);
-
-let unsafeGetMap = (material, state) =>
-  ManageMapBasicMaterialMainService.unsafeGetMap(material, state);
-
-let setMap = (material, texture, state) =>
-  ManageMapBasicMaterialMainService.setMap(material, texture, state);
-
-let hasMap = (material, state) =>
-  ManageMapBasicMaterialMainService.hasMap(material, state);
-
-let removeMap = (material, state) =>
-  ManageMapBasicMaterialMainService.removeMap(material, state);
-
 let getIsDepthTest = (material, state) =>
   OperateTypeArrayBasicMaterialService.getIsDepthTest(
     material,

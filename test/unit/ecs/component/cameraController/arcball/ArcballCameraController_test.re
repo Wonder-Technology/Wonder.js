@@ -89,10 +89,9 @@ let _ =
           EventTool.getPointEventBindedDom(state),
           MouseEventTool.buildMouseEvent(),
         );
-        EventTool.triggerDomEvent(
-          "mousemove",
-          EventTool.getPointEventBindedDom(state),
+        EventTool.triggerFirstMouseDragOverEvent(
           MouseEventTool.buildMouseEvent(~movementX=1, ~movementY=2, ()),
+          state,
         );
         let state = EventTool.restore(state);
 
@@ -283,139 +282,22 @@ let _ =
           },
         );
 
-        describe("remove from eventHandleFunc map", () => {
-          test("unbind event", () => {
-            let state = MouseEventTool.prepare(~sandbox, ());
-            let (state, gameObject1, _, (cameraController1, _, _)) =
-              ArcballCameraControllerTool.createGameObject(state);
-            let state = state |> NoWorkerJobTool.execInitJobs;
-            let value = ref(0);
-            let pointDownHandleFunc =
-              (. event, state) => {
-                value := value^ + 20;
-                (state, event);
-              };
-            let pointUpHandleFunc =
-              (. event, state) => {
-                value := value^ + 21;
-                (state, event);
-              };
-            let pointDragHandleFunc =
-              (. event, state) => {
-                value := value^ + 1;
-                (state, event);
-              };
-            let pointScaleHandleFunc =
-              (. event, state) => {
-                value := value^ + 2;
-                (state, event);
-              };
-            let keydownHandleFunc =
-              (. event, state) => {
-                value := value^ + 3;
-                state;
-              };
-            let state =
-              state
-              |> ManageEventAPI.onCustomGlobalEvent(
-                   NameEventService.getPointDownEventName(),
-                   0,
-                   pointDownHandleFunc,
-                 )
-              |> ManageEventAPI.onCustomGlobalEvent(
-                   NameEventService.getPointUpEventName(),
-                   0,
-                   pointUpHandleFunc,
-                 )
-              |> ManageEventAPI.onCustomGlobalEvent(
-                   NameEventService.getPointDragOverEventName(),
-                   0,
-                   pointDragHandleFunc,
-                 )
-              |> ManageEventAPI.onCustomGlobalEvent(
-                   NameEventService.getPointScaleEventName(),
-                   0,
-                   pointScaleHandleFunc,
-                 )
-              |> ManageEventAPI.onKeyboardEvent(
-                   EventType.KeyDown,
-                   0,
-                   keydownHandleFunc,
-                 );
-            let state =
-              state
-              |> ArcballCameraControllerTool.addPointDragStartEventHandleFunc(
-                   cameraController1,
-                   pointDownHandleFunc,
-                 )
-              |> ArcballCameraControllerTool.addPointDragDropEventHandleFunc(
-                   cameraController1,
-                   pointUpHandleFunc,
-                 )
-              |> ArcballCameraControllerTool.addPointDragOverEventHandleFunc(
-                   cameraController1,
-                   pointDragHandleFunc,
-                 )
-              |> ArcballCameraControllerTool.addPointScaleEventHandleFunc(
-                   cameraController1,
-                   pointScaleHandleFunc,
-                 )
-              |> ArcballCameraControllerTool.addKeydownEventHandleFunc(
-                   cameraController1,
-                   keydownHandleFunc,
-                 );
-
-            let state =
-              state
-              |> GameObjectTool.disposeGameObjectArcballCameraControllerComponent(
-                   gameObject1,
-                   cameraController1,
-                 );
-
-            let state = MainStateTool.setState(state);
-            EventTool.triggerDomEvent(
-              "mousewheel",
-              EventTool.getPointEventBindedDom(state),
-              MouseEventTool.buildMouseEvent(),
-            );
-            EventTool.triggerDomEvent(
-              "mousedown",
-              EventTool.getPointEventBindedDom(state),
-              MouseEventTool.buildMouseEvent(),
-            );
-            EventTool.triggerDomEvent(
-              "mousemove",
-              EventTool.getPointEventBindedDom(state),
-              MouseEventTool.buildMouseEvent(),
-            );
-            EventTool.triggerDomEvent(
-              "mouseup",
-              EventTool.getPointEventBindedDom(state),
-              MouseEventTool.buildMouseEvent(),
-            );
-            EventTool.triggerDomEvent(
-              "keydown",
-              EventTool.getPointEventBindedDom(state),
-              MouseEventTool.buildMouseEvent(),
-            );
-            let state = EventTool.restore(state);
-            value^ |> expect == 0;
-          });
+        describe("remove from eventHandleFunc map", () =>
           test("remove from map", () => {
             let (state, gameObject1, _, (cameraController1, _, _)) =
               ArcballCameraControllerTool.createGameObject(state^);
             let value = ref(0);
-            let pointDownHandleFunc =
+            let pointDragStartHandleFunc =
               (. event, state) => {
                 value := value^ + 1;
                 (state, event);
               };
-            let pointUpHandleFunc =
+            let pointDragDropHandleFunc =
               (. event, state) => {
                 value := value^ + 1;
                 (state, event);
               };
-            let pointDragHandleFunc =
+            let pointDragOverHandleFunc =
               (. event, state) => {
                 value := value^ + 1;
                 (state, event);
@@ -434,15 +316,15 @@ let _ =
               state
               |> ArcballCameraControllerTool.addPointDragStartEventHandleFunc(
                    cameraController1,
-                   pointDownHandleFunc,
+                   pointDragStartHandleFunc,
                  )
               |> ArcballCameraControllerTool.addPointDragDropEventHandleFunc(
                    cameraController1,
-                   pointUpHandleFunc,
+                   pointDragDropHandleFunc,
                  )
               |> ArcballCameraControllerTool.addPointDragOverEventHandleFunc(
                    cameraController1,
-                   pointDragHandleFunc,
+                   pointDragOverHandleFunc,
                  )
               |> ArcballCameraControllerTool.addPointScaleEventHandleFunc(
                    cameraController1,
@@ -491,8 +373,8 @@ let _ =
                  ),
             )
             |> expect == (false, false, false, false, false);
-          });
-        });
+          })
+        );
 
         describe("fix bug", () =>
           test(

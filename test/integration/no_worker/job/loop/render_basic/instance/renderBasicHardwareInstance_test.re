@@ -18,8 +18,8 @@ let _ =
           SettingTool.buildBufferConfigStr(
             ~geometryPointCount=300,
             ~transformCount=500,
-            ~basicMaterialCount=50,
-            ~lightMaterialCount=50,
+            ~basicMaterialCount=48,
+            ~lightMaterialCount=48,
             ~sourceInstanceCount=3,
             ~objectInstanceCountPerSourceInstance=100,
             (),
@@ -64,38 +64,7 @@ let _ =
         (),
       );
     });
-    describe("bind and update sourceInstance's gameObject's map", () => {
-      test("bind map", () => {
-        let (state, gameObject, componentTuple) = _prepare(sandbox, state^);
-        let material =
-          GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent(
-            gameObject,
-            state,
-          );
-        let (state, map) =
-          BasicSourceTextureAPI.createBasicSourceTexture(state);
-        let state =
-          state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
-        RenderBasicMaterialMapTool.testBindMap(sandbox, state);
-      });
-      test("update map", () => {
-        let (state, gameObject, componentTuple) = _prepare(sandbox, state^);
-        let material =
-          GameObjectAPI.unsafeGetGameObjectBasicMaterialComponent(
-            gameObject,
-            state,
-          );
-        let (state, map) =
-          BasicSourceTextureAPI.createBasicSourceTexture(state);
-        let source = BasicSourceTextureTool.buildSource(2, 4);
-        let state =
-          state
-          |> BasicSourceTextureAPI.setBasicSourceTextureSource(map, source);
-        let state =
-          state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
-        RenderBasicMaterialMapTool.testUpdateMap(sandbox, state);
-      });
-    });
+
     describe("send instance data", () => {
       describe("create instance buffer when first send", () => {
         test("test create buffer", () => {

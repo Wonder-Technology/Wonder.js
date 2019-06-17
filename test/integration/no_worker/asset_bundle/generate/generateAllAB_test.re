@@ -25,81 +25,81 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     /* describe("check dependency relation", () => {
-      describe("if has circle dependency, fatal", () => {
-        testPromise("test1", () =>
-          expect(() =>
-            GenerateAllABSystem.generate(
-              GenerateAllABTool.buildDependencyRelation([|
-                [|"s1.sab", "r1.rab"|],
-                [|"r1.rab", "s1.sab"|],
-              |]),
-              ([||], [||]),
-            )
-          )
-          |> toThrowMessage("dependencyRelation shouldn't be circle")
-          |> resolve
-        );
-        testPromise("test2", () =>
-          expect(() =>
-            GenerateAllABSystem.generate(
-              GenerateAllABTool.buildDependencyRelation([|
-                [|"r1.rab", "r2.rab", "r1.rab"|],
-                [|"s1.sab", "r1.rab"|],
-              |]),
-              ([||], [||]),
-            )
-          )
-          |> toThrowMessage("dependencyRelation shouldn't be circle")
-          |> resolve
-        );
-        testPromise("test3", () =>
-          expect(() =>
-            GenerateAllABSystem.generate(
-              GenerateAllABTool.buildDependencyRelation([|
-                [|"r1.rab", "r2.rab"|],
-                [|"r2.rab", "r1.rab"|],
-                [|"s1.sab", "r1.rab"|],
-              |]),
-              ([||], [||]),
-            )
-          )
-          |> toThrowMessage("dependencyRelation shouldn't be circle")
-          |> resolve
-        );
-      });
+         describe("if has circle dependency, fatal", () => {
+           testPromise("test1", () =>
+             expect(() =>
+               GenerateAllABSystem.generate(
+                 GenerateAllABTool.buildDependencyRelation([|
+                   [|"s1.sab", "r1.rab"|],
+                   [|"r1.rab", "s1.sab"|],
+                 |]),
+                 ([||], [||]),
+               )
+             )
+             |> toThrowMessage("dependencyRelation shouldn't be circle")
+             |> resolve
+           );
+           testPromise("test2", () =>
+             expect(() =>
+               GenerateAllABSystem.generate(
+                 GenerateAllABTool.buildDependencyRelation([|
+                   [|"r1.rab", "r2.rab", "r1.rab"|],
+                   [|"s1.sab", "r1.rab"|],
+                 |]),
+                 ([||], [||]),
+               )
+             )
+             |> toThrowMessage("dependencyRelation shouldn't be circle")
+             |> resolve
+           );
+           testPromise("test3", () =>
+             expect(() =>
+               GenerateAllABSystem.generate(
+                 GenerateAllABTool.buildDependencyRelation([|
+                   [|"r1.rab", "r2.rab"|],
+                   [|"r2.rab", "r1.rab"|],
+                   [|"s1.sab", "r1.rab"|],
+                 |]),
+                 ([||], [||]),
+               )
+             )
+             |> toThrowMessage("dependencyRelation shouldn't be circle")
+             |> resolve
+           );
+         });
 
-      describe("else, not fatal", () => {
-        testPromise("test1", () =>
-          expect(() =>
-            GenerateAllABSystem.generate(
-              GenerateAllABTool.buildDependencyRelation([|
-                [|"s1.sab", "r1.rab"|],
-                [|"r1.rab", "r2.rab"|],
-              |]),
-              ([||], [||]),
-            )
-          )
-          |> not_
-          |> toThrow
-          |> resolve
-        );
-        testPromise("test2", () =>
-          expect(() =>
-            GenerateAllABSystem.generate(
-              GenerateAllABTool.buildDependencyRelation([|
-                [|"s1.sab", "r1.rab", "r2.rab"|],
-                [|"r1.rab", "r3.rab"|],
-                [|"r2.rab", "r3.rab"|],
-              |]),
-              ([||], [||]),
-            )
-          )
-          |> not_
-          |> toThrow
-          |> resolve
-        );
-      });
-    }); */
+         describe("else, not fatal", () => {
+           testPromise("test1", () =>
+             expect(() =>
+               GenerateAllABSystem.generate(
+                 GenerateAllABTool.buildDependencyRelation([|
+                   [|"s1.sab", "r1.rab"|],
+                   [|"r1.rab", "r2.rab"|],
+                 |]),
+                 ([||], [||]),
+               )
+             )
+             |> not_
+             |> toThrow
+             |> resolve
+           );
+           testPromise("test2", () =>
+             expect(() =>
+               GenerateAllABSystem.generate(
+                 GenerateAllABTool.buildDependencyRelation([|
+                   [|"s1.sab", "r1.rab", "r2.rab"|],
+                   [|"r1.rab", "r3.rab"|],
+                   [|"r2.rab", "r3.rab"|],
+                 |]),
+                 ([||], [||]),
+               )
+             )
+             |> not_
+             |> toThrow
+             |> resolve
+           );
+         });
+       }); */
 
     describe("remove duplicate buffer data", () => {
       describe("remove duplicate buffer data from rab", () => {
@@ -133,8 +133,11 @@ let _ =
                   (),
                 );
 
-              let (state, rab1) =
-                GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
+              let rab1 =
+                GenerateSingleRABSystem.generateSingleRAB(
+                  resourceData1,
+                  state,
+                );
 
               let image2 =
                 GenerateSingleRABTool.ResourceData.buildImageData(
@@ -161,8 +164,11 @@ let _ =
                   (),
                 );
 
-              let (state, rab2) =
-                GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
+              let rab2 =
+                GenerateSingleRABSystem.generateSingleRAB(
+                  resourceData2,
+                  state,
+                );
 
               GenerateAllABTool.TestWithTwoRAB.generateAllAB(
                 (rab1, rab2),
@@ -234,8 +240,11 @@ let _ =
                   (),
                 );
 
-              let (state, rab1) =
-                GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
+              let rab1 =
+                GenerateSingleRABSystem.generateSingleRAB(
+                  resourceData1,
+                  state,
+                );
 
               let image2 =
                 GenerateSingleRABTool.ResourceData.buildImageData(
@@ -262,8 +271,11 @@ let _ =
                   (),
                 );
 
-              let (state, rab2) =
-                GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
+              let rab2 =
+                GenerateSingleRABSystem.generateSingleRAB(
+                  resourceData2,
+                  state,
+                );
 
               GenerateAllABTool.TestWithTwoRAB.generateAllAB(
                 (rab1, rab2),
@@ -360,11 +372,17 @@ let _ =
                   (),
                 );
 
-              let (state, rab1) =
-                GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
+              let rab1 =
+                GenerateSingleRABSystem.generateSingleRAB(
+                  resourceData1,
+                  state,
+                );
 
-              let (state, rab2) =
-                GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
+              let rab2 =
+                GenerateSingleRABSystem.generateSingleRAB(
+                  resourceData2,
+                  state,
+                );
 
               GenerateAllABTool.TestWithTwoRAB.generateAllAB(
                 (rab1, rab2),
@@ -454,8 +472,11 @@ let _ =
                   (),
                 );
 
-              let (state, rab1) =
-                GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
+              let rab1 =
+                GenerateSingleRABSystem.generateSingleRAB(
+                  resourceData1,
+                  state,
+                );
 
               let (state, gameObject2, transform2, (material2, texture2)) =
                 GenerateAllABTool.TestDuplicateDataForSAB.TestDuplicateImageData.createGameObject1(
@@ -468,7 +489,7 @@ let _ =
               let (canvas, context, (base64Str1, base64Str2)) =
                 GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-              let (state, sab1) =
+              let sab1 =
                 GenerateSingleSABSystem.generateSingleSAB(
                   SceneAPI.getSceneGameObject(state),
                   WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -537,8 +558,11 @@ let _ =
                   (),
                 );
 
-              let (state, rab1) =
-                GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
+              let rab1 =
+                GenerateSingleRABSystem.generateSingleRAB(
+                  resourceData1,
+                  state,
+                );
 
               let (
                 state,
@@ -555,7 +579,7 @@ let _ =
 
               let state = state |> SceneAPI.addSceneChild(transform2);
 
-              let (state, sab1) =
+              let sab1 =
                 GenerateSingleSABSystem.generateSingleSAB(
                   SceneAPI.getSceneGameObject(state),
                   WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -615,9 +639,9 @@ let _ =
               sandbox^,
               hashIdData,
             );
-            let (state, rab1) = GenerateSingleRABTool.generateOneRAB(state^);
+            let rab1 = GenerateSingleRABTool.generateOneRAB(state^);
 
-            GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
+            GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state^)
             |> MostTool.testStream(data => {
                  let manifest =
                    GenerateAllABTool.TestWithOneRAB.getNewRabManifest(data);
@@ -637,12 +661,12 @@ let _ =
               sandbox^,
               hashIdData,
             );
-            let (state, rab1) = GenerateSingleRABTool.generateOneRAB(state^);
-            let (state, rab2) = GenerateSingleRABTool.generateOneRAB(state);
+            let rab1 = GenerateSingleRABTool.generateOneRAB(state^);
+            let rab2 = GenerateSingleRABTool.generateOneRAB(state^);
 
             GenerateAllABTool.TestWithTwoRAB.generateAllAB(
               (rab1, rab2),
-              state,
+              state^,
             )
             |> MostTool.testStream(data => {
                  let (newRab1Manifest, newRab2Manifest) =
@@ -670,12 +694,12 @@ let _ =
               sandbox^,
               hashIdData,
             );
-            let (state, rab1) = GenerateSingleRABTool.generateOneRAB(state^);
-            let (state, sab1) = GenerateSingleSABTool.generateOneSAB(state);
+            let rab1 = GenerateSingleRABTool.generateOneRAB(state^);
+            let sab1 = GenerateSingleSABTool.generateOneSAB(state^);
 
             GenerateAllABTool.TestWithOneSABAndOneRAB.generateAllAB(
               (rab1, sab1),
-              state,
+              state^,
             )
             |> MostTool.testStream(data => {
                  let (newRab1Manifest, newSab1Manifest) =
@@ -698,12 +722,12 @@ let _ =
               sandbox^,
               hashIdData,
             );
-            let (state, rab1) = GenerateSingleRABTool.generateOneRAB(state^);
-            let (state, sab1) = GenerateSingleSABTool.generateOneSAB(state);
+            let rab1 = GenerateSingleRABTool.generateOneRAB(state^);
+            let sab1 = GenerateSingleSABTool.generateOneSAB(state^);
 
             GenerateAllABTool.TestWithOneSABAndOneRAB.generateAllAB(
               (rab1, sab1),
-              state,
+              state^,
             )
             |> MostTool.testStream(data => {
                  let (newRab1Manifest, newSab1Manifest) =
@@ -732,12 +756,12 @@ let _ =
               sandbox^,
               hashIdData,
             );
-            let (state, rab1) = GenerateSingleRABTool.generateOneRAB(state^);
-            let (state, sab1) = GenerateSingleSABTool.generateOneSAB(state);
+            let rab1 = GenerateSingleRABTool.generateOneRAB(state^);
+            let sab1 = GenerateSingleSABTool.generateOneSAB(state^);
 
             GenerateAllABTool.TestWABWithOneSABAndOneRAB.generateAllAB(
               (rab1, sab1),
-              state,
+              state^,
             )
             |> MostTool.testStream(data => {
                  let newWabManifest =
@@ -777,12 +801,12 @@ let _ =
               sandbox^,
               hashIdData,
             );
-            let (state, rab1) = GenerateSingleRABTool.generateOneRAB(state^);
-            let (state, sab1) = GenerateSingleSABTool.generateOneSAB(state);
+            let rab1 = GenerateSingleRABTool.generateOneRAB(state^);
+            let sab1 = GenerateSingleSABTool.generateOneSAB(state^);
 
             GenerateAllABTool.TestWABWithOneSABAndOneRAB.generateAllAB(
               (rab1, sab1),
-              state,
+              state^,
             )
             |> MostTool.testStream(data => {
                  let newWabManifest =

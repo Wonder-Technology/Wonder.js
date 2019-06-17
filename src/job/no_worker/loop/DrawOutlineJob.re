@@ -12,15 +12,7 @@ module DrawOutlineJobUtils = {
         (gl, shaderIndex, renderDataArr, state: StateRenderType.renderState) =>
       renderDataArr
       |> WonderCommonlib.ArrayService.reduceOneParam(
-           (.
-             state,
-             (
-               transformIndex,
-               materialIndex,
-               meshRendererIndex,
-               geometryIndex,
-             ),
-           ) => {
+           (. state, (transformIndex, meshRendererIndex, geometryIndex)) => {
              let sendRenderDataSubState =
                CreateSendRenederDataSubStateRenderService.createState(state);
 
@@ -41,7 +33,15 @@ module DrawOutlineJobUtils = {
              );
 
              state
-             |> RenderJobUtils.draw(gl, meshRendererIndex, geometryIndex);
+             |> RenderJobUtils.draw(
+                  gl,
+                  DrawModeMeshRendererService.getGlDrawMode(
+                    gl,
+                    meshRendererIndex,
+                    state,
+                  ),
+                  geometryIndex,
+                );
 
              state;
            },
@@ -64,10 +64,10 @@ module DrawOutlineJobUtils = {
          )
       |> WonderCommonlib.ArrayService.forEach(
            (.
-             {shaderCacheMap, name, pos, getDataFunc, sendDataFunc}: uniformNoMaterialShaderSendCachableData,
+             {shaderCacheMap, name, pos, getDataFunc, sendDataFunc}: uniformNoMaterialShaderSendData,
            ) =>
            GLSLLocationService.isUniformLocationExist(pos) ?
-             sendDataFunc(.
+             (Obj.magic(sendDataFunc))(.
                gl,
                shaderCacheMap,
                (name, pos),
@@ -83,15 +83,7 @@ module DrawOutlineJobUtils = {
         (gl, shaderIndex, renderDataArr, state: StateRenderType.renderState) =>
       renderDataArr
       |> WonderCommonlib.ArrayService.reduceOneParam(
-           (.
-             state,
-             (
-               transformIndex,
-               materialIndex,
-               meshRendererIndex,
-               geometryIndex,
-             ),
-           ) => {
+           (. state, (transformIndex, meshRendererIndex, geometryIndex)) => {
              let sendRenderDataSubState =
                CreateSendRenederDataSubStateRenderService.createState(state);
 
@@ -118,7 +110,15 @@ module DrawOutlineJobUtils = {
              );
 
              state
-             |> RenderJobUtils.draw(gl, meshRendererIndex, geometryIndex);
+             |> RenderJobUtils.draw(
+                  gl,
+                  DrawModeMeshRendererService.getGlDrawMode(
+                    gl,
+                    meshRendererIndex,
+                    state,
+                  ),
+                  geometryIndex,
+                );
 
              state;
            },
@@ -229,26 +229,6 @@ module DrawOutlineJobUtils = {
   };
 };
 
-let _getMaterialComponent = (gameObject, gameObjectRecord) =>
-  switch (
-    GetComponentGameObjectService.getBasicMaterialComponent(.
-      gameObject,
-      gameObjectRecord,
-    )
-  ) {
-  | Some(material) => Some(material)
-  | None =>
-    switch (
-      GetComponentGameObjectService.getLightMaterialComponent(.
-        gameObject,
-        gameObjectRecord,
-      )
-    ) {
-    | Some(material) => Some(material)
-    | None => None
-    }
-  };
-
 let _getRenderDataArr =
     (({jobDataRecord, gameObjectRecord}: StateDataMainType.state) as state) =>
   OperateRenderJobDataService.getGameObjectsNeedDrawOutline(jobDataRecord)
@@ -266,18 +246,12 @@ let _getRenderDataArr =
              gameObjectRecord,
            )
            |> Js.Option.andThen((. geometry) =>
-                _getMaterialComponent(
+                GetComponentGameObjectService.getMeshRendererComponent(.
                   gameObjectNeedDrawOutline,
                   gameObjectRecord,
                 )
-                |> Js.Option.andThen((. material) =>
-                     GetComponentGameObjectService.getMeshRendererComponent(.
-                       gameObjectNeedDrawOutline,
-                       gameObjectRecord,
-                     )
-                     |> Js.Option.andThen((. meshRenderer) =>
-                          Some((transform, material, meshRenderer, geometry))
-                        )
+                |> Js.Option.andThen((. meshRenderer) =>
+                     Some((transform, meshRenderer, geometry))
                    )
               )
          ) {

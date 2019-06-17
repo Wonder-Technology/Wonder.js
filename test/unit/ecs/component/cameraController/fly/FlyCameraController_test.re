@@ -32,12 +32,6 @@ let _ =
           |> (record => expect(record.index) == 1);
         })
       );
-      test("add to dirty array", () => {
-        let (state, cameraController) = createFlyCameraController(state^);
-        state
-        |> FlyCameraControllerTool.getDirtyArray
-        |> expect == [|cameraController|];
-      });
     });
 
     describe("unsafeGetFlyCameraControllerGameObject", () =>
@@ -63,7 +57,7 @@ let _ =
           FlyCameraControllerTool.createGameObject(state);
         let state = state |> NoWorkerJobTool.execInitJobs;
         let rotateSpeed = 2.5;
-        let eulerAngleDiff = {diffX: 1., diffY: 0.};
+        let eulerAngleDiff = {diffX: 1.45, diffY: 0.};
         let translationDiff = (0., 0., 2.);
 
         let state =
@@ -88,10 +82,9 @@ let _ =
           EventTool.getPointEventBindedDom(state),
           MouseEventTool.buildMouseEvent(),
         );
-        EventTool.triggerDomEvent(
-          "mousemove",
-          EventTool.getPointEventBindedDom(state),
+        EventTool.triggerFirstMouseDragOverEvent(
           MouseEventTool.buildMouseEvent(~movementX=1, ~movementY=2, ()),
+          state,
         );
         let state = EventTool.restore(state);
 
@@ -176,25 +169,6 @@ let _ =
       };
 
       describe("dispose data", () => {
-        test("dirtyArray: remove from array(include duplicated ones)", () => {
-          let (state, gameObject1, _, (cameraController1, _, _)) =
-            FlyCameraControllerTool.createGameObject(state^);
-          let state =
-            FlyCameraControllerAPI.setFlyCameraControllerRotateSpeed(
-              cameraController1,
-              11.,
-              state,
-            );
-
-          let state =
-            state
-            |> GameObjectTool.disposeGameObjectFlyCameraControllerComponent(
-                 gameObject1,
-                 cameraController1,
-               );
-
-          state.flyCameraControllerRecord.dirtyArray |> expect == [||];
-        });
         test(
           "remove from eulerAngleDiffMap, translationDiffMap, moveSpeedMap, rotateSpeedMap, wheelSpeedMap, gameObjectMap",
           () => {
@@ -247,139 +221,22 @@ let _ =
           },
         );
 
-        describe("remove from eventHandleFunc map", () => {
-          test("unbind event", () => {
-            let state = MouseEventTool.prepare(~sandbox, ());
-            let (state, gameObject1, _, (cameraController1, _, _)) =
-              FlyCameraControllerTool.createGameObject(state);
-            let state = state |> NoWorkerJobTool.execInitJobs;
-            let value = ref(0);
-            let pointDownHandleFunc =
-              (. event, state) => {
-                value := value^ + 25;
-                (state, event);
-              };
-            let pointUpHandleFunc =
-              (. event, state) => {
-                value := value^ + 28;
-                (state, event);
-              };
-            let pointDragHandleFunc =
-              (. event, state) => {
-                value := value^ + 1;
-                (state, event);
-              };
-            let pointScaleHandleFunc =
-              (. event, state) => {
-                value := value^ + 2;
-                (state, event);
-              };
-            let keydownHandleFunc =
-              (. event, state) => {
-                value := value^ + 3;
-                state;
-              };
-            let state =
-              state
-              |> ManageEventAPI.onCustomGlobalEvent(
-                   NameEventService.getPointDownEventName(),
-                   0,
-                   pointDownHandleFunc,
-                 )
-              |> ManageEventAPI.onCustomGlobalEvent(
-                   NameEventService.getPointUpEventName(),
-                   0,
-                   pointUpHandleFunc,
-                 )
-              |> ManageEventAPI.onCustomGlobalEvent(
-                   NameEventService.getPointDragOverEventName(),
-                   0,
-                   pointDragHandleFunc,
-                 )
-              |> ManageEventAPI.onCustomGlobalEvent(
-                   NameEventService.getPointScaleEventName(),
-                   0,
-                   pointScaleHandleFunc,
-                 )
-              |> ManageEventAPI.onKeyboardEvent(
-                   EventType.KeyDown,
-                   0,
-                   keydownHandleFunc,
-                 );
-            let state =
-              state
-              |> FlyCameraControllerTool.addPointDragStartEventHandleFunc(
-                   cameraController1,
-                   pointDownHandleFunc,
-                 )
-              |> FlyCameraControllerTool.addPointDragDropEventHandleFunc(
-                   cameraController1,
-                   pointUpHandleFunc,
-                 )
-              |> FlyCameraControllerTool.addPointDragOverEventHandleFunc(
-                   cameraController1,
-                   pointDragHandleFunc,
-                 )
-              |> FlyCameraControllerTool.addPointScaleEventHandleFunc(
-                   cameraController1,
-                   pointScaleHandleFunc,
-                 )
-              |> FlyCameraControllerTool.addKeydownEventHandleFunc(
-                   cameraController1,
-                   keydownHandleFunc,
-                 );
-
-            let state =
-              state
-              |> GameObjectTool.disposeGameObjectFlyCameraControllerComponent(
-                   gameObject1,
-                   cameraController1,
-                 );
-
-            let state = MainStateTool.setState(state);
-            EventTool.triggerDomEvent(
-              "mousewheel",
-              EventTool.getPointEventBindedDom(state),
-              MouseEventTool.buildMouseEvent(),
-            );
-            EventTool.triggerDomEvent(
-              "mousedown",
-              EventTool.getPointEventBindedDom(state),
-              MouseEventTool.buildMouseEvent(),
-            );
-            EventTool.triggerDomEvent(
-              "mousemove",
-              EventTool.getPointEventBindedDom(state),
-              MouseEventTool.buildMouseEvent(),
-            );
-            EventTool.triggerDomEvent(
-              "mouseup",
-              EventTool.getPointEventBindedDom(state),
-              MouseEventTool.buildMouseEvent(),
-            );
-            EventTool.triggerDomEvent(
-              "keydown",
-              EventTool.getPointEventBindedDom(state),
-              MouseEventTool.buildMouseEvent(),
-            );
-            let state = EventTool.restore(state);
-            value^ |> expect == 0;
-          });
+        describe("remove from eventHandleFunc map", () =>
           test("remove from map", () => {
             let (state, gameObject1, _, (cameraController1, _, _)) =
               FlyCameraControllerTool.createGameObject(state^);
             let value = ref(0);
-            let pointDownHandleFunc =
+            let pointDragStartHandleFunc =
               (. event, state) => {
                 value := value^ + 1;
                 (state, event);
               };
-            let pointUpHandleFunc =
+            let pointDragDropHandleFunc =
               (. event, state) => {
                 value := value^ + 1;
                 (state, event);
               };
-            let pointDragHandleFunc =
+            let pointDragOverHandleFunc =
               (. event, state) => {
                 value := value^ + 1;
                 (state, event);
@@ -398,15 +255,15 @@ let _ =
               state
               |> FlyCameraControllerTool.addPointDragStartEventHandleFunc(
                    cameraController1,
-                   pointDownHandleFunc,
+                   pointDragStartHandleFunc,
                  )
               |> FlyCameraControllerTool.addPointDragDropEventHandleFunc(
                    cameraController1,
-                   pointUpHandleFunc,
+                   pointDragDropHandleFunc,
                  )
               |> FlyCameraControllerTool.addPointDragOverEventHandleFunc(
                    cameraController1,
-                   pointDragHandleFunc,
+                   pointDragOverHandleFunc,
                  )
               |> FlyCameraControllerTool.addPointScaleEventHandleFunc(
                    cameraController1,
@@ -430,8 +287,10 @@ let _ =
               pointDragOverEventHandleFuncListMap,
               pointScaleEventHandleFuncListMap,
               keydownEventHandleFuncListMap,
+              keyupEventHandleFuncListMap,
             }: flyCameraControllerRecord =
               state.flyCameraControllerRecord;
+
             (
               pointDragStartEventHandleFuncListMap
               |> WonderCommonlib.MutableSparseMapService.has(
@@ -453,201 +312,82 @@ let _ =
               |> WonderCommonlib.MutableSparseMapService.has(
                    cameraController1,
                  ),
+              keyupEventHandleFuncListMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
             )
-            |> expect == (false, false, false, false, false);
-          });
-        });
+            |> expect == (false, false, false, false, false, false);
+          })
+        );
       });
     });
-    /* describe("unsafeGetDistance", () =>
-         test("test", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
-           let value = 65.;
-           let state =
-             state |> setFlyCameraControllerDistance(cameraController, value);
-           state
-           |> unsafeGetFlyCameraControllerDistance(cameraController)
-           |> expect == value;
-         })
-       );
-       describe("unsafeGetDistance", () => {
-         test("test", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
-           let value = 65.;
-           let state =
-             state |> setFlyCameraControllerDistance(cameraController, value);
-           state
-           |> unsafeGetFlyCameraControllerDistance(cameraController)
-           |> expect == value;
-         });
-         test("constrain distance", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
 
-           let minDistance = 2.;
-           let state =
-             state
-             |> setFlyCameraControllerMinDistance(
-                  cameraController,
-                  minDistance,
-                );
-           let distance = 1.;
-           let state =
-             state
-             |> setFlyCameraControllerDistance(cameraController, distance);
-           state
-           |> unsafeGetFlyCameraControllerDistance(cameraController)
-           |> expect == minDistance;
-         });
-       });
-       describe("unsafeGetMinDistance", () =>
-         test("test", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
-           let value = 65.;
-           let state =
-             state
-             |> setFlyCameraControllerMinDistance(cameraController, value);
-           state
-           |> unsafeGetFlyCameraControllerMinDistance(cameraController)
-           |> expect == value;
-         })
-       );
-       describe("unsafeGetWheelSpeed", () =>
-         test("test", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
-           let value = 65.;
-           let state =
-             state
-             |> setFlyCameraControllerWheelSpeed(cameraController, value);
-           state
-           |> unsafeGetFlyCameraControllerWheelSpeed(cameraController)
-           |> expect == value;
-         })
-       );
-       describe("unsafeGetRotateSpeed", () =>
-         test("test", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
-           let value = 65.;
-           let state =
-             state
-             |> setFlyCameraControllerRotateSpeed(cameraController, value);
-           state
-           |> unsafeGetFlyCameraControllerRotateSpeed(cameraController)
-           |> expect == value;
-         })
-       );
-       describe("unsafeGeteulerAngleDiff", () =>
-         test("test", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
-           let value = 65.;
-           let state =
-             state |> setFlyCameraControllereulerAngleDiff(cameraController, value);
-           state
-           |> unsafeGetFlyCameraControllereulerAngleDiff(cameraController)
-           |> expect == value;
-         })
-       );
-       describe("unsafeGetTheta", () => {
-         test("test", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
-           let value = 0.5;
-           let state =
-             state |> setFlyCameraControllerTheta(cameraController, value);
-           state
-           |> unsafeGetFlyCameraControllerTheta(cameraController)
-           |> expect == value;
-         });
-         test("constrain translationDiff", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
-           let translationDiff = 3.2;
-           let translationDiffMargin = 1.;
-           let state =
-             state
-             |> setFlyCameraControllerThetaMargin(
-                  cameraController,
-                  translationDiffMargin,
-                )
-             |> setFlyCameraControllerTheta(cameraController, translationDiff);
-           state
-           |> unsafeGetFlyCameraControllerTheta(cameraController)
-           |> expect == Js.Math._PI
-           -. translationDiffMargin;
-         });
-       });
-       describe("unsafeGetThetaMargin", () => {
-         test("test", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
-           let value = 1.;
-           let state =
-             state
-             |> setFlyCameraControllerThetaMargin(cameraController, value);
-           state
-           |> unsafeGetFlyCameraControllerThetaMargin(cameraController)
-           |> expect == value;
-         });
-         test("constrain translationDiff", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
-           let translationDiff = 3.2;
-           let translationDiffMargin = 1.;
-           let state =
-             state
-             |> setFlyCameraControllerTheta(cameraController, translationDiff)
-             |> setFlyCameraControllerThetaMargin(
-                  cameraController,
-                  translationDiffMargin,
-                );
-           state
-           |> unsafeGetFlyCameraControllerTheta(cameraController)
-           |> expect == Js.Math._PI
-           -. translationDiffMargin;
-         });
-       });
-       describe("unsafeGetTarget", () =>
-         test("test", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
-           let target = (1., 2., 5.);
-           let state =
-             state |> setFlyCameraControllerTarget(cameraController, target);
-           state
-           |> unsafeGetFlyCameraControllerTarget(cameraController)
-           |> expect == target;
-         })
-       );
-       describe("unsafeGetMoveSpeedX", () =>
-         test("test", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
-           let value = 65.;
-           let state =
-             state
-             |> setFlyCameraControllerMoveSpeedX(cameraController, value);
-           state
-           |> unsafeGetFlyCameraControllerMoveSpeedX(cameraController)
-           |> expect == value;
-         })
-       );
-       describe("unsafeGetMoveSpeedY", () =>
-         test("test", () => {
-           let (state, cameraController) =
-             createFlyCameraController(state^);
-           let value = 65.;
-           let state =
-             state
-             |> setFlyCameraControllerMoveSpeedY(cameraController, value);
-           state
-           |> unsafeGetFlyCameraControllerMoveSpeedY(cameraController)
-           |> expect == value;
-         })
-       ); */
+    describe("unsafeGetWheelSpeed", () =>
+      test("test", () => {
+        let (state, cameraController) = createFlyCameraController(state^);
+        let value = 65.;
+        let state =
+          state |> setFlyCameraControllerWheelSpeed(cameraController, value);
+        state
+        |> unsafeGetFlyCameraControllerWheelSpeed(cameraController)
+        |> expect == value;
+      })
+    );
+
+    describe("unsafeGetRotateSpeed", () =>
+      test("test", () => {
+        let (state, cameraController) = createFlyCameraController(state^);
+        let value = 65.;
+        let state =
+          state |> setFlyCameraControllerRotateSpeed(cameraController, value);
+        state
+        |> unsafeGetFlyCameraControllerRotateSpeed(cameraController)
+        |> expect == value;
+      })
+    );
+
+    describe("unsafeGetMoveSpeed", () =>
+      test("test", () => {
+        let (state, cameraController) = createFlyCameraController(state^);
+        let value = 65.;
+        let state =
+          state |> setFlyCameraControllerMoveSpeed(cameraController, value);
+        state
+        |> unsafeGetFlyCameraControllerMoveSpeed(cameraController)
+        |> expect == value;
+      })
+    );
+
+    describe("unsafeGetEulerAngleDiff", () =>
+      test("test", () => {
+        let (state, cameraController) = createFlyCameraController(state^);
+        let value = {diffX: 2.0, diffY: 1.0};
+        let state =
+          state
+          |> FlyCameraControllerTool.setEulerAngleDiff(
+               cameraController,
+               value,
+             );
+        state
+        |> FlyCameraControllerTool.unsafeGetEulerAngleDiff(cameraController)
+        |> expect == value;
+      })
+    );
+
+    describe("unsafeGetTranslationDiff", () =>
+      test("test", () => {
+        let (state, cameraController) = createFlyCameraController(state^);
+        let value = (1.0, 2.0, 3.0);
+        let state =
+          state
+          |> FlyCameraControllerTool.setTranslationDiff(
+               cameraController,
+               value,
+             );
+        state
+        |> FlyCameraControllerTool.unsafeGetTranslationDiff(cameraController)
+        |> expect == value;
+      })
+    );
   });

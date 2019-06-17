@@ -36,8 +36,6 @@ let convertToRecord = setting => {
                  json |> field("direction_light_count", int),
                pointLightCount: json |> field("point_light_count", int),
                meshRendererCount: json |> field("meshRenderer_count", int),
-               textureCountPerMaterial:
-                 json |> field("texture_count_per_material", int),
                basicSourceTextureCount:
                  json |> field("basic_source_texture_count", int),
                arrayBufferViewSourceTextureCount:

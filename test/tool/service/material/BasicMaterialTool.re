@@ -4,7 +4,7 @@ open BasicMaterialType;
 
 let getRecord = state => RecordBasicMaterialMainService.getRecord(state);
 
-let createMaterialWithMap = state => {
+/* let createMaterialWithMap = state => {
   let (state, material) = BasicMaterialAPI.createBasicMaterial(state);
   let (state, texture) =
     BasicSourceTextureAPI.createBasicSourceTexture(state);
@@ -17,6 +17,22 @@ let createMaterialWithMap = state => {
   (state, material, (texture, source));
 };
 
+let createMaterialWithArrayBufferViewMap = state => {
+  let (state, material) = BasicMaterialAPI.createBasicMaterial(state);
+  let (state, texture) =
+    ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(state);
+  let source = ArrayBufferViewSourceTextureTool.buildSource();
+  let state =
+    state
+    |> ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureSource(
+         texture,
+         source,
+       );
+  let state = BasicMaterialAPI.setBasicMaterialMap(material, texture, state);
+
+  (state, material, (texture, source));
+}; */
+
 let createGameObject = state => {
   open BasicMaterialAPI;
   open GameObjectAPI;
@@ -27,14 +43,20 @@ let createGameObject = state => {
   (state, gameObject, material);
 };
 
+/* let setMaps = (material, map, state) => {
+  let state = state |> BasicMaterialAPI.setBasicMaterialMap(material, map);
+
+  (state, map);
+};
+
 let createGameObjectWithMap = state => {
   let (state, gameObject, material) = createGameObject(state);
   let (state, texture) =
     BasicSourceTextureAPI.createBasicSourceTexture(state);
-  let state =
-    state |> BasicMaterialAPI.setBasicMaterialMap(material, texture);
+  let (state, texture) = setMaps(material, texture, state);
+
   (state, gameObject, (material, texture));
-};
+}; */
 
 let createGameObjectWithMaterial = (material, state) => {
   open GameObjectAPI;
@@ -103,31 +125,6 @@ let isMaterialDisposed = (material, state) => {
   disposedIndexArray |> Js.Array.includes(material);
 };
 
-let getMapUnit = (material, state) =>
-  OperateTypeArrayBasicMaterialService.getMapUnit(.
-    material,
-    getRecord(state).mapUnits,
-  );
-
-let setMapUnit = (material, unit, state) => {
-  OperateTypeArrayBasicMaterialService.setMapUnit(.
-    material,
-    unit,
-    getRecord(state).mapUnits,
-  )
-  |> ignore;
-  state;
-};
-
-let getTextureIndicesIndex = (material, state) =>
-  BufferBasicMaterialService.getTextureIndicesIndex(
-    material,
-    BufferSettingService.getTextureCountPerMaterial(state.settingRecord),
-  );
-
-let getDefaultTextureIndex = () =>
-  BufferMaterialService.getDefaultTextureIndex();
-
 let hasGameObject = (material, state) =>
   switch (
     GameObjectBasicMaterialService.getGameObjects(material, getRecord(state))
@@ -142,12 +139,9 @@ let isNeedInitMaterial = (material, state) =>
     getRecord(state).shaderIndices,
   );
 
-let getEmptyMapUnitArray = (material, state) =>
-  EmptyMapUnitArrayMapService._unsafeGetEmptyMapUnitArray(
-    material,
-    getRecord(state).emptyMapUnitArrayMap,
-  );
-
 let getDefaultIsDepthTest = () => true;
 
 let getDefaultAlpha = () => BufferBasicMaterialService.getDefaultAlpha();
+
+let disposeBasicMaterial = (material, state) =>
+  BasicMaterialAPI.batchDisposeBasicMaterial([|material|], state);

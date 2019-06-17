@@ -35,6 +35,21 @@ let clonePerspectiveCameraProjectionComponent =
   ({...state, perspectiveCameraProjectionRecord}, componentArr);
 };
 
+let cloneFlyCameraControllerComponent =
+    (
+      sourceComponent: component,
+      countRangeArr: array(int),
+      {flyCameraControllerRecord} as state,
+    ) => {
+  let (flyCameraControllerRecord, componentArr) =
+    CloneFlyCameraControllerService.handleCloneComponent(
+      sourceComponent,
+      countRangeArr,
+      flyCameraControllerRecord,
+    );
+  ({...state, flyCameraControllerRecord}, componentArr);
+};
+
 let cloneArcballCameraControllerComponent =
     (
       sourceComponent: component,

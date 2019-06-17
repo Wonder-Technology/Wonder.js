@@ -138,13 +138,7 @@ module RAB = {
        });
 };
 
-let addManifestData =
-    (
-      dependencyRelation: DependencyDataType.dependencyRelation,
-      (sabDataArr, rabDataArr),
-    ) => {
-  let wholeHashIdMap = WonderCommonlib.ImmutableHashMapService.createEmpty();
-
+let _addAllRABManifestData = (rabDataArr, dependencyRelation) =>
   rabDataArr
   |> Js.Array.map(data => RAB.addManifestData(dependencyRelation, data))
   |> Most.mergeArray
@@ -161,25 +155,34 @@ let addManifestData =
          WonderCommonlib.ImmutableHashMapService.createEmpty(),
          WonderCommonlib.ArrayService.createEmpty(),
        ),
-     )
-  |> then_(((wholeHashIdMap, newRabDataArr)) =>
-       sabDataArr
-       |> Js.Array.map(data => SAB.addManifestData(dependencyRelation, data))
-       |> Most.mergeArray
-       |> Most.reduce(
-            (
-              (wholeHashIdMap, newSabDataArr),
-              (hashId, sabRelativePath, sab),
-            ) => (
-              wholeHashIdMap
-              |> WonderCommonlib.ImmutableHashMapService.set(
-                   sabRelativePath,
-                   hashId,
-                 ),
-              newSabDataArr |> ArrayService.push((sabRelativePath, sab)),
+     );
+
+let _addAllSABManifestData = (wholeHashIdMap, sabDataArr, dependencyRelation) =>
+  sabDataArr
+  |> Js.Array.map(data => SAB.addManifestData(dependencyRelation, data))
+  |> Most.mergeArray
+  |> Most.reduce(
+       ((wholeHashIdMap, newSabDataArr), (hashId, sabRelativePath, sab)) => (
+         wholeHashIdMap
+         |> WonderCommonlib.ImmutableHashMapService.set(
+              sabRelativePath,
+              hashId,
             ),
-            (wholeHashIdMap, WonderCommonlib.ArrayService.createEmpty()),
-          )
+         newSabDataArr |> ArrayService.push((sabRelativePath, sab)),
+       ),
+       (wholeHashIdMap, WonderCommonlib.ArrayService.createEmpty()),
+     );
+
+let addManifestData =
+    (
+      dependencyRelation: DependencyDataType.dependencyRelation,
+      (sabDataArr, rabDataArr),
+    ) => {
+  let wholeHashIdMap = WonderCommonlib.ImmutableHashMapService.createEmpty();
+
+  _addAllRABManifestData(rabDataArr, dependencyRelation)
+  |> then_(((wholeHashIdMap, newRabDataArr)) =>
+       _addAllSABManifestData(wholeHashIdMap, sabDataArr, dependencyRelation)
        |> then_(((wholeHashIdMap, newSabDataArr)) =>
             (wholeHashIdMap, newRabDataArr, newSabDataArr) |> resolve
           )
