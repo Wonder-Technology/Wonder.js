@@ -116,13 +116,29 @@ let setTranslationDiff =
     ),
 };
 
-let getDirectionArray = (record: flyCameraControllerRecord) =>
-  record.directionArray;
+let unsafeGetDirectionArray =
+    (cameraController, record: flyCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(
+    cameraController,
+    record.directionArrayMap,
+  )
+  |> OptionService.unsafeGet;
 
-let hasDirection = (record: flyCameraControllerRecord) =>
-  record.directionArray |> ArrayService.hasItem;
+let hasDirection = (cameraController, record: flyCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(
+    cameraController,
+    record.directionArrayMap,
+  )
+  |> OptionService.unsafeGet
+  |> ArrayService.hasItem;
 
-let setDirectionArray = (directionArray, record: flyCameraControllerRecord) => {
+let setDirectionArray =
+    (cameraController, directionArray, record: flyCameraControllerRecord) => {
   ...record,
-  directionArray,
+  directionArrayMap:
+    WonderCommonlib.MutableSparseMapService.set(
+      cameraController,
+      directionArray,
+      record.directionArrayMap,
+    ),
 };

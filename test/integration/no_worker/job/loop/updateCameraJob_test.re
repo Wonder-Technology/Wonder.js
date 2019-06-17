@@ -337,7 +337,10 @@ let _ =
                cameraController,
                2.5,
              )
-          |> FlyCameraControllerTool.setDirectionArray(directionArray)
+          |> FlyCameraControllerAPI.setFlyCameraControllerDirectionArray(
+               cameraController,
+               directionArray,
+             )
           |> FlyCameraControllerTool.setEulerAngleDiff(
                cameraController,
                eulerAngleDiff,

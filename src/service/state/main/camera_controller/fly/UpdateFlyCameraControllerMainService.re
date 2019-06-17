@@ -11,8 +11,12 @@ let _getTranslationPosition = (cameraController, flyCameraControllerRecord) => {
     );
 
   let positionTuple =
-    OperateFlyCameraControllerService.hasDirection(flyCameraControllerRecord) ?
-      OperateFlyCameraControllerService.getDirectionArray(
+    OperateFlyCameraControllerService.hasDirection(
+      cameraController,
+      flyCameraControllerRecord,
+    ) ?
+      OperateFlyCameraControllerService.unsafeGetDirectionArray(
+        cameraController,
         flyCameraControllerRecord,
       )
       |> WonderCommonlib.ArrayService.reduceOneParam(
