@@ -5,7 +5,7 @@ let _buildSamplerDataMapKey = (wrapS, wrapT, magFilter, minFilter) =>
   ++ (minFilter |> Js.Int.toString);
 
 let _getWrapData = wrap =>
-  SourceTextureType.(
+  TextureType.(
     switch (wrap |> uint8ToWrap) {
     | Clamp_to_edge => 33071
     | Mirrored_repeat => 33648
@@ -14,7 +14,7 @@ let _getWrapData = wrap =>
   );
 
 let _getFilterData = filter =>
-  SourceTextureType.(
+  TextureType.(
     switch (filter |> uint8ToFilter) {
     | Nearest => 9728
     | Linear => 9729

@@ -47,6 +47,7 @@ let _ =
           (source1, source2),
         );
       };
+
       let _prepareForArrayBufferViewSourceTexture = () => {
         let (state, (map1, map2), (source1, source2)) =
           ArrayBufferViewSourceTextureRenderWorkerTool.prepareStateAndCreateTwoMaps(
@@ -59,6 +60,7 @@ let _ =
              );
         (state, (map1, map2), (source1, source2));
       };
+
       describe("test init two textures", () => {
         describe("test send init data to render worker", () => {
           let _initTwoGameObjects = (map1, map2, state) => {
@@ -127,7 +129,7 @@ let _ =
                        fail("should error before") |> resolve,
                    )
                 |> PromiseTool.judgeErrorMessage(
-                     "arrayBufferViewSourceTextureRecord->needInitedTextureIndexArray should be empty, but actual is 50,51",
+                     "arrayBufferViewSourceTextureRecord->needInitedTextureIndexArray should be empty",
                    );
               },
             );
@@ -163,27 +165,27 @@ let _ =
                          postMessageToRenderWorker
                          |> withOneArg(
                               SendInitRenderDataWorkerTool.buildInitRenderData(
-                                ~textureData={
-                                  "buffer": Sinon.matchAny,
-                                  "basicSourceTextureData": {
-                                    "index": 2,
-                                    "needAddedImageDataArray": [|
-                                      (
-                                        imageDataArrayBuffer1,
-                                        source1##width,
-                                        source1##height,
-                                        0,
-                                      ),
-                                      (
-                                        imageDataArrayBuffer2,
-                                        source2##width,
-                                        source2##height,
-                                        1,
-                                      ),
-                                    |],
-                                  },
-                                  "arrayBufferViewSourceTextureData": Sinon.matchAny,
-                                },
+                                ~textureData=
+                                  SendInitRenderDataWorkerTool.buildTextureData(
+                                    ~basicSourceTextureData={
+                                      "index": 2,
+                                      "needAddedImageDataArray": [|
+                                        (
+                                          imageDataArrayBuffer1,
+                                          source1##width,
+                                          source1##height,
+                                          0,
+                                        ),
+                                        (
+                                          imageDataArrayBuffer2,
+                                          source2##width,
+                                          source2##height,
+                                          1,
+                                        ),
+                                      |],
+                                    },
+                                    (),
+                                  ),
                                 (),
                               ),
                             )
@@ -250,27 +252,27 @@ let _ =
                          postMessageToRenderWorker
                          |> withOneArg(
                               SendInitRenderDataWorkerTool.buildInitRenderData(
-                                ~textureData={
-                                  "buffer": Sinon.matchAny,
-                                  "basicSourceTextureData": {
-                                    "index": 2,
-                                    "needAddedImageDataArray": [|
-                                      (
-                                        imageDataArrayBuffer1,
-                                        source1##width,
-                                        source1##height,
-                                        0,
-                                      ),
-                                      (
-                                        imageDataArrayBuffer2,
-                                        source2##width,
-                                        source2##height,
-                                        1,
-                                      ),
-                                    |],
-                                  },
-                                  "arrayBufferViewSourceTextureData": Sinon.matchAny,
-                                },
+                                ~textureData=
+                                  SendInitRenderDataWorkerTool.buildTextureData(
+                                    ~basicSourceTextureData={
+                                      "index": 2,
+                                      "needAddedImageDataArray": [|
+                                        (
+                                          imageDataArrayBuffer1,
+                                          source1##width,
+                                          source1##height,
+                                          0,
+                                        ),
+                                        (
+                                          imageDataArrayBuffer2,
+                                          source2##width,
+                                          source2##height,
+                                          1,
+                                        ),
+                                      |],
+                                    },
+                                    (),
+                                  ),
                                 (),
                               ),
                             )
@@ -338,23 +340,23 @@ let _ =
                        postMessageToRenderWorker
                        |> withOneArg(
                             SendInitRenderDataWorkerTool.buildInitRenderData(
-                              ~textureData={
-                                "buffer": Sinon.matchAny,
-                                "arrayBufferViewSourceTextureData": {
-                                  "index": 2,
-                                  "sourceMap":
-                                    WonderCommonlib.MutableSparseMapService.createEmpty()
-                                    |> WonderCommonlib.MutableSparseMapService.set(
-                                         map1,
-                                         source1,
-                                       )
-                                    |> WonderCommonlib.MutableSparseMapService.set(
-                                         map2,
-                                         source2,
-                                       ),
-                                },
-                                "basicSourceTextureData": Sinon.matchAny,
-                              },
+                              ~textureData=
+                                SendInitRenderDataWorkerTool.buildTextureData(
+                                  ~arrayBufferViewSourceTextureData={
+                                    "index": 2,
+                                    "sourceMap":
+                                      WonderCommonlib.MutableSparseMapService.createEmpty()
+                                      |> WonderCommonlib.MutableSparseMapService.set(
+                                           map1,
+                                           source1,
+                                         )
+                                      |> WonderCommonlib.MutableSparseMapService.set(
+                                           map2,
+                                           source2,
+                                         ),
+                                  },
+                                  (),
+                                ),
                               (),
                             ),
                           )

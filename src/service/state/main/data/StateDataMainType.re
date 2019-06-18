@@ -34,11 +34,15 @@ open BasicMaterialType;
 
 open LightMaterialType;
 
+open TextureType;
+
 open SourceTextureType;
 
 open BasicSourceTextureType;
 
 open ArrayBufferViewSourceTextureType;
+
+open CubemapTextureType;
 
 open DirectionLightType;
 
@@ -433,6 +437,7 @@ and state = {
   mutable basicSourceTextureRecord: option(basicSourceTextureRecord),
   mutable arrayBufferViewSourceTextureRecord:
     option(arrayBufferViewSourceTextureRecord),
+  mutable cubemapTextureRecord: option(cubemapTextureRecord),
   mutable directionLightRecord: option(directionLightRecord),
   mutable pointLightRecord: option(pointLightRecord),
   mutable geometryRecord: option(geometryRecord),

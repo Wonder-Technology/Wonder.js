@@ -34,10 +34,7 @@ let _bind = (gl, unit, texture, glTextureMap) => {
 };
 
 let _bindBasicSourceTexture =
-  (.
-    basicSourceTexture,
-    (gl, unit, {basicSourceTextureRecord, browserDetectRecord} as state),
-  ) => {
+  (. basicSourceTexture, (gl, unit, {basicSourceTextureRecord} as state)) => {
     _bind(gl, unit, basicSourceTexture, basicSourceTextureRecord.glTextureMap)
     |> ignore;
     state;
@@ -46,11 +43,7 @@ let _bindBasicSourceTexture =
 let _bindArrayBufferViewSourceTexture =
   (.
     arrayBufferViewTexture,
-    (
-      gl,
-      unit,
-      {arrayBufferViewSourceTextureRecord, browserDetectRecord} as state,
-    ),
+    (gl, unit, {arrayBufferViewSourceTextureRecord} as state),
   ) => {
     _bind(
       gl,
@@ -62,13 +55,14 @@ let _bindArrayBufferViewSourceTexture =
     state;
   };
 
-let bind =
-    (
-      gl,
-      unit,
-      texture,
-      {basicSourceTextureRecord, arrayBufferViewSourceTextureRecord} as state,
-    ) => {
+let _bindCubemapTexture =
+  (. cubemapTexture, (gl, unit, {cubemapTextureRecord} as state)) => {
+    _bind(gl, unit, cubemapTexture, cubemapTextureRecord.glTextureMap)
+    |> ignore;
+    state;
+  };
+
+let bind = (gl, unit, (texture, textureType), state) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -88,10 +82,11 @@ let bind =
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
-  IndexAllSourceTextureService.handleByJudgeSourceTextureIndex(
-    texture,
-    arrayBufferViewSourceTextureRecord.textureIndexOffset,
-    (gl, unit, state),
-    (_bindBasicSourceTexture, _bindArrayBufferViewSourceTexture),
-  );
+  switch (textureType) {
+  | TextureType.BasicSource =>
+    _bindBasicSourceTexture(. texture, (gl, unit, state))
+  | TextureType.ArrayBufferViewSource =>
+    _bindArrayBufferViewSourceTexture(. texture, (gl, unit, state))
+  | TextureType.Cubemap => _bindCubemapTexture(. texture, (gl, unit, state))
+  };
 };

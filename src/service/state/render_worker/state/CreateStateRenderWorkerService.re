@@ -9,6 +9,7 @@ let createState = () => {
   meshRendererRecord: None,
   basicSourceTextureRecord: None,
   arrayBufferViewSourceTextureRecord: None,
+  cubemapTextureRecord: None,
   allTextureRecord: None,
   directionLightRecord: None,
   pointLightRecord: None,

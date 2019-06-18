@@ -1,4 +1,4 @@
-open SourceTextureType;
+open TextureType;
 
 let getGlWrap = (gl, wrap) =>
   switch (wrap) {

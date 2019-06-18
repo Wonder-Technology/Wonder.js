@@ -52,6 +52,9 @@ let createRenderState =
     RecordBasicSourceTextureMainService.getRecord(state);
   let arrayBufferViewSourceTextureRecord =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let cubemapTextureRecord =
+    RecordCubemapTextureMainService.getRecord(state);
+
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
   let isUseWorker = WorkerDetectMainService.isUseWorker(state);
   let renderStateTransformRecord: RenderTransformType.transformRecord =
@@ -87,7 +90,8 @@ let createRenderState =
       alphas: basicMaterialRecord.alphas,
     },
     lightMaterialRecord: {
-      diffuseMapUnitMap: RecordRenderLightMaterialService.createDiffuseMapUnitMap(),
+      diffuseMapUnitMap:
+        RecordRenderLightMaterialService.createDiffuseMapUnitMap(),
       specularMapUnitMap:
         RecordRenderLightMaterialService.createSpecularMapUnitMap(),
       shaderIndices: lightMaterialRecord.shaderIndices,
@@ -131,6 +135,34 @@ let createRenderState =
           state,
         ),
       setFlipYFunc: OperateSourceTextureMainService.setFlipY,
+    },
+    cubemapTextureRecord: {
+      wrapSs: cubemapTextureRecord.wrapSs,
+      wrapTs: cubemapTextureRecord.wrapTs,
+      magFilters: cubemapTextureRecord.magFilters,
+      minFilters: cubemapTextureRecord.minFilters,
+      pxFormats: cubemapTextureRecord.pxFormats,
+      nxFormats: cubemapTextureRecord.nxFormats,
+      pyFormats: cubemapTextureRecord.pyFormats,
+      nyFormats: cubemapTextureRecord.nyFormats,
+      pzFormats: cubemapTextureRecord.pzFormats,
+      nzFormats: cubemapTextureRecord.nzFormats,
+      pxTypes: cubemapTextureRecord.pxTypes,
+      nxTypes: cubemapTextureRecord.nxTypes,
+      pyTypes: cubemapTextureRecord.pyTypes,
+      nyTypes: cubemapTextureRecord.nyTypes,
+      pzTypes: cubemapTextureRecord.pzTypes,
+      nzTypes: cubemapTextureRecord.nzTypes,
+      isNeedUpdates: cubemapTextureRecord.isNeedUpdates,
+      flipYs: cubemapTextureRecord.flipYs,
+      pxSourceMap: cubemapTextureRecord.pxSourceMap,
+      nxSourceMap: cubemapTextureRecord.nxSourceMap,
+      pySourceMap: cubemapTextureRecord.pySourceMap,
+      nySourceMap: cubemapTextureRecord.nySourceMap,
+      pzSourceMap: cubemapTextureRecord.pzSourceMap,
+      nzSourceMap: cubemapTextureRecord.nzSourceMap,
+      glTextureMap: cubemapTextureRecord.glTextureMap,
+      setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY,
     },
     allTextureRecord: {
       activableTextureUnitArray:

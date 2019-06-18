@@ -1,17 +1,17 @@
-let getNearest = () => SourceTextureType.Nearest;
-/* |> SourceTextureType.filterToUint8; */
+let getNearest = () => TextureType.Nearest;
+/* |> TextureType.filterToUint8; */
 
-let getNearestMipmapNearest = () => SourceTextureType.Nearest_mipmap_nearest;
-/* |> SourceTextureType.filterToUint8; */
+let getNearestMipmapNearest = () => TextureType.Nearest_mipmap_nearest;
+/* |> TextureType.filterToUint8; */
 
-let getLinear = () => SourceTextureType.Linear;
-/* |> SourceTextureType.filterToUint8; */
+let getLinear = () => TextureType.Linear;
+/* |> TextureType.filterToUint8; */
 
-let getNearestMipmapLinear = () => SourceTextureType.Nearest_mipmap_linear;
-/* |> SourceTextureType.filterToUint8; */
+let getNearestMipmapLinear = () => TextureType.Nearest_mipmap_linear;
+/* |> TextureType.filterToUint8; */
 
-let getLinearMipmapNearest = () => SourceTextureType.Linear_mipmap_nearest;
-/* |> SourceTextureType.filterToUint8; */
+let getLinearMipmapNearest = () => TextureType.Linear_mipmap_nearest;
+/* |> TextureType.filterToUint8; */
 
-let getLinearMipmapLinear = () => SourceTextureType.Linear_mipmap_linear;
-/* |> SourceTextureType.filterToUint8; */
+let getLinearMipmapLinear = () => TextureType.Linear_mipmap_linear;
+/* |> TextureType.filterToUint8; */

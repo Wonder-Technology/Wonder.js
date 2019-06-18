@@ -16,10 +16,14 @@ let disposeTextureIndices =
 let isAlive = (material, disposedIndexArray) =>
   DisposeComponentService.isAlive(material, disposedIndexArray);
 
-let addAllMaps = (mapArr, state) =>
+let _getExistMapArr = mapArr =>
   mapArr
   |> Js.Array.filter(mapOpt => mapOpt |> Js.Option.isSome)
-  |> Js.Array.map(mapOpt => mapOpt |> OptionService.unsafeGet)
+  |> Js.Array.map(mapOpt => mapOpt |> OptionService.unsafeGet);
+
+let addAllMaps = (mapArr, state) =>
+  mapArr
+  |> _getExistMapArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. (basicSourceTextureArr, arrayBufferViewSourceTextureArr), map) =>
          IndexSourceTextureMainService.isBasicSourceTextureIndex(map, state) ?
@@ -50,7 +54,7 @@ let addAllMaps = (mapArr, state) =>
        ),
      );
 
-let disposeMaps = (isRemoveTexture, materialData, mapArr, state) => {
+let disposeSourceMaps = (isRemoveTexture, materialData, mapArr, state) => {
   let (basicSourceTextureArr, arrayBufferViewSourceTextureArr) =
     addAllMaps(mapArr, state);
 
@@ -66,3 +70,12 @@ let disposeMaps = (isRemoveTexture, materialData, mapArr, state) => {
        arrayBufferViewSourceTextureArr,
      );
 };
+
+/* TODO use by skybox material */
+let disposeCubemapMaps = (isRemoveTexture, materialData, mapArr, state) =>
+  state
+  |> DisposeCubemapTextureMainService.handleDispose(
+       isRemoveTexture,
+       materialData,
+       mapArr |> _getExistMapArr,
+     );

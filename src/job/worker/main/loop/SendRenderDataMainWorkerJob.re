@@ -74,6 +74,8 @@ let _buildData = (operateType, {settingRecord, gameObjectRecord} as state) => {
     RecordBasicSourceTextureMainService.getRecord(state);
   let arrayBufferViewSourceTextureRecord =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let cubemapTextureRecord = RecordCubemapTextureMainService.getRecord(state);
+
   let cameraData = OperateRenderMainService.getCameraRecord(state);
   let isRender = cameraData |> Js.Option.isSome;
   let (isRender, cameraData) =
@@ -158,6 +160,41 @@ let _buildData = (operateType, {settingRecord, gameObjectRecord} as state) => {
               arrayBufferViewSourceTextureRecord.needInitedTextureIndexArray
               |> WonderCommonlib.ArrayService.removeDuplicateItems,
           },
+          "cubemapTextureData": {
+            "needAddedPXImageDataArray":
+              OperateCubemapTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+                cubemapTextureRecord.needAddedPXSourceArray
+                |> _removeAddedSourceDataDuplicateItems,
+              ),
+            "needAddedNXImageDataArray":
+              OperateCubemapTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+                cubemapTextureRecord.needAddedNXSourceArray
+                |> _removeAddedSourceDataDuplicateItems,
+              ),
+            "needAddedPYImageDataArray":
+              OperateCubemapTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+                cubemapTextureRecord.needAddedPYSourceArray
+                |> _removeAddedSourceDataDuplicateItems,
+              ),
+            "needAddedNYImageDataArray":
+              OperateCubemapTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+                cubemapTextureRecord.needAddedNYSourceArray
+                |> _removeAddedSourceDataDuplicateItems,
+              ),
+            "needAddedPZImageDataArray":
+              OperateCubemapTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+                cubemapTextureRecord.needAddedPZSourceArray
+                |> _removeAddedSourceDataDuplicateItems,
+              ),
+            "needAddedNZImageDataArray":
+              OperateCubemapTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+                cubemapTextureRecord.needAddedNZSourceArray
+                |> _removeAddedSourceDataDuplicateItems,
+              ),
+            "needInitedTextureIndexArray":
+              cubemapTextureRecord.needInitedTextureIndexArray
+              |> WonderCommonlib.ArrayService.removeDuplicateItems,
+          },
         },
       },
       "renderData": {
@@ -202,6 +239,8 @@ let _clearData = state => {
   state
   |> OperateSourceTextureMainService.clearNeedAddedSourceArr
   |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray
+  /* TODO test */
+  |> InitCubemapTextureMainService.clearNeedInitedTextureIndexArray
   |> IOIMGUIMainService.resetPointEventStateWhenPointUp;
 };
 

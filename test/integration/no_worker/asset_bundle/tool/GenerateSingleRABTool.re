@@ -33,18 +33,18 @@ module ResourceAssetBundleContent = {
         ~name,
         ~source=0,
         ~magFilter=BasicSourceTextureTool.getDefaultMagFilter()
-                   |> SourceTextureType.filterToUint8,
+                   |> TextureType.filterToUint8,
         ~minFilter=BasicSourceTextureTool.getDefaultMinFilter()
-                   |> SourceTextureType.filterToUint8,
+                   |> TextureType.filterToUint8,
         ~wrapS=BasicSourceTextureTool.getDefaultWrapS()
-               |> SourceTextureType.wrapToUint8,
+               |> TextureType.wrapToUint8,
         ~wrapT=BasicSourceTextureTool.getDefaultWrapT()
-               |> SourceTextureType.wrapToUint8,
+               |> TextureType.wrapToUint8,
         ~format=BasicSourceTextureTool.getDefaultFormat()
-                |> SourceTextureType.formatToUint8,
+                |> TextureType.formatToUint8,
         ~type_=BasicSourceTextureTool.getDefaultType(),
-        ~flipY=BufferSourceTextureService.getDefaultFlipY()
-               |> BufferSourceTextureService.getFlipYFromTypeArrayValue,
+        ~flipY=BufferTextureService.getDefaultFlipY()
+               |> BufferTextureService.getFlipYFromTypeArrayValue,
         (),
       ) => {
     name,
@@ -117,18 +117,18 @@ module ResourceData = {
         ~state,
         ~name="texture1",
         ~magFilter=BasicSourceTextureTool.getDefaultMagFilter()
-                   |> SourceTextureType.filterToUint8,
+                   |> TextureType.filterToUint8,
         ~minFilter=BasicSourceTextureTool.getDefaultMinFilter()
-                   |> SourceTextureType.filterToUint8,
+                   |> TextureType.filterToUint8,
         ~wrapS=BasicSourceTextureTool.getDefaultWrapS()
-               |> SourceTextureType.wrapToUint8,
+               |> TextureType.wrapToUint8,
         ~wrapT=BasicSourceTextureTool.getDefaultWrapT()
-               |> SourceTextureType.wrapToUint8,
+               |> TextureType.wrapToUint8,
         ~format=BasicSourceTextureTool.getDefaultFormat()
-                |> SourceTextureType.formatToUint8,
+                |> TextureType.formatToUint8,
         ~type_=BasicSourceTextureTool.getDefaultType(),
-        ~flipY=BufferSourceTextureService.getDefaultFlipY()
-               |> BufferSourceTextureService.getFlipYFromTypeArrayValue,
+        ~flipY=BufferTextureService.getDefaultFlipY()
+               |> BufferTextureService.getFlipYFromTypeArrayValue,
         ~imageDataIndex=0,
         (),
       ) => {

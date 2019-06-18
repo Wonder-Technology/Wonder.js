@@ -73,7 +73,7 @@ let _setImageData =
        (. state, basicSourceTexture) =>
          OperateBasicSourceTextureMainService.setIsNeedUpdate(
            basicSourceTexture,
-           BufferSourceTextureService.getNeedUpdate(),
+           BufferTextureService.getNeedUpdate(),
            state,
          )
          |> OperateBasicSourceTextureMainService.setSource(

@@ -12,6 +12,8 @@ open RenderWorkerBasicSourceTextureType;
 
 open RenderWorkerArrayBufferViewSourceTextureType;
 
+open RenderWorkerCubemapTextureType;
+
 open RenderWorkerAllTextureType;
 
 open RenderWorkerMeshRendererType;
@@ -150,6 +152,7 @@ and renderWorkerState = {
   mutable basicSourceTextureRecord: option(basicSourceTextureRecord),
   mutable arrayBufferViewSourceTextureRecord:
     option(arrayBufferViewSourceTextureRecord),
+  mutable cubemapTextureRecord: option(cubemapTextureRecord),
   mutable allTextureRecord: option(allTextureRecord),
   mutable transformRecord: option(transformRecord),
   mutable geometryRecord: option(geometryRecord),

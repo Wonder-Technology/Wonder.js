@@ -12,12 +12,14 @@ let execJob = (_, e, stateData) =>
       instanceBuffer:
         Some({
           sourceInstanceCount: instanceBufferData##sourceInstanceCount,
-          objectInstanceCountPerSourceInstance: instanceBufferData##objectInstanceCountPerSourceInstance,
+          objectInstanceCountPerSourceInstance:
+            instanceBufferData##objectInstanceCountPerSourceInstance,
         }),
       basicSourceTextureCount:
         Some(data##bufferData##basicSourceTextureCount),
       arrayBufferViewSourceTextureCount:
         Some(data##bufferData##arrayBufferViewSourceTextureCount),
+      cubemapTextureCount: Some(data##bufferData##cubemapTextureCount),
       directionLightCount: Some(data##bufferData##directionLightCount),
       pointLightCount: Some(data##bufferData##pointLightCount),
     };

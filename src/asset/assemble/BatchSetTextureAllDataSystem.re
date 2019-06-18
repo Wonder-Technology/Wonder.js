@@ -81,19 +81,19 @@ let batchSetBasicSourceTextureData =
          state
          |> OperateBasicSourceTextureMainService.setWrapS(
               arrayBufferViewSourceTexture,
-              wrapS |> SourceTextureType.wrapToUint8,
+              wrapS |> TextureType.wrapToUint8,
             )
          |> OperateBasicSourceTextureMainService.setWrapT(
               arrayBufferViewSourceTexture,
-              wrapT |> SourceTextureType.wrapToUint8,
+              wrapT |> TextureType.wrapToUint8,
             )
          |> OperateBasicSourceTextureMainService.setMagFilter(
               arrayBufferViewSourceTexture,
-              magFilter |> SourceTextureType.filterToUint8,
+              magFilter |> TextureType.filterToUint8,
             )
          |> OperateBasicSourceTextureMainService.setMinFilter(
               arrayBufferViewSourceTexture,
-              minFilter |> SourceTextureType.filterToUint8,
+              minFilter |> TextureType.filterToUint8,
             );
        },
        state,
@@ -109,7 +109,7 @@ let batchSetFormatAndFlipY =
          state
          |> OperateBasicSourceTextureMainService.setFormat(
               basicSourceTexture,
-              format |> SourceTextureType.formatToUint8,
+              format |> TextureType.formatToUint8,
             )
          |> OperateBasicSourceTextureMainService.setFlipY(
               basicSourceTexture,

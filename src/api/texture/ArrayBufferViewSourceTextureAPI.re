@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open SourceTextureType;
+open TextureType;
 
 open ArrayBufferViewSourceTextureType;
 

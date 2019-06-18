@@ -24,6 +24,7 @@ let createState = () => {
   sourceTextureRecord: None,
   basicSourceTextureRecord: None,
   arrayBufferViewSourceTextureRecord: None,
+  cubemapTextureRecord: None,
   directionLightRecord: None,
   pointLightRecord: None,
   geometryRecord: None,

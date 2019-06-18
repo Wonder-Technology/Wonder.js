@@ -10,12 +10,12 @@ let _createTexture1 = state => {
   let state =
     BasicSourceTextureAPI.setBasicSourceTextureWrapS(
       texture,
-      SourceTextureType.Repeat,
+      TextureType.Repeat,
       state,
     )
     |> BasicSourceTextureAPI.setBasicSourceTextureMagFilter(
          texture,
-         SourceTextureType.Linear,
+         TextureType.Linear,
        );
 
   let width = 30;

@@ -218,7 +218,7 @@ let _ =
       );
 
       testPromise("test set parameter and name", () => {
-        open SourceTextureType;
+        open TextureType;
 
         let imageName = "image1";
 
@@ -246,11 +246,11 @@ let _ =
             ~state=state^,
             ~name=texture1Name,
             ~imageDataIndex=0,
-            ~magFilter=magFilter |> SourceTextureType.filterToUint8,
-            ~minFilter=minFilter |> SourceTextureType.filterToUint8,
-            ~wrapS=wrapS |> SourceTextureType.wrapToUint8,
-            ~wrapT=wrapT |> SourceTextureType.wrapToUint8,
-            ~format=format |> SourceTextureType.formatToUint8,
+            ~magFilter=magFilter |> TextureType.filterToUint8,
+            ~minFilter=minFilter |> TextureType.filterToUint8,
+            ~wrapS=wrapS |> TextureType.wrapToUint8,
+            ~wrapT=wrapT |> TextureType.wrapToUint8,
+            ~format=format |> TextureType.formatToUint8,
             ~type_,
             ~flipY,
             (),

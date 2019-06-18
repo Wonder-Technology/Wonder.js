@@ -33,7 +33,7 @@ let isNeedUpdate = (texture, state) =>
     ),
     getRecord(state).isNeedUpdates,
   )
-  === BufferSourceTextureService.getNeedUpdate();
+  === BufferTextureService.getNeedUpdate();
 
 let buildSource = () => Js.Typed_array.Uint8Array.make([|1, 255, 255, 255|]);
 

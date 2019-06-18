@@ -35,3 +35,6 @@ let getBasicSourceTextureCount = record =>
 
 let getArrayBufferViewSourceTextureCount = record =>
   (record |> unsafeGetBuffer).arrayBufferViewSourceTextureCount;
+
+let getCubemapTextureCount = record =>
+  (record |> unsafeGetBuffer).cubemapTextureCount;

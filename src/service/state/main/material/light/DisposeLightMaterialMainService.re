@@ -14,7 +14,7 @@ let isAlive = (material, {disposedIndexArray}) =>
 let _disposeData = (isRemoveTexture, material, state) => {
   let state =
     state
-    |> DisposeMaterialMainService.disposeMaps(
+    |> DisposeMaterialMainService.disposeSourceMaps(
          isRemoveTexture,
          (material, MaterialType.LightMaterial),
          [|

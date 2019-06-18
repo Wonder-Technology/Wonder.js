@@ -122,7 +122,7 @@ let _ =
     describe("setBasicSourceTextureWrapS", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let wrap = SourceTextureType.Mirrored_repeat;
+        let wrap = TextureType.Mirrored_repeat;
         let state = state |> setBasicSourceTextureWrapS(texture, wrap);
         getBasicSourceTextureWrapS(texture, state) |> expect == wrap;
       })
@@ -131,7 +131,7 @@ let _ =
     describe("setBasicSourceTextureWrapT", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let wrap = SourceTextureType.Mirrored_repeat;
+        let wrap = TextureType.Mirrored_repeat;
         let state = state |> setBasicSourceTextureWrapT(texture, wrap);
         getBasicSourceTextureWrapT(texture, state) |> expect == wrap;
       })
@@ -140,7 +140,7 @@ let _ =
     describe("setBasicSourceTextureMagFilter", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let filter = SourceTextureType.Linear;
+        let filter = TextureType.Linear;
         let state = state |> setBasicSourceTextureMagFilter(texture, filter);
         getBasicSourceTextureMagFilter(texture, state) |> expect == filter;
       })
@@ -149,7 +149,7 @@ let _ =
     describe("setBasicSourceTextureMinFilter", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let filter = SourceTextureType.Linear;
+        let filter = TextureType.Linear;
         let state = state |> setBasicSourceTextureMinFilter(texture, filter);
         getBasicSourceTextureMinFilter(texture, state) |> expect == filter;
       })
@@ -158,7 +158,7 @@ let _ =
     describe("setBasicSourceTextureFormat", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let format = SourceTextureType.Rgb;
+        let format = TextureType.Rgb;
         let state = state |> setBasicSourceTextureFormat(texture, format);
         getBasicSourceTextureFormat(texture, state) |> expect == format;
       })
@@ -349,7 +349,7 @@ let _ =
             test("remove from wrapSs", () =>
               _testRemoveFromTypeArr(
                 state,
-                (SourceTextureType.Repeat, SourceTextureType.Mirrored_repeat),
+                (TextureType.Repeat, TextureType.Mirrored_repeat),
                 BufferBasicSourceTextureService.getDefaultWrapS(),
                 (
                   LightMaterialTool.disposeLightMaterial,
@@ -361,7 +361,7 @@ let _ =
             test("remove from wrapTs", () =>
               _testRemoveFromTypeArr(
                 state,
-                (SourceTextureType.Repeat, SourceTextureType.Mirrored_repeat),
+                (TextureType.Repeat, TextureType.Mirrored_repeat),
                 BufferBasicSourceTextureService.getDefaultWrapT(),
                 (
                   LightMaterialTool.disposeLightMaterial,
@@ -374,8 +374,8 @@ let _ =
               _testRemoveFromTypeArr(
                 state,
                 (
-                  SourceTextureType.Linear_mipmap_nearest,
-                  SourceTextureType.Nearest_mipmap_linear,
+                  TextureType.Linear_mipmap_nearest,
+                  TextureType.Nearest_mipmap_linear,
                 ),
                 BufferBasicSourceTextureService.getDefaultMagFilter(),
                 (
@@ -389,8 +389,8 @@ let _ =
               _testRemoveFromTypeArr(
                 state,
                 (
-                  SourceTextureType.Linear_mipmap_nearest,
-                  SourceTextureType.Nearest_mipmap_linear,
+                  TextureType.Linear_mipmap_nearest,
+                  TextureType.Nearest_mipmap_linear,
                 ),
                 BufferBasicSourceTextureService.getDefaultMinFilter(),
                 (
@@ -403,7 +403,7 @@ let _ =
             test("remove from formats", () =>
               _testRemoveFromTypeArr(
                 state,
-                (SourceTextureType.Rgba, SourceTextureType.Alpha),
+                (TextureType.Rgba, TextureType.Alpha),
                 BufferBasicSourceTextureService.getDefaultFormat(),
                 (
                   LightMaterialTool.disposeLightMaterial,

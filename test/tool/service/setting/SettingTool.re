@@ -145,8 +145,9 @@ let buildBufferConfigStr =
       ~directionLightCount=50,
       ~pointLightCount=50,
       ~meshRendererCount=50,
-      ~basicSourceTextureCount=50,
-      ~arrayBufferViewSourceTextureCount=50,
+      ~basicSourceTextureCount=48,
+      ~arrayBufferViewSourceTextureCount=48,
+      ~cubemapTextureCount=48,
       ~sourceInstanceCount=2,
       ~objectInstanceCountPerSourceInstance=100,
       (),
@@ -162,8 +163,7 @@ let buildBufferConfigStr =
   "meshRenderer_count": $meshRendererCount,
   "basic_source_texture_count": $basicSourceTextureCount,
    "arrayBuffer_view_source_texture_count": $arrayBufferViewSourceTextureCount,
-
-
+   "cubemap_texture_count": $cubemapTextureCount,
   "instance_buffer": {
     "sourceInstance_count": $sourceInstanceCount,
 "objectInstance_count_per_source_instance": $objectInstanceCountPerSourceInstance

@@ -127,7 +127,7 @@ let _ =
     let _prepareBasicSourceTextureData = state => {
       open BasicSourceTextureAPI;
       open Js.Typed_array;
-      open SourceTextureType;
+      open TextureType;
       let (state, texture1) = createBasicSourceTexture(state);
       let (state, texture2) = createBasicSourceTexture(state);
       let (state, texture3) = createBasicSourceTexture(state);
@@ -145,7 +145,7 @@ let _ =
     let _prepareArrayBufferViewSourceTextureData = state => {
       open ArrayBufferViewSourceTextureAPI;
       open Js.Typed_array;
-      open SourceTextureType;
+      open TextureType;
       let (state, texture1) = createArrayBufferViewSourceTexture(state);
       let (state, texture2) = createArrayBufferViewSourceTexture(state);
       let (state, texture3) = createArrayBufferViewSourceTexture(state);
@@ -165,7 +165,7 @@ let _ =
         state
         |> setArrayBufferViewSourceTextureFormat(
              texture2,
-             SourceTextureType.Alpha,
+             TextureType.Alpha,
            );
       let state = state |> setArrayBufferViewSourceTextureWidth(texture2, 2);
       let state = state |> setArrayBufferViewSourceTextureHeight(texture2, 4);
@@ -1048,28 +1048,28 @@ disposedUidArrayForRemoveTexture,
             let currentState =
               BasicSourceTextureAPI.setBasicSourceTextureWrapT(
                 texture4,
-                SourceTextureType.Mirrored_repeat,
+                TextureType.Mirrored_repeat,
                 currentState,
               );
             let currentState = AllMaterialTool.pregetGLSLData(currentState);
             let _ = MainStateTool.restore(currentState, copiedState);
             let defaultWrapS =
               BasicSourceTextureTool.getDefaultWrapS()
-              |> SourceTextureType.wrapToUint8;
+              |> TextureType.wrapToUint8;
 
             let defaultWrapT =
               BasicSourceTextureTool.getDefaultWrapT()
-              |> SourceTextureType.wrapToUint8;
+              |> TextureType.wrapToUint8;
             let defaultMagFilter =
               BasicSourceTextureTool.getDefaultMagFilter()
-              |> SourceTextureType.filterToUint8;
+              |> TextureType.filterToUint8;
 
             let defaultMinFilter =
               BasicSourceTextureTool.getDefaultMinFilter()
-              |> SourceTextureType.filterToUint8;
+              |> TextureType.filterToUint8;
             let defaultFormat =
               BasicSourceTextureTool.getDefaultFormat()
-              |> SourceTextureType.formatToUint8;
+              |> TextureType.formatToUint8;
             let defaultType = BasicSourceTextureTool.getDefaultType();
             let defaultIsNeedUpdate =
               BasicSourceTextureTool.getDefaultIsNeedUpdate();
@@ -1167,26 +1167,26 @@ disposedUidArrayForRemoveTexture,
             let currentState =
               ArrayBufferViewSourceTextureAPI.setArrayBufferViewSourceTextureWrapT(
                 texture4,
-                SourceTextureType.Mirrored_repeat,
+                TextureType.Mirrored_repeat,
                 currentState,
               );
             let currentState = AllMaterialTool.pregetGLSLData(currentState);
             let _ = MainStateTool.restore(currentState, copiedState);
             let defaultWrapS =
               ArrayBufferViewSourceTextureTool.getDefaultWrapS()
-              |> SourceTextureType.wrapToUint8;
+              |> TextureType.wrapToUint8;
             let defaultWrapT =
               ArrayBufferViewSourceTextureTool.getDefaultWrapT()
-              |> SourceTextureType.wrapToUint8;
+              |> TextureType.wrapToUint8;
             let defaultMagFilter =
               ArrayBufferViewSourceTextureTool.getDefaultMagFilter()
-              |> SourceTextureType.filterToUint8;
+              |> TextureType.filterToUint8;
             let defaultMinFilter =
               ArrayBufferViewSourceTextureTool.getDefaultMinFilter()
-              |> SourceTextureType.filterToUint8;
+              |> TextureType.filterToUint8;
             let defaultFormat =
               ArrayBufferViewSourceTextureTool.getDefaultFormat()
-              |> SourceTextureType.formatToUint8;
+              |> TextureType.formatToUint8;
             let defaultType =
               ArrayBufferViewSourceTextureTool.getDefaultType();
             let defaultIsNeedUpdate =

@@ -2,14 +2,17 @@ open StateDataMainType;
 
 let _initRenderTextureData = state => {
   ...state,
-  renderRecord: Some({
-    ... RecordRenderMainService.getRecord(state),
-    textureRecord:
-      Some({
-        activableTextureUnitArray:
-          OperateTextureRenderMainService.createActivableTextureUnitArray(state) 
-      }),
-  }),
+  renderRecord:
+    Some({
+      ...RecordRenderMainService.getRecord(state),
+      textureRecord:
+        Some({
+          activableTextureUnitArray:
+            OperateTextureRenderMainService.createActivableTextureUnitArray(
+              state,
+            ),
+        }),
+    }),
 };
 
 let execJob = (flags, {gameObjectRecord} as state) => {
@@ -17,6 +20,8 @@ let execJob = (flags, {gameObjectRecord} as state) => {
     RecordBasicSourceTextureMainService.getRecord(state);
   let arrayBufferViewSourceTextureRecord =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let cubemapTextureRecord = RecordCubemapTextureMainService.getRecord(state);
+
   {
     ...state,
     basicSourceTextureRecord:
@@ -43,6 +48,16 @@ let execJob = (flags, {gameObjectRecord} as state) => {
             arrayBufferViewSourceTextureRecord.glTextureMap,
           ),
       }),
+    cubemapTextureRecord:
+      Some({
+        ...cubemapTextureRecord,
+        glTextureMap:
+          InitTextureService.initTextures(
+            AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+            ArrayService.range(0, cubemapTextureRecord.index - 1),
+            cubemapTextureRecord.glTextureMap,
+          ),
+      }),
   }
-  |> _initRenderTextureData
+  |> _initRenderTextureData;
 };

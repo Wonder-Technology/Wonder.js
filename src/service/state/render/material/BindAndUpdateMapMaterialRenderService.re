@@ -1,6 +1,7 @@
 open StateRenderType;
 
-let bindAndUpdate = ((gl, material), texture, setMapUnitFunc, state) =>
+let bindAndUpdate =
+    ((gl, material), (texture, textureType), setMapUnitFunc, state) =>
   TextureIndexService.isTextureNotDefaultValue(texture) ?
     {
       let (mapUnit, newActivedTextureUnitIndex) =
@@ -11,7 +12,7 @@ let bindAndUpdate = ((gl, material), texture, setMapUnitFunc, state) =>
       |> OperateAllTextureRenderService.setActivedTextureUnitIndex(
            newActivedTextureUnitIndex,
          )
-      |> BindTextureRenderService.bind(gl, mapUnit, texture)
-      |> UpdateTextureRenderService.handleUpdate(gl, texture);
+      |> BindTextureRenderService.bind(gl, mapUnit, (texture, textureType))
+      |> UpdateAllTextureRenderService.handleUpdate(gl, (texture, textureType));
     } :
     state;

@@ -1749,10 +1749,10 @@ let _ =
                     |> expect
                     == [|
                          (
-                           SourceTextureType.Linear,
-                           SourceTextureType.Nearest_mipmap_linear,
-                           SourceTextureType.Repeat,
-                           SourceTextureType.Repeat,
+                           TextureType.Linear,
+                           TextureType.Nearest_mipmap_linear,
+                           TextureType.Repeat,
+                           TextureType.Repeat,
                          ),
                        |],
                   state^,
@@ -1840,7 +1840,7 @@ let _ =
                              state,
                            )
                          )
-                      |> expect == [|SourceTextureType.Rgba|],
+                      |> expect == [|TextureType.Rgba|],
                     state^,
                   )
                 );
@@ -1862,15 +1862,15 @@ let _ =
                          )
                       |> expect
                       == [|
-                           SourceTextureType.Rgba,
-                           SourceTextureType.Rgba,
-                           SourceTextureType.Rgba,
-                           SourceTextureType.Rgba,
-                           SourceTextureType.Rgba,
-                           SourceTextureType.Rgba,
-                           SourceTextureType.Rgba,
-                           SourceTextureType.Rgba,
-                           SourceTextureType.Rgb,
+                           TextureType.Rgba,
+                           TextureType.Rgba,
+                           TextureType.Rgba,
+                           TextureType.Rgba,
+                           TextureType.Rgba,
+                           TextureType.Rgba,
+                           TextureType.Rgba,
+                           TextureType.Rgba,
+                           TextureType.Rgb,
                          |],
                     state^,
                   )
@@ -1955,22 +1955,22 @@ let _ =
                     |> expect
                     == [|
                          (
-                           SourceTextureType.Linear,
-                           SourceTextureType.Nearest_mipmap_linear,
-                           SourceTextureType.Repeat,
-                           SourceTextureType.Repeat,
+                           TextureType.Linear,
+                           TextureType.Nearest_mipmap_linear,
+                           TextureType.Repeat,
+                           TextureType.Repeat,
                          ),
                          (
-                           SourceTextureType.Linear,
-                           SourceTextureType.Nearest_mipmap_linear,
-                           SourceTextureType.Repeat,
-                           SourceTextureType.Repeat,
+                           TextureType.Linear,
+                           TextureType.Nearest_mipmap_linear,
+                           TextureType.Repeat,
+                           TextureType.Repeat,
                          ),
                          (
-                           SourceTextureType.Linear,
-                           SourceTextureType.Nearest_mipmap_linear,
-                           SourceTextureType.Repeat,
-                           SourceTextureType.Repeat,
+                           TextureType.Linear,
+                           TextureType.Nearest_mipmap_linear,
+                           TextureType.Repeat,
+                           TextureType.Repeat,
                          ),
                        |],
                   state^,
@@ -2143,16 +2143,16 @@ let _ =
                     |> expect
                     == [|
                          (
-                           SourceTextureType.Linear,
-                           SourceTextureType.Linear_mipmap_linear,
-                           SourceTextureType.Repeat,
-                           SourceTextureType.Repeat,
+                           TextureType.Linear,
+                           TextureType.Linear_mipmap_linear,
+                           TextureType.Repeat,
+                           TextureType.Repeat,
                          ),
                          (
-                           SourceTextureType.Linear,
-                           SourceTextureType.Linear_mipmap_linear,
-                           SourceTextureType.Repeat,
-                           SourceTextureType.Repeat,
+                           TextureType.Linear,
+                           TextureType.Linear_mipmap_linear,
+                           TextureType.Repeat,
+                           TextureType.Repeat,
                          ),
                        |],
                   state^,

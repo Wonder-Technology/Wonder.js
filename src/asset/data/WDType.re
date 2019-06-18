@@ -145,16 +145,16 @@ type image = {
 
 type basicSourceTexture = {
   name: string,
-  format: SourceTextureType.format,
+  format: TextureType.format,
   flipY: bool,
 };
 
 type sampler = {
   /* TODO add format, type_, ... */
-  magFilter: SourceTextureType.filter,
-  minFilter: SourceTextureType.filter,
-  wrapS: SourceTextureType.wrap,
-  wrapT: SourceTextureType.wrap,
+  magFilter: TextureType.filter,
+  minFilter: TextureType.filter,
+  wrapS: TextureType.wrap,
+  wrapT: TextureType.wrap,
 };
 
 type componentGameObjectIndexData = {

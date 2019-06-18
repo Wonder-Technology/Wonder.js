@@ -28,6 +28,7 @@ type buffer = {
   pointLightCount: int,
   basicSourceTextureCount: int,
   arrayBufferViewSourceTextureCount: int,
+  cubemapTextureCount: int,
   meshRendererCount: int,
   instanceBuffer,
 };

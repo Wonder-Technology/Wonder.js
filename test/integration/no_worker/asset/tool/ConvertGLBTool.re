@@ -67,7 +67,7 @@ let buildMeshRenderer =
 };
 
 let buildBasicSourceTexture =
-    (~name="texture_0", ~format=SourceTextureType.Rgba, ~flipY=false, ())
+    (~name="texture_0", ~format=TextureType.Rgba, ~flipY=false, ())
     : WDType.basicSourceTexture => {
   name,
   format,

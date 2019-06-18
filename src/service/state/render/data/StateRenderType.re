@@ -18,6 +18,8 @@ open RenderBasicSourceTextureType;
 
 open RenderArrayBufferViewSourceTextureType;
 
+open RenderCubemapTextureType;
+
 open RenderAllTextureType;
 
 open RenderSceneType;
@@ -61,6 +63,7 @@ type renderState = {
   meshRendererRecord,
   basicSourceTextureRecord,
   arrayBufferViewSourceTextureRecord,
+  cubemapTextureRecord,
   allTextureRecord,
   directionLightRecord,
   pointLightRecord,

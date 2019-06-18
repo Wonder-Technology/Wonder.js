@@ -46,5 +46,6 @@ let restore =
   |> RestoreSourceTextureMainService.restore(currentState)
   |> RestoreBasicSourceTextureMainService.restore(currentState)
   |> RestoreArrayBufferViewSourceTextureMainService.restore(currentState)
+  |> RestoreCubemapTextureMainService.restore(currentState)
   |> setState(stateData);
 };

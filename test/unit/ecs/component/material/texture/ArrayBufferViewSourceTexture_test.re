@@ -43,7 +43,7 @@ let _ =
           let (_, texture) = createArrayBufferViewSourceTexture(state);
           ();
         })
-        |> toThrowMessage("expect index: 52 <= maxIndex: 51, but actual not");
+        |> toThrowMessage("expect index: 50 <= maxIndex: 49, but actual not");
       });
     });
     describe("test default data", () => {
@@ -99,7 +99,7 @@ let _ =
     describe("setArrayBufferViewSourceTextureWrapS", () =>
       test("test", () => {
         let (state, texture) = createArrayBufferViewSourceTexture(state^);
-        let wrap = SourceTextureType.Mirrored_repeat;
+        let wrap = TextureType.Mirrored_repeat;
         let state =
           state |> setArrayBufferViewSourceTextureWrapS(texture, wrap);
         getArrayBufferViewSourceTextureWrapS(texture, state) |> expect == wrap;
@@ -108,7 +108,7 @@ let _ =
     describe("setArrayBufferViewSourceTextureWrapT", () =>
       test("test", () => {
         let (state, texture) = createArrayBufferViewSourceTexture(state^);
-        let wrap = SourceTextureType.Mirrored_repeat;
+        let wrap = TextureType.Mirrored_repeat;
         let state =
           state |> setArrayBufferViewSourceTextureWrapT(texture, wrap);
         getArrayBufferViewSourceTextureWrapT(texture, state) |> expect == wrap;
@@ -117,7 +117,7 @@ let _ =
     describe("setArrayBufferViewSourceTextureMagFilter", () =>
       test("test", () => {
         let (state, texture) = createArrayBufferViewSourceTexture(state^);
-        let filter = SourceTextureType.Linear;
+        let filter = TextureType.Linear;
         let state =
           state |> setArrayBufferViewSourceTextureMagFilter(texture, filter);
         getArrayBufferViewSourceTextureMagFilter(texture, state)
@@ -127,7 +127,7 @@ let _ =
     describe("setArrayBufferViewSourceTextureMinFilter", () =>
       test("test", () => {
         let (state, texture) = createArrayBufferViewSourceTexture(state^);
-        let filter = SourceTextureType.Linear;
+        let filter = TextureType.Linear;
         let state =
           state |> setArrayBufferViewSourceTextureMinFilter(texture, filter);
         getArrayBufferViewSourceTextureMinFilter(texture, state)
@@ -137,7 +137,7 @@ let _ =
     describe("setArrayBufferViewSourceTextureFormat", () =>
       test("test", () => {
         let (state, texture) = createArrayBufferViewSourceTexture(state^);
-        let format = SourceTextureType.Rgba;
+        let format = TextureType.Rgba;
         let state =
           state |> setArrayBufferViewSourceTextureFormat(texture, format);
         getArrayBufferViewSourceTextureFormat(texture, state)
@@ -307,7 +307,7 @@ let _ =
             test("remove from wrapSs", () =>
               _testRemoveFromTypeArr(
                 state,
-                (SourceTextureType.Repeat, SourceTextureType.Mirrored_repeat),
+                (TextureType.Repeat, TextureType.Mirrored_repeat),
                 BufferArrayBufferViewSourceTextureService.getDefaultWrapS(),
                 (
                   LightMaterialTool.disposeLightMaterial,
@@ -319,7 +319,7 @@ let _ =
             test("remove from wrapTs", () =>
               _testRemoveFromTypeArr(
                 state,
-                (SourceTextureType.Repeat, SourceTextureType.Mirrored_repeat),
+                (TextureType.Repeat, TextureType.Mirrored_repeat),
                 BufferArrayBufferViewSourceTextureService.getDefaultWrapT(),
                 (
                   LightMaterialTool.disposeLightMaterial,
@@ -332,8 +332,8 @@ let _ =
               _testRemoveFromTypeArr(
                 state,
                 (
-                  SourceTextureType.Linear_mipmap_nearest,
-                  SourceTextureType.Nearest_mipmap_linear,
+                  TextureType.Linear_mipmap_nearest,
+                  TextureType.Nearest_mipmap_linear,
                 ),
                 BufferArrayBufferViewSourceTextureService.getDefaultMagFilter(),
                 (
@@ -347,8 +347,8 @@ let _ =
               _testRemoveFromTypeArr(
                 state,
                 (
-                  SourceTextureType.Linear_mipmap_nearest,
-                  SourceTextureType.Nearest_mipmap_linear,
+                  TextureType.Linear_mipmap_nearest,
+                  TextureType.Nearest_mipmap_linear,
                 ),
                 BufferArrayBufferViewSourceTextureService.getDefaultMinFilter(),
                 (
@@ -361,7 +361,7 @@ let _ =
             test("remove from formats", () =>
               _testRemoveFromTypeArr(
                 state,
-                (SourceTextureType.Rgba, SourceTextureType.Alpha),
+                (TextureType.Rgba, TextureType.Alpha),
                 BufferArrayBufferViewSourceTextureService.getDefaultFormat(),
                 (
                   LightMaterialTool.disposeLightMaterial,
