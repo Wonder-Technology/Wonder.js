@@ -14,7 +14,9 @@ let deepCopyForRestore = (state: StateDataMainType.state) => {
     |> RecordDirectionLightMainService.deepCopyForRestore
     |> RecordPointLightMainService.deepCopyForRestore
     |> RecordBasicSourceTextureMainService.deepCopyForRestore
-    |> RecordArrayBufferViewSourceTextureMainService.deepCopyForRestore;
+    |> RecordArrayBufferViewSourceTextureMainService.deepCopyForRestore
+    |> RecordCubemapTextureMainService.deepCopyForRestore;
+
   {
     ...state,
     gameObjectRecord:
@@ -49,7 +51,8 @@ let deepCopyForRestore = (state: StateDataMainType.state) => {
       RecordAllDeviceManagerService.deepCopyForRestore(
         state.deviceManagerRecord,
       ),
-    shaderRecord: RecordAllShaderService.deepCopyForRestore(state.shaderRecord),
+    shaderRecord:
+      RecordAllShaderService.deepCopyForRestore(state.shaderRecord),
     glslRecord: RecordAllGLSLService.deepCopyForRestore(state.glslRecord),
     glslSenderRecord:
       RecordGLSLSenderAllService.deepCopyForRestore(state.glslSenderRecord),

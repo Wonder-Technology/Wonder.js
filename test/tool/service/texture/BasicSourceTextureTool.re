@@ -72,9 +72,10 @@ let getDefaultMagFilter = () =>
 let getDefaultMinFilter = () =>
   BufferBasicSourceTextureService.getDefaultMinFilter();
 
-let getDefaultFormat = () => TextureType.Rgba;
+let getDefaultFormat = () =>
+  BufferBasicSourceTextureService.getDefaultFormat();
 
-let getDefaultType = () => TextureTypeService.getUnsignedByte();
+let getDefaultType = () => BufferBasicSourceTextureService.getDefaultType();
 
 let getDefaultIsNeedUpdate = () =>
   BufferTextureService.getDefaultIsNeedUpdate();

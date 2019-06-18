@@ -39,20 +39,23 @@ let buildSource = () => Js.Typed_array.Uint8Array.make([|1, 255, 255, 255|]);
 
 let buildSource2 = () => Js.Typed_array.Uint8Array.make([|2, 255, 255, 100|]);
 
-let getDefaultWrapS = () => BufferBasicSourceTextureService.getDefaultWrapS();
+let getDefaultWrapS = () =>
+  BufferArrayBufferViewSourceTextureService.getDefaultWrapS();
 
-let getDefaultWrapT = () => BufferBasicSourceTextureService.getDefaultWrapT();
+let getDefaultWrapT = () =>
+  BufferArrayBufferViewSourceTextureService.getDefaultWrapT();
 
 let getDefaultMagFilter = () =>
-  BufferBasicSourceTextureService.getDefaultMagFilter();
+  BufferArrayBufferViewSourceTextureService.getDefaultMagFilter();
 
 let getDefaultMinFilter = () =>
-  BufferBasicSourceTextureService.getDefaultMinFilter();
+  BufferArrayBufferViewSourceTextureService.getDefaultMinFilter();
 
 let getDefaultFormat = () =>
-  BufferBasicSourceTextureService.getDefaultFormat();
+  BufferArrayBufferViewSourceTextureService.getDefaultFormat();
 
-let getDefaultType = () => TextureTypeService.getUnsignedByte();
+let getDefaultType = () =>
+  BufferArrayBufferViewSourceTextureService.getDefaultType();
 
 let getDefaultIsNeedUpdate = () =>
   BufferArrayBufferViewSourceTextureService.getDefaultIsNeedUpdate();
