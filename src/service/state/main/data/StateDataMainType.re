@@ -181,7 +181,9 @@ and flyCameraControllerRecord = {
   keyupEventHandleFuncListMap: keyboardEventHandleFuncListMap,
   moveSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
   wheelSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
+  phiMap: WonderCommonlib.MutableSparseMapService.t(float),
   rotateSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
+  thetaMap: WonderCommonlib.MutableSparseMapService.t(float),
   eulerAngleDiffMap:
     WonderCommonlib.MutableSparseMapService.t(
       FlyCameraControllerType.eulerAngleDiffType,

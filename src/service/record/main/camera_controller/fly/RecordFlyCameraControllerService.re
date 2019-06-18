@@ -17,6 +17,8 @@ let create = () => {
   moveSpeedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   wheelSpeedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   rotateSpeedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  thetaMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  phiMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   eulerAngleDiffMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   translationDiffMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   directionArrayMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -37,6 +39,8 @@ let deepCopyForRestore =
         moveSpeedMap,
         wheelSpeedMap,
         rotateSpeedMap,
+        thetaMap,
+        phiMap,
         eulerAngleDiffMap,
         translationDiffMap,
         gameObjectMap,
@@ -66,6 +70,8 @@ let deepCopyForRestore =
   wheelSpeedMap: wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.copy,
   rotateSpeedMap:
     rotateSpeedMap |> WonderCommonlib.MutableSparseMapService.copy,
+  thetaMap: thetaMap |> WonderCommonlib.MutableSparseMapService.copy,
+  phiMap: phiMap |> WonderCommonlib.MutableSparseMapService.copy,
   eulerAngleDiffMap:
     eulerAngleDiffMap |> WonderCommonlib.MutableSparseMapService.copy,
   translationDiffMap:

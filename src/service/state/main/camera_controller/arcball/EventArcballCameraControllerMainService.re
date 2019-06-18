@@ -101,7 +101,6 @@ let _changeOrbit =
       cameraController,
       arcballCameraControllerRecord,
     );
-
   arcballCameraControllerRecord
   |> OperateArcballCameraControllerService.setPhi(
        cameraController,

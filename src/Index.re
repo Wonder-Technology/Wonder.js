@@ -108,6 +108,14 @@ let hasFlyCameraControllerDirection = FlyCameraControllerAPI.hasFlyCameraControl
 
 let unsafeGetFlyCameraControllerDirectionArray = FlyCameraControllerAPI.unsafeGetFlyCameraControllerDirectionArray;
 
+let setFlyCameraControllerTheta = FlyCameraControllerAPI.setFlyCameraControllerTheta;
+
+let unsafeGetFlyCameraControllerTheta = FlyCameraControllerAPI.unsafeGetFlyCameraControllerTheta;
+
+let setFlyCameraControllerPhi = FlyCameraControllerAPI.setFlyCameraControllerPhi;
+
+let unsafeGetFlyCameraControllerPhi = FlyCameraControllerAPI.unsafeGetFlyCameraControllerPhi;
+
 let setFlyCameraControllerRotateSpeed = FlyCameraControllerAPI.setFlyCameraControllerRotateSpeed;
 
 let unsafeGetFlyCameraControllerRotateSpeed = FlyCameraControllerAPI.unsafeGetFlyCameraControllerRotateSpeed;

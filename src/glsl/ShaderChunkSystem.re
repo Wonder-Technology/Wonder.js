@@ -1015,39 +1015,5 @@ gl_FragColor = vec4(totalColor.rgb, totalColor.a);
 vec4 totalColor = vec4(u_color, u_alpha);
 |}))
 
-|> set("webgl1_basic_map_vertex", _buildChunk(({|
-
-|},{|
-
-|}),{|
-varying vec2 v_mapCoord0;
-|},({|
-
-|},{|
-
-|}),{|
-//    vec2 sourceTexCoord0 = a_texCoord * u_map0SourceRegion.zw + u_map0SourceRegion.xy;
-//
-//    v_mapCoord0 = sourceTexCoord0 * u_map0RepeatRegion.zw + u_map0RepeatRegion.xy;
-
-    v_mapCoord0 = a_texCoord;
-|}))
-
-|> set("webgl1_basic_map_fragment", _buildChunk(({|
-
-|},{|
-
-|}),{|
-varying vec2 v_mapCoord0;
-|},({|
-
-|},{|
-
-|}),{|
-vec4 texelColor = texture2D(u_mapSampler, v_mapCoord0);
-
-    vec4 totalColor = vec4(texelColor.rgb * u_color, texelColor.a * u_alpha);
-|}))
-
     };
   

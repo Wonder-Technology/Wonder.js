@@ -70,6 +70,46 @@ let setRotateSpeed =
     ),
 };
 
+let unsafeGetPhi = (cameraController, record: flyCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(cameraController, record.phiMap)
+  |> OptionService.unsafeGet;
+
+let setPhi =
+    (cameraController, phi, {phiMap} as record: flyCameraControllerRecord) => {
+  ...record,
+  phiMap:
+    WonderCommonlib.MutableSparseMapService.set(
+      cameraController,
+      phi,
+      phiMap,
+    ),
+};
+
+let unsafeGetTheta = (cameraController, record: flyCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(
+    cameraController,
+    record.thetaMap,
+  )
+  |> OptionService.unsafeGet;
+
+let setTheta =
+    (
+      cameraController,
+      theta,
+      {thetaMap} as record: flyCameraControllerRecord,
+    ) => {
+  let thetaMargin = 0.05;
+  {
+    ...record,
+    thetaMap:
+      WonderCommonlib.MutableSparseMapService.set(
+        cameraController,
+        NumberService.clamp(theta, thetaMargin, Js.Math._PI -. thetaMargin),
+        thetaMap,
+      ),
+  };
+};
+
 let unsafeGetEulerAngleDiff =
     (cameraController, record: flyCameraControllerRecord) =>
   WonderCommonlib.MutableSparseMapService.get(

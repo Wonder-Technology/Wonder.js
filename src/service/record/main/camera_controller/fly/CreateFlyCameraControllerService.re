@@ -11,6 +11,8 @@ let _setDefaultValue =
         moveSpeedMap,
         wheelSpeedMap,
         rotateSpeedMap,
+        thetaMap,
+        phiMap,
         eulerAngleDiffMap,
         translationDiffMap,
         directionArrayMap,
@@ -23,6 +25,12 @@ let _setDefaultValue =
     wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 2.5),
   rotateSpeedMap:
     rotateSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 100.),
+  phiMap:
+    phiMap
+    |> WonderCommonlib.MutableSparseMapService.set(index, Js.Math._PI /. 2.),
+  thetaMap:
+    thetaMap
+    |> WonderCommonlib.MutableSparseMapService.set(index, Js.Math._PI /. 2.),
   eulerAngleDiffMap:
     eulerAngleDiffMap
     |> WonderCommonlib.MutableSparseMapService.set(
