@@ -4,7 +4,9 @@ open TextureType;
 
 open ArrayBufferViewSourceTextureType;
 
-open BufferSourceSizeTextureService;
+open BufferSizeTextureService;
+
+open BufferArrayBufferViewSourceSizeTextureService;
 
 open BufferSizeTextureService;
 

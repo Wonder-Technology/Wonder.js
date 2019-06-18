@@ -1,6 +1,6 @@
 open Js.Typed_array;
 
-open BufferSourceSizeTextureService;
+open BufferSizeTextureService;
 
 open BufferSizeTextureService;
 

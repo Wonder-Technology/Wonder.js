@@ -1,7 +1,5 @@
 open Js.Typed_array;
 
-open BufferSourceSizeTextureService;
-
 open BufferSizeTextureService;
 
 let getDefaultWrapS = () => TextureType.Clamp_to_edge;
@@ -124,7 +122,8 @@ let getFlipYsOffset =
 let getFlipYIndex = index => index * getFlipYsSize();
 
 let getWidthsLength = arrayBufferViewSourceTextureCount =>
-  arrayBufferViewSourceTextureCount * getWidthsSize();
+  arrayBufferViewSourceTextureCount
+  * BufferArrayBufferViewSourceSizeTextureService.getWidthsSize();
 
 let getWidthsOffset =
     (basicSourceTextureCount, arrayBufferViewSourceTextureCount) =>
@@ -132,10 +131,12 @@ let getWidthsOffset =
   + getFlipYsLength(arrayBufferViewSourceTextureCount)
   * Uint8Array._BYTES_PER_ELEMENT;
 
-let getWidthIndex = index => index * getWidthsSize();
+let getWidthIndex = index =>
+  index * BufferArrayBufferViewSourceSizeTextureService.getWidthsSize();
 
 let getHeightsLength = arrayBufferViewSourceTextureCount =>
-  arrayBufferViewSourceTextureCount * getHeightsSize();
+  arrayBufferViewSourceTextureCount
+  * BufferArrayBufferViewSourceSizeTextureService.getHeightsSize();
 
 let getHeightsOffset =
     (basicSourceTextureCount, arrayBufferViewSourceTextureCount) =>
@@ -143,7 +144,8 @@ let getHeightsOffset =
   + getWidthsLength(arrayBufferViewSourceTextureCount)
   * Uint16Array._BYTES_PER_ELEMENT;
 
-let getHeightIndex = index => index * getHeightsSize();
+let getHeightIndex = index =>
+  index * BufferArrayBufferViewSourceSizeTextureService.getHeightsSize();
 
 let getTotalByteLength = arrayBufferViewSourceTextureCount =>
   arrayBufferViewSourceTextureCount
@@ -160,5 +162,8 @@ let getTotalByteLength = arrayBufferViewSourceTextureCount =>
       + getFlipYsSize()
     )
     + Uint16Array._BYTES_PER_ELEMENT
-    * (getWidthsSize() + getHeightsSize())
+    * (
+      BufferArrayBufferViewSourceSizeTextureService.getWidthsSize()
+      + BufferArrayBufferViewSourceSizeTextureService.getHeightsSize()
+    )
   );

@@ -2,7 +2,9 @@ open StateDataMainType;
 
 open TextureType;
 
-open BufferSourceSizeTextureService;
+open BufferSizeTextureService;
+
+open BufferSizeTextureService;
 
 open BufferSizeTextureService;
 

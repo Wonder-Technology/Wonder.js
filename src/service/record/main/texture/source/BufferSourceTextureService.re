@@ -1,6 +1,6 @@
 open Js.Typed_array;
 
-open BufferSourceSizeTextureService;
+open BufferSizeTextureService;
 
 open BufferSizeTextureService;
 
@@ -36,7 +36,10 @@ let _getArrayBufferViewSourceTotalByteLength =
       + getFlipYsSize()
     )
     + Uint16Array._BYTES_PER_ELEMENT
-    * (getWidthsSize() + getHeightsSize())
+    * (
+      BufferArrayBufferViewSourceSizeTextureService.getWidthsSize()
+      + BufferArrayBufferViewSourceSizeTextureService.getHeightsSize()
+    )
   );
 
 let getBasicSourceTextureOffset = () => 0;
