@@ -19,22 +19,16 @@ let execJob = (flags, state) => {
   let skyboxGameObject = _createSkyboxGameObject(state);
 
   let state =
-    state |> InitGameObjectMainService.initGameObject(skyboxGameObject);
+    state
+    |> InitGameObjectMainService.initGameObject(skyboxGameObject)
+    |> SkyboxSceneMainService.setSkyboxGameObject(skyboxGameObject);
 
-  {
-    ...state,
-    jobDataRecord: {
-      ...state.jobDataRecord,
-      skyboxData: {
-        ...state.jobDataRecord.skyboxData,
-        skyboxGameObject: Some(skyboxGameObject),
-        cubeTexture:
-          (
-            AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord)
-            |> WonderWebgl.Gl.createTexture
-          )
-          ->Some,
-      },
-    },
-  };
+  let state =
+    switch (SkyboxSceneMainService.getCubemapTexture(state)) {
+    | Some(cubemapTexture) =>
+      InitCubemapTextureMainService.initTexture(cubemapTexture, state)
+    | None => state
+    };
+
+  state;
 };

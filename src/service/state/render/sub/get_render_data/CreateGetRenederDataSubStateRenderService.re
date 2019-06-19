@@ -25,9 +25,5 @@ let createState =
       outlineColor:
         OperateRenderJobDataService.getOutlineColor(jobDataRecord),
     },
-    skyboxData: {
-      cubeTexture:
-        OperateRenderJobDataService.getSkyboxCubeTexture(jobDataRecord),
-    },
   },
 };

@@ -5,5 +5,4 @@ let getSkyboxVMatrix = state =>
   |> Matrix4Service.copy
   |> Matrix4Service.setTranslation((0., 0., 0.));
 
-let unsafeGetGlCubeTexture = ({jobDataRecord}) =>
-  jobDataRecord.skyboxData.cubeTexture |> OptionService.unsafeGet;
+let getCubemapUnit = _state => 0;

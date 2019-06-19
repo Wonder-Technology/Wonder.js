@@ -13,6 +13,12 @@ module DrawOutlineJobUtils = {
       renderDataArr
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (. state, (transformIndex, meshRendererIndex, geometryIndex)) => {
+             /* TODO test */
+             let state =
+               OperateAllTextureRenderService.resetActivedTextureUnitIndex(
+                 state,
+               );
+
              let sendRenderDataSubState =
                CreateSendRenederDataSubStateRenderService.createState(state);
 
@@ -142,7 +148,10 @@ module DrawOutlineJobUtils = {
       |> AllDeviceManagerService.setStencilMask(gl, 0xFF)
       |> AllDeviceManagerService.setDepthTest(gl, false)
       |> AllDeviceManagerService.setDepthWrite(gl, false)
-      |> AllDeviceManagerService.setColorWrite(gl, (false, false, false, false));
+      |> AllDeviceManagerService.setColorWrite(
+           gl,
+           (false, false, false, false),
+         );
 
     {...state, deviceManagerRecord};
   };

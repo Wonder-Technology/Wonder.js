@@ -598,10 +598,6 @@ let useByShaderIndex = RenderJobAPI.useByShaderIndex;
 
 let getShaderIndex = RenderJobAPI.getShaderIndex;
 
-let setSkyboxNeedUpdateCubeTexture = JobDataAPI.setSkyboxNeedUpdateCubeTexture;
-
-let setSkyboxImage = JobDataAPI.setSkyboxImage;
-
 let setGameObjectsNeedDrawOutline = JobDataAPI.setGameObjectsNeedDrawOutline;
 
 let setOutlineColor = JobDataAPI.setOutlineColor;
@@ -945,6 +941,112 @@ let setBasicSourceTextureSource = BasicSourceTextureAPI.setBasicSourceTextureSou
 let unsafeGetBasicSourceTextureSource = BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource;
 
 let createBasicSourceTexture = BasicSourceTextureAPI.createBasicSourceTexture;
+
+let initCubemapTexture = CubemapTextureAPI.initCubemapTexture;
+
+let disposeCubemapTexture = CubemapTextureAPI.disposeCubemapTexture;
+
+let getAllTextures = CubemapTextureAPI.getAllTextures;
+
+let setCubemapTextureName = CubemapTextureAPI.setCubemapTextureName;
+
+let unsafeGetCubemapTextureName = CubemapTextureAPI.unsafeGetCubemapTextureName;
+
+let getCubemapTextureName = CubemapTextureAPI.getCubemapTextureName;
+
+let setCubemapTextureFlipY = CubemapTextureAPI.setCubemapTextureFlipY;
+
+let getCubemapTextureFlipY = CubemapTextureAPI.getCubemapTextureFlipY;
+
+let setCubemapTextureNZType = CubemapTextureAPI.setCubemapTextureNZType;
+
+let getCubemapTextureNZType = CubemapTextureAPI.getCubemapTextureNZType;
+
+let setCubemapTexturePZType = CubemapTextureAPI.setCubemapTexturePZType;
+
+let getCubemapTexturePZType = CubemapTextureAPI.getCubemapTexturePZType;
+
+let setCubemapTextureNYType = CubemapTextureAPI.setCubemapTextureNYType;
+
+let getCubemapTextureNYType = CubemapTextureAPI.getCubemapTextureNYType;
+
+let setCubemapTexturePYType = CubemapTextureAPI.setCubemapTexturePYType;
+
+let getCubemapTexturePYType = CubemapTextureAPI.getCubemapTexturePYType;
+
+let setCubemapTextureNXType = CubemapTextureAPI.setCubemapTextureNXType;
+
+let getCubemapTextureNXType = CubemapTextureAPI.getCubemapTextureNXType;
+
+let setCubemapTexturePXType = CubemapTextureAPI.setCubemapTexturePXType;
+
+let getCubemapTexturePXType = CubemapTextureAPI.getCubemapTexturePXType;
+
+let setCubemapTextureNZFormat = CubemapTextureAPI.setCubemapTextureNZFormat;
+
+let getCubemapTextureNZFormat = CubemapTextureAPI.getCubemapTextureNZFormat;
+
+let setCubemapTexturePZFormat = CubemapTextureAPI.setCubemapTexturePZFormat;
+
+let getCubemapTexturePZFormat = CubemapTextureAPI.getCubemapTexturePZFormat;
+
+let setCubemapTextureNYFormat = CubemapTextureAPI.setCubemapTextureNYFormat;
+
+let getCubemapTextureNYFormat = CubemapTextureAPI.getCubemapTextureNYFormat;
+
+let setCubemapTexturePYFormat = CubemapTextureAPI.setCubemapTexturePYFormat;
+
+let getCubemapTexturePYFormat = CubemapTextureAPI.getCubemapTexturePYFormat;
+
+let setCubemapTextureNXFormat = CubemapTextureAPI.setCubemapTextureNXFormat;
+
+let getCubemapTextureNXFormat = CubemapTextureAPI.getCubemapTextureNXFormat;
+
+let setCubemapTexturePXFormat = CubemapTextureAPI.setCubemapTexturePXFormat;
+
+let getCubemapTexturePXFormat = CubemapTextureAPI.getCubemapTexturePXFormat;
+
+let setCubemapTextureMinFilter = CubemapTextureAPI.setCubemapTextureMinFilter;
+
+let getCubemapTextureMinFilter = CubemapTextureAPI.getCubemapTextureMinFilter;
+
+let setCubemapTextureMagFilter = CubemapTextureAPI.setCubemapTextureMagFilter;
+
+let getCubemapTextureMagFilter = CubemapTextureAPI.getCubemapTextureMagFilter;
+
+let setCubemapTextureWrapT = CubemapTextureAPI.setCubemapTextureWrapT;
+
+let getCubemapTextureWrapT = CubemapTextureAPI.getCubemapTextureWrapT;
+
+let setCubemapTextureWrapS = CubemapTextureAPI.setCubemapTextureWrapS;
+
+let getCubemapTextureWrapS = CubemapTextureAPI.getCubemapTextureWrapS;
+
+let setCubemapTextureNZSource = CubemapTextureAPI.setCubemapTextureNZSource;
+
+let unsafeGetCubemapTextureNZSource = CubemapTextureAPI.unsafeGetCubemapTextureNZSource;
+
+let setCubemapTexturePZSource = CubemapTextureAPI.setCubemapTexturePZSource;
+
+let unsafeGetCubemapTexturePZSource = CubemapTextureAPI.unsafeGetCubemapTexturePZSource;
+
+let setCubemapTextureNYSource = CubemapTextureAPI.setCubemapTextureNYSource;
+
+let unsafeGetCubemapTextureNYSource = CubemapTextureAPI.unsafeGetCubemapTextureNYSource;
+
+let setCubemapTexturePYSource = CubemapTextureAPI.setCubemapTexturePYSource;
+
+let unsafeGetCubemapTexturePYSource = CubemapTextureAPI.unsafeGetCubemapTexturePYSource;
+
+let setCubemapTextureNXSource = CubemapTextureAPI.setCubemapTextureNXSource;
+
+let unsafeGetCubemapTextureNXSource = CubemapTextureAPI.unsafeGetCubemapTextureNXSource;
+
+let setCubemapTexturePXSource = CubemapTextureAPI.setCubemapTexturePXSource;
+
+let unsafeGetCubemapTexturePXSource = CubemapTextureAPI.unsafeGetCubemapTexturePXSource;
+
+let createCubemapTexture = CubemapTextureAPI.createCubemapTexture;
 
 let getFps = TimeControllerAPI.getFps;
 

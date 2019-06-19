@@ -970,3 +970,6 @@ let disposeCubemapTexture = (texture, isRemoveTexture, state) =>
     isRemoveTexture,
     state,
   );
+
+let initCubemapTexture = (texture, state) =>
+  InitCubemapTextureMainService.initTexture(texture, state);

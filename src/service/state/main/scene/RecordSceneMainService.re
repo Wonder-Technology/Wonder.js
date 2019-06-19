@@ -11,8 +11,12 @@ let create = state => {
     ...state,
     sceneRecord:
       Some({
-        ambientLight: {
+        ambientLightData: {
           color: AmbientLightService.getDefaultColor(),
+        },
+        skyboxData: {
+          skyboxGameObject: None,
+          cubemapTexture: None,
         },
         sceneGameObject,
       }),

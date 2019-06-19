@@ -37,7 +37,7 @@ let render =
         geometryIndices,
         sourceInstanceIndices,
       ),
-      state,
+      state: StateRenderType.renderState,
     ) =>
   renderIndexArray
   |> WonderCommonlib.ArrayService.reduceOneParam(

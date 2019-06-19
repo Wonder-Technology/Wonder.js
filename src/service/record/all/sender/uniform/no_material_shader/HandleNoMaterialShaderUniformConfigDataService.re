@@ -50,7 +50,6 @@ let addSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr) =>
     _addUniformSendDataByType(
       (uniformCacheMap, name, pos),
       sendDataArr,
-      /* GetSkyboxDataGetRenderDataService.getSkyboxVMatrix, */
       (
         GetSkyboxDataGetRenderDataService.getSkyboxVMatrix,
         SendUniformService.getSendNoCachableDataByType(type_),
@@ -61,7 +60,7 @@ let addSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr) =>
       (uniformCacheMap, name, pos),
       sendDataArr,
       (
-        GetSkyboxDataGetRenderDataService.unsafeGetGlCubeTexture,
+        GetSkyboxDataGetRenderDataService.getCubemapUnit,
         SendUniformService.getSendCachableDataByType(type_),
       ),
     )
