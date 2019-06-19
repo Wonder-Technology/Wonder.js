@@ -12,8 +12,6 @@ let _disposeData = (cameraController, state) => {
     moveSpeedMap,
     wheelSpeedMap,
     rotateSpeedMap,
-    thetaMap,
-    phiMap,
     eulerAngleDiffMap,
     translationDiffMap,
     gameObjectMap,
@@ -31,12 +29,6 @@ let _disposeData = (cameraController, state) => {
         |> DisposeComponentService.disposeSparseMapData(cameraController),
       rotateSpeedMap:
         rotateSpeedMap
-        |> DisposeComponentService.disposeSparseMapData(cameraController),
-      thetaMap:
-        thetaMap
-        |> DisposeComponentService.disposeSparseMapData(cameraController),
-      phiMap:
-        phiMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),
       eulerAngleDiffMap:
         eulerAngleDiffMap

@@ -11,8 +11,6 @@ let handleCloneComponent =
   let moveSpeed = unsafeGetMoveSpeed(sourceComponent, record);
   let wheelSpeed = unsafeGetWheelSpeed(sourceComponent, record);
   let rotateSpeed = unsafeGetRotateSpeed(sourceComponent, record);
-  let phi = unsafeGetPhi(sourceComponent, record);
-  let theta = unsafeGetTheta(sourceComponent, record);
 
   countRangeArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -23,9 +21,7 @@ let handleCloneComponent =
            record
            |> setMoveSpeed(index, moveSpeed)
            |> setWheelSpeed(index, wheelSpeed)
-           |> setRotateSpeed(index, rotateSpeed)
-           |> setPhi(index, phi)
-           |> setTheta(index, theta),
+           |> setRotateSpeed(index, rotateSpeed),
            componentArr |> ArrayService.push(index),
          );
        },

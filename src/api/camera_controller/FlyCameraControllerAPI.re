@@ -57,24 +57,6 @@ let setFlyCameraControllerRotateSpeed =
     setRotateSpeed(cameraController, value, state.flyCameraControllerRecord),
 };
 
-let unsafeGetFlyCameraControllerPhi = (cameraController, state) =>
-  state.flyCameraControllerRecord |> unsafeGetPhi(cameraController);
-
-let setFlyCameraControllerPhi = (cameraController, value: float, state) => {
-  ...state,
-  flyCameraControllerRecord:
-    setPhi(cameraController, value, state.flyCameraControllerRecord),
-};
-
-let unsafeGetFlyCameraControllerTheta = (cameraController, state) =>
-  state.flyCameraControllerRecord |> unsafeGetTheta(cameraController);
-
-let setFlyCameraControllerTheta = (cameraController, value: float, state) => {
-  ...state,
-  flyCameraControllerRecord:
-    setTheta(cameraController, value, state.flyCameraControllerRecord),
-};
-
 let unsafeGetFlyCameraControllerDirectionArray = (cameraController, state) =>
   state.flyCameraControllerRecord |> unsafeGetDirectionArray(cameraController);
 

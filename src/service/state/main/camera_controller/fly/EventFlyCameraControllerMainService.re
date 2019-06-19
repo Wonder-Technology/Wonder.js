@@ -133,7 +133,6 @@ let _changeOrbit =
     )##height;
 
   let factor = canvasHeight === 0. ? 0. : rotateSpeed /. canvasHeight;
-
   flyCameraControllerRecord
   |> OperateFlyCameraControllerService.setEulerAngleDiff(
        cameraController,
@@ -141,24 +140,6 @@ let _changeOrbit =
          diffX: factor *. (y |> float_of_int),
          diffY: factor *. (x |> float_of_int),
        },
-     )
-  |> OperateFlyCameraControllerService.setPhi(
-       cameraController,
-       OperateFlyCameraControllerService.unsafeGetPhi(
-         cameraController,
-         flyCameraControllerRecord,
-       )
-       +. (x |> NumberType.convertIntToFloat)
-       /. 100.,
-     )
-  |> OperateFlyCameraControllerService.setTheta(
-       cameraController,
-       OperateFlyCameraControllerService.unsafeGetTheta(
-         cameraController,
-         flyCameraControllerRecord,
-       )
-       -. (y |> NumberType.convertIntToFloat)
-       /. 100.,
      );
 };
 

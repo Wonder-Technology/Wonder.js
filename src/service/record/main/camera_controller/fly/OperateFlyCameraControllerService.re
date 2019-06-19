@@ -70,46 +70,6 @@ let setRotateSpeed =
     ),
 };
 
-let unsafeGetPhi = (cameraController, record: flyCameraControllerRecord) =>
-  WonderCommonlib.MutableSparseMapService.get(cameraController, record.phiMap)
-  |> OptionService.unsafeGet;
-
-let setPhi =
-    (cameraController, phi, {phiMap} as record: flyCameraControllerRecord) => {
-  ...record,
-  phiMap:
-    WonderCommonlib.MutableSparseMapService.set(
-      cameraController,
-      phi,
-      phiMap,
-    ),
-};
-
-let unsafeGetTheta = (cameraController, record: flyCameraControllerRecord) =>
-  WonderCommonlib.MutableSparseMapService.get(
-    cameraController,
-    record.thetaMap,
-  )
-  |> OptionService.unsafeGet;
-
-let setTheta =
-    (
-      cameraController,
-      theta,
-      {thetaMap} as record: flyCameraControllerRecord,
-    ) => {
-  let thetaMargin = 0.05;
-  {
-    ...record,
-    thetaMap:
-      WonderCommonlib.MutableSparseMapService.set(
-        cameraController,
-        NumberService.clamp(theta, thetaMargin, Js.Math._PI -. thetaMargin),
-        thetaMap,
-      ),
-  };
-};
-
 let unsafeGetEulerAngleDiff =
     (cameraController, record: flyCameraControllerRecord) =>
   WonderCommonlib.MutableSparseMapService.get(
@@ -180,5 +140,70 @@ let setDirectionArray =
       cameraController,
       directionArray,
       record.directionArrayMap,
+    ),
+};
+
+let getLocalEulerAngleX =
+    (transformComponent, record: flyCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(
+    transformComponent,
+    record.localEulerAngleMapX,
+  );
+
+let setLocalEulerAngleX =
+    (
+      transformComponent,
+      value,
+      {localEulerAngleMapX} as record: flyCameraControllerRecord,
+    ) => {
+  ...record,
+  localEulerAngleMapX:
+    WonderCommonlib.MutableSparseMapService.set(
+      transformComponent,
+      value,
+      localEulerAngleMapX,
+    ),
+};
+
+let getLocalEulerAngleY =
+    (transformComponent, record: flyCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(
+    transformComponent,
+    record.localEulerAngleMapY,
+  );
+
+let setLocalEulerAngleY =
+    (
+      transformComponent,
+      value,
+      {localEulerAngleMapY} as record: flyCameraControllerRecord,
+    ) => {
+  ...record,
+  localEulerAngleMapY:
+    WonderCommonlib.MutableSparseMapService.set(
+      transformComponent,
+      value,
+      localEulerAngleMapY,
+    ),
+};
+let getLocalEulerAngleZ =
+    (transformComponent, record: flyCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(
+    transformComponent,
+    record.localEulerAngleMapZ,
+  );
+
+let setLocalEulerAngleZ =
+    (
+      transformComponent,
+      value,
+      {localEulerAngleMapZ} as record: flyCameraControllerRecord,
+    ) => {
+  ...record,
+  localEulerAngleMapZ:
+    WonderCommonlib.MutableSparseMapService.set(
+      transformComponent,
+      value,
+      localEulerAngleMapZ,
     ),
 };

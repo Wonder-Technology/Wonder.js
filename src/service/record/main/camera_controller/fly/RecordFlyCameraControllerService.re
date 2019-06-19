@@ -17,13 +17,14 @@ let create = () => {
   moveSpeedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   wheelSpeedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   rotateSpeedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-  thetaMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-  phiMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   eulerAngleDiffMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   translationDiffMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   directionArrayMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   gameObjectMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+  localEulerAngleMapX: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  localEulerAngleMapY: WonderCommonlib.MutableSparseMapService.createEmpty(),
+  localEulerAngleMapZ: WonderCommonlib.MutableSparseMapService.createEmpty(),
 };
 
 let deepCopyForRestore =
@@ -39,13 +40,14 @@ let deepCopyForRestore =
         moveSpeedMap,
         wheelSpeedMap,
         rotateSpeedMap,
-        thetaMap,
-        phiMap,
         eulerAngleDiffMap,
         translationDiffMap,
         gameObjectMap,
         disposedIndexArray,
         directionArrayMap,
+        localEulerAngleMapX,
+        localEulerAngleMapY,
+        localEulerAngleMapZ,
       }: flyCameraControllerRecord,
     ) => {
   index,
@@ -70,8 +72,6 @@ let deepCopyForRestore =
   wheelSpeedMap: wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.copy,
   rotateSpeedMap:
     rotateSpeedMap |> WonderCommonlib.MutableSparseMapService.copy,
-  thetaMap: thetaMap |> WonderCommonlib.MutableSparseMapService.copy,
-  phiMap: phiMap |> WonderCommonlib.MutableSparseMapService.copy,
   eulerAngleDiffMap:
     eulerAngleDiffMap |> WonderCommonlib.MutableSparseMapService.copy,
   translationDiffMap:
@@ -80,4 +80,10 @@ let deepCopyForRestore =
     directionArrayMap |> WonderCommonlib.MutableSparseMapService.copy,
   gameObjectMap: gameObjectMap |> WonderCommonlib.MutableSparseMapService.copy,
   disposedIndexArray: disposedIndexArray |> Js.Array.copy,
+  localEulerAngleMapX:
+    localEulerAngleMapX |> WonderCommonlib.MutableSparseMapService.copy,
+  localEulerAngleMapY:
+    localEulerAngleMapY |> WonderCommonlib.MutableSparseMapService.copy,
+  localEulerAngleMapZ:
+    localEulerAngleMapZ |> WonderCommonlib.MutableSparseMapService.copy,
 };
