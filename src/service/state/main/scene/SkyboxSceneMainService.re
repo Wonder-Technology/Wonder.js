@@ -38,3 +38,19 @@ let setCubemapTexture = (cubemapTexture, state) => {
       }),
   };
 };
+
+let removeCubemapTexture = state => {
+  let sceneRecord = RecordSceneMainService.getRecord(state);
+
+  {
+    ...state,
+    sceneRecord:
+      Some({
+        ...sceneRecord,
+        skyboxData: {
+          ...sceneRecord.skyboxData,
+          cubemapTexture: None,
+        },
+      }),
+  };
+};

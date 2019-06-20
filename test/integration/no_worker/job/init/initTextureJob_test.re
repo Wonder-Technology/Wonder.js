@@ -35,7 +35,7 @@ let _ =
     beforeEach(() => {
       sandbox := createSandbox();
       state :=
-        InitBasicMaterialJobTool.initWithJobConfig(
+        InitLightMaterialJobTool.initWithJobConfig(
           sandbox,
           _buildNoWorkerJobConfig(),
         );
@@ -104,8 +104,7 @@ let _ =
 
       describe("test arrayBufferView source texture", () =>
         describe("test init two textures", () =>
-          test(
-            "test create", () => {
+          test("test create", () => {
             let (state, map1) =
               ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(
                 state^,
@@ -195,6 +194,6 @@ let _ =
             |> expect == (glTexture1, glTexture2);
           })
         );
-      })
+      });
     });
   });

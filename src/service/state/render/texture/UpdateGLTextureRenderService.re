@@ -31,6 +31,7 @@ let _setTextureParameters =
            gl |> WonderWebgl.Gl.getTextureWrapS,
            glWrapS,
          );
+
       gl
       |> WonderWebgl.Gl.texParameteri(
            target,

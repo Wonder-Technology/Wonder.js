@@ -13,6 +13,9 @@ let bindAndUpdate =
            newActivedTextureUnitIndex,
          )
       |> BindTextureRenderService.bind(gl, mapUnit, (texture, textureType))
-      |> UpdateAllTextureRenderService.handleUpdate(gl, (texture, textureType));
+      |> UpdateAllTextureRenderService.handleUpdate(
+           gl,
+           (texture, textureType),
+         );
     } :
     state;

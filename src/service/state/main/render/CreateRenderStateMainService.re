@@ -52,8 +52,7 @@ let createRenderState =
     RecordBasicSourceTextureMainService.getRecord(state);
   let arrayBufferViewSourceTextureRecord =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
-  let cubemapTextureRecord =
-    RecordCubemapTextureMainService.getRecord(state);
+  let cubemapTextureRecord = RecordCubemapTextureMainService.getRecord(state);
 
   let sourceInstanceRecord = RecordSourceInstanceMainService.getRecord(state);
   let isUseWorker = WorkerDetectMainService.isUseWorker(state);
@@ -162,7 +161,7 @@ let createRenderState =
       pzSourceMap: cubemapTextureRecord.pzSourceMap,
       nzSourceMap: cubemapTextureRecord.nzSourceMap,
       glTextureMap: cubemapTextureRecord.glTextureMap,
-      setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY,
+      setFlipYFunc: OperateSourceTextureMainService.setFlipY,
     },
     allTextureRecord: {
       activableTextureUnitArray:

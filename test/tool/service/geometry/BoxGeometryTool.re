@@ -55,3 +55,7 @@ let isGeometryDisposed = (geometry, state) =>
       geometry,
       state |> RecordGeometryMainService.getRecord,
     );
+
+let isBoxGeometry = (geometry, state) =>
+  GeometryAPI.getGeometryVertices(geometry, state)
+  == getBoxGeometryVertices(state);

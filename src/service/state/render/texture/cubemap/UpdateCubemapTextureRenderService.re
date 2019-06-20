@@ -19,25 +19,7 @@ let _drawTwoDTexture = (gl, (target, glFormat, glType), source) =>
   _drawTexture(gl, (target, 0, source, glFormat, glType));
 
 let _allocateSourceToTexture =
-    (
-      gl,
-      (
-        target,
-        glFormatArr,
-        glTypeArr,
-        /* (
-             glPXFormat,
-             glNXFormat,
-             glPYFormat,
-             glNYFormat,
-             glPZFormat,
-             glNZFormat,
-           ),
-           (glPXType, glNXType, glPYType, glNYType, glPZType, glNZType), */
-      ),
-      /* (pxSource, nxSource, pySource, nySource, pzSource, nzSource), */
-      sourceArr,
-    ) =>
+    (gl, (target, glFormatArr, glTypeArr), sourceArr) =>
   sourceArr
   |> WonderCommonlib.ArrayService.forEachi((. source, index) =>
        _drawTwoDTexture(
@@ -83,9 +65,7 @@ let _getAllSources =
   | _ => None
   };
 
-let _getSourceSize =
-    /* ((pxSource, nxSource, pySource, nySource, pzSource, nzSource)) => { */
-    sourceArr => {
+let _getSourceSize = sourceArr => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(

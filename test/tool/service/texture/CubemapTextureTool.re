@@ -60,3 +60,11 @@ let getDefaultIsNeedUpdate = () =>
   BufferTextureService.getDefaultIsNeedUpdate();
 
 let getDefaultFlipY = () => BufferCubemapTextureService.getDefaultFlipY();
+
+let buildSource = (~width, ~height, ~src="", ()) => {
+  "width": width,
+  "height": height,
+  "src": src,
+} |> Obj.magic;
+
+/* let removePXSource */

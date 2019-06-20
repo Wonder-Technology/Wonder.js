@@ -26,6 +26,9 @@ let calledWithArg4 = (stub, arg1, arg2, arg3, arg4) =>
 let calledWithArg5 = (stub, arg1, arg2, arg3, arg4, arg5) =>
   stub##calledWith(arg1, arg2, arg3, arg4, arg5);
 
+let calledWithArg6 = (stub, arg1, arg2, arg3, arg4, arg5, arg6) =>
+  stub##calledWith(arg1, arg2, arg3, arg4, arg5, arg6);
+
 let deferReturns = (timeout, returnedData, stub) =>
   stub |> returns(_defer(timeout, returnedData));
 

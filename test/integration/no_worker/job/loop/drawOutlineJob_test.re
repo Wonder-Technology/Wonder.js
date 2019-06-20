@@ -550,35 +550,12 @@ let _ =
     };
 
     module TestUseProgram = {
-      let prepareAndExec = shaderName => {
-        let program1 = Obj.magic(1);
-        let program2 = Obj.magic(2);
-        let createProgram =
-          createEmptyStubWithJsObjSandbox(sandbox)
-          |> onCall(0)
-          |> returns(program1)
-          |> onCall(1)
-          |> returns(program2);
-        let useProgram = createEmptyStubWithJsObjSandbox(sandbox);
-        let state =
-          state^
-          |> FakeGlTool.setFakeGl(
-               FakeGlTool.buildFakeGl(
-                 ~sandbox,
-                 ~createProgram,
-                 ~useProgram,
-                 (),
-               ),
-             );
-
-        let state =
-          state |> DirectorTool.init |> DirectorTool.runWithDefaultTime;
-
-        let drawGameObjectsShaderIndex =
-          ShaderTool.getNoMaterialShaderIndex(shaderName, state);
-
-        (state, useProgram, drawGameObjectsShaderIndex);
-      };
+      let prepareAndExec = shaderName =>
+        RenderInJobTool.TestUseProgram.prepareAndExec(
+          sandbox,
+          state,
+          shaderName,
+        );
     };
 
     beforeEach(() => {
@@ -664,32 +641,9 @@ let _ =
         });
 
         describe("test get uniform location", () => {
-          let testGetLocation = (sandbox, name, callCount, execFunc, state) => {
-            open Wonder_jest;
-            open Expect;
-            open Sinon;
-
-            let state = state^;
-
-            let getUniformLocation =
-              GLSLLocationTool.getUniformLocation(sandbox, name);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(~sandbox, ~getUniformLocation, ()),
-                 );
-
-            let state = state |> execFunc;
-
-            getUniformLocation
-            |> withTwoArgs(matchAny, name)
-            |> getCallCount
-            |> expect == callCount;
-          };
-
           describe("test get no_material_shader uniform location", () =>
             test("test get u_outlineColor location once", () =>
-              testGetLocation(
+              RenderInJobTool.testGetLocation(
                 sandbox,
                 "u_outlineColor",
                 1,
@@ -701,7 +655,7 @@ let _ =
 
           describe("test get camera uniform location", () =>
             test("test get u_vMatrix location twice", () =>
-              testGetLocation(
+              RenderInJobTool.testGetLocation(
                 sandbox,
                 "u_vMatrix",
                 2,
@@ -713,7 +667,7 @@ let _ =
 
           describe("test get model uniform location", () =>
             test("test get u_mMatrix location twice", () =>
-              testGetLocation(
+              RenderInJobTool.testGetLocation(
                 sandbox,
                 "u_mMatrix",
                 2,
@@ -725,26 +679,10 @@ let _ =
         });
 
         describe("test glsl", () => {
-          let _prepareForJudgeGLSLNotExec = (sandbox, state) => {
-            let shaderSource = createEmptyStubWithJsObjSandbox(sandbox);
-            let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~shaderSource,
-                     ~createProgram,
-                     (),
-                   ),
-                 );
-            (state, shaderSource);
-          };
-
           describe("test outline_draw_origin_gameObjects glsl", () => {
             test("test vs", () => {
               let (state, shaderSource) =
-                _prepareForJudgeGLSLNotExec(sandbox, state^);
+                RenderInJobTool.prepareForJudgeGLSLNotExec(sandbox, state^);
 
               let state = state |> DirectorTool.init;
 
@@ -763,7 +701,7 @@ let _ =
             });
             test("test fs", () => {
               let (state, shaderSource) =
-                _prepareForJudgeGLSLNotExec(sandbox, state^);
+                RenderInJobTool.prepareForJudgeGLSLNotExec(sandbox, state^);
 
               let state = state |> DirectorTool.init;
 
@@ -779,7 +717,7 @@ let _ =
             describe("test vs", () => {
               test("send a_position, a_normal and mvp matrices", () => {
                 let (state, shaderSource) =
-                  _prepareForJudgeGLSLNotExec(sandbox, state^);
+                  RenderInJobTool.prepareForJudgeGLSLNotExec(sandbox, state^);
 
                 let state = state |> DirectorTool.init;
 
@@ -798,7 +736,7 @@ let _ =
               });
               test("move a_position out towards a_normal", () => {
                 let (state, shaderSource) =
-                  _prepareForJudgeGLSLNotExec(sandbox, state^);
+                  RenderInJobTool.prepareForJudgeGLSLNotExec(sandbox, state^);
 
                 let state = state |> DirectorTool.init;
 
@@ -815,7 +753,7 @@ let _ =
 
             test("test fs", () => {
               let (state, shaderSource) =
-                _prepareForJudgeGLSLNotExec(sandbox, state^);
+                RenderInJobTool.prepareForJudgeGLSLNotExec(sandbox, state^);
 
               let state = state |> DirectorTool.init;
 

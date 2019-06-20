@@ -69,9 +69,6 @@ let _draw =
       (transformIndex, geometryIndex),
       state: StateRenderType.renderState,
     ) => {
-  let state =
-    OperateAllTextureRenderService.resetActivedTextureUnitIndex(state);
-
   let sendRenderDataSubState =
     CreateSendRenederDataSubStateRenderService.createState(state);
 
@@ -93,11 +90,7 @@ let _draw =
   );
 
   state
-  |> RenderJobUtils.draw(
-       gl,
-       DrawModeType.Triangles |> DrawModeType.drawModeToUint8,
-       geometryIndex,
-     );
+  |> RenderJobUtils.draw(gl, gl |> WonderWebgl.Gl.getTriangles, geometryIndex);
 
   state;
 };
@@ -112,20 +105,22 @@ let _restoreGlState =
   {...state, deviceManagerRecord};
 };
 
-let execJob = (flags, state) =>
-  switch (SkyboxSceneMainService.getCubemapTexture(state)) {
+let execJob = (flags, mainState) =>
+  switch (SkyboxSceneMainService.getCubemapTexture(mainState)) {
   | Some(cubemapTexture) =>
-    let gl = AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+    let gl =
+      AllDeviceManagerService.unsafeGetGl(. mainState.deviceManagerRecord);
 
     let target = gl |> WonderWebgl.Gl.getTextureCubeMap;
 
     let renderSkyboxGameObjectData =
       _getRenderData(
-        SkyboxSceneMainService.unsafeGetSkyboxGameObject(state),
-        state,
+        SkyboxSceneMainService.unsafeGetSkyboxGameObject(mainState),
+        mainState,
       );
 
-    let renderState = CreateRenderStateMainService.createRenderState(state);
+    let renderState =
+      CreateRenderStateMainService.createRenderState(mainState);
 
     let renderState =
       renderState
@@ -147,6 +142,6 @@ let execJob = (flags, state) =>
       |> _draw(gl, drawSkyboxShaderIndex, renderSkyboxGameObjectData)
       |> _restoreGlState(gl);
 
-    state;
-  | None => state
+    mainState;
+  | None => mainState
   };

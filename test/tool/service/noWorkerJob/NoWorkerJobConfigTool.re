@@ -60,6 +60,9 @@ let buildNoWorkerInitJobConfigWithoutInitMain = () => {|
     },
         {
           "name": "init_texture"
+        }, 
+        {
+          "name": "init_skybox"
         }
 ]
         |};
@@ -173,6 +176,9 @@ let buildNoWorkerLoopJobConfig = () => {|
             },
             {
                 "name": "draw_outline"
+            },
+            {
+                "name": "render_skybox"
             }
 ]
         |};

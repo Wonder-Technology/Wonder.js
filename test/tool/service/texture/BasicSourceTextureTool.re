@@ -37,18 +37,17 @@ let isNeedUpdate = (texture, state) =>
 let getDefaultTextureIndex = () =>
   TextureIndexService.getDefaultTextureIndex();
 
-let getNearest = () => SourceTextureTool.getNearest();
+let getNearest = () => TextureTool.getNearest();
 
-let getNearestMipmapNearest = () =>
-  SourceTextureTool.getNearestMipmapNearest();
+let getNearestMipmapNearest = () => TextureTool.getNearestMipmapNearest();
 
-let getLinear = () => SourceTextureTool.getLinear();
+let getLinear = () => TextureTool.getLinear();
 
-let getNearestMipmapLinear = () => SourceTextureTool.getNearestMipmapLinear();
+let getNearestMipmapLinear = () => TextureTool.getNearestMipmapLinear();
 
-let getLinearMipmapNearest = () => SourceTextureTool.getLinearMipmapNearest();
+let getLinearMipmapNearest = () => TextureTool.getLinearMipmapNearest();
 
-let getLinearMipmapLinear = () => SourceTextureTool.getLinearMipmapLinear();
+let getLinearMipmapLinear = () => TextureTool.getLinearMipmapLinear();
 
 let getRgb = () => TextureType.Rgb;
 
