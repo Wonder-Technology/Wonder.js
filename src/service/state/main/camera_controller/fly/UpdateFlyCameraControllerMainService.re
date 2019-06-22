@@ -76,7 +76,7 @@ let _updateTransform =
   let (cameraLocalEulerAngle, state) =
     RotateFlyCameraControllerMainService.getLocalEulerAngleWithDiffValueAndSetToMap(
       cameraTransform,
-      (diffX, diffY, 0.),
+      (diffX, diffY),
       state,
     );
 

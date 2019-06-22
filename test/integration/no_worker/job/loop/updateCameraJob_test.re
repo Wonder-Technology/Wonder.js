@@ -364,17 +364,9 @@ let _ =
 
                 let ((ex, ey, ez), state) =
                   state
-                  |> FlyCameraControllerTool.setLocalEulerAngleX(
+                  |> FlyCameraControllerTool.setLocalEulerAngle(
                        transform,
-                       x,
-                     )
-                  |> FlyCameraControllerTool.setLocalEulerAngleY(
-                       transform,
-                       y,
-                     )
-                  |> FlyCameraControllerTool.setLocalEulerAngleZ(
-                       transform,
-                       z,
+                       localEulerAngles,
                      )
                   |> RotateFlyCameraControllerMainService.getLocalEulerAngleOrInit(
                        transform,
@@ -386,15 +378,14 @@ let _ =
               });
               test(
                 "else, get localEulerAngle from engine and store in map", () => {
-                /* TODO rename pos */
                 let (state, transform, cameraController) = _prepare();
-                let (x, y, z) as pos = (1., 2., 3.);
+                let (x, y, z) as localEulerAngles = (1., 2., 3.);
 
                 let ((ex, ey, ez), state) =
                   state
                   |> TransformAPI.setTransformLocalEulerAngles(
                        transform,
-                       pos,
+                       localEulerAngles,
                      )
                   |> RotateFlyCameraControllerMainService.getLocalEulerAngleOrInit(
                        transform,
@@ -402,20 +393,12 @@ let _ =
 
                 (
                   (ex, ey, ez) |> Vector3Tool.truncate(3),
-                  (
-                    state
-                    |> FlyCameraControllerTool.getLocalEulerAngleX(transform)
-                    |> OptionService.unsafeGet,
-                    state
-                    |> FlyCameraControllerTool.getLocalEulerAngleY(transform)
-                    |> OptionService.unsafeGet,
-                    state
-                    |> FlyCameraControllerTool.getLocalEulerAngleZ(transform)
-                    |> OptionService.unsafeGet,
-                  )
+                  state
+                  |> FlyCameraControllerTool.getLocalEulerAngle(transform)
+                  |> OptionService.unsafeGet
                   |> Vector3Tool.truncate(3),
                 )
-                |> expect == (pos, pos);
+                |> expect == (localEulerAngles, localEulerAngles);
               });
             });
 
@@ -429,17 +412,9 @@ let _ =
 
                   let state =
                     state
-                    |> FlyCameraControllerTool.setLocalEulerAngleX(
+                    |> FlyCameraControllerTool.setLocalEulerAngle(
                          transform,
-                         x,
-                       )
-                    |> FlyCameraControllerTool.setLocalEulerAngleY(
-                         transform,
-                         y,
-                       )
-                    |> FlyCameraControllerTool.setLocalEulerAngleZ(
-                         transform,
-                         z,
+                         (x, y, z),
                        );
 
                   let state = state |> NoWorkerJobTool.execLoopJobs;
@@ -453,23 +428,9 @@ let _ =
                 test("set the new localEulerAngle in localEulerAngleMap", () =>
                   _judgeLocalEulerAngle(
                     (1.2, 3.4), (1., 2., 3.), (transform, state) =>
-                    (
-                      state
-                      |> FlyCameraControllerTool.getLocalEulerAngleX(
-                           transform,
-                         )
-                      |> OptionService.unsafeGet,
-                      state
-                      |> FlyCameraControllerTool.getLocalEulerAngleY(
-                           transform,
-                         )
-                      |> OptionService.unsafeGet,
-                      state
-                      |> FlyCameraControllerTool.getLocalEulerAngleZ(
-                           transform,
-                         )
-                      |> OptionService.unsafeGet,
-                    )
+                    state
+                    |> FlyCameraControllerTool.getLocalEulerAngle(transform)
+                    |> OptionService.unsafeGet
                   )
                 );
 
@@ -487,7 +448,7 @@ let _ =
           })
         );
 
-        describe("set local position", () => {
+        describe("set local localEulerAngles", () => {
           test("trigger point scale event", () => {
             let (state, transform, cameraController) =
               _prepare(~translationDiff=(0., 0., 12.), ());
@@ -530,7 +491,9 @@ let _ =
           });
 
           describe("trigger keydown and point drag event", () =>
-            test("if rotation diff change, local position should change", () => {
+            test(
+              "if rotation diff change, local localEulerAngles should change",
+              () => {
               let (state, transform, cameraController) =
                 _prepare(
                   ~translationDiff=(1.5, 0., 0.),
