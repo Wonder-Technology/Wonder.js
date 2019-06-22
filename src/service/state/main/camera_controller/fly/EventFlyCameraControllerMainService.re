@@ -133,6 +133,7 @@ let _changeOrbit =
     )##height;
 
   let factor = canvasHeight === 0. ? 0. : rotateSpeed /. canvasHeight;
+
   flyCameraControllerRecord
   |> OperateFlyCameraControllerService.setEulerAngleDiff(
        cameraController,
