@@ -73,7 +73,7 @@ let getLocalEulerAngleOrInit =
     );
   };
 
-let setAndGetLocalEulerAngleWithDiffValue =
+let getLocalEulerAngleWithDiffValueAndSetToMap =
     (
       transformComponent,
       (diffX, diffY, diffZ),
