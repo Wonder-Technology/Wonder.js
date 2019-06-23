@@ -498,7 +498,6 @@ let _ =
               state |> setCubemapTextureWrapT(texture2, Mirrored_repeat);
             let state = state |> setCubemapTextureMagFilter(texture2, Linear);
             let state = state |> setCubemapTextureMinFilter(texture2, Linear);
-            let state = state |> setCubemapTextureFlipY(texture2, true);
 
             let copiedState = MainStateTool.deepCopyForRestore(state);
             let (currentState, texture4) =
