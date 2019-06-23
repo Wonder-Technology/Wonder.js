@@ -443,6 +443,12 @@ let _ =
                   |> CubemapTextureAPI.setCubemapTextureNXType(map, 2)
                   |> CubemapTextureAPI.setCubemapTexturePZType(map, 2);
                 let textureCubemap = Obj.magic(1);
+                let textureCubemapPositiveX = Obj.magic(1);
+                let textureCubemapNegativeX = Obj.magic(2);
+                let textureCubemapPositiveY = Obj.magic(3);
+                let textureCubemapNegativeY = Obj.magic(4);
+                let textureCubemapPositiveZ = Obj.magic(5);
+                let textureCubemapNegativeZ = Obj.magic(6);
                 let rgb = Obj.magic(2);
                 let rgba = Obj.magic(3);
                 let rgbS3tcDxt1 = Obj.magic(4);
@@ -457,6 +463,12 @@ let _ =
                        FakeGlTool.buildFakeGl(
                          ~sandbox,
                          ~textureCubemap,
+                         ~textureCubemapPositiveX,
+                         ~textureCubemapNegativeX,
+                         ~textureCubemapPositiveY,
+                         ~textureCubemapNegativeY,
+                         ~textureCubemapPositiveZ,
+                         ~textureCubemapNegativeZ,
                          ~rgb,
                          ~rgba,
                          ~rgbS3tcDxt1,
@@ -477,7 +489,7 @@ let _ =
                 (
                   SinonTool.calledWithArg6(
                     texImage2D,
-                    textureCubemap,
+                    textureCubemapPositiveX,
                     0,
                     rgbaS3tcDxt1,
                     rgbaS3tcDxt1,
@@ -486,7 +498,7 @@ let _ =
                   ),
                   SinonTool.calledWithArg6(
                     texImage2D,
-                    textureCubemap,
+                    textureCubemapNegativeX,
                     0,
                     rgbS3tcDxt1,
                     rgbS3tcDxt1,
@@ -495,7 +507,7 @@ let _ =
                   ),
                   SinonTool.calledWithArg6(
                     texImage2D,
-                    textureCubemap,
+                    textureCubemapPositiveY,
                     0,
                     rgb,
                     rgb,
@@ -504,7 +516,7 @@ let _ =
                   ),
                   SinonTool.calledWithArg6(
                     texImage2D,
-                    textureCubemap,
+                    textureCubemapNegativeY,
                     0,
                     rgb,
                     rgb,
@@ -513,7 +525,7 @@ let _ =
                   ),
                   SinonTool.calledWithArg6(
                     texImage2D,
-                    textureCubemap,
+                    textureCubemapPositiveZ,
                     0,
                     rgba,
                     rgba,
@@ -522,7 +534,7 @@ let _ =
                   ),
                   SinonTool.calledWithArg6(
                     texImage2D,
-                    textureCubemap,
+                    textureCubemapNegativeZ,
                     0,
                     rgb,
                     rgb,

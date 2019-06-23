@@ -100,7 +100,8 @@ let update =
         glFormat,
         glType,
         flipY,
-        target,
+        wholeTarget,
+        drawTarget,
       ),
       (isNeedUpdates, browserDetectRecord),
       (allocateSourceToTextureFunc, setFlipYFunc),
@@ -127,15 +128,15 @@ let update =
      } */
   _setTextureParameters(
     gl,
-    target,
+    wholeTarget,
     isSourcePowerOfTwo,
     (glWrapS, glWrapT, magFilter, minFilter),
   );
-  allocateSourceToTextureFunc(gl, (target, glFormat, glType), source);
+  allocateSourceToTextureFunc(gl, (drawTarget, glFormat, glType), source);
 
   isSourcePowerOfTwo
   && (_isFilterMipmaps(magFilter) || _isFilterMipmaps(minFilter)) ?
-    gl |> WonderWebgl.Gl.generateMipmap(target) : ();
+    gl |> WonderWebgl.Gl.generateMipmap(wholeTarget) : ();
 
   OperateTypeArrayTextureService.setIsNeedUpdate(
     textureInTypeArray,

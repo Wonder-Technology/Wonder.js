@@ -148,6 +148,7 @@ let update =
         glType,
         flipY,
         target,
+        target,
       ),
       (isNeedUpdates, browserDetectRecord),
       (_allocateSourceToTexture((width, height)), setFlipYFunc),
