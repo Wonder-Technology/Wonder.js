@@ -1235,7 +1235,8 @@ let _ =
         test("else, set from it", () =>
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfTexture(true),
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfTexture(~flipY=true, ()),
             ~state,
             ~testFunc=
               ({basicSourceTextures}) =>
@@ -1244,6 +1245,75 @@ let _ =
                 == [|
                      ConvertGLBTool.buildBasicSourceTexture(~flipY=true, ()),
                    |],
+            (),
+          )
+        );
+      });
+
+      describe("test format", () => {
+        test("if not has extras, set format by source->mime type", () =>
+          ConvertGLBTool.testResult(
+            sandbox^,
+            GLBTool.buildGLBFilePath("BoxTextured.glb"),
+            (({basicSourceTextures}, binBuffer)) =>
+            basicSourceTextures
+            |> expect
+            == [|
+                 ConvertGLBTool.buildBasicSourceTexture(
+                   ~format=TextureType.Rgba,
+                   (),
+                 ),
+               |]
+          )
+        );
+
+        test("else, set from it", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfTexture(
+                ~format=TextureType.Rgbas3tcdxt1,
+                (),
+              ),
+            ~state,
+            ~testFunc=
+              ({basicSourceTextures}) =>
+                basicSourceTextures
+                |> expect
+                == [|
+                     ConvertGLBTool.buildBasicSourceTexture(
+                       ~format=TextureType.Rgbas3tcdxt1,
+                       (),
+                     ),
+                   |],
+            (),
+          )
+        );
+      });
+
+      describe("test type", () => {
+        test("if not has extras, set to 0", () =>
+          ConvertGLBTool.testResult(
+            sandbox^,
+            GLBTool.buildGLBFilePath("BoxTextured.glb"),
+            (({basicSourceTextures}, binBuffer)) =>
+            basicSourceTextures
+            |> expect
+            == [|ConvertGLBTool.buildBasicSourceTexture(~type_=0, ())|]
+          )
+        );
+
+        test("else, set from it", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfTexture(~type_=2, ()),
+            ~state,
+            ~testFunc=
+              ({basicSourceTextures}) =>
+                basicSourceTextures
+                |> expect
+                == [|ConvertGLBTool.buildBasicSourceTexture(~type_=2, ())|],
             (),
           )
         );

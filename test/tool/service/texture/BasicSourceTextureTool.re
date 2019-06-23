@@ -79,6 +79,8 @@ let getDefaultType = () => BufferBasicSourceTextureService.getDefaultType();
 let getDefaultIsNeedUpdate = () =>
   BufferTextureService.getDefaultIsNeedUpdate();
 
+let getDefaultFlipYBool = () => false;
+
 let getNeedUpdate = BufferTextureService.getNeedUpdate;
 
 let getNotNeedUpdate = BufferTextureService.getNotNeedUpdate;

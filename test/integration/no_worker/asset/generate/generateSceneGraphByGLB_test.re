@@ -422,7 +422,9 @@ let _ =
   "textures": [
     {
       "extras": {
-        "flipY": false
+        "flipY": false,
+        "format": 1,
+        "type_": 0
       },
       "sampler": 0,
       "source": 0,
@@ -430,7 +432,9 @@ let _ =
     },
     {
       "extras": {
-        "flipY": false
+        "flipY": false,
+        "format": 1,
+        "type_": 0
       },
       "sampler": 0,
       "source": 0,

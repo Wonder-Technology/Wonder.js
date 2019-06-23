@@ -1716,7 +1716,7 @@ let _ =
                 )
               );
 
-              testPromise("test set other data", () =>
+              testPromise("test set sampler data", () =>
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("BoxTextured.glb"),
@@ -1876,6 +1876,28 @@ let _ =
                   )
                 );
               });
+
+              describe("test set type", () =>
+                testPromise("set default type", () =>
+                  AssembleWDBSystemTool.testGLB(
+                    sandbox^,
+                    GLBTool.buildGLBFilePath("BoxTextured.glb"),
+                    ((state, _, rootGameObject)) =>
+                      AssembleWDBSystemTool.getAllDiffuseMaps(
+                        rootGameObject,
+                        state,
+                      )
+                      |> Js.Array.map(diffuseMap =>
+                           BasicSourceTextureAPI.getBasicSourceTextureType(
+                             diffuseMap,
+                             state,
+                           )
+                         )
+                      |> expect == [|BasicSourceTextureTool.getDefaultType()|],
+                    state^,
+                  )
+                )
+              );
             });
 
             describe("test truck glb", () => {
@@ -1922,7 +1944,7 @@ let _ =
                 )
               );
 
-              testPromise("test set other data", () =>
+              testPromise("test set sampler data", () =>
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
@@ -2110,7 +2132,7 @@ let _ =
                 )
               );
 
-              testPromise("test set other data", () =>
+              testPromise("test set sampler data", () =>
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("SuperLowPolyStove.glb"),

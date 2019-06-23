@@ -288,6 +288,9 @@ let _addTextureData =
          name: NameBasicSourceTextureMainService.getName(texture, state),
          sampler: samplerIndex,
          source: imageIndex,
+         format:
+           OperateBasicSourceTextureMainService.getFormat(texture, state),
+         type_: OperateBasicSourceTextureMainService.getType(texture, state),
          flipY: OperateBasicSourceTextureMainService.getFlipY(texture, state),
        }: GenerateSceneGraphType.textureData,
      );

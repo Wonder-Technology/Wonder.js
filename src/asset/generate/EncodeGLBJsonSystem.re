@@ -509,7 +509,8 @@ let _encodeLightMaterials = materialDataArr => (
 let _encodeTextures = textureDataArr => (
   "textures",
   textureDataArr
-  |> Js.Array.map(({name, sampler, source, flipY}: textureData) => {
+  |> Js.Array.map(
+       ({name, sampler, source, flipY, format, type_}: textureData) => {
        let list = [];
 
        let list =
@@ -524,7 +525,11 @@ let _encodeTextures = textureDataArr => (
          ...list,
        ];
 
-       let extraList = [("flipY", flipY |> bool)];
+       let extraList = [
+         ("flipY", flipY |> bool),
+         ("format", format |> int),
+         ("type_", type_ |> int),
+       ];
 
        let list = [("extras", extraList |> object_), ...list];
 

@@ -60,17 +60,26 @@ let convertToBasicSourceTextures =
                      | Some(name) => name
                      | None => _buildDefaultName(index)
                      },
-                   format: {
-                     let ({uri, mimeType}: GLTFType.image) as image =
-                       Array.unsafe_get(
-                         images |> OptionService.unsafeGet,
-                         source,
-                       );
+                   type_:
+                     switch (extras) {
+                     | Some({type_}) => type_
+                     | None => BufferBasicSourceTextureService.getDefaultType()
+                     },
+                   format:
+                     switch (extras) {
+                     | Some({format}) => format
+                     | None =>
+                       let ({uri, mimeType}: GLTFType.image) as image =
+                         Array.unsafe_get(
+                           images |> OptionService.unsafeGet,
+                           source,
+                         );
 
-                     TextureFormatService.getFormatByMimeType(
-                       mimeType |> OptionService.unsafeGet,
-                     );
-                   },
+                       TextureFormatService.getFormatByMimeType(
+                         mimeType |> OptionService.unsafeGet,
+                       )
+                       |> TextureType.formatToUint8;
+                     },
                    flipY:
                      switch (extras) {
                      | Some({flipY}) => flipY

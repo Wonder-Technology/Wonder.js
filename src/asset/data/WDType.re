@@ -145,12 +145,12 @@ type image = {
 
 type basicSourceTexture = {
   name: string,
-  format: TextureType.format,
+  format: int,
+  type_: int,
   flipY: bool,
 };
 
 type sampler = {
-  /* TODO add format, type_, ... */
   magFilter: TextureType.filter,
   minFilter: TextureType.filter,
   wrapS: TextureType.wrap,

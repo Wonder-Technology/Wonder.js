@@ -67,10 +67,17 @@ let buildMeshRenderer =
 };
 
 let buildBasicSourceTexture =
-    (~name="texture_0", ~format=TextureType.Rgba, ~flipY=false, ())
+    (
+      ~name="texture_0",
+      ~format=BufferBasicSourceTextureService.getDefaultFormat(),
+      ~type_=BufferBasicSourceTextureService.getDefaultType(),
+      ~flipY=BasicSourceTextureTool.getDefaultFlipYBool(),
+      (),
+    )
     : WDType.basicSourceTexture => {
   name,
-  format,
+  format: format |> TextureType.formatToUint8,
+  type_,
   flipY,
 };
 
@@ -1175,7 +1182,15 @@ let buildGLTFJsonOfScript =
   );
 };
 
-let buildGLTFJsonOfTexture = flipY =>
+let buildGLTFJsonOfTexture =
+    (
+      ~format=BufferBasicSourceTextureService.getDefaultFormat(),
+      ~type_=BufferBasicSourceTextureService.getDefaultType(),
+      ~flipY=BasicSourceTextureTool.getDefaultFlipYBool(),
+      (),
+    ) => {
+  let format = format |> TextureType.formatToUint8;
+
   buildGLTFJson(
     ~textures=
       {j|  [
@@ -1183,13 +1198,16 @@ let buildGLTFJsonOfTexture = flipY =>
                  "sampler": 0,
                  "source": 0,
                  "extras": {
-                   "flipY": $flipY
+                   "flipY": $flipY,
+                   "format": $format,
+                   "type_": $type_
                  }
 
              }
          ]|j},
     (),
   );
+};
 
 let buildGLTFJsonOfMeshRenderer =
     (~isMeshRenderer1Render=true, ~isMeshRenderer2Render=true, ()) =>
