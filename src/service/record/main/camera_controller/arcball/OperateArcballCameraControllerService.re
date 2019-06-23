@@ -226,3 +226,30 @@ let setRotateSpeed =
       rotateSpeedMap,
     ),
 };
+
+let unsafeGetDirectionArray =
+    (cameraController, record: arcballCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(
+    cameraController,
+    record.directionArrayMap,
+  )
+  |> OptionService.unsafeGet;
+
+let hasDirection = (cameraController, record: arcballCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(
+    cameraController,
+    record.directionArrayMap,
+  )
+  |> OptionService.unsafeGet
+  |> ArrayService.hasItem;
+
+let setDirectionArray =
+    (cameraController, directionArray, record: arcballCameraControllerRecord) => {
+  ...record,
+  directionArrayMap:
+    WonderCommonlib.MutableSparseMapService.set(
+      cameraController,
+      directionArray,
+      record.directionArrayMap,
+    ),
+};

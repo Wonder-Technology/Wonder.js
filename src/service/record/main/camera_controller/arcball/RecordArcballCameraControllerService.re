@@ -25,6 +25,7 @@ let create = () => {
   wheelSpeedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   gameObjectMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+  directionArrayMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
 };
 
 let deepCopyForRestore =
@@ -48,6 +49,7 @@ let deepCopyForRestore =
         rotateSpeedMap,
         wheelSpeedMap,
         gameObjectMap,
+        directionArrayMap,
         disposedIndexArray,
       },
     ) => {
@@ -82,5 +84,7 @@ let deepCopyForRestore =
     rotateSpeedMap |> WonderCommonlib.MutableSparseMapService.copy,
   wheelSpeedMap: wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.copy,
   gameObjectMap: gameObjectMap |> WonderCommonlib.MutableSparseMapService.copy,
+  directionArrayMap:
+    directionArrayMap |> WonderCommonlib.MutableSparseMapService.copy,
   disposedIndexArray: disposedIndexArray |> Js.Array.copy,
 };

@@ -22,6 +22,7 @@ let _disposeData = (cameraController, state) => {
     rotateSpeedMap,
     wheelSpeedMap,
     gameObjectMap,
+    directionArrayMap,
   } = arcballCameraControllerRecord;
 
   {
@@ -63,6 +64,9 @@ let _disposeData = (cameraController, state) => {
         |> DisposeComponentService.disposeSparseMapData(cameraController),
       gameObjectMap:
         gameObjectMap
+        |> DisposeComponentService.disposeSparseMapData(cameraController),
+      directionArrayMap:
+        directionArrayMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),
     },
   };

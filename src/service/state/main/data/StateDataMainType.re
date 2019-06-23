@@ -215,6 +215,10 @@ and arcballCameraControllerRecord = {
   moveSpeedYMap: WonderCommonlib.MutableSparseMapService.t(float),
   rotateSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
   wheelSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
+  directionArrayMap:
+    WonderCommonlib.MutableSparseMapService.t(
+      array(FlyCameraControllerType.direction),
+    ),
   gameObjectMap,
   disposedIndexArray: array(component),
 }
