@@ -754,6 +754,10 @@ let setAmbientLightColor = SceneAPI.setAmbientLightColor;
 
 let getAmbientLightColor = SceneAPI.getAmbientLightColor;
 
+let removeCubemapTexture = SceneAPI.removeCubemapTexture;
+
+let setCubemapTexture = SceneAPI.setCubemapTexture;
+
 let setScreenSize = ScreenAPI.setScreenSize;
 
 let setScriptIsActive = ScriptAPI.setScriptIsActive;
@@ -1369,6 +1373,10 @@ let getSceneGameObject = SceneAPI.getSceneGameObject;
 let setAmbientLightColor = SceneAPI.setAmbientLightColor;
 
 let getAmbientLightColor = SceneAPI.getAmbientLightColor;
+
+let removeCubemapTexture = SceneAPI.removeCubemapTexture;
+
+let setCubemapTexture = SceneAPI.setCubemapTexture;
 
 let setScreenSize = ScreenAPI.setScreenSize;
 
