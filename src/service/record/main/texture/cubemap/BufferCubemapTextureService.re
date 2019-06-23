@@ -16,7 +16,7 @@ let getDefaultType = () => TextureTypeService.getUnsignedByte();
 
 let getDefaultIsNeedUpdate = BufferTextureService.getDefaultIsNeedUpdate;
 
-let getDefaultFlipY = BufferTextureService.getDefaultFlipY;
+let getDefaultFlipY = BufferTextureService.getNotFlipY;
 
 let getWrapSsLength = cubemapTextureCount =>
   cubemapTextureCount * getWrapSsSize();

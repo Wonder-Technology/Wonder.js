@@ -49,11 +49,11 @@ let _ =
       );
 
       describe("is flipY", () =>
-        test("default is true", () => {
+        test("default is false", () => {
           let (state, texture) = createCubemapTexture(state^);
 
           CubemapTextureAPI.getCubemapTextureFlipY(texture, state)
-          |> expect == true;
+          |> expect == false;
         })
       );
     });
