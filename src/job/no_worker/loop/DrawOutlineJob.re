@@ -13,12 +13,6 @@ module DrawOutlineJobUtils = {
       renderDataArr
       |> WonderCommonlib.ArrayService.reduceOneParam(
            (. state, (transformIndex, meshRendererIndex, geometryIndex)) => {
-             /* TODO test */
-             let state =
-               OperateAllTextureRenderService.resetActivedTextureUnitIndex(
-                 state,
-               );
-
              let sendRenderDataSubState =
                CreateSendRenederDataSubStateRenderService.createState(state);
 
