@@ -1,3 +1,22 @@
+<a name="1.2.0-alpha.2"></a>
+# [1.2.0-alpha.2](https://github.com/Wonder-Technology/Wonder.js/compare/v1.2.0-alpha.1...v1.2.0-alpha.2) (2019-06-23)
+
+
+### Bug Fixes
+
+* **flyCamera:** should set localEulerAngle to engine then change camera position ([e89ffe3](https://github.com/Wonder-Technology/Wonder.js/commit/e89ffe3))
+
+
+### Features
+
+* **flyCamera:** add getAllFlyCameraControllerComponents in GetComponentGameObjectMainService ([447fa8f](https://github.com/Wonder-Technology/Wonder.js/commit/447fa8f))
+* **flyCamera:** add localEulerAngleMapXYZ to manage camera localEulerAngle ([c5161c7](https://github.com/Wonder-Technology/Wonder.js/commit/c5161c7))
+* **flyCamera:** add phi and theta map in flyCameraControllerRecord ([a81e0d6](https://github.com/Wonder-Technology/Wonder.js/commit/a81e0d6))
+* **texture:** remove basic material->map; rewrite map unit logic; ([201f8ab](https://github.com/Wonder-Technology/Wonder.js/commit/201f8ab))
+* **texture:** remove bind map unit cache ([4474c85](https://github.com/Wonder-Technology/Wonder.js/commit/4474c85))
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/Wonder-Technology/Wonder.js/compare/v1.0.2...v1.1.0) (2019-05-31)
 
