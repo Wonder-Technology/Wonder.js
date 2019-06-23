@@ -408,7 +408,6 @@ let deepCopyForRestore = ({settingRecord} as state) => {
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(
                index * getFormatsSize(),
              ),
-        /* TODO test */
         pxTypes:
           pxTypes
           |> CopyTypeArrayService.copyUint8ArrayWithEndIndex(

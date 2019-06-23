@@ -45,7 +45,6 @@ let addSendData = ((field, pos, name, type_, uniformCacheMap), sendDataArr) =>
         SendUniformService.getSendCachableDataByType(type_),
       ),
     )
-  /* TODO test or remove */
   | "skyboxVMatrix" =>
     _addUniformSendDataByType(
       (uniformCacheMap, name, pos),
