@@ -33,7 +33,6 @@ let _disposeData = (texture, state) => {
         nySourceMap,
         pzSourceMap,
         nzSourceMap,
-        glTextureMap,
         needAddedPXSourceArray,
         needAddedNXSourceArray,
         needAddedPYSourceArray,

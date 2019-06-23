@@ -36,13 +36,13 @@ let buildInitRenderData =
 
 let buildTextureData =
     (
-      ~buffer=Sinon.matchAny,
+      ~sourceTextureBuffer=Sinon.matchAny,
       ~basicSourceTextureData=Sinon.matchAny,
       ~arrayBufferViewSourceTextureData=Sinon.matchAny,
       ~cubemapTextureData=Sinon.matchAny,
       (),
     ) => {
-  "buffer": buffer,
+  "sourceTextureBuffer": sourceTextureBuffer,
   "basicSourceTextureData": basicSourceTextureData,
   "arrayBufferViewSourceTextureData": arrayBufferViewSourceTextureData,
   "cubemapTextureData": cubemapTextureData,

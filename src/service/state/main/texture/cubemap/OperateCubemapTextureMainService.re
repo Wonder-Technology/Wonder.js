@@ -396,3 +396,17 @@ let setIsNeedUpdate = (texture, isNeedUpdate, state) => {
   |> ignore;
   state;
 };
+
+let clearNeedAddedSourceArr = state => {
+  ...state,
+  cubemapTextureRecord:
+    Some({
+      ...RecordCubemapTextureMainService.getRecord(state),
+      needAddedPXSourceArray: [||],
+      needAddedNXSourceArray: [||],
+      needAddedPYSourceArray: [||],
+      needAddedNYSourceArray: [||],
+      needAddedPZSourceArray: [||],
+      needAddedNZSourceArray: [||],
+    }),
+};

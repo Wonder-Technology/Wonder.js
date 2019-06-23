@@ -4,7 +4,8 @@ open Js.Promise;
 
 let _createTypeArrays =
     (
-      buffer,
+      sourceTextureBuffer,
+      cubemapTextureBuffer,
       (
         basicSourceTextureCount,
         arrayBufferViewSourceTextureCount,
@@ -23,7 +24,7 @@ let _createTypeArrays =
     flipYs,
   ) =
     CreateTypeArrayAllBasicSourceTextureService.createTypeArrays(
-      buffer,
+      sourceTextureBuffer,
       basicSourceTextureCount,
     );
   state.basicSourceTextureRecord =
@@ -52,7 +53,7 @@ let _createTypeArrays =
     heights,
   ) =
     CreateTypeArrayAllArrayBufferViewSourceTextureService.createTypeArrays(
-      buffer,
+      sourceTextureBuffer,
       basicSourceTextureCount,
       arrayBufferViewSourceTextureCount,
     );
@@ -93,7 +94,7 @@ let _createTypeArrays =
     flipYs,
   ) =
     CreateTypeArrayAllCubemapTextureService.createTypeArrays(
-      buffer,
+      cubemapTextureBuffer,
       cubemapTextureCount,
     );
   state.cubemapTextureRecord =
@@ -149,7 +150,8 @@ let _buildCreateTypeArraysStream = (e, stateData) =>
 
     state
     |> _createTypeArrays(
-         textureData##buffer,
+         textureData##sourceTextureBuffer,
+         textureData##cubemapTextureData##buffer,
          (
            basicSourceTextureCount,
            arrayBufferViewSourceTextureCount,

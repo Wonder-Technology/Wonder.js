@@ -6,18 +6,22 @@ let clear = sandbox => {
   RenderWorkerStateTool.getStateData().state = None;
 };
 
-let markUseWorker = state => {
+let _markWorker = (useWorker, state) => {
   ...state,
   settingRecord: {
     ...state.settingRecord,
     worker:
       Some({
         ...state.settingRecord.worker |> OptionService.unsafeGet,
-        useWorker: true,
+        useWorker,
       }),
   },
   workerDetectRecord: {
     ...state.workerDetectRecord,
-    isSupportRenderWorkerAndSharedArrayBuffer: true,
+    isSupportRenderWorkerAndSharedArrayBuffer: useWorker,
   },
 };
+
+let markUseWorker = state => _markWorker(true, state);
+
+let markNotUseWorker = state => _markWorker(false, state);

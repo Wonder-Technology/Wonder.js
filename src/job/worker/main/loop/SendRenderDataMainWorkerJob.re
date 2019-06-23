@@ -238,8 +238,8 @@ let _clearData = state => {
   |> ignore;
   state
   |> OperateSourceTextureMainService.clearNeedAddedSourceArr
+  |> OperateCubemapTextureMainService.clearNeedAddedSourceArr
   |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray
-  /* TODO test */
   |> InitCubemapTextureMainService.clearNeedInitedTextureIndexArray
   |> IOIMGUIMainService.resetPointEventStateWhenPointUp;
 };

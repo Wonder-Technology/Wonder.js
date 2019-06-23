@@ -146,6 +146,28 @@ let _ =
       })
     );
 
+    describe("setCubemapTexturePXSource", () =>
+      test("test", () => {
+        let (state, texture) = createCubemapTexture(state^);
+        let source = CubemapTextureTool.buildSource();
+
+        let state = state |> setCubemapTexturePXSource(texture, source);
+
+        unsafeGetCubemapTexturePXSource(texture, state) |> expect == source;
+      })
+    );
+
+    describe("setCubemapTextureNYSource", () =>
+      test("test", () => {
+        let (state, texture) = createCubemapTexture(state^);
+        let source = CubemapTextureTool.buildSource();
+
+        let state = state |> setCubemapTextureNYSource(texture, source);
+
+        unsafeGetCubemapTextureNYSource(texture, state) |> expect == source;
+      })
+    );
+
     describe("setCubemapTextureFlipY", () =>
       test("test", () => {
         let (state, texture) = createCubemapTexture(state^);
@@ -166,20 +188,407 @@ let _ =
       })
     );
 
-    /* TODO test after add skybox material
+    describe("initCubemapTexture", () =>
+      describe("create gl texture, save to glTextureMap", () => {
+        let _prepare = state => {
+          let (state, texture) =
+            CubemapTextureAPI.createCubemapTexture(state);
+          let glTexture = Obj.magic(1);
+          let createTexture = Sinon.createEmptyStubWithJsObjSandbox(sandbox);
+          createTexture |> returns(glTexture);
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ()),
+               );
+          (state, texture, glTexture, createTexture);
+        };
 
-     describe("dispose from material", () => {
-          beforeEach(() =>
-            state :=
-              state^
-              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()))
+        test("test create", () => {
+          let (state, texture, glTexture, _) = _prepare(state^);
+
+          let state = CubemapTextureAPI.initCubemapTexture(texture, state);
+
+          CubemapTextureTool.unsafeGetTexture(texture, state)
+          |> expect == glTexture;
+        });
+        test("if created before, not create", () => {
+          let (state, texture, _, createTexture) = _prepare(state^);
+
+          let state = CubemapTextureAPI.initCubemapTexture(texture, state);
+          let state = CubemapTextureAPI.initCubemapTexture(texture, state);
+
+          createTexture |> expect |> toCalledOnce;
+        });
+      })
+    );
+
+    /* TODO test after used by material
+
+       describe("dispose from material", () => {
+            beforeEach(() =>
+              state :=
+                state^
+                |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()))
+            );
+
+
+          });
+
+
+          */
+
+    describe("disposeCubemapTexture", () => {
+      test("if is remove texture, not dispose data", () => {
+        let (state, texture) = createCubemapTexture(state^);
+        let source = CubemapTextureTool.buildSource();
+        let state = state |> setCubemapTexturePXSource(texture, source);
+
+        let state =
+          state |> CubemapTextureAPI.disposeCubemapTexture(texture, true);
+
+        CubemapTextureTool.getCubemapTexturePXSource(texture, state)
+        |> Js.Option.isNone
+        |> expect == false;
+      });
+
+      describe("else, dispose data", () => {
+        test("remove from nameMap", () => {
+          let (state, texture) = createCubemapTexture(state^);
+          let state =
+            state |> CubemapTextureAPI.setCubemapTextureName(texture, "name");
+
+          let state =
+            state |> CubemapTextureAPI.disposeCubemapTexture(texture, false);
+
+          CubemapTextureAPI.getCubemapTextureName(texture, state)
+          |> expect == None;
+        });
+        test(
+          "remove from pxSourceMap, nxSourceMap, pySourceMap, nySourceMap, pzSourceMap, nzSourceMap",
+          () => {
+            let (state, texture) = createCubemapTexture(state^);
+            let state =
+              CubemapTextureTool.setAllSources(~state, ~texture, ());
+
+            let state =
+              state |> CubemapTextureAPI.disposeCubemapTexture(texture, false);
+
+            (
+              CubemapTextureTool.getCubemapTexturePXSource(texture, state),
+              CubemapTextureTool.getCubemapTextureNZSource(texture, state),
+            )
+            |> expect == (None, None);
+          },
+        );
+
+        describe("test remove from type array", () => {
+          let _testRemoveFromTypeArr =
+              (
+                state,
+                (value1, value2),
+                defaultValue,
+                (disposeTextureFunc, getValueFunc, setValueFunc),
+              ) => {
+            open Wonder_jest;
+            open Expect;
+            open Expect.Operators;
+            open Sinon;
+
+            let (state, texture1) = createCubemapTexture(state^);
+            let (state, texture2) = createCubemapTexture(state);
+
+            let state = state |> setValueFunc(texture1, value1);
+            let state = state |> setValueFunc(texture2, value2);
+            let state = state |> disposeTextureFunc(texture1, false);
+
+            (getValueFunc(texture1, state), getValueFunc(texture2, state))
+            |> expect == (defaultValue, value2);
+          };
+
+          test("remove from wrapSs", () =>
+            _testRemoveFromTypeArr(
+              state,
+              (TextureType.Repeat, TextureType.Mirrored_repeat),
+              BufferCubemapTextureService.getDefaultWrapS(),
+              (
+                CubemapTextureAPI.disposeCubemapTexture,
+                CubemapTextureAPI.getCubemapTextureWrapS,
+                CubemapTextureAPI.setCubemapTextureWrapS,
+              ),
+            )
+          );
+          test("remove from wrapTs", () =>
+            _testRemoveFromTypeArr(
+              state,
+              (TextureType.Repeat, TextureType.Mirrored_repeat),
+              BufferCubemapTextureService.getDefaultWrapT(),
+              (
+                CubemapTextureAPI.disposeCubemapTexture,
+                CubemapTextureAPI.getCubemapTextureWrapT,
+                CubemapTextureAPI.setCubemapTextureWrapT,
+              ),
+            )
+          );
+          test("remove from magFilters", () =>
+            _testRemoveFromTypeArr(
+              state,
+              (
+                TextureType.Linear_mipmap_nearest,
+                TextureType.Nearest_mipmap_linear,
+              ),
+              BufferCubemapTextureService.getDefaultMagFilter(),
+              (
+                CubemapTextureAPI.disposeCubemapTexture,
+                CubemapTextureAPI.getCubemapTextureMagFilter,
+                CubemapTextureAPI.setCubemapTextureMagFilter,
+              ),
+            )
+          );
+          test("remove from minFilters", () =>
+            _testRemoveFromTypeArr(
+              state,
+              (
+                TextureType.Linear_mipmap_nearest,
+                TextureType.Nearest_mipmap_linear,
+              ),
+              BufferCubemapTextureService.getDefaultMinFilter(),
+              (
+                CubemapTextureAPI.disposeCubemapTexture,
+                CubemapTextureAPI.getCubemapTextureMinFilter,
+                CubemapTextureAPI.setCubemapTextureMinFilter,
+              ),
+            )
           );
 
+          describe("remove from formats", () => {
+            test("remove from pxFormats", () =>
+              _testRemoveFromTypeArr(
+                state,
+                (TextureType.Rgbas3tcdxt3, TextureType.Alpha),
+                BufferCubemapTextureService.getDefaultFormat(),
+                (
+                  CubemapTextureAPI.disposeCubemapTexture,
+                  CubemapTextureAPI.getCubemapTexturePXFormat,
+                  CubemapTextureAPI.setCubemapTexturePXFormat,
+                ),
+              )
+            );
+            test("remove from nxFormats", () =>
+              _testRemoveFromTypeArr(
+                state,
+                (TextureType.Rgbas3tcdxt3, TextureType.Alpha),
+                BufferCubemapTextureService.getDefaultFormat(),
+                (
+                  CubemapTextureAPI.disposeCubemapTexture,
+                  CubemapTextureAPI.getCubemapTextureNXFormat,
+                  CubemapTextureAPI.setCubemapTextureNXFormat,
+                ),
+              )
+            );
+            test("remove from pyFormats", () =>
+              _testRemoveFromTypeArr(
+                state,
+                (TextureType.Rgbas3tcdxt3, TextureType.Alpha),
+                BufferCubemapTextureService.getDefaultFormat(),
+                (
+                  CubemapTextureAPI.disposeCubemapTexture,
+                  CubemapTextureAPI.getCubemapTexturePYFormat,
+                  CubemapTextureAPI.setCubemapTexturePYFormat,
+                ),
+              )
+            );
+            test("remove from nyFormats", () =>
+              _testRemoveFromTypeArr(
+                state,
+                (TextureType.Rgbas3tcdxt3, TextureType.Alpha),
+                BufferCubemapTextureService.getDefaultFormat(),
+                (
+                  CubemapTextureAPI.disposeCubemapTexture,
+                  CubemapTextureAPI.getCubemapTextureNYFormat,
+                  CubemapTextureAPI.setCubemapTextureNYFormat,
+                ),
+              )
+            );
+            test("remove from pzFormats", () =>
+              _testRemoveFromTypeArr(
+                state,
+                (TextureType.Rgbas3tcdxt3, TextureType.Alpha),
+                BufferCubemapTextureService.getDefaultFormat(),
+                (
+                  CubemapTextureAPI.disposeCubemapTexture,
+                  CubemapTextureAPI.getCubemapTexturePZFormat,
+                  CubemapTextureAPI.setCubemapTexturePZFormat,
+                ),
+              )
+            );
+            test("remove from nzFormats", () =>
+              _testRemoveFromTypeArr(
+                state,
+                (TextureType.Rgbas3tcdxt3, TextureType.Alpha),
+                BufferCubemapTextureService.getDefaultFormat(),
+                (
+                  CubemapTextureAPI.disposeCubemapTexture,
+                  CubemapTextureAPI.getCubemapTextureNZFormat,
+                  CubemapTextureAPI.setCubemapTextureNZFormat,
+                ),
+              )
+            );
+          });
 
+          describe("remove from types", () => {
+            test("remove from pxTypes", () =>
+              _testRemoveFromTypeArr(
+                state,
+                (
+                  TextureTypeService.getUnsignedShort4444(),
+                  TextureTypeService.getUnsignedShort5551(),
+                ),
+                BufferCubemapTextureService.getDefaultType(),
+                (
+                  CubemapTextureAPI.disposeCubemapTexture,
+                  CubemapTextureAPI.getCubemapTexturePXType,
+                  CubemapTextureAPI.setCubemapTexturePXType,
+                ),
+              )
+            );
+            test("remove from nxTypes", () =>
+              _testRemoveFromTypeArr(
+                state,
+                (
+                  TextureTypeService.getUnsignedShort4444(),
+                  TextureTypeService.getUnsignedShort5551(),
+                ),
+                BufferCubemapTextureService.getDefaultType(),
+                (
+                  CubemapTextureAPI.disposeCubemapTexture,
+                  CubemapTextureAPI.getCubemapTextureNXType,
+                  CubemapTextureAPI.setCubemapTextureNXType,
+                ),
+              )
+            );
+            test("remove from pyTypes", () =>
+              _testRemoveFromTypeArr(
+                state,
+                (
+                  TextureTypeService.getUnsignedShort4444(),
+                  TextureTypeService.getUnsignedShort5551(),
+                ),
+                BufferCubemapTextureService.getDefaultType(),
+                (
+                  CubemapTextureAPI.disposeCubemapTexture,
+                  CubemapTextureAPI.getCubemapTexturePYType,
+                  CubemapTextureAPI.setCubemapTexturePYType,
+                ),
+              )
+            );
+            test("remove from nyTypes", () =>
+              _testRemoveFromTypeArr(
+                state,
+                (
+                  TextureTypeService.getUnsignedShort4444(),
+                  TextureTypeService.getUnsignedShort5551(),
+                ),
+                BufferCubemapTextureService.getDefaultType(),
+                (
+                  CubemapTextureAPI.disposeCubemapTexture,
+                  CubemapTextureAPI.getCubemapTextureNYType,
+                  CubemapTextureAPI.setCubemapTextureNYType,
+                ),
+              )
+            );
+            test("remove from pzTypes", () =>
+              _testRemoveFromTypeArr(
+                state,
+                (
+                  TextureTypeService.getUnsignedShort4444(),
+                  TextureTypeService.getUnsignedShort5551(),
+                ),
+                BufferCubemapTextureService.getDefaultType(),
+                (
+                  CubemapTextureAPI.disposeCubemapTexture,
+                  CubemapTextureAPI.getCubemapTexturePZType,
+                  CubemapTextureAPI.setCubemapTexturePZType,
+                ),
+              )
+            );
+            test("remove from nzTypes", () =>
+              _testRemoveFromTypeArr(
+                state,
+                (
+                  TextureTypeService.getUnsignedShort4444(),
+                  TextureTypeService.getUnsignedShort5551(),
+                ),
+                BufferCubemapTextureService.getDefaultType(),
+                (
+                  CubemapTextureAPI.disposeCubemapTexture,
+                  CubemapTextureAPI.getCubemapTextureNZType,
+                  CubemapTextureAPI.setCubemapTextureNZType,
+                ),
+              )
+            );
+          });
+
+          test("remove from isNeedUpdates", () =>
+            _testRemoveFromTypeArr(
+              state,
+              (true, false),
+              CubemapTextureTool.getDefaultIsNeedUpdateBool(),
+              (
+                CubemapTextureAPI.disposeCubemapTexture,
+                CubemapTextureTool.getIsNeedUpdate,
+                CubemapTextureTool.setIsNeedUpdate,
+              ),
+            )
+          );
+          test("remove from flipYs", () =>
+            _testRemoveFromTypeArr(
+              state,
+              (true, false),
+              BufferCubemapTextureService.getDefaultFlipY()
+              |> BufferTextureService.getFlipYFromTypeArrayValue,
+              (
+                CubemapTextureAPI.disposeCubemapTexture,
+                CubemapTextureAPI.getCubemapTextureFlipY,
+                CubemapTextureAPI.setCubemapTextureFlipY,
+              ),
+            )
+          );
         });
 
+        describe("test remove worker data", () => {
+          test("remove from needAddedSourceArray", () => {
+            let state = TestWorkerTool.markUseWorker(state^);
+            let (state, texture) = createCubemapTexture(state);
+            let state =
+              CubemapTextureTool.setAllSources(~state, ~texture, ());
 
-     describe("disposeCubemapTexture", () => {
-     });
-        */
+            let state =
+              CubemapTextureAPI.disposeCubemapTexture(texture, false, state);
+
+            CubemapTextureTool.getNeedAddedAllSourceArray(state)
+            |> Js.Array.map(needAddedSourceArray =>
+                 needAddedSourceArray |> Js.Array.length
+               )
+            |> expect == [|0, 0, 0, 0, 0, 0|];
+          });
+          test("remove from needInitedTextureIndexArray", () => {
+            let (state, texture) = createCubemapTexture(state^);
+            let state =
+              CubemapTextureTool.setAllSources(~state, ~texture, ());
+            let needInitedTextureIndexArray =
+              CubemapTextureTool.getNeedInitedTextureIndexArray(state);
+            let needInitedTextureIndexArray =
+              needInitedTextureIndexArray |> ArrayService.push(texture);
+
+            let state =
+              CubemapTextureAPI.disposeCubemapTexture(texture, false, state);
+
+            CubemapTextureTool.getNeedInitedTextureIndexArray(state)
+            |> Js.Array.length
+            |> expect == 0;
+          });
+        });
+      });
+    });
   });

@@ -224,44 +224,14 @@ let _ =
 
       describe("update cubemap", () => {
         let _prepare = (~state, ~width=2, ~height=4, ()) => {
-          let source1 =
-            CubemapTextureTool.buildSource(~width, ~height, ~src="px", ());
-          let source2 =
-            CubemapTextureTool.buildSource(~width, ~height, ~src="nx", ());
-          let source3 =
-            CubemapTextureTool.buildSource(~width, ~height, ~src="py", ());
-          let source4 =
-            CubemapTextureTool.buildSource(~width, ~height, ~src="ny", ());
-          let source5 =
-            CubemapTextureTool.buildSource(~width, ~height, ~src="pz", ());
-          let source6 =
-            CubemapTextureTool.buildSource(~width, ~height, ~src="nz", ());
           let state =
-            state
-            |> CubemapTextureAPI.setCubemapTexturePXSource(
-                 cubemapTextureRef^,
-                 source1,
-               )
-            |> CubemapTextureAPI.setCubemapTextureNXSource(
-                 cubemapTextureRef^,
-                 source2,
-               )
-            |> CubemapTextureAPI.setCubemapTexturePYSource(
-                 cubemapTextureRef^,
-                 source3,
-               )
-            |> CubemapTextureAPI.setCubemapTextureNYSource(
-                 cubemapTextureRef^,
-                 source4,
-               )
-            |> CubemapTextureAPI.setCubemapTexturePZSource(
-                 cubemapTextureRef^,
-                 source5,
-               )
-            |> CubemapTextureAPI.setCubemapTextureNZSource(
-                 cubemapTextureRef^,
-                 source6,
-               );
+            CubemapTextureTool.setAllSources(
+              ~state,
+              ~texture=cubemapTextureRef^,
+              ~width,
+              ~height,
+              (),
+            );
 
           (state, cubemapTextureRef^);
         };

@@ -53,6 +53,11 @@ let _addNZSource = (texture, imageBitmap, state) => {
 let _getFlipYFunc = (texture, state) => {
   let {flipYs} = RecordCubemapTextureRenderWorkerService.getRecord(state);
 
+  /* WonderLog.Log.print(
+(     texture, 
+flipYs )
+  ) |> ignore; */
+
   OperateTypeArrayAllCubemapTextureService.isFlipY(
     texture,
     flipYs |> OptionService.unsafeGet,

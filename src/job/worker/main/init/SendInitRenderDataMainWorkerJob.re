@@ -35,6 +35,7 @@ let _buildTextureData = state => {
         () =>
         needInitedTextureIndexArray |> Js.Array.length == 0
       );
+
       let arrayBufferViewSourceTextureRecord =
         RecordArrayBufferViewSourceTextureMainService.getRecord(state);
       let needInitedTextureIndexArray =
@@ -43,6 +44,20 @@ let _buildTextureData = state => {
         Log.buildAssertMessage(
           ~expect=
             {j|arrayBufferViewSourceTextureRecord->needInitedTextureIndexArray should be empty|j},
+          ~actual={j|is $needInitedTextureIndexArray|j},
+        ),
+        () =>
+        needInitedTextureIndexArray |> Js.Array.length == 0
+      );
+
+      let cubemapTextureRecord =
+        RecordCubemapTextureMainService.getRecord(state);
+      let needInitedTextureIndexArray =
+        cubemapTextureRecord.needInitedTextureIndexArray;
+      test(
+        Log.buildAssertMessage(
+          ~expect=
+            {j|cubemapTextureRecord->needInitedTextureIndexArray should be empty|j},
           ~actual={j|is $needInitedTextureIndexArray|j},
         ),
         () =>
@@ -59,7 +74,7 @@ let _buildTextureData = state => {
   let cubemapTextureRecord = RecordCubemapTextureMainService.getRecord(state);
 
   {
-    "buffer": sourceTextureRecord.buffer,
+    "sourceTextureBuffer": sourceTextureRecord.buffer,
     "basicSourceTextureData": {
       "index": basicSourceTextureRecord.index,
       /* TODO perf: add needAddedImageDataArray->arrayBuffer to transfer list */
@@ -72,8 +87,8 @@ let _buildTextureData = state => {
       "index": arrayBufferViewSourceTextureRecord.index,
       "sourceMap": arrayBufferViewSourceTextureRecord.sourceMap,
     },
-    /* TODO test */
     "cubemapTextureData": {
+      "buffer": cubemapTextureRecord.buffer,
       "index": cubemapTextureRecord.index,
       "needAddedPXImageDataArray":
         OperateCubemapTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
@@ -263,8 +278,8 @@ let _buildData = (operateType, canvas, stateData) => {
 let _clearData = state =>
   state
   |> OperateSourceTextureMainService.clearNeedAddedSourceArr
+  |> OperateCubemapTextureMainService.clearNeedAddedSourceArr
   |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray
-  /* TODO test */
   |> InitCubemapTextureMainService.clearNeedInitedTextureIndexArray;
 
 let execJob = (flags, stateData) =>
