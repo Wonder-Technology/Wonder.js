@@ -219,6 +219,15 @@ let _buildData = (operateType, {settingRecord, gameObjectRecord} as state) => {
           "objectInstanceTransformIndexMap":
             sourceInstanceRecord.objectInstanceTransformIndexMap,
         },
+        "skyboxData": {
+          "cubemapTextureOpt":
+            SkyboxSceneMainService.getCubemapTexture(state),
+          "renderSkyboxGameObjectData":
+            RenderSkyboxJobUtils.getRenderData(
+              SkyboxSceneMainService.unsafeGetSkyboxGameObject(state),
+              state,
+            ),
+        },
       },
       "imguiData": imguiData,
       "customData":

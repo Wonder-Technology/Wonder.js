@@ -49,20 +49,6 @@ let _buildTextureData = state => {
         () =>
         needInitedTextureIndexArray |> Js.Array.length == 0
       );
-
-      let cubemapTextureRecord =
-        RecordCubemapTextureMainService.getRecord(state);
-      let needInitedTextureIndexArray =
-        cubemapTextureRecord.needInitedTextureIndexArray;
-      test(
-        Log.buildAssertMessage(
-          ~expect=
-            {j|cubemapTextureRecord->needInitedTextureIndexArray should be empty|j},
-          ~actual={j|is $needInitedTextureIndexArray|j},
-        ),
-        () =>
-        needInitedTextureIndexArray |> Js.Array.length == 0
-      );
     },
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );

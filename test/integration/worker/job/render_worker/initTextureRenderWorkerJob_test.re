@@ -460,52 +460,6 @@ let _ =
           });
 
           describe("test cubemap texture", () => {
-            describe("contract check", () =>
-              testPromise(
-                "cubemapTextureRecord->needInitedTextureIndexArray should be empty",
-                () => {
-                let (
-                  state,
-                  context,
-                  (
-                    imageDataArrayBuffer1,
-                    imageDataArrayBuffer2,
-                    imageDataArrayBuffer3,
-                    imageDataArrayBuffer4,
-                    imageDataArrayBuffer5,
-                    imageDataArrayBuffer6,
-                    imageDataArrayBuffer7,
-                    imageDataArrayBuffer8,
-                    imageDataArrayBuffer9,
-                    imageDataArrayBuffer10,
-                    imageDataArrayBuffer11,
-                    imageDataArrayBuffer12,
-                  ),
-                  (map1, map2),
-                  (allSource1, allSource2),
-                ) =
-                  _prepareForCubemapTexture();
-                let state =
-                  state
-                  |> CubemapTextureAPI.initCubemapTexture(map1)
-                  |> CubemapTextureAPI.initCubemapTexture(map2);
-                MainStateTool.setState(state);
-                MainInitJobMainWorkerTool.prepare()
-                |> MainInitJobMainWorkerTool.test(
-                     sandbox,
-                     state =>
-                       WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(
-                         state,
-                       ),
-                     postMessageToRenderWorker =>
-                       fail("should error before") |> resolve,
-                   )
-                |> PromiseTool.judgeErrorMessage(
-                     "cubemapTextureRecord->needInitedTextureIndexArray should be empty, but actual is 0,1",
-                   );
-              })
-            );
-
             describe("send needAddedImageDataArray", () =>
               testPromise("convert source to imageData", () => {
                 let (

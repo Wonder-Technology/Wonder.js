@@ -92,6 +92,9 @@ let buildMainInitPipelinesConfigWithoutCreateWorkerInstanceAndMessage = () => {|
     },
             {
               "name": "init_script"
+            },
+            {
+              "name": "init_skybox"
             }
           ]
         },
@@ -266,6 +269,9 @@ let buildMainInitJobConfigWithoutCreateWorkerInstance = () => {|
     {
         "name": "init_script"
     },
+            {
+              "name": "init_skybox"
+            },
     {
         "name": "send_init_render_data",
         "flags": [

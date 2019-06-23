@@ -33,6 +33,9 @@
         "name": "create_canvas"
     },
     {
+        "name": "init_skybox"
+    },
+    {
         "name": "set_full_screen"
     },
     {
