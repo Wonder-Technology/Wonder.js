@@ -11,13 +11,14 @@ let execJob = (flags, e, stateData) =>
     | true =>
       let skyboxData = data##renderData##skyboxData;
       let cubemapTextureOpt = skyboxData##cubemapTextureOpt;
-      let renderSkyboxGameObjectData = skyboxData##renderSkyboxGameObjectData;
+      let renderSkyboxGameObjectDataOpt =
+        skyboxData##renderSkyboxGameObjectDataOpt;
 
       let _renderState =
         RenderSkyboxJobUtils.exec(
           AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
           cubemapTextureOpt,
-          renderSkyboxGameObjectData,
+          renderSkyboxGameObjectDataOpt,
           CreateRenderStateRenderWorkerService.createRenderState(state),
         );
 

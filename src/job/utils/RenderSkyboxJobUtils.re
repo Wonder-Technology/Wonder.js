@@ -1,14 +1,17 @@
-let getRenderData =
-    (skyboxGameObject, {gameObjectRecord}: StateDataMainType.state) => (
-  GetComponentGameObjectService.unsafeGetTransformComponent(
-    skyboxGameObject,
-    gameObjectRecord,
-  ),
-  GetComponentGameObjectService.unsafeGetGeometryComponent(
-    skyboxGameObject,
-    gameObjectRecord,
-  ),
-);
+let getRenderData = (({gameObjectRecord}: StateDataMainType.state) as state) =>
+  SkyboxSceneMainService.getSkyboxGameObject(state)
+  |> Js.Option.andThen((. skyboxGameObject) =>
+       Some((
+         GetComponentGameObjectService.unsafeGetTransformComponent(
+           skyboxGameObject,
+           gameObjectRecord,
+         ),
+         GetComponentGameObjectService.unsafeGetGeometryComponent(
+           skyboxGameObject,
+           gameObjectRecord,
+         ),
+       ))
+     );
 
 let _prepareGlState =
     (gl, ({deviceManagerRecord}: StateRenderType.renderState) as state) => {
@@ -107,11 +110,11 @@ let exec =
     (
       gl,
       cubemapTextureOpt,
-      renderSkyboxGameObjectData,
+      renderSkyboxGameObjectDataOpt,
       renderState: StateRenderType.renderState,
     ) =>
-  switch (cubemapTextureOpt) {
-  | Some(cubemapTexture) =>
+  switch (cubemapTextureOpt, renderSkyboxGameObjectDataOpt) {
+  | (Some(cubemapTexture), Some(renderSkyboxGameObjectData)) =>
     let target = gl |> WonderWebgl.Gl.getTextureCubeMap;
 
     let renderState =
@@ -132,5 +135,5 @@ let exec =
     |> UseProgramRenderService.useByShaderIndex(gl, drawSkyboxShaderIndex)
     |> _draw(gl, drawSkyboxShaderIndex, renderSkyboxGameObjectData)
     |> _restoreGlState(gl);
-  | None => renderState
+  | _ => renderState
   };

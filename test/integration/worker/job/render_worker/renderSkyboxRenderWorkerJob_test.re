@@ -42,13 +42,8 @@ let _ =
                          ~skyboxData={
                            "cubemapTextureOpt":
                              SkyboxSceneMainService.getCubemapTexture(state),
-                           "renderSkyboxGameObjectData":
-                             RenderSkyboxJobUtils.getRenderData(
-                               SkyboxSceneMainService.unsafeGetSkyboxGameObject(
-                                 state,
-                               ),
-                               state,
-                             ),
+                           "renderSkyboxGameObjectDataOpt":
+                             RenderSkyboxJobUtils.getRenderData(state),
                          },
                          (),
                        ),

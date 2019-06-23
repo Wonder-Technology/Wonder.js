@@ -1,8 +1,10 @@
 open StateDataMainType;
 
+let getSkyboxGameObject = state =>
+  RecordSceneMainService.getRecord(state).skyboxData.skyboxGameObject;
+
 let unsafeGetSkyboxGameObject = state =>
-  RecordSceneMainService.getRecord(state).skyboxData.skyboxGameObject
-  |> OptionService.unsafeGet;
+  getSkyboxGameObject(state) |> OptionService.unsafeGet;
 
 let setSkyboxGameObject = (skyboxGameObject, state) => {
   let sceneRecord = RecordSceneMainService.getRecord(state);
