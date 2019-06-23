@@ -354,7 +354,7 @@ let _ =
       };
 
       describe("update one flyCameraController", () => {
-        describe("update transform", () =>
+        describe("update transform localEulerAngle", () =>
           describe("trigger point drag event", () => {
             describe("get localEulerAngle from map", () => {
               test("if has localEulerAngle in map, get it", () => {
@@ -448,7 +448,7 @@ let _ =
           })
         );
 
-        describe("set local localEulerAngles", () => {
+        describe("update transform localPosition", () => {
           test("trigger point scale event", () => {
             let (state, transform, cameraController) =
               _prepare(~translationDiff=(0., 0., 12.), ());
@@ -489,51 +489,49 @@ let _ =
             |> Vector3Tool.truncate(3)
             |> expect == ((-1.2), 0., (-3.7));
           });
-
-          describe("trigger keydown and point drag event", () =>
-            test(
-              "if rotation diff change, local localEulerAngles should change",
-              () => {
-              let (state, transform, cameraController) =
-                _prepare(
-                  ~translationDiff=(1.5, 0., 0.),
-                  ~eulerAngleDiff={diffX: 0., diffY: 0.},
-                  (),
-                );
-
-              let state =
-                TransformAPI.setTransformLocalEulerAngles(
-                  transform,
-                  (45., 20., 34.),
-                  state,
-                )
-                |> NoWorkerJobTool.execLoopJobs;
-
-              let localPos1 =
-                TransformAPI.getTransformLocalPosition(transform, state)
-                |> Vector3Tool.truncate(3);
-
-              let (state, transform, cameraController) =
-                _prepare(
-                  ~translationDiff=(1.5, 0., 0.),
-                  ~eulerAngleDiff={diffX: 10., diffY: 15.},
-                  (),
-                );
-
-              let state =
-                TransformAPI.setTransformLocalEulerAngles(
-                  transform,
-                  (45., 20., 34.),
-                  state,
-                )
-                |> NoWorkerJobTool.execLoopJobs;
-
-              TransformAPI.getTransformLocalPosition(transform, state)
-              |> Vector3Tool.truncate(3)
-              |> expect !== localPos1;
-            })
-          );
         });
+
+        describe("update transform localPosition and localEulerAngle", () =>
+          test("trigger keydown and point drag event", () => {
+            let (state, transform, cameraController) =
+              _prepare(
+                ~translationDiff=(1.5, 0., 0.),
+                ~eulerAngleDiff={diffX: 0., diffY: 0.},
+                (),
+              );
+
+            let state =
+              TransformAPI.setTransformLocalEulerAngles(
+                transform,
+                (45., 20., 34.),
+                state,
+              )
+              |> NoWorkerJobTool.execLoopJobs;
+
+            let localPos1 =
+              TransformAPI.getTransformLocalPosition(transform, state)
+              |> Vector3Tool.truncate(3);
+
+            let (state, transform, cameraController) =
+              _prepare(
+                ~translationDiff=(1.5, 0., 0.),
+                ~eulerAngleDiff={diffX: 10., diffY: 15.},
+                (),
+              );
+
+            let state =
+              TransformAPI.setTransformLocalEulerAngles(
+                transform,
+                (45., 20., 34.),
+                state,
+              )
+              |> NoWorkerJobTool.execLoopJobs;
+
+            TransformAPI.getTransformLocalPosition(transform, state)
+            |> Vector3Tool.truncate(3)
+            |> expect !== localPos1;
+          })
+        );
       });
 
       describe("test reset data", () =>
