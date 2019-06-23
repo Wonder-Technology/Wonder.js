@@ -70,12 +70,3 @@ let disposeSourceMaps = (isRemoveTexture, materialData, mapArr, state) => {
        arrayBufferViewSourceTextureArr,
      );
 };
-
-/* TODO use by skybox material */
-let disposeCubemapMaps = (isRemoveTexture, materialData, mapArr, state) =>
-  state
-  |> DisposeCubemapTextureMainService.handleDispose(
-       isRemoveTexture,
-       materialData,
-       mapArr |> _getExistMapArr,
-     );
