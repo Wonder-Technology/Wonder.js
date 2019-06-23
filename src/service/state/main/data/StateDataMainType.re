@@ -194,6 +194,8 @@ and flyCameraControllerRecord = {
     WonderCommonlib.MutableSparseMapService.t(
       array(FlyCameraControllerType.direction),
     ),
+  localEulerAngleMap:
+    WonderCommonlib.ImmutableSparseMapService.t((float, float, float)),
 }
 and arcballCameraControllerRecord = {
   index: int,

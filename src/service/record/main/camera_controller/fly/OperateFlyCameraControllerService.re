@@ -142,3 +142,25 @@ let setDirectionArray =
       record.directionArrayMap,
     ),
 };
+
+let getLocalEulerAngle =
+    (transformComponent, record: flyCameraControllerRecord) =>
+  WonderCommonlib.MutableSparseMapService.get(
+    transformComponent,
+    record.localEulerAngleMap,
+  );
+
+let setLocalEulerAngle =
+    (
+      transformComponent,
+      value,
+      {localEulerAngleMap} as record: flyCameraControllerRecord,
+    ) => {
+  ...record,
+  localEulerAngleMap:
+    WonderCommonlib.MutableSparseMapService.set(
+      transformComponent,
+      value,
+      localEulerAngleMap,
+    ),
+};

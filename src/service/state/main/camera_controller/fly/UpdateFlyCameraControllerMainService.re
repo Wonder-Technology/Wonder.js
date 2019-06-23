@@ -73,11 +73,19 @@ let _updateTransform =
       flyCameraControllerRecord,
     );
 
-  let (cameraRotationX, cameraRotationY, _) =
-    ModelMatrixTransformService.getLocalEulerAnglesTuple(
+  let (cameraLocalEulerAngle, state) =
+    RotateFlyCameraControllerMainService.getLocalEulerAngleWithDiffValueAndSetToMap(
       cameraTransform,
-      RecordTransformMainService.getRecord(state).localRotations,
+      (diffX, diffY),
+      state,
     );
+
+  let state =
+    state
+    |> ModelMatrixTransformMainService.setLocalEulerAnglesByTuple(
+         cameraTransform,
+         cameraLocalEulerAngle,
+       );
 
   let cameraLocalPositionTuple =
     ModelMatrixTransformService.getLocalRotationTuple(
@@ -103,16 +111,11 @@ let _updateTransform =
         |> ModelMatrixTransformService.setLocalPositionByTuple(
              cameraTransform,
              cameraLocalPositionTuple,
-           )
-        |> ModelMatrixTransformService.setLocalEulerAnglesByTuple(
-             cameraTransform,
-             (cameraRotationX -. diffX, cameraRotationY -. diffY, 0.),
            ),
       ),
     flyCameraControllerRecord:
       _resetFlyCameraDiffValue(cameraController, flyCameraControllerRecord),
   };
-  state;
 };
 
 let _getAllFlyCameraControllers = ({flyCameraControllerRecord} as state) => {

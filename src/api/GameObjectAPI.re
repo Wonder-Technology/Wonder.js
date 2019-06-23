@@ -1274,6 +1274,8 @@ let getAllPointLightComponents = GetComponentGameObjectMainService.getAllPointLi
 
 let getAllGeometryComponents = GetComponentGameObjectMainService.getAllGeometryComponents;
 
+let getAllFlyCameraControllerComponents = GetComponentGameObjectMainService.getAllFlyCameraControllerComponents;
+
 let getAllArcballCameraControllerComponents = GetComponentGameObjectMainService.getAllArcballCameraControllerComponents;
 
 let getAllBasicCameraViewComponents = GetComponentGameObjectMainService.getAllBasicCameraViewComponents;

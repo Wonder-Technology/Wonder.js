@@ -61,6 +61,20 @@ let setTranslationDiff = (cameraController, value, state) => {
     ),
 };
 
+let getLocalEulerAngle = (transformComponent, state) =>
+  state.flyCameraControllerRecord
+  |> OperateFlyCameraControllerService.getLocalEulerAngle(transformComponent);
+
+let setLocalEulerAngle = (transformComponent, value, state) => {
+  ...state,
+  flyCameraControllerRecord:
+    OperateFlyCameraControllerService.setLocalEulerAngle(
+      transformComponent,
+      value,
+      state.flyCameraControllerRecord,
+    ),
+};
+
 let setFlyCameraControllerData = (cameraController, state) => {
   open FlyCameraControllerAPI;
 
