@@ -614,6 +614,48 @@ let _ =
         );
       };
 
+      let _createCameraControllerGameObjects = state => {
+        let (
+          state,
+          gameObject1,
+          transform1,
+          (cameraController1, basicCameraView1, perspectiveCameraProjection1),
+        ) =
+          ArcballCameraControllerTool.createGameObject(state^);
+        let (
+          state,
+          gameObject2,
+          transform2,
+          (cameraController2, basicCameraView2, perspectiveCameraProjection2),
+        ) =
+          ArcballCameraControllerTool.createGameObject(state);
+        let (
+          state,
+          gameObject3,
+          transform3,
+          (cameraController3, basicCameraView3, perspectiveCameraProjection3),
+        ) =
+          FlyCameraControllerTool.createGameObject(state);
+        let (
+          state,
+          gameObject4,
+          transform4,
+          (cameraController4, basicCameraView4, perspectiveCameraProjection4),
+        ) =
+          FlyCameraControllerTool.createGameObject(state);
+
+        (
+          state,
+          (gameObject1, gameObject2, gameObject3, gameObject4),
+          (
+            cameraController1,
+            cameraController2,
+            cameraController3,
+            cameraController4,
+          ),
+        );
+      };
+
       let _createLightGameObjects = state => {
         let (state, gameObject1, light1) =
           DirectionLightTool.createGameObject(state^);
@@ -698,6 +740,82 @@ let _ =
       });
 
       describe("test get all components of state", () => {
+        describe("getAllFlyCameraControllerComponents", () => {
+          test("get all components", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (
+                cameraController1,
+                cameraController2,
+                cameraController3,
+                cameraController4,
+              ),
+            ) =
+              _createCameraControllerGameObjects(state);
+
+            GameObjectAPI.getAllFlyCameraControllerComponents(state)
+            |> expect == [|cameraController3, cameraController4|];
+          });
+          test("test dispose", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (
+                cameraController1,
+                cameraController2,
+                cameraController3,
+                cameraController4,
+              ),
+            ) =
+              _createCameraControllerGameObjects(state);
+
+            let state = state |> GameObjectAPI.disposeGameObject(gameObject3);
+            let state = state |> DisposeJob.execJob(None);
+
+            GameObjectAPI.getAllFlyCameraControllerComponents(state)
+            |> expect == [|cameraController4|];
+          });
+        });
+
+        describe("getAllArcballCameraControllerComponents", () => {
+          test("get all components", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (
+                cameraController1,
+                cameraController2,
+                cameraController3,
+                cameraController4,
+              ),
+            ) =
+              _createCameraControllerGameObjects(state);
+
+            GameObjectAPI.getAllArcballCameraControllerComponents(state)
+            |> expect == [|cameraController1, cameraController2|];
+          });
+          test("test dispose", () => {
+            let (
+              state,
+              (gameObject1, gameObject2, gameObject3, gameObject4),
+              (
+                cameraController1,
+                cameraController2,
+                cameraController3,
+                cameraController4,
+              ),
+            ) =
+              _createCameraControllerGameObjects(state);
+
+            let state = state |> GameObjectAPI.disposeGameObject(gameObject1);
+            let state = state |> DisposeJob.execJob(None);
+
+            GameObjectAPI.getAllArcballCameraControllerComponents(state)
+            |> expect == [|cameraController2|];
+          });
+        });
+
         describe("getAllDirectionLightComponents", () => {
           test("get all components", () => {
             let (
