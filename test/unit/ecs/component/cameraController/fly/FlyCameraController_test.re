@@ -170,7 +170,7 @@ let _ =
 
       describe("dispose data", () => {
         test(
-          "remove from eulerAngleDiffMap, translationDiffMap, moveSpeedMap, rotateSpeedMap, wheelSpeedMap, gameObjectMap",
+          "remove from eulerAngleDiffMap, translationDiffMap, moveSpeedMap, rotateSpeedMap, wheelSpeedMap, gameObjectMap, directionArrayMap",
           () => {
             let (
               state,

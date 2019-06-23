@@ -47,23 +47,6 @@ let _updateTransform =
   LookAtTransfromMainService.lookAt(~transform, ~target, ~state, ());
 };
 
-let _clearDirtyArray = ({arcballCameraControllerRecord} as state) => {
-  ...state,
-  arcballCameraControllerRecord: {
-    ...arcballCameraControllerRecord,
-    dirtyArray: DirtyArrayService.create(),
-  },
-};
-
-let update = ({arcballCameraControllerRecord} as state) =>
-  arcballCameraControllerRecord.dirtyArray
-  |> WonderCommonlib.ArrayService.removeDuplicateItems
-  |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. state, dirtyIndex) => _updateTransform(dirtyIndex, state),
-       state,
-     )
-  |> _clearDirtyArray;
-
 let _getAllArcballCameraControllers =
     ({arcballCameraControllerRecord} as state) => {
   let {index, disposedIndexArray}: arcballCameraControllerRecord = arcballCameraControllerRecord;
@@ -71,11 +54,10 @@ let _getAllArcballCameraControllers =
   GetAllComponentService.getAllComponents(index, disposedIndexArray);
 };
 
-let updateAll = ({arcballCameraControllerRecord} as state) =>
+let update = ({arcballCameraControllerRecord} as state) =>
   _getAllArcballCameraControllers(state)
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. state, cameraController) =>
          _updateTransform(cameraController, state),
        state,
-     )
-  |> _clearDirtyArray;
+     );

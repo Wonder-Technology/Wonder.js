@@ -32,13 +32,6 @@ let _ =
           |> (record => expect(record.index) == 1);
         })
       );
-      test("add to dirty array", () => {
-        let (state, cameraController) =
-          createArcballCameraController(state^);
-        state
-        |> ArcballCameraControllerTool.getDirtyArray
-        |> expect == [|cameraController|];
-      });
     });
 
     describe("unsafeGetArcballCameraControllerGameObject", () =>
@@ -61,8 +54,7 @@ let _ =
 
     describe("bind/unbind arcballCameraController event", () => {
       let _prepareMouseEvent = sandbox => {
-        let state =
-          EventCameraControllerTool.prepareMouseEvent(sandbox);
+        let state = EventCameraControllerTool.prepareMouseEvent(sandbox);
         let (state, gameObject, _, (cameraController, _, _)) =
           ArcballCameraControllerTool.createGameObject(state);
         let state = state |> NoWorkerJobTool.execInitJobs;
@@ -165,31 +157,8 @@ let _ =
       };
 
       describe("dispose data", () => {
-        test("dirtyArray: remove from array(include duplicated ones)", () => {
-          let (state, gameObject1, _, (cameraController1, _, _)) =
-            ArcballCameraControllerTool.createGameObject(state^);
-          let state =
-            ArcballCameraControllerAPI.setArcballCameraControllerDistance(
-              cameraController1,
-              11.,
-              state,
-            )
-            |> ArcballCameraControllerAPI.setArcballCameraControllerPhi(
-                 cameraController1,
-                 0.1,
-               );
-
-          let state =
-            state
-            |> GameObjectTool.disposeGameObjectArcballCameraControllerComponent(
-                 gameObject1,
-                 cameraController1,
-               );
-          let {dirtyArray} = state.arcballCameraControllerRecord;
-          dirtyArray |> expect == [||];
-        });
         test(
-          "remove from distanceMap, minDistanceMap, phiMap, thetaMap, thetaMarginMap, targetMap, moveSpeedXMap, moveSpeedYMap, rotateSpeedMap, wheelSpeedMap, gameObjectMap",
+          "remove from distanceMap, minDistanceMap, phiMap, thetaMap, thetaMarginMap, targetMap, moveSpeedXMap, moveSpeedYMap, rotateSpeedMap, wheelSpeedMap, gameObjectMap, directionArrayMap",
           () => {
             let (
               state,
@@ -217,6 +186,7 @@ let _ =
               rotateSpeedMap,
               wheelSpeedMap,
               gameObjectMap,
+              directionArrayMap,
             } =
               state.arcballCameraControllerRecord;
             (
@@ -264,9 +234,14 @@ let _ =
               |> WonderCommonlib.MutableSparseMapService.has(
                    cameraController1,
                  ),
+              directionArrayMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
             )
             |> expect
             == (
+                 false,
                  false,
                  false,
                  false,

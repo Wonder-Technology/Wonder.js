@@ -204,7 +204,6 @@ and arcballCameraControllerRecord = {
   pointDragOverEventHandleFuncListMap: pointEventHandleFuncListMap,
   pointScaleEventHandleFuncListMap: pointEventHandleFuncListMap,
   keydownEventHandleFuncListMap: keyboardEventHandleFuncListMap,
-  dirtyArray: ArcballCameraControllerType.dirtyArray,
   distanceMap: WonderCommonlib.MutableSparseMapService.t(float),
   minDistanceMap: WonderCommonlib.MutableSparseMapService.t(float),
   phiMap: WonderCommonlib.MutableSparseMapService.t(float),

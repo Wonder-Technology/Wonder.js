@@ -80,8 +80,6 @@ let setArcballCameraControllerData = (cameraController, state) => {
   );
 };
 
-let getDirtyArray = state => state.arcballCameraControllerRecord.dirtyArray;
-
 /* let getPointDragStartEventHandleFuncMap =
      ({arcballCameraControllerRecord} as state) =>
    arcballCameraControllerRecord.pointDragStartEventHandleFuncMap; */

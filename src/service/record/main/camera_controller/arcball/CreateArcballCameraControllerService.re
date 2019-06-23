@@ -24,13 +24,16 @@ let _setDefaultValue =
   minDistanceMap:
     minDistanceMap |> WonderCommonlib.MutableSparseMapService.set(index, 0.05),
   phiMap:
-    phiMap |> WonderCommonlib.MutableSparseMapService.set(index, Js.Math._PI /. 2.),
+    phiMap
+    |> WonderCommonlib.MutableSparseMapService.set(index, Js.Math._PI /. 2.),
   thetaMap:
-    thetaMap |> WonderCommonlib.MutableSparseMapService.set(index, Js.Math._PI /. 2.),
+    thetaMap
+    |> WonderCommonlib.MutableSparseMapService.set(index, Js.Math._PI /. 2.),
   thetaMarginMap:
     thetaMarginMap |> WonderCommonlib.MutableSparseMapService.set(index, 0.05),
   targetMap:
-    targetMap |> WonderCommonlib.MutableSparseMapService.set(index, (0., 0., 0.)),
+    targetMap
+    |> WonderCommonlib.MutableSparseMapService.set(index, (0., 0., 0.)),
   moveSpeedXMap:
     moveSpeedXMap |> WonderCommonlib.MutableSparseMapService.set(index, 1.),
   moveSpeedYMap:
@@ -48,7 +51,6 @@ let create =
         /* pointDragOverEventHandleFuncMap,
            pointScaleEventHandleFuncMap,
            keydownEventHandleFuncMap, */
-        dirtyArray,
         distanceMap,
         minDistanceMap,
         phiMap,
@@ -66,13 +68,5 @@ let create =
   let (index, newIndex, disposedIndexArray) =
     generateIndex(index, disposedIndexArray);
   let record = _setDefaultValue(index, record);
-  (
-    {
-      ...record,
-      index: newIndex,
-      dirtyArray: DirtyArrayService.addToDirtyArray(index, dirtyArray),
-      disposedIndexArray,
-    },
-    index,
-  );
+  ({...record, index: newIndex, disposedIndexArray}, index);
 };
