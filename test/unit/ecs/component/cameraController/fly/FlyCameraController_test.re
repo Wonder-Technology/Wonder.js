@@ -193,6 +193,7 @@ let _ =
               eulerAngleDiffMap,
               translationDiffMap,
               gameObjectMap,
+              directionArrayMap,
             } =
               state.flyCameraControllerRecord;
             (
@@ -216,8 +217,12 @@ let _ =
               |> WonderCommonlib.MutableSparseMapService.has(
                    cameraController1,
                  ),
+              directionArrayMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
             )
-            |> expect == (false, false, false, false, false);
+            |> expect == (false, false, false, false, false, false);
           },
         );
 

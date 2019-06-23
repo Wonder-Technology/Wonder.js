@@ -152,6 +152,21 @@ let _addUniqueDirection = (direction, array) =>
        FlyCameraControllerType.convertDirectionToString(item)
      );
 
+let _handleDirectionArray = (key, handleFunc, directionArray) =>
+  switch (key) {
+  | "a"
+  | "left" => directionArray |> handleFunc(Left)
+  | "d"
+  | "right" => directionArray |> handleFunc(Right)
+  | "w"
+  | "up" => directionArray |> handleFunc(Front)
+  | "s"
+  | "down" => directionArray |> handleFunc(Back)
+  | "q" => directionArray |> handleFunc(Up)
+  | "e" => directionArray |> handleFunc(Down)
+  | _ => directionArray
+  };
+
 let _moveSpecificDirection =
     (
       cameraController,
@@ -162,22 +177,8 @@ let _moveSpecificDirection =
     OperateFlyCameraControllerService.unsafeGetDirectionArray(
       cameraController,
       flyCameraControllerRecord,
-    );
-
-  let directionArray =
-    switch (keyboardEvent.key) {
-    | "a"
-    | "left" => directionArray |> _addUniqueDirection(Left)
-    | "d"
-    | "right" => directionArray |> _addUniqueDirection(Right)
-    | "w"
-    | "up" => directionArray |> _addUniqueDirection(Front)
-    | "s"
-    | "down" => directionArray |> _addUniqueDirection(Back)
-    | "q" => directionArray |> _addUniqueDirection(Up)
-    | "e" => directionArray |> _addUniqueDirection(Down)
-    | _ => directionArray
-    };
+    )
+    |> _handleDirectionArray(keyboardEvent.key, _addUniqueDirection);
 
   {
     ...state,
@@ -203,22 +204,8 @@ let _staticSpecificDirection =
     OperateFlyCameraControllerService.unsafeGetDirectionArray(
       cameraController,
       flyCameraControllerRecord,
-    );
-
-  let directionArray =
-    switch (keyboardEvent.key) {
-    | "a"
-    | "left" => directionArray |> _removeSpecificDirection(Left)
-    | "d"
-    | "right" => directionArray |> _removeSpecificDirection(Right)
-    | "w"
-    | "up" => directionArray |> _removeSpecificDirection(Front)
-    | "s"
-    | "down" => directionArray |> _removeSpecificDirection(Back)
-    | "q" => directionArray |> _removeSpecificDirection(Up)
-    | "e" => directionArray |> _removeSpecificDirection(Down)
-    | _ => directionArray
-    };
+    )
+    |> _handleDirectionArray(keyboardEvent.key, _removeSpecificDirection);
 
   {
     ...state,
