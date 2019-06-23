@@ -293,6 +293,7 @@ let _ =
              );
         });
       });
+
       describe("test restore arrayBufferView source texture record", () => {
         let _prepareArrayBufferViewSourceTextureData = state => {
           open ArrayBufferViewSourceTextureAPI;

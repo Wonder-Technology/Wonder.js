@@ -24,7 +24,6 @@ let _getRenderData = (skyboxGameObject, {gameObjectRecord}) => (
   ),
 );
 
-/* TODO refactor: duplicate with DrawOutlineJob */
 let _sendUniformNoMaterialShaderData =
     (
       gl,

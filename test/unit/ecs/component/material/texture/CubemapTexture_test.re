@@ -223,21 +223,6 @@ let _ =
       })
     );
 
-    /* TODO test after used by material
-
-       describe("dispose from material", () => {
-            beforeEach(() =>
-              state :=
-                state^
-                |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()))
-            );
-
-
-          });
-
-
-          */
-
     describe("disposeCubemapTexture", () => {
       test("if is remove texture, not dispose data", () => {
         let (state, texture) = createCubemapTexture(state^);
