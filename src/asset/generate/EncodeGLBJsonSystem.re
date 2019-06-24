@@ -375,6 +375,80 @@ let _encodeScriptExtra = (scriptDataArr, extraList) =>
     ]
   };
 
+let _encodeCubemapTextures = (textureDataArr, extraList) =>
+  switch (textureDataArr |> Js.Array.length) {
+  | 0 => extraList
+  | _ => [
+      (
+        "cubemapTextures",
+        textureDataArr
+        |> Js.Array.map(
+             (
+               (
+                 {
+                   name,
+                   sampler,
+                   pxSource,
+                   nxSource,
+                   pySource,
+                   nySource,
+                   pzSource,
+                   nzSource,
+                   pxFormat,
+                   nxFormat,
+                   pyFormat,
+                   nyFormat,
+                   pzFormat,
+                   nzFormat,
+                   pxType,
+                   nxType,
+                   pyType,
+                   nyType,
+                   pzType,
+                   nzType,
+                   flipY,
+                 }: cubemapTextureData
+               ) as data,
+             ) => {
+             let list = [];
+
+             let list =
+               switch (name) {
+               | None => list
+               | Some(name) => [("name", name |> string), ...list]
+               };
+
+             [
+               ("sampler", sampler |> int),
+               ("flipY", flipY |> bool),
+               ("pxSource", pxSource |> int),
+               ("nxSource", nxSource |> int),
+               ("pySource", pySource |> int),
+               ("nySource", nySource |> int),
+               ("pzSource", pzSource |> int),
+               ("nzSource", nzSource |> int),
+               ("pxFormat", pxFormat |> int),
+               ("nxFormat", nxFormat |> int),
+               ("pyFormat", pyFormat |> int),
+               ("nyFormat", nyFormat |> int),
+               ("pzFormat", pzFormat |> int),
+               ("nzFormat", nzFormat |> int),
+               ("pxType", pxType |> int),
+               ("nxType", nxType |> int),
+               ("pyType", pyType |> int),
+               ("nyType", nyType |> int),
+               ("pzType", pzType |> int),
+               ("nzType", nzType |> int),
+               ...list,
+             ]
+             |> object_;
+           })
+        |> jsonArray,
+      ),
+      ...extraList,
+    ]
+  };
+
 let _encodeExtras =
     (
       basicCameraViewDataArr,
@@ -383,6 +457,7 @@ let _encodeExtras =
       flyCameraControllerDataArr,
       arcballCameraControllerDataArr,
       scriptDataArr,
+      cubemapTextureDataArr,
     ) => (
   "extras",
   []
@@ -392,16 +467,16 @@ let _encodeExtras =
   |> _encodeFlyCameraControllerExtra(flyCameraControllerDataArr)
   |> _encodeArcballCameraControllerExtra(arcballCameraControllerDataArr)
   |> _encodeScriptExtra(scriptDataArr)
+  |> _encodeCubemapTextures(cubemapTextureDataArr)
   |> object_,
 );
 
-let _encodeSceneExtras = imguiData => {
+let _encodeSceneExtras = (imguiData, skyboxCubemapTextureIndexOpt) => {
   let extraList = [];
 
   let extraList =
     switch (imguiData) {
     | (None, None) => extraList
-
     | (Some(customData), Some(imguiFuncStr)) => [
         (
           "imgui",
@@ -425,10 +500,27 @@ let _encodeSceneExtras = imguiData => {
       )
     };
 
+  let extraList =
+    switch (skyboxCubemapTextureIndexOpt) {
+    | None => extraList
+    | Some(skyboxCubemapTextureIndex) => [
+        (
+          "skybox",
+          [("cubemap", skyboxCubemapTextureIndex |> int)] |> object_,
+        ),
+        ...extraList,
+      ]
+    };
+
   [("extras", extraList |> object_)];
 };
 
-let _encodeScenes = (extensionsUsedArr, (lightDataArr, imguiData), state) => {
+let _encodeScenes =
+    (
+      extensionsUsedArr,
+      (lightDataArr, imguiData, skyboxCubemapTextureIndexOpt),
+      state,
+    ) => {
   let list = [("nodes", [|0|] |> intArray)];
 
   let list =
@@ -455,7 +547,8 @@ let _encodeScenes = (extensionsUsedArr, (lightDataArr, imguiData), state) => {
       ] :
       list;
 
-  let list = list @ _encodeSceneExtras(imguiData);
+  let list =
+    list @ _encodeSceneExtras(imguiData, skyboxCubemapTextureIndexOpt);
 
   ("scenes", [|list |> object_|] |> jsonArray);
 };
@@ -506,11 +599,13 @@ let _encodeLightMaterials = materialDataArr => (
   |> jsonArray,
 );
 
-let _encodeTextures = textureDataArr => (
+let _encodeBasicSourceTextures = textureDataArr => (
   "textures",
   textureDataArr
   |> Js.Array.map(
-       ({name, sampler, source, flipY, format, type_}: textureData) => {
+       (
+         {name, sampler, source, flipY, format, type_}: basicSourceTextureData,
+       ) => {
        let list = [];
 
        let list =
@@ -775,7 +870,8 @@ let encode =
         meshRendererDataArr,
         basicMaterialDataArr,
         lightMaterialDataArr,
-        textureDataArr,
+        basicSourceTextureDataArr,
+        cubemapTextureDataArr,
         samplerDataArr,
         imageUint8DataArr,
         basicCameraViewDataArr,
@@ -785,6 +881,7 @@ let encode =
         lightDataArr,
         scriptDataArr,
         imguiData,
+        skyboxCubemapTextureIndexOpt,
         extensionsUsedArr,
       ),
       state,
@@ -792,7 +889,11 @@ let encode =
   let list = [
     _encodeAsset(),
     ("scene", 0 |> int),
-    _encodeScenes(extensionsUsedArr, (lightDataArr, imguiData), state),
+    _encodeScenes(
+      extensionsUsedArr,
+      (lightDataArr, imguiData, skyboxCubemapTextureIndexOpt),
+      state,
+    ),
     _encodeCameras(cameraProjectionDataArr),
     _encodeExtras(
       basicCameraViewDataArr,
@@ -801,10 +902,11 @@ let encode =
       flyCameraControllerDataArr,
       arcballCameraControllerDataArr,
       scriptDataArr,
+      cubemapTextureDataArr,
     ),
     _encodeNodes(nodeDataArr, state),
     _encodeLightMaterials(lightMaterialDataArr),
-    _encodeTextures(textureDataArr),
+    _encodeBasicSourceTextures(basicSourceTextureDataArr),
     _encodeSamplers(samplerDataArr),
     _encodeImages(imageUint8DataArr),
     _encodeBuffers(totalByteLength),

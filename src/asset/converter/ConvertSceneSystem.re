@@ -39,6 +39,15 @@ let _convertIMGUI = extras =>
        }
      );
 
+let _convertSkybox = extras =>
+  extras
+  |> Js.Option.andThen((. {skybox}: GLTFType.sceneExtras) =>
+       switch (skybox) {
+       | None => None
+       | Some({cubemap}) => Some({cubemap: cubemap}: WDType.skybox)
+       }
+     );
+
 let _convertIsRoot = extras =>
   switch (extras) {
   | None => _getDefaultIsRoot()
@@ -90,6 +99,7 @@ let convertToScene =
       ambientLightArr |> Js.Array.length == 1 ?
         Some({color: ambientLightArr[0].color}) : None,
     imgui: _convertIMGUI(extras),
+    skybox: _convertSkybox(extras),
     isRoot: _convertIsRoot(extras),
   };
 };

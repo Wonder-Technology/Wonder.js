@@ -2,27 +2,6 @@ open StateDataMainType;
 
 open WDType;
 
-let _batchSetBasicSourceTextureSources =
-    (
-      imageBasicSourceTextures,
-      basicSourceTextureImages,
-      {settingRecord} as state,
-    ) =>
-  imageBasicSourceTextures
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. state, basicSourceTexture, index) =>
-         switch (ArrayService.getNth(index, basicSourceTextureImages)) {
-         | None => state
-         | Some(image) =>
-           OperateBasicSourceTextureMainService.setSource(
-             basicSourceTexture,
-             image,
-             state,
-           )
-         },
-       state,
-     );
-
 let convertKeyFromImageIndexToBasicSourceTexture =
     (imageTextureIndexData, basicSourceTextureArr, imageUint8ArrayDataMap) =>
   imageUint8ArrayDataMap
@@ -45,6 +24,27 @@ let convertKeyFromImageIndexToBasicSourceTexture =
        WonderCommonlib.MutableSparseMapService.createEmpty(),
      );
 
+let _batchSetBasicSourceTextureSources =
+    (
+      imageBasicSourceTextures,
+      basicSourceTextureImages,
+      {settingRecord} as state,
+    ) =>
+  imageBasicSourceTextures
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. state, basicSourceTexture, index) =>
+         switch (ArrayService.getNth(index, basicSourceTextureImages)) {
+         | None => state
+         | Some(image) =>
+           OperateBasicSourceTextureMainService.setSource(
+             basicSourceTexture,
+             image,
+             state,
+           )
+         },
+       state,
+     );
+
 let batchSet =
     (
       (
@@ -55,11 +55,11 @@ let batchSet =
       state,
     ) =>
   state
-  |> BatchSetTextureAllDataSystem.batchSetNewDiffueMaps(
+  |> BatchSetBasicSourceTextureAllDataSystem.batchSetNewDiffueMaps(
        diffuseMapLightMaterials,
        lightMaterialDiffuseMaps,
      )
-  |> BatchSetTextureAllDataSystem.batchSetBasicSourceTextureData(
+  |> BatchSetBasicSourceTextureAllDataSystem.batchSetBasicSourceTextureData(
        samplerBasicSourceTextures,
        basicSourceTextureSamplers,
      )

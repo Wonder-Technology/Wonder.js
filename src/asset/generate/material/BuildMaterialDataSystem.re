@@ -181,6 +181,6 @@ let build =
     samplerDataArr,
     imageUint8DataArr,
     imageResultUint8ArrayMap,
-    (totalByteLength, bufferViewDataArr),
+    (totalByteLength, byteOffset,bufferViewDataArr),
   );
 };

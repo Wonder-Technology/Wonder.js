@@ -46,6 +46,9 @@ let buildDefaultLightMaterialName = index =>
 
 let buildDefaultTextureName = index => buildDefaultName("texture", index);
 
+let buildDefaultCubemapTextureName = index =>
+  buildDefaultName("cubemapTexture", index);
+
 let isDefaultImageName = name =>
   name |> Js.String.match([%re {|/^image_/g|}]) |> Js.Option.isSome;
 

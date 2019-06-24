@@ -2581,15 +2581,22 @@ let _ =
       });
     });
 
+    /* TODO fix */
     describe("test imageUint8ArrayDataMap", () => {
       testPromise(
         "return imageUint8ArrayDataMap with mimeType and uint8Array", () =>
         AssembleWDBSystemTool.testGLB(
           sandbox^,
           GLBTool.buildGLBFilePath("BoxTextured.glb"),
-          ((state, (imageUint8ArrayMap, _), rootGameObject)) =>
+          (
+            (
+              state,
+              ((basicSourceTextureImageUint8ArrayMap, _), _),
+              rootGameObject,
+            ),
+          ) =>
             AssembleWDBSystemTool.isImageUint8ArrayMapEqual(
-              imageUint8ArrayMap,
+              basicSourceTextureImageUint8ArrayMap,
               WonderCommonlib.MutableSparseMapService.createEmpty()
               |> WonderCommonlib.MutableSparseMapService.set(
                    0,
@@ -2605,9 +2612,15 @@ let _ =
         AssembleWDBSystemTool.testGLB(
           sandbox^,
           GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-          ((state, (imageUint8ArrayMap, _), rootGameObject)) =>
+          (
+            (
+              state,
+              ((basicSourceTextureImageUint8ArrayMap, _), _),
+              rootGameObject,
+            ),
+          ) =>
             AssembleWDBSystemTool.isImageUint8ArrayMapEqual(
-              imageUint8ArrayMap,
+              basicSourceTextureImageUint8ArrayMap,
               WonderCommonlib.MutableSparseMapService.createEmpty()
               |> WonderCommonlib.MutableSparseMapService.set(
                    0,

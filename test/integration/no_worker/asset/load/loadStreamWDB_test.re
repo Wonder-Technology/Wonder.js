@@ -2089,8 +2089,24 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               LoadStreamWDBTool.setImageData(
                 ({imageIndex: 0, image}: StreamType.loadedStreamImageBlobData)
                 ->Some,
-                basicSourceTextureArr,
-                {textureIndices: [|0, 1|], imageIndices: [|0, 0|]}: WDType.imageTextureIndexData,
+                (
+                  (
+                    basicSourceTextureArr,
+                    {textureIndices: [|0, 1|], imageIndices: [|0, 0|]}: WDType.imageTextureIndexData,
+                  ),
+                  (
+                    [||],
+                    {
+                      cubemapTextureIndices: [||],
+                      pxImageIndices: [||],
+                      nxImageIndices: [||],
+                      pyImageIndices: [||],
+                      nyImageIndices: [||],
+                      pzImageIndices: [||],
+                      nzImageIndices: [||],
+                    }: WDType.imageCubemapTextureIndexData,
+                  ),
+                ),
                 state,
               );
 

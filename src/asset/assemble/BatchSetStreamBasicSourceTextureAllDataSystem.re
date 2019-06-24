@@ -25,11 +25,11 @@ let batchSet =
       state,
     ) =>
   state
-  |> BatchSetTextureAllDataSystem.batchSetNewDiffueMaps(
+  |> BatchSetBasicSourceTextureAllDataSystem.batchSetNewDiffueMaps(
        diffuseMapLightMaterials,
        lightMaterialDiffuseMaps,
      )
-  |> BatchSetTextureAllDataSystem.batchSetBasicSourceTextureData(
+  |> BatchSetBasicSourceTextureAllDataSystem.batchSetBasicSourceTextureData(
        samplerBasicSourceTextures,
        basicSourceTextureSamplers,
      )

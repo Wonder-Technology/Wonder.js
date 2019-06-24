@@ -63,12 +63,36 @@ type samplerData = {
   minFilter: int,
 };
 
-type textureData = {
+type basicSourceTextureData = {
   name: option(string),
   sampler: int,
   source: int,
   format: int,
   type_: int,
+  flipY: bool,
+};
+
+type cubemapTextureData = {
+  name: option(string),
+  sampler: int,
+  pxSource: int,
+  nxSource: int,
+  pySource: int,
+  nySource: int,
+  pzSource: int,
+  nzSource: int,
+  pxFormat: int,
+  nxFormat: int,
+  pyFormat: int,
+  nyFormat: int,
+  pzFormat: int,
+  nzFormat: int,
+  pxType: int,
+  nxType: int,
+  pyType: int,
+  nyType: int,
+  pzType: int,
+  nzType: int,
   flipY: bool,
 };
 

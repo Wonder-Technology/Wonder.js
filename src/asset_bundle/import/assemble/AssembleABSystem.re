@@ -206,7 +206,7 @@ module SAB = {
 
   let _batchOperate =
       (
-        {geometrys, indices, gameObjects, basicSourceTextures} as sceneAssetBundleContent,
+        {geometrys, indices, gameObjects, basicSourceTextures, cubemapTextures} as sceneAssetBundleContent,
         blobObjectUrlImageArr,
         bufferArr,
         (
@@ -226,7 +226,7 @@ module SAB = {
             pointLightArr,
             scriptArr,
           ),
-          basicSourceTextureArr,
+          (basicSourceTextureArr, cubemapTextureArr),
         ),
       ) => {
     let state =
@@ -236,7 +236,7 @@ module SAB = {
           state,
           gameObjectArr,
           (transformArr, geometryArr),
-          basicSourceTextureArr,
+          (basicSourceTextureArr, cubemapTextureArr),
         ),
       );
 
@@ -293,16 +293,27 @@ module SAB = {
       );
 
     let state =
-      BatchSetTextureAllDataSystem.batchSetFormatAndFlipY(
-        basicSourceTextureArr,
-        basicSourceTextures,
-        state,
-      );
+      state
+      |> BatchSetBasicSourceTextureAllDataSystem.batchSetFormatAndTypeAndFlipY(
+           basicSourceTextureArr,
+           basicSourceTextures,
+         )
+      |> BatchSetCubemapTextureAllDataSystem.batchSetFormatAndTypeAndFlipY(
+           cubemapTextureArr,
+           cubemapTextures,
+         );
 
     let basicSourceTextureData =
-      BatchOperateWholeSystem.getBatchAllTypeTextureData(
+      BatchOperateWholeSystem.getBatchAllTypeBasicSourceTextureData(
         lightMaterialArr,
         basicSourceTextureArr,
+        blobObjectUrlImageArr,
+        sceneAssetBundleContent,
+      );
+
+    let cubemapTextureData =
+      BatchOperateWholeSystem.getBatchAllTypeCubemapTextureData(
+        cubemapTextureArr,
         blobObjectUrlImageArr,
         sceneAssetBundleContent,
       );
@@ -366,7 +377,10 @@ module SAB = {
            geometryGameObjects,
            gameObjectGeometrys,
          )
-      |> BatchSetWholeTextureAllDataSystem.batchSet(basicSourceTextureData),
+      |> BatchSetWholeBasicSourceTextureAllDataSystem.batchSet(
+           basicSourceTextureData,
+         )
+      |> BatchSetWholeCubemapTextureAllDataSystem.batchSet(cubemapTextureData),
       gameObjectArr,
     );
   };
@@ -421,7 +435,7 @@ module SAB = {
              pointLightArr,
              scriptArr,
            ),
-           basicSourceTextureArr,
+           (basicSourceTextureArr, cubemapTextureArr),
          ) =
            state
            |> BatchCreateSystem.batchCreate(true, sceneAssetBundleContent);
@@ -459,8 +473,15 @@ module SAB = {
                  pointLightArr,
                  scriptArr,
                ),
-               basicSourceTextureArr,
+               (basicSourceTextureArr, cubemapTextureArr),
              ),
+           );
+
+         let state =
+           SetSkyboxSystem.setSkybox(
+             sceneAssetBundleContent,
+             cubemapTextureArr,
+             state,
            );
 
          let (state, rootGameObject) =

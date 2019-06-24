@@ -69,37 +69,37 @@ let batchSetNewDiffueMaps =
 let batchSetBasicSourceTextureData =
     (
       samplerBasicSourceTextures,
-      arrayBufferViewSourceTextureSamplers,
+      basicSourceTextureSamplers,
       {settingRecord} as state,
     ) =>
   samplerBasicSourceTextures
   |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. state, arrayBufferViewSourceTexture, index) => {
+       (. state, basicSourceTexture, index) => {
          let {magFilter, minFilter, wrapS, wrapT}: WDType.sampler =
-           Array.unsafe_get(arrayBufferViewSourceTextureSamplers, index);
+           Array.unsafe_get(basicSourceTextureSamplers, index);
 
          state
          |> OperateBasicSourceTextureMainService.setWrapS(
-              arrayBufferViewSourceTexture,
+              basicSourceTexture,
               wrapS |> TextureType.wrapToUint8,
             )
          |> OperateBasicSourceTextureMainService.setWrapT(
-              arrayBufferViewSourceTexture,
+              basicSourceTexture,
               wrapT |> TextureType.wrapToUint8,
             )
          |> OperateBasicSourceTextureMainService.setMagFilter(
-              arrayBufferViewSourceTexture,
+              basicSourceTexture,
               magFilter |> TextureType.filterToUint8,
             )
          |> OperateBasicSourceTextureMainService.setMinFilter(
-              arrayBufferViewSourceTexture,
+              basicSourceTexture,
               minFilter |> TextureType.filterToUint8,
             );
        },
        state,
      );
 
-let batchSetFormatAndFlipY =
+let batchSetFormatAndTypeAndFlipY =
     (basicSourceTextureArr, basicSourceTextures, state) =>
   basicSourceTextureArr
   |> ArrayService.reduceOneParamValidi(

@@ -549,13 +549,31 @@ let _batchSetGameObjectData = (targets, dataArr, setDataFunc, state) =>
        state,
      );
 
-let _batchSetTextureName = (basicSourceTextureArr, basicSourceTextures, state) =>
+let _batchSetBasicSourceTextureName =
+    (
+      basicSourceTextureArr,
+      basicSourceTextures: array(WDType.basicSourceTexture),
+      state,
+    ) =>
   basicSourceTextureArr
   |> ArrayService.reduceOneParamValidi(
        (. state, basicSourceTexture, index) =>
          NameBasicSourceTextureMainService.setName(
            basicSourceTexture,
            Array.unsafe_get(basicSourceTextures, index).name,
+           state,
+         ),
+       state,
+     );
+
+let _batchSetCubemapTextureName =
+    (cubemapTextureArr, cubemapTextures: array(WDType.cubemapTexture), state) =>
+  cubemapTextureArr
+  |> ArrayService.reduceOneParamValidi(
+       (. state, cubemapTexture, index) =>
+         NameBasicSourceTextureMainService.setName(
+           cubemapTexture,
+           Array.unsafe_get(cubemapTextures, index).name,
            state,
          ),
        state,
@@ -580,8 +598,9 @@ let _batchSetGeometryName = (geometrys, geometryArr, state) =>
 
 let batchSetNames =
     (
-      (gameObjectArr, basicSourceTextureArr),
-      (gameObjects: WDType.gameObjects, basicSourceTextures),
+      (gameObjectArr, gameObjects),
+      (basicSourceTextureArr, basicSourceTextures),
+      (cubemapTextureArr, cubemapTextures),
       (geometrys, geometryArr),
       state,
     ) =>
@@ -591,7 +610,11 @@ let batchSetNames =
        gameObjects.names,
        NameGameObjectMainService.setName,
      )
-  |> _batchSetTextureName(basicSourceTextureArr, basicSourceTextures)
+  |> _batchSetBasicSourceTextureName(
+       basicSourceTextureArr,
+       basicSourceTextures,
+     )
+  |> _batchSetCubemapTextureName(cubemapTextureArr, cubemapTextures)
   |> _batchSetGeometryName(geometrys, geometryArr);
 
 let batchSetIsActive = (gameObjectArr, gameObjects: WDType.gameObjects, state) =>
@@ -633,33 +656,19 @@ let batchSetIsRoot = (gameObjectArr, gameObjects: WDType.gameObjects, state) =>
 
 let batchSetNamesAndGameObjectIsActiveAndIsRoot =
     (
-      {geometrys, gameObjects, basicSourceTextures} as wd,
-      /* (blobObjectUrlImageArr, imageUint8ArrayDataMap), */
-      /* bufferArr, */
-      /* (isBindEvent, isActiveCamera), */
+      {geometrys, gameObjects, basicSourceTextures, cubemapTextures} as wd,
       (
         state,
         gameObjectArr,
-        (
-          transformArr,
-          geometryArr,
-          /* meshRendererArr, */
-          /* basicCameraViewArr,
-             perspectiveCameraProjectionArr,
-             arcballCameraControllerArr,
-             basicMaterialArr,
-             lightMaterialArr,
-             directionLightArr,
-             pointLightArr,
-             scriptArr, */
-        ),
-        basicSourceTextureArr,
+        (transformArr, geometryArr),
+        (basicSourceTextureArr, cubemapTextureArr),
       ),
     ) =>
   state
   |> batchSetNames(
-       (gameObjectArr, basicSourceTextureArr),
-       (gameObjects, basicSourceTextures),
+       (gameObjectArr, gameObjects),
+       (basicSourceTextureArr, basicSourceTextures),
+       (cubemapTextureArr, cubemapTextures),
        (geometrys, geometryArr),
      )
   |> batchSetIsActive(gameObjectArr, gameObjects)
@@ -842,4 +851,4 @@ let batchAddComponent =
        scriptGameObjects,
        gameObjectScripts,
      );
-/* |> BatchSetWholeTextureAllDataSystem.batchSet(basicSourceTextureData); */
+/* |> BatchSetWholeBasicSourceTextureAllDataSystem.batchSet(basicSourceTextureData); */

@@ -33,7 +33,7 @@ let _batchSetGeometryData =
      );
 };
 
-let _getBatchTextureData =
+let getBatchAllTypeBasicSourceTextureData =
     (lightMaterialArr, textureArr, imageArr, {indices, samplers}) => (
   (
     indices.materialIndices.diffuseMapMaterialIndices.materialIndices
@@ -55,18 +55,35 @@ let _getBatchTextureData =
   ),
 );
 
-let getBatchAllTypeTextureData =
-    (lightMaterialArr, basicSourceTextureArr, blobObjectUrlImageArr, wd) =>
-  _getBatchTextureData(
-    lightMaterialArr,
-    basicSourceTextureArr,
-    blobObjectUrlImageArr,
-    wd,
-  );
+let getBatchAllTypeCubemapTextureData =
+    (textureArr, imageArr, {indices, samplers}) => (
+  (
+    indices.samplerCubemapTextureIndices.cubemapTextureIndices
+    |> BatchOperateSystem.getBatchArrByIndices(textureArr),
+    indices.samplerCubemapTextureIndices.samplerIndices
+    |> BatchOperateSystem.getBatchArrByIndices(samplers),
+  ),
+  (
+    indices.imageCubemapTextureIndices.cubemapTextureIndices
+    |> BatchOperateSystem.getBatchArrByIndices(textureArr),
+    indices.imageCubemapTextureIndices.pxImageIndices
+    |> BatchOperateSystem.getBatchArrByIndices(imageArr),
+    indices.imageCubemapTextureIndices.nxImageIndices
+    |> BatchOperateSystem.getBatchArrByIndices(imageArr),
+    indices.imageCubemapTextureIndices.pyImageIndices
+    |> BatchOperateSystem.getBatchArrByIndices(imageArr),
+    indices.imageCubemapTextureIndices.nyImageIndices
+    |> BatchOperateSystem.getBatchArrByIndices(imageArr),
+    indices.imageCubemapTextureIndices.pzImageIndices
+    |> BatchOperateSystem.getBatchArrByIndices(imageArr),
+    indices.imageCubemapTextureIndices.nzImageIndices
+    |> BatchOperateSystem.getBatchArrByIndices(imageArr),
+  ),
+);
 
 let batchOperate =
     (
-      {geometrys, indices, gameObjects, basicSourceTextures} as wd,
+      {geometrys, indices, gameObjects, basicSourceTextures, cubemapTextures} as wd,
       (blobObjectUrlImageArr, imageUint8ArrayDataMap),
       bufferArr,
       (isBindEvent, isActiveCamera),
@@ -87,7 +104,7 @@ let batchOperate =
           pointLightArr,
           scriptArr,
         ),
-        basicSourceTextureArr,
+        (basicSourceTextureArr, cubemapTextureArr),
       ),
     ) => {
   let state =
@@ -97,7 +114,7 @@ let batchOperate =
         state,
         gameObjectArr,
         (transformArr, geometryArr),
-        basicSourceTextureArr,
+        (basicSourceTextureArr, cubemapTextureArr),
       ),
     );
 
@@ -154,26 +171,46 @@ let batchOperate =
     );
 
   let state =
-    BatchSetTextureAllDataSystem.batchSetFormatAndFlipY(
-      basicSourceTextureArr,
-      basicSourceTextures,
-      state,
-    );
+    state
+    |> BatchSetBasicSourceTextureAllDataSystem.batchSetFormatAndTypeAndFlipY(
+         basicSourceTextureArr,
+         basicSourceTextures,
+       )
+    |> BatchSetCubemapTextureAllDataSystem.batchSetFormatAndTypeAndFlipY(
+         cubemapTextureArr,
+         cubemapTextures,
+       );
 
   let basicSourceTextureData =
-    getBatchAllTypeTextureData(
+    getBatchAllTypeBasicSourceTextureData(
       lightMaterialArr,
       basicSourceTextureArr,
       blobObjectUrlImageArr,
       wd,
     );
 
-  let imageUint8ArrayDataMap =
-    BatchSetWholeTextureAllDataSystem.convertKeyFromImageIndexToBasicSourceTexture(
-      indices.imageTextureIndices,
-      basicSourceTextureArr,
-      imageUint8ArrayDataMap,
+  let cubemapTextureData =
+    getBatchAllTypeCubemapTextureData(
+      cubemapTextureArr,
+      blobObjectUrlImageArr,
+      wd,
     );
+
+  let basicSourceTextureImageUint8ArrayDataMap =
+    imageUint8ArrayDataMap
+    |> WonderCommonlib.MutableSparseMapService.copy
+    |> BatchSetWholeBasicSourceTextureAllDataSystem.convertKeyFromImageIndexToBasicSourceTexture(
+         indices.imageTextureIndices,
+         basicSourceTextureArr,
+       );
+
+  let cubemapTextureImageUint8ArrayDataMap =
+    imageUint8ArrayDataMap
+    |> WonderCommonlib.MutableSparseMapService.copy
+    |> BatchSetWholeCubemapTextureAllDataSystem.convertKeyFromImageIndexToCubemapTexture(
+         indices.imageCubemapTextureIndices,
+         cubemapTextureArr,
+       );
 
   (
     state
@@ -230,8 +267,15 @@ let batchOperate =
          geometryGameObjects,
          gameObjectGeometrys,
        )
-    |> BatchSetWholeTextureAllDataSystem.batchSet(basicSourceTextureData),
-    imageUint8ArrayDataMap,
+    |> BatchSetWholeBasicSourceTextureAllDataSystem.batchSet(
+         basicSourceTextureData,
+       )
+    |> BatchSetWholeCubemapTextureAllDataSystem.batchSet(cubemapTextureData),
+    (
+      basicSourceTextureImageUint8ArrayDataMap,
+      cubemapTextureImageUint8ArrayDataMap,
+    ),
     gameObjectArr,
+    cubemapTextureArr,
   );
 };

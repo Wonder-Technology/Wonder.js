@@ -59,7 +59,7 @@ let _fillImageUint8ArrayBuffer = (buffer, uint8Array, offset) => {
 let build =
     (
       totalByteLength,
-      (geometryEndByteOffset, (vertexDataArr, indexDataArr, index32DataArr)),
+      (vertexDataArr, indexDataArr, index32DataArr),
       imageUint8DataArr,
     ) => {
   let buffer = ArrayBuffer.make(totalByteLength);

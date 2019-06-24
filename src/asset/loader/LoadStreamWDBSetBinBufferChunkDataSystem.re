@@ -50,19 +50,10 @@ let _setGeometryData =
   );
 };
 
-let _getBasicSourceTextures =
-    (imageIndex, basicSourceTextureArr, imageTextureIndexData) =>
-  IndicesUtils.getBasicSourceTextures(
-    imageIndex,
-    basicSourceTextureArr,
-    imageTextureIndexData,
-  );
-
-let _setImageData =
-    (imageData, basicSourceTextureArr, imageTextureIndices, state) => {
-  let {imageIndex, image} = imageData |> OptionService.unsafeGet;
+let _setBasicSourceTextureImageData =
+    ({imageIndex, image}, basicSourceTextureArr, imageTextureIndices, state) => {
   let basicSourceTextures =
-    _getBasicSourceTextures(
+    IndicesUtils.getBasicSourceTextures(
       imageIndex,
       basicSourceTextureArr,
       imageTextureIndices,
@@ -84,17 +75,121 @@ let _setImageData =
      );
 };
 
+let _setOneFaceCubemapTextureImageData =
+    (image, oneFaceCubemapTextures, setSourceFunc, state) =>
+  oneFaceCubemapTextures
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (. state, cubemapTexture) =>
+         OperateCubemapTextureMainService.setIsNeedUpdate(
+           cubemapTexture,
+           BufferTextureService.getNeedUpdate(),
+           state,
+         )
+         |> setSourceFunc(
+              cubemapTexture,
+              image |> ImageType.imageToDomExtendImageElement,
+            ),
+       state,
+     );
+
+let _setCubemapTextureImageData =
+    (
+      {imageIndex, image},
+      cubemapTextureArr,
+      imageCubemapTextureIndices,
+      state,
+    ) =>
+  state
+  |> _setOneFaceCubemapTextureImageData(
+       image,
+       IndicesUtils.getPXCubemapTextures(
+         imageIndex,
+         cubemapTextureArr,
+         imageCubemapTextureIndices,
+       ),
+       OperateCubemapTextureMainService.setPXSource,
+     )
+  |> _setOneFaceCubemapTextureImageData(
+       image,
+       IndicesUtils.getNXCubemapTextures(
+         imageIndex,
+         cubemapTextureArr,
+         imageCubemapTextureIndices,
+       ),
+       OperateCubemapTextureMainService.setNXSource,
+     )
+  |> _setOneFaceCubemapTextureImageData(
+       image,
+       IndicesUtils.getPYCubemapTextures(
+         imageIndex,
+         cubemapTextureArr,
+         imageCubemapTextureIndices,
+       ),
+       OperateCubemapTextureMainService.setPYSource,
+     )
+  |> _setOneFaceCubemapTextureImageData(
+       image,
+       IndicesUtils.getNYCubemapTextures(
+         imageIndex,
+         cubemapTextureArr,
+         imageCubemapTextureIndices,
+       ),
+       OperateCubemapTextureMainService.setNYSource,
+     )
+  |> _setOneFaceCubemapTextureImageData(
+       image,
+       IndicesUtils.getPZCubemapTextures(
+         imageIndex,
+         cubemapTextureArr,
+         imageCubemapTextureIndices,
+       ),
+       OperateCubemapTextureMainService.setPZSource,
+     )
+  |> _setOneFaceCubemapTextureImageData(
+       image,
+       IndicesUtils.getNZCubemapTextures(
+         imageIndex,
+         cubemapTextureArr,
+         imageCubemapTextureIndices,
+       ),
+       OperateCubemapTextureMainService.setNZSource,
+     );
+
+let _setImageData =
+    (
+      imageData,
+      (
+        (basicSourceTextureArr, imageTextureIndices),
+        (cubemapTextureArr, imageCubemapTextureIndices),
+      ),
+      state,
+    ) => {
+  let imageData = imageData |> OptionService.unsafeGet;
+
+  state
+  |> _setBasicSourceTextureImageData(
+       imageData,
+       basicSourceTextureArr,
+       imageTextureIndices,
+     )
+  |> _setCubemapTextureImageData(
+       imageData,
+       cubemapTextureArr,
+       imageCubemapTextureIndices,
+     );
+};
+
 let _getIndexUint16Data = (componentType, arrayBuffer) =>
   switch (componentType) {
   | 5121 =>
-    Uint16Array.make(Uint8Array.fromBuffer(arrayBuffer) |> Obj.magic) |. Some
-  | 5123 => Uint16Array.fromBuffer(arrayBuffer) |. Some
+    Uint16Array.make(Uint8Array.fromBuffer(arrayBuffer) |> Obj.magic)->Some
+  | 5123 => Uint16Array.fromBuffer(arrayBuffer)->Some
   | _ => None
   };
 
 let _getIndexUint32Data = (componentType, arrayBuffer) =>
   switch (componentType) {
-  | 5125 => Uint32Array.fromBuffer(arrayBuffer) |. Some
+  | 5125 => Uint32Array.fromBuffer(arrayBuffer)->Some
   | _ => None
   };
 
@@ -155,7 +250,10 @@ let setBinBufferChunkData =
     (
       loadedStreamChunkDataArrWhichHasAllData,
       (geometryArr, geometryGameObjects, gameObjectGeometrys),
-      (basicSourceTextureArr, imageTextureIndices),
+      (
+        (basicSourceTextureArr, imageTextureIndices),
+        (cubemapTextureArr, imageCubemapTextureIndices),
+      ),
       state,
     ) =>
   loadedStreamChunkDataArrWhichHasAllData
@@ -217,8 +315,10 @@ let setBinBufferChunkData =
          | Image =>
            _setImageData(
              imageData,
-             basicSourceTextureArr,
-             imageTextureIndices,
+             (
+               (basicSourceTextureArr, imageTextureIndices),
+               (cubemapTextureArr, imageCubemapTextureIndices),
+             ),
              state,
            )
          },

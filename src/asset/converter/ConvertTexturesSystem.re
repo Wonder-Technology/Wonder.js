@@ -1,5 +1,5 @@
 let _buildDefaultName = textureIndex =>
-  ConvertCommon.buildDefaultTextureName(textureIndex);
+  ConvertCommon.buildDefaultCubemapTextureName(textureIndex);
 
 /* let _getNames = (textures, images) =>
    textures
@@ -93,6 +93,67 @@ let convertToBasicSourceTextures =
            },
          [||],
        )
+  };
+
+let convertToCubemapTextures =
+    (({extras, images}: GLTFType.gltf) as gltf)
+    : array(WDType.cubemapTexture) =>
+  switch (extras) {
+  | None => [||]
+  | Some({cubemapTextures}) =>
+    switch (cubemapTextures) {
+    | None => [||]
+    | Some(cubemapTextures) =>
+      cubemapTextures
+      |> WonderCommonlib.ArrayService.reduceOneParami(
+           (.
+             arr,
+             (
+               {
+                 name,
+                 pxFormat,
+                 nxFormat,
+                 pyFormat,
+                 nyFormat,
+                 pzFormat,
+                 nzFormat,
+                 pxType,
+                 nxType,
+                 pyType,
+                 nyType,
+                 pzType,
+                 nzType,
+                 flipY,
+               }: GLTFType.cubemapTexture
+             ) as texture,
+             index,
+           ) =>
+             arr
+             |> ArrayService.push(
+                  {
+                    name:
+                      switch (name) {
+                      | Some(name) => name
+                      | None => _buildDefaultName(index)
+                      },
+                    pxFormat,
+                    nxFormat,
+                    pyFormat,
+                    nyFormat,
+                    pzFormat,
+                    nzFormat,
+                    pxType,
+                    nxType,
+                    pyType,
+                    nyType,
+                    pzType,
+                    nzType,
+                    flipY,
+                  }: WDType.cubemapTexture,
+                ),
+           [||],
+         )
+    }
   };
 
 let _convertMagFilter = magFilter =>
