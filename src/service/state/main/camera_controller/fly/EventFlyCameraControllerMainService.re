@@ -144,14 +144,6 @@ let _changeOrbit =
      );
 };
 
-let _addUniqueDirection = (direction, array) =>
-  array
-  |> Js.Array.copy
-  |> ArrayService.push(direction)
-  |> ArrayService.removeDuplicateItems((. item) =>
-       FlyCameraControllerType.convertDirectionToString(item)
-     );
-
 let _handleDirectionArray = (key, handleFunc, directionArray) =>
   switch (key) {
   | "a"
@@ -178,7 +170,7 @@ let _moveSpecificDirection =
       cameraController,
       flyCameraControllerRecord,
     )
-    |> _handleDirectionArray(keyboardEvent.key, _addUniqueDirection);
+    |> _handleDirectionArray(keyboardEvent.key, ArrayService.addUniqueItem);
 
   {
     ...state,
@@ -191,9 +183,6 @@ let _moveSpecificDirection =
   };
 };
 
-let _removeSpecificDirection = (direction, array) =>
-  array |> Js.Array.filter(item => item != direction);
-
 let _staticSpecificDirection =
     (
       cameraController,
@@ -205,7 +194,10 @@ let _staticSpecificDirection =
       cameraController,
       flyCameraControllerRecord,
     )
-    |> _handleDirectionArray(keyboardEvent.key, _removeSpecificDirection);
+    |> _handleDirectionArray(
+         keyboardEvent.key,
+         ArrayService.removeSpecificItem,
+       );
 
   {
     ...state,
@@ -312,6 +304,7 @@ let prepareBindEvent = (cameraController, state) => {
         event,
       );
     };
+
   let keydownHandleFunc =
     (. event: EventType.keyboardEvent, {flyCameraControllerRecord} as state) =>
       isTriggerKeydownEventHandler(event) ?

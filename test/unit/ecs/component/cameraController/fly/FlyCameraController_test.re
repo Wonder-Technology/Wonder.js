@@ -256,6 +256,11 @@ let _ =
                 value := value^ + 3;
                 state;
               };
+            let keyupHandleFunc =
+              (. event, state) => {
+                value := value^ + 3;
+                state;
+              };
             let state =
               state
               |> FlyCameraControllerTool.addPointDragStartEventHandleFunc(
@@ -277,6 +282,10 @@ let _ =
               |> FlyCameraControllerTool.addKeydownEventHandleFunc(
                    cameraController1,
                    keydownHandleFunc,
+                 )
+              |> FlyCameraControllerTool.addKeyupEventHandleFunc(
+                   cameraController1,
+                   keyupHandleFunc,
                  );
 
             let state =
@@ -377,6 +386,22 @@ let _ =
         state
         |> FlyCameraControllerTool.unsafeGetEulerAngleDiff(cameraController)
         |> expect == value;
+      })
+    );
+
+    describe("unsafeGetDirectionArray", () =>
+      test("test", () => {
+        let (state, cameraController) = createFlyCameraController(state^);
+        let directionArray = [|Left, Up|];
+        let state =
+          state
+          |> setFlyCameraControllerDirectionArray(
+               cameraController,
+               directionArray,
+             );
+        state
+        |> unsafeGetFlyCameraControllerDirectionArray(cameraController)
+        |> expect == directionArray;
       })
     );
 
