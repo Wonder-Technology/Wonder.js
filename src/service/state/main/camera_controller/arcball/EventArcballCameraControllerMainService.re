@@ -2,6 +2,8 @@ open StateDataMainType;
 
 open EventType;
 
+open ArcballCameraControllerType;
+
 let _addEventHandleFunc =
     (cameraController, handleFunc, eventHandleFuncListMap) =>
   switch (
@@ -93,6 +95,17 @@ let _addKeydownEventHandleFunc =
     ),
 };
 
+let _addKeyupEventHandleFunc =
+    (cameraController, handleFunc, {keyupEventHandleFuncListMap} as record) => {
+  ...record,
+  keyupEventHandleFuncListMap:
+    _addEventHandleFunc(
+      cameraController,
+      handleFunc,
+      keyupEventHandleFuncListMap,
+    ),
+};
+
 let _changeOrbit =
     (cameraController, {movementDelta}, arcballCameraControllerRecord) => {
   let (x, y) = movementDelta;
@@ -121,6 +134,70 @@ let _changeOrbit =
        -. (y |> NumberType.convertIntToFloat)
        /. (100. /. rotateSpeed),
      );
+};
+
+let _handleDirectionArray = (key, handleFunc, directionArray) =>
+  switch (key) {
+  | "a"
+  | "left" => directionArray |> handleFunc(Left)
+  | "d"
+  | "right" => directionArray |> handleFunc(Right)
+  | "w"
+  | "up" => directionArray |> handleFunc(Up)
+  | "s"
+  | "down" => directionArray |> handleFunc(Down)
+  | _ => directionArray
+  };
+
+let _moveSpecificDirection =
+    (
+      cameraController,
+      keyboardEvent: keyboardEvent,
+      {arcballCameraControllerRecord, gameObjectRecord} as state,
+    ) => {
+  let directionArray =
+    OperateArcballCameraControllerService.unsafeGetDirectionArray(
+      cameraController,
+      arcballCameraControllerRecord,
+    )
+    |> _handleDirectionArray(keyboardEvent.key, ArrayService.addUniqueItem);
+
+  {
+    ...state,
+    arcballCameraControllerRecord:
+      arcballCameraControllerRecord
+      |> OperateArcballCameraControllerService.setDirectionArray(
+           cameraController,
+           directionArray,
+         ),
+  };
+};
+
+let _staticSpecificDirection =
+    (
+      cameraController,
+      keyboardEvent: keyboardEvent,
+      {arcballCameraControllerRecord, gameObjectRecord} as state,
+    ) => {
+  let directionArray =
+    OperateArcballCameraControllerService.unsafeGetDirectionArray(
+      cameraController,
+      arcballCameraControllerRecord,
+    )
+    |> _handleDirectionArray(
+         keyboardEvent.key,
+         ArrayService.removeSpecificItem,
+       );
+
+  {
+    ...state,
+    arcballCameraControllerRecord:
+      arcballCameraControllerRecord
+      |> OperateArcballCameraControllerService.setDirectionArray(
+           cameraController,
+           directionArray,
+         ),
+  };
 };
 
 let _isCombinedKey = ({ctrlKey, altKey, shiftKey, metaKey}: keyboardEvent) =>
@@ -211,12 +288,14 @@ let prepareBindEvent = (cameraController, state) => {
       {arcballCameraControllerRecord} as state,
     ) =>
       isTriggerKeydownEventHandler(event) ?
-        TargetArcballCameraControllerMainService.setTargetByKeyboardEvent(
-          cameraController,
-          event,
-          state,
-        ) :
-        state;
+        _moveSpecificDirection(cameraController, event, state) : state;
+
+  let keyupHandleFunc =
+    (.
+      event: EventType.keyboardEvent,
+      {arcballCameraControllerRecord} as state,
+    ) =>
+      _staticSpecificDirection(cameraController, event, state);
 
   let state = {
     ...state,
@@ -238,7 +317,8 @@ let prepareBindEvent = (cameraController, state) => {
            cameraController,
            pointScaleHandleFunc,
          )
-      |> _addKeydownEventHandleFunc(cameraController, keydownHandleFunc),
+      |> _addKeydownEventHandleFunc(cameraController, keydownHandleFunc)
+      |> _addKeyupEventHandleFunc(cameraController, keyupHandleFunc),
   };
 
   (
@@ -248,6 +328,7 @@ let prepareBindEvent = (cameraController, state) => {
     pointDragOverHandleFunc,
     pointScaleHandleFunc,
     keydownHandleFunc,
+    keyupHandleFunc,
   );
 };
 
@@ -259,6 +340,7 @@ let bindEvent = (cameraController, state) => {
     pointDragOverHandleFunc,
     pointScaleHandleFunc,
     keydownHandleFunc,
+    keyupHandleFunc,
   ) =
     prepareBindEvent(cameraController, state);
 
@@ -298,6 +380,14 @@ let bindEvent = (cameraController, state) => {
     ManageEventMainService.onKeyboardEvent(
       ~eventName=EventType.KeyDown,
       ~handleFunc=keydownHandleFunc,
+      ~state,
+      (),
+    );
+
+  let state =
+    ManageEventMainService.onKeyboardEvent(
+      ~eventName=EventType.KeyUp,
+      ~handleFunc=keyupHandleFunc,
       ~state,
       (),
     );
@@ -490,13 +580,44 @@ let _disposeKeyDownEventHandleFuncListMap =
   };
 };
 
+let _disposeKeyUpEventHandleFuncListMap =
+    (cameraController, {arcballCameraControllerRecord} as state) => {
+  let {keyupEventHandleFuncListMap} = arcballCameraControllerRecord;
+
+  switch (
+    keyupEventHandleFuncListMap
+    |> WonderCommonlib.MutableSparseMapService.get(cameraController)
+  ) {
+  | None => state
+  | Some(keyupEventHandleFuncList) =>
+    let state =
+      keyupEventHandleFuncList
+      |> List.fold_left(
+           (state, func) =>
+             _unbindKeyboardEvent(EventType.KeyUp, func, state),
+           state,
+         );
+
+    {
+      ...state,
+      arcballCameraControllerRecord: {
+        ...arcballCameraControllerRecord,
+        keydownEventHandleFuncListMap:
+          keyupEventHandleFuncListMap
+          |> DisposeComponentService.disposeSparseMapData(cameraController),
+      },
+    };
+  };
+};
+
 let unbindEvent = (cameraController, state) =>
   state
   |> _disposePointDragStartEventHandleFuncListMap(cameraController)
   |> _disposePointDragDropEventHandleFuncListMap(cameraController)
   |> _disposePointDragOverEventHandleFuncListMap(cameraController)
   |> _disposePointScaleEventHandleFuncListMap(cameraController)
-  |> _disposeKeyDownEventHandleFuncListMap(cameraController);
+  |> _disposeKeyDownEventHandleFuncListMap(cameraController)
+  |> _disposeKeyUpEventHandleFuncListMap(cameraController);
 
 let unbindPointScaleEvent = (cameraController, state) =>
   state |> _disposePointScaleEventHandleFuncListMap(cameraController);

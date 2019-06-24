@@ -4,6 +4,8 @@ open TransformType;
 
 open EventType;
 
+open ArcballCameraControllerType;
+
 let _computeTarget =
     (
       cameraController,
@@ -48,10 +50,9 @@ let _computeTarget =
   |> Vector3Service.add(Vector3Type.Float, _, (y1 *. dy, y2 *. dy, 0.));
 };
 
-let setTargetByKeyboardEvent =
+let setAndGetTranslationTarget =
     (
       cameraController,
-      keyboardEvent: keyboardEvent,
       {arcballCameraControllerRecord, gameObjectRecord} as state,
     ) => {
   let moveSpeedX =
@@ -64,30 +65,84 @@ let setTargetByKeyboardEvent =
       cameraController,
       arcballCameraControllerRecord,
     );
+  let initPosition = (0., 0.);
 
   let (dx, dy) =
-    switch (keyboardEvent.key) {
-    | "a"
-    | "left" => (-. moveSpeedX, 0.)
-    | "d"
-    | "right" => (moveSpeedX, 0.)
-    | "w"
-    | "up" => (0., moveSpeedY)
-    | "s"
-    | "down" => (0., -. moveSpeedY)
-    | _ => (0., 0.)
-    };
+    OperateArcballCameraControllerService.hasDirection(
+      cameraController,
+      arcballCameraControllerRecord,
+    ) ?
+      OperateArcballCameraControllerService.unsafeGetDirectionArray(
+        cameraController,
+        arcballCameraControllerRecord,
+      )
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (. (dx, dy), direction) =>
+             switch (direction) {
+             | Left => (-. moveSpeedX, dy)
+             | Right => (moveSpeedX, dy)
+             | Up => (dx, moveSpeedY)
+             | Down => (dx, -. moveSpeedY)
+             },
+           initPosition,
+         ) :
+      initPosition;
 
-  switch (dx, dy) {
-  | (0., 0.) => state
-  | (dx, dy) => {
+  let newTargetValue = _computeTarget(cameraController, (dx, dy), state);
+
+  (
+    newTargetValue,
+    {
       ...state,
       arcballCameraControllerRecord:
         OperateArcballCameraControllerService.setTarget(
           cameraController,
-          _computeTarget(cameraController, (dx, dy), state),
+          newTargetValue,
           arcballCameraControllerRecord,
         ),
-    }
-  };
+    },
+  );
 };
+/* let setTargetByKeyboardEvent =
+       (
+         cameraController,
+         keyboardEvent: keyboardEvent,
+         {arcballCameraControllerRecord, gameObjectRecord} as state,
+       ) => {
+     let moveSpeedX =
+       OperateArcballCameraControllerService.unsafeGetMoveSpeedX(
+         cameraController,
+         arcballCameraControllerRecord,
+       );
+     let moveSpeedY =
+       OperateArcballCameraControllerService.unsafeGetMoveSpeedY(
+         cameraController,
+         arcballCameraControllerRecord,
+       );
+
+     let (dx, dy) =
+       switch (keyboardEvent.key) {
+       | "a"
+       | "left" => (-. moveSpeedX, 0.)
+       | "d"
+       | "right" => (moveSpeedX, 0.)
+       | "w"
+       | "up" => (0., moveSpeedY)
+       | "s"
+       | "down" => (0., -. moveSpeedY)
+       | _ => (0., 0.)
+       };
+
+     switch (dx, dy) {
+     | (0., 0.) => state
+     | (dx, dy) => {
+         ...state,
+         arcballCameraControllerRecord:
+           OperateArcballCameraControllerService.setTarget(
+             cameraController,
+             _computeTarget(cameraController, (dx, dy), state),
+             arcballCameraControllerRecord,
+           ),
+       }
+     };
+   }; */

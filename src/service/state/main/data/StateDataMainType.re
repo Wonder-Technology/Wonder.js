@@ -204,6 +204,7 @@ and arcballCameraControllerRecord = {
   pointDragOverEventHandleFuncListMap: pointEventHandleFuncListMap,
   pointScaleEventHandleFuncListMap: pointEventHandleFuncListMap,
   keydownEventHandleFuncListMap: keyboardEventHandleFuncListMap,
+  keyupEventHandleFuncListMap: keyboardEventHandleFuncListMap,
   distanceMap: WonderCommonlib.MutableSparseMapService.t(float),
   minDistanceMap: WonderCommonlib.MutableSparseMapService.t(float),
   phiMap: WonderCommonlib.MutableSparseMapService.t(float),
@@ -216,7 +217,7 @@ and arcballCameraControllerRecord = {
   wheelSpeedMap: WonderCommonlib.MutableSparseMapService.t(float),
   directionArrayMap:
     WonderCommonlib.MutableSparseMapService.t(
-      array(FlyCameraControllerType.direction),
+      array(ArcballCameraControllerType.direction),
     ),
   gameObjectMap,
   disposedIndexArray: array(component),

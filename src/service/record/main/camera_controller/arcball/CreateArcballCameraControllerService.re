@@ -16,6 +16,7 @@ let _setDefaultValue =
         moveSpeedYMap,
         rotateSpeedMap,
         wheelSpeedMap,
+        directionArrayMap,
       } as record,
     ) => {
   ...record,
@@ -42,6 +43,8 @@ let _setDefaultValue =
     rotateSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 1.),
   wheelSpeedMap:
     wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.set(index, 1.),
+  directionArrayMap:
+    directionArrayMap |> WonderCommonlib.MutableSparseMapService.set(index, [||]),
 };
 
 let create =

@@ -25,8 +25,11 @@ let _updateTransform =
 
   let theta = unsafeGetTheta(cameraController, arcballCameraControllerRecord);
 
-  let (x, y, z) as target =
-    unsafeGetTarget(cameraController, arcballCameraControllerRecord);
+  let ((x, y, z) as target, state) =
+    TargetArcballCameraControllerMainService.setAndGetTranslationTarget(
+      cameraController,
+      state,
+    );
 
   let state = {
     ...state,
