@@ -138,3 +138,14 @@ let addKeydownEventHandleFunc =
       arcballCameraControllerRecord,
     ),
 };
+
+let addKeyupEventHandleFunc =
+    (cameraController, handleFunc, {arcballCameraControllerRecord} as state) => {
+  ...state,
+  arcballCameraControllerRecord:
+    EventArcballCameraControllerMainService._addKeyupEventHandleFunc(
+      cameraController,
+      handleFunc,
+      arcballCameraControllerRecord,
+    ),
+};

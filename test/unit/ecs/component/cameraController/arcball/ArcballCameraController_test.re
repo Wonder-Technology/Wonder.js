@@ -287,6 +287,11 @@ let _ =
                 value := value^ + 3;
                 state;
               };
+            let keyupHandleFunc =
+              (. event, state) => {
+                value := value^ + 3;
+                state;
+              };
             let state =
               state
               |> ArcballCameraControllerTool.addPointDragStartEventHandleFunc(
@@ -308,6 +313,10 @@ let _ =
               |> ArcballCameraControllerTool.addKeydownEventHandleFunc(
                    cameraController1,
                    keydownHandleFunc,
+                 )
+              |> ArcballCameraControllerTool.addKeyupEventHandleFunc(
+                   cameraController1,
+                   keyupHandleFunc,
                  );
 
             let state =
@@ -323,6 +332,7 @@ let _ =
               pointDragOverEventHandleFuncListMap,
               pointScaleEventHandleFuncListMap,
               keydownEventHandleFuncListMap,
+              keyupEventHandleFuncListMap,
             } =
               state.arcballCameraControllerRecord;
             (
@@ -346,8 +356,12 @@ let _ =
               |> WonderCommonlib.MutableSparseMapService.has(
                    cameraController1,
                  ),
+              keyupEventHandleFuncListMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
             )
-            |> expect == (false, false, false, false, false);
+            |> expect == (false, false, false, false, false, false);
           })
         );
 
@@ -546,6 +560,22 @@ component should be removed from gameObject
         state
         |> unsafeGetArcballCameraControllerTarget(cameraController)
         |> expect == target;
+      })
+    );
+    describe("unsafeGetDirectionArray", () =>
+      test("test", () => {
+        let (state, cameraController) =
+          createArcballCameraController(state^);
+        let directionArray = [|Left, Up|];
+        let state =
+          state
+          |> setArcballCameraControllerDirectionArray(
+               cameraController,
+               directionArray,
+             );
+        state
+        |> unsafeGetArcballCameraControllerDirectionArray(cameraController)
+        |> expect == directionArray;
       })
     );
     describe("unsafeGetMoveSpeedX", () =>

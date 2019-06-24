@@ -161,7 +161,14 @@ let _ =
 
     describe("update arcballCameraController", () => {
       let _prepare =
-          (~distance=2.5, ~phi=1., ~theta=0.5, ~target=(1., 2., 3.), ()) => {
+          (
+            ~distance=0.,
+            ~phi=1.57,
+            ~theta=1.57,
+            ~target=(1., 2., 3.),
+            ~directionArray=[||],
+            (),
+          ) => {
         let state =
           TestTool.initWithJobConfigWithoutBuildFakeDom(
             ~sandbox,
@@ -203,6 +210,10 @@ let _ =
 
         let state =
           state
+          |> setArcballCameraControllerDirectionArray(
+               cameraController,
+               directionArray,
+             )
           |> setArcballCameraControllerDistance(cameraController, distance)
           |> setArcballCameraControllerPhi(cameraController, phi)
           |> setArcballCameraControllerTheta(cameraController, theta)
@@ -213,21 +224,62 @@ let _ =
 
       describe("update one arcballCameraController", () =>
         describe("update transform", () => {
-          test("set localPosition", () => {
-            let (state, transform) =
-              _prepare(
-                ~distance=2.5,
-                ~phi=1.,
-                ~theta=0.5,
-                ~target=(1., 2., 3.),
-                (),
-              );
+          describe("update localPosition", () => {
+            test("trigger point scale event", () => {
+              let (state, transform) =
+                _prepare(~distance=2.3, ~target=(1., 2., 3.), ());
 
-            let state = state |> NoWorkerJobTool.execLoopJobs;
+              let state = state |> NoWorkerJobTool.execLoopJobs;
 
-            TransformAPI.getTransformLocalPosition(transform, state)
-            |> Vector3Tool.truncate(3)
-            |> expect == (1.648, 4.194, 4.009);
+              TransformAPI.getTransformLocalPosition(transform, state)
+              |> Vector3Tool.truncate(2)
+              |> expect == (1., 2., 5.3);
+            });
+            test("trigger keydown event", () => {
+              let (state, transform) =
+                _prepare(
+                  ~directionArray=[|Right, Up|],
+                  ~target=(1., 2., 3.),
+                  (),
+                );
+
+              let state = state |> NoWorkerJobTool.execLoopJobs;
+
+              TransformAPI.getTransformLocalPosition(transform, state)
+              |> Vector3Tool.truncate(2)
+              |> expect == (2., 3., 3.05);
+            });
+            test("trigger point scale and keydown event", () => {
+              let (state, transform) =
+                _prepare(
+                  ~directionArray=[|Left, Down|],
+                  ~distance=2.3,
+                  ~target=(1., 2., 3.),
+                  (),
+                );
+
+              let state = state |> NoWorkerJobTool.execLoopJobs;
+
+              TransformAPI.getTransformLocalPosition(transform, state)
+              |> Vector3Tool.truncate(2)
+              |> expect == (0., 1., 5.3);
+            });
+            test("trigger point drag and keydown event", () => {
+              let (state, transform) =
+                _prepare(
+                  ~directionArray=[|Left, Up|],
+                  ~phi=1.,
+                  ~theta=0.5,
+                  ~target=(1., 2., 3.),
+                  (),
+                );
+
+              let state = state |> NoWorkerJobTool.execLoopJobs;
+
+              TransformAPI.getTransformLocalPosition(transform, state)
+              |> Vector3Tool.truncate(2)
+              |> expect == (0.01, 3.04, 3.02);
+            });
           });
 
           test("lookAt target", () => {
