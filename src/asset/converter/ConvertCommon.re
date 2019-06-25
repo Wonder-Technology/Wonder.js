@@ -44,7 +44,8 @@ let buildDefaultBasicMaterialName = index =>
 let buildDefaultLightMaterialName = index =>
   buildDefaultName("lightMaterial", index);
 
-let buildDefaultTextureName = index => buildDefaultName("texture", index);
+let buildDefaultBasicSourceTextureName = index =>
+  buildDefaultName("texture", index);
 
 let buildDefaultCubemapTextureName = index =>
   buildDefaultName("cubemapTexture", index);

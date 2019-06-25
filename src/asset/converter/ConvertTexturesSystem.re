@@ -1,4 +1,7 @@
-let _buildDefaultName = textureIndex =>
+let _buildBasicSourceTextureDefaultName = textureIndex =>
+  ConvertCommon.buildDefaultBasicSourceTextureName(textureIndex);
+
+let _buildCubemapTextureDefaultName = textureIndex =>
   ConvertCommon.buildDefaultCubemapTextureName(textureIndex);
 
 /* let _getNames = (textures, images) =>
@@ -9,14 +12,14 @@ let _buildDefaultName = textureIndex =>
           | Some(name) => nameArr |> ArrayService.push(name)
           | None =>
             switch (source) {
-            | None => nameArr |> ArrayService.push(_buildDefaultName(index))
+            | None => nameArr |> ArrayService.push(_buildBasicSourceTextureDefaultName(index))
             | Some(source) =>
               let {name}: GLTFType.image =
                 Array.unsafe_get(images |> OptionService.unsafeGet, source);
 
               switch (name) {
               | Some(name) => nameArr |> ArrayService.push(name)
-              | None => nameArr |> ArrayService.push(_buildDefaultName(index))
+              | None => nameArr |> ArrayService.push(_buildBasicSourceTextureDefaultName(index))
               };
             }
           },
@@ -58,7 +61,7 @@ let convertToBasicSourceTextures =
                    name:
                      switch (name) {
                      | Some(name) => name
-                     | None => _buildDefaultName(index)
+                     | None => _buildBasicSourceTextureDefaultName(index)
                      },
                    type_:
                      switch (extras) {
@@ -134,7 +137,7 @@ let convertToCubemapTextures =
                     name:
                       switch (name) {
                       | Some(name) => name
-                      | None => _buildDefaultName(index)
+                      | None => _buildCubemapTextureDefaultName(index)
                       },
                     pxFormat,
                     nxFormat,
