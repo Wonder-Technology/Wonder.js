@@ -52,7 +52,7 @@ let buildFakeDomForNotPassCanvasId = sandbox => {
     },
   };
   let createElementStub =
-    createMethodStub(
+    SinonTool.createMethodStub(
       refJsObjToSandbox(sandbox^),
       documentToObj(DomExtend.document),
       "createElement",
@@ -85,14 +85,15 @@ let buildFakeCanvasForNotPassCanvasIdWithCanvas = (sandbox, canvasDom) => {
     },
   };
   let createElementStub =
-    createMethodStub(
+    SinonTool.createMethodStub(
       refJsObjToSandbox(sandbox^),
       documentToObj(DomExtend.document),
       "createElement",
     );
   createElementStub |> withOneArg("div") |> returns(div) |> ignore;
   createElementStub |> withOneArg("canvas") |> returns(canvasDom) |> ignore;
-  createMethodStub(
+
+  SinonTool.createMethodStub(
     refJsObjToSandbox(sandbox^),
     documentToObj(DomExtend.document),
     "querySelectorAll",

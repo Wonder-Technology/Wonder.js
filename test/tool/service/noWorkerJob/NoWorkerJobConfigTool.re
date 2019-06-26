@@ -60,7 +60,7 @@ let buildNoWorkerInitJobConfigWithoutInitMain = () => {|
     },
         {
           "name": "init_texture"
-        }, 
+        },
         {
           "name": "init_skybox"
         }

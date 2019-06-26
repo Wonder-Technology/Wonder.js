@@ -341,6 +341,328 @@ let _ =
       });
     });
 
+    describe("test skybox", () => {
+      testPromise("set skybox->cubemap", () =>
+        AssembleWDBSystemTool.testGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(),
+          ~state,
+          ~testFunc=
+            ((state, _, rootGameObject)) =>
+              SceneTool.getCubemapTexture(state)
+              |> Js.Option.isSome
+              |> expect == true,
+          (),
+        )
+      );
+
+      describe("test skybox->cubemap texture", () => {
+        describe("test set texture name", () =>
+          testPromise("test", () =>
+            AssembleWDBSystemTool.testGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(
+                  ~name=Some("aaa"),
+                  (),
+                ),
+              ~state,
+              ~testFunc=
+                ((state, _, rootGameObject)) =>
+                  CubemapTextureAPI.unsafeGetCubemapTextureName(
+                    SceneTool.unsafeGetCubemapTexture(state),
+                    state,
+                  )
+                  |> expect == "aaa",
+              (),
+            )
+          )
+        );
+
+        testPromise("test set flipY", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(
+                ~flipY=true,
+                (),
+              ),
+            ~state,
+            ~testFunc=
+              ((state, _, rootGameObject)) =>
+                CubemapTextureAPI.getCubemapTextureFlipY(
+                  SceneTool.unsafeGetCubemapTexture(state),
+                  state,
+                )
+                |> expect == true,
+            (),
+          )
+        );
+
+        testPromise("test set sampler data", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(),
+            ~state,
+            ~testFunc=
+              ((state, _, rootGameObject)) => {
+                let cubemapTexture = SceneTool.unsafeGetCubemapTexture(state);
+
+                (
+                  CubemapTextureAPI.getCubemapTextureMagFilter(
+                    cubemapTexture,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTextureMinFilter(
+                    cubemapTexture,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTextureWrapS(
+                    cubemapTexture,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTextureWrapT(
+                    cubemapTexture,
+                    state,
+                  ),
+                )
+                |> expect
+                == (
+                     TextureType.Linear,
+                     TextureType.Nearest_mipmap_linear,
+                     TextureType.Repeat,
+                     TextureType.Repeat,
+                   );
+              },
+            (),
+          )
+        );
+
+        describe("test set source", () => {
+          testPromise("if isLoadImage === false, not set source", () =>
+            AssembleWDBSystemTool.testGLTF(
+              ~sandbox=sandbox^,
+              ~isLoadImage=false,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(),
+              ~state,
+              ~testFunc=
+                ((state, _, rootGameObject)) =>
+                  CubemapTextureTool.getCubemapTexturePXSource(
+                    SceneTool.unsafeGetCubemapTexture(state),
+                    state,
+                  )
+                  |> Js.Option.isNone
+                  |> expect == true,
+              (),
+            )
+          );
+          testPromise("else, set source", () =>
+            AssembleWDBSystemTool.testGLTF(
+              ~sandbox=sandbox^,
+              ~isLoadImage=true,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(),
+              ~state,
+              ~testFunc=
+                ((state, _, rootGameObject)) => {
+                  let cubemapTexture =
+                    SceneTool.unsafeGetCubemapTexture(state);
+
+                  (
+                    CubemapTextureAPI.unsafeGetCubemapTexturePXSource(
+                      cubemapTexture,
+                      state,
+                    ),
+                    CubemapTextureAPI.unsafeGetCubemapTextureNXSource(
+                      cubemapTexture,
+                      state,
+                    ),
+                    CubemapTextureAPI.unsafeGetCubemapTexturePYSource(
+                      cubemapTexture,
+                      state,
+                    ),
+                    CubemapTextureAPI.unsafeGetCubemapTextureNYSource(
+                      cubemapTexture,
+                      state,
+                    ),
+                    CubemapTextureAPI.unsafeGetCubemapTexturePZSource(
+                      cubemapTexture,
+                      state,
+                    ),
+                    CubemapTextureAPI.unsafeGetCubemapTextureNZSource(
+                      cubemapTexture,
+                      state,
+                    ),
+                  )
+                  |> expect
+                  == (
+                       GLBTool.createFakeImage(
+                         ~name="pxSource.png",
+                         ~src="object_url1",
+                         (),
+                       ),
+                       GLBTool.createFakeImage(
+                         ~name="nxSource.jpg",
+                         ~src="object_url2",
+                         (),
+                       ),
+                       GLBTool.createFakeImage(
+                         ~name="pySource.png",
+                         ~src="object_url3",
+                         (),
+                       ),
+                       GLBTool.createFakeImage(
+                         ~name="nySource.jpg",
+                         ~src="object_url4",
+                         (),
+                       ),
+                       GLBTool.createFakeImage(
+                         ~name="pzSource.png",
+                         ~src="object_url5",
+                         (),
+                       ),
+                       GLBTool.createFakeImage(
+                         ~name="nzSource.jpg",
+                         ~src="object_url6",
+                         (),
+                       ),
+                     );
+                },
+              (),
+            )
+          );
+        });
+
+        testPromise("test release blobs", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~isLoadImage=true,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(),
+            ~state,
+            ~testFunc=
+              ((state, _, rootGameObject)) => {
+                let cubemapTexture = SceneTool.unsafeGetCubemapTexture(state);
+
+                GLBTool.getURL(.)##revokeObjectURL
+                |> getCallCount
+                |> expect == 7;
+              },
+            (),
+          )
+        );
+
+        testPromise("test set format", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(
+                ~pyFormat=TextureType.Alpha,
+                (),
+              ),
+            ~state,
+            ~testFunc=
+              ((state, _, rootGameObject)) => {
+                let cubemapTexture = SceneTool.unsafeGetCubemapTexture(state);
+
+                (
+                  CubemapTextureAPI.getCubemapTexturePXFormat(
+                    cubemapTexture,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTextureNXFormat(
+                    cubemapTexture,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTexturePYFormat(
+                    cubemapTexture,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTextureNYFormat(
+                    cubemapTexture,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTexturePZFormat(
+                    cubemapTexture,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTextureNZFormat(
+                    cubemapTexture,
+                    state,
+                  ),
+                )
+                |> expect
+                == (
+                     CubemapTextureTool.getDefaultFormat(),
+                     CubemapTextureTool.getDefaultFormat(),
+                     TextureType.Alpha,
+                     CubemapTextureTool.getDefaultFormat(),
+                     CubemapTextureTool.getDefaultFormat(),
+                     CubemapTextureTool.getDefaultFormat(),
+                   );
+              },
+            (),
+          )
+        );
+
+        testPromise("test set type", () =>
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(
+                ~pyType=3,
+                (),
+              ),
+            ~state,
+            ~testFunc=
+              ((state, _, rootGameObject)) => {
+                let cubemapTexture = SceneTool.unsafeGetCubemapTexture(state);
+
+                (
+                  CubemapTextureAPI.getCubemapTexturePXType(
+                    cubemapTexture,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTextureNXType(
+                    cubemapTexture,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTexturePYType(
+                    cubemapTexture,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTextureNYType(
+                    cubemapTexture,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTexturePZType(
+                    cubemapTexture,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTextureNZType(
+                    cubemapTexture,
+                    state,
+                  ),
+                )
+                |> expect
+                == (
+                     CubemapTextureTool.getDefaultType(),
+                     CubemapTextureTool.getDefaultType(),
+                     3,
+                     CubemapTextureTool.getDefaultType(),
+                     CubemapTextureTool.getDefaultType(),
+                     CubemapTextureTool.getDefaultType(),
+                   );
+              },
+            (),
+          )
+        );
+      });
+    });
+
     describe("test gameObject", () => {
       describe("set gameObject name", () =>
         testPromise("test", () =>
@@ -1777,11 +2099,11 @@ let _ =
                          )
                       |> expect
                       == [|
-                           {
-                             "name": "CesiumLogoFlat.png",
-                             "src": "object_url0",
-                           }
-                           |> Obj.magic,
+                           GLBTool.createFakeImage(
+                             ~name="CesiumLogoFlat.png",
+                             ~src="object_url0",
+                             (),
+                           ),
                          |],
                     state^,
                   )
@@ -2015,12 +2337,21 @@ let _ =
                        )
                     |> expect
                     == [|
-                         {"name": "image_0", "src": "object_url0"}
-                         |> Obj.magic,
-                         {"name": "image_0", "src": "object_url0"}
-                         |> Obj.magic,
-                         {"name": "image_0", "src": "object_url0"}
-                         |> Obj.magic,
+                         GLBTool.createFakeImage(
+                           ~name="image_0",
+                           ~src="object_url0",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name="image_0",
+                           ~src="object_url0",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name="image_0",
+                           ~src="object_url0",
+                           (),
+                         ),
                        |],
                   state^,
                 )
@@ -2198,16 +2529,16 @@ let _ =
                        )
                     |> expect
                     == [|
-                         {
-                           "name": "MetalBrillante_diffuse.png",
-                           "src": "object_url0",
-                         }
-                         |> Obj.magic,
-                         {
-                           "name": "MetalNegro_diffuse.png",
-                           "src": "object_url1",
-                         }
-                         |> Obj.magic,
+                         GLBTool.createFakeImage(
+                           ~name="MetalBrillante_diffuse.png",
+                           ~src="object_url0",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name="MetalNegro_diffuse.png",
+                           ~src="object_url1",
+                           (),
+                         ),
                        |],
                   state^,
                 )

@@ -14,6 +14,7 @@ let _ =
     let cesiumMilkTruckWDBArrayBuffer = ref(Obj.magic(-1));
     let alphaBlendModeTestWDBArrayBuffer = ref(Obj.magic(-1));
     let stoveWDBArrayBuffer = ref(Obj.magic(-1));
+    let skyboxWDBArrayBuffer = ref(Obj.magic(-1));
 
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
@@ -100,7 +101,8 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
 
       let _buildReader = readStub => {"read": readStub |> Obj.magic};
 
-      let _getDefault11Image = () => Obj.magic(101);
+      let _getDefault11Image = () =>
+        TextureTool.buildSource(~name="default", ());
 
       let _prepareWithReadStub = (sandbox, readStub, state) => {
         let default11Image = _getDefault11Image();
@@ -164,14 +166,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
       let _getAllDiffuseMaps = (rootGameObject, state) =>
         AssembleWDBSystemTool.getAllDiffuseMaps(rootGameObject, state);
 
-      let _getAllDiffuseMapSources = (rootGameObject, state) =>
-        _getAllDiffuseMaps(rootGameObject, state)
-        |> Js.Array.map(diffuseMap =>
-             BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
-               diffuseMap,
-               state,
-             )
-           );
+      let _getAllDiffuseMapSources = LoadStreamWDBTool.getAllDiffuseMapSources;
 
       beforeEach(() => {
         GLBTool.prepare(sandbox^);
@@ -269,96 +264,130 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
         });
       });
 
-      describe("test before start loop", () => {
-        let _testSetDefaultSource = (sandbox, wdbArrayBuffer, state) => {
-          let state =
-            state^
-            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-          let (default11Image, readStub, _, handleWhenDoneFunc, state) =
-            _prepare(sandbox, wdbArrayBuffer^, state);
-          let sourcesBeforeStartLoop = ref([||]);
-          let handleBeforeStartLoop = (state, rootGameObject) => {
-            sourcesBeforeStartLoop :=
-              _getAllDiffuseMapSources(rootGameObject, state);
+      describe("test before start loop", () =>
+        describe("set default source to all textures", () => {
+          let _testSetDefaultSource =
+              (sandbox, wdbArrayBuffer, getTextureSourceArrFunc, state) => {
+            let state =
+              state^
+              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+            let (default11Image, readStub, _, handleWhenDoneFunc, state) =
+              _prepare(sandbox, wdbArrayBuffer^, state);
+            let sourcesBeforeStartLoop = ref([||]);
+            let handleBeforeStartLoop = (state, rootGameObject) => {
+              sourcesBeforeStartLoop :=
+                getTextureSourceArrFunc(rootGameObject, state);
 
-            let (state, _, _) = DirectionLightTool.createGameObject(state);
-            let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+              let (state, _, _) = DirectionLightTool.createGameObject(state);
+              let (state, _, _, _) =
+                CameraTool.createCameraGameObject(state);
 
-            state;
+              state;
+            };
+
+            LoadStreamWDBTool.read(
+              (
+                default11Image,
+                _buildController(sandbox),
+                handleBeforeStartLoop,
+                handleWhenDoneFunc,
+              ),
+              _buildReader(readStub),
+            )
+            |> then_(() => {
+                 let state = StateAPI.unsafeGetState();
+
+                 let state = DirectorTool.runWithDefaultTime(state);
+
+                 sourcesBeforeStartLoop^
+                 |> expect
+                 == (
+                      ArrayTool.range(
+                        0,
+                        Js.Array.length(sourcesBeforeStartLoop^) - 1,
+                      )
+                      |> Js.Array.map(_ => default11Image)
+                    )
+                 |> resolve;
+               });
           };
 
-          LoadStreamWDBTool.read(
-            (
-              default11Image,
-              _buildController(sandbox),
-              handleBeforeStartLoop,
-              handleWhenDoneFunc,
-            ),
-            _buildReader(readStub),
-          )
-          |> then_(() => {
-               let state = StateAPI.unsafeGetState();
-
-               let state = DirectorTool.runWithDefaultTime(state);
-
-               sourcesBeforeStartLoop^
-               |> expect
-               == (
-                    ArrayTool.range(
-                      0,
-                      Js.Array.length(sourcesBeforeStartLoop^) - 1,
-                    )
-                    |> Js.Array.map(_ => default11Image)
-                  )
-               |> resolve;
-             });
-        };
-
-        describe("test BoxTextured wdb", () =>
-          testPromise("set default source to all basicSourceTextures", () =>
-            _testSetDefaultSource(sandbox, boxTexturedWDBArrayBuffer, state)
-          )
-        );
-
-        describe("test CesiumMilkTruck wdb", () => {
-          beforeEach(() =>
-            state :=
-              RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
+          describe("set default source to all basicSourceTextures", () => {
+            let _testSetDefaultSource = (sandbox, wdbArrayBuffer, state) =>
+              _testSetDefaultSource(
                 sandbox,
-                LoopRenderJobTool.buildNoWorkerJobConfig(),
-                SettingTool.buildBufferConfigStr(
-                  ~geometryPointCount=30000,
-                  ~geometryCount=10,
-                  (),
-                ),
+                wdbArrayBuffer,
+                _getAllDiffuseMapSources,
+                state,
+              );
+
+            testPromise("test BoxTextured wdb", () =>
+              _testSetDefaultSource(sandbox, boxTexturedWDBArrayBuffer, state)
+            );
+
+            describe("test CesiumMilkTruck wdb", () => {
+              beforeEach(() =>
+                state :=
+                  RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
+                    sandbox,
+                    LoopRenderJobTool.buildNoWorkerJobConfig(),
+                    SettingTool.buildBufferConfigStr(
+                      ~geometryPointCount=30000,
+                      ~geometryCount=10,
+                      (),
+                    ),
+                  )
+              );
+
+              testPromise("test", () =>
+                _testSetDefaultSource(
+                  sandbox,
+                  cesiumMilkTruckWDBArrayBuffer,
+                  state,
+                )
+              );
+            });
+
+            testPromise("test AlphaBlendModeTest wdb", () =>
+              _testSetDefaultSource(
+                sandbox,
+                alphaBlendModeTestWDBArrayBuffer,
+                state,
               )
-          );
+            );
 
-          testPromise("set default source to all basicSourceTextures", () =>
-            _testSetDefaultSource(
-              sandbox,
-              cesiumMilkTruckWDBArrayBuffer,
-              state,
-            )
-          );
-        });
+            testPromise("test SuperLowPolyStove wdb", () =>
+              _testSetDefaultSource(sandbox, stoveWDBArrayBuffer, state)
+            );
+          });
 
-        describe("test AlphaBlendModeTest wdb", () =>
-          testPromise("set default source to all basicSourceTextures", () =>
-            _testSetDefaultSource(
-              sandbox,
-              alphaBlendModeTestWDBArrayBuffer,
-              state,
-            )
-          )
-        );
+          describe("set default source to all cubemapTextures", () => {
+            let _testSetDefaultSource = (sandbox, wdbArrayBuffer, state) =>
+              _testSetDefaultSource(
+                sandbox,
+                wdbArrayBuffer,
+                LoadStreamWDBTool.getSkyboxCubemapSourceArr,
+                state,
+              );
 
-        describe("test SuperLowPolyStove wdb", () =>
-          testPromise("set default source to all basicSourceTextures", () =>
-            _testSetDefaultSource(sandbox, stoveWDBArrayBuffer, state)
-          )
-        );
-      });
+            beforeAll(() =>
+              skyboxWDBArrayBuffer :=
+                WDBTool.generateWDB(state => {
+                  let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+                  let (state, cubemapTexture) =
+                    SkyboxTool.prepareCubemapTextureAndSetAllSources(state);
+
+                  (state, rootGameObject);
+                })
+            );
+
+            testPromise("test skybox wdb", () =>
+              _testSetDefaultSource(sandbox, skyboxWDBArrayBuffer, state)
+            );
+          });
+        })
+      );
 
       describe("test load all data in first chunk", () => {
         let _testAddGeometryComponents =
@@ -415,12 +444,8 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             (
               sandbox,
               wdbArrayBuffer,
-              (
-                blobDataLength,
-                arrayBufferByteLength,
-                resultParam,
-                resultSourcesWhenDone,
-              ),
+              (resultBlobData, resultSourcesWhenDone),
+              getTextureSourceArrFunc,
               state,
             ) => {
           let state =
@@ -430,12 +455,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             _prepare(sandbox, wdbArrayBuffer^, state);
           let sourcesWhenDone = ref(Obj.magic([||]));
           let handleWhenDoneFunc = (state, rootGameObject) => {
-            sourcesWhenDone := _getAllDiffuseMapSources(rootGameObject, state);
-
-            GameObjectAPI.hasGameObjectGeometryComponent(
-              _getBoxTexturedMeshGameObject(rootGameObject, state),
-              state,
-            );
+            sourcesWhenDone := getTextureSourceArrFunc(rootGameObject, state);
 
             let (state, _, _) = DirectionLightTool.createGameObject(state);
             let (state, _, _, _) = CameraTool.createCameraGameObject(state);
@@ -462,18 +482,13 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                let (arrayBuffer, param) = Array.unsafe_get(blobData, 0);
 
                (
-                 blobData |> Js.Array.length,
-                 arrayBuffer |> ArrayBuffer.byteLength,
-                 param,
+                 blobData
+                 |> Js.Array.map(((arrayBuffer, param)) =>
+                      (arrayBuffer |> ArrayBuffer.byteLength, param)
+                    ),
                  sourcesWhenDone^,
                )
-               |> expect
-               == (
-                    blobDataLength,
-                    arrayBufferByteLength,
-                    resultParam,
-                    resultSourcesWhenDone,
-                  )
+               |> expect == (resultBlobData, resultSourcesWhenDone)
                |> resolve;
              });
         };
@@ -517,382 +532,797 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
              });
         };
 
-        describe("test BoxTextured wdb", () => {
-          testPromise("add geometry component", () =>
-            _testAddGeometryComponents(
-              sandbox,
-              boxTexturedWDBArrayBuffer,
-              ([||], [|0|]),
-              state,
-            )
-          );
-          testPromise("test set geometry point data", () => {
-            let array_buffer = 1;
-            let element_array_buffer = 2;
-            let static_draw = 3;
-            let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
-            let state =
-              state^
-              |> FakeGlTool.setFakeGl(
-                   FakeGlTool.buildFakeGl(
-                     ~sandbox,
-                     ~array_buffer,
-                     ~element_array_buffer,
-                     ~static_draw,
-                     ~bufferData,
-                     (),
-                   ),
-                 );
-            let (default11Image, readStub, handleBeforeStartLoop, _, state) =
-              _prepare(sandbox, boxTexturedWDBArrayBuffer^, state);
-            let geometryWhenDone = ref(-1);
-            let handleWhenDoneFunc = (state, rootGameObject) => {
-              geometryWhenDone :=
-                GameObjectAPI.unsafeGetGameObjectGeometryComponent(
-                  _getBoxTexturedMeshGameObject(rootGameObject, state),
-                  state,
-                );
-
-              state;
-            };
-
-            LoadStreamWDBTool.read(
+        describe("test skybox wdb", () => {
+          let _testLoadBlobImage =
               (
-                default11Image,
-                _buildController(sandbox),
-                handleBeforeStartLoop,
-                handleWhenDoneFunc,
-              ),
-              _buildReader(readStub),
-            )
-            |> then_(() => {
-                 let state = StateAPI.unsafeGetState();
-
-                 let state = DirectorTool.runWithDefaultTime(state);
-
-                 let geometry = geometryWhenDone^;
-
-                 let vertices =
-                   GeometryAPI.getGeometryVertices(geometry, state);
-                 let normals =
-                   GeometryAPI.getGeometryNormals(geometry, state);
-                 let texCoords =
-                   GeometryAPI.getGeometryTexCoords(geometry, state);
-                 let indices =
-                   GeometryAPI.getGeometryIndices16(geometry, state);
-
-                 (
-                   (vertices, normals, texCoords, indices->Some, None),
-                   (
-                     bufferData
-                     |> withThreeArgs(array_buffer, vertices, static_draw)
-                     |> getCallCount,
-                     bufferData
-                     |> withThreeArgs(array_buffer, normals, static_draw)
-                     |> getCallCount,
-                     bufferData
-                     |> withThreeArgs(array_buffer, texCoords, static_draw)
-                     |> getCallCount,
-                     bufferData
-                     |> withThreeArgs(
-                          element_array_buffer,
-                          indices,
-                          static_draw,
-                        )
-                     |> getCallCount,
-                   ),
-                 )
-                 |> expect
-                 == (GLTFTool.getBoxTexturedGeometryData(), (1, 1, 1, 1))
-                 |> resolve;
-               });
-          });
-          testPromise("load blob image and set it to be source", () =>
-            _testLoadBlobImage(
-              sandbox,
-              boxTexturedWDBArrayBuffer,
-              (
-                1,
-                23516,
-                {"type": "image/png"},
-                [|
-                  {"name": "CesiumLogoFlat.png", "src": "object_url0"}
-                  |> Obj.magic,
-                |],
-              ),
-              state,
-            )
-          );
-          testPromise("draw the gameObject", () =>
-            _testDraw(sandbox, boxTexturedWDBArrayBuffer, 1, state)
-          );
-        });
-
-        describe("test CesiumMilkTruck wdb", () => {
-          beforeEach(() =>
-            state :=
-              RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
                 sandbox,
-                LoopRenderJobTool.buildNoWorkerJobConfig(),
-                SettingTool.buildBufferConfigStr(
-                  ~geometryPointCount=30000,
-                  ~geometryCount=10,
-                  (),
-                ),
+                wdbArrayBuffer,
+                (resultBlobData, resultSourcesWhenDone),
+                state,
+              ) =>
+            _testLoadBlobImage(
+              sandbox,
+              wdbArrayBuffer,
+              (resultBlobData, resultSourcesWhenDone),
+              LoadStreamWDBTool.getSkyboxCubemapSourceArr,
+              state,
+            );
+
+          beforeEach(() =>
+            state := LoadStreamWDBTool.prepareStateForSkybox(sandbox)
+          );
+
+          beforeAll(() =>
+            skyboxWDBArrayBuffer :=
+              WDBTool.generateWDB(state => {
+                let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+                let (state, cubemapTexture) =
+                  SkyboxTool.prepareCubemapTextureAndSetAllSources(state);
+
+                (state, rootGameObject);
+              })
+          );
+
+          testPromise("load blob image and set it to be source", () =>
+            _testLoadBlobImage(
+              sandbox,
+              skyboxWDBArrayBuffer,
+              (
+                [|
+                  (227, {"type": "image/png"}),
+                  (167, {"type": "image/png"}),
+                  (145, {"type": "image/png"}),
+                  (143, {"type": "image/png"}),
+                  (161, {"type": "image/png"}),
+                  (151, {"type": "image/jpeg"}),
+                |],
+                [|
+                  GLBTool.createFakeImage(
+                    ~name="image_0",
+                    ~src="object_url0",
+                    (),
+                  ),
+                  GLBTool.createFakeImage(
+                    ~name="image_1",
+                    ~src="object_url1",
+                    (),
+                  ),
+                  GLBTool.createFakeImage(
+                    ~name="image_2",
+                    ~src="object_url2",
+                    (),
+                  ),
+                  GLBTool.createFakeImage(
+                    ~name="image_3",
+                    ~src="object_url3",
+                    (),
+                  ),
+                  GLBTool.createFakeImage(
+                    ~name="image_4",
+                    ~src="object_url4",
+                    (),
+                  ),
+                  GLBTool.createFakeImage(
+                    ~name="image_5",
+                    ~src="object_url5",
+                    (),
+                  ),
+                |],
+              ),
+              state,
+            )
+          );
+          testPromise("draw the gameObject", () =>
+            _testDraw(sandbox, skyboxWDBArrayBuffer, 1, state)
+          );
+          testPromise("mark skybox->cubemap texture need update", () => {
+            let state =
+              state^
+              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+            let (default11Image, readStub, handleBeforeStartLoop, _, state) =
+              _prepare(sandbox, skyboxWDBArrayBuffer^, state);
+            let handleWhenDoneFunc = (state, rootGameObject) => state;
+
+            LoadStreamWDBTool.read(
+              (
+                default11Image,
+                _buildController(sandbox),
+                handleBeforeStartLoop,
+                handleWhenDoneFunc,
+              ),
+              _buildReader(readStub),
+            )
+            |> then_(() => {
+                 let state = StateAPI.unsafeGetState();
+
+                 CubemapTextureTool.getIsNeedUpdate(
+                   SceneTool.unsafeGetCubemapTexture(state),
+                   state,
+                 )
+                 |> expect == true
+                 |> resolve;
+               });
+          });
+        });
+
+        describe("test glb->wdb", () => {
+          let _testLoadBlobImage =
+              (
+                sandbox,
+                wdbArrayBuffer,
+                (resultBlobData, resultSourcesWhenDone),
+                state,
+              ) =>
+            _testLoadBlobImage(
+              sandbox,
+              wdbArrayBuffer,
+              (resultBlobData, resultSourcesWhenDone),
+              _getAllDiffuseMapSources,
+              state,
+            );
+
+          describe("test BoxTextured wdb", () => {
+            testPromise("add geometry component", () =>
+              _testAddGeometryComponents(
+                sandbox,
+                boxTexturedWDBArrayBuffer,
+                ([||], [|0|]),
+                state,
               )
-          );
+            );
+            testPromise("test set geometry point data", () => {
+              let array_buffer = 1;
+              let element_array_buffer = 2;
+              let static_draw = 3;
+              let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                state^
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(
+                       ~sandbox,
+                       ~array_buffer,
+                       ~element_array_buffer,
+                       ~static_draw,
+                       ~bufferData,
+                       (),
+                     ),
+                   );
+              let (default11Image, readStub, handleBeforeStartLoop, _, state) =
+                _prepare(sandbox, boxTexturedWDBArrayBuffer^, state);
+              let geometryWhenDone = ref(-1);
+              let handleWhenDoneFunc = (state, rootGameObject) => {
+                geometryWhenDone :=
+                  GameObjectAPI.unsafeGetGameObjectGeometryComponent(
+                    _getBoxTexturedMeshGameObject(rootGameObject, state),
+                    state,
+                  );
 
-          testPromise("add geometry component", () =>
-            _testAddGeometryComponents(
-              sandbox,
-              cesiumMilkTruckWDBArrayBuffer,
-              ([||], [|1, 2, 3, 0, 0|]),
-              state,
-            )
-          );
-          testPromise("test set geometry point data", () => {
-            let state =
-              state^
-              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-            let (default11Image, readStub, handleBeforeStartLoop, _, state) =
-              _prepare(sandbox, cesiumMilkTruckWDBArrayBuffer^, state);
-            let rootGameObjectWhenDone = ref(-1);
-            let handleWhenDoneFunc = (state, rootGameObject) => {
-              rootGameObjectWhenDone := rootGameObject;
+                state;
+              };
 
-              state;
-            };
+              LoadStreamWDBTool.read(
+                (
+                  default11Image,
+                  _buildController(sandbox),
+                  handleBeforeStartLoop,
+                  handleWhenDoneFunc,
+                ),
+                _buildReader(readStub),
+              )
+              |> then_(() => {
+                   let state = StateAPI.unsafeGetState();
 
-            LoadStreamWDBTool.read(
-              (
-                default11Image,
-                _buildController(sandbox),
-                handleBeforeStartLoop,
-                handleWhenDoneFunc,
-              ),
-              _buildReader(readStub),
-            )
-            |> then_(() => {
-                 let state = StateAPI.unsafeGetState();
+                   let state = DirectorTool.runWithDefaultTime(state);
 
-                 let state = DirectorTool.runWithDefaultTime(state);
+                   let geometry = geometryWhenDone^;
 
-                 let dataArr =
-                   _getAllGeometryData(rootGameObjectWhenDone^, state);
+                   let vertices =
+                     GeometryAPI.getGeometryVertices(geometry, state);
+                   let normals =
+                     GeometryAPI.getGeometryNormals(geometry, state);
+                   let texCoords =
+                     GeometryAPI.getGeometryTexCoords(geometry, state);
+                   let indices =
+                     GeometryAPI.getGeometryIndices16(geometry, state);
 
-                 let dataMap = GLTFTool.getTruckGeometryData();
-
-                 dataArr
-                 |> expect
-                 == [|
-                      (
-                        "Cesium_Milk_Truck_0",
-                        dataMap
-                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                             "Cesium_Milk_Truck_0",
-                           ),
-                      ),
-                      (
-                        "Cesium_Milk_Truck_1",
-                        dataMap
-                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                             "Cesium_Milk_Truck_1",
-                           ),
-                      ),
-                      (
-                        "Cesium_Milk_Truck_2",
-                        dataMap
-                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                             "Cesium_Milk_Truck_2",
-                           ),
-                      ),
-                      (
-                        "Wheels",
-                        dataMap
-                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                             "Wheels",
-                           ),
-                      ),
-                      (
-                        "Wheels",
-                        dataMap
-                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                             "Wheels",
-                           ),
-                      ),
-                    |]
-                 |> resolve;
-               });
+                   (
+                     (vertices, normals, texCoords, indices->Some, None),
+                     (
+                       bufferData
+                       |> withThreeArgs(array_buffer, vertices, static_draw)
+                       |> getCallCount,
+                       bufferData
+                       |> withThreeArgs(array_buffer, normals, static_draw)
+                       |> getCallCount,
+                       bufferData
+                       |> withThreeArgs(array_buffer, texCoords, static_draw)
+                       |> getCallCount,
+                       bufferData
+                       |> withThreeArgs(
+                            element_array_buffer,
+                            indices,
+                            static_draw,
+                          )
+                       |> getCallCount,
+                     ),
+                   )
+                   |> expect
+                   == (GLTFTool.getBoxTexturedGeometryData(), (1, 1, 1, 1))
+                   |> resolve;
+                 });
+            });
+            testPromise("load blob image and set it to be source", () =>
+              _testLoadBlobImage(
+                sandbox,
+                boxTexturedWDBArrayBuffer,
+                (
+                  [|(23516, {"type": "image/png"})|],
+                  [|
+                    GLBTool.createFakeImage(
+                      ~name="CesiumLogoFlat.png",
+                      ~src="object_url0",
+                      (),
+                    ),
+                  |],
+                ),
+                state,
+              )
+            );
+            testPromise("draw the gameObject", () =>
+              _testDraw(sandbox, boxTexturedWDBArrayBuffer, 1, state)
+            );
           });
-          testPromise("load blob image and set it to be source", () =>
-            _testLoadBlobImage(
-              sandbox,
-              cesiumMilkTruckWDBArrayBuffer,
-              (
-                1,
-                427633,
-                {"type": "image/png"},
-                [|
-                  {"name": "image_0", "src": "object_url0"} |> Obj.magic,
-                  {"name": "image_0", "src": "object_url0"} |> Obj.magic,
-                  {"name": "image_0", "src": "object_url0"} |> Obj.magic,
-                |],
-              ),
-              state,
-            )
-          );
-          testPromise("draw the gameObject", () =>
-            _testDraw(sandbox, cesiumMilkTruckWDBArrayBuffer, 5, state)
-          );
-        });
 
-        describe("test AlphaBlendModeTest wdb", () => {
-          testPromise("add geometry component", () =>
-            _testAddGeometryComponents(
-              sandbox,
-              alphaBlendModeTestWDBArrayBuffer,
-              ([||], [|4, 7, 5, 1, 8, 0, 3, 6, 2|]),
-              state,
-            )
-          );
-          testPromise("test set geometry point data", () => {
-            let state =
-              state^
-              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-            let (default11Image, readStub, handleBeforeStartLoop, _, state) =
-              _prepare(sandbox, alphaBlendModeTestWDBArrayBuffer^, state);
-            let rootGameObjectWhenDone = ref(-1);
-            let handleWhenDoneFunc = (state, rootGameObject) => {
-              rootGameObjectWhenDone := rootGameObject;
+          describe("test CesiumMilkTruck wdb", () => {
+            beforeEach(() =>
+              state :=
+                RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
+                  sandbox,
+                  LoopRenderJobTool.buildNoWorkerJobConfig(),
+                  SettingTool.buildBufferConfigStr(
+                    ~geometryPointCount=30000,
+                    ~geometryCount=10,
+                    (),
+                  ),
+                )
+            );
 
-              state;
-            };
+            testPromise("add geometry component", () =>
+              _testAddGeometryComponents(
+                sandbox,
+                cesiumMilkTruckWDBArrayBuffer,
+                ([||], [|1, 2, 3, 0, 0|]),
+                state,
+              )
+            );
+            testPromise("test set geometry point data", () => {
+              let state =
+                state^
+                |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+              let (default11Image, readStub, handleBeforeStartLoop, _, state) =
+                _prepare(sandbox, cesiumMilkTruckWDBArrayBuffer^, state);
+              let rootGameObjectWhenDone = ref(-1);
+              let handleWhenDoneFunc = (state, rootGameObject) => {
+                rootGameObjectWhenDone := rootGameObject;
 
-            LoadStreamWDBTool.read(
-              (
-                default11Image,
-                _buildController(sandbox),
-                handleBeforeStartLoop,
-                handleWhenDoneFunc,
-              ),
-              _buildReader(readStub),
-            )
-            |> then_(() => {
-                 let state = StateAPI.unsafeGetState();
+                state;
+              };
 
-                 let state = DirectorTool.runWithDefaultTime(state);
+              LoadStreamWDBTool.read(
+                (
+                  default11Image,
+                  _buildController(sandbox),
+                  handleBeforeStartLoop,
+                  handleWhenDoneFunc,
+                ),
+                _buildReader(readStub),
+              )
+              |> then_(() => {
+                   let state = StateAPI.unsafeGetState();
 
-                 let dataArr =
-                   _getAllGeometryData(rootGameObjectWhenDone^, state);
+                   let state = DirectorTool.runWithDefaultTime(state);
 
-                 let dataMap = GLTFTool.getAlphaBlendModeTestGeometryData();
+                   let dataArr =
+                     _getAllGeometryData(rootGameObjectWhenDone^, state);
 
-                 (dataArr |> Js.Array.length, dataArr[1])
-                 |> expect
-                 == (
-                      9,
-                      (
-                        "DecalBlendMesh",
-                        dataMap
-                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                             "DecalBlendMesh",
-                           ),
-                      ),
-                    )
-                 |> resolve;
-               });
+                   let dataMap = GLTFTool.getTruckGeometryData();
+
+                   dataArr
+                   |> expect
+                   == [|
+                        (
+                          "Cesium_Milk_Truck_0",
+                          dataMap
+                          |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                               "Cesium_Milk_Truck_0",
+                             ),
+                        ),
+                        (
+                          "Cesium_Milk_Truck_1",
+                          dataMap
+                          |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                               "Cesium_Milk_Truck_1",
+                             ),
+                        ),
+                        (
+                          "Cesium_Milk_Truck_2",
+                          dataMap
+                          |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                               "Cesium_Milk_Truck_2",
+                             ),
+                        ),
+                        (
+                          "Wheels",
+                          dataMap
+                          |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                               "Wheels",
+                             ),
+                        ),
+                        (
+                          "Wheels",
+                          dataMap
+                          |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                               "Wheels",
+                             ),
+                        ),
+                      |]
+                   |> resolve;
+                 });
+            });
+            testPromise("load blob image and set it to be source", () =>
+              _testLoadBlobImage(
+                sandbox,
+                cesiumMilkTruckWDBArrayBuffer,
+                (
+                  [|(427633, {"type": "image/png"})|],
+                  [|
+                    GLBTool.createFakeImage(
+                      ~name="image_0",
+                      ~src="object_url0",
+                      (),
+                    ),
+                    GLBTool.createFakeImage(
+                      ~name="image_0",
+                      ~src="object_url0",
+                      (),
+                    ),
+                    GLBTool.createFakeImage(
+                      ~name="image_0",
+                      ~src="object_url0",
+                      (),
+                    ),
+                  |],
+                ),
+                state,
+              )
+            );
+            testPromise("draw the gameObject", () =>
+              _testDraw(sandbox, cesiumMilkTruckWDBArrayBuffer, 5, state)
+            );
           });
-          testPromise("load blob image and set it to be source", () =>
-            _testLoadBlobImage(
-              sandbox,
-              alphaBlendModeTestWDBArrayBuffer,
-              (
-                2,
-                702714,
-                {"type": "image/jpeg"},
-                [|
-                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
-                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
-                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
-                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
-                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
-                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
-                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
-                  {"name": "image_3", "src": "object_url1"} |> Obj.magic,
-                  {"name": "image_2", "src": "object_url0"} |> Obj.magic,
-                |],
-              ),
-              state,
-            )
-          );
-          testPromise("draw the gameObject", () =>
-            _testDraw(sandbox, alphaBlendModeTestWDBArrayBuffer, 9, state)
-          );
-        });
 
-        describe("test SuperLowPolyStove wdb", () => {
-          testPromise("add geometry component", () =>
-            _testAddGeometryComponents(
-              sandbox,
-              stoveWDBArrayBuffer,
-              ([||], [|0, 1|]),
-              state,
-            )
-          );
-          testPromise("test set geometry point data", () => {
-            let state =
-              state^
-              |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
-            let (default11Image, readStub, handleBeforeStartLoop, _, state) =
-              _prepare(sandbox, stoveWDBArrayBuffer^, state);
-            let rootGameObjectWhenDone = ref(-1);
-            let handleWhenDoneFunc = (state, rootGameObject) => {
-              rootGameObjectWhenDone := rootGameObject;
+          describe("test AlphaBlendModeTest wdb", () => {
+            testPromise("add geometry component", () =>
+              _testAddGeometryComponents(
+                sandbox,
+                alphaBlendModeTestWDBArrayBuffer,
+                ([||], [|4, 7, 5, 1, 8, 0, 3, 6, 2|]),
+                state,
+              )
+            );
+            testPromise("test set geometry point data", () => {
+              let state =
+                state^
+                |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+              let (default11Image, readStub, handleBeforeStartLoop, _, state) =
+                _prepare(sandbox, alphaBlendModeTestWDBArrayBuffer^, state);
+              let rootGameObjectWhenDone = ref(-1);
+              let handleWhenDoneFunc = (state, rootGameObject) => {
+                rootGameObjectWhenDone := rootGameObject;
 
-              state;
-            };
+                state;
+              };
 
-            LoadStreamWDBTool.read(
-              (
-                default11Image,
-                _buildController(sandbox),
-                handleBeforeStartLoop,
-                handleWhenDoneFunc,
-              ),
-              _buildReader(readStub),
-            )
-            |> then_(() => {
-                 let state = StateAPI.unsafeGetState();
+              LoadStreamWDBTool.read(
+                (
+                  default11Image,
+                  _buildController(sandbox),
+                  handleBeforeStartLoop,
+                  handleWhenDoneFunc,
+                ),
+                _buildReader(readStub),
+              )
+              |> then_(() => {
+                   let state = StateAPI.unsafeGetState();
 
-                 let state = DirectorTool.runWithDefaultTime(state);
+                   let state = DirectorTool.runWithDefaultTime(state);
 
-                 let dataArr =
-                   _getAllGeometryData(rootGameObjectWhenDone^, state);
+                   let dataArr =
+                     _getAllGeometryData(rootGameObjectWhenDone^, state);
 
-                 let dataMap = GLTFTool.getSuperLowPolyStoveGeometryData();
+                   let dataMap = GLTFTool.getAlphaBlendModeTestGeometryData();
 
-                 (dataArr |> Js.Array.length, dataArr[1])
-                 |> expect
-                 == (
-                      2,
-                      (
-                        "Stove_1",
-                        dataMap
-                        |> WonderCommonlib.MutableHashMapService.unsafeGet(
-                             "Stove_1",
-                           ),
-                      ),
-                    )
-                 |> resolve;
-               });
+                   (dataArr |> Js.Array.length, dataArr[1])
+                   |> expect
+                   == (
+                        9,
+                        (
+                          "DecalBlendMesh",
+                          dataMap
+                          |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                               "DecalBlendMesh",
+                             ),
+                        ),
+                      )
+                   |> resolve;
+                 });
+            });
+            testPromise("load blob image and set it to be source", () =>
+              _testLoadBlobImage(
+                sandbox,
+                alphaBlendModeTestWDBArrayBuffer,
+                (
+                  [|
+                    (702714, {"type": "image/jpeg"}),
+                    (65522, {"type": "image/png"}),
+                  |],
+                  [|
+                    GLBTool.createFakeImage(
+                      ~name="image_3",
+                      ~src="object_url1",
+                      (),
+                    ),
+                    GLBTool.createFakeImage(
+                      ~name="image_3",
+                      ~src="object_url1",
+                      (),
+                    ),
+                    GLBTool.createFakeImage(
+                      ~name="image_3",
+                      ~src="object_url1",
+                      (),
+                    ),
+                    GLBTool.createFakeImage(
+                      ~name="image_3",
+                      ~src="object_url1",
+                      (),
+                    ),
+                    GLBTool.createFakeImage(
+                      ~name="image_3",
+                      ~src="object_url1",
+                      (),
+                    ),
+                    GLBTool.createFakeImage(
+                      ~name="image_3",
+                      ~src="object_url1",
+                      (),
+                    ),
+                    GLBTool.createFakeImage(
+                      ~name="image_3",
+                      ~src="object_url1",
+                      (),
+                    ),
+                    GLBTool.createFakeImage(
+                      ~name="image_3",
+                      ~src="object_url1",
+                      (),
+                    ),
+                    GLBTool.createFakeImage(
+                      ~name="image_2",
+                      ~src="object_url0",
+                      (),
+                    ),
+                  |],
+                ),
+                state,
+              )
+            );
+            testPromise("draw the gameObject", () =>
+              _testDraw(sandbox, alphaBlendModeTestWDBArrayBuffer, 9, state)
+            );
           });
-          testPromise("draw the gameObject", () =>
-            _testDraw(sandbox, stoveWDBArrayBuffer, 2, state)
-          );
+
+          describe("test SuperLowPolyStove wdb", () => {
+            testPromise("add geometry component", () =>
+              _testAddGeometryComponents(
+                sandbox,
+                stoveWDBArrayBuffer,
+                ([||], [|0, 1|]),
+                state,
+              )
+            );
+            testPromise("test set geometry point data", () => {
+              let state =
+                state^
+                |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+              let (default11Image, readStub, handleBeforeStartLoop, _, state) =
+                _prepare(sandbox, stoveWDBArrayBuffer^, state);
+              let rootGameObjectWhenDone = ref(-1);
+              let handleWhenDoneFunc = (state, rootGameObject) => {
+                rootGameObjectWhenDone := rootGameObject;
+
+                state;
+              };
+
+              LoadStreamWDBTool.read(
+                (
+                  default11Image,
+                  _buildController(sandbox),
+                  handleBeforeStartLoop,
+                  handleWhenDoneFunc,
+                ),
+                _buildReader(readStub),
+              )
+              |> then_(() => {
+                   let state = StateAPI.unsafeGetState();
+
+                   let state = DirectorTool.runWithDefaultTime(state);
+
+                   let dataArr =
+                     _getAllGeometryData(rootGameObjectWhenDone^, state);
+
+                   let dataMap = GLTFTool.getSuperLowPolyStoveGeometryData();
+
+                   (dataArr |> Js.Array.length, dataArr[1])
+                   |> expect
+                   == (
+                        2,
+                        (
+                          "Stove_1",
+                          dataMap
+                          |> WonderCommonlib.MutableHashMapService.unsafeGet(
+                               "Stove_1",
+                             ),
+                        ),
+                      )
+                   |> resolve;
+                 });
+            });
+            testPromise("draw the gameObject", () =>
+              _testDraw(sandbox, stoveWDBArrayBuffer, 2, state)
+            );
+          });
         });
       });
 
       describe("test load in multiple chunks", () => {
+        describe(
+          "test skybox and one gameObject with map(basic source texture) wdb",
+          () =>
+          describe(
+            {|
+            load blob image;
+            set it to be source;
+            |},
+            () => {
+              let _testLoadBlobImage =
+                  (
+                    sandbox,
+                    (resultBlobData, resultSourcesWhenDone),
+                    prepareFunc,
+                    state,
+                  ) => {
+                let state =
+                  state^
+                  |> FakeGlTool.setFakeGl(
+                       FakeGlTool.buildFakeGl(~sandbox, ()),
+                     );
+                let (
+                  default11Image,
+                  readStub,
+                  handleBeforeStartLoop,
+                  _,
+                  state,
+                ) =
+                  prepareFunc(sandbox, state);
+                let sourcesWhenDone = ref([||]);
+
+                let handleWhenDoneFunc = (state, rootGameObject) => {
+                  sourcesWhenDone :=
+                    LoadStreamWDBTool.getSkyboxCubemapSourceAndAllDiffuseMapSourcesArr(
+                      rootGameObject,
+                      state,
+                    );
+
+                  let (state, _, _) =
+                    DirectionLightTool.createGameObject(state);
+                  let (state, _, _, _) =
+                    CameraTool.createCameraGameObject(state);
+
+                  state;
+                };
+
+                LoadStreamWDBTool.read(
+                  (
+                    default11Image,
+                    _buildController(sandbox),
+                    handleBeforeStartLoop,
+                    handleWhenDoneFunc,
+                  ),
+                  _buildReader(readStub),
+                )
+                |> then_(() => {
+                     let state = StateAPI.unsafeGetState();
+
+                     let state = DirectorTool.runWithDefaultTime(state);
+
+                     let blobData = _getBlobData(.);
+
+                     let (arrayBuffer, param) =
+                       Array.unsafe_get(blobData, 0);
+
+                     (
+                       blobData
+                       |> Js.Array.map(((arrayBuffer, param)) =>
+                            (arrayBuffer |> ArrayBuffer.byteLength, param)
+                          ),
+                       sourcesWhenDone^,
+                     )
+                     |> expect == (resultBlobData, resultSourcesWhenDone)
+                     |> resolve;
+                   });
+              };
+
+              beforeEach(() =>
+                state := LoadStreamWDBTool.prepareStateForSkybox(sandbox)
+              );
+
+              beforeAll(() =>
+                skyboxWDBArrayBuffer :=
+                  WDBTool.generateWDB(state => {
+                    let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+                    let (state, cubemapTexture) =
+                      SkyboxTool.prepareCubemapTextureAndSetAllSources(state);
+
+                    let sceneGameObjectTransform =
+                      GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                        rootGameObject,
+                        state,
+                      );
+
+                    let (state, gameObject1, transform1) =
+                      LoadStreamWDBTool.createGameObjectWithDiffuseMap(state);
+
+                    let state =
+                      state
+                      |> TransformAPI.setTransformParent(
+                           Js.Nullable.return(sceneGameObjectTransform),
+                           transform1,
+                         );
+
+                    (state, rootGameObject);
+                  })
+              );
+
+              describe(
+                {|
+            chunk1: header + json + stream + stream_chunk1-stream_chunk4
+            chunk2: stream_chunk5->stream_chunk11 + a part of stream_chunk12(all are image chunks)
+            chunk3: other stream_chunk12(basic source texture image chunk)
+            done
+            |},
+                () => {
+                  let _prepare = (sandbox, state) => {
+                    let readStub = createEmptyStubWithJsObjSandbox(sandbox);
+                    let readStub =
+                      readStub
+                      |> onCall(0)
+                      |> returns(
+                           _buildChunkData(
+                             ~arrayBuffer=
+                               (
+                                 skyboxWDBArrayBuffer^
+                                 |> ArrayBuffer.slice(
+                                      ~start=0,
+                                      ~end_=948 + 124 + 840,
+                                    )
+                               )
+                               ->Some,
+                             (),
+                           ),
+                         )
+                      |> onCall(1)
+                      |> returns(
+                           _buildChunkData(
+                             ~arrayBuffer=
+                               (
+                                 cesiumMilkTruckWDBArrayBuffer^
+                                 |> ArrayBuffer.slice(
+                                      ~start=948 + 124 + 840,
+                                      ~end_=948 + 124 + 1855,
+                                    )
+                               )
+                               ->Some,
+                             (),
+                           ),
+                         )
+                      |> onCall(2)
+                      |> returns(
+                           _buildChunkData(
+                             ~arrayBuffer=
+                               (
+                                 skyboxWDBArrayBuffer^
+                                 |> ArrayBuffer.sliceFrom(948 + 124 + 1855)
+                               )
+                               ->Some,
+                             (),
+                           ),
+                         )
+                      |> onCall(3)
+                      |> returns(
+                           _buildChunkData(
+                             ~arrayBuffer=None,
+                             ~done_=true,
+                             (),
+                           ),
+                         );
+
+                    _prepareWithReadStub(sandbox, readStub, state);
+                  };
+
+                  testPromise("test", () =>
+                    _testLoadBlobImage(
+                      sandbox,
+                      (
+                        [|
+                          (227, {"type": "image/png"}),
+                          (167, {"type": "image/png"}),
+                          (145, {"type": "image/png"}),
+                          (143, {"type": "image/png"}),
+                          (161, {"type": "image/png"}),
+                          (151, {"type": "image/jpeg"}),
+                          (129, {"type": "image/png"}),
+                        |],
+                        [|
+                          GLBTool.createFakeImage(
+                            ~name="image_1",
+                            ~src="object_url1",
+                            (),
+                          ),
+                          GLBTool.createFakeImage(
+                            ~name="image_2",
+                            ~src="object_url2",
+                            (),
+                          ),
+                          GLBTool.createFakeImage(
+                            ~name="image_3",
+                            ~src="object_url3",
+                            (),
+                          ),
+                          GLBTool.createFakeImage(
+                            ~name="image_4",
+                            ~src="object_url4",
+                            (),
+                          ),
+                          GLBTool.createFakeImage(
+                            ~name="image_5",
+                            ~src="object_url5",
+                            (),
+                          ),
+                          GLBTool.createFakeImage(
+                            ~name="image_6",
+                            ~src="object_url6",
+                            (),
+                          ),
+                          GLBTool.createFakeImage(
+                            ~name="image_0",
+                            ~src="object_url0",
+                            (),
+                          ),
+                        |],
+                      ),
+                      _prepare,
+                      state,
+                    )
+                  );
+                },
+              );
+            },
+          )
+        );
+
         describe("test CesiumMilkTruck wdb", () => {
           let _testSetGeometryPointData =
               (sandbox, dataCount, prepareFunc, state) => {
@@ -1209,9 +1639,21 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     (
                       1,
                       [|
-                        {"name": "image_0", "src": "object_url0"} |> Obj.magic,
-                        {"name": "image_0", "src": "object_url0"} |> Obj.magic,
-                        {"name": "image_0", "src": "object_url0"} |> Obj.magic,
+                        GLBTool.createFakeImage(
+                          ~name="image_0",
+                          ~src="object_url0",
+                          (),
+                        ),
+                        GLBTool.createFakeImage(
+                          ~name="image_0",
+                          ~src="object_url0",
+                          (),
+                        ),
+                        GLBTool.createFakeImage(
+                          ~name="image_0",
+                          ~src="object_url0",
+                          (),
+                        ),
                       |],
                     ),
                     _prepare,
@@ -1295,9 +1737,21 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     (
                       1,
                       [|
-                        {"name": "image_0", "src": "object_url0"} |> Obj.magic,
-                        {"name": "image_0", "src": "object_url0"} |> Obj.magic,
-                        {"name": "image_0", "src": "object_url0"} |> Obj.magic,
+                        GLBTool.createFakeImage(
+                          ~name="image_0",
+                          ~src="object_url0",
+                          (),
+                        ),
+                        GLBTool.createFakeImage(
+                          ~name="image_0",
+                          ~src="object_url0",
+                          (),
+                        ),
+                        GLBTool.createFakeImage(
+                          ~name="image_0",
+                          ~src="object_url0",
+                          (),
+                        ),
                       |],
                     ),
                     _prepare,
@@ -2069,7 +2523,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
       });
 
       describe("test set bin buffer chunk data", () =>
-        describe("test set image data", () =>
+        describe("test set basic source texture->image data", () =>
           test("mark need update", () => {
             let image = Obj.magic(51);
             let basicSourceTextureArr = [|0, 1|];

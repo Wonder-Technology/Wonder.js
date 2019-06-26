@@ -571,7 +571,7 @@ let _batchSetCubemapTextureName =
   cubemapTextureArr
   |> ArrayService.reduceOneParamValidi(
        (. state, cubemapTexture, index) =>
-         NameBasicSourceTextureMainService.setName(
+         NameCubemapTextureMainService.setName(
            cubemapTexture,
            Array.unsafe_get(cubemapTextures, index).name,
            state,

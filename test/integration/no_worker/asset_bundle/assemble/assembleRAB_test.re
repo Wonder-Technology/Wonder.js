@@ -98,8 +98,10 @@ let _ =
                       state,
                     )
                     |> expect
-                    == (
-                         {"name": imageName, "src": "object_url0"} |> Obj.magic
+                    == GLBTool.createFakeImage(
+                         ~name=imageName,
+                         ~src="object_url0",
+                         (),
                        )
                     |> resolve;
                   });
@@ -207,9 +209,16 @@ let _ =
                     )
                     |> expect
                     == (
-                         {"name": imageName, "src": "object_url0"} |> Obj.magic,
-                         {"name": imageName, "src": "object_url0"}
-                         |> Obj.magic,
+                         GLBTool.createFakeImage(
+                           ~name=imageName,
+                           ~src="object_url0",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name=imageName,
+                           ~src="object_url0",
+                           (),
+                         ),
                        )
                     |> resolve;
                   });

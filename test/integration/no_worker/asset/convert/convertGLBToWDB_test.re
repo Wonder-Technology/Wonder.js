@@ -512,7 +512,6 @@ let _ =
           (),
         )
       );
-
       test("test imgui", () => {
         let customData = {| [1, 2] |};
         let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
@@ -527,6 +526,19 @@ let _ =
               scene.imgui
               |> expect
               == Some({customData: customData |> Obj.magic, imguiFunc}),
+          (),
+        );
+      });
+      test("test skybox", () => {
+        let cubemap = 0;
+
+        ConvertGLBTool.testGLTFResultByGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(~cubemap=0, ()),
+          ~state,
+          ~testFunc=
+            ({scene}) => scene.skybox |> expect == Some({cubemap: cubemap}),
           (),
         );
       });
@@ -1236,7 +1248,10 @@ let _ =
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=
-              ConvertGLBTool.buildGLTFJsonOfTexture(~flipY=true, ()),
+              ConvertGLBTool.buildGLTFJsonOfBasicSourceTexture(
+                ~flipY=true,
+                (),
+              ),
             ~state,
             ~testFunc=
               ({basicSourceTextures}) =>
@@ -1271,7 +1286,7 @@ let _ =
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=
-              ConvertGLBTool.buildGLTFJsonOfTexture(
+              ConvertGLBTool.buildGLTFJsonOfBasicSourceTexture(
                 ~format=TextureType.Rgbas3tcdxt1,
                 (),
               ),
@@ -1307,7 +1322,7 @@ let _ =
           ConvertGLBTool.testGLTFResultByGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=
-              ConvertGLBTool.buildGLTFJsonOfTexture(~type_=2, ()),
+              ConvertGLBTool.buildGLTFJsonOfBasicSourceTexture(~type_=2, ()),
             ~state,
             ~testFunc=
               ({basicSourceTextures}) =>
@@ -1378,6 +1393,143 @@ let _ =
              |]
         )
       );
+    });
+
+    describe("test cubemapTextures", () => {
+      test("if not has extras, not has cubemapTexture data", () =>
+        ConvertGLBTool.testResult(
+          sandbox^,
+          GLBTool.buildGLBFilePath("BoxTextured.glb"),
+          (({cubemapTextures}, binBuffer)) =>
+          cubemapTextures |> expect == [||]
+        )
+      );
+
+      describe("else", () => {
+        describe("test name", () => {
+          test("if has no name, set to default", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfCubemapTexture(~name=None, ()),
+              ~state,
+              ~testFunc=
+                ({cubemapTextures}) =>
+                  cubemapTextures
+                  |> expect
+                  == [|
+                       ConvertGLBTool.buildCubemapTexture(
+                         ~name=ConvertCommon.buildDefaultCubemapTextureName(),
+                         (),
+                       ),
+                     |],
+              (),
+            )
+          );
+          test("else, set to it", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfCubemapTexture(
+                  ~name=Some("aaa"),
+                  (),
+                ),
+              ~state,
+              ~testFunc=
+                ({cubemapTextures}) =>
+                  cubemapTextures
+                  |> expect
+                  == [|ConvertGLBTool.buildCubemapTexture(~name="aaa", ())|],
+              (),
+            )
+          );
+        });
+
+        test("test flipY", () =>
+          ConvertGLBTool.testGLTFResultByGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfCubemapTexture(~flipY=true, ()),
+            ~state,
+            ~testFunc=
+              ({cubemapTextures}) =>
+                cubemapTextures
+                |> expect
+                == [|ConvertGLBTool.buildCubemapTexture(~flipY=true, ())|],
+            (),
+          )
+        );
+
+        describe("test format", () =>
+          test("test", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfCubemapTexture(
+                  ~pxFormat=BufferCubemapTextureService.getDefaultFormat(),
+                  ~nxFormat=TextureType.Rgb,
+                  ~pyFormat=TextureType.Alpha,
+                  ~nyFormat=TextureType.Alpha,
+                  ~pzFormat=TextureType.Alpha,
+                  ~nzFormat=TextureType.Alpha,
+                  (),
+                ),
+              ~state,
+              ~testFunc=
+                ({cubemapTextures}) =>
+                  cubemapTextures
+                  |> expect
+                  == [|
+                       ConvertGLBTool.buildCubemapTexture(
+                         ~pxFormat=
+                           BufferCubemapTextureService.getDefaultFormat(),
+                         ~nxFormat=TextureType.Rgb,
+                         ~pyFormat=TextureType.Alpha,
+                         ~nyFormat=TextureType.Alpha,
+                         ~pzFormat=TextureType.Alpha,
+                         ~nzFormat=TextureType.Alpha,
+                         (),
+                       ),
+                     |],
+              (),
+            )
+          )
+        );
+
+        describe("test type", () =>
+          test("test", () =>
+            ConvertGLBTool.testGLTFResultByGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfCubemapTexture(
+                  ~nxType=0,
+                  ~pyType=0,
+                  ~nyType=1,
+                  ~pzType=2,
+                  ~nzType=1,
+                  (),
+                ),
+              ~state,
+              ~testFunc=
+                ({cubemapTextures}) =>
+                  cubemapTextures
+                  |> expect
+                  == [|
+                       ConvertGLBTool.buildCubemapTexture(
+                         ~pxType=BufferCubemapTextureService.getDefaultType(),
+                         ~nxType=0,
+                         ~pyType=0,
+                         ~nyType=1,
+                         ~pzType=2,
+                         ~nzType=1,
+                         (),
+                       ),
+                     |],
+              (),
+            )
+          )
+        );
+      });
     });
 
     describe("test samplers", () =>

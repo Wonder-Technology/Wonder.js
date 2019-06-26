@@ -190,3 +190,5 @@ let getNeedAddedAllSourceArray = state => {
 let getNeedInitedTextureIndexArray = state =>
   RecordCubemapTextureMainService.getRecord(state).
     needInitedTextureIndexArray;
+
+let getDefaultFlipYBool = () => false;

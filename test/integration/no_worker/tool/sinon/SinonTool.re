@@ -38,3 +38,14 @@ let returnDifferentOnEachCall = stub =>
        (. stub, i) => stub |> onCall(i) |> returns(i |> Obj.magic),
        stub,
      );
+
+let createMethodStub = [%bs.raw
+  {| function(sandbox, obj, method) {
+    /* sandbox.stub(obj, method); */
+
+    obj[method] =  sandbox.stub();
+
+    return obj[method];
+}
+|}
+];

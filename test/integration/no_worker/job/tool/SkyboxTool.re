@@ -9,6 +9,15 @@ let prepareCubemapTexture = state => {
   (state, map);
 };
 
+let prepareCubemapTextureAndSetAllSources = state => {
+  let (state, cubemapTexture) = prepareCubemapTexture(state);
+
+  let state =
+    CubemapTextureTool.setAllSources(~texture=cubemapTexture, ~state, ());
+
+  (state, cubemapTexture);
+};
+
 let prepareGameObject = state => {
   let (state, _, cameraTransform, (basicCameraView, _)) =
     CameraTool.createCameraGameObject(state);

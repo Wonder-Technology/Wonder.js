@@ -767,8 +767,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-  "bufferViews":[{"buffer":0,"byteOffset":0,"byteLength":288},{"buffer":0,"byteOffset":288,"byteLength":288},{"buffer":0,"byteOffset":576,"byteLength":192},{"buffer":0,"byteOffset":768,"byteLength":72},{"buffer":0,"byteOffset":840,"byteLength":36},{"buffer":0,"byteOffset":876,"byteLength":36},{"buffer":0,"byteOffset":912,"byteLength":24},{"buffer":0,"byteOffset":936,"byteLength":6},{"buffer":0,"byteOffset":944,"byteLength":36},{"buffer":0,"byteOffset":980,"byteLength":36},{"buffer":0,"byteOffset":1016,"byteLength":24},{"buffer":0,"byteOffset":1040,"byteLength":6},{"buffer":0,"byteOffset":1048,"byteLength":2},{"buffer":0,"byteOffset":1052,"byteLength":2}]
-
+"bufferViews":[{"buffer":0,"byteOffset":0,"byteLength":288},{"buffer":0,"byteOffset":288,"byteLength":288},{"buffer":0,"byteOffset":576,"byteLength":192},{"buffer":0,"byteOffset":768,"byteLength":72},{"buffer":0,"byteOffset":840,"byteLength":36},{"buffer":0,"byteOffset":876,"byteLength":36},{"buffer":0,"byteOffset":912,"byteLength":24},{"buffer":0,"byteOffset":936,"byteLength":6},{"buffer":0,"byteOffset":944,"byteLength":36},{"buffer":0,"byteOffset":980,"byteLength":36},{"buffer":0,"byteOffset":1016,"byteLength":24},{"buffer":0,"byteOffset":1040,"byteLength":6},{"buffer":0,"byteOffset":1048,"byteLength":227},{"buffer":0,"byteOffset":1276,"byteLength":167}]
                 |j},
           state,
         );
@@ -863,6 +862,366 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           state,
         );
       });
+    });
+
+    describe("test skybox", () => {
+      describe("test gltf", () => {
+        describe("scenes->extras should has skybox data", () => {
+          let _prepareGameObject = state => {
+            let state = state^;
+
+            let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+            let (state, cubemapTexture) =
+              SkyboxTool.prepareCubemapTextureAndSetAllSources(state);
+
+            let (canvas, context, _) =
+              GenerateSceneGraphSystemTool.prepareCanvasForCubemapTexture(
+                sandbox,
+              );
+
+            (state, rootGameObject, cubemapTexture);
+          };
+
+          test("test", () => {
+            let (state, rootGameObject, _) = _prepareGameObject(state);
+
+            GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+              rootGameObject,
+              {j|
+"scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0],"extras":{"skybox":{"cubemap":0}}}]
+          |j},
+              state,
+            );
+          });
+        });
+
+        describe("test cubemapTextures data", () => {
+          let _prepareGameObject = state => {
+            let state = state^;
+
+            let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+            let (state, cubemapTexture) =
+              SkyboxTool.prepareCubemapTextureAndSetAllSources(state);
+
+            let state =
+              state
+              |> CubemapTextureAPI.setCubemapTextureFlipY(
+                   cubemapTexture,
+                   true,
+                 );
+
+            let state =
+              state
+              |> CubemapTextureAPI.setCubemapTexturePXFormat(
+                   cubemapTexture,
+                   TextureType.Rgbas3tcdxt1,
+                 )
+              |> CubemapTextureAPI.setCubemapTextureNXFormat(
+                   cubemapTexture,
+                   TextureType.Rgbs3tcdxt1,
+                 )
+              |> CubemapTextureAPI.setCubemapTexturePZFormat(
+                   cubemapTexture,
+                   TextureType.Rgba,
+                 );
+            let state =
+              state
+              |> CubemapTextureAPI.setCubemapTexturePXType(cubemapTexture, 1)
+              |> CubemapTextureAPI.setCubemapTextureNXType(cubemapTexture, 2)
+              |> CubemapTextureAPI.setCubemapTexturePZType(cubemapTexture, 2);
+
+            let (canvas, context, _) =
+              GenerateSceneGraphSystemTool.prepareCanvasForCubemapTexture(
+                sandbox,
+              );
+
+            (state, rootGameObject, cubemapTexture);
+          };
+
+          test("extras should has cubemapTextures data", () => {
+            let (state, rootGameObject, _) = _prepareGameObject(state);
+
+            GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+              rootGameObject,
+              {j|
+"extras":{"cubemapTextures":[{"sampler":0,"flipY":true,"pxSource":0,"nxSource":1,"pySource":2,"nySource":3,"pzSource":4,"nzSource":5,"pxFormat":6,"nxFormat":5,"pyFormat":0,"nyFormat":0,"pzFormat":1,"nzFormat":0,"pxType":1,"nxType":2,"pyType":0,"nyType":0,"pzType":2,"nzType":0}]}
+          |j},
+              state,
+            );
+          });
+          test("test samplers, images", () => {
+            let (state, rootGameObject, _) = _prepareGameObject(state);
+
+            GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+              rootGameObject,
+              {j|
+"samplers":[{"wrapS":33071,"wrapT":33071,"magFilter":9729,"minFilter":9728}],"images":[{"bufferView":0,"mimeType":"image/png"},{"bufferView":1,"mimeType":"image/png"},{"bufferView":2,"mimeType":"image/png"},{"bufferView":3,"mimeType":"image/png"},{"bufferView":4,"mimeType":"image/png"},{"bufferView":5,"mimeType":"image/jpeg"}]
+          |j},
+              state,
+            );
+          });
+        });
+
+        describe("test has one basicSourceTexture and one cubemapTexture", () => {
+          let _prepareGameObject = state => {
+            let state = state^;
+
+            let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+            let (state, cubemapTexture) =
+              SkyboxTool.prepareCubemapTextureAndSetAllSources(state);
+
+            let cubemapTextureName = "cubemap_texture_name";
+
+            let state =
+              state
+              |> CubemapTextureAPI.setCubemapTextureName(
+                   cubemapTexture,
+                   cubemapTextureName,
+                 );
+
+            let state =
+              state
+              |> CubemapTextureAPI.setCubemapTextureFlipY(
+                   cubemapTexture,
+                   true,
+                 );
+
+            let state =
+              state
+              |> CubemapTextureAPI.setCubemapTexturePXFormat(
+                   cubemapTexture,
+                   TextureType.Rgbas3tcdxt1,
+                 )
+              |> CubemapTextureAPI.setCubemapTextureNXFormat(
+                   cubemapTexture,
+                   TextureType.Rgbs3tcdxt1,
+                 )
+              |> CubemapTextureAPI.setCubemapTexturePZFormat(
+                   cubemapTexture,
+                   TextureType.Rgba,
+                 );
+            let state =
+              state
+              |> CubemapTextureAPI.setCubemapTexturePXType(cubemapTexture, 1)
+              |> CubemapTextureAPI.setCubemapTextureNXType(cubemapTexture, 2)
+              |> CubemapTextureAPI.setCubemapTexturePZType(cubemapTexture, 2);
+
+            let sceneGameObjectTransform =
+              GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                rootGameObject,
+                state,
+              );
+
+            let basicSourceTextureName = "texture_name";
+            let basicSourceTextureImageName = "image_name";
+
+            let (state, gameObject1, transform1) =
+              _createGameObjectWithMap(
+                basicSourceTextureName,
+                basicSourceTextureImageName,
+                state,
+              );
+
+            let state =
+              state
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(sceneGameObjectTransform),
+                   transform1,
+                 );
+
+            let (canvas, context, _) =
+              GenerateSceneGraphSystemTool.prepareCanvasForCubemapTexture(
+                sandbox,
+              );
+
+            (
+              state,
+              rootGameObject,
+              (cubemapTexture, cubemapTextureName),
+              basicSourceTextureImageName,
+            );
+          };
+
+          test("test extras->cubemapTextures", () => {
+            let (
+              state,
+              rootGameObject,
+              (cubemapTexture, cubemapTextureName),
+              basicSourceTextureImageName,
+            ) =
+              _prepareGameObject(state);
+
+            GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+              rootGameObject,
+              {j|
+"extras":{"cubemapTextures":[{"sampler":1,"flipY":true,"pxSource":1,"nxSource":2,"pySource":3,"nySource":4,"pzSource":5,"nzSource":6,"pxFormat":6,"nxFormat":5,"pyFormat":0,"nyFormat":0,"pzFormat":1,"nzFormat":0,"pxType":1,"nxType":2,"pyType":0,"nyType":0,"pzType":2,"nzType":0,"name":"$cubemapTextureName"}]
+          |j},
+              state,
+            );
+          });
+          test("test samplers, images", () => {
+            let (
+              state,
+              rootGameObject,
+              (cubemapTexture, cubemapTextureName),
+              basicSourceTextureImageName,
+            ) =
+              _prepareGameObject(state);
+
+            GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+              rootGameObject,
+              {j|
+"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728},{"wrapS":33071,"wrapT":33071,"magFilter":9729,"minFilter":9728}],"images":[{"name":"$basicSourceTextureImageName","bufferView":4,"mimeType":"image/png"},{"bufferView":5,"mimeType":"image/png"},{"bufferView":6,"mimeType":"image/png"},{"bufferView":7,"mimeType":"image/png"},{"bufferView":8,"mimeType":"image/png"},{"bufferView":9,"mimeType":"image/jpeg"},{"bufferView":10,"mimeType":"image/png"}]
+          |j},
+              state,
+            );
+          });
+        });
+      });
+
+      describe("test assemble result", () =>
+        describe("test has one basicSourceTexture and one cubemapTexture", () => {
+          let _prepareGameObject = state => {
+            let state = state^;
+
+            let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+            let (state, cubemapTexture) =
+              SkyboxTool.prepareCubemapTextureAndSetAllSources(state);
+
+            let cubemapTextureName = "cubemap_texture_name";
+
+            let state =
+              state
+              |> CubemapTextureAPI.setCubemapTextureName(
+                   cubemapTexture,
+                   cubemapTextureName,
+                 );
+
+            let sceneGameObjectTransform =
+              GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                rootGameObject,
+                state,
+              );
+
+            let basicSourceTextureName = "texture_name";
+            let basicSourceTextureImageName = "image_name";
+
+            let (state, gameObject1, transform1) =
+              _createGameObjectWithMap(
+                basicSourceTextureName,
+                basicSourceTextureImageName,
+                state,
+              );
+
+            let state =
+              state
+              |> TransformAPI.setTransformParent(
+                   Js.Nullable.return(sceneGameObjectTransform),
+                   transform1,
+                 );
+
+            let (canvas, context, _) =
+              GenerateSceneGraphSystemTool.prepareCanvasForCubemapTexture(
+                sandbox,
+              );
+
+            (
+              state,
+              rootGameObject,
+              (cubemapTexture, cubemapTextureName),
+              (basicSourceTextureName, basicSourceTextureImageName),
+            );
+          };
+
+          testPromise(
+            "test set cubemapTexture and basicSourceTexture->name", () => {
+            let (
+              state,
+              rootGameObject,
+              (cubemapTexture, cubemapTextureName),
+              (basicSourceTextureName, basicSourceTextureImageName),
+            ) =
+              _prepareGameObject(state);
+
+            GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
+              sandbox^,
+              rootGameObject,
+              ((state, _, rootGameObject)) =>
+                (
+                  CubemapTextureAPI.unsafeGetCubemapTextureName(
+                    SceneTool.unsafeGetCubemapTexture(state),
+                    state,
+                  ),
+                  AssembleWDBSystemTool.getAllDiffuseMaps(
+                    rootGameObject,
+                    state,
+                  )
+                  |> Js.Array.map(map =>
+                       BasicSourceTextureAPI.unsafeGetBasicSourceTextureName(
+                         map,
+                         state,
+                       )
+                     ),
+                )
+                |> expect == (cubemapTextureName, [|basicSourceTextureName|]),
+              state,
+            );
+          });
+
+          testPromise(
+            "test set cubemapTexture and basicSourceTexture->source", () => {
+            let (
+              state,
+              rootGameObject,
+              (cubemapTexture, cubemapTextureName),
+              (basicSourceTextureName, basicSourceTextureImageName),
+            ) =
+              _prepareGameObject(state);
+
+            GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
+              sandbox^,
+              rootGameObject,
+              ((state, _, rootGameObject)) =>
+                (
+                  CubemapTextureAPI.unsafeGetCubemapTexturePXSource(
+                    SceneTool.unsafeGetCubemapTexture(state),
+                    state,
+                  ),
+                  AssembleWDBSystemTool.getAllDiffuseMaps(
+                    rootGameObject,
+                    state,
+                  )
+                  |> Js.Array.map(map =>
+                       BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+                         map,
+                         state,
+                       )
+                     ),
+                )
+                |> expect
+                == (
+                     GLBTool.createFakeImage(
+                       ~name="image_1",
+                       ~src="object_url1",
+                       (),
+                     ),
+                     [|
+                       GLBTool.createFakeImage(
+                         ~name=basicSourceTextureImageName,
+                         ~src="object_url0",
+                         (),
+                       ),
+                     |],
+                   ),
+              state,
+            );
+          });
+        })
+      );
     });
 
     describe("test dispose", () => {
@@ -1071,7 +1430,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-            "bufferViews":[{"buffer":0,"byteOffset":0,"byteLength":288},{"buffer":0,"byteOffset":288,"byteLength":288},{"buffer":0,"byteOffset":576,"byteLength":192},{"buffer":0,"byteOffset":768,"byteLength":72},{"buffer":0,"byteOffset":840,"byteLength":36},{"buffer":0,"byteOffset":876,"byteLength":36},{"buffer":0,"byteOffset":912,"byteLength":24},{"buffer":0,"byteOffset":936,"byteLength":6},{"buffer":0,"byteOffset":944,"byteLength":2}]
+"bufferViews":[{"buffer":0,"byteOffset":0,"byteLength":288},{"buffer":0,"byteOffset":288,"byteLength":288},{"buffer":0,"byteOffset":576,"byteLength":192},{"buffer":0,"byteOffset":768,"byteLength":72},{"buffer":0,"byteOffset":840,"byteLength":36},{"buffer":0,"byteOffset":876,"byteLength":36},{"buffer":0,"byteOffset":912,"byteLength":24},{"buffer":0,"byteOffset":936,"byteLength":6},{"buffer":0,"byteOffset":944,"byteLength":227}]
 |j},
           state,
         );

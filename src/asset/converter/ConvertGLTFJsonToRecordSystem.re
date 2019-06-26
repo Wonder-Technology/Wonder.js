@@ -334,17 +334,11 @@ let _convertExtras = json =>
                     "scripts",
                     array(json =>
                       (
-                        /* WonderLog.Log.print(json) |> ignore; */
                         {
                           isActive: json |> field("isActive", bool),
                           eventFunctionDataMap:
                             _getScriptMap("eventFunctionDataMap", json),
-                          /* json
-                              |> field("eventFunctionDataMap",dict |> Obj.magic)
-                             |> WonderLog.Log.print  */
-                          attributeMap:
-                            /* json |> field("attributeMap", dict |> Obj.magic), */
-                            _getScriptMap("attributeMap", json),
+                          attributeMap: _getScriptMap("attributeMap", json),
                         }: script
                       )
                     ),
