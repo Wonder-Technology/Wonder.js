@@ -14,7 +14,7 @@ plugins:
       command: 'sudo npm run version'
     Committing new version:
       plugin: bumped-terminal
-      command: 'git add CHANGELOG.md package.json && git commit -m "chore(release): v$newVersion"'
+      command: 'npm run updateCopyRightVersiona && git add CHANGELOG.md package.json && git commit -m "chore(release): v$newVersion"'
     Publishing tag to GitHub:
       plugin: bumped-terminal
       command: 'git tag v$newVersion && git push origin master:master && git push origin v$newVersion'

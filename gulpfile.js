@@ -28,3 +28,22 @@ gulp.task("generateIndex", function (done) {
 
 
 
+gulp.task("updateCopyRightVersion", function (done) {
+    const packageJsonFilePath = path.join(__dirname, "package.json");
+    const copyrightFilePath = path.join(__dirname, "src/Copyright.re");
+
+    var packageJson = JSON.parse(fs.readFileSync(packageJsonFilePath, "utf8"));
+
+    var data = fs.readFileSync(copyrightFilePath, "utf8");
+
+    var result = data.replace(/(let\sgetVersion\s=\s\(\)\s=>\s")(.+)"/img, function (match, p1, p2) {
+        return p1 + packageJson.version + "\"";
+    });
+
+    fs.writeFileSync(
+        copyrightFilePath, result, "utf8"
+    );
+
+    done();
+});
+

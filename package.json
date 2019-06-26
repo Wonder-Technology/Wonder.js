@@ -31,7 +31,8 @@
     "test:pfCI": "npm run build && gulp testPerformanceInCI",
     "test:watch": "jest --watch --verbose false --config jest.json",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md",
-    "installWithPuppeteer": "npm link gulp && gulp installWithPuppeteer"
+    "installWithPuppeteer": "npm link gulp && gulp installWithPuppeteer",
+    "updateCopyRightVersion": "gulp updateCopyRightVersion"
   },
   "config": {
     "commitizen": {
