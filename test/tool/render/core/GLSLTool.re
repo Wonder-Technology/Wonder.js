@@ -12,20 +12,29 @@ let getFsSourceByCount = (shaderSource, count) =>
 
 let containSpecifyCount = (source: string, target: string, ~count=1, ()) =>
   switch (
-    Js.String.match(Js.Re.fromStringWithFlags(target, ~flags="g"), source)
+    Js.String.match(
+      Js.Re.fromStringWithFlags(
+        target |> StringTool.removeNewLinesAndSpaces,
+        ~flags="g",
+      ),
+      source |> StringTool.removeNewLinesAndSpaces,
+    )
   ) {
   | None => count == 0
   | Some(result) => Js.Array.length(result) == count
   };
 
 let contain = (source: string, targetLine: string) =>
-  Js.String.includes(targetLine |> Js.String.trim, source);
+  Js.String.includes(
+    targetLine |> StringTool.removeNewLinesAndSpaces,
+    source |> StringTool.removeNewLinesAndSpaces,
+  );
 
 let containMultiline = (source: string, targetLineArray: list(string)) =>
   targetLineArray
   |> List.for_all(targetLine =>
        Js.String.includes(
-         targetLine |> Js.String.trim |> StringTool.removeSpaces,
-         source |> StringTool.removeSpaces,
+         targetLine |> StringTool.removeNewLinesAndSpaces,
+         source |> StringTool.removeNewLinesAndSpaces,
        )
      );
