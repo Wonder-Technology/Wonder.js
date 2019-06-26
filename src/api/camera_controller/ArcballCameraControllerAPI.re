@@ -169,6 +169,24 @@ let setArcballCameraControllerRotateSpeed =
     ),
 };
 
+let unsafeGetArcballCameraControllerDirectionArray = (cameraController, state) =>
+  state.arcballCameraControllerRecord
+  |> unsafeGetDirectionArray(cameraController);
+
+let hasArcballCameraControllerDirection = (cameraController, state) =>
+  state.arcballCameraControllerRecord |> hasDirection(cameraController);
+
+let setArcballCameraControllerDirectionArray =
+    (cameraController, directionArray, state) => {
+  ...state,
+  arcballCameraControllerRecord:
+    setDirectionArray(
+      cameraController,
+      directionArray,
+      state.arcballCameraControllerRecord,
+    ),
+};
+
 let bindArcballCameraControllerEvent = (cameraController, state) =>
   EventArcballCameraControllerMainService.bindEvent(cameraController, state);
 

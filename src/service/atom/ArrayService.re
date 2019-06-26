@@ -60,6 +60,9 @@ let hasItem = arr => arr |> Js.Array.length > 0;
 
 let unsafeGetFirst = arr => Array.unsafe_get(arr, 0);
 
+let removeSpecificItem = (target, array) =>
+  array |> Js.Array.filter(item => item != target);
+
 let getFirst = arr => unsafeGetFirst(arr) |> Obj.magic |> Js.toOption;
 
 let unsafeFindFirst = (arr: array('a), targetValue, func) =>
@@ -295,3 +298,9 @@ let fastIntersect =
 let batchRemove =
     (targetArr: array(int), sourceArr: array(int)): array(int) =>
   fastExclude(targetArr, sourceArr);
+
+let addUniqueItem = (target, array) =>
+  array
+  |> Js.Array.copy
+  |> push(target)
+  |> removeDuplicateItems((. item) => item |> Obj.magic);

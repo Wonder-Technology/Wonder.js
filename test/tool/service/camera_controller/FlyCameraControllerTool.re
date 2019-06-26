@@ -145,3 +145,14 @@ let addKeydownEventHandleFunc =
       flyCameraControllerRecord,
     ),
 };
+
+let addKeyupEventHandleFunc =
+    (cameraController, handleFunc, {flyCameraControllerRecord} as state) => {
+  ...state,
+  flyCameraControllerRecord:
+    EventFlyCameraControllerMainService._addKeyupEventHandleFunc(
+      cameraController,
+      handleFunc,
+      flyCameraControllerRecord,
+    ),
+};

@@ -144,13 +144,20 @@ let _changeOrbit =
      );
 };
 
-let _addUniqueDirection = (direction, array) =>
-  array
-  |> Js.Array.copy
-  |> ArrayService.push(direction)
-  |> ArrayService.removeDuplicateItems((. item) =>
-       FlyCameraControllerType.convertDirectionToString(item)
-     );
+let _handleDirectionArray = (key, handleFunc, directionArray) =>
+  switch (key) {
+  | "a"
+  | "left" => directionArray |> handleFunc(Left)
+  | "d"
+  | "right" => directionArray |> handleFunc(Right)
+  | "w"
+  | "up" => directionArray |> handleFunc(Front)
+  | "s"
+  | "down" => directionArray |> handleFunc(Back)
+  | "q" => directionArray |> handleFunc(Up)
+  | "e" => directionArray |> handleFunc(Down)
+  | _ => directionArray
+  };
 
 let _moveSpecificDirection =
     (
@@ -162,22 +169,8 @@ let _moveSpecificDirection =
     OperateFlyCameraControllerService.unsafeGetDirectionArray(
       cameraController,
       flyCameraControllerRecord,
-    );
-
-  let directionArray =
-    switch (keyboardEvent.key) {
-    | "a"
-    | "left" => directionArray |> _addUniqueDirection(Left)
-    | "d"
-    | "right" => directionArray |> _addUniqueDirection(Right)
-    | "w"
-    | "up" => directionArray |> _addUniqueDirection(Front)
-    | "s"
-    | "down" => directionArray |> _addUniqueDirection(Back)
-    | "q" => directionArray |> _addUniqueDirection(Up)
-    | "e" => directionArray |> _addUniqueDirection(Down)
-    | _ => directionArray
-    };
+    )
+    |> _handleDirectionArray(keyboardEvent.key, ArrayService.addUniqueItem);
 
   {
     ...state,
@@ -190,9 +183,6 @@ let _moveSpecificDirection =
   };
 };
 
-let _removeSpecificDirection = (direction, array) =>
-  array |> Js.Array.filter(item => item != direction);
-
 let _staticSpecificDirection =
     (
       cameraController,
@@ -203,22 +193,11 @@ let _staticSpecificDirection =
     OperateFlyCameraControllerService.unsafeGetDirectionArray(
       cameraController,
       flyCameraControllerRecord,
-    );
-
-  let directionArray =
-    switch (keyboardEvent.key) {
-    | "a"
-    | "left" => directionArray |> _removeSpecificDirection(Left)
-    | "d"
-    | "right" => directionArray |> _removeSpecificDirection(Right)
-    | "w"
-    | "up" => directionArray |> _removeSpecificDirection(Front)
-    | "s"
-    | "down" => directionArray |> _removeSpecificDirection(Back)
-    | "q" => directionArray |> _removeSpecificDirection(Up)
-    | "e" => directionArray |> _removeSpecificDirection(Down)
-    | _ => directionArray
-    };
+    )
+    |> _handleDirectionArray(
+         keyboardEvent.key,
+         ArrayService.removeSpecificItem,
+       );
 
   {
     ...state,
@@ -325,6 +304,7 @@ let prepareBindEvent = (cameraController, state) => {
         event,
       );
     };
+
   let keydownHandleFunc =
     (. event: EventType.keyboardEvent, {flyCameraControllerRecord} as state) =>
       isTriggerKeydownEventHandler(event) ?

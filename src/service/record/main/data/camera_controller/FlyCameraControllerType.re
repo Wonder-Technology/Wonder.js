@@ -14,5 +14,3 @@ type eulerAngleDiffType = {
 };
 
 type dirtyArray = array(cameraController);
-
-external convertDirectionToString: direction => string = "%identity";

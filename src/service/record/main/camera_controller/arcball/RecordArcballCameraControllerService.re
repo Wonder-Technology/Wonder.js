@@ -12,7 +12,8 @@ let create = () => {
     WonderCommonlib.MutableSparseMapService.createEmpty(),
   keydownEventHandleFuncListMap:
     WonderCommonlib.MutableSparseMapService.createEmpty(),
-  dirtyArray: WonderCommonlib.ArrayService.createEmpty(),
+  keyupEventHandleFuncListMap:
+    WonderCommonlib.MutableSparseMapService.createEmpty(),
   distanceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   minDistanceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   phiMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
@@ -25,6 +26,7 @@ let create = () => {
   wheelSpeedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   gameObjectMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
   disposedIndexArray: WonderCommonlib.ArrayService.createEmpty(),
+  directionArrayMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
 };
 
 let deepCopyForRestore =
@@ -36,7 +38,7 @@ let deepCopyForRestore =
         pointDragOverEventHandleFuncListMap,
         pointScaleEventHandleFuncListMap,
         keydownEventHandleFuncListMap,
-        dirtyArray,
+        keyupEventHandleFuncListMap,
         distanceMap,
         minDistanceMap,
         phiMap,
@@ -48,6 +50,7 @@ let deepCopyForRestore =
         rotateSpeedMap,
         wheelSpeedMap,
         gameObjectMap,
+        directionArrayMap,
         disposedIndexArray,
       },
     ) => {
@@ -67,7 +70,8 @@ let deepCopyForRestore =
   keydownEventHandleFuncListMap:
     keydownEventHandleFuncListMap
     |> WonderCommonlib.MutableSparseMapService.copy,
-  dirtyArray: dirtyArray |> Js.Array.copy,
+  keyupEventHandleFuncListMap:
+    keyupEventHandleFuncListMap |> WonderCommonlib.MutableSparseMapService.copy,
   distanceMap: distanceMap |> WonderCommonlib.MutableSparseMapService.copy,
   minDistanceMap:
     minDistanceMap |> WonderCommonlib.MutableSparseMapService.copy,
@@ -82,5 +86,7 @@ let deepCopyForRestore =
     rotateSpeedMap |> WonderCommonlib.MutableSparseMapService.copy,
   wheelSpeedMap: wheelSpeedMap |> WonderCommonlib.MutableSparseMapService.copy,
   gameObjectMap: gameObjectMap |> WonderCommonlib.MutableSparseMapService.copy,
+  directionArrayMap:
+    directionArrayMap |> WonderCommonlib.MutableSparseMapService.copy,
   disposedIndexArray: disposedIndexArray |> Js.Array.copy,
 };

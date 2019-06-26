@@ -170,7 +170,7 @@ let _ =
 
       describe("dispose data", () => {
         test(
-          "remove from eulerAngleDiffMap, translationDiffMap, moveSpeedMap, rotateSpeedMap, wheelSpeedMap, gameObjectMap",
+          "remove from eulerAngleDiffMap, translationDiffMap, moveSpeedMap, rotateSpeedMap, wheelSpeedMap, gameObjectMap, directionArrayMap",
           () => {
             let (
               state,
@@ -193,6 +193,7 @@ let _ =
               eulerAngleDiffMap,
               translationDiffMap,
               gameObjectMap,
+              directionArrayMap,
             } =
               state.flyCameraControllerRecord;
             (
@@ -216,8 +217,12 @@ let _ =
               |> WonderCommonlib.MutableSparseMapService.has(
                    cameraController1,
                  ),
+              directionArrayMap
+              |> WonderCommonlib.MutableSparseMapService.has(
+                   cameraController1,
+                 ),
             )
-            |> expect == (false, false, false, false, false);
+            |> expect == (false, false, false, false, false, false);
           },
         );
 
@@ -251,6 +256,11 @@ let _ =
                 value := value^ + 3;
                 state;
               };
+            let keyupHandleFunc =
+              (. event, state) => {
+                value := value^ + 3;
+                state;
+              };
             let state =
               state
               |> FlyCameraControllerTool.addPointDragStartEventHandleFunc(
@@ -272,6 +282,10 @@ let _ =
               |> FlyCameraControllerTool.addKeydownEventHandleFunc(
                    cameraController1,
                    keydownHandleFunc,
+                 )
+              |> FlyCameraControllerTool.addKeyupEventHandleFunc(
+                   cameraController1,
+                   keyupHandleFunc,
                  );
 
             let state =
@@ -372,6 +386,22 @@ let _ =
         state
         |> FlyCameraControllerTool.unsafeGetEulerAngleDiff(cameraController)
         |> expect == value;
+      })
+    );
+
+    describe("unsafeGetDirectionArray", () =>
+      test("test", () => {
+        let (state, cameraController) = createFlyCameraController(state^);
+        let directionArray = [|Left, Up|];
+        let state =
+          state
+          |> setFlyCameraControllerDirectionArray(
+               cameraController,
+               directionArray,
+             );
+        state
+        |> unsafeGetFlyCameraControllerDirectionArray(cameraController)
+        |> expect == directionArray;
       })
     );
 

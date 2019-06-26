@@ -277,6 +277,7 @@ let _ =
               })
             )
           );
+
           describe("bind point scale event", () => {
             test("preventDefault", () => {
               let (cameraController, state) = _prepareFlyCameraEvent(100.);

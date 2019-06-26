@@ -4,6 +4,8 @@ open BasicCameraViewAPI;
 
 open ArcballCameraControllerAPI;
 
+open ArcballCameraControllerType;
+
 let _ =
   describe("test arcball cameraController event", () => {
     open Expect;
@@ -408,81 +410,121 @@ let _ =
               |> expect == (posX, posY, posZ);
             });
 
-            describe("else, set target", () => {
-              let _judgeTargetValue = (keyCode, expectFunc) => {
-                let (
-                  state,
-                  cameraController,
-                  (moveSpeedX, moveSpeedY),
-                  (posX, posY, posZ),
-                ) =
-                  _prepareKeyEvent();
+            describe("else, add direction into directionArray", () => {
+              describe("test keydown one direction", () => {
+                let _judgeChangeDirectionArray = (keyCode, direction) => {
+                  let (state, cameraController, moveSpeed, diffTuple) =
+                    _prepareKeyEvent();
 
-                let state = MainStateTool.setState(state);
-                EventTool.triggerDomEvent(
-                  "keydown",
-                  EventTool.getKeyboardEventBindedDom(state),
-                  KeyboardEventTool.buildKeyboardEvent(~keyCode, ()),
-                );
-                let state = EventTool.restore(state);
+                  let state = MainStateTool.setState(state);
+                  EventTool.triggerDomEvent(
+                    "keydown",
+                    EventTool.getKeyboardEventBindedDom(state),
+                    KeyboardEventTool.buildKeyboardEvent(~keyCode, ()),
+                  );
+                  let state =
+                    MainStateTool.unsafeGetState() |> EventTool.restore;
 
-                expectFunc(
                   state
-                  |> unsafeGetArcballCameraControllerTarget(cameraController),
-                  expect,
-                  (moveSpeedX, moveSpeedY),
-                  (posX, posY, posZ),
-                );
-              };
+                  |> ArcballCameraControllerAPI.unsafeGetArcballCameraControllerDirectionArray(
+                       cameraController,
+                     )
+                  |> expect == [|direction|];
+                };
 
-              test("test move left", () =>
-                _judgeTargetValue(
-                  65,
-                  (
-                    targetValue,
-                    expect,
-                    (moveSpeedX, moveSpeedY),
-                    (posX, posY, posZ),
-                  ) =>
-                  targetValue |> expect == (posX -. moveSpeedX, posY, posZ)
-                )
-              );
-              test("test move right", () =>
-                _judgeTargetValue(
-                  39,
-                  (
-                    targetValue,
-                    expect,
-                    (moveSpeedX, moveSpeedY),
-                    (posX, posY, posZ),
-                  ) =>
-                  targetValue |> expect == (posX +. moveSpeedX, posY, posZ)
-                )
-              );
-              test("test move up", () =>
-                _judgeTargetValue(
-                  87,
-                  (
-                    targetValue,
-                    expect,
-                    (moveSpeedX, moveSpeedY),
-                    (posX, posY, posZ),
-                  ) =>
-                  targetValue |> expect == (posX, posY +. moveSpeedY, posZ)
-                )
-              );
-              test("test move down", () =>
-                _judgeTargetValue(
-                  83,
-                  (
-                    targetValue,
-                    expect,
-                    (moveSpeedX, moveSpeedY),
-                    (posX, posY, posZ),
-                  ) =>
-                  targetValue |> expect == (posX, posY -. moveSpeedY, posZ)
-                )
-              );
+                test("test move left", () =>
+                  _judgeChangeDirectionArray(65, Left)
+                );
+                test("test move right", () =>
+                  _judgeChangeDirectionArray(39, Right)
+                );
+                test("test move up", () =>
+                  _judgeChangeDirectionArray(87, Up)
+                );
+                test("test move down", () =>
+                  _judgeChangeDirectionArray(83, Down)
+                );
+              });
+
+              describe("test keydown multiple direction", () => {
+                describe("test should remove duplicate direction", () =>
+                  test("test move up and up", () => {
+                    let keyCode = 65;
+                    let direction = Left;
+
+                    let (state, cameraController, moveSpeed, diffTuple) =
+                      _prepareKeyEvent();
+
+                    let state = MainStateTool.setState(state);
+                    EventTool.triggerDomEvent(
+                      "keydown",
+                      EventTool.getKeyboardEventBindedDom(state),
+                      KeyboardEventTool.buildKeyboardEvent(~keyCode, ()),
+                    );
+                    EventTool.triggerDomEvent(
+                      "keydown",
+                      EventTool.getKeyboardEventBindedDom(state),
+                      KeyboardEventTool.buildKeyboardEvent(~keyCode, ()),
+                    );
+                    let state =
+                      MainStateTool.unsafeGetState() |> EventTool.restore;
+
+                    state
+                    |> ArcballCameraControllerAPI.unsafeGetArcballCameraControllerDirectionArray(
+                         cameraController,
+                       )
+                    |> expect == [|direction|];
+                  })
+                );
+
+                let _judgeMultipleChangeDirectionArray =
+                    ((keydownCode1, keydownCode2), (direction1, direction2)) => {
+                  let (state, cameraController, moveSpeed, diffTuple) =
+                    _prepareKeyEvent();
+
+                  let state = MainStateTool.setState(state);
+                  EventTool.triggerDomEvent(
+                    "keydown",
+                    EventTool.getKeyboardEventBindedDom(state),
+                    KeyboardEventTool.buildKeyboardEvent(
+                      ~keyCode=keydownCode1,
+                      (),
+                    ),
+                  );
+                  EventTool.triggerDomEvent(
+                    "keydown",
+                    EventTool.getKeyboardEventBindedDom(state),
+                    KeyboardEventTool.buildKeyboardEvent(
+                      ~keyCode=keydownCode2,
+                      (),
+                    ),
+                  );
+                  let state =
+                    MainStateTool.unsafeGetState() |> EventTool.restore;
+
+                  state
+                  |> ArcballCameraControllerAPI.unsafeGetArcballCameraControllerDirectionArray(
+                       cameraController,
+                     )
+                  |> expect == [|direction1, direction2|];
+                };
+
+                test("test move left and up", () =>
+                  _judgeMultipleChangeDirectionArray((65, 87), (Left, Up))
+                );
+                test("test move left and down", () =>
+                  _judgeMultipleChangeDirectionArray((65, 83), (Left, Down))
+                );
+                test("test move right and up", () =>
+                  _judgeMultipleChangeDirectionArray((39, 87), (Right, Up))
+                );
+                test("test move right and down", () =>
+                  _judgeMultipleChangeDirectionArray(
+                    (39, 83),
+                    (Right, Down),
+                  )
+                );
+              });
             });
           });
         });

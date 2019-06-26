@@ -10,7 +10,6 @@ let _disposeData = (cameraController, state) => {
     |> EventArcballCameraControllerMainService.unbindEvent(cameraController);
 
   let {
-    dirtyArray,
     distanceMap,
     minDistanceMap,
     phiMap,
@@ -22,15 +21,13 @@ let _disposeData = (cameraController, state) => {
     rotateSpeedMap,
     wheelSpeedMap,
     gameObjectMap,
+    directionArrayMap,
   } = arcballCameraControllerRecord;
 
   {
     ...state,
     arcballCameraControllerRecord: {
       ...arcballCameraControllerRecord,
-      dirtyArray:
-        dirtyArray
-        |> Js.Array.filter(dirtyIndex => dirtyIndex !== cameraController),
       distanceMap:
         distanceMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),
@@ -63,6 +60,9 @@ let _disposeData = (cameraController, state) => {
         |> DisposeComponentService.disposeSparseMapData(cameraController),
       gameObjectMap:
         gameObjectMap
+        |> DisposeComponentService.disposeSparseMapData(cameraController),
+      directionArrayMap:
+        directionArrayMap
         |> DisposeComponentService.disposeSparseMapData(cameraController),
     },
   };
