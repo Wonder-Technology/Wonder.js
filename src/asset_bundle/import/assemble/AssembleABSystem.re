@@ -569,16 +569,16 @@ module RAB = {
          ),
        );
 
-  let _buildTextureData =
+  let _buildBasicSourceTextureData =
       (
-        {textures}: RABType.resourceAssetBundleContent,
+        {basicSourceTextures}: RABType.resourceAssetBundleContent,
         imageMapByIndex,
         state,
       ) =>
-    textures
+    basicSourceTextures
     |> WonderCommonlib.ArrayService.reduceOneParami(
          (.
-           (textureMapByName, textureMapByIndex, state),
+           (basicSourceTextureMapByName, basicSourceTextureMapByIndex, state),
            {
              source,
              name,
@@ -589,7 +589,7 @@ module RAB = {
              format,
              type_,
              flipY,
-           }: RABType.texture,
+           }: RABType.basicSourceTexture,
            textureIndex,
          ) => {
            let (state, texture) =
@@ -623,9 +623,155 @@ module RAB = {
                 );
 
            (
-             textureMapByName
+             basicSourceTextureMapByName
              |> WonderCommonlib.ImmutableHashMapService.set(name, texture),
-             textureMapByIndex
+             basicSourceTextureMapByIndex
+             |> WonderCommonlib.ImmutableSparseMapService.set(
+                  textureIndex,
+                  texture,
+                ),
+             state,
+           );
+         },
+         (
+           WonderCommonlib.ImmutableHashMapService.createEmpty(),
+           WonderCommonlib.ImmutableSparseMapService.createEmpty(),
+           state,
+         ),
+       );
+
+  let _buildCubemapTextureData =
+      (
+        {cubemapTextures}: RABType.resourceAssetBundleContent,
+        imageMapByIndex,
+        state,
+      ) =>
+    cubemapTextures
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (.
+           (cubemapTextureMapByName, cubemapTextureMapByIndex, state),
+           {
+             name,
+             magFilter,
+             minFilter,
+             wrapS,
+             wrapT,
+             flipY,
+             pxSource,
+             nxSource,
+             pySource,
+             nySource,
+             pzSource,
+             nzSource,
+             pxFormat,
+             nxFormat,
+             pyFormat,
+             nyFormat,
+             pzFormat,
+             nzFormat,
+             pxType,
+             nxType,
+             pyType,
+             nyType,
+             pzType,
+             nzType,
+           }: RABType.cubemapTexture,
+           textureIndex,
+         ) => {
+           let (state, texture) =
+             CreateCubemapTextureMainService.create(. state);
+
+           let state =
+             state
+             |> OperateCubemapTextureMainService.setWrapS(texture, wrapS)
+             |> OperateCubemapTextureMainService.setWrapT(texture, wrapT)
+             |> OperateCubemapTextureMainService.setMagFilter(
+                  texture,
+                  magFilter,
+                )
+             |> OperateCubemapTextureMainService.setMinFilter(
+                  texture,
+                  minFilter,
+                )
+             |> OperateCubemapTextureMainService.setPXFormat(
+                  texture,
+                  pxFormat,
+                )
+             |> OperateCubemapTextureMainService.setNXFormat(
+                  texture,
+                  nxFormat,
+                )
+             |> OperateCubemapTextureMainService.setPYFormat(
+                  texture,
+                  pyFormat,
+                )
+             |> OperateCubemapTextureMainService.setNYFormat(
+                  texture,
+                  nyFormat,
+                )
+             |> OperateCubemapTextureMainService.setPZFormat(
+                  texture,
+                  pzFormat,
+                )
+             |> OperateCubemapTextureMainService.setNZFormat(
+                  texture,
+                  nzFormat,
+                )
+             |> OperateCubemapTextureMainService.setPXType(texture, pxType)
+             |> OperateCubemapTextureMainService.setNXType(texture, nxType)
+             |> OperateCubemapTextureMainService.setPYType(texture, pyType)
+             |> OperateCubemapTextureMainService.setNYType(texture, nyType)
+             |> OperateCubemapTextureMainService.setPZType(texture, pzType)
+             |> OperateCubemapTextureMainService.setNZType(texture, nzType)
+             |> OperateCubemapTextureMainService.setFlipY(texture, flipY)
+             |> NameCubemapTextureMainService.setName(texture, name)
+             |> OperateCubemapTextureMainService.setPXSource(
+                  texture,
+                  imageMapByIndex
+                  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
+                       pxSource,
+                     ),
+                )
+             |> OperateCubemapTextureMainService.setNXSource(
+                  texture,
+                  imageMapByIndex
+                  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
+                       nxSource,
+                     ),
+                )
+             |> OperateCubemapTextureMainService.setPYSource(
+                  texture,
+                  imageMapByIndex
+                  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
+                       pySource,
+                     ),
+                )
+             |> OperateCubemapTextureMainService.setNYSource(
+                  texture,
+                  imageMapByIndex
+                  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
+                       nySource,
+                     ),
+                )
+             |> OperateCubemapTextureMainService.setPZSource(
+                  texture,
+                  imageMapByIndex
+                  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
+                       pzSource,
+                     ),
+                )
+             |> OperateCubemapTextureMainService.setNZSource(
+                  texture,
+                  imageMapByIndex
+                  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
+                       nzSource,
+                     ),
+                );
+
+           (
+             cubemapTextureMapByName
+             |> WonderCommonlib.ImmutableHashMapService.set(name, texture),
+             cubemapTextureMapByIndex
              |> WonderCommonlib.ImmutableSparseMapService.set(
                   textureIndex,
                   texture,
@@ -661,7 +807,8 @@ module RAB = {
          (WonderCommonlib.ImmutableHashMapService.createEmpty(), state),
        );
 
-  let _buildLightMaterialData = (lightMaterials, textureMapByIndex, state) =>
+  let _buildLightMaterialData =
+      (lightMaterials, basicSourceTextureMapByIndex, state) =>
     lightMaterials
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (.
@@ -693,7 +840,7 @@ module RAB = {
                  state
                  |> OperateLightMaterialMainService.setDiffuseMap(
                       material,
-                      textureMapByIndex
+                      basicSourceTextureMapByIndex
                       |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
                            diffuseMap,
                          ),
@@ -712,13 +859,17 @@ module RAB = {
   let _buildMaterialData =
       (
         {basicMaterials, lightMaterials}: RABType.resourceAssetBundleContent,
-        textureMapByIndex,
+        basicSourceTextureMapByIndex,
         state,
       ) => {
     let (basicMaterialMap, state) =
       _buildBasicMaterialData(basicMaterials, state);
     let (lightMaterialMap, state) =
-      _buildLightMaterialData(lightMaterials, textureMapByIndex, state);
+      _buildLightMaterialData(
+        lightMaterials,
+        basicSourceTextureMapByIndex,
+        state,
+      );
 
     (basicMaterialMap, lightMaterialMap, state);
   };
@@ -997,8 +1148,19 @@ module RAB = {
          let state =
            StateDataMainService.unsafeGetState(StateDataMain.stateData);
 
-         let (textureMapByName, textureMapByIndex, state) =
-           _buildTextureData(
+         let (
+           basicSourceTextureMapByName,
+           basicSourceTextureMapByIndex,
+           state,
+         ) =
+           _buildBasicSourceTextureData(
+             resourceAssetBundleContent,
+             imageMapByIndex,
+             state,
+           );
+
+         let (cubemapTextureMapByName, cubemapTextureMapByIndex, state) =
+           _buildCubemapTextureData(
              resourceAssetBundleContent,
              imageMapByIndex,
              state,
@@ -1007,7 +1169,7 @@ module RAB = {
          let (basicMaterialMap, lightMaterialMap, state) =
            _buildMaterialData(
              resourceAssetBundleContent,
-             textureMapByIndex,
+             basicSourceTextureMapByIndex,
              state,
            );
 
@@ -1030,7 +1192,8 @@ module RAB = {
              rabRelativePath,
              (
                imageMapByName,
-               textureMapByName,
+               basicSourceTextureMapByName,
+               cubemapTextureMapByName,
                basicMaterialMap,
                lightMaterialMap,
                geometryMap,

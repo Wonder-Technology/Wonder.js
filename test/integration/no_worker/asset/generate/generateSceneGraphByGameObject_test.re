@@ -957,7 +957,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
               rootGameObject,
               {j|
-"samplers":[{"wrapS":33071,"wrapT":33071,"magFilter":9729,"minFilter":9728}],"images":[{"bufferView":0,"mimeType":"image/png"},{"bufferView":1,"mimeType":"image/png"},{"bufferView":2,"mimeType":"image/png"},{"bufferView":3,"mimeType":"image/png"},{"bufferView":4,"mimeType":"image/png"},{"bufferView":5,"mimeType":"image/jpeg"}]
+"samplers":[{"wrapS":33071,"wrapT":33071,"magFilter":9729,"minFilter":9728}],"images":[{"name":"i1","bufferView":0,"mimeType":"image/png"},{"name":"i2","bufferView":1,"mimeType":"image/png"},{"name":"i3","bufferView":2,"mimeType":"image/png"},{"name":"i4","bufferView":3,"mimeType":"image/png"},{"name":"i5","bufferView":4,"mimeType":"image/png"},{"name":"i6","bufferView":5,"mimeType":"image/jpeg"}]
           |j},
               state,
             );
@@ -1074,7 +1074,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
               rootGameObject,
               {j|
-"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728},{"wrapS":33071,"wrapT":33071,"magFilter":9729,"minFilter":9728}],"images":[{"name":"$basicSourceTextureImageName","bufferView":4,"mimeType":"image/png"},{"bufferView":5,"mimeType":"image/png"},{"bufferView":6,"mimeType":"image/png"},{"bufferView":7,"mimeType":"image/png"},{"bufferView":8,"mimeType":"image/png"},{"bufferView":9,"mimeType":"image/jpeg"},{"bufferView":10,"mimeType":"image/png"}]
+"samplers":[{"wrapS":10497,"wrapT":33071,"magFilter":9729,"minFilter":9728},{"wrapS":33071,"wrapT":33071,"magFilter":9729,"minFilter":9728}],"images":[{"name":"image_name","bufferView":4,"mimeType":"image/png"},{"name":"i1","bufferView":5,"mimeType":"image/png"},{"name":"i2","bufferView":6,"mimeType":"image/png"},{"name":"i3","bufferView":7,"mimeType":"image/png"},{"name":"i4","bufferView":8,"mimeType":"image/png"},{"name":"i5","bufferView":9,"mimeType":"image/jpeg"},{"name":"i6","bufferView":10,"mimeType":"image/png"}]
           |j},
               state,
             );
@@ -1205,7 +1205,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
                 |> expect
                 == (
                      GLBTool.createFakeImage(
-                       ~name="image_1",
+                       ~name="i1",
                        ~src="object_url1",
                        (),
                      ),
@@ -1748,21 +1748,21 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
 
           let (state, geometry) = BoxGeometryTool.createBoxGeometry(state);
 
-          let textureName1 = "texture_name1";
+          let texture1Name = "texture_name1";
 
           let (state, gameObject1, transform1) =
             _createGameObjectWithMapAndGeometry(
-              textureName1,
+              texture1Name,
               geometry,
               state,
             );
 
-          let textureName2 = "texture_name2";
+          let texture2Name = "texture_name2";
           let imageName2 = "image_name2";
 
           let (state, gameObject2, transform2) =
             _createGameObjectWithMapAndGeometry(
-              textureName2,
+              texture2Name,
               geometry,
               state,
             );
@@ -1784,8 +1784,8 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           (
             state,
             (rootGameObject, sceneGameObjectTransform),
-            (gameObject1, textureName1),
-            (gameObject2, textureName2),
+            (gameObject1, texture1Name),
+            (gameObject2, texture2Name),
           );
         };
 
@@ -1801,8 +1801,8 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             let (
               state,
               (rootGameObject, sceneGameObjectTransform),
-              (gameObject1, textureName1),
-              (gameObject2, textureName2),
+              (gameObject1, texture1Name),
+              (gameObject2, texture2Name),
             ) =
               _prepareGameObject(state);
 
@@ -1817,7 +1817,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
                        state,
                      )
                    )
-                |> expect == [|textureName1, textureName2|],
+                |> expect == [|texture1Name, texture2Name|],
               state,
             );
           },
@@ -2469,10 +2469,10 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
               state,
             );
 
-          let textureName1 = "texture_name1";
+          let texture1Name = "texture_name1";
 
           let (state, gameObject1, transform1) =
-            _createGameObjectWithMap(textureName1, state);
+            _createGameObjectWithMap(texture1Name, state);
 
           let state =
             state
@@ -2487,7 +2487,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           (
             state,
             (rootGameObject, sceneGameObjectTransform),
-            (gameObject1, textureName1),
+            (gameObject1, texture1Name),
           );
         };
 
@@ -2503,7 +2503,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             let (
               state,
               (rootGameObject, sceneGameObjectTransform),
-              (gameObject1, textureName1),
+              (gameObject1, texture1Name),
             ) =
               _prepareGameObject(state);
 
@@ -2588,10 +2588,10 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
               state,
             );
 
-          let textureName1 = "texture_name1";
+          let texture1Name = "texture_name1";
 
           let (state, gameObject1, transform1, (format1, type1_)) =
-            _createGameObjectWithMap(textureName1, state);
+            _createGameObjectWithMap(texture1Name, state);
 
           let state =
             state
@@ -2606,7 +2606,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           (
             state,
             (rootGameObject, sceneGameObjectTransform),
-            (gameObject1, textureName1),
+            (gameObject1, texture1Name),
             (format1, type1_),
           );
         };
@@ -2623,7 +2623,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             let (
               state,
               (rootGameObject, sceneGameObjectTransform),
-              (gameObject1, textureName1),
+              (gameObject1, texture1Name),
               (format1, type1_),
             ) =
               _prepareGameObject(state);

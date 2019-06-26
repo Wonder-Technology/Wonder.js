@@ -35,7 +35,8 @@ let generateSingleRAB = (resourceData, state) => {
   let (
     (
       imageArr,
-      textureArr,
+      basicSourceTextureArr,
+      cubemapTextureArr,
       basicMaterialArr,
       lightMaterialArr,
       geometryArr,
@@ -51,7 +52,8 @@ let generateSingleRAB = (resourceData, state) => {
   let jsonUint8Array =
     BuildSingleRABJsonDataSystem.buildJsonUint8Array({
       images: imageArr,
-      textures: textureArr,
+      basicSourceTextures: basicSourceTextureArr,
+      cubemapTextures: cubemapTextureArr,
       basicMaterials: basicMaterialArr,
       lightMaterials: lightMaterialArr,
       scriptEventFunctions: scriptEventFunctionArr,

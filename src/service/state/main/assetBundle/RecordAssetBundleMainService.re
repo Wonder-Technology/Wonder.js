@@ -7,7 +7,9 @@ let create = () => {
     isLoadedMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     loadedRABMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     isAssembledMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
-    textureMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
+    basicSourceTextureMap:
+      WonderCommonlib.ImmutableHashMapService.createEmpty(),
+    cubemapTextureMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     imageMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     basicMaterialMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     lightMaterialMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),

@@ -61,8 +61,8 @@ let getDefaultIsNeedUpdate = () =>
 
 let getDefaultFlipY = () => BufferCubemapTextureService.getDefaultFlipY();
 
-let buildSource = (~width=2, ~height=4, ~src="", ()) =>
-  {"width": width, "height": height, "src": src} |> Obj.magic;
+let buildSource = (~width=2, ~height=4, ~src="", ~name="source", ()) =>
+  {"width": width, "height": height, "src": src, "name": name} |> Obj.magic;
 
 let getCubemapTexturePXSource = (texture, state) => {
   let {pxSourceMap} = RecordCubemapTextureMainService.getRecord(state);
@@ -103,13 +103,26 @@ let getAllSources = (texture, state) => {
 let unsafeGetAllSources = (texture, state) =>
   getAllSources(texture, state) |> OptionService.unsafeGet;
 
-let setAllSources = (~state, ~texture, ~width=2, ~height=4, ()) => {
-  let source1 = buildSource(~width, ~height, ~src="px", ());
-  let source2 = buildSource(~width, ~height, ~src="nx", ());
-  let source3 = buildSource(~width, ~height, ~src="py", ());
-  let source4 = buildSource(~width, ~height, ~src="ny", ());
-  let source5 = buildSource(~width, ~height, ~src="pz", ());
-  let source6 = buildSource(~width, ~height, ~src="nz", ());
+let setAllSources =
+    (
+      ~state,
+      ~texture,
+      ~width=2,
+      ~height=4,
+      ~image1Name="i1",
+      ~image2Name="i2",
+      ~image3Name="i3",
+      ~image4Name="i4",
+      ~image5Name="i5",
+      ~image6Name="i6",
+      (),
+    ) => {
+  let source1 = buildSource(~width, ~height, ~src="px", ~name=image1Name, ());
+  let source2 = buildSource(~width, ~height, ~src="nx", ~name=image2Name, ());
+  let source3 = buildSource(~width, ~height, ~src="py", ~name=image3Name, ());
+  let source4 = buildSource(~width, ~height, ~src="ny", ~name=image4Name, ());
+  let source5 = buildSource(~width, ~height, ~src="pz", ~name=image5Name, ());
+  let source6 = buildSource(~width, ~height, ~src="nz", ~name=image6Name, ());
 
   let state =
     state

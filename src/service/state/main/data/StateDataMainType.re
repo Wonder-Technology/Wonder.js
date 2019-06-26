@@ -370,10 +370,16 @@ and assembleRABData = {
   loadedRABMap:
     WonderCommonlib.ImmutableHashMapService.t(Js.Typed_array.ArrayBuffer.t),
   isAssembledMap: WonderCommonlib.ImmutableHashMapService.t(bool),
-  textureMap:
+  basicSourceTextureMap:
     WonderCommonlib.ImmutableHashMapService.t(
       WonderCommonlib.ImmutableHashMapService.t(
         BasicSourceTextureType.basicSourceTexture,
+      ),
+    ),
+  cubemapTextureMap:
+    WonderCommonlib.ImmutableHashMapService.t(
+      WonderCommonlib.ImmutableHashMapService.t(
+        CubemapTextureType.cubemapTexture,
       ),
     ),
   imageMap:

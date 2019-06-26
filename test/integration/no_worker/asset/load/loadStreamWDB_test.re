@@ -578,36 +578,12 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   (151, {"type": "image/jpeg"}),
                 |],
                 [|
-                  GLBTool.createFakeImage(
-                    ~name="image_0",
-                    ~src="object_url0",
-                    (),
-                  ),
-                  GLBTool.createFakeImage(
-                    ~name="image_1",
-                    ~src="object_url1",
-                    (),
-                  ),
-                  GLBTool.createFakeImage(
-                    ~name="image_2",
-                    ~src="object_url2",
-                    (),
-                  ),
-                  GLBTool.createFakeImage(
-                    ~name="image_3",
-                    ~src="object_url3",
-                    (),
-                  ),
-                  GLBTool.createFakeImage(
-                    ~name="image_4",
-                    ~src="object_url4",
-                    (),
-                  ),
-                  GLBTool.createFakeImage(
-                    ~name="image_5",
-                    ~src="object_url5",
-                    (),
-                  ),
+                  GLBTool.createFakeImage(~name="i1", ~src="object_url0", ()),
+                  GLBTool.createFakeImage(~name="i2", ~src="object_url1", ()),
+                  GLBTool.createFakeImage(~name="i3", ~src="object_url2", ()),
+                  GLBTool.createFakeImage(~name="i4", ~src="object_url3", ()),
+                  GLBTool.createFakeImage(~name="i5", ~src="object_url4", ()),
+                  GLBTool.createFakeImage(~name="i6", ~src="object_url5", ()),
                 |],
               ),
               state,
@@ -1277,32 +1253,32 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                         |],
                         [|
                           GLBTool.createFakeImage(
-                            ~name="image_1",
+                            ~name="i1",
                             ~src="object_url1",
                             (),
                           ),
                           GLBTool.createFakeImage(
-                            ~name="image_2",
+                            ~name="i2",
                             ~src="object_url2",
                             (),
                           ),
                           GLBTool.createFakeImage(
-                            ~name="image_3",
+                            ~name="i3",
                             ~src="object_url3",
                             (),
                           ),
                           GLBTool.createFakeImage(
-                            ~name="image_4",
+                            ~name="i4",
                             ~src="object_url4",
                             (),
                           ),
                           GLBTool.createFakeImage(
-                            ~name="image_5",
+                            ~name="i5",
                             ~src="object_url5",
                             (),
                           ),
                           GLBTool.createFakeImage(
-                            ~name="image_6",
+                            ~name="i6",
                             ~src="object_url6",
                             (),
                           ),

@@ -121,8 +121,13 @@ let releaseAssembleRABData = (rabRelativePath, {assetBundleRecord} as state) => 
           |> WonderCommonlib.ImmutableHashMapService.deleteVal(
                rabRelativePath,
              ),
-        textureMap:
-          assembleRABData.textureMap
+        basicSourceTextureMap:
+          assembleRABData.basicSourceTextureMap
+          |> WonderCommonlib.ImmutableHashMapService.deleteVal(
+               rabRelativePath,
+             ),
+        cubemapTextureMap:
+          assembleRABData.cubemapTextureMap
           |> WonderCommonlib.ImmutableHashMapService.deleteVal(
                rabRelativePath,
              ),
@@ -162,7 +167,8 @@ let setAssembleRABData =
       rabRelativePath,
       (
         imageMapByName,
-        textureMapByName,
+        basicSourceTextureMapByName,
+        cubemapTextureMapByName,
         basicMaterialMap,
         lightMaterialMap,
         geometryMap,
@@ -185,11 +191,17 @@ let setAssembleRABData =
                rabRelativePath,
                imageMapByName,
              ),
-        textureMap:
-          assembleRABData.textureMap
+        basicSourceTextureMap:
+          assembleRABData.basicSourceTextureMap
           |> WonderCommonlib.ImmutableHashMapService.set(
                rabRelativePath,
-               textureMapByName,
+               basicSourceTextureMapByName,
+             ),
+        cubemapTextureMap:
+          assembleRABData.cubemapTextureMap
+          |> WonderCommonlib.ImmutableHashMapService.set(
+               rabRelativePath,
+               cubemapTextureMapByName,
              ),
         basicMaterialMap:
           assembleRABData.basicMaterialMap
@@ -330,19 +342,36 @@ let unsafeFindImageByName = (rabRelativePath, name, state) =>
        ),
      );
 
-let findTextureByName = (rabRelativePath, name, state) =>
+let findBasicSourceTextureByName = (rabRelativePath, name, state) =>
   _findDataByName(
     rabRelativePath,
     name,
-    state.assetBundleRecord.assembleRABData.textureMap,
+    state.assetBundleRecord.assembleRABData.basicSourceTextureMap,
   );
 
-let unsafeFindTextureByName = (rabRelativePath, name, state) =>
-  findTextureByName(rabRelativePath, name, state)
+let unsafeFindBasicSourceTextureByName = (rabRelativePath, name, state) =>
+  findBasicSourceTextureByName(rabRelativePath, name, state)
   |> OptionService.unsafeGetWithMessage(
        WonderLog.Log.buildAssertMessage(
          ~expect=
-           {j|texture by name:$name exist in rabRelativePath:$rabRelativePath|j},
+           {j|basic source texture by name:$name exist in rabRelativePath:$rabRelativePath|j},
+         ~actual={j|not|j},
+       ),
+     );
+
+let findCubemapTextureByName = (rabRelativePath, name, state) =>
+  _findDataByName(
+    rabRelativePath,
+    name,
+    state.assetBundleRecord.assembleRABData.cubemapTextureMap,
+  );
+
+let unsafeFindCubemapTextureByName = (rabRelativePath, name, state) =>
+  findCubemapTextureByName(rabRelativePath, name, state)
+  |> OptionService.unsafeGetWithMessage(
+       WonderLog.Log.buildAssertMessage(
+         ~expect=
+           {j|cubemap texture by name:$name exist in rabRelativePath:$rabRelativePath|j},
          ~actual={j|not|j},
        ),
      );

@@ -105,210 +105,406 @@ let _ =
       describe("remove duplicate buffer data from rab", () => {
         describe("remove duplicate image buffer data", () =>
           describe("judge duplicate by image name", () => {
-            testPromise("test with textures", () => {
-              let imageName = "image1";
+            describe("test image from basicSourceTexture", () => {
+              testPromise("test with textures", () => {
+                let imageName = "image1";
 
-              let image1 =
-                GenerateSingleRABTool.ResourceData.buildImageData(
-                  ~name=imageName,
-                  (),
-                );
+                let image1 =
+                  GenerateSingleRABTool.ResourceData.buildImageData(
+                    ~name=imageName,
+                    (),
+                  );
 
-              let imageDataMap =
-                WonderCommonlib.ImmutableSparseMapService.createEmpty()
-                |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
+                let imageDataMap =
+                  WonderCommonlib.ImmutableSparseMapService.createEmpty()
+                  |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
-              let (state, textureResourceData1) =
-                GenerateSingleRABTool.ResourceData.createTextureResourceData(
-                  ~state=state^,
-                  /* ~name="texture1", */
-                  ~imageDataIndex=0,
-                  (),
-                );
+                let (state, textureResourceData1) =
+                  GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
+                    ~state=state^,
+                    /* ~name="texture1", */
+                    ~imageDataIndex=0,
+                    (),
+                  );
 
-              let resourceData1 =
-                GenerateSingleRABTool.ResourceData.buildResourceData(
-                  ~textures=[|textureResourceData1|],
-                  ~imageDataMap,
-                  (),
-                );
+                let resourceData1 =
+                  GenerateSingleRABTool.ResourceData.buildResourceData(
+                    ~basicSourceTextures=[|textureResourceData1|],
+                    ~imageDataMap,
+                    (),
+                  );
 
-              let rab1 =
-                GenerateSingleRABSystem.generateSingleRAB(
-                  resourceData1,
+                let rab1 =
+                  GenerateSingleRABSystem.generateSingleRAB(
+                    resourceData1,
+                    state,
+                  );
+
+                let image2 =
+                  GenerateSingleRABTool.ResourceData.buildImageData(
+                    ~name=imageName,
+                    (),
+                  );
+
+                let imageDataMap =
+                  WonderCommonlib.ImmutableSparseMapService.createEmpty()
+                  |> WonderCommonlib.ImmutableSparseMapService.set(0, image2);
+
+                let (state, textureResourceData2) =
+                  GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
+                    ~state,
+                    /* ~name="texture2", */
+                    ~imageDataIndex=0,
+                    (),
+                  );
+
+                let resourceData2 =
+                  GenerateSingleRABTool.ResourceData.buildResourceData(
+                    ~basicSourceTextures=[|textureResourceData2|],
+                    ~imageDataMap,
+                    (),
+                  );
+
+                let rab2 =
+                  GenerateSingleRABSystem.generateSingleRAB(
+                    resourceData2,
+                    state,
+                  );
+
+                GenerateAllABTool.TestWithTwoRAB.generateAllAB(
+                  (rab1, rab2),
                   state,
-                );
+                )
+                |> MostTool.testStream(data => {
+                     let (newRab1Content, newRab2Content) =
+                       GenerateAllABTool.TestWithTwoRAB.getNewRabContents(
+                         data,
+                       );
 
-              let image2 =
-                GenerateSingleRABTool.ResourceData.buildImageData(
-                  ~name=imageName,
-                  (),
-                );
+                     (newRab1Content.images, newRab2Content.images)
+                     |> expect
+                     == (
+                          [|
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image1.name,
+                              ~mimeType=image1.mimeType,
+                              ~bufferView=0,
+                              (),
+                            ),
+                          |],
+                          [|
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image2.name,
+                              ~mimeType=image2.mimeType,
+                              ~bufferView=
+                                ABBufferViewUtils.buildNoneBufferViewIndex(),
+                              (),
+                            ),
+                          |],
+                        )
+                     |> resolve;
+                   });
+              });
+              testPromise("test with lightMaterials", () => {
+                let imageName = "image1";
 
-              let imageDataMap =
-                WonderCommonlib.ImmutableSparseMapService.createEmpty()
-                |> WonderCommonlib.ImmutableSparseMapService.set(0, image2);
+                let image1 =
+                  GenerateSingleRABTool.ResourceData.buildImageData(
+                    ~name=imageName,
+                    (),
+                  );
 
-              let (state, textureResourceData2) =
-                GenerateSingleRABTool.ResourceData.createTextureResourceData(
-                  ~state,
-                  /* ~name="texture2", */
-                  ~imageDataIndex=0,
-                  (),
-                );
+                let imageDataMap =
+                  WonderCommonlib.ImmutableSparseMapService.createEmpty()
+                  |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
-              let resourceData2 =
-                GenerateSingleRABTool.ResourceData.buildResourceData(
-                  ~textures=[|textureResourceData2|],
-                  ~imageDataMap,
-                  (),
-                );
+                let (state, textureResourceData1) =
+                  GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
+                    ~state=state^,
+                    /* ~name="texture1", */
+                    ~imageDataIndex=0,
+                    (),
+                  );
 
-              let rab2 =
-                GenerateSingleRABSystem.generateSingleRAB(
-                  resourceData2,
+                let lightMaterial1Name = "lightMaterial1";
+                let (state, lightMaterial1) =
+                  GenerateSingleRABTool.ResourceData.createLightMaterialResourceData(
+                    ~state,
+                    ~diffuseMap=Some(textureResourceData1.textureComponent),
+                    ~name=lightMaterial1Name,
+                    (),
+                  );
+
+                let resourceData1 =
+                  GenerateSingleRABTool.ResourceData.buildResourceData(
+                    ~basicSourceTextures=[|textureResourceData1|],
+                    ~lightMaterials=[|lightMaterial1|],
+                    ~imageDataMap,
+                    (),
+                  );
+
+                let rab1 =
+                  GenerateSingleRABSystem.generateSingleRAB(
+                    resourceData1,
+                    state,
+                  );
+
+                let image2 =
+                  GenerateSingleRABTool.ResourceData.buildImageData(
+                    ~name=imageName,
+                    (),
+                  );
+
+                let imageDataMap =
+                  WonderCommonlib.ImmutableSparseMapService.createEmpty()
+                  |> WonderCommonlib.ImmutableSparseMapService.set(0, image2);
+
+                let (state, textureResourceData2) =
+                  GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
+                    ~state,
+                    /* ~name="texture2", */
+                    ~imageDataIndex=0,
+                    (),
+                  );
+
+                let resourceData2 =
+                  GenerateSingleRABTool.ResourceData.buildResourceData(
+                    ~basicSourceTextures=[|textureResourceData2|],
+                    ~imageDataMap,
+                    (),
+                  );
+
+                let rab2 =
+                  GenerateSingleRABSystem.generateSingleRAB(
+                    resourceData2,
+                    state,
+                  );
+
+                GenerateAllABTool.TestWithTwoRAB.generateAllAB(
+                  (rab1, rab2),
                   state,
-                );
+                )
+                |> MostTool.testStream(data => {
+                     let (newRab1Content, newRab2Content) =
+                       GenerateAllABTool.TestWithTwoRAB.getNewRabContents(
+                         data,
+                       );
 
-              GenerateAllABTool.TestWithTwoRAB.generateAllAB(
-                (rab1, rab2),
-                state,
-              )
-              |> MostTool.testStream(data => {
-                   let (newRab1Content, newRab2Content) =
-                     GenerateAllABTool.TestWithTwoRAB.getNewRabContents(data);
-
-                   (newRab1Content.images, newRab2Content.images)
-                   |> expect
-                   == (
-                        [|
-                          GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
-                            ~name=image1.name,
-                            ~mimeType=image1.mimeType,
-                            ~bufferView=0,
-                            (),
-                          ),
-                        |],
-                        [|
-                          GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
-                            ~name=image2.name,
-                            ~mimeType=image2.mimeType,
-                            ~bufferView=
-                              ABBufferViewUtils.buildNoneBufferViewIndex(),
-                            (),
-                          ),
-                        |],
-                      )
-                   |> resolve;
-                 });
+                     (newRab1Content.images, newRab2Content.images)
+                     |> expect
+                     == (
+                          [|
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image1.name,
+                              ~mimeType=image1.mimeType,
+                              ~bufferView=0,
+                              (),
+                            ),
+                          |],
+                          [|
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image2.name,
+                              ~mimeType=image2.mimeType,
+                              ~bufferView=
+                                ABBufferViewUtils.buildNoneBufferViewIndex(),
+                              (),
+                            ),
+                          |],
+                        )
+                     |> resolve;
+                   });
+              });
             });
-            testPromise("test with lightMaterials", () => {
-              let imageName = "image1";
 
-              let image1 =
-                GenerateSingleRABTool.ResourceData.buildImageData(
-                  ~name=imageName,
-                  (),
-                );
+            describe("test image from cubemapTexture", () =>
+              testPromise("test with cubemapTextures", () => {
+                let image1Name = "i1";
+                let image2Name = "i2";
+                let image3Name = "i3";
+                let image4Name = "i4";
+                let image5Name = "i5";
+                let image6Name = "i6";
 
-              let imageDataMap =
-                WonderCommonlib.ImmutableSparseMapService.createEmpty()
-                |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
-
-              let (state, textureResourceData1) =
-                GenerateSingleRABTool.ResourceData.createTextureResourceData(
-                  ~state=state^,
-                  /* ~name="texture1", */
-                  ~imageDataIndex=0,
-                  (),
-                );
-
-              let lightMaterial1Name = "lightMaterial1";
-              let (state, lightMaterial1) =
-                GenerateSingleRABTool.ResourceData.createLightMaterialResourceData(
-                  ~state,
-                  ~diffuseMap=Some(textureResourceData1.textureComponent),
-                  ~name=lightMaterial1Name,
-                  (),
-                );
-
-              let resourceData1 =
-                GenerateSingleRABTool.ResourceData.buildResourceData(
-                  ~textures=[|textureResourceData1|],
-                  ~lightMaterials=[|lightMaterial1|],
-                  ~imageDataMap,
-                  (),
-                );
-
-              let rab1 =
-                GenerateSingleRABSystem.generateSingleRAB(
-                  resourceData1,
+                let (
                   state,
-                );
+                  textureResourceData1,
+                  texture1Name,
+                  (
+                    imageDataMap1,
+                    (
+                      image1_1,
+                      image1_2,
+                      image1_3,
+                      image1_4,
+                      image1_5,
+                      image1_6,
+                    ),
+                  ),
+                ) =
+                  GenerateSingleRABTool.Test.createCubemapTextureResourceData(
+                    ~state=state^,
+                    ~image1Name,
+                    ~image2Name,
+                    ~image3Name,
+                    ~image4Name,
+                    ~image5Name,
+                    ~image6Name,
+                    (),
+                  );
 
-              let image2 =
-                GenerateSingleRABTool.ResourceData.buildImageData(
-                  ~name=imageName,
-                  (),
-                );
+                let resourceData1 =
+                  GenerateSingleRABTool.ResourceData.buildResourceData(
+                    ~cubemapTextures=[|textureResourceData1|],
+                    ~imageDataMap=imageDataMap1,
+                    (),
+                  );
 
-              let imageDataMap =
-                WonderCommonlib.ImmutableSparseMapService.createEmpty()
-                |> WonderCommonlib.ImmutableSparseMapService.set(0, image2);
+                let rab1 =
+                  GenerateSingleRABSystem.generateSingleRAB(
+                    resourceData1,
+                    state,
+                  );
 
-              let (state, textureResourceData2) =
-                GenerateSingleRABTool.ResourceData.createTextureResourceData(
-                  ~state,
-                  /* ~name="texture2", */
-                  ~imageDataIndex=0,
-                  (),
-                );
-
-              let resourceData2 =
-                GenerateSingleRABTool.ResourceData.buildResourceData(
-                  ~textures=[|textureResourceData2|],
-                  ~imageDataMap,
-                  (),
-                );
-
-              let rab2 =
-                GenerateSingleRABSystem.generateSingleRAB(
-                  resourceData2,
+                let (
                   state,
-                );
+                  textureResourceData2,
+                  texture2Name,
+                  (
+                    imageDataMap2,
+                    (
+                      image2_1,
+                      image2_2,
+                      image2_3,
+                      image2_4,
+                      image2_5,
+                      image2_6,
+                    ),
+                  ),
+                ) =
+                  GenerateSingleRABTool.Test.createCubemapTextureResourceData(
+                    ~state,
+                    ~image1Name,
+                    ~image2Name,
+                    ~image3Name,
+                    ~image4Name,
+                    ~image5Name,
+                    ~image6Name,
+                    (),
+                  );
 
-              GenerateAllABTool.TestWithTwoRAB.generateAllAB(
-                (rab1, rab2),
-                state,
-              )
-              |> MostTool.testStream(data => {
-                   let (newRab1Content, newRab2Content) =
-                     GenerateAllABTool.TestWithTwoRAB.getNewRabContents(data);
+                let resourceData2 =
+                  GenerateSingleRABTool.ResourceData.buildResourceData(
+                    ~cubemapTextures=[|textureResourceData2|],
+                    ~imageDataMap=imageDataMap2,
+                    (),
+                  );
 
-                   (newRab1Content.images, newRab2Content.images)
-                   |> expect
-                   == (
-                        [|
-                          GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
-                            ~name=image1.name,
-                            ~mimeType=image1.mimeType,
-                            ~bufferView=0,
-                            (),
-                          ),
-                        |],
-                        [|
-                          GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
-                            ~name=image2.name,
-                            ~mimeType=image2.mimeType,
-                            ~bufferView=
-                              ABBufferViewUtils.buildNoneBufferViewIndex(),
-                            (),
-                          ),
-                        |],
-                      )
-                   |> resolve;
-                 });
-            });
+                let rab2 =
+                  GenerateSingleRABSystem.generateSingleRAB(
+                    resourceData2,
+                    state,
+                  );
+
+                GenerateAllABTool.TestWithTwoRAB.generateAllAB(
+                  (rab1, rab2),
+                  state,
+                )
+                |> MostTool.testStream(data => {
+                     let (newRab1Content, newRab2Content) =
+                       GenerateAllABTool.TestWithTwoRAB.getNewRabContents(
+                         data,
+                       );
+
+                     (newRab1Content.images, newRab2Content.images)
+                     |> expect
+                     == (
+                          [|
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image1_1.name,
+                              ~mimeType=image1_1.mimeType,
+                              ~bufferView=0,
+                              (),
+                            ),
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image1_2.name,
+                              ~mimeType=image1_2.mimeType,
+                              ~bufferView=1,
+                              (),
+                            ),
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image1_3.name,
+                              ~mimeType=image1_3.mimeType,
+                              ~bufferView=2,
+                              (),
+                            ),
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image1_4.name,
+                              ~mimeType=image1_4.mimeType,
+                              ~bufferView=3,
+                              (),
+                            ),
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image1_5.name,
+                              ~mimeType=image1_5.mimeType,
+                              ~bufferView=4,
+                              (),
+                            ),
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image1_6.name,
+                              ~mimeType=image1_6.mimeType,
+                              ~bufferView=5,
+                              (),
+                            ),
+                          |],
+                          [|
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image2_1.name,
+                              ~mimeType=image2_1.mimeType,
+                              ~bufferView=
+                                ABBufferViewUtils.buildNoneBufferViewIndex(),
+                              (),
+                            ),
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image2_2.name,
+                              ~mimeType=image2_2.mimeType,
+                              ~bufferView=
+                                ABBufferViewUtils.buildNoneBufferViewIndex(),
+                              (),
+                            ),
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image2_3.name,
+                              ~mimeType=image2_3.mimeType,
+                              ~bufferView=
+                                ABBufferViewUtils.buildNoneBufferViewIndex(),
+                              (),
+                            ),
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image2_4.name,
+                              ~mimeType=image2_4.mimeType,
+                              ~bufferView=
+                                ABBufferViewUtils.buildNoneBufferViewIndex(),
+                              (),
+                            ),
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image2_5.name,
+                              ~mimeType=image2_5.mimeType,
+                              ~bufferView=
+                                ABBufferViewUtils.buildNoneBufferViewIndex(),
+                              (),
+                            ),
+                            GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                              ~name=image2_6.name,
+                              ~mimeType=image2_6.mimeType,
+                              ~bufferView=
+                                ABBufferViewUtils.buildNoneBufferViewIndex(),
+                              (),
+                            ),
+                          |],
+                        )
+                     |> resolve;
+                   });
+              })
+            );
           })
         );
 
@@ -444,8 +640,8 @@ let _ =
 
       describe("remove duplicate buffer data from sab", () => {
         describe("remove duplicate image buffer data", () =>
-          describe("judge duplicate by image name", () =>
-            testPromise("test", () => {
+          describe("judge duplicate by image name", () => {
+            testPromise("test image from basicSourceTexture", () => {
               let imageName = "image1";
 
               let image1 =
@@ -459,7 +655,7 @@ let _ =
                 |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
               let (state, textureResourceData1) =
-                GenerateSingleRABTool.ResourceData.createTextureResourceData(
+                GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
                   ~state=state^,
                   ~imageDataIndex=0,
                   (),
@@ -467,7 +663,7 @@ let _ =
 
               let resourceData1 =
                 GenerateSingleRABTool.ResourceData.buildResourceData(
-                  ~textures=[|textureResourceData1|],
+                  ~basicSourceTextures=[|textureResourceData1|],
                   ~imageDataMap,
                   (),
                 );
@@ -529,8 +725,184 @@ let _ =
                       )
                    |> resolve;
                  });
-            })
-          )
+            });
+            testPromise("test image from cubemapTexture", () => {
+              let image1Name = "i1";
+              let image2Name = "i2";
+              let image3Name = "i3";
+              let image4Name = "i4";
+              let image5Name = "i5";
+              let image6Name = "i6";
+
+              let (
+                state,
+                textureResourceData1,
+                texture1Name,
+                (
+                  imageDataMap1,
+                  (
+                    image1_1,
+                    image1_2,
+                    image1_3,
+                    image1_4,
+                    image1_5,
+                    image1_6,
+                  ),
+                ),
+              ) =
+                GenerateSingleRABTool.Test.createCubemapTextureResourceData(
+                  ~state=state^,
+                  ~image1Name,
+                  ~image2Name,
+                  ~image3Name,
+                  ~image4Name,
+                  ~image5Name,
+                  ~image6Name,
+                  ~image6MimeType="image/jpeg",
+                  (),
+                );
+
+              let resourceData1 =
+                GenerateSingleRABTool.ResourceData.buildResourceData(
+                  ~cubemapTextures=[|textureResourceData1|],
+                  ~imageDataMap=imageDataMap1,
+                  (),
+                );
+
+              let rab1 =
+                GenerateSingleRABSystem.generateSingleRAB(
+                  resourceData1,
+                  state,
+                );
+
+              let (state, cubemapTexture) =
+                SkyboxTool.prepareCubemapTexture(state);
+
+              let state =
+                CubemapTextureTool.setAllSources(
+                  ~texture=cubemapTexture,
+                  ~image1Name,
+                  ~image2Name,
+                  ~image3Name,
+                  ~image4Name,
+                  ~image5Name,
+                  ~image6Name,
+                  ~state,
+                  (),
+                );
+
+              let _ =
+                GenerateSceneGraphSystemTool.prepareCanvasForCubemapTexture(
+                  sandbox,
+                );
+
+              let sab1 =
+                GenerateSingleSABSystem.generateSingleSAB(
+                  SceneAPI.getSceneGameObject(state),
+                  WonderCommonlib.MutableSparseMapService.createEmpty(),
+                  state,
+                );
+
+              GenerateAllABTool.TestWithOneSABAndOneRAB.generateAllAB(
+                (rab1, sab1),
+                state,
+              )
+              |> MostTool.testStream(data => {
+                   let (newRab1Content, newSab1Content) =
+                     GenerateAllABTool.TestWithOneSABAndOneRAB.getNewABContents(
+                       data,
+                     );
+
+                   (newRab1Content.images, newSab1Content.images)
+                   |> expect
+                   == (
+                        [|
+                          GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                            ~name=image1_1.name,
+                            ~mimeType=image1_1.mimeType,
+                            ~bufferView=0,
+                            (),
+                          ),
+                          GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                            ~name=image1_2.name,
+                            ~mimeType=image1_2.mimeType,
+                            ~bufferView=1,
+                            (),
+                          ),
+                          GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                            ~name=image1_3.name,
+                            ~mimeType=image1_3.mimeType,
+                            ~bufferView=2,
+                            (),
+                          ),
+                          GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                            ~name=image1_4.name,
+                            ~mimeType=image1_4.mimeType,
+                            ~bufferView=3,
+                            (),
+                          ),
+                          GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                            ~name=image1_5.name,
+                            ~mimeType=image1_5.mimeType,
+                            ~bufferView=4,
+                            (),
+                          ),
+                          GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+                            ~name=image1_6.name,
+                            ~mimeType=image1_6.mimeType,
+                            ~bufferView=5,
+                            (),
+                          ),
+                        |],
+                        Some([|
+                          GenerateSingleSABTool.SceneAssetBundleContent.buildImageData(
+                            ~name=image1_1.name,
+                            ~mimeType=image1_1.mimeType,
+                            ~bufferView=
+                              ABBufferViewUtils.buildNoneBufferViewIndex(),
+                            (),
+                          ),
+                          GenerateSingleSABTool.SceneAssetBundleContent.buildImageData(
+                            ~name=image1_2.name,
+                            ~mimeType=image1_2.mimeType,
+                            ~bufferView=
+                              ABBufferViewUtils.buildNoneBufferViewIndex(),
+                            (),
+                          ),
+                          GenerateSingleSABTool.SceneAssetBundleContent.buildImageData(
+                            ~name=image1_3.name,
+                            ~mimeType=image1_3.mimeType,
+                            ~bufferView=
+                              ABBufferViewUtils.buildNoneBufferViewIndex(),
+                            (),
+                          ),
+                          GenerateSingleSABTool.SceneAssetBundleContent.buildImageData(
+                            ~name=image1_4.name,
+                            ~mimeType=image1_4.mimeType,
+                            ~bufferView=
+                              ABBufferViewUtils.buildNoneBufferViewIndex(),
+                            (),
+                          ),
+                          GenerateSingleSABTool.SceneAssetBundleContent.buildImageData(
+                            ~name=image1_5.name,
+                            ~mimeType=image1_5.mimeType,
+                            ~bufferView=
+                              ABBufferViewUtils.buildNoneBufferViewIndex(),
+                            (),
+                          ),
+                          GenerateSingleSABTool.SceneAssetBundleContent.buildImageData(
+                            ~name=image1_6.name,
+                            ~mimeType=image1_6.mimeType,
+                            ~bufferView=
+                              ABBufferViewUtils.buildNoneBufferViewIndex(),
+                            (),
+                          ),
+                        |]),
+                      )
+                   |> resolve;
+                 });
+            });
+          })
         );
 
         describe("remove duplicate geometry buffer data", () =>

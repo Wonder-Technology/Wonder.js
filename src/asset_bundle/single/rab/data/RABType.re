@@ -4,7 +4,7 @@ type textureIndex = int;
 
 type imageIndex = int;
 
-type texture = {
+type basicSourceTexture = {
   name: string,
   source: imageIndex,
   magFilter: int,
@@ -14,6 +14,33 @@ type texture = {
   format: int,
   type_: int,
   flipY: bool,
+};
+
+type cubemapTexture = {
+  name: string,
+  magFilter: int,
+  minFilter: int,
+  wrapS: int,
+  wrapT: int,
+  flipY: bool,
+  pxSource: imageIndex,
+  nxSource: imageIndex,
+  pySource: imageIndex,
+  nySource: imageIndex,
+  pzSource: imageIndex,
+  nzSource: imageIndex,
+  pxFormat: int,
+  nxFormat: int,
+  pyFormat: int,
+  nyFormat: int,
+  pzFormat: int,
+  nzFormat: int,
+  pxType: int,
+  nxType: int,
+  pyType: int,
+  nyType: int,
+  pzType: int,
+  nzType: int,
 };
 
 type image = {
@@ -63,7 +90,8 @@ type geometry = {
 };
 
 type resourceAssetBundleContent = {
-  textures: array(texture),
+  basicSourceTextures: array(basicSourceTexture),
+  cubemapTextures: array(cubemapTexture),
   images: array(image),
   basicMaterials: array(basicMaterial),
   lightMaterials: array(lightMaterial),
@@ -81,7 +109,7 @@ type manifest = {
 type materialComponent = int;
 
 type geometryComponent = int;
-/* type texture */
+/* type basicSourceTexture */
 
 type imageData = {
   /* base64: option(string), */
@@ -93,9 +121,19 @@ type imageData = {
 
 type imageDataMap = WonderCommonlib.ImmutableSparseMapService.t(imageData);
 
-type textureData = {
+type basicSourceTextureData = {
   textureComponent: int,
   imageDataIndex: int,
+};
+
+type cubemapTextureData = {
+  textureComponent: int,
+  pxImageDataIndex: int,
+  nxImageDataIndex: int,
+  pyImageDataIndex: int,
+  nyImageDataIndex: int,
+  pzImageDataIndex: int,
+  nzImageDataIndex: int,
 };
 
 /* type materialNodeData = {
@@ -116,7 +154,8 @@ type scriptAttributeData = {
 type resourceData = {
   basicMaterials: array(materialComponent),
   lightMaterials: array(materialComponent),
-  textures: array(textureData),
+  basicSourceTextures: array(basicSourceTextureData),
+  cubemapTextures: array(cubemapTextureData),
   geometrys: array(geometryComponent),
   scriptEventFunctionDataArr: array(scriptEventFunctionData),
   scriptAttributeDataArr: array(scriptAttributeData),
