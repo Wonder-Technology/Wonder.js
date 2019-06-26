@@ -1,3 +1,19 @@
+<a name="1.2.0-alpha.3"></a>
+# [1.2.0-alpha.3](https://github.com/Wonder-Technology/Wonder.js/compare/v1.2.0-alpha.2...v1.2.0-alpha.3) (2019-06-26)
+
+
+### Bug Fixes
+
+* **flyCamera:** remove flyCamera should remove directionArrayMap ([157d1d4](https://github.com/Wonder-Technology/Wonder.js/commit/157d1d4))
+
+
+### Features
+
+* **arcball:** add arcball directionArray bind keydown and keyup event ([9144057](https://github.com/Wonder-Technology/Wonder.js/commit/9144057))
+* **arcball:** add directionArrayMap in arcballCameraControllerRecord ([dfd9dc6](https://github.com/Wonder-Technology/Wonder.js/commit/dfd9dc6))
+
+
+
 <a name="1.2.0-alpha.2"></a>
 # [1.2.0-alpha.2](https://github.com/Wonder-Technology/Wonder.js/compare/v1.2.0-alpha.1...v1.2.0-alpha.2) (2019-06-23)
 
