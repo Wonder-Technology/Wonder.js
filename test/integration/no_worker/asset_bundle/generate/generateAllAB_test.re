@@ -1121,6 +1121,28 @@ let _ =
 
     describe("generate one wab", () =>
       describe("test manifest", () => {
+        describe("test version", () =>
+          testPromise("test", () => {
+            let rab1 = GenerateSingleRABTool.generateOneRAB(state^);
+            let sab1 = GenerateSingleSABTool.generateOneSAB(state^);
+
+            GenerateAllABTool.TestWABWithOneSABAndOneRAB.generateAllAB(
+              (rab1, sab1),
+              state^,
+            )
+            |> MostTool.testStream(data => {
+                 let newWabManifest =
+                   GenerateAllABTool.TestWABWithOneSABAndOneRAB.getNewWabManifest(
+                     data,
+                   );
+
+                 newWabManifest.version
+                 |> expect == Copyright.getVersion()
+                 |> resolve;
+               });
+          })
+        );
+
         describe("test wholeHashIdMap", () =>
           testPromise("test", () => {
             let hashIdData = GenerateAllABTool.Manifest.buildHashIdData();
