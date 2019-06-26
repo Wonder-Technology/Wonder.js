@@ -40,7 +40,7 @@ let prepareForUseProgramCase = (sandbox, prepareFunc, state) => {
   (state, program, useProgram);
 };
 
-let init = (completeFunc, state) => {
+let initWithJob = (~jobFuncArr, ~completeFunc, ~state) => {
   let initData = {
     "data":
       SendInitRenderDataMainWorkerJob._buildData(
@@ -79,27 +79,7 @@ let init = (completeFunc, state) => {
      )
   |> WonderBsMost.Most.drain
   |> then_(_ =>
-       [|
-         CreateGlRenderWorkerJob.execJob(None),
-         SetViewportRenderWorkerJob.execJob(None),
-         InitTransformRenderWorkerJob.execJob(None),
-         InitStateRenderWorkerJob.execJob(None),
-         GetRenderConfigDataRenderWorkerJob.execJob(None),
-         GetSettingDataRenderWorkerJob.execJob(None),
-         GetMaterialDataRenderWorkerJob.execJob(None),
-         GetBrowserDetectDataRenderWorkerJob.execJob(None),
-         PregetGLSLDataRenderWorkerJob.execJob(None),
-         InitInstanceRenderWorkerJob.execJob(None),
-         InitGeometryRenderWorkerJob.execJob(None),
-         InitMeshRendererRenderWorkerJob.execJob(None),
-         InitBasicMaterialRenderWorkerJob.execJob(None),
-         InitBasicMaterialRenderWorkerJob.execJob(None),
-         InitDirectionLightRenderWorkerJob.execJob(None),
-         InitPointLightRenderWorkerJob.execJob(None),
-         InitLightMaterialRenderWorkerJob.execJob(None),
-         InitTextureRenderWorkerJob.execJob(None),
-         InitIMGUIRenderWorkerJob.execJob(None),
-       |]
+       jobFuncArr
        |> concatStreamFuncArray(
             initData,
             RenderWorkerStateTool.getStateData(),
@@ -113,6 +93,52 @@ let init = (completeFunc, state) => {
           )
      );
 };
+
+let getJobFuncArrExceptInitNoMaterialShader = () => [|
+  CreateGlRenderWorkerJob.execJob(None),
+  SetViewportRenderWorkerJob.execJob(None),
+  InitTransformRenderWorkerJob.execJob(None),
+  InitStateRenderWorkerJob.execJob(None),
+  GetRenderConfigDataRenderWorkerJob.execJob(None),
+  GetSettingDataRenderWorkerJob.execJob(None),
+  GetMaterialDataRenderWorkerJob.execJob(None),
+  GetBrowserDetectDataRenderWorkerJob.execJob(None),
+  PregetGLSLDataRenderWorkerJob.execJob(None),
+  InitInstanceRenderWorkerJob.execJob(None),
+  InitGeometryRenderWorkerJob.execJob(None),
+  InitMeshRendererRenderWorkerJob.execJob(None),
+  InitBasicMaterialRenderWorkerJob.execJob(None),
+  InitDirectionLightRenderWorkerJob.execJob(None),
+  InitPointLightRenderWorkerJob.execJob(None),
+  InitLightMaterialRenderWorkerJob.execJob(None),
+  InitTextureRenderWorkerJob.execJob(None),
+  InitIMGUIRenderWorkerJob.execJob(None),
+|];
+
+let getJobFuncArr = () => [|
+  CreateGlRenderWorkerJob.execJob(None),
+  SetViewportRenderWorkerJob.execJob(None),
+  InitTransformRenderWorkerJob.execJob(None),
+  InitStateRenderWorkerJob.execJob(None),
+  GetRenderConfigDataRenderWorkerJob.execJob(None),
+  GetSettingDataRenderWorkerJob.execJob(None),
+  GetMaterialDataRenderWorkerJob.execJob(None),
+  GetBrowserDetectDataRenderWorkerJob.execJob(None),
+  PregetGLSLDataRenderWorkerJob.execJob(None),
+  InitInstanceRenderWorkerJob.execJob(None),
+  InitGeometryRenderWorkerJob.execJob(None),
+  InitMeshRendererRenderWorkerJob.execJob(None),
+  InitNoMaterialShaderRenderWorkerJob.execJob(None),
+  InitBasicMaterialRenderWorkerJob.execJob(None),
+  InitDirectionLightRenderWorkerJob.execJob(None),
+  InitPointLightRenderWorkerJob.execJob(None),
+  InitLightMaterialRenderWorkerJob.execJob(None),
+  InitTextureRenderWorkerJob.execJob(None),
+  InitIMGUIRenderWorkerJob.execJob(None),
+|];
+
+let init = (completeFunc, state) =>
+  initWithJob(~completeFunc, ~state, ~jobFuncArr=getJobFuncArr());
 
 let execMainLoopJobsWithJobHandleMap = (sandbox, jobHandleMap, completeFunc) => {
   let state = MainInitJobMainWorkerTool.prepare();
@@ -161,6 +187,7 @@ let render = (sandbox, postMessageToRenderWorker, completeFunc) => {
     SendUniformShaderDataRenderWorkerJob.execJob(None),
     RenderBasicRenderWorkerJob.execJob(None),
     FrontRenderLightRenderWorkerJob.execJob(None),
+    RenderSkyboxRenderWorkerJob.execJob(None),
     RenderIMGUIRenderWorkerJob.execJob(None),
     CommitRenderWorkerJob.execJob(None),
     SendFinishRenderDataRenderWorkerJob.execJob(Some([|"FINISH_RENDER"|])),
@@ -229,6 +256,29 @@ let mainLoopAndDispose =
     },
   );
 
+let initWithJobAndMainLoopAndRender =
+    (
+      ~completeFunc,
+      ~state,
+      ~sandbox,
+      ~jobFuncArr,
+      ~beforeExecRenderRenderWorkerJobsFunc=state => (),
+      (),
+    ) =>
+  initWithJob(
+    ~completeFunc=
+      state =>
+        mainLoopAndRender(
+          ~completeFunc,
+          ~state,
+          ~sandbox,
+          ~beforeExecRenderRenderWorkerJobsFunc,
+          (),
+        ),
+    ~state,
+    ~jobFuncArr,
+  );
+
 let initAndMainLoopAndRender =
     (
       ~completeFunc,
@@ -237,14 +287,11 @@ let initAndMainLoopAndRender =
       ~beforeExecRenderRenderWorkerJobsFunc=state => (),
       (),
     ) =>
-  init(
-    state =>
-      mainLoopAndRender(
-        ~completeFunc,
-        ~state,
-        ~sandbox,
-        ~beforeExecRenderRenderWorkerJobsFunc,
-        (),
-      ),
-    state,
+  initWithJobAndMainLoopAndRender(
+    ~completeFunc,
+    ~state,
+    ~sandbox,
+    ~jobFuncArr=getJobFuncArr(),
+    ~beforeExecRenderRenderWorkerJobsFunc,
+    (),
   );

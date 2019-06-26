@@ -2,11 +2,11 @@ open WonderWebgl.GlType;
 
 open WonderWebgl.Gl;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
-open GLSLSenderType;
+open AllGLSLSenderType;
 
-open VboBufferType;
+open AllVboBufferType;
 
 let _addNormalMatrixInstanceArrayBufferSendData =
     (
@@ -17,7 +17,7 @@ let _addNormalMatrixInstanceArrayBufferSendData =
   instanceSendNoCachableDataArr
   |> ArrayService.push({
        pos:
-         GLSLLocationService.getAttribLocationAndCache(
+         AllGLSLLocationService.getAttribLocationAndCache(
            program,
            name,
            attributeLocationMap,
@@ -44,12 +44,12 @@ let _readAttributes =
                    type_ |> OptionService.unsafeGetJsonSerializedValue;
 
                  switch (buffer) {
-                 | VboBufferType.Instance_m_matrix =>
+                 | AllVboBufferType.Instance_m_matrix =>
                    HandleAttributeConfigDataInitMaterialAllService.addModelMatrixInstanceArrayBufferSendData(
                      (gl, program, name, attributeLocationMap),
                      sendDataArrTuple,
                    )
-                 | VboBufferType.Instance_normal_matrix =>
+                 | AllVboBufferType.Instance_normal_matrix =>
                    _addNormalMatrixInstanceArrayBufferSendData(
                      (gl, program, name, attributeLocationMap),
                      sendDataArrTuple,

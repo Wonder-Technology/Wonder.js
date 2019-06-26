@@ -83,11 +83,17 @@
                 ],
                 state
             ) {
-                var state = wd.setSkyboxImage(
-                    [
-                        px, nx, py, ny, pz, nz
-                    ], state
-                );
+                var [state, texture] = wd.createCubemapTexture(state);
+                var state = wd.setCubemapTexture(texture, state);
+
+
+                var state = wd.setCubemapTexturePXSource(texture, px, state);
+                var state = wd.setCubemapTextureNXSource(texture, nx, state);
+                var state = wd.setCubemapTexturePYSource(texture, py, state);
+                var state = wd.setCubemapTextureNYSource(texture, ny, state);
+                var state = wd.setCubemapTexturePZSource(texture, pz, state);
+                var state = wd.setCubemapTextureNZSource(texture, nz, state);
+
 
 
                 var [state, box] = LightBoxesTool.createBox(state);

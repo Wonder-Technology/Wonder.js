@@ -10,7 +10,7 @@ open MeshRendererType;
 
 open MaterialType;
 
-open InstanceType;
+open AllInstanceType;
 
 open CameraControllerType;
 

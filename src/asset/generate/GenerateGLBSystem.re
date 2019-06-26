@@ -49,11 +49,11 @@ let generateGLBData =
   let (
     basicMaterialDataArr,
     lightMaterialDataArr,
-    textureDataArr,
+    basicSourceTextureDataArr,
     samplerDataArr,
     imageUint8DataArr,
     imageResultUint8ArrayMap,
-    (totalByteLength, bufferViewDataArr),
+    (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     BuildMaterialDataSystem.build(
       (basicMaterialDataMap, lightMaterialDataMap, imageUint8ArrayDataMap),
@@ -62,10 +62,29 @@ let generateGLBData =
       state,
     );
 
+  let cubemapTextureDataArr = [||];
+
+  let (
+    skyboxCubemapTextureIndexOpt,
+    (cubemapTextureDataArr, samplerDataArr, imageUint8DataArr),
+    imageResultUint8ArrayMap,
+    (totalByteLength, byteOffset, bufferViewDataArr),
+  ) =
+    BuildSkyboxDataSystem.build(
+      cubemapTextureDataArr,
+      samplerDataArr,
+      imageUint8DataArr,
+      imageUint8ArrayDataMap,
+      imageResultUint8ArrayMap,
+      (totalByteLength, byteOffset, bufferViewDataArr),
+      getResultUint8ArrayDataFunc,
+      state,
+    );
+
   let buffer =
     BuildBufferSystem.build(
       totalByteLength,
-      (geometryEndByteOffset, (vertexDataArr, indexDataArr, index32DataArr)),
+      (vertexDataArr, indexDataArr, index32DataArr),
       imageUint8DataArr,
     );
 
@@ -111,7 +130,8 @@ let generateGLBData =
         meshRendererDataArr,
         basicMaterialDataArr,
         lightMaterialDataArr,
-        textureDataArr,
+        basicSourceTextureDataArr,
+        cubemapTextureDataArr,
         samplerDataArr,
         imageUint8DataArr,
         basicCameraViewDataArr,
@@ -121,6 +141,7 @@ let generateGLBData =
         lightDataArr,
         scriptDataArr,
         BuildIMGUIDataSystem.build(state),
+        skyboxCubemapTextureIndexOpt,
         extensionsUsedArr,
       ),
       state,

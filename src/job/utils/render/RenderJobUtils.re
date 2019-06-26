@@ -1,10 +1,10 @@
 open StateRenderType;
 
-open VboBufferType;
+open AllVboBufferType;
 
 open GeometryType;
 
-open GLSLSenderType;
+open AllGLSLSenderType;
 
 let _getOrCreateBuffer =
     (
@@ -149,7 +149,7 @@ let sendUniformRenderObjectModelData =
      )
   |> WonderCommonlib.ArrayService.forEach(
        (. {pos, getDataFunc, sendDataFunc}: uniformRenderObjectSendModelData) =>
-       GLSLLocationService.isUniformLocationExist(pos) ?
+       AllGLSLLocationService.isUniformLocationExist(pos) ?
          sendDataFunc(.
            gl,
            pos,

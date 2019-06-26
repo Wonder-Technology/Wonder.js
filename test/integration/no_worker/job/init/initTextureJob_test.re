@@ -35,12 +35,13 @@ let _ =
     beforeEach(() => {
       sandbox := createSandbox();
       state :=
-        InitBasicMaterialJobTool.initWithJobConfig(
+        InitLightMaterialJobTool.initWithJobConfig(
           sandbox,
           _buildNoWorkerJobConfig(),
         );
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
     describe("init all textures", () => {
       describe("test basic source texture", () => {
         describe("test init one texture", () =>
@@ -103,8 +104,7 @@ let _ =
 
       describe("test arrayBufferView source texture", () =>
         describe("test init two textures", () =>
-          test(
-            "test create", () => {
+          test("test create", () => {
             let (state, map1) =
               ArrayBufferViewSourceTextureAPI.createArrayBufferViewSourceTexture(
                 state^,
@@ -135,5 +135,65 @@ let _ =
           })
         )
       );
+
+      describe("test cubemap texture", () => {
+        describe("test init one texture", () =>
+          describe("create gl texture, save to glTextureMap", () => {
+            let _prepare = state => {
+              let (state, map) =
+                CubemapTextureAPI.createCubemapTexture(state);
+              let glTexture = Obj.magic(1);
+              let createTexture =
+                Sinon.createEmptyStubWithJsObjSandbox(sandbox);
+              createTexture |> returns(glTexture);
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ()),
+                   );
+              (state, map, glTexture, createTexture);
+            };
+
+            test("test create", () => {
+              let (state, map, glTexture, _) = _prepare(state^);
+              let state = state |> InitRenderJobTool.exec;
+              CubemapTextureTool.unsafeGetTexture(map, state)
+              |> expect == glTexture;
+            });
+            test("if created before, not create", () => {
+              let (state, map, _, createTexture) = _prepare(state^);
+              let state = state |> InitRenderJobTool.exec;
+              let state = state |> InitRenderJobTool.exec;
+              createTexture |> expect |> toCalledOnce;
+            });
+          })
+        );
+
+        describe("test init two textures", () =>
+          test("test create", () => {
+            let (state, map1) =
+              CubemapTextureAPI.createCubemapTexture(state^);
+            let (state, map2) =
+              CubemapTextureAPI.createCubemapTexture(state);
+            let glTexture1 = Obj.magic(1);
+            let glTexture2 = Obj.magic(2);
+            let createTexture =
+              Sinon.createEmptyStubWithJsObjSandbox(sandbox);
+            createTexture |> onCall(0) |> returns(glTexture1);
+            createTexture |> onCall(1) |> returns(glTexture2);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(~sandbox, ~createTexture, ()),
+                 );
+            let state = state |> InitRenderJobTool.exec;
+            (
+              CubemapTextureTool.unsafeGetTexture(map1, state),
+              CubemapTextureTool.unsafeGetTexture(map2, state),
+            )
+            |> expect == (glTexture1, glTexture2);
+          })
+        );
+      });
     });
   });

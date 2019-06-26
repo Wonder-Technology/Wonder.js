@@ -83,7 +83,7 @@ let _ =
     describe("detect capabilty", () => {
       describe("detect texture capability", () => {
         let _prepare = () => {
-          open GPUDetectType;
+          open AllGPUDetectType;
           let (_, fakeGl, _, _) =
             SettingTool.buildFakeDomForNotPassCanvasId(sandbox);
           let maxTextureImageUnits = 4;
@@ -128,7 +128,7 @@ let _ =
       });
       describe("detect precision", () => {
         let _prepare = sandbox => {
-          open GPUDetectType;
+          open AllGPUDetectType;
           let warn =
             createMethodStubWithJsObjSandbox(
               sandbox,

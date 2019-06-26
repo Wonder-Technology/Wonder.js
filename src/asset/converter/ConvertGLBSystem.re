@@ -78,6 +78,8 @@ let _buildWDBJsonUint8Array = (gltf: GLTFType.gltf) => {
                ),
              basicSourceTextures:
                ConvertTexturesSystem.convertToBasicSourceTextures(gltf),
+             cubemapTextures:
+               ConvertTexturesSystem.convertToCubemapTextures(gltf),
              samplers: ConvertTexturesSystem.convertToSamplers(gltf),
              images: ConvertImagesSystem.convertToImages(gltf),
              accessors: ConvertBuffersSystem.convertToAccessors(gltf),

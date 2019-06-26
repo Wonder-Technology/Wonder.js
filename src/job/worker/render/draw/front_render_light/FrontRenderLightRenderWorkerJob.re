@@ -33,7 +33,7 @@ let execJob = (flags, e, stateData) =>
     switch (IsRenderUtils.isRender(MessageService.getRecord(e))) {
     | false => e
     | true =>
-      let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+      let gl = AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
       _render(gl, state) |> StateRenderWorkerService.setState(stateData);
       e;
     };

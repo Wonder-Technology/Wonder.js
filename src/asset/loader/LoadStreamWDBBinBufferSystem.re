@@ -71,7 +71,11 @@ let handleBinBufferData =
       (
         _,
         (geometryArr, geometryGameObjects, gameObjectGeometrys),
-        (basicSourceTextureArr, imageTextureIndices, images),
+        (
+          images,
+          (basicSourceTextureArr, imageTextureIndices),
+          (cubemapTextureArr, imageCubemapTextureIndices),
+        ),
       ) as assembleData,
       state,
     ) => {
@@ -126,7 +130,10 @@ let handleBinBufferData =
            LoadStreamWDBSetBinBufferChunkDataSystem.setBinBufferChunkData(
              loadedStreamChunkDataArrWhichHasAllData,
              (geometryArr, geometryGameObjects, gameObjectGeometrys),
-             (basicSourceTextureArr, imageTextureIndices),
+             (
+               (basicSourceTextureArr, imageTextureIndices),
+               (cubemapTextureArr, imageCubemapTextureIndices),
+             ),
              state,
            );
 

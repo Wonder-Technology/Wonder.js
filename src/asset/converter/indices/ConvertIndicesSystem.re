@@ -5,6 +5,22 @@ let convertToIndices = (gltf: GLTFType.gltf): WDType.indices => {
   ) =
     ConvertTextureIndicesSystem.convertToImageAndSamplerTextureIndices(gltf);
 
+  let (
+    (
+      imageCubemapTextureIndices,
+      pxImageIndices,
+      nxImageIndices,
+      pyImageIndices,
+      nyImageIndices,
+      pzImageIndices,
+      nzImageIndices,
+    ),
+    (samplerCubemapTextureIndices, cubemapSamplerIndices),
+  ) =
+    ConvertCubemapTextureIndicesSystem.convertToImageAndSamplerTextureIndices(
+      gltf,
+    );
+
   {
     gameObjectIndices:
       ConvertGameObjectIndexDataSystem.convertToGameObjectIndexData(gltf),
@@ -14,9 +30,22 @@ let convertToIndices = (gltf: GLTFType.gltf): WDType.indices => {
       textureIndices: imageTextureIndices,
       imageIndices,
     },
+    imageCubemapTextureIndices: {
+      cubemapTextureIndices: imageCubemapTextureIndices,
+      pxImageIndices,
+      nxImageIndices,
+      pyImageIndices,
+      nyImageIndices,
+      pzImageIndices,
+      nzImageIndices,
+    },
     samplerTextureIndices: {
       textureIndices: samplerTextureIndices,
       samplerIndices,
+    },
+    samplerCubemapTextureIndices: {
+      cubemapTextureIndices: samplerCubemapTextureIndices,
+      samplerIndices: cubemapSamplerIndices,
     },
   };
 };

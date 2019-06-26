@@ -2,7 +2,7 @@ open Wonder_jest;
 
 open Js.Typed_array;
 
-open DeviceManagerType;
+open AllDeviceManagerType;
 
 let _ =
   describe("test redo,undo deviceManager record", () => {
@@ -14,7 +14,7 @@ let _ =
     let state = ref(MainStateTool.createState());
 
     let _prepareDeviceManagerData = state => {
-      open DeviceManagerType;
+      open AllDeviceManagerType;
       let record = DeviceManagerTool.getDeviceManagerRecord(state);
       let gl = Obj.magic(RandomTool.getRandomFloat(10.));
       let depthWrite = Some(true);

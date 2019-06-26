@@ -183,6 +183,7 @@ let _createRecordWithState = state =>
   |> RecordSourceTextureMainService.create
   |> RecordBasicSourceTextureMainService.create
   |> RecordArrayBufferViewSourceTextureMainService.create
+  |> RecordCubemapTextureMainService.create
   |> RecordSourceInstanceMainService.create
   |> RecordGeometryMainService.create
   |> RecordRenderMainService.create

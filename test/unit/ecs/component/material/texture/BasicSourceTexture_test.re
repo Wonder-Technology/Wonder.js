@@ -122,7 +122,7 @@ let _ =
     describe("setBasicSourceTextureWrapS", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let wrap = SourceTextureType.Mirrored_repeat;
+        let wrap = TextureType.Mirrored_repeat;
         let state = state |> setBasicSourceTextureWrapS(texture, wrap);
         getBasicSourceTextureWrapS(texture, state) |> expect == wrap;
       })
@@ -131,7 +131,7 @@ let _ =
     describe("setBasicSourceTextureWrapT", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let wrap = SourceTextureType.Mirrored_repeat;
+        let wrap = TextureType.Mirrored_repeat;
         let state = state |> setBasicSourceTextureWrapT(texture, wrap);
         getBasicSourceTextureWrapT(texture, state) |> expect == wrap;
       })
@@ -140,7 +140,7 @@ let _ =
     describe("setBasicSourceTextureMagFilter", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let filter = SourceTextureType.Linear;
+        let filter = TextureType.Linear;
         let state = state |> setBasicSourceTextureMagFilter(texture, filter);
         getBasicSourceTextureMagFilter(texture, state) |> expect == filter;
       })
@@ -149,7 +149,7 @@ let _ =
     describe("setBasicSourceTextureMinFilter", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let filter = SourceTextureType.Linear;
+        let filter = TextureType.Linear;
         let state = state |> setBasicSourceTextureMinFilter(texture, filter);
         getBasicSourceTextureMinFilter(texture, state) |> expect == filter;
       })
@@ -158,7 +158,7 @@ let _ =
     describe("setBasicSourceTextureFormat", () =>
       test("test", () => {
         let (state, texture) = createBasicSourceTexture(state^);
-        let format = SourceTextureType.Rgb;
+        let format = TextureType.Rgb;
         let state = state |> setBasicSourceTextureFormat(texture, format);
         getBasicSourceTextureFormat(texture, state) |> expect == format;
       })
@@ -191,56 +191,15 @@ let _ =
       })
     );
 
-    describe("dispose from material", () =>
-      describe("dispose from material", () => {
-        beforeEach(() =>
-          state :=
-            state^
-            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()))
-        );
+    describe("dispose from material", () => {
+      beforeEach(() =>
+        state :=
+          state^
+          |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()))
+      );
 
-        describe("remove material from group", () =>
-          test("test light material", () => {
-            let (
-              state,
-              material1,
-              (diffuseMap, specularMap, source1, source2),
-            ) =
-              LightMaterialTool.createMaterialWithMap(state^);
-            let (state, material2) =
-              LightMaterialAPI.createLightMaterial(state);
-            let (state, _) =
-              LightMaterialTool.setMaps(
-                material2,
-                diffuseMap,
-                specularMap,
-                state,
-              );
-
-            let state =
-              LightMaterialAPI.batchDisposeLightMaterial(
-                [|material1|],
-                state,
-              );
-
-            (
-              BasicSourceTextureTool.unsafeGetMaterialDataArr(
-                diffuseMap,
-                state,
-              )
-              |> Js.Array.length,
-              BasicSourceTextureTool.unsafeGetMaterialDataArr(
-                specularMap,
-                state,
-              )
-              |> Js.Array.length,
-            )
-            |> expect == (1, 1);
-          })
-        );
-
-        test(
-          "if other materials use the texture, not dispose texture data", () => {
+      describe("remove material from group", () =>
+        test("test light material", () => {
           let (state, material1, (diffuseMap, specularMap, source1, source2)) =
             LightMaterialTool.createMaterialWithMap(state^);
           let (state, material2) =
@@ -257,50 +216,262 @@ let _ =
             LightMaterialAPI.batchDisposeLightMaterial([|material1|], state);
 
           (
-            BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+            BasicSourceTextureTool.unsafeGetMaterialDataArr(diffuseMap, state)
+            |> Js.Array.length,
+            BasicSourceTextureTool.unsafeGetMaterialDataArr(
+              specularMap,
+              state,
+            )
+            |> Js.Array.length,
+          )
+          |> expect == (1, 1);
+        })
+      );
+
+      test("if other materials use the texture, not dispose texture data", () => {
+        let (state, material1, (diffuseMap, specularMap, source1, source2)) =
+          LightMaterialTool.createMaterialWithMap(state^);
+        let (state, material2) = LightMaterialAPI.createLightMaterial(state);
+        let (state, _) =
+          LightMaterialTool.setMaps(
+            material2,
+            diffuseMap,
+            specularMap,
+            state,
+          );
+
+        let state =
+          LightMaterialAPI.batchDisposeLightMaterial([|material1|], state);
+
+        (
+          BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+            diffuseMap,
+            state,
+          ),
+          BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+            specularMap,
+            state,
+          ),
+        )
+        |> expect == (source1, source2);
+      });
+
+      test("if is remove texture, not dispose data", () => {
+        let (state, material1, (diffuseMap, specularMap, source1, source2)) =
+          LightMaterialTool.createMaterialWithMap(state^);
+
+        let state =
+          LightMaterialAPI.batchDisposeLightMaterialRemoveTexture(
+            [|material1|],
+            state,
+          );
+
+        BasicSourceTextureTool.getBasicSourceTextureSource(diffuseMap, state)
+        |> Js.Option.isNone
+        |> expect == false;
+      });
+
+      describe("else", () => {
+        test("remove from sourceMap, nameMap", () => {
+          let (state, material1, (diffuseMap, specularMap, source1, source2)) =
+            LightMaterialTool.createMaterialWithMap(state^);
+          let state =
+            state
+            |> BasicSourceTextureAPI.setBasicSourceTextureName(
+                 diffuseMap,
+                 "name",
+               );
+
+          let state =
+            LightMaterialAPI.batchDisposeLightMaterial([|material1|], state);
+
+          (
+            BasicSourceTextureAPI.getBasicSourceTextureName(diffuseMap, state),
+            BasicSourceTextureTool.getBasicSourceTextureSource(
               diffuseMap,
               state,
             ),
-            BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
-              specularMap,
-              state,
-            ),
           )
-          |> expect == (source1, source2);
+          |> expect == (None, None);
         });
 
-        test("if is remove texture, not dispose data", () => {
-          let (state, material1, (diffuseMap, specularMap, source1, source2)) =
-            LightMaterialTool.createMaterialWithMap(state^);
+        describe("test remove from type array", () => {
+          let _testRemoveFromTypeArr =
+              (
+                state,
+                (value1, value2),
+                defaultValue,
+                (disposeMaterialFunc, getValueFunc, setValueFunc),
+              ) => {
+            open Wonder_jest;
+            open Expect;
+            open Expect.Operators;
+            open Sinon;
 
-          let state =
-            LightMaterialAPI.batchDisposeLightMaterialRemoveTexture(
-              [|material1|],
+            let (state, material1, (texture1, source1)) =
+              LightMaterialTool.createMaterialWithDiffuseMap(state^);
+            let (state, material2, (texture2, source2)) =
+              LightMaterialTool.createMaterialWithDiffuseMap(state);
+
+            let state = state |> setValueFunc(texture1, value1);
+            let state = state |> setValueFunc(texture2, value2);
+            let state = state |> disposeMaterialFunc(material1);
+            (getValueFunc(texture1, state), getValueFunc(texture2, state))
+            |> expect == (defaultValue, value2);
+          };
+
+          test("remove from wrapSs", () =>
+            _testRemoveFromTypeArr(
               state,
-            );
-
-          BasicSourceTextureTool.getBasicSourceTextureSource(
-            diffuseMap,
-            state,
-          )
-          |> Js.Option.isNone
-          |> expect == false;
+              (TextureType.Repeat, TextureType.Mirrored_repeat),
+              BufferBasicSourceTextureService.getDefaultWrapS(),
+              (
+                LightMaterialTool.disposeLightMaterial,
+                BasicSourceTextureAPI.getBasicSourceTextureWrapS,
+                BasicSourceTextureAPI.setBasicSourceTextureWrapS,
+              ),
+            )
+          );
+          test("remove from wrapTs", () =>
+            _testRemoveFromTypeArr(
+              state,
+              (TextureType.Repeat, TextureType.Mirrored_repeat),
+              BufferBasicSourceTextureService.getDefaultWrapT(),
+              (
+                LightMaterialTool.disposeLightMaterial,
+                BasicSourceTextureAPI.getBasicSourceTextureWrapT,
+                BasicSourceTextureAPI.setBasicSourceTextureWrapT,
+              ),
+            )
+          );
+          test("remove from magFilters", () =>
+            _testRemoveFromTypeArr(
+              state,
+              (
+                TextureType.Linear_mipmap_nearest,
+                TextureType.Nearest_mipmap_linear,
+              ),
+              BufferBasicSourceTextureService.getDefaultMagFilter(),
+              (
+                LightMaterialTool.disposeLightMaterial,
+                BasicSourceTextureAPI.getBasicSourceTextureMagFilter,
+                BasicSourceTextureAPI.setBasicSourceTextureMagFilter,
+              ),
+            )
+          );
+          test("remove from minFilters", () =>
+            _testRemoveFromTypeArr(
+              state,
+              (
+                TextureType.Linear_mipmap_nearest,
+                TextureType.Nearest_mipmap_linear,
+              ),
+              BufferBasicSourceTextureService.getDefaultMinFilter(),
+              (
+                LightMaterialTool.disposeLightMaterial,
+                BasicSourceTextureAPI.getBasicSourceTextureMinFilter,
+                BasicSourceTextureAPI.setBasicSourceTextureMinFilter,
+              ),
+            )
+          );
+          test("remove from formats", () =>
+            _testRemoveFromTypeArr(
+              state,
+              (TextureType.Rgba, TextureType.Alpha),
+              BufferBasicSourceTextureService.getDefaultFormat(),
+              (
+                LightMaterialTool.disposeLightMaterial,
+                BasicSourceTextureAPI.getBasicSourceTextureFormat,
+                BasicSourceTextureAPI.setBasicSourceTextureFormat,
+              ),
+            )
+          );
+          test("remove from types", () =>
+            _testRemoveFromTypeArr(
+              state,
+              (
+                TextureTypeService.getUnsignedShort4444(),
+                TextureTypeService.getUnsignedShort5551(),
+              ),
+              BufferBasicSourceTextureService.getDefaultType(),
+              (
+                LightMaterialTool.disposeLightMaterial,
+                BasicSourceTextureAPI.getBasicSourceTextureType,
+                BasicSourceTextureAPI.setBasicSourceTextureType,
+              ),
+            )
+          );
+          test("remove from isNeedUpdates", () =>
+            _testRemoveFromTypeArr(
+              state,
+              (true, false),
+              true,
+              (
+                LightMaterialTool.disposeLightMaterial,
+                BasicSourceTextureTool.getIsNeedUpdate,
+                BasicSourceTextureTool.setIsNeedUpdate,
+              ),
+            )
+          );
+          test("remove from flipYs", () =>
+            _testRemoveFromTypeArr(
+              state,
+              (true, false),
+              true,
+              (
+                LightMaterialTool.disposeLightMaterial,
+                BasicSourceTextureAPI.getBasicSourceTextureFlipY,
+                BasicSourceTextureAPI.setBasicSourceTextureFlipY,
+              ),
+            )
+          );
         });
 
-        describe("else", () => {
-          test("remove from sourceMap, nameMap", () => {
+        /* describe("remove from glTextureMap", () => {
+             let _prepareAndExec = state => {
+               let (
+                 state,
+                 material1,
+                 (diffuseMap, specularMap, source1, source2),
+               ) =
+                 LightMaterialTool.createMaterialWithMap(state^);
+               let glTexture = Obj.magic(100);
+               let state =
+                 state
+                 |> BasicSourceTextureTool.setGlTexture(diffuseMap, glTexture);
+               let gl = DeviceManagerAPI.unsafeGetGl(state) |> Obj.magic;
+
+               let state =
+                 LightMaterialAPI.batchDisposeLightMaterial(
+                   [|material1|],
+                   state,
+                 );
+
+               (state, gl, glTexture, diffuseMap);
+             };
+
+             test("delete gl texture", () => {
+               let (state, gl, glTexture, _) = _prepareAndExec(state);
+
+               gl##deleteTexture |> expect |> toCalledWith([|glTexture|]);
+             });
+             test("remove from glTextureMap", () => {
+               let (state, gl, _, diffuseMap) = _prepareAndExec(state);
+
+               BasicSourceTextureTool.getTexture(diffuseMap, state)
+               |> expect == None;
+             });
+           }); */
+
+        describe("test remove worker data", () => {
+          test("remove from needAddedSourceArray", () => {
+            let state = TestWorkerTool.markUseWorker(state^);
             let (
               state,
               material1,
               (diffuseMap, specularMap, source1, source2),
             ) =
-              LightMaterialTool.createMaterialWithMap(state^);
-            let state =
-              state
-              |> BasicSourceTextureAPI.setBasicSourceTextureName(
-                   diffuseMap,
-                   "name",
-                 );
+              LightMaterialTool.createMaterialWithMap(state);
 
             let state =
               LightMaterialAPI.batchDisposeLightMaterial(
@@ -308,235 +479,37 @@ let _ =
                 state,
               );
 
-            (
-              BasicSourceTextureAPI.getBasicSourceTextureName(
-                diffuseMap,
-                state,
-              ),
-              BasicSourceTextureTool.getBasicSourceTextureSource(
-                diffuseMap,
-                state,
-              ),
-            )
-            |> expect == (None, None);
+            BasicSourceTextureTool.getNeedAddedSourceArray(state)
+            |> Js.Array.length
+            |> expect == 0;
           });
+          test("remove from needInitedTextureIndexArray", () => {
+            let (
+              state,
+              material1,
+              (diffuseMap, specularMap, source1, source2),
+            ) =
+              LightMaterialTool.createMaterialWithMap(state^);
+            let needInitedTextureIndexArray =
+              BasicSourceTextureTool.getNeedInitedTextureIndexArray(state);
+            let needInitedTextureIndexArray =
+              needInitedTextureIndexArray
+              |> ArrayService.push(diffuseMap)
+              |> ArrayService.push(specularMap);
 
-          describe("test remove from type array", () => {
-            let _testRemoveFromTypeArr =
-                (
-                  state,
-                  (value1, value2),
-                  defaultValue,
-                  (disposeMaterialFunc, getValueFunc, setValueFunc),
-                ) => {
-              open Wonder_jest;
-              open Expect;
-              open Expect.Operators;
-              open Sinon;
-
-              let (state, material1, (texture1, source1)) =
-                LightMaterialTool.createMaterialWithDiffuseMap(state^);
-              let (state, material2, (texture2, source2)) =
-                LightMaterialTool.createMaterialWithDiffuseMap(state);
-
-              let state = state |> setValueFunc(texture1, value1);
-              let state = state |> setValueFunc(texture2, value2);
-              let state = state |> disposeMaterialFunc(material1);
-              (getValueFunc(texture1, state), getValueFunc(texture2, state))
-              |> expect == (defaultValue, value2);
-            };
-
-            test("remove from wrapSs", () =>
-              _testRemoveFromTypeArr(
+            let state =
+              LightMaterialAPI.batchDisposeLightMaterial(
+                [|material1|],
                 state,
-                (SourceTextureType.Repeat, SourceTextureType.Mirrored_repeat),
-                BufferBasicSourceTextureService.getDefaultWrapS(),
-                (
-                  LightMaterialTool.disposeLightMaterial,
-                  BasicSourceTextureAPI.getBasicSourceTextureWrapS,
-                  BasicSourceTextureAPI.setBasicSourceTextureWrapS,
-                ),
-              )
-            );
-            test("remove from wrapTs", () =>
-              _testRemoveFromTypeArr(
-                state,
-                (SourceTextureType.Repeat, SourceTextureType.Mirrored_repeat),
-                BufferBasicSourceTextureService.getDefaultWrapT(),
-                (
-                  LightMaterialTool.disposeLightMaterial,
-                  BasicSourceTextureAPI.getBasicSourceTextureWrapT,
-                  BasicSourceTextureAPI.setBasicSourceTextureWrapT,
-                ),
-              )
-            );
-            test("remove from magFilters", () =>
-              _testRemoveFromTypeArr(
-                state,
-                (
-                  SourceTextureType.Linear_mipmap_nearest,
-                  SourceTextureType.Nearest_mipmap_linear,
-                ),
-                BufferBasicSourceTextureService.getDefaultMagFilter(),
-                (
-                  LightMaterialTool.disposeLightMaterial,
-                  BasicSourceTextureAPI.getBasicSourceTextureMagFilter,
-                  BasicSourceTextureAPI.setBasicSourceTextureMagFilter,
-                ),
-              )
-            );
-            test("remove from minFilters", () =>
-              _testRemoveFromTypeArr(
-                state,
-                (
-                  SourceTextureType.Linear_mipmap_nearest,
-                  SourceTextureType.Nearest_mipmap_linear,
-                ),
-                BufferBasicSourceTextureService.getDefaultMinFilter(),
-                (
-                  LightMaterialTool.disposeLightMaterial,
-                  BasicSourceTextureAPI.getBasicSourceTextureMinFilter,
-                  BasicSourceTextureAPI.setBasicSourceTextureMinFilter,
-                ),
-              )
-            );
-            test("remove from formats", () =>
-              _testRemoveFromTypeArr(
-                state,
-                (SourceTextureType.Rgba, SourceTextureType.Alpha),
-                BufferBasicSourceTextureService.getDefaultFormat(),
-                (
-                  LightMaterialTool.disposeLightMaterial,
-                  BasicSourceTextureAPI.getBasicSourceTextureFormat,
-                  BasicSourceTextureAPI.setBasicSourceTextureFormat,
-                ),
-              )
-            );
-            test("remove from types", () =>
-              _testRemoveFromTypeArr(
-                state,
-                (
-                  TextureTypeService.getUnsignedShort4444(),
-                  TextureTypeService.getUnsignedShort5551(),
-                ),
-                BufferBasicSourceTextureService.getDefaultType(),
-                (
-                  LightMaterialTool.disposeLightMaterial,
-                  BasicSourceTextureAPI.getBasicSourceTextureType,
-                  BasicSourceTextureAPI.setBasicSourceTextureType,
-                ),
-              )
-            );
-            test("remove from isNeedUpdates", () =>
-              _testRemoveFromTypeArr(
-                state,
-                (true, false),
-                true,
-                (
-                  LightMaterialTool.disposeLightMaterial,
-                  BasicSourceTextureTool.getIsNeedUpdate,
-                  BasicSourceTextureTool.setIsNeedUpdate,
-                ),
-              )
-            );
-            test("remove from flipYs", () =>
-              _testRemoveFromTypeArr(
-                state,
-                (true, false),
-                true,
-                (
-                  LightMaterialTool.disposeLightMaterial,
-                  BasicSourceTextureAPI.getBasicSourceTextureFlipY,
-                  BasicSourceTextureAPI.setBasicSourceTextureFlipY,
-                ),
-              )
-            );
-          });
+              );
 
-          /* describe("remove from glTextureMap", () => {
-               let _prepareAndExec = state => {
-                 let (
-                   state,
-                   material1,
-                   (diffuseMap, specularMap, source1, source2),
-                 ) =
-                   LightMaterialTool.createMaterialWithMap(state^);
-                 let glTexture = Obj.magic(100);
-                 let state =
-                   state
-                   |> BasicSourceTextureTool.setGlTexture(diffuseMap, glTexture);
-                 let gl = DeviceManagerAPI.unsafeGetGl(state) |> Obj.magic;
-
-                 let state =
-                   LightMaterialAPI.batchDisposeLightMaterial(
-                     [|material1|],
-                     state,
-                   );
-
-                 (state, gl, glTexture, diffuseMap);
-               };
-
-               test("delete gl texture", () => {
-                 let (state, gl, glTexture, _) = _prepareAndExec(state);
-
-                 gl##deleteTexture |> expect |> toCalledWith([|glTexture|]);
-               });
-               test("remove from glTextureMap", () => {
-                 let (state, gl, _, diffuseMap) = _prepareAndExec(state);
-
-                 BasicSourceTextureTool.getTexture(diffuseMap, state)
-                 |> expect == None;
-               });
-             }); */
-
-          describe("test remove worker data", () => {
-            test("remove from needAddedSourceArray", () => {
-              let state = TestWorkerTool.markUseWorker(state^);
-              let (
-                state,
-                material1,
-                (diffuseMap, specularMap, source1, source2),
-              ) =
-                LightMaterialTool.createMaterialWithMap(state);
-
-              let state =
-                LightMaterialAPI.batchDisposeLightMaterial(
-                  [|material1|],
-                  state,
-                );
-
-              BasicSourceTextureTool.getNeedAddedSourceArray(state)
-              |> Js.Array.length
-              |> expect == 0;
-            });
-            test("remove from needInitedTextureIndexArray", () => {
-              let (
-                state,
-                material1,
-                (diffuseMap, specularMap, source1, source2),
-              ) =
-                LightMaterialTool.createMaterialWithMap(state^);
-              let needInitedTextureIndexArray =
-                BasicSourceTextureTool.getNeedInitedTextureIndexArray(state);
-              let needInitedTextureIndexArray =
-                needInitedTextureIndexArray
-                |> ArrayService.push(diffuseMap)
-                |> ArrayService.push(specularMap);
-
-              let state =
-                LightMaterialAPI.batchDisposeLightMaterial(
-                  [|material1|],
-                  state,
-                );
-
-              BasicSourceTextureTool.getNeedInitedTextureIndexArray(state)
-              |> Js.Array.length
-              |> expect == 0;
-            });
+            BasicSourceTextureTool.getNeedInitedTextureIndexArray(state)
+            |> Js.Array.length
+            |> expect == 0;
           });
         });
-      })
-    );
+      });
+    });
 
     describe("disposeBasicSourceTexture", () => {
       test("clear texture's materials", () => {

@@ -1896,29 +1896,23 @@ let _ =
 
     describe("update map", () => {
       let _prepare = (~state, ~width=2, ~height=4, ()) => {
-        let (state, gameObject, _, _, _, (diffuseMap, specularMap)) =
-          FrontRenderLightJobTool.prepareGameObjectWithCreatedMap(
+        let (state, gameObject, _, _, _, diffuseMap) =
+          FrontRenderLightJobTool.prepareGameObjectWithCreatedDiffuseMap(
             sandbox,
             state,
           );
         let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-        /* let source = Obj.magic({"width": width, "height": height}); */
         let source1 = BasicSourceTextureTool.buildSource(width, height);
-        let source2 = BasicSourceTextureTool.buildSource(width, height);
         let state =
           state
           |> BasicSourceTextureAPI.setBasicSourceTextureSource(
                diffuseMap,
                source1,
              );
-        let state =
-          state
-          |> BasicSourceTextureAPI.setBasicSourceTextureSource(
-               specularMap,
-               source2,
-             );
-        (state, (diffuseMap, specularMap));
+
+        (state, diffuseMap);
       };
+
       test("if is updated before, not update", () => {
         let (state, _) = _prepare(~state=state^, ());
         let unpackFlipYWebgl = Obj.magic(2);
@@ -1935,9 +1929,17 @@ let _ =
              );
         let state =
           state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+        let pixelStoreiCallCount =
+          pixelStorei |> withOneArg(unpackFlipYWebgl) |> getCallCount;
+
         let state = state |> DirectorTool.runWithDefaultTime;
         let state = state |> DirectorTool.runWithDefaultTime;
-        pixelStorei |> withOneArg(unpackFlipYWebgl) |> expect |> toCalledTwice;
+
+        pixelStorei
+        |> withOneArg(unpackFlipYWebgl)
+        |> getCallCount
+        |> expect == pixelStoreiCallCount;
       });
       test("if source not exist, not update", () => {
         let (state, gameObject, _, _, _, _) =
@@ -1967,11 +1969,9 @@ let _ =
         |> toCalled;
       });
       test("set flipY", () => {
-        let (state, (map1, map2)) = _prepare(~state=state^, ());
+        let (state, map) = _prepare(~state=state^, ());
         let state =
-          state
-          |> BasicSourceTextureAPI.setBasicSourceTextureFlipY(map1, false)
-          |> BasicSourceTextureAPI.setBasicSourceTextureFlipY(map2, true);
+          state |> BasicSourceTextureAPI.setBasicSourceTextureFlipY(map, true);
         let unpackFlipYWebgl = Obj.magic(2);
         let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
         let state =
@@ -1984,12 +1984,434 @@ let _ =
                  (),
                ),
              );
+
         let state =
           state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
         pixelStorei
         |> withTwoArgs(unpackFlipYWebgl, true)
         |> expect
         |> toCalledOnce;
+      });
+      test("set unpack_colorspace_conversion_webgl to be none", () => {
+        let (state, _) = _prepare(~state=state^, ());
+        let none = Obj.magic(2);
+        let unpackColorspaceConversionWebgl = Obj.magic(3);
+        let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
+        let state =
+          state
+          |> FakeGlTool.setFakeGl(
+               FakeGlTool.buildFakeGl(
+                 ~sandbox,
+                 ~none,
+                 ~unpackColorspaceConversionWebgl,
+                 ~pixelStorei,
+                 (),
+               ),
+             );
+
+        let state =
+          state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+        pixelStorei
+        |> withTwoArgs(unpackColorspaceConversionWebgl, none)
+        |> expect
+        |> toCalledOnce;
+      });
+
+      describe("set texture parameters", () => {
+        describe("if source is power of two", () => {
+          let _prepare = state => {
+            let (state, map) = _prepare(~state, ~width=2, ~height=4, ());
+
+            (state, map);
+          };
+
+          test("set wrap", () => {
+            let (state, _) = _prepare(state^);
+            let texture2D = Obj.magic(1);
+            let textureWrapS = Obj.magic(2);
+            let textureWrapT = Obj.magic(3);
+            let clampToEdge = Obj.magic(4);
+            let texParameteri = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~texture2D,
+                     ~textureWrapS,
+                     ~textureWrapT,
+                     ~clampToEdge,
+                     ~texParameteri,
+                     (),
+                   ),
+                 );
+
+            let state =
+              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+            (
+              texParameteri
+              |> withThreeArgs(texture2D, textureWrapS, clampToEdge)
+              |> getCallCount,
+              texParameteri
+              |> withThreeArgs(texture2D, textureWrapT, clampToEdge)
+              |> getCallCount,
+            )
+            |> expect == (1, 1);
+          });
+          test("set filter", () => {
+            let (state, _) = _prepare(state^);
+            let texture2D = Obj.magic(1);
+            let nearest = Obj.magic(2);
+            let linear = Obj.magic(3);
+            let textureMagFilter = Obj.magic(4);
+            let textureMinFilter = Obj.magic(5);
+            let texParameteri = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~texture2D,
+                     ~nearest,
+                     ~linear,
+                     ~textureMagFilter,
+                     ~textureMinFilter,
+                     ~texParameteri,
+                     (),
+                   ),
+                 );
+            let state =
+              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+            (
+              texParameteri
+              |> withThreeArgs(texture2D, textureMagFilter, linear)
+              |> getCallCount,
+              texParameteri
+              |> withThreeArgs(texture2D, textureMinFilter, nearest)
+              |> getCallCount,
+            )
+            |> expect == (1, 1);
+          });
+        });
+        describe("else", () => {
+          let _prepare = state => {
+            let (state, map) = _prepare(~state, ~width=3, ~height=4, ());
+
+            (state, map);
+          };
+          test("set wrap to Clamp_to_edge", () => {
+            let (state, _) = _prepare(state^);
+            let texture2D = Obj.magic(1);
+            let textureWrapS = Obj.magic(2);
+            let textureWrapT = Obj.magic(3);
+            let clampToEdge = Obj.magic(4);
+            let texParameteri = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~texture2D,
+                     ~textureWrapS,
+                     ~textureWrapT,
+                     ~clampToEdge,
+                     ~texParameteri,
+                     (),
+                   ),
+                 );
+            let state =
+              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+            (
+              texParameteri
+              |> withThreeArgs(texture2D, textureWrapS, clampToEdge)
+              |> getCallCount,
+              texParameteri
+              |> withThreeArgs(texture2D, textureWrapT, clampToEdge)
+              |> getCallCount,
+            )
+            |> expect == (1, 1);
+          });
+          describe("set filter with fallback", () => {
+            let _setFakeGl = (sandbox, state) => {
+              let texture2D = Obj.magic(1);
+              let nearest = Obj.magic(2);
+              let linear = Obj.magic(3);
+              let textureMagFilter = Obj.magic(4);
+              let textureMinFilter = Obj.magic(5);
+              let texParameteri = createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(
+                     FakeGlTool.buildFakeGl(
+                       ~sandbox,
+                       ~texture2D,
+                       ~nearest,
+                       ~linear,
+                       ~textureMagFilter,
+                       ~textureMinFilter,
+                       ~texParameteri,
+                       (),
+                     ),
+                   );
+              (
+                state,
+                texture2D,
+                nearest,
+                linear,
+                textureMagFilter,
+                textureMinFilter,
+                texParameteri,
+              );
+            };
+            test(
+              "if filter === Nearest or NEAREST_MIPMAP_MEAREST or Nearest_mipmap_linear, set Nearest",
+              () => {
+                let (state, map) = _prepare(state^);
+                let state =
+                  state
+                  |> BasicSourceTextureAPI.setBasicSourceTextureMagFilter(
+                       map,
+                       BasicSourceTextureTool.getNearestMipmapLinear(),
+                     )
+                  |> BasicSourceTextureAPI.setBasicSourceTextureMinFilter(
+                       map,
+                       BasicSourceTextureTool.getNearest(),
+                     );
+                let (
+                  state,
+                  texture2D,
+                  nearest,
+                  linear,
+                  textureMagFilter,
+                  textureMinFilter,
+                  texParameteri,
+                ) =
+                  _setFakeGl(sandbox, state);
+                let state =
+                  state
+                  |> RenderJobsTool.init
+                  |> DirectorTool.runWithDefaultTime;
+
+                (
+                  texParameteri
+                  |> withThreeArgs(texture2D, textureMagFilter, nearest)
+                  |> getCallCount,
+                  texParameteri
+                  |> withThreeArgs(texture2D, textureMinFilter, nearest)
+                  |> getCallCount,
+                )
+                |> expect == (1, 1);
+              },
+            );
+            test("else, set Linear", () => {
+              let (state, map) = _prepare(state^);
+              let state =
+                state
+                |> BasicSourceTextureAPI.setBasicSourceTextureMagFilter(
+                     map,
+                     BasicSourceTextureTool.getLinearMipmapNearest(),
+                   )
+                |> BasicSourceTextureAPI.setBasicSourceTextureMinFilter(
+                     map,
+                     BasicSourceTextureTool.getLinear(),
+                   );
+              let (
+                state,
+                texture2D,
+                nearest,
+                linear,
+                textureMagFilter,
+                textureMinFilter,
+                texParameteri,
+              ) =
+                _setFakeGl(sandbox, state);
+
+              let state =
+                state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+              (
+                texParameteri
+                |> withThreeArgs(texture2D, textureMagFilter, linear)
+                |> getCallCount,
+                texParameteri
+                |> withThreeArgs(texture2D, textureMinFilter, linear)
+                |> getCallCount,
+              )
+              |> expect == (1, 1);
+            });
+          });
+        });
+      });
+
+      describe("allocate source to texture", () =>
+        describe("draw no mipmap twoD texture", () => {
+          test("test draw", () => {
+            let (state, map) = _prepare(~state=state^, ());
+            let source =
+              BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+                map,
+                state,
+              );
+            let texture2D = Obj.magic(1);
+            let rgba = Obj.magic(2);
+            let unsignedByte = Obj.magic(3);
+            let texImage2D = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~texture2D,
+                     ~rgba,
+                     ~unsignedByte,
+                     ~texImage2D,
+                     (),
+                   ),
+                 );
+
+            let state =
+              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+            texImage2D
+            |> expect
+            |> toCalledWith([|
+                 texture2D,
+                 0,
+                 rgba,
+                 rgba,
+                 unsignedByte,
+                 source |> Obj.magic,
+               |]);
+          });
+          test("test different format,type", () => {
+            let (state, map) = _prepare(~state=state^, ());
+            let state =
+              state
+              |> BasicSourceTextureAPI.setBasicSourceTextureFormat(
+                   map,
+                   BasicSourceTextureTool.getAlpha(),
+                 );
+            let state =
+              state
+              |> BasicSourceTextureAPI.setBasicSourceTextureType(
+                   map,
+                   BasicSourceTextureTool.getUnsignedShort565(),
+                 );
+            let source =
+              BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+                map,
+                state,
+              );
+            let texture2D = Obj.magic(1);
+            let alpha = Obj.magic(2);
+            let unsignedShort565 = Obj.magic(3);
+            let texImage2D = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~texture2D,
+                     ~alpha,
+                     ~unsignedShort565,
+                     ~texImage2D,
+                     (),
+                   ),
+                 );
+
+            let state =
+              state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+            texImage2D
+            |> expect
+            |> toCalledWith([|
+                 texture2D,
+                 0,
+                 alpha,
+                 alpha,
+                 unsignedShort565,
+                 source |> Obj.magic,
+               |]);
+          });
+        })
+      );
+
+      describe("generate mipmap", () => {
+        let _exec = state => {
+          let texture2D = Obj.magic(1);
+          let generateMipmap = createEmptyStubWithJsObjSandbox(sandbox);
+          let state =
+            state
+            |> FakeGlTool.setFakeGl(
+                 FakeGlTool.buildFakeGl(
+                   ~sandbox,
+                   ~texture2D,
+                   ~generateMipmap,
+                   (),
+                 ),
+               );
+          let state =
+            state |> RenderJobsTool.init |> DirectorTool.runWithDefaultTime;
+
+          (state, texture2D, generateMipmap);
+        };
+
+        test("if filter is mipmap and is source power of two, generate", () => {
+          let (state, map) =
+            _prepare(~state=state^, ~width=2, ~height=4, ());
+          let state =
+            state
+            |> BasicSourceTextureAPI.setBasicSourceTextureMagFilter(
+                 map,
+                 BasicSourceTextureTool.getNearestMipmapNearest(),
+               );
+
+          let (state, texture2D, generateMipmap) = _exec(state);
+
+          generateMipmap |> expect |> toCalledWith([|texture2D|]);
+        });
+
+        describe("else, not generate", () => {
+          test("test filter isn't mipmap", () => {
+            let (state, map) =
+              _prepare(~state=state^, ~width=2, ~height=4, ());
+            let state =
+              state
+              |> BasicSourceTextureAPI.setBasicSourceTextureMagFilter(
+                   map,
+                   BasicSourceTextureTool.getNearest(),
+                 )
+              |> BasicSourceTextureAPI.setBasicSourceTextureMinFilter(
+                   map,
+                   BasicSourceTextureTool.getNearest(),
+                 );
+
+            let (state, texture2D, generateMipmap) = _exec(state);
+
+            generateMipmap |> expect |> not_ |> toCalled;
+          });
+          test("test source isn't power of two", () => {
+            let (state, map) =
+              _prepare(~state=state^, ~width=1, ~height=4, ());
+            let state =
+              state
+              |> BasicSourceTextureAPI.setBasicSourceTextureMagFilter(
+                   map,
+                   BasicSourceTextureTool.getLinearMipmapLinear(),
+                 )
+              |> BasicSourceTextureAPI.setBasicSourceTextureMinFilter(
+                   map,
+                   BasicSourceTextureTool.getNearest(),
+                 );
+
+            let (state, texture2D, generateMipmap) = _exec(state);
+
+            generateMipmap |> expect |> not_ |> toCalled;
+          });
+        });
       });
     });
 

@@ -36,10 +36,41 @@ let _setImageIndexMap = (imageDataIndex, imageArr, imageIndexMap) => {
      );
 };
 
-let _buildImageData = ({textures, imageDataMap}) => {
+let _buildImageData = ({basicSourceTextures, cubemapTextures, imageDataMap}) => {
   let (imageIndexMap, imageArr, bufferViewArr, uint8ArrayArr, byteOffset) =
-    textures
-    |> Js.Array.map(({imageDataIndex}) => imageDataIndex)
+    cubemapTextures
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (.
+           imageDataIndexArr,
+           {
+             pxImageDataIndex,
+             nxImageDataIndex,
+             pyImageDataIndex,
+             nyImageDataIndex,
+             pzImageDataIndex,
+             nzImageDataIndex,
+           },
+         ) => {
+           imageDataIndexArr
+           |> Js.Array.pushMany([|
+                pxImageDataIndex,
+                nxImageDataIndex,
+                pyImageDataIndex,
+                nyImageDataIndex,
+                pzImageDataIndex,
+                nzImageDataIndex,
+              |]);
+
+           imageDataIndexArr;
+         },
+         basicSourceTextures
+         |> Js.Array.map(({imageDataIndex}) => imageDataIndex),
+       )
+    /* ArrayService.fastConcat(
+         basicSourceTextures
+         |> Js.Array.map(({imageDataIndex}) => imageDataIndex),
+         cubemapTextures |> Js.Array.map(({imageDataIndex}) => imageDataIndex),
+       ) */
     |> WonderCommonlib.ArrayService.removeDuplicateItems
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (.
@@ -123,12 +154,20 @@ let _setTextureIndexMap = (textureComponent, textureArr, textureIndexMap) => {
      );
 };
 
-let _buildTextureData = (imageIndexMap, {textures}, state) =>
-  textures
+let _buildBasicSourceTextureData =
+    (imageIndexMap, {basicSourceTextures}, state) =>
+  basicSourceTextures
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. (textureIndexMap, textureArr), {textureComponent, imageDataIndex}) => (
-         _setTextureIndexMap(textureComponent, textureArr, textureIndexMap),
-         textureArr
+       (.
+         (basicSourceTextureIndexMap, basicSourceTextureArr),
+         {textureComponent, imageDataIndex},
+       ) => (
+         _setTextureIndexMap(
+           textureComponent,
+           basicSourceTextureArr,
+           basicSourceTextureIndexMap,
+         ),
+         basicSourceTextureArr
          |> ArrayService.push({
               name:
                 NameBasicSourceTextureMainService.unsafeGetName(
@@ -180,8 +219,155 @@ let _buildTextureData = (imageIndexMap, {textures}, state) =>
        (WonderCommonlib.ImmutableSparseMapService.createEmpty(), [||]),
      );
 
+let _buildCubemapTextureData = (imageIndexMap, {cubemapTextures}, state) =>
+  cubemapTextures
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (.
+         (cubemapTextureIndexMap, cubemapTextureArr),
+         {
+           textureComponent,
+           pxImageDataIndex,
+           nxImageDataIndex,
+           pyImageDataIndex,
+           nyImageDataIndex,
+           pzImageDataIndex,
+           nzImageDataIndex,
+         },
+       ) => (
+         _setTextureIndexMap(
+           textureComponent,
+           cubemapTextureArr,
+           cubemapTextureIndexMap,
+         ),
+         cubemapTextureArr
+         |> ArrayService.push({
+              name:
+                NameCubemapTextureMainService.unsafeGetName(
+                  textureComponent,
+                  state,
+                ),
+              pxSource:
+                imageIndexMap
+                |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
+                     pxImageDataIndex,
+                   ),
+              nxSource:
+                imageIndexMap
+                |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
+                     nxImageDataIndex,
+                   ),
+              pySource:
+                imageIndexMap
+                |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
+                     pyImageDataIndex,
+                   ),
+              nySource:
+                imageIndexMap
+                |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
+                     nyImageDataIndex,
+                   ),
+              pzSource:
+                imageIndexMap
+                |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
+                     pzImageDataIndex,
+                   ),
+              nzSource:
+                imageIndexMap
+                |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
+                     nzImageDataIndex,
+                   ),
+              wrapS:
+                OperateCubemapTextureMainService.getWrapS(
+                  textureComponent,
+                  state,
+                ),
+              wrapT:
+                OperateCubemapTextureMainService.getWrapT(
+                  textureComponent,
+                  state,
+                ),
+              minFilter:
+                OperateCubemapTextureMainService.getMinFilter(
+                  textureComponent,
+                  state,
+                ),
+              magFilter:
+                OperateCubemapTextureMainService.getMagFilter(
+                  textureComponent,
+                  state,
+                ),
+              pxFormat:
+                OperateCubemapTextureMainService.getPXFormat(
+                  textureComponent,
+                  state,
+                ),
+              nxFormat:
+                OperateCubemapTextureMainService.getNXFormat(
+                  textureComponent,
+                  state,
+                ),
+              pyFormat:
+                OperateCubemapTextureMainService.getPYFormat(
+                  textureComponent,
+                  state,
+                ),
+              nyFormat:
+                OperateCubemapTextureMainService.getNYFormat(
+                  textureComponent,
+                  state,
+                ),
+              pzFormat:
+                OperateCubemapTextureMainService.getPZFormat(
+                  textureComponent,
+                  state,
+                ),
+              nzFormat:
+                OperateCubemapTextureMainService.getNZFormat(
+                  textureComponent,
+                  state,
+                ),
+              pxType:
+                OperateCubemapTextureMainService.getPXType(
+                  textureComponent,
+                  state,
+                ),
+              nxType:
+                OperateCubemapTextureMainService.getNXType(
+                  textureComponent,
+                  state,
+                ),
+              pyType:
+                OperateCubemapTextureMainService.getPYType(
+                  textureComponent,
+                  state,
+                ),
+              nyType:
+                OperateCubemapTextureMainService.getNYType(
+                  textureComponent,
+                  state,
+                ),
+              pzType:
+                OperateCubemapTextureMainService.getPZType(
+                  textureComponent,
+                  state,
+                ),
+              nzType:
+                OperateCubemapTextureMainService.getNZType(
+                  textureComponent,
+                  state,
+                ),
+              flipY:
+                OperateCubemapTextureMainService.getFlipY(
+                  textureComponent,
+                  state,
+                ),
+            }),
+       ),
+       (WonderCommonlib.ImmutableSparseMapService.createEmpty(), [||]),
+     );
+
 let _getLightMaterialMapTextureIndexFromMap =
-    (textureComponent, textureIndexMap) => {
+    (textureComponent, basicSourceTextureIndexMap) => {
   WonderLog.Contract.requireCheck(
     () =>
       WonderLog.(
@@ -190,11 +376,11 @@ let _getLightMaterialMapTextureIndexFromMap =
             test(
               Log.buildAssertMessage(
                 ~expect=
-                  {j|lightMaterial->maps contain in resourceData->textures|j},
+                  {j|lightMaterial->maps contain in resourceData->basicSourceTextures|j},
                 ~actual={j|not|j},
               ),
               () =>
-              textureIndexMap
+              basicSourceTextureIndexMap
               |> WonderCommonlib.ImmutableSparseMapService.has(
                    textureComponent,
                  )
@@ -206,20 +392,24 @@ let _getLightMaterialMapTextureIndexFromMap =
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 
-  textureIndexMap
+  basicSourceTextureIndexMap
   |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(textureComponent);
 };
 
-let _getLightMaterialMapTextureIndex = (textureComponent, textureIndexMap) =>
+let _getLightMaterialMapTextureIndex =
+    (textureComponent, basicSourceTextureIndexMap) =>
   switch (textureComponent) {
   | None => None
   | Some(textureComponent) =>
-    _getLightMaterialMapTextureIndexFromMap(textureComponent, textureIndexMap)
+    _getLightMaterialMapTextureIndexFromMap(
+      textureComponent,
+      basicSourceTextureIndexMap,
+    )
     ->Some
   };
 
 let _buildMaterialData =
-    (textureIndexMap, {basicMaterials, lightMaterials}, state) => {
+    (basicSourceTextureIndexMap, {basicMaterials, lightMaterials}, state) => {
   let basicMaterialArr =
     basicMaterials
     |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -267,7 +457,7 @@ let _buildMaterialData =
                       materialComponent,
                       state,
                     ),
-                    textureIndexMap,
+                    basicSourceTextureIndexMap,
                   ),
                 shininess:
                   OperateLightMaterialMainService.getShininess(
@@ -505,10 +695,15 @@ let buildJsonData = (resourceData, state) => {
   ) =
     _buildImageData(resourceData);
 
-  let (textureIndexMap, textureArr) =
-    _buildTextureData(imageIndexMap, resourceData, state);
+  let (basicSourceTextureIndexMap, basicSourceTextureArr) =
+    _buildBasicSourceTextureData(imageIndexMap, resourceData, state);
+
+  let (_cubemapTextureIndexMap, cubemapTextureArr) =
+    _buildCubemapTextureData(imageIndexMap, resourceData, state);
+
   let (basicMaterialArr, lightMaterialArr) =
-    _buildMaterialData(textureIndexMap, resourceData, state);
+    _buildMaterialData(basicSourceTextureIndexMap, resourceData, state);
+
   let (
     geometryArr,
     geometryArrayBufferArr,
@@ -529,7 +724,8 @@ let buildJsonData = (resourceData, state) => {
   (
     (
       imageArr,
-      textureArr,
+      basicSourceTextureArr,
+      cubemapTextureArr,
       basicMaterialArr,
       lightMaterialArr,
       geometryArr,

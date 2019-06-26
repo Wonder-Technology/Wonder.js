@@ -159,6 +159,24 @@ let _batchCreateBasicSourceTexture =
      );
 };
 
+let _batchCreateCubemapTexture =
+    ({cubemapTextures}, {settingRecord} as state) => {
+  let cubemapTextureRecord = RecordCubemapTextureMainService.getRecord(state);
+
+  cubemapTextures
+  |> ArrayService.reduceOneParamValidi(
+       (. (state, indexArr), _, cubemapTextureIndex) => {
+         let (state, index) =
+           CreateCubemapTextureMainService.create(. state);
+
+         Array.unsafe_set(indexArr, cubemapTextureIndex, index);
+
+         (state, indexArr);
+       },
+       (state, [||]),
+     );
+};
+
 let _batchCreateLightComponent = (components, createFunc, state) =>
   ArrayService.range(0, (components |> Js.Array.length) - 1)
   |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -202,6 +220,7 @@ let batchCreate = (isRenderLight, wd, state) => {
   let (state, lightMaterialArr) = _batchCreateLightMaterial(wd, state);
   let (state, basicSourceTextureArr) =
     _batchCreateBasicSourceTexture(wd, state);
+  let (state, cubemapTextureArr) = _batchCreateCubemapTexture(wd, state);
   let (state, directionLightArr) =
     _batchCreateDirectionLight(isRenderLight, wd, state);
   let (state, pointLightArr) =
@@ -225,7 +244,7 @@ let batchCreate = (isRenderLight, wd, state) => {
       pointLightArr,
       scriptArr,
     ),
-    basicSourceTextureArr,
+    (basicSourceTextureArr, cubemapTextureArr),
   );
   /* |> WonderLog.Contract.ensureCheck(
        (

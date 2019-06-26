@@ -1,6 +1,6 @@
-open ShaderType;
+open AllShaderType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 open StateInitNoMaterialShaderType;
 
@@ -8,8 +8,8 @@ let _createProgramAndInit =
     (gl, shaderIndex, (vsSource, fsSource), programRecord) =>
   gl
   |> WonderWebgl.Gl.createProgram
-  |> ProgramService.registerProgram(shaderIndex, programRecord)
-  |> ProgramService.initShader(vsSource, fsSource, gl);
+  |> AllProgramService.registerProgram(shaderIndex, programRecord)
+  |> AllProgramService.initShader(vsSource, fsSource, gl);
 
 let init =
     (
@@ -30,10 +30,10 @@ let init =
       } as state,
     ) => {
   let shaderIndex =
-    ShaderIndexShaderService.genereateShaderIndex(shaderRecord);
+    ShaderIndexAllShaderService.genereateShaderIndex(shaderRecord);
 
   shaderRecord
-  |> NoMaterialShaderIndexShaderService.setShaderIndex(
+  |> NoMaterialShaderIndexAllShaderService.setShaderIndex(
        shaderName,
        shaderIndex,
      )

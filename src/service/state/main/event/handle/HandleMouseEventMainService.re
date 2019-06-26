@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 open EventType;
 
@@ -11,7 +11,7 @@ let getLocation = (mouseDomEvent, {browserDetectRecord}) => {
   | Chrome
   | Firefox => (mouseDomEvent##pageX, mouseDomEvent##pageY)
   | _ =>
-    RecordBrowserDetectAllService.fatalUnknownBrowser("getLocation", browser)
+    RecordAllBrowserDetectService.fatalUnknownBrowser("getLocation", browser)
   };
 };
 
@@ -45,7 +45,7 @@ let getButton = (mouseDomEvent, {browserDetectRecord} as state) => {
       )
     }
   | _ =>
-    RecordBrowserDetectAllService.fatalUnknownBrowser("getButton", browser)
+    RecordAllBrowserDetectService.fatalUnknownBrowser("getButton", browser)
   };
 };
 

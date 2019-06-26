@@ -17,7 +17,7 @@ type arrayBufferViewSourceTextureRecord = {
     (
       WonderWebgl.GlType.webgl1Context,
       bool,
-      BrowserDetectType.browserDetectRecord
+      AllBrowserDetectType.browserDetectRecord
     ) =>
     unit,
   textureIndexOffset: int,

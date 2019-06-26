@@ -46,7 +46,7 @@ let _ =
     describe("deepCopyForRestore", () => {
       describe("deep copy shader record", () =>
         test("deep copy materialsMap", () => {
-          open ShaderType;
+          open AllShaderType;
 
           let {materialsMap} = ShaderTool.getShaderRecord(state^);
 
@@ -91,7 +91,7 @@ let _ =
               uniformShaderSendCachableFunctionDataMap,
               uniformInstanceSendNoCachableDataMap,
               uniformNoMaterialShaderSendCachableDataMap,
-            }: GLSLSenderType.glslSenderRecord =
+            }: AllGLSLSenderType.glslSenderRecord =
               state^.glslSenderRecord;
 
             let copiedState = MainStateTool.deepCopyForRestore(state^);
@@ -141,7 +141,7 @@ let _ =
               uniformShaderSendCachableFunctionDataMap,
               uniformInstanceSendNoCachableDataMap,
               uniformNoMaterialShaderSendCachableDataMap,
-            }: GLSLSenderType.glslSenderRecord =
+            }: AllGLSLSenderType.glslSenderRecord =
               copiedState.glslSenderRecord;
 
             (
@@ -181,7 +181,7 @@ let _ =
         test("not copy uniformCacheMap", () => {
           open StateDataMainType;
 
-          let {uniformCacheMap}: GLSLSenderType.glslSenderRecord =
+          let {uniformCacheMap}: AllGLSLSenderType.glslSenderRecord =
             state^.glslSenderRecord;
 
           let copiedState = MainStateTool.deepCopyForRestore(state^);
@@ -193,7 +193,7 @@ let _ =
           |> WonderCommonlib.MutableSparseMapService.set(shaderIndex, data)
           |> ignore;
 
-          let {uniformCacheMap}: GLSLSenderType.glslSenderRecord =
+          let {uniformCacheMap}: AllGLSLSenderType.glslSenderRecord =
             copiedState.glslSenderRecord;
 
           uniformCacheMap
@@ -204,7 +204,7 @@ let _ =
           open StateDataMainType;
 
           let (
-                {vertexAttribHistoryArray, lastSendMaterialData}: GLSLSenderType.glslSenderRecord
+                {vertexAttribHistoryArray, lastSendMaterialData}: AllGLSLSenderType.glslSenderRecord
               ) as record =
             state^.glslSenderRecord;
 
@@ -217,7 +217,7 @@ let _ =
 
           record.lastSendMaterialData = Some(data);
 
-          let {vertexAttribHistoryArray, lastSendMaterialData}: GLSLSenderType.glslSenderRecord =
+          let {vertexAttribHistoryArray, lastSendMaterialData}: AllGLSLSenderType.glslSenderRecord =
             copiedState.glslSenderRecord;
 
           (vertexAttribHistoryArray |> Js.Array.length, lastSendMaterialData)
@@ -230,7 +230,7 @@ let _ =
       describe("restore glsl sender data to target state", () => {
         let _prepareGLSLSenderData = state => {
           open StateDataMainType;
-          let {attributeSendDataMap, vertexAttribHistoryArray}: GLSLSenderType.glslSenderRecord =
+          let {attributeSendDataMap, vertexAttribHistoryArray}: AllGLSLSenderType.glslSenderRecord =
             state.glslSenderRecord;
           let shaderIndex1 = 0;
           let data1 = Obj.magic(0);
@@ -253,8 +253,8 @@ let _ =
               MainStateTool.createNewCompleteState(sandbox),
             );
           let newState = MainStateTool.restore(currentState, state);
-          /* let {lastSendMaterialData, lastSendGeometryData}: GLSLSenderType.glslSenderRecord = */
-          let {lastSendMaterialData}: GLSLSenderType.glslSenderRecord =
+          /* let {lastSendMaterialData, lastSendGeometryData}: AllGLSLSenderType.glslSenderRecord = */
+          let {lastSendMaterialData}: AllGLSLSenderType.glslSenderRecord =
             newState |> GLSLSenderTool.getGLSLSenderRecord;
           lastSendMaterialData |> expect == None;
         });
@@ -267,7 +267,7 @@ let _ =
               MainStateTool.createNewCompleteState(sandbox),
             );
           let newState = MainStateTool.restore(currentState, state);
-          let {vertexAttribHistoryArray}: GLSLSenderType.glslSenderRecord =
+          let {vertexAttribHistoryArray}: AllGLSLSenderType.glslSenderRecord =
             newState |> GLSLSenderTool.getGLSLSenderRecord;
           vertexAttribHistoryArray
           |> expect == WonderCommonlib.ArrayService.createEmpty();
@@ -278,7 +278,7 @@ let _ =
           test(
             "currentState and targetState ->glslRecord->precision should be the same",
             () => {
-            open ShaderType;
+            open AllShaderType;
             let (state, shaderIndex1, shaderIndex2) =
               _prepareShaderData(state^);
             let currentState = MainStateTool.createNewCompleteState(sandbox);
@@ -296,7 +296,7 @@ let _ =
       );
       describe("restore program data to target state", () =>
         test("clear lastUsedProgram", () => {
-          open ProgramType;
+          open AllProgramType;
           let (state, shaderIndex1, program1) = _prepareProgramData(state^);
           let (currentState, _, _) =
             _prepareProgramData(
@@ -406,9 +406,9 @@ let _ =
         });
         describe("test restore data", () => {
           let _prepareState1 = state => {
-            open ShaderType;
-            open GLSLLocationType;
-            open ProgramType;
+            open AllShaderType;
+            open AllGLSLLocationType;
+            open AllProgramType;
             open StateDataMainType;
             let shaderIndex1 = 0;
             let shaderIndex2 = 1;
@@ -470,7 +470,7 @@ let _ =
                  uniformLocationData2,
                )
             |> ignore;
-            let {uniformShaderSendNoCachableDataMap}: GLSLSenderType.glslSenderRecord =
+            let {uniformShaderSendNoCachableDataMap}: AllGLSLSenderType.glslSenderRecord =
               state.glslSenderRecord;
             let uniformShaderSendNoCachableData1 = Obj.magic(121);
             let uniformShaderSendNoCachableData2 = Obj.magic(122);
@@ -502,10 +502,10 @@ let _ =
           };
           let _prepareState2 = state => {
             open StateDataMainType;
-            open ShaderType;
-            open GLSLLocationType;
-            open ProgramType;
-            open GLSLSenderType;
+            open AllShaderType;
+            open AllGLSLLocationType;
+            open AllProgramType;
+            open AllGLSLSenderType;
             let shaderIndex1 = 3;
             let shaderIndex2 = 4;
             let {shaderLibShaderIndexMap} as record =
@@ -561,7 +561,7 @@ let _ =
                  uniformLocationData2,
                )
             |> ignore;
-            let {uniformShaderSendNoCachableDataMap}: GLSLSenderType.glslSenderRecord =
+            let {uniformShaderSendNoCachableDataMap}: AllGLSLSenderType.glslSenderRecord =
               state.glslSenderRecord;
             let uniformShaderSendNoCachableData1 = Obj.magic(10221);
             let uniformShaderSendNoCachableData2 = Obj.magic(10222);
@@ -630,7 +630,7 @@ let _ =
           describe("test restore shader data", () => {
             describe("test index", () =>
               test("index should be big one", () => {
-                open ShaderType;
+                open AllShaderType;
                 let (
                   newState,
                   (currentState, _, _, _, _),
@@ -648,7 +648,7 @@ let _ =
             );
             describe("test shaderLibShaderIndexMap", () =>
               test("should be target state's one", () => {
-                open ShaderType;
+                open AllShaderType;
                 let (
                   newState,
                   (
@@ -679,7 +679,7 @@ let _ =
           describe("test restore program data", () =>
             describe("test programMap", () =>
               test("should be target state's one", () => {
-                open ProgramType;
+                open AllProgramType;
                 let (
                   newState,
                   (
@@ -708,7 +708,7 @@ let _ =
           describe("test restore glsl location data", () =>
             describe("test attributeLocationMap, uniformLocationMap", () =>
               test("should be target state's one", () => {
-                open GLSLLocationType;
+                open AllGLSLLocationType;
                 let (
                   newState,
                   (
@@ -780,7 +780,7 @@ let _ =
                   ),
                 ) =
                   _prepare(state^);
-                let {uniformShaderSendNoCachableDataMap}: GLSLSenderType.glslSenderRecord =
+                let {uniformShaderSendNoCachableDataMap}: AllGLSLSenderType.glslSenderRecord =
                   newState |> GLSLSenderTool.getGLSLSenderRecord;
 
                 uniformShaderSendNoCachableDataMap

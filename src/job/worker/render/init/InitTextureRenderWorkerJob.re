@@ -4,9 +4,13 @@ open Js.Promise;
 
 let _createTypeArrays =
     (
-      buffer,
-      basicSourceTextureCount,
-      arrayBufferViewSourceTextureCount,
+      sourceTextureBuffer,
+      cubemapTextureBuffer,
+      (
+        basicSourceTextureCount,
+        arrayBufferViewSourceTextureCount,
+        cubemapTextureCount,
+      ),
       state,
     ) => {
   let (
@@ -19,8 +23,8 @@ let _createTypeArrays =
     isNeedUpdates,
     flipYs,
   ) =
-    CreateTypeArrayBasicSourceTextureService.createTypeArrays(
-      buffer,
+    CreateTypeArrayAllBasicSourceTextureService.createTypeArrays(
+      sourceTextureBuffer,
       basicSourceTextureCount,
     );
   state.basicSourceTextureRecord =
@@ -48,8 +52,8 @@ let _createTypeArrays =
     widths,
     heights,
   ) =
-    CreateTypeArrayArrayBufferViewSourceTextureService.createTypeArrays(
-      buffer,
+    CreateTypeArrayAllArrayBufferViewSourceTextureService.createTypeArrays(
+      sourceTextureBuffer,
       basicSourceTextureCount,
       arrayBufferViewSourceTextureCount,
     );
@@ -68,6 +72,60 @@ let _createTypeArrays =
       sourceMap: None,
       glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
     });
+
+  let (
+    wrapSs,
+    wrapTs,
+    magFilters,
+    minFilters,
+    pxFormats,
+    nxFormats,
+    pyFormats,
+    nyFormats,
+    pzFormats,
+    nzFormats,
+    pxTypes,
+    nxTypes,
+    pyTypes,
+    nyTypes,
+    pzTypes,
+    nzTypes,
+    isNeedUpdates,
+    flipYs,
+  ) =
+    CreateTypeArrayAllCubemapTextureService.createTypeArrays(
+      cubemapTextureBuffer,
+      cubemapTextureCount,
+    );
+  state.cubemapTextureRecord =
+    Some({
+      wrapSs: Some(wrapSs),
+      wrapTs: Some(wrapTs),
+      magFilters: Some(magFilters),
+      minFilters: Some(minFilters),
+      pxFormats: Some(pxFormats),
+      nxFormats: Some(nxFormats),
+      pyFormats: Some(pyFormats),
+      nyFormats: Some(nyFormats),
+      pzFormats: Some(pzFormats),
+      nzFormats: Some(nzFormats),
+      pxTypes: Some(pxTypes),
+      nxTypes: Some(nxTypes),
+      pyTypes: Some(pyTypes),
+      nyTypes: Some(nyTypes),
+      pzTypes: Some(pzTypes),
+      nzTypes: Some(nzTypes),
+      isNeedUpdates: Some(isNeedUpdates),
+      flipYs: Some(flipYs),
+      pxSourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      nxSourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      pySourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      nySourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      pzSourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      nzSourceMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+      glTextureMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+    });
+
   state;
 };
 
@@ -85,11 +143,20 @@ let _buildCreateTypeArraysStream = (e, stateData) =>
       BufferRenderWorkerSettingService.unsafeGetArrayBufferViewSourceTextureCount(
         settingRecord,
       );
+    let cubemapTextureCount =
+      BufferRenderWorkerSettingService.unsafeGetCubemapTextureCount(
+        settingRecord,
+      );
+
     state
     |> _createTypeArrays(
-         textureData##buffer,
-         basicSourceTextureCount,
-         arrayBufferViewSourceTextureCount,
+         textureData##sourceTextureBuffer,
+         textureData##cubemapTextureData##buffer,
+         (
+           basicSourceTextureCount,
+           arrayBufferViewSourceTextureCount,
+           cubemapTextureCount,
+         ),
        )
     |> StateRenderWorkerService.setState(stateData);
   });
@@ -117,12 +184,15 @@ let _buildInitTextureStream = (e, stateData) =>
       RecordBasicSourceTextureRenderWorkerService.getRecord(state);
     let arrayBufferViewSourceTextureRecord =
       RecordArrayBufferViewSourceTextureRenderWorkerService.getRecord(state);
+    let cubemapTextureRecord =
+      RecordCubemapTextureRenderWorkerService.getRecord(state);
+
     state.basicSourceTextureRecord =
       Some({
         ...basicSourceTextureRecord,
         glTextureMap:
           InitTextureService.initTextures(
-            DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+            AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
             ArrayService.range(
               0,
               textureData##basicSourceTextureData##index - 1,
@@ -135,13 +205,23 @@ let _buildInitTextureStream = (e, stateData) =>
         ...arrayBufferViewSourceTextureRecord,
         glTextureMap:
           InitTextureService.initTextures(
-            DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
-            IndexArrayBufferViewSourceTextureService.getAllArrayBufferViewSourceTextureIndexWhenInit(
+            AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+            IndexAllArrayBufferViewSourceTextureService.getAllArrayBufferViewSourceTextureIndexWhenInit(
               textureData##arrayBufferViewSourceTextureData##index,
               state.settingRecord
               |> BufferRenderWorkerSettingService.unsafeGetBasicSourceTextureCount,
             ),
             arrayBufferViewSourceTextureRecord.glTextureMap,
+          ),
+      });
+    state.cubemapTextureRecord =
+      Some({
+        ...cubemapTextureRecord,
+        glTextureMap:
+          InitTextureService.initTextures(
+            AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+            ArrayService.range(0, textureData##cubemapTextureData##index - 1),
+            cubemapTextureRecord.glTextureMap,
           ),
       });
 
@@ -164,6 +244,17 @@ let execJob = (_, e, stateData) => {
     _buildCreateTypeArraysStream(e, stateData),
     SourceMapBasicSourceTextureRenderWorkerService.addSourceFromImageDataStream(
       textureData##basicSourceTextureData##needAddedImageDataArray,
+      state,
+    ),
+    SourceMapCubemapTextureRenderWorkerService.addSourceFromImageDataStream(
+      (
+        textureData##cubemapTextureData##needAddedPXImageDataArray,
+        textureData##cubemapTextureData##needAddedNXImageDataArray,
+        textureData##cubemapTextureData##needAddedPYImageDataArray,
+        textureData##cubemapTextureData##needAddedNYImageDataArray,
+        textureData##cubemapTextureData##needAddedPZImageDataArray,
+        textureData##cubemapTextureData##needAddedNZImageDataArray,
+      ),
       state,
     ),
     _buildAddArrayBufferViewSourceStream(e, stateData),

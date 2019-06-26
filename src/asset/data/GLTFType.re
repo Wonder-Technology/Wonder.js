@@ -8,6 +8,8 @@ type materialIndex = int;
 
 type textureIndex = int;
 
+type cubemapTextureIndex = int;
+
 type imageIndex = int;
 
 type samplerIndex = int;
@@ -34,8 +36,11 @@ type sceneKHRLightsExtension = {light: int};
 
 type sceneExtensions = {khr_lights: option(sceneKHRLightsExtension)};
 
+type skybox = {cubemap: cubemapTextureIndex};
+
 type sceneExtras = {
   imgui: option(SceneGraphType.imgui),
+  skybox: option(skybox),
   isRoot: option(bool),
 };
 
@@ -144,7 +149,11 @@ type sampler = {
   wrapT: option(int),
 };
 
-type textureExtra = {flipY: bool};
+type textureExtra = {
+  format: int,
+  type_: int,
+  flipY: bool,
+};
 
 type texture = {
   sampler: option(samplerIndex),
@@ -263,6 +272,34 @@ type basicCameraView = {isActive: bool};
 
 type script = CommonAssetType.script;
 
+type cubemapTexture = {
+  name: option(string),
+  /* magFilter: int,
+     minFilter: int,
+     wrapS: int,
+     wrapT: int, */
+  sampler: samplerIndex,
+  flipY: bool,
+  pxSource: imageIndex,
+  nxSource: imageIndex,
+  pySource: imageIndex,
+  nySource: imageIndex,
+  pzSource: imageIndex,
+  nzSource: imageIndex,
+  pxFormat: int,
+  nxFormat: int,
+  pyFormat: int,
+  nyFormat: int,
+  pzFormat: int,
+  nzFormat: int,
+  pxType: int,
+  nxType: int,
+  pyType: int,
+  nyType: int,
+  pzType: int,
+  nzType: int,
+};
+
 type gltfExtras = {
   basicCameraViews: option(array(basicCameraView)),
   flyCameraControllers: option(array(SceneGraphType.flyCameraController)),
@@ -271,6 +308,7 @@ type gltfExtras = {
   basicMaterials: option(array(basicMaterial)),
   meshRenderers: option(array(meshRenderer)),
   scripts: option(array(script)),
+  cubemapTextures: option(array(cubemapTexture)),
 };
 
 type gltf = {

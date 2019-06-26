@@ -1,4 +1,4 @@
-open CustomWorkerDataType;
+open CustomAllWorkerDataType;
 
 type mainWorkerData = {customDataFromMainWorkerToRenderWorker};
 

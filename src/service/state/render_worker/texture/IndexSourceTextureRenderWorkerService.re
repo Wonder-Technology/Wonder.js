@@ -1,9 +1,9 @@
 open StateDataRenderWorkerType;
 
 let getBasicSourceTextureIndexOffset = () =>
-  IndexSourceTextureService.getBasicSourceTextureIndexOffset();
+  IndexAllSourceTextureService.getBasicSourceTextureIndexOffset();
 
 let getArrayBufferViewSourceTextureIndexOffset = ({settingRecord} as state) =>
-  IndexSourceTextureService.getArrayBufferViewSourceTextureIndexOffset(
+  IndexAllSourceTextureService.getArrayBufferViewSourceTextureIndexOffset(
     BufferRenderWorkerSettingService.unsafeGetBasicSourceTextureCount(settingRecord)
   );

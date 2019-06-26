@@ -1,7 +1,7 @@
 open StateDataRenderWorkerType;
 
 let isSupportInstance = (state) =>
-  JudgeInstanceService.isSupportInstance(
+  JudgeAllInstanceService.isSupportInstance(
     OperateRenderWorkerSettingService.unsafeGetGPU(state.settingRecord).useHardwareInstance,
     state.gpuDetectRecord
   );

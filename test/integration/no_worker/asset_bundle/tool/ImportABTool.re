@@ -35,9 +35,10 @@ module RAB = {
         ~wholeDependencyRelationMap=buildWholeDependencyRelationMap(
                                       rabRelativePaths,
                                     ),
+        ~version="",
         (),
       ) =>
-    WABType.{wholeHashIdMap, wholeDependencyRelationMap};
+    WABType.{version, wholeHashIdMap, wholeDependencyRelationMap};
 
   let loadAllDependencyRABAndSetToState =
       (
@@ -140,9 +141,10 @@ module SAB = {
         ~wholeDependencyRelationMap=buildWholeDependencyRelationMap(
                                       abRelativePaths,
                                     ),
+        ~version="",
         (),
       ) =>
-    WABType.{wholeHashIdMap, wholeDependencyRelationMap};
+    WABType.{version, wholeHashIdMap, wholeDependencyRelationMap};
 
   let loadSABAndSetToState =
       (

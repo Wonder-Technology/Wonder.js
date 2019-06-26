@@ -13,20 +13,20 @@ open Js.Typed_array;
 let getIndicesType = (index, state) => {
   let {indicesTypeMap} as record = getRecord(state);
 
-  IndicesTypeGeometryType.getIndicesType(index, indicesTypeMap);
+  IndicesTypeAllGeometryService.getIndicesType(index, indicesTypeMap);
 };
 
 let unsafeGetIndicesType = (index, state) => {
   let {indicesTypeMap} as record = getRecord(state);
 
-  IndicesTypeGeometryType.unsafeGetIndicesType(index, indicesTypeMap);
+  IndicesTypeAllGeometryService.unsafeGetIndicesType(index, indicesTypeMap);
 };
 
 let setIndicesType = (index, indicesType, state) => {
   let {indicesTypeMap} as record = getRecord(state);
 
   record.indicesTypeMap =
-    IndicesTypeGeometryType.setIndicesType(
+    IndicesTypeAllGeometryService.setIndicesType(
       index,
       indicesType,
       indicesTypeMap,

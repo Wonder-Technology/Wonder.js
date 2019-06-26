@@ -33,3 +33,17 @@ let buildInitRenderData =
   "pointLightData": Sinon.matchAny,
   "sourceInstanceData": Sinon.matchAny,
 };
+
+let buildTextureData =
+    (
+      ~sourceTextureBuffer=Sinon.matchAny,
+      ~basicSourceTextureData=Sinon.matchAny,
+      ~arrayBufferViewSourceTextureData=Sinon.matchAny,
+      ~cubemapTextureData=Sinon.matchAny,
+      (),
+    ) => {
+  "sourceTextureBuffer": sourceTextureBuffer,
+  "basicSourceTextureData": basicSourceTextureData,
+  "arrayBufferViewSourceTextureData": arrayBufferViewSourceTextureData,
+  "cubemapTextureData": cubemapTextureData,
+};

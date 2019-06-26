@@ -1,4 +1,4 @@
-open GPUDetectType;
+open AllGPUDetectType;
 
 open ShaderChunkSystem;
 

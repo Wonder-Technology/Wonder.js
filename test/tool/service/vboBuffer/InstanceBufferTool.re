@@ -3,7 +3,7 @@ open StateDataMainType;
 let getDefaultCapacity = () => 1;
 
 let getOrCreateBuffer = (sourceInstance, defaultCapacity, state) => {
-  open VboBufferType;
+  open AllVboBufferType;
   open RenderSourceInstanceType;
   /* open StateRenderType; */
   let state = CreateRenderStateMainService.createRenderState(state);

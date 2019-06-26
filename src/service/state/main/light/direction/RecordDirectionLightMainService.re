@@ -47,7 +47,7 @@ let _setAllTypeArrDataToDefault = (count: int, (buffer, colors, intensities)) =>
 let _initBufferData = count => {
   let buffer = createBuffer(count);
   let (colors, intensities) =
-    CreateTypeArrayDirectionLightService.createTypeArrays(buffer, count);
+    CreateTypeArrayAllDirectionLightService.createTypeArrays(buffer, count);
   (buffer, colors, intensities) |> _setAllTypeArrDataToDefault(count);
 };
 

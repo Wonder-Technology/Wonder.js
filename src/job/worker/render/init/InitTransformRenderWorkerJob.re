@@ -4,7 +4,7 @@ open RenderWorkerTransformType;
 
 let _createTypeArrays = (buffer, count, state) => {
   let (localToWorldMatrices, localPositions, localRotations, localScales) =
-    CreateTypeArrayTransformService.createTypeArrays(buffer, count);
+    CreateTypeArrayAllTransformService.createTypeArrays(buffer, count);
   state.transformRecord =
     Some({
       localToWorldMatrices,

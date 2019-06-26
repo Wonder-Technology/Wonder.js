@@ -2,7 +2,7 @@ open Wonder_jest;
 
 open Js.Promise;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let _ =
   describe("test load no worker data", () => {

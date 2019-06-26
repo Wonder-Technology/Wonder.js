@@ -1,4 +1,4 @@
-open InstanceType;
+open AllInstanceType;
 
 type sourceInstanceRecord = {
   objectInstanceTransformIndexMap: option(objectInstanceTransformIndexMap),

@@ -28,7 +28,7 @@ let _addAccessorData =
     accessorBufferArr
     |> ArrayService.push({
          ...oldAccessor,
-         bufferView: bufferViewDataArr |> Js.Array.length |. Some,
+         bufferView: (bufferViewDataArr |> Js.Array.length)->Some,
          byteOffset: Some(0),
        }),
     bufferViewDataArr
@@ -61,7 +61,7 @@ let _addBufferViewData =
       oldBufferViewIndex,
       bufferViewDataArr,
       newBufferViewOffset,
-      {bufferViews}: GLTFType.gltf,
+      bufferViews: array(GLTFType.bufferView),
     ) => {
   let oldBufferView = Array.unsafe_get(bufferViews, oldBufferViewIndex);
 
@@ -308,7 +308,7 @@ let _addPBRImageData =
     (
       diffuseTextureIndex,
       (
-        gltf,
+        {bufferViews}: GLTFType.gltf,
         bufferViewDataArr,
         streamChunkArr,
         newBufferViewOffset,
@@ -353,7 +353,7 @@ let _addPBRImageData =
           bufferView |> OptionService.unsafeGet,
           bufferViewDataArr,
           newBufferViewOffset,
-          gltf,
+          bufferViews,
         );
 
       (
@@ -367,7 +367,7 @@ let _addPBRImageData =
                type_: Image,
              }: StreamType.streamUnitData,
            ),
-        newImageBufferViewIndex |. Some,
+        newImageBufferViewIndex->Some,
         newBufferViewOffset,
         Some((imageIndex, image)),
         hasImageAddBeforeMap
@@ -438,6 +438,26 @@ let _addSpecularGlossinessImageData =
       (lightMaterial, materials, textures, images),
       noneData,
     )
+  };
+
+let _addNewImage = (newBufferViewIndex, imageData, newImages) =>
+  switch (newImages) {
+  | None => newImages
+  | Some(newImages) =>
+    (
+      switch (newBufferViewIndex, imageData) {
+      | (Some(newBufferViewIndex), Some((imageIndex, image))) =>
+        Array.unsafe_set(
+          newImages,
+          imageIndex,
+          {...image, bufferView: Some(newBufferViewIndex)}: GLTFType.image,
+        );
+
+        newImages;
+      | _ => newImages
+      }
+    )
+    ->Some
   };
 
 let _addImageData =
@@ -514,6 +534,258 @@ let _addImageData =
   };
 };
 
+let _addCubemapOneFaceTextureImageData =
+    (
+      source,
+      (images, bufferViews),
+      (
+        bufferViewDataArr,
+        streamChunkArr,
+        newBufferViewOffset,
+        newImages,
+        hasImageAddBeforeMap,
+      ),
+    ) => {
+  let imageIndex = source;
+
+  _hasAddDataBefore(hasImageAddBeforeMap, imageIndex) ?
+    (
+      bufferViewDataArr,
+      streamChunkArr
+      |> ArrayService.push(
+           {
+             byteLength: 0,
+             componentType: _getImageComponentType(),
+             index: imageIndex,
+             type_: Image,
+           }: StreamType.streamUnitData,
+         ),
+      newBufferViewOffset,
+      newImages,
+      hasImageAddBeforeMap,
+    ) :
+    {
+      let ({bufferView}: GLTFType.image) as image =
+        Array.unsafe_get(images, imageIndex);
+
+      let (
+        byteLength,
+        newImageBufferViewIndex,
+        bufferViewDataArr,
+        newBufferViewOffset,
+      ) =
+        _addBufferViewData(
+          bufferView |> OptionService.unsafeGet,
+          bufferViewDataArr,
+          newBufferViewOffset,
+          bufferViews,
+        );
+
+      (
+        bufferViewDataArr,
+        streamChunkArr
+        |> ArrayService.push(
+             {
+               byteLength,
+               componentType: _getImageComponentType(),
+               index: imageIndex,
+               type_: Image,
+             }: StreamType.streamUnitData,
+           ),
+        newBufferViewOffset,
+        _addNewImage(
+          newImageBufferViewIndex->Some,
+          Some((imageIndex, image)),
+          newImages,
+        ),
+        hasImageAddBeforeMap
+        |> WonderCommonlib.MutableSparseMapService.set(imageIndex, true),
+      );
+    };
+};
+
+let _addCubemapTextureImageData =
+    (
+      cubemapTextures,
+      (images, bufferViews),
+      (bufferViewDataArr, streamChunkArr, newBufferViewOffset, newImages),
+      noneData,
+    ) => {
+  let (bufferViewDataArr, streamChunkArr, newBufferViewOffset, newImages, _) =
+    cubemapTextures
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (.
+           (
+             bufferViewDataArr,
+             streamChunkArr,
+             newBufferViewOffset,
+             newImages,
+             hasImageAddBeforeMap,
+           ),
+           {pxSource, nxSource, pySource, nySource, pzSource, nzSource}: GLTFType.cubemapTexture,
+         ) => {
+           let (
+             bufferViewDataArr,
+             streamChunkArr,
+             newBufferViewOffset,
+             newImages,
+             hasImageAddBeforeMap,
+           ) =
+             _addCubemapOneFaceTextureImageData(
+               pxSource,
+               (images, bufferViews),
+               (
+                 bufferViewDataArr,
+                 streamChunkArr,
+                 newBufferViewOffset,
+                 newImages,
+                 hasImageAddBeforeMap,
+               ),
+             );
+
+           let (
+             bufferViewDataArr,
+             streamChunkArr,
+             newBufferViewOffset,
+             newImages,
+             hasImageAddBeforeMap,
+           ) =
+             _addCubemapOneFaceTextureImageData(
+               nxSource,
+               (images, bufferViews),
+               (
+                 bufferViewDataArr,
+                 streamChunkArr,
+                 newBufferViewOffset,
+                 newImages,
+                 hasImageAddBeforeMap,
+               ),
+             );
+
+           let (
+             bufferViewDataArr,
+             streamChunkArr,
+             newBufferViewOffset,
+             newImages,
+             hasImageAddBeforeMap,
+           ) =
+             _addCubemapOneFaceTextureImageData(
+               pySource,
+               (images, bufferViews),
+               (
+                 bufferViewDataArr,
+                 streamChunkArr,
+                 newBufferViewOffset,
+                 newImages,
+                 hasImageAddBeforeMap,
+               ),
+             );
+
+           let (
+             bufferViewDataArr,
+             streamChunkArr,
+             newBufferViewOffset,
+             newImages,
+             hasImageAddBeforeMap,
+           ) =
+             _addCubemapOneFaceTextureImageData(
+               nySource,
+               (images, bufferViews),
+               (
+                 bufferViewDataArr,
+                 streamChunkArr,
+                 newBufferViewOffset,
+                 newImages,
+                 hasImageAddBeforeMap,
+               ),
+             );
+
+           let (
+             bufferViewDataArr,
+             streamChunkArr,
+             newBufferViewOffset,
+             newImages,
+             hasImageAddBeforeMap,
+           ) =
+             _addCubemapOneFaceTextureImageData(
+               pzSource,
+               (images, bufferViews),
+               (
+                 bufferViewDataArr,
+                 streamChunkArr,
+                 newBufferViewOffset,
+                 newImages,
+                 hasImageAddBeforeMap,
+               ),
+             );
+
+           let (
+             bufferViewDataArr,
+             streamChunkArr,
+             newBufferViewOffset,
+             newImages,
+             hasImageAddBeforeMap,
+           ) =
+             _addCubemapOneFaceTextureImageData(
+               nzSource,
+               (images, bufferViews),
+               (
+                 bufferViewDataArr,
+                 streamChunkArr,
+                 newBufferViewOffset,
+                 newImages,
+                 hasImageAddBeforeMap,
+               ),
+             );
+
+           (
+             bufferViewDataArr,
+             streamChunkArr,
+             newBufferViewOffset,
+             newImages,
+             hasImageAddBeforeMap,
+           );
+         },
+         (
+           bufferViewDataArr,
+           streamChunkArr,
+           newBufferViewOffset,
+           newImages,
+           WonderCommonlib.MutableSparseMapService.createEmpty(),
+         ),
+       );
+
+  (bufferViewDataArr, streamChunkArr, newBufferViewOffset, newImages);
+};
+
+let _addImageDataForCubemapTexture =
+    (
+      (bufferViewDataArr, streamChunkArr, newBufferViewOffset, newImages),
+      ({extras, images, bufferViews}: GLTFType.gltf) as gltf,
+    ) => {
+  let noneData = (
+    bufferViewDataArr,
+    streamChunkArr,
+    newBufferViewOffset,
+    newImages,
+  );
+
+  switch (extras, images) {
+  | (Some({cubemapTextures}), Some(images)) =>
+    switch (cubemapTextures) {
+    | None => noneData
+    | Some(cubemapTextures) =>
+      _addCubemapTextureImageData(
+        cubemapTextures,
+        (images, bufferViews),
+        (bufferViewDataArr, streamChunkArr, newBufferViewOffset, newImages),
+        noneData,
+      )
+    }
+  | _ => noneData
+  };
+};
+
 let _buildNewGLTF =
     ((accessorBufferArr, bufferViewArr, newMeshes, newImages), gltf)
     : GLTFType.gltf => {
@@ -526,7 +798,8 @@ let _buildNewGLTF =
 
 let _checkPointData = (accessorIndex, (isDuplicate, hasAccessorIndexMap)) =>
   switch (
-    hasAccessorIndexMap |> WonderCommonlib.MutableSparseMapService.get(accessorIndex)
+    hasAccessorIndexMap
+    |> WonderCommonlib.MutableSparseMapService.get(accessorIndex)
   ) {
   | None => (
       isDuplicate,
@@ -729,25 +1002,7 @@ let _addMeshAndImageData =
           gltf,
         );
 
-      let newImages =
-        switch (newImages) {
-        | None => newImages
-        | Some(newImages) =>
-          (
-            switch (newBufferViewIndex, imageData) {
-            | (Some(newBufferViewIndex), Some((imageIndex, image))) =>
-              Array.unsafe_set(
-                newImages,
-                imageIndex,
-                {...image, bufferView: Some(newBufferViewIndex)}: GLTFType.image,
-              );
-
-              newImages;
-            | _ => newImages
-            }
-          )
-          |. Some
-        };
+      let newImages = _addNewImage(newBufferViewIndex, imageData, newImages);
 
       (
         (hasMeshAddBeforeMap, hasImageAddBeforeMap),
@@ -781,7 +1036,7 @@ let buildJsonData =
     accessorBufferArr,
     bufferViewDataArr,
     streamChunkArr,
-    _,
+    newBufferViewOffset,
     newMeshes,
     newImages,
   ) =
@@ -845,6 +1100,12 @@ let buildJsonData =
            Some([||]),
          ),
        );
+
+  let (bufferViewDataArr, streamChunkArr, _newBufferViewOffset, newImages) =
+    _addImageDataForCubemapTexture(
+      (bufferViewDataArr, streamChunkArr, newBufferViewOffset, newImages),
+      gltf,
+    );
 
   (
     bufferViewDataArr,

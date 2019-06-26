@@ -1,3 +1,3 @@
 open StateDataRenderWorkerType;
 
-let unsafeGetGl = (state) => [@bs] DeviceManagerService.unsafeGetGl(state.deviceManagerRecord);
+let unsafeGetGl = (state) => [@bs] AllDeviceManagerService.unsafeGetGl(state.deviceManagerRecord);

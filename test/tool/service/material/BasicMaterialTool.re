@@ -141,7 +141,7 @@ let isNeedInitMaterial = (material, state) =>
 
 let getDefaultIsDepthTest = () => true;
 
-let getDefaultAlpha = () => BufferBasicMaterialService.getDefaultAlpha();
+let getDefaultAlpha = () => BufferAllBasicMaterialService.getDefaultAlpha();
 
 let disposeBasicMaterial = (material, state) =>
   BasicMaterialAPI.batchDisposeBasicMaterial([|material|], state);

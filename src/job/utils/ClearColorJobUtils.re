@@ -1,6 +1,6 @@
 let execJob = (flags, deviceManagerRecord) =>
-  DeviceManagerService.clearColor(
-    [@bs] DeviceManagerService.unsafeGetGl(deviceManagerRecord),
+  AllDeviceManagerService.clearColor(
+    [@bs] AllDeviceManagerService.unsafeGetGl(deviceManagerRecord),
     ColorService.convert16HexToRGBA(JobConfigUtils.getOperateType(flags)),
     deviceManagerRecord
   );

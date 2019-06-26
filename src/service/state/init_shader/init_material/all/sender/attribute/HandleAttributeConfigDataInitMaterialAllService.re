@@ -2,11 +2,11 @@ open WonderWebgl.GlType;
 
 open WonderWebgl.Gl;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 /* open StateRenderType; */
 
-open GLSLSenderType;
+open AllGLSLSenderType;
 
 let addModelMatrixInstanceArrayBufferSendData =
     (
@@ -17,7 +17,7 @@ let addModelMatrixInstanceArrayBufferSendData =
   instanceSendNoCachableDataArr
   |> ArrayService.push({
        pos:
-         GLSLLocationService.getAttribLocationAndCache(
+         AllGLSLLocationService.getAttribLocationAndCache(
            program,
            name,
            attributeLocationMap,
@@ -36,7 +36,7 @@ let addOtherArrayBufferSendData =
   sendDataArr
   |> ArrayService.push({
        pos:
-         GLSLLocationService.getAttribLocationAndCache(
+         AllGLSLLocationService.getAttribLocationAndCache(
            program,
            name,
            attributeLocationMap,
@@ -136,7 +136,7 @@ let addAttributeSendData =
   let attributeLocationMap =
     HandleShaderConfigDataMapService.getOrCreateHashMap(
       glslLocationRecord
-      |> GLSLLocationService.getAttributeLocationMap(shaderIndex),
+      |> AllGLSLLocationService.getAttributeLocationMap(shaderIndex),
     );
   (
     readAttributeSendDataFunc(.
@@ -151,7 +151,7 @@ let addAttributeSendData =
          glslSenderRecord,
        ),
     glslLocationRecord
-    |> GLSLLocationService.setAttributeLocationMap(
+    |> AllGLSLLocationService.setAttributeLocationMap(
          shaderIndex,
          attributeLocationMap,
        ),

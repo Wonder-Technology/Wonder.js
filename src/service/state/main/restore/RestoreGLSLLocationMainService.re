@@ -1,5 +1,5 @@
 open StateDataMainType;
 
-open GLSLLocationType;
+open AllGLSLLocationType;
 
 let restore = (currentState, targetState) => targetState;

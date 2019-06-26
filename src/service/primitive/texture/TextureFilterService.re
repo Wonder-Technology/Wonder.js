@@ -1,4 +1,4 @@
-open SourceTextureType;
+open TextureType;
 
 let getGlFilter = (gl, filter) =>
   switch (filter) {

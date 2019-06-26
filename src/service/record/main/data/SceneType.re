@@ -1,6 +1,12 @@
-type ambientLight = {color: array(float)};
+type ambientLightData = {color: array(float)};
+
+type skyboxData = {
+  skyboxGameObject: option(GameObjectPrimitiveType.gameObject),
+  cubemapTexture: option(CubemapTextureType.cubemapTexture),
+};
 
 type sceneRecord = {
-  ambientLight,
+  ambientLightData,
+  skyboxData,
   sceneGameObject: GameObjectPrimitiveType.gameObject,
 };

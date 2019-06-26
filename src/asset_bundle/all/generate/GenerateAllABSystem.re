@@ -21,7 +21,11 @@ let generate = (dependencyRelation, (sabDataArr, rabDataArr)) =>
   |> ManifestDataSystem.addManifestData(dependencyRelation)
   |> Most.map(((wholeHashIdMap, newRabDataArr, newSabDataArr)) =>
        (
-         GenerateWABSystem.generate(dependencyRelation, wholeHashIdMap),
+         GenerateWABSystem.generate(
+           Copyright.getVersion(),
+           dependencyRelation,
+           wholeHashIdMap,
+         ),
          newRabDataArr,
          newSabDataArr,
        )

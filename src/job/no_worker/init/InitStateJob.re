@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open DeviceManagerType;
+open AllDeviceManagerType;
 
 let execJob = (flags, state) => {
   ...state,

@@ -25,7 +25,7 @@ open StateDataMainType;
              {
                /* TODO optimize: add gl texture to pool? */
                let gl =
-                 DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+                 AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
                {
                  ...state,
@@ -73,7 +73,7 @@ open StateDataMainType;
            {
              /* TODO optimize: add gl texture to pool? */
              let gl =
-               DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+               AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
              {
                ...state,

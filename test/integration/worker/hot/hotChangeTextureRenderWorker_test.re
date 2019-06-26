@@ -15,7 +15,7 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("test change texture", () =>
-      describe("test basic material", () => {
+      describe("test light material", () => {
         describe("test basic source texture", () =>
           describe("test map", () => {
             let _prepare = () => {
@@ -116,6 +116,7 @@ let _ =
             });
           })
         );
+
         describe("test arrayBufferView source texture", () =>
           describe("test map", () => {
             let _prepare = () => {

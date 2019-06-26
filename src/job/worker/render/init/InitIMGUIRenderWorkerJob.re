@@ -80,7 +80,7 @@ let execJob = (_, e, stateData) => {
                     state.imguiRecord,
                   )
                   |> WonderImgui.ManageIMGUIAPI.init(
-                       DeviceManagerService.unsafeGetGl(.
+                       AllDeviceManagerService.unsafeGetGl(.
                          state.deviceManagerRecord,
                        ),
                        (imguiData##canvasWidth, imguiData##canvasHeight),

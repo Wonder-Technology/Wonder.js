@@ -16,7 +16,7 @@ let _setRenderObjectGlState =
   let deviceManagerRecord =
     RenderObjectGlStateUtils.setRenderObjectGlState(
       gl,
-      OperateTypeArrayBasicMaterialService.getIsDepthTest(
+      OperateTypeArrayAllBasicMaterialService.getIsDepthTest(
         materialIndex,
         basicMaterialRecord.isDepthTests,
       ),
@@ -37,7 +37,7 @@ let render =
         geometryIndices,
         sourceInstanceIndices,
       ),
-      state,
+      state: StateRenderType.renderState,
     ) =>
   renderIndexArray
   |> WonderCommonlib.ArrayService.reduceOneParam(

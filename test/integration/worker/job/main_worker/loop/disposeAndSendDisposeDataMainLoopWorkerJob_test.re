@@ -27,7 +27,7 @@ let _ =
           describe("dispose data in dispose job", () =>
             describe("not dispose main worker state->vbo buffer data", () =>
               testPromise("not add buffer to pool", () => {
-                open VboBufferType;
+                open AllVboBufferType;
                 let (state, gameObject1, geometry1) =
                   DisposeForNoWorkerAndWorkerJobTool.prepareForDisposeGeometryVboBuffer(
                     state,

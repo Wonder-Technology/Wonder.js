@@ -81,7 +81,7 @@ let _getRotationTuple = mat => {
   };
 };
 
-let convertToTransforms = ({nodes}: GLTFType.gltf) : array(WDType.transform) =>
+let convertToTransforms = ({nodes}: GLTFType.gltf): array(WDType.transform) =>
   nodes
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (. arr, {matrix, translation, rotation, scale}: GLTFType.node) =>
@@ -178,16 +178,17 @@ let _createState = () => {
           geometryPointCount: 300,
           geometryCount: 30,
           transformCount: _createTransformCount(100000),
-          basicMaterialCount: 50,
-          lightMaterialCount: 50,
-          directionLightCount: 50,
-          pointLightCount: 50,
-          basicSourceTextureCount: 50,
-          arrayBufferViewSourceTextureCount: 50,
-          meshRendererCount: 50,
+          basicMaterialCount: 48,
+          lightMaterialCount: 48,
+          directionLightCount: 48,
+          pointLightCount: 48,
+          basicSourceTextureCount: 48,
+          arrayBufferViewSourceTextureCount: 48,
+          cubemapTextureCount: 48,
+          meshRendererCount: 48,
           instanceBuffer: {
-            sourceInstanceCount: 50,
-            objectInstanceCountPerSourceInstance: 50,
+            sourceInstanceCount: 48,
+            objectInstanceCountPerSourceInstance: 48,
           },
         }),
       isDebug: None,

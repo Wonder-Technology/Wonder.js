@@ -115,7 +115,7 @@ let init =
            (
              materialIndex,
              isSourceInstanceMap
-             |> JudgeInstanceService.unsafeGetIsSourceInstance(materialIndex),
+             |> JudgeAllInstanceService.unsafeGetIsSourceInstance(materialIndex),
              isSupportInstance,
            ),
            state,

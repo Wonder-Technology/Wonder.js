@@ -3,7 +3,7 @@ open BasicMaterialType;
 open StateDataMainType;
 
 let getColor = (material, state) =>
-  OperateTypeArrayBasicMaterialService.getColor(
+  OperateTypeArrayAllBasicMaterialService.getColor(
     material,
     RecordBasicMaterialMainService.getRecord(state).colors,
   );
@@ -17,7 +17,7 @@ let setColor = (material, color: array(float), state) => {
       Some({
         ...basicMaterialRecord,
         colors:
-          OperateTypeArrayBasicMaterialService.setColor(
+          OperateTypeArrayAllBasicMaterialService.setColor(
             material,
             color,
             colors,
@@ -27,13 +27,13 @@ let setColor = (material, color: array(float), state) => {
 };
 
 let getIsDepthTest = (material, state) =>
-  OperateTypeArrayBasicMaterialService.getIsDepthTest(
+  OperateTypeArrayAllBasicMaterialService.getIsDepthTest(
     material,
     RecordBasicMaterialMainService.getRecord(state).isDepthTests,
   );
 
 /* let isDepthTest = (material, state) =>
-   OperateTypeArrayBasicMaterialService.isDepthTest(
+   OperateTypeArrayAllBasicMaterialService.isDepthTest(
      material,
      RecordBasicMaterialMainService.getRecord(state).isDepthTests,
    ); */
@@ -47,10 +47,10 @@ let setIsDepthTest = (material, isDepthTest, state) => {
       Some({
         ...basicMaterialRecord,
         isDepthTests:
-          OperateTypeArrayBasicMaterialService.setIsDepthTest(
+          OperateTypeArrayAllBasicMaterialService.setIsDepthTest(
             material,
             isDepthTest
-            |> OperateTypeArrayBasicMaterialService.convertIsDepthTestToVal,
+            |> OperateTypeArrayAllBasicMaterialService.convertIsDepthTestToVal,
             isDepthTests,
           ),
       }),
@@ -58,7 +58,7 @@ let setIsDepthTest = (material, isDepthTest, state) => {
 };
 
 let getAlpha = (material, state) =>
-  OperateTypeArrayBasicMaterialService.getAlpha(
+  OperateTypeArrayAllBasicMaterialService.getAlpha(
     material,
     RecordBasicMaterialMainService.getRecord(state).alphas,
   );
@@ -72,7 +72,7 @@ let setAlpha = (material, alpha, state) => {
       Some({
         ...basicMaterialRecord,
         alphas:
-          OperateTypeArrayBasicMaterialService.setAlpha(
+          OperateTypeArrayAllBasicMaterialService.setAlpha(
             material,
             alpha,
             alphas,

@@ -12,6 +12,7 @@ type settingRecord = {
   instanceBuffer: option(instanceBuffer),
   basicSourceTextureCount: option(int),
   arrayBufferViewSourceTextureCount: option(int),
+  cubemapTextureCount: option(int),
   directionLightCount: option(int),
   pointLightCount: option(int),
   memory: option(memory),

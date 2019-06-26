@@ -1,10 +1,10 @@
 let execJob = (deviceManagerRecord) =>
-  DeviceManagerService.setSide(
-    [@bs] DeviceManagerService.unsafeGetGl(deviceManagerRecord),
+  AllDeviceManagerService.setSide(
+    [@bs] AllDeviceManagerService.unsafeGetGl(deviceManagerRecord),
     FRONT,
     deviceManagerRecord
   )
-  |> DeviceManagerService.setDepthTest(
-       [@bs] DeviceManagerService.unsafeGetGl(deviceManagerRecord),
+  |> AllDeviceManagerService.setDepthTest(
+       [@bs] AllDeviceManagerService.unsafeGetGl(deviceManagerRecord),
        true
      );

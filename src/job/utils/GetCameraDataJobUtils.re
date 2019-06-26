@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open RenderCameraType;
+open AllRenderCameraType;
 
 let getCameraData =
     (

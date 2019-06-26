@@ -25,100 +25,251 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("build image data", () =>
-      describe("test has duplicate data", () =>
-        testPromise("test1", () => {
-          let imageName = "image1";
+      describe("test has duplicate data", () => {
+        describe("test image from basicSourceTexture", () =>
+          testPromise("test1", () => {
+            let imageName = "image1";
 
-          let image1 =
-            GenerateSingleRABTool.ResourceData.buildImageData(
-              ~name=imageName,
-              (),
-            );
+            let image1 =
+              GenerateSingleRABTool.ResourceData.buildImageData(
+                ~name=imageName,
+                (),
+              );
 
-          let imageDataMap =
-            WonderCommonlib.ImmutableSparseMapService.createEmpty()
-            |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
+            let imageDataMap =
+              WonderCommonlib.ImmutableSparseMapService.createEmpty()
+              |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
-          let (state, textureResourceData1) =
-            GenerateSingleRABTool.ResourceData.createTextureResourceData(
-              ~state=state^,
-              ~imageDataIndex=0,
-              (),
-            );
+            let (state, textureResourceData1) =
+              GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
+                ~state=state^,
+                ~imageDataIndex=0,
+                (),
+              );
 
-          let resourceData1 =
-            GenerateSingleRABTool.ResourceData.buildResourceData(
-              ~textures=[|textureResourceData1|],
-              ~imageDataMap,
-              (),
-            );
+            let resourceData1 =
+              GenerateSingleRABTool.ResourceData.buildResourceData(
+                ~basicSourceTextures=[|textureResourceData1|],
+                ~imageDataMap,
+                (),
+              );
 
-          let rab1 =
-            GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
+            let rab1 =
+              GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
-          let (state, gameObject2, transform2, (material2, texture2)) =
-            GenerateAllABTool.TestDuplicateDataForSAB.TestDuplicateImageData.createGameObject1(
-              imageName,
+            let (state, gameObject2, transform2, (material2, texture2)) =
+              GenerateAllABTool.TestDuplicateDataForSAB.TestDuplicateImageData.createGameObject1(
+                imageName,
+                state,
+              );
+            let gameObject2Name = "g2";
+            let state =
+              state
+              |> GameObjectAPI.setGameObjectName(gameObject2, gameObject2Name);
+
+            let state = state |> SceneAPI.addSceneChild(gameObject2);
+
+            let (canvas, context, (base64Str1, base64Str2)) =
+              GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+
+            let sab1 =
+              GenerateSingleSABSystem.generateSingleSAB(
+                SceneAPI.getSceneGameObject(state),
+                WonderCommonlib.MutableSparseMapService.createEmpty(),
+                state,
+              );
+
+            GenerateAllABTool.TestWithOneSABAndOneRAB.generateAllAB(
+              (rab1, sab1),
               state,
-            );
-          let gameObject2Name = "g2";
-          let state =
-            state
-            |> GameObjectAPI.setGameObjectName(gameObject2, gameObject2Name);
+            )
+            |> MostTool.testStream(data => {
+                 let (rab1RelativePath, sab1RelativePath) =
+                   GenerateAllABTool.TestWithOneSABAndOneRAB.getABRelativePaths();
 
-          let state = state |> SceneAPI.addSceneChild(gameObject2);
+                 AssembleSABTool.TestWithOneSABAndOneRAB.assemble(data)
+                 |> MostTool.testStream(rootGameObject => {
+                      let state = StateAPI.unsafeGetState();
 
-          let (canvas, context, (base64Str1, base64Str2)) =
-            GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+                      GameObjectTool.unsafeFindGameObjectByName(
+                        rootGameObject,
+                        gameObject2Name,
+                        state,
+                      )
+                      |> GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(
+                           _,
+                           state,
+                         )
+                      |> LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(
+                           _,
+                           state,
+                         )
+                      |> BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
+                           _,
+                           state,
+                         )
+                      |> expect
+                      == GLBTool.createFakeImage(
+                           ~name=imageName,
+                           ~src="object_url0",
+                           (),
+                         )
+                      |> resolve;
+                    });
+               });
+          })
+        );
 
-          let sab1 =
-            GenerateSingleSABSystem.generateSingleSAB(
-              SceneAPI.getSceneGameObject(state),
-              WonderCommonlib.MutableSparseMapService.createEmpty(),
+        describe("test image from cubemapTexture", () =>
+          testPromise("test1", () => {
+            let image1Name = "i1";
+            let image2Name = "i2";
+            let image3Name = "i3";
+            let image4Name = "i4";
+            let image5Name = "i5";
+            let image6Name = "i6";
+
+            let (
               state,
-            );
+              textureResourceData1,
+              texture1Name,
+              (
+                imageDataMap1,
+                (image1_1, image1_2, image1_3, image1_4, image1_5, image1_6),
+              ),
+            ) =
+              GenerateSingleRABTool.Test.createCubemapTextureResourceData(
+                ~state=state^,
+                ~image1Name,
+                ~image2Name,
+                ~image3Name,
+                ~image4Name,
+                ~image5Name,
+                ~image6Name,
+                (),
+              );
 
-          GenerateAllABTool.TestWithOneSABAndOneRAB.generateAllAB(
-            (rab1, sab1),
-            state,
-          )
-          |> MostTool.testStream(data => {
-               let (rab1RelativePath, sab1RelativePath) =
-                 GenerateAllABTool.TestWithOneSABAndOneRAB.getABRelativePaths();
+            let resourceData1 =
+              GenerateSingleRABTool.ResourceData.buildResourceData(
+                ~cubemapTextures=[|textureResourceData1|],
+                ~imageDataMap=imageDataMap1,
+                (),
+              );
 
-               AssembleSABTool.TestWithOneSABAndOneRAB.assemble(data)
-               |> MostTool.testStream(rootGameObject => {
-                    let state = StateAPI.unsafeGetState();
+            let rab1 =
+              GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
-                    GameObjectTool.unsafeFindGameObjectByName(
-                      rootGameObject,
-                      gameObject2Name,
-                      state,
-                    )
-                    |> GameObjectAPI.unsafeGetGameObjectLightMaterialComponent(
-                         _,
-                         state,
-                       )
-                    |> LightMaterialAPI.unsafeGetLightMaterialDiffuseMap(
-                         _,
-                         state,
-                       )
-                    |> BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
-                         _,
-                         state,
-                       )
-                    |> expect
-                    == (
-                         {"name": imageName, "src": "object_url0"} |> Obj.magic
-                       )
-                    |> resolve;
-                  });
-             });
-        })
-      )
+            let (state, cubemapTexture) =
+              SkyboxTool.prepareCubemapTexture(state);
+
+            let state =
+              CubemapTextureTool.setAllSources(
+                ~texture=cubemapTexture,
+                ~image1Name,
+                ~image2Name,
+                ~image3Name,
+                ~image4Name,
+                ~image5Name,
+                ~image6Name,
+                ~state,
+                (),
+              );
+
+            let _ =
+              GenerateSceneGraphSystemTool.prepareCanvasForCubemapTexture(
+                sandbox,
+              );
+
+            let sab1 =
+              GenerateSingleSABSystem.generateSingleSAB(
+                SceneAPI.getSceneGameObject(state),
+                WonderCommonlib.MutableSparseMapService.createEmpty(),
+                state,
+              );
+
+            GenerateAllABTool.TestWithOneSABAndOneRAB.generateAllAB(
+              (rab1, sab1),
+              state,
+            )
+            |> MostTool.testStream(data => {
+                 let (rab1RelativePath, sab1RelativePath) =
+                   GenerateAllABTool.TestWithOneSABAndOneRAB.getABRelativePaths();
+
+                 AssembleSABTool.TestWithOneSABAndOneRAB.assemble(data)
+                 |> MostTool.testStream(rootGameObject => {
+                      let state = StateAPI.unsafeGetState();
+
+                      let cubemapTexture =
+                        SceneTool.unsafeGetCubemapTexture(state);
+
+                      (
+                        CubemapTextureAPI.unsafeGetCubemapTexturePXSource(
+                          cubemapTexture,
+                          state,
+                        ),
+                        CubemapTextureAPI.unsafeGetCubemapTextureNXSource(
+                          cubemapTexture,
+                          state,
+                        ),
+                        CubemapTextureAPI.unsafeGetCubemapTexturePYSource(
+                          cubemapTexture,
+                          state,
+                        ),
+                        CubemapTextureAPI.unsafeGetCubemapTextureNYSource(
+                          cubemapTexture,
+                          state,
+                        ),
+                        CubemapTextureAPI.unsafeGetCubemapTexturePZSource(
+                          cubemapTexture,
+                          state,
+                        ),
+                        CubemapTextureAPI.unsafeGetCubemapTextureNZSource(
+                          cubemapTexture,
+                          state,
+                        ),
+                      )
+                      |> expect
+                      == (
+                           GLBTool.createFakeImage(
+                             ~name=image1Name,
+                             ~src="object_url0",
+                             (),
+                           ),
+                           GLBTool.createFakeImage(
+                             ~name=image2Name,
+                             ~src="object_url1",
+                             (),
+                           ),
+                           GLBTool.createFakeImage(
+                             ~name=image3Name,
+                             ~src="object_url2",
+                             (),
+                           ),
+                           GLBTool.createFakeImage(
+                             ~name=image4Name,
+                             ~src="object_url3",
+                             (),
+                           ),
+                           GLBTool.createFakeImage(
+                             ~name=image5Name,
+                             ~src="object_url4",
+                             (),
+                           ),
+                           GLBTool.createFakeImage(
+                             ~name=image6Name,
+                             ~src="object_url5",
+                             (),
+                           ),
+                         )
+                      |> resolve;
+                    });
+               });
+          })
+        );
+      })
     );
 
-    describe("build texture data", () =>
+    describe("build basicSourceTexture data", () =>
       describe("test flipY", () =>
         testPromise(
           "assembled sab gameObjects->texture->flipY not affected by dependency rab->texture->flipY",
@@ -136,7 +287,7 @@ let _ =
               |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
             let (state, textureResourceData1) =
-              GenerateSingleRABTool.ResourceData.createTextureResourceData(
+              GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
                 ~state=state^,
                 ~imageDataIndex=0,
                 ~flipY=false,
@@ -145,7 +296,7 @@ let _ =
 
             let resourceData1 =
               GenerateSingleRABTool.ResourceData.buildResourceData(
-                ~textures=[|textureResourceData1|],
+                ~basicSourceTextures=[|textureResourceData1|],
                 ~imageDataMap,
                 (),
               );
@@ -213,6 +364,105 @@ let _ =
                            state,
                          )
                       |> expect == true
+                      |> resolve;
+                    });
+               });
+          },
+        )
+      )
+    );
+
+    describe("build cubemapTexture data", () =>
+      describe("test flipY", () =>
+        testPromise(
+          "assembled sab gameObjects->texture->flipY not affected by dependency rab->texture->flipY",
+          () => {
+            let image1Name = "i1";
+            let image2Name = "i2";
+            let image3Name = "i3";
+            let image4Name = "i4";
+            let image5Name = "i5";
+            let image6Name = "i6";
+
+            let (
+              state,
+              textureResourceData1,
+              texture1Name,
+              (
+                imageDataMap1,
+                (image1_1, image1_2, image1_3, image1_4, image1_5, image1_6),
+              ),
+            ) =
+              GenerateSingleRABTool.Test.createCubemapTextureResourceData(
+                ~state=state^,
+                ~image1Name,
+                ~image2Name,
+                ~image3Name,
+                ~image4Name,
+                ~image5Name,
+                ~image6Name,
+                ~flipY=true,
+                (),
+              );
+
+            let resourceData1 =
+              GenerateSingleRABTool.ResourceData.buildResourceData(
+                ~cubemapTextures=[|textureResourceData1|],
+                ~imageDataMap=imageDataMap1,
+                (),
+              );
+
+            let rab1 =
+              GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
+
+            let (state, cubemapTexture) =
+              SkyboxTool.prepareCubemapTexture(state);
+
+            let state =
+              CubemapTextureTool.setAllSources(
+                ~texture=cubemapTexture,
+                ~image1Name,
+                ~image2Name,
+                ~image3Name,
+                ~image4Name,
+                ~image5Name,
+                ~image6Name,
+                ~state,
+                (),
+              );
+
+            let _ =
+              GenerateSceneGraphSystemTool.prepareCanvasForCubemapTexture(
+                sandbox,
+              );
+
+            let sab1 =
+              GenerateSingleSABSystem.generateSingleSAB(
+                SceneAPI.getSceneGameObject(state),
+                WonderCommonlib.MutableSparseMapService.createEmpty(),
+                state,
+              );
+
+            GenerateAllABTool.TestWithOneSABAndOneRAB.generateAllAB(
+              (rab1, sab1),
+              state,
+            )
+            |> MostTool.testStream(data => {
+                 let (rab1RelativePath, sab1RelativePath) =
+                   GenerateAllABTool.TestWithOneSABAndOneRAB.getABRelativePaths();
+
+                 AssembleSABTool.TestWithOneSABAndOneRAB.assemble(data)
+                 |> MostTool.testStream(rootGameObject => {
+                      let state = StateAPI.unsafeGetState();
+
+                      let cubemapTexture =
+                        SceneTool.unsafeGetCubemapTexture(state);
+
+                      CubemapTextureAPI.getCubemapTextureFlipY(
+                        cubemapTexture,
+                        state,
+                      )
+                      |> expect == false
                       |> resolve;
                     });
                });

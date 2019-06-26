@@ -6,7 +6,7 @@ let _getSharedData =
     (
       {typeArrayPoolRecord, deviceManagerRecord} as currentState: StateDataMainType.state,
     ) => {
-  gl: DeviceManagerService.unsafeGetGl(. deviceManagerRecord),
+  gl: AllDeviceManagerService.unsafeGetGl(. deviceManagerRecord),
   float32ArrayPoolMap:
     TypeArrayPoolService.getFloat32ArrayPoolMap(typeArrayPoolRecord),
   uint16ArrayPoolMap:
@@ -26,7 +26,7 @@ let restore =
   let targetState =
     targetState |> RestoreDeviceManagerMainService.restore(currentState);
   let gl =
-    DeviceManagerService.unsafeGetGl(. targetState.deviceManagerRecord);
+    AllDeviceManagerService.unsafeGetGl(. targetState.deviceManagerRecord);
   targetState
   |> RestoreTypeArrayPoolMainService.restore(currentState, sharedData)
   |> RestoreGlobalTempMainService.restore(currentState)
@@ -46,5 +46,6 @@ let restore =
   |> RestoreSourceTextureMainService.restore(currentState)
   |> RestoreBasicSourceTextureMainService.restore(currentState)
   |> RestoreArrayBufferViewSourceTextureMainService.restore(currentState)
+  |> RestoreCubemapTextureMainService.restore(currentState)
   |> setState(stateData);
 };

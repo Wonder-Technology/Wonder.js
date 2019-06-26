@@ -4,7 +4,7 @@ open RenderWorkerSourceInstanceType;
 
 let _createTypeArrays = (buffer, sourceInstanceCount, objectInstanceCountPerSourceInstance, state) => {
   let (objectInstanceTransformCollections, isTransformStatics) =
-    CreateTypeArraySourceInstanceService.createTypeArrays(
+    CreateTypeArrayAllSourceInstanceService.createTypeArrays(
       buffer,
       sourceInstanceCount,
       objectInstanceCountPerSourceInstance

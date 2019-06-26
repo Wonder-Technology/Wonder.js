@@ -14,7 +14,7 @@ let generateArrayBufferViewSourceTextureIndex =
 
 let unsafeGetTexture = (texture, state) =>
   OperateGlTextureMapService.unsafeGetTexture(
-    IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+    IndexAllSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
       IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
         state,
@@ -24,8 +24,8 @@ let unsafeGetTexture = (texture, state) =>
   );
 
 let isNeedUpdate = (texture, state) =>
-  OperateTypeArrayArrayBufferViewSourceTextureService.getIsNeedUpdate(.
-    IndexSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
+  OperateTypeArrayAllArrayBufferViewSourceTextureService.getIsNeedUpdate(.
+    IndexAllSourceTextureService.getArrayBufferViewSourceTextureIndexInTypeArray(
       texture,
       IndexSourceTextureMainService.getArrayBufferViewSourceTextureIndexOffset(
         state,
@@ -33,26 +33,29 @@ let isNeedUpdate = (texture, state) =>
     ),
     getRecord(state).isNeedUpdates,
   )
-  === BufferSourceTextureService.getNeedUpdate();
+  === BufferTextureService.getNeedUpdate();
 
 let buildSource = () => Js.Typed_array.Uint8Array.make([|1, 255, 255, 255|]);
 
 let buildSource2 = () => Js.Typed_array.Uint8Array.make([|2, 255, 255, 100|]);
 
-let getDefaultWrapS = () => BufferBasicSourceTextureService.getDefaultWrapS();
+let getDefaultWrapS = () =>
+  BufferArrayBufferViewSourceTextureService.getDefaultWrapS();
 
-let getDefaultWrapT = () => BufferBasicSourceTextureService.getDefaultWrapT();
+let getDefaultWrapT = () =>
+  BufferArrayBufferViewSourceTextureService.getDefaultWrapT();
 
 let getDefaultMagFilter = () =>
-  BufferBasicSourceTextureService.getDefaultMagFilter();
+  BufferArrayBufferViewSourceTextureService.getDefaultMagFilter();
 
 let getDefaultMinFilter = () =>
-  BufferBasicSourceTextureService.getDefaultMinFilter();
+  BufferArrayBufferViewSourceTextureService.getDefaultMinFilter();
 
 let getDefaultFormat = () =>
-  BufferBasicSourceTextureService.getDefaultFormat();
+  BufferArrayBufferViewSourceTextureService.getDefaultFormat();
 
-let getDefaultType = () => TextureTypeService.getUnsignedByte();
+let getDefaultType = () =>
+  BufferArrayBufferViewSourceTextureService.getDefaultType();
 
 let getDefaultIsNeedUpdate = () =>
   BufferArrayBufferViewSourceTextureService.getDefaultIsNeedUpdate();

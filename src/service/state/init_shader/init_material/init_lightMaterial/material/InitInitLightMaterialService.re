@@ -2,7 +2,7 @@ open StateInitLightMaterialType;
 
 open InitMaterialLightMaterialType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let _getShaderLibItems = ({materialShaders}) => {
   let shaderName = "front_render_light";

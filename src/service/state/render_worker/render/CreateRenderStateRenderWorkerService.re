@@ -1,6 +1,6 @@
 open StateRenderType;
 
-open GPUDetectType;
+open AllGPUDetectType;
 
 open RenderWorkerGeometryType;
 
@@ -18,8 +18,6 @@ open RenderWorkerDirectionLightType;
 
 open RenderWorkerPointLightType;
 
-open RenderWorkerBasicSourceTextureType;
-
 open RenderAllTextureType;
 
 open RenderWorkerSourceInstanceType;
@@ -30,9 +28,9 @@ open RenderWorkerRenderType;
 
 open RenderWorkerWorkerDetectType;
 
-open DeviceManagerType;
+open AllDeviceManagerType;
 
-open ShaderType;
+open AllShaderType;
 
 let createRenderState =
     (
@@ -69,6 +67,8 @@ let createRenderState =
     RecordBasicSourceTextureRenderWorkerService.getRecord(state);
   let arrayBufferViewSourceTextureRecord =
     RecordArrayBufferViewSourceTextureRenderWorkerService.getRecord(state);
+  let cubemapTextureRecord =
+    RecordCubemapTextureRenderWorkerService.getRecord(state);
 
   let allTextureRecord =
     RecordArrayBufferViewSourceTextureRenderWorkerService.getRecord(state);
@@ -125,9 +125,10 @@ let createRenderState =
       alphas: RecordBasicMaterialRenderWorkerService.unsafeGetAlphas(state),
     },
     lightMaterialRecord: {
-      diffuseMapUnitMap: RecordLightMaterialService.createDiffuseMapUnitMap(),
+      diffuseMapUnitMap:
+        RecordRenderLightMaterialService.createDiffuseMapUnitMap(),
       specularMapUnitMap:
-        RecordLightMaterialService.createSpecularMapUnitMap(),
+        RecordRenderLightMaterialService.createSpecularMapUnitMap(),
       shaderIndices:
         RecordLightMaterialRenderWorkerService.unsafeGetShaderIndices(state),
       diffuseColors:
@@ -192,6 +193,47 @@ let createRenderState =
         IndexSourceTextureRenderWorkerService.getArrayBufferViewSourceTextureIndexOffset(
           state,
         ),
+      setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY,
+    },
+    cubemapTextureRecord: {
+      wrapSs: cubemapTextureRecord.wrapSs |> OptionService.unsafeGet,
+      wrapTs: cubemapTextureRecord.wrapTs |> OptionService.unsafeGet,
+      magFilters: cubemapTextureRecord.magFilters |> OptionService.unsafeGet,
+      minFilters: cubemapTextureRecord.minFilters |> OptionService.unsafeGet,
+      pxFormats: cubemapTextureRecord.pxFormats |> OptionService.unsafeGet,
+      nxFormats: cubemapTextureRecord.nxFormats |> OptionService.unsafeGet,
+      pyFormats: cubemapTextureRecord.pyFormats |> OptionService.unsafeGet,
+      nyFormats: cubemapTextureRecord.nyFormats |> OptionService.unsafeGet,
+      pzFormats: cubemapTextureRecord.pzFormats |> OptionService.unsafeGet,
+      nzFormats: cubemapTextureRecord.nzFormats |> OptionService.unsafeGet,
+      pxTypes: cubemapTextureRecord.pxTypes |> OptionService.unsafeGet,
+      nxTypes: cubemapTextureRecord.nxTypes |> OptionService.unsafeGet,
+      pyTypes: cubemapTextureRecord.pyTypes |> OptionService.unsafeGet,
+      nyTypes: cubemapTextureRecord.nyTypes |> OptionService.unsafeGet,
+      pzTypes: cubemapTextureRecord.pzTypes |> OptionService.unsafeGet,
+      nzTypes: cubemapTextureRecord.nzTypes |> OptionService.unsafeGet,
+      isNeedUpdates:
+        cubemapTextureRecord.isNeedUpdates |> OptionService.unsafeGet,
+      flipYs: cubemapTextureRecord.flipYs |> OptionService.unsafeGet,
+      pxSourceMap:
+        cubemapTextureRecord.pxSourceMap
+        |> WorkerType.sparseMapImageBitmapToSparseMapImageElement,
+      nxSourceMap:
+        cubemapTextureRecord.nxSourceMap
+        |> WorkerType.sparseMapImageBitmapToSparseMapImageElement,
+      pySourceMap:
+        cubemapTextureRecord.pySourceMap
+        |> WorkerType.sparseMapImageBitmapToSparseMapImageElement,
+      nySourceMap:
+        cubemapTextureRecord.nySourceMap
+        |> WorkerType.sparseMapImageBitmapToSparseMapImageElement,
+      pzSourceMap:
+        cubemapTextureRecord.pzSourceMap
+        |> WorkerType.sparseMapImageBitmapToSparseMapImageElement,
+      nzSourceMap:
+        cubemapTextureRecord.nzSourceMap
+        |> WorkerType.sparseMapImageBitmapToSparseMapImageElement,
+      glTextureMap: cubemapTextureRecord.glTextureMap,
       setFlipYFunc: OperateSourceTextureRenderWorkerService.setFlipY,
     },
     allTextureRecord: {

@@ -4,7 +4,7 @@ open RenderWorkerMeshRendererType;
 
 let _createTypeArrays = (buffer, meshRendererCount, state) => {
   let (drawModes, isRenders) =
-    CreateTypeArrayMeshRendererService.createTypeArrays(
+    CreateTypeArrayAllMeshRendererService.createTypeArrays(
       buffer,
       meshRendererCount,
     );

@@ -1,0 +1,30 @@
+open WorkerType;
+
+type cubemapTextureRecord = {
+  wrapSs: option(Js.Typed_array.Uint8Array.t),
+  wrapTs: option(Js.Typed_array.Uint8Array.t),
+  magFilters: option(Js.Typed_array.Uint8Array.t),
+  minFilters: option(Js.Typed_array.Uint8Array.t),
+  pxFormats: option(Js.Typed_array.Uint8Array.t),
+  nxFormats: option(Js.Typed_array.Uint8Array.t),
+  pyFormats: option(Js.Typed_array.Uint8Array.t),
+  nyFormats: option(Js.Typed_array.Uint8Array.t),
+  pzFormats: option(Js.Typed_array.Uint8Array.t),
+  nzFormats: option(Js.Typed_array.Uint8Array.t),
+  pxTypes: option(Js.Typed_array.Uint8Array.t),
+  nxTypes: option(Js.Typed_array.Uint8Array.t),
+  pyTypes: option(Js.Typed_array.Uint8Array.t),
+  nyTypes: option(Js.Typed_array.Uint8Array.t),
+  pzTypes: option(Js.Typed_array.Uint8Array.t),
+  nzTypes: option(Js.Typed_array.Uint8Array.t),
+  isNeedUpdates: option(Js.Typed_array.Uint8Array.t),
+  flipYs: option(Js.Typed_array.Uint8Array.t),
+  pxSourceMap: WonderCommonlib.MutableSparseMapService.t(imageBitmap),
+  nxSourceMap: WonderCommonlib.MutableSparseMapService.t(imageBitmap),
+  pySourceMap: WonderCommonlib.MutableSparseMapService.t(imageBitmap),
+  nySourceMap: WonderCommonlib.MutableSparseMapService.t(imageBitmap),
+  pzSourceMap: WonderCommonlib.MutableSparseMapService.t(imageBitmap),
+  nzSourceMap: WonderCommonlib.MutableSparseMapService.t(imageBitmap),
+  glTextureMap:
+    WonderCommonlib.MutableSparseMapService.t(WonderWebgl.GlType.texture),
+};

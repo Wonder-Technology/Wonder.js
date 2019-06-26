@@ -2,6 +2,8 @@ let buildRenderRenderData =
     (
       ~basicSourceTextureData=Sinon.matchAny,
       ~arrayBufferViewSourceTextureData=Sinon.matchAny,
+      ~cubemapTextureData=Sinon.matchAny,
+      ~skyboxData=Sinon.matchAny,
       ~materialData=Sinon.matchAny,
       ~imguiData=Sinon.matchAny,
       ~customData=Sinon.matchAny,
@@ -17,6 +19,7 @@ let buildRenderRenderData =
     "textureData": {
       "basicSourceTextureData": basicSourceTextureData,
       "arrayBufferViewSourceTextureData": arrayBufferViewSourceTextureData,
+      "cubemapTextureData": cubemapTextureData,
     },
   },
   "renderData": {
@@ -26,6 +29,7 @@ let buildRenderRenderData =
     "basic": Sinon.matchAny,
     "light": Sinon.matchAny,
     "sourceInstance": Sinon.matchAny,
+    "skyboxData": skyboxData,
   },
   "imguiData": imguiData,
   "customData": customData,

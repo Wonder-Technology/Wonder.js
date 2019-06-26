@@ -1,4 +1,4 @@
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 open BrowserType;
 

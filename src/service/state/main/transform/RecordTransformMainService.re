@@ -63,7 +63,7 @@ let _setAllTypeArrDataToDefault =
 let _initBufferData = (count, defaultDataTuple) => {
   let buffer = createBuffer(count);
   let (localToWorldMatrices, localPositions, localRotations, localScales) =
-    CreateTypeArrayTransformService.createTypeArrays(buffer, count);
+    CreateTypeArrayAllTransformService.createTypeArrays(buffer, count);
   (buffer, localToWorldMatrices, localPositions, localRotations, localScales)
   |> _setAllTypeArrDataToDefault(count, defaultDataTuple);
 };

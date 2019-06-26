@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open InstanceType;
+open AllInstanceType;
 
 open SourceInstanceType;
 

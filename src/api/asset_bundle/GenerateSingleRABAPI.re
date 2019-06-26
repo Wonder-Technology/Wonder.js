@@ -6,7 +6,8 @@ let buildResourceData =
     (
       basicMaterials,
       lightMaterials,
-      textures,
+      basicSourceTextures,
+      cubemapTextures,
       geometrys,
       scriptEventFunctionDataArr,
       scriptAttributeDataArr,
@@ -15,7 +16,8 @@ let buildResourceData =
     : resourceData => {
   basicMaterials,
   lightMaterials,
-  textures,
+  basicSourceTextures,
+  cubemapTextures,
   geometrys,
   scriptEventFunctionDataArr,
   scriptAttributeDataArr,

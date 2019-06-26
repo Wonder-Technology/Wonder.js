@@ -14,6 +14,8 @@ type lightMaterialIndex = int;
 
 type textureIndex = int;
 
+type cubemapTextureIndex = int;
+
 type cameraViewIndex = int;
 
 type cameraProjectionIndex = int;
@@ -145,16 +147,43 @@ type image = {
 
 type basicSourceTexture = {
   name: string,
-  format: SourceTextureType.format,
+  format: int,
+  type_: int,
   flipY: bool,
 };
 
+type cubemapTexture = {
+  name: string,
+  /* magFilter: int,
+     minFilter: int,
+     wrapS: int,
+     wrapT: int, */
+  flipY: bool,
+  /* pxSource: imageIndex,
+     nxSource: imageIndex,
+     pySource: imageIndex,
+     nySource: imageIndex,
+     pzSource: imageIndex,
+     nzSource: imageIndex, */
+  pxFormat: int,
+  nxFormat: int,
+  pyFormat: int,
+  nyFormat: int,
+  pzFormat: int,
+  nzFormat: int,
+  pxType: int,
+  nxType: int,
+  pyType: int,
+  nyType: int,
+  pzType: int,
+  nzType: int,
+};
+
 type sampler = {
-  /* TODO add format, type_, ... */
-  magFilter: SourceTextureType.filter,
-  minFilter: SourceTextureType.filter,
-  wrapS: SourceTextureType.wrap,
-  wrapT: SourceTextureType.wrap,
+  magFilter: TextureType.filter,
+  minFilter: TextureType.filter,
+  wrapS: TextureType.wrap,
+  wrapT: TextureType.wrap,
 };
 
 type componentGameObjectIndexData = {
@@ -195,8 +224,23 @@ type imageTextureIndexData = {
   imageIndices: array(imageIndex),
 };
 
+type imageCubemapTextureIndexData = {
+  cubemapTextureIndices: array(cubemapTextureIndex),
+  pxImageIndices: array(imageIndex),
+  nxImageIndices: array(imageIndex),
+  pyImageIndices: array(imageIndex),
+  nyImageIndices: array(imageIndex),
+  pzImageIndices: array(imageIndex),
+  nzImageIndices: array(imageIndex),
+};
+
 type samplerTextureIndexData = {
   textureIndices: array(textureIndex),
+  samplerIndices: array(samplerIndex),
+};
+
+type samplerCubemapTextureIndexData = {
+  cubemapTextureIndices: array(cubemapTextureIndex),
   samplerIndices: array(samplerIndex),
 };
 
@@ -204,7 +248,9 @@ type indices = {
   gameObjectIndices,
   materialIndices,
   imageTextureIndices: imageTextureIndexData,
+  imageCubemapTextureIndices: imageCubemapTextureIndexData,
   samplerTextureIndices: samplerTextureIndexData,
+  samplerCubemapTextureIndices: samplerCubemapTextureIndexData,
 };
 
 type basicCameraView = {isActive: bool};
@@ -225,10 +271,13 @@ type pointLight = {
   range: float,
 };
 
+type skybox = {cubemap: cubemapTextureIndex};
+
 type scene = {
   gameObjects: array(gameObjectIndex),
   ambientLight: option(ambientLight),
   imgui: option(SceneGraphType.imgui),
+  skybox: option(skybox),
   isRoot: bool,
 };
 
@@ -241,6 +290,7 @@ type wd = {
   gameObjects,
   images: option(array(image)),
   basicSourceTextures: array(basicSourceTexture),
+  cubemapTextures: array(cubemapTexture),
   samplers: array(sampler),
   buffers: array(int),
   bufferViews: array(bufferView),

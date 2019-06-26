@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open ShaderType;
+open AllShaderType;
 
 let restore = (currentState, targetState) => {
   WonderLog.Contract.requireCheck(

@@ -4,7 +4,7 @@ open WDType;
 
 open Js.Typed_array;
 
-let _getBatchTextureData =
+let _getBatchAllTypeBasicSourceTextureData =
     (lightMaterialArr, textureArr, default11Image, {indices, samplers}) => (
   (
     indices.materialIndices.diffuseMapMaterialIndices.materialIndices
@@ -25,19 +25,31 @@ let _getBatchTextureData =
   ),
 );
 
-let _getBatchAllTypeTextureData =
-    (lightMaterialArr, basicSourceTextureArr, default11Image, wd) =>
-  _getBatchTextureData(
-    lightMaterialArr,
-    basicSourceTextureArr,
-    /* blobObjectUrlImageArr, */
+let _getBatchAllTypeCubemapTextureData =
+    (textureArr, default11Image, {indices, samplers}) => (
+  (
+    indices.samplerCubemapTextureIndices.cubemapTextureIndices
+    |> BatchOperateSystem.getBatchArrByIndices(textureArr),
+    indices.samplerCubemapTextureIndices.samplerIndices
+    |> BatchOperateSystem.getBatchArrByIndices(samplers),
+  ),
+  (
+    indices.imageCubemapTextureIndices.cubemapTextureIndices
+    |> BatchOperateSystem.getBatchArrByIndices(textureArr),
     default11Image,
-    wd,
-  );
+  ),
+);
 
 let batchOperate =
     (
-      {geometrys, indices, gameObjects, basicSourceTextures, images} as wd,
+      {
+        geometrys,
+        indices,
+        gameObjects,
+        basicSourceTextures,
+        cubemapTextures,
+        images,
+      } as wd,
       default11Image,
       (
         state,
@@ -56,7 +68,7 @@ let batchOperate =
           pointLightArr,
           scriptArr,
         ),
-        basicSourceTextureArr,
+        (basicSourceTextureArr, cubemapTextureArr),
       ),
     ) => {
   let state =
@@ -66,7 +78,7 @@ let batchOperate =
         state,
         gameObjectArr,
         (transformArr, geometryArr),
-        basicSourceTextureArr,
+        (basicSourceTextureArr, cubemapTextureArr),
       ),
     );
 
@@ -123,19 +135,26 @@ let batchOperate =
     );
 
   let state =
-    BatchSetTextureAllDataSystem.batchSetFormatAndFlipY(
-      basicSourceTextureArr,
-      basicSourceTextures,
-      state,
-    );
+    state
+    |> BatchSetBasicSourceTextureAllDataSystem.batchSetFormatAndTypeAndFlipY(
+         basicSourceTextureArr,
+         basicSourceTextures,
+       )
+    |> BatchSetCubemapTextureAllDataSystem.batchSetFormatAndTypeAndFlipY(
+         cubemapTextureArr,
+         cubemapTextures,
+       );
 
   let basicSourceTextureData =
-    _getBatchAllTypeTextureData(
+    _getBatchAllTypeBasicSourceTextureData(
       lightMaterialArr,
       basicSourceTextureArr,
       default11Image,
       wd,
     );
+
+  let cubemapTextureData =
+    _getBatchAllTypeCubemapTextureData(cubemapTextureArr, default11Image, wd);
 
   (
     state
@@ -187,9 +206,16 @@ let batchOperate =
            gameObjectScripts,
          ),
        )
-    |> BatchSetStreamTextureAllDataSystem.batchSet(basicSourceTextureData),
+    |> BatchSetStreamBasicSourceTextureAllDataSystem.batchSet(
+         basicSourceTextureData,
+       )
+    |> BatchSetStreamCubemapTextureAllDataSystem.batchSet(cubemapTextureData),
     gameObjectArr,
     (geometryArr, geometryGameObjects, gameObjectGeometrys),
-    (basicSourceTextureArr, indices.imageTextureIndices, images),
+    (
+      images,
+      (basicSourceTextureArr, indices.imageTextureIndices),
+      (cubemapTextureArr, indices.imageCubemapTextureIndices),
+    ),
   );
 };

@@ -1,5 +1,11 @@
 open StateDataMainType;
 
+let setCubemapTexture = (cubemapTexture, state) =>
+  SkyboxSceneMainService.setCubemapTexture(cubemapTexture, state);
+
+let removeCubemapTexture = state =>
+  SkyboxSceneMainService.removeCubemapTexture(state);
+
 let getAmbientLightColor = state =>
   AmbientLightSceneMainService.getAmbientLightColor(state);
 

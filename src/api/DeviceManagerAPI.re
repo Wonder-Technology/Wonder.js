@@ -1,14 +1,14 @@
 open StateDataMainType;
 
 let unsafeGetGl = state =>
-  DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+  AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
 let setViewport = (viewportData, state) => {
   ...state,
   deviceManagerRecord:
     state.deviceManagerRecord
-    |> DeviceManagerService.setViewportOfGl(
-         DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    |> AllDeviceManagerService.setViewportOfGl(
+         AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
          viewportData,
        ),
 };
@@ -17,8 +17,8 @@ let setScissor = (scissorData, state) => {
   ...state,
   deviceManagerRecord:
     state.deviceManagerRecord
-    |> DeviceManagerService.setScissorOfGl(
-         DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    |> AllDeviceManagerService.setScissorOfGl(
+         AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
          scissorData,
        ),
 };
@@ -27,8 +27,8 @@ let setScissorTest = (targetScissorTest, state) => {
   ...state,
   deviceManagerRecord:
     state.deviceManagerRecord
-    |> DeviceManagerService.setScissorTest(
-         DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    |> AllDeviceManagerService.setScissorTest(
+         AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
          targetScissorTest,
        ),
 };
@@ -36,8 +36,8 @@ let setScissorTest = (targetScissorTest, state) => {
 let setSide = (targetSide, state) => {
   ...state,
   deviceManagerRecord:
-    DeviceManagerService.setSide(
-      DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    AllDeviceManagerService.setSide(
+      AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
       targetSide,
       state.deviceManagerRecord,
     ),
@@ -47,8 +47,8 @@ let setStencilTest = (targetStencilTest, state) => {
   ...state,
   deviceManagerRecord:
     state.deviceManagerRecord
-    |> DeviceManagerService.setStencilTest(
-         DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    |> AllDeviceManagerService.setStencilTest(
+         AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
          targetStencilTest,
        ),
 };
@@ -57,8 +57,8 @@ let setStencilMask = (targetStencilMask, state) => {
   ...state,
   deviceManagerRecord:
     state.deviceManagerRecord
-    |> DeviceManagerService.setStencilMask(
-         DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    |> AllDeviceManagerService.setStencilMask(
+         AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
          targetStencilMask,
        ),
 };
@@ -68,8 +68,8 @@ let setStencilFunc =
   ...state,
   deviceManagerRecord:
     state.deviceManagerRecord
-    |> DeviceManagerService.setStencilFunc(
-         DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    |> AllDeviceManagerService.setStencilFunc(
+         AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
          (targetStencilFunc, targetStencilRef, targetStencilMask),
        ),
 };
@@ -79,8 +79,8 @@ let setStencilOp =
   ...state,
   deviceManagerRecord:
     state.deviceManagerRecord
-    |> DeviceManagerService.setStencilOp(
-         DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    |> AllDeviceManagerService.setStencilOp(
+         AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
          (targetStencilSFail, targetStencilDPFail, targetStencilDPPass),
        ),
 };

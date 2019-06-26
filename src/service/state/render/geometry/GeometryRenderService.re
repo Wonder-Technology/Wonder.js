@@ -7,7 +7,7 @@ open RenderGeometryType;
 open Js.Typed_array;
 
 let unsafeGetIndicesType = (geometry, {geometryRecord}) =>
-  IndicesTypeGeometryType.unsafeGetIndicesType(
+  IndicesTypeAllGeometryService.unsafeGetIndicesType(
     geometry,
     geometryRecord.indicesTypeMap,
   );

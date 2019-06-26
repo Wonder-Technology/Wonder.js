@@ -1,5 +1,8 @@
-let _buildDefaultName = textureIndex =>
-  ConvertCommon.buildDefaultTextureName(textureIndex);
+let _buildBasicSourceTextureDefaultName = textureIndex =>
+  ConvertCommon.buildDefaultBasicSourceTextureName(textureIndex);
+
+let _buildCubemapTextureDefaultName = textureIndex =>
+  ConvertCommon.buildDefaultCubemapTextureName(textureIndex);
 
 /* let _getNames = (textures, images) =>
    textures
@@ -9,14 +12,14 @@ let _buildDefaultName = textureIndex =>
           | Some(name) => nameArr |> ArrayService.push(name)
           | None =>
             switch (source) {
-            | None => nameArr |> ArrayService.push(_buildDefaultName(index))
+            | None => nameArr |> ArrayService.push(_buildBasicSourceTextureDefaultName(index))
             | Some(source) =>
               let {name}: GLTFType.image =
                 Array.unsafe_get(images |> OptionService.unsafeGet, source);
 
               switch (name) {
               | Some(name) => nameArr |> ArrayService.push(name)
-              | None => nameArr |> ArrayService.push(_buildDefaultName(index))
+              | None => nameArr |> ArrayService.push(_buildBasicSourceTextureDefaultName(index))
               };
             }
           },
@@ -58,19 +61,28 @@ let convertToBasicSourceTextures =
                    name:
                      switch (name) {
                      | Some(name) => name
-                     | None => _buildDefaultName(index)
+                     | None => _buildBasicSourceTextureDefaultName(index)
                      },
-                   format: {
-                     let ({uri, mimeType}: GLTFType.image) as image =
-                       Array.unsafe_get(
-                         images |> OptionService.unsafeGet,
-                         source,
-                       );
+                   type_:
+                     switch (extras) {
+                     | Some({type_}) => type_
+                     | None => BufferBasicSourceTextureService.getDefaultType()
+                     },
+                   format:
+                     switch (extras) {
+                     | Some({format}) => format
+                     | None =>
+                       let ({uri, mimeType}: GLTFType.image) as image =
+                         Array.unsafe_get(
+                           images |> OptionService.unsafeGet,
+                           source,
+                         );
 
-                     TextureFormatService.getFormatByMimeType(
-                       mimeType |> OptionService.unsafeGet,
-                     );
-                   },
+                       TextureFormatService.getFormatByMimeType(
+                         mimeType |> OptionService.unsafeGet,
+                       )
+                       |> TextureType.formatToUint8;
+                     },
                    flipY:
                      switch (extras) {
                      | Some({flipY}) => flipY
@@ -86,13 +98,74 @@ let convertToBasicSourceTextures =
        )
   };
 
+let convertToCubemapTextures =
+    (({extras, images}: GLTFType.gltf) as gltf)
+    : array(WDType.cubemapTexture) =>
+  switch (extras) {
+  | None => [||]
+  | Some({cubemapTextures}) =>
+    switch (cubemapTextures) {
+    | None => [||]
+    | Some(cubemapTextures) =>
+      cubemapTextures
+      |> WonderCommonlib.ArrayService.reduceOneParami(
+           (.
+             arr,
+             (
+               {
+                 name,
+                 pxFormat,
+                 nxFormat,
+                 pyFormat,
+                 nyFormat,
+                 pzFormat,
+                 nzFormat,
+                 pxType,
+                 nxType,
+                 pyType,
+                 nyType,
+                 pzType,
+                 nzType,
+                 flipY,
+               }: GLTFType.cubemapTexture
+             ) as texture,
+             index,
+           ) =>
+             arr
+             |> ArrayService.push(
+                  {
+                    name:
+                      switch (name) {
+                      | Some(name) => name
+                      | None => _buildCubemapTextureDefaultName(index)
+                      },
+                    pxFormat,
+                    nxFormat,
+                    pyFormat,
+                    nyFormat,
+                    pzFormat,
+                    nzFormat,
+                    pxType,
+                    nxType,
+                    pyType,
+                    nyType,
+                    pzType,
+                    nzType,
+                    flipY,
+                  }: WDType.cubemapTexture,
+                ),
+           [||],
+         )
+    }
+  };
+
 let _convertMagFilter = magFilter =>
   switch (magFilter) {
-  | None => SourceTextureType.Linear
+  | None => TextureType.Linear
   | Some(magFilter) =>
     switch (magFilter) {
-    | 9728 => SourceTextureType.Nearest
-    | 9729 => SourceTextureType.Linear
+    | 9728 => TextureType.Nearest
+    | 9729 => TextureType.Linear
     | magFilter =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(
@@ -108,15 +181,15 @@ let _convertMagFilter = magFilter =>
 
 let _convertMinFilter = minFilter =>
   switch (minFilter) {
-  | None => SourceTextureType.Nearest
+  | None => TextureType.Nearest
   | Some(minFilter) =>
     switch (minFilter) {
-    | 9728 => SourceTextureType.Nearest
-    | 9729 => SourceTextureType.Linear
-    | 9984 => SourceTextureType.Nearest_mipmap_nearest
-    | 9985 => SourceTextureType.Linear_mipmap_nearest
-    | 9986 => SourceTextureType.Nearest_mipmap_linear
-    | 9987 => SourceTextureType.Linear_mipmap_linear
+    | 9728 => TextureType.Nearest
+    | 9729 => TextureType.Linear
+    | 9984 => TextureType.Nearest_mipmap_nearest
+    | 9985 => TextureType.Linear_mipmap_nearest
+    | 9986 => TextureType.Nearest_mipmap_linear
+    | 9987 => TextureType.Linear_mipmap_linear
     | minFilter =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(
@@ -132,12 +205,12 @@ let _convertMinFilter = minFilter =>
 
 let _convertWrap = wrap =>
   switch (wrap) {
-  | None => SourceTextureType.Clamp_to_edge
+  | None => TextureType.Clamp_to_edge
   | Some(wrap) =>
     switch (wrap) {
-    | 33071 => SourceTextureType.Clamp_to_edge
-    | 33648 => SourceTextureType.Mirrored_repeat
-    | 10497 => SourceTextureType.Repeat
+    | 33071 => TextureType.Clamp_to_edge
+    | 33648 => TextureType.Mirrored_repeat
+    | 10497 => TextureType.Repeat
     | wrap =>
       WonderLog.Log.fatal(
         WonderLog.Log.buildFatalMessage(

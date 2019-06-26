@@ -48,7 +48,7 @@ let execJob = (flags, e, stateData) =>
     let materialData = initData##materialData;
     let basicMaterialData = data##initData##materialData##basicMaterialData;
     let lightMaterialData = data##initData##materialData##lightMaterialData;
-    let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+    let gl = AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
     let isSupportInstance =
       JudgeInstanceRenderWorkerService.isSupportInstance(state);
     state

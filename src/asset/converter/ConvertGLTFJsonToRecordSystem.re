@@ -85,7 +85,11 @@ let _convertTextures = json =>
                json
                |> optional(
                     field("extras", json =>
-                      {flipY: json |> field("flipY", bool)}
+                      {
+                        flipY: json |> field("flipY", bool),
+                        format: json |> field("format", int),
+                        type_: json |> field("type_", int),
+                      }
                     ),
                   ),
            }
@@ -137,6 +141,15 @@ let _convertScenes = json =>
                                      json |> field("imguiFunc", string),
                                    customData: _convertCustomData(json),
                                  }: SceneGraphType.imgui
+                               )
+                             ),
+                           ),
+                      skybox:
+                        json
+                        |> optional(
+                             field("skybox", json =>
+                               (
+                                 {cubemap: json |> field("cubemap", int)}: GLTFType.skybox
                                )
                              ),
                            ),
@@ -321,23 +334,50 @@ let _convertExtras = json =>
                     "scripts",
                     array(json =>
                       (
-                        /* WonderLog.Log.print(json) |> ignore; */
                         {
                           isActive: json |> field("isActive", bool),
                           eventFunctionDataMap:
                             _getScriptMap("eventFunctionDataMap", json),
-                          /* json
-                              |> field("eventFunctionDataMap",dict |> Obj.magic)
-                             |> WonderLog.Log.print  */
-                          attributeMap:
-                            /* json |> field("attributeMap", dict |> Obj.magic), */
-                            _getScriptMap("attributeMap", json),
+                          attributeMap: _getScriptMap("attributeMap", json),
                         }: script
                       )
                     ),
                   ),
                 ),
-           /* |> WonderLog.Log.print  */
+           cubemapTextures:
+             json
+             |> optional(
+                  field(
+                    "cubemapTextures",
+                    array(json =>
+                      (
+                        {
+                          name: json |> optional(field("name", string)),
+                          sampler: json |> field("sampler", int),
+                          flipY: json |> field("flipY", bool),
+                          pxSource: json |> field("pxSource", int),
+                          nxSource: json |> field("nxSource", int),
+                          pySource: json |> field("pySource", int),
+                          nySource: json |> field("nySource", int),
+                          pzSource: json |> field("pzSource", int),
+                          nzSource: json |> field("nzSource", int),
+                          pxFormat: json |> field("pxFormat", int),
+                          nxFormat: json |> field("nxFormat", int),
+                          pyFormat: json |> field("pyFormat", int),
+                          nyFormat: json |> field("nyFormat", int),
+                          pzFormat: json |> field("pzFormat", int),
+                          nzFormat: json |> field("nzFormat", int),
+                          pxType: json |> field("pxType", int),
+                          nxType: json |> field("nxType", int),
+                          pyType: json |> field("pyType", int),
+                          nyType: json |> field("nyType", int),
+                          pzType: json |> field("pzType", int),
+                          nzType: json |> field("nzType", int),
+                        }: cubemapTexture
+                      )
+                    ),
+                  ),
+                ),
          }
        ),
      );

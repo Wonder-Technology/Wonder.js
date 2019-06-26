@@ -1,6 +1,6 @@
 open Wonder_jest;
 
-describe("DeviceManagerService", () => {
+describe("AllDeviceManagerService", () => {
   open Expect;
   open Expect.Operators;
   open Sinon;
@@ -63,11 +63,11 @@ describe("DeviceManagerService", () => {
       let record =
         DeviceManagerTool.setSide(
           gl,
-          DeviceManagerType.FRONT,
+          AllDeviceManagerType.FRONT,
           state^.deviceManagerRecord,
         );
       let record =
-        DeviceManagerTool.setSide(gl, DeviceManagerType.FRONT, record);
+        DeviceManagerTool.setSide(gl, AllDeviceManagerType.FRONT, record);
       expect(cullFace) |> toCalledOnce;
     });
     describe("else", () => {
@@ -89,7 +89,7 @@ describe("DeviceManagerService", () => {
         let record =
           DeviceManagerTool.setSide(
             gl,
-            DeviceManagerType.NONE,
+            AllDeviceManagerType.NONE,
             state^.deviceManagerRecord,
           );
         (
@@ -107,7 +107,7 @@ describe("DeviceManagerService", () => {
         let record =
           DeviceManagerTool.setSide(
             gl,
-            DeviceManagerType.BOTH,
+            AllDeviceManagerType.BOTH,
             state^.deviceManagerRecord,
           );
         SinonTool.calledWith(disable, getCullFace) |> expect == true;
@@ -130,7 +130,7 @@ describe("DeviceManagerService", () => {
         let record =
           DeviceManagerTool.setSide(
             gl,
-            DeviceManagerType.FRONT,
+            AllDeviceManagerType.FRONT,
             state^.deviceManagerRecord,
           );
         (
@@ -157,7 +157,7 @@ describe("DeviceManagerService", () => {
         let record =
           DeviceManagerTool.setSide(
             gl,
-            DeviceManagerType.BACK,
+            AllDeviceManagerType.BACK,
             state^.deviceManagerRecord,
           );
         (

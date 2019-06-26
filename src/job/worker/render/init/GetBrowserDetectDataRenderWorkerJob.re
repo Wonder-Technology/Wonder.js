@@ -1,4 +1,4 @@
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 let execJob = (_, e, stateData) =>
   MostUtils.callFunc(

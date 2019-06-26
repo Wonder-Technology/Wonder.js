@@ -1,9 +1,9 @@
-open SourceTextureType;
+open TextureType;
 
 let getFormatByMimeType = mimeType =>
   switch (mimeType) {
-  | "image/png" => SourceTextureType.Rgba
-  | "image/jpeg" => SourceTextureType.Rgb
+  | "image/png" => TextureType.Rgba
+  | "image/jpeg" => TextureType.Rgb
   | mimeType =>
     WonderLog.Log.fatal(
       WonderLog.Log.buildFatalMessage(

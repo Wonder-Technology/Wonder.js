@@ -40,6 +40,8 @@ let convertToRecord = setting => {
                  json |> field("basic_source_texture_count", int),
                arrayBufferViewSourceTextureCount:
                  json |> field("arrayBuffer_view_source_texture_count", int),
+               cubemapTextureCount:
+                 json |> field("cubemap_texture_count", int),
                instanceBuffer:
                  json
                  |> field("instance_buffer", json =>

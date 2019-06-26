@@ -166,78 +166,80 @@ let _ =
         });
       });
 
-      describe("test image", () => {
-        let _prepareGameObject = state => {
-          open GameObjectAPI;
+      describe("test image", () =>
+        describe("test image from basicSourceTexture", () => {
+          let _prepareGameObject = state => {
+            open GameObjectAPI;
 
-          let state = state^;
+            let state = state^;
 
-          let rootGameObject = SceneAPI.getSceneGameObject(state);
+            let rootGameObject = SceneAPI.getSceneGameObject(state);
 
-          let sceneGameObjectTransform =
-            GameObjectAPI.unsafeGetGameObjectTransformComponent(
-              rootGameObject,
-              state,
-            );
+            let sceneGameObjectTransform =
+              GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                rootGameObject,
+                state,
+              );
 
-          let imageName = "image1";
+            let imageName = "image1";
 
-          let (state, gameObject1, transform1, (material1, texture1)) =
-            GenerateSABTool.createGameObjectWithMap(imageName, state);
+            let (state, gameObject1, transform1, (material1, texture1)) =
+              GenerateSABTool.createGameObjectWithMap(imageName, state);
 
-          let state = state |> SceneAPI.addSceneChild(transform1);
+            let state = state |> SceneAPI.addSceneChild(transform1);
 
-          let (canvas, context, (base64Str1, base64Str2)) =
-            GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
+            let (canvas, context, (base64Str1, base64Str2)) =
+              GenerateSceneGraphSystemTool.prepareCanvas(sandbox);
 
-          (state, rootGameObject, (imageName, base64Str1));
-        };
+            (state, rootGameObject, (imageName, base64Str1));
+          };
 
-        test("test images", () => {
-          let (state, rootGameObject, (imageName, base64Str1)) =
-            _prepareGameObject(state);
+          test("test images", () => {
+            let (state, rootGameObject, (imageName, base64Str1)) =
+              _prepareGameObject(state);
 
-          let sab =
-            GenerateSingleSABSystem.generateSingleSAB(
-              rootGameObject,
-              WonderCommonlib.MutableSparseMapService.createEmpty(),
-              state,
-            );
+            let sab =
+              GenerateSingleSABSystem.generateSingleSAB(
+                rootGameObject,
+                WonderCommonlib.MutableSparseMapService.createEmpty(),
+                state,
+              );
 
-          let content =
-            GenerateSingleSABTool.SceneAssetBundleContent.getSceneAssetBundleContent(
-              sab,
-            );
+            let content =
+              GenerateSingleSABTool.SceneAssetBundleContent.getSceneAssetBundleContent(
+                sab,
+              );
 
-          content.images
-          |> expect
-          == Some([|
-               {name: imageName, bufferView: 4, mimeType: "image/png"},
-             |]);
-        });
-        test("test image buffer data", () => {
-          let (state, rootGameObject, (_, base64Str1)) =
-            _prepareGameObject(state);
+            content.images
+            |> expect
+            == Some([|
+                 {name: imageName, bufferView: 4, mimeType: "image/png"},
+               |]);
+          });
+          test("test image buffer data", () => {
+            let (state, rootGameObject, (_, base64Str1)) =
+              _prepareGameObject(state);
 
-          let sab =
-            GenerateSingleSABSystem.generateSingleSAB(
-              rootGameObject,
-              WonderCommonlib.MutableSparseMapService.createEmpty(),
-              state,
-            );
+            let sab =
+              GenerateSingleSABSystem.generateSingleSAB(
+                rootGameObject,
+                WonderCommonlib.MutableSparseMapService.createEmpty(),
+                state,
+              );
 
-          let content =
-            GenerateSingleSABTool.SceneAssetBundleContent.getSceneAssetBundleContent(
-              sab,
-            );
+            let content =
+              GenerateSingleSABTool.SceneAssetBundleContent.getSceneAssetBundleContent(
+                sab,
+              );
 
-          (content.bufferViews |> Array.unsafe_get(_, 4)).byteLength
-          |> expect
-          == (
-               BufferUtils.convertBase64ToBinary(base64Str1)
-               |> Uint8Array.byteLength
-             );
-        });
-      });
+            (content.bufferViews |> Array.unsafe_get(_, 4)).byteLength
+            |> expect
+            == (
+                 BufferUtils.convertBase64ToBinary(base64Str1)
+                 |> Uint8Array.byteLength
+               );
+          });
+        })
+      );
     });
   });

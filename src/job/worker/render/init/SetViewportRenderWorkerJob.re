@@ -7,8 +7,8 @@ let execJob = (_, e, stateData) =>
     let viewportData = data##viewportData;
     state.deviceManagerRecord =
       state.deviceManagerRecord
-      |> DeviceManagerService.setViewportOfGl(
-           DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+      |> AllDeviceManagerService.setViewportOfGl(
+           AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
            viewportData,
          );
     StateRenderWorkerService.setState(stateData, state);

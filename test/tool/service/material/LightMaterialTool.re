@@ -131,6 +131,26 @@ let createMaterialWithArrayBufferViewMap = state => {
   (state, material, (diffuseMap, specularMap, source1, source2));
 };
 
+let createGameObjectWithDiffuseMap = state => {
+  open LightMaterialAPI;
+  open GameObjectAPI;
+
+  let (state, gameObject) = state |> createGameObject;
+
+  let (state, material, (diffuseMap, source1)) =
+    createMaterialWithDiffuseMap(state);
+
+  let state =
+    state |> addGameObjectLightMaterialComponent(gameObject, material);
+
+  (
+    state,
+    gameObject,
+    GameObjectAPI.unsafeGetGameObjectTransformComponent(gameObject, state),
+    (material, (diffuseMap, source1)),
+  );
+};
+
 let createGameObjectWithMap = state => {
   let (state, gameObject, material) = createGameObject(state);
   let (state, (texture1, texture2)) = createAndSetMaps(material, state);
@@ -205,10 +225,10 @@ let isMaterialDisposed = (material, state) => {
 };
 
 let getDiffuseTextureIndicesIndex = (material, state) =>
-  BufferLightMaterialService.getDiffuseTextureIndicesIndex(material);
+  BufferAllLightMaterialService.getDiffuseTextureIndicesIndex(material);
 
 let getSpecularTextureIndicesIndex = (material, state) =>
-  BufferLightMaterialService.getSpecularTextureIndicesIndex(material);
+  BufferAllLightMaterialService.getSpecularTextureIndicesIndex(material);
 
 let getDefaultTextureIndex = () =>
   TextureIndexService.getDefaultTextureIndex();

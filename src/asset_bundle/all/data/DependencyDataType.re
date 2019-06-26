@@ -1,7 +1,5 @@
-open AllABType;
-
 type dependencyRelation =
-  WonderCommonlib.ImmutableHashMapService.t(array(abRelativePath));
+  WonderCommonlib.ImmutableHashMapService.t(array(AllABType.abRelativePath));
 
 type bufferDataNameMap =
   WonderCommonlib.ImmutableHashMapService.t(

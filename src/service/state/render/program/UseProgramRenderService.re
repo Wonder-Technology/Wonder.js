@@ -1,6 +1,6 @@
 open StateRenderType;
 
-open ProgramType;
+open AllProgramType;
 
 open WonderWebgl.GlType;
 
@@ -17,7 +17,7 @@ let _use = (gl, program: program, {programRecord} as state) =>
   };
 
 let useByShaderIndex = (gl, shaderIndex, {programRecord} as state) => {
-  let program = ProgramService.unsafeGetProgram(shaderIndex, programRecord);
+  let program = AllProgramService.unsafeGetProgram(shaderIndex, programRecord);
 
   state |> _use(gl, program);
 };

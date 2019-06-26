@@ -4,7 +4,7 @@ open DrawModeType;
 
 let getGlDrawMode = (gl, meshRenderer, state) =>
   switch (
-    OperateTypeArrayMeshRendererService.getDrawMode(
+    OperateTypeArrayAllMeshRendererService.getDrawMode(
       meshRenderer,
       state.meshRendererRecord.drawModes,
     )

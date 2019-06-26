@@ -38,21 +38,21 @@ let _disposeData = (material, state) => {
         shaderIndices,
         colors:
           DisposeTypeArrayService.deleteAndResetFloat32TypeArr(.
-            BufferBasicMaterialService.getColorIndex(material),
-            BufferBasicMaterialService.getColorsSize(),
+            BufferAllBasicMaterialService.getColorIndex(material),
+            BufferAllBasicMaterialService.getColorsSize(),
             defaultColor,
             colors,
           ),
         isDepthTests:
           DisposeTypeArrayService.deleteAndResetUint8(.
-            BufferBasicMaterialService.getIsDepthTestIndex(material),
+            BufferAllBasicMaterialService.getIsDepthTestIndex(material),
             BufferMaterialService.getDefaultIsDepthTest(),
             isDepthTests,
           ),
         alphas:
           DisposeTypeArrayService.deleteAndResetFloat32(.
-            BufferBasicMaterialService.getAlphaIndex(material),
-            BufferBasicMaterialService.getDefaultAlpha(),
+            BufferAllBasicMaterialService.getAlphaIndex(material),
+            BufferAllBasicMaterialService.getDefaultAlpha(),
             alphas,
           ),
         nameMap: nameMap |> disposeSparseMapData(material),

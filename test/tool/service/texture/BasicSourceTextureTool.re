@@ -28,33 +28,32 @@ let setGlTexture = (texture, glTexture, state) => {
 };
 
 let isNeedUpdate = (texture, state) =>
-  OperateTypeArrayBasicSourceTextureService.getIsNeedUpdate(.
+  OperateTypeArrayAllBasicSourceTextureService.getIsNeedUpdate(.
     texture,
     getRecord(state).isNeedUpdates,
   )
-  === BufferSourceTextureService.getNeedUpdate();
+  === BufferTextureService.getNeedUpdate();
 
 let getDefaultTextureIndex = () =>
   TextureIndexService.getDefaultTextureIndex();
 
-let getNearest = () => SourceTextureTool.getNearest();
+let getNearest = () => TextureTool.getNearest();
 
-let getNearestMipmapNearest = () =>
-  SourceTextureTool.getNearestMipmapNearest();
+let getNearestMipmapNearest = () => TextureTool.getNearestMipmapNearest();
 
-let getLinear = () => SourceTextureTool.getLinear();
+let getLinear = () => TextureTool.getLinear();
 
-let getNearestMipmapLinear = () => SourceTextureTool.getNearestMipmapLinear();
+let getNearestMipmapLinear = () => TextureTool.getNearestMipmapLinear();
 
-let getLinearMipmapNearest = () => SourceTextureTool.getLinearMipmapNearest();
+let getLinearMipmapNearest = () => TextureTool.getLinearMipmapNearest();
 
-let getLinearMipmapLinear = () => SourceTextureTool.getLinearMipmapLinear();
+let getLinearMipmapLinear = () => TextureTool.getLinearMipmapLinear();
 
-let getRgb = () => SourceTextureType.Rgb;
+let getRgb = () => TextureType.Rgb;
 
-let getRgba = () => SourceTextureType.Rgba;
+let getRgba = () => TextureType.Rgba;
 
-let getAlpha = () => SourceTextureType.Alpha;
+let getAlpha = () => TextureType.Alpha;
 
 let getUnsignedByte = () => TextureTypeService.getUnsignedByte();
 
@@ -72,27 +71,30 @@ let getDefaultMagFilter = () =>
 let getDefaultMinFilter = () =>
   BufferBasicSourceTextureService.getDefaultMinFilter();
 
-let getDefaultFormat = () => SourceTextureType.Rgba;
+let getDefaultFormat = () =>
+  BufferBasicSourceTextureService.getDefaultFormat();
 
-let getDefaultType = () => TextureTypeService.getUnsignedByte();
+let getDefaultType = () => BufferBasicSourceTextureService.getDefaultType();
 
 let getDefaultIsNeedUpdate = () =>
-  BufferBasicSourceTextureService.getDefaultIsNeedUpdate();
+  BufferTextureService.getDefaultIsNeedUpdate();
 
-let getNeedUpdate = BufferSourceTextureService.getNeedUpdate;
+let getDefaultFlipYBool = () => false;
 
-let getNotNeedUpdate = BufferSourceTextureService.getNotNeedUpdate;
+let getNeedUpdate = BufferTextureService.getNeedUpdate;
+
+let getNotNeedUpdate = BufferTextureService.getNotNeedUpdate;
 
 let getIsNeedUpdate = (texture, state) =>
   OperateBasicSourceTextureMainService.getIsNeedUpdate(texture, state)
-  === BufferSourceTextureService.getNeedUpdate();
+  === BufferTextureService.getNeedUpdate();
 
 let setIsNeedUpdate = (texture, isNeedUpdate, state) =>
   OperateBasicSourceTextureMainService.setIsNeedUpdate(
     texture,
     isNeedUpdate ?
-      BufferSourceTextureService.getNeedUpdate() :
-      BufferSourceTextureService.getNotNeedUpdate(),
+      BufferTextureService.getNeedUpdate() :
+      BufferTextureService.getNotNeedUpdate(),
     state,
   );
 

@@ -11,7 +11,7 @@ let getOrCreateInstanceBuffer =
   let state = RenderStateTool.createState(state);
   InstanceBufferRenderService.getOrCreateBuffer(
     (
-      DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+      AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
       sourceInstanceIndex,
       defaultCapacity,
     ),
@@ -31,7 +31,7 @@ let addVboBufferToGeometryBufferMapByRecord =
         geometryTexCoordBufferMap,
         geometryNormalBufferMap,
         geometryElementArrayBufferMap,
-      } as vboBufferRecord: VboBufferType.vboBufferRecord,
+      } as vboBufferRecord: AllVboBufferType.vboBufferRecord,
     ) => {
   WonderCommonlib.MutableSparseMapService.set(
     geometryIndex,
@@ -59,9 +59,9 @@ let addVboBufferToGeometryBufferMapByRecord =
 let addVboBufferToSourceInstanceBufferMapByRecord =
     (
       sourceInstanceIndex,
-      {matrixInstanceBufferMap} as vboBufferRecord: VboBufferType.vboBufferRecord,
+      {matrixInstanceBufferMap} as vboBufferRecord: AllVboBufferType.vboBufferRecord,
     ) => {
-  open VboBufferType;
+  open AllVboBufferType;
   WonderCommonlib.MutableSparseMapService.set(
     sourceInstanceIndex,
     Obj.magic(0),
@@ -135,7 +135,7 @@ let getOrCreateGeometryVertexArrayBuffer =
     (geometryIndex: int, state: StateDataMainType.state) => {
   let state = RenderStateTool.createState(state);
   GetVboBufferRenderService.getOrCreateBuffer(
-    DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.geometryVertexBufferMap),
     (
       [@bs] ArrayBufferRenderService.createBuffer,
@@ -149,7 +149,7 @@ let getOrCreateGeometryTexCoordArrayBuffer =
     (geometryIndex: int, state: StateDataMainType.state) => {
   let state = RenderStateTool.createState(state);
   GetVboBufferRenderService.getOrCreateBuffer(
-    DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.geometryTexCoordBufferMap),
     (
       [@bs] ArrayBufferRenderService.createBuffer,
@@ -163,7 +163,7 @@ let getOrCreateGeometryNormalArrayBuffer =
     (geometryIndex: int, state: StateDataMainType.state) => {
   let state = RenderStateTool.createState(state);
   GetVboBufferRenderService.getOrCreateBuffer(
-    DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
     (geometryIndex, state.vboBufferRecord.geometryNormalBufferMap),
     (
       [@bs] ArrayBufferRenderService.createBuffer,
@@ -179,7 +179,7 @@ let getOrCreateGeometryElementArrayBuffer =
 
   let renderState = RenderStateTool.createState(state);
   let gl =
-    DeviceManagerService.unsafeGetGl(. renderState.deviceManagerRecord);
+    AllDeviceManagerService.unsafeGetGl(. renderState.deviceManagerRecord);
 
   let elementArrayBufferMap =
     renderState.vboBufferRecord.geometryElementArrayBufferMap;

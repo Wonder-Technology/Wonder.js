@@ -6,7 +6,7 @@ open SettingType;
 
 open SettingGPUType;
 
-open BrowserDetectType;
+open AllBrowserDetectType;
 
 let _buildMaterialData =
     (buffer, index, disposedIndexArray, isSourceInstanceMap) => {
@@ -35,6 +35,7 @@ let _buildTextureData = state => {
         () =>
         needInitedTextureIndexArray |> Js.Array.length == 0
       );
+
       let arrayBufferViewSourceTextureRecord =
         RecordArrayBufferViewSourceTextureMainService.getRecord(state);
       let needInitedTextureIndexArray =
@@ -56,8 +57,10 @@ let _buildTextureData = state => {
     RecordBasicSourceTextureMainService.getRecord(state);
   let arrayBufferViewSourceTextureRecord =
     RecordArrayBufferViewSourceTextureMainService.getRecord(state);
+  let cubemapTextureRecord = RecordCubemapTextureMainService.getRecord(state);
+
   {
-    "buffer": sourceTextureRecord.buffer,
+    "sourceTextureBuffer": sourceTextureRecord.buffer,
     "basicSourceTextureData": {
       "index": basicSourceTextureRecord.index,
       /* TODO perf: add needAddedImageDataArray->arrayBuffer to transfer list */
@@ -69,6 +72,34 @@ let _buildTextureData = state => {
     "arrayBufferViewSourceTextureData": {
       "index": arrayBufferViewSourceTextureRecord.index,
       "sourceMap": arrayBufferViewSourceTextureRecord.sourceMap,
+    },
+    "cubemapTextureData": {
+      "buffer": cubemapTextureRecord.buffer,
+      "index": cubemapTextureRecord.index,
+      "needAddedPXImageDataArray":
+        OperateCubemapTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+          cubemapTextureRecord.needAddedPXSourceArray,
+        ),
+      "needAddedNXImageDataArray":
+        OperateCubemapTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+          cubemapTextureRecord.needAddedNXSourceArray,
+        ),
+      "needAddedPYImageDataArray":
+        OperateCubemapTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+          cubemapTextureRecord.needAddedPYSourceArray,
+        ),
+      "needAddedNYImageDataArray":
+        OperateCubemapTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+          cubemapTextureRecord.needAddedNYSourceArray,
+        ),
+      "needAddedPZImageDataArray":
+        OperateCubemapTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+          cubemapTextureRecord.needAddedPZSourceArray,
+        ),
+      "needAddedNZImageDataArray":
+        OperateCubemapTextureMainService.convertNeedAddedSourceArrayToImageDataArr(
+          cubemapTextureRecord.needAddedNZSourceArray,
+        ),
     },
   };
 };
@@ -140,6 +171,7 @@ let _buildData = (operateType, canvas, stateData) => {
       "basicSourceTextureCount": buffer.basicSourceTextureCount,
       "arrayBufferViewSourceTextureCount":
         buffer.arrayBufferViewSourceTextureCount,
+      "cubemapTextureCount": buffer.cubemapTextureCount,
       "directionLightCount": buffer.directionLightCount,
       "pointLightCount": buffer.pointLightCount,
     },
@@ -232,7 +264,9 @@ let _buildData = (operateType, canvas, stateData) => {
 let _clearData = state =>
   state
   |> OperateSourceTextureMainService.clearNeedAddedSourceArr
-  |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray;
+  |> OperateCubemapTextureMainService.clearNeedAddedSourceArr
+  |> InitSourceTextureMainService.clearNeedInitedTextureIndexArray
+  |> InitCubemapTextureMainService.clearNeedInitedTextureIndexArray;
 
 let execJob = (flags, stateData) =>
   MostUtils.callFunc(() => {

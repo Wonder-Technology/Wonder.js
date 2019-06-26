@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open TypeArrayPoolType;
+open AllTypeArrayPoolType;
 
 let restore =
     (

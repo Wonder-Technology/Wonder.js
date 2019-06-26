@@ -2749,7 +2749,7 @@ let _ =
                      /* test(
                        "remove from buffer map",
                        () => {
-                         open VboBufferType;
+                         open AllVboBufferType;
                          let (state, gameObjectArr, sourceInstanceArr) =
                            SourceInstanceTool.createSourceInstanceGameObjectArr(2, state^);
                          let state =

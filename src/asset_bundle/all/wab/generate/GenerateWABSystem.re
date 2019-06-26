@@ -16,9 +16,13 @@ let _computeByteLength = jsonUint8Array => {
 let _writeHeader = (jsonByteLength, dataView) =>
   dataView |> DataViewCommon.writeUint32_1(jsonByteLength, 0);
 
-let generate = (wholeDependencyRelation, wholeHashIdMap) => {
+let generate = (version, wholeDependencyRelation, wholeHashIdMap) => {
   let jsonUint8Array =
-    {wholeHashIdMap, wholeDependencyRelationMap: wholeDependencyRelation}
+    {
+      version,
+      wholeHashIdMap,
+      wholeDependencyRelationMap: wholeDependencyRelation,
+    }
     |> GenerateABUtils.buildJsonUint8Array;
 
   let (jsonByteLength, jsonAlignedByteLength, totalByteLength) =

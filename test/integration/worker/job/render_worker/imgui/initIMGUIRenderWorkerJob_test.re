@@ -257,7 +257,7 @@ let _ =
                         "canvasHeight": Sinon.matchAny,
                         "setting": Sinon.matchAny,
                         "fntData":
-                          fntData |> Obj.magic |> Js.Json.stringify |. Some,
+                          (fntData |> Obj.magic |> Js.Json.stringify)->Some,
                         "bitmapImageData": Sinon.matchAny,
                         "customTextureSourceDataArr": Sinon.matchAny,
                       },
@@ -343,13 +343,13 @@ let _ =
                   RenderWorkerStateTool.unsafeGetState().imguiRecord,
                 )
                 |> Obj.magic
-                |>
-                expect == [|
-                            imageDataArrayBuffer1,
-                            bitmap##width,
-                            bitmap##height,
-                            {"imageOrientation": "none"} |> Obj.magic,
-                          |]
+                |> expect
+                == [|
+                     imageDataArrayBuffer1,
+                     bitmap##width,
+                     bitmap##height,
+                     {"imageOrientation": "none"} |> Obj.magic,
+                   |]
                 |> resolve,
               state,
             );
@@ -383,29 +383,29 @@ let _ =
                   RenderWorkerStateTool.unsafeGetState().imguiRecord,
                 )
                 |> Obj.magic
-                |>
-                expect == [|
-                            (
-                              (
-                                imageDataArrayBuffer2,
-                                source1##width,
-                                source1##height,
-                                {"imageOrientation": "none"} |> Obj.magic,
-                              ),
-                              id1,
-                              imageType1,
-                            ),
-                            (
-                              (
-                                imageDataArrayBuffer3,
-                                source2##width,
-                                source2##height,
-                                {"imageOrientation": "none"} |> Obj.magic,
-                              ),
-                              id2,
-                              imageType2,
-                            ),
-                          |]
+                |> expect
+                == [|
+                     (
+                       (
+                         imageDataArrayBuffer2,
+                         source1##width,
+                         source1##height,
+                         {"imageOrientation": "none"} |> Obj.magic,
+                       ),
+                       id1,
+                       imageType1,
+                     ),
+                     (
+                       (
+                         imageDataArrayBuffer3,
+                         source2##width,
+                         source2##height,
+                         {"imageOrientation": "none"} |> Obj.magic,
+                       ),
+                       id2,
+                       imageType2,
+                     ),
+                   |]
                 |> resolve,
               state,
             );
@@ -454,9 +454,12 @@ let _ =
           MainStateTool.setState(state);
           BrowserDetectTool.setChrome();
 
-          RenderJobsRenderWorkerTool.init(
-            state => createProgram |> expect |> toCalledOnce |> resolve,
-            state,
+          RenderJobsRenderWorkerTool.initWithJob(
+            ~completeFunc=
+              state => createProgram |> expect |> toCalledOnce |> resolve,
+            ~state,
+            ~jobFuncArr=
+              RenderJobsRenderWorkerTool.getJobFuncArrExceptInitNoMaterialShader(),
           );
         })
       );

@@ -2,11 +2,11 @@ open WonderWebgl;
 
 module DrawOutlineJobUtils = {
   module DrawOriginGameObjects = {
-    open VboBufferType;
+    open AllVboBufferType;
 
     open StateRenderType;
 
-    open GLSLSenderType;
+    open AllGLSLSenderType;
 
     let draw =
         (gl, shaderIndex, renderDataArr, state: StateRenderType.renderState) =>
@@ -50,11 +50,11 @@ module DrawOutlineJobUtils = {
   };
 
   module DrawExpandGameObjects = {
-    open VboBufferType;
+    open AllVboBufferType;
 
     open StateRenderType;
 
-    open GLSLSenderType;
+    open AllGLSLSenderType;
 
     let _sendUniformNoMaterialShaderData =
         (gl, shaderIndex, getRenderDataSubState, {glslSenderRecord} as state) => {
@@ -66,7 +66,7 @@ module DrawOutlineJobUtils = {
            (.
              {shaderCacheMap, name, pos, getDataFunc, sendDataFunc}: uniformNoMaterialShaderSendData,
            ) =>
-           GLSLLocationService.isUniformLocationExist(pos) ?
+           AllGLSLLocationService.isUniformLocationExist(pos) ?
              (Obj.magic(sendDataFunc))(.
                gl,
                shaderCacheMap,
@@ -130,19 +130,22 @@ module DrawOutlineJobUtils = {
       (gl, ({deviceManagerRecord}: StateRenderType.renderState) as state) => {
     let deviceManagerRecord =
       deviceManagerRecord
-      |> DeviceManagerService.setStencilTest(gl, true)
-      |> DeviceManagerService.setStencilOp(
+      |> AllDeviceManagerService.setStencilTest(gl, true)
+      |> AllDeviceManagerService.setStencilOp(
            gl,
            (Gl.getKeep(gl), Gl.getKeep(gl), Gl.getReplace(gl)),
          )
-      |> DeviceManagerService.setStencilFunc(
+      |> AllDeviceManagerService.setStencilFunc(
            gl,
            (Gl.getAlways(gl), 1, 0xFF),
          )
-      |> DeviceManagerService.setStencilMask(gl, 0xFF)
-      |> DeviceManagerService.setDepthTest(gl, false)
-      |> DeviceManagerService.setDepthWrite(gl, false)
-      |> DeviceManagerService.setColorWrite(gl, (false, false, false, false));
+      |> AllDeviceManagerService.setStencilMask(gl, 0xFF)
+      |> AllDeviceManagerService.setDepthTest(gl, false)
+      |> AllDeviceManagerService.setDepthWrite(gl, false)
+      |> AllDeviceManagerService.setColorWrite(
+           gl,
+           (false, false, false, false),
+         );
 
     {...state, deviceManagerRecord};
   };
@@ -157,15 +160,15 @@ module DrawOutlineJobUtils = {
       (gl, ({deviceManagerRecord}: StateRenderType.renderState) as state) => {
     let deviceManagerRecord =
       deviceManagerRecord
-      |> DeviceManagerService.setStencilFunc(
+      |> AllDeviceManagerService.setStencilFunc(
            gl,
            (Gl.getNotEqual(gl), 1, 0xFF),
          )
-      |> DeviceManagerService.setStencilMask(gl, 0x00)
-      /* |> DeviceManagerService.setSide(gl, DeviceManagerType.BACK) */
-      |> DeviceManagerService.setDepthTest(gl, false)
-      |> DeviceManagerService.setDepthWrite(gl, false)
-      |> DeviceManagerService.setColorWrite(gl, (true, true, true, true));
+      |> AllDeviceManagerService.setStencilMask(gl, 0x00)
+      /* |> AllDeviceManagerService.setSide(gl, AllDeviceManagerType.BACK) */
+      |> AllDeviceManagerService.setDepthTest(gl, false)
+      |> AllDeviceManagerService.setDepthWrite(gl, false)
+      |> AllDeviceManagerService.setColorWrite(gl, (true, true, true, true));
 
     {...state, deviceManagerRecord};
   };
@@ -174,11 +177,11 @@ module DrawOutlineJobUtils = {
       (gl, ({deviceManagerRecord}: StateRenderType.renderState) as state) => {
     let deviceManagerRecord =
       deviceManagerRecord
-      |> DeviceManagerService.setStencilTest(gl, false)
-      |> DeviceManagerService.setStencilMask(gl, 0xFF)
-      /* |> DeviceManagerService.setSide(gl, DeviceManagerType.FRONT) */
-      |> DeviceManagerService.setDepthTest(gl, true)
-      |> DeviceManagerService.setDepthWrite(gl, true);
+      |> AllDeviceManagerService.setStencilTest(gl, false)
+      |> AllDeviceManagerService.setStencilMask(gl, 0xFF)
+      /* |> AllDeviceManagerService.setSide(gl, AllDeviceManagerType.FRONT) */
+      |> AllDeviceManagerService.setDepthTest(gl, true)
+      |> AllDeviceManagerService.setDepthWrite(gl, true);
 
     {...state, deviceManagerRecord};
   };
@@ -196,18 +199,18 @@ module DrawOutlineJobUtils = {
         ({jobDataRecord, shaderRecord}: StateRenderType.renderState) as state,
       ) => {
     let drawOriginGameObjectsShaderIndex =
-      NoMaterialShaderIndexShaderService.unsafeGetShaderIndex(
+      NoMaterialShaderIndexAllShaderService.unsafeGetShaderIndex(
         "outline_draw_origin_gameObjects",
         shaderRecord,
       );
 
     let drawExpandGameObjectsShaderIndex =
-      NoMaterialShaderIndexShaderService.unsafeGetShaderIndex(
+      NoMaterialShaderIndexAllShaderService.unsafeGetShaderIndex(
         "outline_draw_expand_gameObjects",
         shaderRecord,
       );
 
-    let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+    let gl = AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
 
     state
     |> _prepareGlState(gl)

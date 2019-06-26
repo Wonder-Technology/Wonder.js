@@ -1,8 +1,8 @@
 open StateInitBasicMaterialType;
 
-open ShaderType;
+open AllShaderType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let initMaterialShader =
     (

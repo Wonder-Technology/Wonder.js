@@ -67,10 +67,52 @@ let buildMeshRenderer =
 };
 
 let buildBasicSourceTexture =
-    (~name="texture_0", ~format=SourceTextureType.Rgba, ~flipY=false, ())
+    (
+      ~name="texture_0",
+      ~format=BufferBasicSourceTextureService.getDefaultFormat(),
+      ~type_=BufferBasicSourceTextureService.getDefaultType(),
+      ~flipY=BasicSourceTextureTool.getDefaultFlipYBool(),
+      (),
+    )
     : WDType.basicSourceTexture => {
   name,
-  format,
+  format: format |> TextureType.formatToUint8,
+  type_,
+  flipY,
+};
+
+let buildCubemapTexture =
+    (
+      ~name="cubemapTexture_0",
+      ~pxFormat=CubemapTextureTool.getDefaultFormat(),
+      ~nxFormat=CubemapTextureTool.getDefaultFormat(),
+      ~pyFormat=CubemapTextureTool.getDefaultFormat(),
+      ~nyFormat=CubemapTextureTool.getDefaultFormat(),
+      ~pzFormat=CubemapTextureTool.getDefaultFormat(),
+      ~nzFormat=CubemapTextureTool.getDefaultFormat(),
+      ~pxType=CubemapTextureTool.getDefaultType(),
+      ~nxType=CubemapTextureTool.getDefaultType(),
+      ~pyType=CubemapTextureTool.getDefaultType(),
+      ~nyType=CubemapTextureTool.getDefaultType(),
+      ~pzType=CubemapTextureTool.getDefaultType(),
+      ~nzType=CubemapTextureTool.getDefaultType(),
+      ~flipY=CubemapTextureTool.getDefaultFlipYBool(),
+      (),
+    )
+    : WDType.cubemapTexture => {
+  name,
+  pxFormat: pxFormat |> TextureType.formatToUint8,
+  nxFormat: nxFormat |> TextureType.formatToUint8,
+  pyFormat: pyFormat |> TextureType.formatToUint8,
+  nyFormat: nyFormat |> TextureType.formatToUint8,
+  pzFormat: pzFormat |> TextureType.formatToUint8,
+  nzFormat: nzFormat |> TextureType.formatToUint8,
+  pxType,
+  nxType,
+  pyType,
+  nyType,
+  pzType,
+  nzType,
   flipY,
 };
 
@@ -138,6 +180,8 @@ let buildGLTFJson =
       ~arcballCameraControllers={|
         []|},
       ~scripts={|
+        []|},
+      ~cubemapTextures={|
         []|},
       ~nodes={| [
         {
@@ -335,7 +379,8 @@ let buildGLTFJson =
         "basicMaterials": $basicMaterials,
         "flyCameraControllers": $flyCameraControllers,
         "arcballCameraControllers": $arcballCameraControllers,
-        "scripts": $scripts
+        "scripts": $scripts,
+        "cubemapTextures": $cubemapTextures
     }
 }
         |j};
@@ -485,6 +530,230 @@ let buildGLTFJsonOfIMGUI = (customData, imguiFunc) =>
     ]|j},
     (),
   );
+
+let buildGLTFJsonOfSkyboxAndOneCubemap =
+    (
+      ~cubemap=0,
+      ~name=None,
+      ~pxFormat=CubemapTextureTool.getDefaultFormat(),
+      ~nxFormat=CubemapTextureTool.getDefaultFormat(),
+      ~pyFormat=CubemapTextureTool.getDefaultFormat(),
+      ~nyFormat=CubemapTextureTool.getDefaultFormat(),
+      ~pzFormat=CubemapTextureTool.getDefaultFormat(),
+      ~nzFormat=CubemapTextureTool.getDefaultFormat(),
+      ~pxType=CubemapTextureTool.getDefaultType(),
+      ~nxType=CubemapTextureTool.getDefaultType(),
+      ~pyType=CubemapTextureTool.getDefaultType(),
+      ~nyType=CubemapTextureTool.getDefaultType(),
+      ~pzType=CubemapTextureTool.getDefaultType(),
+      ~nzType=CubemapTextureTool.getDefaultType(),
+      ~flipY=CubemapTextureTool.getDefaultFlipYBool(),
+      (),
+    ) => {
+  let pxFormat = pxFormat |> TextureType.formatToUint8;
+  let nxFormat = nxFormat |> TextureType.formatToUint8;
+  let pyFormat = pyFormat |> TextureType.formatToUint8;
+  let nyFormat = nyFormat |> TextureType.formatToUint8;
+  let pzFormat = pzFormat |> TextureType.formatToUint8;
+  let nzFormat = nzFormat |> TextureType.formatToUint8;
+
+  let cubemapTextures =
+    switch (name) {
+    | None => {j|  [
+             {
+                 "sampler": 0,
+                 "flipY": $flipY,
+                 "pxSource": 1,
+                 "nxSource": 2,
+                 "pySource": 3,
+                 "nySource": 4,
+                 "pzSource": 5,
+                 "nzSource": 6,
+                 "pxFormat": $pxFormat,
+                 "nxFormat": $nxFormat,
+                 "pyFormat": $pyFormat,
+                 "nyFormat": $nyFormat,
+                 "pzFormat": $pzFormat,
+                 "nzFormat": $nzFormat,
+                 "pxType": $pxType,
+                 "nxType": $nxType,
+                 "pyType": $pyType,
+                 "nyType": $nyType,
+                 "pzType": $pzType,
+                 "nzType": $nzType
+             }
+         ]|j}
+    | Some(name) => {j|  [
+             {
+               "name": "$name",
+                 "sampler": 0,
+                 "flipY": $flipY,
+                 "pxSource": 1,
+                 "nxSource": 2,
+                 "pySource": 3,
+                 "nySource": 4,
+                 "pzSource": 5,
+                 "nzSource": 6,
+                 "pxFormat": $pxFormat,
+                 "nxFormat": $nxFormat,
+                 "pyFormat": $pyFormat,
+                 "nyFormat": $nyFormat,
+                 "pzFormat": $pzFormat,
+                 "nzFormat": $nzFormat,
+                 "pxType": $pxType,
+                 "nxType": $nxType,
+                 "pyType": $pyType,
+                 "nyType": $nyType,
+                 "pzType": $pzType,
+                 "nzType": $nzType
+             }
+         ]|j}
+    };
+
+  buildGLTFJson(
+    ~scene={|0|},
+    ~scenes=
+      {j|  [
+        {
+        "nodes": [0],
+        "extras": {
+            "skybox": {
+                "cubemap": $cubemap
+            }
+        }
+    }
+    ]|j},
+    ~cubemapTextures,
+    ~images=
+      {|  [
+         {"name": "CesiumLogoFlat.png", "mimeType": "image/png", "bufferView": 3},
+         {"name": "pxSource.png", "mimeType": "image/png", "bufferView": 4},
+         {"name": "nxSource.jpg", "mimeType": "image/jpg", "bufferView": 5},
+         {"name": "pySource.png", "mimeType": "image/png", "bufferView": 6},
+         {"name": "nySource.jpg", "mimeType": "image/jpg", "bufferView": 7},
+         {"name": "pzSource.png", "mimeType": "image/png", "bufferView": 8},
+         {"name": "nzSource.jpg", "mimeType": "image/jpg", "bufferView": 9}
+             ]|},
+    ~samplers=
+      {|  [
+             {
+                 "magFilter": 9729,
+                 "minFilter": 9986,
+                 "wrapS": 10497,
+                 "wrapT": 10497
+             },
+             {
+                 "magFilter": 9729,
+                 "minFilter": 9986,
+                 "wrapS": 10497,
+                 "wrapT": 10497
+             },
+             {
+                 "magFilter": 9728,
+                 "minFilter": 9987,
+                 "wrapS": 10497,
+                 "wrapT": 33648
+             },
+             {
+                 "magFilter": 9729,
+                 "minFilter": 9986,
+                 "wrapS": 10497,
+                 "wrapT": 10497
+             },
+             {
+                 "magFilter": 9728,
+                 "minFilter": 9987,
+                 "wrapS": 10497,
+                 "wrapT": 33648
+             },
+             {
+                 "magFilter": 9729,
+                 "minFilter": 9986,
+                 "wrapS": 10497,
+                 "wrapT": 10497
+             },
+             {
+                 "magFilter": 9728,
+                 "minFilter": 9987,
+                 "wrapS": 10497,
+                 "wrapT": 33648
+             }
+         ]|},
+    ~bufferViews=
+      {|  [
+        {
+            "buffer": 0,
+            "byteOffset": 768,
+            "byteLength": 72,
+            "target": 34963
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 576,
+            "byteStride": 12,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 576,
+            "byteLength": 192,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 840,
+            "byteLength": 200,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1040,
+            "byteLength": 100,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1140,
+            "byteLength": 260,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1400,
+            "byteLength": 200,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1600,
+            "byteLength": 250,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1850,
+            "byteLength": 150,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {"buffer":0,"byteLength":24676,"byteOffset":2000}
+    ]|},
+    ~buffers=
+      {| [
+        {
+            "byteLength": 25520
+        }
+            ]|},
+    (),
+  );
+};
 
 let buildGLTFJsonOfSceneIsRoot = isRoot =>
   buildGLTFJson(
@@ -1175,7 +1444,15 @@ let buildGLTFJsonOfScript =
   );
 };
 
-let buildGLTFJsonOfTexture = flipY =>
+let buildGLTFJsonOfBasicSourceTexture =
+    (
+      ~format=BufferBasicSourceTextureService.getDefaultFormat(),
+      ~type_=BufferBasicSourceTextureService.getDefaultType(),
+      ~flipY=BasicSourceTextureTool.getDefaultFlipYBool(),
+      (),
+    ) => {
+  let format = format |> TextureType.formatToUint8;
+
   buildGLTFJson(
     ~textures=
       {j|  [
@@ -1183,13 +1460,227 @@ let buildGLTFJsonOfTexture = flipY =>
                  "sampler": 0,
                  "source": 0,
                  "extras": {
-                   "flipY": $flipY
+                   "flipY": $flipY,
+                   "format": $format,
+                   "type_": $type_
                  }
 
              }
          ]|j},
     (),
   );
+};
+
+let buildGLTFJsonOfCubemapTexture =
+    (
+      ~name=None,
+      ~pxFormat=BufferCubemapTextureService.getDefaultFormat(),
+      ~nxFormat=BufferCubemapTextureService.getDefaultFormat(),
+      ~pyFormat=BufferCubemapTextureService.getDefaultFormat(),
+      ~nyFormat=BufferCubemapTextureService.getDefaultFormat(),
+      ~pzFormat=BufferCubemapTextureService.getDefaultFormat(),
+      ~nzFormat=BufferCubemapTextureService.getDefaultFormat(),
+      ~pxType=BufferCubemapTextureService.getDefaultType(),
+      ~nxType=BufferCubemapTextureService.getDefaultType(),
+      ~pyType=BufferCubemapTextureService.getDefaultType(),
+      ~nyType=BufferCubemapTextureService.getDefaultType(),
+      ~pzType=BufferCubemapTextureService.getDefaultType(),
+      ~nzType=BufferCubemapTextureService.getDefaultType(),
+      ~flipY=CubemapTextureTool.getDefaultFlipYBool(),
+      (),
+    ) => {
+  let pxFormat = pxFormat |> TextureType.formatToUint8;
+  let nxFormat = nxFormat |> TextureType.formatToUint8;
+  let pyFormat = pyFormat |> TextureType.formatToUint8;
+  let nyFormat = nyFormat |> TextureType.formatToUint8;
+  let pzFormat = pzFormat |> TextureType.formatToUint8;
+  let nzFormat = nzFormat |> TextureType.formatToUint8;
+
+  let cubemapTextures =
+    switch (name) {
+    | None => {j|  [
+             {
+                 "sampler": 0,
+                 "flipY": $flipY,
+                 "pxSource": 1,
+                 "nxSource": 2,
+                 "pySource": 3,
+                 "nySource": 4,
+                 "pzSource": 5,
+                 "nzSource": 6,
+                 "pxFormat": $pxFormat,
+                 "nxFormat": $nxFormat,
+                 "pyFormat": $pyFormat,
+                 "nyFormat": $nyFormat,
+                 "pzFormat": $pzFormat,
+                 "nzFormat": $nzFormat,
+                 "pxType": $pxType,
+                 "nxType": $nxType,
+                 "pyType": $pyType,
+                 "nyType": $nyType,
+                 "pzType": $pzType,
+                 "nzType": $nzType
+             }
+         ]|j}
+    | Some(name) => {j|  [
+             {
+               "name": "$name",
+                 "sampler": 0,
+                 "flipY": $flipY,
+                 "pxSource": 1,
+                 "nxSource": 2,
+                 "pySource": 3,
+                 "nySource": 4,
+                 "pzSource": 5,
+                 "nzSource": 6,
+                 "pxFormat": $pxFormat,
+                 "nxFormat": $nxFormat,
+                 "pyFormat": $pyFormat,
+                 "nyFormat": $nyFormat,
+                 "pzFormat": $pzFormat,
+                 "nzFormat": $nzFormat,
+                 "pxType": $pxType,
+                 "nxType": $nxType,
+                 "pyType": $pyType,
+                 "nyType": $nyType,
+                 "pzType": $pzType,
+                 "nzType": $nzType
+             }
+         ]|j}
+    };
+
+  buildGLTFJson(
+    ~cubemapTextures,
+    ~images=
+      {|  [
+         {"name": "CesiumLogoFlat.png", "mimeType": "image/png", "bufferView": 3},
+         {"name": "pxSource.png", "mimeType": "image/png", "bufferView": 4},
+         {"name": "nxSource.jpg", "mimeType": "image/jpg", "bufferView": 5},
+         {"name": "pySource.png", "mimeType": "image/png", "bufferView": 6},
+         {"name": "nySource.jpg", "mimeType": "image/jpg", "bufferView": 7},
+         {"name": "pzSource.png", "mimeType": "image/png", "bufferView": 8},
+         {"name": "nzSource.jpg", "mimeType": "image/jpg", "bufferView": 9}
+             ]|},
+    ~samplers=
+      {|  [
+             {
+                 "magFilter": 9729,
+                 "minFilter": 9986,
+                 "wrapS": 10497,
+                 "wrapT": 10497
+             },
+             {
+                 "magFilter": 9729,
+                 "minFilter": 9986,
+                 "wrapS": 10497,
+                 "wrapT": 10497
+             },
+             {
+                 "magFilter": 9728,
+                 "minFilter": 9987,
+                 "wrapS": 10497,
+                 "wrapT": 33648
+             },
+             {
+                 "magFilter": 9729,
+                 "minFilter": 9986,
+                 "wrapS": 10497,
+                 "wrapT": 10497
+             },
+             {
+                 "magFilter": 9728,
+                 "minFilter": 9987,
+                 "wrapS": 10497,
+                 "wrapT": 33648
+             },
+             {
+                 "magFilter": 9729,
+                 "minFilter": 9986,
+                 "wrapS": 10497,
+                 "wrapT": 10497
+             },
+             {
+                 "magFilter": 9728,
+                 "minFilter": 9987,
+                 "wrapS": 10497,
+                 "wrapT": 33648
+             }
+         ]|},
+    ~bufferViews=
+      {|  [
+        {
+            "buffer": 0,
+            "byteOffset": 768,
+            "byteLength": 72,
+            "target": 34963
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 576,
+            "byteStride": 12,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 576,
+            "byteLength": 192,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 840,
+            "byteLength": 200,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1040,
+            "byteLength": 100,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1140,
+            "byteLength": 260,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1400,
+            "byteLength": 200,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1600,
+            "byteLength": 250,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1850,
+            "byteLength": 150,
+            "byteStride": 8,
+            "target": 34962
+        },
+        {"buffer":0,"byteLength":24676,"byteOffset":2000}
+    ]|},
+    ~buffers=
+      {| [
+        {
+            "byteLength": 25520
+        }
+            ]|},
+    (),
+  );
+};
 
 let buildGLTFJsonOfMeshRenderer =
     (~isMeshRenderer1Render=true, ~isMeshRenderer2Render=true, ()) =>

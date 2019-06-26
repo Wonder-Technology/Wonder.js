@@ -28,23 +28,22 @@ module ResourceAssetBundleContent = {
     bufferView,
   };
 
-  let buildTextureData =
+  let buildBasicSourceTextureData =
       (
         ~name,
         ~source=0,
         ~magFilter=BasicSourceTextureTool.getDefaultMagFilter()
-                   |> SourceTextureType.filterToUint8,
+                   |> TextureType.filterToUint8,
         ~minFilter=BasicSourceTextureTool.getDefaultMinFilter()
-                   |> SourceTextureType.filterToUint8,
+                   |> TextureType.filterToUint8,
         ~wrapS=BasicSourceTextureTool.getDefaultWrapS()
-               |> SourceTextureType.wrapToUint8,
+               |> TextureType.wrapToUint8,
         ~wrapT=BasicSourceTextureTool.getDefaultWrapT()
-               |> SourceTextureType.wrapToUint8,
+               |> TextureType.wrapToUint8,
         ~format=BasicSourceTextureTool.getDefaultFormat()
-                |> SourceTextureType.formatToUint8,
+                |> TextureType.formatToUint8,
         ~type_=BasicSourceTextureTool.getDefaultType(),
-        ~flipY=BufferSourceTextureService.getDefaultFlipY()
-               |> BufferSourceTextureService.getFlipYFromTypeArrayValue,
+        ~flipY=BasicSourceTextureTool.getDefaultFlipYBool(),
         (),
       ) => {
     name,
@@ -55,6 +54,68 @@ module ResourceAssetBundleContent = {
     wrapT,
     format,
     type_,
+    flipY,
+  };
+
+  let buildCubemapTextureData =
+      (
+        ~name,
+        ~magFilter=CubemapTextureTool.getDefaultMagFilter()
+                   |> TextureType.filterToUint8,
+        ~minFilter=CubemapTextureTool.getDefaultMinFilter()
+                   |> TextureType.filterToUint8,
+        ~wrapS=CubemapTextureTool.getDefaultWrapS() |> TextureType.wrapToUint8,
+        ~wrapT=CubemapTextureTool.getDefaultWrapT() |> TextureType.wrapToUint8,
+        ~pxFormat=CubemapTextureTool.getDefaultFormat()
+                  |> TextureType.formatToUint8,
+        ~nxFormat=CubemapTextureTool.getDefaultFormat()
+                  |> TextureType.formatToUint8,
+        ~pyFormat=CubemapTextureTool.getDefaultFormat()
+                  |> TextureType.formatToUint8,
+        ~nyFormat=CubemapTextureTool.getDefaultFormat()
+                  |> TextureType.formatToUint8,
+        ~pzFormat=CubemapTextureTool.getDefaultFormat()
+                  |> TextureType.formatToUint8,
+        ~nzFormat=CubemapTextureTool.getDefaultFormat()
+                  |> TextureType.formatToUint8,
+        ~pxType=CubemapTextureTool.getDefaultType(),
+        ~nxType=CubemapTextureTool.getDefaultType(),
+        ~pyType=CubemapTextureTool.getDefaultType(),
+        ~nyType=CubemapTextureTool.getDefaultType(),
+        ~pzType=CubemapTextureTool.getDefaultType(),
+        ~nzType=CubemapTextureTool.getDefaultType(),
+        ~pxSource=0,
+        ~nxSource=1,
+        ~pySource=2,
+        ~nySource=3,
+        ~pzSource=4,
+        ~nzSource=5,
+        ~flipY=CubemapTextureTool.getDefaultFlipYBool(),
+        (),
+      ) => {
+    name,
+    pxSource,
+    nxSource,
+    pySource,
+    nySource,
+    pzSource,
+    nzSource,
+    magFilter,
+    minFilter,
+    wrapS,
+    wrapT,
+    pxFormat,
+    nxFormat,
+    pyFormat,
+    nyFormat,
+    pzFormat,
+    nzFormat,
+    pxType,
+    nxType,
+    pyType,
+    nyType,
+    pzType,
+    nzType,
     flipY,
   };
 
@@ -112,33 +173,28 @@ module ResourceData = {
     mimeType,
   };
 
-  let createTextureResourceData =
+  let createBasicSourceTextureResourceData =
       (
         ~state,
-        ~name="texture1",
+        ~name="basicSourceTexture1",
         ~magFilter=BasicSourceTextureTool.getDefaultMagFilter()
-                   |> SourceTextureType.filterToUint8,
+                   |> TextureType.filterToUint8,
         ~minFilter=BasicSourceTextureTool.getDefaultMinFilter()
-                   |> SourceTextureType.filterToUint8,
+                   |> TextureType.filterToUint8,
         ~wrapS=BasicSourceTextureTool.getDefaultWrapS()
-               |> SourceTextureType.wrapToUint8,
+               |> TextureType.wrapToUint8,
         ~wrapT=BasicSourceTextureTool.getDefaultWrapT()
-               |> SourceTextureType.wrapToUint8,
+               |> TextureType.wrapToUint8,
         ~format=BasicSourceTextureTool.getDefaultFormat()
-                |> SourceTextureType.formatToUint8,
+                |> TextureType.formatToUint8,
         ~type_=BasicSourceTextureTool.getDefaultType(),
-        ~flipY=BufferSourceTextureService.getDefaultFlipY()
-               |> BufferSourceTextureService.getFlipYFromTypeArrayValue,
+        ~flipY=BasicSourceTextureTool.getDefaultFlipYBool(),
         ~imageDataIndex=0,
         (),
       ) => {
     let (state, texture) =
       BasicSourceTextureAPI.createBasicSourceTexture(state);
-    /* let state =
-       state |>
-         BasicSourceTextureAPI.setBasicSourceTextureName(texture, name)
-         |>
-         Basic */
+
     let state =
       state
       |> OperateBasicSourceTextureMainService.setWrapS(texture, wrapS)
@@ -155,21 +211,82 @@ module ResourceData = {
       |> OperateBasicSourceTextureMainService.setType(texture, type_)
       |> OperateBasicSourceTextureMainService.setFlipY(texture, flipY)
       |> NameBasicSourceTextureMainService.setName(texture, name);
-    /* |> OperateBasicSourceTextureMainService.setSource(
-         texture,
-         imageMapByIndex
-         |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(source),
-       ); */
-
-    /*
-     let resourceData =
-       buildResourceData(
-         ~textures=[|buildTextureResourceData(texture, 0)|],
-         ~imageDataMap,
-         (),
-       ); */
 
     (state, {textureComponent: texture, imageDataIndex});
+  };
+
+  let createCubemapTextureResourceData =
+      (
+        ~state,
+        ~name="cubemapTexture1",
+        ~magFilter=CubemapTextureTool.getDefaultMagFilter()
+                   |> TextureType.filterToUint8,
+        ~minFilter=CubemapTextureTool.getDefaultMinFilter()
+                   |> TextureType.filterToUint8,
+        ~wrapS=CubemapTextureTool.getDefaultWrapS() |> TextureType.wrapToUint8,
+        ~wrapT=CubemapTextureTool.getDefaultWrapT() |> TextureType.wrapToUint8,
+        ~pxFormat=CubemapTextureTool.getDefaultFormat()
+                  |> TextureType.formatToUint8,
+        ~nxFormat=CubemapTextureTool.getDefaultFormat()
+                  |> TextureType.formatToUint8,
+        ~pyFormat=CubemapTextureTool.getDefaultFormat()
+                  |> TextureType.formatToUint8,
+        ~nyFormat=CubemapTextureTool.getDefaultFormat()
+                  |> TextureType.formatToUint8,
+        ~pzFormat=CubemapTextureTool.getDefaultFormat()
+                  |> TextureType.formatToUint8,
+        ~nzFormat=CubemapTextureTool.getDefaultFormat()
+                  |> TextureType.formatToUint8,
+        ~pxType=CubemapTextureTool.getDefaultType(),
+        ~nxType=CubemapTextureTool.getDefaultType(),
+        ~pyType=CubemapTextureTool.getDefaultType(),
+        ~nyType=CubemapTextureTool.getDefaultType(),
+        ~pzType=CubemapTextureTool.getDefaultType(),
+        ~nzType=CubemapTextureTool.getDefaultType(),
+        ~flipY=CubemapTextureTool.getDefaultFlipYBool(),
+        ~pxImageDataIndex=0,
+        ~nxImageDataIndex=1,
+        ~pyImageDataIndex=2,
+        ~nyImageDataIndex=3,
+        ~pzImageDataIndex=4,
+        ~nzImageDataIndex=5,
+        (),
+      ) => {
+    let (state, texture) = CubemapTextureAPI.createCubemapTexture(state);
+
+    let state =
+      state
+      |> OperateCubemapTextureMainService.setWrapS(texture, wrapS)
+      |> OperateCubemapTextureMainService.setWrapT(texture, wrapT)
+      |> OperateCubemapTextureMainService.setMagFilter(texture, magFilter)
+      |> OperateCubemapTextureMainService.setMinFilter(texture, minFilter)
+      |> OperateCubemapTextureMainService.setPXFormat(texture, pxFormat)
+      |> OperateCubemapTextureMainService.setNXFormat(texture, nxFormat)
+      |> OperateCubemapTextureMainService.setPYFormat(texture, pyFormat)
+      |> OperateCubemapTextureMainService.setNYFormat(texture, nyFormat)
+      |> OperateCubemapTextureMainService.setPZFormat(texture, pzFormat)
+      |> OperateCubemapTextureMainService.setNZFormat(texture, nzFormat)
+      |> OperateCubemapTextureMainService.setPXType(texture, pxType)
+      |> OperateCubemapTextureMainService.setNXType(texture, nxType)
+      |> OperateCubemapTextureMainService.setPYType(texture, pyType)
+      |> OperateCubemapTextureMainService.setNYType(texture, nyType)
+      |> OperateCubemapTextureMainService.setPZType(texture, pzType)
+      |> OperateCubemapTextureMainService.setNZType(texture, nzType)
+      |> OperateCubemapTextureMainService.setFlipY(texture, flipY)
+      |> NameCubemapTextureMainService.setName(texture, name);
+
+    (
+      state,
+      {
+        textureComponent: texture,
+        pxImageDataIndex,
+        nxImageDataIndex,
+        pyImageDataIndex,
+        nyImageDataIndex,
+        pzImageDataIndex,
+        nzImageDataIndex,
+      },
+    );
   };
 
   let createBasicMaterialResourceData =
@@ -363,7 +480,8 @@ module ResourceData = {
       (
         ~basicMaterials=[||],
         ~lightMaterials=[||],
-        ~textures=[||],
+        ~basicSourceTextures=[||],
+        ~cubemapTextures=[||],
         ~geometrys=[||],
         ~scriptEventFunctionDataArr=[||],
         ~scriptAttributeDataArr=[||],
@@ -372,11 +490,144 @@ module ResourceData = {
       ) => {
     basicMaterials,
     lightMaterials,
-    textures,
+    basicSourceTextures,
+    cubemapTextures,
     geometrys,
     scriptEventFunctionDataArr,
     scriptAttributeDataArr,
     imageDataMap,
+  };
+};
+
+module Test = {
+  let prepareCubemapTextureResourceData =
+      (
+        ~image1Name="i1",
+        ~image2Name="i2",
+        ~image3Name="i3",
+        ~image4Name="i4",
+        ~image5Name="i5",
+        ~image6Name="i6",
+        ~image1MimeType="image/png",
+        ~image2MimeType="image/png",
+        ~image3MimeType="image/png",
+        ~image4MimeType="image/png",
+        ~image5MimeType="image/png",
+        ~image6MimeType="image/png",
+        (),
+      ) => {
+    let image1 =
+      ResourceData.buildImageData(
+        ~name=image1Name,
+        ~mimeType=image1MimeType,
+        (),
+      );
+    let image2 =
+      ResourceData.buildImageData(
+        ~name=image2Name,
+        ~mimeType=image2MimeType,
+        (),
+      );
+    let image3 =
+      ResourceData.buildImageData(
+        ~name=image3Name,
+        ~mimeType=image3MimeType,
+        (),
+      );
+    let image4 =
+      ResourceData.buildImageData(
+        ~name=image4Name,
+        ~mimeType=image4MimeType,
+        (),
+      );
+    let image5 =
+      ResourceData.buildImageData(
+        ~name=image5Name,
+        ~mimeType=image5MimeType,
+        (),
+      );
+    let image6 =
+      ResourceData.buildImageData(
+        ~name=image6Name,
+        ~mimeType=image6MimeType,
+        (),
+      );
+
+    let imageDataMap =
+      WonderCommonlib.ImmutableSparseMapService.createEmpty()
+      |> WonderCommonlib.ImmutableSparseMapService.set(0, image1)
+      |> WonderCommonlib.ImmutableSparseMapService.set(1, image2)
+      |> WonderCommonlib.ImmutableSparseMapService.set(2, image3)
+      |> WonderCommonlib.ImmutableSparseMapService.set(3, image4)
+      |> WonderCommonlib.ImmutableSparseMapService.set(4, image5)
+      |> WonderCommonlib.ImmutableSparseMapService.set(5, image6);
+
+    let textureName = "cubemapTexture1";
+
+    (
+      textureName,
+      (imageDataMap, (image1, image2, image3, image4, image5, image6)),
+    );
+  };
+
+  let createCubemapTextureResourceData =
+      (
+        ~state,
+        ~image1Name="i1",
+        ~image2Name="i2",
+        ~image3Name="i3",
+        ~image4Name="i4",
+        ~image5Name="i5",
+        ~image6Name="i6",
+        ~image1MimeType="image/png",
+        ~image2MimeType="image/png",
+        ~image3MimeType="image/png",
+        ~image4MimeType="image/png",
+        ~image5MimeType="image/png",
+        ~image6MimeType="image/png",
+        ~flipY=false,
+        (),
+      ) => {
+    let (
+      textureName,
+      (imageDataMap, (image1, image2, image3, image4, image5, image6)),
+    ) =
+      prepareCubemapTextureResourceData(
+        ~image1Name,
+        ~image2Name,
+        ~image3Name,
+        ~image4Name,
+        ~image5Name,
+        ~image6Name,
+        ~image1MimeType,
+        ~image2MimeType,
+        ~image3MimeType,
+        ~image4MimeType,
+        ~image5MimeType,
+        ~image6MimeType,
+        (),
+      );
+
+    let (state, textureResourceData) =
+      ResourceData.createCubemapTextureResourceData(
+        ~state,
+        ~flipY,
+        ~name=textureName,
+        ~pxImageDataIndex=0,
+        ~nxImageDataIndex=1,
+        ~pyImageDataIndex=2,
+        ~nyImageDataIndex=3,
+        ~pzImageDataIndex=4,
+        ~nzImageDataIndex=5,
+        (),
+      );
+
+    (
+      state,
+      textureResourceData,
+      textureName,
+      (imageDataMap, (image1, image2, image3, image4, image5, image6)),
+    );
   };
 };
 
@@ -388,11 +639,15 @@ let generateOneRAB = state => {
     |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
   let (state, textureResourceData1) =
-    ResourceData.createTextureResourceData(~state, ~imageDataIndex=0, ());
+    ResourceData.createBasicSourceTextureResourceData(
+      ~state,
+      ~imageDataIndex=0,
+      (),
+    );
 
   let resourceData1 =
     ResourceData.buildResourceData(
-      ~textures=[|textureResourceData1|],
+      ~basicSourceTextures=[|textureResourceData1|],
       ~imageDataMap,
       (),
     );

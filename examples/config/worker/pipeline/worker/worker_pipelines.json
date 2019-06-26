@@ -56,6 +56,9 @@
                         "name": "init_meshRenderer"
                     },
                     {
+                        "name": "init_no_material_shader"
+                    },
+                    {
                         "name": "init_basic_material"
                     },
                     {
@@ -131,6 +134,9 @@
                     },
                     {
                         "name": "front_render_light"
+                    },
+                    {
+                        "name": "render_skybox"
                     },
                     {
                         "name": "render_imgui"

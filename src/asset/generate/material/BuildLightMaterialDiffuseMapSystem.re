@@ -4,27 +4,6 @@ let _buildSamplerDataMapKey = (wrapS, wrapT, magFilter, minFilter) =>
   ++ (magFilter |> Js.Int.toString)
   ++ (minFilter |> Js.Int.toString);
 
-let _getWrapData = wrap =>
-  SourceTextureType.(
-    switch (wrap |> uint8ToWrap) {
-    | Clamp_to_edge => 33071
-    | Mirrored_repeat => 33648
-    | Repeat => 10497
-    }
-  );
-
-let _getFilterData = filter =>
-  SourceTextureType.(
-    switch (filter |> uint8ToFilter) {
-    | Nearest => 9728
-    | Linear => 9729
-    | Nearest_mipmap_nearest => 9984
-    | Linear_mipmap_nearest => 9985
-    | Nearest_mipmap_linear => 9986
-    | Linear_mipmap_linear => 9987
-    }
-  );
-
 let _addSamplerData = (texture, samplerIndexMap, state, samplerDataArr) => {
   let wrapS = OperateBasicSourceTextureMainService.getWrapS(texture, state);
   let wrapT = OperateBasicSourceTextureMainService.getWrapT(texture, state);
@@ -47,10 +26,10 @@ let _addSamplerData = (texture, samplerIndexMap, state, samplerDataArr) => {
       samplerDataArr
       |> ArrayService.push(
            {
-             wrapS: _getWrapData(wrapS),
-             wrapT: _getWrapData(wrapT),
-             magFilter: _getFilterData(magFilter),
-             minFilter: _getFilterData(minFilter),
+             wrapS: BuildTextureDataUtils.getWrapData(wrapS),
+             wrapT: BuildTextureDataUtils.getWrapData(wrapT),
+             magFilter: BuildTextureDataUtils.getFilterData(magFilter),
+             minFilter: BuildTextureDataUtils.getFilterData(minFilter),
            }: GenerateSceneGraphType.samplerData,
          ),
     );
@@ -288,8 +267,11 @@ let _addTextureData =
          name: NameBasicSourceTextureMainService.getName(texture, state),
          sampler: samplerIndex,
          source: imageIndex,
+         format:
+           OperateBasicSourceTextureMainService.getFormat(texture, state),
+         type_: OperateBasicSourceTextureMainService.getType(texture, state),
          flipY: OperateBasicSourceTextureMainService.getFlipY(texture, state),
-       }: GenerateSceneGraphType.textureData,
+       }: GenerateSceneGraphType.basicSourceTextureData,
      );
 
 let _addMaterialData =

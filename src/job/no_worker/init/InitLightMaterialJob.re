@@ -6,7 +6,7 @@ let execJob = (flags, {gameObjectRecord} as state) => {
   let {index, disposedIndexArray} =
     RecordLightMaterialMainService.getRecord(state);
   InitInitLightMaterialService.init(
-    DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
+    AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord),
     (
       JudgeInstanceMainService.buildMap(
         index,

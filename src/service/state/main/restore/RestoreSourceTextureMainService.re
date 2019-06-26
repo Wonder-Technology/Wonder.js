@@ -1,6 +1,6 @@
 open StateDataMainType;
 
-open SourceTextureType;
+open TextureType;
 
 let restore = (currentState, targetState) => {
   let currentTextureRecord = RecordSourceTextureMainService.getRecord(currentState);

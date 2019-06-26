@@ -25,90 +25,249 @@ let _ =
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
     describe("build image data", () =>
-      describe("test has duplicate data", () =>
-        testPromise("test1", () => {
-          let imageName = "image1";
+      describe("test has duplicate data", () => {
+        describe("test image from basicSourceTexture", () =>
+          testPromise("test1", () => {
+            let imageName = "image1";
 
-          let image1 =
-            GenerateSingleRABTool.ResourceData.buildImageData(
-              ~name=imageName,
-              (),
-            );
+            let image1 =
+              GenerateSingleRABTool.ResourceData.buildImageData(
+                ~name=imageName,
+                (),
+              );
 
-          let imageDataMap =
-            WonderCommonlib.ImmutableSparseMapService.createEmpty()
-            |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
+            let imageDataMap =
+              WonderCommonlib.ImmutableSparseMapService.createEmpty()
+              |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
-          let (state, textureResourceData1) =
-            GenerateSingleRABTool.ResourceData.createTextureResourceData(
-              ~state=state^,
-              ~imageDataIndex=0,
-              (),
-            );
+            let (state, textureResourceData1) =
+              GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
+                ~state=state^,
+                ~imageDataIndex=0,
+                (),
+              );
 
-          let resourceData1 =
-            GenerateSingleRABTool.ResourceData.buildResourceData(
-              ~textures=[|textureResourceData1|],
-              ~imageDataMap,
-              (),
-            );
+            let resourceData1 =
+              GenerateSingleRABTool.ResourceData.buildResourceData(
+                ~basicSourceTextures=[|textureResourceData1|],
+                ~imageDataMap,
+                (),
+              );
 
-          let rab1 =
-            GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
+            let rab1 =
+              GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
 
-          let image2 =
-            GenerateSingleRABTool.ResourceData.buildImageData(
-              ~name=imageName,
-              (),
-            );
+            let image2 =
+              GenerateSingleRABTool.ResourceData.buildImageData(
+                ~name=imageName,
+                (),
+              );
 
-          let imageDataMap =
-            WonderCommonlib.ImmutableSparseMapService.createEmpty()
-            |> WonderCommonlib.ImmutableSparseMapService.set(0, image2);
+            let imageDataMap =
+              WonderCommonlib.ImmutableSparseMapService.createEmpty()
+              |> WonderCommonlib.ImmutableSparseMapService.set(0, image2);
 
-          let (state, textureResourceData2) =
-            GenerateSingleRABTool.ResourceData.createTextureResourceData(
-              ~state,
-              ~imageDataIndex=0,
-              (),
-            );
+            let (state, textureResourceData2) =
+              GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
+                ~state,
+                ~imageDataIndex=0,
+                (),
+              );
 
-          let resourceData2 =
-            GenerateSingleRABTool.ResourceData.buildResourceData(
-              ~textures=[|textureResourceData2|],
-              ~imageDataMap,
-              (),
-            );
+            let resourceData2 =
+              GenerateSingleRABTool.ResourceData.buildResourceData(
+                ~basicSourceTextures=[|textureResourceData2|],
+                ~imageDataMap,
+                (),
+              );
 
-          let rab2 =
-            GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
+            let rab2 =
+              GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
 
-          GenerateAllABTool.TestWithTwoRAB.generateAllAB((rab1, rab2), state)
-          |> MostTool.testStream(data => {
-               let (rab1RelativePath, rab2RelativePath) =
-                 GenerateAllABTool.TestWithTwoRAB.getRabRelativePaths();
+            GenerateAllABTool.TestWithTwoRAB.generateAllAB(
+              (rab1, rab2),
+              state,
+            )
+            |> MostTool.testStream(data => {
+                 let (rab1RelativePath, rab2RelativePath) =
+                   GenerateAllABTool.TestWithTwoRAB.getRabRelativePaths();
 
-               AssembleRABTool.TestWithTwoRABs.assemble(data)
-               |> MostTool.testStream(() => {
-                    let state = StateAPI.unsafeGetState();
+                 AssembleRABTool.TestWithTwoRABs.assemble(data)
+                 |> MostTool.testStream(() => {
+                      let state = StateAPI.unsafeGetState();
 
-                    OperateRABAssetBundleMainService.unsafeFindImageByName(
-                      rab2RelativePath,
-                      imageName,
-                      state,
-                    )
-                    |> expect
-                    == (
-                         {"name": imageName, "src": "object_url0"} |> Obj.magic
-                       )
-                    |> resolve;
-                  });
-             });
-        })
-      )
+                      OperateRABAssetBundleMainService.unsafeFindImageByName(
+                        rab2RelativePath,
+                        imageName,
+                        state,
+                      )
+                      |> expect
+                      == GLBTool.createFakeImage(
+                           ~name=imageName,
+                           ~src="object_url0",
+                           (),
+                         )
+                      |> resolve;
+                    });
+               });
+          })
+        );
+
+        describe("test image from cubemapTexture", () =>
+          testPromise("test1", () => {
+            let image1Name = "i1";
+            let image2Name = "i2";
+            let image3Name = "i3";
+            let image4Name = "i4";
+            let image5Name = "i5";
+            let image6Name = "i6";
+
+            let (
+              state,
+              textureResourceData1,
+              texture1Name,
+              (
+                imageDataMap1,
+                (image1_1, image1_2, image1_3, image1_4, image1_5, image1_6),
+              ),
+            ) =
+              GenerateSingleRABTool.Test.createCubemapTextureResourceData(
+                ~state=state^,
+                ~image1Name,
+                ~image2Name,
+                ~image3Name,
+                ~image4Name,
+                ~image5Name,
+                ~image6Name,
+                (),
+              );
+
+            let resourceData1 =
+              GenerateSingleRABTool.ResourceData.buildResourceData(
+                ~cubemapTextures=[|textureResourceData1|],
+                ~imageDataMap=imageDataMap1,
+                (),
+              );
+
+            let rab1 =
+              GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
+
+            let (
+              state,
+              textureResourceData2,
+              texture2Name,
+              (
+                imageDataMap2,
+                (image2_1, image2_2, image2_3, image2_4, image2_5, image2_6),
+              ),
+            ) =
+              GenerateSingleRABTool.Test.createCubemapTextureResourceData(
+                ~state,
+                ~image1Name,
+                ~image2Name,
+                ~image3Name,
+                ~image4Name,
+                ~image5Name,
+                ~image6Name,
+                (),
+              );
+
+            let resourceData2 =
+              GenerateSingleRABTool.ResourceData.buildResourceData(
+                ~cubemapTextures=[|textureResourceData2|],
+                ~imageDataMap=imageDataMap2,
+                (),
+              );
+
+            let rab2 =
+              GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
+
+            GenerateAllABTool.TestWithTwoRAB.generateAllAB(
+              (rab1, rab2),
+              state,
+            )
+            |> MostTool.testStream(data => {
+                 let (rab1RelativePath, rab2RelativePath) =
+                   GenerateAllABTool.TestWithTwoRAB.getRabRelativePaths();
+
+                 AssembleRABTool.TestWithTwoRABs.assemble(data)
+                 |> MostTool.testStream(() => {
+                      let state = StateAPI.unsafeGetState();
+
+                      (
+                        OperateRABAssetBundleMainService.unsafeFindImageByName(
+                          rab2RelativePath,
+                          image1Name,
+                          state,
+                        ),
+                        OperateRABAssetBundleMainService.unsafeFindImageByName(
+                          rab2RelativePath,
+                          image2Name,
+                          state,
+                        ),
+                        OperateRABAssetBundleMainService.unsafeFindImageByName(
+                          rab2RelativePath,
+                          image3Name,
+                          state,
+                        ),
+                        OperateRABAssetBundleMainService.unsafeFindImageByName(
+                          rab2RelativePath,
+                          image4Name,
+                          state,
+                        ),
+                        OperateRABAssetBundleMainService.unsafeFindImageByName(
+                          rab2RelativePath,
+                          image5Name,
+                          state,
+                        ),
+                        OperateRABAssetBundleMainService.unsafeFindImageByName(
+                          rab2RelativePath,
+                          image6Name,
+                          state,
+                        ),
+                      )
+                      |> expect
+                      == (
+                           GLBTool.createFakeImage(
+                             ~name=image1Name,
+                             ~src="object_url0",
+                             (),
+                           ),
+                           GLBTool.createFakeImage(
+                             ~name=image2Name,
+                             ~src="object_url1",
+                             (),
+                           ),
+                           GLBTool.createFakeImage(
+                             ~name=image3Name,
+                             ~src="object_url2",
+                             (),
+                           ),
+                           GLBTool.createFakeImage(
+                             ~name=image4Name,
+                             ~src="object_url3",
+                             (),
+                           ),
+                           GLBTool.createFakeImage(
+                             ~name=image5Name,
+                             ~src="object_url4",
+                             (),
+                           ),
+                           GLBTool.createFakeImage(
+                             ~name=image6Name,
+                             ~src="object_url5",
+                             (),
+                           ),
+                         )
+                      |> resolve;
+                    });
+               });
+          })
+        );
+      })
     );
 
-    describe("build texture data", () => {
+    describe("build basicSourceTexture data", () => {
       describe("set source", () =>
         testPromise("test use image with duplicate data as source", () => {
           let imageName = "image1";
@@ -126,7 +285,7 @@ let _ =
           let texture1Name = "texture1";
 
           let (state, textureResourceData1) =
-            GenerateSingleRABTool.ResourceData.createTextureResourceData(
+            GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
               ~state=state^,
               ~name=texture1Name,
               ~imageDataIndex=0,
@@ -135,7 +294,7 @@ let _ =
 
           let resourceData1 =
             GenerateSingleRABTool.ResourceData.buildResourceData(
-              ~textures=[|textureResourceData1|],
+              ~basicSourceTextures=[|textureResourceData1|],
               ~imageDataMap,
               (),
             );
@@ -156,7 +315,7 @@ let _ =
           let texture2Name = "texture2";
 
           let (state, textureResourceData2) =
-            GenerateSingleRABTool.ResourceData.createTextureResourceData(
+            GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
               ~state,
               ~name=texture2Name,
               ~imageDataIndex=0,
@@ -165,7 +324,7 @@ let _ =
 
           let resourceData2 =
             GenerateSingleRABTool.ResourceData.buildResourceData(
-              ~textures=[|textureResourceData2|],
+              ~basicSourceTextures=[|textureResourceData2|],
               ~imageDataMap,
               (),
             );
@@ -183,13 +342,13 @@ let _ =
                     let state = StateAPI.unsafeGetState();
 
                     let texture1 =
-                      OperateRABAssetBundleMainService.unsafeFindTextureByName(
+                      OperateRABAssetBundleMainService.unsafeFindBasicSourceTextureByName(
                         rab1RelativePath,
                         texture1Name,
                         state,
                       );
                     let texture2 =
-                      OperateRABAssetBundleMainService.unsafeFindTextureByName(
+                      OperateRABAssetBundleMainService.unsafeFindBasicSourceTextureByName(
                         rab2RelativePath,
                         texture2Name,
                         state,
@@ -207,9 +366,16 @@ let _ =
                     )
                     |> expect
                     == (
-                         {"name": imageName, "src": "object_url0"} |> Obj.magic,
-                         {"name": imageName, "src": "object_url0"}
-                         |> Obj.magic,
+                         GLBTool.createFakeImage(
+                           ~name=imageName,
+                           ~src="object_url0",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name=imageName,
+                           ~src="object_url0",
+                           (),
+                         ),
                        )
                     |> resolve;
                   });
@@ -218,7 +384,7 @@ let _ =
       );
 
       testPromise("test set parameter and name", () => {
-        open SourceTextureType;
+        open TextureType;
 
         let imageName = "image1";
 
@@ -242,15 +408,15 @@ let _ =
         let flipY = false;
 
         let (state, textureResourceData1) =
-          GenerateSingleRABTool.ResourceData.createTextureResourceData(
+          GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
             ~state=state^,
             ~name=texture1Name,
             ~imageDataIndex=0,
-            ~magFilter=magFilter |> SourceTextureType.filterToUint8,
-            ~minFilter=minFilter |> SourceTextureType.filterToUint8,
-            ~wrapS=wrapS |> SourceTextureType.wrapToUint8,
-            ~wrapT=wrapT |> SourceTextureType.wrapToUint8,
-            ~format=format |> SourceTextureType.formatToUint8,
+            ~magFilter=magFilter |> TextureType.filterToUint8,
+            ~minFilter=minFilter |> TextureType.filterToUint8,
+            ~wrapS=wrapS |> TextureType.wrapToUint8,
+            ~wrapT=wrapT |> TextureType.wrapToUint8,
+            ~format=format |> TextureType.formatToUint8,
             ~type_,
             ~flipY,
             (),
@@ -258,7 +424,7 @@ let _ =
 
         let resourceData1 =
           GenerateSingleRABTool.ResourceData.buildResourceData(
-            ~textures=[|textureResourceData1|],
+            ~basicSourceTextures=[|textureResourceData1|],
             ~imageDataMap,
             (),
           );
@@ -276,7 +442,7 @@ let _ =
                   let state = StateAPI.unsafeGetState();
 
                   let texture1 =
-                    OperateRABAssetBundleMainService.unsafeFindTextureByName(
+                    OperateRABAssetBundleMainService.unsafeFindBasicSourceTextureByName(
                       rab1RelativePath,
                       texture1Name,
                       state,
@@ -331,6 +497,314 @@ let _ =
                 });
            });
       });
+    });
+
+    describe("build cubemapTexture data", () =>
+      describe("set source", () =>
+        testPromise("test use image with duplicate data as source", () => {
+          let image1Name = "i1";
+          let image2Name = "i2";
+          let image3Name = "i3";
+          let image4Name = "i4";
+          let image5Name = "i5";
+          let image6Name = "i6";
+
+          let (
+            state,
+            textureResourceData1,
+            texture1Name,
+            (
+              imageDataMap1,
+              (image1_1, image1_2, image1_3, image1_4, image1_5, image1_6),
+            ),
+          ) =
+            GenerateSingleRABTool.Test.createCubemapTextureResourceData(
+              ~state=state^,
+              ~image1Name,
+              ~image2Name,
+              ~image3Name,
+              ~image4Name,
+              ~image5Name,
+              ~image6Name,
+              (),
+            );
+
+          let resourceData1 =
+            GenerateSingleRABTool.ResourceData.buildResourceData(
+              ~cubemapTextures=[|textureResourceData1|],
+              ~imageDataMap=imageDataMap1,
+              (),
+            );
+
+          let rab1 =
+            GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
+
+          let (
+            state,
+            textureResourceData2,
+            texture2Name,
+            (
+              imageDataMap2,
+              (image2_1, image2_2, image2_3, image2_4, image2_5, image2_6),
+            ),
+          ) =
+            GenerateSingleRABTool.Test.createCubemapTextureResourceData(
+              ~state,
+              ~image1Name,
+              ~image2Name,
+              ~image3Name,
+              ~image4Name,
+              ~image5Name,
+              ~image6Name,
+              (),
+            );
+
+          let resourceData2 =
+            GenerateSingleRABTool.ResourceData.buildResourceData(
+              ~cubemapTextures=[|textureResourceData2|],
+              ~imageDataMap=imageDataMap2,
+              (),
+            );
+
+          let rab2 =
+            GenerateSingleRABSystem.generateSingleRAB(resourceData2, state);
+
+          GenerateAllABTool.TestWithTwoRAB.generateAllAB((rab1, rab2), state)
+          |> MostTool.testStream(data => {
+               let (rab1RelativePath, rab2RelativePath) =
+                 GenerateAllABTool.TestWithTwoRAB.getRabRelativePaths();
+
+               AssembleRABTool.TestWithTwoRABs.assemble(data)
+               |> MostTool.testStream(() => {
+                    let state = StateAPI.unsafeGetState();
+
+                    let texture1 =
+                      OperateRABAssetBundleMainService.unsafeFindCubemapTextureByName(
+                        rab1RelativePath,
+                        texture1Name,
+                        state,
+                      );
+                    let texture2 =
+                      OperateRABAssetBundleMainService.unsafeFindCubemapTextureByName(
+                        rab2RelativePath,
+                        texture2Name,
+                        state,
+                      );
+
+                    (
+                      CubemapTextureAPI.unsafeGetCubemapTexturePXSource(
+                        texture1,
+                        state,
+                      ),
+                      CubemapTextureAPI.unsafeGetCubemapTextureNXSource(
+                        texture1,
+                        state,
+                      ),
+                      CubemapTextureAPI.unsafeGetCubemapTexturePYSource(
+                        texture1,
+                        state,
+                      ),
+                      CubemapTextureAPI.unsafeGetCubemapTextureNYSource(
+                        texture1,
+                        state,
+                      ),
+                      CubemapTextureAPI.unsafeGetCubemapTexturePZSource(
+                        texture1,
+                        state,
+                      ),
+                      CubemapTextureAPI.unsafeGetCubemapTextureNZSource(
+                        texture1,
+                        state,
+                      ),
+                      CubemapTextureAPI.unsafeGetCubemapTexturePXSource(
+                        texture2,
+                        state,
+                      ),
+                      CubemapTextureAPI.unsafeGetCubemapTextureNXSource(
+                        texture2,
+                        state,
+                      ),
+                      CubemapTextureAPI.unsafeGetCubemapTexturePYSource(
+                        texture2,
+                        state,
+                      ),
+                      CubemapTextureAPI.unsafeGetCubemapTextureNYSource(
+                        texture2,
+                        state,
+                      ),
+                      CubemapTextureAPI.unsafeGetCubemapTexturePZSource(
+                        texture2,
+                        state,
+                      ),
+                      CubemapTextureAPI.unsafeGetCubemapTextureNZSource(
+                        texture2,
+                        state,
+                      ),
+                    )
+                    |> expect
+                    == (
+                         GLBTool.createFakeImage(
+                           ~name=image1Name,
+                           ~src="object_url0",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name=image2Name,
+                           ~src="object_url1",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name=image3Name,
+                           ~src="object_url2",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name=image4Name,
+                           ~src="object_url3",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name=image5Name,
+                           ~src="object_url4",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name=image6Name,
+                           ~src="object_url5",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name=image1Name,
+                           ~src="object_url0",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name=image2Name,
+                           ~src="object_url1",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name=image3Name,
+                           ~src="object_url2",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name=image4Name,
+                           ~src="object_url3",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name=image5Name,
+                           ~src="object_url4",
+                           (),
+                         ),
+                         GLBTool.createFakeImage(
+                           ~name=image6Name,
+                           ~src="object_url5",
+                           (),
+                         ),
+                       )
+                    |> resolve;
+                  });
+             });
+        })
+      )
+    );
+
+    testPromise("test set parameter and name", () => {
+      open TextureType;
+
+      let (
+        textureName,
+        (imageDataMap, (image1, image2, image3, image4, image5, image6)),
+      ) =
+        GenerateSingleRABTool.Test.prepareCubemapTextureResourceData();
+
+      let texture1Name = "texture1";
+      let wrapS = Mirrored_repeat;
+      let wrapT = Repeat;
+      let magFilter = Nearest;
+      let minFilter = Nearest_mipmap_nearest;
+      let pxFormat = Rgbas3tcdxt1;
+      let pyType = 0;
+      let flipY = false;
+
+      let (state, textureResourceData1) =
+        GenerateSingleRABTool.ResourceData.createCubemapTextureResourceData(
+          ~state=state^,
+          ~name=texture1Name,
+          ~magFilter=magFilter |> TextureType.filterToUint8,
+          ~minFilter=minFilter |> TextureType.filterToUint8,
+          ~wrapS=wrapS |> TextureType.wrapToUint8,
+          ~wrapT=wrapT |> TextureType.wrapToUint8,
+          ~pxFormat=pxFormat |> TextureType.formatToUint8,
+          ~pyType,
+          ~flipY,
+          (),
+        );
+
+      let resourceData1 =
+        GenerateSingleRABTool.ResourceData.buildResourceData(
+          ~cubemapTextures=[|textureResourceData1|],
+          ~imageDataMap,
+          (),
+        );
+
+      let rab1 =
+        GenerateSingleRABSystem.generateSingleRAB(resourceData1, state);
+
+      GenerateAllABTool.TestWithOneRAB.generateAllAB(rab1, state)
+      |> MostTool.testStream(data => {
+           let rab1RelativePath =
+             GenerateAllABTool.TestWithOneRAB.getRabRelativePath();
+
+           AssembleRABTool.TestWithOneRAB.assemble(data)
+           |> MostTool.testStream(() => {
+                let state = StateAPI.unsafeGetState();
+
+                let texture1 =
+                  OperateRABAssetBundleMainService.unsafeFindCubemapTextureByName(
+                    rab1RelativePath,
+                    texture1Name,
+                    state,
+                  );
+
+                (
+                  CubemapTextureAPI.unsafeGetCubemapTextureName(
+                    texture1,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTextureWrapS(texture1, state),
+                  CubemapTextureAPI.getCubemapTextureWrapT(texture1, state),
+                  CubemapTextureAPI.getCubemapTextureMagFilter(
+                    texture1,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTextureMinFilter(
+                    texture1,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTexturePXFormat(
+                    texture1,
+                    state,
+                  ),
+                  CubemapTextureAPI.getCubemapTexturePYType(texture1, state),
+                  CubemapTextureAPI.getCubemapTextureFlipY(texture1, state),
+                )
+                |> expect
+                == (
+                     texture1Name,
+                     wrapS,
+                     wrapT,
+                     magFilter,
+                     minFilter,
+                     pxFormat,
+                     pyType,
+                     flipY,
+                   )
+                |> resolve;
+              });
+         });
     });
 
     describe("build basicMaterial data", () =>
@@ -459,7 +933,7 @@ let _ =
 
         let texture1Name = "t1";
         let (state, textureResourceData1) =
-          GenerateSingleRABTool.ResourceData.createTextureResourceData(
+          GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
             ~state=state^,
             ~imageDataIndex=0,
             ~name=texture1Name,
@@ -477,7 +951,7 @@ let _ =
 
         let resourceData1 =
           GenerateSingleRABTool.ResourceData.buildResourceData(
-            ~textures=[|textureResourceData1|],
+            ~basicSourceTextures=[|textureResourceData1|],
             ~lightMaterials=[|lightMaterial1|],
             ~imageDataMap,
             (),
@@ -507,7 +981,7 @@ let _ =
                     state,
                   )
                   |> expect
-                  == OperateRABAssetBundleMainService.unsafeFindTextureByName(
+                  == OperateRABAssetBundleMainService.unsafeFindBasicSourceTextureByName(
                        rab1RelativePath,
                        texture1Name,
                        state,

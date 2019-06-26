@@ -152,7 +152,7 @@ let assembleWDBData =
          isSetIMGUIFunc && hasIMGUIFunc ?
            state |> SetIMGUIFuncSystem.setIMGUIFunc(wd) : state;
 
-       let (state, imageUint8ArrayDataMap, gameObjectArr) =
+       let (state, imageUint8ArrayDataMap, gameObjectArr, cubemapTextureArr) =
          state
          |> BatchCreateSystem.batchCreate(isRenderLight, wd)
          |> BatchOperateWholeSystem.batchOperate(
@@ -161,6 +161,8 @@ let assembleWDBData =
               AssembleWholeWDBUtils.buildBufferArray(buffers, binBuffer),
               (isBindEvent, isActiveCamera),
             );
+
+       let state = SetSkyboxSystem.setSkybox(wd, cubemapTextureArr, state);
 
        let (state, rootGameObject) =
          BuildRootGameObjectSystem.build(wd, (state, gameObjectArr));

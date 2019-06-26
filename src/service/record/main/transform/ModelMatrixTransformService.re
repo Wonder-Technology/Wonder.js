@@ -64,7 +64,7 @@ let getNormalMatrixTypeArray =
     matrix :
     {
       let (_, has, unUsedFloat9Array) =
-        GlobalTempService.popUnUsedFloat9Array(globalTempRecord);
+        AllGlobalTempService.popUnUsedFloat9Array(globalTempRecord);
 
       let matrix =
         _getNormalMatrixTypeArray(
@@ -128,7 +128,7 @@ let setPositionByTuple =
       position,
       invert(
         localToWorldMatrix,
-        GlobalTempService.getFloat32Array1(globalTempRecord),
+        AllGlobalTempService.getFloat32Array1(globalTempRecord),
       ),
     ),
     record,
@@ -206,7 +206,7 @@ let setScaleByTuple =
       position,
       invert(
         localToWorldMatrix,
-        GlobalTempService.getFloat32Array1(globalTempRecord),
+        AllGlobalTempService.getFloat32Array1(globalTempRecord),
       ),
     ),
     record,

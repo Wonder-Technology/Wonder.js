@@ -1,6 +1,6 @@
 open StateInitLightMaterialType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let _getMaterialShaderLibDataArrByStaticBranch =
   (.
@@ -32,27 +32,27 @@ let _isPass =
     switch (condition) {
     | "light_has_map" =>
       TextureIndexService.isTextureNotDefaultValue(
-        OperateTypeArrayLightMaterialService.getTextureIndex(.
+        OperateTypeArrayAllLightMaterialService.getTextureIndex(.
           materialIndex,
           materialRecord.diffuseTextureIndices,
         ),
       )
       || TextureIndexService.isTextureNotDefaultValue(
-           OperateTypeArrayLightMaterialService.getTextureIndex(.
+           OperateTypeArrayAllLightMaterialService.getTextureIndex(.
              materialIndex,
              materialRecord.specularTextureIndices,
            ),
          )
     | "has_diffuse_map" =>
       TextureIndexService.isTextureNotDefaultValue(
-        OperateTypeArrayLightMaterialService.getTextureIndex(.
+        OperateTypeArrayAllLightMaterialService.getTextureIndex(.
           materialIndex,
           materialRecord.diffuseTextureIndices,
         ),
       )
     | "has_specular_map" =>
       TextureIndexService.isTextureNotDefaultValue(
-        OperateTypeArrayLightMaterialService.getTextureIndex(.
+        OperateTypeArrayAllLightMaterialService.getTextureIndex(.
           materialIndex,
           materialRecord.specularTextureIndices,
         ),

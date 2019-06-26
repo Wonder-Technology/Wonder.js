@@ -1,6 +1,6 @@
 open WonderWebgl.GlType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let _addAmbientLightSendData =
     ((field, program, uniformCacheMap, uniformLocationMap), sendDataArrTuple) =>
@@ -106,7 +106,7 @@ let _readUniforms =
                HandleCameraUniformConfigDataService.addCameraSendData(
                  (
                    field,
-                   GLSLLocationService.getUniformLocationAndCache(
+                   AllGLSLLocationService.getUniformLocationAndCache(
                      program,
                      name,
                      uniformLocationMap,
@@ -122,7 +122,7 @@ let _readUniforms =
                HandleMaterialUniformConfigDataService.addLightMaterialSendData(
                  (
                    field,
-                   GLSLLocationService.getUniformLocationAndCache(
+                   AllGLSLLocationService.getUniformLocationAndCache(
                      program,
                      name,
                      uniformLocationMap,
@@ -146,7 +146,7 @@ let _readUniforms =
                HandleModelUniformConfigDataService.addModelSendData(
                  (
                    field,
-                   GLSLLocationService.getUniformLocationAndCache(
+                   AllGLSLLocationService.getUniformLocationAndCache(
                      program,
                      name,
                      uniformLocationMap,

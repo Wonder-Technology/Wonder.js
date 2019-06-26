@@ -15,6 +15,7 @@ module.exports = {
   ],
 
   scopes: [
+    { name: "skybox" },
     { name: "script" },
     { name: "state" },
     { name: "api" },

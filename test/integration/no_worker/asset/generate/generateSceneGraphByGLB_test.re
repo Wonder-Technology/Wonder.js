@@ -76,34 +76,7 @@ let _ =
             gltf
             |> GenerateSceneGraphSystemTool.contain(
                  {|
-  "bufferViews": [
-    {
-      "buffer": 0,
-      "byteOffset": 0,
-      "byteLength": 288
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 288,
-      "byteLength": 288
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 576,
-      "byteLength": 192
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 768,
-      "byteLength": 72
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 840,
-      "byteLength": 2
-    }
-  ]
-
+"bufferViews":[{"buffer":0,"byteOffset":0,"byteLength":288},{"buffer":0,"byteOffset":288,"byteLength":288},{"buffer":0,"byteOffset":576,"byteLength":192},{"buffer":0,"byteOffset":768,"byteLength":72},{"buffer":0,"byteOffset":840,"byteLength":227}]
   |},
                ),
           state,
@@ -127,8 +100,11 @@ let _ =
                  )
               |> expect
               == [|
-                   {"name": "CesiumLogoFlat.png", "src": "object_url1"}
-                   |> Obj.magic,
+                   GLBTool.createFakeImage(
+                     ~name="CesiumLogoFlat.png",
+                     ~src="object_url1",
+                     (),
+                   ),
                  |],
             state,
           );
@@ -147,58 +123,7 @@ let _ =
             gltf
             |> GenerateSceneGraphSystemTool.contain(
                  {|
-  "bufferViews": [
-    {
-      "buffer": 0,
-      "byteOffset": 0,
-      "byteLength": 11472
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 11472,
-      "byteLength": 11472
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 22944,
-      "byteLength": 7648
-    },
-    {
-      "buffer": 0,
-      "byteOffset": 30592,
-        "byteLength": 20208
-          },
-            {
-              "buffer": 0,
-              "byteOffset": 50800,
-              "byteLength": 18048
-            },
-            {
-              "buffer": 0,
-              "byteOffset": 68848,
-              "byteLength": 18048
-            },
-            {
-              "buffer": 0,
-              "byteOffset": 86896,
-              "byteLength": 12032
-            },
-            {
-              "buffer": 0,
-              "byteOffset": 98928,
-              "byteLength": 19344
-            },
-            {
-              "buffer": 0,
-              "byteOffset": 118272,
-              "byteLength": 2
-            },
-            {
-              "buffer": 0,
-              "byteOffset": 118276,
-              "byteLength": 2
-            }
-          ]
+"bufferViews":[{"buffer":0,"byteOffset":0,"byteLength":11472},{"buffer":0,"byteOffset":11472,"byteLength":11472},{"buffer":0,"byteOffset":22944,"byteLength":7648},{"buffer":0,"byteOffset":30592,"byteLength":20208},{"buffer":0,"byteOffset":50800,"byteLength":18048},{"buffer":0,"byteOffset":68848,"byteLength":18048},{"buffer":0,"byteOffset":86896,"byteLength":12032},{"buffer":0,"byteOffset":98928,"byteLength":19344},{"buffer":0,"byteOffset":118272,"byteLength":227},{"buffer":0,"byteOffset":118500,"byteLength":167}]
          |},
                ),
           state,
@@ -422,7 +347,9 @@ let _ =
   "textures": [
     {
       "extras": {
-        "flipY": false
+        "flipY": false,
+        "format": 1,
+        "type_": 0
       },
       "sampler": 0,
       "source": 0,
@@ -430,7 +357,9 @@ let _ =
     },
     {
       "extras": {
-        "flipY": false
+        "flipY": false,
+        "format": 1,
+        "type_": 0
       },
       "sampler": 0,
       "source": 0,
@@ -471,15 +400,51 @@ let _ =
                  )
               |> expect
               == [|
-                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
-                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
-                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
-                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
-                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
-                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
-                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
-                   {"name": "image_3", "src": "object_url2"} |> Obj.magic,
-                   {"name": "image_2", "src": "object_url3"} |> Obj.magic,
+                   GLBTool.createFakeImage(
+                     ~name="image_3",
+                     ~src="object_url2",
+                     (),
+                   ),
+                   GLBTool.createFakeImage(
+                     ~name="image_3",
+                     ~src="object_url2",
+                     (),
+                   ),
+                   GLBTool.createFakeImage(
+                     ~name="image_3",
+                     ~src="object_url2",
+                     (),
+                   ),
+                   GLBTool.createFakeImage(
+                     ~name="image_3",
+                     ~src="object_url2",
+                     (),
+                   ),
+                   GLBTool.createFakeImage(
+                     ~name="image_3",
+                     ~src="object_url2",
+                     (),
+                   ),
+                   GLBTool.createFakeImage(
+                     ~name="image_3",
+                     ~src="object_url2",
+                     (),
+                   ),
+                   GLBTool.createFakeImage(
+                     ~name="image_3",
+                     ~src="object_url2",
+                     (),
+                   ),
+                   GLBTool.createFakeImage(
+                     ~name="image_3",
+                     ~src="object_url2",
+                     (),
+                   ),
+                   GLBTool.createFakeImage(
+                     ~name="image_2",
+                     ~src="object_url3",
+                     (),
+                   ),
                  |],
             state,
           );

@@ -16,6 +16,9 @@ let unsafeGetArrayBufferViewSourceTextureCount =
     ({arrayBufferViewSourceTextureCount}) =>
   arrayBufferViewSourceTextureCount |> OptionService.unsafeGet;
 
+let unsafeGetCubemapTextureCount = ({cubemapTextureCount}) =>
+  cubemapTextureCount |> OptionService.unsafeGet;
+
 let unsafeGetDirectionLightCount = ({directionLightCount}) =>
   directionLightCount |> OptionService.unsafeGet;
 

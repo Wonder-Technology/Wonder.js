@@ -17,7 +17,7 @@ let execJob = (_, e, stateData) =>
         geometryIndices,
         sourceInstanceIndices,
       ) =
-        CreateTypeArrayRenderObjectService.createTypeArrays(
+        CreateTypeArrayAllRenderObjectService.createTypeArrays(
           lightRenderData##buffer,
           lightRenderData##bufferCount,
         );

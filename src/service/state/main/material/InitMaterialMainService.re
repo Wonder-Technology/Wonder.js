@@ -54,7 +54,7 @@ let handleInitComponent =
         state;
       } :
       {
-        let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+        let gl = AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
         let isSupportInstance =
           JudgeInstanceMainService.isSupportInstance(state);
         initMaterialFunc(.
@@ -82,7 +82,7 @@ let _reInitComponentsIfNoWorker =
       (reInitMaterialFunc, createInitMaterialStateFunc),
       {gameObjectRecord} as state,
     ) => {
-  let gl = DeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
+  let gl = AllDeviceManagerService.unsafeGetGl(. state.deviceManagerRecord);
   let isSupportInstance = JudgeInstanceMainService.isSupportInstance(state);
   reInitMaterialFunc(.
     gl,
@@ -124,9 +124,9 @@ let reInitComponents =
                shaderIndices,
              );
 
-           ShaderIndexShaderService.isDefaultShaderIndex(currentShaderIndex) ?
+           ShaderIndexAllShaderService.isDefaultShaderIndex(currentShaderIndex) ?
              () :
-             ShaderIndexShaderService.removeShaderIndexFromMaterial(
+             ShaderIndexAllShaderService.removeShaderIndexFromMaterial(
                currentShaderIndex,
                materialIndex,
                shaderRecord,

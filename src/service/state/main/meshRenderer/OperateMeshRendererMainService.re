@@ -3,7 +3,7 @@ open MeshRendererType;
 open StateDataMainType;
 
 let getDrawMode = (meshRenderer, state) =>
-  OperateTypeArrayMeshRendererService.getDrawMode(
+  OperateTypeArrayAllMeshRendererService.getDrawMode(
     meshRenderer,
     RecordMeshRendererMainService.getRecord(state).drawModes,
   );
@@ -18,7 +18,7 @@ let setDrawMode = (meshRenderer, drawMode, state) => {
       Some({
         ...meshRendererRecord,
         drawModes:
-          OperateTypeArrayMeshRendererService.setDrawMode(
+          OperateTypeArrayAllMeshRendererService.setDrawMode(
             meshRenderer,
             drawMode,
             drawModes,
@@ -28,7 +28,7 @@ let setDrawMode = (meshRenderer, drawMode, state) => {
 };
 
 let getIsRender = (meshRenderer, state) =>
-  OperateTypeArrayMeshRendererService.getIsRender(
+  OperateTypeArrayAllMeshRendererService.getIsRender(
     meshRenderer,
     RecordMeshRendererMainService.getRecord(state).isRenders,
   )
@@ -74,7 +74,7 @@ let _setIsRender =
       Some({
         ...meshRendererRecord,
         isRenders:
-          OperateTypeArrayMeshRendererService.setIsRender(
+          OperateTypeArrayAllMeshRendererService.setIsRender(
             meshRenderer,
             isRender === true ?
               BufferMeshRendererService.getRender() :

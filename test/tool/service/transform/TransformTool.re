@@ -160,7 +160,7 @@ let changeTupleToTypeArray = ((x, y, z)) => Float32Array.make([|x, y, z|]);
 
 let createBuffer = BufferTransformService.createBuffer;
 
-let createTypeArrays = CreateTypeArrayTransformService.createTypeArrays;
+let createTypeArrays = CreateTypeArrayAllTransformService.createTypeArrays;
 
 let setAllTypeArrDataToDefault =
     (

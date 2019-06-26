@@ -1,4 +1,4 @@
-open InstanceType;
+open AllInstanceType;
 
 open SourceInstanceType;
 

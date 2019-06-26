@@ -8,7 +8,7 @@ let getDiffuseMap = (material, state) => {
 
   ManagerMapMaterialMainService.getMap(
     material,
-    OperateTypeArrayLightMaterialService.getTextureIndex,
+    OperateTypeArrayAllLightMaterialService.getTextureIndex,
     diffuseTextureIndices,
   );
 };
@@ -31,7 +31,7 @@ let setDiffuseMap = (material, texture, state) => {
     ManagerMapMaterialMainService.setMap(
       material,
       texture,
-      OperateTypeArrayLightMaterialService.setTextureIndex,
+      OperateTypeArrayAllLightMaterialService.setTextureIndex,
       diffuseTextureIndices,
     );
 
@@ -59,7 +59,7 @@ let removeDiffuseMap = (material, state) => {
   let diffuseTextureIndices =
     ManagerMapMaterialMainService.removeMap(
       material,
-      OperateTypeArrayLightMaterialService.setTextureIndex,
+      OperateTypeArrayAllLightMaterialService.setTextureIndex,
       diffuseTextureIndices,
     );
 
@@ -76,7 +76,7 @@ let getSpecularMap = (material, state) => {
 
   ManagerMapMaterialMainService.getMap(
     material,
-    OperateTypeArrayLightMaterialService.getTextureIndex,
+    OperateTypeArrayAllLightMaterialService.getTextureIndex,
     specularTextureIndices,
   );
 };
@@ -99,7 +99,7 @@ let setSpecularMap = (material, texture, state) => {
     ManagerMapMaterialMainService.setMap(
       material,
       texture,
-      OperateTypeArrayLightMaterialService.setTextureIndex,
+      OperateTypeArrayAllLightMaterialService.setTextureIndex,
       specularTextureIndices,
     );
 
@@ -127,7 +127,7 @@ let removeSpecularMap = (material, {settingRecord} as state) => {
   let specularTextureIndices =
     ManagerMapMaterialMainService.removeMap(
       material,
-      OperateTypeArrayLightMaterialService.setTextureIndex,
+      OperateTypeArrayAllLightMaterialService.setTextureIndex,
       specularTextureIndices,
     );
 

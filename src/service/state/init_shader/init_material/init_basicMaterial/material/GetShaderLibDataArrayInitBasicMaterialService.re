@@ -1,6 +1,6 @@
 open StateInitBasicMaterialType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let _getMaterialShaderLibDataArrByStaticBranch =
   (.
@@ -31,7 +31,7 @@ let _isPass =
     /* switch (condition) {
        | "basic_has_map" =>
          MapUnitService.hasMap(
-           OperateTypeArrayBasicMaterialService.getActivableTextureUnit(.
+           OperateTypeArrayAllBasicMaterialService.getActivableTextureUnit(.
              materialIndex,
              materialRecord.mapUnits,
            ),

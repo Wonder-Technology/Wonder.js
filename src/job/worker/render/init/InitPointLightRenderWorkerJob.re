@@ -4,7 +4,7 @@ open RenderWorkerPointLightType;
 
 let _createRecordWithCreatedTypeArrays = (buffer, count, index, state) => {
   let (colors, intensities, constants, linears, quadratics, ranges) =
-    CreateTypeArrayPointLightService.createTypeArrays(buffer, count);
+    CreateTypeArrayAllPointLightService.createTypeArrays(buffer, count);
 
   state.pointLightRecord =
     Some({

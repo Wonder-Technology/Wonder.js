@@ -21,8 +21,8 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    describe("test images", () =>
-      test("test", () => {
+    describe("test images", () => {
+      test("test from basic source texture", () => {
         let image1 = GenerateSingleRABTool.ResourceData.buildImageData();
 
         let imageDataMap =
@@ -30,7 +30,7 @@ let _ =
           |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
         let (state, textureResourceData) =
-          GenerateSingleRABTool.ResourceData.createTextureResourceData(
+          GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
             ~state=state^,
             ~name="texture1",
             ~imageDataIndex=0,
@@ -39,7 +39,7 @@ let _ =
 
         let resourceData =
           GenerateSingleRABTool.ResourceData.buildResourceData(
-            ~textures=[|textureResourceData|],
+            ~basicSourceTextures=[|textureResourceData|],
             ~imageDataMap,
             (),
           );
@@ -62,18 +62,78 @@ let _ =
                (),
              ),
            |];
-      })
-    );
+      });
+      test("test from cubemap texture", () => {
+        let (
+          state,
+          textureResourceData,
+          textureName,
+          (imageDataMap, (image1, image2, image3, image4, image5, image6)),
+        ) =
+          GenerateSingleRABTool.Test.createCubemapTextureResourceData(
+            ~state=state^,
+            (),
+          );
 
-    /* TODO describe
-       ("test textures",
-       (
-       () => {
+        let resourceData =
+          GenerateSingleRABTool.ResourceData.buildResourceData(
+            ~cubemapTextures=[|textureResourceData|],
+            ~imageDataMap,
+            (),
+          );
 
-       })
-       ); */
+        let rab =
+          GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
 
-    describe("test lightMaterials", () => {
+        let content =
+          GenerateSingleRABTool.ResourceAssetBundleContent.getResourceAssetBundleContent(
+            rab,
+          );
+
+        content.images
+        |> expect
+        == [|
+             GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+               ~name=image1.name,
+               ~mimeType=image1.mimeType,
+               ~bufferView=0,
+               (),
+             ),
+             GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+               ~name=image2.name,
+               ~mimeType=image2.mimeType,
+               ~bufferView=1,
+               (),
+             ),
+             GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+               ~name=image3.name,
+               ~mimeType=image3.mimeType,
+               ~bufferView=2,
+               (),
+             ),
+             GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+               ~name=image4.name,
+               ~mimeType=image4.mimeType,
+               ~bufferView=3,
+               (),
+             ),
+             GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+               ~name=image5.name,
+               ~mimeType=image5.mimeType,
+               ~bufferView=4,
+               (),
+             ),
+             GenerateSingleRABTool.ResourceAssetBundleContent.buildImageData(
+               ~name=image6.name,
+               ~mimeType=image6.mimeType,
+               ~bufferView=5,
+               (),
+             ),
+           |];
+      });
+    });
+
+    describe("test lightMaterials and basicSourceTextures", () => {
       test(
         "if lightMaterial->maps not contain in resourceData->textures, contract error",
         () => {
@@ -85,7 +145,7 @@ let _ =
 
         let texture1Name = "texture1";
         let (state, textureResourceData1) =
-          GenerateSingleRABTool.ResourceData.createTextureResourceData(
+          GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
             ~state=state^,
             ~name=texture1Name,
             ~imageDataIndex=0,
@@ -103,7 +163,7 @@ let _ =
 
         let resourceData =
           GenerateSingleRABTool.ResourceData.buildResourceData(
-            ~textures=[||],
+            ~basicSourceTextures=[||],
             ~lightMaterials=[|lightMaterial|],
             ~imageDataMap,
             (),
@@ -113,149 +173,193 @@ let _ =
           GenerateSingleRABSystem.generateSingleRAB(resourceData, state)
         )
         |> toThrowMessage(
-             "expect lightMaterial->maps contain in resourceData->textures",
+             "expect lightMaterial->maps contain in resourceData->basicSourceTextures",
            );
       });
 
       describe(
-        "test texture resource data not contain in lightMaterial resource data",
+        "test basicSourceTexture resource data not contain in lightMaterial resource data",
         () => {
-        test("test lightMaterial has no diffuseMap", () => {
-          let image1 = GenerateSingleRABTool.ResourceData.buildImageData();
+          test("test lightMaterial has no diffuseMap", () => {
+            let image1 = GenerateSingleRABTool.ResourceData.buildImageData();
 
-          let imageDataMap =
-            WonderCommonlib.ImmutableSparseMapService.createEmpty()
-            |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
+            let imageDataMap =
+              WonderCommonlib.ImmutableSparseMapService.createEmpty()
+              |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
-          let texture1Name = "texture1";
-          let (state, textureResourceData) =
-            GenerateSingleRABTool.ResourceData.createTextureResourceData(
-              ~state=state^,
-              ~name=texture1Name,
-              ~imageDataIndex=0,
-              (),
-            );
+            let texture1Name = "texture1";
+            let (state, textureResourceData) =
+              GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
+                ~state=state^,
+                ~name=texture1Name,
+                ~imageDataIndex=0,
+                (),
+              );
 
-          let lightMaterial1Name = "lightMaterial1";
-          let (state, lightMaterial) =
-            GenerateSingleRABTool.ResourceData.createLightMaterialResourceData(
-              ~state,
-              ~diffuseMap=None,
-              ~name=lightMaterial1Name,
-              (),
-            );
+            let lightMaterial1Name = "lightMaterial1";
+            let (state, lightMaterial) =
+              GenerateSingleRABTool.ResourceData.createLightMaterialResourceData(
+                ~state,
+                ~diffuseMap=None,
+                ~name=lightMaterial1Name,
+                (),
+              );
 
-          let resourceData =
-            GenerateSingleRABTool.ResourceData.buildResourceData(
-              ~textures=[|textureResourceData|],
-              ~lightMaterials=[|lightMaterial|],
-              ~imageDataMap,
-              (),
-            );
+            let resourceData =
+              GenerateSingleRABTool.ResourceData.buildResourceData(
+                ~basicSourceTextures=[|textureResourceData|],
+                ~lightMaterials=[|lightMaterial|],
+                ~imageDataMap,
+                (),
+              );
 
-          let rab =
-            GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
+            let rab =
+              GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
 
-          let content =
-            GenerateSingleRABTool.ResourceAssetBundleContent.getResourceAssetBundleContent(
-              rab,
-            );
+            let content =
+              GenerateSingleRABTool.ResourceAssetBundleContent.getResourceAssetBundleContent(
+                rab,
+              );
 
-          (content.textures, content.lightMaterials)
-          |> expect
-          == (
-               [|
-                 GenerateSingleRABTool.ResourceAssetBundleContent.buildTextureData(
-                   ~name=texture1Name,
-                   ~source=0,
-                   (),
-                 ),
-               |],
-               [|
-                 GenerateSingleRABTool.ResourceAssetBundleContent.buildLightMaterialData(
-                   ~name=lightMaterial1Name,
-                   ~diffuseMap=None,
-                   (),
-                 ),
-               |],
-             );
-        });
-        test("test lightMaterial has one diffuseMap", () => {
-          let image1 = GenerateSingleRABTool.ResourceData.buildImageData();
+            (content.basicSourceTextures, content.lightMaterials)
+            |> expect
+            == (
+                 [|
+                   GenerateSingleRABTool.ResourceAssetBundleContent.buildBasicSourceTextureData(
+                     ~name=texture1Name,
+                     ~source=0,
+                     (),
+                   ),
+                 |],
+                 [|
+                   GenerateSingleRABTool.ResourceAssetBundleContent.buildLightMaterialData(
+                     ~name=lightMaterial1Name,
+                     ~diffuseMap=None,
+                     (),
+                   ),
+                 |],
+               );
+          });
+          test("test lightMaterial has one diffuseMap", () => {
+            let image1 = GenerateSingleRABTool.ResourceData.buildImageData();
 
-          let imageDataMap =
-            WonderCommonlib.ImmutableSparseMapService.createEmpty()
-            |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
+            let imageDataMap =
+              WonderCommonlib.ImmutableSparseMapService.createEmpty()
+              |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
-          let texture1Name = "texture1";
-          let (state, textureResourceData1) =
-            GenerateSingleRABTool.ResourceData.createTextureResourceData(
-              ~state=state^,
-              ~name=texture1Name,
-              ~imageDataIndex=0,
-              (),
-            );
+            let texture1Name = "texture1";
+            let (state, textureResourceData1) =
+              GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
+                ~state=state^,
+                ~name=texture1Name,
+                ~imageDataIndex=0,
+                (),
+              );
 
-          let texture2Name = "texture2";
-          let (state, textureResourceData2) =
-            GenerateSingleRABTool.ResourceData.createTextureResourceData(
-              ~state,
-              ~name=texture2Name,
-              ~imageDataIndex=0,
-              (),
-            );
+            let texture2Name = "texture2";
+            let (state, textureResourceData2) =
+              GenerateSingleRABTool.ResourceData.createBasicSourceTextureResourceData(
+                ~state,
+                ~name=texture2Name,
+                ~imageDataIndex=0,
+                (),
+              );
 
-          let lightMaterial1Name = "lightMaterial1";
-          let (state, lightMaterial) =
-            GenerateSingleRABTool.ResourceData.createLightMaterialResourceData(
-              ~state,
-              ~diffuseMap=Some(textureResourceData2.textureComponent),
-              ~name=lightMaterial1Name,
-              (),
-            );
+            let lightMaterial1Name = "lightMaterial1";
+            let (state, lightMaterial) =
+              GenerateSingleRABTool.ResourceData.createLightMaterialResourceData(
+                ~state,
+                ~diffuseMap=Some(textureResourceData2.textureComponent),
+                ~name=lightMaterial1Name,
+                (),
+              );
 
-          let resourceData =
-            GenerateSingleRABTool.ResourceData.buildResourceData(
-              ~textures=[|textureResourceData1, textureResourceData2|],
-              ~lightMaterials=[|lightMaterial|],
-              ~imageDataMap,
-              (),
-            );
+            let resourceData =
+              GenerateSingleRABTool.ResourceData.buildResourceData(
+                ~basicSourceTextures=[|
+                  textureResourceData1,
+                  textureResourceData2,
+                |],
+                ~lightMaterials=[|lightMaterial|],
+                ~imageDataMap,
+                (),
+              );
 
-          let rab =
-            GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
+            let rab =
+              GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
 
-          let content =
-            GenerateSingleRABTool.ResourceAssetBundleContent.getResourceAssetBundleContent(
-              rab,
-            );
+            let content =
+              GenerateSingleRABTool.ResourceAssetBundleContent.getResourceAssetBundleContent(
+                rab,
+              );
 
-          (content.textures, content.lightMaterials)
-          |> expect
-          == (
-               [|
-                 GenerateSingleRABTool.ResourceAssetBundleContent.buildTextureData(
-                   ~name=texture1Name,
-                   ~source=0,
-                   (),
-                 ),
-                 GenerateSingleRABTool.ResourceAssetBundleContent.buildTextureData(
-                   ~name=texture2Name,
-                   ~source=0,
-                   (),
-                 ),
-               |],
-               [|
-                 GenerateSingleRABTool.ResourceAssetBundleContent.buildLightMaterialData(
-                   ~name=lightMaterial1Name,
-                   ~diffuseMap=Some(1),
-                   (),
-                 ),
-               |],
-             );
-        });
-      });
+            (content.basicSourceTextures, content.lightMaterials)
+            |> expect
+            == (
+                 [|
+                   GenerateSingleRABTool.ResourceAssetBundleContent.buildBasicSourceTextureData(
+                     ~name=texture1Name,
+                     ~source=0,
+                     (),
+                   ),
+                   GenerateSingleRABTool.ResourceAssetBundleContent.buildBasicSourceTextureData(
+                     ~name=texture2Name,
+                     ~source=0,
+                     (),
+                   ),
+                 |],
+                 [|
+                   GenerateSingleRABTool.ResourceAssetBundleContent.buildLightMaterialData(
+                     ~name=lightMaterial1Name,
+                     ~diffuseMap=Some(1),
+                     (),
+                   ),
+                 |],
+               );
+          });
+        },
+      );
     });
+
+    describe("test cubemapTextures", () =>
+      test("test", () => {
+        let (state, textureResourceData, textureName, (imageDataMap, _)) =
+          GenerateSingleRABTool.Test.createCubemapTextureResourceData(
+            ~state=state^,
+            (),
+          );
+
+        let resourceData =
+          GenerateSingleRABTool.ResourceData.buildResourceData(
+            ~cubemapTextures=[|textureResourceData|],
+            ~imageDataMap,
+            (),
+          );
+
+        let rab =
+          GenerateSingleRABSystem.generateSingleRAB(resourceData, state);
+
+        let content =
+          GenerateSingleRABTool.ResourceAssetBundleContent.getResourceAssetBundleContent(
+            rab,
+          );
+
+        content.cubemapTextures
+        |> expect
+        == [|
+             GenerateSingleRABTool.ResourceAssetBundleContent.buildCubemapTextureData(
+               ~name=textureName,
+               ~pxSource=0,
+               ~nxSource=1,
+               ~pySource=2,
+               ~nySource=3,
+               ~pzSource=4,
+               ~nzSource=5,
+               (),
+             ),
+           |];
+      })
+    );
 
     describe("test geometrys", () =>
       test("test", () => {

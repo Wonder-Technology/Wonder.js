@@ -47,7 +47,7 @@ let _initBufferData =
     (sourceInstanceCount, objectInstanceCountPerSourceInstance, defaultIsTransformStatic) => {
   let buffer = createBuffer(sourceInstanceCount, objectInstanceCountPerSourceInstance);
   let (objectInstanceTransformCollections, isTransformStatics) =
-    CreateTypeArraySourceInstanceService.createTypeArrays(
+    CreateTypeArrayAllSourceInstanceService.createTypeArrays(
       buffer,
       sourceInstanceCount,
       objectInstanceCountPerSourceInstance

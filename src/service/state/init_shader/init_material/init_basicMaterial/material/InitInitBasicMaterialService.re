@@ -2,7 +2,7 @@ open StateInitBasicMaterialType;
 
 open InitMaterialBasicMaterialType;
 
-open RenderConfigType;
+open AllRenderConfigType;
 
 let _getShaderLibItems = ({materialShaders}) => {
   let shaderName = "render_basic";

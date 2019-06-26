@@ -44,7 +44,15 @@ let buildFakeTextEncoder =
     |}
   ];
 
-let _createFakeImage = src => {"src": src, "name": ""};
+let _createFakeImage = src => {
+  "src": src,
+  "name": "",
+  "width": 2,
+  "height": 4,
+};
+
+let createFakeImage = (~name="", ~src="", ~width=2, ~height=4, ()) =>
+  {"src": src, "name": name, "width": 2, "height": 4} |> Obj.magic;
 
 let buildFakeURL = [%raw
   sandbox => {|
@@ -59,6 +67,7 @@ let buildFakeURL = [%raw
         URL.createObjectURL.onCall(3).returns(_createFakeImage("object_url3"));
         URL.createObjectURL.onCall(4).returns(_createFakeImage("object_url4"));
         URL.createObjectURL.onCall(5).returns(_createFakeImage("object_url5"));
+        URL.createObjectURL.onCall(6).returns(_createFakeImage("object_url6"));
 
         window.URL = URL;
     |}
