@@ -44,7 +44,7 @@ let _ =
       describe("is need updates", () =>
         test("default is need update", () => {
           let (state, texture) = createCubemapTexture(state^);
-          CubemapTextureTool.isNeedUpdate(texture, state) |> expect == true;
+          CubemapTextureTool.getIsNeedUpdate(texture, state) |> expect == true;
         })
       );
 
@@ -175,6 +175,24 @@ let _ =
         let state = state |> setCubemapTextureFlipY(texture, false);
 
         getCubemapTextureFlipY(texture, state) |> expect == false;
+      })
+    );
+
+    describe("getCubemapTextureIsNeedUpdate", () =>
+      test("default is true", () => {
+        let (state, texture) = createCubemapTexture(state^);
+
+        state |> getCubemapTextureIsNeedUpdate(texture) |> expect == true;
+      })
+    );
+
+    describe("setCubemapTextureIsNeedUpdate", () =>
+      test("test set", () => {
+        let (state, texture) = createCubemapTexture(state^);
+
+        let state = state |> setCubemapTextureIsNeedUpdate(texture, false);
+
+        state |> getCubemapTextureIsNeedUpdate(texture) |> expect == false;
       })
     );
 

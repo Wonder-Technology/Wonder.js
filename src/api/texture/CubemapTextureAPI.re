@@ -957,6 +957,19 @@ let setCubemapTextureName = (texture, name, state: StateDataMainType.state) =>
      ); */
   NameCubemapTextureMainService.setName(texture, name, state);
 
+let getCubemapTextureIsNeedUpdate = (texture, state) =>
+  OperateCubemapTextureMainService.getIsNeedUpdate(texture, state)
+  === BufferTextureService.getNeedUpdate();
+
+let setCubemapTextureIsNeedUpdate = (texture, isNeedUpdate, state) =>
+  OperateCubemapTextureMainService.setIsNeedUpdate(
+    texture,
+    isNeedUpdate ?
+      BufferTextureService.getNeedUpdate() :
+      BufferTextureService.getNotNeedUpdate(),
+    state,
+  );
+
 let getAllTextures = state => {
   let {index, disposedIndexArray} =
     RecordCubemapTextureMainService.getRecord(state);

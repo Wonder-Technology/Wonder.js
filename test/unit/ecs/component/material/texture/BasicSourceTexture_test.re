@@ -47,7 +47,7 @@ let _ =
       describe("is need updates", () =>
         test("default is need update", () => {
           let (state, texture) = createBasicSourceTexture(state^);
-          BasicSourceTextureTool.isNeedUpdate(texture, state)
+          BasicSourceTextureTool.getIsNeedUpdate(texture, state)
           |> expect == true;
         })
       );
@@ -178,6 +178,24 @@ let _ =
         let (state, texture) = createBasicSourceTexture(state^);
         let state = state |> setBasicSourceTextureFlipY(texture, false);
         getBasicSourceTextureFlipY(texture, state) |> expect == false;
+      })
+    );
+
+    describe("getBasicSourceTextureIsNeedUpdate", () =>
+      test("default is true", () => {
+        let (state, texture) = createBasicSourceTexture(state^);
+
+        state |> getBasicSourceTextureIsNeedUpdate(texture) |> expect == true;
+      })
+    );
+
+    describe("setBasicSourceTextureIsNeedUpdate", () =>
+      test("test set", () => {
+        let (state, texture) = createBasicSourceTexture(state^);
+
+        let state = state |> setBasicSourceTextureIsNeedUpdate(texture, false);
+
+        state |> getBasicSourceTextureIsNeedUpdate(texture) |> expect == false;
       })
     );
 

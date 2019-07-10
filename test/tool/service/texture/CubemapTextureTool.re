@@ -4,13 +4,6 @@ open CubemapTextureType;
 
 let getRecord = state => state.cubemapTextureRecord |> OptionService.unsafeGet;
 
-let isNeedUpdate = (texture, state) =>
-  OperateTypeArrayAllCubemapTextureService.getIsNeedUpdate(.
-    texture,
-    getRecord(state).isNeedUpdates,
-  )
-  === BufferTextureService.getNeedUpdate();
-
 let getTexture = (texture, state) =>
   OperateGlTextureMapService.getTexture(
     texture,
@@ -32,15 +25,6 @@ let setGlTexture = (texture, glTexture, state) => {
 
   state;
 };
-
-let setIsNeedUpdate = (texture, isNeedUpdate, state) =>
-  OperateCubemapTextureMainService.setIsNeedUpdate(
-    texture,
-    isNeedUpdate ?
-      BufferTextureService.getNeedUpdate() :
-      BufferTextureService.getNotNeedUpdate(),
-    state,
-  );
 
 let getDefaultWrapS = () => BufferCubemapTextureService.getDefaultWrapS();
 
@@ -136,18 +120,9 @@ let setAllSources =
   state;
 };
 
-let getIsNeedUpdate = (texture, state) =>
-  OperateCubemapTextureMainService.getIsNeedUpdate(texture, state)
-  === BufferTextureService.getNeedUpdate();
+let getIsNeedUpdate = CubemapTextureAPI.getCubemapTextureIsNeedUpdate;
 
-let setIsNeedUpdate = (texture, isNeedUpdate, state) =>
-  OperateCubemapTextureMainService.setIsNeedUpdate(
-    texture,
-    isNeedUpdate ?
-      BufferTextureService.getNeedUpdate() :
-      BufferTextureService.getNotNeedUpdate(),
-    state,
-  );
+let setIsNeedUpdate = CubemapTextureAPI.setCubemapTextureIsNeedUpdate;
 
 let getDefaultIsNeedUpdateBool = () =>
   BufferTextureService.getDefaultIsNeedUpdate()

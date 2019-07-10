@@ -27,13 +27,6 @@ let setGlTexture = (texture, glTexture, state) => {
   state;
 };
 
-let isNeedUpdate = (texture, state) =>
-  OperateTypeArrayAllBasicSourceTextureService.getIsNeedUpdate(.
-    texture,
-    getRecord(state).isNeedUpdates,
-  )
-  === BufferTextureService.getNeedUpdate();
-
 let getDefaultTextureIndex = () =>
   TextureIndexService.getDefaultTextureIndex();
 
@@ -85,18 +78,9 @@ let getNeedUpdate = BufferTextureService.getNeedUpdate;
 
 let getNotNeedUpdate = BufferTextureService.getNotNeedUpdate;
 
-let getIsNeedUpdate = (texture, state) =>
-  OperateBasicSourceTextureMainService.getIsNeedUpdate(texture, state)
-  === BufferTextureService.getNeedUpdate();
+let getIsNeedUpdate = BasicSourceTextureAPI.getBasicSourceTextureIsNeedUpdate;
 
-let setIsNeedUpdate = (texture, isNeedUpdate, state) =>
-  OperateBasicSourceTextureMainService.setIsNeedUpdate(
-    texture,
-    isNeedUpdate ?
-      BufferTextureService.getNeedUpdate() :
-      BufferTextureService.getNotNeedUpdate(),
-    state,
-  );
+let setIsNeedUpdate = BasicSourceTextureAPI.setBasicSourceTextureIsNeedUpdate;
 
 let getMaterialDataArr = (texture, state) =>
   MaterialsMapService.getMaterialDataArr(

@@ -419,6 +419,19 @@ let setBasicSourceTextureName =
      ); */
   NameBasicSourceTextureMainService.setName(texture, name, state);
 
+let getBasicSourceTextureIsNeedUpdate = (texture, state) =>
+  OperateBasicSourceTextureMainService.getIsNeedUpdate(texture, state)
+  === BufferTextureService.getNeedUpdate();
+
+let setBasicSourceTextureIsNeedUpdate = (texture, isNeedUpdate, state) =>
+  OperateBasicSourceTextureMainService.setIsNeedUpdate(
+    texture,
+    isNeedUpdate ?
+      BufferTextureService.getNeedUpdate() :
+      BufferTextureService.getNotNeedUpdate(),
+    state,
+  );
+
 let getAllTextures = state => {
   let {index, disposedIndexArray} =
     RecordBasicSourceTextureMainService.getRecord(state);
