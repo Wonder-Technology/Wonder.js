@@ -14,6 +14,7 @@ let _ =
     beforeEach(() => {
       sandbox := createSandbox();
       state := SkyboxTool.initWithJobConfig(sandbox);
+      TestTool.closeContractCheck();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
@@ -159,6 +160,7 @@ let _ =
 
         describe("else", () => {
           let _prepare = state => {
+            TestTool.closeContractCheck();
             let textureUnit0 = 10;
             let textureCubemap = Obj.magic(8);
             let glTexture1 = Obj.magic(11);
@@ -265,33 +267,34 @@ let _ =
           |> getCallCount
           |> expect == pixelStoreiCallCount;
         });
-        test("if source not exist, not update", () => {
-          let unpackFlipYWebgl = Obj.magic(2);
-          let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
-          let state =
-            state^
-            |> FakeGlTool.setFakeGl(
-                 FakeGlTool.buildFakeGl(
-                   ~sandbox,
-                   ~unpackFlipYWebgl,
-                   ~pixelStorei,
-                   (),
-                 ),
-               );
 
-          let state =
-            state |> DirectorTool.init |> DirectorTool.runWithDefaultTime;
+        describe("contract check", () =>
+          test("should has all sources", () => {
+            TestTool.openContractCheck();
+            let unpackFlipYWebgl = Obj.magic(2);
+            let pixelStorei = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              state^
+              |> FakeGlTool.setFakeGl(
+                   FakeGlTool.buildFakeGl(
+                     ~sandbox,
+                     ~unpackFlipYWebgl,
+                     ~pixelStorei,
+                     (),
+                   ),
+                 );
 
-          pixelStorei
-          |> withOneArg(unpackFlipYWebgl)
-          |> expect
-          |> not_
-          |> toCalled;
-        });
+            expect(() =>
+              state |> DirectorTool.init |> DirectorTool.runWithDefaultTime
+            )
+            |> toThrowMessage("expect has all sources");
+          })
+        );
 
         describe("else", () => {
           describe("contract check", () =>
             test("all sources' size should equal", () => {
+              TestTool.openContractCheck();
               let (state, map) = _prepare(~state=state^, ());
               let state =
                 state

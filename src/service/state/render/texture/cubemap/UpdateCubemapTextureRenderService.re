@@ -116,6 +116,47 @@ let _getType = (gl, texture, types) =>
   |> TextureTypeService.getGlType(gl);
 
 let update = (gl, texture, (cubemapTextureRecord, browserDetectRecord)) => {
+  WonderLog.Contract.requireCheck(
+    () =>
+      WonderLog.(
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|has all sources|j},
+                ~actual={j|not|j},
+              ),
+              () => {
+                let {
+                  pxSourceMap,
+                  nxSourceMap,
+                  pySourceMap,
+                  nySourceMap,
+                  pzSourceMap,
+                  nzSourceMap,
+                } = cubemapTextureRecord;
+
+                _getAllSources(
+                  texture,
+                  (
+                    pxSourceMap,
+                    nxSourceMap,
+                    pySourceMap,
+                    nySourceMap,
+                    pzSourceMap,
+                    nzSourceMap,
+                  ),
+                )
+                |> Js.Option.isSome
+                |> assertTrue;
+              },
+            )
+          )
+        )
+      ),
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
   let {
     pxSourceMap,
     nxSourceMap,

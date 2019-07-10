@@ -14,6 +14,8 @@ let _ =
     beforeEach(() => {
       sandbox := createSandbox();
       state := SkyboxTool.initWithJobConfig(sandbox);
+
+      TestTool.closeContractCheck();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 

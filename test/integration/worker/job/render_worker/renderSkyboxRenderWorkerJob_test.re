@@ -68,7 +68,7 @@ let _ =
         describe("bind cubemap", () =>
           testPromise("active texture unit", () => {
             let state = TestMainWorkerTool.initWithJobConfig(~sandbox, ());
-
+            TestTool.closeContractCheck();
             let (state, map) = SkyboxTool.prepareCubemapTexture(state);
             let (state, _, _) = SkyboxTool.prepareGameObject(state);
 
