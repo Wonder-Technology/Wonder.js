@@ -67,34 +67,46 @@ let _getAllSources =
 
 let _getSourceSize = sourceArr => {
   WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|all sources' size equal|j},
-                ~actual={j|not|j},
-              ),
-              () => {
-                sourceArr
-                |> Js.Array.map(source =>
-                     source |> TextureSizeService.getWidth
-                   )
-                |> WonderCommonlib.ArrayService.removeDuplicateItems
-                |> Js.Array.length == 1;
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
 
-                sourceArr
-                |> Js.Array.map(source =>
-                     source |> TextureSizeService.getHeight
-                   )
-                |> WonderCommonlib.ArrayService.removeDuplicateItems
-                |> Js.Array.length == 1;
-              },
-            )
-          )
-        )
-      ),
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|all sources' size equal|j},
+          ~actual={j|not|j},
+        ),
+        () => {
+          sourceArr
+          |> Js.Array.map(source => source |> TextureSizeService.getWidth)
+          |> WonderCommonlib.ArrayService.removeDuplicateItems
+          |> Js.Array.length == 1;
+
+          sourceArr
+          |> Js.Array.map(source => source |> TextureSizeService.getHeight)
+          |> WonderCommonlib.ArrayService.removeDuplicateItems
+          |> Js.Array.length == 1;
+        },
+      );
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|source' width and height equal|j},
+          ~actual={j|not|j},
+        ),
+        () =>
+        sourceArr
+        |> Js.Array.map(source => source |> TextureSizeService.getWidth)
+        |> WonderCommonlib.ArrayService.removeDuplicateItems
+        |> ArrayService.unsafeGetFirst
+        == (
+             sourceArr
+             |> Js.Array.map(source => source |> TextureSizeService.getHeight)
+             |> WonderCommonlib.ArrayService.removeDuplicateItems
+             |> ArrayService.unsafeGetFirst
+           )
+      );
+    },
     IsDebugMainService.getIsDebug(StateDataMain.stateData),
   );
 

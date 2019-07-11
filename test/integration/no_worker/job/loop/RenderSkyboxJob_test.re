@@ -292,7 +292,7 @@ let _ =
         );
 
         describe("else", () => {
-          describe("contract check", () =>
+          describe("contract check", () => {
             test("all sources' size should equal", () => {
               TestTool.openContractCheck();
               let (state, map) = _prepare(~state=state^, ());
@@ -314,8 +314,30 @@ let _ =
                 state |> DirectorTool.init |> DirectorTool.runWithDefaultTime
               )
               |> toThrowMessage("expect all sources' size equal");
-            })
-          );
+            });
+            test("source' width and height should equal", () => {
+              TestTool.openContractCheck();
+              let (state, map) = _prepare(~state=state^, ());
+
+              let state =
+                state
+                |> CubemapTextureTool.setAllSources(
+                     ~state=_,
+                     ~width=2,
+                     ~height=4,
+                     ~texture=map,
+                     (),
+                   );
+              let state =
+                state
+                |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+
+              expect(() =>
+                state |> DirectorTool.init |> DirectorTool.runWithDefaultTime
+              )
+              |> toThrowMessage("expect source' width and height equal");
+            });
+          });
 
           test("set flipY", () => {
             let (state, map) = _prepare(~state=state^, ());

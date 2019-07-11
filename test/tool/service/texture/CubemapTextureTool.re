@@ -91,7 +91,7 @@ let setAllSources =
     (
       ~state,
       ~texture,
-      ~width=2,
+      ~width=4,
       ~height=4,
       ~image1Name="i1",
       ~image2Name="i2",
