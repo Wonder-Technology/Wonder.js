@@ -3,7 +3,7 @@ let _convertToImageTextureIndices =
       (pxSource, nxSource, pySource, nySource, pzSource, nzSource),
       index,
       (
-        imageTextureIndices,
+        imageCubemapTextureIndices,
         pxImageIndices,
         nxImageIndices,
         pyImageIndices,
@@ -12,7 +12,7 @@ let _convertToImageTextureIndices =
         nzImageIndices,
       ),
     ) => (
-  imageTextureIndices |> ArrayService.push(index),
+  imageCubemapTextureIndices |> ArrayService.push(index),
   pxImageIndices |> ArrayService.push(pxSource),
   nxImageIndices |> ArrayService.push(nxSource),
   pyImageIndices |> ArrayService.push(pySource),
@@ -39,7 +39,7 @@ let convertToImageAndSamplerTextureIndices = ({nodes, extras}: GLTFType.gltf) =>
            (.
              (
                (
-                 imageTextureIndices,
+                 imageCubemapTextureIndices,
                  pxImageIndices,
                  nxImageIndices,
                  pyImageIndices,
@@ -64,7 +64,7 @@ let convertToImageAndSamplerTextureIndices = ({nodes, extras}: GLTFType.gltf) =>
                (pxSource, nxSource, pySource, nySource, pzSource, nzSource),
                index,
                (
-                 imageTextureIndices,
+                 imageCubemapTextureIndices,
                  pxImageIndices,
                  nxImageIndices,
                  pyImageIndices,

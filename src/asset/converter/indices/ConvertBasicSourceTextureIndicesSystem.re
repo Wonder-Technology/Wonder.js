@@ -1,10 +1,10 @@
 
 let _convertToImageTextureIndices =
-    (source, index, (imageTextureIndices, imageIndices)) =>
+    (source, index, (imageBasicSourceTextureIndices, imageIndices)) =>
   switch (source) {
-  | None => (imageTextureIndices, imageIndices)
+  | None => (imageBasicSourceTextureIndices, imageIndices)
   | Some(source) => (
-      imageTextureIndices |> ArrayService.push(index),
+      imageBasicSourceTextureIndices |> ArrayService.push(index),
       imageIndices |> ArrayService.push(source),
     )
   };
@@ -28,7 +28,7 @@ let convertToImageAndSamplerTextureIndices =
     |> WonderCommonlib.ArrayService.reduceOneParami(
          (.
            (
-             (imageTextureIndices, imageIndices),
+             (imageBasicSourceTextureIndices, imageIndices),
              (samplerTextureIndices, samplerIndices),
            ),
            {sampler, source}: GLTFType.texture,
@@ -37,7 +37,7 @@ let convertToImageAndSamplerTextureIndices =
            _convertToImageTextureIndices(
              source,
              index,
-             (imageTextureIndices, imageIndices),
+             (imageBasicSourceTextureIndices, imageIndices),
            ),
            _convertToSamplerTextureIndices(
              sampler,
@@ -50,7 +50,7 @@ let convertToImageAndSamplerTextureIndices =
     |> WonderLog.Contract.ensureCheck(
          (
            (
-             (imageTextureIndices, imageIndices),
+             (imageBasicSourceTextureIndices, imageIndices),
              (samplerTextureIndices, samplerIndices),
            ),
          ) => {
@@ -59,11 +59,11 @@ let convertToImageAndSamplerTextureIndices =
            open Operators;
            test(
              Log.buildAssertMessage(
-               ~expect={j|imageTextureIndices' count == imageIndices' count|j},
+               ~expect={j|imageBasicSourceTextureIndices' count == imageIndices' count|j},
                ~actual={j|not|j},
              ),
              () =>
-             imageTextureIndices
+             imageBasicSourceTextureIndices
              |> Js.Array.length == (imageIndices |> Js.Array.length)
            );
            test(

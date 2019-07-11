@@ -115,6 +115,38 @@ let testGLBWithConfig =
   );
 };
 
+let testWDB =
+    (
+      ~sandbox,
+      ~wdbArrayBuffer,
+      ~testFunc,
+      ~state,
+      ~isSetIMGUIFunc=true,
+      ~isBindEvent=true,
+      ~isActiveCamera=true,
+      ~isRenderLight=true,
+      ~isLoadImage=true,
+      (),
+    ) => {
+  open Js.Promise;
+
+  let result = ref(Obj.magic(1));
+
+  GLBTool.prepare(sandbox);
+
+  let (wdFileContent, _, binBuffer) =
+    BufferUtils.decodeWDB(wdbArrayBuffer, AssembleWholeWDBSystem.checkWDB);
+
+  AssembleWholeWDBSystem.assembleWDBData(
+    wdFileContent |> Js.Json.parseExn |> Obj.magic,
+    binBuffer,
+    (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight, isLoadImage),
+    state,
+  )
+  |> WonderBsMost.Most.forEach(data => result := data)
+  |> then_(() => testFunc(result^) |> resolve);
+};
+
 let testGLB = (sandbox, glbFilePath, testFunc, state) =>
   testGLBWithConfig(~sandbox, ~glbFilePath, ~testFunc, ~state, ());
 
@@ -302,5 +334,56 @@ let isImageUint8ArrayMapEqual =
               (. (mimeType, uint8ArrayByteLength)) =>
               (mimeType, uint8ArrayByteLength)
             )
+       )
+  );
+
+let isCubemapTextureImageUint8ArrayMapEqual =
+    (sourceImageUint8ArrayMap, targetImageUint8ArrayMap) =>
+  Js.Typed_array.(
+    sourceImageUint8ArrayMap
+    |> WonderCommonlib.MutableSparseMapService.mapValid(
+         (.
+           {
+             pxImageUint8ArrayData: (mimeType1, u1),
+             nxImageUint8ArrayData: (mimeType2, u2),
+             pyImageUint8ArrayData: (mimeType3, u3),
+             nyImageUint8ArrayData: (mimeType4, u4),
+             pzImageUint8ArrayData: (mimeType5, u5),
+             nzImageUint8ArrayData: (mimeType6, u6),
+           }: WDType.cubemapTextureImageUint8ArrayData,
+         ) =>
+         (
+           {
+             pxImageUint8ArrayData: (
+               mimeType1,
+               u1 |> Uint8Array.byteLength |> Obj.magic,
+             ),
+             nxImageUint8ArrayData: (
+               mimeType2,
+               u2 |> Uint8Array.byteLength |> Obj.magic,
+             ),
+             pyImageUint8ArrayData: (
+               mimeType3,
+               u3 |> Uint8Array.byteLength |> Obj.magic,
+             ),
+             nyImageUint8ArrayData: (
+               mimeType4,
+               u4 |> Uint8Array.byteLength |> Obj.magic,
+             ),
+             pzImageUint8ArrayData: (
+               mimeType5,
+               u5 |> Uint8Array.byteLength |> Obj.magic,
+             ),
+             nzImageUint8ArrayData: (
+               mimeType6,
+               u6 |> Uint8Array.byteLength |> Obj.magic,
+             ),
+           }: WDType.cubemapTextureImageUint8ArrayData
+         )
+       )
+    |> Obj.magic
+    == (
+         targetImageUint8ArrayMap
+         |> WonderCommonlib.MutableSparseMapService.mapValid((. data) => data)
        )
   );

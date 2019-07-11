@@ -2276,7 +2276,7 @@ let _ =
         );
       });
 
-      describe("test imageTextureIndices", () => {
+      describe("test imageBasicSourceTextureIndices", () => {
         let _buildIndexData = (textureIndices, imageIndices) => {
           textureIndices,
           imageIndices,
@@ -2286,7 +2286,7 @@ let _ =
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
             (({indices}, _)) =>
-            indices.imageTextureIndices
+            indices.imageBasicSourceTextureIndices
             |> expect == _buildIndexData([|0, 1|], [|0, 0|])
           )
         );

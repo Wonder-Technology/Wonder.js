@@ -51,12 +51,12 @@ let _setGeometryData =
 };
 
 let _setBasicSourceTextureImageData =
-    ({imageIndex, image}, basicSourceTextureArr, imageTextureIndices, state) => {
+    ({imageIndex, image}, basicSourceTextureArr, imageBasicSourceTextureIndices, state) => {
   let basicSourceTextures =
     IndicesUtils.getBasicSourceTextures(
       imageIndex,
       basicSourceTextureArr,
-      imageTextureIndices,
+      imageBasicSourceTextureIndices,
     );
 
   basicSourceTextures
@@ -159,7 +159,7 @@ let _setImageData =
     (
       imageData,
       (
-        (basicSourceTextureArr, imageTextureIndices),
+        (basicSourceTextureArr, imageBasicSourceTextureIndices),
         (cubemapTextureArr, imageCubemapTextureIndices),
       ),
       state,
@@ -170,7 +170,7 @@ let _setImageData =
   |> _setBasicSourceTextureImageData(
        imageData,
        basicSourceTextureArr,
-       imageTextureIndices,
+       imageBasicSourceTextureIndices,
      )
   |> _setCubemapTextureImageData(
        imageData,
@@ -251,7 +251,7 @@ let setBinBufferChunkData =
       loadedStreamChunkDataArrWhichHasAllData,
       (geometryArr, geometryGameObjects, gameObjectGeometrys),
       (
-        (basicSourceTextureArr, imageTextureIndices),
+        (basicSourceTextureArr, imageBasicSourceTextureIndices),
         (cubemapTextureArr, imageCubemapTextureIndices),
       ),
       state,
@@ -316,7 +316,7 @@ let setBinBufferChunkData =
            _setImageData(
              imageData,
              (
-               (basicSourceTextureArr, imageTextureIndices),
+               (basicSourceTextureArr, imageBasicSourceTextureIndices),
                (cubemapTextureArr, imageCubemapTextureIndices),
              ),
              state,

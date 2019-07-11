@@ -48,9 +48,9 @@ let getBatchAllTypeBasicSourceTextureData =
     |> BatchOperateSystem.getBatchArrByIndices(samplers),
   ),
   (
-    indices.imageTextureIndices.textureIndices
+    indices.imageBasicSourceTextureIndices.textureIndices
     |> BatchOperateSystem.getBatchArrByIndices(textureArr),
-    indices.imageTextureIndices.imageIndices
+    indices.imageBasicSourceTextureIndices.imageIndices
     |> BatchOperateSystem.getBatchArrByIndices(imageArr),
   ),
 );
@@ -200,7 +200,7 @@ let batchOperate =
     imageUint8ArrayDataMap
     |> WonderCommonlib.MutableSparseMapService.copy
     |> BatchSetWholeBasicSourceTextureAllDataSystem.convertKeyFromImageIndexToBasicSourceTexture(
-         indices.imageTextureIndices,
+         indices.imageBasicSourceTextureIndices,
          basicSourceTextureArr,
        );
 

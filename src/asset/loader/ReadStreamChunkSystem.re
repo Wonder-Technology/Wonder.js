@@ -114,7 +114,7 @@ let _assembleAndStartLoop =
       state,
       rootGameObject,
       (geometryArr, geometryGameObjects, gameObjectGeometrys),
-      (basicSourceTextureArr, imageTextureIndices, images),
+      (basicSourceTextureArr, imageBasicSourceTextureIndices, images),
     ) =
       AssembleStreamWDBSystem.assemble(
         _getJsonChunkStr(
@@ -137,7 +137,7 @@ let _assembleAndStartLoop =
       (
         rootGameObject,
         (geometryArr, geometryGameObjects, gameObjectGeometrys),
-        (basicSourceTextureArr, imageTextureIndices, images),
+        (basicSourceTextureArr, imageBasicSourceTextureIndices, images),
       ),
     );
   };

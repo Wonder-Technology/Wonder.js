@@ -1,9 +1,11 @@
 let convertToIndices = (gltf: GLTFType.gltf): WDType.indices => {
   let (
-    (imageTextureIndices, imageIndices),
+    (imageBasicSourceTextureIndices, imageIndices),
     (samplerTextureIndices, samplerIndices),
   ) =
-    ConvertTextureIndicesSystem.convertToImageAndSamplerTextureIndices(gltf);
+    ConvertBasicSourceTextureIndicesSystem.convertToImageAndSamplerTextureIndices(
+      gltf,
+    );
 
   let (
     (
@@ -26,8 +28,8 @@ let convertToIndices = (gltf: GLTFType.gltf): WDType.indices => {
       ConvertGameObjectIndexDataSystem.convertToGameObjectIndexData(gltf),
     materialIndices:
       ConvertMaterialIndicesSystem.convertToMaterialIndices(gltf),
-    imageTextureIndices: {
-      textureIndices: imageTextureIndices,
+    imageBasicSourceTextureIndices: {
+      textureIndices: imageBasicSourceTextureIndices,
       imageIndices,
     },
     imageCubemapTextureIndices: {

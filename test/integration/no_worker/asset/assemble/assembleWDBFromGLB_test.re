@@ -2912,59 +2912,176 @@ let _ =
       });
     });
 
-    /* TODO fix */
     describe("test imageUint8ArrayDataMap", () => {
-      testPromise(
-        "return imageUint8ArrayDataMap with mimeType and uint8Array", () =>
-        AssembleWDBSystemTool.testGLB(
-          sandbox^,
-          GLBTool.buildGLBFilePath("BoxTextured.glb"),
-          (
+      describe("test basicSourceTextureImageUint8ArrayMap", () => {
+        testPromise(
+          "return imageUint8ArrayDataMap with mimeType and uint8Array", () =>
+          AssembleWDBSystemTool.testGLB(
+            sandbox^,
+            GLBTool.buildGLBFilePath("BoxTextured.glb"),
             (
-              state,
-              ((basicSourceTextureImageUint8ArrayMap, _), _),
-              rootGameObject,
-            ),
-          ) =>
-            AssembleWDBSystemTool.isImageUint8ArrayMapEqual(
-              basicSourceTextureImageUint8ArrayMap,
-              WonderCommonlib.MutableSparseMapService.createEmpty()
-              |> WonderCommonlib.MutableSparseMapService.set(
-                   0,
-                   ("image/png", 23516),
-                 ),
-            )
-            |> expect == true,
-          state^,
-        )
-      );
-      testPromise(
-        "imageUint8ArrayDataMap's key should be basicSourceTexture", () =>
-        AssembleWDBSystemTool.testGLB(
-          sandbox^,
-          GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-          (
+              (
+                state,
+                ((basicSourceTextureImageUint8ArrayMap, _), _),
+                rootGameObject,
+              ),
+            ) =>
+              AssembleWDBSystemTool.isImageUint8ArrayMapEqual(
+                basicSourceTextureImageUint8ArrayMap,
+                WonderCommonlib.MutableSparseMapService.createEmpty()
+                |> WonderCommonlib.MutableSparseMapService.set(
+                     0,
+                     ("image/png", 23516),
+                   ),
+              )
+              |> expect == true,
+            state^,
+          )
+        );
+        testPromise(
+          "imageUint8ArrayDataMap's key should be basicSourceTexture", () =>
+          AssembleWDBSystemTool.testGLB(
+            sandbox^,
+            GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
             (
-              state,
-              ((basicSourceTextureImageUint8ArrayMap, _), _),
-              rootGameObject,
-            ),
-          ) =>
-            AssembleWDBSystemTool.isImageUint8ArrayMapEqual(
-              basicSourceTextureImageUint8ArrayMap,
-              WonderCommonlib.MutableSparseMapService.createEmpty()
-              |> WonderCommonlib.MutableSparseMapService.set(
-                   0,
-                   ("image/png", 427633),
-                 )
-              |> WonderCommonlib.MutableSparseMapService.set(
-                   1,
-                   ("image/png", 427633),
-                 ),
-            )
-            |> expect == true,
-          state^,
-        )
-      );
+              (
+                state,
+                ((basicSourceTextureImageUint8ArrayMap, _), _),
+                rootGameObject,
+              ),
+            ) =>
+              AssembleWDBSystemTool.isImageUint8ArrayMapEqual(
+                basicSourceTextureImageUint8ArrayMap,
+                WonderCommonlib.MutableSparseMapService.createEmpty()
+                |> WonderCommonlib.MutableSparseMapService.set(
+                     0,
+                     ("image/png", 427633),
+                   )
+                |> WonderCommonlib.MutableSparseMapService.set(
+                     1,
+                     ("image/png", 427633),
+                   ),
+              )
+              |> expect == true,
+            state^,
+          )
+        );
+      });
+
+      describe("test cubemapTextureImageUint8ArrayDataMap", () => {
+        let skyboxWDBArrayBuffer = ref(Obj.magic(-1));
+
+        beforeAll(() =>
+          skyboxWDBArrayBuffer :=
+            WDBTool.generateWDB(state => {
+              let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+              let (state, cubemapTexture) =
+                SkyboxTool.prepareCubemapTextureAndSetAllSources(state);
+
+              let sceneGameObjectTransform =
+                GameObjectAPI.unsafeGetGameObjectTransformComponent(
+                  rootGameObject,
+                  state,
+                );
+
+              let (state, gameObject1, transform1) =
+                LoadStreamWDBTool.createGameObjectWithDiffuseMap(state);
+
+              let state =
+                state
+                |> TransformAPI.setTransformParent(
+                     Js.Nullable.return(sceneGameObjectTransform),
+                     transform1,
+                   );
+
+              (state, rootGameObject);
+            })
+        );
+
+        testPromise(
+          "test basicSourceTextureImageUint8ArrayDataMap and cubemapTextureImageUint8ArrayDataMap->length",
+          () =>
+          AssembleWDBSystemTool.testWDB(
+            ~sandbox=sandbox^,
+            ~wdbArrayBuffer=skyboxWDBArrayBuffer^,
+            ~testFunc=
+              (
+                (
+                  state,
+                  (
+                    (
+                      basicSourceTextureImageUint8ArrayDataMap,
+                      cubemapTextureImageUint8ArrayDataMap,
+                    ),
+                    _,
+                  ),
+                  rootGameObject,
+                ),
+              ) =>
+                (
+                  basicSourceTextureImageUint8ArrayDataMap
+                  |> WonderCommonlib.MutableSparseMapService.length,
+                  cubemapTextureImageUint8ArrayDataMap
+                  |> WonderCommonlib.MutableSparseMapService.length,
+                )
+                |> expect == (1, 1),
+            ~state=state^,
+            (),
+          )
+        );
+        testPromise(
+          "return cubemapTextureImageUint8ArrayMap with all face sources' mimeType and uint8Array",
+          () =>
+          AssembleWDBSystemTool.testWDB(
+            ~sandbox=sandbox^,
+            ~wdbArrayBuffer=skyboxWDBArrayBuffer^,
+            ~testFunc=
+              (
+                (
+                  state,
+                  ((_, cubemapTextureImageUint8ArrayMap), _),
+                  rootGameObject,
+                ),
+              ) =>
+                AssembleWDBSystemTool.isCubemapTextureImageUint8ArrayMapEqual(
+                  cubemapTextureImageUint8ArrayMap,
+                  WonderCommonlib.MutableSparseMapService.createEmpty()
+                  |> WonderCommonlib.MutableSparseMapService.set(
+                       0,
+                       {
+                         pxImageUint8ArrayData: (
+                           "image/png",
+                           167 |> Obj.magic,
+                         ),
+                         nxImageUint8ArrayData: (
+                           "image/png",
+                           145 |> Obj.magic,
+                         ),
+                         pyImageUint8ArrayData: (
+                           "image/png",
+                           143 |> Obj.magic,
+                         ),
+                         nyImageUint8ArrayData: (
+                           "image/png",
+                           161 |> Obj.magic,
+                         ),
+                         pzImageUint8ArrayData: (
+                           "image/jpeg",
+                           151 |> Obj.magic,
+                         ),
+                         nzImageUint8ArrayData: (
+                           "image/png",
+                           129 |> Obj.magic,
+                         ),
+                       }: WDType.cubemapTextureImageUint8ArrayData,
+                     ),
+                )
+                |> expect == true,
+            ~state=state^,
+            (),
+          )
+        );
+      });
     });
   });

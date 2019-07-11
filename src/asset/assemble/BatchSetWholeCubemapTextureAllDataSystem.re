@@ -72,23 +72,57 @@ let _batchSetCubemapTextureSources =
      );
 
 let convertKeyFromImageIndexToCubemapTexture =
-    (imageTextureIndexData, cubemapTextureArr, imageUint8ArrayDataMap) =>
-  imageUint8ArrayDataMap
-  |> WonderCommonlib.MutableSparseMapService.reduceiValid(
-       (. resultImageUint8ArrayDataMap, data, imageIndex) =>
-         IndicesUtils.getAllCubemapTextures(
-           imageIndex,
-           cubemapTextureArr,
-           imageTextureIndexData,
-         )
-         |> WonderCommonlib.ArrayService.reduceOneParam(
-              (. resultImageUint8ArrayDataMap, cubemapTexture) =>
-                resultImageUint8ArrayDataMap
-                |> WonderCommonlib.MutableSparseMapService.set(
-                     cubemapTexture,
-                     data,
-                   ),
-              resultImageUint8ArrayDataMap,
+    (
+      {
+        cubemapTextureIndices,
+        pxImageIndices,
+        nxImageIndices,
+        pyImageIndices,
+        nyImageIndices,
+        pzImageIndices,
+        nzImageIndices,
+      }: WDType.imageCubemapTextureIndexData,
+      cubemapTextureArr,
+      imageUint8ArrayDataMap,
+    ) =>
+  cubemapTextureIndices
+  |> WonderCommonlib.ArrayService.reduceOneParami(
+       (. resultImageUint8ArrayDataMap, cubemapTextureIndex, index) =>
+         resultImageUint8ArrayDataMap
+         |> WonderCommonlib.MutableSparseMapService.set(
+              Array.unsafe_get(cubemapTextureArr, cubemapTextureIndex),
+              {
+                pxImageUint8ArrayData:
+                  imageUint8ArrayDataMap
+                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                       Array.unsafe_get(pxImageIndices, index),
+                     ),
+                nxImageUint8ArrayData:
+                  imageUint8ArrayDataMap
+                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                       Array.unsafe_get(nxImageIndices, index),
+                     ),
+                pyImageUint8ArrayData:
+                  imageUint8ArrayDataMap
+                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                       Array.unsafe_get(pyImageIndices, index),
+                     ),
+                nyImageUint8ArrayData:
+                  imageUint8ArrayDataMap
+                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                       Array.unsafe_get(nyImageIndices, index),
+                     ),
+                pzImageUint8ArrayData:
+                  imageUint8ArrayDataMap
+                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                       Array.unsafe_get(pzImageIndices, index),
+                     ),
+                nzImageUint8ArrayData:
+                  imageUint8ArrayDataMap
+                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                       Array.unsafe_get(nzImageIndices, index),
+                     ),
+              }: WDType.cubemapTextureImageUint8ArrayData,
             ),
        WonderCommonlib.MutableSparseMapService.createEmpty(),
      );

@@ -73,7 +73,7 @@ let handleBinBufferData =
         (geometryArr, geometryGameObjects, gameObjectGeometrys),
         (
           images,
-          (basicSourceTextureArr, imageTextureIndices),
+          (basicSourceTextureArr, imageBasicSourceTextureIndices),
           (cubemapTextureArr, imageCubemapTextureIndices),
         ),
       ) as assembleData,
@@ -131,7 +131,7 @@ let handleBinBufferData =
              loadedStreamChunkDataArrWhichHasAllData,
              (geometryArr, geometryGameObjects, gameObjectGeometrys),
              (
-               (basicSourceTextureArr, imageTextureIndices),
+               (basicSourceTextureArr, imageBasicSourceTextureIndices),
                (cubemapTextureArr, imageCubemapTextureIndices),
              ),
              state,

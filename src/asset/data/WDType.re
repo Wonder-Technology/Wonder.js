@@ -138,11 +138,12 @@ type bufferView = {
      | UNKNOWN; */
 
    type blobImage = {objectUrl: string}; */
+type mimeType = string;
 
 type image = {
   name: string,
   bufferView: bufferViewIndex,
-  mimeType: string,
+  mimeType,
 };
 
 type basicSourceTexture = {
@@ -247,7 +248,7 @@ type samplerCubemapTextureIndexData = {
 type indices = {
   gameObjectIndices,
   materialIndices,
-  imageTextureIndices: imageTextureIndexData,
+  imageBasicSourceTextureIndices: imageTextureIndexData,
   imageCubemapTextureIndices: imageCubemapTextureIndexData,
   samplerTextureIndices: samplerTextureIndexData,
   samplerCubemapTextureIndices: samplerCubemapTextureIndexData,
@@ -307,4 +308,13 @@ type wd = {
   basicMaterials: array(basicMaterial),
   lightMaterials: array(lightMaterial),
   scripts: array(script),
+};
+
+type cubemapTextureImageUint8ArrayData = {
+  pxImageUint8ArrayData: (mimeType, Js.Typed_array.Uint8Array.t),
+  nxImageUint8ArrayData: (mimeType, Js.Typed_array.Uint8Array.t),
+  pyImageUint8ArrayData: (mimeType, Js.Typed_array.Uint8Array.t),
+  nyImageUint8ArrayData: (mimeType, Js.Typed_array.Uint8Array.t),
+  pzImageUint8ArrayData: (mimeType, Js.Typed_array.Uint8Array.t),
+  nzImageUint8ArrayData: (mimeType, Js.Typed_array.Uint8Array.t),
 };

@@ -11,7 +11,7 @@ let assemble = (({buffers}: wd) as wd, default11Image, state) => {
     (geometryArr, geometryGameObjects, gameObjectGeometrys),
     (
       images,
-      (basicSourceTextureArr, imageTextureIndices),
+      (basicSourceTextureArr, imageBasicSourceTextureIndices),
       (cubemapTextureArr, imageCubemapTextureIndices),
     ),
   ) =
@@ -30,7 +30,7 @@ let assemble = (({buffers}: wd) as wd, default11Image, state) => {
     (geometryArr, geometryGameObjects, gameObjectGeometrys),
     (
       images,
-      (basicSourceTextureArr, imageTextureIndices),
+      (basicSourceTextureArr, imageBasicSourceTextureIndices),
       (cubemapTextureArr, imageCubemapTextureIndices),
     ),
   );

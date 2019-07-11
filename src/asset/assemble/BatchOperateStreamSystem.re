@@ -19,7 +19,7 @@ let _getBatchAllTypeBasicSourceTextureData =
     |> BatchOperateSystem.getBatchArrByIndices(samplers),
   ),
   (
-    indices.imageTextureIndices.textureIndices
+    indices.imageBasicSourceTextureIndices.textureIndices
     |> BatchOperateSystem.getBatchArrByIndices(textureArr),
     default11Image,
   ),
@@ -214,7 +214,7 @@ let batchOperate =
     (geometryArr, geometryGameObjects, gameObjectGeometrys),
     (
       images,
-      (basicSourceTextureArr, indices.imageTextureIndices),
+      (basicSourceTextureArr, indices.imageBasicSourceTextureIndices),
       (cubemapTextureArr, indices.imageCubemapTextureIndices),
     ),
   );

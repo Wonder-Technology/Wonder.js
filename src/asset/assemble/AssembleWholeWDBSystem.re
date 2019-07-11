@@ -152,7 +152,7 @@ let assembleWDBData =
          isSetIMGUIFunc && hasIMGUIFunc ?
            state |> SetIMGUIFuncSystem.setIMGUIFunc(wd) : state;
 
-       let (state, imageUint8ArrayDataMap, gameObjectArr, cubemapTextureArr) =
+       let (state, imageUint8ArrayDataMapTuple, gameObjectArr, cubemapTextureArr) =
          state
          |> BatchCreateSystem.batchCreate(isRenderLight, wd)
          |> BatchOperateWholeSystem.batchOperate(
@@ -167,7 +167,7 @@ let assembleWDBData =
        let (state, rootGameObject) =
          BuildRootGameObjectSystem.build(wd, (state, gameObjectArr));
 
-       (state, (imageUint8ArrayDataMap, hasIMGUIFunc), rootGameObject)
+       (state, (imageUint8ArrayDataMapTuple, hasIMGUIFunc), rootGameObject)
        |> resolve;
      })
   |> WonderBsMost.Most.fromPromise;

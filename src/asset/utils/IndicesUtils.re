@@ -158,32 +158,3 @@ let getNZCubemapTextures =
     cubemapTextureIndices,
     nzImageIndices,
   );
-
-let getAllCubemapTextures =
-    (
-      imageIndex,
-      cubemapTextureArr,
-      {
-        cubemapTextureIndices,
-        pxImageIndices,
-        nxImageIndices,
-        pyImageIndices,
-        nyImageIndices,
-        pzImageIndices,
-        nzImageIndices,
-      }: WDType.imageCubemapTextureIndexData,
-    ) =>
-  [||]
-  |> _getTextureIndexArr(imageIndex, pxImageIndices)
-  |> _getTextureIndexArr(imageIndex, nxImageIndices)
-  |> _getTextureIndexArr(imageIndex, pyImageIndices)
-  |> _getTextureIndexArr(imageIndex, nyImageIndices)
-  |> _getTextureIndexArr(imageIndex, pzImageIndices)
-  |> _getTextureIndexArr(imageIndex, nzImageIndices)
-  |> WonderCommonlib.ArrayService.removeDuplicateItems
-  |> Js.Array.map(index =>
-       Array.unsafe_get(
-         cubemapTextureArr,
-         Array.unsafe_get(cubemapTextureIndices, index),
-       )
-     );
