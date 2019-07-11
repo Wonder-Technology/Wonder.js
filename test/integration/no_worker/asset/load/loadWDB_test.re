@@ -58,7 +58,7 @@ let _ =
         );
 
       LoadWDBTool.load(~wdbPath="../singleNode.wdb", ~fetchFunc, ())
-      |> then_(((state, _, gameObject)) =>
+      |> then_(((state, _, (gameObject, _))) =>
            AssembleWDBSystemTool.getAllGameObjects(gameObject, state)
            |> expect == [|gameObject|]
            |> resolve
@@ -116,11 +116,11 @@ let _ =
           );
 
         LoadWDBTool.load(~wdbPath="../singleNode.wdb", ~fetchFunc, ())
-        |> then_(((state, _, gameObject1)) => {
+        |> then_(((state, _, (gameObject1, _))) => {
              MainStateTool.setState(state) |> ignore;
 
              LoadWDBTool.load(~wdbPath="../singleNode.wdb", ~fetchFunc, ())
-             |> then_(((state, _, gameObject2)) =>
+             |> then_(((state, _, (gameObject2, _))) =>
                   (
                     AssembleWDBSystemTool.getAllGameObjects(
                       gameObject1,
@@ -163,7 +163,7 @@ let _ =
           ~handleWhenLoadingFunc,
           (),
         )
-        |> then_(((state, _, gameObject1)) => {
+        |> then_(((state, _, (gameObject1, _))) => {
              MainStateTool.setState(state) |> ignore;
 
              LoadWDBTool.load(
@@ -172,7 +172,7 @@ let _ =
                ~handleWhenLoadingFunc,
                (),
              )
-             |> then_(((state, _, gameObject2)) =>
+             |> then_(((state, _, (gameObject2, _))) =>
                   (
                     contentLengthArr,
                     wdbPathArr,
@@ -185,13 +185,13 @@ let _ =
                       state,
                     ),
                   )
-                  |>
-                  expect == (
-                              [|contentLength1, contentLength2|],
-                              [|wdbPath1, wdbPath2|],
-                              [|gameObject1|],
-                              [|gameObject2|],
-                            )
+                  |> expect
+                  == (
+                       [|contentLength1, contentLength2|],
+                       [|wdbPath1, wdbPath2|],
+                       [|gameObject1|],
+                       [|gameObject2|],
+                     )
                   |> resolve
                 );
            });

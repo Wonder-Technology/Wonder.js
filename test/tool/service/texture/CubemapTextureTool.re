@@ -45,7 +45,7 @@ let getDefaultIsNeedUpdate = () =>
 
 let getDefaultFlipY = () => BufferCubemapTextureService.getDefaultFlipY();
 
-let buildSource = (~width=2, ~height=4, ~src="", ~name="source", ()) =>
+let buildSource = (~width=4, ~height=4, ~src="", ~name="source", ()) =>
   {"width": width, "height": height, "src": src, "name": name} |> Obj.magic;
 
 let getCubemapTexturePXSource = (texture, state) => {

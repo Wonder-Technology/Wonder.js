@@ -59,7 +59,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("BoxTextured.glb"),
-            ((state, _, rootGameObject)) => {
+            ((state, _, (rootGameObject, _))) => {
               let state =
                 AssembleWDBSystemTool.getAllGameObjects(rootGameObject, state)
                 |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -96,7 +96,7 @@ let _ =
             AssembleWDBSystemTool.testGLB(
               sandbox^,
               GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
-              ((state, _, rootGameObject)) => {
+              ((state, _, (rootGameObject, _))) => {
                 let state =
                   GameObjectTool.disposeAllGameObjects(rootGameObject, state);
 

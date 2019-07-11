@@ -797,7 +797,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
             sandbox^,
             rootGameObject,
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               AssembleWDBSystemTool.getAllGeometryData(rootGameObject, state)
               |> expect
               == [|
@@ -1150,10 +1150,10 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
               sandbox^,
               rootGameObject,
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, cubemapTextureOpt))) =>
                 (
                   CubemapTextureAPI.unsafeGetCubemapTextureName(
-                    SceneTool.unsafeGetCubemapTexture(state),
+                    cubemapTextureOpt |> OptionService.unsafeGet,
                     state,
                   ),
                   AssembleWDBSystemTool.getAllDiffuseMaps(
@@ -1185,10 +1185,10 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
               sandbox^,
               rootGameObject,
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, cubemapTextureOpt))) =>
                 (
                   CubemapTextureAPI.unsafeGetCubemapTexturePXSource(
-                    SceneTool.unsafeGetCubemapTexture(state),
+                    cubemapTextureOpt |> OptionService.unsafeGet,
                     state,
                   ),
                   AssembleWDBSystemTool.getAllDiffuseMaps(
@@ -1606,7 +1606,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
               sandbox^,
               rootGameObject,
-              ((state, _, rootGameObject)) => {
+              ((state, _, (rootGameObject, _))) => {
                 let dataMap = GLTFTool.getTruckGeometryData();
 
                 AssembleWDBSystemTool.getAllGeometryData(
@@ -1809,7 +1809,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
               sandbox^,
               rootGameObject,
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 AssembleWDBSystemTool.getAllDiffuseMaps(rootGameObject, state)
                 |> Js.Array.map(map =>
                      BasicSourceTextureAPI.unsafeGetBasicSourceTextureName(
@@ -2510,7 +2510,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
               sandbox^,
               rootGameObject,
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 AssembleWDBSystemTool.getAllDiffuseMaps(rootGameObject, state)
                 |> Js.Array.map(map =>
                      BasicSourceTextureAPI.getBasicSourceTextureFlipY(
@@ -2631,7 +2631,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
               sandbox^,
               rootGameObject,
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 AssembleWDBSystemTool.getAllDiffuseMaps(rootGameObject, state)
                 |> Js.Array.map(map =>
                      (
@@ -3721,7 +3721,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
             sandbox^,
             rootGameObject,
-            ((state, _, rootGameObject)) => {
+            ((state, _, (rootGameObject, _))) => {
               let state =
                 ScriptTool.ExecEventFunction.execAllInitEventFunction(state);
 
@@ -3991,7 +3991,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
         GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
           sandbox^,
           rootGameObject,
-          ((state, _, rootGameObject)) =>
+          ((state, _, (rootGameObject, _))) =>
             AssembleWDBSystemTool.getAllDirectionLightData(
               rootGameObject,
               state,
@@ -4020,7 +4020,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
         GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
           sandbox^,
           rootGameObject,
-          ((state, _, rootGameObject)) =>
+          ((state, _, (rootGameObject, _))) =>
             AssembleWDBSystemTool.getAllPointLightData(rootGameObject, state)
             |> expect
             == [|
@@ -4288,7 +4288,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
             sandbox^,
             rootGameObject,
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               AssembleWDBSystemTool.getAllDiffuseMaps(rootGameObject, state)
               |> Js.Array.map(map =>
                    BasicSourceTextureAPI.unsafeGetBasicSourceTextureSource(
@@ -4783,7 +4783,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           GenerateSceneGraphSystemTool.testAssembleResultByGameObject(
             sandbox^,
             rootGameObject,
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               AssembleWDBSystemTool.getAllLightMaterials(
                 rootGameObject,
                 state,

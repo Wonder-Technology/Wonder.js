@@ -46,7 +46,7 @@ let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
   )
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => {
-       let (state, _, rootGameObject) = result^;
+       let (state, _, (rootGameObject, _)) = result^;
 
        let (gltf, imageResultUint8ArrayMap, binBuffer) =
          GenerateSceneGraphAPI.generateGLBData(
@@ -81,7 +81,7 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
   )
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => {
-       let (state, _, rootGameObject) = result^;
+       let (state, _, (rootGameObject, _)) = result^;
 
        GenerateSceneGraphAPI.generateWDB(
          rootGameObject,
@@ -137,7 +137,7 @@ let testGLTFResultByGLTF =
   ->(AssembleWholeWDBSystem.assemble((true, true, true, true, true), state^))
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => {
-       let (state, _, rootGameObject) = result^;
+       let (state, _, (rootGameObject, _)) = result^;
 
        let (gltf, _, binBuffer) =
          GenerateSceneGraphAPI.generateGLBData(

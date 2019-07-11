@@ -88,7 +88,7 @@ let _ =
                    GenerateAllABTool.TestWithOneSABAndOneRAB.getABRelativePaths();
 
                  AssembleSABTool.TestWithOneSABAndOneRAB.assemble(data)
-                 |> MostTool.testStream(rootGameObject => {
+                 |> MostTool.testStream(((rootGameObject, _)) => {
                       let state = StateAPI.unsafeGetState();
 
                       GameObjectTool.unsafeFindGameObjectByName(
@@ -196,7 +196,7 @@ let _ =
                    GenerateAllABTool.TestWithOneSABAndOneRAB.getABRelativePaths();
 
                  AssembleSABTool.TestWithOneSABAndOneRAB.assemble(data)
-                 |> MostTool.testStream(rootGameObject => {
+                 |> MostTool.testStream(((rootGameObject, _)) => {
                       let state = StateAPI.unsafeGetState();
 
                       let cubemapTexture =
@@ -232,32 +232,38 @@ let _ =
                       == (
                            GLBTool.createFakeImage(
                              ~name=image1Name,
-                             ~src="object_url0",
+                             ~src="px",
+                             ~width=4,
                              (),
                            ),
                            GLBTool.createFakeImage(
                              ~name=image2Name,
-                             ~src="object_url1",
+                             ~src="nx",
+                             ~width=4,
                              (),
                            ),
                            GLBTool.createFakeImage(
                              ~name=image3Name,
-                             ~src="object_url2",
+                             ~src="py",
+                             ~width=4,
                              (),
                            ),
                            GLBTool.createFakeImage(
                              ~name=image4Name,
-                             ~src="object_url3",
+                             ~src="ny",
+                             ~width=4,
                              (),
                            ),
                            GLBTool.createFakeImage(
                              ~name=image5Name,
-                             ~src="object_url4",
+                             ~src="pz",
+                             ~width=4,
                              (),
                            ),
                            GLBTool.createFakeImage(
                              ~name=image6Name,
-                             ~src="object_url5",
+                             ~src="nz",
+                             ~width=4,
                              (),
                            ),
                          )
@@ -343,7 +349,7 @@ let _ =
                    GenerateAllABTool.TestWithOneSABAndOneRAB.getABRelativePaths();
 
                  AssembleSABTool.TestWithOneSABAndOneRAB.assemble(data)
-                 |> MostTool.testStream(rootGameObject => {
+                 |> MostTool.testStream(((rootGameObject, _)) => {
                       let state = StateAPI.unsafeGetState();
 
                       GameObjectTool.unsafeFindGameObjectByName(
@@ -452,7 +458,7 @@ let _ =
                    GenerateAllABTool.TestWithOneSABAndOneRAB.getABRelativePaths();
 
                  AssembleSABTool.TestWithOneSABAndOneRAB.assemble(data)
-                 |> MostTool.testStream(rootGameObject => {
+                 |> MostTool.testStream(((rootGameObject, _)) => {
                       let state = StateAPI.unsafeGetState();
 
                       let cubemapTexture =
@@ -577,7 +583,7 @@ let _ =
                GenerateAllABTool.TestWithOneSABAndOneRAB.getABRelativePaths();
 
              AssembleSABTool.TestWithOneSABAndOneRAB.assemble(data)
-             |> MostTool.testStream(rootGameObject => {
+             |> MostTool.testStream(((rootGameObject, _)) => {
                   let state = StateAPI.unsafeGetState();
 
                   let geometry2 =
@@ -682,7 +688,7 @@ let _ =
                );
 
              AssembleSABTool.TestWithOneSAB.assemble(data)
-             |> MostTool.testStream(rootGameObject => {
+             |> MostTool.testStream(((rootGameObject, _)) => {
                   let state = StateAPI.unsafeGetState();
 
                   (

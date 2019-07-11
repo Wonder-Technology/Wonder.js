@@ -2700,7 +2700,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               ~wdbPath=NodeTool.buildWDBPath("BoxTextured"),
               ~fetchFunc,
               ~handleWhenLoadWholeWDBFunc=
-                (state, _, rootGameObject) => {
+                (state, _, (rootGameObject, _)) => {
                   stateRef := state;
                   rootGameObjectRef := rootGameObject;
                 },

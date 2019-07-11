@@ -7,5 +7,5 @@ let testStream = (testFunc, stream) => {
 
   stream
   |> Most.forEach(value => valueRef := value)
-  |> then_(() => testFunc(valueRef^));
+  |> then_(() => testFunc(valueRef^ |> Obj.magic));
 };

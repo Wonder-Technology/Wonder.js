@@ -19,7 +19,11 @@ let assemble = (({buffers}: wd) as wd, default11Image, state) => {
     |> BatchCreateSystem.batchCreate(true, wd)
     |> BatchOperateStreamSystem.batchOperate(wd, default11Image);
 
-  let state = SetSkyboxSystem.setSkybox(wd, cubemapTextureArr, state);
+  let state =
+    state
+    |> SkyboxCubemapSystem.setSkyboxCubemap(
+         SkyboxCubemapSystem.getSkyboxCubemap(wd, cubemapTextureArr, state),
+       );
 
   let (state, rootGameObject) =
     (state, gameObjectArr) |> BuildRootGameObjectSystem.build(wd);

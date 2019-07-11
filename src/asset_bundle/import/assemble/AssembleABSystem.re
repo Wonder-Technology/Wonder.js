@@ -477,13 +477,6 @@ module SAB = {
              ),
            );
 
-         let state =
-           SetSkyboxSystem.setSkybox(
-             sceneAssetBundleContent,
-             cubemapTextureArr,
-             state,
-           );
-
          let (state, rootGameObject) =
            BuildRootGameObjectSystem.build(
              sceneAssetBundleContent,
@@ -495,7 +488,15 @@ module SAB = {
          |> StateDataMainService.setState(StateDataMain.stateData)
          |> ignore;
 
-         rootGameObject |> resolve;
+         (
+           rootGameObject,
+           SkyboxCubemapSystem.getSkyboxCubemap(
+             sceneAssetBundleContent,
+             cubemapTextureArr,
+             state,
+           ),
+         )
+         |> resolve;
        })
     |> WonderBsMost.Most.fromPromise;
   };

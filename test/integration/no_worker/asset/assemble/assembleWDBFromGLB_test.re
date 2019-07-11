@@ -43,7 +43,8 @@ let _ =
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
           ~state,
           ~testFunc=
-            ((state, _, rootGameObject)) => rootGameObject |> expect == 1,
+            ((state, _, (rootGameObject, _))) =>
+              rootGameObject |> expect == 1,
           (),
         )
       );
@@ -54,7 +55,7 @@ let _ =
             AssembleWDBSystemTool.buildGLTFJsonOfMultiSceneGameObjects(),
           ~state,
           ~testFunc=
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               (
                 rootGameObject,
                 TransformAPI.unsafeGetTransformChildren(
@@ -84,7 +85,7 @@ let _ =
                   ),
                 ~state,
                 ~testFunc=
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     GameObjectAPI.unsafeGetGameObjectIsRoot(
                       rootGameObject,
                       state,
@@ -103,7 +104,7 @@ let _ =
                   ),
                 ~state,
                 ~testFunc=
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     GameObjectAPI.unsafeGetGameObjectIsRoot(
                       rootGameObject,
                       state,
@@ -122,7 +123,7 @@ let _ =
                   ),
                 ~state,
                 ~testFunc=
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     GameObjectAPI.unsafeGetGameObjectIsRoot(
                       rootGameObject,
                       state,
@@ -145,7 +146,7 @@ let _ =
                 ),
               ~state,
               ~testFunc=
-                ((state, _, rootGameObject)) =>
+                ((state, _, (rootGameObject, _))) =>
                   GameObjectAPI.unsafeGetGameObjectIsRoot(
                     rootGameObject,
                     state,
@@ -161,7 +162,7 @@ let _ =
             AssembleWDBSystemTool.testGLB(
               sandbox^,
               GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 GameObjectAPI.unsafeGetGameObjectIsRoot(rootGameObject, state)
                 |> expect == true,
               state^,
@@ -185,7 +186,7 @@ let _ =
                 ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
               ~state,
               ~testFunc=
-                ((state, (_, hasIMGUIFunc), rootGameObject)) =>
+                ((state, (_, hasIMGUIFunc), (rootGameObject, _))) =>
                   hasIMGUIFunc |> expect == true,
               (),
             );
@@ -203,7 +204,7 @@ let _ =
                 ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
               ~state,
               ~testFunc=
-                ((state, _, rootGameObject)) => {
+                ((state, _, (rootGameObject, _))) => {
                   let (_, func) =
                     IMGUITool.getCustomData(state)
                     |> OptionService.unsafeGet
@@ -226,7 +227,7 @@ let _ =
               ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 (
                   IMGUITool.getIMGUIFunc(state)
                   |> OptionService.unsafeGet
@@ -270,7 +271,7 @@ let _ =
               ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
             ~state=ref(state),
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 (
                   IMGUITool.getIMGUIFunc(state)
                   |> OptionService.unsafeGet
@@ -313,7 +314,7 @@ let _ =
               ~state,
               ~isSetIMGUIFunc=false,
               ~testFunc=
-                ((state, (_, hasIMGUIFunc), rootGameObject)) =>
+                ((state, (_, hasIMGUIFunc), (rootGameObject, _))) =>
                   hasIMGUIFunc |> expect == true,
               (),
             );
@@ -331,7 +332,7 @@ let _ =
             ~state,
             ~isSetIMGUIFunc=false,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 IMGUITool.getCustomData(state)
                 |> Js.Option.isNone
                 |> expect == true,
@@ -342,17 +343,27 @@ let _ =
     });
 
     describe("test skybox", () => {
-      testPromise("set skybox->cubemap", () =>
+      testPromise("get skybox->cubemap", () =>
         AssembleWDBSystemTool.testGLTF(
           ~sandbox=sandbox^,
           ~embeddedGLTFJsonStr=
             ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(),
           ~state,
           ~testFunc=
-            ((state, _, rootGameObject)) =>
-              SceneTool.getCubemapTexture(state)
-              |> Js.Option.isSome
-              |> expect == true,
+            ((state, _, (rootGameObject, cubemapTextureOpt))) =>
+              cubemapTextureOpt |> Js.Option.isSome |> expect == true,
+          (),
+        )
+      );
+      testPromise("not set to skybox", () =>
+        AssembleWDBSystemTool.testGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(),
+          ~state,
+          ~testFunc=
+            ((state, _, (rootGameObject, cubemapTextureOpt))) =>
+              SceneTool.getCubemapTexture(state) |> expect == None,
           (),
         )
       );
@@ -369,9 +380,9 @@ let _ =
                 ),
               ~state,
               ~testFunc=
-                ((state, _, rootGameObject)) =>
+                ((state, _, (rootGameObject, cubemapTextureOpt))) =>
                   CubemapTextureAPI.unsafeGetCubemapTextureName(
-                    SceneTool.unsafeGetCubemapTexture(state),
+                    cubemapTextureOpt |> OptionService.unsafeGet,
                     state,
                   )
                   |> expect == "aaa",
@@ -390,9 +401,9 @@ let _ =
               ),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, cubemapTextureOpt))) =>
                 CubemapTextureAPI.getCubemapTextureFlipY(
-                  SceneTool.unsafeGetCubemapTexture(state),
+                  cubemapTextureOpt |> OptionService.unsafeGet,
                   state,
                 )
                 |> expect == true,
@@ -407,8 +418,9 @@ let _ =
               ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) => {
-                let cubemapTexture = SceneTool.unsafeGetCubemapTexture(state);
+              ((state, _, (rootGameObject, cubemapTextureOpt))) => {
+                let cubemapTexture =
+                  cubemapTextureOpt |> OptionService.unsafeGet;
 
                 (
                   CubemapTextureAPI.getCubemapTextureMagFilter(
@@ -449,9 +461,9 @@ let _ =
                 ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(),
               ~state,
               ~testFunc=
-                ((state, _, rootGameObject)) =>
+                ((state, _, (rootGameObject, cubemapTextureOpt))) =>
                   CubemapTextureTool.getCubemapTexturePXSource(
-                    SceneTool.unsafeGetCubemapTexture(state),
+                    cubemapTextureOpt |> OptionService.unsafeGet,
                     state,
                   )
                   |> Js.Option.isNone
@@ -467,9 +479,9 @@ let _ =
                 ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(),
               ~state,
               ~testFunc=
-                ((state, _, rootGameObject)) => {
+                ((state, _, (rootGameObject, cubemapTextureOpt))) => {
                   let cubemapTexture =
-                    SceneTool.unsafeGetCubemapTexture(state);
+                    cubemapTextureOpt |> OptionService.unsafeGet;
 
                   (
                     CubemapTextureAPI.unsafeGetCubemapTexturePXSource(
@@ -544,8 +556,9 @@ let _ =
               ConvertGLBTool.buildGLTFJsonOfSkyboxAndOneCubemap(),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) => {
-                let cubemapTexture = SceneTool.unsafeGetCubemapTexture(state);
+              ((state, _, (rootGameObject, cubemapTextureOpt))) => {
+                let cubemapTexture =
+                  cubemapTextureOpt |> OptionService.unsafeGet;
 
                 GLBTool.getURL(.)##revokeObjectURL
                 |> getCallCount
@@ -565,8 +578,9 @@ let _ =
               ),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) => {
-                let cubemapTexture = SceneTool.unsafeGetCubemapTexture(state);
+              ((state, _, (rootGameObject, cubemapTextureOpt))) => {
+                let cubemapTexture =
+                  cubemapTextureOpt |> OptionService.unsafeGet;
 
                 (
                   CubemapTextureAPI.getCubemapTexturePXFormat(
@@ -618,8 +632,9 @@ let _ =
               ),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) => {
-                let cubemapTexture = SceneTool.unsafeGetCubemapTexture(state);
+              ((state, _, (rootGameObject, cubemapTextureOpt))) => {
+                let cubemapTexture =
+                  cubemapTextureOpt |> OptionService.unsafeGet;
 
                 (
                   CubemapTextureAPI.getCubemapTexturePXType(
@@ -669,7 +684,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               _getAllGameObjects(rootGameObject, state)
               |> Js.Array.map(gameObject =>
                    GameObjectAPI.unsafeGetGameObjectName(gameObject, state)
@@ -695,7 +710,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               AssembleWDBSystemTool.getAllGameObjectsIsActive(
                 rootGameObject,
                 state,
@@ -712,7 +727,7 @@ let _ =
               ConvertGLBTool.buildGLTFJsonOfNodeIsActive(false),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 AssembleWDBSystemTool.getAllGameObjectsIsActive(
                   rootGameObject,
                   state,
@@ -728,7 +743,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               AssembleWDBSystemTool.getAllGameObjectsIsRoot(
                 rootGameObject,
                 state,
@@ -745,7 +760,7 @@ let _ =
               ConvertGLBTool.buildGLTFJsonOfNodeIsRoot(true),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 AssembleWDBSystemTool.getAllGameObjectsIsRoot(
                   rootGameObject,
                   state,
@@ -778,7 +793,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("2CylinderEngine.glb"),
-            ((state, _, rootGameObject)) => {
+            ((state, _, (rootGameObject, _))) => {
               let dataMap = GLTFTool.getTruckGeometryData();
 
               AssembleWDBSystemTool.getAllGameObjects(rootGameObject, state)
@@ -797,7 +812,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, _, rootGameObject)) => {
+            ((state, _, (rootGameObject, _))) => {
               let allTransformChildren =
                 _getAllChildrenTransform(rootGameObject, state);
               allTransformChildren |> expect == [|4, 2, 6, 7, 8, 5, 3|];
@@ -809,7 +824,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, _, rootGameObject)) => {
+            ((state, _, (rootGameObject, _))) => {
               let allTransformChildren =
                 _getAllChildrenTransform(rootGameObject, state);
               TransformTool.getRecord(state).parentMap
@@ -836,7 +851,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               _getAllSortedTransforms(rootGameObject, state)
               |> Js.Array.map(transform =>
                    (
@@ -918,7 +933,7 @@ let _ =
             ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfSingleNode(),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) => {
+              ((state, _, (rootGameObject, _))) => {
                 let boxGameObject = rootGameObject;
                 let geometry =
                   GameObjectAPI.unsafeGetGameObjectGeometryComponent(
@@ -942,7 +957,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, _, rootGameObject)) => {
+            ((state, _, (rootGameObject, _))) => {
               let dataMap = GLTFTool.getTruckGeometryData();
 
               AssembleWDBSystemTool.getAllGeometryData(rootGameObject, state)
@@ -1008,7 +1023,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
-            ((state, _, rootGameObject)) => {
+            ((state, _, (rootGameObject, _))) => {
               let allGeometryData =
                 AssembleWDBSystemTool.getAllGeometryData(
                   rootGameObject,
@@ -1050,7 +1065,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("SuperLowPolyStove.glb"),
-            ((state, _, rootGameObject)) => {
+            ((state, _, (rootGameObject, _))) => {
               let allGeometryData =
                 AssembleWDBSystemTool.getAllGeometryData(
                   rootGameObject,
@@ -1081,7 +1096,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               _getAllSortedTransforms(rootGameObject, state)
               |> Js.Array.map(transform =>
                    TransformAPI.unsafeGetTransformGameObject(transform, state)
@@ -1104,7 +1119,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("BoxTextured.glb"),
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               AssembleWDBSystemTool.getAllGeometrys(rootGameObject, state)
               |> Js.Array.map(geometry =>
                    GeometryAPI.unsafeGetGeometryName(geometry, state)
@@ -1117,7 +1132,7 @@ let _ =
           AssembleWDBSystemTool.testGLB(
             sandbox^,
             GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               AssembleWDBSystemTool.getAllGeometrys(rootGameObject, state)
               |> Js.Array.map(geometry =>
                    GeometryAPI.unsafeGetGeometryName(geometry, state)
@@ -1166,7 +1181,7 @@ let _ =
             ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllGameObjects(rootGameObject, state)
                 |> Js.Array.map(gameObject =>
                      GameObjectAPI.hasGameObjectBasicCameraViewComponent(
@@ -1202,7 +1217,7 @@ let _ =
                 ~isActiveCamera=false,
                 ~state=ref(state),
                 ~testFunc=
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     _getAllBasicCameraViewGameObjects(rootGameObject, state)
                     |> Js.Array.map(gameObject =>
                          GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent(
@@ -1241,7 +1256,7 @@ let _ =
                   ~isActiveCamera=true,
                   ~state=ref(state),
                   ~testFunc=
-                    ((state, _, rootGameObject)) =>
+                    ((state, _, (rootGameObject, _))) =>
                       _getAllBasicCameraViewGameObjects(rootGameObject, state)
                       |> Js.Array.map(gameObject =>
                            GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent(
@@ -1279,7 +1294,7 @@ let _ =
               ~isActiveCamera=false,
               ~state=ref(state),
               ~testFunc=
-                ((state, _, rootGameObject)) =>
+                ((state, _, (rootGameObject, _))) =>
                   _getAllBasicCameraViewGameObjects(rootGameObject, state)
                   |> Js.Array.map(gameObject =>
                        GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent(
@@ -1319,7 +1334,7 @@ let _ =
                   ConvertGLBTool.buildGLTFJsonOfBasicCameraView(),
                 ~state=ref(state),
                 ~testFunc=
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     _getAllBasicCameraViewGameObjects(rootGameObject, state)
                     |> Js.Array.map(gameObject =>
                          GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent(
@@ -1371,7 +1386,7 @@ let _ =
             ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllPerspectiveCameraProjectionComponent(
                   rootGameObject,
                   state,
@@ -1442,7 +1457,7 @@ let _ =
               ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
               ~state,
               ~testFunc=
-                ((state, _, rootGameObject)) =>
+                ((state, _, (rootGameObject, _))) =>
                   _getAllPerspectiveCameraProjectionComponent(
                     rootGameObject,
                     state,
@@ -1527,7 +1542,7 @@ let _ =
               ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCamera(),
               ~state=ref(state),
               ~testFunc=
-                ((state, _, rootGameObject)) => {
+                ((state, _, (rootGameObject, _))) => {
                   let state =
                     state
                     |> FakeGlTool.setFakeGl(
@@ -1582,7 +1597,7 @@ let _ =
               ConvertGLBTool.buildGLTFJsonOfFlyCameraController(),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllFlyCameraControllerComponent(rootGameObject, state)
                 |> Js.Array.map(cameraController =>
                      FlyCameraControllerAPI.unsafeGetFlyCameraControllerMoveSpeed(
@@ -1601,7 +1616,7 @@ let _ =
               ConvertGLBTool.buildGLTFJsonOfFlyCameraController(),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllFlyCameraControllerComponent(rootGameObject, state)
                 |> Js.Array.map(cameraController =>
                      FlyCameraControllerAPI.unsafeGetFlyCameraControllerRotateSpeed(
@@ -1620,7 +1635,7 @@ let _ =
               ConvertGLBTool.buildGLTFJsonOfFlyCameraController(),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllFlyCameraControllerComponent(rootGameObject, state)
                 |> Js.Array.map(cameraController =>
                      FlyCameraControllerAPI.unsafeGetFlyCameraControllerWheelSpeed(
@@ -1642,7 +1657,7 @@ let _ =
               ~isBindEvent=false,
               ~state,
               ~testFunc=
-                ((state, _, rootGameObject)) =>
+                ((state, _, (rootGameObject, _))) =>
                   _getAllFlyCameraControllerComponent(rootGameObject, state)
                   |> Js.Array.map(cameraController =>
                        FlyCameraControllerAPI.isBindFlyCameraControllerEvent(
@@ -1667,7 +1682,7 @@ let _ =
                 ~isBindEvent=true,
                 ~state,
                 ~testFunc=
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     _getAllFlyCameraControllerComponent(rootGameObject, state)
                     |> Js.Array.map(cameraController =>
                          FlyCameraControllerAPI.isBindFlyCameraControllerEvent(
@@ -1690,7 +1705,7 @@ let _ =
                 ~isBindEvent=true,
                 ~state,
                 ~testFunc=
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     _getAllFlyCameraControllerComponent(rootGameObject, state)
                     |> Js.Array.map(cameraController =>
                          FlyCameraControllerAPI.isBindFlyCameraControllerEvent(
@@ -1731,7 +1746,7 @@ let _ =
               ConvertGLBTool.buildGLTFJsonOfArcballCameraController(),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllArcballCameraControllerComponent(rootGameObject, state)
                 |> Js.Array.map(cameraController =>
                      ArcballCameraControllerAPI.unsafeGetArcballCameraControllerDistance(
@@ -1750,7 +1765,7 @@ let _ =
               ConvertGLBTool.buildGLTFJsonOfArcballCameraController(),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllArcballCameraControllerComponent(rootGameObject, state)
                 |> Js.Array.map(cameraController =>
                      ArcballCameraControllerAPI.unsafeGetArcballCameraControllerMinDistance(
@@ -1769,7 +1784,7 @@ let _ =
               ConvertGLBTool.buildGLTFJsonOfArcballCameraController(),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllArcballCameraControllerComponent(rootGameObject, state)
                 |> Js.Array.map(cameraController =>
                      ArcballCameraControllerAPI.unsafeGetArcballCameraControllerWheelSpeed(
@@ -1791,7 +1806,7 @@ let _ =
               ~isBindEvent=false,
               ~state,
               ~testFunc=
-                ((state, _, rootGameObject)) =>
+                ((state, _, (rootGameObject, _))) =>
                   _getAllArcballCameraControllerComponent(
                     rootGameObject,
                     state,
@@ -1819,7 +1834,7 @@ let _ =
                 ~isBindEvent=true,
                 ~state,
                 ~testFunc=
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     _getAllArcballCameraControllerComponent(
                       rootGameObject,
                       state,
@@ -1845,7 +1860,7 @@ let _ =
                 ~isBindEvent=true,
                 ~state,
                 ~testFunc=
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     _getAllArcballCameraControllerComponent(
                       rootGameObject,
                       state,
@@ -1878,7 +1893,7 @@ let _ =
                 ConvertGLBTool.buildGLTFJsonOfBasicMaterial(),
               ~state,
               ~testFunc=
-                ((state, _, rootGameObject)) =>
+                ((state, _, (rootGameObject, _))) =>
                   _getAllBasicMaterials(rootGameObject, state)
                   |> Js.Array.map(basicMaterial =>
                        BasicMaterialAPI.unsafeGetBasicMaterialName(
@@ -1903,7 +1918,7 @@ let _ =
                 ),
               ~state,
               ~testFunc=
-                ((state, _, rootGameObject)) =>
+                ((state, _, (rootGameObject, _))) =>
                   _getAllBasicMaterials(rootGameObject, state)
                   |> Js.Array.map(basicMaterial =>
                        BasicMaterialAPI.getBasicMaterialColor(
@@ -1927,7 +1942,7 @@ let _ =
             AssembleWDBSystemTool.testGLB(
               sandbox^,
               GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllLightMaterials(rootGameObject, state)
                 |> Js.Array.map(material =>
                      LightMaterialAPI.unsafeGetLightMaterialName(
@@ -1947,7 +1962,7 @@ let _ =
             AssembleWDBSystemTool.testGLB(
               sandbox^,
               GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllLightMaterials(rootGameObject, state)
                 |> Js.Array.map(lightMaterial =>
                      LightMaterialAPI.getLightMaterialDiffuseColor(
@@ -1974,7 +1989,7 @@ let _ =
             AssembleWDBSystemTool.testGLB(
               sandbox^,
               GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllLightMaterials(rootGameObject, state)
                 |> Js.Array.filter(lightMaterial =>
                      LightMaterialAPI.hasLightMaterialDiffuseMap(
@@ -2000,7 +2015,7 @@ let _ =
                   AssembleWDBSystemTool.testGLB(
                     sandbox^,
                     GLBTool.buildGLBFilePath("BoxTextured.glb"),
-                    ((state, _, rootGameObject)) =>
+                    ((state, _, (rootGameObject, _))) =>
                       AssembleWDBSystemTool.getAllDiffuseMaps(
                         rootGameObject,
                         state,
@@ -2021,7 +2036,7 @@ let _ =
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("BoxTextured.glb"),
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     AssembleWDBSystemTool.getAllDiffuseMaps(
                       rootGameObject,
                       state,
@@ -2042,7 +2057,7 @@ let _ =
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("BoxTextured.glb"),
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     AssembleWDBSystemTool.getAllDiffuseMaps(
                       rootGameObject,
                       state,
@@ -2086,7 +2101,7 @@ let _ =
                   AssembleWDBSystemTool.testGLB(
                     sandbox^,
                     GLBTool.buildGLBFilePath("BoxTextured.glb"),
-                    ((state, _, rootGameObject)) =>
+                    ((state, _, (rootGameObject, _))) =>
                       AssembleWDBSystemTool.getAllDiffuseMaps(
                         rootGameObject,
                         state,
@@ -2113,7 +2128,7 @@ let _ =
                     ~sandbox=sandbox^,
                     ~glbFilePath=GLBTool.buildGLBFilePath("BoxTextured.glb"),
                     ~testFunc=
-                      ((state, _, rootGameObject)) =>
+                      ((state, _, (rootGameObject, _))) =>
                         AssembleWDBSystemTool.getAllDiffuseMaps(
                           rootGameObject,
                           state,
@@ -2138,7 +2153,7 @@ let _ =
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("BoxTextured.glb"),
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     GLBTool.getURL(.)##revokeObjectURL
                     |> getCallCount
                     |> expect == 1,
@@ -2151,7 +2166,7 @@ let _ =
                   AssembleWDBSystemTool.testGLB(
                     sandbox^,
                     GLBTool.buildGLBFilePath("BoxTextured.glb"),
-                    ((state, _, rootGameObject)) =>
+                    ((state, _, (rootGameObject, _))) =>
                       AssembleWDBSystemTool.getAllDiffuseMaps(
                         rootGameObject,
                         state,
@@ -2171,7 +2186,7 @@ let _ =
                   AssembleWDBSystemTool.testGLB(
                     sandbox^,
                     GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
-                    ((state, _, rootGameObject)) =>
+                    ((state, _, (rootGameObject, _))) =>
                       AssembleWDBSystemTool.getAllDiffuseMaps(
                         rootGameObject,
                         state,
@@ -2204,7 +2219,7 @@ let _ =
                   AssembleWDBSystemTool.testGLB(
                     sandbox^,
                     GLBTool.buildGLBFilePath("BoxTextured.glb"),
-                    ((state, _, rootGameObject)) =>
+                    ((state, _, (rootGameObject, _))) =>
                       AssembleWDBSystemTool.getAllDiffuseMaps(
                         rootGameObject,
                         state,
@@ -2228,7 +2243,7 @@ let _ =
                   AssembleWDBSystemTool.testGLB(
                     sandbox^,
                     GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-                    ((state, _, rootGameObject)) =>
+                    ((state, _, (rootGameObject, _))) =>
                       AssembleWDBSystemTool.getAllDiffuseMaps(
                         rootGameObject,
                         state,
@@ -2249,7 +2264,7 @@ let _ =
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     AssembleWDBSystemTool.getAllDiffuseMaps(
                       rootGameObject,
                       state,
@@ -2270,7 +2285,7 @@ let _ =
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     AssembleWDBSystemTool.getAllDiffuseMaps(
                       rootGameObject,
                       state,
@@ -2324,7 +2339,7 @@ let _ =
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     AssembleWDBSystemTool.getAllDiffuseMaps(
                       rootGameObject,
                       state,
@@ -2363,7 +2378,7 @@ let _ =
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("AlphaBlendModeTest.glb"),
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     GLBTool.getURL(.)##revokeObjectURL
                     |> getCallCount
                     |> expect == 2,
@@ -2379,7 +2394,7 @@ let _ =
             AssembleWDBSystemTool.testGLB(
               sandbox^,
               GLBTool.buildGLBFilePath("SuperLowPolyStove.glb"),
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllLightMaterials(rootGameObject, state)
                 |> Js.Array.map(lightMaterial =>
                      LightMaterialAPI.getLightMaterialDiffuseColor(
@@ -2399,7 +2414,7 @@ let _ =
             AssembleWDBSystemTool.testGLB(
               sandbox^,
               GLBTool.buildGLBFilePath("SuperLowPolyStove.glb"),
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllLightMaterials(rootGameObject, state)
                 |> Js.Array.filter(lightMaterial =>
                      LightMaterialAPI.hasLightMaterialDiffuseMap(
@@ -2425,7 +2440,7 @@ let _ =
                   AssembleWDBSystemTool.testGLB(
                     sandbox^,
                     GLBTool.buildGLBFilePath("SuperLowPolyStove.glb"),
-                    ((state, _, rootGameObject)) =>
+                    ((state, _, (rootGameObject, _))) =>
                       AssembleWDBSystemTool.getAllDiffuseMaps(
                         rootGameObject,
                         state,
@@ -2446,7 +2461,7 @@ let _ =
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("SuperLowPolyStove.glb"),
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     AssembleWDBSystemTool.getAllDiffuseMaps(
                       rootGameObject,
                       state,
@@ -2467,7 +2482,7 @@ let _ =
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("SuperLowPolyStove.glb"),
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     AssembleWDBSystemTool.getAllDiffuseMaps(
                       rootGameObject,
                       state,
@@ -2516,7 +2531,7 @@ let _ =
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("SuperLowPolyStove.glb"),
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     AssembleWDBSystemTool.getAllDiffuseMaps(
                       rootGameObject,
                       state,
@@ -2548,7 +2563,7 @@ let _ =
                 AssembleWDBSystemTool.testGLB(
                   sandbox^,
                   GLBTool.buildGLBFilePath("SuperLowPolyStove.glb"),
-                  ((state, _, rootGameObject)) =>
+                  ((state, _, (rootGameObject, _))) =>
                     GLBTool.getURL(.)##revokeObjectURL
                     |> getCallCount
                     |> expect == 2,
@@ -2569,7 +2584,7 @@ let _ =
                 ConvertGLBTool.buildGLTFJsonOfBasicMaterialAndLightMaterial(),
               ~state,
               ~testFunc=
-                ((state, _, rootGameObject)) =>
+                ((state, _, (rootGameObject, _))) =>
                   (
                     AssembleWDBSystemTool.getAllBasicMaterials(
                       rootGameObject,
@@ -2611,7 +2626,7 @@ let _ =
         AssembleWDBSystemTool.testGLB(
           sandbox^,
           GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-          ((state, _, rootGameObject)) =>
+          ((state, _, (rootGameObject, _))) =>
             _getAllGameObjects(rootGameObject, state)
             |> Js.Array.filter(gameObject =>
                  GameObjectAPI.hasGameObjectMeshRendererComponent(
@@ -2628,7 +2643,7 @@ let _ =
         AssembleWDBSystemTool.testGLB(
           sandbox^,
           GLBTool.buildGLBFilePath("CesiumMilkTruck.glb"),
-          ((state, _, rootGameObject)) =>
+          ((state, _, (rootGameObject, _))) =>
             _getAllSortedTransforms(rootGameObject, state)
             |> Js.Array.map(transform =>
                  TransformAPI.unsafeGetTransformGameObject(transform, state)
@@ -2654,7 +2669,7 @@ let _ =
             ),
           ~state,
           ~testFunc=
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               _getAllGameObjects(rootGameObject, state)
               |> Js.Array.map(gameObject =>
                    GameObjectAPI.unsafeGetGameObjectMeshRendererComponent(
@@ -2678,7 +2693,7 @@ let _ =
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfMeshRenderer(),
           ~state,
           ~testFunc=
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               _getAllGameObjects(rootGameObject, state)
               |> Js.Array.map(gameObject =>
                    GameObjectAPI.unsafeGetGameObjectMeshRendererComponent(
@@ -2706,7 +2721,7 @@ let _ =
           ~isRenderLight=false,
           ~state,
           ~testFunc=
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               AssembleWDBSystemTool.getAllDirectionLights(
                 rootGameObject,
                 state,
@@ -2725,7 +2740,7 @@ let _ =
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
           ~state,
           ~testFunc=
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               AssembleWDBSystemTool.getAllDirectionLightData(
                 rootGameObject,
                 state,
@@ -2744,7 +2759,7 @@ let _ =
           ~isRenderLight=false,
           ~state,
           ~testFunc=
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               AssembleWDBSystemTool.getAllPointLights(rootGameObject, state)
               |> Js.Array.map(light =>
                    PointLightAPI.getPointLightIsRender(light, state)
@@ -2760,7 +2775,7 @@ let _ =
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
           ~state,
           ~testFunc=
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               AssembleWDBSystemTool.getAllPointLightData(
                 rootGameObject,
                 state,
@@ -2778,7 +2793,7 @@ let _ =
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
           ~state,
           ~testFunc=
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               SceneAPI.getAmbientLightColor(state)
               |> expect == [|1., 0.5, 1.|],
           (),
@@ -2794,7 +2809,7 @@ let _ =
             ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfScript(),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) =>
+              ((state, _, (rootGameObject, _))) =>
                 _getAllGameObjects(rootGameObject, state)
                 |> Js.Array.map(gameObject =>
                      GameObjectAPI.hasGameObjectScriptComponent(
@@ -2820,7 +2835,7 @@ let _ =
             ),
           ~state,
           ~testFunc=
-            ((state, _, rootGameObject)) =>
+            ((state, _, (rootGameObject, _))) =>
               AssembleWDBSystemTool.getAllScripts(rootGameObject, state)
               |> Js.Array.map(script =>
                    ScriptAPI.unsafeGetScriptIsActive(script, state)
@@ -2847,7 +2862,7 @@ let _ =
               ),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) => {
+              ((state, _, (rootGameObject, _))) => {
                 let state =
                   ScriptTool.ExecEventFunction.execAllInitEventFunction(
                     state,
@@ -2886,7 +2901,7 @@ let _ =
               ),
             ~state,
             ~testFunc=
-              ((state, _, rootGameObject)) => {
+              ((state, _, (rootGameObject, _))) => {
                 let state =
                   ScriptTool.ExecEventFunction.execAllUpdateEventFunction(
                     state,

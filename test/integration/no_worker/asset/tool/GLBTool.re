@@ -47,12 +47,12 @@ let buildFakeTextEncoder =
 let _createFakeImage = src => {
   "src": src,
   "name": "",
-  "width": 2,
+  "width": 4,
   "height": 4,
 };
 
-let createFakeImage = (~name="", ~src="", ~width=2, ~height=4, ()) =>
-  {"src": src, "name": name, "width": 2, "height": 4} |> Obj.magic;
+let createFakeImage = (~name="", ~src="", ~width=4, ~height=4, ()) =>
+  {"src": src, "name": name, "width": width, "height": height} |> Obj.magic;
 
 let buildFakeURL = [%raw
   sandbox => {|

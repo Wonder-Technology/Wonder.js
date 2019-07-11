@@ -152,7 +152,12 @@ let assembleWDBData =
          isSetIMGUIFunc && hasIMGUIFunc ?
            state |> SetIMGUIFuncSystem.setIMGUIFunc(wd) : state;
 
-       let (state, imageUint8ArrayDataMapTuple, gameObjectArr, cubemapTextureArr) =
+       let (
+         state,
+         imageUint8ArrayDataMapTuple,
+         gameObjectArr,
+         cubemapTextureArr,
+       ) =
          state
          |> BatchCreateSystem.batchCreate(isRenderLight, wd)
          |> BatchOperateWholeSystem.batchOperate(
@@ -162,12 +167,21 @@ let assembleWDBData =
               (isBindEvent, isActiveCamera),
             );
 
-       let state = SetSkyboxSystem.setSkybox(wd, cubemapTextureArr, state);
-
        let (state, rootGameObject) =
          BuildRootGameObjectSystem.build(wd, (state, gameObjectArr));
 
-       (state, (imageUint8ArrayDataMapTuple, hasIMGUIFunc), rootGameObject)
+       (
+         state,
+         (imageUint8ArrayDataMapTuple, hasIMGUIFunc),
+         (
+           rootGameObject,
+           SkyboxCubemapSystem.getSkyboxCubemap(
+             wd,
+             cubemapTextureArr,
+             state,
+           ),
+         ),
+       )
        |> resolve;
      })
   |> WonderBsMost.Most.fromPromise;

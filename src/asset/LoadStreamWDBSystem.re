@@ -34,8 +34,8 @@ let _handleNotSupportStreamLoad =
          (true, true, true, true, true),
          state,
        )
-       |> Most.tap(((state, data, rootGameObject)) =>
-            handleWhenLoadWholeWDBFunc(state, data, rootGameObject)
+       |> Most.tap(((state, data, rootGameObjectData)) =>
+            handleWhenLoadWholeWDBFunc(state, data, rootGameObjectData)
           )
        |> Most.drain
        |> then_(_ => resolve())
@@ -112,9 +112,9 @@ let load =
        let default11Image = image |> ImageType.imageToDomExtendImageElement;
 
        Most.fromPromise(
-         fetchFunc(.wdbPath)
+         fetchFunc(. wdbPath)
          |> then_(response =>
-              ! Fetch.Response.ok(response) ?
+              !Fetch.Response.ok(response) ?
                 {
                   let status = Fetch.Response.status(response);
                   let statusText = Fetch.Response.statusText(response);
@@ -129,7 +129,7 @@ let load =
                     ),
                   );
                 } :
-                ! FetchCommon.isSupportStreamLoad(response) ?
+                !FetchCommon.isSupportStreamLoad(response) ?
                   _handleNotSupportStreamLoad(
                     response,
                     wdbPath,
