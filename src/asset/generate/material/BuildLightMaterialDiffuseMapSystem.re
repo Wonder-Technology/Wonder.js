@@ -36,83 +36,6 @@ let _addSamplerData = (texture, samplerIndexMap, state, samplerDataArr) => {
   };
 };
 
-let _convertImageToBase64 = [%raw
-  (width, height, mimeType, image) => {|
-    var canvas = document.createElement("canvas");
-    var ctx = canvas.getContext("2d");
-    var dataURL = null;
-    canvas.height = width;
-    canvas.width = height;
-    ctx.drawImage(image, 0, 0);
-    return canvas.toDataURL(mimeType);
-    |}
-];
-
-/* let _getLastBufferViewOffset = bufferViewDataArr => {
-     WonderLog.Contract.requireCheck(
-       () =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(
-                   ~expect={j|bufferViewDataArr.length >= 1|j},
-                   ~actual={j|is 0|j},
-                 ),
-                 () =>
-                 bufferViewDataArr |> Js.Array.length >= 1
-               )
-             )
-           )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
-
-     let sortedBufferViewDataArr =
-       bufferViewDataArr
-       |> Js.Array.copy
-       |> Js.Array.sortInPlaceWith(
-            (
-              bufferViewA: GenerateSceneGraphType.bufferViewData,
-              bufferViewB: GenerateSceneGraphType.bufferViewData,
-            ) =>
-            bufferViewB.byteOffset - bufferViewA.byteOffset
-          );
-
-     let {byteOffset, byteLength}: GenerateSceneGraphType.bufferViewData = sortedBufferViewDataArr[0];
-
-     byteOffset + byteLength;
-   }; */
-
-let _convertBase64MimeTypeToWDBMimeType = mimeType =>
-  switch (mimeType) {
-  | "image/png"
-  | "image/jpeg" => mimeType
-  | _ =>
-    WonderLog.Log.fatal(
-      WonderLog.Log.buildFatalMessage(
-        ~title="_convertBase64MimeTypeToWDBMimeType",
-        ~description={j|unknown mimeType: $mimeType|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j},
-      ),
-    )
-  };
-
-let _getImageMimeType = source =>
-  ImageService.getMimeTypeByExtname(
-    FileNameService.getFileExtName(Obj.magic(source)##name),
-  );
-
-let _getImageBase64 = (texture, source) =>
-  _convertImageToBase64(
-    TextureSizeService.getWidth(source),
-    TextureSizeService.getHeight(source),
-    _getImageMimeType(source),
-    source,
-  );
-
 let _getImageUint8ArrayData =
     (texture, source, imageUint8ArrayDataMap, getResultUint8ArrayDataFunc) => {
   open Js.Typed_array;
@@ -124,7 +47,7 @@ let _getImageUint8ArrayData =
     ) {
     | Some(data) => data
     | None =>
-      let imageBase64 = _getImageBase64(texture, source);
+      let imageBase64 = BuildTextureDataUtils.getImageBase64(texture, source);
 
       (
         BufferUtils.getBase64MimeType(imageBase64),
@@ -220,7 +143,9 @@ let _addImageData =
            {
              name: ImageUtils.getImageName(source) |> Js.Nullable.toOption,
              bufferView: bufferViewDataArr |> Js.Array.length,
-             mimeType: mimeType |> _convertBase64MimeTypeToWDBMimeType,
+             mimeType:
+               mimeType
+               |> BuildTextureDataUtils.convertBase64MimeTypeToWDBMimeType,
              uint8Array: imageResultUint8Array,
              byteOffset,
            }: GenerateSceneGraphType.imageData,
