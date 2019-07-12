@@ -8,7 +8,10 @@ open GenerateSceneGraphType;
 
 let generateGLBData =
     (
-      (rootGameObject, imageUint8ArrayDataMap),
+      (
+        rootGameObject,
+        basicSourceTextureImageUint8ArrayDataMap: TextureimageUint8ArrayType.basicSourceTextureImageUint8ArrayDataMap,
+      ),
       (getPointsDataFuncTuple, getResultUint8ArrayDataFunc),
       state,
     ) => {
@@ -52,11 +55,15 @@ let generateGLBData =
     basicSourceTextureDataArr,
     samplerDataArr,
     imageUint8DataArr,
-    imageResultUint8ArrayMap,
+    basicSourceTextureImageResultUint8ArrayMap,
     (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     BuildMaterialDataSystem.build(
-      (basicMaterialDataMap, lightMaterialDataMap, imageUint8ArrayDataMap),
+      (
+        basicMaterialDataMap,
+        lightMaterialDataMap,
+        basicSourceTextureImageUint8ArrayDataMap,
+      ),
       (totalByteLength, geometryEndByteOffset, bufferViewDataArr),
       getResultUint8ArrayDataFunc,
       state,
@@ -67,15 +74,14 @@ let generateGLBData =
   let (
     skyboxCubemapTextureIndexOpt,
     (cubemapTextureDataArr, samplerDataArr, imageUint8DataArr),
-    imageResultUint8ArrayMap,
+    /* cubemapTextureImageResultUint8ArrayMap, */
     (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     BuildSkyboxDataSystem.build(
       cubemapTextureDataArr,
       samplerDataArr,
       imageUint8DataArr,
-      imageUint8ArrayDataMap,
-      imageResultUint8ArrayMap,
+      /* cubemapTextureImageUint8ArrayDataMap, */
       (totalByteLength, byteOffset, bufferViewDataArr),
       getResultUint8ArrayDataFunc,
       state,
@@ -146,7 +152,7 @@ let generateGLBData =
       ),
       state,
     ),
-    imageResultUint8ArrayMap,
+    basicSourceTextureImageResultUint8ArrayMap,
     buffer,
   );
 };

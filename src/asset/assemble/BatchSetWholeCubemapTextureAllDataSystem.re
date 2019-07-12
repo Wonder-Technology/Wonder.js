@@ -122,7 +122,7 @@ let convertKeyFromImageIndexToCubemapTexture =
                   |> WonderCommonlib.MutableSparseMapService.unsafeGet(
                        Array.unsafe_get(nzImageIndices, index),
                      ),
-              }: WDType.cubemapTextureImageUint8ArrayData,
+              }: TextureimageUint8ArrayType.cubemapTextureImageUint8ArrayData,
             ),
        WonderCommonlib.MutableSparseMapService.createEmpty(),
      );

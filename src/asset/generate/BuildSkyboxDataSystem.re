@@ -65,24 +65,15 @@ let _getImageBase64 = (texture, source) =>
     source,
   );
 
-let _getImageUint8ArrayData =
-    (texture, source, imageUint8ArrayDataMap, getResultUint8ArrayDataFunc) => {
+let _getImageUint8ArrayData = (texture, source, getResultUint8ArrayDataFunc) => {
   open Js.Typed_array;
 
-  let (mimeType, imageUint8Array) =
-    switch (
-      imageUint8ArrayDataMap
-      |> WonderCommonlib.MutableSparseMapService.get(texture)
-    ) {
-    | Some(data) => data
-    | None =>
-      let imageBase64 = _getImageBase64(texture, source);
+  let imageBase64 = _getImageBase64(texture, source);
 
-      (
-        BufferUtils.getBase64MimeType(imageBase64),
-        BufferUtils.convertBase64ToBinary(imageBase64),
-      );
-    };
+  let (mimeType, imageUint8Array) = (
+    BufferUtils.getBase64MimeType(imageBase64),
+    BufferUtils.convertBase64ToBinary(imageBase64),
+  );
 
   let imageResultUint8Array = imageUint8Array |> getResultUint8ArrayDataFunc;
   let imageResultUint8ArrayByteLength =
@@ -106,7 +97,7 @@ let _addOneFaceImageData =
       oneFaceSource,
       /* (texture, imageUint8ArrayMap, state), */
       (texture, state),
-      (imageUint8ArrayDataMap, imageResultUint8ArrayMap),
+      /* (imageUint8ArrayDataMap, imageResultUint8ArrayMap), */
       imageUint8DataArr,
       (totalByteLength, byteOffset, bufferViewDataArr),
       getResultUint8ArrayDataFunc,
@@ -144,7 +135,6 @@ let _addOneFaceImageData =
     _getImageUint8ArrayData(
       texture,
       oneFaceSource,
-      imageUint8ArrayDataMap,
       getResultUint8ArrayDataFunc,
     );
 
@@ -155,9 +145,9 @@ let _addOneFaceImageData =
           imageUint8Array,
         ); */
 
-  let imageResultUint8ArrayMap =
-    imageResultUint8ArrayMap
-    |> WonderCommonlib.MutableSparseMapService.set(texture, imageUint8Array);
+  /* let imageResultUint8ArrayMap =
+     imageResultUint8ArrayMap
+     |> WonderCommonlib.MutableSparseMapService.set(texture, imageUint8Array); */
 
   (
     imageIndex,
@@ -173,7 +163,7 @@ let _addOneFaceImageData =
            byteOffset,
          }: GenerateSceneGraphType.imageData,
        ),
-    imageResultUint8ArrayMap,
+    /* imageResultUint8ArrayMap, */
     (
       totalByteLength + imageResultUint8ArrayAlignedByteLength,
       byteOffset + imageResultUint8ArrayAlignedByteLength,
@@ -192,7 +182,7 @@ let _addOneFaceImageData =
 let _addImageData =
     (
       (texture, state),
-      (imageUint8ArrayDataMap, imageResultUint8ArrayMap),
+      /* (imageUint8ArrayDataMap, imageResultUint8ArrayMap), */
       imageUint8DataArr,
       (totalByteLength, byteOffset, bufferViewDataArr),
       getResultUint8ArrayDataFunc,
@@ -200,13 +190,13 @@ let _addImageData =
   let (
     pxImageIndex,
     imageUint8DataArr,
-    imageResultUint8ArrayMap,
+    /* imageResultUint8ArrayMap, */
     (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     _addOneFaceImageData(
       OperateCubemapTextureMainService.unsafeGetPXSource(texture, state),
       (texture, state),
-      (imageUint8ArrayDataMap, imageResultUint8ArrayMap),
+      /* (imageUint8ArrayDataMap, imageResultUint8ArrayMap), */
       imageUint8DataArr,
       (totalByteLength, byteOffset, bufferViewDataArr),
       getResultUint8ArrayDataFunc,
@@ -215,13 +205,13 @@ let _addImageData =
   let (
     nxImageIndex,
     imageUint8DataArr,
-    imageResultUint8ArrayMap,
+    /* imageResultUint8ArrayMap, */
     (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     _addOneFaceImageData(
       OperateCubemapTextureMainService.unsafeGetNXSource(texture, state),
       (texture, state),
-      (imageUint8ArrayDataMap, imageResultUint8ArrayMap),
+      /* (imageUint8ArrayDataMap, imageResultUint8ArrayMap), */
       imageUint8DataArr,
       (totalByteLength, byteOffset, bufferViewDataArr),
       getResultUint8ArrayDataFunc,
@@ -229,13 +219,13 @@ let _addImageData =
   let (
     pyImageIndex,
     imageUint8DataArr,
-    imageResultUint8ArrayMap,
+    /* imageResultUint8ArrayMap, */
     (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     _addOneFaceImageData(
       OperateCubemapTextureMainService.unsafeGetPYSource(texture, state),
       (texture, state),
-      (imageUint8ArrayDataMap, imageResultUint8ArrayMap),
+      /* (imageUint8ArrayDataMap, imageResultUint8ArrayMap), */
       imageUint8DataArr,
       (totalByteLength, byteOffset, bufferViewDataArr),
       getResultUint8ArrayDataFunc,
@@ -243,13 +233,13 @@ let _addImageData =
   let (
     nyImageIndex,
     imageUint8DataArr,
-    imageResultUint8ArrayMap,
+    /* imageResultUint8ArrayMap, */
     (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     _addOneFaceImageData(
       OperateCubemapTextureMainService.unsafeGetNYSource(texture, state),
       (texture, state),
-      (imageUint8ArrayDataMap, imageResultUint8ArrayMap),
+      /* (imageUint8ArrayDataMap, imageResultUint8ArrayMap), */
       imageUint8DataArr,
       (totalByteLength, byteOffset, bufferViewDataArr),
       getResultUint8ArrayDataFunc,
@@ -257,13 +247,13 @@ let _addImageData =
   let (
     pzImageIndex,
     imageUint8DataArr,
-    imageResultUint8ArrayMap,
+    /* imageResultUint8ArrayMap, */
     (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     _addOneFaceImageData(
       OperateCubemapTextureMainService.unsafeGetPZSource(texture, state),
       (texture, state),
-      (imageUint8ArrayDataMap, imageResultUint8ArrayMap),
+      /* (imageUint8ArrayDataMap, imageResultUint8ArrayMap), */
       imageUint8DataArr,
       (totalByteLength, byteOffset, bufferViewDataArr),
       getResultUint8ArrayDataFunc,
@@ -271,13 +261,13 @@ let _addImageData =
   let (
     nzImageIndex,
     imageUint8DataArr,
-    imageResultUint8ArrayMap,
+    /* imageResultUint8ArrayMap, */
     (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     _addOneFaceImageData(
       OperateCubemapTextureMainService.unsafeGetNZSource(texture, state),
       (texture, state),
-      (imageUint8ArrayDataMap, imageResultUint8ArrayMap),
+      /* (imageUint8ArrayDataMap, imageResultUint8ArrayMap), */
       imageUint8DataArr,
       (totalByteLength, byteOffset, bufferViewDataArr),
       getResultUint8ArrayDataFunc,
@@ -293,7 +283,7 @@ let _addImageData =
       nzImageIndex,
     ),
     imageUint8DataArr,
-    imageResultUint8ArrayMap,
+    /* imageResultUint8ArrayMap, */
     (totalByteLength, byteOffset, bufferViewDataArr),
   );
 };
@@ -353,8 +343,8 @@ let build =
       cubemapTextureDataArr,
       samplerDataArr,
       imageUint8DataArr,
-      imageUint8ArrayDataMap,
-      imageResultUint8ArrayMap,
+      /* imageUint8ArrayDataMap,
+         imageResultUint8ArrayMap, */
       (totalByteLength, byteOffset, bufferViewDataArr),
       getResultUint8ArrayDataFunc,
       state,
@@ -363,7 +353,7 @@ let build =
   | None => (
       None,
       (cubemapTextureDataArr, samplerDataArr, imageUint8DataArr),
-      imageResultUint8ArrayMap,
+      /* imageResultUint8ArrayMap, */
       (totalByteLength, byteOffset, bufferViewDataArr),
     )
   | Some(cubemapTexture) =>
@@ -380,12 +370,12 @@ let build =
         nzImageIndex,
       ),
       imageUint8DataArr,
-      imageResultUint8ArrayMap,
+      /* imageResultUint8ArrayMap, */
       (totalByteLength, byteOffset, bufferViewDataArr),
     ) =
       _addImageData(
         (cubemapTexture, state),
-        (imageUint8ArrayDataMap, imageResultUint8ArrayMap),
+        /* (imageUint8ArrayDataMap, imageResultUint8ArrayMap), */
         imageUint8DataArr,
         (totalByteLength, byteOffset, bufferViewDataArr),
         getResultUint8ArrayDataFunc,
@@ -414,7 +404,7 @@ let build =
     (
       Some(skyboxCubemapTextureIndex),
       (cubemapTextureDataArr, samplerDataArr, imageUint8DataArr),
-      imageResultUint8ArrayMap,
+      /* imageResultUint8ArrayMap, */
       (totalByteLength, byteOffset, bufferViewDataArr),
     );
   };

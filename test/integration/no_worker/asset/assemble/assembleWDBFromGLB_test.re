@@ -3089,7 +3089,7 @@ let _ =
                            "image/png",
                            129 |> Obj.magic,
                          ),
-                       }: WDType.cubemapTextureImageUint8ArrayData,
+                       }: TextureimageUint8ArrayType.cubemapTextureImageUint8ArrayData,
                      ),
                 )
                 |> expect == true,
