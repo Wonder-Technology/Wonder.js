@@ -85,47 +85,50 @@ let convertKeyFromImageIndexToCubemapTexture =
       cubemapTextureArr,
       imageUint8ArrayDataMap,
     ) =>
-  cubemapTextureIndices
-  |> WonderCommonlib.ArrayService.reduceOneParami(
-       (. resultImageUint8ArrayDataMap, cubemapTextureIndex, index) =>
-         resultImageUint8ArrayDataMap
-         |> WonderCommonlib.MutableSparseMapService.set(
-              Array.unsafe_get(cubemapTextureArr, cubemapTextureIndex),
-              {
-                pxImageUint8ArrayData:
-                  imageUint8ArrayDataMap
-                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(
-                       Array.unsafe_get(pxImageIndices, index),
-                     ),
-                nxImageUint8ArrayData:
-                  imageUint8ArrayDataMap
-                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(
-                       Array.unsafe_get(nxImageIndices, index),
-                     ),
-                pyImageUint8ArrayData:
-                  imageUint8ArrayDataMap
-                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(
-                       Array.unsafe_get(pyImageIndices, index),
-                     ),
-                nyImageUint8ArrayData:
-                  imageUint8ArrayDataMap
-                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(
-                       Array.unsafe_get(nyImageIndices, index),
-                     ),
-                pzImageUint8ArrayData:
-                  imageUint8ArrayDataMap
-                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(
-                       Array.unsafe_get(pzImageIndices, index),
-                     ),
-                nzImageUint8ArrayData:
-                  imageUint8ArrayDataMap
-                  |> WonderCommonlib.MutableSparseMapService.unsafeGet(
-                       Array.unsafe_get(nzImageIndices, index),
-                     ),
-              }: TextureimageUint8ArrayType.cubemapTextureImageUint8ArrayData,
-            ),
-       WonderCommonlib.MutableSparseMapService.createEmpty(),
-     );
+  imageUint8ArrayDataMap
+  |> WonderCommonlib.MutableSparseMapService.length === 0 ?
+    WonderCommonlib.MutableSparseMapService.createEmpty() :
+    cubemapTextureIndices
+    |> WonderCommonlib.ArrayService.reduceOneParami(
+         (. resultImageUint8ArrayDataMap, cubemapTextureIndex, index) =>
+           resultImageUint8ArrayDataMap
+           |> WonderCommonlib.MutableSparseMapService.set(
+                Array.unsafe_get(cubemapTextureArr, cubemapTextureIndex),
+                {
+                  pxImageUint8ArrayData:
+                    imageUint8ArrayDataMap
+                    |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                         Array.unsafe_get(pxImageIndices, index),
+                       ),
+                  nxImageUint8ArrayData:
+                    imageUint8ArrayDataMap
+                    |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                         Array.unsafe_get(nxImageIndices, index),
+                       ),
+                  pyImageUint8ArrayData:
+                    imageUint8ArrayDataMap
+                    |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                         Array.unsafe_get(pyImageIndices, index),
+                       ),
+                  nyImageUint8ArrayData:
+                    imageUint8ArrayDataMap
+                    |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                         Array.unsafe_get(nyImageIndices, index),
+                       ),
+                  pzImageUint8ArrayData:
+                    imageUint8ArrayDataMap
+                    |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                         Array.unsafe_get(pzImageIndices, index),
+                       ),
+                  nzImageUint8ArrayData:
+                    imageUint8ArrayDataMap
+                    |> WonderCommonlib.MutableSparseMapService.unsafeGet(
+                         Array.unsafe_get(nzImageIndices, index),
+                       ),
+                }: TextureimageUint8ArrayType.cubemapTextureImageUint8ArrayData,
+              ),
+         WonderCommonlib.MutableSparseMapService.createEmpty(),
+       );
 
 let batchSet =
     (
