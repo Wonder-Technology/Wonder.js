@@ -24,6 +24,7 @@ let generateWDB = buildWDBGameObjectFunc => {
       Js.Nullable.return(
         WonderCommonlib.MutableSparseMapService.createEmpty(),
       ),
+      true,
       state,
     );
 

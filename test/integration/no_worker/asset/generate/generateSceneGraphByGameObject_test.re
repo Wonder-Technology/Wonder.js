@@ -1080,6 +1080,41 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             );
           });
         });
+
+        describe("test isBuildCubemapFronSceneSkybox = false", () =>
+          describe("not has skybox data", () => {
+            let _prepareGameObject = state => {
+              let state = state^;
+
+              let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+              let (state, cubemapTexture) =
+                SkyboxTool.prepareCubemapTextureAndSetAllSources(state);
+
+              let (canvas, context, _) =
+                GenerateSceneGraphSystemTool.prepareCanvasForCubemapTexture(
+                  sandbox,
+                );
+
+              (state, rootGameObject, cubemapTexture);
+            };
+
+            test("test", () => {
+              let (state, rootGameObject, _) = _prepareGameObject(state);
+
+              GenerateSceneGraphSystemTool.testGLTFResultByGameObjectWithConfig(
+                ~rootGameObject,
+                ~targetJsonStr=
+                  {j|
+"scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0],"extras":{}}]
+          |j},
+                ~state,
+                ~isBuildCubemapFronSceneSkybox=false,
+                (),
+              );
+            });
+          })
+        );
       });
 
       describe("test assemble result", () =>
@@ -4227,6 +4262,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             Js.Nullable.return(
               WonderCommonlib.MutableSparseMapService.createEmpty(),
             ),
+            true,
             state,
           );
 

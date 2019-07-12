@@ -72,6 +72,7 @@ let generateOneSAB = state => {
   GenerateSingleSABSystem.generateSingleSAB(
     SceneAPI.getSceneGameObject(state),
     WonderCommonlib.MutableSparseMapService.createEmpty(),
+    true,
     state,
   );
 };

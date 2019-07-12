@@ -34,10 +34,17 @@ let generateSAB =
     jsonUint8Array,
   );
 
-let generateSingleSAB = (sceneGameObject, imageUint8ArrayMap, state) => {
+let generateSingleSAB =
+    (
+      sceneGameObject,
+      imageUint8ArrayMap,
+      isBuildCubemapFronSceneSkybox,
+      state,
+    ) => {
   let (gltf, imageResultUint8ArrayMap, binBuffer) =
     GenerateGLBSystem.generateGLBData(
       (sceneGameObject, imageUint8ArrayMap),
+      isBuildCubemapFronSceneSkybox,
       (
         (
           VerticesGeometryMainService.getVertices,

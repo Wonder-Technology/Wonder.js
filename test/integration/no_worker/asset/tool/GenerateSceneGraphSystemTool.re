@@ -26,7 +26,15 @@ let contain = (targetJsonStr: string, json: Js.Json.t) =>
     )
   );
 
-let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
+let testGLTFResultByGLBWithConfig =
+    (
+      ~sandbox,
+      ~glbFilePath,
+      ~testFunc,
+      ~state,
+      ~isBuildCubemapFronSceneSkybox=true,
+      (),
+    ) => {
   open Js.Promise;
 
   let result = ref(Obj.magic(1));
@@ -54,6 +62,7 @@ let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
            Js.Nullable.return(
              WonderCommonlib.MutableSparseMapService.createEmpty(),
            ),
+           isBuildCubemapFronSceneSkybox,
            state,
          );
 
@@ -61,7 +70,24 @@ let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
      });
 };
 
-let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
+let testGLTFResultByGLB = (sandbox, glbFilePath, testFunc, state) =>
+  testGLTFResultByGLBWithConfig(
+    ~sandbox,
+    ~glbFilePath,
+    ~testFunc,
+    ~state,
+    (),
+  );
+
+let testAssembleResultByGLBWithConfig =
+    (
+      ~sandbox,
+      ~glbFilePath,
+      ~testFunc,
+      ~state,
+      ~isBuildCubemapFronSceneSkybox=true,
+      (),
+    ) => {
   open Js.Promise;
 
   let result = ref(Obj.magic(1));
@@ -88,6 +114,7 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
          Js.Nullable.return(
            WonderCommonlib.MutableSparseMapService.createEmpty(),
          ),
+         isBuildCubemapFronSceneSkybox,
          state,
        )
        |> resolve;
@@ -102,6 +129,15 @@ let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) => {
        |> then_(() => testFunc(result^) |> resolve)
      );
 };
+
+let testAssembleResultByGLB = (sandbox, glbFilePath, testFunc, state) =>
+  testAssembleResultByGLBWithConfig(
+    ~sandbox,
+    ~glbFilePath,
+    ~testFunc,
+    ~state,
+    (),
+  );
 
 /* let _buildBinBuffer = () => {
      let buffer =
@@ -122,6 +158,7 @@ let testGLTFResultByGLTF =
       ~targetJsonStr,
       ~state,
       ~binBuffer=GLBTool.buildBinBuffer(),
+      ~isBuildCubemapFronSceneSkybox=true,
       (),
     ) => {
   open Js.Promise;
@@ -145,6 +182,7 @@ let testGLTFResultByGLTF =
            Js.Nullable.return(
              WonderCommonlib.MutableSparseMapService.createEmpty(),
            ),
+           isBuildCubemapFronSceneSkybox,
            state,
          );
 
@@ -152,13 +190,49 @@ let testGLTFResultByGLTF =
      });
 };
 
-let testGLTFResultByGameObject = (rootGameObject, targetJsonStr, state) => {
+let testGLTFResultByGameObjectWithConfig =
+    (
+      ~rootGameObject,
+      ~targetJsonStr,
+      ~state,
+      ~isBuildCubemapFronSceneSkybox=true,
+      (),
+    ) => {
   let (gltf, _, binBuffer) =
     GenerateSceneGraphAPI.generateGLBData(
       rootGameObject,
       Js.Nullable.return(
         WonderCommonlib.MutableSparseMapService.createEmpty(),
       ),
+      isBuildCubemapFronSceneSkybox,
+      state,
+    );
+
+  gltf |> contain(targetJsonStr);
+};
+
+let testGLTFResultByGameObject = (rootGameObject, targetJsonStr, state) =>
+  testGLTFResultByGameObjectWithConfig(
+    ~rootGameObject,
+    ~targetJsonStr,
+    ~state,
+    (),
+  );
+
+let testGLTFResultByGameObjectWithImageUint8ArrayDataMapWithConfig =
+    (
+      ~rootGameObject,
+      ~targetJsonStr,
+      ~imageUint8ArrayDataMap,
+      ~state,
+      ~isBuildCubemapFronSceneSkybox=true,
+      (),
+    ) => {
+  let (gltf, _, binBuffer) =
+    GenerateSceneGraphAPI.generateGLBData(
+      rootGameObject,
+      imageUint8ArrayDataMap,
+      isBuildCubemapFronSceneSkybox,
       state,
     );
 
@@ -166,19 +240,24 @@ let testGLTFResultByGameObject = (rootGameObject, targetJsonStr, state) => {
 };
 
 let testGLTFResultByGameObjectWithImageUint8ArrayDataMap =
-    (rootGameObject, targetJsonStr, imageUint8ArrayDataMap, state) => {
-  let (gltf, _, binBuffer) =
-    GenerateSceneGraphAPI.generateGLBData(
-      rootGameObject,
-      imageUint8ArrayDataMap,
-      state,
-    );
+    (rootGameObject, targetJsonStr, imageUint8ArrayDataMap, state) =>
+  testGLTFResultByGameObjectWithImageUint8ArrayDataMapWithConfig(
+    ~rootGameObject,
+    ~targetJsonStr,
+    ~imageUint8ArrayDataMap,
+    ~state,
+    (),
+  );
 
-  gltf |> contain(targetJsonStr);
-};
-
-let testAssembleResultByGameObject =
-    (sandbox, rootGameObject, testFunc, state) => {
+let testAssembleResultByGameObjectWithConfig =
+    (
+      ~sandbox,
+      ~rootGameObject,
+      ~testFunc,
+      ~state,
+      ~isBuildCubemapFronSceneSkybox=true,
+      (),
+    ) => {
   open Js.Promise;
 
   GLBTool.prepare(sandbox);
@@ -191,6 +270,7 @@ let testAssembleResultByGameObject =
       Js.Nullable.return(
         WonderCommonlib.MutableSparseMapService.createEmpty(),
       ),
+      isBuildCubemapFronSceneSkybox,
       state,
     );
 
@@ -202,6 +282,16 @@ let testAssembleResultByGameObject =
   |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => testFunc(result^) |> resolve);
 };
+
+let testAssembleResultByGameObject =
+    (sandbox, rootGameObject, testFunc, state) =>
+  testAssembleResultByGameObjectWithConfig(
+    ~sandbox,
+    ~rootGameObject,
+    ~testFunc,
+    ~state,
+    (),
+  );
 
 let _buildFakeContext = sandbox => {
   "drawImage": createEmptyStubWithJsObjSandbox(sandbox),

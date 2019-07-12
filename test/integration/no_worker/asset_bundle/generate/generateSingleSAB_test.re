@@ -146,6 +146,7 @@ let _ =
             GenerateSingleSABSystem.generateSingleSAB(
               rootGameObject,
               WonderCommonlib.MutableSparseMapService.createEmpty(),
+              true,
               state,
             );
 
@@ -202,6 +203,7 @@ let _ =
               GenerateSingleSABSystem.generateSingleSAB(
                 rootGameObject,
                 WonderCommonlib.MutableSparseMapService.createEmpty(),
+                true,
                 state,
               );
 
@@ -224,6 +226,7 @@ let _ =
               GenerateSingleSABSystem.generateSingleSAB(
                 rootGameObject,
                 WonderCommonlib.MutableSparseMapService.createEmpty(),
+                true,
                 state,
               );
 

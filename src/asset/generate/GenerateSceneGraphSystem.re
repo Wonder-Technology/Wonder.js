@@ -11,17 +11,21 @@ let _getFuncTuple = () => (
   imageUint8Array => imageUint8Array,
 );
 
-let generateGLBData = (rootGameObject, imageUint8ArrayMap, state) =>
+let generateGLBData =
+    (rootGameObject, imageUint8ArrayMap, isBuildCubemapFronSceneSkybox, state) =>
   GenerateGLBSystem.generateGLBData(
     (rootGameObject, imageUint8ArrayMap),
+    isBuildCubemapFronSceneSkybox,
     _getFuncTuple(),
     state,
   );
 
-let generateWDB = (rootGameObject, imageUint8ArrayMap, state) =>
+let generateWDB =
+    (rootGameObject, imageUint8ArrayMap, isBuildCubemapFronSceneSkybox, state) =>
   GenerateWDBSystem.generateWDB(
     rootGameObject,
     imageUint8ArrayMap,
+    isBuildCubemapFronSceneSkybox,
     _getFuncTuple(),
     state,
   );

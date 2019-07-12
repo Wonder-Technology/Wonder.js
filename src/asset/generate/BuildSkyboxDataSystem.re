@@ -299,6 +299,7 @@ let _addTextureData =
 
 let build =
     (
+      isBuildCubemapFronSceneSkybox,
       cubemapTextureDataArr,
       samplerDataArr,
       imageUint8DataArr,
@@ -308,45 +309,26 @@ let build =
       getResultUint8ArrayDataFunc,
       state,
     ) =>
-  switch (SkyboxSceneMainService.getCubemapTexture(state)) {
-  | None => (
+  !isBuildCubemapFronSceneSkybox ?
+    (
       None,
       (cubemapTextureDataArr, samplerDataArr, imageUint8DataArr),
       /* imageResultUint8ArrayMap, */
       (totalByteLength, byteOffset, bufferViewDataArr),
-    )
-  | Some(cubemapTexture) =>
-    let (samplerIndex, samplerDataArr) =
-      _addSamplerData(cubemapTexture, state, samplerDataArr);
+    ) :
+    (
+      switch (SkyboxSceneMainService.getCubemapTexture(state)) {
+      | None => (
+          None,
+          (cubemapTextureDataArr, samplerDataArr, imageUint8DataArr),
+          /* imageResultUint8ArrayMap, */
+          (totalByteLength, byteOffset, bufferViewDataArr),
+        )
+      | Some(cubemapTexture) =>
+        let (samplerIndex, samplerDataArr) =
+          _addSamplerData(cubemapTexture, state, samplerDataArr);
 
-    let (
-      (
-        pxImageIndex,
-        nxImageIndex,
-        pyImageIndex,
-        nyImageIndex,
-        pzImageIndex,
-        nzImageIndex,
-      ),
-      imageUint8DataArr,
-      /* imageResultUint8ArrayMap, */
-      (totalByteLength, byteOffset, bufferViewDataArr),
-    ) =
-      _addImageData(
-        (cubemapTexture, state),
-        /* (imageUint8ArrayDataMap, imageResultUint8ArrayMap), */
-        imageUint8DataArr,
-        (totalByteLength, byteOffset, bufferViewDataArr),
-        getResultUint8ArrayDataFunc,
-      );
-
-    let skyboxCubemapTextureIndex = cubemapTextureDataArr |> Js.Array.length;
-
-    let cubemapTextureDataArr =
-      _addTextureData(
-        cubemapTexture,
-        (
-          samplerIndex,
+        let (
           (
             pxImageIndex,
             nxImageIndex,
@@ -355,15 +337,44 @@ let build =
             pzImageIndex,
             nzImageIndex,
           ),
-        ),
-        state,
-        cubemapTextureDataArr,
-      );
+          imageUint8DataArr,
+          /* imageResultUint8ArrayMap, */
+          (totalByteLength, byteOffset, bufferViewDataArr),
+        ) =
+          _addImageData(
+            (cubemapTexture, state),
+            /* (imageUint8ArrayDataMap, imageResultUint8ArrayMap), */
+            imageUint8DataArr,
+            (totalByteLength, byteOffset, bufferViewDataArr),
+            getResultUint8ArrayDataFunc,
+          );
 
-    (
-      Some(skyboxCubemapTextureIndex),
-      (cubemapTextureDataArr, samplerDataArr, imageUint8DataArr),
-      /* imageResultUint8ArrayMap, */
-      (totalByteLength, byteOffset, bufferViewDataArr),
+        let skyboxCubemapTextureIndex =
+          cubemapTextureDataArr |> Js.Array.length;
+
+        let cubemapTextureDataArr =
+          _addTextureData(
+            cubemapTexture,
+            (
+              samplerIndex,
+              (
+                pxImageIndex,
+                nxImageIndex,
+                pyImageIndex,
+                nyImageIndex,
+                pzImageIndex,
+                nzImageIndex,
+              ),
+            ),
+            state,
+            cubemapTextureDataArr,
+          );
+
+        (
+          Some(skyboxCubemapTextureIndex),
+          (cubemapTextureDataArr, samplerDataArr, imageUint8DataArr),
+          /* imageResultUint8ArrayMap, */
+          (totalByteLength, byteOffset, bufferViewDataArr),
+        );
+      }
     );
-  };
