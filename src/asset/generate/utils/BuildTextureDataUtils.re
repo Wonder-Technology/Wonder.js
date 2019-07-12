@@ -52,7 +52,7 @@ let _getImageMimeType = source =>
     FileNameService.getFileExtName(Obj.magic(source)##name),
   );
 
-let getImageBase64 = (texture, source) =>
+let getImageBase64 = source =>
   _convertImageToBase64(
     TextureSizeService.getWidth(source),
     TextureSizeService.getHeight(source),

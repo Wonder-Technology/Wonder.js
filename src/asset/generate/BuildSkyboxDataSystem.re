@@ -25,7 +25,7 @@ let _addSamplerData = (texture, state, samplerDataArr) => {
 let _getImageUint8ArrayData = (texture, source, getResultUint8ArrayDataFunc) => {
   open Js.Typed_array;
 
-  let imageBase64 = BuildTextureDataUtils.getImageBase64(texture, source);
+  let imageBase64 = BuildTextureDataUtils.getImageBase64(source);
 
   let (mimeType, imageUint8Array) = (
     BufferUtils.getBase64MimeType(imageBase64),

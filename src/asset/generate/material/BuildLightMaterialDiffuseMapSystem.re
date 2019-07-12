@@ -47,7 +47,7 @@ let _getImageUint8ArrayData =
     ) {
     | Some(data) => data
     | None =>
-      let imageBase64 = BuildTextureDataUtils.getImageBase64(texture, source);
+      let imageBase64 = BuildTextureDataUtils.getImageBase64(source);
 
       (
         BufferUtils.getBase64MimeType(imageBase64),
