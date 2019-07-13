@@ -6,6 +6,8 @@ let isDefaultLightMaterialName = ConvertCommon.isDefaultLightMaterialName;
 
 let isDefaultBasicMaterialName = ConvertCommon.isDefaultBasicMaterialName;
 
-let isDefaultTextureName = ConvertCommon.isDefaultTextureName;
+let isDefaultBasicSourceTextureName = ConvertCommon.isDefaultBasicSourceTextureName;
+
+let isDefaultCubemapTextureName = ConvertCommon.isDefaultCubemapTextureName;
 
 let isDefaultGeometryName = ConvertCommon.isDefaultGeometryName;

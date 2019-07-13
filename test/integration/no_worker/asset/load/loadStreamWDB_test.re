@@ -255,7 +255,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                (totalLoadedByteLengthArr, contentLengthArr, wdbPathArr)
                |> expect
                == (
-                    [|1000, 25084|],
+                    [|1000, 25092|],
                     [|contentLength, contentLength|],
                     [|"./BoxTextured.wdb", "./BoxTextured.wdb"|],
                   )
@@ -2679,7 +2679,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  ArrayService.unsafeGetFirst(wdbPathArr)
                  |> Js.String.includes("test/res/wdb/BoxTextured.wdb"),
                )
-               |> expect == ([|25024|], [|contentLength|], 1, true)
+               |> expect == ([|25036|], [|contentLength|], 1, true)
                |> resolve
              );
         });

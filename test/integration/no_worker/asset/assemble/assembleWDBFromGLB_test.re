@@ -2026,7 +2026,7 @@ let _ =
                              state,
                            )
                          )
-                      |> expect == [|"texture_0"|],
+                      |> expect == [|"basicSourceTexture_0"|],
                     state^,
                   )
                 )
@@ -2254,7 +2254,12 @@ let _ =
                              state,
                            )
                          )
-                      |> expect == [|"texture_0", "texture_1", "texture_1"|],
+                      |> expect
+                      == [|
+                           "basicSourceTexture_0",
+                           "basicSourceTexture_1",
+                           "basicSourceTexture_1",
+                         |],
                     state^,
                   )
                 )
@@ -2451,7 +2456,8 @@ let _ =
                              state,
                            )
                          )
-                      |> expect == [|"texture_0", "texture_2"|],
+                      |> expect
+                      == [|"basicSourceTexture_0", "basicSourceTexture_2"|],
                     state^,
                   )
                 )

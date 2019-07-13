@@ -68,7 +68,7 @@ let buildMeshRenderer =
 
 let buildBasicSourceTexture =
     (
-      ~name="texture_0",
+      ~name="basicSourceTexture_0",
       ~format=BufferBasicSourceTextureService.getDefaultFormat(),
       ~type_=BufferBasicSourceTextureService.getDefaultType(),
       ~flipY=BasicSourceTextureTool.getDefaultFlipYBool(),

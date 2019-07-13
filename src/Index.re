@@ -20,7 +20,9 @@ let assembleWholeGLB = AssembleWholeWDBAPI.assembleWholeGLB;
 
 let isDefaultGeometryName = ConverterAPI.isDefaultGeometryName;
 
-let isDefaultTextureName = ConverterAPI.isDefaultTextureName;
+let isDefaultCubemapTextureName = ConverterAPI.isDefaultCubemapTextureName;
+
+let isDefaultBasicSourceTextureName = ConverterAPI.isDefaultBasicSourceTextureName;
 
 let isDefaultBasicMaterialName = ConverterAPI.isDefaultBasicMaterialName;
 
@@ -49,6 +51,12 @@ let unbindArcballCameraControllerPointScaleEvent = ArcballCameraControllerAPI.un
 let unbindArcballCameraControllerEvent = ArcballCameraControllerAPI.unbindArcballCameraControllerEvent;
 
 let bindArcballCameraControllerEvent = ArcballCameraControllerAPI.bindArcballCameraControllerEvent;
+
+let setArcballCameraControllerDirectionArray = ArcballCameraControllerAPI.setArcballCameraControllerDirectionArray;
+
+let hasArcballCameraControllerDirection = ArcballCameraControllerAPI.hasArcballCameraControllerDirection;
+
+let unsafeGetArcballCameraControllerDirectionArray = ArcballCameraControllerAPI.unsafeGetArcballCameraControllerDirectionArray;
 
 let setArcballCameraControllerRotateSpeed = ArcballCameraControllerAPI.setArcballCameraControllerRotateSpeed;
 
@@ -904,6 +912,10 @@ let disposeBasicSourceTexture = BasicSourceTextureAPI.disposeBasicSourceTexture;
 
 let getAllTextures = BasicSourceTextureAPI.getAllTextures;
 
+let setBasicSourceTextureIsNeedUpdate = BasicSourceTextureAPI.setBasicSourceTextureIsNeedUpdate;
+
+let getBasicSourceTextureIsNeedUpdate = BasicSourceTextureAPI.getBasicSourceTextureIsNeedUpdate;
+
 let setBasicSourceTextureName = BasicSourceTextureAPI.setBasicSourceTextureName;
 
 let unsafeGetBasicSourceTextureName = BasicSourceTextureAPI.unsafeGetBasicSourceTextureName;
@@ -953,6 +965,10 @@ let initCubemapTexture = CubemapTextureAPI.initCubemapTexture;
 let disposeCubemapTexture = CubemapTextureAPI.disposeCubemapTexture;
 
 let getAllTextures = CubemapTextureAPI.getAllTextures;
+
+let setCubemapTextureIsNeedUpdate = CubemapTextureAPI.setCubemapTextureIsNeedUpdate;
+
+let getCubemapTextureIsNeedUpdate = CubemapTextureAPI.getCubemapTextureIsNeedUpdate;
 
 let setCubemapTextureName = CubemapTextureAPI.setCubemapTextureName;
 

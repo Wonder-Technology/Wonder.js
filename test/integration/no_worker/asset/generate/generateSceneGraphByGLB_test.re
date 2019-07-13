@@ -353,7 +353,7 @@ let _ =
       },
       "sampler": 0,
       "source": 0,
-      "name": "texture_1"
+      "name": "basicSourceTexture_1"
     },
     {
       "extras": {
@@ -363,7 +363,7 @@ let _ =
       },
       "sampler": 0,
       "source": 0,
-      "name": "texture_0"
+      "name": "basicSourceTexture_0"
     }
   ],
   "samplers": [

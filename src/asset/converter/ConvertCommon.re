@@ -45,7 +45,7 @@ let buildDefaultLightMaterialName = index =>
   buildDefaultName("lightMaterial", index);
 
 let buildDefaultBasicSourceTextureName = index =>
-  buildDefaultName("texture", index);
+  buildDefaultName("basicSourceTexture", index);
 
 let buildDefaultCubemapTextureName = index =>
   buildDefaultName("cubemapTexture", index);
@@ -59,8 +59,13 @@ let isDefaultLightMaterialName = name =>
 let isDefaultBasicMaterialName = name =>
   name |> Js.String.match([%re {|/^basicMaterial_/g|}]) |> Js.Option.isSome;
 
-let isDefaultTextureName = name =>
-  name |> Js.String.match([%re {|/^texture_/g|}]) |> Js.Option.isSome;
+let isDefaultBasicSourceTextureName = name =>
+  name
+  |> Js.String.match([%re {|/^basicSourceTexture/g|}])
+  |> Js.Option.isSome;
+
+let isDefaultCubemapTextureName = name =>
+  name |> Js.String.match([%re {|/^cubemapTexture/g|}]) |> Js.Option.isSome;
 
 let isDefaultGeometryName = name =>
   name |> Js.String.match([%re {|/^geometry_/g|}]) |> Js.Option.isSome;
