@@ -12,20 +12,20 @@ let _getFuncTuple = () => (
 );
 
 let generateGLBData =
-    (rootGameObject, imageUint8ArrayMap, isBuildCubemapFronSceneSkybox, state) =>
+    (rootGameObject, imageUint8ArrayMap, isBuildCubemapFromSceneSkybox, state) =>
   GenerateGLBSystem.generateGLBData(
     (rootGameObject, imageUint8ArrayMap),
-    isBuildCubemapFronSceneSkybox,
+    isBuildCubemapFromSceneSkybox,
     _getFuncTuple(),
     state,
   );
 
 let generateWDB =
-    (rootGameObject, imageUint8ArrayMap, isBuildCubemapFronSceneSkybox, state) =>
+    (rootGameObject, imageUint8ArrayMap, isBuildCubemapFromSceneSkybox, state) =>
   GenerateWDBSystem.generateWDB(
     rootGameObject,
     imageUint8ArrayMap,
-    isBuildCubemapFronSceneSkybox,
+    isBuildCubemapFromSceneSkybox,
     _getFuncTuple(),
     state,
   );

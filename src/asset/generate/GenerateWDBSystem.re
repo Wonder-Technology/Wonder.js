@@ -2,14 +2,14 @@ let generateWDB =
     (
       rootGameObject,
       imageBase64Map,
-      isBuildCubemapFronSceneSkybox,
+      isBuildCubemapFromSceneSkybox,
       funcTuple,
       state,
     ) => {
   let (gltf, imageResultUint8ArrayMap, binBuffer) =
     GenerateGLBSystem.generateGLBData(
       (rootGameObject, imageBase64Map),
-      isBuildCubemapFronSceneSkybox,
+      isBuildCubemapFromSceneSkybox,
       funcTuple,
       state,
     );

@@ -299,7 +299,7 @@ let _addTextureData =
 
 let build =
     (
-      isBuildCubemapFronSceneSkybox,
+      isBuildCubemapFromSceneSkybox,
       cubemapTextureDataArr,
       samplerDataArr,
       imageUint8DataArr,
@@ -309,7 +309,7 @@ let build =
       getResultUint8ArrayDataFunc,
       state,
     ) =>
-  !isBuildCubemapFronSceneSkybox ?
+  !isBuildCubemapFromSceneSkybox ?
     (
       None,
       (cubemapTextureDataArr, samplerDataArr, imageUint8DataArr),

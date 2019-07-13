@@ -2,7 +2,7 @@ let generateGLBData =
     (
       sceneGameObject,
       imageUint8ArrayMap,
-      isBuildCubemapFronSceneSkybox,
+      isBuildCubemapFromSceneSkybox,
       state,
     ) =>
   GenerateSceneGraphSystem.generateGLBData(
@@ -11,7 +11,7 @@ let generateGLBData =
     | None => WonderCommonlib.MutableSparseMapService.createEmpty()
     | Some(imageUint8ArrayMap) => imageUint8ArrayMap
     },
-    isBuildCubemapFronSceneSkybox,
+    isBuildCubemapFromSceneSkybox,
     state,
   );
 
@@ -19,7 +19,7 @@ let generateWDB =
     (
       sceneGameObject,
       imageUint8ArrayMap,
-      isBuildCubemapFronSceneSkybox,
+      isBuildCubemapFromSceneSkybox,
       state,
     ) =>
   GenerateSceneGraphSystem.generateWDB(
@@ -28,6 +28,6 @@ let generateWDB =
     | None => WonderCommonlib.MutableSparseMapService.createEmpty()
     | Some(imageUint8ArrayMap) => imageUint8ArrayMap
     },
-    isBuildCubemapFronSceneSkybox,
+    isBuildCubemapFromSceneSkybox,
     state,
   );

@@ -12,7 +12,7 @@ let generateGLBData =
         rootGameObject,
         basicSourceTextureImageUint8ArrayDataMap: TextureimageUint8ArrayType.basicSourceTextureImageUint8ArrayDataMap,
       ),
-      isBuildCubemapFronSceneSkybox,
+      isBuildCubemapFromSceneSkybox,
       (getPointsDataFuncTuple, getResultUint8ArrayDataFunc),
       state,
     ) => {
@@ -79,7 +79,7 @@ let generateGLBData =
     (totalByteLength, byteOffset, bufferViewDataArr),
   ) =
     BuildSkyboxDataSystem.build(
-      isBuildCubemapFronSceneSkybox,
+      isBuildCubemapFromSceneSkybox,
       cubemapTextureDataArr,
       samplerDataArr,
       imageUint8DataArr,

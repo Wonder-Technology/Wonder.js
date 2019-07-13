@@ -38,13 +38,13 @@ let generateSingleSAB =
     (
       sceneGameObject,
       imageUint8ArrayMap,
-      isBuildCubemapFronSceneSkybox,
+      isBuildCubemapFromSceneSkybox,
       state,
     ) => {
   let (gltf, imageResultUint8ArrayMap, binBuffer) =
     GenerateGLBSystem.generateGLBData(
       (sceneGameObject, imageUint8ArrayMap),
-      isBuildCubemapFronSceneSkybox,
+      isBuildCubemapFromSceneSkybox,
       (
         (
           VerticesGeometryMainService.getVertices,

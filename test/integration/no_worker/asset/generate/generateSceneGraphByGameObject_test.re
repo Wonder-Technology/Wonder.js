@@ -1081,7 +1081,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           });
         });
 
-        describe("test isBuildCubemapFronSceneSkybox = false", () =>
+        describe("test isBuildCubemapFromSceneSkybox = false", () =>
           describe("not has skybox data", () => {
             let _prepareGameObject = state => {
               let state = state^;
@@ -1109,7 +1109,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
 "scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0],"extras":{}}]
           |j},
                 ~state,
-                ~isBuildCubemapFronSceneSkybox=false,
+                ~isBuildCubemapFromSceneSkybox=false,
                 (),
               );
             });
