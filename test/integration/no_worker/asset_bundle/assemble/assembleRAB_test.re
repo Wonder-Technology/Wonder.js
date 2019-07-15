@@ -36,7 +36,7 @@ let _ =
                 (),
               );
 
-            let imageDataMap =
+            let basicSourceTextureImageDataMap =
               WonderCommonlib.ImmutableSparseMapService.createEmpty()
               |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
@@ -50,7 +50,7 @@ let _ =
             let resourceData1 =
               GenerateSingleRABTool.ResourceData.buildResourceData(
                 ~basicSourceTextures=[|textureResourceData1|],
-                ~imageDataMap,
+                ~basicSourceTextureImageDataMap,
                 (),
               );
 
@@ -63,7 +63,7 @@ let _ =
                 (),
               );
 
-            let imageDataMap =
+            let basicSourceTextureImageDataMap =
               WonderCommonlib.ImmutableSparseMapService.createEmpty()
               |> WonderCommonlib.ImmutableSparseMapService.set(0, image2);
 
@@ -77,7 +77,7 @@ let _ =
             let resourceData2 =
               GenerateSingleRABTool.ResourceData.buildResourceData(
                 ~basicSourceTextures=[|textureResourceData2|],
-                ~imageDataMap,
+                ~basicSourceTextureImageDataMap,
                 (),
               );
 
@@ -127,7 +127,7 @@ let _ =
               textureResourceData1,
               texture1Name,
               (
-                imageDataMap1,
+                cubemapTextureImageDataMap1,
                 (image1_1, image1_2, image1_3, image1_4, image1_5, image1_6),
               ),
             ) =
@@ -145,7 +145,7 @@ let _ =
             let resourceData1 =
               GenerateSingleRABTool.ResourceData.buildResourceData(
                 ~cubemapTextures=[|textureResourceData1|],
-                ~imageDataMap=imageDataMap1,
+                ~cubemapTextureImageDataMap=cubemapTextureImageDataMap1,
                 (),
               );
 
@@ -157,7 +157,7 @@ let _ =
               textureResourceData2,
               texture2Name,
               (
-                imageDataMap2,
+                cubemapTextureImageDataMap2,
                 (image2_1, image2_2, image2_3, image2_4, image2_5, image2_6),
               ),
             ) =
@@ -175,7 +175,7 @@ let _ =
             let resourceData2 =
               GenerateSingleRABTool.ResourceData.buildResourceData(
                 ~cubemapTextures=[|textureResourceData2|],
-                ~imageDataMap=imageDataMap2,
+                ~cubemapTextureImageDataMap=cubemapTextureImageDataMap2,
                 (),
               );
 
@@ -278,7 +278,7 @@ let _ =
               (),
             );
 
-          let imageDataMap =
+          let basicSourceTextureImageDataMap =
             WonderCommonlib.ImmutableSparseMapService.createEmpty()
             |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
@@ -295,7 +295,7 @@ let _ =
           let resourceData1 =
             GenerateSingleRABTool.ResourceData.buildResourceData(
               ~basicSourceTextures=[|textureResourceData1|],
-              ~imageDataMap,
+              ~basicSourceTextureImageDataMap,
               (),
             );
 
@@ -308,7 +308,7 @@ let _ =
               (),
             );
 
-          let imageDataMap =
+          let basicSourceTextureImageDataMap =
             WonderCommonlib.ImmutableSparseMapService.createEmpty()
             |> WonderCommonlib.ImmutableSparseMapService.set(0, image2);
 
@@ -325,7 +325,7 @@ let _ =
           let resourceData2 =
             GenerateSingleRABTool.ResourceData.buildResourceData(
               ~basicSourceTextures=[|textureResourceData2|],
-              ~imageDataMap,
+              ~basicSourceTextureImageDataMap,
               (),
             );
 
@@ -394,7 +394,7 @@ let _ =
             (),
           );
 
-        let imageDataMap =
+        let basicSourceTextureImageDataMap =
           WonderCommonlib.ImmutableSparseMapService.createEmpty()
           |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
@@ -425,7 +425,7 @@ let _ =
         let resourceData1 =
           GenerateSingleRABTool.ResourceData.buildResourceData(
             ~basicSourceTextures=[|textureResourceData1|],
-            ~imageDataMap,
+            ~basicSourceTextureImageDataMap,
             (),
           );
 
@@ -514,7 +514,7 @@ let _ =
             textureResourceData1,
             texture1Name,
             (
-              imageDataMap1,
+              cubemapTextureImageDataMap1,
               (image1_1, image1_2, image1_3, image1_4, image1_5, image1_6),
             ),
           ) =
@@ -532,7 +532,7 @@ let _ =
           let resourceData1 =
             GenerateSingleRABTool.ResourceData.buildResourceData(
               ~cubemapTextures=[|textureResourceData1|],
-              ~imageDataMap=imageDataMap1,
+              ~cubemapTextureImageDataMap=cubemapTextureImageDataMap1,
               (),
             );
 
@@ -544,7 +544,7 @@ let _ =
             textureResourceData2,
             texture2Name,
             (
-              imageDataMap2,
+              cubemapTextureImageDataMap2,
               (image2_1, image2_2, image2_3, image2_4, image2_5, image2_6),
             ),
           ) =
@@ -562,7 +562,7 @@ let _ =
           let resourceData2 =
             GenerateSingleRABTool.ResourceData.buildResourceData(
               ~cubemapTextures=[|textureResourceData2|],
-              ~imageDataMap=imageDataMap2,
+              ~cubemapTextureImageDataMap=cubemapTextureImageDataMap2,
               (),
             );
 
@@ -716,7 +716,10 @@ let _ =
 
       let (
         textureName,
-        (imageDataMap, (image1, image2, image3, image4, image5, image6)),
+        (
+          cubemapTextureImageDataMap,
+          (image1, image2, image3, image4, image5, image6),
+        ),
       ) =
         GenerateSingleRABTool.Test.prepareCubemapTextureResourceData();
 
@@ -746,7 +749,7 @@ let _ =
       let resourceData1 =
         GenerateSingleRABTool.ResourceData.buildResourceData(
           ~cubemapTextures=[|textureResourceData1|],
-          ~imageDataMap,
+          ~cubemapTextureImageDataMap,
           (),
         );
 
@@ -927,7 +930,7 @@ let _ =
             (),
           );
 
-        let imageDataMap =
+        let basicSourceTextureImageDataMap =
           WonderCommonlib.ImmutableSparseMapService.createEmpty()
           |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
@@ -953,7 +956,7 @@ let _ =
           GenerateSingleRABTool.ResourceData.buildResourceData(
             ~basicSourceTextures=[|textureResourceData1|],
             ~lightMaterials=[|lightMaterial1|],
-            ~imageDataMap,
+            ~basicSourceTextureImageDataMap,
             (),
           );
 

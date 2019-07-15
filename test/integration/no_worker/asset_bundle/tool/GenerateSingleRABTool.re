@@ -84,12 +84,12 @@ module ResourceAssetBundleContent = {
         ~nyType=CubemapTextureTool.getDefaultType(),
         ~pzType=CubemapTextureTool.getDefaultType(),
         ~nzType=CubemapTextureTool.getDefaultType(),
-        ~pxSource=0,
-        ~nxSource=1,
-        ~pySource=2,
-        ~nySource=3,
-        ~pzSource=4,
-        ~nzSource=5,
+        ~pxSource=Some(0),
+        ~nxSource=Some(1),
+        ~pySource=Some(2),
+        ~nySource=Some(3),
+        ~pzSource=Some(4),
+        ~nzSource=Some(5),
         ~flipY=CubemapTextureTool.getDefaultFlipYBool(),
         (),
       ) => {
@@ -156,6 +156,8 @@ module ResourceAssetBundleContent = {
 };
 
 module ResourceData = {
+  open ResourceData;
+
   let buildTextureResourceData = (textureComponent, imageDataIndex) => {
     textureComponent,
     imageDataIndex,
@@ -212,7 +214,10 @@ module ResourceData = {
       |> OperateBasicSourceTextureMainService.setFlipY(texture, flipY)
       |> NameBasicSourceTextureMainService.setName(texture, name);
 
-    (state, {textureComponent: texture, imageDataIndex});
+    (
+      state,
+      {textureComponent: texture, imageDataIndex}: ResourceData.basicSourceTextureData,
+    );
   };
 
   let createCubemapTextureResourceData =
@@ -244,12 +249,7 @@ module ResourceData = {
         ~pzType=CubemapTextureTool.getDefaultType(),
         ~nzType=CubemapTextureTool.getDefaultType(),
         ~flipY=CubemapTextureTool.getDefaultFlipYBool(),
-        ~pxImageDataIndex=0,
-        ~nxImageDataIndex=1,
-        ~pyImageDataIndex=2,
-        ~nyImageDataIndex=3,
-        ~pzImageDataIndex=4,
-        ~nzImageDataIndex=5,
+        ~imageDataIndex=0,
         (),
       ) => {
     let (state, texture) = CubemapTextureAPI.createCubemapTexture(state);
@@ -275,18 +275,7 @@ module ResourceData = {
       |> OperateCubemapTextureMainService.setFlipY(texture, flipY)
       |> NameCubemapTextureMainService.setName(texture, name);
 
-    (
-      state,
-      {
-        textureComponent: texture,
-        pxImageDataIndex,
-        nxImageDataIndex,
-        pyImageDataIndex,
-        nyImageDataIndex,
-        pzImageDataIndex,
-        nzImageDataIndex,
-      },
-    );
+    (state, {textureComponent: texture, imageDataIndex});
   };
 
   let createBasicMaterialResourceData =
@@ -485,7 +474,8 @@ module ResourceData = {
         ~geometrys=[||],
         ~scriptEventFunctionDataArr=[||],
         ~scriptAttributeDataArr=[||],
-        ~imageDataMap=WonderCommonlib.ImmutableSparseMapService.createEmpty(),
+        ~basicSourceTextureImageDataMap=WonderCommonlib.ImmutableSparseMapService.createEmpty(),
+        ~cubemapTextureImageDataMap=WonderCommonlib.ImmutableSparseMapService.createEmpty(),
         (),
       ) => {
     basicMaterials,
@@ -495,7 +485,8 @@ module ResourceData = {
     geometrys,
     scriptEventFunctionDataArr,
     scriptAttributeDataArr,
-    imageDataMap,
+    basicSourceTextureImageDataMap,
+    cubemapTextureImageDataMap,
   };
 };
 
@@ -555,12 +546,17 @@ module Test = {
 
     let imageDataMap =
       WonderCommonlib.ImmutableSparseMapService.createEmpty()
-      |> WonderCommonlib.ImmutableSparseMapService.set(0, image1)
-      |> WonderCommonlib.ImmutableSparseMapService.set(1, image2)
-      |> WonderCommonlib.ImmutableSparseMapService.set(2, image3)
-      |> WonderCommonlib.ImmutableSparseMapService.set(3, image4)
-      |> WonderCommonlib.ImmutableSparseMapService.set(4, image5)
-      |> WonderCommonlib.ImmutableSparseMapService.set(5, image6);
+      |> WonderCommonlib.ImmutableSparseMapService.set(
+           0,
+           {
+             pxImageData: Some(image1),
+             nxImageData: Some(image2),
+             pyImageData: Some(image3),
+             nyImageData: Some(image4),
+             pzImageData: Some(image5),
+             nzImageData: Some(image6),
+           }: RABType.ResourceData.cubemapTextureImageData,
+         );
 
     let textureName = "cubemapTexture1";
 
@@ -613,12 +609,7 @@ module Test = {
         ~state,
         ~flipY,
         ~name=textureName,
-        ~pxImageDataIndex=0,
-        ~nxImageDataIndex=1,
-        ~pyImageDataIndex=2,
-        ~nyImageDataIndex=3,
-        ~pzImageDataIndex=4,
-        ~nzImageDataIndex=5,
+        ~imageDataIndex=0,
         (),
       );
 
@@ -634,7 +625,7 @@ module Test = {
 let generateOneRAB = state => {
   let image1 = ResourceData.buildImageData();
 
-  let imageDataMap =
+  let basicSourceTextureImageDataMap =
     WonderCommonlib.ImmutableSparseMapService.createEmpty()
     |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
@@ -648,7 +639,7 @@ let generateOneRAB = state => {
   let resourceData1 =
     ResourceData.buildResourceData(
       ~basicSourceTextures=[|textureResourceData1|],
-      ~imageDataMap,
+      ~basicSourceTextureImageDataMap,
       (),
     );
 

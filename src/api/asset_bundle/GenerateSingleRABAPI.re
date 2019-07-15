@@ -11,9 +11,10 @@ let buildResourceData =
       geometrys,
       scriptEventFunctionDataArr,
       scriptAttributeDataArr,
-      imageDataMap,
+      basicSourceTextureImageDataMap,
+      cubemapTextureImageDataMap,
     )
-    : resourceData => {
+    : ResourceData.resourceData => {
   basicMaterials,
   lightMaterials,
   basicSourceTextures,
@@ -21,5 +22,6 @@ let buildResourceData =
   geometrys,
   scriptEventFunctionDataArr,
   scriptAttributeDataArr,
-  imageDataMap,
+  basicSourceTextureImageDataMap,
+  cubemapTextureImageDataMap,
 };

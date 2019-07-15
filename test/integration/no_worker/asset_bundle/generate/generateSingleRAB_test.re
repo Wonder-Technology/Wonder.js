@@ -25,7 +25,7 @@ let _ =
       test("test from basic source texture", () => {
         let image1 = GenerateSingleRABTool.ResourceData.buildImageData();
 
-        let imageDataMap =
+        let basicSourceTextureImageDataMap =
           WonderCommonlib.ImmutableSparseMapService.createEmpty()
           |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
@@ -40,7 +40,7 @@ let _ =
         let resourceData =
           GenerateSingleRABTool.ResourceData.buildResourceData(
             ~basicSourceTextures=[|textureResourceData|],
-            ~imageDataMap,
+            ~basicSourceTextureImageDataMap,
             (),
           );
 
@@ -68,7 +68,10 @@ let _ =
           state,
           textureResourceData,
           textureName,
-          (imageDataMap, (image1, image2, image3, image4, image5, image6)),
+          (
+            cubemapTextureImageDataMap,
+            (image1, image2, image3, image4, image5, image6),
+          ),
         ) =
           GenerateSingleRABTool.Test.createCubemapTextureResourceData(
             ~state=state^,
@@ -78,7 +81,7 @@ let _ =
         let resourceData =
           GenerateSingleRABTool.ResourceData.buildResourceData(
             ~cubemapTextures=[|textureResourceData|],
-            ~imageDataMap,
+            ~cubemapTextureImageDataMap,
             (),
           );
 
@@ -139,7 +142,7 @@ let _ =
         () => {
         let image1 = GenerateSingleRABTool.ResourceData.buildImageData();
 
-        let imageDataMap =
+        let basicSourceTextureImageDataMap =
           WonderCommonlib.ImmutableSparseMapService.createEmpty()
           |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
@@ -165,7 +168,7 @@ let _ =
           GenerateSingleRABTool.ResourceData.buildResourceData(
             ~basicSourceTextures=[||],
             ~lightMaterials=[|lightMaterial|],
-            ~imageDataMap,
+            ~basicSourceTextureImageDataMap,
             (),
           );
 
@@ -183,7 +186,7 @@ let _ =
           test("test lightMaterial has no diffuseMap", () => {
             let image1 = GenerateSingleRABTool.ResourceData.buildImageData();
 
-            let imageDataMap =
+            let basicSourceTextureImageDataMap =
               WonderCommonlib.ImmutableSparseMapService.createEmpty()
               |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
@@ -209,7 +212,7 @@ let _ =
               GenerateSingleRABTool.ResourceData.buildResourceData(
                 ~basicSourceTextures=[|textureResourceData|],
                 ~lightMaterials=[|lightMaterial|],
-                ~imageDataMap,
+                ~basicSourceTextureImageDataMap,
                 (),
               );
 
@@ -243,7 +246,7 @@ let _ =
           test("test lightMaterial has one diffuseMap", () => {
             let image1 = GenerateSingleRABTool.ResourceData.buildImageData();
 
-            let imageDataMap =
+            let basicSourceTextureImageDataMap =
               WonderCommonlib.ImmutableSparseMapService.createEmpty()
               |> WonderCommonlib.ImmutableSparseMapService.set(0, image1);
 
@@ -281,7 +284,7 @@ let _ =
                   textureResourceData2,
                 |],
                 ~lightMaterials=[|lightMaterial|],
-                ~imageDataMap,
+                ~basicSourceTextureImageDataMap,
                 (),
               );
 
@@ -323,7 +326,12 @@ let _ =
 
     describe("test cubemapTextures", () =>
       test("test", () => {
-        let (state, textureResourceData, textureName, (imageDataMap, _)) =
+        let (
+          state,
+          textureResourceData,
+          textureName,
+          (cubemapTextureImageDataMap, _),
+        ) =
           GenerateSingleRABTool.Test.createCubemapTextureResourceData(
             ~state=state^,
             (),
@@ -332,7 +340,7 @@ let _ =
         let resourceData =
           GenerateSingleRABTool.ResourceData.buildResourceData(
             ~cubemapTextures=[|textureResourceData|],
-            ~imageDataMap,
+            ~cubemapTextureImageDataMap,
             (),
           );
 
@@ -349,12 +357,12 @@ let _ =
         == [|
              GenerateSingleRABTool.ResourceAssetBundleContent.buildCubemapTextureData(
                ~name=textureName,
-               ~pxSource=0,
-               ~nxSource=1,
-               ~pySource=2,
-               ~nySource=3,
-               ~pzSource=4,
-               ~nzSource=5,
+               ~pxSource=Some(0),
+               ~nxSource=Some(1),
+               ~pySource=Some(2),
+               ~nySource=Some(3),
+               ~pzSource=Some(4),
+               ~nzSource=Some(5),
                (),
              ),
            |];

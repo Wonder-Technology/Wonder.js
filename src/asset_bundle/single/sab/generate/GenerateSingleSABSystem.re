@@ -37,13 +37,13 @@ let generateSAB =
 let generateSingleSAB =
     (
       sceneGameObject,
-      imageUint8ArrayMap,
+      basicSourceTextureImageUint8ArrayMap,
       isBuildCubemapFromSceneSkybox,
       state,
     ) => {
-  let (gltf, imageResultUint8ArrayMap, binBuffer) =
+  let (gltf, basicSourceTextureImageResultUint8ArrayMap, binBuffer) =
     GenerateGLBSystem.generateGLBData(
-      (sceneGameObject, imageUint8ArrayMap),
+      (sceneGameObject, basicSourceTextureImageUint8ArrayMap),
       isBuildCubemapFromSceneSkybox,
       (
         (

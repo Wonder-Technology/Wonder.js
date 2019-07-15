@@ -49,6 +49,14 @@ let generateSingleRAB = (resourceData, state) => {
   ) =
     BuildSingleRABJsonDataSystem.buildJsonData(resourceData, state);
 
+    WonderLog.Log.print((
+      "generate:",
+
+      /* basicSourceTextureArr,
+      cubemapTextureArr, */
+      imageArr
+    )) |> ignore;
+
   let jsonUint8Array =
     BuildSingleRABJsonDataSystem.buildJsonUint8Array({
       images: imageArr,

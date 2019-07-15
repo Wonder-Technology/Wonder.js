@@ -641,6 +641,27 @@ module RAB = {
          ),
        );
 
+  let _setFaceSource =
+      (texture, imageMapByIndex, faceSource, setFaceSourceFunc, state) =>
+    switch (faceSource) {
+    | None => state
+    | Some(faceSource) =>
+      WonderLog.Log.print((
+        imageMapByIndex,
+        faceSource,
+        /* imageMapByIndex
+           |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(faceSource), */
+      ))
+      |> ignore;
+
+      state
+      |> setFaceSourceFunc(
+           texture,
+           imageMapByIndex
+           |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(faceSource),
+         );
+    };
+
   let _buildCubemapTextureData =
       (
         {cubemapTextures}: RABType.resourceAssetBundleContent,
@@ -648,6 +669,7 @@ module RAB = {
         state,
       ) =>
     cubemapTextures
+    |> WonderLog.Log.print
     |> WonderCommonlib.ArrayService.reduceOneParami(
          (.
            (cubemapTextureMapByName, cubemapTextureMapByIndex, state),
@@ -726,47 +748,41 @@ module RAB = {
              |> OperateCubemapTextureMainService.setNZType(texture, nzType)
              |> OperateCubemapTextureMainService.setFlipY(texture, flipY)
              |> NameCubemapTextureMainService.setName(texture, name)
-             |> OperateCubemapTextureMainService.setPXSource(
+             |> _setFaceSource(
                   texture,
-                  imageMapByIndex
-                  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
-                       pxSource,
-                     ),
+                  imageMapByIndex,
+                  pxSource,
+                  OperateCubemapTextureMainService.setPXSource,
                 )
-             |> OperateCubemapTextureMainService.setNXSource(
+             |> _setFaceSource(
                   texture,
-                  imageMapByIndex
-                  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
-                       nxSource,
-                     ),
+                  imageMapByIndex,
+                  nxSource,
+                  OperateCubemapTextureMainService.setNXSource,
                 )
-             |> OperateCubemapTextureMainService.setPYSource(
+             |> _setFaceSource(
                   texture,
-                  imageMapByIndex
-                  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
-                       pySource,
-                     ),
+                  imageMapByIndex,
+                  pySource,
+                  OperateCubemapTextureMainService.setPYSource,
                 )
-             |> OperateCubemapTextureMainService.setNYSource(
+             |> _setFaceSource(
                   texture,
-                  imageMapByIndex
-                  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
-                       nySource,
-                     ),
+                  imageMapByIndex,
+                  nySource,
+                  OperateCubemapTextureMainService.setNYSource,
                 )
-             |> OperateCubemapTextureMainService.setPZSource(
+             |> _setFaceSource(
                   texture,
-                  imageMapByIndex
-                  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
-                       pzSource,
-                     ),
+                  imageMapByIndex,
+                  pzSource,
+                  OperateCubemapTextureMainService.setPZSource,
                 )
-             |> OperateCubemapTextureMainService.setNZSource(
+             |> _setFaceSource(
                   texture,
-                  imageMapByIndex
-                  |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
-                       nzSource,
-                     ),
+                  imageMapByIndex,
+                  nzSource,
+                  OperateCubemapTextureMainService.setNZSource,
                 );
 
            (

@@ -36,41 +36,82 @@ let _setImageIndexMap = (imageDataIndex, imageArr, imageIndexMap) => {
      );
 };
 
-let _buildImageData = ({basicSourceTextures, cubemapTextures, imageDataMap}) => {
-  let (imageIndexMap, imageArr, bufferViewArr, uint8ArrayArr, byteOffset) =
-    cubemapTextures
-    |> WonderCommonlib.ArrayService.reduceOneParam(
-         (.
-           imageDataIndexArr,
-           {
-             pxImageDataIndex,
-             nxImageDataIndex,
-             pyImageDataIndex,
-             nyImageDataIndex,
-             pzImageDataIndex,
-             nzImageDataIndex,
-           },
-         ) => {
-           imageDataIndexArr
-           |> Js.Array.pushMany([|
-                pxImageDataIndex,
-                nxImageDataIndex,
-                pyImageDataIndex,
-                nyImageDataIndex,
-                pzImageDataIndex,
-                nzImageDataIndex,
-              |]);
+let _addImageData =
+    (
+      imageDataIndex,
+      {name, mimeType, uint8Array}: ResourceData.imageData,
+      (imageIndexMap, imageArr, bufferViewArr, uint8ArrayArr, byteOffset),
+    ) => {
+  let byteLength = uint8Array |> Uint8Array.length;
+  let alignedByteLength = BufferUtils.alignedLength(byteLength);
 
-           imageDataIndexArr;
-         },
-         basicSourceTextures
-         |> Js.Array.map(({imageDataIndex}) => imageDataIndex),
+  (
+    _setImageIndexMap(imageDataIndex, imageArr, imageIndexMap),
+    imageArr
+    |> ArrayService.push({
+         name,
+         mimeType,
+         bufferView: bufferViewArr |> Js.Array.length,
+       }),
+    bufferViewArr |> ArrayService.push({byteOffset, byteLength}),
+    uint8ArrayArr |> ArrayService.push(uint8Array),
+    byteOffset + alignedByteLength,
+  );
+};
+
+let _addCubemapFaceImageData =
+    (
+      imageDataIndex,
+      /* {name, mimeType, uint8Array}: ResourceData.imageData, */
+      faceImageData,
+      (imageIndexMap, imageArr, bufferViewArr, uint8ArrayArr, byteOffset),
+    ) =>
+  switch (faceImageData) {
+  | None => (
+      imageIndexMap,
+      imageArr,
+      bufferViewArr,
+      uint8ArrayArr,
+      byteOffset,
+    )
+  | Some(({name, mimeType, uint8Array}: ResourceData.imageData)) =>
+    let byteLength = uint8Array |> Uint8Array.length;
+    let alignedByteLength = BufferUtils.alignedLength(byteLength);
+
+    (
+      _setImageIndexMap(imageDataIndex, imageArr, imageIndexMap),
+      imageArr
+      |> ArrayService.push({
+           name,
+           mimeType,
+           bufferView: bufferViewArr |> Js.Array.length,
+         }),
+      bufferViewArr |> ArrayService.push({byteOffset, byteLength}),
+      uint8ArrayArr |> ArrayService.push(uint8Array),
+      byteOffset + alignedByteLength,
+    );
+  };
+
+let _buildImageData =
+    (
+      {
+        basicSourceTextures,
+        cubemapTextures,
+        basicSourceTextureImageDataMap,
+        cubemapTextureImageDataMap,
+      }: ResourceData.resourceData,
+    ) => {
+  let (
+    basicSourceTextureImageIndexMap,
+    imageArr,
+    bufferViewArr,
+    uint8ArrayArr,
+    byteOffset,
+  ) =
+    basicSourceTextures
+    |> Js.Array.map(({imageDataIndex}: ResourceData.basicSourceTextureData) =>
+         imageDataIndex
        )
-    /* ArrayService.fastConcat(
-         basicSourceTextures
-         |> Js.Array.map(({imageDataIndex}) => imageDataIndex),
-         cubemapTextures |> Js.Array.map(({imageDataIndex}) => imageDataIndex),
-       ) */
     |> WonderCommonlib.ArrayService.removeDuplicateItems
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (.
@@ -82,29 +123,21 @@ let _buildImageData = ({basicSourceTextures, cubemapTextures, imageDataMap}) => 
              byteOffset,
            ),
            imageDataIndex,
-         ) => {
-           let {name, mimeType, uint8Array}: imageData =
-             imageDataMap
+         ) =>
+           _addImageData(
+             imageDataIndex,
+             basicSourceTextureImageDataMap
              |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
                   imageDataIndex,
-                );
-
-           let byteLength = uint8Array |> Uint8Array.length;
-           let alignedByteLength = BufferUtils.alignedLength(byteLength);
-
-           (
-             _setImageIndexMap(imageDataIndex, imageArr, imageIndexMap),
-             imageArr
-             |> ArrayService.push({
-                  name,
-                  mimeType,
-                  bufferView: bufferViewArr |> Js.Array.length,
-                }),
-             bufferViewArr |> ArrayService.push({byteOffset, byteLength}),
-             uint8ArrayArr |> ArrayService.push(uint8Array),
-             byteOffset + alignedByteLength,
-           );
-         },
+                ),
+             (
+               imageIndexMap,
+               imageArr,
+               bufferViewArr,
+               uint8ArrayArr,
+               byteOffset,
+             ),
+           ),
          (
            WonderCommonlib.ImmutableSparseMapService.createEmpty(),
            [||],
@@ -114,8 +147,213 @@ let _buildImageData = ({basicSourceTextures, cubemapTextures, imageDataMap}) => 
          ),
        );
 
+  let (
+    (
+      pxImageIndexMap,
+      nxImageIndexMap,
+      pyImageIndexMap,
+      nyImageIndexMap,
+      pzImageIndexMap,
+      nzImageIndexMap,
+    ),
+    imageArr,
+    bufferViewArr,
+    uint8ArrayArr,
+    byteOffset,
+  ) =
+    cubemapTextures
+    |> Js.Array.map(({imageDataIndex}: ResourceData.cubemapTextureData) =>
+         imageDataIndex
+       )
+    |> WonderCommonlib.ArrayService.removeDuplicateItems
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (.
+           (
+             (
+               pxImageIndexMap,
+               nxImageIndexMap,
+               pyImageIndexMap,
+               nyImageIndexMap,
+               pzImageIndexMap,
+               nzImageIndexMap,
+             ),
+             imageArr,
+             bufferViewArr,
+             uint8ArrayArr,
+             byteOffset,
+           ),
+           imageDataIndex,
+         ) => {
+           let {
+             pxImageData,
+             nxImageData,
+             pyImageData,
+             nyImageData,
+             pzImageData,
+             nzImageData,
+           }: ResourceData.cubemapTextureImageData =
+             cubemapTextureImageDataMap
+             |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
+                  imageDataIndex,
+                );
+
+           let (
+             pxImageIndexMap,
+             imageArr,
+             bufferViewArr,
+             uint8ArrayArr,
+             byteOffset,
+           ) =
+             _addCubemapFaceImageData(
+               imageDataIndex,
+               pxImageData,
+               (
+                 pxImageIndexMap,
+                 imageArr,
+                 bufferViewArr,
+                 uint8ArrayArr,
+                 byteOffset,
+               ),
+             );
+
+           let (
+             nxImageIndexMap,
+             imageArr,
+             bufferViewArr,
+             uint8ArrayArr,
+             byteOffset,
+           ) =
+             _addCubemapFaceImageData(
+               imageDataIndex,
+               nxImageData,
+               (
+                 nxImageIndexMap,
+                 imageArr,
+                 bufferViewArr,
+                 uint8ArrayArr,
+                 byteOffset,
+               ),
+             );
+
+           let (
+             pyImageIndexMap,
+             imageArr,
+             bufferViewArr,
+             uint8ArrayArr,
+             byteOffset,
+           ) =
+             _addCubemapFaceImageData(
+               imageDataIndex,
+               pyImageData,
+               (
+                 pyImageIndexMap,
+                 imageArr,
+                 bufferViewArr,
+                 uint8ArrayArr,
+                 byteOffset,
+               ),
+             );
+
+           let (
+             nyImageIndexMap,
+             imageArr,
+             bufferViewArr,
+             uint8ArrayArr,
+             byteOffset,
+           ) =
+             _addCubemapFaceImageData(
+               imageDataIndex,
+               nyImageData,
+               (
+                 nyImageIndexMap,
+                 imageArr,
+                 bufferViewArr,
+                 uint8ArrayArr,
+                 byteOffset,
+               ),
+             );
+
+           let (
+             pzImageIndexMap,
+             imageArr,
+             bufferViewArr,
+             uint8ArrayArr,
+             byteOffset,
+           ) =
+             _addCubemapFaceImageData(
+               imageDataIndex,
+               pzImageData,
+               (
+                 pzImageIndexMap,
+                 imageArr,
+                 bufferViewArr,
+                 uint8ArrayArr,
+                 byteOffset,
+               ),
+             );
+
+           let (
+             nzImageIndexMap,
+             imageArr,
+             bufferViewArr,
+             uint8ArrayArr,
+             byteOffset,
+           ) =
+             _addCubemapFaceImageData(
+               imageDataIndex,
+               nzImageData,
+               (
+                 nzImageIndexMap,
+                 imageArr,
+                 bufferViewArr,
+                 uint8ArrayArr,
+                 byteOffset,
+               ),
+             );
+
+           (
+             (
+               pxImageIndexMap,
+               nxImageIndexMap,
+               pyImageIndexMap,
+               nyImageIndexMap,
+               pzImageIndexMap,
+               nzImageIndexMap,
+             ),
+             imageArr,
+             bufferViewArr,
+             uint8ArrayArr,
+             byteOffset,
+           );
+         },
+         (
+           (
+             WonderCommonlib.ImmutableSparseMapService.createEmpty(),
+             WonderCommonlib.ImmutableSparseMapService.createEmpty(),
+             WonderCommonlib.ImmutableSparseMapService.createEmpty(),
+             WonderCommonlib.ImmutableSparseMapService.createEmpty(),
+             WonderCommonlib.ImmutableSparseMapService.createEmpty(),
+             WonderCommonlib.ImmutableSparseMapService.createEmpty(),
+           ),
+           imageArr,
+           bufferViewArr,
+           uint8ArrayArr,
+           byteOffset,
+         ),
+       );
+
   (
-    imageIndexMap,
+    (
+      basicSourceTextureImageIndexMap,
+      (
+        pxImageIndexMap,
+        nxImageIndexMap,
+        pyImageIndexMap,
+        nyImageIndexMap,
+        pzImageIndexMap,
+        nzImageIndexMap,
+      ),
+    ),
     imageArr,
     bufferViewArr,
     uint8ArrayArr,
@@ -155,12 +393,12 @@ let _setTextureIndexMap = (textureComponent, textureArr, textureIndexMap) => {
 };
 
 let _buildBasicSourceTextureData =
-    (imageIndexMap, {basicSourceTextures}, state) =>
+    (imageIndexMap, {basicSourceTextures}: ResourceData.resourceData, state) =>
   basicSourceTextures
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (.
          (basicSourceTextureIndexMap, basicSourceTextureArr),
-         {textureComponent, imageDataIndex},
+         {textureComponent, imageDataIndex}: ResourceData.basicSourceTextureData,
        ) => (
          _setTextureIndexMap(
            textureComponent,
@@ -219,26 +457,29 @@ let _buildBasicSourceTextureData =
        (WonderCommonlib.ImmutableSparseMapService.createEmpty(), [||]),
      );
 
-let _buildCubemapTextureData = (imageIndexMap, {cubemapTextures}, state) =>
+let _buildCubemapTextureFaceSource = (faceSourceImageIndexMap, imageDataIndex) =>
+  faceSourceImageIndexMap
+  |> WonderCommonlib.ImmutableSparseMapService.get(imageDataIndex);
+
+let _buildCubemapTextureData =
+    (
+      (
+        pxImageIndexMap,
+        nxImageIndexMap,
+        pyImageIndexMap,
+        nyImageIndexMap,
+        pzImageIndexMap,
+        nzImageIndexMap,
+      ),
+      {cubemapTextures}: ResourceData.resourceData,
+      state,
+    ) =>
   cubemapTextures
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (.
-         (cubemapTextureIndexMap, cubemapTextureArr),
-         {
-           textureComponent,
-           pxImageDataIndex,
-           nxImageDataIndex,
-           pyImageDataIndex,
-           nyImageDataIndex,
-           pzImageDataIndex,
-           nzImageDataIndex,
-         },
-       ) => (
-         _setTextureIndexMap(
-           textureComponent,
-           cubemapTextureArr,
-           cubemapTextureIndexMap,
-         ),
+         cubemapTextureArr,
+         {textureComponent, imageDataIndex}: ResourceData.cubemapTextureData,
+       ) =>
          cubemapTextureArr
          |> ArrayService.push({
               name:
@@ -247,35 +488,35 @@ let _buildCubemapTextureData = (imageIndexMap, {cubemapTextures}, state) =>
                   state,
                 ),
               pxSource:
-                imageIndexMap
-                |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
-                     pxImageDataIndex,
-                   ),
+                _buildCubemapTextureFaceSource(
+                  pxImageIndexMap,
+                  imageDataIndex,
+                ),
               nxSource:
-                imageIndexMap
-                |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
-                     nxImageDataIndex,
-                   ),
+                _buildCubemapTextureFaceSource(
+                  nxImageIndexMap,
+                  imageDataIndex,
+                ),
               pySource:
-                imageIndexMap
-                |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
-                     pyImageDataIndex,
-                   ),
+                _buildCubemapTextureFaceSource(
+                  pyImageIndexMap,
+                  imageDataIndex,
+                ),
               nySource:
-                imageIndexMap
-                |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
-                     nyImageDataIndex,
-                   ),
+                _buildCubemapTextureFaceSource(
+                  nyImageIndexMap,
+                  imageDataIndex,
+                ),
               pzSource:
-                imageIndexMap
-                |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
-                     pzImageDataIndex,
-                   ),
+                _buildCubemapTextureFaceSource(
+                  pzImageIndexMap,
+                  imageDataIndex,
+                ),
               nzSource:
-                imageIndexMap
-                |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(
-                     nzImageDataIndex,
-                   ),
+                _buildCubemapTextureFaceSource(
+                  nzImageIndexMap,
+                  imageDataIndex,
+                ),
               wrapS:
                 OperateCubemapTextureMainService.getWrapS(
                   textureComponent,
@@ -362,8 +603,7 @@ let _buildCubemapTextureData = (imageIndexMap, {cubemapTextures}, state) =>
                   state,
                 ),
             }),
-       ),
-       (WonderCommonlib.ImmutableSparseMapService.createEmpty(), [||]),
+       [||],
      );
 
 let _getLightMaterialMapTextureIndexFromMap =
@@ -409,7 +649,11 @@ let _getLightMaterialMapTextureIndex =
   };
 
 let _buildMaterialData =
-    (basicSourceTextureIndexMap, {basicMaterials, lightMaterials}, state) => {
+    (
+      basicSourceTextureIndexMap,
+      {basicMaterials, lightMaterials}: ResourceData.resourceData,
+      state,
+    ) => {
   let basicMaterialArr =
     basicMaterials
     |> WonderCommonlib.ArrayService.reduceOneParam(
@@ -576,7 +820,12 @@ let _buildGeometryAllPointData =
 };
 
 let _buildGeometryData =
-    (imageAlignedByteLength, imageBufferViewArr, {geometrys}, state) => {
+    (
+      imageAlignedByteLength,
+      imageBufferViewArr,
+      {geometrys}: ResourceData.resourceData,
+      state,
+    ) => {
   let imageBufferViewIndex = imageBufferViewArr |> Js.Array.length;
 
   let (geometryArr, uint8ArrayArr, bufferViewArr, byteOffset) =
@@ -666,9 +915,11 @@ let convertEventFunctionDataToStr =
   |> Obj.magic
   |> Js.Json.stringify;
 
-let _buildScriptEventFunctionData = ({scriptEventFunctionDataArr}) =>
+let _buildScriptEventFunctionData =
+    ({scriptEventFunctionDataArr}: ResourceData.resourceData) =>
   scriptEventFunctionDataArr
-  |> Js.Array.map(({name, eventFunctionData}) =>
+  |> Js.Array.map(
+       ({name, eventFunctionData}: ResourceData.scriptEventFunctionData) =>
        {
          name,
          eventFunctionDataStr:
@@ -679,15 +930,16 @@ let _buildScriptEventFunctionData = ({scriptEventFunctionDataArr}) =>
 let convertAttributeToStr = attribute =>
   attribute |> Obj.magic |> Js.Json.stringify;
 
-let _buildScriptAttributeData = ({scriptAttributeDataArr}) =>
+let _buildScriptAttributeData =
+    ({scriptAttributeDataArr}: ResourceData.resourceData) =>
   scriptAttributeDataArr
-  |> Js.Array.map(({name, attribute}) =>
+  |> Js.Array.map(({name, attribute}: ResourceData.scriptAttributeData) =>
        {name, attributeStr: convertAttributeToStr(attribute)}
      );
 
 let buildJsonData = (resourceData, state) => {
   let (
-    imageIndexMap,
+    (basicSourceTextureImageIndexMap, cubemapTextureFaceImageIndexMapTuple),
     imageArr,
     imageBufferViewArr,
     imageUint8ArrayArr,
@@ -696,10 +948,18 @@ let buildJsonData = (resourceData, state) => {
     _buildImageData(resourceData);
 
   let (basicSourceTextureIndexMap, basicSourceTextureArr) =
-    _buildBasicSourceTextureData(imageIndexMap, resourceData, state);
+    _buildBasicSourceTextureData(
+      basicSourceTextureImageIndexMap,
+      resourceData,
+      state,
+    );
 
-  let (_cubemapTextureIndexMap, cubemapTextureArr) =
-    _buildCubemapTextureData(imageIndexMap, resourceData, state);
+  let cubemapTextureArr =
+    _buildCubemapTextureData(
+      cubemapTextureFaceImageIndexMapTuple,
+      resourceData,
+      state,
+    );
 
   let (basicMaterialArr, lightMaterialArr) =
     _buildMaterialData(basicSourceTextureIndexMap, resourceData, state);
