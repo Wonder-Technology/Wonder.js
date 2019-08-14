@@ -2,18 +2,17 @@ open StateDataRenderWorkerType;
 
 let getIMGUIAPIJsObj = state => state.apiRecord.imguiAPIJsObj;
 
-let setIMGUIAPIJsObj = (imguiAPIJsObj, state) => {...state, apiRecord: imguiAPIJsObj};
+let setIMGUIAPIJsObj = (imguiAPIJsObj, state) => {
+  ...state,
+  apiRecord: imguiAPIJsObj,
+};
 
 let create = () => {
   imguiAPIJsObj: {
     "label": FixedLayoutControlIMGUIRenderWorkerService.label,
     "image": FixedLayoutControlIMGUIRenderWorkerService.image,
-    "button": FixedLayoutControlIMGUIRenderWorkerService.button,
+    "button": ExtendIMGUIRenderWorkerService.Button.button,
     "box": FixedLayoutControlIMGUIRenderWorkerService.box,
-    "radioButton": FixedLayoutControlIMGUIRenderWorkerService.radioButton,
-    "checkbox": FixedLayoutControlIMGUIRenderWorkerService.checkbox,
-    "sliderInt": FixedLayoutControlIMGUIRenderWorkerService.sliderInt,
-    "sliderFloat": FixedLayoutControlIMGUIRenderWorkerService.sliderFloat,
     "beginGroup": FixedLayoutControlIMGUIRenderWorkerService.beginGroup,
     "endGroup": FixedLayoutControlIMGUIRenderWorkerService.endGroup,
     "getCustomDataInRenderWorker": OperateCustomRenderWorkerService.getCustomDataInRenderWorker,

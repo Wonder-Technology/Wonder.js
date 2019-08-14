@@ -284,17 +284,21 @@ let _ =
                       let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
                       let buttonFunc = imguiAPIJsObj##button;
-                      let setCustomDataFunc = imguiAPIJsObj##setCustomDataFromRenderWorkerToMainWorker;
+                      let setCustomDataFunc =
+                        imguiAPIJsObj##setCustomDataFromRenderWorkerToMainWorker;
 
-                      let (state, isClick) =
+                      let (state, isButtonClick) =
                         buttonFunc(.
-                          (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
-                          str1,
+                          (
+                            (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
+                            str1,
+                          ),
+                          Js.Nullable.null,
                           state,
                         );
 
                       let state =
-                        isClick ?
+                        isButtonClick ?
                           setCustomDataFunc(. sendedCustomData, state) : state;
 
                       state;

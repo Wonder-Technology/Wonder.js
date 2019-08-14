@@ -2,49 +2,49 @@ open WonderImgui.IMGUIType;
 
 let buildEmptyCustomData = () => Obj.magic(-1);
 
-let buildControlData = () => {
-  radioButtonData: {
-    isSelectedMap: WonderCommonlib.MutableHashMapService.createEmpty(),
-  },
-  checkboxData: {
-    index: 1,
-    isSelectedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-  },
-  sliderData: {
-    index: 3,
-    valueMap:
-      WonderCommonlib.MutableSparseMapService.createEmpty()
-      |> WonderCommonlib.MutableSparseMapService.set(1, 2.),
-  },
-};
+/* let buildControlData = () => {
+     radioButtonData: {
+       isSelectedMap: WonderCommonlib.MutableHashMapService.createEmpty(),
+     },
+     checkboxData: {
+       index: 1,
+       isSelectedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+     },
+     sliderData: {
+       index: 3,
+       valueMap:
+         WonderCommonlib.MutableSparseMapService.createEmpty()
+         |> WonderCommonlib.MutableSparseMapService.set(1, 2.),
+     },
+   };
 
-let buildControlDataAfterRenderIMGUI = buildedControlData => {
-  radioButtonData: {
-    isSelectedMap: WonderCommonlib.MutableHashMapService.createEmpty(),
-  },
-  checkboxData: {
-    index: 0,
-    isSelectedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
-  },
-  sliderData: {
-    index: 0,
-    valueMap:
-      WonderCommonlib.MutableSparseMapService.createEmpty()
-      |> WonderCommonlib.MutableSparseMapService.set(1, 2.),
-  },
-};
+   let buildControlDataAfterRenderIMGUI = buildedControlData => {
+     radioButtonData: {
+       isSelectedMap: WonderCommonlib.MutableHashMapService.createEmpty(),
+     },
+     checkboxData: {
+       index: 0,
+       isSelectedMap: WonderCommonlib.MutableSparseMapService.createEmpty(),
+     },
+     sliderData: {
+       index: 0,
+       valueMap:
+         WonderCommonlib.MutableSparseMapService.createEmpty()
+         |> WonderCommonlib.MutableSparseMapService.set(1, 2.),
+     },
+   }; */
+/*
+ let isRenderWorkerControlDataEqualMainWorkerControlData =
+     (renderWorkerControlData, mainWorkerControlData) =>
+   /* renderWorkerControlData.sliderData.valueMap
+      == mainWorkerControlData.sliderData.valueMap; */
+   renderWorkerControlData
+   == buildControlDataAfterRenderIMGUI(mainWorkerControlData); */
 
-let isRenderWorkerControlDataEqualMainWorkerControlData =
-    (renderWorkerControlData, mainWorkerControlData) =>
-  /* renderWorkerControlData.sliderData.valueMap
-     == mainWorkerControlData.sliderData.valueMap; */
-  renderWorkerControlData
-  == buildControlDataAfterRenderIMGUI(mainWorkerControlData);
-
-let getMainWorkerControlData = state =>
-  WonderImgui.RecordIMGUIService.getControlData(
-    RecordIMGUIMainService.getWonderIMGUIRecord(state),
-  );
+/* let getMainWorkerControlData = state =>
+   WonderImgui.RecordIMGUIService.getControlData(
+     RecordIMGUIMainService.getWonderIMGUIRecord(state),
+   ); */
 
 let prepareForTestSendRenderData = sandbox =>
   SendRenderDataMainWorkerTool.prepareForTestSendRenderData(sandbox);

@@ -280,8 +280,11 @@ let _ =
 
                   let (state, isButtonClick) =
                     buttonFunc(.
-                      (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
-                      str1,
+                      (
+                        (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
+                        str1,
+                      ),
+                      Js.Nullable.null,
                       state,
                     );
 
@@ -289,15 +292,15 @@ let _ =
                 },
                 state,
               );
-            let state =
-              ManageIMGUIAPI.setSetting(
-                IMGUITool.buildSettingJsObj(
-                  ~clickButtonColor=[|0.1, 0.2, 0.3|],
-                  (),
-                ),
-                state,
-              );
+
             let state = state |> NoWorkerJobTool.execInitJobs;
+            let state =
+              RenderIMGUITool.setDefaultSkinData(
+                ~state,
+                ~clickButtonColor=[|0.1, 0.2, 0.3|],
+                (),
+              );
+
             let bufferDataCallCountAfterInit = bufferData |> getCallCount;
             let state = MainStateTool.setState(state);
             EventTool.triggerDomEvent(
@@ -391,8 +394,11 @@ let _ =
 
                   let (state, isButtonClick) =
                     buttonFunc(.
-                      (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
-                      str1,
+                      (
+                        (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
+                        str1,
+                      ),
+                      Js.Nullable.null,
                       state,
                     );
 
@@ -455,8 +461,11 @@ let _ =
 
                   let (state, isButtonClick) =
                     buttonFunc(.
-                      (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
-                      str1,
+                      (
+                        (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
+                        str1,
+                      ),
+                      Js.Nullable.null,
                       state,
                     );
 

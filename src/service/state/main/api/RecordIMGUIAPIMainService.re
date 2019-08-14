@@ -13,12 +13,8 @@ let getIMGUIAPIJsObj = state => state.apiRecord.imguiAPIJsObj;
 let create = () => {
   "label": FixedLayoutControlIMGUIMainService.label,
   "image": FixedLayoutControlIMGUIMainService.image,
-  "button": FixedLayoutControlIMGUIMainService.button,
+  "button": ExtendIMGUIMainService.Button.button,
   "box": FixedLayoutControlIMGUIMainService.box,
-  "radioButton": FixedLayoutControlIMGUIMainService.radioButton,
-  "checkbox": FixedLayoutControlIMGUIMainService.checkbox,
-  "sliderInt": FixedLayoutControlIMGUIMainService.sliderInt,
-  "sliderFloat": FixedLayoutControlIMGUIMainService.sliderFloat,
   "beginGroup": FixedLayoutControlIMGUIMainService.beginGroup,
   "endGroup": FixedLayoutControlIMGUIMainService.endGroup,
   "unsafeGetGameObjectTransformComponent": GameObjectAPI.unsafeGetGameObjectTransformComponent,

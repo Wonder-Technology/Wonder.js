@@ -76,7 +76,7 @@
     "wonder-bs-json": "^0.0.1",
     "wonder-bs-most": "^0.0.3",
     "wonder-commonlib": "^0.2.32",
-    "wonder-imgui": "^0.0.34",
+    "wonder-imgui": "^0.0.35",
     "wonder-log": "^0.2.11",
     "wonder-most-animation-frame": "0.0.3",
     "wonder-webgl": "^0.0.11"

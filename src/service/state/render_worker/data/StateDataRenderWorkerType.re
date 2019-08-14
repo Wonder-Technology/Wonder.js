@@ -78,38 +78,15 @@ type apiRecord = {
       ) =>
       renderWorkerState,
     "button":
-      (. (int, int, int, int), string, renderWorkerState) =>
+      (
+        . ((int, int, int, int), string),
+        WonderImgui.IMGUIType.customControlFunctionShowData,
+        renderWorkerState
+      ) =>
       (renderWorkerState, bool),
     "box":
       (. (int, int, int, int), Js.Array.t(float), renderWorkerState) =>
       renderWorkerState,
-    "radioButton":
-      (
-        . Js.Array.t(((int, int, int, int), string)),
-        int,
-        string,
-        renderWorkerState
-      ) =>
-      (renderWorkerState, int),
-    "checkbox":
-      (. (int, int, int, int), bool, string, renderWorkerState) =>
-      (renderWorkerState, bool),
-    "sliderInt":
-      (
-        . ((int, int, int, int), int),
-        (int, int),
-        (int, string),
-        renderWorkerState
-      ) =>
-      (renderWorkerState, bool, int),
-    "sliderFloat":
-      (
-        . ((int, int, int, int), int),
-        (float, float, int),
-        (float, string),
-        renderWorkerState
-      ) =>
-      (renderWorkerState, bool, float),
     "beginGroup":
       (. WonderImgui.StructureType.position, renderWorkerState) =>
       renderWorkerState,

@@ -9,17 +9,3 @@ let label =
 let image =
   (. rect: (int, int, int, int), uv, id, record) =>
     FixedLayoutControlIMGUIAPI.image(. rect, uv, id, record);
-
-let sliderFloat =
-  (.
-    (rect, textWidth),
-    (min, max, numDecimalDigits),
-    (defaultValue, str),
-    record,
-  ) =>
-    FixedLayoutControlIMGUIMainService.sliderFloat(.
-      (rect, textWidth),
-      (min, max, numDecimalDigits),
-      (defaultValue, str),
-      record,
-    );

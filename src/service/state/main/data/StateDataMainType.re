@@ -247,24 +247,13 @@ and apiRecord = {
       ) =>
       state,
     "button":
-      (. WonderImgui.StructureType.rect, string, state) => (state, bool),
-    "box": (. (int, int, int, int), Js.Array.t(float), state) => state,
-    "radioButton":
-      (. Js.Array.t(((int, int, int, int), string)), int, string, state) =>
-      (state, int),
-    "checkbox":
-      (. (int, int, int, int), bool, string, state) => (state, bool),
-    "sliderInt":
-      (. ((int, int, int, int), int), (int, int), (int, string), state) =>
-      (state, bool, int),
-    "sliderFloat":
       (
-        . ((int, int, int, int), int),
-        (float, float, int),
-        (float, string),
+        . ((int, int, int, int), string),
+        WonderImgui.IMGUIType.customControlFunctionShowData,
         state
       ) =>
-      (state, bool, float),
+      (state, bool),
+    "box": (. (int, int, int, int), Js.Array.t(float), state) => state,
     "beginGroup": (. WonderImgui.StructureType.position, state) => state,
     "endGroup": (. state) => state,
     "unsafeGetGameObjectTransformComponent":

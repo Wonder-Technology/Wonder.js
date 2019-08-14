@@ -20,18 +20,6 @@ let image =
     )
     |> ManageIMGUIMainService.setRecord(_, state);
 
-let button =
-  (. rect, str, state) => {
-    let (record, isClick) =
-      WonderImgui.FixedLayoutControlIMGUIService.button(.
-        rect,
-        str,
-        ManageIMGUIMainService.getRecord(state),
-      );
-
-    (ManageIMGUIMainService.setRecord(record, state), isClick);
-  };
-
 let box =
   (. rect, color, state) =>
     WonderImgui.FixedLayoutControlIMGUIService.box(.
@@ -40,63 +28,6 @@ let box =
       ManageIMGUIMainService.getRecord(state),
     )
     |> ManageIMGUIMainService.setRecord(_, state);
-
-let radioButton =
-  (. groupDataArr, defaultSelectIndex, group, state) => {
-    let (record, selectIndex) =
-      WonderImgui.FixedLayoutControlIMGUIService.radioButton(.
-        groupDataArr,
-        defaultSelectIndex,
-        group,
-        ManageIMGUIMainService.getRecord(state),
-      );
-
-    (ManageIMGUIMainService.setRecord(record, state), selectIndex);
-  };
-
-let checkbox =
-  (. rect, defaultIsSelected, str, state) => {
-    let (record, isSelected) =
-      WonderImgui.FixedLayoutControlIMGUIService.checkbox(.
-        rect,
-        defaultIsSelected,
-        str,
-        ManageIMGUIMainService.getRecord(state),
-      );
-
-    (ManageIMGUIMainService.setRecord(record, state), isSelected);
-  };
-
-let sliderInt =
-  (. (rect, textWidth), (min, max), (defaultValue, str), state) => {
-    let (record, isSelected, value) =
-      WonderImgui.FixedLayoutControlIMGUIService.sliderInt(.
-        (rect, textWidth),
-        (min, max),
-        (defaultValue, str),
-        ManageIMGUIMainService.getRecord(state),
-      );
-
-    (ManageIMGUIMainService.setRecord(record, state), isSelected, value);
-  };
-
-let sliderFloat =
-  (.
-    (rect, textWidth),
-    (min, max, numDecimalDigits),
-    (defaultValue, str),
-    state,
-  ) => {
-    let (record, isSelected, value) =
-      WonderImgui.FixedLayoutControlIMGUIService.sliderFloat(.
-        (rect, textWidth),
-        (min, max, numDecimalDigits),
-        (defaultValue, str),
-        ManageIMGUIMainService.getRecord(state),
-      );
-
-    (ManageIMGUIMainService.setRecord(record, state), isSelected, value);
-  };
 
 let beginGroup =
   (. position, state) =>
