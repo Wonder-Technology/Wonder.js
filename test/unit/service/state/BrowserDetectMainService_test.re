@@ -29,10 +29,8 @@ let _ =
                  FakeGlWorkerTool.buildFakeGl(~sandbox, ()),
                );
 
-          MainStateTool.setState(state);
-          setBrowserFunc();
-
-          let state = MainStateTool.unsafeGetState();
+          let state = state |> setBrowserFunc;
+          MainStateTool.setState(state) |> ignore;
 
           expect(() =>
             BrowserDetectMainService.detectMobileNotSupportWorker(state)

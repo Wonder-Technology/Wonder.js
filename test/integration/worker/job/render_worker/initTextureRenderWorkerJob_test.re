@@ -747,7 +747,7 @@ let _ =
                          map2,
                          true,
                        );
-                  BrowserDetectTool.setChrome();
+                  let state = state |> BrowserDetectTool.setChrome;
 
                   RenderJobsRenderWorkerTool.init(
                     state =>
@@ -807,7 +807,7 @@ let _ =
                          map2,
                          false,
                        );
-                  BrowserDetectTool.setChrome();
+                  let state = state |> BrowserDetectTool.setChrome;
 
                   RenderJobsRenderWorkerTool.init(
                     state =>
@@ -857,7 +857,7 @@ let _ =
                   (source1, source2),
                 ) =
                   _prepareForBasicSourceTexture();
-                BrowserDetectTool.setFirefox();
+                let state = state |> BrowserDetectTool.setFirefox;
                 RenderJobsRenderWorkerTool.init(
                   state =>
                     (
@@ -918,7 +918,7 @@ let _ =
                          (),
                        ),
                      );
-                BrowserDetectTool.setChrome();
+                let state = state |> BrowserDetectTool.setChrome;
                 RenderJobsRenderWorkerTool.init(
                   state => createTexture |> expect |> toCalledTwice |> resolve,
                   state,
@@ -1027,7 +1027,7 @@ let _ =
                     state
                     |> CubemapTextureAPI.setCubemapTextureFlipY(map1, true)
                     |> CubemapTextureAPI.setCubemapTextureFlipY(map2, true);
-                  BrowserDetectTool.setChrome();
+                  let state = state |> BrowserDetectTool.setChrome;
 
                   RenderJobsRenderWorkerTool.init(
                     state =>
@@ -1171,7 +1171,7 @@ let _ =
                     |> CubemapTextureAPI.setCubemapTextureFlipY(map1, false)
                     |> CubemapTextureAPI.setCubemapTextureFlipY(map2, false);
 
-                  BrowserDetectTool.setChrome();
+                  let state = state |> BrowserDetectTool.setChrome;
 
                   RenderJobsRenderWorkerTool.init(
                     state =>
@@ -1315,7 +1315,7 @@ let _ =
                   state
                   |> CubemapTextureAPI.setCubemapTextureFlipY(map1, true)
                   |> CubemapTextureAPI.setCubemapTextureFlipY(map2, true);
-                BrowserDetectTool.setFirefox();
+                let state = state |> BrowserDetectTool.setFirefox;
 
                 RenderJobsRenderWorkerTool.init(
                   state =>
@@ -1429,7 +1429,7 @@ let _ =
                          (),
                        ),
                      );
-                BrowserDetectTool.setChrome();
+                let state = state |> BrowserDetectTool.setChrome;
                 RenderJobsRenderWorkerTool.init(
                   state => createTexture |> expect |> toCalledTwice |> resolve,
                   state,

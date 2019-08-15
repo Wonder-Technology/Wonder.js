@@ -802,7 +802,7 @@ let _ =
           );
         };
         let _judge = (judgeFunc, state) => {
-          BrowserDetectTool.setChrome();
+          let state = state |> BrowserDetectTool.setChrome;
           RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
             ~state,
             ~sandbox,
@@ -962,7 +962,7 @@ let _ =
           );
         };
         let _judge = (judgeFunc, state) => {
-          BrowserDetectTool.setChrome();
+          let state = state |> BrowserDetectTool.setChrome;
           RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
             ~state,
             ~sandbox,

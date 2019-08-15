@@ -48,8 +48,7 @@ let prepareIMGUI = state => {
 
   let state = prepareFntData(state);
 
-  let state = MainStateTool.setState(state);
-  let state = BrowserDetectTool.setChrome();
+  let state = state |> BrowserDetectTool.setChrome;
 
   let canvasDom = EventTool.buildFakeCanvas((0, 0, Js.Nullable.undefined));
   let state = ViewTool.setCanvas(canvasDom |> Obj.magic, state);

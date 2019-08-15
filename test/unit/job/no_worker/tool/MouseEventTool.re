@@ -55,11 +55,7 @@ let prepareWithState =
 
   let state = ViewTool.setCanvas(canvasDom |> Obj.magic, state);
 
-  MainStateTool.setState(state) |> ignore;
-
-  setBrowserFunc();
-
-  MainStateTool.unsafeGetState();
+  state |> setBrowserFunc;
 };
 
 let prepare =
@@ -116,7 +112,7 @@ let prepareForPointerLock = (sandbox, state) => {
 
   let canvas = ViewTool.unsafeGetCanvas(state) |> Obj.magic;
   let requestPointerLockStub = createEmptyStubWithJsObjSandbox(sandbox);
-  canvas##requestPointerLock#=requestPointerLockStub;
+  canvas##requestPointerLock #= requestPointerLockStub;
 
   (state, requestPointerLockStub);
 };

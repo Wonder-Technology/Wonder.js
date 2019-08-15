@@ -53,11 +53,7 @@ let prepareWithState =
 
   let state = ViewTool.setCanvas(canvasDom |> Obj.magic, state);
 
-  MainStateTool.setState(state) |> ignore;
-
-  setBrowserFunc();
-
-  MainStateTool.unsafeGetState();
+  state |> setBrowserFunc;
 };
 
 let prepare =
@@ -106,9 +102,5 @@ let prepare =
 
   let state = ViewTool.setCanvas(canvasDom |> Obj.magic, state);
 
-  MainStateTool.setState(state) |> ignore;
-
-  setBrowserFunc();
-
-  MainStateTool.unsafeGetState();
+  state |> setBrowserFunc;
 };

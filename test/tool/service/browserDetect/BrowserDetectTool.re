@@ -1,56 +1,38 @@
 open AllBrowserDetectType;
 
-let setChrome = () => {
-  let state = MainStateTool.unsafeGetState();
-  let state = {
-    ...state,
-    browserDetectRecord: {
-      browser: Chrome,
-    },
-  };
-  MainStateTool.setState(state);
+open StateDataMainType;
+
+let setChrome = state => {
+  ...state,
+  browserDetectRecord: {
+    browser: Chrome,
+  },
 };
 
-let setFirefox = () => {
-  let state = MainStateTool.unsafeGetState();
-  let state = {
-    ...state,
-    browserDetectRecord: {
-      browser: Firefox,
-    },
-  };
-  MainStateTool.setState(state);
+let setFirefox = state => {
+  ...state,
+  browserDetectRecord: {
+    browser: Firefox,
+  },
 };
 
-let setAndroid = () => {
-  let state = MainStateTool.unsafeGetState();
-  let state = {
-    ...state,
-    browserDetectRecord: {
-      browser: Android,
-    },
-  };
-  MainStateTool.setState(state);
+let setAndroid = state => {
+  ...state,
+  browserDetectRecord: {
+    browser: Android,
+  },
 };
 
-let setIOS = () => {
-  let state = MainStateTool.unsafeGetState();
-  let state = {
-    ...state,
-    browserDetectRecord: {
-      browser: IOS,
-    },
-  };
-  MainStateTool.setState(state);
+let setIOS = state => {
+  ...state,
+  browserDetectRecord: {
+    browser: IOS,
+  },
 };
 
-let setUnknown = () => {
-  let state = MainStateTool.unsafeGetState();
-  let state = {
-    ...state,
-    browserDetectRecord: {
-      browser: Unknown,
-    },
-  };
-  MainStateTool.setState(state);
+let setUnknown = state => {
+  ...state,
+  browserDetectRecord: {
+    browser: Unknown,
+  },
 };

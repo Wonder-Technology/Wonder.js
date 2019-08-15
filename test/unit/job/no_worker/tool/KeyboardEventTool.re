@@ -25,8 +25,7 @@ let prepare =
       ~setBrowserFunc=BrowserDetectTool.setChrome,
       (),
     ) => {
-  let canvasDom =
-     EventTool.buildFakeCanvas((0,0,Js.Nullable.null));
+  let canvasDom = EventTool.buildFakeCanvas((0, 0, Js.Nullable.null));
 
   let state =
     TestTool.initWithJobConfigWithoutBuildFakeDom(
@@ -62,9 +61,5 @@ let prepare =
 
   let state = ViewTool.setCanvas(canvasDom |> Obj.magic, state);
 
-  MainStateTool.setState(state) |> ignore;
-
-  setBrowserFunc();
-
-  MainStateTool.unsafeGetState();
+  state |> setBrowserFunc;
 };

@@ -80,7 +80,7 @@ let _ =
                 bindTexture,
               ) =
                 _prepare();
-              BrowserDetectTool.setChrome();
+              let state = state |> BrowserDetectTool.setChrome;
               RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
                 ~state,
                 ~sandbox,
@@ -153,7 +153,7 @@ let _ =
                 bindTexture,
               ) =
                 _prepare();
-              BrowserDetectTool.setChrome();
+              let state = state |> BrowserDetectTool.setChrome;
               RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
                 ~state,
                 ~sandbox,

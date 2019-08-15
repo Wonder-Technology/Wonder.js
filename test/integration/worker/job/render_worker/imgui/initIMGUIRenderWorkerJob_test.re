@@ -299,11 +299,10 @@ let _ =
           |> FakeGlWorkerTool.setFakeGl(
                FakeGlWorkerTool.buildFakeGl(~sandbox, ()),
              );
-        MainStateTool.setState(state);
-        BrowserDetectTool.setChrome();
+        let state = state |> BrowserDetectTool.setChrome;
 
         (
-          MainStateTool.unsafeGetState(),
+          state,
           (fntData, bitmap, setting, customImageArr),
           (
             (
@@ -446,7 +445,6 @@ let _ =
         );
       });
 
-
       describe("init imgui", () =>
         testPromise("create program", () => {
           let (state, (fntData, bitmap, setting, _), (_, context)) =
@@ -457,9 +455,7 @@ let _ =
             |> FakeGlWorkerTool.setFakeGl(
                  FakeGlWorkerTool.buildFakeGl(~sandbox, ~createProgram, ()),
                );
-          MainStateTool.setState(state);
-          BrowserDetectTool.setChrome();
-          let state = MainStateTool.unsafeGetState();
+          let state = state |> BrowserDetectTool.setChrome;
 
           RenderJobsRenderWorkerTool.initWithJob(
             ~completeFunc=
@@ -493,9 +489,7 @@ let _ =
             let (state, _, _, _, _) =
               FrontRenderLightJobTool.prepareGameObject(sandbox, state);
             let (state, _, _, _) = CameraTool.createCameraGameObject(state);
-            MainStateTool.setState(state);
-            BrowserDetectTool.setChrome();
-            let state = MainStateTool.unsafeGetState();
+            let state = state |> BrowserDetectTool.setChrome;
 
             RenderJobsRenderWorkerTool.init(
               state =>

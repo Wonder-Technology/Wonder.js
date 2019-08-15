@@ -317,8 +317,7 @@ let _ =
                     },
                     state,
                   );
-                MainStateTool.setState(state);
-                BrowserDetectTool.setChrome();
+                let state = state |> BrowserDetectTool.setChrome;
 
                 RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
                   ~state,

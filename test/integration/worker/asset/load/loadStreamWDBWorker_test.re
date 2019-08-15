@@ -50,8 +50,7 @@ let _ =
         let state =
           state
           |> LightMaterialAPI.setLightMaterialDiffuseMap(material1, map1);
-        BrowserDetectTool.setChrome();
-        let state = MainStateTool.unsafeGetState();
+        let state = state |> BrowserDetectTool.setChrome;
         RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
           ~state,
           ~sandbox,
