@@ -173,35 +173,29 @@ let _ =
     });
 
     describe("test imgui", () => {
-      describe(
-        "if isSetIMGUIFunc === true, set imgui func and custom data", () => {
+      describe("if isSetIMGUIFunc === true, set imgui data", () => {
         describe("test return hasIMGUIFunc", () =>
-          testPromise("return true", () => {
-            let customData = {|[ 1, \"function (a) { return a; }\" ]|};
-            let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
-
+          testPromise("return true", () =>
             AssembleWDBSystemTool.testGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=
-                ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfIMGUI(),
               ~state,
               ~testFunc=
                 ((state, (_, hasIMGUIFunc), (rootGameObject, _))) =>
                   hasIMGUIFunc |> expect == true,
               (),
-            );
-          })
+            )
+          )
         );
 
         describe("test customData", () =>
           testPromise("test value with function", () => {
             let customData = {|[ 1, \"function (a) { return a; }\" ]|};
-            let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
 
             AssembleWDBSystemTool.testGLTF(
               ~sandbox=sandbox^,
               ~embeddedGLTFJsonStr=
-                ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+                ConvertGLBTool.buildGLTFJsonOfIMGUI(~customData, ()),
               ~state,
               ~testFunc=
                 ((state, _, (rootGameObject, _))) => {
@@ -224,7 +218,11 @@ let _ =
           AssembleWDBSystemTool.testGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=
-              ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+              ConvertGLBTool.buildGLTFJsonOfIMGUI(
+                ~customData,
+                ~imguiFunc,
+                (),
+              ),
             ~state,
             ~testFunc=
               ((state, _, (rootGameObject, _))) =>
@@ -268,7 +266,11 @@ let _ =
           AssembleWDBSystemTool.testGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=
-              ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+              ConvertGLBTool.buildGLTFJsonOfIMGUI(
+                ~customData,
+                ~imguiFunc,
+                (),
+              ),
             ~state=ref(state),
             ~testFunc=
               ((state, _, (rootGameObject, _))) =>
@@ -299,36 +301,94 @@ let _ =
             (),
           );
         });
+        testPromise("test extendData", () => {
+          let customControlName = "c1";
+          let skinName = "s1";
+          let extendData =
+            SceneGraphIMGUITool.buildExtendData(
+              ~funcMap=
+                WonderCommonlib.ImmutableHashMapService.createEmpty()
+                |> WonderCommonlib.ImmutableHashMapService.set(
+                     customControlName,
+                     IMGUITool.buildEmptyCustomControlFuncStr(),
+                   ),
+              ~allSkinDataMap=
+                WonderCommonlib.ImmutableHashMapService.createEmpty()
+                |> WonderCommonlib.ImmutableHashMapService.set(
+                     skinName,
+                     ExtendIMGUIMainService.ExtendData.Skin.createDefaultSkinData(),
+                   ),
+              (),
+            );
+
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfIMGUI(~extendData, ()),
+            ~state,
+            ~testFunc=
+              ((state, _, (rootGameObject, _))) => {
+                let funcMap =
+                  ExtendIMGUIMainService.ExtendData.CustomControl.getFuncMap(
+                    state,
+                  );
+
+                let allSkinDataMap =
+                  ExtendIMGUIMainService.ExtendData.Skin.getAllSkinDataMap(
+                    state,
+                  );
+
+                (
+                  (
+                    funcMap
+                    |> WonderCommonlib.ImmutableHashMapService.unsafeGet(
+                         customControlName,
+                       )
+                    |> JudgeTool.isFunction,
+                    funcMap
+                    |> SerializeAllIMGUIService.CustomControl.serializeFuncMap,
+                  ),
+                  allSkinDataMap,
+                )
+                |> expect
+                == (
+                     (
+                       true,
+                       extendData.customControlData.funcMap
+                       |> Obj.magic
+                       |> Js.Json.stringify,
+                     ),
+                     extendData.skinData.allSkinDataMap,
+                   );
+              },
+            (),
+          );
+        });
       });
 
       describe("else, not set", () => {
         describe("test return hasIMGUIFunc", () =>
-          testPromise("return true", () => {
-            let customData = {|[ 1, \"function (a) { return a; }\" ]|};
-            let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
-
+          testPromise("return true", () =>
             AssembleWDBSystemTool.testGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=
-                ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfIMGUI(),
               ~state,
               ~isSetIMGUIFunc=false,
               ~testFunc=
                 ((state, (_, hasIMGUIFunc), (rootGameObject, _))) =>
                   hasIMGUIFunc |> expect == true,
               (),
-            );
-          })
+            )
+          )
         );
 
-        testPromise("test no customData", () => {
+        testPromise("should has no customData", () => {
           let customData = {|[ 1, \"function (a) { return a; }\" ]|};
-          let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
 
           AssembleWDBSystemTool.testGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=
-              ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+              ConvertGLBTool.buildGLTFJsonOfIMGUI(~customData, ()),
             ~state,
             ~isSetIMGUIFunc=false,
             ~testFunc=
@@ -2858,12 +2918,12 @@ let _ =
             ~embeddedGLTFJsonStr=
               ConvertGLBTool.buildGLTFJsonOfScript(
                 ~eventFunctionDataMap=
-                  AssetScriptTool.buildEventFunctionDataMap(
-                    ~initFunc=Some(AssetScriptTool.buildEventFunc()),
+                  SceneGraphScriptTool.buildEventFunctionDataMap(
+                    ~initFunc=Some(SceneGraphScriptTool.buildEventFunc()),
                     (),
                   )
                   ->Some,
-                ~attributeMap=AssetScriptTool.buildAttributeMap()->Some,
+                ~attributeMap=SceneGraphScriptTool.buildAttributeMap()->Some,
                 (),
               ),
             ~state,
@@ -2878,14 +2938,14 @@ let _ =
                 |> Js.Array.map(script =>
                      ScriptTool.unsafeGetScriptAttributeIntFieldValue(
                        script,
-                       AssetScriptTool.getScriptAttributeName(),
-                       AssetScriptTool.getScriptAttributeFieldName(),
+                       SceneGraphScriptTool.getScriptAttributeName(),
+                       SceneGraphScriptTool.getScriptAttributeFieldName(),
                        state,
                      )
                    )
                 |> expect
                 == [|
-                     AssetScriptTool.getAttributeFieldAValueAfterExecEventeFunc(),
+                     SceneGraphScriptTool.getAttributeFieldAValueAfterExecEventeFunc(),
                    |];
               },
             (),
@@ -2897,12 +2957,12 @@ let _ =
             ~embeddedGLTFJsonStr=
               ConvertGLBTool.buildGLTFJsonOfScript(
                 ~eventFunctionDataMap=
-                  AssetScriptTool.buildEventFunctionDataMap(
-                    ~updateFunc=Some(AssetScriptTool.buildEventFunc2()),
+                  SceneGraphScriptTool.buildEventFunctionDataMap(
+                    ~updateFunc=Some(SceneGraphScriptTool.buildEventFunc2()),
                     (),
                   )
                   ->Some,
-                ~attributeMap=AssetScriptTool.buildAttributeMap()->Some,
+                ~attributeMap=SceneGraphScriptTool.buildAttributeMap()->Some,
                 (),
               ),
             ~state,
@@ -2917,14 +2977,14 @@ let _ =
                 |> Js.Array.map(script =>
                      ScriptTool.unsafeGetScriptAttributeIntFieldValue(
                        script,
-                       AssetScriptTool.getScriptAttributeName(),
-                       AssetScriptTool.getScriptAttributeFieldName(),
+                       SceneGraphScriptTool.getScriptAttributeName(),
+                       SceneGraphScriptTool.getScriptAttributeFieldName(),
                        state,
                      )
                    )
                 |> expect
                 == [|
-                     AssetScriptTool.getAttributeFieldAValueAfterExecEventeFunc2(),
+                     SceneGraphScriptTool.getAttributeFieldAValueAfterExecEventeFunc2(),
                    |];
               },
             (),

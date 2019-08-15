@@ -39,7 +39,7 @@ let _ =
           let (state, bufferData) =
             IMGUIWorkerTool.prepareForTestInRenderWorkerJob(sandbox);
 
-          let state = ExtendIMGUITool.addExtendData(state);
+          let state = ExtendIMGUITool.addExtendDataAndSetIMGUIFunc(state);
 
           let bufferDataCallCountAfterInit = ref(0);
           RenderJobsRenderWorkerTool.initAndMainLoopAndRender(

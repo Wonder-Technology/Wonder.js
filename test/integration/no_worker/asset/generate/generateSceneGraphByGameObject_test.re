@@ -827,40 +827,72 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
     });
 
     describe("test imgui", () => {
-      let _prepareGameObject = state => {
-        let customData = Obj.magic((1, "cc"));
+      describe("test customData and imguiFunc", () => {
+        let _prepareGameObject = state => {
+          let customData = Obj.magic((1, "cc"));
 
-        let imguiFunc =
-          (. customData, imguiAPIJsObj, state) => {
-            let (a, b) = Obj.magic(customData);
-            let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
+          let imguiFunc =
+            (. customData, imguiAPIJsObj, state) => {
+              let (a, b) = Obj.magic(customData);
+              let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
-            let imageFunc = imguiAPIJsObj##image |> Obj.magic;
-            let state = imageFunc(. a, b, state);
+              let imageFunc = imguiAPIJsObj##image |> Obj.magic;
+              let state = imageFunc(. a, b, state);
 
-            state;
-          };
+              state;
+            };
 
-        let state =
-          ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state^);
+          let state =
+            ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state^);
 
-        let (state, rootGameObject) = state |> GameObjectAPI.createGameObject;
+          let (state, rootGameObject) =
+            state |> GameObjectAPI.createGameObject;
 
-        (state, (customData, imguiFunc), rootGameObject);
-      };
+          (state, (customData, imguiFunc), rootGameObject);
+        };
 
-      test("test customData and imguiFunc", () => {
-        let (state, (customData, imguiFunc), rootGameObject) =
-          _prepareGameObject(state);
+        test("test", () => {
+          let (state, (customData, imguiFunc), rootGameObject) =
+            _prepareGameObject(state);
 
-        GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
-          rootGameObject,
-          "
-            \"extras\":{\"imgui\":{\"customData\":\"[1,\\\"cc\\\"]\",\"imguiFunc\"
-            :\"function(customData,imguiAPIJsObj,state){\\nvarimageFunc=imguiAPIJsObj.image;\\nreturnimageFunc(customData[0],customData[1],state);\\n}\"}}}]
-            ",
-          state,
-        );
+          GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+            rootGameObject,
+            "
+\"extras\":{\"imgui\":{\"customData\":\"[1,\\\"cc\\\"]\",\"imguiFunc\":\"function(customData,imguiAPIJsObj,state){\\nvarimageFunc=imguiAPIJsObj.image;\\nreturnimageFunc(customData[0],customData[1],state);\\n}\",\"extendData\":{\"customControlData\":[\"{}\"],\"skinData\":[{}]}}}
+          ",
+            state,
+          );
+        });
+      });
+
+      describe("test extendData", () => {
+        let _prepareGameObject = state => {
+          let (state, _) = ExtendIMGUITool.addExtendData(state^);
+
+          let state =
+            ManageIMGUIAPI.setIMGUIFunc(
+              Obj.magic(-1),
+              IMGUITool.buildEmptyIMGUIFunc(),
+              state,
+            );
+
+          let (state, rootGameObject) =
+            state |> GameObjectAPI.createGameObject;
+
+          (state, rootGameObject);
+        };
+
+        test("test", () => {
+          let (state, rootGameObject) = _prepareGameObject(state);
+
+          GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+            rootGameObject,
+            "
+\"extras\":{\"imgui\":{\"customData\":\"-1\",\"imguiFunc\":\"function(customData,imguiAPIJsObj,state){returnstate;}\",\"extendData\":{\"customControlData\":[\"{\\\"A1\\\":\\\"function(customControlFuncData,showData,apiJsObj,record){\\\\nvardrawBox=apiJsObj.drawBox;\\\\nvarparseShowData=apiJsObj.parseShowData;\\\\nvarunsafeGetSkinData=apiJsObj.unsafeGetSkinData;\\\\nvarunsafeGetSingleCustomStyleDataMap=apiJsObj.unsafeGetSingleCustomStyleDataMap;\\\\nvarunsafeGetCustomStyleData=apiJsObj.unsafeGetCustomStyleData;\\\\nvarhasSingleCustomStyleName=apiJsObj.hasSingleCustomStyleName;\\\\nvarparseSingleCustomStyleName=apiJsObj.parseSingleCustomStyleName;\\\\nvarhasCustomStyleData=apiJsObj.hasCustomStyleData;\\\\nvarmatch=parseShowData(showData);\\\\nvarsingleCustomStyleNameNullable=match[1];\\\\nvardefaultColor=\\\\n/*array*/\\\\n[0.5,0.1,0.2];\\\\nvarmatch$1=hasSingleCustomStyleName(singleCustomStyleNameNullable);\\\\nvarcolor;\\\\n\\\\nif(match$1){\\\\nvarsingleCustomStyleName=parseSingleCustomStyleName(singleCustomStyleNameNullable);\\\\nvarsingleCustomStyleDataMap=unsafeGetSingleCustomStyleDataMap(singleCustomStyleName,unsafeGetSkinData(match[0],record));\\\\nvarmatch$2=hasCustomStyleData(\\\\\\\"color\\\\\\\",singleCustomStyleDataMap);\\\\ncolor=match$2?unsafeGetCustomStyleData(\\\\\\\"color\\\\\\\",singleCustomStyleDataMap):defaultColor;\\\\n}else{\\\\ncolor=defaultColor;\\\\n}\\\\n\\\\nvarrecord$1=drawBox(customControlFuncData,color,record);\\\\nreturn(\\\\n/*tuple*/\\\\n[record$1,true]\\\\n);\\\\n}\\\"}\"],\"skinData\":[{\"Skin1\":[[[0.35,0.1,0.1],[0.4,0.1,0.1],[0.5,0.1,0.1],null,null,null],{\"CustomStyle1\":{\"color\":[0.5,1,2]}}]}]}}}
+          ",
+            state,
+          );
+        });
       });
     });
 

@@ -89,6 +89,13 @@ let addExtendData = state => {
          },
        );
 
+  (state, (rectData, customControlName, (skinName, customStyleName)));
+};
+
+let addExtendDataAndSetIMGUIFunc = state => {
+  let (state, (rectData, customControlName, (skinName, customStyleName))) =
+    state |> addExtendData;
+
   let state =
     ManageIMGUIAPI.setIMGUIFunc(
       (rectData, customControlName, (skinName, customStyleName)) |> Obj.magic,

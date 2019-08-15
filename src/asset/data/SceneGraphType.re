@@ -21,7 +21,19 @@ type arcballCameraController = {
   isBindEvent: bool,
 };
 
+type serializedFunc = string;
+
+type funcMap = WonderCommonlib.ImmutableHashMapService.t(serializedFunc);
+
+type customControlData = {funcMap};
+
+type extendData = {
+  customControlData,
+  skinData: ExtendIMGUIType.skinData,
+};
+
 type imgui = {
-  imguiFunc: string,
+  imguiFunc: serializedFunc,
   customData: WonderImgui.IMGUIType.customDataForIMGUIFunc,
+  extendData,
 };

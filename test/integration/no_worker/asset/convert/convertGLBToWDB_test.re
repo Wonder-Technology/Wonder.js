@@ -515,17 +515,42 @@ let _ =
       test("test imgui", () => {
         let customData = {| [1, 2] |};
         let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
+        let extendData =
+          SceneGraphIMGUITool.buildExtendData(
+            ~funcMap=
+              WonderCommonlib.ImmutableHashMapService.createEmpty()
+              |> WonderCommonlib.ImmutableHashMapService.set(
+                   "c1",
+                   IMGUITool.buildEmptyCustomControlFuncStr(),
+                 ),
+            ~allSkinDataMap=
+              WonderCommonlib.ImmutableHashMapService.createEmpty()
+              |> WonderCommonlib.ImmutableHashMapService.set(
+                   "s1",
+                   ExtendIMGUIMainService.ExtendData.Skin.createDefaultSkinData(),
+                 ),
+            (),
+          );
 
         ConvertGLBTool.testGLTFResultByGLTF(
           ~sandbox=sandbox^,
           ~embeddedGLTFJsonStr=
-            ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+            ConvertGLBTool.buildGLTFJsonOfIMGUI(
+              ~customData,
+              ~imguiFunc,
+              ~extendData,
+              (),
+            ),
           ~state,
           ~testFunc=
             ({scene}) =>
               scene.imgui
               |> expect
-              == Some({customData: customData |> Obj.magic, imguiFunc}),
+              == Some({
+                   customData: customData |> Obj.magic,
+                   imguiFunc,
+                   extendData,
+                 }),
           (),
         );
       });
@@ -555,19 +580,15 @@ let _ =
         );
 
         describe("else", () => {
-          test("if extras has no isRoot, set true", () => {
-            let customData = {| [1, 2] |};
-            let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
-
+          test("if extras has no isRoot, set true", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
-              ~embeddedGLTFJsonStr=
-                ConvertGLBTool.buildGLTFJsonOfIMGUI(customData, imguiFunc),
+              ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfIMGUI(),
               ~state,
               ~testFunc=({scene}) => scene.isRoot |> expect == true,
               (),
-            );
-          });
+            )
+          );
           test("else, set it", () =>
             ConvertGLBTool.testGLTFResultByGLTF(
               ~sandbox=sandbox^,
@@ -939,7 +960,7 @@ let _ =
         describe("test has data", () => {
           test("test only has event function data", () => {
             let eventFunctionDataMap =
-              AssetScriptTool.buildEventFunctionDataMap();
+              SceneGraphScriptTool.buildEventFunctionDataMap();
             let eventFunctionDataMapStr =
               ConvertScriptDataUtils._convertEventFunctionDataMapToStr(
                 eventFunctionDataMap,
@@ -972,8 +993,8 @@ let _ =
           });
           test("test has event function data and attribute data", () => {
             let eventFunctionDataMap =
-              AssetScriptTool.buildEventFunctionDataMap();
-            let attributeMap = AssetScriptTool.buildAttributeMap();
+              SceneGraphScriptTool.buildEventFunctionDataMap();
+            let attributeMap = SceneGraphScriptTool.buildAttributeMap();
             let eventFunctionDataMapStr =
               ConvertScriptDataUtils._convertEventFunctionDataMapToStr(
                 eventFunctionDataMap,

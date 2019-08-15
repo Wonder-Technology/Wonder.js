@@ -471,18 +471,27 @@ let _encodeExtras =
   |> object_,
 );
 
+let _encodeIMGUIExtendData =
+    ({customControlData, skinData}: SceneGraphType.extendData) =>
+  [
+    ("customControlData", customControlData |> Obj.magic),
+    ("skinData", skinData |> Obj.magic),
+  ]
+  |> object_;
+
 let _encodeSceneExtras = (imguiData, skyboxCubemapTextureIndexOpt) => {
   let extraList = [];
 
   let extraList =
     switch (imguiData) {
-    | (None, None) => extraList
-    | (Some(customData), Some(imguiFuncStr)) => [
+    | (None, None, _) => extraList
+    | (Some(customData), Some(imguiFuncStr), extendData) => [
         (
           "imgui",
           [
             ("customData", customData |> Obj.magic |> int),
             ("imguiFunc", imguiFuncStr |> string),
+            ("extendData", _encodeIMGUIExtendData(extendData)),
           ]
           |> object_,
         ),

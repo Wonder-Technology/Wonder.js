@@ -119,6 +119,12 @@ let _convertCustomData = [%raw
       |}
 ];
 
+let _convertExtendData = [%raw
+  json => {|
+      return json.extendData;
+      |}
+];
+
 let _convertScenes = json =>
   json
   |> field(
@@ -140,6 +146,7 @@ let _convertScenes = json =>
                                    imguiFunc:
                                      json |> field("imguiFunc", string),
                                    customData: _convertCustomData(json),
+                                   extendData: _convertExtendData(json),
                                  }: SceneGraphType.imgui
                                )
                              ),

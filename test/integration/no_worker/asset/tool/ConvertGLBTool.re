@@ -513,7 +513,15 @@ let buildGLTFJsonOfLight = () =>
     (),
   );
 
-let buildGLTFJsonOfIMGUI = (customData, imguiFunc) =>
+let buildGLTFJsonOfIMGUI =
+    (
+      ~customData="",
+      ~imguiFunc=IMGUITool.buildEmptyIMGUIFuncStr(),
+      ~extendData=SceneGraphIMGUITool.buildExtendData(),
+      (),
+    ) => {
+  let extendDataStr = extendData |> Obj.magic |> Js.Json.stringify;
+
   buildGLTFJson(
     ~scene={|0|},
     ~scenes=
@@ -523,13 +531,15 @@ let buildGLTFJsonOfIMGUI = (customData, imguiFunc) =>
         "extras": {
             "imgui": {
                 "customData": "$customData",
-                "imguiFunc": "$imguiFunc"
+                "imguiFunc": "$imguiFunc",
+                "extendData": $extendDataStr
             }
         }
     }
     ]|j},
     (),
   );
+};
 
 let buildGLTFJsonOfSkyboxAndOneCubemap =
     (
@@ -1401,8 +1411,10 @@ let buildGLTFJsonOfArcballCameraController = (~isBindEvent=true, ()) => {
 let buildGLTFJsonOfScript =
     (
       ~isActive=true,
-      ~eventFunctionDataMap=Some(AssetScriptTool.buildEventFunctionDataMap()),
-      ~attributeMap=Some(AssetScriptTool.buildAttributeMap()),
+      ~eventFunctionDataMap=Some(
+                              SceneGraphScriptTool.buildEventFunctionDataMap(),
+                            ),
+      ~attributeMap=Some(SceneGraphScriptTool.buildAttributeMap()),
       (),
     ) => {
   let eventFunctionDataMapStr =

@@ -32,16 +32,18 @@ module ExtendData = {
   module CustomControl = {
     let serializeFuncMap = (mainState: StateDataMainType.state) =>
       ExtendIMGUIMainService.ExtendData.CustomControl.getFuncMap(mainState)
-      |> SerializeService.serializeValueWithFunction;
+      |> SerializeAllIMGUIService.CustomControl.serializeFuncMap;
 
     let deserializeFuncMap = funcMap =>
-      funcMap |> SerializeService.deserializeValueWithFunction;
+      funcMap |> SerializeAllIMGUIService.CustomControl.deserializeFuncMap;
   };
 
   module Skin = {
     let serializeAllSkinDataMap = (mainState: StateDataMainType.state) =>
-      ExtendIMGUIMainService.ExtendData.Skin.getAllSkinDataMap(mainState);
+      ExtendIMGUIMainService.ExtendData.Skin.getAllSkinDataMap(mainState)
+      |> SerializeAllIMGUIService.Skin.serializeAllSkinDataMap;
 
-    let deserializeAllSkinDataMap = allSkinDataMap => allSkinDataMap;
+    let deserializeAllSkinDataMap = allSkinDataMap =>
+      allSkinDataMap |> SerializeAllIMGUIService.Skin.deserializeAllSkinDataMap;
   };
 };

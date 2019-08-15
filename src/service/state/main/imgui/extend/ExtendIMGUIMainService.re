@@ -52,6 +52,19 @@ module ExtendData = {
   module CustomControl = {
     let getFuncMap = state => _getExtendData(state).customControlData.funcMap;
 
+    let setFuncMap = (funcMap, state) => {
+      ...state,
+      imguiRecord: {
+        ...state.imguiRecord,
+        extendData: {
+          ...state.imguiRecord.extendData,
+          customControlData: {
+            funcMap: funcMap,
+          },
+        },
+      },
+    };
+
     let registerCustomControl = (name, customControlFunc, state) => {
       ...state,
       imguiRecord: {
@@ -81,6 +94,19 @@ module ExtendData = {
   module Skin = {
     let getAllSkinDataMap = state =>
       _getExtendData(state).skinData.allSkinDataMap;
+
+    let setAllSkinDataMap = (allSkinDataMap, state) => {
+      ...state,
+      imguiRecord: {
+        ...state.imguiRecord,
+        extendData: {
+          ...state.imguiRecord.extendData,
+          skinData: {
+            allSkinDataMap: allSkinDataMap,
+          },
+        },
+      },
+    };
 
     let _setAllSkinDataMap = (allSkinDataMap, state) => {
       ...state,

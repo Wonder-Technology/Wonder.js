@@ -1,4 +1,9 @@
-let buildEmptyIMGUIFuncStr = () => {|function (customData, imguiAPIJsObj, record){ return record; }|};
+let buildEmptyIMGUIFuncStr = () => {|function (customData, imguiAPIJsObj, state){ return state; }|};
+
+let buildEmptyIMGUIFunc = () =>
+  buildEmptyIMGUIFuncStr() |> SerializeService.deserializeFunction;
+
+let buildEmptyCustomControlFuncStr = () => {|function (_customControlFuncInputData, _customControlFunctionShowData, _customControlAPIJsObj, record){ return record; }|};
 
 let getIMGUIFunc = ManageIMGUIMainService.getIMGUIFunc;
 

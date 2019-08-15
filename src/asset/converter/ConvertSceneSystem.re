@@ -29,15 +29,8 @@ let getRootNodeIndexs = ({nodes}: GLTFType.scene) =>
 
 let _getDefaultIsRoot = () => true;
 
-let _convertIMGUI = extras =>
-  extras
-  |> Js.Option.andThen((. {imgui}: GLTFType.sceneExtras) =>
-       switch (imgui) {
-       | None => None
-       | Some({imguiFunc, customData}) =>
-         Some({imguiFunc, customData}: SceneGraphType.imgui)
-       }
-     );
+let _convertIMGUI = extras: option(SceneGraphType.imgui) =>
+  extras |> Js.Option.andThen((. {imgui}: GLTFType.sceneExtras) => imgui);
 
 let _convertSkybox = extras =>
   extras

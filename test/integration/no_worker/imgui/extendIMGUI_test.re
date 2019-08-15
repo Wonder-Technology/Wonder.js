@@ -73,7 +73,7 @@ let _ =
           let (state, array_buffer, dynamic_draw, bufferData) =
             RenderIMGUITool.prepareGl(sandbox, state);
 
-          let state = ExtendIMGUITool.addExtendData(state);
+          let state = ExtendIMGUITool.addExtendDataAndSetIMGUIFunc(state);
 
           let state = state |> NoWorkerJobTool.execInitJobs;
 
