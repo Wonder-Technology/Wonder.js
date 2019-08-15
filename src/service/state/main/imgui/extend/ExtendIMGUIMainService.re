@@ -109,11 +109,20 @@ module ExtendData = {
         state,
       );
 
+    let setSkinData = (skinName, skinData, state) =>
+      _setAllSkinDataMap(
+        getAllSkinDataMap(state)
+        |> WonderCommonlib.ImmutableHashMapService.set(skinName, skinData),
+        state,
+      );
+
     let mergeAllSkinDataMapsToWonderImguiIMGUIRecord = state =>
       SkinAllIMGUIService.mergeAllSkinDataMapsToWonderImguiIMGUIRecord(
         getAllSkinDataMap(state),
         ManageIMGUIMainService.getRecord(state),
       )
       |> ManageIMGUIMainService.setRecord(_, state);
+
+    let createDefaultSkinData = WonderImgui.DataSkinIMGUIService._createDefaultSkinData;
   };
 };

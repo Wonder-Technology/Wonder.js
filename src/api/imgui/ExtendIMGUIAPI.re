@@ -44,6 +44,10 @@ let unsafeGetDefaultSkinData = state =>
     ManageIMGUIMainService.getRecord(state),
   );
 
+let createDefaultSkinData = ExtendIMGUIMainService.ExtendData.Skin.createDefaultSkinData;
+
+let setSkinData = ExtendIMGUIMainService.ExtendData.Skin.setSkinData;
+
 /* let setSkinData = (skinName, skinData, state) =>
      WonderImgui.ExtendIMGUIAPI.setSkinData(
        skinName,
@@ -71,3 +75,6 @@ let getButtonSkinData = WonderImgui.ExtendIMGUIAPI.getButtonSkinData;
 let setButtonSkinData = WonderImgui.ExtendIMGUIAPI.setButtonSkinData;
 
 let createButtonSkinData = WonderImgui.ExtendIMGUIAPI.createButtonSkinData;
+
+let createDefaultButtonSkinData = () =>
+  WonderImgui.ExtendButton.Skin.createDefaultSkinData();

@@ -95,11 +95,11 @@ var ImguiTool = (function () {
             var state = wd.setIMGUIFunc(
                 null,
                 (customData, api, state) => {
-                    var radioButtonWidth = 200;
-                    var radioButtonHeight = 100;
+                    // var radioButtonWidth = 200;
+                    // var radioButtonHeight = 100;
 
                     var intervalX = screenWidth / 2;
-                    var intervalY = screenWidth / 6;
+                    var intervalY = screenHeight / 6;
 
                     var controlWidth = screenWidth / 2;
                     var controlHeight = screenHeight / 6;
@@ -184,7 +184,9 @@ var ImguiTool = (function () {
 
 
                         var [state, isClick_button1] = api.button(
-                            [0, intervalY * 3, controlWidth, controlHeight], "button1", state
+                            [[0, intervalY * 3, controlWidth, controlHeight], "button1"],
+                            null,
+                            state
                         );
 
 

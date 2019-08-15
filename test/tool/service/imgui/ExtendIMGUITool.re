@@ -1,6 +1,3 @@
-let createDefaultButtonSkinData = () =>
-  WonderImgui.ExtendButton.Skin.createDefaultSkinData();
-
 let _addSkinData = (~state, ~color) => {
   open ExtendIMGUIAPI;
 

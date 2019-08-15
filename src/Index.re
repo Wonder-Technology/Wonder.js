@@ -534,6 +534,44 @@ let createRenderGroup = RenderGroupAPI.createRenderGroup;
 
 let buildRenderGroup = RenderGroupAPI.buildRenderGroup;
 
+let createDefaultButtonSkinData = ExtendIMGUIAPI.createDefaultButtonSkinData;
+
+let createButtonSkinData = ExtendIMGUIAPI.createButtonSkinData;
+
+let setButtonSkinData = ExtendIMGUIAPI.setButtonSkinData;
+
+let getButtonSkinData = ExtendIMGUIAPI.getButtonSkinData;
+
+let getDefaultSkinName = ExtendIMGUIAPI.getDefaultSkinName;
+
+let setSkinData = ExtendIMGUIAPI.setSkinData;
+
+let createDefaultSkinData = ExtendIMGUIAPI.createDefaultSkinData;
+
+let unsafeGetDefaultSkinData = ExtendIMGUIAPI.unsafeGetDefaultSkinData;
+
+let unsafeGetSkinData = ExtendIMGUIAPI.unsafeGetSkinData;
+
+let createSkinData = ExtendIMGUIAPI.createSkinData;
+
+let removeSkinData = ExtendIMGUIAPI.removeSkinData;
+
+let addSkinData = ExtendIMGUIAPI.addSkinData;
+
+let removeSingleCustomStyleData = ExtendIMGUIAPI.removeSingleCustomStyleData;
+
+let addSingleCustomStyleData = ExtendIMGUIAPI.addSingleCustomStyleData;
+
+let removeCustomStyleData = ExtendIMGUIAPI.removeCustomStyleData;
+
+let addCustomStyleData = ExtendIMGUIAPI.addCustomStyleData;
+
+let createSingleCustomStyleData = ExtendIMGUIAPI.createSingleCustomStyleData;
+
+let createAllCustomStyleData = ExtendIMGUIAPI.createAllCustomStyleData;
+
+let registerCustomControl = ExtendIMGUIAPI.registerCustomControl;
+
 let image = FixedLayoutControlIMGUIAPI.image;
 
 let label = FixedLayoutControlIMGUIAPI.label;

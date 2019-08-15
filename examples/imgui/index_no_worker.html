@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>imgui no worker</title>
+</head>
+
+<body>
+    <script src="../../test/e2e/js/AssetTool.js"></script>
+    <script src="../../test/e2e/js/IMGUITool.js"></script>
+    <script src="../../dist/wd.js"></script>
+    <script>
+        var _setDefaultSkinData = function (buttonColor, hoverButtonColor, clickButtonColor,
+            buttonImage, hoverButtonImage, clickButtonImage, state
+        ) {
+            var buttonColor = buttonColor !== undefined ? buttonColor : /* array */[
+                0.35,
+                0.1,
+                0.1
+            ];
+            var hoverButtonColor = hoverButtonColor !== undefined ? hoverButtonColor : /* array */[
+                0.35,
+                0.1,
+                0.1
+            ];
+            var clickButtonColor = clickButtonColor !== undefined ? clickButtonColor : /* array */[
+                0.35,
+                0.1,
+                0.1
+            ];
+
+            return wd.setSkinData(wd.getDefaultSkinName(/* () */0), wd.setButtonSkinData(wd.createButtonSkinData(buttonColor, hoverButtonColor, clickButtonColor, buttonImage, hoverButtonImage, clickButtonImage), wd.createDefaultSkinData()), state);
+        };
+
+
+
+        var _addSkinData = function (skinName, customStyleName, color, state) {
+            var allCustomStyleData = wd.createAllCustomStyleData();
+            var singleCustomStyleData = wd.createSingleCustomStyleData();
+
+            singleCustomStyleData = wd.addCustomStyleData("color", color, singleCustomStyleData);
+
+
+            allCustomStyleData = wd.addSingleCustomStyleData(customStyleName, singleCustomStyleData, allCustomStyleData);
+
+
+            state = wd.addSkinData(skinName, wd.createSkinData(wd.createDefaultButtonSkinData(), allCustomStyleData), state);
+
+            return state;
+        };
+
+        var _registerCustomControl = function (customControlName, state) {
+            return wd.registerCustomControl(customControlName, (customControlFuncData, showData, apiJsObj, record) => {
+                var drawBox = apiJsObj.drawBox;
+                var parseShowData = apiJsObj.parseShowData;
+                var unsafeGetSkinData = apiJsObj.unsafeGetSkinData;
+                var unsafeGetSingleCustomStyleDataMap = apiJsObj.unsafeGetSingleCustomStyleDataMap;
+                var unsafeGetCustomStyleData = apiJsObj.unsafeGetCustomStyleData;
+                var hasSingleCustomStyleName = apiJsObj.hasSingleCustomStyleName;
+                var parseSingleCustomStyleName = apiJsObj.parseSingleCustomStyleName;
+                var hasCustomStyleData = apiJsObj.hasCustomStyleData;
+                var match = parseShowData(showData);
+                var singleCustomStyleNameNullable = match[1];
+                var defaultColor = /* array */[
+                    0.0,
+                    0.0,
+                    0.0
+                ];
+                var match$1 = hasSingleCustomStyleName(singleCustomStyleNameNullable);
+                var color;
+                if (match$1) {
+                    var singleCustomStyleName = parseSingleCustomStyleName(singleCustomStyleNameNullable);
+                    var singleCustomStyleDataMap = unsafeGetSingleCustomStyleDataMap(singleCustomStyleName, unsafeGetSkinData(match[0], record));
+                    var match$2 = hasCustomStyleData("color", singleCustomStyleDataMap);
+                    color = match$2 ? unsafeGetCustomStyleData("color", singleCustomStyleDataMap) : defaultColor;
+                } else {
+                    color = defaultColor;
+                }
+                var record$1 = drawBox(customControlFuncData, color, record);
+
+                return /* tuple */[
+                    record$1,
+                    true
+                ];
+            }, state);
+        };
+
+
+        window.onload = function () {
+            return AssetTool.loadConfig(["../config/setting.json", "../config/"], null, function () {
+
+                return AssetTool.loadIMGUIAsset("../../test/e2e/asset/font/Lato-Regular-64.fnt",
+                    "../../test/e2e/asset/font/lato.png",
+                    [
+                        ["../../test/e2e/asset/image/1.png", "1"],
+                        ["../../test/e2e/asset/image/2.jpg", "2"]
+                    ],
+                    function (state) {
+                        var state = ImguiTool.setSetting([0.045, 0.012], state);
+
+
+
+                        var state = _setDefaultSkinData(
+                            [0.35, 0.5, 0.1],
+                            [0.40, 0.5, 0.1],
+                            [0.50, 0.1, 0.5],
+                            null, "1", "2",
+                            state
+                        );
+
+
+                        var customControlName = "A1";
+
+                        var state = _registerCustomControl(customControlName, state);
+
+                        var skinName = "Skin1";
+                        var customStyleName = "CustomStyle1";
+                        var color = [0.0, 1.0, 0.0];
+
+                        var state = _addSkinData(skinName, customStyleName, color, state);
+
+
+
+
+
+                        var screenWidth = window.innerWidth;
+                        var screenHeight = window.innerHeight;
+
+
+                        var rect = [0, 10, 200, 50];
+
+                        var state = wd.setIMGUIFunc(
+                            [rect, customControlName, [skinName, customStyleName]],
+                            (customData, api, state) => {
+                                var intervalX = screenWidth / 2;
+                                var intervalY = screenHeight / 6;
+
+                                var controlWidth = screenWidth / 2;
+                                var controlHeight = screenHeight / 6;
+
+                                var state = state;
+
+                                var [state, isClick_button1] = api.button(
+                                    [[0, intervalY * 3, controlWidth, controlHeight], "button1"],
+                                    null,
+                                    state
+                                );
+
+
+                                var state = api.label(
+                                    [intervalX, intervalY * 3, controlWidth, controlHeight], "label1", 0, state
+                                );
+
+
+                                var state = api.image(
+                                    [0, intervalY * 4, controlWidth / 2, controlHeight / 2], [0, 0, 1, 1], "1", state
+                                );
+
+
+                                var match = customData[2];
+                                var match$1 = customData[0];
+                                var unsafeGetCustomControl = api.unsafeGetCustomControl;
+                                var getWonderImguiIMGUIRecord = api.getWonderImguiIMGUIRecord;
+                                var setWonderImguiIMGUIRecord = api.setWonderImguiIMGUIRecord;
+                                var customControl = unsafeGetCustomControl(customData[1], state);
+                                var record = getWonderImguiIMGUIRecord(state);
+                                var match$2 = customControl(/* tuple */[
+                                    match$1[0],
+                                    match$1[1],
+                                    match$1[2],
+                                    match$1[3]
+                                ], /* tuple */[
+                                        match[0],
+                                        match[1]
+                                    ], record);
+                                return setWonderImguiIMGUIRecord(match$2[0], state);
+
+                            }, state);
+
+
+
+
+                        wd.startDirector(state);
+
+
+                    }, wd.unsafeGetState());
+            });
+
+
+        };
+    </script>
+</body>
+
+</html>
