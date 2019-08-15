@@ -254,8 +254,14 @@ and apiRecord = {
       ) =>
       (state, bool),
     "box": (. (int, int, int, int), Js.Array.t(float), state) => state,
-    "beginGroup": (. WonderImgui.StructureType.position, state) => state,
+    "unsafeGetCustomControl":
+      (. string, state) => WonderImgui.IMGUIType.customControlFunc,
+    "getWonderImguiIMGUIRecord":
+      (. state) => WonderImgui.IMGUIType.imguiRecord,
+    "setWonderImguiIMGUIRecord":
+      (. WonderImgui.IMGUIType.imguiRecord, state) => state,
     "endGroup": (. state) => state,
+    "beginGroup": (. WonderImgui.StructureType.position, state) => state,
     "unsafeGetGameObjectTransformComponent":
       (GameObjectPrimitiveType.gameObject, state) => int,
     "unsafeGetGameObjectLightMaterialComponent":

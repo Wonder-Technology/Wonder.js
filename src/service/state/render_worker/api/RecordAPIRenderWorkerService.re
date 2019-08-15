@@ -15,6 +15,12 @@ let create = () => {
     "box": FixedLayoutControlIMGUIRenderWorkerService.box,
     "beginGroup": FixedLayoutControlIMGUIRenderWorkerService.beginGroup,
     "endGroup": FixedLayoutControlIMGUIRenderWorkerService.endGroup,
+    "unsafeGetCustomControl": ExtendIMGUIRenderWorkerService.Extend.unsafeGetCustomControl,
+    "getWonderImguiIMGUIRecord":
+      (. state) => ManageIMGUIRenderWorkerService.getRecord(state),
+    "setWonderImguiIMGUIRecord":
+      (. imguiRecord, state) =>
+        ManageIMGUIRenderWorkerService.setRecord(imguiRecord, state),
     "getCustomDataInRenderWorker": OperateCustomRenderWorkerService.getCustomDataInRenderWorker,
     "setCustomDataInRenderWorker": OperateCustomRenderWorkerService.setCustomDataInRenderWorker,
     "getCustomDataFromMainWorkerToRenderWorker": OperateCustomRenderWorkerService.getCustomDataFromMainWorkerToRenderWorker,

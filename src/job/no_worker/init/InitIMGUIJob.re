@@ -16,5 +16,7 @@ let execJob = (_, {imguiRecord, viewRecord} as state) => {
           RecordIMGUIMainService.getWonderIMGUIRecord(state),
         ),
     },
-  };
+  }
+  |> ExtendIMGUIMainService.ExtendData.CustomControl.registerAllCustomControlsToWonderImguiIMGUIRecord
+  |> ExtendIMGUIMainService.ExtendData.Skin.mergeAllSkinDataMapsToWonderImguiIMGUIRecord;
 };

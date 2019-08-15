@@ -17,6 +17,12 @@ let create = () => {
   "box": FixedLayoutControlIMGUIMainService.box,
   "beginGroup": FixedLayoutControlIMGUIMainService.beginGroup,
   "endGroup": FixedLayoutControlIMGUIMainService.endGroup,
+  "unsafeGetCustomControl": ExtendIMGUIMainService.Extend.unsafeGetCustomControl,
+  "getWonderImguiIMGUIRecord":
+    (. state) => ManageIMGUIMainService.getRecord(state),
+  "setWonderImguiIMGUIRecord":
+    (. imguiRecord, state) =>
+      ManageIMGUIMainService.setRecord(imguiRecord, state),
   "unsafeGetGameObjectTransformComponent": GameObjectAPI.unsafeGetGameObjectTransformComponent,
   "unsafeGetGameObjectLightMaterialComponent": GameObjectAPI.unsafeGetGameObjectLightMaterialComponent,
   "unsafeGetGameObjectPerspectiveCameraProjectionComponent": GameObjectAPI.unsafeGetGameObjectPerspectiveCameraProjectionComponent,

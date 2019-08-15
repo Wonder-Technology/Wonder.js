@@ -87,6 +87,13 @@ type apiRecord = {
     "box":
       (. (int, int, int, int), Js.Array.t(float), renderWorkerState) =>
       renderWorkerState,
+    "unsafeGetCustomControl":
+      (. string, renderWorkerState) => WonderImgui.IMGUIType.customControlFunc,
+    "getWonderImguiIMGUIRecord":
+      (. renderWorkerState) => WonderImgui.IMGUIType.imguiRecord,
+    "setWonderImguiIMGUIRecord":
+      (. WonderImgui.IMGUIType.imguiRecord, renderWorkerState) =>
+      renderWorkerState,
     "beginGroup":
       (. WonderImgui.StructureType.position, renderWorkerState) =>
       renderWorkerState,

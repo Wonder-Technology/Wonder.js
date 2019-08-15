@@ -41,6 +41,7 @@ let prepareForUseProgramCase = (sandbox, prepareFunc, state) => {
 };
 
 let initWithJob = (~jobFuncArr, ~completeFunc, ~state) => {
+  let state = MainStateTool.setState(state);
   let initData = {
     "data":
       SendInitRenderDataMainWorkerJob._buildData(

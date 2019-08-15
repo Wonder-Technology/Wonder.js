@@ -42,6 +42,7 @@ let _ =
                         "fntData": Sinon.matchAny,
                         "bitmapImageData": Sinon.matchAny,
                         "customTextureSourceDataArr": Sinon.matchAny,
+                        "extendData": Sinon.matchAny,
                       },
                       (),
                     ),
@@ -94,6 +95,7 @@ let _ =
                               bitmap##height,
                             ),
                             "customTextureSourceDataArr": Sinon.matchAny,
+                            "extendData": Sinon.matchAny,
                           },
                           (),
                         ),
@@ -163,6 +165,7 @@ let _ =
                    |> withOneArg(
                         SendInitRenderDataWorkerTool.buildInitRenderData(
                           ~imguiData={
+                            "extendData": Sinon.matchAny,
                             "canvasWidth": Sinon.matchAny,
                             "canvasHeight": Sinon.matchAny,
                             "setting": Sinon.matchAny,
@@ -223,6 +226,7 @@ let _ =
                |> withOneArg(
                     SendInitRenderDataWorkerTool.buildInitRenderData(
                       ~imguiData={
+                        "extendData": Sinon.matchAny,
                         "canvasWidth": Sinon.matchAny,
                         "canvasHeight": Sinon.matchAny,
                         "setting": setting |> Obj.magic |> Js.Json.stringify,
@@ -253,6 +257,7 @@ let _ =
                |> withOneArg(
                     SendInitRenderDataWorkerTool.buildInitRenderData(
                       ~imguiData={
+                        "extendData": Sinon.matchAny,
                         "canvasWidth": Sinon.matchAny,
                         "canvasHeight": Sinon.matchAny,
                         "setting": Sinon.matchAny,
@@ -298,7 +303,7 @@ let _ =
         BrowserDetectTool.setChrome();
 
         (
-          state,
+          MainStateTool.unsafeGetState(),
           (fntData, bitmap, setting, customImageArr),
           (
             (
@@ -441,6 +446,7 @@ let _ =
         );
       });
 
+
       describe("init imgui", () =>
         testPromise("create program", () => {
           let (state, (fntData, bitmap, setting, _), (_, context)) =
@@ -453,6 +459,7 @@ let _ =
                );
           MainStateTool.setState(state);
           BrowserDetectTool.setChrome();
+          let state = MainStateTool.unsafeGetState();
 
           RenderJobsRenderWorkerTool.initWithJob(
             ~completeFunc=
@@ -488,6 +495,7 @@ let _ =
             let (state, _, _, _) = CameraTool.createCameraGameObject(state);
             MainStateTool.setState(state);
             BrowserDetectTool.setChrome();
+            let state = MainStateTool.unsafeGetState();
 
             RenderJobsRenderWorkerTool.init(
               state =>

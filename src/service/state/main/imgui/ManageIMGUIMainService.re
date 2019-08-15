@@ -5,10 +5,13 @@ let getIMGUIFunc = state =>
     RecordIMGUIMainService.getWonderIMGUIRecord(state),
   );
 
-let setIMGUIFunc = (customData, func, state) => {
+let setIMGUIFunc = (customData, func: FuncIMGUIType.imguiFunc, state) => {
   let wonderImguiIMGUIRecord =
     RecordIMGUIMainService.getWonderIMGUIRecord(state)
-    |> WonderImgui.ManageIMGUIAPI.setIMGUIFunc(customData, func);
+    |> WonderImgui.ManageIMGUIAPI.setIMGUIFunc(
+         customData,
+         func |> FuncIMGUIType.imguiFuncToWonderIMGUIIMGUIFunc,
+       );
 
   WorkerDetectMainService.isUseWorker(state) ?
     {

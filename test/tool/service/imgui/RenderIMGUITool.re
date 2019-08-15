@@ -42,3 +42,38 @@ let setDefaultSkinData =
        )
     |> ManageIMGUIMainService.setRecord(_, state)
   );
+
+let prepareIMGUI = state => {
+  let state = AssetIMGUITool.prepareFontAsset(state^);
+
+  let state = prepareFntData(state);
+
+  let state = MainStateTool.setState(state);
+  let state = BrowserDetectTool.setChrome();
+
+  let canvasDom = EventTool.buildFakeCanvas((0, 0, Js.Nullable.undefined));
+  let state = ViewTool.setCanvas(canvasDom |> Obj.magic, state);
+
+  state;
+};
+
+let prepareGl = (sandbox, state) => {
+  let array_buffer = 1;
+  let dynamic_draw = 2;
+  let getExtension = WonderImgui.RenderIMGUITool.buildNoVAOExtension(sandbox);
+  let bufferData = Sinon.createEmptyStubWithJsObjSandbox(sandbox);
+  let state =
+    state
+    |> FakeGlTool.setFakeGl(
+         WonderImgui.FakeGlTool.buildFakeGl(
+           ~sandbox,
+           ~array_buffer,
+           ~bufferData,
+           ~dynamic_draw,
+           ~getExtension,
+           (),
+         ),
+       );
+
+  (state, array_buffer, dynamic_draw, bufferData);
+};

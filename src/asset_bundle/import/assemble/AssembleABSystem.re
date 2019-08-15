@@ -646,20 +646,12 @@ module RAB = {
     switch (faceSource) {
     | None => state
     | Some(faceSource) =>
-      WonderLog.Log.print((
-        imageMapByIndex,
-        faceSource,
-        /* imageMapByIndex
-           |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(faceSource), */
-      ))
-      |> ignore;
-
       state
       |> setFaceSourceFunc(
            texture,
            imageMapByIndex
            |> WonderCommonlib.ImmutableSparseMapService.unsafeGet(faceSource),
-         );
+         )
     };
 
   let _buildCubemapTextureData =
@@ -669,7 +661,6 @@ module RAB = {
         state,
       ) =>
     cubemapTextures
-    |> WonderLog.Log.print
     |> WonderCommonlib.ArrayService.reduceOneParami(
          (.
            (cubemapTextureMapByName, cubemapTextureMapByIndex, state),

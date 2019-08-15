@@ -222,47 +222,14 @@ let _ =
               (),
             );
 
-          let state = AssetIMGUITool.prepareFontAsset(state^);
-
-          let state = RenderIMGUITool.prepareFntData(state);
-
-          let state = MainStateTool.setState(state);
-          let state = BrowserDetectTool.setChrome();
-
-          let canvasDom =
-            EventTool.buildFakeCanvas((0, 0, Js.Nullable.undefined));
-          let state = ViewTool.setCanvas(canvasDom |> Obj.magic, state);
-
-          state;
-        };
-
-        let _prepareGl = state => {
-          let array_buffer = 1;
-          let dynamic_draw = 2;
-          let getExtension =
-            WonderImgui.RenderIMGUITool.buildNoVAOExtension(sandbox);
-          let bufferData = createEmptyStubWithJsObjSandbox(sandbox);
-          let state =
-            state
-            |> FakeGlTool.setFakeGl(
-                 WonderImgui.FakeGlTool.buildFakeGl(
-                   ~sandbox,
-                   ~array_buffer,
-                   ~bufferData,
-                   ~dynamic_draw,
-                   ~getExtension,
-                   (),
-                 ),
-               );
-
-          (state, array_buffer, dynamic_draw, bufferData);
+          RenderIMGUITool.prepareIMGUI(state);
         };
 
         describe("test mousedown button", () =>
           test("test color buffer data", () => {
             let state = _prepareState();
             let (state, array_buffer, dynamic_draw, bufferData) =
-              _prepareGl(state);
+              RenderIMGUITool.prepareGl(sandbox, state);
             let ((buttonX1, buttonY1, buttonWidth1, buttonHeight1), str1) as buttonData =
               WonderImgui.ButtonIMGUITool.buildButtonData1();
             let state =
@@ -375,7 +342,7 @@ let _ =
           test("test button is click", () => {
             let state = _prepareState();
             let (state, array_buffer, dynamic_draw, bufferData) =
-              _prepareGl(state);
+              RenderIMGUITool.prepareGl(sandbox, state);
             let ((buttonX1, buttonY1, buttonWidth1, buttonHeight1), str1) as buttonData =
               WonderImgui.ButtonIMGUITool.buildButtonData1();
             let isClick = ref(false);
@@ -442,7 +409,7 @@ let _ =
           test("test button isn't click after point up", () => {
             let state = _prepareState();
             let (state, array_buffer, dynamic_draw, bufferData) =
-              _prepareGl(state);
+              RenderIMGUITool.prepareGl(sandbox, state);
             let ((buttonX1, buttonY1, buttonWidth1, buttonHeight1), str1) as buttonData =
               WonderImgui.ButtonIMGUITool.buildButtonData1();
             let isClick = ref(false);

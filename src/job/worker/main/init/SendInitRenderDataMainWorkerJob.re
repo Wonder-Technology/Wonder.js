@@ -128,6 +128,20 @@ let _buildIMGUIData = state => {
     "bitmapImageData": AssetIMGUIMainServiice.convertBitmapToImageData(state),
     "customTextureSourceDataArr":
       AssetIMGUIMainServiice.convertCustomTextureSourcesToImageDataArr(state),
+    "extendData": {
+      "customControlData": {
+        "funcMap":
+          ExtendIMGUIRenderWorkerService.ExtendData.CustomControl.serializeFuncMap(
+            state,
+          ),
+      },
+      "skinData": {
+        "allSkinDataMap":
+          ExtendIMGUIRenderWorkerService.ExtendData.Skin.serializeAllSkinDataMap(
+            state,
+          ),
+      },
+    },
   };
 };
 

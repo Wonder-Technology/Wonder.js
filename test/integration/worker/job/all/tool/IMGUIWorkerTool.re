@@ -80,5 +80,5 @@ let prepareForTestInRenderWorkerJob = sandbox => {
   MainStateTool.setState(state);
   BrowserDetectTool.setChrome();
 
-  (state, bufferData);
+  (MainStateTool.unsafeGetState(), bufferData);
 };

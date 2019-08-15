@@ -16,6 +16,20 @@ let execJob = (_, e, stateData) => {
     {
       let state = StateRenderWorkerService.unsafeGetState(stateData);
 
+      let setting = imguiData##setting |> Js.Json.parseExn |> Obj.magic;
+
+      let extendData = imguiData##extendData;
+
+      let customControlData = extendData##customControlData;
+      let funcMap =
+        customControlData##funcMap
+        |> ExtendIMGUIRenderWorkerService.ExtendData.CustomControl.deserializeFuncMap;
+
+      let skinData = extendData##skinData;
+      let allSkinDataMap =
+        skinData##allSkinDataMap
+        |> ExtendIMGUIRenderWorkerService.ExtendData.Skin.deserializeAllSkinDataMap;
+
       ImageBitmapRenderWorkerService.createImageBitmapFromImageData(
         imguiData##bitmapImageData
         |> OptionService.unsafeGetJsonSerializedValue,
@@ -30,9 +44,7 @@ let execJob = (_, e, stateData) => {
              |> WonderImgui.AssetIMGUIAPI.setBitmap(
                   imageBitmap |> WorkerType.imageBitmapToImageElement,
                 )
-             |> WonderImgui.ManageIMGUIAPI.setSetting(
-                  imguiData##setting |> Js.Json.parseExn |> Obj.magic,
-                )
+             |> WonderImgui.ManageIMGUIAPI.setSetting(setting)
              |> WonderImgui.AssetIMGUIAPI.setFntData(
                   imguiData##fntData
                   |> OptionService.unsafeGetJsonSerializedValue
@@ -84,6 +96,12 @@ let execJob = (_, e, stateData) => {
                          state.deviceManagerRecord,
                        ),
                        (imguiData##canvasWidth, imguiData##canvasHeight),
+                     )
+                  |> CustomControlAllIMGUIService.registerAllCustomControlsToWonderImguiIMGUIRecord(
+                       funcMap,
+                     )
+                  |> SkinAllIMGUIService.mergeAllSkinDataMapsToWonderImguiIMGUIRecord(
+                       allSkinDataMap,
                      );
 
                 state
