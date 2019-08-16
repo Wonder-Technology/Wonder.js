@@ -38,7 +38,6 @@ let _ =
                       ~imguiData={
                         "canvasWidth": width,
                         "canvasHeight": height,
-                        "setting": Sinon.matchAny,
                         "fntData": Sinon.matchAny,
                         "bitmapImageData": Sinon.matchAny,
                         "customTextureSourceDataArr": Sinon.matchAny,
@@ -87,7 +86,6 @@ let _ =
                           ~imguiData={
                             "canvasWidth": Sinon.matchAny,
                             "canvasHeight": Sinon.matchAny,
-                            "setting": Sinon.matchAny,
                             "fntData": Sinon.matchAny,
                             "bitmapImageData": (
                               imageDataArrayBuffer1,
@@ -168,7 +166,6 @@ let _ =
                             "extendData": Sinon.matchAny,
                             "canvasWidth": Sinon.matchAny,
                             "canvasHeight": Sinon.matchAny,
-                            "setting": Sinon.matchAny,
                             "fntData": Sinon.matchAny,
                             "bitmapImageData": Sinon.matchAny,
                             "customTextureSourceDataArr": [|
@@ -210,37 +207,6 @@ let _ =
         })
       );
 
-      testPromise("send setting", () => {
-        let (state, (_, context)) = _prepare();
-        let (state, setting) =
-          IMGUITool.setTextColorSetting([|0.5, 0.5, 1.|], state);
-        MainStateTool.setState(state);
-
-        MainInitJobMainWorkerTool.prepare()
-        |> MainInitJobMainWorkerTool.test(
-             sandbox,
-             state =>
-               WorkerInstanceMainWorkerTool.unsafeGetRenderWorker(state),
-             postMessageToRenderWorker =>
-               postMessageToRenderWorker
-               |> withOneArg(
-                    SendInitRenderDataWorkerTool.buildInitRenderData(
-                      ~imguiData={
-                        "extendData": Sinon.matchAny,
-                        "canvasWidth": Sinon.matchAny,
-                        "canvasHeight": Sinon.matchAny,
-                        "setting": setting |> Obj.magic |> Js.Json.stringify,
-                        "fntData": Sinon.matchAny,
-                        "bitmapImageData": Sinon.matchAny,
-                        "customTextureSourceDataArr": Sinon.matchAny,
-                      },
-                      (),
-                    ),
-                  )
-               |> getCallCount
-               |> expect == 1,
-           );
-      });
       testPromise("send fntData", () => {
         let (state, (_, context)) = _prepare();
         let fntData = Obj.magic(2);
@@ -260,7 +226,6 @@ let _ =
                         "extendData": Sinon.matchAny,
                         "canvasWidth": Sinon.matchAny,
                         "canvasHeight": Sinon.matchAny,
-                        "setting": Sinon.matchAny,
                         "fntData":
                           (fntData |> Obj.magic |> Js.Json.stringify)->Some,
                         "bitmapImageData": Sinon.matchAny,
@@ -282,7 +247,7 @@ let _ =
       let _prepare = () => {
         let (
           state,
-          (fntData, bitmap, setting, customImageArr),
+          (fntData, bitmap, customImageArr),
           (
             (
               imageDataArrayBuffer1,
@@ -303,7 +268,7 @@ let _ =
 
         (
           state,
-          (fntData, bitmap, setting, customImageArr),
+          (fntData, bitmap, customImageArr),
           (
             (
               imageDataArrayBuffer1,
@@ -328,7 +293,7 @@ let _ =
           testPromise("flipY is false", () => {
             let (
               state,
-              (_, bitmap, _, _),
+              (_, bitmap, _),
               (
                 (
                   imageDataArrayBuffer1,
@@ -366,7 +331,7 @@ let _ =
           testPromise("flipY is false", () => {
             let (
               state,
-              (_, _, _, customImageArr),
+              (_, _, customImageArr),
               (
                 (
                   imageDataArrayBuffer1,
@@ -418,7 +383,7 @@ let _ =
       );
 
       testPromise("set fntData", () => {
-        let (state, (fntData, _, _, _), _) = _prepare();
+        let (state, (fntData, _, _), _) = _prepare();
 
         RenderJobsRenderWorkerTool.init(
           state =>
@@ -431,23 +396,9 @@ let _ =
         );
       });
 
-      testPromise("set setting", () => {
-        let (state, (_, _, setting, _), _) = _prepare();
-
-        RenderJobsRenderWorkerTool.init(
-          state =>
-            IMGUIRenderWorkerTool.getSetting(
-              RenderWorkerStateTool.unsafeGetState().imguiRecord,
-            )
-            |> expect == setting
-            |> resolve,
-          state,
-        );
-      });
-
       describe("init imgui", () =>
         testPromise("create program", () => {
-          let (state, (fntData, bitmap, setting, _), (_, context)) =
+          let (state, (fntData, bitmap, _), (_, context)) =
             _prepareSetData();
           let createProgram = createEmptyStubWithJsObjSandbox(sandbox);
           let state =
@@ -459,7 +410,7 @@ let _ =
 
           RenderJobsRenderWorkerTool.initWithJob(
             ~completeFunc=
-              state => createProgram |> expect |> toCalledOnce |> resolve,
+              state => createProgram |> expect |> toCalledThrice |> resolve,
             ~state,
             ~jobFuncArr=
               RenderJobsRenderWorkerTool.getJobFuncArrExceptInitNoMaterialShader(),
@@ -471,7 +422,7 @@ let _ =
         describe("test render empty imgui + a light box", () =>
           testPromise(
             {|vs glsl should not contain "attribute null null;" |}, () => {
-            let (state, (fntData, bitmap, setting, _), (_, context)) =
+            let (state, (fntData, bitmap, _), (_, context)) =
               _prepareSetData();
             let getExtension =
               WonderImgui.RenderIMGUITool.buildNoVAOExtension(sandbox);

@@ -81,7 +81,7 @@ let _ =
 
           let state = state |> NoWorkerJobTool.execLoopJobs;
 
-          ExtendIMGUITool.judgeColorBufferData(
+          ExtendIMGUITool.judgeNoTextureProgramColorBufferData(
             bufferData,
             bufferDataCallCountAfterInit,
           );

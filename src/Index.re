@@ -576,11 +576,11 @@ let image = FixedLayoutControlIMGUIAPI.image;
 
 let label = FixedLayoutControlIMGUIAPI.label;
 
-let sendUniformProjectionMatData = ManageIMGUIAPI.sendUniformProjectionMatData;
+let sendNoTextureProgramUniformProjectionMatData = ManageIMGUIAPI.sendNoTextureProgramUniformProjectionMatData;
 
-let setSetting = ManageIMGUIAPI.setSetting;
+let sendFontTextureProgramUniformProjectionMatData = ManageIMGUIAPI.sendFontTextureProgramUniformProjectionMatData;
 
-let getSetting = ManageIMGUIAPI.getSetting;
+let sendCustomTextureProgramUniformProjectionMatData = ManageIMGUIAPI.sendCustomTextureProgramUniformProjectionMatData;
 
 let clearIMGUIFunc = ManageIMGUIAPI.clearIMGUIFunc;
 

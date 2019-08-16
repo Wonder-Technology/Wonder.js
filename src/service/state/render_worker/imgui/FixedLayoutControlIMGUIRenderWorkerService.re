@@ -1,11 +1,11 @@
 open StateDataRenderWorkerType;
 
 let label =
-  (. rect, str, align, state) =>
+  (. rect, str, cssData, state) =>
     WonderImgui.FixedLayoutControlIMGUIService.label(.
       rect,
       str,
-      align,
+      cssData,
       ManageIMGUIRenderWorkerService.getRecord(state),
     )
     |> ManageIMGUIRenderWorkerService.setRecord(_, state);

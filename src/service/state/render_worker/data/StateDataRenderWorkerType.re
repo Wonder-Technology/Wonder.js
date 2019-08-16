@@ -65,7 +65,7 @@ type apiRecord = {
       (
         . WonderImgui.StructureType.rect,
         string,
-        WonderImgui.FontType.align,
+        (Js.Array.t(float), WonderImgui.FontType.align),
         renderWorkerState
       ) =>
       renderWorkerState,

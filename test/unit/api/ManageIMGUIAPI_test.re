@@ -63,7 +63,7 @@ let _ =
       });
     });
 
-    describe("sendUniformProjectionMatData", () =>
+    describe("sendCustomTextureProgramUniformProjectionMatData", () =>
       test("clear last send program", () => {
         let state = AssetIMGUITool.prepareFontAsset(state^);
         let gl = FakeGlTool.buildFakeGl(~sandbox, ()) |> Obj.magic;
@@ -73,7 +73,11 @@ let _ =
         let state = ProgramTool.setLastUsedProgram(program, state);
 
         let state =
-          ManageIMGUIAPI.sendUniformProjectionMatData(gl, (500, 250), state);
+          ManageIMGUIAPI.sendCustomTextureProgramUniformProjectionMatData(
+            gl,
+            (500, 250),
+            state,
+          );
 
         state.programRecord.lastUsedProgram |> expect == None;
       })

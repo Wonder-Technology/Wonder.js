@@ -77,7 +77,7 @@ let _ =
 
         let state = state |> NoWorkerJobTool.execInitJobs;
 
-        createProgram |> expect |> toCalledOnce;
+        createProgram |> expect |> toCalledThrice;
       });
     });
   });

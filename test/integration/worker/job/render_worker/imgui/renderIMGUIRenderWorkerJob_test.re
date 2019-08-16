@@ -251,7 +251,7 @@ let _ =
             ~state,
             ~sandbox,
             ~completeFunc=
-              _ => bufferData |> getCallCount |> expect == 8 |> resolve,
+              _ => bufferData |> getCallCount |> expect == 22 |> resolve,
             (),
           );
         })

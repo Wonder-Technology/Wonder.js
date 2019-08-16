@@ -52,7 +52,7 @@ let prepareForTestSendRenderData = sandbox =>
 let prepareForTestInRenderWorkerJob = sandbox => {
   open Sinon;
 
-  let (state, (fntData, bitmap, setting, _), (_, context)) =
+  let (state, (fntData, bitmap, _), (_, context)) =
     IMGUIRenderWorkerTool.prepareSetData(sandbox);
   let canvasWidth = 100;
   let canvasHeight = 200;

@@ -16,8 +16,6 @@ let execJob = (_, e, stateData) => {
     {
       let state = StateRenderWorkerService.unsafeGetState(stateData);
 
-      let setting = imguiData##setting |> Js.Json.parseExn |> Obj.magic;
-
       let extendData = imguiData##extendData;
 
       let customControlData = extendData##customControlData;
@@ -44,7 +42,6 @@ let execJob = (_, e, stateData) => {
              |> WonderImgui.AssetIMGUIAPI.setBitmap(
                   imageBitmap |> WorkerType.imageBitmapToImageElement,
                 )
-             |> WonderImgui.ManageIMGUIAPI.setSetting(setting)
              |> WonderImgui.AssetIMGUIAPI.setFntData(
                   imguiData##fntData
                   |> OptionService.unsafeGetJsonSerializedValue

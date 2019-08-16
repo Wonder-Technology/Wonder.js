@@ -120,10 +120,6 @@ let _buildIMGUIData = state => {
   {
     "canvasWidth": canvasWidth,
     "canvasHeight": canvasHeight,
-    "setting":
-      WonderImgui.ManageIMGUIAPI.getSetting(wonderImguiIMGUIRecord)
-      |> Obj.magic
-      |> Js.Json.stringify,
     "fntData": _getFntData(wonderImguiIMGUIRecord),
     "bitmapImageData": AssetIMGUIMainServiice.convertBitmapToImageData(state),
     "customTextureSourceDataArr":

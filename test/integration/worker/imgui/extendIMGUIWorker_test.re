@@ -50,7 +50,7 @@ let _ =
                 bufferDataCallCountAfterInit := bufferData |> getCallCount,
             ~completeFunc=
               _ =>
-                ExtendIMGUITool.judgeColorBufferData(
+                ExtendIMGUITool.judgeNoTextureProgramColorBufferData(
                   bufferData,
                   bufferDataCallCountAfterInit^,
                 )

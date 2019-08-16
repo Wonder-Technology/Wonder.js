@@ -138,13 +138,14 @@ let addExtendDataAndSetIMGUIFunc = state => {
   state;
 };
 
-let judgeColorBufferData = (bufferData, bufferDataCallCountAfterInit) =>
+let judgeNoTextureProgramColorBufferData =
+    (bufferData, bufferDataCallCountAfterInit) =>
   Wonder_jest.(
     Expect.(
       Expect.Operators.(
         Sinon.(
           bufferData
-          |> getCall(bufferDataCallCountAfterInit + 1)
+          |> getCall(bufferDataCallCountAfterInit + 9)
           |> getSpecificArg(1)
           |> Array.of_list
           |> expect == [|0.5, 1., 2., 0.5, 1., 2., 0.5, 1., 2., 0.5, 1., 2.|]

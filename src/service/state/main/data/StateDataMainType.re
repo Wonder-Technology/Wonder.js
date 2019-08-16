@@ -234,7 +234,7 @@ and apiRecord = {
       (
         . WonderImgui.StructureType.rect,
         string,
-        WonderImgui.FontType.align,
+        (Js.Array.t(float), WonderImgui.FontType.align),
         state
       ) =>
       state,

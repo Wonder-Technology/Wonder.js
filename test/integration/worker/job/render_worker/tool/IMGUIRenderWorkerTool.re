@@ -30,9 +30,6 @@ let setFntData = (fntData, state) =>
     },
   };
 
-let getSetting = imguiRecord =>
-  WonderImgui.ManageIMGUIAPI.getSetting(imguiRecord);
-
 let buildCustomImageData =
     (~source, ~id, ~imageType=WonderImgui.ImageType.Png, ()) => (
   source,
@@ -99,9 +96,6 @@ let prepareSetData = sandbox => {
   let bitmap = Obj.magic({"width": 100, "height": 200});
   let state = setBitmap(bitmap, state);
 
-  let (state, setting) =
-    IMGUITool.setTextColorSetting([|0., 1., 0.|], state);
-
   let id1 = "a1";
   let imageType1 = WonderImgui.ImageType.Png;
   let source1 = Obj.magic({"width": 100, "height": 200});
@@ -116,11 +110,11 @@ let prepareSetData = sandbox => {
 
   (
     state,
-    (fntData, bitmap, setting, customImageArr),
+    (fntData, bitmap, customImageArr),
     (imageDataArrayBufferTuple, context),
   );
 };
-/* 
-let getControlData = state =>
-  RecordIMGUIRenderWorkerService.getRecord(state)
-  |> WonderImgui.RecordIMGUIService.getControlData; */
+/*
+ let getControlData = state =>
+   RecordIMGUIRenderWorkerService.getRecord(state)
+   |> WonderImgui.RecordIMGUIService.getControlData; */
