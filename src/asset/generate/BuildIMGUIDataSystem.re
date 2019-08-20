@@ -24,6 +24,29 @@ module ExtendData = {
 module AssetData = {
   open Js.Typed_array;
 
+  let _addBufferData =
+      (
+        (alignedByteLength, byteLength),
+        data,
+        (
+          (totalByteLength, byteOffset, bufferViewDataArr),
+          assetArrayBufferDataArr,
+        ),
+      ) => (
+    (
+      totalByteLength + alignedByteLength,
+      byteOffset + alignedByteLength,
+      bufferViewDataArr
+      |> ArrayService.push(
+           {buffer: 0, byteOffset, byteLength}: GenerateSceneGraphType.bufferViewData,
+         ),
+    ),
+    assetArrayBufferDataArr
+    |> ArrayService.push(
+         {byteOffset, arrayBuffer: data}: GenerateSceneGraphType.imguiAssetData,
+       ),
+  );
+
   let _buildBitmapData =
       (
         state,
@@ -39,19 +62,13 @@ module AssetData = {
 
     (
       {bufferView: bufferViewDataArr |> Js.Array.length},
-      (
+      _addBufferData(
+        (alignedByteLength, byteLength),
+        data,
         (
-          totalByteLength + alignedByteLength,
-          byteOffset + alignedByteLength,
-          bufferViewDataArr
-          |> ArrayService.push(
-               {buffer: 0, byteOffset, byteLength}: GenerateSceneGraphType.bufferViewData,
-             ),
+          (totalByteLength, byteOffset, bufferViewDataArr),
+          assetArrayBufferDataArr,
         ),
-        assetArrayBufferDataArr
-        |> ArrayService.push(
-             {byteOffset, arrayBuffer: data}: GenerateSceneGraphType.imguiAssetData,
-           ),
       ),
     );
   };
@@ -86,20 +103,13 @@ module AssetData = {
                   mimeType,
                   bufferView: bufferViewDataArr |> Js.Array.length,
                 }),
-             /* TODO duplicate */
-             (
+             _addBufferData(
+               (alignedByteLength, byteLength),
+               arrayBuffer,
                (
-                 totalByteLength + alignedByteLength,
-                 byteOffset + alignedByteLength,
-                 bufferViewDataArr
-                 |> ArrayService.push(
-                      {buffer: 0, byteOffset, byteLength}: GenerateSceneGraphType.bufferViewData,
-                    ),
+                 (totalByteLength, byteOffset, bufferViewDataArr),
+                 assetArrayBufferDataArr,
                ),
-               assetArrayBufferDataArr
-               |> ArrayService.push(
-                    {byteOffset, arrayBuffer}: GenerateSceneGraphType.imguiAssetData,
-                  ),
              ),
            );
          },
