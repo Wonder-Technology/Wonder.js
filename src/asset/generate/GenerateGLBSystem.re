@@ -89,11 +89,29 @@ let generateGLBData =
       state,
     );
 
+  let (
+    customData,
+    imguiFunc,
+    extendData,
+    (
+      assetData,
+      (
+        (totalByteLength, byteOffset, bufferViewDataArr),
+        assetArrayBufferDataArr,
+      ),
+    ),
+  ) =
+    BuildIMGUIDataSystem.build(
+      state,
+      (totalByteLength, byteOffset, bufferViewDataArr),
+    );
+
   let buffer =
     BuildBufferSystem.build(
       totalByteLength,
       (vertexDataArr, indexDataArr, index32DataArr),
       imageUint8DataArr,
+      assetArrayBufferDataArr,
     );
 
   let basicCameraViewDataArr =
@@ -148,7 +166,7 @@ let generateGLBData =
         arcballCameraControllerDataArr,
         lightDataArr,
         scriptDataArr,
-        BuildIMGUIDataSystem.build(state),
+        (customData, imguiFunc, extendData, assetData),
         skyboxCubemapTextureIndexOpt,
         extensionsUsedArr,
       ),

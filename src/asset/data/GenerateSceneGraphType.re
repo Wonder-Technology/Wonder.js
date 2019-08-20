@@ -96,6 +96,11 @@ type cubemapTextureData = {
   flipY: bool,
 };
 
+type imguiAssetData = {
+  arrayBuffer: Js.Typed_array.ArrayBuffer.t,
+  byteOffset: int,
+};
+
 type imageData = {
   name: option(string),
   bufferView: int,

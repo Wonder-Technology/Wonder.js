@@ -1,3 +1,5 @@
+open WDPrimitiveType;
+
 type target = (float, float, float);
 
 type flyCameraController = {
@@ -23,16 +25,43 @@ type arcballCameraController = {
 
 type serializedFunc = string;
 
-type funcMap = WonderCommonlib.ImmutableHashMapService.t(serializedFunc);
+type funcMap = string;
 
 type customControlData = {funcMap};
 
+type allSkinDataMap = string;
+
+type skinData = {allSkinDataMap};
+
 type extendData = {
   customControlData,
-  skinData: ExtendIMGUIType.skinData,
+  skinData,
+};
+
+type fntData = {content: string};
+
+type bitmapData = {bufferView: bufferViewIndex};
+
+type fontData = {
+  fntData,
+  bitmapData,
+};
+
+type customImageData = {
+  id: string,
+  bufferView: bufferViewIndex,
+  mimeType,
+};
+
+type customImagesData = {customImages: array(customImageData)};
+
+type assetData = {
+  fontData: option(fontData),
+  customImagesData: option(customImagesData),
 };
 
 type imgui = {
+  assetData,
   imguiFunc: serializedFunc,
   customData: WonderImgui.IMGUIType.customDataForIMGUIFunc,
   extendData,

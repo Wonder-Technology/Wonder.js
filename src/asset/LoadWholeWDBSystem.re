@@ -6,7 +6,7 @@ let load =
     (
       wdbPath,
       (
-        isSetIMGUIFunc,
+        isHandleIMGUI,
         isBindEvent,
         isActiveCamera,
         isRenderLight,
@@ -31,7 +31,7 @@ let load =
        AssembleWholeWDBSystem.assemble(
          wdb |> LoadType.fetchArrayBufferToArrayBuffer,
          (
-           isSetIMGUIFunc,
+           isHandleIMGUI,
            isBindEvent,
            isActiveCamera,
            isRenderLight,

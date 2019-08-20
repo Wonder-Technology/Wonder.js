@@ -92,7 +92,7 @@ var ImguiTool = (function () {
             var screenHeight = window.innerHeight;
 
 
-            var state = wd.setIMGUIFunc(
+            var state = wd.handleIMGUI(
                 null,
                 (customData, api, state) => {
                     // var radioButtonWidth = 200;

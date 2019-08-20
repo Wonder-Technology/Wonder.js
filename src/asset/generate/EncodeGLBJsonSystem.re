@@ -473,22 +473,121 @@ let _encodeExtras =
 
 let _encodeIMGUIExtendData =
     ({customControlData, skinData}: SceneGraphType.extendData) =>
+  /* [
+       ("customControlData", customControlData |> Obj.magic),
+       ("skinData", skinData |> Obj.magic),
+     ]
+     |> object_; */
+  /* let list = [];
+
+
+     let list =
+       switch (fontData) {
+       | None => list
+       | Some({fntData, bitmapData}) => [
+           (
+             "fontData",
+             [
+               ("fntData", [("content", fntData.content |> string)] |> object_),
+               (
+                 "bitmapData",
+                 [("bufferView", bitmapData.bufferView |> int)] |> object_,
+               ),
+             ]
+             |> object_,
+           ),
+           ...list,
+         ]
+       }; */
   [
-    ("customControlData", customControlData |> Obj.magic),
-    ("skinData", skinData |> Obj.magic),
+    (
+      "customControlData",
+      [
+        /* ("funcMap",  customControlData.funcMap |> SerializeAllIMGUIService.CustomControl.serializeFuncMap ) */
+        ("funcMap", customControlData.funcMap |> string),
+      ]
+      |> object_,
+    ),
+    (
+      "skinData",
+      [
+        (
+          /* "allSkinDataMap", skinData.allSkinDataMap |> SerializeAllIMGUIService.Skin.serializeAllSkinDataMap */
+          "allSkinDataMap",
+          skinData.allSkinDataMap |> string,
+        ),
+      ]
+      |> object_,
+    ),
   ]
   |> object_;
+
+let _encodeIMGUIAssetData =
+    ({fontData, customImagesData}: SceneGraphType.assetData) => {
+  open SceneGraphType;
+
+  let list = [];
+
+  let list =
+    switch (fontData) {
+    | None => list
+    | Some({fntData, bitmapData}) => [
+        (
+          "fontData",
+          [
+            ("fntData", [("content", fntData.content |> string)] |> object_),
+            (
+              "bitmapData",
+              [("bufferView", bitmapData.bufferView |> int)] |> object_,
+            ),
+          ]
+          |> object_,
+        ),
+        ...list,
+      ]
+    };
+
+  let list =
+    switch (customImagesData) {
+    | None => list
+    | Some({customImages}) => [
+        (
+          "customImages",
+          [
+            (
+              "customImages",
+              customImages
+              |> Js.Array.map(({id, bufferView, mimeType}) =>
+                   [
+                     ("id", id |> string),
+                     ("bufferView", bufferView |> int),
+                     ("mimeType", mimeType |> string),
+                   ]
+                   |> object_
+                 )
+              |> jsonArray,
+            ),
+          ]
+          |> object_,
+        ),
+        ...list,
+      ]
+    };
+
+  list |> object_;
+};
 
 let _encodeSceneExtras = (imguiData, skyboxCubemapTextureIndexOpt) => {
   let extraList = [];
 
   let extraList =
     switch (imguiData) {
-    | (None, None, _) => extraList
-    | (Some(customData), Some(imguiFuncStr), extendData) => [
+    | (None, None, _, _) => extraList
+    | (Some(customData), Some(imguiFuncStr), extendData, assetData) => [
         (
           "imgui",
           [
+            ("assetData", _encodeIMGUIAssetData(assetData)),
             ("customData", customData |> Obj.magic |> int),
             ("imguiFunc", imguiFuncStr |> string),
             ("extendData", _encodeIMGUIExtendData(extendData)),

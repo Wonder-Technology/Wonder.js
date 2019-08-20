@@ -6,19 +6,10 @@ open Js.Typed_array;
 
 open Js.Promise;
 
+open WonderBsMost;
+
 /* let _getSourcePath = (filePath, sourceRelativePath) =>
    PathService.resolve(filePath, sourceRelativePath); */
-
-let _getArrayBuffer = (binBuffer, bufferView, bufferViews: array(bufferView)) => {
-  let {byteOffset, byteLength}: bufferView =
-    Array.unsafe_get(bufferViews, bufferView);
-
-  binBuffer
-  |> Js.Typed_array.ArrayBuffer.slice(
-       ~start=byteOffset,
-       ~end_=byteOffset + byteLength,
-     );
-};
 
 let _buildImageArray = (isLoadImage, {images, bufferViews}: wd, binBuffer) => {
   let blobObjectUrlImageArr = [||];
@@ -35,7 +26,11 @@ let _buildImageArray = (isLoadImage, {images, bufferViews}: wd, binBuffer) => {
         |> ArrayService.reduceOneParamValidi(
              (. streamArr, {name, bufferView, mimeType}: image, imageIndex) => {
                let arrayBuffer =
-                 _getArrayBuffer(binBuffer, bufferView, bufferViews);
+                 AssembleCommon.getArrayBuffer(
+                   binBuffer,
+                   bufferView,
+                   bufferViews,
+                 );
 
                imageUint8ArrayDataMap
                |> WonderCommonlib.MutableSparseMapService.set(
@@ -51,7 +46,7 @@ let _buildImageArray = (isLoadImage, {images, bufferViews}: wd, binBuffer) => {
                       mimeType,
                       {j|load image error. imageName: $name|j},
                     )
-                    |> WonderBsMost.Most.tap(image => {
+                    |> Most.tap(image => {
                          ImageUtils.setImageName(image, name);
 
                          Array.unsafe_set(
@@ -65,8 +60,8 @@ let _buildImageArray = (isLoadImage, {images, bufferViews}: wd, binBuffer) => {
              [||],
            )
     )
-    |> WonderBsMost.Most.mergeArray
-    |> WonderBsMost.Most.drain
+    |> Most.mergeArray
+    |> Most.drain
     |> then_(() => (blobObjectUrlImageArr, imageUint8ArrayDataMap) |> resolve);
 };
 
@@ -131,7 +126,7 @@ let assembleWDBData =
       ({buffers}: wd) as wd,
       binBuffer,
       (
-        isSetIMGUIFunc,
+        isHandleIMGUI,
         isBindEvent,
         isActiveCamera,
         isRenderLight,
@@ -141,16 +136,13 @@ let assembleWDBData =
     ) => {
   StateDataMainService.setState(StateDataMain.stateData, state) |> ignore;
 
+  let resultData1 = ref(Obj.magic(-1));
+  let resultData2 = ref(Obj.magic(-1));
+
   _buildImageArray(isLoadImage, wd, binBuffer)
   |> then_(imageDataTuple => {
        let state =
          StateDataMainService.unsafeGetState(StateDataMain.stateData);
-
-       let hasIMGUIFunc =
-         !OptionService.isJsonSerializedValueNone(wd.scene.imgui);
-       let state =
-         isSetIMGUIFunc && hasIMGUIFunc ?
-           state |> SetIMGUIFuncSystem.setIMGUIFunc(wd) : state;
 
        let (
          state,
@@ -170,21 +162,36 @@ let assembleWDBData =
        let (state, rootGameObject) =
          BuildRootGameObjectSystem.build(wd, (state, gameObjectArr));
 
-       (
-         state,
-         (imageUint8ArrayDataMapTuple, hasIMGUIFunc),
+       resultData1 :=
+         (imageUint8ArrayDataMapTuple, HandleIMGUISystem.getHasIMGUIData(wd));
+       resultData2 :=
          (
            rootGameObject,
-           SkyboxCubemapSystem.getSkyboxCubemap(
-             wd,
-             cubemapTextureArr,
-             state,
-           ),
-         ),
-       )
-       |> resolve;
+           SkyboxCubemapSystem.getSkyboxCubemap(wd, cubemapTextureArr, state),
+         );
+
+       StateDataMainService.setState(StateDataMain.stateData, state) |> ignore;
+
+       () |> resolve;
      })
-  |> WonderBsMost.Most.fromPromise;
+  |> Most.fromPromise
+  |> Most.merge(
+       HandleIMGUISystem.handleIMGUI(
+         isHandleIMGUI,
+         wd,
+         binBuffer,
+         StateDataMainService.unsafeGetState(StateDataMain.stateData),
+       ),
+     )
+  |> Most.drain
+  |> Most.fromPromise
+  |> Most.map(_ =>
+       (
+         StateDataMainService.unsafeGetState(StateDataMain.stateData),
+         resultData1^,
+         resultData2^,
+       )
+     );
 };
 
 let assemble = (wdb, configTuple, state) => {

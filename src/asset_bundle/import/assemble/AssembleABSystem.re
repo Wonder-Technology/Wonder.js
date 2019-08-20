@@ -385,15 +385,6 @@ module SAB = {
     );
   };
 
-  let _handleIMGUI = (sceneAssetBundleContent, state) => {
-    let imguiData = sceneAssetBundleContent.scene.imgui;
-    let hasIMGUIFunc = !OptionService.isJsonSerializedValueNone(imguiData);
-
-    hasIMGUIFunc ?
-      state |> SetIMGUIFuncSystem.setIMGUIFunc(sceneAssetBundleContent) :
-      state;
-  };
-
   let assemble = (sabRelativePath, sab, wholeDependencyRelationMap) => {
     let allDependencyRABRelativePath =
       FindDependencyDataSystem.findAllDependencyRABRelativePathByDepthSearch(
@@ -404,19 +395,17 @@ module SAB = {
     let (sceneAssetBundleContent: SABType.sceneAssetBundleContent, binBuffer) =
       All.getContentData(sab);
 
-    let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
+    let resultData = ref(Obj.magic(-1));
 
     _buildImageArray(
       sceneAssetBundleContent,
       binBuffer,
       allDependencyRABRelativePath,
-      state,
+      StateDataMainService.unsafeGetState(StateDataMain.stateData),
     )
     |> then_(blobObjectUrlImageArr => {
          let state =
            StateDataMainService.unsafeGetState(StateDataMain.stateData);
-
-         let state = _handleIMGUI(sceneAssetBundleContent, state);
 
          let (
            state,
@@ -483,22 +472,41 @@ module SAB = {
              (state, gameObjectArr),
            );
 
-         state
+         resultData :=
+           (
+             rootGameObject,
+             SkyboxCubemapSystem.getSkyboxCubemap(
+               sceneAssetBundleContent,
+               cubemapTextureArr,
+               state,
+             ),
+           );
+
+         StateDataMainService.setState(StateDataMain.stateData, state)
+         |> ignore;
+
+         () |> resolve;
+       })
+    |> WonderBsMost.Most.fromPromise
+    |> Most.merge(
+         HandleIMGUISystem.handleIMGUI(
+           true,
+           sceneAssetBundleContent,
+           binBuffer,
+           StateDataMainService.unsafeGetState(StateDataMain.stateData),
+         ),
+       )
+    |> Most.drain
+    |> then_(_ => {
+         StateDataMainService.unsafeGetState(StateDataMain.stateData)
          |> OperateSABAssetBundleMainService.markAssembled(sabRelativePath)
          |> StateDataMainService.setState(StateDataMain.stateData)
          |> ignore;
 
-         (
-           rootGameObject,
-           SkyboxCubemapSystem.getSkyboxCubemap(
-             sceneAssetBundleContent,
-             cubemapTextureArr,
-             state,
-           ),
-         )
-         |> resolve;
+         () |> resolve;
        })
-    |> WonderBsMost.Most.fromPromise;
+    |> Most.fromPromise
+    |> Most.map(_ => resultData^);
   };
 };
 

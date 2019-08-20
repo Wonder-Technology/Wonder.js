@@ -515,13 +515,20 @@ let _ =
       test("test imgui", () => {
         let customData = {| [1, 2] |};
         let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
+        let assetData =
+          ConvertGLBTool.buildAssetData(
+            ~fntContent="aaa",
+            ~bitmapBufferView=0,
+            ~customImages=[||],
+            (),
+          );
         let extendData =
-          SceneGraphIMGUITool.buildExtendData(
+          ConvertGLBTool.buildExtendData(
             ~funcMap=
               WonderCommonlib.ImmutableHashMapService.createEmpty()
               |> WonderCommonlib.ImmutableHashMapService.set(
                    "c1",
-                   IMGUITool.buildEmptyCustomControlFuncStr(),
+                   IMGUITool.buildEmptyCustomControlFunc(),
                  ),
             ~allSkinDataMap=
               WonderCommonlib.ImmutableHashMapService.createEmpty()
@@ -539,6 +546,7 @@ let _ =
               ~customData,
               ~imguiFunc,
               ~extendData,
+              ~assetData,
               (),
             ),
           ~state,
@@ -549,7 +557,29 @@ let _ =
               == Some({
                    customData: customData |> Obj.magic,
                    imguiFunc,
-                   extendData,
+                   extendData:
+                     SceneGraphIMGUITool.buildExtendData(
+                       ~funcMap=
+                         WonderCommonlib.ImmutableHashMapService.createEmpty()
+                         |> WonderCommonlib.ImmutableHashMapService.set(
+                              "c1",
+                              IMGUITool.buildEmptyCustomControlFunc(),
+                            ),
+                       ~allSkinDataMap=
+                         WonderCommonlib.ImmutableHashMapService.createEmpty()
+                         |> WonderCommonlib.ImmutableHashMapService.set(
+                              "s1",
+                              ExtendIMGUIMainService.ExtendData.Skin.createDefaultSkinData(),
+                            ),
+                       (),
+                     ),
+                   assetData:
+                     SceneGraphIMGUITool.buildAssetData(
+                       ~fntContent="aaa",
+                       ~bitmapBufferView=0,
+                       ~customImages=[||],
+                       (),
+                     ),
                  }),
           (),
         );

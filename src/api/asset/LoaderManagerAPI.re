@@ -10,7 +10,7 @@ let loadConfig = jsonPathArr =>
 let loadWholeWDB =
     (
       wdbPath,
-      isSetIMGUIFunc,
+      isHandleIMGUI,
       isBindEvent,
       isActiveCamera,
       isRenderLight,
@@ -20,7 +20,7 @@ let loadWholeWDB =
     ) =>
   LoaderManagerSystem.loadWholeWDB(
     wdbPath,
-    (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight, isLoadImage),
+    (isHandleIMGUI, isBindEvent, isActiveCamera, isRenderLight, isLoadImage),
     (_fetch, handleWhenLoadingFunc),
     state,
   );

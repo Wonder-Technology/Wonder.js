@@ -10,7 +10,8 @@ let execJob = (flags, e, stateData) =>
     let imguiRecord =
       imguiData##imguiFunc
       |> OptionService.isJsonSerializedValueNone
-      || imguiData##customData
+      ||
+      imguiData##customData
       |> OptionService.isJsonSerializedValueNone ?
         RecordIMGUIRenderWorkerService.getRecord(state) :
         RecordIMGUIRenderWorkerService.getRecord(state)

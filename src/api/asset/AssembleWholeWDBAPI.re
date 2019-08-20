@@ -3,7 +3,7 @@ open Js.Promise;
 let assembleWholeGLB =
     (
       glb,
-      isSetIMGUIFunc,
+      isHandleIMGUI,
       isBindEvent,
       isActiveCamera,
       isRenderLight,
@@ -14,7 +14,7 @@ let assembleWholeGLB =
   |> AssembleWholeWDBSystem.assemble(
        _,
        (
-         isSetIMGUIFunc,
+         isHandleIMGUI,
          isBindEvent,
          isActiveCamera,
          isRenderLight,
@@ -26,7 +26,7 @@ let assembleWholeGLB =
 let assembleWholeWDB =
     (
       wdb,
-      isSetIMGUIFunc,
+      isHandleIMGUI,
       isBindEvent,
       isActiveCamera,
       isRenderLight,
@@ -35,6 +35,6 @@ let assembleWholeWDB =
     ) =>
   AssembleWholeWDBSystem.assemble(
     wdb,
-    (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight, isLoadImage),
+    (isHandleIMGUI, isBindEvent, isActiveCamera, isRenderLight, isLoadImage),
     state,
   );

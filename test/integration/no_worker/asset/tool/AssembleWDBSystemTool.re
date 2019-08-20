@@ -48,7 +48,7 @@ let testGLTF =
       ~testFunc,
       ~state,
       ~binBuffer=GLBTool.buildBinBuffer(),
-      ~isSetIMGUIFunc=true,
+      ~isHandleIMGUI=true,
       ~isBindEvent=true,
       ~isActiveCamera=true,
       ~isRenderLight=true,
@@ -67,7 +67,7 @@ let testGLTF =
   ->(
       AssembleWholeWDBSystem.assemble(
         (
-          isSetIMGUIFunc,
+          isHandleIMGUI,
           isBindEvent,
           isActiveCamera,
           isRenderLight,
@@ -76,7 +76,10 @@ let testGLTF =
         state^,
       )
     )
-  |> WonderBsMost.Most.forEach(data => result := data)
+  |> WonderBsMost.Most.forEach(data => { 
+   /* WonderLog.Log.print(("data:", data)) |> ignore;  */
+    
+    result := data })
   |> then_(() => testFunc(result^) |> resolve);
 };
 
@@ -86,7 +89,7 @@ let testGLBWithConfig =
       ~glbFilePath,
       ~testFunc,
       ~state,
-      ~isSetIMGUIFunc=true,
+      ~isHandleIMGUI=true,
       ~isBindEvent=true,
       ~isActiveCamera=true,
       ~isRenderLight=true,
@@ -102,7 +105,7 @@ let testGLBWithConfig =
       wd,
       binBuffer,
       (
-        isSetIMGUIFunc,
+        isHandleIMGUI,
         isBindEvent,
         isActiveCamera,
         isRenderLight,
@@ -121,7 +124,7 @@ let testWDB =
       ~wdbArrayBuffer,
       ~testFunc,
       ~state,
-      ~isSetIMGUIFunc=true,
+      ~isHandleIMGUI=true,
       ~isBindEvent=true,
       ~isActiveCamera=true,
       ~isRenderLight=true,
@@ -140,7 +143,7 @@ let testWDB =
   AssembleWholeWDBSystem.assembleWDBData(
     wdFileContent |> Js.Json.parseExn |> Obj.magic,
     binBuffer,
-    (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight, isLoadImage),
+    (isHandleIMGUI, isBindEvent, isActiveCamera, isRenderLight, isLoadImage),
     state,
   )
   |> WonderBsMost.Most.forEach(data => result := data)

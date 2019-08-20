@@ -4,8 +4,6 @@ open Js.Promise;
 
 open StateDataMainType;
 
-open WonderImgui;
-
 let _ =
   describe("load imgui asset", () => {
     open Expect;
@@ -38,13 +36,14 @@ let _ =
         (customTextureSourceSrc2, "a2"),
       |];
       let customImageArr = [|
-        (customTextureSourceSrc1, "a1", ImageType.Jpg),
-        (customTextureSourceSrc2, "a2", ImageType.Png),
+        (customTextureSourceSrc1, "a1", WonderImgui.ImageType.Jpg),
+        (customTextureSourceSrc2, "a2", WonderImgui.ImageType.Png),
       |];
-      IOIMGUITool.buildFakeURL(sandbox^);
-      IOIMGUITool.buildFakeLoadImage(.);
+      WonderImgui.IOIMGUITool.buildFakeURL(sandbox^);
+      WonderImgui.IOIMGUITool.buildFakeLoadImage(.);
+      WonderImgui.IOIMGUITool.setFakeCreateObjectURLReturnBlob();
       let fetch =
-        IOIMGUITool.buildFakeFetch(
+        WonderImgui.IOIMGUITool.buildFakeFetch(
           sandbox,
           fntFilePath,
           bitmapFilePath,
@@ -79,7 +78,9 @@ let _ =
         (1, 2, 3, 4),
         (contentLength, filePath) => (),
         (bitmap, state) =>
-          AssetTool.unsafeGetBitmap(IMGUITool.getWonderIMGUIRecord(state))
+          WonderImgui.AssetTool.unsafeGetBitmap(
+            IMGUITool.getWonderIMGUIRecord(state),
+          )
           |> Obj.magic
           |> expect == bitmap
           |> resolve,

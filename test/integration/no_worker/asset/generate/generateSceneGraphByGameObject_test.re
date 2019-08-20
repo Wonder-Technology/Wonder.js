@@ -858,7 +858,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
             rootGameObject,
             "
-\"extras\":{\"imgui\":{\"customData\":\"[1,\\\"cc\\\"]\",\"imguiFunc\":\"function(customData,imguiAPIJsObj,state){\\nvarimageFunc=imguiAPIJsObj.image;\\nreturnimageFunc(customData[0],customData[1],state);\\n}\",\"extendData\":{\"customControlData\":[\"{}\"],\"skinData\":[{}]}}}
+\"extras\":{\"imgui\":{\"assetData\":{},\"customData\":\"[1,\\\"cc\\\"]\",\"imguiFunc\":\"function(customData,imguiAPIJsObj,state){\\nvarimageFunc=imguiAPIJsObj.image;\\nreturnimageFunc(customData[0],customData[1],state);\\n}\",\"extendData\":{\"customControlData\":{\"funcMap\":\"{}\"},\"skinData\":{\"allSkinDataMap\":\"{}\"}}}
           ",
             state,
           );
@@ -888,8 +888,51 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
             rootGameObject,
             "
-\"extras\":{\"imgui\":{\"customData\":\"-1\",\"imguiFunc\":\"function(customData,imguiAPIJsObj,state){returnstate;}\",\"extendData\":{\"customControlData\":[\"{\\\"A1\\\":\\\"function(customControlFuncData,showData,apiJsObj,record){\\\\nvardrawBox=apiJsObj.drawBox;\\\\nvarparseShowData=apiJsObj.parseShowData;\\\\nvarunsafeGetSkinData=apiJsObj.unsafeGetSkinData;\\\\nvarunsafeGetSingleCustomStyleDataMap=apiJsObj.unsafeGetSingleCustomStyleDataMap;\\\\nvarunsafeGetCustomStyleData=apiJsObj.unsafeGetCustomStyleData;\\\\nvarhasSingleCustomStyleName=apiJsObj.hasSingleCustomStyleName;\\\\nvarparseSingleCustomStyleName=apiJsObj.parseSingleCustomStyleName;\\\\nvarhasCustomStyleData=apiJsObj.hasCustomStyleData;\\\\nvarmatch=parseShowData(showData);\\\\nvarsingleCustomStyleNameNullable=match[1];\\\\nvardefaultColor=\\\\n/*array*/\\\\n[0.5,0.1,0.2];\\\\nvarmatch$1=hasSingleCustomStyleName(singleCustomStyleNameNullable);\\\\nvarcolor;\\\\n\\\\nif(match$1){\\\\nvarsingleCustomStyleName=parseSingleCustomStyleName(singleCustomStyleNameNullable);\\\\nvarsingleCustomStyleDataMap=unsafeGetSingleCustomStyleDataMap(singleCustomStyleName,unsafeGetSkinData(match[0],record));\\\\nvarmatch$2=hasCustomStyleData(\\\\\\\"color\\\\\\\",singleCustomStyleDataMap);\\\\ncolor=match$2?unsafeGetCustomStyleData(\\\\\\\"color\\\\\\\",singleCustomStyleDataMap):defaultColor;\\\\n}else{\\\\ncolor=defaultColor;\\\\n}\\\\n\\\\nvarrecord$1=drawBox(customControlFuncData,color,record);\\\\nreturn(\\\\n/*tuple*/\\\\n[record$1,true]\\\\n);\\\\n}\\\"}\"],\"skinData\":[{\"Skin1\":[[[0.35,0.1,0.1],[0.4,0.1,0.1],[0.5,0.1,0.1],null,null,null],{\"CustomStyle1\":{\"color\":[0.5,1,2]}}]}]}}}
+ {\"extensions\":{\"KHR_lights\":{\"lights\":[{\"color\":[0,0,0],\"type\":\"ambient\"}]}},\"extensionsUsedArr\":[\"KHR_lights\"],\"asset\":{\"version\":\"2.0\",\"generator\":\"GLTF2WD\"},\"scene\":0,\"scenes\":[{\"extensions\":{\"KHR_lights\":{\"light\":0}},\"nodes\":[0],\"extras\":{\"imgui\":{\"assetData\":{},\"customData\":\"-1\",\"imguiFunc\":\"function(customData,imguiAPIJsObj,state){returnstate;}\",\"extendData\":{\"customControlData\":{\"funcMap\":\"{\\\"A1\\\":\\\"function(customControlFuncData,showData,apiJsObj,record){\\\\nvardrawBox=apiJsObj.drawBox;\\\\nvarparseShowData=apiJsObj.parseShowData;\\\\nvarunsafeGetSkinData=apiJsObj.unsafeGetSkinData;\\\\nvarunsafeGetSingleCustomStyleDataMap=apiJsObj.unsafeGetSingleCustomStyleDataMap;\\\\nvarunsafeGetCustomStyleData=apiJsObj.unsafeGetCustomStyleData;\\\\nvarhasSingleCustomStyleName=apiJsObj.hasSingleCustomStyleName;\\\\nvarparseSingleCustomStyleName=apiJsObj.parseSingleCustomStyleName;\\\\nvarhasCustomStyleData=apiJsObj.hasCustomStyleData;\\\\nvarmatch=parseShowData(showData);\\\\nvarsingleCustomStyleNameNullable=match[1];\\\\nvardefaultColor=\\\\n/*array*/\\\\n[0.5,0.1,0.2];\\\\nvarmatch$1=hasSingleCustomStyleName(singleCustomStyleNameNullable);\\\\nvarcolor;\\\\n\\\\nif(match$1){\\\\nvarsingleCustomStyleName=parseSingleCustomStyleName(singleCustomStyleNameNullable);\\\\nvarsingleCustomStyleDataMap=unsafeGetSingleCustomStyleDataMap(singleCustomStyleName,unsafeGetSkinData(match[0],record));\\\\nvarmatch$2=hasCustomStyleData(\\\\\\\"color\\\\\\\",singleCustomStyleDataMap);\\\\ncolor=match$2?unsafeGetCustomStyleData(\\\\\\\"color\\\\\\\",singleCustomStyleDataMap):defaultColor;\\\\n}else{\\\\ncolor=defaultColor;\\\\n}\\\\n\\\\nvarrecord$1=drawBox(customControlFuncData,color,record);\\\\nreturn(\\\\n/*tuple*/\\\\n[record$1,true]\\\\n);\\\\n}\\\"}\"},\"skinData\":{\"allSkinDataMap\":\"{\\\"Skin1\\\":[[[0.35,0.1,0.1],[0.4,0.1,0.1],[0.5,0.1,0.1],null,null,null,1,[1,1,1]],{\\\"CustomStyle1\\\":{\\\"color\\\":[0.5,1,2]}}]}\"}}}
           ",
+            state,
+          );
+        });
+      });
+
+      describe("test assetData", () => {
+        let _prepareGameObject = state => {
+          let state = SetAssetIMGUITool.buildAndSetAssetData(state^);
+
+          let state =
+            ManageIMGUIAPI.setIMGUIFunc(
+              Obj.magic(-1),
+              IMGUITool.buildEmptyIMGUIFunc(),
+              state,
+            );
+
+          let (state, rootGameObject) =
+            state |> GameObjectAPI.createGameObject;
+
+          (state, rootGameObject);
+        };
+
+        test("test imgui->assetData", () => {
+          let (state, rootGameObject) = _prepareGameObject(state);
+
+          GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+            rootGameObject,
+            "
+ {\"extensions\":{\"KHR_lights\":{\"lights\":[{\"color\":[0,0,0],\"type\":\"ambient\"}]}},\"extensionsUsedArr\":[\"KHR_lights\"],\"asset\":{\"version\":\"2.0\",\"generator\":\"GLTF2WD\"},\"scene\":0,\"scenes\":[{\"extensions\":{\"KHR_lights\":{\"light\":0}},\"nodes\":[0],\"extras\":{\"imgui\":{\"assetData\":{\"customImages\":{\"customImages\":[{\"id\":\"c1\",\"bufferView\":1,\"mimeType\":\"image/png\"},{\"id\":\"c2\",\"bufferView\":2,\"mimeType\":\"image/jpeg\"}]},\"fontData\":{\"fntData\":{\"content\":\"infoface=\\\"Lato-Regular\\\"size=64bold=0italic=0charset=\\\"\\\"unicode=1stretchH=100smooth=1aa=2padding=0,0,0,0spacing=0,0\\ncommonlineHeight=77base=63scaleW=512scaleH=512pages=1packed=0alphaChnl=0redChnl=0greenChnl=0blueChnl=0\\npageid=0file=\\\"lato.png\\\"\\ncharscount=0\"},\"bitmapData\":{\"bufferView\":0}}},\"customData\":\"-1\",\"imguiFunc\":\"function(customData,imguiAPIJsObj,state){returnstate;}\",\"extendData\":{\"customControlData\":{\"funcMap\":\"{}\"},\"skinData\":{\"allSkinDataMap\":\"{}\"}}}
+          ",
+            state,
+          );
+        });
+        test(
+          "should add bitmap array buffer, customImagesData array buffer to bufferViews",
+          () => {
+          let (state, rootGameObject) = _prepareGameObject(state);
+
+          GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
+            rootGameObject,
+            {|
+            "bufferViews":[{"buffer":0,"byteOffset":0,"byteLength":10},{"buffer":0,"byteOffset":12,"byteLength":20},{"buffer":0,"byteOffset":32,"byteLength":30}]
+          |},
             state,
           );
         });

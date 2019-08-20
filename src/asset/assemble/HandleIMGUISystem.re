@@ -1,0 +1,105 @@
+open WDType;
+
+open WonderBsMost;
+
+let _setExtendData =
+    ({customControlData, skinData}: SceneGraphType.extendData, state) =>
+  state
+  |> ExtendIMGUIMainService.ExtendData.CustomControl.setFuncMap(
+       customControlData.funcMap
+       |> SerializeAllIMGUIService.CustomControl.deserializeFuncMap,
+     )
+  |> ExtendIMGUIMainService.ExtendData.Skin.setAllSkinDataMap(
+       skinData.allSkinDataMap
+       |> SerializeAllIMGUIService.Skin.deserializeAllSkinDataMap,
+     );
+
+let _setFontData = (fontData, {bufferViews}: wd, binBuffer, state) =>
+  OptionService.isJsonSerializedValueNone(fontData) ?
+    state :
+    {
+      let {fntData, bitmapData}: SceneGraphType.fontData =
+        OptionService.unsafeGetJsonSerializedValue(fontData);
+
+      state
+      |> SetAssetIMGUIMainService.setSettedAssetFntData(fntData.content)
+      |> SetAssetIMGUIMainService.setSettedAssetBitmapData(
+           AssembleCommon.getArrayBuffer(
+             binBuffer,
+             bitmapData.bufferView,
+             bufferViews,
+           ),
+         );
+    };
+
+let _setCustomImagesData =
+    (customImagesData, {bufferViews}: wd, binBuffer, state) =>
+  OptionService.isJsonSerializedValueNone(customImagesData) ?
+    state :
+    {
+      let {customImages}: SceneGraphType.customImagesData =
+        OptionService.unsafeGetJsonSerializedValue(customImagesData);
+
+      customImages
+      |> WonderCommonlib.ArrayService.reduceOneParam(
+           (.
+             state,
+             {id, bufferView, mimeType}: SceneGraphType.customImageData,
+           ) =>
+             state
+             |> SetAssetIMGUIMainService.addSettedAssetCustomImageData((
+                  AssembleCommon.getArrayBuffer(
+                    binBuffer,
+                    bufferView,
+                    bufferViews,
+                  ),
+                  id,
+                  mimeType,
+                )),
+           state,
+         );
+    };
+
+let _setAndInitAssetData =
+    (
+      {fontData, customImagesData}: SceneGraphType.assetData,
+      wd,
+      binBuffer,
+      state,
+    ) =>
+  state
+  |> _setFontData(fontData, wd, binBuffer)
+  |> _setCustomImagesData(customImagesData, wd, binBuffer)
+  |> SetAssetIMGUIMainService.initSettedAssets;
+
+let _isCustomDataEmpty = customData => customData |> Obj.magic === "";
+
+let _handle = ({scene} as wd, binBuffer, state) => {
+  let {assetData, imguiFunc, customData, extendData}: SceneGraphType.imgui =
+    OptionService.unsafeGetJsonSerializedValue(scene.imgui);
+
+  state
+  |> ManageIMGUIMainService.setIMGUIFunc(
+       _isCustomDataEmpty(customData) ?
+         Js.Nullable.null |> Obj.magic :
+         customData |> SerializeService.deserializeValueWithFunction,
+       imguiFunc |> SerializeService.deserializeFunction,
+     )
+  |> _setExtendData(extendData)
+  |> _setAndInitAssetData(assetData, wd, binBuffer);
+};
+
+let getHasIMGUIData = ({scene} as wd) =>
+  !OptionService.isJsonSerializedValueNone(scene.imgui);
+
+let handleIMGUI = (isHandleIMGUI, {scene} as wd, binBuffer, state) => {
+  let hasIMGUIData = getHasIMGUIData(wd);
+
+  (
+    isHandleIMGUI && hasIMGUIData ?
+      state |> _handle(wd, binBuffer) : Most.just(state)
+  )
+  |> Most.map(state =>
+       StateDataMainService.setState(StateDataMain.stateData, state) |> ignore
+     );
+};

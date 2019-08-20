@@ -32,6 +32,8 @@ let _ =
           (),
         );
 
+      SceneGraphDomTool.buildFakeImage();
+
       ConvertTool.setFakeTransformCount(50);
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
@@ -173,16 +175,16 @@ let _ =
     });
 
     describe("test imgui", () => {
-      describe("if isSetIMGUIFunc === true, set imgui data", () => {
-        describe("test return hasIMGUIFunc", () =>
+      describe("if isHandleIMGUI === true, set imgui data", () => {
+        describe("test return hasIMGUIData", () =>
           testPromise("return true", () =>
             AssembleWDBSystemTool.testGLTF(
               ~sandbox=sandbox^,
               ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfIMGUI(),
               ~state,
               ~testFunc=
-                ((state, (_, hasIMGUIFunc), (rootGameObject, _))) =>
-                  hasIMGUIFunc |> expect == true,
+                ((state, (_, hasIMGUIData), (rootGameObject, _))) =>
+                  hasIMGUIData |> expect == true,
               (),
             )
           )
@@ -305,12 +307,12 @@ let _ =
           let customControlName = "c1";
           let skinName = "s1";
           let extendData =
-            SceneGraphIMGUITool.buildExtendData(
+            ConvertGLBTool.buildExtendData(
               ~funcMap=
                 WonderCommonlib.ImmutableHashMapService.createEmpty()
                 |> WonderCommonlib.ImmutableHashMapService.set(
                      customControlName,
-                     IMGUITool.buildEmptyCustomControlFuncStr(),
+                     IMGUITool.buildEmptyCustomControlFunc(),
                    ),
               ~allSkinDataMap=
                 WonderCommonlib.ImmutableHashMapService.createEmpty()
@@ -348,35 +350,76 @@ let _ =
                     funcMap
                     |> SerializeAllIMGUIService.CustomControl.serializeFuncMap,
                   ),
-                  allSkinDataMap,
+                  allSkinDataMap
+                  |> SerializeAllIMGUIService.Skin.serializeAllSkinDataMap,
                 )
                 |> expect
                 == (
-                     (
-                       true,
-                       extendData.customControlData.funcMap
-                       |> Obj.magic
-                       |> Js.Json.stringify,
-                     ),
-                     extendData.skinData.allSkinDataMap,
+                     (true, extendData##customControlData##funcMap),
+                     extendData##skinData##allSkinDataMap,
                    );
               },
+            (),
+          );
+        });
+        testPromise("test assetData", () => {
+          WonderImgui.IOIMGUITool.buildFakeURL(sandbox^);
+          WonderImgui.IOIMGUITool.buildFakeLoadImage(.);
+
+          let assetData =
+            ConvertGLBTool.buildAssetData(
+              ~fntContent=SceneGraphIMGUITool.buildFakeFntContent(),
+              ~bitmapBufferView=0,
+              ~customImages=[|
+                ConvertGLBTool.buildCustomImageData(
+                  ~id="c1",
+                  ~bufferView=2,
+                  ~mimeType="image/png",
+                  (),
+                ),
+              |],
+              (),
+            );
+
+          AssembleWDBSystemTool.testGLTF(
+            ~sandbox=sandbox^,
+            ~embeddedGLTFJsonStr=
+              ConvertGLBTool.buildGLTFJsonOfIMGUI(~assetData, ()),
+            ~state,
+            ~testFunc=
+              ((state, _, (rootGameObject, _))) =>
+                (
+                  SetAssetIMGUIMainService.unsafeGetSettedAssetFntData(state),
+                  SetAssetIMGUIMainService.unsafeGetSettedAssetBitmapData(
+                    state,
+                  )
+                  |> Js.Typed_array.ArrayBuffer.byteLength,
+                  SceneGraphIMGUITool.getSettedAssetCustomImageDataArrForTest(
+                    state,
+                  ),
+                )
+                |> expect
+                == (
+                     SceneGraphIMGUITool.buildFakeFntContent(),
+                     288,
+                     [|(192, "c1", "image/png")|],
+                   ),
             (),
           );
         });
       });
 
       describe("else, not set", () => {
-        describe("test return hasIMGUIFunc", () =>
+        describe("test return hasIMGUIData", () =>
           testPromise("return true", () =>
             AssembleWDBSystemTool.testGLTF(
               ~sandbox=sandbox^,
               ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfIMGUI(),
               ~state,
-              ~isSetIMGUIFunc=false,
+              ~isHandleIMGUI=false,
               ~testFunc=
-                ((state, (_, hasIMGUIFunc), (rootGameObject, _))) =>
-                  hasIMGUIFunc |> expect == true,
+                ((state, (_, hasIMGUIData), (rootGameObject, _))) =>
+                  hasIMGUIData |> expect == true,
               (),
             )
           )
@@ -390,7 +433,7 @@ let _ =
             ~embeddedGLTFJsonStr=
               ConvertGLBTool.buildGLTFJsonOfIMGUI(~customData, ()),
             ~state,
-            ~isSetIMGUIFunc=false,
+            ~isHandleIMGUI=false,
             ~testFunc=
               ((state, _, (rootGameObject, _))) =>
                 IMGUITool.getCustomData(state)

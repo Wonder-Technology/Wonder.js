@@ -513,13 +513,61 @@ let buildGLTFJsonOfLight = () =>
     (),
   );
 
+let buildExtendData =
+    (
+      ~funcMap=WonderCommonlib.ImmutableHashMapService.createEmpty(),
+      ~allSkinDataMap=WonderCommonlib.ImmutableHashMapService.createEmpty(),
+      (),
+    ) => {
+  "customControlData": {
+    "funcMap":
+      funcMap |> SerializeAllIMGUIService.CustomControl.serializeFuncMap,
+  },
+  "skinData": {
+    "allSkinDataMap":
+      allSkinDataMap |> SerializeAllIMGUIService.Skin.serializeAllSkinDataMap,
+  },
+};
+
+let buildCustomImageData = (~id="", ~bufferView=1, ~mimeType="image/png", ()) => {
+  "id": id,
+  "bufferView": bufferView,
+  "mimeType": mimeType,
+};
+
+let buildAssetData =
+    (
+      ~fntContent=SceneGraphIMGUITool.buildFakeFntContent(),
+      ~bitmapBufferView=0,
+      ~customImages=[||],
+      (),
+    ) => {
+  "fontData":
+    Js.Nullable.return({
+      "fntData": {
+        "content": fntContent,
+      },
+      "bitmapData": {
+        "bufferView": bitmapBufferView,
+      },
+    }),
+  "customImagesData": Js.Nullable.return({"customImages": customImages}),
+};
+
+let buildEmptyAssetData = () => {
+  "fontData": Js.Nullable.undefined,
+  "customImagesData": Js.Nullable.undefined,
+};
+
 let buildGLTFJsonOfIMGUI =
     (
       ~customData="",
       ~imguiFunc=IMGUITool.buildEmptyIMGUIFuncStr(),
-      ~extendData=SceneGraphIMGUITool.buildExtendData(),
+      ~extendData=buildExtendData(),
+      ~assetData=buildEmptyAssetData(),
       (),
     ) => {
+  let assetDataStr = assetData |> Obj.magic |> Js.Json.stringify;
   let extendDataStr = extendData |> Obj.magic |> Js.Json.stringify;
 
   buildGLTFJson(
@@ -530,6 +578,7 @@ let buildGLTFJsonOfIMGUI =
         "nodes": [0],
         "extras": {
             "imgui": {
+                "assetData": $assetDataStr,
                 "customData": "$customData",
                 "imguiFunc": "$imguiFunc",
                 "extendData": $extendDataStr

@@ -42,8 +42,29 @@ type loadedStreamBlobData = {
   type_: chunk,
 };
 
-exception ReadError;
+/* type binBuffer = Js.Typed_array.ArrayBuffer.t; */
 
-external uint8ToChunk : Js.Typed_array.Uint8Array.elt => chunk = "%identity";
+type assembleData =
+  option(
+    (
+      GameObjectPrimitiveType.gameObject,
+      (
+        array(ComponentType.component),
+        array(int),
+        array(ComponentType.component),
+      ),
+      (
+        option(array(WDType.image)),
+        (array(int), WDType.imageTextureIndexData),
+        (
+          array(CubemapTextureType.cubemapTexture),
+          WDType.imageCubemapTextureIndexData,
+        ),
+      ),
+      /* (option(WDType.wd), option(binBuffer)), */
+    ),
+  );
 
-external chunkToUint8 : chunk => Js.Typed_array.Uint8Array.elt = "%identity";
+external uint8ToChunk: Js.Typed_array.Uint8Array.elt => chunk = "%identity";
+
+external chunkToUint8: chunk => Js.Typed_array.Uint8Array.elt = "%identity";

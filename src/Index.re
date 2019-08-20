@@ -584,7 +584,7 @@ let sendCustomTextureProgramUniformProjectionMatData = ManageIMGUIAPI.sendCustom
 
 let clearIMGUIFunc = ManageIMGUIAPI.clearIMGUIFunc;
 
-let setIMGUIFunc = ManageIMGUIAPI.setIMGUIFunc;
+let handleIMGUI = ManageIMGUIAPI.setIMGUIFunc;
 
 let loadImageDataArr = JieHuoAPI.loadImageDataArr;
 

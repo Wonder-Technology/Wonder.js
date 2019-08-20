@@ -11,7 +11,7 @@ let loadWholeWDB =
     (
       wdbPath,
       (
-        isSetIMGUIFunc,
+        isHandleIMGUI,
         isBindEvent,
         isActiveCamera,
         isRenderLight,
@@ -22,7 +22,7 @@ let loadWholeWDB =
     ) =>
   LoadWholeWDBSystem.load(
     wdbPath,
-    (isSetIMGUIFunc, isBindEvent, isActiveCamera, isRenderLight, isLoadImage),
+    (isHandleIMGUI, isBindEvent, isActiveCamera, isRenderLight, isLoadImage),
     fetchFunc,
     state,
   );

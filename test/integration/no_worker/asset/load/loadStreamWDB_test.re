@@ -72,6 +72,8 @@ window.Blob = Blob;
 
       _clearBlobData(.);
       _buildFakeBlob(.);
+
+      TestTool.closeContractCheck();
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
@@ -326,7 +328,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             );
 
             describe("test CesiumMilkTruck wdb", () => {
-              beforeEach(() =>
+              beforeEach(() => {
                 state :=
                   RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
                     sandbox,
@@ -336,8 +338,10 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                       ~geometryCount=10,
                       (),
                     ),
-                  )
-              );
+                  );
+
+                TestTool.closeContractCheck();
+              });
 
               testPromise("test", () =>
                 _testSetDefaultSource(
@@ -548,9 +552,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               state,
             );
 
-          beforeEach(() =>
-            state := LoadStreamWDBTool.prepareStateForSkybox(sandbox)
-          );
+          beforeEach(() => {
+            state := LoadStreamWDBTool.prepareStateForSkybox(sandbox);
+
+            TestTool.closeContractCheck();
+          });
 
           beforeAll(() =>
             skyboxWDBArrayBuffer :=
@@ -751,7 +757,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           });
 
           describe("test CesiumMilkTruck wdb", () => {
-            beforeEach(() =>
+            beforeEach(() => {
               state :=
                 RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
                   sandbox,
@@ -761,8 +767,10 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     ~geometryCount=10,
                     (),
                   ),
-                )
-            );
+                );
+
+              TestTool.closeContractCheck();
+            });
 
             testPromise("add geometry component", () =>
               _testAddGeometryComponents(
@@ -1140,9 +1148,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                    });
               };
 
-              beforeEach(() =>
-                state := LoadStreamWDBTool.prepareStateForSkybox(sandbox)
-              );
+              beforeEach(() => {
+                state := LoadStreamWDBTool.prepareStateForSkybox(sandbox);
+
+                TestTool.closeContractCheck();
+              });
 
               beforeAll(() =>
                 skyboxWDBArrayBuffer :=
@@ -1341,7 +1351,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                });
           };
 
-          beforeEach(() =>
+          beforeEach(() => {
             state :=
               RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
                 sandbox,
@@ -1351,8 +1361,10 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   ~geometryCount=10,
                   (),
                 ),
-              )
-          );
+              );
+
+            TestTool.closeContractCheck();
+          });
 
           describe(
             {|
@@ -1750,8 +1762,8 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             8.done
             |},
             () => {
-              let _testNotExecHandleWhenDoneFunc =
-                  (sandbox, prepareFunc, state) => {
+              let _testContractError = (sandbox, prepareFunc, state) => {
+                TestTool.openContractCheck();
                 let state =
                   state^
                   |> FakeGlTool.setFakeGl(
@@ -1772,22 +1784,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   state;
                 };
 
-                LoadStreamWDBTool.read(
-                  (
-                    default11Image,
-                    _buildController(sandbox),
-                    handleBeforeStartLoop,
-                    handleWhenDoneFunc,
+                PromiseTool.judgeErrorMessage(
+                  "expect load all data",
+                  LoadStreamWDBTool.read(
+                    (
+                      default11Image,
+                      _buildController(sandbox),
+                      handleBeforeStartLoop,
+                      handleWhenDoneFunc,
+                    ),
+                    _buildReader(readStub),
                   ),
-                  _buildReader(readStub),
-                )
-                |> then_(() => {
-                     let state = StateAPI.unsafeGetState();
-
-                     let state = DirectorTool.runWithDefaultTime(state);
-
-                     rootGameObjectWhenDone^ |> expect == (-1) |> resolve;
-                   });
+                );
               };
 
               let _testNotSendAttributeData = (sandbox, prepareFunc, state) => {
@@ -1845,8 +1853,8 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   _prepareWithReadStub(sandbox, readStub, state);
                 };
 
-                testPromise("not exec handleWhenDoneFunc", () =>
-                  _testNotExecHandleWhenDoneFunc(sandbox, _prepare, state)
+                testPromise("contract error", () =>
+                  _testContractError(sandbox, _prepare, state)
                 );
               });
 
@@ -1887,8 +1895,8 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   _prepareWithReadStub(sandbox, readStub, state);
                 };
 
-                testPromise("not exec handleWhenDoneFunc", () =>
-                  _testNotExecHandleWhenDoneFunc(sandbox, _prepare, state)
+                testPromise("contract error", () =>
+                  _testContractError(sandbox, _prepare, state)
                 );
               });
 
@@ -2551,6 +2559,117 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           })
         )
       );
+
+      describe("test imgui", () => {
+        let imguiWDBArrayBuffer = ref(Obj.magic(-1));
+
+        let _test = (sandbox, hasIMGUIFunc, prepareFunc, state) => {
+          let state =
+            state^
+            |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+          let (
+            default11Image,
+            readStub,
+            handleBeforeStartLoop,
+            handleWhenDoneFunc,
+            state,
+          ) =
+            prepareFunc(sandbox, state);
+          let rootGameObjectWhenDone = ref(-1);
+          let handleWhenDoneFunc = (state, rootGameObject) => {
+            rootGameObjectWhenDone := rootGameObject;
+
+            state;
+          };
+
+          LoadStreamWDBTool.read(
+            (
+              default11Image,
+              _buildController(sandbox),
+              handleBeforeStartLoop,
+              handleWhenDoneFunc,
+            ),
+            _buildReader(readStub),
+          )
+          |> then_(() => {
+               let state = StateAPI.unsafeGetState();
+
+               let state = DirectorTool.runWithDefaultTime(state);
+
+               IMGUITool.getIMGUIFunc(state)
+               |> Js.Option.isSome
+               |> expect == hasIMGUIFunc
+               |> resolve;
+             });
+        };
+
+        beforeAll(() =>
+          imguiWDBArrayBuffer :=
+            WDBTool.generateWDB(state => {
+              let rootGameObject = SceneAPI.getSceneGameObject(state);
+
+              let state =
+                ManageIMGUIAPI.setIMGUIFunc(
+                  Obj.magic(-1),
+                  IMGUITool.buildEmptyIMGUIFunc(),
+                  state,
+                );
+
+              let (state, cubemapTexture) =
+                SkyboxTool.prepareCubemapTextureAndSetAllSources(state);
+
+              (state, rootGameObject);
+            })
+        );
+
+        describe(
+          {|
+            1.chunk1: header + json +  a part of first stream_chunk
+            2.chunk2: other stream chunk data
+            3.done
+            |},
+          () =>
+          describe("test 1,2,3", () => {
+            let _prepare = (sandbox, state) => {
+              let readStub = createEmptyStubWithJsObjSandbox(sandbox);
+
+              let readStub =
+                readStub
+                |> onCall(0)
+                |> returns(
+                     _buildChunkData(
+                       ~arrayBuffer=
+                         (
+                           imguiWDBArrayBuffer^
+                           |> ArrayBuffer.slice(~start=0, ~end_=800)
+                         )
+                         ->Some,
+                       (),
+                     ),
+                   )
+                |> onCall(1)
+                |> returns(
+                     _buildChunkData(
+                       ~arrayBuffer=
+                         (imguiWDBArrayBuffer^ |> ArrayBuffer.sliceFrom(800))
+                         ->Some,
+                       (),
+                     ),
+                   )
+                |> onCall(2)
+                |> returns(
+                     _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                   );
+
+              _prepareWithReadStub(sandbox, readStub, state);
+            };
+
+            testPromise("should handle imgui", () =>
+              _test(sandbox, true, _prepare, state)
+            );
+          })
+        );
+      });
 
       describe("if load error", () => {
         let _buildFakeFetchReturnResponse = (ok, status, statusText) =>

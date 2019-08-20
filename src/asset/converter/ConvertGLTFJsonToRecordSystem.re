@@ -4,6 +4,8 @@ open WonderBsJson.Json;
 
 open Decode;
 
+open SceneGraphType;
+
 let _convertAsset = json =>
   json
   |> field("asset", json =>
@@ -119,11 +121,79 @@ let _convertCustomData = [%raw
       |}
 ];
 
-let _convertExtendData = [%raw
-  json => {|
-      return json.extendData;
-      |}
-];
+/* let _convertExtendData = [%raw
+     json => {|
+         return json.extendData;
+         |}
+   ]; */
+
+let _convertExtendData = json =>
+  json
+  |> field("extendData", json =>
+       {
+         customControlData:
+           json
+           |> field("customControlData", json =>
+                {funcMap: json |> field("funcMap", string)}
+              ),
+         skinData:
+           json
+           |> field("skinData", json =>
+                {allSkinDataMap: json |> field("allSkinDataMap", string)}
+              ),
+       }
+     );
+
+/* let _convertAssetData = [%raw
+     json => {|
+         return json.assetData;
+         |}
+   ]; */
+
+let _convertAssetData = json =>
+  json
+  |> field("assetData", json =>
+       {
+         fontData:
+           json
+           |> optional(
+                field("fontData", json =>
+                  {
+                    fntData:
+                      json
+                      |> field("fntData", json =>
+                           {content: json |> field("content", string)}
+                         ),
+                    bitmapData:
+                      json
+                      |> field("bitmapData", json =>
+                           {bufferView: json |> field("bufferView", int)}
+                         ),
+                  }
+                ),
+              ),
+         customImagesData:
+           json
+           |> optional(
+                field("customImagesData", json =>
+                  {
+                    customImages:
+                      json
+                      |> field(
+                           "customImages",
+                           array(json =>
+                             {
+                               id: json |> field("id", string),
+                               bufferView: json |> field("bufferView", int),
+                               mimeType: json |> field("mimeType", string),
+                             }
+                           ),
+                         ),
+                  }
+                ),
+              ),
+       }
+     );
 
 let _convertScenes = json =>
   json
@@ -143,6 +213,7 @@ let _convertScenes = json =>
                              field("imgui", json =>
                                (
                                  {
+                                   assetData: _convertAssetData(json),
                                    imguiFunc:
                                      json |> field("imguiFunc", string),
                                    customData: _convertCustomData(json),

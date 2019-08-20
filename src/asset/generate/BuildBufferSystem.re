@@ -56,11 +56,26 @@ let _fillImageUint8ArrayBuffer = (buffer, uint8Array, offset) => {
   buffer;
 };
 
+let _fillIMGUIArrayBuffer = (buffer, arrayBuffer, offset) => {
+  TypeArrayService.setUint8Array(
+    Uint8Array.fromBuffer(arrayBuffer),
+    Uint8Array.fromBufferRange(
+      buffer,
+      ~offset,
+      ~length=arrayBuffer |> ArrayBuffer.byteLength,
+    ),
+  )
+  |> ignore;
+
+  buffer;
+};
+
 let build =
     (
       totalByteLength,
       (vertexDataArr, indexDataArr, index32DataArr),
       imageUint8DataArr,
+      assetArrayBufferDataArr,
     ) => {
   let buffer = ArrayBuffer.make(totalByteLength);
 
@@ -88,10 +103,24 @@ let build =
          buffer,
        );
 
-  imageUint8DataArr
+  let buffer =
+    imageUint8DataArr
+    |> WonderCommonlib.ArrayService.reduceOneParam(
+         (.
+           buffer,
+           {uint8Array, byteOffset}: GenerateSceneGraphType.imageData,
+         ) =>
+           _fillImageUint8ArrayBuffer(buffer, uint8Array, byteOffset),
+         buffer,
+       );
+
+  assetArrayBufferDataArr
   |> WonderCommonlib.ArrayService.reduceOneParam(
-       (. buffer, {uint8Array, byteOffset}: GenerateSceneGraphType.imageData) =>
-         _fillImageUint8ArrayBuffer(buffer, uint8Array, byteOffset),
+       (.
+         buffer,
+         {arrayBuffer, byteOffset}: GenerateSceneGraphType.imguiAssetData,
+       ) =>
+         _fillIMGUIArrayBuffer(buffer, arrayBuffer, byteOffset),
        buffer,
      );
 };

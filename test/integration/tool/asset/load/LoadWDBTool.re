@@ -4,7 +4,7 @@ let load =
     (
       ~wdbPath,
       ~fetchFunc,
-      ~isSetIMGUIFunc=true,
+      ~isHandleIMGUI=true,
       ~isBindEvent=true,
       ~isActiveCamera=true,
       ~isRenderLight=true,
@@ -18,7 +18,7 @@ let load =
   |> LoaderManagerSystem.loadWholeWDB(
        wdbPath,
        (
-         isSetIMGUIFunc,
+         isHandleIMGUI,
          isBindEvent,
          isActiveCamera,
          isRenderLight,

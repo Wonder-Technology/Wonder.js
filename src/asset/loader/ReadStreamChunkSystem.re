@@ -95,6 +95,22 @@ let _getJsonChunkStr =
   );
 };
 
+let _getBinBuffer =
+    (
+      (jsonChunkLength, streamChunkLength, binBufferChunkLength),
+      totalLoadedByteLength,
+      totalUint8Array,
+    ) =>
+  Uint8Array.fromBufferRange(
+    totalUint8Array |> Uint8Array.buffer,
+    ~offset=
+      BufferUtils.getWDBHeaderTotalByteLength()
+      + (jsonChunkLength |> BufferUtils.alignedLength)
+      + (streamChunkLength |> BufferUtils.alignedLength),
+    ~length=binBufferChunkLength,
+  )
+  |> Uint8Array.buffer;
+
 let _assembleAndStartLoop =
     (
       assembleData,
@@ -159,31 +175,124 @@ let _isLoadStreamChunk = (jsonChunkLength, totalLoadedByteLength) =>
   totalLoadedByteLength >= BufferUtils.getWDBHeaderTotalByteLength()
   + jsonChunkLength;
 
-let _handleDone = (controller, assembleData, handleWhenDoneFunc) => {
-  _close(controller);
-
-  switch (assembleData) {
-  | None =>
-    WonderLog.Log.error(
-      WonderLog.Log.buildErrorMessage(
-        ~title="read",
-        ~description={j|assembleData should exist, but actually is none|j},
-        ~reason="",
-        ~solution={j||j},
-        ~params={j||j},
-      ),
+let _getTotalNeedLoadedByteLength =
+    (
+      allChunkLengths,
+      totalLoadedByteLength,
+      (loadedUint8ArrayArr, totalUint8Array),
+    ) => {
+  let (jsonChunkLength, streamChunkLength, binBufferChunkLength) as allChunkLengths =
+    _getAllChunkLengths(
+      allChunkLengths,
+      totalLoadedByteLength,
+      (loadedUint8ArrayArr, totalUint8Array),
     );
-    resolve();
-  | Some((rootGameObject, _, _)) =>
-    handleWhenDoneFunc(
-      StateDataMainService.unsafeGetState(StateDataMain.stateData),
-      rootGameObject,
-    )
-    |> StateDataMainService.setState(StateDataMain.stateData)
-    |> ignore;
 
-    resolve();
-  };
+  BufferUtils.getWDBHeaderTotalByteLength()
+  + (jsonChunkLength |> BufferUtils.alignedLength)
+  + (streamChunkLength |> BufferUtils.alignedLength)
+  + (binBufferChunkLength |> BufferUtils.alignedLength);
+};
+
+let _handleDone =
+    (
+      controller,
+      assembleData,
+      (allChunkLengths, loadedUint8ArrayArr, totalUint8Array),
+      handleWhenDoneFunc,
+    ) => {
+  WonderLog.Contract.requireCheck(
+    () => {
+      open WonderLog;
+      open Contract;
+      open Operators;
+
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|totalUint8Array should >= loaded data|j},
+          ~actual={j|not|j},
+        ),
+        () => {
+          let totalLoadedByteLength =
+            _getTotalLoadedByteLength(loadedUint8ArrayArr);
+
+          totalUint8Array |> Uint8Array.byteLength >= totalLoadedByteLength;
+        },
+      );
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|load all data|j},
+          ~actual={j|not|j},
+        ),
+        () => {
+          let totalLoadedByteLength =
+            _getTotalLoadedByteLength(loadedUint8ArrayArr);
+
+          totalLoadedByteLength
+          == _getTotalNeedLoadedByteLength(
+               allChunkLengths,
+               totalLoadedByteLength,
+               (loadedUint8ArrayArr, totalUint8Array),
+             );
+        },
+      );
+    },
+    IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  );
+
+  let totalLoadedByteLength = _getTotalLoadedByteLength(loadedUint8ArrayArr);
+  let (jsonChunkLength, streamChunkLength, binBufferChunkLength) as allChunkLengths =
+    _getAllChunkLengths(
+      allChunkLengths,
+      totalLoadedByteLength,
+      (loadedUint8ArrayArr, totalUint8Array),
+    );
+
+  HandleIMGUISystem.handleIMGUI(
+    true,
+    _getJsonChunkStr(
+      jsonChunkLength,
+      totalLoadedByteLength,
+      (loadedUint8ArrayArr, totalUint8Array),
+    )
+    |> Js.Json.parseExn
+    |> Obj.magic,
+    _getBinBuffer(
+      (jsonChunkLength, streamChunkLength, binBufferChunkLength),
+      totalLoadedByteLength,
+      totalUint8Array,
+    ),
+    StateDataMainService.unsafeGetState(StateDataMain.stateData),
+  )
+  |> WonderBsMost.Most.drain
+  |> then_(() => {
+       _close(controller);
+
+       switch (assembleData) {
+       | None =>
+         WonderLog.Log.error(
+           WonderLog.Log.buildErrorMessage(
+             ~title="read",
+             ~description=
+               {j|assembleData should exist, but actually is none|j},
+             ~reason="",
+             ~solution={j||j},
+             ~params={j||j},
+           ),
+         );
+         resolve();
+
+       | Some((rootGameObject, _, _)) =>
+         handleWhenDoneFunc(
+           StateDataMainService.unsafeGetState(StateDataMain.stateData),
+           rootGameObject,
+         )
+         |> StateDataMainService.setState(StateDataMain.stateData)
+         |> ignore;
+
+         resolve();
+       };
+     });
 };
 
 let rec read =
@@ -199,7 +308,7 @@ let rec read =
           (
             allChunkLengths,
             streamChunkArr,
-            assembleData,
+            assembleData: StreamType.assembleData,
             nextStreamChunkIndex,
             loadedStreamChunkArrWhichNotHasAllData,
             loadBlobImageMap,
@@ -209,7 +318,12 @@ let rec read =
   _readReader(reader)
   |> then_(streamData =>
        FetchExtend.isDone(streamData) ?
-         _handleDone(controller, assembleData, handleWhenDoneFunc) :
+         _handleDone(
+           controller,
+           assembleData,
+           (allChunkLengths, loadedUint8ArrayArr, totalUint8Array),
+           handleWhenDoneFunc,
+         ) :
          _handleLoading(
            streamData,
            (
@@ -231,11 +345,6 @@ let rec read =
            reader,
          )
      )
-  |> catch(e => {
-       WonderLog.Log.error(e) |> ignore;
-
-       reject(StreamType.ReadError);
-     })
 and _handleLoadBinBufferChunk =
     (
       (
