@@ -10,7 +10,7 @@ let generateGLBData =
     (
       (
         rootGameObject,
-        basicSourceTextureImageUint8ArrayDataMap: TextureimageUint8ArrayType.basicSourceTextureImageUint8ArrayDataMap,
+        basicSourceTextureImageUint8ArrayDataMap: TextureImageUint8ArrayDataType.basicSourceTextureImageUint8ArrayDataMap,
       ),
       isBuildCubemapFromSceneSkybox,
       (getPointsDataFuncTuple, getResultUint8ArrayDataFunc),

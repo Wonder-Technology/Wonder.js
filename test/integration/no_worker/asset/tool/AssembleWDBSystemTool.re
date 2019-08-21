@@ -350,7 +350,7 @@ let isCubemapTextureImageUint8ArrayMapEqual =
              nyImageUint8ArrayData: (mimeType4, u4),
              pzImageUint8ArrayData: (mimeType5, u5),
              nzImageUint8ArrayData: (mimeType6, u6),
-           }: TextureimageUint8ArrayType.cubemapTextureImageUint8ArrayData,
+           }: TextureImageUint8ArrayDataType.cubemapTextureImageUint8ArrayData,
          ) =>
          (
            {
@@ -378,7 +378,7 @@ let isCubemapTextureImageUint8ArrayMapEqual =
                mimeType6,
                u6 |> Uint8Array.byteLength |> Obj.magic,
              ),
-           }: TextureimageUint8ArrayType.cubemapTextureImageUint8ArrayData
+           }: TextureImageUint8ArrayDataType.cubemapTextureImageUint8ArrayData
          )
        )
     |> Obj.magic

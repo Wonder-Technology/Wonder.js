@@ -26,8 +26,6 @@ let _ =
 
     describe("test extend by add skin data and add custom control", () =>
       describe("test render", () => {
-        /* TODO duplicate */
-
         beforeAllPromise(() =>
           BasicSourceTextureRenderWorkerTool.buildFakeCreateImageBitmapFunc()
         );

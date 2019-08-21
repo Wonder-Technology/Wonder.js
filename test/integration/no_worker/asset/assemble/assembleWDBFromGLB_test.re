@@ -3281,7 +3281,7 @@ let _ =
                            "image/png",
                            129 |> Obj.magic,
                          ),
-                       }: TextureimageUint8ArrayType.cubemapTextureImageUint8ArrayData,
+                       }: TextureImageUint8ArrayDataType.cubemapTextureImageUint8ArrayData,
                      ),
                 )
                 |> expect == true,
