@@ -14,11 +14,11 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    describe("clearIMGUIFunc", () => {
+    describe("clearExecFuncDataArr", () => {
       let _isInTestCoverage = funcStr =>
         funcStr |> Js.String.includes("istanbul");
 
-      test("set empty imgui func", () => {
+      test("clear exec func data arr", () => {
         let state = AssetIMGUITool.prepareFontAsset(state^);
         let gl = FakeGlTool.buildFakeGl(~sandbox, ()) |> Obj.magic;
         let state = state |> FakeGlTool.setFakeGl(gl);
@@ -26,40 +26,23 @@ let _ =
         let program = Obj.magic(1);
         let state = ProgramTool.setLastUsedProgram(program, state);
 
-        let func = (_, _, state) => {
-          Js.log("log");
+        let func = (_, _, state) => state;
 
-          state;
-        };
+        let execFuncName = "e1";
 
         let state =
-          ManageIMGUIAPI.setIMGUIFunc(
-            Obj.magic(-1),
-            Obj.magic(func),
-            state,
+          ExecIMGUITool.addExecFuncData(
+            ~state,
+            ~name=execFuncName,
+            ~func=Obj.magic(func),
+            (),
           );
 
-        let state = ManageIMGUIAPI.clearIMGUIFunc(state);
+        let state = ManageIMGUIAPI.clearExecFuncDataArr(state);
 
-        let func = ManageIMGUIMainService.getIMGUIFunc(state);
-
-        let funcStr =
-          SerializeTool.serializeFunction(func)
-          |> StringTool.removeNewLines
-          |> StringTool.removeSpaces;
-
-        _isInTestCoverage(funcStr) ?
-          1 |> expect == 1 :
-          funcStr
-          |> expect
-          == (
-               StringTool.removeNewLines(
-                 {| function (param, param$1, state) {
-          return state;
-          }|},
-               )
-               |> StringTool.removeSpaces
-             );
+        ExecIMGUITool.getExecFuncDataArr(state)
+        |> Js.Array.length
+        |> expect == 0;
       });
     });
 

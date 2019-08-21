@@ -9,8 +9,10 @@ let _ =
     open Expect;
     open Expect.Operators;
     open Sinon;
+
     let sandbox = getSandboxDefaultVal();
     let state = ref(MainStateTool.createState());
+
     beforeEach(() => {
       sandbox := createSandbox();
       state :=
@@ -21,6 +23,7 @@ let _ =
         );
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
+
     describe("dispose sourceInstance data", () => {
       let _test = (judgeFunc, state) => {
         let (
@@ -51,11 +54,12 @@ let _ =
           ~sandbox,
           ~completeFunc=
             _ => {
-              GameObjectAPI.disposeGameObject(
-                gameObject,
-                MainStateTool.unsafeGetState(),
-              )
-              |> MainStateTool.setState;
+              let state =
+                GameObjectAPI.disposeGameObject(
+                  gameObject,
+                  MainStateTool.unsafeGetState(),
+                );
+
               RenderJobsRenderWorkerTool.mainLoopAndDispose(
                 ~state,
                 ~sandbox,
@@ -71,6 +75,7 @@ let _ =
           (),
         );
       };
+
       testPromise("add matrixFloat32ArrayMap->typeArray to pool", () =>
         _test(
           (sourceInstance, renderWorkerState) =>
@@ -113,12 +118,8 @@ let _ =
                  )
               |> Obj.magic,
             )
-            |>
-            expect == (
-                        Js.Undefined.empty,
-                        Js.Undefined.empty,
-                        Js.Undefined.empty,
-                      );
+            |> expect
+            == (Js.Undefined.empty, Js.Undefined.empty, Js.Undefined.empty);
           },
           state,
         )

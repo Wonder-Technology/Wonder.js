@@ -72,19 +72,35 @@ let _setAndInitAssetData =
   |> _setCustomImagesData(customImagesData, wd, binBuffer)
   |> SetAssetIMGUIMainService.initSettedAssets;
 
-let _isCustomDataEmpty = customData => customData |> Obj.magic === "";
+let _addAllExecFuncData = (execFuncDataArr, state) =>
+  execFuncDataArr
+  |> SerializeAllIMGUIService.Exec.deserializeExecFuncDataArrToWonderType
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (.
+         state,
+         {execFunc, customData, zIndex, name}: ExecIMGUIType.execFuncData,
+       ) =>
+         ManageIMGUIMainService.addExecFuncData(
+           name,
+           customData,
+           zIndex,
+           execFunc,
+           state,
+         ),
+       state,
+     );
+
+let _setExecData = ({execFuncDataArr}: SceneGraphType.execData, state) =>
+  state
+  |> ManageIMGUIMainService.clearExecFuncDataArr
+  |> _addAllExecFuncData(execFuncDataArr);
 
 let _handle = ({scene} as wd, binBuffer, state) => {
-  let {assetData, imguiFunc, customData, extendData}: SceneGraphType.imgui =
+  let {assetData, execData, extendData}: SceneGraphType.imgui =
     OptionService.unsafeGetJsonSerializedValue(scene.imgui);
 
   state
-  |> ManageIMGUIMainService.setIMGUIFunc(
-       _isCustomDataEmpty(customData) ?
-         Js.Nullable.null |> Obj.magic :
-         customData |> SerializeService.deserializeValueWithFunction,
-       imguiFunc |> SerializeService.deserializeFunction,
-     )
+  |> _setExecData(execData)
   |> _setExtendData(extendData)
   |> _setAndInitAssetData(assetData, wd, binBuffer);
 };

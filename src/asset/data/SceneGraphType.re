@@ -60,9 +60,21 @@ type assetData = {
   customImagesData: option(customImagesData),
 };
 
+type serializedCustomData = string;
+
+type execFuncData = {
+  execFunc: serializedFunc,
+  customData: serializedCustomData,
+  zIndex: WonderImgui.IMGUIType.execFuncZIndex,
+  name: WonderImgui.IMGUIType.execFuncName,
+};
+
+type execFuncDataArr = array(execFuncData);
+
+type execData = {execFuncDataArr};
+
 type imgui = {
   assetData,
-  imguiFunc: serializedFunc,
-  customData: WonderImgui.IMGUIType.customDataForIMGUIFunc,
+  execData,
   extendData,
 };

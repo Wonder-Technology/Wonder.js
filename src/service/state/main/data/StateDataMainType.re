@@ -234,7 +234,7 @@ and apiRecord = {
       (
         . WonderImgui.StructureType.rect,
         string,
-        (Js.Array.t(float), WonderImgui.FontType.align),
+        (WonderImgui.SkinType.color, WonderImgui.FontType.align),
         state
       ) =>
       state,
@@ -253,7 +253,8 @@ and apiRecord = {
         state
       ) =>
       (state, bool),
-    "box": (. (int, int, int, int), Js.Array.t(float), state) => state,
+    "box":
+      (. (int, int, int, int), WonderImgui.SkinType.color, state) => state,
     "unsafeGetCustomControl":
       (. string, state) => WonderImgui.IMGUIType.customControlFunc,
     "getWonderImguiIMGUIRecord":

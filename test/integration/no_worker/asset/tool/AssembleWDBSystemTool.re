@@ -76,10 +76,7 @@ let testGLTF =
         state^,
       )
     )
-  |> WonderBsMost.Most.forEach(data => { 
-   /* WonderLog.Log.print(("data:", data)) |> ignore;  */
-    
-    result := data })
+  |> WonderBsMost.Most.forEach(data => result := data)
   |> then_(() => testFunc(result^) |> resolve);
 };
 

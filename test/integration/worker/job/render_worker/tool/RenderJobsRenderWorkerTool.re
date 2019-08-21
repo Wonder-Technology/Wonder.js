@@ -205,7 +205,9 @@ let mainLoopAndRender =
       ~sandbox,
       ~beforeExecRenderRenderWorkerJobsFunc=state => (),
       (),
-    ) =>
+    ) => {
+  MainStateTool.setState(state) |> ignore;
+
   execMainLoopJobs(
     sandbox,
     postMessageToRenderWorker => {
@@ -213,6 +215,7 @@ let mainLoopAndRender =
       render(sandbox, postMessageToRenderWorker, completeFunc);
     },
   );
+};
 
 let dispose = (postMessageToRenderWorker, completeFunc) => {
   open Sinon;
@@ -248,7 +251,9 @@ let mainLoopAndDispose =
       ~sandbox,
       ~beforeExecRenderRenderWorkerJobsFunc=state => (),
       (),
-    ) =>
+    ) => {
+  MainStateTool.setState(state) |> ignore;
+
   execMainLoopJobs(
     sandbox,
     postMessageToRenderWorker => {
@@ -256,6 +261,7 @@ let mainLoopAndDispose =
       dispose(postMessageToRenderWorker, completeFunc);
     },
   );
+};
 
 let initWithJobAndMainLoopAndRender =
     (

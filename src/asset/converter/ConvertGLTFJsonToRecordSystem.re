@@ -195,6 +195,26 @@ let _convertAssetData = json =>
        }
      );
 
+let _convertExecData = json =>
+  json
+  |> field("execData", json =>
+       {
+         execFuncDataArr:
+           json
+           |> field(
+                "execFuncDataArr",
+                array(json =>
+                  {
+                    execFunc: json |> field("execFunc", string),
+                    customData: _convertCustomData(json),
+                    zIndex: json |> field("zIndex", int),
+                    name: json |> field("name", string),
+                  }
+                ),
+              ),
+       }
+     );
+
 let _convertScenes = json =>
   json
   |> field(
@@ -214,9 +234,7 @@ let _convertScenes = json =>
                                (
                                  {
                                    assetData: _convertAssetData(json),
-                                   imguiFunc:
-                                     json |> field("imguiFunc", string),
-                                   customData: _convertCustomData(json),
+                                   execData: _convertExecData(json),
                                    extendData: _convertExtendData(json),
                                  }: SceneGraphType.imgui
                                )

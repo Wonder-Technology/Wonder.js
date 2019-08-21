@@ -43,8 +43,7 @@ let _ =
                    SendRenderRenderDataWorkerTool.buildRenderRenderData(
                      ~imguiData={
                        "ioData": ioData,
-                       "customData": Sinon.matchAny,
-                       "imguiFunc": Sinon.matchAny,
+                       "execFuncDataArr": Sinon.matchAny,
                      },
                      (),
                    ),
@@ -83,20 +82,25 @@ let _ =
         })
       );
 
-      describe("send imguiFunc and customData", () => {
+      describe("send execData", () => {
         let _buildData = () => (
           (. _, _, state) => state,
           Obj.magic((100, a => a + 1)),
         );
 
         describe(
-          "if is already set imguiFunc in render worker, not set again", () =>
+          "if is already set execData in render worker, not set again", () =>
           describe("send none", () => {
             testPromise("test two loops", () => {
               let (state, postMessageToRenderWorker) = _prepare();
-              let (imguiFunc, customData) = _buildData();
+              let (execFunc, customData) = _buildData();
               let state =
-                ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state);
+                ExecIMGUITool.addExecFuncData(
+                  ~state,
+                  ~customData,
+                  ~func=execFunc,
+                  (),
+                );
               MainStateTool.setState(state);
 
               WorkerJobWorkerTool.execMainWorkerJob(
@@ -113,8 +117,8 @@ let _ =
                                SendRenderRenderDataWorkerTool.buildRenderRenderData(
                                  ~imguiData={
                                    "ioData": Sinon.matchAny,
-                                   "customData": None,
-                                   "imguiFunc": None,
+                                   "execFuncDataArr":
+                                     ExecIMGUITool.createEmptyExecFuncDataArr(),
                                  },
                                  (),
                                ),
@@ -127,9 +131,14 @@ let _ =
             });
             testPromise("test three loops", () => {
               let (state, postMessageToRenderWorker) = _prepare();
-              let (imguiFunc, customData) = _buildData();
+              let (execFunc, customData) = _buildData();
               let state =
-                ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state);
+                ExecIMGUITool.addExecFuncData(
+                  ~state,
+                  ~customData,
+                  ~func=execFunc,
+                  (),
+                );
               MainStateTool.setState(state);
 
               WorkerJobWorkerTool.execMainWorkerJob(
@@ -150,8 +159,8 @@ let _ =
                                      SendRenderRenderDataWorkerTool.buildRenderRenderData(
                                        ~imguiData={
                                          "ioData": Sinon.matchAny,
-                                         "customData": None,
-                                         "imguiFunc": None,
+                                         "execFuncDataArr":
+                                           ExecIMGUITool.createEmptyExecFuncDataArr(),
                                        },
                                        (),
                                      ),
@@ -170,9 +179,18 @@ let _ =
         describe("else", () =>
           testPromise("send data", () => {
             let (state, postMessageToRenderWorker) = _prepare();
-            let (imguiFunc, customData) = _buildData();
+            let (execFunc, customData) = _buildData();
+            let zIndex = 1;
+            let name = "e1";
             let state =
-              ManageIMGUIAPI.setIMGUIFunc(customData, imguiFunc, state);
+              ExecIMGUITool.addExecFuncData(
+                ~state,
+                ~customData,
+                ~func=execFunc,
+                ~name,
+                ~zIndex,
+                (),
+              );
             MainStateTool.setState(state);
 
             WorkerJobWorkerTool.execMainWorkerJob(
@@ -185,12 +203,13 @@ let _ =
                        SendRenderRenderDataWorkerTool.buildRenderRenderData(
                          ~imguiData={
                            "ioData": Sinon.matchAny,
-                           "customData":
-                             customData
-                             |> RenderIMGUIRenderWorkerTool.serializeValueWithFunction,
-                           "imguiFunc":
-                             RenderIMGUIRenderWorkerTool.serializeFunction(
-                               imguiFunc,
+                           "execFuncDataArr":
+                             SceneGraphIMGUITool.buildExecFuncDataArr(
+                               ~name,
+                               ~zIndex,
+                               ~customData,
+                               ~func=execFunc,
+                               (),
                              ),
                          },
                          (),
@@ -213,57 +232,130 @@ let _ =
       );
 
       describe("test render imgui", () =>
-        testPromise("test render image", () => {
-          let (state, bufferData) =
-            IMGUIWorkerTool.prepareForTestInRenderWorkerJob(sandbox);
-          let state =
-            ManageIMGUIAPI.setIMGUIFunc(
-              Obj.magic(WonderImgui.RenderIMGUITool.buildImageData()),
-              (. customData, imguiAPIJsObj, state) => {
-                let (
-                  (
-                    (imageX1, imageY1, imageWidth1, imageHeight1),
-                    (imageS01, imageT01, imageS11, imageT11),
-                    textureId1,
-                  ),
-                  _,
-                  _,
-                ) =
-                  Obj.magic(customData);
-                let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
+        describe("test render image", () => {
+          let _addExecFuncData = (imageX1, zIndex, state) =>
+            ExecIMGUITool.addExecFuncData(
+              ~state,
+              ~zIndex,
+              ~customData=
+                Obj.magic((
+                  WonderImgui.RenderIMGUITool.buildImageData(),
+                  imageX1,
+                )),
+              ~func=
+                (. customData, imguiAPIJsObj, state) => {
+                  let (
+                    (
+                      (
+                        (_, imageY1, imageWidth1, imageHeight1),
+                        (imageS01, imageT01, imageS11, imageT11),
+                        textureId1,
+                      ),
+                      _,
+                      _,
+                    ),
+                    imageX1,
+                  ) =
+                    Obj.magic(customData);
+                  let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
-                let imageFunc = imguiAPIJsObj##image;
+                  let imageFunc = imguiAPIJsObj##image;
 
-                let state =
-                  imageFunc(.
-                    (imageX1, imageY1, imageWidth1, imageHeight1),
-                    (imageS01, imageT01, imageS11, imageT11),
-                    textureId1,
-                    state,
-                  );
+                  let state =
+                    imageFunc(.
+                      (imageX1, imageY1, imageWidth1, imageHeight1),
+                      (imageS01, imageT01, imageS11, imageT11),
+                      textureId1,
+                      state,
+                    );
 
-                state;
-              },
-              state,
+                  state;
+                },
+              (),
             );
 
-          RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
-            ~state,
-            ~sandbox,
-            ~completeFunc=
-              _ => bufferData |> getCallCount |> expect == 22 |> resolve,
-            (),
-          );
+          testPromise("test single exec func data", () => {
+            let (state, bufferData) =
+              IMGUIWorkerTool.prepareForTestInRenderWorkerJob(sandbox);
+
+            let state = state |> _addExecFuncData(50, 2);
+
+            let bufferDataCallCountAfterInit = ref(0);
+            RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+              ~state,
+              ~sandbox,
+              ~beforeExecRenderRenderWorkerJobsFunc=
+                state => {
+                  bufferDataCallCountAfterInit := bufferData |> getCallCount;
+
+                  ();
+                },
+              ~completeFunc=
+                _ =>
+                  RenderIMGUITool.judgeCustomTextureProgramPositionBufferData(
+                    bufferData,
+                    bufferDataCallCountAfterInit^,
+                    [|50., 60., 50., 310., 200., 60., 200., 310.|],
+                  )
+                  |> resolve,
+              (),
+            );
+          });
+          testPromise("test two exec func data", () => {
+            let (state, bufferData) =
+              IMGUIWorkerTool.prepareForTestInRenderWorkerJob(sandbox);
+
+            let state =
+              state |> _addExecFuncData(50, 2) |> _addExecFuncData(100, 1);
+
+            let bufferDataCallCountAfterInit = ref(0);
+            RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
+              ~state,
+              ~sandbox,
+              ~beforeExecRenderRenderWorkerJobsFunc=
+                state => {
+                  bufferDataCallCountAfterInit := bufferData |> getCallCount;
+
+                  ();
+                },
+              ~completeFunc=
+                _ =>
+                  RenderIMGUITool.judgeCustomTextureProgramPositionBufferData(
+                    bufferData,
+                    bufferDataCallCountAfterInit^,
+                    [|
+                      100.,
+                      60.,
+                      100.,
+                      310.,
+                      250.,
+                      60.,
+                      250.,
+                      310.,
+                      50.,
+                      60.,
+                      50.,
+                      310.,
+                      200.,
+                      60.,
+                      200.,
+                      310.,
+                    |],
+                  )
+                  |> resolve,
+              (),
+            );
+          });
         })
       );
 
       describe("test operate main state if imgui button is click", () =>
         describe(
-          {|can't invoke api to operate main state in imguiFunc!
+          {|can't invoke api to operate main state in execFunc!
           instead, should:|},
           () => {
             testPromise(
-              {|set custom data to render worker state in imguiFunc;
+              {|set custom data to render worker state in execFunc;
                 send custom data to main worker when finish render;|},
               () => {
                 let (state, bufferData) =
@@ -273,37 +365,45 @@ let _ =
                 let ((buttonX1, buttonY1, buttonWidth1, buttonHeight1), str1) as customData =
                   WonderImgui.ButtonIMGUITool.buildButtonData1();
                 let state =
-                  ManageIMGUIAPI.setIMGUIFunc(
-                    Obj.magic(customData),
-                    (. customData, imguiAPIJsObj, state) => {
-                      let (
-                        (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
-                        str1,
-                      ) =
-                        Obj.magic(customData);
-                      let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
+                  ExecIMGUITool.addExecFuncData(
+                    ~state,
+                    ~customData=Obj.magic(customData),
+                    ~func=
+                      (. customData, imguiAPIJsObj, state) => {
+                        let (
+                          (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
+                          str1,
+                        ) =
+                          Obj.magic(customData);
+                        let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
-                      let buttonFunc = imguiAPIJsObj##button;
-                      let setCustomDataFunc =
-                        imguiAPIJsObj##setCustomDataFromRenderWorkerToMainWorker;
+                        let buttonFunc = imguiAPIJsObj##button;
+                        let setCustomDataFunc =
+                          imguiAPIJsObj##setCustomDataFromRenderWorkerToMainWorker;
 
-                      let (state, isButtonClick) =
-                        buttonFunc(.
-                          (
-                            (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
-                            str1,
-                          ),
-                          Js.Nullable.null,
-                          state,
-                        );
+                        let (state, isButtonClick) =
+                          buttonFunc(.
+                            (
+                              (
+                                buttonX1,
+                                buttonY1,
+                                buttonWidth1,
+                                buttonHeight1,
+                              ),
+                              str1,
+                            ),
+                            Js.Nullable.null,
+                            state,
+                          );
 
-                      let state =
-                        isButtonClick ?
-                          setCustomDataFunc(. sendedCustomData, state) : state;
+                        let state =
+                          isButtonClick ?
+                            setCustomDataFunc(. sendedCustomData, state) :
+                            state;
 
-                      state;
-                    },
-                    state,
+                        state;
+                      },
+                    (),
                   );
                 let selfPostMessage =
                   RenderJobsRenderWorkerTool.stubSelfPostMessage(sandbox^);

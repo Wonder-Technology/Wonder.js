@@ -1,6 +1,6 @@
 type imguiRecord = {
   ioData: WonderImgui.IMGUIType.ioData,
-  isSetIMGUIFuncInRenderWorkerForWorker: bool,
+  isSetExecFuncInRenderWorkerForWorker: bool,
   extendData: ExtendIMGUIType.extendData,
   wonderImguiIMGUIRecord: WonderImgui.IMGUIType.imguiRecord,
 };

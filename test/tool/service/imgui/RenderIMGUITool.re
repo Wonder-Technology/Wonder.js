@@ -80,3 +80,35 @@ let prepareGl = (sandbox, state) => {
 
   (state, array_buffer, dynamic_draw, bufferData);
 };
+
+let judgeCustomTextureProgramPositionBufferData =
+    (bufferData, bufferDataCallCountAfterInit, targetData) =>
+  Wonder_jest.(
+    Expect.(
+      Expect.Operators.(
+        Sinon.(
+          bufferData
+          |> getCall(bufferDataCallCountAfterInit + 0)
+          |> getSpecificArg(1)
+          |> Array.of_list
+          |> expect == targetData
+        )
+      )
+    )
+  );
+
+let judgeNoTextureProgramColorBufferData =
+    (bufferData, bufferDataCallCountAfterInit) =>
+  Wonder_jest.(
+    Expect.(
+      Expect.Operators.(
+        Sinon.(
+          bufferData
+          |> getCall(bufferDataCallCountAfterInit + 9)
+          |> getSpecificArg(1)
+          |> Array.of_list
+          |> expect == [|0.5, 1., 2., 0.5, 1., 2., 0.5, 1., 2., 0.5, 1., 2.|]
+        )
+      )
+    )
+  );

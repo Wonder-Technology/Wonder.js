@@ -582,9 +582,11 @@ let sendFontTextureProgramUniformProjectionMatData = ManageIMGUIAPI.sendFontText
 
 let sendCustomTextureProgramUniformProjectionMatData = ManageIMGUIAPI.sendCustomTextureProgramUniformProjectionMatData;
 
-let clearIMGUIFunc = ManageIMGUIAPI.clearIMGUIFunc;
+let clearExecFuncDataArr = ManageIMGUIAPI.clearExecFuncDataArr;
 
-let handleIMGUI = ManageIMGUIAPI.setIMGUIFunc;
+let removeExecFuncData = ManageIMGUIAPI.removeExecFuncData;
+
+let addExecFuncData = ManageIMGUIAPI.addExecFuncData;
 
 let loadImageDataArr = JieHuoAPI.loadImageDataArr;
 

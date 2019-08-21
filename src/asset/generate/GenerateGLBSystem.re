@@ -90,8 +90,7 @@ let generateGLBData =
     );
 
   let (
-    customData,
-    imguiFunc,
+    execData,
     extendData,
     (
       assetData,
@@ -166,7 +165,7 @@ let generateGLBData =
         arcballCameraControllerDataArr,
         lightDataArr,
         scriptDataArr,
-        (customData, imguiFunc, extendData, assetData),
+        (execData, extendData, assetData),
         skyboxCubemapTextureIndexOpt,
         extensionsUsedArr,
       ),

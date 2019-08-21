@@ -39,7 +39,7 @@ let _ =
           let (state, bufferData) =
             IMGUIWorkerTool.prepareForTestInRenderWorkerJob(sandbox);
 
-          let state = ExtendIMGUITool.addExtendDataAndSetIMGUIFunc(state);
+          let state = ExtendIMGUITool.addExtendDataAndSetExecFunc(state);
 
           let bufferDataCallCountAfterInit = ref(0);
           RenderJobsRenderWorkerTool.initAndMainLoopAndRender(
@@ -50,7 +50,7 @@ let _ =
                 bufferDataCallCountAfterInit := bufferData |> getCallCount,
             ~completeFunc=
               _ =>
-                ExtendIMGUITool.judgeNoTextureProgramColorBufferData(
+                RenderIMGUITool.judgeNoTextureProgramColorBufferData(
                   bufferData,
                   bufferDataCallCountAfterInit^,
                 )

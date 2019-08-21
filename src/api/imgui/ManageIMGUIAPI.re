@@ -1,8 +1,10 @@
 open StateDataMainType;
 
-let setIMGUIFunc = ManageIMGUIMainService.setIMGUIFunc;
+let addExecFuncData = ManageIMGUIMainService.addExecFuncData;
 
-let clearIMGUIFunc = ManageIMGUIMainService.clearIMGUIFunc;
+let removeExecFuncData = ManageIMGUIMainService.removeExecFuncData;
+
+let clearExecFuncDataArr = ManageIMGUIMainService.clearExecFuncDataArr;
 
 let sendCustomTextureProgramUniformProjectionMatData = (gl, canvasSize, state) =>
   ManageIMGUIMainService.sendCustomTextureProgramUniformProjectionMatData(

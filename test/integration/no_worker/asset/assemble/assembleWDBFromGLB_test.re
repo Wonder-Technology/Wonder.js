@@ -175,7 +175,7 @@ let _ =
     });
 
     describe("test imgui", () => {
-      describe("if isHandleIMGUI === true, set imgui data", () => {
+      describe("if isHandleIMGUI === true, handle imgui data", () => {
         describe("test return hasIMGUIData", () =>
           testPromise("return true", () =>
             AssembleWDBSystemTool.testGLTF(
@@ -190,105 +190,126 @@ let _ =
           )
         );
 
-        describe("test customData", () =>
-          testPromise("test value with function", () => {
-            let customData = {|[ 1, \"function (a) { return a; }\" ]|};
+        describe("test execData", () => {
+          describe("test customData", () =>
+            testPromise("test value with function", () => {
+              let customData = {|[ 1, "function (a) { return a; }" ]|};
+              let name = "e1";
+
+              AssembleWDBSystemTool.testGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfIMGUI(
+                    ~execData=
+                      ConvertGLBTool.buildExecDataToOneExecFuncData(
+                        ~name,
+                        ~customData,
+                        (),
+                      ),
+                    (),
+                  ),
+                ~state,
+                ~testFunc=
+                  ((state, _, (rootGameObject, _))) => {
+                    let (_, func) =
+                      ExecIMGUITool.getCustomData(name, state)
+                      |> OptionService.unsafeGet
+                      |> Obj.magic;
+
+                    func(10) |> expect == 10;
+                  },
+                (),
+              );
+            })
+          );
+          testPromise("test empty imgui func", () => {
+            let customData = {|1|};
+            let execFunc = ExecIMGUITool.buildEmptyExecFuncStr();
+            let name = "e1";
 
             AssembleWDBSystemTool.testGLTF(
               ~sandbox=sandbox^,
               ~embeddedGLTFJsonStr=
-                ConvertGLBTool.buildGLTFJsonOfIMGUI(~customData, ()),
+                ConvertGLBTool.buildGLTFJsonOfIMGUI(
+                  ~execData=
+                    ConvertGLBTool.buildExecDataToOneExecFuncData(
+                      ~name,
+                      ~customData,
+                      ~func=execFunc,
+                      (),
+                    ),
+                  (),
+                ),
               ~state,
               ~testFunc=
-                ((state, _, (rootGameObject, _))) => {
-                  let (_, func) =
-                    IMGUITool.getCustomData(state)
+                ((state, _, (rootGameObject, _))) =>
+                  (
+                    ExecIMGUITool.getExecFunc(name, state)
                     |> OptionService.unsafeGet
-                    |> Obj.magic;
-
-                  func(10) |> expect == 10;
-                },
+                    |> SerializeTool.serializeFunction,
+                    ExecIMGUITool.getCustomData(name, state)
+                    |> OptionService.unsafeGet
+                    |> Obj.magic,
+                  )
+                  |> expect
+                  == (execFunc, customData |> Obj.magic |> Js.Json.parseExn),
               (),
             );
-          })
-        );
+          });
+          testPromise("test use imguiAPIJsObj", () => {
+            let (state, gameObject, material) =
+              LightMaterialTool.createGameObject(state^);
+            let name = "e1";
+            let customData = [|gameObject|] |> Obj.magic |> Js.Json.stringify;
+            let execFunc =
+              (
+                (. customData, imguiAPIJsObj, state) => {
+                  let gameObject = Array.unsafe_get(customData, 0);
+                  let unsafeGetGameObjectLightMaterialComponent =
+                    imguiAPIJsObj##unsafeGetGameObjectLightMaterialComponent;
 
-        testPromise("test empty imgui func", () => {
-          let customData = {|1|};
-          let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
+                  let material =
+                    unsafeGetGameObjectLightMaterialComponent(.
+                      gameObject,
+                      state,
+                    );
 
-          AssembleWDBSystemTool.testGLTF(
-            ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=
-              ConvertGLBTool.buildGLTFJsonOfIMGUI(
-                ~customData,
-                ~imguiFunc,
-                (),
-              ),
-            ~state,
-            ~testFunc=
-              ((state, _, (rootGameObject, _))) =>
-                (
-                  IMGUITool.getIMGUIFunc(state)
-                  |> OptionService.unsafeGet
-                  |> SerializeTool.serializeFunction,
-                  IMGUITool.getCustomData(state)
-                  |> OptionService.unsafeGet
-                  |> Obj.magic,
-                )
-                |> expect
-                == (imguiFunc, customData |> Obj.magic |> Js.Json.parseExn),
-            (),
-          );
-        });
-        testPromise("test use imguiAPIJsObj", () => {
-          let (state, gameObject, material) =
-            LightMaterialTool.createGameObject(state^);
-          let customData = [|gameObject|] |> Obj.magic |> Js.Json.stringify;
-          let imguiFunc =
-            (
-              (. customData, imguiAPIJsObj, state) => {
-                let gameObject = Array.unsafe_get(customData, 0);
-                let unsafeGetGameObjectLightMaterialComponent =
-                  imguiAPIJsObj##unsafeGetGameObjectLightMaterialComponent;
+                  state;
+                }
+              )
+              |> Obj.magic
+              |> SerializeTool.serializeFunction
+              |> StringTool.removeNewLines;
 
-                let material =
-                  unsafeGetGameObjectLightMaterialComponent(.
-                    gameObject,
-                    state,
-                  );
-
-                state;
-              }
-            )
-            |> Obj.magic
-            |> SerializeTool.serializeFunction
-            |> StringTool.removeNewLines;
-
-          AssembleWDBSystemTool.testGLTF(
-            ~sandbox=sandbox^,
-            ~embeddedGLTFJsonStr=
-              ConvertGLBTool.buildGLTFJsonOfIMGUI(
-                ~customData,
-                ~imguiFunc,
-                (),
-              ),
-            ~state=ref(state),
-            ~testFunc=
-              ((state, _, (rootGameObject, _))) =>
-                (
-                  IMGUITool.getIMGUIFunc(state)
-                  |> OptionService.unsafeGet
-                  |> SerializeTool.serializeFunction
-                  |> StringTool.removeNewLines
-                  |> StringTool.removeSpaces,
-                  IMGUITool.getCustomData(state)
-                  |> OptionService.unsafeGet
-                  |> Obj.magic,
-                )
-                |> expect
-                == (
-                     {|
+            AssembleWDBSystemTool.testGLTF(
+              ~sandbox=sandbox^,
+              ~embeddedGLTFJsonStr=
+                ConvertGLBTool.buildGLTFJsonOfIMGUI(
+                  ~execData=
+                    ConvertGLBTool.buildExecDataToOneExecFuncData(
+                      ~name,
+                      ~customData,
+                      ~func=execFunc,
+                      (),
+                    ),
+                  (),
+                ),
+              ~state=ref(state),
+              ~testFunc=
+                ((state, _, (rootGameObject, _))) =>
+                  (
+                    ExecIMGUITool.getExecFunc(name, state)
+                    |> OptionService.unsafeGet
+                    |> SerializeTool.serializeFunction
+                    |> StringTool.removeNewLines
+                    |> StringTool.removeSpaces,
+                    ExecIMGUITool.getCustomData(name, state)
+                    |> OptionService.unsafeGet
+                    |> Obj.magic,
+                  )
+                  |> expect
+                  == (
+                       {|
                          function (customData, imguiAPIJsObj, state) {
                            var gameObject = customData[0];
                            var unsafeGetGameObjectLightMaterialComponent = imguiAPIJsObj.unsafeGetGameObjectLightMaterialComponent;
@@ -296,13 +317,66 @@ let _ =
                            return state;
                          }
                        |}
-                     |> StringTool.removeNewLines
-                     |> StringTool.removeSpaces,
-                     [|gameObject|],
-                   ),
-            (),
+                       |> StringTool.removeNewLines
+                       |> StringTool.removeSpaces,
+                       [|gameObject|],
+                     ),
+              (),
+            );
+          });
+
+          describe("test multi exec func data", () =>
+            describe("test zIndex", () =>
+              testPromise("the execFuncDataArr is sorted by zIndex", () => {
+                let customData1 = {|1|};
+                let execFunc1 = ExecIMGUITool.buildEmptyExecFuncStr();
+                let name1 = "e1";
+                let zIndex1 = 2;
+
+                let customData2 = {|2|};
+                let execFunc2 = {|function (customData, imguiAPIJsObj, state){ var a = 1; return state; }|};
+                let name2 = "e2";
+                let zIndex2 = 0;
+
+                AssembleWDBSystemTool.testGLTF(
+                  ~sandbox=sandbox^,
+                  ~embeddedGLTFJsonStr=
+                    ConvertGLBTool.buildGLTFJsonOfIMGUI(
+                      ~execData=
+                        [|
+                          ConvertGLBTool.buildExecFuncData(
+                            ~name=name1,
+                            ~customData=customData1,
+                            ~zIndex=zIndex1,
+                            ~func=execFunc1,
+                            (),
+                          ),
+                          ConvertGLBTool.buildExecFuncData(
+                            ~name=name2,
+                            ~customData=customData2,
+                            ~zIndex=zIndex2,
+                            ~func=execFunc2,
+                            (),
+                          ),
+                        |]
+                        |> ConvertGLBTool.buildExecData,
+                      (),
+                    ),
+                  ~state,
+                  ~testFunc=
+                    ((state, _, (rootGameObject, _))) =>
+                      ExecIMGUITool.getExecFuncDataArr(state)
+                      |> Js.Array.map(({name}: ExecIMGUIType.execFuncData) =>
+                           name
+                         )
+                      |> expect == [|name2, name1|],
+                  (),
+                );
+              })
+            )
           );
         });
+
         testPromise("test extendData", () => {
           let customControlName = "c1";
           let skinName = "s1";
@@ -409,7 +483,7 @@ let _ =
         });
       });
 
-      describe("else, not set", () => {
+      describe("else, not handle", () => {
         describe("test return hasIMGUIData", () =>
           testPromise("return true", () =>
             AssembleWDBSystemTool.testGLTF(
@@ -427,16 +501,25 @@ let _ =
 
         testPromise("should has no customData", () => {
           let customData = {|[ 1, \"function (a) { return a; }\" ]|};
+          let name = "e1";
 
           AssembleWDBSystemTool.testGLTF(
             ~sandbox=sandbox^,
             ~embeddedGLTFJsonStr=
-              ConvertGLBTool.buildGLTFJsonOfIMGUI(~customData, ()),
+              ConvertGLBTool.buildGLTFJsonOfIMGUI(
+                ~execData=
+                  ConvertGLBTool.buildExecDataToOneExecFuncData(
+                    ~name,
+                    ~customData,
+                    (),
+                  ),
+                (),
+              ),
             ~state,
             ~isHandleIMGUI=false,
             ~testFunc=
               ((state, _, (rootGameObject, _))) =>
-                IMGUITool.getCustomData(state)
+                ExecIMGUITool.getCustomData(name, state)
                 |> Js.Option.isNone
                 |> expect == true,
             (),

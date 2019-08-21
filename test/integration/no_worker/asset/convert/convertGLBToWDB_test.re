@@ -513,8 +513,16 @@ let _ =
         )
       );
       test("test imgui", () => {
-        let customData = {| [1, 2] |};
-        let imguiFunc = IMGUITool.buildEmptyIMGUIFuncStr();
+        let execFuncName = "e1";
+        let customData = {|[1,2]|};
+        let execFunc = ExecIMGUITool.buildEmptyExecFuncStr();
+        let execData =
+          ConvertGLBTool.buildExecDataToOneExecFuncData(
+            ~name=execFuncName,
+            ~customData,
+            ~func=execFunc,
+            (),
+          );
         let assetData =
           ConvertGLBTool.buildAssetData(
             ~fntContent="aaa",
@@ -543,8 +551,7 @@ let _ =
           ~sandbox=sandbox^,
           ~embeddedGLTFJsonStr=
             ConvertGLBTool.buildGLTFJsonOfIMGUI(
-              ~customData,
-              ~imguiFunc,
+              ~execData,
               ~extendData,
               ~assetData,
               (),
@@ -555,8 +562,13 @@ let _ =
               scene.imgui
               |> expect
               == Some({
-                   customData: customData |> Obj.magic,
-                   imguiFunc,
+                   execData:
+                     SceneGraphIMGUITool.buildExecDataToOneExecFuncData(
+                       ~name=execFuncName,
+                       ~customData=customData |> Obj.magic |> Js.Json.parseExn |> Obj.magic,
+                       ~func=ExecIMGUITool.buildEmptyExecFunc(),
+                       (),
+                     ),
                    extendData:
                      SceneGraphIMGUITool.buildExtendData(
                        ~funcMap=

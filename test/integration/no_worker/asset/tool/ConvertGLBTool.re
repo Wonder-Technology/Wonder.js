@@ -559,16 +559,47 @@ let buildEmptyAssetData = () => {
   "customImagesData": Js.Nullable.undefined,
 };
 
+let buildExecFuncData =
+    (
+      ~name="exec",
+      ~customData="",
+      ~zIndex=0,
+      ~func=ExecIMGUITool.buildEmptyExecFuncStr(),
+      (),
+    ) => {
+  "name": name,
+  "execFunc": func,
+  "zIndex": zIndex,
+  "customData": customData,
+};
+
+let buildExecDataToOneExecFuncData =
+    (
+      ~name="exec",
+      ~customData="",
+      ~zIndex=0,
+      ~func=ExecIMGUITool.buildEmptyExecFuncStr(),
+      (),
+    ) => {
+  "execFuncDataArr": [|
+    buildExecFuncData(~name, ~customData, ~zIndex, ~func, ()),
+  |],
+};
+
+let buildExecData = execFuncDataArr => {
+  "execFuncDataArr": execFuncDataArr,
+};
+
 let buildGLTFJsonOfIMGUI =
     (
-      ~customData="",
-      ~imguiFunc=IMGUITool.buildEmptyIMGUIFuncStr(),
+      ~execData=buildExecDataToOneExecFuncData(),
       ~extendData=buildExtendData(),
       ~assetData=buildEmptyAssetData(),
       (),
     ) => {
   let assetDataStr = assetData |> Obj.magic |> Js.Json.stringify;
   let extendDataStr = extendData |> Obj.magic |> Js.Json.stringify;
+  let execDataStr = execData |> Obj.magic |> Js.Json.stringify;
 
   buildGLTFJson(
     ~scene={|0|},
@@ -579,8 +610,7 @@ let buildGLTFJsonOfIMGUI =
         "extras": {
             "imgui": {
                 "assetData": $assetDataStr,
-                "customData": "$customData",
-                "imguiFunc": "$imguiFunc",
+                "execData": $execDataStr,
                 "extendData": $extendDataStr
             }
         }

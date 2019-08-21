@@ -2563,7 +2563,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
       describe("test imgui", () => {
         let imguiWDBArrayBuffer = ref(Obj.magic(-1));
 
-        let _test = (sandbox, hasIMGUIFunc, prepareFunc, state) => {
+        let _test = (sandbox, hasExecFunc, prepareFunc, state) => {
           let state =
             state^
             |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
@@ -2596,9 +2596,8 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
 
                let state = DirectorTool.runWithDefaultTime(state);
 
-               IMGUITool.getIMGUIFunc(state)
-               |> Js.Option.isSome
-               |> expect == hasIMGUIFunc
+               ExecIMGUITool.hasExecFuncData(state)
+               |> expect == hasExecFunc
                |> resolve;
              });
         };
@@ -2608,12 +2607,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             WDBTool.generateWDB(state => {
               let rootGameObject = SceneAPI.getSceneGameObject(state);
 
-              let state =
-                ManageIMGUIAPI.setIMGUIFunc(
-                  Obj.magic(-1),
-                  IMGUITool.buildEmptyIMGUIFunc(),
-                  state,
-                );
+              let state = ExecIMGUITool.addExecFuncData(~state, ());
 
               let (state, cubemapTexture) =
                 SkyboxTool.prepareCubemapTextureAndSetAllSources(state);

@@ -229,13 +229,18 @@ module AssetData = {
   };
 };
 
+module ExecData = {
+  let _buildExecFuncDataArr = state =>
+    ManageIMGUIMainService.getExecFuncDataArr(state)
+    |> SerializeAllIMGUIService.Exec.serializeWonderExecFuncDataArr;
+
+  let buildExecDataToOneExecFuncData = state => {
+    execFuncDataArr: _buildExecFuncDataArr(state),
+  };
+};
+
 let build = (state, (totalByteLength, byteOffset, bufferViewDataArr)) => (
-  ManageIMGUIMainService.getCustomData(state)
-  |> SerializeService.serializeValueWithFunction,
-  switch (ManageIMGUIMainService.getIMGUIFunc(state)) {
-  | None => None
-  | Some(imguiFunc) => imguiFunc |> SerializeService.serializeFunction
-  },
+  ExecData.buildExecDataToOneExecFuncData(state),
   ExtendData.buildExtendData(state),
   AssetData.buildAssetData(
     state,

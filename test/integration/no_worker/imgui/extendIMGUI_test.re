@@ -73,7 +73,7 @@ let _ =
           let (state, array_buffer, dynamic_draw, bufferData) =
             RenderIMGUITool.prepareGl(sandbox, state);
 
-          let state = ExtendIMGUITool.addExtendDataAndSetIMGUIFunc(state);
+          let state = ExtendIMGUITool.addExtendDataAndSetExecFunc(state);
 
           let state = state |> NoWorkerJobTool.execInitJobs;
 
@@ -81,7 +81,7 @@ let _ =
 
           let state = state |> NoWorkerJobTool.execLoopJobs;
 
-          ExtendIMGUITool.judgeNoTextureProgramColorBufferData(
+          RenderIMGUITool.judgeNoTextureProgramColorBufferData(
             bufferData,
             bufferDataCallCountAfterInit,
           );

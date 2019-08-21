@@ -16,12 +16,12 @@ let buildExtendData =
 };
 
 /* let buildCustomImageData =
-    (~id="", ~bufferView=1, ~mimeType="image/png", ())
-    : SceneGraphType.customImageData => {
-  id,
-  bufferView,
-  mimeType,
-}; */
+       (~id="", ~bufferView=1, ~mimeType="image/png", ())
+       : SceneGraphType.customImageData => {
+     id,
+     bufferView,
+     mimeType,
+   }; */
 
 let getSettedAssetCustomImageDataArrForTest = state =>
   SetAssetIMGUIMainService.getSettedAssetCustomImageDataArr(state)
@@ -57,4 +57,31 @@ let buildAssetData =
 let buildEmptyAssetData = (): SceneGraphType.assetData => {
   fontData: None,
   customImagesData: None,
+};
+
+let buildExecFuncDataArr =
+    (
+      ~name="exec",
+      ~customData=Obj.magic(-1),
+      ~zIndex=0,
+      ~func=ExecIMGUITool.buildEmptyExecFunc(),
+      (),
+    )
+    : SceneGraphType.execFuncDataArr =>
+  [|
+    ({name, execFunc: func, zIndex, customData}: ExecIMGUIType.execFuncData),
+  |]
+  |> SerializeAllIMGUIService.Exec.serializeWonderExecFuncDataArr;
+
+let buildExecDataToOneExecFuncData =
+    (
+      ~name="exec",
+      ~customData=Obj.magic(-1),
+      ~zIndex=0,
+      ~func=ExecIMGUITool.buildEmptyExecFunc(),
+      (),
+    )
+    : SceneGraphType.execData => {
+  execFuncDataArr:
+    buildExecFuncDataArr(~name, ~customData, ~zIndex, ~func, ()),
 };

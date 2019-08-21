@@ -6,6 +6,14 @@ let getRecord = state => state.imguiRecord;
 
 let getWonderIMGUIRecord = state => getRecord(state).wonderImguiIMGUIRecord;
 
+let setWonderIMGUIRecord = (imguiRecord, state) => {
+  ...state,
+  imguiRecord: {
+    ...state.imguiRecord,
+    wonderImguiIMGUIRecord: imguiRecord,
+  },
+};
+
 let getIOData = state => getRecord(state).ioData;
 
 let create = () => {
@@ -23,6 +31,6 @@ let create = () => {
       allSkinDataMap: WonderCommonlib.ImmutableHashMapService.createEmpty(),
     },
   },
-  isSetIMGUIFuncInRenderWorkerForWorker: false,
+  isSetExecFuncInRenderWorkerForWorker: false,
   wonderImguiIMGUIRecord: WonderImgui.ManageIMGUIService.createRecord(),
 };

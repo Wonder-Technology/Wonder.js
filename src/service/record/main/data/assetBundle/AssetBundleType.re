@@ -42,8 +42,8 @@
    }; */
 
 /* type imguiData = {
-     imguiFunc: string,
-     customData: WonderImgui.IMGUIType.customDataForIMGUIFunc,
+     execFunc: string,
+     customData: WonderImgui.IMGUIType.customData,
    }; */
 
 type assembleSABData = {

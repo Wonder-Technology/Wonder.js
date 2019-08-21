@@ -1,11 +1,11 @@
 open StateDataMainType;
 
 let label =
-  (. rect, str, align, state) =>
+  (. rect, str, data, state) =>
     WonderImgui.FixedLayoutControlIMGUIService.label(.
       rect,
       str,
-      align,
+      data,
       ManageIMGUIMainService.getRecord(state),
     )
     |> ManageIMGUIMainService.setRecord(_, state);

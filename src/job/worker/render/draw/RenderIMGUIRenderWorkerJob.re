@@ -1,5 +1,30 @@
 open StateDataRenderWorkerType;
 
+let _addAllExecFuncData = (execFuncDataArr, imguiRecord) =>
+  execFuncDataArr
+  |> SerializeAllIMGUIService.Exec.deserializeExecFuncDataArrToWonderIMGUIType
+  |> WonderCommonlib.ArrayService.reduceOneParam(
+       (.
+         imguiRecord,
+         {execFunc, customData, zIndex, name}: WonderImgui.IMGUIType.execFuncData,
+       ) =>
+         WonderImgui.ManageIMGUIAPI.addExecFuncData(
+           name,
+           customData,
+           zIndex,
+           execFunc,
+           imguiRecord,
+         ),
+       imguiRecord,
+     );
+
+let _updateExecData = (execFuncDataArr, imguiRecord) =>
+  execFuncDataArr |> ExecDataAllIMGUIService.hasExecFuncData ?
+    imguiRecord
+    |> WonderImgui.ManageIMGUIAPI.clearExecFuncDataArr
+    |> _addAllExecFuncData(execFuncDataArr) :
+    imguiRecord;
+
 let execJob = (flags, e, stateData) =>
   MostUtils.callFunc(() => {
     let state = StateRenderWorkerService.unsafeGetState(stateData);
@@ -7,22 +32,11 @@ let execJob = (flags, e, stateData) =>
     let data = MessageService.getRecord(e);
     let imguiData = data##imguiData;
 
+    let execFuncDataArr = imguiData##execFuncDataArr;
+
     let imguiRecord =
-      imguiData##imguiFunc
-      |> OptionService.isJsonSerializedValueNone
-      ||
-      imguiData##customData
-      |> OptionService.isJsonSerializedValueNone ?
-        RecordIMGUIRenderWorkerService.getRecord(state) :
-        RecordIMGUIRenderWorkerService.getRecord(state)
-        |> WonderImgui.ManageIMGUIAPI.setIMGUIFunc(
-             imguiData##customData
-             |> OptionService.unsafeGetJsonSerializedValue
-             |> SerializeService.deserializeValueWithFunction,
-             imguiData##imguiFunc
-             |> OptionService.unsafeGetJsonSerializedValue
-             |> SerializeService.deserializeFunction,
-           );
+      RecordIMGUIRenderWorkerService.getRecord(state)
+      |> _updateExecData(execFuncDataArr);
 
     state.imguiRecord = imguiRecord;
 

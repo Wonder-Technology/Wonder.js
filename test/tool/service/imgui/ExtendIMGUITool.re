@@ -92,64 +92,52 @@ let addExtendData = state => {
   (state, (rectData, customControlName, (skinName, customStyleName)));
 };
 
-let addExtendDataAndSetIMGUIFunc = state => {
+let addExtendDataAndSetExecFunc = state => {
   let (state, (rectData, customControlName, (skinName, customStyleName))) =
     state |> addExtendData;
 
   let state =
-    ManageIMGUIAPI.setIMGUIFunc(
-      (rectData, customControlName, (skinName, customStyleName)) |> Obj.magic,
-      (. customData, imguiAPIJsObj, state) => {
-        let (
-          (x1, y1, w1, w2),
-          customControlName,
-          (skinName, customStyleName),
-        ) =
-          customData |> Obj.magic;
-
-        let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
-
-        let unsafeGetCustomControl = imguiAPIJsObj##unsafeGetCustomControl;
-
-        let getWonderImguiIMGUIRecord =
-          imguiAPIJsObj##getWonderImguiIMGUIRecord;
-        let setWonderImguiIMGUIRecord =
-          imguiAPIJsObj##setWonderImguiIMGUIRecord;
-
-        let customControl =
-          unsafeGetCustomControl(. customControlName, state);
-
-        let record = getWonderImguiIMGUIRecord(. state);
-
-        let (record, _) =
-          customControl(.
+    ExecIMGUITool.addExecFuncData(
+      ~state,
+      ~customData=
+        (rectData, customControlName, (skinName, customStyleName))
+        |> Obj.magic,
+      ~func=
+        (. customData, imguiAPIJsObj, state) => {
+          let (
             (x1, y1, w1, w2),
-            Js.Nullable.return((skinName, customStyleName)),
-            record,
-          );
+            customControlName,
+            (skinName, customStyleName),
+          ) =
+            customData |> Obj.magic;
 
-        let state = setWonderImguiIMGUIRecord(. record, state);
+          let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
-        state;
-      },
-      state,
+          let unsafeGetCustomControl = imguiAPIJsObj##unsafeGetCustomControl;
+
+          let getWonderImguiIMGUIRecord =
+            imguiAPIJsObj##getWonderImguiIMGUIRecord;
+          let setWonderImguiIMGUIRecord =
+            imguiAPIJsObj##setWonderImguiIMGUIRecord;
+
+          let customControl =
+            unsafeGetCustomControl(. customControlName, state);
+
+          let record = getWonderImguiIMGUIRecord(. state);
+
+          let (record, _) =
+            customControl(.
+              (x1, y1, w1, w2),
+              Js.Nullable.return((skinName, customStyleName)),
+              record,
+            );
+
+          let state = setWonderImguiIMGUIRecord(. record, state);
+
+          state;
+        },
+      (),
     );
 
   state;
 };
-
-let judgeNoTextureProgramColorBufferData =
-    (bufferData, bufferDataCallCountAfterInit) =>
-  Wonder_jest.(
-    Expect.(
-      Expect.Operators.(
-        Sinon.(
-          bufferData
-          |> getCall(bufferDataCallCountAfterInit + 9)
-          |> getSpecificArg(1)
-          |> Array.of_list
-          |> expect == [|0.5, 1., 2., 0.5, 1., 2., 0.5, 1., 2., 0.5, 1., 2.|]
-        )
-      )
-    )
-  );

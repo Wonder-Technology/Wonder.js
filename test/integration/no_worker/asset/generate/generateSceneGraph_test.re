@@ -58,7 +58,7 @@ let _ =
             gltf
             |> GenerateSceneGraphSystemTool.contain(
                  {|
-                  "scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0],"extras":{}}]
+"scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0],"extras":{"imgui":{"assetData":{},"extendData":{"customControlData":{"funcMap":"{}"},"skinData":{"allSkinDataMap":"{}"}},"execData":{"execFuncDataArr":[]}}}}]
                   |},
                ),
           state,

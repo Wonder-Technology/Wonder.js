@@ -34,27 +34,24 @@ let _buildIMGUIData = ({viewRecord} as state) => {
 
   let ioData = RecordIMGUIMainService.getIOData(state);
 
-  ManageIMGUIMainService.isSetIMGUIFuncInRenderWorkerForWorker(state) ?
-    (state, {"ioData": ioData, "customData": None, "imguiFunc": None}) :
+  ManageIMGUIMainService.isSetExecFuncInRenderWorkerForWorker(state) ?
     (
-      ManageIMGUIMainService.markSetIMGUIFuncInRenderWorkerForWorker(state),
+      state,
       {
         "ioData": ioData,
-        "customData":
-          switch (
-            WonderImgui.ManageIMGUIAPI.getCustomData(wonderImguiIMGUIRecord)
-          ) {
-          | None => None
-          | Some(customData) =>
-            (customData |> SerializeService.serializeValueWithFunction)->Some
-          },
-        "imguiFunc":
-          switch (
-            WonderImgui.ManageIMGUIAPI.getIMGUIFunc(wonderImguiIMGUIRecord)
-          ) {
-          | None => None
-          | Some(func) => (func |> SerializeService.serializeFunction)->Some
-          },
+        "execFuncDataArr": ManageIMGUIMainService.createEmptyExecFuncDataArr(),
+      },
+    ) :
+    (
+      ManageIMGUIMainService.markSetExecFuncInRenderWorkerForWorker(state),
+      {
+        "ioData": ioData,
+        "execFuncDataArr":
+          SerializeAllIMGUIService.Exec.serializeWonderIMGUIExecFuncDataArr(
+            WonderImgui.ManageIMGUIAPI.getExecFuncDataArr(
+              wonderImguiIMGUIRecord,
+            ),
+          ),
       },
     );
 };

@@ -10,6 +10,8 @@
     <script src="../../test/e2e/js/AssetTool.js"></script>
     <script src="../../test/e2e/js/IMGUITool.js"></script>
     <script src="../../dist/wd.js"></script>
+    <script src="../../dist/wd.render.worker.js"></script>
+
     <script>
         var _setDefaultSkinData = function (buttonColor, hoverButtonColor, clickButtonColor,
             buttonImage, hoverButtonImage, clickButtonImage, state
@@ -30,7 +32,15 @@
                 0.1
             ];
 
-            return wd.setSkinData(wd.getDefaultSkinName(/* () */0), wd.setButtonSkinData(wd.createButtonSkinData(buttonColor, hoverButtonColor, clickButtonColor, buttonImage, hoverButtonImage, clickButtonImage), wd.createDefaultSkinData()), state);
+
+            var fontColor = [1.0, 1.0, 1.0];
+            var fontAlign = 0;
+
+
+            return wd.setSkinData(wd.getDefaultSkinName(/* () */0), wd.setButtonSkinData(wd.createButtonSkinData(buttonColor, hoverButtonColor, clickButtonColor, buttonImage, hoverButtonImage, clickButtonImage,
+                fontAlign,
+                fontColor
+            ), wd.createDefaultSkinData()), state);
         };
 
 
@@ -51,7 +61,7 @@
         };
 
         var _registerCustomControl = function (customControlName, state) {
-            return wd.registerCustomControl(customControlName, (customControlFuncData, showData, apiJsObj, record) => {
+            return wd.registerCustomControl(customControlName, function (customControlFuncData, showData, apiJsObj, record) {
                 var drawBox = apiJsObj.drawBox;
                 var parseShowData = apiJsObj.parseShowData;
                 var unsafeGetSkinData = apiJsObj.unsafeGetSkinData;
@@ -97,10 +107,6 @@
                         ["../../test/e2e/asset/image/2.jpg", "2"]
                     ],
                     function (state) {
-                        var state = ImguiTool.setSetting([0.045, 0.012], state);
-
-
-
                         var state = _setDefaultSkinData(
                             [0.35, 0.5, 0.1],
                             [0.40, 0.5, 0.1],
@@ -130,7 +136,8 @@
 
                         var rect = [0, 10, 200, 50];
 
-                        var state = wd.setIMGUIFunc(
+                        var state = wd.addExecFuncData(
+                            "e1",
                             [
 
                                 rect, customControlName, [skinName, customStyleName],
@@ -139,6 +146,7 @@
                                 ]
 
                             ],
+                            0,
                             (customData, api, state) => {
                                 var [
                                     screenWidth, screenHeight
@@ -159,9 +167,15 @@
                                 );
 
 
+                                var labelAlign = 0;
+                                var labelColor = [1.0, 1.0, 1.0];
+
                                 var state = api.label(
-                                    [intervalX, intervalY * 3, controlWidth, controlHeight], "label1", 0, state
+                                    [intervalX, intervalY * 3, controlWidth, controlHeight], "label1",
+                                    [labelColor, labelAlign],
+                                    state
                                 );
+
 
 
                                 var state = api.image(

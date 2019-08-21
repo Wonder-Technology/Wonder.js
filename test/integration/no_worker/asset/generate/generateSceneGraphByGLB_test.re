@@ -461,7 +461,7 @@ let _ =
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfCameras(),
           ~targetJsonStr=
             {|
-"scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0],"extras":{}}]
+"scenes":[{"extensions":{"KHR_lights":{"light":0}},"nodes":[0]
             |},
           ~state,
           (),
@@ -704,7 +704,7 @@ let _ =
           ~embeddedGLTFJsonStr=ConvertGLBTool.buildGLTFJsonOfLight(),
           ~targetJsonStr=
             {|
-              "scenes":[{"extensions":{"KHR_lights":{"light":2}},"nodes":[0],"extras":{}}]
+              "scenes":[{"extensions":{"KHR_lights":{"light":2}}
 |},
           ~state,
           (),

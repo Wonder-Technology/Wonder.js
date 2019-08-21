@@ -128,22 +128,23 @@ let _ =
             WonderImgui.RenderIMGUITool.buildImageData();
           let image1Data = _getPositionBufferData();
           let state =
-            ManageIMGUIAPI.setIMGUIFunc(
-              Obj.magic(-1),
-              (. _, imguiAPIJsObj, state) => {
-                let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
-                let imageFunc = imguiAPIJsObj##image;
-                let state =
-                  imageFunc(.
-                    (imageX1, imageY1, imageWidth1, imageHeight1),
-                    (imageS01, imageT01, imageS11, imageT11),
-                    textureId1,
-                    state,
-                  );
+            ExecIMGUITool.addExecFuncData(
+              ~state,
+              ~func=
+                (. _, imguiAPIJsObj, state) => {
+                  let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
+                  let imageFunc = imguiAPIJsObj##image;
+                  let state =
+                    imageFunc(.
+                      (imageX1, imageY1, imageWidth1, imageHeight1),
+                      (imageS01, imageT01, imageS11, imageT11),
+                      textureId1,
+                      state,
+                    );
 
-                state;
-              },
-              state,
+                  state;
+                },
+              (),
             );
           let state = state |> NoWorkerJobTool.execInitJobs;
           let bufferDataCallCountAfterInit = bufferData |> getCallCount;
@@ -234,31 +235,33 @@ let _ =
               let ((buttonX1, buttonY1, buttonWidth1, buttonHeight1), str1) as buttonData =
                 WonderImgui.ButtonIMGUITool.buildButtonData1();
               let state =
-                ManageIMGUIAPI.setIMGUIFunc(
-                  buttonData |> Obj.magic,
-                  (. customData, imguiAPIJsObj, state) => {
-                    let (
-                      (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
-                      str1,
-                    ) =
-                      customData |> Obj.magic;
-                    let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
+                ExecIMGUITool.addExecFuncData(
+                  ~state,
+                  ~customData=buttonData |> Obj.magic,
+                  ~func=
+                    (. customData, imguiAPIJsObj, state) => {
+                      let (
+                        (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
+                        str1,
+                      ) =
+                        customData |> Obj.magic;
+                      let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
-                    let buttonFunc = imguiAPIJsObj##button;
+                      let buttonFunc = imguiAPIJsObj##button;
 
-                    let (state, isButtonClick) =
-                      buttonFunc(.
-                        (
-                          (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
-                          str1,
-                        ),
-                        Js.Nullable.null,
-                        state,
-                      );
+                      let (state, isButtonClick) =
+                        buttonFunc(.
+                          (
+                            (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
+                            str1,
+                          ),
+                          Js.Nullable.null,
+                          state,
+                        );
 
-                    state;
-                  },
-                  state,
+                      state;
+                    },
+                  (),
                 );
 
               let state = state |> NoWorkerJobTool.execInitJobs;
@@ -396,33 +399,35 @@ let _ =
               WonderImgui.ButtonIMGUITool.buildButtonData1();
             let isClick = ref(false);
             let state =
-              ManageIMGUIAPI.setIMGUIFunc(
-                buttonData |> Obj.magic,
-                (. customData, imguiAPIJsObj, state) => {
-                  let (
-                    (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
-                    str1,
-                  ) =
-                    customData |> Obj.magic;
-                  let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
+              ExecIMGUITool.addExecFuncData(
+                ~state,
+                ~customData=buttonData |> Obj.magic,
+                ~func=
+                  (. customData, imguiAPIJsObj, state) => {
+                    let (
+                      (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
+                      str1,
+                    ) =
+                      customData |> Obj.magic;
+                    let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
-                  let buttonFunc = imguiAPIJsObj##button;
+                    let buttonFunc = imguiAPIJsObj##button;
 
-                  let (state, isButtonClick) =
-                    buttonFunc(.
-                      (
-                        (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
-                        str1,
-                      ),
-                      Js.Nullable.null,
-                      state,
-                    );
+                    let (state, isButtonClick) =
+                      buttonFunc(.
+                        (
+                          (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
+                          str1,
+                        ),
+                        Js.Nullable.null,
+                        state,
+                      );
 
-                  isClick := isButtonClick;
+                    isClick := isButtonClick;
 
-                  state;
-                },
-                state,
+                    state;
+                  },
+                (),
               );
             let state = state |> NoWorkerJobTool.execInitJobs;
             let state = MainStateTool.setState(state);
@@ -463,33 +468,35 @@ let _ =
               WonderImgui.ButtonIMGUITool.buildButtonData1();
             let isClick = ref(false);
             let state =
-              ManageIMGUIAPI.setIMGUIFunc(
-                buttonData |> Obj.magic,
-                (. customData, imguiAPIJsObj, state) => {
-                  let (
-                    (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
-                    str1,
-                  ) =
-                    customData |> Obj.magic;
-                  let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
+              ExecIMGUITool.addExecFuncData(
+                ~state,
+                ~customData=buttonData |> Obj.magic,
+                ~func=
+                  (. customData, imguiAPIJsObj, state) => {
+                    let (
+                      (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
+                      str1,
+                    ) =
+                      customData |> Obj.magic;
+                    let imguiAPIJsObj = Obj.magic(imguiAPIJsObj);
 
-                  let buttonFunc = imguiAPIJsObj##button;
+                    let buttonFunc = imguiAPIJsObj##button;
 
-                  let (state, isButtonClick) =
-                    buttonFunc(.
-                      (
-                        (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
-                        str1,
-                      ),
-                      Js.Nullable.null,
-                      state,
-                    );
+                    let (state, isButtonClick) =
+                      buttonFunc(.
+                        (
+                          (buttonX1, buttonY1, buttonWidth1, buttonHeight1),
+                          str1,
+                        ),
+                        Js.Nullable.null,
+                        state,
+                      );
 
-                  isClick := isButtonClick;
+                    isClick := isButtonClick;
 
-                  state;
-                },
-                state,
+                    state;
+                  },
+                (),
               );
             let state = state |> NoWorkerJobTool.execInitJobs;
 
