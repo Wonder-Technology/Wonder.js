@@ -9,3 +9,4 @@ let testStream = (testFunc, stream) => {
   |> Most.forEach(value => valueRef := value)
   |> then_(() => testFunc(valueRef^ |> Obj.magic));
 };
+

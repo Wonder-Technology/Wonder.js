@@ -404,8 +404,26 @@ module SAB = {
       StateDataMainService.unsafeGetState(StateDataMain.stateData),
     )
     |> then_(blobObjectUrlImageArr => {
+         resultData := blobObjectUrlImageArr;
+
+         resolve();
+       })
+    |> Most.fromPromise
+    |> Most.merge(
+         HandleIMGUISystem.handleIMGUI(
+           true,
+           sceneAssetBundleContent,
+           binBuffer,
+           StateDataMainService.unsafeGetState(StateDataMain.stateData),
+         ),
+       )
+    |> Most.drain
+    |> Most.fromPromise
+    |> Most.map(_ => {
          let state =
            StateDataMainService.unsafeGetState(StateDataMain.stateData);
+
+         let blobObjectUrlImageArr = resultData^;
 
          let (
            state,
@@ -472,41 +490,22 @@ module SAB = {
              (state, gameObjectArr),
            );
 
-         resultData :=
-           (
-             rootGameObject,
-             SkyboxCubemapSystem.getSkyboxCubemap(
-               sceneAssetBundleContent,
-               cubemapTextureArr,
-               state,
-             ),
+         let state =
+           state
+           |> OperateSABAssetBundleMainService.markAssembled(sabRelativePath);
+
+         let skyboxCubemap =
+           SkyboxCubemapSystem.getSkyboxCubemap(
+             sceneAssetBundleContent,
+             cubemapTextureArr,
+             state,
            );
 
          StateDataMainService.setState(StateDataMain.stateData, state)
          |> ignore;
 
-         () |> resolve;
-       })
-    |> WonderBsMost.Most.fromPromise
-    |> Most.merge(
-         HandleIMGUISystem.handleIMGUI(
-           true,
-           sceneAssetBundleContent,
-           binBuffer,
-           StateDataMainService.unsafeGetState(StateDataMain.stateData),
-         ),
-       )
-    |> Most.drain
-    |> then_(_ => {
-         StateDataMainService.unsafeGetState(StateDataMain.stateData)
-         |> OperateSABAssetBundleMainService.markAssembled(sabRelativePath)
-         |> StateDataMainService.setState(StateDataMain.stateData)
-         |> ignore;
-
-         () |> resolve;
-       })
-    |> Most.fromPromise
-    |> Most.map(_ => resultData^);
+         (rootGameObject, skyboxCubemap);
+       });
   };
 };
 

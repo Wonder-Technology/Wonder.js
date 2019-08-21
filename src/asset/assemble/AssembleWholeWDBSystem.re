@@ -134,15 +134,25 @@ let assembleWDBData =
       ),
       state,
     ) => {
-  StateDataMainService.setState(StateDataMain.stateData, state) |> ignore;
-
-  let resultData1 = ref(Obj.magic(-1));
-  let resultData2 = ref(Obj.magic(-1));
+  let resultData = ref(Obj.magic(-1));
 
   _buildImageArray(isLoadImage, wd, binBuffer)
   |> then_(imageDataTuple => {
+       resultData := imageDataTuple;
+
+       resolve();
+     })
+  |> Most.fromPromise
+  |> Most.merge(
+       HandleIMGUISystem.handleIMGUI(isHandleIMGUI, wd, binBuffer, state),
+     )
+  |> Most.drain
+  |> Most.fromPromise
+  |> Most.map(_ => {
        let state =
          StateDataMainService.unsafeGetState(StateDataMain.stateData);
+
+       let imageDataTuple = resultData^;
 
        let (
          state,
@@ -162,36 +172,18 @@ let assembleWDBData =
        let (state, rootGameObject) =
          BuildRootGameObjectSystem.build(wd, (state, gameObjectArr));
 
-       resultData1 :=
-         (imageUint8ArrayDataMapTuple, HandleIMGUISystem.getHasIMGUIData(wd));
-       resultData2 :=
+       (
+         state,
+         (
+           imageUint8ArrayDataMapTuple,
+           HandleIMGUISystem.getHasIMGUIData(wd),
+         ),
          (
            rootGameObject,
            SkyboxCubemapSystem.getSkyboxCubemap(wd, cubemapTextureArr, state),
-         );
-
-       StateDataMainService.setState(StateDataMain.stateData, state) |> ignore;
-
-       () |> resolve;
-     })
-  |> Most.fromPromise
-  |> Most.merge(
-       HandleIMGUISystem.handleIMGUI(
-         isHandleIMGUI,
-         wd,
-         binBuffer,
-         StateDataMainService.unsafeGetState(StateDataMain.stateData),
-       ),
-     )
-  |> Most.drain
-  |> Most.fromPromise
-  |> Most.map(_ =>
-       (
-         StateDataMainService.unsafeGetState(StateDataMain.stateData),
-         resultData1^,
-         resultData2^,
-       )
-     );
+         ),
+       );
+     });
 };
 
 let assemble = (wdb, configTuple, state) => {

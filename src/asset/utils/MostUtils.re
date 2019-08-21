@@ -63,24 +63,40 @@ let concatStreamFuncArray = (stateData, streamFuncArr) => {
      );
 };
 
+/* let concatExecStreamArr =
+     (streamArr: array((. unit) => WonderBsMost.Most.stream(unit))) =>
+   switch (Js.Array.length(streamArr)) {
+   | 0 => WonderBsMost.Most.just(Obj.magic(1))
+   | _ =>
+     streamArr
+     |> Js.Array.sliceFrom(1)
+     |> WonderCommonlib.ArrayService.reduceOneParam(
+          (. stream1, buildStream2Func) =>
+            _isFromEventStream(stream1) === true ?
+              stream1 |> concatMap(() => buildStream2Func(.)) :
+              stream1 |> concatMap(() => buildStream2Func(.)),
+          (Array.unsafe_get(streamArr, 0))(.),
+        )
+   }; */
+
+let ignore = stream => stream |> map(_ => ());
+
 let concatExecStreamArr =
-    (streamArr: array((. unit) => WonderBsMost.Most.stream(unit))) =>
-  switch (Js.Array.length(streamArr)) {
+    (buildStreamFuncArr: array((. unit) => WonderBsMost.Most.stream(unit))) =>
+  switch (Js.Array.length(buildStreamFuncArr)) {
   | 0 => WonderBsMost.Most.just(Obj.magic(1))
   | _ =>
-    streamArr
+    buildStreamFuncArr
     |> Js.Array.sliceFrom(1)
     |> WonderCommonlib.ArrayService.reduceOneParam(
          (. stream1, buildStream2Func) =>
            _isFromEventStream(stream1) === true ?
              stream1 |> concatMap(() => buildStream2Func(.)) :
              stream1 |> concatMap(() => buildStream2Func(.)),
-         (Array.unsafe_get(streamArr, 0))(.),
+         (Array.unsafe_get(buildStreamFuncArr, 0))(.),
        )
   };
 
 let callStreamFunc = func => just(func) |> flatMap(func => func());
 
 let callFunc = func => just(func) |> map(func => func());
-
-let ignore = stream => stream |> map(_ => ());

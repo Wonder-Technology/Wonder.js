@@ -1544,6 +1544,39 @@ let _ =
               );
             })
           );
+
+          describe("fix bug", () =>
+            testPromise("shouldn't affect by isLoadImage", () =>
+              AssembleWDBSystemTool.testGLTF(
+                ~sandbox=sandbox^,
+                ~embeddedGLTFJsonStr=
+                  ConvertGLBTool.buildGLTFJsonOfBasicCameraView(),
+                ~isActiveCamera=true,
+                ~isLoadImage=false,
+                ~state=ref(state^),
+                ~testFunc=
+                  ((state, _, (rootGameObject, _))) =>
+                    _getAllBasicCameraViewGameObjects(rootGameObject, state)
+                    |> Js.Array.map(gameObject =>
+                         GameObjectAPI.unsafeGetGameObjectBasicCameraViewComponent(
+                           gameObject,
+                           state,
+                         )
+                       )
+                    |> Js.Array.map(cameraView =>
+                         (
+                           cameraView,
+                           BasicCameraViewAPI.isActiveBasicCameraView(
+                             cameraView,
+                             state,
+                           ),
+                         )
+                       )
+                    |> expect == [|(1, true), (0, false), (2, false)|],
+                (),
+              )
+            )
+          );
         });
       });
     });
