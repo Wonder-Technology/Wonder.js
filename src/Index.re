@@ -534,6 +534,14 @@ let createRenderGroup = RenderGroupAPI.createRenderGroup;
 
 let buildRenderGroup = RenderGroupAPI.buildRenderGroup;
 
+let clearExecFuncDataArr = ExecIMGUIAPI.clearExecFuncDataArr;
+
+let removeExecFuncData = ExecIMGUIAPI.removeExecFuncData;
+
+let addExecFuncData = ExecIMGUIAPI.addExecFuncData;
+
+let hasExecFuncData = ExecIMGUIAPI.hasExecFuncData;
+
 let createDefaultButtonSkinData = ExtendIMGUIAPI.createDefaultButtonSkinData;
 
 let createButtonSkinData = ExtendIMGUIAPI.createButtonSkinData;
@@ -570,6 +578,8 @@ let createSingleCustomStyleData = ExtendIMGUIAPI.createSingleCustomStyleData;
 
 let createAllCustomStyleData = ExtendIMGUIAPI.createAllCustomStyleData;
 
+let removeCustomControl = ExtendIMGUIAPI.removeCustomControl;
+
 let registerCustomControl = ExtendIMGUIAPI.registerCustomControl;
 
 let image = FixedLayoutControlIMGUIAPI.image;
@@ -581,12 +591,6 @@ let sendNoTextureProgramUniformProjectionMatData = ManageIMGUIAPI.sendNoTextureP
 let sendFontTextureProgramUniformProjectionMatData = ManageIMGUIAPI.sendFontTextureProgramUniformProjectionMatData;
 
 let sendCustomTextureProgramUniformProjectionMatData = ManageIMGUIAPI.sendCustomTextureProgramUniformProjectionMatData;
-
-let clearExecFuncDataArr = ManageIMGUIAPI.clearExecFuncDataArr;
-
-let removeExecFuncData = ManageIMGUIAPI.removeExecFuncData;
-
-let addExecFuncData = ManageIMGUIAPI.addExecFuncData;
 
 let loadImageDataArr = JieHuoAPI.loadImageDataArr;
 

@@ -1,36 +1,74 @@
-let getSettedAssetFntData = state =>
-  WonderImgui.FontIMGUIService.SetAsset.getFntData(
+let getSettedAssetFntContent = state =>
+  WonderImgui.FontIMGUIService.SetAsset.getFntContent(
     ManageIMGUIMainService.getRecord(state),
   );
 
-let unsafeGetSettedAssetFntData = state =>
-  WonderImgui.AssetIMGUIAPI.unsafeGetSettedAssetFntData(
+let unsafeGetSettedAssetFntContent = state =>
+  WonderImgui.AssetIMGUIAPI.unsafeGetSettedAssetFntContent(
     ManageIMGUIMainService.getRecord(state),
   );
 
-let setSettedAssetFntData = (content, state) =>
+let getSettedAssetFntName = state =>
+  WonderImgui.FontIMGUIService.SetAsset.getFntName(
+    ManageIMGUIMainService.getRecord(state),
+  );
+
+let unsafeGetSettedAssetFntName = state =>
+  WonderImgui.AssetIMGUIAPI.unsafeGetSettedAssetFntName(
+    ManageIMGUIMainService.getRecord(state),
+  );
+
+let hasSettedAssetFntData = state =>
+  WonderImgui.AssetIMGUIAPI.hasSettedAssetFntData(
+    ManageIMGUIMainService.getRecord(state),
+  );
+
+let setSettedAssetFntData = (name, content, state) =>
   WonderImgui.AssetIMGUIAPI.setSettedAssetFntData(
+    name,
     content,
     ManageIMGUIMainService.getRecord(state),
   )
   |> ManageIMGUIMainService.setRecord(_, state);
 
-let getSettedAssetBitmapData = state =>
-  WonderImgui.FontIMGUIService.SetAsset.getBitmapData(
+let getSettedAssetBitmapArrayBuffer = state =>
+  WonderImgui.FontIMGUIService.SetAsset.getBitmapArrayBuffer(
     ManageIMGUIMainService.getRecord(state),
   );
 
-let unsafeGetSettedAssetBitmapData = state =>
-  WonderImgui.AssetIMGUIAPI.unsafeGetSettedAssetBitmapData(
+let unsafeGetSettedAssetBitmapArrayBuffer = state =>
+  WonderImgui.AssetIMGUIAPI.unsafeGetSettedAssetBitmapArrayBuffer(
     ManageIMGUIMainService.getRecord(state),
   );
 
-let setSettedAssetBitmapData = (bitmapArrayBuffer, state) =>
+let hasSettedAssetBitmapData = state =>
+  WonderImgui.AssetIMGUIAPI.hasSettedAssetBitmapData(
+    ManageIMGUIMainService.getRecord(state),
+  );
+
+let getSettedAssetBitmapName = state =>
+  WonderImgui.FontIMGUIService.SetAsset.getBitmapName(
+    ManageIMGUIMainService.getRecord(state),
+  );
+
+let unsafeGetSettedAssetBitmapName = state =>
+  WonderImgui.AssetIMGUIAPI.unsafeGetSettedAssetBitmapName(
+    ManageIMGUIMainService.getRecord(state),
+  );
+
+let setSettedAssetBitmapData = (name, bitmapArrayBuffer, state) =>
   WonderImgui.AssetIMGUIAPI.setSettedAssetBitmapData(
+    name,
     bitmapArrayBuffer,
     ManageIMGUIMainService.getRecord(state),
   )
   |> ManageIMGUIMainService.setRecord(_, state);
+
+let hasSettedAssetCustomImageData = (id, state) =>
+  WonderImgui.AssetIMGUIAPI.hasSettedAssetCustomImageData(
+    id,
+    ManageIMGUIMainService.getRecord(state),
+  );
 
 let getSettedAssetCustomImageDataArr = state =>
   WonderImgui.AssetIMGUIAPI.getSettedAssetCustomImageDataArr(

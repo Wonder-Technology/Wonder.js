@@ -55,16 +55,18 @@ module AssetData = {
           assetArrayBufferDataArr,
         ),
       ) => {
-    let data = SetAssetIMGUIMainService.unsafeGetSettedAssetBitmapData(state);
+    let name = SetAssetIMGUIMainService.unsafeGetSettedAssetBitmapName(state);
+    let arrayBuffer =
+      SetAssetIMGUIMainService.unsafeGetSettedAssetBitmapArrayBuffer(state);
 
-    let byteLength = ArrayBuffer.byteLength(data);
+    let byteLength = ArrayBuffer.byteLength(arrayBuffer);
     let alignedByteLength = byteLength |> BufferUtils.alignedLength;
 
     (
-      {bufferView: bufferViewDataArr |> Js.Array.length},
+      {name, bufferView: bufferViewDataArr |> Js.Array.length},
       _addBufferData(
         (alignedByteLength, byteLength),
-        data,
+        arrayBuffer,
         (
           (totalByteLength, byteOffset, bufferViewDataArr),
           assetArrayBufferDataArr,
@@ -123,7 +125,8 @@ module AssetData = {
        );
 
   let _hasFontData = state =>
-    SetAssetIMGUIMainService.getSettedAssetFntData(state) |> Js.Option.isSome;
+    SetAssetIMGUIMainService.getSettedAssetFntContent(state)
+    |> Js.Option.isSome;
 
   let _hasCustomImagesData = state =>
     SetAssetIMGUIMainService.getSettedAssetCustomImageDataArr(state)
@@ -160,8 +163,12 @@ module AssetData = {
           (
             Some({
               fntData: {
+                name:
+                  SetAssetIMGUIMainService.unsafeGetSettedAssetFntName(state),
                 content:
-                  SetAssetIMGUIMainService.unsafeGetSettedAssetFntData(state),
+                  SetAssetIMGUIMainService.unsafeGetSettedAssetFntContent(
+                    state,
+                  ),
               },
               bitmapData,
             }),
@@ -231,7 +238,7 @@ module AssetData = {
 
 module ExecData = {
   let _buildExecFuncDataArr = state =>
-    ManageIMGUIMainService.getExecFuncDataArr(state)
+    ExecIMGUIMainService.getExecFuncDataArr(state)
     |> SerializeAllIMGUIService.Exec.serializeWonderExecFuncDataArr;
 
   let buildExecDataToOneExecFuncData = state => {

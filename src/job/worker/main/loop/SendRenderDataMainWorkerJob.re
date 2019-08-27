@@ -34,21 +34,21 @@ let _buildIMGUIData = ({viewRecord} as state) => {
 
   let ioData = RecordIMGUIMainService.getIOData(state);
 
-  ManageIMGUIMainService.isSetExecFuncInRenderWorkerForWorker(state) ?
+  ExecIMGUIMainService.isSetExecFuncInRenderWorkerForWorker(state) ?
     (
       state,
       {
         "ioData": ioData,
-        "execFuncDataArr": ManageIMGUIMainService.createEmptyExecFuncDataArr(),
+        "execFuncDataArr": ExecIMGUIMainService.createEmptyExecFuncDataArr(),
       },
     ) :
     (
-      ManageIMGUIMainService.markSetExecFuncInRenderWorkerForWorker(state),
+      ExecIMGUIMainService.markSetExecFuncInRenderWorkerForWorker(state),
       {
         "ioData": ioData,
         "execFuncDataArr":
           SerializeAllIMGUIService.Exec.serializeWonderIMGUIExecFuncDataArr(
-            WonderImgui.ManageIMGUIAPI.getExecFuncDataArr(
+            WonderImgui.ExecIMGUIAPI.getExecFuncDataArr(
               wonderImguiIMGUIRecord,
             ),
           ),

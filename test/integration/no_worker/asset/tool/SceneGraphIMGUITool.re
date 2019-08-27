@@ -29,6 +29,8 @@ let getSettedAssetCustomImageDataArrForTest = state =>
        (arrayBuffer |> Js.Typed_array.ArrayBuffer.byteLength, id, mimeType)
      );
 
+let buildFakeFntName = () => "fnt";
+
 let buildFakeFntContent = () => {|info face="Lato-Regular" size=64 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=2 padding=0,0,0,0 spacing=0,0
 common lineHeight=77 base=63 scaleW=512 scaleH=512 pages=1 packed=0 alphaChnl=0 redChnl=0 greenChnl=0 blueChnl=0
 page id=0 file="lato.png"
@@ -36,7 +38,9 @@ chars count=0|};
 
 let buildAssetData =
     (
+      ~fntName="fnt",
       ~fntContent=buildFakeFntContent(),
+      ~bitmapName="bitmap",
       ~bitmapBufferView=0,
       ~customImages=[||],
       (),
@@ -45,9 +49,11 @@ let buildAssetData =
   fontData:
     Some({
       fntData: {
+        name: fntName,
         content: fntContent,
       },
       bitmapData: {
+        name: bitmapName,
         bufferView: bitmapBufferView,
       },
     }),

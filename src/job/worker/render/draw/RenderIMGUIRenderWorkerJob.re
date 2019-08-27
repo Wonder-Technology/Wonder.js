@@ -8,7 +8,7 @@ let _addAllExecFuncData = (execFuncDataArr, imguiRecord) =>
          imguiRecord,
          {execFunc, customData, zIndex, name}: WonderImgui.IMGUIType.execFuncData,
        ) =>
-         WonderImgui.ManageIMGUIAPI.addExecFuncData(
+         WonderImgui.ExecIMGUIAPI.addExecFuncData(
            name,
            customData,
            zIndex,
@@ -21,7 +21,7 @@ let _addAllExecFuncData = (execFuncDataArr, imguiRecord) =>
 let _updateExecData = (execFuncDataArr, imguiRecord) =>
   execFuncDataArr |> ExecDataAllIMGUIService.hasExecFuncData ?
     imguiRecord
-    |> WonderImgui.ManageIMGUIAPI.clearExecFuncDataArr
+    |> WonderImgui.ExecIMGUIAPI.clearExecFuncDataArr
     |> _addAllExecFuncData(execFuncDataArr) :
     imguiRecord;
 

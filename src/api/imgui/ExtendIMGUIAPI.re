@@ -1,6 +1,10 @@
 open StateDataMainType;
 
+let hasCustomControl = ExtendIMGUIMainService.Extend.hasCustomControl;
+
 let registerCustomControl = ExtendIMGUIMainService.ExtendData.CustomControl.registerCustomControl;
+
+let removeCustomControl = ExtendIMGUIMainService.ExtendData.CustomControl.removeCustomControl;
 
 let createAllCustomStyleData = WonderImgui.ExtendIMGUIAPI.createAllCustomStyleData;
 
@@ -13,6 +17,8 @@ let removeCustomStyleData = WonderImgui.ExtendIMGUIAPI.removeCustomStyleData;
 let addSingleCustomStyleData = WonderImgui.ExtendIMGUIAPI.addSingleCustomStyleData;
 
 let removeSingleCustomStyleData = WonderImgui.ExtendIMGUIAPI.removeSingleCustomStyleData;
+
+let hasSkinData = ExtendIMGUIMainService.Extend.hasSkinData;
 
 let addSkinData = ExtendIMGUIMainService.ExtendData.Skin.addSkinData;
 /* (skinName, skinData, state) =>

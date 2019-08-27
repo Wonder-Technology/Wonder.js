@@ -38,9 +38,15 @@ type extendData = {
   skinData,
 };
 
-type fntData = {content: string};
+type fntData = {
+  name: string,
+  content: string,
+};
 
-type bitmapData = {bufferView: bufferViewIndex};
+type bitmapData = {
+  name: string,
+  bufferView: bufferViewIndex,
+};
 
 type fontData = {
   fntData,

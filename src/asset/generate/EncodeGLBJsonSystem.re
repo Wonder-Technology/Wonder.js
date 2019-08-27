@@ -498,10 +498,21 @@ let _encodeIMGUIAssetData =
         (
           "fontData",
           [
-            ("fntData", [("content", fntData.content |> string)] |> object_),
+            (
+              "fntData",
+              [
+                ("name", fntData.name |> string),
+                ("content", fntData.content |> string),
+              ]
+              |> object_,
+            ),
             (
               "bitmapData",
-              [("bufferView", bitmapData.bufferView |> int)] |> object_,
+              [
+                ("name", bitmapData.name |> string),
+                ("bufferView", bitmapData.bufferView |> int),
+              ]
+              |> object_,
             ),
           ]
           |> object_,
@@ -564,49 +575,22 @@ let _encodeIMGUIExecData = ({execFuncDataArr}: SceneGraphType.execData) =>
   ]
   |> object_;
 
-/* let _encodeSceneExtras = (imguiData, skyboxCubemapTextureIndexOpt) => { */
 let _encodeSceneExtras =
     ((execData, extendData, assetData), skyboxCubemapTextureIndexOpt) => {
   let extraList = [];
 
-  let extraList =
-    /* switch (imguiData) {
-       | (None, None, _) => extraList
-       | (Some(execData), Some(extendData), assetData) => [
-           (
-             "imgui",
-             [
-               ("assetData", _encodeIMGUIAssetData(assetData)),
-               ("extendData", _encodeIMGUIExtendData(extendData)),
-               ("execData", _encodeIMGUIExecData(execData)),
-             ]
-             |> object_,
-           ),
-           ...extraList,
-         ]
-       | _ =>
-         WonderLog.Log.fatal(
-           WonderLog.Log.buildFatalMessage(
-             ~title="_encodeScenes",
-             ~description={j|imguiData error|j},
-             ~reason="",
-             ~solution={j||j},
-             ~params={j||j},
-           ),
-         )
-       }; */
-    [
-      (
-        "imgui",
-        [
-          ("assetData", _encodeIMGUIAssetData(assetData)),
-          ("extendData", _encodeIMGUIExtendData(extendData)),
-          ("execData", _encodeIMGUIExecData(execData)),
-        ]
-        |> object_,
-      ),
-      ...extraList,
-    ];
+  let extraList = [
+    (
+      "imgui",
+      [
+        ("assetData", _encodeIMGUIAssetData(assetData)),
+        ("extendData", _encodeIMGUIExtendData(extendData)),
+        ("execData", _encodeIMGUIExecData(execData)),
+      ]
+      |> object_,
+    ),
+    ...extraList,
+  ];
 
   let extraList =
     switch (skyboxCubemapTextureIndexOpt) {

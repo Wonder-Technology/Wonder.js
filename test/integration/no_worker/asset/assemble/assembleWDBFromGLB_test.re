@@ -440,9 +440,12 @@ let _ =
           WonderImgui.IOIMGUITool.buildFakeURL(sandbox^);
           WonderImgui.IOIMGUITool.buildFakeLoadImage(.);
 
+          let bitmapName = "bbb";
           let assetData =
             ConvertGLBTool.buildAssetData(
+              ~fntName=SceneGraphIMGUITool.buildFakeFntName(),
               ~fntContent=SceneGraphIMGUITool.buildFakeFntContent(),
+              ~bitmapName,
               ~bitmapBufferView=0,
               ~customImages=[|
                 ConvertGLBTool.buildCustomImageData(
@@ -463,8 +466,14 @@ let _ =
             ~testFunc=
               ((state, _, (rootGameObject, _))) =>
                 (
-                  SetAssetIMGUIMainService.unsafeGetSettedAssetFntData(state),
-                  SetAssetIMGUIMainService.unsafeGetSettedAssetBitmapData(
+                  SetAssetIMGUIMainService.unsafeGetSettedAssetFntName(state),
+                  SetAssetIMGUIMainService.unsafeGetSettedAssetFntContent(
+                    state,
+                  ),
+                  SetAssetIMGUIMainService.unsafeGetSettedAssetBitmapName(
+                    state,
+                  ),
+                  SetAssetIMGUIMainService.unsafeGetSettedAssetBitmapArrayBuffer(
                     state,
                   )
                   |> Js.Typed_array.ArrayBuffer.byteLength,
@@ -474,7 +483,9 @@ let _ =
                 )
                 |> expect
                 == (
+                     SceneGraphIMGUITool.buildFakeFntName(),
                      SceneGraphIMGUITool.buildFakeFntContent(),
+                     bitmapName,
                      288,
                      [|(192, "c1", "image/png")|],
                    ),

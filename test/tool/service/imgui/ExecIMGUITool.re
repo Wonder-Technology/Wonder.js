@@ -4,7 +4,7 @@ let buildEmptyExecFunc = () =>
   buildEmptyExecFuncStr() |> SerializeService.deserializeFunction;
 
 let createEmptyExecFuncDataArr = () =>
-  ManageIMGUIMainService.createEmptyExecFuncDataArr();
+  ExecIMGUIMainService.createEmptyExecFuncDataArr();
 
 let addExecFuncData =
     (
@@ -15,13 +15,13 @@ let addExecFuncData =
       ~func=buildEmptyExecFunc(),
       (),
     ) =>
-  state |> ManageIMGUIAPI.addExecFuncData(name, customData, zIndex, func);
+  state |> ExecIMGUIAPI.addExecFuncData(name, customData, zIndex, func);
 
-let getExecFunc = ManageIMGUIMainService.getExecFunc;
+let getExecFunc = ExecIMGUIMainService.getExecFunc;
 
-let getCustomData = ManageIMGUIMainService.getCustomData;
+let getCustomData = ExecIMGUIMainService.getCustomData;
 
-let getExecFuncDataArr = ManageIMGUIMainService.getExecFuncDataArr;
+let getExecFuncDataArr = ExecIMGUIMainService.getExecFuncDataArr;
 
 let hasExecFuncData = state =>
   getExecFuncDataArr(state) |> ExecDataAllIMGUIService.hasExecFuncData;

@@ -525,7 +525,9 @@ let _ =
           );
         let assetData =
           ConvertGLBTool.buildAssetData(
+            ~fntName="fnt",
             ~fntContent="aaa",
+            ~bitmapName="bbb",
             ~bitmapBufferView=0,
             ~customImages=[||],
             (),
@@ -565,7 +567,11 @@ let _ =
                    execData:
                      SceneGraphIMGUITool.buildExecDataToOneExecFuncData(
                        ~name=execFuncName,
-                       ~customData=customData |> Obj.magic |> Js.Json.parseExn |> Obj.magic,
+                       ~customData=
+                         customData
+                         |> Obj.magic
+                         |> Js.Json.parseExn
+                         |> Obj.magic,
                        ~func=ExecIMGUITool.buildEmptyExecFunc(),
                        (),
                      ),
@@ -587,7 +593,9 @@ let _ =
                      ),
                    assetData:
                      SceneGraphIMGUITool.buildAssetData(
+                       ~fntName="fnt",
                        ~fntContent="aaa",
+                       ~bitmapName="bbb",
                        ~bitmapBufferView=0,
                        ~customImages=[||],
                        (),

@@ -22,8 +22,12 @@ let _setFontData = (fontData, {bufferViews}: wd, binBuffer, state) =>
         OptionService.unsafeGetJsonSerializedValue(fontData);
 
       state
-      |> SetAssetIMGUIMainService.setSettedAssetFntData(fntData.content)
+      |> SetAssetIMGUIMainService.setSettedAssetFntData(
+           fntData.name,
+           fntData.content,
+         )
       |> SetAssetIMGUIMainService.setSettedAssetBitmapData(
+           bitmapData.name,
            AssembleCommon.getArrayBuffer(
              binBuffer,
              bitmapData.bufferView,
@@ -80,7 +84,7 @@ let _addAllExecFuncData = (execFuncDataArr, state) =>
          state,
          {execFunc, customData, zIndex, name}: ExecIMGUIType.execFuncData,
        ) =>
-         ManageIMGUIMainService.addExecFuncData(
+         ExecIMGUIMainService.addExecFuncData(
            name,
            customData,
            zIndex,
@@ -92,7 +96,7 @@ let _addAllExecFuncData = (execFuncDataArr, state) =>
 
 let _setExecData = ({execFuncDataArr}: SceneGraphType.execData, state) =>
   state
-  |> ManageIMGUIMainService.clearExecFuncDataArr
+  |> ExecIMGUIMainService.clearExecFuncDataArr
   |> _addAllExecFuncData(execFuncDataArr);
 
 let _handle = ({scene} as wd, binBuffer, state) => {

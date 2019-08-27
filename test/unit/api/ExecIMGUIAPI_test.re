@@ -1,7 +1,7 @@
 open Wonder_jest;
 
 let _ =
-  describe("ManageIMGUIAPI", () => {
+  describe("ExecIMGUIAPI", () => {
     open Expect;
     open Expect.Operators;
     open Sinon;
@@ -14,8 +14,11 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    describe("sendCustomTextureProgramUniformProjectionMatData", () =>
-      test("clear last send program", () => {
+    describe("clearExecFuncDataArr", () => {
+      let _isInTestCoverage = funcStr =>
+        funcStr |> Js.String.includes("istanbul");
+
+      test("clear exec func data arr", () => {
         let state = AssetIMGUITool.prepareFontAsset(state^);
         let gl = FakeGlTool.buildFakeGl(~sandbox, ()) |> Obj.magic;
         let state = state |> FakeGlTool.setFakeGl(gl);
@@ -23,14 +26,23 @@ let _ =
         let program = Obj.magic(1);
         let state = ProgramTool.setLastUsedProgram(program, state);
 
+        let func = (_, _, state) => state;
+
+        let execFuncName = "e1";
+
         let state =
-          ManageIMGUIAPI.sendCustomTextureProgramUniformProjectionMatData(
-            gl,
-            (500, 250),
-            state,
+          ExecIMGUITool.addExecFuncData(
+            ~state,
+            ~name=execFuncName,
+            ~func=Obj.magic(func),
+            (),
           );
 
-        state.programRecord.lastUsedProgram |> expect == None;
-      })
-    );
+        let state = ExecIMGUIAPI.clearExecFuncDataArr(state);
+
+        ExecIMGUITool.getExecFuncDataArr(state)
+        |> Js.Array.length
+        |> expect == 0;
+      });
+    });
   });

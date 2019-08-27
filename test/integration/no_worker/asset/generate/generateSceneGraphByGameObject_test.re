@@ -974,7 +974,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
             rootGameObject,
             "
-\"extras\":{\"imgui\":{\"assetData\":{\"customImages\":{\"customImages\":[{\"id\":\"c1\",\"bufferView\":1,\"mimeType\":\"image/png\"},{\"id\":\"c2\",\"bufferView\":2,\"mimeType\":\"image/jpeg\"}]},\"fontData\":{\"fntData\":{\"content\":\"infoface=\\\"Lato-Regular\\\"size=64bold=0italic=0charset=\\\"\\\"unicode=1stretchH=100smooth=1aa=2padding=0,0,0,0spacing=0,0\\ncommonlineHeight=77base=63scaleW=512scaleH=512pages=1packed=0alphaChnl=0redChnl=0greenChnl=0blueChnl=0\\npageid=0file=\\\"lato.png\\\"\\ncharscount=0\"},\"bitmapData\":{\"bufferView\":0}}},\"extendData\":{\"customControlData\":{\"funcMap\":\"{}\"},\"skinData\":{\"allSkinDataMap\":\"{}\"}},\"execData\":{\"execFuncDataArr\":[{\"execFunc\":\"function(customData,imguiAPIJsObj,state){returnstate;}\",\"customData\":\"-1\",\"zIndex\":0,\"name\":\"exec\"}]}}
+\"extras\":{\"imgui\":{\"assetData\":{\"customImages\":{\"customImages\":[{\"id\":\"c1\",\"bufferView\":1,\"mimeType\":\"image/png\"},{\"id\":\"c2\",\"bufferView\":2,\"mimeType\":\"image/jpeg\"}]},\"fontData\":{\"fntData\":{\"name\":\"fnt\",\"content\":\"infoface=\\\"Lato-Regular\\\"size=64bold=0italic=0charset=\\\"\\\"unicode=1stretchH=100smooth=1aa=2padding=0,0,0,0spacing=0,0\\ncommonlineHeight=77base=63scaleW=512scaleH=512pages=1packed=0alphaChnl=0redChnl=0greenChnl=0blueChnl=0\\npageid=0file=\\\"lato.png\\\"\\ncharscount=0\"},\"bitmapData\":{\"name\":\"bitmap\",\"bufferView\":0}}}
           ",
             state,
           );

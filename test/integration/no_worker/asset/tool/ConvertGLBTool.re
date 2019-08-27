@@ -537,7 +537,9 @@ let buildCustomImageData = (~id="", ~bufferView=1, ~mimeType="image/png", ()) =>
 
 let buildAssetData =
     (
+      ~fntName=SceneGraphIMGUITool.buildFakeFntName(),
       ~fntContent=SceneGraphIMGUITool.buildFakeFntContent(),
+      ~bitmapName=SetAssetIMGUITool.buildFakeBitmapName(),
       ~bitmapBufferView=0,
       ~customImages=[||],
       (),
@@ -545,9 +547,11 @@ let buildAssetData =
   "fontData":
     Js.Nullable.return({
       "fntData": {
+        "name": fntName,
         "content": fntContent,
       },
       "bitmapData": {
+        "name": bitmapName,
         "bufferView": bitmapBufferView,
       },
     }),
@@ -586,9 +590,7 @@ let buildExecDataToOneExecFuncData =
   |],
 };
 
-let buildExecData = execFuncDataArr => {
-  "execFuncDataArr": execFuncDataArr,
-};
+let buildExecData = execFuncDataArr => {"execFuncDataArr": execFuncDataArr};
 
 let buildGLTFJsonOfIMGUI =
     (

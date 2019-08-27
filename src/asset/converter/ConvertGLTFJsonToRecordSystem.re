@@ -162,12 +162,18 @@ let _convertAssetData = json =>
                     fntData:
                       json
                       |> field("fntData", json =>
-                           {content: json |> field("content", string)}
+                           {
+                             name: json |> field("name", string),
+                             content: json |> field("content", string),
+                           }
                          ),
                     bitmapData:
                       json
                       |> field("bitmapData", json =>
-                           {bufferView: json |> field("bufferView", int)}
+                           {
+                             name: json |> field("name", string),
+                             bufferView: json |> field("bufferView", int),
+                           }
                          ),
                   }
                 ),

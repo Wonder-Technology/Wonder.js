@@ -1,5 +1,7 @@
 open Js.Typed_array;
 
+let buildFakeBitmapName = () => "bitmap";
+
 let buildFakeBitmapData = (~data=ArrayBuffer.make(10), ()) => data;
 
 let buildCustomImageData =
@@ -12,9 +14,13 @@ let buildCustomImageData =
 let buildAndSetAssetData = state =>
   state
   |> SetAssetIMGUIMainService.setSettedAssetFntData(
+       SceneGraphIMGUITool.buildFakeFntName(),
        SceneGraphIMGUITool.buildFakeFntContent(),
      )
-  |> SetAssetIMGUIMainService.setSettedAssetBitmapData(buildFakeBitmapData())
+  |> SetAssetIMGUIMainService.setSettedAssetBitmapData(
+       buildFakeBitmapName(),
+       buildFakeBitmapData(),
+     )
   |> SetAssetIMGUIMainService.addSettedAssetCustomImageData(
        buildCustomImageData(
          ~id="c1",

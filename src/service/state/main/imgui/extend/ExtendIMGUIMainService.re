@@ -18,14 +18,21 @@ module Button = {
 };
 
 module Extend = {
-  let registerCustomControl =
-      (name, customControlFunc: ExtendIMGUIType.customControlFunc, state) =>
-    CustomControlAllIMGUIService.registerCustomControl(
+  let hasCustomControl = (name, state) =>
+    WonderImgui.ExtendIMGUIAPI.hasCustomControl(
       name,
-      customControlFunc,
       ManageIMGUIMainService.getRecord(state),
-    )
-    |> ManageIMGUIMainService.setRecord(_, state);
+    );
+
+  /*
+   let registerCustomControl =
+       (name, customControlFunc: ExtendIMGUIType.customControlFunc, state) =>
+     CustomControlAllIMGUIService.registerCustomControl(
+       name,
+       customControlFunc,
+       ManageIMGUIMainService.getRecord(state),
+     )
+     |> ManageIMGUIMainService.setRecord(_, state); */
 
   let unsafeGetCustomControl =
     (. name, state) =>
@@ -33,6 +40,12 @@ module Extend = {
         name,
         ManageIMGUIMainService.getRecord(state),
       );
+
+  let hasSkinData = (skinName, state) =>
+    WonderImgui.ExtendIMGUIAPI.hasSkinData(
+      skinName,
+      ManageIMGUIMainService.getRecord(state),
+    );
 };
 
 module ExtendData = {
@@ -78,6 +91,21 @@ module ExtendData = {
                    name,
                    customControlFunc,
                  ),
+          },
+        },
+      },
+    };
+
+    let removeCustomControl = (name, state) => {
+      ...state,
+      imguiRecord: {
+        ...state.imguiRecord,
+        extendData: {
+          ...state.imguiRecord.extendData,
+          customControlData: {
+            funcMap:
+              getFuncMap(state)
+              |> WonderCommonlib.ImmutableHashMapService.deleteVal(name),
           },
         },
       },
