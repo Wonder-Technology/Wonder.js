@@ -534,6 +534,50 @@ let createRenderGroup = RenderGroupAPI.createRenderGroup;
 
 let buildRenderGroup = RenderGroupAPI.buildRenderGroup;
 
+let initSettedAssets = AssetIMGUIAPI.initSettedAssets;
+
+let addSettedAssetCustomImageData = AssetIMGUIAPI.addSettedAssetCustomImageData;
+
+let getSettedAssetCustomImageDataArr = AssetIMGUIAPI.getSettedAssetCustomImageDataArr;
+
+let hasSettedAssetCustomImageData = AssetIMGUIAPI.hasSettedAssetCustomImageData;
+
+let setSettedAssetBitmapData = AssetIMGUIAPI.setSettedAssetBitmapData;
+
+let hasSettedAssetBitmapData = AssetIMGUIAPI.hasSettedAssetBitmapData;
+
+let unsafeGetSettedAssetBitmapName = AssetIMGUIAPI.unsafeGetSettedAssetBitmapName;
+
+let getSettedAssetBitmapName = AssetIMGUIAPI.getSettedAssetBitmapName;
+
+let unsafeGetSettedAssetBitmapArrayBuffer = AssetIMGUIAPI.unsafeGetSettedAssetBitmapArrayBuffer;
+
+let getSettedAssetBitmapArrayBuffer = AssetIMGUIAPI.getSettedAssetBitmapArrayBuffer;
+
+let setSettedAssetFntData = AssetIMGUIAPI.setSettedAssetFntData;
+
+let hasSettedAssetFntData = AssetIMGUIAPI.hasSettedAssetFntData;
+
+let unsafeGetSettedAssetFntName = AssetIMGUIAPI.unsafeGetSettedAssetFntName;
+
+let getSettedAssetFntName = AssetIMGUIAPI.getSettedAssetFntName;
+
+let unsafeGetSettedAssetFntContent = AssetIMGUIAPI.unsafeGetSettedAssetFntContent;
+
+let getSettedAssetFntContent = AssetIMGUIAPI.getSettedAssetFntContent;
+
+let unsafeGetZIndex = ExecIMGUIAPI.unsafeGetZIndex;
+
+let getZIndex = ExecIMGUIAPI.getZIndex;
+
+let unsafeGetCustomData = ExecIMGUIAPI.unsafeGetCustomData;
+
+let getCustomData = ExecIMGUIAPI.getCustomData;
+
+let unsafeGetExecFunc = ExecIMGUIAPI.unsafeGetExecFunc;
+
+let getExecFunc = ExecIMGUIAPI.getExecFunc;
+
 let clearExecFuncDataArr = ExecIMGUIAPI.clearExecFuncDataArr;
 
 let removeExecFuncData = ExecIMGUIAPI.removeExecFuncData;
@@ -566,6 +610,8 @@ let removeSkinData = ExtendIMGUIAPI.removeSkinData;
 
 let addSkinData = ExtendIMGUIAPI.addSkinData;
 
+let hasSkinData = ExtendIMGUIAPI.hasSkinData;
+
 let removeSingleCustomStyleData = ExtendIMGUIAPI.removeSingleCustomStyleData;
 
 let addSingleCustomStyleData = ExtendIMGUIAPI.addSingleCustomStyleData;
@@ -581,6 +627,8 @@ let createAllCustomStyleData = ExtendIMGUIAPI.createAllCustomStyleData;
 let removeCustomControl = ExtendIMGUIAPI.removeCustomControl;
 
 let registerCustomControl = ExtendIMGUIAPI.registerCustomControl;
+
+let hasCustomControl = ExtendIMGUIAPI.hasCustomControl;
 
 let image = FixedLayoutControlIMGUIAPI.image;
 
