@@ -213,7 +213,7 @@ let _convertExecData = json =>
                   {
                     execFunc: json |> field("execFunc", string),
                     customData: _convertCustomData(json),
-                    zIndex: json |> field("zIndex", int),
+                    execOrder: json |> field("execOrder", int),
                     name: json |> field("name", string),
                   }
                 ),

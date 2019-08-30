@@ -82,12 +82,12 @@ let _addAllExecFuncData = (execFuncDataArr, state) =>
   |> WonderCommonlib.ArrayService.reduceOneParam(
        (.
          state,
-         {execFunc, customData, zIndex, name}: ExecIMGUIType.execFuncData,
+         {execFunc, customData, execOrder, name}: ExecIMGUIType.execFuncData,
        ) =>
          ExecIMGUIMainService.addExecFuncData(
            name,
            customData,
-           zIndex,
+           execOrder,
            execFunc,
            state,
          ),

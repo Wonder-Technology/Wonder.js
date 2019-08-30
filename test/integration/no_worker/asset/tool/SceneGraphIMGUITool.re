@@ -69,13 +69,13 @@ let buildExecFuncDataArr =
     (
       ~name="exec",
       ~customData=Obj.magic(-1),
-      ~zIndex=0,
+      ~execOrder=0,
       ~func=ExecIMGUITool.buildEmptyExecFunc(),
       (),
     )
     : SceneGraphType.execFuncDataArr =>
   [|
-    ({name, execFunc: func, zIndex, customData}: ExecIMGUIType.execFuncData),
+    ({name, execFunc: func, execOrder, customData}: ExecIMGUIType.execFuncData),
   |]
   |> SerializeAllIMGUIService.Exec.serializeWonderExecFuncDataArr;
 
@@ -83,11 +83,11 @@ let buildExecDataToOneExecFuncData =
     (
       ~name="exec",
       ~customData=Obj.magic(-1),
-      ~zIndex=0,
+      ~execOrder=0,
       ~func=ExecIMGUITool.buildEmptyExecFunc(),
       (),
     )
     : SceneGraphType.execData => {
   execFuncDataArr:
-    buildExecFuncDataArr(~name, ~customData, ~zIndex, ~func, ()),
+    buildExecFuncDataArr(~name, ~customData, ~execOrder, ~func, ()),
 };

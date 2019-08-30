@@ -566,9 +566,9 @@ let unsafeGetSettedAssetFntContent = AssetIMGUIAPI.unsafeGetSettedAssetFntConten
 
 let getSettedAssetFntContent = AssetIMGUIAPI.getSettedAssetFntContent;
 
-let unsafeGetZIndex = ExecIMGUIAPI.unsafeGetZIndex;
+let unsafeGetExecOrder = ExecIMGUIAPI.unsafeGetExecOrder;
 
-let getZIndex = ExecIMGUIAPI.getZIndex;
+let getExecOrder = ExecIMGUIAPI.getExecOrder;
 
 let unsafeGetCustomData = ExecIMGUIAPI.unsafeGetCustomData;
 

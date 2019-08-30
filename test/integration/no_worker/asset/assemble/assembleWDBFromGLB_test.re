@@ -326,17 +326,17 @@ let _ =
           });
 
           describe("test multi exec func data", () =>
-            describe("test zIndex", () =>
-              testPromise("the execFuncDataArr is sorted by zIndex", () => {
+            describe("test execOrder", () =>
+              testPromise("the execFuncDataArr is sorted by execOrder", () => {
                 let customData1 = {|1|};
                 let execFunc1 = ExecIMGUITool.buildEmptyExecFuncStr();
                 let name1 = "e1";
-                let zIndex1 = 2;
+                let execOrder1 = 2;
 
                 let customData2 = {|2|};
                 let execFunc2 = {|function (customData, imguiAPIJsObj, state){ var a = 1; return state; }|};
                 let name2 = "e2";
-                let zIndex2 = 0;
+                let execOrder2 = 0;
 
                 AssembleWDBSystemTool.testGLTF(
                   ~sandbox=sandbox^,
@@ -347,14 +347,14 @@ let _ =
                           ConvertGLBTool.buildExecFuncData(
                             ~name=name1,
                             ~customData=customData1,
-                            ~zIndex=zIndex1,
+                            ~execOrder=execOrder1,
                             ~func=execFunc1,
                             (),
                           ),
                           ConvertGLBTool.buildExecFuncData(
                             ~name=name2,
                             ~customData=customData2,
-                            ~zIndex=zIndex2,
+                            ~execOrder=execOrder2,
                             ~func=execFunc2,
                             (),
                           ),

@@ -863,7 +863,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
               rootGameObject,
               "
-\"extras\":{\"imgui\":{\"assetData\":{},\"extendData\":{\"customControlData\":{\"funcMap\":\"{}\"},\"skinData\":{\"allSkinDataMap\":\"{}\"}},\"execData\":{\"execFuncDataArr\":[{\"execFunc\":\"function(customData,imguiAPIJsObj,state){\\nvarimageFunc=imguiAPIJsObj.image;\\nreturnimageFunc(customData[0],customData[1],state);\\n}\",\"customData\":\"[1,\\\"cc\\\"]\",\"zIndex\":0,\"name\":\"exec\"}]}}
+\"extras\":{\"imgui\":{\"assetData\":{},\"extendData\":{\"customControlData\":{\"funcMap\":\"{}\"},\"skinData\":{\"allSkinDataMap\":\"{}\"}},\"execData\":{\"execFuncDataArr\":[{\"execFunc\":\"function(customData,imguiAPIJsObj,state){\\nvarimageFunc=imguiAPIJsObj.image;\\nreturnimageFunc(customData[0],customData[1],state);\\n}\",\"customData\":\"[1,\\\"cc\\\"]\",\"execOrder\":0,\"name\":\"exec\"}]}}
           ",
               state,
             );
@@ -886,12 +886,12 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
                 state;
               };
             let name1 = "e1";
-            let zIndex1 = 2;
+            let execOrder1 = 2;
 
             let customData2 = Obj.magic(-1);
             let execFunc2 = (. customData, imguiAPIJsObj, state) => state;
             let name2 = "e2";
-            let zIndex2 = 0;
+            let execOrder2 = 0;
 
             let state =
               ExecIMGUITool.addExecFuncData(
@@ -899,7 +899,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
                 ~customData=customData1,
                 ~func=execFunc1,
                 ~name=name1,
-                ~zIndex=zIndex1,
+                ~execOrder=execOrder1,
                 (),
               )
               |> ExecIMGUITool.addExecFuncData(
@@ -907,7 +907,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
                    ~customData=customData2,
                    ~func=execFunc2,
                    ~name=name2,
-                   ~zIndex=zIndex2,
+                   ~execOrder=execOrder2,
                    (),
                  );
 
@@ -923,7 +923,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
             GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
               rootGameObject,
               "
-\"extras\":{\"imgui\":{\"assetData\":{},\"extendData\":{\"customControlData\":{\"funcMap\":\"{}\"},\"skinData\":{\"allSkinDataMap\":\"{}\"}},\"execData\":{\"execFuncDataArr\":[{\"execFunc\":\"function(customData,imguiAPIJsObj,state){\\nreturnstate;\\n}\",\"customData\":\"-1\",\"zIndex\":0,\"name\":\"e2\"},{\"execFunc\":\"function(customData,imguiAPIJsObj,state){\\nvarimageFunc=imguiAPIJsObj.image;\\nreturnimageFunc(customData[0],customData[1],state);\\n}\",\"customData\":\"[1,\\\"cc\\\"]\",\"zIndex\":2,\"name\":\"e1\"}]}}}
+\"extras\":{\"imgui\":{\"assetData\":{},\"extendData\":{\"customControlData\":{\"funcMap\":\"{}\"},\"skinData\":{\"allSkinDataMap\":\"{}\"}},\"execData\":{\"execFuncDataArr\":[{\"execFunc\":\"function(customData,imguiAPIJsObj,state){\\nreturnstate;\\n}\",\"customData\":\"-1\",\"execOrder\":0,\"name\":\"e2\"},{\"execFunc\":\"function(customData,imguiAPIJsObj,state){\\nvarimageFunc=imguiAPIJsObj.image;\\nreturnimageFunc(customData[0],customData[1],state);\\n}\",\"customData\":\"[1,\\\"cc\\\"]\",\"execOrder\":2,\"name\":\"e1\"}]}}}
           ",
               state,
             );
@@ -949,7 +949,7 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
           GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
             rootGameObject,
             "
-\"extras\":{\"imgui\":{\"assetData\":{},\"extendData\":{\"customControlData\":{\"funcMap\":\"{\\\"A1\\\":\\\"function(customControlFuncData,showData,apiJsObj,record){\\\\nvardrawBox=apiJsObj.drawBox;\\\\nvarparseShowData=apiJsObj.parseShowData;\\\\nvarunsafeGetSkinData=apiJsObj.unsafeGetSkinData;\\\\nvarunsafeGetSingleCustomStyleDataMap=apiJsObj.unsafeGetSingleCustomStyleDataMap;\\\\nvarunsafeGetCustomStyleData=apiJsObj.unsafeGetCustomStyleData;\\\\nvarhasSingleCustomStyleName=apiJsObj.hasSingleCustomStyleName;\\\\nvarparseSingleCustomStyleName=apiJsObj.parseSingleCustomStyleName;\\\\nvarhasCustomStyleData=apiJsObj.hasCustomStyleData;\\\\nvarmatch=parseShowData(showData);\\\\nvarsingleCustomStyleNameNullable=match[1];\\\\nvardefaultColor=\\\\n/*array*/\\\\n[0.5,0.1,0.2];\\\\nvarmatch$1=hasSingleCustomStyleName(singleCustomStyleNameNullable);\\\\nvarcolor;\\\\n\\\\nif(match$1){\\\\nvarsingleCustomStyleName=parseSingleCustomStyleName(singleCustomStyleNameNullable);\\\\nvarsingleCustomStyleDataMap=unsafeGetSingleCustomStyleDataMap(singleCustomStyleName,unsafeGetSkinData(match[0],record));\\\\nvarmatch$2=hasCustomStyleData(\\\\\\\"color\\\\\\\",singleCustomStyleDataMap);\\\\ncolor=match$2?unsafeGetCustomStyleData(\\\\\\\"color\\\\\\\",singleCustomStyleDataMap):defaultColor;\\\\n}else{\\\\ncolor=defaultColor;\\\\n}\\\\n\\\\nvarrecord$1=drawBox(customControlFuncData,color,record);\\\\nreturn(\\\\n/*tuple*/\\\\n[record$1,true]\\\\n);\\\\n}\\\"}\"},\"skinData\":{\"allSkinDataMap\":\"{\\\"Skin1\\\":[[[0.35,0.1,0.1],[0.4,0.1,0.1],[0.5,0.1,0.1],null,null,null,1,[1,1,1]],{\\\"CustomStyle1\\\":{\\\"color\\\":[0.5,1,2]}}]}\"}},\"execData\":{\"execFuncDataArr\":[{\"execFunc\":\"function(customData,imguiAPIJsObj,state){returnstate;}\",\"customData\":\"-1\",\"zIndex\":0,\"name\":\"exec\"}]}}}
+\"extras\":{\"imgui\":{\"assetData\":{},\"extendData\":{\"customControlData\":{\"funcMap\":\"{\\\"A1\\\":\\\"function(customControlFuncData,showData,apiJsObj,record){\\\\nvardrawBox=apiJsObj.drawBox;\\\\nvarparseShowData=apiJsObj.parseShowData;\\\\nvarunsafeGetSkinData=apiJsObj.unsafeGetSkinData;\\\\nvarunsafeGetSingleCustomStyleDataMap=apiJsObj.unsafeGetSingleCustomStyleDataMap;\\\\nvarunsafeGetCustomStyleData=apiJsObj.unsafeGetCustomStyleData;\\\\nvarhasSingleCustomStyleName=apiJsObj.hasSingleCustomStyleName;\\\\nvarparseSingleCustomStyleName=apiJsObj.parseSingleCustomStyleName;\\\\nvarhasCustomStyleData=apiJsObj.hasCustomStyleData;\\\\nvarmatch=parseShowData(showData);\\\\nvarsingleCustomStyleNameNullable=match[1];\\\\nvardefaultColor=\\\\n/*array*/\\\\n[0.5,0.1,0.2];\\\\nvarmatch$1=hasSingleCustomStyleName(singleCustomStyleNameNullable);\\\\nvarcolor;\\\\n\\\\nif(match$1){\\\\nvarsingleCustomStyleName=parseSingleCustomStyleName(singleCustomStyleNameNullable);\\\\nvarsingleCustomStyleDataMap=unsafeGetSingleCustomStyleDataMap(singleCustomStyleName,unsafeGetSkinData(match[0],record));\\\\nvarmatch$2=hasCustomStyleData(\\\\\\\"color\\\\\\\",singleCustomStyleDataMap);\\\\ncolor=match$2?unsafeGetCustomStyleData(\\\\\\\"color\\\\\\\",singleCustomStyleDataMap):defaultColor;\\\\n}else{\\\\ncolor=defaultColor;\\\\n}\\\\n\\\\nvarrecord$1=drawBox(customControlFuncData,color,record);\\\\nreturn(\\\\n/*tuple*/\\\\n[record$1,true]\\\\n);\\\\n}\\\"}\"},\"skinData\":{\"allSkinDataMap\":\"{\\\"Skin1\\\":[[[0.35,0.1,0.1],[0.4,0.1,0.1],[0.5,0.1,0.1],null,null,null,1,[1,1,1]],{\\\"CustomStyle1\\\":{\\\"color\\\":[0.5,1,2]}}]}\"}},\"execData\":{\"execFuncDataArr\":[{\"execFunc\":\"function(customData,imguiAPIJsObj,state){returnstate;}\",\"customData\":\"-1\",\"execOrder\":0,\"name\":\"exec\"}]}}}
           ",
             state,
           );

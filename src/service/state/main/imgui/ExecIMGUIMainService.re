@@ -35,13 +35,13 @@ let hasExecFuncData = (execFuncName, state) =>
   |> WonderImgui.ExecIMGUIAPI.hasExecFuncData(execFuncName);
 
 let addExecFuncData =
-    (execFuncName, customData, zIndex, func: ExecIMGUIType.execFunc, state) => {
+    (execFuncName, customData, execOrder, func: ExecIMGUIType.execFunc, state) => {
   let wonderImguiIMGUIRecord =
     RecordIMGUIMainService.getWonderIMGUIRecord(state)
     |> WonderImgui.ExecIMGUIAPI.addExecFuncData(
          execFuncName,
          customData,
-         zIndex,
+         execOrder,
          func |> ExecIMGUIType.wonderExecFuncToWonderIMGUIExecFunc,
        );
 
@@ -78,14 +78,14 @@ let unsafeGetCustomData = (execFuncName, state) =>
     RecordIMGUIMainService.getWonderIMGUIRecord(state),
   );
 
-let getZIndex = (execFuncName, state) =>
-  WonderImgui.ExecIMGUIAPI.getZIndex(
+let getExecOrder = (execFuncName, state) =>
+  WonderImgui.ExecIMGUIAPI.getExecOrder(
     execFuncName,
     RecordIMGUIMainService.getWonderIMGUIRecord(state),
   );
 
-let unsafeGetZIndex = (execFuncName, state) =>
-  WonderImgui.ExecIMGUIAPI.unsafeGetZIndex(
+let unsafeGetExecOrder = (execFuncName, state) =>
+  WonderImgui.ExecIMGUIAPI.unsafeGetExecOrder(
     execFuncName,
     RecordIMGUIMainService.getWonderIMGUIRecord(state),
   );

@@ -560,12 +560,12 @@ let _encodeIMGUIExecData = ({execFuncDataArr}: SceneGraphType.execData) =>
       execFuncDataArr
       |> Js.Array.map(
            (
-             {execFunc, customData, zIndex, name}: SceneGraphType.execFuncData,
+             {execFunc, customData, execOrder, name}: SceneGraphType.execFuncData,
            ) =>
            [
              ("execFunc", execFunc |> string),
              ("customData", _encodeIMGUICustomData(customData)),
-             ("zIndex", zIndex |> int),
+             ("execOrder", execOrder |> int),
              ("name", name |> string),
            ]
            |> object_

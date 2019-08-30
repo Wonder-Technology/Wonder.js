@@ -12,13 +12,13 @@ module Exec = {
     execFuncDataArr
     |> Js.Array.map(
          (
-           {execFunc, customData, zIndex, name}: WonderImgui.IMGUIType.execFuncData,
+           {execFunc, customData, execOrder, name}: WonderImgui.IMGUIType.execFuncData,
          ) =>
          (
            {
              execFunc: execFunc |> SerializeService.serializeFunction,
              customData: customData |> Obj.magic |> SerializeService.serializeValueWithFunction,
-             zIndex,
+             execOrder,
              name,
            }: SceneGraphType.execFuncData
          )
@@ -29,12 +29,12 @@ module Exec = {
       : WonderImgui.IMGUIType.execFuncDataArr =>
     execFuncDataArr
     |> Js.Array.map(
-         ({execFunc, customData, zIndex, name}: SceneGraphType.execFuncData) =>
+         ({execFunc, customData, execOrder, name}: SceneGraphType.execFuncData) =>
          (
            {
              execFunc: execFunc |> SerializeService.deserializeFunction,
              customData: customData |> _deserializeCustomData,
-             zIndex,
+             execOrder,
              name,
            }: WonderImgui.IMGUIType.execFuncData
          )
@@ -45,12 +45,12 @@ module Exec = {
       : SceneGraphType.execFuncDataArr =>
     execFuncDataArr
     |> Js.Array.map(
-         ({execFunc, customData, zIndex, name}: ExecIMGUIType.execFuncData) =>
+         ({execFunc, customData, execOrder, name}: ExecIMGUIType.execFuncData) =>
          (
            {
              execFunc: execFunc |> SerializeService.serializeFunction,
              customData: customData |> Obj.magic |> SerializeService.serializeValueWithFunction,
-             zIndex,
+             execOrder,
              name,
            }: SceneGraphType.execFuncData
          )
@@ -61,12 +61,12 @@ module Exec = {
       : ExecIMGUIType.execFuncDataArr =>
     execFuncDataArr
     |> Js.Array.map(
-         ({execFunc, customData, zIndex, name}: SceneGraphType.execFuncData) =>
+         ({execFunc, customData, execOrder, name}: SceneGraphType.execFuncData) =>
          (
            {
              execFunc: execFunc |> SerializeService.deserializeFunction,
              customData: customData |> _deserializeCustomData,
-             zIndex,
+             execOrder,
              name,
            }: ExecIMGUIType.execFuncData
          )

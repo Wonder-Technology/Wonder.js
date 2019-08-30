@@ -567,13 +567,13 @@ let buildExecFuncData =
     (
       ~name="exec",
       ~customData="",
-      ~zIndex=0,
+      ~execOrder=0,
       ~func=ExecIMGUITool.buildEmptyExecFuncStr(),
       (),
     ) => {
   "name": name,
   "execFunc": func,
-  "zIndex": zIndex,
+  "execOrder": execOrder,
   "customData": customData,
 };
 
@@ -581,12 +581,12 @@ let buildExecDataToOneExecFuncData =
     (
       ~name="exec",
       ~customData="",
-      ~zIndex=0,
+      ~execOrder=0,
       ~func=ExecIMGUITool.buildEmptyExecFuncStr(),
       (),
     ) => {
   "execFuncDataArr": [|
-    buildExecFuncData(~name, ~customData, ~zIndex, ~func, ()),
+    buildExecFuncData(~name, ~customData, ~execOrder, ~func, ()),
   |],
 };
 

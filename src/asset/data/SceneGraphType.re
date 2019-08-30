@@ -71,7 +71,7 @@ type serializedCustomData = string;
 type execFuncData = {
   execFunc: serializedFunc,
   customData: serializedCustomData,
-  zIndex: WonderImgui.IMGUIType.execFuncZIndex,
+  execOrder: WonderImgui.IMGUIType.execFuncExecOrder,
   name: WonderImgui.IMGUIType.execFuncName,
 };
 

@@ -180,7 +180,7 @@ let _ =
           testPromise("send data", () => {
             let (state, postMessageToRenderWorker) = _prepare();
             let (execFunc, customData) = _buildData();
-            let zIndex = 1;
+            let execOrder = 1;
             let name = "e1";
             let state =
               ExecIMGUITool.addExecFuncData(
@@ -188,7 +188,7 @@ let _ =
                 ~customData,
                 ~func=execFunc,
                 ~name,
-                ~zIndex,
+                ~execOrder,
                 (),
               );
             MainStateTool.setState(state);
@@ -206,7 +206,7 @@ let _ =
                            "execFuncDataArr":
                              SceneGraphIMGUITool.buildExecFuncDataArr(
                                ~name,
-                               ~zIndex,
+                               ~execOrder,
                                ~customData,
                                ~func=execFunc,
                                (),
@@ -233,10 +233,10 @@ let _ =
 
       describe("test render imgui", () =>
         describe("test render image", () => {
-          let _addExecFuncData = (imageX1, zIndex, state) =>
+          let _addExecFuncData = (imageX1, execOrder, state) =>
             ExecIMGUITool.addExecFuncData(
               ~state,
-              ~zIndex,
+              ~execOrder,
               ~customData=
                 Obj.magic((
                   WonderImgui.RenderIMGUITool.buildImageData(),

@@ -11,11 +11,11 @@ let addExecFuncData =
       ~state,
       ~name="exec",
       ~customData=Obj.magic(-1),
-      ~zIndex=0,
+      ~execOrder=0,
       ~func=buildEmptyExecFunc(),
       (),
     ) =>
-  state |> ExecIMGUIAPI.addExecFuncData(name, customData, zIndex, func);
+  state |> ExecIMGUIAPI.addExecFuncData(name, customData, execOrder, func);
 
 let getExecFunc = ExecIMGUIMainService.getExecFunc;
 

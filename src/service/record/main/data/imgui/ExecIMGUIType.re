@@ -9,7 +9,7 @@ type execFunc =
 type execFuncData = {
   execFunc,
   customData: WonderImgui.IMGUIType.customData,
-  zIndex: WonderImgui.IMGUIType.execFuncZIndex,
+  execOrder: WonderImgui.IMGUIType.execFuncExecOrder,
   name: WonderImgui.IMGUIType.execFuncName,
 };
 

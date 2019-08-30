@@ -14,6 +14,6 @@ let getCustomData = ExecIMGUIMainService.getCustomData;
 
 let unsafeGetCustomData = ExecIMGUIMainService.unsafeGetCustomData;
 
-let getZIndex = ExecIMGUIMainService.getZIndex;
+let getExecOrder = ExecIMGUIMainService.getExecOrder;
 
-let unsafeGetZIndex = ExecIMGUIMainService.unsafeGetZIndex;
+let unsafeGetExecOrder = ExecIMGUIMainService.unsafeGetExecOrder;
