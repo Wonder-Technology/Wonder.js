@@ -18,8 +18,9 @@ let unsafeGetSettedAssetFntName = state =>
     ManageIMGUIMainService.getRecord(state),
   );
 
-let hasSettedAssetFntData = state =>
+let hasSettedAssetFntData = (name, state) =>
   WonderImgui.AssetIMGUIAPI.hasSettedAssetFntData(
+    name,
     ManageIMGUIMainService.getRecord(state),
   );
 
@@ -41,8 +42,9 @@ let unsafeGetSettedAssetBitmapArrayBuffer = state =>
     ManageIMGUIMainService.getRecord(state),
   );
 
-let hasSettedAssetBitmapData = state =>
+let hasSettedAssetBitmapData = (name, state) =>
   WonderImgui.AssetIMGUIAPI.hasSettedAssetBitmapData(
+    name,
     ManageIMGUIMainService.getRecord(state),
   );
 
