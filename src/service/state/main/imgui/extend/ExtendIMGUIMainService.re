@@ -18,34 +18,12 @@ module Button = {
 };
 
 module Extend = {
-  let hasCustomControl = (name, state) =>
-    WonderImgui.ExtendIMGUIAPI.hasCustomControl(
-      name,
-      ManageIMGUIMainService.getRecord(state),
-    );
-
-  /*
-   let registerCustomControl =
-       (name, customControlFunc: ExtendIMGUIType.customControlFunc, state) =>
-     CustomControlAllIMGUIService.registerCustomControl(
-       name,
-       customControlFunc,
-       ManageIMGUIMainService.getRecord(state),
-     )
-     |> ManageIMGUIMainService.setRecord(_, state); */
-
   let unsafeGetCustomControl =
     (. name, state) =>
       WonderImgui.ManageCustomControlIMGUIService.unsafeGetCustomControl(.
         name,
         ManageIMGUIMainService.getRecord(state),
       );
-
-  let hasSkinData = (skinName, state) =>
-    WonderImgui.ExtendIMGUIAPI.hasSkinData(
-      skinName,
-      ManageIMGUIMainService.getRecord(state),
-    );
 };
 
 module ExtendData = {
@@ -117,6 +95,13 @@ module ExtendData = {
         ManageIMGUIMainService.getRecord(state),
       )
       |> ManageIMGUIMainService.setRecord(_, state);
+
+    let hasCustomControl = (name, state) =>
+      getFuncMap(state) |> WonderCommonlib.ImmutableHashMapService.has(name);
+
+    let unsafeGetCustomControl = (name, state) =>
+      getFuncMap(state)
+      |> WonderCommonlib.ImmutableHashMapService.unsafeGet(name);
   };
 
   module Skin = {
@@ -163,12 +148,23 @@ module ExtendData = {
         state,
       );
 
+    let getSkinData = (skinName, state) =>
+      getAllSkinDataMap(state)
+      |> WonderCommonlib.ImmutableHashMapService.get(skinName);
+
+    let unsafeGetSkinData = (skinName, state) =>
+      getSkinData(skinName, state) |> OptionService.unsafeGet;
+
     let setSkinData = (skinName, skinData, state) =>
       _setAllSkinDataMap(
         getAllSkinDataMap(state)
         |> WonderCommonlib.ImmutableHashMapService.set(skinName, skinData),
         state,
       );
+
+    let hasSkinData = (skinName, state) =>
+      getAllSkinDataMap(state)
+      |> WonderCommonlib.ImmutableHashMapService.has(skinName);
 
     let mergeAllSkinDataMapsToWonderImguiIMGUIRecord = state =>
       SkinAllIMGUIService.mergeAllSkinDataMapsToWonderImguiIMGUIRecord(
