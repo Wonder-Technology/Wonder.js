@@ -22,10 +22,14 @@ let hasSettedAssetBitmapData = SetAssetIMGUIMainService.hasSettedAssetBitmapData
 
 let setSettedAssetBitmapData = SetAssetIMGUIMainService.setSettedAssetBitmapData;
 
+let removeSettedAssetBitmapData = SetAssetIMGUIMainService.removeSettedAssetBitmapData;
+
 let hasSettedAssetCustomImageData = SetAssetIMGUIMainService.hasSettedAssetCustomImageData;
 
 let getSettedAssetCustomImageDataArr = SetAssetIMGUIMainService.getSettedAssetCustomImageDataArr;
 
 let addSettedAssetCustomImageData = SetAssetIMGUIMainService.addSettedAssetCustomImageData;
+
+let removeSettedAssetCustomImageData = SetAssetIMGUIMainService.removeSettedAssetCustomImageData;
 
 let initSettedAssets = SetAssetIMGUIMainService.initSettedAssets;

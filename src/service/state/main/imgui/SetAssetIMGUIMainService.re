@@ -48,6 +48,12 @@ let hasSettedAssetBitmapData = (name, state) =>
     ManageIMGUIMainService.getRecord(state),
   );
 
+let removeSettedAssetBitmapData = state =>
+  WonderImgui.AssetIMGUIAPI.removeSettedAssetBitmapData(
+    ManageIMGUIMainService.getRecord(state),
+  )
+  |> ManageIMGUIMainService.setRecord(_, state);
+
 let getSettedAssetBitmapName = state =>
   WonderImgui.FontIMGUIService.SetAsset.getBitmapName(
     ManageIMGUIMainService.getRecord(state),
@@ -80,6 +86,13 @@ let getSettedAssetCustomImageDataArr = state =>
 let addSettedAssetCustomImageData = (data, state) =>
   WonderImgui.AssetIMGUIAPI.addSettedAssetCustomImageData(
     data,
+    ManageIMGUIMainService.getRecord(state),
+  )
+  |> ManageIMGUIMainService.setRecord(_, state);
+
+let removeSettedAssetCustomImageData = (id, state) =>
+  WonderImgui.AssetIMGUIAPI.removeSettedAssetCustomImageData(
+    id,
     ManageIMGUIMainService.getRecord(state),
   )
   |> ManageIMGUIMainService.setRecord(_, state);
