@@ -6,6 +6,8 @@ let removeExecFuncData = ExecIMGUIMainService.removeExecFuncData;
 
 let clearExecFuncDataArr = ExecIMGUIMainService.clearExecFuncDataArr;
 
+let getExecFuncDataArr = ExecIMGUIMainService.getExecFuncDataArr;
+
 let getExecFunc = ExecIMGUIMainService.getExecFunc;
 
 let unsafeGetExecFunc = ExecIMGUIMainService.unsafeGetExecFunc;

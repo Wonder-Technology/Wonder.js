@@ -10,6 +10,8 @@ let hasSettedAssetFntData = SetAssetIMGUIMainService.hasSettedAssetFntData;
 
 let setSettedAssetFntData = SetAssetIMGUIMainService.setSettedAssetFntData;
 
+let removeSettedAssetFntData = SetAssetIMGUIMainService.removeSettedAssetFntData;
+
 let getSettedAssetBitmapArrayBuffer = SetAssetIMGUIMainService.getSettedAssetBitmapArrayBuffer;
 
 let unsafeGetSettedAssetBitmapArrayBuffer = SetAssetIMGUIMainService.unsafeGetSettedAssetBitmapArrayBuffer;

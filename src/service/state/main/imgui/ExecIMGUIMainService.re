@@ -34,6 +34,11 @@ let hasExecFuncData = (execFuncName, state) =>
   RecordIMGUIMainService.getWonderIMGUIRecord(state)
   |> WonderImgui.ExecIMGUIAPI.hasExecFuncData(execFuncName);
 
+let getExecFuncDataArr = state =>
+  WonderImgui.ExecIMGUIAPI.getExecFuncDataArr(
+    RecordIMGUIMainService.getWonderIMGUIRecord(state),
+  );
+
 let addExecFuncData =
     (execFuncName, customData, execOrder, func: ExecIMGUIType.execFunc, state) => {
   let wonderImguiIMGUIRecord =

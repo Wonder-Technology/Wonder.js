@@ -32,6 +32,12 @@ let setSettedAssetFntData = (name, content, state) =>
   )
   |> ManageIMGUIMainService.setRecord(_, state);
 
+let removeSettedAssetFntData = state =>
+  WonderImgui.AssetIMGUIAPI.removeSettedAssetFntData(
+    ManageIMGUIMainService.getRecord(state),
+  )
+  |> ManageIMGUIMainService.setRecord(_, state);
+
 let getSettedAssetBitmapArrayBuffer = state =>
   WonderImgui.FontIMGUIService.SetAsset.getBitmapArrayBuffer(
     ManageIMGUIMainService.getRecord(state),
