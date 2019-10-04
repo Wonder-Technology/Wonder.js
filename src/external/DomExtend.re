@@ -4,9 +4,6 @@ open WonderWebgl.DomExtendType;
 
 [@bs.send] external createElement : (document, string) => Js.t({..}) = "";
 
-[@bs.return null_to_opt] [@bs.send]
-external querySelectorAll : (document, string) => option(htmlElement) = "";
-
 [@bs.val] external requestAnimationFrame : (float => unit) => int = "";
 
 [@bs.send]
