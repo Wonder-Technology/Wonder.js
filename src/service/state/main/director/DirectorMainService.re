@@ -54,17 +54,15 @@ let init = _noWorkerInit;
 let loopBody = (time: float, state: StateDataMainType.state) =>
   state |> _run(time);
 
-let rec _noWorkerLoop = (time: float, state: StateDataMainType.state) : int => {
-  StateDataMainService.setState(StateDataMain.stateData, state) |> ignore;
-
-  DomExtend.requestAnimationFrame((time: float) =>
+let rec _noWorkerLoop = (time: float): int =>
+  DomExtend.requestAnimationFrame((time: float) => {
     StateDataMainService.unsafeGetState(StateDataMain.stateData)
     |> loopBody(time)
     |> StateDataMainService.setState(StateDataMain.stateData)
-    |> _noWorkerLoop(time)
-    |> ignore
-  );
-};
+    |> ignore;
+
+    _noWorkerLoop(time) |> ignore;
+  });
 
 let start = (state: StateDataMainType.state) =>
   WorkerDetectMainService.isUseWorker(state) ?
@@ -74,4 +72,11 @@ let start = (state: StateDataMainType.state) =>
     |> WonderBsMost.Most.concat(_createWorkerLoopStream())
     |> WonderBsMost.Most.drain
     |> ignore :
-    state |> _noWorkerInit |> _noWorkerLoop(0.) |> ignore;
+    {
+      state
+      |> _noWorkerInit
+      |> StateDataMainService.setState(StateDataMain.stateData)
+      |> ignore;
+
+      _noWorkerLoop(0.) |> ignore;
+    };
