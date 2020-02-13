@@ -219,5 +219,7 @@ You are welcome to donate for Wonder.js project! Thanks very much!
 
 ## Donors
 
+|  日期   | 头像  | 金额（元） |
+|  ----  | ----  | ----  |
 
-[![liuxin2322](./donate/liuxin2322.jpg)](https://github.com/liuxin2322)
+| 2020.02.13  | [![liuxin2322](./donate/liuxin2322.jpg)](https://github.com/liuxin2322) | 999 |
