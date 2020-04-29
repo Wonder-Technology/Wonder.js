@@ -223,3 +223,5 @@ You are welcome to donate for Wonder.js project! Thanks very much!
 |  ----  | ----  | ----  |
 | 2020.02.13  | [![liuxin2322](./donate/liuxin2322.jpg)](https://github.com/liuxin2322) | 999 |
 | 2020.03.04  | ![rong](./donate/rong.png) | 2000 |
+| 2020.04.29  | ![谢员外](./donate/谢员外.jpg) | 1000 |
+| 2020.04.29  | [![mko_io](./donate/mko_io.jpg)](https://github.com/mko-io) | 999 |
