@@ -1,1 +1,0 @@
-type workerDetectRecord = {isUseWorker: bool};

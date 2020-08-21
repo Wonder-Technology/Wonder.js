@@ -1,1 +1,0 @@
-let getDefaultColor = () => [|0., 0., 0.|];

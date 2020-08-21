@@ -1,1 +1,0 @@
-let getEulerAngles = QuaternionService.getEulerAngles;

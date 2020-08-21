@@ -1,1 +1,0 @@
-let setScreenSize = ScreenService.setScreenSize;

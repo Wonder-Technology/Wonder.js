@@ -1,3 +1,0 @@
-type customDataFromRenderWorkerToMainWorker;
-
-type customDataFromMainWorkerToRenderWorker;

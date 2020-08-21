@@ -3,30 +3,19 @@
 .idea/
 .vscode/
 jest_0/
-lib/bs/
-lib/js/src/
 reference/
 node_modules/
 mine/
+
+lib/
 
 coverage
 
 dist/
 
-dist/base
-
 npm-debug
-
-
-test/e2e/performance/report
-
-test/e2e/render/report
-
-test/e2e/render/screenshot/current/
-
-
-_temp/
 
 .bsb.lock
 
 yarn.lock
+

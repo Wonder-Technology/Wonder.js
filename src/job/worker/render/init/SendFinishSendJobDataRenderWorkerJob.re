@@ -1,1 +1,0 @@
-let execJob = (flags, e, stateData) => SendWorkerDataJobUtils.execJob(flags, e, stateData);

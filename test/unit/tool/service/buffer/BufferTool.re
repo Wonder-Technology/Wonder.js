@@ -1,3 +1,0 @@
-let getDefaultShaderIndex = DefaultTypeArrayValueService.getDefaultShaderIndex;
-
-let getDefaultSourceInstance = DefaultTypeArrayValueService.getDefaultSourceInstance;

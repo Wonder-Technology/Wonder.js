@@ -1,1 +1,0 @@
-[@bs.val] external root : Js.t({..}) = "window";

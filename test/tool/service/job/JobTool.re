@@ -1,1 +1,0 @@
-let getConfigRecord = () => 1 |> Obj.magic;
