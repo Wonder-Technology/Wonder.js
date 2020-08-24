@@ -20,7 +20,10 @@
     "wonder-bs-sinon"
   ],
   "refmt": 3,
-  "bs-dependencies": [],
+  "bs-dependencies": [
+    "wonder-bs-json",
+    "wonder-bs-most"
+  ],
   "package-specs": [
     "commonjs"
   ],

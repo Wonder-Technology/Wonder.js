@@ -1,0 +1,3 @@
+let create = () => {
+  GameObjectApService.create();
+};
