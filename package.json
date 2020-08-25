@@ -29,7 +29,6 @@
     "wonder-bs-sinon": "^0.1.9"
   },
   "dependencies": {
-    "wonder-bs-json": "^0.0.1",
     "wonder-bs-most": "^0.0.3"
   }
 }

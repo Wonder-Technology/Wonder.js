@@ -1,1 +1,0 @@
-type buffer = {transformCount: int};

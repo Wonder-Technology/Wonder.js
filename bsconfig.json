@@ -21,7 +21,6 @@
   ],
   "refmt": 3,
   "bs-dependencies": [
-    "wonder-bs-json",
     "wonder-bs-most"
   ],
   "package-specs": [
