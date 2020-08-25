@@ -1,6 +1,6 @@
 open Js.Typed_array;
 
-open BufferTransformRepo;
+open BufferTransformRepoUtils;
 
 let createTypeArrays = (buffer, count) => (
   Float32Array.fromBufferRange(

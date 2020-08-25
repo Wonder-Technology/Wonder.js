@@ -1,9 +1,9 @@
 open GameObjectPOType;
 
-let createGameObject = () => {
-  let {maxUID} as gameObjectPO = Repo.getGameObject();
+let getMaxUID = () => {
+  Repo.getGameObject().maxUID;
+};
 
-  Repo.setGameObject({...gameObjectPO, maxUID: maxUID->succ});
-
-  maxUID;
+let setMaxUID = maxUID => {
+  Repo.setGameObject({...Repo.getGameObject(), maxUID});
 };

@@ -31,7 +31,7 @@ let getTransform = () => {
 let setTransform = transform => {
   let po = ContainerManager.getPO();
 
-  {...po, transform} |> ContainerManager.setPO;
+  {...po, transform: transform->Some} |> ContainerManager.setPO;
 };
 
 let getConfig = () => {

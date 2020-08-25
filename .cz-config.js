@@ -16,6 +16,7 @@ module.exports = {
 
   scopes: [
       { name: "ecs" },
+      { name: "transform" },
   ],
 
   // it needs to match the value for field type. Eg.: "fix"

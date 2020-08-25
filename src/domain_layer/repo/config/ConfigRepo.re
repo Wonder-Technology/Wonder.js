@@ -1,7 +1,7 @@
 open ConfigPOType;
 
 let getSetting = () => {
-  Repo.getConfig().setting->Option.get;
+  Repo.getConfig().setting->OptionSt.get;
 };
 
 let setSetting = setting => {

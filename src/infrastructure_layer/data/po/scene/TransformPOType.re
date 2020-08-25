@@ -11,7 +11,8 @@ type transform = {
   defaultLocalScale: VectorPOType.vec3,
   parentMap:
     ImmutableSparseMap.t(ComponentPOType.index, ComponentPOType.index),
-  childMap:
+  childrenMap:
     ImmutableSparseMap.t(ComponentPOType.index, list(ComponentPOType.index)),
   gameObjectMap: ComponentPOType.gameObjectMap,
+  dirtyMap: ImmutableSparseMap.t(ComponentPOType.index, bool),
 };

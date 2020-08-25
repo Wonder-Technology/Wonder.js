@@ -1,7 +1,5 @@
-type uid = int;
-
 type t =
-  | GameObject(uid);
+  | GameObject(GameObjectPOType.uid);
 
 let create = uid => GameObject(uid);
 

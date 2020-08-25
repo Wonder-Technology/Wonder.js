@@ -21,7 +21,7 @@ let setSetting = setting => {
                ),
              )
         )
-        ->Option.getWithDefault({transformCount: 10000}: buffer),
+        ->OptionSt.getWithDefault({transformCount: 10000}: buffer),
     }
     ->SettingDoService.set
   });
