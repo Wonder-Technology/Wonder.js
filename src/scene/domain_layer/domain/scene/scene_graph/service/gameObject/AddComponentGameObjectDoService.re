@@ -1,12 +1,12 @@
 let _addComponent = ((gameObject, component), handleAddComponentFunc) => {
-  DpContainer.unsafeGetGameObjectRepoDp().addTransform(gameObject, component);
+  GameObjectRepoAt.addTransform(gameObject, component);
 
   handleAddComponentFunc(. component, gameObject);
 };
 
 let addTransform = (gameObject, transform) => {
   _addComponent(
-    (gameObject->GameObjectEntity.value, transform->TransformEntity.value),
+    (gameObject, transform),
     AddTransformDoService.handleAddComponent,
   );
 };

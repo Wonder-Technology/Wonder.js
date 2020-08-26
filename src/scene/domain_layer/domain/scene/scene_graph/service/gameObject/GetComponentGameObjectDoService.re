@@ -1,6 +1,4 @@
 let getTransform = gameObject =>
-  DpContainer.unsafeGetGameObjectRepoDp().getTransform(
-    gameObject->GameObjectEntity.value,
-  )
+  GameObjectRepoAt.getTransform(gameObject)
   ->OptionSt.fromNullable
   ->OptionSt.map(TransformEntity.create);

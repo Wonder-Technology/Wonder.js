@@ -1,23 +1,13 @@
 let hasParent = transform => {
-  DpContainer.unsafeGetTransformRepoDp().hasParent(
-    transform->TransformEntity.value,
-  );
+  TransformRepoAt.hasParent(transform);
 };
 
 let getParent = transform => {
-  DpContainer.unsafeGetTransformRepoDp().getParent(
-    transform->TransformEntity.value,
-  )
-  ->OptionSt.fromNullable
-  ->OptionSt.map(TransformEntity.create);
+  TransformRepoAt.getParent(transform);
 };
 
 let getChildren = transform => {
-  DpContainer.unsafeGetTransformRepoDp().getChildren(
-    transform->TransformEntity.value,
-  )
-  ->OptionSt.fromNullable
-  ->OptionSt.map(children => children->ListSt.map(TransformEntity.create));
+  TransformRepoAt.getChildren(transform);
 };
 
 let _addToParent = (parent, child) => {
@@ -49,38 +39,25 @@ let _addToParent = (parent, child) => {
     DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
   )
   ->Result.mapSuccess(() => {
-      let transformRepoDp = DpContainer.unsafeGetTransformRepoDp();
-
-      transformRepoDp.setParent(
-        parent->TransformEntity.value,
-        child->TransformEntity.value,
-      );
-      transformRepoDp.addChild(
-        parent->TransformEntity.value,
-        child->TransformEntity.value,
-      );
+      TransformRepoAt.setParent(parent, child);
+      TransformRepoAt.addChild(parent, child);
 
       ();
     });
 };
 
-let _removeFromParentMap = child => {
-  DpContainer.unsafeGetTransformRepoDp().removeParent(
-    child->TransformEntity.value,
-  );
+let _removeParent = child => {
+  TransformRepoAt.removeParent(child);
 };
 
-let _removeFromChildMap = (parent, child) => {
-  DpContainer.unsafeGetTransformRepoDp().removeChild(
-    parent->TransformEntity.value,
-    child->TransformEntity.value,
-  );
+let _removeChild = (parent, child) => {
+  TransformRepoAt.removeChild(parent, child);
 };
 
 let _removeFromParent = (currentParent, child) => {
-  _removeFromParentMap(child);
+  _removeParent(child);
 
-  _removeFromChildMap(currentParent, child);
+  _removeChild(currentParent, child);
 };
 
 let _setNewParent = (parent, child) =>
@@ -96,9 +73,7 @@ let _setNewParent = (parent, child) =>
   };
 
 let rec _markHierachyDirty = transform => {
-  let transformRepoDp = DpContainer.unsafeGetTransformRepoDp();
-
-  transformRepoDp.setIsDirty(transform->TransformEntity.value, true);
+  TransformRepoAt.setIsDirty(transform, true);
 
   switch (getChildren(transform)) {
   | None => ()
