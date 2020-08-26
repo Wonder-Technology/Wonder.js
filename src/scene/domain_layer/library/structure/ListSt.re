@@ -32,3 +32,17 @@ let ignoreTraverseResultValue = traverseResult => {
 let range = (start, end_) => {
   Belt.List.makeBy(end_ - start + 1, i => i + start);
 };
+
+let map = (list, func) => {
+  Belt.List.map(list, func);
+};
+
+let _eq = (source, target) => source === target;
+
+let includes = (list, value) => {
+  list->Belt.List.has(value, _eq);
+};
+
+let reduce = Belt.List.reduce;
+
+let forEach = Belt.List.forEach;

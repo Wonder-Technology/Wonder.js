@@ -1,36 +1,61 @@
 let _assert = (result: bool, message) => result;
 
+// let _throw = [%bs.raw {|
+// function(message) {
+// throw new Error(message);
+// }
+// |}];
+
 let test = (message, func) => {
-  (message, func());
+  // func() ? () : _throw(message);
+  func()
+    ? () : Js.Exn.raiseError(message);
 };
 
 let requireCheck =
-    (f: unit => (string, bool), isTest: bool): Result.t2(unit) =>
-  switch (isTest) {
-  | true =>
-    let (message, isPass) = f();
-
-    switch (isPass) {
-    | false => Result.fail(Js.Exn.raiseError(message))
-    | true => Result.succeed()
+    // (f: unit => (string, bool), isTest: bool): Result.t2(unit) =>
+    (f: unit => unit, isTest: bool): Result.t2(unit) =>
+  isTest
+    ? try(f()->Result.succeed) {
+      | Js.Exn.Error(e) => Result.fail(e)
+      }
+    : {
+      Result.succeed();
     };
-  | _ => Result.succeed()
-  };
+
+// switch (isTest) {
+// | true =>
+//   let (message, isPass) = f();
+
+//   switch (isPass) {
+//   | false => Result.fail(Js.Exn.raiseError(message))
+//   | true => Result.succeed()
+//   };
+// | _ => Result.succeed()
+// };
 
 let ensureCheck =
-    (returnVal: 'a, f: 'a => (string, bool), isTest: bool): Result.t2('a) =>
-  switch (isTest) {
-  | true =>
-    let (message, isPass) = f(returnVal);
-
-    switch (isPass) {
-    | false => Result.fail(Js.Exn.raiseError(message))
-    | true => Result.succeed(returnVal)
+    // (returnVal: 'a, f: 'a => (string, bool), isTest: bool): Result.t2('a) =>
+    (returnVal: 'a, f: 'a => unit, isTest: bool): Result.t2('a) => {
+  // switch (isTest) {
+  // | true =>
+  //   let (message, isPass) = f(returnVal);
+  //   switch (isPass) {
+  //   | false => Result.fail(Js.Exn.raiseError(message))
+  //   | true => Result.succeed(returnVal)
+  //   };
+  // | _ => Result.succeed(returnVal)
+  // };
+  isTest
+    ? try(f(returnVal)->Result.succeed->Result.mapSuccess(() => returnVal)) {
+      | Js.Exn.Error(e) => Result.fail(e)
+      }
+    : {
+      Result.succeed(returnVal);
     };
-  | _ => Result.succeed(returnVal)
-  };
+};
 
-let assertPass = () => ();
+let assertPass = () => true;
 
 let assertTrue = (source: bool) =>
   _assert(source == true, "expect to be true, but actual is false");

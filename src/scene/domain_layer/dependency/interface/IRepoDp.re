@@ -1,5 +1,7 @@
 open ScenePOType;
 
+open TransformPOType;
+
 type sceneRepo = {setSceneGameObject: gameObject => unit};
 
 type gameObjectRepo = {
@@ -11,12 +13,19 @@ type gameObjectRepo = {
 };
 
 type transformRepo = {
-  getMaxIndex: unit => index,
-  setMaxIndex: index => unit,
-  setChildren: (transform, list(transform)) => unit,
+  getMaxIndex: unit => ComponentPOType.index,
+  setMaxIndex: ComponentPOType.index => unit,
   setIsDirty: (transform, bool) => unit,
   addGameObject: (transform, gameObject) => unit,
-  getGameObject: transform => Js.Nullable.t(gameObject)
+  getGameObject: transform => Js.Nullable.t(gameObject),
+  hasParent: transform => bool,
+  getParent: transform => Js.Nullable.t(parent),
+  setParent: (parent, child) => unit,
+  removeParent: transform => unit,
+  getChildren: transform => Js.Nullable.t(children),
+  setChildren: (parent, children) => unit,
+  addChild: (parent, child) => unit,
+  removeChild: (parent, child) => unit,
 };
 
 type repo = {

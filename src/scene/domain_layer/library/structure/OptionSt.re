@@ -14,3 +14,5 @@ let getWithDefault = Belt.Option.getWithDefault;
 let isSome = Belt.Option.isSome;
 
 let map = Belt.Option.map;
+
+let fromNullable = x => Js.Nullable.toOption(x);
