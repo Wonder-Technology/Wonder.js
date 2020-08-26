@@ -4,7 +4,7 @@ let getExn = Belt.Option.getExn;
 
 let get = optionData => {
   switch (optionData) {
-  | None => Result.failWith({|data not exist(get by getExn)|})
+  | None => Result.failWith({|data not exist in option data|})
   | Some(data) => Result.succeed(data)
   };
 };

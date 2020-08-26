@@ -48,3 +48,9 @@ let handleFail = (result: t('s, 'f), handleFailFunc: 'f => 's): 's =>
   | Success(s) => s
   | Fail(f) => handleFailFunc(f)
   };
+
+let fromNullable = x =>
+  switch (Js.Nullable.toOption(x)) {
+  | None => failWith({|data not exist in nullable data|})
+  | Some(data) => succeed(data)
+  };
