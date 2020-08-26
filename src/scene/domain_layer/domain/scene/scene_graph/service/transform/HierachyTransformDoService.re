@@ -41,8 +41,6 @@ let _addToParent = (parent, child) => {
   ->Result.mapSuccess(() => {
       TransformRepoAt.setParent(parent, child);
       TransformRepoAt.addChild(parent, child);
-
-      ();
     });
 };
 
@@ -72,17 +70,17 @@ let _setNewParent = (parent, child) =>
       : Result.succeed()
   };
 
-let rec _markHierachyDirty = transform => {
+let rec markHierachyDirty = transform => {
   TransformRepoAt.setIsDirty(transform, true);
 
   switch (getChildren(transform)) {
   | None => ()
   | Some(children) =>
-    children->ListSt.forEach(child => {_markHierachyDirty(child)})
+    children->ListSt.forEach(child => {markHierachyDirty(child)})
   };
 };
 
 let setParent = (parent, child) => {
   _setNewParent(parent, child)
-  ->Result.mapSuccess(() => {_markHierachyDirty(child)});
+  ->Result.mapSuccess(() => {markHierachyDirty(child)});
 };

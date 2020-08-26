@@ -15,6 +15,7 @@ type gameObjectRepo = {
 type transformRepo = {
   getMaxIndex: unit => ComponentPOType.index,
   setMaxIndex: ComponentPOType.index => unit,
+  getIsDirty: transform => Js.Nullable.t(bool),
   setIsDirty: (transform, bool) => unit,
   addGameObject: (transform, gameObject) => unit,
   getGameObject: transform => Js.Nullable.t(gameObject),
@@ -26,10 +27,22 @@ type transformRepo = {
   setChildren: (parent, children) => unit,
   addChild: (parent, child) => unit,
   removeChild: (parent, child) => unit,
+  getLocalToWorldMatrix: transform => Js.Typed_array.Float32Array.t,
+  getLocalPosition: transform => position,
+  setLocalPosition: (transform, position) => unit,
+  getLocalRotation: transform => rotation,
+  setLocalRotation: (transform, rotation) => unit,
+  getLocalScale: transform => scale,
+  setLocalScale: (transform, scale) => unit,
+};
+
+type globalTempRepo = {
+  getFloat32Array1: unit => Js.Typed_array.Float32Array.t,
 };
 
 type repo = {
   sceneRepo,
   gameObjectRepo,
   transformRepo,
+  globalTempRepo,
 };

@@ -39,6 +39,10 @@ let unsafeGetTransformRepoDp = () => {
   _unsafeGetRepoDp().transformRepo;
 };
 
+let unsafeGetGlobalTempRepoDp = () => {
+  _unsafeGetRepoDp().globalTempRepo;
+};
+
 let setRepoDp = dp => {
   dpContainer.repo = dp->Some;
 
