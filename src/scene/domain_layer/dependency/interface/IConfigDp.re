@@ -1,6 +1,8 @@
-type setting = {
-  getIsDebug: unit => bool,
-  getTransformCount: unit => int,
-};
+type otherConfig = {getIsDebug: unit => bool};
 
-type config = {setting};
+type poConfig = {getTransformCount: unit => int};
+
+type config = {
+  otherConfig,
+  poConfig,
+};

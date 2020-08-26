@@ -9,8 +9,12 @@ let _unsafeGetConfigDp = () => {
   dpContainer.config->OptionSt.unsafeGet;
 };
 
-let unsafeGetSettingConfigDp = () => {
-  _unsafeGetConfigDp().setting;
+let unsafeGetPOConfigDp = () => {
+  _unsafeGetConfigDp().poConfig;
+};
+
+let unsafeGetOtherConfigDp = () => {
+  _unsafeGetConfigDp().otherConfig;
 };
 
 let setConfigDp = dp => {

@@ -18,6 +18,7 @@ module.exports = {
       { name: "ecs" },
       { name: "gameObject" },
       { name: "transform" },
+      { name: "dependency" },
   ],
 
   // it needs to match the value for field type. Eg.: "fix"

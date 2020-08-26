@@ -15,5 +15,5 @@ let checkNotExceedMaxCountByIndex = (index, maxCount) =>
         index <= maxIndex
       );
     },
-    DpContainer.unsafeGetSettingConfigDp().getIsDebug(),
+    DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
   );

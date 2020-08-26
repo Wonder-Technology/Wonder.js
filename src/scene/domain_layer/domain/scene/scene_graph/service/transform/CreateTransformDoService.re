@@ -14,7 +14,7 @@ let create = () => {
 
   index
   ->BufferComponentDoService.checkNotExceedMaxCountByIndex(
-      DpContainer.unsafeGetSettingConfigDp().getTransformCount(),
+      DpContainer.unsafeGetPOConfigDp().getTransformCount(),
     )
   ->Result.mapSuccess(TransformEntity.create);
 };
