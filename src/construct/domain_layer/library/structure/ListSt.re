@@ -19,6 +19,24 @@ let rec traverseResultM = (list, f) => {
   };
 };
 
+let rec traverseReduceResultM =
+        (list: list('a), param: 'b, f: ('b, 'a) => Result.t2('b))
+        : Result.t2('b) => {
+  // define the monadic functions
+  let (>>=) = (x, f) => Result.bind(x, f);
+
+  let retn = Result.succeed;
+
+  // define a "cons" function
+  let cons = (head, tail) => [head, ...tail];
+  // loop through the list
+  switch (list) {
+  | [] => retn(param)
+  | [head, ...tail] =>
+    f(param, head) >>= (h => traverseReduceResultM(tail, h, f))
+  };
+};
+
 let _id = value => value;
 
 let rec sequenceResultM = list => {
@@ -43,6 +61,16 @@ let includes = (list, value) => {
   list->Belt.List.has(value, _eq);
 };
 
+let getBy = Belt.List.getBy;
+
 let reduce = Belt.List.reduce;
 
 let forEach = Belt.List.forEach;
+
+let push = (list, value) => {
+  list->Belt.List.concat([value]);
+};
+
+let toArray = Belt.List.toArray;
+
+let fromArray = Belt.List.fromArray;

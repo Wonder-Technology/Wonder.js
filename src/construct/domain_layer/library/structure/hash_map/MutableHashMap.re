@@ -5,3 +5,5 @@ let createEmpty = HashMap.createEmpty;
 let set = Belt.MutableMap.String.set;
 
 let get = HashMap.get;
+
+let getNullable = HashMap.getNullable;

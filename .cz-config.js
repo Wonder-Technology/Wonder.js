@@ -18,6 +18,7 @@ module.exports = {
       { name: "ecs" },
       { name: "gameObject" },
       { name: "transform" },
+      { name: "pipeline" },
       { name: "dependency" },
   ],
 

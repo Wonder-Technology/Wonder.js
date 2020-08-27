@@ -4,6 +4,9 @@ let createEmpty = (~hintSize=10, ()): HashMapType.t2('a) => make(~hintSize);
 
 let get = (map: HashMapType.t2('a), key: string) => get(map, key);
 
+let getNullable = (map: HashMapType.t2('a), key: string) =>
+  get(map, key)->Js.Nullable.fromOption;
+
 // let entries = (map: HashMapType.t2('a)): array((Js.Dict.key, 'a)) =>
 //   map |> Js.Dict.entries;
 

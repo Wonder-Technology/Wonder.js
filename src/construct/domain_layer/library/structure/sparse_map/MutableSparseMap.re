@@ -6,6 +6,8 @@ let copy = SparseMap.copy;
 
 let get = SparseMap.get;
 
+let getNullable = SparseMap.getNullable;
+
 let has = SparseMap.has;
 
 let set = Belt.MutableMap.Int.set;

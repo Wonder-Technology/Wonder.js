@@ -2,6 +2,8 @@ open ScenePOType;
 
 open TransformPOType;
 
+open PipelinePOType;
+
 type sceneRepo = {setSceneGameObject: gameObject => unit};
 
 type gameObjectRepo = {
@@ -40,9 +42,17 @@ type globalTempRepo = {
   getFloat32Array1: unit => Js.Typed_array.Float32Array.t,
 };
 
+type pipelineRepo = {
+  getJobExecFunc: (pipelineName, jobName) => Js.Nullable.t(execFunc),
+  setJobExecFunc: (pipelineName, jobName, execFunc) => unit,
+  getPipelineStream: pipelineName => Js.Nullable.t(pipelineStream),
+  setPipelineStream: (pipelineName, pipelineStream) => unit,
+};
+
 type repo = {
   sceneRepo,
   gameObjectRepo,
   transformRepo,
   globalTempRepo,
+  pipelineRepo,
 };

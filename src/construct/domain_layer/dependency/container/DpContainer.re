@@ -43,6 +43,10 @@ let unsafeGetGlobalTempRepoDp = () => {
   _unsafeGetRepoDp().globalTempRepo;
 };
 
+let unsafeGetPipelineRepoDp = () => {
+  _unsafeGetRepoDp().pipelineRepo;
+};
+
 let setRepoDp = dp => {
   dpContainer.repo = dp->Some;
 

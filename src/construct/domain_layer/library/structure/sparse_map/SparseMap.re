@@ -7,4 +7,6 @@ let copy = copy;
 
 let get = get;
 
+let getNullable = (map, key) => get(map, key)->Js.Nullable.fromOption;
+
 let has = has;
