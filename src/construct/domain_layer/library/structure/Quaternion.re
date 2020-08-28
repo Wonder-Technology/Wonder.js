@@ -16,7 +16,7 @@ let normalize = ((x, y, z, w) as tuple) => {
   };
 };
 
-let invert = tuple => conjugate(tuple) |> normalize;
+let invert = tuple => conjugate(tuple)->normalize;
 
 let multiply = ((q1x, q1y, q1z, q1w), (q2x, q2y, q2z, q2w)) => (
   q1w *. q2x +. q1x *. q2w +. q1y *. q2z -. q1z *. q2y,
@@ -173,7 +173,7 @@ let _getEulerAngles = [%bs.raw
 let getEulerAngles = quat => {
   let rad_to_deg = 180. /. Js.Math._PI;
 
-  _getEulerAngles(quat) |> Vector3.scale(Vector3.Float, rad_to_deg);
+  _getEulerAngles(quat)->Vector3.scale(Vector3.Float, rad_to_deg);
 };
 
 let setFromAxisAngle = (angle, axis) => {

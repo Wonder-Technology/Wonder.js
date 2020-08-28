@@ -1,4 +1,4 @@
-let getJsonStr = json => Js.Json.stringify(json |> Obj.magic);
+let getJsonStr = json => Js.Json.stringify(json->Obj.magic);
 
 let buildDebugMessage = (~description, ~params, ()) => {j|
   Debug:
@@ -12,7 +12,7 @@ let buildDebugMessage = (~description, ~params, ()) => {j|
   |j};
 
 let buildDebugJsonMessage = (~description, ~var, ()) => {
-  let varStr = Js.Json.stringify(var |> Obj.magic);
+  let varStr = Js.Json.stringify(var->Obj.magic);
   {j|
   DebugJson:
 

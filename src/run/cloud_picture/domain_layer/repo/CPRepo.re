@@ -7,7 +7,7 @@ let getPipeline = () => {
 let setPipeline = pipeline => {
   let po = CPContainerManager.getPO();
 
-  {...po, pipeline} |> CPContainerManager.setPO;
+  {...po, pipeline}->CPContainerManager.setPO;
 };
 
 let getScene = () => {
@@ -19,7 +19,7 @@ let getScene = () => {
 let setScene = scene => {
   let po = CPContainerManager.getPO();
 
-  {...po, scene} |> CPContainerManager.setPO;
+  {...po, scene}->CPContainerManager.setPO;
 };
 
 let getGameObject = () => {
@@ -31,7 +31,7 @@ let getGameObject = () => {
 let setGameObject = gameObject => {
   let po = CPContainerManager.getPO();
 
-  {...po, gameObject} |> CPContainerManager.setPO;
+  {...po, gameObject}->CPContainerManager.setPO;
 };
 
 let getTransform = () => {
@@ -47,7 +47,7 @@ let getExnTransform = () => {
 let setTransform = transform => {
   let po = CPContainerManager.getPO();
 
-  {...po, transform: transform->Some} |> CPContainerManager.setPO;
+  {...po, transform: transform->Some}->CPContainerManager.setPO;
 };
 
 let getPOConfig = () => {
@@ -59,7 +59,7 @@ let getPOConfig = () => {
 // let setPOConfig = poConfig => {
 //   let po = CPContainerManager.getPO();
 
-//   {...po, poConfig} |> CPContainerManager.setPO;
+//   {...po, poConfig} -> CPContainerManager.setPO;
 // };
 
 let getGlobalTemp = () => {
@@ -71,5 +71,5 @@ let getGlobalTemp = () => {
 let setGlobalTemp = globalTemp => {
   let po = CPContainerManager.getPO();
 
-  {...po, globalTemp} |> CPContainerManager.setPO;
+  {...po, globalTemp}->CPContainerManager.setPO;
 };
