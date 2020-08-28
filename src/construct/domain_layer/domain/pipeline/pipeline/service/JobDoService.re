@@ -1,10 +1,12 @@
 let register = (pipeline, job, execFunc) => {
-  PipelineRepoAt.setJobExecFunc(pipeline, job, execFunc);
+  DpContainer.unsafeGetPipelineRepoDp().setJobExecFunc(
+    pipeline->PipelineEntity.value,
+    job->JobEntity.value,
+    execFunc,
+  );
 };
 
 let getExecFunc = (pipelineName, jobName) => {
-  PipelineRepoAt.getJobExecFunc(
-    pipelineName->PipelineEntity.create,
-    jobName->JobEntity.create,
-  );
+  DpContainer.unsafeGetPipelineRepoDp().getJobExecFunc(pipelineName, jobName)
+  ->OptionSt.fromNullable;
 };

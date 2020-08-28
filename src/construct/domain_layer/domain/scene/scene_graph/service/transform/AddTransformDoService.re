@@ -1,4 +1,7 @@
 let handleAddComponent =
   (. transform, gameObject) => {
-    TransformRepoAt.setGameObject(transform, gameObject);
+    DpContainer.unsafeGetTransformRepoDp().setGameObject(
+      transform,
+      gameObject,
+    );
   };

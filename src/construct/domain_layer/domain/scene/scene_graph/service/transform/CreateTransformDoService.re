@@ -1,14 +1,14 @@
 let _initDataWhenCreate = index => {
-  TransformRepoAt.setChildrenByIndex(index, []);
+  DpContainer.unsafeGetTransformRepoDp().setChildren(index, []);
 };
 
 let create = () => {
-  let index = TransformRepoAt.getMaxIndex();
+  let index = DpContainer.unsafeGetTransformRepoDp().getMaxIndex();
   let newIndex = index->IndexComponentDoService.generateIndex;
 
   _initDataWhenCreate(index);
 
-  TransformRepoAt.setIsDirtyByIndex(index, true);
+  DpContainer.unsafeGetTransformRepoDp().setIsDirty(index, true);
 
   index
   ->BufferComponentDoService.checkNotExceedMaxCountByIndex(

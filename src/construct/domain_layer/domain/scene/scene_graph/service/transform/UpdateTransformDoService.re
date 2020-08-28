@@ -1,7 +1,7 @@
 let rec update = transform =>
   DirtyTransformDoService.isDirty(transform)
     ? {
-      TransformRepoAt.setIsDirty(transform, false);
+      DirtyTransformDoService.mark(transform, false);
 
       switch (HierachyTransformDoService.getParent(transform)) {
       | Some(parent) =>
@@ -15,7 +15,7 @@ let rec update = transform =>
         childLocalToWorldMatrix
         ->LocalToWorldMatrixVO.multiply(
             parentLocalToWorldMatrix,
-            GlobalTempRepoAt.getFloat32Array1()
+            DpContainer.unsafeGetGlobalTempRepoDp().getFloat32Array1()
             ->LocalToWorldMatrixVO.create
             ->LocalToWorldMatrixVO.fromTranslationRotationScale(
                 ModelMatrixTransformDoService.getLocalPosition(transform),

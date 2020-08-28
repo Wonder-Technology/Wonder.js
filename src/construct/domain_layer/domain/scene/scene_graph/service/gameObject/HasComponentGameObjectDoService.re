@@ -1,3 +1,5 @@
 let hasTransform = gameObject => {
-  GameObjectRepoAt.hasTransform(gameObject);
+  DpContainer.unsafeGetGameObjectRepoDp().hasTransform(
+    gameObject->GameObjectEntity.value,
+  );
 };

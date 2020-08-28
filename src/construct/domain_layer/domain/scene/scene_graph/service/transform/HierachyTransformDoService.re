@@ -1,13 +1,23 @@
 let hasParent = transform => {
-  TransformRepoAt.hasParent(transform);
+  DpContainer.unsafeGetTransformRepoDp().hasParent(
+    transform->TransformEntity.value,
+  );
 };
 
 let getParent = transform => {
-  TransformRepoAt.getParent(transform);
+  DpContainer.unsafeGetTransformRepoDp().getParent(
+    transform->TransformEntity.value,
+  )
+  ->OptionSt.fromNullable
+  ->OptionSt.map(TransformEntity.create);
 };
 
 let getChildren = transform => {
-  TransformRepoAt.getChildren(transform);
+  DpContainer.unsafeGetTransformRepoDp().getChildren(
+    transform->TransformEntity.value,
+  )
+  ->OptionSt.fromNullable
+  ->OptionSt.map(children => children->ListSt.map(TransformEntity.create));
 };
 
 let _addToParent = (parent, child) => {
@@ -39,17 +49,28 @@ let _addToParent = (parent, child) => {
     DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
   )
   ->Result.mapSuccess(() => {
-      TransformRepoAt.setParent(parent, child);
-      TransformRepoAt.addChild(parent, child);
+      DpContainer.unsafeGetTransformRepoDp().setParent(
+        parent->TransformEntity.value,
+        child->TransformEntity.value,
+      );
+      DpContainer.unsafeGetTransformRepoDp().addChild(
+        parent->TransformEntity.value,
+        child->TransformEntity.value,
+      );
     });
 };
 
-let _removeParent = child => {
-  TransformRepoAt.removeParent(child);
+let _removeParent = transform => {
+  DpContainer.unsafeGetTransformRepoDp().removeParent(
+    transform->TransformEntity.value,
+  );
 };
 
 let _removeChild = (parent, child) => {
-  TransformRepoAt.removeChild(parent, child);
+  DpContainer.unsafeGetTransformRepoDp().removeChild(
+    parent->TransformEntity.value,
+    child->TransformEntity.value,
+  );
 };
 
 let _removeFromParent = (currentParent, child) => {
@@ -71,7 +92,7 @@ let _setNewParent = (parent, child) =>
   };
 
 let rec markHierachyDirty = transform => {
-  TransformRepoAt.setIsDirty(transform, true);
+  DirtyTransformDoService.mark(transform, true);
 
   switch (getChildren(transform)) {
   | None => ()

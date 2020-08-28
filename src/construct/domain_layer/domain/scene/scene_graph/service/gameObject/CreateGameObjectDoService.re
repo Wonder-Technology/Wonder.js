@@ -1,7 +1,7 @@
 let create = () => {
-  let uid = GameObjectRepoAt.getMaxUID();
+  let uid = DpContainer.unsafeGetGameObjectRepoDp().getMaxUID();
 
-  GameObjectRepoAt.setMaxUID(uid |> succ);
+  DpContainer.unsafeGetGameObjectRepoDp().setMaxUID(uid->succ);
 
   let gameObject = uid->GameObjectEntity.create;
 

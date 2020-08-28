@@ -1,19 +1,28 @@
 let getLocalToWorldMatrix = transform => {
-  TransformRepoAt.getLocalToWorldMatrix(transform);
+  DpContainer.unsafeGetTransformRepoDp().getLocalToWorldMatrix(
+    transform->TransformEntity.value,
+  )
+  ->LocalToWorldMatrixVO.create;
 };
 
 let getLocalPosition = transform =>
-  TransformRepoAt.getLocalPosition(transform);
+  DpContainer.unsafeGetTransformRepoDp().getLocalPosition(
+    transform->TransformEntity.value,
+  )
+  ->PositionVO.create;
 
 let setLocalPosition = (transform, localPosition) => {
-  TransformRepoAt.setLocalPosition(transform, localPosition)
+  DpContainer.unsafeGetTransformRepoDp().setLocalPosition(
+    transform->TransformEntity.value,
+    localPosition->PositionVO.value,
+  )
   ->Result.mapSuccess(() => {
       HierachyTransformDoService.markHierachyDirty(transform)
     });
 };
 
 let setPosition = (transform, parent, position) => {
-  GlobalTempRepoAt.getFloat32Array1()
+  DpContainer.unsafeGetGlobalTempRepoDp().getFloat32Array1()
   ->Matrix4.invert(getLocalToWorldMatrix(parent)->LocalToWorldMatrixVO.value)
   ->Result.bind(mat4 => {
       setLocalPosition(
@@ -27,18 +36,25 @@ let setPosition = (transform, parent, position) => {
 };
 
 let getLocalRotation = transform =>
-  TransformRepoAt.getLocalRotation(transform);
+  DpContainer.unsafeGetTransformRepoDp().getLocalRotation(
+    transform->TransformEntity.value,
+  )
+  ->RotationVO.create;
 
 let setLocalRotation = (transform, localRotation) => {
-  TransformRepoAt.setLocalRotation(transform, localRotation)
+  DpContainer.unsafeGetTransformRepoDp().setLocalRotation(
+    transform->TransformEntity.value,
+    localRotation->RotationVO.value,
+  )
   ->Result.mapSuccess(() => {
       HierachyTransformDoService.markHierachyDirty(transform)
     });
 };
 
 let getLocalEulerAngles = transform => {
-  TransformRepoAt.getLocalRotation(transform)
-  ->RotationVO.value
+  DpContainer.unsafeGetTransformRepoDp().getLocalRotation(
+    transform->TransformEntity.value,
+  )
   ->Quaternion.getEulerAngles
   ->EulerAnglesVO.create;
 };
@@ -53,17 +69,24 @@ let setLocalEulerAngles = (transform, localEulerAngles) => {
   );
 };
 
-let getLocalScale = transform => TransformRepoAt.getLocalScale(transform);
+let getLocalScale = transform =>
+  DpContainer.unsafeGetTransformRepoDp().getLocalScale(
+    transform->TransformEntity.value,
+  )
+  ->ScaleVO.create;
 
 let setLocalScale = (transform, localScale) => {
-  TransformRepoAt.setLocalScale(transform, localScale)
+  DpContainer.unsafeGetTransformRepoDp().setLocalScale(
+    transform->TransformEntity.value,
+    localScale->ScaleVO.value,
+  )
   ->Result.mapSuccess(() => {
       HierachyTransformDoService.markHierachyDirty(transform)
     });
 };
 
 let setScale = (transform, parent, scale) => {
-  GlobalTempRepoAt.getFloat32Array1()
+  DpContainer.unsafeGetGlobalTempRepoDp().getFloat32Array1()
   ->Matrix4.invert(getLocalToWorldMatrix(parent)->LocalToWorldMatrixVO.value)
   ->Result.bind(mat4 => {
       setLocalScale(
