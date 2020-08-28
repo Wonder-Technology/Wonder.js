@@ -1,4 +1,4 @@
 let handleAddComponent =
   (. transform, gameObject) => {
-    TransformRepoAt.addGameObject(transform, gameObject);
+    TransformRepoAt.setGameObject(transform, gameObject);
   };

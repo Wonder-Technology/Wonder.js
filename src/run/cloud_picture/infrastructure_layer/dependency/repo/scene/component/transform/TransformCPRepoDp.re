@@ -13,7 +13,7 @@ let getGameObject = transform => {
   ->ImmutableSparseMap.getNullable(transform);
 };
 
-let addGameObject = (transform, gameObject) => {
+let setGameObject = (transform, gameObject) => {
   let {gameObjectMap} as transformPO = CPRepo.getExnTransform();
 
   CPRepo.setTransform({

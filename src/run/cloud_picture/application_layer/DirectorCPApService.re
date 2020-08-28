@@ -15,7 +15,7 @@ let _injectDependencies = () => {
       setMaxIndex: TransformCPRepoDp.setMaxIndex,
       getIsDirty: TransformCPRepoDp.getIsDirty,
       setIsDirty: TransformCPRepoDp.setIsDirty,
-      addGameObject: TransformCPRepoDp.addGameObject,
+      setGameObject: TransformCPRepoDp.setGameObject,
       getGameObject: TransformCPRepoDp.getGameObject,
       hasParent: TransformCPRepoDp.hasParent,
       getParent: TransformCPRepoDp.getParent,

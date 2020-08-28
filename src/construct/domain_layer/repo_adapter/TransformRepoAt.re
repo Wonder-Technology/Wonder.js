@@ -23,8 +23,8 @@ let setIsDirty = transform => {
   );
 };
 
-let addGameObject = (transform, gameObject) => {
-  DpContainer.unsafeGetTransformRepoDp().addGameObject(
+let setGameObject = (transform, gameObject) => {
+  DpContainer.unsafeGetTransformRepoDp().setGameObject(
     transform->TransformEntity.value,
     gameObject->GameObjectEntity.value,
   );
