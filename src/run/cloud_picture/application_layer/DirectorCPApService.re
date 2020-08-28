@@ -57,7 +57,15 @@ let _parseAndSetPipelineStream = pipelineData => {
     });
 };
 
-let init = () => {
+let _execPipelineStream =
+    ((handleFailFunc, handleSuccessFunc), pipelineStream) => {
+  pipelineStream->OptionSt.map(pipelineStream =>
+    PipelineRunAPI.execPipelineStream(handleFailFunc, pipelineStream)
+    ->Js.Promise.then_(() => handleSuccessFunc(), _)
+  );
+};
+
+let init = ((handleFailFunc, handleSuccessFunc)) => {
   _injectDependencies();
 
   JobCPDoService.registerAllJobs();
@@ -68,17 +76,23 @@ let init = () => {
       PipelineCPDoService.getRunPipelineData()
       ->_parseAndSetPipelineStream
       ->Result.mapSuccess(() => {
-          PipelineCPDoService.getPipelineStream(
-            PipelineCPDoService.getInitPipeline(),
+          _execPipelineStream(
+            (handleFailFunc, handleSuccessFunc),
+            PipelineCPDoService.getPipelineStream(
+              PipelineCPDoService.getInitPipeline(),
+            ),
           )
-          ->OptionSt.map(WonderBsMost.Most.drain)
           ->ignore
         })
     });
 };
 
-let run = () => {
-  PipelineCPDoService.getPipelineStream(PipelineCPDoService.getRunPipeline())
-  ->OptionSt.map(WonderBsMost.Most.drain)
+let run = ((handleFailFunc, handleSuccessFunc)) => {
+  _execPipelineStream(
+    (handleFailFunc, handleSuccessFunc),
+    PipelineCPDoService.getPipelineStream(
+      PipelineCPDoService.getRunPipeline(),
+    ),
+  )
   ->ignore;
 };

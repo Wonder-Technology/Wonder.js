@@ -7,8 +7,17 @@ let _findGroup = (groupName, groups) => {
   };
 };
 
+// TODO test: should test execFunc->result->fail case
 let _buildJobStream = execFunc => {
-  MostUtils.callStreamFunc(execFunc);
+  WonderBsMost.Most.(
+    execFunc
+    ->just
+    ->flatMap(func => func(), _)
+    ->flatMap(
+        result => {result->Result.either(s => s->just, f => f->throwError)},
+        _,
+      )
+  );
 };
 
 let _buildJobStreams =
@@ -44,6 +53,16 @@ let rec _buildPipelineStream = ({name, link, elements}, groups) =>
 
 let parse = ({name, groups, firstGroup}) => {
   _findGroup(firstGroup, groups)
-  ->Result.bind(group => {_buildPipelineStream(group, groups)})
+  ->Result.bind(group => {
+      _buildPipelineStream(group, groups)
+      ->Result.mapSuccess(pipelineStream => {
+          pipelineStream
+          ->Obj.magic
+          ->WonderBsMost.Most.recoverWith(
+              err => WonderBsMost.Most.just(err->Result.fail),
+              _,
+            )
+        })
+    })
   ->Result.mapSuccess(Tuple2.create(PipelineEntity.create(name)));
 };

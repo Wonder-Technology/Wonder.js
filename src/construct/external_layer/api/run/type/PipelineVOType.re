@@ -29,4 +29,6 @@ type pipelineData = {
   firstGroup: groupName,
 };
 
-type execFunc = unit => WonderBsMost.Most.stream(unit);
+type execFunc = unit => WonderBsMost.Most.stream(Result.t2(unit));
+
+type pipelineStream = WonderBsMost.Most.stream(Result.t2(unit));

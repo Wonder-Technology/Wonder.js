@@ -1,5 +1,7 @@
 let create = () => JobEntity.create("create_all_po_ecs_buffers");
 
 let exec = () => {
-  WonderBsMost.Most.empty();
+  CreatePOTransformCPRepo.createPO()
+  ->Result.mapSuccess(transformPO => {transformPO->CPRepo.setTransform})
+  ->WonderBsMost.Most.just;
 };

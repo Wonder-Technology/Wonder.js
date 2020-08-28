@@ -1,6 +1,6 @@
 let parsePipelineData =
     (data: PipelineVOType.pipelineData)
-    : Result.t2((PipelineEntity.t, WonderBsMost.Most.stream(unit))) => {
+    : Result.t2((PipelineEntity.t, PipelineVOType.pipelineStream)) => {
   PipelineApService.parsePipelineData(data);
 };
 
@@ -15,12 +15,15 @@ let registerJob =
 };
 
 let getPipelineStream =
-    (pipeline: PipelineEntity.t): option(WonderBsMost.Most.stream(unit)) => {
+    (pipeline: PipelineEntity.t): option(PipelineVOType.pipelineStream) => {
   PipelineApService.getPipelineStream(pipeline);
 };
 
 let setPipelineStream =
-    (pipeline: PipelineEntity.t, stream: WonderBsMost.Most.stream(unit))
-    : unit => {
+    (pipeline: PipelineEntity.t, stream: PipelineVOType.pipelineStream): unit => {
   PipelineApService.setPipelineStream(pipeline, stream);
+};
+
+let execPipelineStream = (handleFailFunc, pipelineStream) => {
+  PipelineApService.execPipelineStream(handleFailFunc, pipelineStream);
 };

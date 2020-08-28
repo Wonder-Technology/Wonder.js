@@ -22,5 +22,3 @@ let concatArray = streamArr =>
         streamArr[0],
       )
   };
-
-let callStreamFunc = func => just(func)->flatMap(func => func(), _);

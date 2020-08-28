@@ -1,7 +1,7 @@
-let init = () => {
-  DirectorCPApService.init();
-};
+// let init = () => {
+//   DirectorCPApService.init();
+// };
 
-let run = () => {
-  DirectorCPApService.run();
-};
+// let run = () => {
+//   DirectorCPApService.run();
+// };
