@@ -11,12 +11,13 @@ let _buildJobStream = execFunc => {
   MostUtils.callStreamFunc(execFunc);
 };
 
-let _buildJobStreams = (elements, groups, buildPipelineStreamFunc) =>
+let _buildJobStreams =
+    ((pipelineName, elements), groups, buildPipelineStreamFunc) =>
   elements->ListSt.traverseReduceResultM(
     [], (streams, {name, type_}: element) => {
     switch (type_) {
     | Job =>
-      JobDoService.getExecFunc(name)
+      JobDoService.getExecFunc(pipelineName, name)
       ->OptionSt.get
       ->Result.mapSuccess(execFunc => {
           streams->ListSt.push(execFunc->_buildJobStream)
@@ -29,7 +30,7 @@ let _buildJobStreams = (elements, groups, buildPipelineStreamFunc) =>
   });
 
 let rec _buildPipelineStream = ({name, link, elements}, groups) =>
-  _buildJobStreams(elements, groups, _buildPipelineStream)
+  _buildJobStreams((name, elements), groups, _buildPipelineStream)
   ->Result.mapSuccess(streams => {
       streams
       ->ListSt.toArray

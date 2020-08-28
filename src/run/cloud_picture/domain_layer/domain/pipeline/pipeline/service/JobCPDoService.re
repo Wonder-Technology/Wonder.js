@@ -16,6 +16,6 @@ let _register = (pipeline, jobs) => {
 };
 
 let registerAllJobs = () => {
-  _register(PipelineRepo.getInitPipeline(), _getInitPipelineJobs());
-  _register(PipelineRepo.getRunPipeline(), _getRunPipelineJobs());
+  _register(PipelineCPRepo.getInitPipeline(), _getInitPipelineJobs());
+  _register(PipelineCPRepo.getRunPipeline(), _getRunPipelineJobs());
 };

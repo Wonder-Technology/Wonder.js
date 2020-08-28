@@ -1,3 +1,5 @@
 let create = () => JobEntity.create("update_transform");
 
-let exec = () => {};
+let exec = () => {
+  WonderBsMost.Most.empty();
+};

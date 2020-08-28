@@ -74,3 +74,5 @@ let push = (list, value) => {
 let toArray = Belt.List.toArray;
 
 let fromArray = Belt.List.fromArray;
+
+let remove = (list, value) => list->Belt.List.filter(v => v !== value);

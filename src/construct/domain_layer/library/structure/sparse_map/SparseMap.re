@@ -1,12 +1,18 @@
-open Belt.HashMap.Int;
+let createEmpty = (~hintSize=10, ()): SparseMapType.t2('a) => [||];
 
-let createEmpty = (~hintSize=10, ()): SparseMapType.t2('a) =>
-  make(~hintSize);
+let copy = Js.Array.copy;
 
-let copy = copy;
+let unsafeGet = (map: SparseMapType.t2('a), key: int): 'a =>
+  Array.unsafe_get(map, key)->SparseMapType.nullableToNotNullable;
 
-let get = get;
+let get = (map, key: int) => {
+  let value = unsafeGet(map, key);
 
-let getNullable = (map, key) => get(map, key)->Js.Nullable.fromOption;
+  NullUtils.isEmpty(value) ? None : Some(value);
+};
 
-let has = has;
+let getNullable = (map, key) => {
+  get(map, key)->Js.Nullable.fromOption;
+};
+
+let has = (map, key: int) => !NullUtils.isEmpty(unsafeGet(map, key));

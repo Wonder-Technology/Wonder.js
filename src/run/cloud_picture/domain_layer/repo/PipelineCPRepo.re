@@ -1,17 +1,17 @@
 let getInitPipeline = () => {
-  Repo.getPipeline().initPipeline->PipelineEntity.create;
+  CPRepo.getPipeline().initPipeline->PipelineEntity.create;
 };
 
 let getRunPipeline = () => {
-  Repo.getPipeline().runPipeline->PipelineEntity.create;
+  CPRepo.getPipeline().runPipeline->PipelineEntity.create;
 };
 
 let getInitPipelineData = () => {
-  Repo.getPipeline().initPipelineData;
+  CPRepo.getPipeline().initPipelineData;
 };
 
 let getRunPipelineData = () => {
-  Repo.getPipeline().runPipelineData;
+  CPRepo.getPipeline().runPipelineData;
 };
 
 let getPipelineStream = pipeline => {

@@ -6,14 +6,16 @@ let getLocalPosition = transform =>
   TransformRepoAt.getLocalPosition(transform);
 
 let setLocalPosition = (transform, localPosition) => {
-  TransformRepoAt.setLocalPosition(transform, localPosition);
-  HierachyTransformDoService.markHierachyDirty(transform);
+  TransformRepoAt.setLocalPosition(transform, localPosition)
+  ->Result.mapSuccess(() => {
+      HierachyTransformDoService.markHierachyDirty(transform)
+    });
 };
 
 let setPosition = (transform, parent, position) => {
   GlobalTempRepoAt.getFloat32Array1()
   ->Matrix4.invert(getLocalToWorldMatrix(parent)->LocalToWorldMatrixVO.value)
-  ->Result.mapSuccess(mat4 => {
+  ->Result.bind(mat4 => {
       setLocalPosition(
         transform,
         position
@@ -28,8 +30,10 @@ let getLocalRotation = transform =>
   TransformRepoAt.getLocalRotation(transform);
 
 let setLocalRotation = (transform, localRotation) => {
-  TransformRepoAt.setLocalRotation(transform, localRotation);
-  HierachyTransformDoService.markHierachyDirty(transform);
+  TransformRepoAt.setLocalRotation(transform, localRotation)
+  ->Result.mapSuccess(() => {
+      HierachyTransformDoService.markHierachyDirty(transform)
+    });
 };
 
 let getLocalEulerAngles = transform => {
@@ -52,14 +56,16 @@ let setLocalEulerAngles = (transform, localEulerAngles) => {
 let getLocalScale = transform => TransformRepoAt.getLocalScale(transform);
 
 let setLocalScale = (transform, localScale) => {
-  TransformRepoAt.setLocalScale(transform, localScale);
-  HierachyTransformDoService.markHierachyDirty(transform);
+  TransformRepoAt.setLocalScale(transform, localScale)
+  ->Result.mapSuccess(() => {
+      HierachyTransformDoService.markHierachyDirty(transform)
+    });
 };
 
 let setScale = (transform, parent, scale) => {
   GlobalTempRepoAt.getFloat32Array1()
   ->Matrix4.invert(getLocalToWorldMatrix(parent)->LocalToWorldMatrixVO.value)
-  ->Result.mapSuccess(mat4 => {
+  ->Result.bind(mat4 => {
       setLocalScale(
         transform,
         scale

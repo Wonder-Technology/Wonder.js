@@ -52,7 +52,6 @@ let updateAndSetPosition = (transform, position) =>
   switch (HierachyTransformDoService.getParent(transform)) {
   | None =>
     ModelMatrixTransformDoService.setLocalPosition(transform, position)
-    ->Result.succeed
   | Some(parent) =>
     update(parent);
 
@@ -88,9 +87,7 @@ let updateAndGetScale = transform => {
 
 let updateAndSetScale = (transform, scale) =>
   switch (HierachyTransformDoService.getParent(transform)) {
-  | None =>
-    ModelMatrixTransformDoService.setLocalScale(transform, scale)
-    ->Result.succeed
+  | None => ModelMatrixTransformDoService.setLocalScale(transform, scale)
   | Some(parent) =>
     update(parent);
 

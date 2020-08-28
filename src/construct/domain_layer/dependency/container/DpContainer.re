@@ -1,24 +1,27 @@
 type t = {
-  mutable config: option(IConfigDp.config),
+  mutable otherConfig: option(IConfigDp.otherConfig),
+  mutable poConfig: option(IConfigDp.poConfig),
   mutable repo: option(IRepoDp.repo),
 };
 
-let dpContainer = {config: None, repo: None};
+let dpContainer = {otherConfig: None, poConfig: None, repo: None};
 
-let _unsafeGetConfigDp = () => {
-  dpContainer.config->OptionSt.unsafeGet;
+let unsafeGetOtherConfigDp = () => {
+  dpContainer.otherConfig->OptionSt.unsafeGet;
 };
 
 let unsafeGetPOConfigDp = () => {
-  _unsafeGetConfigDp().poConfig;
+  dpContainer.poConfig->OptionSt.unsafeGet;
 };
 
-let unsafeGetOtherConfigDp = () => {
-  _unsafeGetConfigDp().otherConfig;
+let setOtherConfigDp = dp => {
+  dpContainer.otherConfig = dp->Some;
+
+  ();
 };
 
-let setConfigDp = dp => {
-  dpContainer.config = dp->Some;
+let setPOConfigDp = dp => {
+  dpContainer.poConfig = dp->Some;
 
   ();
 };

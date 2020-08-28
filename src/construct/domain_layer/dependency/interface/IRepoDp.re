@@ -31,11 +31,11 @@ type transformRepo = {
   removeChild: (parent, child) => unit,
   getLocalToWorldMatrix: transform => Js.Typed_array.Float32Array.t,
   getLocalPosition: transform => position,
-  setLocalPosition: (transform, position) => unit,
+  setLocalPosition: (transform, position) => Result.t2(unit),
   getLocalRotation: transform => rotation,
-  setLocalRotation: (transform, rotation) => unit,
+  setLocalRotation: (transform, rotation) => Result.t2(unit),
   getLocalScale: transform => scale,
-  setLocalScale: (transform, scale) => unit,
+  setLocalScale: (transform, scale) => Result.t2(unit),
 };
 
 type globalTempRepo = {

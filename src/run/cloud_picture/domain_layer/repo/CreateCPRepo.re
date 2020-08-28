@@ -29,4 +29,18 @@ let create = () => {
     pipelineStreamMap: ImmutableHashMap.createEmpty(),
     jobExecFuncMap: ImmutableHashMap.createEmpty(),
   },
+  poConfig: {
+    transformCount: 10000,
+  },
+  scene: {
+    sceneGameObject: Js.Nullable.null,
+  },
+  gameObject: {
+    maxUID: 0,
+    transformMap: ImmutableSparseMap.createEmpty(),
+  },
+  transform: None,
+  globalTemp: {
+    float16Array1: Js.Typed_array.Float32Array.fromLength(16),
+  },
 };

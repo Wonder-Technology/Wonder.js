@@ -345,7 +345,7 @@ let invert = (resultFloat32Arr, mat: Float32Array.t) => {
     );
   switch (det^) {
   | 0. =>
-    Result.fail(
+    Result.failWith(
       Log.buildFatalMessage(
         ~title="invert",
         ~description={j|det shouldn't be 0.|j},

@@ -1,21 +1,21 @@
 open PipelineVOType;
 
 let getInitPipeline = () => {
-  PipelineRepo.getInitPipeline();
+  PipelineCPRepo.getInitPipeline();
 };
 
 let getRunPipeline = () => {
-  PipelineRepo.getRunPipeline();
+  PipelineCPRepo.getRunPipeline();
 };
 
 let getInitPipelineData = () => {
-  PipelineRepo.getInitPipelineData();
+  PipelineCPRepo.getInitPipelineData();
 };
 
 let getRunPipelineData = () => {
-  PipelineRepo.getRunPipelineData();
+  PipelineCPRepo.getRunPipelineData();
 };
 
 let getPipelineStream = pipeline => {
-  PipelineRepo.getPipelineStream(pipeline);
+  PipelineCPRepo.getPipelineStream(pipeline);
 };

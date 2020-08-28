@@ -1,27 +1,45 @@
-open Belt.HashMap.String;
+let createEmpty = (~hintSize=10, ()): HashMapType.t2('a) => Js.Dict.empty();
 
-let createEmpty = (~hintSize=10, ()): HashMapType.t2('a) => make(~hintSize);
+let unsafeGet = (map, key: string) =>
+  Js.Dict.unsafeGet(map, key)->HashMapType.nullableToNotNullable;
 
-let get = (map: HashMapType.t2('a), key: string) => get(map, key);
+let get = (map, key: string) => {
+  let value = unsafeGet(map, key);
+
+  NullUtils.isEmpty(value) ? None : Some(value);
+};
 
 let getNullable = (map: HashMapType.t2('a), key: string) =>
   get(map, key)->Js.Nullable.fromOption;
 
-// let entries = (map: HashMapType.t2('a)): array((Js.Dict.key, 'a)) =>
-//   map |> Js.Dict.entries;
+let has = (map, key: string) => !NullUtils.isEmpty(unsafeGet(map, key));
 
-// let _mutableSet = (key: string, value, map) => {
-//   Js.Dict.set(map, key, value);
-//   map;
-// };
+let entries =
+    (map: HashMapType.t(Js.Dict.key, 'a)): array((Js.Dict.key, 'a)) =>
+  map->Js.Dict.entries->HashMapType.entriesNullableToEntriesNotNullable;
 
-// let _createEmpty = (): Js.Dict.t('a) => Js.Dict.empty();
+let _mutableSet = (map, key: string, value) => {
+  Js.Dict.set(map, key, value);
+  map;
+};
 
-let copy = (map: HashMapType.t2('a)): HashMapType.t2('a) => copy(map);
+let _createEmpty = (): Js.Dict.t('a) => Js.Dict.empty();
 
-// map
-// |> entries
-// |> ArrayContainerDoService.reduceOneParam(
-//      (. newMap, (key, value)) => newMap |> _mutableSet(key, value),
-//      _createEmpty(),
-//    );
+let copy =
+    (map: Js.Dict.t(Js.Nullable.t('a))): Js.Dict.t(Js.Nullable.t('a)) =>
+  map
+  ->entries
+  ->ArraySt.reduceOneParam(
+      (. newMap, (key, value)) => newMap->_mutableSet(key, value),
+      _createEmpty(),
+    )
+  ->HashMapType.dictNotNullableToDictNullable;
+
+// let copy = (map: HashMapType.t2('a)): HashMapType.t2('a) =>
+//   map
+//   ->entries
+//   ->ArraySt.reduceOneParam(
+//       (. newMap, (key, value)) => newMap->_mutableSet(key, value),
+//       createEmpty(),
+//     );
+// // ->HashMapType.dictNotNullableToDictNullable;

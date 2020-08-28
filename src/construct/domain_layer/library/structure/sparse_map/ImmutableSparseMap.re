@@ -10,4 +10,18 @@ let getNullable = SparseMap.getNullable;
 
 let has = SparseMap.has;
 
-let set = Belt.HashMap.Int.set;
+let set = (map, key: int, value) => {
+  let newMap = map->copy;
+
+  Array.unsafe_set(newMap, key, value->SparseMapType.notNullableToNullable);
+
+  newMap;
+};
+
+let remove = (map, key: int) => {
+  let newMap = map->copy;
+
+  Array.unsafe_set(newMap, key, Js.Nullable.undefined);
+
+  newMap;
+};
