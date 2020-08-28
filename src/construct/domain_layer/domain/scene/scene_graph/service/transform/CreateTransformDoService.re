@@ -3,8 +3,10 @@ let _initDataWhenCreate = index => {
 };
 
 let create = () => {
-  let index = DpContainer.unsafeGetTransformRepoDp().getMaxIndex();
+  let index = IndexTransformDoService.getMaxIndex();
   let newIndex = index->IndexComponentDoService.generateIndex;
+
+  IndexTransformDoService.setMaxIndex(newIndex);
 
   _initDataWhenCreate(index);
 
