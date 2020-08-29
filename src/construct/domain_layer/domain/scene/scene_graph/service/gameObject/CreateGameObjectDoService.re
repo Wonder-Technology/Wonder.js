@@ -6,9 +6,7 @@ let create = () => {
   let gameObject = uid->GameObjectEntity.create;
 
   CreateTransformDoService.create()
-  ->Result.mapSuccess(transform => {
-      AddComponentGameObjectDoService.addTransform(gameObject, transform);
-
-      gameObject;
+  ->Result.bind(transform => {
+      gameObject->AddComponentGameObjectDoService.addTransform(transform)
     });
 };

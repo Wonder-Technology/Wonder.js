@@ -18,6 +18,10 @@ let setParent = (parent, child) => {
   TransformApService.setParent(parent, child);
 };
 
+let removeParent = transform => {
+  TransformApService.removeParent(transform);
+};
+
 let getChildren = transform => {
   TransformApService.getChildren(transform);
 };
@@ -84,4 +88,12 @@ let getEulerAngles = transform => {
 
 let setEulerAngles = (transform, eulerAngles) => {
   TransformApService.setEulerAngles(transform, eulerAngles);
+};
+
+let rotateLocalOnAxis = (transform, (angle, localAxis)) => {
+  TransformApService.rotateLocalOnAxis(transform, (angle, localAxis));
+};
+
+let rotateWorldOnAxis = (transform, (angle, worldAxis)) => {
+  TransformApService.rotateWorldOnAxis(transform, (angle, worldAxis));
 };

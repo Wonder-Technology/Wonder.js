@@ -36,5 +36,7 @@ let getScale = mat => {
 };
 
 let getEulerAngles = mat => {
-  Matrix4.getEulerAngles(mat->value)->EulerAnglesVO.create;
+  Matrix4.getEulerAngles(mat->value)
+  ->Tuple3.map(AngleVO.create)
+  ->EulerAnglesVO.create;
 };

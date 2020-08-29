@@ -79,6 +79,13 @@ let _removeFromParent = (currentParent, child) => {
   _removeChild(currentParent, child);
 };
 
+let removeParent = transform => {
+  switch (getParent(transform)) {
+  | None => ()
+  | Some(currentParent) => _removeFromParent(currentParent, transform)
+  };
+};
+
 let _setNewParent = (parent, child) =>
   switch (getParent(child)) {
   | None => _addToParent(parent, child)

@@ -3,6 +3,8 @@ let init = (~sandbox, ~isDebug=true, ~transformCount=10, ()) => {
 
   POConfigCPRepo.setTransformCount(transformCount);
 
+  CPContainerManager.setPO(CreateCPRepo.create());
+
   CreateAllPOECSBuffersCPJobEntity._createAndSetAllECSPOs()
   ->Result.handleFail(err => {err->Exception.throwErr});
 };

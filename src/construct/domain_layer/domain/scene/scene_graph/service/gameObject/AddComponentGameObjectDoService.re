@@ -1,12 +1,42 @@
-let _addComponent = ((gameObject, component), handleAddComponentFunc) => {
-  DpContainer.unsafeGetGameObjectRepoDp().addTransform(gameObject, component);
+let _addComponent =
+    (
+      (gameObject, component),
+      (hasComponentFunc, addComponentFunc, handleAddComponentFunc),
+    ) => {
+  Contract.requireCheck(
+    () => {
+      Contract.(
+        Operators.(
+          test(
+            Log.buildAssertMessage(
+              ~expect=
+                {j|this type of the component shouldn't be added before|j},
+              ~actual={j|not|j},
+            ),
+            () => {
+            hasComponentFunc(gameObject)->assertFalse
+          })
+        )
+      )
+    },
+    DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+  )
+  ->Result.mapSuccess(() => {
+      addComponentFunc(gameObject, component);
 
-  handleAddComponentFunc(. component, gameObject);
+      handleAddComponentFunc(. component, gameObject);
+
+      gameObject->GameObjectEntity.create;
+    });
 };
 
 let addTransform = (gameObject, transform) => {
   _addComponent(
     (gameObject->GameObjectEntity.value, transform->TransformEntity.value),
-    AddTransformDoService.handleAddComponent,
+    (
+      DpContainer.unsafeGetGameObjectRepoDp().hasTransform,
+      DpContainer.unsafeGetGameObjectRepoDp().addTransform,
+      AddTransformDoService.handleAddComponent,
+    ),
   );
 };

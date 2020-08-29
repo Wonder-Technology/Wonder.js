@@ -56,6 +56,7 @@ let getLocalEulerAngles = transform => {
     transform->TransformEntity.value,
   )
   ->Quaternion.getEulerAngles
+  ->Tuple3.map(AngleVO.create)
   ->EulerAnglesVO.create;
 };
 
@@ -63,7 +64,7 @@ let setLocalEulerAngles = (transform, localEulerAngles) => {
   setLocalRotation(
     transform,
     localEulerAngles
-    ->EulerAnglesVO.value
+    ->EulerAnglesVO.getPrimitiveValue
     ->Quaternion.setFromEulerAngles
     ->RotationVO.create,
   );

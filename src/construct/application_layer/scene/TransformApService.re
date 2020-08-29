@@ -18,6 +18,10 @@ let setParent = (parent, child) => {
   HierachyTransformDoService.setParent(parent, child);
 };
 
+let removeParent = parent => {
+  HierachyTransformDoService.removeParent(parent);
+};
+
 let getChildren = transform => {
   HierachyTransformDoService.getChildren(transform);
 };
@@ -87,4 +91,12 @@ let getEulerAngles = transform => {
 
 let setEulerAngles = (transform, eulerAngles) => {
   UpdateTransformDoService.updateAndSetEulerAngles(transform, eulerAngles);
+};
+
+let rotateLocalOnAxis = (transform, (angle, localAxis)) => {
+  RotateTransformDoService.rotateLocalOnAxis(transform, (angle, localAxis));
+};
+
+let rotateWorldOnAxis = (transform, (angle, worldAxis)) => {
+  RotateTransformDoService.rotateWorldOnAxis(transform, (angle, worldAxis));
 };

@@ -33,7 +33,7 @@ let setParent = (parent, child) => {
 
   CPRepo.setTransform({
     ...transformPO,
-    parentMap: parentMap->ImmutableSparseMap.set(parent, child),
+    parentMap: parentMap->ImmutableSparseMap.set(child, parent),
   });
 };
 
