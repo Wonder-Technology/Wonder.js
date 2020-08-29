@@ -3,3 +3,9 @@ let throwErr = [%bs.raw {|
     throw err;
 }
 |}];
+
+let buildErr = [%bs.raw {|
+(message) => {
+return new Error(message);
+}
+|}];

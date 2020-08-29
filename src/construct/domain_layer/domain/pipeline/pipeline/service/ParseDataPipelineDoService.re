@@ -7,14 +7,15 @@ let _findGroup = (groupName, groups) => {
   };
 };
 
-// TODO test: should test execFunc->result->fail case
 let _buildJobStream = execFunc => {
   WonderBsMost.Most.(
     execFunc
     ->just
-    ->flatMap(func => func(), _)
+    ->flatMap(func => {func()}, _)
     ->flatMap(
-        result => {result->Result.either(s => s->just, f => f->throwError)},
+        result => {
+          result->Result.either(s => {s->just}, f => {f->throwError})
+        },
         _,
       )
   );
@@ -33,13 +34,15 @@ let _buildJobStreams =
         })
     | Group =>
       _findGroup(name, groups)
-      ->Result.bind(group => {buildPipelineStreamFunc(group, groups)})
+      ->Result.bind(group => {
+          buildPipelineStreamFunc(pipelineName, group, groups)
+        })
       ->Result.mapSuccess(stream => {streams->ListSt.push(stream)})
     }
   });
 
-let rec _buildPipelineStream = ({name, link, elements}, groups) =>
-  _buildJobStreams((name, elements), groups, _buildPipelineStream)
+let rec _buildPipelineStream = (pipelineName, {name, link, elements}, groups) =>
+  _buildJobStreams((pipelineName, elements), groups, _buildPipelineStream)
   ->Result.mapSuccess(streams => {
       streams
       ->ListSt.toArray
@@ -54,12 +57,13 @@ let rec _buildPipelineStream = ({name, link, elements}, groups) =>
 let parse = ({name, groups, firstGroup}) => {
   _findGroup(firstGroup, groups)
   ->Result.bind(group => {
-      _buildPipelineStream(group, groups)
+      _buildPipelineStream(name, group, groups)
       ->Result.mapSuccess(pipelineStream => {
           pipelineStream
           ->Obj.magic
+          ->WonderBsMost.Most.map(_ => Result.succeed(), _)
           ->WonderBsMost.Most.recoverWith(
-              err => WonderBsMost.Most.just(err->Result.fail),
+              err => {WonderBsMost.Most.just(err->Result.fail)},
               _,
             )
         })

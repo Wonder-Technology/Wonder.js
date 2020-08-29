@@ -8,7 +8,7 @@ let succeed = x => Success(x);
 
 let fail = x => Fail(x);
 
-let _raiseErrorAndReturn = msg => Js.Exn.raiseError(msg);
+let _raiseErrorAndReturn = msg => msg->Exception.buildErr;
 
 let failWith = x => x->_raiseErrorAndReturn->Fail;
 

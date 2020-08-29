@@ -24,6 +24,7 @@ let setPipelineStream =
   PipelineApService.setPipelineStream(pipeline, stream);
 };
 
-let execPipelineStream = (handleFailFunc, pipelineStream) => {
+let execPipelineStream =
+    (handleFailFunc: Js.Exn.t => unit, pipelineStream) => {
   PipelineApService.execPipelineStream(handleFailFunc, pipelineStream);
 };
