@@ -1,3 +1,7 @@
+let getSceneGameObject = () => {
+  SceneRoot.getSceneGameObject();
+};
+
 let setSceneGameObject = gameObject => {
-  SceneRoot.setSceneGameObject(gameObject->GameObjectEntity.create);
+  SceneRoot.setSceneGameObject(gameObject);
 };

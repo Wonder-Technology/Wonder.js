@@ -3,7 +3,7 @@
   "moduleFileExtensions": [
     "js"
   ],
-  "testRegex": "lib/commonjs/test/(unit|integration)/.+_test\\.js$",
+  "testRegex": "lib/js/test/.+/.+_test\\.bs\\.js$",
   "transformIgnorePatterns": [
     ""
   ],

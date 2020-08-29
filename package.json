@@ -9,7 +9,8 @@
   "main": "",
   "scripts": {
     "watch": "bsb -clean-world -make-world -w",
-    "build": "bsb -clean-world -make-world"
+    "build": "bsb -clean-world -make-world",
+    "test:watch": "jest --watch --config jest.json"
   },
   "config": {
     "commitizen": {

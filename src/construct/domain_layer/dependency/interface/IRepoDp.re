@@ -4,7 +4,10 @@ open TransformPOType;
 
 open PipelinePOType;
 
-type sceneRepo = {setSceneGameObject: gameObject => unit};
+type sceneRepo = {
+  getSceneGameObject: unit => Js.Nullable.t(gameObject),
+  setSceneGameObject: gameObject => unit,
+};
 
 type gameObjectRepo = {
   getMaxUID: unit => uid,

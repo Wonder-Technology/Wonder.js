@@ -10,35 +10,37 @@ let _setAllTypeArrDataToDefault =
       ),
     ) =>
   ListSt.range(0, count - 1)
-  ->ListSt.traverseResultM(index => {
-      OperateTypeArrayTransformCPRepoUtils.setLocalToWorldMatrix(
-        index,
-        defaultLocalToWorldMatrix,
-        localToWorldMatrices,
-      )
-      ->Result.bind(() => {
-          OperateTypeArrayTransformCPRepoUtils.setLocalPosition(
-            index,
-            defaultLocalPosition,
-            localPositions,
-          )
-          ->Result.bind(() => {
-              OperateTypeArrayTransformCPRepoUtils.setLocalRotation(
-                index,
-                defaultLocalRotation,
-                localRotations,
-              )
-              ->Result.bind(() => {
-                  OperateTypeArrayTransformCPRepoUtils.setLocalScale(
-                    index,
-                    defaultLocalScale,
-                    localScales,
-                  )
-                })
-            })
-        })
-    })
-  ->ListSt.ignoreTraverseResultValue;
+  /*! shouldn't use traverseResultM! it will cause max size stack err!*/
+  ->ListSt.reduce(Result.succeed(), (result, index) => {
+      result->Result.bind(() => {
+        OperateTypeArrayTransformCPRepoUtils.setLocalToWorldMatrix(
+          index,
+          defaultLocalToWorldMatrix,
+          localToWorldMatrices,
+        )
+        ->Result.bind(() => {
+            OperateTypeArrayTransformCPRepoUtils.setLocalPosition(
+              index,
+              defaultLocalPosition,
+              localPositions,
+            )
+            ->Result.bind(() => {
+                OperateTypeArrayTransformCPRepoUtils.setLocalRotation(
+                  index,
+                  defaultLocalRotation,
+                  localRotations,
+                )
+                ->Result.bind(() => {
+                    OperateTypeArrayTransformCPRepoUtils.setLocalScale(
+                      index,
+                      defaultLocalScale,
+                      localScales,
+                    )
+                  })
+              })
+          })
+      })
+    });
 
 let _initBufferData = (count, defaultDataTuple) => {
   BufferTransformCPRepoUtils.createBuffer(count)

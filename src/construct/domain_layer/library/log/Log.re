@@ -1,3 +1,8 @@
+let printForDebug = value => {
+  Js.log(value);
+  value;
+};
+
 let getJsonStr = json => Js.Json.stringify(json->Obj.magic);
 
 let buildDebugMessage = (~description, ~params, ()) => {j|

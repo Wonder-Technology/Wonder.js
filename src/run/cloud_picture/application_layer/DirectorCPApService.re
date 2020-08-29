@@ -1,6 +1,7 @@
 let _injectDependencies = () => {
   RepoDpRunAPI.set({
     sceneRepo: {
+      getSceneGameObject: SceneCPRepoDp.getSceneGameObject,
       setSceneGameObject: SceneCPRepoDp.setSceneGameObject,
     },
     gameObjectRepo: {
