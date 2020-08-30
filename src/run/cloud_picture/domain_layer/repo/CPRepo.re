@@ -73,3 +73,15 @@ let setGlobalTemp = globalTemp => {
 
   {...po, globalTemp}->CPContainerManager.setPO;
 };
+
+let getTime = () => {
+  let po = CPContainerManager.getPO();
+
+  po.time;
+};
+
+let setTime = time => {
+  let po = CPContainerManager.getPO();
+
+  {...po, time}->CPContainerManager.setPO;
+};

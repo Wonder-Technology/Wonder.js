@@ -11,7 +11,7 @@ let create = () => {
         {
           name: "frame",
           link: Concat,
-          elements: [{name: "create_all_po_ecs_buffers", type_: Job}],
+          elements: [{name: "start_time", type_: Job}],
         },
       ],
     },
@@ -42,5 +42,9 @@ let create = () => {
   transform: None,
   globalTemp: {
     float16Array1: Js.Typed_array.Float32Array.fromLength(16),
+  },
+  time: {
+    startTime: Js.Nullable.null,
+    elapsed: 0.,
   },
 };

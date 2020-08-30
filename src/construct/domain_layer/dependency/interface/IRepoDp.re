@@ -52,10 +52,16 @@ type pipelineRepo = {
   setPipelineStream: (pipelineName, pipelineStream) => unit,
 };
 
+type timeRepo = {
+  getElapsed: unit => TimePOType.time,
+  start: TimePOType.time => unit,
+};
+
 type repo = {
   sceneRepo,
   gameObjectRepo,
   transformRepo,
   globalTempRepo,
   pipelineRepo,
+  timeRepo,
 };

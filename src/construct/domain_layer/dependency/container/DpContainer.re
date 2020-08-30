@@ -2,9 +2,10 @@ type t = {
   mutable otherConfig: option(IConfigDp.otherConfig),
   mutable poConfig: option(IConfigDp.poConfig),
   mutable repo: option(IRepoDp.repo),
+  mutable time: option(ITimeDp.time),
 };
 
-let dpContainer = {otherConfig: None, poConfig: None, repo: None};
+let dpContainer = {otherConfig: None, poConfig: None, repo: None, time: None};
 
 let unsafeGetOtherConfigDp = () => {
   dpContainer.otherConfig->OptionSt.unsafeGet;
@@ -50,8 +51,22 @@ let unsafeGetPipelineRepoDp = () => {
   _unsafeGetRepoDp().pipelineRepo;
 };
 
+let unsafeGetTimeRepoDp = () => {
+  _unsafeGetRepoDp().timeRepo;
+};
+
 let setRepoDp = dp => {
   dpContainer.repo = dp->Some;
+
+  ();
+};
+
+let unsafeGetTimeDp = () => {
+  dpContainer.time->OptionSt.unsafeGet;
+};
+
+let setTimeDp = dp => {
+  dpContainer.time = dp->Some;
 
   ();
 };

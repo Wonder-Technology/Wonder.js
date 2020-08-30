@@ -5,4 +5,5 @@ type po = {
   transform: option(TransformCPPOType.transform),
   poConfig: POConfigCPPOType.poConfig,
   globalTemp: GlobalTempCPPOType.globalTemp,
+  time: TimeCPPOType.time,
 };

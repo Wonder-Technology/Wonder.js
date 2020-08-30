@@ -1,3 +1,12 @@
+let _createAndSetAllComponentPOs = () => {
+  CreatePOTransformCPRepo.createPO()
+  ->Result.mapSuccess(transformPO => {transformPO->CPRepo.setTransform});
+};
+
+let prepare = () => {
+  _createAndSetAllComponentPOs();
+};
+
 let _injectDependencies = () => {
   RepoDpRunAPI.set({
     sceneRepo: {
@@ -42,6 +51,10 @@ let _injectDependencies = () => {
       setJobExecFunc: PipelineCPRepoDp.setJobExecFunc,
       getPipelineStream: PipelineCPRepoDp.getPipelineStream,
       setPipelineStream: PipelineCPRepoDp.setPipelineStream,
+    },
+    timeRepo: {
+      start: TimeCPRepoDp.start,
+      getElapsed: TimeCPRepoDp.getElapsed,
     },
   });
 

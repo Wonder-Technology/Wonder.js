@@ -1,8 +1,5 @@
 let _getInitPipelineJobs = () => [
-  (
-    CreateAllPOECSBuffersCPJobEntity.create(),
-    CreateAllPOECSBuffersCPJobEntity.exec,
-  ),
+  (StartTimeCPJobEntity.create(), StartTimeCPJobEntity.exec),
 ];
 
 let _getRunPipelineJobs = () => [

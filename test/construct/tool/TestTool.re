@@ -5,6 +5,6 @@ let init = (~sandbox, ~isDebug=true, ~transformCount=10, ()) => {
 
   CPContainerManager.setPO(CreateCPRepo.create());
 
-  CreateAllPOECSBuffersCPJobEntity._createAndSetAllECSPOs()
+  DirectorCPApService._createAndSetAllComponentPOs()
   ->Result.handleFail(err => {err->Exception.throwErr});
 };

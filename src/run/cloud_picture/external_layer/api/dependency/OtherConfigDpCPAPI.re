@@ -1,3 +1,3 @@
-let set = (dp: IConfigDp.otherConfig) => {
+let set = dp => {
   OtherConfigDpRunAPI.set(dp);
 };
