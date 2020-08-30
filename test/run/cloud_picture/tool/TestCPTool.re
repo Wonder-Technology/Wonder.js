@@ -3,16 +3,18 @@ let init =
       ~sandbox,
       ~isDebug=true,
       ~transformCount=10,
-      ~initPipelineData=PipelineCPDoService.getInitPipelineData(),
-      ~runPipelineData=PipelineCPDoService.getRunPipelineData(),
+      ~initPipelineData=PipelineTool.buildEmptyPipelineData(),
+      ~runPipelineData=PipelineTool.buildEmptyPipelineData(),
       (),
     ) => {
-  PipelineCPDoService.setInitPipelineData(initPipelineData);
-  PipelineCPDoService.setRunPipelineData(runPipelineData);
-
   DependencyTool.injectAllDependencies(~isDebug, ());
 
   POConfigCPRepo.setTransformCount(transformCount);
 
   CPContainerManager.setPO(CreateCPRepo.create());
+
+  PipelineCPDoService.setInitPipelineData(initPipelineData);
+  PipelineCPDoService.setRunPipelineData(runPipelineData);
+
+  DirectorCPTool.prepare();
 };

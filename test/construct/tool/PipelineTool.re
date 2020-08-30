@@ -20,3 +20,11 @@ let execPipelineStream =
   ->WonderBsMost.Most.drain
   ->Js.Promise.then_(() => handleSuccessFunc()->Js.Promise.resolve, _);
 };
+
+let buildEmptyPipelineData = (): PipelineVOType.pipelineData => {
+  {
+    name: "",
+    firstGroup: "frame",
+    groups: [{name: "frame", link: Concat, elements: []}],
+  };
+};
