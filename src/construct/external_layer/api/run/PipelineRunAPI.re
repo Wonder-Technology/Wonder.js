@@ -23,8 +23,3 @@ let setPipelineStream =
     (pipeline: PipelineEntity.t, stream: PipelineVOType.pipelineStream): unit => {
   PipelineApService.setPipelineStream(pipeline, stream);
 };
-
-let execPipelineStream =
-    (handleFailFunc: Js.Exn.t => unit, pipelineStream) => {
-  PipelineApService.execPipelineStream(handleFailFunc, pipelineStream);
-};

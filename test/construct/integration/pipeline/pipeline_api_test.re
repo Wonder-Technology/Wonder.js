@@ -51,11 +51,13 @@ let _ =
           ->PipelineRunAPI.parsePipelineData
           ->ResultTool.getExnSuccessValue;
 
-        PipelineRunAPI.execPipelineStream(handleFailFunc, pipelineStream)
-        ->Js.Promise.then_(
-            () => {handleSuccessFunc()->Js.Promise.resolve},
+        pipelineStream
+        ->WonderBsMost.Most.tap(
+            result => {result->Result.handleFail(handleFailFunc)->ignore},
             _,
-          );
+          )
+        ->WonderBsMost.Most.drain
+        ->Js.Promise.then_(() => handleSuccessFunc()->Js.Promise.resolve, _);
       };
 
       testPromise("test exec single job success", () => {

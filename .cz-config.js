@@ -20,6 +20,7 @@ module.exports = {
       { name: "transform" },
       { name: "pipeline" },
       { name: "dependency" },
+      { name: "cloud-picture" },
   ],
 
   // it needs to match the value for field type. Eg.: "fix"

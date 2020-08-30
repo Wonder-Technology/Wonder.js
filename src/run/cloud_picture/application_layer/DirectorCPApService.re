@@ -51,49 +51,17 @@ let _injectDependencies = () => {
 };
 
 let _parseAndSetPipelineStream = pipelineData => {
-  pipelineData
-  ->PipelineRunAPI.parsePipelineData
-  ->Result.mapSuccess(((pipeline, pipelineStream)) => {
-      PipelineRunAPI.setPipelineStream(pipeline, pipelineStream)
-    });
+  pipelineData->PipelineRunAPI.parsePipelineData;
 };
 
-let _execPipelineStream =
-    ((handleFailFunc, handleSuccessFunc), pipelineStream) => {
-  pipelineStream->OptionSt.map(pipelineStream =>
-    PipelineRunAPI.execPipelineStream(handleFailFunc, pipelineStream)
-    ->Js.Promise.then_(() => handleSuccessFunc(), _)
-  );
-};
-
-let init = ((handleFailFunc, handleSuccessFunc)) => {
+let init = () => {
   _injectDependencies();
 
   JobCPDoService.registerAllJobs();
 
-  PipelineCPDoService.getInitPipelineData()
-  ->_parseAndSetPipelineStream
-  ->Result.bind(() => {
-      PipelineCPDoService.getRunPipelineData()
-      ->_parseAndSetPipelineStream
-      ->Result.mapSuccess(() => {
-          _execPipelineStream(
-            (handleFailFunc, handleSuccessFunc),
-            PipelineCPDoService.getPipelineStream(
-              PipelineCPDoService.getInitPipeline(),
-            ),
-          )
-          ->ignore
-        })
-    });
+  PipelineCPDoService.getInitPipelineData()->_parseAndSetPipelineStream;
 };
 
-let run = ((handleFailFunc, handleSuccessFunc)) => {
-  _execPipelineStream(
-    (handleFailFunc, handleSuccessFunc),
-    PipelineCPDoService.getPipelineStream(
-      PipelineCPDoService.getRunPipeline(),
-    ),
-  )
-  ->ignore;
+let run = () => {
+  PipelineCPDoService.getRunPipelineData()->_parseAndSetPipelineStream;
 };
