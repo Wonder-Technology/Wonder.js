@@ -31,7 +31,7 @@ module.exports = {
       { name: "dead-code" },
       { name: "type" },
       { name: "encapsulate" },
-      { name: "e2e-test" }
+      { name: "test" }
     ],
     test: [
       { name: "pf-test" },

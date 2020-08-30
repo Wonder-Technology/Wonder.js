@@ -35,15 +35,8 @@ let _ =
     });
 
     describe("exec pipeline stream", () => {
-      let _createPipeline = (~pipelineName="init", ()) =>
-        pipelineName->PipelineEntity.create;
-
       let _createJob = (~jobName, ~execFunc) => {
         (jobName->JobEntity.create, execFunc);
-      };
-
-      let _registerJobs = (~jobs, ~pipeline=_createPipeline(), ()) => {
-        JobCPDoService._register(pipeline, jobs);
       };
 
       let _execPipelineStream =
@@ -67,7 +60,7 @@ let _ =
 
       testPromise("test exec single job success", () => {
         let gameObject = ref((-1)->GameObjectEntity.create);
-        _registerJobs(
+        PipelineTool.registerJobs(
           ~jobs=[
             _createJob(~jobName="set_scene_gameObject", ~execFunc=() => {
               gameObject :=
@@ -106,7 +99,7 @@ let _ =
       testPromise("test concat two jobs", () => {
         let gameObject1 = ref((-1)->GameObjectEntity.create);
         let gameObject2 = ref((-1)->GameObjectEntity.create);
-        _registerJobs(
+        PipelineTool.registerJobs(
           ~jobs=[
             _createJob(~jobName="set_scene_gameObject2", ~execFunc=() => {
               gameObject2 := 10->GameObjectEntity.create;
@@ -152,7 +145,7 @@ let _ =
       testPromise("exec single job fail", () => {
         let message = "fail!";
         let resultMessage = ref("");
-        _registerJobs(
+        PipelineTool.registerJobs(
           ~jobs=[
             _createJob(~jobName="fail", ~execFunc=() => {
               Result.failWith(message)->WonderBsMost.Most.just
