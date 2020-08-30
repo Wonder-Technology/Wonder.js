@@ -12,8 +12,16 @@ let getInitPipelineData = () => {
   PipelineCPRepo.getInitPipelineData();
 };
 
+let setInitPipelineData = initPipelineData => {
+  PipelineCPRepo.setInitPipelineData(initPipelineData);
+};
+
 let getRunPipelineData = () => {
   PipelineCPRepo.getRunPipelineData();
+};
+
+let setRunPipelineData = runPipelineData => {
+  PipelineCPRepo.setRunPipelineData(runPipelineData);
 };
 
 let getPipelineStream = pipeline => {
