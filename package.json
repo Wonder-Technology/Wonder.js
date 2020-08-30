@@ -10,7 +10,8 @@
   "scripts": {
     "watch": "bsb -clean-world -make-world -w",
     "build": "bsb -clean-world -make-world",
-    "test:watch": "jest --watch --config jest.json"
+    "test:watch": "jest --watch --config jest.json",
+    "test:coverage": "npm run build && jest --config jest_coverage.json"
   },
   "config": {
     "commitizen": {
