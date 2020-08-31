@@ -1,0 +1,23 @@
+files:
+  - package.json
+plugins:
+  prerelease:
+    Build:
+      plugin: bumped-terminal
+      command: 'sudo yarn build'
+    Unit Test:
+      plugin: bumped-terminal
+      command: 'sudo yarn test:coverage'
+  postrelease:
+    Generating CHANGELOG file:
+      plugin: bumped-terminal
+      command: 'sudo yarn version'
+    Committing new version:
+      plugin: bumped-terminal
+      command: 'git add CHANGELOG.md package.json && git commit -m "chore(release): v$newVersion"'
+    Publishing tag to GitHub:
+      plugin: bumped-terminal
+      command: 'git tag v$newVersion && git push origin master:master && git push origin v$newVersion'
+    Publishing to NPM:
+      plugin: bumped-terminal
+      command: sudo npm publish
