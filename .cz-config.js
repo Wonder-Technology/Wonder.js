@@ -54,7 +54,7 @@ module.exports = {
       { name: "package.json" },
       { name: "publish" },
       { name: "bumped" },
-      { name: "code-climate" },
+      { name: "action" },
       { name: "readme" },
       { name: "changelog" },
       { name: "npm" }
