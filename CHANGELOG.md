@@ -1,3 +1,93 @@
+<a name="2.0.0-alpha.1"></a>
+# [2.0.0-alpha.1](https://github.com/Wonder-Technology/Wonder.js/compare/v1.1.0...v2.0.0-alpha.1) (2020-08-31)
+
+
+### Bug Fixes
+
+* **flyCamera:** remove flyCamera should remove directionArrayMap ([157d1d4](https://github.com/Wonder-Technology/Wonder.js/commit/157d1d4))
+* **flyCamera:** should set localEulerAngle to engine then change camera position ([e89ffe3](https://github.com/Wonder-Technology/Wonder.js/commit/e89ffe3))
+
+
+### Features
+
+* move cloud_picture->create_all_po_ecs_buffers job logic to DirectorCPAPI.prepare; add time; add start_time job instead of create_all_po_ecs_buffers; ([b0d9265](https://github.com/Wonder-Technology/Wonder.js/commit/b0d9265))
+* **asset:** "convert gltf": rename default basic source texture name from  "texture_" to "basicSourceTexture_"; ConverterAPI: add isDefaultCubemapTextureName; ([604428d](https://github.com/Wonder-Technology/Wonder.js/commit/604428d))
+* **asset:** fix "assemble whole wdb"->cubemapTextureImageUint8ArrayDataMap: if imageUint8ArrayDataMap is empty, it should be empty ([20f6de9](https://github.com/Wonder-Technology/Wonder.js/commit/20f6de9))
+* **asset:** fix: rename "generate glb"->isBuildCubemapFronSceneSkybox to isBuildCubemapFromSceneSkybox ([7045af4](https://github.com/Wonder-Technology/Wonder.js/commit/7045af4))
+* **asset-bundle:** fix cubemap ([041aea7](https://github.com/Wonder-Technology/Wonder.js/commit/041aea7))
+* **dependency:** add repo adapter for convert do and po ([6f526a7](https://github.com/Wonder-Technology/Wonder.js/commit/6f526a7))
+* **dependency:** set all dendenpencies ([29d450f](https://github.com/Wonder-Technology/Wonder.js/commit/29d450f))
+* **dependency:** split config dp to other config, po config ([f645d30](https://github.com/Wonder-Technology/Wonder.js/commit/f645d30))
+* **ecs:** add scene,gameObject,transform(not finish); add structures; add setting; ([87f3f5b](https://github.com/Wonder-Technology/Wonder.js/commit/87f3f5b))
+* **gameObject:** add "operate transform component" logic ([b1686d8](https://github.com/Wonder-Technology/Wonder.js/commit/b1686d8))
+* **glsl:** update wonder-glsl-compiler version ([79861bc](https://github.com/Wonder-Technology/Wonder.js/commit/79861bc))
+* **imgui:** add extend ([410fe27](https://github.com/Wonder-Technology/Wonder.js/commit/410fe27))
+* **imgui:** add hasXXX apis; "setted asset data"->font data add name; ([27cdd05](https://github.com/Wonder-Technology/Wonder.js/commit/27cdd05))
+* **imgui:** add set imgui assets logic and change scene graph corresponding ([168c69e](https://github.com/Wonder-Technology/Wonder.js/commit/168c69e))
+* **imgui:** asset: add extend data ([bc816fa](https://github.com/Wonder-Technology/Wonder.js/commit/bc816fa))
+* **imgui:** AssetIMGUIAPI add removeSettedAssetFntData ([0296798](https://github.com/Wonder-Technology/Wonder.js/commit/0296798))
+* **imgui:** fix "assemble wdb" and "assemble sab": now merge load image and handle imgui ([e846894](https://github.com/Wonder-Technology/Wonder.js/commit/e846894))
+* **imgui:** fix ExtendIMGUIAPI ([aec2399](https://github.com/Wonder-Technology/Wonder.js/commit/aec2399))
+* **imgui:** fix has asset functions ([b84139b](https://github.com/Wonder-Technology/Wonder.js/commit/b84139b))
+* **imgui:** fix SetAssetIMGUIMainService->hasSettedAssetFntData, hasSettedAssetBitmapData ([2e54285](https://github.com/Wonder-Technology/Wonder.js/commit/2e54285))
+* **imgui:** optimize serialize/deserialize extend data ([d106b50](https://github.com/Wonder-Technology/Wonder.js/commit/d106b50))
+* **imgui:** rename zIndex to execOrder; ([efe0d60](https://github.com/Wonder-Technology/Wonder.js/commit/efe0d60))
+* **imgui:** update wonder-imgui version ([ee28511](https://github.com/Wonder-Technology/Wonder.js/commit/ee28511))
+* **imgui:** update wonder-imgui version ([5df72cb](https://github.com/Wonder-Technology/Wonder.js/commit/5df72cb))
+* **imgui:** update wonder-imgui(add extend) ([7c2d17a](https://github.com/Wonder-Technology/Wonder.js/commit/7c2d17a))
+* **imgui:** use "add/remove exec func" instead of "set exec func" (rename "imgui func" to "exec func") ([db3b7ae](https://github.com/Wonder-Technology/Wonder.js/commit/db3b7ae))
+* **pipeline:** add "pipeline" related logic of construct and run(draft) ([916bc7e](https://github.com/Wonder-Technology/Wonder.js/commit/916bc7e))
+* **pipeline:** finish CreateAllPOECSBuffersCPJobEntity's logic; change exec func's return type from stream(unit) to stream(Result.t2(unit)); ([da411fa](https://github.com/Wonder-Technology/Wonder.js/commit/da411fa))
+* **pipeline:** finish UpdateTransformCPJobEntity's logic ([1a8a661](https://github.com/Wonder-Technology/Wonder.js/commit/1a8a661))
+* **pipeline:** remove execPipelineStream api ([9f6d13e](https://github.com/Wonder-Technology/Wonder.js/commit/9f6d13e))
+* **transform:** add get/set local/global position/rotation/scale/eulerAngles ([85e82a8](https://github.com/Wonder-Technology/Wonder.js/commit/85e82a8))
+* **transform:** add hierachy related api ([fbe22b2](https://github.com/Wonder-Technology/Wonder.js/commit/fbe22b2))
+* rewrite by extract repo as dependency ([ed71354](https://github.com/Wonder-Technology/Wonder.js/commit/ed71354))
+* **transform:** finish "create transform po" logic; begin "create transform" logic(not finish); ([7c8044d](https://github.com/Wonder-Technology/Wonder.js/commit/7c8044d))
+* begin rewrite ([a36e43a](https://github.com/Wonder-Technology/Wonder.js/commit/a36e43a))
+* **arcball:** add arcball directionArray bind keydown and keyup event ([9144057](https://github.com/Wonder-Technology/Wonder.js/commit/9144057))
+* **arcball:** add directionArrayMap in arcballCameraControllerRecord ([dfd9dc6](https://github.com/Wonder-Technology/Wonder.js/commit/dfd9dc6))
+* **arrayService:** add hasItem into arrayService.re ([7d59156](https://github.com/Wonder-Technology/Wonder.js/commit/7d59156))
+* **asset:** "generate glb": add isBuildCubemapFronSceneSkybox config ([c634f3e](https://github.com/Wonder-Technology/Wonder.js/commit/c634f3e))
+* **asset:** add cubemap, skybox(pass compile) ([cab73b2](https://github.com/Wonder-Technology/Wonder.js/commit/cab73b2))
+* **asset:** fix "assemble wdb"->cubemapTextureImageUint8ArrayMap ([858b3ae](https://github.com/Wonder-Technology/Wonder.js/commit/858b3ae))
+* **asset:** fix "assemble whole wdb","assemble sab": not set skybox->cubemap, return cubemap instead ([f4ee739](https://github.com/Wonder-Technology/Wonder.js/commit/f4ee739))
+* **asset:** fix generate glb->skybox ([0f41916](https://github.com/Wonder-Technology/Wonder.js/commit/0f41916))
+* **asset:** pass all tests ([fc54947](https://github.com/Wonder-Technology/Wonder.js/commit/fc54947))
+* **asset:** WDType,GLTFType,GenerateSceneGraphType->texture add format, type_ ([e0eecda](https://github.com/Wonder-Technology/Wonder.js/commit/e0eecda))
+* **asset-bundle:** add skybox, cubemap ([f6a5f8f](https://github.com/Wonder-Technology/Wonder.js/commit/f6a5f8f))
+* **asset-bundle:** wab->manifest add version ([e864088](https://github.com/Wonder-Technology/Wonder.js/commit/e864088))
+* **clone:** finish clone fly camera gameObject feature ([3afc6c3](https://github.com/Wonder-Technology/Wonder.js/commit/3afc6c3))
+* **flycamera:** add fly camera-> keyup event handle ([54d0284](https://github.com/Wonder-Technology/Wonder.js/commit/54d0284))
+* **flyCamera:** add flyCamera record in engineState | add add/clone/operate/create/record FlyCamera ([9b922ec](https://github.com/Wonder-Technology/Wonder.js/commit/9b922ec))
+* **flyCamera:** add getAllFlyCameraControllerComponents in GetComponentGameObjectMainService ([447fa8f](https://github.com/Wonder-Technology/Wonder.js/commit/447fa8f))
+* **flyCamera:** add localEulerAngleMapXYZ to manage camera localEulerAngle ([c5161c7](https://github.com/Wonder-Technology/Wonder.js/commit/c5161c7))
+* **flyCamera:** add phi and theta map in flyCameraControllerRecord ([a81e0d6](https://github.com/Wonder-Technology/Wonder.js/commit/a81e0d6))
+* **flyCamera:** change position with keydown and pointScale together ([7193153](https://github.com/Wonder-Technology/Wonder.js/commit/7193153))
+* **flyCamera:** finish bind fly camera event and update camera ([b04485b](https://github.com/Wonder-Technology/Wonder.js/commit/b04485b))
+* **flyCamera:** finish support fly camera  mulyiple key down event ([3890ff2](https://github.com/Wonder-Technology/Wonder.js/commit/3890ff2))
+* **flyCamera:** finish update fly camera in updateCameraJob ([5e06dd9](https://github.com/Wonder-Technology/Wonder.js/commit/5e06dd9))
+* **outline:** drawOutlineJob: not resetActivedTextureUnitIndex(because has no map) ([8d1633e](https://github.com/Wonder-Technology/Wonder.js/commit/8d1633e))
+* **skybox:** fix draw cubemap->target ([407b6a4](https://github.com/Wonder-Technology/Wonder.js/commit/407b6a4))
+* **skybox:** rewrite skybox with cubemap texture(pass compile) ([d5482a0](https://github.com/Wonder-Technology/Wonder.js/commit/d5482a0))
+* **skybox:** update cubemap texture: add check all sources ([c00e749](https://github.com/Wonder-Technology/Wonder.js/commit/c00e749))
+* **skybox:** update cubemap texture: add check source's width,height ([2c0a276](https://github.com/Wonder-Technology/Wonder.js/commit/2c0a276))
+* **texture:** add get/set is need update apis ([893224f](https://github.com/Wonder-Technology/Wonder.js/commit/893224f))
+* **texture:** cubemap->flipY: change default value to false ([05106b5](https://github.com/Wonder-Technology/Wonder.js/commit/05106b5))
+* **texture:** remove basic material->map; rewrite map unit logic; ([201f8ab](https://github.com/Wonder-Technology/Wonder.js/commit/201f8ab))
+* **texture:** remove bind map unit cache ([4474c85](https://github.com/Wonder-Technology/Wonder.js/commit/4474c85))
+* **updateCamera:** add update fly camera in UpdateCameraMainWorkerJob.re ([12129d9](https://github.com/Wonder-Technology/Wonder.js/commit/12129d9))
+* **wdb:** feature: assemble wdb file to create root gameObject ([a918f29](https://github.com/Wonder-Technology/Wonder.js/commit/a918f29))
+* **wdb:** finish convert gltf json to gltf record ([fb76f76](https://github.com/Wonder-Technology/Wonder.js/commit/fb76f76))
+* **worker:** add skybox and pass test ([558ef81](https://github.com/Wonder-Technology/Wonder.js/commit/558ef81))
+
+
+### Reverts
+
+* **wdb:** finish generate root gameObject to glb json string ([41147c8](https://github.com/Wonder-Technology/Wonder.js/commit/41147c8))
+
+
+
 <a name="1.2.0-alpha.3"></a>
 # [1.2.0-alpha.3](https://github.com/Wonder-Technology/Wonder.js/compare/v1.2.0-alpha.2...v1.2.0-alpha.3) (2019-06-26)
 
