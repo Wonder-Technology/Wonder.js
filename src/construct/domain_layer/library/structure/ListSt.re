@@ -76,3 +76,7 @@ let toArray = Belt.List.toArray;
 let fromArray = Belt.List.fromArray;
 
 let remove = (list, value) => list->Belt.List.filter(v => v !== value);
+
+let length = Belt.List.length;
+
+let head = Belt.List.head;

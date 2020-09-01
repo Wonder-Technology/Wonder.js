@@ -2,6 +2,26 @@ open Js.Typed_array;
 
 type t = Float32Array.t;
 
+let createIdentityMatrix4 = () =>
+  Float32Array.make([|
+    1.,
+    0.,
+    0.,
+    0.,
+    0.,
+    1.,
+    0.,
+    0.,
+    0.,
+    0.,
+    1.,
+    0.,
+    0.,
+    0.,
+    0.,
+    1.,
+  |]);
+
 let fromTranslationRotationScale =
     (resultFloat32Arr, (tx, ty, tz), (x, y, z, w), (sx, sy, sz)) => {
   let x2 = x +. x;

@@ -43,6 +43,26 @@ let unsafeGetTransformRepoDp = () => {
   _unsafeGetRepoDp().transformRepo;
 };
 
+let unsafeGetPBRMaterialRepoDp = () => {
+  _unsafeGetRepoDp().pbrMaterialRepo;
+};
+
+let unsafeGetGeometryRepoDp = () => {
+  _unsafeGetRepoDp().geometryRepo;
+};
+
+let unsafeGetDirectionLightRepoDp = () => {
+  _unsafeGetRepoDp().directionLightRepo;
+};
+
+let unsafeGetBasicCameraViewRepoDp = () => {
+  _unsafeGetRepoDp().basicCameraViewRepo;
+};
+
+let unsafeGetPerspectiveCameraProjectionRepoDp = () => {
+  _unsafeGetRepoDp().perspectiveCameraProjectionRepo;
+};
+
 let unsafeGetGlobalTempRepoDp = () => {
   _unsafeGetRepoDp().globalTempRepo;
 };

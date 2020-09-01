@@ -23,7 +23,7 @@ let setLocalPosition = (transform, localPosition) => {
 
 let setPosition = (transform, parent, position) => {
   DpContainer.unsafeGetGlobalTempRepoDp().getFloat32Array1()
-  ->Matrix4.invert(getLocalToWorldMatrix(parent)->LocalToWorldMatrixVO.value)
+  ->LocalToWorldMatrixVO.invert(getLocalToWorldMatrix(parent))
   ->Result.bind(mat4 => {
       setLocalPosition(
         transform,
@@ -88,7 +88,7 @@ let setLocalScale = (transform, localScale) => {
 
 let setScale = (transform, parent, scale) => {
   DpContainer.unsafeGetGlobalTempRepoDp().getFloat32Array1()
-  ->Matrix4.invert(getLocalToWorldMatrix(parent)->LocalToWorldMatrixVO.value)
+  ->LocalToWorldMatrixVO.invert(getLocalToWorldMatrix(parent))
   ->Result.bind(mat4 => {
       setLocalScale(
         transform,

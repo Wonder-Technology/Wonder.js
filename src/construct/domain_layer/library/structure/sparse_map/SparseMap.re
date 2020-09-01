@@ -16,3 +16,33 @@ let getNullable = (map, key) => {
 };
 
 let has = (map, key: int) => !NullUtils.isEmpty(unsafeGet(map, key));
+
+let map = (map, func) =>
+  map->Js.Array.map(
+         value =>
+           if (NullUtils.isNotInMap(value)) {
+             Js.Nullable.undefined;
+           } else {
+             func(. value->SparseMapType.nullableToNotNullable)
+             ->SparseMapType.notNullableToNullable;
+           },
+         _,
+       );
+
+let reducei = (map, func, initValue) =>
+  map
+  ->ArraySt.reduceOneParami(
+      (. previousValue, value, index) =>
+        if (NullUtils.isNotInMap(value)) {
+          previousValue;
+        } else {
+          func(.
+            previousValue->SparseMapType.nullableToNotNullable,
+            value->SparseMapType.nullableToNotNullable,
+            index,
+          )
+          ->SparseMapType.notNullableToNullable;
+        },
+      initValue->SparseMapType.notNullableToNullable,
+    )
+  ->SparseMapType.nullableToNotNullable;

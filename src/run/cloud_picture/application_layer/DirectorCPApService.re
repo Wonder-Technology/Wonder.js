@@ -1,6 +1,18 @@
 let _createAndSetAllComponentPOs = () => {
   CreatePOTransformCPRepo.createPO()
-  ->Result.mapSuccess(transformPO => {transformPO->CPRepo.setTransform});
+  ->Result.mapSuccess(po => {po->CPRepo.setTransform})
+  ->Result.bind(() => {
+      CreatePOPBRMaterialCPRepo.createPO()
+      ->Result.mapSuccess(po => {po->CPRepo.setPBRMaterial})
+    })
+  ->Result.bind(() => {
+      CreatePOGeometryCPRepo.createPO()
+      ->Result.mapSuccess(po => {po->CPRepo.setGeometry})
+    })
+  ->Result.bind(() => {
+      CreatePODirectionLightCPRepo.createPO()
+      ->Result.mapSuccess(po => {po->CPRepo.setDirectionLight})
+    });
 };
 
 let prepare = () => {
@@ -19,6 +31,21 @@ let _injectDependencies = () => {
       addTransform: GameObjectCPRepoDp.addTransform,
       getTransform: GameObjectCPRepoDp.getTransform,
       hasTransform: GameObjectCPRepoDp.hasTransform,
+      addPBRMaterial: GameObjectCPRepoDp.addPBRMaterial,
+      getPBRMaterial: GameObjectCPRepoDp.getPBRMaterial,
+      hasPBRMaterial: GameObjectCPRepoDp.hasPBRMaterial,
+      addGeometry: GameObjectCPRepoDp.addGeometry,
+      getGeometry: GameObjectCPRepoDp.getGeometry,
+      hasGeometry: GameObjectCPRepoDp.hasGeometry,
+      addDirectionLight: GameObjectCPRepoDp.addDirectionLight,
+      getDirectionLight: GameObjectCPRepoDp.getDirectionLight,
+      hasDirectionLight: GameObjectCPRepoDp.hasDirectionLight,
+      addBasicCameraView: GameObjectCPRepoDp.addBasicCameraView,
+      getBasicCameraView: GameObjectCPRepoDp.getBasicCameraView,
+      hasBasicCameraView: GameObjectCPRepoDp.hasBasicCameraView,
+      addPerspectiveCameraProjection: GameObjectCPRepoDp.addPerspectiveCameraProjection,
+      getPerspectiveCameraProjection: GameObjectCPRepoDp.getPerspectiveCameraProjection,
+      hasPerspectiveCameraProjection: GameObjectCPRepoDp.hasPerspectiveCameraProjection,
     },
     transformRepo: {
       getMaxIndex: TransformCPRepoDp.getMaxIndex,
@@ -43,6 +70,75 @@ let _injectDependencies = () => {
       getLocalScale: TransformCPRepoDp.getLocalScale,
       setLocalScale: TransformCPRepoDp.setLocalScale,
     },
+    pbrMaterialRepo: {
+      getMaxIndex: PBRMaterialCPRepoDp.getMaxIndex,
+      setMaxIndex: PBRMaterialCPRepoDp.setMaxIndex,
+      getGameObjects: PBRMaterialCPRepoDp.getGameObjects,
+      addGameObject: PBRMaterialCPRepoDp.addGameObject,
+      getDiffuseColor: PBRMaterialCPRepoDp.getDiffuseColor,
+      setDiffuseColor: PBRMaterialCPRepoDp.setDiffuseColor,
+      getSpecular: PBRMaterialCPRepoDp.getSpecular,
+      setSpecular: PBRMaterialCPRepoDp.setSpecular,
+      getRoughness: PBRMaterialCPRepoDp.getRoughness,
+      setRoughness: PBRMaterialCPRepoDp.setRoughness,
+      getMetalness: PBRMaterialCPRepoDp.getMetalness,
+      setMetalness: PBRMaterialCPRepoDp.setMetalness,
+    },
+    geometryRepo: {
+      getMaxIndex: GeometryCPRepoDp.getMaxIndex,
+      setMaxIndex: GeometryCPRepoDp.setMaxIndex,
+      getGameObjects: GeometryCPRepoDp.getGameObjects,
+      addGameObject: GeometryCPRepoDp.addGameObject,
+      getVertices: GeometryCPRepoDp.getVertices,
+      setVertices: GeometryCPRepoDp.setVertices,
+      getNormals: GeometryCPRepoDp.getNormals,
+      setNormals: GeometryCPRepoDp.setNormals,
+      getIndices: GeometryCPRepoDp.getIndices,
+      setIndices: GeometryCPRepoDp.setIndices,
+      hasVertices: GeometryCPRepoDp.hasVertices,
+      hasNormals: GeometryCPRepoDp.hasNormals,
+      hasIndices: GeometryCPRepoDp.hasIndices,
+      getIndicesCount: GeometryCPRepoDp.getIndicesCount,
+    },
+    directionLightRepo: {
+      getMaxIndex: DirectionLightCPRepoDp.getMaxIndex,
+      setMaxIndex: DirectionLightCPRepoDp.setMaxIndex,
+      getGameObject: DirectionLightCPRepoDp.getGameObject,
+      setGameObject: DirectionLightCPRepoDp.setGameObject,
+      getColor: DirectionLightCPRepoDp.getColor,
+      setColor: DirectionLightCPRepoDp.setColor,
+      getIntensity: DirectionLightCPRepoDp.getIntensity,
+      setIntensity: DirectionLightCPRepoDp.setIntensity,
+    },
+    basicCameraViewRepo: {
+      getMaxIndex: BasicCameraViewCPRepoDp.getMaxIndex,
+      setMaxIndex: BasicCameraViewCPRepoDp.setMaxIndex,
+      getGameObject: BasicCameraViewCPRepoDp.getGameObject,
+      setGameObject: BasicCameraViewCPRepoDp.setGameObject,
+      isActive: BasicCameraViewCPRepoDp.isActive,
+      setAllNotActive: BasicCameraViewCPRepoDp.setAllNotActive,
+      setActive: BasicCameraViewCPRepoDp.setActive,
+      getActiveBasicCameraViews: BasicCameraViewCPRepoDp.getActiveBasicCameraViews,
+    },
+    perspectiveCameraProjectionRepo: {
+      getMaxIndex: PerspectiveCameraProjectionCPRepoDp.getMaxIndex,
+      setMaxIndex: PerspectiveCameraProjectionCPRepoDp.setMaxIndex,
+      getGameObject: PerspectiveCameraProjectionCPRepoDp.getGameObject,
+      setGameObject: PerspectiveCameraProjectionCPRepoDp.setGameObject,
+      getPMatrix: PerspectiveCameraProjectionCPRepoDp.getPMatrix,
+      setPMatrix: PerspectiveCameraProjectionCPRepoDp.setPMatrix,
+      addToDirtyList: PerspectiveCameraProjectionCPRepoDp.addToDirtyList,
+      getFovy: PerspectiveCameraProjectionCPRepoDp.getFovy,
+      setFovy: PerspectiveCameraProjectionCPRepoDp.setFovy,
+      getAspect: PerspectiveCameraProjectionCPRepoDp.getAspect,
+      setAspect: PerspectiveCameraProjectionCPRepoDp.setAspect,
+      getNear: PerspectiveCameraProjectionCPRepoDp.getNear,
+      setNear: PerspectiveCameraProjectionCPRepoDp.setNear,
+      getFar: PerspectiveCameraProjectionCPRepoDp.getFar,
+      setFar: PerspectiveCameraProjectionCPRepoDp.setFar,
+      markDirty: PerspectiveCameraProjectionCPRepoDp.markDirty,
+      markNotDirty: PerspectiveCameraProjectionCPRepoDp.markNotDirty,
+    },
     globalTempRepo: {
       getFloat32Array1: GlobalTempCPRepoDp.getFloat32Array1,
     },
@@ -60,6 +156,10 @@ let _injectDependencies = () => {
 
   POConfigDpRunAPI.set({
     getTransformCount: POConfigCPRepoDp.getTransformCount,
+    getPBRMaterialCount: POConfigCPRepoDp.getPBRMaterialCount,
+    getGeometryCount: POConfigCPRepoDp.getGeometryCount,
+    getGeometryPointCount: POConfigCPRepoDp.getGeometryPointCount,
+    getDirectionLightCount: POConfigCPRepoDp.getDirectionLightCount,
   });
 };
 

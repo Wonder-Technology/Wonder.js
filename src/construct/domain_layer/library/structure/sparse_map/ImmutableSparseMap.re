@@ -25,3 +25,7 @@ let remove = (map, key: int) => {
 
   newMap;
 };
+
+let map = SparseMap.map;
+
+let reducei = SparseMap.reducei;

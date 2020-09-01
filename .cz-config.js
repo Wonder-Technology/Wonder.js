@@ -15,7 +15,7 @@ module.exports = {
   ],
 
   scopes: [
-      { name: "ecs" },
+      { name: "scene" },
       { name: "gameObject" },
       { name: "transform" },
       { name: "pipeline" },
