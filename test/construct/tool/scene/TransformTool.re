@@ -36,3 +36,7 @@ let getDefaultLocalToWorldMatrixTypeArray = () =>
   CPRepo.getExnTransform().defaultLocalToWorldMatrix
   ->Obj.magic
   ->Float32Array.make;
+
+let update = transform => {
+  UpdateTransformDoService.update(transform);
+};

@@ -99,7 +99,7 @@ let normalize = ((x, y, z)) => {
 
 let transformQuat = [%bs.raw
   {|
-  function(a, q){
+  function(q, a){
      // benchmarks: https://jsperf.com/quaternion-transform-vec3-implementations-fixed
     let qx = q[0], qy = q[1], qz = q[2], qw = q[3];
     let x = a[0], y = a[1], z = a[2];

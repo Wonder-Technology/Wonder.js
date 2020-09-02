@@ -29,4 +29,8 @@ let setActive = (cameraView, isActive) => {
 
 let getActiveCameraView = () =>
   DpContainer.unsafeGetBasicCameraViewRepoDp().getActiveBasicCameraViews()
-  ->Result.mapSuccess(activeCameraViews => {activeCameraViews->ListSt.head});
+  ->Result.mapSuccess(activeCameraViews => {
+      activeCameraViews
+      ->ListSt.head
+      ->OptionSt.map(BasicCameraViewEntity.create)
+    });

@@ -1,7 +1,8 @@
 let getIndices = geometry => {
   DpContainer.unsafeGetGeometryRepoDp().getIndices(
     geometry->GeometryEntity.value,
-  );
+  )
+  ->Result.mapSuccess(IndicesVO.create);
 };
 
 let setIndices = (geometry, indices) => {

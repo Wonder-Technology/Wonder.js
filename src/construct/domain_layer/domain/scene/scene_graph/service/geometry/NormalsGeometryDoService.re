@@ -1,7 +1,8 @@
 let getNormals = geometry => {
   DpContainer.unsafeGetGeometryRepoDp().getNormals(
     geometry->GeometryEntity.value,
-  );
+  )
+  ->Result.mapSuccess(NormalsVO.create);
 };
 
 let setNormals = (geometry, normals) => {

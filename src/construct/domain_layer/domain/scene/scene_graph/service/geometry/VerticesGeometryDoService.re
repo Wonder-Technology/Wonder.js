@@ -1,7 +1,8 @@
 let getVertices = geometry => {
   DpContainer.unsafeGetGeometryRepoDp().getVertices(
     geometry->GeometryEntity.value,
-  );
+  )
+  ->Result.mapSuccess(VerticesVO.create);
 };
 
 let setVertices = (geometry, vertices) => {

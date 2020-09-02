@@ -1,9 +1,9 @@
-let _toFailWithErr = (err, message) => {
+let _toFailContainErrMessage = (err, message) => {
   open Wonder_jest;
   open Expect;
   open! Expect.Operators;
 
-  expect(err->Js.Exn.message) == Some(message);
+  expect(err->Js.Exn.message->OptionSt.getExn)->toContainString(message, _);
 };
 
 let toFail = (result, message) => {
@@ -13,7 +13,7 @@ let toFail = (result, message) => {
 
   result->Result.either(
     _ => {expect(true) == true},
-    err => {_toFailWithErr(err, message)},
+    err => {_toFailContainErrMessage(err, message)},
   );
 };
 

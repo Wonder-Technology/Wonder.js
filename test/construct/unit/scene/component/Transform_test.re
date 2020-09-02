@@ -91,7 +91,7 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
-    describe("createTransform", () => {
+    describe("create", () => {
       test("create a new transform", () => {
         let transform = create()->ResultTool.getExnSuccessValue;
 

@@ -7,6 +7,7 @@ let getViewWorldToCameraMatrix = cameraView => {
           ->LocalToWorldMatrixVO.invert(
               ModelMatrixTransformDoService.getLocalToWorldMatrix(transform),
             )
+          ->Result.mapSuccess(mat => {mat->WorldToCameraMatrixVO.create})
         })
     })
   ->OptionSt.open_

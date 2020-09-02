@@ -34,14 +34,10 @@ let setGameObject = gameObject => {
   {...po, gameObject}->CPContainerManager.setPO;
 };
 
-let getTransform = () => {
+let getExnTransform = () => {
   let po = CPContainerManager.getPO();
 
-  po.transform;
-};
-
-let getExnTransform = () => {
-  getTransform()->OptionSt.getExn;
+  po.transform->OptionSt.getExn;
 };
 
 let setTransform = transform => {
@@ -50,14 +46,10 @@ let setTransform = transform => {
   {...po, transform: transform->Some}->CPContainerManager.setPO;
 };
 
-let getPBRMaterial = () => {
+let getExnPBRMaterial = () => {
   let po = CPContainerManager.getPO();
 
-  po.pbrMaterial;
-};
-
-let getExnPBRMaterial = () => {
-  getPBRMaterial()->OptionSt.getExn;
+  po.pbrMaterial->OptionSt.getExn;
 };
 
 let setPBRMaterial = pbrMaterial => {
@@ -66,14 +58,10 @@ let setPBRMaterial = pbrMaterial => {
   {...po, pbrMaterial: pbrMaterial->Some}->CPContainerManager.setPO;
 };
 
-let getGeometry = () => {
+let getExnGeometry = () => {
   let po = CPContainerManager.getPO();
 
-  po.geometry;
-};
-
-let getExnGeometry = () => {
-  getGeometry()->OptionSt.getExn;
+  po.geometry->OptionSt.getExn;
 };
 
 let setGeometry = geometry => {
@@ -106,14 +94,10 @@ let setPerspectiveCameraProjection = perspectiveCameraProjection => {
   {...po, perspectiveCameraProjection}->CPContainerManager.setPO;
 };
 
-let getDirectionLight = () => {
+let getExnDirectionLight = () => {
   let po = CPContainerManager.getPO();
 
-  po.directionLight;
-};
-
-let getExnDirectionLight = () => {
-  getDirectionLight()->OptionSt.getExn;
+  po.directionLight->OptionSt.getExn;
 };
 
 let setDirectionLight = directionLight => {
@@ -138,12 +122,6 @@ let getGlobalTemp = () => {
   let po = CPContainerManager.getPO();
 
   po.globalTemp;
-};
-
-let setGlobalTemp = globalTemp => {
-  let po = CPContainerManager.getPO();
-
-  {...po, globalTemp}->CPContainerManager.setPO;
 };
 
 let getTime = () => {

@@ -2,7 +2,7 @@ open Js.Typed_array;
 
 let getVertexSize = () => 3;
 
-let getTexCoordsSize = () => 2;
+// let getTexCoordsSize = () => 2;
 
 let getVertexLength = geometryPointCount =>
   geometryPointCount * getVertexSize();

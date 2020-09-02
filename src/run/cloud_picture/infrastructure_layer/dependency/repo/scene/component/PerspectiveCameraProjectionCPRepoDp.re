@@ -112,10 +112,12 @@ let _mark = (cameraProjection, operateDirtyArrayFunc) => {
   });
 };
 
-let markDirty = cameraProjection =>
+let markDirty = cameraProjection => {
   _mark(cameraProjection, DirtyListRepoUtils.addToDirtyList);
+};
 
-let markNotDirty = cameraProjection =>
+let markNotDirty = cameraProjection => {
   _mark(cameraProjection, DirtyListRepoUtils.removeFromDirtyList);
+};
 
 let addToDirtyList = cameraProjection => markDirty(cameraProjection);

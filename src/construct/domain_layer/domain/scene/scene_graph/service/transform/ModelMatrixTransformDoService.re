@@ -63,10 +63,7 @@ let getLocalEulerAngles = transform => {
 let setLocalEulerAngles = (transform, localEulerAngles) => {
   setLocalRotation(
     transform,
-    localEulerAngles
-    ->EulerAnglesVO.getPrimitiveValue
-    ->Quaternion.setFromEulerAngles
-    ->RotationVO.create,
+    localEulerAngles->EulerAnglesVO.convertToQuaternion->RotationVO.create,
   );
 };
 

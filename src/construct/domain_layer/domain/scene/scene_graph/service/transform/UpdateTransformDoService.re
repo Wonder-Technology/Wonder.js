@@ -104,8 +104,5 @@ let updateAndGetEulerAngles = transform => {
 let updateAndSetEulerAngles = (transform, eulerAngles) =>
   updateAndSetRotation(
     transform,
-    eulerAngles
-    ->EulerAnglesVO.getPrimitiveValue
-    ->Quaternion.setFromEulerAngles
-    ->RotationVO.create,
+    eulerAngles->EulerAnglesVO.convertToQuaternion->RotationVO.create,
   );
