@@ -11,4 +11,6 @@ type po = {
   poConfig: POConfigCPPOType.poConfig,
   globalTemp: GlobalTempCPPOType.globalTemp,
   time: TimeCPPOType.time,
+  picture: PictureCPPOType.picture,
+  webgpu: WebGPUCPPOType.webgpu,
 };

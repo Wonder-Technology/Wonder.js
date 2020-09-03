@@ -1,5 +1,5 @@
-let prepare = () => {
-  DirectorCPAPI.prepare()->ResultTool.getExnSuccessValue;
+let prepare = (~pictureSize=(0,0), ()) => {
+  DirectorCPAPI.prepare(pictureSize)->ResultTool.getExnSuccessValue;
 };
 
 let init =

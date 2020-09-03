@@ -15,8 +15,9 @@ let _createAndSetAllComponentPOs = () => {
     });
 };
 
-let prepare = () => {
-  _createAndSetAllComponentPOs();
+let prepare = pictureSize => {
+  _createAndSetAllComponentPOs()
+  ->Result.mapSuccess(() => {PictureCPDoService.setSize(pictureSize)});
 };
 
 let _injectDependencies = () => {

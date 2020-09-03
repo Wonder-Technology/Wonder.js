@@ -76,4 +76,15 @@ let create = () => {
     startTime: Js.Nullable.null,
     elapsed: 0.,
   },
+  picture: {
+    size: None,
+  },
+  webgpu: {
+    device: None,
+    adapter: None,
+    context: None,
+    queue: None,
+    swapChainFormat: None,
+    swapChain: None,
+  },
 };

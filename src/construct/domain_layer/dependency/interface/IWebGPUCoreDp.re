@@ -50,6 +50,8 @@ type commandBufferObject;
 
 type textureFormat = string;
 
+type swapChainFormat;
+
 [@bs.deriving abstract]
 type adapterDescriptor = {
   window: windowObject,
@@ -68,7 +70,7 @@ type windowDescriptor = {
 type swapChainConfig = {
   .
   "device": deviceObject,
-  "format": textureFormat,
+  "format": swapChainFormat,
 };
 
 type shaderModuleDescriptor = {. "code": string};
@@ -458,13 +460,14 @@ type device = {
 };
 
 type context = {
-  getSwapChainPreferredFormat: deviceObject => Js.Promise.t(textureFormat),
+  getSwapChainPreferredFormat:
+    (deviceObject, contextObject) => Js.Promise.t(swapChainFormat),
   configureSwapChain: (swapChainConfig, contextObject) => swapChainObject,
 };
 
 type window = {
   make: windowDescriptor => windowObject,
-  getContext: (string, windowObject) => contextObject,
+  getContext: windowObject => contextObject,
   pollEvents: (unit, windowObject) => unit,
   shouldClose: windowObject => bool,
   getWidth: windowObject => int,

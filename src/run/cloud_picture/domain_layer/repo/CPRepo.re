@@ -135,3 +135,27 @@ let setTime = time => {
 
   {...po, time}->CPContainerManager.setPO;
 };
+
+let getPicture = () => {
+  let po = CPContainerManager.getPO();
+
+  po.picture;
+};
+
+let setPicture = picture => {
+  let po = CPContainerManager.getPO();
+
+  {...po, picture}->CPContainerManager.setPO;
+};
+
+let getWebGPU = () => {
+  let po = CPContainerManager.getPO();
+
+  po.webgpu;
+};
+
+let setWebGPU = webgpu => {
+  let po = CPContainerManager.getPO();
+
+  {...po, webgpu}->CPContainerManager.setPO;
+};

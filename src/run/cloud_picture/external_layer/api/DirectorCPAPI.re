@@ -1,5 +1,5 @@
-let prepare = () => {
-  DirectorCPApService.prepare();
+let prepare = pictureSize => {
+  DirectorCPApService.prepare(pictureSize);
 };
 
 let init = () => {
