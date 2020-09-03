@@ -318,6 +318,57 @@ let getScaleTuple = matTypeArr => {
   );
 };
 
+let buildPerspective =
+    (resultFloat32Arr, (fovy: float, aspect: float, near: float, far: float)) => {
+  Contract.requireCheck(
+    () => {
+      Contract.(
+        Operators.(
+          test(
+            Log.buildAssertMessage(
+              ~expect={j|frustum not be null|j},
+              ~actual={j|be|j},
+            ),
+            () => {
+              let fovy = Js.Math._PI *. fovy /. 180. /. 2.;
+              Js.Math.sin(fovy) <>=. 0.;
+            },
+          )
+        )
+      )
+    },
+    DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+  )
+  ->Result.mapSuccess(() => {
+      let fovy = Js.Math._PI *. fovy /. 180. /. 2.;
+      let s = Js.Math.sin(fovy);
+      let rd = 1. /. (far -. near);
+      let ct = Js.Math.cos(fovy) /. s;
+      Float32Array.unsafe_set(resultFloat32Arr, 0, ct /. aspect);
+      Float32Array.unsafe_set(resultFloat32Arr, 1, 0.);
+      Float32Array.unsafe_set(resultFloat32Arr, 2, 0.);
+      Float32Array.unsafe_set(resultFloat32Arr, 3, 0.);
+      Float32Array.unsafe_set(resultFloat32Arr, 4, 0.);
+      Float32Array.unsafe_set(resultFloat32Arr, 5, ct);
+      Float32Array.unsafe_set(resultFloat32Arr, 6, 0.);
+      Float32Array.unsafe_set(resultFloat32Arr, 7, 0.);
+      Float32Array.unsafe_set(resultFloat32Arr, 8, 0.);
+      Float32Array.unsafe_set(resultFloat32Arr, 9, 0.);
+      Float32Array.unsafe_set(resultFloat32Arr, 10, -. (far +. near) *. rd);
+      Float32Array.unsafe_set(resultFloat32Arr, 11, -1.);
+      Float32Array.unsafe_set(resultFloat32Arr, 12, 0.);
+      Float32Array.unsafe_set(resultFloat32Arr, 13, 0.);
+      Float32Array.unsafe_set(
+        resultFloat32Arr,
+        14,
+        (-2.) *. far *. near *. rd,
+      );
+      Float32Array.unsafe_set(resultFloat32Arr, 15, 0.);
+
+      resultFloat32Arr;
+    });
+};
+
 let invert = (resultFloat32Arr, mat: Float32Array.t) => {
   let a00 = Float32Array.unsafe_get(mat, 0);
   let a01 = Float32Array.unsafe_get(mat, 1);

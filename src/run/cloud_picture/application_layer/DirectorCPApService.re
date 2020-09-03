@@ -129,6 +129,8 @@ let _injectDependencies = () => {
       getPMatrix: PerspectiveCameraProjectionCPRepoDp.getPMatrix,
       setPMatrix: PerspectiveCameraProjectionCPRepoDp.setPMatrix,
       addToDirtyList: PerspectiveCameraProjectionCPRepoDp.addToDirtyList,
+      getDirtyList: PerspectiveCameraProjectionCPRepoDp.getDirtyList,
+      clearDirtyList: PerspectiveCameraProjectionCPRepoDp.clearDirtyList,
       getFovy: PerspectiveCameraProjectionCPRepoDp.getFovy,
       setFovy: PerspectiveCameraProjectionCPRepoDp.setFovy,
       getAspect: PerspectiveCameraProjectionCPRepoDp.getAspect,

@@ -45,3 +45,7 @@ let setFar = (cameraProjection, far) =>
     cameraProjection->PerspectiveCameraProjectionEntity.value,
     far->FarVO.value,
   );
+
+let computeAspect = ((width, height)) => {
+  (width->Belt.Float.fromInt /. height->Belt.Float.fromInt)->AspectVO.create;
+};

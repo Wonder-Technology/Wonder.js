@@ -132,6 +132,8 @@ type perspectiveCameraProjectionRepo = {
   setPMatrix:
     (perspectiveCameraProjection, Js.Typed_array.Float32Array.t) => unit,
   addToDirtyList: perspectiveCameraProjection => unit,
+  getDirtyList: unit => list(perspectiveCameraProjection),
+  clearDirtyList: unit => unit,
   getFovy: perspectiveCameraProjection => option(float),
   setFovy: (perspectiveCameraProjection, float) => unit,
   getAspect: perspectiveCameraProjection => option(float),

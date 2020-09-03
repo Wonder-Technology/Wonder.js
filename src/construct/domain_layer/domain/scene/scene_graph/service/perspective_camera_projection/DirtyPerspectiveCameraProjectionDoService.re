@@ -9,3 +9,9 @@ let markNotDirty = cameraProjection => {
     cameraProjection->PerspectiveCameraProjectionEntity.value,
   );
 };
+
+let getUniqueDirtyList = () => {
+  DpContainer.unsafeGetPerspectiveCameraProjectionRepoDp().getDirtyList()
+  ->ListSt.removeDuplicateItems
+  ->ListSt.map(PerspectiveCameraProjectionEntity.create);
+};

@@ -121,3 +121,12 @@ let markNotDirty = cameraProjection => {
 };
 
 let addToDirtyList = cameraProjection => markDirty(cameraProjection);
+
+let getDirtyList = () => CPRepo.getPerspectiveCameraProjection().dirtyList;
+
+let clearDirtyList = () => {
+  CPRepo.setPerspectiveCameraProjection({
+    ...CPRepo.getPerspectiveCameraProjection(),
+    dirtyList: DirtyListRepoUtils.create(),
+  });
+};

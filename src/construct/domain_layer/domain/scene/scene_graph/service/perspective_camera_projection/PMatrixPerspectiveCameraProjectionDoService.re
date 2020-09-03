@@ -4,3 +4,10 @@ let getPMatrix = cameraProjection => {
   )
   ->OptionSt.map(PerspectiveMatrixVO.create);
 };
+
+let setPMatrix = (cameraProjection, pMatrix) => {
+  DpContainer.unsafeGetPerspectiveCameraProjectionRepoDp().setPMatrix(
+    cameraProjection->PerspectiveCameraProjectionEntity.value,
+    pMatrix->PerspectiveMatrixVO.value,
+  );
+};

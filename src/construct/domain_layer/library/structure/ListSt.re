@@ -80,3 +80,21 @@ let remove = (list, value) => list->Belt.List.filter(v => v !== value);
 let length = Belt.List.length;
 
 let head = Belt.List.head;
+
+let removeDuplicateItems = list => {
+  let arr = list->toArray;
+
+  let resultArr = [||];
+  let map = MutableHashMap.createEmpty();
+  for (i in 0 to Js.Array.length(arr) - 1) {
+    let item = Array.unsafe_get(arr, i);
+    let key = Js.Int.toString(item);
+    switch (MutableHashMap.get(map, key)) {
+    | None =>
+      Js.Array.push(item, resultArr) |> ignore;
+      MutableHashMap.set(map, key, item) |> ignore;
+    | Some(_) => ()
+    };
+  };
+  resultArr->fromArray;
+};
