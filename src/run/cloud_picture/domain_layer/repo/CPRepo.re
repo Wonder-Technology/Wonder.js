@@ -159,3 +159,15 @@ let setWebGPU = webgpu => {
 
   {...po, webgpu}->CPContainerManager.setPO;
 };
+
+let getCamera = () => {
+  let po = CPContainerManager.getPO();
+
+  po.camera;
+};
+
+let setCamera = camera => {
+  let po = CPContainerManager.getPO();
+
+  {...po, camera}->CPContainerManager.setPO;
+};

@@ -87,4 +87,7 @@ let create = () => {
     swapChainFormat: None,
     swapChain: None,
   },
+  camera: {
+    cameraBufferData: None,
+  },
 };

@@ -13,4 +13,5 @@ type po = {
   time: TimeCPPOType.time,
   picture: PictureCPPOType.picture,
   webgpu: WebGPUCPPOType.webgpu,
+  camera: CameraCPPOType.camera,
 };

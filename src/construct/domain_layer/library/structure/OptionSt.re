@@ -2,9 +2,12 @@ let unsafeGet = Belt.Option.getUnsafe;
 
 let getExn = Belt.Option.getExn;
 
+let buildFailResult = () =>
+  Result.failWith({|data not exist in option data|});
+
 let get = optionData => {
   switch (optionData) {
-  | None => Result.failWith({|data not exist in option data|})
+  | None => buildFailResult()
   | Some(data) => Result.succeed(data)
   };
 };
@@ -19,7 +22,7 @@ let fromNullable = x => Js.Nullable.toOption(x);
 
 let rec sequenceResultM = optionData => {
   switch (optionData) {
-  | None => Result.failWith({|data not exist in option data|})
+  | None => buildFailResult()
   | Some(result) => result->Result.mapSuccess(value => value->Some)
   };
 };
@@ -29,4 +32,8 @@ let open_ = optionOptionData => {
   | None => None
   | Some(optionData) => optionData
   };
+};
+
+let openWithResult = resultOptionData => {
+  resultOptionData->Result.bind(get);
 };

@@ -29,7 +29,7 @@ let updateCameraProjection = cameraProjection => {
           ))
         ->Result.mapSuccess(pMatrix => {
             pMatrix
-            ->PerspectiveMatrixVO.create
+            ->ProjectionMatrixVO.create
             ->PMatrixPerspectiveCameraProjectionDoService.setPMatrix(
                 cameraProjection,
                 _,

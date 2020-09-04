@@ -146,7 +146,7 @@ let _ =
         getViewWorldToCameraMatrix(cameraView)
         ->ResultTool.getExnSuccessValue
         ->OptionSt.getExn
-        ->WorldToCameraMatrixVO.value
+        ->ViewMatrixVO.value
         ->expect
         == Js.Typed_array.Float32Array.make([|
              0.048192769289016724,

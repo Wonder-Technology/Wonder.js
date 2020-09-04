@@ -117,27 +117,27 @@ type accelerationContainerDescriptor = {
   instances: array(instance),
 };
 
-// type accelerationContainerUsage ={
-// none: accelerationContainerUsageObject,
-// allow_update: accelerationContainerUsageObject,
-// prefer_fast_trace: accelerationContainerUsageObject,
-// prefer_fast_build: accelerationContainerUsageObject,
-// low_memory: accelerationContainerUsageObject,
-// };
+type accelerationContainerUsage = {
+  none: accelerationContainerUsageObject,
+  allow_update: accelerationContainerUsageObject,
+  prefer_fast_trace: accelerationContainerUsageObject,
+  prefer_fast_build: accelerationContainerUsageObject,
+  low_memory: accelerationContainerUsageObject,
+};
 
-// type accelerationGeometryUsage ={
-// none: accelerationGeometryUsageObject,
-// opaque: accelerationGeometryUsageObject,
-// allow_any_hit: accelerationGeometryUsageObject,
-// };
+type accelerationGeometryUsage = {
+  none: accelerationGeometryUsageObject,
+  opaque: accelerationGeometryUsageObject,
+  allow_any_hit: accelerationGeometryUsageObject,
+};
 
-// type accelerationInstanceUsage ={
-// none: accelerationInstanceUsageObject,
-// triangle_cull_disable: accelerationInstanceUsageObject,
-// triangle_front_counterclockwise: accelerationInstanceUsageObject,
-// force_opaque: accelerationInstanceUsageObject,
-// force_no_opaque: accelerationInstanceUsageObject,
-// };
+type accelerationInstanceUsage = {
+  none: accelerationInstanceUsageObject,
+  triangle_cull_disable: accelerationInstanceUsageObject,
+  triangle_front_counterclockwise: accelerationInstanceUsageObject,
+  force_opaque: accelerationInstanceUsageObject,
+  force_no_opaque: accelerationInstanceUsageObject,
+};
 
 type accelerationContainer = {
   updateInstance: (instanceId, instance, accelerationContainerObject) => unit,
@@ -216,9 +216,33 @@ type device = {
     (shaderBindingTableDescriptor, deviceObject) => shaderBindingTableObject,
   createRayTracingAccelerationContainer:
     accelerationContainerDescriptor => accelerationContainerObject,
-  /*! add this to avoid IWebGPUCoreDp->binding dependent on IWebGPURayTracingDP! */
+  /*! add this to avoid IWebGPUCoreDp dependent on IWebGPURayTracingDP! */
   createRayTracingBindGroup:
     (bindGroupDescriptor, deviceObject) => bindGroupObject,
+};
+
+type shaderStage = {
+  compute: shaderStageObject,
+  fragment: shaderStageObject,
+  vertex: shaderStageObject,
+  ray_generation: shaderStageObject,
+  ray_closest_hit: shaderStageObject,
+  ray_any_hit: shaderStageObject,
+  ray_miss: shaderStageObject,
+  ray_intersection: shaderStageObject,
+};
+
+type bufferUsage = {
+  storage: bufferUsageObject,
+  uniform: bufferUsageObject,
+  indirect: bufferUsageObject,
+  vertex: bufferUsageObject,
+  index: bufferUsageObject,
+  map_read: bufferUsageObject,
+  map_write: bufferUsageObject,
+  copy_src: bufferUsageObject,
+  copy_dst: bufferUsageObject,
+  ray_tracing: bufferUsageObject,
 };
 
 type webgpuRayTracing = {
@@ -226,4 +250,9 @@ type webgpuRayTracing = {
   passEncoderRayTracing,
   commandEncoder,
   device,
+  accelerationContainerUsage,
+  accelerationGeometryUsage,
+  accelerationInstanceUsage,
+  bufferUsage,
+  shaderStage,
 };

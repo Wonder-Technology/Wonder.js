@@ -41,7 +41,7 @@ let _ =
         let cameraProjection = create();
 
         getPMatrix(cameraProjection)->OptionSt.getExn->expect
-        == Matrix4.createIdentityMatrix4()->PerspectiveMatrixVO.create;
+        == Matrix4.createIdentityMatrix4()->ProjectionMatrixVO.create;
       });
     });
 

@@ -321,13 +321,13 @@ type x = int;
 type y = int;
 type z = int;
 
-// type textureUsage = {
-//   copy_src: textureUsageObject,
-//   copy_dst: textureUsageObject,
-//   sampled: textureUsageObject,
-//   storage: textureUsageObject,
-//   output_attachment: textureUsageObject,
-// };
+type textureUsage = {
+  copy_src: textureUsageObject,
+  copy_dst: textureUsageObject,
+  sampled: textureUsageObject,
+  storage: textureUsageObject,
+  output_attachment: textureUsageObject,
+};
 
 type swapChain = {
   getCurrentTextureView: (unit, swapChainObject) => textureViewObject,
@@ -337,23 +337,23 @@ type swapChain = {
 
 type queue = {submit: (array(commandBufferObject), queueObject) => unit};
 
-// type shaderStage = {
-//   compute: shaderStageObject,
-//   fragment: shaderStageObject,
-//   vertex: shaderStageObject,
-// };
+type shaderStage = {
+  compute: shaderStageObject,
+  fragment: shaderStageObject,
+  vertex: shaderStageObject,
+};
 
-// type bufferUsage = {
-//   storage: bufferUsageObject,
-//   uniform: bufferUsageObject,
-//   indirect: bufferUsageObject,
-//   vertex: bufferUsageObject,
-//   index: bufferUsageObject,
-//   map_read: bufferUsageObject,
-//   map_write: bufferUsageObject,
-//   copy_src: bufferUsageObject,
-//   copy_dst: bufferUsageObject,
-// };
+type bufferUsage = {
+  storage: bufferUsageObject,
+  uniform: bufferUsageObject,
+  indirect: bufferUsageObject,
+  vertex: bufferUsageObject,
+  index: bufferUsageObject,
+  map_read: bufferUsageObject,
+  map_write: bufferUsageObject,
+  copy_src: bufferUsageObject,
+  copy_dst: bufferUsageObject,
+};
 
 type buffer = {
   setSubFloat32Data:
@@ -485,12 +485,12 @@ type gpu = {
 };
 
 type webgpuCore = {
-  // textureUsage,
+  textureUsage,
   texture,
   swapChain,
   queue,
-  // shaderStage,
-  // bufferUsage,
+  shaderStage,
+  bufferUsage,
   buffer,
   passEncoder,
   commandEncoder,

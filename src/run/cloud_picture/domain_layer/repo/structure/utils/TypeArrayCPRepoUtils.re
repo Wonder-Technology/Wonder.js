@@ -106,6 +106,22 @@ let setFloat4 = (index: int, (x, y, z, w), typeArray: Float32Array.t) => {
     });
 };
 
+let setFloat32Array = (index, target: Float32Array.t, typeArray) => {
+  Contract.requireCheck(
+    () => {
+      Contract.(
+        Operators.(
+          _checkNotExceedBound(Float32Array.length, index + 31, typeArray)
+        )
+      )
+    },
+    DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+  )
+  ->Result.mapSuccess(() => {
+      typeArray->Float32Array.setArrayOffset(Obj.magic(target), index, _)
+    });
+};
+
 let setUint32_1 = (index: int, value: int, typeArray: Uint32Array.t) => {
   Contract.requireCheck(
     () => {
