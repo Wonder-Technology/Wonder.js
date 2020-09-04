@@ -38,5 +38,5 @@ let getDefaultLocalToWorldMatrixTypeArray = () =>
   ->Float32Array.make;
 
 let update = transform => {
-  UpdateTransformDoService.update(transform);
+  UpdateTransformDoService.mutableUpdate(transform);
 };

@@ -1,11 +1,11 @@
-let rec update = transform =>
+let rec mutableUpdate = transform =>
   DirtyTransformDoService.isDirty(transform)
     ? {
       DirtyTransformDoService.mark(transform, false);
 
       switch (HierachyTransformDoService.getParent(transform)) {
       | Some(parent) =>
-        update(parent);
+        mutableUpdate(parent);
 
         let parentLocalToWorldMatrix =
           ModelMatrixTransformDoService.getLocalToWorldMatrix(parent);
@@ -42,7 +42,7 @@ let rec update = transform =>
     };
 
 let updateAndGetPosition = transform => {
-  update(transform);
+  mutableUpdate(transform);
 
   ModelMatrixTransformDoService.getLocalToWorldMatrix(transform)
   ->LocalToWorldMatrixVO.getTranslation;
@@ -53,13 +53,13 @@ let updateAndSetPosition = (transform, position) =>
   | None =>
     ModelMatrixTransformDoService.setLocalPosition(transform, position)
   | Some(parent) =>
-    update(parent);
+    mutableUpdate(parent);
 
     ModelMatrixTransformDoService.setPosition(transform, parent, position);
   };
 
 let updateAndGetRotation = transform => {
-  update(transform);
+  mutableUpdate(transform);
 
   ModelMatrixTransformDoService.getLocalToWorldMatrix(transform)
   ->LocalToWorldMatrixVO.getRotation;
@@ -79,7 +79,7 @@ let updateAndSetRotation = (transform, rotation) =>
   };
 
 let updateAndGetScale = transform => {
-  update(transform);
+  mutableUpdate(transform);
 
   ModelMatrixTransformDoService.getLocalToWorldMatrix(transform)
   ->LocalToWorldMatrixVO.getScale;
@@ -89,13 +89,13 @@ let updateAndSetScale = (transform, scale) =>
   switch (HierachyTransformDoService.getParent(transform)) {
   | None => ModelMatrixTransformDoService.setLocalScale(transform, scale)
   | Some(parent) =>
-    update(parent);
+    mutableUpdate(parent);
 
     ModelMatrixTransformDoService.setScale(transform, parent, scale);
   };
 
 let updateAndGetEulerAngles = transform => {
-  update(transform);
+  mutableUpdate(transform);
 
   ModelMatrixTransformDoService.getLocalToWorldMatrix(transform)
   ->LocalToWorldMatrixVO.getEulerAngles;
