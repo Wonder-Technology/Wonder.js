@@ -3,7 +3,7 @@ open Js.Typed_array;
 let create = () => JobEntity.create("init_camera");
 
 let exec = () => {
-  WebGPUCPDoService.getDevice()
+  WebGPUCPRepo.getDevice()
   ->OptionSt.get
   ->Result.mapSuccess(device => {
       let cameraBufferData = Float32Array.fromLength(4 + 16 + 16);

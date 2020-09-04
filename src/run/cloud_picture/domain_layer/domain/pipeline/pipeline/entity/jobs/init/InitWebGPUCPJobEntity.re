@@ -19,12 +19,12 @@ let exec = () => {
                 context,
               );
 
-            WebGPUCPDoService.setDevice(device);
-            WebGPUCPDoService.setAdapter(adapter);
-            WebGPUCPDoService.setContext(context);
-            WebGPUCPDoService.setQueue(queue);
-            WebGPUCPDoService.setSwapChainFormat(swapChainFormat);
-            WebGPUCPDoService.setSwapChain(swapChain);
+            WebGPUCPRepo.setDevice(device);
+            WebGPUCPRepo.setAdapter(adapter);
+            WebGPUCPRepo.setContext(context);
+            WebGPUCPRepo.setQueue(queue);
+            WebGPUCPRepo.setSwapChainFormat(swapChainFormat);
+            WebGPUCPRepo.setSwapChain(swapChain);
 
             ();
           },
