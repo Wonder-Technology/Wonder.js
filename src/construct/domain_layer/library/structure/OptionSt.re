@@ -18,6 +18,8 @@ let isSome = Belt.Option.isSome;
 
 let map = Belt.Option.map;
 
+let flatMap = Belt.Option.flatMap;
+
 let fromNullable = x => Js.Nullable.toOption(x);
 
 let rec sequenceResultM = optionData => {
@@ -32,8 +34,4 @@ let open_ = optionOptionData => {
   | None => None
   | Some(optionData) => optionData
   };
-};
-
-let openWithResult = resultOptionData => {
-  resultOptionData->Result.bind(get);
 };

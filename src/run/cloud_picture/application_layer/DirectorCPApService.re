@@ -15,9 +15,12 @@ let _createAndSetAllComponentPOs = () => {
     });
 };
 
-let prepare = pictureSize => {
+let prepare = (pictureSize, sampleCount) => {
   _createAndSetAllComponentPOs()
-  ->Result.mapSuccess(() => {PictureCPDoService.setSize(pictureSize)});
+  ->Result.mapSuccess(() => {
+      PictureCPDoService.setSize(pictureSize);
+      PassCPDoService.setSampleCount(sampleCount);
+    });
 };
 
 let _injectDependencies = () => {
@@ -47,6 +50,9 @@ let _injectDependencies = () => {
       addPerspectiveCameraProjection: GameObjectCPRepoDp.addPerspectiveCameraProjection,
       getPerspectiveCameraProjection: GameObjectCPRepoDp.getPerspectiveCameraProjection,
       hasPerspectiveCameraProjection: GameObjectCPRepoDp.hasPerspectiveCameraProjection,
+      getAllGeometryGameObjects: GameObjectCPRepoDp.getAllGeometryGameObjects,
+      getAllGameObjectGeometries: GameObjectCPRepoDp.getAllGameObjectGeometries,
+      getAllGameObjectPBRMaterials: GameObjectCPRepoDp.getAllGameObjectPBRMaterials,
     },
     transformRepo: {
       getMaxIndex: TransformCPRepoDp.getMaxIndex,
@@ -144,6 +150,7 @@ let _injectDependencies = () => {
     },
     globalTempRepo: {
       getFloat32Array1: GlobalTempCPRepoDp.getFloat32Array1,
+      getFloat9Array: GlobalTempCPRepoDp.getFloat9Array,
     },
     pipelineRepo: {
       getJobExecFunc: PipelineCPRepoDp.getJobExecFunc,
@@ -178,6 +185,10 @@ let init = () => {
   PipelineCPDoService.getInitPipelineData()->_parseAndSetPipelineStream;
 };
 
-let run = () => {
-  PipelineCPDoService.getRunPipelineData()->_parseAndSetPipelineStream;
+let update = () => {
+  PipelineCPDoService.getUpdatePipelineData()->_parseAndSetPipelineStream;
+};
+
+let render = () => {
+  PipelineCPDoService.getRenderPipelineData()->_parseAndSetPipelineStream;
 };

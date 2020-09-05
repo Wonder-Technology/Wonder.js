@@ -171,3 +171,39 @@ let setCamera = camera => {
 
   {...po, camera}->CPContainerManager.setPO;
 };
+
+let getPass = () => {
+  let po = CPContainerManager.getPO();
+
+  po.pass;
+};
+
+let setPass = pass => {
+  let po = CPContainerManager.getPO();
+
+  {...po, pass}->CPContainerManager.setPO;
+};
+
+let getRayTracingPass = () => {
+  let po = CPContainerManager.getPO();
+
+  po.rayTracingPass;
+};
+
+let setRayTracingPass = rayTracingPass => {
+  let po = CPContainerManager.getPO();
+
+  {...po, rayTracingPass}->CPContainerManager.setPO;
+};
+
+let getAccumulationPass = () => {
+  let po = CPContainerManager.getPO();
+
+  po.accumulationPass;
+};
+
+let setAccumulationPass = accumulationPass => {
+  let po = CPContainerManager.getPO();
+
+  {...po, accumulationPass}->CPContainerManager.setPO;
+};

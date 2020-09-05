@@ -14,10 +14,6 @@ type queueObject;
 
 type shaderModuleObject;
 
-type renderPipelineObject;
-
-type computePipelineObject;
-
 type bindGroupLayoutObject;
 
 type pipelineLayoutObject;
@@ -30,15 +26,13 @@ type shaderStageObject = int;
 
 type bindGroupObject;
 
-// type accelerationContainerObject;
-
 type samplerObject;
 
 type textureViewObject;
 
-type pipelineRenderObject;
+type renderPipelineObject;
 
-type pipelineComputeObject;
+type computePipelineObject;
 
 type commandEncoderObject;
 
@@ -49,8 +43,6 @@ type textureObject;
 type commandBufferObject;
 
 type textureFormat = string;
-
-type swapChainFormat;
 
 [@bs.deriving abstract]
 type adapterDescriptor = {
@@ -70,10 +62,16 @@ type windowDescriptor = {
 type swapChainConfig = {
   .
   "device": deviceObject,
-  "format": swapChainFormat,
+  "format": textureFormat,
 };
 
-type shaderModuleDescriptor = {. "code": string};
+type code;
+
+type shaderModuleDescriptor = {. "code": code};
+
+type glslPath = string;
+
+type loadGLSL = glslPath => code;
 
 type pipelineLayoutConfig = {
   .
@@ -202,11 +200,9 @@ type depthStencilState = {
   stencilBack: stencilStateFaceDescriptor,
 };
 
-type pipelineLayout;
-
 [@bs.deriving abstract]
 type pipelineRenderDescriptor = {
-  layout: pipelineLayout,
+  layout: pipelineLayoutObject,
   [@bs.optional]
   sampleCount: int,
   vertexStage,
@@ -228,7 +224,7 @@ type computeStage = {
 
 [@bs.deriving abstract]
 type pipelineComputeDescriptor = {
-  layout: pipelineLayout,
+  layout: pipelineLayoutObject,
   computeStage,
 };
 
@@ -384,7 +380,7 @@ type texture = {
 };
 
 type passEncoderRender = {
-  setPipeline: (pipelineRenderObject, passEncoderRenderObject) => unit,
+  setPipeline: (renderPipelineObject, passEncoderRenderObject) => unit,
   setBindGroup:
     (bindingPoint, bindGroupObject, passEncoderRenderObject) => unit,
   setDynamicBindGroup:
@@ -415,7 +411,7 @@ type passEncoderRender = {
 };
 
 type passEncoderCompute = {
-  setPipeline: (pipelineComputeObject, passEncoderComputeObject) => unit,
+  setPipeline: (computePipelineObject, passEncoderComputeObject) => unit,
   setBindGroup:
     (bindingPoint, bindGroupObject, passEncoderComputeObject) => unit,
   setDynamicBindGroup:
@@ -442,7 +438,8 @@ type commandEncoder = {
 
 type device = {
   getQueue: deviceObject => queueObject,
-  createShaderModule: shaderModuleDescriptor => shaderModuleObject,
+  createShaderModule:
+    (shaderModuleDescriptor, deviceObject) => shaderModuleObject,
   createPipelineLayout:
     (pipelineLayoutConfig, deviceObject) => pipelineLayoutObject,
   createBuffer: (bufferDescriptor, deviceObject) => bufferObject,
@@ -450,9 +447,9 @@ type device = {
     (bindGroupLayoutDescriptor, deviceObject) => bindGroupLayoutObject,
   createBindGroup: (bindGroupDescriptor, deviceObject) => bindGroupObject,
   createRenderPipeline:
-    (pipelineRenderDescriptor, deviceObject) => pipelineRenderObject,
+    (pipelineRenderDescriptor, deviceObject) => renderPipelineObject,
   createComputePipeline:
-    (pipelineComputeDescriptor, deviceObject) => pipelineComputeObject,
+    (pipelineComputeDescriptor, deviceObject) => computePipelineObject,
   createCommandEncoder:
     (commandEncoderDescriptor, deviceObject) => commandEncoderObject,
   createSampler: (samplerDescriptor, deviceObject) => samplerObject,
@@ -461,7 +458,7 @@ type device = {
 
 type context = {
   getSwapChainPreferredFormat:
-    (deviceObject, contextObject) => Js.Promise.t(swapChainFormat),
+    (deviceObject, contextObject) => Js.Promise.t(textureFormat),
   configureSwapChain: (swapChainConfig, contextObject) => swapChainObject,
 };
 
@@ -499,4 +496,5 @@ type webgpuCore = {
   window,
   adapter,
   gpu,
+  loadGLSL,
 };

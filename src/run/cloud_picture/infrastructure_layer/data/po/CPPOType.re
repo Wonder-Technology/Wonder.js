@@ -14,4 +14,7 @@ type po = {
   picture: PictureCPPOType.picture,
   webgpu: WebGPUCPPOType.webgpu,
   camera: CameraCPPOType.camera,
+  pass: PassCPPOType.pass,
+  rayTracingPass: RayTracingPassCPPOType.rayTracingPass,
+  accumulationPass: AccumulationPassCPPOType.accumulationPass,
 };

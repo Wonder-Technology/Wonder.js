@@ -21,3 +21,15 @@ let getIntensity = light => {
 let setIntensity = (light, intensity) => {
   DirectionLightApService.setIntensity(light, intensity);
 };
+
+let getAllLights = () => {
+  DirectionLightApService.getAllLights();
+};
+
+let getDirection = light => {
+  DirectionLightApService.getDirection(light);
+};
+
+let getLightCount = () => {
+  DirectionLightApService.getLightCount();
+};

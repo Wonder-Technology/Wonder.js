@@ -23,3 +23,7 @@ let push = (arr, value) => {
 
   arr;
 };
+
+let forEach = (arr, func) => {
+  Js.Array.forEach(func, arr);
+};

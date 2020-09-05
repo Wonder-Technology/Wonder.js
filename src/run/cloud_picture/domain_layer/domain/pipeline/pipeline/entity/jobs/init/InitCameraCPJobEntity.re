@@ -2,17 +2,20 @@ open Js.Typed_array;
 
 let create = () => JobEntity.create("init_camera");
 
+let _buildCameraBufferData = device => {
+  let bufferData = Float32Array.fromLength(16 + 16 + 4);
+  let bufferSize = bufferData |> Float32Array.byteLength;
+
+  let buffer = UniformBufferVO.createFromDevice(~device, ~bufferSize);
+
+  (buffer, bufferData);
+};
+
 let exec = () => {
   WebGPUCPRepo.getDevice()
   ->OptionSt.get
   ->Result.mapSuccess(device => {
-      let cameraBufferData = Float32Array.fromLength(4 + 16 + 16);
-      let cameraBufferSize = cameraBufferData |> Float32Array.byteLength;
-
-      let cameraBuffer =
-        UniformBufferVO.createFromDevice(device, cameraBufferSize);
-
-      CameraCPRepo.setCameraBufferData(cameraBuffer, cameraBufferData);
+      _buildCameraBufferData(device)->CameraCPRepo.setCameraBufferData;
 
       ();
     })

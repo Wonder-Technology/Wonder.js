@@ -5,6 +5,18 @@ let getLocalToWorldMatrix = transform => {
   ->LocalToWorldMatrixVO.create;
 };
 
+let getNormalMatrix = transform => {
+  DpContainer.unsafeGetGlobalTempRepoDp().getFloat9Array()
+  ->Matrix4.invertTo3x3(
+      DpContainer.unsafeGetTransformRepoDp().getLocalToWorldMatrix(
+        transform->TransformEntity.value,
+      ),
+    )
+  ->Result.mapSuccess(mat3 => {
+      mat3->Matrix3.transposeSelf->NormalMatrixVO.create
+    });
+};
+
 let getLocalPosition = transform =>
   DpContainer.unsafeGetTransformRepoDp().getLocalPosition(
     transform->TransformEntity.value,

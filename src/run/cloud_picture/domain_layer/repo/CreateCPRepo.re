@@ -5,7 +5,8 @@ open BasicCameraViewCPPOType;
 let create = () => {
   pipeline: {
     initPipeline: "init",
-    runPipeline: "run",
+    updatePipeline: "update",
+    renderPipeline: "render",
     initPipelineData: {
       name: "init",
       firstGroup: "frame",
@@ -13,18 +14,45 @@ let create = () => {
         {
           name: "frame",
           link: Concat,
-          elements: [{name: "start_time", type_: Job}],
+          elements: [
+            {name: "start_time", type_: Job},
+            {name: "init_webgpu", type_: Job},
+            {name: "init_camera", type_: Job},
+            {name: "init_pass", type_: Job},
+            {name: "init_rayTracing", type_: Job},
+            {name: "init_accumulation", type_: Job},
+          ],
         },
       ],
     },
-    runPipelineData: {
-      name: "run",
+    updatePipelineData: {
+      name: "update",
       firstGroup: "frame",
       groups: [
         {
           name: "frame",
           link: Concat,
-          elements: [{name: "update_transform", type_: Job}],
+          elements: [
+            {name: "update_transform", type_: Job},
+            {name: "update_camera", type_: Job},
+            {name: "update_rayTracing", type_: Job},
+            {name: "update_accumulation", type_: Job},
+            {name: "update_pass", type_: Job},
+          ],
+        },
+      ],
+    },
+    renderPipelineData: {
+      name: "render",
+      firstGroup: "frame",
+      groups: [
+        {
+          name: "frame",
+          link: Concat,
+          elements: [
+            {name: "render_rayTracing", type_: Job},
+            {name: "render_accumulation", type_: Job},
+          ],
         },
       ],
     },
@@ -36,6 +64,7 @@ let create = () => {
     pbrMaterialCount: 10000,
     geometryPointCount: 2000000,
     geometryCount: 10000,
+    // TODO change to 1
     directionLightCount: 4,
   },
   scene: {
@@ -71,6 +100,7 @@ let create = () => {
   },
   globalTemp: {
     float16Array1: Js.Typed_array.Float32Array.fromLength(16),
+    float9Array: Js.Typed_array.Float32Array.fromLength(9),
   },
   time: {
     startTime: Js.Nullable.null,
@@ -81,6 +111,7 @@ let create = () => {
   },
   webgpu: {
     device: None,
+    window: None,
     adapter: None,
     context: None,
     queue: None,
@@ -89,5 +120,29 @@ let create = () => {
   },
   camera: {
     cameraBufferData: None,
+  },
+  pass: {
+    sampleCount: 1,
+    totalSampleCount: 0,
+    commonBufferData: None,
+    resolutionBufferData: None,
+    pixelBufferData: None,
+  },
+  rayTracingPass: {
+    sceneDescBufferData: None,
+    pointIndexBufferData: None,
+    vertexBufferData: None,
+    indexBufferData: None,
+    pbrMaterialBufferData: None,
+    shaderBindingTable: None,
+    staticBindGroupDataList: [],
+    pipeline: None,
+    cameraBindGroupLayout: None,
+    directionLightBindGroupLayout: None,
+  },
+  accumulationPass: {
+    accumulationPixelBufferData: None,
+    staticBindGroupData: None,
+    pipeline: None,
   },
 };

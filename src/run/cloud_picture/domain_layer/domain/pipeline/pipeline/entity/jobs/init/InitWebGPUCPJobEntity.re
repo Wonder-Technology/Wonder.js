@@ -11,7 +11,7 @@ let exec = () => {
         "resizable": false,
       })
       ->LoadWebGPUDoService.load
-      ->WonderBsMost.Most.tap(
+      ->WonderBsMost.Most.map(
           ((adapter, device, context, queue, swapChainFormat)) => {
             let swapChain =
               DpContainer.unsafeGetWebGPUCoreDp().context.configureSwapChain(
@@ -30,5 +30,6 @@ let exec = () => {
           },
           _,
         )
-    });
+    })
+  ->ResultMost.sequenceMostM;
 };

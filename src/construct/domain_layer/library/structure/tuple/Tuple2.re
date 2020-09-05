@@ -16,3 +16,7 @@ let collectResult = (resultData1, resultData2) => {
     resultData2->Result.mapSuccess(data2 => {(data1, data2)})
   });
 };
+
+let getFirst = ((x, y)) => x;
+
+let getLast = ((x, y)) => y;

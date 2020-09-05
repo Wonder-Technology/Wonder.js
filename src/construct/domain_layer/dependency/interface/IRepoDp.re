@@ -42,6 +42,9 @@ type gameObjectRepo = {
   getPerspectiveCameraProjection:
     gameObject => Js.Nullable.t(perspectiveCameraProjection),
   hasPerspectiveCameraProjection: gameObject => bool,
+  getAllGeometryGameObjects: unit => list(gameObject),
+  getAllGameObjectGeometries: unit => list(geometry),
+  getAllGameObjectPBRMaterials: unit => list(pbrMaterial),
 };
 
 type transformRepo = {
@@ -148,6 +151,7 @@ type perspectiveCameraProjectionRepo = {
 
 type globalTempRepo = {
   getFloat32Array1: unit => Js.Typed_array.Float32Array.t,
+  getFloat9Array: unit => Js.Typed_array.Float32Array.t,
 };
 
 type pipelineRepo = {

@@ -6,6 +6,14 @@ let setDevice = device => {
   CPRepo.setWebGPU({...CPRepo.getWebGPU(), device: device->Some});
 };
 
+let getWindow = () => {
+  CPRepo.getWebGPU().window;
+};
+
+let setWindow = window => {
+  CPRepo.setWebGPU({...CPRepo.getWebGPU(), window: window->Some});
+};
+
 let getAdapter = () => {
   CPRepo.getWebGPU().adapter;
 };

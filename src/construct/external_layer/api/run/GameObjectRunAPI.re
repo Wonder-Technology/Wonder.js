@@ -76,3 +76,15 @@ let getPerspectiveCameraProjection = gameObject => {
 let hasPerspectiveCameraProjection = gameObject => {
   GameObjectApService.hasPerspectiveCameraProjection(gameObject);
 };
+
+let getAllRenderGameObjects = () => {
+  GameObjectApService.getAllRenderGameObjects();
+};
+
+let getAllRenderGeometries = () => {
+  GameObjectApService.getAllRenderGeometries();
+};
+
+let getAllRenderPBRMaterials = () => {
+  GameObjectApService.getAllRenderPBRMaterials();
+};

@@ -126,3 +126,21 @@ let hasPerspectiveCameraProjection = gameObject => {
   CPRepo.getGameObject().perspectiveCameraProjectionMap
   ->ImmutableSparseMap.has(gameObject);
 };
+
+let getAllGeometryGameObjects = () => {
+  CPRepo.getGameObject().geometryMap
+  ->ImmutableSparseMap.getKeys
+  ->ListSt.fromArray;
+};
+
+let getAllGameObjectGeometries = () => {
+  CPRepo.getGameObject().geometryMap
+  ->ImmutableSparseMap.getValues
+  ->ListSt.fromArray;
+};
+
+let getAllGameObjectPBRMaterials = () => {
+  CPRepo.getGameObject().pbrMaterialMap
+  ->ImmutableSparseMap.getValues
+  ->ListSt.fromArray;
+};

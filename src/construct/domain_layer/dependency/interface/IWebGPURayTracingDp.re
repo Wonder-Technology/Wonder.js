@@ -2,7 +2,7 @@ open IWebGPUCoreDp;
 
 type shaderBindingTableObject;
 
-type pipelineRayTracingObject;
+type rayTracingPipelineObject;
 
 type accelerationContainerObject;
 
@@ -161,7 +161,7 @@ type queryHeightDimension = int;
 type queryDepthDimension = int;
 
 type passEncoderRayTracing = {
-  setPipeline: (pipelineRayTracingObject, passEncoderRayTracingObject) => unit,
+  setPipeline: (rayTracingPipelineObject, passEncoderRayTracingObject) => unit,
   setBindGroup:
     (bindingPoint, bindGroupObject, passEncoderRayTracingObject) => unit,
   traceRays:
@@ -190,6 +190,7 @@ type commandEncoder = {
 
 [@bs.deriving abstract]
 type binding = {
+  [@bs.optional]
   accelerationContainer: accelerationContainerObject,
   binding: bindingPoint,
   [@bs.optional]
@@ -211,11 +212,12 @@ type bindGroupDescriptor = {
 
 type device = {
   createRayTracingPipeline:
-    (pipelineRayTracingDescriptor, deviceObject) => pipelineRayTracingObject,
+    (pipelineRayTracingDescriptor, deviceObject) => rayTracingPipelineObject,
   createRayTracingShaderBindingTable:
     (shaderBindingTableDescriptor, deviceObject) => shaderBindingTableObject,
   createRayTracingAccelerationContainer:
-    accelerationContainerDescriptor => accelerationContainerObject,
+    (accelerationContainerDescriptor, deviceObject) =>
+    accelerationContainerObject,
   /*! add this to avoid IWebGPUCoreDp dependent on IWebGPURayTracingDP! */
   createRayTracingBindGroup:
     (bindGroupDescriptor, deviceObject) => bindGroupObject,

@@ -1,23 +1,23 @@
 let create = () => JobEntity.create("update_camera");
 
-let _updateCameraBuffer = ((position, viewMatrix, projectionMatrix)) => {
+let _updateCameraBuffer = ((viewInverse, projectionInverse, near, far)) => {
   CameraCPRepo.getCameraBufferData()
   ->OptionSt.get
   ->Result.bind(((cameraBuffer, cameraBufferData)) => {
       ListResult.mergeResults([
-        TypeArrayCPRepoUtils.setFloat3(
+        TypeArrayCPRepoUtils.setFloat32Array(
           0,
-          position->PositionVO.value,
+          viewInverse,
           cameraBufferData,
         ),
         TypeArrayCPRepoUtils.setFloat32Array(
-          4,
-          viewMatrix->ViewMatrixVO.value,
+          16,
+          projectionInverse,
           cameraBufferData,
         ),
-        TypeArrayCPRepoUtils.setFloat32Array(
-          4 + 32,
-          projectionMatrix->ProjectionMatrixVO.value,
+        TypeArrayCPRepoUtils.setFloat2(
+          16 + 16,
+          (near, far),
           cameraBufferData,
         ),
       ])
@@ -28,14 +28,14 @@ let _updateCameraBuffer = ((position, viewMatrix, projectionMatrix)) => {
             cameraBuffer->UniformBufferVO.value,
           );
 
-          CameraCPRepo.setCameraBufferData(cameraBuffer, cameraBufferData);
+          CameraCPRepo.setCameraBufferData((cameraBuffer, cameraBufferData));
         })
     });
 };
 
 let _updateCamera = () => {
   ActiveBasicCameraViewDoService.getActiveCameraView()
-  ->OptionSt.openWithResult
+  ->ResultOption.openInverse
   ->Result.bind(activeCameraView => {
       activeCameraView
       ->GameObjectBasicCameraViewDoService.getGameObject
@@ -49,20 +49,30 @@ let _updateCamera = () => {
           )
         })
       ->Result.bind(((transform, cameraProjection)) => {
-          Tuple3.collectResult(
-            UpdateTransformDoService.updateAndGetPosition(transform)
-            ->Result.succeed,
-            ViewMatrixBasicCameraViewDoService.getViewWorldToCameraMatrix(
-              activeCameraView,
-            )
-            ->OptionSt.openWithResult,
-            PMatrixPerspectiveCameraProjectionDoService.getPMatrix(
-              cameraProjection,
-            )
-            ->OptionSt.get,
+          Tuple4.collectResult(
+            BasicCameraViewRunAPI.getViewWorldToCameraMatrix(activeCameraView)
+            ->ResultOption.openInverse
+            ->Result.bind(viewMatrix => {
+                Matrix4.createIdentityMatrix4()
+                ->Matrix4.invert(viewMatrix->ViewMatrixVO.value)
+              }),
+            PerspectiveCameraProjectionRunAPI.getPMatrix(cameraProjection)
+            ->OptionSt.get
+            ->Result.bind(projectionMatrix => {
+                Matrix4.createIdentityMatrix4()
+                ->Matrix4.invert(projectionMatrix->ProjectionMatrixVO.value)
+              }),
+            PerspectiveCameraProjectionRunAPI.getNear(cameraProjection)
+            ->OptionSt.get
+            ->Result.mapSuccess(NearVO.value),
+            PerspectiveCameraProjectionRunAPI.getFar(cameraProjection)
+            ->OptionSt.get
+            ->Result.mapSuccess(FarVO.value),
           )
         })
-      ->Result.bind(_updateCameraBuffer)
+      ->Result.bind(((viewInverse, projectionInverse, near, far)) =>
+          _updateCameraBuffer((viewInverse, projectionInverse, near, far))
+        )
     });
 };
 

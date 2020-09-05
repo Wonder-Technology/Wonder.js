@@ -512,6 +512,61 @@ let invert = (resultFloat32Arr, mat: Float32Array.t) => {
   };
 };
 
+let invertTo3x3 = (resultFloat32Arr, mat: Float32Array.t) => {
+  let a00 = Float32Array.unsafe_get(mat, 0);
+  let a01 = Float32Array.unsafe_get(mat, 1);
+  let a02 = Float32Array.unsafe_get(mat, 2);
+  let a03 = Float32Array.unsafe_get(mat, 3);
+  let a10 = Float32Array.unsafe_get(mat, 4);
+  let a11 = Float32Array.unsafe_get(mat, 5);
+  let a12 = Float32Array.unsafe_get(mat, 6);
+  let a13 = Float32Array.unsafe_get(mat, 7);
+  let a20 = Float32Array.unsafe_get(mat, 8);
+  let a21 = Float32Array.unsafe_get(mat, 9);
+  let a22 = Float32Array.unsafe_get(mat, 10);
+  let a23 = Float32Array.unsafe_get(mat, 11);
+  let a30 = Float32Array.unsafe_get(mat, 12);
+  let a31 = Float32Array.unsafe_get(mat, 13);
+  let a32 = Float32Array.unsafe_get(mat, 14);
+  let a33 = Float32Array.unsafe_get(mat, 15);
+  let b11 = a22 *. a11 -. a12 *. a21;
+  let b21 = -. a22 *. a01 +. a02 *. a21;
+  let b31 = a12 *. a01 -. a02 *. a11;
+  let b12 = -. a22 *. a10 +. a12 *. a20;
+  let b22 = a22 *. a00 -. a02 *. a20;
+  let b32 = -. a12 *. a00 +. a02 *. a10;
+  let b13 = a21 *. a10 -. a11 *. a20;
+  let b23 = -. a21 *. a00 +. a01 *. a20;
+  let b33 = a11 *. a00 -. a01 *. a10;
+  /* Calculate the determinant */
+  let det = ref(a00 *. b11 +. a01 *. b12 +. a02 *. b13);
+  switch (det^) {
+  | 0. =>
+    Result.failWith(
+      Log.buildFatalMessage(
+        ~title="invert",
+        ~description={j|det shouldn't be 0.|j},
+        ~reason="",
+        ~solution={j||j},
+        ~params={j||j},
+      ),
+    )
+  | _ =>
+    det := 1.0 /. det^;
+    Float32Array.unsafe_set(resultFloat32Arr, 0, b11 *. det^);
+    Float32Array.unsafe_set(resultFloat32Arr, 1, b21 *. det^);
+    Float32Array.unsafe_set(resultFloat32Arr, 2, b31 *. det^);
+    Float32Array.unsafe_set(resultFloat32Arr, 3, b12 *. det^);
+    Float32Array.unsafe_set(resultFloat32Arr, 4, b22 *. det^);
+    Float32Array.unsafe_set(resultFloat32Arr, 5, b32 *. det^);
+    Float32Array.unsafe_set(resultFloat32Arr, 6, b13 *. det^);
+    Float32Array.unsafe_set(resultFloat32Arr, 7, b23 *. det^);
+    Float32Array.unsafe_set(resultFloat32Arr, 8, b33 *. det^);
+
+    resultFloat32Arr->Result.succeed;
+  };
+};
+
 let getEulerAngles = matTypeArr => {
   let (sx, sy, sz) = getScaleTuple(matTypeArr);
 

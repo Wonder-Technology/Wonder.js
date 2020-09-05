@@ -8,7 +8,7 @@ let value = buffer =>
   | UniformBuffer(value) => value
   };
 
-let createFromDevice = (device, bufferSize) => {
+let createFromDevice = (~device, ~bufferSize) => {
   DpContainer.unsafeGetWebGPUCoreDp().device.createBuffer(
     {
       "size": bufferSize,
