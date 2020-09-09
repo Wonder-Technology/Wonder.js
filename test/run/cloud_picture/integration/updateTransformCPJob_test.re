@@ -13,7 +13,7 @@ let _ =
       TestCPTool.init(
         ~sandbox,
         ~updatePipelineData={
-          name: "run",
+          name: "update",
           firstGroup: "frame",
           groups: [
             {
