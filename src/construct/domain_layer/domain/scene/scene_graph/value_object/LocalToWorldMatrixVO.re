@@ -40,3 +40,7 @@ let getEulerAngles = mat => {
   ->Tuple3.map(AngleVO.create)
   ->EulerAnglesVO.create;
 };
+
+let invert = (result, mat) => {
+  result->Matrix4.invert(mat->value);
+};

@@ -1,11 +1,15 @@
-let prepare = () => {
-  DirectorCPApService.prepare();
+let prepare = (pictureSize, sampleCount) => {
+  DirectorCPApService.prepare(pictureSize, sampleCount);
 };
 
 let init = () => {
   DirectorCPApService.init();
 };
 
-let run = () => {
-  DirectorCPApService.run();
+let update = () => {
+  DirectorCPApService.update();
+};
+
+let render = () => {
+  DirectorCPApService.render();
 };

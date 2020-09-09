@@ -3,9 +3,21 @@ type t = {
   mutable poConfig: option(IConfigDp.poConfig),
   mutable repo: option(IRepoDp.repo),
   mutable time: option(ITimeDp.time),
+  mutable webgpuCore: option(IWebGPUCoreDp.webgpuCore),
+  mutable webgpuRayTracing: option(IWebGPURayTracingDp.webgpuRayTracing),
+  // mutable network: option(INetworkDp.network),
 };
 
-let dpContainer = {otherConfig: None, poConfig: None, repo: None, time: None};
+let dpContainer = {
+  otherConfig: None,
+  poConfig: None,
+  repo: None,
+  time: None,
+
+  webgpuCore: None,
+  webgpuRayTracing: None,
+  // network: None,
+};
 
 let unsafeGetOtherConfigDp = () => {
   dpContainer.otherConfig->OptionSt.unsafeGet;
@@ -43,6 +55,26 @@ let unsafeGetTransformRepoDp = () => {
   _unsafeGetRepoDp().transformRepo;
 };
 
+let unsafeGetPBRMaterialRepoDp = () => {
+  _unsafeGetRepoDp().pbrMaterialRepo;
+};
+
+let unsafeGetGeometryRepoDp = () => {
+  _unsafeGetRepoDp().geometryRepo;
+};
+
+let unsafeGetDirectionLightRepoDp = () => {
+  _unsafeGetRepoDp().directionLightRepo;
+};
+
+let unsafeGetBasicCameraViewRepoDp = () => {
+  _unsafeGetRepoDp().basicCameraViewRepo;
+};
+
+let unsafeGetPerspectiveCameraProjectionRepoDp = () => {
+  _unsafeGetRepoDp().perspectiveCameraProjectionRepo;
+};
+
 let unsafeGetGlobalTempRepoDp = () => {
   _unsafeGetRepoDp().globalTempRepo;
 };
@@ -70,3 +102,33 @@ let setTimeDp = dp => {
 
   ();
 };
+
+let unsafeGetWebGPUCoreDp = () => {
+  dpContainer.webgpuCore->OptionSt.unsafeGet;
+};
+
+let setWebGPUCoreDp = dp => {
+  dpContainer.webgpuCore = dp->Some;
+
+  ();
+};
+
+let unsafeGetWebGPURayTracingDp = () => {
+  dpContainer.webgpuRayTracing->OptionSt.unsafeGet;
+};
+
+let setWebGPURayTracingDp = dp => {
+  dpContainer.webgpuRayTracing = dp->Some;
+
+  ();
+};
+
+// let unsafeGetNetworkDp = () => {
+//   dpContainer.network->OptionSt.unsafeGet;
+// };
+
+// let setNetworkDp = dp => {
+//   dpContainer.network = dp->Some;
+
+//   ();
+// };

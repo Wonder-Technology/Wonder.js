@@ -1,6 +1,14 @@
+[@bs.val] [@bs.scope "console"] external trace: unit => unit;
+
 let printForDebug = value => {
   Js.log(value);
   value;
+};
+
+let logForDebug = value => {
+  Js.log(value);
+
+  trace();
 };
 
 let getJsonStr = json => Js.Json.stringify(json->Obj.magic);

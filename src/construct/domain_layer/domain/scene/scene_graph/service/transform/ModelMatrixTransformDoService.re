@@ -5,6 +5,18 @@ let getLocalToWorldMatrix = transform => {
   ->LocalToWorldMatrixVO.create;
 };
 
+let getNormalMatrix = transform => {
+  DpContainer.unsafeGetGlobalTempRepoDp().getFloat9Array()
+  ->Matrix4.invertTo3x3(
+      DpContainer.unsafeGetTransformRepoDp().getLocalToWorldMatrix(
+        transform->TransformEntity.value,
+      ),
+    )
+  ->Result.mapSuccess(mat3 => {
+      mat3->Matrix3.transposeSelf->NormalMatrixVO.create
+    });
+};
+
 let getLocalPosition = transform =>
   DpContainer.unsafeGetTransformRepoDp().getLocalPosition(
     transform->TransformEntity.value,
@@ -23,7 +35,7 @@ let setLocalPosition = (transform, localPosition) => {
 
 let setPosition = (transform, parent, position) => {
   DpContainer.unsafeGetGlobalTempRepoDp().getFloat32Array1()
-  ->Matrix4.invert(getLocalToWorldMatrix(parent)->LocalToWorldMatrixVO.value)
+  ->LocalToWorldMatrixVO.invert(getLocalToWorldMatrix(parent))
   ->Result.bind(mat4 => {
       setLocalPosition(
         transform,
@@ -63,10 +75,7 @@ let getLocalEulerAngles = transform => {
 let setLocalEulerAngles = (transform, localEulerAngles) => {
   setLocalRotation(
     transform,
-    localEulerAngles
-    ->EulerAnglesVO.getPrimitiveValue
-    ->Quaternion.setFromEulerAngles
-    ->RotationVO.create,
+    localEulerAngles->EulerAnglesVO.convertToQuaternion->RotationVO.create,
   );
 };
 
@@ -88,7 +97,7 @@ let setLocalScale = (transform, localScale) => {
 
 let setScale = (transform, parent, scale) => {
   DpContainer.unsafeGetGlobalTempRepoDp().getFloat32Array1()
-  ->Matrix4.invert(getLocalToWorldMatrix(parent)->LocalToWorldMatrixVO.value)
+  ->LocalToWorldMatrixVO.invert(getLocalToWorldMatrix(parent))
   ->Result.bind(mat4 => {
       setLocalScale(
         transform,

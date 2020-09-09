@@ -12,8 +12,8 @@ let _ =
       sandbox := createSandbox();
       TestCPTool.init(
         ~sandbox,
-        ~runPipelineData={
-          name: "run",
+        ~updatePipelineData={
+          name: "update",
           firstGroup: "frame",
           groups: [
             {
@@ -40,7 +40,7 @@ let _ =
         setLocalPosition(parent, pos1)->ResultTool.getExnSuccessValue;
         setLocalPosition(child, pos2)->ResultTool.getExnSuccessValue;
 
-        DirectorCPTool.initAndRun(
+        DirectorCPTool.initAndUpdate(
           ~handleSuccessFunc=
             () => {
               getPosition(child)->expect == PositionTool.add(pos1, pos2)

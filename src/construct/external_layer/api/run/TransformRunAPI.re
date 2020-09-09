@@ -97,3 +97,11 @@ let rotateLocalOnAxis = (transform, (angle, localAxis)) => {
 let rotateWorldOnAxis = (transform, (angle, worldAxis)) => {
   TransformApService.rotateWorldOnAxis(transform, (angle, worldAxis));
 };
+
+let getLocalToWorldMatrix = transform => {
+  TransformApService.getLocalToWorldMatrix(transform);
+};
+
+let getNormalMatrix = transform => {
+  TransformApService.getNormalMatrix(transform);
+};

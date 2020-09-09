@@ -10,3 +10,7 @@ let value = eulerAngles =>
 
 let getPrimitiveValue = eulerAngles =>
   eulerAngles->value->Tuple3.map(AngleVO.value);
+
+let convertToQuaternion = eulerAngles => {
+  eulerAngles->getPrimitiveValue->Quaternion.setFromEulerAngles;
+};

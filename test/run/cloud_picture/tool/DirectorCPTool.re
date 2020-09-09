@@ -1,5 +1,6 @@
-let prepare = () => {
-  DirectorCPAPI.prepare()->ResultTool.getExnSuccessValue;
+let prepare = (~pictureSize=(0, 0), ~sampleCount=1, ()) => {
+  DirectorCPAPI.prepare(pictureSize, sampleCount)
+  ->ResultTool.getExnSuccessValue;
 };
 
 let init =
@@ -19,24 +20,7 @@ let init =
   );
 };
 
-// let run =
-//     (
-//       ~handleSuccessFunc,
-//       ~handleFailFunc=ResultTool.buildEmptyHandleFailFunc(),
-//       (),
-//     ) => {
-//   let (_, pipelineStream) =
-//     DirectorCPAPI.run()->Result.handleFail(handleFailFunc->Obj.magic);
-
-//   PipelineTool.execPipelineStream(
-//     ~pipelineStream,
-//     ~handleSuccessFunc,
-//     ~handleFailFunc,
-//     (),
-//   );
-// };
-
-let initAndRun =
+let initAndUpdate =
     (
       ~handleSuccessFunc,
       ~handleAfterInitFunc=() => (),
@@ -46,14 +30,14 @@ let initAndRun =
   let (_, initPipelineStream) =
     DirectorCPAPI.init()->Result.handleFail(handleFailFunc->Obj.magic);
 
-  let (_, runPipelineStream) =
-    DirectorCPAPI.run()->Result.handleFail(handleFailFunc->Obj.magic);
+  let (_, updatePipelineStream) =
+    DirectorCPAPI.update()->Result.handleFail(handleFailFunc->Obj.magic);
 
   PipelineTool.execPipelineStream(
     ~pipelineStream=
       initPipelineStream
       ->WonderBsMost.Most.tap(_ => {handleAfterInitFunc()}, _)
-      ->WonderBsMost.Most.concat(runPipelineStream),
+      ->WonderBsMost.Most.concat(updatePipelineStream),
     ~handleSuccessFunc,
     ~handleFailFunc,
     (),

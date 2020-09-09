@@ -22,3 +22,11 @@ let remove = (map, key: int) => {
 
   map;
 };
+
+let map = SparseMap.map;
+
+let reducei = SparseMap.reducei;
+
+let getValues = SparseMap.getValues;
+
+let getKeys = SparseMap.getKeys;

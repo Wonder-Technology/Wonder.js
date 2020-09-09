@@ -40,27 +40,17 @@ let _setAllTypeArrDataToDefault =
               })
           })
       })
+    })
+  ->Result.mapSuccess(() => {
+      (localToWorldMatrices, localPositions, localRotations, localScales)
     });
 
 let _initBufferData = (count, defaultDataTuple) => {
   BufferTransformCPRepoUtils.createBuffer(count)
   ->Result.bind(buffer => {
-      let (localToWorldMatrices, localPositions, localRotations, localScales) =
-        CreateTypeArrayTransformCPRepoUtils.createTypeArrays(buffer, count);
-
-      (localToWorldMatrices, localPositions, localRotations, localScales)
+      CreateTypeArrayTransformCPRepoUtils.createTypeArrays(buffer, count)
       ->_setAllTypeArrDataToDefault(count, defaultDataTuple)
-      ->Result.mapSuccess(() => {
-          (
-            buffer,
-            (
-              localToWorldMatrices,
-              localPositions,
-              localRotations,
-              localScales,
-            ),
-          )
-        });
+      ->Result.mapSuccess(typeArrData => {(buffer, typeArrData)})
     });
 };
 

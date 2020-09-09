@@ -86,6 +86,15 @@ function(source) {
 let assertNullableExist = (source: 'a) =>
   _assert(_isNullableExist(source), "expect exist, but actual not");
 
+let _isNullableListExist = sourceList => {
+  sourceList
+  ->Belt.List.getBy(source => Obj.magic(source)->Js.Nullable.isNullable)
+  ->Js.Option.isNone;
+};
+
+let assertNullableListExist = sourceList =>
+  _assert(_isNullableListExist(sourceList), "expect exist, but actual not");
+
 let assertExist = (source: option('a)) =>
   _assert(Js.Option.isSome(source), "expect exist, but actual not");
 

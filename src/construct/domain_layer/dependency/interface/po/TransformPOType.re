@@ -16,4 +16,6 @@ type scale = (float, float, float);
 
 type localToWorldMatrix = Js.Typed_array.Float32Array.t;
 
+type normalMatrix = Js.Typed_array.Float32Array.t;
+
 type eulerAngles = (float, float, float);

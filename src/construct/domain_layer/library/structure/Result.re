@@ -48,3 +48,7 @@ let handleFail = (result: t('s, 'f), handleFailFunc: 'f => 's): 's =>
   | Success(s) => s
   | Fail(f) => handleFailFunc(f)
   };
+
+let getExn = result => {
+  result->handleFail(Exception.throwErr);
+};

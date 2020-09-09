@@ -4,24 +4,36 @@ let getInitPipeline = () => {
   PipelineCPRepo.getInitPipeline();
 };
 
-let getRunPipeline = () => {
-  PipelineCPRepo.getRunPipeline();
+let getUpdatePipeline = () => {
+  PipelineCPRepo.getUpdatePipeline();
+};
+
+let getRenderPipeline = () => {
+  PipelineCPRepo.getRenderPipeline();
 };
 
 let getInitPipelineData = () => {
   PipelineCPRepo.getInitPipelineData();
 };
 
-let setInitPipelineData = initPipelineData => {
-  PipelineCPRepo.setInitPipelineData(initPipelineData);
+let setInitPipelineData = pipelineData => {
+  PipelineCPRepo.setInitPipelineData(pipelineData);
 };
 
-let getRunPipelineData = () => {
-  PipelineCPRepo.getRunPipelineData();
+let getUpdatePipelineData = () => {
+  PipelineCPRepo.getUpdatePipelineData();
 };
 
-let setRunPipelineData = runPipelineData => {
-  PipelineCPRepo.setRunPipelineData(runPipelineData);
+let setUpdatePipelineData = pipelineData => {
+  PipelineCPRepo.setUpdatePipelineData(pipelineData);
+};
+
+let getRenderPipelineData = () => {
+  PipelineCPRepo.getRenderPipelineData();
+};
+
+let setRenderPipelineData = pipelineData => {
+  PipelineCPRepo.setRenderPipelineData(pipelineData);
 };
 
 let getPipelineStream = pipeline => {
