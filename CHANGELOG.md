@@ -1,3 +1,18 @@
+<a name="2.0.0-alpha.2"></a>
+# [2.0.0-alpha.2](https://github.com/Wonder-Technology/Wonder.js/compare/v2.0.0-alpha.1...v2.0.0-alpha.2) (2020-09-09)
+
+
+### Features
+
+* **cloud-picture:** add "camera buffer" related logic ([27baa0a](https://github.com/Wonder-Technology/Wonder.js/commit/27baa0a))
+* **cloud-picture:** add init_webgpu job ([d7e38c6](https://github.com/Wonder-Technology/Wonder.js/commit/d7e38c6))
+* **cloud-picture:** add ray tracing pass, accumulation pass jobs; ([d64411e](https://github.com/Wonder-Technology/Wonder.js/commit/d64411e))
+* **cloud-picture:** add update_camera job to jobs/update/ folder ([cd266e2](https://github.com/Wonder-Technology/Wonder.js/commit/cd266e2))
+* **component:** add pbrMaterial, geometry, directionLight, basicCameraView, perspectiveCameraProjection components ([171e1f3](https://github.com/Wonder-Technology/Wonder.js/commit/171e1f3))
+* **dependency:** add IWebGPUCoreDp, IWebGPURayTracingDp ([5e62880](https://github.com/Wonder-Technology/Wonder.js/commit/5e62880))
+
+
+
 <a name="2.0.0-alpha.1"></a>
 # [2.0.0-alpha.1](https://github.com/Wonder-Technology/Wonder.js/compare/v1.1.0...v2.0.0-alpha.1) (2020-08-31)
 
