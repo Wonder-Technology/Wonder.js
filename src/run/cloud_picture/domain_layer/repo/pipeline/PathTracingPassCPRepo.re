@@ -1,4 +1,4 @@
-open RayTracingPassCPPOType;
+open PathTracingPassCPPOType;
 
 let getSceneDescBufferData = () => {
   CPRepo.getRayTracingPass().sceneDescBufferData

@@ -3,14 +3,14 @@ let _getInitPipelineJobs = () => [
   (InitWebGPUCPJobEntity.create(), InitWebGPUCPJobEntity.exec),
   (InitCameraCPJobEntity.create(), InitCameraCPJobEntity.exec),
   (InitPassCPJobEntity.create(), InitPassCPJobEntity.exec),
-  (InitRayTracingCPJobEntity.create(), InitRayTracingCPJobEntity.exec),
+  (InitPathTracingCPJobEntity.create(), InitPathTracingCPJobEntity.exec),
   (InitAccumulationCPJobEntity.create(), InitAccumulationCPJobEntity.exec),
 ];
 
 let _getUpdatePipelineJobs = () => [
   (UpdateTransformCPJobEntity.create(), UpdateTransformCPJobEntity.exec),
   (UpdateCameraCPJobEntity.create(), UpdateCameraCPJobEntity.exec),
-  (UpdateRayTracingCPJobEntity.create(), UpdateRayTracingCPJobEntity.exec),
+  (UpdatePathTracingCPJobEntity.create(), UpdatePathTracingCPJobEntity.exec),
   (
     UpdateAccumulationCPJobEntity.create(),
     UpdateAccumulationCPJobEntity.exec,
@@ -19,7 +19,7 @@ let _getUpdatePipelineJobs = () => [
 ];
 
 let _getRenderPipelineJobs = () => [
-  (RenderRayTracingCPJobEntity.create(), RenderRayTracingCPJobEntity.exec),
+  (RenderPathTracingCPJobEntity.create(), RenderPathTracingCPJobEntity.exec),
   (
     RenderAccumulationCPJobEntity.create(),
     RenderAccumulationCPJobEntity.exec,

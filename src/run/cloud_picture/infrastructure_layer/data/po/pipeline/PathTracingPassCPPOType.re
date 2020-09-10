@@ -1,6 +1,6 @@
 open PassCPPOType;
 
-type rayTracingPass = {
+type pathTracingPass = {
   sceneDescBufferData:
     option(
       (IWebGPUCoreDp.bufferObject, bufferSize, Js.Typed_array.Float32Array.t),

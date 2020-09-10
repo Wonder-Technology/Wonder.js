@@ -1,6 +1,6 @@
 open Js.Typed_array;
 
-let create = () => JobEntity.create("init_rayTracing");
+let create = () => JobEntity.create("init_pathTracing");
 
 let _buildSceneDescBufferData = device => {
   let gameObjectCount = POConfigCPRepo.getTransformCount();
@@ -268,7 +268,7 @@ let exec = () => {
         "src/run/cloud_picture/domain_layer/domain/shader/ray_tracing",
         device,
       )
-      ->RayTracingPassCPRepo.setShaderBindingTable;
+      ->PathTracingPassCPRepo.setShaderBindingTable;
 
       let cameraBindGroupLayout =
         DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroupLayout(
@@ -289,12 +289,12 @@ let exec = () => {
           device,
         );
 
-      RayTracingPassCPRepo.setCameraBindGroupLayout(cameraBindGroupLayout);
+      PathTracingPassCPRepo.setCameraBindGroupLayout(cameraBindGroupLayout);
 
       CameraCPRepo.getCameraBufferData()
       ->OptionSt.get
       ->Result.mapSuccess(((cameraBuffer, cameraBufferData)) => {
-          RayTracingPassCPRepo.addStaticBindGroupData(
+          PathTracingPassCPRepo.addStaticBindGroupData(
             1,
             DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroup(
               {
@@ -334,14 +334,14 @@ let exec = () => {
               device,
             );
 
-          RayTracingPassCPRepo.setDirectionLightBindGroupLayout(
+          PathTracingPassCPRepo.setDirectionLightBindGroupLayout(
             directionLightBindGroupLayout,
           );
 
           _buildDirectionLightBufferData(device)
           ->Result.mapSuccess(
               ((directionLightBuffer, directionLightBufferSize)) => {
-              RayTracingPassCPRepo.addStaticBindGroupData(
+              PathTracingPassCPRepo.addStaticBindGroupData(
                 2,
                 DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroup(
                   {
@@ -363,18 +363,18 @@ let exec = () => {
         })
       ->Result.mapSuccess(() => {
           _buildSceneDescBufferData(device)
-          ->RayTracingPassCPRepo.setSceneDescBufferData;
+          ->PathTracingPassCPRepo.setSceneDescBufferData;
 
           _buildPointIndexBufferData(device)
-          ->RayTracingPassCPRepo.setPointIndexBufferData;
+          ->PathTracingPassCPRepo.setPointIndexBufferData;
 
           _buildVertexBufferData(device)
-          ->RayTracingPassCPRepo.setVertexBufferData;
+          ->PathTracingPassCPRepo.setVertexBufferData;
 
-          _buildIndexBufferData(device)->RayTracingPassCPRepo.setIndexBufferData;
+          _buildIndexBufferData(device)->PathTracingPassCPRepo.setIndexBufferData;
 
           _buildPBRMaterialBufferData(device)
-          ->RayTracingPassCPRepo.setPBRMaterialBufferData;
+          ->PathTracingPassCPRepo.setPBRMaterialBufferData;
 
           ();
         });

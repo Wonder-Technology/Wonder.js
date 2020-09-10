@@ -1,6 +1,6 @@
 open Js.Typed_array;
 
-let create = () => JobEntity.create("update_rayTracing");
+let create = () => JobEntity.create("update_pathTracing");
 
 let _updateSceneDescBufferData =
     (
@@ -52,7 +52,7 @@ let _updateSceneDescBufferData =
         sceneDescBuffer->StorageBufferVO.value,
       );
 
-      RayTracingPassCPRepo.setSceneDescBufferData((
+      PathTracingPassCPRepo.setSceneDescBufferData((
         sceneDescBuffer,
         sceneDescBufferSize,
         sceneDescBufferData,
@@ -103,7 +103,7 @@ let _updatePointIndexBufferData =
         pointIndexBuffer->StorageBufferVO.value,
       );
 
-      RayTracingPassCPRepo.setPointIndexBufferData((
+      PathTracingPassCPRepo.setPointIndexBufferData((
         pointIndexBuffer,
         pointIndexBufferSize,
         pointIndexBufferData,
@@ -185,7 +185,7 @@ let _updateVertexBufferData =
         vertexBuffer->StorageBufferVO.value,
       );
 
-      RayTracingPassCPRepo.setVertexBufferData((
+      PathTracingPassCPRepo.setVertexBufferData((
         vertexBuffer,
         vertexBufferSize,
         vertexBufferData,
@@ -202,7 +202,7 @@ let _updateIndexBufferData = ((indexBuffer, indexBufferSize)) => {
     indexBuffer->StorageBufferVO.value,
   );
 
-  RayTracingPassCPRepo.setIndexBufferData((indexBuffer, indexBufferSize));
+  PathTracingPassCPRepo.setIndexBufferData((indexBuffer, indexBufferSize));
 };
 
 let _updatePBRMaterialBufferData =
@@ -245,7 +245,7 @@ let _updatePBRMaterialBufferData =
         pbrMaterialBufferData,
         pbrMaterialBuffer->StorageBufferVO.value,
       );
-      RayTracingPassCPRepo.setPBRMaterialBufferData((
+      PathTracingPassCPRepo.setPBRMaterialBufferData((
         pbrMaterialBuffer,
         pbrMaterialBufferSize,
         pbrMaterialBufferData,
@@ -380,7 +380,7 @@ let _createAndAddRayTracingBindGroup =
       device,
     );
 
-  RayTracingPassCPRepo.addStaticBindGroupData(
+  PathTracingPassCPRepo.addStaticBindGroupData(
     0,
     DpContainer.unsafeGetWebGPURayTracingDp().device.createRayTracingBindGroup(
       {
@@ -454,9 +454,9 @@ let _createAndAddRayTracingBindGroup =
 
 let _createAndSetPipeline = (device, rtBindGroupLayout) => {
   Tuple3.collectOption(
-    RayTracingPassCPRepo.getShaderBindingTable(),
-    RayTracingPassCPRepo.getCameraBindGroupLayout(),
-    RayTracingPassCPRepo.getDirectionLightBindGroupLayout(),
+    PathTracingPassCPRepo.getShaderBindingTable(),
+    PathTracingPassCPRepo.getCameraBindGroupLayout(),
+    PathTracingPassCPRepo.getDirectionLightBindGroupLayout(),
   )
   ->Result.mapSuccess(
       (
@@ -496,7 +496,7 @@ let _createAndSetPipeline = (device, rtBindGroupLayout) => {
         ),
         device,
       )
-      ->RayTracingPassCPRepo.setPipeline
+      ->PathTracingPassCPRepo.setPipeline
     });
 };
 
@@ -506,11 +506,11 @@ let exec = () => {
       BuildAccerlerationContainerDoService.buildContainers(device, queue)
       ->Result.bind(instanceContainer => {
           Tuple5.collectOption(
-            RayTracingPassCPRepo.getSceneDescBufferData(),
-            RayTracingPassCPRepo.getPointIndexBufferData(),
-            RayTracingPassCPRepo.getVertexBufferData(),
-            RayTracingPassCPRepo.getIndexBufferData(),
-            RayTracingPassCPRepo.getPBRMaterialBufferData(),
+            PathTracingPassCPRepo.getSceneDescBufferData(),
+            PathTracingPassCPRepo.getPointIndexBufferData(),
+            PathTracingPassCPRepo.getVertexBufferData(),
+            PathTracingPassCPRepo.getIndexBufferData(),
+            PathTracingPassCPRepo.getPBRMaterialBufferData(),
           )
           ->Result.bind(
               (
