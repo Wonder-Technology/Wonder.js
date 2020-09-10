@@ -52,6 +52,7 @@ let create = () => {
           elements: [
             {name: "render_pathTracing", type_: Job},
             {name: "render_accumulation", type_: Job},
+            {name: "end_render", type_: Job},
           ],
         },
       ],

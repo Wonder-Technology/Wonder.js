@@ -24,6 +24,7 @@ let _getRenderPipelineJobs = () => [
     RenderAccumulationCPJobEntity.create(),
     RenderAccumulationCPJobEntity.exec,
   ),
+  (EndRenderCPJobEntity.create(), EndRenderCPJobEntity.exec),
 ];
 
 let _register = (pipeline, jobs) => {
