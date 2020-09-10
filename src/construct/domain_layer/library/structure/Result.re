@@ -8,9 +8,9 @@ let succeed = x => Success(x);
 
 let fail = x => Fail(x);
 
-let _raiseErrorAndReturn = msg => msg->Exception.buildErr;
+let _buildErr = msg => msg->Exception.buildErr;
 
-let failWith = x => x->_raiseErrorAndReturn->Fail;
+let failWith = x => x->_buildErr->fail;
 
 let either = (twoTrackInput, successFunc, failureFunc) =>
   switch (twoTrackInput) {
@@ -34,7 +34,7 @@ let tap = (twoTrackInput, oneTrackFunc) =>
 let tryCatch = (oneTrackFunc: unit => 'b): t2('b) =>
   try(oneTrackFunc()->succeed) {
   | Js.Exn.Error(e) => fail(e)
-  | err => {j|unknown error: $err|j}->_raiseErrorAndReturn->fail
+  | err => {j|unknown error: $err|j}->_buildErr->fail
   };
 
 let mapSuccess = (result, mapFunc) =>
