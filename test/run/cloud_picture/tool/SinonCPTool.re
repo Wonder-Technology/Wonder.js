@@ -1,46 +1,65 @@
 let returns = (stub, value) => stub->Sinon.returns(value, _)->Obj.magic;
 
-// let createEmptyStub: Sinon.sandbox => 'emptyStub = [%bs.raw
-//   {| function(sandbox) {
-// //      return ((arg1, arg2) =>   {
-// // return  sandbox.stub.apply(sandbox, Array.prototype.slice.call(arguments) );
+let getStub = ((stub, _)) => stub;
 
-// //           })()
-
-//     let stub = sandbox.stub();
-//     stub.length = 0;
-
-//     return stub;
-// }
-// |}
-// ];
-
-// let createTwoArgsEmptyStub = (sandbox) =>{
-//     (arg1, arg2) =>{
-// Sinon.createEmptyStub(Sinon.refJsObjToSandbox(sandbox^))
-//     }
-// }
-
-// let createEmptyStub: Sinon.sandbox => 'emptyStub = [%bs.raw
-//   {| function(sandbox) {
-//      return ((arg1, arg2) =>   {
-// return  sandbox.stub.apply(sandbox, Array.prototype.slice.call(arguments) );
-
-//           })
-// }
-// |}
-// ];
+let getDpFunc = ((_, dpFunc)) => dpFunc;
 
 let createTwoArgsEmptyStubData = [%bs.raw
   {| function(stub) {
      return [stub, (a,b) =>   {
-//return  stub.apply(null, Array.prototype.slice.call(arguments));
 return  stub(a, b);
           }];
 }
 |}
 ];
 
-let getStub = ((stub, _)) => stub;
+let createThreeArgsEmptyStubData = [%bs.raw
+  {| function(stub) {
+     return [stub, (a,b, c) =>   {
+return  stub(a, b, c);
+          }];
+}
+|}
+];
 
-let getDpFunc = ((_, dpFunc)) => dpFunc;
+let createFourArgsEmptyStubData = [%bs.raw
+  {| function(stub) {
+     return [stub, (a,b, c, d) =>   {
+return  stub(a, b, c, d);
+          }];
+}
+|}
+];
+
+let createFiveArgsEmptyStubData = [%bs.raw
+  {| function(stub) {
+     return [stub, (a,b, c, d, e) =>   {
+return  stub(a, b, c, d, e);
+          }];
+}
+|}
+];
+
+let createSixArgsEmptyStubData = [%bs.raw
+  {| function(stub) {
+     return [stub, (a,b, c, d, e, f) =>   {
+return  stub(a, b, c, d, e, f);
+          }];
+}
+|}
+];
+
+let createSevenArgsEmptyStubData = [%bs.raw
+  {| function(stub) {
+     return [stub, (a,b, c,d,e,f,g) =>   {
+return  stub(a,b, c,d,e,f,g);
+          }];
+}
+|}
+];
+
+let toCalledWith = (expect, expectedArg) =>
+  Wonder_jest.ExpectSinon.toCalledWith(expectedArg->Obj.magic) @@
+  Obj.magic(expect);
+
+let calledWithArg2 = (stub, arg1, arg2) => stub##calledWith(arg1, arg2);

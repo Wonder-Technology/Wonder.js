@@ -15,6 +15,14 @@ let createQueueObject = (): queueObject => Obj.magic(Js.Math.random());
 let createSwapChainObject = (): swapChainObject =>
   Obj.magic(Js.Math.random());
 
+let createBufferObject = (): bufferObject => Obj.magic(Js.Math.random());
+
+let createBindGroupLayoutObject = (): bindGroupLayoutObject =>
+  Obj.magic(Js.Math.random());
+
+let createBindGroupObject = (): bindGroupObject =>
+  Obj.magic(Js.Math.random());
+
 let build =
     (
       ~sandbox,
@@ -35,45 +43,103 @@ let build =
       ~map_write=6,
       ~copy_src_bufferUsage=7,
       ~copy_dst_bufferUsage=8,
-      ~createView=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~getCurrentTextureView=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~createView=createEmptyStub(refJsObjToSandbox(sandbox^))
+                  ->SinonCPTool.createTwoArgsEmptyStubData
+                  ->SinonCPTool.getDpFunc,
+      ~getCurrentTextureView=createEmptyStub(refJsObjToSandbox(sandbox^))
+                             ->SinonCPTool.createTwoArgsEmptyStubData
+                             ->SinonCPTool.getDpFunc,
       ~present=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~submit=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~setSubFloat32Data=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~setSubUint8Data=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~setSubUint32Data=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~setPipeline_render=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~setBindGroup_render=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~submit=createEmptyStub(refJsObjToSandbox(sandbox^))
+              ->SinonCPTool.createTwoArgsEmptyStubData
+              ->SinonCPTool.getDpFunc,
+      ~setSubFloat32Data=createEmptyStub(refJsObjToSandbox(sandbox^))
+                         ->SinonCPTool.createThreeArgsEmptyStubData
+                         ->SinonCPTool.getDpFunc,
+      ~setSubUint8Data=createEmptyStub(refJsObjToSandbox(sandbox^))
+                       ->SinonCPTool.createThreeArgsEmptyStubData
+                       ->SinonCPTool.getDpFunc,
+      ~setSubUint32Data=createEmptyStub(refJsObjToSandbox(sandbox^))
+                        ->SinonCPTool.createThreeArgsEmptyStubData
+                        ->SinonCPTool.getDpFunc,
+      ~setPipeline_render=createEmptyStub(refJsObjToSandbox(sandbox^))
+                          ->SinonCPTool.createTwoArgsEmptyStubData
+                          ->SinonCPTool.getDpFunc,
+      ~setBindGroup_render=createEmptyStub(refJsObjToSandbox(sandbox^))
+                           ->SinonCPTool.createThreeArgsEmptyStubData
+                           ->SinonCPTool.getDpFunc,
       ~setDynamicBindGroup_render=createEmptyStub(
                                     refJsObjToSandbox(sandbox^),
-                                  ),
-      ~setVertexBuffer=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~setIndexBuffer=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~draw=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~drawIndexed=createEmptyStub(refJsObjToSandbox(sandbox^)),
+                                  )
+                                  ->SinonCPTool.createFourArgsEmptyStubData
+                                  ->SinonCPTool.getDpFunc,
+      ~setVertexBuffer=createEmptyStub(refJsObjToSandbox(sandbox^))
+                       ->SinonCPTool.createThreeArgsEmptyStubData
+                       ->SinonCPTool.getDpFunc,
+      ~setIndexBuffer=createEmptyStub(refJsObjToSandbox(sandbox^))
+                      ->SinonCPTool.createTwoArgsEmptyStubData
+                      ->SinonCPTool.getDpFunc,
+      ~draw=createEmptyStub(refJsObjToSandbox(sandbox^))
+            ->SinonCPTool.createFiveArgsEmptyStubData
+            ->SinonCPTool.getDpFunc,
+      ~drawIndexed=createEmptyStub(refJsObjToSandbox(sandbox^))
+                   ->SinonCPTool.createSixArgsEmptyStubData
+                   ->SinonCPTool.getDpFunc,
       ~endPass_render=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~setPipeline_compute=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~setBindGroup_compute=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~setPipeline_compute=createEmptyStub(refJsObjToSandbox(sandbox^))
+                           ->SinonCPTool.createTwoArgsEmptyStubData
+                           ->SinonCPTool.getDpFunc,
+      ~setBindGroup_compute=createEmptyStub(refJsObjToSandbox(sandbox^))
+                            ->SinonCPTool.createThreeArgsEmptyStubData
+                            ->SinonCPTool.getDpFunc,
       ~setDynamicBindGroup_compute=createEmptyStub(
                                      refJsObjToSandbox(sandbox^),
-                                   ),
-      ~dispatchX=createEmptyStub(refJsObjToSandbox(sandbox^)),
+                                   )
+                                   ->SinonCPTool.createFourArgsEmptyStubData
+                                   ->SinonCPTool.getDpFunc,
+      ~dispatchX=createEmptyStub(refJsObjToSandbox(sandbox^))
+                 ->SinonCPTool.createTwoArgsEmptyStubData
+                 ->SinonCPTool.getDpFunc,
       ~endPass_compute=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~beginRenderPass=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~beginComputePass=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~beginRenderPass=createEmptyStub(refJsObjToSandbox(sandbox^))
+                       ->SinonCPTool.createTwoArgsEmptyStubData
+                       ->SinonCPTool.getDpFunc,
+      ~beginComputePass=createEmptyStub(refJsObjToSandbox(sandbox^))
+                        ->SinonCPTool.createTwoArgsEmptyStubData
+                        ->SinonCPTool.getDpFunc,
       ~finish=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getQueue=createEmptyStub(refJsObjToSandbox(sandbox^))
                 ->SinonCPTool.returns(createQueueObject()),
-      ~createShaderModule=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createPipelineLayout=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createBuffer=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createBindGroupLayout=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createBindGroup=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createRenderPipeline=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createComputePipeline=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createCommandEncoder=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createSampler=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~createTexture=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~createShaderModule=createEmptyStub(refJsObjToSandbox(sandbox^))
+                          ->SinonCPTool.createTwoArgsEmptyStubData
+                          ->SinonCPTool.getDpFunc,
+      ~createPipelineLayout=createEmptyStub(refJsObjToSandbox(sandbox^))
+                            ->SinonCPTool.createTwoArgsEmptyStubData
+                            ->SinonCPTool.getDpFunc,
+      ~createBuffer=createEmptyStub(refJsObjToSandbox(sandbox^))
+                    ->SinonCPTool.createTwoArgsEmptyStubData
+                    ->SinonCPTool.getDpFunc,
+      ~createBindGroupLayout=createEmptyStub(refJsObjToSandbox(sandbox^))
+                             ->SinonCPTool.createTwoArgsEmptyStubData
+                             ->SinonCPTool.getDpFunc,
+      ~createBindGroup=createEmptyStub(refJsObjToSandbox(sandbox^))
+                       ->SinonCPTool.createTwoArgsEmptyStubData
+                       ->SinonCPTool.getDpFunc,
+      ~createRenderPipeline=createEmptyStub(refJsObjToSandbox(sandbox^))
+                            ->SinonCPTool.createTwoArgsEmptyStubData
+                            ->SinonCPTool.getDpFunc,
+      ~createComputePipeline=createEmptyStub(refJsObjToSandbox(sandbox^))
+                             ->SinonCPTool.createTwoArgsEmptyStubData
+                             ->SinonCPTool.getDpFunc,
+      ~createCommandEncoder=createEmptyStub(refJsObjToSandbox(sandbox^))
+                            ->SinonCPTool.createTwoArgsEmptyStubData
+                            ->SinonCPTool.getDpFunc,
+      ~createSampler=createEmptyStub(refJsObjToSandbox(sandbox^))
+                     ->SinonCPTool.createTwoArgsEmptyStubData
+                     ->SinonCPTool.getDpFunc,
+      ~createTexture=createEmptyStub(refJsObjToSandbox(sandbox^))
+                     ->SinonCPTool.createTwoArgsEmptyStubData
+                     ->SinonCPTool.getDpFunc,
       ~getSwapChainPreferredFormat=createEmptyStub(
                                      refJsObjToSandbox(sandbox^),
                                    )
@@ -91,7 +157,9 @@ let build =
       ~make=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getContext=createEmptyStub(refJsObjToSandbox(sandbox^))
                   ->SinonCPTool.returns(createContextObject()),
-      ~pollEvents=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~pollEvents=createEmptyStub(refJsObjToSandbox(sandbox^))
+                  ->SinonCPTool.createTwoArgsEmptyStubData
+                  ->SinonCPTool.getDpFunc,
       ~shouldClose=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getWidth=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getHeight=createEmptyStub(refJsObjToSandbox(sandbox^)),

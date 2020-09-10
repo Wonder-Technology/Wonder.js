@@ -8,7 +8,7 @@ let _ =
 
     let sandbox = getSandboxDefaultVal();
 
-    let _prepareAndExec = sandbox => {
+    let _prepare = sandbox => {
       let width = 10;
       let height = 20;
       DirectorCPTool.prepare(~pictureSize=(width, height), ());
@@ -51,7 +51,6 @@ let _ =
       let getQueue =
         createEmptyStub(refJsObjToSandbox(sandbox^))
         ->SinonCPTool.returns(queue);
-
       WebGPUDependencyTool.build(
         ~sandbox,
         ~make,
@@ -115,24 +114,19 @@ let _ =
           getQueue,
         ),
       ) =
-        _prepareAndExec(sandbox);
+        _prepare(sandbox);
 
       DirectorCPTool.init(
         ~handleSuccessFunc=
           () => {
             make
             ->expect
-            ->toCalledWith(
-                [|
-                  {
-                    "width": width,
-                    "height": height,
-                    "title": "Cloud Picture",
-                    "resizable": false,
-                  },
-                |],
-                _,
-              )
+            ->SinonCPTool.toCalledWith({
+                "width": width,
+                "height": height,
+                "title": "Cloud Picture",
+                "resizable": false,
+              })
           },
         (),
       );
@@ -151,22 +145,19 @@ let _ =
           getQueue,
         ),
       ) =
-        _prepareAndExec(sandbox);
+        _prepare(sandbox);
 
       DirectorCPTool.init(
         ~handleSuccessFunc=
           () => {
             requestAdapter
             ->expect
-            ->toCalledWith(
-                [|
-                  IWebGPUCoreDp.adapterDescriptor(
-                    ~window,
-                    ~preferredBackend="Vulkan",
-                    (),
-                  ),
-                |],
-                _,
+            ->SinonCPTool.toCalledWith(
+                IWebGPUCoreDp.adapterDescriptor(
+                  ~window,
+                  ~preferredBackend="Vulkan",
+                  (),
+                ),
               )
           },
         (),
@@ -186,16 +177,18 @@ let _ =
           getQueue,
         ),
       ) =
-        _prepareAndExec(sandbox);
+        _prepare(sandbox);
 
       DirectorCPTool.init(
         ~handleSuccessFunc=
           () => {
-            requestDeviceStubData->SinonCPTool.getStub->expect
-            |> toCalledWith([|
-                 {"extensions": [|"ray_tracing"|]}->Obj.magic,
-                 adapter,
-               |])
+            requestDeviceStubData
+            ->SinonCPTool.getStub
+            ->expect
+            ->SinonCPTool.toCalledWith((
+                {"extensions": [|"ray_tracing"|]},
+                adapter,
+              ))
           },
         (),
       );
@@ -214,16 +207,18 @@ let _ =
           getQueue,
         ),
       ) =
-        _prepareAndExec(sandbox);
+        _prepare(sandbox);
 
       DirectorCPTool.init(
         ~handleSuccessFunc=
           () => {
-            configureSwapChainStubData->SinonCPTool.getStub->expect
-            |> toCalledWith([|
-                 {"device": device, "format": swapChainFormat}->Obj.magic,
-                 context,
-               |])
+            configureSwapChainStubData
+            ->SinonCPTool.getStub
+            ->expect
+            ->SinonCPTool.toCalledWith((
+                {"device": device, "format": swapChainFormat},
+                context,
+              ))
           },
         (),
       );
@@ -243,7 +238,7 @@ let _ =
           getQueue,
         ),
       ) =
-        _prepareAndExec(sandbox);
+        _prepare(sandbox);
 
       DirectorCPTool.init(
         ~handleSuccessFunc=

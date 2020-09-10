@@ -97,18 +97,6 @@ let addStaticBindGroupData = (setSlot, bindGroup) => {
   });
 };
 
-let addStaticBindGroupData = (setSlot, bindGroup) => {
-  let {staticBindGroupDataList} as po = CPRepo.getRayTracingPass();
-
-  CPRepo.setRayTracingPass({
-    ...po,
-    staticBindGroupDataList: [
-      {setSlot, bindGroup},
-      ...staticBindGroupDataList,
-    ],
-  });
-};
-
 let getAllStaticBindGroupData = () => {
   CPRepo.getRayTracingPass().staticBindGroupDataList;
 };
@@ -118,7 +106,10 @@ let getPipeline = () => {
 };
 
 let setPipeline = pipeline => {
-  CPRepo.setRayTracingPass({...CPRepo.getRayTracingPass(), pipeline: pipeline->Some});
+  CPRepo.setRayTracingPass({
+    ...CPRepo.getRayTracingPass(),
+    pipeline: pipeline->Some,
+  });
 };
 
 let getCameraBindGroupLayout = () => {
