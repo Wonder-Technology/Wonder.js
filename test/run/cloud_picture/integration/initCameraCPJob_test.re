@@ -66,7 +66,7 @@ let _ =
               ->SinonCPTool.toCalledWith((
                   {
                     "size":
-                      (16 + 16 + 4)
+                      (16 + 16 + 2)
                       * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
                     "usage": copy_dst lor uniform,
                   },
@@ -87,7 +87,7 @@ let _ =
                 CameraCPTool.getCameraBufferData()->OptionSt.getExn;
 
               typeArr->expect
-              == Js.Typed_array.Float32Array.fromLength(16 + 16 + 4);
+              == Js.Typed_array.Float32Array.fromLength(16 + 16 + 2);
             },
           (),
         );

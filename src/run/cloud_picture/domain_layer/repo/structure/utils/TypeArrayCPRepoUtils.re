@@ -186,12 +186,12 @@ let setFloat16 =
     });
 };
 
-let setFloat32Array = (index, target: Float32Array.t, typeArray) => {
+let setFloat16WithFloat32Array = (index, target: Float32Array.t, typeArray) => {
   Contract.requireCheck(
     () => {
       Contract.(
         Operators.(
-          _checkNotExceedBound(Float32Array.length, index + 31, typeArray)
+          _checkNotExceedBound(Float32Array.length, index + 15, typeArray)
         )
       )
     },

@@ -5,12 +5,12 @@ let _updateCameraBuffer = ((viewInverse, projectionInverse, near, far)) => {
   ->OptionSt.get
   ->Result.bind(((cameraBuffer, cameraBufferData)) => {
       ListResult.mergeResults([
-        TypeArrayCPRepoUtils.setFloat32Array(
+        TypeArrayCPRepoUtils.setFloat16WithFloat32Array(
           0,
           viewInverse,
           cameraBufferData,
         ),
-        TypeArrayCPRepoUtils.setFloat32Array(
+        TypeArrayCPRepoUtils.setFloat16WithFloat32Array(
           16,
           projectionInverse,
           cameraBufferData,
@@ -34,18 +34,15 @@ let _updateCameraBuffer = ((viewInverse, projectionInverse, near, far)) => {
 };
 
 let _updateCamera = () => {
-  ActiveBasicCameraViewDoService.getActiveCameraView()
-  ->ResultOption.openInverse
-  ->Result.bind(activeCameraView => {
+  BasicCameraViewRunAPI.getActiveBasicCameraView()
+  ->ResultOption.openInverseSucceedWithNone(activeCameraView => {
       activeCameraView
-      ->GameObjectBasicCameraViewDoService.getGameObject
+      ->BasicCameraViewRunAPI.getGameObject
       ->OptionSt.get
       ->Result.bind(gameObject => {
           Tuple2.collectOption(
-            GetComponentGameObjectDoService.getTransform(gameObject),
-            GetComponentGameObjectDoService.getPerspectiveCameraProjection(
-              gameObject,
-            ),
+            GameObjectRunAPI.getTransform(gameObject),
+            GameObjectRunAPI.getPerspectiveCameraProjection(gameObject),
           )
         })
       ->Result.bind(((transform, cameraProjection)) => {
@@ -77,5 +74,9 @@ let _updateCamera = () => {
 };
 
 let exec = () => {
-  UpdatePerspectiveCameraProjectionDoService.update()->WonderBsMost.Most.just;
+  ListResult.mergeResults([
+    UpdatePerspectiveCameraProjectionDoService.update(),
+    _updateCamera(),
+  ])
+  ->WonderBsMost.Most.just;
 };
