@@ -10,32 +10,38 @@ let load = window => {
       ),
     ),
   )
-  |> flatMap(adapter => {
-       fromPromise(
-         DpContainer.unsafeGetWebGPUCoreDp().adapter.requestDevice(
-           {"extensions": [|"ray_tracing"|]},
-           adapter,
-         ),
-       )
-       |> flatMap(device => {
-            let context =
-              DpContainer.unsafeGetWebGPUCoreDp().window.getContext(window);
-            let queue =
-              DpContainer.unsafeGetWebGPUCoreDp().device.getQueue(device);
+  ->flatMap(
+      adapter => {
+        fromPromise(
+          DpContainer.unsafeGetWebGPUCoreDp().adapter.requestDevice(
+            {"extensions": [|"ray_tracing"|]},
+            adapter,
+          ),
+        )
+        ->flatMap(
+            device => {
+              let context =
+                DpContainer.unsafeGetWebGPUCoreDp().window.getContext(window);
+              let queue =
+                DpContainer.unsafeGetWebGPUCoreDp().device.getQueue(device);
 
-            fromPromise(
-              DpContainer.unsafeGetWebGPUCoreDp().context.
-                getSwapChainPreferredFormat(
-                device,
-                context,
-              ),
-            )
-            ->map(
-                swapChainFormat => {
-                  (adapter, device, context, queue, swapChainFormat)
-                },
-                _,
-              );
-          })
-     });
+              fromPromise(
+                DpContainer.unsafeGetWebGPUCoreDp().context.
+                  getSwapChainPreferredFormat(
+                  device,
+                  context,
+                ),
+              )
+              ->map(
+                  swapChainFormat => {
+                    (adapter, device, context, queue, swapChainFormat)
+                  },
+                  _,
+                );
+            },
+            _,
+          )
+      },
+      _,
+    );
 };

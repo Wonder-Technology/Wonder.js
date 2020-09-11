@@ -19,7 +19,7 @@ let create = () => {
             {name: "init_webgpu", type_: Job},
             {name: "init_camera", type_: Job},
             {name: "init_pass", type_: Job},
-            {name: "init_rayTracing", type_: Job},
+            {name: "init_pathTracing", type_: Job},
             {name: "init_accumulation", type_: Job},
           ],
         },
@@ -35,7 +35,7 @@ let create = () => {
           elements: [
             {name: "update_transform", type_: Job},
             {name: "update_camera", type_: Job},
-            {name: "update_rayTracing", type_: Job},
+            {name: "update_pathTracing", type_: Job},
             {name: "update_accumulation", type_: Job},
             {name: "update_pass", type_: Job},
           ],
@@ -50,8 +50,9 @@ let create = () => {
           name: "frame",
           link: Concat,
           elements: [
-            {name: "render_rayTracing", type_: Job},
+            {name: "render_pathTracing", type_: Job},
             {name: "render_accumulation", type_: Job},
+            {name: "end_render", type_: Job},
           ],
         },
       ],
@@ -128,7 +129,7 @@ let create = () => {
     resolutionBufferData: None,
     pixelBufferData: None,
   },
-  rayTracingPass: {
+  pathTracingPass: {
     sceneDescBufferData: None,
     pointIndexBufferData: None,
     vertexBufferData: None,

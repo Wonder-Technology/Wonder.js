@@ -187,13 +187,13 @@ let setPass = pass => {
 let getRayTracingPass = () => {
   let po = CPContainerManager.getPO();
 
-  po.rayTracingPass;
+  po.pathTracingPass;
 };
 
-let setRayTracingPass = rayTracingPass => {
+let setRayTracingPass = pathTracingPass => {
   let po = CPContainerManager.getPO();
 
-  {...po, rayTracingPass}->CPContainerManager.setPO;
+  {...po, pathTracingPass}->CPContainerManager.setPO;
 };
 
 let getAccumulationPass = () => {

@@ -104,9 +104,9 @@ let _ =
 
     describe("getDirection", () =>
       describe("fix bug", () => {
-        let _prepare = state => {
+        let _prepare = () => {
           let (gameObject, light) =
-            DirectionLightTool.createGameObject(state);
+            DirectionLightTool.createGameObject();
 
           let localEulerAngles =
             (45., 22., 60.)->EulerAnglesTool.createFromPrimitive;

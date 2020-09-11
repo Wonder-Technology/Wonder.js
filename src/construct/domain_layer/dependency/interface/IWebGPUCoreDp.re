@@ -327,8 +327,7 @@ type textureUsage = {
 
 type swapChain = {
   getCurrentTextureView: (unit, swapChainObject) => textureViewObject,
-  present: swapChainObject,
-  unit,
+  present: swapChainObject => unit,
 };
 
 type queue = {submit: (array(commandBufferObject), queueObject) => unit};

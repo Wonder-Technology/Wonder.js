@@ -29,6 +29,22 @@ let _ =
             * 3;
           })
         })
-      })
+      });
+
+      test("set picture size", () => {
+        let pictureSize = (10, 20);
+
+        DirectorCPTool.prepare(~pictureSize, ());
+
+        PictureCPTool.getSize()->OptionSt.getExn->expect == pictureSize;
+      });
+
+      test("set sample count", () => {
+        let sampleCount = 111;
+
+        DirectorCPTool.prepare(~sampleCount, ());
+
+        PassCPTool.getSampleCount()->expect == sampleCount;
+      });
     });
   });

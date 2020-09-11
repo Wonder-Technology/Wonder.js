@@ -145,7 +145,6 @@ let _ =
       });
       testPromise("exec single job fail", () => {
         let message = "fail!";
-        let resultMessage = ref("");
         PipelineTool.registerJobs(
           ~jobs=[
             _createJob(~jobName="fail", ~execFunc=() => {
@@ -155,22 +154,22 @@ let _ =
           (),
         );
 
-        _execPipelineStream(
-          ~pipelineData={
-                          name: "init",
-                          firstGroup: "frame",
-                          groups: [
-                            {
-                              name: "frame",
-                              link: Concat,
-                              elements: [{name: "fail", type_: Job}],
-                            },
-                          ],
-                        }: PipelineVOType.pipelineData,
-          ~handleFailFunc=
-            err => {resultMessage := err->Js.Exn.message->OptionSt.getExn},
-          ~handleSuccessFunc=() => {(resultMessage^)->expect == message},
-          (),
+        ExpectStreamTool.toFail(
+          ~execFunc=
+            _execPipelineStream(
+              ~pipelineData={
+                              name: "init",
+                              firstGroup: "frame",
+                              groups: [
+                                {
+                                  name: "frame",
+                                  link: Concat,
+                                  elements: [{name: "fail", type_: Job}],
+                                },
+                              ],
+                            }: PipelineVOType.pipelineData,
+            ),
+          ~message,
         );
       });
     });

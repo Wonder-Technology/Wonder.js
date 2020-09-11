@@ -1,13 +1,13 @@
 open Js.Typed_array;
 
-let create = () => JobEntity.create("init_rayTracing");
+let create = () => JobEntity.create("init_pathTracing");
 
 let _buildSceneDescBufferData = device => {
   let gameObjectCount = POConfigCPRepo.getTransformCount();
 
   let dataCount = 4 + 12 + 16;
   let bufferData = Float32Array.fromLength(gameObjectCount * dataCount);
-  let bufferSize = bufferData |> Float32Array.byteLength;
+  let bufferSize = bufferData->Float32Array.byteLength;
 
   let buffer =
     StorageBufferVO.createFromDevice(
@@ -26,7 +26,7 @@ let _buildPointIndexBufferData = device => {
   let geometryCount = POConfigCPRepo.getGeometryCount();
   let dataCount = 2;
   let bufferData = Uint32Array.fromLength(geometryCount * dataCount);
-  let bufferSize = bufferData |> Uint32Array.byteLength;
+  let bufferSize = bufferData->Uint32Array.byteLength;
 
   let buffer =
     StorageBufferVO.createFromDevice(
@@ -42,9 +42,9 @@ let _buildPointIndexBufferData = device => {
 };
 
 let _buildVertexBufferData = device => {
-  let geometryPopintCount = POConfigCPRepo.getGeometryPointCount();
-  let bufferData = Float32Array.fromLength(geometryPopintCount * 4 * 2);
-  let bufferSize = bufferData |> Float32Array.byteLength;
+  let geometryPointCount = POConfigCPRepo.getGeometryPointCount();
+  let bufferData = Float32Array.fromLength(geometryPointCount * 4 * 2);
+  let bufferSize = bufferData->Float32Array.byteLength;
 
   let buffer =
     StorageBufferVO.createFromDevice(
@@ -60,8 +60,8 @@ let _buildVertexBufferData = device => {
 };
 
 let _buildIndexBufferData = device => {
-  let geometryPopintCount = POConfigCPRepo.getGeometryPointCount();
-  let bufferSize = geometryPopintCount * 1;
+  let geometryPointCount = POConfigCPRepo.getGeometryPointCount();
+  let bufferSize = geometryPointCount * 1 * Uint32Array._BYTES_PER_ELEMENT;
 
   let buffer =
     StorageBufferVO.createFromDevice(
@@ -80,7 +80,7 @@ let _buildPBRMaterialBufferData = device => {
   let pbrMaterialCount = POConfigCPRepo.getPBRMaterialCount();
   let dataCount = 4 + 4;
   let bufferData = Float32Array.fromLength(pbrMaterialCount * dataCount);
-  let bufferSize = bufferData |> Float32Array.byteLength;
+  let bufferSize = bufferData->Float32Array.byteLength;
 
   let buffer =
     StorageBufferVO.createFromDevice(
@@ -115,7 +115,9 @@ let _buildDirectionLightBufferData = device => {
   )
   ->Result.bind(() => {
       DirectionLightRunAPI.getAllLights()
-      ->ListSt.traverseResultM(light => {
+      ->ListSt.head
+      ->OptionSt.get
+      ->Result.bind(light => {
           DirectionLightRunAPI.getDirection(light)
           ->OptionSt.get
           ->Result.mapSuccess(direction => {
@@ -125,32 +127,28 @@ let _buildDirectionLightBufferData = device => {
               )
             })
         })
-      ->Result.bind(list => {
+      ->Result.bind(((intensity, direction)) => {
           let directionLightBufferData =
             Float32Array.fromLength(
               POConfigCPRepo.getDirectionLightCount() * (4 + 4),
             );
 
-          list
-          ->ListSt.traverseReduceResultM(0, (offset, (intensity, direction)) => {
-              ListResult.mergeResults([
-                TypeArrayCPRepoUtils.setFloat1(
-                  offset + 0,
-                  intensity,
-                  directionLightBufferData,
-                ),
-                TypeArrayCPRepoUtils.setFloat3(
-                  offset + 4,
-                  direction,
-                  directionLightBufferData,
-                ),
-              ])
-              ->Result.mapSuccess(() => {offset + 8})
-            })
-          ->Result.mapSuccess(_ => directionLightBufferData);
+          ListResult.mergeResults([
+            TypeArrayCPRepoUtils.setFloat1(
+              0,
+              intensity,
+              directionLightBufferData,
+            ),
+            TypeArrayCPRepoUtils.setFloat3(
+              4,
+              direction,
+              directionLightBufferData,
+            ),
+          ])
+          ->Result.mapSuccess(() => directionLightBufferData);
         })
       ->Result.mapSuccess(directionLightBufferData => {
-          let bufferSize = directionLightBufferData |> Float32Array.byteLength;
+          let bufferSize = directionLightBufferData->Float32Array.byteLength;
 
           let buffer =
             StorageBufferVO.createFromDevice(
@@ -184,6 +182,7 @@ let _createShaderBindingTable = (baseShaderPath, device) => {
       },
       device,
     );
+
   let rayRChitShaderModule =
     DpContainer.unsafeGetWebGPUCoreDp().device.createShaderModule(
       {
@@ -268,7 +267,7 @@ let exec = () => {
         "src/run/cloud_picture/domain_layer/domain/shader/ray_tracing",
         device,
       )
-      ->RayTracingPassCPRepo.setShaderBindingTable;
+      ->PathTracingPassCPRepo.setShaderBindingTable;
 
       let cameraBindGroupLayout =
         DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroupLayout(
@@ -289,12 +288,12 @@ let exec = () => {
           device,
         );
 
-      RayTracingPassCPRepo.setCameraBindGroupLayout(cameraBindGroupLayout);
+      PathTracingPassCPRepo.setCameraBindGroupLayout(cameraBindGroupLayout);
 
       CameraCPRepo.getCameraBufferData()
       ->OptionSt.get
       ->Result.mapSuccess(((cameraBuffer, cameraBufferData)) => {
-          RayTracingPassCPRepo.addStaticBindGroupData(
+          PathTracingPassCPRepo.addStaticBindGroupData(
             1,
             DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroup(
               {
@@ -334,14 +333,14 @@ let exec = () => {
               device,
             );
 
-          RayTracingPassCPRepo.setDirectionLightBindGroupLayout(
+          PathTracingPassCPRepo.setDirectionLightBindGroupLayout(
             directionLightBindGroupLayout,
           );
 
           _buildDirectionLightBufferData(device)
           ->Result.mapSuccess(
               ((directionLightBuffer, directionLightBufferSize)) => {
-              RayTracingPassCPRepo.addStaticBindGroupData(
+              PathTracingPassCPRepo.addStaticBindGroupData(
                 2,
                 DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroup(
                   {
@@ -363,18 +362,19 @@ let exec = () => {
         })
       ->Result.mapSuccess(() => {
           _buildSceneDescBufferData(device)
-          ->RayTracingPassCPRepo.setSceneDescBufferData;
+          ->PathTracingPassCPRepo.setSceneDescBufferData;
 
           _buildPointIndexBufferData(device)
-          ->RayTracingPassCPRepo.setPointIndexBufferData;
+          ->PathTracingPassCPRepo.setPointIndexBufferData;
 
           _buildVertexBufferData(device)
-          ->RayTracingPassCPRepo.setVertexBufferData;
+          ->PathTracingPassCPRepo.setVertexBufferData;
 
-          _buildIndexBufferData(device)->RayTracingPassCPRepo.setIndexBufferData;
+          _buildIndexBufferData(device)
+          ->PathTracingPassCPRepo.setIndexBufferData;
 
           _buildPBRMaterialBufferData(device)
-          ->RayTracingPassCPRepo.setPBRMaterialBufferData;
+          ->PathTracingPassCPRepo.setPBRMaterialBufferData;
 
           ();
         });

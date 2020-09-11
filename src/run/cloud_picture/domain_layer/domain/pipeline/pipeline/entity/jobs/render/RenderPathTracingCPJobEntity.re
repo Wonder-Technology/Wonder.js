@@ -1,11 +1,11 @@
-let create = () => JobEntity.create("render_rayTracing");
+let create = () => JobEntity.create("render_pathTracing");
 
 let exec = () => {
   Tuple4.collectOption(
     WebGPUCPRepo.getDevice(),
     WebGPUCPRepo.getQueue(),
     WebGPUCPRepo.getWindow(),
-    RayTracingPassCPRepo.getPipeline(),
+    PathTracingPassCPRepo.getPipeline(),
   )
   ->Result.mapSuccess(((device, queue, window, pipeline)) => {
       let commandEncoder =
@@ -26,7 +26,7 @@ let exec = () => {
         rtPass,
       );
 
-      RayTracingPassCPRepo.getAllStaticBindGroupData()
+      PathTracingPassCPRepo.getAllStaticBindGroupData()
       ->ListSt.forEach(
           ({setSlot, bindGroup}: PassCPPOType.staticBindGroupData) => {
           DpContainer.unsafeGetWebGPURayTracingDp().passEncoderRayTracing.
