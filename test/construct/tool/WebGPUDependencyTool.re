@@ -23,6 +23,18 @@ let createBindGroupLayoutObject = (): bindGroupLayoutObject =>
 let createBindGroupObject = (): bindGroupObject =>
   Obj.magic(Js.Math.random());
 
+let createPipelineLayout = (): pipelineLayoutObject =>
+  Obj.magic(Js.Math.random());
+
+let createRenderPipelineObject = (): renderPipelineObject =>
+  Obj.magic(Js.Math.random());
+
+let createComputePipelineObject = (): computePipelineObject =>
+  Obj.magic(Js.Math.random());
+
+let createShaderModuleObject = (): shaderModuleObject =>
+  Obj.magic(Js.Math.random());
+
 let build =
     (
       ~sandbox,

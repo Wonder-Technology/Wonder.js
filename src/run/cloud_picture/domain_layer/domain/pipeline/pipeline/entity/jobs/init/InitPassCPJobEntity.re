@@ -44,15 +44,19 @@ let _buildResolutionBufferData = (window, device) => {
   (buffer, bufferData);
 };
 
+let _buildAndSetAllBufferData = (window, device) => {
+  _buildPixelBufferData(window, device)->PassCPRepo.setPixelBufferData;
+
+  _buildCommonBufferData(device)->PassCPRepo.setCommonBufferData;
+
+  _buildResolutionBufferData(window, device)
+  ->PassCPRepo.setResolutionBufferData;
+};
+
 let exec = () => {
   Tuple2.collectOption(WebGPUCPRepo.getWindow(), WebGPUCPRepo.getDevice())
   ->Result.mapSuccess(((window, device)) => {
-      _buildPixelBufferData(window, device)->PassCPRepo.setPixelBufferData;
-
-      _buildCommonBufferData(device)->PassCPRepo.setCommonBufferData;
-
-      _buildResolutionBufferData(window, device)
-      ->PassCPRepo.setResolutionBufferData;
+      _buildAndSetAllBufferData(window, device);
 
       ();
     })

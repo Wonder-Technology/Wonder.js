@@ -11,11 +11,15 @@ let _buildCameraBufferData = device => {
   (buffer, bufferData);
 };
 
+let _buildAndSetAllBufferData = device => {
+  _buildCameraBufferData(device)->CameraCPRepo.setCameraBufferData;
+};
+
 let exec = () => {
   WebGPUCPRepo.getDevice()
   ->OptionSt.get
   ->Result.mapSuccess(device => {
-      _buildCameraBufferData(device)->CameraCPRepo.setCameraBufferData;
+      _buildAndSetAllBufferData(device);
 
       ();
     })

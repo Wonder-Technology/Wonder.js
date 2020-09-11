@@ -76,13 +76,6 @@ let _createAndSetBindGroup =
           ),
           IWebGPUCoreDp.binding(
             ~binding=1,
-            ~buffer=pixelBuffer,
-            ~offset=0,
-            ~size=pixelBufferSize,
-            (),
-          ),
-          IWebGPUCoreDp.binding(
-            ~binding=1,
             ~buffer=accumulationPixelBuffer,
             ~offset=0,
             ~size=accumulationPixelBufferSize,
@@ -93,7 +86,7 @@ let _createAndSetBindGroup =
             ~buffer=resolutionBuffer,
             ~offset=0,
             ~size=
-              resolutionBufferData->AccumulationCPDoService.getResolutionBufferDataSize,
+              resolutionBufferData->PassCPDoService.getResolutionBufferDataSize,
             (),
           ),
         |],
