@@ -19,11 +19,7 @@ let execPipelineStream =
     )
   ->WonderBsMost.Most.drain
   ->Js.Promise.then_(() => handleSuccessFunc()->Js.Promise.resolve, _)
-  ->Js.Promise.catch((e) => {
-    Log.logForDebug(e);
-
-    Js.Promise.reject(e->Obj.magic);
-  }, _);
+  ->Js.Promise.catch(e => {Js.Promise.reject(e->Obj.magic)}, _);
 };
 
 let buildEmptyPipelineData = (): PipelineVOType.pipelineData => {

@@ -95,6 +95,21 @@ let _buildPBRMaterialBufferData = device => {
   (buffer, bufferSize, bufferData);
 };
 
+let _buildAndSetAllBufferData = device => {
+  _buildSceneDescBufferData(device)
+  ->PathTracingPassCPRepo.setSceneDescBufferData;
+
+  _buildPointIndexBufferData(device)
+  ->PathTracingPassCPRepo.setPointIndexBufferData;
+
+  _buildVertexBufferData(device)->PathTracingPassCPRepo.setVertexBufferData;
+
+  _buildIndexBufferData(device)->PathTracingPassCPRepo.setIndexBufferData;
+
+  _buildPBRMaterialBufferData(device)
+  ->PathTracingPassCPRepo.setPBRMaterialBufferData;
+};
+
 let _buildDirectionLightBufferData = device => {
   Contract.requireCheck(
     () => {
@@ -171,7 +186,9 @@ let _buildDirectionLightBufferData = device => {
     });
 };
 
-let _createShaderBindingTable = (baseShaderPath, device) => {
+let _createShaderBindingTable = device => {
+  let baseShaderPath = "src/run/cloud_picture/domain_layer/domain/shader/ray_tracing";
+
   let rayGenShaderModule =
     DpContainer.unsafeGetWebGPUCoreDp().device.createShaderModule(
       {
@@ -263,10 +280,7 @@ let _createShaderBindingTable = (baseShaderPath, device) => {
 let exec = () => {
   Tuple2.collectOption(WebGPUCPRepo.getDevice(), WebGPUCPRepo.getQueue())
   ->Result.bind(((device, queue)) => {
-      _createShaderBindingTable(
-        "src/run/cloud_picture/domain_layer/domain/shader/ray_tracing",
-        device,
-      )
+      _createShaderBindingTable(device)
       ->PathTracingPassCPRepo.setShaderBindingTable;
 
       let cameraBindGroupLayout =
@@ -361,20 +375,7 @@ let exec = () => {
             });
         })
       ->Result.mapSuccess(() => {
-          _buildSceneDescBufferData(device)
-          ->PathTracingPassCPRepo.setSceneDescBufferData;
-
-          _buildPointIndexBufferData(device)
-          ->PathTracingPassCPRepo.setPointIndexBufferData;
-
-          _buildVertexBufferData(device)
-          ->PathTracingPassCPRepo.setVertexBufferData;
-
-          _buildIndexBufferData(device)
-          ->PathTracingPassCPRepo.setIndexBufferData;
-
-          _buildPBRMaterialBufferData(device)
-          ->PathTracingPassCPRepo.setPBRMaterialBufferData;
+          _buildAndSetAllBufferData(device);
 
           ();
         });

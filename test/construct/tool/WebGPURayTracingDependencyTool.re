@@ -85,6 +85,9 @@ let build =
       ~createRayTracingAccelerationContainer=createEmptyStub(
                                                refJsObjToSandbox(sandbox^),
                                              )
+                                             ->SinonCPTool.returns(
+                                                 createAccelerationContainerObject(),
+                                               )
                                              ->SinonCPTool.createTwoArgsEmptyStubData
                                              ->SinonCPTool.getDpFunc,
       ~createRayTracingBindGroup=createEmptyStub(refJsObjToSandbox(sandbox^))

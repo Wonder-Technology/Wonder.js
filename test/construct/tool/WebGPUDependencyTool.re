@@ -35,6 +35,12 @@ let createComputePipelineObject = (): computePipelineObject =>
 let createShaderModuleObject = (): shaderModuleObject =>
   Obj.magic(Js.Math.random());
 
+let createCommandEncoderObject = (): commandEncoderObject =>
+  Obj.magic(Js.Math.random());
+
+let createCommandBufferObject = (): commandBufferObject =>
+  Obj.magic(Js.Math.random());
+
 let build =
     (
       ~sandbox,
@@ -129,6 +135,7 @@ let build =
                             ->SinonCPTool.createTwoArgsEmptyStubData
                             ->SinonCPTool.getDpFunc,
       ~createBuffer=createEmptyStub(refJsObjToSandbox(sandbox^))
+                    ->SinonCPTool.returns(createBufferObject())
                     ->SinonCPTool.createTwoArgsEmptyStubData
                     ->SinonCPTool.getDpFunc,
       ~createBindGroupLayout=createEmptyStub(refJsObjToSandbox(sandbox^))

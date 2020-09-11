@@ -25,3 +25,30 @@ let getDirectionLightBindGroupLayout = () =>
 let getAllStaticBindGroupData = () => {
   PathTracingPassCPRepo.getAllStaticBindGroupData();
 };
+
+let buildAndSetAllBufferData = device => {
+  InitPathTracingCPJobEntity._buildAndSetAllBufferData(device);
+};
+
+let createAndSetShaderBindingTable = () => {
+  WebGPURayTracingDependencyTool.createShaderBindingTableObject()
+  ->PathTracingPassCPRepo.setShaderBindingTable;
+};
+
+let createAndSetAllBindGroupLayoutsAndBindGroups = () => {
+  WebGPUDependencyTool.createBindGroupLayoutObject()
+  ->PathTracingPassCPRepo.setCameraBindGroupLayout;
+
+  WebGPUDependencyTool.createBindGroupLayoutObject()
+  ->PathTracingPassCPRepo.setDirectionLightBindGroupLayout;
+
+  PathTracingPassCPRepo.addStaticBindGroupData(
+    1,
+    WebGPUDependencyTool.createBindGroupObject(),
+  );
+
+  PathTracingPassCPRepo.addStaticBindGroupData(
+    2,
+    WebGPUDependencyTool.createBindGroupObject(),
+  );
+};
