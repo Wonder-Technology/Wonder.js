@@ -32,6 +32,7 @@ module.exports = {
       { name: "dead-code" },
       { name: "type" },
       { name: "encapsulate" },
+      { name: "dependency" },
       { name: "test" }
     ],
     test: [

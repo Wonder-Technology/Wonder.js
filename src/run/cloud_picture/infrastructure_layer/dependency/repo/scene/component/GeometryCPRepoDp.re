@@ -1,5 +1,11 @@
 open GeometryCPPOType;
 
+open ReallocatedPointsGeometryCPRepoUtils;
+
+open Js.Typed_array;
+
+open TypeArrayCPRepoUtils;
+
 let getMaxIndex = () => {
   CPRepo.getExnGeometry().maxIndex;
 };
@@ -24,39 +30,112 @@ let addGameObject = (geometry, gameObject) => {
 };
 
 let getVertices = geometry => {
-  VerticesGeometryCPRepo.getVertices(geometry);
+  let {vertices, verticesInfos} = CPRepo.getExnGeometry();
+
+  getFloat32PointData(
+    BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+    vertices,
+    verticesInfos,
+  );
 };
 
-let setVertices = (geometry, vertices) => {
-  VerticesGeometryCPRepo.setVertices(geometry, vertices);
+let setVertices = (geometry, data) => {
+  let {verticesInfos, vertices, verticesOffset} as geometryPO =
+    CPRepo.getExnGeometry();
+
+  setFloat32PointData(
+    (
+      BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+      verticesInfos,
+      verticesOffset,
+      Float32Array.length(data),
+    ),
+    fillFloat32ArrayWithOffset(vertices, data),
+  )
+  ->Result.mapSuccess(verticesOffset => {
+      CPRepo.setGeometry({...geometryPO, verticesOffset})
+    });
 };
 
 let getNormals = geometry => {
-  NormalsGeometryCPRepo.getNormals(geometry);
+  let {normals, normalsInfos} = CPRepo.getExnGeometry();
+
+  getFloat32PointData(
+    BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+    normals,
+    normalsInfos,
+  );
 };
 
-let setNormals = (geometry, normals) => {
-  NormalsGeometryCPRepo.setNormals(geometry, normals);
+let setNormals = (geometry, data) => {
+  let {normalsInfos, normals, normalsOffset} as geometryPO =
+    CPRepo.getExnGeometry();
+
+  setFloat32PointData(
+    (
+      BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+      normalsInfos,
+      normalsOffset,
+      Float32Array.length(data),
+    ),
+    fillFloat32ArrayWithOffset(normals, data),
+  )
+  ->Result.mapSuccess(normalsOffset => {
+      CPRepo.setGeometry({...geometryPO, normalsOffset})
+    });
 };
 
 let getIndices = geometry => {
-  IndicesGeometryCPRepo.getIndices(geometry);
+  let {indices, indicesInfos} = CPRepo.getExnGeometry();
+
+  getUint32PointData(
+    BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+    indices,
+    indicesInfos,
+  );
 };
 
-let setIndices = (geometry, indices) => {
-  IndicesGeometryCPRepo.setIndices(geometry, indices);
+let setIndices = (geometry, data) => {
+  let {indicesInfos, indices, indicesOffset} as geometryPO =
+    CPRepo.getExnGeometry();
+
+  setUint32PointData(
+    (
+      BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+      indicesInfos,
+      indicesOffset,
+      Uint32Array.length(data),
+    ),
+    fillUint32ArrayWithOffset(indices, data),
+  )
+  ->Result.mapSuccess(indicesOffset => {
+      CPRepo.setGeometry({...geometryPO, indicesOffset})
+    });
 };
 
 let hasVertices = geometry => {
-  VerticesGeometryCPRepo.hasVertices(geometry);
+  let {verticesInfos} = CPRepo.getExnGeometry();
+
+  hasPointData(
+    BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+    verticesInfos,
+  );
 };
 
 let hasNormals = geometry => {
-  NormalsGeometryCPRepo.hasNormals(geometry);
+  let {normalsInfos} = CPRepo.getExnGeometry();
+
+  hasPointData(
+    BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+    normalsInfos,
+  );
 };
 
 let hasIndices = geometry => {
-  IndicesGeometryCPRepo.hasIndices(geometry);
+  ReallocatedPointsGeometryCPRepoUtils.hasPointData(
+    BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+    CPRepo.getExnGeometry().indicesInfos,
+  );
 };
 
 let getIndicesCount = geometry => {
