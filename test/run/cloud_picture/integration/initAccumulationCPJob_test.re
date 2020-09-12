@@ -79,8 +79,7 @@ let _ =
             ~handleSuccessFunc=
               () => {
                 let (buffer, bufferSize) =
-                  AccumulationPassCPTool.getAccumulationPixelBufferData()
-                  ->OptionSt.getExn;
+                  AccumulationPassCPTool.getAccumulationPixelBufferData();
 
                 (
                   bufferSize,
@@ -189,12 +188,11 @@ let _ =
           ~handleSuccessFunc=
             () => {
               let (resolutionBuffer, resolutionBufferData) =
-                PassCPTool.getResolutionBufferData()->OptionSt.getExn;
+                PassCPTool.getResolutionBufferData();
               let (pixelBuffer, pixelBufferSize) =
-                PassCPTool.getPixelBufferData()->OptionSt.getExn;
+                PassCPTool.getPixelBufferData();
               let (accumulationPixelBuffer, accumulationPixelBufferSize) =
-                AccumulationPassCPTool.getAccumulationPixelBufferData()
-                ->OptionSt.getExn;
+                AccumulationPassCPTool.getAccumulationPixelBufferData();
 
               (
                 createBindGroupStubData
@@ -231,8 +229,7 @@ let _ =
                     },
                     device,
                   ),
-                AccumulationPassCPTool.getStaticBindGroupData()
-                ->OptionSt.getExn,
+                AccumulationPassCPTool.getStaticBindGroupData(),
               )
               ->expect
               == (true, {setSlot: 0, bindGroup});
@@ -353,12 +350,11 @@ let _ =
           ~handleSuccessFunc=
             () => {
               let (resolutionBuffer, resolutionBufferData) =
-                PassCPTool.getResolutionBufferData()->OptionSt.getExn;
+                PassCPTool.getResolutionBufferData();
               let (pixelBuffer, pixelBufferSize) =
-                PassCPTool.getPixelBufferData()->OptionSt.getExn;
+                PassCPTool.getPixelBufferData();
               let (accumulationPixelBuffer, accumulationPixelBufferSize) =
-                AccumulationPassCPTool.getAccumulationPixelBufferData()
-                ->OptionSt.getExn;
+                AccumulationPassCPTool.getAccumulationPixelBufferData();
 
               (
                 createPipelineLayoutStubData
@@ -401,7 +397,7 @@ let _ =
                     ),
                     device,
                   ),
-                AccumulationPassCPTool.getPipeline()->OptionSt.getExn,
+                AccumulationPassCPTool.getPipeline(),
               )
               ->expect
               == (true, true, renderPipeline);

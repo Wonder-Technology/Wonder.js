@@ -15,7 +15,9 @@ let createQueueObject = (): queueObject => Obj.magic(Js.Math.random());
 let createSwapChainObject = (): swapChainObject =>
   Obj.magic(Js.Math.random());
 
-let createBufferObject = (): bufferObject => Obj.magic(Js.Math.random());
+let createBufferObject = (): bufferObject => {
+  Obj.magic(Js.Math.random());
+};
 
 let createBindGroupLayoutObject = (): bindGroupLayoutObject =>
   Obj.magic(Js.Math.random());

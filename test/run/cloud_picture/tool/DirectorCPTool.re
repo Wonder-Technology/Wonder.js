@@ -3,6 +3,11 @@ let prepare = (~pictureSize=(0, 0), ~sampleCount=1, ()) => {
   ->ResultTool.getExnSuccessValue;
 };
 
+let createAndSetAllComponentPOs = () => {
+  DirectorCPApService._createAndSetAllComponentPOs()
+  ->ResultTool.getExnSuccessValue;
+};
+
 let init =
     (
       ~handleSuccessFunc,

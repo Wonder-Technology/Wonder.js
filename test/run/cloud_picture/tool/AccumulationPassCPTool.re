@@ -1,10 +1,10 @@
 let getAccumulationPixelBufferData = () =>
-  AccumulationPassCPRepo.getAccumulationPixelBufferData();
+  AccumulationPassCPRepo.getAccumulationPixelBufferData()->OptionSt.getExn;
 
 let getStaticBindGroupData = () => {
-  AccumulationPassCPRepo.getStaticBindGroupData();
+  AccumulationPassCPRepo.getStaticBindGroupData()->OptionSt.getExn;
 };
 
 let getPipeline = () => {
-  AccumulationPassCPRepo.getPipeline();
+  AccumulationPassCPRepo.getPipeline()->OptionSt.getExn;
 };

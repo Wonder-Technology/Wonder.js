@@ -32,9 +32,11 @@ let createAndAddTwoMaterials = (gameObject1, gameObject2) => {
 
   (
     (material1, material2),
-    (diffuseColor1, diffuseColor2),
-    (specular1, specular2),
-    (roughness1, roughness2),
-    (metalness1, metalness2),
+    (
+      (diffuseColor1, diffuseColor2),
+      (specular1, specular2),
+      (roughness1, roughness2),
+      (metalness1, metalness2),
+    ),
   );
 };

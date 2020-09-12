@@ -243,8 +243,7 @@ let _ =
           DirectorCPTool.initAndUpdate(
             ~handleSuccessFunc=
               () => {
-                let (_, typeArr) =
-                  CameraCPTool.getCameraBufferData()->OptionSt.getExn;
+                let (_, typeArr) = CameraCPTool.getCameraBufferData();
 
                 typeArr->expect
                 == Js.Typed_array.Float32Array.make([|
@@ -310,7 +309,7 @@ let _ =
           ~handleSuccessFunc=
             () => {
               let (cameraBuffer, typeArr) =
-                CameraCPTool.getCameraBufferData()->OptionSt.getExn;
+                CameraCPTool.getCameraBufferData();
 
               setSubFloat32DataStubData
               ->SinonCPTool.getStub

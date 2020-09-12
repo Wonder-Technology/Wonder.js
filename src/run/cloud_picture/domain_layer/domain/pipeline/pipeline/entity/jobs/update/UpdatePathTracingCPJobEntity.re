@@ -80,7 +80,7 @@ let _updatePointIndexBufferData =
     })
   ->Result.bind(list => {
       list->ListSt.traverseResultM(
-        ((geometry, (vertexStartIndex, _), (indexStartIndex, _))) => {
+        ((geometry, (vertexStartIndex, _), (faceStartIndex, _))) => {
         ListResult.mergeResults([
           TypeArrayCPRepoUtils.setUint32_1(
             geometry * stride,
@@ -90,7 +90,7 @@ let _updatePointIndexBufferData =
           ),
           TypeArrayCPRepoUtils.setUint32_1(
             geometry * stride + 1,
-            indexStartIndex,
+            faceStartIndex,
             pointIndexBufferData,
           ),
         ])
@@ -115,22 +115,30 @@ let _updateVertexBufferData =
     ((vertexBuffer, vertexBufferSize, vertexBufferData)) => {
   Contract.requireCheck(
     () => {
-      Contract.(
-        Operators.(
-          test(
-            Log.buildAssertMessage(
-              ~expect={j|vertices.length == normals.length|j},
-              ~actual={j|not|j},
-            ),
-            () => {
-              let vertices = PointsGeometryCPRepo.getVerticesTypeArr();
-              let normals = PointsGeometryCPRepo.getNormalsTypeArr();
+      open Contract;
+      open Operators;
 
-              vertices->Float32Array.length == normals->Float32Array.length;
-            },
-          )
-        )
-      )
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|vertices.length == normals.length|j},
+          ~actual={j|not|j},
+        ),
+        () => {
+          let vertices = PointsGeometryCPRepo.getVerticesTypeArr();
+          let normals = PointsGeometryCPRepo.getNormalsTypeArr();
+
+          vertices->Float32Array.length == normals->Float32Array.length;
+        },
+      );
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|verticesOffset == normalsOffset|j},
+          ~actual={j|not|j},
+        ),
+        () => {
+        PointsGeometryCPRepo.getVerticesOffset()
+        == PointsGeometryCPRepo.getNormalsOffset()
+      });
     },
     DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
   )
@@ -138,7 +146,7 @@ let _updateVertexBufferData =
       let vertices = PointsGeometryCPRepo.getVerticesTypeArr();
       let normals = PointsGeometryCPRepo.getNormalsTypeArr();
 
-      let length = vertices->Float32Array.length;
+      let length = PointsGeometryCPRepo.getVerticesOffset();
 
       let i = ref(0);
       let j = ref(0);
@@ -298,10 +306,7 @@ let _createAndAddRayTracingBindGroup =
         (indexBuffer, indexBufferSize),
         (pbrMaterialBuffer, pbrMaterialBufferSize),
       ),
-      (
-        (pixelBuffer, pixelBufferSize),
-        (commonDataBuffer, commonDataBufferData),
-      ),
+      ((pixelBuffer, pixelBufferSize), (commonBuffer, commonBufferData)),
     ) => {
   let rtBindGroupLayout =
     DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroupLayout(
@@ -402,10 +407,9 @@ let _createAndAddRayTracingBindGroup =
           ),
           IWebGPURayTracingDp.binding(
             ~binding=2,
-            ~buffer=commonDataBuffer->UniformBufferVO.value,
+            ~buffer=commonBuffer->UniformBufferVO.value,
             ~offset=0,
-            ~size=
-              commonDataBufferData->PassCPDoService.getCommonDataBufferSize,
+            ~size=commonBufferData->PassCPDoService.getCommonBufferSize,
             (),
           ),
           IWebGPURayTracingDp.binding(

@@ -279,8 +279,7 @@ let _ =
                     },
                     device,
                   ),
-                PathTracingPassCPTool.getCameraBindGroupLayout()
-                ->OptionSt.getExn,
+                PathTracingPassCPTool.getCameraBindGroupLayout(),
               )
               ->expect
               == (true, layout)
@@ -333,8 +332,7 @@ let _ =
                     },
                     device,
                   ),
-                PathTracingPassCPTool.getDirectionLightBindGroupLayout()
-                ->OptionSt.getExn,
+                PathTracingPassCPTool.getDirectionLightBindGroupLayout(),
               )
               ->expect
               == (true, layout)
@@ -372,7 +370,7 @@ let _ =
           ~handleSuccessFunc=
             () => {
               let (cameraBuffer, cameraBufferData) =
-                CameraCPTool.getCameraBufferData()->OptionSt.getExn;
+                CameraCPTool.getCameraBufferData();
 
               (
                 createBindGroupStubData
@@ -648,8 +646,7 @@ let _ =
           DirectorCPTool.init(
             ~handleSuccessFunc=
               () => {
-                let (buffer, bufferSize, _) =
-                  getBufferDataFunc()->OptionSt.getExn;
+                let (buffer, bufferSize, _) = getBufferDataFunc();
 
                 (
                   bufferSize,
@@ -673,7 +670,7 @@ let _ =
           DirectorCPTool.init(
             ~handleSuccessFunc=
               () => {
-                let (_, _, typeArr) = getBufferDataFunc()->OptionSt.getExn;
+                let (_, _, typeArr) = getBufferDataFunc();
 
                 typeArr->expect == makeTypeArrFunc(count);
               },
@@ -751,7 +748,7 @@ let _ =
             ~handleSuccessFunc=
               () => {
                 let (buffer, bufferSize) =
-                  PathTracingPassCPTool.getIndexBufferData()->OptionSt.getExn;
+                  PathTracingPassCPTool.getIndexBufferData();
 
                 (
                   bufferSize,

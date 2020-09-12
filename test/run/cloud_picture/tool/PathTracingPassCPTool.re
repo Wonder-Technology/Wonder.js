@@ -1,29 +1,33 @@
 let getSceneDescBufferData = () =>
-  PathTracingPassCPRepo.getSceneDescBufferData();
+  PathTracingPassCPRepo.getSceneDescBufferData()->OptionSt.getExn;
 
 let getPointIndexBufferData = () =>
-  PathTracingPassCPRepo.getPointIndexBufferData();
+  PathTracingPassCPRepo.getPointIndexBufferData()->OptionSt.getExn;
 
-let getVertexBufferData = () => PathTracingPassCPRepo.getVertexBufferData();
+let getVertexBufferData = () =>
+  PathTracingPassCPRepo.getVertexBufferData()->OptionSt.getExn;
 
-let getIndexBufferData = () => PathTracingPassCPRepo.getIndexBufferData();
+let getIndexBufferData = () =>
+  PathTracingPassCPRepo.getIndexBufferData()->OptionSt.getExn;
 
 let getPBRMaterialBufferData = () =>
-  PathTracingPassCPRepo.getPBRMaterialBufferData();
-
-// let getDirectionLightBufferData = () => PathTracingPassCPRepo.getDirectionLightBufferData();
+  PathTracingPassCPRepo.getPBRMaterialBufferData()->OptionSt.getExn;
 
 let getShaderBindingTable = () =>
-  PathTracingPassCPRepo.getShaderBindingTable();
+  PathTracingPassCPRepo.getShaderBindingTable()->OptionSt.getExn;
 
 let getCameraBindGroupLayout = () =>
-  PathTracingPassCPRepo.getCameraBindGroupLayout();
+  PathTracingPassCPRepo.getCameraBindGroupLayout()->OptionSt.getExn;
 
 let getDirectionLightBindGroupLayout = () =>
-  PathTracingPassCPRepo.getDirectionLightBindGroupLayout();
+  PathTracingPassCPRepo.getDirectionLightBindGroupLayout()->OptionSt.getExn;
 
 let getAllStaticBindGroupData = () => {
   PathTracingPassCPRepo.getAllStaticBindGroupData();
+};
+
+let getPipeline = () => {
+  PathTracingPassCPRepo.getPipeline()->OptionSt.getExn;
 };
 
 let buildAndSetAllBufferData = device => {
@@ -36,19 +40,16 @@ let createAndSetShaderBindingTable = () => {
 };
 
 let createAndSetAllBindGroupLayoutsAndBindGroups = () => {
+  let cameraBindGroup = WebGPUDependencyTool.createBindGroupObject();
+  let directionLightBindGroup = WebGPUDependencyTool.createBindGroupObject();
+
   WebGPUDependencyTool.createBindGroupLayoutObject()
   ->PathTracingPassCPRepo.setCameraBindGroupLayout;
 
   WebGPUDependencyTool.createBindGroupLayoutObject()
   ->PathTracingPassCPRepo.setDirectionLightBindGroupLayout;
 
-  PathTracingPassCPRepo.addStaticBindGroupData(
-    1,
-    WebGPUDependencyTool.createBindGroupObject(),
-  );
+  PathTracingPassCPRepo.addStaticBindGroupData(1, cameraBindGroup);
 
-  PathTracingPassCPRepo.addStaticBindGroupData(
-    2,
-    WebGPUDependencyTool.createBindGroupObject(),
-  );
+  PathTracingPassCPRepo.addStaticBindGroupData(2, directionLightBindGroup);
 };

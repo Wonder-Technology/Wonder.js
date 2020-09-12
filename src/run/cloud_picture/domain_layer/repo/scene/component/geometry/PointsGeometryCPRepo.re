@@ -70,3 +70,15 @@ let getNormalsTypeArr = () => {
 let getIndicesTypeArr = () => {
   CPRepo.getExnGeometry().indices;
 };
+
+let getVerticesOffset = () => {
+  CPRepo.getExnGeometry().verticesOffset;
+};
+
+let getNormalsOffset = () => {
+  CPRepo.getExnGeometry().normalsOffset;
+};
+
+let getIndicesOffset = () => {
+  CPRepo.getExnGeometry().indicesOffset;
+};

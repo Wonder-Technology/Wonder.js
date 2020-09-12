@@ -61,7 +61,9 @@ let _buildVertexBufferData = device => {
 
 let _buildIndexBufferData = device => {
   let geometryPointCount = POConfigCPRepo.getGeometryPointCount();
-  let bufferSize = geometryPointCount * 1 * Uint32Array._BYTES_PER_ELEMENT;
+  let bufferSize =
+    BufferGeometryCPRepoUtils.getIndicesLength(geometryPointCount)
+    * Uint32Array._BYTES_PER_ELEMENT;
 
   let buffer =
     StorageBufferVO.createFromDevice(
