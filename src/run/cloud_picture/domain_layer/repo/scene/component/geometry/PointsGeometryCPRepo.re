@@ -45,7 +45,7 @@ let getVertexInfo = index => {
               },
             );
           },
-          DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+          OtherConfigDpRunAPI.unsafeGet().getIsDebug(),
         )
     });
 };

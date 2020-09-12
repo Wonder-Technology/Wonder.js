@@ -4,8 +4,8 @@ let create = () => JobEntity.create("init_accumulation");
 
 let _buildAccumulationPixelBufferData = (window, device) => {
   let bufferSize =
-    DpContainer.unsafeGetWebGPUCoreDp().window.getWidth(window)
-    * DpContainer.unsafeGetWebGPUCoreDp().window.getHeight(window)
+    WebGPUCoreDpRunAPI.unsafeGet().window.getWidth(window)
+    * WebGPUCoreDpRunAPI.unsafeGet().window.getHeight(window)
     * 4
     * Float32Array._BYTES_PER_ELEMENT;
 
@@ -14,8 +14,8 @@ let _buildAccumulationPixelBufferData = (window, device) => {
       ~device,
       ~bufferSize,
       ~usage=
-        DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.copy_dst
-        lor DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.storage,
+        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
+        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
       (),
     );
 
@@ -32,27 +32,27 @@ let _createAndSetBindGroup =
       ),
     ) => {
   let bindGroupLayout =
-    DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroupLayout(
+    WebGPUCoreDpRunAPI.unsafeGet().device.createBindGroupLayout(
       {
         "entries": [|
           IWebGPUCoreDp.layoutBinding(
             ~binding=0,
             ~visibility=
-              DpContainer.unsafeGetWebGPUCoreDp().shaderStage.fragment,
+              WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=1,
             ~visibility=
-              DpContainer.unsafeGetWebGPUCoreDp().shaderStage.fragment,
+              WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=2,
             ~visibility=
-              DpContainer.unsafeGetWebGPUCoreDp().shaderStage.fragment,
+              WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
             ~type_="uniform-buffer",
             (),
           ),
@@ -63,7 +63,7 @@ let _createAndSetBindGroup =
 
   AccumulationPassCPRepo.setStaticBindGroupData(
     0,
-    DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroup(
+    WebGPUCoreDpRunAPI.unsafeGet().device.createBindGroup(
       {
         "layout": bindGroupLayout,
         "entries": [|
@@ -102,30 +102,30 @@ let _createAndSetPipeline = (device, swapChainFormat, bindGroupLayout) => {
   let baseShaderPath = "src/run/cloud_picture/domain_layer/domain/pipeline/shader/accumulation";
 
   let vertexShaderModule =
-    DpContainer.unsafeGetWebGPUCoreDp().device.createShaderModule(
+    WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
       {
         "code":
-          DpContainer.unsafeGetWebGPUCoreDp().loadGLSL(
+          WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(
             {j|$(baseShaderPath)/accumulation.vert|j},
           ),
       },
       device,
     );
   let fragmentShaderModule =
-    DpContainer.unsafeGetWebGPUCoreDp().device.createShaderModule(
+    WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
       {
         "code":
-          DpContainer.unsafeGetWebGPUCoreDp().loadGLSL(
+          WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(
             {j|$(baseShaderPath)/accumulation.frag|j},
           ),
       },
       device,
     );
 
-  DpContainer.unsafeGetWebGPUCoreDp().device.createRenderPipeline(
+  WebGPUCoreDpRunAPI.unsafeGet().device.createRenderPipeline(
     IWebGPUCoreDp.pipelineRenderDescriptor(
       ~layout=
-        DpContainer.unsafeGetWebGPUCoreDp().device.createPipelineLayout(
+        WebGPUCoreDpRunAPI.unsafeGet().device.createPipelineLayout(
           {"bindGroupLayouts": [|bindGroupLayout|]},
           device,
         ),

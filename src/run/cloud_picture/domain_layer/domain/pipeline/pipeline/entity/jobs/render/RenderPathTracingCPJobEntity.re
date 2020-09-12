@@ -9,18 +9,18 @@ let exec = () => {
   )
   ->Result.mapSuccess(((device, queue, window, pipeline)) => {
       let commandEncoder =
-        DpContainer.unsafeGetWebGPUCoreDp().device.createCommandEncoder(
+        WebGPUCoreDpRunAPI.unsafeGet().device.createCommandEncoder(
           IWebGPUCoreDp.commandEncoderDescriptor(),
           device,
         );
       let rtPass =
-        DpContainer.unsafeGetWebGPURayTracingDp().commandEncoder.
+        WebGPURayTracingDpRunAPI.unsafeGet().commandEncoder.
           beginRayTracingPass(
           IWebGPURayTracingDp.passEncoderRayTracingDescriptor(),
           commandEncoder,
         );
 
-      DpContainer.unsafeGetWebGPURayTracingDp().passEncoderRayTracing.
+      WebGPURayTracingDpRunAPI.unsafeGet().passEncoderRayTracing.
         setPipeline(
         pipeline,
         rtPass,
@@ -29,7 +29,7 @@ let exec = () => {
       PathTracingPassCPRepo.getAllStaticBindGroupData()
       ->ListSt.forEach(
           ({setSlot, bindGroup}: PassCPPOType.staticBindGroupData) => {
-          DpContainer.unsafeGetWebGPURayTracingDp().passEncoderRayTracing.
+          WebGPURayTracingDpRunAPI.unsafeGet().passEncoderRayTracing.
             setBindGroup(
             setSlot,
             bindGroup,
@@ -37,23 +37,23 @@ let exec = () => {
           )
         });
 
-      DpContainer.unsafeGetWebGPURayTracingDp().passEncoderRayTracing.traceRays(
+      WebGPURayTracingDpRunAPI.unsafeGet().passEncoderRayTracing.traceRays(
         0, // sbt ray-generation offset
         1, // sbt ray-hit offset
         2, // sbt ray-miss offset
-        DpContainer.unsafeGetWebGPUCoreDp().window.getWidth(window),
-        DpContainer.unsafeGetWebGPUCoreDp().window.getHeight(window),
+        WebGPUCoreDpRunAPI.unsafeGet().window.getWidth(window),
+        WebGPUCoreDpRunAPI.unsafeGet().window.getHeight(window),
         1, // query depth dimension
         rtPass,
       );
 
-      DpContainer.unsafeGetWebGPURayTracingDp().passEncoderRayTracing.endPass(
+      WebGPURayTracingDpRunAPI.unsafeGet().passEncoderRayTracing.endPass(
         rtPass,
       );
 
-      DpContainer.unsafeGetWebGPUCoreDp().queue.submit(
+      WebGPUCoreDpRunAPI.unsafeGet().queue.submit(
         [|
-          DpContainer.unsafeGetWebGPUCoreDp().commandEncoder.finish(
+          WebGPUCoreDpRunAPI.unsafeGet().commandEncoder.finish(
             commandEncoder,
           ),
         |],

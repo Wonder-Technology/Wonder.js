@@ -27,7 +27,7 @@ let newSharedArrayBuffer = totalByteLength => {
         )
       )
     },
-    DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+    OtherConfigDpRunAPI.unsafeGet().getIsDebug(),
   )
   ->Result.mapSuccess(() => {_newSharedArrayBuffer(totalByteLength)});
 };

@@ -29,7 +29,7 @@ let getInfo = (infoIndex, infos) =>
           endIndex >= startIndex
         );
       },
-      DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+      OtherConfigDpRunAPI.unsafeGet().getIsDebug(),
     );
 
 let setInfo = (infoIndex, startIndex, endIndex, infos) => {
@@ -54,7 +54,7 @@ let setInfo = (infoIndex, startIndex, endIndex, infos) => {
         endIndex >= startIndex
       );
     },
-    DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+    OtherConfigDpRunAPI.unsafeGet().getIsDebug(),
   )
   ->Result.bind(() => {
       TypeArrayCPRepoUtils.setUint32_1(infoIndex, startIndex, infos)

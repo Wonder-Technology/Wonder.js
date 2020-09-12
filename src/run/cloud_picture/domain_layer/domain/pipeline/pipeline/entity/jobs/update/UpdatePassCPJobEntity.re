@@ -9,7 +9,7 @@ let _updateCommonBufferData = ((commonBuffer, commonBufferData)) => {
     TypeArrayCPRepoUtils.setUint32_1(1, totalSampleCount, commonBufferData),
   ])
   ->Result.tap(() => {
-      DpContainer.unsafeGetWebGPUCoreDp().buffer.setSubUint32Data(
+      WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubUint32Data(
         0,
         commonBufferData,
         commonBuffer->UniformBufferVO.value,

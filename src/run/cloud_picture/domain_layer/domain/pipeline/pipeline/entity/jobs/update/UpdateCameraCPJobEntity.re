@@ -22,7 +22,7 @@ let _updateCameraBuffer = ((viewInverse, projectionInverse, near, far)) => {
         ),
       ])
       ->Result.mapSuccess(() => {
-          DpContainer.unsafeGetWebGPUCoreDp().buffer.setSubFloat32Data(
+          WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubFloat32Data(
             0,
             cameraBufferData,
             cameraBuffer->UniformBufferVO.value,
