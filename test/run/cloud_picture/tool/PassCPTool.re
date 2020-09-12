@@ -1,5 +1,10 @@
 let getSampleCount = () => PassCPRepo.getSampleCount();
 
+let getTotalSampleCount = () => PassCPRepo.getTotalSampleCount();
+
+let setTotalSampleCount = totalSampleCount =>
+  PassCPRepo.setTotalSampleCount(totalSampleCount);
+
 let getPixelBufferData = () =>
   PassCPRepo.getPixelBufferData()->OptionSt.getExn;
 
