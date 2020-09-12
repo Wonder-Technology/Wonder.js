@@ -25,6 +25,10 @@ let init =
   POConfigCPRepo.setDirectionLightCount(directionLightCount);
 
   DirectorCPTool.prepare();
+
+  WebGPUDependencyTool.build(~sandbox, ())->WebGPUDependencyTool.set;
+  WebGPURayTracingDependencyTool.build(~sandbox, ())
+  ->WebGPURayTracingDependencyTool.set;
 };
 
 let updateBufferCount =

@@ -16,10 +16,6 @@ let _ =
       let queue = WebGPUDependencyTool.createQueueObject();
       WebGPUCPTool.setQueue(queue);
 
-      WebGPUDependencyTool.build(~sandbox, ())->WebGPUDependencyTool.set;
-      WebGPURayTracingDependencyTool.build(~sandbox, ())
-      ->WebGPURayTracingDependencyTool.set;
-
       PathTracingPassCPTool.buildAndSetAllBufferData(device);
       PathTracingPassCPTool.createAndSetShaderBindingTable();
       PathTracingPassCPTool.createAndSetAllBindGroupLayoutsAndBindGroups();
