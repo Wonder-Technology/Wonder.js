@@ -30,6 +30,12 @@ let getPipeline = () => {
   PathTracingPassCPRepo.getPipeline()->OptionSt.getExn;
 };
 
+let createAndSetPipeline = () => {
+  PathTracingPassCPRepo.setPipeline(
+    WebGPURayTracingDependencyTool.createRayTracingPipelineObject(),
+  );
+};
+
 let buildAndSetAllBufferData = device => {
   InitPathTracingCPJobEntity._buildAndSetAllBufferData(device);
 };
@@ -39,7 +45,7 @@ let createAndSetShaderBindingTable = () => {
   ->PathTracingPassCPRepo.setShaderBindingTable;
 };
 
-let createAndSetAllBindGroupLayoutsAndBindGroups = () => {
+let createAndSetAllBindGroupLayoutsAndBindGroupsExceptRayTracing = () => {
   let cameraBindGroup = WebGPUDependencyTool.createBindGroupObject();
   let directionLightBindGroup = WebGPUDependencyTool.createBindGroupObject();
 
@@ -51,5 +57,15 @@ let createAndSetAllBindGroupLayoutsAndBindGroups = () => {
 
   PathTracingPassCPRepo.addStaticBindGroupData(1, cameraBindGroup);
 
+  PathTracingPassCPRepo.addStaticBindGroupData(2, directionLightBindGroup);
+};
+
+let createAndSetAllBindGroups = () => {
+  let rtBindGroup = WebGPUDependencyTool.createBindGroupObject();
+  let cameraBindGroup = WebGPUDependencyTool.createBindGroupObject();
+  let directionLightBindGroup = WebGPUDependencyTool.createBindGroupObject();
+
+  PathTracingPassCPRepo.addStaticBindGroupData(0, rtBindGroup);
+  PathTracingPassCPRepo.addStaticBindGroupData(1, cameraBindGroup);
   PathTracingPassCPRepo.addStaticBindGroupData(2, directionLightBindGroup);
 };

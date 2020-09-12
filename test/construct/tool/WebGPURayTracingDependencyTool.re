@@ -11,6 +11,9 @@ let createRayTracingPipelineObject = (): rayTracingPipelineObject =>
 let createAccelerationContainerObject = (): accelerationContainerObject =>
   Obj.magic(Js.Math.random());
 
+let createPassEncoderRayTracingObject = (): passEncoderRayTracingObject =>
+  Obj.magic(Js.Math.random());
+
 let build =
     (
       ~sandbox,

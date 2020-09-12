@@ -85,3 +85,24 @@ let initAndUpdateAndUpdate =
     (),
   );
 };
+
+let initAndRender =
+    (
+      ~handleSuccessFunc,
+      ~handleFailFunc=ResultTool.buildEmptyHandleFailFunc(),
+      (),
+    ) => {
+  let (_, initPipelineStream) =
+    DirectorCPAPI.init()->Result.handleFail(handleFailFunc->Obj.magic);
+
+  let (_, renderPipelineStream) =
+    DirectorCPAPI.render()->Result.handleFail(handleFailFunc->Obj.magic);
+
+  PipelineTool.execPipelineStream(
+    ~pipelineStream=
+      initPipelineStream->WonderBsMost.Most.concat(renderPipelineStream, _),
+    ~handleSuccessFunc,
+    ~handleFailFunc,
+    (),
+  );
+};

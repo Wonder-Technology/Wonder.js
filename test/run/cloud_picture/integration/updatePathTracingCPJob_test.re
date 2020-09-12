@@ -18,7 +18,7 @@ let _ =
 
       PathTracingPassCPTool.buildAndSetAllBufferData(device);
       PathTracingPassCPTool.createAndSetShaderBindingTable();
-      PathTracingPassCPTool.createAndSetAllBindGroupLayoutsAndBindGroups();
+      PathTracingPassCPTool.createAndSetAllBindGroupLayoutsAndBindGroupsExceptRayTracing();
       PassCPTool.buildAndSetAllBufferData(
         WebGPUDependencyTool.createWindowObject(),
         device,

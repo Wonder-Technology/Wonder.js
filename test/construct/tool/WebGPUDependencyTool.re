@@ -43,6 +43,16 @@ let createCommandEncoderObject = (): commandEncoderObject =>
 let createCommandBufferObject = (): commandBufferObject =>
   Obj.magic(Js.Math.random());
 
+let createPassEncoderRenderObject = (): passEncoderRenderObject =>
+  Obj.magic(Js.Math.random());
+
+let createPassEncoderComputeObject = (): passEncoderComputeObject =>
+  Obj.magic(Js.Math.random());
+
+let createTextureViewObject = (): textureViewObject => {
+  Obj.magic(Js.Math.random());
+};
+
 let build =
     (
       ~sandbox,

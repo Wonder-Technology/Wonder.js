@@ -9,6 +9,7 @@ let init =
       ~directionLightCount=2,
       ~initPipelineData=PipelineTool.buildEmptyPipelineData(),
       ~updatePipelineData=PipelineTool.buildEmptyPipelineData(),
+      ~renderPipelineData=PipelineTool.buildEmptyPipelineData(),
       (),
     ) => {
   DependencyTool.injectAllDependencies(~isDebug, ());
@@ -17,6 +18,7 @@ let init =
 
   PipelineCPDoService.setInitPipelineData(initPipelineData);
   PipelineCPDoService.setUpdatePipelineData(updatePipelineData);
+  PipelineCPDoService.setRenderPipelineData(renderPipelineData);
 
   POConfigCPRepo.setTransformCount(transformCount);
   POConfigCPRepo.setGeometryPointCount(geometryPointCount);

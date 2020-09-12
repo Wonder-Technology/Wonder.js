@@ -8,3 +8,15 @@ let getStaticBindGroupData = () => {
 let getPipeline = () => {
   AccumulationPassCPRepo.getPipeline()->OptionSt.getExn;
 };
+
+let createAndSetPipeline = () => {
+  AccumulationPassCPRepo.setPipeline(
+    WebGPUDependencyTool.createRenderPipelineObject(),
+  );
+};
+
+let createAndSetAllBindGroups = () => {
+  let bindGroup = WebGPUDependencyTool.createBindGroupObject();
+
+  AccumulationPassCPRepo.setStaticBindGroupData(0, bindGroup);
+};
