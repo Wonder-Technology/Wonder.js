@@ -315,8 +315,7 @@ let _createAndAddRayTracingBindGroup =
           IWebGPUCoreDp.layoutBinding(
             ~binding=0,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                ray_generation
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_generation
               lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
                     ray_closest_hit,
             ~type_="acceleration-container",
@@ -325,16 +324,14 @@ let _createAndAddRayTracingBindGroup =
           IWebGPUCoreDp.layoutBinding(
             ~binding=1,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                ray_generation,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_generation,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=2,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                ray_generation
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_generation
               lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
                     ray_closest_hit,
             ~type_="uniform-buffer",
@@ -343,40 +340,35 @@ let _createAndAddRayTracingBindGroup =
           IWebGPUCoreDp.layoutBinding(
             ~binding=3,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=4,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=5,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=6,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=7,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
             ~type_="storage-buffer",
             (),
           ),
@@ -507,7 +499,7 @@ let _createAndSetPipeline = (device, rtBindGroupLayout) => {
 let exec = () => {
   Tuple2.collectOption(WebGPUCPRepo.getDevice(), WebGPUCPRepo.getQueue())
   ->Result.bind(((device, queue)) => {
-      BuildAccerlerationContainerDoService.buildContainers(device, queue)
+      WebGPURayTracingRunAPI.buildContainers(device, queue)
       ->Result.bind(instanceContainer => {
           Tuple5.collectOption(
             PathTracingPassCPRepo.getSceneDescBufferData(),

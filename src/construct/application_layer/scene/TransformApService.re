@@ -108,3 +108,7 @@ let getLocalToWorldMatrix = transform => {
 let getNormalMatrix = transform => {
   ModelMatrixTransformDoService.getNormalMatrix(transform);
 };
+
+let getMaxIndex = IndexTransformDoService.getMaxIndex;
+
+let mutableUpdate = UpdateTransformDoService.mutableUpdate;

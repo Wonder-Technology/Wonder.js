@@ -75,7 +75,7 @@ let _updateCamera = () => {
 
 let exec = () => {
   ListResult.mergeResults([
-    UpdatePerspectiveCameraProjectionDoService.update(),
+    PerspectiveCameraProjectionRunAPI.update(),
     _updateCamera(),
   ])
   ->WonderBsMost.Most.just;

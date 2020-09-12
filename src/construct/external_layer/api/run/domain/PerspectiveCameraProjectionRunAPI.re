@@ -45,3 +45,5 @@ let setFar = (cameraProjection, far) => {
 let markDirty = PerspectiveCameraProjectionApService.markDirty;
 
 let markNotDirty = PerspectiveCameraProjectionApService.markNotDirty;
+
+let update = PerspectiveCameraProjectionApService.update;

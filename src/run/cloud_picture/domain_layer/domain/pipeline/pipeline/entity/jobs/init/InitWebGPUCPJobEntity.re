@@ -10,7 +10,7 @@ let exec = () => {
         "title": "Cloud Picture",
         "resizable": false,
       })
-      ->LoadWebGPUDoService.load
+      ->WebGPUCoreRunAPI.load
       ->WonderBsMost.Most.map(
           ((adapter, device, context, queue, swapChainFormat)) => {
             let swapChain =
