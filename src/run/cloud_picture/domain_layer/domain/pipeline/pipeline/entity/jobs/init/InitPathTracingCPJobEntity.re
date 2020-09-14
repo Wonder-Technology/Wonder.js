@@ -240,24 +240,20 @@ let _createShaderBindingTable = device => {
         {
           "module": rayGenShaderModule,
           "stage":
-            WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-              ray_generation,
+            WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_generation,
         },
         {
           "module": rayRChitShaderModule,
           "stage":
-            WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-              ray_closest_hit,
+            WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
         },
         {
           "module": rayMissShaderModule,
-          "stage":
-            WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_miss,
+          "stage": WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_miss,
         },
         {
           "module": rayMissShadowShaderModule,
-          "stage":
-            WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_miss,
+          "stage": WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_miss,
         },
       |],
       "groups": [|
@@ -293,9 +289,7 @@ let exec = () => {
                 ~binding=0,
                 ~visibility=
                   WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                    ray_generation
-                  lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                        ray_closest_hit,
+                    ray_generation,
                 ~type_="uniform-buffer",
                 (),
               ),
@@ -338,9 +332,7 @@ let exec = () => {
                     ~binding=0,
                     ~visibility=
                       WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                        ray_generation
-                      lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                            ray_closest_hit,
+                        ray_closest_hit,
                     ~type_="storage-buffer",
                     (),
                   ),
