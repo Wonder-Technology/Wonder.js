@@ -62,10 +62,6 @@ let parse = ({name, groups, firstGroup}) => {
           pipelineStream
           ->Obj.magic
           ->WonderBsMost.Most.map(_ => Result.succeed(), _)
-          ->WonderBsMost.Most.recoverWith(
-              err => {WonderBsMost.Most.just(err->Result.fail)},
-              _,
-            )
         })
     })
   ->Result.mapSuccess(Tuple2.create(PipelineEntity.create(name)));

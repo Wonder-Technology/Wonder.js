@@ -172,5 +172,43 @@ let _ =
           ~message,
         );
       });
+      testPromise("if one job fail, then not exec the remain jobs", () => {
+        let value = ref(0);
+        let message = "fail";
+        PipelineTool.registerJobs(
+          ~jobs=[
+            _createJob(~jobName="fail", ~execFunc=() => {
+              Result.failWith(message)->WonderBsMost.Most.just
+            }),
+            _createJob(~jobName="do", ~execFunc=() => {
+              value := 10;
+              Result.succeed()->WonderBsMost.Most.just;
+            }),
+          ],
+          (),
+        );
+
+        ExpectStreamTool.testAfterFail(
+          ~execFunc=
+            _execPipelineStream(
+              ~pipelineData={
+                              name: "init",
+                              firstGroup: "frame",
+                              groups: [
+                                {
+                                  name: "frame",
+                                  link: Concat,
+                                  elements: [
+                                    {name: "fail", type_: Job},
+                                    {name: "do", type_: Job},
+                                  ],
+                                },
+                              ],
+                            }: PipelineVOType.pipelineData,
+            ),
+          ~handleFunc=errMessage => {
+          (errMessage, value^)->expect == (message, 0)
+        });
+      });
     });
   });
