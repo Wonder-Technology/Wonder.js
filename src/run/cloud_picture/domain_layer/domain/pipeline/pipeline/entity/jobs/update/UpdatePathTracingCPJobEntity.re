@@ -331,9 +331,7 @@ let _createAndAddRayTracingBindGroup =
           IWebGPUCoreDp.layoutBinding(
             ~binding=2,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_generation
-              lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                    ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_generation,
             ~type_="uniform-buffer",
             (),
           ),

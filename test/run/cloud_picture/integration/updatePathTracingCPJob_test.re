@@ -1302,7 +1302,7 @@ let _ =
                       ),
                       IWebGPUCoreDp.layoutBinding(
                         ~binding=2,
-                        ~visibility=ray_generation lor ray_closest_hit,
+                        ~visibility=ray_generation,
                         ~type_="uniform-buffer",
                         (),
                       ),
