@@ -153,6 +153,12 @@ let _ =
                         ~type_="uniform-buffer",
                         (),
                       ),
+                      IWebGPUCoreDp.layoutBinding(
+                        ~binding=3,
+                        ~visibility=fragment,
+                        ~type_="uniform-buffer",
+                        (),
+                      ),
                     |],
                   },
                   device,
@@ -191,6 +197,8 @@ let _ =
                 PassCPTool.getResolutionBufferData();
               let (pixelBuffer, pixelBufferSize) =
                 PassCPTool.getPixelBufferData();
+              let (commonBuffer, commonBufferData) =
+                PassCPTool.getCommonBufferData();
               let (accumulationPixelBuffer, accumulationPixelBufferSize) =
                 AccumulationPassCPTool.getAccumulationPixelBufferData();
 
@@ -223,6 +231,14 @@ let _ =
                           ~offset=0,
                           ~size=
                             resolutionBufferData->PassCPDoService.getResolutionBufferDataSize,
+                          (),
+                        ),
+                        IWebGPUCoreDp.binding(
+                          ~binding=3,
+                          ~buffer=commonBuffer->UniformBufferVO.value,
+                          ~offset=0,
+                          ~size=
+                            commonBufferData->PassCPDoService.getCommonBufferDataSize,
                           (),
                         ),
                       |],
