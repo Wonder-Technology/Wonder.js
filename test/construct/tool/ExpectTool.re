@@ -17,10 +17,18 @@ let toFail = (result, message) => {
   );
 };
 
-// let toPass = () => {
-//   open Wonder_jest;
-//   open Expect;
-//   open! Expect.Operators;
+let toPass = () => {
+  open Wonder_jest;
+  open Expect;
+  open! Expect.Operators;
 
-//   true->expect == true;
-// };
+  true->expect == true;
+};
+
+let judgeResult = result => {
+  open Wonder_jest;
+  open Expect;
+  open! Expect.Operators;
+
+  result->Result.isSuccess->expect == true;
+};

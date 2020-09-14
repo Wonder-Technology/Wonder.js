@@ -38,6 +38,7 @@ let initAndUpdate =
   let (_, updatePipelineStream) =
     DirectorCPAPI.update()->Result.handleFail(handleFailFunc->Obj.magic);
 
+
   PipelineTool.execPipelineStream(
     ~pipelineStream=
       initPipelineStream
