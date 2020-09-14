@@ -1425,7 +1425,7 @@ let _ =
                           ~buffer=commonBuffer->UniformBufferVO.value,
                           ~offset=0,
                           ~size=
-                            commonBufferData->PassCPDoService.getCommonBufferSize,
+                            commonBufferData->PassCPDoService.getCommonBufferDataSize,
                           (),
                         ),
                         IWebGPURayTracingDp.binding(

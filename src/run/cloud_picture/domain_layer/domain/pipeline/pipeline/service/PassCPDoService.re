@@ -2,7 +2,7 @@ let setSampleCount = sampleCount => {
   PassCPRepo.setSampleCount(sampleCount);
 };
 
-let getCommonBufferSize = commonBufferData =>
+let getCommonBufferDataSize = commonBufferData =>
   commonBufferData->Js.Typed_array.Uint32Array.byteLength;
 
 let getResolutionBufferDataSize = resolutionBufferData =>
