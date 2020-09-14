@@ -11,6 +11,9 @@ let createRayTracingPipelineObject = (): rayTracingPipelineObject =>
 let createAccelerationContainerObject = (): accelerationContainerObject =>
   Obj.magic(Js.Math.random());
 
+let createPassEncoderRayTracingObject = (): passEncoderRayTracingObject =>
+  Obj.magic(Js.Math.random());
+
 let build =
     (
       ~sandbox,
@@ -85,6 +88,9 @@ let build =
       ~createRayTracingAccelerationContainer=createEmptyStub(
                                                refJsObjToSandbox(sandbox^),
                                              )
+                                             ->SinonCPTool.returns(
+                                                 createAccelerationContainerObject(),
+                                               )
                                              ->SinonCPTool.createTwoArgsEmptyStubData
                                              ->SinonCPTool.getDpFunc,
       ~createRayTracingBindGroup=createEmptyStub(refJsObjToSandbox(sandbox^))

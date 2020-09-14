@@ -14,8 +14,8 @@ let _buildSceneDescBufferData = device => {
       ~device,
       ~bufferSize,
       ~usage=
-        DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.copy_dst
-        lor DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.storage,
+        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
+        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
       (),
     );
 
@@ -33,8 +33,8 @@ let _buildPointIndexBufferData = device => {
       ~device,
       ~bufferSize,
       ~usage=
-        DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.copy_dst
-        lor DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.storage,
+        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
+        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
       (),
     );
 
@@ -51,8 +51,8 @@ let _buildVertexBufferData = device => {
       ~device,
       ~bufferSize,
       ~usage=
-        DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.copy_dst
-        lor DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.storage,
+        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
+        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
       (),
     );
 
@@ -61,15 +61,17 @@ let _buildVertexBufferData = device => {
 
 let _buildIndexBufferData = device => {
   let geometryPointCount = POConfigCPRepo.getGeometryPointCount();
-  let bufferSize = geometryPointCount * 1 * Uint32Array._BYTES_PER_ELEMENT;
+  let bufferSize =
+    BufferGeometryCPRepoUtils.getIndicesLength(geometryPointCount)
+    * Uint32Array._BYTES_PER_ELEMENT;
 
   let buffer =
     StorageBufferVO.createFromDevice(
       ~device,
       ~bufferSize,
       ~usage=
-        DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.copy_dst
-        lor DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.storage,
+        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
+        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
       (),
     );
 
@@ -87,12 +89,27 @@ let _buildPBRMaterialBufferData = device => {
       ~device,
       ~bufferSize,
       ~usage=
-        DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.copy_dst
-        lor DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.storage,
+        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
+        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
       (),
     );
 
   (buffer, bufferSize, bufferData);
+};
+
+let _buildAndSetAllBufferData = device => {
+  _buildSceneDescBufferData(device)
+  ->PathTracingPassCPRepo.setSceneDescBufferData;
+
+  _buildPointIndexBufferData(device)
+  ->PathTracingPassCPRepo.setPointIndexBufferData;
+
+  _buildVertexBufferData(device)->PathTracingPassCPRepo.setVertexBufferData;
+
+  _buildIndexBufferData(device)->PathTracingPassCPRepo.setIndexBufferData;
+
+  _buildPBRMaterialBufferData(device)
+  ->PathTracingPassCPRepo.setPBRMaterialBufferData;
 };
 
 let _buildDirectionLightBufferData = device => {
@@ -111,7 +128,7 @@ let _buildDirectionLightBufferData = device => {
         )
       )
     },
-    DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+    OtherConfigDpRunAPI.unsafeGet().getIsDebug(),
   )
   ->Result.bind(() => {
       DirectionLightRunAPI.getAllLights()
@@ -155,12 +172,12 @@ let _buildDirectionLightBufferData = device => {
               ~device,
               ~bufferSize,
               ~usage=
-                DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.copy_dst
-                lor DpContainer.unsafeGetWebGPUCoreDp().bufferUsage.storage,
+                WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
+                lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
               (),
             );
 
-          DpContainer.unsafeGetWebGPUCoreDp().buffer.setSubFloat32Data(
+          WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubFloat32Data(
             0,
             directionLightBufferData,
             buffer->StorageBufferVO.value,
@@ -171,12 +188,14 @@ let _buildDirectionLightBufferData = device => {
     });
 };
 
-let _createShaderBindingTable = (baseShaderPath, device) => {
+let _createShaderBindingTable = device => {
+  let baseShaderPath = "src/run/cloud_picture/domain_layer/domain/shader/ray_tracing";
+
   let rayGenShaderModule =
-    DpContainer.unsafeGetWebGPUCoreDp().device.createShaderModule(
+    WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
       {
         "code":
-          DpContainer.unsafeGetWebGPUCoreDp().loadGLSL(
+          WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(
             {j|$(baseShaderPath)/ray-generation.rgen|j},
           ),
       },
@@ -184,61 +203,61 @@ let _createShaderBindingTable = (baseShaderPath, device) => {
     );
 
   let rayRChitShaderModule =
-    DpContainer.unsafeGetWebGPUCoreDp().device.createShaderModule(
+    WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
       {
         "code":
-          DpContainer.unsafeGetWebGPUCoreDp().loadGLSL(
+          WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(
             {j|$(baseShaderPath)/ray-closest-hit.rchit|j},
           ),
       },
       device,
     );
   let rayMissShaderModule =
-    DpContainer.unsafeGetWebGPUCoreDp().device.createShaderModule(
+    WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
       {
         "code":
-          DpContainer.unsafeGetWebGPUCoreDp().loadGLSL(
+          WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(
             {j|$(baseShaderPath)/ray-miss.rmiss|j},
           ),
       },
       device,
     );
   let rayMissShadowShaderModule =
-    DpContainer.unsafeGetWebGPUCoreDp().device.createShaderModule(
+    WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
       {
         "code":
-          DpContainer.unsafeGetWebGPUCoreDp().loadGLSL(
+          WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(
             {j|$(baseShaderPath)/ray-miss-shadow.rmiss|j},
           ),
       },
       device,
     );
 
-  DpContainer.unsafeGetWebGPURayTracingDp().device.
+  WebGPURayTracingDpRunAPI.unsafeGet().device.
     createRayTracingShaderBindingTable(
     {
       "stages": [|
         {
           "module": rayGenShaderModule,
           "stage":
-            DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
+            WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
               ray_generation,
         },
         {
           "module": rayRChitShaderModule,
           "stage":
-            DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
+            WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
               ray_closest_hit,
         },
         {
           "module": rayMissShaderModule,
           "stage":
-            DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.ray_miss,
+            WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_miss,
         },
         {
           "module": rayMissShadowShaderModule,
           "stage":
-            DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.ray_miss,
+            WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_miss,
         },
       |],
       "groups": [|
@@ -263,22 +282,19 @@ let _createShaderBindingTable = (baseShaderPath, device) => {
 let exec = () => {
   Tuple2.collectOption(WebGPUCPRepo.getDevice(), WebGPUCPRepo.getQueue())
   ->Result.bind(((device, queue)) => {
-      _createShaderBindingTable(
-        "src/run/cloud_picture/domain_layer/domain/shader/ray_tracing",
-        device,
-      )
+      _createShaderBindingTable(device)
       ->PathTracingPassCPRepo.setShaderBindingTable;
 
       let cameraBindGroupLayout =
-        DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroupLayout(
+        WebGPUCoreDpRunAPI.unsafeGet().device.createBindGroupLayout(
           {
             "entries": [|
               IWebGPUCoreDp.layoutBinding(
                 ~binding=0,
                 ~visibility=
-                  DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
+                  WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
                     ray_generation
-                  lor DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
+                  lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
                         ray_closest_hit,
                 ~type_="uniform-buffer",
                 (),
@@ -295,7 +311,7 @@ let exec = () => {
       ->Result.mapSuccess(((cameraBuffer, cameraBufferData)) => {
           PathTracingPassCPRepo.addStaticBindGroupData(
             1,
-            DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroup(
+            WebGPUCoreDpRunAPI.unsafeGet().device.createBindGroup(
               {
                 "layout": cameraBindGroupLayout,
                 "entries": [|
@@ -315,15 +331,15 @@ let exec = () => {
         })
       ->Result.bind(() => {
           let directionLightBindGroupLayout =
-            DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroupLayout(
+            WebGPUCoreDpRunAPI.unsafeGet().device.createBindGroupLayout(
               {
                 "entries": [|
                   IWebGPUCoreDp.layoutBinding(
                     ~binding=0,
                     ~visibility=
-                      DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
+                      WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
                         ray_generation
-                      lor DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
+                      lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
                             ray_closest_hit,
                     ~type_="storage-buffer",
                     (),
@@ -342,7 +358,7 @@ let exec = () => {
               ((directionLightBuffer, directionLightBufferSize)) => {
               PathTracingPassCPRepo.addStaticBindGroupData(
                 2,
-                DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroup(
+                WebGPUCoreDpRunAPI.unsafeGet().device.createBindGroup(
                   {
                     "layout": directionLightBindGroupLayout,
                     "entries": [|
@@ -361,20 +377,7 @@ let exec = () => {
             });
         })
       ->Result.mapSuccess(() => {
-          _buildSceneDescBufferData(device)
-          ->PathTracingPassCPRepo.setSceneDescBufferData;
-
-          _buildPointIndexBufferData(device)
-          ->PathTracingPassCPRepo.setPointIndexBufferData;
-
-          _buildVertexBufferData(device)
-          ->PathTracingPassCPRepo.setVertexBufferData;
-
-          _buildIndexBufferData(device)
-          ->PathTracingPassCPRepo.setIndexBufferData;
-
-          _buildPBRMaterialBufferData(device)
-          ->PathTracingPassCPRepo.setPBRMaterialBufferData;
+          _buildAndSetAllBufferData(device);
 
           ();
         });

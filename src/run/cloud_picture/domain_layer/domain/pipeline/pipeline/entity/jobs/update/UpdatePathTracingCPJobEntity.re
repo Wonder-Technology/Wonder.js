@@ -46,7 +46,7 @@ let _updateSceneDescBufferData =
       })
     })
   ->Result.mapSuccess(_ => {
-      DpContainer.unsafeGetWebGPUCoreDp().buffer.setSubFloat32Data(
+      WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubFloat32Data(
         0,
         sceneDescBufferData,
         sceneDescBuffer->StorageBufferVO.value,
@@ -80,7 +80,7 @@ let _updatePointIndexBufferData =
     })
   ->Result.bind(list => {
       list->ListSt.traverseResultM(
-        ((geometry, (vertexStartIndex, _), (indexStartIndex, _))) => {
+        ((geometry, (vertexStartIndex, _), (faceStartIndex, _))) => {
         ListResult.mergeResults([
           TypeArrayCPRepoUtils.setUint32_1(
             geometry * stride,
@@ -90,14 +90,14 @@ let _updatePointIndexBufferData =
           ),
           TypeArrayCPRepoUtils.setUint32_1(
             geometry * stride + 1,
-            indexStartIndex,
+            faceStartIndex,
             pointIndexBufferData,
           ),
         ])
       })
     })
   ->Result.mapSuccess(_ => {
-      DpContainer.unsafeGetWebGPUCoreDp().buffer.setSubUint32Data(
+      WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubUint32Data(
         0,
         pointIndexBufferData,
         pointIndexBuffer->StorageBufferVO.value,
@@ -115,30 +115,38 @@ let _updateVertexBufferData =
     ((vertexBuffer, vertexBufferSize, vertexBufferData)) => {
   Contract.requireCheck(
     () => {
-      Contract.(
-        Operators.(
-          test(
-            Log.buildAssertMessage(
-              ~expect={j|vertices.length == normals.length|j},
-              ~actual={j|not|j},
-            ),
-            () => {
-              let vertices = PointsGeometryCPRepo.getVerticesTypeArr();
-              let normals = PointsGeometryCPRepo.getNormalsTypeArr();
+      open Contract;
+      open Operators;
 
-              vertices->Float32Array.length == normals->Float32Array.length;
-            },
-          )
-        )
-      )
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|vertices.length == normals.length|j},
+          ~actual={j|not|j},
+        ),
+        () => {
+          let vertices = PointsGeometryCPRepo.getVerticesTypeArr();
+          let normals = PointsGeometryCPRepo.getNormalsTypeArr();
+
+          vertices->Float32Array.length == normals->Float32Array.length;
+        },
+      );
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|verticesOffset == normalsOffset|j},
+          ~actual={j|not|j},
+        ),
+        () => {
+        PointsGeometryCPRepo.getVerticesOffset()
+        == PointsGeometryCPRepo.getNormalsOffset()
+      });
     },
-    DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+    OtherConfigDpRunAPI.unsafeGet().getIsDebug(),
   )
   ->Result.tap(() => {
       let vertices = PointsGeometryCPRepo.getVerticesTypeArr();
       let normals = PointsGeometryCPRepo.getNormalsTypeArr();
 
-      let length = vertices->Float32Array.length;
+      let length = PointsGeometryCPRepo.getVerticesOffset();
 
       let i = ref(0);
       let j = ref(0);
@@ -179,7 +187,7 @@ let _updateVertexBufferData =
         j := j^ + 8;
       };
 
-      DpContainer.unsafeGetWebGPUCoreDp().buffer.setSubFloat32Data(
+      WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubFloat32Data(
         0,
         vertexBufferData,
         vertexBuffer->StorageBufferVO.value,
@@ -196,7 +204,7 @@ let _updateVertexBufferData =
 let _updateIndexBufferData = ((indexBuffer, indexBufferSize)) => {
   let indices = PointsGeometryCPRepo.getIndicesTypeArr();
 
-  DpContainer.unsafeGetWebGPUCoreDp().buffer.setSubUint32Data(
+  WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubUint32Data(
     0,
     indices,
     indexBuffer->StorageBufferVO.value,
@@ -240,7 +248,7 @@ let _updatePBRMaterialBufferData =
       },
     )
   ->Result.mapSuccess(_ => {
-      DpContainer.unsafeGetWebGPUCoreDp().buffer.setSubFloat32Data(
+      WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubFloat32Data(
         0,
         pbrMaterialBufferData,
         pbrMaterialBuffer->StorageBufferVO.value,
@@ -298,21 +306,17 @@ let _createAndAddRayTracingBindGroup =
         (indexBuffer, indexBufferSize),
         (pbrMaterialBuffer, pbrMaterialBufferSize),
       ),
-      (
-        (pixelBuffer, pixelBufferSize),
-        (commonDataBuffer, commonDataBufferData),
-      ),
+      ((pixelBuffer, pixelBufferSize), (commonBuffer, commonBufferData)),
     ) => {
   let rtBindGroupLayout =
-    DpContainer.unsafeGetWebGPUCoreDp().device.createBindGroupLayout(
+    WebGPUCoreDpRunAPI.unsafeGet().device.createBindGroupLayout(
       {
         "entries": [|
           IWebGPUCoreDp.layoutBinding(
             ~binding=0,
             ~visibility=
-              DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
-                ray_generation
-              lor DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_generation
+              lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
                     ray_closest_hit,
             ~type_="acceleration-container",
             (),
@@ -320,17 +324,15 @@ let _createAndAddRayTracingBindGroup =
           IWebGPUCoreDp.layoutBinding(
             ~binding=1,
             ~visibility=
-              DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
-                ray_generation,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_generation,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=2,
             ~visibility=
-              DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
-                ray_generation
-              lor DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_generation
+              lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
                     ray_closest_hit,
             ~type_="uniform-buffer",
             (),
@@ -338,40 +340,35 @@ let _createAndAddRayTracingBindGroup =
           IWebGPUCoreDp.layoutBinding(
             ~binding=3,
             ~visibility=
-              DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
-                ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=4,
             ~visibility=
-              DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
-                ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=5,
             ~visibility=
-              DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
-                ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=6,
             ~visibility=
-              DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
-                ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=7,
             ~visibility=
-              DpContainer.unsafeGetWebGPURayTracingDp().shaderStage.
-                ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
             ~type_="storage-buffer",
             (),
           ),
@@ -382,7 +379,7 @@ let _createAndAddRayTracingBindGroup =
 
   PathTracingPassCPRepo.addStaticBindGroupData(
     0,
-    DpContainer.unsafeGetWebGPURayTracingDp().device.createRayTracingBindGroup(
+    WebGPURayTracingDpRunAPI.unsafeGet().device.createRayTracingBindGroup(
       {
         "layout": rtBindGroupLayout,
         "entries": [|
@@ -402,10 +399,9 @@ let _createAndAddRayTracingBindGroup =
           ),
           IWebGPURayTracingDp.binding(
             ~binding=2,
-            ~buffer=commonDataBuffer->UniformBufferVO.value,
+            ~buffer=commonBuffer->UniformBufferVO.value,
             ~offset=0,
-            ~size=
-              commonDataBufferData->PassCPDoService.getCommonDataBufferSize,
+            ~size=commonBufferData->PassCPDoService.getCommonBufferSize,
             (),
           ),
           IWebGPURayTracingDp.binding(
@@ -466,10 +462,10 @@ let _createAndSetPipeline = (device, rtBindGroupLayout) => {
           directionLightBindGroupLayout,
         ),
       ) => {
-      DpContainer.unsafeGetWebGPURayTracingDp().device.createRayTracingPipeline(
+      WebGPURayTracingDpRunAPI.unsafeGet().device.createRayTracingPipeline(
         IWebGPURayTracingDp.pipelineRayTracingDescriptor(
           ~layout=
-            DpContainer.unsafeGetWebGPUCoreDp().device.createPipelineLayout(
+            WebGPUCoreDpRunAPI.unsafeGet().device.createPipelineLayout(
               {
                 "bindGroupLayouts": [|
                   rtBindGroupLayout,
@@ -503,7 +499,7 @@ let _createAndSetPipeline = (device, rtBindGroupLayout) => {
 let exec = () => {
   Tuple2.collectOption(WebGPUCPRepo.getDevice(), WebGPUCPRepo.getQueue())
   ->Result.bind(((device, queue)) => {
-      BuildAccerlerationContainerDoService.buildContainers(device, queue)
+      WebGPURayTracingRunAPI.buildContainers(device, queue)
       ->Result.bind(instanceContainer => {
           Tuple5.collectOption(
             PathTracingPassCPRepo.getSceneDescBufferData(),

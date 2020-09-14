@@ -1,6 +1,4 @@
 let createBasicCameraViewPerspectiveCamera = () => {
-  open BasicCameraViewRunAPI;
-  open PerspectiveCameraProjectionRunAPI;
   let perspectiveCameraProjection = PerspectiveCameraProjectionRunAPI.create();
   let basicCameraView = BasicCameraViewRunAPI.create();
 
@@ -8,9 +6,18 @@ let createBasicCameraViewPerspectiveCamera = () => {
     perspectiveCameraProjection,
     0.1->NearVO.create,
   );
-  setFar(perspectiveCameraProjection, 1000.->FarVO.create);
-  setFovy(perspectiveCameraProjection, 60.->FovyVO.create);
-  setAspect(perspectiveCameraProjection, 1.->AspectVO.create);
+  PerspectiveCameraProjectionRunAPI.setFar(
+    perspectiveCameraProjection,
+    1000.->FarVO.create,
+  );
+  PerspectiveCameraProjectionRunAPI.setFovy(
+    perspectiveCameraProjection,
+    60.->FovyVO.create,
+  );
+  PerspectiveCameraProjectionRunAPI.setAspect(
+    perspectiveCameraProjection,
+    1.->AspectVO.create,
+  );
 
   (basicCameraView, perspectiveCameraProjection);
 };

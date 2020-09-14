@@ -15,13 +15,43 @@ let createQueueObject = (): queueObject => Obj.magic(Js.Math.random());
 let createSwapChainObject = (): swapChainObject =>
   Obj.magic(Js.Math.random());
 
-let createBufferObject = (): bufferObject => Obj.magic(Js.Math.random());
+let createBufferObject = (): bufferObject => {
+  Obj.magic(Js.Math.random());
+};
 
 let createBindGroupLayoutObject = (): bindGroupLayoutObject =>
   Obj.magic(Js.Math.random());
 
 let createBindGroupObject = (): bindGroupObject =>
   Obj.magic(Js.Math.random());
+
+let createPipelineLayout = (): pipelineLayoutObject =>
+  Obj.magic(Js.Math.random());
+
+let createRenderPipelineObject = (): renderPipelineObject =>
+  Obj.magic(Js.Math.random());
+
+let createComputePipelineObject = (): computePipelineObject =>
+  Obj.magic(Js.Math.random());
+
+let createShaderModuleObject = (): shaderModuleObject =>
+  Obj.magic(Js.Math.random());
+
+let createCommandEncoderObject = (): commandEncoderObject =>
+  Obj.magic(Js.Math.random());
+
+let createCommandBufferObject = (): commandBufferObject =>
+  Obj.magic(Js.Math.random());
+
+let createPassEncoderRenderObject = (): passEncoderRenderObject =>
+  Obj.magic(Js.Math.random());
+
+let createPassEncoderComputeObject = (): passEncoderComputeObject =>
+  Obj.magic(Js.Math.random());
+
+let createTextureViewObject = (): textureViewObject => {
+  Obj.magic(Js.Math.random());
+};
 
 let build =
     (
@@ -117,6 +147,7 @@ let build =
                             ->SinonCPTool.createTwoArgsEmptyStubData
                             ->SinonCPTool.getDpFunc,
       ~createBuffer=createEmptyStub(refJsObjToSandbox(sandbox^))
+                    ->SinonCPTool.returns(createBufferObject())
                     ->SinonCPTool.createTwoArgsEmptyStubData
                     ->SinonCPTool.getDpFunc,
       ~createBindGroupLayout=createEmptyStub(refJsObjToSandbox(sandbox^))

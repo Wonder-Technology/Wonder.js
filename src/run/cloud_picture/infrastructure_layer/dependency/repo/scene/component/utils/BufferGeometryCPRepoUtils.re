@@ -25,7 +25,7 @@ let getNormalsOffset = geometryPointCount =>
 let getIndexSize = () => 1;
 
 let getIndicesLength = geometryPointCount =>
-  geometryPointCount * getIndexSize();
+  (3 + (geometryPointCount - 3) * 3) * getIndexSize();
 
 let getIndicesOffset = geometryPointCount =>
   getNormalsOffset(geometryPointCount)
@@ -73,16 +73,12 @@ let getInfoIndex = index => index * getInfoSize();
 let getTotalByteLength = (geometryPointCount, geometryCount) =>
   geometryPointCount
   * (
-    Float32Array._BYTES_PER_ELEMENT
-    * getVertexSize()
-    * 2
+    Float32Array._BYTES_PER_ELEMENT * getVertexSize() * 2
     // + Float32Array._BYTES_PER_ELEMENT
     // * getTexCoordsSize()
-    // + Uint16Array._BYTES_PER_ELEMENT
-    // * getIndexSize()
-    + Uint32Array._BYTES_PER_ELEMENT
-    * getIndexSize()
   )
+  + getIndicesLength(geometryPointCount)
+  * Uint32Array._BYTES_PER_ELEMENT
   + geometryCount
   * Uint32Array._BYTES_PER_ELEMENT
   * (getInfoSize() * 3);

@@ -11,9 +11,11 @@ let getMaxIndex = () => {
   CPRepo.getPerspectiveCameraProjection().maxIndex;
 };
 
-let getDirtyList = () =>
-  CPRepo.getPerspectiveCameraProjection().dirtyList
-  ->ListSt.map(PerspectiveCameraProjectionEntity.create);
+let getUniqueDirtyList = () => {
+  // CPRepo.getPerspectiveCameraProjection().dirtyList
+  // ->ListSt.map(PerspectiveCameraProjectionEntity.create);
+  DirtyPerspectiveCameraProjectionDoService.getUniqueDirtyList();
+};
 
 let clearDirtyList = () =>
   CPRepo.setPerspectiveCameraProjection({

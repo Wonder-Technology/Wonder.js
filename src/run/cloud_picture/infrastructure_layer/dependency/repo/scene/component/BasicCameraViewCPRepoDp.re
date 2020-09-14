@@ -69,6 +69,6 @@ let getActiveBasicCameraViews = () => {
           )
         )
       },
-      DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+      OtherConfigDpRunAPI.unsafeGet().getIsDebug(),
     );
 };

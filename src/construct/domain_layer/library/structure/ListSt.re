@@ -83,6 +83,10 @@ let head = Belt.List.head;
 
 let nth = Belt.List.get;
 
+let getLast = list => {
+  list->nth(length(list) - 1);
+};
+
 let removeDuplicateItems = list => {
   let arr = list->toArray;
 

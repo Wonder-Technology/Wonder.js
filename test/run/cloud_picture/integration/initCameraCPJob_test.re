@@ -57,8 +57,7 @@ let _ =
         DirectorCPTool.init(
           ~handleSuccessFunc=
             () => {
-              let (buffer, _) =
-                CameraCPTool.getCameraBufferData()->OptionSt.getExn;
+              let (buffer, _) = CameraCPTool.getCameraBufferData();
 
               createBufferStubData
               ->SinonCPTool.getStub
@@ -66,7 +65,7 @@ let _ =
               ->SinonCPTool.toCalledWith((
                   {
                     "size":
-                      (16 + 16 + 4)
+                      (16 + 16 + 2)
                       * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
                     "usage": copy_dst lor uniform,
                   },
@@ -83,11 +82,10 @@ let _ =
         DirectorCPTool.init(
           ~handleSuccessFunc=
             () => {
-              let (_, typeArr) =
-                CameraCPTool.getCameraBufferData()->OptionSt.getExn;
+              let (_, typeArr) = CameraCPTool.getCameraBufferData();
 
               typeArr->expect
-              == Js.Typed_array.Float32Array.fromLength(16 + 16 + 4);
+              == Js.Typed_array.Float32Array.fromLength(16 + 16 + 2);
             },
           (),
         );

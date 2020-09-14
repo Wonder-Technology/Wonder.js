@@ -34,7 +34,7 @@ let _ =
       test("add to dirty list", () => {
         let cameraProjection = create();
 
-        PerspectiveCameraProjectionTool.getDirtyList()->expect
+        PerspectiveCameraProjectionTool.getUniqueDirtyList()->expect
         == [cameraProjection];
       });
       test("set empty pMatrix", () => {
@@ -53,7 +53,7 @@ let _ =
         PerspectiveCameraProjectionTool.clearDirtyList();
         markDirty(cameraProjection1);
 
-        PerspectiveCameraProjectionTool.getDirtyList()->expect
+        PerspectiveCameraProjectionTool.getUniqueDirtyList()->expect
         == [cameraProjection1];
       })
     );
@@ -68,7 +68,7 @@ let _ =
         setFar(cameraProjection1, 2.->FarVO.create);
         markNotDirty(cameraProjection1);
 
-        PerspectiveCameraProjectionTool.getDirtyList()->expect
+        PerspectiveCameraProjectionTool.getUniqueDirtyList()->expect
         == [cameraProjection2];
       })
     );

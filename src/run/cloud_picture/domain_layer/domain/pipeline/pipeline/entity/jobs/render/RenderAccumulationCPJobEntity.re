@@ -21,18 +21,18 @@ let exec = () => {
         ),
       ) => {
       let backBufferView =
-        DpContainer.unsafeGetWebGPUCoreDp().swapChain.getCurrentTextureView(
+        WebGPUCoreDpRunAPI.unsafeGet().swapChain.getCurrentTextureView(
           (),
           swapChain,
         );
 
       let commandEncoder =
-        DpContainer.unsafeGetWebGPUCoreDp().device.createCommandEncoder(
+        WebGPUCoreDpRunAPI.unsafeGet().device.createCommandEncoder(
           IWebGPUCoreDp.commandEncoderDescriptor(),
           device,
         );
       let renderPass =
-        DpContainer.unsafeGetWebGPUCoreDp().commandEncoder.beginRenderPass(
+        WebGPUCoreDpRunAPI.unsafeGet().commandEncoder.beginRenderPass(
           IWebGPUCoreDp.passEncoderRenderDescriptor(
             ~colorAttachments=[|
               {
@@ -52,18 +52,18 @@ let exec = () => {
           commandEncoder,
         );
 
-      DpContainer.unsafeGetWebGPUCoreDp().passEncoder.render.setPipeline(
+      WebGPUCoreDpRunAPI.unsafeGet().passEncoder.render.setPipeline(
         pipeline,
         renderPass,
       );
 
-      DpContainer.unsafeGetWebGPUCoreDp().passEncoder.render.setBindGroup(
+      WebGPUCoreDpRunAPI.unsafeGet().passEncoder.render.setBindGroup(
         setSlot,
         bindGroup,
         renderPass,
       );
 
-      DpContainer.unsafeGetWebGPUCoreDp().passEncoder.render.draw(
+      WebGPUCoreDpRunAPI.unsafeGet().passEncoder.render.draw(
         3,
         1,
         0,
@@ -71,13 +71,13 @@ let exec = () => {
         renderPass,
       );
 
-      DpContainer.unsafeGetWebGPUCoreDp().passEncoder.render.endPass(
+      WebGPUCoreDpRunAPI.unsafeGet().passEncoder.render.endPass(
         renderPass,
       );
 
-      DpContainer.unsafeGetWebGPUCoreDp().queue.submit(
+      WebGPUCoreDpRunAPI.unsafeGet().queue.submit(
         [|
-          DpContainer.unsafeGetWebGPUCoreDp().commandEncoder.finish(
+          WebGPUCoreDpRunAPI.unsafeGet().commandEncoder.finish(
             commandEncoder,
           ),
         |],

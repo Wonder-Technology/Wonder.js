@@ -9,8 +9,6 @@ let _ =
     let sandbox = getSandboxDefaultVal();
 
     let _prepare = sandbox => {
-      CameraCPTool.createAndSetCameraBufferData();
-
       let (gameObject, light) = DirectionLightTool.createGameObject();
 
       let device = WebGPUDependencyTool.createDeviceObject();
@@ -21,6 +19,8 @@ let _ =
       WebGPUDependencyTool.build(~sandbox, ())->WebGPUDependencyTool.set;
       WebGPURayTracingDependencyTool.build(~sandbox, ())
       ->WebGPURayTracingDependencyTool.set;
+
+      CameraCPTool.buildAndSetAllBufferData(device);
 
       ((device, queue), (gameObject, light));
     };
@@ -48,6 +48,7 @@ let _ =
     describe("create shader binding table and set to po", () => {
       testPromise("create all shader modules", () => {
         let ((device, _), _) = _prepare(sandbox);
+        let baseShaderPath = "src/run/cloud_picture/domain_layer/domain/shader/ray_tracing";
         let buffer = WebGPUDependencyTool.createBufferObject();
         let rayGenGLSL = "a1";
         let rayRChitGLSL = "a2";
@@ -74,28 +75,58 @@ let _ =
           ~handleSuccessFunc=
             () => {
               (
-                createShaderModuleStubData
-                ->SinonCPTool.getStub
-                ->getCall(0, _)
-                ->SinonCPTool.calledWithArg2({"code": rayGenGLSL}, device),
-                createShaderModuleStubData
-                ->SinonCPTool.getStub
-                ->getCall(1, _)
-                ->SinonCPTool.calledWithArg2({"code": rayRChitGLSL}, device),
-                createShaderModuleStubData
-                ->SinonCPTool.getStub
-                ->getCall(2, _)
-                ->SinonCPTool.calledWithArg2({"code": rayMissGLSL}, device),
-                createShaderModuleStubData
-                ->SinonCPTool.getStub
-                ->getCall(3, _)
-                ->SinonCPTool.calledWithArg2(
-                    {"code": rayMissShadowGLSL},
-                    device,
-                  ),
+                (
+                  createShaderModuleStubData
+                  ->SinonCPTool.getStub
+                  ->getCall(0, _)
+                  ->SinonCPTool.calledWithArg2({"code": rayGenGLSL}, device),
+                  createShaderModuleStubData
+                  ->SinonCPTool.getStub
+                  ->getCall(1, _)
+                  ->SinonCPTool.calledWithArg2(
+                      {"code": rayRChitGLSL},
+                      device,
+                    ),
+                  createShaderModuleStubData
+                  ->SinonCPTool.getStub
+                  ->getCall(2, _)
+                  ->SinonCPTool.calledWithArg2(
+                      {"code": rayMissGLSL},
+                      device,
+                    ),
+                  createShaderModuleStubData
+                  ->SinonCPTool.getStub
+                  ->getCall(3, _)
+                  ->SinonCPTool.calledWithArg2(
+                      {"code": rayMissShadowGLSL},
+                      device,
+                    ),
+                ),
+                (
+                  loadGLSL
+                  ->getCall(0, _)
+                  ->SinonCPTool.calledWith(
+                      {j|$(baseShaderPath)/ray-generation.rgen|j},
+                    ),
+                  loadGLSL
+                  ->getCall(1, _)
+                  ->SinonCPTool.calledWith(
+                      {j|$(baseShaderPath)/ray-closest-hit.rchit|j},
+                    ),
+                  loadGLSL
+                  ->getCall(2, _)
+                  ->SinonCPTool.calledWith(
+                      {j|$(baseShaderPath)/ray-miss.rmiss|j},
+                    ),
+                  loadGLSL
+                  ->getCall(3, _)
+                  ->SinonCPTool.calledWith(
+                      {j|$(baseShaderPath)/ray-miss-shadow.rmiss|j},
+                    ),
+                ),
               )
               ->expect
-              == (true, true, true, true)
+              == ((true, true, true, true), (true, true, true, true))
             },
           (),
         );
@@ -103,10 +134,14 @@ let _ =
       testPromise("create ray tracing shader binding table", () => {
         let ((device, _), _) = _prepare(sandbox);
         let buffer = WebGPUDependencyTool.createBufferObject();
-        let rayGenShaderModule = "b1";
-        let rayRChitShaderModule = "b2";
-        let rayMissShaderModule = "b3";
-        let rayMissShadowShaderModule = "b4";
+        let rayGenShaderModule =
+          WebGPUDependencyTool.createShaderModuleObject();
+        let rayRChitShaderModule =
+          WebGPUDependencyTool.createShaderModuleObject();
+        let rayMissShaderModule =
+          WebGPUDependencyTool.createShaderModuleObject();
+        let rayMissShadowShaderModule =
+          WebGPUDependencyTool.createShaderModuleObject();
         let createShaderModuleStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^));
         createShaderModuleStubData
@@ -244,8 +279,7 @@ let _ =
                     },
                     device,
                   ),
-                PathTracingPassCPTool.getCameraBindGroupLayout()
-                ->OptionSt.getExn,
+                PathTracingPassCPTool.getCameraBindGroupLayout(),
               )
               ->expect
               == (true, layout)
@@ -298,8 +332,7 @@ let _ =
                     },
                     device,
                   ),
-                PathTracingPassCPTool.getDirectionLightBindGroupLayout()
-                ->OptionSt.getExn,
+                PathTracingPassCPTool.getDirectionLightBindGroupLayout(),
               )
               ->expect
               == (true, layout)
@@ -337,7 +370,7 @@ let _ =
           ~handleSuccessFunc=
             () => {
               let (cameraBuffer, cameraBufferData) =
-                CameraCPTool.getCameraBufferData()->OptionSt.getExn;
+                CameraCPTool.getCameraBufferData();
 
               (
                 createBindGroupStubData
@@ -613,8 +646,7 @@ let _ =
           DirectorCPTool.init(
             ~handleSuccessFunc=
               () => {
-                let (buffer, bufferSize, _) =
-                  getBufferDataFunc()->OptionSt.getExn;
+                let (buffer, bufferSize, _) = getBufferDataFunc();
 
                 (
                   bufferSize,
@@ -638,7 +670,7 @@ let _ =
           DirectorCPTool.init(
             ~handleSuccessFunc=
               () => {
-                let (_, _, typeArr) = getBufferDataFunc()->OptionSt.getExn;
+                let (_, _, typeArr) = getBufferDataFunc();
 
                 typeArr->expect == makeTypeArrFunc(count);
               },
@@ -716,7 +748,7 @@ let _ =
             ~handleSuccessFunc=
               () => {
                 let (buffer, bufferSize) =
-                  PathTracingPassCPTool.getIndexBufferData()->OptionSt.getExn;
+                  PathTracingPassCPTool.getIndexBufferData();
 
                 (
                   bufferSize,

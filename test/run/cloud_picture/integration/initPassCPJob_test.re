@@ -67,8 +67,7 @@ let _ =
         DirectorCPTool.init(
           ~handleSuccessFunc=
             () => {
-              let (buffer, bufferSize) =
-                PassCPTool.getPixelBufferData()->OptionSt.getExn;
+              let (buffer, bufferSize) = PassCPTool.getPixelBufferData();
 
               (
                 bufferSize,
@@ -116,8 +115,7 @@ let _ =
         DirectorCPTool.init(
           ~handleSuccessFunc=
             () => {
-              let (buffer, _) =
-                PassCPTool.getCommonBufferData()->OptionSt.getExn;
+              let (buffer, _) = PassCPTool.getCommonBufferData();
 
               createBufferStubData
               ->SinonCPTool.getStub
@@ -140,8 +138,7 @@ let _ =
         DirectorCPTool.init(
           ~handleSuccessFunc=
             () => {
-              let (_, typeArr) =
-                PassCPTool.getCommonBufferData()->OptionSt.getExn;
+              let (_, typeArr) = PassCPTool.getCommonBufferData();
 
               typeArr->expect == Js.Typed_array.Uint32Array.fromLength(2);
             },
@@ -213,8 +210,7 @@ let _ =
         DirectorCPTool.init(
           ~handleSuccessFunc=
             () => {
-              let (buffer, _) =
-                PassCPTool.getResolutionBufferData()->OptionSt.getExn;
+              let (buffer, _) = PassCPTool.getResolutionBufferData();
 
               createBufferStubData
               ->SinonCPTool.getStub
@@ -248,8 +244,7 @@ let _ =
         DirectorCPTool.init(
           ~handleSuccessFunc=
             () => {
-              let (_, typeArr) =
-                PassCPTool.getResolutionBufferData()->OptionSt.getExn;
+              let (_, typeArr) = PassCPTool.getResolutionBufferData();
 
               typeArr->expect
               == Js.Typed_array.Float32Array.make([|
@@ -277,8 +272,7 @@ let _ =
         DirectorCPTool.init(
           ~handleSuccessFunc=
             () => {
-              let (_, typeArr) =
-                PassCPTool.getResolutionBufferData()->OptionSt.getExn;
+              let (_, typeArr) = PassCPTool.getResolutionBufferData();
 
               setSubFloat32DataStubData
               ->SinonCPTool.getStub
