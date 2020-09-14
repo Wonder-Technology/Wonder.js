@@ -12,13 +12,14 @@ let exec = () => {
       })
       ->WebGPUCoreRunAPI.load
       ->WonderBsMost.Most.map(
-          ((adapter, device, context, queue, swapChainFormat)) => {
+          ((window, adapter, device, context, queue, swapChainFormat)) => {
             let swapChain =
               WebGPUCoreDpRunAPI.unsafeGet().context.configureSwapChain(
                 {"device": device, "format": swapChainFormat},
                 context,
               );
 
+            WebGPUCPRepo.setWindow(window);
             WebGPUCPRepo.setDevice(device);
             WebGPUCPRepo.setAdapter(adapter);
             WebGPUCPRepo.setContext(context);
