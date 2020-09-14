@@ -215,12 +215,12 @@ let _ =
                       ),
                       IWebGPURayTracingDp.group(
                         ~type_="general",
-                        ~closestHitIndex=2,
+                        ~generalIndex=2,
                         (),
                       ),
                       IWebGPURayTracingDp.group(
                         ~type_="general",
-                        ~closestHitIndex=3,
+                        ~generalIndex=3,
                         (),
                       ),
                     |],
