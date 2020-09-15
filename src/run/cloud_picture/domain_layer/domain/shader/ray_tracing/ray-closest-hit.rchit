@@ -2,6 +2,7 @@
 #extension GL_EXT_ray_tracing : enable
 #extension GL_EXT_nonuniform_qualifier : enable
 #extension GL_GOOGLE_include_directive : enable
+#extension GL_EXT_scalar_block_layout : enable
 #pragma shader_stage(closest)
 
 #include "define.glsl"
@@ -40,7 +41,7 @@ void main() {
   vec3 radiance = vec3(0.0);
   vec3 throughput = prd.throughput;
 
-  vec3 seed = prd.seed;
+  uint seed = prd.seed;
 
   HitShadingData data = getHitShadingData(gl_InstanceID, gl_PrimitiveID);
 
