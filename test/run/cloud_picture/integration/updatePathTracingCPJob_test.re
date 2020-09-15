@@ -1629,6 +1629,8 @@ let _ =
                             + 1
                             * Uint32Array._BYTES_PER_ELEMENT
                             + 1
+                            * Float32Array._BYTES_PER_ELEMENT
+                            + 1
                             * Float32Array._BYTES_PER_ELEMENT,
                         );
                       },
