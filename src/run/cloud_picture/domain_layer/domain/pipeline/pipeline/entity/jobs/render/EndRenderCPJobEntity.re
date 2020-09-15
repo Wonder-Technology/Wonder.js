@@ -5,7 +5,7 @@ let exec = () => {
   ->Result.mapSuccess(((window, swapChain)) => {
       WebGPUCoreDpRunAPI.unsafeGet().swapChain.present(swapChain);
 
-      WebGPUCoreDpRunAPI.unsafeGet().window.pollEvents((), window);
+      WebGPUCoreDpRunAPI.unsafeGet().window.pollEvents(window);
     })
   ->WonderBsMost.Most.just;
 };
