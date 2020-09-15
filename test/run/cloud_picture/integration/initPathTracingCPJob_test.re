@@ -215,12 +215,12 @@ let _ =
                       ),
                       IWebGPURayTracingDp.group(
                         ~type_="general",
-                        ~closestHitIndex=2,
+                        ~generalIndex=2,
                         (),
                       ),
                       IWebGPURayTracingDp.group(
                         ~type_="general",
-                        ~closestHitIndex=3,
+                        ~generalIndex=3,
                         (),
                       ),
                     |],
@@ -271,7 +271,7 @@ let _ =
                       "entries": [|
                         IWebGPUCoreDp.layoutBinding(
                           ~binding=0,
-                          ~visibility=ray_generation lor ray_closest_hit,
+                          ~visibility=ray_generation,
                           ~type_="uniform-buffer",
                           (),
                         ),
@@ -324,7 +324,7 @@ let _ =
                       "entries": [|
                         IWebGPUCoreDp.layoutBinding(
                           ~binding=0,
-                          ~visibility=ray_generation lor ray_closest_hit,
+                          ~visibility=ray_closest_hit,
                           ~type_="storage-buffer",
                           (),
                         ),

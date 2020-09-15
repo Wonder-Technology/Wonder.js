@@ -153,6 +153,12 @@ let _ =
                         ~type_="uniform-buffer",
                         (),
                       ),
+                      IWebGPUCoreDp.layoutBinding(
+                        ~binding=3,
+                        ~visibility=fragment,
+                        ~type_="uniform-buffer",
+                        (),
+                      ),
                     |],
                   },
                   device,
@@ -191,6 +197,8 @@ let _ =
                 PassCPTool.getResolutionBufferData();
               let (pixelBuffer, pixelBufferSize) =
                 PassCPTool.getPixelBufferData();
+              let (commonBuffer, commonBufferData) =
+                PassCPTool.getCommonBufferData();
               let (accumulationPixelBuffer, accumulationPixelBufferSize) =
                 AccumulationPassCPTool.getAccumulationPixelBufferData();
 
@@ -225,6 +233,14 @@ let _ =
                             resolutionBufferData->PassCPDoService.getResolutionBufferDataSize,
                           (),
                         ),
+                        IWebGPUCoreDp.binding(
+                          ~binding=3,
+                          ~buffer=commonBuffer->UniformBufferVO.value,
+                          ~offset=0,
+                          ~size=
+                            commonBufferData->PassCPDoService.getCommonBufferDataSize,
+                          (),
+                        ),
                       |],
                     },
                     device,
@@ -242,7 +258,7 @@ let _ =
     describe("create pipeline and set to po", () => {
       testPromise("create all shader modules", () => {
         let (window, device, swapChainFormat) = _prepare();
-        let baseShaderPath = "src/run/cloud_picture/domain_layer/domain/pipeline/shader/accumulation";
+        let baseShaderPath = "src/run/cloud_picture/domain_layer/domain/shader/accumulation";
         let buffer = WebGPUDependencyTool.createBufferObject();
         let vertexGLSL = "a1";
         let fragmentGLSL = "a2";

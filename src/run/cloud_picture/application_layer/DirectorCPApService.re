@@ -15,14 +15,6 @@ let _createAndSetAllComponentPOs = () => {
     });
 };
 
-let prepare = (pictureSize, sampleCount) => {
-  _createAndSetAllComponentPOs()
-  ->Result.mapSuccess(() => {
-      PictureCPDoService.setSize(pictureSize);
-      PassCPDoService.setSampleCount(sampleCount);
-    });
-};
-
 let _injectDependencies = () => {
   RepoDpRunAPI.set({
     sceneRepo: {
@@ -173,13 +165,21 @@ let _injectDependencies = () => {
   });
 };
 
+let prepare = (pictureSize, sampleCount) => {
+  _injectDependencies();
+
+  _createAndSetAllComponentPOs()
+  ->Result.mapSuccess(() => {
+      PictureCPDoService.setSize(pictureSize);
+      PassCPDoService.setSampleCount(sampleCount);
+    });
+};
+
 let _parseAndSetPipelineStream = pipelineData => {
   pipelineData->PipelineRunAPI.parsePipelineData;
 };
 
 let init = () => {
-  _injectDependencies();
-
   JobCPDoService.registerAllJobs();
 
   PipelineCPDoService.getInitPipelineData()->_parseAndSetPipelineStream;

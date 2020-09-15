@@ -12,18 +12,24 @@ let _buildErr = msg => msg->Exception.buildErr;
 
 let failWith = x => x->_buildErr->fail;
 
-let either = (twoTrackInput, successFunc, failureFunc) =>
-  switch (twoTrackInput) {
+let isSuccess = result => {
+  switch (result) {
+  | Success(s) => true
+  | Fail(f) => false
+  };
+};
+
+let either = (result, successFunc, failureFunc) =>
+  switch (result) {
   | Success(s) => successFunc(s)
   | Fail(f) => failureFunc(f)
   };
 
-let bind = (twoTrackInput, switchFunc) =>
-  either(twoTrackInput, switchFunc, fail);
+let bind = (result, switchFunc) => either(result, switchFunc, fail);
 
-let tap = (twoTrackInput, oneTrackFunc) =>
+let tap = (result, oneTrackFunc) =>
   either(
-    twoTrackInput,
+    result,
     result => {
       result->oneTrackFunc->ignore;
       result->succeed;

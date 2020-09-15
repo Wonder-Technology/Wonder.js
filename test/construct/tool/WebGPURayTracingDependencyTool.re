@@ -104,7 +104,7 @@ let build =
       updateInstance,
       setSubFloat32Data,
     },
-    passEncoderRayTracing: {
+    passEncoder: {
       setPipeline,
       setBindGroup,
       traceRays,

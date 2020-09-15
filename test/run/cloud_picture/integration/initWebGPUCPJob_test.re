@@ -223,6 +223,28 @@ let _ =
         (),
       );
     });
+    testPromise("set window", () => {
+      let (
+        (width, height),
+        (window, adapter, device, swapChainFormat, swapChain, queue, context),
+        (
+          make,
+          requestAdapter,
+          requestDeviceStubData,
+          getSwapChainPreferredFormatStubData,
+          configureSwapChainStubData,
+          getContext,
+          getQueue,
+        ),
+      ) =
+        _prepare(sandbox);
+
+      DirectorCPTool.init(
+        ~handleSuccessFunc=
+          () => {WebGPUCPTool.getWindow()->OptionSt.getExn->expect == window},
+        (),
+      );
+    });
     testPromise(
       "set device, adapter, context, queue, swapChainFormat, swapChain", () => {
       let (

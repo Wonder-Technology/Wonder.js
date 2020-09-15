@@ -13,13 +13,23 @@ let execPipelineStream =
       (),
     ) => {
   pipelineStream
+  ->WonderBsMost.Most.recoverWith(
+      err => {WonderBsMost.Most.just(err->Result.fail)},
+      _,
+    )
   ->WonderBsMost.Most.tap(
       result => {result->Result.handleFail(handleFailFunc)->ignore},
       _,
     )
   ->WonderBsMost.Most.drain
-  ->Js.Promise.then_(() => handleSuccessFunc()->Js.Promise.resolve, _)
-  ->Js.Promise.catch(e => {Js.Promise.reject(e->Obj.magic)}, _);
+  ->Js.Promise.then_(
+      () =>
+        {
+          handleSuccessFunc();
+        }
+        ->Js.Promise.resolve,
+      _,
+    );
 };
 
 let buildEmptyPipelineData = (): PipelineVOType.pipelineData => {

@@ -28,6 +28,7 @@ let _createAndSetBindGroup =
       (
         (resolutionBuffer, resolutionBufferData),
         (pixelBuffer, pixelBufferSize),
+        (commonBuffer, commonBufferData),
         (accumulationPixelBuffer, accumulationPixelBufferSize),
       ),
     ) => {
@@ -37,22 +38,25 @@ let _createAndSetBindGroup =
         "entries": [|
           IWebGPUCoreDp.layoutBinding(
             ~binding=0,
-            ~visibility=
-              WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
+            ~visibility=WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=1,
-            ~visibility=
-              WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
+            ~visibility=WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=2,
-            ~visibility=
-              WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
+            ~visibility=WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
+            ~type_="uniform-buffer",
+            (),
+          ),
+          IWebGPUCoreDp.layoutBinding(
+            ~binding=3,
+            ~visibility=WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
             ~type_="uniform-buffer",
             (),
           ),
@@ -89,6 +93,13 @@ let _createAndSetBindGroup =
               resolutionBufferData->PassCPDoService.getResolutionBufferDataSize,
             (),
           ),
+          IWebGPUCoreDp.binding(
+            ~binding=3,
+            ~buffer=commonBuffer,
+            ~offset=0,
+            ~size=commonBufferData->PassCPDoService.getCommonBufferDataSize,
+            (),
+          ),
         |],
       },
       device,
@@ -99,7 +110,7 @@ let _createAndSetBindGroup =
 };
 
 let _createAndSetPipeline = (device, swapChainFormat, bindGroupLayout) => {
-  let baseShaderPath = "src/run/cloud_picture/domain_layer/domain/pipeline/shader/accumulation";
+  let baseShaderPath = "src/run/cloud_picture/domain_layer/domain/shader/accumulation";
 
   let vertexShaderModule =
     WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
@@ -168,9 +179,10 @@ let exec = () => {
       _buildAccumulationPixelBufferData(window, device)
       ->AccumulationPassCPRepo.setAccumulationPixelBufferData;
 
-      Tuple3.collectOption(
+      Tuple4.collectOption(
         PassCPRepo.getResolutionBufferData(),
         PassCPRepo.getPixelBufferData(),
+        PassCPRepo.getCommonBufferData(),
         AccumulationPassCPRepo.getAccumulationPixelBufferData(),
       )
       ->Result.mapSuccess(
@@ -178,6 +190,7 @@ let exec = () => {
             (
               (resolutionBuffer, resolutionBufferData),
               (pixelBuffer, pixelBufferSize),
+              (commonBuffer, commonBufferData),
               (accumulationPixelBuffer, accumulationPixelBufferSize),
             ) as allBufferData,
           ) => {
@@ -186,6 +199,7 @@ let exec = () => {
             (
               (resolutionBuffer->UniformBufferVO.value, resolutionBufferData),
               (pixelBuffer->StorageBufferVO.value, pixelBufferSize),
+              (commonBuffer->UniformBufferVO.value, commonBufferData),
               (
                 accumulationPixelBuffer->StorageBufferVO.value,
                 accumulationPixelBufferSize,

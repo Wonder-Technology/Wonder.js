@@ -160,7 +160,7 @@ type queryWidthDimension = int;
 type queryHeightDimension = int;
 type queryDepthDimension = int;
 
-type passEncoderRayTracing = {
+type passEncoder = {
   setPipeline: (rayTracingPipelineObject, passEncoderRayTracingObject) => unit,
   setBindGroup:
     (bindingPoint, bindGroupObject, passEncoderRayTracingObject) => unit,
@@ -249,7 +249,7 @@ type bufferUsage = {
 
 type webgpuRayTracing = {
   accelerationContainer,
-  passEncoderRayTracing,
+  passEncoder,
   commandEncoder,
   device,
   accelerationContainerUsage,

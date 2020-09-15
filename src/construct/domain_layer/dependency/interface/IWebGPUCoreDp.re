@@ -414,7 +414,7 @@ type passEncoderCompute = {
   setBindGroup:
     (bindingPoint, bindGroupObject, passEncoderComputeObject) => unit,
   setDynamicBindGroup:
-    (bindingPoint, bindGroupObject, array(int), passEncoderRenderObject) =>
+    (bindingPoint, bindGroupObject, array(int), passEncoderComputeObject) =>
     unit,
   dispatchX: (x, passEncoderComputeObject) => unit,
   endPass: passEncoderComputeObject => unit,

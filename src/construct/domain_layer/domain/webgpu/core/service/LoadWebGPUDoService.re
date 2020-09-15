@@ -34,7 +34,7 @@ let load = window => {
               )
               ->map(
                   swapChainFormat => {
-                    (adapter, device, context, queue, swapChainFormat)
+                    (window, adapter, device, context, queue, swapChainFormat)
                   },
                   _,
                 );

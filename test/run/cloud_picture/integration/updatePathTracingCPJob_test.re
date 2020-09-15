@@ -1302,7 +1302,7 @@ let _ =
                       ),
                       IWebGPUCoreDp.layoutBinding(
                         ~binding=2,
-                        ~visibility=ray_generation lor ray_closest_hit,
+                        ~visibility=ray_generation,
                         ~type_="uniform-buffer",
                         (),
                       ),
@@ -1425,7 +1425,7 @@ let _ =
                           ~buffer=commonBuffer->UniformBufferVO.value,
                           ~offset=0,
                           ~size=
-                            commonBufferData->PassCPDoService.getCommonBufferSize,
+                            commonBufferData->PassCPDoService.getCommonBufferDataSize,
                           (),
                         ),
                         IWebGPURayTracingDp.binding(

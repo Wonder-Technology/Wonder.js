@@ -20,7 +20,7 @@ let exec = () => {
           commandEncoder,
         );
 
-      WebGPURayTracingDpRunAPI.unsafeGet().passEncoderRayTracing.
+      WebGPURayTracingDpRunAPI.unsafeGet().passEncoder.
         setPipeline(
         pipeline,
         rtPass,
@@ -29,7 +29,7 @@ let exec = () => {
       PathTracingPassCPRepo.getAllStaticBindGroupData()
       ->ListSt.forEach(
           ({setSlot, bindGroup}: PassCPPOType.staticBindGroupData) => {
-          WebGPURayTracingDpRunAPI.unsafeGet().passEncoderRayTracing.
+          WebGPURayTracingDpRunAPI.unsafeGet().passEncoder.
             setBindGroup(
             setSlot,
             bindGroup,
@@ -37,7 +37,7 @@ let exec = () => {
           )
         });
 
-      WebGPURayTracingDpRunAPI.unsafeGet().passEncoderRayTracing.traceRays(
+      WebGPURayTracingDpRunAPI.unsafeGet().passEncoder.traceRays(
         0, // sbt ray-generation offset
         1, // sbt ray-hit offset
         2, // sbt ray-miss offset
@@ -47,7 +47,7 @@ let exec = () => {
         rtPass,
       );
 
-      WebGPURayTracingDpRunAPI.unsafeGet().passEncoderRayTracing.endPass(
+      WebGPURayTracingDpRunAPI.unsafeGet().passEncoder.endPass(
         rtPass,
       );
 

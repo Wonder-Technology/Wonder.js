@@ -331,9 +331,7 @@ let _createAndAddRayTracingBindGroup =
           IWebGPUCoreDp.layoutBinding(
             ~binding=2,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_generation
-              lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                    ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_generation,
             ~type_="uniform-buffer",
             (),
           ),
@@ -401,7 +399,7 @@ let _createAndAddRayTracingBindGroup =
             ~binding=2,
             ~buffer=commonBuffer->UniformBufferVO.value,
             ~offset=0,
-            ~size=commonBufferData->PassCPDoService.getCommonBufferSize,
+            ~size=commonBufferData->PassCPDoService.getCommonBufferDataSize,
             (),
           ),
           IWebGPURayTracingDp.binding(
