@@ -280,7 +280,7 @@ let _buildAndSetVertexBufferData = device => {
 };
 
 let _buildAndSetIndexBufferData = device => {
-  let bufferData = PointsGeometryCPRepo.getUsedIndicesTypeArr();
+  let bufferData = PointsGeometryCPRepo.getCopyUsedIndicesTypeArr();
   let bufferSize = bufferData->Uint32Array.byteLength;
 
   let buffer =
