@@ -37,7 +37,8 @@ void main() {
   vec3 pixelColor = vec3(0.0);
 
   for (uint ss = 0; ss < sampleCount; ++ss) {
-    const vec2 offset = 1.0 * randInUnitDisk(prd.seed);
+    // const vec2 offset = 1.0 * randInUnitDisk(prd.seed);
+    const vec2 offset = 0.0;
     const vec2 pixel = vec2(ipos.x + rnd(prd.seed), ipos.y + rnd(prd.seed));
     const vec2 uv = (pixel / gl_LaunchSizeEXT.xy) * 2.0 - 1.0;
 

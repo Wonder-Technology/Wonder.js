@@ -30,7 +30,10 @@ vec3 computeDirectLight(
 
 
   const vec3 N = worldNormal;
-  const vec3 L = lightDir;
+
+  // const vec3 L = lightDir;
+  const vec3 L = -lightDir;
+
   const vec3 H = normalize(V + L);
 
   const float NdotH = max(0.0, dot(N, H));
