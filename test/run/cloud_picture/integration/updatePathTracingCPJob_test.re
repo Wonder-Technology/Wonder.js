@@ -738,7 +738,7 @@ let _ =
       });
     });
 
-    describe("update all path tracing's buffer data", () => {
+    describe("build and set all path tracing's buffer data", () => {
       let _prepare = () => {
         let (device, queue) = _prepare();
         let (
@@ -758,12 +758,77 @@ let _ =
           );
         let _ =
           TransformCPTool.setTwoTransformsData(gameObject1, gameObject2);
-        ();
+
+        device;
       };
 
-      describe("update scene desc buffer data", () => {
-        beforeEach(() => {
-          TestCPTool.updateBufferCount(~transformCount=2, ())
+      let _testCreateBuffer = (~getBufferSizeFunc, ~getBufferDataFunc) => {
+        testPromise("create buffer", ()
+          => {
+            let device = _prepare();
+            let buffer = WebGPUDependencyTool.createBufferObject();
+            let createBufferStubData =
+              createEmptyStub(refJsObjToSandbox(sandbox^))
+              ->SinonCPTool.returns(buffer)
+              ->SinonCPTool.createTwoArgsEmptyStubData;
+            let copy_dst = 2;
+            let storage = 3;
+            WebGPUDependencyTool.build(
+              ~sandbox,
+              ~createBuffer=createBufferStubData->SinonCPTool.getDpFunc,
+              ~storage_bufferUsage=storage,
+              ~copy_dst_bufferUsage=copy_dst,
+              (),
+            )
+            ->WebGPUDependencyTool.set;
+
+            DirectorCPTool.initAndUpdate(
+              ~handleSuccessFunc=
+                () => {
+                  let (buffer, bufferSize, _) = getBufferDataFunc();
+
+                  (
+                    bufferSize,
+                    createBufferStubData
+                    ->SinonCPTool.getStub
+                    ->SinonCPTool.calledWithArg2(
+                        {"size": bufferSize, "usage": copy_dst lor storage},
+                        device,
+                      ),
+                  )
+                  ->expect
+                  == (getBufferSizeFunc(), true);
+                },
+              (),
+            );
+          });
+          // testPromise("create type arr", () => {
+          //   let device = _prepare();
+          //   DirectorCPTool.init(
+          //     ~handleSuccessFunc=
+          //       () => {
+          //         let (_, _, typeArr) = getBufferDataFunc();
+          //         typeArr->expect == makeTypeArrFunc();
+          //       },
+          //     (),
+          //   );
+          // });
+      };
+
+      describe("build and set scene desc buffer data", () => {
+        // beforeEach(() => {
+        //   // TestCPTool.updateBufferCount(~transformCount=2, ())
+        // });
+
+        describe("build scene desc buffer data", () => {
+          _testCreateBuffer(
+            ~getBufferSizeFunc=
+              () =>
+                (4 + 12 + 16)
+                * 2
+                * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
+            ~getBufferDataFunc=PathTracingPassCPTool.getSceneDescBufferData,
+          )
         });
 
         testPromise(
@@ -882,9 +947,17 @@ let _ =
         });
       });
 
-      describe("update point index buffer data", () => {
-        beforeEach(() => {
-          TestCPTool.updateBufferCount(~geometryCount=2, ())
+      describe("build and set point index buffer data", () => {
+        // beforeEach(() => {
+        //   TestCPTool.updateBufferCount(~geometryCount=2, ())
+        // });
+
+        describe("build point index buffer data", () => {
+          _testCreateBuffer(
+            ~getBufferSizeFunc=
+              () => 2 * 2 * Js.Typed_array.Uint32Array._BYTES_PER_ELEMENT,
+            ~getBufferDataFunc=PathTracingPassCPTool.getPointIndexBufferData,
+          )
         });
 
         testPromise(
@@ -937,12 +1010,20 @@ let _ =
         });
       });
 
-      describe("update vertex buffer data", () => {
-        beforeEach(() => {
-          TestCPTool.updateBufferCount(
-            ~geometryCount=2,
-            ~geometryPointCount=100,
-            (),
+      describe("build and set vertex buffer data", () => {
+        // beforeEach(() => {
+        //   TestCPTool.updateBufferCount(
+        //     ~geometryCount=2,
+        //     ~geometryPointCount=100,
+        //     (),
+        //   )
+        // });
+
+        describe("build vertex buffer data", () => {
+          _testCreateBuffer(
+            ~getBufferSizeFunc=
+              () => 56 * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
+            ~getBufferDataFunc=PathTracingPassCPTool.getVertexBufferData,
           )
         });
 
@@ -1039,13 +1120,61 @@ let _ =
         );
       });
 
-      describe("update index buffer data", () => {
-        beforeEach(() => {
-          TestCPTool.updateBufferCount(
-            ~geometryCount=2,
-            ~geometryPointCount=100,
-            (),
-          )
+      describe("build and set index buffer data", () => {
+        // beforeEach(() => {
+        //   TestCPTool.updateBufferCount(
+        //     ~geometryCount=2,
+        //     ~geometryPointCount=100,
+        //     (),
+        //   )
+        // });
+
+        describe("build index buffer data", () => {
+          // let _prepare = sandbox => {
+          //   let ((device, queue), _) = _prepare(sandbox);
+          //   let count = 3;
+          //   POConfigCPTool.setGeometryPointCount(count);
+          //   (device, count);
+          // };
+          testPromise("create buffer", () => {
+            let device = _prepare();
+            let buffer = WebGPUDependencyTool.createBufferObject();
+            let createBufferStubData =
+              createEmptyStub(refJsObjToSandbox(sandbox^))
+              ->SinonCPTool.returns(buffer)
+              ->SinonCPTool.createTwoArgsEmptyStubData;
+            let copy_dst = 2;
+            let storage = 3;
+            WebGPUDependencyTool.build(
+              ~sandbox,
+              ~createBuffer=createBufferStubData->SinonCPTool.getDpFunc,
+              ~storage_bufferUsage=storage,
+              ~copy_dst_bufferUsage=copy_dst,
+              (),
+            )
+            ->WebGPUDependencyTool.set;
+
+            DirectorCPTool.initAndUpdate(
+              ~handleSuccessFunc=
+                () => {
+                  let (buffer, bufferSize) =
+                    PathTracingPassCPTool.getIndexBufferData();
+
+                  (
+                    bufferSize,
+                    createBufferStubData
+                    ->SinonCPTool.getStub
+                    ->SinonCPTool.calledWithArg2(
+                        {"size": bufferSize, "usage": copy_dst lor storage},
+                        device,
+                      ),
+                  )
+                  ->expect
+                  == (9 * Js.Typed_array.Uint32Array._BYTES_PER_ELEMENT, true);
+                },
+              (),
+            );
+          })
         });
 
         testPromise(
@@ -1084,9 +1213,18 @@ let _ =
         );
       });
 
-      describe("update pbr material buffer data", () => {
-        beforeEach(() => {
-          TestCPTool.updateBufferCount(~pbrMaterialCount=3, ())
+      describe("build and set pbr material buffer data", () => {
+        // beforeEach(() => {
+        //   TestCPTool.updateBufferCount(~pbrMaterialCount=3, ())
+        // });
+
+        describe("build pbr material buffer data", () => {
+          _testCreateBuffer(
+            ~getBufferSizeFunc=
+              count =>
+                (4 + 4) * 2 * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
+            ~getBufferDataFunc=PathTracingPassCPTool.getPBRMaterialBufferData,
+          )
         });
 
         testPromise(
@@ -1117,14 +1255,6 @@ let _ =
                        2.,
                        1.5,
                        1.,
-                       0.,
-                       0.,
-                       0.,
-                       0.,
-                       0.,
-                       0.,
-                       0.,
-                       0.,
                        0.,
                      |]);
                 },
