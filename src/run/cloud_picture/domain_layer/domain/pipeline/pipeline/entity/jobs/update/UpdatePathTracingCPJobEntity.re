@@ -60,6 +60,32 @@ let _updateSceneDescBufferData =
     });
 };
 
+let _convertVertexStartIndexFromAlignedInPOToInVertexBufferData =
+    vertexStartIndex => {
+  Contract.requireCheck(
+    () => {
+      Contract.(
+        Operators.(
+          test(
+            Log.buildAssertMessage(
+              ~expect=
+                {j|vertexStartIndex:$vertexStartIndex should be 3 times|j},
+              ~actual={j|not|j},
+            ),
+            () => {
+              let x = vertexStartIndex->Belt.Float.fromInt /. 3.;
+
+              x -. x->Js.Math.floor_float ==. 0.0;
+            },
+          )
+        )
+      )
+    },
+    DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+  )
+  ->Result.mapSuccess(() => {vertexStartIndex / 3 * 8});
+};
+
 let _updatePointIndexBufferData =
     (
       (pointIndexBuffer, pointIndexBufferSize, pointIndexBufferData),
@@ -81,19 +107,23 @@ let _updatePointIndexBufferData =
   ->Result.bind(list => {
       list->ListSt.traverseResultM(
         ((geometry, (vertexStartIndex, _), (faceStartIndex, _))) => {
-        ListResult.mergeResults([
-          TypeArrayCPRepoUtils.setUint32_1(
-            geometry * stride,
-            (vertexStartIndex->Belt.Float.fromInt /. 3. *. 8.)
-            ->Belt.Int.fromFloat,
-            pointIndexBufferData,
-          ),
-          TypeArrayCPRepoUtils.setUint32_1(
-            geometry * stride + 1,
-            faceStartIndex,
-            pointIndexBufferData,
-          ),
-        ])
+        _convertVertexStartIndexFromAlignedInPOToInVertexBufferData(
+          vertexStartIndex,
+        )
+        ->Result.bind(vertexStartIndex => {
+            ListResult.mergeResults([
+              TypeArrayCPRepoUtils.setUint32_1(
+                geometry * stride,
+                vertexStartIndex,
+                pointIndexBufferData,
+              ),
+              TypeArrayCPRepoUtils.setUint32_1(
+                geometry * stride + 1,
+                faceStartIndex,
+                pointIndexBufferData,
+              ),
+            ])
+          })
       })
     })
   ->Result.mapSuccess(_ => {
@@ -142,7 +172,7 @@ let _updateVertexBufferData =
     },
     OtherConfigDpRunAPI.unsafeGet().getIsDebug(),
   )
-  ->Result.tap(() => {
+  ->Result.bind(() => {
       let vertices = PointsGeometryCPRepo.getVerticesTypeArr();
       let normals = PointsGeometryCPRepo.getNormalsTypeArr();
 
@@ -187,22 +217,29 @@ let _updateVertexBufferData =
         j := j^ + 8;
       };
 
-      WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubFloat32Data(
-        0,
-        vertexBufferData,
-        vertexBuffer->StorageBufferVO.value,
-      );
+      _convertVertexStartIndexFromAlignedInPOToInVertexBufferData(i^)
+      ->Result.mapSuccess(usedVertexBufferDataLength => {
+          WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubFloat32Data(
+            0,
+            Float32Array.subarray(
+              ~start=0,
+              ~end_=usedVertexBufferDataLength,
+              vertexBufferData,
+            ),
+            vertexBuffer->StorageBufferVO.value,
+          );
 
-      PathTracingPassCPRepo.setVertexBufferData((
-        vertexBuffer,
-        vertexBufferSize,
-        vertexBufferData,
-      ));
+          PathTracingPassCPRepo.setVertexBufferData((
+            vertexBuffer,
+            vertexBufferSize,
+            vertexBufferData,
+          ));
+        });
     });
 };
 
 let _updateIndexBufferData = ((indexBuffer, indexBufferSize)) => {
-  let indices = PointsGeometryCPRepo.getIndicesTypeArr();
+  let indices = PointsGeometryCPRepo.getUsedIndicesTypeArr();
 
   WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubUint32Data(
     0,
