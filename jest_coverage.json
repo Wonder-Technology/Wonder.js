@@ -19,6 +19,7 @@
         "<rootDir>/lib/js/src/.+/data/",
         "<rootDir>/lib/js/src/.+/interface/",
         "<rootDir>/lib/js/src/.+/type/",
+        "<rootDir>/lib/js/src/run/cloud_picture/domain_layer/domain/shader/",
         "<rootDir>/lib/js/src/.+/ParseDataPipelineDoService.*"
         
     ],
