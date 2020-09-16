@@ -46,7 +46,7 @@ let _buildAndSetSceneDescBufferData = (device, allRenderGameObjects) => {
                 normalMatrix->NormalMatrixVO.value,
                 bufferData,
               ),
-              TypeArrayCPRepoUtils.setMat3Data(
+              TypeArrayCPRepoUtils.setFloat16WithFloat32Array(
                 offset + 4 + 12,
                 TransformRunAPI.getLocalToWorldMatrix(transform)
                 ->LocalToWorldMatrixVO.value,
