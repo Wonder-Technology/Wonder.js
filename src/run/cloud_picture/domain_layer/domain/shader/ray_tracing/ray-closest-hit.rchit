@@ -51,7 +51,7 @@ void main() {
                        computeSpecularLobeProb(data.materialDiffuse, data.materialSpecular, data.materialMetalness)
                        );
 
-  prd.radiance += computeDirectLight(
+  radiance += computeDirectLight(
       tMin, data.worldPosition,
       data.worldNormal, data.V, shading, topLevelAS) * throughput;
 
