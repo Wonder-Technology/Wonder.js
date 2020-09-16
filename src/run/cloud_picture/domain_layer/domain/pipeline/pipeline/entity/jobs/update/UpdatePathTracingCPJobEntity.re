@@ -94,7 +94,7 @@ let _convertVertexStartIndexFromAlignedInPOToInVertexBufferData =
     },
     DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
   )
-  ->Result.mapSuccess(() => {vertexStartIndex / 3 * 8});
+  ->Result.mapSuccess(() => {vertexStartIndex / 3});
 };
 
 let _buildAndSetPointIndexBufferData = (device, allRenderGeometries) => {

@@ -972,7 +972,7 @@ let _ =
                     PathTracingPassCPTool.getPointIndexBufferData();
 
                   typeArr->expect
-                  == Js.Typed_array.Uint32Array.make([|0, 0, 24, 3|]);
+                  == Js.Typed_array.Uint32Array.make([|0, 0, 3, 3|]);
                 },
               (),
             );
