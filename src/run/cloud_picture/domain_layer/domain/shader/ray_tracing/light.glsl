@@ -20,7 +20,7 @@ void getLightData(in uint lightIndex, out float lightIntensity,
   lightDistance = 100000.0;
 
   // lightDir = normalize(vec3(data.position) - vec3(0.0));
-  lightDir = vec3(data.direction);
+  lightDir = normalize(vec3(data.direction));
 }
 
 bool isLightVisibleFromTheSurface(vec3 worldNormal, vec3 lightDir) {

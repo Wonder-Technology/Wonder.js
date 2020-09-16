@@ -327,8 +327,7 @@ type textureUsage = {
 
 type swapChain = {
   getCurrentTextureView: (unit, swapChainObject) => textureViewObject,
-  present: swapChainObject,
-  unit,
+  present: swapChainObject => unit,
 };
 
 type queue = {submit: (array(commandBufferObject), queueObject) => unit};
@@ -415,7 +414,7 @@ type passEncoderCompute = {
   setBindGroup:
     (bindingPoint, bindGroupObject, passEncoderComputeObject) => unit,
   setDynamicBindGroup:
-    (bindingPoint, bindGroupObject, array(int), passEncoderRenderObject) =>
+    (bindingPoint, bindGroupObject, array(int), passEncoderComputeObject) =>
     unit,
   dispatchX: (x, passEncoderComputeObject) => unit,
   endPass: passEncoderComputeObject => unit,
@@ -465,7 +464,7 @@ type context = {
 type window = {
   make: windowDescriptor => windowObject,
   getContext: windowObject => contextObject,
-  pollEvents: (unit, windowObject) => unit,
+  pollEvents: windowObject => unit,
   shouldClose: windowObject => bool,
   getWidth: windowObject => int,
   getHeight: windowObject => int,

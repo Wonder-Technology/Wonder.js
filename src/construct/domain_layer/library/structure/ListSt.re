@@ -48,7 +48,7 @@ let ignoreTraverseResultValue = traverseResult => {
 };
 
 let range = (start, end_) => {
-  Belt.List.makeBy(end_ - start + 1, i => i + start);
+  Belt.List.makeBy(end_ - start, i => i + start);
 };
 
 let map = (list, func) => {
@@ -80,6 +80,12 @@ let remove = (list, value) => list->Belt.List.filter(v => v !== value);
 let length = Belt.List.length;
 
 let head = Belt.List.head;
+
+let nth = Belt.List.get;
+
+let getLast = list => {
+  list->nth(length(list) - 1);
+};
 
 let removeDuplicateItems = list => {
   let arr = list->toArray;

@@ -1,7 +1,7 @@
 let create = () => JobEntity.create("update_accumulation");
 
 let exec = () => {
-  AccumulationCPDoService.increaseSampleAccumulation()
+  AccumulationPassCPDoService.increaseSampleAccumulation()
   ->Result.succeed
   ->WonderBsMost.Most.just;
 };

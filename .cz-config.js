@@ -18,6 +18,7 @@ module.exports = {
       { name: "scene" },
       { name: "gameObject" },
       { name: "transform" },
+      { name: "geometry" },
       { name: "pipeline" },
       { name: "dependency" },
       { name: "cloud-picture" },
@@ -32,6 +33,7 @@ module.exports = {
       { name: "dead-code" },
       { name: "type" },
       { name: "encapsulate" },
+      { name: "dependency" },
       { name: "test" }
     ],
     test: [

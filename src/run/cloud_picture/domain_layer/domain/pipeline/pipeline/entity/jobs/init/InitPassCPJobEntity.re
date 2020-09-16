@@ -4,8 +4,8 @@ let create = () => JobEntity.create("init_pass");
 
 let _buildPixelBufferData = (window, device) => {
   let bufferSize =
-    DpContainer.unsafeGetWebGPUCoreDp().window.getWidth(window)
-    * DpContainer.unsafeGetWebGPUCoreDp().window.getHeight(window)
+    WebGPUCoreDpRunAPI.unsafeGet().window.getWidth(window)
+    * WebGPUCoreDpRunAPI.unsafeGet().window.getHeight(window)
     * 4
     * Float32Array._BYTES_PER_ELEMENT;
 
@@ -26,16 +26,16 @@ let _buildCommonBufferData = device => {
 let _buildResolutionBufferData = (window, device) => {
   let bufferData =
     Float32Array.make([|
-      DpContainer.unsafeGetWebGPUCoreDp().window.getWidth(window)
+      WebGPUCoreDpRunAPI.unsafeGet().window.getWidth(window)
       ->Belt.Float.fromInt,
-      DpContainer.unsafeGetWebGPUCoreDp().window.getHeight(window)
+      WebGPUCoreDpRunAPI.unsafeGet().window.getHeight(window)
       ->Belt.Float.fromInt,
     |]);
   let bufferSize = bufferData->Float32Array.byteLength;
 
   let buffer = UniformBufferVO.createFromDevice(~device, ~bufferSize);
 
-  DpContainer.unsafeGetWebGPUCoreDp().buffer.setSubFloat32Data(
+  WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubFloat32Data(
     0,
     bufferData,
     buffer->UniformBufferVO.value,
@@ -44,15 +44,19 @@ let _buildResolutionBufferData = (window, device) => {
   (buffer, bufferData);
 };
 
+let _buildAndSetAllBufferData = (window, device) => {
+  _buildPixelBufferData(window, device)->PassCPRepo.setPixelBufferData;
+
+  _buildCommonBufferData(device)->PassCPRepo.setCommonBufferData;
+
+  _buildResolutionBufferData(window, device)
+  ->PassCPRepo.setResolutionBufferData;
+};
+
 let exec = () => {
   Tuple2.collectOption(WebGPUCPRepo.getWindow(), WebGPUCPRepo.getDevice())
   ->Result.mapSuccess(((window, device)) => {
-      _buildPixelBufferData(window, device)->PassCPRepo.setPixelBufferData;
-
-      _buildCommonBufferData(device)->PassCPRepo.setCommonBufferData;
-
-      _buildResolutionBufferData(window, device)
-      ->PassCPRepo.setResolutionBufferData;
+      _buildAndSetAllBufferData(window, device);
 
       ();
     })

@@ -4,21 +4,22 @@ let exec = () => {
   PictureCPDoService.getSize()
   ->OptionSt.get
   ->Result.mapSuccess(((width, height)) => {
-      DpContainer.unsafeGetWebGPUCoreDp().window.make({
+      WebGPUCoreDpRunAPI.unsafeGet().window.make({
         "width": width,
         "height": height,
         "title": "Cloud Picture",
         "resizable": false,
       })
-      ->LoadWebGPUDoService.load
+      ->WebGPUCoreRunAPI.load
       ->WonderBsMost.Most.map(
-          ((adapter, device, context, queue, swapChainFormat)) => {
+          ((window, adapter, device, context, queue, swapChainFormat)) => {
             let swapChain =
-              DpContainer.unsafeGetWebGPUCoreDp().context.configureSwapChain(
+              WebGPUCoreDpRunAPI.unsafeGet().context.configureSwapChain(
                 {"device": device, "format": swapChainFormat},
                 context,
               );
 
+            WebGPUCPRepo.setWindow(window);
             WebGPUCPRepo.setDevice(device);
             WebGPUCPRepo.setAdapter(adapter);
             WebGPUCPRepo.setContext(context);
