@@ -18,6 +18,7 @@ module.exports = {
       { name: "scene" },
       { name: "gameObject" },
       { name: "transform" },
+      { name: "geometry" },
       { name: "pipeline" },
       { name: "dependency" },
       { name: "cloud-picture" },

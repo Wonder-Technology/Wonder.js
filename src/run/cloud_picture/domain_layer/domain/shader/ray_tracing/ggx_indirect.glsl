@@ -3,8 +3,8 @@ void computeIndirectLight( in vec3 V,
 
 vec3 worldNormal,
                           in ShadingData shading,
-                          out vec3 throughput,
-                          out float t
+                          inout vec3 throughput,
+                          inout float t
                           ) {
   const vec3 N = worldNormal;
   const vec3 L = bsdfDir;

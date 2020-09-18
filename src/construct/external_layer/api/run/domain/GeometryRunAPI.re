@@ -10,6 +10,10 @@ let createSphereGeometry = (radius, bands) => {
   GeometryApService.createSphereGeometry(radius, bands);
 };
 
+let createPlaneGeometry = () => {
+  GeometryApService.createPlaneGeometry();
+};
+
 let getVertices = geometry => {
   GeometryApService.getVertices(geometry);
 };

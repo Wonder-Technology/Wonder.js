@@ -52,25 +52,14 @@ let _ =
     });
     testPromise("poll events", () => {
       let (window, swapChain) = _prepare();
-      let pollEventsStubData =
-        createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+      let pollEvents = createEmptyStub(refJsObjToSandbox(sandbox^));
 
-      WebGPUDependencyTool.build(
-        ~sandbox,
-        ~pollEvents=pollEventsStubData->SinonCPTool.getDpFunc,
-        (),
-      )
+      WebGPUDependencyTool.build(~sandbox, ~pollEvents, ())
       ->WebGPUDependencyTool.set;
 
       DirectorCPTool.initAndRender(
         ~handleSuccessFunc=
-          () => {
-            pollEventsStubData
-            ->SinonCPTool.getStub
-            ->expect
-            ->SinonCPTool.toCalledWith(((), window))
-          },
+          () => {pollEvents->expect->SinonCPTool.toCalledWith([|window|])},
         (),
       );
     });

@@ -2,116 +2,6 @@ open Js.Typed_array;
 
 let create = () => JobEntity.create("init_pathTracing");
 
-let _buildSceneDescBufferData = device => {
-  let gameObjectCount = POConfigCPRepo.getTransformCount();
-
-  let dataCount = 4 + 12 + 16;
-  let bufferData = Float32Array.fromLength(gameObjectCount * dataCount);
-  let bufferSize = bufferData->Float32Array.byteLength;
-
-  let buffer =
-    StorageBufferVO.createFromDevice(
-      ~device,
-      ~bufferSize,
-      ~usage=
-        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
-        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
-      (),
-    );
-
-  (buffer, bufferSize, bufferData);
-};
-
-let _buildPointIndexBufferData = device => {
-  let geometryCount = POConfigCPRepo.getGeometryCount();
-  let dataCount = 2;
-  let bufferData = Uint32Array.fromLength(geometryCount * dataCount);
-  let bufferSize = bufferData->Uint32Array.byteLength;
-
-  let buffer =
-    StorageBufferVO.createFromDevice(
-      ~device,
-      ~bufferSize,
-      ~usage=
-        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
-        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
-      (),
-    );
-
-  (buffer, bufferSize, bufferData);
-};
-
-let _buildVertexBufferData = device => {
-  let geometryPointCount = POConfigCPRepo.getGeometryPointCount();
-  let bufferData = Float32Array.fromLength(geometryPointCount * 4 * 2);
-  let bufferSize = bufferData->Float32Array.byteLength;
-
-  let buffer =
-    StorageBufferVO.createFromDevice(
-      ~device,
-      ~bufferSize,
-      ~usage=
-        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
-        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
-      (),
-    );
-
-  (buffer, bufferSize, bufferData);
-};
-
-let _buildIndexBufferData = device => {
-  let geometryPointCount = POConfigCPRepo.getGeometryPointCount();
-  let bufferSize =
-    BufferGeometryCPRepoUtils.getIndicesLength(geometryPointCount)
-    * Uint32Array._BYTES_PER_ELEMENT;
-
-  let buffer =
-    StorageBufferVO.createFromDevice(
-      ~device,
-      ~bufferSize,
-      ~usage=
-        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
-        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
-      (),
-    );
-
-  (buffer, bufferSize);
-};
-
-let _buildPBRMaterialBufferData = device => {
-  let pbrMaterialCount = POConfigCPRepo.getPBRMaterialCount();
-  let dataCount = 4 + 4;
-  let bufferData = Float32Array.fromLength(pbrMaterialCount * dataCount);
-  let bufferSize = bufferData->Float32Array.byteLength;
-
-  let buffer =
-    StorageBufferVO.createFromDevice(
-      ~device,
-      ~bufferSize,
-      ~usage=
-        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
-        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
-      (),
-    );
-
-  (buffer, bufferSize, bufferData);
-};
-
-let _buildAndSetAllBufferData = device => {
-  _buildSceneDescBufferData(device)
-  ->PathTracingPassCPRepo.setSceneDescBufferData;
-
-  _buildPointIndexBufferData(device)
-  ->PathTracingPassCPRepo.setPointIndexBufferData;
-
-  _buildVertexBufferData(device)->PathTracingPassCPRepo.setVertexBufferData;
-
-  _buildIndexBufferData(device)->PathTracingPassCPRepo.setIndexBufferData;
-
-  _buildPBRMaterialBufferData(device)
-  ->PathTracingPassCPRepo.setPBRMaterialBufferData;
-};
-
 let _buildDirectionLightBufferData = device => {
   Contract.requireCheck(
     () => {
@@ -367,11 +257,6 @@ let exec = () => {
                 ),
               )
             });
-        })
-      ->Result.mapSuccess(() => {
-          _buildAndSetAllBufferData(device);
-
-          ();
         });
     })
   ->WonderBsMost.Most.just;

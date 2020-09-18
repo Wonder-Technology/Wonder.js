@@ -738,7 +738,7 @@ let _ =
       });
     });
 
-    describe("update all path tracing's buffer data", () => {
+    describe("build and set all path tracing's buffer data", () => {
       let _prepare = () => {
         let (device, queue) = _prepare();
         let (
@@ -758,12 +758,77 @@ let _ =
           );
         let _ =
           TransformCPTool.setTwoTransformsData(gameObject1, gameObject2);
-        ();
+
+        device;
       };
 
-      describe("update scene desc buffer data", () => {
-        beforeEach(() => {
-          TestCPTool.updateBufferCount(~transformCount=2, ())
+      let _testCreateBuffer = (~getBufferSizeFunc, ~getBufferDataFunc) => {
+        testPromise("create buffer", ()
+          => {
+            let device = _prepare();
+            let buffer = WebGPUDependencyTool.createBufferObject();
+            let createBufferStubData =
+              createEmptyStub(refJsObjToSandbox(sandbox^))
+              ->SinonCPTool.returns(buffer)
+              ->SinonCPTool.createTwoArgsEmptyStubData;
+            let copy_dst = 2;
+            let storage = 3;
+            WebGPUDependencyTool.build(
+              ~sandbox,
+              ~createBuffer=createBufferStubData->SinonCPTool.getDpFunc,
+              ~storage_bufferUsage=storage,
+              ~copy_dst_bufferUsage=copy_dst,
+              (),
+            )
+            ->WebGPUDependencyTool.set;
+
+            DirectorCPTool.initAndUpdate(
+              ~handleSuccessFunc=
+                () => {
+                  let (buffer, bufferSize, _) = getBufferDataFunc();
+
+                  (
+                    bufferSize,
+                    createBufferStubData
+                    ->SinonCPTool.getStub
+                    ->SinonCPTool.calledWithArg2(
+                        {"size": bufferSize, "usage": copy_dst lor storage},
+                        device,
+                      ),
+                  )
+                  ->expect
+                  == (getBufferSizeFunc(), true);
+                },
+              (),
+            );
+          });
+          // testPromise("create type arr", () => {
+          //   let device = _prepare();
+          //   DirectorCPTool.init(
+          //     ~handleSuccessFunc=
+          //       () => {
+          //         let (_, _, typeArr) = getBufferDataFunc();
+          //         typeArr->expect == makeTypeArrFunc();
+          //       },
+          //     (),
+          //   );
+          // });
+      };
+
+      describe("build and set scene desc buffer data", () => {
+        // beforeEach(() => {
+        //   // TestCPTool.updateBufferCount(~transformCount=2, ())
+        // });
+
+        describe("build scene desc buffer data", () => {
+          _testCreateBuffer(
+            ~getBufferSizeFunc=
+              () =>
+                (4 + 12 + 16)
+                * 2
+                * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
+            ~getBufferDataFunc=PathTracingPassCPTool.getSceneDescBufferData,
+          )
         });
 
         testPromise(
@@ -799,18 +864,18 @@ let _ =
                        0.05230407789349556,
                        (-0.03489949554204941),
                        0.,
-                       0.,
                        (-0.10343948006629944),
                        1.997018575668335,
-                       0.,
                        0.03488355129957199,
                        0.,
                        0.10727924853563309,
+                       (-0.046806808561086655),
+                       2.997715950012207,
                        0.,
                        0.,
+                       1.,
                        0.,
-                       0.,
-                       0.,
+                       1.,
                        1.,
                        1.,
                        0.,
@@ -831,18 +896,18 @@ let _ =
                        2.462019205093384,
                        (-0.8682408928871155),
                        0.,
-                       0.,
                        (-4.832844257354736),
                        8.703600883483887,
-                       0.,
                        0.9438963532447815,
                        0.,
                        5.9284281730651855,
+                       0.10258530080318451,
+                       29.40821647644043,
                        0.,
+                       2.,
+                       1.,
                        0.,
-                       0.,
-                       0.,
-                       0.,
+                       1.,
                      |]);
                 },
               (),
@@ -882,9 +947,17 @@ let _ =
         });
       });
 
-      describe("update point index buffer data", () => {
-        beforeEach(() => {
-          TestCPTool.updateBufferCount(~geometryCount=2, ())
+      describe("build and set point index buffer data", () => {
+        // beforeEach(() => {
+        //   TestCPTool.updateBufferCount(~geometryCount=2, ())
+        // });
+
+        describe("build point index buffer data", () => {
+          _testCreateBuffer(
+            ~getBufferSizeFunc=
+              () => 2 * 2 * Js.Typed_array.Uint32Array._BYTES_PER_ELEMENT,
+            ~getBufferDataFunc=PathTracingPassCPTool.getPointIndexBufferData,
+          )
         });
 
         testPromise(
@@ -899,7 +972,7 @@ let _ =
                     PathTracingPassCPTool.getPointIndexBufferData();
 
                   typeArr->expect
-                  == Js.Typed_array.Uint32Array.make([|0, 0, 24, 3|]);
+                  == Js.Typed_array.Uint32Array.make([|0, 0, 3, 3|]);
                 },
               (),
             );
@@ -937,152 +1010,171 @@ let _ =
         });
       });
 
-      describe("update vertex buffer data", () => {
-        beforeEach(() => {
-          TestCPTool.updateBufferCount(
-            ~geometryCount=2,
-            ~geometryPointCount=10,
-            (),
+      describe("build and set vertex buffer data", () => {
+        // beforeEach(() => {
+        //   TestCPTool.updateBufferCount(
+        //     ~geometryCount=2,
+        //     ~geometryPointCount=100,
+        //     (),
+        //   )
+        // });
+
+        describe("build vertex buffer data", () => {
+          _testCreateBuffer(
+            ~getBufferSizeFunc=
+              () => 56 * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
+            ~getBufferDataFunc=PathTracingPassCPTool.getVertexBufferData,
           )
         });
 
         testPromise(
-          "set each render geometry's vertices, normals to buffer data", () => {
-          let _ = _prepare();
+          "set each render geometry's vertices, normals to buffer data and set buffer's data",
+          () => {
+            let _ = _prepare();
+            let setSubFloat32DataStubData =
+              createEmptyStub(refJsObjToSandbox(sandbox^))
+              ->SinonCPTool.createThreeArgsEmptyStubData;
+            WebGPUDependencyTool.build(
+              ~sandbox,
+              ~setSubFloat32Data=
+                setSubFloat32DataStubData->SinonCPTool.getDpFunc,
+              (),
+            )
+            ->WebGPUDependencyTool.set;
 
-          DirectorCPTool.initAndUpdate(
-            ~handleSuccessFunc=
-              () => {
-                let (_, _, typeArr) =
-                  PathTracingPassCPTool.getVertexBufferData();
+            DirectorCPTool.initAndUpdate(
+              ~handleSuccessFunc=
+                () => {
+                  let (buffer, _, _) =
+                    PathTracingPassCPTool.getVertexBufferData();
 
-                typeArr->expect
-                == Js.Typed_array.Float32Array.make([|
-                     10.,
-                     10.,
-                     11.,
-                     0.,
-                     1.,
-                     2.,
-                     3.,
-                     0.,
-                     1.5,
-                     2.,
-                     3.,
-                     0.,
-                     2.,
-                     1.5,
-                     3.,
-                     0.,
-                     2.5,
-                     2.,
-                     3.5,
-                     0.,
-                     3.,
-                     3.5,
-                     4.5,
-                     0.,
-                     20.,
-                     10.,
-                     11.,
-                     0.,
-                     2.,
-                     (-1.),
-                     3.5,
-                     0.,
-                     1.5,
-                     3.,
-                     1.,
-                     0.,
-                     2.,
-                     1.,
-                     3.5,
-                     0.,
-                     2.5,
-                     2.5,
-                     (-1.5),
-                     0.,
-                     3.,
-                     5.5,
-                     (-2.5),
-                     0.,
-                     2.,
-                     3.,
-                     10.,
-                     0.,
-                     (-1.),
-                     2.,
-                     3.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                     0.,
-                   |]);
-              },
-            (),
-          );
-        });
-        testPromise("set buffer's data", () => {
-          let _ = _prepare();
-          let setSubFloat32DataStubData =
-            createEmptyStub(refJsObjToSandbox(sandbox^))
-            ->SinonCPTool.createThreeArgsEmptyStubData;
-          WebGPUDependencyTool.build(
-            ~sandbox,
-            ~setSubFloat32Data=
-              setSubFloat32DataStubData->SinonCPTool.getDpFunc,
-            (),
-          )
-          ->WebGPUDependencyTool.set;
-
-          DirectorCPTool.initAndUpdate(
-            ~handleSuccessFunc=
-              () => {
-                let (buffer, _, typeArr) =
-                  PathTracingPassCPTool.getVertexBufferData();
-
-                setSubFloat32DataStubData
-                ->SinonCPTool.getStub
-                ->expect
-                ->SinonCPTool.toCalledWith((
-                    0,
-                    typeArr,
-                    buffer->StorageBufferVO.value,
-                  ));
-              },
-            (),
-          );
-        });
+                  setSubFloat32DataStubData
+                  ->SinonCPTool.getStub
+                  ->expect
+                  ->SinonCPTool.toCalledWith((
+                      0,
+                      Js.Typed_array.Float32Array.make([|
+                        10.,
+                        10.,
+                        11.,
+                        0.,
+                        1.,
+                        2.,
+                        3.,
+                        0.,
+                        1.5,
+                        2.,
+                        3.,
+                        0.,
+                        2.,
+                        1.5,
+                        3.,
+                        0.,
+                        2.5,
+                        2.,
+                        3.5,
+                        0.,
+                        3.,
+                        3.5,
+                        4.5,
+                        0.,
+                        20.,
+                        10.,
+                        11.,
+                        0.,
+                        2.,
+                        (-1.),
+                        3.5,
+                        0.,
+                        1.5,
+                        3.,
+                        1.,
+                        0.,
+                        2.,
+                        1.,
+                        3.5,
+                        0.,
+                        2.5,
+                        2.5,
+                        (-1.5),
+                        0.,
+                        3.,
+                        5.5,
+                        (-2.5),
+                        0.,
+                        2.,
+                        3.,
+                        10.,
+                        0.,
+                        (-1.),
+                        2.,
+                        3.,
+                        0.,
+                      |]),
+                      buffer->StorageBufferVO.value,
+                    ));
+                },
+              (),
+            );
+          },
+        );
       });
 
-      describe("update index buffer data", () => {
-        beforeEach(() => {
-          TestCPTool.updateBufferCount(
-            ~geometryCount=2,
-            ~geometryPointCount=10,
-            (),
-          )
+      describe("build and set index buffer data", () => {
+        // beforeEach(() => {
+        //   TestCPTool.updateBufferCount(
+        //     ~geometryCount=2,
+        //     ~geometryPointCount=100,
+        //     (),
+        //   )
+        // });
+
+        describe("build index buffer data", () => {
+          // let _prepare = sandbox => {
+          //   let ((device, queue), _) = _prepare(sandbox);
+          //   let count = 3;
+          //   POConfigCPTool.setGeometryPointCount(count);
+          //   (device, count);
+          // };
+          testPromise("create buffer", () => {
+            let device = _prepare();
+            let buffer = WebGPUDependencyTool.createBufferObject();
+            let createBufferStubData =
+              createEmptyStub(refJsObjToSandbox(sandbox^))
+              ->SinonCPTool.returns(buffer)
+              ->SinonCPTool.createTwoArgsEmptyStubData;
+            let copy_dst = 2;
+            let storage = 3;
+            WebGPUDependencyTool.build(
+              ~sandbox,
+              ~createBuffer=createBufferStubData->SinonCPTool.getDpFunc,
+              ~storage_bufferUsage=storage,
+              ~copy_dst_bufferUsage=copy_dst,
+              (),
+            )
+            ->WebGPUDependencyTool.set;
+
+            DirectorCPTool.initAndUpdate(
+              ~handleSuccessFunc=
+                () => {
+                  let (buffer, bufferSize) =
+                    PathTracingPassCPTool.getIndexBufferData();
+
+                  (
+                    bufferSize,
+                    createBufferStubData
+                    ->SinonCPTool.getStub
+                    ->SinonCPTool.calledWithArg2(
+                        {"size": bufferSize, "usage": copy_dst lor storage},
+                        device,
+                      ),
+                  )
+                  ->expect
+                  == (9 * Js.Typed_array.Uint32Array._BYTES_PER_ELEMENT, true);
+                },
+              (),
+            );
+          })
         });
 
         testPromise(
@@ -1111,32 +1203,7 @@ let _ =
                   ->expect
                   ->SinonCPTool.toCalledWith((
                       0,
-                      Uint32Array.make([|
-                        2,
-                        1,
-                        0,
-                        2,
-                        0,
-                        1,
-                        3,
-                        1,
-                        2,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                      |]),
+                      Uint32Array.make([|2, 1, 0, 2, 0, 1, 3, 1, 2|]),
                       buffer->StorageBufferVO.value,
                     ));
                 },
@@ -1146,9 +1213,18 @@ let _ =
         );
       });
 
-      describe("update pbr material buffer data", () => {
-        beforeEach(() => {
-          TestCPTool.updateBufferCount(~pbrMaterialCount=3, ())
+      describe("build and set pbr material buffer data", () => {
+        // beforeEach(() => {
+        //   TestCPTool.updateBufferCount(~pbrMaterialCount=3, ())
+        // });
+
+        describe("build pbr material buffer data", () => {
+          _testCreateBuffer(
+            ~getBufferSizeFunc=
+              count =>
+                (4 + 4) * 2 * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
+            ~getBufferDataFunc=PathTracingPassCPTool.getPBRMaterialBufferData,
+          )
         });
 
         testPromise(
@@ -1179,14 +1255,6 @@ let _ =
                        2.,
                        1.5,
                        1.,
-                       0.,
-                       0.,
-                       0.,
-                       0.,
-                       0.,
-                       0.,
-                       0.,
-                       0.,
                        0.,
                      |]);
                 },
@@ -1560,6 +1628,8 @@ let _ =
                             * Float32Array._BYTES_PER_ELEMENT
                             + 1
                             * Uint32Array._BYTES_PER_ELEMENT
+                            + 1
+                            * Float32Array._BYTES_PER_ELEMENT
                             + 1
                             * Float32Array._BYTES_PER_ELEMENT,
                         );

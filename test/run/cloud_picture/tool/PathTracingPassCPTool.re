@@ -37,7 +37,8 @@ let createAndSetPipeline = () => {
 };
 
 let buildAndSetAllBufferData = device => {
-  InitPathTracingCPJobEntity._buildAndSetAllBufferData(device);
+  UpdatePathTracingCPJobEntity._buildAndSetAllBufferData(device)
+  ->ResultTool.getExnSuccessValueIgnore;
 };
 
 let createAndSetShaderBindingTable = () => {

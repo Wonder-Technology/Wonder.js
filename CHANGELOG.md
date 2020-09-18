@@ -1,3 +1,37 @@
+<a name="2.0.0-alpha.3"></a>
+# [2.0.0-alpha.3](https://github.com/Wonder-Technology/Wonder.js/compare/v2.0.0-alpha.2...v2.0.0-alpha.3) (2020-09-16)
+
+
+### Bug Fixes
+
+* **cloud-picture:** fix "if create gameObject(should use gameObject repo dp) before init and after prepare, will error" bug ([ec5b0f8](https://github.com/Wonder-Technology/Wonder.js/commit/ec5b0f8))
+* **cloud-picture:** fix glsl ([2346c0a](https://github.com/Wonder-Technology/Wonder.js/commit/2346c0a))
+* **cloud-picture:** fix glsl ([d808234](https://github.com/Wonder-Technology/Wonder.js/commit/d808234))
+* **cloud-picture:** fix glsl ([540c991](https://github.com/Wonder-Technology/Wonder.js/commit/540c991))
+* **cloud-picture:** fix InitAccumulationCPJobEntity->_createAndSetPipeline->baseShaderPath ([3aa29ea](https://github.com/Wonder-Technology/Wonder.js/commit/3aa29ea))
+* **cloud-picture:** fix InitAccumulationCPJobEntity->bind group and layout: add commonBuffer ([1a7bc7e](https://github.com/Wonder-Technology/Wonder.js/commit/1a7bc7e))
+* **cloud-picture:** fix InitPathTracingCPJobEntity->_createShaderBindingTable->groups ([1026c93](https://github.com/Wonder-Technology/Wonder.js/commit/1026c93))
+* **cloud-picture:** fix InitPathTracingCPJobEntity->camera,directionLight bind group layout->visibility ([7f9154d](https://github.com/Wonder-Technology/Wonder.js/commit/7f9154d))
+* **cloud-picture:** fix maxPayloadSize ([7facf78](https://github.com/Wonder-Technology/Wonder.js/commit/7facf78))
+* **cloud-picture:** fix UpdatePathTracingCPJobEntity->_buildAndSetPointIndexBufferData->set vertexIndex data ([e670a46](https://github.com/Wonder-Technology/Wonder.js/commit/e670a46))
+* **cloud-picture:** fix UpdatePathTracingCPJobEntity->_buildAndSetSceneDescBufferData->set localToWorldMatrix data ([da96b11](https://github.com/Wonder-Technology/Wonder.js/commit/da96b11))
+* **cloud-picture:** fix UpdatePathTracingCPJobEntity->bind group layout->visibility ([7dbfdc8](https://github.com/Wonder-Technology/Wonder.js/commit/7dbfdc8))
+* **cloud-picture:** fix UpdatePathTracingCPJobEntity->set vertex buffer's and index buffer's data ([eb74b19](https://github.com/Wonder-Technology/Wonder.js/commit/eb74b19))
+* **cloud-picture:** initWebGPUCPJobEntity should set window ([1130503](https://github.com/Wonder-Technology/Wonder.js/commit/1130503))
+* **cloud-picture:** move "build all path tracing buffer data" to UpdateTransformCPJobEntity ([adcd873](https://github.com/Wonder-Technology/Wonder.js/commit/adcd873))
+* **cloud-picture:** the index buffer's data should be new type arr! ([46f39f0](https://github.com/Wonder-Technology/Wonder.js/commit/46f39f0))
+* **dependency:** fix IWebGPUCoreDp->passEncoderCompute->setDynamicBindGroup ([f92298b](https://github.com/Wonder-Technology/Wonder.js/commit/f92298b))
+* **dependency:** fix IWebGPUCoreDp->pollEvents type ([fc070bc](https://github.com/Wonder-Technology/Wonder.js/commit/fc070bc))
+* **pipeline:** now if one job in the pipeline stream err, it will trigger the stream's error handler ([8e11d5a](https://github.com/Wonder-Technology/Wonder.js/commit/8e11d5a))
+
+
+### Features
+
+* **geometry:** GeometryRunAPI add createPlaneGeometry api ([9bfb1bb](https://github.com/Wonder-Technology/Wonder.js/commit/9bfb1bb))
+* **pipeline:** add end_render job ([2c20a0a](https://github.com/Wonder-Technology/Wonder.js/commit/2c20a0a))
+
+
+
 <a name="2.0.0-alpha.2"></a>
 # [2.0.0-alpha.2](https://github.com/Wonder-Technology/Wonder.js/compare/v2.0.0-alpha.1...v2.0.0-alpha.2) (2020-09-09)
 

@@ -1,7 +1,7 @@
 
 struct InstanceData {
-  uint geometryIndex;
-  uint materialIndex;
+  float geometryIndex;
+  float materialIndex;
   float pad_0;
   float pad_1;
 
@@ -22,8 +22,6 @@ extract this to avoid duplicate instead of move this into InstanceData.
 struct PointIndexData {
   uint vertexIndex;
   uint faceIndex;
-  float pad_0;
-  float pad_1;
 };
 
 struct PBRMaterial {
@@ -114,16 +112,11 @@ struct HitShadingData {
 };
 
 
-vec2 _blerp(vec2 b, vec2 p1, vec2 p2, vec2 p3) {
-  return (1.0 - b.x - b.y) * p1 + b.x * p2 + b.y * p3;
-}
-
-
 HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   InstanceData instanceData = _getInstanceData(instanceIndex);
 
-  uint geometryIndex = instanceData.geometryIndex;
-  uint materialIndex = instanceData.materialIndex;
+  uint geometryIndex = uint(instanceData.geometryIndex);
+  uint materialIndex = uint(instanceData.materialIndex);
 
   PointIndexData pointIndexData = _getPointIndexData(geometryIndex);
   uint vertexIndex = _getVertexIndex(pointIndexData);

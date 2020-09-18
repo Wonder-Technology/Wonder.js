@@ -82,3 +82,11 @@ let getNormalsOffset = () => {
 let getIndicesOffset = () => {
   CPRepo.getExnGeometry().indicesOffset;
 };
+
+let getCopyUsedIndicesTypeArr = () => {
+  Js.Typed_array.Uint32Array.slice(
+    ~start=0,
+    ~end_=getIndicesOffset(),
+    getIndicesTypeArr(),
+  );
+};

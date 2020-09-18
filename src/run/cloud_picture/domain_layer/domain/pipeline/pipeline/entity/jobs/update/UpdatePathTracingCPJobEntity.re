@@ -2,11 +2,23 @@ open Js.Typed_array;
 
 let create = () => JobEntity.create("update_pathTracing");
 
-let _updateSceneDescBufferData =
-    (
-      (sceneDescBuffer, sceneDescBufferSize, sceneDescBufferData),
-      allRenderGameObjects,
-    ) => {
+let _buildAndSetSceneDescBufferData = (device, allRenderGameObjects) => {
+  let gameObjectCount = allRenderGameObjects->ListSt.length;
+
+  let dataCount = 4 + 12 + 16;
+  let bufferData = Float32Array.fromLength(gameObjectCount * dataCount);
+  let bufferSize = bufferData->Float32Array.byteLength;
+
+  let buffer =
+    StorageBufferVO.createFromDevice(
+      ~device,
+      ~bufferSize,
+      ~usage=
+        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
+        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
+      (),
+    );
+
   allRenderGameObjects
   ->ListSt.traverseResultM(gameObject => {
       Tuple3.collectOption(
@@ -27,18 +39,18 @@ let _updateSceneDescBufferData =
                   geometry->GeometryEntity.value->Belt.Float.fromInt,
                   pbrMaterial->PBRMaterialEntity.value->Belt.Float.fromInt,
                 ),
-                sceneDescBufferData,
+                bufferData,
               ),
               TypeArrayCPRepoUtils.setMat3Data(
                 offset + 4,
                 normalMatrix->NormalMatrixVO.value,
-                sceneDescBufferData,
+                bufferData,
               ),
-              TypeArrayCPRepoUtils.setMat3Data(
+              TypeArrayCPRepoUtils.setFloat16WithFloat32Array(
                 offset + 4 + 12,
                 TransformRunAPI.getLocalToWorldMatrix(transform)
                 ->LocalToWorldMatrixVO.value,
-                sceneDescBufferData,
+                bufferData,
               ),
             ])
           })
@@ -48,24 +60,59 @@ let _updateSceneDescBufferData =
   ->Result.mapSuccess(_ => {
       WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubFloat32Data(
         0,
-        sceneDescBufferData,
-        sceneDescBuffer->StorageBufferVO.value,
+        bufferData,
+        buffer->StorageBufferVO.value,
       );
 
       PathTracingPassCPRepo.setSceneDescBufferData((
-        sceneDescBuffer,
-        sceneDescBufferSize,
-        sceneDescBufferData,
+        buffer,
+        bufferSize,
+        bufferData,
       ));
     });
 };
 
-let _updatePointIndexBufferData =
-    (
-      (pointIndexBuffer, pointIndexBufferSize, pointIndexBufferData),
-      allRenderGeometries,
-    ) => {
+let _convertVertexStartIndexFromAlignedInPOToInVertexBufferData =
+    vertexStartIndex => {
+  Contract.requireCheck(
+    () => {
+      Contract.(
+        Operators.(
+          test(
+            Log.buildAssertMessage(
+              ~expect={j|vertexStartIndex:$vertexStartIndex be 3 times|j},
+              ~actual={j|not|j},
+            ),
+            () => {
+              let x = vertexStartIndex->Belt.Float.fromInt /. 3.;
+
+              x -. x->Js.Math.floor_float ==. 0.0;
+            },
+          )
+        )
+      )
+    },
+    DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+  )
+  ->Result.mapSuccess(() => {vertexStartIndex / 3});
+};
+
+let _buildAndSetPointIndexBufferData = (device, allRenderGeometries) => {
+  let geometryCount = allRenderGeometries->ListSt.length;
   let dataCount = 2;
+  let bufferData = Uint32Array.fromLength(geometryCount * dataCount);
+  let bufferSize = bufferData->Uint32Array.byteLength;
+
+  let buffer =
+    StorageBufferVO.createFromDevice(
+      ~device,
+      ~bufferSize,
+      ~usage=
+        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
+        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
+      (),
+    );
+
   let stride = dataCount;
 
   allRenderGeometries
@@ -81,38 +128,41 @@ let _updatePointIndexBufferData =
   ->Result.bind(list => {
       list->ListSt.traverseResultM(
         ((geometry, (vertexStartIndex, _), (faceStartIndex, _))) => {
-        ListResult.mergeResults([
-          TypeArrayCPRepoUtils.setUint32_1(
-            geometry * stride,
-            (vertexStartIndex->Belt.Float.fromInt /. 3. *. 8.)
-            ->Belt.Int.fromFloat,
-            pointIndexBufferData,
-          ),
-          TypeArrayCPRepoUtils.setUint32_1(
-            geometry * stride + 1,
-            faceStartIndex,
-            pointIndexBufferData,
-          ),
-        ])
+        _convertVertexStartIndexFromAlignedInPOToInVertexBufferData(
+          vertexStartIndex,
+        )
+        ->Result.bind(vertexStartIndex => {
+            ListResult.mergeResults([
+              TypeArrayCPRepoUtils.setUint32_1(
+                geometry * stride,
+                vertexStartIndex,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setUint32_1(
+                geometry * stride + 1,
+                faceStartIndex,
+                bufferData,
+              ),
+            ])
+          })
       })
     })
   ->Result.mapSuccess(_ => {
       WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubUint32Data(
         0,
-        pointIndexBufferData,
-        pointIndexBuffer->StorageBufferVO.value,
+        bufferData,
+        buffer->StorageBufferVO.value,
       );
 
       PathTracingPassCPRepo.setPointIndexBufferData((
-        pointIndexBuffer,
-        pointIndexBufferSize,
-        pointIndexBufferData,
+        buffer,
+        bufferSize,
+        bufferData,
       ));
     });
 };
 
-let _updateVertexBufferData =
-    ((vertexBuffer, vertexBufferSize, vertexBufferData)) => {
+let _buildAndSetVertexBufferData = device => {
   Contract.requireCheck(
     () => {
       open Contract;
@@ -139,10 +189,38 @@ let _updateVertexBufferData =
         PointsGeometryCPRepo.getVerticesOffset()
         == PointsGeometryCPRepo.getNormalsOffset()
       });
+      test(
+        Log.buildAssertMessage(
+          ~expect={j|verticesOffset be 3 times|j},
+          ~actual={j|not|j},
+        ),
+        () => {
+          let x =
+            PointsGeometryCPRepo.getVerticesOffset()->Belt.Float.fromInt /. 3.;
+
+          x -. x->Js.Math.floor_float ==. 0.0;
+        },
+      );
     },
     OtherConfigDpRunAPI.unsafeGet().getIsDebug(),
   )
-  ->Result.tap(() => {
+  ->Result.mapSuccess(() => {
+      let bufferData =
+        Float32Array.fromLength(
+          PointsGeometryCPRepo.getVerticesOffset() / 3 * 8,
+        );
+      let bufferSize = bufferData->Float32Array.byteLength;
+
+      let buffer =
+        StorageBufferVO.createFromDevice(
+          ~device,
+          ~bufferSize,
+          ~usage=
+            WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
+            lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
+          (),
+        );
+
       let vertices = PointsGeometryCPRepo.getVerticesTypeArr();
       let normals = PointsGeometryCPRepo.getNormalsTypeArr();
 
@@ -152,33 +230,33 @@ let _updateVertexBufferData =
       let j = ref(0);
       while (i^ < length) {
         Float32Array.unsafe_set(
-          vertexBufferData,
+          bufferData,
           j^,
           Float32Array.unsafe_get(vertices, i^),
         );
         Float32Array.unsafe_set(
-          vertexBufferData,
+          bufferData,
           j^ + 1,
           Float32Array.unsafe_get(vertices, i^ + 1),
         );
         Float32Array.unsafe_set(
-          vertexBufferData,
+          bufferData,
           j^ + 2,
           Float32Array.unsafe_get(vertices, i^ + 2),
         );
 
         Float32Array.unsafe_set(
-          vertexBufferData,
+          bufferData,
           j^ + 4,
           Float32Array.unsafe_get(normals, i^),
         );
         Float32Array.unsafe_set(
-          vertexBufferData,
+          bufferData,
           j^ + 5,
           Float32Array.unsafe_get(normals, i^ + 1),
         );
         Float32Array.unsafe_set(
-          vertexBufferData,
+          bufferData,
           j^ + 6,
           Float32Array.unsafe_get(normals, i^ + 2),
         );
@@ -189,35 +267,57 @@ let _updateVertexBufferData =
 
       WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubFloat32Data(
         0,
-        vertexBufferData,
-        vertexBuffer->StorageBufferVO.value,
+        bufferData,
+        buffer->StorageBufferVO.value,
       );
 
       PathTracingPassCPRepo.setVertexBufferData((
-        vertexBuffer,
-        vertexBufferSize,
-        vertexBufferData,
+        buffer,
+        bufferSize,
+        bufferData,
       ));
     });
 };
 
-let _updateIndexBufferData = ((indexBuffer, indexBufferSize)) => {
-  let indices = PointsGeometryCPRepo.getIndicesTypeArr();
+let _buildAndSetIndexBufferData = device => {
+  let bufferData = PointsGeometryCPRepo.getCopyUsedIndicesTypeArr();
+  let bufferSize = bufferData->Uint32Array.byteLength;
+
+  let buffer =
+    StorageBufferVO.createFromDevice(
+      ~device,
+      ~bufferSize,
+      ~usage=
+        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
+        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
+      (),
+    );
 
   WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubUint32Data(
     0,
-    indices,
-    indexBuffer->StorageBufferVO.value,
+    bufferData,
+    buffer->StorageBufferVO.value,
   );
 
-  PathTracingPassCPRepo.setIndexBufferData((indexBuffer, indexBufferSize));
+  PathTracingPassCPRepo.setIndexBufferData((buffer, bufferSize));
 };
 
-let _updatePBRMaterialBufferData =
-    (
-      (pbrMaterialBuffer, pbrMaterialBufferSize, pbrMaterialBufferData),
-      allRenderPBRMaterials,
-    ) => {
+let _buildAndSetPBRMaterialBufferData = (device, allRenderPBRMaterials) => {
+  let pbrMaterialCount = allRenderPBRMaterials->ListSt.length;
+  let dataCount = 4 + 4;
+  let bufferData = Float32Array.fromLength(pbrMaterialCount * dataCount);
+  let bufferSize = bufferData->Float32Array.byteLength;
+
+  let buffer =
+    StorageBufferVO.createFromDevice(
+      ~device,
+      ~bufferSize,
+      ~usage=
+        WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
+        lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
+      (),
+    );
+
   allRenderPBRMaterials
   ->ListSt.traverseReduceResultM(
       0,
@@ -233,15 +333,11 @@ let _updatePBRMaterialBufferData =
           PBRMaterialRunAPI.getMetalness(pbrMaterial)->MetalnessVO.value;
 
         ListResult.mergeResults([
-          TypeArrayCPRepoUtils.setFloat3(
-            offset + 0,
-            diffuse,
-            pbrMaterialBufferData,
-          ),
+          TypeArrayCPRepoUtils.setFloat3(offset + 0, diffuse, bufferData),
           TypeArrayCPRepoUtils.setFloat3(
             offset + 4,
             (metalness, roughness, specular),
-            pbrMaterialBufferData,
+            bufferData,
           ),
         ])
         ->Result.mapSuccess(() => {offset + 4 + 4});
@@ -250,46 +346,30 @@ let _updatePBRMaterialBufferData =
   ->Result.mapSuccess(_ => {
       WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubFloat32Data(
         0,
-        pbrMaterialBufferData,
-        pbrMaterialBuffer->StorageBufferVO.value,
+        bufferData,
+        buffer->StorageBufferVO.value,
       );
       PathTracingPassCPRepo.setPBRMaterialBufferData((
-        pbrMaterialBuffer,
-        pbrMaterialBufferSize,
-        pbrMaterialBufferData,
+        buffer,
+        bufferSize,
+        bufferData,
       ));
     });
 };
 
-let _updateAllBufferData =
-    (
-      (
-        (sceneDescBuffer, sceneDescBufferSize, sceneDescBufferData),
-        (pointIndexBuffer, pointIndexBufferSize, pointIndexBufferData),
-        (vertexBuffer, vertexBufferSize, vertexBufferData),
-        (indexBuffer, indexBufferSize),
-        (pbrMaterialBuffer, pbrMaterialBufferSize, pbrMaterialBufferData),
-      ),
-    ) => {
+let _buildAndSetAllBufferData = device => {
   let allRenderGeometries = GameObjectRunAPI.getAllRenderGeometries();
 
   ListResult.mergeResults([
-    _updateSceneDescBufferData(
-      (sceneDescBuffer, sceneDescBufferSize, sceneDescBufferData),
+    _buildAndSetSceneDescBufferData(
+      device,
       GameObjectRunAPI.getAllRenderGameObjects(),
     ),
-    _updatePointIndexBufferData(
-      (pointIndexBuffer, pointIndexBufferSize, pointIndexBufferData),
-      allRenderGeometries,
-    ),
-    _updateVertexBufferData((
-      vertexBuffer,
-      vertexBufferSize,
-      vertexBufferData,
-    )),
-    _updateIndexBufferData((indexBuffer, indexBufferSize))->Result.succeed,
-    _updatePBRMaterialBufferData(
-      (pbrMaterialBuffer, pbrMaterialBufferSize, pbrMaterialBufferData),
+    _buildAndSetPointIndexBufferData(device, allRenderGeometries),
+    _buildAndSetVertexBufferData(device),
+    _buildAndSetIndexBufferData(device)->Result.succeed,
+    _buildAndSetPBRMaterialBufferData(
+      device,
       GameObjectRunAPI.getAllRenderPBRMaterials(),
     ),
   ]);
@@ -300,11 +380,11 @@ let _createAndAddRayTracingBindGroup =
       device,
       instanceContainer,
       (
-        (sceneDescBuffer, sceneDescBufferSize),
-        (pointIndexBuffer, pointIndexBufferSize),
-        (vertexBuffer, vertexBufferSize),
+        (sceneDescBuffer, sceneDescBufferSize, _),
+        (pointIndexBuffer, pointIndexBufferSize, _),
+        (vertexBuffer, vertexBufferSize, _),
         (indexBuffer, indexBufferSize),
-        (pbrMaterialBuffer, pbrMaterialBufferSize),
+        (pbrMaterialBuffer, pbrMaterialBufferSize, _),
       ),
       ((pixelBuffer, pixelBufferSize), (commonBuffer, commonBufferData)),
     ) => {
@@ -484,6 +564,8 @@ let _createAndSetPipeline = (device, rtBindGroupLayout) => {
                 + 1
                 * Uint32Array._BYTES_PER_ELEMENT
                 + 1
+                * Float32Array._BYTES_PER_ELEMENT
+                + 1
                 * Float32Array._BYTES_PER_ELEMENT,
             );
           },
@@ -499,48 +581,25 @@ let exec = () => {
   ->Result.bind(((device, queue)) => {
       WebGPURayTracingRunAPI.buildContainers(device, queue)
       ->Result.bind(instanceContainer => {
-          Tuple5.collectOption(
-            PathTracingPassCPRepo.getSceneDescBufferData(),
-            PathTracingPassCPRepo.getPointIndexBufferData(),
-            PathTracingPassCPRepo.getVertexBufferData(),
-            PathTracingPassCPRepo.getIndexBufferData(),
-            PathTracingPassCPRepo.getPBRMaterialBufferData(),
-          )
-          ->Result.bind(
-              (
-                (
-                  (sceneDescBuffer, sceneDescBufferSize, sceneDescBufferData),
-                  (
-                    pointIndexBuffer,
-                    pointIndexBufferSize,
-                    pointIndexBufferData,
-                  ),
-                  (vertexBuffer, vertexBufferSize, vertexBufferData),
-                  (indexBuffer, indexBufferSize),
-                  (
-                    pbrMaterialBuffer,
-                    pbrMaterialBufferSize,
-                    pbrMaterialBufferData,
-                  ),
-                ) as allBufferData,
-              ) => {
-              _updateAllBufferData(allBufferData)
-              ->Result.bind(() => {
-                  Tuple2.collectOption(
-                    PassCPRepo.getPixelBufferData(),
-                    PassCPRepo.getCommonBufferData(),
+          _buildAndSetAllBufferData(device)
+          ->Result.bind(() => {
+              Tuple2.collectOption(
+                PassCPRepo.getPixelBufferData(),
+                PassCPRepo.getCommonBufferData(),
+              )
+              ->Result.bind(passAllBufferData => {
+                  Tuple5.collectOption(
+                    PathTracingPassCPRepo.getSceneDescBufferData(),
+                    PathTracingPassCPRepo.getPointIndexBufferData(),
+                    PathTracingPassCPRepo.getVertexBufferData(),
+                    PathTracingPassCPRepo.getIndexBufferData(),
+                    PathTracingPassCPRepo.getPBRMaterialBufferData(),
                   )
-                  ->Result.bind(passAllBufferData => {
+                  ->Result.bind(pathTracingAllBufferData => {
                       _createAndAddRayTracingBindGroup(
                         device,
                         instanceContainer,
-                        (
-                          (sceneDescBuffer, sceneDescBufferSize),
-                          (pointIndexBuffer, pointIndexBufferSize),
-                          (vertexBuffer, vertexBufferSize),
-                          (indexBuffer, indexBufferSize),
-                          (pbrMaterialBuffer, pbrMaterialBufferSize),
-                        ),
+                        pathTracingAllBufferData,
                         passAllBufferData,
                       )
                       ->_createAndSetPipeline(device, _)
