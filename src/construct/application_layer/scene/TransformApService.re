@@ -112,3 +112,7 @@ let getNormalMatrix = transform => {
 let getMaxIndex = IndexTransformDoService.getMaxIndex;
 
 let mutableUpdate = UpdateTransformDoService.mutableUpdate;
+
+let lookAt = (transform, target) => {
+  UpdateTransformDoService.setLookAt(transform, target);
+}

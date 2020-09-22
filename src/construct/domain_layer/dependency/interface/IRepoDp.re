@@ -63,6 +63,7 @@ type transformRepo = {
   addChild: (parent, child) => unit,
   removeChild: (parent, child) => unit,
   getLocalToWorldMatrix: transform => Js.Typed_array.Float32Array.t,
+  setLocalToWorldMatrix: (transform, Js.Typed_array.Float32Array.t) => Result.t2(unit),
   getLocalPosition: transform => position,
   setLocalPosition: (transform, position) => Result.t2(unit),
   getLocalRotation: transform => rotation,

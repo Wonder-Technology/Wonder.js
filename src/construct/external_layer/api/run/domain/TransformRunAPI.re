@@ -109,3 +109,5 @@ let getNormalMatrix = transform => {
 let getMaxIndex = TransformApService.getMaxIndex;
 
 let mutableUpdate = TransformApService.mutableUpdate;
+
+let lookAt = TransformApService.lookAt;

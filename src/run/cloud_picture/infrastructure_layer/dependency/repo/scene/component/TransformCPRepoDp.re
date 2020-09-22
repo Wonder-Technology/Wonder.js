@@ -118,6 +118,14 @@ let getLocalToWorldMatrix = transform => {
   );
 };
 
+let setLocalToWorldMatrix = (transform, localToWorldMatrix) => {
+  OperateTypeArrayTransformCPRepoUtils.setLocalToWorldMatrix(
+    transform,
+    TypeArrayCPRepoUtils.getFloat16Tuple(0, localToWorldMatrix),
+    CPRepo.getExnTransform().localToWorldMatrices,
+  )
+}
+
 let getLocalPosition = transform => {
   OperateTypeArrayTransformCPRepoUtils.getLocalPositionTuple(
     transform,

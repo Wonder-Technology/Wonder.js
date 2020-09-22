@@ -62,6 +62,7 @@ let _injectDependencies = () => {
       addChild: TransformCPRepoDp.addChild,
       removeChild: TransformCPRepoDp.removeChild,
       getLocalToWorldMatrix: TransformCPRepoDp.getLocalToWorldMatrix,
+      setLocalToWorldMatrix: TransformCPRepoDp.setLocalToWorldMatrix,
       getLocalPosition: TransformCPRepoDp.getLocalPosition,
       setLocalPosition: TransformCPRepoDp.setLocalPosition,
       getLocalRotation: TransformCPRepoDp.getLocalRotation,
