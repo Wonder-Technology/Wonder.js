@@ -600,3 +600,36 @@ let getEulerAngles = matTypeArr => {
 
   (x^, y, z^)->Vector3.scale(Vector3.Float, Angle.getRadToDeg());
 };
+
+let setLookAt = (eye, center, up) => {
+  let (z1, z2, z3) as z = 
+    Vector3.sub(Vector3.Float, eye, center) -> Vector3.normalize;
+
+  let y = up -> Vector3.normalize;
+
+  let (x1, x2, x3) as x = 
+    Vector3.cross(y, z) -> Vector3.normalize;
+  
+  let (y1, y2, y3) = Vector3.cross(z, x);
+
+  let (eyeX, eyeY, eyeZ) = eye;
+
+  Float32Array.make([|
+    x1,
+    x2,
+    x3,
+    0.,
+    y1,
+    y2,
+    y3,
+    0.,
+    z1,
+    z2,
+    z3,
+    0.,
+    eyeX,
+    eyeY,
+    eyeZ,
+    1.,
+  |]);
+}
