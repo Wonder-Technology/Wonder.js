@@ -146,59 +146,59 @@ let _ =
         })
       );
 
-      describe("set map's source id", () => {
+      describe("set map's image id", () => {
         let _buildImageId = () => "image1"->ImageIdVO.create;
 
-        describe("setDiffuseMapSourceId", () => {
+        describe("setDiffuseMapImageId", () => {
           test("set map's image id", () => {
             let material = create()->ResultTool.getExnSuccessValue;
             let id = _buildImageId();
 
-            setDiffuseMapSourceId(material, id);
+            setDiffuseMapImageId(material, id);
 
-            PBRMaterialTool.getDiffuseMapSourceId(material)
+            PBRMaterialTool.getDiffuseMapImageId(material)
             ->OptionSt.getExn
             ->expect
             == id;
           })
         });
 
-        describe("setMetalRoughnessMapSourceId", () => {
+        describe("setMetalRoughnessMapImageId", () => {
           test("set map's image id", () => {
             let material = create()->ResultTool.getExnSuccessValue;
             let id = _buildImageId();
 
-            setMetalRoughnessMapSourceId(material, id);
+            setMetalRoughnessMapImageId(material, id);
 
-            PBRMaterialTool.getMetalRoughnessMapSourceId(material)
+            PBRMaterialTool.getMetalRoughnessMapImageId(material)
             ->OptionSt.getExn
             ->expect
             == id;
           })
         });
 
-        describe("setEmissionMapSourceId", () => {
+        describe("setEmissionMapImageId", () => {
           test("set map's image id", () => {
             let material = create()->ResultTool.getExnSuccessValue;
             let id = _buildImageId();
 
-            setEmissionMapSourceId(material, id);
+            setEmissionMapImageId(material, id);
 
-            PBRMaterialTool.getEmissionMapSourceId(material)
+            PBRMaterialTool.getEmissionMapImageId(material)
             ->OptionSt.getExn
             ->expect
             == id;
           })
         });
 
-        describe("setNormalMapSourceId", () => {
+        describe("setNormalMapImageId", () => {
           test("set map's image id", () => {
             let material = create()->ResultTool.getExnSuccessValue;
             let id = _buildImageId();
 
-            setNormalMapSourceId(material, id);
+            setNormalMapImageId(material, id);
 
-            PBRMaterialTool.getNormalMapSourceId(material)
+            PBRMaterialTool.getNormalMapImageId(material)
             ->OptionSt.getExn
             ->expect
             == id;

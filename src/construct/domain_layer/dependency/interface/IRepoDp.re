@@ -84,14 +84,14 @@ type pbrMaterialRepo = {
   setRoughness: (pbrMaterial, float) => Result.t2(unit),
   getMetalness: pbrMaterial => float,
   setMetalness: (pbrMaterial, float) => Result.t2(unit),
-  getDiffuseMapSourceId: pbrMaterial => Js.Nullable.t(ImagePOType.id),
-  setDiffuseMapSourceId: (pbrMaterial, ImagePOType.id) => unit,
-  getMetalRoughnessMapSourceId: pbrMaterial => Js.Nullable.t(ImagePOType.id),
-  setMetalRoughnessMapSourceId: (pbrMaterial, ImagePOType.id) => unit,
-  getEmissionMapSourceId: pbrMaterial => Js.Nullable.t(ImagePOType.id),
-  setEmissionMapSourceId: (pbrMaterial, ImagePOType.id) => unit,
-  getNormalMapSourceId: pbrMaterial => Js.Nullable.t(ImagePOType.id),
-  setNormalMapSourceId: (pbrMaterial, ImagePOType.id) => unit,
+  getDiffuseMapImageId: pbrMaterial => Js.Nullable.t(ImagePOType.id),
+  setDiffuseMapImageId: (pbrMaterial, ImagePOType.id) => unit,
+  getMetalRoughnessMapImageId: pbrMaterial => Js.Nullable.t(ImagePOType.id),
+  setMetalRoughnessMapImageId: (pbrMaterial, ImagePOType.id) => unit,
+  getEmissionMapImageId: pbrMaterial => Js.Nullable.t(ImagePOType.id),
+  setEmissionMapImageId: (pbrMaterial, ImagePOType.id) => unit,
+  getNormalMapImageId: pbrMaterial => Js.Nullable.t(ImagePOType.id),
+  setNormalMapImageId: (pbrMaterial, ImagePOType.id) => unit,
 };
 
 type geometryRepo = {
