@@ -86,6 +86,14 @@ let createPO = () => {
           defaultMetalness,
           gameObjectsMap:
             CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),
+          diffuseMapSourceIdMap:
+            CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),
+          metalRoughnessMapSourceIdMap:
+            CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),
+          emissionMapSourceIdMap:
+            CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),
+          normalMapSourceIdMap:
+            CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),
         }: PBRMaterialCPPOType.pbrMaterial
       )
     });

@@ -74,7 +74,7 @@ let _ =
       );
 
       describe("setDiffuseColor", () =>
-        test("test set color", () => {
+        test("set color", () => {
           let material = create()->ResultTool.getExnSuccessValue;
           let color = (0.2, 0.3, 0.5)->PBRMaterialTool.createDiffuseColor;
 
@@ -95,7 +95,7 @@ let _ =
       );
 
       describe("setSpecular", () =>
-        test("test set specular", () => {
+        test("set specular", () => {
           let material = create()->ResultTool.getExnSuccessValue;
           let specular = 0.5->SpecularVO.create;
 
@@ -115,7 +115,7 @@ let _ =
       );
 
       describe("setRoughness", () =>
-        test("test set roughness", () => {
+        test("set roughness", () => {
           let material = create()->ResultTool.getExnSuccessValue;
           let roughness = 0.5->RoughnessVO.create;
 
@@ -135,7 +135,7 @@ let _ =
       );
 
       describe("setMetalness", () =>
-        test("test set metalness", () => {
+        test("set metalness", () => {
           let material = create()->ResultTool.getExnSuccessValue;
           let metalness = 0.5->MetalnessVO.create;
 
@@ -145,5 +145,65 @@ let _ =
           getMetalness(material)->expect == metalness;
         })
       );
+
+      describe("set map's source id", () => {
+        let _buildImageId = () => "image1"->ImageIdVO.create;
+
+        describe("setDiffuseMapSourceId", () => {
+          test("set map's image id", () => {
+            let material = create()->ResultTool.getExnSuccessValue;
+            let id = _buildImageId();
+
+            setDiffuseMapSourceId(material, id);
+
+            PBRMaterialTool.getDiffuseMapSourceId(material)
+            ->OptionSt.getExn
+            ->expect
+            == id;
+          })
+        });
+
+        describe("setMetalRoughnessMapSourceId", () => {
+          test("set map's image id", () => {
+            let material = create()->ResultTool.getExnSuccessValue;
+            let id = _buildImageId();
+
+            setMetalRoughnessMapSourceId(material, id);
+
+            PBRMaterialTool.getMetalRoughnessMapSourceId(material)
+            ->OptionSt.getExn
+            ->expect
+            == id;
+          })
+        });
+
+        describe("setEmissionMapSourceId", () => {
+          test("set map's image id", () => {
+            let material = create()->ResultTool.getExnSuccessValue;
+            let id = _buildImageId();
+
+            setEmissionMapSourceId(material, id);
+
+            PBRMaterialTool.getEmissionMapSourceId(material)
+            ->OptionSt.getExn
+            ->expect
+            == id;
+          })
+        });
+
+        describe("setNormalMapSourceId", () => {
+          test("set map's image id", () => {
+            let material = create()->ResultTool.getExnSuccessValue;
+            let id = _buildImageId();
+
+            setNormalMapSourceId(material, id);
+
+            PBRMaterialTool.getNormalMapSourceId(material)
+            ->OptionSt.getExn
+            ->expect
+            == id;
+          })
+        });
+      });
     });
   });

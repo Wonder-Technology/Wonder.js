@@ -82,3 +82,64 @@ let setMetalness = (material, metalness) => {
     CPRepo.getExnPBRMaterial().metalnesses,
   );
 };
+
+let getDiffuseMapSourceId = material => {
+  CPRepo.getExnPBRMaterial().diffuseMapSourceIdMap
+  ->ImmutableSparseMap.getNullable(material);
+};
+
+let setDiffuseMapSourceId = (material, id) => {
+  let {diffuseMapSourceIdMap} as materialPO = CPRepo.getExnPBRMaterial();
+
+  CPRepo.setPBRMaterial({
+    ...materialPO,
+    diffuseMapSourceIdMap:
+      diffuseMapSourceIdMap->ImmutableSparseMap.set(material, id),
+  });
+};
+
+let getMetalRoughnessMapSourceId = material => {
+  CPRepo.getExnPBRMaterial().metalRoughnessMapSourceIdMap
+  ->ImmutableSparseMap.getNullable(material);
+};
+
+let setMetalRoughnessMapSourceId = (material, id) => {
+  let {metalRoughnessMapSourceIdMap} as materialPO =
+    CPRepo.getExnPBRMaterial();
+
+  CPRepo.setPBRMaterial({
+    ...materialPO,
+    metalRoughnessMapSourceIdMap:
+      metalRoughnessMapSourceIdMap->ImmutableSparseMap.set(material, id),
+  });
+};
+
+let getEmissionMapSourceId = material => {
+  CPRepo.getExnPBRMaterial().emissionMapSourceIdMap
+  ->ImmutableSparseMap.getNullable(material);
+};
+
+let setEmissionMapSourceId = (material, id) => {
+  let {emissionMapSourceIdMap} as materialPO = CPRepo.getExnPBRMaterial();
+
+  CPRepo.setPBRMaterial({
+    ...materialPO,
+    emissionMapSourceIdMap:
+      emissionMapSourceIdMap->ImmutableSparseMap.set(material, id),
+  });
+};
+
+let getNormalMapSourceId = material => {
+  CPRepo.getExnPBRMaterial().normalMapSourceIdMap
+  ->ImmutableSparseMap.getNullable(material);
+};
+
+let setNormalMapSourceId = (material, id) => {
+  let {normalMapSourceIdMap} as materialPO = CPRepo.getExnPBRMaterial();
+
+  CPRepo.setPBRMaterial({
+    ...materialPO,
+    normalMapSourceIdMap:
+      normalMapSourceIdMap->ImmutableSparseMap.set(material, id),
+  });
+};

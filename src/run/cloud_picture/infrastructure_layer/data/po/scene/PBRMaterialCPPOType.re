@@ -10,4 +10,12 @@ type pbrMaterial = {
   defaultRoughness: float,
   defaultMetalness: float,
   gameObjectsMap: ComponentCPPOType.gameObjectsMap,
+  diffuseMapSourceIdMap:
+    ImmutableSparseMap.t(PBRMaterialPOType.pbrMaterial, ImagePOType.id),
+  metalRoughnessMapSourceIdMap:
+    ImmutableSparseMap.t(PBRMaterialPOType.pbrMaterial, ImagePOType.id),
+  emissionMapSourceIdMap:
+    ImmutableSparseMap.t(PBRMaterialPOType.pbrMaterial, ImagePOType.id),
+  normalMapSourceIdMap:
+    ImmutableSparseMap.t(PBRMaterialPOType.pbrMaterial, ImagePOType.id),
 };

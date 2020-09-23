@@ -37,3 +37,19 @@ let getMetalness = material => {
 let setMetalness = (material, metalness) => {
   PBRMaterialApService.setMetalness(material, metalness);
 };
+
+let setDiffuseMapSourceId = (material, id) => {
+  PBRMaterialApService.setDiffuseMapSourceId(material, id);
+};
+
+let setMetalRoughnessMapSourceId = (material, id) => {
+  PBRMaterialApService.setMetalRoughnessMapSourceId(material, id);
+};
+
+let setEmissionMapSourceId = (material, id) => {
+  PBRMaterialApService.setEmissionMapSourceId(material, id);
+};
+
+let setNormalMapSourceId = (material, id) => {
+  PBRMaterialApService.setNormalMapSourceId(material, id);
+};

@@ -23,3 +23,11 @@ let truncateColor = color => {
   )
   ->createDiffuseColor;
 };
+
+let getDiffuseMapSourceId = OperatePBRMaterialDoService.getDiffuseMapSourceId;
+
+let getMetalRoughnessMapSourceId = OperatePBRMaterialDoService.getMetalRoughnessMapSourceId;
+
+let getEmissionMapSourceId = OperatePBRMaterialDoService.getEmissionMapSourceId;
+
+let getNormalMapSourceId = OperatePBRMaterialDoService.getNormalMapSourceId;

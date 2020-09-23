@@ -50,3 +50,59 @@ let setMetalness = (material, metalness) => {
     metalness->MetalnessVO.value,
   );
 };
+
+let getDiffuseMapSourceId = material =>
+  DpContainer.unsafeGetPBRMaterialRepoDp().getDiffuseMapSourceId(
+    material->PBRMaterialEntity.value,
+  )
+  ->OptionSt.fromNullable
+  ->OptionSt.map(ImageIdVO.create);
+
+let setDiffuseMapSourceId = (material, id) => {
+  DpContainer.unsafeGetPBRMaterialRepoDp().setDiffuseMapSourceId(
+    material->PBRMaterialEntity.value,
+    id->ImageIdVO.value,
+  );
+};
+
+let getMetalRoughnessMapSourceId = material =>
+  DpContainer.unsafeGetPBRMaterialRepoDp().getMetalRoughnessMapSourceId(
+    material->PBRMaterialEntity.value,
+  )
+  ->OptionSt.fromNullable
+  ->OptionSt.map(ImageIdVO.create);
+
+let setMetalRoughnessMapSourceId = (material, id) => {
+  DpContainer.unsafeGetPBRMaterialRepoDp().setMetalRoughnessMapSourceId(
+    material->PBRMaterialEntity.value,
+    id->ImageIdVO.value,
+  );
+};
+
+let getEmissionMapSourceId = material =>
+  DpContainer.unsafeGetPBRMaterialRepoDp().getEmissionMapSourceId(
+    material->PBRMaterialEntity.value,
+  )
+  ->OptionSt.fromNullable
+  ->OptionSt.map(ImageIdVO.create);
+
+let setEmissionMapSourceId = (material, id) => {
+  DpContainer.unsafeGetPBRMaterialRepoDp().setEmissionMapSourceId(
+    material->PBRMaterialEntity.value,
+    id->ImageIdVO.value,
+  );
+};
+
+let getNormalMapSourceId = material =>
+  DpContainer.unsafeGetPBRMaterialRepoDp().getNormalMapSourceId(
+    material->PBRMaterialEntity.value,
+  )
+  ->OptionSt.fromNullable
+  ->OptionSt.map(ImageIdVO.create);
+
+let setNormalMapSourceId = (material, id) => {
+  DpContainer.unsafeGetPBRMaterialRepoDp().setNormalMapSourceId(
+    material->PBRMaterialEntity.value,
+    id->ImageIdVO.value,
+  );
+};

@@ -8,7 +8,7 @@ let loadImages = imageDataList => {
           stream->tap(
                     imageData => {
                       DpContainer.unsafeGetImageRepoDp().setData(
-                        id,
+                        id->ImageIdVO.value,
                         imageData,
                       )
                     },
