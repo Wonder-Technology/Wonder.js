@@ -32,6 +32,11 @@ let createTwoGameObjectsAndSetPointData = () => {
       10.,
     |])
     ->VerticesVO.create;
+  let texCoords1 =
+    Float32Array.make([|0.5, 0., 0.1, 1., 0.2, 0.5|])->TexCoordsVO.create;
+  let texCoords2 =
+    Float32Array.make([|0.1, 0.1, 0.6, 0.7, 0.12, 0.5, 0.6, 0.24|])
+    ->TexCoordsVO.create;
   let normals1 =
     Float32Array.make([|1., 2., 3., 2., 1.5, 3., 3., 3.5, 4.5|])
     ->NormalsVO.create;
@@ -58,6 +63,8 @@ let createTwoGameObjectsAndSetPointData = () => {
 
   setVertices(geometry1, vertices1)->ResultTool.getExnSuccessValueIgnore;
   setVertices(geometry2, vertices2)->ResultTool.getExnSuccessValueIgnore;
+  setTexCoords(geometry1, texCoords1)->ResultTool.getExnSuccessValueIgnore;
+  setTexCoords(geometry2, texCoords2)->ResultTool.getExnSuccessValueIgnore;
   setNormals(geometry1, normals1)->ResultTool.getExnSuccessValueIgnore;
   setNormals(geometry2, normals2)->ResultTool.getExnSuccessValueIgnore;
   setIndices(geometry1, indices1)->ResultTool.getExnSuccessValueIgnore;
@@ -66,6 +73,11 @@ let createTwoGameObjectsAndSetPointData = () => {
   (
     (gameObject1, gameObject2),
     (geometry1, geometry2),
-    ((vertices1, vertices2), (normals1, normals2), (indices1, indices2)),
+    (
+      (vertices1, vertices2),
+      (texCoords1, texCoords2),
+      (normals1, normals2),
+      (indices1, indices2),
+    ),
   );
 };

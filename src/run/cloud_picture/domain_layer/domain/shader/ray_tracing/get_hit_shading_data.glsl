@@ -11,9 +11,9 @@ struct InstanceData {
 
 struct Vertex {
   vec4 position;
+  vec4 texCoord;
   vec4 normal;
-  // TODO perf: pack texCoord to position,normal
-  //   vec4 texCoord;
+  vec4 tangent;
 };
 
 /*

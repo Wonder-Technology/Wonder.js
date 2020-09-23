@@ -55,6 +55,7 @@ let _ =
           (geometry1, geometry2),
           (
             (vertices1, vertices2),
+            _,
             (normals1, normals2),
             (indices1, indices2),
           ),
@@ -273,8 +274,7 @@ let _ =
             WebGPUDependencyTool.build(
               ~sandbox,
               ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
-              ~setSubUint32Data=
-                setSubUint32DataStubData->SinonTool.getDpFunc,
+              ~setSubUint32Data=setSubUint32DataStubData->SinonTool.getDpFunc,
               ~setSubFloat32Data=
                 setSubFloat32DataStubData->SinonTool.getDpFunc,
               (),
@@ -746,6 +746,7 @@ let _ =
           (geometry1, geometry2),
           (
             (vertices1, vertices2),
+            (texCoords1, texCoords2),
             (normals1, normals2),
             (indices1, indices2),
           ),
@@ -921,8 +922,7 @@ let _ =
             ->SinonTool.createThreeArgsEmptyStubData;
           WebGPUDependencyTool.build(
             ~sandbox,
-            ~setSubFloat32Data=
-              setSubFloat32DataStubData->SinonTool.getDpFunc,
+            ~setSubFloat32Data=setSubFloat32DataStubData->SinonTool.getDpFunc,
             (),
           )
           ->WebGPUDependencyTool.set;
@@ -1022,13 +1022,13 @@ let _ =
         describe("build vertex buffer data", () => {
           _testCreateBuffer(
             ~getBufferSizeFunc=
-              () => 56 * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
+              () => 56 * 2 * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
             ~getBufferDataFunc=PathTracingPassCPTool.getVertexBufferData,
           )
         });
 
         testPromise(
-          "set each render geometry's vertices, normals to buffer data and set buffer's data",
+          "set each render geometry's vertices, texCoords, normals, tangents(compute) to buffer data and set buffer's data",
           () => {
             let _ = _prepare();
             let setSubFloat32DataStubData =
@@ -1058,57 +1058,113 @@ let _ =
                         10.,
                         11.,
                         0.,
+                        0.5,
+                        0.,
+                        0.,
+                        0.,
                         1.,
                         2.,
                         3.,
                         0.,
+                        NumberCPTool.returnNaN(),
+                        NumberCPTool.returnNaN(),
+                        NumberCPTool.returnNaN(),
+                        0.,
                         1.5,
                         2.,
                         3.,
                         0.,
+                        1.,
+                        0.20000000298023224,
+                        0.,
+                        0.,
                         2.,
                         1.5,
                         3.,
+                        0.,
+                        (-0.4790635108947754),
+                        (-0.37787315249443054),
+                        (-0.7922815680503845),
                         0.,
                         2.5,
                         2.,
                         3.5,
+                        0.,
+                        0.10000000149011612,
+                        0.10000000149011612,
+                        0.,
                         0.,
                         3.,
                         3.5,
                         4.5,
                         0.,
+                        (-0.4530031383037567),
+                        (-0.5450996160507202),
+                        (-0.7054463624954224),
+                        0.,
                         20.,
                         10.,
                         11.,
                         0.,
+                        0.699999988079071,
+                        0.11999999731779099,
+                        0.,
+                        0.,
                         2.,
                         (-1.),
                         3.5,
+                        0.,
+                        (-0.42488011717796326),
+                        0.2953373193740845,
+                        (-0.855717658996582),
                         0.,
                         1.5,
                         3.,
                         1.,
                         0.,
+                        0.6000000238418579,
+                        0.23999999463558197,
+                        0.,
+                        0.,
                         2.,
                         1.,
                         3.5,
+                        0.,
+                        0.,
+                        0.,
+                        0.,
                         0.,
                         2.5,
                         2.5,
                         (-1.5),
                         0.,
+                        0.,
+                        0.,
+                        0.,
+                        0.,
                         3.,
                         5.5,
                         (-2.5),
+                        0.,
+                        0.,
+                        0.,
+                        0.,
                         0.,
                         2.,
                         3.,
                         10.,
                         0.,
+                        0.,
+                        0.,
+                        0.,
+                        0.,
                         (-1.),
                         2.,
                         3.,
+                        0.,
+                        0.,
+                        0.,
+                        0.,
                         0.,
                       |]),
                       buffer->StorageBufferVO.value,
@@ -1186,8 +1242,7 @@ let _ =
               ->SinonTool.createThreeArgsEmptyStubData;
             WebGPUDependencyTool.build(
               ~sandbox,
-              ~setSubUint32Data=
-                setSubUint32DataStubData->SinonTool.getDpFunc,
+              ~setSubUint32Data=setSubUint32DataStubData->SinonTool.getDpFunc,
               (),
             )
             ->WebGPUDependencyTool.set;
@@ -1269,8 +1324,7 @@ let _ =
             ->SinonTool.createThreeArgsEmptyStubData;
           WebGPUDependencyTool.build(
             ~sandbox,
-            ~setSubFloat32Data=
-              setSubFloat32DataStubData->SinonTool.getDpFunc,
+            ~setSubFloat32Data=setSubFloat32DataStubData->SinonTool.getDpFunc,
             (),
           )
           ->WebGPUDependencyTool.set;

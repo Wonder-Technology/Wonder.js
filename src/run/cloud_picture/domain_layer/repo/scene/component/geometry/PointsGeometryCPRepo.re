@@ -63,6 +63,10 @@ let getVerticesTypeArr = () => {
   CPRepo.getExnGeometry().vertices;
 };
 
+let getTexCoordsTypeArr = () => {
+  CPRepo.getExnGeometry().texCoords;
+};
+
 let getNormalsTypeArr = () => {
   CPRepo.getExnGeometry().normals;
 };
