@@ -17,4 +17,5 @@ type po = {
   pass: PassCPPOType.pass,
   pathTracingPass: PathTracingPassCPPOType.pathTracingPass,
   accumulationPass: AccumulationPassCPPOType.accumulationPass,
+  image: ImageCPPOType.image,
 };

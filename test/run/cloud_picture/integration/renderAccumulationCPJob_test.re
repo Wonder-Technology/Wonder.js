@@ -49,24 +49,24 @@ let _ =
       let commandEncoder = WebGPUDependencyTool.createCommandEncoderObject();
       let createCommandEncoderStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(commandEncoder)
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.returns(commandEncoder)
+        ->SinonTool.createTwoArgsEmptyStubData;
       let backBufferView = WebGPUDependencyTool.createTextureViewObject();
       let getCurrentTextureViewStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(backBufferView)
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.returns(backBufferView)
+        ->SinonTool.createTwoArgsEmptyStubData;
       let beginRenderPassStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.createTwoArgsEmptyStubData;
 
       WebGPUDependencyTool.build(
         ~sandbox,
         ~createCommandEncoder=
-          createCommandEncoderStubData->SinonCPTool.getDpFunc,
+          createCommandEncoderStubData->SinonTool.getDpFunc,
         ~getCurrentTextureView=
-          getCurrentTextureViewStubData->SinonCPTool.getDpFunc,
-        ~beginRenderPass=beginRenderPassStubData->SinonCPTool.getDpFunc,
+          getCurrentTextureViewStubData->SinonTool.getDpFunc,
+        ~beginRenderPass=beginRenderPassStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPUDependencyTool.set;
@@ -76,14 +76,14 @@ let _ =
           () => {
             (
               createCommandEncoderStubData
-              ->SinonCPTool.getStub
-              ->SinonCPTool.calledWithArg2(
+              ->SinonTool.getStub
+              ->SinonTool.calledWithArg2(
                   IWebGPUCoreDp.commandEncoderDescriptor(),
                   device,
                 ),
               beginRenderPassStubData
-              ->SinonCPTool.getStub
-              ->SinonCPTool.calledWithArg2(
+              ->SinonTool.getStub
+              ->SinonTool.calledWithArg2(
                   IWebGPUCoreDp.passEncoderRenderDescriptor(
                     ~colorAttachments=[|
                       {
@@ -113,16 +113,16 @@ let _ =
       let (device, window, queue, swapChain) = _prepare();
       let setPipelineStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.createTwoArgsEmptyStubData;
       let pass = WebGPUDependencyTool.createPassEncoderRenderObject();
       let beginRenderPassStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(pass)
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.returns(pass)
+        ->SinonTool.createTwoArgsEmptyStubData;
       WebGPUDependencyTool.build(
         ~sandbox,
-        ~setPipeline_render=setPipelineStubData->SinonCPTool.getDpFunc,
-        ~beginRenderPass=beginRenderPassStubData->SinonCPTool.getDpFunc,
+        ~setPipeline_render=setPipelineStubData->SinonTool.getDpFunc,
+        ~beginRenderPass=beginRenderPassStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPUDependencyTool.set;
@@ -133,8 +133,8 @@ let _ =
             let pipeline = AccumulationPassCPTool.getPipeline();
 
             setPipelineStubData
-            ->SinonCPTool.getStub
-            ->SinonCPTool.calledWithArg2(pipeline, pass)
+            ->SinonTool.getStub
+            ->SinonTool.calledWithArg2(pipeline, pass)
             ->expect
             == true;
           },
@@ -145,16 +145,16 @@ let _ =
       let (device, window, queue, swapChain) = _prepare();
       let setBindGroupStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.createThreeArgsEmptyStubData;
+        ->SinonTool.createThreeArgsEmptyStubData;
       let pass = WebGPUDependencyTool.createPassEncoderRenderObject();
       let beginRenderPassStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(pass)
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.returns(pass)
+        ->SinonTool.createTwoArgsEmptyStubData;
       WebGPUDependencyTool.build(
         ~sandbox,
-        ~beginRenderPass=beginRenderPassStubData->SinonCPTool.getDpFunc,
-        ~setBindGroup_render=setBindGroupStubData->SinonCPTool.getDpFunc,
+        ~beginRenderPass=beginRenderPassStubData->SinonTool.getDpFunc,
+        ~setBindGroup_render=setBindGroupStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPUDependencyTool.set;
@@ -166,8 +166,8 @@ let _ =
               AccumulationPassCPTool.getStaticBindGroupData();
 
             setBindGroupStubData
-            ->SinonCPTool.getStub
-            ->SinonCPTool.calledWithArg3(
+            ->SinonTool.getStub
+            ->SinonTool.calledWithArg3(
                 bindGroupData.setSlot,
                 bindGroupData.bindGroup,
                 pass,
@@ -182,17 +182,17 @@ let _ =
       let (device, window, queue, swapChain) = _prepare();
       let drawStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.createFiveArgsEmptyStubData;
+        ->SinonTool.createFiveArgsEmptyStubData;
       let pass = WebGPUDependencyTool.createPassEncoderRenderObject();
       let beginRenderPassStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(pass)
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.returns(pass)
+        ->SinonTool.createTwoArgsEmptyStubData;
 
       WebGPUDependencyTool.build(
         ~sandbox,
-        ~draw=drawStubData->SinonCPTool.getDpFunc,
-        ~beginRenderPass=beginRenderPassStubData->SinonCPTool.getDpFunc,
+        ~draw=drawStubData->SinonTool.getDpFunc,
+        ~beginRenderPass=beginRenderPassStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPUDependencyTool.set;
@@ -200,9 +200,9 @@ let _ =
         ~handleSuccessFunc=
           () => {
             drawStubData
-            ->SinonCPTool.getStub
+            ->SinonTool.getStub
             ->expect
-            ->SinonCPTool.toCalledWith((3, 1, 0, 0, pass))
+            ->SinonTool.toCalledWith((3, 1, 0, 0, pass))
           },
         (),
       );
@@ -213,21 +213,21 @@ let _ =
       let commandBufferObject =
         WebGPUDependencyTool.createCommandBufferObject();
       let finish = createEmptyStub(refJsObjToSandbox(sandbox^));
-      finish->onCall(0, _)->SinonCPTool.returns(commandBufferObject);
+      finish->onCall(0, _)->SinonTool.returns(commandBufferObject);
       let submitStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.createTwoArgsEmptyStubData;
       let pass = WebGPUDependencyTool.createPassEncoderRenderObject();
       let beginRenderPassStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(pass)
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.returns(pass)
+        ->SinonTool.createTwoArgsEmptyStubData;
       WebGPUDependencyTool.build(
         ~sandbox,
         ~finish,
         ~endPass_render=endPass,
-        ~submit=submitStubData->SinonCPTool.getDpFunc,
-        ~beginRenderPass=beginRenderPassStubData->SinonCPTool.getDpFunc,
+        ~submit=submitStubData->SinonTool.getDpFunc,
+        ~beginRenderPass=beginRenderPassStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPUDependencyTool.set;
@@ -236,10 +236,10 @@ let _ =
         ~handleSuccessFunc=
           () => {
             (
-              endPass->SinonCPTool.calledWith(pass),
+              endPass->SinonTool.calledWith(pass),
               submitStubData
-              ->SinonCPTool.getStub
-              ->SinonCPTool.calledWithArg2([|commandBufferObject|], queue),
+              ->SinonTool.getStub
+              ->SinonTool.calledWithArg2([|commandBufferObject|], queue),
             )
             ->expect
             == (true, true)

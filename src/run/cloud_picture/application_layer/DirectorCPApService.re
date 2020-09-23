@@ -154,6 +154,10 @@ let _injectDependencies = () => {
       start: TimeCPRepoDp.start,
       getElapsed: TimeCPRepoDp.getElapsed,
     },
+    imageRepo: {
+      getData: ImageCPRepoDp.getData,
+      setData: ImageCPRepoDp.setData,
+    },
   });
 
   POConfigDpRunAPI.set({

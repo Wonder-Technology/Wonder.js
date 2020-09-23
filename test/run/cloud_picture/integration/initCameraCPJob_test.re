@@ -41,13 +41,13 @@ let _ =
         let buffer = WebGPUDependencyTool.createBufferObject();
         let createBufferStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.returns(buffer)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(buffer)
+          ->SinonTool.createTwoArgsEmptyStubData;
         let copy_dst = 0;
         let uniform = 1;
         WebGPUDependencyTool.build(
           ~sandbox,
-          ~createBuffer=createBufferStubData->SinonCPTool.getDpFunc,
+          ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
           ~copy_dst_bufferUsage=copy_dst,
           ~uniform,
           (),
@@ -60,9 +60,9 @@ let _ =
               let (buffer, _) = CameraCPTool.getCameraBufferData();
 
               createBufferStubData
-              ->SinonCPTool.getStub
+              ->SinonTool.getStub
               ->expect
-              ->SinonCPTool.toCalledWith((
+              ->SinonTool.toCalledWith((
                   {
                     "size":
                       (16 + 16 + 2)

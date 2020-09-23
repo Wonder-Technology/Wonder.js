@@ -146,4 +146,7 @@ let create = () => {
     staticBindGroupData: None,
     pipeline: None,
   },
+  image: {
+    dataMap: ImmutableHashMap.createEmpty(),
+  },
 };

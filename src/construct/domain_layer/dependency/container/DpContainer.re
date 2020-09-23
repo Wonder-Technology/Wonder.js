@@ -5,7 +5,7 @@ type t = {
   mutable time: option(ITimeDp.time),
   mutable webgpuCore: option(IWebGPUCoreDp.webgpuCore),
   mutable webgpuRayTracing: option(IWebGPURayTracingDp.webgpuRayTracing),
-  // mutable network: option(INetworkDp.network),
+  mutable network: option(INetworkDp.network),
 };
 
 let dpContainer = {
@@ -13,10 +13,9 @@ let dpContainer = {
   poConfig: None,
   repo: None,
   time: None,
-
   webgpuCore: None,
   webgpuRayTracing: None,
-  // network: None,
+  network: None,
 };
 
 let unsafeGetOtherConfigDp = () => {
@@ -87,6 +86,10 @@ let unsafeGetTimeRepoDp = () => {
   _unsafeGetRepoDp().timeRepo;
 };
 
+let unsafeGetImageRepoDp = () => {
+  _unsafeGetRepoDp().imageRepo;
+};
+
 let setRepoDp = dp => {
   dpContainer.repo = dp->Some;
 
@@ -123,12 +126,12 @@ let setWebGPURayTracingDp = dp => {
   ();
 };
 
-// let unsafeGetNetworkDp = () => {
-//   dpContainer.network->OptionSt.unsafeGet;
-// };
+let unsafeGetNetworkDp = () => {
+  dpContainer.network->OptionSt.unsafeGet;
+};
 
-// let setNetworkDp = dp => {
-//   dpContainer.network = dp->Some;
+let setNetworkDp = dp => {
+  dpContainer.network = dp->Some;
 
-//   ();
-// };
+  ();
+};

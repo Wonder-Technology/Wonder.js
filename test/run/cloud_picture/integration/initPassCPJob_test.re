@@ -44,19 +44,19 @@ let _ =
         let height = 20;
         let getWidth =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.returns(width);
+          ->SinonTool.returns(width);
         let getHeight =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.returns(height);
+          ->SinonTool.returns(height);
         let buffer = WebGPUDependencyTool.createBufferObject();
         let createBufferStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.returns(buffer)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(buffer)
+          ->SinonTool.createTwoArgsEmptyStubData;
         let storage = 3;
         WebGPUDependencyTool.build(
           ~sandbox,
-          ~createBuffer=createBufferStubData->SinonCPTool.getDpFunc,
+          ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
           ~storage_bufferUsage=storage,
           ~getWidth,
           ~getHeight,
@@ -72,9 +72,9 @@ let _ =
               (
                 bufferSize,
                 createBufferStubData
-                ->SinonCPTool.getStub
+                ->SinonTool.getStub
                 ->getCall(0, _)
-                ->SinonCPTool.calledWithArg2(
+                ->SinonTool.calledWithArg2(
                     {"size": bufferSize, "usage": storage},
                     device,
                   ),
@@ -99,13 +99,13 @@ let _ =
         let buffer = WebGPUDependencyTool.createBufferObject();
         let createBufferStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.returns(buffer)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(buffer)
+          ->SinonTool.createTwoArgsEmptyStubData;
         let copy_dst = 0;
         let uniform = 1;
         WebGPUDependencyTool.build(
           ~sandbox,
-          ~createBuffer=createBufferStubData->SinonCPTool.getDpFunc,
+          ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
           ~copy_dst_bufferUsage=copy_dst,
           ~uniform,
           (),
@@ -118,9 +118,9 @@ let _ =
               let (buffer, _) = PassCPTool.getCommonBufferData();
 
               createBufferStubData
-              ->SinonCPTool.getStub
+              ->SinonTool.getStub
               ->expect
-              ->SinonCPTool.toCalledWith((
+              ->SinonTool.toCalledWith((
                   {
                     "size": 2 * Js.Typed_array.Uint32Array._BYTES_PER_ELEMENT,
                     "usage": copy_dst lor uniform,
@@ -154,24 +154,24 @@ let _ =
         let height = 20;
         let getWidth =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.returns(width);
+          ->SinonTool.returns(width);
         let getHeight =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.returns(height);
+          ->SinonTool.returns(height);
         let buffer = WebGPUDependencyTool.createBufferObject();
         let createBufferStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.returns(buffer)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(buffer)
+          ->SinonTool.createTwoArgsEmptyStubData;
         let copy_dst = 0;
         let uniform = 1;
         let setSubFloat32DataStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.createThreeArgsEmptyStubData;
+          ->SinonTool.createThreeArgsEmptyStubData;
         WebGPUDependencyTool.build(
           ~sandbox,
-          ~createBuffer=createBufferStubData->SinonCPTool.getDpFunc,
-          ~setSubFloat32Data=setSubFloat32DataStubData->SinonCPTool.getDpFunc,
+          ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
+          ~setSubFloat32Data=setSubFloat32DataStubData->SinonTool.getDpFunc,
           ~copy_dst_bufferUsage=copy_dst,
           ~uniform,
           ~getWidth,
@@ -213,10 +213,10 @@ let _ =
               let (buffer, _) = PassCPTool.getResolutionBufferData();
 
               createBufferStubData
-              ->SinonCPTool.getStub
+              ->SinonTool.getStub
               ->getCall(2, _)
               ->expect
-              ->SinonCPTool.toCalledWith((
+              ->SinonTool.toCalledWith((
                   {
                     "size": 2 * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
                     "usage": copy_dst lor uniform,
@@ -275,9 +275,9 @@ let _ =
               let (_, typeArr) = PassCPTool.getResolutionBufferData();
 
               setSubFloat32DataStubData
-              ->SinonCPTool.getStub
+              ->SinonTool.getStub
               ->expect
-              ->SinonCPTool.toCalledWith((0, typeArr, buffer));
+              ->SinonTool.toCalledWith((0, typeArr, buffer));
             },
           (),
         );

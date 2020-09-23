@@ -166,6 +166,11 @@ type timeRepo = {
   start: TimePOType.time => unit,
 };
 
+type imageRepo = {
+  getData: ImagePOType.id => Js.Nullable.t(ImagePOType.data),
+  setData: (ImagePOType.id, ImagePOType.data) => unit,
+};
+
 type repo = {
   sceneRepo,
   gameObjectRepo,
@@ -178,4 +183,5 @@ type repo = {
   globalTempRepo,
   pipelineRepo,
   timeRepo,
+  imageRepo,
 };

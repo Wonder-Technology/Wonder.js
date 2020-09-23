@@ -46,7 +46,7 @@ let _ =
 
       DirectorCPTool.initAndRender(
         ~handleSuccessFunc=
-          () => {present->expect->SinonCPTool.toCalledWith([|swapChain|])},
+          () => {present->expect->SinonTool.toCalledWith([|swapChain|])},
         (),
       );
     });
@@ -59,7 +59,7 @@ let _ =
 
       DirectorCPTool.initAndRender(
         ~handleSuccessFunc=
-          () => {pollEvents->expect->SinonCPTool.toCalledWith([|window|])},
+          () => {pollEvents->expect->SinonTool.toCalledWith([|window|])},
         (),
       );
     });

@@ -207,3 +207,15 @@ let setAccumulationPass = accumulationPass => {
 
   {...po, accumulationPass}->CPContainerManager.setPO;
 };
+
+let getImage = () => {
+  let po = CPContainerManager.getPO();
+
+  po.image;
+};
+
+let setImage = image => {
+  let po = CPContainerManager.getPO();
+
+  {...po, image}->CPContainerManager.setPO;
+};

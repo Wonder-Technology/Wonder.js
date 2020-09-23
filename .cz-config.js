@@ -20,6 +20,7 @@ module.exports = {
       { name: "transform" },
       { name: "geometry" },
       { name: "pipeline" },
+      { name: "asset" },
       { name: "dependency" },
       { name: "cloud-picture" },
   ],

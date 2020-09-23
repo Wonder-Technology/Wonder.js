@@ -47,23 +47,23 @@ let _ =
       let commandEncoder = WebGPUDependencyTool.createCommandEncoderObject();
       let createCommandEncoderStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(commandEncoder)
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.returns(commandEncoder)
+        ->SinonTool.createTwoArgsEmptyStubData;
       let beginRayTracingPassStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.createTwoArgsEmptyStubData;
 
       WebGPUDependencyTool.build(
         ~sandbox,
         ~createCommandEncoder=
-          createCommandEncoderStubData->SinonCPTool.getDpFunc,
+          createCommandEncoderStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPUDependencyTool.set;
       WebGPURayTracingDependencyTool.build(
         ~sandbox,
         ~beginRayTracingPass=
-          beginRayTracingPassStubData->SinonCPTool.getDpFunc,
+          beginRayTracingPassStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPURayTracingDependencyTool.set;
@@ -73,14 +73,14 @@ let _ =
           () => {
             (
               createCommandEncoderStubData
-              ->SinonCPTool.getStub
-              ->SinonCPTool.calledWithArg2(
+              ->SinonTool.getStub
+              ->SinonTool.calledWithArg2(
                   IWebGPUCoreDp.commandEncoderDescriptor(),
                   device,
                 ),
               beginRayTracingPassStubData
-              ->SinonCPTool.getStub
-              ->SinonCPTool.calledWithArg2(
+              ->SinonTool.getStub
+              ->SinonTool.calledWithArg2(
                   IWebGPURayTracingDp.passEncoderRayTracingDescriptor(),
                   commandEncoder,
                 ),
@@ -95,19 +95,19 @@ let _ =
       let (device, window, queue) = _prepare();
       let setPipelineStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.createTwoArgsEmptyStubData;
       let pass =
         WebGPURayTracingDependencyTool.createPassEncoderRayTracingObject();
       let beginRayTracingPassStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(pass)
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.returns(pass)
+        ->SinonTool.createTwoArgsEmptyStubData;
 
       WebGPURayTracingDependencyTool.build(
         ~sandbox,
         ~beginRayTracingPass=
-          beginRayTracingPassStubData->SinonCPTool.getDpFunc,
-        ~setPipeline=setPipelineStubData->SinonCPTool.getDpFunc,
+          beginRayTracingPassStubData->SinonTool.getDpFunc,
+        ~setPipeline=setPipelineStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPURayTracingDependencyTool.set;
@@ -118,8 +118,8 @@ let _ =
             let pipeline = PathTracingPassCPTool.getPipeline();
 
             setPipelineStubData
-            ->SinonCPTool.getStub
-            ->SinonCPTool.calledWithArg2(pipeline, pass)
+            ->SinonTool.getStub
+            ->SinonTool.calledWithArg2(pipeline, pass)
             ->expect
             == true;
           },
@@ -130,19 +130,19 @@ let _ =
       let (device, window, queue) = _prepare();
       let setBindGroupStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.createThreeArgsEmptyStubData;
+        ->SinonTool.createThreeArgsEmptyStubData;
       let pass =
         WebGPURayTracingDependencyTool.createPassEncoderRayTracingObject();
       let beginRayTracingPassStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(pass)
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.returns(pass)
+        ->SinonTool.createTwoArgsEmptyStubData;
 
       WebGPURayTracingDependencyTool.build(
         ~sandbox,
         ~beginRayTracingPass=
-          beginRayTracingPassStubData->SinonCPTool.getDpFunc,
-        ~setBindGroup=setBindGroupStubData->SinonCPTool.getDpFunc,
+          beginRayTracingPassStubData->SinonTool.getDpFunc,
+        ~setBindGroup=setBindGroupStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPURayTracingDependencyTool.set;
@@ -155,25 +155,25 @@ let _ =
 
             (
               setBindGroupStubData
-              ->SinonCPTool.getStub
+              ->SinonTool.getStub
               ->getCall(0, _)
-              ->SinonCPTool.calledWithArg3(
+              ->SinonTool.calledWithArg3(
                   bindGroupData1.setSlot,
                   bindGroupData1.bindGroup,
                   pass,
                 ),
               setBindGroupStubData
-              ->SinonCPTool.getStub
+              ->SinonTool.getStub
               ->getCall(1, _)
-              ->SinonCPTool.calledWithArg3(
+              ->SinonTool.calledWithArg3(
                   bindGroupData2.setSlot,
                   bindGroupData2.bindGroup,
                   pass,
                 ),
               setBindGroupStubData
-              ->SinonCPTool.getStub
+              ->SinonTool.getStub
               ->getCall(2, _)
-              ->SinonCPTool.calledWithArg3(
+              ->SinonTool.calledWithArg3(
                   bindGroupData3.setSlot,
                   bindGroupData3.bindGroup,
                   pass,
@@ -189,29 +189,29 @@ let _ =
       let (device, window, queue) = _prepare();
       let traceRaysStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.createSevenArgsEmptyStubData;
+        ->SinonTool.createSevenArgsEmptyStubData;
       let width = 10;
       let height = 20;
       let getWidth =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(width);
+        ->SinonTool.returns(width);
       let getHeight =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(height);
+        ->SinonTool.returns(height);
       let pass =
         WebGPURayTracingDependencyTool.createPassEncoderRayTracingObject();
       let beginRayTracingPassStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(pass)
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.returns(pass)
+        ->SinonTool.createTwoArgsEmptyStubData;
 
       WebGPUDependencyTool.build(~sandbox, ~getWidth, ~getHeight, ())
       ->WebGPUDependencyTool.set;
       WebGPURayTracingDependencyTool.build(
         ~sandbox,
-        ~traceRays=traceRaysStubData->SinonCPTool.getDpFunc,
+        ~traceRays=traceRaysStubData->SinonTool.getDpFunc,
         ~beginRayTracingPass=
-          beginRayTracingPassStubData->SinonCPTool.getDpFunc,
+          beginRayTracingPassStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPURayTracingDependencyTool.set;
@@ -220,9 +220,9 @@ let _ =
         ~handleSuccessFunc=
           () => {
             traceRaysStubData
-            ->SinonCPTool.getStub
+            ->SinonTool.getStub
             ->expect
-            ->SinonCPTool.toCalledWith((0, 1, 2, width, height, 1, pass))
+            ->SinonTool.toCalledWith((0, 1, 2, width, height, 1, pass))
           },
         (),
       );
@@ -233,29 +233,29 @@ let _ =
       let commandBufferObject =
         WebGPUDependencyTool.createCommandBufferObject();
       let finish = createEmptyStub(refJsObjToSandbox(sandbox^));
-      finish->onCall(0, _)->SinonCPTool.returns(commandBufferObject);
+      finish->onCall(0, _)->SinonTool.returns(commandBufferObject);
       let submitStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.createTwoArgsEmptyStubData;
 
       let pass =
         WebGPURayTracingDependencyTool.createPassEncoderRayTracingObject();
       let beginRayTracingPassStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(pass)
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.returns(pass)
+        ->SinonTool.createTwoArgsEmptyStubData;
 
       WebGPUDependencyTool.build(
         ~sandbox,
         ~finish,
-        ~submit=submitStubData->SinonCPTool.getDpFunc,
+        ~submit=submitStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPUDependencyTool.set;
       WebGPURayTracingDependencyTool.build(
         ~sandbox,
         ~beginRayTracingPass=
-          beginRayTracingPassStubData->SinonCPTool.getDpFunc,
+          beginRayTracingPassStubData->SinonTool.getDpFunc,
         ~endPass,
         (),
       )
@@ -265,10 +265,10 @@ let _ =
         ~handleSuccessFunc=
           () => {
             (
-              endPass->SinonCPTool.calledWith(pass),
+              endPass->SinonTool.calledWith(pass),
               submitStubData
-              ->SinonCPTool.getStub
-              ->SinonCPTool.calledWithArg2([|commandBufferObject|], queue),
+              ->SinonTool.getStub
+              ->SinonTool.calledWithArg2([|commandBufferObject|], queue),
             )
             ->expect
             == (true, true)

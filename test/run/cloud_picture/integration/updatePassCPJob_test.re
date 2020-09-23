@@ -63,10 +63,10 @@ let _ =
         let _ = _prepare();
         let setSubUint32DataStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.createThreeArgsEmptyStubData;
+          ->SinonTool.createThreeArgsEmptyStubData;
         WebGPUDependencyTool.build(
           ~sandbox,
-          ~setSubUint32Data=setSubUint32DataStubData->SinonCPTool.getDpFunc,
+          ~setSubUint32Data=setSubUint32DataStubData->SinonTool.getDpFunc,
           (),
         )
         ->WebGPUDependencyTool.set;
@@ -76,9 +76,9 @@ let _ =
               let (buffer, typeArr) = PassCPTool.getCommonBufferData();
 
               setSubUint32DataStubData
-              ->SinonCPTool.getStub
+              ->SinonTool.getStub
               ->expect
-              ->SinonCPTool.toCalledWith((
+              ->SinonTool.toCalledWith((
                   0,
                   typeArr,
                   buffer->UniformBufferVO.value,

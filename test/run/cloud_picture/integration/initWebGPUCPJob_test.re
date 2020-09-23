@@ -15,52 +15,52 @@ let _ =
       let window = WebGPUDependencyTool.createWindowObject();
       let make =
         createEmptyStubWithJsObjSandbox(sandbox)
-        ->SinonCPTool.returns(window);
+        ->SinonTool.returns(window);
       let adapter = WebGPUDependencyTool.createAdapterObject();
       let requestAdapter =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(
+        ->SinonTool.returns(
             Js.Promise.make((~resolve, ~reject) => resolve(. adapter)),
           );
       let device = WebGPUDependencyTool.createDeviceObject();
       let requestDeviceStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(
+        ->SinonTool.returns(
             Js.Promise.make((~resolve, ~reject) => resolve(. device)),
           )
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.createTwoArgsEmptyStubData;
       let swapChainFormat = "2";
       let getSwapChainPreferredFormatStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(
+        ->SinonTool.returns(
             Js.Promise.make((~resolve, ~reject) =>
               resolve(. swapChainFormat)
             ),
           )
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.createTwoArgsEmptyStubData;
       let swapChain = WebGPUDependencyTool.createSwapChainObject();
       let configureSwapChainStubData =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(swapChain)
-        ->SinonCPTool.createTwoArgsEmptyStubData;
+        ->SinonTool.returns(swapChain)
+        ->SinonTool.createTwoArgsEmptyStubData;
       let context = WebGPUDependencyTool.createContextObject();
       let getContext =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(context);
+        ->SinonTool.returns(context);
       let queue = WebGPUDependencyTool.createQueueObject();
       let getQueue =
         createEmptyStub(refJsObjToSandbox(sandbox^))
-        ->SinonCPTool.returns(queue);
+        ->SinonTool.returns(queue);
       WebGPUDependencyTool.build(
         ~sandbox,
         ~make,
         ~getContext,
         ~getQueue,
         ~requestAdapter,
-        ~requestDevice=requestDeviceStubData->SinonCPTool.getDpFunc,
-        ~configureSwapChain=configureSwapChainStubData->SinonCPTool.getDpFunc,
+        ~requestDevice=requestDeviceStubData->SinonTool.getDpFunc,
+        ~configureSwapChain=configureSwapChainStubData->SinonTool.getDpFunc,
         ~getSwapChainPreferredFormat=
-          getSwapChainPreferredFormatStubData->SinonCPTool.getDpFunc,
+          getSwapChainPreferredFormatStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPUDependencyTool.set;
@@ -121,7 +121,7 @@ let _ =
           () => {
             make
             ->expect
-            ->SinonCPTool.toCalledWith({
+            ->SinonTool.toCalledWith({
                 "width": width,
                 "height": height,
                 "title": "Cloud Picture",
@@ -152,7 +152,7 @@ let _ =
           () => {
             requestAdapter
             ->expect
-            ->SinonCPTool.toCalledWith(
+            ->SinonTool.toCalledWith(
                 IWebGPUCoreDp.adapterDescriptor(
                   ~window,
                   ~preferredBackend="Vulkan",
@@ -183,9 +183,9 @@ let _ =
         ~handleSuccessFunc=
           () => {
             requestDeviceStubData
-            ->SinonCPTool.getStub
+            ->SinonTool.getStub
             ->expect
-            ->SinonCPTool.toCalledWith((
+            ->SinonTool.toCalledWith((
                 {"extensions": [|"ray_tracing"|]},
                 adapter,
               ))
@@ -213,9 +213,9 @@ let _ =
         ~handleSuccessFunc=
           () => {
             configureSwapChainStubData
-            ->SinonCPTool.getStub
+            ->SinonTool.getStub
             ->expect
-            ->SinonCPTool.toCalledWith((
+            ->SinonTool.toCalledWith((
                 {"device": device, "format": swapChainFormat},
                 context,
               ))

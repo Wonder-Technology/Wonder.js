@@ -49,53 +49,53 @@ let build =
       ~ray_miss=6,
       ~ray_intersection=7,
       ~updateInstance=createEmptyStub(refJsObjToSandbox(sandbox^))
-                      ->SinonCPTool.createThreeArgsEmptyStubData
-                      ->SinonCPTool.getDpFunc,
+                      ->SinonTool.createThreeArgsEmptyStubData
+                      ->SinonTool.getDpFunc,
       ~setSubFloat32Data=createEmptyStub(refJsObjToSandbox(sandbox^))
-                         ->SinonCPTool.createThreeArgsEmptyStubData
-                         ->SinonCPTool.getDpFunc,
+                         ->SinonTool.createThreeArgsEmptyStubData
+                         ->SinonTool.getDpFunc,
       ~setPipeline=createEmptyStub(refJsObjToSandbox(sandbox^))
-                   ->SinonCPTool.createTwoArgsEmptyStubData
-                   ->SinonCPTool.getDpFunc,
+                   ->SinonTool.createTwoArgsEmptyStubData
+                   ->SinonTool.getDpFunc,
       ~setBindGroup=createEmptyStub(refJsObjToSandbox(sandbox^))
-                    ->SinonCPTool.createThreeArgsEmptyStubData
-                    ->SinonCPTool.getDpFunc,
+                    ->SinonTool.createThreeArgsEmptyStubData
+                    ->SinonTool.getDpFunc,
       ~traceRays=createEmptyStub(refJsObjToSandbox(sandbox^))
-                 ->SinonCPTool.createSevenArgsEmptyStubData
-                 ->SinonCPTool.getDpFunc,
+                 ->SinonTool.createSevenArgsEmptyStubData
+                 ->SinonTool.getDpFunc,
       ~endPass=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~beginRayTracingPass=createEmptyStub(refJsObjToSandbox(sandbox^))
-                           ->SinonCPTool.createTwoArgsEmptyStubData
-                           ->SinonCPTool.getDpFunc,
+                           ->SinonTool.createTwoArgsEmptyStubData
+                           ->SinonTool.getDpFunc,
       ~buildRayTracingAccelerationContainer=createEmptyStub(
                                               refJsObjToSandbox(sandbox^),
                                             )
-                                            ->SinonCPTool.createTwoArgsEmptyStubData
-                                            ->SinonCPTool.getDpFunc,
+                                            ->SinonTool.createTwoArgsEmptyStubData
+                                            ->SinonTool.getDpFunc,
       ~updateRayTracingAccelerationContainer=createEmptyStub(
                                                refJsObjToSandbox(sandbox^),
                                              )
-                                             ->SinonCPTool.createTwoArgsEmptyStubData
-                                             ->SinonCPTool.getDpFunc,
+                                             ->SinonTool.createTwoArgsEmptyStubData
+                                             ->SinonTool.getDpFunc,
       ~createRayTracingPipeline=createEmptyStub(refJsObjToSandbox(sandbox^))
-                                ->SinonCPTool.createTwoArgsEmptyStubData
-                                ->SinonCPTool.getDpFunc,
+                                ->SinonTool.createTwoArgsEmptyStubData
+                                ->SinonTool.getDpFunc,
       ~createRayTracingShaderBindingTable=createEmptyStub(
                                             refJsObjToSandbox(sandbox^),
                                           )
-                                          ->SinonCPTool.createTwoArgsEmptyStubData
-                                          ->SinonCPTool.getDpFunc,
+                                          ->SinonTool.createTwoArgsEmptyStubData
+                                          ->SinonTool.getDpFunc,
       ~createRayTracingAccelerationContainer=createEmptyStub(
                                                refJsObjToSandbox(sandbox^),
                                              )
-                                             ->SinonCPTool.returns(
+                                             ->SinonTool.returns(
                                                  createAccelerationContainerObject(),
                                                )
-                                             ->SinonCPTool.createTwoArgsEmptyStubData
-                                             ->SinonCPTool.getDpFunc,
+                                             ->SinonTool.createTwoArgsEmptyStubData
+                                             ->SinonTool.getDpFunc,
       ~createRayTracingBindGroup=createEmptyStub(refJsObjToSandbox(sandbox^))
-                                 ->SinonCPTool.createTwoArgsEmptyStubData
-                                 ->SinonCPTool.getDpFunc,
+                                 ->SinonTool.createTwoArgsEmptyStubData
+                                 ->SinonTool.getDpFunc,
       (),
     )
     : webgpuRayTracing => {

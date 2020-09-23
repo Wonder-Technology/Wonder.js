@@ -55,17 +55,17 @@ let _ =
         let rayMissGLSL = "a3";
         let rayMissShadowGLSL = "a4";
         let loadGLSL = createEmptyStub(refJsObjToSandbox(sandbox^));
-        loadGLSL->onCall(0, _)->SinonCPTool.returns(rayGenGLSL);
-        loadGLSL->onCall(1, _)->SinonCPTool.returns(rayRChitGLSL);
-        loadGLSL->onCall(2, _)->SinonCPTool.returns(rayMissGLSL);
-        loadGLSL->onCall(3, _)->SinonCPTool.returns(rayMissShadowGLSL);
+        loadGLSL->onCall(0, _)->SinonTool.returns(rayGenGLSL);
+        loadGLSL->onCall(1, _)->SinonTool.returns(rayRChitGLSL);
+        loadGLSL->onCall(2, _)->SinonTool.returns(rayMissGLSL);
+        loadGLSL->onCall(3, _)->SinonTool.returns(rayMissShadowGLSL);
         let createShaderModuleStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.createTwoArgsEmptyStubData;
         WebGPUDependencyTool.build(
           ~sandbox,
           ~createShaderModule=
-            createShaderModuleStubData->SinonCPTool.getDpFunc,
+            createShaderModuleStubData->SinonTool.getDpFunc,
           ~loadGLSL,
           (),
         )
@@ -77,27 +77,27 @@ let _ =
               (
                 (
                   createShaderModuleStubData
-                  ->SinonCPTool.getStub
+                  ->SinonTool.getStub
                   ->getCall(0, _)
-                  ->SinonCPTool.calledWithArg2({"code": rayGenGLSL}, device),
+                  ->SinonTool.calledWithArg2({"code": rayGenGLSL}, device),
                   createShaderModuleStubData
-                  ->SinonCPTool.getStub
+                  ->SinonTool.getStub
                   ->getCall(1, _)
-                  ->SinonCPTool.calledWithArg2(
+                  ->SinonTool.calledWithArg2(
                       {"code": rayRChitGLSL},
                       device,
                     ),
                   createShaderModuleStubData
-                  ->SinonCPTool.getStub
+                  ->SinonTool.getStub
                   ->getCall(2, _)
-                  ->SinonCPTool.calledWithArg2(
+                  ->SinonTool.calledWithArg2(
                       {"code": rayMissGLSL},
                       device,
                     ),
                   createShaderModuleStubData
-                  ->SinonCPTool.getStub
+                  ->SinonTool.getStub
                   ->getCall(3, _)
-                  ->SinonCPTool.calledWithArg2(
+                  ->SinonTool.calledWithArg2(
                       {"code": rayMissShadowGLSL},
                       device,
                     ),
@@ -105,22 +105,22 @@ let _ =
                 (
                   loadGLSL
                   ->getCall(0, _)
-                  ->SinonCPTool.calledWith(
+                  ->SinonTool.calledWith(
                       {j|$(baseShaderPath)/ray-generation.rgen|j},
                     ),
                   loadGLSL
                   ->getCall(1, _)
-                  ->SinonCPTool.calledWith(
+                  ->SinonTool.calledWith(
                       {j|$(baseShaderPath)/ray-closest-hit.rchit|j},
                     ),
                   loadGLSL
                   ->getCall(2, _)
-                  ->SinonCPTool.calledWith(
+                  ->SinonTool.calledWith(
                       {j|$(baseShaderPath)/ray-miss.rmiss|j},
                     ),
                   loadGLSL
                   ->getCall(3, _)
-                  ->SinonCPTool.calledWith(
+                  ->SinonTool.calledWith(
                       {j|$(baseShaderPath)/ray-miss-shadow.rmiss|j},
                     ),
                 ),
@@ -146,28 +146,28 @@ let _ =
           createEmptyStub(refJsObjToSandbox(sandbox^));
         createShaderModuleStubData
         ->onCall(0, _)
-        ->SinonCPTool.returns(rayGenShaderModule);
+        ->SinonTool.returns(rayGenShaderModule);
         createShaderModuleStubData
         ->onCall(1, _)
-        ->SinonCPTool.returns(rayRChitShaderModule);
+        ->SinonTool.returns(rayRChitShaderModule);
         createShaderModuleStubData
         ->onCall(2, _)
-        ->SinonCPTool.returns(rayMissShaderModule);
+        ->SinonTool.returns(rayMissShaderModule);
         createShaderModuleStubData
         ->onCall(3, _)
-        ->SinonCPTool.returns(rayMissShadowShaderModule);
+        ->SinonTool.returns(rayMissShadowShaderModule);
         let createShaderModuleStubData =
-          createShaderModuleStubData->SinonCPTool.createTwoArgsEmptyStubData;
+          createShaderModuleStubData->SinonTool.createTwoArgsEmptyStubData;
         let createRayTracingShaderBindingTableStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.createTwoArgsEmptyStubData;
         let ray_generation = 0;
         let ray_closest_hit = 1;
         let ray_miss = 2;
         WebGPUDependencyTool.build(
           ~sandbox,
           ~createShaderModule=
-            createShaderModuleStubData->SinonCPTool.getDpFunc,
+            createShaderModuleStubData->SinonTool.getDpFunc,
           (),
         )
         ->WebGPUDependencyTool.set;
@@ -177,7 +177,7 @@ let _ =
           ~ray_closest_hit,
           ~ray_miss,
           ~createRayTracingShaderBindingTable=
-            createRayTracingShaderBindingTableStubData->SinonCPTool.getDpFunc,
+            createRayTracingShaderBindingTableStubData->SinonTool.getDpFunc,
           (),
         )
         ->WebGPURayTracingDependencyTool.set;
@@ -186,9 +186,9 @@ let _ =
           ~handleSuccessFunc=
             () => {
               createRayTracingShaderBindingTableStubData
-              ->SinonCPTool.getStub
+              ->SinonTool.getStub
               ->expect
-              ->SinonCPTool.toCalledWith((
+              ->SinonTool.toCalledWith((
                   {
                     "stages": [|
                       {"module": rayGenShaderModule, "stage": ray_generation},
@@ -240,14 +240,14 @@ let _ =
         let createBindGroupLayoutStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
           ->onCall(0, _)
-          ->SinonCPTool.returns(layout)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(layout)
+          ->SinonTool.createTwoArgsEmptyStubData;
         let ray_generation = 0;
         let ray_closest_hit = 1;
         WebGPUDependencyTool.build(
           ~sandbox,
           ~createBindGroupLayout=
-            createBindGroupLayoutStubData->SinonCPTool.getDpFunc,
+            createBindGroupLayoutStubData->SinonTool.getDpFunc,
           (),
         )
         ->WebGPUDependencyTool.set;
@@ -264,9 +264,9 @@ let _ =
             () => {
               (
                 createBindGroupLayoutStubData
-                ->SinonCPTool.getStub
+                ->SinonTool.getStub
                 ->getCall(0, _)
-                ->SinonCPTool.calledWithArg2(
+                ->SinonTool.calledWithArg2(
                     {
                       "entries": [|
                         IWebGPUCoreDp.layoutBinding(
@@ -293,14 +293,14 @@ let _ =
         let createBindGroupLayoutStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
           ->onCall(1, _)
-          ->SinonCPTool.returns(layout)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(layout)
+          ->SinonTool.createTwoArgsEmptyStubData;
         let ray_generation = 0;
         let ray_closest_hit = 1;
         WebGPUDependencyTool.build(
           ~sandbox,
           ~createBindGroupLayout=
-            createBindGroupLayoutStubData->SinonCPTool.getDpFunc,
+            createBindGroupLayoutStubData->SinonTool.getDpFunc,
           (),
         )
         ->WebGPUDependencyTool.set;
@@ -317,9 +317,9 @@ let _ =
             () => {
               (
                 createBindGroupLayoutStubData
-                ->SinonCPTool.getStub
+                ->SinonTool.getStub
                 ->getCall(1, _)
-                ->SinonCPTool.calledWithArg2(
+                ->SinonTool.calledWithArg2(
                     {
                       "entries": [|
                         IWebGPUCoreDp.layoutBinding(
@@ -349,19 +349,19 @@ let _ =
         let createBindGroupLayoutStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
           ->onCall(0, _)
-          ->SinonCPTool.returns(layout)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(layout)
+          ->SinonTool.createTwoArgsEmptyStubData;
         let bindGroup = WebGPUDependencyTool.createBindGroupObject();
         let createBindGroupStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
           ->onCall(0, _)
-          ->SinonCPTool.returns(bindGroup)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(bindGroup)
+          ->SinonTool.createTwoArgsEmptyStubData;
         WebGPUDependencyTool.build(
           ~sandbox,
           ~createBindGroupLayout=
-            createBindGroupLayoutStubData->SinonCPTool.getDpFunc,
-          ~createBindGroup=createBindGroupStubData->SinonCPTool.getDpFunc,
+            createBindGroupLayoutStubData->SinonTool.getDpFunc,
+          ~createBindGroup=createBindGroupStubData->SinonTool.getDpFunc,
           (),
         )
         ->WebGPUDependencyTool.set;
@@ -374,9 +374,9 @@ let _ =
 
               (
                 createBindGroupStubData
-                ->SinonCPTool.getStub
+                ->SinonTool.getStub
                 ->getCall(0, _)
-                ->SinonCPTool.calledWithArg2(
+                ->SinonTool.calledWithArg2(
                     {
                       "layout": layout,
                       "entries": [|
@@ -431,18 +431,18 @@ let _ =
             let createBufferStubData =
               createEmptyStub(refJsObjToSandbox(sandbox^))
               ->onCall(0, _)
-              ->SinonCPTool.returns(buffer)
-              ->SinonCPTool.createTwoArgsEmptyStubData;
+              ->SinonTool.returns(buffer)
+              ->SinonTool.createTwoArgsEmptyStubData;
             let copy_dst = 2;
             let storage = 3;
             let setSubFloat32DataStubData =
               createEmptyStub(refJsObjToSandbox(sandbox^))
-              ->SinonCPTool.createThreeArgsEmptyStubData;
+              ->SinonTool.createThreeArgsEmptyStubData;
             WebGPUDependencyTool.build(
               ~sandbox,
-              ~createBuffer=createBufferStubData->SinonCPTool.getDpFunc,
+              ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
               ~setSubFloat32Data=
-                setSubFloat32DataStubData->SinonCPTool.getDpFunc,
+                setSubFloat32DataStubData->SinonTool.getDpFunc,
               ~storage_bufferUsage=storage,
               ~copy_dst_bufferUsage=copy_dst,
               (),
@@ -454,8 +454,8 @@ let _ =
                 () => {
                   (
                     createBufferStubData
-                    ->SinonCPTool.getStub
-                    ->SinonCPTool.calledWithArg2(
+                    ->SinonTool.getStub
+                    ->SinonTool.calledWithArg2(
                         {
                           "size":
                             directionLightCount->_computeDirectionLightBufferSize,
@@ -464,7 +464,7 @@ let _ =
                         device,
                       ),
                     setSubFloat32DataStubData
-                    ->SinonCPTool.getStub
+                    ->SinonTool.getStub
                     ->getCall(0, _)
                     ->getArgs
                     ->ListSt.nth(2)
@@ -492,15 +492,15 @@ let _ =
               ->ResultTool.getExnSuccessValueIgnore;
               let createBufferStubData =
                 createEmptyStub(refJsObjToSandbox(sandbox^))
-                ->SinonCPTool.createTwoArgsEmptyStubData;
+                ->SinonTool.createTwoArgsEmptyStubData;
               let setSubFloat32DataStubData =
                 createEmptyStub(refJsObjToSandbox(sandbox^))
-                ->SinonCPTool.createThreeArgsEmptyStubData;
+                ->SinonTool.createThreeArgsEmptyStubData;
               WebGPUDependencyTool.build(
                 ~sandbox,
-                ~createBuffer=createBufferStubData->SinonCPTool.getDpFunc,
+                ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
                 ~setSubFloat32Data=
-                  setSubFloat32DataStubData->SinonCPTool.getDpFunc,
+                  setSubFloat32DataStubData->SinonTool.getDpFunc,
                 (),
               )
               ->WebGPUDependencyTool.set;
@@ -510,7 +510,7 @@ let _ =
                   () => {
                     let typeArr =
                       setSubFloat32DataStubData
-                      ->SinonCPTool.getStub
+                      ->SinonTool.getStub
                       ->getCall(0, _)
                       ->getArgs
                       ->ListSt.nth(1)
@@ -549,26 +549,26 @@ let _ =
           let createBufferStubData =
             createEmptyStub(refJsObjToSandbox(sandbox^))
             ->onCall(0, _)
-            ->SinonCPTool.returns(buffer)
-            ->SinonCPTool.createTwoArgsEmptyStubData;
+            ->SinonTool.returns(buffer)
+            ->SinonTool.createTwoArgsEmptyStubData;
           let layout = WebGPUDependencyTool.createBindGroupLayoutObject();
           let createBindGroupLayoutStubData =
             createEmptyStub(refJsObjToSandbox(sandbox^))
             ->onCall(1, _)
-            ->SinonCPTool.returns(layout)
-            ->SinonCPTool.createTwoArgsEmptyStubData;
+            ->SinonTool.returns(layout)
+            ->SinonTool.createTwoArgsEmptyStubData;
           let bindGroup = WebGPUDependencyTool.createBindGroupObject();
           let createBindGroupStubData =
             createEmptyStub(refJsObjToSandbox(sandbox^))
             ->onCall(1, _)
-            ->SinonCPTool.returns(bindGroup)
-            ->SinonCPTool.createTwoArgsEmptyStubData;
+            ->SinonTool.returns(bindGroup)
+            ->SinonTool.createTwoArgsEmptyStubData;
           WebGPUDependencyTool.build(
             ~sandbox,
-            ~createBuffer=createBufferStubData->SinonCPTool.getDpFunc,
+            ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
             ~createBindGroupLayout=
-              createBindGroupLayoutStubData->SinonCPTool.getDpFunc,
-            ~createBindGroup=createBindGroupStubData->SinonCPTool.getDpFunc,
+              createBindGroupLayoutStubData->SinonTool.getDpFunc,
+            ~createBindGroup=createBindGroupStubData->SinonTool.getDpFunc,
             (),
           )
           ->WebGPUDependencyTool.set;
@@ -578,9 +578,9 @@ let _ =
               () => {
                 (
                   createBindGroupStubData
-                  ->SinonCPTool.getStub
+                  ->SinonTool.getStub
                   ->getCall(1, _)
-                  ->SinonCPTool.calledWithArg2(
+                  ->SinonTool.calledWithArg2(
                       {
                         "layout": layout,
                         "entries": [|

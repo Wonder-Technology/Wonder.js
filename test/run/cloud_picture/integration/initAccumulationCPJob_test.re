@@ -53,20 +53,20 @@ let _ =
           let height = 20;
           let getWidth =
             createEmptyStub(refJsObjToSandbox(sandbox^))
-            ->SinonCPTool.returns(width);
+            ->SinonTool.returns(width);
           let getHeight =
             createEmptyStub(refJsObjToSandbox(sandbox^))
-            ->SinonCPTool.returns(height);
+            ->SinonTool.returns(height);
           let buffer = WebGPUDependencyTool.createBufferObject();
           let createBufferStubData =
             createEmptyStub(refJsObjToSandbox(sandbox^))
-            ->SinonCPTool.returns(buffer)
-            ->SinonCPTool.createTwoArgsEmptyStubData;
+            ->SinonTool.returns(buffer)
+            ->SinonTool.createTwoArgsEmptyStubData;
           let storage = 3;
           let copy_dst = 4;
           WebGPUDependencyTool.build(
             ~sandbox,
-            ~createBuffer=createBufferStubData->SinonCPTool.getDpFunc,
+            ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
             ~storage_bufferUsage=storage,
             ~copy_dst_bufferUsage=copy_dst,
             ~getWidth,
@@ -84,9 +84,9 @@ let _ =
                 (
                   bufferSize,
                   createBufferStubData
-                  ->SinonCPTool.getStub
+                  ->SinonTool.getStub
                   ->getCall(0, _)
-                  ->SinonCPTool.calledWithArg2(
+                  ->SinonTool.calledWithArg2(
                       {"size": bufferSize, "usage": copy_dst lor storage},
                       device,
                     ),
@@ -113,14 +113,14 @@ let _ =
         let createBindGroupLayoutStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
           ->onCall(0, _)
-          ->SinonCPTool.returns(layout)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(layout)
+          ->SinonTool.createTwoArgsEmptyStubData;
         let fragment = 2;
         WebGPUDependencyTool.build(
           ~sandbox,
           ~fragment,
           ~createBindGroupLayout=
-            createBindGroupLayoutStubData->SinonCPTool.getDpFunc,
+            createBindGroupLayoutStubData->SinonTool.getDpFunc,
           (),
         )
         ->WebGPUDependencyTool.set;
@@ -129,10 +129,10 @@ let _ =
           ~handleSuccessFunc=
             () => {
               createBindGroupLayoutStubData
-              ->SinonCPTool.getStub
+              ->SinonTool.getStub
               ->getCall(0, _)
               ->expect
-              ->SinonCPTool.toCalledWith((
+              ->SinonTool.toCalledWith((
                   {
                     "entries": [|
                       IWebGPUCoreDp.layoutBinding(
@@ -173,19 +173,19 @@ let _ =
         let createBindGroupLayoutStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
           ->onCall(0, _)
-          ->SinonCPTool.returns(layout)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(layout)
+          ->SinonTool.createTwoArgsEmptyStubData;
         let bindGroup = WebGPUDependencyTool.createBindGroupObject();
         let createBindGroupStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
           ->onCall(0, _)
-          ->SinonCPTool.returns(bindGroup)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(bindGroup)
+          ->SinonTool.createTwoArgsEmptyStubData;
         WebGPUDependencyTool.build(
           ~sandbox,
           ~createBindGroupLayout=
-            createBindGroupLayoutStubData->SinonCPTool.getDpFunc,
-          ~createBindGroup=createBindGroupStubData->SinonCPTool.getDpFunc,
+            createBindGroupLayoutStubData->SinonTool.getDpFunc,
+          ~createBindGroup=createBindGroupStubData->SinonTool.getDpFunc,
           (),
         )
         ->WebGPUDependencyTool.set;
@@ -204,9 +204,9 @@ let _ =
 
               (
                 createBindGroupStubData
-                ->SinonCPTool.getStub
+                ->SinonTool.getStub
                 ->getCall(0, _)
-                ->SinonCPTool.calledWithArg2(
+                ->SinonTool.calledWithArg2(
                     {
                       "layout": layout,
                       "entries": [|
@@ -263,15 +263,15 @@ let _ =
         let vertexGLSL = "a1";
         let fragmentGLSL = "a2";
         let loadGLSL = createEmptyStub(refJsObjToSandbox(sandbox^));
-        loadGLSL->onCall(0, _)->SinonCPTool.returns(vertexGLSL);
-        loadGLSL->onCall(1, _)->SinonCPTool.returns(fragmentGLSL);
+        loadGLSL->onCall(0, _)->SinonTool.returns(vertexGLSL);
+        loadGLSL->onCall(1, _)->SinonTool.returns(fragmentGLSL);
         let createShaderModuleStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.createTwoArgsEmptyStubData;
         WebGPUDependencyTool.build(
           ~sandbox,
           ~createShaderModule=
-            createShaderModuleStubData->SinonCPTool.getDpFunc,
+            createShaderModuleStubData->SinonTool.getDpFunc,
           ~loadGLSL,
           (),
         )
@@ -283,13 +283,13 @@ let _ =
               (
                 (
                   createShaderModuleStubData
-                  ->SinonCPTool.getStub
+                  ->SinonTool.getStub
                   ->getCall(0, _)
-                  ->SinonCPTool.calledWithArg2({"code": vertexGLSL}, device),
+                  ->SinonTool.calledWithArg2({"code": vertexGLSL}, device),
                   createShaderModuleStubData
-                  ->SinonCPTool.getStub
+                  ->SinonTool.getStub
                   ->getCall(1, _)
-                  ->SinonCPTool.calledWithArg2(
+                  ->SinonTool.calledWithArg2(
                       {"code": fragmentGLSL},
                       device,
                     ),
@@ -297,12 +297,12 @@ let _ =
                 (
                   loadGLSL
                   ->getCall(0, _)
-                  ->SinonCPTool.calledWith(
+                  ->SinonTool.calledWith(
                       {j|$(baseShaderPath)/accumulation.vert|j},
                     ),
                   loadGLSL
                   ->getCall(1, _)
-                  ->SinonCPTool.calledWith(
+                  ->SinonTool.calledWith(
                       {j|$(baseShaderPath)/accumulation.frag|j},
                     ),
                 ),
@@ -323,41 +323,41 @@ let _ =
           createEmptyStub(refJsObjToSandbox(sandbox^));
         createShaderModuleStubData
         ->onCall(0, _)
-        ->SinonCPTool.returns(vertexShaderModule);
+        ->SinonTool.returns(vertexShaderModule);
         createShaderModuleStubData
         ->onCall(1, _)
-        ->SinonCPTool.returns(fragmentShaderModule);
+        ->SinonTool.returns(fragmentShaderModule);
         let createShaderModuleStubData =
-          createShaderModuleStubData->SinonCPTool.createTwoArgsEmptyStubData;
+          createShaderModuleStubData->SinonTool.createTwoArgsEmptyStubData;
         let bindGroupLayout =
           WebGPUDependencyTool.createBindGroupLayoutObject();
         let createBindGroupLayoutStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
           ->onCall(0, _)
-          ->SinonCPTool.returns(bindGroupLayout)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(bindGroupLayout)
+          ->SinonTool.createTwoArgsEmptyStubData;
         let pipelineLayout = WebGPUDependencyTool.createPipelineLayout();
         let createPipelineLayoutStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
           ->onCall(0, _)
-          ->SinonCPTool.returns(pipelineLayout)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(pipelineLayout)
+          ->SinonTool.createTwoArgsEmptyStubData;
         let renderPipeline = WebGPUDependencyTool.createRenderPipelineObject();
         let createRenderPipelineStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
           ->onCall(0, _)
-          ->SinonCPTool.returns(renderPipeline)
-          ->SinonCPTool.createTwoArgsEmptyStubData;
+          ->SinonTool.returns(renderPipeline)
+          ->SinonTool.createTwoArgsEmptyStubData;
         WebGPUDependencyTool.build(
           ~sandbox,
           ~createShaderModule=
-            createShaderModuleStubData->SinonCPTool.getDpFunc,
+            createShaderModuleStubData->SinonTool.getDpFunc,
           ~createBindGroupLayout=
-            createBindGroupLayoutStubData->SinonCPTool.getDpFunc,
+            createBindGroupLayoutStubData->SinonTool.getDpFunc,
           ~createPipelineLayout=
-            createPipelineLayoutStubData->SinonCPTool.getDpFunc,
+            createPipelineLayoutStubData->SinonTool.getDpFunc,
           ~createRenderPipeline=
-            createRenderPipelineStubData->SinonCPTool.getDpFunc,
+            createRenderPipelineStubData->SinonTool.getDpFunc,
           (),
         )
         ->WebGPUDependencyTool.set;
@@ -374,16 +374,16 @@ let _ =
 
               (
                 createPipelineLayoutStubData
-                ->SinonCPTool.getStub
+                ->SinonTool.getStub
                 ->getCall(0, _)
-                ->SinonCPTool.calledWithArg2(
+                ->SinonTool.calledWithArg2(
                     {"bindGroupLayouts": [|bindGroupLayout|]},
                     device,
                   ),
                 createRenderPipelineStubData
-                ->SinonCPTool.getStub
+                ->SinonTool.getStub
                 ->getCall(0, _)
-                ->SinonCPTool.calledWithArg2(
+                ->SinonTool.calledWithArg2(
                     IWebGPUCoreDp.pipelineRenderDescriptor(
                       ~layout=pipelineLayout,
                       ~vertexStage={

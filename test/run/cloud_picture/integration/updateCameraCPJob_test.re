@@ -294,10 +294,10 @@ let _ =
         BasicCameraViewRunAPI.active(cameraView);
         let setSubFloat32DataStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonCPTool.createThreeArgsEmptyStubData;
+          ->SinonTool.createThreeArgsEmptyStubData;
         WebGPUDependencyTool.build(
           ~sandbox,
-          ~setSubFloat32Data=setSubFloat32DataStubData->SinonCPTool.getDpFunc,
+          ~setSubFloat32Data=setSubFloat32DataStubData->SinonTool.getDpFunc,
           (),
         )
         ->WebGPUDependencyTool.set;
@@ -312,9 +312,9 @@ let _ =
                 CameraCPTool.getCameraBufferData();
 
               setSubFloat32DataStubData
-              ->SinonCPTool.getStub
+              ->SinonTool.getStub
               ->expect
-              ->SinonCPTool.toCalledWith((
+              ->SinonTool.toCalledWith((
                   0,
                   typeArr,
                   cameraBuffer->UniformBufferVO.value,

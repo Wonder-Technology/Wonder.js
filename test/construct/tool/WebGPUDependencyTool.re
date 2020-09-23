@@ -74,136 +74,136 @@ let build =
       ~copy_src_bufferUsage=7,
       ~copy_dst_bufferUsage=8,
       ~createView=createEmptyStub(refJsObjToSandbox(sandbox^))
-                  ->SinonCPTool.createTwoArgsEmptyStubData
-                  ->SinonCPTool.getDpFunc,
+                  ->SinonTool.createTwoArgsEmptyStubData
+                  ->SinonTool.getDpFunc,
       ~getCurrentTextureView=createEmptyStub(refJsObjToSandbox(sandbox^))
-                             ->SinonCPTool.createTwoArgsEmptyStubData
-                             ->SinonCPTool.getDpFunc,
+                             ->SinonTool.createTwoArgsEmptyStubData
+                             ->SinonTool.getDpFunc,
       ~present=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~submit=createEmptyStub(refJsObjToSandbox(sandbox^))
-              ->SinonCPTool.createTwoArgsEmptyStubData
-              ->SinonCPTool.getDpFunc,
+              ->SinonTool.createTwoArgsEmptyStubData
+              ->SinonTool.getDpFunc,
       ~setSubFloat32Data=createEmptyStub(refJsObjToSandbox(sandbox^))
-                         ->SinonCPTool.createThreeArgsEmptyStubData
-                         ->SinonCPTool.getDpFunc,
+                         ->SinonTool.createThreeArgsEmptyStubData
+                         ->SinonTool.getDpFunc,
       ~setSubUint8Data=createEmptyStub(refJsObjToSandbox(sandbox^))
-                       ->SinonCPTool.createThreeArgsEmptyStubData
-                       ->SinonCPTool.getDpFunc,
+                       ->SinonTool.createThreeArgsEmptyStubData
+                       ->SinonTool.getDpFunc,
       ~setSubUint32Data=createEmptyStub(refJsObjToSandbox(sandbox^))
-                        ->SinonCPTool.createThreeArgsEmptyStubData
-                        ->SinonCPTool.getDpFunc,
+                        ->SinonTool.createThreeArgsEmptyStubData
+                        ->SinonTool.getDpFunc,
       ~setPipeline_render=createEmptyStub(refJsObjToSandbox(sandbox^))
-                          ->SinonCPTool.createTwoArgsEmptyStubData
-                          ->SinonCPTool.getDpFunc,
+                          ->SinonTool.createTwoArgsEmptyStubData
+                          ->SinonTool.getDpFunc,
       ~setBindGroup_render=createEmptyStub(refJsObjToSandbox(sandbox^))
-                           ->SinonCPTool.createThreeArgsEmptyStubData
-                           ->SinonCPTool.getDpFunc,
+                           ->SinonTool.createThreeArgsEmptyStubData
+                           ->SinonTool.getDpFunc,
       ~setDynamicBindGroup_render=createEmptyStub(
                                     refJsObjToSandbox(sandbox^),
                                   )
-                                  ->SinonCPTool.createFourArgsEmptyStubData
-                                  ->SinonCPTool.getDpFunc,
+                                  ->SinonTool.createFourArgsEmptyStubData
+                                  ->SinonTool.getDpFunc,
       ~setVertexBuffer=createEmptyStub(refJsObjToSandbox(sandbox^))
-                       ->SinonCPTool.createThreeArgsEmptyStubData
-                       ->SinonCPTool.getDpFunc,
+                       ->SinonTool.createThreeArgsEmptyStubData
+                       ->SinonTool.getDpFunc,
       ~setIndexBuffer=createEmptyStub(refJsObjToSandbox(sandbox^))
-                      ->SinonCPTool.createTwoArgsEmptyStubData
-                      ->SinonCPTool.getDpFunc,
+                      ->SinonTool.createTwoArgsEmptyStubData
+                      ->SinonTool.getDpFunc,
       ~draw=createEmptyStub(refJsObjToSandbox(sandbox^))
-            ->SinonCPTool.createFiveArgsEmptyStubData
-            ->SinonCPTool.getDpFunc,
+            ->SinonTool.createFiveArgsEmptyStubData
+            ->SinonTool.getDpFunc,
       ~drawIndexed=createEmptyStub(refJsObjToSandbox(sandbox^))
-                   ->SinonCPTool.createSixArgsEmptyStubData
-                   ->SinonCPTool.getDpFunc,
+                   ->SinonTool.createSixArgsEmptyStubData
+                   ->SinonTool.getDpFunc,
       ~endPass_render=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~setPipeline_compute=createEmptyStub(refJsObjToSandbox(sandbox^))
-                           ->SinonCPTool.createTwoArgsEmptyStubData
-                           ->SinonCPTool.getDpFunc,
+                           ->SinonTool.createTwoArgsEmptyStubData
+                           ->SinonTool.getDpFunc,
       ~setBindGroup_compute=createEmptyStub(refJsObjToSandbox(sandbox^))
-                            ->SinonCPTool.createThreeArgsEmptyStubData
-                            ->SinonCPTool.getDpFunc,
+                            ->SinonTool.createThreeArgsEmptyStubData
+                            ->SinonTool.getDpFunc,
       ~setDynamicBindGroup_compute=createEmptyStub(
                                      refJsObjToSandbox(sandbox^),
                                    )
-                                   ->SinonCPTool.createFourArgsEmptyStubData
-                                   ->SinonCPTool.getDpFunc,
+                                   ->SinonTool.createFourArgsEmptyStubData
+                                   ->SinonTool.getDpFunc,
       ~dispatchX=createEmptyStub(refJsObjToSandbox(sandbox^))
-                 ->SinonCPTool.createTwoArgsEmptyStubData
-                 ->SinonCPTool.getDpFunc,
+                 ->SinonTool.createTwoArgsEmptyStubData
+                 ->SinonTool.getDpFunc,
       ~endPass_compute=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~beginRenderPass=createEmptyStub(refJsObjToSandbox(sandbox^))
-                       ->SinonCPTool.createTwoArgsEmptyStubData
-                       ->SinonCPTool.getDpFunc,
+                       ->SinonTool.createTwoArgsEmptyStubData
+                       ->SinonTool.getDpFunc,
       ~beginComputePass=createEmptyStub(refJsObjToSandbox(sandbox^))
-                        ->SinonCPTool.createTwoArgsEmptyStubData
-                        ->SinonCPTool.getDpFunc,
+                        ->SinonTool.createTwoArgsEmptyStubData
+                        ->SinonTool.getDpFunc,
       ~finish=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getQueue=createEmptyStub(refJsObjToSandbox(sandbox^))
-                ->SinonCPTool.returns(createQueueObject()),
+                ->SinonTool.returns(createQueueObject()),
       ~createShaderModule=createEmptyStub(refJsObjToSandbox(sandbox^))
-                          ->SinonCPTool.createTwoArgsEmptyStubData
-                          ->SinonCPTool.getDpFunc,
+                          ->SinonTool.createTwoArgsEmptyStubData
+                          ->SinonTool.getDpFunc,
       ~createPipelineLayout=createEmptyStub(refJsObjToSandbox(sandbox^))
-                            ->SinonCPTool.createTwoArgsEmptyStubData
-                            ->SinonCPTool.getDpFunc,
+                            ->SinonTool.createTwoArgsEmptyStubData
+                            ->SinonTool.getDpFunc,
       ~createBuffer=createEmptyStub(refJsObjToSandbox(sandbox^))
-                    ->SinonCPTool.returns(createBufferObject())
-                    ->SinonCPTool.createTwoArgsEmptyStubData
-                    ->SinonCPTool.getDpFunc,
+                    ->SinonTool.returns(createBufferObject())
+                    ->SinonTool.createTwoArgsEmptyStubData
+                    ->SinonTool.getDpFunc,
       ~createBindGroupLayout=createEmptyStub(refJsObjToSandbox(sandbox^))
-                             ->SinonCPTool.createTwoArgsEmptyStubData
-                             ->SinonCPTool.getDpFunc,
+                             ->SinonTool.createTwoArgsEmptyStubData
+                             ->SinonTool.getDpFunc,
       ~createBindGroup=createEmptyStub(refJsObjToSandbox(sandbox^))
-                       ->SinonCPTool.createTwoArgsEmptyStubData
-                       ->SinonCPTool.getDpFunc,
+                       ->SinonTool.createTwoArgsEmptyStubData
+                       ->SinonTool.getDpFunc,
       ~createRenderPipeline=createEmptyStub(refJsObjToSandbox(sandbox^))
-                            ->SinonCPTool.createTwoArgsEmptyStubData
-                            ->SinonCPTool.getDpFunc,
+                            ->SinonTool.createTwoArgsEmptyStubData
+                            ->SinonTool.getDpFunc,
       ~createComputePipeline=createEmptyStub(refJsObjToSandbox(sandbox^))
-                             ->SinonCPTool.createTwoArgsEmptyStubData
-                             ->SinonCPTool.getDpFunc,
+                             ->SinonTool.createTwoArgsEmptyStubData
+                             ->SinonTool.getDpFunc,
       ~createCommandEncoder=createEmptyStub(refJsObjToSandbox(sandbox^))
-                            ->SinonCPTool.createTwoArgsEmptyStubData
-                            ->SinonCPTool.getDpFunc,
+                            ->SinonTool.createTwoArgsEmptyStubData
+                            ->SinonTool.getDpFunc,
       ~createSampler=createEmptyStub(refJsObjToSandbox(sandbox^))
-                     ->SinonCPTool.createTwoArgsEmptyStubData
-                     ->SinonCPTool.getDpFunc,
+                     ->SinonTool.createTwoArgsEmptyStubData
+                     ->SinonTool.getDpFunc,
       ~createTexture=createEmptyStub(refJsObjToSandbox(sandbox^))
-                     ->SinonCPTool.createTwoArgsEmptyStubData
-                     ->SinonCPTool.getDpFunc,
+                     ->SinonTool.createTwoArgsEmptyStubData
+                     ->SinonTool.getDpFunc,
       ~getSwapChainPreferredFormat=createEmptyStub(
                                      refJsObjToSandbox(sandbox^),
                                    )
-                                   ->SinonCPTool.returns(
+                                   ->SinonTool.returns(
                                        Js.Promise.make((~resolve, ~reject) =>
                                          resolve(. -1)
                                        ),
                                      )
-                                   ->SinonCPTool.createTwoArgsEmptyStubData
-                                   ->SinonCPTool.getDpFunc,
+                                   ->SinonTool.createTwoArgsEmptyStubData
+                                   ->SinonTool.getDpFunc,
       ~configureSwapChain=createEmptyStub(refJsObjToSandbox(sandbox^))
-                          ->SinonCPTool.returns(createSwapChainObject())
-                          ->SinonCPTool.createTwoArgsEmptyStubData
-                          ->SinonCPTool.getDpFunc,
+                          ->SinonTool.returns(createSwapChainObject())
+                          ->SinonTool.createTwoArgsEmptyStubData
+                          ->SinonTool.getDpFunc,
       ~make=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getContext=createEmptyStub(refJsObjToSandbox(sandbox^))
-                  ->SinonCPTool.returns(createContextObject()),
+                  ->SinonTool.returns(createContextObject()),
       ~pollEvents=createEmptyStub(refJsObjToSandbox(sandbox^))
-                  ->SinonCPTool.createTwoArgsEmptyStubData
-                  ->SinonCPTool.getDpFunc,
+                  ->SinonTool.createTwoArgsEmptyStubData
+                  ->SinonTool.getDpFunc,
       ~shouldClose=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getWidth=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getHeight=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~requestDevice=createEmptyStub(refJsObjToSandbox(sandbox^))
-                     ->SinonCPTool.returns(
+                     ->SinonTool.returns(
                          Js.Promise.make((~resolve, ~reject) =>
                            resolve(. createDeviceObject())
                          ),
                        )
-                     ->SinonCPTool.createTwoArgsEmptyStubData
-                     ->SinonCPTool.getDpFunc,
+                     ->SinonTool.createTwoArgsEmptyStubData
+                     ->SinonTool.getDpFunc,
       ~requestAdapter=createEmptyStub(refJsObjToSandbox(sandbox^))
-                      ->SinonCPTool.returns(
+                      ->SinonTool.returns(
                           Js.Promise.make((~resolve, ~reject) =>
                             resolve(. createAdapterObject())
                           ),
