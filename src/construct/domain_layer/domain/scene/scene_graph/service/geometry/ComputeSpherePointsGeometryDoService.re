@@ -32,6 +32,8 @@ let compute = (radius, bands) => {
       vertices->ArraySt.push(x)->ArraySt.push(y)->ArraySt.push(z)->ignore;
 
       normals->ArraySt.push(x)->ArraySt.push(y)->ArraySt.push(z)->ignore;
+
+      texCoords->ArraySt.push(u)->ArraySt.push(v)->ignore;
     };
   };
 
@@ -51,5 +53,5 @@ let compute = (radius, bands) => {
     };
   };
 
-  (vertices, normals, indices);
+  (vertices, texCoords, normals, indices);
 };

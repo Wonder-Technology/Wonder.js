@@ -85,6 +85,34 @@ let setNormals = (geometry, data) => {
     });
 };
 
+let getTexCoords = geometry => {
+  let {texCoords, texCoordsInfos} = CPRepo.getExnGeometry();
+
+  getFloat32PointData(
+    BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+    texCoords,
+    texCoordsInfos,
+  );
+};
+
+let setTexCoords = (geometry, data) => {
+  let {texCoordsInfos, texCoords, texCoordsOffset} as geometryPO =
+    CPRepo.getExnGeometry();
+
+  setFloat32PointData(
+    (
+      BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+      texCoordsInfos,
+      texCoordsOffset,
+      Float32Array.length(data),
+    ),
+    fillFloat32ArrayWithOffset(texCoords, data),
+  )
+  ->Result.mapSuccess(texCoordsOffset => {
+      CPRepo.setGeometry({...geometryPO, texCoordsOffset})
+    });
+};
+
 let getIndices = geometry => {
   let {indices, indicesInfos} = CPRepo.getExnGeometry();
 
@@ -128,6 +156,15 @@ let hasNormals = geometry => {
   hasPointData(
     BufferGeometryCPRepoUtils.getInfoIndex(geometry),
     normalsInfos,
+  );
+};
+
+let hasTexCoords = geometry => {
+  let {texCoordsInfos} = CPRepo.getExnGeometry();
+
+  hasPointData(
+    BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+    texCoordsInfos,
   );
 };
 

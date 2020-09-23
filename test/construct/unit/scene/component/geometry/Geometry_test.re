@@ -62,6 +62,14 @@ let _ =
         )
       );
 
+      describe("set texCoords with type array", () =>
+        _testSetVertexDataWithTypeArray(
+          getTexCoords,
+          setTexCoords,
+          TexCoordsVO.create,
+        )
+      );
+
       describe("set normals with type array", () =>
         _testSetVertexDataWithTypeArray(
           getNormals,

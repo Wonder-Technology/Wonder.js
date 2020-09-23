@@ -103,10 +103,13 @@ type geometryRepo = {
   setVertices: (geometry, Js.Typed_array.Float32Array.t) => Result.t2(unit),
   getNormals: geometry => Result.t2(Js.Typed_array.Float32Array.t),
   setNormals: (geometry, Js.Typed_array.Float32Array.t) => Result.t2(unit),
+  getTexCoords: geometry => Result.t2(Js.Typed_array.Float32Array.t),
+  setTexCoords: (geometry, Js.Typed_array.Float32Array.t) => Result.t2(unit),
   getIndices: geometry => Result.t2(Js.Typed_array.Uint32Array.t),
   setIndices: (geometry, Js.Typed_array.Uint32Array.t) => Result.t2(unit),
   hasVertices: geometry => Result.t2(bool),
   hasNormals: geometry => Result.t2(bool),
+  hasTexCoords: geometry => Result.t2(bool),
   hasIndices: geometry => Result.t2(bool),
   getIndicesCount: geometry => Result.t2(int),
 };

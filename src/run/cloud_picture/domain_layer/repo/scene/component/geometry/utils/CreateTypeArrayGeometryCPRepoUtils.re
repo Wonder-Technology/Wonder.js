@@ -10,6 +10,11 @@ let createTypeArrays = (buffer, geometryPointCount, geometryCount) => (
   ),
   Float32Array.fromBufferRange(
     SharedArrayBufferCPPOType.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset=getTexCoordsOffset(geometryPointCount),
+    ~length=getTexCoordsLength(geometryPointCount),
+  ),
+  Float32Array.fromBufferRange(
+    SharedArrayBufferCPPOType.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getNormalsOffset(geometryPointCount),
     ~length=getVertexLength(geometryPointCount),
   ),
@@ -22,6 +27,11 @@ let createTypeArrays = (buffer, geometryPointCount, geometryCount) => (
     SharedArrayBufferCPPOType.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getVerticesInfosOffset(geometryPointCount),
     ~length=getVerticesInfosLength(geometryCount),
+  ),
+  Uint32Array.fromBufferRange(
+    SharedArrayBufferCPPOType.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset=getTexCoordsInfosOffset(geometryPointCount, geometryCount),
+    ~length=getTexCoordsInfosLength(geometryCount),
   ),
   Uint32Array.fromBufferRange(
     SharedArrayBufferCPPOType.sharedArrayBufferToArrayBuffer(buffer),

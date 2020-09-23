@@ -10,8 +10,13 @@ let createSphereGeometry = (radius, bands) => {
   GeometryApService.createSphereGeometry(radius, bands);
 };
 
-let createPlaneGeometry = () => {
-  GeometryApService.createPlaneGeometry();
+let createPlaneGeometry = (width, height, widthSegments, heightSegments) => {
+  GeometryApService.createPlaneGeometry(
+    width,
+    height,
+    widthSegments,
+    heightSegments,
+  );
 };
 
 let getVertices = geometry => {
@@ -20,6 +25,14 @@ let getVertices = geometry => {
 
 let setVertices = (geometry, vertices) => {
   GeometryApService.setVertices(geometry, vertices);
+};
+
+let getTexCoords = geometry => {
+  GeometryApService.getTexCoords(geometry);
+};
+
+let setTexCoords = (geometry, texCoords) => {
+  GeometryApService.setTexCoords(geometry, texCoords);
 };
 
 let getNormals = geometry => {

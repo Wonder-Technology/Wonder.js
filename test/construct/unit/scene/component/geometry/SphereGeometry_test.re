@@ -27,6 +27,9 @@ let _ =
           getVertices(geometry)
           ->ResultTool.getExnSuccessValue
           ->VerticesVO.value,
+          getTexCoords(geometry)
+          ->ResultTool.getExnSuccessValue
+          ->TexCoordsVO.value,
           getNormals(geometry)
           ->ResultTool.getExnSuccessValue
           ->NormalsVO.value,
@@ -64,6 +67,26 @@ let _ =
                6.123234262925839e-17,
                (-0.5),
                (-1.4997597572211942e-32),
+             |]),
+             Float32Array.make([|
+               1.,
+               1.,
+               0.5,
+               1.,
+               0.,
+               1.,
+               1.,
+               0.5,
+               0.5,
+               0.5,
+               0.,
+               0.5,
+               1.,
+               0.,
+               0.5,
+               0.,
+               0.,
+               0.,
              |]),
              Float32Array.make([|
                0.,

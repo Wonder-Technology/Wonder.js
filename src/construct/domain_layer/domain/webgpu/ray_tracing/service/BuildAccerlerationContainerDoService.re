@@ -1,6 +1,7 @@
 open Js.Typed_array;
 
 let _buildSceneGeometryContainers = device => {
+  // TODO perf:  vertex buffer can use VertexBuffer, only need set the stride; index buffer can use IndexBuffer(refer to WebGPU-Path-Tracer -> GeometryBuffer.mjs)
   AllRenderGameObjectsDoService.getAllRenderGeometries()
   ->ListSt.traverseResultM(geometry => {
       VerticesGeometryDoService.getVertices(geometry)
