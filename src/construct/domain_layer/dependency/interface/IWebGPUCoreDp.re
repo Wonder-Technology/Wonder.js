@@ -340,6 +340,7 @@ type shaderStage = {
 
 type bufferUsage = {
   storage: bufferUsageObject,
+  sampled: bufferUsageObject,
   uniform: bufferUsageObject,
   indirect: bufferUsageObject,
   vertex: bufferUsageObject,
@@ -425,6 +426,30 @@ type passEncoder = {
   compute: passEncoderCompute,
 };
 
+type bufferCopyView = {
+  .
+  "buffer": bufferObject,
+  "bytesPerRow": int,
+  "arrayLayer": int,
+  "mipLevel": int,
+  "imageHeight": int,
+};
+
+type origin3D = {
+  .
+  "x": int,
+  "y": int,
+  "z": int,
+};
+
+type textureCopyView = {
+  .
+  "texture": textureObject,
+  "arrayLayer": int,
+  "mipLevel": int,
+  "origin": origin3D,
+};
+
 type commandEncoder = {
   beginRenderPass:
     (passEncoderRenderDescriptor, commandEncoderObject) =>
@@ -433,6 +458,8 @@ type commandEncoder = {
     (passEncoderComputeDescriptor, commandEncoderObject) =>
     passEncoderComputeObject,
   finish: commandEncoderObject => commandBufferObject,
+  copyBufferToTexture:
+    (bufferCopyView, textureCopyView, extend3D, commandEncoderObject) => unit,
 };
 
 type device = {

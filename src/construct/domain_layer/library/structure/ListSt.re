@@ -19,6 +19,33 @@ let rec traverseResultM = (list, f) => {
   };
 };
 
+let traverseResultMi = (list, f) => {
+  // define the monadic functions
+  let (>>=) = (x, f) => Result.bind(x, f);
+
+  let retn = Result.succeed;
+
+  // define a "cons" function
+  let cons = (head, tail) => [head, ...tail];
+
+  let rec _traverse = (list, i, f) => {
+    // loop through the list
+    switch (list) {
+    | [] =>
+      // if empty, lift [] to a Result
+      retn([])
+    | [head, ...tail] =>
+      // otherwise lift the head to a Result using f
+      // then lift the tail to a Result using traverse
+      // then cons the head and tail and return it
+      f(i, head)
+      >>= (h => _traverse(tail, i->succ, f) >>= (t => retn(cons(h, t))))
+    };
+  };
+
+  _traverse(list, 0, f);
+};
+
 let rec traverseReduceResultM =
         (list: list('a), param: 'b, f: ('b, 'a) => Result.t2('b))
         : Result.t2('b) => {
@@ -67,6 +94,8 @@ let reduce = Belt.List.reduce;
 
 let forEach = Belt.List.forEach;
 
+let forEachi = Belt.List.forEachWithIndex;
+
 let push = (list, value) => {
   list->Belt.List.concat([value]);
 };
@@ -87,14 +116,14 @@ let getLast = list => {
   list->nth(length(list) - 1);
 };
 
-let removeDuplicateItems = list => {
+let removeDuplicateItemsU = (list, buildKeyFunc) => {
   let arr = list->toArray;
 
   let resultArr = [||];
   let map = MutableHashMap.createEmpty();
   for (i in 0 to Js.Array.length(arr) - 1) {
     let item = Array.unsafe_get(arr, i);
-    let key = Js.Int.toString(item);
+    let key = buildKeyFunc(item);
     switch (MutableHashMap.get(map, key)) {
     | None =>
       Js.Array.push(item, resultArr) |> ignore;
@@ -103,4 +132,8 @@ let removeDuplicateItems = list => {
     };
   };
   resultArr->fromArray;
+};
+
+let removeDuplicateItems = list => {
+  removeDuplicateItemsU(list, Js.Int.toString);
 };

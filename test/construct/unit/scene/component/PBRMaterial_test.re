@@ -146,6 +146,14 @@ let _ =
         })
       );
 
+      describe("getDiffuseMapImageId", () => {
+        test("test default", () => {
+          let material = create()->ResultTool.getExnSuccessValue;
+
+          getDiffuseMapImageId(material)->expect == None;
+        })
+      });
+
       describe("set map's image id", () => {
         let _buildImageId = () => "image1"->ImageIdVO.create;
 
@@ -156,10 +164,7 @@ let _ =
 
             setDiffuseMapImageId(material, id);
 
-            PBRMaterialTool.getDiffuseMapImageId(material)
-            ->OptionSt.getExn
-            ->expect
-            == id;
+            getDiffuseMapImageId(material)->OptionSt.getExn->expect == id;
           })
         });
 
@@ -170,9 +175,7 @@ let _ =
 
             setMetalRoughnessMapImageId(material, id);
 
-            PBRMaterialTool.getMetalRoughnessMapImageId(material)
-            ->OptionSt.getExn
-            ->expect
+            getMetalRoughnessMapImageId(material)->OptionSt.getExn->expect
             == id;
           })
         });
@@ -184,10 +187,7 @@ let _ =
 
             setEmissionMapImageId(material, id);
 
-            PBRMaterialTool.getEmissionMapImageId(material)
-            ->OptionSt.getExn
-            ->expect
-            == id;
+            getEmissionMapImageId(material)->OptionSt.getExn->expect == id;
           })
         });
 
@@ -198,10 +198,7 @@ let _ =
 
             setNormalMapImageId(material, id);
 
-            PBRMaterialTool.getNormalMapImageId(material)
-            ->OptionSt.getExn
-            ->expect
-            == id;
+            getNormalMapImageId(material)->OptionSt.getExn->expect == id;
           })
         });
       });

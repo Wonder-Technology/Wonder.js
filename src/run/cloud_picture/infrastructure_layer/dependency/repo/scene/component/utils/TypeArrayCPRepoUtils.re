@@ -202,6 +202,36 @@ let setFloat16WithFloat32Array = (index, target: Float32Array.t, typeArray) => {
     });
 };
 
+let setUint8_1 = (index: int, value: int, typeArray: Uint8Array.t) => {
+  Contract.requireCheck(
+    () => {
+      Contract.(
+        Operators.(
+          _checkNotExceedBound(Uint8Array.length, index + 0, typeArray)
+        )
+      )
+    },
+    OtherConfigDpRunAPI.unsafeGet().getIsDebug(),
+  )
+  ->Result.mapSuccess(() => {Uint8Array.unsafe_set(typeArray, index, value)});
+};
+
+let setUint16_1 = (index: int, value: int, typeArray: Uint16Array.t) => {
+  Contract.requireCheck(
+    () => {
+      Contract.(
+        Operators.(
+          _checkNotExceedBound(Uint16Array.length, index + 0, typeArray)
+        )
+      )
+    },
+    OtherConfigDpRunAPI.unsafeGet().getIsDebug(),
+  )
+  ->Result.mapSuccess(() => {
+      Uint16Array.unsafe_set(typeArray, index, value)
+    });
+};
+
 let setUint32_1 = (index: int, value: int, typeArray: Uint32Array.t) => {
   Contract.requireCheck(
     () => {
@@ -230,6 +260,12 @@ let getFloat4Tuple = (index: int, typeArray: Float32Array.t) => (
   Float32Array.unsafe_get(typeArray, index + 2),
   Float32Array.unsafe_get(typeArray, index + 3),
 );
+
+let getUint8_1 = (index: int, typeArray: Uint8Array.t) =>
+  Uint8Array.unsafe_get(typeArray, index);
+
+let getUint16_1 = (index: int, typeArray: Uint16Array.t) =>
+  Uint16Array.unsafe_get(typeArray, index);
 
 let getUint32_1 = (index: int, typeArray: Uint32Array.t) =>
   Uint32Array.unsafe_get(typeArray, index);

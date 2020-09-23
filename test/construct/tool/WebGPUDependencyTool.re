@@ -73,6 +73,7 @@ let build =
       ~map_write=6,
       ~copy_src_bufferUsage=7,
       ~copy_dst_bufferUsage=8,
+      ~sampled=9,
       ~createView=createEmptyStub(refJsObjToSandbox(sandbox^))
                   ->SinonTool.createTwoArgsEmptyStubData
                   ->SinonTool.getDpFunc,
@@ -138,6 +139,9 @@ let build =
                         ->SinonTool.createTwoArgsEmptyStubData
                         ->SinonTool.getDpFunc,
       ~finish=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~copyBufferToTexture=createEmptyStub(refJsObjToSandbox(sandbox^))
+                           ->SinonTool.createFourArgsEmptyStubData
+                           ->SinonTool.getDpFunc,
       ~getQueue=createEmptyStub(refJsObjToSandbox(sandbox^))
                 ->SinonTool.returns(createQueueObject()),
       ~createShaderModule=createEmptyStub(refJsObjToSandbox(sandbox^))
@@ -237,6 +241,7 @@ let build =
     },
     bufferUsage: {
       storage: storage_bufferUsage,
+      sampled,
       uniform,
       indirect,
       vertex,
@@ -274,6 +279,7 @@ let build =
       beginRenderPass,
       beginComputePass,
       finish,
+      copyBufferToTexture,
     },
     device: {
       getQueue,

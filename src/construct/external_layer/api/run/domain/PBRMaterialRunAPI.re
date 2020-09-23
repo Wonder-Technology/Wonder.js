@@ -38,16 +38,32 @@ let setMetalness = (material, metalness) => {
   PBRMaterialApService.setMetalness(material, metalness);
 };
 
+let getDiffuseMapImageId = material => {
+  PBRMaterialApService.getDiffuseMapImageId(material);
+};
+
 let setDiffuseMapImageId = (material, id) => {
   PBRMaterialApService.setDiffuseMapImageId(material, id);
+};
+
+let getMetalRoughnessMapImageId = material => {
+  PBRMaterialApService.getMetalRoughnessMapImageId(material);
 };
 
 let setMetalRoughnessMapImageId = (material, id) => {
   PBRMaterialApService.setMetalRoughnessMapImageId(material, id);
 };
 
+let getEmissionMapImageId = material => {
+  PBRMaterialApService.getEmissionMapImageId(material);
+};
+
 let setEmissionMapImageId = (material, id) => {
   PBRMaterialApService.setEmissionMapImageId(material, id);
+};
+
+let getNormalMapImageId = material => {
+  PBRMaterialApService.getNormalMapImageId(material);
 };
 
 let setNormalMapImageId = (material, id) => {

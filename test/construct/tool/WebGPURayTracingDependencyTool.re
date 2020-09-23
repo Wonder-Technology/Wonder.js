@@ -39,7 +39,8 @@ let build =
       ~map_write=6,
       ~copy_src=7,
       ~copy_dst=8,
-      ~ray_tracing=9,
+      ~sampled=9,
+      ~ray_tracing=10,
       ~compute=0,
       ~fragment=1,
       ~vertex=2,
@@ -142,6 +143,7 @@ let build =
     },
     bufferUsage: {
       storage,
+      sampled,
       uniform,
       indirect,
       vertex,

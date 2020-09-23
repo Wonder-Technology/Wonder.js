@@ -92,7 +92,7 @@ let _convertVertexStartIndexFromAlignedInPOToInVertexBufferData =
         )
       )
     },
-    DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+    OtherConfigDpRunAPI.unsafeGet().getIsDebug(),
   )
   ->Result.mapSuccess(() => {vertexStartIndex / 3});
 };

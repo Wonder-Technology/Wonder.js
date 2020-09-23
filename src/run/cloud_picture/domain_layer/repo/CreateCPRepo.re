@@ -35,6 +35,7 @@ let create = () => {
           elements: [
             {name: "update_transform", type_: Job},
             {name: "update_camera", type_: Job},
+            {name: "update_textureArray", type_: Job},
             {name: "update_pathTracing", type_: Job},
             {name: "update_accumulation", type_: Job},
             {name: "update_pass", type_: Job},
@@ -118,6 +119,11 @@ let create = () => {
     queue: None,
     swapChainFormat: None,
     swapChain: None,
+    textureArray: {
+      layerIndexMap: ImmutableHashMap.createEmpty(),
+      textureArrayView: None,
+      textureSampler: None,
+    },
   },
   camera: {
     cameraBufferData: None,
