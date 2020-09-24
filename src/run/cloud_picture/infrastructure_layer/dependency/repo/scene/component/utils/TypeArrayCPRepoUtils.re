@@ -394,3 +394,7 @@ let fillUint32ArrayWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
       |> Uint32Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
     });
 };
+
+let reduceFloat32Array = (typeArr, acc, f) => {
+  Float32Array.reduce(f, acc, typeArr);
+};

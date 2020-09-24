@@ -39,7 +39,6 @@ let _ =
           (getFunc, setFunc, createVertexDataVOFunc) =>
         test("directly set it", () => {
           let geometry = create()->ResultTool.getExnSuccessValue;
-
           setFunc(
             geometry,
             Float32Array.make([|1., 2., 3.|])->createVertexDataVOFunc,
@@ -48,7 +47,6 @@ let _ =
 
           let newData =
             Float32Array.make([|3., 5., 5.|])->createVertexDataVOFunc;
-
           setFunc(geometry, newData)->ResultTool.getExnSuccessValueIgnore;
 
           getFunc(geometry)->ResultTool.getExnSuccessValue->expect == newData;
@@ -62,13 +60,32 @@ let _ =
         )
       );
 
-      describe("set texCoords with type array", () =>
-        _testSetVertexDataWithTypeArray(
-          getTexCoords,
-          setTexCoords,
-          TexCoordsVO.create,
-        )
-      );
+      describe("set texCoords with type array", () => {
+        test("directly set it", () => {
+          let geometry = create()->ResultTool.getExnSuccessValue;
+          setTexCoords(
+            geometry,
+            Float32Array.make([|0., 1.|])->TexCoordsVO.create,
+          )
+          ->ResultTool.getExnSuccessValueIgnore;
+
+          let newData = Float32Array.make([|0.5, 0.2|])->TexCoordsVO.create;
+          setTexCoords(geometry, newData)
+          ->ResultTool.getExnSuccessValueIgnore;
+
+          getTexCoords(geometry)->ResultTool.getExnSuccessValue->expect
+          == newData;
+        });
+        test("texCoords should in [0.0, 1.0]", () => {
+          let geometry = create()->ResultTool.getExnSuccessValue;
+
+          setTexCoords(
+            geometry,
+            Float32Array.make([|1., 2., (-0.1), 0.5|])->TexCoordsVO.create,
+          )
+          ->ExpectTool.toFail("expect texCoords in [0.0, 1.0]");
+        });
+      });
 
       describe("set normals with type array", () =>
         _testSetVertexDataWithTypeArray(
