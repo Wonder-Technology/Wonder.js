@@ -1,3 +1,3 @@
 let load = WebGPUCoreApService.load;
 
-let getTextureArraySize = WebGPUCoreApService.getTextureArraySize;
+let getTextureArrayLayerSize = WebGPUCoreApService.getTextureArrayLayerSize;

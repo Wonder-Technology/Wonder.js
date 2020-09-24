@@ -1,6 +1,6 @@
 let create = () => JobEntity.create("update_textureArray");
 
-let _addImageData = (result, imageId) => {
+let _addImageIdAndData = (result, imageId) => {
   switch (AssetRunAPI.getImageData(imageId)) {
   | Some(imageData) => [(imageId, imageData), ...result]
   | None => result
@@ -15,25 +15,25 @@ let _getAllUsedImageIdAndData = () => {
         let result =
           switch (PBRMaterialRunAPI.getDiffuseMapImageId(material)) {
           | None => result
-          | Some(imageId) => _addImageData(result, imageId)
+          | Some(imageId) => _addImageIdAndData(result, imageId)
           };
 
         let result =
           switch (PBRMaterialRunAPI.getMetalRoughnessMapImageId(material)) {
           | None => result
-          | Some(imageId) => _addImageData(result, imageId)
+          | Some(imageId) => _addImageIdAndData(result, imageId)
           };
 
         let result =
           switch (PBRMaterialRunAPI.getEmissionMapImageId(material)) {
           | None => result
-          | Some(imageId) => _addImageData(result, imageId)
+          | Some(imageId) => _addImageIdAndData(result, imageId)
           };
 
         let result =
           switch (PBRMaterialRunAPI.getNormalMapImageId(material)) {
           | None => result
-          | Some(imageId) => _addImageData(result, imageId)
+          | Some(imageId) => _addImageIdAndData(result, imageId)
           };
 
         result;
@@ -47,18 +47,20 @@ let _getLayerCount = allUsedImageIdAndData => {
   ->ListSt.length
   ->Contract.ensureCheck(
       r => {
-        Contract.(
-          Operators.(
-            test(
-              Log.buildAssertMessage(
-                ~expect={j|layer count:$r < 2048|j},
-                ~actual={j|not|j},
-              ),
-              () => {
-              r < 2048
-            })
-          )
-        )
+        open Contract;
+        open Operators;
+
+        let maxLayerCount =
+          WebGPUCoreDpRunAPI.unsafeGet().capacity.getTextureArrayMaxLayerCount();
+
+        test(
+          Log.buildAssertMessage(
+            ~expect={j|layer count:$r < $maxLayerCount|j},
+            ~actual={j|not|j},
+          ),
+          () => {
+          r < maxLayerCount
+        });
       },
       OtherConfigDpRunAPI.unsafeGet().getIsDebug(),
     );
@@ -80,13 +82,18 @@ let _setMapBetweenImageIdToLayerIndex = allUsedImageIdAndData => {
   ->ignore;
 };
 
-let _buildWebGPUObjects = (device, (imageWidth, imageHeight, layerCount)) => {
+let _buildWebGPUObjects =
+    (device, (textureArrayLayerWidth, textureArrayLayerHeight, layerCount)) => {
   let format = "rgba8unorm-srgb";
 
   let textureArray =
     WebGPUCoreDpRunAPI.unsafeGet().device.createTexture(
       IWebGPUCoreDp.textureDescriptor(
-        ~size={"width": imageWidth, "height": imageHeight, "depth": 1},
+        ~size={
+          "width": textureArrayLayerWidth,
+          "height": textureArrayLayerHeight,
+          "depth": 1,
+        },
         ~arrayLayerCount=layerCount,
         ~mipLevelCount=1,
         ~sampleCount=1,
@@ -126,16 +133,16 @@ let _buildWebGPUObjects = (device, (imageWidth, imageHeight, layerCount)) => {
   (textureArray, textureArrayView, textureSampler);
 };
 
-let _scaleImageDataToBufferDataWithFixedSize =
+let _fillImageDataToBufferDataWithFixedSize =
     (
       {width, height, data}: ImagePOType.data,
       bytesPerRow,
       allUsedImageIdAndData,
       bufferData,
     ) => {
-  ListSt.range(0, height - 1)
+  ListSt.range(0, height)
   ->ListSt.traverseResultM(yy => {
-      ListSt.range(0, width - 1)
+      ListSt.range(0, width)
       ->ListSt.traverseResultM(xx => {
           let bufferDataIndex = xx * 4 + yy * bytesPerRow;
           let dataIndex = xx * 4 + yy * width * 4;
@@ -171,7 +178,7 @@ let _fillTextureArray =
     (
       (device, queue),
       textureArray,
-      (imageWidth, imageHeight),
+      (textureArrayLayerWidth, textureArrayLayerHeight),
       allUsedImageIdAndData,
     ) => {
   open Js.Typed_array;
@@ -183,14 +190,13 @@ let _fillTextureArray =
     );
 
   let bytesPerRow =
-    Js.Math.ceil_int(Number.dividInt(imageWidth * 4, 256)) * 256;
-
-  let bufferData = Uint8Array.fromLength(bytesPerRow * imageHeight);
+    Js.Math.ceil_int(Number.dividInt(textureArrayLayerWidth * 4, 256)) * 256;
 
   let textureBuffer =
     WebGPUCoreDpRunAPI.unsafeGet().device.createBuffer(
       {
-        "size": bufferData->Uint8Array.byteLength,
+        "size":
+          bytesPerRow * textureArrayLayerHeight * Uint8Array._BYTES_PER_ELEMENT,
         "usage":
           WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_src
           lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst,
@@ -200,7 +206,10 @@ let _fillTextureArray =
 
   allUsedImageIdAndData
   ->ListSt.traverseResultMi((layerIndex, (_, imageData)) => {
-      _scaleImageDataToBufferDataWithFixedSize(
+      let bufferData =
+        Uint8Array.fromLength(bytesPerRow * textureArrayLayerHeight);
+
+      _fillImageDataToBufferDataWithFixedSize(
         imageData,
         bytesPerRow,
         allUsedImageIdAndData,
@@ -219,7 +228,7 @@ let _fillTextureArray =
               "bytesPerRow": bytesPerRow,
               "arrayLayer": 0,
               "mipLevel": 0,
-              "imageHeight": 0,
+              "textureArrayLayerHeight": 0,
             },
             {
               "texture": textureArray,
@@ -231,10 +240,14 @@ let _fillTextureArray =
                 "z": 0,
               },
             },
-            {"width": imageWidth, "height": imageHeight, "depth": 1},
+            {
+              "width": textureArrayLayerWidth,
+              "height": textureArrayLayerHeight,
+              "depth": 1,
+            },
             commandEncoder,
           );
-        })
+        });
     })
   ->Result.mapSuccess(_ => {
       WebGPUCoreDpRunAPI.unsafeGet().queue.submit(
@@ -260,20 +273,21 @@ let exec = () => {
 
       _setMapBetweenImageIdToLayerIndex(allUsedImageIdAndData);
 
-      let (imageWidth, imageHeight) = WebGPUCoreRunAPI.getTextureArraySize();
+      let (textureArrayLayerWidth, textureArrayLayerHeight) =
+        WebGPUCoreRunAPI.getTextureArrayLayerSize();
 
       _getLayerCount(allUsedImageIdAndData)
       ->Result.bind(layerCount => {
           let (textureArray, textureArrayView, textureSampler) =
             _buildWebGPUObjects(
               device,
-              (imageWidth, imageHeight, layerCount),
+              (textureArrayLayerWidth, textureArrayLayerHeight, layerCount),
             );
 
           _fillTextureArray(
             (device, queue),
             textureArray,
-            (imageWidth, imageHeight),
+            (textureArrayLayerWidth, textureArrayLayerHeight),
             allUsedImageIdAndData,
           )
           ->Result.tap(() => {

@@ -5,6 +5,11 @@ let printForDebug = value => {
   value;
 };
 
+let printListForDebug = list => {
+  Js.log(list->ListSt.toArray);
+  list;
+};
+
 let logForDebug = value => {
   Js.log(value);
 

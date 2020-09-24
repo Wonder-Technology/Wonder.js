@@ -37,10 +37,10 @@ struct PBRMaterial {
   float emissionMapLayerIndex;
   float normalMapLayerIndex;
 
-  vec2 diffuseMapOffset;
-  vec2 metalRoughnessMapOffset;
-  vec2 emissionMapOffset;
-  vec2 normalMapOffset;
+  vec2 diffuseMapScale;
+  vec2 metalRoughnessMapScale;
+  vec2 emissionMapScale;
+  vec2 normalMapScale;
 };
 
 hitAttributeEXT vec3 attribs;
@@ -170,7 +170,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   if (_hasMap(diffuseMapLayerIndex)) {
     data.materialDiffuse =
         texture(sampler2DArray(textureArray, textureSampler),
-                vec3(uv * diffuseMapOffset, diffuseMapLayerIndex))
+                vec3(uv * diffuseMapScale, diffuseMapLayerIndex))
             .rgb +
         vec3(mat.diffuse);
   } else {
@@ -181,7 +181,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
     data.worldNormal =
         mat3(tw, bw, nw) *
         normalize((texture(sampler2DArray(textureArray, textureSampler),
-                           vec3(uv * normalMapOffset, mat.normalIndex))
+                           vec3(uv * normalMapScale, mat.normalIndex))
                        .rgb) *
                       2.0 -
                   1.0)
@@ -193,7 +193,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   if (_hasMap(emissionMapLayerIndex)) {
     data.materialEmission =
         texture(sampler2DArray(textureArray, textureSampler),
-                vec3(uv * emissionMapOffset, emissionIndex))
+                vec3(uv * emissionMapScale, emissionIndex))
             .rgb;
   } else {
     data.materialEmission = vec3(0.0);
@@ -203,7 +203,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   if (_hasMap(metalRoughnessMapLayerIndex)) {
     metalRoughness =
         texture(sampler2DArray(textureArray, textureSampler),
-                vec3(uv * metalRoughnessMapOffset, metalRoughnessMapLayerIndex))
+                vec3(uv * metalRoughnessMapScale, metalRoughnessMapLayerIndex))
             .rg;
 
     data.materialMetalness = metalRoughness.r + mat.metalness;

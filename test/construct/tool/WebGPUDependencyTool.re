@@ -49,7 +49,15 @@ let createPassEncoderRenderObject = (): passEncoderRenderObject =>
 let createPassEncoderComputeObject = (): passEncoderComputeObject =>
   Obj.magic(Js.Math.random());
 
+let createTextureObject = (): textureObject => {
+  Obj.magic(Js.Math.random());
+};
+
 let createTextureViewObject = (): textureViewObject => {
+  Obj.magic(Js.Math.random());
+};
+
+let createSamplerObject = (): samplerObject => {
   Obj.magic(Js.Math.random());
 };
 
@@ -213,6 +221,8 @@ let build =
                           ),
                         ),
       ~loadGLSL=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getTextureArrayLayerSize=() => (8, 8),
+      ~getTextureArrayMaxLayerCount=() => 2048,
       (),
     )
     : webgpuCore => {
@@ -313,6 +323,10 @@ let build =
       requestAdapter: requestAdapter,
     },
     loadGLSL,
+    capacity: {
+      getTextureArrayLayerSize,
+      getTextureArrayMaxLayerCount,
+    },
   };
 };
 

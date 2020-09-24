@@ -492,23 +492,50 @@ let _getMapLayerIndex = mapImageIdOpt => {
   ->Belt.Float.fromInt;
 };
 
-let _computeMapOffset = mapImageIdOpt => {
-  let defaultOffset = (0.0, 0.0);
+let _computeMapScale = mapImageIdOpt => {
+  let defaultScale = (1.0, 1.0);
 
-  switch (mapImageIdOpt) {
-  | None => defaultOffset
-  | Some(imageId) =>
-    switch (AssetRunAPI.getImageData(imageId)) {
-    | None => defaultOffset
-    | Some(({width, height}: ImagePOType.data)) =>
-      let (imageWidth, imageHeight) = WebGPUCoreRunAPI.getTextureArraySize();
+  (
+    switch (mapImageIdOpt) {
+    | None => defaultScale
+    | Some(imageId) =>
+      switch (AssetRunAPI.getImageData(imageId)) {
+      | None => defaultScale
+      | Some(({width, height}: ImagePOType.data)) =>
+        let (textureArrayLayerWidth, textureArrayLayerHeight) =
+          WebGPUCoreRunAPI.getTextureArrayLayerSize();
 
-      (
-        Number.dividInt(width, imageWidth),
-        Number.dividInt(height, imageHeight),
-      );
+        (
+          Number.dividInt(width, textureArrayLayerWidth),
+          Number.dividInt(height, textureArrayLayerHeight),
+        );
+      }
     }
-  };
+  )
+  ->Contract.ensureCheck(
+      ((scaleX, scaleY)) => {
+        Contract.(
+          Operators.(
+            test(
+              Log.buildAssertMessage(
+                ~expect={j|map scale in (0.0, 1.0]|j},
+                ~actual={j|not |j},
+              ),
+              () => {
+              scaleX
+              >. 0.0
+              && scaleX
+              <=. 1.0
+              && scaleY
+              >. 0.0
+              && scaleY
+              <=. 1.0
+            })
+          )
+        )
+      },
+      DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+    );
 };
 
 let _buildAndSetPBRMaterialBufferData = (device, allRenderPBRMaterials) => {
@@ -550,44 +577,60 @@ let _buildAndSetPBRMaterialBufferData = (device, allRenderPBRMaterials) => {
         let normalMapImageId =
           PBRMaterialRunAPI.getNormalMapImageId(pbrMaterial);
 
-        ListResult.mergeResults([
-          TypeArrayCPRepoUtils.setFloat3(offset + 0, diffuse, bufferData),
-          TypeArrayCPRepoUtils.setFloat3(
-            offset + 4,
-            (metalness, roughness, specular),
-            bufferData,
-          ),
-          TypeArrayCPRepoUtils.setFloat4(
-            offset + 8,
+        Tuple4.collectResult(
+          _computeMapScale(diffuseMapImageId),
+          _computeMapScale(metalRoughnessMapImageId),
+          _computeMapScale(emissionMapImageId),
+          _computeMapScale(normalMapImageId),
+        )
+        ->Result.bind(
             (
-              _getMapLayerIndex(diffuseMapImageId),
-              _getMapLayerIndex(metalRoughnessMapImageId),
-              _getMapLayerIndex(emissionMapImageId),
-              _getMapLayerIndex(normalMapImageId),
-            ),
-            bufferData,
-          ),
-          TypeArrayCPRepoUtils.setFloat2(
-            offset + 12,
-            _computeMapOffset(diffuseMapImageId),
-            bufferData,
-          ),
-          TypeArrayCPRepoUtils.setFloat2(
-            offset + 14,
-            _computeMapOffset(metalRoughnessMapImageId),
-            bufferData,
-          ),
-          TypeArrayCPRepoUtils.setFloat2(
-            offset + 16,
-            _computeMapOffset(emissionMapImageId),
-            bufferData,
-          ),
-          TypeArrayCPRepoUtils.setFloat2(
-            offset + 18,
-            _computeMapOffset(normalMapImageId),
-            bufferData,
-          ),
-        ])
+              (
+                diffuseMapScale,
+                metalRoughnessMapScale,
+                emissionMapScale,
+                normalMapScale,
+              ),
+            ) => {
+            ListResult.mergeResults([
+              TypeArrayCPRepoUtils.setFloat3(offset + 0, diffuse, bufferData),
+              TypeArrayCPRepoUtils.setFloat3(
+                offset + 4,
+                (metalness, roughness, specular),
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat4(
+                offset + 8,
+                (
+                  _getMapLayerIndex(diffuseMapImageId),
+                  _getMapLayerIndex(metalRoughnessMapImageId),
+                  _getMapLayerIndex(emissionMapImageId),
+                  _getMapLayerIndex(normalMapImageId),
+                ),
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 12,
+                diffuseMapScale,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 14,
+                metalRoughnessMapScale,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 16,
+                emissionMapScale,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 18,
+                normalMapScale,
+                bufferData,
+              ),
+            ])
+          })
         ->Result.mapSuccess(() => {offset + 20});
       },
     )

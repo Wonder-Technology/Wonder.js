@@ -434,7 +434,7 @@ type bufferCopyView = {
   "bytesPerRow": int,
   "arrayLayer": int,
   "mipLevel": int,
-  "imageHeight": int,
+  "textureArrayLayerHeight": int,
 };
 
 type origin3D = {
@@ -509,6 +509,11 @@ type gpu = {
   requestAdapter: adapterDescriptor => Js.Promise.t(adapterObject),
 };
 
+type capacity = {
+  getTextureArrayLayerSize: unit => (int, int),
+  getTextureArrayMaxLayerCount: unit => int,
+};
+
 type webgpuCore = {
   textureUsage,
   texture,
@@ -525,4 +530,5 @@ type webgpuCore = {
   adapter,
   gpu,
   loadGLSL,
+  capacity,
 };
