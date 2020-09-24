@@ -94,6 +94,8 @@ type layoutBinding = {
   type_: string,
   [@bs.optional]
   hasDynamicOffset: bool,
+  [@bs.optional]
+  viewDimension: string,
 };
 
 type bindGroupLayoutDescriptor = {. "entries": array(layoutBinding)};

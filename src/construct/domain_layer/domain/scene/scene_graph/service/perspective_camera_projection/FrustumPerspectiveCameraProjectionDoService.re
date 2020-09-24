@@ -67,5 +67,5 @@ let setFar = (cameraProjection, far) => {
 };
 
 let computeAspect = ((width, height)) => {
-  (width->Belt.Float.fromInt /. height->Belt.Float.fromInt)->AspectVO.create;
+  Number.dividInt(width, height)->AspectVO.create;
 };

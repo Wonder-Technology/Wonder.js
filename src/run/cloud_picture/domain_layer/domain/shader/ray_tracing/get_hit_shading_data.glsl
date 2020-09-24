@@ -31,6 +31,16 @@ struct PBRMaterial {
   float roughness;
   float specular;
   float pad_0;
+
+  float diffuseMapLayerIndex;
+  float metalRoughnessMapLayerIndex;
+  float emissionMapLayerIndex;
+  float normalMapLayerIndex;
+
+  vec2 diffuseMapOffset;
+  vec2 metalRoughnessMapOffset;
+  vec2 emissionMapOffset;
+  vec2 normalMapOffset;
 };
 
 hitAttributeEXT vec3 attribs;
@@ -53,6 +63,17 @@ layout(std140, set = 0, binding = 7) buffer MatColorBufferObject {
   PBRMaterial m[];
 }
 materials;
+
+layout(set = 0, binding = 8) uniform sampler textureSampler;
+layout(set = 0, binding = 9) uniform texture2DArray textureArray;
+
+vec2 _blerp(vec2 b, vec2 p1, vec2 p2, vec2 p3) {
+  return (1.0 - b.x - b.y) * p1 + b.x * p2 + b.y * p3;
+}
+
+vec3 _blerp(vec2 b, vec3 p1, vec3 p2, vec3 p3) {
+  return (1.0 - b.x - b.y) * p1 + b.x * p2 + b.y * p3;
+}
 
 uint _getVertexIndex(PointIndexData pointIndexData) {
   return pointIndexData.vertexIndex;
@@ -82,14 +103,6 @@ PBRMaterial _getMaterial(uint materialIndex) {
   return materials.m[materialIndex];
 }
 
-vec3 _getMaterialDiffuse(PBRMaterial mat) { return vec3(mat.diffuse); }
-
-float _getMaterialMetalness(PBRMaterial mat) { return mat.metalness; }
-
-float _getMaterialRoughness(PBRMaterial mat) { return mat.roughness; }
-
-float _getMaterialSpecular(PBRMaterial mat) { return mat.specular; }
-
 ivec3 _getTriangleIndices(uint faceIndex, uint primitiveIndex) {
   return ivec3(indices.i[faceIndex + 3 * primitiveIndex + 0],
                indices.i[faceIndex + 3 * primitiveIndex + 1],
@@ -100,17 +113,18 @@ Vertex _getTriangleVertex(uint vertexIndex, uint index) {
   return vertices.v[vertexIndex + index];
 }
 
+bool _hasMap(uint mapLayerIndex) { return mapLayerIndex < 2048; }
+
 struct HitShadingData {
   vec3 worldPosition;
   vec3 worldNormal;
   vec3 V;
   vec3 materialDiffuse;
-  // vec3 materialSpecularColor;
+  vec3 materialEmission;
   float materialMetalness;
   float materialRoughness;
   float materialSpecular;
 };
-
 
 HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   InstanceData instanceData = _getInstanceData(instanceIndex);
@@ -130,33 +144,84 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   Vertex v1 = _getTriangleVertex(vertexIndex, ind.y);
   Vertex v2 = _getTriangleVertex(vertexIndex, ind.z);
 
-  const vec3 barycentrics =
-      vec3(1.0 - attribs.x - attribs.y, attribs.x, attribs.y);
+  const vec2 u0 = v0.texCoord.xy, u1 = v1.texCoord.xy, u2 = v2.texCoord.xy;
+  const vec3 n0 = v0.normal.xyz, n1 = v1.normal.xyz, n2 = v2.normal.xyz;
+  const vec3 t0 = v0.tangent.xyz, t1 = v1.tangent.xyz, t2 = v2.tangent.xyz;
 
-  // Computing the normal at hit position
-  vec3 localNormal = vec3(v0.normal) * barycentrics.x +
-                     vec3(v1.normal) * barycentrics.y +
-                     vec3(v2.normal) * barycentrics.z;
+  const vec2 uv = _blerp(attribs.xy, u0.xy, u1.xy, u2.xy);
+  const vec3 no = _blerp(attribs.xy, n0.xyz, n1.xyz, n2.xyz);
+  const vec3 ta = _blerp(attribs.xy, t0.xyz, t1.xyz, t2.xyz);
 
-  // Computing the coordinates of the hit position
-  vec3 localPos = vec3(v0.position) * barycentrics.x +
-                  vec3(v1.position) * barycentrics.y +
-                  vec3(v2.position) * barycentrics.z;
+  mat3 normalMatrix = _getNormalMatrix(instanceData);
+
+  const vec3 nw = normalize(normalMatrix * no);
+  const vec3 tw = normalize(normalMatrix * ta);
+  const vec3 bw = cross(nw, tw);
 
   PBRMaterial mat = _getMaterial(materialIndex);
 
+  uint diffuseMapLayerIndex = uint(mat.diffuseMapLayerIndex);
+  uint normalMapLayerIndex = uint(mat.normalMapLayerIndex);
+  uint emissionMapLayerIndex = uint(mat.emissionMapLayerIndex);
+  uint metalRoughnessMapLayerIndex = uint(mat.metalRoughnessMapLayerIndex);
+
   HitShadingData data;
+
+  if (_hasMap(diffuseMapLayerIndex)) {
+    data.materialDiffuse =
+        texture(sampler2DArray(textureArray, textureSampler),
+                vec3(uv * diffuseMapOffset, diffuseMapLayerIndex))
+            .rgb +
+        vec3(mat.diffuse);
+  } else {
+    data.materialDiffuse = vec3(mat.diffuse);
+  }
+
+  if (_hasMap(normalMapLayerIndex)) {
+    data.worldNormal =
+        mat3(tw, bw, nw) *
+        normalize((texture(sampler2DArray(textureArray, textureSampler),
+                           vec3(uv * normalMapOffset, mat.normalIndex))
+                       .rgb) *
+                      2.0 -
+                  1.0)
+            .xyz;
+  } else {
+    data.worldNormal = nw;
+  }
+
+  if (_hasMap(emissionMapLayerIndex)) {
+    data.materialEmission =
+        texture(sampler2DArray(textureArray, textureSampler),
+                vec3(uv * emissionMapOffset, emissionIndex))
+            .rgb;
+  } else {
+    data.materialEmission = vec3(0.0);
+  }
+
+  vec2 metalRoughness;
+  if (_hasMap(metalRoughnessMapLayerIndex)) {
+    metalRoughness =
+        texture(sampler2DArray(textureArray, textureSampler),
+                vec3(uv * metalRoughnessMapOffset, metalRoughnessMapLayerIndex))
+            .rg;
+
+    data.materialMetalness = metalRoughness.r + mat.metalness;
+    data.materialRoughness = metalRoughness.g + mat.roughness;
+  } else {
+    data.materialMetalness = mat.metalness;
+    data.materialRoughness = mat.roughness;
+  }
+
+  const vec3 p0 = v0.position.xyz, p1 = v1.position.xyz, p2 = v2.position.xyz;
+
+  vec3 localPos = _blerp(attribs.xy, p0.xyz, p1.xyz, p2.xyz);
+
   data.worldPosition =
       vec3(_getModelMatrix(instanceData) * vec4(localPos, 1.0));
-  data.worldNormal = normalize(_getNormalMatrix(instanceData) * localNormal);
 
   // data.V = normalize(uCamera.cameraPosition.xyz - data.worldPosition);
   data.V = -gl_WorldRayDirectionEXT;
-
-  data.materialDiffuse = _getMaterialDiffuse(mat);
-  data.materialMetalness = _getMaterialMetalness(mat);
-  data.materialRoughness = _getMaterialRoughness(mat);
-  data.materialSpecular = _getMaterialSpecular(mat);
 
   return data;
 }

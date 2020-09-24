@@ -39,7 +39,7 @@ let getVertexInfo = index => {
                 ~actual={j|not|j},
               ),
               () => {
-                let x = startIndex->Belt.Float.fromInt /. 3.;
+                let x = Number.dividInt(startIndex, 3);
 
                 x -. x->Js.Math.floor_float ==. 0.0;
               },

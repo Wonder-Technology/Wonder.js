@@ -23,15 +23,11 @@ layout(location = 1) rayPayloadEXT bool isShadowed;
 
 #include "ggx_direct.glsl"
 
-
 layout(location = 0) rayPayloadInEXT hitPayload prd;
-
 
 #include "ggx_indirect.glsl"
 
 layout(set = 0, binding = 0) uniform accelerationStructureEXT topLevelAS;
-
-
 
 void main() {
   const float tMin = EPSILON;
@@ -45,28 +41,23 @@ void main() {
 
   HitShadingData data = getHitShadingData(gl_InstanceID, gl_PrimitiveID);
 
-  ShadingData shading =
-      buildShadingData(data.materialDiffuse, data.materialMetalness,
-                       data.materialRoughness, data.materialSpecular, 
-                       computeSpecularLobeProb(data.materialDiffuse, data.materialSpecular, data.materialMetalness)
-                       );
+  ShadingData shading = buildShadingData(
+      data.materialDiffuse, data.materialEmission, data.materialMetalness,
+      data.materialRoughness, data.materialSpecular,
+      computeSpecularLobeProb(data.materialDiffuse, data.materialSpecular,
+                              data.materialMetalness));
 
-  radiance += computeDirectLight(
-      tMin, data.worldPosition,
-      data.worldNormal, data.V, shading, topLevelAS) * throughput;
+  radiance += shading.emission * throughput;
 
+  radiance += computeDirectLight(tMin, data.worldPosition, data.worldNormal,
+                                 data.V, shading, topLevelAS) *
+              throughput;
 
+  const vec3 bsdfDir =
+      disneySample(seed, data.V, data.worldNormal, EPSILON, shading);
 
-const vec3 bsdfDir = disneySample(seed, data.V, data.worldNormal, EPSILON, shading);
-
-computeIndirectLight( data.V,
-                          bsdfDir,
-data.worldNormal,
-                           shading,
-                          throughput,
-                          t
-                          );
-
+  computeIndirectLight(data.V, bsdfDir, data.worldNormal, shading, throughput,
+                       t);
 
   prd.radiance = radiance;
   prd.t = t;

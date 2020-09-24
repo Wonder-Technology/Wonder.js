@@ -1,15 +1,17 @@
 
 struct ShadingData {
   vec3 baseColor;
+  vec3 emission;
   float metallic;
   float specular;
   float roughness;
-  //specularLobeProb
+  // specularLobeProb
   float csw;
 };
 
-ShadingData buildShadingData(vec3 materialDiffuse, float materialMetalness,
-                  float materialRoughness, float materialSpecular, float csw) {
+ShadingData buildShadingData(vec3 materialDiffuse, vec3 materialEmission,
+                             float materialMetalness, float materialRoughness,
+                             float materialSpecular, float csw) {
   // TODO should pass from pbr material
   float metalnessIntensity = 1.0;
   float roughnessIntensity = 0.1125;
@@ -17,9 +19,12 @@ ShadingData buildShadingData(vec3 materialDiffuse, float materialMetalness,
   ShadingData shading;
 
   shading.baseColor = materialDiffuse;
-  shading.metallic = materialMetalness * metalnessIntensity;
+  shading.emission = materialEmission;
+  shading.metallic =
+      clamp(materialMetalness * metalnessIntensity, 0.001, 0.999);
   shading.specular = materialSpecular;
-  shading.roughness = materialRoughness * roughnessIntensity;
+  shading.roughness =
+      clamp(materialRoughness * metalnessIntensity, 0.001, 0.999);
   shading.csw = csw;
 
   return shading;

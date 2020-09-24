@@ -1,7 +1,5 @@
-vec3 computeDirectLight(
-                         float tMin,
-                        vec3 worldPosition, vec3 worldNormal, vec3 V,
-                        ShadingData shading,
+vec3 computeDirectLight(float tMin, vec3 worldPosition, vec3 worldNormal,
+                        vec3 V, ShadingData shading,
 
                         accelerationStructureEXT topLevelAS) {
   uint lightIndexToSample = 0;
@@ -28,7 +26,6 @@ vec3 computeDirectLight(
     }
   }
 
-
   const vec3 N = worldNormal;
 
   const vec3 L = lightDir;
@@ -42,13 +39,13 @@ vec3 computeDirectLight(
 
   vec3 f = eval(NdotL, NdotV, NdotH, HdotL, shading);
 
-/*! not consider light pdf! because its pdf === 1.0 
+  /*! not consider light pdf! because its pdf === 1.0
 
-  // float lightPdf = 1 / float(lightCount);
-  // float lightPdf = 1.0;
-*/
+    // float lightPdf = 1 / float(lightCount);
+    // float lightPdf = 1.0;
+  */
 
   Lo += lightIntensity * f;
 
-  return max(vec3(0.0), Lo) ;
+  return max(vec3(0.0), Lo);
 }

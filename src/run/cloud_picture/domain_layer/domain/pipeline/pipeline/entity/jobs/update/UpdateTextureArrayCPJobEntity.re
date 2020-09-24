@@ -183,7 +183,7 @@ let _fillTextureArray =
     );
 
   let bytesPerRow =
-    Js.Math.ceil_int(Belt.Float.fromInt(imageWidth * 4) /. 256.) * 256;
+    Js.Math.ceil_int(Number.dividInt(imageWidth * 4, 256)) * 256;
 
   let bufferData = Uint8Array.fromLength(bytesPerRow * imageHeight);
 
@@ -253,10 +253,6 @@ let _setWebGPUObjects = (textureArrayView, textureSampler) => {
   TextureArrayWebGPUCPRepo.setTextureSampler(textureSampler);
 };
 
-let _getTextureArraySize = () => {
-  (2048, 2048);
-};
-
 let exec = () => {
   Tuple2.collectOption(WebGPUCPRepo.getDevice(), WebGPUCPRepo.getQueue())
   ->Result.bind(((device, queue)) => {
@@ -264,7 +260,7 @@ let exec = () => {
 
       _setMapBetweenImageIdToLayerIndex(allUsedImageIdAndData);
 
-      let (imageWidth, imageHeight) = _getTextureArraySize();
+      let (imageWidth, imageHeight) = WebGPUCoreRunAPI.getTextureArraySize();
 
       _getLayerCount(allUsedImageIdAndData)
       ->Result.bind(layerCount => {

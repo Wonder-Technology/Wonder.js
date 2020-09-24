@@ -84,7 +84,7 @@ let _convertVertexStartIndexFromAlignedInPOToInVertexBufferData =
               ~actual={j|not|j},
             ),
             () => {
-              let x = vertexStartIndex->Belt.Float.fromInt /. 3.;
+              let x = Number.dividInt(vertexStartIndex, 3);
 
               x -. x->Js.Math.floor_float ==. 0.0;
             },
@@ -336,7 +336,7 @@ let _buildAndSetVertexBufferData = device => {
         ),
         () => {
           let x =
-            PointsGeometryCPRepo.getVerticesOffset()->Belt.Float.fromInt /. 3.;
+            Number.dividInt(PointsGeometryCPRepo.getVerticesOffset(), 3);
 
           x -. x->Js.Math.floor_float ==. 0.0;
         },
@@ -477,9 +477,43 @@ let _buildAndSetIndexBufferData = device => {
   PathTracingPassCPRepo.setIndexBufferData((buffer, bufferSize));
 };
 
+let _getMapLayerIndexForNotExist = () => 5000;
+
+let _getMapLayerIndex = mapImageIdOpt => {
+  (
+    switch (mapImageIdOpt) {
+    | None => _getMapLayerIndexForNotExist()
+    | Some(imageId) =>
+      TextureArrayWebGPUCPRepo.getLayerIndex(imageId->ImageIdVO.value)
+      ->OptionSt.fromNullable
+      ->OptionSt.getWithDefault(_getMapLayerIndexForNotExist())
+    }
+  )
+  ->Belt.Float.fromInt;
+};
+
+let _computeMapOffset = mapImageIdOpt => {
+  let defaultOffset = (0.0, 0.0);
+
+  switch (mapImageIdOpt) {
+  | None => defaultOffset
+  | Some(imageId) =>
+    switch (AssetRunAPI.getImageData(imageId)) {
+    | None => defaultOffset
+    | Some(({width, height}: ImagePOType.data)) =>
+      let (imageWidth, imageHeight) = WebGPUCoreRunAPI.getTextureArraySize();
+
+      (
+        Number.dividInt(width, imageWidth),
+        Number.dividInt(height, imageHeight),
+      );
+    }
+  };
+};
+
 let _buildAndSetPBRMaterialBufferData = (device, allRenderPBRMaterials) => {
   let pbrMaterialCount = allRenderPBRMaterials->ListSt.length;
-  let dataCount = 4 + 4;
+  let dataCount = 4 + 4 + 4 + 8;
   let bufferData = Float32Array.fromLength(pbrMaterialCount * dataCount);
   let bufferSize = bufferData->Float32Array.byteLength;
 
@@ -507,6 +541,15 @@ let _buildAndSetPBRMaterialBufferData = (device, allRenderPBRMaterials) => {
         let metalness =
           PBRMaterialRunAPI.getMetalness(pbrMaterial)->MetalnessVO.value;
 
+        let diffuseMapImageId =
+          PBRMaterialRunAPI.getDiffuseMapImageId(pbrMaterial);
+        let metalRoughnessMapImageId =
+          PBRMaterialRunAPI.getMetalRoughnessMapImageId(pbrMaterial);
+        let emissionMapImageId =
+          PBRMaterialRunAPI.getEmissionMapImageId(pbrMaterial);
+        let normalMapImageId =
+          PBRMaterialRunAPI.getNormalMapImageId(pbrMaterial);
+
         ListResult.mergeResults([
           TypeArrayCPRepoUtils.setFloat3(offset + 0, diffuse, bufferData),
           TypeArrayCPRepoUtils.setFloat3(
@@ -514,8 +557,38 @@ let _buildAndSetPBRMaterialBufferData = (device, allRenderPBRMaterials) => {
             (metalness, roughness, specular),
             bufferData,
           ),
+          TypeArrayCPRepoUtils.setFloat4(
+            offset + 8,
+            (
+              _getMapLayerIndex(diffuseMapImageId),
+              _getMapLayerIndex(metalRoughnessMapImageId),
+              _getMapLayerIndex(emissionMapImageId),
+              _getMapLayerIndex(normalMapImageId),
+            ),
+            bufferData,
+          ),
+          TypeArrayCPRepoUtils.setFloat2(
+            offset + 12,
+            _computeMapOffset(diffuseMapImageId),
+            bufferData,
+          ),
+          TypeArrayCPRepoUtils.setFloat2(
+            offset + 14,
+            _computeMapOffset(metalRoughnessMapImageId),
+            bufferData,
+          ),
+          TypeArrayCPRepoUtils.setFloat2(
+            offset + 16,
+            _computeMapOffset(emissionMapImageId),
+            bufferData,
+          ),
+          TypeArrayCPRepoUtils.setFloat2(
+            offset + 18,
+            _computeMapOffset(normalMapImageId),
+            bufferData,
+          ),
         ])
-        ->Result.mapSuccess(() => {offset + 4 + 4});
+        ->Result.mapSuccess(() => {offset + 20});
       },
     )
   ->Result.mapSuccess(_ => {
@@ -560,6 +633,8 @@ let _createAndAddRayTracingBindGroup =
         (vertexBuffer, vertexBufferSize, _),
         (indexBuffer, indexBufferSize),
         (pbrMaterialBuffer, pbrMaterialBufferSize, _),
+        textureSampler,
+        textureArrayView,
       ),
       ((pixelBuffer, pixelBufferSize), (commonBuffer, commonBufferData)),
     ) => {
@@ -623,6 +698,21 @@ let _createAndAddRayTracingBindGroup =
             ~visibility=
               WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
             ~type_="storage-buffer",
+            (),
+          ),
+          IWebGPUCoreDp.layoutBinding(
+            ~binding=8,
+            ~visibility=
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
+            ~type_="sampler",
+            (),
+          ),
+          IWebGPUCoreDp.layoutBinding(
+            ~binding=9,
+            ~visibility=
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
+            ~type_="sampled-texture",
+            ~viewDimension="2d-array",
             (),
           ),
         |],
@@ -690,6 +780,18 @@ let _createAndAddRayTracingBindGroup =
             ~buffer=pbrMaterialBuffer->StorageBufferVO.value,
             ~offset=0,
             ~size=pbrMaterialBufferSize,
+            (),
+          ),
+          IWebGPURayTracingDp.binding(
+            ~binding=8,
+            ~sampler=textureSampler,
+            ~size=0,
+            (),
+          ),
+          IWebGPURayTracingDp.binding(
+            ~binding=9,
+            ~textureView=textureArrayView,
+            ~size=0,
             (),
           ),
         |],
@@ -763,18 +865,20 @@ let exec = () => {
                 PassCPRepo.getCommonBufferData(),
               )
               ->Result.bind(passAllBufferData => {
-                  Tuple5.collectOption(
+                  Tuple7.collectOption(
                     PathTracingPassCPRepo.getSceneDescBufferData(),
                     PathTracingPassCPRepo.getPointIndexBufferData(),
                     PathTracingPassCPRepo.getVertexBufferData(),
                     PathTracingPassCPRepo.getIndexBufferData(),
                     PathTracingPassCPRepo.getPBRMaterialBufferData(),
+                    TextureArrayWebGPUCPRepo.getTextureSampler(),
+                    TextureArrayWebGPUCPRepo.getTextureArrayView(),
                   )
-                  ->Result.bind(pathTracingAllBufferData => {
+                  ->Result.bind(pathTracingAllBufferDataAndTextureArrayData => {
                       _createAndAddRayTracingBindGroup(
                         device,
                         instanceContainer,
-                        pathTracingAllBufferData,
+                        pathTracingAllBufferDataAndTextureArrayData,
                         passAllBufferData,
                       )
                       ->_createAndSetPipeline(device, _)
