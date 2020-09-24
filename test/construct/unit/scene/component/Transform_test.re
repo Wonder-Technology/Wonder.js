@@ -761,4 +761,17 @@ let _ =
         );
       });
     });
+
+    describe("lookAt", () => {
+      test("set lookAt will change localToWorld matrix", () => {
+        let transform = create()->ResultTool.getExnSuccessValue;
+
+        let target = (0., 0., 1.);
+
+        transform -> lookAt(target) -> ResultTool.getExnSuccessValue;
+
+        getEulerAngles(transform) -> expect
+        == (180., -0., 180.) -> EulerAnglesTool.createFromPrimitive;
+      })
+    })
   });
