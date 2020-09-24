@@ -5,13 +5,6 @@ let getLocalToWorldMatrix = transform => {
   ->LocalToWorldMatrixVO.create;
 };
 
-let setLocalToWorldMatrix = (transform, localToWorldMatrix) => {
-  DpContainer.unsafeGetTransformRepoDp().setLocalToWorldMatrix(
-    transform->TransformEntity.value,
-    localToWorldMatrix
-  )
-}
-
 let getNormalMatrix = transform => {
   DpContainer.unsafeGetGlobalTempRepoDp().getFloat9Array()
   ->Matrix4.invertTo3x3(

@@ -231,27 +231,6 @@ let getFloat4Tuple = (index: int, typeArray: Float32Array.t) => (
   Float32Array.unsafe_get(typeArray, index + 3),
 );
 
-let getFloat16Tuple = (index: int, typeArray: Float32Array.t) => {
-  (
-    Float32Array.unsafe_get(typeArray, index),
-    Float32Array.unsafe_get(typeArray, index + 1),
-    Float32Array.unsafe_get(typeArray, index + 2),
-    Float32Array.unsafe_get(typeArray, index + 3),
-    Float32Array.unsafe_get(typeArray, index + 4),
-    Float32Array.unsafe_get(typeArray, index + 5),
-    Float32Array.unsafe_get(typeArray, index + 6),
-    Float32Array.unsafe_get(typeArray, index + 7),
-    Float32Array.unsafe_get(typeArray, index + 8),
-    Float32Array.unsafe_get(typeArray, index + 9),
-    Float32Array.unsafe_get(typeArray, index + 10),
-    Float32Array.unsafe_get(typeArray, index + 11),
-    Float32Array.unsafe_get(typeArray, index + 12),
-    Float32Array.unsafe_get(typeArray, index + 13),
-    Float32Array.unsafe_get(typeArray, index + 14),
-    Float32Array.unsafe_get(typeArray, index + 15),
-  );
-}
-
 let getUint32_1 = (index: int, typeArray: Uint32Array.t) =>
   Uint32Array.unsafe_get(typeArray, index);
 

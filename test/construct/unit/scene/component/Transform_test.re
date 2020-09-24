@@ -765,33 +765,13 @@ let _ =
     describe("lookAt", () => {
       test("set lookAt will change localToWorld matrix", () => {
         let transform = create()->ResultTool.getExnSuccessValue;
-    
-        transform->lookAt((0., -1.0, 0.0))->ResultTool.getExnSuccessValue;
 
-        let changedLocalToWorldMatrix = transform->getLocalToWorldMatrix;
-           
-        changedLocalToWorldMatrix->LocalToWorldMatrixVO.value->expect 
-        == Js.Typed_array.Float32Array.make([|
-          0.0,
-          0.0,
-          0.0,
-          0.0,
+        let target = (0., 0., 1.);
 
-          0.0,
-          0.0,
-          0.0,
-          0.0,
+        transform -> lookAt(target) -> ResultTool.getExnSuccessValue;
 
-          0.0,
-          1.0,
-          0.0,
-          0.0,
-          
-          0.0,
-          0.0,
-          0.0,
-          1.0
-        |]);
+        getEulerAngles(transform) -> expect
+        == (180., -0., 180.) -> EulerAnglesTool.createFromPrimitive;
       })
     })
   });

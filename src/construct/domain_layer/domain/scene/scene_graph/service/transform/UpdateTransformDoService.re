@@ -106,16 +106,3 @@ let updateAndSetEulerAngles = (transform, eulerAngles) =>
     transform,
     eulerAngles->EulerAnglesVO.convertToQuaternion->RotationVO.create,
   );
-
-let setLookAt = (transform, target) => {
-  ModelMatrixTransformDoService.setLocalToWorldMatrix(
-    transform,
-    Matrix4.setLookAt(
-      updateAndGetPosition(
-        transform,
-      ) -> PositionVO.value,
-      target,
-      (0., 1., 0.),
-    )
-  )
-}
