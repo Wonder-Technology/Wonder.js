@@ -37,7 +37,6 @@ let create = () => {
             {name: "update_camera", type_: Job},
             {name: "update_textureArray", type_: Job},
             {name: "update_pathTracing", type_: Job},
-            {name: "update_accumulation", type_: Job},
             {name: "update_pass", type_: Job},
           ],
         },
@@ -52,6 +51,8 @@ let create = () => {
           link: Concat,
           elements: [
             {name: "render_pathTracing", type_: Job},
+            {name: "update_accumulation", type_: Job},
+            {name: "update_pass_for_render", type_: Job},
             {name: "render_accumulation", type_: Job},
             {name: "end_render", type_: Job},
           ],

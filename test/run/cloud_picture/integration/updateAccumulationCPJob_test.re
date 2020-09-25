@@ -12,8 +12,8 @@ let _ =
       sandbox := createSandbox();
       TestCPTool.init(
         ~sandbox,
-        ~updatePipelineData={
-          name: "update",
+        ~renderPipelineData={
+          name: "render",
           firstGroup: "frame",
           groups: [
             {
@@ -34,7 +34,7 @@ let _ =
       let totalSampleCount = 10;
       PassCPTool.setTotalSampleCount(totalSampleCount);
 
-      DirectorCPTool.initAndUpdate(
+      DirectorCPTool.initAndRender(
         ~handleSuccessFunc=
           () => {
             PassCPTool.getTotalSampleCount()->expect == totalSampleCount

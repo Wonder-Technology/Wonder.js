@@ -1,7 +1,7 @@
 open Wonder_jest;
 
 let _ =
-  describe("test update_pass job", () => {
+  describe("test update_pass_for_render job", () => {
     open Expect;
     open Expect.Operators;
     open Sinon;
@@ -12,14 +12,14 @@ let _ =
       sandbox := createSandbox();
       TestCPTool.init(
         ~sandbox,
-        ~updatePipelineData={
-          name: "update",
+        ~renderPipelineData={
+          name: "render",
           firstGroup: "frame",
           groups: [
             {
               name: "frame",
               link: Concat,
-              elements: [{name: "update_pass", type_: Job}],
+              elements: [{name: "update_pass_for_render", type_: Job}],
             },
           ],
         },
@@ -38,18 +38,19 @@ let _ =
         PassCPTool.buildAndSetAllBufferData(window, device);
       };
 
-      testPromise("set sample count to buffer data", () => {
+      testPromise("set total sample count to buffer data", () => {
         let _ = _prepare();
-        let sampleCount = 2;
-        DirectorCPTool.prepare(~sampleCount, ());
+        DirectorCPTool.prepare();
+        let totalSampleCount = 10;
+        PassCPTool.setTotalSampleCount(totalSampleCount);
 
-        DirectorCPTool.initAndUpdate(
+        DirectorCPTool.initAndRender(
           ~handleSuccessFunc=
             () => {
               let (_, typeArr) = PassCPTool.getCommonBufferData();
 
-              typeArr->Js.Typed_array.Uint32Array.unsafe_get(0)->expect
-              == sampleCount;
+              typeArr->Js.Typed_array.Uint32Array.unsafe_get(1)->expect
+              == totalSampleCount;
             },
           (),
         );
@@ -65,7 +66,8 @@ let _ =
           (),
         )
         ->WebGPUDependencyTool.set;
-        DirectorCPTool.initAndUpdate(
+
+        DirectorCPTool.initAndRender(
           ~handleSuccessFunc=
             () => {
               let (buffer, typeArr) = PassCPTool.getCommonBufferData();

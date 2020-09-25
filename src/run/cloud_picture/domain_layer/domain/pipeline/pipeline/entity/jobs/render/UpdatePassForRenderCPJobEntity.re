@@ -1,9 +1,9 @@
-let create = () => JobEntity.create("update_pass");
+let create = () => JobEntity.create("update_pass_for_render");
 
 let _updateCommonBufferData = ((commonBuffer, commonBufferData)) => {
-  let sampleCount = PassCPRepo.getSampleCount();
+  let totalSampleCount = PassCPRepo.getTotalSampleCount();
 
-  TypeArrayCPRepoUtils.setUint32_1(0, sampleCount, commonBufferData)
+  TypeArrayCPRepoUtils.setUint32_1(1, totalSampleCount, commonBufferData)
   ->Result.tap(() => {
       WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubUint32Data(
         0,
@@ -15,15 +15,11 @@ let _updateCommonBufferData = ((commonBuffer, commonBufferData)) => {
     });
 };
 
-let _updateAllBufferData = ((commonBuffer, commonBufferData)) => {
-  _updateCommonBufferData((commonBuffer, commonBufferData));
-};
-
 let exec = () => {
   PassCPRepo.getCommonBufferData()
   ->OptionSt.get
   ->Result.bind(((commonBuffer, commonBufferData)) => {
-      _updateAllBufferData((commonBuffer, commonBufferData))
+      _updateCommonBufferData((commonBuffer, commonBufferData))
     })
   ->WonderBsMost.Most.just;
 };

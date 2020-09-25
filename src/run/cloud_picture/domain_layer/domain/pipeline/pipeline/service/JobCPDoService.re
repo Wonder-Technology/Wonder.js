@@ -11,10 +11,6 @@ let _getUpdatePipelineJobs = () => [
   (UpdateTransformCPJobEntity.create(), UpdateTransformCPJobEntity.exec),
   (UpdateCameraCPJobEntity.create(), UpdateCameraCPJobEntity.exec),
   (UpdatePathTracingCPJobEntity.create(), UpdatePathTracingCPJobEntity.exec),
-  (
-    UpdateAccumulationCPJobEntity.create(),
-    UpdateAccumulationCPJobEntity.exec,
-  ),
   (UpdatePassCPJobEntity.create(), UpdatePassCPJobEntity.exec),
   (
     UpdateTextureArrayCPJobEntity.create(),
@@ -24,6 +20,14 @@ let _getUpdatePipelineJobs = () => [
 
 let _getRenderPipelineJobs = () => [
   (RenderPathTracingCPJobEntity.create(), RenderPathTracingCPJobEntity.exec),
+  (
+    UpdateAccumulationCPJobEntity.create(),
+    UpdateAccumulationCPJobEntity.exec,
+  ),
+  (
+    UpdatePassForRenderCPJobEntity.create(),
+    UpdatePassForRenderCPJobEntity.exec,
+  ),
   (
     RenderAccumulationCPJobEntity.create(),
     RenderAccumulationCPJobEntity.exec,
