@@ -170,7 +170,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   if (_hasMap(diffuseMapLayerIndex)) {
     data.materialDiffuse =
         texture(sampler2DArray(textureArray, textureSampler),
-                vec3(uv * diffuseMapScale, diffuseMapLayerIndex))
+                vec3(uv * mat.diffuseMapScale, diffuseMapLayerIndex))
             .rgb +
         vec3(mat.diffuse);
   } else {
@@ -181,7 +181,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
     data.worldNormal =
         mat3(tw, bw, nw) *
         normalize((texture(sampler2DArray(textureArray, textureSampler),
-                           vec3(uv * normalMapScale, mat.normalIndex))
+                           vec3(uv * mat.normalMapScale, normalMapLayerIndex))
                        .rgb) *
                       2.0 -
                   1.0)
@@ -193,7 +193,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   if (_hasMap(emissionMapLayerIndex)) {
     data.materialEmission =
         texture(sampler2DArray(textureArray, textureSampler),
-                vec3(uv * emissionMapScale, emissionIndex))
+                vec3(uv * mat.emissionMapScale, emissionMapLayerIndex))
             .rgb;
   } else {
     data.materialEmission = vec3(0.0);
@@ -201,10 +201,10 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
 
   vec2 metalRoughness;
   if (_hasMap(metalRoughnessMapLayerIndex)) {
-    metalRoughness =
-        texture(sampler2DArray(textureArray, textureSampler),
-                vec3(uv * metalRoughnessMapScale, metalRoughnessMapLayerIndex))
-            .rg;
+    metalRoughness = texture(sampler2DArray(textureArray, textureSampler),
+                             vec3(uv * mat.metalRoughnessMapScale,
+                                  metalRoughnessMapLayerIndex))
+                         .rg;
 
     data.materialMetalness = metalRoughness.r + mat.metalness;
     data.materialRoughness = metalRoughness.g + mat.roughness;
@@ -212,6 +212,8 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
     data.materialMetalness = mat.metalness;
     data.materialRoughness = mat.roughness;
   }
+
+  data.materialSpecular = mat.specular;
 
   const vec3 p0 = v0.position.xyz, p1 = v1.position.xyz, p2 = v2.position.xyz;
 
