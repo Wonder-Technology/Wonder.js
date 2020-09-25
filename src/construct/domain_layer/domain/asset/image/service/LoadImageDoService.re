@@ -5,12 +5,14 @@ let loadImages = imageDataList => {
   ->ListSt.traverseResultM(((id, path)) => {
       DpContainer.unsafeGetNetworkDp().readImageFile(path)
       ->Result.mapSuccess(stream => {
-          stream->tap(
+          stream->map(
                     imageData => {
                       DpContainer.unsafeGetImageRepoDp().setData(
                         id->ImageIdVO.value,
                         imageData,
-                      )
+                      );
+
+                      ();
                     },
                     _,
                   )
