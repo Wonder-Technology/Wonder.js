@@ -375,6 +375,7 @@ let _buildAndSetVertexBufferData = device => {
       let length = PointsGeometryCPRepo.getVerticesOffset();
 
       let i = ref(0);
+      let texCoordsIndex = ref(0);
       let j = ref(0);
       while (i^ < length) {
         Float32Array.unsafe_set(
@@ -396,12 +397,12 @@ let _buildAndSetVertexBufferData = device => {
         Float32Array.unsafe_set(
           bufferData,
           j^ + 4,
-          Float32Array.unsafe_get(texCoords, i^),
+          Float32Array.unsafe_get(texCoords, texCoordsIndex^),
         );
         Float32Array.unsafe_set(
           bufferData,
           j^ + 5,
-          Float32Array.unsafe_get(texCoords, i^ + 1),
+          1.0 -. Float32Array.unsafe_get(texCoords, texCoordsIndex^ + 1),
         );
 
         Float32Array.unsafe_set(
@@ -437,6 +438,7 @@ let _buildAndSetVertexBufferData = device => {
         );
 
         i := i^ + 3;
+        texCoordsIndex := texCoordsIndex^ + 2;
         j := j^ + 16;
       };
 
@@ -485,7 +487,6 @@ let _getMapLayerIndex = mapImageIdOpt => {
     | None => _getMapLayerIndexForNotExist()
     | Some(imageId) =>
       TextureArrayWebGPUCPRepo.getLayerIndex(imageId->ImageIdVO.value)
-      
       ->OptionSt.getWithDefault(_getMapLayerIndexForNotExist())
     }
   )

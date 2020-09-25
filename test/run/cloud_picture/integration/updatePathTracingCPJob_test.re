@@ -16,7 +16,6 @@ let _ =
       let queue = WebGPUDependencyTool.createQueueObject();
       WebGPUCPTool.setQueue(queue);
 
-      PathTracingPassCPTool.buildAndSetAllBufferData(device);
       PathTracingPassCPTool.createAndSetShaderBindingTable();
       PathTracingPassCPTool.createAndSetAllBindGroupLayoutsAndBindGroupsExceptRayTracing();
       PassCPTool.buildAndSetAllBufferData(
@@ -1016,14 +1015,6 @@ let _ =
       });
 
       describe("build and set vertex buffer data", () => {
-        // beforeEach(() => {
-        //   TestCPTool.updateBufferCount(
-        //     ~geometryCount=2,
-        //     ~geometryPointCount=100,
-        //     (),
-        //   )
-        // });
-
         describe("build vertex buffer data", () => {
           _testCreateBuffer(
             ~getBufferSizeFunc=
@@ -1033,7 +1024,7 @@ let _ =
         });
 
         testPromise(
-          "set each render geometry's vertices, texCoords, normals, tangents(compute) to buffer data and set buffer's data",
+          "set each render geometry's vertices, texCoords(should flip vertical), normals, tangents(compute) to buffer data and set buffer's data",
           () => {
             let _ = _prepare();
             let setSubFloat32DataStubData =
@@ -1064,7 +1055,7 @@ let _ =
                         11.,
                         0.,
                         0.5,
-                        0.,
+                        1.,
                         0.,
                         0.,
                         1.,
@@ -1079,8 +1070,8 @@ let _ =
                         2.,
                         3.,
                         0.,
-                        1.,
-                        0.20000000298023224,
+                        0.10000000149011612,
+                        0.,
                         0.,
                         0.,
                         2.,
@@ -1095,8 +1086,8 @@ let _ =
                         2.,
                         3.5,
                         0.,
-                        0.10000000149011612,
-                        0.10000000149011612,
+                        0.20000000298023224,
+                        0.5,
                         0.,
                         0.,
                         3.,
@@ -1111,8 +1102,8 @@ let _ =
                         10.,
                         11.,
                         0.,
-                        0.699999988079071,
-                        0.11999999731779099,
+                        0.10000000149011612,
+                        0.8999999761581421,
                         0.,
                         0.,
                         2.,
@@ -1128,7 +1119,7 @@ let _ =
                         1.,
                         0.,
                         0.6000000238418579,
-                        0.23999999463558197,
+                        0.30000001192092896,
                         0.,
                         0.,
                         2.,
@@ -1143,8 +1134,8 @@ let _ =
                         2.5,
                         (-1.5),
                         0.,
-                        0.,
-                        0.,
+                        0.11999999731779099,
+                        0.5,
                         0.,
                         0.,
                         3.,
@@ -1159,8 +1150,8 @@ let _ =
                         3.,
                         10.,
                         0.,
-                        0.,
-                        0.,
+                        0.6000000238418579,
+                        0.7599999904632568,
                         0.,
                         0.,
                         (-1.),
