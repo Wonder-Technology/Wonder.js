@@ -6,12 +6,21 @@ let getGameObjects = geometry => {
   GameObjectGeometryDoService.getGameObjects(geometry);
 };
 
+let createTriangleGeometry = () => {
+  CreateTriangleGeometryDoService.create();
+};
+
 let createSphereGeometry = (radius, bands) => {
   CreateSphereGeometryDoService.create(radius, bands);
 };
 
 let createPlaneGeometry = (width, height, widthSegments, heightSegments) => {
-  CreatePlaneGeometryDoService.create(width, height, widthSegments, heightSegments);
+  CreatePlaneGeometryDoService.create(
+    width,
+    height,
+    widthSegments,
+    heightSegments,
+  );
 };
 
 let getVertices = geometry => {

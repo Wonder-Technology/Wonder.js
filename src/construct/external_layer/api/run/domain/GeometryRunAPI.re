@@ -6,6 +6,10 @@ let getGameObjects = geometry => {
   GeometryApService.getGameObjects(geometry);
 };
 
+let createTriangleGeometry = () => {
+  GeometryApService.createTriangleGeometry();
+};
+
 let createSphereGeometry = (radius, bands) => {
   GeometryApService.createSphereGeometry(radius, bands);
 };
