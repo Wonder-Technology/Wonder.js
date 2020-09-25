@@ -35,9 +35,7 @@ let _ =
 
       DirectorCPTool.init(
         ~handleSuccessFunc=
-          () => {
-            TimeCPTool.getTimePO().startTime->expect == now->Js.Nullable.return
-          },
+          () => {TimeCPTool.getTimePO().startTime->expect == now->Some},
         (),
       );
     });

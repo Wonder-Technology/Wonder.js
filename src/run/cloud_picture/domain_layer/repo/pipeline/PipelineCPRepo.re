@@ -38,7 +38,7 @@ let getPipelineStream = pipeline => {
   pipeline
   ->PipelineEntity.value
   ->PipelineCPRepoDp.getPipelineStream
-  ->OptionSt.fromNullable;
+  
 };
 
 let setPipelineStream = (pipeline, stream) => {

@@ -1,4 +1,4 @@
 type time = {
-  startTime: Js.Nullable.t(TimePOType.time),
+  startTime: option(TimePOType.time),
   elapsed: TimePOType.time,
 };

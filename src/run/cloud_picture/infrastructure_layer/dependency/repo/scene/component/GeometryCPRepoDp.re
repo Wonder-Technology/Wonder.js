@@ -16,7 +16,7 @@ let setMaxIndex = maxIndex => {
 
 let getGameObjects = geometry => {
   CPRepo.getExnGeometry().gameObjectsMap
-  ->ImmutableSparseMap.getNullable(geometry);
+  ->ImmutableSparseMap.get(geometry);
 };
 
 let addGameObject = (geometry, gameObject) => {

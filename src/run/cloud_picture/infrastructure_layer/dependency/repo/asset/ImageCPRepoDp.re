@@ -10,5 +10,5 @@ let setData = (id, data) => {
 };
 
 let getData = id => {
-  CPRepo.getImage().dataMap->ImmutableHashMap.getNullable(id);
+  CPRepo.getImage().dataMap->ImmutableHashMap.get(id);
 };

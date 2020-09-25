@@ -10,7 +10,7 @@ let setMaxIndex = maxIndex => {
 
 let getGameObject = light => {
   CPRepo.getExnDirectionLight().gameObjectMap
-  ->ImmutableSparseMap.getNullable(light);
+  ->ImmutableSparseMap.get(light);
 };
 
 let setGameObject = (light, gameObject) => {

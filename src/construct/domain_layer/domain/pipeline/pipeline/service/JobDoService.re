@@ -7,6 +7,5 @@ let register = (pipeline, job, execFunc) => {
 };
 
 let getExecFunc = (pipelineName, jobName) => {
-  DpContainer.unsafeGetPipelineRepoDp().getJobExecFunc(pipelineName, jobName)
-  ->OptionSt.fromNullable;
+  DpContainer.unsafeGetPipelineRepoDp().getJobExecFunc(pipelineName, jobName);
 };

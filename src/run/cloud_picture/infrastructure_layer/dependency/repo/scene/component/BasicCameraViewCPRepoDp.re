@@ -10,7 +10,7 @@ let setMaxIndex = maxIndex => {
 
 let getGameObject = cameraView => {
   CPRepo.getBasicCameraView().gameObjectMap
-  ->ImmutableSparseMap.getNullable(cameraView);
+  ->ImmutableSparseMap.get(cameraView);
 };
 
 let setGameObject = (cameraView, gameObject) => {

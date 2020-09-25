@@ -1,6 +1,6 @@
 let getLayerIndex = id => {
   TextureArrayWebGPUCPRepo.getLayerIndex(id->ImageIdVO.value)
-  ->OptionSt.fromNullable;
+  
 };
 
 let getBytesPerRow = () => {

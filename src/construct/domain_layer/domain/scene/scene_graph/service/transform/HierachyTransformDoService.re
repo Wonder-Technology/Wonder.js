@@ -8,7 +8,7 @@ let getParent = transform => {
   DpContainer.unsafeGetTransformRepoDp().getParent(
     transform->TransformEntity.value,
   )
-  ->OptionSt.fromNullable
+  
   ->OptionSt.map(TransformEntity.create);
 };
 
@@ -16,7 +16,7 @@ let getChildren = transform => {
   DpContainer.unsafeGetTransformRepoDp().getChildren(
     transform->TransformEntity.value,
   )
-  ->OptionSt.fromNullable
+  
   ->OptionSt.map(children => children->ListSt.map(TransformEntity.create));
 };
 

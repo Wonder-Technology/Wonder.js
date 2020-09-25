@@ -15,7 +15,7 @@ open PerspectiveCameraProjectionPOType;
 open PipelinePOType;
 
 type sceneRepo = {
-  getSceneGameObject: unit => Js.Nullable.t(gameObject),
+  getSceneGameObject: unit => option(gameObject),
   setSceneGameObject: gameObject => unit,
 };
 
@@ -23,24 +23,24 @@ type gameObjectRepo = {
   getMaxUID: unit => uid,
   setMaxUID: uid => unit,
   addTransform: (gameObject, transform) => unit,
-  getTransform: gameObject => Js.Nullable.t(transform),
+  getTransform: gameObject => option(transform),
   hasTransform: gameObject => bool,
   addPBRMaterial: (gameObject, pbrMaterial) => unit,
-  getPBRMaterial: gameObject => Js.Nullable.t(pbrMaterial),
+  getPBRMaterial: gameObject => option(pbrMaterial),
   hasPBRMaterial: gameObject => bool,
   addGeometry: (gameObject, geometry) => unit,
-  getGeometry: gameObject => Js.Nullable.t(geometry),
+  getGeometry: gameObject => option(geometry),
   hasGeometry: gameObject => bool,
   addDirectionLight: (gameObject, directionLight) => unit,
-  getDirectionLight: gameObject => Js.Nullable.t(directionLight),
+  getDirectionLight: gameObject => option(directionLight),
   hasDirectionLight: gameObject => bool,
   addBasicCameraView: (gameObject, basicCameraView) => unit,
-  getBasicCameraView: gameObject => Js.Nullable.t(basicCameraView),
+  getBasicCameraView: gameObject => option(basicCameraView),
   hasBasicCameraView: gameObject => bool,
   addPerspectiveCameraProjection:
     (gameObject, perspectiveCameraProjection) => unit,
   getPerspectiveCameraProjection:
-    gameObject => Js.Nullable.t(perspectiveCameraProjection),
+    gameObject => option(perspectiveCameraProjection),
   hasPerspectiveCameraProjection: gameObject => bool,
   getAllGeometryGameObjects: unit => list(gameObject),
   getAllGameObjectGeometries: unit => list(geometry),
@@ -50,15 +50,15 @@ type gameObjectRepo = {
 type transformRepo = {
   getMaxIndex: unit => ComponentPOType.index,
   setMaxIndex: ComponentPOType.index => unit,
-  getIsDirty: transform => Js.Nullable.t(bool),
+  getIsDirty: transform => option(bool),
   setIsDirty: (transform, bool) => unit,
   setGameObject: (transform, gameObject) => unit,
-  getGameObject: transform => Js.Nullable.t(gameObject),
+  getGameObject: transform => option(gameObject),
   hasParent: transform => bool,
-  getParent: transform => Js.Nullable.t(parent),
+  getParent: transform => option(parent),
   setParent: (parent, child) => unit,
   removeParent: transform => unit,
-  getChildren: transform => Js.Nullable.t(children),
+  getChildren: transform => option(children),
   setChildren: (parent, children) => unit,
   addChild: (parent, child) => unit,
   removeChild: (parent, child) => unit,
@@ -74,7 +74,7 @@ type transformRepo = {
 type pbrMaterialRepo = {
   getMaxIndex: unit => ComponentPOType.index,
   setMaxIndex: ComponentPOType.index => unit,
-  getGameObjects: pbrMaterial => Js.Nullable.t(list(gameObject)),
+  getGameObjects: pbrMaterial => option(list(gameObject)),
   addGameObject: (pbrMaterial, gameObject) => unit,
   getDiffuseColor: pbrMaterial => diffuse,
   setDiffuseColor: (pbrMaterial, diffuse) => Result.t2(unit),
@@ -84,20 +84,20 @@ type pbrMaterialRepo = {
   setRoughness: (pbrMaterial, float) => Result.t2(unit),
   getMetalness: pbrMaterial => float,
   setMetalness: (pbrMaterial, float) => Result.t2(unit),
-  getDiffuseMapImageId: pbrMaterial => Js.Nullable.t(ImagePOType.id),
+  getDiffuseMapImageId: pbrMaterial => option(ImagePOType.id),
   setDiffuseMapImageId: (pbrMaterial, ImagePOType.id) => unit,
-  getMetalRoughnessMapImageId: pbrMaterial => Js.Nullable.t(ImagePOType.id),
+  getMetalRoughnessMapImageId: pbrMaterial => option(ImagePOType.id),
   setMetalRoughnessMapImageId: (pbrMaterial, ImagePOType.id) => unit,
-  getEmissionMapImageId: pbrMaterial => Js.Nullable.t(ImagePOType.id),
+  getEmissionMapImageId: pbrMaterial => option(ImagePOType.id),
   setEmissionMapImageId: (pbrMaterial, ImagePOType.id) => unit,
-  getNormalMapImageId: pbrMaterial => Js.Nullable.t(ImagePOType.id),
+  getNormalMapImageId: pbrMaterial => option(ImagePOType.id),
   setNormalMapImageId: (pbrMaterial, ImagePOType.id) => unit,
 };
 
 type geometryRepo = {
   getMaxIndex: unit => ComponentPOType.index,
   setMaxIndex: ComponentPOType.index => unit,
-  getGameObjects: geometry => Js.Nullable.t(list(gameObject)),
+  getGameObjects: geometry => option(list(gameObject)),
   addGameObject: (geometry, gameObject) => unit,
   getVertices: geometry => Result.t2(Js.Typed_array.Float32Array.t),
   setVertices: (geometry, Js.Typed_array.Float32Array.t) => Result.t2(unit),
@@ -117,7 +117,7 @@ type geometryRepo = {
 type directionLightRepo = {
   getMaxIndex: unit => ComponentPOType.index,
   setMaxIndex: ComponentPOType.index => unit,
-  getGameObject: directionLight => Js.Nullable.t(gameObject),
+  getGameObject: directionLight => option(gameObject),
   setGameObject: (directionLight, gameObject) => unit,
   getColor: geometry => (float, float, float),
   setColor: (geometry, (float, float, float)) => Result.t2(unit),
@@ -128,7 +128,7 @@ type directionLightRepo = {
 type basicCameraViewRepo = {
   getMaxIndex: unit => ComponentPOType.index,
   setMaxIndex: ComponentPOType.index => unit,
-  getGameObject: basicCameraView => Js.Nullable.t(gameObject),
+  getGameObject: basicCameraView => option(gameObject),
   setGameObject: (basicCameraView, gameObject) => unit,
   isActive: basicCameraView => bool,
   setAllNotActive: unit => unit,
@@ -139,7 +139,7 @@ type basicCameraViewRepo = {
 type perspectiveCameraProjectionRepo = {
   getMaxIndex: unit => ComponentPOType.index,
   setMaxIndex: ComponentPOType.index => unit,
-  getGameObject: perspectiveCameraProjection => Js.Nullable.t(gameObject),
+  getGameObject: perspectiveCameraProjection => option(gameObject),
   setGameObject: (perspectiveCameraProjection, gameObject) => unit,
   getPMatrix:
     perspectiveCameraProjection => option(Js.Typed_array.Float32Array.t),
@@ -166,9 +166,9 @@ type globalTempRepo = {
 };
 
 type pipelineRepo = {
-  getJobExecFunc: (pipelineName, jobName) => Js.Nullable.t(execFunc),
+  getJobExecFunc: (pipelineName, jobName) => option(execFunc),
   setJobExecFunc: (pipelineName, jobName, execFunc) => unit,
-  getPipelineStream: pipelineName => Js.Nullable.t(pipelineStream),
+  getPipelineStream: pipelineName => option(pipelineStream),
   setPipelineStream: (pipelineName, pipelineStream) => unit,
 };
 
@@ -178,7 +178,7 @@ type timeRepo = {
 };
 
 type imageRepo = {
-  getData: ImagePOType.id => Js.Nullable.t(ImagePOType.data),
+  getData: ImagePOType.id => option(ImagePOType.data),
   setData: (ImagePOType.id, ImagePOType.data) => unit,
 };
 

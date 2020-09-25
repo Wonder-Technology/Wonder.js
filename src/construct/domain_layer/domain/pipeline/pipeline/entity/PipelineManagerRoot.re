@@ -2,7 +2,7 @@ let getPipelineStream = pipeline => {
   DpContainer.unsafeGetPipelineRepoDp().getPipelineStream(
     pipeline->PipelineEntity.value,
   )
-  ->OptionSt.fromNullable;
+  
 };
 
 let setPipelineStream = (pipeline, stream) => {

@@ -1,5 +1,5 @@
 let getData = id => {
-  DpContainer.unsafeGetImageRepoDp().getData(id)->OptionSt.fromNullable;
+  DpContainer.unsafeGetImageRepoDp().getData(id)
 };
 
 let setData = (id, data) => {

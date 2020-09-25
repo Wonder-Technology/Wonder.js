@@ -10,7 +10,7 @@ let isDirty = transform =>
     DpContainer.unsafeGetTransformRepoDp().getIsDirty(
       transform->TransformEntity.value,
     )
-    ->OptionSt.fromNullable
+    
   ) {
   | None => false
   | Some(isDirty) => isDirty === true

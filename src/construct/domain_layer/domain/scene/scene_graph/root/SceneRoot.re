@@ -1,6 +1,6 @@
 let getSceneGameObject = () => {
   DpContainer.unsafeGetSceneRepoDp().getSceneGameObject()
-  ->OptionSt.fromNullable
+  
   ->OptionSt.map(GameObjectEntity.create);
 };
 

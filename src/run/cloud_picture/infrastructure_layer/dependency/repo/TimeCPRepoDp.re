@@ -1,7 +1,7 @@
-let start = (startTime) => {
+let start = startTime => {
   CPRepo.setTime({
     ...CPRepo.getTime(),
-    startTime: startTime->Js.Nullable.return,
+    startTime: startTime->Some,
     elapsed: 0.0,
   });
 };

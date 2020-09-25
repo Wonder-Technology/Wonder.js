@@ -1,12 +1,9 @@
 open PipelineCPPOType;
 
 let getJobExecFunc = (pipelineName, jobName) => {
-  switch (
-    CPRepo.getPipeline().jobExecFuncMap->ImmutableHashMap.get(pipelineName)
-  ) {
-  | None => Js.Nullable.null
-  | Some(map) => map->ImmutableHashMap.getNullable(jobName)
-  };
+  CPRepo.getPipeline().jobExecFuncMap
+  ->ImmutableHashMap.get(pipelineName)
+  ->OptionSt.flatMap(map => map->ImmutableHashMap.get(jobName));
 };
 
 let setJobExecFunc = (pipelineName, jobName, execFunc) => {
@@ -30,8 +27,7 @@ let setJobExecFunc = (pipelineName, jobName, execFunc) => {
 };
 
 let getPipelineStream = pipeline => {
-  CPRepo.getPipeline().pipelineStreamMap
-  ->ImmutableHashMap.getNullable(pipeline);
+  CPRepo.getPipeline().pipelineStreamMap->ImmutableHashMap.get(pipeline);
 };
 
 let setPipelineStream = (pipeline, stream) => {

@@ -19,7 +19,7 @@ let addTransform = (gameObject, transform) => {
 
 let getTransform = gameObject => {
   CPRepo.getGameObject().transformMap
-  ->ImmutableSparseMap.getNullable(gameObject);
+  ->ImmutableSparseMap.get(gameObject);
 };
 
 let hasTransform = gameObject => {
@@ -38,7 +38,7 @@ let addPBRMaterial = (gameObject, material) => {
 
 let getPBRMaterial = gameObject => {
   CPRepo.getGameObject().pbrMaterialMap
-  ->ImmutableSparseMap.getNullable(gameObject);
+  ->ImmutableSparseMap.get(gameObject);
 };
 
 let hasPBRMaterial = gameObject => {
@@ -56,7 +56,7 @@ let addGeometry = (gameObject, geometry) => {
 
 let getGeometry = gameObject => {
   CPRepo.getGameObject().geometryMap
-  ->ImmutableSparseMap.getNullable(gameObject);
+  ->ImmutableSparseMap.get(gameObject);
 };
 
 let hasGeometry = gameObject => {
@@ -75,7 +75,7 @@ let addDirectionLight = (gameObject, directionLight) => {
 
 let getDirectionLight = gameObject => {
   CPRepo.getGameObject().directionLightMap
-  ->ImmutableSparseMap.getNullable(gameObject);
+  ->ImmutableSparseMap.get(gameObject);
 };
 
 let hasDirectionLight = gameObject => {
@@ -95,7 +95,7 @@ let addBasicCameraView = (gameObject, basicCameraView) => {
 
 let getBasicCameraView = gameObject => {
   CPRepo.getGameObject().basicCameraViewMap
-  ->ImmutableSparseMap.getNullable(gameObject);
+  ->ImmutableSparseMap.get(gameObject);
 };
 
 let hasBasicCameraView = gameObject => {
@@ -119,7 +119,7 @@ let addPerspectiveCameraProjection = (gameObject, perspectiveCameraProjection) =
 
 let getPerspectiveCameraProjection = gameObject => {
   CPRepo.getGameObject().perspectiveCameraProjectionMap
-  ->ImmutableSparseMap.getNullable(gameObject);
+  ->ImmutableSparseMap.get(gameObject);
 };
 
 let hasPerspectiveCameraProjection = gameObject => {

@@ -9,7 +9,7 @@ let _setTextureArray = textureArray => {
 };
 
 let getLayerIndex = imageId => {
-  _getTextureArray().layerIndexMap->ImmutableHashMap.getNullable(imageId);
+  _getTextureArray().layerIndexMap->ImmutableHashMap.get(imageId);
 };
 
 let setLayerIndex = (imageId, layerIndex) => {

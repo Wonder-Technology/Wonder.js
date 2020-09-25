@@ -70,7 +70,7 @@ let create = () => {
     directionLightCount: 4,
   },
   scene: {
-    sceneGameObject: Js.Nullable.null,
+    sceneGameObject: None,
   },
   gameObject: {
     maxUID: 0,
@@ -105,7 +105,7 @@ let create = () => {
     float9Array: Js.Typed_array.Float32Array.fromLength(9),
   },
   time: {
-    startTime: Js.Nullable.null,
+    startTime: None,
     elapsed: 0.,
   },
   picture: {

@@ -1,1 +1,1 @@
-type scene = {sceneGameObject: Js.Nullable.t(GameObjectCPPOType.uid)};
+type scene = {sceneGameObject: option(GameObjectCPPOType.uid)};

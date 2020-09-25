@@ -485,7 +485,7 @@ let _getMapLayerIndex = mapImageIdOpt => {
     | None => _getMapLayerIndexForNotExist()
     | Some(imageId) =>
       TextureArrayWebGPUCPRepo.getLayerIndex(imageId->ImageIdVO.value)
-      ->OptionSt.fromNullable
+      
       ->OptionSt.getWithDefault(_getMapLayerIndexForNotExist())
     }
   )

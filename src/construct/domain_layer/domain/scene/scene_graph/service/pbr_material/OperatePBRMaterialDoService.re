@@ -55,7 +55,7 @@ let getDiffuseMapImageId = material =>
   DpContainer.unsafeGetPBRMaterialRepoDp().getDiffuseMapImageId(
     material->PBRMaterialEntity.value,
   )
-  ->OptionSt.fromNullable
+  
   ->OptionSt.map(ImageIdVO.create);
 
 let setDiffuseMapImageId = (material, id) => {
@@ -69,7 +69,7 @@ let getMetalRoughnessMapImageId = material =>
   DpContainer.unsafeGetPBRMaterialRepoDp().getMetalRoughnessMapImageId(
     material->PBRMaterialEntity.value,
   )
-  ->OptionSt.fromNullable
+  
   ->OptionSt.map(ImageIdVO.create);
 
 let setMetalRoughnessMapImageId = (material, id) => {
@@ -83,7 +83,7 @@ let getEmissionMapImageId = material =>
   DpContainer.unsafeGetPBRMaterialRepoDp().getEmissionMapImageId(
     material->PBRMaterialEntity.value,
   )
-  ->OptionSt.fromNullable
+  
   ->OptionSt.map(ImageIdVO.create);
 
 let setEmissionMapImageId = (material, id) => {
@@ -97,7 +97,7 @@ let getNormalMapImageId = material =>
   DpContainer.unsafeGetPBRMaterialRepoDp().getNormalMapImageId(
     material->PBRMaterialEntity.value,
   )
-  ->OptionSt.fromNullable
+  
   ->OptionSt.map(ImageIdVO.create);
 
 let setNormalMapImageId = (material, id) => {

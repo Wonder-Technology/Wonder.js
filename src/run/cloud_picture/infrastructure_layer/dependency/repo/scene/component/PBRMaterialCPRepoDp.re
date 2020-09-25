@@ -10,7 +10,7 @@ let setMaxIndex = maxIndex => {
 
 let getGameObjects = material => {
   CPRepo.getExnPBRMaterial().gameObjectsMap
-  ->ImmutableSparseMap.getNullable(material);
+  ->ImmutableSparseMap.get(material);
 };
 
 let addGameObject = (material, gameObject) => {
@@ -85,7 +85,7 @@ let setMetalness = (material, metalness) => {
 
 let getDiffuseMapImageId = material => {
   CPRepo.getExnPBRMaterial().diffuseMapImageIdMap
-  ->ImmutableSparseMap.getNullable(material);
+  ->ImmutableSparseMap.get(material);
 };
 
 let setDiffuseMapImageId = (material, id) => {
@@ -100,7 +100,7 @@ let setDiffuseMapImageId = (material, id) => {
 
 let getMetalRoughnessMapImageId = material => {
   CPRepo.getExnPBRMaterial().metalRoughnessMapImageIdMap
-  ->ImmutableSparseMap.getNullable(material);
+  ->ImmutableSparseMap.get(material);
 };
 
 let setMetalRoughnessMapImageId = (material, id) => {
@@ -116,7 +116,7 @@ let setMetalRoughnessMapImageId = (material, id) => {
 
 let getEmissionMapImageId = material => {
   CPRepo.getExnPBRMaterial().emissionMapImageIdMap
-  ->ImmutableSparseMap.getNullable(material);
+  ->ImmutableSparseMap.get(material);
 };
 
 let setEmissionMapImageId = (material, id) => {
@@ -131,7 +131,7 @@ let setEmissionMapImageId = (material, id) => {
 
 let getNormalMapImageId = material => {
   CPRepo.getExnPBRMaterial().normalMapImageIdMap
-  ->ImmutableSparseMap.getNullable(material);
+  ->ImmutableSparseMap.get(material);
 };
 
 let setNormalMapImageId = (material, id) => {

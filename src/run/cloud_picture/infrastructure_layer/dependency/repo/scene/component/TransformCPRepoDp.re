@@ -10,7 +10,7 @@ let setMaxIndex = maxIndex => {
 
 let getGameObject = transform => {
   CPRepo.getExnTransform().gameObjectMap
-  ->ImmutableSparseMap.getNullable(transform);
+  ->ImmutableSparseMap.get(transform);
 };
 
 let setGameObject = (transform, gameObject) => {
@@ -25,7 +25,7 @@ let setGameObject = (transform, gameObject) => {
 
 let getParent = transform => {
   CPRepo.getExnTransform().parentMap
-  ->ImmutableSparseMap.getNullable(transform);
+  ->ImmutableSparseMap.get(transform);
 };
 
 let setParent = (parent, child) => {
@@ -52,7 +52,7 @@ let removeParent = transform => {
 
 let getChildren = transform => {
   CPRepo.getExnTransform().childrenMap
-  ->ImmutableSparseMap.getNullable(transform);
+  ->ImmutableSparseMap.get(transform);
 };
 
 let setChildren = (parent, children) => {
@@ -99,7 +99,7 @@ let removeChild = (parent, child) => {
 
 let getIsDirty = transform => {
   CPRepo.getExnTransform().dirtyMap
-  ->ImmutableSparseMap.getNullable(transform);
+  ->ImmutableSparseMap.get(transform);
 };
 
 let setIsDirty = (transform, isDirty) => {
