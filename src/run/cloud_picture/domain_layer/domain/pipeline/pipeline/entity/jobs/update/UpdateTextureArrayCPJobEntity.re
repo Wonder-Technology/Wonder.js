@@ -43,8 +43,9 @@ let _getAllUsedImageIdAndData = () => {
 };
 
 let _getLayerCount = allUsedImageIdAndData => {
-  allUsedImageIdAndData
-  ->ListSt.length
+  let count = allUsedImageIdAndData->ListSt.length;
+
+  (count === 0 ? 1 : count)
   ->Contract.ensureCheck(
       r => {
         open Contract;

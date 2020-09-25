@@ -182,7 +182,51 @@ let _ =
             },
           (),
         );
-      })
+      });
+
+      describe("fix bug", () => {
+        testPromise(
+          "if has no used image id, layer count should be 1 instead of 0", () => {
+          let device = WebGPUDependencyTool.createDeviceObject();
+          WebGPUCPTool.setDevice(device);
+          let queue = WebGPUDependencyTool.createQueueObject();
+          WebGPUCPTool.setQueue(queue);
+          let textureArray = WebGPUDependencyTool.createTextureObject();
+          let createTextureStubData =
+            createEmptyStub(refJsObjToSandbox(sandbox^))
+            ->SinonTool.returns(textureArray)
+            ->SinonTool.createTwoArgsEmptyStubData;
+          WebGPUDependencyTool.build(
+            ~sandbox,
+            ~createTexture=createTextureStubData->SinonTool.getDpFunc,
+            (),
+          )
+          ->WebGPUDependencyTool.set;
+
+          DirectorCPTool.initAndUpdate(
+            ~handleSuccessFunc=
+              () => {
+                createTextureStubData
+                ->SinonTool.getStub
+                ->getCall(0, _)
+                ->expect
+                ->SinonTool.toCalledWith((
+                    IWebGPUCoreDp.textureDescriptor(
+                      ~size=Sinon.matchAny,
+                      ~arrayLayerCount=1,
+                      ~mipLevelCount=Sinon.matchAny,
+                      ~sampleCount=Sinon.matchAny,
+                      ~dimension=Sinon.matchAny,
+                      ~format=Sinon.matchAny,
+                      ~usage=Sinon.matchAny,
+                    ),
+                    device,
+                  ))
+              },
+            (),
+          );
+        })
+      });
     });
 
     describe("fill textureArray", () => {
