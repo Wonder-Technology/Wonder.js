@@ -21,10 +21,10 @@ ShadingData buildShadingData(vec3 materialDiffuse, vec3 materialEmission,
   shading.baseColor = materialDiffuse;
   shading.emission = materialEmission;
   shading.metallic =
-      clamp(materialMetalness * metalnessIntensity, 0.001, 0.999);
+      clamp(materialMetalness, 0.001, 0.999) * metalnessIntensity;
   shading.specular = materialSpecular;
   shading.roughness =
-      clamp(materialRoughness * metalnessIntensity, 0.001, 0.999);
+      clamp(materialRoughness, 0.001, 0.999) * roughnessIntensity;
   shading.csw = csw;
 
   return shading;
