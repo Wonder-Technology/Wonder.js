@@ -100,8 +100,8 @@ let _buildWebGPUObjects =
         ~dimension="2d",
         ~format,
         ~usage=
-          WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst
-          lor WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.sampled,
+          WebGPUCoreDpRunAPI.unsafeGet().textureUsage.copy_dst
+          lor WebGPUCoreDpRunAPI.unsafeGet().textureUsage.sampled,
       ),
       device,
     );

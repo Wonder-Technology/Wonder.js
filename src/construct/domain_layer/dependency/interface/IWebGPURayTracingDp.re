@@ -236,7 +236,6 @@ type shaderStage = {
 
 type bufferUsage = {
   storage: bufferUsageObject,
-  sampled: bufferUsageObject,
   uniform: bufferUsageObject,
   indirect: bufferUsageObject,
   vertex: bufferUsageObject,

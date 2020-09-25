@@ -24,6 +24,7 @@ module.exports = {
       { name: "asset" },
       { name: "dependency" },
       { name: "cloud-picture" },
+      { name: "webgpu" },
   ],
 
   // it needs to match the value for field type. Eg.: "fix"

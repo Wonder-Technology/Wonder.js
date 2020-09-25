@@ -81,7 +81,6 @@ let build =
       ~map_write=6,
       ~copy_src_bufferUsage=7,
       ~copy_dst_bufferUsage=8,
-      ~sampled=9,
       ~createView=createEmptyStub(refJsObjToSandbox(sandbox^))
                   ->SinonTool.createTwoArgsEmptyStubData
                   ->SinonTool.getDpFunc,
@@ -251,7 +250,6 @@ let build =
     },
     bufferUsage: {
       storage: storage_bufferUsage,
-      sampled,
       uniform,
       indirect,
       vertex,
