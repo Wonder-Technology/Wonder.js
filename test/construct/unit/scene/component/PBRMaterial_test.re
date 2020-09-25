@@ -69,7 +69,7 @@ let _ =
           let material = create()->ResultTool.getExnSuccessValue;
 
           getDiffuseColor(material)->expect
-          == (1., 1., 1.)->PBRMaterialTool.createDiffuseColor;
+          == (0., 0., 0.)->PBRMaterialTool.createDiffuseColor;
         })
       );
 
