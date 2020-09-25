@@ -40,3 +40,72 @@ let createAndAddTwoMaterials = (gameObject1, gameObject2) => {
     ),
   );
 };
+
+let setMapData = (material1, material2) => {
+  open ImagePOType;
+
+  let id1 = "i1"->ImageIdVO.create;
+  let id2 = "i2"->ImageIdVO.create;
+  let id3 = "i3"->ImageIdVO.create;
+  let id4 = "i4"->ImageIdVO.create;
+  let id5 = "i5"->ImageIdVO.create;
+  let imageData1 = {
+    width: 2,
+    height: 1,
+    data: Js.Typed_array.Uint8Array.make([|1|]),
+  };
+  let imageData2 = {
+    width: 2,
+    height: 2,
+    data: Js.Typed_array.Uint8Array.make([|1, 2|]),
+  };
+  let imageData3 = {
+    width: 2,
+    height: 2,
+    data:
+      Js.Typed_array.Uint8Array.make([|
+        3,
+        2,
+        1,
+        255,
+        100,
+        150,
+        101,
+        255,
+        102,
+        150,
+        101,
+        255,
+        97,
+        150,
+        101,
+        255,
+      |]),
+  };
+  let imageData4 = {
+    width: 4,
+    height: 2,
+    data: Js.Typed_array.Uint8Array.make([|1, 3, 2|]),
+  };
+  let imageData5 = {
+    width: 2,
+    height: 4,
+    data: Js.Typed_array.Uint8Array.make([|0, 4|]),
+  };
+  PBRMaterialRunAPI.setDiffuseMapImageId(material1, id2);
+  PBRMaterialRunAPI.setMetalRoughnessMapImageId(material1, id1);
+  PBRMaterialRunAPI.setNormalMapImageId(material1, id3);
+  PBRMaterialRunAPI.setDiffuseMapImageId(material2, id2);
+  PBRMaterialRunAPI.setEmissionMapImageId(material2, id4);
+  PBRMaterialRunAPI.setMetalRoughnessMapImageId(material2, id1);
+  ImageTool.setData(id1, imageData1);
+  ImageTool.setData(id2, imageData2);
+  ImageTool.setData(id3, imageData3);
+  ImageTool.setData(id4, imageData4);
+  ImageTool.setData(id5, imageData5);
+
+  (
+    (id1, id2, id3, id4, id5),
+    (imageData1, imageData2, imageData3, imageData4, imageData5),
+  );
+};

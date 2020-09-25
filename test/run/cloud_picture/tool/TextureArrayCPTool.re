@@ -17,3 +17,17 @@ let getTextureArrayView = () => {
 let getTextureSampler = () => {
   TextureArrayWebGPUCPRepo.getTextureSampler()->OptionSt.getExn;
 };
+
+let createAndSetTextureArrayViewAndTextureSampler = () => {
+  TextureArrayWebGPUCPRepo.setTextureArrayView(
+    WebGPUDependencyTool.createTextureViewObject(),
+  );
+  TextureArrayWebGPUCPRepo.setTextureSampler(
+    WebGPUDependencyTool.createSamplerObject(),
+  );
+};
+
+let setMapBetweenAllUsedImageIdToLayerIndex = () => {
+  UpdateTextureArrayCPJobEntity._getAllUsedImageIdAndData()
+  ->UpdateTextureArrayCPJobEntity._setMapBetweenImageIdToLayerIndex;
+};

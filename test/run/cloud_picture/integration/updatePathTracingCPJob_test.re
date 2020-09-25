@@ -23,6 +23,7 @@ let _ =
         WebGPUDependencyTool.createWindowObject(),
         device,
       );
+      TextureArrayCPTool.createAndSetTextureArrayViewAndTextureSampler();
 
       (device, queue);
     };
@@ -760,13 +761,17 @@ let _ =
         let _ =
           TransformCPTool.setTwoTransformsData(gameObject1, gameObject2);
 
-        device;
+        (
+          device,
+          (gameObject1, gameObject2),
+          ((geometry1, geometry2), (material1, material2)),
+        );
       };
 
       let _testCreateBuffer = (~getBufferSizeFunc, ~getBufferDataFunc) => {
         testPromise("create buffer", ()
           => {
-            let device = _prepare();
+            let (device, _, _) = _prepare();
             let buffer = WebGPUDependencyTool.createBufferObject();
             let createBufferStubData =
               createEmptyStub(refJsObjToSandbox(sandbox^))
@@ -1186,14 +1191,8 @@ let _ =
         // });
 
         describe("build index buffer data", () => {
-          // let _prepare = sandbox => {
-          //   let ((device, queue), _) = _prepare(sandbox);
-          //   let count = 3;
-          //   POConfigCPTool.setGeometryPointCount(count);
-          //   (device, count);
-          // };
           testPromise("create buffer", () => {
-            let device = _prepare();
+            let (device, _, _) = _prepare();
             let buffer = WebGPUDependencyTool.createBufferObject();
             let createBufferStubData =
               createEmptyStub(refJsObjToSandbox(sandbox^))
@@ -1277,15 +1276,33 @@ let _ =
           _testCreateBuffer(
             ~getBufferSizeFunc=
               count =>
-                (4 + 4) * 2 * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
+                (4 + 4 + 4 + 8)
+                * 2
+                * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
             ~getBufferDataFunc=PathTracingPassCPTool.getPBRMaterialBufferData,
           )
         });
 
         testPromise(
-          "set each render pbrMaterial's diffuse, specular, roughness, metalness to buffer data",
+          "set each render pbrMaterial's diffuse, specular, roughness, metalness, diffuseMapLayerIndex, metalRoughnessMapLayerIndex, emissionMapLayerIndex, normalMapLayerIndex, diffuseMapScale, metalRoughnessScale, emissionMapScale, normalMapScale to buffer data",
           () => {
-            let _ = _prepare();
+            open ImagePOType;
+            let (
+              device,
+              (gameObject1, gameObject2),
+              ((geometry1, geometry2), (material1, material2)),
+            ) =
+              _prepare();
+            let _ = PBRMaterialCPTool.setMapData(material1, material2);
+            TextureArrayCPTool.setMapBetweenAllUsedImageIdToLayerIndex();
+            let (textureArrayLayerWidth, textureArrayLayerHeight) = (8, 8);
+            WebGPUDependencyTool.build(
+              ~sandbox,
+              ~getTextureArrayLayerSize=
+                () => (textureArrayLayerWidth, textureArrayLayerHeight),
+              (),
+            )
+            ->WebGPUDependencyTool.set;
 
             DirectorCPTool.initAndUpdate(
               ~handleSuccessFunc=
@@ -1303,6 +1320,18 @@ let _ =
                        0.5,
                        0.5,
                        0.,
+                       2.,
+                       1.,
+                       5000.,
+                       3.,
+                       0.25,
+                       0.25,
+                       0.25,
+                       0.125,
+                       1.,
+                       1.,
+                       0.25,
+                       0.25,
                        0.,
                        1.,
                        0.,
@@ -1311,6 +1340,18 @@ let _ =
                        1.5,
                        1.,
                        0.,
+                       2.,
+                       1.,
+                       0.,
+                       5000.,
+                       0.25,
+                       0.25,
+                       0.25,
+                       0.125,
+                       0.5,
+                       0.25,
+                       1.,
+                       1.,
                      |]);
                 },
               (),
@@ -1458,6 +1499,23 @@ let _ =
                         ~type_="storage-buffer",
                         (),
                       ),
+                      IWebGPUCoreDp.layoutBinding(
+                        ~binding=8,
+                        ~visibility=
+                          WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
+                            ray_closest_hit,
+                        ~type_="sampler",
+                        (),
+                      ),
+                      IWebGPUCoreDp.layoutBinding(
+                        ~binding=9,
+                        ~visibility=
+                          WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
+                            ray_closest_hit,
+                        ~type_="sampled-texture",
+                        ~viewDimension="2d-array",
+                        (),
+                      ),
                     |],
                   },
                   device,
@@ -1583,6 +1641,19 @@ let _ =
                           ~buffer=pbrMaterialBuffer->StorageBufferVO.value,
                           ~offset=0,
                           ~size=pbrMaterialBufferSize,
+                          (),
+                        ),
+                        IWebGPURayTracingDp.binding(
+                          ~binding=8,
+                          ~sampler=TextureArrayCPTool.getTextureSampler(),
+                          ~size=0,
+                          (),
+                        ),
+                        IWebGPURayTracingDp.binding(
+                          ~binding=9,
+                          ~textureView=
+                            TextureArrayCPTool.getTextureArrayView(),
+                          ~size=0,
                           (),
                         ),
                       |],
