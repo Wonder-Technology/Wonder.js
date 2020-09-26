@@ -199,4 +199,49 @@ let _ =
         getIndicesCount(geometry)->ResultTool.getExnSuccessValue->expect == 3;
       })
     });
+
+    describe("computeTangents", () => {
+      test("sphere's computed tangents shouldn't has NaN", () => {
+        let geometry =
+          createSphereGeometry(2.0, 2)->ResultTool.getExnSuccessValue;
+
+        computeTangents(
+          getVertices(geometry)->ResultTool.getExnSuccessValue,
+          getTexCoords(geometry)->ResultTool.getExnSuccessValue,
+          getNormals(geometry)->ResultTool.getExnSuccessValue,
+          getIndices(geometry)->ResultTool.getExnSuccessValue,
+        )
+        ->TangentsVO.value
+        ->expect
+        == Float32Array.make([|
+             0.,
+             0.,
+             0.,
+             1.,
+             0.,
+             (-6.123234262925839e-17),
+             (-1.),
+             0.,
+             1.8369702788777518e-16,
+             (-1.),
+             (-8.164312350567786e-17),
+             (-2.0410780876419464e-17),
+             4.898587410340671e-16,
+             (-2.999519808315976e-32),
+             1.,
+             1.,
+             8.164312350567786e-17,
+             (-2.6534016462834284e-16),
+             1.,
+             4.898587410340671e-16,
+             (-6.123234262925839e-17),
+             (-1.),
+             4.898587410340671e-16,
+             1.8369702788777518e-16,
+             (-1.),
+             (-4.898587410340671e-16),
+             1.4802974102831747e-16,
+           |]);
+      })
+    });
   });

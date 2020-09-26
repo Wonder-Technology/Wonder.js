@@ -168,7 +168,6 @@ let _getEulerAngles = [%bs.raw
                 z = Math.atan2(2 * (qw * qz + qx * qy), 1 - 2 * (qy * qy + qz * qz));
             }
 
-            //return Vector3.create(x, y, z).scale(RAD_TO_DEG);
             return [x, y, z];
    }
     |}
@@ -177,7 +176,7 @@ let _getEulerAngles = [%bs.raw
 let getEulerAngles = quat => {
   let rad_to_deg = 180. /. Js.Math._PI;
 
-  _getEulerAngles(quat)->Vector3.scale(Vector3.Float, rad_to_deg);
+  _getEulerAngles(quat)->Vector3.scale(Vector3.Float, _, rad_to_deg);
 };
 
 let setFromAxisAngle = (angle, axis) => {

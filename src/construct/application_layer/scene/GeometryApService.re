@@ -70,3 +70,12 @@ let hasIndices = geometry => {
 let getIndicesCount = geometry => {
   IndicesGeometryDoService.getIndicesCount(geometry);
 };
+
+let computeTangents = (vertices, texCoords, normals, indices) => {
+  TangentsGeometryDoService.computeTangents(
+    vertices,
+    texCoords,
+    normals,
+    indices,
+  );
+};

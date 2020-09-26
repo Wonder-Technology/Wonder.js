@@ -598,7 +598,7 @@ let getEulerAngles = matTypeArr => {
     x := Js.Math.atan2(~x=a10 /. sy, ~y=a11 /. sy, ());
   };
 
-  (x^, y, z^)->Vector3.scale(Vector3.Float, Angle.getRadToDeg());
+  Vector3.scale(Vector3.Float, (x^, y, z^), Angle.getRadToDeg());
 };
 
 let setLookAt = (eye, center, up) => {

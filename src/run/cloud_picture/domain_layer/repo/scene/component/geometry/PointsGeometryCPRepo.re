@@ -59,24 +59,52 @@ let getIndexInfo = index => {
   );
 };
 
-let getVerticesTypeArr = () => {
+let _getVerticesTypeArr = () => {
   CPRepo.getExnGeometry().vertices;
 };
 
-let getTexCoordsTypeArr = () => {
+let _getTexCoordsTypeArr = () => {
   CPRepo.getExnGeometry().texCoords;
 };
 
-let getNormalsTypeArr = () => {
+let _getNormalsTypeArr = () => {
   CPRepo.getExnGeometry().normals;
 };
 
-let getIndicesTypeArr = () => {
+let _getIndicesTypeArr = () => {
   CPRepo.getExnGeometry().indices;
 };
 
 let getVerticesOffset = () => {
   CPRepo.getExnGeometry().verticesOffset;
+};
+
+let getVertexCount = () => {
+  Contract.requireCheck(
+    () => {
+      Contract.(
+        Operators.(
+          test(
+            Log.buildAssertMessage(
+              ~expect={j|verticesOffset be 3 times|j},
+              ~actual={j|not|j},
+            ),
+            () => {
+              let x = Number.dividInt(getVerticesOffset(), 3);
+
+              x -. x->Js.Math.floor_float ==. 0.0;
+            },
+          )
+        )
+      )
+    },
+    DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+  )
+  ->Result.mapSuccess(() => {getVerticesOffset() / 3});
+};
+
+let _getTexCoordsOffset = () => {
+  CPRepo.getExnGeometry().texCoordsOffset;
 };
 
 let getNormalsOffset = () => {
@@ -87,10 +115,42 @@ let getIndicesOffset = () => {
   CPRepo.getExnGeometry().indicesOffset;
 };
 
+let getSubUsedVerticesTypeArr = () => {
+  Js.Typed_array.Float32Array.subarray(
+    ~start=0,
+    ~end_=getVerticesOffset(),
+    _getVerticesTypeArr(),
+  );
+};
+
+let getSubUsedTexCoordsTypeArr = () => {
+  Js.Typed_array.Float32Array.subarray(
+    ~start=0,
+    ~end_=_getTexCoordsOffset(),
+    _getTexCoordsTypeArr(),
+  );
+};
+
+let getSubUsedNormalsTypeArr = () => {
+  Js.Typed_array.Float32Array.subarray(
+    ~start=0,
+    ~end_=getNormalsOffset(),
+    _getNormalsTypeArr(),
+  );
+};
+
+let getSubUsedIndicesTypeArr = () => {
+  Js.Typed_array.Uint32Array.subarray(
+    ~start=0,
+    ~end_=getIndicesOffset(),
+    _getIndicesTypeArr(),
+  );
+};
+
 let getCopyUsedIndicesTypeArr = () => {
   Js.Typed_array.Uint32Array.slice(
     ~start=0,
     ~end_=getIndicesOffset(),
-    getIndicesTypeArr(),
+    _getIndicesTypeArr(),
   );
 };
