@@ -396,14 +396,6 @@ let _ =
               () => {
                 let bytesPerRow = TextureArrayCPTool.getBytesPerRow();
 
-                let bufferData =
-                  setSubUint8DataStubData
-                  ->SinonTool.getStub
-                  ->getCall(1, _)
-                  ->getArgs
-                  ->ListSt.nth(1)
-                  ->OptionSt.getExn;
-
                 (
                   _getBufferData(setSubUint8DataStubData, bytesPerRow, 0),
                   _getBufferData(setSubUint8DataStubData, bytesPerRow, 1),

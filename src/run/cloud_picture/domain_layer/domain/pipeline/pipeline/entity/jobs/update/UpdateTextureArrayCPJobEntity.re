@@ -1,3 +1,5 @@
+open Js.Typed_array;
+
 let create = () => JobEntity.create("update_textureArray");
 
 let _addImageIdAndData = (result, imageId) => {
@@ -19,7 +21,9 @@ let _getAllUsedImageIdAndData = () => {
           };
 
         let result =
-          switch (PBRMaterialRunAPI.getChannelRoughnessMetallicMapImageId(material)) {
+          switch (
+            PBRMaterialRunAPI.getChannelRoughnessMetallicMapImageId(material)
+          ) {
           | None => result
           | Some(imageId) => _addImageIdAndData(result, imageId)
           };
@@ -135,13 +139,28 @@ let _buildWebGPUObjects =
 };
 
 let _fillImageDataToBufferDataWithFixedSize =
-    ({width, height, data}: ImagePOType.data, bytesPerRow, bufferData) => {
-  ListSt.range(0, height)
-  ->ListSt.forEach(yy => {
-      ListSt.range(0, width)
-      ->ListSt.forEach(xx => {
-          let bufferDataIndex = xx * 4 + yy * bytesPerRow;
-          let dataIndex = xx * 4 + yy * width * 4;
+    (
+      (textureArrayLayerWidth, textureArrayLayerHeight),
+      {width, height, data}: ImagePOType.data,
+      bytesPerRow,
+    ) => {
+  width == textureArrayLayerWidth && height == textureArrayLayerHeight
+    ? {
+      data;
+    }
+    : {
+      let yy = ref(0);
+      let xx = ref(0);
+
+      let bufferData =
+        Uint8Array.fromLength(bytesPerRow * textureArrayLayerHeight);
+
+      while (yy^ < height) {
+        xx := 0;
+
+        while (xx^ < width) {
+          let bufferDataIndex = xx^ * 4 + yy^ * bytesPerRow;
+          let dataIndex = xx^ * 4 + yy^ * width * 4;
 
           TypeArrayCPRepoUtils.setUint8_1WithoutCheck(
             bufferDataIndex + 0,
@@ -163,8 +182,15 @@ let _fillImageDataToBufferDataWithFixedSize =
             255,
             bufferData,
           );
-        })
-    });
+
+          xx := xx^ + 1;
+        };
+
+        yy := yy^ + 1;
+      };
+
+      bufferData;
+    };
 };
 
 let _fillTextureArray =
@@ -174,8 +200,6 @@ let _fillTextureArray =
       (textureArrayLayerWidth, textureArrayLayerHeight),
       allUsedImageIdAndData,
     ) => {
-  open Js.Typed_array;
-
   let bytesPerRow =
     Js.Math.ceil_int(Number.dividInt(textureArrayLayerWidth * 4, 256)) * 256;
 
@@ -199,13 +223,11 @@ let _fillTextureArray =
       );
 
     let bufferData =
-      Uint8Array.fromLength(bytesPerRow * textureArrayLayerHeight);
-
-    _fillImageDataToBufferDataWithFixedSize(
-      imageData,
-      bytesPerRow,
-      bufferData,
-    );
+      _fillImageDataToBufferDataWithFixedSize(
+        (textureArrayLayerWidth, textureArrayLayerHeight),
+        imageData,
+        bytesPerRow,
+      );
 
     WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubUint8Data(
       0,
