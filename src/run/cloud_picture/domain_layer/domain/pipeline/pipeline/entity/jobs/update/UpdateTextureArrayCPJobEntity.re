@@ -135,44 +135,36 @@ let _buildWebGPUObjects =
 };
 
 let _fillImageDataToBufferDataWithFixedSize =
-    (
-      {width, height, data}: ImagePOType.data,
-      bytesPerRow,
-      allUsedImageIdAndData,
-      bufferData,
-    ) => {
+    ({width, height, data}: ImagePOType.data, bytesPerRow, bufferData) => {
   ListSt.range(0, height)
-  ->ListSt.traverseResultM(yy => {
+  ->ListSt.forEach(yy => {
       ListSt.range(0, width)
-      ->ListSt.traverseResultM(xx => {
+      ->ListSt.forEach(xx => {
           let bufferDataIndex = xx * 4 + yy * bytesPerRow;
           let dataIndex = xx * 4 + yy * width * 4;
 
-          ListResult.mergeResults([
-            TypeArrayCPRepoUtils.setUint8_1(
-              bufferDataIndex + 0,
-              TypeArrayCPRepoUtils.getUint8_1(dataIndex + 0, data),
-              bufferData,
-            ),
-            TypeArrayCPRepoUtils.setUint8_1(
-              bufferDataIndex + 1,
-              TypeArrayCPRepoUtils.getUint8_1(dataIndex + 1, data),
-              bufferData,
-            ),
-            TypeArrayCPRepoUtils.setUint8_1(
-              bufferDataIndex + 2,
-              TypeArrayCPRepoUtils.getUint8_1(dataIndex + 2, data),
-              bufferData,
-            ),
-            TypeArrayCPRepoUtils.setUint8_1(
-              bufferDataIndex + 3,
-              255,
-              bufferData,
-            ),
-          ]);
+          TypeArrayCPRepoUtils.setUint8_1WithoutCheck(
+            bufferDataIndex + 0,
+            TypeArrayCPRepoUtils.getUint8_1(dataIndex + 0, data),
+            bufferData,
+          );
+          TypeArrayCPRepoUtils.setUint8_1WithoutCheck(
+            bufferDataIndex + 1,
+            TypeArrayCPRepoUtils.getUint8_1(dataIndex + 1, data),
+            bufferData,
+          );
+          TypeArrayCPRepoUtils.setUint8_1WithoutCheck(
+            bufferDataIndex + 2,
+            TypeArrayCPRepoUtils.getUint8_1(dataIndex + 2, data),
+            bufferData,
+          );
+          TypeArrayCPRepoUtils.setUint8_1WithoutCheck(
+            bufferDataIndex + 3,
+            255,
+            bufferData,
+          );
         })
-    })
-  ->Result.mapSuccess(_ => ());
+    });
 };
 
 let _fillTextureArray =
@@ -205,61 +197,53 @@ let _fillTextureArray =
       device,
     );
 
-  allUsedImageIdAndData
-  ->ListSt.traverseResultMi((layerIndex, (_, imageData)) => {
-      let bufferData =
-        Uint8Array.fromLength(bytesPerRow * textureArrayLayerHeight);
+  allUsedImageIdAndData->ListSt.forEachi((layerIndex, (_, imageData)) => {
+    let bufferData =
+      Uint8Array.fromLength(bytesPerRow * textureArrayLayerHeight);
 
-      _fillImageDataToBufferDataWithFixedSize(
-        imageData,
-        bytesPerRow,
-        allUsedImageIdAndData,
-        bufferData,
-      )
-      ->Result.mapSuccess(() => {
-          WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubUint8Data(
-            0,
-            bufferData,
-            textureBuffer,
-          );
+    _fillImageDataToBufferDataWithFixedSize(
+      imageData,
+      bytesPerRow,
+      bufferData,
+    );
 
-          WebGPUCoreDpRunAPI.unsafeGet().commandEncoder.copyBufferToTexture(
-            {
-              "buffer": textureBuffer,
-              "bytesPerRow": bytesPerRow,
-              "arrayLayer": 0,
-              "mipLevel": 0,
-              "textureArrayLayerHeight": 0,
-            },
-            {
-              "texture": textureArray,
-              "mipLevel": 0,
-              "arrayLayer": layerIndex,
-              "origin": {
-                "x": 0,
-                "y": 0,
-                "z": 0,
-              },
-            },
-            {
-              "width": textureArrayLayerWidth,
-              "height": textureArrayLayerHeight,
-              "depth": 1,
-            },
-            commandEncoder,
-          );
-        });
-    })
-  ->Result.mapSuccess(_ => {
-      WebGPUCoreDpRunAPI.unsafeGet().queue.submit(
-        [|
-          WebGPUCoreDpRunAPI.unsafeGet().commandEncoder.finish(
-            commandEncoder,
-          ),
-        |],
-        queue,
-      )
-    });
+    WebGPUCoreDpRunAPI.unsafeGet().buffer.setSubUint8Data(
+      0,
+      bufferData,
+      textureBuffer,
+    );
+
+    WebGPUCoreDpRunAPI.unsafeGet().commandEncoder.copyBufferToTexture(
+      {
+        "buffer": textureBuffer,
+        "bytesPerRow": bytesPerRow,
+        "arrayLayer": 0,
+        "mipLevel": 0,
+        "textureArrayLayerHeight": 0,
+      },
+      {
+        "texture": textureArray,
+        "mipLevel": 0,
+        "arrayLayer": layerIndex,
+        "origin": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+        },
+      },
+      {
+        "width": textureArrayLayerWidth,
+        "height": textureArrayLayerHeight,
+        "depth": 1,
+      },
+      commandEncoder,
+    );
+  });
+
+  WebGPUCoreDpRunAPI.unsafeGet().queue.submit(
+    [|WebGPUCoreDpRunAPI.unsafeGet().commandEncoder.finish(commandEncoder)|],
+    queue,
+  );
 };
 
 let _setWebGPUObjects = (textureArrayView, textureSampler) => {
@@ -278,7 +262,7 @@ let exec = () => {
         WebGPUCoreRunAPI.getTextureArrayLayerSize();
 
       _getLayerCount(allUsedImageIdAndData)
-      ->Result.bind(layerCount => {
+      ->Result.mapSuccess(layerCount => {
           let (textureArray, textureArrayView, textureSampler) =
             _buildWebGPUObjects(
               device,
@@ -290,10 +274,9 @@ let exec = () => {
             textureArray,
             (textureArrayLayerWidth, textureArrayLayerHeight),
             allUsedImageIdAndData,
-          )
-          ->Result.tap(() => {
-              _setWebGPUObjects(textureArrayView, textureSampler)
-            });
+          );
+
+          _setWebGPUObjects(textureArrayView, textureSampler);
         });
     })
   ->WonderBsMost.Most.just;

@@ -202,6 +202,10 @@ let setFloat16WithFloat32Array = (index, target: Float32Array.t, typeArray) => {
     });
 };
 
+let setUint8_1WithoutCheck = (index: int, value: int, typeArray: Uint8Array.t) => {
+  Uint8Array.unsafe_set(typeArray, index, value);
+};
+
 let setUint8_1 = (index: int, value: int, typeArray: Uint8Array.t) => {
   Contract.requireCheck(
     () => {
