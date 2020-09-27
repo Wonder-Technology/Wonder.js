@@ -206,9 +206,9 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   if (_hasMap(channelRoughnessMetallicMapLayerIndex)) {
     metallicRoughness =
         gammaCorrection(texture(sampler2DArray(textureArray, textureSampler),
-                                 vec3(uv * mat.channelRoughnessMetallicMapScale,
-                                      channelRoughnessMetallicMapLayerIndex))
-                                    .bg));
+                                vec3(uv * mat.channelRoughnessMetallicMapScale,
+                                     channelRoughnessMetallicMapLayerIndex))
+                            .bg);
 
     data.materialMetalness = metallicRoughness.r + mat.metalness;
     data.materialRoughness = metallicRoughness.g + mat.roughness;
