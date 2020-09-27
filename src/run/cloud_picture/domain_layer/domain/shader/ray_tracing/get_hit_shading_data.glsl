@@ -173,7 +173,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
         texture(sampler2DArray(textureArray, textureSampler),
                 vec3(uv * mat.diffuseMapScale, diffuseMapLayerIndex))
             .rgb +
-        vec3(mat.diffuse);
+        invGammaCorrectionForSpecificColorDefinedInShader(vec3(mat.diffuse));
   } else {
     data.materialDiffuse = vec3(mat.diffuse);
   }
