@@ -22,13 +22,18 @@ let getNormalsOffset = geometryPointCount =>
   + getTexCoordsLength(geometryPointCount)
   * Float32Array._BYTES_PER_ELEMENT;
 
+let getTangentsOffset = geometryPointCount =>
+  getNormalsOffset(geometryPointCount)
+  + getVertexLength(geometryPointCount)
+  * Float32Array._BYTES_PER_ELEMENT;
+
 let getIndexSize = () => 1;
 
 let getIndicesLength = geometryPointCount =>
   (3 + (geometryPointCount - 3) * 3) * getIndexSize();
 
 let getIndicesOffset = geometryPointCount =>
-  getNormalsOffset(geometryPointCount)
+  getTangentsOffset(geometryPointCount)
   + getVertexLength(geometryPointCount)
   * Uint32Array._BYTES_PER_ELEMENT;
 
@@ -55,11 +60,18 @@ let getNormalsInfosOffset = (geometryPointCount, geometryCount) =>
   + getTexCoordsInfosLength(geometryCount)
   * Uint32Array._BYTES_PER_ELEMENT;
 
+let getTangentsInfosLength = geometryCount => geometryCount * getInfoSize();
+
+let getTangentsInfosOffset = (geometryPointCount, geometryCount) =>
+  getNormalsInfosOffset(geometryPointCount, geometryCount)
+  + getNormalsInfosLength(geometryCount)
+  * Uint32Array._BYTES_PER_ELEMENT;
+
 let getIndicesInfosLength = geometryCount => geometryCount * getInfoSize();
 
 let getIndicesInfosOffset = (geometryPointCount, geometryCount) =>
-  getNormalsInfosOffset(geometryPointCount, geometryCount)
-  + getNormalsInfosLength(geometryCount)
+  getTangentsInfosOffset(geometryPointCount, geometryCount)
+  + getIndicesInfosLength(geometryCount)
   * Uint32Array._BYTES_PER_ELEMENT;
 
 let getVertexIndex = index => index * getVertexSize();
@@ -75,7 +87,7 @@ let getTotalByteLength = (geometryPointCount, geometryCount) =>
   * (
     Float32Array._BYTES_PER_ELEMENT
     * getVertexSize()
-    * 2
+    * 3
     + Float32Array._BYTES_PER_ELEMENT
     * getTexCoordsSize()
   )
@@ -83,7 +95,7 @@ let getTotalByteLength = (geometryPointCount, geometryCount) =>
   * Uint32Array._BYTES_PER_ELEMENT
   + geometryCount
   * Uint32Array._BYTES_PER_ELEMENT
-  * (getInfoSize() * 4);
+  * (getInfoSize() * 5);
 
 let createBuffer = (geometryPointCount, geometryCount) =>
   SharedArrayBufferCPRepoUtils.newSharedArrayBuffer(

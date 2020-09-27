@@ -47,6 +47,14 @@ let setNormals = (geometry, normals) => {
   GeometryApService.setNormals(geometry, normals);
 };
 
+let getTangents = geometry => {
+  GeometryApService.getTangents(geometry);
+};
+
+let setTangents = (geometry, tangents) => {
+  GeometryApService.setTangents(geometry, tangents);
+};
+
 let getIndices = geometry => {
   GeometryApService.getIndices(geometry);
 };
@@ -61,6 +69,10 @@ let hasVertices = geometry => {
 
 let hasNormals = geometry => {
   GeometryApService.hasNormals(geometry);
+};
+
+let hasTangents = geometry => {
+  GeometryApService.hasTangents(geometry);
 };
 
 let hasIndices = geometry => {

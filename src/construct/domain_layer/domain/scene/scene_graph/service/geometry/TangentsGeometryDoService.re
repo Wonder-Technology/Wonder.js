@@ -211,3 +211,23 @@ let computeTangents = (vertices, texCoords, normals, indices) => {
 
   tangents->TangentsVO.create;
 };
+
+let getTangents = geometry => {
+  DpContainer.unsafeGetGeometryRepoDp().getTangents(
+    geometry->GeometryEntity.value,
+  )
+  ->Result.mapSuccess(TangentsVO.create);
+};
+
+let setTangents = (geometry, tangents) => {
+  DpContainer.unsafeGetGeometryRepoDp().setTangents(
+    geometry->GeometryEntity.value,
+    tangents->TangentsVO.value,
+  );
+};
+
+let hasTangents = geometry => {
+  DpContainer.unsafeGetGeometryRepoDp().hasTangents(
+    geometry->GeometryEntity.value,
+  );
+};

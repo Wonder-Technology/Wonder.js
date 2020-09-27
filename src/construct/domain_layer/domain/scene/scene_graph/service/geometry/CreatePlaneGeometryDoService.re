@@ -1,50 +1,4 @@
-// let create = () => {
-//   let vertices = [|
-//     1.0,
-//     0.0,
-//     (-1.0),
-//     1.0,
-//     0.0,
-//     1.0,
-//     (-1.0),
-//     0.0,
-//     1.0,
-//     (-1.0),
-//     0.0,
-//     (-1.0),
-//   |];
-//   let  = [|
-//     0.0,
-//     1.0,
-//     0.0,
-//     0.0,
-//     1.0,
-//     0.0,
-//     0.0,
-//     1.0,
-//     0.0,
-//     0.0,
-//     1.0,
-//     0.0,
-//   |];
-//   let normals = [|
-//     0.0,
-//     1.0,
-//     0.0,
-//     0.0,
-//     1.0,
-//     0.0,
-//     0.0,
-//     1.0,
-//     0.0,
-//     0.0,
-//     1.0,
-//     0.0,
-//   |];
-//   let indices = [|2, 1, 0, 0, 3, 2|];
-
-//   CreateDefaultGeometryDoService.create((vertices, normals, indices));
-// };
+open Js.Typed_array;
 
 let _generate = [%bs.raw
   {|
@@ -121,6 +75,8 @@ let _generate = [%bs.raw
     |}
 ];
 
-let create = (width, height, widthSegments, heightSegments) =>
+let create = (width, height, widthSegments, heightSegments) => {
   _generate(width, height, widthSegments, heightSegments)
+  ->ComputePointsGeometryDoService.addTangents
   ->CreateDefaultGeometryDoService.create;
+};

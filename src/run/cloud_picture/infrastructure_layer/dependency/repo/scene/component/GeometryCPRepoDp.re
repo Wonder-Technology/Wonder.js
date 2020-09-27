@@ -15,8 +15,7 @@ let setMaxIndex = maxIndex => {
 };
 
 let getGameObjects = geometry => {
-  CPRepo.getExnGeometry().gameObjectsMap
-  ->ImmutableSparseMap.get(geometry);
+  CPRepo.getExnGeometry().gameObjectsMap->ImmutableSparseMap.get(geometry);
 };
 
 let addGameObject = (geometry, gameObject) => {
@@ -113,6 +112,34 @@ let setTexCoords = (geometry, data) => {
     });
 };
 
+let getTangents = geometry => {
+  let {tangents, tangentsInfos} = CPRepo.getExnGeometry();
+
+  getFloat32PointData(
+    BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+    tangents,
+    tangentsInfos,
+  );
+};
+
+let setTangents = (geometry, data) => {
+  let {tangentsInfos, tangents, tangentsOffset} as geometryPO =
+    CPRepo.getExnGeometry();
+
+  setFloat32PointData(
+    (
+      BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+      tangentsInfos,
+      tangentsOffset,
+      Float32Array.length(data),
+    ),
+    fillFloat32ArrayWithOffset(tangents, data),
+  )
+  ->Result.mapSuccess(tangentsOffset => {
+      CPRepo.setGeometry({...geometryPO, tangentsOffset})
+    });
+};
+
 let getIndices = geometry => {
   let {indices, indicesInfos} = CPRepo.getExnGeometry();
 
@@ -165,6 +192,15 @@ let hasTexCoords = geometry => {
   hasPointData(
     BufferGeometryCPRepoUtils.getInfoIndex(geometry),
     texCoordsInfos,
+  );
+};
+
+let hasTangents = geometry => {
+  let {tangentsInfos} = CPRepo.getExnGeometry();
+
+  hasPointData(
+    BufferGeometryCPRepoUtils.getInfoIndex(geometry),
+    tangentsInfos,
   );
 };
 

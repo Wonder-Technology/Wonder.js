@@ -1078,9 +1078,9 @@ let _ =
                         1.5,
                         3.,
                         0.,
-                        (-0.6260513067245483),
-                        (-0.29872071743011475),
-                        (-0.7202956080436707),
+                        (-0.5092150568962097),
+                        (-0.3632996380329132),
+                        (-0.7802008390426636),
                         0.,
                         2.5,
                         2.,
@@ -1094,9 +1094,9 @@ let _ =
                         3.5,
                         4.5,
                         0.,
-                        (-0.5014890432357788),
-                        (-0.5245985388755798),
-                        (-0.6879717707633972),
+                        (-0.4640968143939972),
+                        (-0.5406073331832886),
+                        (-0.7016821503639221),
                         0.,
                         20.,
                         10.,
@@ -1110,9 +1110,9 @@ let _ =
                         (-1.),
                         3.5,
                         0.,
-                        0.42488011717796326,
-                        (-0.2953373193740845),
-                        0.855717658996582,
+                        (-0.46341636776924133),
+                        0.28125104308128357,
+                        (-0.8403232097625732),
                         0.,
                         1.5,
                         3.,
@@ -1126,9 +1126,9 @@ let _ =
                         1.,
                         3.5,
                         0.,
-                        0.,
-                        0.,
-                        0.,
+                        (-0.4861387014389038),
+                        (-0.2385973036289215),
+                        (-0.8406785726547241),
                         0.,
                         2.5,
                         2.5,
@@ -1142,9 +1142,9 @@ let _ =
                         5.5,
                         (-2.5),
                         0.,
-                        0.,
-                        0.,
-                        0.,
+                        (-0.3303399085998535),
+                        (-0.7303808927536011),
+                        0.5978455543518066,
                         0.,
                         2.,
                         3.,
@@ -1158,9 +1158,9 @@ let _ =
                         2.,
                         3.,
                         0.,
-                        0.,
-                        0.,
-                        0.,
+                        0.2768343389034271,
+                        (-0.5682389140129089),
+                        (-0.7748982310295105),
                         0.,
                       |]),
                       buffer->StorageBufferVO.value,
@@ -1170,6 +1170,42 @@ let _ =
             );
           },
         );
+        // describe("fix bug", () => {
+        //   testPromise(
+        //     "test tangents for two render geometries",
+        //     () => {
+        //       let _ = _prepare();
+        //       let setSubFloat32DataStubData =
+        //         createEmptyStub(refJsObjToSandbox(sandbox^))
+        //         ->SinonTool.createThreeArgsEmptyStubData;
+        //       WebGPUDependencyTool.build(
+        //         ~sandbox,
+        //         ~setSubFloat32Data=
+        //           setSubFloat32DataStubData->SinonTool.getDpFunc,
+        //         (),
+        //       )
+        //       ->WebGPUDependencyTool.set;
+        //       DirectorCPTool.initAndUpdate(
+        //         ~handleSuccessFunc=
+        //           () => {
+        //             let (buffer, _, _) =
+        //               PathTracingPassCPTool.getVertexBufferData();
+        //             setSubFloat32DataStubData
+        //             ->SinonTool.getStub
+        //             ->expect
+        //             ->SinonTool.toCalledWith((
+        //                 0,
+        //                 Js.Typed_array.Float32Array.make(
+        //                   [||]
+        //                 ),
+        //                 buffer->StorageBufferVO.value,
+        //               ));
+        //           },
+        //         (),
+        //       );
+        //     },
+        //   )
+        // });
       });
 
       describe("build and set index buffer data", () => {

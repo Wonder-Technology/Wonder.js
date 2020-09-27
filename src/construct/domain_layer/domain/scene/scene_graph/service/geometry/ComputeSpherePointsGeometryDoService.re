@@ -1,3 +1,5 @@
+open Js.Typed_array;
+
 let compute = (radius, bands) => {
   let latitudeBands = bands;
   let longitudeBands = bands;
@@ -53,5 +55,6 @@ let compute = (radius, bands) => {
     };
   };
 
-  (vertices, texCoords, normals, indices);
+  (vertices, texCoords, normals, indices)
+  ->ComputePointsGeometryDoService.addTangents;
 };

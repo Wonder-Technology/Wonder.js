@@ -70,6 +70,27 @@ let createTwoGameObjectsAndSetPointData = () => {
   setIndices(geometry1, indices1)->ResultTool.getExnSuccessValueIgnore;
   setIndices(geometry2, indices2)->ResultTool.getExnSuccessValueIgnore;
 
+  setTangents(
+    geometry1,
+    TangentsGeometryDoService.computeTangents(
+      vertices1,
+      texCoords1,
+      normals1,
+      indices1,
+    ),
+  )
+  ->ResultTool.getExnSuccessValueIgnore;
+  setTangents(
+    geometry2,
+    TangentsGeometryDoService.computeTangents(
+      vertices2,
+      texCoords2,
+      normals2,
+      indices2,
+    ),
+  )
+  ->ResultTool.getExnSuccessValueIgnore;
+
   (
     (gameObject1, gameObject2),
     (geometry1, geometry2),

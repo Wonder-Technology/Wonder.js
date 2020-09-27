@@ -71,6 +71,10 @@ let _getNormalsTypeArr = () => {
   CPRepo.getExnGeometry().normals;
 };
 
+let _getTangentsTypeArr = () => {
+  CPRepo.getExnGeometry().tangents;
+};
+
 let _getIndicesTypeArr = () => {
   CPRepo.getExnGeometry().indices;
 };
@@ -111,7 +115,11 @@ let getNormalsOffset = () => {
   CPRepo.getExnGeometry().normalsOffset;
 };
 
-let getIndicesOffset = () => {
+let _getTangentsOffset = () => {
+  CPRepo.getExnGeometry().tangentsOffset;
+};
+
+let _getIndicesOffset = () => {
   CPRepo.getExnGeometry().indicesOffset;
 };
 
@@ -139,10 +147,18 @@ let getSubUsedNormalsTypeArr = () => {
   );
 };
 
+let getSubUsedTangentsTypeArr = () => {
+  Js.Typed_array.Float32Array.subarray(
+    ~start=0,
+    ~end_=_getTangentsOffset(),
+    _getTangentsTypeArr(),
+  );
+};
+
 let getSubUsedIndicesTypeArr = () => {
   Js.Typed_array.Uint32Array.subarray(
     ~start=0,
-    ~end_=getIndicesOffset(),
+    ~end_=_getIndicesOffset(),
     _getIndicesTypeArr(),
   );
 };
@@ -150,7 +166,7 @@ let getSubUsedIndicesTypeArr = () => {
 let getCopyUsedIndicesTypeArr = () => {
   Js.Typed_array.Uint32Array.slice(
     ~start=0,
-    ~end_=getIndicesOffset(),
+    ~end_=_getIndicesOffset(),
     _getIndicesTypeArr(),
   );
 };

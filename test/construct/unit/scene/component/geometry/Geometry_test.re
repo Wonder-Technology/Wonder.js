@@ -95,6 +95,14 @@ let _ =
         )
       );
 
+      describe("set tangents with type array", () =>
+        _testSetVertexDataWithTypeArray(
+          getTangents,
+          setTangents,
+          TangentsVO.create,
+        )
+      );
+
       describe("set indices with type array", () =>
         test("directly set it", () => {
           let geometry = create()->ResultTool.getExnSuccessValue;

@@ -211,15 +211,7 @@ let _buildAndSetVertexBufferData = device => {
           let vertices = PointsGeometryCPRepo.getSubUsedVerticesTypeArr();
           let texCoords = PointsGeometryCPRepo.getSubUsedTexCoordsTypeArr();
           let normals = PointsGeometryCPRepo.getSubUsedNormalsTypeArr();
-          let tangents =
-            GeometryRunAPI.computeTangents(
-              vertices->VerticesVO.create,
-              texCoords->TexCoordsVO.create,
-              normals->NormalsVO.create,
-              PointsGeometryCPRepo.getSubUsedIndicesTypeArr()
-              ->IndicesVO.create,
-            )
-            ->TangentsVO.value;
+          let tangents = PointsGeometryCPRepo.getSubUsedTangentsTypeArr();
 
           let length = vertexCount * 3;
 
@@ -422,7 +414,9 @@ let _buildAndSetPBRMaterialBufferData = (device, allRenderPBRMaterials) => {
         let diffuseMapImageId =
           PBRMaterialRunAPI.getDiffuseMapImageId(pbrMaterial);
         let channelRoughnessMetallicMapImageId =
-          PBRMaterialRunAPI.getChannelRoughnessMetallicMapImageId(pbrMaterial);
+          PBRMaterialRunAPI.getChannelRoughnessMetallicMapImageId(
+            pbrMaterial,
+          );
         let emissionMapImageId =
           PBRMaterialRunAPI.getEmissionMapImageId(pbrMaterial);
         let normalMapImageId =
