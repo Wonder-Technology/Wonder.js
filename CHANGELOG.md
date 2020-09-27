@@ -1,3 +1,45 @@
+<a name="2.0.0-alpha.4"></a>
+# [2.0.0-alpha.4](https://github.com/Wonder-Technology/Wonder.js/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) (2020-09-27)
+
+
+### Features
+
+* **asset:** add loadImages api ([9829bf9](https://github.com/Wonder-Technology/Wonder.js/commit/9829bf9))
+* **asset:** ignore load image stream's return value ([9d34ede](https://github.com/Wonder-Technology/Wonder.js/commit/9d34ede))
+* **cloud-picture:** add UpdateTextureArrayCPJobEntity job ([584b815](https://github.com/Wonder-Technology/Wonder.js/commit/584b815))
+* **cloud-picture:** edit glsl: add texture related code; edit UpdatePathTracingCPJobEntity: send texture related code; ([f28a8f6](https://github.com/Wonder-Technology/Wonder.js/commit/f28a8f6))
+* **cloud-picture:** edit shading_data.glsl: change roughnessIntensity to 1.0 ([f322a20](https://github.com/Wonder-Technology/Wonder.js/commit/f322a20))
+* **cloud-picture:** fix "if has two render geometries, the second one's tangents sended to vertex buffer is wrong" ([f11d923](https://github.com/Wonder-Technology/Wonder.js/commit/f11d923))
+* **cloud-picture:** fix get_hit_shading_data.glsl bug ([5561a6f](https://github.com/Wonder-Technology/Wonder.js/commit/5561a6f))
+* **cloud-picture:** fix glsl: add gamma correction ([eb1feaa](https://github.com/Wonder-Technology/Wonder.js/commit/eb1feaa))
+* **cloud-picture:** fix glsl: add inv gamma correction for specific color defined in shader ([17ed877](https://github.com/Wonder-Technology/Wonder.js/commit/17ed877))
+* **cloud-picture:** fix glsl: fix gamma ([e82c0cd](https://github.com/Wonder-Technology/Wonder.js/commit/e82c0cd))
+* **cloud-picture:** fix glsl:get_hit_shading_data.glsl ([d5c5c3e](https://github.com/Wonder-Technology/Wonder.js/commit/d5c5c3e))
+* **cloud-picture:** fix glsl:shading_data.glsl ([5b6a134](https://github.com/Wonder-Technology/Wonder.js/commit/5b6a134))
+* **cloud-picture:** fix UpdatePathTracingCPJob->_buildAndSetVertexBufferData->compute tangents ([64ee72f](https://github.com/Wonder-Technology/Wonder.js/commit/64ee72f))
+* **cloud-picture:** fix UpdatePathTracingCPJob->_buildAndSetVertexBufferData->set texCoords ([982c5ae](https://github.com/Wonder-Technology/Wonder.js/commit/982c5ae))
+* **cloud-picture:** fix UpdateTextureArrayCPJobEntity->_fillImageDataToBufferDataWithFixedSize: use forEach instead of traverseResultM ([93d58cc](https://github.com/Wonder-Technology/Wonder.js/commit/93d58cc))
+* **cloud-picture:** fix UpdateTextureArrayCPJobEntity->_fillTextureArray: create commandEncoder and submit for each layer ([5dcd6ab](https://github.com/Wonder-Technology/Wonder.js/commit/5dcd6ab))
+* **cloud-picture:** fix updateTextureArrayCPJobEntity: if has no used image id, layer count should be 1 instead of 0 ([23db231](https://github.com/Wonder-Technology/Wonder.js/commit/23db231))
+* **cloud-picture:** path tracing->vertex buffer add texCoords, tangents(compute) ([f2abb26](https://github.com/Wonder-Technology/Wonder.js/commit/f2abb26))
+* **cloud-picture:** rename metalRoughnessMap to channelRoughnessMetallicMap ([0f462b8](https://github.com/Wonder-Technology/Wonder.js/commit/0f462b8))
+* **cloud-picture:** separate "render" jobs from "update" pipeline to "render" pipeline ([f94b925](https://github.com/Wonder-Technology/Wonder.js/commit/f94b925))
+* **dependency:** lookAt ([5891d70](https://github.com/Wonder-Technology/Wonder.js/commit/5891d70))
+* **geometry:** add createTriangleGeometry api ([3767365](https://github.com/Wonder-Technology/Wonder.js/commit/3767365))
+* **geometry:** add texCoords ([dcd3581](https://github.com/Wonder-Technology/Wonder.js/commit/dcd3581))
+* **geometry:** setTexCoords add check: texCoords should in [0.0, 1.0] ([5e3932f](https://github.com/Wonder-Technology/Wonder.js/commit/5e3932f))
+* **pbr-material:** add setXxxMapSourceId APIs ([6b15fba](https://github.com/Wonder-Technology/Wonder.js/commit/6b15fba))
+* **pbr-material:** change default diffseColor to (0., 0., 0.) ([ac0b57b](https://github.com/Wonder-Technology/Wonder.js/commit/ac0b57b))
+* **transform:** lookAt ([bdc330a](https://github.com/Wonder-Technology/Wonder.js/commit/bdc330a))
+* **webgpu:** remove bufferUsage->sampled ([882234b](https://github.com/Wonder-Technology/Wonder.js/commit/882234b))
+
+
+### Performance Improvements
+
+* **cloud-picture:** optimize UpdateTextureArrayCPJobEntity->_fillImageDataToBufferDataWithFixedSize ([f20b336](https://github.com/Wonder-Technology/Wonder.js/commit/f20b336))
+
+
+
 <a name="2.0.0-alpha.3"></a>
 # [2.0.0-alpha.3](https://github.com/Wonder-Technology/Wonder.js/compare/v2.0.0-alpha.2...v2.0.0-alpha.3) (2020-09-16)
 
