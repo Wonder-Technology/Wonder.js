@@ -181,11 +181,13 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   if (_hasMap(normalMapLayerIndex)) {
     data.worldNormal =
         mat3(tw, bw, nw) *
-        normalize((texture(sampler2DArray(textureArray, textureSampler),
-                           vec3(uv * mat.normalMapScale, normalMapLayerIndex))
-                       .rgb) *
-                      2.0 -
-                  1.0)
+        normalize(
+            (gammaCorrection(
+                texture(sampler2DArray(textureArray, textureSampler),
+                        vec3(uv * mat.normalMapScale, normalMapLayerIndex))
+                    .rgb)) *
+                2.0 -
+            1.0)
             .xyz;
   } else {
     data.worldNormal = nw;
@@ -202,10 +204,11 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
 
   vec2 metallicRoughness;
   if (_hasMap(channelRoughnessMetallicMapLayerIndex)) {
-    metallicRoughness = texture(sampler2DArray(textureArray, textureSampler),
-                                vec3(uv * mat.channelRoughnessMetallicMapScale,
-                                     channelRoughnessMetallicMapLayerIndex))
-                            .bg;
+    metallicRoughness =
+        gammaCorrection(texture(sampler2DArray(textureArray, textureSampler),
+                                 vec3(uv * mat.channelRoughnessMetallicMapScale,
+                                      channelRoughnessMetallicMapLayerIndex))
+                                    .bg));
 
     data.materialMetalness = metallicRoughness.r + mat.metalness;
     data.materialRoughness = metallicRoughness.g + mat.roughness;

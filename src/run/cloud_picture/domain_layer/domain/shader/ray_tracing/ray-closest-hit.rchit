@@ -7,6 +7,8 @@
 
 #include "define.glsl"
 
+#include "utils.glsl"
+
 #include "get_hit_shading_data.glsl"
 #include "shading_data.glsl"
 
