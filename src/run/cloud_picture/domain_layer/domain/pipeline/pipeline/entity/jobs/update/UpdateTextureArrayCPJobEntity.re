@@ -176,12 +176,6 @@ let _fillTextureArray =
     ) => {
   open Js.Typed_array;
 
-  let commandEncoder =
-    WebGPUCoreDpRunAPI.unsafeGet().device.createCommandEncoder(
-      IWebGPUCoreDp.commandEncoderDescriptor(),
-      device,
-    );
-
   let bytesPerRow =
     Js.Math.ceil_int(Number.dividInt(textureArrayLayerWidth * 4, 256)) * 256;
 
@@ -198,6 +192,12 @@ let _fillTextureArray =
     );
 
   allUsedImageIdAndData->ListSt.forEachi((layerIndex, (_, imageData)) => {
+    let commandEncoder =
+      WebGPUCoreDpRunAPI.unsafeGet().device.createCommandEncoder(
+        IWebGPUCoreDp.commandEncoderDescriptor(),
+        device,
+      );
+
     let bufferData =
       Uint8Array.fromLength(bytesPerRow * textureArrayLayerHeight);
 
@@ -238,12 +238,14 @@ let _fillTextureArray =
       },
       commandEncoder,
     );
-  });
 
-  WebGPUCoreDpRunAPI.unsafeGet().queue.submit(
-    [|WebGPUCoreDpRunAPI.unsafeGet().commandEncoder.finish(commandEncoder)|],
-    queue,
-  );
+    WebGPUCoreDpRunAPI.unsafeGet().queue.submit(
+      [|
+        WebGPUCoreDpRunAPI.unsafeGet().commandEncoder.finish(commandEncoder),
+      |],
+      queue,
+    );
+  });
 };
 
 let _setWebGPUObjects = (textureArrayView, textureSampler) => {

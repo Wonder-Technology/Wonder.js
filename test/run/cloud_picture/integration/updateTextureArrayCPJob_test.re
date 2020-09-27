@@ -230,38 +230,6 @@ let _ =
     });
 
     describe("fill textureArray", () => {
-      testPromise("create commandEncoder", () => {
-        let (
-          (device, queue),
-          (id1, id2, id3, id4, id5),
-          (imageData1, imageData2, imageData3, imageData4, imageData5),
-        ) =
-          _prepare();
-        let createCommandEncoderStubData =
-          createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonTool.createTwoArgsEmptyStubData;
-        WebGPUDependencyTool.build(
-          ~sandbox,
-          ~createCommandEncoder=
-            createCommandEncoderStubData->SinonTool.getDpFunc,
-          (),
-        )
-        ->WebGPUDependencyTool.set;
-
-        DirectorCPTool.initAndUpdate(
-          ~handleSuccessFunc=
-            () => {
-              createCommandEncoderStubData
-              ->SinonTool.getStub
-              ->expect
-              ->SinonTool.toCalledWith((
-                  IWebGPUCoreDp.commandEncoderDescriptor(),
-                  device,
-                ))
-            },
-          (),
-        );
-      });
       testPromise("create texture buffer only once", () => {
         let (
           (device, queue),
@@ -619,169 +587,207 @@ let _ =
         });
       });
 
-      testPromise("set texture buffer's data for each layer", () => {
-        let (
-          (device, queue),
-          (id1, id2, id3, id4, id5),
-          (imageData1, imageData2, imageData3, imageData4, imageData5),
-        ) =
-          _prepare();
-        let textureBuffer = WebGPUDependencyTool.createBufferObject();
-        let createBufferStubData =
-          createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonTool.returns(textureBuffer)
-          ->SinonTool.createTwoArgsEmptyStubData;
-        let setSubUint8DataStubData =
-          createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonTool.createThreeArgsEmptyStubData;
-        WebGPUDependencyTool.build(
-          ~sandbox,
-          ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
-          ~setSubUint8Data=setSubUint8DataStubData->SinonTool.getDpFunc,
-          (),
-        )
-        ->WebGPUDependencyTool.set;
+      describe("fill TextureArray's layers", () => {
+        testPromise("create commandEncoder", () => {
+          let (
+            (device, queue),
+            (id1, id2, id3, id4, id5),
+            (imageData1, imageData2, imageData3, imageData4, imageData5),
+          ) =
+            _prepare();
+          let createCommandEncoderStubData =
+            createEmptyStub(refJsObjToSandbox(sandbox^))
+            ->SinonTool.createTwoArgsEmptyStubData;
+          WebGPUDependencyTool.build(
+            ~sandbox,
+            ~createCommandEncoder=
+              createCommandEncoderStubData->SinonTool.getDpFunc,
+            (),
+          )
+          ->WebGPUDependencyTool.set;
 
-        DirectorCPTool.initAndUpdate(
-          ~handleSuccessFunc=
-            () => {
-              (
-                setSubUint8DataStubData->SinonTool.getStub->getCallCount,
-                setSubUint8DataStubData
+          DirectorCPTool.initAndUpdate(
+            ~handleSuccessFunc=
+              () => {
+                createCommandEncoderStubData
                 ->SinonTool.getStub
-                ->getCall(1, _)
-                ->SinonTool.calledWithArg3(0, Sinon.matchAny, textureBuffer),
-              )
-              ->expect
-              == (4, true)
-            },
-          (),
-        );
-      });
-      testPromise("copy texture buffer to TextureArray for each layer", () => {
-        let (
-          (device, queue),
-          (id1, id2, id3, id4, id5),
-          (imageData1, imageData2, imageData3, imageData4, imageData5),
-        ) =
-          _prepare();
-        let commandEncoder = WebGPUDependencyTool.createCommandEncoderObject();
-        let createCommandEncoderStubData =
-          createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonTool.returns(commandEncoder)
-          ->SinonTool.createTwoArgsEmptyStubData;
-        let textureArray = WebGPUDependencyTool.createTextureObject();
-        let createTextureStubData =
-          createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonTool.returns(textureArray)
-          ->SinonTool.createTwoArgsEmptyStubData;
-        let textureBuffer = WebGPUDependencyTool.createBufferObject();
-        let createBufferStubData =
-          createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonTool.returns(textureBuffer)
-          ->SinonTool.createTwoArgsEmptyStubData;
-        let copyBufferToTextureStubData =
-          createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonTool.createFourArgsEmptyStubData;
-        let (textureArrayLayerWidth, textureArrayLayerHeight) = (4, 4);
-        WebGPUDependencyTool.build(
-          ~sandbox,
-          ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
-          ~createCommandEncoder=
-            createCommandEncoderStubData->SinonTool.getDpFunc,
-          ~createTexture=createTextureStubData->SinonTool.getDpFunc,
-          ~copyBufferToTexture=
-            copyBufferToTextureStubData->SinonTool.getDpFunc,
-          ~getTextureArrayLayerSize=
-            () => (textureArrayLayerWidth, textureArrayLayerHeight),
-          (),
-        )
-        ->WebGPUDependencyTool.set;
+                ->getCallCount
+                ->expect
+                == 4
+              },
+            (),
+          );
+        });
+        testPromise("set texture buffer's data", () => {
+          let (
+            (device, queue),
+            (id1, id2, id3, id4, id5),
+            (imageData1, imageData2, imageData3, imageData4, imageData5),
+          ) =
+            _prepare();
+          let textureBuffer = WebGPUDependencyTool.createBufferObject();
+          let createBufferStubData =
+            createEmptyStub(refJsObjToSandbox(sandbox^))
+            ->SinonTool.returns(textureBuffer)
+            ->SinonTool.createTwoArgsEmptyStubData;
+          let setSubUint8DataStubData =
+            createEmptyStub(refJsObjToSandbox(sandbox^))
+            ->SinonTool.createThreeArgsEmptyStubData;
+          WebGPUDependencyTool.build(
+            ~sandbox,
+            ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
+            ~setSubUint8Data=setSubUint8DataStubData->SinonTool.getDpFunc,
+            (),
+          )
+          ->WebGPUDependencyTool.set;
 
-        DirectorCPTool.initAndUpdate(
-          ~handleSuccessFunc=
-            () => {
-              let bytesPerRow = TextureArrayCPTool.getBytesPerRow();
+          DirectorCPTool.initAndUpdate(
+            ~handleSuccessFunc=
+              () => {
+                (
+                  setSubUint8DataStubData->SinonTool.getStub->getCallCount,
+                  setSubUint8DataStubData
+                  ->SinonTool.getStub
+                  ->getCall(1, _)
+                  ->SinonTool.calledWithArg3(
+                      0,
+                      Sinon.matchAny,
+                      textureBuffer,
+                    ),
+                )
+                ->expect
+                == (4, true)
+              },
+            (),
+          );
+        });
+        testPromise("copy texture buffer", () => {
+          let (
+            (device, queue),
+            (id1, id2, id3, id4, id5),
+            (imageData1, imageData2, imageData3, imageData4, imageData5),
+          ) =
+            _prepare();
+          let commandEncoder =
+            WebGPUDependencyTool.createCommandEncoderObject();
+          let createCommandEncoderStubData =
+            createEmptyStub(refJsObjToSandbox(sandbox^))
+            ->SinonTool.returns(commandEncoder)
+            ->SinonTool.createTwoArgsEmptyStubData;
+          let textureArray = WebGPUDependencyTool.createTextureObject();
+          let createTextureStubData =
+            createEmptyStub(refJsObjToSandbox(sandbox^))
+            ->SinonTool.returns(textureArray)
+            ->SinonTool.createTwoArgsEmptyStubData;
+          let textureBuffer = WebGPUDependencyTool.createBufferObject();
+          let createBufferStubData =
+            createEmptyStub(refJsObjToSandbox(sandbox^))
+            ->SinonTool.returns(textureBuffer)
+            ->SinonTool.createTwoArgsEmptyStubData;
+          let copyBufferToTextureStubData =
+            createEmptyStub(refJsObjToSandbox(sandbox^))
+            ->SinonTool.createFourArgsEmptyStubData;
+          let (textureArrayLayerWidth, textureArrayLayerHeight) = (4, 4);
+          WebGPUDependencyTool.build(
+            ~sandbox,
+            ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
+            ~createCommandEncoder=
+              createCommandEncoderStubData->SinonTool.getDpFunc,
+            ~createTexture=createTextureStubData->SinonTool.getDpFunc,
+            ~copyBufferToTexture=
+              copyBufferToTextureStubData->SinonTool.getDpFunc,
+            ~getTextureArrayLayerSize=
+              () => (textureArrayLayerWidth, textureArrayLayerHeight),
+            (),
+          )
+          ->WebGPUDependencyTool.set;
 
-              (
-                copyBufferToTextureStubData->SinonTool.getStub->getCallCount,
-                copyBufferToTextureStubData
-                ->SinonTool.getStub
-                ->getCall(1, _)
-                ->SinonTool.calledWithArg4(
-                    {
-                      "buffer": textureBuffer,
-                      "bytesPerRow": bytesPerRow,
-                      "arrayLayer": 0,
-                      "mipLevel": 0,
-                      "textureArrayLayerHeight": 0,
-                    },
-                    {
-                      "texture": textureArray,
-                      "mipLevel": 0,
-                      "arrayLayer": 1,
-                      "origin": {
-                        "x": 0,
-                        "y": 0,
-                        "z": 0,
+          DirectorCPTool.initAndUpdate(
+            ~handleSuccessFunc=
+              () => {
+                let bytesPerRow = TextureArrayCPTool.getBytesPerRow();
+
+                (
+                  copyBufferToTextureStubData->SinonTool.getStub->getCallCount,
+                  copyBufferToTextureStubData
+                  ->SinonTool.getStub
+                  ->getCall(1, _)
+                  ->SinonTool.calledWithArg4(
+                      {
+                        "buffer": textureBuffer,
+                        "bytesPerRow": bytesPerRow,
+                        "arrayLayer": 0,
+                        "mipLevel": 0,
+                        "textureArrayLayerHeight": 0,
                       },
-                    },
-                    {
-                      "width": textureArrayLayerWidth,
-                      "height": textureArrayLayerHeight,
-                      "depth": 1,
-                    },
-                    commandEncoder,
-                  ),
-              )
-              ->expect
-              == (4, true);
-            },
-          (),
-        );
-      });
-      testPromise("finish and submit", () => {
-        let (
-          (device, queue),
-          (id1, id2, id3, id4, id5),
-          (imageData1, imageData2, imageData3, imageData4, imageData5),
-        ) =
-          _prepare();
-        let commandBufferObject =
-          WebGPUDependencyTool.createCommandBufferObject();
-        let finish = createEmptyStub(refJsObjToSandbox(sandbox^));
-        finish->SinonTool.returns(commandBufferObject);
-        let submitStubData =
-          createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonTool.createTwoArgsEmptyStubData;
-        let beginRenderPassStubData =
-          createEmptyStub(refJsObjToSandbox(sandbox^))
-          ->SinonTool.returns(pass)
-          ->SinonTool.createTwoArgsEmptyStubData;
-        WebGPUDependencyTool.build(
-          ~sandbox,
-          ~finish,
-          ~submit=submitStubData->SinonTool.getDpFunc,
-          (),
-        )
-        ->WebGPUDependencyTool.set;
+                      {
+                        "texture": textureArray,
+                        "mipLevel": 0,
+                        "arrayLayer": 1,
+                        "origin": {
+                          "x": 0,
+                          "y": 0,
+                          "z": 0,
+                        },
+                      },
+                      {
+                        "width": textureArrayLayerWidth,
+                        "height": textureArrayLayerHeight,
+                        "depth": 1,
+                      },
+                      commandEncoder,
+                    ),
+                )
+                ->expect
+                == (4, true);
+              },
+            (),
+          );
+        });
+        testPromise("finish and submit", () => {
+          let (
+            (device, queue),
+            (id1, id2, id3, id4, id5),
+            (imageData1, imageData2, imageData3, imageData4, imageData5),
+          ) =
+            _prepare();
+          let commandBufferObject =
+            WebGPUDependencyTool.createCommandBufferObject();
+          let finish = createEmptyStub(refJsObjToSandbox(sandbox^));
+          finish->onCall(1, _)->SinonTool.returns(commandBufferObject);
+          let submitStubData =
+            createEmptyStub(refJsObjToSandbox(sandbox^))
+            ->SinonTool.createTwoArgsEmptyStubData;
+          let beginRenderPassStubData =
+            createEmptyStub(refJsObjToSandbox(sandbox^))
+            ->SinonTool.returns(pass)
+            ->SinonTool.createTwoArgsEmptyStubData;
+          WebGPUDependencyTool.build(
+            ~sandbox,
+            ~finish,
+            ~submit=submitStubData->SinonTool.getDpFunc,
+            (),
+          )
+          ->WebGPUDependencyTool.set;
 
-        DirectorCPTool.initAndUpdate(
-          ~handleSuccessFunc=
-            () => {
-              let bytesPerRow = TextureArrayCPTool.getBytesPerRow();
+          DirectorCPTool.initAndUpdate(
+            ~handleSuccessFunc=
+              () => {
+                let bytesPerRow = TextureArrayCPTool.getBytesPerRow();
 
-              (
-                submitStubData->SinonTool.getStub->getCallCount,
-                submitStubData
-                ->SinonTool.getStub
-                ->SinonTool.calledWithArg2([|commandBufferObject|], queue),
-              )
-              ->expect
-              == (1, true);
-            },
-          (),
-        );
+                (
+                  submitStubData->SinonTool.getStub->getCallCount,
+                  submitStubData
+                  ->SinonTool.getStub
+                  ->getCall(1, _)
+                  ->SinonTool.calledWithArg2([|commandBufferObject|], queue),
+                )
+                ->expect
+                == (4, true);
+              },
+            (),
+          );
+        });
       });
     });
 
