@@ -11,7 +11,7 @@
     "watch": "bsb -clean-world -make-world -w",
     "build": "bsb -clean-world -make-world",
     "test:watch": "jest --watch --config jest.json",
-    "test:coverage": "npm run build && jest --config jest_coverage.json",
+    "test:coverage": "jest --config jest_coverage.json",
     "test:ci": "jest --maxWorkers=4 --config jest_coverage.json",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
   },
