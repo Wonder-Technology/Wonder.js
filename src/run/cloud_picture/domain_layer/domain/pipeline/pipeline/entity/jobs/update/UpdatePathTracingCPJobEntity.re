@@ -421,8 +421,8 @@ let _buildAndSetPBRMaterialBufferData = (device, allRenderPBRMaterials) => {
 
         let diffuseMapImageId =
           PBRMaterialRunAPI.getDiffuseMapImageId(pbrMaterial);
-        let metalRoughnessMapImageId =
-          PBRMaterialRunAPI.getMetalRoughnessMapImageId(pbrMaterial);
+        let channelRoughnessMetallicMapImageId =
+          PBRMaterialRunAPI.getChannelRoughnessMetallicMapImageId(pbrMaterial);
         let emissionMapImageId =
           PBRMaterialRunAPI.getEmissionMapImageId(pbrMaterial);
         let normalMapImageId =
@@ -430,7 +430,7 @@ let _buildAndSetPBRMaterialBufferData = (device, allRenderPBRMaterials) => {
 
         Tuple4.collectResult(
           _computeMapScale(diffuseMapImageId),
-          _computeMapScale(metalRoughnessMapImageId),
+          _computeMapScale(channelRoughnessMetallicMapImageId),
           _computeMapScale(emissionMapImageId),
           _computeMapScale(normalMapImageId),
         )
@@ -438,7 +438,7 @@ let _buildAndSetPBRMaterialBufferData = (device, allRenderPBRMaterials) => {
             (
               (
                 diffuseMapScale,
-                metalRoughnessMapScale,
+                channelRoughnessMetallicMapScale,
                 emissionMapScale,
                 normalMapScale,
               ),
@@ -454,7 +454,7 @@ let _buildAndSetPBRMaterialBufferData = (device, allRenderPBRMaterials) => {
                 offset + 8,
                 (
                   _getMapLayerIndex(diffuseMapImageId),
-                  _getMapLayerIndex(metalRoughnessMapImageId),
+                  _getMapLayerIndex(channelRoughnessMetallicMapImageId),
                   _getMapLayerIndex(emissionMapImageId),
                   _getMapLayerIndex(normalMapImageId),
                 ),
@@ -467,7 +467,7 @@ let _buildAndSetPBRMaterialBufferData = (device, allRenderPBRMaterials) => {
               ),
               TypeArrayCPRepoUtils.setFloat2(
                 offset + 14,
-                metalRoughnessMapScale,
+                channelRoughnessMetallicMapScale,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(

@@ -93,11 +93,11 @@ let setMapData = (material1, material2) => {
     data: Js.Typed_array.Uint8Array.make([|0, 4|]),
   };
   PBRMaterialRunAPI.setDiffuseMapImageId(material1, id2);
-  PBRMaterialRunAPI.setMetalRoughnessMapImageId(material1, id1);
+  PBRMaterialRunAPI.setChannelRoughnessMetallicMapImageId(material1, id1);
   PBRMaterialRunAPI.setNormalMapImageId(material1, id3);
   PBRMaterialRunAPI.setDiffuseMapImageId(material2, id2);
   PBRMaterialRunAPI.setEmissionMapImageId(material2, id4);
-  PBRMaterialRunAPI.setMetalRoughnessMapImageId(material2, id1);
+  PBRMaterialRunAPI.setChannelRoughnessMetallicMapImageId(material2, id1);
   ImageTool.setData(id1, imageData1);
   ImageTool.setData(id2, imageData2);
   ImageTool.setData(id3, imageData3);

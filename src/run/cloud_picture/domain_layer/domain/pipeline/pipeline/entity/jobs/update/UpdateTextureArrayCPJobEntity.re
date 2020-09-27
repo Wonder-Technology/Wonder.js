@@ -19,7 +19,7 @@ let _getAllUsedImageIdAndData = () => {
           };
 
         let result =
-          switch (PBRMaterialRunAPI.getMetalRoughnessMapImageId(material)) {
+          switch (PBRMaterialRunAPI.getChannelRoughnessMetallicMapImageId(material)) {
           | None => result
           | Some(imageId) => _addImageIdAndData(result, imageId)
           };

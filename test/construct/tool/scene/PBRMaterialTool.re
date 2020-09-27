@@ -26,7 +26,7 @@ let truncateColor = color => {
 
 let getDiffuseMapImageId = OperatePBRMaterialDoService.getDiffuseMapImageId;
 
-let getMetalRoughnessMapImageId = OperatePBRMaterialDoService.getMetalRoughnessMapImageId;
+let getChannelRoughnessMetallicMapImageId = OperatePBRMaterialDoService.getChannelRoughnessMetallicMapImageId;
 
 let getEmissionMapImageId = OperatePBRMaterialDoService.getEmissionMapImageId;
 

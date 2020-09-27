@@ -168,14 +168,14 @@ let _ =
           })
         });
 
-        describe("setMetalRoughnessMapImageId", () => {
+        describe("setChannelRoughnessMetallicMapImageId", () => {
           test("set map's image id", () => {
             let material = create()->ResultTool.getExnSuccessValue;
             let id = _buildImageId();
 
-            setMetalRoughnessMapImageId(material, id);
+            setChannelRoughnessMetallicMapImageId(material, id);
 
-            getMetalRoughnessMapImageId(material)->OptionSt.getExn->expect
+            getChannelRoughnessMetallicMapImageId(material)->OptionSt.getExn->expect
             == id;
           })
         });

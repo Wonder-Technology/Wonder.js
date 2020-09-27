@@ -33,12 +33,12 @@ struct PBRMaterial {
   float pad_0;
 
   float diffuseMapLayerIndex;
-  float metalRoughnessMapLayerIndex;
+  float channelRoughnessMetallicMapLayerIndex;
   float emissionMapLayerIndex;
   float normalMapLayerIndex;
 
   vec2 diffuseMapScale;
-  vec2 metalRoughnessMapScale;
+  vec2 channelRoughnessMetallicMapScale;
   vec2 emissionMapScale;
   vec2 normalMapScale;
 };
@@ -163,7 +163,8 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   uint diffuseMapLayerIndex = uint(mat.diffuseMapLayerIndex);
   uint normalMapLayerIndex = uint(mat.normalMapLayerIndex);
   uint emissionMapLayerIndex = uint(mat.emissionMapLayerIndex);
-  uint metalRoughnessMapLayerIndex = uint(mat.metalRoughnessMapLayerIndex);
+  uint channelRoughnessMetallicMapLayerIndex =
+      uint(mat.channelRoughnessMetallicMapLayerIndex);
 
   HitShadingData data;
 
@@ -199,15 +200,15 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
     data.materialEmission = vec3(0.0);
   }
 
-  vec2 metalRoughness;
-  if (_hasMap(metalRoughnessMapLayerIndex)) {
-    metalRoughness = texture(sampler2DArray(textureArray, textureSampler),
-                             vec3(uv * mat.metalRoughnessMapScale,
-                                  metalRoughnessMapLayerIndex))
-                         .rg;
+  vec2 metallicRoughness;
+  if (_hasMap(channelRoughnessMetallicMapLayerIndex)) {
+    metallicRoughness = texture(sampler2DArray(textureArray, textureSampler),
+                                vec3(uv * mat.channelRoughnessMetallicMapScale,
+                                     channelRoughnessMetallicMapLayerIndex))
+                            .bg;
 
-    data.materialMetalness = metalRoughness.r + mat.metalness;
-    data.materialRoughness = metalRoughness.g + mat.roughness;
+    data.materialMetalness = metallicRoughness.r + mat.metalness;
+    data.materialRoughness = metallicRoughness.g + mat.roughness;
   } else {
     data.materialMetalness = mat.metalness;
     data.materialRoughness = mat.roughness;

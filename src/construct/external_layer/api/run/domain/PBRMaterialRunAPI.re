@@ -46,12 +46,12 @@ let setDiffuseMapImageId = (material, id) => {
   PBRMaterialApService.setDiffuseMapImageId(material, id);
 };
 
-let getMetalRoughnessMapImageId = material => {
-  PBRMaterialApService.getMetalRoughnessMapImageId(material);
+let getChannelRoughnessMetallicMapImageId = material => {
+  PBRMaterialApService.getChannelRoughnessMetallicMapImageId(material);
 };
 
-let setMetalRoughnessMapImageId = (material, id) => {
-  PBRMaterialApService.setMetalRoughnessMapImageId(material, id);
+let setChannelRoughnessMetallicMapImageId = (material, id) => {
+  PBRMaterialApService.setChannelRoughnessMetallicMapImageId(material, id);
 };
 
 let getEmissionMapImageId = material => {

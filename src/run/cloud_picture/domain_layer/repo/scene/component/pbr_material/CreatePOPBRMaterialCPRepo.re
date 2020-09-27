@@ -88,7 +88,7 @@ let createPO = () => {
             CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),
           diffuseMapImageIdMap:
             CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),
-          metalRoughnessMapImageIdMap:
+          channelRoughnessMetallicMapImageIdMap:
             CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),
           emissionMapImageIdMap:
             CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),

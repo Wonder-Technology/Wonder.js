@@ -65,15 +65,15 @@ let setDiffuseMapImageId = (material, id) => {
   );
 };
 
-let getMetalRoughnessMapImageId = material =>
-  DpContainer.unsafeGetPBRMaterialRepoDp().getMetalRoughnessMapImageId(
+let getChannelRoughnessMetallicMapImageId = material =>
+  DpContainer.unsafeGetPBRMaterialRepoDp().getChannelRoughnessMetallicMapImageId(
     material->PBRMaterialEntity.value,
   )
   
   ->OptionSt.map(ImageIdVO.create);
 
-let setMetalRoughnessMapImageId = (material, id) => {
-  DpContainer.unsafeGetPBRMaterialRepoDp().setMetalRoughnessMapImageId(
+let setChannelRoughnessMetallicMapImageId = (material, id) => {
+  DpContainer.unsafeGetPBRMaterialRepoDp().setChannelRoughnessMetallicMapImageId(
     material->PBRMaterialEntity.value,
     id->ImageIdVO.value,
   );

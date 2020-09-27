@@ -98,19 +98,19 @@ let setDiffuseMapImageId = (material, id) => {
   });
 };
 
-let getMetalRoughnessMapImageId = material => {
-  CPRepo.getExnPBRMaterial().metalRoughnessMapImageIdMap
+let getChannelRoughnessMetallicMapImageId = material => {
+  CPRepo.getExnPBRMaterial().channelRoughnessMetallicMapImageIdMap
   ->ImmutableSparseMap.get(material);
 };
 
-let setMetalRoughnessMapImageId = (material, id) => {
-  let {metalRoughnessMapImageIdMap} as materialPO =
+let setChannelRoughnessMetallicMapImageId = (material, id) => {
+  let {channelRoughnessMetallicMapImageIdMap} as materialPO =
     CPRepo.getExnPBRMaterial();
 
   CPRepo.setPBRMaterial({
     ...materialPO,
-    metalRoughnessMapImageIdMap:
-      metalRoughnessMapImageIdMap->ImmutableSparseMap.set(material, id),
+    channelRoughnessMetallicMapImageIdMap:
+      channelRoughnessMetallicMapImageIdMap->ImmutableSparseMap.set(material, id),
   });
 };
 

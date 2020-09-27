@@ -12,7 +12,7 @@ type pbrMaterial = {
   gameObjectsMap: ComponentCPPOType.gameObjectsMap,
   diffuseMapImageIdMap:
     ImmutableSparseMap.t(PBRMaterialPOType.pbrMaterial, ImagePOType.id),
-  metalRoughnessMapImageIdMap:
+  channelRoughnessMetallicMapImageIdMap:
     ImmutableSparseMap.t(PBRMaterialPOType.pbrMaterial, ImagePOType.id),
   emissionMapImageIdMap:
     ImmutableSparseMap.t(PBRMaterialPOType.pbrMaterial, ImagePOType.id),

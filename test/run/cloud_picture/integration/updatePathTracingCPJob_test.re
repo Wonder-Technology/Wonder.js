@@ -1275,7 +1275,7 @@ let _ =
         });
 
         testPromise(
-          "set each render pbrMaterial's diffuse, specular, roughness, metalness, diffuseMapLayerIndex, metalRoughnessMapLayerIndex, emissionMapLayerIndex, normalMapLayerIndex, diffuseMapScale, metalRoughnessScale, emissionMapScale, normalMapScale to buffer data",
+          "set each render pbrMaterial's diffuse, specular, roughness, metalness, diffuseMapLayerIndex, channelRoughnessMetallicMapLayerIndex, emissionMapLayerIndex, normalMapLayerIndex, diffuseMapScale, channelRoughnessMetallicScaleScale, emissionMapScale, normalMapScale to buffer data",
           () => {
             open ImagePOType;
             let (
