@@ -14,7 +14,8 @@ ShadingData buildShadingData(vec3 materialDiffuse, vec3 materialEmission,
                              float materialSpecular, float csw) {
   // TODO should pass from pbr material
   float metalnessIntensity = 1.0;
-  float roughnessIntensity = 0.1125;
+  // float roughnessIntensity = 0.1125;
+  float roughnessIntensity = 1.0;
 
   ShadingData shading;
 
