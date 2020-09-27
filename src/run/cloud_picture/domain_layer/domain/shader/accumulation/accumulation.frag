@@ -17,25 +17,23 @@ accumulationPixelBuffer;
 layout(set = 0, binding = 2) uniform ScreenDimension { vec2 resolution; }
 screenDimension;
 
-layout(std140, set = 0, binding = 3) uniform CommonData { 
+layout(std140, set = 0, binding = 3) uniform CommonData {
   uint sampleCount;
   uint totalSampleCount;
   uint pad_0;
   uint pad_1;
- }
+}
 pushC;
 
 void main() {
   uint pixelIndex = getPixelIndex(uv, screenDimension.resolution);
 
-    vec4 accumulationColor = accumulationPixelBuffer.pixels[pixelIndex] +
-                             pixelBuffer.pixels[pixelIndex];
+  vec4 accumulationColor = accumulationPixelBuffer.pixels[pixelIndex] +
+                           pixelBuffer.pixels[pixelIndex];
 
-    accumulationPixelBuffer.pixels[pixelIndex] = accumulationColor;
+  accumulationPixelBuffer.pixels[pixelIndex] = accumulationColor;
 
-    vec4 finalColor = accumulationColor / pushC.totalSampleCount;
+  vec4 finalColor = accumulationColor / pushC.totalSampleCount;
 
-    pixelBuffer.pixels[pixelIndex] = finalColor;
-
-    outColor = finalColor;
+  outColor = vec4(gammaCorrection(vec3(finalColor)), finalColor.w);
 }

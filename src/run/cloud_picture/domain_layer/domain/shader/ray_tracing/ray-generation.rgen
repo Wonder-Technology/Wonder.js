@@ -7,7 +7,6 @@
 #include "../common/camera.glsl"
 #include "random.glsl"
 #include "raycommon.glsl"
-#include "utils.glsl"
 
 layout(location = 0) rayPayloadEXT hitPayload prd;
 
@@ -75,5 +74,5 @@ void main() {
 
   const uint pixelIndex = ipos.y * resolution.x + ipos.x;
 
-  pixelBuffer.pixels[pixelIndex] = vec4(gammaCorrection(pixelColor), 1.0);
+  pixelBuffer.pixels[pixelIndex] = vec4(pixelColor, 1.0);
 }

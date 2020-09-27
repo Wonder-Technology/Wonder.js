@@ -6,7 +6,7 @@
 
 #include "raycommon.glsl"
 
-#include "utils.glsl"
+#include "../common/utils.glsl"
 
 layout(location = 0) rayPayloadInEXT hitPayload prd;
 
