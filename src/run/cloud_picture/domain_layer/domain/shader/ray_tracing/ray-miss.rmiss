@@ -6,12 +6,11 @@
 
 #include "raycommon.glsl"
 
-#include "../common/utils.glsl"
-
 layout(location = 0) rayPayloadInEXT hitPayload prd;
 
 void main() {
   prd.throughput = vec3(0);
-  prd.radiance = invGammaCorrectionForSpecificColorDefinedInShader(vec3(0.15));
+  // prd.radiance = vec3(0.15);
+  prd.radiance = vec3(0.05);
   prd.t = -1.0;
 }

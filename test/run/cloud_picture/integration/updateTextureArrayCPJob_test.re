@@ -183,70 +183,72 @@ let _ =
         );
       });
       testPromise(
-        {j|TextureArray's and textureArrayView's format should has "-srgb" suffix, so sRGB conversions from gamma to linear and vice versa are applied during the reading and writing of color values in the shader|j},
-        () => {
-          let (
-            (device, queue),
-            (id1, id2, id3, id4, id5),
-            (imageData1, imageData2, imageData3, imageData4, imageData5),
-          ) =
-            _prepare();
-          let createTextureStubData =
-            createEmptyStub(refJsObjToSandbox(sandbox^))
-            ->SinonTool.createTwoArgsEmptyStubData;
-          let createViewStubData =
-            createEmptyStub(refJsObjToSandbox(sandbox^))
-            ->SinonTool.createTwoArgsEmptyStubData;
-          WebGPUDependencyTool.build(
-            ~sandbox,
-            ~createTexture=createTextureStubData->SinonTool.getDpFunc,
-            ~createView=createViewStubData->SinonTool.getDpFunc,
-            (),
-          )
-          ->WebGPUDependencyTool.set;
+        // {j|TextureArray's and textureArrayView's format should has "-srgb" suffix, so sRGB conversions from gamma to linear and vice versa are applied during the reading and writing of color values in the shader|j},
 
-          DirectorCPTool.initAndUpdate(
-            ~handleSuccessFunc=
-              () => {
-                let format = "rgba8unorm-srgb";
+          {j|TextureArray's and textureArrayView's format should not has "-srgb" suffix, so not do any sRGB conversions during the reading and writing of color values in the shader|j},
+          () => {
+            let (
+              (device, queue),
+              (id1, id2, id3, id4, id5),
+              (imageData1, imageData2, imageData3, imageData4, imageData5),
+            ) =
+              _prepare();
+            let createTextureStubData =
+              createEmptyStub(refJsObjToSandbox(sandbox^))
+              ->SinonTool.createTwoArgsEmptyStubData;
+            let createViewStubData =
+              createEmptyStub(refJsObjToSandbox(sandbox^))
+              ->SinonTool.createTwoArgsEmptyStubData;
+            WebGPUDependencyTool.build(
+              ~sandbox,
+              ~createTexture=createTextureStubData->SinonTool.getDpFunc,
+              ~createView=createViewStubData->SinonTool.getDpFunc,
+              (),
+            )
+            ->WebGPUDependencyTool.set;
 
-                (
-                  createTextureStubData
-                  ->SinonTool.getStub
-                  ->getCall(0, _)
-                  ->SinonTool.calledWithArg2(
-                      IWebGPUCoreDp.textureDescriptor(
-                        ~size=Sinon.matchAny,
-                        ~arrayLayerCount=Sinon.matchAny,
-                        ~mipLevelCount=Sinon.matchAny,
-                        ~sampleCount=Sinon.matchAny,
-                        ~dimension=Sinon.matchAny,
-                        ~format,
-                        ~usage=Sinon.matchAny,
+            DirectorCPTool.initAndUpdate(
+              ~handleSuccessFunc=
+                () => {
+                  let format = "rgba8unorm";
+
+                  (
+                    createTextureStubData
+                    ->SinonTool.getStub
+                    ->getCall(0, _)
+                    ->SinonTool.calledWithArg2(
+                        IWebGPUCoreDp.textureDescriptor(
+                          ~size=Sinon.matchAny,
+                          ~arrayLayerCount=Sinon.matchAny,
+                          ~mipLevelCount=Sinon.matchAny,
+                          ~sampleCount=Sinon.matchAny,
+                          ~dimension=Sinon.matchAny,
+                          ~format,
+                          ~usage=Sinon.matchAny,
+                        ),
+                        device,
                       ),
-                      device,
-                    ),
-                  createViewStubData
-                  ->SinonTool.getStub
-                  ->getCall(0, _)
-                  ->SinonTool.calledWithArg2(
-                      IWebGPUCoreDp.textureViewDescriptor(
-                        ~format,
-                        ~baseArrayLayer=Sinon.matchAny,
-                        ~arrayLayerCount=Sinon.matchAny,
-                        ~dimension=Sinon.matchAny,
-                        (),
+                    createViewStubData
+                    ->SinonTool.getStub
+                    ->getCall(0, _)
+                    ->SinonTool.calledWithArg2(
+                        IWebGPUCoreDp.textureViewDescriptor(
+                          ~format,
+                          ~baseArrayLayer=Sinon.matchAny,
+                          ~arrayLayerCount=Sinon.matchAny,
+                          ~dimension=Sinon.matchAny,
+                          (),
+                        ),
+                        Sinon.matchAny,
                       ),
-                      Sinon.matchAny,
-                    ),
-                )
-                ->expect
-                == (true, true);
-              },
-            (),
-          );
-        },
-      );
+                  )
+                  ->expect
+                  == (true, true);
+                },
+              (),
+            );
+          },
+        );
 
       describe("fix bug", () => {
         testPromise(

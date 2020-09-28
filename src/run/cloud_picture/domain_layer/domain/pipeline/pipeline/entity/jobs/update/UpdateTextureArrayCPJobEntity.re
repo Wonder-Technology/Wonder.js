@@ -89,7 +89,7 @@ let _setMapBetweenImageIdToLayerIndex = allUsedImageIdAndData => {
 
 let _buildWebGPUObjects =
     (device, (textureArrayLayerWidth, textureArrayLayerHeight, layerCount)) => {
-  let format = "rgba8unorm-srgb";
+  let format = "rgba8unorm";
 
   let textureArray =
     WebGPUCoreDpRunAPI.unsafeGet().device.createTexture(
