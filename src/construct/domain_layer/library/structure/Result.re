@@ -1,12 +1,10 @@
-type t('a, 'b) =
-  | Success('a)
-  | Fail('b);
+type t('a, 'b) = Belt.Result.t('a, 'b);
 
 type t2('a) = t('a, Js.Exn.t);
 
-let succeed = x => Success(x);
+let succeed = x => Ok(x);
 
-let fail = x => Fail(x);
+let fail = x => Error(x);
 
 let _buildErr = msg => msg->Exception.buildErr;
 
@@ -14,15 +12,15 @@ let failWith = x => x->_buildErr->fail;
 
 let isSuccess = result => {
   switch (result) {
-  | Success(s) => true
-  | Fail(f) => false
+  | Ok(s) => true
+  | Error(f) => false
   };
 };
 
 let either = (result, successFunc, failureFunc) =>
   switch (result) {
-  | Success(s) => successFunc(s)
-  | Fail(f) => failureFunc(f)
+  | Ok(s) => successFunc(s)
+  | Error(f) => failureFunc(f)
   };
 
 let bind = (result, switchFunc) => either(result, switchFunc, fail);
@@ -45,14 +43,14 @@ let tryCatch = (oneTrackFunc: unit => 'b): t2('b) =>
 
 let mapSuccess = (result, mapFunc) =>
   switch (result) {
-  | Success(s) => mapFunc(s)->succeed
-  | Fail(f) => fail(f)
+  | Ok(s) => mapFunc(s)->succeed
+  | Error(f) => fail(f)
   };
 
 let handleFail = (result: t('s, 'f), handleFailFunc: 'f => 's): 's =>
   switch (result) {
-  | Success(s) => s
-  | Fail(f) => handleFailFunc(f)
+  | Ok(s) => s
+  | Error(f) => handleFailFunc(f)
   };
 
 let getExn = result => {
