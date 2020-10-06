@@ -32,6 +32,7 @@ module.exports = {
     refactor: [
       { name: "duplication" },
       { name: "rename" },
+      { name: "architecture" },
       { name: "too-much" },
       { name: "dead-code" },
       { name: "type" },

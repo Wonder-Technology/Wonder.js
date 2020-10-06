@@ -188,14 +188,15 @@ let _injectDependencies =
       getPipelineStream: PipelineCPRepoDp.getPipelineStream,
       setPipelineStream: PipelineCPRepoDp.setPipelineStream,
     },
-    timeRepo: {
-      start: TimeCPRepoDp.start,
-      getElapsed: TimeCPRepoDp.getElapsed,
-    },
     imageRepo: {
       getData: ImageCPRepoDp.getData,
       setData: ImageCPRepoDp.setData,
     },
+  });
+
+  TimeJobRepoDpRunAPI.set({
+    start: TimeCPRepoDp.start,
+    getElapsed: TimeCPRepoDp.getElapsed,
   });
 
   _setAllBufferCount(

@@ -176,11 +176,6 @@ type pipelineRepo = {
   setPipelineStream: (pipelineName, pipelineStream) => unit,
 };
 
-type timeRepo = {
-  getElapsed: unit => TimePOType.time,
-  start: TimePOType.time => unit,
-};
-
 type imageRepo = {
   getData: ImagePOType.id => option(ImagePOType.data),
   setData: (ImagePOType.id, ImagePOType.data) => unit,
@@ -197,6 +192,5 @@ type repo = {
   perspectiveCameraProjectionRepo,
   globalTempRepo,
   pipelineRepo,
-  timeRepo,
   imageRepo,
 };

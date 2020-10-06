@@ -2,6 +2,7 @@ type t = {
   mutable otherConfig: option(IConfigDp.otherConfig),
   mutable poConfig: option(IConfigDp.poConfig),
   mutable repo: option(IRepoDp.repo),
+  mutable timeJobRepo: option(ITimeJobRepoDp.timeJobRepo),
   mutable time: option(ITimeDp.time),
   mutable webgpuCore: option(IWebGPUCoreDp.webgpuCore),
   mutable webgpuRayTracing: option(IWebGPURayTracingDp.webgpuRayTracing),
@@ -12,6 +13,7 @@ let dpContainer = {
   otherConfig: None,
   poConfig: None,
   repo: None,
+  timeJobRepo: None,
   time: None,
   webgpuCore: None,
   webgpuRayTracing: None,
@@ -82,16 +84,22 @@ let unsafeGetPipelineRepoDp = () => {
   _unsafeGetRepoDp().pipelineRepo;
 };
 
-let unsafeGetTimeRepoDp = () => {
-  _unsafeGetRepoDp().timeRepo;
-};
-
 let unsafeGetImageRepoDp = () => {
   _unsafeGetRepoDp().imageRepo;
 };
 
 let setRepoDp = dp => {
   dpContainer.repo = dp->Some;
+
+  ();
+};
+
+let unsafeGetTimeRepoDp = () => {
+  dpContainer.timeJobRepo->OptionSt.unsafeGet;
+};
+
+let setTimeRepoDp = dp => {
+  dpContainer.timeJobRepo = dp->Some;
 
   ();
 };

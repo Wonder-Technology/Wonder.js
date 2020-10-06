@@ -1,5 +1,5 @@
 let _getInitPipelineJobs = () => [
-  (StartTimeCPJobEntity.create(), StartTimeCPJobEntity.exec),
+  (StartTimeJobEntity.create(), StartTimeJobEntity.exec),
   (InitWebGPUCPJobEntity.create(), InitWebGPUCPJobEntity.exec),
   (InitCameraCPJobEntity.create(), InitCameraCPJobEntity.exec),
   (InitPassCPJobEntity.create(), InitPassCPJobEntity.exec),
@@ -8,7 +8,7 @@ let _getInitPipelineJobs = () => [
 ];
 
 let _getUpdatePipelineJobs = () => [
-  (UpdateTransformCPJobEntity.create(), UpdateTransformCPJobEntity.exec),
+  (UpdateTransformJobEntity.create(), UpdateTransformJobEntity.exec),
   (UpdateCameraCPJobEntity.create(), UpdateCameraCPJobEntity.exec),
   (UpdatePathTracingCPJobEntity.create(), UpdatePathTracingCPJobEntity.exec),
   (UpdatePassCPJobEntity.create(), UpdatePassCPJobEntity.exec),
