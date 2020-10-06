@@ -19,17 +19,17 @@ let _ =
       WebGPUCPTool.setQueue(queue);
 
       let gameObject1 =
-        GameObjectRunAPI.create()->ResultTool.getExnSuccessValue;
+        GameObjectCPAPI.create()->ResultTool.getExnSuccessValue;
       let gameObject2 =
-        GameObjectRunAPI.create()->ResultTool.getExnSuccessValue;
+        GameObjectCPAPI.create()->ResultTool.getExnSuccessValue;
 
       let material1 =
-        PBRMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
+        PBRMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
       let material2 =
-        PBRMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
-      GameObjectRunAPI.addPBRMaterial(gameObject1, material1)
+        PBRMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
+      GameObjectCPAPI.addPBRMaterial(gameObject1, material1)
       ->ResultTool.getExnSuccessValueIgnore;
-      GameObjectRunAPI.addPBRMaterial(gameObject2, material2)
+      GameObjectCPAPI.addPBRMaterial(gameObject2, material2)
       ->ResultTool.getExnSuccessValueIgnore;
 
       let (
@@ -125,7 +125,7 @@ let _ =
             () => {
               let layerCount = 4;
               let (textureArrayLayerWidth, textureArrayLayerHeight) =
-                WebGPUCoreRunAPI.getTextureArrayLayerSize();
+                WebGPUCoreCPAPI.getTextureArrayLayerSize();
 
               (
                 createTextureStubData

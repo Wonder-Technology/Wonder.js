@@ -11,7 +11,7 @@ let _ =
     beforeEach(() => {
       sandbox := createSandbox();
 
-      OtherConfigDpCPAPI.set({getIsDebug: () => true});
+      OtherConfigDpRunAPI.set({getIsDebug: () => true});
     });
 
     describe("prepare", () => {
@@ -56,7 +56,7 @@ let _ =
 
           DirectorCPTool.prepare(~sampleCount, ());
 
-          GameObjectRunAPI.create()->ExpectTool.judgeResult;
+          GameObjectCPAPI.create()->ExpectTool.judgeResult;
         },
       )
     });

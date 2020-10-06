@@ -477,7 +477,7 @@ let _ =
                 gameObject,
                 (1., 2., 3.)->PositionVO.create,
               );
-              DirectionLightRunAPI.setIntensity(
+              DirectionLightCPAPI.setIntensity(
                 light,
                 intensity->IntensityVO.create,
               )
@@ -509,7 +509,7 @@ let _ =
                       ->OptionSt.getExn;
 
                     let (x, y, z) =
-                      DirectionLightRunAPI.getDirection(light)
+                      DirectionLightCPAPI.getDirection(light)
                       ->OptionSt.getExn
                       ->DirectionVO.value;
 

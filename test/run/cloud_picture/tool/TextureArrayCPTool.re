@@ -5,7 +5,7 @@ let getLayerIndex = id => {
 
 let getBytesPerRow = () => {
   let (textureArrayLayerWidth, textureArrayLayerHeight) =
-    WebGPUCoreRunAPI.getTextureArrayLayerSize();
+    WebGPUCoreCPAPI.getTextureArrayLayerSize();
 
   Js.Math.ceil_int(Number.dividInt(textureArrayLayerWidth * 4, 256)) * 256;
 };

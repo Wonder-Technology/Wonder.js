@@ -1,9 +1,9 @@
 let createAndAddTwoMaterials = (gameObject1, gameObject2) => {
-  let material1 = PBRMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
-  let material2 = PBRMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
-  GameObjectRunAPI.addPBRMaterial(gameObject1, material1)
+  let material1 = PBRMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
+  let material2 = PBRMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
+  GameObjectCPAPI.addPBRMaterial(gameObject1, material1)
   ->ResultTool.getExnSuccessValueIgnore;
-  GameObjectRunAPI.addPBRMaterial(gameObject2, material2)
+  GameObjectCPAPI.addPBRMaterial(gameObject2, material2)
   ->ResultTool.getExnSuccessValueIgnore;
   let diffuseColor1 = (1., 0., 0.)->Color3VO.create->DiffuseVO.create;
   let diffuseColor2 = (0., 1., 0.)->Color3VO.create->DiffuseVO.create;
@@ -13,21 +13,21 @@ let createAndAddTwoMaterials = (gameObject1, gameObject2) => {
   let roughness2 = 1.5->RoughnessVO.create;
   let metalness1 = 1.0->MetalnessVO.create;
   let metalness2 = 2.0->MetalnessVO.create;
-  PBRMaterialRunAPI.setDiffuseColor(material1, diffuseColor1)
+  PBRMaterialCPAPI.setDiffuseColor(material1, diffuseColor1)
   ->ResultTool.getExnSuccessValueIgnore;
-  PBRMaterialRunAPI.setDiffuseColor(material2, diffuseColor2)
+  PBRMaterialCPAPI.setDiffuseColor(material2, diffuseColor2)
   ->ResultTool.getExnSuccessValueIgnore;
-  PBRMaterialRunAPI.setSpecular(material1, specular1)
+  PBRMaterialCPAPI.setSpecular(material1, specular1)
   ->ResultTool.getExnSuccessValueIgnore;
-  PBRMaterialRunAPI.setSpecular(material2, specular2)
+  PBRMaterialCPAPI.setSpecular(material2, specular2)
   ->ResultTool.getExnSuccessValueIgnore;
-  PBRMaterialRunAPI.setRoughness(material1, roughness1)
+  PBRMaterialCPAPI.setRoughness(material1, roughness1)
   ->ResultTool.getExnSuccessValueIgnore;
-  PBRMaterialRunAPI.setRoughness(material2, roughness2)
+  PBRMaterialCPAPI.setRoughness(material2, roughness2)
   ->ResultTool.getExnSuccessValueIgnore;
-  PBRMaterialRunAPI.setMetalness(material1, metalness1)
+  PBRMaterialCPAPI.setMetalness(material1, metalness1)
   ->ResultTool.getExnSuccessValueIgnore;
-  PBRMaterialRunAPI.setMetalness(material2, metalness2)
+  PBRMaterialCPAPI.setMetalness(material2, metalness2)
   ->ResultTool.getExnSuccessValueIgnore;
 
   (
@@ -92,12 +92,12 @@ let setMapData = (material1, material2) => {
     height: 4,
     data: Js.Typed_array.Uint8Array.make([|0, 4|]),
   };
-  PBRMaterialRunAPI.setDiffuseMapImageId(material1, id2);
-  PBRMaterialRunAPI.setChannelRoughnessMetallicMapImageId(material1, id1);
-  PBRMaterialRunAPI.setNormalMapImageId(material1, id3);
-  PBRMaterialRunAPI.setDiffuseMapImageId(material2, id2);
-  PBRMaterialRunAPI.setEmissionMapImageId(material2, id4);
-  PBRMaterialRunAPI.setChannelRoughnessMetallicMapImageId(material2, id1);
+  PBRMaterialCPAPI.setDiffuseMapImageId(material1, id2);
+  PBRMaterialCPAPI.setChannelRoughnessMetallicMapImageId(material1, id1);
+  PBRMaterialCPAPI.setNormalMapImageId(material1, id3);
+  PBRMaterialCPAPI.setDiffuseMapImageId(material2, id2);
+  PBRMaterialCPAPI.setEmissionMapImageId(material2, id4);
+  PBRMaterialCPAPI.setChannelRoughnessMetallicMapImageId(material2, id1);
   ImageTool.setData(id1, imageData1);
   ImageTool.setData(id2, imageData2);
   ImageTool.setData(id3, imageData3);
