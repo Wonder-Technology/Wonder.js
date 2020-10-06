@@ -1,6 +1,6 @@
 let handleAddComponent =
   (. material, gameObject) => {
-    DpContainer.unsafeGetPBRMaterialRepoDp().addGameObject(
+    DpContainer.unsafeGetBRDFMaterialRepoDp().addGameObject(
       material,
       gameObject,
     );

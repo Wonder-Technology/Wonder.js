@@ -5,12 +5,12 @@ let getTransform = gameObject =>
   
   ->OptionSt.map(TransformEntity.create);
 
-let getPBRMaterial = gameObject =>
-  DpContainer.unsafeGetGameObjectRepoDp().getPBRMaterial(
+let getBRDFMaterial = gameObject =>
+  DpContainer.unsafeGetGameObjectRepoDp().getBRDFMaterial(
     gameObject->GameObjectEntity.value,
   )
   
-  ->OptionSt.map(PBRMaterialEntity.create);
+  ->OptionSt.map(BRDFMaterialEntity.create);
 
 let getGeometry = gameObject =>
   DpContainer.unsafeGetGameObjectRepoDp().getGeometry(

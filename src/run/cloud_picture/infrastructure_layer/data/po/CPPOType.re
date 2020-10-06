@@ -3,7 +3,7 @@ type po = {
   scene: SceneCPPOType.scene,
   gameObject: GameObjectCPPOType.gameObject,
   transform: option(TransformCPPOType.transform),
-  pbrMaterial: option(PBRMaterialCPPOType.pbrMaterial),
+  brdfMaterial: option(BRDFMaterialCPPOType.brdfMaterial),
   geometry: option(GeometryCPPOType.geometry),
   basicCameraView: BasicCameraViewCPPOType.basicCameraView,
   perspectiveCameraProjection: PerspectiveCameraProjectionCPPOType.perspectiveCameraProjection,

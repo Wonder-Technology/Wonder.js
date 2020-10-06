@@ -2,8 +2,8 @@ let _createAndSetAllComponentPOs = () => {
   CreatePOTransformCPRepo.createPO()
   ->Result.mapSuccess(po => {po->CPRepo.setTransform})
   ->Result.bind(() => {
-      CreatePOPBRMaterialCPRepo.createPO()
-      ->Result.mapSuccess(po => {po->CPRepo.setPBRMaterial})
+      CreatePOBRDFMaterialCPRepo.createPO()
+      ->Result.mapSuccess(po => {po->CPRepo.setBRDFMaterial})
     })
   ->Result.bind(() => {
       CreatePOGeometryCPRepo.createPO()
@@ -20,12 +20,12 @@ let _setAllBufferCount =
       ~transformCount,
       ~geometryPointCount,
       ~geometryCount,
-      ~pbrMaterialCount,
+      ~brdfMaterialCount,
       ~directionLightCount,
     ) => {
   POConfigDpRunAPI.set({
     getTransformCount: () => transformCount,
-    getPBRMaterialCount: () => pbrMaterialCount,
+    getBRDFMaterialCount: () => brdfMaterialCount,
     getGeometryCount: () => geometryCount,
     getGeometryPointCount: () => geometryPointCount,
     getDirectionLightCount: () => directionLightCount,
@@ -37,7 +37,7 @@ let _injectDependencies =
       ~transformCount,
       ~geometryPointCount,
       ~geometryCount,
-      ~pbrMaterialCount,
+      ~brdfMaterialCount,
       ~directionLightCount,
     ) => {
   RepoDpRunAPI.set({
@@ -51,9 +51,9 @@ let _injectDependencies =
       addTransform: GameObjectCPRepoDp.addTransform,
       getTransform: GameObjectCPRepoDp.getTransform,
       hasTransform: GameObjectCPRepoDp.hasTransform,
-      addPBRMaterial: GameObjectCPRepoDp.addPBRMaterial,
-      getPBRMaterial: GameObjectCPRepoDp.getPBRMaterial,
-      hasPBRMaterial: GameObjectCPRepoDp.hasPBRMaterial,
+      addBRDFMaterial: GameObjectCPRepoDp.addBRDFMaterial,
+      getBRDFMaterial: GameObjectCPRepoDp.getBRDFMaterial,
+      hasBRDFMaterial: GameObjectCPRepoDp.hasBRDFMaterial,
       addGeometry: GameObjectCPRepoDp.addGeometry,
       getGeometry: GameObjectCPRepoDp.getGeometry,
       hasGeometry: GameObjectCPRepoDp.hasGeometry,
@@ -68,7 +68,7 @@ let _injectDependencies =
       hasPerspectiveCameraProjection: GameObjectCPRepoDp.hasPerspectiveCameraProjection,
       getAllGeometryGameObjects: GameObjectCPRepoDp.getAllGeometryGameObjects,
       getAllGameObjectGeometries: GameObjectCPRepoDp.getAllGameObjectGeometries,
-      getAllGameObjectPBRMaterials: GameObjectCPRepoDp.getAllGameObjectPBRMaterials,
+      getAllGameObjectBRDFMaterials: GameObjectCPRepoDp.getAllGameObjectBRDFMaterials,
     },
     transformRepo: {
       getMaxIndex: TransformCPRepoDp.getMaxIndex,
@@ -93,27 +93,27 @@ let _injectDependencies =
       getLocalScale: TransformCPRepoDp.getLocalScale,
       setLocalScale: TransformCPRepoDp.setLocalScale,
     },
-    pbrMaterialRepo: {
-      getMaxIndex: PBRMaterialCPRepoDp.getMaxIndex,
-      setMaxIndex: PBRMaterialCPRepoDp.setMaxIndex,
-      getGameObjects: PBRMaterialCPRepoDp.getGameObjects,
-      addGameObject: PBRMaterialCPRepoDp.addGameObject,
-      getDiffuseColor: PBRMaterialCPRepoDp.getDiffuseColor,
-      setDiffuseColor: PBRMaterialCPRepoDp.setDiffuseColor,
-      getSpecular: PBRMaterialCPRepoDp.getSpecular,
-      setSpecular: PBRMaterialCPRepoDp.setSpecular,
-      getRoughness: PBRMaterialCPRepoDp.getRoughness,
-      setRoughness: PBRMaterialCPRepoDp.setRoughness,
-      getMetalness: PBRMaterialCPRepoDp.getMetalness,
-      setMetalness: PBRMaterialCPRepoDp.setMetalness,
-      getDiffuseMapImageId: PBRMaterialCPRepoDp.getDiffuseMapImageId,
-      setDiffuseMapImageId: PBRMaterialCPRepoDp.setDiffuseMapImageId,
-      getChannelRoughnessMetallicMapImageId: PBRMaterialCPRepoDp.getChannelRoughnessMetallicMapImageId,
-      setChannelRoughnessMetallicMapImageId: PBRMaterialCPRepoDp.setChannelRoughnessMetallicMapImageId,
-      getEmissionMapImageId: PBRMaterialCPRepoDp.getEmissionMapImageId,
-      setEmissionMapImageId: PBRMaterialCPRepoDp.setEmissionMapImageId,
-      getNormalMapImageId: PBRMaterialCPRepoDp.getNormalMapImageId,
-      setNormalMapImageId: PBRMaterialCPRepoDp.setNormalMapImageId,
+    brdfMaterialRepo: {
+      getMaxIndex: BRDFMaterialCPRepoDp.getMaxIndex,
+      setMaxIndex: BRDFMaterialCPRepoDp.setMaxIndex,
+      getGameObjects: BRDFMaterialCPRepoDp.getGameObjects,
+      addGameObject: BRDFMaterialCPRepoDp.addGameObject,
+      getDiffuseColor: BRDFMaterialCPRepoDp.getDiffuseColor,
+      setDiffuseColor: BRDFMaterialCPRepoDp.setDiffuseColor,
+      getSpecular: BRDFMaterialCPRepoDp.getSpecular,
+      setSpecular: BRDFMaterialCPRepoDp.setSpecular,
+      getRoughness: BRDFMaterialCPRepoDp.getRoughness,
+      setRoughness: BRDFMaterialCPRepoDp.setRoughness,
+      getMetalness: BRDFMaterialCPRepoDp.getMetalness,
+      setMetalness: BRDFMaterialCPRepoDp.setMetalness,
+      getDiffuseMapImageId: BRDFMaterialCPRepoDp.getDiffuseMapImageId,
+      setDiffuseMapImageId: BRDFMaterialCPRepoDp.setDiffuseMapImageId,
+      getChannelRoughnessMetallicMapImageId: BRDFMaterialCPRepoDp.getChannelRoughnessMetallicMapImageId,
+      setChannelRoughnessMetallicMapImageId: BRDFMaterialCPRepoDp.setChannelRoughnessMetallicMapImageId,
+      getEmissionMapImageId: BRDFMaterialCPRepoDp.getEmissionMapImageId,
+      setEmissionMapImageId: BRDFMaterialCPRepoDp.setEmissionMapImageId,
+      getNormalMapImageId: BRDFMaterialCPRepoDp.getNormalMapImageId,
+      setNormalMapImageId: BRDFMaterialCPRepoDp.setNormalMapImageId,
     },
     geometryRepo: {
       getMaxIndex: GeometryCPRepoDp.getMaxIndex,
@@ -203,7 +203,7 @@ let _injectDependencies =
     ~transformCount,
     ~geometryPointCount,
     ~geometryCount,
-    ~pbrMaterialCount,
+    ~brdfMaterialCount,
     ~directionLightCount,
   );
 };
@@ -215,14 +215,14 @@ let prepare =
       ~transformCount,
       ~geometryPointCount,
       ~geometryCount,
-      ~pbrMaterialCount,
+      ~brdfMaterialCount,
       ~directionLightCount,
     ) => {
   _injectDependencies(
     ~transformCount,
     ~geometryPointCount,
     ~geometryCount,
-    ~pbrMaterialCount,
+    ~brdfMaterialCount,
     ~directionLightCount,
   );
 

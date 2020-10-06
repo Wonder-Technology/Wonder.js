@@ -1,5 +1,5 @@
 open ComponentPOType;
 
-type pbrMaterial = index;
+type brdfMaterial = index;
 
 type diffuse = (float, float, float);

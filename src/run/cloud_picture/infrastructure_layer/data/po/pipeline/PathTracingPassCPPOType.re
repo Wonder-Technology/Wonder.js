@@ -14,7 +14,7 @@ type pathTracingPass = {
       (IWebGPUCoreDp.bufferObject, bufferSize, Js.Typed_array.Float32Array.t),
     ),
   indexBufferData: option((IWebGPUCoreDp.bufferObject, bufferSize)),
-  pbrMaterialBufferData:
+  brdfMaterialBufferData:
     option(
       (IWebGPUCoreDp.bufferObject, bufferSize, Js.Typed_array.Float32Array.t),
     ),

@@ -12,25 +12,25 @@ let _setAllTypeArrDataToDefault =
   ListSt.range(0, count - 1)
   ->ListSt.reduce(Result.succeed(), (result, index) => {
       result->Result.bind(() => {
-        OperateTypeArrayPBRMaterialCPRepoUtils.setDiffuseColor(
+        OperateTypeArrayBRDFMaterialCPRepoUtils.setDiffuseColor(
           index,
           defaultDiffuseColor,
           diffuseColors,
         )
         ->Result.bind(() => {
-            OperateTypeArrayPBRMaterialCPRepoUtils.setSpecular(
+            OperateTypeArrayBRDFMaterialCPRepoUtils.setSpecular(
               index,
               defaultSpecular,
               speculars,
             )
             ->Result.bind(() => {
-                OperateTypeArrayPBRMaterialCPRepoUtils.setRoughness(
+                OperateTypeArrayBRDFMaterialCPRepoUtils.setRoughness(
                   index,
                   defaultRoughness,
                   roughnesses,
                 )
                 ->Result.bind(() => {
-                    OperateTypeArrayPBRMaterialCPRepoUtils.setMetalness(
+                    OperateTypeArrayBRDFMaterialCPRepoUtils.setMetalness(
                       index,
                       defaultMetalness,
                       metalnesses,
@@ -45,16 +45,16 @@ let _setAllTypeArrDataToDefault =
     });
 
 let _initBufferData = (count, defaultDataTuple) => {
-  BufferPBRMaterialCPRepoUtils.createBuffer(count)
+  BufferBRDFMaterialCPRepoUtils.createBuffer(count)
   ->Result.bind(buffer => {
-      CreateTypeArrayPBRMaterialCPRepoUtils.createTypeArrays(buffer, count)
+      CreateTypeArrayBRDFMaterialCPRepoUtils.createTypeArrays(buffer, count)
       ->_setAllTypeArrDataToDefault(count, defaultDataTuple)
       ->Result.mapSuccess(typeArrData => {(buffer, typeArrData)})
     });
 };
 
 let createPO = () => {
-  let pbrMaterialCount = POConfigDpRunAPI.unsafeGet().getPBRMaterialCount();
+  let brdfMaterialCount = POConfigDpRunAPI.unsafeGet().getBRDFMaterialCount();
 
   let defaultDiffuseColor = (0., 0., 0.);
   let defaultSpecular = 0.0;
@@ -62,7 +62,7 @@ let createPO = () => {
   let defaultMetalness = 0.0;
 
   _initBufferData(
-    pbrMaterialCount,
+    brdfMaterialCount,
     (
       defaultDiffuseColor,
       defaultSpecular,
@@ -85,16 +85,16 @@ let createPO = () => {
           defaultRoughness,
           defaultMetalness,
           gameObjectsMap:
-            CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),
+            CreateMapComponentCPRepoUtils.createEmptyMap(brdfMaterialCount),
           diffuseMapImageIdMap:
-            CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),
+            CreateMapComponentCPRepoUtils.createEmptyMap(brdfMaterialCount),
           channelRoughnessMetallicMapImageIdMap:
-            CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),
+            CreateMapComponentCPRepoUtils.createEmptyMap(brdfMaterialCount),
           emissionMapImageIdMap:
-            CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),
+            CreateMapComponentCPRepoUtils.createEmptyMap(brdfMaterialCount),
           normalMapImageIdMap:
-            CreateMapComponentCPRepoUtils.createEmptyMap(pbrMaterialCount),
-        }: PBRMaterialCPPOType.pbrMaterial
+            CreateMapComponentCPRepoUtils.createEmptyMap(brdfMaterialCount),
+        }: BRDFMaterialCPPOType.brdfMaterial
       )
     });
 };

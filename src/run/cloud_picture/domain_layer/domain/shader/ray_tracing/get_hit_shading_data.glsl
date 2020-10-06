@@ -24,7 +24,7 @@ struct PointIndexData {
   uint faceIndex;
 };
 
-struct PBRMaterial {
+struct BRDFMaterial {
   vec4 diffuse;
 
   float metalness;
@@ -60,7 +60,7 @@ layout(scalar, set = 0, binding = 6) buffer Indices { uint i[]; }
 indices;
 
 layout(std140, set = 0, binding = 7) buffer MatColorBufferObject {
-  PBRMaterial m[];
+  BRDFMaterial m[];
 }
 materials;
 
@@ -99,7 +99,7 @@ PointIndexData _getPointIndexData(uint geometryIndex) {
   return scenePointIndexData.o[geometryIndex];
 }
 
-PBRMaterial _getMaterial(uint materialIndex) {
+BRDFMaterial _getMaterial(uint materialIndex) {
   return materials.m[materialIndex];
 }
 
@@ -158,7 +158,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   const vec3 tw = normalize(normalMatrix * ta);
   const vec3 bw = cross(nw, tw);
 
-  PBRMaterial mat = _getMaterial(materialIndex);
+  BRDFMaterial mat = _getMaterial(materialIndex);
 
   uint diffuseMapLayerIndex = uint(mat.diffuseMapLayerIndex);
   uint normalMapLayerIndex = uint(mat.normalMapLayerIndex);

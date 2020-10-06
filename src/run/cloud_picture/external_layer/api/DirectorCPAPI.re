@@ -5,7 +5,7 @@ let prepare =
       ~transformCount=10000,
       ~geometryPointCount=10000,
       ~geometryCount=10000,
-      ~pbrMaterialCount=2000000,
+      ~brdfMaterialCount=2000000,
       ~directionLightCount=1,
       (),
     ) => {
@@ -15,7 +15,7 @@ let prepare =
     ~transformCount,
     ~geometryPointCount,
     ~geometryCount,
-    ~pbrMaterialCount,
+    ~brdfMaterialCount,
     ~directionLightCount,
   );
 };

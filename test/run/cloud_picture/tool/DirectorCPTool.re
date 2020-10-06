@@ -5,7 +5,7 @@ let prepare =
       ~transformCount=10,
       ~geometryPointCount=10,
       ~geometryCount=10,
-      ~pbrMaterialCount=10,
+      ~brdfMaterialCount=10,
       ~directionLightCount=2,
       (),
     ) => {
@@ -15,7 +15,7 @@ let prepare =
     ~transformCount,
     ~geometryPointCount,
     ~geometryCount,
-    ~pbrMaterialCount,
+    ~brdfMaterialCount,
     ~directionLightCount,
     (),
   )

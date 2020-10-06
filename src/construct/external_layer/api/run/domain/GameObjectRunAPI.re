@@ -14,16 +14,16 @@ let hasTransform = gameObject => {
   GameObjectApService.hasTransform(gameObject);
 };
 
-let addPBRMaterial = (gameObject, material) => {
-  GameObjectApService.addPBRMaterial(gameObject, material);
+let addBRDFMaterial = (gameObject, material) => {
+  GameObjectApService.addBRDFMaterial(gameObject, material);
 };
 
-let getPBRMaterial = gameObject => {
-  GameObjectApService.getPBRMaterial(gameObject);
+let getBRDFMaterial = gameObject => {
+  GameObjectApService.getBRDFMaterial(gameObject);
 };
 
-let hasPBRMaterial = gameObject => {
-  GameObjectApService.hasPBRMaterial(gameObject);
+let hasBRDFMaterial = gameObject => {
+  GameObjectApService.hasBRDFMaterial(gameObject);
 };
 
 let addGeometry = (gameObject, geometry) => {
@@ -85,6 +85,6 @@ let getAllRenderGeometries = () => {
   GameObjectApService.getAllRenderGeometries();
 };
 
-let getAllRenderPBRMaterials = () => {
-  GameObjectApService.getAllRenderPBRMaterials();
+let getAllRenderBRDFMaterials = () => {
+  GameObjectApService.getAllRenderBRDFMaterials();
 };

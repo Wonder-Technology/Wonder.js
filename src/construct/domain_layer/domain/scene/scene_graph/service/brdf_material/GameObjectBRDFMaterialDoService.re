@@ -1,6 +1,6 @@
 let getGameObjects = material => {
-  DpContainer.unsafeGetPBRMaterialRepoDp().getGameObjects(
-    material->PBRMaterialEntity.value,
+  DpContainer.unsafeGetBRDFMaterialRepoDp().getGameObjects(
+    material->BRDFMaterialEntity.value,
   )
   
   ->OptionSt.map(gameObjects =>

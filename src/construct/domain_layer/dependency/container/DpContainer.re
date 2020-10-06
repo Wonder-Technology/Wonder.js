@@ -56,8 +56,8 @@ let unsafeGetTransformRepoDp = () => {
   _unsafeGetRepoDp().transformRepo;
 };
 
-let unsafeGetPBRMaterialRepoDp = () => {
-  _unsafeGetRepoDp().pbrMaterialRepo;
+let unsafeGetBRDFMaterialRepoDp = () => {
+  _unsafeGetRepoDp().brdfMaterialRepo;
 };
 
 let unsafeGetGeometryRepoDp = () => {
