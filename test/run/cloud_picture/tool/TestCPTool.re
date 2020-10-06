@@ -12,7 +12,15 @@ let init =
       ~renderPipelineData=PipelineTool.buildEmptyPipelineData(),
       (),
     ) => {
-  DependencyTool.injectAllDependencies(~isDebug, ());
+  DependencyTool.injectAllDependencies(
+    ~isDebug,
+    ~transformCount,
+    ~geometryPointCount,
+    ~geometryCount,
+    ~pbrMaterialCount,
+    ~directionLightCount,
+    (),
+  );
 
   CPContainerManager.setPO(CreateCPRepo.create());
 
@@ -20,13 +28,14 @@ let init =
   PipelineCPDoService.setUpdatePipelineData(updatePipelineData);
   PipelineCPDoService.setRenderPipelineData(renderPipelineData);
 
-  POConfigCPRepo.setTransformCount(transformCount);
-  POConfigCPRepo.setGeometryPointCount(geometryPointCount);
-  POConfigCPRepo.setGeometryCount(geometryCount);
-  POConfigCPRepo.setPBRMaterialCount(pbrMaterialCount);
-  POConfigCPRepo.setDirectionLightCount(directionLightCount);
-
-  DirectorCPTool.prepare();
+  DirectorCPTool.prepare(
+    ~transformCount,
+    ~geometryPointCount,
+    ~geometryCount,
+    ~pbrMaterialCount,
+    ~directionLightCount,
+    (),
+  );
 
   WebGPUDependencyTool.build(~sandbox, ())->WebGPUDependencyTool.set;
   WebGPURayTracingDependencyTool.build(~sandbox, ())
@@ -42,11 +51,14 @@ let updateBufferCount =
       ~directionLightCount=2,
       (),
     ) => {
-  POConfigCPRepo.setTransformCount(transformCount);
-  POConfigCPRepo.setGeometryPointCount(geometryPointCount);
-  POConfigCPRepo.setGeometryCount(geometryCount);
-  POConfigCPRepo.setPBRMaterialCount(pbrMaterialCount);
-  POConfigCPRepo.setDirectionLightCount(directionLightCount);
+  POConfigTool.setAllCount(
+    ~transformCount,
+    ~geometryPointCount,
+    ~geometryCount,
+    ~pbrMaterialCount,
+    ~directionLightCount,
+    (),
+  );
 
   DirectorCPTool.createAndSetAllComponentPOs();
 };

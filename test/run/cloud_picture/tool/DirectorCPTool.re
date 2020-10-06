@@ -1,5 +1,24 @@
-let prepare = (~pictureSize=(0, 0), ~sampleCount=1, ()) => {
-  DirectorCPAPI.prepare(pictureSize, sampleCount)
+let prepare =
+    (
+      ~pictureSize=(0, 0),
+      ~sampleCount=1,
+      ~transformCount=10,
+      ~geometryPointCount=10,
+      ~geometryCount=10,
+      ~pbrMaterialCount=10,
+      ~directionLightCount=2,
+      (),
+    ) => {
+  DirectorCPAPI.prepare(
+    ~pictureSize,
+    ~sampleCount,
+    ~transformCount,
+    ~geometryPointCount,
+    ~geometryCount,
+    ~pbrMaterialCount,
+    ~directionLightCount,
+    (),
+  )
   ->ResultTool.getExnSuccessValue;
 };
 
@@ -37,7 +56,6 @@ let initAndUpdate =
 
   let (_, updatePipelineStream) =
     DirectorCPAPI.update()->Result.handleFail(handleFailFunc->Obj.magic);
-
 
   PipelineTool.execPipelineStream(
     ~pipelineStream=

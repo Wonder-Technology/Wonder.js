@@ -55,7 +55,7 @@ let _initBufferData = (count, defaultDataTuple) => {
 };
 
 let createPO = () => {
-  let transformCount = POConfigCPRepo.getTransformCount();
+  let transformCount = POConfigDpRunAPI.unsafeGet().getTransformCount();
 
   let defaultLocalToWorldMatrix = (
     1.,

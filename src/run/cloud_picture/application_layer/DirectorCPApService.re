@@ -15,7 +15,31 @@ let _createAndSetAllComponentPOs = () => {
     });
 };
 
-let _injectDependencies = () => {
+let _setAllBufferCount =
+    (
+      ~transformCount,
+      ~geometryPointCount,
+      ~geometryCount,
+      ~pbrMaterialCount,
+      ~directionLightCount,
+    ) => {
+  POConfigDpRunAPI.set({
+    getTransformCount: () => transformCount,
+    getPBRMaterialCount: () => pbrMaterialCount,
+    getGeometryCount: () => geometryCount,
+    getGeometryPointCount: () => geometryPointCount,
+    getDirectionLightCount: () => directionLightCount,
+  });
+};
+
+let _injectDependencies =
+    (
+      ~transformCount,
+      ~geometryPointCount,
+      ~geometryCount,
+      ~pbrMaterialCount,
+      ~directionLightCount,
+    ) => {
   RepoDpRunAPI.set({
     sceneRepo: {
       getSceneGameObject: SceneCPRepoDp.getSceneGameObject,
@@ -174,17 +198,32 @@ let _injectDependencies = () => {
     },
   });
 
-  POConfigDpRunAPI.set({
-    getTransformCount: POConfigCPRepoDp.getTransformCount,
-    getPBRMaterialCount: POConfigCPRepoDp.getPBRMaterialCount,
-    getGeometryCount: POConfigCPRepoDp.getGeometryCount,
-    getGeometryPointCount: POConfigCPRepoDp.getGeometryPointCount,
-    getDirectionLightCount: POConfigCPRepoDp.getDirectionLightCount,
-  });
+  _setAllBufferCount(
+    ~transformCount,
+    ~geometryPointCount,
+    ~geometryCount,
+    ~pbrMaterialCount,
+    ~directionLightCount,
+  );
 };
 
-let prepare = (pictureSize, sampleCount) => {
-  _injectDependencies();
+let prepare =
+    (
+      ~pictureSize,
+      ~sampleCount,
+      ~transformCount,
+      ~geometryPointCount,
+      ~geometryCount,
+      ~pbrMaterialCount,
+      ~directionLightCount,
+    ) => {
+  _injectDependencies(
+    ~transformCount,
+    ~geometryPointCount,
+    ~geometryCount,
+    ~pbrMaterialCount,
+    ~directionLightCount,
+  );
 
   _createAndSetAllComponentPOs()
   ->Result.mapSuccess(() => {

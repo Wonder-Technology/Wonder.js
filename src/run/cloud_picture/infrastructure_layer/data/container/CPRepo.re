@@ -106,18 +106,6 @@ let setDirectionLight = directionLight => {
   {...po, directionLight: directionLight->Some}->CPContainerManager.setPO;
 };
 
-let getPOConfig = () => {
-  let po = CPContainerManager.getPO();
-
-  po.poConfig;
-};
-
-let setPOConfig = poConfig => {
-  let po = CPContainerManager.getPO();
-
-  {...po, poConfig}->CPContainerManager.setPO;
-};
-
 let getGlobalTemp = () => {
   let po = CPContainerManager.getPO();
 

@@ -8,7 +8,6 @@ type po = {
   basicCameraView: BasicCameraViewCPPOType.basicCameraView,
   perspectiveCameraProjection: PerspectiveCameraProjectionCPPOType.perspectiveCameraProjection,
   directionLight: option(DirectionLightCPPOType.directionLight),
-  poConfig: POConfigCPPOType.poConfig,
   globalTemp: GlobalTempCPPOType.globalTemp,
   time: TimeCPPOType.time,
   picture: PictureCPPOType.picture,

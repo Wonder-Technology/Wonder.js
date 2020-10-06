@@ -54,7 +54,7 @@ let _initBufferData = (count, defaultDataTuple) => {
 };
 
 let createPO = () => {
-  let pbrMaterialCount = POConfigCPRepo.getPBRMaterialCount();
+  let pbrMaterialCount = POConfigDpRunAPI.unsafeGet().getPBRMaterialCount();
 
   let defaultDiffuseColor = (0., 0., 0.);
   let defaultSpecular = 0.0;

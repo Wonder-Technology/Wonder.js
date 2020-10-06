@@ -62,14 +62,6 @@ let create = () => {
     pipelineStreamMap: ImmutableHashMap.createEmpty(),
     jobExecFuncMap: ImmutableHashMap.createEmpty(),
   },
-  poConfig: {
-    transformCount: 10000,
-    pbrMaterialCount: 10000,
-    geometryPointCount: 2000000,
-    geometryCount: 10000,
-    // TODO change to 1
-    directionLightCount: 4,
-  },
   scene: {
     sceneGameObject: None,
   },
