@@ -13,15 +13,26 @@ let getMaxIndex = () => {
 
 let createDiffuseColor = color => color->Color3VO.create->DiffuseVO.create;
 
-let truncateColor = color => {
-  let (r, g, b) = color->DiffuseVO.getPrimitiveValue;
+let createSpecularColor = color =>
+  color->Color3VO.create->SpecularColorVO.create;
 
+let _truncateColor = ((r, g, b)) => {
   (
     TruncateTool.truncateFloatValue(5, r),
     TruncateTool.truncateFloatValue(5, g),
     TruncateTool.truncateFloatValue(5, b),
-  )
-  ->createDiffuseColor;
+  );
+};
+
+let truncateDiffuseColor = color => {
+  color->DiffuseVO.getPrimitiveValue->_truncateColor->createDiffuseColor;
+};
+
+let truncateSpecularColor = color => {
+  color
+  ->SpecularColorVO.getPrimitiveValue
+  ->_truncateColor
+  ->createSpecularColor;
 };
 
 let getDiffuseMapImageId = BSDFMaterialRunAPI.getDiffuseMapImageId;

@@ -81,7 +81,9 @@ let _ =
           setDiffuseColor(material, color)
           ->ResultTool.getExnSuccessValueIgnore;
 
-          getDiffuseColor(material)->BSDFMaterialTool.truncateColor->expect
+          getDiffuseColor(material)
+          ->BSDFMaterialTool.truncateDiffuseColor
+          ->expect
           == color;
         })
       );
@@ -103,6 +105,30 @@ let _ =
           ->ResultTool.getExnSuccessValueIgnore;
 
           getSpecular(material)->expect == specular;
+        })
+      );
+
+      describe("getSpecularColor", () =>
+        test("test default", () => {
+          let material = create()->ResultTool.getExnSuccessValue;
+
+          getSpecularColor(material)->expect
+          == (1., 1., 1.)->BSDFMaterialTool.createSpecularColor;
+        })
+      );
+
+      describe("setSpecularColor", () =>
+        test("set color", () => {
+          let material = create()->ResultTool.getExnSuccessValue;
+          let color = (0.2, 0.3, 0.5)->BSDFMaterialTool.createSpecularColor;
+
+          setSpecularColor(material, color)
+          ->ResultTool.getExnSuccessValueIgnore;
+
+          getSpecularColor(material)
+          ->BSDFMaterialTool.truncateSpecularColor
+          ->expect
+          == color;
         })
       );
 
@@ -146,6 +172,45 @@ let _ =
         })
       );
 
+      describe("getTransmission", () =>
+        test("test default", () => {
+          let material = create()->ResultTool.getExnSuccessValue;
+
+          getTransmission(material)->expect == 0.0->TransmissionVO.create;
+        })
+      );
+
+      describe("setTransmission", () =>
+        test("set transmission", () => {
+          let material = create()->ResultTool.getExnSuccessValue;
+          let transmission = 0.5->TransmissionVO.create;
+
+          setTransmission(material, transmission)
+          ->ResultTool.getExnSuccessValueIgnore;
+
+          getTransmission(material)->expect == transmission;
+        })
+      );
+
+      describe("getIOR", () =>
+        test("test default", () => {
+          let material = create()->ResultTool.getExnSuccessValue;
+
+          getIOR(material)->expect == 1.5->IORVO.create;
+        })
+      );
+
+      describe("setIOR", () =>
+        test("set ior", () => {
+          let material = create()->ResultTool.getExnSuccessValue;
+          let ior = 0.5->IORVO.create;
+
+          setIOR(material, ior)->ResultTool.getExnSuccessValueIgnore;
+
+          getIOR(material)->expect == ior;
+        })
+      );
+
       describe("getDiffuseMapImageId", () => {
         test("test default", () => {
           let material = create()->ResultTool.getExnSuccessValue;
@@ -175,7 +240,9 @@ let _ =
 
             setChannelRoughnessMetallicMapImageId(material, id);
 
-            getChannelRoughnessMetallicMapImageId(material)->OptionSt.getExn->expect
+            getChannelRoughnessMetallicMapImageId(material)
+            ->OptionSt.getExn
+            ->expect
             == id;
           })
         });
@@ -199,6 +266,28 @@ let _ =
             setNormalMapImageId(material, id);
 
             getNormalMapImageId(material)->OptionSt.getExn->expect == id;
+          })
+        });
+
+        describe("setTransmissionMapImageId", () => {
+          test("set map's image id", () => {
+            let material = create()->ResultTool.getExnSuccessValue;
+            let id = _buildImageId();
+
+            setTransmissionMapImageId(material, id);
+
+            getTransmissionMapImageId(material)->OptionSt.getExn->expect == id;
+          })
+        });
+
+        describe("setSpecularMapImageId", () => {
+          test("set map's image id", () => {
+            let material = create()->ResultTool.getExnSuccessValue;
+            let id = _buildImageId();
+
+            setSpecularMapImageId(material, id);
+
+            getSpecularMapImageId(material)->OptionSt.getExn->expect == id;
           })
         });
       });
