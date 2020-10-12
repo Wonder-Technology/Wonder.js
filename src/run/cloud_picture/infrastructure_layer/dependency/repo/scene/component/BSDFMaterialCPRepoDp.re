@@ -83,6 +83,36 @@ let setMetalness = (material, metalness) => {
   );
 };
 
+let getTransmission = material => {
+  OperateTypeArrayBSDFMaterialCPRepoUtils.getTransmission(
+    material,
+    CPRepo.getExnBSDFMaterial().transmissions,
+  );
+};
+
+let setTransmission = (material, transmission) => {
+  OperateTypeArrayBSDFMaterialCPRepoUtils.setTransmission(
+    material,
+    transmission,
+    CPRepo.getExnBSDFMaterial().transmissions,
+  );
+};
+
+let getIOR = material => {
+  OperateTypeArrayBSDFMaterialCPRepoUtils.getIOR(
+    material,
+    CPRepo.getExnBSDFMaterial().iors,
+  );
+};
+
+let setIOR = (material, ior) => {
+  OperateTypeArrayBSDFMaterialCPRepoUtils.setIOR(
+    material,
+    ior,
+    CPRepo.getExnBSDFMaterial().iors,
+  );
+};
+
 let getDiffuseMapImageId = material => {
   CPRepo.getExnBSDFMaterial().diffuseMapImageIdMap
   ->ImmutableSparseMap.get(material);
@@ -110,7 +140,10 @@ let setChannelRoughnessMetallicMapImageId = (material, id) => {
   CPRepo.setBSDFMaterial({
     ...materialPO,
     channelRoughnessMetallicMapImageIdMap:
-      channelRoughnessMetallicMapImageIdMap->ImmutableSparseMap.set(material, id),
+      channelRoughnessMetallicMapImageIdMap->ImmutableSparseMap.set(
+        material,
+        id,
+      ),
   });
 };
 
@@ -141,5 +174,20 @@ let setNormalMapImageId = (material, id) => {
     ...materialPO,
     normalMapImageIdMap:
       normalMapImageIdMap->ImmutableSparseMap.set(material, id),
+  });
+};
+
+let getTransmissionMapImageId = material => {
+  CPRepo.getExnBSDFMaterial().transmissionMapImageIdMap
+  ->ImmutableSparseMap.get(material);
+};
+
+let setTransmissionMapImageId = (material, id) => {
+  let {transmissionMapImageIdMap} as materialPO = CPRepo.getExnBSDFMaterial();
+
+  CPRepo.setBSDFMaterial({
+    ...materialPO,
+    transmissionMapImageIdMap:
+      transmissionMapImageIdMap->ImmutableSparseMap.set(material, id),
   });
 };

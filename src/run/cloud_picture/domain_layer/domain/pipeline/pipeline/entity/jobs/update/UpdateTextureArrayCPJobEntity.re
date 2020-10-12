@@ -40,6 +40,12 @@ let _getAllUsedImageIdAndData = () => {
           | Some(imageId) => _addImageIdAndData(result, imageId)
           };
 
+        let result =
+          switch (BSDFMaterialRunAPI.getTransmissionMapImageId(material)) {
+          | None => result
+          | Some(imageId) => _addImageIdAndData(result, imageId)
+          };
+
         result;
       },
     )

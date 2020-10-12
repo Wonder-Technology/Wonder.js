@@ -383,7 +383,7 @@ let _computeMapScale = mapImageIdOpt => {
 
 let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
   let bsdfMaterialCount = allRenderBSDFMaterials->ListSt.length;
-  let dataCount = 4 + 4 + 4 + 8;
+  let dataCount = 4 + 4 + 4 + 4 + 4 + 4;
   let bufferData = Float32Array.fromLength(bsdfMaterialCount * dataCount);
   let bufferSize = bufferData->Float32Array.byteLength;
 
@@ -410,6 +410,10 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
           BSDFMaterialRunAPI.getRoughness(bsdfMaterial)->RoughnessVO.value;
         let metalness =
           BSDFMaterialRunAPI.getMetalness(bsdfMaterial)->MetalnessVO.value;
+        let transmission =
+          BSDFMaterialRunAPI.getTransmission(bsdfMaterial)
+          ->TransmissionVO.value;
+        let ior = BSDFMaterialRunAPI.getIOR(bsdfMaterial)->IORVO.value;
 
         let diffuseMapImageId =
           BSDFMaterialRunAPI.getDiffuseMapImageId(bsdfMaterial);
@@ -421,12 +425,15 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
           BSDFMaterialRunAPI.getEmissionMapImageId(bsdfMaterial);
         let normalMapImageId =
           BSDFMaterialRunAPI.getNormalMapImageId(bsdfMaterial);
+        let transmissionMapImageId =
+          BSDFMaterialRunAPI.getTransmissionMapImageId(bsdfMaterial);
 
-        Tuple4.collectResult(
+        Tuple5.collectResult(
           _computeMapScale(diffuseMapImageId),
           _computeMapScale(channelRoughnessMetallicMapImageId),
           _computeMapScale(emissionMapImageId),
           _computeMapScale(normalMapImageId),
+          _computeMapScale(transmissionMapImageId),
         )
         ->Result.bind(
             (
@@ -435,48 +442,67 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
                 channelRoughnessMetallicMapScale,
                 emissionMapScale,
                 normalMapScale,
+                transmissionMapScale,
               ),
             ) => {
             ListResult.mergeResults([
               TypeArrayCPRepoUtils.setFloat3(offset + 0, diffuse, bufferData),
-              TypeArrayCPRepoUtils.setFloat3(
+              TypeArrayCPRepoUtils.setFloat4(
                 offset + 4,
-                (metalness, roughness, specular),
+                (metalness, roughness, specular, transmission)
+               
+                ,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat4(
                 offset + 8,
                 (
+                  ior,
                   _getMapLayerIndex(diffuseMapImageId),
                   _getMapLayerIndex(channelRoughnessMetallicMapImageId),
                   _getMapLayerIndex(emissionMapImageId),
-                  _getMapLayerIndex(normalMapImageId),
-                ),
+                )
+                ,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
                 offset + 12,
-                diffuseMapScale,
+                (
+                  _getMapLayerIndex(normalMapImageId),
+                  _getMapLayerIndex(transmissionMapImageId),
+                )
+                -> Log.printForDebug
+                ,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
                 offset + 14,
-                channelRoughnessMetallicMapScale,
+                diffuseMapScale,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
                 offset + 16,
-                emissionMapScale,
+                channelRoughnessMetallicMapScale,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
                 offset + 18,
+                emissionMapScale,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 20,
                 normalMapScale,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 22,
+                transmissionMapScale,
                 bufferData,
               ),
             ])
           })
-        ->Result.mapSuccess(() => {offset + 20});
+        ->Result.mapSuccess(() => {offset + 24});
       },
     )
   ->Result.mapSuccess(_ => {

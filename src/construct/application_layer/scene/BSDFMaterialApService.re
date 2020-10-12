@@ -38,6 +38,22 @@ let setMetalness = (material, metalness) => {
   OperateBSDFMaterialDoService.setMetalness(material, metalness);
 };
 
+let getTransmission = material => {
+  OperateBSDFMaterialDoService.getTransmission(material);
+};
+
+let setTransmission = (material, transmission) => {
+  OperateBSDFMaterialDoService.setTransmission(material, transmission);
+};
+
+let getIOR = material => {
+  OperateBSDFMaterialDoService.getIOR(material);
+};
+
+let setIOR = (material, ior) => {
+  OperateBSDFMaterialDoService.setIOR(material, ior);
+};
+
 let getDiffuseMapImageId = material => {
   OperateBSDFMaterialDoService.getDiffuseMapImageId(material);
 };
@@ -47,11 +63,16 @@ let setDiffuseMapImageId = (material, id) => {
 };
 
 let getChannelRoughnessMetallicMapImageId = material => {
-  OperateBSDFMaterialDoService.getChannelRoughnessMetallicMapImageId(material);
+  OperateBSDFMaterialDoService.getChannelRoughnessMetallicMapImageId(
+    material,
+  );
 };
 
 let setChannelRoughnessMetallicMapImageId = (material, id) => {
-  OperateBSDFMaterialDoService.setChannelRoughnessMetallicMapImageId(material, id);
+  OperateBSDFMaterialDoService.setChannelRoughnessMetallicMapImageId(
+    material,
+    id,
+  );
 };
 
 let getEmissionMapImageId = material => {
@@ -68,4 +89,12 @@ let getNormalMapImageId = material => {
 
 let setNormalMapImageId = (material, id) => {
   OperateBSDFMaterialDoService.setNormalMapImageId(material, id);
+};
+
+let getTransmissionMapImageId = material => {
+  OperateBSDFMaterialDoService.getTransmissionMapImageId(material);
+};
+
+let setTransmissionMapImageId = (material, id) => {
+  OperateBSDFMaterialDoService.setTransmissionMapImageId(material, id);
 };

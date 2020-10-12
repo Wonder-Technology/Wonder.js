@@ -51,11 +51,36 @@ let setMetalness = (material, metalness) => {
   );
 };
 
+let getTransmission = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().getTransmission(
+    material->BSDFMaterialEntity.value,
+  )
+  ->TransmissionVO.create;
+
+let setTransmission = (material, transmission) => {
+  DpContainer.unsafeGetBSDFMaterialRepoDp().setTransmission(
+    material->BSDFMaterialEntity.value,
+    transmission->TransmissionVO.value,
+  );
+};
+
+let getIOR = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().getIOR(
+    material->BSDFMaterialEntity.value,
+  )
+  ->IORVO.create;
+
+let setIOR = (material, ior) => {
+  DpContainer.unsafeGetBSDFMaterialRepoDp().setIOR(
+    material->BSDFMaterialEntity.value,
+    ior->IORVO.value,
+  );
+};
+
 let getDiffuseMapImageId = material =>
   DpContainer.unsafeGetBSDFMaterialRepoDp().getDiffuseMapImageId(
     material->BSDFMaterialEntity.value,
   )
-  
   ->OptionSt.map(ImageIdVO.create);
 
 let setDiffuseMapImageId = (material, id) => {
@@ -66,14 +91,15 @@ let setDiffuseMapImageId = (material, id) => {
 };
 
 let getChannelRoughnessMetallicMapImageId = material =>
-  DpContainer.unsafeGetBSDFMaterialRepoDp().getChannelRoughnessMetallicMapImageId(
+  DpContainer.unsafeGetBSDFMaterialRepoDp().
+    getChannelRoughnessMetallicMapImageId(
     material->BSDFMaterialEntity.value,
   )
-  
   ->OptionSt.map(ImageIdVO.create);
 
 let setChannelRoughnessMetallicMapImageId = (material, id) => {
-  DpContainer.unsafeGetBSDFMaterialRepoDp().setChannelRoughnessMetallicMapImageId(
+  DpContainer.unsafeGetBSDFMaterialRepoDp().
+    setChannelRoughnessMetallicMapImageId(
     material->BSDFMaterialEntity.value,
     id->ImageIdVO.value,
   );
@@ -83,7 +109,6 @@ let getEmissionMapImageId = material =>
   DpContainer.unsafeGetBSDFMaterialRepoDp().getEmissionMapImageId(
     material->BSDFMaterialEntity.value,
   )
-  
   ->OptionSt.map(ImageIdVO.create);
 
 let setEmissionMapImageId = (material, id) => {
@@ -97,11 +122,23 @@ let getNormalMapImageId = material =>
   DpContainer.unsafeGetBSDFMaterialRepoDp().getNormalMapImageId(
     material->BSDFMaterialEntity.value,
   )
-  
   ->OptionSt.map(ImageIdVO.create);
 
 let setNormalMapImageId = (material, id) => {
   DpContainer.unsafeGetBSDFMaterialRepoDp().setNormalMapImageId(
+    material->BSDFMaterialEntity.value,
+    id->ImageIdVO.value,
+  );
+};
+
+let getTransmissionMapImageId = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().getTransmissionMapImageId(
+    material->BSDFMaterialEntity.value,
+  )
+  ->OptionSt.map(ImageIdVO.create);
+
+let setTransmissionMapImageId = (material, id) => {
+  DpContainer.unsafeGetBSDFMaterialRepoDp().setTransmissionMapImageId(
     material->BSDFMaterialEntity.value,
     id->ImageIdVO.value,
   );

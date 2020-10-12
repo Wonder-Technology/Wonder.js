@@ -19,7 +19,7 @@ module.exports = {
       { name: "gameObject" },
       { name: "transform" },
       { name: "geometry" },
-      { name: "pbr-material" },
+      { name: "bsdf-material" },
       { name: "pipeline" },
       { name: "asset" },
       { name: "dependency" },

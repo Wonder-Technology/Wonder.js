@@ -33,6 +33,24 @@ let getMetalnessesOffset = count =>
   + getRoughnessesLength(count)
   * Float32Array._BYTES_PER_ELEMENT;
 
+let getTransmissionsSize = () => 1;
+
+let getTransmissionsLength = count => count * getTransmissionsSize();
+
+let getTransmissionsOffset = count =>
+  getMetalnessesOffset(count)
+  + getMetalnessesLength(count)
+  * Float32Array._BYTES_PER_ELEMENT;
+
+let getIORsSize = () => 1;
+
+let getIORsLength = count => count * getIORsSize();
+
+let getIORsOffset = count =>
+  getTransmissionsOffset(count)
+  + getTransmissionsLength(count)
+  * Float32Array._BYTES_PER_ELEMENT;
+
 let getDiffuseColorIndex = index => index * getDiffuseColorsSize();
 
 let getSpecularIndex = index => index * getSpecularsSize();
@@ -40,6 +58,10 @@ let getSpecularIndex = index => index * getSpecularsSize();
 let getRoughnessIndex = index => index * getRoughnessesSize();
 
 let getMetalnessIndex = index => index * getMetalnessesSize();
+
+let getTransmissionIndex = index => index * getTransmissionsSize();
+
+let getIORIndex = index => index * getIORsSize();
 
 let getTotalByteLength = count =>
   count
@@ -49,6 +71,8 @@ let getTotalByteLength = count =>
     + getSpecularsSize()
     + getRoughnessesSize()
     + getMetalnessesSize()
+    + getTransmissionsSize()
+    + getIORsSize()
   );
 
 let createBuffer = count =>

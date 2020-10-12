@@ -24,10 +24,12 @@ let truncateColor = color => {
   ->createDiffuseColor;
 };
 
-let getDiffuseMapImageId = OperateBSDFMaterialDoService.getDiffuseMapImageId;
+let getDiffuseMapImageId = BSDFMaterialRunAPI.getDiffuseMapImageId;
 
-let getChannelRoughnessMetallicMapImageId = OperateBSDFMaterialDoService.getChannelRoughnessMetallicMapImageId;
+let getChannelRoughnessMetallicMapImageId = BSDFMaterialRunAPI.getChannelRoughnessMetallicMapImageId;
 
-let getEmissionMapImageId = OperateBSDFMaterialDoService.getEmissionMapImageId;
+let getEmissionMapImageId = BSDFMaterialRunAPI.getEmissionMapImageId;
 
-let getNormalMapImageId = OperateBSDFMaterialDoService.getNormalMapImageId;
+let getNormalMapImageId = BSDFMaterialRunAPI.getNormalMapImageId;
+
+let getTransmissionMapImageId = BSDFMaterialRunAPI.getTransmissionMapImageId;

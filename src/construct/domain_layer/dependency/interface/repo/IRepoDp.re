@@ -84,15 +84,22 @@ type bsdfMaterialRepo = {
   setRoughness: (bsdfMaterial, float) => Result.t2(unit),
   getMetalness: bsdfMaterial => float,
   setMetalness: (bsdfMaterial, float) => Result.t2(unit),
+  getTransmission: bsdfMaterial => float,
+  setTransmission: (bsdfMaterial, float) => Result.t2(unit),
+  getIOR: bsdfMaterial => float,
+  setIOR: (bsdfMaterial, float) => Result.t2(unit),
   getDiffuseMapImageId: bsdfMaterial => option(ImagePOType.id),
   setDiffuseMapImageId: (bsdfMaterial, ImagePOType.id) => unit,
   getChannelRoughnessMetallicMapImageId:
     bsdfMaterial => option(ImagePOType.id),
-  setChannelRoughnessMetallicMapImageId: (bsdfMaterial, ImagePOType.id) => unit,
+  setChannelRoughnessMetallicMapImageId:
+    (bsdfMaterial, ImagePOType.id) => unit,
   getEmissionMapImageId: bsdfMaterial => option(ImagePOType.id),
   setEmissionMapImageId: (bsdfMaterial, ImagePOType.id) => unit,
   getNormalMapImageId: bsdfMaterial => option(ImagePOType.id),
   setNormalMapImageId: (bsdfMaterial, ImagePOType.id) => unit,
+  getTransmissionMapImageId: bsdfMaterial => option(ImagePOType.id),
+  setTransmissionMapImageId: (bsdfMaterial, ImagePOType.id) => unit,
 };
 
 type geometryRepo = {
