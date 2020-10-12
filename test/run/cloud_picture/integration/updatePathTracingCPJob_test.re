@@ -1295,23 +1295,16 @@ let _ =
       });
 
       describe("build and set pbr material buffer data", () => {
-        // beforeEach(() => {
-        //   TestCPTool.updateBufferCount(~bsdfMaterialCount=3, ())
-        // });
-
         describe("build pbr material buffer data", () => {
           _testCreateBuffer(
             ~getBufferSizeFunc=
-              count =>
-                (4 + 4 + 4 + 4 + 4 + 4)
-                * 2
-                * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
+              count => 32 * 2 * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
             ~getBufferDataFunc=PathTracingPassCPTool.getBSDFMaterialBufferData,
           )
         });
 
         testPromise(
-          "set each render bsdfMaterial's diffuse, specular, roughness, metalness, transmission, ior, diffuseMapLayerIndex, channelRoughnessMetallicMapLayerIndex, emissionMapLayerIndex, normalMapLayerIndex, transmissionMapLayerIndex, diffuseMapScale, channelRoughnessMetallicScaleScale, emissionMapScale, normalMapScale, transmissionMapScale to buffer data",
+          "set each render bsdfMaterial's diffuse, specular, specularColor, roughness, metalness, transmission, ior, diffuseMapLayerIndex, channelRoughnessMetallicMapLayerIndex, emissionMapLayerIndex, normalMapLayerIndex, transmissionMapLayerIndex, specularMapLayerIndex, diffuseMapScale, channelRoughnessMetallicScaleScale, emissionMapScale, normalMapScale, transmissionMapScale, specularMapScale to buffer data",
           () => {
             open ImagePOType;
             let (
@@ -1343,6 +1336,10 @@ let _ =
                        0.,
                        0.,
                        0.,
+                       0.5,
+                       0.,
+                       0.,
+                       0.,
                        1.,
                        0.5,
                        0.5,
@@ -1351,7 +1348,9 @@ let _ =
                        3.,
                        2.,
                        5000.,
-                       4.,
+                       5.,
+                       0.,
+                       5000.,
                        0.,
                        0.25,
                        0.25,
@@ -1363,7 +1362,13 @@ let _ =
                        0.25,
                        0.25,
                        0.5,
+                       1.,
+                       1.,
                        0.,
+                       1.,
+                       0.,
+                       0.,
+                       0.5,
                        1.,
                        0.,
                        0.,
@@ -1377,6 +1382,8 @@ let _ =
                        1.,
                        5000.,
                        0.,
+                       4.,
+                       0.,
                        0.25,
                        0.25,
                        0.25,
@@ -1385,6 +1392,8 @@ let _ =
                        0.25,
                        1.,
                        1.,
+                       0.25,
+                       0.5,
                        0.25,
                        0.5,
                      |]);

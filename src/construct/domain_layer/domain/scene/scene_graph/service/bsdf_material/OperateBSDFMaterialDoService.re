@@ -5,10 +5,10 @@ let getDiffuseColor = material =>
   ->Color3VO.create
   ->DiffuseVO.create;
 
-let setDiffuseColor = (material, diffuse) => {
+let setDiffuseColor = (material, color) => {
   DpContainer.unsafeGetBSDFMaterialRepoDp().setDiffuseColor(
     material->BSDFMaterialEntity.value,
-    diffuse->DiffuseVO.getPrimitiveValue,
+    color->DiffuseVO.getPrimitiveValue,
   );
 };
 
@@ -22,6 +22,20 @@ let setSpecular = (material, specular) => {
   DpContainer.unsafeGetBSDFMaterialRepoDp().setSpecular(
     material->BSDFMaterialEntity.value,
     specular->SpecularVO.value,
+  );
+};
+
+let getSpecularColor = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().getSpecularColor(
+    material->BSDFMaterialEntity.value,
+  )
+  ->Color3VO.create
+  ->SpecularColorVO.create;
+
+let setSpecularColor = (material, color) => {
+  DpContainer.unsafeGetBSDFMaterialRepoDp().setSpecularColor(
+    material->BSDFMaterialEntity.value,
+    color->SpecularColorVO.getPrimitiveValue,
   );
 };
 
@@ -139,6 +153,19 @@ let getTransmissionMapImageId = material =>
 
 let setTransmissionMapImageId = (material, id) => {
   DpContainer.unsafeGetBSDFMaterialRepoDp().setTransmissionMapImageId(
+    material->BSDFMaterialEntity.value,
+    id->ImageIdVO.value,
+  );
+};
+
+let getSpecularMapImageId = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().getSpecularMapImageId(
+    material->BSDFMaterialEntity.value,
+  )
+  ->OptionSt.map(ImageIdVO.create);
+
+let setSpecularMapImageId = (material, id) => {
+  DpContainer.unsafeGetBSDFMaterialRepoDp().setSpecularMapImageId(
     material->BSDFMaterialEntity.value,
     id->ImageIdVO.value,
   );

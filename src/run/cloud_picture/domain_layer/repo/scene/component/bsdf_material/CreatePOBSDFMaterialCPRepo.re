@@ -3,6 +3,7 @@ let _setAllTypeArrDataToDefault =
       (
         diffuseColors,
         speculars,
+        specularColors,
         roughnesses,
         metalnesses,
         transmissions,
@@ -12,6 +13,7 @@ let _setAllTypeArrDataToDefault =
       (
         defaultDiffuseColor,
         defaultSpecular,
+        defaultSpecularColor,
         defaultRoughness,
         defaultMetalness,
         defaultTransmission,
@@ -31,6 +33,11 @@ let _setAllTypeArrDataToDefault =
             index,
             defaultSpecular,
             speculars,
+          ),
+          OperateTypeArrayBSDFMaterialCPRepoUtils.setSpecularColor(
+            index,
+            defaultSpecularColor,
+            specularColors,
           ),
           OperateTypeArrayBSDFMaterialCPRepoUtils.setRoughness(
             index,
@@ -59,6 +66,7 @@ let _setAllTypeArrDataToDefault =
       (
         diffuseColors,
         speculars,
+        specularColors,
         roughnesses,
         metalnesses,
         transmissions,
@@ -79,7 +87,8 @@ let createPO = () => {
   let bsdfMaterialCount = POConfigDpRunAPI.unsafeGet().getBSDFMaterialCount();
 
   let defaultDiffuseColor = (0., 0., 0.);
-  let defaultSpecular = 0.0;
+  let defaultSpecular = 1.0;
+  let defaultSpecularColor = (1., 1., 1.);
   let defaultRoughness = 0.0;
   let defaultMetalness = 0.0;
   let defaultTransmission = 0.0;
@@ -90,6 +99,7 @@ let createPO = () => {
     (
       defaultDiffuseColor,
       defaultSpecular,
+      defaultSpecularColor,
       defaultRoughness,
       defaultMetalness,
       defaultTransmission,
@@ -103,6 +113,7 @@ let createPO = () => {
           (
             diffuseColors,
             speculars,
+            specularColors,
             roughnesses,
             metalnesses,
             transmissions,
@@ -116,12 +127,14 @@ let createPO = () => {
           buffer,
           diffuseColors,
           speculars,
+          specularColors,
           roughnesses,
           metalnesses,
           transmissions,
           iors,
           defaultDiffuseColor,
           defaultSpecular,
+          defaultSpecularColor,
           defaultRoughness,
           defaultMetalness,
           defaultTransmission,
@@ -137,6 +150,8 @@ let createPO = () => {
           normalMapImageIdMap:
             CreateMapComponentCPRepoUtils.createEmptyMap(bsdfMaterialCount),
           transmissionMapImageIdMap:
+            CreateMapComponentCPRepoUtils.createEmptyMap(bsdfMaterialCount),
+          specularMapImageIdMap:
             CreateMapComponentCPRepoUtils.createEmptyMap(bsdfMaterialCount),
         }: BSDFMaterialCPPOType.bsdfMaterial
       )

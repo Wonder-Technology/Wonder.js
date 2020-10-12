@@ -383,7 +383,7 @@ let _computeMapScale = mapImageIdOpt => {
 
 let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
   let bsdfMaterialCount = allRenderBSDFMaterials->ListSt.length;
-  let dataCount = 4 + 4 + 4 + 4 + 4 + 4;
+  let dataCount = 32;
   let bufferData = Float32Array.fromLength(bsdfMaterialCount * dataCount);
   let bufferSize = bufferData->Float32Array.byteLength;
 
@@ -404,6 +404,9 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
         let diffuse =
           BSDFMaterialRunAPI.getDiffuseColor(bsdfMaterial)
           ->DiffuseVO.getPrimitiveValue;
+        let specularColor =
+          BSDFMaterialRunAPI.getSpecularColor(bsdfMaterial)
+          ->SpecularColorVO.getPrimitiveValue;
         let specular =
           BSDFMaterialRunAPI.getSpecular(bsdfMaterial)->SpecularVO.value;
         let roughness =
@@ -427,13 +430,16 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
           BSDFMaterialRunAPI.getNormalMapImageId(bsdfMaterial);
         let transmissionMapImageId =
           BSDFMaterialRunAPI.getTransmissionMapImageId(bsdfMaterial);
+        let specularMapImageId =
+          BSDFMaterialRunAPI.getSpecularMapImageId(bsdfMaterial);
 
-        Tuple5.collectResult(
+        Tuple6.collectResult(
           _computeMapScale(diffuseMapImageId),
           _computeMapScale(channelRoughnessMetallicMapImageId),
           _computeMapScale(emissionMapImageId),
           _computeMapScale(normalMapImageId),
           _computeMapScale(transmissionMapImageId),
+          _computeMapScale(specularMapImageId),
         )
         ->Result.bind(
             (
@@ -443,66 +449,73 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
                 emissionMapScale,
                 normalMapScale,
                 transmissionMapScale,
+                specularMapScale,
               ),
             ) => {
             ListResult.mergeResults([
               TypeArrayCPRepoUtils.setFloat3(offset + 0, diffuse, bufferData),
-              TypeArrayCPRepoUtils.setFloat4(
+              TypeArrayCPRepoUtils.setFloat3(
                 offset + 4,
-                (metalness, roughness, specular, transmission)
-               
-                ,
+                specularColor,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat4(
                 offset + 8,
+                (metalness, roughness, specular, transmission),
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat4(
+                offset + 12,
                 (
                   ior,
                   _getMapLayerIndex(diffuseMapImageId),
                   _getMapLayerIndex(channelRoughnessMetallicMapImageId),
                   _getMapLayerIndex(emissionMapImageId),
-                )
-                ,
+                ),
                 bufferData,
               ),
-              TypeArrayCPRepoUtils.setFloat2(
-                offset + 12,
+              TypeArrayCPRepoUtils.setFloat3(
+                offset + 16,
                 (
                   _getMapLayerIndex(normalMapImageId),
                   _getMapLayerIndex(transmissionMapImageId),
-                )
-                -> Log.printForDebug
-                ,
-                bufferData,
-              ),
-              TypeArrayCPRepoUtils.setFloat2(
-                offset + 14,
-                diffuseMapScale,
-                bufferData,
-              ),
-              TypeArrayCPRepoUtils.setFloat2(
-                offset + 16,
-                channelRoughnessMetallicMapScale,
-                bufferData,
-              ),
-              TypeArrayCPRepoUtils.setFloat2(
-                offset + 18,
-                emissionMapScale,
+                  _getMapLayerIndex(specularMapImageId),
+                ),
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
                 offset + 20,
-                normalMapScale,
+                diffuseMapScale,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
                 offset + 22,
+                channelRoughnessMetallicMapScale,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 24,
+                emissionMapScale,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 26,
+                normalMapScale,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 28,
                 transmissionMapScale,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 30,
+                specularMapScale,
                 bufferData,
               ),
             ])
           })
-        ->Result.mapSuccess(() => {offset + 24});
+        ->Result.mapSuccess(() => {offset + 32});
       },
     )
   ->Result.mapSuccess(_ => {

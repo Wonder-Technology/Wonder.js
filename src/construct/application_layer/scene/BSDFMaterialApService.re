@@ -10,8 +10,8 @@ let getDiffuseColor = material => {
   OperateBSDFMaterialDoService.getDiffuseColor(material);
 };
 
-let setDiffuseColor = (material, diffuse) => {
-  OperateBSDFMaterialDoService.setDiffuseColor(material, diffuse);
+let setDiffuseColor = (material, color) => {
+  OperateBSDFMaterialDoService.setDiffuseColor(material, color);
 };
 
 let getSpecular = material => {
@@ -20,6 +20,14 @@ let getSpecular = material => {
 
 let setSpecular = (material, specular) => {
   OperateBSDFMaterialDoService.setSpecular(material, specular);
+};
+
+let getSpecularColor = material => {
+  OperateBSDFMaterialDoService.getSpecularColor(material);
+};
+
+let setSpecularColor = (material, color) => {
+  OperateBSDFMaterialDoService.setSpecularColor(material, color);
 };
 
 let getRoughness = material => {
@@ -97,4 +105,12 @@ let getTransmissionMapImageId = material => {
 
 let setTransmissionMapImageId = (material, id) => {
   OperateBSDFMaterialDoService.setTransmissionMapImageId(material, id);
+};
+
+let getSpecularMapImageId = material => {
+  OperateBSDFMaterialDoService.getSpecularMapImageId(material);
+};
+
+let setSpecularMapImageId = (material, id) => {
+  OperateBSDFMaterialDoService.setSpecularMapImageId(material, id);
 };

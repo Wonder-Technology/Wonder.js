@@ -30,10 +30,10 @@ let getDiffuseColor = material => {
   );
 };
 
-let setDiffuseColor = (material, diffuse) => {
+let setDiffuseColor = (material, color) => {
   OperateTypeArrayBSDFMaterialCPRepoUtils.setDiffuseColor(
     material,
-    diffuse,
+    color,
     CPRepo.getExnBSDFMaterial().diffuseColors,
   );
 };
@@ -50,6 +50,21 @@ let setSpecular = (material, specular) => {
     material,
     specular,
     CPRepo.getExnBSDFMaterial().speculars,
+  );
+};
+
+let getSpecularColor = material => {
+  OperateTypeArrayBSDFMaterialCPRepoUtils.getSpecularColor(
+    material,
+    CPRepo.getExnBSDFMaterial().specularColors,
+  );
+};
+
+let setSpecularColor = (material, color) => {
+  OperateTypeArrayBSDFMaterialCPRepoUtils.setSpecularColor(
+    material,
+    color,
+    CPRepo.getExnBSDFMaterial().specularColors,
   );
 };
 
@@ -189,5 +204,20 @@ let setTransmissionMapImageId = (material, id) => {
     ...materialPO,
     transmissionMapImageIdMap:
       transmissionMapImageIdMap->ImmutableSparseMap.set(material, id),
+  });
+};
+
+let getSpecularMapImageId = material => {
+  CPRepo.getExnBSDFMaterial().specularMapImageIdMap
+  ->ImmutableSparseMap.get(material);
+};
+
+let setSpecularMapImageId = (material, id) => {
+  let {specularMapImageIdMap} as materialPO = CPRepo.getExnBSDFMaterial();
+
+  CPRepo.setBSDFMaterial({
+    ...materialPO,
+    specularMapImageIdMap:
+      specularMapImageIdMap->ImmutableSparseMap.set(material, id),
   });
 };

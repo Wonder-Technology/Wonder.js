@@ -15,6 +15,11 @@ let createTypeArrays = (buffer, count) => (
   ),
   Float32Array.fromBufferRange(
     SharedArrayBufferCPPOType.sharedArrayBufferToArrayBuffer(buffer),
+    ~offset=getSpecularColorsOffset(count),
+    ~length=getSpecularColorsLength(count),
+  ),
+  Float32Array.fromBufferRange(
+    SharedArrayBufferCPPOType.sharedArrayBufferToArrayBuffer(buffer),
     ~offset=getRoughnessesOffset(count),
     ~length=getRoughnessesLength(count),
   ),

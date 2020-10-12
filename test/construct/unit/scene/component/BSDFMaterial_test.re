@@ -90,7 +90,7 @@ let _ =
         test("test default", () => {
           let material = create()->ResultTool.getExnSuccessValue;
 
-          getSpecular(material)->expect == 0.0->SpecularVO.create;
+          getSpecular(material)->expect == 1.0->SpecularVO.create;
         })
       );
 

@@ -80,6 +80,8 @@ type bsdfMaterialRepo = {
   setDiffuseColor: (bsdfMaterial, diffuse) => Result.t2(unit),
   getSpecular: bsdfMaterial => float,
   setSpecular: (bsdfMaterial, float) => Result.t2(unit),
+  getSpecularColor: bsdfMaterial => specularColor,
+  setSpecularColor: (bsdfMaterial, specularColor) => Result.t2(unit),
   getRoughness: bsdfMaterial => float,
   setRoughness: (bsdfMaterial, float) => Result.t2(unit),
   getMetalness: bsdfMaterial => float,
@@ -100,6 +102,8 @@ type bsdfMaterialRepo = {
   setNormalMapImageId: (bsdfMaterial, ImagePOType.id) => unit,
   getTransmissionMapImageId: bsdfMaterial => option(ImagePOType.id),
   setTransmissionMapImageId: (bsdfMaterial, ImagePOType.id) => unit,
+  getSpecularMapImageId: bsdfMaterial => option(ImagePOType.id),
+  setSpecularMapImageId: (bsdfMaterial, ImagePOType.id) => unit,
 };
 
 type geometryRepo = {

@@ -12,6 +12,16 @@ let getSpecular = (index, typeArr) =>
 let setSpecular = (index, data, typeArr) =>
   TypeArrayCPRepoUtils.setFloat1(getSpecularIndex(index), data, typeArr);
 
+let getSpecularColor = (index, typeArr) =>
+  TypeArrayCPRepoUtils.getFloat3Tuple(getSpecularColorIndex(index), typeArr);
+
+let setSpecularColor = (index, data, typeArr) =>
+  TypeArrayCPRepoUtils.setFloat3(
+    getSpecularColorIndex(index),
+    data,
+    typeArr,
+  );
+
 let getRoughness = (index, typeArr) =>
   TypeArrayCPRepoUtils.getFloat1(getRoughnessIndex(index), typeArr);
 

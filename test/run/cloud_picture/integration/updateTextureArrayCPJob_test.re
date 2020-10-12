@@ -33,7 +33,7 @@ let _ =
       ->ResultTool.getExnSuccessValueIgnore;
 
       let (
-        (id1, id2, id3, id4, id5, id6),
+        (id1, id2, id3, id4, id5, id6, id7),
         (
           imageData1,
           imageData2,
@@ -41,13 +41,14 @@ let _ =
           imageData4,
           imageData5,
           imageData6,
+          imageData7,
         ),
       ) =
         BSDFMaterialCPTool.setMapData(material1, material2);
 
       (
         (device, queue),
-        (id1, id2, id3, id4, id5, id6),
+        (id1, id2, id3, id4, id5, id6, id7),
         (
           imageData1,
           imageData2,
@@ -55,6 +56,7 @@ let _ =
           imageData4,
           imageData5,
           imageData6,
+          imageData7,
         ),
       );
     };
@@ -83,7 +85,7 @@ let _ =
       testPromise("test", () => {
         let (
           (device, queue),
-          (id1, id2, id3, id4, id5, id6),
+          (id1, id2, id3, id4, id5, id6, id7),
           (
             imageData1,
             imageData2,
@@ -91,6 +93,7 @@ let _ =
             imageData4,
             imageData5,
             imageData6,
+            imageData7,
           ),
         ) =
           _prepare();
@@ -105,9 +108,18 @@ let _ =
                 TextureArrayCPTool.getLayerIndex(id4),
                 TextureArrayCPTool.getLayerIndex(id5),
                 TextureArrayCPTool.getLayerIndex(id6),
+                TextureArrayCPTool.getLayerIndex(id7),
               )
               ->expect
-              == (Some(2), Some(3), Some(4), Some(1), None, Some(0))
+              == (
+                   Some(2),
+                   Some(3),
+                   Some(5),
+                   Some(1),
+                   None,
+                   Some(0),
+                   Some(4),
+                 )
             },
           (),
         );
@@ -118,7 +130,7 @@ let _ =
       testPromise("create textureArray, textureArrayView, textureSampler", () => {
         let (
           (device, queue),
-          (id1, id2, id3, id4, id5, id6),
+          (id1, id2, id3, id4, id5, id6, id7),
           (
             imageData1,
             imageData2,
@@ -126,6 +138,7 @@ let _ =
             imageData4,
             imageData5,
             imageData6,
+            imageData7,
           ),
         ) =
           _prepare();
@@ -152,7 +165,7 @@ let _ =
         DirectorCPTool.initAndUpdate(
           ~handleSuccessFunc=
             () => {
-              let layerCount = 5;
+              let layerCount = 6;
               let (textureArrayLayerWidth, textureArrayLayerHeight) =
                 WebGPUCoreCPAPI.getTextureArrayLayerSize();
 
@@ -218,7 +231,7 @@ let _ =
           () => {
             let (
               (device, queue),
-              (id1, id2, id3, id4, id5, id6),
+              (id1, id2, id3, id4, id5, id6, id7),
               (
                 imageData1,
                 imageData2,
@@ -226,6 +239,7 @@ let _ =
                 imageData4,
                 imageData5,
                 imageData6,
+                imageData7,
               ),
             ) =
               _prepare();
@@ -335,7 +349,7 @@ let _ =
       testPromise("create texture buffer only once", () => {
         let (
           (device, queue),
-          (id1, id2, id3, id4, id5, id6),
+          (id1, id2, id3, id4, id5, id6, id7),
           (
             imageData1,
             imageData2,
@@ -343,6 +357,7 @@ let _ =
             imageData4,
             imageData5,
             imageData6,
+            imageData7,
           ),
         ) =
           _prepare();
@@ -419,7 +434,7 @@ let _ =
         testPromise("fill image data to buffer data with fixed size", () => {
           let (
             (device, queue),
-            (id1, id2, id3, id4, id5, id6),
+            (id1, id2, id3, id4, id5, id6, id7),
             (
               imageData1,
               imageData2,
@@ -427,6 +442,7 @@ let _ =
               imageData4,
               imageData5,
               imageData6,
+              imageData7,
             ),
           ) =
             _prepare();
@@ -454,6 +470,7 @@ let _ =
                   _getBufferData(setSubUint8DataStubData, bytesPerRow, 2),
                   _getBufferData(setSubUint8DataStubData, bytesPerRow, 3),
                   _getBufferData(setSubUint8DataStubData, bytesPerRow, 4),
+                  _getBufferData(setSubUint8DataStubData, bytesPerRow, 5),
                 )
                 ->expect
                 == (
@@ -692,6 +709,64 @@ let _ =
                      (
                        Js.Typed_array.Uint8Array.make([|
                          3,
+                         4,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         0,
+                       |]),
+                       Js.Typed_array.Uint8Array.make([|
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         0,
+                       |]),
+                       Js.Typed_array.Uint8Array.make([|
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         0,
+                       |]),
+                       Js.Typed_array.Uint8Array.make([|
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         0,
+                       |]),
+                     ),
+                     (
+                       Js.Typed_array.Uint8Array.make([|
+                         3,
                          2,
                          1,
                          255,
@@ -758,7 +833,7 @@ let _ =
         testPromise("create commandEncoder", () => {
           let (
             (device, queue),
-            (id1, id2, id3, id4, id5, id6),
+            (id1, id2, id3, id4, id5, id6, id7),
             (
               imageData1,
               imageData2,
@@ -766,6 +841,7 @@ let _ =
               imageData4,
               imageData5,
               imageData6,
+              imageData7,
             ),
           ) =
             _prepare();
@@ -787,7 +863,7 @@ let _ =
                 ->SinonTool.getStub
                 ->getCallCount
                 ->expect
-                == 5
+                == 6
               },
             (),
           );
@@ -795,7 +871,7 @@ let _ =
         testPromise("set texture buffer's data", () => {
           let (
             (device, queue),
-            (id1, id2, id3, id4, id5, id6),
+            (id1, id2, id3, id4, id5, id6, id7),
             (
               imageData1,
               imageData2,
@@ -803,6 +879,7 @@ let _ =
               imageData4,
               imageData5,
               imageData6,
+              imageData7,
             ),
           ) =
             _prepare();
@@ -837,7 +914,7 @@ let _ =
                     ),
                 )
                 ->expect
-                == (5, true)
+                == (6, true)
               },
             (),
           );
@@ -845,7 +922,7 @@ let _ =
         testPromise("copy texture buffer", () => {
           let (
             (device, queue),
-            (id1, id2, id3, id4, id5, id6),
+            (id1, id2, id3, id4, id5, id6, id7),
             (
               imageData1,
               imageData2,
@@ -853,6 +930,7 @@ let _ =
               imageData4,
               imageData5,
               imageData6,
+              imageData7,
             ),
           ) =
             _prepare();
@@ -927,7 +1005,7 @@ let _ =
                     ),
                 )
                 ->expect
-                == (5, true);
+                == (6, true);
               },
             (),
           );
@@ -935,7 +1013,7 @@ let _ =
         testPromise("finish and submit", () => {
           let (
             (device, queue),
-            (id1, id2, id3, id4, id5, id6),
+            (id1, id2, id3, id4, id5, id6, id7),
             (
               imageData1,
               imageData2,
@@ -943,6 +1021,7 @@ let _ =
               imageData4,
               imageData5,
               imageData6,
+              imageData7,
             ),
           ) =
             _prepare();
@@ -978,7 +1057,7 @@ let _ =
                   ->SinonTool.calledWithArg2([|commandBufferObject|], queue),
                 )
                 ->expect
-                == (5, true);
+                == (6, true);
               },
             (),
           );
@@ -990,7 +1069,7 @@ let _ =
       testPromise("test", () => {
         let (
           (device, queue),
-          (id1, id2, id3, id4, id5, id6),
+          (id1, id2, id3, id4, id5, id6, id7),
           (
             imageData1,
             imageData2,
@@ -998,6 +1077,7 @@ let _ =
             imageData4,
             imageData5,
             imageData6,
+            imageData7,
           ),
         ) =
           _prepare();
@@ -1038,7 +1118,7 @@ let _ =
       testPromise("layer count should < 2048", () => {
         let (
           (device, queue),
-          (id1, id2, id3, id4, id5, id6),
+          (id1, id2, id3, id4, id5, id6, id7),
           (
             imageData1,
             imageData2,
@@ -1046,6 +1126,7 @@ let _ =
             imageData4,
             imageData5,
             imageData6,
+            imageData7,
           ),
         ) =
           _prepare();
@@ -1059,7 +1140,7 @@ let _ =
         ExpectStreamTool.toFail(
           ~execFunc=
             DirectorCPTool.initAndUpdate(~handleAfterInitFunc=() => ()),
-          ~message="expect layer count:5 < 3",
+          ~message="expect layer count:6 < 3",
         );
       })
     });

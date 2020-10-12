@@ -15,6 +15,12 @@ let _getAllUsedImageIdAndData = () => {
       [],
       (result, material) => {
         let result =
+          switch (BSDFMaterialRunAPI.getSpecularMapImageId(material)) {
+          | None => result
+          | Some(imageId) => _addImageIdAndData(result, imageId)
+          };
+
+        let result =
           switch (BSDFMaterialRunAPI.getDiffuseMapImageId(material)) {
           | None => result
           | Some(imageId) => _addImageIdAndData(result, imageId)

@@ -102,6 +102,8 @@ let _injectDependencies =
       setDiffuseColor: BSDFMaterialCPRepoDp.setDiffuseColor,
       getSpecular: BSDFMaterialCPRepoDp.getSpecular,
       setSpecular: BSDFMaterialCPRepoDp.setSpecular,
+      getSpecularColor: BSDFMaterialCPRepoDp.getSpecularColor,
+      setSpecularColor: BSDFMaterialCPRepoDp.setSpecularColor,
       getRoughness: BSDFMaterialCPRepoDp.getRoughness,
       setRoughness: BSDFMaterialCPRepoDp.setRoughness,
       getMetalness: BSDFMaterialCPRepoDp.getMetalness,
@@ -120,6 +122,8 @@ let _injectDependencies =
       setNormalMapImageId: BSDFMaterialCPRepoDp.setNormalMapImageId,
       getTransmissionMapImageId: BSDFMaterialCPRepoDp.getTransmissionMapImageId,
       setTransmissionMapImageId: BSDFMaterialCPRepoDp.setTransmissionMapImageId,
+      getSpecularMapImageId: BSDFMaterialCPRepoDp.getSpecularMapImageId,
+      setSpecularMapImageId: BSDFMaterialCPRepoDp.setSpecularMapImageId,
     },
     geometryRepo: {
       getMaxIndex: GeometryCPRepoDp.getMaxIndex,

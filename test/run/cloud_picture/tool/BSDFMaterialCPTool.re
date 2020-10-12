@@ -9,6 +9,8 @@ let createAndAddTwoMaterials = (gameObject1, gameObject2) => {
   let diffuseColor2 = (0., 1., 0.)->Color3VO.create->DiffuseVO.create;
   let specular1 = 0.5->SpecularVO.create;
   let specular2 = 1.0->SpecularVO.create;
+  let specularColor1 = (0.5, 0., 0.)->Color3VO.create->SpecularColorVO.create;
+  let specularColor2 = (0.5, 1., 0.)->Color3VO.create->SpecularColorVO.create;
   let roughness1 = 0.5->RoughnessVO.create;
   let roughness2 = 1.5->RoughnessVO.create;
   let metalness1 = 1.0->MetalnessVO.create;
@@ -24,6 +26,10 @@ let createAndAddTwoMaterials = (gameObject1, gameObject2) => {
   BSDFMaterialCPAPI.setSpecular(material1, specular1)
   ->ResultTool.getExnSuccessValueIgnore;
   BSDFMaterialCPAPI.setSpecular(material2, specular2)
+  ->ResultTool.getExnSuccessValueIgnore;
+  BSDFMaterialCPAPI.setSpecularColor(material1, specularColor1)
+  ->ResultTool.getExnSuccessValueIgnore;
+  BSDFMaterialCPAPI.setSpecularColor(material2, specularColor2)
   ->ResultTool.getExnSuccessValueIgnore;
   BSDFMaterialCPAPI.setRoughness(material1, roughness1)
   ->ResultTool.getExnSuccessValueIgnore;
@@ -46,7 +52,7 @@ let createAndAddTwoMaterials = (gameObject1, gameObject2) => {
     (material1, material2),
     (
       (diffuseColor1, diffuseColor2),
-      (specular1, specular2),
+      ((specular1, specular2), (specularColor1, specularColor2)),
       (roughness1, roughness2),
       (metalness1, metalness2),
       (transmission1, transmission2),
@@ -64,6 +70,7 @@ let setMapData = (material1, material2) => {
   let id4 = "i4"->ImageIdVO.create;
   let id5 = "i5"->ImageIdVO.create;
   let id6 = "i6"->ImageIdVO.create;
+  let id7 = "i7"->ImageIdVO.create;
   let imageData1 = {
     width: 2,
     height: 1,
@@ -112,6 +119,11 @@ let setMapData = (material1, material2) => {
     height: 4,
     data: Js.Typed_array.Uint8Array.make([|1, 2|]),
   };
+  let imageData7 = {
+    width: 2,
+    height: 4,
+    data: Js.Typed_array.Uint8Array.make([|3, 4|]),
+  };
   BSDFMaterialCPAPI.setDiffuseMapImageId(material1, id2);
   BSDFMaterialCPAPI.setChannelRoughnessMetallicMapImageId(material1, id1);
   BSDFMaterialCPAPI.setNormalMapImageId(material1, id3);
@@ -120,6 +132,7 @@ let setMapData = (material1, material2) => {
   BSDFMaterialCPAPI.setEmissionMapImageId(material2, id4);
   BSDFMaterialCPAPI.setChannelRoughnessMetallicMapImageId(material2, id1);
   BSDFMaterialCPAPI.setTransmissionMapImageId(material2, id6);
+  BSDFMaterialCPAPI.setSpecularMapImageId(material2, id7);
 
   ImageTool.setData(id1, imageData1);
   ImageTool.setData(id2, imageData2);
@@ -127,9 +140,18 @@ let setMapData = (material1, material2) => {
   ImageTool.setData(id4, imageData4);
   ImageTool.setData(id5, imageData5);
   ImageTool.setData(id6, imageData6);
+  ImageTool.setData(id7, imageData7);
 
   (
-    (id1, id2, id3, id4, id5, id6),
-    (imageData1, imageData2, imageData3, imageData4, imageData5, imageData6),
+    (id1, id2, id3, id4, id5, id6, id7),
+    (
+      imageData1,
+      imageData2,
+      imageData3,
+      imageData4,
+      imageData5,
+      imageData6,
+      imageData7,
+    ),
   );
 };
