@@ -81,46 +81,46 @@ let _ =
         );
       });
 
-      describe("test brdfMaterial component", () => {
+      describe("test bsdfMaterial component", () => {
         let _createAndAddComponent = () => {
           let gameObject = create()->ResultTool.getExnSuccessValue;
 
-          let brdfMaterial =
-            BRDFMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
+          let bsdfMaterial =
+            BSDFMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
 
-          addBRDFMaterial(gameObject, brdfMaterial)
+          addBSDFMaterial(gameObject, bsdfMaterial)
           ->ResultTool.getExnSuccessValue;
         };
 
-        describe("addBRDFMaterial", () => {
+        describe("addBSDFMaterial", () => {
           test("if this type of component is already exist, fail", () => {
             let gameObject = _createAndAddComponent();
 
-            let brdfMaterial =
-              BRDFMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
+            let bsdfMaterial =
+              BSDFMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
 
-            addBRDFMaterial(gameObject, brdfMaterial)
+            addBSDFMaterial(gameObject, bsdfMaterial)
             ->ExpectTool.toFail(
                 "expect this type of the component shouldn't be added before, but actual not",
               );
           })
         });
 
-        describe("getBRDFMaterial", () =>
-          test("get brdfMaterial component", () => {
+        describe("getBSDFMaterial", () =>
+          test("get bsdfMaterial component", () => {
             let gameObject = _createAndAddComponent();
 
-            getBRDFMaterial(gameObject)
+            getBSDFMaterial(gameObject)
             ->OptionSt.getExn
-            ->BRDFMaterialTool.isBRDFMaterial;
+            ->BSDFMaterialTool.isBSDFMaterial;
           })
         );
 
-        describe("hasBRDFMaterial", () =>
-          test("has brdfMaterial component", () => {
+        describe("hasBSDFMaterial", () =>
+          test("has bsdfMaterial component", () => {
             let gameObject = _createAndAddComponent();
 
-            hasBRDFMaterial(gameObject)->expect == true;
+            hasBSDFMaterial(gameObject)->expect == true;
           })
         );
       });

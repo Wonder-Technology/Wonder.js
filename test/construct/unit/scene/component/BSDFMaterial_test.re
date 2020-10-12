@@ -1,9 +1,9 @@
 open Wonder_jest;
 
-open BRDFMaterialRunAPI;
+open BSDFMaterialRunAPI;
 
 let _ =
-  describe("BRDFMaterial", () => {
+  describe("BSDFMaterial", () => {
     open Expect;
     open! Expect.Operators;
     open Sinon;
@@ -20,14 +20,14 @@ let _ =
       test("create a new material", () => {
         let material = create()->ResultTool.getExnSuccessValue;
 
-        expect(material) == 0->BRDFMaterialEntity.create;
+        expect(material) == 0->BSDFMaterialEntity.create;
       });
 
       describe("change po", () =>
         test("po->index + 1", () => {
           let _ = create()->ResultTool.getExnSuccessValue;
 
-          BRDFMaterialTool.getMaxIndex()->expect == 1;
+          BSDFMaterialTool.getMaxIndex()->expect == 1;
         })
       );
     });
@@ -40,9 +40,9 @@ let _ =
         let gameObject2 =
           GameObjectRunAPI.create()->ResultTool.getExnSuccessValue;
 
-        GameObjectRunAPI.addBRDFMaterial(gameObject1, material)
+        GameObjectRunAPI.addBSDFMaterial(gameObject1, material)
         ->ResultTool.getExnSuccessValueIgnore;
-        GameObjectRunAPI.addBRDFMaterial(gameObject2, material)
+        GameObjectRunAPI.addBSDFMaterial(gameObject2, material)
         ->ResultTool.getExnSuccessValueIgnore;
 
         getGameObjects(material)->OptionSt.getExn->expect
@@ -55,13 +55,13 @@ let _ =
         "get the data from array buffer may not equal to the value which is setted",
         () => {
         let material = create()->ResultTool.getExnSuccessValue;
-        let color = (0.2, 0.3, 0.5)->BRDFMaterialTool.createDiffuseColor;
+        let color = (0.2, 0.3, 0.5)->BSDFMaterialTool.createDiffuseColor;
 
         setDiffuseColor(material, color)->ResultTool.getExnSuccessValueIgnore;
 
         getDiffuseColor(material)->expect
         == (0.20000000298023224, 0.30000001192092896, 0.5)
-           ->BRDFMaterialTool.createDiffuseColor;
+           ->BSDFMaterialTool.createDiffuseColor;
       });
 
       describe("getDiffuseColor", () =>
@@ -69,19 +69,19 @@ let _ =
           let material = create()->ResultTool.getExnSuccessValue;
 
           getDiffuseColor(material)->expect
-          == (0., 0., 0.)->BRDFMaterialTool.createDiffuseColor;
+          == (0., 0., 0.)->BSDFMaterialTool.createDiffuseColor;
         })
       );
 
       describe("setDiffuseColor", () =>
         test("set color", () => {
           let material = create()->ResultTool.getExnSuccessValue;
-          let color = (0.2, 0.3, 0.5)->BRDFMaterialTool.createDiffuseColor;
+          let color = (0.2, 0.3, 0.5)->BSDFMaterialTool.createDiffuseColor;
 
           setDiffuseColor(material, color)
           ->ResultTool.getExnSuccessValueIgnore;
 
-          getDiffuseColor(material)->BRDFMaterialTool.truncateColor->expect
+          getDiffuseColor(material)->BSDFMaterialTool.truncateColor->expect
           == color;
         })
       );

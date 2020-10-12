@@ -1,22 +1,22 @@
-open BRDFMaterialCPPOType;
+open BSDFMaterialCPPOType;
 
 let getMaxIndex = () => {
-  CPRepo.getExnBRDFMaterial().maxIndex;
+  CPRepo.getExnBSDFMaterial().maxIndex;
 };
 
 let setMaxIndex = maxIndex => {
-  CPRepo.setBRDFMaterial({...CPRepo.getExnBRDFMaterial(), maxIndex});
+  CPRepo.setBSDFMaterial({...CPRepo.getExnBSDFMaterial(), maxIndex});
 };
 
 let getGameObjects = material => {
-  CPRepo.getExnBRDFMaterial().gameObjectsMap
+  CPRepo.getExnBSDFMaterial().gameObjectsMap
   ->ImmutableSparseMap.get(material);
 };
 
 let addGameObject = (material, gameObject) => {
-  let {gameObjectsMap} as materialPO = CPRepo.getExnBRDFMaterial();
+  let {gameObjectsMap} as materialPO = CPRepo.getExnBSDFMaterial();
 
-  CPRepo.setBRDFMaterial({
+  CPRepo.setBSDFMaterial({
     ...materialPO,
     gameObjectsMap:
       gameObjectsMap->ListMapRepoUtils.addValue(material, gameObject),
@@ -24,74 +24,74 @@ let addGameObject = (material, gameObject) => {
 };
 
 let getDiffuseColor = material => {
-  OperateTypeArrayBRDFMaterialCPRepoUtils.getDiffuseColor(
+  OperateTypeArrayBSDFMaterialCPRepoUtils.getDiffuseColor(
     material,
-    CPRepo.getExnBRDFMaterial().diffuseColors,
+    CPRepo.getExnBSDFMaterial().diffuseColors,
   );
 };
 
 let setDiffuseColor = (material, diffuse) => {
-  OperateTypeArrayBRDFMaterialCPRepoUtils.setDiffuseColor(
+  OperateTypeArrayBSDFMaterialCPRepoUtils.setDiffuseColor(
     material,
     diffuse,
-    CPRepo.getExnBRDFMaterial().diffuseColors,
+    CPRepo.getExnBSDFMaterial().diffuseColors,
   );
 };
 
 let getSpecular = material => {
-  OperateTypeArrayBRDFMaterialCPRepoUtils.getSpecular(
+  OperateTypeArrayBSDFMaterialCPRepoUtils.getSpecular(
     material,
-    CPRepo.getExnBRDFMaterial().speculars,
+    CPRepo.getExnBSDFMaterial().speculars,
   );
 };
 
 let setSpecular = (material, specular) => {
-  OperateTypeArrayBRDFMaterialCPRepoUtils.setSpecular(
+  OperateTypeArrayBSDFMaterialCPRepoUtils.setSpecular(
     material,
     specular,
-    CPRepo.getExnBRDFMaterial().speculars,
+    CPRepo.getExnBSDFMaterial().speculars,
   );
 };
 
 let getRoughness = material => {
-  OperateTypeArrayBRDFMaterialCPRepoUtils.getRoughness(
+  OperateTypeArrayBSDFMaterialCPRepoUtils.getRoughness(
     material,
-    CPRepo.getExnBRDFMaterial().roughnesses,
+    CPRepo.getExnBSDFMaterial().roughnesses,
   );
 };
 
 let setRoughness = (material, roughness) => {
-  OperateTypeArrayBRDFMaterialCPRepoUtils.setRoughness(
+  OperateTypeArrayBSDFMaterialCPRepoUtils.setRoughness(
     material,
     roughness,
-    CPRepo.getExnBRDFMaterial().roughnesses,
+    CPRepo.getExnBSDFMaterial().roughnesses,
   );
 };
 
 let getMetalness = material => {
-  OperateTypeArrayBRDFMaterialCPRepoUtils.getMetalness(
+  OperateTypeArrayBSDFMaterialCPRepoUtils.getMetalness(
     material,
-    CPRepo.getExnBRDFMaterial().metalnesses,
+    CPRepo.getExnBSDFMaterial().metalnesses,
   );
 };
 
 let setMetalness = (material, metalness) => {
-  OperateTypeArrayBRDFMaterialCPRepoUtils.setMetalness(
+  OperateTypeArrayBSDFMaterialCPRepoUtils.setMetalness(
     material,
     metalness,
-    CPRepo.getExnBRDFMaterial().metalnesses,
+    CPRepo.getExnBSDFMaterial().metalnesses,
   );
 };
 
 let getDiffuseMapImageId = material => {
-  CPRepo.getExnBRDFMaterial().diffuseMapImageIdMap
+  CPRepo.getExnBSDFMaterial().diffuseMapImageIdMap
   ->ImmutableSparseMap.get(material);
 };
 
 let setDiffuseMapImageId = (material, id) => {
-  let {diffuseMapImageIdMap} as materialPO = CPRepo.getExnBRDFMaterial();
+  let {diffuseMapImageIdMap} as materialPO = CPRepo.getExnBSDFMaterial();
 
-  CPRepo.setBRDFMaterial({
+  CPRepo.setBSDFMaterial({
     ...materialPO,
     diffuseMapImageIdMap:
       diffuseMapImageIdMap->ImmutableSparseMap.set(material, id),
@@ -99,15 +99,15 @@ let setDiffuseMapImageId = (material, id) => {
 };
 
 let getChannelRoughnessMetallicMapImageId = material => {
-  CPRepo.getExnBRDFMaterial().channelRoughnessMetallicMapImageIdMap
+  CPRepo.getExnBSDFMaterial().channelRoughnessMetallicMapImageIdMap
   ->ImmutableSparseMap.get(material);
 };
 
 let setChannelRoughnessMetallicMapImageId = (material, id) => {
   let {channelRoughnessMetallicMapImageIdMap} as materialPO =
-    CPRepo.getExnBRDFMaterial();
+    CPRepo.getExnBSDFMaterial();
 
-  CPRepo.setBRDFMaterial({
+  CPRepo.setBSDFMaterial({
     ...materialPO,
     channelRoughnessMetallicMapImageIdMap:
       channelRoughnessMetallicMapImageIdMap->ImmutableSparseMap.set(material, id),
@@ -115,14 +115,14 @@ let setChannelRoughnessMetallicMapImageId = (material, id) => {
 };
 
 let getEmissionMapImageId = material => {
-  CPRepo.getExnBRDFMaterial().emissionMapImageIdMap
+  CPRepo.getExnBSDFMaterial().emissionMapImageIdMap
   ->ImmutableSparseMap.get(material);
 };
 
 let setEmissionMapImageId = (material, id) => {
-  let {emissionMapImageIdMap} as materialPO = CPRepo.getExnBRDFMaterial();
+  let {emissionMapImageIdMap} as materialPO = CPRepo.getExnBSDFMaterial();
 
-  CPRepo.setBRDFMaterial({
+  CPRepo.setBSDFMaterial({
     ...materialPO,
     emissionMapImageIdMap:
       emissionMapImageIdMap->ImmutableSparseMap.set(material, id),
@@ -130,14 +130,14 @@ let setEmissionMapImageId = (material, id) => {
 };
 
 let getNormalMapImageId = material => {
-  CPRepo.getExnBRDFMaterial().normalMapImageIdMap
+  CPRepo.getExnBSDFMaterial().normalMapImageIdMap
   ->ImmutableSparseMap.get(material);
 };
 
 let setNormalMapImageId = (material, id) => {
-  let {normalMapImageIdMap} as materialPO = CPRepo.getExnBRDFMaterial();
+  let {normalMapImageIdMap} as materialPO = CPRepo.getExnBSDFMaterial();
 
-  CPRepo.setBRDFMaterial({
+  CPRepo.setBSDFMaterial({
     ...materialPO,
     normalMapImageIdMap:
       normalMapImageIdMap->ImmutableSparseMap.set(material, id),

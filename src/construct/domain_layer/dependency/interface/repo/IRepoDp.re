@@ -2,7 +2,7 @@ open ScenePOType;
 
 open TransformPOType;
 
-open BRDFMaterialPOType;
+open BSDFMaterialPOType;
 
 open GeometryPOType;
 
@@ -25,9 +25,9 @@ type gameObjectRepo = {
   addTransform: (gameObject, transform) => unit,
   getTransform: gameObject => option(transform),
   hasTransform: gameObject => bool,
-  addBRDFMaterial: (gameObject, brdfMaterial) => unit,
-  getBRDFMaterial: gameObject => option(brdfMaterial),
-  hasBRDFMaterial: gameObject => bool,
+  addBSDFMaterial: (gameObject, bsdfMaterial) => unit,
+  getBSDFMaterial: gameObject => option(bsdfMaterial),
+  hasBSDFMaterial: gameObject => bool,
   addGeometry: (gameObject, geometry) => unit,
   getGeometry: gameObject => option(geometry),
   hasGeometry: gameObject => bool,
@@ -44,7 +44,7 @@ type gameObjectRepo = {
   hasPerspectiveCameraProjection: gameObject => bool,
   getAllGeometryGameObjects: unit => list(gameObject),
   getAllGameObjectGeometries: unit => list(geometry),
-  getAllGameObjectBRDFMaterials: unit => list(brdfMaterial),
+  getAllGameObjectBSDFMaterials: unit => list(bsdfMaterial),
 };
 
 type transformRepo = {
@@ -71,28 +71,28 @@ type transformRepo = {
   setLocalScale: (transform, scale) => Result.t2(unit),
 };
 
-type brdfMaterialRepo = {
+type bsdfMaterialRepo = {
   getMaxIndex: unit => ComponentPOType.index,
   setMaxIndex: ComponentPOType.index => unit,
-  getGameObjects: brdfMaterial => option(list(gameObject)),
-  addGameObject: (brdfMaterial, gameObject) => unit,
-  getDiffuseColor: brdfMaterial => diffuse,
-  setDiffuseColor: (brdfMaterial, diffuse) => Result.t2(unit),
-  getSpecular: brdfMaterial => float,
-  setSpecular: (brdfMaterial, float) => Result.t2(unit),
-  getRoughness: brdfMaterial => float,
-  setRoughness: (brdfMaterial, float) => Result.t2(unit),
-  getMetalness: brdfMaterial => float,
-  setMetalness: (brdfMaterial, float) => Result.t2(unit),
-  getDiffuseMapImageId: brdfMaterial => option(ImagePOType.id),
-  setDiffuseMapImageId: (brdfMaterial, ImagePOType.id) => unit,
+  getGameObjects: bsdfMaterial => option(list(gameObject)),
+  addGameObject: (bsdfMaterial, gameObject) => unit,
+  getDiffuseColor: bsdfMaterial => diffuse,
+  setDiffuseColor: (bsdfMaterial, diffuse) => Result.t2(unit),
+  getSpecular: bsdfMaterial => float,
+  setSpecular: (bsdfMaterial, float) => Result.t2(unit),
+  getRoughness: bsdfMaterial => float,
+  setRoughness: (bsdfMaterial, float) => Result.t2(unit),
+  getMetalness: bsdfMaterial => float,
+  setMetalness: (bsdfMaterial, float) => Result.t2(unit),
+  getDiffuseMapImageId: bsdfMaterial => option(ImagePOType.id),
+  setDiffuseMapImageId: (bsdfMaterial, ImagePOType.id) => unit,
   getChannelRoughnessMetallicMapImageId:
-    brdfMaterial => option(ImagePOType.id),
-  setChannelRoughnessMetallicMapImageId: (brdfMaterial, ImagePOType.id) => unit,
-  getEmissionMapImageId: brdfMaterial => option(ImagePOType.id),
-  setEmissionMapImageId: (brdfMaterial, ImagePOType.id) => unit,
-  getNormalMapImageId: brdfMaterial => option(ImagePOType.id),
-  setNormalMapImageId: (brdfMaterial, ImagePOType.id) => unit,
+    bsdfMaterial => option(ImagePOType.id),
+  setChannelRoughnessMetallicMapImageId: (bsdfMaterial, ImagePOType.id) => unit,
+  getEmissionMapImageId: bsdfMaterial => option(ImagePOType.id),
+  setEmissionMapImageId: (bsdfMaterial, ImagePOType.id) => unit,
+  getNormalMapImageId: bsdfMaterial => option(ImagePOType.id),
+  setNormalMapImageId: (bsdfMaterial, ImagePOType.id) => unit,
 };
 
 type geometryRepo = {
@@ -185,7 +185,7 @@ type repo = {
   sceneRepo,
   gameObjectRepo,
   transformRepo,
-  brdfMaterialRepo,
+  bsdfMaterialRepo,
   geometryRepo,
   directionLightRepo,
   basicCameraViewRepo,

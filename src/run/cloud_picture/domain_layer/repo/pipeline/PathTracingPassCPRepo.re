@@ -59,17 +59,17 @@ let setIndexBufferData = ((buffer, bufferSize)) => {
   });
 };
 
-let getBRDFMaterialBufferData = () => {
-  CPRepo.getRayTracingPass().brdfMaterialBufferData
+let getBSDFMaterialBufferData = () => {
+  CPRepo.getRayTracingPass().bsdfMaterialBufferData
   ->OptionSt.map(((buffer, bufferSize, typeArr)) => {
       (buffer->StorageBufferVO.create, bufferSize, typeArr)
     });
 };
 
-let setBRDFMaterialBufferData = ((buffer, bufferSize, typeArr)) => {
+let setBSDFMaterialBufferData = ((buffer, bufferSize, typeArr)) => {
   CPRepo.setRayTracingPass({
     ...CPRepo.getRayTracingPass(),
-    brdfMaterialBufferData:
+    bsdfMaterialBufferData:
       (buffer->StorageBufferVO.value, bufferSize, typeArr)->Some,
   });
 };

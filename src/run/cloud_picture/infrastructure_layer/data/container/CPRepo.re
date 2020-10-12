@@ -46,16 +46,16 @@ let setTransform = transform => {
   {...po, transform: transform->Some}->CPContainerManager.setPO;
 };
 
-let getExnBRDFMaterial = () => {
+let getExnBSDFMaterial = () => {
   let po = CPContainerManager.getPO();
 
-  po.brdfMaterial->OptionSt.getExn;
+  po.bsdfMaterial->OptionSt.getExn;
 };
 
-let setBRDFMaterial = brdfMaterial => {
+let setBSDFMaterial = bsdfMaterial => {
   let po = CPContainerManager.getPO();
 
-  {...po, brdfMaterial: brdfMaterial->Some}->CPContainerManager.setPO;
+  {...po, bsdfMaterial: bsdfMaterial->Some}->CPContainerManager.setPO;
 };
 
 let getExnGeometry = () => {

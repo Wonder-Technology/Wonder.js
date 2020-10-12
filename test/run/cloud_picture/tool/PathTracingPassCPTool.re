@@ -10,8 +10,8 @@ let getVertexBufferData = () =>
 let getIndexBufferData = () =>
   PathTracingPassCPRepo.getIndexBufferData()->OptionSt.getExn;
 
-let getBRDFMaterialBufferData = () =>
-  PathTracingPassCPRepo.getBRDFMaterialBufferData()->OptionSt.getExn;
+let getBSDFMaterialBufferData = () =>
+  PathTracingPassCPRepo.getBSDFMaterialBufferData()->OptionSt.getExn;
 
 let getShaderBindingTable = () =>
   PathTracingPassCPRepo.getShaderBindingTable()->OptionSt.getExn;

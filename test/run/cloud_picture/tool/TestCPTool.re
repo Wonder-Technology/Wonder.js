@@ -5,7 +5,7 @@ let init =
       ~transformCount=10,
       ~geometryPointCount=10,
       ~geometryCount=10,
-      ~brdfMaterialCount=10,
+      ~bsdfMaterialCount=10,
       ~directionLightCount=2,
       ~initPipelineData=PipelineTool.buildEmptyPipelineData(),
       ~updatePipelineData=PipelineTool.buildEmptyPipelineData(),
@@ -17,7 +17,7 @@ let init =
     ~transformCount,
     ~geometryPointCount,
     ~geometryCount,
-    ~brdfMaterialCount,
+    ~bsdfMaterialCount,
     ~directionLightCount,
     (),
   );
@@ -32,7 +32,7 @@ let init =
     ~transformCount,
     ~geometryPointCount,
     ~geometryCount,
-    ~brdfMaterialCount,
+    ~bsdfMaterialCount,
     ~directionLightCount,
     (),
   );
@@ -47,7 +47,7 @@ let updateBufferCount =
       ~transformCount=10,
       ~geometryPointCount=10,
       ~geometryCount=10,
-      ~brdfMaterialCount=10,
+      ~bsdfMaterialCount=10,
       ~directionLightCount=2,
       (),
     ) => {
@@ -55,7 +55,7 @@ let updateBufferCount =
     ~transformCount,
     ~geometryPointCount,
     ~geometryCount,
-    ~brdfMaterialCount,
+    ~bsdfMaterialCount,
     ~directionLightCount,
     (),
   );

@@ -55,15 +55,15 @@ void main() {
                                  data.V, shading, topLevelAS) *
               throughput;
 
-  const vec3 brdfDir =
+  const vec3 bsdfDir =
       disneySample(seed, data.V, data.worldNormal, EPSILON, shading);
 
-  computeIndirectLight(data.V, brdfDir, data.worldNormal, shading, throughput,
+  computeIndirectLight(data.V, bsdfDir, data.worldNormal, shading, throughput,
                        t);
 
   prd.radiance = radiance;
   prd.t = t;
-  prd.scatterDirection = brdfDir;
+  prd.scatterDirection = bsdfDir;
   prd.throughput = throughput;
   prd.seed = seed;
 }

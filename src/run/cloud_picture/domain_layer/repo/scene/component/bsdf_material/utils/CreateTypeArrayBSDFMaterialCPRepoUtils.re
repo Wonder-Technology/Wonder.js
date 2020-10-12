@@ -1,6 +1,6 @@
 open Js.Typed_array;
 
-open BufferBRDFMaterialCPRepoUtils;
+open BufferBSDFMaterialCPRepoUtils;
 
 let createTypeArrays = (buffer, count) => (
   Float32Array.fromBufferRange(

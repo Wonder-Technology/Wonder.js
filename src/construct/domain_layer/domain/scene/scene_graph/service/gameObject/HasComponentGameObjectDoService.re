@@ -4,8 +4,8 @@ let hasTransform = gameObject => {
   );
 };
 
-let hasBRDFMaterial = gameObject => {
-  DpContainer.unsafeGetGameObjectRepoDp().hasBRDFMaterial(
+let hasBSDFMaterial = gameObject => {
+  DpContainer.unsafeGetGameObjectRepoDp().hasBSDFMaterial(
     gameObject->GameObjectEntity.value,
   );
 };

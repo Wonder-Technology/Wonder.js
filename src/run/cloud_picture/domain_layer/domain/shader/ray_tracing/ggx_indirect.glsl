@@ -1,5 +1,5 @@
 void computeIndirectLight( in vec3 V,
-                          in vec3 brdfDir,
+                          in vec3 bsdfDir,
 
 vec3 worldNormal,
                           in ShadingData shading,
@@ -7,7 +7,7 @@ vec3 worldNormal,
                           inout float t
                           ) {
   const vec3 N = worldNormal;
-  const vec3 L = brdfDir;
+  const vec3 L = bsdfDir;
   const vec3 H = normalize(V + L);
 
   const float NdotH = abs(dot(N, H));

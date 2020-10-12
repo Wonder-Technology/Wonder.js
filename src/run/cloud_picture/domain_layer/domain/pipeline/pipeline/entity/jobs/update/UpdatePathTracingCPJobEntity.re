@@ -24,12 +24,12 @@ let _buildAndSetSceneDescBufferData = (device, allRenderGameObjects) => {
       Tuple3.collectOption(
         GameObjectRunAPI.getTransform(gameObject),
         GameObjectRunAPI.getGeometry(gameObject),
-        GameObjectRunAPI.getBRDFMaterial(gameObject),
+        GameObjectRunAPI.getBSDFMaterial(gameObject),
       )
     })
   ->Result.bind(list => {
       list->ListSt.traverseReduceResultM(
-        0, (offset, (transform, geometry, brdfMaterial)) => {
+        0, (offset, (transform, geometry, bsdfMaterial)) => {
         TransformRunAPI.getNormalMatrix(transform)
         ->Result.bind(normalMatrix => {
             ListResult.mergeResults([
@@ -37,7 +37,7 @@ let _buildAndSetSceneDescBufferData = (device, allRenderGameObjects) => {
                 offset + 0,
                 (
                   geometry->GeometryEntity.value->Belt.Float.fromInt,
-                  brdfMaterial->BRDFMaterialEntity.value->Belt.Float.fromInt,
+                  bsdfMaterial->BSDFMaterialEntity.value->Belt.Float.fromInt,
                 ),
                 bufferData,
               ),
@@ -381,10 +381,10 @@ let _computeMapScale = mapImageIdOpt => {
     );
 };
 
-let _buildAndSetBRDFMaterialBufferData = (device, allRenderBRDFMaterials) => {
-  let brdfMaterialCount = allRenderBRDFMaterials->ListSt.length;
+let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
+  let bsdfMaterialCount = allRenderBSDFMaterials->ListSt.length;
   let dataCount = 4 + 4 + 4 + 8;
-  let bufferData = Float32Array.fromLength(brdfMaterialCount * dataCount);
+  let bufferData = Float32Array.fromLength(bsdfMaterialCount * dataCount);
   let bufferSize = bufferData->Float32Array.byteLength;
 
   let buffer =
@@ -397,30 +397,30 @@ let _buildAndSetBRDFMaterialBufferData = (device, allRenderBRDFMaterials) => {
       (),
     );
 
-  allRenderBRDFMaterials
+  allRenderBSDFMaterials
   ->ListSt.traverseReduceResultM(
       0,
-      (offset, brdfMaterial) => {
+      (offset, bsdfMaterial) => {
         let diffuse =
-          BRDFMaterialRunAPI.getDiffuseColor(brdfMaterial)
+          BSDFMaterialRunAPI.getDiffuseColor(bsdfMaterial)
           ->DiffuseVO.getPrimitiveValue;
         let specular =
-          BRDFMaterialRunAPI.getSpecular(brdfMaterial)->SpecularVO.value;
+          BSDFMaterialRunAPI.getSpecular(bsdfMaterial)->SpecularVO.value;
         let roughness =
-          BRDFMaterialRunAPI.getRoughness(brdfMaterial)->RoughnessVO.value;
+          BSDFMaterialRunAPI.getRoughness(bsdfMaterial)->RoughnessVO.value;
         let metalness =
-          BRDFMaterialRunAPI.getMetalness(brdfMaterial)->MetalnessVO.value;
+          BSDFMaterialRunAPI.getMetalness(bsdfMaterial)->MetalnessVO.value;
 
         let diffuseMapImageId =
-          BRDFMaterialRunAPI.getDiffuseMapImageId(brdfMaterial);
+          BSDFMaterialRunAPI.getDiffuseMapImageId(bsdfMaterial);
         let channelRoughnessMetallicMapImageId =
-          BRDFMaterialRunAPI.getChannelRoughnessMetallicMapImageId(
-            brdfMaterial,
+          BSDFMaterialRunAPI.getChannelRoughnessMetallicMapImageId(
+            bsdfMaterial,
           );
         let emissionMapImageId =
-          BRDFMaterialRunAPI.getEmissionMapImageId(brdfMaterial);
+          BSDFMaterialRunAPI.getEmissionMapImageId(bsdfMaterial);
         let normalMapImageId =
-          BRDFMaterialRunAPI.getNormalMapImageId(brdfMaterial);
+          BSDFMaterialRunAPI.getNormalMapImageId(bsdfMaterial);
 
         Tuple4.collectResult(
           _computeMapScale(diffuseMapImageId),
@@ -485,7 +485,7 @@ let _buildAndSetBRDFMaterialBufferData = (device, allRenderBRDFMaterials) => {
         bufferData,
         buffer->StorageBufferVO.value,
       );
-      PathTracingPassCPRepo.setBRDFMaterialBufferData((
+      PathTracingPassCPRepo.setBSDFMaterialBufferData((
         buffer,
         bufferSize,
         bufferData,
@@ -504,9 +504,9 @@ let _buildAndSetAllBufferData = device => {
     _buildAndSetPointIndexBufferData(device, allRenderGeometries),
     _buildAndSetVertexBufferData(device),
     _buildAndSetIndexBufferData(device)->Result.succeed,
-    _buildAndSetBRDFMaterialBufferData(
+    _buildAndSetBSDFMaterialBufferData(
       device,
-      GameObjectRunAPI.getAllRenderBRDFMaterials(),
+      GameObjectRunAPI.getAllRenderBSDFMaterials(),
     ),
   ]);
 };
@@ -520,7 +520,7 @@ let _createAndAddRayTracingBindGroup =
         (pointIndexBuffer, pointIndexBufferSize, _),
         (vertexBuffer, vertexBufferSize, _),
         (indexBuffer, indexBufferSize),
-        (brdfMaterialBuffer, brdfMaterialBufferSize, _),
+        (bsdfMaterialBuffer, bsdfMaterialBufferSize, _),
         textureSampler,
         textureArrayView,
       ),
@@ -665,9 +665,9 @@ let _createAndAddRayTracingBindGroup =
           ),
           IWebGPURayTracingDp.binding(
             ~binding=7,
-            ~buffer=brdfMaterialBuffer->StorageBufferVO.value,
+            ~buffer=bsdfMaterialBuffer->StorageBufferVO.value,
             ~offset=0,
-            ~size=brdfMaterialBufferSize,
+            ~size=bsdfMaterialBufferSize,
             (),
           ),
           IWebGPURayTracingDp.binding(
@@ -758,7 +758,7 @@ let exec = () => {
                     PathTracingPassCPRepo.getPointIndexBufferData(),
                     PathTracingPassCPRepo.getVertexBufferData(),
                     PathTracingPassCPRepo.getIndexBufferData(),
-                    PathTracingPassCPRepo.getBRDFMaterialBufferData(),
+                    PathTracingPassCPRepo.getBSDFMaterialBufferData(),
                     TextureArrayWebGPUCPRepo.getTextureSampler(),
                     TextureArrayWebGPUCPRepo.getTextureArrayView(),
                   )

@@ -24,19 +24,19 @@ let _ =
         GameObjectCPAPI.create()->ResultTool.getExnSuccessValue;
 
       let material1 =
-        BRDFMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
+        BSDFMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
       let material2 =
-        BRDFMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
-      GameObjectCPAPI.addBRDFMaterial(gameObject1, material1)
+        BSDFMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
+      GameObjectCPAPI.addBSDFMaterial(gameObject1, material1)
       ->ResultTool.getExnSuccessValueIgnore;
-      GameObjectCPAPI.addBRDFMaterial(gameObject2, material2)
+      GameObjectCPAPI.addBSDFMaterial(gameObject2, material2)
       ->ResultTool.getExnSuccessValueIgnore;
 
       let (
         (id1, id2, id3, id4, id5),
         (imageData1, imageData2, imageData3, imageData4, imageData5),
       ) =
-        BRDFMaterialCPTool.setMapData(material1, material2);
+        BSDFMaterialCPTool.setMapData(material1, material2);
 
       (
         (device, queue),

@@ -3,7 +3,7 @@ let setAllCount =
       ~transformCount=10,
       ~geometryPointCount=10,
       ~geometryCount=10,
-      ~brdfMaterialCount=10,
+      ~bsdfMaterialCount=10,
       ~directionLightCount=2,
       (),
     ) => {
@@ -11,7 +11,7 @@ let setAllCount =
     ~transformCount,
     ~geometryPointCount,
     ~geometryCount,
-    ~brdfMaterialCount,
+    ~bsdfMaterialCount,
     ~directionLightCount,
   );
 };

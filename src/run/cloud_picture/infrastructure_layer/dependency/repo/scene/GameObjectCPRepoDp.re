@@ -26,23 +26,23 @@ let hasTransform = gameObject => {
   CPRepo.getGameObject().transformMap->ImmutableSparseMap.has(gameObject);
 };
 
-let addBRDFMaterial = (gameObject, material) => {
-  let {brdfMaterialMap} as gameObjectPO = CPRepo.getGameObject();
+let addBSDFMaterial = (gameObject, material) => {
+  let {bsdfMaterialMap} as gameObjectPO = CPRepo.getGameObject();
 
   CPRepo.setGameObject({
     ...gameObjectPO,
-    brdfMaterialMap:
-      brdfMaterialMap->ImmutableSparseMap.set(gameObject, material),
+    bsdfMaterialMap:
+      bsdfMaterialMap->ImmutableSparseMap.set(gameObject, material),
   });
 };
 
-let getBRDFMaterial = gameObject => {
-  CPRepo.getGameObject().brdfMaterialMap
+let getBSDFMaterial = gameObject => {
+  CPRepo.getGameObject().bsdfMaterialMap
   ->ImmutableSparseMap.get(gameObject);
 };
 
-let hasBRDFMaterial = gameObject => {
-  CPRepo.getGameObject().brdfMaterialMap->ImmutableSparseMap.has(gameObject);
+let hasBSDFMaterial = gameObject => {
+  CPRepo.getGameObject().bsdfMaterialMap->ImmutableSparseMap.has(gameObject);
 };
 
 let addGeometry = (gameObject, geometry) => {
@@ -139,8 +139,8 @@ let getAllGameObjectGeometries = () => {
   ->ListSt.fromArray;
 };
 
-let getAllGameObjectBRDFMaterials = () => {
-  CPRepo.getGameObject().brdfMaterialMap
+let getAllGameObjectBSDFMaterials = () => {
+  CPRepo.getGameObject().bsdfMaterialMap
   ->ImmutableSparseMap.getValues
   ->ListSt.fromArray;
 };

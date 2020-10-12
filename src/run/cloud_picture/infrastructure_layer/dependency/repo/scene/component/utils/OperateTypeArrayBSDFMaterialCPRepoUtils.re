@@ -1,4 +1,4 @@
-open BufferBRDFMaterialCPRepoUtils;
+open BufferBSDFMaterialCPRepoUtils;
 
 let getDiffuseColor = (index, typeArr) =>
   TypeArrayCPRepoUtils.getFloat3Tuple(getDiffuseColorIndex(index), typeArr);

@@ -10,32 +10,32 @@ let _addImageIdAndData = (result, imageId) => {
 };
 
 let _getAllUsedImageIdAndData = () => {
-  GameObjectRunAPI.getAllRenderBRDFMaterials()
+  GameObjectRunAPI.getAllRenderBSDFMaterials()
   ->ListSt.reduce(
       [],
       (result, material) => {
         let result =
-          switch (BRDFMaterialRunAPI.getDiffuseMapImageId(material)) {
+          switch (BSDFMaterialRunAPI.getDiffuseMapImageId(material)) {
           | None => result
           | Some(imageId) => _addImageIdAndData(result, imageId)
           };
 
         let result =
           switch (
-            BRDFMaterialRunAPI.getChannelRoughnessMetallicMapImageId(material)
+            BSDFMaterialRunAPI.getChannelRoughnessMetallicMapImageId(material)
           ) {
           | None => result
           | Some(imageId) => _addImageIdAndData(result, imageId)
           };
 
         let result =
-          switch (BRDFMaterialRunAPI.getEmissionMapImageId(material)) {
+          switch (BSDFMaterialRunAPI.getEmissionMapImageId(material)) {
           | None => result
           | Some(imageId) => _addImageIdAndData(result, imageId)
           };
 
         let result =
-          switch (BRDFMaterialRunAPI.getNormalMapImageId(material)) {
+          switch (BSDFMaterialRunAPI.getNormalMapImageId(material)) {
           | None => result
           | Some(imageId) => _addImageIdAndData(result, imageId)
           };

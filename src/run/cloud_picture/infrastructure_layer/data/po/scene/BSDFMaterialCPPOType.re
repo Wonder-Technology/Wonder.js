@@ -1,4 +1,4 @@
-type brdfMaterial = {
+type bsdfMaterial = {
   maxIndex: ComponentCPPOType.index,
   buffer: SharedArrayBufferCPPOType.sharedArrayBuffer,
   mutable diffuseColors: Js.Typed_array.Float32Array.t,
@@ -11,11 +11,11 @@ type brdfMaterial = {
   defaultMetalness: float,
   gameObjectsMap: ComponentCPPOType.gameObjectsMap,
   diffuseMapImageIdMap:
-    ImmutableSparseMap.t(BRDFMaterialPOType.brdfMaterial, ImagePOType.id),
+    ImmutableSparseMap.t(BSDFMaterialPOType.bsdfMaterial, ImagePOType.id),
   channelRoughnessMetallicMapImageIdMap:
-    ImmutableSparseMap.t(BRDFMaterialPOType.brdfMaterial, ImagePOType.id),
+    ImmutableSparseMap.t(BSDFMaterialPOType.bsdfMaterial, ImagePOType.id),
   emissionMapImageIdMap:
-    ImmutableSparseMap.t(BRDFMaterialPOType.brdfMaterial, ImagePOType.id),
+    ImmutableSparseMap.t(BSDFMaterialPOType.bsdfMaterial, ImagePOType.id),
   normalMapImageIdMap:
-    ImmutableSparseMap.t(BRDFMaterialPOType.brdfMaterial, ImagePOType.id),
+    ImmutableSparseMap.t(BSDFMaterialPOType.bsdfMaterial, ImagePOType.id),
 };

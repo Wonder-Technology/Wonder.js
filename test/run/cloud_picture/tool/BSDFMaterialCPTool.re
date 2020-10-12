@@ -1,9 +1,9 @@
 let createAndAddTwoMaterials = (gameObject1, gameObject2) => {
-  let material1 = BRDFMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
-  let material2 = BRDFMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
-  GameObjectCPAPI.addBRDFMaterial(gameObject1, material1)
+  let material1 = BSDFMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
+  let material2 = BSDFMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
+  GameObjectCPAPI.addBSDFMaterial(gameObject1, material1)
   ->ResultTool.getExnSuccessValueIgnore;
-  GameObjectCPAPI.addBRDFMaterial(gameObject2, material2)
+  GameObjectCPAPI.addBSDFMaterial(gameObject2, material2)
   ->ResultTool.getExnSuccessValueIgnore;
   let diffuseColor1 = (1., 0., 0.)->Color3VO.create->DiffuseVO.create;
   let diffuseColor2 = (0., 1., 0.)->Color3VO.create->DiffuseVO.create;
@@ -13,21 +13,21 @@ let createAndAddTwoMaterials = (gameObject1, gameObject2) => {
   let roughness2 = 1.5->RoughnessVO.create;
   let metalness1 = 1.0->MetalnessVO.create;
   let metalness2 = 2.0->MetalnessVO.create;
-  BRDFMaterialCPAPI.setDiffuseColor(material1, diffuseColor1)
+  BSDFMaterialCPAPI.setDiffuseColor(material1, diffuseColor1)
   ->ResultTool.getExnSuccessValueIgnore;
-  BRDFMaterialCPAPI.setDiffuseColor(material2, diffuseColor2)
+  BSDFMaterialCPAPI.setDiffuseColor(material2, diffuseColor2)
   ->ResultTool.getExnSuccessValueIgnore;
-  BRDFMaterialCPAPI.setSpecular(material1, specular1)
+  BSDFMaterialCPAPI.setSpecular(material1, specular1)
   ->ResultTool.getExnSuccessValueIgnore;
-  BRDFMaterialCPAPI.setSpecular(material2, specular2)
+  BSDFMaterialCPAPI.setSpecular(material2, specular2)
   ->ResultTool.getExnSuccessValueIgnore;
-  BRDFMaterialCPAPI.setRoughness(material1, roughness1)
+  BSDFMaterialCPAPI.setRoughness(material1, roughness1)
   ->ResultTool.getExnSuccessValueIgnore;
-  BRDFMaterialCPAPI.setRoughness(material2, roughness2)
+  BSDFMaterialCPAPI.setRoughness(material2, roughness2)
   ->ResultTool.getExnSuccessValueIgnore;
-  BRDFMaterialCPAPI.setMetalness(material1, metalness1)
+  BSDFMaterialCPAPI.setMetalness(material1, metalness1)
   ->ResultTool.getExnSuccessValueIgnore;
-  BRDFMaterialCPAPI.setMetalness(material2, metalness2)
+  BSDFMaterialCPAPI.setMetalness(material2, metalness2)
   ->ResultTool.getExnSuccessValueIgnore;
 
   (
@@ -92,12 +92,12 @@ let setMapData = (material1, material2) => {
     height: 4,
     data: Js.Typed_array.Uint8Array.make([|0, 4|]),
   };
-  BRDFMaterialCPAPI.setDiffuseMapImageId(material1, id2);
-  BRDFMaterialCPAPI.setChannelRoughnessMetallicMapImageId(material1, id1);
-  BRDFMaterialCPAPI.setNormalMapImageId(material1, id3);
-  BRDFMaterialCPAPI.setDiffuseMapImageId(material2, id2);
-  BRDFMaterialCPAPI.setEmissionMapImageId(material2, id4);
-  BRDFMaterialCPAPI.setChannelRoughnessMetallicMapImageId(material2, id1);
+  BSDFMaterialCPAPI.setDiffuseMapImageId(material1, id2);
+  BSDFMaterialCPAPI.setChannelRoughnessMetallicMapImageId(material1, id1);
+  BSDFMaterialCPAPI.setNormalMapImageId(material1, id3);
+  BSDFMaterialCPAPI.setDiffuseMapImageId(material2, id2);
+  BSDFMaterialCPAPI.setEmissionMapImageId(material2, id4);
+  BSDFMaterialCPAPI.setChannelRoughnessMetallicMapImageId(material2, id1);
   ImageTool.setData(id1, imageData1);
   ImageTool.setData(id2, imageData2);
   ImageTool.setData(id3, imageData3);
