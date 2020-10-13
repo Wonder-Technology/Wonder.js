@@ -27,20 +27,31 @@ struct PointIndexData {
 struct BSDFMaterial {
   vec4 diffuse;
 
+  vec4 specularColor;
+
   float metalness;
   float roughness;
   float specular;
-  float pad_0;
+  float transmission;
 
+  float ior;
   float diffuseMapLayerIndex;
   float channelRoughnessMetallicMapLayerIndex;
   float emissionMapLayerIndex;
+
   float normalMapLayerIndex;
+  float transmissionMapLayerIndex;
+  float specularMapLayerIndex;
+  float pad_0;
 
   vec2 diffuseMapScale;
   vec2 channelRoughnessMetallicMapScale;
+
   vec2 emissionMapScale;
   vec2 normalMapScale;
+
+  vec2 transmissionMapScale;
+  vec2 specularMapScale;
 };
 
 hitAttributeEXT vec3 attribs;
@@ -120,10 +131,13 @@ struct HitShadingData {
   vec3 worldNormal;
   vec3 V;
   vec3 materialDiffuse;
+  vec3 materialSpecularColor;
   vec3 materialEmission;
   float materialMetalness;
   float materialRoughness;
   float materialSpecular;
+  float materialTransmission;
+  float materialIOR;
 };
 
 HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
@@ -165,6 +179,8 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   uint emissionMapLayerIndex = uint(mat.emissionMapLayerIndex);
   uint channelRoughnessMetallicMapLayerIndex =
       uint(mat.channelRoughnessMetallicMapLayerIndex);
+  uint transmissionMapLayerIndex = uint(mat.transmissionMapLayerIndex);
+  uint specularMapLayerIndex = uint(mat.specularMapLayerIndex);
 
   HitShadingData data;
 
@@ -177,6 +193,20 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
         vec3(mat.diffuse);
   } else {
     data.materialDiffuse = vec3(mat.diffuse);
+  }
+
+  if (_hasMap(specularMapLayerIndex)) {
+    vec4 specularMap =
+        texture(sampler2DArray(textureArray, textureSampler),
+                vec3(uv * mat.specularMapScale, specularMapLayerIndex));
+
+    data.materialSpecularColor =
+        convertSRGBToLinear(specularMap.rgb) * vec3(mat.specularColor);
+
+    data.materialSpecular = specularMap.a * mat.specular;
+  } else {
+    data.materialSpecularColor = vec3(mat.specularColor);
+    data.materialSpecular = mat.specular;
   }
 
   if (_hasMap(normalMapLayerIndex)) {
@@ -215,7 +245,16 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
     data.materialRoughness = mat.roughness;
   }
 
-  data.materialSpecular = mat.specular;
+  if (_hasMap(transmissionMapLayerIndex)) {
+    data.materialTransmission =
+        texture(sampler2DArray(textureArray, textureSampler),
+                vec3(uv * mat.transmissionMapScale, transmissionMapLayerIndex))
+            .r;
+  } else {
+    data.materialTransmission = mat.transmission;
+  }
+
+  data.materialIOR = mat.ior;
 
   const vec3 p0 = v0.position.xyz, p1 = v1.position.xyz, p2 = v2.position.xyz;
 
@@ -225,7 +264,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
       vec3(_getModelMatrix(instanceData) * vec4(localPos, 1.0));
 
   // data.V = normalize(uCamera.cameraPosition.xyz - data.worldPosition);
-  data.V = -gl_WorldRayDirectionEXT;
+  data.V = getVFromRayDirection(gl_WorldRayDirectionEXT);
 
   return data;
 }

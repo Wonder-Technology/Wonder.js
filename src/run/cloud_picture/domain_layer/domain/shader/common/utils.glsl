@@ -32,3 +32,7 @@ vec3 gammaCorrection(vec3 colorInLinearSpace) {
 vec3 convertSRGBToLinear(vec3 specificColorDefinedInShader) {
   return pow(specificColorDefinedInShader, vec3(2.2));
 }
+
+vec3 getVFromRayDirection(vec3 rayDirection) { return -rayDirection; }
+
+vec3 getRayDirectionFromV(vec3 V) { return -V; }

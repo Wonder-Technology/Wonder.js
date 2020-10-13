@@ -17,7 +17,7 @@
 
 #include "light.glsl"
 
-#include "disney.glsl"
+#include "bsdf.glsl"
 
 layout(location = 1) rayPayloadEXT bool isShadowed;
 
@@ -43,11 +43,19 @@ void main() {
 
   HitShadingData data = getHitShadingData(gl_InstanceID, gl_PrimitiveID);
 
+  float outsideIOR = 1.0;
+
+  float bsdfSpecularLobeProb = computeBSDFSpecularLobeProb(
+      gl_WorldRayDirectionEXT, data.worldNormal, outsideIOR, data.materialIOR);
+
   ShadingData shading = buildShadingData(
-      data.materialDiffuse, data.materialEmission, data.materialMetalness,
-      data.materialRoughness, data.materialSpecular,
+      data.materialDiffuse, data.materialSpecularColor, data.materialEmission,
+      data.materialMetalness, data.materialRoughness, data.materialSpecular,
+      data.materialTransmission, data.materialIOR, outsideIOR,
       computeSpecularLobeProb(data.materialDiffuse, data.materialSpecular,
-                              data.materialMetalness));
+                              data.materialMetalness),
+      bsdfSpecularLobeProb,
+      isFromOutside(gl_WorldRayDirectionEXT, data.worldNormal));
 
   radiance += shading.emission * throughput;
 
