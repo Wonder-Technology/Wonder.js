@@ -1,4 +1,5 @@
-vec3 computeDirectLight(inout float seed, float epsilon, float tMin,
+
+vec3 computeDirectLight(inout uint seed, float epsilon, float tMin,
                         vec3 worldPosition, vec3 worldNormal, vec3 V,
                         ShadingData shading,
 

@@ -15,6 +15,8 @@
 //   return vec2(saturateFloat(v.x), saturateFloat(v.y));
 // }
 
+float max(float f1, float f2, float f3) { return max(max(f1, f2), f3); }
+
 uint getPixelIndex(vec2 uv, vec2 resolution) {
   const ivec2 bufferCoord = ivec2(floor(uv * resolution));
 

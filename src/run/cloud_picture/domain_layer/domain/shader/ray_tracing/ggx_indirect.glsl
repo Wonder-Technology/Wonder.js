@@ -1,3 +1,4 @@
+
 void computeIndirectLight(inout uint seed, in float epsilon, in vec3 V,
                           in vec3 bsdfDir,
 
@@ -10,10 +11,10 @@ void computeIndirectLight(inout uint seed, in float epsilon, in vec3 V,
 
   float NdotHForBRDF;
   float VdotHForBRDF;
-  vec3 NDFForBRDF;
+  float NDFForBRDF;
   float NdotHForFresnel;
   float VdotHForFresnel;
-  vec3 NDFForFresnel;
+  float NDFForFresnel;
   vec3 f = eval(seed, L, N, V, epsilon, shading, NdotHForBRDF, VdotHForBRDF,
                 NDFForBRDF, NdotHForFresnel, VdotHForFresnel, NDFForFresnel);
 

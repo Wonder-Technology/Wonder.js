@@ -25,9 +25,9 @@ layout(location = 1) rayPayloadEXT bool isShadowed;
 
 #include "ggx_direct.glsl"
 
-layout(location = 0) rayPayloadInEXT hitPayload prd;
-
 #include "ggx_indirect.glsl"
+
+layout(location = 0) rayPayloadInEXT hitPayload prd;
 
 layout(set = 0, binding = 0) uniform accelerationStructureEXT topLevelAS;
 
@@ -62,7 +62,8 @@ void main() {
                          data.worldNormal, data.V, shading, topLevelAS) *
       throughput;
 
-  const vec3 bsdfDir = sample(seed, data.V, data.worldNormal, EPSILON, shading);
+  const vec3 bsdfDir =
+      sample_(seed, data.V, data.worldNormal, EPSILON, shading);
 
   computeIndirectLight(seed, EPSILON, data.V, bsdfDir, data.worldNormal,
                        shading, throughput, t);
