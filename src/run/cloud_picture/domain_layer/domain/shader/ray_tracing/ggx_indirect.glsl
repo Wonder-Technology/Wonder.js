@@ -1,25 +1,28 @@
-void computeIndirectLight( in vec3 V,
+void computeIndirectLight(inout uint seed, in float epsilon, in vec3 V,
                           in vec3 bsdfDir,
 
-vec3 worldNormal,
-                          in ShadingData shading,
-                          inout vec3 throughput,
-                          inout float t
-                          ) {
+                          in vec3 worldNormal, in ShadingData shading,
+                          inout vec3 throughput, inout float t) {
   const vec3 N = worldNormal;
   const vec3 L = bsdfDir;
-  const vec3 H = normalize(V + L);
 
-  const float NdotH = abs(dot(N, H));
   const float NdotL = abs(dot(L, N));
-  const float HdotL = abs(dot(H, L));
-  const float NdotV = abs(dot(N, V));
 
+  float NdotHForBRDF;
+  float VdotHForBRDF;
+  vec3 NDFForBRDF;
+  float NdotHForFresnel;
+  float VdotHForFresnel;
+  vec3 NDFForFresnel;
+  vec3 f = eval(seed, L, N, V, epsilon, shading, NdotHForBRDF, VdotHForBRDF,
+                NDFForBRDF, NdotHForFresnel, VdotHForFresnel, NDFForFresnel);
 
-  const float pdf = computeDiffuseAndSpecularPdf(NdotH, NdotL, HdotL, shading);
+  const float pdf =
+      computePdf(NdotL, NdotHForBRDF, VdotHForBRDF, NDFForBRDF, NdotHForFresnel,
+                 VdotHForFresnel, NDFForFresnel, shading);
 
   if (pdf > 0.0) {
-    throughput *= eval(NdotL, NdotV, NdotH, HdotL, shading) / pdf;
+    throughput *= f / pdf;
   } else {
     t = -1.0;
   }

@@ -101,12 +101,22 @@ float _geometrySmith(float NdotV, float NdotL, float roughness) {
 
 float pow5(float v) { return v * v * v * v * v; }
 
-vec3 _evalDiffuseBRDF(vec3 cdiff, vec3 F) {
+vec3 _evalDiffuseBRDF(float NdotL, float NdotV, vec3 baseColor, float metallic,
+                      vec3 f0, vec3 F) {
+  if (NdotL <= 0.0 || NdotV <= 0.0)
+    return vec3(0.0);
+
+  vec3 black = vec3(0.0);
+  vec3 cdiff = mix(baseColor * (1.0 - max(f0.r, f0.g, f0.b)), black, metallic);
+
   return (1.0 - max(F.r, F.g, F.b)) * cdiff / PI;
 }
 
-vec3 _evalSpecularBRDF(float D, float G, vec3 F, float epsilon, float NdotL,
-                       float NdotV) {
+vec3 _evalSpecularBRDF(float NdotL, float NdotV, float D, float G, vec3 F,
+                       float epsilon, float NdotL, float NdotV) {
+  if (NdotL <= 0.0 || NdotV <= 0.0)
+    return vec3(0.0);
+
   // Microfacet specular = D * G * F / (4 * NdotL * NdotV)
   vec3 nominator = D * G * F;
   float denominator = 4.0 * NdotV * NdotL + epsilon;
@@ -131,22 +141,18 @@ vec3 _affectByLight(float NdotL, vec3 radiance) {
 vec3 _evalRefractionBTDF(float NdotV, float NdotL, float NdotH, float VdotH,
                          vec3 H, vec3 L, vec3 V, float D, float G, vec3 F,
                          float epsilon, float etaIn, float etaOut) {
-
   float term1 = VdotH * LdotH / (NdotV * NdotL);
   vec3 term2 = etaOut * etaOut * (1 - F) * G * D;
-  // term1 = 1;
-  // term2 = 1;
   float term3 =
       (etaIn * VdotH + etaOut * LdotH) * (etaIn * VdotH + etaOut * LdotH) +
       epsilon;
-  // term3 = 1;
 
   return term1 * term2 / term3;
 }
 
 void _evalForBRDF(in vec3 L, in vec3 N, in vec3 V, in vec3 f0, in float f90,
                   in ShadingData shading, out float NdotH, out float VdotH,
-                  out vec3 F, out float NDF, out vec3 cdiff) {
+                  out vec3 F, out float NDF) {
   vec3 H = normalize(V + L);
 
   NdotH = abs(dot(N, H));
@@ -154,22 +160,19 @@ void _evalForBRDF(in vec3 L, in vec3 N, in vec3 V, in vec3 f0, in float f90,
 
   F = _fresnelSchlick(VdotH, f0, f90);
 
-  vec3 black = vec3(0.0);
-  cdiff = mix(shading.baseColor * (1.0 - max(f0.r, f0.g, f0.b)), black,
-              shading.metallic);
-
   NDF = _distributionGGX(NdotH, shading.roughness);
 }
 
-vec3 computeHForRefractionBTDF() {
+vec3 computeHForFresnel() {
   _importanceSampleGGX(rnd(seed), rnd(seed), N, roughness, epsilon)
 }
 
-void _evalForRefractionBTDF(inout seed, in vec3 L, in vec3 N, in vec3 V,
-                            in vec3 f0, in float f90, in ShadingData shading,
-                            out float NdotH, out float VdotH, out vec3 F,
-                            out float NDF, out float etaIn, out float etaOut) {
-  vec3 H = _importanceSampleGGX(rnd(seed), rnd(seed), N, roughness, epsilon);
+void _evalForFresnel(inout seed, in vec3 L, in vec3 N, in vec3 V, in vec3 f0,
+                     in float f90, in ShadingData shading, out float NdotH,
+                     out float VdotH, out vec3 F, out float NDF,
+                     out float etaIn, out float etaOut) {
+  vec3 H =
+      _importanceSampleGGX(rnd(seed), rnd(seed), N, shading.roughness, epsilon);
 
   NdotH = abs(dot(N, H));
   VdotH = max(dot(H, V), 0.0);
@@ -183,9 +186,10 @@ void _evalForRefractionBTDF(inout seed, in vec3 L, in vec3 N, in vec3 V,
 }
 
 vec3 _eval(inout uint seed, in vec3 L, in vec3 N, in vec3 V, in float epsilon,
-           in ShadingData shading, out vec3 NdotHForBRDF, out vec3 VdotHForBRDF,
-           out vec3 NDFForBRDF, out vec3 NdotHForRefractionBTDF,
-           out vec3 VdotHForRefractionBTDF, out vec3 NDFForRefractionBTDF) {
+           in ShadingData shading, out float NdotHForBRDF,
+           out float VdotHForBRDF, out vec3 NDFForBRDF,
+           out float NdotHForFresnel, out float VdotHForFresnel,
+           out vec3 NDFForFresnel) {
   const float NdotL = abs(dot(L, N));
   const float NdotV = abs(dot(N, V));
 
@@ -201,60 +205,60 @@ vec3 _eval(inout uint seed, in vec3 L, in vec3 N, in vec3 V, in float epsilon,
 
   float G = _geometrySmith(NdotV, NdotL, shading.roughness);
 
-  vec3 NdotHForBRDF;
-  vec3 VdotHForBRDF;
+  //   float NdotHForBRDF;
+  //   float VdotHForBRDF;
   vec3 FForBRDF;
-  vec3 NDFForBRDF;
-  vec3 cdiff;
-
+  //   vec3 NDFForBRDF;
   _evalForBRDF(L, N, V, f0, f90, shading, NdotHForBRDF, VdotHForBRDF, FForBRDF,
-               NDFForBRDF, cdiff);
+               NDFForBRDF);
 
-  vec3 NdotHForRefractionBTDF;
-  vec3 VdotHForRefractionBTDF;
-  vec3 FForRefractionBTDF;
-  vec3 NDFForRefractionBTDF;
+  //   float NdotHForFresnel;
+  //   float VdotHForFresnel;
+  vec3 FForFresnel;
+  //   vec3 NDFForFresnel;
   float etaIn;
   float etaOut;
-  _evalForRefractionBTDF(seed, L, N, V, f0, f90, shading,
-                         NdotHForRefractionBTDF, VdotHForRefractionBTDF,
-                         FForRefractionBTDF, NDFForRefractionBTDF, etaIn,
-                         etaOut);
+  _evalForFresnel(seed, L, N, V, f0, f90, shading, NdotHForFresnel,
+                  VdotHForFresnel, FForFresnel, NDFForFresnel, etaIn, etaOut);
 
-  vec3 radiance = (1.0 - shading.transmission) * _evalDiffuseBRDF(cdiff, F) +
+  vec3 radiance =
+      (1.0 - shading.transmission) *
+          (_evalDiffuseBRDF(NdotL, NdotV, shading.baseColor, shading.metallic,
+                            f0, FForBRDF) +
+           _evalSpecularBRDF(NdotL, NdotV, NDFForBRDF, G, FForBRDF, epsilon,
+                             NdotL, NdotV)) +
 
-                  shading.transmission *
-                      _evalRefractionBTDF(
-                          NdotV, NdotL, NdotHForRefractionBTDF,
-                          VdotHForRefractionBTDF, L, V, NDFForRefractionBTDF, G,
-                          FForRefractionBTDF, epsilon, etaIn, etaOut) +
-                  _evalSpecularBRDF(NDF, G, F, epsilon, NdotL, NdotV);
+      shading.transmission *
+          (_evalRefractionBTDF(NdotV, NdotL, NdotHForFresnel, VdotHForFresnel,
+                               L, V, NDFForFresnel, G, FForFresnel, epsilon,
+                               etaIn, etaOut) +
+           _evalSpecularBRDF(NdotL, NdotV, NDFForFresnel, G, FForFresnel,
+                             epsilon, NdotL, NdotV));
 
   return _affectByLight(NdotL, radiance);
 }
 
 vec3 eval(inout uint seed, in vec3 L, in vec3 N, in vec3 V, in float epsilon,
           in ShadingData shading) {
-  vec3 NdotHForBRDF;
-  vec3 VdotHForBRDF;
+  float NdotHForBRDF;
+  float VdotHForBRDF;
   vec3 NDFForBRDF;
 
-  vec3 NdotHForRefractionBTDF;
-  vec3 VdotHForRefractionBTDF;
-  vec3 NDFForRefractionBTDF;
+  float NdotHForFresnel;
+  float VdotHForFresnel;
+  vec3 NDFForFresnel;
 
   return _eval(seed, L, N, V, epsilon, shading, NdotHForBRDF, VdotHForBRDF,
-               NDFForBRDF, NdotHForRefractionBTDF, VdotHForRefractionBTDF,
-               NDFForRefractionBTDF);
+               NDFForBRDF, NdotHForFresnel, VdotHForFresnel, NDFForFresnel);
 }
 
 vec3 eval(inout uint seed, in vec3 L, in vec3 N, in vec3 V, in float epsilon,
-          in ShadingData shading, out vec3 NdotHForBRDF, out vec3 VdotHForBRDF,
-          out vec3 NDFForBRDF, out vec3 NdotHForRefractionBTDF,
-          out vec3 VdotHForRefractionBTDF, out vec3 NDFForRefractionBTDF) {
+          in ShadingData shading, out float NdotHForBRDF,
+          out float VdotHForBRDF, out vec3 NDFForBRDF,
+          out float NdotHForFresnel, out float VdotHForFresnel,
+          out vec3 NDFForFresnel) {
   return _eval(seed, L, N, V, epsilon, shading, NdotHForBRDF, VdotHForBRDF,
-               NDFForBRDF, NdotHForRefractionBTDF, VdotHForRefractionBTDF,
-               NDFForRefractionBTDF);
+               NDFForBRDF, NdotHForFresnel, VdotHForFresnel, NDFForFresnel);
 }
 
 // return the roation matrix
@@ -361,7 +365,7 @@ vec3 sample(inout uint seed, in const vec3 V, in const vec3 N, in float epsilon,
   }
 }
 
-float _cosinSamplingPDF(float NdotL) { return NdotL / PI; }
+float _cosinSamplePDF(float NdotL) { return NdotL / PI; }
 
 vec3 _importanceSampleGGXPDF(float NDF, float NdotH, float VdotH) {
   // ImportanceSampleGGX pdf
@@ -369,15 +373,24 @@ vec3 _importanceSampleGGXPDF(float NDF, float NdotH, float VdotH) {
   return NDF * NdotH / (4 * VdotH);
 }
 
-float computePdf(const float NdotL, vec3 NdotHForBRDF, vec3 VdotHForBRDF,
-                 vec3 NDFForBRDF, vec3 NdotHForRefractionBTDF,
-                 vec3 VdotHForRefractionBTDF, vec3 NDFForRefractionBTDF,
-                 in ShadingData shading) {
-  return (1.0 - shading.transmission) * (1.0 - shading.specularLobeProb) *
-             _cosinSamplingPDF(NdotL) +
-         shading.transmission * (1.0 - shading.bsdfSpecularLobeProb) *
-             _importanceSampleGGXPDF(NDFForRefractionBTDF,
-                                     NdotHForRefractionBTDF,
-                                     VdotHForRefractionBTDF) +
-         _importanceSampleGGXPDF(NDFForBRDF, NdNDFForBRDF, VdotHForBRDF);
+float computePdf(const float NdotL, float NdotHForBRDF, float VdotHForBRDF,
+                 vec3 NDFForBRDF, float NdotHForFresnel, float VdotHForFresnel,
+                 vec3 NDFForFresnel, in ShadingData shading) {
+  return (1.0 - shading.transmission) *
+             ((1.0 - shading.specularLobeProb) * _cosinSamplePDF(NdotL) +
+              shading.specularLobeProb *
+                  _importanceSampleGGXPDF(NDFForBRDF, NdotHForBRDF,
+                                          VdotHForBRDF)) +
+         shading.transmission *
+             /*! ((1.0 - shading.bsdfSpecularLobeProb) *
+                  _importanceSampleGGXPDF(NDFForFresnel,
+                                          NdotHForFresnel,
+                                          VdotHForFresnel) +
+              shading.bsdfSpecularLobeProb *
+                  _importanceSampleGGXPDF(NDFForFresnel,
+                                          NdotHForFresnel,
+                                          VdotHForFresnel));
+                                          */
+             _importanceSampleGGXPDF(NDFForFresnel, NdotHForFresnel,
+                                     VdotHForFresnel);
 }

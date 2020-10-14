@@ -45,29 +45,27 @@ void main() {
 
   float outsideIOR = 1.0;
 
-  float bsdfSpecularLobeProb = computeBSDFSpecularLobeProb(
-      gl_WorldRayDirectionEXT, data.worldNormal, outsideIOR, data.materialIOR);
-
   ShadingData shading = buildShadingData(
       data.materialDiffuse, data.materialSpecularColor, data.materialEmission,
       data.materialMetalness, data.materialRoughness, data.materialSpecular,
       data.materialTransmission, data.materialIOR, outsideIOR,
       computeSpecularLobeProb(data.materialDiffuse, data.materialSpecular,
                               data.materialMetalness),
-      bsdfSpecularLobeProb,
+      computeBSDFSpecularLobeProb(gl_WorldRayDirectionEXT, data.worldNormal,
+                                  outsideIOR, data.materialIOR),
       isFromOutside(gl_WorldRayDirectionEXT, data.worldNormal));
 
   radiance += shading.emission * throughput;
 
-  radiance += computeDirectLight(tMin, data.worldPosition, data.worldNormal,
-                                 data.V, shading, topLevelAS) *
-              throughput;
+  radiance +=
+      computeDirectLight(seed, EPSILON, tMin, data.worldPosition,
+                         data.worldNormal, data.V, shading, topLevelAS) *
+      throughput;
 
-  const vec3 bsdfDir =
-      disneySample(seed, data.V, data.worldNormal, EPSILON, shading);
+  const vec3 bsdfDir = sample(seed, data.V, data.worldNormal, EPSILON, shading);
 
-  computeIndirectLight(data.V, bsdfDir, data.worldNormal, shading, throughput,
-                       t);
+  computeIndirectLight(seed, EPSILON, data.V, bsdfDir, data.worldNormal,
+                       shading, throughput, t);
 
   prd.radiance = radiance;
   prd.t = t;
