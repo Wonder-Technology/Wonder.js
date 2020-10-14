@@ -1,5 +1,4 @@
 
-float _pow5(float v) { return v * v * v * v * v; }
 
 /*!
 while BTDF is not reciprocal(refer to
@@ -8,6 +7,8 @@ invert the direction of our vectors for simplicity!
 
 refer to https://autodesk.github.io/standard-surface/#reciprocity
 */
+
+float _pow5(float v) { return v * v * v * v * v; }
 
 float computeSpecularLobeProb(vec3 baseColor, float specular, float metallic) {
   const vec3 cd_lin = baseColor;
@@ -69,7 +70,7 @@ bool isFromOutside(vec3 rayDirection, vec3 N) {
 }
 
 vec3 _fresnelSchlick(float VdotH, vec3 f0, float f90) {
-  return f0 + (vec3(f90) - f0) * _pow5(1.0 - VdotH);
+  return f0 + (f90 - f0) * _pow5(1.0 - VdotH);
 }
 
 float _distributionGGX(float NdotH, float roughness) {
@@ -276,10 +277,10 @@ vec3 eval(inout uint seed, in vec3 L, in vec3 N, in vec3 V, in float epsilon,
 }
 
 vec3 eval(inout uint seed, in vec3 L, in vec3 N, in vec3 V, in float epsilon,
-           in ShadingData shading, out float NdotHForBRDF,
-           out float VdotHForBRDF, out float NDFForBRDF,
-           out float NdotHForFresnel, out float VdotHForFresnel,
-           out float NDFForFresnel) {
+          in ShadingData shading, out float NdotHForBRDF,
+          out float VdotHForBRDF, out float NDFForBRDF,
+          out float NdotHForFresnel, out float VdotHForFresnel,
+          out float NDFForFresnel) {
   return _eval(seed, L, N, V, epsilon, shading, NdotHForBRDF, VdotHForBRDF,
                NDFForBRDF, NdotHForFresnel, VdotHForFresnel, NDFForFresnel);
 }
@@ -362,7 +363,6 @@ float _cosinSamplePDF(float NdotL) { return NdotL / PI; }
 
 float _importanceSampleGGXPDF(float NDF, float NdotH, float VdotH) {
   // ImportanceSampleGGX pdf
-  // pdf = D * NoH / (4 * VoH)
   return NDF * NdotH / (4 * VdotH);
 }
 

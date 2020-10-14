@@ -86,11 +86,11 @@ let _initBufferData = (count, defaultDataTuple) => {
 let createPO = () => {
   let bsdfMaterialCount = POConfigDpRunAPI.unsafeGet().getBSDFMaterialCount();
 
-  let defaultDiffuseColor = (0., 0., 0.);
+  let defaultDiffuseColor = (1., 1., 1.);
   let defaultSpecular = 1.0;
   let defaultSpecularColor = (1., 1., 1.);
-  let defaultRoughness = 0.0;
-  let defaultMetalness = 0.0;
+  let defaultRoughness = 1.0;
+  let defaultMetalness = 1.0;
   let defaultTransmission = 0.0;
   let defaultIOR = 1.5;
 

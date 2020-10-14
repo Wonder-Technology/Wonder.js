@@ -69,7 +69,7 @@ let _ =
           let material = create()->ResultTool.getExnSuccessValue;
 
           getDiffuseColor(material)->expect
-          == (0., 0., 0.)->BSDFMaterialTool.createDiffuseColor;
+          == (1., 1., 1.)->BSDFMaterialTool.createDiffuseColor;
         })
       );
 
@@ -136,7 +136,7 @@ let _ =
         test("test default", () => {
           let material = create()->ResultTool.getExnSuccessValue;
 
-          getRoughness(material)->expect == 0.0->RoughnessVO.create;
+          getRoughness(material)->expect == 1.0->RoughnessVO.create;
         })
       );
 
@@ -156,7 +156,7 @@ let _ =
         test("test default", () => {
           let material = create()->ResultTool.getExnSuccessValue;
 
-          getMetalness(material)->expect == 0.0->MetalnessVO.create;
+          getMetalness(material)->expect == 1.0->MetalnessVO.create;
         })
       );
 

@@ -249,7 +249,8 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
     data.materialTransmission =
         texture(sampler2DArray(textureArray, textureSampler),
                 vec3(uv * mat.transmissionMapScale, transmissionMapLayerIndex))
-            .r;
+            .r *
+        mat.transmission;
   } else {
     data.materialTransmission = mat.transmission;
   }

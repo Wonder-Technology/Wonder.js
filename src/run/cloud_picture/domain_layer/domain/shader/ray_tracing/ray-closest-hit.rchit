@@ -51,9 +51,10 @@ void main() {
       data.materialTransmission, data.materialIOR, outsideIOR,
       computeSpecularLobeProb(data.materialDiffuse, data.materialSpecular,
                               data.materialMetalness),
-      computeBSDFSpecularLobeProb(gl_WorldRayDirectionEXT, data.worldNormal,
-                                  outsideIOR, data.materialIOR),
-      isFromOutside(gl_WorldRayDirectionEXT, data.worldNormal));
+      computeBSDFSpecularLobeProb(getRayDirectionFromV(data.V),
+                                  data.worldNormal, outsideIOR,
+                                  data.materialIOR),
+      isFromOutside(getRayDirectionFromV(data.V), data.worldNormal));
 
   radiance += shading.emission * throughput;
 
