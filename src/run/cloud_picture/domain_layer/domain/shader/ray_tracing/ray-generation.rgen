@@ -29,7 +29,7 @@ void main() {
   const uint sampleCount = pushC.sampleCount;
   const uint totalSampleCount = pushC.totalSampleCount;
 
-  const uint bounceCount = 3;
+  const uint bounceCount = 5;
 
   prd.seed = tea(tea(ipos.x, ipos.y), totalSampleCount);
 
@@ -51,6 +51,9 @@ void main() {
     prd.throughput = vec3(1.0);
 
     for (uint bb = 0; bb < bounceCount; ++bb) {
+      prd.bias = vec3(0.0);
+      prd.t = -1.0;
+
       traceRayEXT(topLevelAS, gl_RayFlagsOpaqueEXT, cullMask, 0, 0, 0,
                   origin.xyz, uCamera.near, direction.xyz, uCamera.far, 0);
 
@@ -58,12 +61,11 @@ void main() {
 
       // abort if the ray is either invalid or didn't hit anything
       const float t = prd.t;
-      // if (t < 0.0 || prd.scatterDirection.w <= 0.0) break;
       if (t < 0.0)
         break;
 
       // move the ray based on the bsdf direction
-      origin = origin + t * direction;
+      origin = origin + t * direction + vec4(prd.bias, 0.0);
       direction = vec4(prd.scatterDirection, 0.0);
     };
 

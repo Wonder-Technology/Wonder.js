@@ -770,6 +770,8 @@ let _createAndSetPipeline = (device, rtBindGroupLayout) => {
                 + 1
                 * Float32Array._BYTES_PER_ELEMENT
                 + 1
+                * Float32Array._BYTES_PER_ELEMENT
+                + 3
                 * Float32Array._BYTES_PER_ELEMENT,
             );
           },

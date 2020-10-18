@@ -10,6 +10,7 @@
 #include "../common/utils.glsl"
 
 #include "get_hit_shading_data.glsl"
+
 #include "shading_data.glsl"
 
 #include "random.glsl"
@@ -63,11 +64,20 @@ void main() {
                          data.worldNormal, data.V, shading, topLevelAS) *
       throughput;
 
-  const vec3 bsdfDir =
-      sample_(seed, data.V, data.worldNormal, EPSILON, shading);
+  bool isBRDFDir;
+  vec3 bsdfDir =
+      sample_(seed, data.V, data.worldNormal, EPSILON, shading, isBRDFDir);
 
   computeIndirectLight(seed, EPSILON, data.V, bsdfDir, data.worldNormal,
-                       shading, throughput, t);
+                       shading, isBRDFDir, throughput, t);
+
+  vec3 bias =
+      0.001 * (shading.isFromOutside ? data.worldNormal : -data.worldNormal);
+  if (isBRDFDir) {
+    prd.bias = bias;
+  } else {
+    prd.bias = -bias;
+  }
 
   prd.radiance = radiance;
   prd.t = t;

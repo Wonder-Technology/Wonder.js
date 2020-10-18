@@ -10,9 +10,7 @@ struct ShadingData {
   float ior;
   float outsideIOR;
   float specularLobeProb;
-  // bool isConsiderBRDF;
   float bsdfSpecularLobeProb;
-  // bool isConsiderBSDFAndSpecular;
   bool isFromOutside;
 };
 
@@ -32,21 +30,26 @@ ShadingData buildShadingData(vec3 materialDiffuse, vec3 materialSpecularColor,
 
   shading.baseColor = materialDiffuse;
   shading.specularColor = materialSpecularColor;
+
+
   shading.emission = materialEmission;
   shading.metallic =
       clamp(materialMetalness, 0.001, 0.999) * metalnessIntensity;
   shading.specular = materialSpecular;
+
   shading.roughness =
       clamp(materialRoughness, 0.001, 0.999) * roughnessIntensity;
-  shading.transmission = materialTransmission;
 
   shading.outsideIOR = outsideIOR;
   shading.ior = materialIOR;
+
+  shading.transmission = materialTransmission;
 
   shading.specularLobeProb = specularLobeProb;
   shading.bsdfSpecularLobeProb = bsdfSpecularLobeProb;
 
   shading.isFromOutside = isFromOutside;
+
 
   return shading;
 }

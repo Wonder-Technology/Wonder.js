@@ -32,7 +32,10 @@ vec3 computeDirectLight(inout uint seed, float epsilon, float tMin,
 
   const vec3 L = lightDir;
 
-  vec3 f = eval(seed, L, N, V, epsilon, shading);
+  float NdotH;
+  float VdotH;
+  float NDF;
+  vec3 f = evalBRDF(seed, L, N, V, epsilon, shading, NdotH, VdotH, NDF);
 
   /*! not consider light pdf! because its pdf === 1.0
 
