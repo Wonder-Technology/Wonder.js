@@ -1,3 +1,26 @@
+<a name="2.0.0-alpha.5"></a>
+# [2.0.0-alpha.5](https://github.com/Wonder-Technology/Wonder.js/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2020-10-18)
+
+
+### Bug Fixes
+
+* **cloud-picture:** fix gamma correction ([29e20b9](https://github.com/Wonder-Technology/Wonder.js/commit/29e20b9))
+
+
+### Features
+
+* **bsdf-material:** add specularColor, specularMap ([94a486d](https://github.com/Wonder-Technology/Wonder.js/commit/94a486d))
+* **bsdf-material:** add transmission, ior, transmissionMap ([4b03f73](https://github.com/Wonder-Technology/Wonder.js/commit/4b03f73))
+* **cloud-picture:** edit bsdf glsl(draft v2) ([40eedc3](https://github.com/Wonder-Technology/Wonder.js/commit/40eedc3))
+* **cloud-picture:** edit bsdf glsl(draft) ([3bc8cca](https://github.com/Wonder-Technology/Wonder.js/commit/3bc8cca))
+* **cloud-picture:** fix bsdf glsl; change bsdf material->roughness's, metalness's, diffuseColor's default value; ([9decf5b](https://github.com/Wonder-Technology/Wonder.js/commit/9decf5b))
+* **cloud-picture:** fix bsdf glsl(pass compile) ([04dc06c](https://github.com/Wonder-Technology/Wonder.js/commit/04dc06c))
+* **cloud-picture:** pass run test(bsdf scene) ([f61d274](https://github.com/Wonder-Technology/Wonder.js/commit/f61d274))
+* change Result.t to Belt.Result.t ([20cf628](https://github.com/Wonder-Technology/Wonder.js/commit/20cf628))
+* test/run should use cp api instead of run api ([89281da](https://github.com/Wonder-Technology/Wonder.js/commit/89281da))
+
+
+
 <a name="2.0.0-alpha.4"></a>
 # [2.0.0-alpha.4](https://github.com/Wonder-Technology/Wonder.js/compare/v2.0.0-alpha.3...v2.0.0-alpha.4) (2020-09-27)
 
