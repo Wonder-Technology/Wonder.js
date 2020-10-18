@@ -64,8 +64,7 @@ let _ =
           ->SinonTool.createTwoArgsEmptyStubData;
         WebGPUDependencyTool.build(
           ~sandbox,
-          ~createShaderModule=
-            createShaderModuleStubData->SinonTool.getDpFunc,
+          ~createShaderModule=createShaderModuleStubData->SinonTool.getDpFunc,
           ~loadGLSL,
           (),
         )
@@ -83,17 +82,11 @@ let _ =
                   createShaderModuleStubData
                   ->SinonTool.getStub
                   ->getCall(1, _)
-                  ->SinonTool.calledWithArg2(
-                      {"code": rayRChitGLSL},
-                      device,
-                    ),
+                  ->SinonTool.calledWithArg2({"code": rayRChitGLSL}, device),
                   createShaderModuleStubData
                   ->SinonTool.getStub
                   ->getCall(2, _)
-                  ->SinonTool.calledWithArg2(
-                      {"code": rayMissGLSL},
-                      device,
-                    ),
+                  ->SinonTool.calledWithArg2({"code": rayMissGLSL}, device),
                   createShaderModuleStubData
                   ->SinonTool.getStub
                   ->getCall(3, _)
@@ -166,8 +159,7 @@ let _ =
         let ray_miss = 2;
         WebGPUDependencyTool.build(
           ~sandbox,
-          ~createShaderModule=
-            createShaderModuleStubData->SinonTool.getDpFunc,
+          ~createShaderModule=createShaderModuleStubData->SinonTool.getDpFunc,
           (),
         )
         ->WebGPUDependencyTool.set;
@@ -426,7 +418,7 @@ let _ =
           testPromise("create buffer", () => {
             let ((device, _), _) = _prepare(sandbox);
             let directionLightCount = 10;
-            POConfigCPTool.setDirectionLightCount(directionLightCount);
+            POConfigTool.setAllCount(~directionLightCount, ());
             let buffer = WebGPUDependencyTool.createBufferObject();
             let createBufferStubData =
               createEmptyStub(refJsObjToSandbox(sandbox^))
@@ -485,7 +477,7 @@ let _ =
                 gameObject,
                 (1., 2., 3.)->PositionVO.create,
               );
-              DirectionLightRunAPI.setIntensity(
+              DirectionLightCPAPI.setIntensity(
                 light,
                 intensity->IntensityVO.create,
               )
@@ -517,7 +509,7 @@ let _ =
                       ->OptionSt.getExn;
 
                     let (x, y, z) =
-                      DirectionLightRunAPI.getDirection(light)
+                      DirectionLightCPAPI.getDirection(light)
                       ->OptionSt.getExn
                       ->DirectionVO.value;
 
@@ -544,7 +536,7 @@ let _ =
         testPromise("create direction light bind group and add to po", () => {
           let ((device, _), _) = _prepare(sandbox);
           let directionLightCount = 5;
-          POConfigCPTool.setDirectionLightCount(directionLightCount);
+          POConfigTool.setAllCount(~directionLightCount, ());
           let buffer = WebGPUDependencyTool.createBufferObject();
           let createBufferStubData =
             createEmptyStub(refJsObjToSandbox(sandbox^))

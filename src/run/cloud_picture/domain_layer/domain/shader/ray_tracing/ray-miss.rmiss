@@ -12,5 +12,7 @@ void main() {
   prd.throughput = vec3(0);
   // prd.radiance = vec3(0.15);
   prd.radiance = vec3(0.05);
+  // prd.radiance = vec3(0.2);
+  // prd.radiance = vec3(0.4);
   prd.t = -1.0;
 }

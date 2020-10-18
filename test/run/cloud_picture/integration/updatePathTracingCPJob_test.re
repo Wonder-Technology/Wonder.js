@@ -62,7 +62,7 @@ let _ =
         ) =
           GeometryCPTool.createTwoGameObjectsAndSetPointData();
         let _ =
-          PBRMaterialCPTool.createAndAddTwoMaterials(
+          BSDFMaterialCPTool.createAndAddTwoMaterials(
             gameObject1,
             gameObject2,
           );
@@ -753,7 +753,7 @@ let _ =
         ) =
           GeometryCPTool.createTwoGameObjectsAndSetPointData();
         let ((material1, material2), _) =
-          PBRMaterialCPTool.createAndAddTwoMaterials(
+          BSDFMaterialCPTool.createAndAddTwoMaterials(
             gameObject1,
             gameObject2,
           );
@@ -1295,23 +1295,16 @@ let _ =
       });
 
       describe("build and set pbr material buffer data", () => {
-        // beforeEach(() => {
-        //   TestCPTool.updateBufferCount(~pbrMaterialCount=3, ())
-        // });
-
         describe("build pbr material buffer data", () => {
           _testCreateBuffer(
             ~getBufferSizeFunc=
-              count =>
-                (4 + 4 + 4 + 8)
-                * 2
-                * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
-            ~getBufferDataFunc=PathTracingPassCPTool.getPBRMaterialBufferData,
+              count => 32 * 2 * Js.Typed_array.Float32Array._BYTES_PER_ELEMENT,
+            ~getBufferDataFunc=PathTracingPassCPTool.getBSDFMaterialBufferData,
           )
         });
 
         testPromise(
-          "set each render pbrMaterial's diffuse, specular, roughness, metalness, diffuseMapLayerIndex, channelRoughnessMetallicMapLayerIndex, emissionMapLayerIndex, normalMapLayerIndex, diffuseMapScale, channelRoughnessMetallicScaleScale, emissionMapScale, normalMapScale to buffer data",
+          "set each render bsdfMaterial's diffuse, specular, specularColor, roughness, metalness, transmission, ior, diffuseMapLayerIndex, channelRoughnessMetallicMapLayerIndex, emissionMapLayerIndex, normalMapLayerIndex, transmissionMapLayerIndex, specularMapLayerIndex, diffuseMapScale, channelRoughnessMetallicScaleScale, emissionMapScale, normalMapScale, transmissionMapScale, specularMapScale to buffer data",
           () => {
             open ImagePOType;
             let (
@@ -1320,7 +1313,7 @@ let _ =
               ((geometry1, geometry2), (material1, material2)),
             ) =
               _prepare();
-            let _ = PBRMaterialCPTool.setMapData(material1, material2);
+            let _ = BSDFMaterialCPTool.setMapData(material1, material2);
             TextureArrayCPTool.setMapBetweenAllUsedImageIdToLayerIndex();
             let (textureArrayLayerWidth, textureArrayLayerHeight) = (8, 8);
             WebGPUDependencyTool.build(
@@ -1335,7 +1328,7 @@ let _ =
               ~handleSuccessFunc=
                 () => {
                   let (_, _, typeArr) =
-                    PathTracingPassCPTool.getPBRMaterialBufferData();
+                    PathTracingPassCPTool.getBSDFMaterialBufferData();
 
                   typeArr->expect
                   == Js.Typed_array.Float32Array.make([|
@@ -1343,14 +1336,22 @@ let _ =
                        0.,
                        0.,
                        0.,
+                       0.5,
+                       0.,
+                       0.,
+                       0.,
                        1.,
                        0.5,
                        0.5,
                        0.,
-                       2.,
                        1.,
-                       5000.,
                        3.,
+                       2.,
+                       5000.,
+                       5.,
+                       0.,
+                       5000.,
+                       0.,
                        0.25,
                        0.25,
                        0.25,
@@ -1359,18 +1360,30 @@ let _ =
                        1.,
                        0.25,
                        0.25,
+                       0.25,
+                       0.5,
+                       1.,
+                       1.,
                        0.,
+                       1.,
+                       0.,
+                       0.,
+                       0.5,
                        1.,
                        0.,
                        0.,
                        2.,
                        1.5,
                        1.,
-                       0.,
+                       0.5,
+                       2.,
+                       3.,
                        2.,
                        1.,
-                       0.,
                        5000.,
+                       0.,
+                       4.,
+                       0.,
                        0.25,
                        0.25,
                        0.25,
@@ -1379,6 +1392,10 @@ let _ =
                        0.25,
                        1.,
                        1.,
+                       0.25,
+                       0.5,
+                       0.25,
+                       0.5,
                      |]);
                 },
               (),
@@ -1401,7 +1418,7 @@ let _ =
             ~handleSuccessFunc=
               () => {
                 let (buffer, _, typeArr) =
-                  PathTracingPassCPTool.getPBRMaterialBufferData();
+                  PathTracingPassCPTool.getBSDFMaterialBufferData();
 
                 setSubFloat32DataStubData
                 ->SinonTool.getStub
@@ -1603,8 +1620,8 @@ let _ =
                 PathTracingPassCPTool.getVertexBufferData();
               let (indexBuffer, indexBufferSize) =
                 PathTracingPassCPTool.getIndexBufferData();
-              let (pbrMaterialBuffer, pbrMaterialBufferSize, _) =
-                PathTracingPassCPTool.getPBRMaterialBufferData();
+              let (bsdfMaterialBuffer, bsdfMaterialBufferSize, _) =
+                PathTracingPassCPTool.getBSDFMaterialBufferData();
 
               (
                 createRayTracingBindGroupStubData
@@ -1665,9 +1682,9 @@ let _ =
                         ),
                         IWebGPURayTracingDp.binding(
                           ~binding=7,
-                          ~buffer=pbrMaterialBuffer->StorageBufferVO.value,
+                          ~buffer=bsdfMaterialBuffer->StorageBufferVO.value,
                           ~offset=0,
-                          ~size=pbrMaterialBufferSize,
+                          ~size=bsdfMaterialBufferSize,
                           (),
                         ),
                         IWebGPURayTracingDp.binding(
@@ -1783,6 +1800,8 @@ let _ =
                             + 1
                             * Float32Array._BYTES_PER_ELEMENT
                             + 1
+                            * Float32Array._BYTES_PER_ELEMENT
+                            + 3
                             * Float32Array._BYTES_PER_ELEMENT,
                         );
                       },

@@ -29,7 +29,7 @@ let _initBufferData = (count, defaultDataTuple) => {
 };
 
 let createPO = () => {
-  let lightCount = POConfigCPRepo.getDirectionLightCount();
+  let lightCount = POConfigDpRunAPI.unsafeGet().getDirectionLightCount();
 
   let defaultColor = (1., 1., 1.);
   let defaultIntensity = 1.0;

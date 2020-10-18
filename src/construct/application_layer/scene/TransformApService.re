@@ -109,10 +109,6 @@ let getNormalMatrix = transform => {
   ModelMatrixTransformDoService.getNormalMatrix(transform);
 };
 
-let getMaxIndex = IndexTransformDoService.getMaxIndex;
-
-let mutableUpdate = UpdateTransformDoService.mutableUpdate;
-
 let lookAt = (transform, target) => {
   LookAtTransformDoService.lookAt(~transform, ~target, ());
-}
+};

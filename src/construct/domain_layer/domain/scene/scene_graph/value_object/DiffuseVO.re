@@ -3,9 +3,9 @@ type t =
 
 let create = value => Diffuse(value);
 
-let value = diffuse =>
-  switch (diffuse) {
+let value = color =>
+  switch (color) {
   | Diffuse(value) => value
   };
 
-let getPrimitiveValue = diffuse => diffuse->value->Color3VO.value;
+let getPrimitiveValue = color => color->value->Color3VO.value;

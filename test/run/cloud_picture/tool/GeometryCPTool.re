@@ -1,17 +1,17 @@
 open Js.Typed_array;
 
 let createGameObject = () => {
-  let geometry = GeometryRunAPI.create()->ResultTool.getExnSuccessValue;
-  let gameObject = GameObjectRunAPI.create()->ResultTool.getExnSuccessValue;
+  let geometry = GeometryCPAPI.create()->ResultTool.getExnSuccessValue;
+  let gameObject = GameObjectCPAPI.create()->ResultTool.getExnSuccessValue;
 
-  GameObjectRunAPI.addGeometry(gameObject, geometry)
+  GameObjectCPAPI.addGeometry(gameObject, geometry)
   ->ResultTool.getExnSuccessValueIgnore;
 
   (gameObject, geometry);
 };
 
 let createTwoGameObjectsAndSetPointData = () => {
-  open GeometryRunAPI;
+  open GeometryCPAPI;
 
   let vertices1 =
     Float32Array.make([|10., 10., 11., 1.5, 2.0, 3.0, 2.5, 2.0, 3.5|])

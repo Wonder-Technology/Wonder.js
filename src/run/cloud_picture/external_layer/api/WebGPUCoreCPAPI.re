@@ -1,0 +1,1 @@
+let getTextureArrayLayerSize = WebGPUCoreRunAPI.getTextureArrayLayerSize;

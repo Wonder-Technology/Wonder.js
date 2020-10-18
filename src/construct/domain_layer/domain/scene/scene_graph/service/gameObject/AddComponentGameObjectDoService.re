@@ -45,14 +45,14 @@ let addTransform = (gameObject, transform) => {
   );
 };
 
-let addPBRMaterial = (gameObject, material) => {
+let addBSDFMaterial = (gameObject, material) => {
   _addComponent(
     (
-      DpContainer.unsafeGetGameObjectRepoDp().hasPBRMaterial,
-      DpContainer.unsafeGetGameObjectRepoDp().addPBRMaterial,
-      AddPBRMaterialDoService.handleAddComponent,
+      DpContainer.unsafeGetGameObjectRepoDp().hasBSDFMaterial,
+      DpContainer.unsafeGetGameObjectRepoDp().addBSDFMaterial,
+      AddBSDFMaterialDoService.handleAddComponent,
     ),
-    (gameObject->GameObjectEntity.value, material->PBRMaterialEntity.value),
+    (gameObject->GameObjectEntity.value, material->BSDFMaterialEntity.value),
   );
 };
 

@@ -19,29 +19,45 @@ let _ =
       WebGPUCPTool.setQueue(queue);
 
       let gameObject1 =
-        GameObjectRunAPI.create()->ResultTool.getExnSuccessValue;
+        GameObjectCPAPI.create()->ResultTool.getExnSuccessValue;
       let gameObject2 =
-        GameObjectRunAPI.create()->ResultTool.getExnSuccessValue;
+        GameObjectCPAPI.create()->ResultTool.getExnSuccessValue;
 
       let material1 =
-        PBRMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
+        BSDFMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
       let material2 =
-        PBRMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
-      GameObjectRunAPI.addPBRMaterial(gameObject1, material1)
+        BSDFMaterialCPAPI.create()->ResultTool.getExnSuccessValue;
+      GameObjectCPAPI.addBSDFMaterial(gameObject1, material1)
       ->ResultTool.getExnSuccessValueIgnore;
-      GameObjectRunAPI.addPBRMaterial(gameObject2, material2)
+      GameObjectCPAPI.addBSDFMaterial(gameObject2, material2)
       ->ResultTool.getExnSuccessValueIgnore;
 
       let (
-        (id1, id2, id3, id4, id5),
-        (imageData1, imageData2, imageData3, imageData4, imageData5),
+        (id1, id2, id3, id4, id5, id6, id7),
+        (
+          imageData1,
+          imageData2,
+          imageData3,
+          imageData4,
+          imageData5,
+          imageData6,
+          imageData7,
+        ),
       ) =
-        PBRMaterialCPTool.setMapData(material1, material2);
+        BSDFMaterialCPTool.setMapData(material1, material2);
 
       (
         (device, queue),
-        (id1, id2, id3, id4, id5),
-        (imageData1, imageData2, imageData3, imageData4, imageData5),
+        (id1, id2, id3, id4, id5, id6, id7),
+        (
+          imageData1,
+          imageData2,
+          imageData3,
+          imageData4,
+          imageData5,
+          imageData6,
+          imageData7,
+        ),
       );
     };
 
@@ -69,8 +85,16 @@ let _ =
       testPromise("test", () => {
         let (
           (device, queue),
-          (id1, id2, id3, id4, id5),
-          (imageData1, imageData2, imageData3, imageData4, imageData5),
+          (id1, id2, id3, id4, id5, id6, id7),
+          (
+            imageData1,
+            imageData2,
+            imageData3,
+            imageData4,
+            imageData5,
+            imageData6,
+            imageData7,
+          ),
         ) =
           _prepare();
 
@@ -83,9 +107,19 @@ let _ =
                 TextureArrayCPTool.getLayerIndex(id3),
                 TextureArrayCPTool.getLayerIndex(id4),
                 TextureArrayCPTool.getLayerIndex(id5),
+                TextureArrayCPTool.getLayerIndex(id6),
+                TextureArrayCPTool.getLayerIndex(id7),
               )
               ->expect
-              == (Some(1), Some(2), Some(3), Some(0), None)
+              == (
+                   Some(2),
+                   Some(3),
+                   Some(5),
+                   Some(1),
+                   None,
+                   Some(0),
+                   Some(4),
+                 )
             },
           (),
         );
@@ -96,8 +130,16 @@ let _ =
       testPromise("create textureArray, textureArrayView, textureSampler", () => {
         let (
           (device, queue),
-          (id1, id2, id3, id4, id5),
-          (imageData1, imageData2, imageData3, imageData4, imageData5),
+          (id1, id2, id3, id4, id5, id6, id7),
+          (
+            imageData1,
+            imageData2,
+            imageData3,
+            imageData4,
+            imageData5,
+            imageData6,
+            imageData7,
+          ),
         ) =
           _prepare();
         let textureArray = WebGPUDependencyTool.createTextureObject();
@@ -123,9 +165,9 @@ let _ =
         DirectorCPTool.initAndUpdate(
           ~handleSuccessFunc=
             () => {
-              let layerCount = 4;
+              let layerCount = 6;
               let (textureArrayLayerWidth, textureArrayLayerHeight) =
-                WebGPUCoreRunAPI.getTextureArrayLayerSize();
+                WebGPUCoreCPAPI.getTextureArrayLayerSize();
 
               (
                 createTextureStubData
@@ -189,8 +231,16 @@ let _ =
           () => {
             let (
               (device, queue),
-              (id1, id2, id3, id4, id5),
-              (imageData1, imageData2, imageData3, imageData4, imageData5),
+              (id1, id2, id3, id4, id5, id6, id7),
+              (
+                imageData1,
+                imageData2,
+                imageData3,
+                imageData4,
+                imageData5,
+                imageData6,
+                imageData7,
+              ),
             ) =
               _prepare();
             let createTextureStubData =
@@ -299,8 +349,16 @@ let _ =
       testPromise("create texture buffer only once", () => {
         let (
           (device, queue),
-          (id1, id2, id3, id4, id5),
-          (imageData1, imageData2, imageData3, imageData4, imageData5),
+          (id1, id2, id3, id4, id5, id6, id7),
+          (
+            imageData1,
+            imageData2,
+            imageData3,
+            imageData4,
+            imageData5,
+            imageData6,
+            imageData7,
+          ),
         ) =
           _prepare();
         let createBufferStubData =
@@ -376,8 +434,16 @@ let _ =
         testPromise("fill image data to buffer data with fixed size", () => {
           let (
             (device, queue),
-            (id1, id2, id3, id4, id5),
-            (imageData1, imageData2, imageData3, imageData4, imageData5),
+            (id1, id2, id3, id4, id5, id6, id7),
+            (
+              imageData1,
+              imageData2,
+              imageData3,
+              imageData4,
+              imageData5,
+              imageData6,
+              imageData7,
+            ),
           ) =
             _prepare();
           let setSubUint8DataStubData =
@@ -403,9 +469,69 @@ let _ =
                   _getBufferData(setSubUint8DataStubData, bytesPerRow, 1),
                   _getBufferData(setSubUint8DataStubData, bytesPerRow, 2),
                   _getBufferData(setSubUint8DataStubData, bytesPerRow, 3),
+                  _getBufferData(setSubUint8DataStubData, bytesPerRow, 4),
+                  _getBufferData(setSubUint8DataStubData, bytesPerRow, 5),
                 )
                 ->expect
                 == (
+                     (
+                       Js.Typed_array.Uint8Array.make([|
+                         1,
+                         2,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         0,
+                       |]),
+                       Js.Typed_array.Uint8Array.make([|
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         0,
+                       |]),
+                       Js.Typed_array.Uint8Array.make([|
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         0,
+                       |]),
+                       Js.Typed_array.Uint8Array.make([|
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         0,
+                       |]),
+                     ),
                      (
                        Js.Typed_array.Uint8Array.make([|
                          1,
@@ -574,6 +700,64 @@ let _ =
                          0,
                          0,
                          0,
+                         0,
+                         0,
+                         0,
+                         0,
+                       |]),
+                     ),
+                     (
+                       Js.Typed_array.Uint8Array.make([|
+                         3,
+                         4,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         0,
+                       |]),
+                       Js.Typed_array.Uint8Array.make([|
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         0,
+                       |]),
+                       Js.Typed_array.Uint8Array.make([|
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         0,
+                       |]),
+                       Js.Typed_array.Uint8Array.make([|
+                         0,
+                         0,
+                         0,
+                         255,
+                         0,
+                         0,
+                         0,
+                         255,
                          0,
                          0,
                          0,
@@ -649,8 +833,16 @@ let _ =
         testPromise("create commandEncoder", () => {
           let (
             (device, queue),
-            (id1, id2, id3, id4, id5),
-            (imageData1, imageData2, imageData3, imageData4, imageData5),
+            (id1, id2, id3, id4, id5, id6, id7),
+            (
+              imageData1,
+              imageData2,
+              imageData3,
+              imageData4,
+              imageData5,
+              imageData6,
+              imageData7,
+            ),
           ) =
             _prepare();
           let createCommandEncoderStubData =
@@ -671,7 +863,7 @@ let _ =
                 ->SinonTool.getStub
                 ->getCallCount
                 ->expect
-                == 4
+                == 6
               },
             (),
           );
@@ -679,8 +871,16 @@ let _ =
         testPromise("set texture buffer's data", () => {
           let (
             (device, queue),
-            (id1, id2, id3, id4, id5),
-            (imageData1, imageData2, imageData3, imageData4, imageData5),
+            (id1, id2, id3, id4, id5, id6, id7),
+            (
+              imageData1,
+              imageData2,
+              imageData3,
+              imageData4,
+              imageData5,
+              imageData6,
+              imageData7,
+            ),
           ) =
             _prepare();
           let textureBuffer = WebGPUDependencyTool.createBufferObject();
@@ -714,7 +914,7 @@ let _ =
                     ),
                 )
                 ->expect
-                == (4, true)
+                == (6, true)
               },
             (),
           );
@@ -722,8 +922,16 @@ let _ =
         testPromise("copy texture buffer", () => {
           let (
             (device, queue),
-            (id1, id2, id3, id4, id5),
-            (imageData1, imageData2, imageData3, imageData4, imageData5),
+            (id1, id2, id3, id4, id5, id6, id7),
+            (
+              imageData1,
+              imageData2,
+              imageData3,
+              imageData4,
+              imageData5,
+              imageData6,
+              imageData7,
+            ),
           ) =
             _prepare();
           let commandEncoder =
@@ -797,7 +1005,7 @@ let _ =
                     ),
                 )
                 ->expect
-                == (4, true);
+                == (6, true);
               },
             (),
           );
@@ -805,8 +1013,16 @@ let _ =
         testPromise("finish and submit", () => {
           let (
             (device, queue),
-            (id1, id2, id3, id4, id5),
-            (imageData1, imageData2, imageData3, imageData4, imageData5),
+            (id1, id2, id3, id4, id5, id6, id7),
+            (
+              imageData1,
+              imageData2,
+              imageData3,
+              imageData4,
+              imageData5,
+              imageData6,
+              imageData7,
+            ),
           ) =
             _prepare();
           let commandBufferObject =
@@ -841,7 +1057,7 @@ let _ =
                   ->SinonTool.calledWithArg2([|commandBufferObject|], queue),
                 )
                 ->expect
-                == (4, true);
+                == (6, true);
               },
             (),
           );
@@ -853,8 +1069,16 @@ let _ =
       testPromise("test", () => {
         let (
           (device, queue),
-          (id1, id2, id3, id4, id5),
-          (imageData1, imageData2, imageData3, imageData4, imageData5),
+          (id1, id2, id3, id4, id5, id6, id7),
+          (
+            imageData1,
+            imageData2,
+            imageData3,
+            imageData4,
+            imageData5,
+            imageData6,
+            imageData7,
+          ),
         ) =
           _prepare();
         let textureArrayView = WebGPUDependencyTool.createTextureViewObject();
@@ -894,8 +1118,16 @@ let _ =
       testPromise("layer count should < 2048", () => {
         let (
           (device, queue),
-          (id1, id2, id3, id4, id5),
-          (imageData1, imageData2, imageData3, imageData4, imageData5),
+          (id1, id2, id3, id4, id5, id6, id7),
+          (
+            imageData1,
+            imageData2,
+            imageData3,
+            imageData4,
+            imageData5,
+            imageData6,
+            imageData7,
+          ),
         ) =
           _prepare();
         WebGPUDependencyTool.build(
@@ -908,7 +1140,7 @@ let _ =
         ExpectStreamTool.toFail(
           ~execFunc=
             DirectorCPTool.initAndUpdate(~handleAfterInitFunc=() => ()),
-          ~message="expect layer count:4 < 3",
+          ~message="expect layer count:6 < 3",
         );
       })
     });

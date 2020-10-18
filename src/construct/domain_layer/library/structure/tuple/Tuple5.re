@@ -22,3 +22,18 @@ let collectOption =
     }
   };
 };
+
+let collectResult =
+    (resultData1, resultData2, resultData3, resultData4, resultData5) => {
+  resultData1->Result.bind(data1 => {
+    resultData2->Result.bind(data2 => {
+      resultData3->Result.bind(data3 => {
+        resultData4->Result.bind(data4 => {
+          resultData5->Result.mapSuccess(data5 => {
+            (data1, data2, data3, data4, data5)
+          })
+        })
+      })
+    })
+  });
+};

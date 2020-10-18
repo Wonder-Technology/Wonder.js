@@ -10,32 +10,44 @@ let _addImageIdAndData = (result, imageId) => {
 };
 
 let _getAllUsedImageIdAndData = () => {
-  GameObjectRunAPI.getAllRenderPBRMaterials()
+  GameObjectRunAPI.getAllRenderBSDFMaterials()
   ->ListSt.reduce(
       [],
       (result, material) => {
         let result =
-          switch (PBRMaterialRunAPI.getDiffuseMapImageId(material)) {
+          switch (BSDFMaterialRunAPI.getSpecularMapImageId(material)) {
+          | None => result
+          | Some(imageId) => _addImageIdAndData(result, imageId)
+          };
+
+        let result =
+          switch (BSDFMaterialRunAPI.getDiffuseMapImageId(material)) {
           | None => result
           | Some(imageId) => _addImageIdAndData(result, imageId)
           };
 
         let result =
           switch (
-            PBRMaterialRunAPI.getChannelRoughnessMetallicMapImageId(material)
+            BSDFMaterialRunAPI.getChannelRoughnessMetallicMapImageId(material)
           ) {
           | None => result
           | Some(imageId) => _addImageIdAndData(result, imageId)
           };
 
         let result =
-          switch (PBRMaterialRunAPI.getEmissionMapImageId(material)) {
+          switch (BSDFMaterialRunAPI.getEmissionMapImageId(material)) {
           | None => result
           | Some(imageId) => _addImageIdAndData(result, imageId)
           };
 
         let result =
-          switch (PBRMaterialRunAPI.getNormalMapImageId(material)) {
+          switch (BSDFMaterialRunAPI.getNormalMapImageId(material)) {
+          | None => result
+          | Some(imageId) => _addImageIdAndData(result, imageId)
+          };
+
+        let result =
+          switch (BSDFMaterialRunAPI.getTransmissionMapImageId(material)) {
           | None => result
           | Some(imageId) => _addImageIdAndData(result, imageId)
           };

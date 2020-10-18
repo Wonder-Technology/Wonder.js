@@ -32,20 +32,20 @@ let _ =
       describe("test update one perspectiveCameraProjection", () => {
         testPromise("set pMatrix based on aspect, fovy, near, far", () => {
           let perspectiveCameraProjection =
-            PerspectiveCameraProjectionRunAPI.create();
-          PerspectiveCameraProjectionRunAPI.setNear(
+            PerspectiveCameraProjectionCPAPI.create();
+          PerspectiveCameraProjectionCPAPI.setNear(
             perspectiveCameraProjection,
             0.2->NearVO.create,
           );
-          PerspectiveCameraProjectionRunAPI.setFar(
+          PerspectiveCameraProjectionCPAPI.setFar(
             perspectiveCameraProjection,
             1000.->FarVO.create,
           );
-          PerspectiveCameraProjectionRunAPI.setFovy(
+          PerspectiveCameraProjectionCPAPI.setFovy(
             perspectiveCameraProjection,
             60.->FovyVO.create,
           );
-          PerspectiveCameraProjectionRunAPI.setAspect(
+          PerspectiveCameraProjectionCPAPI.setAspect(
             perspectiveCameraProjection,
             1.->AspectVO.create,
           );
@@ -53,7 +53,7 @@ let _ =
           DirectorCPTool.initAndUpdate(
             ~handleSuccessFunc=
               () => {
-                PerspectiveCameraProjectionRunAPI.getPMatrix(
+                PerspectiveCameraProjectionCPAPI.getPMatrix(
                   perspectiveCameraProjection,
                 )
                 ->OptionSt.getExn
@@ -83,16 +83,16 @@ let _ =
         });
         testPromise("if not set aspect, compute it", () => {
           let perspectiveCameraProjection =
-            PerspectiveCameraProjectionRunAPI.create();
-          PerspectiveCameraProjectionRunAPI.setNear(
+            PerspectiveCameraProjectionCPAPI.create();
+          PerspectiveCameraProjectionCPAPI.setNear(
             perspectiveCameraProjection,
             0.2->NearVO.create,
           );
-          PerspectiveCameraProjectionRunAPI.setFar(
+          PerspectiveCameraProjectionCPAPI.setFar(
             perspectiveCameraProjection,
             1000.->FarVO.create,
           );
-          PerspectiveCameraProjectionRunAPI.setFovy(
+          PerspectiveCameraProjectionCPAPI.setFovy(
             perspectiveCameraProjection,
             60.->FovyVO.create,
           );
@@ -101,7 +101,7 @@ let _ =
           DirectorCPTool.initAndUpdate(
             ~handleSuccessFunc=
               () => {
-                PerspectiveCameraProjectionRunAPI.getPMatrix(
+                PerspectiveCameraProjectionCPAPI.getPMatrix(
                   perspectiveCameraProjection,
                 )
                 ->OptionSt.getExn
@@ -131,16 +131,16 @@ let _ =
         });
         testPromise("if not set near, fail", () => {
           let perspectiveCameraProjection =
-            PerspectiveCameraProjectionRunAPI.create();
-          PerspectiveCameraProjectionRunAPI.setFar(
+            PerspectiveCameraProjectionCPAPI.create();
+          PerspectiveCameraProjectionCPAPI.setFar(
             perspectiveCameraProjection,
             1000.->FarVO.create,
           );
-          PerspectiveCameraProjectionRunAPI.setFovy(
+          PerspectiveCameraProjectionCPAPI.setFovy(
             perspectiveCameraProjection,
             60.->FovyVO.create,
           );
-          PerspectiveCameraProjectionRunAPI.setAspect(
+          PerspectiveCameraProjectionCPAPI.setAspect(
             perspectiveCameraProjection,
             1.->AspectVO.create,
           );
@@ -164,20 +164,20 @@ let _ =
         |j},
           () => {
             let perspectiveCameraProjection =
-              PerspectiveCameraProjectionRunAPI.create();
-            PerspectiveCameraProjectionRunAPI.setNear(
+              PerspectiveCameraProjectionCPAPI.create();
+            PerspectiveCameraProjectionCPAPI.setNear(
               perspectiveCameraProjection,
               0.2->NearVO.create,
             );
-            PerspectiveCameraProjectionRunAPI.setFar(
+            PerspectiveCameraProjectionCPAPI.setFar(
               perspectiveCameraProjection,
               1000.->FarVO.create,
             );
-            PerspectiveCameraProjectionRunAPI.setFovy(
+            PerspectiveCameraProjectionCPAPI.setFovy(
               perspectiveCameraProjection,
               60.->FovyVO.create,
             );
-            PerspectiveCameraProjectionRunAPI.setAspect(
+            PerspectiveCameraProjectionCPAPI.setAspect(
               perspectiveCameraProjection,
               1.->AspectVO.create,
             );
@@ -185,14 +185,14 @@ let _ =
             DirectorCPTool.initAndUpdateAndUpdate(
               ~handleSuccessAfterUpdate1Func=
                 () => {
-                  PerspectiveCameraProjectionRunAPI.setFar(
+                  PerspectiveCameraProjectionCPAPI.setFar(
                     perspectiveCameraProjection,
                     2000.->FarVO.create,
                   )
                 },
               ~handleSuccessAfterUpdate2Func=
                 () => {
-                  PerspectiveCameraProjectionRunAPI.getPMatrix(
+                  PerspectiveCameraProjectionCPAPI.getPMatrix(
                     perspectiveCameraProjection,
                   )
                   ->OptionSt.getExn
@@ -232,9 +232,9 @@ let _ =
           let (_, transform, (cameraView, cameraProjection)) =
             CameraTool.createCameraGameObject();
           let pos = (1., 2., 3.)->PositionTool.create;
-          TransformRunAPI.setLocalPosition(transform, pos)
+          TransformCPAPI.setLocalPosition(transform, pos)
           ->ResultTool.getExnSuccessValue;
-          BasicCameraViewRunAPI.active(cameraView);
+          BasicCameraViewCPAPI.active(cameraView);
           WebGPUDependencyTool.build(~sandbox, ())->WebGPUDependencyTool.set;
           CameraCPTool.buildAndSetAllBufferData(
             WebGPUDependencyTool.createDeviceObject(),
@@ -291,7 +291,7 @@ let _ =
       testPromise("set camera buffer's data", () => {
         let (_, transform, (cameraView, cameraProjection)) =
           CameraTool.createCameraGameObject();
-        BasicCameraViewRunAPI.active(cameraView);
+        BasicCameraViewCPAPI.active(cameraView);
         let setSubFloat32DataStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
           ->SinonTool.createThreeArgsEmptyStubData;

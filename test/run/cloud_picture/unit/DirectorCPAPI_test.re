@@ -11,7 +11,7 @@ let _ =
     beforeEach(() => {
       sandbox := createSandbox();
 
-      OtherConfigDpCPAPI.set({getIsDebug: () => true});
+      OtherConfigDpRunAPI.set({getIsDebug: () => true});
     });
 
     describe("prepare", () => {
@@ -19,9 +19,8 @@ let _ =
         describe("create and set transform po", () => {
           test("should create localPositions", () => {
             let transformCount = 5;
-            POConfigCPTool.setTransformCount(transformCount);
 
-            DirectorCPTool.prepare();
+            DirectorCPTool.prepare(~transformCount, ());
 
             TransformCPTool.getTransformPO().localPositions
             ->Js.Typed_array.Float32Array.length
@@ -57,7 +56,7 @@ let _ =
 
           DirectorCPTool.prepare(~sampleCount, ());
 
-          GameObjectRunAPI.create()->ExpectTool.judgeResult;
+          GameObjectCPAPI.create()->ExpectTool.judgeResult;
         },
       )
     });

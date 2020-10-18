@@ -13,8 +13,9 @@ let _initBufferData = (geometryPointCount, geometryCount) => {
 };
 
 let createPO = () => {
-  let geometryPointCount = POConfigCPRepo.getGeometryPointCount();
-  let geometryCount = POConfigCPRepo.getGeometryCount();
+  let geometryPointCount =
+    POConfigDpRunAPI.unsafeGet().getGeometryPointCount();
+  let geometryCount = POConfigDpRunAPI.unsafeGet().getGeometryCount();
 
   _initBufferData(geometryPointCount, geometryCount)
   ->Result.mapSuccess(
@@ -52,7 +53,7 @@ let createPO = () => {
           verticesOffset: 0,
           texCoordsOffset: 0,
           normalsOffset: 0,
-          tangentsOffset:0,
+          tangentsOffset: 0,
           indicesOffset: 0,
           gameObjectsMap:
             CreateMapComponentCPRepoUtils.createEmptyMap(geometryCount),

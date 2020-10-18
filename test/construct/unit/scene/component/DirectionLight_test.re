@@ -33,7 +33,7 @@ let _ =
 
       describe("contract check", () => {
         test("should not exceed buffer's max count", () => {
-          POConfigTool.setDirectionLightCount(2);
+          POConfigTool.setAllCount(~directionLightCount=2, ());
 
           let light = create()->ResultTool.getExnSuccessValue;
           let light = create()->ResultTool.getExnSuccessValue;
@@ -105,8 +105,7 @@ let _ =
     describe("getDirection", () =>
       describe("fix bug", () => {
         let _prepare = () => {
-          let (gameObject, light) =
-            DirectionLightTool.createGameObject();
+          let (gameObject, light) = DirectionLightTool.createGameObject();
 
           let localEulerAngles =
             (45., 22., 60.)->EulerAnglesTool.createFromPrimitive;

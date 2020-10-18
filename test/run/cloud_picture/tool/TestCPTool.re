@@ -5,14 +5,22 @@ let init =
       ~transformCount=10,
       ~geometryPointCount=10,
       ~geometryCount=10,
-      ~pbrMaterialCount=10,
+      ~bsdfMaterialCount=10,
       ~directionLightCount=2,
       ~initPipelineData=PipelineTool.buildEmptyPipelineData(),
       ~updatePipelineData=PipelineTool.buildEmptyPipelineData(),
       ~renderPipelineData=PipelineTool.buildEmptyPipelineData(),
       (),
     ) => {
-  DependencyTool.injectAllDependencies(~isDebug, ());
+  DependencyTool.injectAllDependencies(
+    ~isDebug,
+    ~transformCount,
+    ~geometryPointCount,
+    ~geometryCount,
+    ~bsdfMaterialCount,
+    ~directionLightCount,
+    (),
+  );
 
   CPContainerManager.setPO(CreateCPRepo.create());
 
@@ -20,13 +28,14 @@ let init =
   PipelineCPDoService.setUpdatePipelineData(updatePipelineData);
   PipelineCPDoService.setRenderPipelineData(renderPipelineData);
 
-  POConfigCPRepo.setTransformCount(transformCount);
-  POConfigCPRepo.setGeometryPointCount(geometryPointCount);
-  POConfigCPRepo.setGeometryCount(geometryCount);
-  POConfigCPRepo.setPBRMaterialCount(pbrMaterialCount);
-  POConfigCPRepo.setDirectionLightCount(directionLightCount);
-
-  DirectorCPTool.prepare();
+  DirectorCPTool.prepare(
+    ~transformCount,
+    ~geometryPointCount,
+    ~geometryCount,
+    ~bsdfMaterialCount,
+    ~directionLightCount,
+    (),
+  );
 
   WebGPUDependencyTool.build(~sandbox, ())->WebGPUDependencyTool.set;
   WebGPURayTracingDependencyTool.build(~sandbox, ())
@@ -38,15 +47,18 @@ let updateBufferCount =
       ~transformCount=10,
       ~geometryPointCount=10,
       ~geometryCount=10,
-      ~pbrMaterialCount=10,
+      ~bsdfMaterialCount=10,
       ~directionLightCount=2,
       (),
     ) => {
-  POConfigCPRepo.setTransformCount(transformCount);
-  POConfigCPRepo.setGeometryPointCount(geometryPointCount);
-  POConfigCPRepo.setGeometryCount(geometryCount);
-  POConfigCPRepo.setPBRMaterialCount(pbrMaterialCount);
-  POConfigCPRepo.setDirectionLightCount(directionLightCount);
+  POConfigTool.setAllCount(
+    ~transformCount,
+    ~geometryPointCount,
+    ~geometryCount,
+    ~bsdfMaterialCount,
+    ~directionLightCount,
+    (),
+  );
 
   DirectorCPTool.createAndSetAllComponentPOs();
 };

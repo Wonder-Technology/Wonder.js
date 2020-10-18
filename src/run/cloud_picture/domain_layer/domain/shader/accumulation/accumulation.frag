@@ -35,7 +35,7 @@ void main() {
 
   vec4 finalColor = accumulationColor / pushC.totalSampleCount;
 
-  finalColor = vec4(gammaCorrection((vec3(finalColor))), finalColor.w);
+  finalColor = vec4(gammaCorrection(vec3(finalColor)), finalColor.w);
 
   outColor = finalColor;
 }

@@ -8,7 +8,7 @@ let getAllRenderGeometries = () => {
   ->ListSt.map(GeometryEntity.create);
 };
 
-let getAllRenderPBRMaterials = () => {
-  DpContainer.unsafeGetGameObjectRepoDp().getAllGameObjectPBRMaterials()
-  ->ListSt.map(PBRMaterialEntity.create);
+let getAllRenderBSDFMaterials = () => {
+  DpContainer.unsafeGetGameObjectRepoDp().getAllGameObjectBSDFMaterials()
+  ->ListSt.map(BSDFMaterialEntity.create);
 };

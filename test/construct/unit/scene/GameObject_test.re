@@ -81,46 +81,46 @@ let _ =
         );
       });
 
-      describe("test pbrMaterial component", () => {
+      describe("test bsdfMaterial component", () => {
         let _createAndAddComponent = () => {
           let gameObject = create()->ResultTool.getExnSuccessValue;
 
-          let pbrMaterial =
-            PBRMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
+          let bsdfMaterial =
+            BSDFMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
 
-          addPBRMaterial(gameObject, pbrMaterial)
+          addBSDFMaterial(gameObject, bsdfMaterial)
           ->ResultTool.getExnSuccessValue;
         };
 
-        describe("addPBRMaterial", () => {
+        describe("addBSDFMaterial", () => {
           test("if this type of component is already exist, fail", () => {
             let gameObject = _createAndAddComponent();
 
-            let pbrMaterial =
-              PBRMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
+            let bsdfMaterial =
+              BSDFMaterialRunAPI.create()->ResultTool.getExnSuccessValue;
 
-            addPBRMaterial(gameObject, pbrMaterial)
+            addBSDFMaterial(gameObject, bsdfMaterial)
             ->ExpectTool.toFail(
                 "expect this type of the component shouldn't be added before, but actual not",
               );
           })
         });
 
-        describe("getPBRMaterial", () =>
-          test("get pbrMaterial component", () => {
+        describe("getBSDFMaterial", () =>
+          test("get bsdfMaterial component", () => {
             let gameObject = _createAndAddComponent();
 
-            getPBRMaterial(gameObject)
+            getBSDFMaterial(gameObject)
             ->OptionSt.getExn
-            ->PBRMaterialTool.isPBRMaterial;
+            ->BSDFMaterialTool.isBSDFMaterial;
           })
         );
 
-        describe("hasPBRMaterial", () =>
-          test("has pbrMaterial component", () => {
+        describe("hasBSDFMaterial", () =>
+          test("has bsdfMaterial component", () => {
             let gameObject = _createAndAddComponent();
 
-            hasPBRMaterial(gameObject)->expect == true;
+            hasBSDFMaterial(gameObject)->expect == true;
           })
         );
       });

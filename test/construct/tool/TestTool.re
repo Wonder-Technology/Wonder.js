@@ -1,7 +1,7 @@
 let init = (~sandbox, ~isDebug=true, ~transformCount=10, ()) => {
-  DependencyTool.injectAllDependencies(~isDebug, ());
+  DependencyTool.injectAllDependencies(~isDebug, ~transformCount, ());
 
-  POConfigCPRepo.setTransformCount(transformCount);
+  POConfigTool.setAllCount(~transformCount, ());
 
   CPContainerManager.setPO(CreateCPRepo.create());
 

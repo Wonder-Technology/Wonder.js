@@ -5,4 +5,5 @@ struct hitPayload {
   vec3 scatterDirection;
   vec3 throughput;
   uint seed;
+  vec3 bias;
 };

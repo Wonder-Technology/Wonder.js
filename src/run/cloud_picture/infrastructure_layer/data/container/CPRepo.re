@@ -46,16 +46,16 @@ let setTransform = transform => {
   {...po, transform: transform->Some}->CPContainerManager.setPO;
 };
 
-let getExnPBRMaterial = () => {
+let getExnBSDFMaterial = () => {
   let po = CPContainerManager.getPO();
 
-  po.pbrMaterial->OptionSt.getExn;
+  po.bsdfMaterial->OptionSt.getExn;
 };
 
-let setPBRMaterial = pbrMaterial => {
+let setBSDFMaterial = bsdfMaterial => {
   let po = CPContainerManager.getPO();
 
-  {...po, pbrMaterial: pbrMaterial->Some}->CPContainerManager.setPO;
+  {...po, bsdfMaterial: bsdfMaterial->Some}->CPContainerManager.setPO;
 };
 
 let getExnGeometry = () => {
@@ -104,18 +104,6 @@ let setDirectionLight = directionLight => {
   let po = CPContainerManager.getPO();
 
   {...po, directionLight: directionLight->Some}->CPContainerManager.setPO;
-};
-
-let getPOConfig = () => {
-  let po = CPContainerManager.getPO();
-
-  po.poConfig;
-};
-
-let setPOConfig = poConfig => {
-  let po = CPContainerManager.getPO();
-
-  {...po, poConfig}->CPContainerManager.setPO;
 };
 
 let getGlobalTemp = () => {

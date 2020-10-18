@@ -37,7 +37,7 @@ let _buildDirectionLightBufferData = device => {
       ->Result.bind(((intensity, direction)) => {
           let directionLightBufferData =
             Float32Array.fromLength(
-              POConfigCPRepo.getDirectionLightCount() * (4 + 4),
+              POConfigDpRunAPI.unsafeGet().getDirectionLightCount() * (4 + 4),
             );
 
           ListResult.mergeResults([

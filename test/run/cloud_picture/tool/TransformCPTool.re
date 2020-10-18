@@ -1,12 +1,12 @@
 let getTransformPO = () => CPRepo.getExnTransform();
 
 let setTwoTransformsData = (gameObject1, gameObject2) => {
-  open TransformRunAPI;
+  open TransformCPAPI;
 
   let transform1 =
-    GameObjectRunAPI.getTransform(gameObject1)->OptionSt.getExn;
+    GameObjectCPAPI.getTransform(gameObject1)->OptionSt.getExn;
   let transform2 =
-    GameObjectRunAPI.getTransform(gameObject2)->OptionSt.getExn;
+    GameObjectCPAPI.getTransform(gameObject2)->OptionSt.getExn;
 
   let pos1 = (0., 1., 0.)->PositionTool.create;
   let pos2 = (2., 1., 0.)->PositionTool.create;
