@@ -99,22 +99,22 @@ let _ =
                   loadGLSL
                   ->getCall(0, _)
                   ->SinonTool.calledWith(
-                      {j|$(baseShaderPath)/ray-generation.rgen|j},
+                      {j|$(baseShaderPath)/ray_generation.rgen|j},
                     ),
                   loadGLSL
                   ->getCall(1, _)
                   ->SinonTool.calledWith(
-                      {j|$(baseShaderPath)/ray-closest-hit.rchit|j},
+                      {j|$(baseShaderPath)/ray_closest_hit.rchit|j},
                     ),
                   loadGLSL
                   ->getCall(2, _)
                   ->SinonTool.calledWith(
-                      {j|$(baseShaderPath)/ray-miss.rmiss|j},
+                      {j|$(baseShaderPath)/ray_miss.rmiss|j},
                     ),
                   loadGLSL
                   ->getCall(3, _)
                   ->SinonTool.calledWith(
-                      {j|$(baseShaderPath)/ray-miss-shadow.rmiss|j},
+                      {j|$(baseShaderPath)/ray_miss_shadow.rmiss|j},
                     ),
                 ),
               )

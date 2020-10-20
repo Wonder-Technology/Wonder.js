@@ -86,7 +86,7 @@ let _createShaderBindingTable = device => {
       {
         "code":
           WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(
-            {j|$(baseShaderPath)/ray-generation.rgen|j},
+            {j|$(baseShaderPath)/ray_generation.rgen|j},
           ),
       },
       device,
@@ -97,7 +97,7 @@ let _createShaderBindingTable = device => {
       {
         "code":
           WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(
-            {j|$(baseShaderPath)/ray-closest-hit.rchit|j},
+            {j|$(baseShaderPath)/ray_closest_hit.rchit|j},
           ),
       },
       device,
@@ -107,7 +107,7 @@ let _createShaderBindingTable = device => {
       {
         "code":
           WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(
-            {j|$(baseShaderPath)/ray-miss.rmiss|j},
+            {j|$(baseShaderPath)/ray_miss.rmiss|j},
           ),
       },
       device,
@@ -117,7 +117,7 @@ let _createShaderBindingTable = device => {
       {
         "code":
           WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(
-            {j|$(baseShaderPath)/ray-miss-shadow.rmiss|j},
+            {j|$(baseShaderPath)/ray_miss_shadow.rmiss|j},
           ),
       },
       device,
