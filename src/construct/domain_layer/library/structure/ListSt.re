@@ -1,3 +1,5 @@
+type t('index, 'value) = list('value);
+
 let rec traverseResultM = (list, f) => {
   // define the monadic functions
   let (>>=) = (x, f) => Result.bind(x, f);
