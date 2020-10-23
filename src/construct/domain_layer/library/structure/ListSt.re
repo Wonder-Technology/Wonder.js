@@ -84,6 +84,10 @@ let map = (list, func) => {
   Belt.List.map(list, func);
 };
 
+let mapi = (list, func) => {
+  Belt.List.mapWithIndex(list, func);
+};
+
 let _eq = (source, target) => source === target;
 
 let includes = (list, value) => {
@@ -93,6 +97,8 @@ let includes = (list, value) => {
 let getBy = Belt.List.getBy;
 
 let reduce = Belt.List.reduce;
+
+let reducei = Belt.List.reduceWithIndex;
 
 let forEach = Belt.List.forEach;
 
@@ -107,6 +113,8 @@ let toArray = Belt.List.toArray;
 let fromArray = Belt.List.fromArray;
 
 let remove = (list, value) => list->Belt.List.filter(v => v !== value);
+
+let filter = Belt.List.filter;
 
 let length = Belt.List.length;
 
@@ -139,3 +147,9 @@ let removeDuplicateItemsU = (list, buildKeyFunc) => {
 let removeDuplicateItems = list => {
   removeDuplicateItemsU(list, Js.Int.toString);
 };
+
+let reverse = Belt.List.reverse;
+
+let zip = Belt.List.zip;
+
+let zipBy = Belt.List.zipBy;

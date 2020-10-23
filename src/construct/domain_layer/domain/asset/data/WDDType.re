@@ -74,64 +74,60 @@ type gameObjects = {
 //   //   scriptGameObjectIndexMapData: componentGameObjectIndexMapData,
 // };
 
-type parentTransformIndex = transformIndex;
+type parentIndex = transformIndex;
 
-type childrenTransformIndices = list(transformIndex);
+type childrenIndices = list(transformIndex);
 
-type gameObjectComponentIndexMap = {
-  //   hierachyIndexMap:
-  //     ImmutableSparseMap.t(parentTransformIndex, childrenTransformIndexs),
-  //   transformGameObjectIndexMapData:
-  //     ImmutableSparseMap.t(gameObjectIndex, transformIndex),
-  //   basicCameraViewGameObjectIndexMapData:
-  //     ImmutableSparseMap.t(gameObjectIndex, cameraViewIndex),
-  //   perspectiveCameraProjectionGameObjectIndexMapData:
-  //     ImmutableSparseMap.t(gameObjectIndex, cameraProjectionIndex),
-  //   bsdfMaterialGameObjectIndexMapData:
-  //     ImmutableSparseMap.t(gameObjectIndex, bsdfMaterialIndex),
-  //   directionLightGameObjectIndexMapData:
-  //     ImmutableSparseMap.t(gameObjectIndex, directionLightIndex),
-  //   geometryGameObjectIndexMapData:
-  //     ImmutableSparseMap.t(gameObjectIndex, geometryIndex),
-  hierachyIndexMap: ListSt.t(parentTransformIndex, childrenTransformIndices),
-  transformGameObjectIndexMap: ListSt.t(gameObjectIndex, transformIndex),
-  basicCameraViewGameObjectIndexMap:
-    ListSt.t(gameObjectIndex, cameraViewIndex),
-  perspectiveCameraProjectionGameObjectIndexMap:
-    ListSt.t(gameObjectIndex, cameraProjectionIndex),
-  bsdfMaterialGameObjectIndexMap:
-    ListSt.t(gameObjectIndex, bsdfMaterialIndex),
-  directionLightGameObjectIndexMap:
-    ListSt.t(gameObjectIndex, directionLightIndex),
-  geometryGameObjectIndexMap: ListSt.t(gameObjectIndex, geometryIndex),
+type gameObjectComponentIndexMapData = {
+  hierachyIndexMap: ImmutableSparseMap.t(parentIndex, childrenIndices),
+  transformgIndexMap: ImmutableSparseMap.t(gameObjectIndex, transformIndex),
+  basicCameraViewIndexMap:
+    ImmutableSparseMap.t(gameObjectIndex, cameraViewIndex),
+  perspectiveCameraProjectionIndexMap:
+    ImmutableSparseMap.t(gameObjectIndex, cameraProjectionIndex),
+  bsdfMaterialIndexMap:
+    ImmutableSparseMap.t(gameObjectIndex, bsdfMaterialIndex),
+  directionLightIndexMap:
+    ImmutableSparseMap.t(gameObjectIndex, directionLightIndex),
+  geometryIndexMap: ImmutableSparseMap.t(gameObjectIndex, geometryIndex),
+  //   hierachyIndexMap: ListSt.t(parentIndex, childrenIndices),
+  //   transformGameObjectIndexMap: ListSt.t(gameObjectIndex, transformIndex),
+  //   basicCameraViewGameObjectIndexMap:
+  //     ListSt.t(gameObjectIndex, cameraViewIndex),
+  //   perspectiveCameraProjectionGameObjectIndexMap:
+  //     ListSt.t(gameObjectIndex, cameraProjectionIndex),
+  //   bsdfMaterialGameObjectIndexMap:
+  //     ListSt.t(gameObjectIndex, bsdfMaterialIndex),
+  //   directionLightGameObjectIndexMap:
+  //     ListSt.t(gameObjectIndex, directionLightIndex),
+  //   geometryGameObjectIndexMap: ListSt.t(gameObjectIndex, geometryIndex),
 };
 
-// type mapMaterialIndexMapData = {
-//   materialIndices: list(lightMaterialIndex),
-//   //   mapIndices: list(textureIndex),
-//   mapIndices: list(imageIndex),
-// };
-
-// type materialIndices = {
-//   diffuseMapMaterialIndices: mapMaterialIndexMapData,
-//   channelRoughnessMetallicMapMaterialIndices: mapMaterialIndexMapData,
-//   emissionMapMaterialIndices: mapMaterialIndexMapData,
-//   normalMapMaterialIndices: mapMaterialIndexMapData,
-//   transmissionMapMaterialIndices: mapMaterialIndexMapData,
-//   specularMapMaterialIndices: mapMaterialIndexMapData,
-// };
+type materialIndexMapData = {
+  diffuseMapImageIndexMap:
+    ImmutableSparseMap.t(bsdfMaterialIndex, imageIndex),
+  channelRoughnessMetallicMapImageIndexMap:
+    ImmutableSparseMap.t(bsdfMaterialIndex, imageIndex),
+  emissionMapImageIndexMap:
+    ImmutableSparseMap.t(bsdfMaterialIndex, imageIndex),
+  normalMapImageIndexMap: ImmutableSparseMap.t(bsdfMaterialIndex, imageIndex),
+  transmissionMapImageIndexMap:
+    ImmutableSparseMap.t(bsdfMaterialIndex, imageIndex),
+  specularMapImageIndexMap:
+    ImmutableSparseMap.t(bsdfMaterialIndex, imageIndex),
+};
 
 // type imageTextureIndexMapData = {
 //   textureIndices: list(textureIndex),
 //   imageIndices: list(imageIndex),
 // };
 
-// type indices = {
-//   gameObjectIndices,
-//   //   materialIndices,
-//   //   imageTextureIndices: imageTextureIndexMapData,
-//   //   samplerTextureIndices: samplerTextureIndexMapData,
-// };
+type indexMapData = {
+  gameObjectComponentIndexMapData,
+  materialIndexMapData,
+  //   imageTextureIndices: imageTextureIndexMapData,
+  //   samplerTextureIndices: samplerTextureIndexMapData,
+};
 
 // type image = {
 //   //   name: string,
@@ -143,32 +139,29 @@ type gameObjectComponentIndexMap = {
 // type image = ArrayBuffer.t;
 
 type directionLight = {
-  color: (float, float, float),
-  intensity: float,
+  color: option((float, float, float)),
+  intensity: option(float),
 };
 
 type basicCameraView = {isActive: bool};
 
 type perspectiveCameraProjection = {
-  near: float,
-  //   far: option(float),
-  far: float,
-  fovy: float,
-  //   aspect: option(float),
-  aspect: float,
+  near: option(float),
+  far: option(float),
+  fovy: option(float),
+  aspect: option(float),
 };
 
 type transform = {
-  translation: (float, float, float),
-  rotation: (float, float, float, float),
-  scale: (float, float, float),
+  translation: option((float, float, float)),
+  rotation: option((float, float, float, float)),
+  scale: option((float, float, float)),
 };
 
 type geometry = {
-  //   name: string,
   position: positionIndex,
-  normal: normalIndex,
-  texCoord: texCoordIndex,
+  normal: option(normalIndex),
+  texCoord: option(texCoordIndex),
   index: indexIndex,
 };
 
@@ -181,27 +174,27 @@ type geometry = {
 // type index = ArrayBuffer.t;
 
 type bsdfMaterial = {
-  diffuseColor: (float, float, float),
-  specularColor: (float, float, float),
-  specular: float,
-  roughness: float,
-  metalness: float,
-  ior: float,
-  transmission: float,
-  diffuseMapImage: imageIndex,
-  channelRoughnessMetallicMapImage: imageIndex,
-  emissionMapImage: imageIndex,
-  normalMapImage: imageIndex,
-  transmissionMapImage: imageIndex,
-  specularMapImage: imageIndex,
+  diffuseColor: option((float, float, float)),
+  specularColor: option((float, float, float)),
+  specular: option(float),
+  roughness: option(float),
+  metalness: option(float),
+  ior: option(float),
+  transmission: option(float),
+  //   diffuseMapImageId: option(imageIndexString),
+  //   channelRoughnessMetallicMapImageId: option(imageIndexString),
+  //   emissionMapImageId: option(imageIndex),
+  //   normalMapImageId: option(imageIndex),
+  //   transmissionMapImageId: option(imageIndex),
+  //   specularMapImageId: option(imageIndex),
 };
 
-type data = {
-//   images: list(ArrayBuffer.t),
-//   positions: list(ArrayBuffer.t),
-//   normals: list(ArrayBuffer.t),
-//   texCoords: list(ArrayBuffer.t),
-//   indices: list(ArrayBuffer.t),
+type bufferData = {
+  //   images: list(ArrayBuffer.t),
+  //   positions: list(ArrayBuffer.t),
+  //   normals: list(ArrayBuffer.t),
+  //   texCoords: list(ArrayBuffer.t),
+  //   indices: list(ArrayBuffer.t),
   images: list(Uint8Array.t),
   positions: list(Float32Array.t),
   normals: list(Float32Array.t),
@@ -210,16 +203,15 @@ type data = {
 };
 
 type wdd = {
-  data,
+  bufferData,
   asset,
   scene,
-  //   indices,
-  gameObjectComponentIndexMap,
+  indexMapData,
   gameObjects,
   directionLights: list(directionLight),
   basicCameraViews: list(basicCameraView),
   perspectiveCameraProjections: list(perspectiveCameraProjection),
   transforms: list(transform),
-  geometrys: list(geometry),
+  geometries: list(geometry),
   bsdfMaterials: list(bsdfMaterial),
 };

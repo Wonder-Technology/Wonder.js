@@ -7,12 +7,10 @@ let loadImages = imageDataList => {
       ->Result.mapSuccess(stream => {
           stream->map(
                     imageData => {
-                      DpContainer.unsafeGetImageRepoDp().setData(
+                      OperateImageDoService.setData(
                         id->ImageIdVO.value,
                         imageData,
-                      );
-
-                      ();
+                      )
                     },
                     _,
                   )

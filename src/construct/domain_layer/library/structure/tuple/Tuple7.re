@@ -39,3 +39,30 @@ let collectOption =
     }
   };
 };
+
+let collectResult =
+    (
+      resultData1,
+      resultData2,
+      resultData3,
+      resultData4,
+      resultData5,
+      resultData6,
+      resultData7,
+    ) => {
+  resultData1->Result.bind(data1 => {
+    resultData2->Result.bind(data2 => {
+      resultData3->Result.bind(data3 => {
+        resultData4->Result.bind(data4 => {
+          resultData5->Result.bind(data5 => {
+            resultData6->Result.bind(data6 => {
+              resultData7->Result.mapSuccess(data7 => {
+                (data1, data2, data3, data4, data5, data6, data7)
+              })
+            })
+          })
+        })
+      })
+    })
+  });
+};

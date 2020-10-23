@@ -20,7 +20,14 @@ let map = Belt.Option.map;
 
 let flatMap = Belt.Option.flatMap;
 
-let fromNullable = x => Js.Nullable.toOption(x);
+let fromNullable = optionData => Js.Nullable.toOption(optionData);
+
+let forEachResult = (optionData, func) => {
+  switch (optionData) {
+  | None => ()->Result.succeed
+  | Some(data) => func(data)
+  };
+};
 
 let rec sequenceResultM = optionData => {
   switch (optionData) {

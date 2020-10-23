@@ -30,7 +30,8 @@ let _addComponent =
 
       handleAddComponentFunc(. component, gameObject);
 
-      gameObject->GameObjectEntity.create;
+      // gameObject->GameObjectEntity.create;
+      ();
     });
 };
 
