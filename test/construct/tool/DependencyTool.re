@@ -1,31 +1,16 @@
 open Sinon;
 
-let injectAllDependencies =
-    (
-      ~isDebug=true,
-      ~transformCount=10,
-      ~geometryPointCount=10,
-      ~geometryCount=10,
-      ~bsdfMaterialCount=10,
-      ~directionLightCount=2,
-      (),
-    ) => {
-  DirectorCPApService._injectDependencies(
-    ~transformCount,
-    ~geometryPointCount,
-    ~geometryCount,
-    ~bsdfMaterialCount,
-    ~directionLightCount,
-  );
+let injectAllDependencies = (~isDebug=true, ()) => {
+  DirectorCPApService._injectDependencies();
 
-  OtherConfigDpCPAPI.set({getIsDebug: () => isDebug});
+  ConfigDpCPAPI.set({getIsDebug: () => isDebug});
 };
 
-let injectNetworkDp =
-    (
-      ~sandbox,
-      ~readImageFile=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      (),
-    ) => {
-  NetworkDpRunAPI.set({readImageFile: readImageFile});
-};
+// let injectNetworkDp =
+//     (
+//       ~sandbox,
+//       ~readImageFile=createEmptyStub(refJsObjToSandbox(sandbox^)),
+//       (),
+//     ) => {
+//   NetworkDpRunAPI.set({readImageFile: readImageFile});
+// };

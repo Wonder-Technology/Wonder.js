@@ -1,105 +1,93 @@
 type t = {
-  mutable otherConfig: option(IConfigDp.otherConfig),
-  mutable poConfig: option(IConfigDp.poConfig),
-  mutable repo: option(IRepoDp.repo),
-  mutable timeJobRepo: option(ITimeJobRepoDp.timeJobRepo),
+  mutable config: option(IConfigDp.config),
+  mutable sceneGraphRepo: option(ISceneGraphRepoDp.sceneGraphRepo),
+  mutable timeRepo: option(ITimeRepoDp.timeRepo),
+  mutable pipelineRepo: option(IPipelineRepoDp.pipelineRepo),
   mutable time: option(ITimeDp.time),
-  mutable webgpuCore: option(IWebGPUCoreDp.webgpuCore),
-  mutable webgpuRayTracing: option(IWebGPURayTracingDp.webgpuRayTracing),
-  mutable network: option(INetworkDp.network),
+  // mutable webgpuCore: option(IWebGPUCoreDp.webgpuCore),
+  // mutable webgpuRayTracing: option(IWebGPURayTracingDp.webgpuRayTracing),
+  // mutable network: option(INetworkDp.network),
 };
 
 let dpContainer = {
-  otherConfig: None,
-  poConfig: None,
-  repo: None,
-  timeJobRepo: None,
+  config: None,
+  sceneGraphRepo: None,
+  timeRepo: None,
+  pipelineRepo: None,
   time: None,
-  webgpuCore: None,
-  webgpuRayTracing: None,
-  network: None,
+  // webgpuCore: None,
+  // webgpuRayTracing: None,
+  // network: None,
 };
 
-let unsafeGetOtherConfigDp = () => {
-  dpContainer.otherConfig->OptionSt.unsafeGet;
+let unsafeGetConfigDp = () => {
+  dpContainer.config->OptionSt.unsafeGet;
 };
 
-let unsafeGetPOConfigDp = () => {
-  dpContainer.poConfig->OptionSt.unsafeGet;
-};
-
-let setOtherConfigDp = dp => {
-  dpContainer.otherConfig = dp->Some;
+let setConfigDp = dp => {
+  dpContainer.config = dp->Some;
 
   ();
 };
 
-let setPOConfigDp = dp => {
-  dpContainer.poConfig = dp->Some;
-
-  ();
-};
-
-let _unsafeGetRepoDp = () => {
-  dpContainer.repo->OptionSt.unsafeGet;
-};
-
-let unsafeGetSceneRepoDp = () => {
-  _unsafeGetRepoDp().sceneRepo;
+let _unsafeGetSceneGraphRepoDp = () => {
+  dpContainer.sceneGraphRepo->OptionSt.unsafeGet;
 };
 
 let unsafeGetGameObjectRepoDp = () => {
-  _unsafeGetRepoDp().gameObjectRepo;
+  _unsafeGetSceneGraphRepoDp().gameObjectRepo;
 };
 
-let unsafeGetTransformRepoDp = () => {
-  _unsafeGetRepoDp().transformRepo;
-};
+// let unsafeGetTransformRepoDp = () => {
+//   _unsafeGetSceneGraphRepoDp().transformRepo;
+// };
 
-let unsafeGetBSDFMaterialRepoDp = () => {
-  _unsafeGetRepoDp().bsdfMaterialRepo;
-};
+// let unsafeGetBSDFMaterialRepoDp = () => {
+//   _unsafeGetSceneGraphRepoDp().bsdfMaterialRepo;
+// };
 
-let unsafeGetGeometryRepoDp = () => {
-  _unsafeGetRepoDp().geometryRepo;
-};
+// let unsafeGetGeometryRepoDp = () => {
+//   _unsafeGetSceneGraphRepoDp().geometryRepo;
+// };
 
-let unsafeGetDirectionLightRepoDp = () => {
-  _unsafeGetRepoDp().directionLightRepo;
-};
+// let unsafeGetDirectionLightRepoDp = () => {
+//   _unsafeGetSceneGraphRepoDp().directionLightRepo;
+// };
 
-let unsafeGetBasicCameraViewRepoDp = () => {
-  _unsafeGetRepoDp().basicCameraViewRepo;
-};
+// let unsafeGetBasicCameraViewRepoDp = () => {
+//   _unsafeGetSceneGraphRepoDp().basicCameraViewRepo;
+// };
 
-let unsafeGetPerspectiveCameraProjectionRepoDp = () => {
-  _unsafeGetRepoDp().perspectiveCameraProjectionRepo;
-};
+// let unsafeGetPerspectiveCameraProjectionRepoDp = () => {
+//   _unsafeGetSceneGraphRepoDp().perspectiveCameraProjectionRepo;
+// };
 
-let unsafeGetGlobalTempRepoDp = () => {
-  _unsafeGetRepoDp().globalTempRepo;
-};
+// let unsafeGetGlobalTempRepoDp = () => {
+//   _unsafeGetSceneGraphRepoDp().globalTempRepo;
+// };
 
 let unsafeGetPipelineRepoDp = () => {
-  _unsafeGetRepoDp().pipelineRepo;
+  dpContainer.pipelineRepo->OptionSt.unsafeGet;
 };
 
-let unsafeGetImageRepoDp = () => {
-  _unsafeGetRepoDp().imageRepo;
+let setPipelineRepoDp = dp => {
+  dpContainer.pipelineRepo = dp->Some;
+
+  ();
 };
 
-let setRepoDp = dp => {
-  dpContainer.repo = dp->Some;
+let setSceneGraphRepoDp = dp => {
+  dpContainer.sceneGraphRepo = dp->Some;
 
   ();
 };
 
 let unsafeGetTimeRepoDp = () => {
-  dpContainer.timeJobRepo->OptionSt.unsafeGet;
+  dpContainer.timeRepo->OptionSt.unsafeGet;
 };
 
 let setTimeRepoDp = dp => {
-  dpContainer.timeJobRepo = dp->Some;
+  dpContainer.timeRepo = dp->Some;
 
   ();
 };
@@ -114,32 +102,32 @@ let setTimeDp = dp => {
   ();
 };
 
-let unsafeGetWebGPUCoreDp = () => {
-  dpContainer.webgpuCore->OptionSt.unsafeGet;
-};
+// let unsafeGetWebGPUCoreDp = () => {
+//   dpContainer.webgpuCore->OptionSt.unsafeGet;
+// };
 
-let setWebGPUCoreDp = dp => {
-  dpContainer.webgpuCore = dp->Some;
+// let setWebGPUCoreDp = dp => {
+//   dpContainer.webgpuCore = dp->Some;
 
-  ();
-};
+//   ();
+// };
 
-let unsafeGetWebGPURayTracingDp = () => {
-  dpContainer.webgpuRayTracing->OptionSt.unsafeGet;
-};
+// let unsafeGetWebGPURayTracingDp = () => {
+//   dpContainer.webgpuRayTracing->OptionSt.unsafeGet;
+// };
 
-let setWebGPURayTracingDp = dp => {
-  dpContainer.webgpuRayTracing = dp->Some;
+// let setWebGPURayTracingDp = dp => {
+//   dpContainer.webgpuRayTracing = dp->Some;
 
-  ();
-};
+//   ();
+// };
 
-let unsafeGetNetworkDp = () => {
-  dpContainer.network->OptionSt.unsafeGet;
-};
+// let unsafeGetNetworkDp = () => {
+//   dpContainer.network->OptionSt.unsafeGet;
+// };
 
-let setNetworkDp = dp => {
-  dpContainer.network = dp->Some;
+// let setNetworkDp = dp => {
+//   dpContainer.network = dp->Some;
 
-  ();
-};
+//   ();
+// };

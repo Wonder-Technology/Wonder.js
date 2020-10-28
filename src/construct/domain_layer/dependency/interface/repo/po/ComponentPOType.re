@@ -1,1 +1,0 @@
-type index = int;

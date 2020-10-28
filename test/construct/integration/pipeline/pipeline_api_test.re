@@ -60,14 +60,13 @@ let _ =
       };
 
       testPromise("test exec single job success", () => {
-        let gameObject = ref((-1)->GameObjectEntity.create);
+        let x = ref(-1);
+        let value = 10;
+
         PipelineTool.registerJobs(
           ~jobs=[
-            _createJob(~jobName="set_scene_gameObject", ~execFunc=() => {
-              gameObject :=
-                GameObjectRunAPI.create()->ResultTool.getExnSuccessValue;
-
-              SceneRunAPI.setSceneGameObject(gameObject^);
+            _createJob(~jobName="job1", ~execFunc=() => {
+              x := value;
 
               Result.succeed()->WonderBsMost.Most.just;
             }),
@@ -83,37 +82,28 @@ let _ =
                             {
                               name: "frame",
                               link: Concat,
-                              elements: [
-                                {name: "set_scene_gameObject", type_: Job},
-                              ],
+                              elements: [{name: "job1", type_: Job}],
                             },
                           ],
                         }: PipelineVOType.pipelineData,
-          ~handleSuccessFunc=
-            () => {
-              SceneRunAPI.getSceneGameObject()->expect == (gameObject^)->Some
-            },
+          ~handleSuccessFunc=() => {(x^)->expect == value},
           (),
         );
       });
       // TODO test merge jobs
       testPromise("test concat two jobs", () => {
-        let gameObject1 = ref((-1)->GameObjectEntity.create);
-        let gameObject2 = ref((-1)->GameObjectEntity.create);
+        let x = ref(-1);
+        let value1 = 1;
+        let value2 = 2;
         PipelineTool.registerJobs(
           ~jobs=[
-            _createJob(~jobName="set_scene_gameObject2", ~execFunc=() => {
-              gameObject2 := 10->GameObjectEntity.create;
-
-              SceneRunAPI.setSceneGameObject(gameObject2^);
+            _createJob(~jobName="job2", ~execFunc=() => {
+              x := value2;
 
               Result.succeed()->WonderBsMost.Most.just;
             }),
-            _createJob(~jobName="set_scene_gameObject1", ~execFunc=() => {
-              gameObject1 :=
-                GameObjectRunAPI.create()->ResultTool.getExnSuccessValue;
-
-              SceneRunAPI.setSceneGameObject(gameObject1^);
+            _createJob(~jobName="job1", ~execFunc=() => {
+              x := value1;
 
               Result.succeed()->WonderBsMost.Most.just;
             }),
@@ -130,16 +120,13 @@ let _ =
                               name: "frame",
                               link: Concat,
                               elements: [
-                                {name: "set_scene_gameObject1", type_: Job},
-                                {name: "set_scene_gameObject2", type_: Job},
+                                {name: "job1", type_: Job},
+                                {name: "job2", type_: Job},
                               ],
                             },
                           ],
                         }: PipelineVOType.pipelineData,
-          ~handleSuccessFunc=
-            () => {
-              SceneRunAPI.getSceneGameObject()->expect == (gameObject2^)->Some
-            },
+          ~handleSuccessFunc=() => {(x^)->expect == value2},
           (),
         );
       });

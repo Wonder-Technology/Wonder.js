@@ -1,5 +1,5 @@
 type t =
-  | Scale(TransformPOType.scale);
+  | Scale(SceneGraphType.scale);
 
 let create = value => Scale(value);
 

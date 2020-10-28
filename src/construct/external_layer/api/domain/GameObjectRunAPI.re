@@ -1,0 +1,3 @@
+let getAllRenderGameObjects = () => {
+  GameObjectApService.getAllRenderGameObjects();
+};

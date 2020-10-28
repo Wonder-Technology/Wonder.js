@@ -1,5 +1,5 @@
 type t =
-  | GameObject(ScenePOType.gameObject);
+  | GameObject(SceneGraphType.gameObject);
 
 let create = uid => GameObject(uid);
 

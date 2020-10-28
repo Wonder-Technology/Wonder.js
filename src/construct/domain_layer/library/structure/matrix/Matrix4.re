@@ -337,7 +337,7 @@ let buildPerspective =
         )
       )
     },
-    DpContainer.unsafeGetOtherConfigDp().getIsDebug(),
+    DpContainer.unsafeGetConfigDp().getIsDebug(),
   )
   ->Result.mapSuccess(() => {
       let fovy = Js.Math._PI *. fovy /. 180. /. 2.;
@@ -602,14 +602,13 @@ let getEulerAngles = matTypeArr => {
 };
 
 let setLookAt = (eye, center, up) => {
-  let (z1, z2, z3) as z = 
-    Vector3.sub(Vector3.Float, eye, center) -> Vector3.normalize;
+  let (z1, z2, z3) as z =
+    Vector3.sub(Vector3.Float, eye, center)->Vector3.normalize;
 
-  let y = up -> Vector3.normalize;
+  let y = up->Vector3.normalize;
 
-  let (x1, x2, x3) as x = 
-    Vector3.cross(y, z) -> Vector3.normalize;
-  
+  let (x1, x2, x3) as x = Vector3.cross(y, z)->Vector3.normalize;
+
   let (y1, y2, y3) = Vector3.cross(z, x);
 
   let (eyeX, eyeY, eyeZ) = eye;
@@ -632,4 +631,4 @@ let setLookAt = (eye, center, up) => {
     eyeZ,
     1.,
   |]);
-}
+};

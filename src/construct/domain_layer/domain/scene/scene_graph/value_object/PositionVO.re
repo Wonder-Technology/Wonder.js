@@ -1,5 +1,5 @@
 type t =
-  | Position(TransformPOType.position);
+  | Position(SceneGraphType.position);
 
 let create = value => Position(value);
 
