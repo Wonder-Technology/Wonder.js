@@ -1,0 +1,3 @@
+let getSceneGameObject = () => {
+  SceneApService.getSceneGameObject();
+};

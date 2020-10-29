@@ -1,5 +1,7 @@
-let getAllRenderGameObjects = () => {
-  DpContainer.unsafeGetGameObjectRepoDp().getAllGeometryGameObjects()
+let getAllRenderGameObjects = sceneGameObject => {
+  DpContainer.unsafeGetGameObjectRepoDp().getAllGeometryGameObjects(
+    sceneGameObject->GameObjectEntity.value,
+  )
   ->ListSt.map(GameObjectEntity.create);
 };
 

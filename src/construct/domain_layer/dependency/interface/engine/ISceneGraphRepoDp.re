@@ -1,5 +1,7 @@
 open SceneGraphType;
 
+type sceneRepo = {getSceneGameObject: unit => gameObject};
+
 type gameObjectRepo = {
   //   getMaxUID: unit => uid,
   //   setMaxUID: uid => unit,
@@ -23,9 +25,24 @@ type gameObjectRepo = {
   //   getPerspectiveCameraProjection:
   //     gameObject => option(perspectiveCameraProjection),
   //   hasPerspectiveCameraProjection: gameObject => bool,
-  getAllGeometryGameObjects: unit => list(gameObject),
-  // getAllGameObjectGeometries: unit => list(geometry),
-  // getAllGameObjectBSDFMaterials: unit => list(bsdfMaterial),
+  getAllGeometryGameObjects: gameObject => list(gameObject),
+  // getAllGameObjectGeometries: gameObject => list(geometry),
+  // getAllGameObjectBSDFMaterials: gameObject => list(bsdfMaterial),
 };
 
-type sceneGraphRepo = {gameObjectRepo};
+type transformRepo = {
+  getLocalToWorldMatrix: transform => localToWorldMatrix,
+  getNormalMatrix: transform => normalMatrix,
+  getLocalPosition: transform => position,
+  getLocalRotation: transform => rotation,
+  getLocalScale: transform => scale,
+  getPosition: transform => position,
+  getRotation: transform => rotation,
+  getScale: transform => scale,
+};
+
+type sceneGraphRepo = {
+  sceneRepo,
+  transformRepo,
+  gameObjectRepo,
+};

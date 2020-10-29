@@ -1,0 +1,4 @@
+
+let getSceneGameObject = () => {
+  SceneRoot.getSceneGameObject();
+};

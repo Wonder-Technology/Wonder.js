@@ -34,13 +34,17 @@ let _unsafeGetSceneGraphRepoDp = () => {
   dpContainer.sceneGraphRepo->OptionSt.unsafeGet;
 };
 
+let unsafeGetSceneRepoDp = () => {
+  _unsafeGetSceneGraphRepoDp().sceneRepo;
+};
+
 let unsafeGetGameObjectRepoDp = () => {
   _unsafeGetSceneGraphRepoDp().gameObjectRepo;
 };
 
-// let unsafeGetTransformRepoDp = () => {
-//   _unsafeGetSceneGraphRepoDp().transformRepo;
-// };
+let unsafeGetTransformRepoDp = () => {
+  _unsafeGetSceneGraphRepoDp().transformRepo;
+};
 
 // let unsafeGetBSDFMaterialRepoDp = () => {
 //   _unsafeGetSceneGraphRepoDp().bsdfMaterialRepo;
