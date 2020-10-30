@@ -1,9 +1,9 @@
 type t =
   | GameObject(SceneGraphType.gameObject);
 
-let create = uid => GameObject(uid);
+let create = value => GameObject(value);
 
 let value = gameObject =>
   switch (gameObject) {
-  | GameObject(uid) => uid
+  | GameObject(value) => value
   };

@@ -29,9 +29,9 @@ let init = () => {
   PipelineCPDoService.getInitPipelineData()->_parseAndSetPipelineStream;
 };
 
-// let update = () => {
-//   PipelineCPDoService.getUpdatePipelineData()->_parseAndSetPipelineStream;
-// };
+let update = () => {
+  PipelineCPDoService.getUpdatePipelineData()->_parseAndSetPipelineStream;
+};
 
 // let render = () => {
 //   PipelineCPDoService.getRenderPipelineData()->_parseAndSetPipelineStream;

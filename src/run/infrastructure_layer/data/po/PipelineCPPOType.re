@@ -4,10 +4,10 @@ type pipelineData = PipelineVOType.pipelineData;
 
 type pipeline = {
   initPipeline: pipelineName,
-  // updatePipeline: pipelineName,
+  updatePipeline: pipelineName,
   // renderPipeline: pipelineName,
   initPipelineData: pipelineData,
-  // updatePipelineData: pipelineData,
+  updatePipelineData: pipelineData,
   // renderPipelineData: pipelineData,
   pipelineStreamMap: ImmutableHashMap.t(pipelineName, pipelineStream),
   jobExecFuncMap:

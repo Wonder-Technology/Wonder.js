@@ -56,13 +56,13 @@ let unsafeGetDirectionLightRepoDp = () => {
   _unsafeGetSceneGraphRepoDp().directionLightRepo;
 };
 
-// let unsafeGetBasicCameraViewRepoDp = () => {
-//   _unsafeGetSceneGraphRepoDp().basicCameraViewRepo;
-// };
+let unsafeGetBasicCameraViewRepoDp = () => {
+  _unsafeGetSceneGraphRepoDp().basicCameraViewRepo;
+};
 
-// let unsafeGetPerspectiveCameraProjectionRepoDp = () => {
-//   _unsafeGetSceneGraphRepoDp().perspectiveCameraProjectionRepo;
-// };
+let unsafeGetPerspectiveCameraProjectionRepoDp = () => {
+  _unsafeGetSceneGraphRepoDp().perspectiveCameraProjectionRepo;
+};
 
 // let unsafeGetGlobalTempRepoDp = () => {
 //   _unsafeGetSceneGraphRepoDp().globalTempRepo;

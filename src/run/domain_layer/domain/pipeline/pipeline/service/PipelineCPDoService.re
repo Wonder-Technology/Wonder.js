@@ -1,12 +1,10 @@
-// open PipelineVOType;
-
 let getInitPipeline = () => {
   PipelineCPRepo.getInitPipeline();
 };
 
-// let getUpdatePipeline = () => {
-//   PipelineCPRepo.getUpdatePipeline();
-// };
+let getUpdatePipeline = () => {
+  PipelineCPRepo.getUpdatePipeline();
+};
 
 // let getRenderPipeline = () => {
 //   PipelineCPRepo.getRenderPipeline();
@@ -20,13 +18,13 @@ let setInitPipelineData = pipelineData => {
   PipelineCPRepo.setInitPipelineData(pipelineData);
 };
 
-// let getUpdatePipelineData = () => {
-//   PipelineCPRepo.getUpdatePipelineData();
-// };
+let getUpdatePipelineData = () => {
+  PipelineCPRepo.getUpdatePipelineData();
+};
 
-// let setUpdatePipelineData = pipelineData => {
-//   PipelineCPRepo.setUpdatePipelineData(pipelineData);
-// };
+let setUpdatePipelineData = pipelineData => {
+  PipelineCPRepo.setUpdatePipelineData(pipelineData);
+};
 
 // let getRenderPipelineData = () => {
 //   PipelineCPRepo.getRenderPipelineData();

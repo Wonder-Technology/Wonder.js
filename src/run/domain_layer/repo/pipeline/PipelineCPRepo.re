@@ -2,9 +2,9 @@ let getInitPipeline = () => {
   CPRepo.getPipeline().initPipeline->PipelineEntity.create;
 };
 
-// let getUpdatePipeline = () => {
-//   CPRepo.getPipeline().updatePipeline->PipelineEntity.create;
-// };
+let getUpdatePipeline = () => {
+  CPRepo.getPipeline().updatePipeline->PipelineEntity.create;
+};
 
 // let getRenderPipeline = () => {
 //   CPRepo.getPipeline().renderPipeline->PipelineEntity.create;
@@ -18,13 +18,13 @@ let setInitPipelineData = initPipelineData => {
   CPRepo.setPipeline({...CPRepo.getPipeline(), initPipelineData});
 };
 
-// let getUpdatePipelineData = () => {
-//   CPRepo.getPipeline().updatePipelineData;
-// };
+let getUpdatePipelineData = () => {
+  CPRepo.getPipeline().updatePipelineData;
+};
 
-// let setUpdatePipelineData = updatePipelineData => {
-//   CPRepo.setPipeline({...CPRepo.getPipeline(), updatePipelineData});
-// };
+let setUpdatePipelineData = updatePipelineData => {
+  CPRepo.setPipeline({...CPRepo.getPipeline(), updatePipelineData});
+};
 
 // let getRenderPipelineData = () => {
 //   CPRepo.getPipeline().renderPipelineData;

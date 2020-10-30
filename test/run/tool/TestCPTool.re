@@ -3,7 +3,7 @@ let init =
       ~sandbox,
       ~isDebug=true,
       ~initPipelineData=PipelineTool.buildEmptyPipelineData(),
-      //   ~updatePipelineData=PipelineTool.buildEmptyPipelineData(),
+      ~updatePipelineData=PipelineTool.buildEmptyPipelineData(),
       //   ~renderPipelineData=PipelineTool.buildEmptyPipelineData(),
       (),
     ) => {
@@ -12,11 +12,11 @@ let init =
   CPContainerManager.setPO(CreateCPRepo.create());
 
   PipelineCPDoService.setInitPipelineData(initPipelineData);
-  //   PipelineCPDoService.setUpdatePipelineData(updatePipelineData);
+  PipelineCPDoService.setUpdatePipelineData(updatePipelineData);
   //   PipelineCPDoService.setRenderPipelineData(renderPipelineData);
 
   DirectorCPTool.prepare();
-  //   WebGPUDependencyTool.build(~sandbox, ())->WebGPUDependencyTool.set;
-  //   WebGPURayTracingDependencyTool.build(~sandbox, ())
-  //   ->WebGPURayTracingDependencyTool.set;
+  WebGPUDependencyTool.build(~sandbox, ())->WebGPUDependencyTool.set;
+  WebGPURayTracingDependencyTool.build(~sandbox, ())
+  ->WebGPURayTracingDependencyTool.set;
 };

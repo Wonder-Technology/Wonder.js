@@ -1,9 +1,9 @@
 type t =
   | DirectionLight(SceneGraphType.directionLight);
 
-let create = index => DirectionLight(index);
+let create = value => DirectionLight(value);
 
 let value = directionLight =>
   switch (directionLight) {
-  | DirectionLight(index) => index
+  | DirectionLight(value) => value
   };

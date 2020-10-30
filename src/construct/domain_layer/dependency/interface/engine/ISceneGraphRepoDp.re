@@ -1,17 +1,16 @@
 open SceneGraphType;
 
-type sceneRepo = {getSceneGameObject: unit => gameObject};
+type sceneRepo = {getSceneGameObject: unit => sceneGameObject};
 
 type gameObjectRepo = {
   getTransform: gameObject => option(transform),
   // getBSDFMaterial: gameObject => option(bsdfMaterial),
   // getGeometry: gameObject => option(geometry),
   getDirectionLight: gameObject => option(directionLight),
-  // getBasicCameraView: gameObject => option(basicCameraView),
-  // getPerspectiveCameraProjection:
-  //   gameObject => option(perspectiveCameraProjection),
-  // hasPerspectiveCameraProjection: gameObject => bool,
-  getAllGeometryGameObjects: gameObject => list(gameObject),
+  getBasicCameraView: gameObject => option(basicCameraView),
+  getPerspectiveCameraProjection:
+    gameObject => option(perspectiveCameraProjection),
+  getAllGeometryGameObjects: sceneGameObject => list(gameObject),
   // getAllGameObjectGeometries: gameObject => list(geometry),
   // getAllGameObjectBSDFMaterials: gameObject => list(bsdfMaterial),
 };
@@ -31,7 +30,21 @@ type directionLightRepo = {
   getColor: directionLight => color3,
   getIntensity: directionLight => intensity,
   getDirection: directionLight => direction,
-  getAllLights: gameObject => list(directionLight),
+  getAllLights: sceneGameObject => list(directionLight),
+};
+
+type basicCameraViewRepo = {
+  getGameObject: basicCameraView => gameObject,
+  getViewWorldToCameraMatrix: basicCameraView => viewWorldToCameraMatrix,
+  getActiveBasicCameraView: sceneGameObject => option(basicCameraView),
+};
+
+type perspectiveCameraProjectionRepo = {
+  getPMatrix: perspectiveCameraProjection => Js.Typed_array.Float32Array.t,
+  getFovy: perspectiveCameraProjection => float,
+  getAspect: perspectiveCameraProjection => float,
+  getNear: perspectiveCameraProjection => float,
+  getFar: perspectiveCameraProjection => float,
 };
 
 // type bsdfMaterialRepo = {
@@ -55,5 +68,7 @@ type sceneGraphRepo = {
   sceneRepo,
   transformRepo,
   directionLightRepo,
+  basicCameraViewRepo,
+  perspectiveCameraProjectionRepo,
   gameObjectRepo,
 };

@@ -3,7 +3,7 @@ open CPPOType;
 let create = () => {
   pipeline: {
     initPipeline: "init",
-    // updatePipeline: "update",
+    updatePipeline: "update",
     // renderPipeline: "render",
     initPipelineData: {
       name: "init",
@@ -23,23 +23,22 @@ let create = () => {
         },
       ],
     },
-    // updatePipelineData: {
-    //   name: "update",
-    //   firstGroup: "frame",
-    //   groups: [
-    //     {
-    //       name: "frame",
-    //       link: Concat,
-    //       elements: [
-    //         {name: "update_transform", type_: Job},
-    //         {name: "update_camera", type_: Job},
-    //         {name: "update_textureArray", type_: Job},
-    //         {name: "update_pathTracing", type_: Job},
-    //         {name: "update_pass", type_: Job},
-    //       ],
-    //     },
-    //   ],
-    // },
+    updatePipelineData: {
+      name: "update",
+      firstGroup: "frame",
+      groups: [
+        {
+          name: "frame",
+          link: Concat,
+          elements: [
+            {name: "update_camera", type_: Job},
+            // {name: "update_textureArray", type_: Job},
+            // {name: "update_pathTracing", type_: Job},
+            // {name: "update_pass", type_: Job},
+          ],
+        },
+      ],
+    },
     // renderPipelineData: {
     //   name: "render",
     //   firstGroup: "frame",

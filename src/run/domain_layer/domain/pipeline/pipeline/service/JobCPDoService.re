@@ -7,16 +7,15 @@ let _getInitPipelineJobs = () => [
   (InitAccumulationCPJobEntity.create(), InitAccumulationCPJobEntity.exec),
 ];
 
-// let _getUpdatePipelineJobs = () => [
-//   (UpdateTransformJobEntity.create(), UpdateTransformJobEntity.exec),
-//   (UpdateCameraCPJobEntity.create(), UpdateCameraCPJobEntity.exec),
-//   (UpdatePathTracingCPJobEntity.create(), UpdatePathTracingCPJobEntity.exec),
-//   (UpdatePassCPJobEntity.create(), UpdatePassCPJobEntity.exec),
-//   (
-//     UpdateTextureArrayCPJobEntity.create(),
-//     UpdateTextureArrayCPJobEntity.exec,
-//   ),
-// ];
+let _getUpdatePipelineJobs = () => [
+  (UpdateCameraCPJobEntity.create(), UpdateCameraCPJobEntity.exec),
+  // (UpdatePathTracingCPJobEntity.create(), UpdatePathTracingCPJobEntity.exec),
+  // (UpdatePassCPJobEntity.create(), UpdatePassCPJobEntity.exec),
+  // (
+  //   UpdateTextureArrayCPJobEntity.create(),
+  //   UpdateTextureArrayCPJobEntity.exec,
+  // ),
+];
 
 // let _getRenderPipelineJobs = () => [
 //   (RenderPathTracingCPJobEntity.create(), RenderPathTracingCPJobEntity.exec),
@@ -43,6 +42,6 @@ let _register = (pipeline, jobs) => {
 
 let registerAllJobs = () => {
   _register(PipelineCPRepo.getInitPipeline(), _getInitPipelineJobs());
-  // _register(PipelineCPRepo.getUpdatePipeline(), _getUpdatePipelineJobs());
+  _register(PipelineCPRepo.getUpdatePipeline(), _getUpdatePipelineJobs());
   // _register(PipelineCPRepo.getRenderPipeline(), _getRenderPipelineJobs());
 };

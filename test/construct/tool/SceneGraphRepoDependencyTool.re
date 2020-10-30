@@ -19,6 +19,10 @@ let buildGameObjectRepo =
       ~sandbox,
       ~getTransform=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getDirectionLight=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getBasicCameraView=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getPerspectiveCameraProjection=createEmptyStub(
+                                        refJsObjToSandbox(sandbox^),
+                                      ),
       ~getAllGeometryGameObjects=createEmptyStub(refJsObjToSandbox(sandbox^))
                                  ->SinonTool.returns(_createEmptyList()),
       (),
@@ -26,6 +30,8 @@ let buildGameObjectRepo =
     : gameObjectRepo => {
   getTransform,
   getDirectionLight,
+  getBasicCameraView,
+  getPerspectiveCameraProjection,
   getAllGeometryGameObjects,
 };
 
@@ -70,6 +76,41 @@ let buildDirectionLightRepo =
   getAllLights,
 };
 
+let buildBasicCameraViewRepo =
+    (
+      ~sandbox,
+      ~getGameObject=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getViewWorldToCameraMatrix=createEmptyStub(
+                                    refJsObjToSandbox(sandbox^),
+                                  ),
+      ~getActiveBasicCameraView=createEmptyStub(refJsObjToSandbox(sandbox^))
+                                ->SinonTool.returns(Js.Nullable.null),
+      (),
+    )
+    : basicCameraViewRepo => {
+  getGameObject,
+  getViewWorldToCameraMatrix,
+  getActiveBasicCameraView,
+};
+
+let buildPerspectiveCameraProjectionRepo =
+    (
+      ~sandbox,
+      ~getPMatrix=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getFovy=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getNear=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getFar=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getAspect=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      (),
+    )
+    : perspectiveCameraProjectionRepo => {
+  getPMatrix,
+  getFovy,
+  getAspect,
+  getNear,
+  getFar,
+};
+
 let build =
     (
       ~sandbox,
@@ -77,6 +118,11 @@ let build =
       ~gameObjectRepo=buildGameObjectRepo(~sandbox, ()),
       ~transformRepo=buildTransformRepo(~sandbox, ()),
       ~directionLightRepo=buildDirectionLightRepo(~sandbox, ()),
+      ~basicCameraViewRepo=buildBasicCameraViewRepo(~sandbox, ()),
+      ~perspectiveCameraProjectionRepo=buildPerspectiveCameraProjectionRepo(
+                                         ~sandbox,
+                                         (),
+                                       ),
       (),
     )
     : sceneGraphRepo => {
@@ -84,6 +130,8 @@ let build =
   gameObjectRepo,
   transformRepo,
   directionLightRepo,
+  basicCameraViewRepo,
+  perspectiveCameraProjectionRepo,
 };
 
 let set = dp => {
