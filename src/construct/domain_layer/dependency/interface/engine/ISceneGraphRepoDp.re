@@ -6,7 +6,7 @@ type gameObjectRepo = {
   getTransform: gameObject => option(transform),
   // getBSDFMaterial: gameObject => option(bsdfMaterial),
   // getGeometry: gameObject => option(geometry),
-  // getDirectionLight: gameObject => option(directionLight),
+  getDirectionLight: gameObject => option(directionLight),
   // getBasicCameraView: gameObject => option(basicCameraView),
   // getPerspectiveCameraProjection:
   //   gameObject => option(perspectiveCameraProjection),
@@ -25,6 +25,13 @@ type transformRepo = {
   getPosition: transform => position,
   getRotation: transform => rotation,
   getScale: transform => scale,
+};
+
+type directionLightRepo = {
+  getColor: directionLight => color3,
+  getIntensity: directionLight => intensity,
+  getDirection: directionLight => direction,
+  getAllLights: gameObject => list(directionLight),
 };
 
 // type bsdfMaterialRepo = {
@@ -47,5 +54,6 @@ type transformRepo = {
 type sceneGraphRepo = {
   sceneRepo,
   transformRepo,
+  directionLightRepo,
   gameObjectRepo,
 };

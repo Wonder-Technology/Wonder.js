@@ -1,8 +1,5 @@
-// let prepare = (pictureSize, sampleCount) => {
-//   DirectorCPApService.prepare(~pictureSize, ~sampleCount);
-// };
-let prepare = pictureSize => {
-  DirectorCPApService.prepare(~pictureSize);
+let prepare = (pictureSize, sampleCount) => {
+  DirectorCPApService.prepare(~pictureSize, ~sampleCount);
 };
 
 let _getStreamFromTuple = ((_, pipelineStream)) => pipelineStream;

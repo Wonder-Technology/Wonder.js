@@ -32,7 +32,7 @@ let setPicture = picture => {
   let po = CPContainerManager.getPO();
 
   {...po, picture}->CPContainerManager.setPO;
-}
+};
 
 let getWebGPU = () => {
   let po = CPContainerManager.getPO();
@@ -70,25 +70,26 @@ let setPass = pass => {
   {...po, pass}->CPContainerManager.setPO;
 };
 
-// let getRayTracingPass = () => {
-//   let po = CPContainerManager.getPO();
+let getRayTracingPass = () => {
+  let po = CPContainerManager.getPO();
 
-//   po.pathTracingPass;
-// };
+  po.pathTracingPass;
+};
 
-// let setRayTracingPass = pathTracingPass => {
-//   let po = CPContainerManager.getPO();
+let setRayTracingPass = pathTracingPass => {
+  let po = CPContainerManager.getPO();
 
-//   {...po, pathTracingPass}->CPContainerManager.setPO;
-// };
+  {...po, pathTracingPass}->CPContainerManager.setPO;
+};
 
-// let getAccumulationPass = () => {
-//   let po = CPContainerManager.getPO();
+let getAccumulationPass = () => {
+  let po = CPContainerManager.getPO();
 
-//   po.accumulationPass;
-// };
+  po.accumulationPass;
+};
 
-// let setAccumulationPass = accumulationPass => {
-//   let po = CPContainerManager.getPO();
+let setAccumulationPass = accumulationPass => {
+  let po = CPContainerManager.getPO();
 
-//   {...po, accumulationPass}->CPContainerManager.setPO;
+  {...po, accumulationPass}->CPContainerManager.setPO;
+};

@@ -12,12 +12,11 @@ let _injectDependencies = () => {
   });
 };
 
-// let prepare = (~pictureSize, ~sampleCount) => {
-let prepare = (~pictureSize) => {
+let prepare = (~pictureSize, ~sampleCount) => {
   _injectDependencies();
 
   PictureCPDoService.setSize(pictureSize);
-  // PassCPDoService.setSampleCount(sampleCount);
+  PassCPDoService.setSampleCount(sampleCount);
 };
 
 let _parseAndSetPipelineStream = pipelineData => {

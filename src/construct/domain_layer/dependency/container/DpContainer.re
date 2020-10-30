@@ -52,9 +52,9 @@ let unsafeGetTransformRepoDp = () => {
 //   _unsafeGetSceneGraphRepoDp().geometryRepo;
 // };
 
-// let unsafeGetDirectionLightRepoDp = () => {
-//   _unsafeGetSceneGraphRepoDp().directionLightRepo;
-// };
+let unsafeGetDirectionLightRepoDp = () => {
+  _unsafeGetSceneGraphRepoDp().directionLightRepo;
+};
 
 // let unsafeGetBasicCameraViewRepoDp = () => {
 //   _unsafeGetSceneGraphRepoDp().basicCameraViewRepo;

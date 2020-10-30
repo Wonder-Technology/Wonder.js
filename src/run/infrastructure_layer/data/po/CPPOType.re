@@ -6,6 +6,6 @@ type po = {
   webgpu: WebGPUCPPOType.webgpu,
   camera: CameraCPPOType.camera,
   pass: PassCPPOType.pass,
-  // pathTracingPass: PathTracingPassCPPOType.pathTracingPass,
-  // accumulationPass: AccumulationPassCPPOType.accumulationPass,
+  pathTracingPass: PathTracingPassCPPOType.pathTracingPass,
+  accumulationPass: AccumulationPassCPPOType.accumulationPass,
 };
