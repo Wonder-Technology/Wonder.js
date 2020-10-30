@@ -1,5 +1,5 @@
 type t =
-  | ViewMatrix(SceneGraphType.viewWorldToCameraMatrix);
+  | ViewMatrix(SceneGraphRepoType.viewWorldToCameraMatrix);
 
 let create = value => ViewMatrix(value);
 

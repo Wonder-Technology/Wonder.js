@@ -1,5 +1,5 @@
 type t =
-  | Aspect(SceneGraphType.aspect);
+  | Aspect(SceneGraphRepoType.aspect);
 
 let create = value => Aspect(value);
 

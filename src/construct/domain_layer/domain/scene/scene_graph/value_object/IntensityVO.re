@@ -1,5 +1,5 @@
 type t =
-  | Intensity(SceneGraphType.intensity);
+  | Intensity(SceneGraphRepoType.intensity);
 
 let create = value => Intensity(value);
 

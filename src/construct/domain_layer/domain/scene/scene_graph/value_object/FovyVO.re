@@ -1,5 +1,5 @@
 type t =
-  | Fovy(SceneGraphType.fovy);
+  | Fovy(SceneGraphRepoType.fovy);
 
 let create = value => Fovy(value);
 

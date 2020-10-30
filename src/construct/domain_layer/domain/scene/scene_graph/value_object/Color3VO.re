@@ -1,5 +1,5 @@
 type t =
-  | Color3(SceneGraphType.color3);
+  | Color3(SceneGraphRepoType.color3);
 
 let create = value => Color3(value);
 

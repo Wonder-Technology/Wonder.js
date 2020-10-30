@@ -1,5 +1,5 @@
 type t =
-  | DirectionLight(SceneGraphType.directionLight);
+  | DirectionLight(SceneGraphRepoType.directionLight);
 
 let create = value => DirectionLight(value);
 

@@ -1,5 +1,5 @@
 type t =
-  | Far(SceneGraphType.far);
+  | Far(SceneGraphRepoType.far);
 
 let create = value => Far(value);
 

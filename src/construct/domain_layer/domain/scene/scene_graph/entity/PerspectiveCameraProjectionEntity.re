@@ -1,5 +1,5 @@
 type t =
-  | PerspectiveCameraProjection(SceneGraphType.perspectiveCameraProjection);
+  | PerspectiveCameraProjection(SceneGraphRepoType.perspectiveCameraProjection);
 
 let create = value => PerspectiveCameraProjection(value);
 

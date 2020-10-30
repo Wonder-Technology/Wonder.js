@@ -1,5 +1,5 @@
 type t =
-  | Transform(SceneGraphType.transform);
+  | Transform(SceneGraphRepoType.transform);
 
 let create = value => Transform(value);
 

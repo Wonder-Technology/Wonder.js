@@ -1,5 +1,5 @@
 type t =
-  | LocalToWorldMatrix(SceneGraphType.localToWorldMatrix);
+  | LocalToWorldMatrix(SceneGraphRepoType.localToWorldMatrix);
 
 let create = value => LocalToWorldMatrix(value);
 

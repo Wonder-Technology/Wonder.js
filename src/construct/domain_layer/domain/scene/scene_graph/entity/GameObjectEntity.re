@@ -1,5 +1,5 @@
 type t =
-  | GameObject(SceneGraphType.gameObject);
+  | GameObject(SceneGraphRepoType.gameObject);
 
 let create = value => GameObject(value);
 

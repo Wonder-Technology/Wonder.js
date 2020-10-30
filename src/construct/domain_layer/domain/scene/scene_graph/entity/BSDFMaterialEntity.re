@@ -1,5 +1,5 @@
 type t =
-  | BSDFMaterial(SceneGraphType.bsdfMaterial);
+  | BSDFMaterial(SceneGraphRepoType.bsdfMaterial);
 
 let create = index => BSDFMaterial(index);
 

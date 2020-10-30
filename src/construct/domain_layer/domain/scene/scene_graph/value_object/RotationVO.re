@@ -1,5 +1,5 @@
 type t =
-  | Rotation(SceneGraphType.rotation);
+  | Rotation(SceneGraphRepoType.rotation);
 
 let create = value => Rotation(value);
 

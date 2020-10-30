@@ -1,5 +1,5 @@
 type t =
-  | BasicCameraView(SceneGraphType.basicCameraView);
+  | BasicCameraView(SceneGraphRepoType.basicCameraView);
 
 let create = value => BasicCameraView(value);
 

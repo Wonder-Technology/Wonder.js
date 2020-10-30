@@ -1,5 +1,5 @@
 type t =
-  | ProjectionMatrix(SceneGraphType.projectionMatrix);
+  | ProjectionMatrix(SceneGraphRepoType.projectionMatrix);
 
 let create = value => ProjectionMatrix(value);
 

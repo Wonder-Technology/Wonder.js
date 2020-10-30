@@ -1,5 +1,5 @@
 type t =
-  | Near(SceneGraphType.near);
+  | Near(SceneGraphRepoType.near);
 
 let create = value => Near(value);
 

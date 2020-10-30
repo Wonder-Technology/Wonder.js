@@ -1,5 +1,5 @@
 type t =
-  | Direction(SceneGraphType.direction);
+  | Direction(SceneGraphRepoType.direction);
 
 let create = value => Direction(value);
 

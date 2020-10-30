@@ -1,4 +1,4 @@
-open SceneGraphType;
+open SceneGraphRepoType;
 
 let getLocalPosition = transform => {
   DpContainer.unsafeGetTransformRepoDp().getLocalPosition(

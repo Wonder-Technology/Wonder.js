@@ -1,4 +1,4 @@
-open SceneGraphType;
+open SceneGraphRepoType;
 
 type sceneRepo = ISceneGraphRepoDp.sceneRepo;
 

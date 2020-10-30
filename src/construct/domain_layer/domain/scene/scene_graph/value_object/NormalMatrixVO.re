@@ -1,5 +1,5 @@
 type t =
-  | NormalMatrix(SceneGraphType.normalMatrix);
+  | NormalMatrix(SceneGraphRepoType.normalMatrix);
 
 let create = value => NormalMatrix(value);
 
