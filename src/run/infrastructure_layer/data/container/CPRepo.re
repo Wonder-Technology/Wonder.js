@@ -46,29 +46,29 @@ let setWebGPU = webgpu => {
   {...po, webgpu}->CPContainerManager.setPO;
 };
 
-// let getCamera = () => {
-//   let po = CPContainerManager.getPO();
+let getCamera = () => {
+  let po = CPContainerManager.getPO();
 
-//   po.camera;
-// };
+  po.camera;
+};
 
-// let setCamera = camera => {
-//   let po = CPContainerManager.getPO();
+let setCamera = camera => {
+  let po = CPContainerManager.getPO();
 
-//   {...po, camera}->CPContainerManager.setPO;
-// };
+  {...po, camera}->CPContainerManager.setPO;
+};
 
-// let getPass = () => {
-//   let po = CPContainerManager.getPO();
+let getPass = () => {
+  let po = CPContainerManager.getPO();
 
-//   po.pass;
-// };
+  po.pass;
+};
 
-// let setPass = pass => {
-//   let po = CPContainerManager.getPO();
+let setPass = pass => {
+  let po = CPContainerManager.getPO();
 
-//   {...po, pass}->CPContainerManager.setPO;
-// };
+  {...po, pass}->CPContainerManager.setPO;
+};
 
 // let getRayTracingPass = () => {
 //   let po = CPContainerManager.getPO();

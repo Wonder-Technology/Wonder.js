@@ -1,8 +1,8 @@
 let _getInitPipelineJobs = () => [
   (StartTimeJobEntity.create(), StartTimeJobEntity.exec),
   (InitWebGPUCPJobEntity.create(), InitWebGPUCPJobEntity.exec),
-  // (InitCameraCPJobEntity.create(), InitCameraCPJobEntity.exec),
-  // (InitPassCPJobEntity.create(), InitPassCPJobEntity.exec),
+  (InitCameraCPJobEntity.create(), InitCameraCPJobEntity.exec),
+  (InitPassCPJobEntity.create(), InitPassCPJobEntity.exec),
   // (InitPathTracingCPJobEntity.create(), InitPathTracingCPJobEntity.exec),
   // (InitAccumulationCPJobEntity.create(), InitAccumulationCPJobEntity.exec),
 ];

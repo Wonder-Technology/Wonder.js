@@ -15,7 +15,7 @@ let create = () => {
           elements: [
             {name: "start_time", type_: Job},
             {name: "init_webgpu", type_: Job},
-            // {name: "init_camera", type_: Job},
+            {name: "init_camera", type_: Job},
             // {name: "init_pass", type_: Job},
             // {name: "init_pathTracing", type_: Job},
             // {name: "init_accumulation", type_: Job},
@@ -81,16 +81,16 @@ let create = () => {
     //   textureSampler: None,
     // },
   },
-  // camera: {
-  //   cameraBufferData: None,
-  // },
-  // pass: {
-  //   sampleCount: 1,
-  //   totalSampleCount: 0,
-  //   commonBufferData: None,
-  //   resolutionBufferData: None,
-  //   pixelBufferData: None,
-  // },
+  camera: {
+    cameraBufferData: None,
+  },
+  pass: {
+    sampleCount: 1,
+    totalSampleCount: 0,
+    commonBufferData: None,
+    resolutionBufferData: None,
+    pixelBufferData: None,
+  },
   // pathTracingPass: {
   //   sceneDescBufferData: None,
   //   pointIndexBufferData: None,
