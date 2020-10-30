@@ -32,19 +32,19 @@ let setPicture = picture => {
   let po = CPContainerManager.getPO();
 
   {...po, picture}->CPContainerManager.setPO;
-} /* }*/;
+}
 
-// let getWebGPU = () => {
-//   let po = CPContainerManager.getPO();
+let getWebGPU = () => {
+  let po = CPContainerManager.getPO();
 
-//   po.webgpu;
-// };
+  po.webgpu;
+};
 
-// let setWebGPU = webgpu => {
-//   let po = CPContainerManager.getPO();
+let setWebGPU = webgpu => {
+  let po = CPContainerManager.getPO();
 
-//   {...po, webgpu}->CPContainerManager.setPO;
-// };
+  {...po, webgpu}->CPContainerManager.setPO;
+};
 
 // let getCamera = () => {
 //   let po = CPContainerManager.getPO();

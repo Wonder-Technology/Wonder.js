@@ -14,7 +14,7 @@ let create = () => {
           link: Concat,
           elements: [
             {name: "start_time", type_: Job},
-            // {name: "init_webgpu", type_: Job},
+            {name: "init_webgpu", type_: Job},
             // {name: "init_camera", type_: Job},
             // {name: "init_pass", type_: Job},
             // {name: "init_pathTracing", type_: Job},
@@ -67,4 +67,48 @@ let create = () => {
   picture: {
     size: None,
   },
+  webgpu: {
+    device: None,
+    window: None,
+    adapter: None,
+    context: None,
+    queue: None,
+    swapChainFormat: None,
+    swapChain: None,
+    // textureArray: {
+    //   layerIndexMap: ImmutableHashMap.createEmpty(),
+    //   textureArrayView: None,
+    //   textureSampler: None,
+    // },
+  },
+  // camera: {
+  //   cameraBufferData: None,
+  // },
+  // pass: {
+  //   sampleCount: 1,
+  //   totalSampleCount: 0,
+  //   commonBufferData: None,
+  //   resolutionBufferData: None,
+  //   pixelBufferData: None,
+  // },
+  // pathTracingPass: {
+  //   sceneDescBufferData: None,
+  //   pointIndexBufferData: None,
+  //   vertexBufferData: None,
+  //   indexBufferData: None,
+  //   bsdfMaterialBufferData: None,
+  //   shaderBindingTable: None,
+  //   staticBindGroupDataList: [],
+  //   pipeline: None,
+  //   cameraBindGroupLayout: None,
+  //   directionLightBindGroupLayout: None,
+  // },
+  // accumulationPass: {
+  //   accumulationPixelBufferData: None,
+  //   staticBindGroupData: None,
+  //   pipeline: None,
+  // },
+  // image: {
+  //   dataMap: ImmutableHashMap.createEmpty(),
+  // },
 };

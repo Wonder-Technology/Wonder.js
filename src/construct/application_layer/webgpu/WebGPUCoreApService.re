@@ -1,0 +1,1 @@
+let load = LoadWebGPUDoService.load;

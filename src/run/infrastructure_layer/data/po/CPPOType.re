@@ -3,7 +3,7 @@ type po = {
   // globalTemp: GlobalTempCPPOType.globalTemp,
   time: TimeCPPOType.time,
   picture: PictureCPPOType.picture,
-  // webgpu: WebGPUCPPOType.webgpu,
+  webgpu: WebGPUCPPOType.webgpu,
   // camera: CameraCPPOType.camera,
   // pass: PassCPPOType.pass,
   // pathTracingPass: PathTracingPassCPPOType.pathTracingPass,

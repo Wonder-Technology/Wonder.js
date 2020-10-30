@@ -3,28 +3,14 @@ open SceneGraphType;
 type sceneRepo = {getSceneGameObject: unit => gameObject};
 
 type gameObjectRepo = {
-  //   getMaxUID: unit => uid,
-  //   setMaxUID: uid => unit,
-  //   addTransform: (gameObject, transform) => unit,
   getTransform: gameObject => option(transform),
-  //   hasTransform: gameObject => bool,
-  //   addBSDFMaterial: (gameObject, bsdfMaterial) => unit,
-  //   getBSDFMaterial: gameObject => option(bsdfMaterial),
-  // //   hasBSDFMaterial: gameObject => bool,
-  // //   addGeometry: (gameObject, geometry) => unit,
-  //   getGeometry: gameObject => option(geometry),
-  // //   hasGeometry: gameObject => bool,
-  // //   addDirectionLight: (gameObject, directionLight) => unit,
-  //   getDirectionLight: gameObject => option(directionLight),
-  // //   hasDirectionLight: gameObject => bool,
-  // //   addBasicCameraView: (gameObject, basicCameraView) => unit,
-  //   getBasicCameraView: gameObject => option(basicCameraView),
-  // //   hasBasicCameraView: gameObject => bool,
-  // //   addPerspectiveCameraProjection:
-  // //     (gameObject, perspectiveCameraProjection) => unit,
-  //   getPerspectiveCameraProjection:
-  //     gameObject => option(perspectiveCameraProjection),
-  //   hasPerspectiveCameraProjection: gameObject => bool,
+  // getBSDFMaterial: gameObject => option(bsdfMaterial),
+  // getGeometry: gameObject => option(geometry),
+  // getDirectionLight: gameObject => option(directionLight),
+  // getBasicCameraView: gameObject => option(basicCameraView),
+  // getPerspectiveCameraProjection:
+  //   gameObject => option(perspectiveCameraProjection),
+  // hasPerspectiveCameraProjection: gameObject => bool,
   getAllGeometryGameObjects: gameObject => list(gameObject),
   // getAllGameObjectGeometries: gameObject => list(geometry),
   // getAllGameObjectBSDFMaterials: gameObject => list(bsdfMaterial),
@@ -40,6 +26,23 @@ type transformRepo = {
   getRotation: transform => rotation,
   getScale: transform => scale,
 };
+
+// type bsdfMaterialRepo = {
+//   getDiffuseColor: bsdfMaterial => diffuse,
+//   getSpecular: bsdfMaterial => float,
+//   getSpecularColor: bsdfMaterial => specularColor,
+//   getRoughness: bsdfMaterial => float,
+//   getMetalness: bsdfMaterial => float,
+//   getTransmission: bsdfMaterial => float,
+//   getIOR: bsdfMaterial => float,
+//   getDiffuseMapImageId: bsdfMaterial => option(ImagePOType.id),
+//   getChannelRoughnessMetallicMapImageId:
+//     bsdfMaterial => option(ImagePOType.id),
+//   getEmissionMapImageId: bsdfMaterial => option(ImagePOType.id),
+//   getNormalMapImageId: bsdfMaterial => option(ImagePOType.id),
+//   getTransmissionMapImageId: bsdfMaterial => option(ImagePOType.id),
+//   getSpecularMapImageId: bsdfMaterial => option(ImagePOType.id),
+// };
 
 type sceneGraphRepo = {
   sceneRepo,
