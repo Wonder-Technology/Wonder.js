@@ -23,8 +23,13 @@ let buildGameObjectRepo =
       ~getPerspectiveCameraProjection=createEmptyStub(
                                         refJsObjToSandbox(sandbox^),
                                       ),
+      ~getBSDFMaterial=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getAllGeometryGameObjects=createEmptyStub(refJsObjToSandbox(sandbox^))
                                  ->SinonTool.returns(_createEmptyList()),
+      ~getAllGameObjectBSDFMaterials=createEmptyStub(
+                                       refJsObjToSandbox(sandbox^),
+                                     )
+                                     ->SinonTool.returns(_createEmptyList()),
       (),
     )
     : gameObjectRepo => {
@@ -32,7 +37,9 @@ let buildGameObjectRepo =
   getDirectionLight,
   getBasicCameraView,
   getPerspectiveCameraProjection,
+  getBSDFMaterial,
   getAllGeometryGameObjects,
+  getAllGameObjectBSDFMaterials,
 };
 
 let buildTransformRepo =
@@ -111,6 +118,44 @@ let buildPerspectiveCameraProjectionRepo =
   getFar,
 };
 
+let buildBSDFMaterialRepo =
+    (
+      ~sandbox,
+      ~getDiffuseColor=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getSpecular=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getSpecularColor=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getRoughness=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getMetalness=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getTransmission=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getIOR=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getDiffuseMapImageId=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getChannelRoughnessMetallicMapImageId=createEmptyStub(
+                                               refJsObjToSandbox(sandbox^),
+                                             ),
+      ~getEmissionMapImageId=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getNormalMapImageId=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getTransmissionMapImageId=createEmptyStub(
+                                   refJsObjToSandbox(sandbox^),
+                                 ),
+      ~getSpecularMapImageId=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      (),
+    )
+    : bsdfMaterialRepo => {
+  getDiffuseColor,
+  getSpecular,
+  getSpecularColor,
+  getRoughness,
+  getMetalness,
+  getTransmission,
+  getIOR,
+  getDiffuseMapImageId,
+  getChannelRoughnessMetallicMapImageId,
+  getEmissionMapImageId,
+  getNormalMapImageId,
+  getTransmissionMapImageId,
+  getSpecularMapImageId,
+};
+
 let build =
     (
       ~sandbox,
@@ -123,6 +168,7 @@ let build =
                                          ~sandbox,
                                          (),
                                        ),
+      ~bsdfMaterialRepo=buildBSDFMaterialRepo(~sandbox, ()),
       (),
     )
     : sceneGraphRepo => {
@@ -132,6 +178,7 @@ let build =
   directionLightRepo,
   basicCameraViewRepo,
   perspectiveCameraProjectionRepo,
+  bsdfMaterialRepo,
 };
 
 let set = dp => {

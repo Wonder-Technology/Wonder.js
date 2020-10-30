@@ -4,15 +4,15 @@ type sceneRepo = {getSceneGameObject: unit => sceneGameObject};
 
 type gameObjectRepo = {
   getTransform: gameObject => option(transform),
-  // getBSDFMaterial: gameObject => option(bsdfMaterial),
+  getBSDFMaterial: gameObject => option(bsdfMaterial),
   // getGeometry: gameObject => option(geometry),
   getDirectionLight: gameObject => option(directionLight),
   getBasicCameraView: gameObject => option(basicCameraView),
   getPerspectiveCameraProjection:
     gameObject => option(perspectiveCameraProjection),
   getAllGeometryGameObjects: sceneGameObject => list(gameObject),
-  // getAllGameObjectGeometries: gameObject => list(geometry),
-  // getAllGameObjectBSDFMaterials: gameObject => list(bsdfMaterial),
+  // getAllGameObjectGeometries: sceneGameObject => list(geometry),
+  getAllGameObjectBSDFMaterials: sceneGameObject => list(bsdfMaterial),
 };
 
 type transformRepo = {
@@ -47,22 +47,22 @@ type perspectiveCameraProjectionRepo = {
   getFar: perspectiveCameraProjection => float,
 };
 
-// type bsdfMaterialRepo = {
-//   getDiffuseColor: bsdfMaterial => diffuse,
-//   getSpecular: bsdfMaterial => float,
-//   getSpecularColor: bsdfMaterial => specularColor,
-//   getRoughness: bsdfMaterial => float,
-//   getMetalness: bsdfMaterial => float,
-//   getTransmission: bsdfMaterial => float,
-//   getIOR: bsdfMaterial => float,
-//   getDiffuseMapImageId: bsdfMaterial => option(ImagePOType.id),
-//   getChannelRoughnessMetallicMapImageId:
-//     bsdfMaterial => option(ImagePOType.id),
-//   getEmissionMapImageId: bsdfMaterial => option(ImagePOType.id),
-//   getNormalMapImageId: bsdfMaterial => option(ImagePOType.id),
-//   getTransmissionMapImageId: bsdfMaterial => option(ImagePOType.id),
-//   getSpecularMapImageId: bsdfMaterial => option(ImagePOType.id),
-// };
+type bsdfMaterialRepo = {
+  getDiffuseColor: bsdfMaterial => diffuse,
+  getSpecular: bsdfMaterial => float,
+  getSpecularColor: bsdfMaterial => specularColor,
+  getRoughness: bsdfMaterial => float,
+  getMetalness: bsdfMaterial => float,
+  getTransmission: bsdfMaterial => float,
+  getIOR: bsdfMaterial => float,
+  getDiffuseMapImageId: bsdfMaterial => option(ImageRepoType.id),
+  getChannelRoughnessMetallicMapImageId:
+    bsdfMaterial => option(ImageRepoType.id),
+  getEmissionMapImageId: bsdfMaterial => option(ImageRepoType.id),
+  getNormalMapImageId: bsdfMaterial => option(ImageRepoType.id),
+  getTransmissionMapImageId: bsdfMaterial => option(ImageRepoType.id),
+  getSpecularMapImageId: bsdfMaterial => option(ImageRepoType.id),
+};
 
 type sceneGraphRepo = {
   sceneRepo,
@@ -70,5 +70,6 @@ type sceneGraphRepo = {
   directionLightRepo,
   basicCameraViewRepo,
   perspectiveCameraProjectionRepo,
+  bsdfMaterialRepo,
   gameObjectRepo,
 };

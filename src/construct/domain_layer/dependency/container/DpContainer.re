@@ -1,6 +1,7 @@
 type t = {
   mutable config: option(IConfigDp.config),
   mutable sceneGraphRepo: option(ISceneGraphRepoDp.sceneGraphRepo),
+  mutable imageRepo: option(IImageRepoDp.imageRepo),
   mutable timeRepo: option(ITimeRepoDp.timeRepo),
   mutable pipelineRepo: option(IPipelineRepoDp.pipelineRepo),
   mutable time: option(ITimeDp.time),
@@ -12,6 +13,7 @@ let dpContainer = {
   config: None,
   sceneGraphRepo: None,
   timeRepo: None,
+  imageRepo: None,
   pipelineRepo: None,
   time: None,
   webgpuCore: None,
@@ -44,9 +46,9 @@ let unsafeGetTransformRepoDp = () => {
   _unsafeGetSceneGraphRepoDp().transformRepo;
 };
 
-// let unsafeGetBSDFMaterialRepoDp = () => {
-//   _unsafeGetSceneGraphRepoDp().bsdfMaterialRepo;
-// };
+let unsafeGetBSDFMaterialRepoDp = () => {
+  _unsafeGetSceneGraphRepoDp().bsdfMaterialRepo;
+};
 
 // let unsafeGetGeometryRepoDp = () => {
 //   _unsafeGetSceneGraphRepoDp().geometryRepo;
@@ -120,6 +122,16 @@ let unsafeGetWebGPURayTracingDp = () => {
 
 let setWebGPURayTracingDp = dp => {
   dpContainer.webgpuRayTracing = dp->Some;
+
+  ();
+};
+
+let unsafeGetImageRepoDp = () => {
+  dpContainer.imageRepo->OptionSt.unsafeGet;
+};
+
+let setImageRepoDp = dp => {
+  dpContainer.imageRepo = dp->Some;
 
   ();
 };

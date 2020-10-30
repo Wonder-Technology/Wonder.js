@@ -9,12 +9,12 @@ let _getInitPipelineJobs = () => [
 
 let _getUpdatePipelineJobs = () => [
   (UpdateCameraCPJobEntity.create(), UpdateCameraCPJobEntity.exec),
+  (
+    UpdateTextureArrayCPJobEntity.create(),
+    UpdateTextureArrayCPJobEntity.exec,
+  ),
   // (UpdatePathTracingCPJobEntity.create(), UpdatePathTracingCPJobEntity.exec),
   // (UpdatePassCPJobEntity.create(), UpdatePassCPJobEntity.exec),
-  // (
-  //   UpdateTextureArrayCPJobEntity.create(),
-  //   UpdateTextureArrayCPJobEntity.exec,
-  // ),
 ];
 
 // let _getRenderPipelineJobs = () => [

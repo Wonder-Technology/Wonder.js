@@ -21,3 +21,9 @@ let getPerspectiveCameraProjection = gameObject =>
     gameObject->GameObjectEntity.value,
   )
   ->OptionSt.map(PerspectiveCameraProjectionEntity.create);
+
+let getBSDFMaterial = gameObject =>
+  DpContainer.unsafeGetGameObjectRepoDp().getBSDFMaterial(
+    gameObject->GameObjectEntity.value,
+  )
+  ->OptionSt.map(BSDFMaterialEntity.create);

@@ -10,6 +10,8 @@ type basicCameraView;
 
 type perspectiveCameraProjection;
 
+type bsdfMaterial;
+
 type position = (float, float, float);
 
 type rotation = (float, float, float, float);
@@ -37,3 +39,15 @@ type fovy = float;
 type viewWorldToCameraMatrix = Js.Typed_array.Float32Array.t;
 
 type projectionMatrix = Js.Typed_array.Float32Array.t;
+
+type diffuse = color3;
+
+type specularColor = color3;
+
+type imageId = string;
+
+type imageData = {
+  width: int,
+  height: int,
+  data: Js.Typed_array.Uint8Array.t,
+};

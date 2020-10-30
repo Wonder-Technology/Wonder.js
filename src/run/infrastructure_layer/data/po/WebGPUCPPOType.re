@@ -1,10 +1,10 @@
-// type layerIndex = int;
+type layerIndex = int;
 
-// type textureArray = {
-//   layerIndexMap: ImmutableHashMap.t(ImagePOType.id, layerIndex),
-//   textureArrayView: option(IWebGPUCoreDp.textureViewObject),
-//   textureSampler: option(IWebGPUCoreDp.samplerObject),
-// };
+type textureArray = {
+  layerIndexMap: ImmutableHashMap.t(ImageRepoType.id, layerIndex),
+  textureArrayView: option(IWebGPUCoreDp.textureViewObject),
+  textureSampler: option(IWebGPUCoreDp.samplerObject),
+};
 
 type webgpu = {
   device: option(IWebGPUCoreDp.deviceObject),
@@ -14,5 +14,5 @@ type webgpu = {
   queue: option(IWebGPUCoreDp.queueObject),
   swapChainFormat: option(IWebGPUCoreDp.textureFormat),
   swapChain: option(IWebGPUCoreDp.swapChainObject),
-  // textureArray,
+  textureArray,
 };

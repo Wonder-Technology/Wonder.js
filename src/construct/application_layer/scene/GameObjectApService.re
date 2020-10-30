@@ -1,7 +1,3 @@
-let getAllRenderGameObjects = sceneGameObject => {
-  AllRenderGameObjectsDoService.getAllRenderGameObjects(sceneGameObject);
-};
-
 let getTransform = gameObject => {
   GetComponentGameObjectDoService.getTransform(gameObject);
 };
@@ -16,4 +12,16 @@ let getBasicCameraView = gameObject => {
 
 let getPerspectiveCameraProjection = gameObject => {
   GetComponentGameObjectDoService.getPerspectiveCameraProjection(gameObject);
+};
+
+let getBSDFMaterial = gameObject => {
+  GetComponentGameObjectDoService.getBSDFMaterial(gameObject);
+};
+
+let getAllRenderGameObjects = sceneGameObject => {
+  AllRenderGameObjectsDoService.getAllRenderGameObjects(sceneGameObject);
+};
+
+let getAllRenderBSDFMaterials = (sceneGameObject) => {
+  AllRenderGameObjectsDoService.getAllRenderBSDFMaterials(sceneGameObject);
 };

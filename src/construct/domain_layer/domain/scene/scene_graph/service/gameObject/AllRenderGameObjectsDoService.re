@@ -6,11 +6,15 @@ let getAllRenderGameObjects = sceneGameObject => {
 };
 
 // let getAllRenderGeometries = () => {
-//   DpContainer.unsafeGetGameObjectRepoDp().getAllGameObjectGeometries()
+//   DpContainer.unsafeGetGameObjectRepoDp().getAllGameObjectGeometries(
+//     sceneGameObject->GameObjectEntity.value,
+// )
 //   ->ListSt.map(GeometryEntity.create);
 // };
 
-// let getAllRenderBSDFMaterials = () => {
-//   DpContainer.unsafeGetGameObjectRepoDp().getAllGameObjectBSDFMaterials()
-//   ->ListSt.map(BSDFMaterialEntity.create);
-// };
+let getAllRenderBSDFMaterials = sceneGameObject => {
+  DpContainer.unsafeGetGameObjectRepoDp().getAllGameObjectBSDFMaterials(
+    sceneGameObject->GameObjectEntity.value,
+  )
+  ->ListSt.map(BSDFMaterialEntity.create);
+};

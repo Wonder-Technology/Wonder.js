@@ -37,21 +37,21 @@ let buildDirectionLightRepoWithTwoDirectionLights = sandbox => {
       ~getColor=
         light => {
           switch (light) {
-          | light1 => color1
-          | light2 => color2
+          | light when light == light1 => color1
+          | light when light == light2 => color2
           }
         },
       ~getIntensity=
         light =>
           switch (light) {
-          | light1 => intensity1
-          | light2 => intensity2
+          | light when light == light1 => intensity1
+          | light when light == light2 => intensity2
           },
       ~getDirection=
         light =>
           switch (light) {
-          | light1 => direction1
-          | light2 => direction2
+          | light when light == light1 => direction1
+          | light when light == light2 => direction2
           },
       (),
     ),

@@ -8,7 +8,9 @@ type gameObjectRepo = {
   getBasicCameraView: gameObject => Js.Nullable.t(basicCameraView),
   getPerspectiveCameraProjection:
     gameObject => Js.Nullable.t(perspectiveCameraProjection),
+  getBSDFMaterial: gameObject => Js.Nullable.t(bsdfMaterial),
   getAllGeometryGameObjects: gameObject => array(gameObject),
+  getAllGameObjectBSDFMaterials: gameObject => array(bsdfMaterial),
 };
 
 type transformRepo = ISceneGraphRepoDp.transformRepo;
@@ -28,6 +30,23 @@ type basicCameraViewRepo = {
 
 type perspectiveCameraProjectionRepo = ISceneGraphRepoDp.perspectiveCameraProjectionRepo;
 
+type bsdfMaterialRepo = {
+  getDiffuseColor: bsdfMaterial => diffuse,
+  getSpecular: bsdfMaterial => float,
+  getSpecularColor: bsdfMaterial => specularColor,
+  getRoughness: bsdfMaterial => float,
+  getMetalness: bsdfMaterial => float,
+  getTransmission: bsdfMaterial => float,
+  getIOR: bsdfMaterial => float,
+  getDiffuseMapImageId: bsdfMaterial => Js.Nullable.t(ImageRepoType.id),
+  getChannelRoughnessMetallicMapImageId:
+    bsdfMaterial => Js.Nullable.t(ImageRepoType.id),
+  getEmissionMapImageId: bsdfMaterial => Js.Nullable.t(ImageRepoType.id),
+  getNormalMapImageId: bsdfMaterial => Js.Nullable.t(ImageRepoType.id),
+  getTransmissionMapImageId: bsdfMaterial => Js.Nullable.t(ImageRepoType.id),
+  getSpecularMapImageId: bsdfMaterial => Js.Nullable.t(ImageRepoType.id),
+};
+
 type sceneGraphRepo = {
   sceneRepo,
   gameObjectRepo,
@@ -35,4 +54,5 @@ type sceneGraphRepo = {
   directionLightRepo,
   basicCameraViewRepo,
   perspectiveCameraProjectionRepo,
+  bsdfMaterialRepo,
 };

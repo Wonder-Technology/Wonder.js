@@ -16,7 +16,11 @@ let init =
   //   PipelineCPDoService.setRenderPipelineData(renderPipelineData);
 
   DirectorCPTool.prepare();
+
   WebGPUDependencyTool.build(~sandbox, ())->WebGPUDependencyTool.set;
   WebGPURayTracingDependencyTool.build(~sandbox, ())
   ->WebGPURayTracingDependencyTool.set;
+
+  SceneGraphRepoDependencyTool.build(~sandbox, ())
+  ->SceneGraphRepoDependencyTool.set;
 };
