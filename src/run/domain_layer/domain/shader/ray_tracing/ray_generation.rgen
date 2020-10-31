@@ -1,0 +1,80 @@
+#version 460
+#extension GL_EXT_ray_tracing : require
+#extension GL_EXT_nonuniform_qualifier : enable
+#extension GL_GOOGLE_include_directive : enable
+#pragma shader_stage(raygen)
+
+#include "../common/camera.glsl"
+#include "random.glsl"
+#include "raycommon.glsl"
+
+layout(location = 0) rayPayloadEXT hitPayload prd;
+
+layout(set = 0, binding = 0) uniform accelerationStructureEXT topLevelAS;
+layout(std140, set = 0, binding = 1) buffer PixelBuffer { vec4 pixels[]; }
+pixelBuffer;
+
+layout(std140, set = 0, binding = 2) uniform CommonData {
+  uint sampleCount;
+  uint totalSampleCount;
+  uint pad_0;
+  uint pad_1;
+}
+pushC;
+
+void main() {
+  const ivec2 ipos = ivec2(gl_LaunchIDEXT.xy);
+  const ivec2 resolution = ivec2(gl_LaunchSizeEXT.xy);
+
+  const uint sampleCount = pushC.sampleCount;
+  const uint totalSampleCount = pushC.totalSampleCount;
+
+  const uint bounceCount = 5;
+
+  prd.seed = tea(tea(ipos.x, ipos.y), totalSampleCount);
+
+  const uint cullMask = 0xFF;
+  vec3 pixelColor = vec3(0.0);
+
+  for (uint ss = 0; ss < sampleCount; ++ss) {
+    // const vec2 offset = 1.0 * randInUnitDisk(prd.seed);
+    const vec2 offset = vec2(0.0);
+    const vec2 pixel = vec2(ipos.x + rnd(prd.seed), ipos.y + rnd(prd.seed));
+    const vec2 uv = (pixel / gl_LaunchSizeEXT.xy) * 2.0 - 1.0;
+
+    vec4 origin = uCamera.viewInverse * vec4(offset, 0, 1);
+    vec4 target = uCamera.projectionInverse * (vec4(uv.x, uv.y, 1, 1));
+    vec4 direction = uCamera.viewInverse *
+                     vec4(normalize(target.xyz * 1.0 - vec3(offset, 0)), 0);
+
+    vec3 radiance = vec3(0.0);
+    prd.throughput = vec3(1.0);
+
+    for (uint bb = 0; bb < bounceCount; ++bb) {
+      prd.bias = vec3(0.0);
+      prd.t = -1.0;
+
+      traceRayEXT(topLevelAS, gl_RayFlagsOpaqueEXT, cullMask, 0, 0, 0,
+                  origin.xyz, uCamera.near, direction.xyz, uCamera.far, 0);
+
+      radiance += prd.radiance;
+
+      // abort if the ray is either invalid or didn't hit anything
+      const float t = prd.t;
+      if (t < 0.0)
+        break;
+
+      // move the ray based on the bsdf direction
+      origin = origin + t * direction + vec4(prd.bias, 0.0);
+      direction = vec4(prd.scatterDirection, 0.0);
+    };
+
+    pixelColor += radiance;
+  };
+
+  pixelColor = max(vec3(0), pixelColor);
+
+  const uint pixelIndex = ipos.y * resolution.x + ipos.x;
+
+  pixelBuffer.pixels[pixelIndex] = vec4(pixelColor, 1.0);
+}
