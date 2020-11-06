@@ -33,6 +33,6 @@ let update = () => {
   PipelineCPDoService.getUpdatePipelineData()->_parseAndSetPipelineStream;
 };
 
-// let render = () => {
-//   PipelineCPDoService.getRenderPipelineData()->_parseAndSetPipelineStream;
-// };
+let render = () => {
+  PipelineCPDoService.getRenderPipelineData()->_parseAndSetPipelineStream;
+};

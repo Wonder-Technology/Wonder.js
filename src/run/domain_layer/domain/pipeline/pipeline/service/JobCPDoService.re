@@ -17,22 +17,22 @@ let _getUpdatePipelineJobs = () => [
   (UpdatePassCPJobEntity.create(), UpdatePassCPJobEntity.exec),
 ];
 
-// let _getRenderPipelineJobs = () => [
-//   (RenderPathTracingCPJobEntity.create(), RenderPathTracingCPJobEntity.exec),
-//   (
-//     UpdateAccumulationCPJobEntity.create(),
-//     UpdateAccumulationCPJobEntity.exec,
-//   ),
-//   (
-//     UpdatePassForRenderCPJobEntity.create(),
-//     UpdatePassForRenderCPJobEntity.exec,
-//   ),
-//   (
-//     RenderAccumulationCPJobEntity.create(),
-//     RenderAccumulationCPJobEntity.exec,
-//   ),
-//   (EndRenderCPJobEntity.create(), EndRenderCPJobEntity.exec),
-// ];
+let _getRenderPipelineJobs = () => [
+  (RenderPathTracingCPJobEntity.create(), RenderPathTracingCPJobEntity.exec),
+  (
+    UpdateAccumulationCPJobEntity.create(),
+    UpdateAccumulationCPJobEntity.exec,
+  ),
+  (
+    UpdatePassForRenderCPJobEntity.create(),
+    UpdatePassForRenderCPJobEntity.exec,
+  ),
+  (
+    RenderAccumulationCPJobEntity.create(),
+    RenderAccumulationCPJobEntity.exec,
+  ),
+  (EndRenderCPJobEntity.create(), EndRenderCPJobEntity.exec),
+];
 
 let _register = (pipeline, jobs) => {
   jobs->ListSt.forEach(((job, execFunc)) => {
@@ -43,5 +43,5 @@ let _register = (pipeline, jobs) => {
 let registerAllJobs = () => {
   _register(PipelineCPRepo.getInitPipeline(), _getInitPipelineJobs());
   _register(PipelineCPRepo.getUpdatePipeline(), _getUpdatePipelineJobs());
-  // _register(PipelineCPRepo.getRenderPipeline(), _getRenderPipelineJobs());
+  _register(PipelineCPRepo.getRenderPipeline(), _getRenderPipelineJobs());
 };

@@ -6,9 +6,9 @@ let getUpdatePipeline = () => {
   PipelineCPRepo.getUpdatePipeline();
 };
 
-// let getRenderPipeline = () => {
-//   PipelineCPRepo.getRenderPipeline();
-// };
+let getRenderPipeline = () => {
+  PipelineCPRepo.getRenderPipeline();
+};
 
 let getInitPipelineData = () => {
   PipelineCPRepo.getInitPipelineData();
@@ -26,13 +26,13 @@ let setUpdatePipelineData = pipelineData => {
   PipelineCPRepo.setUpdatePipelineData(pipelineData);
 };
 
-// let getRenderPipelineData = () => {
-//   PipelineCPRepo.getRenderPipelineData();
-// };
+let getRenderPipelineData = () => {
+  PipelineCPRepo.getRenderPipelineData();
+};
 
-// let setRenderPipelineData = pipelineData => {
-//   PipelineCPRepo.setRenderPipelineData(pipelineData);
-// };
+let setRenderPipelineData = pipelineData => {
+  PipelineCPRepo.setRenderPipelineData(pipelineData);
+};
 
 let getPipelineStream = pipeline => {
   PipelineCPRepo.getPipelineStream(pipeline);

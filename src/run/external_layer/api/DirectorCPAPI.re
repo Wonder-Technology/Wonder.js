@@ -10,18 +10,22 @@ let _throwErr = [%bs.raw {|
 }
 |}];
 
-let init = () => {
-  DirectorCPApService.init()
+let _executeStream = streamDataResult => {
+  streamDataResult
   // TODO use Promise.reject instead of throw!
   ->Result.handleFail(_throwErr)
   ->_getStreamFromTuple
   ->WonderBsMost.Most.drain;
 };
 
-// let update = () => {
-//   DirectorCPApService.update();
-// };
+let init = () => {
+  DirectorCPApService.init()->_executeStream;
+};
 
-// let render = () => {
-//   DirectorCPApService.render();
-// };
+let update = () => {
+  DirectorCPApService.update()->_executeStream;
+};
+
+let render = () => {
+  DirectorCPApService.render()->_executeStream;
+};

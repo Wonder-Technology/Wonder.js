@@ -4,7 +4,7 @@ let init =
       ~isDebug=true,
       ~initPipelineData=PipelineTool.buildEmptyPipelineData(),
       ~updatePipelineData=PipelineTool.buildEmptyPipelineData(),
-      //   ~renderPipelineData=PipelineTool.buildEmptyPipelineData(),
+      ~renderPipelineData=PipelineTool.buildEmptyPipelineData(),
       (),
     ) => {
   DependencyTool.injectAllDependencies(~isDebug, ());
@@ -13,7 +13,7 @@ let init =
 
   PipelineCPDoService.setInitPipelineData(initPipelineData);
   PipelineCPDoService.setUpdatePipelineData(updatePipelineData);
-  //   PipelineCPDoService.setRenderPipelineData(renderPipelineData);
+  PipelineCPDoService.setRenderPipelineData(renderPipelineData);
 
   DirectorCPTool.prepare();
 

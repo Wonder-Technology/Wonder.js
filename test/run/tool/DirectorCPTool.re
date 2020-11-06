@@ -83,23 +83,23 @@ let initAndUpdateAndUpdate =
   );
 };
 
-// let initAndRender =
-//     (
-//       ~handleSuccessFunc,
-//       ~handleFailFunc=ResultTool.buildEmptyHandleFailFunc(),
-//       (),
-//     ) => {
-//   let (_, initPipelineStream) =
-//     DirectorCPApService.init()->Result.handleFail(handleFailFunc->Obj.magic);
+let initAndRender =
+    (
+      ~handleSuccessFunc,
+      ~handleFailFunc=ResultTool.buildEmptyHandleFailFunc(),
+      (),
+    ) => {
+  let (_, initPipelineStream) =
+    DirectorCPApService.init()->Result.handleFail(handleFailFunc->Obj.magic);
 
-//   let (_, renderPipelineStream) =
-//     DirectorCPApService.render()->Result.handleFail(handleFailFunc->Obj.magic);
+  let (_, renderPipelineStream) =
+    DirectorCPApService.render()->Result.handleFail(handleFailFunc->Obj.magic);
 
-//   PipelineTool.execPipelineStream(
-//     ~pipelineStream=
-//       initPipelineStream->WonderBsMost.Most.concat(renderPipelineStream, _),
-//     ~handleSuccessFunc,
-//     ~handleFailFunc,
-//     (),
-//   );
-// };
+  PipelineTool.execPipelineStream(
+    ~pipelineStream=
+      initPipelineStream->WonderBsMost.Most.concat(renderPipelineStream, _),
+    ~handleSuccessFunc,
+    ~handleFailFunc,
+    (),
+  );
+};
