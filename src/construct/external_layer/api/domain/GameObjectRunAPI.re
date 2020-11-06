@@ -18,10 +18,18 @@ let getBSDFMaterial = gameObject => {
   GameObjectApService.getBSDFMaterial(gameObject);
 };
 
+let getGeometry = gameObject => {
+  GameObjectApService.getGeometry(gameObject);
+};
+
 let getAllRenderGameObjects = sceneGameObject => {
   GameObjectApService.getAllRenderGameObjects(sceneGameObject);
 };
 
-let getAllRenderBSDFMaterials = (sceneGameObject) => {
+let getAllRenderGeometries = sceneGameObject => {
+  GameObjectApService.getAllRenderGeometries(sceneGameObject);
+};
+
+let getAllRenderBSDFMaterials = sceneGameObject => {
   GameObjectApService.getAllRenderBSDFMaterials(sceneGameObject);
 };

@@ -19,10 +19,9 @@ let _ =
       WebGPUCPTool.setQueue(queue);
 
       let (
-        (gameObjectRepo, bsdfMaterialRepo, imageRepo),
+        (bsdfMaterialRepo, imageRepo),
         (
-          _,
-          _,
+          ((material1, material2), _),
           (
             (id1, id2, id3, id4, id5, id6, id7),
             (
@@ -38,9 +37,26 @@ let _ =
         ),
       ) =
         BSDFMaterialCPTool.buildRepoWithTwoMaterialsAndMapData(sandbox);
+
+      let (gameObject1, gameObject2) =
+        GameObjectCPTool.createTwoGameObjects();
+
       SceneGraphRepoDependencyTool.build(
         ~sandbox,
-        ~gameObjectRepo,
+        ~gameObjectRepo=
+          SceneGraphRepoDependencyTool.buildGameObjectRepo(
+            ~sandbox,
+            ~getAllGameObjectBSDFMaterials=_ => [|material1, material2|],
+            ~getBSDFMaterial=
+              (gameObject: SceneGraphRepoType.gameObject) =>
+                switch (gameObject) {
+                | gameObject when JudgeTool.isEqual(gameObject, gameObject1) =>
+                  Js.Nullable.return(material1)
+                | gameObject when JudgeTool.isEqual(gameObject, gameObject2) =>
+                  Js.Nullable.return(material2)
+                },
+            (),
+          ),
         ~bsdfMaterialRepo,
         (),
       )

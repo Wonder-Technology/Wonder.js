@@ -1,9 +1,6 @@
 let buildRepoWithTwoMaterialsAndMapData = sandbox => {
   open ImageRepoType;
 
-  let gameObject1 = 0->Obj.magic;
-  let gameObject2 = 1->Obj.magic;
-
   let material1 = 2->Obj.magic;
   let material2 = 3->Obj.magic;
 
@@ -85,24 +82,15 @@ let buildRepoWithTwoMaterialsAndMapData = sandbox => {
 
   (
     (
-      SceneGraphRepoDependencyTool.buildGameObjectRepo(
-        ~sandbox,
-        ~getAllGameObjectBSDFMaterials=_ => [|material1, material2|],
-        ~getBSDFMaterial=
-          gameObject =>
-            switch (gameObject) {
-            | gameObject1 => Js.Nullable.return(material1)
-            | gameObject2 => Js.Nullable.return(material2)
-            },
-        (),
-      ),
       SceneGraphRepoDependencyTool.buildBSDFMaterialRepo(
         ~sandbox,
+        ~isSame=(material1, material2) => {material1 == material2},
+        ~getId=material => material->Obj.magic,
         ~getDiffuseColor=
           material =>
             switch (material) {
-            | material1 => diffuseColor1
-            | material2 => diffuseColor2
+            | material when material == material1 => diffuseColor1
+            | material when material == material2 => diffuseColor2
             },
         ~getSpecular=
           material =>
@@ -196,7 +184,6 @@ let buildRepoWithTwoMaterialsAndMapData = sandbox => {
       ),
     ),
     (
-      (gameObject1, gameObject2),
       (
         (material1, material2),
         (

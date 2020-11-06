@@ -13,7 +13,7 @@ let _getUpdatePipelineJobs = () => [
     UpdateTextureArrayCPJobEntity.create(),
     UpdateTextureArrayCPJobEntity.exec,
   ),
-  // (UpdatePathTracingCPJobEntity.create(), UpdatePathTracingCPJobEntity.exec),
+  (UpdatePathTracingCPJobEntity.create(), UpdatePathTracingCPJobEntity.exec),
   // (UpdatePassCPJobEntity.create(), UpdatePassCPJobEntity.exec),
 ];
 

@@ -78,3 +78,16 @@ let getSpecularMapImageId = material =>
     material->BSDFMaterialEntity.value,
   )
   ->OptionSt.map(ImageIdVO.create);
+
+let isSame = (material1, material2) => {
+  DpContainer.unsafeGetBSDFMaterialRepoDp().isSame(
+    material1->BSDFMaterialEntity.value,
+    material2->BSDFMaterialEntity.value,
+  );
+};
+
+let getId = material => {
+  DpContainer.unsafeGetBSDFMaterialRepoDp().getId(
+    material->BSDFMaterialEntity.value,
+  );
+};

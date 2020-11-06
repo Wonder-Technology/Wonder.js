@@ -66,6 +66,32 @@ let rec traverseReduceResultM =
   };
 };
 
+let traverseReduceResultMi =
+    (list: list('a), param: 'b, f: ('b, (int, 'a)) => Result.t2('b))
+    : Result.t2('b) => {
+  // define the monadic functions
+  let (>>=) = (x, f) => Result.bind(x, f);
+
+  let retn = Result.succeed;
+
+  // define a "cons" function
+  let cons = (head, tail) => [head, ...tail];
+
+  let rec _traverse = (list, param, i, f) => {
+    // loop through the list
+    switch (list) {
+    | [] => retn(param)
+    | [head, ...tail] =>
+      // otherwise lift the head to a Result using f
+      // then lift the tail to a Result using traverse
+      // then cons the head and tail and return it
+      f(param, (i, head)) >>= (h => _traverse(tail, h, i->succ, f))
+    };
+  };
+
+  _traverse(list, param, 0, f);
+};
+
 let _id = value => value;
 
 let rec sequenceResultM = list => {

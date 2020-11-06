@@ -361,8 +361,11 @@ let fillFloat32ArrayWithOffset =
     ConfigDpRunAPI.unsafeGet().getIsDebug(),
   )
   ->Result.mapSuccess(() => {
-      targetTypeArr
-      |> Float32Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
+      targetTypeArr->Float32Array.setArrayOffset(
+                       Obj.magic(sourceTypeArr),
+                       offset,
+                       _,
+                     )
     });
 };
 
@@ -394,8 +397,11 @@ let fillUint32ArrayWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
     ConfigDpRunAPI.unsafeGet().getIsDebug(),
   )
   ->Result.mapSuccess(() => {
-      targetTypeArr
-      |> Uint32Array.setArrayOffset(Obj.magic(sourceTypeArr), offset)
+      targetTypeArr->Uint32Array.setArrayOffset(
+                       Obj.magic(sourceTypeArr),
+                       offset,
+                       _,
+                     )
     });
 };
 

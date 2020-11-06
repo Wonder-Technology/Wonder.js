@@ -5,13 +5,13 @@ type sceneRepo = {getSceneGameObject: unit => sceneGameObject};
 type gameObjectRepo = {
   getTransform: gameObject => option(transform),
   getBSDFMaterial: gameObject => option(bsdfMaterial),
-  // getGeometry: gameObject => option(geometry),
+  getGeometry: gameObject => option(geometry),
   getDirectionLight: gameObject => option(directionLight),
   getBasicCameraView: gameObject => option(basicCameraView),
   getPerspectiveCameraProjection:
     gameObject => option(perspectiveCameraProjection),
   getAllGeometryGameObjects: sceneGameObject => list(gameObject),
-  // getAllGameObjectGeometries: sceneGameObject => list(geometry),
+  getAllGameObjectGeometries: sceneGameObject => list(geometry),
   getAllGameObjectBSDFMaterials: sceneGameObject => list(bsdfMaterial),
 };
 
@@ -20,9 +20,11 @@ type transformRepo = {
   getNormalMatrix: transform => normalMatrix,
   getLocalPosition: transform => position,
   getLocalRotation: transform => rotation,
+  getLocalEulerAngles: transform => eulerAngles,
   getLocalScale: transform => scale,
   getPosition: transform => position,
   getRotation: transform => rotation,
+  getEulerAngles: transform => eulerAngles,
   getScale: transform => scale,
 };
 
@@ -62,6 +64,18 @@ type bsdfMaterialRepo = {
   getNormalMapImageId: bsdfMaterial => option(ImageRepoType.id),
   getTransmissionMapImageId: bsdfMaterial => option(ImageRepoType.id),
   getSpecularMapImageId: bsdfMaterial => option(ImageRepoType.id),
+  isSame: (bsdfMaterial, bsdfMaterial) => bool,
+  getId: bsdfMaterial => int,
+};
+
+type geometryRepo = {
+  getVertices: geometry => Js.Typed_array.Float32Array.t,
+  getNormals: geometry => option(Js.Typed_array.Float32Array.t),
+  getTexCoords: geometry => option(Js.Typed_array.Float32Array.t),
+  getTangents: geometry => option(Js.Typed_array.Float32Array.t),
+  getIndices: geometry => option(Js.Typed_array.Uint32Array.t),
+  isSame: (geometry, geometry) => bool,
+  getId: geometry => int,
 };
 
 type sceneGraphRepo = {
@@ -71,5 +85,6 @@ type sceneGraphRepo = {
   basicCameraViewRepo,
   perspectiveCameraProjectionRepo,
   bsdfMaterialRepo,
+  geometryRepo,
   gameObjectRepo,
 };

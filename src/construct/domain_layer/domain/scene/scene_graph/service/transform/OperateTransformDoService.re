@@ -14,6 +14,14 @@ let getLocalRotation = transform => {
   ->RotationVO.create;
 };
 
+let getLocalEulerAngles = transform => {
+  DpContainer.unsafeGetTransformRepoDp().getLocalEulerAngles(
+    transform->TransformEntity.value,
+  )
+  ->Tuple3.map(AngleVO.create)
+  ->EulerAnglesVO.create;
+};
+
 let getLocalScale = transform => {
   DpContainer.unsafeGetTransformRepoDp().getLocalScale(
     transform->TransformEntity.value,
@@ -33,6 +41,14 @@ let getRotation = transform => {
     transform->TransformEntity.value,
   )
   ->RotationVO.create;
+};
+
+let getEulerAngles = transform => {
+  DpContainer.unsafeGetTransformRepoDp().getEulerAngles(
+    transform->TransformEntity.value,
+  )
+  ->Tuple3.map(AngleVO.create)
+  ->EulerAnglesVO.create;
 };
 
 let getScale = transform => {

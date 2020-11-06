@@ -8,6 +8,7 @@ let set =
         basicCameraViewRepo,
         perspectiveCameraProjectionRepo,
         bsdfMaterialRepo,
+        geometryRepo,
       }: SceneGraphRepoDpCPType.sceneGraphRepo,
     ) => {
   let {
@@ -16,7 +17,9 @@ let set =
     getBasicCameraView,
     getPerspectiveCameraProjection,
     getBSDFMaterial,
+    getGeometry,
     getAllGeometryGameObjects,
+    getAllGameObjectGeometries,
     getAllGameObjectBSDFMaterials,
   }: SceneGraphRepoDpCPType.gameObjectRepo = gameObjectRepo;
   let {getColor, getIntensity, getDirection, getAllLights}: SceneGraphRepoDpCPType.directionLightRepo = directionLightRepo;
@@ -35,7 +38,18 @@ let set =
     getNormalMapImageId,
     getTransmissionMapImageId,
     getSpecularMapImageId,
+    isSame: isSameBSDFMaterial,
+    getId: getBSDFMaterialId,
   }: SceneGraphRepoDpCPType.bsdfMaterialRepo = bsdfMaterialRepo;
+  let {
+    getVertices,
+    getNormals,
+    getTexCoords,
+    getTangents,
+    getIndices,
+    isSame: isSameGeometry,
+    getId: getGeometryId,
+  }: SceneGraphRepoDpCPType.geometryRepo = geometryRepo;
 
   SceneGraphRepoDpRunAPI.set(
     {
@@ -56,8 +70,14 @@ let set =
         getBSDFMaterial: gameObject => {
           getBSDFMaterial(gameObject)->OptionSt.fromNullable;
         },
+        getGeometry: gameObject => {
+          getGeometry(gameObject)->OptionSt.fromNullable;
+        },
         getAllGeometryGameObjects: sceneGameObject => {
           getAllGeometryGameObjects(sceneGameObject)->ListSt.fromArray;
+        },
+        getAllGameObjectGeometries: sceneGameObject => {
+          getAllGameObjectGeometries(sceneGameObject)->ListSt.fromArray;
         },
         getAllGameObjectBSDFMaterials: sceneGameObject => {
           getAllGameObjectBSDFMaterials(sceneGameObject)->ListSt.fromArray;
@@ -81,6 +101,8 @@ let set =
       },
       perspectiveCameraProjectionRepo,
       bsdfMaterialRepo: {
+        isSame: isSameBSDFMaterial,
+        getId: getBSDFMaterialId,
         getDiffuseColor,
         getSpecular,
         getSpecularColor,
@@ -106,6 +128,23 @@ let set =
         },
         getSpecularMapImageId: bsdfMaterial => {
           getSpecularMapImageId(bsdfMaterial)->OptionSt.fromNullable;
+        },
+      },
+      geometryRepo: {
+        isSame: isSameGeometry,
+        getId: getGeometryId,
+        getVertices,
+        getNormals: geometry => {
+          getNormals(geometry)->OptionSt.fromNullable;
+        },
+        getTexCoords: geometry => {
+          getTexCoords(geometry)->OptionSt.fromNullable;
+        },
+        getTangents: geometry => {
+          getTangents(geometry)->OptionSt.fromNullable;
+        },
+        getIndices: geometry => {
+          getIndices(geometry)->OptionSt.fromNullable;
         },
       },
     }: ISceneGraphRepoDp.sceneGraphRepo,

@@ -33,7 +33,7 @@ let create = () => {
           elements: [
             {name: "update_camera", type_: Job},
             {name: "update_textureArray", type_: Job},
-            // {name: "update_pathTracing", type_: Job},
+            {name: "update_pathTracing", type_: Job},
             // {name: "update_pass", type_: Job},
           ],
         },
@@ -107,7 +107,4 @@ let create = () => {
     staticBindGroupData: None,
     pipeline: None,
   },
-  // image: {
-  //   dataMap: ImmutableHashMap.createEmpty(),
-  // },
 };

@@ -24,8 +24,13 @@ let buildGameObjectRepo =
                                         refJsObjToSandbox(sandbox^),
                                       ),
       ~getBSDFMaterial=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getGeometry=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getAllGeometryGameObjects=createEmptyStub(refJsObjToSandbox(sandbox^))
                                  ->SinonTool.returns(_createEmptyList()),
+      ~getAllGameObjectGeometries=createEmptyStub(
+                                    refJsObjToSandbox(sandbox^),
+                                  )
+                                  ->SinonTool.returns(_createEmptyList()),
       ~getAllGameObjectBSDFMaterials=createEmptyStub(
                                        refJsObjToSandbox(sandbox^),
                                      )
@@ -38,7 +43,9 @@ let buildGameObjectRepo =
   getBasicCameraView,
   getPerspectiveCameraProjection,
   getBSDFMaterial,
+  getGeometry,
   getAllGeometryGameObjects,
+  getAllGameObjectGeometries,
   getAllGameObjectBSDFMaterials,
 };
 
@@ -49,9 +56,11 @@ let buildTransformRepo =
       ~getNormalMatrix=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getLocalPosition=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getLocalRotation=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getLocalEulerAngles=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getLocalScale=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getPosition=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getRotation=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getEulerAngles=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getScale=createEmptyStub(refJsObjToSandbox(sandbox^)),
       (),
     )
@@ -60,9 +69,11 @@ let buildTransformRepo =
   getNormalMatrix,
   getLocalPosition,
   getLocalRotation,
+  getLocalEulerAngles,
   getLocalScale,
   getPosition,
   getRotation,
+  getEulerAngles,
   getScale,
 };
 
@@ -121,6 +132,8 @@ let buildPerspectiveCameraProjectionRepo =
 let buildBSDFMaterialRepo =
     (
       ~sandbox,
+      ~isSame=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getId=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getDiffuseColor=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getSpecular=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getSpecularColor=createEmptyStub(refJsObjToSandbox(sandbox^)),
@@ -141,6 +154,8 @@ let buildBSDFMaterialRepo =
       (),
     )
     : bsdfMaterialRepo => {
+  isSame,
+  getId,
   getDiffuseColor,
   getSpecular,
   getSpecularColor,
@@ -156,6 +171,28 @@ let buildBSDFMaterialRepo =
   getSpecularMapImageId,
 };
 
+let buildGeometryRepo =
+    (
+      ~sandbox,
+      ~isSame=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getId=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getVertices=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getNormals=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getTexCoords=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getTangents=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getIndices=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      (),
+    )
+    : geometryRepo => {
+  isSame,
+  getId,
+  getVertices,
+  getNormals,
+  getTexCoords,
+  getTangents,
+  getIndices,
+};
+
 let build =
     (
       ~sandbox,
@@ -169,6 +206,7 @@ let build =
                                          (),
                                        ),
       ~bsdfMaterialRepo=buildBSDFMaterialRepo(~sandbox, ()),
+      ~geometryRepo=buildGeometryRepo(~sandbox, ()),
       (),
     )
     : sceneGraphRepo => {
@@ -179,6 +217,7 @@ let build =
   basicCameraViewRepo,
   perspectiveCameraProjectionRepo,
   bsdfMaterialRepo,
+  geometryRepo,
 };
 
 let set = dp => {

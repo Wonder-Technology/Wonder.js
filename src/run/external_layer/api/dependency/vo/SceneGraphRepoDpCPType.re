@@ -9,8 +9,10 @@ type gameObjectRepo = {
   getPerspectiveCameraProjection:
     gameObject => Js.Nullable.t(perspectiveCameraProjection),
   getBSDFMaterial: gameObject => Js.Nullable.t(bsdfMaterial),
-  getAllGeometryGameObjects: gameObject => array(gameObject),
-  getAllGameObjectBSDFMaterials: gameObject => array(bsdfMaterial),
+  getGeometry: gameObject => Js.Nullable.t(geometry),
+  getAllGeometryGameObjects: sceneGameObject => array(gameObject),
+  getAllGameObjectGeometries: sceneGameObject => array(geometry),
+  getAllGameObjectBSDFMaterials: sceneGameObject => array(bsdfMaterial),
 };
 
 type transformRepo = ISceneGraphRepoDp.transformRepo;
@@ -45,6 +47,18 @@ type bsdfMaterialRepo = {
   getNormalMapImageId: bsdfMaterial => Js.Nullable.t(ImageRepoType.id),
   getTransmissionMapImageId: bsdfMaterial => Js.Nullable.t(ImageRepoType.id),
   getSpecularMapImageId: bsdfMaterial => Js.Nullable.t(ImageRepoType.id),
+  isSame: (bsdfMaterial, bsdfMaterial) => bool,
+  getId: bsdfMaterial => int,
+};
+
+type geometryRepo = {
+  getVertices: geometry => Js.Typed_array.Float32Array.t,
+  getNormals: geometry => Js.Nullable.t(Js.Typed_array.Float32Array.t),
+  getTexCoords: geometry => Js.Nullable.t(Js.Typed_array.Float32Array.t),
+  getTangents: geometry => Js.Nullable.t(Js.Typed_array.Float32Array.t),
+  getIndices: geometry => Js.Nullable.t(Js.Typed_array.Uint32Array.t),
+  isSame: (geometry, geometry) => bool,
+  getId: geometry => int,
 };
 
 type sceneGraphRepo = {
@@ -55,4 +69,5 @@ type sceneGraphRepo = {
   basicCameraViewRepo,
   perspectiveCameraProjectionRepo,
   bsdfMaterialRepo,
+  geometryRepo,
 };

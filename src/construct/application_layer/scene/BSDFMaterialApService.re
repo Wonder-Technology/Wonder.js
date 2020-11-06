@@ -51,3 +51,11 @@ let getTransmissionMapImageId = material => {
 let getSpecularMapImageId = material => {
   OperateBSDFMaterialDoService.getSpecularMapImageId(material);
 };
+
+let isSame = (material1, material2) => {
+  OperateBSDFMaterialDoService.isSame(material1, material2);
+};
+
+let getId = material => {
+  OperateBSDFMaterialDoService.getId(material);
+};

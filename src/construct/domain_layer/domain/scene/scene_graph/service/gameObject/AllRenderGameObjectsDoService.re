@@ -5,12 +5,12 @@ let getAllRenderGameObjects = sceneGameObject => {
   ->ListSt.map(GameObjectEntity.create);
 };
 
-// let getAllRenderGeometries = () => {
-//   DpContainer.unsafeGetGameObjectRepoDp().getAllGameObjectGeometries(
-//     sceneGameObject->GameObjectEntity.value,
-// )
-//   ->ListSt.map(GeometryEntity.create);
-// };
+let getAllRenderGeometries = (sceneGameObject) => {
+  DpContainer.unsafeGetGameObjectRepoDp().getAllGameObjectGeometries(
+    sceneGameObject->GameObjectEntity.value,
+  )
+  ->ListSt.map(GeometryEntity.create);
+};
 
 let getAllRenderBSDFMaterials = sceneGameObject => {
   DpContainer.unsafeGetGameObjectRepoDp().getAllGameObjectBSDFMaterials(

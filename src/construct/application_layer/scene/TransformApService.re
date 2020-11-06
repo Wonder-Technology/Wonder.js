@@ -14,6 +14,14 @@ let getRotation = transform => {
   OperateTransformDoService.getRotation(transform);
 };
 
+let getLocalEulerAngles = transform => {
+  OperateTransformDoService.getLocalEulerAngles(transform);
+};
+
+let getEulerAngles = transform => {
+  OperateTransformDoService.getEulerAngles(transform);
+};
+
 let getLocalScale = transform => {
   OperateTransformDoService.getLocalScale(transform);
 };

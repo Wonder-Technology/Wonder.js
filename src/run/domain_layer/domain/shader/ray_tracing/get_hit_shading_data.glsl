@@ -16,7 +16,7 @@ struct Vertex {
   vec4 tangent;
 };
 
-/*
+/*!
 extract this to avoid duplicate instead of move this into InstanceData.
 */
 struct PointIndexData {

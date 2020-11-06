@@ -12,9 +12,13 @@ type perspectiveCameraProjection;
 
 type bsdfMaterial;
 
+type geometry;
+
 type position = (float, float, float);
 
 type rotation = (float, float, float, float);
+
+type eulerAngles = (float, float, float);
 
 type scale = (float, float, float);
 

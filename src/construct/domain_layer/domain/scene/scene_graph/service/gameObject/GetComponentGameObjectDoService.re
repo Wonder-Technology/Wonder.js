@@ -27,3 +27,9 @@ let getBSDFMaterial = gameObject =>
     gameObject->GameObjectEntity.value,
   )
   ->OptionSt.map(BSDFMaterialEntity.create);
+
+let getGeometry = gameObject =>
+  DpContainer.unsafeGetGameObjectRepoDp().getGeometry(
+    gameObject->GameObjectEntity.value,
+  )
+  ->OptionSt.map(GeometryEntity.create);

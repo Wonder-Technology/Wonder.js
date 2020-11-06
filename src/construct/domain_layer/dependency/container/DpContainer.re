@@ -50,9 +50,9 @@ let unsafeGetBSDFMaterialRepoDp = () => {
   _unsafeGetSceneGraphRepoDp().bsdfMaterialRepo;
 };
 
-// let unsafeGetGeometryRepoDp = () => {
-//   _unsafeGetSceneGraphRepoDp().geometryRepo;
-// };
+let unsafeGetGeometryRepoDp = () => {
+  _unsafeGetSceneGraphRepoDp().geometryRepo;
+};
 
 let unsafeGetDirectionLightRepoDp = () => {
   _unsafeGetSceneGraphRepoDp().directionLightRepo;
