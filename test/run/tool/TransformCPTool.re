@@ -116,12 +116,6 @@ let buildRepoWithTwoTransforms = sandbox => {
           | transform when transform == transform1 => rotation1
           | transform when transform == transform2 => rotation2
           },
-      ~getEulerAngles=
-        transform =>
-          switch (transform) {
-          | transform when transform == transform1 => eulerAngles1
-          | transform when transform == transform2 => eulerAngles2
-          },
       ~getScale=
         transform =>
           switch (transform) {

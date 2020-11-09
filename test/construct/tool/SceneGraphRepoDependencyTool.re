@@ -60,7 +60,6 @@ let buildTransformRepo =
       ~getLocalScale=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getPosition=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getRotation=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~getEulerAngles=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getScale=createEmptyStub(refJsObjToSandbox(sandbox^)),
       (),
     )
@@ -73,7 +72,6 @@ let buildTransformRepo =
   getLocalScale,
   getPosition,
   getRotation,
-  getEulerAngles,
   getScale,
 };
 

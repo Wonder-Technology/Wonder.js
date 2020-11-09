@@ -24,7 +24,6 @@ type transformRepo = {
   getLocalScale: transform => scale,
   getPosition: transform => position,
   getRotation: transform => rotation,
-  getEulerAngles: transform => eulerAngles,
   getScale: transform => scale,
 };
 

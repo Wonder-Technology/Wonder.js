@@ -104,11 +104,7 @@ let _convertMat4To34RowMajorMatrix = (mat4): Float32Array.t => {
 let _convertInstanceTransformDataToContainerTransformMatrix =
     ((translation, rotation, scale)) => {
   Matrix4.createIdentityMatrix4()
-  ->Matrix4.fromTranslationRotationScale(
-      translation,
-      Quaternion.setFromEulerAngles(rotation),
-      scale,
-    )
+  ->Matrix4.fromTranslationRotationScale(translation, rotation, scale)
   ->_convertMat4To34RowMajorMatrix;
 };
 
@@ -146,11 +142,11 @@ let _createInstances = geometryContainerMap => {
                 _convertInstanceTransformDataToContainerTransformMatrix((
                   OperateTransformDoService.getPosition(transform)
                   ->PositionVO.value,
-                  OperateTransformDoService.getEulerAngles(transform)
-                  ->EulerAnglesVO.getPrimitiveValue,
+                  OperateTransformDoService.getRotation(transform)
+                  ->RotationVO.value,
                   OperateTransformDoService.getScale(transform)
                   ->ScaleVO.value,
-                )),
+                ))-> Log.printForDebug,
               ~instanceOffset=_convertHitGroupIndexToInstanceOffset(0),
               ~geometryContainer,
               (),
