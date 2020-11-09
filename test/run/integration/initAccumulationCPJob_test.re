@@ -256,7 +256,7 @@ let _ =
     describe("create pipeline and set to po", () => {
       testPromise("create all shader modules", () => {
         let (window, device, swapChainFormat) = _prepare();
-        let baseShaderPath = "src/run/cloud_picture/domain_layer/domain/shader/accumulation";
+        let baseShaderPath = "src/run/domain_layer/domain/shader/accumulation";
         let buffer = WebGPUDependencyTool.createBufferObject();
         let vertexGLSL = "a1";
         let fragmentGLSL = "a2";
@@ -268,8 +268,7 @@ let _ =
           ->SinonTool.createTwoArgsEmptyStubData;
         WebGPUDependencyTool.build(
           ~sandbox,
-          ~createShaderModule=
-            createShaderModuleStubData->SinonTool.getDpFunc,
+          ~createShaderModule=createShaderModuleStubData->SinonTool.getDpFunc,
           ~loadGLSL,
           (),
         )
@@ -287,10 +286,7 @@ let _ =
                   createShaderModuleStubData
                   ->SinonTool.getStub
                   ->getCall(1, _)
-                  ->SinonTool.calledWithArg2(
-                      {"code": fragmentGLSL},
-                      device,
-                    ),
+                  ->SinonTool.calledWithArg2({"code": fragmentGLSL}, device),
                 ),
                 (
                   loadGLSL
@@ -348,8 +344,7 @@ let _ =
           ->SinonTool.createTwoArgsEmptyStubData;
         WebGPUDependencyTool.build(
           ~sandbox,
-          ~createShaderModule=
-            createShaderModuleStubData->SinonTool.getDpFunc,
+          ~createShaderModule=createShaderModuleStubData->SinonTool.getDpFunc,
           ~createBindGroupLayout=
             createBindGroupLayoutStubData->SinonTool.getDpFunc,
           ~createPipelineLayout=
