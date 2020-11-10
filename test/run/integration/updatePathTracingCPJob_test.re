@@ -1272,7 +1272,7 @@ let _ =
           )
         });
         testPromise(
-          "set each render bsdfMaterial's diffuse, specular, specularColor, roughness, metalness, transmission, ior, diffuseMapLayerIndex, channelRoughnessMetallicMapLayerIndex, emissionMapLayerIndex, normalMapLayerIndex, transmissionMapLayerIndex, specularMapLayerIndex, diffuseMapScale, channelRoughnessMetallicScaleScale, emissionMapScale, normalMapScale, transmissionMapScale, specularMapScale to buffer data",
+          "set each render bsdfMaterial's diffuse, alphaCutoff, specular, specularColor, roughness, metalness, transmission, ior, diffuseMapLayerIndex, channelRoughnessMetallicMapLayerIndex, emissionMapLayerIndex, normalMapLayerIndex, transmissionMapLayerIndex, specularMapLayerIndex, diffuseMapScale, channelRoughnessMetallicScaleScale, emissionMapScale, normalMapScale, transmissionMapScale, specularMapScale to buffer data",
           () => {
             open ImageRepoType;
             let (
@@ -1333,7 +1333,7 @@ let _ =
                        0.,
                        1.,
                        0.,
-                       0.,
+                       0.5,
                        0.5,
                        1.,
                        0.,

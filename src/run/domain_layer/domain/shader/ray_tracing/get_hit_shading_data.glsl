@@ -25,7 +25,7 @@ struct PointIndexData {
 };
 
 struct BSDFMaterial {
-  vec4 diffuse;
+  vec4 diffuseAndAlphaCutoff;
 
   vec4 specularColor;
 
@@ -140,6 +140,10 @@ struct HitShadingData {
   float materialIOR;
 };
 
+bool _isUseAlphaAsCoverageInsteadOfTransmission(float alphaCutoff) {
+  return alphaCutoff > 0.0;
+}
+
 HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   InstanceData instanceData = _getInstanceData(instanceIndex);
 
@@ -184,15 +188,22 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
 
   HitShadingData data;
 
+  float alphaCutoff = mat.diffuseAndAlphaCutoff.w;
+  float alpha = 1.0;
+
   if (_hasMap(diffuseMapLayerIndex)) {
+    vec4 diffuseMapData =
+        texture(sampler2DArray(textureArray, textureSampler),
+                vec3(uv * mat.diffuseMapScale, diffuseMapLayerIndex));
+
     data.materialDiffuse =
-        convertSRGBToLinear(
-            texture(sampler2DArray(textureArray, textureSampler),
-                    vec3(uv * mat.diffuseMapScale, diffuseMapLayerIndex))
-                .rgb) +
-        vec3(mat.diffuse);
+        convertSRGBToLinear(diffuseMapData.rgb) + mat.diffuseAndAlphaCutoff.xyz;
+
+    alpha = diffuseMapData.a;
   } else {
-    data.materialDiffuse = vec3(mat.diffuse);
+    data.materialDiffuse = mat.diffuseAndAlphaCutoff.xyz;
+
+    alpha = 1.0;
   }
 
   if (_hasMap(specularMapLayerIndex)) {
@@ -245,17 +256,23 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
     data.materialRoughness = mat.roughness;
   }
 
-  if (_hasMap(transmissionMapLayerIndex)) {
-    data.materialTransmission =
-        texture(sampler2DArray(textureArray, textureSampler),
-                vec3(uv * mat.transmissionMapScale, transmissionMapLayerIndex))
-            .r *
-        mat.transmission;
+  if (_isUseAlphaAsCoverageInsteadOfTransmission(alphaCutoff)) {
+    data.materialTransmission = alpha >= alphaCutoff ? 0.0 : 1.0 - alpha;
+    data.materialIOR = 1.0;
   } else {
-    data.materialTransmission = mat.transmission;
-  }
+    if (_hasMap(transmissionMapLayerIndex)) {
+      data.materialTransmission =
+          texture(
+              sampler2DArray(textureArray, textureSampler),
+              vec3(uv * mat.transmissionMapScale, transmissionMapLayerIndex))
+              .r *
+          mat.transmission;
+    } else {
+      data.materialTransmission = mat.transmission;
+    }
 
-  data.materialIOR = mat.ior;
+    data.materialIOR = mat.ior;
+  }
 
   const vec3 p0 = v0.position.xyz, p1 = v1.position.xyz, p2 = v2.position.xyz;
 

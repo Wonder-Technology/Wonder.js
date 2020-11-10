@@ -47,6 +47,7 @@ type bsdfMaterialRepo = {
   getNormalMapImageId: bsdfMaterial => Js.Nullable.t(ImageRepoType.id),
   getTransmissionMapImageId: bsdfMaterial => Js.Nullable.t(ImageRepoType.id),
   getSpecularMapImageId: bsdfMaterial => Js.Nullable.t(ImageRepoType.id),
+  getAlphaCutoff: bsdfMaterial => float,
   isSame: (bsdfMaterial, bsdfMaterial) => bool,
   getId: bsdfMaterial => int,
 };

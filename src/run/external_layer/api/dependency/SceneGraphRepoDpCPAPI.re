@@ -38,6 +38,7 @@ let set =
     getNormalMapImageId,
     getTransmissionMapImageId,
     getSpecularMapImageId,
+    getAlphaCutoff,
     isSame: isSameBSDFMaterial,
     getId: getBSDFMaterialId,
   }: SceneGraphRepoDpCPType.bsdfMaterialRepo = bsdfMaterialRepo;
@@ -130,6 +131,7 @@ let set =
         getSpecularMapImageId: bsdfMaterial => {
           getSpecularMapImageId(bsdfMaterial)->OptionSt.fromNullable;
         },
+        getAlphaCutoff,
       },
       geometryRepo: {
         isSame: isSameGeometry,

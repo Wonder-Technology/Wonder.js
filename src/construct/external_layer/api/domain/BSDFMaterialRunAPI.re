@@ -50,6 +50,10 @@ let getSpecularMapImageId = material => {
   BSDFMaterialApService.getSpecularMapImageId(material);
 };
 
+let getAlphaCutoff = material => {
+  BSDFMaterialApService.getAlphaCutoff(material);
+};
+
 let isSame = (material1, material2) => {
   BSDFMaterialApService.isSame(material1, material2);
 };

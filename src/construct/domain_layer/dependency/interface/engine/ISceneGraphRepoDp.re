@@ -63,6 +63,8 @@ type bsdfMaterialRepo = {
   getNormalMapImageId: bsdfMaterial => option(ImageRepoType.id),
   getTransmissionMapImageId: bsdfMaterial => option(ImageRepoType.id),
   getSpecularMapImageId: bsdfMaterial => option(ImageRepoType.id),
+  // isUseAlphaBlend: bsdfMaterial => bool,
+  getAlphaCutoff: bsdfMaterial => float,
   isSame: (bsdfMaterial, bsdfMaterial) => bool,
   getId: bsdfMaterial => int,
 };

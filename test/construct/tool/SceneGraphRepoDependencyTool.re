@@ -139,6 +139,7 @@ let buildBSDFMaterialRepo =
       ~getMetalness=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getTransmission=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getIOR=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getAlphaCutoff=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getDiffuseMapImageId=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getChannelRoughnessMetallicMapImageId=createEmptyStub(
                                                refJsObjToSandbox(sandbox^),
@@ -167,6 +168,7 @@ let buildBSDFMaterialRepo =
   getNormalMapImageId,
   getTransmissionMapImageId,
   getSpecularMapImageId,
+  getAlphaCutoff,
 };
 
 let buildGeometryRepo =

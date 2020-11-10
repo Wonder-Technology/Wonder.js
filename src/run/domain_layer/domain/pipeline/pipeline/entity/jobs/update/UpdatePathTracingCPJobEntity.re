@@ -480,6 +480,9 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
         let diffuse =
           BSDFMaterialRunAPI.getDiffuseColor(bsdfMaterial)
           ->DiffuseVO.getPrimitiveValue;
+        let alphaCutoff =
+          BSDFMaterialRunAPI.getAlphaCutoff(bsdfMaterial)
+          ->AlphaCutoffVO.value;
         let specularColor =
           BSDFMaterialRunAPI.getSpecularColor(bsdfMaterial)
           ->SpecularColorVO.getPrimitiveValue;
@@ -530,6 +533,11 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
             ) => {
             ListResult.mergeResults([
               TypeArrayCPRepoUtils.setFloat3(offset + 0, diffuse, bufferData),
+              TypeArrayCPRepoUtils.setFloat1(
+                offset + 3,
+                alphaCutoff,
+                bufferData,
+              ),
               TypeArrayCPRepoUtils.setFloat3(
                 offset + 4,
                 specularColor,

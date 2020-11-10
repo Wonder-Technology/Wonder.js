@@ -79,6 +79,12 @@ let getSpecularMapImageId = material =>
   )
   ->OptionSt.map(ImageIdVO.create);
 
+let getAlphaCutoff = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().getAlphaCutoff(
+    material->BSDFMaterialEntity.value,
+  )
+  ->AlphaCutoffVO.create;
+
 let isSame = (material1, material2) => {
   DpContainer.unsafeGetBSDFMaterialRepoDp().isSame(
     material1->BSDFMaterialEntity.value,
