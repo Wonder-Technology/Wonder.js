@@ -1,3 +1,9 @@
+let isFlipTexCoordY = geometry => {
+  DpContainer.unsafeGetGeometryRepoDp().isFlipTexCoordY(
+    geometry->GeometryEntity.value,
+  );
+};
+
 let isSame = (geometry1, geometry2) => {
   DpContainer.unsafeGetGeometryRepoDp().isSame(
     geometry1->GeometryEntity.value,

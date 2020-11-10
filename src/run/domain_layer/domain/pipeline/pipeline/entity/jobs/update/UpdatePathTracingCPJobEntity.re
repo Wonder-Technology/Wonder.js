@@ -229,6 +229,11 @@ let _createVertexBufferData = allRenderGeometries => {
         | Some(texCoords) =>
           let length = texCoords->Float32Array.length;
 
+          let getTexCoordYFunc =
+            GeometryRunAPI.isFlipTexCoordY(geometry)
+              ? (i => Float32Array.unsafe_get(texCoords, i^ + 1)->_flipY)
+              : (i => Float32Array.unsafe_get(texCoords, i^ + 1));
+
           let i = ref(0);
           let j = ref(offset);
           while (i^ < length) {
@@ -237,11 +242,7 @@ let _createVertexBufferData = allRenderGeometries => {
               j^ + 4,
               Float32Array.unsafe_get(texCoords, i^),
             );
-            Float32Array.unsafe_set(
-              bufferData,
-              j^ + 5,
-              Float32Array.unsafe_get(texCoords, i^ + 1)->_flipY,
-            );
+            Float32Array.unsafe_set(bufferData, j^ + 5, getTexCoordYFunc(i));
 
             i := i^ + 2;
             j := j^ + stride;

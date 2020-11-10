@@ -41,10 +41,17 @@ let buildRepoWithTwoGeometriesAndSetPointData = sandbox => {
       3.,
     |]);
   let tangents1 =
-    Float32Array.make([|(-0.24470466375350952), (-0.5224775075912476), (-0.8167845010757446), (-0.5092150568962097), (-0.3632996380329132), (-0.7802008390426636), 
-    
-    
-    (-0.4640968143939972), (-0.5406073331832886), (-0.7016821503639221)|]);
+    Float32Array.make([|
+      (-0.24470466375350952),
+      (-0.5224775075912476),
+      (-0.8167845010757446),
+      (-0.5092150568962097),
+      (-0.3632996380329132),
+      (-0.7802008390426636),
+      (-0.4640968143939972),
+      (-0.5406073331832886),
+      (-0.7016821503639221),
+    |]);
   let tangents2 =
     Float32Array.make([|
       (-0.46341636776924133),
@@ -67,7 +74,14 @@ let buildRepoWithTwoGeometriesAndSetPointData = sandbox => {
     SceneGraphRepoDependencyTool.buildGeometryRepo(
       ~sandbox,
       ~isSame=(geometry1, geometry2) => {geometry1 == geometry2},
-      ~getId=geometry => geometry -> Obj.magic,
+      ~isFlipTexCoordY=
+        geometry => {
+          switch (geometry) {
+          | geometry when geometry == geometry1 => false
+          | geometry when geometry == geometry2 => true
+          }
+        },
+      ~getId=geometry => geometry->Obj.magic,
       ~getVertices=
         geometry =>
           switch (geometry) {

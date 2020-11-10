@@ -47,6 +47,7 @@ let set =
     getTexCoords,
     getTangents,
     getIndices,
+    isFlipTexCoordY,
     isSame: isSameGeometry,
     getId: getGeometryId,
   }: SceneGraphRepoDpCPType.geometryRepo = geometryRepo;
@@ -146,6 +147,7 @@ let set =
         getIndices: geometry => {
           getIndices(geometry)->OptionSt.fromNullable;
         },
+        isFlipTexCoordY,
       },
     }: ISceneGraphRepoDp.sceneGraphRepo,
   );

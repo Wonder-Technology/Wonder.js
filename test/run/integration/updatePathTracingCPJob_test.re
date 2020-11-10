@@ -1044,7 +1044,7 @@ let _ =
           )
         });
         testPromise(
-          "set each render geometry's vertices, texCoords(should flip vertical), normals, tangents to buffer data and set buffer's data",
+          "set each render geometry's vertices, texCoords, normals, tangents to buffer data and set buffer's data",
           () => {
             let _ = _prepare();
             let setSubFloat32DataStubData =
@@ -1073,7 +1073,7 @@ let _ =
                         11.,
                         0.,
                         0.5,
-                        1.,
+                        0.,
                         0.,
                         0.,
                         1.,
@@ -1089,7 +1089,7 @@ let _ =
                         3.,
                         0.,
                         0.10000000149011612,
-                        0.,
+                        1.,
                         0.,
                         0.,
                         2.,

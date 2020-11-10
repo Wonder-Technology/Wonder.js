@@ -179,6 +179,8 @@ let buildGeometryRepo =
       ~getTexCoords=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getTangents=createEmptyStub(refJsObjToSandbox(sandbox^)),
       ~getIndices=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~isFlipTexCoordY=createEmptyStub(refJsObjToSandbox(sandbox^))
+                       ->SinonTool.returns(false),
       (),
     )
     : geometryRepo => {
@@ -189,6 +191,7 @@ let buildGeometryRepo =
   getTexCoords,
   getTangents,
   getIndices,
+  isFlipTexCoordY,
 };
 
 let build =

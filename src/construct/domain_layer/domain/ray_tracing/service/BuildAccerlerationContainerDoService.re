@@ -146,7 +146,7 @@ let _createInstances = geometryContainerMap => {
                   ->RotationVO.value,
                   OperateTransformDoService.getScale(transform)
                   ->ScaleVO.value,
-                ))-> Log.printForDebug,
+                )),
               ~instanceOffset=_convertHitGroupIndexToInstanceOffset(0),
               ~geometryContainer,
               (),

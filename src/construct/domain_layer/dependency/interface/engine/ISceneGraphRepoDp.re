@@ -73,6 +73,7 @@ type geometryRepo = {
   getTexCoords: geometry => option(Js.Typed_array.Float32Array.t),
   getTangents: geometry => option(Js.Typed_array.Float32Array.t),
   getIndices: geometry => option(Js.Typed_array.Uint32Array.t),
+  isFlipTexCoordY: geometry => bool,
   isSame: (geometry, geometry) => bool,
   getId: geometry => int,
 };

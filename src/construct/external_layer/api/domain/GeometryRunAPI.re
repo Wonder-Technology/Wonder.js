@@ -18,6 +18,10 @@ let getIndices = geometry => {
   GeometryApService.getIndices(geometry);
 };
 
+let isFlipTexCoordY = geometry => {
+  GeometryApService.isFlipTexCoordY(geometry);
+};
+
 let isSame = (geometry1, geometry2) => {
   GeometryApService.isSame(geometry1, geometry2);
 };
