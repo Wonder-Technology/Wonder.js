@@ -191,7 +191,7 @@ let _fillImageDataToBufferDataWithFixedSize =
           );
           TypeArrayCPRepoUtils.setUint8_1WithoutCheck(
             bufferDataIndex + 3,
-            255,
+            TypeArrayCPRepoUtils.getUint8_1(dataIndex + 3, data),
             bufferData,
           );
 
