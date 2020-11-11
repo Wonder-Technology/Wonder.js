@@ -197,7 +197,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
                 vec3(uv * mat.diffuseMapScale, diffuseMapLayerIndex));
 
     data.materialDiffuse =
-        convertSRGBToLinear(diffuseMapData.rgb) + mat.diffuseAndAlphaCutoff.xyz;
+        convertSRGBToLinear(diffuseMapData.rgb) * mat.diffuseAndAlphaCutoff.xyz;
 
     alpha = diffuseMapData.a;
   } else {
