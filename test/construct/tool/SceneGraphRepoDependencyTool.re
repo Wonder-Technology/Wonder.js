@@ -150,6 +150,26 @@ let buildBSDFMaterialRepo =
                                    refJsObjToSandbox(sandbox^),
                                  ),
       ~getSpecularMapImageId=createEmptyStub(refJsObjToSandbox(sandbox^)),
+      ~getDiffuseMapImageWrapData=createEmptyStub(
+                                    refJsObjToSandbox(sandbox^),
+                                  ),
+      ~getChannelRoughnessMetallicMapImageWrapData=createEmptyStub(
+                                                     refJsObjToSandbox(
+                                                       sandbox^,
+                                                     ),
+                                                   ),
+      ~getEmissionMapImageWrapData=createEmptyStub(
+                                     refJsObjToSandbox(sandbox^),
+                                   ),
+      ~getNormalMapImageWrapData=createEmptyStub(
+                                   refJsObjToSandbox(sandbox^),
+                                 ),
+      ~getTransmissionMapImageWrapData=createEmptyStub(
+                                         refJsObjToSandbox(sandbox^),
+                                       ),
+      ~getSpecularMapImageWrapData=createEmptyStub(
+                                     refJsObjToSandbox(sandbox^),
+                                   ),
       (),
     )
     : bsdfMaterialRepo => {
@@ -169,6 +189,12 @@ let buildBSDFMaterialRepo =
   getTransmissionMapImageId,
   getSpecularMapImageId,
   getAlphaCutoff,
+  getDiffuseMapImageWrapData,
+  getChannelRoughnessMetallicMapImageWrapData,
+  getEmissionMapImageWrapData,
+  getNormalMapImageWrapData,
+  getTransmissionMapImageWrapData,
+  getSpecularMapImageWrapData,
 };
 
 let buildGeometryRepo =

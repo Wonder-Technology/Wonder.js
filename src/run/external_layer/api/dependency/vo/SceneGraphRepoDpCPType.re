@@ -50,6 +50,13 @@ type bsdfMaterialRepo = {
   getAlphaCutoff: bsdfMaterial => float,
   isSame: (bsdfMaterial, bsdfMaterial) => bool,
   getId: bsdfMaterial => int,
+  getDiffuseMapImageWrapData: bsdfMaterial => Js.Nullable.t(wrapData),
+  getChannelRoughnessMetallicMapImageWrapData:
+    bsdfMaterial => Js.Nullable.t(wrapData),
+  getEmissionMapImageWrapData: bsdfMaterial => Js.Nullable.t(wrapData),
+  getNormalMapImageWrapData: bsdfMaterial => Js.Nullable.t(wrapData),
+  getTransmissionMapImageWrapData: bsdfMaterial => Js.Nullable.t(wrapData),
+  getSpecularMapImageWrapData: bsdfMaterial => Js.Nullable.t(wrapData),
 };
 
 type geometryRepo = {

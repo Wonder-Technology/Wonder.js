@@ -457,9 +457,19 @@ let _computeMapScale = mapImageIdOpt => {
     );
 };
 
+let _getMapImageWrapData = mapImageWrapDataOpt => {
+  switch (mapImageWrapDataOpt) {
+  | None => (1., 1.)
+  | Some((wrapS, wrapT)) => (
+      wrapS->Belt.Float.fromInt,
+      wrapT->Belt.Float.fromInt,
+    )
+  };
+};
+
 let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
   let bsdfMaterialCount = allRenderBSDFMaterials->ListSt.length;
-  let dataCount = 32;
+  let dataCount = 44;
   let bufferData = Float32Array.fromLength(bsdfMaterialCount * dataCount);
   let bufferSize = bufferData->Float32Array.byteLength;
 
@@ -511,6 +521,33 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
           BSDFMaterialRunAPI.getTransmissionMapImageId(bsdfMaterial);
         let specularMapImageId =
           BSDFMaterialRunAPI.getSpecularMapImageId(bsdfMaterial);
+
+        let diffuseMapImageWrapData =
+          BSDFMaterialRunAPI.getDiffuseMapImageWrapData(bsdfMaterial)
+          ->OptionSt.map(Tuple2.map(WrapVO.value))
+          ->_getMapImageWrapData;
+        let channelRoughnessMetallicMapImageWrapData =
+          BSDFMaterialRunAPI.getChannelRoughnessMetallicMapImageWrapData(
+            bsdfMaterial,
+          )
+          ->OptionSt.map(Tuple2.map(WrapVO.value))
+          ->_getMapImageWrapData;
+        let emissionMapImageWrapData =
+          BSDFMaterialRunAPI.getEmissionMapImageWrapData(bsdfMaterial)
+          ->OptionSt.map(Tuple2.map(WrapVO.value))
+          ->_getMapImageWrapData;
+        let normalMapImageWrapData =
+          BSDFMaterialRunAPI.getNormalMapImageWrapData(bsdfMaterial)
+          ->OptionSt.map(Tuple2.map(WrapVO.value))
+          ->_getMapImageWrapData;
+        let transmissionMapImageWrapData =
+          BSDFMaterialRunAPI.getTransmissionMapImageWrapData(bsdfMaterial)
+          ->OptionSt.map(Tuple2.map(WrapVO.value))
+          ->_getMapImageWrapData;
+        let specularMapImageWrapData =
+          BSDFMaterialRunAPI.getSpecularMapImageWrapData(bsdfMaterial)
+          ->OptionSt.map(Tuple2.map(WrapVO.value))
+          ->_getMapImageWrapData;
 
         Tuple6.collectResult(
           _computeMapScale(diffuseMapImageId),
@@ -597,9 +634,39 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
                 specularMapScale,
                 bufferData,
               ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 32,
+                diffuseMapImageWrapData,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 34,
+                channelRoughnessMetallicMapImageWrapData,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 36,
+                emissionMapImageWrapData,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 38,
+                normalMapImageWrapData,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 40,
+                transmissionMapImageWrapData,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat2(
+                offset + 42,
+                specularMapImageWrapData,
+                bufferData,
+              ),
             ])
           })
-        ->Result.mapSuccess(() => {offset + 32});
+        ->Result.mapSuccess(() => {offset + 44});
       },
     )
   ->Result.mapSuccess(_ => {

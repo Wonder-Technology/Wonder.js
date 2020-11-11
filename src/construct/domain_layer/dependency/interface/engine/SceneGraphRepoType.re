@@ -55,3 +55,12 @@ type imageData = {
   height: int,
   data: Js.Typed_array.Uint8Array.t,
 };
+
+// TODO use enum
+// type wrap =
+//   | ClampToEdge
+//   | Repeat
+//   | Mirror;
+type wrap = int;
+
+type wrapData = (wrap, wrap);

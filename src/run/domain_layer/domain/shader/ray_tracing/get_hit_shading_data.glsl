@@ -52,6 +52,15 @@ struct BSDFMaterial {
 
   vec2 transmissionMapScale;
   vec2 specularMapScale;
+
+  vec2 diffuseMapWrapData;
+  vec2 channelRoughnessMetallicMapWrapData;
+
+  vec2 emissionMapWrapData;
+  vec2 normalMapWrapData;
+
+  vec2 transmissionMapWrapData;
+  vec2 specularMapWrapData;
 };
 
 hitAttributeEXT vec3 attribs;
@@ -144,6 +153,52 @@ bool _isUseAlphaAsCoverageInsteadOfTransmission(float alphaCutoff) {
   return alphaCutoff > 0.0;
 }
 
+float _computeUVFieldByWrap(float wrap, float uvField) {
+  switch (int(wrap)) {
+    // ClampToEdge
+  case 0:
+    if (uvField > 1.0) {
+      return 1.0;
+    } else if (uvField < 0.0) {
+      return 0.0;
+    } else {
+      return uvField;
+    }
+    // Repeat
+  case 1:
+    if (uvField > 1.0) {
+      return uvField - int(uvField);
+    } else if (uvField < 0.0) {
+      return 1.0 - (abs(uvField) - int(abs(uvField)));
+    } else {
+      return uvField;
+    }
+    // Mirror
+  case 2:
+    if (uvField > 1.0) {
+      if (int(uvField) % 2 == 1) {
+        return 1.0 - (uvField - int(uvField));
+      } else {
+        return (uvField - int(uvField));
+      }
+    } else if (uvField < 0.0) {
+      if (int(abs(uvField)) % 2 == 1) {
+        return 1.0 - (abs(uvField) - int(abs(uvField)));
+      } else {
+        return abs(uvField) - int(abs(uvField));
+      }
+    } else {
+      return uvField;
+    }
+  }
+}
+
+vec2 _computeUVByWrapData(vec2 wrapData, vec2 uv) {
+  return vec2(_computeUVFieldByWrap(wrapData.x, uv.x),
+              _computeUVFieldByWrap(wrapData.y, uv.y));
+  // return uv;
+}
+
 HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   InstanceData instanceData = _getInstanceData(instanceIndex);
 
@@ -194,7 +249,9 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   if (_hasMap(diffuseMapLayerIndex)) {
     vec4 diffuseMapData =
         texture(sampler2DArray(textureArray, textureSampler),
-                vec3(uv * mat.diffuseMapScale, diffuseMapLayerIndex));
+                vec3(_computeUVByWrapData(mat.diffuseMapWrapData, uv) *
+                         mat.diffuseMapScale,
+                     diffuseMapLayerIndex));
 
     data.materialDiffuse =
         convertSRGBToLinear(diffuseMapData.rgb) * mat.diffuseAndAlphaCutoff.xyz;
@@ -209,7 +266,9 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   if (_hasMap(specularMapLayerIndex)) {
     vec4 specularMap =
         texture(sampler2DArray(textureArray, textureSampler),
-                vec3(uv * mat.specularMapScale, specularMapLayerIndex));
+                vec3(_computeUVByWrapData(mat.specularMapWrapData, uv) *
+                         mat.specularMapScale,
+                     specularMapLayerIndex));
 
     data.materialSpecularColor =
         convertSRGBToLinear(specularMap.rgb) * vec3(mat.specularColor);
@@ -223,11 +282,14 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   if (_hasMap(normalMapLayerIndex)) {
     data.worldNormal =
         mat3(tw, bw, nw) *
-        normalize((texture(sampler2DArray(textureArray, textureSampler),
-                           vec3(uv * mat.normalMapScale, normalMapLayerIndex))
-                       .rgb) *
-                      2.0 -
-                  1.0)
+        normalize(
+            (texture(sampler2DArray(textureArray, textureSampler),
+                     vec3(_computeUVByWrapData(mat.normalMapWrapData, uv) *
+                              mat.normalMapScale,
+                          normalMapLayerIndex))
+                 .rgb) *
+                2.0 -
+            1.0)
             .xyz;
   } else {
     data.worldNormal = nw;
@@ -236,7 +298,9 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   if (_hasMap(emissionMapLayerIndex)) {
     data.materialEmission =
         texture(sampler2DArray(textureArray, textureSampler),
-                vec3(uv * mat.emissionMapScale, emissionMapLayerIndex))
+                vec3(_computeUVByWrapData(mat.emissionMapWrapData, uv) *
+                         mat.emissionMapScale,
+                     emissionMapLayerIndex))
             .rgb;
   } else {
     data.materialEmission = vec3(0.0);
@@ -244,10 +308,13 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
 
   vec2 metallicRoughness;
   if (_hasMap(channelRoughnessMetallicMapLayerIndex)) {
-    metallicRoughness = texture(sampler2DArray(textureArray, textureSampler),
-                                vec3(uv * mat.channelRoughnessMetallicMapScale,
-                                     channelRoughnessMetallicMapLayerIndex))
-                            .bg;
+    metallicRoughness =
+        texture(sampler2DArray(textureArray, textureSampler),
+                vec3(_computeUVByWrapData(
+                         mat.channelRoughnessMetallicMapWrapData, uv) *
+                         mat.channelRoughnessMetallicMapScale,
+                     channelRoughnessMetallicMapLayerIndex))
+            .bg;
 
     data.materialMetalness = metallicRoughness.r + mat.metalness;
     data.materialRoughness = metallicRoughness.g + mat.roughness;
@@ -262,9 +329,10 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   } else {
     if (_hasMap(transmissionMapLayerIndex)) {
       data.materialTransmission =
-          texture(
-              sampler2DArray(textureArray, textureSampler),
-              vec3(uv * mat.transmissionMapScale, transmissionMapLayerIndex))
+          texture(sampler2DArray(textureArray, textureSampler),
+                  vec3(_computeUVByWrapData(mat.transmissionMapWrapData, uv) *
+                           mat.transmissionMapScale,
+                       transmissionMapLayerIndex))
               .r *
           mat.transmission;
     } else {

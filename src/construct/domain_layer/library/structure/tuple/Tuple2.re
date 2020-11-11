@@ -20,3 +20,7 @@ let collectResult = (resultData1, resultData2) => {
 let getFirst = ((x, y)) => x;
 
 let getLast = ((x, y)) => y;
+
+let map = (func, (x, y)) => {
+  (func(x), func(y));
+};

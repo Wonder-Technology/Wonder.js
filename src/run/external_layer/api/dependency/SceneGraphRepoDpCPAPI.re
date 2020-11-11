@@ -41,6 +41,12 @@ let set =
     getAlphaCutoff,
     isSame: isSameBSDFMaterial,
     getId: getBSDFMaterialId,
+    getDiffuseMapImageWrapData,
+    getChannelRoughnessMetallicMapImageWrapData,
+    getEmissionMapImageWrapData,
+    getNormalMapImageWrapData,
+    getTransmissionMapImageWrapData,
+    getSpecularMapImageWrapData,
   }: SceneGraphRepoDpCPType.bsdfMaterialRepo = bsdfMaterialRepo;
   let {
     getVertices,
@@ -132,6 +138,26 @@ let set =
           getSpecularMapImageId(bsdfMaterial)->OptionSt.fromNullable;
         },
         getAlphaCutoff,
+        getDiffuseMapImageWrapData: bsdfMaterial => {
+          getDiffuseMapImageWrapData(bsdfMaterial)->OptionSt.fromNullable;
+        },
+        getChannelRoughnessMetallicMapImageWrapData: bsdfMaterial => {
+          getChannelRoughnessMetallicMapImageWrapData(bsdfMaterial)
+          ->OptionSt.fromNullable;
+        },
+        getEmissionMapImageWrapData: bsdfMaterial => {
+          getEmissionMapImageWrapData(bsdfMaterial)->OptionSt.fromNullable;
+        },
+        getNormalMapImageWrapData: bsdfMaterial => {
+          getNormalMapImageWrapData(bsdfMaterial)->OptionSt.fromNullable;
+        },
+        getTransmissionMapImageWrapData: bsdfMaterial => {
+          getTransmissionMapImageWrapData(bsdfMaterial)
+          ->OptionSt.fromNullable;
+        },
+        getSpecularMapImageWrapData: bsdfMaterial => {
+          getSpecularMapImageWrapData(bsdfMaterial)->OptionSt.fromNullable;
+        },
       },
       geometryRepo: {
         isSame: isSameGeometry,

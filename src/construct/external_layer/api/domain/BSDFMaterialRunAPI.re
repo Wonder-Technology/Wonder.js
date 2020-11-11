@@ -61,3 +61,21 @@ let isSame = (material1, material2) => {
 let getId = material => {
   BSDFMaterialApService.getId(material);
 };
+
+let getDiffuseMapImageWrapData = material =>
+  BSDFMaterialApService.getDiffuseMapImageWrapData(material);
+
+let getChannelRoughnessMetallicMapImageWrapData = material =>
+  BSDFMaterialApService.getChannelRoughnessMetallicMapImageWrapData(material);
+
+let getEmissionMapImageWrapData = material =>
+  BSDFMaterialApService.getEmissionMapImageWrapData(material);
+
+let getNormalMapImageWrapData = material =>
+  BSDFMaterialApService.getNormalMapImageWrapData(material);
+
+let getTransmissionMapImageWrapData = material =>
+  BSDFMaterialApService.getTransmissionMapImageWrapData(material);
+
+let getSpecularMapImageWrapData = material =>
+  BSDFMaterialApService.getSpecularMapImageWrapData(material);

@@ -97,3 +97,40 @@ let getId = material => {
     material->BSDFMaterialEntity.value,
   );
 };
+
+let getDiffuseMapImageWrapData = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().getDiffuseMapImageWrapData(
+    material->BSDFMaterialEntity.value,
+  )
+  ->OptionSt.map(Tuple2.map(WrapVO.create));
+
+let getChannelRoughnessMetallicMapImageWrapData = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().
+    getChannelRoughnessMetallicMapImageWrapData(
+    material->BSDFMaterialEntity.value,
+  )
+  ->OptionSt.map(Tuple2.map(WrapVO.create));
+
+let getEmissionMapImageWrapData = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().getEmissionMapImageWrapData(
+    material->BSDFMaterialEntity.value,
+  )
+  ->OptionSt.map(Tuple2.map(WrapVO.create));
+
+let getNormalMapImageWrapData = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().getNormalMapImageWrapData(
+    material->BSDFMaterialEntity.value,
+  )
+  ->OptionSt.map(Tuple2.map(WrapVO.create));
+
+let getTransmissionMapImageWrapData = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().getTransmissionMapImageWrapData(
+    material->BSDFMaterialEntity.value,
+  )
+  ->OptionSt.map(Tuple2.map(WrapVO.create));
+
+let getSpecularMapImageWrapData = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().getSpecularMapImageWrapData(
+    material->BSDFMaterialEntity.value,
+  )
+  ->OptionSt.map(Tuple2.map(WrapVO.create));

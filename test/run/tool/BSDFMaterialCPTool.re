@@ -20,6 +20,18 @@ let buildRepoWithTwoMaterialsAndMapData = sandbox => {
   let transmission2 = 0.5;
   let ior1 = 1.0;
   let ior2 = 2.0;
+  let diffuseMapImageWrapData1 = (0, 0);
+  let diffuseMapImageWrapData2 = (0, 0);
+  let channelRoughnessMetallicMapImageWrapData1 = (2, 0);
+  let channelRoughnessMetallicMapImageWrapData2 = (2, 0);
+  // let emissionMapImageWrapData1 = (0, 0);
+  let emissionMapImageWrapData2 = (2, 2);
+  let normalMapImageWrapData1 = (1, 0);
+  // let normalMapImageWrapData2 = (1, 1);
+  let transmissionMapImageWrapData1 = (0, 2);
+  let transmissionMapImageWrapData2 = (0, 2);
+  // let specularMapImageWrapData1 = (1, 1);
+  let specularMapImageWrapData2 = (2, 2);
 
   let id1 = "i1";
   let id2 = "i2";
@@ -173,6 +185,57 @@ let buildRepoWithTwoMaterialsAndMapData = sandbox => {
             | material when material == material1 => Js.Nullable.null
             | material when material == material2 => Js.Nullable.return(id7)
             },
+        ~getDiffuseMapImageWrapData=
+          material => {
+            switch (material) {
+            | material when material == material1 =>
+              Js.Nullable.return(diffuseMapImageWrapData1)
+            | material when material == material2 =>
+              Js.Nullable.return(diffuseMapImageWrapData2)
+            }
+          },
+        ~getChannelRoughnessMetallicMapImageWrapData=
+          material => {
+            switch (material) {
+            | material when material == material1 =>
+              Js.Nullable.return(channelRoughnessMetallicMapImageWrapData1)
+            | material when material == material2 =>
+              Js.Nullable.return(channelRoughnessMetallicMapImageWrapData2)
+            }
+          },
+        ~getEmissionMapImageWrapData=
+          material => {
+            switch (material) {
+            | material when material == material1 => Js.Nullable.null
+            | material when material == material2 =>
+              Js.Nullable.return(emissionMapImageWrapData2)
+            }
+          },
+        ~getNormalMapImageWrapData=
+          material => {
+            switch (material) {
+            | material when material == material1 =>
+              Js.Nullable.return(normalMapImageWrapData1)
+            | material when material == material2 => Js.Nullable.null
+            }
+          },
+        ~getTransmissionMapImageWrapData=
+          material => {
+            switch (material) {
+            | material when material == material1 =>
+              Js.Nullable.return(transmissionMapImageWrapData1)
+            | material when material == material2 =>
+              Js.Nullable.return(transmissionMapImageWrapData1)
+            }
+          },
+        ~getSpecularMapImageWrapData=
+          material => {
+            switch (material) {
+            | material when material == material1 => Js.Nullable.null
+            | material when material == material2 =>
+              Js.Nullable.return(specularMapImageWrapData2)
+            }
+          },
         (),
       ),
       ImageRepoDependencyTool.build(
