@@ -44,8 +44,9 @@ void main() {
 
     vec4 origin = uCamera.viewInverse * vec4(offset, 0, 1);
     vec4 target = uCamera.projectionInverse * (vec4(uv.x, uv.y, 1, 1));
-    vec4 direction = uCamera.viewInverse *
-                     vec4(normalize(target.xyz * 1.0 - vec3(offset, 0)), 0);
+    vec4 direction =
+        normalize(uCamera.viewInverse *
+                  vec4(normalize(target.xyz * 1.0 - vec3(offset, 0)), 0));
 
     vec3 radiance = vec3(0.0);
     prd.throughput = vec3(1.0);
