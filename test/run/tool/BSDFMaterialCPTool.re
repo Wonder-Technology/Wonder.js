@@ -4,8 +4,8 @@ let buildRepoWithTwoMaterialsAndMapData = sandbox => {
   let material1 = 2->Obj.magic;
   let material2 = 3->Obj.magic;
 
-  let diffuseColor1 = (1., 0., 0.);
-  let diffuseColor2 = (0., 1., 0.);
+  let diffuseColor1 = (1., 0., 0., 1.);
+  let diffuseColor2 = (0., 1., 0., 0.5);
   let alphaCutoff1 = 0.0;
   let alphaCutoff2 = 0.5;
   let specular1 = 0.5;

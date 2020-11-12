@@ -1281,7 +1281,6 @@ let _ =
               ((geometry1, geometry2), (material1, material2)),
             ) =
               _prepare();
-            // let _ = BSDFMaterialCPTool.setMapData(material1, material2);
             TextureArrayCPTool.setMapBetweenAllUsedImageIdToLayerIndex();
             let (textureArrayLayerWidth, textureArrayLayerHeight) = (8, 8);
             WebGPUDependencyTool.build(
@@ -1301,7 +1300,7 @@ let _ =
                        1.,
                        0.,
                        0.,
-                       0.,
+                       1.,
                        0.5,
                        0.,
                        0.,
@@ -1349,7 +1348,7 @@ let _ =
                        0.5,
                        1.,
                        0.,
-                       0.,
+                       0.5,
                        2.,
                        1.5,
                        1.,

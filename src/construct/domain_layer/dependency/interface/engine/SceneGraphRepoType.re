@@ -28,6 +28,8 @@ type normalMatrix = Js.Typed_array.Float32Array.t;
 
 type color3 = (float, float, float);
 
+type color4 = (float, float, float, float);
+
 type intensity = float;
 
 type direction = (float, float, float);
@@ -44,7 +46,7 @@ type viewWorldToCameraMatrix = Js.Typed_array.Float32Array.t;
 
 type projectionMatrix = Js.Typed_array.Float32Array.t;
 
-type diffuse = color3;
+type diffuse = color4;
 
 type specularColor = color3;
 

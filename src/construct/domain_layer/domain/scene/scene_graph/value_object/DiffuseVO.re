@@ -1,5 +1,5 @@
 type t =
-  | Diffuse(Color3VO.t);
+  | Diffuse(Color4VO.t);
 
 let create = value => Diffuse(value);
 
@@ -8,4 +8,4 @@ let value = color =>
   | Diffuse(value) => value
   };
 
-let getPrimitiveValue = color => color->value->Color3VO.value;
+let getPrimitiveValue = color => color->value->Color4VO.value;

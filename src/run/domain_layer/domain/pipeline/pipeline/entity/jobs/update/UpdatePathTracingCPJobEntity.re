@@ -569,15 +569,15 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
               ),
             ) => {
             ListResult.mergeResults([
-              TypeArrayCPRepoUtils.setFloat3(offset + 0, diffuse, bufferData),
-              TypeArrayCPRepoUtils.setFloat1(
-                offset + 3,
-                alphaCutoff,
-                bufferData,
-              ),
+              TypeArrayCPRepoUtils.setFloat4(offset + 0, diffuse, bufferData),
               TypeArrayCPRepoUtils.setFloat3(
                 offset + 4,
                 specularColor,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat1(
+                offset + 7,
+                alphaCutoff,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat4(

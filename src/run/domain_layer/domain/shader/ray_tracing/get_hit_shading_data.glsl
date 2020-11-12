@@ -25,9 +25,9 @@ struct PointIndexData {
 };
 
 struct BSDFMaterial {
-  vec4 diffuseAndAlphaCutoff;
+  vec4 diffuse;
 
-  vec4 specularColor;
+  vec4 specularColorAndAlphaCutoff;
 
   float metalness;
   float roughness;
@@ -243,7 +243,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
 
   HitShadingData data;
 
-  float alphaCutoff = mat.diffuseAndAlphaCutoff.w;
+  float alphaCutoff = mat.specularColorAndAlphaCutoff.w;
   float alpha = 1.0;
 
   if (_hasMap(diffuseMapLayerIndex)) {
@@ -254,13 +254,13 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
                      diffuseMapLayerIndex));
 
     data.materialDiffuse =
-        convertSRGBToLinear(diffuseMapData.rgb) * mat.diffuseAndAlphaCutoff.xyz;
+        convertSRGBToLinear(diffuseMapData.rgb) * mat.diffuse.rgb;
 
-    alpha = diffuseMapData.a;
+    alpha = diffuseMapData.a * mat.diffuse.a;
   } else {
-    data.materialDiffuse = mat.diffuseAndAlphaCutoff.xyz;
+    data.materialDiffuse = mat.diffuse.rgb;
 
-    alpha = 1.0;
+    alpha = mat.diffuse.a;
   }
 
   if (_hasMap(specularMapLayerIndex)) {
@@ -270,12 +270,12 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
                          mat.specularMapScale,
                      specularMapLayerIndex));
 
-    data.materialSpecularColor =
-        convertSRGBToLinear(specularMap.rgb) * vec3(mat.specularColor);
+    data.materialSpecularColor = convertSRGBToLinear(specularMap.rgb) *
+                                 mat.specularColorAndAlphaCutoff.xyz;
 
     data.materialSpecular = specularMap.a * mat.specular;
   } else {
-    data.materialSpecularColor = vec3(mat.specularColor);
+    data.materialSpecularColor = mat.specularColorAndAlphaCutoff.xyz;
     data.materialSpecular = mat.specular;
   }
 
