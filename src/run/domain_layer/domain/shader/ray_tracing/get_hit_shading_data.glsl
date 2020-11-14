@@ -35,14 +35,14 @@ struct BSDFMaterial {
   float transmission;
 
   float ior;
+  float isDoubleSide;
   float diffuseMapLayerIndex;
   float channelRoughnessMetallicMapLayerIndex;
-  float emissionMapLayerIndex;
 
+  float emissionMapLayerIndex;
   float normalMapLayerIndex;
   float transmissionMapLayerIndex;
   float specularMapLayerIndex;
-  float pad_0;
 
   vec2 diffuseMapScale;
   vec2 channelRoughnessMetallicMapScale;
@@ -199,6 +199,22 @@ vec2 _computeUVByWrapData(vec2 wrapData, vec2 uv) {
   // return uv;
 }
 
+bool _isBackFace(vec3 rayDir, vec3 normal) {
+  return dot(rayDir, normal) <= 0.0;
+}
+
+vec3 _revertNormal(vec3 normal, vec3 rayDir) {
+  return normal * (float(_isBackFace(rayDir, normal))) * 2.0 - 1.0;
+}
+
+vec3 _handleNormalForDoubleSide(vec3 normal, vec3 rayDir, bool isDoubleSide) {
+  if (isDoubleSide) {
+    return _revertNormal(normal, rayDir);
+  }
+
+  return normal;
+}
+
 HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   InstanceData instanceData = _getInstanceData(instanceIndex);
 
@@ -222,16 +238,19 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   const vec3 t0 = v0.tangent.xyz, t1 = v1.tangent.xyz, t2 = v2.tangent.xyz;
 
   const vec2 uv = _blerp(attribs.xy, u0.xy, u1.xy, u2.xy);
-  const vec3 no = _blerp(attribs.xy, n0.xyz, n1.xyz, n2.xyz);
+  vec3 no = _blerp(attribs.xy, n0.xyz, n1.xyz, n2.xyz);
   const vec3 ta = _blerp(attribs.xy, t0.xyz, t1.xyz, t2.xyz);
+
+  BSDFMaterial mat = _getMaterial(materialIndex);
+
+  no = _handleNormalForDoubleSide(no, gl_WorldRayDirectionEXT,
+                                  bool(mat.isDoubleSide));
 
   mat3 normalMatrix = _getNormalMatrix(instanceData);
 
   const vec3 nw = normalize(normalMatrix * no);
   const vec3 tw = normalize(normalMatrix * ta);
   const vec3 bw = cross(nw, tw);
-
-  BSDFMaterial mat = _getMaterial(materialIndex);
 
   uint diffuseMapLayerIndex = uint(mat.diffuseMapLayerIndex);
   uint normalMapLayerIndex = uint(mat.normalMapLayerIndex);

@@ -134,3 +134,8 @@ let getSpecularMapImageWrapData = material =>
     material->BSDFMaterialEntity.value,
   )
   ->OptionSt.map(Tuple2.map(WrapVO.create));
+
+let isDoubleSide = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().isDoubleSide(
+    material->BSDFMaterialEntity.value,
+  );

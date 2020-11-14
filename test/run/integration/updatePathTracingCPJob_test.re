@@ -1272,7 +1272,7 @@ let _ =
           )
         });
         testPromise(
-          "set each render bsdfMaterial's diffuse, alphaCutoff, specular, specularColor, roughness, metalness, transmission, ior, diffuseMapLayerIndex, channelRoughnessMetallicMapLayerIndex, emissionMapLayerIndex, normalMapLayerIndex, transmissionMapLayerIndex, specularMapLayerIndex, diffuseMapScale, channelRoughnessMetallicScaleScale, emissionMapScale, normalMapScale, transmissionMapScale, specularMapScale, diffuseMapImageWrapData, channelRoughnessMetallicMapImageWrapData, emissionMapImageWrapData, normalMapImageWrapData, transmissionMapImageWrapData, specularMapImageWrapData to buffer data",
+          "set each render bsdfMaterial's diffuse, alphaCutoff, specular, specularColor, roughness, metalness, transmission, ior, isDoubleSide, diffuseMapLayerIndex, channelRoughnessMetallicMapLayerIndex, emissionMapLayerIndex, normalMapLayerIndex, transmissionMapLayerIndex, specularMapLayerIndex, diffuseMapScale, channelRoughnessMetallicScaleScale, emissionMapScale, normalMapScale, transmissionMapScale, specularMapScale, diffuseMapImageWrapData, channelRoughnessMetallicMapImageWrapData, emissionMapImageWrapData, normalMapImageWrapData, transmissionMapImageWrapData, specularMapImageWrapData to buffer data",
           () => {
             open ImageRepoType;
             let (
@@ -1310,13 +1310,13 @@ let _ =
                        0.5,
                        0.,
                        1.,
+                       1.,
                        3.,
                        2.,
                        5000.,
                        5.,
                        0.,
                        5000.,
-                       0.,
                        0.25,
                        0.25,
                        0.25,
@@ -1354,13 +1354,13 @@ let _ =
                        1.,
                        0.5,
                        2.,
+                       0.,
                        3.,
                        2.,
                        1.,
                        5000.,
                        0.,
                        4.,
-                       0.,
                        0.25,
                        0.25,
                        0.25,

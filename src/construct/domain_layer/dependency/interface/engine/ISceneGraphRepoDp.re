@@ -74,6 +74,7 @@ type bsdfMaterialRepo = {
   getNormalMapImageWrapData: bsdfMaterial => option(wrapData),
   getTransmissionMapImageWrapData: bsdfMaterial => option(wrapData),
   getSpecularMapImageWrapData: bsdfMaterial => option(wrapData),
+  isDoubleSide: bsdfMaterial => bool,
 };
 
 type geometryRepo = {

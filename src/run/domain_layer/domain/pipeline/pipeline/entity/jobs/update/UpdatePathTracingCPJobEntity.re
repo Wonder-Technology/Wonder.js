@@ -467,6 +467,10 @@ let _getMapImageWrapData = mapImageWrapDataOpt => {
   };
 };
 
+let _convertBoolToFloat = boolValue => {
+  boolValue ? 1.0 : 0.0;
+};
+
 let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
   let bsdfMaterialCount = allRenderBSDFMaterials->ListSt.length;
   let dataCount = 44;
@@ -506,6 +510,7 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
           BSDFMaterialRunAPI.getTransmission(bsdfMaterial)
           ->TransmissionVO.value;
         let ior = BSDFMaterialRunAPI.getIOR(bsdfMaterial)->IORVO.value;
+        let isDoubleSide = BSDFMaterialRunAPI.isDoubleSide(bsdfMaterial);
 
         let diffuseMapImageId =
           BSDFMaterialRunAPI.getDiffuseMapImageId(bsdfMaterial);
@@ -589,15 +594,16 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
                 offset + 12,
                 (
                   ior,
+                  _convertBoolToFloat(isDoubleSide),
                   _getMapLayerIndex(diffuseMapImageId),
                   _getMapLayerIndex(channelRoughnessMetallicMapImageId),
-                  _getMapLayerIndex(emissionMapImageId),
                 ),
                 bufferData,
               ),
-              TypeArrayCPRepoUtils.setFloat3(
+              TypeArrayCPRepoUtils.setFloat4(
                 offset + 16,
                 (
+                  _getMapLayerIndex(emissionMapImageId),
                   _getMapLayerIndex(normalMapImageId),
                   _getMapLayerIndex(transmissionMapImageId),
                   _getMapLayerIndex(specularMapImageId),

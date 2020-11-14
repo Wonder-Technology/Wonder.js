@@ -170,6 +170,8 @@ let buildBSDFMaterialRepo =
       ~getSpecularMapImageWrapData=createEmptyStub(
                                      refJsObjToSandbox(sandbox^),
                                    ),
+      ~isDoubleSide=createEmptyStub(refJsObjToSandbox(sandbox^))
+                    ->SinonTool.returns(false),
       (),
     )
     : bsdfMaterialRepo => {
@@ -195,6 +197,7 @@ let buildBSDFMaterialRepo =
   getNormalMapImageWrapData,
   getTransmissionMapImageWrapData,
   getSpecularMapImageWrapData,
+  isDoubleSide,
 };
 
 let buildGeometryRepo =

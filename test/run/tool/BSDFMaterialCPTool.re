@@ -20,6 +20,8 @@ let buildRepoWithTwoMaterialsAndMapData = sandbox => {
   let transmission2 = 0.5;
   let ior1 = 1.0;
   let ior2 = 2.0;
+  let isDoubleSide1 = true;
+  let isDoubleSide2 = false;
   let diffuseMapImageWrapData1 = (0, 0);
   let diffuseMapImageWrapData2 = (0, 0);
   let channelRoughnessMetallicMapImageWrapData1 = (2, 0);
@@ -147,6 +149,12 @@ let buildRepoWithTwoMaterialsAndMapData = sandbox => {
             switch (material) {
             | material when material == material1 => ior1
             | material when material == material2 => ior2
+            },
+        ~isDoubleSide=
+          material =>
+            switch (material) {
+            | material when material == material1 => isDoubleSide1
+            | material when material == material2 => isDoubleSide2
             },
         ~getDiffuseMapImageId=
           material =>

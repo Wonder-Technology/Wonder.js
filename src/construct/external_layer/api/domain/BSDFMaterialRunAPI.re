@@ -79,3 +79,5 @@ let getTransmissionMapImageWrapData = material =>
 
 let getSpecularMapImageWrapData = material =>
   BSDFMaterialApService.getSpecularMapImageWrapData(material);
+
+let isDoubleSide = material => BSDFMaterialApService.isDoubleSide(material);

@@ -47,6 +47,7 @@ let set =
     getNormalMapImageWrapData,
     getTransmissionMapImageWrapData,
     getSpecularMapImageWrapData,
+    isDoubleSide,
   }: SceneGraphRepoDpCPType.bsdfMaterialRepo = bsdfMaterialRepo;
   let {
     getVertices,
@@ -158,6 +159,7 @@ let set =
         getSpecularMapImageWrapData: bsdfMaterial => {
           getSpecularMapImageWrapData(bsdfMaterial)->OptionSt.fromNullable;
         },
+        isDoubleSide,
       },
       geometryRepo: {
         isSame: isSameGeometry,

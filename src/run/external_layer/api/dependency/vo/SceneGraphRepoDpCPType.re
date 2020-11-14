@@ -57,6 +57,7 @@ type bsdfMaterialRepo = {
   getNormalMapImageWrapData: bsdfMaterial => Js.Nullable.t(wrapData),
   getTransmissionMapImageWrapData: bsdfMaterial => Js.Nullable.t(wrapData),
   getSpecularMapImageWrapData: bsdfMaterial => Js.Nullable.t(wrapData),
+  isDoubleSide: bsdfMaterial => bool,
 };
 
 type geometryRepo = {
