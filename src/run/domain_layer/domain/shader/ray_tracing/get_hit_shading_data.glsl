@@ -199,20 +199,12 @@ vec2 _computeUVByWrapData(vec2 wrapData, vec2 uv) {
   // return uv;
 }
 
-bool _isBackFace(vec3 rayDir, vec3 normal) {
+bool _isFrontFace(vec3 rayDir, vec3 normal) {
   return dot(rayDir, normal) <= 0.0;
 }
 
-vec3 _revertNormal(vec3 normal, vec3 rayDir) {
-  return normal * (float(_isBackFace(rayDir, normal))) * 2.0 - 1.0;
-}
-
-vec3 _handleNormalForDoubleSide(vec3 normal, vec3 rayDir, bool isDoubleSide) {
-  if (isDoubleSide) {
-    return _revertNormal(normal, rayDir);
-  }
-
-  return normal;
+vec3 _revertForBackFace(vec3 normalRelatedData, bool isFrontFace) {
+  return normalRelatedData * (float(isFrontFace) * 2.0 - 1.0);
 }
 
 HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
@@ -241,16 +233,21 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   vec3 no = _blerp(attribs.xy, n0.xyz, n1.xyz, n2.xyz);
   const vec3 ta = _blerp(attribs.xy, t0.xyz, t1.xyz, t2.xyz);
 
-  BSDFMaterial mat = _getMaterial(materialIndex);
-
-  no = _handleNormalForDoubleSide(no, gl_WorldRayDirectionEXT,
-                                  bool(mat.isDoubleSide));
-
   mat3 normalMatrix = _getNormalMatrix(instanceData);
 
-  const vec3 nw = normalize(normalMatrix * no);
-  const vec3 tw = normalize(normalMatrix * ta);
-  const vec3 bw = cross(nw, tw);
+  vec3 nw = normalize(normalMatrix * no);
+  vec3 tw = normalize(normalMatrix * ta);
+  vec3 bw = cross(nw, tw);
+
+  BSDFMaterial mat = _getMaterial(materialIndex);
+
+  if (bool(mat.isDoubleSide)) {
+    bool isFrontFace = _isFrontFace(gl_WorldRayDirectionEXT, nw);
+
+    nw = _revertForBackFace(nw, isFrontFace);
+    tw = _revertForBackFace(tw, isFrontFace);
+    bw = _revertForBackFace(bw, isFrontFace);
+  }
 
   uint diffuseMapLayerIndex = uint(mat.diffuseMapLayerIndex);
   uint normalMapLayerIndex = uint(mat.normalMapLayerIndex);
@@ -299,7 +296,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   }
 
   if (_hasMap(normalMapLayerIndex)) {
-    data.worldNormal =
+    data.worldNormal = normalize(
         mat3(tw, bw, nw) *
         normalize(
             (texture(sampler2DArray(textureArray, textureSampler),
@@ -309,7 +306,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
                  .rgb) *
                 2.0 -
             1.0)
-            .xyz;
+            .xyz);
   } else {
     data.worldNormal = nw;
   }
