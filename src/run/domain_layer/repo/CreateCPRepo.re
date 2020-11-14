@@ -78,6 +78,7 @@ let create = () => {
       layerIndexMap: ImmutableHashMap.createEmpty(),
       textureArrayView: None,
       textureSampler: None,
+      layerSize: (2048, 2048),
     },
   },
   camera: {

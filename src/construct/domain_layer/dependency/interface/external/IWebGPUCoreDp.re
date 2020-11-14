@@ -509,7 +509,6 @@ type gpu = {
 };
 
 type capacity = {
-  getTextureArrayLayerSize: unit => (int, int),
   getTextureArrayMaxLayerCount: unit => int,
 };
 

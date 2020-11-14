@@ -296,7 +296,7 @@ let exec = () => {
       _setMapBetweenImageIdToLayerIndex(allUsedImageIdAndData);
 
       let (textureArrayLayerWidth, textureArrayLayerHeight) =
-        WebGPUCoreRunAPI.getTextureArrayLayerSize();
+        WebGPUCPAPI.getTextureArrayLayerSize();
 
       _getLayerCount(allUsedImageIdAndData)
       ->Result.mapSuccess(layerCount => {

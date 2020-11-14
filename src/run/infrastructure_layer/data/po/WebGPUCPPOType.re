@@ -1,9 +1,14 @@
 type layerIndex = int;
 
+type width = int;
+
+type height = int;
+
 type textureArray = {
   layerIndexMap: ImmutableHashMap.t(ImageRepoType.id, layerIndex),
   textureArrayView: option(IWebGPUCoreDp.textureViewObject),
   textureSampler: option(IWebGPUCoreDp.samplerObject),
+  layerSize: (width, height),
 };
 
 type webgpu = {

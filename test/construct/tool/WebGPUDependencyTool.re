@@ -220,7 +220,6 @@ let build =
                           ),
                         ),
       ~loadGLSL=createEmptyStub(refJsObjToSandbox(sandbox^)),
-      ~getTextureArrayLayerSize=() => (8, 8),
       ~getTextureArrayMaxLayerCount=() => 2048,
       (),
     )
@@ -322,8 +321,7 @@ let build =
     },
     loadGLSL,
     capacity: {
-      getTextureArrayLayerSize,
-      getTextureArrayMaxLayerCount,
+      getTextureArrayMaxLayerCount: getTextureArrayMaxLayerCount,
     },
   };
 };

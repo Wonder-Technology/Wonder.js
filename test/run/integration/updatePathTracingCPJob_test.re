@@ -1283,13 +1283,11 @@ let _ =
               _prepare();
             TextureArrayCPTool.setMapBetweenAllUsedImageIdToLayerIndex();
             let (textureArrayLayerWidth, textureArrayLayerHeight) = (8, 8);
-            WebGPUDependencyTool.build(
-              ~sandbox,
-              ~getTextureArrayLayerSize=
-                () => (textureArrayLayerWidth, textureArrayLayerHeight),
-              (),
-            )
-            ->WebGPUDependencyTool.set;
+            WebGPUCPAPI.setTextureArrayLayerSize(
+              textureArrayLayerWidth,
+              textureArrayLayerHeight,
+            );
+
             DirectorCPTool.initAndUpdate(
               ~handleSuccessFunc=
                 () => {

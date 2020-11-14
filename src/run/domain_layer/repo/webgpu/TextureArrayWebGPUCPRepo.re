@@ -42,3 +42,11 @@ let setTextureSampler = textureSampler => {
     textureSampler: textureSampler->Some,
   });
 };
+
+let getTextureArrayLayerSize = () => {
+  _getTextureArray().layerSize;
+};
+
+let setTextureArrayLayerSize = (width, height) => {
+  _setTextureArray({..._getTextureArray(), layerSize: (width, height)});
+};

@@ -383,11 +383,13 @@ let _ =
         let copy_src = 1;
         let copy_dst = 2;
         let (textureArrayLayerWidth, textureArrayLayerHeight) = (4, 4);
+        WebGPUCPAPI.setTextureArrayLayerSize(
+          textureArrayLayerWidth,
+          textureArrayLayerHeight,
+        );
         WebGPUDependencyTool.build(
           ~sandbox,
           ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
-          ~getTextureArrayLayerSize=
-            () => (textureArrayLayerWidth, textureArrayLayerHeight),
           ~copy_src_bufferUsage=copy_src,
           ~copy_dst_bufferUsage=copy_dst,
           (),
@@ -461,10 +463,12 @@ let _ =
             createEmptyStub(refJsObjToSandbox(sandbox^))
             ->SinonTool.createThreeArgsEmptyStubData;
           let (textureArrayLayerWidth, textureArrayLayerHeight) = (4, 4);
+          WebGPUCPAPI.setTextureArrayLayerSize(
+            textureArrayLayerWidth,
+            textureArrayLayerHeight,
+          );
           WebGPUDependencyTool.build(
             ~sandbox,
-            ~getTextureArrayLayerSize=
-              () => (textureArrayLayerWidth, textureArrayLayerHeight),
             ~setSubUint8Data=setSubUint8DataStubData->SinonTool.getDpFunc,
             (),
           )
@@ -961,6 +965,10 @@ let _ =
             createEmptyStub(refJsObjToSandbox(sandbox^))
             ->SinonTool.createFourArgsEmptyStubData;
           let (textureArrayLayerWidth, textureArrayLayerHeight) = (4, 4);
+          WebGPUCPAPI.setTextureArrayLayerSize(
+            textureArrayLayerWidth,
+            textureArrayLayerHeight,
+          );
           WebGPUDependencyTool.build(
             ~sandbox,
             ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
@@ -969,8 +977,6 @@ let _ =
             ~createTexture=createTextureStubData->SinonTool.getDpFunc,
             ~copyBufferToTexture=
               copyBufferToTextureStubData->SinonTool.getDpFunc,
-            ~getTextureArrayLayerSize=
-              () => (textureArrayLayerWidth, textureArrayLayerHeight),
             (),
           )
           ->WebGPUDependencyTool.set;
