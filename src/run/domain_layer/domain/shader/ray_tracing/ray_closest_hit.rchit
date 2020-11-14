@@ -32,6 +32,16 @@ layout(location = 0) rayPayloadInEXT hitPayload prd;
 
 layout(set = 0, binding = 0) uniform accelerationStructureEXT topLevelAS;
 
+void _fixMaterialData(inout HitShadingData data) {
+  if (data.materialMetalness == 0.0 && data.materialRoughness == 0.0) {
+    data.materialMetalness = 0.001;
+    data.materialRoughness == 0.002;
+  } else {
+    data.materialMetalness = clamp(data.materialMetalness, 0.001, 0.999);
+    data.materialRoughness = clamp(data.materialRoughness, 0.001, 0.999);
+  }
+}
+
 void main() {
   const float tMin = EPSILON;
 
@@ -43,6 +53,8 @@ void main() {
   uint seed = prd.seed;
 
   HitShadingData data = getHitShadingData(gl_InstanceID, gl_PrimitiveID);
+
+  _fixMaterialData(data);
 
   float outsideIOR = 1.0;
 

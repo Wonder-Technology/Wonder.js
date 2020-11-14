@@ -21,24 +21,16 @@ ShadingData buildShadingData(vec3 materialDiffuse, vec3 materialSpecularColor,
 
                              float outsideIOR, float specularLobeProb,
                              float bsdfSpecularLobeProb, bool isFromOutside) {
-  // TODO should pass from pbr material
-  float metalnessIntensity = 1.0;
-  // float roughnessIntensity = 0.1125;
-  float roughnessIntensity = 1.0;
-
   ShadingData shading;
 
   shading.baseColor = materialDiffuse;
   shading.specularColor = materialSpecularColor;
 
-
   shading.emission = materialEmission;
-  shading.metallic =
-      clamp(materialMetalness, 0.001, 0.999) * metalnessIntensity;
   shading.specular = materialSpecular;
 
-  shading.roughness =
-      clamp(materialRoughness, 0.001, 0.999) * roughnessIntensity;
+  shading.metallic = materialMetalness;
+  shading.roughness = materialRoughness;
 
   shading.outsideIOR = outsideIOR;
   shading.ior = materialIOR;
@@ -49,7 +41,6 @@ ShadingData buildShadingData(vec3 materialDiffuse, vec3 materialSpecularColor,
   shading.bsdfSpecularLobeProb = bsdfSpecularLobeProb;
 
   shading.isFromOutside = isFromOutside;
-
 
   return shading;
 }
