@@ -2,6 +2,10 @@ let getDiffuseColor = material => {
   BSDFMaterialApService.getDiffuseColor(material);
 };
 
+let getEmissionColor = material => {
+  BSDFMaterialApService.getEmissionColor(material);
+};
+
 let getSpecular = material => {
   BSDFMaterialApService.getSpecular(material);
 };

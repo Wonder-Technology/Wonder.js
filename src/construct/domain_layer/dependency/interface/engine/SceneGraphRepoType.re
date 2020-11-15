@@ -48,6 +48,8 @@ type projectionMatrix = Js.Typed_array.Float32Array.t;
 
 type diffuse = color4;
 
+type emissionColor = color3;
+
 type specularColor = color3;
 
 type imageId = string;

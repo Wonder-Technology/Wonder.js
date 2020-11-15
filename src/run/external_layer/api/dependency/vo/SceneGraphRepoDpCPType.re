@@ -34,6 +34,7 @@ type perspectiveCameraProjectionRepo = ISceneGraphRepoDp.perspectiveCameraProjec
 
 type bsdfMaterialRepo = {
   getDiffuseColor: bsdfMaterial => diffuse,
+  getEmissionColor: bsdfMaterial => emissionColor,
   getSpecular: bsdfMaterial => float,
   getSpecularColor: bsdfMaterial => specularColor,
   getRoughness: bsdfMaterial => float,

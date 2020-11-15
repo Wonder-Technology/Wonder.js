@@ -5,6 +5,13 @@ let getDiffuseColor = material =>
   ->Color4VO.create
   ->DiffuseVO.create;
 
+let getEmissionColor = material =>
+  DpContainer.unsafeGetBSDFMaterialRepoDp().getEmissionColor(
+    material->BSDFMaterialEntity.value,
+  )
+  ->Color3VO.create
+  ->EmissionColorVO.create;
+
 let getSpecular = material =>
   DpContainer.unsafeGetBSDFMaterialRepoDp().getSpecular(
     material->BSDFMaterialEntity.value,

@@ -6,6 +6,8 @@ let buildRepoWithTwoMaterialsAndMapData = sandbox => {
 
   let diffuseColor1 = (1., 0., 0., 1.);
   let diffuseColor2 = (0., 1., 0., 0.5);
+  let emissionColor1 = (1., 1., 0.);
+  let emissionColor2 = (0., 0.5, 0.5);
   let alphaCutoff1 = 0.0;
   let alphaCutoff2 = 0.5;
   let specular1 = 0.5;
@@ -107,6 +109,12 @@ let buildRepoWithTwoMaterialsAndMapData = sandbox => {
             switch (material) {
             | material when material == material1 => diffuseColor1
             | material when material == material2 => diffuseColor2
+            },
+        ~getEmissionColor=
+          material =>
+            switch (material) {
+            | material when material == material1 => emissionColor1
+            | material when material == material2 => emissionColor2
             },
         ~getAlphaCutoff=
           material =>

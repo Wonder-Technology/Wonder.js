@@ -473,7 +473,7 @@ let _convertBoolToFloat = boolValue => {
 
 let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
   let bsdfMaterialCount = allRenderBSDFMaterials->ListSt.length;
-  let dataCount = 44;
+  let dataCount = 48;
   let bufferData = Float32Array.fromLength(bsdfMaterialCount * dataCount);
   let bufferSize = bufferData->Float32Array.byteLength;
 
@@ -494,6 +494,9 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
         let diffuse =
           BSDFMaterialRunAPI.getDiffuseColor(bsdfMaterial)
           ->DiffuseVO.getPrimitiveValue;
+        let emissionColor =
+          BSDFMaterialRunAPI.getEmissionColor(bsdfMaterial)
+          ->EmissionColorVO.getPrimitiveValue;
         let alphaCutoff =
           BSDFMaterialRunAPI.getAlphaCutoff(bsdfMaterial)
           ->AlphaCutoffVO.value;
@@ -577,21 +580,26 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
               TypeArrayCPRepoUtils.setFloat4(offset + 0, diffuse, bufferData),
               TypeArrayCPRepoUtils.setFloat3(
                 offset + 4,
+                emissionColor,
+                bufferData,
+              ),
+              TypeArrayCPRepoUtils.setFloat3(
+                offset + 8,
                 specularColor,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat1(
-                offset + 7,
+                offset + 11,
                 alphaCutoff,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat4(
-                offset + 8,
+                offset + 12,
                 (metalness, roughness, specular, transmission),
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat4(
-                offset + 12,
+                offset + 16,
                 (
                   ior,
                   _convertBoolToFloat(isDoubleSide),
@@ -601,7 +609,7 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat4(
-                offset + 16,
+                offset + 20,
                 (
                   _getMapLayerIndex(emissionMapImageId),
                   _getMapLayerIndex(normalMapImageId),
@@ -611,68 +619,68 @@ let _buildAndSetBSDFMaterialBufferData = (device, allRenderBSDFMaterials) => {
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
-                offset + 20,
+                offset + 24,
                 diffuseMapScale,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
-                offset + 22,
+                offset + 26,
                 channelRoughnessMetallicMapScale,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
-                offset + 24,
+                offset + 28,
                 emissionMapScale,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
-                offset + 26,
+                offset + 30,
                 normalMapScale,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
-                offset + 28,
+                offset + 32,
                 transmissionMapScale,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
-                offset + 30,
+                offset + 34,
                 specularMapScale,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
-                offset + 32,
+                offset + 36,
                 diffuseMapImageWrapData,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
-                offset + 34,
+                offset + 38,
                 channelRoughnessMetallicMapImageWrapData,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
-                offset + 36,
+                offset + 40,
                 emissionMapImageWrapData,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
-                offset + 38,
+                offset + 42,
                 normalMapImageWrapData,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
-                offset + 40,
+                offset + 44,
                 transmissionMapImageWrapData,
                 bufferData,
               ),
               TypeArrayCPRepoUtils.setFloat2(
-                offset + 42,
+                offset + 46,
                 specularMapImageWrapData,
                 bufferData,
               ),
             ])
           })
-        ->Result.mapSuccess(() => {offset + 44});
+        ->Result.mapSuccess(() => {offset + 48});
       },
     )
   ->Result.mapSuccess(_ => {

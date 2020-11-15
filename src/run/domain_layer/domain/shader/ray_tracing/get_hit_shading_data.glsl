@@ -27,6 +27,9 @@ struct PointIndexData {
 struct BSDFMaterial {
   vec4 diffuse;
 
+  vec3 emissionColor;
+  float pad_0;
+
   vec4 specularColorAndAlphaCutoff;
 
   float metalness;
@@ -314,14 +317,16 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   }
 
   if (_hasMap(emissionMapLayerIndex)) {
-    data.materialEmission =
+    vec4 emissionMapData =
         texture(sampler2DArray(textureArray, textureSampler),
                 vec3(_computeUVByWrapData(mat.emissionMapWrapData, uv) *
                          mat.emissionMapScale,
-                     emissionMapLayerIndex))
-            .rgb;
+                     emissionMapLayerIndex));
+
+    data.materialEmission =
+        convertSRGBToLinear(emissionMapData.rgb) * mat.emissionColor;
   } else {
-    data.materialEmission = vec3(0.0);
+    data.materialEmission = mat.emissionColor;
   }
 
   vec2 metallicRoughness;

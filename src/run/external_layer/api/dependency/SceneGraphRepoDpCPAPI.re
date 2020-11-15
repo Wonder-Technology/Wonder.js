@@ -26,6 +26,7 @@ let set =
   let {getGameObject, getViewWorldToCameraMatrix, getActiveBasicCameraView}: SceneGraphRepoDpCPType.basicCameraViewRepo = basicCameraViewRepo;
   let {
     getDiffuseColor,
+    getEmissionColor,
     getSpecular,
     getSpecularColor,
     getRoughness,
@@ -113,6 +114,7 @@ let set =
         isSame: isSameBSDFMaterial,
         getId: getBSDFMaterialId,
         getDiffuseColor,
+        getEmissionColor,
         getSpecular,
         getSpecularColor,
         getRoughness,
