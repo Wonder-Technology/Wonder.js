@@ -153,6 +153,8 @@ bool _isUseAlphaAsCoverageInsteadOfTransmission(float alphaCutoff) {
   return alphaCutoff > 0.0;
 }
 
+bool _isHandleAlphaCutoff(float alphaCutoff) { return alphaCutoff != 1.0; }
+
 float _computeUVFieldByWrap(float wrap, float uvField) {
   switch (int(wrap)) {
     // ClampToEdge
@@ -340,7 +342,12 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   }
 
   if (_isUseAlphaAsCoverageInsteadOfTransmission(alphaCutoff)) {
-    data.materialTransmission = alpha >= alphaCutoff ? 0.0 : 1.0 - alpha;
+    if (_isHandleAlphaCutoff(alphaCutoff)) {
+      data.materialTransmission = alpha >= alphaCutoff ? 0.0 : 1.0;
+    } else {
+      data.materialTransmission = 1.0 - alpha;
+    }
+
     data.materialIOR = 1.0;
   } else {
     if (_hasMap(transmissionMapLayerIndex)) {
