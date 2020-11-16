@@ -1,3 +1,53 @@
+<a name="2.0.0-alpha.6"></a>
+# [2.0.0-alpha.6](https://github.com/Wonder-Technology/Wonder.js/compare/v2.0.0-alpha.5...v2.0.0-alpha.6) (2020-11-16)
+
+
+### Bug Fixes
+
+* **cloud-picture:** fix "HitShadingData->V is wrong (in get_hit_shading_data.glsl->getHitShadingData) if the camera has a parent and the parent's transform's scale isn't 1.0(e.g. [0.2,0.2,0.2])" ([8dbda60](https://github.com/Wonder-Technology/Wonder.js/commit/8dbda60))
+* **cloud-picture:** fix "if metalness == 1.0, will cause computeSpecularLobeProb(in bsdf.glsl) NaN!" bug ([f894660](https://github.com/Wonder-Technology/Wonder.js/commit/f894660))
+* **cloud-picture:** fix shader->emission ([bb6e975](https://github.com/Wonder-Technology/Wonder.js/commit/bb6e975))
+* **cloud-picture:** uploaded texture in gpu can get alpha data ([a680eb5](https://github.com/Wonder-Technology/Wonder.js/commit/a680eb5))
+
+
+### Features
+
+* update single1_wonder.png ([270dafd](https://github.com/Wonder-Technology/Wonder.js/commit/270dafd))
+* **architecture:** add InitCameraCPJobEntity, InitPassCPJobEntity ([92ee13e](https://github.com/Wonder-Technology/Wonder.js/commit/92ee13e))
+* **architecture:** add InitPathTracingCPJobEntity, InitAccumulationCPJobEntity ([3a410a0](https://github.com/Wonder-Technology/Wonder.js/commit/3a410a0))
+* **architecture:** add shader ([4f1ce41](https://github.com/Wonder-Technology/Wonder.js/commit/4f1ce41))
+* **architecture:** add UpdateCameraCPJobEntity ([b69eb34](https://github.com/Wonder-Technology/Wonder.js/commit/b69eb34))
+* **architecture:** fix baseShaderPath:remove cloud_picture/ ([3a23f3b](https://github.com/Wonder-Technology/Wonder.js/commit/3a23f3b))
+* **architecture:** ISceneGraphRepoDp->geometryRepo add isFlipTexCoordY ([a9df3bb](https://github.com/Wonder-Technology/Wonder.js/commit/a9df3bb))
+* **architecture:** support alpha as coverage ([5932613](https://github.com/Wonder-Technology/Wonder.js/commit/5932613))
+* **cloud-picture:** add WebGPUCPAPI for get/set texture array layer size ([a14a6cd](https://github.com/Wonder-Technology/Wonder.js/commit/a14a6cd))
+* **cloud-picture:** edit get_hit_shading_data.glsl->data.materialDiffuse: now "* diffuseColor" instead of "+ diffuseColor" ([a361f10](https://github.com/Wonder-Technology/Wonder.js/commit/a361f10))
+* **cloud-picture:** fix get_hit_shading_data.glsl->get materialMetalness,materialRoughness: now "*" instead "+" factor ([6bea913](https://github.com/Wonder-Technology/Wonder.js/commit/6bea913))
+* add snapshots ([c01469f](https://github.com/Wonder-Technology/Wonder.js/commit/c01469f))
+* **architecture:** add InitWebGPUCPJobEntity ([e2cb1ad](https://github.com/Wonder-Technology/Wonder.js/commit/e2cb1ad))
+* **architecture:** add UpdateAccumulationCPJobEntity, RenderAccumulationCPJobEntity, RenderPathTracingCPJobEntity, EndRenderCPJobEntity ([8a213f5](https://github.com/Wonder-Technology/Wonder.js/commit/8a213f5))
+* **architecture:** add UpdatePassCPJobEntity ([b5e9eda](https://github.com/Wonder-Technology/Wonder.js/commit/b5e9eda))
+* **architecture:** add UpdatePathTracingCPJobEntity ([c57d30f](https://github.com/Wonder-Technology/Wonder.js/commit/c57d30f))
+* **architecture:** add UpdateTextureArrayCPJobEntity ([6ea4ed7](https://github.com/Wonder-Technology/Wonder.js/commit/6ea4ed7))
+* **architecture:** begin change to "render middleware" ([5b7c3c9](https://github.com/Wonder-Technology/Wonder.js/commit/5b7c3c9))
+* **architecture:** fix BuildAccerlerationContainerDoService ->_convertInstanceTransformDataToContainerTransformMatrix: accept getRotation instead of getEulerAngles ([58a4585](https://github.com/Wonder-Technology/Wonder.js/commit/58a4585))
+* **architecture:** pass run test: only implement start time job ([582acd5](https://github.com/Wonder-Technology/Wonder.js/commit/582acd5))
+* **asset:** add "assemble wdd" draft ([eef6de2](https://github.com/Wonder-Technology/Wonder.js/commit/eef6de2))
+* **asset:** add WDDType ([9b52ea1](https://github.com/Wonder-Technology/Wonder.js/commit/9b52ea1))
+* **bsdf-material:** support double side ([487ede3](https://github.com/Wonder-Technology/Wonder.js/commit/487ede3))
+* **cloud-picture:** fix "double side" glsl ([6b40e53](https://github.com/Wonder-Technology/Wonder.js/commit/6b40e53))
+* **cloud-picture:** fix get_hit_shading_data.glsl->alpha cut ([e9f9ea9](https://github.com/Wonder-Technology/Wonder.js/commit/e9f9ea9))
+* **cloud-picture:** handle texture wrap(clampToEdge,repeat,mirror) for TextureArray ([b3ac205](https://github.com/Wonder-Technology/Wonder.js/commit/b3ac205))
+* **cloud-picture:** ISceneGraphRepoDp->bsdfMaterialRepo->getDiffuseColor now return (r,g,b,a) instead of (r,g,b) ([a7ea7df](https://github.com/Wonder-Technology/Wonder.js/commit/a7ea7df))
+* **cloud-picture:** support transmission shadow ([cba166f](https://github.com/Wonder-Technology/Wonder.js/commit/cba166f))
+
+
+### Performance Improvements
+
+* ListSt->traverse use iterate instead of recursive ([1392e0c](https://github.com/Wonder-Technology/Wonder.js/commit/1392e0c))
+
+
+
 <a name="2.0.0-alpha.5"></a>
 # [2.0.0-alpha.5](https://github.com/Wonder-Technology/Wonder.js/compare/v2.0.0-alpha.4...v2.0.0-alpha.5) (2020-10-18)
 
