@@ -15,10 +15,8 @@ let concatArray = streamArr =>
   | _ =>
     streamArr
     ->ArraySt.sliceFrom(1)
-    ->ArraySt.reduceOneParam(
-        (. stream1, stream2) =>
-          _isFromEventStream(stream1) === true
-            ? stream2->concat(stream1) : stream2->concat(stream1),
-        streamArr[0],
+    ->ArraySt.reduceOneParam(streamArr[0], (. stream1, stream2) =>
+        _isFromEventStream(stream1) === true
+          ? stream2->concat(stream1) : stream2->concat(stream1)
       )
   };

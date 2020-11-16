@@ -29,21 +29,21 @@ let map = (map, func) =>
          _,
        );
 
-let reducei = (map, func, initValue) =>
+let reducei = (map, initValue, func) =>
   map
   ->ArraySt.reduceOneParami(
-      (. previousValue, value, index) =>
-        if (NullUtils.isNotInMap(value)) {
-          previousValue;
-        } else {
-          func(.
-            previousValue->SparseMapType.nullableToNotNullable,
-            value->SparseMapType.nullableToNotNullable,
-            index,
-          )
-          ->SparseMapType.notNullableToNullable;
-        },
       initValue->SparseMapType.notNullableToNullable,
+      (. previousValue, value, index) =>
+      if (NullUtils.isNotInMap(value)) {
+        previousValue;
+      } else {
+        func(.
+          previousValue->SparseMapType.nullableToNotNullable,
+          value->SparseMapType.nullableToNotNullable,
+          index,
+        )
+        ->SparseMapType.notNullableToNullable;
+      }
     )
   ->SparseMapType.nullableToNotNullable;
 
@@ -53,13 +53,11 @@ let getValues = map =>
   |> SparseMapType.arrayNullableToArrayNotNullable;
 
 let getKeys = map =>
-  map->ArraySt.reduceOneParami(
-    (. arr, value, key) =>
-      if (NullUtils.isNotInMap(value)) {
-        arr;
-      } else {
-        arr |> Js.Array.push(key) |> ignore;
-        arr;
-      },
-    [||],
+  map->ArraySt.reduceOneParami([||], (. arr, value, key) =>
+    if (NullUtils.isNotInMap(value)) {
+      arr;
+    } else {
+      arr |> Js.Array.push(key) |> ignore;
+      arr;
+    }
   );

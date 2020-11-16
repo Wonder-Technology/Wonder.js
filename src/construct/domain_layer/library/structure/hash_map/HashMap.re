@@ -29,17 +29,7 @@ let copy =
     (map: Js.Dict.t(Js.Nullable.t('a))): Js.Dict.t(Js.Nullable.t('a)) =>
   map
   ->entries
-  ->ArraySt.reduceOneParam(
-      (. newMap, (key, value)) => newMap->_mutableSet(key, value),
-      _createEmpty(),
+  ->ArraySt.reduceOneParam(_createEmpty(), (. newMap, (key, value)) =>
+      newMap->_mutableSet(key, value)
     )
   ->HashMapType.dictNotNullableToDictNullable;
-
-// let copy = (map: HashMapType.t2('a)): HashMapType.t2('a) =>
-//   map
-//   ->entries
-//   ->ArraySt.reduceOneParam(
-//       (. newMap, (key, value)) => newMap->_mutableSet(key, value),
-//       createEmpty(),
-//     );
-// // ->HashMapType.dictNotNullableToDictNullable;

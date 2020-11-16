@@ -1,8 +1,8 @@
-let reduceOneParam = (arr, func, param) => {
+let reduceOneParam = (arr, param, func) => {
   Belt.Array.reduceU(arr, param, func);
 };
 
-let reduceOneParami = (arr, func, param) => {
+let reduceOneParami = (arr, param, func) => {
   let mutableParam = ref(param);
   for (i in 0 to Js.Array.length(arr) - 1) {
     mutableParam := func(. mutableParam^, Array.unsafe_get(arr, i), i);
