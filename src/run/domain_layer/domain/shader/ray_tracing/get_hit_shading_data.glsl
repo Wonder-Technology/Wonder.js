@@ -396,8 +396,8 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
                      channelRoughnessMetallicMapLayerIndex))
             .bg;
 
-    data.materialMetalness = metallicRoughness.r + mat.metalness;
-    data.materialRoughness = metallicRoughness.g + mat.roughness;
+    data.materialMetalness = metallicRoughness.r * mat.metalness;
+    data.materialRoughness = metallicRoughness.g * mat.roughness;
   } else {
     data.materialMetalness = mat.metalness;
     data.materialRoughness = mat.roughness;
