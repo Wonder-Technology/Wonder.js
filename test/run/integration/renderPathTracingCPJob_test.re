@@ -62,8 +62,7 @@ let _ =
       ->WebGPUDependencyTool.set;
       WebGPURayTracingDependencyTool.build(
         ~sandbox,
-        ~beginRayTracingPass=
-          beginRayTracingPassStubData->SinonTool.getDpFunc,
+        ~beginRayTracingPass=beginRayTracingPassStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPURayTracingDependencyTool.set;
@@ -105,8 +104,7 @@ let _ =
 
       WebGPURayTracingDependencyTool.build(
         ~sandbox,
-        ~beginRayTracingPass=
-          beginRayTracingPassStubData->SinonTool.getDpFunc,
+        ~beginRayTracingPass=beginRayTracingPassStubData->SinonTool.getDpFunc,
         ~setPipeline=setPipelineStubData->SinonTool.getDpFunc,
         (),
       )
@@ -140,8 +138,7 @@ let _ =
 
       WebGPURayTracingDependencyTool.build(
         ~sandbox,
-        ~beginRayTracingPass=
-          beginRayTracingPassStubData->SinonTool.getDpFunc,
+        ~beginRayTracingPass=beginRayTracingPassStubData->SinonTool.getDpFunc,
         ~setBindGroup=setBindGroupStubData->SinonTool.getDpFunc,
         (),
       )
@@ -210,8 +207,7 @@ let _ =
       WebGPURayTracingDependencyTool.build(
         ~sandbox,
         ~traceRays=traceRaysStubData->SinonTool.getDpFunc,
-        ~beginRayTracingPass=
-          beginRayTracingPassStubData->SinonTool.getDpFunc,
+        ~beginRayTracingPass=beginRayTracingPassStubData->SinonTool.getDpFunc,
         (),
       )
       ->WebGPURayTracingDependencyTool.set;
@@ -222,7 +218,7 @@ let _ =
             traceRaysStubData
             ->SinonTool.getStub
             ->expect
-            ->SinonTool.toCalledWith((0, 1, 2, width, height, 1, pass))
+            ->SinonTool.toCalledWith((0, 1, 3, width, height, 1, pass))
           },
         (),
       );
@@ -254,8 +250,7 @@ let _ =
       ->WebGPUDependencyTool.set;
       WebGPURayTracingDependencyTool.build(
         ~sandbox,
-        ~beginRayTracingPass=
-          beginRayTracingPassStubData->SinonTool.getDpFunc,
+        ~beginRayTracingPass=beginRayTracingPassStubData->SinonTool.getDpFunc,
         ~endPass,
         (),
       )

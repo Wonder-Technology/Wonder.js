@@ -97,6 +97,16 @@ let _createShaderBindingTable = device => {
       },
       device,
     );
+  let rayRAhitShaderModule =
+    WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
+      {
+        "code":
+          WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(
+            {j|$(baseShaderPath)/ray_anyhit_shadow.rahit|j},
+          ),
+      },
+      device,
+    );
   let rayMissShaderModule =
     WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
       {
@@ -133,6 +143,11 @@ let _createShaderBindingTable = device => {
             WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
         },
         {
+          "module": rayRAhitShaderModule,
+          "stage":
+            WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_any_hit,
+        },
+        {
           "module": rayMissShaderModule,
           "stage": WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_miss,
         },
@@ -152,8 +167,13 @@ let _createShaderBindingTable = device => {
           ~closestHitIndex=1,
           (),
         ),
-        IWebGPURayTracingDp.group(~type_="general", ~generalIndex=2, ()),
+        IWebGPURayTracingDp.group(
+          ~type_="triangles-hit-group",
+          ~anyHitIndex=2,
+          (),
+        ),
         IWebGPURayTracingDp.group(~type_="general", ~generalIndex=3, ()),
+        IWebGPURayTracingDp.group(~type_="general", ~generalIndex=4, ()),
       |],
     },
     device,

@@ -741,7 +741,8 @@ let _createAndAddRayTracingBindGroup =
             ~visibility=
               WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_generation
               lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                    ray_closest_hit,
+                    ray_closest_hit
+              lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_any_hit,
             ~type_="acceleration-container",
             (),
           ),
@@ -762,49 +763,56 @@ let _createAndAddRayTracingBindGroup =
           IWebGPUCoreDp.layoutBinding(
             ~binding=3,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit
+              lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_any_hit,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=4,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit
+              lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_any_hit,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=5,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit
+              lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_any_hit,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=6,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit
+              lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_any_hit,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=7,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit
+              lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_any_hit,
             ~type_="storage-buffer",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=8,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit
+              lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_any_hit,
             ~type_="sampler",
             (),
           ),
           IWebGPUCoreDp.layoutBinding(
             ~binding=9,
             ~visibility=
-              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit,
+              WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_closest_hit
+              lor WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.ray_any_hit,
             ~type_="sampled-texture",
             ~viewDimension="2d-array",
             (),

@@ -407,7 +407,7 @@ let _ =
             ) =
               _prepare();
             let prefer_fast_trace = 3;
-            let opaque = 5;
+            let allow_any_hit = 5;
             WebGPUDependencyTool.build(
               ~sandbox,
               ~createBuffer=createBufferStubData->SinonTool.getDpFunc,
@@ -419,7 +419,7 @@ let _ =
               ~createRayTracingAccelerationContainer=
                 createRayTracingAccelerationContainerStubData->SinonTool.getDpFunc,
               ~prefer_fast_trace,
-              ~opaque,
+              ~allow_any_hit,
               (),
             )
             ->WebGPURayTracingDependencyTool.set;
@@ -436,7 +436,7 @@ let _ =
                           ~level="bottom",
                           ~geometries=[|
                             {
-                              "usage": opaque,
+                              "usage": allow_any_hit,
                               "type": "triangles",
                               "vertex": {
                                 "buffer": vertexBuffer1,
@@ -464,7 +464,7 @@ let _ =
                           ~level="bottom",
                           ~geometries=[|
                             {
-                              "usage": opaque,
+                              "usage": allow_any_hit,
                               "type": "triangles",
                               "vertex": {
                                 "buffer": vertexBuffer2,
@@ -1461,6 +1461,7 @@ let _ =
           ->SinonTool.createTwoArgsEmptyStubData;
         let ray_generation = 2;
         let ray_closest_hit = 3;
+        let ray_any_hit = 4;
         WebGPUDependencyTool.build(
           ~sandbox,
           ~createBindGroupLayout=
@@ -1474,6 +1475,7 @@ let _ =
             createRayTracingAccelerationContainerStubData->SinonTool.getDpFunc,
           ~ray_generation,
           ~ray_closest_hit,
+          ~ray_any_hit,
           (),
         )
         ->WebGPURayTracingDependencyTool.set;
@@ -1488,7 +1490,7 @@ let _ =
                     "entries": [|
                       IWebGPUCoreDp.layoutBinding(
                         ~binding=0,
-                        ~visibility=ray_generation lor ray_closest_hit,
+                        ~visibility=ray_generation lor ray_closest_hit lor ray_any_hit,
                         ~type_="acceleration-container",
                         (),
                       ),
@@ -1506,47 +1508,43 @@ let _ =
                       ),
                       IWebGPUCoreDp.layoutBinding(
                         ~binding=3,
-                        ~visibility=ray_closest_hit,
+                        ~visibility=ray_closest_hit lor ray_any_hit,
                         ~type_="storage-buffer",
                         (),
                       ),
                       IWebGPUCoreDp.layoutBinding(
                         ~binding=4,
-                        ~visibility=ray_closest_hit,
+                        ~visibility=ray_closest_hit lor ray_any_hit,
                         ~type_="storage-buffer",
                         (),
                       ),
                       IWebGPUCoreDp.layoutBinding(
                         ~binding=5,
-                        ~visibility=ray_closest_hit,
+                        ~visibility=ray_closest_hit lor ray_any_hit,
                         ~type_="storage-buffer",
                         (),
                       ),
                       IWebGPUCoreDp.layoutBinding(
                         ~binding=6,
-                        ~visibility=ray_closest_hit,
+                        ~visibility=ray_closest_hit lor ray_any_hit,
                         ~type_="storage-buffer",
                         (),
                       ),
                       IWebGPUCoreDp.layoutBinding(
                         ~binding=7,
-                        ~visibility=ray_closest_hit,
+                        ~visibility=ray_closest_hit lor ray_any_hit,
                         ~type_="storage-buffer",
                         (),
                       ),
                       IWebGPUCoreDp.layoutBinding(
                         ~binding=8,
-                        ~visibility=
-                          WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                            ray_closest_hit,
+                        ~visibility=ray_closest_hit lor ray_any_hit,
                         ~type_="sampler",
                         (),
                       ),
                       IWebGPUCoreDp.layoutBinding(
                         ~binding=9,
-                        ~visibility=
-                          WebGPURayTracingDpRunAPI.unsafeGet().shaderStage.
-                            ray_closest_hit,
+                        ~visibility=ray_closest_hit lor ray_any_hit,
                         ~type_="sampled-texture",
                         ~viewDimension="2d-array",
                         (),

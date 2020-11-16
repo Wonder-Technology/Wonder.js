@@ -40,7 +40,7 @@ let exec = () => {
       WebGPURayTracingDpRunAPI.unsafeGet().passEncoder.traceRays(
         0, // sbt ray_generation offset
         1, // sbt ray-hit offset
-        2, // sbt ray_miss offset
+        3, // sbt ray_miss offset
         WebGPUCoreDpRunAPI.unsafeGet().window.getWidth(window),
         WebGPUCoreDpRunAPI.unsafeGet().window.getHeight(window),
         1, // query depth dimension

@@ -62,13 +62,15 @@ let _ =
         let buffer = WebGPUDependencyTool.createBufferObject();
         let rayGenGLSL = "a1";
         let rayRChitGLSL = "a2";
-        let rayMissGLSL = "a3";
-        let rayMissShadowGLSL = "a4";
+        let rayRAhitGLSL = "a3";
+        let rayMissGLSL = "a4";
+        let rayMissShadowGLSL = "a5";
         let loadGLSL = createEmptyStub(refJsObjToSandbox(sandbox^));
         loadGLSL->onCall(0, _)->SinonTool.returns(rayGenGLSL);
         loadGLSL->onCall(1, _)->SinonTool.returns(rayRChitGLSL);
-        loadGLSL->onCall(2, _)->SinonTool.returns(rayMissGLSL);
-        loadGLSL->onCall(3, _)->SinonTool.returns(rayMissShadowGLSL);
+        loadGLSL->onCall(2, _)->SinonTool.returns(rayRAhitGLSL);
+        loadGLSL->onCall(3, _)->SinonTool.returns(rayMissGLSL);
+        loadGLSL->onCall(4, _)->SinonTool.returns(rayMissShadowGLSL);
         let createShaderModuleStubData =
           createEmptyStub(refJsObjToSandbox(sandbox^))
           ->SinonTool.createTwoArgsEmptyStubData;
@@ -96,10 +98,14 @@ let _ =
                   createShaderModuleStubData
                   ->SinonTool.getStub
                   ->getCall(2, _)
-                  ->SinonTool.calledWithArg2({"code": rayMissGLSL}, device),
+                  ->SinonTool.calledWithArg2({"code": rayRAhitGLSL}, device),
                   createShaderModuleStubData
                   ->SinonTool.getStub
                   ->getCall(3, _)
+                  ->SinonTool.calledWithArg2({"code": rayMissGLSL}, device),
+                  createShaderModuleStubData
+                  ->SinonTool.getStub
+                  ->getCall(4, _)
                   ->SinonTool.calledWithArg2(
                       {"code": rayMissShadowGLSL},
                       device,
@@ -119,17 +125,25 @@ let _ =
                   loadGLSL
                   ->getCall(2, _)
                   ->SinonTool.calledWith(
-                      {j|$(baseShaderPath)/ray_miss.rmiss|j},
+                      {j|$(baseShaderPath)/ray_anyhit_shadow.rahit|j},
                     ),
                   loadGLSL
                   ->getCall(3, _)
+                  ->SinonTool.calledWith(
+                      {j|$(baseShaderPath)/ray_miss.rmiss|j},
+                    ),
+                  loadGLSL
+                  ->getCall(4, _)
                   ->SinonTool.calledWith(
                       {j|$(baseShaderPath)/ray_miss_shadow.rmiss|j},
                     ),
                 ),
               )
               ->expect
-              == ((true, true, true, true), (true, true, true, true))
+              == (
+                   (true, true, true, true, true),
+                   (true, true, true, true, true),
+                 )
             },
           (),
         );
@@ -140,6 +154,8 @@ let _ =
         let rayGenShaderModule =
           WebGPUDependencyTool.createShaderModuleObject();
         let rayRChitShaderModule =
+          WebGPUDependencyTool.createShaderModuleObject();
+        let rayRAhitShaderModule =
           WebGPUDependencyTool.createShaderModuleObject();
         let rayMissShaderModule =
           WebGPUDependencyTool.createShaderModuleObject();
@@ -155,9 +171,12 @@ let _ =
         ->SinonTool.returns(rayRChitShaderModule);
         createShaderModuleStubData
         ->onCall(2, _)
-        ->SinonTool.returns(rayMissShaderModule);
+        ->SinonTool.returns(rayRAhitShaderModule);
         createShaderModuleStubData
         ->onCall(3, _)
+        ->SinonTool.returns(rayMissShaderModule);
+        createShaderModuleStubData
+        ->onCall(4, _)
         ->SinonTool.returns(rayMissShadowShaderModule);
         let createShaderModuleStubData =
           createShaderModuleStubData->SinonTool.createTwoArgsEmptyStubData;
@@ -166,7 +185,8 @@ let _ =
           ->SinonTool.createTwoArgsEmptyStubData;
         let ray_generation = 0;
         let ray_closest_hit = 1;
-        let ray_miss = 2;
+        let ray_any_hit = 2;
+        let ray_miss = 3;
         WebGPUDependencyTool.build(
           ~sandbox,
           ~createShaderModule=createShaderModuleStubData->SinonTool.getDpFunc,
@@ -177,6 +197,7 @@ let _ =
           ~sandbox,
           ~ray_generation,
           ~ray_closest_hit,
+          ~ray_any_hit,
           ~ray_miss,
           ~createRayTracingShaderBindingTable=
             createRayTracingShaderBindingTableStubData->SinonTool.getDpFunc,
@@ -198,6 +219,7 @@ let _ =
                         "module": rayRChitShaderModule,
                         "stage": ray_closest_hit,
                       },
+                      {"module": rayRAhitShaderModule, "stage": ray_any_hit},
                       {"module": rayMissShaderModule, "stage": ray_miss},
                       {
                         "module": rayMissShadowShaderModule,
@@ -216,13 +238,18 @@ let _ =
                         (),
                       ),
                       IWebGPURayTracingDp.group(
-                        ~type_="general",
-                        ~generalIndex=2,
+                        ~type_="triangles-hit-group",
+                        ~anyHitIndex=2,
                         (),
                       ),
                       IWebGPURayTracingDp.group(
                         ~type_="general",
                         ~generalIndex=3,
+                        (),
+                      ),
+                      IWebGPURayTracingDp.group(
+                        ~type_="general",
+                        ~generalIndex=4,
                         (),
                       ),
                     |],

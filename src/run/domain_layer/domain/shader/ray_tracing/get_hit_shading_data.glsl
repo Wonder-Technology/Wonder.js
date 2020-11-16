@@ -212,11 +212,11 @@ vec3 _revertForBackFace(vec3 normalRelatedData, bool isFrontFace) {
   return normalRelatedData * (float(isFrontFace) * 2.0 - 1.0);
 }
 
-HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
+void getVertices(in uint instanceIndex, in uint primitiveIndex, out Vertex v0,
+                 out Vertex v1, out Vertex v2) {
   InstanceData instanceData = _getInstanceData(instanceIndex);
 
   uint geometryIndex = uint(instanceData.geometryIndex);
-  uint materialIndex = uint(instanceData.materialIndex);
 
   PointIndexData pointIndexData = _getPointIndexData(geometryIndex);
   uint vertexIndex = _getVertexIndex(pointIndexData);
@@ -226,15 +226,88 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   ivec3 ind = _getTriangleIndices(faceIndex, primitiveIndex);
 
   // Vertex of the triangle
-  Vertex v0 = _getTriangleVertex(vertexIndex, ind.x);
-  Vertex v1 = _getTriangleVertex(vertexIndex, ind.y);
-  Vertex v2 = _getTriangleVertex(vertexIndex, ind.z);
+  v0 = _getTriangleVertex(vertexIndex, ind.x);
+  v1 = _getTriangleVertex(vertexIndex, ind.y);
+  v2 = _getTriangleVertex(vertexIndex, ind.z);
+}
 
+vec2 getUV(in Vertex v0, in Vertex v1, in Vertex v2) {
   const vec2 u0 = v0.texCoord.xy, u1 = v1.texCoord.xy, u2 = v2.texCoord.xy;
+
+  return _blerp(attribs.xy, u0.xy, u1.xy, u2.xy);
+}
+
+void getMaterialDiffuseAndTransmissionAndIOR(in BSDFMaterial mat, in vec2 uv,
+                                             out vec3 materialDiffuse,
+                                             out float materialTransmission,
+                                             out float materialIOR) {
+  float alphaCutoff = mat.specularColorAndAlphaCutoff.w;
+  float alpha = 1.0;
+
+  uint diffuseMapLayerIndex = uint(mat.diffuseMapLayerIndex);
+  uint transmissionMapLayerIndex = uint(mat.transmissionMapLayerIndex);
+
+  if (_hasMap(diffuseMapLayerIndex)) {
+    vec4 diffuseMapData =
+        texture(sampler2DArray(textureArray, textureSampler),
+                vec3(_computeUVByWrapData(mat.diffuseMapWrapData, uv) *
+                         mat.diffuseMapScale,
+                     diffuseMapLayerIndex));
+
+    materialDiffuse = convertSRGBToLinear(diffuseMapData.rgb) * mat.diffuse.rgb;
+
+    alpha = diffuseMapData.a * mat.diffuse.a;
+  } else {
+    materialDiffuse = mat.diffuse.rgb;
+
+    alpha = mat.diffuse.a;
+  }
+
+  if (_isUseAlphaAsCoverageInsteadOfTransmission(alphaCutoff)) {
+    if (_isHandleAlphaCutoff(alphaCutoff)) {
+      materialTransmission = alpha >= alphaCutoff ? 0.0 : 1.0;
+    } else {
+      materialTransmission = 1.0 - alpha;
+    }
+
+    materialIOR = 1.0;
+  } else {
+    if (_hasMap(transmissionMapLayerIndex)) {
+      materialTransmission =
+          texture(sampler2DArray(textureArray, textureSampler),
+                  vec3(_computeUVByWrapData(mat.transmissionMapWrapData, uv) *
+                           mat.transmissionMapScale,
+                       transmissionMapLayerIndex))
+              .r *
+          mat.transmission;
+    } else {
+      materialTransmission = mat.transmission;
+    }
+
+    materialIOR = mat.ior;
+  }
+}
+
+BSDFMaterial getMaterial(uint instanceIndex) {
+  InstanceData instanceData = _getInstanceData(instanceIndex);
+
+  uint materialIndex = uint(instanceData.materialIndex);
+
+  return _getMaterial(materialIndex);
+}
+
+HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
+  InstanceData instanceData = _getInstanceData(instanceIndex);
+
+  Vertex v0;
+  Vertex v1;
+  Vertex v2;
+
+  getVertices(instanceIndex, primitiveIndex, v0, v1, v2);
+
   const vec3 n0 = v0.normal.xyz, n1 = v1.normal.xyz, n2 = v2.normal.xyz;
   const vec3 t0 = v0.tangent.xyz, t1 = v1.tangent.xyz, t2 = v2.tangent.xyz;
 
-  const vec2 uv = _blerp(attribs.xy, u0.xy, u1.xy, u2.xy);
   vec3 no = _blerp(attribs.xy, n0.xyz, n1.xyz, n2.xyz);
   const vec3 ta = _blerp(attribs.xy, t0.xyz, t1.xyz, t2.xyz);
 
@@ -244,7 +317,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   vec3 tw = normalize(normalMatrix * ta);
   vec3 bw = cross(nw, tw);
 
-  BSDFMaterial mat = _getMaterial(materialIndex);
+  BSDFMaterial mat = getMaterial(instanceIndex);
 
   if (bool(mat.isDoubleSide)) {
     bool isFrontFace = _isFrontFace(gl_WorldRayDirectionEXT, nw);
@@ -254,35 +327,19 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
     bw = _revertForBackFace(bw, isFrontFace);
   }
 
-  uint diffuseMapLayerIndex = uint(mat.diffuseMapLayerIndex);
   uint normalMapLayerIndex = uint(mat.normalMapLayerIndex);
   uint emissionMapLayerIndex = uint(mat.emissionMapLayerIndex);
   uint channelRoughnessMetallicMapLayerIndex =
       uint(mat.channelRoughnessMetallicMapLayerIndex);
-  uint transmissionMapLayerIndex = uint(mat.transmissionMapLayerIndex);
   uint specularMapLayerIndex = uint(mat.specularMapLayerIndex);
 
   HitShadingData data;
 
-  float alphaCutoff = mat.specularColorAndAlphaCutoff.w;
-  float alpha = 1.0;
+  vec2 uv = getUV(v0, v1, v2);
 
-  if (_hasMap(diffuseMapLayerIndex)) {
-    vec4 diffuseMapData =
-        texture(sampler2DArray(textureArray, textureSampler),
-                vec3(_computeUVByWrapData(mat.diffuseMapWrapData, uv) *
-                         mat.diffuseMapScale,
-                     diffuseMapLayerIndex));
-
-    data.materialDiffuse =
-        convertSRGBToLinear(diffuseMapData.rgb) * mat.diffuse.rgb;
-
-    alpha = diffuseMapData.a * mat.diffuse.a;
-  } else {
-    data.materialDiffuse = mat.diffuse.rgb;
-
-    alpha = mat.diffuse.a;
-  }
+  getMaterialDiffuseAndTransmissionAndIOR(mat, uv, data.materialDiffuse,
+                                          data.materialTransmission,
+                                          data.materialIOR);
 
   if (_hasMap(specularMapLayerIndex)) {
     vec4 specularMap =
@@ -346,30 +403,6 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
     data.materialRoughness = mat.roughness;
   }
 
-  if (_isUseAlphaAsCoverageInsteadOfTransmission(alphaCutoff)) {
-    if (_isHandleAlphaCutoff(alphaCutoff)) {
-      data.materialTransmission = alpha >= alphaCutoff ? 0.0 : 1.0;
-    } else {
-      data.materialTransmission = 1.0 - alpha;
-    }
-
-    data.materialIOR = 1.0;
-  } else {
-    if (_hasMap(transmissionMapLayerIndex)) {
-      data.materialTransmission =
-          texture(sampler2DArray(textureArray, textureSampler),
-                  vec3(_computeUVByWrapData(mat.transmissionMapWrapData, uv) *
-                           mat.transmissionMapScale,
-                       transmissionMapLayerIndex))
-              .r *
-          mat.transmission;
-    } else {
-      data.materialTransmission = mat.transmission;
-    }
-
-    data.materialIOR = mat.ior;
-  }
-
   const vec3 p0 = v0.position.xyz, p1 = v1.position.xyz, p2 = v2.position.xyz;
 
   vec3 localPos = _blerp(attribs.xy, p0.xyz, p1.xyz, p2.xyz);
@@ -377,7 +410,6 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   data.worldPosition =
       vec3(_getModelMatrix(instanceData) * vec4(localPos, 1.0));
 
-  // data.V = normalize(uCamera.cameraPosition.xyz - data.worldPosition);
   data.V = getVFromRayDirection(gl_WorldRayDirectionEXT);
 
   return data;

@@ -59,7 +59,7 @@ let _buildSceneGeometryContainers = device => {
                     "usage":
                       DpContainer.unsafeGetWebGPURayTracingDp().
                         accelerationGeometryUsage.
-                        opaque,
+                        allow_any_hit,
                     "type": "triangles",
                     "vertex": {
                       "buffer": geometryVertexBuffer->RayTracingBufferVO.value,
