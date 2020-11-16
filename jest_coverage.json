@@ -19,6 +19,7 @@
         "<rootDir>/lib/js/src/.+/data/",
         "<rootDir>/lib/js/src/.+/interface/",
         "<rootDir>/lib/js/src/.+/type/",
+        "<rootDir>/lib/js/src/run/.+/api/",
         "<rootDir>/lib/js/src/run/cloud_picture/domain_layer/domain/shader/",
         "<rootDir>/lib/js/src/.+/ParseDataPipelineDoService.*",
         "<rootDir>/lib/js/src/.+/PointsGeometryCPRepo.*"
@@ -32,8 +33,8 @@
         "global": {
             "lines": 95,
             "statements": 95,
-            "branches": 75,
-            "functions": 94
+            "branches": 80,
+            "functions": 92
         }
     }
 }

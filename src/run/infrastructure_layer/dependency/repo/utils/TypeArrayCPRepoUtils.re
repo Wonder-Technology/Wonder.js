@@ -14,8 +14,8 @@ let _checkNotExceedBound = (getLengthFunc, index, typeArray) =>
     )
   );
 
-let getFloat16TypeArray = (index: int, typeArray: Float32Array.t) =>
-  Float32Array.subarray(~start=index, ~end_=index + 16, typeArray);
+// let getFloat16TypeArray = (index: int, typeArray: Float32Array.t) =>
+//   Float32Array.subarray(~start=index, ~end_=index + 16, typeArray);
 
 let setMat3Data = (index, mat3, typeArray: Float32Array.t) => {
   Contract.requireCheck(
@@ -150,41 +150,41 @@ let setFloat4 = (index: int, (x, y, z, w), typeArray: Float32Array.t) => {
     });
 };
 
-let setFloat16 =
-    (
-      index: int,
-      (a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15),
-      typeArray: Float32Array.t,
-    ) => {
-  Contract.requireCheck(
-    () => {
-      Contract.(
-        Operators.(
-          _checkNotExceedBound(Float32Array.length, index + 15, typeArray)
-        )
-      )
-    },
-    ConfigDpRunAPI.unsafeGet().getIsDebug(),
-  )
-  ->Result.mapSuccess(() => {
-      Float32Array.unsafe_set(typeArray, index + 0, a0);
-      Float32Array.unsafe_set(typeArray, index + 1, a1);
-      Float32Array.unsafe_set(typeArray, index + 2, a2);
-      Float32Array.unsafe_set(typeArray, index + 3, a3);
-      Float32Array.unsafe_set(typeArray, index + 4, a4);
-      Float32Array.unsafe_set(typeArray, index + 5, a5);
-      Float32Array.unsafe_set(typeArray, index + 6, a6);
-      Float32Array.unsafe_set(typeArray, index + 7, a7);
-      Float32Array.unsafe_set(typeArray, index + 8, a8);
-      Float32Array.unsafe_set(typeArray, index + 9, a9);
-      Float32Array.unsafe_set(typeArray, index + 10, a10);
-      Float32Array.unsafe_set(typeArray, index + 11, a11);
-      Float32Array.unsafe_set(typeArray, index + 12, a12);
-      Float32Array.unsafe_set(typeArray, index + 13, a13);
-      Float32Array.unsafe_set(typeArray, index + 14, a14);
-      Float32Array.unsafe_set(typeArray, index + 15, a15);
-    });
-};
+// let setFloat16 =
+//     (
+//       index: int,
+//       (a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15),
+//       typeArray: Float32Array.t,
+//     ) => {
+//   Contract.requireCheck(
+//     () => {
+//       Contract.(
+//         Operators.(
+//           _checkNotExceedBound(Float32Array.length, index + 15, typeArray)
+//         )
+//       )
+//     },
+//     ConfigDpRunAPI.unsafeGet().getIsDebug(),
+//   )
+//   ->Result.mapSuccess(() => {
+//       Float32Array.unsafe_set(typeArray, index + 0, a0);
+//       Float32Array.unsafe_set(typeArray, index + 1, a1);
+//       Float32Array.unsafe_set(typeArray, index + 2, a2);
+//       Float32Array.unsafe_set(typeArray, index + 3, a3);
+//       Float32Array.unsafe_set(typeArray, index + 4, a4);
+//       Float32Array.unsafe_set(typeArray, index + 5, a5);
+//       Float32Array.unsafe_set(typeArray, index + 6, a6);
+//       Float32Array.unsafe_set(typeArray, index + 7, a7);
+//       Float32Array.unsafe_set(typeArray, index + 8, a8);
+//       Float32Array.unsafe_set(typeArray, index + 9, a9);
+//       Float32Array.unsafe_set(typeArray, index + 10, a10);
+//       Float32Array.unsafe_set(typeArray, index + 11, a11);
+//       Float32Array.unsafe_set(typeArray, index + 12, a12);
+//       Float32Array.unsafe_set(typeArray, index + 13, a13);
+//       Float32Array.unsafe_set(typeArray, index + 14, a14);
+//       Float32Array.unsafe_set(typeArray, index + 15, a15);
+//     });
+// };
 
 let setFloat16WithFloat32Array = (index, target: Float32Array.t, typeArray) => {
   Contract.requireCheck(
@@ -206,35 +206,35 @@ let setUint8_1WithoutCheck = (index: int, value: int, typeArray: Uint8Array.t) =
   Uint8Array.unsafe_set(typeArray, index, value);
 };
 
-let setUint8_1 = (index: int, value: int, typeArray: Uint8Array.t) => {
-  Contract.requireCheck(
-    () => {
-      Contract.(
-        Operators.(
-          _checkNotExceedBound(Uint8Array.length, index + 0, typeArray)
-        )
-      )
-    },
-    ConfigDpRunAPI.unsafeGet().getIsDebug(),
-  )
-  ->Result.mapSuccess(() => {Uint8Array.unsafe_set(typeArray, index, value)});
-};
+// let setUint8_1 = (index: int, value: int, typeArray: Uint8Array.t) => {
+//   Contract.requireCheck(
+//     () => {
+//       Contract.(
+//         Operators.(
+//           _checkNotExceedBound(Uint8Array.length, index + 0, typeArray)
+//         )
+//       )
+//     },
+//     ConfigDpRunAPI.unsafeGet().getIsDebug(),
+//   )
+//   ->Result.mapSuccess(() => {Uint8Array.unsafe_set(typeArray, index, value)});
+// };
 
-let setUint16_1 = (index: int, value: int, typeArray: Uint16Array.t) => {
-  Contract.requireCheck(
-    () => {
-      Contract.(
-        Operators.(
-          _checkNotExceedBound(Uint16Array.length, index + 0, typeArray)
-        )
-      )
-    },
-    ConfigDpRunAPI.unsafeGet().getIsDebug(),
-  )
-  ->Result.mapSuccess(() => {
-      Uint16Array.unsafe_set(typeArray, index, value)
-    });
-};
+// let setUint16_1 = (index: int, value: int, typeArray: Uint16Array.t) => {
+//   Contract.requireCheck(
+//     () => {
+//       Contract.(
+//         Operators.(
+//           _checkNotExceedBound(Uint16Array.length, index + 0, typeArray)
+//         )
+//       )
+//     },
+//     ConfigDpRunAPI.unsafeGet().getIsDebug(),
+//   )
+//   ->Result.mapSuccess(() => {
+//       Uint16Array.unsafe_set(typeArray, index, value)
+//     });
+// };
 
 let setUint32_1 = (index: int, value: int, typeArray: Uint32Array.t) => {
   Contract.requireCheck(
@@ -252,122 +252,122 @@ let setUint32_1 = (index: int, value: int, typeArray: Uint32Array.t) => {
     });
 };
 
-let getFloat3Tuple = (index: int, typeArray: Float32Array.t) => (
-  Float32Array.unsafe_get(typeArray, index),
-  Float32Array.unsafe_get(typeArray, index + 1),
-  Float32Array.unsafe_get(typeArray, index + 2),
-);
+// let getFloat3Tuple = (index: int, typeArray: Float32Array.t) => (
+//   Float32Array.unsafe_get(typeArray, index),
+//   Float32Array.unsafe_get(typeArray, index + 1),
+//   Float32Array.unsafe_get(typeArray, index + 2),
+// );
 
-let getFloat4Tuple = (index: int, typeArray: Float32Array.t) => (
-  Float32Array.unsafe_get(typeArray, index),
-  Float32Array.unsafe_get(typeArray, index + 1),
-  Float32Array.unsafe_get(typeArray, index + 2),
-  Float32Array.unsafe_get(typeArray, index + 3),
-);
+// let getFloat4Tuple = (index: int, typeArray: Float32Array.t) => (
+//   Float32Array.unsafe_get(typeArray, index),
+//   Float32Array.unsafe_get(typeArray, index + 1),
+//   Float32Array.unsafe_get(typeArray, index + 2),
+//   Float32Array.unsafe_get(typeArray, index + 3),
+// );
 
 let getUint8_1 = (index: int, typeArray: Uint8Array.t) =>
   Uint8Array.unsafe_get(typeArray, index);
 
-let getUint16_1 = (index: int, typeArray: Uint16Array.t) =>
-  Uint16Array.unsafe_get(typeArray, index);
+// let getUint16_1 = (index: int, typeArray: Uint16Array.t) =>
+//   Uint16Array.unsafe_get(typeArray, index);
 
-let getUint32_1 = (index: int, typeArray: Uint32Array.t) =>
-  Uint32Array.unsafe_get(typeArray, index);
+// let getUint32_1 = (index: int, typeArray: Uint32Array.t) =>
+//   Uint32Array.unsafe_get(typeArray, index);
 
-let getFloat1 = (index: int, typeArray: Float32Array.t) =>
-  Float32Array.unsafe_get(typeArray, index);
+// let getFloat1 = (index: int, typeArray: Float32Array.t) =>
+//   Float32Array.unsafe_get(typeArray, index);
 
-let getFloat32Array =
-    (typeArray: Float32Array.t, startIndex: int, endIndex: int) =>
-  Float32Array.slice(~start=startIndex, ~end_=endIndex, typeArray);
+// let getFloat32Array =
+//     (typeArray: Float32Array.t, startIndex: int, endIndex: int) =>
+//   Float32Array.slice(~start=startIndex, ~end_=endIndex, typeArray);
 
-let getUint32Array =
-    (typeArray: Uint32Array.t, startIndex: int, endIndex: int) =>
-  Uint32Array.slice(~start=startIndex, ~end_=endIndex, typeArray);
+// let getUint32Array =
+//     (typeArray: Uint32Array.t, startIndex: int, endIndex: int) =>
+//   Uint32Array.slice(~start=startIndex, ~end_=endIndex, typeArray);
 
-let _setFloat32ArrayWithFloat32Array =
-  (. targetTypeArr, sourceTypeArr, typeArrIndex, i) =>
-    Js.Typed_array.Float32Array.unsafe_set(
-      targetTypeArr,
-      typeArrIndex,
-      Js.Typed_array.Float32Array.unsafe_get(sourceTypeArr, i),
-    );
+// let _setFloat32ArrayWithFloat32Array =
+//   (. targetTypeArr, sourceTypeArr, typeArrIndex, i) =>
+//     Js.Typed_array.Float32Array.unsafe_set(
+//       targetTypeArr,
+//       typeArrIndex,
+//       Js.Typed_array.Float32Array.unsafe_get(sourceTypeArr, i),
+//     );
 
-let _setUint32ArrayWithUint32Array =
-  (. targetTypeArr, sourceTypeArr, typeArrIndex, i) =>
-    Js.Typed_array.Uint32Array.unsafe_set(
-      targetTypeArr,
-      typeArrIndex,
-      Js.Typed_array.Uint32Array.unsafe_get(sourceTypeArr, i),
-    );
+// let _setUint32ArrayWithUint32Array =
+//   (. targetTypeArr, sourceTypeArr, typeArrIndex, i) =>
+//     Js.Typed_array.Uint32Array.unsafe_set(
+//       targetTypeArr,
+//       typeArrIndex,
+//       Js.Typed_array.Uint32Array.unsafe_get(sourceTypeArr, i),
+//     );
 
-let _fillTypeArrayWithTypeArr =
-    (
-      (targetTypeArr, targetStartIndex),
-      (sourceTypeArr, sourceStartIndex),
-      endIndex,
-      _setTypeArrWithTypeArr,
-    ) => {
-  let typeArrIndex = ref(targetStartIndex);
-  for (i in sourceStartIndex to endIndex - 1) {
-    _setTypeArrWithTypeArr(. targetTypeArr, sourceTypeArr, typeArrIndex^, i);
-    typeArrIndex := succ(typeArrIndex^);
-  };
-  typeArrIndex^;
-};
+// let _fillTypeArrayWithTypeArr =
+//     (
+//       (targetTypeArr, targetStartIndex),
+//       (sourceTypeArr, sourceStartIndex),
+//       endIndex,
+//       _setTypeArrWithTypeArr,
+//     ) => {
+//   let typeArrIndex = ref(targetStartIndex);
+//   for (i in sourceStartIndex to endIndex - 1) {
+//     _setTypeArrWithTypeArr(. targetTypeArr, sourceTypeArr, typeArrIndex^, i);
+//     typeArrIndex := succ(typeArrIndex^);
+//   };
+//   typeArrIndex^;
+// };
 
-let fillUint32ArrayWithUint32Array = (targetData, sourceData, endIndex) =>
-  _fillTypeArrayWithTypeArr(
-    targetData,
-    sourceData,
-    endIndex,
-    _setUint32ArrayWithUint32Array,
-  );
+// let fillUint32ArrayWithUint32Array = (targetData, sourceData, endIndex) =>
+//   _fillTypeArrayWithTypeArr(
+//     targetData,
+//     sourceData,
+//     endIndex,
+//     _setUint32ArrayWithUint32Array,
+//   );
 
-let fillFloat32ArrayWithFloat32Array = (targetData, sourceData, endIndex) =>
-  _fillTypeArrayWithTypeArr(
-    targetData,
-    sourceData,
-    endIndex,
-    _setFloat32ArrayWithFloat32Array,
-  );
+// let fillFloat32ArrayWithFloat32Array = (targetData, sourceData, endIndex) =>
+//   _fillTypeArrayWithTypeArr(
+//     targetData,
+//     sourceData,
+//     endIndex,
+//     _setFloat32ArrayWithFloat32Array,
+//   );
 
-let fillFloat32ArrayWithOffset =
-    (targetTypeArr, sourceTypeArr: Float32Array.t, offset) => {
-  Contract.requireCheck(
-    () => {
-      open Contract;
-      open Operators;
-      test(
-        Log.buildAssertMessage(
-          ~expect={j|offset should >= 0|j},
-          ~actual={j|is $offset|j},
-        ),
-        () =>
-        offset >= 0
-      );
-      let sourceTypeArrLen = Float32Array.length(sourceTypeArr);
-      let targetTypeArrLen = Float32Array.length(targetTypeArr);
-      test(
-        Log.buildAssertMessage(
-          ~expect=
-            {j|sourceTypeArr.length:$sourceTypeArrLen + offset:$offset <= targetTypeArr.length:$targetTypeArrLen|j},
-          ~actual={j|not|j},
-        ),
-        () =>
-        sourceTypeArrLen + offset <= targetTypeArrLen
-      );
-    },
-    ConfigDpRunAPI.unsafeGet().getIsDebug(),
-  )
-  ->Result.mapSuccess(() => {
-      targetTypeArr->Float32Array.setArrayOffset(
-                       Obj.magic(sourceTypeArr),
-                       offset,
-                       _,
-                     )
-    });
-};
+// let fillFloat32ArrayWithOffset =
+//     (targetTypeArr, sourceTypeArr: Float32Array.t, offset) => {
+//   Contract.requireCheck(
+//     () => {
+//       open Contract;
+//       open Operators;
+//       test(
+//         Log.buildAssertMessage(
+//           ~expect={j|offset should >= 0|j},
+//           ~actual={j|is $offset|j},
+//         ),
+//         () =>
+//         offset >= 0
+//       );
+//       let sourceTypeArrLen = Float32Array.length(sourceTypeArr);
+//       let targetTypeArrLen = Float32Array.length(targetTypeArr);
+//       test(
+//         Log.buildAssertMessage(
+//           ~expect=
+//             {j|sourceTypeArr.length:$sourceTypeArrLen + offset:$offset <= targetTypeArr.length:$targetTypeArrLen|j},
+//           ~actual={j|not|j},
+//         ),
+//         () =>
+//         sourceTypeArrLen + offset <= targetTypeArrLen
+//       );
+//     },
+//     ConfigDpRunAPI.unsafeGet().getIsDebug(),
+//   )
+//   ->Result.mapSuccess(() => {
+//       targetTypeArr->Float32Array.setArrayOffset(
+//                        Obj.magic(sourceTypeArr),
+//                        offset,
+//                        _,
+//                      )
+//     });
+// };
 
 let fillUint32ArrayWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
   Contract.requireCheck(
@@ -405,6 +405,6 @@ let fillUint32ArrayWithOffset = (targetTypeArr, sourceTypeArr, offset) => {
     });
 };
 
-let reduceFloat32Array = (typeArr, acc, f) => {
-  Float32Array.reduce(f, acc, typeArr);
-};
+// let reduceFloat32Array = (typeArr, acc, f) => {
+//   Float32Array.reduce(f, acc, typeArr);
+// };
