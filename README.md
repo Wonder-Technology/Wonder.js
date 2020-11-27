@@ -12,41 +12,16 @@ MIT Licence
 
 # Snapshot
 
-- render by three.js
-
-[![single1_three](./snapshot/single1_three.png)](https://github.com/Wonder-Technology/Wonder.js)
-
-
-- render by wonder
 
 [![single1_wonder](./snapshot/single1_wonder.png)](https://github.com/Wonder-Technology/Wonder.js)
 
 
 
-- render by three.js
-
-[![room1_three](./snapshot/room1_three.png)](https://github.com/Wonder-Technology/Wonder.js)
-
-
-- render by wonder
-
 [![room1_wonder](./snapshot/room1_wonder.png)](https://github.com/Wonder-Technology/Wonder.js)
 
-- render by three.js
-
-[![outdoor1_three](./snapshot/outdoor1_three.png)](https://github.com/Wonder-Technology/Wonder.js)
-
-
-- render by wonder
 
 [![outdoor1_wonder](./snapshot/outdoor1_wonder.png)](https://github.com/Wonder-Technology/Wonder.js)
 
-- render by three.js
-
-[![outdoor2_three](./snapshot/outdoor2_three.png)](https://github.com/Wonder-Technology/Wonder.js)
-
-
-- render by wonder
 
 [![outdoor2_wonder](./snapshot/outdoor2_wonder.png)](https://github.com/Wonder-Technology/Wonder.js)
 
