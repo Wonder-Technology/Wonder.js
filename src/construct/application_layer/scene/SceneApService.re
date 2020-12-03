@@ -1,4 +1,0 @@
-
-let getSceneGameObject = () => {
-  SceneRoot.getSceneGameObject();
-};
