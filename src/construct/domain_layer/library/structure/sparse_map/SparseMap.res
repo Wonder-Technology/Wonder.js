@@ -42,14 +42,14 @@ let reducei = (map, initValue, func) =>
 
 let getValues = map =>
   map
-  |> Js.Array.filter(value => NullUtils.isInMap(value))
-  |> SparseMapType.arrayNullableToArrayNotNullable
+  -> Js.Array.filter(value => NullUtils.isInMap(value), _)
+  -> SparseMapType.arrayNullableToArrayNotNullable
 
 let getKeys = map => map->ArraySt.reduceOneParami([], (. arr, value, key) =>
     if NullUtils.isNotInMap(value) {
       arr
     } else {
-      arr |> Js.Array.push(key) |> ignore
+      arr -> Js.Array.push(key, _) -> ignore
       arr
     }
   )

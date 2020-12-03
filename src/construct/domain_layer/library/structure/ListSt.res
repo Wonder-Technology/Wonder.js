@@ -103,8 +103,8 @@ let removeDuplicateItemsU = (list, buildKeyFunc) => {
     let key = buildKeyFunc(item)
     switch MutableHashMap.get(map, key) {
     | None =>
-      Js.Array.push(item, resultArr) |> ignore
-      MutableHashMap.set(map, key, item) |> ignore
+      Js.Array.push(item, resultArr) -> ignore
+      MutableHashMap.set(map, key, item) -> ignore
     | Some(_) => ()
     }
   }

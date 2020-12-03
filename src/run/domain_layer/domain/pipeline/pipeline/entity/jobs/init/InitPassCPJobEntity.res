@@ -16,7 +16,7 @@ let _buildPixelBufferData = (window, device) => {
 
 let _buildCommonBufferData = device => {
   let bufferData = Uint32Array.fromLength(2)
-  let bufferSize = bufferData |> Uint32Array.byteLength
+  let bufferSize = bufferData -> Uint32Array.byteLength
 
   let buffer = UniformBufferVO.createFromDevice(~device, ~bufferSize)
 

@@ -4,7 +4,7 @@ let create = () => JobEntity.create("init_camera")
 
 let _buildCameraBufferData = device => {
   let bufferData = Float32Array.fromLength(16 + 16 + 2)
-  let bufferSize = bufferData |> Float32Array.byteLength
+  let bufferSize = bufferData -> Float32Array.byteLength
 
   let buffer = UniformBufferVO.createFromDevice(~device, ~bufferSize)
 
