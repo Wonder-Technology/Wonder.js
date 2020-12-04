@@ -1,3 +1,1 @@
-let load = LoadWebGPUDoService.load
-
-let getTextureArrayLayerSize = TextureArrayWebGPUDoService.getTextureArrayLayerSize
+let load = LoadWebGPUDoService.load 
