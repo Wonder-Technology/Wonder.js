@@ -19,6 +19,8 @@
         "<rootDir>/lib/js/src/.+/data/",
         "<rootDir>/lib/js/src/.+/interface/",
         "<rootDir>/lib/js/src/.+/type/",
+        "<rootDir>/lib/js/src/.+/api/",
+        "<rootDir>/lib/js/src/.+/domain_layer/domain/shader/",
         "<rootDir>/lib/js/src/.+/ParseDataPipelineDoService.*",
         "<rootDir>/lib/js/src/.+/PointsGeometryCPRepo.*"
     ],

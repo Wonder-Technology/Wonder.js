@@ -25,7 +25,6 @@
     "@babel/core": "^7.10.4",
     "@babel/preset-env": "^7.10.4",
     "babel-jest": "^26.1.0",
-    "bs-platform": "^8.3.3",
     "cz-conventional-changelog": "^3.2.0",
     "cz-customizable": "^5.2.0",
     "jest": "^25.2.3",
@@ -33,6 +32,7 @@
     "wonder-bs-sinon": "^0.1.9"
   },
   "dependencies": {
-    "wonder-bs-most": "^0.0.3"
+    "wonder-bs-most": "^0.0.3",
+    "bs-platform": "^8.3.3"
   }
 }
