@@ -109,7 +109,7 @@ let _createAndSetBindGroup = (
 }
 
 let _createAndSetPipeline = (device, swapChainFormat, bindGroupLayout) => {
-  let baseShaderPath = "src/domain_layer/domain/shader/accumulation"
+  let baseShaderPath = "src/construct/rtx_path_tracer/domain_layer/domain/shader/accumulation"
 
   let vertexShaderModule = WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
     {
