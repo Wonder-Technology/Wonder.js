@@ -17,7 +17,7 @@ bool shadowRayVisibility(accelerationStructureEXT topLevelAS, uint missIndex,
               tMin,       // ray min range
               rayDir,     // ray direction
               tMax,       // ray max range
-              1           // payload (location = 1)
+              1           // payload
   );
   return isShadowed;
 }

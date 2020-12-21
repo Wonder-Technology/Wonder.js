@@ -35,6 +35,15 @@ vec3 convertSRGBToLinear(vec3 specificColorDefinedInShader) {
   return pow(specificColorDefinedInShader, vec3(2.2));
 }
 
-vec3 getVFromRayDirection(vec3 rayDirection) { return -rayDirection; }
+vec3 getWoFromRayDirection(vec3 rayDirection) { return -rayDirection; }
 
-vec3 getRayDirectionFromV(vec3 V) { return -V; }
+vec3 getRayDirectionFromWo(vec3 wo) { return -wo; }
+
+bool isSpectrumBlack(vec3 s) { return s == vec3(0.0); }
+
+float powerHeuristic(int nf, float fPdf, int ng, float gPdf) {
+  float f = nf * fPdf;
+  float g = ng * gPdf;
+
+  return (f * f) / (f * f + g * g);
+}

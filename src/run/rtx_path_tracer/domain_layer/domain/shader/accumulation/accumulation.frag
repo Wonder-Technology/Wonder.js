@@ -1,6 +1,8 @@
 #version 450
 #pragma shader_stage(fragment)
 
+#include "../common/define_debug.glsl"
+
 #include "../common/utils.glsl"
 
 layout(location = 0) in vec2 uv;
@@ -37,5 +39,9 @@ void main() {
 
   finalColor = vec4(gammaCorrection(vec3(finalColor)), finalColor.w);
 
+#if DEBUG
+  outColor = pixelBuffer.pixels[pixelIndex];
+#else
   outColor = finalColor;
+#endif
 }

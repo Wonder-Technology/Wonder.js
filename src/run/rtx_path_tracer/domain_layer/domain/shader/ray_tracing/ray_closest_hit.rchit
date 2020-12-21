@@ -5,16 +5,26 @@
 #extension GL_EXT_scalar_block_layout : enable
 #pragma shader_stage(closest)
 
+#include "../common/define_debug.glsl"
+
 #include "define.glsl"
 
 #include "../common/utils.glsl"
 
-#include "get_hit_shading_data.glsl"
+#include "get_surfaceInteraction_data.glsl"
 
 #include "shading_data.glsl"
 
 #include "random.glsl"
 #include "raycommon.glsl"
+
+#include "point_light.glsl"
+
+#include "direction_light.glsl"
+
+#include "rect_light.glsl"
+
+#include "area_light.glsl"
 
 #include "light.glsl"
 
@@ -22,17 +32,20 @@
 
 layout(location = 1) rayPayloadEXT bool isShadowed;
 
+layout(location = 2)
+    rayPayloadEXT SampleBSDFWithMISHitPayload sampleBSDFWithMISHitPayload;
+
 #include "shadow_ray.glsl"
 
 #include "ggx_direct.glsl"
 
 #include "ggx_indirect.glsl"
 
-layout(location = 0) rayPayloadInEXT hitPayload prd;
+layout(location = 0) rayPayloadInEXT HitPayload path;
 
 layout(set = 0, binding = 0) uniform accelerationStructureEXT topLevelAS;
 
-void _fixMaterialData(inout HitShadingData data) {
+void _fixMaterialData(inout SurfaceInteraction data) {
   if (data.materialMetalness == 0.0 && data.materialRoughness == 0.0) {
     data.materialMetalness = 0.001;
     data.materialRoughness == 0.002;
@@ -42,17 +55,44 @@ void _fixMaterialData(inout HitShadingData data) {
   }
 }
 
+vec3 _getLe(SurfaceInteraction data, vec3 wo) {
+  if (data.materialLightTypeOfAreaLight == NONE) {
+    return data.materialEmission;
+  }
+
+  return getAreaLightLe(data.materialLightTypeOfAreaLight,
+                        data.materialLightIndexOfAreaLight, data.worldNormal,
+                        wo);
+}
+
 void main() {
   const float tMin = EPSILON;
 
   float t = gl_HitTEXT;
 
+  path.t = t;
+
   vec3 radiance = vec3(0.0);
-  vec3 throughput = prd.throughput;
+  vec3 throughput = path.throughput;
 
-  uint seed = prd.seed;
+  uint seed = path.seed;
 
-  HitShadingData data = getHitShadingData(gl_InstanceID, gl_PrimitiveID);
+  SurfaceInteraction data =
+      getSurfaceInteractionData(gl_InstanceID, gl_PrimitiveID);
+
+  vec3 wo = getWoFromRayDirection(gl_WorldRayDirectionEXT);
+
+  if (path.bounceIndex == 0 || path.isSpecularBounce) {
+    radiance += _getLe(data, wo) * throughput;
+  }
+
+  if (isEmittedInstance(data.materialEmission,
+                        data.materialLightTypeOfAreaLight)) {
+    path.radiance = radiance;
+    path.isTerminate = true;
+
+    return;
+  }
 
   _fixMaterialData(data);
 
@@ -64,36 +104,42 @@ void main() {
       data.materialTransmission, data.materialIOR, outsideIOR,
       computeSpecularLobeProb(data.materialDiffuse, data.materialSpecular,
                               data.materialMetalness),
-      computeBSDFSpecularLobeProb(getRayDirectionFromV(data.V),
-                                  data.worldNormal, outsideIOR,
-                                  data.materialIOR),
-      isFromOutside(getRayDirectionFromV(data.V), data.worldNormal));
-
-  radiance += shading.emission * throughput;
+      computeBSDFSpecularLobeProb(getRayDirectionFromWo(wo), data.worldNormal,
+                                  outsideIOR, data.materialIOR),
+      isFromOutside(getRayDirectionFromWo(wo), data.worldNormal));
 
   radiance +=
-      computeDirectLight(seed, EPSILON, tMin, data.worldPosition,
-                         data.worldNormal, data.V, shading, topLevelAS) *
+      computeDirectLight(seed, EPSILON, tMin, path.tMax, data.worldPosition,
+                         data.worldNormal, wo, shading, topLevelAS) *
       throughput;
 
   bool isBRDFDir;
-  vec3 bsdfDir =
-      sample_(seed, data.V, data.worldNormal, EPSILON, shading, isBRDFDir);
+  vec3 wi = sample_(seed, wo, data.worldNormal, EPSILON, shading, isBRDFDir);
 
-  computeIndirectLight(seed, EPSILON, data.V, bsdfDir, data.worldNormal,
-                       shading, isBRDFDir, throughput, t);
+  float NdotWi;
+  float pdf;
+  vec3 f = computeIndirectLight(seed, EPSILON, wo, wi, data.worldNormal,
+                                shading, isBRDFDir, throughput, t, NdotWi, pdf);
+
+  if (isSpectrumBlack(f) || pdf == 0.0) {
+    path.radiance = radiance;
+    path.seed = seed;
+    path.isTerminate = true;
+    return;
+  }
+
+  throughput *= f * NdotWi / pdf;
 
   vec3 bias =
       0.001 * (shading.isFromOutside ? data.worldNormal : -data.worldNormal);
   if (isBRDFDir) {
-    prd.bias = bias;
+    path.bias = bias;
   } else {
-    prd.bias = -bias;
+    path.bias = -bias;
   }
 
-  prd.radiance = radiance;
-  prd.t = t;
-  prd.scatterDirection = bsdfDir;
-  prd.throughput = throughput;
-  prd.seed = seed;
+  path.radiance = radiance;
+  path.scatterDirection = wi;
+  path.throughput = throughput;
+  path.seed = seed;
 }

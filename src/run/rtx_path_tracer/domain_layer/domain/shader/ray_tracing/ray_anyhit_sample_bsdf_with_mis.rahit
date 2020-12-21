@@ -9,6 +9,9 @@
 
 #include "get_surfaceInteraction_data.glsl"
 
+layout(location = 2)
+    rayPayloadInEXT SampleBSDFWithMISHitPayload sampleBSDFWithMISHitPayload;
+
 void main() {
   uint instanceIndex = gl_InstanceID;
   uint primitiveIndex = gl_PrimitiveID;
@@ -26,6 +29,9 @@ void main() {
   if (isTransmission(mat, uv)) {
     ignoreIntersectionEXT();
   } else {
+    sampleBSDFWithMISHitPayload.lightIndex = mat.materialLightIndexOfAreaLight;
+    sampleBSDFWithMISHitPayload.lightType = mat.materialLightTypeOfAreaLight;
+
     terminateRayEXT();
   }
 }

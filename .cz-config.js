@@ -24,7 +24,7 @@ module.exports = {
       { name: "pipeline" },
       { name: "asset" },
       { name: "dependency" },
-      { name: "cloud-picture" },
+      { name: "rtx-path-tracer" },
       { name: "webgpu" },
   ],
 

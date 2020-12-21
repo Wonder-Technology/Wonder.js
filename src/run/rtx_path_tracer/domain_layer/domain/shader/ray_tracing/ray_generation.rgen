@@ -5,10 +5,11 @@
 #pragma shader_stage(raygen)
 
 #include "../common/camera.glsl"
+#include "../common/define_debug.glsl"
 #include "random.glsl"
 #include "raycommon.glsl"
 
-layout(location = 0) rayPayloadEXT hitPayload prd;
+layout(location = 0) rayPayloadEXT HitPayload path;
 
 layout(set = 0, binding = 0) uniform accelerationStructureEXT topLevelAS;
 layout(std140, set = 0, binding = 1) buffer PixelBuffer { vec4 pixels[]; }
@@ -26,20 +27,36 @@ void main() {
   const ivec2 ipos = ivec2(gl_LaunchIDEXT.xy);
   const ivec2 resolution = ivec2(gl_LaunchSizeEXT.xy);
 
+#if DEBUG
+  path.debugColor = vec4(1.0, 1.0, 1.0, 1.0);
+
+  const uint sampleCount = 1;
+
+  const uint maxBounceCount = DEBUG_BOUNCE_COUNT;
+  const uint minBounceCount = DEBUG_BOUNCE_COUNT;
+#else
   const uint sampleCount = pushC.sampleCount;
+
+  const uint maxBounceCount = 5;
+  const uint minBounceCount = 2;
+#endif
+
   const uint totalSampleCount = pushC.totalSampleCount;
 
-  const uint bounceCount = 5;
+  // https://www.w3.org/WAI/GL/wiki/Relative_luminance
+  const vec3 luminance = vec3(0.2126, 0.7152, 0.0722);
 
-  prd.seed = tea(tea(ipos.x, ipos.y), totalSampleCount);
+  path.seed = tea(tea(ipos.x, ipos.y), totalSampleCount);
+
+  path.tMax = uCamera.far;
 
   const uint cullMask = 0xFF;
   vec3 pixelColor = vec3(0.0);
 
   for (uint ss = 0; ss < sampleCount; ++ss) {
-    // const vec2 offset = 1.0 * randInUnitDisk(prd.seed);
+    // const vec2 offset = 1.0 * randInUnitDisk(path.seed);
     const vec2 offset = vec2(0.0);
-    const vec2 pixel = vec2(ipos.x + rnd(prd.seed), ipos.y + rnd(prd.seed));
+    const vec2 pixel = vec2(ipos.x + rnd(path.seed), ipos.y + rnd(path.seed));
     const vec2 uv = (pixel / gl_LaunchSizeEXT.xy) * 2.0 - 1.0;
 
     vec4 origin = uCamera.viewInverse * vec4(offset, 0, 1);
@@ -49,25 +66,38 @@ void main() {
                   vec4(normalize(target.xyz * 1.0 - vec3(offset, 0)), 0));
 
     vec3 radiance = vec3(0.0);
-    prd.throughput = vec3(1.0);
+    path.throughput = vec3(1.0);
+    path.isSpecularBounce = false;
+    path.isTerminate = false;
 
-    for (uint bb = 0; bb < bounceCount; ++bb) {
-      prd.bias = vec3(0.0);
-      prd.t = -1.0;
+    for (uint bounceIndex = 0; bounceIndex < maxBounceCount; ++bounceIndex) {
+      path.bias = vec3(0.0);
+      path.t = -1.0;
+
+      path.bounceIndex = bounceIndex;
 
       traceRayEXT(topLevelAS, gl_RayFlagsOpaqueEXT, cullMask, 0, 0, 0,
-                  origin.xyz, uCamera.near, direction.xyz, uCamera.far, 0);
+                  origin.xyz, uCamera.near, direction.xyz, path.tMax, 0);
 
-      radiance += prd.radiance;
+      radiance += path.radiance;
 
-      // abort if the ray is either invalid or didn't hit anything
-      const float t = prd.t;
-      if (t < 0.0)
+      const float t = path.t;
+      if (t < 0.0 || path.isTerminate) {
         break;
+      }
 
       // move the ray based on the bsdf direction
-      origin = origin + t * direction + vec4(prd.bias, 0.0);
-      direction = vec4(prd.scatterDirection, 0.0);
+      origin = origin + t * direction + vec4(path.bias, 0.0);
+      direction = vec4(path.scatterDirection, 0.0);
+
+      // Russian Roulette sampling
+      if (bounceIndex >= minBounceCount - 1) {
+        float p_rr = 1.0 - dot(path.throughput, luminance);
+        if (rnd(path.seed) < p_rr) {
+          break;
+        }
+        path.throughput /= 1.0 - p_rr;
+      }
     };
 
     pixelColor += radiance;
@@ -77,5 +107,9 @@ void main() {
 
   const uint pixelIndex = ipos.y * resolution.x + ipos.x;
 
+#if DEBUG
+  pixelBuffer.pixels[pixelIndex] = path.debugColor;
+#else
   pixelBuffer.pixels[pixelIndex] = vec4(pixelColor, 1.0);
+#endif
 }

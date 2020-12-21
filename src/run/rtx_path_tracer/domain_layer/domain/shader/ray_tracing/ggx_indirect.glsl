@@ -1,30 +1,28 @@
 
-void computeIndirectLight(inout uint seed, in float epsilon, in vec3 V,
-                          in vec3 bsdfDir,
+vec3 computeIndirectLight(inout uint seed, in float epsilon, in vec3 wo,
+                          in vec3 wi,
 
                           in vec3 worldNormal, in ShadingData shading,
                           in bool isBRDFDir, inout vec3 throughput,
-                          inout float t) {
+                          inout float t, out float NdotWi, out float pdf) {
   const vec3 N = worldNormal;
-  const vec3 L = bsdfDir;
+  const vec3 L = wi;
 
   float NdotH;
   float VdotH;
   float NDF;
 
   vec3 f = isBRDFDir
-               ? evalBRDF(seed, L, N, V, epsilon, shading, NdotH, VdotH, NDF)
-               : evalBTDF(seed, L, N, V, epsilon, shading, NdotH, VdotH, NDF);
+               ? evalBRDF(seed, L, N, wo, epsilon, shading, NdotH, VdotH, NDF)
+               : evalBTDF(seed, L, N, wo, epsilon, shading, NdotH, VdotH, NDF);
 
-  const float NdotL = abs(dot(L, N));
+  // const float NdotL = abs(dot(L, N));
+  const float NdotL = dot(L, N);
 
-  const float pdf = isBRDFDir
-                        ? computeBRDFPdf(NdotL, NdotH, VdotH, NDF, shading)
-                        : computeBTDFPdf(NdotL, NdotH, VdotH, NDF, shading);
+  NdotWi = NdotL;
 
-  if (pdf > 0.0) {
-    throughput *= f / pdf;
-  } else {
-    t = -1.0;
-  }
+  pdf = isBRDFDir ? computeBRDFPdf(NdotL, NdotH, VdotH, NDF, shading)
+                  : computeBTDFPdf(NdotL, NdotH, VdotH, NDF, shading);
+
+  return f;
 }

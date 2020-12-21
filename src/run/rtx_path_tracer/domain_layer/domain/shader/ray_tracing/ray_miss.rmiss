@@ -2,17 +2,26 @@
 #extension GL_EXT_ray_tracing : enable
 #pragma shader_stage(miss)
 
+#include "define.glsl"
+
 #include "shading_data.glsl"
 
 #include "raycommon.glsl"
 
-layout(location = 0) rayPayloadInEXT hitPayload prd;
+#include "infinite_area_light.glsl"
+
+layout(location = 0) rayPayloadInEXT HitPayload path;
 
 void main() {
-  prd.throughput = vec3(0);
-  // prd.radiance = vec3(0.15);
-  prd.radiance = vec3(0.00);
-  // prd.radiance = vec3(0.2);
-  // prd.radiance = vec3(0.4);
-  prd.t = -1.0;
+  path.t = -1.0;
+  path.isTerminate = true;
+
+  if (path.bounceIndex == 0 || path.isSpecularBounce) {
+    path.radiance =
+        getInfiniteAreaLightLe(gl_WorldRayDirectionEXT) * path.throughput;
+    path.throughput = vec3(0.0);
+  } else {
+    path.throughput = vec3(0.0);
+    path.radiance = vec3(0.0);
+  }
 }

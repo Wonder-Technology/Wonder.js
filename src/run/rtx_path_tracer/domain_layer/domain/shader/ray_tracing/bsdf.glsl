@@ -116,19 +116,19 @@ vec3 _evalSpecularBRDF(float NdotL, float NdotV, float D, float G, vec3 F,
   return nominator / denominator;
 }
 
-vec3 _affectByLight(float NdotL, vec3 radiance) {
-  /*!
-  c.rgb = s.Albedo * _LightColor0.rgb * (NdotL * atten);
-  NdotL multiplied with atten(here not has atten!) is where the light is
-  applied. If either of these are zero, the whole expression becomes zero and
-  the colour of the pixel turns black. So if the surface is no longer at an
-  angle where it receives light, or if the light source is too far away, is when
-  that will happen. (refer to
-  https://www.undefinedgames.org/2019/05/10/shaders-and-lighting-models/)
-  */
+// vec3 _affectByLight(float NdotL, vec3 radiance) {
+//   /*!
+//   c.rgb = s.Albedo * _LightColor0.rgb * (NdotL * atten);
+//   NdotL multiplied with atten(here not has atten!) is where the light is
+//   applied. If either of these are zero, the whole expression becomes zero and
+//   the colour of the pixel turns black. So if the surface is no longer at an
+//   angle where it receives light, or if the light source is too far away, is when
+//   that will happen. (refer to
+//   https://www.undefinedgames.org/2019/05/10/shaders-and-lighting-models/)
+//   */
 
-  return radiance * NdotL;
-}
+//   return radiance * NdotL;
+// }
 
 vec3 _evalRefractionBTDF(float NdotV, float NdotL, float VdotH, float LdotH,
                          float D, float G, vec3 F, float epsilon, float etaIn,
@@ -252,7 +252,8 @@ vec3 evalBRDF(inout uint seed, in vec3 L, in vec3 N, in vec3 V,
                         dielectricSpecularF0, F) +
        _evalSpecularBRDF(NdotL, NdotV, NDF, G, F, epsilon));
 
-  return _affectByLight(NdotL, radiance);
+  // return _affectByLight(NdotL, radiance);
+  return radiance;
 }
 
 vec3 evalBTDF(inout uint seed, in vec3 L, in vec3 N, in vec3 V,
@@ -297,7 +298,8 @@ vec3 evalBTDF(inout uint seed, in vec3 L, in vec3 N, in vec3 V,
        (isEvalSpecularBRDF ? _evalSpecularBRDF(NdotL, NdotV, NDF, G, F, epsilon)
                            : vec3(0.0)));
 
-  return _affectByLight(NdotL, radiance);
+  // return _affectByLight(NdotL, radiance);
+  return radiance;
 }
 
 vec3 _cosineSampleHemisphere(float u1, float u2) {
@@ -314,7 +316,7 @@ vec3 _sampleSpecularBRDF(float r1, float r2, vec3 N, vec3 V, float roughness,
                          float epsilon) {
   vec3 halfVec = _importanceSampleGGX(r1, r2, N, roughness, epsilon);
 
-  return reflect(getRayDirectionFromV(V), halfVec);
+  return reflect(getRayDirectionFromWo(V), halfVec);
 }
 
 vec3 _sampleRefractionBTDF(float r1, float r2, vec3 N, vec3 V,
@@ -324,7 +326,7 @@ vec3 _sampleRefractionBTDF(float r1, float r2, vec3 N, vec3 V,
 
   float eta = isFromOutside ? outsideIOR / ior : ior / outsideIOR;
 
-  return normalize(refract(getRayDirectionFromV(V), halfVec, eta));
+  return normalize(refract(getRayDirectionFromWo(V), halfVec, eta));
 }
 
 vec3 sample_(inout uint seed, in vec3 V, in vec3 N, in float epsilon,

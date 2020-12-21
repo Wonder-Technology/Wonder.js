@@ -1,5 +1,5 @@
 
-struct InstanceData {
+struct Instance {
   float geometryIndex;
   float materialIndex;
   float pad_0;
@@ -17,9 +17,9 @@ struct Vertex {
 };
 
 /*!
-extract this to avoid duplicate instead of move this into InstanceData.
+extract this to avoid duplicate instead of move this into Instance.
 */
-struct PointIndexData {
+struct PointIndex {
   uint vertexIndex;
   uint faceIndex;
 };
@@ -64,15 +64,18 @@ struct BSDFMaterial {
 
   vec2 transmissionMapWrapData;
   vec2 specularMapWrapData;
+
+  // lightTypeOfAreaLight, lightIndexOfAreaLight
+  TODO vec2 areaLightData;
 };
 
 hitAttributeEXT vec3 attribs;
 
-layout(std140, set = 0, binding = 3) buffer SceneDesc { InstanceData i[]; }
+layout(std140, set = 0, binding = 3) buffer SceneDesc { Instance i[]; }
 sceneDesc;
 
 layout(scalar, set = 0, binding = 4) buffer ScenePointIndexData {
-  PointIndexData o[];
+  PointIndex o[];
 }
 scenePointIndexData;
 
@@ -98,27 +101,19 @@ vec3 _blerp(vec2 b, vec3 p1, vec3 p2, vec3 p3) {
   return (1.0 - b.x - b.y) * p1 + b.x * p2 + b.y * p3;
 }
 
-uint _getVertexIndex(PointIndexData pointIndexData) {
-  return pointIndexData.vertexIndex;
-}
+uint _getVertexIndex(PointIndex pointIndex) { return pointIndex.vertexIndex; }
 
-uint _getFaceIndex(PointIndexData pointIndexData) {
-  return pointIndexData.faceIndex;
-}
+uint _getFaceIndex(PointIndex pointIndex) { return pointIndex.faceIndex; }
 
-mat3 _getNormalMatrix(InstanceData instanceData) {
-  return instanceData.normalMatrix;
-}
+mat3 _getNormalMatrix(Instance instance) { return instance.normalMatrix; }
 
-mat4 _getModelMatrix(InstanceData instanceData) {
-  return instanceData.modelMatrix;
-}
+mat4 _getModelMatrix(Instance instance) { return instance.modelMatrix; }
 
-InstanceData _getInstanceData(uint instanceIndex) {
+Instance getInstance(uint instanceIndex) {
   return sceneDesc.i[instanceIndex];
 }
 
-PointIndexData _getPointIndexData(uint geometryIndex) {
+PointIndex _getPointIndex(uint geometryIndex) {
   return scenePointIndexData.o[geometryIndex];
 }
 
@@ -138,10 +133,9 @@ Vertex _getTriangleVertex(uint vertexIndex, uint index) {
 
 bool _hasMap(uint mapLayerIndex) { return mapLayerIndex < 2048; }
 
-struct HitShadingData {
+struct SurfaceInteraction {
   vec3 worldPosition;
   vec3 worldNormal;
-  vec3 V;
   vec3 materialDiffuse;
   vec3 materialSpecularColor;
   vec3 materialEmission;
@@ -150,6 +144,9 @@ struct HitShadingData {
   float materialSpecular;
   float materialTransmission;
   float materialIOR;
+
+  TODO get it from mats : TODO uint materialLightTypeOfAreaLight;
+  TODO uint materialLightIndexOfAreaLight;
 };
 
 bool _isUseAlphaAsCoverageInsteadOfTransmission(float alphaCutoff) {
@@ -214,13 +211,13 @@ vec3 _revertForBackFace(vec3 normalRelatedData, bool isFrontFace) {
 
 void getVertices(in uint instanceIndex, in uint primitiveIndex, out Vertex v0,
                  out Vertex v1, out Vertex v2) {
-  InstanceData instanceData = _getInstanceData(instanceIndex);
+  Instance instance = getInstance(instanceIndex);
 
-  uint geometryIndex = uint(instanceData.geometryIndex);
+  uint geometryIndex = uint(instance.geometryIndex);
 
-  PointIndexData pointIndexData = _getPointIndexData(geometryIndex);
-  uint vertexIndex = _getVertexIndex(pointIndexData);
-  uint faceIndex = _getFaceIndex(pointIndexData);
+  PointIndex pointIndex = _getPointIndex(geometryIndex);
+  uint vertexIndex = _getVertexIndex(pointIndex);
+  uint faceIndex = _getFaceIndex(pointIndex);
 
   // Indices of the triangle
   ivec3 ind = _getTriangleIndices(faceIndex, primitiveIndex);
@@ -237,10 +234,55 @@ vec2 getUV(in Vertex v0, in Vertex v1, in Vertex v2) {
   return _blerp(attribs.xy, u0.xy, u1.xy, u2.xy);
 }
 
-void getMaterialDiffuseAndTransmissionAndIOR(in BSDFMaterial mat, in vec2 uv,
-                                             out vec3 materialDiffuse,
-                                             out float materialTransmission,
-                                             out float materialIOR) {
+// TODO perf: only get transmission(ignore alpha?)
+void isTransmission(in BSDFMaterial mat, in vec2 uv) {
+  float alphaCutoff = mat.specularColorAndAlphaCutoff.w;
+  float alpha = 1.0;
+
+  uint diffuseMapLayerIndex = uint(mat.diffuseMapLayerIndex);
+  uint transmissionMapLayerIndex = uint(mat.transmissionMapLayerIndex);
+
+  if (_hasMap(diffuseMapLayerIndex)) {
+    vec4 diffuseMapData =
+        texture(sampler2DArray(textureArray, textureSampler),
+                vec3(_computeUVByWrapData(mat.diffuseMapWrapData, uv) *
+                         mat.diffuseMapScale,
+                     diffuseMapLayerIndex));
+
+    alpha = diffuseMapData.a * mat.diffuse.a;
+  } else {
+    alpha = mat.diffuse.a;
+  }
+
+  float materialTransmission = 0.0;
+
+  if (_isUseAlphaAsCoverageInsteadOfTransmission(alphaCutoff)) {
+    if (_isHandleAlphaCutoff(alphaCutoff)) {
+      materialTransmission = alpha >= alphaCutoff ? 0.0 : 1.0;
+    } else {
+      materialTransmission = 1.0 - alpha;
+    }
+  } else {
+    if (_hasMap(transmissionMapLayerIndex)) {
+      materialTransmission =
+          texture(sampler2DArray(textureArray, textureSampler),
+                  vec3(_computeUVByWrapData(mat.transmissionMapWrapData, uv) *
+                           mat.transmissionMapScale,
+                       transmissionMapLayerIndex))
+              .r *
+          mat.transmission;
+    } else {
+      materialTransmission = mat.transmission;
+    }
+  }
+
+  return materialTransmission > 0.0;
+}
+
+void _getMaterialDiffuseAndTransmissionAndIOR(in BSDFMaterial mat, in vec2 uv,
+                                              out vec3 materialDiffuse,
+                                              out float materialTransmission,
+                                              out float materialIOR) {
   float alphaCutoff = mat.specularColorAndAlphaCutoff.w;
   float alpha = 1.0;
 
@@ -289,15 +331,16 @@ void getMaterialDiffuseAndTransmissionAndIOR(in BSDFMaterial mat, in vec2 uv,
 }
 
 BSDFMaterial getMaterial(uint instanceIndex) {
-  InstanceData instanceData = _getInstanceData(instanceIndex);
+  Instance instance = getInstance(instanceIndex);
 
-  uint materialIndex = uint(instanceData.materialIndex);
+  uint materialIndex = uint(instance.materialIndex);
 
   return _getMaterial(materialIndex);
 }
 
-HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
-  InstanceData instanceData = _getInstanceData(instanceIndex);
+SurfaceInteraction getSurfaceInteractionData(uint instanceIndex,
+                                             uint primitiveIndex) {
+  Instance instance = getInstance(instanceIndex);
 
   Vertex v0;
   Vertex v1;
@@ -311,7 +354,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
   vec3 no = _blerp(attribs.xy, n0.xyz, n1.xyz, n2.xyz);
   const vec3 ta = _blerp(attribs.xy, t0.xyz, t1.xyz, t2.xyz);
 
-  mat3 normalMatrix = _getNormalMatrix(instanceData);
+  mat3 normalMatrix = _getNormalMatrix(instance);
 
   vec3 nw = normalize(normalMatrix * no);
   vec3 tw = normalize(normalMatrix * ta);
@@ -333,13 +376,13 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
       uint(mat.channelRoughnessMetallicMapLayerIndex);
   uint specularMapLayerIndex = uint(mat.specularMapLayerIndex);
 
-  HitShadingData data;
+  SurfaceInteraction data;
 
   vec2 uv = getUV(v0, v1, v2);
 
-  getMaterialDiffuseAndTransmissionAndIOR(mat, uv, data.materialDiffuse,
-                                          data.materialTransmission,
-                                          data.materialIOR);
+  _getMaterialDiffuseAndTransmissionAndIOR(mat, uv, data.materialDiffuse,
+                                           data.materialTransmission,
+                                           data.materialIOR);
 
   if (_hasMap(specularMapLayerIndex)) {
     vec4 specularMap =
@@ -407,10 +450,7 @@ HitShadingData getHitShadingData(uint instanceIndex, uint primitiveIndex) {
 
   vec3 localPos = _blerp(attribs.xy, p0.xyz, p1.xyz, p2.xyz);
 
-  data.worldPosition =
-      vec3(_getModelMatrix(instanceData) * vec4(localPos, 1.0));
-
-  data.V = getVFromRayDirection(gl_WorldRayDirectionEXT);
+  data.worldPosition = vec3(_getModelMatrix(instance) * vec4(localPos, 1.0));
 
   return data;
 }
