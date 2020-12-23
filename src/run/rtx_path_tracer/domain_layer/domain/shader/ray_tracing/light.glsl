@@ -51,6 +51,7 @@ void randomChooseOneLight(inout uint seed, out uint lightType,
   }
 }
 
+
 vec3 sampleLi(in uint lightType, in uint lightIndex, in float tMax, out vec3 wi,
               out float lightPdf, out float lightDistance) {
   switch (lightType) {

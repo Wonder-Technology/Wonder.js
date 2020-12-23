@@ -76,9 +76,9 @@ vec3 _sampleBSDFWithMIS(inout uint seed, float epsilon, float tMin, float tMax,
     return vec3(0.0);
   }
 
-  bool sampledSpecular = false;
+  bool isSampledSpecular = false;
 
-  // TODO handle sampledSpecular when sample BSDF
+  // TODO handle isSampledSpecular when sample BSDF
 
   bool isBRDFDir;
   vec3 wi = sample_(seed, wo, worldNormal, epsilon, shading, isBRDFDir);
@@ -105,7 +105,7 @@ vec3 _sampleBSDFWithMIS(inout uint seed, float epsilon, float tMin, float tMax,
 
   float weight = 1.0;
 
-  if (!sampledSpecular) {
+  if (!isSampledSpecular) {
     float lightPdf =
         pdfLi(lightType, lightIndex, wi, worldPosition, worldNormal);
 

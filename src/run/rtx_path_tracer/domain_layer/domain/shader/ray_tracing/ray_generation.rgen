@@ -28,7 +28,7 @@ void main() {
   const ivec2 resolution = ivec2(gl_LaunchSizeEXT.xy);
 
 #if DEBUG
-  path.debugColor = vec4(1.0, 1.0, 1.0, 1.0);
+  path.debugColor = CORRECT_COLOR;
 
   const uint sampleCount = 1;
 
@@ -108,7 +108,11 @@ void main() {
   const uint pixelIndex = ipos.y * resolution.x + ipos.x;
 
 #if DEBUG
-  pixelBuffer.pixels[pixelIndex] = path.debugColor;
+  if (path.debugColor != CORRECT_COLOR) {
+    pixelBuffer.pixels[pixelIndex] = path.debugColor;
+  } else {
+    pixelBuffer.pixels[pixelIndex] = vec4(pixelColor, 1.0);
+  }
 #else
   pixelBuffer.pixels[pixelIndex] = vec4(pixelColor, 1.0);
 #endif

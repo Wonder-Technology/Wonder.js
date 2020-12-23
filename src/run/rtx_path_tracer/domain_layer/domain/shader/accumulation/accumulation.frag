@@ -40,7 +40,11 @@ void main() {
   finalColor = vec4(gammaCorrection(vec3(finalColor)), finalColor.w);
 
 #if DEBUG
-  outColor = pixelBuffer.pixels[pixelIndex];
+  if (path.debugColor != CORRECT_COLOR) {
+    outColor = pixelBuffer.pixels[pixelIndex];
+  } else {
+    outColor = finalColor;
+  }
 #else
   outColor = finalColor;
 #endif

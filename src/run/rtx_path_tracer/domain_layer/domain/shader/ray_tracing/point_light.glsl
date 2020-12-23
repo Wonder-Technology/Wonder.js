@@ -1,8 +1,9 @@
 
 
 struct PointLight {
-  float instanceIndex;
   vec3 i;
+  float pad_0;
+  vec3 worldPosition;
 };
 
 layout(std140, set = 2, binding = 1) buffer PointLights { PointLight l[]; }
@@ -13,10 +14,9 @@ uint getPointLights() { return pointLights.l; }
 vec3 samplePointLightLi(in uint lightIndex, in float tMax, out vec3 wi,
                         out float lightPdf, out float lightDistance) {
   PointLight light = getPointLights()[lightIndex];
-  Instance instance = getInstance(uint(light.instanceIndex));
 
+vec3 worldPosition = light.worldPosition;
 
-TODO get worldPosition from instance.modelMatrix
 TODO finish:
     ProfilePhase _(Prof::LightSample);
     *wi = Normalize(pLight - ref.p);
