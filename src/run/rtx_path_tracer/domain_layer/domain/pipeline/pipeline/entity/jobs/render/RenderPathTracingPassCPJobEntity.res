@@ -1,6 +1,6 @@
 
 
-let create = () => JobEntity.create("render_pathTracing")
+let create = () => JobEntity.create("render_pathTracing_pass")
 
 let exec = () =>
   Tuple4.collectOption(

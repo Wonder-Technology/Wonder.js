@@ -4,7 +4,7 @@ open Wonderjs
 
 open Js.Typed_array
 
-let _ = describe("test update_pathTracing job", () => {
+let _ = describe("test update_pathTracing_pass job", () => {
   open Expect
   open Expect.Operators
   open Sinon
@@ -116,7 +116,7 @@ let _ = describe("test update_pathTracing job", () => {
           {
             name: "frame",
             link: Concat,
-            elements: list{{name: "update_pathTracing", type_: Job}},
+            elements: list{{name: "update_pathTracing_pass", type_: Job}},
           },
         },
       },

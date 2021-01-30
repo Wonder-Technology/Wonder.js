@@ -2,7 +2,7 @@
 
 open Js.Typed_array
 
-let create = () => JobEntity.create("init_pathTracing")
+let create = () => JobEntity.create("init_pathTracing_pass")
 
 let _buildDirectionLightBufferData = (device, sceneGameObject) => Contract.requireCheck(() => {
     open Contract

@@ -27,7 +27,7 @@ let createAndSetPipeline = () =>
   PathTracingPassCPRepo.setPipeline(WebGPURayTracingDependencyTool.createRayTracingPipelineObject())
 
 // let buildAndSetAllBufferData = device => {
-//   UpdatePathTracingCPJobEntity._buildAndSetAllBufferData(device)
+//   UpdatePathTracingPassCPJobEntity._buildAndSetAllBufferData(device)
 //   ->ResultTool.getExnSuccessValueIgnore;
 // };
 

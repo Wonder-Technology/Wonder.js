@@ -2,7 +2,7 @@ open Wonder_jest
 
 open Wonderjs
 
-let _ = describe("test render_accumulation job", () => {
+let _ = describe("test render_accumulation_pass job", () => {
   open Expect
   open Expect.Operators
   open Sinon
@@ -36,7 +36,7 @@ let _ = describe("test render_accumulation job", () => {
           {
             name: "frame",
             link: Concat,
-            elements: list{{name: "render_accumulation", type_: Job}},
+            elements: list{{name: "render_accumulation_pass", type_: Job}},
           },
         },
       },

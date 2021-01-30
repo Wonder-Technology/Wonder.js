@@ -2,7 +2,7 @@
 
 open Js.Typed_array
 
-let create = () => JobEntity.create("init_accumulation")
+let create = () => JobEntity.create("init_accumulation_pass")
 
 let _buildAccumulationPixelBufferData = (window, device) => {
   let bufferSize =

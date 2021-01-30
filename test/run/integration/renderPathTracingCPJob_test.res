@@ -1,6 +1,6 @@
 open Wonder_jest
 
-let _ = describe("test render_pathTracing job", () => {
+let _ = describe("test render_pathTracing_pass job", () => {
   open Expect
   open Expect.Operators
   open Sinon
@@ -32,7 +32,7 @@ let _ = describe("test render_pathTracing job", () => {
           {
             name: "frame",
             link: Concat,
-            elements: list{{name: "render_pathTracing", type_: Job}},
+            elements: list{{name: "render_pathTracing_pass", type_: Job}},
           },
         },
       },

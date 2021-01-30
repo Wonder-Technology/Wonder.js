@@ -2,7 +2,7 @@
 
 open Js.Typed_array
 
-let create = () => JobEntity.create("update_pathTracing")
+let create = () => JobEntity.create("update_pathTracing_pass")
 
 let _findIndex = (isSameFunc, component, components) =>
   components->ListSt.reducei(None, (indexOpt, sourceComponent, index) =>

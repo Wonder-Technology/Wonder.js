@@ -1,6 +1,6 @@
 open Wonder_jest
 
-let _ = describe("test update_accumulation job", () => {
+let _ = describe("test update_accumulation_pass job", () => {
   open Expect
   open Expect.Operators
   open Sinon
@@ -18,7 +18,7 @@ let _ = describe("test update_accumulation job", () => {
           {
             name: "frame",
             link: Concat,
-            elements: list{{name: "update_accumulation", type_: Job}},
+            elements: list{{name: "update_accumulation_pass", type_: Job}},
           },
         },
       },

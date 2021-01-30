@@ -1,6 +1,6 @@
 
 
-let create = () => JobEntity.create("render_accumulation")
+let create = () => JobEntity.create("render_accumulation_pass")
 
 let exec = () =>
   Tuple6.collectOption(

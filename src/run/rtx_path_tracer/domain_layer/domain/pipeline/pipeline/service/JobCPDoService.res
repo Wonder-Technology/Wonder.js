@@ -5,22 +5,22 @@ let _getInitPipelineJobs = () => list{
   (InitWebGPUCPJobEntity.create(), InitWebGPUCPJobEntity.exec),
   (InitCameraCPJobEntity.create(), InitCameraCPJobEntity.exec),
   (InitPassCPJobEntity.create(), InitPassCPJobEntity.exec),
-  (InitPathTracingCPJobEntity.create(), InitPathTracingCPJobEntity.exec),
-  (InitAccumulationCPJobEntity.create(), InitAccumulationCPJobEntity.exec),
+  (InitPathTracingPassCPJobEntity.create(), InitPathTracingPassCPJobEntity.exec),
+  (InitAccumulationPassCPJobEntity.create(), InitAccumulationPassCPJobEntity.exec),
 }
 
 let _getUpdatePipelineJobs = () => list{
   (UpdateCameraCPJobEntity.create(), UpdateCameraCPJobEntity.exec),
   (UpdateTextureArrayCPJobEntity.create(), UpdateTextureArrayCPJobEntity.exec),
-  (UpdatePathTracingCPJobEntity.create(), UpdatePathTracingCPJobEntity.exec),
+  (UpdatePathTracingPassCPJobEntity.create(), UpdatePathTracingPassCPJobEntity.exec),
   (UpdatePassCPJobEntity.create(), UpdatePassCPJobEntity.exec),
 }
 
 let _getRenderPipelineJobs = () => list{
-  (RenderPathTracingCPJobEntity.create(), RenderPathTracingCPJobEntity.exec),
-  (UpdateAccumulationCPJobEntity.create(), UpdateAccumulationCPJobEntity.exec),
+  (RenderPathTracingPassCPJobEntity.create(), RenderPathTracingPassCPJobEntity.exec),
+  (UpdateAccumulationPassCPJobEntity.create(), UpdateAccumulationPassCPJobEntity.exec),
   (UpdatePassForRenderCPJobEntity.create(), UpdatePassForRenderCPJobEntity.exec),
-  (RenderAccumulationCPJobEntity.create(), RenderAccumulationCPJobEntity.exec),
+  (RenderAccumulationPassCPJobEntity.create(), RenderAccumulationPassCPJobEntity.exec),
   (EndRenderCPJobEntity.create(), EndRenderCPJobEntity.exec),
 }
 
