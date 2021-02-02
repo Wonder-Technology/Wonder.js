@@ -1,5 +1,3 @@
-
-
 open Js.Typed_array
 
 let create = () => JobEntity.create("init_pathTracing_pass")
@@ -23,8 +21,8 @@ let _buildDirectionLightBufferData = (device, sceneGameObject) => Contract.requi
       let directionLightBufferData = Float32Array.fromLength(directionLightCount * (4 + 4))
 
       ListResult.mergeResults(list{
-        TypeArrayCPRepoUtils.setFloat1(0, intensity, directionLightBufferData),
-        TypeArrayCPRepoUtils.setFloat3(4, direction, directionLightBufferData),
+        TypeArrayRTRepoUtils.setFloat1(0, intensity, directionLightBufferData),
+        TypeArrayRTRepoUtils.setFloat3(4, direction, directionLightBufferData),
       })->Result.mapSuccess(() => directionLightBufferData)
     })
     ->Result.mapSuccess(directionLightBufferData => {
@@ -51,7 +49,7 @@ let _buildDirectionLightBufferData = (device, sceneGameObject) => Contract.requi
   )
 
 let _createShaderBindingTable = device => {
-  let baseShaderPath = "src/run/rtx_path_tracer/domain_layer/domain/shader/ray_tracing"
+  let baseShaderPath = "src/run/rtx_real_time_hybrid_ray_tracer/domain_layer/domain/shader/ray_tracing"
 
   let rayGenShaderModule = WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
     {
@@ -122,11 +120,11 @@ let _createShaderBindingTable = device => {
 }
 
 let exec = () =>
-  Tuple2.collectOption(WebGPUCPRepo.getDevice(), WebGPUCPRepo.getQueue())->Result.bind(((
+  Tuple2.collectOption(WebGPURTRepo.getDevice(), WebGPURTRepo.getQueue())->Result.bind(((
     device,
     queue,
   )) => {
-    _createShaderBindingTable(device)->PathTracingPassCPRepo.setShaderBindingTable
+    _createShaderBindingTable(device)->PathTracingPassRTRepo.setShaderBindingTable
 
     let cameraBindGroupLayout = WebGPUCoreDpRunAPI.unsafeGet().device.createBindGroupLayout(
       {
@@ -142,13 +140,13 @@ let exec = () =>
       device,
     )
 
-    PathTracingPassCPRepo.setCameraBindGroupLayout(cameraBindGroupLayout)
+    PathTracingPassRTRepo.setCameraBindGroupLayout(cameraBindGroupLayout)
 
-    CameraCPRepo.getCameraBufferData()->OptionSt.get->Result.mapSuccess(((
+    CameraRTRepo.getCameraBufferData()->OptionSt.get->Result.mapSuccess(((
       cameraBuffer,
       cameraBufferData,
     )) => {
-      PathTracingPassCPRepo.addStaticBindGroupData(
+      PathTracingPassRTRepo.addStaticBindGroupData(
         1,
         WebGPUCoreDpRunAPI.unsafeGet().device.createBindGroup(
           {
@@ -182,13 +180,13 @@ let exec = () =>
         device,
       )
 
-      PathTracingPassCPRepo.setDirectionLightBindGroupLayout(directionLightBindGroupLayout)
+      PathTracingPassRTRepo.setDirectionLightBindGroupLayout(directionLightBindGroupLayout)
 
       _buildDirectionLightBufferData(device, SceneRunAPI.getSceneGameObject())->Result.mapSuccess(((
         directionLightBuffer,
         directionLightBufferSize,
       )) =>
-        PathTracingPassCPRepo.addStaticBindGroupData(
+        PathTracingPassRTRepo.addStaticBindGroupData(
           2,
           WebGPUCoreDpRunAPI.unsafeGet().device.createBindGroup(
             {

@@ -28,12 +28,14 @@ pushC;
 void main() {
   uint pixelIndex = computePixelArrayIndex(uv, screenDimension.resolution);
 
-  vec4 accumulationColor = accumulationPixelBuffer.pixels[pixelIndex] +
-                           pixelBuffer.pixels[pixelIndex];
+  // vec4 accumulationColor = accumulationPixelBuffer.pixels[pixelIndex] +
+  //                          pixelBuffer.pixels[pixelIndex];
 
-  accumulationPixelBuffer.pixels[pixelIndex] = accumulationColor;
+  // accumulationPixelBuffer.pixels[pixelIndex] = accumulationColor;
 
-  vec4 finalColor = accumulationColor / pushC.totalSampleCount;
+  // vec4 finalColor = accumulationColor / pushC.totalSampleCount;
+
+  vec4 finalColor = pixelBuffer.pixels[pixelIndex];
 
   finalColor = vec4(gammaCorrection(vec3(finalColor)), finalColor.w);
 

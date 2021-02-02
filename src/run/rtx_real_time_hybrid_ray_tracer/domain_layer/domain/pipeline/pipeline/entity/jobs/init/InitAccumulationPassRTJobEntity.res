@@ -65,7 +65,7 @@ let _createAndSetBindGroup = (
     device,
   )
 
-  AccumulationPassCPRepo.setStaticBindGroupData(
+  AccumulationPassRTRepo.setStaticBindGroupData(
     0,
     WebGPUCoreDpRunAPI.unsafeGet().device.createBindGroup(
       {
@@ -89,14 +89,14 @@ let _createAndSetBindGroup = (
             ~binding=2,
             ~buffer=resolutionBuffer,
             ~offset=0,
-            ~size=resolutionBufferData->PassCPDoService.getResolutionBufferDataSize,
+            ~size=resolutionBufferData->PassRTDoService.getResolutionBufferDataSize,
             (),
           ),
           IWebGPUCoreDp.binding(
             ~binding=3,
             ~buffer=commonBuffer,
             ~offset=0,
-            ~size=commonBufferData->PassCPDoService.getCommonBufferDataSize,
+            ~size=commonBufferData->PassRTDoService.getCommonBufferDataSize,
             (),
           ),
         ],
@@ -109,7 +109,7 @@ let _createAndSetBindGroup = (
 }
 
 let _createAndSetPipeline = (device, swapChainFormat, bindGroupLayout) => {
-  let baseShaderPath = "src/run/rtx_path_tracer/domain_layer/domain/shader/accumulation"
+  let baseShaderPath = "src/run/rtx_real_time_hybrid_ray_tracer/domain_layer/domain/shader/accumulation"
 
   let vertexShaderModule = WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
     {
@@ -145,26 +145,26 @@ let _createAndSetPipeline = (device, swapChainFormat, bindGroupLayout) => {
       (),
     ),
     device,
-  )->AccumulationPassCPRepo.setPipeline
+  )->AccumulationPassRTRepo.setPipeline
 }
 
 let exec = () =>
   Tuple3.collectOption(
-    WebGPUCPRepo.getWindow(),
-    WebGPUCPRepo.getDevice(),
-    WebGPUCPRepo.getSwapChainFormat(),
+    WebGPURTRepo.getWindow(),
+    WebGPURTRepo.getDevice(),
+    WebGPURTRepo.getSwapChainFormat(),
   )
   ->Result.bind(((window, device, swapChainFormat)) => {
     _buildAccumulationPixelBufferData(
       window,
       device,
-    )->AccumulationPassCPRepo.setAccumulationPixelBufferData
+    )->AccumulationPassRTRepo.setAccumulationPixelBufferData
 
     Tuple4.collectOption(
-      PassCPRepo.getResolutionBufferData(),
-      PassCPRepo.getPixelBufferData(),
-      PassCPRepo.getCommonBufferData(),
-      AccumulationPassCPRepo.getAccumulationPixelBufferData(),
+      PassRTRepo.getResolutionBufferData(),
+      PassRTRepo.getPixelBufferData(),
+      PassRTRepo.getCommonBufferData(),
+      AccumulationPassRTRepo.getAccumulationPixelBufferData(),
     )->Result.mapSuccess(((
       (resolutionBuffer, resolutionBufferData),
       (pixelBuffer, pixelBufferSize),

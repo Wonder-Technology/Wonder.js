@@ -25,6 +25,7 @@ module.exports = {
       { name: "asset" },
       { name: "dependency" },
       { name: "cloud-picture" },
+      { name: "rtx_real_time_hybrid_ray_tracer" },
       { name: "webgpu" },
   ],
 

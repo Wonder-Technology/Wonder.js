@@ -221,7 +221,7 @@ let _ = describe("test init_accumulation_pass job", () => {
   describe("create pipeline and set to po", () => {
     testPromise("create all shader modules", () => {
       let (window, device, swapChainFormat) = _prepare()
-      let baseShaderPath = "src/construct/rtx_path_tracer/domain_layer/domain/shader/accumulation"
+      let baseShaderPath = "src/run/rtx_path_tracer/domain_layer/domain/shader/accumulation"
       let buffer = WebGPUDependencyTool.createBufferObject()
       let vertexGLSL = "a1"
       let fragmentGLSL = "a2"

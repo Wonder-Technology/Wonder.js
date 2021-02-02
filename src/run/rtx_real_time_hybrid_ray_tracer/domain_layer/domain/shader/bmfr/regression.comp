@@ -1,0 +1,625 @@
+#version 460
+#extension GL_EXT_nonuniform_qualifier : enable
+#extension GL_EXT_scalar_block_layout : enable
+#pragma shader_stage(compute)
+
+#define BUFFER_COUNT 13
+#define FEATURES_COUNT 10
+#define FEATURES_NOT_SCALED 4
+#define BLOCK_PIXELS 1024
+#define LOCAL_SIZE 256
+#define BLOCK_EDGE_LENGTH 32
+#define NOISE_AMOUNT 0.01
+#define BLOCK_OFFSETS_COUNT 16
+
+#define INBLOCK_ID subVector *LOCAL_SIZE + groupThreadId
+#define BLOCK_OFFSET groupId.x *BUFFER_COUNT
+
+#include "./barrier.glsl"
+
+layout(local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
+
+shared float sumVec[256];
+shared float uVec[1024];
+shared float gchannel[1024];
+shared float bchannel[1024];
+shared float rmat[10][13]; // FEATURES * BUFFER_COUNT
+shared float uLengthSquared;
+shared float dotV;
+shared float blockMin;
+shared float blockMax;
+shared float vecLength;
+
+// layout(binding = 0) uniform sampler sampler0;
+// layout(binding = 1) uniform texture2D gPositionRoughnessTexture;
+// layout(binding = 2) uniform texture2D gNormalMetalnessTexture;
+// layout(binding = 3) uniform texture2D gDiffusePositionWTexture;
+
+layout(std140, set = 1, binding = 0) buffer CurNoisyPixelBuffer {
+  vec4 pixels[];
+}
+curNoisyPixelBuffer;
+
+// BLOCK_PIXELS * [(FEATURES_COUNT + color_channels) * blocks]
+layout(scalar, set = 1, binding = 1) buffer TmpDataBuffer { float data[]; }
+tmpDataBuffer;
+
+// where we perform QR decomposition
+layout(scalar, set = 1, binding = 2) buffer OutDataBuffer { float data[]; }
+outDataBuffer;
+
+layout(set = 1, binding = 3) uniform ScreenDimension { vec2 resolution; }
+screenDimension;
+
+struct BMFRData {
+  vec4 worldPosition;
+  vec4 worldNormal;
+  vec4 diffuse;
+};
+layout(std140, set = 1, binding = 4) buffer BMFRDataBuffer {
+  BMFRData bmfrDataArr[];
+}
+bmfrDataBuffer;
+
+layout(std140, set = 1, binding = 5) uniform CommonData {
+  uint frameIndex;
+  uint horizentalBlocksCount;
+  uint pad_0;
+  uint pad_1;
+  // vec4 compressedData;
+}
+pushC;
+
+int mirror(int index, int size) {
+  if (index < 0)
+    index = abs(index) - 1;
+  else if (index >= size)
+    index = 2 * size - index - 1;
+
+  return index;
+}
+
+ivec2 mirror2(ivec2 index, ivec2 size) {
+  index.x = mirror(index.x, size.x);
+  index.y = mirror(index.y, size.y);
+
+  return index;
+}
+
+ivec2 getPixelIndices(uint inblockId, uint groupIdX, uint horizentalBlocksCount,
+                      uint frameIndex,
+                      ivec2 blockOffsets[BLOCK_OFFSETS_COUNT]) {
+  // go to group indices
+  ivec2 uv =
+      ivec2(groupIdX % horizentalBlocksCount, groupIdX / horizentalBlocksCount);
+  // go to thread indices(32 * 32 in one group)
+  uv *= BLOCK_EDGE_LENGTH;
+  uv += ivec2(inblockId % BLOCK_EDGE_LENGTH, inblockId / BLOCK_EDGE_LENGTH);
+  // offset
+  uv += blockOffsets[frameIndex % BLOCK_OFFSETS_COUNT];
+
+  return uv;
+}
+
+float getAlbedoMinLimit() { return 0.01; }
+
+vec3 demodulateAlbedo(vec3 currentColor, vec3 diffuse) {
+  float minLimit = getAlbedoMinLimit();
+
+  return vec3(
+      diffuse.x < minLimit ? currentColor.x : currentColor.x / diffuse.x,
+      diffuse.y < minLimit ? currentColor.y : currentColor.y / diffuse.y,
+      diffuse.z < minLimit ? currentColor.z : currentColor.z / diffuse.z);
+}
+
+vec3 modulateAlbedo(vec3 currentColor, vec3 diffuse) {
+  float minLimit = getAlbedoMinLimit();
+
+  return vec3(
+      diffuse.x < minLimit ? currentColor.x : currentColor.x * diffuse.x,
+      diffuse.y < minLimit ? currentColor.y : currentColor.y * diffuse.y,
+      diffuse.z < minLimit ? currentColor.z : currentColor.z * diffuse.z);
+}
+
+uint convertBufferTwoDIndexToOneDIndex(uint twoDIndexX, uint twoDIndexY,
+                                       uint bufferSizeX) {
+  return twoDIndexY * bufferSizeX + twoDIndexX;
+}
+
+uint convertDataBufferTwoDIndexToOneDIndex(uint twoDIndexX, uint twoDIndexY) {
+  return convertBufferTwoDIndexToOneDIndex(twoDIndexX, twoDIndexY,
+                                           BLOCK_PIXELS);
+}
+
+uint convertPixelIndicesToPixelIndex(ivec2 pixelIndices, vec2 resolution) {
+  return convertBufferTwoDIndexToOneDIndex(pixelIndices.x, pixelIndices.y,
+                                           uint(resolution.x));
+}
+
+float saturateFloat(float v) {
+  if (v < 0.0) {
+    return 0.0;
+  }
+
+  if (v > 1.0) {
+    return 1.0;
+  }
+
+  return v;
+}
+
+vec2 saturateVec2(vec2 v) {
+  return vec2(saturateFloat(v.x), saturateFloat(v.y));
+}
+
+vec2 convertPixelIndicesToUV(vec2 pixelIndices, vec2 resolution) {
+  return saturateVec2(pixelIndices / resolution);
+}
+
+void householderQRDecomposition(uint groupThreadId, uvec3 groupId) {
+  // use IGNORE_LD_fEATURES
+  // TODO not use IGNORE_LD_fEATURES
+
+  int limit = 0;
+  for (uint col = 0; col < FEATURES_COUNT; col++) {
+    float tmpSumValue = 0;
+    for (uint subVector = 0; subVector < BLOCK_PIXELS / LOCAL_SIZE;
+         ++subVector) {
+      uint index = INBLOCK_ID;
+
+      float tmp = outDataBuffer.data[convertDataBufferTwoDIndexToOneDIndex(
+          index, col + BLOCK_OFFSET)];
+      uVec[index] = tmp;
+      if (index >= limit + 1) {
+        tmpSumValue += tmp * tmp;
+      }
+    }
+    sumVec[groupThreadId] = tmpSumValue;
+    groupMemoryBarrierWithGroupSync();
+
+    // parallel reduction sum
+    if (groupThreadId < 128)
+      sumVec[groupThreadId] += sumVec[groupThreadId + 128];
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 64)
+      sumVec[groupThreadId] += sumVec[groupThreadId + 64];
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 32)
+      sumVec[groupThreadId] += sumVec[groupThreadId + 32];
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 16)
+      sumVec[groupThreadId] += sumVec[groupThreadId + 16];
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 8)
+      sumVec[groupThreadId] += sumVec[groupThreadId + 8];
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 4)
+      sumVec[groupThreadId] += sumVec[groupThreadId + 4];
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 2)
+      sumVec[groupThreadId] += sumVec[groupThreadId + 2];
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId == 0)
+      vecLength = sumVec[0] + sumVec[1];
+    groupMemoryBarrierWithGroupSync();
+
+    float rValue;
+    if (groupThreadId < limit) {
+      rValue = uVec[groupThreadId];
+    } else if (groupThreadId == limit) {
+      uLengthSquared = vecLength;
+      vecLength = sqrt(vecLength + uVec[limit] * uVec[limit]);
+      uVec[limit] -= vecLength;
+      uLengthSquared += uVec[limit] * uVec[limit];
+      rValue = vecLength;
+    } else if (groupThreadId > limit) {
+      rValue = 0;
+    }
+
+    groupMemoryBarrierWithGroupSync();
+
+    if (vecLength > 0.01) {
+      limit++;
+      if (groupThreadId < FEATURES_COUNT)
+        rmat[groupThreadId][col] = rValue;
+    } else {
+      if (groupThreadId < FEATURES_COUNT)
+        rmat[groupThreadId][col] = 0.0;
+      continue;
+    }
+
+    if (uLengthSquared < 0.001) {
+      continue;
+    }
+
+    for (uint feature_buffer = col + 1; feature_buffer < BUFFER_COUNT;
+         feature_buffer++) {
+      float tmp_data_private_cache[BLOCK_PIXELS / LOCAL_SIZE];
+      float tmpSumValue = 0.0;
+      for (uint subVector = 0; subVector < BLOCK_PIXELS / LOCAL_SIZE;
+           ++subVector) {
+        uint index = INBLOCK_ID;
+        if (index >= limit - 1) {
+          float tmp = outDataBuffer.data[convertDataBufferTwoDIndexToOneDIndex(
+              index, feature_buffer + BLOCK_OFFSET)];
+          tmp_data_private_cache[subVector] = tmp;
+          tmpSumValue += tmp * uVec[index];
+        }
+      }
+
+      sumVec[groupThreadId] = tmpSumValue;
+      groupMemoryBarrierWithGroupSync();
+
+      // parallel reduction sum
+      if (groupThreadId < 128)
+        sumVec[groupThreadId] += sumVec[groupThreadId + 128];
+      groupMemoryBarrierWithGroupSync();
+      if (groupThreadId < 64)
+        sumVec[groupThreadId] += sumVec[groupThreadId + 64];
+      groupMemoryBarrierWithGroupSync();
+      if (groupThreadId < 32)
+        sumVec[groupThreadId] += sumVec[groupThreadId + 32];
+      groupMemoryBarrierWithGroupSync();
+      if (groupThreadId < 16)
+        sumVec[groupThreadId] += sumVec[groupThreadId + 16];
+      groupMemoryBarrierWithGroupSync();
+      if (groupThreadId < 8)
+        sumVec[groupThreadId] += sumVec[groupThreadId + 8];
+      groupMemoryBarrierWithGroupSync();
+      if (groupThreadId < 4)
+        sumVec[groupThreadId] += sumVec[groupThreadId + 4];
+      groupMemoryBarrierWithGroupSync();
+      if (groupThreadId < 2)
+        sumVec[groupThreadId] += sumVec[groupThreadId + 2];
+      groupMemoryBarrierWithGroupSync();
+      if (groupThreadId == 0)
+        dotV = sumVec[0] + sumVec[1];
+      groupMemoryBarrierWithGroupSync();
+
+      for (uint subVector = 0; subVector < BLOCK_PIXELS / LOCAL_SIZE;
+           ++subVector) {
+        uint index = INBLOCK_ID;
+        if (index >= limit - 1) {
+          outDataBuffer.data[convertDataBufferTwoDIndexToOneDIndex(
+              index, feature_buffer + BLOCK_OFFSET)] =
+              tmp_data_private_cache[subVector] -
+              2.0 * uVec[index] * dotV / uLengthSquared;
+        }
+      }
+      groupMemoryBarrierWithGroupSync();
+    }
+  }
+
+  uint tmpId;
+  if (groupThreadId < FEATURES_COUNT) {
+    rmat[groupThreadId][FEATURES_COUNT] =
+        outDataBuffer.data[convertDataBufferTwoDIndexToOneDIndex(
+            groupThreadId, FEATURES_COUNT + BLOCK_OFFSET)];
+  } else if ((tmpId = groupThreadId - FEATURES_COUNT) < FEATURES_COUNT) {
+    rmat[tmpId][BUFFER_COUNT - 2] =
+        outDataBuffer.data[convertDataBufferTwoDIndexToOneDIndex(
+            tmpId, BUFFER_COUNT - 2 + BLOCK_OFFSET)];
+  } else if ((tmpId = tmpId - FEATURES_COUNT) < FEATURES_COUNT) {
+    rmat[tmpId][BUFFER_COUNT - 1] =
+        outDataBuffer.data[convertDataBufferTwoDIndexToOneDIndex(
+            tmpId, BUFFER_COUNT - 1 + BLOCK_OFFSET)];
+  }
+  groupMemoryBarrierWithGroupSync();
+
+  // Back substitution
+  limit--;
+  for (int i = BUFFER_COUNT - 4; i >= 0; i--) {
+    if (rmat[limit][i] != 0.0) {
+      if (groupThreadId < 3) {
+        rmat[i][BUFFER_COUNT - groupThreadId - 1] =
+            rmat[limit][BUFFER_COUNT - groupThreadId - 1] / rmat[limit][i];
+      }
+      limit--;
+    } else {
+      if (groupThreadId < 3) {
+        rmat[i][BUFFER_COUNT - groupThreadId - 1] = 0.0f;
+      }
+    }
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 3 * limit + 3) {
+      uint rowId = limit - groupThreadId / 3;
+      uint channel = BUFFER_COUNT - (groupThreadId % 3) - 1;
+      rmat[rowId][channel] -= rmat[i][channel] * rmat[rowId][i];
+    }
+    groupMemoryBarrierWithGroupSync();
+  }
+}
+
+void calculateFilteredColor(uint groupThreadId, uvec3 groupId,
+                            uint horizentalBlocksCount,
+
+                            uint frameIndex,
+                            ivec2 blockOffsets[BLOCK_OFFSETS_COUNT]) {
+  for (uint subVector = 0; subVector < BLOCK_PIXELS / LOCAL_SIZE; ++subVector) {
+    uint index = INBLOCK_ID;
+    uVec[index] = 0.0;
+    gchannel[index] = 0.0;
+    bchannel[index] = 0.0;
+  }
+
+  for (int col = 0; col < FEATURES_COUNT; col++) {
+    for (uint subVector = 0; subVector < BLOCK_PIXELS / LOCAL_SIZE;
+         ++subVector) {
+      uint index = INBLOCK_ID;
+
+      float tmp = tmpDataBuffer.data[convertDataBufferTwoDIndexToOneDIndex(
+          index, col + BLOCK_OFFSET)];
+      uVec[index] += rmat[col][FEATURES_COUNT] * tmp;
+      gchannel[index] += rmat[col][FEATURES_COUNT + 1] * tmp;
+      bchannel[index] += rmat[col][FEATURES_COUNT + 2] * tmp;
+    }
+  }
+
+  for (uint subVector = 0; subVector < BLOCK_PIXELS / LOCAL_SIZE; ++subVector) {
+    uint index = INBLOCK_ID;
+    ivec2 pixelIndices = getPixelIndices(
+        index, groupId.x, horizentalBlocksCount, frameIndex, blockOffsets);
+
+    if (pixelIndices.x < 0 || pixelIndices.y < 0 ||
+        pixelIndices.x >= screenDimension.resolution.x ||
+        pixelIndices.y >= screenDimension.resolution.y) {
+      continue;
+    }
+
+    vec2 uv = convertPixelIndicesToUV(pixelIndices, screenDimension.resolution);
+
+    uint pixelIndex = convertPixelIndicesToPixelIndex(
+        pixelIndices, screenDimension.resolution);
+
+    vec3 currentColor = vec3(uVec[index] < 0.0 ? 0.0 : uVec[index],
+                             gchannel[index] < 0.0 ? 0.0 : gchannel[index],
+                             bchannel[index] < 0.0 ? 0.0 : bchannel[index]);
+
+    // vec3 diffuse =
+    //     texture(sampler2D(gDiffusePositionWTexture, sampler0), uv).xyz;
+
+    BMFRData bmfrData = bmfrDataBuffer.bmfrDataArr[pixelIndex];
+    vec3 diffuse = bmfrData.diffuse.rgb;
+
+    currentColor = modulateAlbedo(currentColor, diffuse);
+
+    curNoisyPixelBuffer.pixels[pixelIndex] =
+        vec4(currentColor, curNoisyPixelBuffer.pixels[pixelIndex].w);
+  }
+}
+
+void main() {
+  uint groupThreadId = gl_LocalInvocationIndex;
+  uvec3 groupId = gl_WorkGroupID;
+
+  // uint frameIndex = uint(pushC.compressedData.x);
+  // uint horizentalBlocksCount = uint(pushC.compressedData.y);
+
+  uint frameIndex = pushC.frameIndex;
+  uint horizentalBlocksCount = pushC.horizentalBlocksCount;
+
+  const ivec2 BLOCK_OFFSETS[BLOCK_OFFSETS_COUNT] = {
+      ivec2(-30, -30), ivec2(-12, -22), ivec2(-24, -2),  ivec2(-8, -16),
+      ivec2(-26, -24), ivec2(-14, -4),  ivec2(-4, -28),  ivec2(-26, -16),
+      ivec2(-4, -2),   ivec2(-24, -32), ivec2(-10, -10), ivec2(-18, -18),
+      ivec2(-12, -30), ivec2(-32, -4),  ivec2(-2, -20),  ivec2(-22, -12),
+  };
+
+  // load features and colors to tmpData
+  for (uint subVector = 0; subVector < BLOCK_PIXELS / LOCAL_SIZE; ++subVector) {
+    uint index = INBLOCK_ID;
+    ivec2 pixelIndices = getPixelIndices(
+        index, groupId.x, horizentalBlocksCount, frameIndex, BLOCK_OFFSETS);
+    pixelIndices = mirror2(pixelIndices, ivec2(screenDimension.resolution.x,
+                                               screenDimension.resolution.y));
+
+    vec2 uv = convertPixelIndicesToUV(pixelIndices, screenDimension.resolution);
+
+    // vec3 worldPosition =
+    //     texture(sampler2D(gPositionRoughnessTexture, sampler0), uv).xyz;
+    // vec3 worldNormal =
+    //     texture(sampler2D(gNormalMetalnessTexture, sampler0), uv).xyz;
+
+    // uint pixelIndex = convertBufferTwoDIndexToOneDIndex(
+    //     pixelIndices.x, pixelIndices.y, uint(screenDimension.resolution.x));
+
+    uint pixelIndex = convertPixelIndicesToPixelIndex(
+        pixelIndices, screenDimension.resolution);
+
+    BMFRData bmfrData = bmfrDataBuffer.bmfrDataArr[pixelIndex];
+    vec3 worldPosition = bmfrData.worldPosition.xyz;
+    vec3 worldNormal = bmfrData.worldNormal.xyz;
+
+    vec3 currentColor = curNoisyPixelBuffer.pixels[pixelIndex].rgb;
+
+    tmpDataBuffer
+        .data[convertDataBufferTwoDIndexToOneDIndex(index, 0 + BLOCK_OFFSET)] =
+        1.0;
+    tmpDataBuffer
+        .data[convertDataBufferTwoDIndexToOneDIndex(index, 1 + BLOCK_OFFSET)] =
+        worldNormal.x;
+    tmpDataBuffer
+        .data[convertDataBufferTwoDIndexToOneDIndex(index, 2 + BLOCK_OFFSET)] =
+        worldNormal.y;
+    tmpDataBuffer
+        .data[convertDataBufferTwoDIndexToOneDIndex(index, 3 + BLOCK_OFFSET)] =
+        worldNormal.z;
+    tmpDataBuffer
+        .data[convertDataBufferTwoDIndexToOneDIndex(index, 4 + BLOCK_OFFSET)] =
+        worldPosition.x;
+    tmpDataBuffer
+        .data[convertDataBufferTwoDIndexToOneDIndex(index, 5 + BLOCK_OFFSET)] =
+        worldPosition.y;
+    tmpDataBuffer
+        .data[convertDataBufferTwoDIndexToOneDIndex(index, 6 + BLOCK_OFFSET)] =
+        worldPosition.z;
+    tmpDataBuffer
+        .data[convertDataBufferTwoDIndexToOneDIndex(index, 7 + BLOCK_OFFSET)] =
+        worldPosition.x * worldPosition.x;
+    tmpDataBuffer
+        .data[convertDataBufferTwoDIndexToOneDIndex(index, 8 + BLOCK_OFFSET)] =
+        worldPosition.y * worldPosition.y;
+    tmpDataBuffer
+        .data[convertDataBufferTwoDIndexToOneDIndex(index, 9 + BLOCK_OFFSET)] =
+        worldPosition.z * worldPosition.z;
+
+    // vec3 diffuse =
+    //     texture(sampler2D(gDiffusePositionWTexture, sampler0), uv).xyz;
+
+    vec3 diffuse = bmfrData.diffuse.rgb;
+
+    currentColor = demodulateAlbedo(currentColor, diffuse);
+
+    tmpDataBuffer
+        .data[convertDataBufferTwoDIndexToOneDIndex(index, 10 + BLOCK_OFFSET)] =
+        currentColor.x;
+    tmpDataBuffer
+        .data[convertDataBufferTwoDIndexToOneDIndex(index, 11 + BLOCK_OFFSET)] =
+        currentColor.y;
+    tmpDataBuffer
+        .data[convertDataBufferTwoDIndexToOneDIndex(index, 12 + BLOCK_OFFSET)] =
+        currentColor.z;
+  }
+  groupMemoryBarrierWithGroupSync();
+
+  // handle scaled feature data to out
+  for (int feature_buffer = FEATURES_NOT_SCALED;
+       feature_buffer < FEATURES_COUNT; ++feature_buffer) {
+    uint subVector = 0;
+    float tmpMax = tmpDataBuffer.data[convertDataBufferTwoDIndexToOneDIndex(
+        INBLOCK_ID, feature_buffer + BLOCK_OFFSET)];
+
+    float tmpMin = tmpMax;
+    for (++subVector; subVector < BLOCK_PIXELS / LOCAL_SIZE; ++subVector) {
+      float value = tmpDataBuffer.data[convertDataBufferTwoDIndexToOneDIndex(
+          INBLOCK_ID, feature_buffer + BLOCK_OFFSET)];
+      tmpMax = max(value, tmpMax);
+      tmpMin = min(value, tmpMin);
+    }
+    sumVec[groupThreadId] = tmpMax;
+    groupMemoryBarrierWithGroupSync();
+
+    // parallel reduction find max
+    if (groupThreadId < 128)
+      sumVec[groupThreadId] =
+          max(sumVec[groupThreadId], sumVec[groupThreadId + 128]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 64)
+      sumVec[groupThreadId] =
+          max(sumVec[groupThreadId], sumVec[groupThreadId + 64]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 32)
+      sumVec[groupThreadId] =
+          max(sumVec[groupThreadId], sumVec[groupThreadId + 32]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 16)
+      sumVec[groupThreadId] =
+          max(sumVec[groupThreadId], sumVec[groupThreadId + 16]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 8)
+      sumVec[groupThreadId] =
+          max(sumVec[groupThreadId], sumVec[groupThreadId + 8]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 4)
+      sumVec[groupThreadId] =
+          max(sumVec[groupThreadId], sumVec[groupThreadId + 4]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 2)
+      sumVec[groupThreadId] =
+          max(sumVec[groupThreadId], sumVec[groupThreadId + 2]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId == 0)
+      blockMax = max(sumVec[0], sumVec[1]);
+    groupMemoryBarrierWithGroupSync();
+
+    sumVec[groupThreadId] = tmpMin;
+    groupMemoryBarrierWithGroupSync();
+
+    // parallel reduction find min
+    if (groupThreadId < 128)
+      sumVec[groupThreadId] =
+          min(sumVec[groupThreadId], sumVec[groupThreadId + 128]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 64)
+      sumVec[groupThreadId] =
+          min(sumVec[groupThreadId], sumVec[groupThreadId + 64]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 32)
+      sumVec[groupThreadId] =
+          min(sumVec[groupThreadId], sumVec[groupThreadId + 32]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 16)
+      sumVec[groupThreadId] =
+          min(sumVec[groupThreadId], sumVec[groupThreadId + 16]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 8)
+      sumVec[groupThreadId] =
+          min(sumVec[groupThreadId], sumVec[groupThreadId + 8]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 4)
+      sumVec[groupThreadId] =
+          min(sumVec[groupThreadId], sumVec[groupThreadId + 4]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId < 2)
+      sumVec[groupThreadId] =
+          min(sumVec[groupThreadId], sumVec[groupThreadId + 2]);
+    groupMemoryBarrierWithGroupSync();
+    if (groupThreadId == 0)
+      blockMin = min(sumVec[0], sumVec[1]);
+    groupMemoryBarrierWithGroupSync();
+
+    // normalize feature
+    if (blockMax - blockMin > 1.0) {
+      for (uint subVector = 0; subVector < BLOCK_PIXELS / LOCAL_SIZE;
+           ++subVector) {
+        uint oneDIndex = convertDataBufferTwoDIndexToOneDIndex(
+            INBLOCK_ID, feature_buffer + BLOCK_OFFSET);
+        float tmpData =
+            (tmpDataBuffer.data[oneDIndex] - blockMin) / (blockMax - blockMin);
+
+        outDataBuffer.data[oneDIndex] = tmpData;
+        tmpDataBuffer.data[oneDIndex] = tmpData;
+      }
+    } else {
+      for (uint subVector = 0; subVector < BLOCK_PIXELS / LOCAL_SIZE;
+           ++subVector) {
+        uint oneDIndex = convertDataBufferTwoDIndexToOneDIndex(
+            INBLOCK_ID, feature_buffer + BLOCK_OFFSET);
+        float tmpData = tmpDataBuffer.data[oneDIndex] - blockMin;
+
+        outDataBuffer.data[oneDIndex] = tmpData;
+        tmpDataBuffer.data[oneDIndex] = tmpData;
+      }
+    }
+  }
+
+  // copy noise colors to out
+  for (uint feature_buffer = FEATURES_COUNT; feature_buffer < BUFFER_COUNT;
+       ++feature_buffer) {
+    for (uint subVector = 0; subVector < BLOCK_PIXELS / LOCAL_SIZE;
+         ++subVector) {
+      uint oneDIndex = convertDataBufferTwoDIndexToOneDIndex(
+          INBLOCK_ID, feature_buffer + BLOCK_OFFSET);
+
+      outDataBuffer.data[oneDIndex] = tmpDataBuffer.data[oneDIndex];
+    }
+  }
+  // copy not scaled features to out
+  for (uint feature_buffer = 0; feature_buffer < FEATURES_NOT_SCALED;
+       ++feature_buffer) {
+    for (uint subVector = 0; subVector < BLOCK_PIXELS / LOCAL_SIZE;
+         ++subVector) {
+      uint oneDIndex = convertDataBufferTwoDIndexToOneDIndex(
+          INBLOCK_ID, feature_buffer + BLOCK_OFFSET);
+
+      outDataBuffer.data[oneDIndex] = tmpDataBuffer.data[oneDIndex];
+    }
+  }
+  groupMemoryBarrierWithGroupSync();
+
+  householderQRDecomposition(groupThreadId, groupId);
+
+  calculateFilteredColor(groupThreadId, groupId, horizentalBlocksCount,
+
+                         frameIndex, BLOCK_OFFSETS);
+}

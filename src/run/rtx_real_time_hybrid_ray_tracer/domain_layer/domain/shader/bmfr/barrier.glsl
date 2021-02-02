@@ -1,0 +1,4 @@
+void groupMemoryBarrierWithGroupSync() {
+  groupMemoryBarrier();
+  barrier();
+}

@@ -17,10 +17,14 @@
 
 float max(float f1, float f2, float f3) { return max(max(f1, f2), f3); }
 
-uint computePixelArrayIndex(vec2 uv, vec2 resolution) {
-  const ivec2 pixelIndex = ivec2(floor(uv * resolution));
-
+uint computePixelArrayIndexFromTwoDPixelIndex(ivec2 pixelIndex,
+                                              vec2 resolution) {
   return pixelIndex.y * uint(resolution.x) + pixelIndex.x;
+}
+
+uint computePixelArrayIndex(vec2 uv, vec2 resolution) {
+  return computePixelArrayIndexFromTwoDPixelIndex(ivec2(floor(uv * resolution)),
+                                                  resolution);
 }
 
 vec2 gammaCorrection(vec2 colorInLinearSpace) {
