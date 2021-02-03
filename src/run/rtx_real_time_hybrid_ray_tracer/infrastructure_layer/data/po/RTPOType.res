@@ -8,4 +8,5 @@ type po = {
   pathTracingPass: PathTracingPassRTPOType.pathTracingPass,
   accumulationPass: AccumulationPassRTPOType.accumulationPass,
   bmfrRegressionPass: BMFRRegressionPassRTPOType.bmfrRegressionPass,
+  bmfrPostprocessPass: BMFRPostprocessPassRTPOType.bmfrPostprocessPass,
 }

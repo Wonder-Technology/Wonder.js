@@ -1,35 +1,23 @@
 open Js.Typed_array
 
-let create = () => JobEntity.create("init_accumulation_pass")
+let create = () => JobEntity.create("init_bmfr_postprocess_pass")
 
-// TODO refactor refer toInitAccumulationPassRTJobEntity: let _buildAccumulationPixelBufferData = PassRTDoService.buildPixelBufferData
-let _buildAccumulationPixelBufferData = (window, device) => {
-  let bufferSize =
-    WebGPUCoreDpRunAPI.unsafeGet().window.getWidth(window) *
-    WebGPUCoreDpRunAPI.unsafeGet().window.getHeight(window) *
-    4 *
-    Float32Array._BYTES_PER_ELEMENT
+let _buildPrevNoisyBufferData = PassRTDoService.buildPixelBufferData
 
-  let buffer = StorageBufferVO.createFromDevice(
-    ~device,
-    ~bufferSize,
-    ~usage=lor(
-      WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst,
-      WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
-    ),
-    (),
-  )
+let _buildPrevPositionBufferData = PassRTDoService.buildPixelBufferData
 
-  (buffer, bufferSize)
-}
+let _buildPrevNormalBufferData = PassRTDoService.buildPixelBufferData
 
 let _createAndSetBindGroup = (
   device,
   (
     (resolutionBuffer, resolutionBufferData),
     (pixelBuffer, pixelBufferSize),
+    (bmfrDataBuffer, bmfrDataBufferSize),
     (commonBuffer, commonBufferData),
-    (accumulationPixelBuffer, accumulationPixelBufferSize),
+    (prevNoisyBuffer, prevNoisyBufferSize),
+    (prevPositionBuffer, prevPositionBufferSize),
+    (prevNormalBuffer, prevNormalBufferSize),
   ),
 ) => {
   let bindGroupLayout = WebGPUCoreDpRunAPI.unsafeGet().device.createBindGroupLayout(
@@ -50,11 +38,29 @@ let _createAndSetBindGroup = (
         IWebGPUCoreDp.layoutBinding(
           ~binding=2,
           ~visibility=WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
-          ~type_="uniform-buffer",
+          ~type_="storage-buffer",
           (),
         ),
         IWebGPUCoreDp.layoutBinding(
           ~binding=3,
+          ~visibility=WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
+          ~type_="storage-buffer",
+          (),
+        ),
+        IWebGPUCoreDp.layoutBinding(
+          ~binding=4,
+          ~visibility=WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
+          ~type_="uniform-buffer",
+          (),
+        ),
+        IWebGPUCoreDp.layoutBinding(
+          ~binding=5,
+          ~visibility=WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
+          ~type_="storage-buffer",
+          (),
+        ),
+        IWebGPUCoreDp.layoutBinding(
+          ~binding=6,
           ~visibility=WebGPUCoreDpRunAPI.unsafeGet().shaderStage.fragment,
           ~type_="uniform-buffer",
           (),
@@ -64,7 +70,7 @@ let _createAndSetBindGroup = (
     device,
   )
 
-  AccumulationPassCPRepo.setStaticBindGroupData(
+  BMFRPostprocessPassRTRepo.setStaticBindGroupData(
     0,
     WebGPUCoreDpRunAPI.unsafeGet().device.createBindGroup(
       {
@@ -79,23 +85,45 @@ let _createAndSetBindGroup = (
           ),
           IWebGPUCoreDp.binding(
             ~binding=1,
-            ~buffer=accumulationPixelBuffer,
+            ~buffer=prevNoisyBuffer,
             ~offset=0,
-            ~size=accumulationPixelBufferSize,
+            ~size=prevNoisyBufferSize,
             (),
           ),
           IWebGPUCoreDp.binding(
             ~binding=2,
-            ~buffer=resolutionBuffer,
+            ~buffer=prevPositionBuffer,
             ~offset=0,
-            ~size=resolutionBufferData->PassCPDoService.getResolutionBufferDataSize,
+            ~size=prevPositionBufferSize,
             (),
           ),
           IWebGPUCoreDp.binding(
             ~binding=3,
+            ~buffer=prevNormalBuffer,
+            ~offset=0,
+            ~size=prevNormalBufferSize,
+            (),
+          ),
+          IWebGPUCoreDp.binding(
+            ~binding=4,
+            ~buffer=resolutionBuffer,
+            ~offset=0,
+            ~size=resolutionBufferData->PassRTDoService.getResolutionBufferDataSize,
+            (),
+          ),
+          IWebGPUCoreDp.binding(
+            ~binding=5,
+            ~buffer=bmfrDataBuffer,
+            ~offset=0,
+            ~size=bmfrDataBufferSize,
+            (),
+          ),
+          IWebGPUCoreDp.binding(
+            ~binding=6,
             ~buffer=commonBuffer,
             ~offset=0,
-            ~size=commonBufferData->PassCPDoService.getCommonBufferDataSize,
+            // TODO extract BMFRPassRTDoService.getCommonBufferDataSize
+            ~size=commonBufferData->Uint32Array.byteLength,
             (),
           ),
         ],
@@ -108,17 +136,17 @@ let _createAndSetBindGroup = (
 }
 
 let _createAndSetPipeline = (device, swapChainFormat, bindGroupLayout) => {
-  let baseShaderPath = "src/run/rtx_path_tracer/domain_layer/domain/shader/accumulation"
+  let baseShaderPath = "src/run/rtx_real_time_hybrid_ray_tracer/domain_layer/domain/shader/bmfr/postprocess"
 
   let vertexShaderModule = WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
     {
-      "code": WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(j`$(baseShaderPath)/accumulation.vert`),
+      "code": WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(j`$(baseShaderPath)/postprocess.vert`),
     },
     device,
   )
   let fragmentShaderModule = WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
     {
-      "code": WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(j`$(baseShaderPath)/accumulation.frag`),
+      "code": WebGPUCoreDpRunAPI.unsafeGet().loadGLSL(j`$(baseShaderPath)/postprocess.frag`),
     },
     device,
   )
@@ -144,44 +172,41 @@ let _createAndSetPipeline = (device, swapChainFormat, bindGroupLayout) => {
       (),
     ),
     device,
-  )->AccumulationPassCPRepo.setPipeline
+  )->BMFRPostprocessPassRTRepo.setPipeline
 }
 
 let exec = () =>
   Tuple3.collectOption(
-    WebGPUCPRepo.getWindow(),
-    WebGPUCPRepo.getDevice(),
-    WebGPUCPRepo.getSwapChainFormat(),
+    WebGPURTRepo.getWindow(),
+    WebGPURTRepo.getDevice(),
+    WebGPURTRepo.getSwapChainFormat(),
   )
   ->Result.bind(((window, device, swapChainFormat)) => {
-    // TODO refactor refer toInitAccumulationPassRTJobEntity:
-    // let (accumulationPixelBuffer, accumulationPixelBufferSize) = _buildAccumulationPixelBufferData(
-    //   window,
-    //   device,
-    // )
-    _buildAccumulationPixelBufferData(
-      window,
-      device,
-    )->AccumulationPassCPRepo.setAccumulationPixelBufferData
+    let (prevNoisyBuffer, prevNoisyBufferSize) = _buildPrevNoisyBufferData(window, device)
+    let (prevPositionBuffer, prevPositionBufferSize) = _buildPrevPositionBufferData(window, device)
+    let (prevNormalBuffer, prevNormalBufferSize) = _buildPrevNormalBufferData(window, device)
 
     Tuple4.collectOption(
-      PassCPRepo.getResolutionBufferData(),
-      PassCPRepo.getPixelBufferData(),
-      PassCPRepo.getCommonBufferData(),
-      AccumulationPassCPRepo.getAccumulationPixelBufferData(),
+      PassRTRepo.getResolutionBufferData(),
+      PassRTRepo.getPixelBufferData(),
+      PassRTRepo.getBMFRDataBufferData(),
+      BMFRRegressionPassRTRepo.getCommonBufferData(),
     )->Result.mapSuccess(((
       (resolutionBuffer, resolutionBufferData),
       (pixelBuffer, pixelBufferSize),
+      (bmfrDataBuffer, bmfrDataBufferSize),
       (commonBuffer, commonBufferData),
-      (accumulationPixelBuffer, accumulationPixelBufferSize),
-    ) as allBufferData) =>
+    )) =>
       _createAndSetBindGroup(
         device,
         (
           (resolutionBuffer->UniformBufferVO.value, resolutionBufferData),
           (pixelBuffer->StorageBufferVO.value, pixelBufferSize),
+          (bmfrDataBuffer->StorageBufferVO.value, bmfrDataBufferSize),
           (commonBuffer->UniformBufferVO.value, commonBufferData),
-          (accumulationPixelBuffer->StorageBufferVO.value, accumulationPixelBufferSize),
+          (prevNoisyBuffer->StorageBufferVO.value, prevNoisyBufferSize),
+          (prevPositionBuffer->StorageBufferVO.value, prevPositionBufferSize),
+          (prevNormalBuffer->StorageBufferVO.value, prevNormalBufferSize),
         ),
       )->_createAndSetPipeline(device, swapChainFormat, _)
     )

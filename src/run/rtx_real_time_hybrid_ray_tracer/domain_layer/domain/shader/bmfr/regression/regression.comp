@@ -15,6 +15,7 @@
 #define INBLOCK_ID subVector *LOCAL_SIZE + groupThreadId
 #define BLOCK_OFFSET groupId.x *BUFFER_COUNT
 
+#include "../utils.glsl"
 #include "./barrier.glsl"
 
 layout(local_size_x = 256, local_size_y = 1, local_size_z = 1) in;
@@ -119,11 +120,6 @@ vec3 modulateAlbedo(vec3 currentColor, vec3 diffuse) {
       diffuse.x < minLimit ? currentColor.x : currentColor.x * diffuse.x,
       diffuse.y < minLimit ? currentColor.y : currentColor.y * diffuse.y,
       diffuse.z < minLimit ? currentColor.z : currentColor.z * diffuse.z);
-}
-
-uint convertBufferTwoDIndexToOneDIndex(uint twoDIndexX, uint twoDIndexY,
-                                       uint bufferSizeX) {
-  return twoDIndexY * bufferSizeX + twoDIndexX;
 }
 
 uint convertDataBufferTwoDIndexToOneDIndex(uint twoDIndexX, uint twoDIndexY) {

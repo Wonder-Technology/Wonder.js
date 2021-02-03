@@ -1,28 +1,8 @@
-
-
 open Js.Typed_array
 
 let create = () => JobEntity.create("init_accumulation_pass")
 
-let _buildAccumulationPixelBufferData = (window, device) => {
-  let bufferSize =
-    WebGPUCoreDpRunAPI.unsafeGet().window.getWidth(window) *
-    WebGPUCoreDpRunAPI.unsafeGet().window.getHeight(window) *
-    4 *
-    Float32Array._BYTES_PER_ELEMENT
-
-  let buffer = StorageBufferVO.createFromDevice(
-    ~device,
-    ~bufferSize,
-    ~usage=lor(
-      WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.copy_dst,
-      WebGPUCoreDpRunAPI.unsafeGet().bufferUsage.storage,
-    ),
-    (),
-  )
-
-  (buffer, bufferSize)
-}
+let _buildAccumulationPixelBufferData = PassRTDoService.buildPixelBufferData
 
 let _createAndSetBindGroup = (
   device,
@@ -155,21 +135,26 @@ let exec = () =>
     WebGPURTRepo.getSwapChainFormat(),
   )
   ->Result.bind(((window, device, swapChainFormat)) => {
-    _buildAccumulationPixelBufferData(
+    // _buildAccumulationPixelBufferData(
+    //   window,
+    //   device,
+    // )->AccumulationPassRTRepo.setAccumulationPixelBufferData
+
+    let (accumulationPixelBuffer, accumulationPixelBufferSize) = _buildAccumulationPixelBufferData(
       window,
       device,
-    )->AccumulationPassRTRepo.setAccumulationPixelBufferData
+    )
 
-    Tuple4.collectOption(
+    Tuple3.collectOption(
       PassRTRepo.getResolutionBufferData(),
       PassRTRepo.getPixelBufferData(),
       PassRTRepo.getCommonBufferData(),
-      AccumulationPassRTRepo.getAccumulationPixelBufferData(),
+      // AccumulationPassRTRepo.getAccumulationPixelBufferData(),
     )->Result.mapSuccess(((
       (resolutionBuffer, resolutionBufferData),
       (pixelBuffer, pixelBufferSize),
       (commonBuffer, commonBufferData),
-      (accumulationPixelBuffer, accumulationPixelBufferSize),
+      // (accumulationPixelBuffer, accumulationPixelBufferSize),
     ) as allBufferData) =>
       _createAndSetBindGroup(
         device,

@@ -19,6 +19,7 @@ let create = () => {
             {name: "init_pass", type_: Job},
             {name: "init_pathTracing_pass", type_: Job},
             {name: "init_bmfr_regression_pass", type_: Job},
+            {name: "init_bmfr_postprocess_pass", type_: Job},
             {name: "init_accumulation_pass", type_: Job},
           },
         },
@@ -51,6 +52,7 @@ let create = () => {
             {name: "render_pathTracing_pass", type_: Job},
             {name: "render_bmfr_regression_pass", type_: Job},
             {name: "update_bmfr_regression_pass", type_: Job},
+            {name: "render_bmfr_postprocess_pass", type_: Job},
             {name: "update_accumulation_pass", type_: Job},
             {name: "update_pass_for_render", type_: Job},
             {name: "render_accumulation_pass", type_: Job},
@@ -113,8 +115,11 @@ let create = () => {
     staticBindGroupData: None,
     pipeline: None,
   },
+  bmfrPostprocessPass: {
+    staticBindGroupData: None,
+    pipeline: None,
+  },
   accumulationPass: {
-    accumulationPixelBufferData: None,
     staticBindGroupData: None,
     pipeline: None,
   },

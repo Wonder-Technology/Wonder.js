@@ -24,6 +24,10 @@ let _buildBufferData = (window, device) => {
   (buffer, bufferSize)
 }
 
+let _buildTmdBufferData = _buildBufferData
+
+let _buildOutBufferData = _buildBufferData
+
 let _buildCommonDataBuffer = (window, device) => {
   let bufferData = Uint32Array.make([
     0,
@@ -144,7 +148,7 @@ let _createAndSetBindGroup = (
 }
 
 let _createAndSetPipeline = (device, bindGroupLayout) => {
-  let baseShaderPath = "src/run/rtx_real_time_hybrid_ray_tracer/domain_layer/domain/shader/bmfr"
+  let baseShaderPath = "src/run/rtx_real_time_hybrid_ray_tracer/domain_layer/domain/shader/bmfr/regression"
 
   let computeShaderModule = WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
     {
@@ -172,12 +176,10 @@ let exec = () =>
     window,
     device,
   )) => {
-    // _buildBufferData(window, device)->BMFRRegressionPassRTRepo.setTmdBufferData
-    // _buildBufferData(window, device)->BMFRRegressionPassRTRepo.setOutBufferData
     _buildCommonDataBuffer(window, device)->BMFRRegressionPassRTRepo.setCommonBufferData
 
-    let (tmdBuffer, tmdBufferSize) = _buildBufferData(window, device)
-    let (outBuffer, outBufferSize) = _buildBufferData(window, device)
+    let (tmdBuffer, tmdBufferSize) = _buildTmdBufferData(window, device)
+    let (outBuffer, outBufferSize) = _buildOutBufferData(window, device)
 
     Tuple4.collectOption(
       PassRTRepo.getResolutionBufferData(),

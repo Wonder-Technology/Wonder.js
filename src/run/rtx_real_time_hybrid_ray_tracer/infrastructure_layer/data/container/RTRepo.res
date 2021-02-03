@@ -105,3 +105,15 @@ let setBMFRRegressionPass = bmfrRegressionPass => {
 
   {...po, bmfrRegressionPass: bmfrRegressionPass}->RTContainerManager.setPO
 }
+
+let getBMFRPostprocessPass = () => {
+  let po = RTContainerManager.getPO()
+
+  po.bmfrPostprocessPass
+}
+
+let setBMFRPostprocessPass = bmfrPostprocessPass => {
+  let po = RTContainerManager.getPO()
+
+  {...po, bmfrPostprocessPass: bmfrPostprocessPass}->RTContainerManager.setPO
+}

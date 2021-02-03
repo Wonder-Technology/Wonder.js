@@ -1,16 +1,16 @@
 
 
-let getAccumulationPixelBufferData = () =>
-  RTRepo.getAccumulationPass().accumulationPixelBufferData->OptionSt.map(((buffer, bufferSize)) => (
-    buffer->StorageBufferVO.create,
-    bufferSize,
-  ))
+// let getAccumulationPixelBufferData = () =>
+//   RTRepo.getAccumulationPass().accumulationPixelBufferData->OptionSt.map(((buffer, bufferSize)) => (
+//     buffer->StorageBufferVO.create,
+//     bufferSize,
+//   ))
 
-let setAccumulationPixelBufferData = ((buffer, bufferSize)) =>
-  RTRepo.setAccumulationPass({
-    ...RTRepo.getAccumulationPass(),
-    accumulationPixelBufferData: (buffer->StorageBufferVO.value, bufferSize)->Some,
-  })
+// let setAccumulationPixelBufferData = ((buffer, bufferSize)) =>
+//   RTRepo.setAccumulationPass({
+//     ...RTRepo.getAccumulationPass(),
+//     accumulationPixelBufferData: (buffer->StorageBufferVO.value, bufferSize)->Some,
+//   })
 
 let getStaticBindGroupData = () => RTRepo.getAccumulationPass().staticBindGroupData
 
