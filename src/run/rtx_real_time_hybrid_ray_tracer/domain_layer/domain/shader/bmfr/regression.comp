@@ -35,20 +35,20 @@ shared float vecLength;
 // layout(binding = 2) uniform texture2D gNormalMetalnessTexture;
 // layout(binding = 3) uniform texture2D gDiffusePositionWTexture;
 
-layout(std140, set = 1, binding = 0) buffer CurNoisyPixelBuffer {
+layout(std140, set = 0, binding = 0) buffer CurNoisyPixelBuffer {
   vec4 pixels[];
 }
 curNoisyPixelBuffer;
 
 // BLOCK_PIXELS * [(FEATURES_COUNT + color_channels) * blocks]
-layout(scalar, set = 1, binding = 1) buffer TmpDataBuffer { float data[]; }
+layout(scalar, set = 0, binding = 1) buffer TmpDataBuffer { float data[]; }
 tmpDataBuffer;
 
 // where we perform QR decomposition
-layout(scalar, set = 1, binding = 2) buffer OutDataBuffer { float data[]; }
+layout(scalar, set = 0, binding = 2) buffer OutDataBuffer { float data[]; }
 outDataBuffer;
 
-layout(set = 1, binding = 3) uniform ScreenDimension { vec2 resolution; }
+layout(set = 0, binding = 3) uniform ScreenDimension { vec2 resolution; }
 screenDimension;
 
 struct BMFRData {
@@ -56,12 +56,12 @@ struct BMFRData {
   vec4 worldNormal;
   vec4 diffuse;
 };
-layout(std140, set = 1, binding = 4) buffer BMFRDataBuffer {
+layout(std140, set = 0, binding = 4) buffer BMFRDataBuffer {
   BMFRData bmfrDataArr[];
 }
 bmfrDataBuffer;
 
-layout(std140, set = 1, binding = 5) uniform CommonData {
+layout(std140, set = 0, binding = 5) uniform CommonData {
   uint frameIndex;
   uint horizentalBlocksCount;
   uint pad_0;

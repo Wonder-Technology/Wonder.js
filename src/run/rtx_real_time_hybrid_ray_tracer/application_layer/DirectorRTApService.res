@@ -16,7 +16,8 @@ let prepare = (~pictureSize) => {
   _injectDependencies()
 
   PictureRTDoService.setSize(pictureSize)
-  // PassRTDoService.setSampleCount(sampleCount)
+
+  PassRTDoService.setSampleCount(1)
 }
 
 let _parseAndSetPipelineStream = pipelineData => pipelineData->PipelineRunAPI.parsePipelineData

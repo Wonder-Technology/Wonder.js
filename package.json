@@ -1,6 +1,6 @@
 {
   "name": "wonder.js",
-  "version": "2.0.0-alpha.6.3",
+  "version": "2.0.0-alpha.6.4",
   "authors": "Wonder",
   "description": "",
   "homepage": "https://github.com/Wonder-Technology/Wonder.js",
@@ -36,3 +36,4 @@
     "bs-platform": "^8.3.3"
   }
 }
+

@@ -27,10 +27,12 @@ void main() {
   const ivec2 ipos = ivec2(gl_LaunchIDEXT.xy);
   const ivec2 resolution = ivec2(gl_LaunchSizeEXT.xy);
 
-  const uint sampleCount = pushC.sampleCount;
+  // const uint sampleCount = pushC.sampleCount;
+  const uint sampleCount = 1;
   const uint totalSampleCount = pushC.totalSampleCount;
 
-  const uint bounceCount = 5;
+  // const uint bounceCount = 5;
+  const uint bounceCount = 3;
 
   prd.seed = tea(tea(ipos.x, ipos.y), totalSampleCount);
 
