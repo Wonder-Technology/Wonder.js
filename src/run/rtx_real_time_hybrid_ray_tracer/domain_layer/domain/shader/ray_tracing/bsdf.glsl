@@ -248,9 +248,14 @@ vec3 evalBRDF(inout uint seed, in vec3 L, in vec3 N, in vec3 V,
 
   vec3 radiance =
       (1.0 - shading.transmission) *
-      (_evalDiffuseBRDF(shading.baseColor, shading.metallic, shading.roughness,
+      (_evalDiffuseBRDF(shading.baseColor, shading.metallic,
+      shading.roughness,
                         dielectricSpecularF0, F) +
        _evalSpecularBRDF(NdotL, NdotV, NDF, G, F, epsilon));
+  // vec3 radiance =
+  //     (1.0 - shading.transmission) *
+  //     (_evalDiffuseBRDF(shading.baseColor, shading.metallic, shading.roughness,
+  //                       dielectricSpecularF0, F));
 
   return _affectByLight(NdotL, radiance);
 }

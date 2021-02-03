@@ -19,8 +19,8 @@ let _getUpdatePipelineJobs = () => list{
 let _getRenderPipelineJobs = () => list{
   (RenderPathTracingPassRTJobEntity.create(), RenderPathTracingPassRTJobEntity.exec),
   (RenderBMFRRegressionPassRTJobEntity.create(), RenderBMFRRegressionPassRTJobEntity.exec),
-  (UpdateBMFRRegressionPassRTJobEntity.create(), UpdateBMFRRegressionPassRTJobEntity.exec),
   (RenderBMFRPostprocessPassRTJobEntity.create(), RenderBMFRPostprocessPassRTJobEntity.exec),
+  (UpdateBMFRRegressionPassRTJobEntity.create(), UpdateBMFRRegressionPassRTJobEntity.exec),
   (UpdateAccumulationPassRTJobEntity.create(), UpdateAccumulationPassRTJobEntity.exec),
   (UpdatePassForRenderRTJobEntity.create(), UpdatePassForRenderRTJobEntity.exec),
   (RenderAccumulationPassRTJobEntity.create(), RenderAccumulationPassRTJobEntity.exec),

@@ -1,5 +1,8 @@
 open Js.Typed_array
 
+// TODO refactor: move commonBufferData to bmfr pass po
+// TODO refactor: rename UpdateBMFRRegressionPassRTJobEntity  to UpdateBMFRPassRTJobEntity
+
 let create = () => JobEntity.create("update_bmfr_regression_pass")
 
 let _updateFrameIndex = () => {

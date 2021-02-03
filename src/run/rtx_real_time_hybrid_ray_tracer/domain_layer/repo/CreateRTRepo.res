@@ -51,8 +51,8 @@ let create = () => {
           elements: list{
             {name: "render_pathTracing_pass", type_: Job},
             {name: "render_bmfr_regression_pass", type_: Job},
-            {name: "update_bmfr_regression_pass", type_: Job},
             {name: "render_bmfr_postprocess_pass", type_: Job},
+            {name: "update_bmfr_regression_pass", type_: Job},
             {name: "update_accumulation_pass", type_: Job},
             {name: "update_pass_for_render", type_: Job},
             {name: "render_accumulation_pass", type_: Job},
