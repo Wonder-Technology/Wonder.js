@@ -57,7 +57,7 @@ let _ = describe("test init_pathTracing job", () => {
   describe("create shader binding table and set to po", () => {
     testPromise("create all shader modules", () => {
       let ((device, _), _) = _prepare(sandbox)
-      let baseShaderPath = "src/domain_layer/domain/shader/ray_tracing"
+      let baseShaderPath = "src/construct/rtx_path_tracer/domain_layer/domain/shader/ray_tracing"
       let buffer = WebGPUDependencyTool.createBufferObject()
       let rayGenGLSL = "a1"
       let rayRChitGLSL = "a2"

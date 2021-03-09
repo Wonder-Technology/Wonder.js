@@ -51,7 +51,7 @@ let _buildDirectionLightBufferData = (device, sceneGameObject) => Contract.requi
   )
 
 let _createShaderBindingTable = device => {
-  let baseShaderPath = "src/domain_layer/domain/shader/ray_tracing"
+  let baseShaderPath = "src/construct/rtx_path_tracer/domain_layer/domain/shader/ray_tracing"
 
   let rayGenShaderModule = WebGPUCoreDpRunAPI.unsafeGet().device.createShaderModule(
     {
