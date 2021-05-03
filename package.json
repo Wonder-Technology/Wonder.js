@@ -64,28 +64,28 @@
     "puppeteer": "1.17.0",
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0",
-    "wonder-benchmark": "^0.2.13",
+    "wonder-benchmark": "0.2.13",
     "wonder-bs-jest": "0.3.0",
     "wonder-bs-sinon": "0.1.9",
-    "wonder-generate-index": "0.1.0",
-    "wonder-glsl-compiler": "^0.1.14",
-    "wonder-render-test": "^0.1.27"
+    "wonder-generate-index": "0.1.2",
+    "wonder-glsl-compiler": "0.1.15",
+    "wonder-render-test": "0.1.27"
   },
   "dependencies": {
-    "bs-fetch": "^0.3.0",
-    "wonder-bs-json": "^0.0.1",
-    "wonder-bs-most": "^0.0.3",
-    "wonder-commonlib": "^0.2.32",
-    "wonder-imgui": "^0.0.44",
-    "wonder-log": "^0.2.11",
+    "bs-fetch": "0.3.0",
+    "wonder-bs-json": "0.0.1",
+    "wonder-bs-most": "0.0.3",
+    "wonder-commonlib": "0.2.32",
+    "wonder-imgui": "0.0.44",
+    "wonder-log": "0.2.11",
     "wonder-most-animation-frame": "0.0.3",
-    "wonder-webgl": "^0.0.11"
+    "wonder-webgl": "0.0.11"
   },
   "resolutions": {
-    "wonder-log": "^0.2.11",
-    "wonder-webgl": "^0.0.11",
+    "wonder-log": "0.2.11",
+    "wonder-webgl": "0.0.11",
     "wonder-commonlib": "0.2.32",
     "wonder-bs-jest": "0.3.0",
-    "wonder-bs-puppeteer": "^0.1.6"
+    "wonder-bs-puppeteer": "0.1.6"
   }
 }

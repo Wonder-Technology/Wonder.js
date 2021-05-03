@@ -2790,7 +2790,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  contentLengthArr,
                  wdbPathArr |> Js.Array.length,
                  ArrayService.unsafeGetFirst(wdbPathArr)
-                 |> Js.String.includes("test/res/wdb/BoxTextured.wdb"),
+                 |> Js.String.includes("BoxTextured.wdb"),
                )
                |> expect == ([|25036|], [|contentLength|], 1, true)
                |> resolve
