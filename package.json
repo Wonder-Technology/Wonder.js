@@ -67,8 +67,8 @@
     "wonder-benchmark": "0.2.13",
     "wonder-bs-jest": "0.3.0",
     "wonder-bs-sinon": "0.1.9",
-    "wonder-generate-index": "0.1.2",
-    "wonder-glsl-compiler": "0.1.15",
+    "wonder-generate-index": "0.1.3",
+    "wonder-glsl-compiler": "0.1.16",
     "wonder-render-test": "0.1.27"
   },
   "dependencies": {
