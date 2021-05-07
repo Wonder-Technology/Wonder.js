@@ -2,24 +2,24 @@ let getCount = arrs => arrs |> Js.Array.length;
 
 let getPrimitiveData = primitives =>
   primitives[0]
-  |> WonderLog.Contract.ensureCheck(
-       ({attributes, indices}: GLTFType.primitive) =>
-         WonderLog.(
-           Contract.(
-             Operators.(
-               test(
-                 Log.buildAssertMessage(
-                   ~expect={j|indices exist|j},
-                   ~actual={j|not|j},
-                 ),
-                 () =>
-                 indices |> Js.Option.isSome |> assertTrue
-               )
-             )
-           )
-         ),
-       IsDebugMainService.getIsDebug(StateDataMain.stateData),
-     );
+  // |> WonderLog.Contract.ensureCheck(
+  //      ({attributes, indices}: GLTFType.primitive) =>
+  //        WonderLog.(
+  //          Contract.(
+  //            Operators.(
+  //              test(
+  //                Log.buildAssertMessage(
+  //                  ~expect={j|indices exist|j},
+  //                  ~actual={j|not|j},
+  //                ),
+  //                () =>
+  //                indices |> Js.Option.isSome |> assertTrue
+  //              )
+  //            )
+  //          )
+  //        ),
+  //      IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  //    );
 
 /* let isBase64 = str =>
    [%re

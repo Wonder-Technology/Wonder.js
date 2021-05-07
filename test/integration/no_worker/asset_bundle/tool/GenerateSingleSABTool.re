@@ -3,7 +3,7 @@ let prepare = sandbox => PrepareABTool.prepare(sandbox);
 module SceneAssetBundleContent = {
   open WDType;
 
-  let getSceneAssetBundleContent = sab: SABType.sceneAssetBundleContent => {
+  let getSceneAssetBundleContent = (sab): SABType.sceneAssetBundleContent => {
     let (wdFileContent, _, buffer) =
       BufferUtils.decodeWDB(sab, AssembleWholeWDBSystem.checkWDB);
 
@@ -29,7 +29,7 @@ module SceneAssetBundleContent = {
         texCoord |> Js.Option.isNone ?
           OptionTool.buildJsonSerializedValueNone() :
           texCoord |> OptionService.unsafeGetJsonSerializedValue,
-      index,
+      index: Some(index),
     }
     ->Some;
 };

@@ -105,7 +105,13 @@ module SAB = {
     ABBufferViewUtils.isNoneAccessorIndex(position)
     && OptionService.isJsonSerializedValueNone(normal)
     && OptionService.isJsonSerializedValueNone(texCoord)
-    && ABBufferViewUtils.isNoneAccessorIndex(index);
+    // TODO has any bug?
+    && (
+      OptionService.isJsonSerializedValueNone(index)
+      || ABBufferViewUtils.isNoneAccessorIndex(
+           index |> OptionService.unsafeGet,
+         )
+    );
 
   let _replaceCreatedGeometryToDependencyGeometry =
       (
@@ -565,12 +571,16 @@ module RAB = {
        )
     |> Most.mergeArray
     |> Most.reduce(
-         ((imageMapByName, imageMapByIndex), (image, imageIndex, name)) => (
-           imageMapByName
-           |> WonderCommonlib.ImmutableHashMapService.set(name, image),
-           imageMapByIndex
-           |> WonderCommonlib.ImmutableSparseMapService.set(imageIndex, image),
-         ),
+         ((imageMapByName, imageMapByIndex), (image, imageIndex, name)) =>
+           (
+             imageMapByName
+             |> WonderCommonlib.ImmutableHashMapService.set(name, image),
+             imageMapByIndex
+             |> WonderCommonlib.ImmutableSparseMapService.set(
+                  imageIndex,
+                  image,
+                ),
+           ),
          (
            WonderCommonlib.ImmutableHashMapService.createEmpty(),
            WonderCommonlib.ImmutableSparseMapService.createEmpty(),
@@ -1115,7 +1125,7 @@ module RAB = {
        );
 
   let convertAttributeStrToRecord =
-      attributeMapStr: ScriptAttributeType.scriptAttribute =>
+      (attributeMapStr): ScriptAttributeType.scriptAttribute =>
     attributeMapStr |> Js.Json.parseExn |> Obj.magic;
 
   let _buildScriptAttributeData =

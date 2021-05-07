@@ -548,7 +548,12 @@ module SAB = {
           uint8ArrayArr,
         ),
       ) =>
-    ABBufferViewUtils.isNoneAccessorIndex(accessor)
+    OptionService.isJsonSerializedValueNone(accessor)
+    || accessor
+    |> Js.Option.isNone
+    || ABBufferViewUtils.isNoneAccessorIndex(
+         accessor |> OptionService.unsafeGet,
+       )
     || All.hasDependencyData(
          name,
          sabRelativePath,
@@ -563,6 +568,8 @@ module SAB = {
         uint8ArrayArr,
       ) :
       {
+        let accessor = accessor |> OptionService.unsafeGet;
+
         let componentType =
           BatchOperateWholeGeometrySystem.getAccessorComponentType(
             sceneAssetBundleContent,
@@ -753,6 +760,8 @@ module SAB = {
           uint8ArrayArr,
         ),
       );
+
+    let indexAccessor = Some(indexAccessor);
 
     (
       (positionAccessor, normalAccessor, texCoordAccessor, indexAccessor),
