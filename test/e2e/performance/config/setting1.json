@@ -25,6 +25,7 @@
         "basic_source_texture_count": 30000,
         "arrayBuffer_view_source_texture_count": 30000,
         "texture_count_per_material": 16,
+        "cubemap_texture_count":64,
         "instance_buffer": {
             "sourceInstance_count": 2,
             "objectInstance_count_per_source_instance": 11000
