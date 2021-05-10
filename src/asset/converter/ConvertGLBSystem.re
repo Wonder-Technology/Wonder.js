@@ -231,8 +231,38 @@ let _checkGLB = dataView => {
   dataView;
 };
 
+let _fixGLTF = (gltf: GLTFType.gltf) => {
+  open GLTFType;
+
+  let nodeMaxIndex = (gltf.nodes |> Js.Array.length) - 1;
+
+  {
+    ...gltf,
+    scenes:
+      gltf.scenes
+      |> Js.Array.map((scene: scene) =>
+           (
+             {
+               ...scene,
+               nodes:
+                 scene.nodes
+                 |> Js.Option.map((. nodes) =>
+                      nodes
+                      |> Js.Array.filter(nodeIndex =>
+                           nodeIndex <= nodeMaxIndex
+                         )
+                    ),
+             }: scene
+           )
+         ),
+  };
+};
+
 let convertGLBData = (gltf: Js.Json.t, binBuffer) =>
-  _convertGLBToWDB(ConvertGLTFJsonToRecordSystem.convert(gltf), binBuffer);
+  _convertGLBToWDB(
+    ConvertGLTFJsonToRecordSystem.convert(gltf)->_fixGLTF,
+    binBuffer,
+  );
 
 let convertGLB = (glb: ArrayBuffer.t) => {
   let (gltfFileContent, binBuffer) = BufferUtils.decodeGLB(glb, _checkGLB);

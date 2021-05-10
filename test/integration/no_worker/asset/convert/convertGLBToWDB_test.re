@@ -2379,4 +2379,49 @@ let _ =
         );
       });
     });
+
+    describe("fix gltf", () =>
+      test("remove scenes->scene->nodes's unexist nodes", () =>
+        ConvertGLBTool.testGLTFResultByGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJson(
+              ~scenes={|  [
+        {
+        "nodes": [0, 1]
+    }
+    ]|},
+              ~nodes=
+                {| [
+        {
+            "matrix": [
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+                0.0,
+                10.0,
+                20.0,
+                30.0,
+                1.0
+            ],
+            "mesh": 0
+        }
+    ]|},
+              (),
+            ),
+          ~state,
+          ~testFunc=
+            ({scene}) => scene.gameObjects |> Js.Array.length |> expect == 1,
+          (),
+        )
+      )
+    );
   });

@@ -796,93 +796,93 @@ let _buildNewGLTF =
   images: newImages,
 };
 
-let _checkPointData = (accessorIndex, (isDuplicate, hasAccessorIndexMap)) =>
-  switch (
-    hasAccessorIndexMap
-    |> WonderCommonlib.MutableSparseMapService.get(accessorIndex)
-  ) {
-  | None => (
-      isDuplicate,
-      hasAccessorIndexMap
-      |> WonderCommonlib.MutableSparseMapService.set(accessorIndex, true),
-    )
+// let _checkPointData = (accessorIndex, (isDuplicate, hasAccessorIndexMap)) =>
+//   switch (
+//     hasAccessorIndexMap
+//     |> WonderCommonlib.MutableSparseMapService.get(accessorIndex)
+//   ) {
+//   | None => (
+//       isDuplicate,
+//       hasAccessorIndexMap
+//       |> WonderCommonlib.MutableSparseMapService.set(accessorIndex, true),
+//     )
 
-  | Some(hasAccessorIndex) => (true, hasAccessorIndexMap)
-  };
+//   | Some(hasAccessorIndex) => (true, hasAccessorIndexMap)
+//   };
 
-let _checkMeshPointDataHasUniqueAccessorIndex = meshes =>
-  WonderLog.(
-    Contract.(
-      test(
-        Log.buildAssertMessage(
-          ~expect={j|mesh -> point data has unique accessorIndex|j},
-          ~actual={j|not|j},
-        ),
-        () => {
-          let hasAccessorIndexMap =
-            WonderCommonlib.MutableSparseMapService.createEmpty();
+// let _checkMeshPointDataHasUniqueAccessorIndex = meshes =>
+//   WonderLog.(
+//     Contract.(
+//       test(
+//         Log.buildAssertMessage(
+//           ~expect={j|mesh -> point data has unique accessorIndex|j},
+//           ~actual={j|not|j},
+//         ),
+//         () => {
+//           let hasAccessorIndexMap =
+//             WonderCommonlib.MutableSparseMapService.createEmpty();
 
-          let (isDuplicate, _hasAccessorIndexMap) =
-            meshes
-            |> WonderCommonlib.ArrayService.reduceOneParam(
-                 (.
-                   (isDuplicate, hasAccessorIndexMap),
-                   {primitives}: GLTFType.mesh,
-                 ) =>
-                   ConvertMultiPrimitivesSystem.isMultiPrimitives(primitives) ?
-                     (isDuplicate, hasAccessorIndexMap) :
-                     {
-                       let (
-                             {attributes, indices, material}: GLTFType.primitive
-                           ) as primitive =
-                         ConvertCommon.getPrimitiveData(primitives);
+//           let (isDuplicate, _hasAccessorIndexMap) =
+//             meshes
+//             |> WonderCommonlib.ArrayService.reduceOneParam(
+//                  (.
+//                    (isDuplicate, hasAccessorIndexMap),
+//                    {primitives}: GLTFType.mesh,
+//                  ) =>
+//                    ConvertMultiPrimitivesSystem.isMultiPrimitives(primitives) ?
+//                      (isDuplicate, hasAccessorIndexMap) :
+//                      {
+//                        let (
+//                              {attributes, indices, material}: GLTFType.primitive
+//                            ) as primitive =
+//                          ConvertCommon.getPrimitiveData(primitives);
 
-                       let (isDuplicate, hasAccessorIndexMap) =
-                         switch (indices) {
-                         | Some(accessorIndex) =>
-                           _checkPointData(
-                             accessorIndex,
-                             (isDuplicate, hasAccessorIndexMap),
-                           )
-                         | _ => (isDuplicate, hasAccessorIndexMap)
-                         };
+//                        let (isDuplicate, hasAccessorIndexMap) =
+//                          switch (indices) {
+//                          | Some(accessorIndex) =>
+//                            _checkPointData(
+//                              accessorIndex,
+//                              (isDuplicate, hasAccessorIndexMap),
+//                            )
+//                          | _ => (isDuplicate, hasAccessorIndexMap)
+//                          };
 
-                       let (isDuplicate, hasAccessorIndexMap) =
-                         _checkPointData(
-                           attributes.position,
-                           (isDuplicate, hasAccessorIndexMap),
-                         );
+//                        let (isDuplicate, hasAccessorIndexMap) =
+//                          _checkPointData(
+//                            attributes.position,
+//                            (isDuplicate, hasAccessorIndexMap),
+//                          );
 
-                       let (isDuplicate, hasAccessorIndexMap) =
-                         switch (attributes.normal) {
-                         | Some(accessorIndex) =>
-                           _checkPointData(
-                             accessorIndex,
-                             (isDuplicate, hasAccessorIndexMap),
-                           )
-                         | _ => (isDuplicate, hasAccessorIndexMap)
-                         };
+//                        let (isDuplicate, hasAccessorIndexMap) =
+//                          switch (attributes.normal) {
+//                          | Some(accessorIndex) =>
+//                            _checkPointData(
+//                              accessorIndex,
+//                              (isDuplicate, hasAccessorIndexMap),
+//                            )
+//                          | _ => (isDuplicate, hasAccessorIndexMap)
+//                          };
 
-                       let (isDuplicate, hasAccessorIndexMap) =
-                         switch (attributes.texCoord_0) {
-                         | Some(accessorIndex) =>
-                           _checkPointData(
-                             accessorIndex,
-                             (isDuplicate, hasAccessorIndexMap),
-                           )
-                         | _ => (isDuplicate, hasAccessorIndexMap)
-                         };
+//                        let (isDuplicate, hasAccessorIndexMap) =
+//                          switch (attributes.texCoord_0) {
+//                          | Some(accessorIndex) =>
+//                            _checkPointData(
+//                              accessorIndex,
+//                              (isDuplicate, hasAccessorIndexMap),
+//                            )
+//                          | _ => (isDuplicate, hasAccessorIndexMap)
+//                          };
 
-                       (isDuplicate, hasAccessorIndexMap);
-                     },
-                 (false, hasAccessorIndexMap),
-               );
+//                        (isDuplicate, hasAccessorIndexMap);
+//                      },
+//                  (false, hasAccessorIndexMap),
+//                );
 
-          isDuplicate |> assertFalse;
-        },
-      )
-    )
-  );
+//           isDuplicate |> assertFalse;
+//         },
+//       )
+//     )
+//   );
 
 let _addMeshAndImageData =
     (
@@ -1018,15 +1018,15 @@ let _addMeshAndImageData =
 
 let buildJsonData =
     (transforms, ({nodes, meshes, images}: GLTFType.gltf) as gltf) => {
-  WonderLog.Contract.requireCheck(
-    () =>
-      WonderLog.(
-        Contract.(
-          Operators.(_checkMeshPointDataHasUniqueAccessorIndex(meshes))
-        )
-      ),
-    IsDebugMainService.getIsDebug(StateDataMain.stateData),
-  );
+  // WonderLog.Contract.requireCheck(
+  //   () =>
+  //     WonderLog.(
+  //       Contract.(
+  //         Operators.(_checkMeshPointDataHasUniqueAccessorIndex(meshes))
+  //       )
+  //     ),
+  //   IsDebugMainService.getIsDebug(StateDataMain.stateData),
+  // );
 
   let activeCameraNodeIndex =
     ConvertCamerasSystem.getActiveCameraNodeIndex(gltf);
