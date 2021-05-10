@@ -28,7 +28,7 @@ type geometry = {
   position: accessorIndex,
   normal: option(accessorIndex),
   texCoord: option(accessorIndex),
-  index: option(accessorIndex),
+  index: accessorIndex,
 };
 
 type perspectiveCameraProjection = {
