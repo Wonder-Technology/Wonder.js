@@ -109,4 +109,118 @@ let _ =
         )
       )
     );
+
+    describe("should dispose gameObjects which are not exist in scene", () => {
+      testPromise("test no children", () =>
+        AssembleWDBSystemTool.testGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJson(
+              ~scenes={|  [
+        {
+        "nodes": [0]
+    }
+    ]|},
+              ~nodes=
+                {| [
+        {
+            "mesh": 0
+        },
+        {
+            "mesh": 0
+        }
+    ]|},
+              (),
+            ),
+          ~state,
+          ~testFunc=
+            ((state, _, (rootGameObject, _))) =>
+              AssembleWDBSystemTool.getAllGameObjects(rootGameObject, state)
+              |> expect
+              == MeshRendererTool.getLightMaterialRenderGameObjectArray(state),
+          (),
+        )
+      );
+      testPromise("test one child", () =>
+        AssembleWDBSystemTool.testGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJson(
+              ~scenes={|  [
+        {
+        "nodes": [0]
+    }
+    ]|},
+              ~nodes=
+                {| [
+        {
+            "mesh": 0,
+            "children": [
+                2
+            ]
+        },
+        {
+            "mesh": 0
+        },
+        {
+            "mesh": 0
+        }
+    ]|},
+              (),
+            ),
+          ~state,
+          ~testFunc=
+            ((state, _, (rootGameObject, _))) =>
+              AssembleWDBSystemTool.getAllGameObjects(rootGameObject, state)
+              |> expect
+              == MeshRendererTool.getLightMaterialRenderGameObjectArray(state),
+          (),
+        )
+      );
+      testPromise("test two children", () =>
+        AssembleWDBSystemTool.testGLTF(
+          ~sandbox=sandbox^,
+          ~embeddedGLTFJsonStr=
+            ConvertGLBTool.buildGLTFJson(
+              ~scenes={|  [
+        {
+        "nodes": [0]
+    }
+    ]|},
+              ~nodes=
+                {| [
+        {
+            "mesh": 0,
+            "children": [
+                2
+            ]
+        },
+        {
+            "mesh": 0,
+            "children": [
+                3,4
+            ]
+        },
+        {
+            "mesh": 0
+        },
+        {
+            "mesh": 0
+        },
+        {
+            "mesh": 0
+        }
+    ]|},
+              (),
+            ),
+          ~state,
+          ~testFunc=
+            ((state, _, (rootGameObject, _))) =>
+              AssembleWDBSystemTool.getAllGameObjects(rootGameObject, state)
+              |> expect
+              == MeshRendererTool.getLightMaterialRenderGameObjectArray(state),
+          (),
+        )
+      );
+    });
   });

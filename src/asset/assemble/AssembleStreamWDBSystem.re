@@ -24,6 +24,13 @@ let assemble = (({buffers}: wd) as wd, default11Image, state) => {
   let (state, rootGameObject) =
     (state, gameObjectArr) |> BuildRootGameObjectSystem.build(wd);
 
+  let state =
+    state
+    |> DisposeGameObjectNotExistInSceneSystem.dispose(
+         rootGameObject,
+         gameObjectArr,
+       );
+
   (
     state,
     rootGameObject,

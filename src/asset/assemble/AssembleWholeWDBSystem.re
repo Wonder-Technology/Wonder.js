@@ -172,6 +172,13 @@ let assembleWDBData =
        let (state, rootGameObject) =
          BuildRootGameObjectSystem.build(wd, (state, gameObjectArr));
 
+       let state =
+         state
+         |> DisposeGameObjectNotExistInSceneSystem.dispose(
+              rootGameObject,
+              gameObjectArr,
+            );
+
        (
          state,
          (
