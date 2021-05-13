@@ -1,6 +1,6 @@
 {
   "name": "wonder.js",
-  "version": "1.2.0-alpha.21",
+  "version": "1.2.0-alpha.22",
   "authors": "Wonder",
   "description": "3d webgl engine",
   "homepage": "https://github.com/Wonder-Technology/Wonder.js",
@@ -73,7 +73,7 @@
   },
   "dependencies": {
     "bs-fetch": "0.3.0",
-    "wonder-bs-json": "0.0.1",
+    "wonder-bs-json": "0.0.3",
     "wonder-bs-most": "0.0.3",
     "wonder-commonlib": "0.2.32",
     "wonder-imgui": "0.0.44",
