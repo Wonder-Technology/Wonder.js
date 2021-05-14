@@ -536,11 +536,15 @@ let buildRenderGroup = RenderGroupAPI.buildRenderGroup;
 
 let initSettedAssets = AssetIMGUIAPI.initSettedAssets;
 
+let removeSettedAssetCustomImageData = AssetIMGUIAPI.removeSettedAssetCustomImageData;
+
 let addSettedAssetCustomImageData = AssetIMGUIAPI.addSettedAssetCustomImageData;
 
 let getSettedAssetCustomImageDataArr = AssetIMGUIAPI.getSettedAssetCustomImageDataArr;
 
 let hasSettedAssetCustomImageData = AssetIMGUIAPI.hasSettedAssetCustomImageData;
+
+let removeSettedAssetBitmapData = AssetIMGUIAPI.removeSettedAssetBitmapData;
 
 let setSettedAssetBitmapData = AssetIMGUIAPI.setSettedAssetBitmapData;
 
@@ -553,6 +557,8 @@ let getSettedAssetBitmapName = AssetIMGUIAPI.getSettedAssetBitmapName;
 let unsafeGetSettedAssetBitmapArrayBuffer = AssetIMGUIAPI.unsafeGetSettedAssetBitmapArrayBuffer;
 
 let getSettedAssetBitmapArrayBuffer = AssetIMGUIAPI.getSettedAssetBitmapArrayBuffer;
+
+let removeSettedAssetFntData = AssetIMGUIAPI.removeSettedAssetFntData;
 
 let setSettedAssetFntData = AssetIMGUIAPI.setSettedAssetFntData;
 
@@ -577,6 +583,8 @@ let getCustomData = ExecIMGUIAPI.getCustomData;
 let unsafeGetExecFunc = ExecIMGUIAPI.unsafeGetExecFunc;
 
 let getExecFunc = ExecIMGUIAPI.getExecFunc;
+
+let getExecFuncDataArr = ExecIMGUIAPI.getExecFuncDataArr;
 
 let clearExecFuncDataArr = ExecIMGUIAPI.clearExecFuncDataArr;
 
@@ -627,6 +635,8 @@ let createAllCustomStyleData = ExtendIMGUIAPI.createAllCustomStyleData;
 let removeCustomControl = ExtendIMGUIAPI.removeCustomControl;
 
 let registerCustomControl = ExtendIMGUIAPI.registerCustomControl;
+
+let unsafeGetCustomControl = ExtendIMGUIAPI.unsafeGetCustomControl;
 
 let hasCustomControl = ExtendIMGUIAPI.hasCustomControl;
 
