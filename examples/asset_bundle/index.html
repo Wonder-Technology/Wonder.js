@@ -334,17 +334,17 @@
                 var scriptAttribute1 =
                     wd.addScriptAttributeFieldJsObj(
                         "a", {
-                            "type": "int",
-                            "defaultValue": 0
-                        },
+                        "type": "int",
+                        "defaultValue": 0
+                    },
                         scriptAttribute1
                     );
                 var scriptAttribute1 =
                     wd.addScriptAttributeFieldJsObj(
                         "b", {
-                            "type": "float",
-                            "defaultValue": 0.1
-                        },
+                        "type": "float",
+                        "defaultValue": 0.1
+                    },
                         scriptAttribute1
                     );
 
@@ -436,7 +436,7 @@
 
 
 
-                    var [state, rab1] =
+                    var rab1 =
                         wd.generateSingleRAB(
                             wd.buildResourceData(
                                 [],
@@ -447,6 +447,7 @@
                                         0
                                     ]
                                 ],
+                                [],
                                 [
                                     sphereGeometry
                                 ],
@@ -468,14 +469,15 @@
                                         image1Name,
                                         mimeType1
                                     ]
-                                ]
+                                ],
+                                []
                             ),
                             state
                         );
 
 
 
-                    var [state, rab2] =
+                    var rab2 =
                         wd.generateSingleRAB(
                             wd.buildResourceData(
                                 [],
@@ -488,6 +490,7 @@
                                         0
                                     ]
                                 ],
+                                [],
                                 [
                                     sphereGeometry
                                 ],
@@ -501,14 +504,15 @@
                                         image2Name,
                                         mimeType2
                                     ]
-                                ]
+                                ],
+                                []
                             ),
                             state
                         );
 
 
 
-                    var [state, rab3] =
+                    var rab3 =
                         wd.generateSingleRAB(
                             wd.buildResourceData(
                                 [],
@@ -516,6 +520,7 @@
                                 ],
                                 [
                                 ],
+                                [],
                                 [
                                     sphereGeometry
                                 ],
@@ -523,6 +528,7 @@
                                 ],
                                 [
                                 ],
+                                [],
                                 [
                                 ]
                             ),
@@ -534,10 +540,11 @@
 
 
 
-                    var [state, sab1] =
+                    var sab1 =
                         wd.generateSingleSAB(
                             wd.getSceneGameObject(state),
                             [],
+                            true,
                             state
                         );
 
@@ -641,7 +648,6 @@
                                 },
                             }
                         )
-
 
 
                 }, 500)
