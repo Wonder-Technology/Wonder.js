@@ -152,6 +152,7 @@ let batchDispose =
     |> DisposeComponentGameObjectMainService.batchDisposePerspectiveCameraProjectionComponent(
          state,
        );
+
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetArcballCameraControllerComponent(
@@ -160,6 +161,16 @@ let batchDispose =
     |> DisposeComponentGameObjectMainService.batchDisposeArcballCameraControllerComponent(
          state,
        );
+
+  let state =
+    state
+    |> BatchGetComponentGameObjectMainService.batchGetFlyCameraControllerComponent(
+         uidArray,
+       )
+    |> DisposeComponentGameObjectMainService.batchDisposeFlyCameraControllerComponent(
+         state,
+       );
+
   let state =
     state
     |> BatchGetComponentGameObjectMainService.batchGetMeshRendererComponent(

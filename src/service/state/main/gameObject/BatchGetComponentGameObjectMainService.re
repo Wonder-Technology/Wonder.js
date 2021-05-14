@@ -24,6 +24,10 @@ let batchGetArcballCameraControllerComponent =
     (uidArray: array(int), {gameObjectRecord} as state) =>
   batchGetComponent(uidArray, gameObjectRecord.arcballCameraControllerMap);
 
+let batchGetFlyCameraControllerComponent =
+    (uidArray: array(int), {gameObjectRecord} as state) =>
+  batchGetComponent(uidArray, gameObjectRecord.flyCameraControllerMap);
+
 let batchGetTransformComponent = (uidArray: array(int), {gameObjectRecord}) =>
   batchGetComponent(uidArray, gameObjectRecord.transformMap);
 
