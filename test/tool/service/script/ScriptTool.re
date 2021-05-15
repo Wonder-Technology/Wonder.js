@@ -206,6 +206,63 @@ module API = {
   };
 };
 
+module TestCaseWithOneEventFuncStub = {
+  let buildScriptEventFunctionData = (~initFunc, ~updateFunc, ~disposeFunc) =>
+    ScriptEventFunctionAPI.createScriptEventFunctionData(
+      buildEventFunctionJsObj(~initFunc, ~updateFunc, ~disposeFunc, ()),
+    );
+
+  let buildScriptData =
+      (
+        ~script,
+        ~state,
+        ~sandbox,
+        ~initFuncStub=Sinon.createEmptyStubWithJsObjSandbox(sandbox),
+        ~updateFuncStub=Sinon.createEmptyStubWithJsObjSandbox(sandbox),
+        ~disposeFuncStub=Sinon.createEmptyStubWithJsObjSandbox(sandbox),
+        (),
+      ) => {
+    let scriptEventFunctionData =
+      buildScriptEventFunctionData(
+        ~initFunc=
+          Some(
+            (. script, api, state) => {
+              initFuncStub(.);
+
+              state;
+            },
+          ),
+        ~updateFunc=
+          Some(
+            (. script, api, state) => {
+              updateFuncStub(.);
+
+              state;
+            },
+          ),
+        ~disposeFunc=
+          Some(
+            (. script, api, state) => {
+              disposeFuncStub(.);
+
+              state;
+            },
+          ),
+      );
+    let scriptEventFunctionDataName = "scriptEventFunctionData1";
+
+    let state =
+      ScriptAPI.addScriptEventFunctionData(
+        script,
+        scriptEventFunctionDataName,
+        scriptEventFunctionData,
+        state,
+      );
+
+    state;
+  };
+};
+
 module TestCaseWithOneEventFuncAndOneAttribute = {
   let buildScriptEventFunctionData = (~initFunc, ~updateFunc, ~disposeFunc) =>
     ScriptEventFunctionAPI.createScriptEventFunctionData(
@@ -241,24 +298,24 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
   let getScriptAttributeName = () => "scriptAttribute1";
 
   /* let buildScriptData = (script, state) => {
-       let scriptAttributeName = getScriptAttributeName();
-       let scriptEventFunctionData =
-         buildScriptEventFunctionData(~scriptAttributeName, ());
-       let scriptAttribute = buildScriptAttribute(scriptAttributeName);
-       let state =
-         ScriptAPI.addScriptAttribute(
-           script,
-           scriptAttributeName,
-           scriptAttribute,
-           state,
-         );
+        let scriptAttributeName = getScriptAttributeName();
+        let scriptEventFunctionData =
+          buildScriptEventFunctionData(~scriptAttributeName, ());
+        let scriptAttribute = buildScriptAttribute(scriptAttributeName);
+        let state =
+          ScriptAPI.addScriptAttribute(
+            script,
+            scriptAttributeName,
+            scriptAttribute,
+            state,
+          );
 
-       let scriptEventFunctionDataName = "scriptEventFunctionData1";
+        let scriptEventFunctionDataName = "scriptEventFunctionData1";
 
-       let state =
-         ScriptAPI.addScriptEventFunctionData(
-           script,
-           scriptEventFunctionDataName,
+        let state =
+          ScriptAPI.addScriptEventFunctionData(
+            script,
+            scriptEventFunctionDataName,
            scriptEventFunctionData,
            state,
          );
@@ -343,10 +400,12 @@ module TestCaseWithOneEventFuncAndOneAttribute = {
           script,
           scriptAttributeName,
           "b",
-          API.unsafeGetScriptAttributeFloatFieldValue(
-            api,
-            "b",
-            scriptAttribute,
+          (
+            API.unsafeGetScriptAttributeFloatFieldValue(
+              api,
+              "b",
+              scriptAttribute,
+            )
           )
           +. 10.,
           state,

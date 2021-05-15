@@ -1,4 +1,6 @@
 let execJob = (deviceManagerRecord) =>
+{
+let gl = [@bs] AllDeviceManagerService.unsafeGetGl(deviceManagerRecord);
   AllDeviceManagerService.setSide(
     [@bs] AllDeviceManagerService.unsafeGetGl(deviceManagerRecord),
     FRONT,
@@ -8,3 +10,4 @@ let execJob = (deviceManagerRecord) =>
        [@bs] AllDeviceManagerService.unsafeGetGl(deviceManagerRecord),
        true
      );
+}

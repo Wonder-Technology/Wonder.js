@@ -86,59 +86,64 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             |}
       ];
 
-      let _buildChunkData = (~arrayBuffer, ~done_=false, ()) =>
-        {
-          "done": done_,
-          "value":
-            switch (arrayBuffer) {
-            | Some(arrayBuffer) => arrayBuffer |> Uint8Array.fromBuffer
-            | None => Obj.magic(-1)
-            },
-        }
-        |> resolve;
+      // let LoadStreamWDBTool.buildChunkData = (~arrayBuffer, ~done_=false, ()) =>
+      //   {
+      //     "done": done_,
+      //     "value":
+      //       switch (arrayBuffer) {
+      //       | Some(arrayBuffer) => arrayBuffer |> Uint8Array.fromBuffer
+      //       | None => Obj.magic(-1)
+      //       },
+      //   }
+      //   |> resolve;
 
-      let _buildController = sandbox => {
-        "close": createEmptyStubWithJsObjSandbox(sandbox),
-      };
+      // let LoadStreamWDBTool.getDefault11Image = () =>
+      //   TextureTool.buildSource(~name="default", ());
 
-      let _buildReader = readStub => {"read": readStub |> Obj.magic};
+      // let LoadStreamWDBTool.prepareWithReadStub = (sandbox, readStub, state) => {
+      //   let default11Image = LoadStreamWDBTool.getDefault11Image();
 
-      let _getDefault11Image = () =>
-        TextureTool.buildSource(~name="default", ());
+      //   StateAPI.setState(state) |> ignore;
 
-      let _prepareWithReadStub = (sandbox, readStub, state) => {
-        let default11Image = _getDefault11Image();
+      //   let handleBeforeStartLoop = (state, rootGameObject) => {
+      //     let (state, _, _) = DirectionLightTool.createGameObject(state);
+      //     let (state, _, _, _) = CameraTool.createCameraGameObject(state);
 
-        StateAPI.setState(state) |> ignore;
+      //     state;
+      //   };
 
-        let handleBeforeStartLoop = (state, rootGameObject) => {
-          let (state, _, _) = DirectionLightTool.createGameObject(state);
-          let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+      //   let handleWhenDoneFunc = (state, rootGameObject) => state;
 
-          state;
-        };
-
-        let handleWhenDoneFunc = (state, rootGameObject) => state;
-
-        (
-          default11Image,
-          readStub,
-          handleBeforeStartLoop,
-          handleWhenDoneFunc,
-          state,
-        );
-      };
+      //   (
+      //     default11Image,
+      //     readStub,
+      //     handleBeforeStartLoop,
+      //     handleWhenDoneFunc,
+      //     state,
+      //   );
+      // };
 
       let _prepare = (sandbox, wdbArrayBuffer, state) => {
         let readStub = createEmptyStubWithJsObjSandbox(sandbox);
         let readStub =
           readStub
           |> onCall(0)
-          |> returns(_buildChunkData(~arrayBuffer=wdbArrayBuffer->Some, ()))
+          |> returns(
+               LoadStreamWDBTool.buildChunkData(
+                 ~arrayBuffer=wdbArrayBuffer->Some,
+                 (),
+               ),
+             )
           |> onCall(1)
-          |> returns(_buildChunkData(~arrayBuffer=None, ~done_=true, ()));
+          |> returns(
+               LoadStreamWDBTool.buildChunkData(
+                 ~arrayBuffer=None,
+                 ~done_=true,
+                 (),
+               ),
+             );
 
-        _prepareWithReadStub(sandbox, readStub, state);
+        LoadStreamWDBTool.prepareWithReadStub(sandbox, readStub, state);
       };
 
       let _getBoxTexturedMeshGameObject = (rootGameObject, state) =>
@@ -187,7 +192,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             readStub
             |> onCall(0)
             |> returns(
-                 _buildChunkData(
+                 LoadStreamWDBTool.buildChunkData(
                    ~arrayBuffer=
                      (
                        boxTexturedWDBArrayBuffer^
@@ -199,7 +204,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                )
             |> onCall(1)
             |> returns(
-                 _buildChunkData(
+                 LoadStreamWDBTool.buildChunkData(
                    ~arrayBuffer=
                      (
                        boxTexturedWDBArrayBuffer^
@@ -210,9 +215,15 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                  ),
                )
             |> onCall(2)
-            |> returns(_buildChunkData(~arrayBuffer=None, ~done_=true, ()));
+            |> returns(
+                 LoadStreamWDBTool.buildChunkData(
+                   ~arrayBuffer=None,
+                   ~done_=true,
+                   (),
+                 ),
+               );
 
-          _prepareWithReadStub(sandbox, readStub, state);
+          LoadStreamWDBTool.prepareWithReadStub(sandbox, readStub, state);
         };
 
         testPromise("trigger when load each chunk data", () => {
@@ -246,12 +257,12 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           LoadStreamWDBTool.readWithHandleWhenLoadingFunc(
             (
               default11Image,
-              _buildController(sandbox),
+              LoadStreamWDBTool.buildController(sandbox),
               (contentLength, wdbPath, handleWhenLoadingFunc),
               handleBeforeStartLoop,
               handleWhenDoneFunc,
             ),
-            _buildReader(readStub),
+            LoadStreamWDBTool.buildReader(readStub),
           )
           |> then_(() =>
                (totalLoadedByteLengthArr, contentLengthArr, wdbPathArr)
@@ -290,11 +301,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             LoadStreamWDBTool.read(
               (
                 default11Image,
-                _buildController(sandbox),
+                LoadStreamWDBTool.buildController(sandbox),
                 handleBeforeStartLoop,
                 handleWhenDoneFunc,
               ),
-              _buildReader(readStub),
+              LoadStreamWDBTool.buildReader(readStub),
             )
             |> then_(() => {
                  let state = StateAPI.unsafeGetState();
@@ -426,11 +437,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           LoadStreamWDBTool.read(
             (
               default11Image,
-              _buildController(sandbox),
+              LoadStreamWDBTool.buildController(sandbox),
               handleBeforeStartLoop,
               handleWhenDoneFunc,
             ),
-            _buildReader(readStub),
+            LoadStreamWDBTool.buildReader(readStub),
           )
           |> then_(() => {
                let state = StateAPI.unsafeGetState();
@@ -470,11 +481,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           LoadStreamWDBTool.read(
             (
               default11Image,
-              _buildController(sandbox),
+              LoadStreamWDBTool.buildController(sandbox),
               handleBeforeStartLoop,
               handleWhenDoneFunc,
             ),
-            _buildReader(readStub),
+            LoadStreamWDBTool.buildReader(readStub),
           )
           |> then_(() => {
                let state = StateAPI.unsafeGetState();
@@ -516,11 +527,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           LoadStreamWDBTool.read(
             (
               default11Image,
-              _buildController(sandbox),
+              LoadStreamWDBTool.buildController(sandbox),
               handleBeforeStartLoop,
               handleWhenDoneFunc,
             ),
-            _buildReader(readStub),
+            LoadStreamWDBTool.buildReader(readStub),
           )
           |> then_(() => {
                let state = StateAPI.unsafeGetState();
@@ -609,11 +620,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             LoadStreamWDBTool.read(
               (
                 default11Image,
-                _buildController(sandbox),
+                LoadStreamWDBTool.buildController(sandbox),
                 handleBeforeStartLoop,
                 handleWhenDoneFunc,
               ),
-              _buildReader(readStub),
+              LoadStreamWDBTool.buildReader(readStub),
             )
             |> then_(() => {
                  let state = StateAPI.unsafeGetState();
@@ -686,11 +697,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               LoadStreamWDBTool.read(
                 (
                   default11Image,
-                  _buildController(sandbox),
+                  LoadStreamWDBTool.buildController(sandbox),
                   handleBeforeStartLoop,
                   handleWhenDoneFunc,
                 ),
-                _buildReader(readStub),
+                LoadStreamWDBTool.buildReader(readStub),
               )
               |> then_(() => {
                    let state = StateAPI.unsafeGetState();
@@ -796,11 +807,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               LoadStreamWDBTool.read(
                 (
                   default11Image,
-                  _buildController(sandbox),
+                  LoadStreamWDBTool.buildController(sandbox),
                   handleBeforeStartLoop,
                   handleWhenDoneFunc,
                 ),
-                _buildReader(readStub),
+                LoadStreamWDBTool.buildReader(readStub),
               )
               |> then_(() => {
                    let state = StateAPI.unsafeGetState();
@@ -911,11 +922,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               LoadStreamWDBTool.read(
                 (
                   default11Image,
-                  _buildController(sandbox),
+                  LoadStreamWDBTool.buildController(sandbox),
                   handleBeforeStartLoop,
                   handleWhenDoneFunc,
                 ),
-                _buildReader(readStub),
+                LoadStreamWDBTool.buildReader(readStub),
               )
               |> then_(() => {
                    let state = StateAPI.unsafeGetState();
@@ -1032,11 +1043,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
               LoadStreamWDBTool.read(
                 (
                   default11Image,
-                  _buildController(sandbox),
+                  LoadStreamWDBTool.buildController(sandbox),
                   handleBeforeStartLoop,
                   handleWhenDoneFunc,
                 ),
-                _buildReader(readStub),
+                LoadStreamWDBTool.buildReader(readStub),
               )
               |> then_(() => {
                    let state = StateAPI.unsafeGetState();
@@ -1120,11 +1131,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                 LoadStreamWDBTool.read(
                   (
                     default11Image,
-                    _buildController(sandbox),
+                    LoadStreamWDBTool.buildController(sandbox),
                     handleBeforeStartLoop,
                     handleWhenDoneFunc,
                   ),
-                  _buildReader(readStub),
+                  LoadStreamWDBTool.buildReader(readStub),
                 )
                 |> then_(() => {
                      let state = StateAPI.unsafeGetState();
@@ -1196,7 +1207,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                       readStub
                       |> onCall(0)
                       |> returns(
-                           _buildChunkData(
+                           LoadStreamWDBTool.buildChunkData(
                              ~arrayBuffer=
                                (
                                  skyboxWDBArrayBuffer^
@@ -1211,7 +1222,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          )
                       |> onCall(1)
                       |> returns(
-                           _buildChunkData(
+                           LoadStreamWDBTool.buildChunkData(
                              ~arrayBuffer=
                                (
                                  cesiumMilkTruckWDBArrayBuffer^
@@ -1226,7 +1237,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          )
                       |> onCall(2)
                       |> returns(
-                           _buildChunkData(
+                           LoadStreamWDBTool.buildChunkData(
                              ~arrayBuffer=
                                (
                                  skyboxWDBArrayBuffer^
@@ -1238,14 +1249,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                          )
                       |> onCall(3)
                       |> returns(
-                           _buildChunkData(
+                           LoadStreamWDBTool.buildChunkData(
                              ~arrayBuffer=None,
                              ~done_=true,
                              (),
                            ),
                          );
 
-                    _prepareWithReadStub(sandbox, readStub, state);
+                    LoadStreamWDBTool.prepareWithReadStub(
+                      sandbox,
+                      readStub,
+                      state,
+                    );
                   };
 
                   testPromise("test", () =>
@@ -1333,11 +1348,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             LoadStreamWDBTool.read(
               (
                 default11Image,
-                _buildController(sandbox),
+                LoadStreamWDBTool.buildController(sandbox),
                 handleBeforeStartLoop,
                 handleWhenDoneFunc,
               ),
-              _buildReader(readStub),
+              LoadStreamWDBTool.buildReader(readStub),
             )
             |> then_(() => {
                  let state = StateAPI.unsafeGetState();
@@ -1422,11 +1437,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                 LoadStreamWDBTool.read(
                   (
                     default11Image,
-                    _buildController(sandbox),
+                    LoadStreamWDBTool.buildController(sandbox),
                     handleBeforeStartLoop,
                     handleWhenDoneFunc,
                   ),
-                  _buildReader(readStub),
+                  LoadStreamWDBTool.buildReader(readStub),
                 )
                 |> then_(() => {
                      let state = StateAPI.unsafeGetState();
@@ -1465,7 +1480,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     readStub
                     |> onCall(0)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1477,10 +1492,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(1)
                     |> returns(
-                         _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                         LoadStreamWDBTool.buildChunkData(
+                           ~arrayBuffer=None,
+                           ~done_=true,
+                           (),
+                         ),
                        );
 
-                  _prepareWithReadStub(sandbox, readStub, state);
+                  LoadStreamWDBTool.prepareWithReadStub(
+                    sandbox,
+                    readStub,
+                    state,
+                  );
                 };
 
                 testPromise("set geometry point data", () =>
@@ -1492,9 +1515,9 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     (
                       0,
                       [|
-                        _getDefault11Image(),
-                        _getDefault11Image(),
-                        _getDefault11Image(),
+                        LoadStreamWDBTool.getDefault11Image(),
+                        LoadStreamWDBTool.getDefault11Image(),
+                        LoadStreamWDBTool.getDefault11Image(),
                       |],
                     ),
                     _prepare,
@@ -1510,7 +1533,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     readStub
                     |> onCall(0)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1522,7 +1545,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(1)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1534,10 +1557,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(2)
                     |> returns(
-                         _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                         LoadStreamWDBTool.buildChunkData(
+                           ~arrayBuffer=None,
+                           ~done_=true,
+                           (),
+                         ),
                        );
 
-                  _prepareWithReadStub(sandbox, readStub, state);
+                  LoadStreamWDBTool.prepareWithReadStub(
+                    sandbox,
+                    readStub,
+                    state,
+                  );
                 };
 
                 testPromise("not set new geometry point data", () =>
@@ -1549,9 +1580,9 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     (
                       0,
                       [|
-                        _getDefault11Image(),
-                        _getDefault11Image(),
-                        _getDefault11Image(),
+                        LoadStreamWDBTool.getDefault11Image(),
+                        LoadStreamWDBTool.getDefault11Image(),
+                        LoadStreamWDBTool.getDefault11Image(),
                       |],
                     ),
                     _prepare,
@@ -1567,7 +1598,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     readStub
                     |> onCall(0)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1579,7 +1610,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(1)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1591,7 +1622,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(2)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1607,10 +1638,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(3)
                     |> returns(
-                         _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                         LoadStreamWDBTool.buildChunkData(
+                           ~arrayBuffer=None,
+                           ~done_=true,
+                           (),
+                         ),
                        );
 
-                  _prepareWithReadStub(sandbox, readStub, state);
+                  LoadStreamWDBTool.prepareWithReadStub(
+                    sandbox,
+                    readStub,
+                    state,
+                  );
                 };
 
                 testPromise("not set new geometry point data", () =>
@@ -1657,7 +1696,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     readStub
                     |> onCall(0)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1669,7 +1708,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(1)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1681,7 +1720,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(2)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1693,7 +1732,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(3)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1705,10 +1744,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(4)
                     |> returns(
-                         _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                         LoadStreamWDBTool.buildChunkData(
+                           ~arrayBuffer=None,
+                           ~done_=true,
+                           (),
+                         ),
                        );
 
-                  _prepareWithReadStub(sandbox, readStub, state);
+                  LoadStreamWDBTool.prepareWithReadStub(
+                    sandbox,
+                    readStub,
+                    state,
+                  );
                 };
 
                 testPromise("set new geometry point data", () =>
@@ -1789,11 +1836,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   LoadStreamWDBTool.read(
                     (
                       default11Image,
-                      _buildController(sandbox),
+                      LoadStreamWDBTool.buildController(sandbox),
                       handleBeforeStartLoop,
                       handleWhenDoneFunc,
                     ),
-                    _buildReader(readStub),
+                    LoadStreamWDBTool.buildReader(readStub),
                   ),
                 );
               };
@@ -1817,11 +1864,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                 LoadStreamWDBTool.read(
                   (
                     default11Image,
-                    _buildController(sandbox),
+                    LoadStreamWDBTool.buildController(sandbox),
                     handleBeforeStartLoop,
                     handleWhenDoneFunc,
                   ),
-                  _buildReader(readStub),
+                  LoadStreamWDBTool.buildReader(readStub),
                 )
                 |> then_(() =>
                      bufferData |> getCallCount |> expect == 0 |> resolve
@@ -1835,7 +1882,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     readStub
                     |> onCall(0)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1847,10 +1894,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(1)
                     |> returns(
-                         _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                         LoadStreamWDBTool.buildChunkData(
+                           ~arrayBuffer=None,
+                           ~done_=true,
+                           (),
+                         ),
                        );
 
-                  _prepareWithReadStub(sandbox, readStub, state);
+                  LoadStreamWDBTool.prepareWithReadStub(
+                    sandbox,
+                    readStub,
+                    state,
+                  );
                 };
 
                 testPromise("contract error", () =>
@@ -1865,7 +1920,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     readStub
                     |> onCall(0)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1877,7 +1932,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(1)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1889,10 +1944,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(2)
                     |> returns(
-                         _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                         LoadStreamWDBTool.buildChunkData(
+                           ~arrayBuffer=None,
+                           ~done_=true,
+                           (),
+                         ),
                        );
 
-                  _prepareWithReadStub(sandbox, readStub, state);
+                  LoadStreamWDBTool.prepareWithReadStub(
+                    sandbox,
+                    readStub,
+                    state,
+                  );
                 };
 
                 testPromise("contract error", () =>
@@ -1907,7 +1970,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     readStub
                     |> onCall(0)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1919,7 +1982,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(1)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1931,7 +1994,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(2)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -1943,10 +2006,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(3)
                     |> returns(
-                         _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                         LoadStreamWDBTool.buildChunkData(
+                           ~arrayBuffer=None,
+                           ~done_=true,
+                           (),
+                         ),
                        );
 
-                  _prepareWithReadStub(sandbox, readStub, state);
+                  LoadStreamWDBTool.prepareWithReadStub(
+                    sandbox,
+                    readStub,
+                    state,
+                  );
                 };
 
                 describe("assemble and start loop", () => {
@@ -1983,11 +2054,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                       LoadStreamWDBTool.read(
                         (
                           default11Image,
-                          _buildController(sandbox),
+                          LoadStreamWDBTool.buildController(sandbox),
                           handleBeforeStartLoop,
                           handleWhenDoneFunc,
                         ),
-                        _buildReader(readStub),
+                        LoadStreamWDBTool.buildReader(readStub),
                       )
                       |> then_(() =>
                            uniform3f
@@ -2031,11 +2102,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                       LoadStreamWDBTool.read(
                         (
                           default11Image,
-                          _buildController(sandbox),
+                          LoadStreamWDBTool.buildController(sandbox),
                           handleBeforeStartLoop,
                           handleWhenDoneFunc,
                         ),
-                        _buildReader(readStub),
+                        LoadStreamWDBTool.buildReader(readStub),
                       )
                       |> then_(() =>
                            uniformMatrix4fv
@@ -2063,7 +2134,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     readStub
                     |> onCall(0)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2075,7 +2146,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(1)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2087,7 +2158,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(2)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2099,7 +2170,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(3)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2111,10 +2182,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(4)
                     |> returns(
-                         _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                         LoadStreamWDBTool.buildChunkData(
+                           ~arrayBuffer=None,
+                           ~done_=true,
+                           (),
+                         ),
                        );
 
-                  _prepareWithReadStub(sandbox, readStub, state);
+                  LoadStreamWDBTool.prepareWithReadStub(
+                    sandbox,
+                    readStub,
+                    state,
+                  );
                 };
 
                 testPromise("not set geometry point data", () =>
@@ -2132,7 +2211,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     readStub
                     |> onCall(0)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2144,7 +2223,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(1)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2156,7 +2235,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(2)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2168,7 +2247,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(3)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2180,7 +2259,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(4)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2192,10 +2271,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(5)
                     |> returns(
-                         _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                         LoadStreamWDBTool.buildChunkData(
+                           ~arrayBuffer=None,
+                           ~done_=true,
+                           (),
+                         ),
                        );
 
-                  _prepareWithReadStub(sandbox, readStub, state);
+                  LoadStreamWDBTool.prepareWithReadStub(
+                    sandbox,
+                    readStub,
+                    state,
+                  );
                 };
 
                 testPromise("set geometry point data", () =>
@@ -2210,7 +2297,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     readStub
                     |> onCall(0)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2222,7 +2309,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(1)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2234,7 +2321,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(2)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2246,7 +2333,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(3)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2258,7 +2345,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(4)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2270,7 +2357,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(5)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2285,10 +2372,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(6)
                     |> returns(
-                         _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                         LoadStreamWDBTool.buildChunkData(
+                           ~arrayBuffer=None,
+                           ~done_=true,
+                           (),
+                         ),
                        );
 
-                  _prepareWithReadStub(sandbox, readStub, state);
+                  LoadStreamWDBTool.prepareWithReadStub(
+                    sandbox,
+                    readStub,
+                    state,
+                  );
                 };
 
                 testPromise("set geometry point data", () =>
@@ -2303,7 +2398,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                     readStub
                     |> onCall(0)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2315,7 +2410,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(1)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2327,7 +2422,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(2)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2339,7 +2434,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(3)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2351,7 +2446,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(4)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2363,7 +2458,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(5)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2378,7 +2473,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(6)
                     |> returns(
-                         _buildChunkData(
+                         LoadStreamWDBTool.buildChunkData(
                            ~arrayBuffer=
                              (
                                cesiumMilkTruckWDBArrayBuffer^
@@ -2390,10 +2485,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                        )
                     |> onCall(7)
                     |> returns(
-                         _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                         LoadStreamWDBTool.buildChunkData(
+                           ~arrayBuffer=None,
+                           ~done_=true,
+                           (),
+                         ),
                        );
 
-                  _prepareWithReadStub(sandbox, readStub, state);
+                  LoadStreamWDBTool.prepareWithReadStub(
+                    sandbox,
+                    readStub,
+                    state,
+                  );
                 };
 
                 testPromise("set geometry point data", () =>
@@ -2428,11 +2531,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
             LoadStreamWDBTool.read(
               (
                 default11Image,
-                _buildController(sandbox),
+                LoadStreamWDBTool.buildController(sandbox),
                 handleBeforeStartLoop,
                 handleWhenDoneFunc,
               ),
-              _buildReader(readStub),
+              LoadStreamWDBTool.buildReader(readStub),
             )
             |> then_(() => {
                  let state = StateAPI.unsafeGetState();
@@ -2460,7 +2563,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                   readStub
                   |> onCall(0)
                   |> returns(
-                       _buildChunkData(
+                       LoadStreamWDBTool.buildChunkData(
                          ~arrayBuffer=
                            (
                              alphaBlendModeTestWDBArrayBuffer^
@@ -2472,7 +2575,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                      )
                   /* |> onCall(1)
                      |> returns(
-                          _buildChunkData(
+                          LoadStreamWDBTool.buildChunkData(
                             ~arrayBuffer=
                               alphaBlendModeTestWDBArrayBuffer^
                               |> ArrayBuffer.slice(~start=65536, ~end_=80000)
@@ -2482,7 +2585,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                         )
                      |> onCall(2)
                      |> returns(
-                          _buildChunkData(
+                          LoadStreamWDBTool.buildChunkData(
                             ~arrayBuffer=
                               alphaBlendModeTestWDBArrayBuffer^
                               |> ArrayBuffer.slice(~start=80000, ~end_=100000)
@@ -2492,10 +2595,18 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                         ) */
                   |> onCall(1)
                   |> returns(
-                       _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                       LoadStreamWDBTool.buildChunkData(
+                         ~arrayBuffer=None,
+                         ~done_=true,
+                         (),
+                       ),
                      );
 
-                _prepareWithReadStub(sandbox, readStub, state);
+                LoadStreamWDBTool.prepareWithReadStub(
+                  sandbox,
+                  readStub,
+                  state,
+                );
               };
 
               testPromise("set geometry point data", () =>
@@ -2585,11 +2696,11 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           LoadStreamWDBTool.read(
             (
               default11Image,
-              _buildController(sandbox),
+              LoadStreamWDBTool.buildController(sandbox),
               handleBeforeStartLoop,
               handleWhenDoneFunc,
             ),
-            _buildReader(readStub),
+            LoadStreamWDBTool.buildReader(readStub),
           )
           |> then_(() => {
                let state = StateAPI.unsafeGetState();
@@ -2631,7 +2742,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                 readStub
                 |> onCall(0)
                 |> returns(
-                     _buildChunkData(
+                     LoadStreamWDBTool.buildChunkData(
                        ~arrayBuffer=
                          (
                            imguiWDBArrayBuffer^
@@ -2643,7 +2754,7 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                    )
                 |> onCall(1)
                 |> returns(
-                     _buildChunkData(
+                     LoadStreamWDBTool.buildChunkData(
                        ~arrayBuffer=
                          (imguiWDBArrayBuffer^ |> ArrayBuffer.sliceFrom(800))
                          ->Some,
@@ -2652,10 +2763,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
                    )
                 |> onCall(2)
                 |> returns(
-                     _buildChunkData(~arrayBuffer=None, ~done_=true, ()),
+                     LoadStreamWDBTool.buildChunkData(
+                       ~arrayBuffer=None,
+                       ~done_=true,
+                       (),
+                     ),
                    );
 
-              _prepareWithReadStub(sandbox, readStub, state);
+              LoadStreamWDBTool.prepareWithReadStub(sandbox, readStub, state);
             };
 
             testPromise("should handle imgui", () =>
@@ -2697,7 +2812,8 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
       });
 
       describe("if not support stream load", () => {
-        let _buildFakeFetchReturnResponse = (contentLength, ok, arrayBuffer) =>
+        let _buildFakeFetchReturnResponse =
+            (sandbox, contentLength, ok, arrayBuffer) =>
           {
             "ok": true,
             "headers": {
@@ -2711,11 +2827,14 @@ setStateFunc(runWithDefaultTimeFunc(unsafeGetStateFunc()));
           |> Js.Promise.resolve;
 
         let _buildFakeFetch = (sandbox, contentLength, gltfJsonStr, binBuffer) => {
+          open Sinon;
+
           let fetch = createEmptyStubWithJsObjSandbox(sandbox);
           fetch
           |> onCall(0)
           |> returns(
                _buildFakeFetchReturnResponse(
+                 sandbox,
                  contentLength,
                  true,
                  ConvertGLBSystem.convertGLBData(

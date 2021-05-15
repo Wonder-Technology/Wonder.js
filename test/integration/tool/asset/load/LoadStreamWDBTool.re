@@ -1,3 +1,5 @@
+open Js.Typed_array;
+
 open Js.Promise;
 
 /* let load =
@@ -234,3 +236,45 @@ let prepareStateForSkybox = sandbox =>
       (),
     ),
   );
+
+let buildChunkData = (~arrayBuffer, ~done_=false, ()) =>
+  {
+    "done": done_,
+    "value":
+      switch (arrayBuffer) {
+      | Some(arrayBuffer) => arrayBuffer |> Uint8Array.fromBuffer
+      | None => Obj.magic(-1)
+      },
+  }
+  |> resolve;
+
+let getDefault11Image = () => TextureTool.buildSource(~name="default", ());
+
+let prepareWithReadStub = (sandbox, readStub, state) => {
+  let default11Image = getDefault11Image();
+
+  StateAPI.setState(state) |> ignore;
+
+  let handleBeforeStartLoop = (state, rootGameObject) => {
+    let (state, _, _) = DirectionLightTool.createGameObject(state);
+    let (state, _, _, _) = CameraTool.createCameraGameObject(state);
+
+    state;
+  };
+
+  let handleWhenDoneFunc = (state, rootGameObject) => state;
+
+  (
+    default11Image,
+    readStub,
+    handleBeforeStartLoop,
+    handleWhenDoneFunc,
+    state,
+  );
+};
+
+let buildController = sandbox => {
+  "close": Sinon.createEmptyStubWithJsObjSandbox(sandbox),
+};
+
+let buildReader = readStub => {"read": readStub |> Obj.magic};

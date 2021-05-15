@@ -14,7 +14,12 @@ let load =
       ),
       (fetchFunc, handleWhenLoadingFunc),
       state,
-    ) =>
+    ) => {
+  state
+  |> OperateLoadMainService.markCanExecScriptAllEventFunction(false)
+  |> StateDataMainService.setState(StateDataMain.stateData)
+  |> ignore;
+
   fromPromise(
     fetchFunc(. wdbPath)
     |> then_(response => {
@@ -29,7 +34,7 @@ let load =
   )
   |> flatMap(wdb =>
        AssembleWholeWDBSystem.assemble(
-         wdb |> LoadType.fetchArrayBufferToArrayBuffer,
+         wdb |> LoadExternalType.fetchArrayBufferToArrayBuffer,
          (
            isHandleIMGUI,
            isBindEvent,
@@ -39,4 +44,8 @@ let load =
          ),
          state,
        )
+     )
+  |> map(((state, data1, data2)) =>
+       (state |> OperateLoadMainService.markCanExecScriptAllEventFunction(true), data1, data2)
      );
+};

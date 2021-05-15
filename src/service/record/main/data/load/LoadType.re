@@ -1,0 +1,1 @@
+type loadRecord = {canExecScriptAllEventFunction: bool};

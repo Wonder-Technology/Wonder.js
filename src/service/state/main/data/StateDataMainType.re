@@ -100,6 +100,8 @@ open AllJobDataType;
 
 open ScriptAPIType;
 
+open LoadType;
+
 type stateData = {
   mutable state: option(state),
   mutable isDebug: bool,
@@ -473,6 +475,7 @@ and state = {
   apiRecord,
   jobDataRecord,
   assetBundleRecord,
+  loadRecord
 };
 
 type sharedDataForRestoreState = {

@@ -18,9 +18,13 @@ let _handleNotSupportStreamLoad =
   response
   |> Fetch.Response.arrayBuffer
   |> then_(wdb => {
+       state
+       |> OperateLoadMainService.markCanExecScriptAllEventFunction(false)
+       |> StateDataMainService.setState(StateDataMain.stateData);
+
        handleWhenLoadingFunc(
          wdb
-         |> LoadType.fetchArrayBufferToArrayBuffer
+         |> LoadExternalType.fetchArrayBufferToArrayBuffer
          |> ArrayBuffer.byteLength,
          FetchCommon.getContentLength(response),
          wdbPath,
@@ -28,9 +32,14 @@ let _handleNotSupportStreamLoad =
 
        wdb |> resolve;
      })
-  |> then_(wdb =>
+  |> then_(wdb => {
+       let state =
+         StateDataMainService.unsafeGetState(StateDataMain.stateData);
+
+       let state = state |> OperateLoadMainService.markCanExecScriptAllEventFunction(true);
+
        AssembleWholeWDBSystem.assemble(
-         wdb |> LoadType.fetchArrayBufferToArrayBuffer,
+         wdb |> LoadExternalType.fetchArrayBufferToArrayBuffer,
          (true, true, true, true, true),
          state,
        )
@@ -38,8 +47,8 @@ let _handleNotSupportStreamLoad =
             handleWhenLoadWholeWDBFunc(state, data, rootGameObjectData)
           )
        |> Most.drain
-       |> then_(_ => resolve())
-     );
+       |> then_(_ => resolve());
+     });
 };
 
 let _streamLoad =

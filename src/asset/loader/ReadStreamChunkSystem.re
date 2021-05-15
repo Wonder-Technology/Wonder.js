@@ -283,9 +283,18 @@ let _handleDone =
          resolve();
 
        | Some((rootGameObject, _, _)) =>
-         handleWhenDoneFunc(
-           StateDataMainService.unsafeGetState(StateDataMain.stateData),
-           rootGameObject,
+         let state =
+           handleWhenDoneFunc(
+             StateDataMainService.unsafeGetState(StateDataMain.stateData),
+             rootGameObject,
+           )
+           |> OperateLoadMainService.markCanExecScriptAllEventFunction(true);
+
+         OperateScriptEventFunctionDataMainService.execAllEventFunction(
+           OperateScriptEventFunctionDataMainService.getAllActiveInitEventFunctionData(
+             state,
+           ),
+           state,
          )
          |> StateDataMainService.setState(StateDataMain.stateData)
          |> ignore;
@@ -380,6 +389,9 @@ and _handleLoadBinBufferChunk =
     );
 
   let state = StateDataMainService.unsafeGetState(StateDataMain.stateData);
+
+  let state =
+    state |> OperateLoadMainService.markCanExecScriptAllEventFunction(false);
 
   let (state, assembleData) =
     _assembleAndStartLoop(

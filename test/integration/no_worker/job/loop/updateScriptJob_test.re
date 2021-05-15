@@ -38,6 +38,385 @@ let _ =
     });
     afterEach(() => restoreSandbox(refJsObjToSandbox(sandbox^)));
 
+    describe("shouldn't exec before load done", () => {
+      open Js.Promise;
+
+      let _buildFakeFetchReturnResponse =
+          (sandbox, contentLength, ok, arrayBuffer) =>
+        {
+          "ok": true,
+          "headers": {
+            "get":
+              Sinon.createEmptyStubWithJsObjSandbox(sandbox)
+              |> Sinon.withOneArg("content-length")
+              |> Sinon.returns(contentLength),
+          },
+          "arrayBuffer": () => arrayBuffer |> resolve,
+        }
+        |> resolve;
+
+      let _buildFakeFetch = (sandbox, contentLength, gltfJsonStr, binBuffer) => {
+        open Sinon;
+
+        let fetch = createEmptyStubWithJsObjSandbox(sandbox);
+        fetch
+        |> onCall(0)
+        |> returns(
+             _buildFakeFetchReturnResponse(
+               sandbox,
+               contentLength,
+               true,
+               ConvertGLBSystem.convertGLBData(
+                 gltfJsonStr |> Js.Json.parseExn,
+                 binBuffer,
+               ),
+             ),
+           );
+        fetch;
+      };
+
+      beforeEach(() => {
+        state :=
+          RenderJobsTool.initWithJobConfigAndBufferConfigWithoutBuildFakeDom(
+            sandbox,
+            NoWorkerJobConfigTool.buildNoWorkerJobConfig(
+              ~initPipelines=
+                NoWorkerJobConfigTool.buildNoWorkerInitPipelineConfigWithoutInitMain(),
+              ~initJobs=
+                NoWorkerJobConfigTool.buildNoWorkerInitJobConfigWithoutInitMain(),
+              ~loopJobs=NoWorkerJobConfigTool.buildNoWorkerLoopJobConfig(),
+              ~loopPipelines=
+                {|
+        [
+    {
+      "name": "default",
+      "jobs": [
+        {
+          "name": "update_script"
+        }
+      ]
+    }
+  ]
+        |},
+              (),
+            ),
+            SettingTool.buildBufferConfigStr(),
+          );
+
+        // _clearBlobData(.);
+        // _buildFakeBlob(.);
+
+        TestTool.closeContractCheck();
+
+        GLBTool.prepare(sandbox^);
+
+        state :=
+          state^
+          |> FakeGlTool.setFakeGl(FakeGlTool.buildFakeGl(~sandbox, ()));
+      });
+
+      describe("test load stream wdb", () => {
+        let boxTexturedWDBArrayBuffer = ref(Obj.magic(-1));
+
+        beforeAll(() =>
+          boxTexturedWDBArrayBuffer := NodeTool.convertGLBToWDB("BoxTextured")
+        );
+
+        describe("test support stream load", () => {
+          testPromise("test load once", () => {
+            let _prepare = (sandbox, state) => {
+              let readStub = createEmptyStubWithJsObjSandbox(sandbox);
+              let readStub =
+                readStub
+                |> onCall(0)
+                |> returns(
+                     LoadStreamWDBTool.buildChunkData(
+                       ~arrayBuffer=(boxTexturedWDBArrayBuffer^)->Some,
+                       (),
+                     ),
+                   )
+                |> onCall(1)
+                |> returns(
+                     LoadStreamWDBTool.buildChunkData(
+                       ~arrayBuffer=None,
+                       ~done_=true,
+                       (),
+                     ),
+                   );
+
+              LoadStreamWDBTool.prepareWithReadStub(sandbox, readStub, state);
+            };
+
+            let (
+              default11Image,
+              readStub,
+              handleBeforeStartLoop,
+              handleWhenDoneFunc,
+              state,
+            ) =
+              _prepare(sandbox, state^);
+            let (state, gameObject, script1) =
+              ScriptTool.createGameObject(state);
+            let updateStub = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              ScriptTool.TestCaseWithOneEventFuncStub.buildScriptData(
+                ~script=script1,
+                ~updateFuncStub=updateStub,
+                ~state,
+                ~sandbox,
+                (),
+              );
+            MainStateTool.setState(state);
+            let handleBeforeStartLoop = (state, rootGameObject) => {
+              let state = handleBeforeStartLoop(state, rootGameObject);
+
+              let state = state |> DirectorTool.runWithDefaultTime;
+
+              state;
+            };
+
+            LoadStreamWDBTool.read(
+              (
+                default11Image,
+                LoadStreamWDBTool.buildController(sandbox),
+                handleBeforeStartLoop,
+                handleWhenDoneFunc,
+              ),
+              LoadStreamWDBTool.buildReader(readStub),
+            )
+            |> then_(_ => {
+                 let state = MainStateTool.unsafeGetState();
+                 let state = state |> DirectorTool.runWithDefaultTime;
+
+                 updateStub |> getCallCount |> expect == 1 |> resolve;
+               });
+          });
+          testPromise("test load twice", () => {
+            let _prepare = (sandbox, state) => {
+              let readStub = createEmptyStubWithJsObjSandbox(sandbox);
+              let readStub =
+                readStub
+                |> onCall(0)
+                |> returns(
+                     LoadStreamWDBTool.buildChunkData(
+                       ~arrayBuffer=(boxTexturedWDBArrayBuffer^)->Some,
+                       (),
+                     ),
+                   )
+                |> onCall(1)
+                |> returns(
+                     LoadStreamWDBTool.buildChunkData(
+                       ~arrayBuffer=None,
+                       ~done_=true,
+                       (),
+                     ),
+                   )
+                |> onCall(2)
+                |> returns(
+                     LoadStreamWDBTool.buildChunkData(
+                       ~arrayBuffer=(boxTexturedWDBArrayBuffer^)->Some,
+                       (),
+                     ),
+                   )
+                |> onCall(3)
+                |> returns(
+                     LoadStreamWDBTool.buildChunkData(
+                       ~arrayBuffer=None,
+                       ~done_=true,
+                       (),
+                     ),
+                   );
+
+              LoadStreamWDBTool.prepareWithReadStub(sandbox, readStub, state);
+            };
+
+            let (
+              default11Image,
+              readStub,
+              handleBeforeStartLoop,
+              handleWhenDoneFunc,
+              state,
+            ) =
+              _prepare(sandbox, state^);
+            let (state, gameObject, script1) =
+              ScriptTool.createGameObject(state);
+            let updateStub = createEmptyStubWithJsObjSandbox(sandbox);
+            let state =
+              ScriptTool.TestCaseWithOneEventFuncStub.buildScriptData(
+                ~script=script1,
+                ~updateFuncStub=updateStub,
+                ~state,
+                ~sandbox,
+                (),
+              );
+            MainStateTool.setState(state);
+            let handleBeforeStartLoop = (state, rootGameObject) => {
+              let state = handleBeforeStartLoop(state, rootGameObject);
+
+              let state = state |> DirectorTool.runWithDefaultTime;
+
+              state;
+            };
+
+            LoadStreamWDBTool.read(
+              (
+                default11Image,
+                LoadStreamWDBTool.buildController(sandbox),
+                handleBeforeStartLoop,
+                handleWhenDoneFunc,
+              ),
+              LoadStreamWDBTool.buildReader(readStub),
+            )
+            |> then_(_ => {
+                 let state = MainStateTool.unsafeGetState();
+                 let state = state |> DirectorTool.runWithDefaultTime;
+                 state |> MainStateTool.setState |> ignore;
+
+                 LoadStreamWDBTool.read(
+                   (
+                     default11Image,
+                     LoadStreamWDBTool.buildController(sandbox),
+                     handleBeforeStartLoop,
+                     handleWhenDoneFunc,
+                   ),
+                   LoadStreamWDBTool.buildReader(readStub),
+                 )
+                 |> then_(_ => {
+                      let state = MainStateTool.unsafeGetState();
+                      let state = state |> DirectorTool.runWithDefaultTime;
+
+                      updateStub |> getCallCount |> expect == 2 |> resolve;
+                    });
+               });
+          });
+        });
+
+        describe("test not support stream load", () =>
+          describe("fallback to load whole wdb", () =>
+            testPromise("test load once", () => {
+              let _prepare = (sandbox, state) => {
+                let readStub = createEmptyStubWithJsObjSandbox(sandbox);
+                let readStub =
+                  readStub
+                  |> onCall(0)
+                  |> returns(
+                       LoadStreamWDBTool.buildChunkData(
+                         ~arrayBuffer=(boxTexturedWDBArrayBuffer^)->Some,
+                         (),
+                       ),
+                     )
+                  |> onCall(1)
+                  |> returns(
+                       LoadStreamWDBTool.buildChunkData(
+                         ~arrayBuffer=None,
+                         ~done_=true,
+                         (),
+                       ),
+                     );
+
+                LoadStreamWDBTool.prepareWithReadStub(
+                  sandbox,
+                  readStub,
+                  state,
+                );
+              };
+
+              let (
+                default11Image,
+                readStub,
+                handleBeforeStartLoop,
+                handleWhenDoneFunc,
+                state,
+              ) =
+                _prepare(sandbox, state^);
+              let (state, gameObject, script1) =
+                ScriptTool.createGameObject(state);
+              let updateStub = createEmptyStubWithJsObjSandbox(sandbox);
+              let state =
+                ScriptTool.TestCaseWithOneEventFuncStub.buildScriptData(
+                  ~script=script1,
+                  ~updateFuncStub=updateStub,
+                  ~state,
+                  ~sandbox,
+                  (),
+                );
+              MainStateTool.setState(state);
+              let handleBeforeStartLoop = (state, rootGameObject) => {
+                let state = handleBeforeStartLoop(state, rootGameObject);
+
+                let state = state |> DirectorTool.runWithDefaultTime;
+
+                state;
+              };
+              let fetchFunc =
+                _buildFakeFetch(
+                  sandbox,
+                  0,
+                  ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+                  GLBTool.buildBinBuffer(),
+                );
+
+              LoadStreamWDBTool.load(
+                ~wdbPath=NodeTool.buildWDBPath("BoxTextured"),
+                ~fetchFunc,
+                ~handleWhenLoadWholeWDBFunc=
+                  (state, _, rootGameObject) =>
+                    state
+                    |> DirectorTool.runWithDefaultTime
+                    |> MainStateTool.setState
+                    |> ignore,
+                (),
+              )
+              |> then_(_ =>
+                   updateStub |> getCallCount |> expect == 1 |> resolve
+                 );
+            })
+          )
+        );
+      });
+
+      describe("test load whole wdb", () =>
+        testPromise("test load once", () => {
+          let fetchFunc =
+            _buildFakeFetch(
+              sandbox,
+              0,
+              ConvertGLBTool.buildGLTFJsonOfSingleNode(),
+              GLBTool.buildBinBuffer(),
+            );
+          let (state, gameObject, script1) =
+            ScriptTool.createGameObject(state^);
+          let updateStub = createEmptyStubWithJsObjSandbox(sandbox);
+          let state =
+            ScriptTool.TestCaseWithOneEventFuncStub.buildScriptData(
+              ~script=script1,
+              ~updateFuncStub=updateStub,
+              ~state,
+              ~sandbox,
+              (),
+            );
+          MainStateTool.setState(state);
+
+          LoadWDBTool.load(
+            ~wdbPath="../singleNode.wdb",
+            ~fetchFunc,
+            ~handleWhenLoadingFunc=
+              (contentLength, wdbPath) =>
+                MainStateTool.unsafeGetState()
+                |> DirectorTool.runWithDefaultTime
+                |> MainStateTool.setState
+                |> ignore,
+            (),
+          )
+          |> then_(((state, _, _)) => {
+               let state = state |> DirectorTool.runWithDefaultTime;
+
+               updateStub |> getCallCount |> expect == 1 |> resolve;
+             });
+        })
+      );
+    });
+
     describe("exec all update event functions", () => {
       test("only exec actived scripts' update event functions", () => {
         let (state, gameObject, script1) =

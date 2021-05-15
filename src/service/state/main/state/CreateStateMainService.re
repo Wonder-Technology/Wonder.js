@@ -50,4 +50,5 @@ let createState = () => {
   apiRecord: RecordAPIMainService.create(),
   jobDataRecord: RecordAllJobDataService.create(),
   assetBundleRecord: RecordAssetBundleMainService.create(),
+  loadRecord: RecordLoadMainService.create(),
 };

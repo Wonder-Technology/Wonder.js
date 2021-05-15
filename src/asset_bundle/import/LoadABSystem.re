@@ -24,7 +24,7 @@ let load = (abPath: string, fetchFunc) =>
          } :
          response |> Fetch.Response.arrayBuffer
      )
-  |> then_(ab => ab |> LoadType.fetchArrayBufferToArrayBuffer |> resolve)
+  |> then_(ab => ab |> LoadExternalType.fetchArrayBufferToArrayBuffer |> resolve)
   |> Most.fromPromise;
 
 let getAssetBundlePath = (.) => "";

@@ -1,7 +1,11 @@
 let exec = state =>
-  OperateScriptEventFunctionDataMainService.execAllEventFunction(
-    OperateScriptEventFunctionDataMainService.getAllActiveInitEventFunctionData(
-      state,
-    ),
-    state,
-  );
+  OperateLoadMainService.getCanExecScriptAllEventFunction(state) ?
+    {
+      OperateScriptEventFunctionDataMainService.execAllEventFunction(
+        OperateScriptEventFunctionDataMainService.getAllActiveInitEventFunctionData(
+          state,
+        ),
+        state,
+      );
+    } :
+    state;
