@@ -3,8 +3,7 @@
 .idea/
 .vscode/
 jest_0/
-lib/bs/
-lib/js/src/
+lib/
 reference/
 node_modules/
 mine/
