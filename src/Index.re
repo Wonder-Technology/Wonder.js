@@ -2,6 +2,8 @@ let setScriptAPIJsObj = APIAPI.setScriptAPIJsObj;
 
 let getScriptAPIJsObj = APIAPI.getScriptAPIJsObj;
 
+let clearAllABData = ABDemoAPI.clearAllABData;
+
 let isSABAssembled = ABDemoAPI.isSABAssembled;
 
 let isRABAssembled = ABDemoAPI.isRABAssembled;

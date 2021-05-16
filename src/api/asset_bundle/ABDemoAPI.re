@@ -100,3 +100,5 @@ let getLoadedNeededABCount = ProgressABSystem.RAB.getLoadedNeededABCount;
 let isRABAssembled = OperateRABAssetBundleMainService.isAssembled;
 
 let isSABAssembled = OperateSABAssetBundleMainService.isAssembled;
+
+let clearAllABData = ClearAssetBundleMainService.clearAllABData;
