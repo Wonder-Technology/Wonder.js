@@ -12,6 +12,6 @@
         "use_hardware_instance": true
     },
     "worker": {
-        "use_worker": true
+        "use_worker": false
     }
 }
