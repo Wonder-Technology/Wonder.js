@@ -2,6 +2,60 @@ let setScriptAPIJsObj = APIAPI.setScriptAPIJsObj;
 
 let getScriptAPIJsObj = APIAPI.getScriptAPIJsObj;
 
+let isSABAssembled = ABDemoAPI.isSABAssembled;
+
+let isRABAssembled = ABDemoAPI.isRABAssembled;
+
+let getLoadedNeededABCount = ABDemoAPI.getLoadedNeededABCount;
+
+let getAllNeededABCount = ABDemoAPI.getAllNeededABCount;
+
+let addSABSceneGameObjectChildrenToScene = ABDemoAPI.addSABSceneGameObjectChildrenToScene;
+
+let initAllSABGameObjects = ABDemoAPI.initAllSABGameObjects;
+
+let setSABSceneGameObjectToBeScene = ABDemoAPI.setSABSceneGameObjectToBeScene;
+
+let disposeSceneAllChildren = ABDemoAPI.disposeSceneAllChildren;
+
+let unsafeGetWholeDependencyRelationMap = ABDemoAPI.unsafeGetWholeDependencyRelationMap;
+
+let unsafeGetLoadedSAB = ABDemoAPI.unsafeGetLoadedSAB;
+
+let assembleSAB = ABDemoAPI.assembleSAB;
+
+let canAssembleSAB = ABDemoAPI.canAssembleSAB;
+
+let isWABLoaded = ABDemoAPI.isWABLoaded;
+
+let loadWABAndSetToState = ABDemoAPI.loadWABAndSetToState;
+
+let assembleAllDependencyRAB = ABDemoAPI.assembleAllDependencyRAB;
+
+let loadSABAndSetToState = ABDemoAPI.loadSABAndSetToState;
+
+let loadAllDependencyRABAndSetToState = ABDemoAPI.loadAllDependencyRABAndSetToState;
+
+let setWholeDependencyRelationMap = ABDemoAPI.setWholeDependencyRelationMap;
+
+let getWholeDependencyRelationMap = ABDemoAPI.getWholeDependencyRelationMap;
+
+let parseWABManifest = ABDemoAPI.parseWABManifest;
+
+let loadAssetBundle = ABDemoAPI.loadAssetBundle;
+
+let cacheAssetBundleArrayBuffer = ABDemoAPI.cacheAssetBundleArrayBuffer;
+
+let getAssetBundleArrayBufferCache = ABDemoAPI.getAssetBundleArrayBufferCache;
+
+let isAssetBundleArrayBufferCached = ABDemoAPI.isAssetBundleArrayBufferCached;
+
+let initAssetBundleArrayBufferCache = ABDemoAPI.initAssetBundleArrayBufferCache;
+
+let getAssetBundlePath = ABDemoAPI.getAssetBundlePath;
+
+let fromPromiseStream = ABDemoAPI.fromPromiseStream;
+
 let buildDependencyRelation = GenerateAllABAPI.buildDependencyRelation;
 
 let generateAllABs = GenerateAllABAPI.generateAllABs;
