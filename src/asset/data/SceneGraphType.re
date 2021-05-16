@@ -5,8 +5,7 @@ type target = (float, float, float);
 type flyCameraController = {
   moveSpeed: float,
   rotateSpeed: float,
-  wheelSpeed: float,
-  isBindEvent: bool,
+  wheelSpeed: float
 };
 
 type arcballCameraController = {
@@ -19,8 +18,7 @@ type arcballCameraController = {
   moveSpeedX: float,
   moveSpeedY: float,
   rotateSpeed: float,
-  wheelSpeed: float,
-  isBindEvent: bool,
+  wheelSpeed: float
 };
 
 type serializedFunc = string;

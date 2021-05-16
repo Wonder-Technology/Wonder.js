@@ -3409,8 +3409,8 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-              "extras":{"flyCameraControllers":[{"moveSpeed":$moveSpeed1,"rotateSpeed":$rotateSpeed1,"wheelSpeed":$wheelSpeed1,"isBindEvent":$isBindEvent1},
-              {"moveSpeed":$moveSpeed2,"rotateSpeed":$rotateSpeed2,"wheelSpeed":$wheelSpeed2,"isBindEvent":$isBindEvent2}]
+              "extras":{"flyCameraControllers":[{"moveSpeed":$moveSpeed1,"rotateSpeed":$rotateSpeed1,"wheelSpeed":$wheelSpeed1},
+              {"moveSpeed":$moveSpeed2,"rotateSpeed":$rotateSpeed2,"wheelSpeed":$wheelSpeed2}]
                       |j},
           state,
         );
@@ -3664,8 +3664,8 @@ der":true,"drawMode":4},{"isRender":true,"drawMode":4},{"isRender":true,"drawMod
         GenerateSceneGraphSystemTool.testGLTFResultByGameObject(
           rootGameObject,
           {j|
-              "extras":{"arcballCameraControllers":[{"distance":$distance1,"minDistance": $minDistance1,"phi":$phi1,"theta":$theta1,"thetaMargin":$thetaMargin1,"target":[$target1],"moveSpeedX":$moveSpeedX1,"moveSpeedY":$moveSpeedY1,"rotateSpeed":$rotateSpeed1,"wheelSpeed":$wheelSpeed1,"isBindEvent":$isBindEvent1},
-              {"distance":$distance2,"minDistance": $minDistance2,"phi":$phi2,"theta":$theta2,"thetaMargin":$thetaMargin2,"target":[$target2],"moveSpeedX":$moveSpeedX2,"moveSpeedY":$moveSpeedY2,"rotateSpeed":$rotateSpeed2,"wheelSpeed":$wheelSpeed2,"isBindEvent":$isBindEvent2}]
+              "extras":{"arcballCameraControllers":[{"distance":$distance1,"minDistance": $minDistance1,"phi":$phi1,"theta":$theta1,"thetaMargin":$thetaMargin1,"target":[$target1],"moveSpeedX":$moveSpeedX1,"moveSpeedY":$moveSpeedY1,"rotateSpeed":$rotateSpeed1,"wheelSpeed":$wheelSpeed1},
+              {"distance":$distance2,"minDistance": $minDistance2,"phi":$phi2,"theta":$theta2,"thetaMargin":$thetaMargin2,"target":[$target2],"moveSpeedX":$moveSpeedX2,"moveSpeedY":$moveSpeedY2,"rotateSpeed":$rotateSpeed2,"wheelSpeed":$wheelSpeed2}]
                       |j},
           state,
         );

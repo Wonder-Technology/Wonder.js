@@ -236,7 +236,7 @@ let _convertScenes = json =>
                       imgui:
                         json
                         |> optional(
-                             field("imgui", json =>
+                             field("imgui", (json) =>
                                (
                                  {
                                    assetData: _convertAssetData(json),
@@ -249,7 +249,7 @@ let _convertScenes = json =>
                       skybox:
                         json
                         |> optional(
-                             field("skybox", json =>
+                             field("skybox", (json) =>
                                (
                                  {cubemap: json |> field("cubemap", int)}: GLTFType.skybox
                                )
@@ -262,13 +262,13 @@ let _convertScenes = json =>
            extensions:
              json
              |> optional(
-                  field("extensions", json =>
+                  field("extensions", (json) =>
                     (
                       {
                         khr_lights:
                           json
                           |> optional(
-                               field("KHR_lights", json =>
+                               field("KHR_lights", (json) =>
                                  (
                                    {light: json |> field("light", int)}: GLTFType.sceneKHRLightsExtension
                                  )
@@ -347,13 +347,12 @@ let _convertExtras = json =>
              |> optional(
                   field(
                     "flyCameraControllers",
-                    array(json =>
+                    array((json) =>
                       (
                         {
                           moveSpeed: json |> field("moveSpeed", float),
                           rotateSpeed: json |> field("rotateSpeed", float),
                           wheelSpeed: json |> field("wheelSpeed", float),
-                          isBindEvent: json |> field("isBindEvent", bool),
                         }: SceneGraphType.flyCameraController
                       )
                     ),
@@ -364,7 +363,7 @@ let _convertExtras = json =>
              |> optional(
                   field(
                     "arcballCameraControllers",
-                    array(json =>
+                    array((json) =>
                       (
                         {
                           distance: json |> field("distance", float),
@@ -379,7 +378,6 @@ let _convertExtras = json =>
                           moveSpeedY: json |> field("moveSpeedY", float),
                           rotateSpeed: json |> field("rotateSpeed", float),
                           wheelSpeed: json |> field("wheelSpeed", float),
-                          isBindEvent: json |> field("isBindEvent", bool),
                         }: SceneGraphType.arcballCameraController
                       )
                     ),
@@ -390,7 +388,7 @@ let _convertExtras = json =>
              |> optional(
                   field(
                     "basicCameraViews",
-                    array(json =>
+                    array((json) =>
                       (
                         {isActive: json |> field("isActive", bool)}: basicCameraView
                       )
@@ -402,7 +400,7 @@ let _convertExtras = json =>
              |> optional(
                   field(
                     "meshRenderers",
-                    array(json =>
+                    array((json) =>
                       (
                         {
                           drawMode: json |> field("drawMode", int),
@@ -417,7 +415,7 @@ let _convertExtras = json =>
              |> optional(
                   field(
                     "basicMaterials",
-                    array(json =>
+                    array((json) =>
                       (
                         {
                           colorFactor:
@@ -434,7 +432,7 @@ let _convertExtras = json =>
              |> optional(
                   field(
                     "scripts",
-                    array(json =>
+                    array((json) =>
                       (
                         {
                           isActive: json |> field("isActive", bool),
@@ -451,7 +449,7 @@ let _convertExtras = json =>
              |> optional(
                   field(
                     "cubemapTextures",
-                    array(json =>
+                    array((json) =>
                       (
                         {
                           name: json |> optional(field("name", string)),
@@ -757,13 +755,13 @@ let _convertNodes = json =>
            extensions:
              json
              |> optional(
-                  field("extensions", json =>
+                  field("extensions", (json) =>
                     (
                       {
                         khr_lights:
                           json
                           |> optional(
-                               field("KHR_lights", json =>
+                               field("KHR_lights", (json) =>
                                  (
                                    {light: json |> field("light", int)}: GLTFType.nodeKHRLightsExtension
                                  )

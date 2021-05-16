@@ -899,14 +899,7 @@ let _ =
               ({flyCameraControllers}) =>
                 flyCameraControllers
                 |> expect
-                == [|
-                     {
-                       moveSpeed: 2.1,
-                       rotateSpeed: 2.3,
-                       wheelSpeed: 3.9,
-                       isBindEvent: true,
-                     },
-                   |],
+                == [|{moveSpeed: 2.1, rotateSpeed: 2.3, wheelSpeed: 3.9}|],
             (),
           )
         );
@@ -945,7 +938,6 @@ let _ =
                        moveSpeedY: 3.1,
                        rotateSpeed: 0.3,
                        wheelSpeed: 0.9,
-                       isBindEvent: true,
                      },
                    |],
             (),

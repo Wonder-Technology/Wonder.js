@@ -35,11 +35,6 @@ let build =
                   |> OperateFlyCameraControllerService.unsafeGetWheelSpeed(
                        cameraController,
                      ),
-                isBindEvent:
-                  EventFlyCameraControllerMainService.isBindEvent(
-                    cameraController,
-                    state,
-                  ),
               }: GenerateSceneGraphType.flyCameraControllerData,
             ),
        [||],

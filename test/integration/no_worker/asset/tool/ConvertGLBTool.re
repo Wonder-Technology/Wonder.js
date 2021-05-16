@@ -1426,27 +1426,50 @@ let buildGLTFJsonOfBasicCameraView = () =>
     (),
   );
 
-let buildGLTFJsonOfFlyCameraController = (~isBindEvent=true, ()) => {
-  let isBindEvent = isBindEvent ? "true" : "false";
-
-  buildGLTFJson(
-    ~nodes=
-      {| [
+let buildGLTFJsonOfFlyCameraController =
+    (
+      ~basicCameraViews={|  [
+        {
+            "isActive": false
+        },
+        {
+            "isActive": true
+        }
+    ]|},
+      ~nodes={| [
         {
             "mesh": 0,
+            "camera":0,
             "extras": {
+                "basicCameraView": 0,
                 "flyCameraController": 0
             }
         }
     ]|},
+      ~cameras={|
+[
+        {
+            "perspective": {
+                "yfov": 0.6,
+                "znear": 1.0
+            },
+            "type": "perspective"
+        }
+    ]
+        |},
+      (),
+    ) => {
+  buildGLTFJson(
+    ~basicCameraViews,
+    ~nodes,
+    ~cameras,
     ~flyCameraControllers=
       {j|
 [
         {
             "moveSpeed":2.1,
             "rotateSpeed":2.3,
-            "wheelSpeed":3.9,
-            "isBindEvent": $isBindEvent
+            "wheelSpeed":3.9
         }
     ]
         |j},
@@ -1454,19 +1477,43 @@ let buildGLTFJsonOfFlyCameraController = (~isBindEvent=true, ()) => {
   );
 };
 
-let buildGLTFJsonOfArcballCameraController = (~isBindEvent=true, ()) => {
-  let isBindEvent = isBindEvent ? "true" : "false";
-
-  buildGLTFJson(
-    ~nodes=
-      {| [
+let buildGLTFJsonOfArcballCameraController =
+    (
+      ~basicCameraViews={|  [
+        {
+            "isActive": false
+        },
+        {
+            "isActive": true
+        }
+    ]|},
+      ~nodes={| [
         {
             "mesh": 0,
+            "camera":0,
             "extras": {
+                "basicCameraView": 0,
                 "arcballCameraController": 0
             }
         }
     ]|},
+      ~cameras={|
+[
+        {
+            "perspective": {
+                "yfov": 0.6,
+                "znear": 1.0
+            },
+            "type": "perspective"
+        }
+    ]
+        |},
+      (),
+    ) => {
+  buildGLTFJson(
+    ~basicCameraViews,
+    ~nodes,
+    ~cameras,
     ~arcballCameraControllers=
       {j|
 [
@@ -1480,8 +1527,7 @@ let buildGLTFJsonOfArcballCameraController = (~isBindEvent=true, ()) => {
             "moveSpeedX":2.1,
             "moveSpeedY":3.1,
             "rotateSpeed":0.3,
-            "wheelSpeed":0.9,
-            "isBindEvent": $isBindEvent
+            "wheelSpeed":0.9
         }
     ]
         |j},

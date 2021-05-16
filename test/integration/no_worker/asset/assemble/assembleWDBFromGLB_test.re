@@ -1900,54 +1900,73 @@ let _ =
             )
           );
 
-          describe("else, judge by data", () => {
-            testPromise("test not bind", () =>
-              AssembleWDBSystemTool.testGLTF(
-                ~sandbox=sandbox^,
-                ~embeddedGLTFJsonStr=
-                  ConvertGLBTool.buildGLTFJsonOfFlyCameraController(
-                    ~isBindEvent=false,
-                    (),
-                  ),
-                ~isBindEvent=true,
-                ~state,
-                ~testFunc=
-                  ((state, _, (rootGameObject, _))) =>
-                    _getAllFlyCameraControllerComponent(rootGameObject, state)
-                    |> Js.Array.map(cameraController =>
-                         FlyCameraControllerAPI.isBindFlyCameraControllerEvent(
-                           cameraController,
-                           state,
+          describe(
+            "else, judge by whether the cameraController's gameObject's cameraView is active or not",
+            () => {
+              testPromise("if not active, not bind", () =>
+                AssembleWDBSystemTool.testGLTF(
+                  ~sandbox=sandbox^,
+                  ~embeddedGLTFJsonStr=
+                    ConvertGLBTool.buildGLTFJsonOfFlyCameraController(
+                      ~basicCameraViews=
+                        {|  [
+        {
+            "isActive": false
+        }
+    ]|},
+                      (),
+                    ),
+                  ~isBindEvent=true,
+                  ~state,
+                  ~testFunc=
+                    ((state, _, (rootGameObject, _))) =>
+                      _getAllFlyCameraControllerComponent(
+                        rootGameObject,
+                        state,
+                      )
+                      |> Js.Array.map(cameraController =>
+                           FlyCameraControllerAPI.isBindFlyCameraControllerEvent(
+                             cameraController,
+                             state,
+                           )
                          )
-                       )
-                    |> expect == [|false|],
-                (),
-              )
-            );
-            testPromise("test bind", () =>
-              AssembleWDBSystemTool.testGLTF(
-                ~sandbox=sandbox^,
-                ~embeddedGLTFJsonStr=
-                  ConvertGLBTool.buildGLTFJsonOfFlyCameraController(
-                    ~isBindEvent=true,
-                    (),
-                  ),
-                ~isBindEvent=true,
-                ~state,
-                ~testFunc=
-                  ((state, _, (rootGameObject, _))) =>
-                    _getAllFlyCameraControllerComponent(rootGameObject, state)
-                    |> Js.Array.map(cameraController =>
-                         FlyCameraControllerAPI.isBindFlyCameraControllerEvent(
-                           cameraController,
-                           state,
+                      |> expect == [|false|],
+                  (),
+                )
+              );
+              testPromise("if active, bind", () =>
+                AssembleWDBSystemTool.testGLTF(
+                  ~sandbox=sandbox^,
+                  ~embeddedGLTFJsonStr=
+                    ConvertGLBTool.buildGLTFJsonOfFlyCameraController(
+                      ~basicCameraViews=
+                        {|  [
+        {
+            "isActive": true
+        }
+    ]|},
+                      (),
+                    ),
+                  ~isBindEvent=true,
+                  ~state,
+                  ~testFunc=
+                    ((state, _, (rootGameObject, _))) =>
+                      _getAllFlyCameraControllerComponent(
+                        rootGameObject,
+                        state,
+                      )
+                      |> Js.Array.map(cameraController =>
+                           FlyCameraControllerAPI.isBindFlyCameraControllerEvent(
+                             cameraController,
+                             state,
+                           )
                          )
-                       )
-                    |> expect == [|true|],
-                (),
-              )
-            );
-          });
+                      |> expect == [|true|],
+                  (),
+                )
+              );
+            },
+          );
         });
       })
     );
@@ -2052,60 +2071,73 @@ let _ =
             )
           );
 
-          describe("else, judge by data", () => {
-            testPromise("test not bind", () =>
-              AssembleWDBSystemTool.testGLTF(
-                ~sandbox=sandbox^,
-                ~embeddedGLTFJsonStr=
-                  ConvertGLBTool.buildGLTFJsonOfArcballCameraController(
-                    ~isBindEvent=false,
-                    (),
-                  ),
-                ~isBindEvent=true,
-                ~state,
-                ~testFunc=
-                  ((state, _, (rootGameObject, _))) =>
-                    _getAllArcballCameraControllerComponent(
-                      rootGameObject,
-                      state,
-                    )
-                    |> Js.Array.map(cameraController =>
-                         ArcballCameraControllerAPI.isBindArcballCameraControllerEvent(
-                           cameraController,
-                           state,
+          describe(
+            "else, judge by whether the cameraController's gameObject's cameraView is active or not",
+            () => {
+              testPromise("if not active, not bind", () =>
+                AssembleWDBSystemTool.testGLTF(
+                  ~sandbox=sandbox^,
+                  ~embeddedGLTFJsonStr=
+                    ConvertGLBTool.buildGLTFJsonOfArcballCameraController(
+                      ~basicCameraViews=
+                        {|  [
+        {
+            "isActive": false
+        }
+    ]|},
+                      (),
+                    ),
+                  ~isBindEvent=true,
+                  ~state,
+                  ~testFunc=
+                    ((state, _, (rootGameObject, _))) =>
+                      _getAllArcballCameraControllerComponent(
+                        rootGameObject,
+                        state,
+                      )
+                      |> Js.Array.map(cameraController =>
+                           ArcballCameraControllerAPI.isBindArcballCameraControllerEvent(
+                             cameraController,
+                             state,
+                           )
                          )
-                       )
-                    |> expect == [|false|],
-                (),
-              )
-            );
-            testPromise("test bind", () =>
-              AssembleWDBSystemTool.testGLTF(
-                ~sandbox=sandbox^,
-                ~embeddedGLTFJsonStr=
-                  ConvertGLBTool.buildGLTFJsonOfArcballCameraController(
-                    ~isBindEvent=true,
-                    (),
-                  ),
-                ~isBindEvent=true,
-                ~state,
-                ~testFunc=
-                  ((state, _, (rootGameObject, _))) =>
-                    _getAllArcballCameraControllerComponent(
-                      rootGameObject,
-                      state,
-                    )
-                    |> Js.Array.map(cameraController =>
-                         ArcballCameraControllerAPI.isBindArcballCameraControllerEvent(
-                           cameraController,
-                           state,
+                      |> expect == [|false|],
+                  (),
+                )
+              );
+              testPromise("if active, bind", () =>
+                AssembleWDBSystemTool.testGLTF(
+                  ~sandbox=sandbox^,
+                  ~embeddedGLTFJsonStr=
+                    ConvertGLBTool.buildGLTFJsonOfArcballCameraController(
+                      ~basicCameraViews=
+                        {|  [
+        {
+            "isActive": true
+        }
+    ]|},
+                      (),
+                    ),
+                  ~isBindEvent=true,
+                  ~state,
+                  ~testFunc=
+                    ((state, _, (rootGameObject, _))) =>
+                      _getAllArcballCameraControllerComponent(
+                        rootGameObject,
+                        state,
+                      )
+                      |> Js.Array.map(cameraController =>
+                           ArcballCameraControllerAPI.isBindArcballCameraControllerEvent(
+                             cameraController,
+                             state,
+                           )
                          )
-                       )
-                    |> expect == [|true|],
-                (),
-              )
-            );
-          });
+                      |> expect == [|true|],
+                  (),
+                )
+              );
+            },
+          );
         });
       })
     );

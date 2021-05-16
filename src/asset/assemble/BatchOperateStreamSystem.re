@@ -158,25 +158,6 @@ let batchOperate =
 
   (
     state
-    |> BatchOperateSystem.batchSetComponentData(
-         wd,
-         (true, true),
-         (
-           transformArr,
-           geometryArr,
-           meshRendererArr,
-           basicCameraViewArr,
-           perspectiveCameraProjectionArr,
-           flyCameraControllerArr,
-           arcballCameraControllerArr,
-           basicMaterialArr,
-           lightMaterialArr,
-           directionLightArr,
-           pointLightArr,
-           scriptArr,
-         ),
-         (parentTransforms, childrenTransforms, gameObjectTransforms),
-       )
     |> BatchOperateSystem.batchAddComponent(
          wd,
          (
@@ -205,6 +186,25 @@ let batchOperate =
            scriptGameObjects,
            gameObjectScripts,
          ),
+       )
+    |> BatchOperateSystem.batchSetComponentData(
+         wd,
+         (true, true),
+         (
+           transformArr,
+           geometryArr,
+           meshRendererArr,
+           basicCameraViewArr,
+           perspectiveCameraProjectionArr,
+           flyCameraControllerArr,
+           arcballCameraControllerArr,
+           basicMaterialArr,
+           lightMaterialArr,
+           directionLightArr,
+           pointLightArr,
+           scriptArr,
+         ),
+         (parentTransforms, childrenTransforms, gameObjectTransforms),
        )
     |> BatchSetStreamBasicSourceTextureAllDataSystem.batchSet(
          basicSourceTextureData,

@@ -282,14 +282,13 @@ let _encodeFlyCameraControllerExtra = (flyCameraControllerDataArr, extraList) =>
         |> Js.Array.map(
              (
                (
-                 {moveSpeed, rotateSpeed, wheelSpeed, isBindEvent}: flyCameraControllerData
+                 {moveSpeed, rotateSpeed, wheelSpeed}: flyCameraControllerData
                ) as data,
              ) =>
              [
                ("moveSpeed", moveSpeed |> float),
                ("rotateSpeed", rotateSpeed |> float),
                ("wheelSpeed", wheelSpeed |> float),
-               ("isBindEvent", isBindEvent |> bool),
              ]
              |> object_
            )
@@ -321,7 +320,6 @@ let _encodeArcballCameraControllerExtra =
                    moveSpeedY,
                    rotateSpeed,
                    wheelSpeed,
-                   isBindEvent,
                  }: arcballCameraControllerData
                ) as data,
              ) =>
@@ -336,7 +334,6 @@ let _encodeArcballCameraControllerExtra =
                ("moveSpeedY", moveSpeedY |> float),
                ("rotateSpeed", rotateSpeed |> float),
                ("wheelSpeed", wheelSpeed |> float),
-               ("isBindEvent", isBindEvent |> bool),
              ]
              |> object_
            )

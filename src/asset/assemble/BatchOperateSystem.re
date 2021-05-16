@@ -342,13 +342,23 @@ let batchSetFlyCameraControllerData =
   |> WonderCommonlib.ArrayService.reduceOneParami(
        (.
          state,
-         {moveSpeed, rotateSpeed, wheelSpeed, isBindEvent}: SceneGraphType.flyCameraController,
+         {moveSpeed, rotateSpeed, wheelSpeed}: SceneGraphType.flyCameraController,
          index,
        ) => {
          let cameraController = flyCameraControllerArr[index];
 
          let state =
-           isBindEventConfig && isBindEvent ?
+           isBindEventConfig
+           && ActiveBasicCameraViewService.isActive(
+                GetComponentGameObjectService.unsafeGetBasicCameraViewComponent(
+                  GameObjectFlyCameraControllerService.unsafeGetGameObject(
+                    cameraController,
+                    state.flyCameraControllerRecord,
+                  ),
+                  state.gameObjectRecord,
+                ),
+                state.basicCameraViewRecord,
+              ) ?
              EventFlyCameraControllerMainService.bindEvent(
                cameraController,
                state,
@@ -398,14 +408,23 @@ let batchSetArcballCameraControllerData =
            moveSpeedY,
            rotateSpeed,
            wheelSpeed,
-           isBindEvent,
          }: SceneGraphType.arcballCameraController,
          index,
        ) => {
          let cameraController = arcballCameraControllerArr[index];
 
          let state =
-           isBindEventConfig && isBindEvent ?
+           isBindEventConfig
+           && ActiveBasicCameraViewService.isActive(
+                GetComponentGameObjectService.unsafeGetBasicCameraViewComponent(
+                  GameObjectArcballCameraControllerService.unsafeGetGameObject(
+                    cameraController,
+                    state.arcballCameraControllerRecord,
+                  ),
+                  state.gameObjectRecord,
+                ),
+                state.basicCameraViewRecord,
+              ) ?
              EventArcballCameraControllerMainService.bindEvent(
                cameraController,
                state,

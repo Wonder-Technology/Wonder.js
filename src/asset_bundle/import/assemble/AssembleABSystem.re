@@ -320,30 +320,6 @@ module SAB = {
 
     (
       state
-      |> BatchOperateSystem.batchSetComponentData(
-           sceneAssetBundleContent,
-           (true, true),
-           (
-             transformArr,
-             geometryArr,
-             meshRendererArr,
-             basicCameraViewArr,
-             perspectiveCameraProjectionArr,
-             flyCameraControllerArr,
-             arcballCameraControllerArr,
-             basicMaterialArr,
-             lightMaterialArr,
-             directionLightArr,
-             pointLightArr,
-             scriptArr,
-           ),
-           (parentTransforms, childrenTransforms, gameObjectTransforms),
-         )
-      |> _batchSetGeometryData(
-           sceneAssetBundleContent,
-           geometryArr,
-           bufferArr,
-         )
       |> BatchOperateSystem.batchAddComponent(
            sceneAssetBundleContent,
            (
@@ -376,6 +352,30 @@ module SAB = {
       |> BatchAddGameObjectComponentMainService.batchAddGeometryComponentForCreate(
            geometryGameObjects,
            gameObjectGeometrys,
+         )
+      |> BatchOperateSystem.batchSetComponentData(
+           sceneAssetBundleContent,
+           (true, true),
+           (
+             transformArr,
+             geometryArr,
+             meshRendererArr,
+             basicCameraViewArr,
+             perspectiveCameraProjectionArr,
+             flyCameraControllerArr,
+             arcballCameraControllerArr,
+             basicMaterialArr,
+             lightMaterialArr,
+             directionLightArr,
+             pointLightArr,
+             scriptArr,
+           ),
+           (parentTransforms, childrenTransforms, gameObjectTransforms),
+         )
+      |> _batchSetGeometryData(
+           sceneAssetBundleContent,
+           geometryArr,
+           bufferArr,
          )
       |> BatchSetWholeBasicSourceTextureAllDataSystem.batchSet(
            basicSourceTextureData,
