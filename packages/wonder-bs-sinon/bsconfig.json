@@ -1,0 +1,21 @@
+{
+  "name": "wonder-bs-sinon",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    },
+    {
+      "dir": "test",
+      "subdirs": true,
+      "type":"dev"
+    }
+  ],
+  "bs-dependencies": [
+    "wonder-bs-jest"
+  ],
+  "refmt": 3,
+  "package-specs": [
+    "es6-global"
+  ]
+}

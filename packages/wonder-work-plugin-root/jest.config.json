@@ -1,0 +1,26 @@
+{
+	"preset": "ts-jest",
+	"automock": false,
+	"moduleFileExtensions": [
+		"js",
+		"jsx",
+		"ts",
+		"tsx"
+	],
+	"transform": {},
+	"testRegex": "test/step-definitions/.*.steps.ts",
+	"setupFilesAfterEnv": [
+		"<rootDir>/test/helper/jest/specHelper.js"
+	],
+	"testPathIgnorePatterns": [
+	],
+	"notify": false,
+	"verbose": true,
+	"testRunner": "jest-jasmine2",
+	"testEnvironment": "jsdom",
+	"globals": {
+		"ts-jest": {
+			"tsconfig": "<rootDir>/test/tsconfig.json"
+		}
+	}
+}

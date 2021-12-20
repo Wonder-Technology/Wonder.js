@@ -1,0 +1,1 @@
+type dataName = WonderComponentTypeGeometryWorker.Index.dataNameType

@@ -1,0 +1,10 @@
+{
+  "name": "wonder-bs-jest",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "refmt": 3
+}

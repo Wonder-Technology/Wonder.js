@@ -1,0 +1,14 @@
+{
+	"extends": "../base-tsconfig.json",
+	"compilerOptions": {
+		"lib": [
+			"DOM",
+			"ESNext",
+		],
+		"types": [
+			"jest",
+		],
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+	},
+}

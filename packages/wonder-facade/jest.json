@@ -1,0 +1,19 @@
+{
+  "preset": "ts-jest",
+  "automock": false,
+  "moduleFileExtensions": [
+    "js",
+    "jsx",
+    "ts",
+    "tsx"
+  ],
+  "testRegex": "test/.+test\\.ts$",
+  "moduleNameMapper": {
+    "^.+\\.(css|less|scss)$": "identity-obj-proxy"
+  },
+  "setupFilesAfterEnv": [
+    "<rootDir>/test/helper/jest/specHelper.js"
+  ],
+  "notify": false,
+  "verbose": true
+}

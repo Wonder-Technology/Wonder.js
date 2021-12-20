@@ -1,0 +1,17 @@
+{
+    "name": "wonder-work-plugin-test1",
+    "version": "3.0.0-alpha.1",
+    "description": "",
+    "author": "wonder",
+    "license": "MIT",
+    "scripts": {
+        "watch": "tsc -w"
+    },
+    "keywords": [],
+    "dependencies": {
+        "most": "1.7.0"
+    },
+    "devDependencies": {
+        "typescript": "^4.2.3"
+    }
+}

@@ -15,55 +15,27 @@ module.exports = {
   ],
 
   scopes: [
-      { name: "architecture" },
-      { name: "scene" },
-      { name: "gameObject" },
-      { name: "transform" },
-      { name: "geometry" },
-      { name: "bsdf-material" },
-      { name: "pipeline" },
-      { name: "asset" },
-      { name: "dependency" },
-      { name: "cloud-picture" },
-      { name: "webgpu" },
+    { name: "doc" },
+    { name: "example" },
+    { name: "bs-most" },
+    { name: "bs-jest" },
+    { name: "bs-sinon" },
+    { name: "fp" },
+    { name: "commonlib" },
+    { name: "core" },
+    { name: "facade" },
+    { name: "work-plugin" },
+    { name: "gameobject" },
+    { name: "component" },
+    { name: "middleware" },
   ],
 
   // it needs to match the value for field type. Eg.: "fix"
   scopeOverrides: {
-    refactor: [
-      { name: "duplication" },
-      { name: "rename" },
-      { name: "too-much" },
-      { name: "dead-code" },
-      { name: "type" },
-      { name: "encapsulate" },
-      { name: "dependency" },
-      { name: "test" }
-    ],
-    test: [
-      { name: "pf-test" },
-      { name: "render-test" },
-      { name: "e2e-test" },
-      { name: "unit-test" },
-      { name: "unit-integration-test" },
-      { name: "integration-test" },
-      { name: "run-test" },
-      { name: "benchmark-test" },
-      { name: "contract" },
-      { name: "coverage" }
-    ],
     chore: [
       { name: "ci" },
-      { name: "merge" },
-      { name: "todo" },
-      { name: "gulp" },
       { name: "package.json" },
-      { name: "publish" },
-      { name: "bumped" },
-      { name: "action" },
       { name: "readme" },
-      { name: "changelog" },
-      { name: "npm" }
     ]
   },
   // override the messages, defaults are as follows

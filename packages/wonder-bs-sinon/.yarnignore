@@ -1,0 +1,7 @@
+.idea/
+.vscode/
+.DS_Store/
+test/
+build/
+reference/
+mine/

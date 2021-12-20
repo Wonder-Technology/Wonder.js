@@ -6,10 +6,9 @@ jest_0/
 reference/
 node_modules/
 mine/
+ocaml/
 
 lib/bs/
-
-lib/js/test/
 
 coverage
 

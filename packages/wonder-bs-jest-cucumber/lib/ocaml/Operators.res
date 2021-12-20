@@ -1,0 +1,3 @@
+open Expect
+
+let \"=" = toEqualFunc

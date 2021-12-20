@@ -1,0 +1,15 @@
+{
+  "automock": false,
+  "moduleFileExtensions": [
+    "js"
+  ],
+  "testRegex": "lib/js/test/step-definitions/.*.steps.bs.js",
+  "directionLightIgnorePatterns": [
+    ""
+  ],
+  "setupFilesAfterEnv": [
+    "<rootDir>/test/helper/jest/specHelper.js"
+  ],
+  "notify": false,
+  "verbose": true
+}

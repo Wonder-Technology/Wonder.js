@@ -1,0 +1,1 @@
+export type nullable<Value extends any> = Value | null | undefined

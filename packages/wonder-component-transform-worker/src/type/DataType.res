@@ -1,0 +1,1 @@
+type dataName = WonderComponentTypeTransformWorker.Index.dataNameType
