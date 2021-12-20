@@ -95,6 +95,13 @@ sparate the descriptor set needed data(e.g. shader resource bind data, type) and
 
 
 
+bind group set design:
+2 sets:
+1 for material buffer data;
+2 for other data(e.g. geometry, instance);
+
+
+
 # GPU资源管理
 render graph, ...
 
