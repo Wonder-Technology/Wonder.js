@@ -1,6 +1,6 @@
 'use strict';
 
-var Main$WonderMiddlewareWebgpuRenderer = require("./Main.bs.js");
+var Init$WonderMiddlewareWebgpuRenderer = require("./Init.bs.js");
 
 function getAllMaterialData(param) {
   return 1;
@@ -15,14 +15,14 @@ function getAllMaterialTypes(param) {
 }
 
 function initJobExec(states) {
-  Main$WonderMiddlewareWebgpuRenderer.createAllRenderPipelines(1);
-  var vertexBuffer = Main$WonderMiddlewareWebgpuRenderer.createVertexBuffer(10, 100);
-  var indexBuffer = Main$WonderMiddlewareWebgpuRenderer.createIndexBuffer(10, 100);
-  var instanceBuffer = Main$WonderMiddlewareWebgpuRenderer.createInstanceBuffer(10);
-  var indirectBuffer = Main$WonderMiddlewareWebgpuRenderer.createIndirectBuffer(10);
-  var cameraBuffer = Main$WonderMiddlewareWebgpuRenderer.createCameraBuffer(undefined);
-  var materialBufferMap = Main$WonderMiddlewareWebgpuRenderer.createAllMaterialBuffers(1);
-  Main$WonderMiddlewareWebgpuRenderer.createAllBindGroups(1, [
+  Init$WonderMiddlewareWebgpuRenderer.createAllRenderPipelines(1);
+  var vertexBuffer = Init$WonderMiddlewareWebgpuRenderer.createVertexBuffer(10, 100);
+  var indexBuffer = Init$WonderMiddlewareWebgpuRenderer.createIndexBuffer(10, 100);
+  var instanceBuffer = Init$WonderMiddlewareWebgpuRenderer.createInstanceBuffer(10);
+  var indirectBuffer = Init$WonderMiddlewareWebgpuRenderer.createIndirectBuffer(10);
+  var cameraBuffer = Init$WonderMiddlewareWebgpuRenderer.createCameraBuffer(undefined);
+  var materialBufferMap = Init$WonderMiddlewareWebgpuRenderer.createAllMaterialBuffers(1);
+  Init$WonderMiddlewareWebgpuRenderer.createAllBindGroups(1, [
         vertexBuffer,
         indexBuffer,
         cameraBuffer,

@@ -1,4 +1,4 @@
-open Main
+open Init
 
 type states
 
