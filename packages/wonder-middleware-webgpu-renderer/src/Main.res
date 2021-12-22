@@ -1,3 +1,13 @@
+let getWebGPUExn = (): IWebGPUForJs.webgpu => {
+  //TODO implement
+  Obj.magic(1)
+}
+
+let setWebGPU = (webgpu: IWebGPUForJs.webgpu): unit => {
+  //TODO implement
+  Obj.magic(1)
+}
+
 type attributeName = string
 
 type attributeFormat = [#float32x3]
@@ -10,26 +20,37 @@ type attributeLocationData = {
 
 type vertexBufferArrayStride = int
 
-type bindGroupSet = int
+// type bindGroupSet = int
 
-type visibility = [#vertex | #framgent]
+// type visibility = [#vertex | #framgent]
 
-type bufferBindingType = [#uniform | #storage | #"read-only-storage"]
+// type bufferBindingType = [#uniform | #storage | #"read-only-storage"]
 
-type buffer = {type_: bufferBindingType}
+// type buffer = {type_: bufferBindingType}
 
-type bindGroupLayoutData = {
-  binding: int,
-  visibility: visibility,
-  buffer: option<buffer>,
-}
+// type bindGroupLayoutData = {
+//   binding: int,
+//   visibility: visibility,
+//   buffer: option<buffer>,
+// }
 
 type shaderData = {
   vertexWGSL: string,
   fragmentWGSL: string,
   vertexBufferArrayStride: vertexBufferArrayStride,
   allVertexAttributeData: array<(attributeName, attributeLocationData)>,
-  allBindGroupLayoutData: array<(bindGroupSet, bindGroupLayoutData)>,
+  /* bind group layout is fixed: set 0 for material buffer data, set 1 for other data(e.g. geometry, ...) */
+  //   allBindGroupLayoutData: array<(bindGroupSet, bindGroupLayoutData)>,
+}
+
+let buildBindGroupLayoutForMaterialBuffer = (): IWebGPUForJs.BindGroupLayout.t => {
+  //TODO implement
+  Obj.magic(1)
+}
+
+let buildBindGroupLayoutForOtherBuffers = (): IWebGPUForJs.BindGroupLayout.t => {
+  //TODO implement
+  Obj.magic(1)
 }
 
 type shaderName = string
@@ -79,7 +100,9 @@ let _createRenderPipeline = ((
   Obj.magic(1)
 }
 
-type renderPipelineDataMap<'renderPipelineData> = WonderCommonlib.ImmutableHashMap.t<
+type specificMaterial = (material, materialType)
+
+type specificMaterialDataMap<'renderPipelineData> = WonderCommonlib.ImmutableHashMap.t<
   materialType,
   WonderCommonlib.ImmutableHashMap.t<material, 'renderPipelineData>,
 >
@@ -87,10 +110,10 @@ type renderPipelineDataMap<'renderPipelineData> = WonderCommonlib.ImmutableHashM
 type renderPipelineUid = int
 
 let _groupByShaderDataAndPipelineState = (
-  allMaterialData: array<(material, materialType, getDepthWriteEnabledFunc)>,
+  allMaterialData: array<(specificMaterial, getDepthWriteEnabledFunc)>,
 ): // ): array<(shaderData, pipelineState)> => {
 (
-  renderPipelineDataMap<renderPipelineUid>,
+  specificMaterialDataMap<renderPipelineUid>,
   WonderCommonlib.ImmutableHashMap.t<renderPipelineUid, (shaderData, pipelineState)>,
 ) => {
   //   allMaterialData->WonderCommonlib.ArraySt.reduceOneParam(
@@ -110,12 +133,11 @@ let _groupByShaderDataAndPipelineState = (
 //   WonderCommonlib.ImmutableHashMap.t<material, renderPipeline>,
 // >
 
-type renderPipelineMap = renderPipelineDataMap<renderPipeline>
+type renderPipelineMap = specificMaterialDataMap<renderPipeline>
 
 let _getRenderPipeline = (
   map: renderPipelineMap,
-  material: material,
-  materialType: materialType,
+  specificMaterial: specificMaterial,
 ): renderPipeline => {
   //TODO implement
   Obj.magic(1)
@@ -123,17 +145,16 @@ let _getRenderPipeline = (
 
 let _setRenderPipeline = (
   map: renderPipelineMap,
-  material: material,
-  materialType: materialType,
-  renderPipeline,
+  specificMaterial: specificMaterial,
+  renderPipeline: renderPipeline,
 ): renderPipelineMap => {
   //TODO implement
   Obj.magic(1)
 }
 
 let _createRenderPipelineMap = ((
-  renderPipelineUidMap: renderPipelineDataMap<renderPipelineUid>,
-  renderPipelineDataMap: WonderCommonlib.ImmutableHashMap.t<
+  renderPipelineUidMap: specificMaterialDataMap<renderPipelineUid>,
+  specificMaterialDataMap: WonderCommonlib.ImmutableHashMap.t<
     renderPipelineUid,
     (shaderData, pipelineState),
   >,
@@ -142,8 +163,86 @@ let _createRenderPipelineMap = ((
   Obj.magic(1)
 }
 
-let createRenderPipelinesWithMaterial = (
-  allMaterialData: array<(material, materialType, getDepthWriteEnabledFunc)>,
+let createAllRenderPipelines = (
+  allMaterialData: array<(specificMaterial, getDepthWriteEnabledFunc)>,
 ): renderPipelineMap => {
   allMaterialData->_groupByShaderDataAndPipelineState->_createRenderPipelineMap
+}
+
+let createVertexBuffer = (
+  maxGeometryCount: int,
+  maxGeometryPointCount: int,
+): IWebGPUForJs.Buffer.t => {
+  //TODO implement
+  Obj.magic(1)
+}
+
+let createIndexBuffer = (
+  maxGeometryCount: int,
+  maxGeometryPointCount: int,
+): IWebGPUForJs.Buffer.t => {
+  //TODO implement
+  Obj.magic(1)
+}
+
+let createInstanceBuffer = (maxInstanceCount: int): IWebGPUForJs.Buffer.t => {
+  //TODO implement
+  Obj.magic(1)
+}
+
+let createIndirectBuffer = (maxInstanceCount: int): IWebGPUForJs.Buffer.t => {
+  //TODO implement
+  Obj.magic(1)
+}
+
+type maxMaterialCount = int
+
+type materialBufferMap = WonderCommonlib.ImmutableHashMap.t<materialType, IWebGPUForJs.Buffer.t>
+
+let createAllMaterialBuffers = (
+  allMaterialData: array<(maxMaterialCount, materialType)>,
+): materialBufferMap => {
+  //TODO implement
+  Obj.magic(1)
+}
+
+let createCameraBuffer = (): IWebGPUForJs.Buffer.t => {
+  //TODO implement
+  Obj.magic(1)
+}
+
+type bindGroupForMaterialBufferMap = specificMaterialDataMap<IWebGPUForJs.BindGroup.t>
+
+type bindGroupForOtherBuffers = IWebGPUForJs.BindGroup.t
+
+let _getBindGroupForMaterialBuffer = (
+  map: renderPipelineMap,
+  specificMaterial: specificMaterial,
+): IWebGPUForJs.BindGroup.t => {
+  //TODO implement
+  Obj.magic(1)
+}
+
+let _setBindGroupForMaterialBuffer = (
+  map: bindGroupForMaterialBufferMap,
+  specificMaterial: specificMaterial,
+  bindGroup: IWebGPUForJs.BindGroup.t,
+): bindGroupForMaterialBufferMap => {
+  //TODO implement
+  Obj.magic(1)
+}
+
+let createAllBindGroups = (
+  allMaterialTypes: array<materialType>,
+  (
+    vertexBuffer: IWebGPUForJs.Buffer.t,
+    indexBuffer: IWebGPUForJs.Buffer.t,
+    cameraBuffer: IWebGPUForJs.Buffer.t,
+    indirectBuffer: IWebGPUForJs.Buffer.t,
+    instanceBuffer: IWebGPUForJs.Buffer.t,
+  ),
+  materialBufferMap: materialBufferMap,
+): (bindGroupForMaterialBufferMap, bindGroupForOtherBuffers) => {
+  //TODO implement
+  Obj.magic(1)
 }
