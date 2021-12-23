@@ -1,6 +1,8 @@
 'use strict';
 
+var OptionSt$WonderCommonlib = require("wonder-commonlib/lib/js/src/structure/OptionSt.bs.js");
 var Init$WonderMiddlewareWebgpuRenderer = require("./Init.bs.js");
+var Render$WonderMiddlewareWebgpuRenderer = require("./Render.bs.js");
 var Update$WonderMiddlewareWebgpuRenderer = require("./Update.bs.js");
 
 function getAllMaterialData(param) {
@@ -82,6 +84,11 @@ function updateJobExec(state) {
         };
 }
 
+function execJobExec(state) {
+  Render$WonderMiddlewareWebgpuRenderer.execBatches(OptionSt$WonderCommonlib.getExn(state.batches), Render$WonderMiddlewareWebgpuRenderer.buildRenderPassState(undefined));
+  return state;
+}
+
 exports.getAllMaterialData = getAllMaterialData;
 exports.getAllMaterialDataForCreateAllMaterialBuffers = getAllMaterialDataForCreateAllMaterialBuffers;
 exports.getAllMaterialTypes = getAllMaterialTypes;
@@ -91,4 +98,5 @@ exports.getAllIndicesData = getAllIndicesData;
 exports.getAllRenderObjectData = getAllRenderObjectData;
 exports.getAllMaterialDataForUpdate = getAllMaterialDataForUpdate;
 exports.updateJobExec = updateJobExec;
+exports.execJobExec = execJobExec;
 /* No side effect */

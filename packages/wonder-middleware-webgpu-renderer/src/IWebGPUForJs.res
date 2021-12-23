@@ -18,6 +18,12 @@ module RenderBundle = {
   type t
 }
 
+module PassEncoder = {
+  module Render = {
+    type descriptor
+  }
+}
+
 type requestAdapter = unit => Js.Promise.t<Adapter.t>
 
 type webgpu = {requestAdapter: requestAdapter}

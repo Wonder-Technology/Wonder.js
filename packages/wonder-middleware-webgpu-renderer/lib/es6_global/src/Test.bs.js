@@ -1,6 +1,8 @@
 
 
+import * as OptionSt$WonderCommonlib from "../../../../../node_modules/wonder-commonlib/lib/es6_global/src/structure/OptionSt.bs.js";
 import * as Init$WonderMiddlewareWebgpuRenderer from "./Init.bs.js";
+import * as Render$WonderMiddlewareWebgpuRenderer from "./Render.bs.js";
 import * as Update$WonderMiddlewareWebgpuRenderer from "./Update.bs.js";
 
 function getAllMaterialData(param) {
@@ -82,6 +84,11 @@ function updateJobExec(state) {
         };
 }
 
+function execJobExec(state) {
+  Render$WonderMiddlewareWebgpuRenderer.execBatches(OptionSt$WonderCommonlib.getExn(state.batches), Render$WonderMiddlewareWebgpuRenderer.buildRenderPassState(undefined));
+  return state;
+}
+
 export {
   getAllMaterialData ,
   getAllMaterialDataForCreateAllMaterialBuffers ,
@@ -92,6 +99,7 @@ export {
   getAllRenderObjectData ,
   getAllMaterialDataForUpdate ,
   updateJobExec ,
+  execJobExec ,
   
 }
 /* No side effect */

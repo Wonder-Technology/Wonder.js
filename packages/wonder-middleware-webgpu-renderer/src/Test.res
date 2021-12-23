@@ -123,3 +123,23 @@ let updateJobExec = (
     batches: batches->Some,
   }
 }
+
+let execJobExec = (
+  {
+    vertexBuffer,
+    indexBuffer,
+    cameraBuffer,
+    indirectBuffer,
+    instanceBuffer,
+    materialBufferMap,
+    bindGroupForMaterialBufferMap,
+    bindGroupForOtherBuffers,
+    batches,
+  } as state: state,
+): state => {
+  open Render
+
+  execBatches(batches->WonderCommonlib.OptionSt.getExn, buildRenderPassState())
+
+  state
+}
