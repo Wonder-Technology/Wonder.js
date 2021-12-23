@@ -68,9 +68,9 @@ type depthStencilState = {depthWriteEnabled: bool}
 
 type pipelineState = {depthStencilState: depthStencilState}
 
-// type material = int
-type material
+type material = int
 
+// e.g. PBR(diffuseColor), Phong(diffuseColor, shininess)
 type materialType
 
 type getDepthWriteEnabledFunc = material => bool
@@ -211,7 +211,11 @@ let createCameraBuffer = (): IWebGPUForJs.Buffer.t => {
   Obj.magic(1)
 }
 
-type bindGroupForMaterialBufferMap = specificMaterialDataMap<IWebGPUForJs.BindGroup.t>
+// type bindGroupForMaterialBufferMap = specificMaterialDataMap<IWebGPUForJs.BindGroup.t>
+type bindGroupForMaterialBufferMap = WonderCommonlib.ImmutableHashMap.t<
+  materialType,
+  IWebGPUForJs.BindGroup.t,
+>
 
 type bindGroupForOtherBuffers = IWebGPUForJs.BindGroup.t
 

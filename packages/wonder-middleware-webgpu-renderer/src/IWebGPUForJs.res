@@ -14,6 +14,10 @@ module BindGroup = {
   type t
 }
 
+module RenderBundle = {
+  type t
+}
+
 type requestAdapter = unit => Js.Promise.t<Adapter.t>
 
 type webgpu = {requestAdapter: requestAdapter}

@@ -24,9 +24,8 @@ export let initJobExec: execFunc = (states) => {
 
 export let updateJobExec: execFunc = (states) => {
     return callFunc(() => {
-        // TODO handle handle new geometry,material, transform 
-
-        // TODO update geometry,material, camera buffer
+        // TODO handle new geometry,material, transform 
+        // TODO handle reinit material
 
         let batches = updateBatches(batches)
         updateIndirectBuffer(indirectBuffer, batches)
