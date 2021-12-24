@@ -1,0 +1,14 @@
+{
+    "name": "wonder-middleware-renderpipeline",
+    "version": "3.0.0-alpha.1",
+    "authors": "Wonder",
+    "license": "MIT",
+    "scripts": {
+        "watch": "rescript clean && rescript build -w"
+    },
+    "keywords": [],
+    "devDependencies": {},
+    "dependencies": {
+        "rescript": "^9.1.4"
+    }
+}
