@@ -1,5 +1,5 @@
 //TODO should from webpack
-let execFunc = (api: Type.api, states: Type.states) => {
+let execFunc = (api: Type.api, states: UI.states) => {
   let {drawButton} = api.ui
   let {trigger} = api.eventManager
 

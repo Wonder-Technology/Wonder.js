@@ -1,7 +1,5 @@
 type func
 
-type states
-
 type registerEventHandlerUIState = {
   x: int,
   y: int,
@@ -47,6 +45,8 @@ type useSelector
 
 type dispatch
 
+type markRender
+
 type uiAPI = {
   addExecFunc: addExecFunc,
   removeExecFunc: removeExecFunc,
@@ -54,6 +54,7 @@ type uiAPI = {
   drawButton: drawButton,
   dispatch: dispatch,
   useSelector: useSelector,
+  markRender: markRender,
 }
 
 type trigger

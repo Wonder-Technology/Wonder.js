@@ -3,7 +3,7 @@
 let handler = (api: Type.api, e: Type.triggerAddMenuItemData<Type.registerEventHandlerUIState>) => {
   let {func, id, stateValue} = e
 
-  let {addExecFunc, removeExecFunc, setState} = api.ui
+  let {addExecFunc, removeExecFunc, setState, markRender} = api.ui
 
   (removeExecFunc->Obj.magic)(id)
 
@@ -12,5 +12,5 @@ let handler = (api: Type.api, e: Type.triggerAddMenuItemData<Type.registerEventH
   /* ! if stateName exist, replace it */
   (setState->Obj.magic)(id, stateValue)
 
-  // loop()
+  (markRender->Obj.magic)(id)
 }

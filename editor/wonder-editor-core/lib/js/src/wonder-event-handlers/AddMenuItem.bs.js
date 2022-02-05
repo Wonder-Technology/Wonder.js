@@ -7,7 +7,8 @@ function handler(api, e) {
   var match = api.ui;
   Curry._1(match.removeExecFunc, id);
   Curry._2(match.addExecFunc, id, e.func);
-  return Curry._2(match.setState, id, e.stateValue);
+  Curry._2(match.setState, id, e.stateValue);
+  return Curry._1(match.markRender, id);
 }
 
 exports.handler = handler;

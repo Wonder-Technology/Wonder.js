@@ -1,15 +1,16 @@
 'use strict';
 
-var Curry = require("rescript/lib/js/curry.js");
 var UI$WonderEditorCore = require("./UI.bs.js");
 var AddMenuItem$WonderEditorCore = require("./wonder-event-handlers/AddMenuItem.bs.js");
 var EventManager$WonderEditorCore = require("./EventManager.bs.js");
 var TriggerTest1$WonderEditorCore = require("./wonder-uis/TriggerTest1.bs.js");
+var DefaultEventName$WonderEditorCore = require("./DefaultEventName.bs.js");
 var RegisterEventHandler$WonderEditorCore = require("./wonder-uis/RegisterEventHandler.bs.js");
 var RegisterEventHandlerSubmit$WonderEditorCore = require("./wonder-event-handlers/RegisterEventHandlerSubmit.bs.js");
 var ShowAllRegisteredEventHandlers$WonderEditorCore = require("./wonder-uis/ShowAllRegisteredEventHandlers.bs.js");
 
 function _initMiddlewares(param) {
+  EventManager$WonderEditorCore.init(undefined);
   return UI$WonderEditorCore.init(undefined);
 }
 
@@ -24,7 +25,7 @@ function _initEditor(param) {
     ui: partial_arg_ui,
     eventManager: partial_arg_eventManager
   };
-  Curry._1(EventManager$WonderEditorCore.onCustomEvent(/* AddMenuItem */0), (function (param) {
+  EventManager$WonderEditorCore.onCustomEvent(DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), (function (param) {
           return AddMenuItem$WonderEditorCore.handler(partial_arg, param);
         }));
   var partial_arg_ui$1 = UI$WonderEditorCore.buildAPI(undefined);
@@ -33,11 +34,10 @@ function _initEditor(param) {
     ui: partial_arg_ui$1,
     eventManager: partial_arg_eventManager$1
   };
-  Curry._1(EventManager$WonderEditorCore.onCustomEvent(/* RegisterEventHandler_Submit */1), (function (param) {
+  EventManager$WonderEditorCore.onCustomEvent(DefaultEventName$WonderEditorCore.getRegisterEventHandlerSubmitEventName(undefined), (function (param) {
           return RegisterEventHandlerSubmit$WonderEditorCore.handler(partial_arg$1, param);
         }));
-  UI$WonderEditorCore.markNotRender(undefined);
-  Curry._1(EventManager$WonderEditorCore.trigger(/* AddMenuItem */0), {
+  EventManager$WonderEditorCore.trigger(DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
         id: "registerEventHandler",
         func: RegisterEventHandler$WonderEditorCore.execFunc,
         stateValue: {
@@ -48,14 +48,14 @@ function _initEditor(param) {
           text: "submit"
         }
       });
-  Curry._1(EventManager$WonderEditorCore.trigger(/* AddMenuItem */0), {
-        id: "showAllEventHandlers",
+  EventManager$WonderEditorCore.trigger(DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
+        id: "showAllRegisteredEventHandlers",
         func: ShowAllRegisteredEventHandlers$WonderEditorCore.execFunc,
         stateValue: {
           eventHandlerArr: []
         }
       });
-  return Curry._1(EventManager$WonderEditorCore.trigger(/* AddMenuItem */0), {
+  return EventManager$WonderEditorCore.trigger(DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
               id: "triggerTest1",
               func: TriggerTest1$WonderEditorCore.execFunc,
               stateValue: {
@@ -69,6 +69,7 @@ function _initEditor(param) {
 }
 
 function init(param) {
+  EventManager$WonderEditorCore.init(undefined);
   UI$WonderEditorCore.init(undefined);
   return _initEditor(undefined);
 }

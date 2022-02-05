@@ -11,7 +11,9 @@
         "-bs-super-errors"
     ],
     "bs-dev-dependencies": [],
-    "bs-dependencies": [],
+    "bs-dependencies": [
+        "wonder-commonlib"
+    ],
     "package-specs": [
         "commonjs",
         "es6-global"

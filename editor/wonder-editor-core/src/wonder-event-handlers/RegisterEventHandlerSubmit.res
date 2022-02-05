@@ -10,8 +10,8 @@ let handler = (api: Type.api, e: Type.triggerRegisterEventHandlerSubmitData) => 
 
   let {dispatch} = api.ui
 
-  /* ! should update state.showAllEventHandlers */
+  /* ! should update states.showAllRegisteredEventHandlers.eventHandlerArr */
 
-  //   TODO use reducer->action
+  //   TODO use reducer->action, reducer instead
   (dispatch->Obj.magic)(("submit", eventName, handlerFunc))
 }

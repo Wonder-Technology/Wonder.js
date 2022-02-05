@@ -1,6 +1,38 @@
-let markNotRender = (): unit => {
-  //TODO implement
-  Obj.magic(1)
+type id = string
+
+type execFunc
+
+type uiState
+
+type states = WonderCommonlib.MutableHashMap.t<id, uiState>
+
+type state = {
+  execFuncMap: WonderCommonlib.MutableHashMap.t<id, execFunc>,
+  stateMap: states,
+  isRenderMap: WonderCommonlib.MutableHashMap.t<id, bool>,
+}
+type stateContainer = {mutable state: option<state>}
+
+let _createStateContainer = (): stateContainer => {state: None}
+
+let stateContainer = _createStateContainer()
+
+let setState = (state: state) => {
+  stateContainer.state = state->Some
+
+  ()
+}
+
+let unsafeGetState = () => {
+  stateContainer.state->Belt.Option.getUnsafe
+}
+
+let markNotRender = (id: id): unit => {
+  unsafeGetState().isRenderMap->WonderCommonlib.MutableHashMap.set(id, false)->ignore
+}
+
+let markRender = (id: id): unit => {
+  unsafeGetState().isRenderMap->WonderCommonlib.MutableHashMap.set(id, true)->ignore
 }
 
 let init = (): unit => {
@@ -9,43 +41,141 @@ let init = (): unit => {
   // _setMenuUI(canvas, _getRenderEngineForUI())
   // _setControllerUI(canvas, _getRenderEngineForUI())
 
-  //TODO implement
-  Obj.magic(1)
+  setState({
+    execFuncMap: WonderCommonlib.MutableHashMap.createEmpty(),
+    stateMap: WonderCommonlib.MutableHashMap.createEmpty(),
+    isRenderMap: WonderCommonlib.MutableHashMap.createEmpty(),
+  })
+}
+
+let _markAllNotRender = (): unit => {
+  let {isRenderMap} = unsafeGetState()
+
+  // TODO add entries to MutableHashMap, ImmutableHashMap ?
+  isRenderMap
+  ->WonderCommonlib.HashMap.entries
+  ->WonderCommonlib.ArraySt.forEach(((id, isRender)) => {
+    isRender
+      ? {
+          markNotRender(id)
+        }
+      : ()
+  })
 }
 
 let render = (): unit => {
-  //TODO implement
-  Obj.magic(1)
+  let {isRenderMap, execFuncMap, stateMap} = unsafeGetState()
+
+  // TODO add entries to MutableHashMap, ImmutableHashMap ?
+  isRenderMap
+  ->WonderCommonlib.HashMap.entries
+  ->WonderCommonlib.ArraySt.forEach(((id, isRender)) => {
+    isRender
+      ? {
+          let execFunc = execFuncMap->WonderCommonlib.MutableHashMap.unsafeGet(id)
+
+          (execFunc->Obj.magic)(stateMap)
+        }
+      : ()
+  })
+
+  _markAllNotRender()
 }
 
-let addExecFunc = () => {
-  //TODO implement
-  Obj.magic(1)
+let addExecFunc = (id: id, func: execFunc) => {
+  setState({
+    ...unsafeGetState(),
+    execFuncMap: unsafeGetState().execFuncMap->WonderCommonlib.MutableHashMap.set(id, func),
+  })
 }
 
-let removeExecFunc = () => {
-  //TODO implement
-  Obj.magic(1)
+// TODO remove?
+let removeExecFunc = (id: id) => {
+  setState({
+    ...unsafeGetState(),
+    execFuncMap: unsafeGetState().execFuncMap->WonderCommonlib.MutableHashMap.deleteVal(id),
+  })
 }
 
-let setState = () => {
-  //TODO implement
-  Obj.magic(1)
+let setState = (id: id, uiState: uiState) => {
+  setState({
+    ...unsafeGetState(),
+    stateMap: unsafeGetState().stateMap->WonderCommonlib.MutableHashMap.set(id, uiState),
+  })
 }
 
-let drawButton = () => {
-  //TODO implement
-  Obj.magic(1)
+// let drawButton = (x:int, y:int, width:int, height:int, onClickFunc) => {
+
+// }
+
+let drawButton = %raw(`
+function(x,y,width,height,onClickFunc) {
+  let id = ( x+y ).toString()
+document.querySelector("#" + id).remove()
+
+
+let button = document.createElement("button")
+
+button.style.position = "absolute"
+button.style.left = x + "px"
+button.style.top = y + "px"
+button.style.width = width + "px"
+button.style.height = height + "px"
+button.innerHTML = "button"
+
+button.onclick = onClickFunc
+button.id = id
+
+  document.body.appendChild(
+    button
+  )
+}
+`)
+
+let dispatch = (
+  actionType: string,
+  eventName: EventManager.eventName,
+  eventHandler: Type.handlerFunc,
+) => {
+  switch actionType {
+  | "submit" =>
+    // TODO should compare whether state is change or not
+
+    let id = "showAllRegisteredEventHandlers"
+
+    let state: Type.showAllEventHandlersUIState =
+      unsafeGetState().stateMap->Obj.magic->WonderCommonlib.MutableHashMap.unsafeGet(id)
+
+    // setState({
+    //   ...unsafeGetState(),
+    //   stateMap: unsafeGetState().stateMap
+    //   ->Obj.magic
+    //   ->WonderCommonlib.MutableHashMap.set(
+    //     "showAllRegisteredEventHandlers",
+    //     {
+    //       ...state,
+    //       eventHandlerArr: state.eventHandlerArr->WonderCommonlib.ArraySt.push({
+    //         eventName: eventName,
+    //         handlerFunc: eventHandler,
+    //       }),
+    //     },
+    //   ),
+    // })
+
+    state.eventHandlerArr
+    ->WonderCommonlib.ArraySt.push({
+      eventName: eventName,
+      handlerFunc: eventHandler,
+    })
+    ->ignore
+
+    unsafeGetState().isRenderMap->WonderCommonlib.MutableHashMap.set(id, true)
+  }
 }
 
-let dispatch = () => {
-  //TODO implement
-  Obj.magic(1)
-}
-
-let useSelector = () => {
-  //TODO implement
-  Obj.magic(1)
+let useSelector = (uiState: uiState) => {
+  // TODO finish
+  uiState
 }
 
 let buildAPI = (): Type.uiAPI => {
@@ -55,4 +185,5 @@ let buildAPI = (): Type.uiAPI => {
   drawButton: drawButton->Obj.magic,
   dispatch: dispatch->Obj.magic,
   useSelector: useSelector->Obj.magic,
+  markRender: markRender->Obj.magic,
 }

@@ -1,5 +1,5 @@
 //TODO should from webpack
-let execFunc = (api: Type.api, states: Type.states) => {
+let execFunc = (api: Type.api, states: UI.states) => {
   // let { useSelector, groupStart, groupEnd, drawInput, drawTextarea, drawButton } = api.ui
   let {drawButton, useSelector} = api.ui
   let {trigger} = api.eventManager
@@ -18,7 +18,7 @@ let execFunc = (api: Type.api, states: Type.states) => {
 
   (drawButton->Obj.magic)(x, y, width, height, e => {
     (trigger->Obj.magic)(
-      DefaultEventType.RegisterEventHandler_Submit,
+      DefaultEventName.getRegisterEventHandlerSubmitEventName(),
       (
         {
           eventName: "wd_event_handler_test1",

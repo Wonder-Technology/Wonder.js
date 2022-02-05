@@ -1,6 +1,7 @@
 // TODO be interface(e.g. EventManager, UI, ...)
 
 let _initMiddlewares = (): unit => {
+  EventManager.init()
   UI.init()
 }
 
@@ -15,7 +16,7 @@ let _initEditor = (): unit => {
   /* ! on default event */
 
   (EventManager.onCustomEvent->Obj.magic)(
-    DefaultEventType.AddMenuItem,
+    DefaultEventName.getAddMenuItemEventName(),
     AddMenuItem.handler(
       (
         {
@@ -27,7 +28,7 @@ let _initEditor = (): unit => {
   )
 
   (EventManager.onCustomEvent->Obj.magic)(
-    DefaultEventType.RegisterEventHandler_Submit,
+    DefaultEventName.getRegisterEventHandlerSubmitEventName(),
     RegisterEventHandlerSubmit.handler(
       (
         {
@@ -40,10 +41,10 @@ let _initEditor = (): unit => {
 
   /* ! add default ui */
 
-  UI.markNotRender()
+  // UI.markNotRender()
 
   (EventManager.trigger->Obj.magic)(
-    DefaultEventType.AddMenuItem,
+    DefaultEventName.getAddMenuItemEventName(),
     (
       {
         id: "registerEventHandler",
@@ -60,10 +61,10 @@ let _initEditor = (): unit => {
   )
 
   (EventManager.trigger->Obj.magic)(
-    DefaultEventType.AddMenuItem,
+    DefaultEventName.getAddMenuItemEventName(),
     (
       {
-        id: "showAllEventHandlers",
+        id: "showAllRegisteredEventHandlers",
         func: ShowAllRegisteredEventHandlers.execFunc->Obj.magic,
         stateValue: {
           eventHandlerArr: [],
@@ -73,7 +74,7 @@ let _initEditor = (): unit => {
   )
 
   (EventManager.trigger->Obj.magic)(
-    DefaultEventType.AddMenuItem,
+    DefaultEventName.getAddMenuItemEventName(),
     (
       {
         id: "triggerTest1",
