@@ -22,12 +22,13 @@ module.exports = {
     { name: "bs-sinon" },
     { name: "fp" },
     { name: "commonlib" },
-    { name: "core" },
+    { name: "engine-core" },
     { name: "facade" },
     { name: "work-plugin" },
     { name: "gameobject" },
     { name: "component" },
     { name: "middleware" },
+    { name: "editor-core" },
   ],
 
   // it needs to match the value for field type. Eg.: "fix"
