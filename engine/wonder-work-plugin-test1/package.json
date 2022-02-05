@@ -1,0 +1,18 @@
+{
+    "name": "wonder-work-plugin-test1",
+    "version": "2.0.0-alpha.7",
+    "description": "",
+    "author": "wonder",
+    "license": "MIT",
+    "scripts": {
+        "watch": "tsc -w",
+		"webpack": "webpack --config webpack.config.js"
+    },
+    "keywords": [],
+    "dependencies": {
+        "most": "1.7.0"
+    },
+    "devDependencies": {
+        "typescript": "^4.2.3"
+    }
+}

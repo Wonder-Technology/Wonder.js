@@ -1,0 +1,24 @@
+{
+    "name": "wonder-fp",
+    "version": "2.0.0-alpha.7",
+    "description": "",
+    "author": "wonder",
+    "license": "MIT",
+    "scripts": {
+        "watch": "tsc -w",
+        "test:watch": "jest --maxWorkers=4 --watch --config jest.json",
+        "test:ci": "jest --maxWorkers=4 --config jest_coverage.json"
+    },
+    "keywords": [],
+    "devDependencies": {
+        "@babel/node": "^7.8.7",
+        "@babel/preset-env": "^7.9.0",
+        "@types/jest": "^25.2.1",
+        "@types/sinon": "^10.0.0",
+        "babel-jest": "^24.1.0",
+        "jest": "^25.2.7",
+        "jest-cucumber": "^3.0.1",
+        "ts-jest": "^26.1.4",
+        "typescript": "^4.2.3"
+    }
+}

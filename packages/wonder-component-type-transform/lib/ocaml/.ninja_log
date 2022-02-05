@@ -1,9 +1,0 @@
-# ninja log v6
-0	7	1639970695233188782	index-WonderComponentTypeTransform.cmi	419f06dfd5c8bc5b
-1	7	1639970695233356757	index-WonderComponentTypeTransform.cmj	9ea9b7d4c6df988e
-1	8	1639970695233931494	index-WonderComponentTypeTransform.cmt	57aac37bea490016
-1	8	1639970695234374774	WonderComponentTypeTransform.cmi	6f8edf7ec04c4faa
-1	8	1639970695234370390	index.res	cbcc41d573cc9da1
-2	9	1639970695235067959	WonderComponentTypeTransform.cmj	6fde4e3a5327806
-2	9	1639970695235246038	WonderComponentTypeTransform.cmt	2a189971cad4f864
-9	14	1639970695240048816	install.stamp	cff5a5b4c02d30cf

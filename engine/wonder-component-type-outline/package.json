@@ -1,0 +1,15 @@
+{
+    "name": "wonder-component-type-outline",
+    "version": "2.0.0-alpha.7",
+    "description": "",
+    "author": "wonder",
+    "license": "MIT",
+    "scripts": {
+        "watch": "tsc -w"
+    },
+    "keywords": [],
+    "dependencies": {},
+    "devDependencies": {
+        "typescript": "^4.2.3"
+    }
+}

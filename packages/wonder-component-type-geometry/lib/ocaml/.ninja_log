@@ -1,9 +1,0 @@
-# ninja log v6
-0	7	1639970663743407585	index-WonderComponentTypeGeometry.cmi	cb541f7e058f01ce
-1	8	1639970663743899384	index-WonderComponentTypeGeometry.cmj	aa6802982eaf0cdc
-1	9	1639970663744574471	index.res	cbcc41d573cc9da1
-1	9	1639970663744789787	index-WonderComponentTypeGeometry.cmt	c537f89699049496
-3	10	1639970663745771534	WonderComponentTypeGeometry.cmt	e452e8bc81f0f7cd
-2	10	1639970663745833241	WonderComponentTypeGeometry.cmi	81974a7c82c8357
-2	10	1639970663746259076	WonderComponentTypeGeometry.cmj	dd109cfaa791f909
-10	14	1639970663750604389	install.stamp	cff5a5b4c02d30cf

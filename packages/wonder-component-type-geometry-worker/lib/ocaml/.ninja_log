@@ -1,9 +1,0 @@
-# ninja log v6
-0	11	1638833848090202653	index-OrillusionComponentTypeGeometryWorker.cmj	1865ced2252c27f4
-0	13	1638833848092785869	index-OrillusionComponentTypeGeometryWorker.cmi	e9e6bb94ec96f7d5
-0	15	1638833848094111511	index-OrillusionComponentTypeGeometryWorker.cmt	834a18bca3180406
-1	15	1638833848095389832	index.res	cbcc41d573cc9da1
-2	16	1638833848096409975	OrillusionComponentTypeGeometryWorker.cmi	3144a2531d337055
-3	17	1638833848097177428	OrillusionComponentTypeGeometryWorker.cmj	12a90b3a9ca82ba4
-5	19	1638833848099494333	OrillusionComponentTypeGeometryWorker.cmt	3a7f7743a538e8fe
-17	28	1638833848108114574	install.stamp	cff5a5b4c02d30cf

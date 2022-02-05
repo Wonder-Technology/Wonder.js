@@ -3,11 +3,17 @@
 	"private": true,
 	"scripts": {
 		"watch": "tsc -w",
+		"clean": "lerna clean && rm -rf node_modules yarn.lock",
+		"install": "lerna bootstrap",
 		"webpack:dev-server": "webpack-dev-server --config webpack.config.watch.js",
+		"webpack:demo": "webpack-dev-server --config webpack.config.watch_editor_demo.js",
 		"ci:test": "lerna run test:ci --concurrency 1"
 	},
 	"workspaces": [
-		"packages/*"
+		"engine/*",
+		"editor/*",
+		"middleware/*",
+		"commonlib/*"
 	],
 	"config": {
 		"commitizen": {

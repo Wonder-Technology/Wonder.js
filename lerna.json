@@ -1,6 +1,9 @@
 {
   "packages": [
-    "packages/*"
+    "engine/*",
+    "editor/*",
+    "middleware/*",
+    "commonlib/*"
   ],
   "npmClient": "yarn",
   "command": {

@@ -1,0 +1,36 @@
+{
+  "name": "wonder-component-arcballcameracontroller",
+  "version": "2.0.0-alpha.7",
+  "authors": "Wonder",
+  "description": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "main": "lib/js/src/Main.bs.js",
+  "types": "src/Main.d.ts",
+  "scripts": {
+    "watch": "rescript clean && rescript build -w",
+    "buildAll:ci": "rescript clean && rescript build",
+    "test:watch": "jest --watch --config jest.json",
+    "test:ci": "yarn buildAll:ci && jest --maxWorkers=4 --config jest_coverage.json"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    }
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "babel-jest": "^26.1.0",
+    "cz-conventional-changelog": "^3.2.0",
+    "cz-customizable": "^5.2.0",
+    "gentype": "^3.48.0",
+    "jest": "^25.2.3"
+  },
+  "dependencies": {
+    "rescript": "^9.1.4"
+  }
+}

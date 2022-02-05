@@ -1,0 +1,22 @@
+{
+  "name": "wonder-component-directionlight-worker",
+  "version": "2.0.0-alpha.7",
+  "authors": "Wonder",
+  "description": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "main": "lib/js/src/Main.bs.js",
+  "types": "src/Main.d.ts",
+  "scripts": {
+    "watch": "rescript clean && rescript build -w"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "gentype": "^3.48.0"
+  },
+  "dependencies": {
+    "rescript": "^9.1.4"
+  }
+}

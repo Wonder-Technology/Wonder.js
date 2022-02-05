@@ -1,0 +1,14 @@
+{
+  "name": "wonder-bs-jest-cucumber",
+  "version": "2.0.0-alpha.7",
+  "description": "",
+  "license": "MIT",
+  "main": "",
+  "scripts": {
+    "watch": "rescript clean && rescript build -w"
+  },
+  "dependencies": {
+    "jest-cucumber": "^3.0.1",
+    "rescript": "^9.1.4"
+  }
+}

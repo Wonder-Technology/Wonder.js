@@ -1,0 +1,23 @@
+{
+  "name": "wonder-commonlib",
+  "version": "2.0.0-alpha.7",
+  "authors": "wonder",
+  "license": "MIT",
+  "keywords": [
+    "Wonder-CommonLib"
+  ],
+  "scripts": {
+    "start": "node ./server/app.js",
+    "watch": "rescript clean && rescript build -w",
+    "test": "npm run build && jest --config jest.json",
+    "test:watch": "npm run build && jest --watch --config jest.json"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "babel-jest": "^24.1.0"
+  },
+  "dependencies": {
+    "rescript": "^9.1.4"
+  }
+}

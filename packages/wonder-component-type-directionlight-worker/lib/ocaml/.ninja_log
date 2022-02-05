@@ -1,9 +1,0 @@
-# ninja log v6
-0	14	1638836440381150880	index-OrillusionComponentTypeDirectionlightWorker.cmi	db2b34d03fc5b19a
-1	14	1638836440381971710	index-OrillusionComponentTypeDirectionlightWorker.cmj	d761f0e1db4f3213
-2	17	1638836440385003489	index-OrillusionComponentTypeDirectionlightWorker.cmt	ee979e22ecc00a07
-3	20	1638836440387426259	index.res	cbcc41d573cc9da1
-4	22	1638836440389493690	OrillusionComponentTypeDirectionlightWorker.cmi	e734fc54a11c7fbd
-7	24	1638836440391648047	OrillusionComponentTypeDirectionlightWorker.cmj	dfe2c06057ea554d
-8	26	1638836440392349719	OrillusionComponentTypeDirectionlightWorker.cmt	8317c954ea0bbd62
-24	35	1638836440402738290	install.stamp	cff5a5b4c02d30cf
