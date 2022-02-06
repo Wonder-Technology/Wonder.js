@@ -22,7 +22,7 @@ let execFunc = (api: Type.api, states: UI.states) => {
       (
         {
           eventName: "wd_event_handler_test1",
-          handlerFunc: Test1.handler->Obj.magic,
+          handlerFunc: Test1.handler(Utils.buildAPI())->Obj.magic,
         }: Type.triggerRegisterEventHandlerSubmitData
       ),
     )

@@ -110,8 +110,11 @@ let setState = (id: id, uiState: uiState) => {
 
 let drawButton = %raw(`
 function(x,y,width,height,onClickFunc) {
-  let id = ( x+y ).toString()
+  let id = "_" + ( x+y ).toString()
+
+  if(document.querySelector("#" + id) !== null){
 document.querySelector("#" + id).remove()
+  }
 
 
 let button = document.createElement("button")
@@ -132,11 +135,11 @@ button.id = id
 }
 `)
 
-let dispatch = (
+let dispatch = ((
   actionType: string,
   eventName: EventManager.eventName,
   eventHandler: Type.handlerFunc,
-) => {
+)) => {
   switch actionType {
   | "submit" =>
     // TODO should compare whether state is change or not

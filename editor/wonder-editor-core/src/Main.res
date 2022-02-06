@@ -17,26 +17,12 @@ let _initEditor = (): unit => {
 
   (EventManager.onCustomEvent->Obj.magic)(
     DefaultEventName.getAddMenuItemEventName(),
-    AddMenuItem.handler(
-      (
-        {
-          ui: UI.buildAPI(),
-          eventManager: EventManager.buildAPI(),
-        }: Type.api
-      ),
-    ),
+    AddMenuItem.handler(Utils.buildAPI()),
   )
 
   (EventManager.onCustomEvent->Obj.magic)(
     DefaultEventName.getRegisterEventHandlerSubmitEventName(),
-    RegisterEventHandlerSubmit.handler(
-      (
-        {
-          ui: UI.buildAPI(),
-          eventManager: EventManager.buildAPI(),
-        }: Type.api
-      ),
-    ),
+    RegisterEventHandlerSubmit.handler(Utils.buildAPI()),
   )
 
   /* ! add default ui */
@@ -48,7 +34,7 @@ let _initEditor = (): unit => {
     (
       {
         id: "registerEventHandler",
-        func: RegisterEventHandler.execFunc->Obj.magic,
+        func: RegisterEventHandler.execFunc(Utils.buildAPI())->Obj.magic,
         stateValue: {
           x: 0,
           y: 140,
@@ -65,7 +51,7 @@ let _initEditor = (): unit => {
     (
       {
         id: "showAllRegisteredEventHandlers",
-        func: ShowAllRegisteredEventHandlers.execFunc->Obj.magic,
+        func: ShowAllRegisteredEventHandlers.execFunc(Utils.buildAPI())->Obj.magic,
         stateValue: {
           eventHandlerArr: [],
         },
@@ -78,7 +64,7 @@ let _initEditor = (): unit => {
     (
       {
         id: "triggerTest1",
-        func: TriggerTest1.execFunc->Obj.magic,
+        func: TriggerTest1.execFunc(Utils.buildAPI())->Obj.magic,
         stateValue: {
           x: 0,
           y: 240,
@@ -99,4 +85,16 @@ let init = () => {
 
 init()
 
-UI.render()
+let _render = %raw(`
+function(renderUIFunc) {
+renderUIFunc()
+
+requestAnimationFrame(
+  () =>{
+_render(renderUIFunc)
+  }
+)
+}
+`)
+
+_render(UI.render)

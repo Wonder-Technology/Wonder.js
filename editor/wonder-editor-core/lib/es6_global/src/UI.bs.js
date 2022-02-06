@@ -94,8 +94,11 @@ function setState$1(id, uiState) {
 }
 
 var drawButton = (function(x,y,width,height,onClickFunc) {
-  let id = ( x+y ).toString()
+  let id = "_" + ( x+y ).toString()
+
+  if(document.querySelector("#" + id) !== null){
 document.querySelector("#" + id).remove()
+  }
 
 
 let button = document.createElement("button")
@@ -115,13 +118,13 @@ button.id = id
   )
 });
 
-function dispatch(actionType, eventName, eventHandler) {
-  if (actionType === "submit") {
+function dispatch(param) {
+  if (param[0] === "submit") {
     var id = "showAllRegisteredEventHandlers";
     var state = MutableHashMap$WonderCommonlib.unsafeGet(stateContainer.state.stateMap, id);
     ArraySt$WonderCommonlib.push(state.eventHandlerArr, {
-          eventName: eventName,
-          handlerFunc: eventHandler
+          eventName: param[1],
+          handlerFunc: param[2]
         });
     return MutableHashMap$WonderCommonlib.set(stateContainer.state.isRenderMap, id, true);
   }
@@ -129,7 +132,7 @@ function dispatch(actionType, eventName, eventHandler) {
         RE_EXN_ID: "Match_failure",
         _1: [
           "UI.res",
-          140,
+          143,
           2
         ],
         Error: new Error()

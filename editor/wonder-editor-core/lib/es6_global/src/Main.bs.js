@@ -1,6 +1,7 @@
 
 
 import * as UI$WonderEditorCore from "./UI.bs.js";
+import * as Utils$WonderEditorCore from "./Utils.bs.js";
 import * as AddMenuItem$WonderEditorCore from "./wonder-event-handlers/AddMenuItem.bs.js";
 import * as EventManager$WonderEditorCore from "./EventManager.bs.js";
 import * as TriggerTest1$WonderEditorCore from "./wonder-uis/TriggerTest1.bs.js";
@@ -19,27 +20,20 @@ function _initEngine(param) {
 }
 
 function _initEditor(param) {
-  var partial_arg_ui = UI$WonderEditorCore.buildAPI(undefined);
-  var partial_arg_eventManager = EventManager$WonderEditorCore.buildAPI(undefined);
-  var partial_arg = {
-    ui: partial_arg_ui,
-    eventManager: partial_arg_eventManager
-  };
+  var partial_arg = Utils$WonderEditorCore.buildAPI(undefined);
   EventManager$WonderEditorCore.onCustomEvent(DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), (function (param) {
           return AddMenuItem$WonderEditorCore.handler(partial_arg, param);
         }));
-  var partial_arg_ui$1 = UI$WonderEditorCore.buildAPI(undefined);
-  var partial_arg_eventManager$1 = EventManager$WonderEditorCore.buildAPI(undefined);
-  var partial_arg$1 = {
-    ui: partial_arg_ui$1,
-    eventManager: partial_arg_eventManager$1
-  };
+  var partial_arg$1 = Utils$WonderEditorCore.buildAPI(undefined);
   EventManager$WonderEditorCore.onCustomEvent(DefaultEventName$WonderEditorCore.getRegisterEventHandlerSubmitEventName(undefined), (function (param) {
           return RegisterEventHandlerSubmit$WonderEditorCore.handler(partial_arg$1, param);
         }));
+  var partial_arg$2 = Utils$WonderEditorCore.buildAPI(undefined);
   EventManager$WonderEditorCore.trigger(DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
         id: "registerEventHandler",
-        func: RegisterEventHandler$WonderEditorCore.execFunc,
+        func: (function (param) {
+            return RegisterEventHandler$WonderEditorCore.execFunc(partial_arg$2, param);
+          }),
         stateValue: {
           x: 0,
           y: 140,
@@ -48,16 +42,22 @@ function _initEditor(param) {
           text: "submit"
         }
       });
+  var partial_arg$3 = Utils$WonderEditorCore.buildAPI(undefined);
   EventManager$WonderEditorCore.trigger(DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
         id: "showAllRegisteredEventHandlers",
-        func: ShowAllRegisteredEventHandlers$WonderEditorCore.execFunc,
+        func: (function (param) {
+            return ShowAllRegisteredEventHandlers$WonderEditorCore.execFunc(partial_arg$3, param);
+          }),
         stateValue: {
           eventHandlerArr: []
         }
       });
+  var partial_arg$4 = Utils$WonderEditorCore.buildAPI(undefined);
   return EventManager$WonderEditorCore.trigger(DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
               id: "triggerTest1",
-              func: TriggerTest1$WonderEditorCore.execFunc,
+              func: (function (param) {
+                  return TriggerTest1$WonderEditorCore.execFunc(partial_arg$4, param);
+                }),
               stateValue: {
                 x: 0,
                 y: 240,
@@ -76,13 +76,24 @@ function init(param) {
 
 init(undefined);
 
-UI$WonderEditorCore.render(undefined);
+var _render = (function(renderUIFunc) {
+renderUIFunc()
+
+requestAnimationFrame(
+  () =>{
+_render(renderUIFunc)
+  }
+)
+});
+
+_render(UI$WonderEditorCore.render);
 
 export {
   _initMiddlewares ,
   _initEngine ,
   _initEditor ,
   init ,
+  _render ,
   
 }
 /*  Not a pure module */

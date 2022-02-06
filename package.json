@@ -6,7 +6,7 @@
 		"clean": "lerna clean && rm -rf node_modules yarn.lock",
 		"install": "lerna bootstrap",
 		"webpack:dev-server": "webpack-dev-server --config webpack.config.watch.js",
-		"webpack:demo": "webpack-dev-server --config webpack.config.watch_editor_demo.js",
+		"webpack:demo": "webpack-dev-server --config webpack.config.watch_editor_demo_rescript.js",
 		"ci:test": "lerna run test:ci --concurrency 1"
 	},
 	"workspaces": [
