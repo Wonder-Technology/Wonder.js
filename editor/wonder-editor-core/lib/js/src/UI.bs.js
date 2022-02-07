@@ -93,7 +93,7 @@ function setState$1(id, uiState) {
             });
 }
 
-var drawButton = (function(x,y,width,height,onClickFunc) {
+var drawButton = (function(x,y,width,height,text,onClickFunc) {
   let id = "_" + ( x+y ).toString()
 
   if(document.querySelector("#" + id) !== null){
@@ -108,7 +108,7 @@ button.style.left = x + "px"
 button.style.top = y + "px"
 button.style.width = width + "px"
 button.style.height = height + "px"
-button.innerHTML = "button"
+button.innerHTML =text
 
 button.onclick = onClickFunc
 button.id = id

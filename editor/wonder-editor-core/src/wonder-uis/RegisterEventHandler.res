@@ -16,7 +16,7 @@ let execFunc = (api: Type.api, states: UI.states) => {
   //     height:150
   // })
 
-  (drawButton->Obj.magic)(x, y, width, height, e => {
+  (drawButton->Obj.magic)(x, y, width, height, text, e => {
     (trigger->Obj.magic)(
       DefaultEventName.getRegisterEventHandlerSubmitEventName(),
       (

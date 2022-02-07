@@ -8,6 +8,15 @@ type registerEventHandlerUIState = {
   text: string,
 }
 
+type registerUIUIState = {
+  x: int,
+  y: int,
+  width: int,
+  height: int,
+  text: string,
+}
+
+
 type registerMiddlewareUIState = {
   x: int,
   y: int,

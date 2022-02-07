@@ -3,9 +3,9 @@
 import * as Curry from "../../../../../node_modules/rescript/lib/es6/curry.js";
 import * as UI$WonderEditorCore from "./UI.bs.js";
 import * as Utils$WonderEditorCore from "./Utils.bs.js";
+import * as RegisterUI$WonderEditorCore from "./wonder-uis/RegisterUI.bs.js";
 import * as AddMenuItem$WonderEditorCore from "./wonder-event-handlers/AddMenuItem.bs.js";
 import * as EventManager$WonderEditorCore from "./EventManager.bs.js";
-import * as TriggerTest1$WonderEditorCore from "./wonder-uis/TriggerTest1.bs.js";
 import * as DefaultEventName$WonderEditorCore from "./DefaultEventName.bs.js";
 import * as MiddlewareManager$WonderEditorCore from "./MiddlewareManager.bs.js";
 import * as RegisterMiddleware$WonderEditorCore from "./wonder-uis/RegisterMiddleware.bs.js";
@@ -53,7 +53,7 @@ function _initEditor(param) {
           y: 140,
           width: 20,
           height: 10,
-          text: "submit"
+          text: "registerEventHandler"
         }
       });
   var partial_arg$4 = Utils$WonderEditorCore.buildAPI(undefined);
@@ -68,16 +68,16 @@ function _initEditor(param) {
       });
   var partial_arg$5 = Utils$WonderEditorCore.buildAPI(undefined);
   Curry._2(eventManager.trigger, DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
-        id: "triggerTest1",
+        id: "registerUI",
         func: (function (param) {
-            return TriggerTest1$WonderEditorCore.execFunc(partial_arg$5, param);
+            return RegisterUI$WonderEditorCore.execFunc(partial_arg$5, param);
           }),
         stateValue: {
           x: 0,
           y: 240,
-          width: 20,
-          height: 10,
-          text: "trigger_test1"
+          width: 60,
+          height: 20,
+          text: "registerUI"
         }
       });
   var partial_arg$6 = Utils$WonderEditorCore.buildAPI(undefined);
@@ -87,7 +87,7 @@ function _initEditor(param) {
                   return RegisterMiddleware$WonderEditorCore.execFunc(partial_arg$6, param);
                 }),
               stateValue: {
-                x: 200,
+                x: 300,
                 y: 140,
                 width: 20,
                 height: 10,

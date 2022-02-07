@@ -1,5 +1,7 @@
 // TODO be interface(e.g. eventManager, UI, ...)
 
+/* ! not show and edit default ones for user! */
+
 let _initMiddlewares = (): unit => {
   MiddlewareManager.init()
 
@@ -24,8 +26,6 @@ let _initEngine = (): unit => {
 }
 
 let _initEditor = (): unit => {
-  //   /* ! not show and edit default ones for user! */
-
   /* ! on default event */
 
   let eventManager: EventManager.getData = MiddlewareManager.unsafeGet("EventManager")->Obj.magic
@@ -60,7 +60,7 @@ let _initEditor = (): unit => {
           y: 140,
           width: 20,
           height: 10,
-          text: "submit",
+          text: "registerEventHandler",
         },
       }: Type.triggerAddMenuItemData<Type.registerEventHandlerUIState>
     ),
@@ -83,18 +83,35 @@ let _initEditor = (): unit => {
     DefaultEventName.getAddMenuItemEventName(),
     (
       {
-        id: "triggerTest1",
-        func: TriggerTest1.execFunc(Utils.buildAPI())->Obj.magic,
+        id: "registerUI",
+        func: RegisterUI.execFunc(Utils.buildAPI())->Obj.magic,
         stateValue: {
           x: 0,
           y: 240,
-          width: 20,
-          height: 10,
-          text: "trigger_test1",
+          width: 60,
+          height: 20,
+          text: "registerUI",
         },
-      }: Type.triggerAddMenuItemData<Type.registerEventHandlerUIState>
+      }: Type.triggerAddMenuItemData<Type.registerUIUIState>
     ),
   )
+
+  // (eventManager.trigger->Obj.magic)(
+  //   DefaultEventName.getAddMenuItemEventName(),
+  //   (
+  //     {
+  //       id: "triggerTest1",
+  //       func: TriggerTest1.execFunc(Utils.buildAPI())->Obj.magic,
+  //       stateValue: {
+  //         x: 100,
+  //         y: 240,
+  //         width: 20,
+  //         height: 10,
+  //         text: "trigger_test1",
+  //       },
+  //     }: Type.triggerAddMenuItemData<Type.registerEventHandlerUIState>
+  //   ),
+  // )
 
   (eventManager.trigger->Obj.magic)(
     DefaultEventName.getAddMenuItemEventName(),
@@ -103,7 +120,7 @@ let _initEditor = (): unit => {
         id: "registerMiddleware",
         func: RegisterMiddleware.execFunc(Utils.buildAPI())->Obj.magic,
         stateValue: {
-          x: 200,
+          x: 300,
           y: 140,
           width: 20,
           height: 10,

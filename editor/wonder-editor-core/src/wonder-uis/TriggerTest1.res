@@ -8,7 +8,7 @@ let execFunc = (api: Type.api, states: UI.states) => {
     "triggerTest1",
   )
 
-  (drawButton->Obj.magic)(x, y, width, height, e => {
+  (drawButton->Obj.magic)(x, y, width, height, text, e => {
     (trigger->Obj.magic)(
       "wd_event_handler_test1",
       (

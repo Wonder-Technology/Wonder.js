@@ -3,9 +3,9 @@
 var Curry = require("rescript/lib/js/curry.js");
 var UI$WonderEditorCore = require("./UI.bs.js");
 var Utils$WonderEditorCore = require("./Utils.bs.js");
+var RegisterUI$WonderEditorCore = require("./wonder-uis/RegisterUI.bs.js");
 var AddMenuItem$WonderEditorCore = require("./wonder-event-handlers/AddMenuItem.bs.js");
 var EventManager$WonderEditorCore = require("./EventManager.bs.js");
-var TriggerTest1$WonderEditorCore = require("./wonder-uis/TriggerTest1.bs.js");
 var DefaultEventName$WonderEditorCore = require("./DefaultEventName.bs.js");
 var MiddlewareManager$WonderEditorCore = require("./MiddlewareManager.bs.js");
 var RegisterMiddleware$WonderEditorCore = require("./wonder-uis/RegisterMiddleware.bs.js");
@@ -53,7 +53,7 @@ function _initEditor(param) {
           y: 140,
           width: 20,
           height: 10,
-          text: "submit"
+          text: "registerEventHandler"
         }
       });
   var partial_arg$4 = Utils$WonderEditorCore.buildAPI(undefined);
@@ -68,16 +68,16 @@ function _initEditor(param) {
       });
   var partial_arg$5 = Utils$WonderEditorCore.buildAPI(undefined);
   Curry._2(eventManager.trigger, DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
-        id: "triggerTest1",
+        id: "registerUI",
         func: (function (param) {
-            return TriggerTest1$WonderEditorCore.execFunc(partial_arg$5, param);
+            return RegisterUI$WonderEditorCore.execFunc(partial_arg$5, param);
           }),
         stateValue: {
           x: 0,
           y: 240,
-          width: 20,
-          height: 10,
-          text: "trigger_test1"
+          width: 60,
+          height: 20,
+          text: "registerUI"
         }
       });
   var partial_arg$6 = Utils$WonderEditorCore.buildAPI(undefined);
@@ -87,7 +87,7 @@ function _initEditor(param) {
                   return RegisterMiddleware$WonderEditorCore.execFunc(partial_arg$6, param);
                 }),
               stateValue: {
-                x: 200,
+                x: 300,
                 y: 140,
                 width: 20,
                 height: 10,

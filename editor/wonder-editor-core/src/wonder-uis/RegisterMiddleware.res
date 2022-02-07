@@ -7,7 +7,7 @@ let execFunc = (api: Type.api, states: UI.states) => {
     JsObjTool.getObjValue(states, "registerMiddleware"),
   )
 
-  (drawButton->Obj.magic)(x, y, width, height, e => {
+  (drawButton->Obj.magic)(x, y, width, height,text, e => {
     (trigger->Obj.magic)(
       DefaultEventName.getRegisterMiddlewareSubmitEventName(),
       (
