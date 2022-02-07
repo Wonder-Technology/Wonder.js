@@ -18,6 +18,14 @@ let _initMiddlewares = (): unit => {
   let ui: UI.getData = MiddlewareManager.unsafeGet("UI")->Obj.magic
 
   ui.init()
+
+  MiddlewareManager.register("RegisterManager", RegisterManager.getData()->Obj.magic)
+
+  let registerManager: RegisterManagerType.getData =
+    MiddlewareManager.unsafeGet("RegisterManager")->Obj.magic
+
+  registerManager.init()
+  // registerManager.registerAllSaved()
 }
 
 let _initEngine = () => {
@@ -35,7 +43,6 @@ let _initEngine = () => {
   /* ! register default component(no one) */
 
   WonderEngineCore.Main.init()
-  WonderEngineCore.Main.runPipeline("init")->WonderBsMost.Most.drain
 }
 
 let _initEditor = (): unit => {
@@ -173,10 +180,24 @@ let _initEditor = (): unit => {
   )
 }
 
+let _readFromSaved = () => {
+  /* ! register all saved registered work plugin */
+
+  let registerManager: RegisterManagerType.getData =
+    MiddlewareManager.unsafeGet("RegisterManager")->Obj.magic
+
+  registerManager.registerAllSaved()
+  (registerManager.setAllSavedToState->Obj.magic)()
+}
+
 let init = () => {
   _initMiddlewares()
   _initEditor()
   _initEngine()
+
+  _readFromSaved()
+
+  WonderEngineCore.Main.runPipeline("init")->WonderBsMost.Most.drain
 }
 
 let _render = %raw(`

@@ -1,7 +1,11 @@
-//TODO should from webpack
-
 let handler = (api: Type.api, e: Type.triggerRegisterWorkPluginSubmitData) => {
-  let {getData} = e
+  let {fileStr, libraryName, funcName} = e
 
-  WonderEngineCore.Main.registerWorkPlugin(~data=(getData->Obj.magic)()->Obj.magic, ())
+  let {setRegisteredWorkPlugin, saveAllRegisteredWorkPugins} = api.registerManager
+
+  (setRegisteredWorkPlugin->Obj.magic)(fileStr, libraryName, funcName)
+
+  // TODO move out to refresh for register work-plugin button's click!
+  (saveAllRegisteredWorkPugins->Obj.magic)()
+  // TODO need refresh page
 }

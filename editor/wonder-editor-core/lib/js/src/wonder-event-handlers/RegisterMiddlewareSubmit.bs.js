@@ -1,7 +1,7 @@
 'use strict';
 
 var Curry = require("rescript/lib/js/curry.js");
-var MiddlewareManager$WonderEditorCore = require("../MiddlewareManager.bs.js");
+var MiddlewareManager$WonderEditorCore = require("../wonder-middlewares/MiddlewareManager.bs.js");
 
 function handler(api, e) {
   var middlewareName = e.middlewareName;

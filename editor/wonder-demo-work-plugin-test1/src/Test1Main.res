@@ -3,6 +3,7 @@ open Test1Type
 let _getExecFunc = (_pipelineName: string, jobName: string) => {
   switch jobName {
   | "init_test1_wonder" => Test1InitJob.exec
+  | _ => Js.Nullable.null->Obj.magic
   }
 }
 
@@ -10,16 +11,7 @@ let _init = _state => {
   ()
 }
 
-// let getData: WonderEngineCore.IWorkForJs.getRegisteredWorkPluginData<
-//   state,
-//   config,
-//   states,
-// > = () => {
-let getData: IWorkForJs.getRegisteredWorkPluginData<
-  state,
-  config,
-  states,
-> = () => {
+let getData: IWorkForJs.getRegisteredWorkPluginData<state, config, states> = () => {
   {
     pluginName: "wonder-work-plugin-test1",
     createStateFunc: (): state => {

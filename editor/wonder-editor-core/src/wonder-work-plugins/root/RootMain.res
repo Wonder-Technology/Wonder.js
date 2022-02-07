@@ -3,6 +3,7 @@ open RootType
 let _getExecFunc = (_pipelineName: string, jobName: string) => {
   switch jobName {
   | "init_root_wonder" => InitJob.exec
+  | _ => Js.Nullable.null->Obj.magic
   }
 }
 

@@ -1,9 +1,9 @@
 
 
-import * as Curry from "../../../../../node_modules/rescript/lib/es6/curry.js";
-import * as ArraySt$WonderCommonlib from "../../../../../node_modules/wonder-commonlib/lib/es6_global/src/structure/ArraySt.bs.js";
-import * as HashMap$WonderCommonlib from "../../../../../node_modules/wonder-commonlib/lib/es6_global/src/structure/hash_map/HashMap.bs.js";
-import * as MutableHashMap$WonderCommonlib from "../../../../../node_modules/wonder-commonlib/lib/es6_global/src/structure/hash_map/MutableHashMap.bs.js";
+import * as Curry from "../../../../../../node_modules/rescript/lib/es6/curry.js";
+import * as ArraySt$WonderCommonlib from "../../../../../../node_modules/wonder-commonlib/lib/es6_global/src/structure/ArraySt.bs.js";
+import * as HashMap$WonderCommonlib from "../../../../../../node_modules/wonder-commonlib/lib/es6_global/src/structure/hash_map/HashMap.bs.js";
+import * as MutableHashMap$WonderCommonlib from "../../../../../../node_modules/wonder-commonlib/lib/es6_global/src/structure/hash_map/MutableHashMap.bs.js";
 
 function _createStateContainer(param) {
   return {

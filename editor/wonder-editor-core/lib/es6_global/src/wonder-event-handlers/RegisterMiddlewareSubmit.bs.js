@@ -1,7 +1,7 @@
 
 
 import * as Curry from "../../../../../../node_modules/rescript/lib/es6/curry.js";
-import * as MiddlewareManager$WonderEditorCore from "../MiddlewareManager.bs.js";
+import * as MiddlewareManager$WonderEditorCore from "../wonder-middlewares/MiddlewareManager.bs.js";
 
 function handler(api, e) {
   var middlewareName = e.middlewareName;

@@ -3,7 +3,7 @@
 import * as Curry from "../../../../../../node_modules/rescript/lib/es6/curry.js";
 import * as JsObjTool$WonderEditorCore from "../JsObjTool.bs.js";
 import * as Main$WonderComponentTransform from "../../../../../../node_modules/wonder-component-transform/lib/es6_global/src/Main.bs.js";
-import * as DefaultEventName$WonderEditorCore from "../DefaultEventName.bs.js";
+import * as DefaultEventName$WonderEditorCore from "../wonder-middlewares/DefaultEventName.bs.js";
 
 function execFunc(api, states) {
   var match = api.ui;

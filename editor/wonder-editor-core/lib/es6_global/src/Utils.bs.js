@@ -1,14 +1,16 @@
 
 
 import * as Curry from "../../../../../node_modules/rescript/lib/es6/curry.js";
-import * as MiddlewareManager$WonderEditorCore from "./MiddlewareManager.bs.js";
+import * as MiddlewareManager$WonderEditorCore from "./wonder-middlewares/MiddlewareManager.bs.js";
 
 function buildAPI(param) {
   var eventManager = MiddlewareManager$WonderEditorCore.unsafeGet("EventManager");
   var ui = MiddlewareManager$WonderEditorCore.unsafeGet("UI");
+  var registerManager = MiddlewareManager$WonderEditorCore.unsafeGet("RegisterManager");
   return {
           ui: Curry._1(ui.buildAPI, undefined),
-          eventManager: Curry._1(eventManager.buildAPI, undefined)
+          eventManager: Curry._1(eventManager.buildAPI, undefined),
+          registerManager: Curry._1(registerManager.buildAPI, undefined)
         };
 }
 

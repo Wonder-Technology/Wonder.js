@@ -1,6 +1,6 @@
 
 
-import * as ImmutableHashMap$WonderCommonlib from "../../../../../node_modules/wonder-commonlib/lib/es6_global/src/structure/hash_map/ImmutableHashMap.bs.js";
+import * as ImmutableHashMap$WonderCommonlib from "../../../../../../node_modules/wonder-commonlib/lib/es6_global/src/structure/hash_map/ImmutableHashMap.bs.js";
 
 function _createStateContainer(param) {
   return {

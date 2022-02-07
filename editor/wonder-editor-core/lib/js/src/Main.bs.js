@@ -2,16 +2,17 @@
 
 var Most = require("most");
 var Curry = require("rescript/lib/js/curry.js");
-var UI$WonderEditorCore = require("./UI.bs.js");
+var UI$WonderEditorCore = require("./wonder-middlewares/UI.bs.js");
 var Main$WonderEngineCore = require("wonder-engine-core/lib/js/src/Main.bs.js");
 var Utils$WonderEditorCore = require("./Utils.bs.js");
 var RootMain$WonderEditorCore = require("./wonder-work-plugins/root/RootMain.bs.js");
 var RegisterUI$WonderEditorCore = require("./wonder-uis/RegisterUI.bs.js");
 var AddMenuItem$WonderEditorCore = require("./wonder-event-handlers/AddMenuItem.bs.js");
-var EventManager$WonderEditorCore = require("./EventManager.bs.js");
-var DefaultEventName$WonderEditorCore = require("./DefaultEventName.bs.js");
+var EventManager$WonderEditorCore = require("./wonder-middlewares/EventManager.bs.js");
+var RegisterManager$WonderEditorCore = require("./wonder-middlewares/RegisterManager.bs.js");
+var DefaultEventName$WonderEditorCore = require("./wonder-middlewares/DefaultEventName.bs.js");
 var Main$WonderGameobjectDataoriented = require("wonder-gameobject-dataoriented/lib/js/src/Main.bs.js");
-var MiddlewareManager$WonderEditorCore = require("./MiddlewareManager.bs.js");
+var MiddlewareManager$WonderEditorCore = require("./wonder-middlewares/MiddlewareManager.bs.js");
 var RegisterComponent$WonderEditorCore = require("./wonder-uis/RegisterComponent.bs.js");
 var RegisterMiddleware$WonderEditorCore = require("./wonder-uis/RegisterMiddleware.bs.js");
 var RegisterWorkPlugin$WonderEditorCore = require("./wonder-uis/RegisterWorkPlugin.bs.js");
@@ -29,7 +30,10 @@ function _initMiddlewares(param) {
   var eventManager = MiddlewareManager$WonderEditorCore.unsafeGet("EventManager");
   Curry._1(eventManager.init, undefined);
   var ui = MiddlewareManager$WonderEditorCore.unsafeGet("UI");
-  return Curry._1(ui.init, undefined);
+  Curry._1(ui.init, undefined);
+  MiddlewareManager$WonderEditorCore.register("RegisterManager", RegisterManager$WonderEditorCore.getData(undefined));
+  var registerManager = MiddlewareManager$WonderEditorCore.unsafeGet("RegisterManager");
+  return Curry._1(registerManager.init, undefined);
 }
 
 function _initEngine(param) {
@@ -37,8 +41,7 @@ function _initEngine(param) {
   Main$WonderEngineCore.registerWorkPlugin(RootMain$WonderEditorCore.getData(undefined), undefined, undefined);
   Main$WonderEngineCore.setGameObjectData(Main$WonderGameobjectDataoriented.getData(undefined));
   Main$WonderEngineCore.createAndSetGameObjectState(undefined);
-  Main$WonderEngineCore.init(undefined);
-  return Most.drain(Main$WonderEngineCore.runPipeline("init"));
+  return Main$WonderEngineCore.init(undefined);
 }
 
 function _initEditor(param) {
@@ -146,10 +149,18 @@ function _initEditor(param) {
             });
 }
 
+function _readFromSaved(param) {
+  var registerManager = MiddlewareManager$WonderEditorCore.unsafeGet("RegisterManager");
+  Curry._1(registerManager.registerAllSaved, undefined);
+  return Curry._1(registerManager.setAllSavedToState, undefined);
+}
+
 function init(param) {
   _initMiddlewares(undefined);
   _initEditor(undefined);
-  return _initEngine(undefined);
+  _initEngine(undefined);
+  _readFromSaved(undefined);
+  return Most.drain(Main$WonderEngineCore.runPipeline("init"));
 }
 
 var _render = (function(renderUIFunc) {
@@ -172,6 +183,7 @@ __x.then(function (param) {
 exports._initMiddlewares = _initMiddlewares;
 exports._initEngine = _initEngine;
 exports._initEditor = _initEditor;
+exports._readFromSaved = _readFromSaved;
 exports.init = init;
 exports._render = _render;
 /* __x Not a pure module */

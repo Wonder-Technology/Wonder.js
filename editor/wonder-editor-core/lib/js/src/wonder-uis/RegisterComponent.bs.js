@@ -3,7 +3,7 @@
 var Curry = require("rescript/lib/js/curry.js");
 var JsObjTool$WonderEditorCore = require("../JsObjTool.bs.js");
 var Main$WonderComponentTransform = require("wonder-component-transform/lib/js/src/Main.bs.js");
-var DefaultEventName$WonderEditorCore = require("../DefaultEventName.bs.js");
+var DefaultEventName$WonderEditorCore = require("../wonder-middlewares/DefaultEventName.bs.js");
 
 function execFunc(api, states) {
   var match = api.ui;

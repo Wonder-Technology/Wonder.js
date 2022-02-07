@@ -63,9 +63,10 @@ type triggerRegisterMiddlewareSubmitData = {
   getData: getData,
 }
 
-type getWorkPluginData
+// type getWorkPluginData
 
-type triggerRegisterWorkPluginSubmitData = {getData: getWorkPluginData}
+// type triggerRegisterWorkPluginSubmitData = {getData: getWorkPluginData}
+type triggerRegisterWorkPluginSubmitData = {fileStr: string, libraryName: string, funcName: string}
 
 type getComponentData
 
@@ -113,9 +114,17 @@ type onCustomEvent
 
 type eventManagerAPI = {trigger: trigger, onCustomEvent: onCustomEvent}
 
+type setRegisteredWorkPlugin
+
+type saveAllRegisteredWorkPugins
+
+type registerManagerAPI = {
+  setRegisteredWorkPlugin: setRegisteredWorkPlugin,
+  saveAllRegisteredWorkPugins: saveAllRegisteredWorkPugins,
+}
+
 type api = {
   ui: uiAPI,
   eventManager: eventManagerAPI,
+  registerManager: registerManagerAPI,
 }
-
-// type 

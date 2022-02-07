@@ -5,16 +5,9 @@ import * as InitJob$WonderEditorCore from "./InitJob.bs.js";
 function _getExecFunc(_pipelineName, jobName) {
   if (jobName === "init_root_wonder") {
     return InitJob$WonderEditorCore.exec;
+  } else {
+    return null;
   }
-  throw {
-        RE_EXN_ID: "Match_failure",
-        _1: [
-          "RootMain.res",
-          4,
-          2
-        ],
-        Error: new Error()
-      };
 }
 
 function _init(_state) {
