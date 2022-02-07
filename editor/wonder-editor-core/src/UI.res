@@ -9,6 +9,7 @@ type dispatch
 type useSelector
 type render
 type buildAPI
+type register
 
 type getData = {
   init: init,
@@ -20,11 +21,18 @@ type getData = {
   useSelector: useSelector,
   render: render,
   buildAPI: buildAPI,
+  register: register,
 }
 
 type execFunc
 
 type uiState
+
+type registerData = {
+  id: id,
+  func: execFunc,
+  stateValue: uiState,
+}
 
 type states = WonderCommonlib.MutableHashMap.t<id, uiState>
 
@@ -203,14 +211,26 @@ let useSelector = (uiState: uiState) => {
   uiState
 }
 
+let register = ({id, func, stateValue}: registerData) => {
+  removeExecFunc(id)
+
+  addExecFunc(id, func)
+
+  /* ! if stateName exist, replace it */
+  setState(id, stateValue)
+
+  markRender(id)
+}
+
 let buildAPI = (): Type.uiAPI => {
-  addExecFunc: addExecFunc->Obj.magic,
-  removeExecFunc: removeExecFunc->Obj.magic,
-  setState: setState->Obj.magic,
+  // addExecFunc: addExecFunc->Obj.magic,
+  // removeExecFunc: removeExecFunc->Obj.magic,
+  // setState: setState->Obj.magic,
+  register: register->Obj.magic,
   drawButton: drawButton->Obj.magic,
   dispatch: dispatch->Obj.magic,
   useSelector: useSelector->Obj.magic,
-  markRender: markRender->Obj.magic,
+  // markRender: markRender->Obj.magic,
 }
 
 let getData = (): getData => {
@@ -224,5 +244,6 @@ let getData = (): getData => {
     useSelector: useSelector->Obj.magic,
     render: render->Obj.magic,
     buildAPI: buildAPI->Obj.magic,
+    register: register->Obj.magic,
   }
 }

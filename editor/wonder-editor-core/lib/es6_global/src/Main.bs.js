@@ -63,8 +63,9 @@ function _initEditor(param) {
   Curry._2(eventManager.onCustomEvent, DefaultEventName$WonderEditorCore.getRegisterComponentSubmitEventName(undefined), (function (param) {
           return RegisterComponentSubmit$WonderEditorCore.handler(partial_arg$4, param);
         }));
+  var ui = MiddlewareManager$WonderEditorCore.unsafeGet("UI");
   var partial_arg$5 = Utils$WonderEditorCore.buildAPI(undefined);
-  Curry._2(eventManager.trigger, DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
+  Curry._1(ui.register, {
         id: "registerEventHandler",
         func: (function (param) {
             return RegisterEventHandler$WonderEditorCore.execFunc(partial_arg$5, param);
@@ -78,7 +79,7 @@ function _initEditor(param) {
         }
       });
   var partial_arg$6 = Utils$WonderEditorCore.buildAPI(undefined);
-  Curry._2(eventManager.trigger, DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
+  Curry._1(ui.register, {
         id: "showAllRegisteredEventHandlers",
         func: (function (param) {
             return ShowAllRegisteredEventHandlers$WonderEditorCore.execFunc(partial_arg$6, param);
@@ -88,7 +89,7 @@ function _initEditor(param) {
         }
       });
   var partial_arg$7 = Utils$WonderEditorCore.buildAPI(undefined);
-  Curry._2(eventManager.trigger, DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
+  Curry._1(ui.register, {
         id: "registerUI",
         func: (function (param) {
             return RegisterUI$WonderEditorCore.execFunc(partial_arg$7, param);
@@ -102,7 +103,7 @@ function _initEditor(param) {
         }
       });
   var partial_arg$8 = Utils$WonderEditorCore.buildAPI(undefined);
-  Curry._2(eventManager.trigger, DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
+  Curry._1(ui.register, {
         id: "registerMiddleware",
         func: (function (param) {
             return RegisterMiddleware$WonderEditorCore.execFunc(partial_arg$8, param);
@@ -116,7 +117,7 @@ function _initEditor(param) {
         }
       });
   var partial_arg$9 = Utils$WonderEditorCore.buildAPI(undefined);
-  Curry._2(eventManager.trigger, DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
+  Curry._1(ui.register, {
         id: "registerWorkPlugin",
         func: (function (param) {
             return RegisterWorkPlugin$WonderEditorCore.execFunc(partial_arg$9, param);
@@ -130,7 +131,7 @@ function _initEditor(param) {
         }
       });
   var partial_arg$10 = Utils$WonderEditorCore.buildAPI(undefined);
-  return Curry._2(eventManager.trigger, DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
+  return Curry._1(ui.register, {
               id: "registerComponent",
               func: (function (param) {
                   return RegisterComponent$WonderEditorCore.execFunc(partial_arg$10, param);

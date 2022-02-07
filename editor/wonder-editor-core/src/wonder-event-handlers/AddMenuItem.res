@@ -1,16 +1,9 @@
 //TODO should from webpack
 
-let handler = (api: Type.api, e: Type.triggerAddMenuItemData<Type.registerEventHandlerUIState>) => {
-  let {func, id, stateValue} = e
+let handler = (api: Type.api, e: UI.registerData) => {
+  let {register} = api.ui
 
-  let {addExecFunc, removeExecFunc, setState, markRender} = api.ui
+  (register->Obj.magic)(e)
 
-  (removeExecFunc->Obj.magic)(id)
-
-  (addExecFunc->Obj.magic)(id, func)
-
-  /* ! if stateName exist, replace it */
-  (setState->Obj.magic)(id, stateValue)
-
-  (markRender->Obj.magic)(id)
+  // TODO dispatch
 }

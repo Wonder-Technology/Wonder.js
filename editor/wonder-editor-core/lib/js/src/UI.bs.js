@@ -132,7 +132,7 @@ function dispatch(param) {
         RE_EXN_ID: "Match_failure",
         _1: [
           "UI.res",
-          165,
+          173,
           2
         ],
         Error: new Error()
@@ -143,15 +143,20 @@ function useSelector(uiState) {
   return uiState;
 }
 
+function register(param) {
+  var id = param.id;
+  removeExecFunc(id);
+  addExecFunc(id, param.func);
+  setState$1(id, param.stateValue);
+  return markRender(id);
+}
+
 function buildAPI(param) {
   return {
-          addExecFunc: addExecFunc,
-          removeExecFunc: removeExecFunc,
-          setState: setState$1,
+          register: register,
           drawButton: drawButton,
           dispatch: dispatch,
-          useSelector: useSelector,
-          markRender: markRender
+          useSelector: useSelector
         };
 }
 
@@ -165,7 +170,8 @@ function getData(param) {
           dispatch: dispatch,
           useSelector: useSelector,
           render: render,
-          buildAPI: buildAPI
+          buildAPI: buildAPI,
+          register: register
         };
 }
 
@@ -183,6 +189,7 @@ exports.setState = setState$1;
 exports.drawButton = drawButton;
 exports.dispatch = dispatch;
 exports.useSelector = useSelector;
+exports.register = register;
 exports.buildAPI = buildAPI;
 exports.getData = getData;
 /* No side effect */

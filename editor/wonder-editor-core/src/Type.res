@@ -80,11 +80,11 @@ type showAllEventHandlersUIState = {eventHandlerArr: array<eventHandlerData>}
 
 type triggerTest1Data = {data1: string}
 
-type addExecFunc
+// type addExecFunc
 
-type removeExecFunc
+// type removeExecFunc
 
-type setState
+// type setState
 
 type drawButton
 
@@ -92,16 +92,19 @@ type useSelector
 
 type dispatch
 
-type markRender
+// type markRender
+
+type register
 
 type uiAPI = {
-  addExecFunc: addExecFunc,
-  removeExecFunc: removeExecFunc,
-  setState: setState,
+  // addExecFunc: addExecFunc,
+  // removeExecFunc: removeExecFunc,
+  // setState: setState,
+  register: register,
   drawButton: drawButton,
   dispatch: dispatch,
   useSelector: useSelector,
-  markRender: markRender,
+  // markRender: markRender,
 }
 
 type trigger

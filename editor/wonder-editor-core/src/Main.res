@@ -32,10 +32,7 @@ let _initEngine = () => {
   WonderEngineCore.Main.setGameObjectData(WonderGameobjectDataoriented.Main.getData()->Obj.magic)
   WonderEngineCore.Main.createAndSetGameObjectState()
 
-  // /* ! register default component */
-  // WonderEngineCore.Main.registerComponent(
-
-  // )
+  /* ! register default component(no one) */
 
   WonderEngineCore.Main.init()
   WonderEngineCore.Main.runPipeline("init")->WonderBsMost.Most.drain
@@ -73,103 +70,105 @@ let _initEditor = (): unit => {
 
   /* ! add default ui */
 
-  // UI.markNotRender()
+  let ui: UI.getData = MiddlewareManager.unsafeGet("UI")->Obj.magic
 
-  (eventManager.trigger->Obj.magic)(
-    DefaultEventName.getAddMenuItemEventName(),
+  (ui.register->Obj.magic)(
     (
       {
         id: "registerEventHandler",
         func: RegisterEventHandler.execFunc(Utils.buildAPI())->Obj.magic,
-        stateValue: {
-          x: 0,
-          y: 140,
-          width: 20,
-          height: 10,
-          text: "registerEventHandler",
-        },
-      }: Type.triggerAddMenuItemData<Type.registerEventHandlerUIState>
+        stateValue: (
+          {
+            x: 0,
+            y: 140,
+            width: 20,
+            height: 10,
+            text: "registerEventHandler",
+          }: Type.registerEventHandlerUIState
+        )->Obj.magic,
+      }: UI.registerData
     ),
   )
 
-  (eventManager.trigger->Obj.magic)(
-    DefaultEventName.getAddMenuItemEventName(),
+  (ui.register->Obj.magic)(
     (
       {
         id: "showAllRegisteredEventHandlers",
         func: ShowAllRegisteredEventHandlers.execFunc(Utils.buildAPI())->Obj.magic,
-        stateValue: {
-          eventHandlerArr: [],
-        },
-      }: Type.triggerAddMenuItemData<Type.showAllEventHandlersUIState>
+        stateValue: ({eventHandlerArr: []}: Type.showAllEventHandlersUIState)->Obj.magic,
+      }: UI.registerData
     ),
   )
 
-  (eventManager.trigger->Obj.magic)(
-    DefaultEventName.getAddMenuItemEventName(),
+  (ui.register->Obj.magic)(
     (
       {
         id: "registerUI",
         func: RegisterUI.execFunc(Utils.buildAPI())->Obj.magic,
-        stateValue: {
-          x: 0,
-          y: 240,
-          width: 60,
-          height: 20,
-          text: "registerUI",
-        },
-      }: Type.triggerAddMenuItemData<Type.registerUIUIState>
+        stateValue: (
+          {
+            x: 0,
+            y: 240,
+            width: 60,
+            height: 20,
+            text: "registerUI",
+          }: Type.registerUIUIState
+        )->Obj.magic,
+      }: UI.registerData
     ),
   )
 
-  (eventManager.trigger->Obj.magic)(
-    DefaultEventName.getAddMenuItemEventName(),
+  (ui.register->Obj.magic)(
     (
       {
         id: "registerMiddleware",
         func: RegisterMiddleware.execFunc(Utils.buildAPI())->Obj.magic,
-        stateValue: {
-          x: 300,
-          y: 140,
-          width: 20,
-          height: 10,
-          text: "registerMiddleware",
-        },
-      }: Type.triggerAddMenuItemData<Type.registerMiddlewareUIState>
+        stateValue: (
+          {
+            x: 300,
+            y: 140,
+            width: 20,
+            height: 10,
+            text: "registerMiddleware",
+          }: Type.registerMiddlewareUIState
+        )->Obj.magic,
+      }: UI.registerData
     ),
   )
 
-  (eventManager.trigger->Obj.magic)(
-    DefaultEventName.getAddMenuItemEventName(),
+  (ui.register->Obj.magic)(
     (
       {
         id: "registerWorkPlugin",
         func: RegisterWorkPlugin.execFunc(Utils.buildAPI())->Obj.magic,
-        stateValue: {
-          x: 600,
-          y: 140,
-          width: 20,
-          height: 10,
-          text: "registerWorkPlugin",
-        },
-      }: Type.triggerAddMenuItemData<Type.registerWorkPluginUIState>
+        stateValue: (
+          {
+            x: 600,
+            y: 140,
+            width: 20,
+            height: 10,
+            text: "registerWorkPlugin",
+          }: Type.registerWorkPluginUIState
+        )->Obj.magic,
+      }: UI.registerData
     ),
   )
 
-  (eventManager.trigger->Obj.magic)(
-    DefaultEventName.getAddMenuItemEventName(),
+  (ui.register->Obj.magic)(
     (
       {
         id: "registerComponent",
         func: RegisterComponent.execFunc(Utils.buildAPI())->Obj.magic,
-        stateValue: {
-          x: 0,
-          y: 10,
-          width: 20,
-          height: 10,
-          text: "registerComponent",
-        },
-      }: Type.triggerAddMenuItemData<Type.registerComponentUIState>
+        stateValue: (
+          {
+            x: 0,
+            y: 10,
+            width: 20,
+            height: 10,
+            text: "registerComponent",
+          }: Type.registerComponentUIState
+        )->Obj.magic,
+      }: UI.registerData
     ),
   )
 }
