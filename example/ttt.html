@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Run Test</title>
+</head>
+
+<body>
+    <textarea id="aaa" placeholder="Type in this box. When you click away an alert will be generated."> </textarea>
+
+    <script>
+        document.querySelector("#aaa").onchange =
+            (e) => {
+                console.log(e.target.value)
+
+                let aaa = eval('(' + "(function(){" + e.target.value + "}())" + ')')
+
+                console.log(aaa, window.ComponentTransform.getData)
+            }
+    </script>
+</body>
+
+</html>

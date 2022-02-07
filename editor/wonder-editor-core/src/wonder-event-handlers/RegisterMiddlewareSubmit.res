@@ -7,7 +7,7 @@ let handler = (api: Type.api, e: Type.triggerRegisterMiddlewareSubmitData) => {
 
   MiddlewareManager.register(middlewareName, (getData->Obj.magic)()->Obj.magic)
 
-  let middlewareTest1: MiddlewareTest1.getData =
+  let middlewareTest1: MiddlewareTest1Type.getData =
     MiddlewareManager.unsafeGet(middlewareName)->Obj.magic
 
   middlewareTest1.func1("middlewareTest1")

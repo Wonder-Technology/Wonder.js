@@ -12,8 +12,27 @@ function buildAPI(param) {
         };
 }
 
+var serializeLib = (function(fileStr, libraryName) {
+eval('(' + "(function(){" + fileStr + "}())" + ')')
+
+return window[libraryName]
+});
+
+var serialize = (function(fileStr, libraryName, funcName) {
+eval('(' + "(function(){" + fileStr + "}())" + ')')
+
+return window[libraryName][funcName]
+});
+
+var getDataFromLib = (function(lib, dataName) {
+return lib[dataName]
+});
+
 export {
   buildAPI ,
+  serializeLib ,
+  serialize ,
+  getDataFromLib ,
   
 }
 /* No side effect */

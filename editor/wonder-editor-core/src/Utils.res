@@ -7,3 +7,25 @@ let buildAPI = (): Type.api => {
     eventManager: (eventManager.buildAPI->Obj.magic)(),
   }
 }
+
+let serializeLib = %raw(`
+function(fileStr, libraryName) {
+eval('(' + "(function(){" + fileStr + "}())" + ')')
+
+return window[libraryName]
+}
+`)
+
+let serialize = %raw(`
+function(fileStr, libraryName, funcName) {
+eval('(' + "(function(){" + fileStr + "}())" + ')')
+
+return window[libraryName][funcName]
+}
+`)
+
+let getDataFromLib = %raw(`
+function(lib, dataName) {
+return lib[dataName]
+}
+`)
