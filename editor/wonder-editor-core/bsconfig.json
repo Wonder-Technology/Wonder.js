@@ -12,7 +12,9 @@
     ],
     "bs-dev-dependencies": [],
     "bs-dependencies": [
-        "wonder-commonlib"
+        "wonder-commonlib",
+        "wonder-engine-core",
+        "wonder-bs-most"
     ],
     "package-specs": [
         "commonjs",

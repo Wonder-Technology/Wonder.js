@@ -1,8 +1,11 @@
 'use strict';
 
+var Most = require("most");
 var Curry = require("rescript/lib/js/curry.js");
 var UI$WonderEditorCore = require("./UI.bs.js");
+var Main$WonderEngineCore = require("wonder-engine-core/lib/js/src/Main.bs.js");
 var Utils$WonderEditorCore = require("./Utils.bs.js");
+var RootMain$WonderEditorCore = require("./wonder-work-plugins/root/RootMain.bs.js");
 var RegisterUI$WonderEditorCore = require("./wonder-uis/RegisterUI.bs.js");
 var AddMenuItem$WonderEditorCore = require("./wonder-event-handlers/AddMenuItem.bs.js");
 var EventManager$WonderEditorCore = require("./EventManager.bs.js");
@@ -25,7 +28,10 @@ function _initMiddlewares(param) {
 }
 
 function _initEngine(param) {
-  return 1;
+  Main$WonderEngineCore.prepare(undefined);
+  Main$WonderEngineCore.registerWorkPlugin(RootMain$WonderEditorCore.getData(undefined), undefined, undefined);
+  Main$WonderEngineCore.init(undefined);
+  return Most.drain(Main$WonderEngineCore.runPipeline("init"));
 }
 
 function _initEditor(param) {
@@ -98,10 +104,9 @@ function _initEditor(param) {
 
 function init(param) {
   _initMiddlewares(undefined);
-  return _initEditor(undefined);
+  _initEditor(undefined);
+  return _initEngine(undefined);
 }
-
-init(undefined);
 
 var _render = (function(renderUIFunc) {
 renderUIFunc()
@@ -113,14 +118,16 @@ _render(renderUIFunc)
 )
 });
 
-var ui = MiddlewareManager$WonderEditorCore.unsafeGet("UI");
+var __x = init(undefined);
 
-_render(ui.render);
+__x.then(function (param) {
+      var ui = MiddlewareManager$WonderEditorCore.unsafeGet("UI");
+      return _render(ui.render);
+    });
 
 exports._initMiddlewares = _initMiddlewares;
 exports._initEngine = _initEngine;
 exports._initEditor = _initEditor;
 exports.init = init;
 exports._render = _render;
-exports.ui = ui;
-/*  Not a pure module */
+/* __x Not a pure module */

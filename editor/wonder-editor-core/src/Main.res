@@ -20,9 +20,13 @@ let _initMiddlewares = (): unit => {
   ui.init()
 }
 
-let _initEngine = (): unit => {
-  //TODO implement
-  Obj.magic(1)
+let _initEngine = () => {
+  WonderEngineCore.Main.prepare()
+
+  WonderEngineCore.Main.registerWorkPlugin(~data=RootMain.getData()->Obj.magic, ())
+
+  WonderEngineCore.Main.init()
+  WonderEngineCore.Main.runPipeline("init")->WonderBsMost.Most.drain
 }
 
 let _initEditor = (): unit => {
@@ -96,23 +100,6 @@ let _initEditor = (): unit => {
     ),
   )
 
-  // (eventManager.trigger->Obj.magic)(
-  //   DefaultEventName.getAddMenuItemEventName(),
-  //   (
-  //     {
-  //       id: "triggerTest1",
-  //       func: TriggerTest1.execFunc(Utils.buildAPI())->Obj.magic,
-  //       stateValue: {
-  //         x: 100,
-  //         y: 240,
-  //         width: 20,
-  //         height: 10,
-  //         text: "trigger_test1",
-  //       },
-  //     }: Type.triggerAddMenuItemData<Type.registerEventHandlerUIState>
-  //   ),
-  // )
-
   (eventManager.trigger->Obj.magic)(
     DefaultEventName.getAddMenuItemEventName(),
     (
@@ -133,11 +120,9 @@ let _initEditor = (): unit => {
 
 let init = () => {
   _initMiddlewares()
-  _initEngine()
   _initEditor()
+  _initEngine()
 }
-
-init()
 
 let _render = %raw(`
 function(renderUIFunc) {
@@ -151,6 +136,8 @@ _render(renderUIFunc)
 }
 `)
 
-let ui: UI.getData = MiddlewareManager.unsafeGet("UI")->Obj.magic
+init()->Js.Promise.then_(() => {
+  let ui: UI.getData = MiddlewareManager.unsafeGet("UI")->Obj.magic
 
-_render(ui.render->Obj.magic)
+  _render(ui.render->Obj.magic)
+}, _)->ignore

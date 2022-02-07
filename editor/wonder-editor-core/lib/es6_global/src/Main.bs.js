@@ -1,8 +1,11 @@
 
 
+import * as Most from "most";
 import * as Curry from "../../../../../node_modules/rescript/lib/es6/curry.js";
 import * as UI$WonderEditorCore from "./UI.bs.js";
+import * as Main$WonderEngineCore from "../../../../../node_modules/wonder-engine-core/lib/es6_global/src/Main.bs.js";
 import * as Utils$WonderEditorCore from "./Utils.bs.js";
+import * as RootMain$WonderEditorCore from "./wonder-work-plugins/root/RootMain.bs.js";
 import * as RegisterUI$WonderEditorCore from "./wonder-uis/RegisterUI.bs.js";
 import * as AddMenuItem$WonderEditorCore from "./wonder-event-handlers/AddMenuItem.bs.js";
 import * as EventManager$WonderEditorCore from "./EventManager.bs.js";
@@ -25,7 +28,10 @@ function _initMiddlewares(param) {
 }
 
 function _initEngine(param) {
-  return 1;
+  Main$WonderEngineCore.prepare(undefined);
+  Main$WonderEngineCore.registerWorkPlugin(RootMain$WonderEditorCore.getData(undefined), undefined, undefined);
+  Main$WonderEngineCore.init(undefined);
+  return Most.drain(Main$WonderEngineCore.runPipeline("init"));
 }
 
 function _initEditor(param) {
@@ -98,10 +104,9 @@ function _initEditor(param) {
 
 function init(param) {
   _initMiddlewares(undefined);
-  return _initEditor(undefined);
+  _initEditor(undefined);
+  return _initEngine(undefined);
 }
-
-init(undefined);
 
 var _render = (function(renderUIFunc) {
 renderUIFunc()
@@ -113,9 +118,12 @@ _render(renderUIFunc)
 )
 });
 
-var ui = MiddlewareManager$WonderEditorCore.unsafeGet("UI");
+var __x = init(undefined);
 
-_render(ui.render);
+__x.then(function (param) {
+      var ui = MiddlewareManager$WonderEditorCore.unsafeGet("UI");
+      return _render(ui.render);
+    });
 
 export {
   _initMiddlewares ,
@@ -123,7 +131,6 @@ export {
   _initEditor ,
   init ,
   _render ,
-  ui ,
   
 }
-/*  Not a pure module */
+/* __x Not a pure module */
