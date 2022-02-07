@@ -46,6 +46,15 @@ function init(param) {
             });
 }
 
+function getData(param) {
+  return {
+          buildAPI: buildAPI,
+          init: init,
+          trigger: trigger,
+          onCustomEvent: onCustomEvent
+        };
+}
+
 export {
   _createStateContainer ,
   stateContainer ,
@@ -55,6 +64,7 @@ export {
   trigger ,
   buildAPI ,
   init ,
+  getData ,
   
 }
 /* No side effect */

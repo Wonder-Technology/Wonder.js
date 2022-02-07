@@ -5,3 +5,5 @@
 let getAddMenuItemEventName = () => "wd_addMenuItem"
 
 let getRegisterEventHandlerSubmitEventName = () => "wd_registerEventHandler_submit"
+
+let getRegisterMiddlewareSubmitEventName = () => "wd_registerMiddleware_submit"

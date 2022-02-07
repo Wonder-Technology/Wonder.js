@@ -2,6 +2,21 @@ type eventName = string
 
 type eventHandler
 
+type buildAPI
+
+type init = unit => unit
+
+type trigger
+
+type onCustomEvent
+
+type getData = {
+  buildAPI: buildAPI,
+  init: init,
+  trigger: trigger,
+  onCustomEvent: onCustomEvent,
+}
+
 type data
 
 type state = {eventHandlerMap: WonderCommonlib.ImmutableHashMap.t<eventName, eventHandler>}
@@ -45,4 +60,13 @@ let buildAPI = (): Type.eventManagerAPI => {
 
 let init = () => {
   setState({eventHandlerMap: WonderCommonlib.ImmutableHashMap.createEmpty()})
+}
+
+let getData = (): getData => {
+  {
+    buildAPI: buildAPI->Obj.magic,
+    init: init->Obj.magic,
+    trigger: trigger->Obj.magic,
+    onCustomEvent: onCustomEvent->Obj.magic,
+  }
 }

@@ -1,8 +1,21 @@
-// TODO be interface(e.g. EventManager, UI, ...)
+// TODO be interface(e.g. eventManager, UI, ...)
 
 let _initMiddlewares = (): unit => {
-  EventManager.init()
-  UI.init()
+  MiddlewareManager.init()
+
+  /* ! on default middleware */
+
+  MiddlewareManager.register("EventManager", EventManager.getData()->Obj.magic)
+
+  MiddlewareManager.register("UI", UI.getData()->Obj.magic)
+
+  let eventManager: EventManager.getData = MiddlewareManager.unsafeGet("EventManager")->Obj.magic
+
+  eventManager.init()
+
+  let ui: UI.getData = MiddlewareManager.unsafeGet("UI")->Obj.magic
+
+  ui.init()
 }
 
 let _initEngine = (): unit => {
@@ -15,21 +28,28 @@ let _initEditor = (): unit => {
 
   /* ! on default event */
 
-  (EventManager.onCustomEvent->Obj.magic)(
+  let eventManager: EventManager.getData = MiddlewareManager.unsafeGet("EventManager")->Obj.magic
+
+  (eventManager.onCustomEvent->Obj.magic)(
     DefaultEventName.getAddMenuItemEventName(),
     AddMenuItem.handler(Utils.buildAPI()),
   )
 
-  (EventManager.onCustomEvent->Obj.magic)(
+  (eventManager.onCustomEvent->Obj.magic)(
     DefaultEventName.getRegisterEventHandlerSubmitEventName(),
     RegisterEventHandlerSubmit.handler(Utils.buildAPI()),
+  )
+
+  (eventManager.onCustomEvent->Obj.magic)(
+    DefaultEventName.getRegisterMiddlewareSubmitEventName(),
+    RegisterMiddlewareSubmit.handler(Utils.buildAPI()),
   )
 
   /* ! add default ui */
 
   // UI.markNotRender()
 
-  (EventManager.trigger->Obj.magic)(
+  (eventManager.trigger->Obj.magic)(
     DefaultEventName.getAddMenuItemEventName(),
     (
       {
@@ -46,7 +66,7 @@ let _initEditor = (): unit => {
     ),
   )
 
-  (EventManager.trigger->Obj.magic)(
+  (eventManager.trigger->Obj.magic)(
     DefaultEventName.getAddMenuItemEventName(),
     (
       {
@@ -59,7 +79,7 @@ let _initEditor = (): unit => {
     ),
   )
 
-  (EventManager.trigger->Obj.magic)(
+  (eventManager.trigger->Obj.magic)(
     DefaultEventName.getAddMenuItemEventName(),
     (
       {
@@ -73,6 +93,23 @@ let _initEditor = (): unit => {
           text: "trigger_test1",
         },
       }: Type.triggerAddMenuItemData<Type.registerEventHandlerUIState>
+    ),
+  )
+
+  (eventManager.trigger->Obj.magic)(
+    DefaultEventName.getAddMenuItemEventName(),
+    (
+      {
+        id: "registerMiddleware",
+        func: RegisterMiddleware.execFunc(Utils.buildAPI())->Obj.magic,
+        stateValue: {
+          x: 200,
+          y: 140,
+          width: 20,
+          height: 10,
+          text: "registerMiddleware",
+        },
+      }: Type.triggerAddMenuItemData<Type.registerMiddlewareUIState>
     ),
   )
 }
@@ -97,4 +134,6 @@ _render(renderUIFunc)
 }
 `)
 
-_render(UI.render)
+let ui: UI.getData = MiddlewareManager.unsafeGet("UI")->Obj.magic
+
+_render(ui.render->Obj.magic)

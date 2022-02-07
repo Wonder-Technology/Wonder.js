@@ -1,5 +1,27 @@
 type id = string
 
+type init = unit => unit
+type addExecFunc
+type removeExecFunc
+type setState
+type markRender
+type dispatch
+type useSelector
+type render
+type buildAPI
+
+type getData = {
+  init: init,
+  addExecFunc: addExecFunc,
+  removeExecFunc: removeExecFunc,
+  setState: setState,
+  markRender: markRender,
+  dispatch: dispatch,
+  useSelector: useSelector,
+  render: render,
+  buildAPI: buildAPI,
+}
+
 type execFunc
 
 type uiState
@@ -189,4 +211,18 @@ let buildAPI = (): Type.uiAPI => {
   dispatch: dispatch->Obj.magic,
   useSelector: useSelector->Obj.magic,
   markRender: markRender->Obj.magic,
+}
+
+let getData = (): getData => {
+  {
+    init: init->Obj.magic,
+    addExecFunc: addExecFunc->Obj.magic,
+    removeExecFunc: removeExecFunc->Obj.magic,
+    setState: setState->Obj.magic,
+    markRender: markRender->Obj.magic,
+    dispatch: dispatch->Obj.magic,
+    useSelector: useSelector->Obj.magic,
+    render: render->Obj.magic,
+    buildAPI: buildAPI->Obj.magic,
+  }
 }

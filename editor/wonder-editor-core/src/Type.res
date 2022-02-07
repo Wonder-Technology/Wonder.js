@@ -8,6 +8,14 @@ type registerEventHandlerUIState = {
   text: string,
 }
 
+type registerMiddlewareUIState = {
+  x: int,
+  y: int,
+  width: int,
+  height: int,
+  text: string,
+}
+
 type id = string
 
 type triggerAddMenuItemData<'uiState> = {
@@ -22,6 +30,13 @@ type triggerRegisterEventHandlerSubmitData = {
   eventName: string,
   // content
   handlerFunc: handlerFunc,
+}
+
+type getData
+
+type triggerRegisterMiddlewareSubmitData = {
+  middlewareName: string,
+  getData: getData,
 }
 
 type eventHandlerData = {

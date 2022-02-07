@@ -46,6 +46,15 @@ function init(param) {
             });
 }
 
+function getData(param) {
+  return {
+          buildAPI: buildAPI,
+          init: init,
+          trigger: trigger,
+          onCustomEvent: onCustomEvent
+        };
+}
+
 exports._createStateContainer = _createStateContainer;
 exports.stateContainer = stateContainer;
 exports.setState = setState;
@@ -54,4 +63,5 @@ exports.onCustomEvent = onCustomEvent;
 exports.trigger = trigger;
 exports.buildAPI = buildAPI;
 exports.init = init;
+exports.getData = getData;
 /* No side effect */

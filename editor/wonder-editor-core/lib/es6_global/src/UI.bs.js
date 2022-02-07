@@ -132,7 +132,7 @@ function dispatch(param) {
         RE_EXN_ID: "Match_failure",
         _1: [
           "UI.res",
-          143,
+          165,
           2
         ],
         Error: new Error()
@@ -155,6 +155,20 @@ function buildAPI(param) {
         };
 }
 
+function getData(param) {
+  return {
+          init: init,
+          addExecFunc: addExecFunc,
+          removeExecFunc: removeExecFunc,
+          setState: setState$1,
+          markRender: markRender,
+          dispatch: dispatch,
+          useSelector: useSelector,
+          render: render,
+          buildAPI: buildAPI
+        };
+}
+
 export {
   _createStateContainer ,
   stateContainer ,
@@ -171,6 +185,7 @@ export {
   dispatch ,
   useSelector ,
   buildAPI ,
+  getData ,
   
 }
 /* No side effect */
