@@ -9,3 +9,5 @@ let getRegisterEventHandlerSubmitEventName = () => "wd_registerEventHandler_subm
 let getRegisterMiddlewareSubmitEventName = () => "wd_registerMiddleware_submit"
 
 let getRegisterWorkPluginSubmitEventName = () => "wd_registerWorkPlugin_submit"
+
+let getRegisterComponentSubmitEventName = () => "wd_registerComponent_submit"

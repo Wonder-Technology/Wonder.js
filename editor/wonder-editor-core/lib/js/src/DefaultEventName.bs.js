@@ -17,8 +17,13 @@ function getRegisterWorkPluginSubmitEventName(param) {
   return "wd_registerWorkPlugin_submit";
 }
 
+function getRegisterComponentSubmitEventName(param) {
+  return "wd_registerComponent_submit";
+}
+
 exports.getAddMenuItemEventName = getAddMenuItemEventName;
 exports.getRegisterEventHandlerSubmitEventName = getRegisterEventHandlerSubmitEventName;
 exports.getRegisterMiddlewareSubmitEventName = getRegisterMiddlewareSubmitEventName;
 exports.getRegisterWorkPluginSubmitEventName = getRegisterWorkPluginSubmitEventName;
+exports.getRegisterComponentSubmitEventName = getRegisterComponentSubmitEventName;
 /* No side effect */

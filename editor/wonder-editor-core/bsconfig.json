@@ -14,7 +14,9 @@
     "bs-dependencies": [
         "wonder-commonlib",
         "wonder-engine-core",
-        "wonder-bs-most"
+        "wonder-bs-most",
+        "wonder-gameobject-dataoriented",
+        "wonder-component-transform"
     ],
     "package-specs": [
         "commonjs",

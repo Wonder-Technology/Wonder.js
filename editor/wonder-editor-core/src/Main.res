@@ -5,7 +5,7 @@
 let _initMiddlewares = (): unit => {
   MiddlewareManager.init()
 
-  /* ! on default middleware */
+  /* ! register default middleware */
 
   MiddlewareManager.register("EventManager", EventManager.getData()->Obj.magic)
 
@@ -23,7 +23,19 @@ let _initMiddlewares = (): unit => {
 let _initEngine = () => {
   WonderEngineCore.Main.prepare()
 
+  /* ! register default work plugin */
+
   WonderEngineCore.Main.registerWorkPlugin(~data=RootMain.getData()->Obj.magic, ())
+
+  /* ! register default gameObject */
+
+  WonderEngineCore.Main.setGameObjectData(WonderGameobjectDataoriented.Main.getData()->Obj.magic)
+  WonderEngineCore.Main.createAndSetGameObjectState()
+
+  // /* ! register default component */
+  // WonderEngineCore.Main.registerComponent(
+
+  // )
 
   WonderEngineCore.Main.init()
   WonderEngineCore.Main.runPipeline("init")->WonderBsMost.Most.drain
@@ -52,6 +64,11 @@ let _initEditor = (): unit => {
   (eventManager.onCustomEvent->Obj.magic)(
     DefaultEventName.getRegisterWorkPluginSubmitEventName(),
     RegisterWorkPluginSubmit.handler(Utils.buildAPI()),
+  )
+
+  (eventManager.onCustomEvent->Obj.magic)(
+    DefaultEventName.getRegisterComponentSubmitEventName(),
+    RegisterComponentSubmit.handler(Utils.buildAPI()),
   )
 
   /* ! add default ui */
@@ -135,7 +152,24 @@ let _initEditor = (): unit => {
           height: 10,
           text: "registerWorkPlugin",
         },
-      }: Type.triggerAddMenuItemData<Type.registerMiddlewareUIState>
+      }: Type.triggerAddMenuItemData<Type.registerWorkPluginUIState>
+    ),
+  )
+
+  (eventManager.trigger->Obj.magic)(
+    DefaultEventName.getAddMenuItemEventName(),
+    (
+      {
+        id: "registerComponent",
+        func: RegisterComponent.execFunc(Utils.buildAPI())->Obj.magic,
+        stateValue: {
+          x: 0,
+          y: 10,
+          width: 20,
+          height: 10,
+          text: "registerComponent",
+        },
+      }: Type.triggerAddMenuItemData<Type.registerComponentUIState>
     ),
   )
 }

@@ -16,8 +16,23 @@ type registerUIUIState = {
   text: string,
 }
 
-
 type registerMiddlewareUIState = {
+  x: int,
+  y: int,
+  width: int,
+  height: int,
+  text: string,
+}
+
+type registerWorkPluginUIState = {
+  x: int,
+  y: int,
+  width: int,
+  height: int,
+  text: string,
+}
+
+type registerComponentUIState = {
   x: int,
   y: int,
   width: int,
@@ -50,10 +65,11 @@ type triggerRegisterMiddlewareSubmitData = {
 
 type getWorkPluginData
 
-type triggerRegisterWorkPluginSubmitData = {
-  getData: getWorkPluginData,
-}
+type triggerRegisterWorkPluginSubmitData = {getData: getWorkPluginData}
 
+type getComponentData
+
+type triggerRegisterComponentSubmitData = {getData: getComponentData}
 
 type eventHandlerData = {
   eventName: string,
