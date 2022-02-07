@@ -49,6 +49,11 @@ let _initEditor = (): unit => {
     RegisterMiddlewareSubmit.handler(Utils.buildAPI()),
   )
 
+  (eventManager.onCustomEvent->Obj.magic)(
+    DefaultEventName.getRegisterWorkPluginSubmitEventName(),
+    RegisterWorkPluginSubmit.handler(Utils.buildAPI()),
+  )
+
   /* ! add default ui */
 
   // UI.markNotRender()
@@ -112,6 +117,23 @@ let _initEditor = (): unit => {
           width: 20,
           height: 10,
           text: "registerMiddleware",
+        },
+      }: Type.triggerAddMenuItemData<Type.registerMiddlewareUIState>
+    ),
+  )
+
+  (eventManager.trigger->Obj.magic)(
+    DefaultEventName.getAddMenuItemEventName(),
+    (
+      {
+        id: "registerWorkPlugin",
+        func: RegisterWorkPlugin.execFunc(Utils.buildAPI())->Obj.magic,
+        stateValue: {
+          x: 600,
+          y: 140,
+          width: 20,
+          height: 10,
+          text: "registerWorkPlugin",
         },
       }: Type.triggerAddMenuItemData<Type.registerMiddlewareUIState>
     ),

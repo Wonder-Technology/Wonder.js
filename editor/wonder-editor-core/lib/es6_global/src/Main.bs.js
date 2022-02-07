@@ -12,8 +12,10 @@ import * as EventManager$WonderEditorCore from "./EventManager.bs.js";
 import * as DefaultEventName$WonderEditorCore from "./DefaultEventName.bs.js";
 import * as MiddlewareManager$WonderEditorCore from "./MiddlewareManager.bs.js";
 import * as RegisterMiddleware$WonderEditorCore from "./wonder-uis/RegisterMiddleware.bs.js";
+import * as RegisterWorkPlugin$WonderEditorCore from "./wonder-uis/RegisterWorkPlugin.bs.js";
 import * as RegisterEventHandler$WonderEditorCore from "./wonder-uis/RegisterEventHandler.bs.js";
 import * as RegisterMiddlewareSubmit$WonderEditorCore from "./wonder-event-handlers/RegisterMiddlewareSubmit.bs.js";
+import * as RegisterWorkPluginSubmit$WonderEditorCore from "./wonder-event-handlers/RegisterWorkPluginSubmit.bs.js";
 import * as RegisterEventHandlerSubmit$WonderEditorCore from "./wonder-event-handlers/RegisterEventHandlerSubmit.bs.js";
 import * as ShowAllRegisteredEventHandlers$WonderEditorCore from "./wonder-uis/ShowAllRegisteredEventHandlers.bs.js";
 
@@ -49,10 +51,14 @@ function _initEditor(param) {
           return RegisterMiddlewareSubmit$WonderEditorCore.handler(partial_arg$2, param);
         }));
   var partial_arg$3 = Utils$WonderEditorCore.buildAPI(undefined);
+  Curry._2(eventManager.onCustomEvent, DefaultEventName$WonderEditorCore.getRegisterWorkPluginSubmitEventName(undefined), (function (param) {
+          return RegisterWorkPluginSubmit$WonderEditorCore.handler(partial_arg$3, param);
+        }));
+  var partial_arg$4 = Utils$WonderEditorCore.buildAPI(undefined);
   Curry._2(eventManager.trigger, DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
         id: "registerEventHandler",
         func: (function (param) {
-            return RegisterEventHandler$WonderEditorCore.execFunc(partial_arg$3, param);
+            return RegisterEventHandler$WonderEditorCore.execFunc(partial_arg$4, param);
           }),
         stateValue: {
           x: 0,
@@ -62,21 +68,21 @@ function _initEditor(param) {
           text: "registerEventHandler"
         }
       });
-  var partial_arg$4 = Utils$WonderEditorCore.buildAPI(undefined);
+  var partial_arg$5 = Utils$WonderEditorCore.buildAPI(undefined);
   Curry._2(eventManager.trigger, DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
         id: "showAllRegisteredEventHandlers",
         func: (function (param) {
-            return ShowAllRegisteredEventHandlers$WonderEditorCore.execFunc(partial_arg$4, param);
+            return ShowAllRegisteredEventHandlers$WonderEditorCore.execFunc(partial_arg$5, param);
           }),
         stateValue: {
           eventHandlerArr: []
         }
       });
-  var partial_arg$5 = Utils$WonderEditorCore.buildAPI(undefined);
+  var partial_arg$6 = Utils$WonderEditorCore.buildAPI(undefined);
   Curry._2(eventManager.trigger, DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
         id: "registerUI",
         func: (function (param) {
-            return RegisterUI$WonderEditorCore.execFunc(partial_arg$5, param);
+            return RegisterUI$WonderEditorCore.execFunc(partial_arg$6, param);
           }),
         stateValue: {
           x: 0,
@@ -86,18 +92,32 @@ function _initEditor(param) {
           text: "registerUI"
         }
       });
-  var partial_arg$6 = Utils$WonderEditorCore.buildAPI(undefined);
+  var partial_arg$7 = Utils$WonderEditorCore.buildAPI(undefined);
+  Curry._2(eventManager.trigger, DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
+        id: "registerMiddleware",
+        func: (function (param) {
+            return RegisterMiddleware$WonderEditorCore.execFunc(partial_arg$7, param);
+          }),
+        stateValue: {
+          x: 300,
+          y: 140,
+          width: 20,
+          height: 10,
+          text: "registerMiddleware"
+        }
+      });
+  var partial_arg$8 = Utils$WonderEditorCore.buildAPI(undefined);
   return Curry._2(eventManager.trigger, DefaultEventName$WonderEditorCore.getAddMenuItemEventName(undefined), {
-              id: "registerMiddleware",
+              id: "registerWorkPlugin",
               func: (function (param) {
-                  return RegisterMiddleware$WonderEditorCore.execFunc(partial_arg$6, param);
+                  return RegisterWorkPlugin$WonderEditorCore.execFunc(partial_arg$8, param);
                 }),
               stateValue: {
-                x: 300,
+                x: 600,
                 y: 140,
                 width: 20,
                 height: 10,
-                text: "registerMiddleware"
+                text: "registerWorkPlugin"
               }
             });
 }

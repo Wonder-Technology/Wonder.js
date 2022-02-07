@@ -48,6 +48,13 @@ type triggerRegisterMiddlewareSubmitData = {
   getData: getData,
 }
 
+type getWorkPluginData
+
+type triggerRegisterWorkPluginSubmitData = {
+  getData: getWorkPluginData,
+}
+
+
 type eventHandlerData = {
   eventName: string,
   handlerFunc: handlerFunc,
