@@ -15,7 +15,6 @@ module.exports = {
   ],
 
   scopes: [
-    { name: "doc" },
     { name: "example" },
     { name: "bs-most" },
     { name: "bs-jest" },
@@ -37,6 +36,7 @@ module.exports = {
       { name: "ci" },
       { name: "package.json" },
       { name: "readme" },
+      { name: "doc" },
     ]
   },
   // override the messages, defaults are as follows

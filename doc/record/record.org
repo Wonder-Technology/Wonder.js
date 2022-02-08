@@ -1,0 +1,183 @@
+* DONE write user design(with imgui extend) 
+
+dispatch ui state
+custom control
+skin
+event handle
+
+
+
+middleware
+(middleware can invoke other middleware by injected middlewareAPI!
+e.g. wonder-imgui can invoke vertex-buffer-manage!
+)
+
+
+
+
+
+# registerEventHandler
+# showAllRegistedEventHandlers
+
+# edit
+
+# TODO run
+
+
+
+# registerMenuUI
+# ////showAllRegistedMenuUIs
+
+
+# TODO run
+
+
+# registerMiddleware
+
+
+# TODO run
+
+
+
+# registerEnginePlugin
+# (need refresh page!)
+
+# TODO run
+
+
+
+# registerEngineComponent
+
+
+# TODO run
+
+
+* DONE fix "register plugin not work" bug
+
+
+
+wpk now only contain asb, not contain wdb!
+
+** DONE change to string
+
+** DONE fix "register plugin not work" bug
+
+# ** TODO generate
+
+# ** TODO load
+
+
+need generate and save to indexdb and reload
+
+
+
+# * TODO implement, pass run test
+
+# use render webgpu cube to instead of imgui render for demo!
+
+
+# * TODO add "multi edit the same scene" 
+
+
+
+
+
+
+
+
+# * TODO add "redo/undo"
+
+
+* TODO improve
+
+** TODO refactor: change packages(e.g. editor/, engine/, ...) to default/, middleware/, component/, work-plugin/, event-handler/, ui/
+
+
+
+** TODO change wonder-commonlib,wonder-bs-most to be middleware so that not pack it by webpack for who(e.g. EventManager, UI, transform component) use it!
+
+** TODO split type from wonder-engine-core to be wonder-engine-core-type package
+
+edit component package(e.g. wonder-component-transform)
+
+
+** TODO use middlwareState(contain allMiddlewareStatesMap), engineState(create by wonder-engine-core)
+
+ui,event handler no need state! so no editorState!
+
+
+** TODO inject api(only remain MiddlewareManager.unsafeGet) and [middlewareState, engineState] as states
+
+inject api and states to ui->execFunc, event handler->handler(
+    e.g.: 
+let handler = ((middlwareState, engineState), api , e,) => {
+...
+(middlwareState, engineState)
+
+);
+
+
+inject api to middleware->getData; inject states to middleware->getData's functions;
+
+
+how to inject to component, work plugin???
+
+
+
+
+
+
+* TODO rewrite demo
+
+** TODO implement register middleware, event handler
+
+*** TODO use drawCopyTextarea
+
+** TODO generate and load wpk instead of save!
+
+
+** TODO add multi user edit
+
+
+** TODO add redo,undo
+
+
+** TODO implement register ui
+
+
+** TODO improve imgui
+
+*** TODO handle custom control
+
+////no need??? because register ui is already equal to custom control!!!
+
+need! because custom control is commonlib control as lib, while register ui is used one!
+
+*** TODO handle skin
+
+
+
+** TODO register work plugin
+
+
+** TODO register component
+
+
+
+** TODO add one edit scene
+
+can add one cube once
+
+
+** TODO wpk should contain wdb
+
+
+
+
+* TODO improve
+
+** TODO be interface(e.g. eventManager, UI, ...)
+
+
+
+
