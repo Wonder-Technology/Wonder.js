@@ -88,6 +88,35 @@ need generate and save to indexdb and reload
 # * TODO add "redo/undo"
 
 
+** DONE think ui
+
+editor ui state, scene ui state:{
+    all ui's state map,
+    canvas
+}
+
+
+*** DONE event handler
+
+
+*** DONE handle custom control
+
+////no need??? because register ui is already equal to custom control!!!
+
+need! because custom control is commonlib control as lib, while register ui is used one!
+
+*** DONE handle skin
+
+
+*** DONE game ui
+
+
+
+
+
+
+
+
 * TODO improve
 
 ** TODO refactor: change packages(e.g. editor/, engine/, ...) to default/, middleware/, component/, work-plugin/, event-handler/, ui/
@@ -131,21 +160,14 @@ how to inject to component, work plugin???
 
 ** TODO implement register middleware, event handler
 
-*** TODO use drawCopyTextarea
-
-** TODO generate and load wpk instead of save!
-
-
-** TODO add multi user edit
-
-
-** TODO add redo,undo
-
+# *** TODO use drawCopyTextarea
 
 ** TODO implement register ui
 
 
 ** TODO improve imgui
+
+based on design
 
 *** TODO handle custom control
 
@@ -154,6 +176,19 @@ how to inject to component, work plugin???
 need! because custom control is commonlib control as lib, while register ui is used one!
 
 *** TODO handle skin
+
+
+*** TODO only editor ui
+
+
+
+** TODO generate and load wpk instead of save!
+
+
+** TODO add multi user edit
+
+
+** TODO add redo,undo
 
 
 
@@ -166,12 +201,24 @@ need! because custom control is commonlib control as lib, while register ui is u
 
 ** TODO add one edit scene
 
+has one default camera
+
 can add one cube once
+
+add editSceneUI
+
+** TODO add one run scene
+
+use default camera
+
+add runSceneUI
 
 
 ** TODO wpk should contain wdb
 
 
+
+* TODO add custom middleware for change str to fields(for extend data, like stateValue, skin, script attribute)
 
 
 * TODO improve
