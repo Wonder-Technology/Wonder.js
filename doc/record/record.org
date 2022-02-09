@@ -119,23 +119,23 @@ need! because custom control is commonlib control as lib, while register ui is u
 
 * TODO improve
 
-** TODO refactor: change packages(e.g. editor/, engine/, ...) to default/, middleware/, component/, work-plugin/, event-handler/, ui/
+** DONE refactor: change packages(e.g. editor/, engine/, ...) to default/, middleware/, component/, work-plugin/, event-handler/, ui/
 
 
 
-** TODO change wonder-commonlib,wonder-bs-most to be middleware so that not pack it by webpack for who(e.g. EventManager, UI, transform component) use it!
+** TODO change wonder-commonlib, wonder-bs-most, wonder-engine-core to be middleware so that not pack it by webpack for who(e.g. EventManager, UI, transform component) use it!
 
 ** TODO split type from wonder-engine-core to be wonder-engine-core-type package
 
 edit component package(e.g. wonder-component-transform)
 
 
-** TODO use middlwareState(contain allMiddlewareStatesMap), engineState(create by wonder-engine-core)
+** TODO use middlwareState(contain allMiddlewareStatesMap), editorUIState, engineCoreState(create by wonder-engine-core)
 
 ui,event handler no need state! so no editorState!
 
 
-** TODO inject api(only remain MiddlewareManager.unsafeGet) and [middlewareState, engineState] as states
+** TODO inject api(only remain MiddlewareManager.unsafeGet) and { middlewareState, engineCoreState } as states
 
 inject api and states to ui->execFunc, event handler->handler(
     e.g.: 
@@ -156,7 +156,7 @@ how to inject to component, work plugin???
 
 
 
-* TODO rewrite demo
+* TODO new demo: rewrite old demo
 
 ** TODO implement register middleware, event handler
 
@@ -182,7 +182,9 @@ need! because custom control is commonlib control as lib, while register ui is u
 
 
 
-** TODO generate and load wpk instead of save!
+** TODO generate and load wpk(only has asb) instead of save!
+
+# wpk = asb + wdb, but now only has asb
 
 
 ** TODO add multi user edit
@@ -203,7 +205,7 @@ need! because custom control is commonlib control as lib, while register ui is u
 
 has one default camera
 
-can add one cube once
+can add one gameObject + outline once
 
 add editSceneUI
 
@@ -219,6 +221,13 @@ add runSceneUI
 
 
 * TODO add custom middleware for change str to fields(for extend data, like stateValue, skin, script attribute)
+
+write by typescript
+
+
+** TODO generate asb, can combine it to the exist wpk(combine asb)
+
+
 
 
 * TODO improve

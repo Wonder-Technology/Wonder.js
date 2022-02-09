@@ -1,1 +1,0 @@
-let getIsDebug = ConfigUtils.getIsDebug

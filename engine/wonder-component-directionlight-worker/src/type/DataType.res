@@ -1,1 +1,0 @@
-type dataName = WonderComponentTypeDirectionlightWorker.Index.dataNameType

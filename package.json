@@ -10,10 +10,12 @@
 		"ci:test": "lerna run test:ci --concurrency 1"
 	},
 	"workspaces": [
-		"engine/*",
-		"editor/*",
-		"middleware/*",
-		"commonlib/*"
+		"defaults/*",
+		"components/*",
+		"middlewares/*",
+		"work-plugins/*",
+		"uis/*",
+		"event-handlers/*"
 	],
 	"config": {
 		"commitizen": {

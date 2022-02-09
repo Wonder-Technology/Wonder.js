@@ -1,1 +1,0 @@
-type config = {isDebug: bool, transformCount:int, buffer: WonderCommonlib.SharedArrayBufferType.sharedArrayBuffer }

@@ -1,1 +1,0 @@
-type dataName = WonderComponentTypePbrmaterialWorker.Index.dataNameType

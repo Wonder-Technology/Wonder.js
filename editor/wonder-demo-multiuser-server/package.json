@@ -1,9 +1,0 @@
-{
-    "name": "wonder-demo-multiuser-server",
-    "version": "0.0.1",
-    "description": "my first socket.io app",
-    "dependencies": {
-        "express": "^4.17.2",
-        "socket.io":"latest"
-    }
-}

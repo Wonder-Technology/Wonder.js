@@ -1,9 +1,11 @@
 {
   "packages": [
-    "engine/*",
-    "editor/*",
-    "middleware/*",
-    "commonlib/*"
+    "defaults/*",
+    "components/*",
+    "middlewares/*",
+    "work-plugins/*",
+    "uis/*",
+    "event-handlers/*"
   ],
   "npmClient": "yarn",
   "command": {

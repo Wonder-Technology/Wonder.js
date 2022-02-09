@@ -1,1 +1,0 @@
-type dataName = WonderComponentTypePerspectivecameraprojection.Index.dataNameType
