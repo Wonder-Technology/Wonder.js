@@ -1,0 +1,13 @@
+{
+    "automock": false,
+    "moduleFileExtensions": [
+      "js"
+    ],
+    "testRegex": "lib/es6_global/test/.+test\\.js$",
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/(?!(.*bs-)|wonder-commonlib)"
+    ],
+    "setupFilesAfterEnv": ["<rootDir>/test/helper/jest/specHelper.js"],
+    "notify": false,
+    "verbose": true
+  }

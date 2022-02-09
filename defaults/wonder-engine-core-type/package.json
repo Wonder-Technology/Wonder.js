@@ -1,0 +1,24 @@
+{
+    "name": "wonder-engine-core-type",
+    "version": "3.0.0-alpha.1",
+    "authors": "Wonder",
+    "license": "MIT",
+    "main": "lib/js/src/Main.bs.js",
+    "types": "src/Main.d.ts",
+    "scripts": {
+        "watch": "rescript clean && rescript build -w",
+        "buildAll:ci": "rescript clean && rescript build",
+        "test:watch": "jest --watch --config jest.json",
+        "test:ci": "yarn buildAll:ci && jest --maxWorkers=4 --config jest_coverage.json"
+    },
+    "config": {
+        "commitizen": {
+            "path": "node_modules/cz-customizable"
+        }
+    },
+    "keywords": [],
+    "devDependencies": {},
+    "dependencies": {
+        "rescript": "^9.1.4"
+    }
+}

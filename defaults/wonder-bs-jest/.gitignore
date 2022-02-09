@@ -1,0 +1,13 @@
+.DS_Store
+.merlin
+.idea/
+.vscode/
+jest_0/
+lib/bs/
+lib/**/src/
+lib/ocaml/
+reference/
+node_modules/
+mine/
+test/coverage
+

@@ -1,0 +1,10 @@
+.idea/
+.vscode/
+.DS_Store/
+lib/bs/
+test/
+build/
+reference/
+mine/
+server/
+examples/

@@ -123,11 +123,14 @@ need! because custom control is commonlib control as lib, while register ui is u
 
 
 
-** TODO change wonder-commonlib, wonder-bs-most, wonder-engine-core to be middleware so that not pack it by webpack for who(e.g. EventManager, UI, transform component) use it!
+# ** TODO change wonder-commonlib, wonder-bs-most, wonder-engine-core to be middleware so that not pack it by webpack for who(e.g. EventManager, UI, transform component) use it!
+** TODO inject default middlewares(e.g.  wonder-commonlib, wonder-bs-most, wonder-engine-core, EventManager, UI) as api
 
-** TODO split type from wonder-engine-core to be wonder-engine-core-type package
 
-edit component package(e.g. wonder-component-transform)
+
+# ** TODO split type from wonder-engine-core to be wonder-engine-core-type package
+
+# edit component package(e.g. wonder-component-transform)
 
 
 ** TODO use middlwareState(contain allMiddlewareStatesMap), editorUIState, engineCoreState(create by wonder-engine-core)
