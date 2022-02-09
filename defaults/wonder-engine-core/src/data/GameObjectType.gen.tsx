@@ -2,9 +2,9 @@
 /* eslint-disable import/first */
 
 
-import type {IGameObjectForJs_createGameObjectFunc as WonderEngineCoreType_IGameObjectForJs_createGameObjectFunc} from 'wonder-engine-core-type/WonderEngineCoreType.gen';
+import type {IGameObjectForJs_createGameObjectFunc as WonderEngineCoreType_IGameObjectForJs_createGameObjectFunc} from './WonderEngineCoreType.gen';
 
-import type {IGameObjectForJs_getAllGameObjectsFunc as WonderEngineCoreType_IGameObjectForJs_getAllGameObjectsFunc} from 'wonder-engine-core-type/WonderEngineCoreType.gen';
+import type {IGameObjectForJs_getAllGameObjectsFunc as WonderEngineCoreType_IGameObjectForJs_getAllGameObjectsFunc} from './WonderEngineCoreType.gen';
 
 // tslint:disable-next-line:max-classes-per-file 
 // tslint:disable-next-line:class-name

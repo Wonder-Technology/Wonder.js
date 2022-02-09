@@ -2,23 +2,23 @@
 /* eslint-disable import/first */
 
 
-import type {IComponentForJs_addComponentFunc as WonderEngineCoreType_IComponentForJs_addComponentFunc} from 'wonder-engine-core-type/WonderEngineCoreType.gen';
+import type {IComponentForJs_addComponentFunc as WonderEngineCoreType_IComponentForJs_addComponentFunc} from './WonderEngineCoreType.gen';
 
-import type {IComponentForJs_componentName as WonderEngineCoreType_IComponentForJs_componentName} from 'wonder-engine-core-type/WonderEngineCoreType.gen';
+import type {IComponentForJs_componentName as WonderEngineCoreType_IComponentForJs_componentName} from './WonderEngineCoreType.gen';
 
-import type {IComponentForJs_createComponentFunc as WonderEngineCoreType_IComponentForJs_createComponentFunc} from 'wonder-engine-core-type/WonderEngineCoreType.gen';
+import type {IComponentForJs_createComponentFunc as WonderEngineCoreType_IComponentForJs_createComponentFunc} from './WonderEngineCoreType.gen';
 
-import type {IComponentForJs_getAllComponentsFunc as WonderEngineCoreType_IComponentForJs_getAllComponentsFunc} from 'wonder-engine-core-type/WonderEngineCoreType.gen';
+import type {IComponentForJs_getAllComponentsFunc as WonderEngineCoreType_IComponentForJs_getAllComponentsFunc} from './WonderEngineCoreType.gen';
 
-import type {IComponentForJs_getComponentDataFunc as WonderEngineCoreType_IComponentForJs_getComponentDataFunc} from 'wonder-engine-core-type/WonderEngineCoreType.gen';
+import type {IComponentForJs_getComponentDataFunc as WonderEngineCoreType_IComponentForJs_getComponentDataFunc} from './WonderEngineCoreType.gen';
 
-import type {IComponentForJs_getComponentFunc as WonderEngineCoreType_IComponentForJs_getComponentFunc} from 'wonder-engine-core-type/WonderEngineCoreType.gen';
+import type {IComponentForJs_getComponentFunc as WonderEngineCoreType_IComponentForJs_getComponentFunc} from './WonderEngineCoreType.gen';
 
-import type {IComponentForJs_getGameObjectsFunc as WonderEngineCoreType_IComponentForJs_getGameObjectsFunc} from 'wonder-engine-core-type/WonderEngineCoreType.gen';
+import type {IComponentForJs_getGameObjectsFunc as WonderEngineCoreType_IComponentForJs_getGameObjectsFunc} from './WonderEngineCoreType.gen';
 
-import type {IComponentForJs_hasComponentFunc as WonderEngineCoreType_IComponentForJs_hasComponentFunc} from 'wonder-engine-core-type/WonderEngineCoreType.gen';
+import type {IComponentForJs_hasComponentFunc as WonderEngineCoreType_IComponentForJs_hasComponentFunc} from './WonderEngineCoreType.gen';
 
-import type {IComponentForJs_setComponentDataFunc as WonderEngineCoreType_IComponentForJs_setComponentDataFunc} from 'wonder-engine-core-type/WonderEngineCoreType.gen';
+import type {IComponentForJs_setComponentDataFunc as WonderEngineCoreType_IComponentForJs_setComponentDataFunc} from './WonderEngineCoreType.gen';
 
 // tslint:disable-next-line:max-classes-per-file 
 // tslint:disable-next-line:class-name

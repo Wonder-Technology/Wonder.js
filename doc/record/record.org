@@ -138,7 +138,7 @@ need! because custom control is commonlib control as lib, while register ui is u
 ui,event handler no need state! so no editorState!
 
 
-** TODO inject api(only remain MiddlewareManager.unsafeGet) and { middlewareState, engineCoreState } as states
+** TODO inject api(only remain MiddlewareManager.unsafeGet) and { middlewareState, editorUIState, engineCoreState } as states
 
 inject api and states to ui->execFunc, event handler->handler(
     e.g.: 
@@ -161,9 +161,21 @@ how to inject to component, work plugin???
 
 * TODO new demo: rewrite old demo
 
-** TODO implement register middleware, event handler
+** TODO implement register event handler
 
 # *** TODO use drawCopyTextarea
+
+** TODO refactor: UI,EventManager inject api
+
+for commonlib, MiddlewareManager, ...
+
+
+
+** TODO refactor: change stateValue to string
+
+
+** TODO implement register middleware
+
 
 ** TODO implement register ui
 

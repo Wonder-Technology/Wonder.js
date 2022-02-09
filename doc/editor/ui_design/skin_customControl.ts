@@ -30,18 +30,20 @@ let editorUIState = editorUIState -> UI.registerSkin(
 let editorUIState =
   editorUIState -> UI.registerCustomControl(
     "WD_Button",
-    (state, rect, str, skinName, api, { onClick }) => {
+    (states, state, rect, str, skinName, api, { onClick }) => {
       let { buttonColor } = api.getSkin(skinName)
       let(isButtonClick, (imageId, color)) = judge(rect, buttonColor, state)
 
-      let state = api.drawBox(rect, state)
-      let state = api.drawText(str, state)
+      // let state = api.drawBox(rect, state)
+      // let state = api.drawText(str, state)
+      let states = api.drawBox(states, rect, state)
+      let states = api.drawText(states, str, state)
 
-      let state = isButtonClick ? onClick({
+      let states = isButtonClick ? onClick(states, {
         pointDown: state.io.pointDown
-      }, state) : state
+      }) : states
 
-      state
+      states
     }
   )
 
