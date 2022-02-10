@@ -205,6 +205,16 @@ need! because custom control is commonlib control as lib, while register ui is u
 ** TODO add multi user edit
 
 
+
+** TODO move multi user edit to be out repo!
+
+support generate asb, can combine it to the exist wpk(combine asb)
+
+
+
+** TODO design how multi user edit to support extend by user(e.g. in user middleware)!
+ 
+
 ** TODO add redo,undo
 
 
@@ -234,13 +244,20 @@ add runSceneUI
 ** TODO wpk should contain wdb
 
 
-
-* TODO add custom middleware for change str to fields(for extend data, like stateValue, skin, script attribute)
-
-write by typescript
+** TODO publish
 
 
-** TODO generate asb, can combine it to the exist wpk(combine asb)
+
+# * TODO add custom middleware for change str to fields(for extend data, like stateValue, skin, script attribute)
+
+# write by typescript
+
+
+# ** TODO generate asb, can combine it to the exist wpk(combine asb)
+
+
+
+* TODO support upgrade user's wpk to use latest extends and default(middleware, core)!
 
 
 
@@ -252,3 +269,98 @@ write by typescript
 
 
 
+
+* TODO rewrite, add bdd test and publish for user to use
+
+# UI still use dom to implement
+** TODO UI use webgl render imgui to implement
+
+
+*** TODO implement drawBox
+
+
+# *** TODO implement drawImage
+
+
+*** TODO implement drawText
+
+default load .fnt, .bitmap resources, not open its control to user
+
+
+
+
+*** TODO implement drawCopyTextArea
+
+
+*** TODO implement drawButton by custom control
+
+
+*** TODO use skin
+
+
+*** TODO support whole skin(e.g. can set background by set whole canvas->clearColor)
+
+
+
+** TODO finish menu
+
+provide menu extend ui(encapuslate register ui)
+
+
+
+** TODO implement transform, geometry, pbrMaterial, cameraView, perspectiveCameraProjection components
+
+component should implement dispose, redo/undo, clone
+
+
+** TODO add basic webgpu render work plugin
+shader is fixed
+
+
+** TODO implement "add cube gameObject" button, "clone gameObject" button for edit and run scene
+
+
+** TODO implement "generate, load wpk", "redo/undo", "publish"
+
+
+
+** TODO add user case
+
+
+*** TODO add user extend wpk: to change str to fields(for extend data, like stateValue, skin, script attribute)
+
+write by typescript
+
+
+# **** TODO generate asb, can combine it to the exist wpk(combine asb)
+
+
+** TODO implement "upgrade user wpk"
+
+
+** TODO publish v2.0.0-alpha.7
+
+
+** TODO prepare doc for user
+
+
+** TODO open for user to use and extend!!!
+
+
+
+
+
+
+
+
+
+
+
+* TODO change UI to use webgpu render
+
+
+
+
+
+
+* TODO implement multi user edit as a outer repo(wpk), and load it
