@@ -1,7 +1,114 @@
 /* ! not show and edit default ones for user! */
 
+// TODO pass run!!!
+
 let _initMiddlewares = () => {
   let middlewareState = MiddlewareManager.init()
+
+
+  TODO rename middleware to extension
+  TODO rewrite (user code should like user_design.ts!, so no need to register EventManager, UI, Init extension here!!! give it to user!)
+
+
+  // TODO move onActive out of getData
+  // (getData should implement extension type, while it not include onActive!)
+  TODO remove onActive, use "Wonder-Active-Extension" event handler instead
+
+
+  TODO api should only has extensionAPI(others are registered(e.g. most))
+
+
+  TODO EventManager->trigger return promise
+
+
+
+
+
+// let states = {
+//   middlewareState,
+//   editSceneEngineCoreState,
+//   runSceneEngineCoreState
+// }
+
+
+/*! make engine-core to be extension! so only need extensionState, not editSceneEngineCoreState, runSceneEngineCoreState!!! */
+let extensionState
+
+
+let extensionState = extensionState -> register(Init Middleware)
+
+when register, invoke onActive
+
+
+  Init Middleware:
+let getData = (): getData => {
+  {
+    onActive: (extensionState, api) => {
+
+let extensionState = extensionState -> register("Wonder-Editor-EventManager")
+let extensionState = extensionState -> register("Wonder-Editor-UI")
+
+
+on(middlewareSubmit)
+
+
+let handler = (extensionState, api: Type.api, e: Type.triggerRegisterMiddlewareSubmitData) => {
+  let {middlewareName, getData} = e
+
+  let {onCustomEvent} = api.eventManager
+
+  MiddlewareManager.register(middlewareName, (getData->Obj.magic)()->Obj.magic)
+
+  let middlewareTest1: MiddlewareTest1Type.getData =
+    MiddlewareManager.unsafeGetData(middlewareName)->Obj.magic
+
+
+
+  let extensionState = middlewareTest1.onActive(extensionState, api)
+
+
+  let {dispatch}: UI.getData = unsafeGetData(middlewareState, "UI")->Obj.magic
+  let uiState: UI.state = unsafeGetState(middlewareState, "UI")->Obj.magic
+
+  //   TODO use reducer->action, reducer instead
+  let uiState = uiState->(dispatch->Obj.magic)(("submit", eventName, handlerFunc))
+
+}
+
+
+
+register(middlewareManagerUI, stateValue)
+
+
+let execFunc = (extensionState: Type.extensionState, api: Type.api): Type.extensionState => {
+  let {useSelector} = api.ui
+
+  let {middlewareArr}: Type.showAllEventHandlersUIState = (useSelector->Obj.magic)(
+    JsObjTool.getObjValue(extensionState, "showAllRegisteredEventHandlers"),
+  )
+
+  Js.log(eventHandlerArr)
+
+}
+
+    },
+  }
+}
+
+
+  // trigger(, )
+  // register()
+  init():
+
+
+middlewareSubmit:
+onActive:
+
+getData
+
+
+
+
 
   /* ! register default middleware */
 

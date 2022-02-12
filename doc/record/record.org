@@ -170,6 +170,13 @@ how to inject to component, work plugin???
 for commonlib, MiddlewareManager, ...
 
 
+** TODO refactor: refactor all as design point
+
+# rename default/ to src/, src/extensions/(e.g. UI, EventManager, ExtensionManager), src/core(editor-core/, engine-core/); add extensions/ folder instead of other folders;
+# rename default/ to src/, src/core(editor-core/, engine-core/); add extensions/(e.g. UI, EventManager, ExtensionManager) folder instead of other folders;
+rename default/ to src/(editor core file); add extensions/(e.g. UI, EventManager, ExtensionManager), extension-types/ folder instead of other folders;
+
+
 
 ** TODO refactor: change stateValue to string
 
