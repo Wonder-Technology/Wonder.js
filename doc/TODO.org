@@ -1,0 +1,143 @@
+# Real-Time Neural Path Tracer based on WebGPU
+# Neural Rendering Engine based on WebGPU
+# Neural Web3D Engine based on WebGPU
+
+
+* TODO implement path tracer by webgpu + lbvh
+
+code in Wonder.js->master branch
+
+
+* TODO extract AI3D to provide abstract API(refer to WebNN API)
+
+refer to: 依赖隔离模式
+
+refer to: webnn polyfil
+
+# backend support: Tensorflow.js, WebNN
+train dependency support: Tensorflow.js
+inference dependency support: Tensorflow.js, WebNN
+
+
+
+
+* TODO implement wspk denoiser with path tracer
+
+generate input(.png) for train and inference
+
+    motion vector .png should preprocess data:
+    1./ 10
+    2.to [0,1]  
+
+* TODO implement NSRR DLSS with path tracer
+
+generate input(.png) for train and inference
+
+    motion vector .png should preprocess data:
+    1./ 10
+    2.to [0,1]  
+
+
+
+# ** TODO change Motion input to accu current frame ClipPosition input
+
+#   vCurrentFrameClipPosition = getLastViewProjectionMatrix() * uModel.lastModelMatrix *
+#                       vec4(position, 1.0);
+
+# so utils.py-> backward_warp_motion->current_frame_grid/vgrid now = motion directly! 
+
+
+still use motion vector!
+
+
+** TODO train and inference should add backward warp step!
+
+add backward warp step:
+
+        all_motionVector_upsampled = all_flow_upsampled
+
+        list_previous_features_warped = []
+        for i in range(0, self.number_previous_frames):
+            accu_previous_feature_warped  = all_features_upsampled[:,:,i + 1,:,:]
+
+            for j in range(0, i):
+                accu_previous_feature_warped = self.motion_warping_function(
+                    accu_previous_feature_warped,
+                    all_motionVector_upsampled[:,:,i - j,:,:]
+                )
+
+            list_previous_features_warped.append(accu_previous_feature_warped)
+
+
+def backward_warp_motion(img: torch.Tensor, motion: torch.Tensor) -> torch.Tensor:
+    suppose img_grid = (img_grid_x(range: [0,1]), img_grid_y(range: [0,1])) in img, motion = (current_frame_grid_x - last_frame_grid_x, current_frame_grid_y - last_frame_grid_y) 
+
+    # 1.current_frame_grid = grid + motion
+    # ////2.wrap_img = current_frame_img
+    # 2.wrap_img = img
+    # 3.if(current_frame_grid in size)  wrap_img[current_frame_grid] = bilinear(img[grid])
+
+    1.last_frame_grid = (img_grid_x, img_grid_y) - motion[img_grid_x, img_grid_y] 
+    2.wrap_img = img
+    3.if(last_frame_grid in size)  wrap_img[img_grid_x, img_grid_y] = bilinear(img[last_frame_grid])
+
+
+
+
+* TODO implement NRC with path tracer
+
+
+
+* TODO publish Wonder.js v3.0.0-alpha.1 version
+
+
+
+
+
+* TODO optimize
+
+** TODO improve NRC by Instant Neural Graphics Primitives with a Multiresolution Hash Encoding
+
+** TODO improve wspk
+
+- inference use tf dependency(webgpu)
+
+- input, output use webgpu
+
+- optimize
+
+** TODO improve NSRR
+
+- inference use tf dependency(webgpu)
+
+- input, output use webgpu
+
+- optimize
+
+
+** TODO publish Wonder.js v3.0.0-alpha.2 version
+
+
+
+
+
+
+
+* TODO add disney brdf and simple bsdf
+
+** TODO add disney brdf
+
+** TODO add simple bsdf
+
+** TODO publish Wonder.js v3.0.0-alpha.3 version
+
+
+
+
+* TODO add MIS and IBL
+
+** TODO add MIS
+
+** TODO add IBL
+
+** TODO publish Wonder.js v3.0.0-alpha.4 version
