@@ -1,0 +1,1 @@
+export let getSize = (canvas) => [canvas.width, canvas.height];

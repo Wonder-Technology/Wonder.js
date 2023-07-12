@@ -1,0 +1,34 @@
+{
+    "name": "simple-path-tracer",
+    "version": "0.0.1",
+    "license": "MIT",
+    "scripts": {
+        "watch": "tsc -w",
+        "test:watch": "jest --maxWorkers=4 --watch --config jest.json",
+        "webpack:dev-server": "webpack-dev-server --config webpack.config.watch.js"
+    },
+    "dependencies": {
+        "@webgpu/types": "^0.1.2",
+        "gl-matrix": "^3.2.1"
+    },
+    "devDependencies": {
+        "@babel/node": "^7.8.7",
+        "@babel/preset-env": "^7.9.0",
+        "@types/jest": "^25.2.1",
+        "@types/sinon": "^10.0.0",
+        "sinon": "^4.1.2",
+        "babel-jest": "^24.1.0",
+        "jest": "^25.2.7",
+        "jest-cucumber": "^3.0.1",
+        "ts-jest": "^26.1.4",
+        "typescript": "^4.2.3",
+        "clean-webpack-plugin": "^4.0.0",
+        "cz-customizable": "^6.3.0",
+        "html-webpack-plugin": "^5.5.0",
+        "source-map-loader": "^3.0.0",
+        "ts-loader": "^9.2.6",
+        "webpack": "^5.62.1",
+        "webpack-cli": "^4.9.1",
+        "webpack-dev-server": "^4.4.0"
+    }
+}

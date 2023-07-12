@@ -1,0 +1,19 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "npmClient": "yarn",
+  "command": {
+    "bootstrap": {
+      "registry": "https://registry.npm.taobao.org"
+    },
+    "publish": {
+      "registry": "https://registry.npmjs.org/"
+    }
+  },
+  "useWorkspaces": true,
+  "ignoreChanges": [
+    "**/*.md"
+  ],
+  "version": "independent"
+}
