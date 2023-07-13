@@ -25,9 +25,18 @@ var fragmentShader = `
   resolution : vec2<f32>
 }
 
+ struct CommonData {
+  sampleCountPerPixel : u32,
+  totalSampleCount : u32,
+  pad_0 : u32,
+  pad_1 : u32,
+}
+
 
 @binding(0) @group(0) var<storage, read_write> pixelBuffer :  Pixels;
 @binding(1) @group(0) var<uniform> screenDimension : ScreenDimension;
+
+@binding(2) @group(0) var<uniform> pushC : CommonData;
 
 @fragment
 fn main(
@@ -38,8 +47,8 @@ fn main(
   var bufferCoord = vec2<u32>(floor(uv * resolution));
   var pixelIndex = bufferCoord.y * u32(resolution.x) + bufferCoord.x;
 
-//   vec3<f32> pixelColor = pixelBuffer.pixels[pixelIndex].rgb / pushC.totalSampleCount;
-  var pixelColor = pixelBuffer.pixels[pixelIndex].rgb;
+  var pixelColor = pixelBuffer.pixels[pixelIndex].rgb / pushC.totalSampleCount;
+  // var pixelColor = pixelBuffer.pixels[pixelIndex].rgb;
 
   return vec4<f32>(pixelColor, 1.0);
   // return vec4<f32>(1.0, 0.0, 0.0, 1.0);

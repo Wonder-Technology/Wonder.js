@@ -1,6 +1,7 @@
 # Feature
 
-- lbvh
+<!-- - lbvh -->
+- middle bvh
 - path tracer
 - direct light sample
 - lambertian+specular material

@@ -1,11 +1,38 @@
-# Real-Time Neural Path Tracer based on WebGPU
-# Neural Rendering Engine based on WebGPU
-# Neural Web3D Engine based on WebGPU
-
-
 * TODO implement path tracer by webgpu + lbvh
 
 code in Wonder.js->master branch
+
+** TODO implement specular reflection
+
+# finish draft
+
+pass test
+
+
+
+show lambertian
+
+
+show specular
+
+
+
+run with 1spp
+
+** TODO generate .png 
+
+
+with 1spp
+
+with 1000spp
+
+
+** TODO refactor: extract .wgsl
+
+* TODO implement NRC with path tracer
+
+
+
 
 
 * TODO extract AI3D to provide abstract API(refer to WebNN API)
@@ -84,7 +111,6 @@ def backward_warp_motion(img: torch.Tensor, motion: torch.Tensor) -> torch.Tenso
 
 
 
-* TODO implement NRC with path tracer
 
 
 

@@ -1,18 +1,19 @@
-import { exec as execInitCanvasJob } from "../job/InitCanvas";
-import { exec as execInitWebGPUJob } from "../job/InitWebGPU";
-import { exec as execInitPassJob } from "../job/InitPass";
-import { exec as execInitRayTracingPassJob } from "../job/ray_tracing_pass/InitRayTracingPass";
-import { exec as execInitScreenPassJob } from "../job/screen_pass/InitScreenPass";
+import { exec as execInitWebGPUJob } from "./jobs/init/InitWebGPUJob";
+import { exec as execInitCameraJob } from "./jobs/init/InitCameraJob";
+import { exec as execInitPassJob } from "./jobs/init/InitPassJob";
+import { exec as execInitRayTracingPassJob } from "./jobs/init/InitPathTracingPassJob";
+import { exec as execInitScreenPassJob } from "./jobs/init/InitScreenPassJob";
+import { setCanvas } from "../data/Repo";
 
-export let exec = async (state) => {
-	// TODO use pipe
+export let exec = async () => {
+    let canvas = document.querySelector("#webgpu")
+    setCanvas(canvas)
 
-	state = execInitCanvasJob(state)
-	state = await execInitWebGPUJob(state);
 
-	state = execInitPassJob(state);
-	state = execInitRayTracingPassJob(state);
-	state = execInitScreenPassJob(state);
 
-	return state
+    await execInitWebGPUJob();
+    execInitCameraJob();
+    execInitPassJob();
+    execInitRayTracingPassJob();
+    execInitScreenPassJob();
 }

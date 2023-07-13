@@ -6,7 +6,7 @@ const isProd = process.env.NODE_ENV === undefined ? false : process.env.NODE_ENV
 const isDevelopment = !isProd;
 
 module.exports = {
-	entry: "./src/main.ts",
+	entry: "./src/index.ts",
 	mode: isProd ? 'production' : 'development',
 	output: {
 		path: path.resolve(__dirname, 'dist'),

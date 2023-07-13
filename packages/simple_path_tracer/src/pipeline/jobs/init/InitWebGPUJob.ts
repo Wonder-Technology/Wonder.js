@@ -1,9 +1,11 @@
-export let exec = async (state) => {
+import { getCanvas, getConfig, setWebGPU } from "../../../data/Repo";
+
+export let exec = async () => {
 	const adapter = await navigator.gpu.requestAdapter();
 	const device = await adapter.requestDevice();
 
-	if (state.canvas === null) return;
-	const context = state.canvas.getContext('webgpu');
+	// if (state.canvas === null) return;
+	const context = getCanvas().getContext('webgpu');
 
 
 	// TODO set devicePixelRatio
@@ -25,11 +27,10 @@ export let exec = async (state) => {
 		alphaMode: "premultiplied"
 	});
 
-	return {
-		...state,
-		adapter,
-		device,
-		context,
+    setWebGPU({
+        device,
+        adapter,
+        context,
 		format: presentationFormat
-	}
+    });
 }
