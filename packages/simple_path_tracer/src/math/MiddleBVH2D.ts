@@ -10,12 +10,12 @@ type triangle = {
 	p2WorldPosition: [number, number, number],
 }
 
-type aabbData = { aabb: t, primitiveIndex: number, instanceIndex: instanceIndex, triangle: triangle }
+export type aabbData = { aabb: t, primitiveIndex: number, instanceIndex: instanceIndex, triangle: triangle }
 
-type wholeAABBData = { aabb: t }
+type wholeAABB = t
 
 export type tree = {
-	wholeAABBData: wholeAABBData,
+	wholeAABB: wholeAABB,
 	leafAllAABBData: Array<aabbData> | null,
 	child1: tree | null,
 	child2: tree | null
@@ -61,7 +61,7 @@ let _computeWholeAABB = (allAABBData: Array<aabbData>) => {
 		)
 	])
 
-	return { aabb: create(worldMin, worldMax) }
+	return create(worldMin, worldMax)
 }
 
 let _sort = (getAxiz, allAABBData: Array<aabbData>) => {
@@ -116,7 +116,7 @@ let _build = (node, minCount, maxDepth, depth, getAxizFuncs, getAxizFuncIndex, a
 //by middle
 export let build = (allAABBData: Array<aabbData>, minCount = 5, maxDepth = 10): tree => {
 	let tree: tree = {
-		wholeAABBData: _computeWholeAABB(allAABBData),
+		wholeAABB: _computeWholeAABB(allAABBData),
 		leafAllAABBData: null,
 		child1: null,
 		child2: null

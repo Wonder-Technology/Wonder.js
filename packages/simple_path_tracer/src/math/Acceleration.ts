@@ -76,7 +76,7 @@ type bottomLevelArr = Array<[
 // TODO refactor(rescript): not edit ref: topLevelArr, bottomLevelArr
 // let _build = (node, topLevelArr, hierachyArr, bottomLevelArr): void => {
 let _build = (node: tree, topLevelArr, child1Arr, child2Arr, bottomLevelArr: bottomLevelArr): void => {
-	let { aabb } = node.wholeAABBData
+	let aabb = node.wholeAABB
 	let { worldMin, worldMax } = aabb
 
 	if (node.leafAllAABBData !== null) {
