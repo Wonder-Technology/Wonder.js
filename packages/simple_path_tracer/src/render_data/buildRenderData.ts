@@ -19,115 +19,115 @@ import { concat } from "../pipeline/jobs/utils/Uint32ArrayUtils";
 // }
 
 let _convertVerticesFromLocalToWorld = (vertices, index, localToWorldMatrix) => {
-	let result = applyMatrix4(
-		[vertices[index * 3], vertices[index * 3 + 1], vertices[index * 3 + 2], 1.0], localToWorldMatrix
-	);
+    let result = applyMatrix4(
+        [vertices[index * 3], vertices[index * 3 + 1], vertices[index * 3 + 2], 1.0], localToWorldMatrix
+    );
 
-	result.pop();
+    result.pop();
 
-	return result;
+    return result;
 }
 
 
 export let buildSceneAccelerationStructureBufferData = (device) => {
-	let allRenderGeometryData = gameObjectConverter.getAllGameObjectGeometryData(scene.getScene());
+    let allRenderGeometryData = gameObjectConverter.getAllGameObjectGeometryData(scene.getScene());
 
-	let allAABBData =
-		allRenderGeometryData.reduce((result, [gameObject, geometry], geometryIndex) => {
-			let vertices = geometryConverter.getVertices(geometry);
-			let indices = geometryConverter.getIndices(geometry);
+    let allAABBData =
+        allRenderGeometryData.reduce((result, [gameObject, geometry], geometryIndex) => {
+            let vertices = geometryConverter.getVertices(geometry);
+            let indices = geometryConverter.getIndices(geometry);
 
-			let localToWorldMatrix = transformConverter.getLocalToWorldMatrix(gameObjectConverter.getTransform(gameObject));
+            let localToWorldMatrix = transformConverter.getLocalToWorldMatrix(gameObjectConverter.getTransform(gameObject));
 
-			// console.log(
-			//     vertices, indices
-			// )
+            // console.log(
+            //     vertices, indices
+            // )
 
-			let primitiveIndex = 0;
+            let primitiveIndex = 0;
 
-			for (let i = 0; i < indices.length; i += 3) {
-				let index0 = indices[i];
-				let index1 = indices[i + 1];
-				let index2 = indices[i + 2];
+            for (let i = 0; i < indices.length; i += 3) {
+                let index0 = indices[i];
+                let index1 = indices[i + 1];
+                let index2 = indices[i + 2];
 
-				// console.log(
-				//     index0, index1, index2
-				// )
+                // console.log(
+                //     index0, index1, index2
+                // )
 
-				let worldVertices0 = _convertVerticesFromLocalToWorld(vertices, index0, localToWorldMatrix);
-				let worldVertices1 = _convertVerticesFromLocalToWorld(vertices, index1, localToWorldMatrix);
-				let worldVertices2 = _convertVerticesFromLocalToWorld(vertices, index2, localToWorldMatrix);
+                let worldVertices0 = _convertVerticesFromLocalToWorld(vertices, index0, localToWorldMatrix);
+                let worldVertices1 = _convertVerticesFromLocalToWorld(vertices, index1, localToWorldMatrix);
+                let worldVertices2 = _convertVerticesFromLocalToWorld(vertices, index2, localToWorldMatrix);
 
-				let aabb = setFromVertices(
-					worldVertices0.concat(worldVertices1, worldVertices2)
-				);
+                let aabb = setFromVertices(
+                    worldVertices0.concat(worldVertices1, worldVertices2)
+                );
 
-				result.push(
-					{
-						aabb,
-						primitiveIndex,
-						// TODO use instanceIndex
-						instanceIndex: geometryIndex,
-						triangle: {
-							p0WorldPosition: worldVertices0,
-							p1WorldPosition: worldVertices1,
-							p2WorldPosition: worldVertices2,
-						}
-					}
-				)
+                result.push(
+                    {
+                        aabb,
+                        primitiveIndex,
+                        // TODO use instanceIndex
+                        instanceIndex: geometryIndex,
+                        triangle: {
+                            p0WorldPosition: worldVertices0,
+                            p1WorldPosition: worldVertices1,
+                            p2WorldPosition: worldVertices2,
+                        }
+                    }
+                )
 
-				primitiveIndex += 1;
-			}
+                primitiveIndex += 1;
+            }
 
-			return result
-		}, [])
+            return result
+        }, [])
 
-	// ( console as any ).profile("build")
-	let a1 = performance.now();
+    // ( console as any ).profile("build")
+    let a1 = performance.now();
 
-	let tree = BVH2D.build(allAABBData, 5, 10)
-	let [topLevelArr, bottomLevelArr] = Acceleration.build(tree);
+    let tree = BVH2D.build(allAABBData, 5, 10)
+    let [topLevelArr, bottomLevelArr] = Acceleration.build(tree);
 
-	let a2 = performance.now();
+    let a2 = performance.now();
 
-	// ( console as any ).profileEnd()
+    // ( console as any ).profileEnd()
 
-	// add padding
-	topLevelArr = topLevelArr.map((data) => {
-		data.push(0)
-		data.push(0)
+    // add padding
+    topLevelArr = topLevelArr.map((data) => {
+        data.push(0)
+        data.push(0)
 
-		return data
-	})
+        return data
+    })
 
-	let topLevelBufferData = new Float32Array(flatten(topLevelArr))
+    let topLevelBufferData = new Float32Array(flatten(topLevelArr))
 
-	let a3 = performance.now()
-	// add padding
-	bottomLevelArr = bottomLevelArr.map((data) => {
-		data.push(0)
-		data.push(0)
+    let a3 = performance.now()
+    // add padding
+    bottomLevelArr = bottomLevelArr.map((data) => {
+        data.push(0)
+        data.push(0)
 
-		return data
-	})
-	let a4 = performance.now()
+        return data
+    })
+    let a4 = performance.now()
 
-	let bottomLevelBufferData = new Float32Array(flatten(bottomLevelArr))
-
-
-	console.log(a2 - a1, a3 - a2, a4 - a3)
+    let bottomLevelBufferData = new Float32Array(flatten(bottomLevelArr))
 
 
-	let topLevelBuffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, topLevelBufferData)
+    console.log(a2 - a1, a3 - a2, a4 - a3)
 
 
-	let bottomLevelBuffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bottomLevelBufferData)
+    let topLevelBuffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, topLevelBufferData)
 
 
-	return [
-		topLevelBuffer, topLevelBufferData.byteLength,
-		bottomLevelBuffer, bottomLevelBufferData.byteLength
-	];
+    let bottomLevelBuffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bottomLevelBufferData)
+
+
+    return [
+        topLevelBuffer, topLevelBufferData.byteLength,
+        bottomLevelBuffer, bottomLevelBufferData.byteLength
+    ];
 }
 
 let _findIndex = (component, components) => {
@@ -158,7 +158,7 @@ let _setMat3Data = (bufferDataArr, index, mat3) => {
     bufferDataArr[index + 11] = 0.0;
 }
 
-export let buildSceneInstanceDataBufferData = ( device) => {
+export let buildSceneInstanceDataBufferData = (device) => {
     let allRenderGameObjects = gameObjectConverter.getAllGeometryGameObjects(scene.getScene());
     let allRenderGeometries = gameObjectConverter.getAllGameObjectGeometries(scene.getScene());
     let allRenderBRDFLambertianMaterials = gameObjectConverter.getAllGameObjectBRDFLambertianMaterials(scene.getScene());
@@ -197,9 +197,9 @@ export let buildSceneInstanceDataBufferData = ( device) => {
 
     // console.log(bufferData)
 
-	let buffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bufferData)
+    let buffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bufferData)
 
-	return [buffer, bufferData.byteLength];
+    return [buffer, bufferData.byteLength];
 }
 
 let _computeVertexCount = vertices => vertices.length / 3;
@@ -230,9 +230,9 @@ export let buildPointIndexBufferData = (device) => {
 
     // console.log(bufferData)
 
-	let buffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bufferData)
+    let buffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bufferData)
 
-	return [buffer, bufferData.byteLength];
+    return [buffer, bufferData.byteLength];
 }
 
 export let buildVertexBufferData = (device) => {
@@ -257,9 +257,9 @@ export let buildVertexBufferData = (device) => {
 
     // console.log(bufferData)
 
-	let buffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bufferData)
+    let buffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bufferData)
 
-	return [buffer, bufferData.byteLength];
+    return [buffer, bufferData.byteLength];
 }
 
 export let buildIndexBufferData = (device) => {
@@ -275,12 +275,21 @@ export let buildIndexBufferData = (device) => {
 
     // console.log(bufferData)
 
-	let buffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bufferData)
+    let buffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bufferData)
 
-	return [buffer, bufferData.byteLength];
+    return [buffer, bufferData.byteLength];
 }
 
 let _convertBoolToFloat = boolValue => boolValue ? 1.0 : 0.0;
+
+//refer to: [Require buffer bindings to have non-zero size](https://github.com/gpuweb/gpuweb/pull/2419)
+let _addDefaultBRDFLambertianMaterial = (bufferDataArr) => {
+    bufferDataArr.push(
+        0, 0, 0, 0
+    );
+
+    return bufferDataArr
+}
 
 export let buildBRDFLambertianMaterialBufferData = (device) => {
     let allRenderBRDFLambertianMaterials = gameObjectConverter.getAllGameObjectBRDFLambertianMaterials(scene.getScene());
@@ -300,13 +309,26 @@ export let buildBRDFLambertianMaterialBufferData = (device) => {
         return bufferDataArr;
     }, []);
 
+    let i = allRenderBRDFLambertianMaterials.length
+    while (i <= 10) {
+        bufferDataArr = _addDefaultBRDFLambertianMaterial(bufferDataArr)
+
+        i += 1
+    }
+
     let bufferData = new Float32Array(bufferDataArr);
 
-    // console.log(bufferData);
+    let buffer = createBuffer(device, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST, bufferData)
 
-	let buffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bufferData)
+    return [buffer, bufferData.byteLength];
+}
 
-	return [buffer, bufferData.byteLength];
+let _addDefaultBRDFSpecularMaterial = (bufferDataArr) => {
+    bufferDataArr.push(
+        0, 0, 0, 0
+    );
+
+    return bufferDataArr
 }
 
 export let buildBRDFSpecularReflectionMaterialBufferData = (device) => {
@@ -314,20 +336,32 @@ export let buildBRDFSpecularReflectionMaterialBufferData = (device) => {
 
     let bufferDataArr = allRenderBRDFSpecularReflectionMaterials.reduce((bufferDataArr, material) => {
         bufferDataArr.push(
-            _convertBoolToFloat(brdfSpecularReflectionMaterialConverter.isRectAreaLight(material))
+            _convertBoolToFloat(brdfSpecularReflectionMaterialConverter.isRectAreaLight(material)),
+            0,
+            0,
+            0
         );
 
         return bufferDataArr;
     }, []);
 
+    let i = allRenderBRDFSpecularReflectionMaterials.length
+    while (i <= 10) {
+        bufferDataArr = _addDefaultBRDFSpecularMaterial(bufferDataArr)
+
+        i += 1
+    }
+
     let bufferData = new Float32Array(bufferDataArr);
 
     // console.log("aa:",bufferData);
 
-	let buffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bufferData)
+    // let buffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bufferData)
+    let buffer = createBuffer(device, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST, bufferData)
 
-	return [buffer, bufferData.byteLength];
+    return [buffer, bufferData.byteLength];
 }
+
 
 export let buildRectAreaLightBufferData = device => {
     let light = areaLightConverter.getRectAreaLight(scene.getScene())
@@ -361,7 +395,7 @@ export let buildRectAreaLightBufferData = device => {
         bufferData = new Float32Array(bufferDataArr);
     }
 
-	let buffer = createBuffer(device, GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST, bufferData)
+    let buffer = createBuffer(device, GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST, bufferData)
 
-	return [buffer, bufferData.byteLength];
+    return [buffer, bufferData.byteLength];
 }

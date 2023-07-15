@@ -14,13 +14,13 @@ let _buildCameraBufferData = device => {
     return [buffer, bufferData];
 }
 
-let _updateCameraBufferData = (viewInverse, projectionInverse, near, far, [buffer, bufferData]) => {
+let _updateCameraBufferData = (device, viewInverse, projectionInverse, near, far, [buffer, bufferData]) => {
     bufferData.set(viewInverse, 0);
     bufferData.set(projectionInverse, 16);
     bufferData[16 + 16] = near;
     bufferData[16 + 16 + 1] = far;
 
-    buffer.setSubData(0, bufferData);
+    device.queue.writeBuffer(buffer, 0, bufferData)
 }
 
 export let exec = () => {
@@ -31,9 +31,10 @@ export let exec = () => {
     let cameraGameObject = scene.getActiveCamera();
 
     let activeCameraView = gameObject.getBasicCameraView(cameraGameObject);
-    let cameraProjection = gameObject.getPerspectiveCameraProjection(cameraGameObject) ;
-    
+    let cameraProjection = gameObject.getPerspectiveCameraProjection(cameraGameObject);
+
     _updateCameraBufferData(
+        device,
         invert(
             createIdentityMatrix4(),
             basicCameraView.getViewWorldToCameraMatrix(

@@ -1,4 +1,4 @@
-var vertexShader = `
+var vertexShader = /* wgsl */`
 struct VertexOutput {
   @builtin(position) Position : vec4<f32>,
   @location(0) uv: vec2<f32>,  
@@ -16,7 +16,7 @@ fn main(
 }
 `;
 
-var fragmentShader = `
+var fragmentShader =/* wgsl */ `
  struct Pixels {
   pixels : array<vec4<f32>>
 }
@@ -47,10 +47,12 @@ fn main(
   var bufferCoord = vec2<u32>(floor(uv * resolution));
   var pixelIndex = bufferCoord.y * u32(resolution.x) + bufferCoord.x;
 
-  var pixelColor = pixelBuffer.pixels[pixelIndex].rgb / pushC.totalSampleCount;
+  var pixelColor = pixelBuffer.pixels[pixelIndex].rgb / f32(pushC.totalSampleCount);
+  // var pixelColor = pixelBuffer.pixels[pixelIndex].rgb ;
   // var pixelColor = pixelBuffer.pixels[pixelIndex].rgb;
 
   return vec4<f32>(pixelColor, 1.0);
+  // return vec4<f32>(f32(pushC.totalSampleCount)/100.0, 1.0,1.0,1.0);
   // return vec4<f32>(1.0, 0.0, 0.0, 1.0);
   // return vec4<f32>(uv, 0.0, 1.0);
 }

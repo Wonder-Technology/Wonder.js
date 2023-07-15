@@ -1,6 +1,6 @@
 import { fatal } from "../log/Log";
 import { getScene } from "../data/Repo";
-import THREE from "three";
+import * as THREE from "three";
 
 let _log = (param1, param2) => {
     console.log(param1, param2);

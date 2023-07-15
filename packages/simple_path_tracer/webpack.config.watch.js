@@ -19,10 +19,10 @@ module.exports = {
 		},
 		compress: true,
 		port: 8090,
-		headers: {
-			"Cross-Origin-Embedder-Policy": "require-corp",
-			"Cross-Origin-Opener-Policy": "same-origin"
-		},
+		// headers: {
+		// 	"Cross-Origin-Embedder-Policy": "require-corp",
+		// 	"Cross-Origin-Opener-Policy": "same-origin"
+		// },
 		client: {
 			progress: true,
 			overlay: {
@@ -80,6 +80,7 @@ module.exports = {
 	// This is important because it allows us to avoid bundling all of our
 	// dependencies, which allows browsers to cache those libraries between builds.
 	externals: {
+		// "three": 
 	},
 	watchOptions: {
 		ignored: ['node_modules/**'],

@@ -2,24 +2,30 @@ import { getPass, setScreenPass, getWebGPU } from "../../../data/Repo";
 import { fragmentShader, vertexShader } from "../../../shader/screen";
 
 export let exec = () => {
-    let { device } = getWebGPU();
+    let { device, format } = getWebGPU();
 
     let bindGroupLayout = device.createBindGroupLayout({
         entries: [
             {
                 binding: 0,
                 visibility: GPUShaderStage.FRAGMENT,
-                type: "storage"
+                buffer: {
+                    type: "storage"
+                },
             },
             {
                 binding: 1,
                 visibility: GPUShaderStage.FRAGMENT,
-                type: "uniform"
+                buffer: {
+                    type: "uniform"
+                },
             },
             {
                 binding: 2,
                 visibility: GPUShaderStage.FRAGMENT,
-                type: "uniform"
+                buffer: {
+                    type: "uniform"
+                },
             }
         ]
     });
@@ -63,17 +69,22 @@ export let exec = () => {
         layout: device.createPipelineLayout({
             bindGroupLayouts: [bindGroupLayout]
         }),
-        vertexStage: {
+        vertex: {
             module: device.createShaderModule({
                 code: vertexShader,
             }),
             entryPoint: "main"
         },
-        fragmentStage: {
+        fragment: {
             module: device.createShaderModule({
                 code: fragmentShader,
             }),
-            entryPoint: "main"
+            entryPoint: "main",
+            targets: [
+                {
+                    format
+                },
+            ],
         },
         primitive: {
             topology: 'triangle-list',

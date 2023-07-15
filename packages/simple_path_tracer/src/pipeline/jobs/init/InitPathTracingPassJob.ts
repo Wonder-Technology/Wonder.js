@@ -1,6 +1,6 @@
 import { getWebGPU, getPass, getCamera, setRayTracingPass } from "../../../data/Repo"
 // import { computeShader } from "../../shader/ray_tracing";
-import { buildBRDFLambertianMaterialBufferData, buildBRDFSpecularReflectionMaterialBufferData, buildIndexBufferData, buildPointIndexBufferData, buildSceneAccelerationStructureBufferData, buildSceneInstanceDataBufferData, buildVertexBufferData } from "../../../render_data/buildRenderData";
+import { buildBRDFLambertianMaterialBufferData, buildBRDFSpecularReflectionMaterialBufferData, buildIndexBufferData, buildPointIndexBufferData, buildRectAreaLightBufferData, buildSceneAccelerationStructureBufferData, buildSceneInstanceDataBufferData, buildVertexBufferData } from "../../../render_data/buildRenderData";
 import { computeShader } from "../../../shader/ray_tracing";
 
 export let exec = () => {
@@ -11,67 +11,99 @@ export let exec = () => {
             {
                 binding: 0,
                 visibility: GPUShaderStage.COMPUTE,
-                type: "read-only-storage"
+                buffer: {
+                    type: "read-only-storage"
+                },
             },
             {
                 binding: 1,
                 visibility: GPUShaderStage.COMPUTE,
-                type: "read-only-storage"
+                buffer: {
+                    type: "read-only-storage"
+                },
             },
             {
                 binding: 2,
                 visibility: GPUShaderStage.COMPUTE,
-                type: "read-only-storage"
+                buffer: {
+                    type: "read-only-storage"
+                },
             },
             {
                 binding: 3,
                 visibility: GPUShaderStage.COMPUTE,
-                type: "read-only-storage"
+                buffer: {
+                    type: "read-only-storage"
+                },
             },
             {
                 binding: 4,
                 visibility: GPUShaderStage.COMPUTE,
-                type: "read-only-storage"
+                buffer: {
+                    type: "read-only-storage"
+                },
             },
             {
                 binding: 5,
                 visibility: GPUShaderStage.COMPUTE,
-                type: "read-only-storage"
+                buffer: {
+                    type: "read-only-storage"
+                },
             },
             {
                 binding: 6,
                 visibility: GPUShaderStage.COMPUTE,
-                type: "read-only-storage"
+                buffer: {
+                    // type: "read-only-storage"
+                    type: "uniform",
+                    // hasDynamicOffset: false,
+                    // minBindingSize: 0
+                },
             },
             {
                 binding: 7,
                 visibility: GPUShaderStage.COMPUTE,
-                type: "read-only-storage"
+                buffer: {
+                    // type: "read-only-storage"
+                    type: "uniform",
+                    // hasDynamicOffset: false,
+                    // minBindingSize: 0
+                },
             },
             {
                 binding: 8,
                 visibility: GPUShaderStage.COMPUTE,
-                type: "uniform"
+                buffer: {
+                    type: "uniform"
+                },
             },
             {
                 binding: 9,
                 visibility: GPUShaderStage.COMPUTE,
-                type: "storage"
+                buffer: {
+                    type: "storage"
+                },
             },
             {
                 binding: 10,
                 visibility: GPUShaderStage.COMPUTE,
-                type: "uniform"
+                buffer: {
+                    type: "uniform"
+                },
             },
             {
                 binding: 11,
                 visibility: GPUShaderStage.COMPUTE,
-                type: "uniform"
+                buffer: {
+                    type: "uniform"
+                },
             },
             {
                 binding: 12,
                 visibility: GPUShaderStage.COMPUTE,
-                type: "uniform"
+                buffer: {
+                    type: "uniform"
+                },
             }
         ]
     });
@@ -97,7 +129,7 @@ export let exec = () => {
     let [brdfLambertianMaterialBuffer, brdfLambertianMaterialBufferSize] = buildBRDFLambertianMaterialBufferData(device);
     let [brdfSpecularReflectionMaterialBuffer, brdfSpecularReflectionMaterialBufferSize] = buildBRDFSpecularReflectionMaterialBufferData(device);
 
-    let [rectAreaLightBuffer, rectAreaLightBufferData] = brdfSpecularReflectionMaterialBufferSize(device)
+    let [rectAreaLightBuffer, rectAreaLightBufferData] = buildRectAreaLightBufferData(device)
 
     let bindGroup = device.createBindGroup({
         layout: bindGroupLayout,
@@ -201,8 +233,8 @@ export let exec = () => {
             bindGroupLayouts: [bindGroupLayout]
         }),
         compute: {
-			module: device.createShaderModule({ code: computeShader }),
-			entryPoint: 'main',
+            module: device.createShaderModule({ code: computeShader }),
+            entryPoint: 'main',
         }
     });
 

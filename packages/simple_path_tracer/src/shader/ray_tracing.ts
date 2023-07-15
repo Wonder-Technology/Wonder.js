@@ -1,7 +1,9 @@
-export var computeShader = `
-const PI=3.141592653589793
-const TWO_PI=6.283185307179586
-const POSITIVE_INFINITY=10000000
+export var computeShader = /* wgsl */ `
+const PI=3.141592653589793;
+const TWO_PI=6.283185307179586;
+const POSITIVE_INFINITY=10000000;
+const MAX_LAMBERTIAN_MATERIAL_COUNT = 10;
+const MAX_SPECULAR_REFLECTION_MATERIAL_COUNT = 10;
 
 struct RayPayload {
    radiance: vec3<f32>,
@@ -42,7 +44,7 @@ struct TopLevel {
 
 
 	child1Index: f32,
-	child2Index: f32
+	child2Index: f32,
   pad_0: f32,
   pad_1: f32,
 }
@@ -72,7 +74,8 @@ struct Instance {
   // worldPosition: vec3<f32>,
   // pad_1: f32,
 
-  normalMatrix: mat4x3<f32>,
+  // normalMatrix: mat4x3<f32>,
+  normalMatrix: mat3x4<f32>,
 }
 
 struct Vertex {
@@ -87,7 +90,7 @@ struct PointIndexData {
 }
 
 struct BRDFLambertianMaterial {
-  color: vec3<f32>,
+  diffuse: vec3<f32>,
   isRectAreaLight: f32,
 }
 
@@ -125,11 +128,11 @@ struct BRDFSpecularReflectionMaterial {
 
 
  struct BRDFLambertianMaterials {
-  lambertianMaterials :  array<BRDFLambertianMaterial>,
+  lambertianMaterials :  array<BRDFLambertianMaterial, MAX_LAMBERTIAN_MATERIAL_COUNT>,
 }
 
  struct BRDFSpecularReflectionMaterials {
-  specularReflectionMaterials :  array<BRDFSpecularReflectionMaterial>,
+  specularReflectionMaterials :  array<BRDFSpecularReflectionMaterial, MAX_SPECULAR_REFLECTION_MATERIAL_COUNT>,
 }
 
 
@@ -139,9 +142,10 @@ struct BRDFSpecularReflectionMaterial {
   minX : f32,
   maxX : f32,
   minY : f32,
-  maxX : f32,
+  maxY : f32,
 
-  normalMatrix: mat4x3<f32>,
+  // normalMatrix: mat4x3<f32>,
+  normalMatrix: mat3x4<f32>,
   modelMatrix: mat4x4<f32>,
 }
 
@@ -177,8 +181,10 @@ struct BRDFSpecularReflectionMaterial {
 @binding(3) @group(0) var<storage, read> scenePointIndexData :  AllPointIndexData;
 @binding(4) @group(0) var<storage, read> sceneVerticesData :  Vertices;
 @binding(5) @group(0) var<storage, read> sceneIndicesData :  Indices;
-@binding(6) @group(0) var<storage, read> sceneBRDFLambertianMaterialData :  BRDFLambertianMaterials;
-@binding(7) @group(0) var<storage, read> sceneBRDFSpecularReflectionMaterialData :  BRDFSpecularReflectionMaterials;
+// @binding(6) @group(0) var<storage, read> sceneBRDFLambertianMaterialData :  BRDFLambertianMaterials;
+@binding(6) @group(0) var<uniform> sceneBRDFLambertianMaterialData :  BRDFLambertianMaterials;
+// @binding(7) @group(0) var<storage, read> sceneBRDFSpecularReflectionMaterialData :  BRDFSpecularReflectionMaterials;
+@binding(7) @group(0) var<uniform> sceneBRDFSpecularReflectionMaterialData :  BRDFSpecularReflectionMaterials;
 
 @binding(8) @group(0) var<uniform> uRectAreaLight :  RectAreaLight;
 
@@ -190,14 +196,51 @@ struct BRDFSpecularReflectionMaterial {
 
 @binding(12) @group(0) var<uniform> pushC : CommonData;
 
+// Generate a random unsigned int from two unsigned int values, using 16 pairs
+// of rounds of the Tiny Encryption Algorithm. See Zafar, Olano, and Curtis,
+// "GPU Random Numbers via the Tiny Encryption Algorithm"
+fn tea(val0:u32, val1:u32)->u32 {
+  var v0 = val0;
+  var v1 = val1;
+  var s0:u32 = u32(0);
+
+  for (var n = 0; n < 16; n++) {
+    s0 += 0x9e3779b9;
+    v0 += ((v1 << 4) + 0xa341316c) ^ (v1 + s0) ^ ((v1 >> 5) + 0xc8013ea4);
+    v1 += ((v0 << 4) + 0xad90777d) ^ (v0 + s0) ^ ((v0 >> 5) + 0x7e95761e);
+  }
+
+  return v0;
+}
+
+// Generate a random unsigned int in [0, 2^24) given the previous RNG state
+// using the Numerical Recipes linear congruential generator
+fn lcg(prev:ptr<function, u32>)->u32 {
+  var LCG_A = 1664525u;
+  var LCG_C = 1013904223u;
+  *prev = (LCG_A * *prev + LCG_C);
+  return *prev & 0x00FFFFFF;
+}
+
+// Generate a random float in [0, 1) given the previous RNG state
+fn rnd(prev: ptr<function, u32>)->f32 { return (f32(lcg(prev)) / f32(0x01000000)); }
+
+// fn randInUnitDisk(seed:ptr<function, u32>)->vec2<f32> {
+//   var p = vec2(0);
+//   do {
+//     p = 2 * vec2(rnd(&seed), rnd(&seed)) - 1;
+//   } while (dot(p, p) >= 1);
+//   return p;
+// }
+
 fn _isIntersectWithTriangle(barycentric:vec3<f32>)->bool {
   return barycentric.x >= 0 && barycentric.y >= 0 && barycentric.z >= 0;
 }
 
 fn _swap(a:ptr<function, f32>, b:ptr<function, f32>) {
-  float temp = a;
-  *a = b;
-  *b = temp;
+  let temp = a;
+  *a = *b;
+  *b = *temp;
 }
 
 fn _isRayIntersectWithAABB(ray: Ray, worldMin: vec3<f32>, worldMax: vec3<f32>) -> bool {
@@ -210,40 +253,67 @@ fn _isRayIntersectWithAABB(ray: Ray, worldMin: vec3<f32>, worldMax: vec3<f32>) -
   var tmin = (min.x - origin.x) / direction.x;
   var tmax = (max.x - origin.x) / direction.x;
 
-  if (tmin > tmax)
+  if (tmin > tmax){
     _swap(&tmin, &tmax);
+  }
 
   var tymin = (min.y - origin.y) / direction.y;
   var tymax = (max.y - origin.y) / direction.y;
 
-  if (tymin > tymax)
+  if (tymin > tymax){
     _swap(&tymin, &tymax);
+  }
 
-  if ((tmin > tymax) || (tymin > tmax))
+  if ((tmin > tymax) || (tymin > tmax)) {
     return false;
+  }
 
-  if (tymin > tmin)
+  if (tymin > tmin){
     tmin = tymin;
+  }
 
-  if (tymax < tmax)
+  if (tymax < tmax){
     tmax = tymax;
+  }
 
   var tzmin = (min.z - origin.z) / direction.z;
   var tzmax = (max.z - origin.z) / direction.z;
 
-  if (tzmin > tzmax)
+  if (tzmin > tzmax){
     _swap(&tzmin, &tzmax);
+  }
 
-  if ((tmin > tzmax) || (tzmin > tmax))
+  if ((tmin > tzmax) || (tzmin > tmax)){
     return false;
+  }
 
-  if (tzmin > tmin)
+  if (tzmin > tmin){
     tmin = tzmin;
+  }
 
-  if (tzmax < tmax)
+  if (tzmax < tmax){
     tmax = tzmax;
+  }
 
   return true;
+}
+
+fn _getBarycentricAndT(ray: Ray, tri: Triangle) -> vec4<f32> {
+  var e1 = tri.p1WorldPosition - tri.p0WorldPosition;
+  var e2 = tri.p2WorldPosition - tri.p0WorldPosition;
+  var s = ray.origin - tri.p0WorldPosition;
+  var s1 = cross(ray.direction, e2);
+  var s2 = cross(s, e1);
+
+  var result =
+      1 / dot(s1, e1) * vec3(dot(s2, e2), dot(s1, s), dot(s2, ray.direction));
+
+  var t = result.x;
+  var b1 = result.y;
+  var b2 = result.z;
+  var b0 = 1 - b1 - b2;
+
+  return vec4(b0, b1, b2, t);
 }
 
 fn _isRayIntersectWithTopLevelNode(ray: Ray, node: TopLevel) -> bool {
@@ -388,12 +458,12 @@ fn _isFromOutside(wo:vec3<f32>, n:vec3<f32>)->bool { return dot(wo, n) > 0.0; }
 
 
 fn _getLambertianMaterial(materialIndex: u32) -> BRDFLambertianMaterial  {
-  return lambertianMaterials.m[materialIndex];
+  return sceneBRDFLambertianMaterialData.lambertianMaterials[materialIndex];
 }
 
  
 fn _getSpecularReflectionMaterial(materialIndex: u32) -> BRDFSpecularReflectionMaterial {
-  return specularReflectionMaterials.m[materialIndex];
+  return sceneBRDFSpecularReflectionMaterialData.specularReflectionMaterials[materialIndex];
 }
 
 fn _isHitEmitInstance(isRectAreaLight: f32) -> bool { return bool(isRectAreaLight); }
@@ -442,28 +512,28 @@ fn _isHitRectAreaLight(isRectAreaLight:f32)->bool {
   return bool(isRectAreaLight);
 }
 
-fn _isHitEmitInstance(isRectAreaLight:f32)->bool { return bool(isRectAreaLight); }
-
 fn _isShadowedByTraceShadowRay(ray:Ray)->bool {
   var intersectResult = _intersectScene(ray);
 
   if (intersectResult.isClosestHit) {
     var instanceIndex = u32(intersectResult.instanceIndex);
 
-    var instance = _getInstance(instanceIndex);
+    var instance = sceneInstanceData.instances[instanceIndex];
     var materialIndex = u32(instance.materialIndex);
     var materialType = u32(instance.materialType);
 
-    var isRectAreaLight;
+    var isRectAreaLight = 0.0;
 
     switch (materialType) {
-    case 0:
-      isRectAreaLight = _getLambertianMaterial(materialIndex).isRectAreaLight;
-      break;
-    case 1:
-      isRectAreaLight =
-          _getSpecularReflectionMaterial(materialIndex).isRectAreaLight;
-      break;
+      case 0:{
+        isRectAreaLight = _getLambertianMaterial(materialIndex).isRectAreaLight;
+        break;
+      }
+      case 1, default:{
+        isRectAreaLight =
+            _getSpecularReflectionMaterial(materialIndex).isRectAreaLight;
+        break;
+      }
     }
 
     return !_isHitRectAreaLight(isRectAreaLight);
@@ -488,16 +558,22 @@ fn _computeDistanceSquare(worldSamplePoint:vec3<f32>, worldHitPoint:vec3<f32>)->
 
 fn _getFresnelReflectivity()->vec3<f32> { return vec3(1.0); }
 
-fn _computeDirectLight(seed:u32, worldHitPoint:vec3<f32>, worldNormal:vec3<f32>,
-                         ray:Ray, diffuse:vec3<f32>)->vec3<f32> {
-  var worldSamplePoint = _sampleRectAreaLight(rnd(seed), rnd(seed));
+fn _computeDirectLight(
+  seed:u32,
+  worldHitPoint:vec3<f32>,
+  worldNormal:vec3<f32>,
+  ray:Ray, diffuse:vec3<f32>
+)->vec3<f32> {
+  var seed_ = seed;
+  var worldSamplePoint = _sampleRectAreaLight(rnd(&seed_), rnd(&seed_));
 
   var lightDir = normalize(worldSamplePoint - worldHitPoint);
 
   var NdotL = dot(lightDir, worldNormal);
 
   var rectAreaLightWorldNormal =
-      normalize(uRectAreaLight.normalMatrix * vec3(0.0, 0.0, 1.0));
+      // normalize(uRectAreaLight.normalMatrix * vec3(0.0, 0.0, 1.0));
+      normalize(( uRectAreaLight.normalMatrix * vec3(0.0, 0.0, 1.0) ).xyz);
 
   var lightCosine = dot(-lightDir, rectAreaLightWorldNormal);
 
@@ -514,9 +590,17 @@ fn _computeDirectLight(seed:u32, worldHitPoint:vec3<f32>, worldNormal:vec3<f32>,
 }
 
 fn _buildTBN(n:vec3<f32>, t:ptr<function, vec3<f32>>, b:ptr<function, vec3<f32>>) {
-  const u = abs(n.z) > 0.999 ? vec3(1, 0, 0) : vec3(0, 0, 1);
+  // const u = abs(n.z) > 0.999 ? vec3(1, 0, 0) : vec3(0, 0, 1);
+  var u=vec3(0.0);
+  if(abs(n.z) > 0.999 ){
+    u = vec3(1, 0, 0);
+  }
+  else{
+    u = vec3(0, 0, 1);
+  }
+
   *t = normalize(cross(u, n));
-  *b = cross(n, t);
+  *b = cross(n, *t);
 }
 
 fn _cosineSampleHemisphereInSphereCoordinateSystem(r1:f32, r2:f32,
@@ -527,8 +611,8 @@ fn _cosineSampleHemisphereInSphereCoordinateSystem(r1:f32, r2:f32,
   var y = sin(phi) * sinTheta;
   var z = sqrt(max(0.0, 1.0 - r2));
 
-  var t;
-  var b;
+  var t=vec3(0.0);
+  var b=vec3(0.0);
   _buildTBN(n, &t, &b);
 
   return t * x + b * y + n * z;
@@ -545,29 +629,30 @@ fn _sampleLambertianMaterial(payload: ptr<function, RayPayload> ,  materialIndex
     return false;
   }
 
-  if (payload.isRayBounceFromSpecularReflectionMaterial &&
+  if ((*payload).isRayBounceFromSpecularReflectionMaterial &&
       _isHitEmitInstance(mat.isRectAreaLight)) {
-    ( *payload ).radiance += _getRectAreaLightLe() * payload.throughput;
+    ( *payload ).radiance += _getRectAreaLightLe() * (*payload).throughput;
 
     return false;
   }
 
   ( *payload ).radiance += (_getBRDFLambertianMaterialLe() +
-                       _computeDirectLight(payload.seed, payload.worldHitPoint,
+                       _computeDirectLight((*payload).seed, (*payload).worldHitPoint,
                                            worldNormal, ray, mat.diffuse)) *
-                      payload.throughput;
+                      (*payload).throughput;
 
   if (_isHitEmitInstance(mat.isRectAreaLight)) {
     return false;
   } else {
     ( *payload ).isRayBounceFromSpecularReflectionMaterial = false;
 
+    var seed = (*payload).seed;
     var wi = _cosineSampleHemisphereInSphereCoordinateSystem(
-        rnd(payload.seed), rnd(payload.seed), worldNormal);
+        rnd(&(seed)), rnd(&(seed)), worldNormal);
 
     ( *payload ).scatterDirection = wi;
 
-    const NdotL = abs(dot(wi, worldNormal));
+    var NdotL = abs(dot(wi, worldNormal));
 
     ( *payload ).throughput *= _evalLambertianBRDF(mat.diffuse) * NdotL /
                           _computeLambertianBRDFPdf(NdotL);
@@ -576,6 +661,8 @@ fn _sampleLambertianMaterial(payload: ptr<function, RayPayload> ,  materialIndex
   }
 }
 
+fn _reflect(wo:vec3<f32>, n:vec3<f32>)->vec3<f32> { return -wo + 2 * dot(n, wo) * n; }
+
 fn _sampleSpecularReflectionMaterial(payload:ptr<function, RayPayload>,
                                         materialIndex:u32,  ray:Ray,
                                        worldNormal:vec3<f32>)->bool {
@@ -583,7 +670,7 @@ fn _sampleSpecularReflectionMaterial(payload:ptr<function, RayPayload>,
       _getSpecularReflectionMaterial(materialIndex);
 
   if (_isHitEmitInstance(mat.isRectAreaLight)) {
-    ( *payload ).radiance += _getRectAreaLightLe() * payload.throughput;
+    ( *payload ).radiance += _getRectAreaLightLe() * (*payload).throughput;
 
     return false;
   } else {
@@ -593,10 +680,10 @@ fn _sampleSpecularReflectionMaterial(payload:ptr<function, RayPayload>,
 
     var wi = _reflect(wo, worldNormal);
 
-    const NdotL = abs(dot(wi, worldNormal));
+    var NdotL = abs(dot(wi, worldNormal));
 
     ( *payload ).radiance +=
-        _getBRDFSpecularReflectionMaterialLe() * payload.throughput;
+        _getBRDFSpecularReflectionMaterialLe() * (*payload).throughput;
     ( *payload ).scatterDirection = wi;
 
     ( *payload ).throughput *= _evalSpecularReflectionBRDF(_getFresnelReflectivity(),
@@ -613,9 +700,9 @@ fn _handleRayClosestHit(payload: ptr<function,RayPayload>, ray: Ray, intersectRe
 
   var instance: Instance = sceneInstanceData.instances[instanceIndex];
 
-  var v0: Vertex v0;
-  var v1: Vertex v1;
-  var v2: Vertex v2;
+  var v0: Vertex;
+  var v1: Vertex;
+  var v2: Vertex;
 
   _getVertices(instanceIndex, primitiveIndex, &v0, &v1, &v2);
 
@@ -627,9 +714,17 @@ fn _handleRayClosestHit(payload: ptr<function,RayPayload>, ray: Ray, intersectRe
 
   var normalMatrix = instance.normalMatrix;
 
-  n = normalize(normalMatrix * n);
+  // n = normalize(normalMatrix * n);
+  n = normalize(( normalMatrix * n ).xyz);
 
-  var bias = 0.001 * (_isFromOutside(-ray.direction, n) ? n : -n);
+  // var bias = 0.001 * (_isFromOutside(-ray.direction, n) ? n : -n);
+  var bias=vec3(0.001);
+   if(_isFromOutside(-ray.direction, n)) {
+     bias *= n;
+   }
+   else{
+     bias *= -n;
+   }
 
   ( *payload ).worldHitPoint =
       ray.origin.xyz + intersectResult.t * ray.direction + bias;
@@ -640,14 +735,16 @@ fn _handleRayClosestHit(payload: ptr<function,RayPayload>, ray: Ray, intersectRe
   var isContinueBounce=false;
 
   switch (materialType) {
-    case 0:
+    case 0:{
       isContinueBounce =
-          _sampleLambertianMaterial(&payload, materialIndex, ray, n, isCameraRay);
+          _sampleLambertianMaterial(payload, materialIndex, ray, n, isCameraRay);
       break;
-    case 1:
+    }
+    case 1, default:{
       isContinueBounce =
-          _sampleSpecularReflectionMaterial(&payload, materialIndex, ray, n);
+          _sampleSpecularReflectionMaterial(payload, materialIndex, ray, n);
       break;
+    }
   }
 
   return isContinueBounce;
@@ -656,7 +753,7 @@ fn _handleRayClosestHit(payload: ptr<function,RayPayload>, ray: Ray, intersectRe
 fn _getEnvLE()->vec3<f32> { return vec3(0.0, 0.0, 0.0); }
 
 fn _handleRayMiss(payload: ptr<function,RayPayload>)->bool {
-(*payload).radiance = _getEnvLE() * payload.throughput;
+(*payload).radiance = _getEnvLE() * (*payload).throughput;
 
 return false;
 }
@@ -676,6 +773,7 @@ fn _luminance(color:vec3<f32>)->f32 {
 }
 
 @compute @workgroup_size(8, 8, 1)
+// @compute @workgroup_size(1, 1, 1)
 fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
   var ipos = vec2<u32>(GlobalInvocationID.x, GlobalInvocationID.y);
 
@@ -683,6 +781,10 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
 
   // var sampleCountPerPixel = pushC.sampleCountPerPixel;
   var totalSampleCount = pushC.totalSampleCount;
+
+
+  var payload: RayPayload;
+    payload.seed = tea(tea(ipos.x, ipos.y), totalSampleCount);
 
   var pixelColor = vec3<f32>(0.0, 0.0, 0.0);
 
@@ -693,14 +795,13 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
 
     var uv = (sampledPixel / resolution) * 2.0 - 1.0;
 
-    var target = uCamera.projectionInverse * (vec4<32>(uv.x, uv.y, -1, 1));
+    var target_ = uCamera.projectionInverse * (vec4<f32>(uv.x, uv.y, -1, 1));
 
-    var direction = normalize(uCamera.viewInverse * vec4<32>(normalize(target.xyz), 0));
+    var direction = normalize(uCamera.viewInverse * vec4<f32>(normalize(target_.xyz), 0));
 
     var wi = direction.xyz;
 
 
-  var payload: RayPayload;
     payload.radiance = vec3<f32>(0.0, 0.0, 0.0);
     payload.throughput = vec3<f32>(1.0, 1.0, 1.0);
     payload.scatterDirection = vec3<f32>(0.0, 0.0, 0.0);
@@ -717,7 +818,8 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
       }
 
 
-      var ksi = rnd(payload.seed);
+      var seed =payload.seed;
+      var ksi = rnd(&seed);
       var p_rr = _luminance(payload.throughput);
       if (ksi > p_rr) {
         break;
@@ -735,5 +837,7 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
 
   var pixelIndex = ipos.y * u32(resolution.x) + ipos.x;
   pixelBuffer.pixels[pixelIndex] = vec4<f32>(pixelBuffer.pixels[pixelIndex].rgb + pixelColor, 1.0);
+  // pixelBuffer.pixels[pixelIndex] = vec4<f32>(pixelColor, 1.0);
+  // pixelBuffer.pixels[pixelIndex] = vec4<f32>(1.0,0.0,0.0, 1.0);
 }
 `

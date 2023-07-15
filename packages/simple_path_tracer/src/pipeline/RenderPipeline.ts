@@ -1,7 +1,7 @@
-import { exec as execRenderRayTracingPassJob } from "./jobs/render/RenderRayTracingPassJob";
+import { exec as execRenderPathTracingPassJob } from "./jobs/render/RenderPathTracingPassJob";
 import { exec as execRenderScreenPassJob } from "./jobs/render/RenderScreenPassJob";
 
 export let exec = () => {
-    execRenderRayTracingPassJob();
+    execRenderPathTracingPassJob();
     execRenderScreenPassJob();
 }

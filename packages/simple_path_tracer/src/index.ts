@@ -1,4 +1,4 @@
-import THREE from "three";
+import * as THREE from "three";
 // import { log } from "./log/Log";
 import { createSphere, createPlane } from "./scene/Primitive";
 import { getConfig, setConfig, setScene, getPass, getWebGPU } from "./data/Repo";
@@ -36,14 +36,14 @@ let _buildScene = () => {
     }, {
         color: [0.7, 0.7, 0.7]
     }, null));
-    // scene.add(createPlane({
-    //     localPosition: [0, -5, 0],
-    //     // localEulerAngles: [90, 0, 0],
-    //     localEulerAngles: [-90, 0, 0],
-    //     width: 10,
-    //     height: 10,
-    // }, null, {
-    // }));
+    scene.add(createPlane({
+        localPosition: [0, -5, 0],
+        // localEulerAngles: [90, 0, 0],
+        localEulerAngles: [-90, 0, 0],
+        width: 10,
+        height: 10,
+    }, null, {
+    }));
     // scene.add(createPlane({
     //     localPosition: [0, 5, 0],
     //     // localEulerAngles: [-90, 0, 0],
@@ -52,7 +52,7 @@ let _buildScene = () => {
     //     height: 10,
     // }, {
     //     color: [0.7, 0.7, 0.7]
-    // }));
+    // }, null));
     // scene.add(createPlane({
     //     localPosition: [-5, 0, 0],
     //     localEulerAngles: [0, 90, 0],
@@ -60,7 +60,7 @@ let _buildScene = () => {
     //     height: 10,
     // }, {
     //     color: [1.0, 0.0, 0.0]
-    // }));
+    // }, null));
     // scene.add(createPlane({
     //     localPosition: [5, 0, 0],
     //     localEulerAngles: [0, -90, 0],
@@ -69,7 +69,7 @@ let _buildScene = () => {
     //     height: 10,
     // }, {
     //     color: [0.0, 1.0, 0.0]
-    // }));
+    // }, null));
 
     // scene.add(createSphere({
     //     localPosition: [0, -3.9, 0],

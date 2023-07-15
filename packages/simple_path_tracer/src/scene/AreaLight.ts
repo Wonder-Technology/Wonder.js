@@ -1,4 +1,4 @@
-import THREE from "three";
+import * as THREE from "three";
 import { convertDegToRad } from "./utils/TransformUtils";
 import { createBRDFLambertianMaterial } from "./BRDFLambertianMaterial";
 
