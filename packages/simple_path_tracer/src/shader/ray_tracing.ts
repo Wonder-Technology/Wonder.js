@@ -655,13 +655,16 @@ fn _computeDistanceSquare(worldSamplePoint:vec3<f32>, worldHitPoint:vec3<f32>)->
 fn _getFresnelReflectivity()->vec3<f32> { return vec3(1.0); }
 
 fn _computeDirectLight(
-  seed:u32,
+  // seed:u32,
+  payload:ptr<function, RayPayload>,
   worldHitPoint:vec3<f32>,
   worldNormal:vec3<f32>,
   ray:Ray, diffuse:vec3<f32>
 )->vec3<f32> {
-  var seed_ = seed;
+  var seed_ = (*payload).seed;
   var worldSamplePoint = _sampleRectAreaLight(rnd(&seed_), rnd(&seed_));
+( *payload).seed = seed_;
+
 
   var lightDir = normalize(worldSamplePoint - worldHitPoint);
 
@@ -733,7 +736,12 @@ fn _sampleLambertianMaterial(payload: ptr<function, RayPayload> ,  materialIndex
   }
 
   ( *payload ).radiance += (_getBRDFLambertianMaterialLe() +
-                       _computeDirectLight((*payload).seed, (*payload).worldHitPoint,
+                       _computeDirectLight(
+                         
+                        // (*payload).seed,
+                        payload,
+                        
+                        (*payload).worldHitPoint,
                                            worldNormal, ray, mat.diffuse)) *
                       (*payload).throughput;
 
@@ -745,6 +753,7 @@ fn _sampleLambertianMaterial(payload: ptr<function, RayPayload> ,  materialIndex
     var seed = (*payload).seed;
     var wi = _cosineSampleHemisphereInSphereCoordinateSystem(
         rnd(&(seed)), rnd(&(seed)), worldNormal);
+( *payload).seed = seed;
 
     ( *payload ).scatterDirection = wi;
 
@@ -846,11 +855,11 @@ fn _handleRayClosestHit(payload: ptr<function,RayPayload>, ray: Ray, intersectRe
   return isContinueBounce;
 }
 
-// fn _getEnvLE()->vec3<f32> { return vec3(0.0, 0.0, 0.0); }
-fn _getEnvLE()->vec3<f32> { return vec3(0.0, 0.0, 1.0); }
+fn _getEnvLE()->vec3<f32> { return vec3(0.0, 0.0, 0.0); }
+// fn _getEnvLE()->vec3<f32> { return vec3(0.0, 0.0, 1.0); }
 
 fn _handleRayMiss(payload: ptr<function,RayPayload>)->bool {
-(*payload).radiance = _getEnvLE() * (*payload).throughput;
+(*payload).radiance += _getEnvLE() * (*payload).throughput;
 
 return false;
 }

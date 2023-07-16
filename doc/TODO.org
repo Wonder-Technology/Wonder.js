@@ -22,7 +22,16 @@ run with 1spp
 bvh bug
 
 
-** TODO optimize
+** DONE optimize
+
+** DONE fix
+
+fix miss
+
+rnd
+
+
+** TODO move camera
 
 
 ** TODO generate .png 
