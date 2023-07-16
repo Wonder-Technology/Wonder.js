@@ -4,21 +4,27 @@ import { tree } from "./MiddleBVH2D"
 
 type wholeWorldMinX = number
 type wholeWorldMinY = number
+type wholeWorldMinZ = number
 type wholeWorldMaxX = number
 type wholeWorldMaxY = number
+type wholeWorldMaxZ = number
 
 type leafInstanceOffset = number
-// type leafInstanceCount = number
-type leafInstanceCountAndMaxLayer = number
+type leafInstanceCount = number
 type child1Index = number
 type child2Index = number
 
 type topLevelNodeData = [
-	wholeWorldMinX, wholeWorldMinY, wholeWorldMaxX, wholeWorldMaxY,
+	wholeWorldMinX, wholeWorldMinY, wholeWorldMinZ,
+
+
 	leafInstanceOffset,
-	// leafInstanceCount,
-	// maxLayer,
-	leafInstanceCountAndMaxLayer,
+
+
+	wholeWorldMaxX, wholeWorldMaxY, wholeWorldMaxZ,
+
+	leafInstanceCount,
+
 	child1Index,
 	child2Index
 ]
@@ -42,18 +48,24 @@ type worldPositionZ = number
 
 // type bottomLevelArr = Array<[worldMinX, worldMinY, worldMaxX, worldMaxY, instanceIndex, layer]>
 type bottomLevelArr = Array<[
-	worldMinX, worldMinY, worldMinZ, worldMaxX, worldMaxY, worldMaxZ,
-	primitiveIndex, instanceIndex,
+	worldMinX, worldMinY, worldMinZ,
+	primitiveIndex,
+
+	worldMaxX, worldMaxY, worldMaxZ,
+	instanceIndex,
 
 	worldPositionX,
 	worldPositionY,
 	worldPositionZ,
+	number,
 	worldPositionX,
 	worldPositionY,
 	worldPositionZ,
+	number,
 	worldPositionX,
 	worldPositionY,
 	worldPositionZ,
+	number,
 ]>
 
 // let _merge24BitValueAnd8BitValue = (value1, value2) => {
@@ -96,41 +108,43 @@ let _build = (node: tree, topLevelArr, child1Arr, child2Arr, bottomLevelArr: bot
 				worldMin[0],
 				worldMin[1],
 				worldMin[2],
+				bottomLevelArr.length,
+
 				worldMax[0],
 				worldMax[1],
 				worldMax[2],
-				bottomLevelArr.length,
 				node.leafAllAABBData.length
 			]
 		)
-		node.leafAllAABBData.reduce((arr, { aabb, primitiveIndex, instanceIndex, triangle }) => {
+		node.leafAllAABBData.forEach(({ aabb, primitiveIndex, instanceIndex, triangle }) => {
 			let { worldMin, worldMax } = aabb
 
 			let { p0WorldPosition, p1WorldPosition, p2WorldPosition } = triangle
 
-			arr.push([
+			bottomLevelArr.push([
 				worldMin[0],
 				worldMin[1],
 				worldMin[2],
+				primitiveIndex,
 				worldMax[0],
 				worldMax[1],
 				worldMax[2],
-				primitiveIndex,
 				instanceIndex,
 
 				p0WorldPosition[0],
 				p0WorldPosition[1],
 				p0WorldPosition[2],
+				0,
 				p1WorldPosition[0],
 				p1WorldPosition[1],
 				p1WorldPosition[2],
+				0,
 				p2WorldPosition[0],
 				p2WorldPosition[1],
 				p2WorldPosition[2],
+				0
 			])
-
-			return arr
-		}, bottomLevelArr)
+		})
 
 		return
 	}
@@ -140,10 +154,11 @@ let _build = (node: tree, topLevelArr, child1Arr, child2Arr, bottomLevelArr: bot
 			worldMin[0],
 			worldMin[1],
 			worldMin[2],
+			0,
+
 			worldMax[0],
 			worldMax[1],
 			worldMax[2],
-			0,
 			// _merge24BitValueAnd8BitValue(0, maxLayer)
 			0
 		]

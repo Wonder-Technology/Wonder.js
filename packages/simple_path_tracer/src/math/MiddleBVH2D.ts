@@ -68,7 +68,6 @@ let _sort = (getAxiz, allAABBData: Array<aabbData>) => {
 	return qsort(allAABBData, ({ aabb }) => getAxiz(computeCenter(aabb)))
 }
 
-
 let _build = (node, minCount, maxDepth, depth, getAxizFuncs, getAxizFuncIndex, allAABBData): void => {
 	if (depth >= maxDepth || allAABBData.length <= minCount) {
 		// node.wholeAABB = _computeWholeAABB(sortedAllAABBData)
@@ -79,7 +78,7 @@ let _build = (node, minCount, maxDepth, depth, getAxizFuncs, getAxizFuncIndex, a
 		return
 	}
 	else {
-		let sortedAllAABBData = _sort(getAxizFuncs[getAxizFuncIndex % 2], allAABBData)
+		let sortedAllAABBData = _sort(getAxizFuncs[getAxizFuncIndex % 3], allAABBData)
 		// console.log(sortedAllAABBData);
 
 
@@ -123,9 +122,9 @@ export let build = (allAABBData: Array<aabbData>, minCount = 5, maxDepth = 10): 
 	}
 
 	_build(tree, minCount, maxDepth, 1, [
-		(vec2) => vec2[0],
-		(vec2) => vec2[1],
-		(vec2) => vec2[2]
+		(vec3) => vec3[0],
+		(vec3) => vec3[1],
+		(vec3) => vec3[2]
 	], 0, allAABBData)
 
 	return tree

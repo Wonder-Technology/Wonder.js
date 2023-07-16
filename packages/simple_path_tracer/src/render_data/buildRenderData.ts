@@ -103,13 +103,14 @@ export let buildSceneAccelerationStructureBufferData = (device) => {
     let topLevelBufferData = new Float32Array(flatten(topLevelArr))
 
     let a3 = performance.now()
-    // add padding
-    bottomLevelArr = bottomLevelArr.map((data) => {
-        data.push(0)
-        data.push(0)
+    // // add padding
+    // bottomLevelArr = bottomLevelArr.map((data) => {
+    //     data.push(0)
+    //     data.push(0)
+    //     data.push(0)
 
-        return data
-    })
+    //     return data
+    // })
     let a4 = performance.now()
 
     let bottomLevelBufferData = new Float32Array(flatten(bottomLevelArr))

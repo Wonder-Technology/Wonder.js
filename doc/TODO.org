@@ -2,7 +2,7 @@
 
 code in Wonder.js->master branch
 
-** TODO implement specular reflection
+** DONE implement specular reflection
 
 # finish draft
 
@@ -18,6 +18,12 @@ show specular
 
 
 run with 1spp
+
+bvh bug
+
+
+** TODO optimize
+
 
 ** TODO generate .png 
 

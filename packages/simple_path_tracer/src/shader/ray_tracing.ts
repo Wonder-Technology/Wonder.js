@@ -38,8 +38,8 @@ struct Triangle {
 
 struct TopLevel {
   worldMin : vec3<f32>,
-  worldMax : vec3<f32>,
 	leafInstanceOffset: f32,
+  worldMax : vec3<f32>,
 	leafInstanceCount: f32,
 
 
@@ -51,16 +51,16 @@ struct TopLevel {
 
 struct BottomLevel {
   worldMin : vec3<f32>,
-  worldMax : vec3<f32>,
   primitiveIndex: f32,
+
+  worldMax : vec3<f32>,
   instanceIndex: f32,
 
-  // TODO perf: move to Vertex->position, and add modelMatrix in Instance???
   p0WorldPosition: vec3<f32>,
-  p1WorldPosition: vec3<f32>,
-  p2WorldPosition: vec3<f32>,
   pad_0: f32,
+  p1WorldPosition: vec3<f32>,
   pad_1: f32,
+  p2WorldPosition: vec3<f32>,
   pad_2: f32,
 }
 
@@ -238,9 +238,9 @@ fn _isIntersectWithTriangle(barycentric:vec3<f32>)->bool {
 }
 
 fn _swap(a:ptr<function, f32>, b:ptr<function, f32>) {
-  let temp = a;
+  let temp = *a;
   *a = *b;
-  *b = *temp;
+  *b = temp;
 }
 
 fn _isRayIntersectWithAABB(ray: Ray, worldMin: vec3<f32>, worldMax: vec3<f32>) -> bool {
@@ -353,9 +353,6 @@ while(stackSize > 0){
 		var leafInstanceCount= u32(currentNode.leafInstanceCount);
 
 		if (_isRayIntersectWithTopLevelNode(ray, currentNode)) {
-			// var leafInstanceCount = _getLeafInstanceCount(leafInstanceCount);
-
-
 			if (_isLeafNode(leafInstanceCount)) {
         var leafInstanceOffset = u32(currentNode.leafInstanceOffset);
 
@@ -363,12 +360,6 @@ while(stackSize > 0){
           var bottomLevel = bottomLevel.bottomLevels[leafInstanceOffset];
 
           if(_isRayIntersectWithAABB(ray, bottomLevel.worldMin, bottomLevel.worldMax)){
-
-
-            // var instance: Instance = sceneInstanceData.instances[u32(bottomLevel.instanceIndex)];
-            // var geometryIndex = u32(instance.geometryIndex);
-            // var geometry:Geometry = sceneGeometryData.geometrys[geometryIndex];
-
       var barycentricAndT = _getBarycentricAndT(
           ray, Triangle(bottomLevel.p0WorldPosition.xyz, bottomLevel.p1WorldPosition.xyz,
                         bottomLevel.p2WorldPosition.xyz));
@@ -750,7 +741,8 @@ fn _handleRayClosestHit(payload: ptr<function,RayPayload>, ray: Ray, intersectRe
   return isContinueBounce;
 }
 
-fn _getEnvLE()->vec3<f32> { return vec3(0.0, 0.0, 0.0); }
+// fn _getEnvLE()->vec3<f32> { return vec3(0.0, 0.0, 0.0); }
+fn _getEnvLE()->vec3<f32> { return vec3(0.0, 0.0, 1.0); }
 
 fn _handleRayMiss(payload: ptr<function,RayPayload>)->bool {
 (*payload).radiance = _getEnvLE() * (*payload).throughput;
@@ -763,6 +755,8 @@ fn _traceRay(ray: Ray, payload: ptr<function,RayPayload>, isCameraRay: bool)->bo
 
   if (intersectResult.isClosestHit) {
     return _handleRayClosestHit(payload, ray, intersectResult, isCameraRay);
+    // (*payload).radiance = vec3(1.0, 0.0, 0.0);
+    // return false;
   }
 
   return _handleRayMiss(payload);
@@ -773,7 +767,6 @@ fn _luminance(color:vec3<f32>)->f32 {
 }
 
 @compute @workgroup_size(8, 8, 1)
-// @compute @workgroup_size(1, 1, 1)
 fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
   var ipos = vec2<u32>(GlobalInvocationID.x, GlobalInvocationID.y);
 
