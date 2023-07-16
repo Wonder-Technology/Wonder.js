@@ -243,59 +243,75 @@ fn _swap(a:ptr<function, f32>, b:ptr<function, f32>) {
   *b = temp;
 }
 
-fn _isRayIntersectWithAABB(ray: Ray, worldMin: vec3<f32>, worldMax: vec3<f32>) -> bool {
-  var min = worldMin;
-  var max = worldMax;
+// fn _isRayIntersectWithAABB(ray: Ray, worldMin: vec3<f32>, worldMax: vec3<f32>) -> bool {
+fn _isRayIntersectWithAABB(ray: Ray, worldMin: vec3<f32>, worldMax: vec3<f32>) -> vec2<f32> {
+  // var min = worldMin;
+  // var max = worldMax;
 
-  var origin = ray.origin;
-  var direction = ray.direction;
+  // var origin = ray.origin;
+  // var direction = ray.direction;
 
-  var tmin = (min.x - origin.x) / direction.x;
-  var tmax = (max.x - origin.x) / direction.x;
+  // var txmin = (min.x - origin.x) / direction.x;
+  // var txmax = (max.x - origin.x) / direction.x;
 
-  if (tmin > tmax){
-    _swap(&tmin, &tmax);
-  }
+  // if (txmin > txmax){
+  //   _swap(&txmin, &txmax);
+  // }
 
-  var tymin = (min.y - origin.y) / direction.y;
-  var tymax = (max.y - origin.y) / direction.y;
+  // var tymin = (min.y - origin.y) / direction.y;
+  // var tymax = (max.y - origin.y) / direction.y;
 
-  if (tymin > tymax){
-    _swap(&tymin, &tymax);
-  }
+  // if (tymin > tymax){
+  //   _swap(&tymin, &tymax);
+  // }
 
-  if ((tmin > tymax) || (tymin > tmax)) {
-    return false;
-  }
+  // if ((txmin > tymax) || (tymin > txmax)) {
+  //   return false;
+  // }
 
-  if (tymin > tmin){
-    tmin = tymin;
-  }
+  // if (tymin > txmin){
+  //   txmin = tymin;
+  // }
 
-  if (tymax < tmax){
-    tmax = tymax;
-  }
+  // if (tymax < txmax){
+  //   txmax = tymax;
+  // }
 
-  var tzmin = (min.z - origin.z) / direction.z;
-  var tzmax = (max.z - origin.z) / direction.z;
+  // var tzmin = (min.z - origin.z) / direction.z;
+  // var tzmax = (max.z - origin.z) / direction.z;
 
-  if (tzmin > tzmax){
-    _swap(&tzmin, &tzmax);
-  }
+  // if (tzmin > tzmax){
+  //   _swap(&tzmin, &tzmax);
+  // }
 
-  if ((tmin > tzmax) || (tzmin > tmax)){
-    return false;
-  }
+  // if ((txmin > tzmax) || (tzmin > txmax)){
+  //   return false;
+  // }
 
-  if (tzmin > tmin){
-    tmin = tzmin;
-  }
+  // if (tzmin > txmin){
+  //   txmin = tzmin;
+  // }
 
-  if (tzmax < tmax){
-    tmax = tzmax;
-  }
+  // if (tzmax < txmax){
+  //   txmax = tzmax;
+  // }
 
-  return true;
+  // return true;
+
+
+  var boxMin = worldMin;
+  var boxMax = worldMax;
+
+  var rayOrigin = ray.origin;
+  var rayDir = ray.direction;
+
+  var tMin = (boxMin - rayOrigin) / rayDir;
+     var tMax = (boxMax - rayOrigin) / rayDir;
+     var t1 = min(tMin, tMax);
+     var t2 = max(tMin, tMax);
+     var  tNear = max(max(t1.x, t1.y), t1.z);
+     var  tFar = min(min(t2.x, t2.y), t2.z);
+    return vec2(tNear, tFar);
 }
 
 fn _getBarycentricAndT(ray: Ray, tri: Triangle) -> vec4<f32> {
@@ -316,7 +332,7 @@ fn _getBarycentricAndT(ray: Ray, tri: Triangle) -> vec4<f32> {
   return vec4(b0, b1, b2, t);
 }
 
-fn _isRayIntersectWithTopLevelNode(ray: Ray, node: TopLevel) -> bool {
+fn _isRayIntersectWithTopLevelNode(ray: Ray, node: TopLevel) -> vec2<f32> {
 return _isRayIntersectWithAABB(ray, node.worldMin, node.worldMax);
 }
 
@@ -329,7 +345,7 @@ fn _hasChild(childIndex: u32) -> bool {
 }
 
 fn _intersectScene(ray: Ray)->TriangleIntersect {
-const MAX_DEPTH = 20;
+const MAX_DEPTH = 10;
 
   var intersectResult: TriangleIntersect;
 
@@ -352,14 +368,22 @@ while(stackSize > 0){
 
 		var leafInstanceCount= u32(currentNode.leafInstanceCount);
 
-		if (_isRayIntersectWithTopLevelNode(ray, currentNode)) {
+
+var tResult = _isRayIntersectWithTopLevelNode(ray, currentNode);
+
+		if (tResult.x <= tResult.y && 
+      tResult.x < intersectResult.t
+      ) {
 			if (_isLeafNode(leafInstanceCount)) {
         var leafInstanceOffset = u32(currentNode.leafInstanceOffset);
 
         while(leafInstanceCount > 0){
           var bottomLevel = bottomLevel.bottomLevels[leafInstanceOffset];
 
-          if(_isRayIntersectWithAABB(ray, bottomLevel.worldMin, bottomLevel.worldMax)){
+tResult = _isRayIntersectWithAABB(ray, bottomLevel.worldMin, bottomLevel.worldMax);
+          if(tResult.x <= tResult.y && 
+      tResult.x < intersectResult.t
+){
       var barycentricAndT = _getBarycentricAndT(
           ray, Triangle(bottomLevel.p0WorldPosition.xyz, bottomLevel.p1WorldPosition.xyz,
                         bottomLevel.p2WorldPosition.xyz));
