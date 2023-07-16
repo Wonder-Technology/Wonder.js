@@ -227,7 +227,8 @@ export let buildPointIndexBufferData = (device) => {
         ];
     }, [[], 0, 0]);
 
-    let bufferData = new Uint32Array(bufferDataArr);
+    // let bufferData = new Uint32Array(bufferDataArr);
+    let bufferData = new Float32Array(bufferDataArr);
 
     // console.log(bufferData)
 
@@ -272,7 +273,8 @@ export let buildIndexBufferData = (device) => {
         return concat(bufferDataArr, indices)
     }, []);
 
-    let bufferData = new Uint32Array(bufferDataArr);
+    // let bufferData = new Uint32Array(bufferDataArr);
+    let bufferData = new Float32Array(bufferDataArr);
 
     // console.log(bufferData)
 

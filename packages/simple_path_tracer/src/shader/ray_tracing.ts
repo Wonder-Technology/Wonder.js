@@ -83,10 +83,14 @@ struct Vertex {
 }
 
 struct PointIndexData {
-  vertexIndex: u32,
-  faceIndex: u32,
-  pad_0: f32,
-  pad_1: f32,
+  // vertexIndex: u32,
+  // faceIndex: u32,
+  // pad_0: f32,
+  // pad_1: f32,
+
+
+  vertexIndex: f32,
+  faceIndex: f32,
 }
 
 struct BRDFLambertianMaterial {
@@ -123,7 +127,8 @@ struct BRDFSpecularReflectionMaterial {
 }
 
  struct Indices {
-  indices :  array<u32>,
+  // indices :  array<u32>,
+  indices :  array<f32>,
 }
 
 
@@ -508,17 +513,17 @@ tResult = _isRayIntersectWithAABB(ray, bottomLevel.worldMin, bottomLevel.worldMa
 
 
 fn _getVertexIndex(pointIndexData:PointIndexData )->u32 {
-  return pointIndexData.vertexIndex;
+  return u32(pointIndexData.vertexIndex);
 }
 
 fn _getFaceIndex(pointIndexData:PointIndexData )->u32 {
-  return pointIndexData.faceIndex;
+  return u32(pointIndexData.faceIndex);
 }
 
 fn _getTriangleIndices(faceIndex:u32, primitiveIndex:u32)->vec3<u32> {
-  return vec3<u32>(sceneIndicesData.indices[faceIndex + 3 * primitiveIndex + 0],
-               sceneIndicesData.indices[faceIndex + 3 * primitiveIndex + 1],
-               sceneIndicesData.indices[faceIndex + 3 * primitiveIndex + 2]);
+  return vec3<u32>(u32(sceneIndicesData.indices[faceIndex + 3 * primitiveIndex + 0]),
+               u32(sceneIndicesData.indices[faceIndex + 3 * primitiveIndex + 1]),
+               u32(sceneIndicesData.indices[faceIndex + 3 * primitiveIndex + 2]));
 }
 
 fn _getTriangleVertex(vertexIndex:u32, index:u32)->Vertex {

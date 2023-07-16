@@ -30,6 +30,16 @@ fix miss
 
 rnd
 
+** DONE fix bug
+
+# specular light
+
+# reflect
+
+
+PointIndexData error:f32
+
+  indices :  array<f32>,
 
 ** TODO move camera
 
