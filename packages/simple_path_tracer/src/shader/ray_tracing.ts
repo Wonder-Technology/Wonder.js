@@ -344,7 +344,49 @@ fn _hasChild(childIndex: u32) -> bool {
   return childIndex != 0;
 }
 
-fn _intersectScene(ray: Ray)->TriangleIntersect {
+
+fn _intersectSceneWithoutBVH(ray: Ray)->TriangleIntersect {
+  var intersectResult: TriangleIntersect;
+
+  intersectResult.isClosestHit = false;
+  intersectResult.t = POSITIVE_INFINITY;
+
+var l = arrayLength(&bottomLevel.bottomLevels);
+  for (var i:u32 = 0; i < l; i++) {
+          var bottomLevel = bottomLevel.bottomLevels[i];
+
+          // if(_isRayIntersectWithAABB(ray, bottomLevel.worldMin, bottomLevel.worldMax)){
+
+var tResult = _isRayIntersectWithAABB(ray, bottomLevel.worldMin, bottomLevel.worldMax);
+          // note: traverse order not improve fps!
+          if(tResult.x <= tResult.y && 
+      tResult.x < intersectResult.t
+){
+
+
+      var barycentricAndT = _getBarycentricAndT(
+          ray, Triangle(bottomLevel.p0WorldPosition.xyz, bottomLevel.p1WorldPosition.xyz,
+                        bottomLevel.p2WorldPosition.xyz));
+      var barycentric = barycentricAndT.xyz;
+      var t = barycentricAndT.w;
+
+                if (_isIntersectWithTriangle(barycentric)) {
+                  if (t >= 0.0 &&
+                      (!intersectResult.isClosestHit || (t < intersectResult.t))) {
+                    intersectResult.isClosestHit = true;
+                    intersectResult.barycentric = barycentric;
+                    intersectResult.t = t;
+                    intersectResult.primitiveIndex = bottomLevel.primitiveIndex;
+                    intersectResult.instanceIndex = bottomLevel.instanceIndex;
+                  }
+                }
+          }
+  }
+
+  return intersectResult;
+}
+
+fn _intersectSceneWithBVH(ray: Ray)->TriangleIntersect {
 const MAX_DEPTH = 10;
 
   var intersectResult: TriangleIntersect;
@@ -424,6 +466,44 @@ tResult = _isRayIntersectWithAABB(ray, bottomLevel.worldMin, bottomLevel.worldMa
 }
 
   return intersectResult;
+
+//   var intersectResult: TriangleIntersect;
+
+//   intersectResult.isClosestHit = false;
+//   intersectResult.t = POSITIVE_INFINITY;
+
+// var l = arrayLength(&bottomLevel.bottomLevels);
+//   for (var i:u32 = 0; i < l; i++) {
+//           var bottomLevel = bottomLevel.bottomLevels[i];
+
+//           // if(_isRayIntersectWithAABB(ray, bottomLevel.worldMin, bottomLevel.worldMax)){
+
+// var tResult = _isRayIntersectWithAABB(ray, bottomLevel.worldMin, bottomLevel.worldMax);
+//           if(tResult.x <= tResult.y && 
+//       tResult.x < intersectResult.t
+// ){
+
+
+//       var barycentricAndT = _getBarycentricAndT(
+//           ray, Triangle(bottomLevel.p0WorldPosition.xyz, bottomLevel.p1WorldPosition.xyz,
+//                         bottomLevel.p2WorldPosition.xyz));
+//       var barycentric = barycentricAndT.xyz;
+//       var t = barycentricAndT.w;
+
+//                 if (_isIntersectWithTriangle(barycentric)) {
+//                   if (t >= 0.0 &&
+//                       (!intersectResult.isClosestHit || (t < intersectResult.t))) {
+//                     intersectResult.isClosestHit = true;
+//                     intersectResult.barycentric = barycentric;
+//                     intersectResult.t = t;
+//                     intersectResult.primitiveIndex = bottomLevel.primitiveIndex;
+//                     intersectResult.instanceIndex = bottomLevel.instanceIndex;
+//                   }
+//                 }
+//           }
+//   }
+
+//   return intersectResult;
 }
 
 
@@ -528,7 +608,8 @@ fn _isHitRectAreaLight(isRectAreaLight:f32)->bool {
 }
 
 fn _isShadowedByTraceShadowRay(ray:Ray)->bool {
-  var intersectResult = _intersectScene(ray);
+  // var intersectResult = _intersectSceneWithBVH(ray);
+  var intersectResult = _intersectSceneWithoutBVH(ray);
 
   if (intersectResult.isClosestHit) {
     var instanceIndex = u32(intersectResult.instanceIndex);
@@ -775,7 +856,9 @@ return false;
 }
 
 fn _traceRay(ray: Ray, payload: ptr<function,RayPayload>, isCameraRay: bool)->bool {
-  var intersectResult: TriangleIntersect = _intersectScene(ray);
+  // var intersectResult: TriangleIntersect = _intersectSceneWithBVH(ray);
+  var intersectResult: TriangleIntersect = _intersectSceneWithoutBVH(ray);
+
 
   if (intersectResult.isClosestHit) {
     return _handleRayClosestHit(payload, ray, intersectResult, isCameraRay);
