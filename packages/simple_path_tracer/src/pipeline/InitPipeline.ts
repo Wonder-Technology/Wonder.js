@@ -3,7 +3,7 @@ import { exec as execInitCameraJob } from "./jobs/init/InitCameraJob";
 import { exec as execInitPassJob } from "./jobs/init/InitPassJob";
 import { exec as execInitRayTracingPassJob } from "./jobs/init/InitPathTracingPassJob";
 import { exec as execInitScreenPassJob } from "./jobs/init/InitScreenPassJob";
-import { getConfig, getPass, getScene, setCanvas, setPass } from "../data/Repo";
+import { getCanvas, getConfig, getPass, getScene, setCanvas, setPass } from "../data/Repo";
 import { scene, gameObject, transform } from "../scene/SceneGraphConverter";
 
 let _updateCameraLocalPosition = (getLocalPositionFunc) => {
@@ -21,6 +21,17 @@ let _updateCameraLocalPosition = (getLocalPositionFunc) => {
 }
 
 let _bindEvent = () => {
+    (document.querySelector("#download") as HTMLButtonElement).onclick = (e) => {
+        let canvas = getCanvas()
+        let canvasUrl = canvas.toDataURL("image/png");
+        const createEl = document.createElement('a');
+        createEl.href = canvasUrl;
+        createEl.download = "download";
+        createEl.click();
+        createEl.remove();
+    }
+
+
     (document.querySelector("#x1") as HTMLButtonElement).onclick = (e) => {
         _updateCameraLocalPosition(
             (localPosition) => [localPosition[0] - 0.1, localPosition[1], localPosition[2]]

@@ -51,7 +51,7 @@ not accu when move
 
 
 
-** TODO generate .png 
+** DONE generate .png 
 
 
 with 1spp
