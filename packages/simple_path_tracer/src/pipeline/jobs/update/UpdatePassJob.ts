@@ -1,23 +1,29 @@
 import { getPass, getWebGPU, setPass } from "../../../data/Repo"
 
-let _updateCommonDataBufferData = () => {
+export let exec = () => {
     let { device } = getWebGPU()
-    let { frameIndex, commonDataBufferData } = getPass();
+    let { isCameraMove, totalSampleCount, commonDataBufferData } = getPass();
 
     let [commonDataBuffer, commonDataData] = commonDataBufferData;
 
-    commonDataData[1] = frameIndex + 1;
+    let newTotalSampleCount = null
+    let newIsCameraMove = null
+    if (isCameraMove) {
+        newTotalSampleCount = 1
+        newIsCameraMove = false
+    }
+    else {
+        newTotalSampleCount = totalSampleCount
+        newIsCameraMove = isCameraMove
+    }
+
+    commonDataData[1] = newTotalSampleCount
 
     device.queue.writeBuffer(commonDataBuffer, 0, commonDataData)
-}
-
-export let exec = () => {
-    let pass = getPass();
-
-    _updateCommonDataBufferData();
 
     setPass({
-        ...pass,
-        frameIndex: pass.frameIndex + 1,
+        ...getPass(),
+        isCameraMove: newIsCameraMove,
+        totalSampleCount: newTotalSampleCount + 1,
     });
 }

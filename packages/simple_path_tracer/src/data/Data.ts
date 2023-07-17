@@ -20,7 +20,8 @@ export let data = {
         cameraBufferData: null
     },
     pass: {
-        frameIndex: null,
+        isCameraMove: false,
+        totalSampleCount: null,
         commonDataBufferData: null,
         pixelBufferData: null,
         resolutionBufferData: null

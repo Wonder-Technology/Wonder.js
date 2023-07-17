@@ -30,7 +30,8 @@ let _buildResolutionBufferData = (width, height, device) => {
 let _buildCommonDataBufferData = device => {
     // let sampleCountPerPixel = 4;
     let sampleCountPerPixel = 1;
-    let totalSampleCount = getPass().frameIndex + 1;
+    // let totalSampleCount = getPass().totalSampleCount + 1;
+    let totalSampleCount = getPass().totalSampleCount;
 
     let bufferData = new Uint32Array([
         sampleCountPerPixel,
@@ -49,7 +50,7 @@ export let exec = () => {
     let { width, height } = getConfig()
 
     setPass({
-        frameIndex: 0,
+        totalSampleCount: 1,
         commonDataBufferData: _buildCommonDataBufferData(device),
         pixelBufferData: _buildPixelBufferData(width, height, device),
         resolutionBufferData: _buildResolutionBufferData(width, height, device)

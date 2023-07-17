@@ -41,7 +41,14 @@ PointIndexData error:f32
 
   indices :  array<f32>,
 
-** TODO move camera
+** DONE move camera
+
+# arcball camera
+simple move camera
+
+
+not accu when move
+
 
 
 ** TODO generate .png 
@@ -57,9 +64,22 @@ with 1000spp
 
 ** TODO write article
 
+why bvh slow?
+
 
 * TODO implement NRC with path tracer
 
+
+** TODO use tensorflow.js to build nrc for train and inference
+
+use webgpu backend
+
+** TODO path tracer use nrc to train
+
+** TODO path tracer use nrc to inference
+
+
+* TODO improve NRC by Instant Neural Graphics Primitives with a Multiresolution Hash Encoding
 
 
 
@@ -76,6 +96,12 @@ inference dependency support: Tensorflow.js, WebNN
 
 
 
+* TODO write article
+
+
+
+
+
 
 * TODO implement wspk denoiser with path tracer
 
@@ -84,6 +110,8 @@ generate input(.png) for train and inference
     motion vector .png should preprocess data:
     1./ 10
     2.to [0,1]  
+
+* TODO write article
 
 * TODO implement NSRR DLSS with path tracer
 
@@ -141,6 +169,8 @@ def backward_warp_motion(img: torch.Tensor, motion: torch.Tensor) -> torch.Tenso
 
 
 
+* TODO write article
+
 
 
 * TODO publish Wonder.js v3.0.0-alpha.1 version
@@ -150,8 +180,6 @@ def backward_warp_motion(img: torch.Tensor, motion: torch.Tensor) -> torch.Tenso
 
 
 * TODO optimize
-
-** TODO improve NRC by Instant Neural Graphics Primitives with a Multiresolution Hash Encoding
 
 ** TODO improve wspk
 
@@ -196,3 +224,10 @@ def backward_warp_motion(img: torch.Tensor, motion: torch.Tensor) -> torch.Tenso
 ** TODO add IBL
 
 ** TODO publish Wonder.js v3.0.0-alpha.4 version
+
+
+
+
+* TODO add PLOC bvh
+
+support support 50W faces scene with > 30fps in RTX 2060s

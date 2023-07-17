@@ -1,29 +1,21 @@
-import { getWebGPU, setCamera } from "../../../data/Repo"
+import { basicCameraView, gameObject, perspectiveCameraProjection, scene, transform } from "../../../scene/SceneGraphConverter";
 import { invert, createIdentityMatrix4 } from "../../../math/Matrix4";
-import { scene, gameObject, basicCameraView, perspectiveCameraProjection } from "../../../scene/SceneGraphConverter";
 import { updateCameraBufferData } from "../utils/CameraUtils";
-
-let _buildCameraBufferData = device => {
-    let bufferData = new Float32Array(16 + 16 + 4);
-    let bufferSize = bufferData.byteLength;
-
-    let buffer = device.createBuffer({
-        size: bufferSize,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
-    });
-
-    return [buffer, bufferData];
-}
+import { getCamera, getWebGPU } from "../../../data/Repo";
 
 export let exec = () => {
     let { device } = getWebGPU();
 
-    let [buffer, bufferData] = _buildCameraBufferData(device)
-
     let cameraGameObject = scene.getActiveCamera();
+
+    transform.update(gameObject.getTransform(cameraGameObject))
+
 
     let activeCameraView = gameObject.getBasicCameraView(cameraGameObject);
     let cameraProjection = gameObject.getPerspectiveCameraProjection(cameraGameObject);
+
+    let { cameraBufferData } = getCamera()
+    let [buffer, bufferData] = cameraBufferData
 
     updateCameraBufferData(
         device,
@@ -43,8 +35,4 @@ export let exec = () => {
         perspectiveCameraProjection.getFar(cameraProjection),
         [buffer, bufferData]
     );
-
-    setCamera({
-        cameraBufferData: [buffer, bufferData]
-    });
 }

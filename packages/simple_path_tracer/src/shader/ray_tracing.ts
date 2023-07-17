@@ -950,7 +950,12 @@ fn main(@builtin(global_invocation_id) GlobalInvocationID : vec3<u32>) {
     pixelColor = payload.radiance;
 
   var pixelIndex = ipos.y * u32(resolution.x) + ipos.x;
-  pixelBuffer.pixels[pixelIndex] = vec4<f32>(pixelBuffer.pixels[pixelIndex].rgb + pixelColor, 1.0);
+  if(totalSampleCount == 1){
+    pixelBuffer.pixels[pixelIndex] = vec4<f32>( pixelColor, 1.0);
+  }
+  else{
+    pixelBuffer.pixels[pixelIndex] = vec4<f32>(pixelBuffer.pixels[pixelIndex].rgb + pixelColor, 1.0);
+  }
   // pixelBuffer.pixels[pixelIndex] = vec4<f32>(pixelColor, 1.0);
   // pixelBuffer.pixels[pixelIndex] = vec4<f32>(1.0,0.0,0.0, 1.0);
 }

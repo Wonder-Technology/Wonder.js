@@ -2,6 +2,8 @@ import { fatal } from "../log/Log";
 import { getScene } from "../data/Repo";
 import * as THREE from "three";
 
+type position = [number, number, number]
+
 let _log = (param1, param2) => {
     console.log(param1, param2);
 }
@@ -272,6 +274,19 @@ export let areaLight = {
 }
 
 export let transform = {
+    update: (transform) => {
+        transform.updateMatrixWorld()
+    },
+    getLocalPosition: (transform): position => {
+        return [transform.position.x, transform.position.y, transform.position.z]
+    },
+    setLocalPosition: (transform, localPosition: position) => {
+        transform.position.set(
+            localPosition[0],
+            localPosition[1],
+            localPosition[2]
+        )
+    },
     getLocalToWorldMatrix: (transform) => {
         let result = _getFromMatrix4(transform.matrixWorld);
 
