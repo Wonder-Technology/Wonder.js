@@ -1,4 +1,4 @@
-* TODO implement path tracer by webgpu + lbvh
+* DONE implement path tracer by webgpu + lbvh
 
 code in Wonder.js->master branch
 
@@ -62,7 +62,7 @@ with 1000spp
 # ** TODO refactor: extract .wgsl
 
 
-** TODO write article
+** DONE write article
 
 why bvh slow?
 
@@ -74,9 +74,34 @@ why bvh slow?
 
 use webgpu backend
 
-** TODO path tracer use nrc to train
+compare with .py
 
-** TODO path tracer use nrc to inference
+
+
+
+** TODO path tracer use nrc to train and inference
+
+
+
+add NRC pass:
+implement encode in CS shader;
+query(inference);
+train;
+update pixelBuffer;
+
+
+
+send query, train gpu buffer to tensor
+    refer to: https://js.tensorflow.org/api/latest/?_gl=1*gn1wql*_ga*NzAyNzE0MjA4LjE2ODU4NDM4ODc.*_ga_W0YLR4190T*MTY4OTczNjg4MC4xMC4xLjE2ODk3MzcwNDguMC4wLjA.#Tensors-Creation
+
+get result from tensor, use to update pixel buffer
+    refer to: https://github.com/tensorflow/tfjs/issues/6677
+
+
+
+# ** TODO perf: add cache for nrc result
+
+# key: position+w
 
 
 * TODO improve NRC by Instant Neural Graphics Primitives with a Multiresolution Hash Encoding
